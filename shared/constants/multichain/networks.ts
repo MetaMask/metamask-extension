@@ -4,11 +4,19 @@ import {
   SolAccountType,
   BtcScope,
   SolScope,
+  TrxScope,
+  TrxAccountType,
+  XlmScope,
+  XlmAccountType,
+  KeyringAccountType,
 } from '@metamask/keyring-api';
+import { KnownSessionProperties } from '@metamask/chain-agnostic-permission';
 import {
   isBtcMainnetAddress,
   isBtcTestnetAddress,
   isSolanaAddress,
+  isStellarAddress,
+  isTronAddress,
 } from '../../lib/multichain/accounts';
 import { MultichainBlockExplorerFormatUrls } from '../../lib/multichain/networks';
 
@@ -54,7 +62,26 @@ export enum MultichainNetworks {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   SOLANA_TESTNET = SolScope.Testnet,
+
+  TRON = TrxScope.Mainnet,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  TRON_NILE = TrxScope.Nile,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  TRON_SHASTA = TrxScope.Shasta,
+
+  STELLAR = XlmScope.Pubnet,
 }
+
+export const MULTICHAIN_TESTNET_NETWORKS: readonly MultichainNetworks[] = [
+  MultichainNetworks.BITCOIN_TESTNET,
+  MultichainNetworks.BITCOIN_SIGNET,
+  MultichainNetworks.SOLANA_DEVNET,
+  MultichainNetworks.SOLANA_TESTNET,
+  MultichainNetworks.TRON_NILE,
+  MultichainNetworks.TRON_SHASTA,
+];
 
 // TODO: This data should be provided by the snap
 export const MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME: Record<
@@ -69,6 +96,10 @@ export const MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME: Record<
   [SolScope.Mainnet]: 'Solana',
   [SolScope.Testnet]: 'Solana',
   [SolScope.Devnet]: 'Solana',
+  [TrxScope.Mainnet]: 'Tron',
+  [TrxScope.Nile]: 'Tron',
+  [TrxScope.Shasta]: 'Tron',
+  [XlmScope.Pubnet]: 'Stellar',
 } as const;
 
 export const MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET = {
@@ -77,6 +108,8 @@ export const MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET = {
   [BtcAccountType.P2sh]: MultichainNetworks.BITCOIN,
   [BtcAccountType.P2tr]: MultichainNetworks.BITCOIN,
   [SolAccountType.DataAccount]: MultichainNetworks.SOLANA,
+  [TrxAccountType.Eoa]: MultichainNetworks.TRON,
+  [XlmAccountType.Account]: MultichainNetworks.STELLAR,
 } as const;
 
 export const MULTICHAIN_NETWORK_TO_NICKNAME: Record<CaipChainId, string> = {
@@ -86,6 +119,10 @@ export const MULTICHAIN_NETWORK_TO_NICKNAME: Record<CaipChainId, string> = {
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
+  [MultichainNetworks.TRON]: 'Tron',
+  [MultichainNetworks.TRON_NILE]: 'Tron Nile Testnet',
+  [MultichainNetworks.TRON_SHASTA]: 'Tron Shasta Testnet',
+  [MultichainNetworks.STELLAR]: 'Stellar',
 } as const;
 
 // TODO: This data should be provided by the snap
@@ -99,44 +136,90 @@ export const SOLANA_TOKEN_IMAGE_URL = './images/solana-logo.svg';
 export const SOLANA_TESTNET_IMAGE_URL = './images/solana-testnet-logo.svg';
 export const SOLANA_DEVNET_IMAGE_URL = './images/solana-devnet-logo.svg';
 
+export const TRON_TOKEN_IMAGE_URL = './images/tron-logo.svg';
+export const TRON_NILE_TOKEN_IMAGE_URL = './images/tron-logo-testnet.svg';
+export const TRON_SHASTA_TOKEN_IMAGE_URL = './images/tron-logo-testnet.svg';
+
+export const STELLAR_TOKEN_IMAGE_URL = './images/xlm.svg';
+
 export const BITCOIN_BLOCK_EXPLORER_URL = 'https://mempool.space';
+export const BITCOIN_BLOCK_EXPLORER_NAME = 'Mempool';
 export const BITCOIN_SIGNET_BLOCK_EXPLORER_URL = 'https://mutinynet.com';
+export const BITCOIN_SIGNET_BLOCK_EXPLORER_NAME = 'Mutinynet';
 export const SOLANA_BLOCK_EXPLORER_URL = 'https://solscan.io';
+export const SOLANA_BLOCK_EXPLORER_NAME = 'Solscan';
+export const TRON_BLOCK_EXPLORER_URL = 'https://tronscan.org';
+export const TRON_BLOCK_EXPLORER_NAME = 'Tronscan';
+export const TRON_NILE_BLOCK_EXPLORER_URL = 'https://nile.tronscan.org';
+export const TRON_SHASTA_BLOCK_EXPLORER_URL = 'https://shasta.tronscan.org';
+export const STELLAR_BLOCK_EXPLORER_URL = 'https://stellar.expert';
+export const STELLAR_BLOCK_EXPLORER_NAME = 'Stellar Expert';
 
 export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
   CaipChainId,
   MultichainBlockExplorerFormatUrls
 > = {
   [MultichainNetworks.BITCOIN]: {
+    name: BITCOIN_BLOCK_EXPLORER_NAME,
     url: BITCOIN_BLOCK_EXPLORER_URL,
     address: `${BITCOIN_BLOCK_EXPLORER_URL}/address/{address}`,
     transaction: `${BITCOIN_BLOCK_EXPLORER_URL}/tx/{txId}`,
   },
   [MultichainNetworks.BITCOIN_TESTNET]: {
+    name: BITCOIN_BLOCK_EXPLORER_NAME,
     url: BITCOIN_BLOCK_EXPLORER_URL,
     address: `${BITCOIN_BLOCK_EXPLORER_URL}/testnet/address/{address}`,
     transaction: `${BITCOIN_BLOCK_EXPLORER_URL}/testnet/tx/{txId}`,
   },
   [MultichainNetworks.BITCOIN_SIGNET]: {
+    name: BITCOIN_SIGNET_BLOCK_EXPLORER_NAME,
     url: BITCOIN_SIGNET_BLOCK_EXPLORER_URL,
     address: `${BITCOIN_SIGNET_BLOCK_EXPLORER_URL}/address/{address}`,
     transaction: `${BITCOIN_SIGNET_BLOCK_EXPLORER_URL}/tx/{txId}`,
   },
 
   [MultichainNetworks.SOLANA]: {
+    name: SOLANA_BLOCK_EXPLORER_NAME,
     url: SOLANA_BLOCK_EXPLORER_URL,
     address: `${SOLANA_BLOCK_EXPLORER_URL}/account/{address}`,
     transaction: `${SOLANA_BLOCK_EXPLORER_URL}/tx/{txId}`,
   },
   [MultichainNetworks.SOLANA_DEVNET]: {
+    name: SOLANA_BLOCK_EXPLORER_NAME,
     url: SOLANA_BLOCK_EXPLORER_URL,
     address: `${SOLANA_BLOCK_EXPLORER_URL}/account/{address}?cluster=devnet`,
     transaction: `${SOLANA_BLOCK_EXPLORER_URL}/tx/{txId}?cluster=devnet`,
   },
   [MultichainNetworks.SOLANA_TESTNET]: {
+    name: SOLANA_BLOCK_EXPLORER_NAME,
     url: SOLANA_BLOCK_EXPLORER_URL,
     address: `${SOLANA_BLOCK_EXPLORER_URL}/account/{address}?cluster=testnet`,
     transaction: `${SOLANA_BLOCK_EXPLORER_URL}/tx/{txId}?cluster=testnet`,
+  },
+  [MultichainNetworks.TRON]: {
+    name: TRON_BLOCK_EXPLORER_NAME,
+    url: TRON_BLOCK_EXPLORER_URL,
+    address: `${TRON_BLOCK_EXPLORER_URL}/#/address/{address}`,
+    transaction: `${TRON_BLOCK_EXPLORER_URL}/#/transaction/{txId}`,
+  },
+  [MultichainNetworks.TRON_NILE]: {
+    name: TRON_BLOCK_EXPLORER_NAME,
+    url: TRON_NILE_BLOCK_EXPLORER_URL,
+    address: `${TRON_NILE_BLOCK_EXPLORER_URL}/#/address/{address}`,
+    transaction: `${TRON_NILE_BLOCK_EXPLORER_URL}/#/transaction/{txId}`,
+  },
+  [MultichainNetworks.TRON_SHASTA]: {
+    name: TRON_BLOCK_EXPLORER_NAME,
+    url: TRON_SHASTA_BLOCK_EXPLORER_URL,
+    address: `${TRON_SHASTA_BLOCK_EXPLORER_URL}/#/address/{address}`,
+    transaction: `${TRON_SHASTA_BLOCK_EXPLORER_URL}/#/transaction/{txId}`,
+  },
+  [MultichainNetworks.STELLAR]: {
+    name: STELLAR_BLOCK_EXPLORER_NAME,
+    url: STELLAR_BLOCK_EXPLORER_URL,
+    address: `${STELLAR_BLOCK_EXPLORER_URL}/explorer/public/account/{address}`,
+    asset: `${STELLAR_BLOCK_EXPLORER_URL}/explorer/public/asset/{asset}`,
+    transaction: `${STELLAR_BLOCK_EXPLORER_URL}/explorer/public/tx/{txId}`,
   },
 } as const;
 
@@ -147,6 +230,10 @@ export const MULTICHAIN_TOKEN_IMAGE_MAP: Record<CaipChainId, string> = {
   [MultichainNetworks.SOLANA]: SOLANA_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
+  [MultichainNetworks.TRON]: TRON_TOKEN_IMAGE_URL,
+  [MultichainNetworks.TRON_NILE]: TRON_NILE_TOKEN_IMAGE_URL,
+  [MultichainNetworks.TRON_SHASTA]: TRON_SHASTA_TOKEN_IMAGE_URL,
+  [MultichainNetworks.STELLAR]: STELLAR_TOKEN_IMAGE_URL,
 } as const;
 
 /**
@@ -290,9 +377,150 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
       ],
     isAddressCompatible: isSolanaAddress,
   },
+  /**
+   * Tron
+   */
+  [MultichainNetworks.TRON]: {
+    chainId: MultichainNetworks.TRON,
+    rpcUrl: '', // not used
+    ticker: 'TRX',
+    nickname: 'Tron',
+    id: 'tron-mainnet',
+    type: 'rpc',
+    decimals: 6,
+    rpcPrefs: {
+      imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.TRON],
+      blockExplorerUrl:
+        MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+          MultichainNetworks.TRON
+        ].url,
+    },
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.TRON
+      ],
+    isAddressCompatible: isTronAddress,
+  },
+  [MultichainNetworks.TRON_NILE]: {
+    chainId: MultichainNetworks.TRON_NILE,
+    rpcUrl: '', // not used
+    ticker: 'TRX',
+    nickname: 'Tron (nile)',
+    id: 'tron-nile',
+    type: 'rpc',
+    decimals: 6,
+    rpcPrefs: {
+      imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.TRON_NILE],
+      blockExplorerUrl:
+        MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+          MultichainNetworks.TRON_NILE
+        ].url,
+    },
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.TRON_NILE
+      ],
+    isAddressCompatible: isTronAddress,
+  },
+  [MultichainNetworks.TRON_SHASTA]: {
+    chainId: MultichainNetworks.TRON_SHASTA,
+    rpcUrl: '', // not used
+    ticker: 'TRX',
+    nickname: 'Tron (shasta)',
+    id: 'tron-shasta',
+    type: 'rpc',
+    decimals: 6,
+    rpcPrefs: {
+      imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.TRON_SHASTA],
+      blockExplorerUrl:
+        MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+          MultichainNetworks.TRON_SHASTA
+        ].url,
+    },
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.TRON_SHASTA
+      ],
+    isAddressCompatible: isTronAddress,
+  },
+  /**
+   * Stellar
+   */
+  [MultichainNetworks.STELLAR]: {
+    chainId: MultichainNetworks.STELLAR,
+    rpcUrl: '', // not used
+    ticker: 'XLM',
+    nickname: 'Stellar',
+    id: 'stellar-mainnet',
+    type: 'rpc',
+    decimals: 7,
+    rpcPrefs: {
+      imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.STELLAR],
+      blockExplorerUrl:
+        MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+          MultichainNetworks.STELLAR
+        ].url,
+    },
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.STELLAR
+      ],
+    isAddressCompatible: isStellarAddress,
+  },
 };
 
 export const SOLANA_TEST_CHAINS: CaipChainId[] = [
   SolScope.Testnet,
   SolScope.Devnet,
+];
+
+export const SOLANA_CHAINS: CaipChainId[] = [
+  MultichainNetworks.SOLANA,
+  MultichainNetworks.SOLANA_TESTNET,
+  MultichainNetworks.SOLANA_DEVNET,
+];
+
+export const TRON_CHAINS: CaipChainId[] = [
+  MultichainNetworks.TRON,
+  MultichainNetworks.TRON_NILE,
+  MultichainNetworks.TRON_SHASTA,
+];
+
+export const BTC_CHAINS: CaipChainId[] = [MultichainNetworks.BITCOIN];
+
+export const STELLAR_CHAINS: CaipChainId[] = [MultichainNetworks.STELLAR];
+
+type NonEvmAccountChangedConfig = {
+  network: MultichainNetworks;
+  chains: CaipChainId[];
+  notificationProperty: KnownSessionProperties;
+  accountType: KeyringAccountType;
+};
+
+export const NON_EVM_ACCOUNT_CHANGED_CONFIGS: NonEvmAccountChangedConfig[] = [
+  {
+    network: MultichainNetworks.SOLANA,
+    chains: SOLANA_CHAINS,
+    notificationProperty:
+      KnownSessionProperties.SolanaAccountChangedNotifications,
+    accountType: SolAccountType.DataAccount,
+  },
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  {
+    network: MultichainNetworks.TRON,
+    chains: TRON_CHAINS,
+    notificationProperty:
+      KnownSessionProperties.TronAccountChangedNotifications,
+    accountType: TrxAccountType.Eoa,
+  },
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  {
+    network: MultichainNetworks.BITCOIN,
+    chains: BTC_CHAINS,
+    notificationProperty:
+      KnownSessionProperties.Bip122AccountChangedNotifications,
+    accountType: BtcAccountType.P2wpkh,
+  },
+  ///: END:ONLY_INCLUDE_IF
 ];

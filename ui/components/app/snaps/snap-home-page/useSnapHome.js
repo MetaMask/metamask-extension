@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch } from '../../../../store/hooks';
 import {
   handleSnapRequest,
   forceUpdateMetamaskState,
@@ -43,7 +43,7 @@ export function useSnapHome({ snapId }) {
     }
     fetchPage();
     return () => (cancelled = true);
-  }, [snapId]);
+  }, [snapId, dispatch]);
 
   return { data, error, loading };
 }

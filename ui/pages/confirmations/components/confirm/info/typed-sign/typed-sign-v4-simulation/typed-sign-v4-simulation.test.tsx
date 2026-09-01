@@ -1,11 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { act } from 'react-dom/test-utils';
 import {
   DecodingData,
   DecodingDataChangeType,
 } from '@metamask/signature-controller';
-import { waitFor } from '@testing-library/dom';
+import { waitFor } from '@testing-library/react';
 
 import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
@@ -14,11 +13,15 @@ import {
   seaportSignatureMsg,
 } from '../../../../../../../../test/data/confirmations/typed_sign';
 import { memoizedGetTokenStandardAndDetails } from '../../../../../utils/token';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import TypedSignV4Simulation from './typed-sign-v4-simulation';
 
 jest.mock('../../../../../../../store/actions', () => {
   return {
     getTokenStandardAndDetails: jest
+      .fn()
+      .mockResolvedValue({ decimals: 2, standard: 'ERC20' }),
+    getTokenStandardAndDetailsByChain: jest
       .fn()
       .mockResolvedValue({ decimals: 2, standard: 'ERC20' }),
     updateEventFragment: jest.fn(),
@@ -58,20 +61,18 @@ describe('PermitSimulation', () => {
     );
     const mockStore = configureMockStore([])(state);
 
-    await act(async () => {
-      const { findByText } = renderWithConfirmContextProvider(
-        <TypedSignV4Simulation />,
-        mockStore,
-      );
+    const { findByText } = renderWithConfirmContextProvider(
+      <TypedSignV4Simulation />,
+      mockStore,
+    );
 
-      expect(await findByText('30')).toBeInTheDocument();
-      expect(await findByText('Estimated changes')).toBeInTheDocument();
-      expect(
-        await findByText(
-          "You're giving the spender permission to spend this many tokens from your account.",
-        ),
-      ).toBeInTheDocument();
-    });
+    expect(await findByText('30')).toBeInTheDocument();
+    expect(
+      await findByText(messages.estimatedChanges.message),
+    ).toBeInTheDocument();
+    expect(
+      await findByText(messages.permitSimulationDetailInfo.message),
+    ).toBeInTheDocument();
   });
 
   it('should render default simulation if decoding api returns error', async () => {
@@ -93,20 +94,18 @@ describe('PermitSimulation', () => {
     );
     const mockStore = configureMockStore([])(state);
 
-    await act(async () => {
-      const { findByText } = renderWithConfirmContextProvider(
-        <TypedSignV4Simulation />,
-        mockStore,
-      );
+    const { findByText } = renderWithConfirmContextProvider(
+      <TypedSignV4Simulation />,
+      mockStore,
+    );
 
-      expect(await findByText('30')).toBeInTheDocument();
-      expect(await findByText('Estimated changes')).toBeInTheDocument();
-      expect(
-        await findByText(
-          "You're giving the spender permission to spend this many tokens from your account.",
-        ),
-      ).toBeInTheDocument();
-    });
+    expect(await findByText('30')).toBeInTheDocument();
+    expect(
+      await findByText(messages.estimatedChanges.message),
+    ).toBeInTheDocument();
+    expect(
+      await findByText(messages.permitSimulationDetailInfo.message),
+    ).toBeInTheDocument();
   });
 
   it('should not render default simulation if decodingLoading is true', async () => {
@@ -116,20 +115,18 @@ describe('PermitSimulation', () => {
     });
     const mockStore = configureMockStore([])(state);
 
-    await act(async () => {
-      const { queryByTestId } = renderWithConfirmContextProvider(
-        <TypedSignV4Simulation />,
-        mockStore,
-      );
+    const { queryByTestId } = renderWithConfirmContextProvider(
+      <TypedSignV4Simulation />,
+      mockStore,
+    );
 
-      await waitFor(() => {
-        expect(queryByTestId('30')).not.toBeInTheDocument();
-        expect(
-          queryByTestId(
-            "You're giving the spender permission to spend this many tokens from your account.",
-          ),
-        ).not.toBeInTheDocument();
-      });
+    await waitFor(() => {
+      expect(queryByTestId('30')).not.toBeInTheDocument();
+      expect(
+        queryByTestId(
+          "You're giving the spender permission to spend this many tokens from your account.",
+        ),
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -144,15 +141,17 @@ describe('PermitSimulation', () => {
     );
     const mockStore = configureMockStore([])(state);
 
-    await act(async () => {
-      const { findByText } = renderWithConfirmContextProvider(
-        <TypedSignV4Simulation />,
-        mockStore,
-      );
+    const { findByText } = renderWithConfirmContextProvider(
+      <TypedSignV4Simulation />,
+      mockStore,
+    );
 
-      expect(await findByText('Estimated changes')).toBeInTheDocument();
-      expect(await findByText('Spending cap')).toBeInTheDocument();
-    });
+    expect(
+      await findByText(messages.estimatedChanges.message),
+    ).toBeInTheDocument();
+    expect(
+      await findByText(messages.permitSimulationChange_approve.message),
+    ).toBeInTheDocument();
   });
 
   it('should render decoding simulation for seaport request', async () => {
@@ -161,14 +160,16 @@ describe('PermitSimulation', () => {
     });
     const mockStore = configureMockStore([])(state);
 
-    await act(async () => {
-      const { findByText } = renderWithConfirmContextProvider(
-        <TypedSignV4Simulation />,
-        mockStore,
-      );
+    const { findByText } = renderWithConfirmContextProvider(
+      <TypedSignV4Simulation />,
+      mockStore,
+    );
 
-      expect(await findByText('Listing price')).toBeInTheDocument();
-      expect(await findByText('You list')).toBeInTheDocument();
-    });
+    expect(
+      await findByText(messages.permitSimulationChange_nft_listing.message),
+    ).toBeInTheDocument();
+    expect(
+      await findByText(messages.permitSimulationChange_listing.message),
+    ).toBeInTheDocument();
   });
 });

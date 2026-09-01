@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 import {
-  getChainIdsToPoll,
   getUseExternalServices,
   getUseTokenDetection,
   getUseTransactionSimulations,
@@ -10,11 +9,8 @@ import {
   tokenListStartPolling,
   tokenListStopPollingByPollingToken,
 } from '../store/actions';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../ducks/metamask/metamask';
-import { isGlobalNetworkSelectorRemoved } from '../selectors/selectors';
+import { getCompletedOnboarding } from '../ducks/metamask/metamask';
+import { getIsUnlocked } from '../ducks/metamask/base-selectors';
 import useMultiPolling from './useMultiPolling';
 
 const useTokenListPolling = () => {
@@ -23,7 +19,6 @@ const useTokenListPolling = () => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isUnlocked = useSelector(getIsUnlocked);
   const useExternalServices = useSelector(getUseExternalServices);
-  const chainIds = useSelector(getChainIdsToPoll);
   const enabledChainIds = useSelector(getEnabledChainIds);
 
   const enabled =
@@ -32,16 +27,10 @@ const useTokenListPolling = () => {
     useExternalServices &&
     (useTokenDetection || useTransactionSimulations);
 
-  const pollableChains = isGlobalNetworkSelectorRemoved
-    ? enabledChainIds
-    : chainIds;
-
   useMultiPolling({
     startPolling: tokenListStartPolling,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     stopPollingByPollingToken: tokenListStopPollingByPollingToken,
-    input: enabled ? pollableChains : [],
+    input: enabled ? enabledChainIds : [],
   });
 
   return {};

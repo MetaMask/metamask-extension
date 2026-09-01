@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { useLocation } from 'react-router-dom';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as Actions from '../../../store/actions';
 import {
   hideBasicFunctionalityModal,
@@ -11,15 +10,36 @@ import {
 import { ONBOARDING_PRIVACY_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 import { BasicConfigurationModal } from './basic-configuration-modal';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 jest.mock('../../../store/actions', () => ({
   setDataCollectionForMarketing: jest.fn(),
   setParticipateInMetaMetrics: jest.fn(),
+  toggleBasicFunctionality: jest.fn(),
   toggleExternalServices: jest.fn(),
 }));
 
 jest.mock('../../../ducks/app/app', () => ({
   hideBasicFunctionalityModal: jest.fn(),
   onboardingToggleBasicFunctionalityOff: jest.fn(),
+}));
+
+jest.mock('../../../selectors/multichain/feature-flags', () => ({
+  ...jest.requireActual('../../../selectors/multichain/feature-flags'),
+  getIsBasicFunctionalityConsolidationEnabled: () => false,
 }));
 
 const mockDispatch = jest.fn();
@@ -32,9 +52,10 @@ jest.mock('react-redux', () => {
   };
 });
 
+const mockUseLocation = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useLocation: jest.fn(),
+  useLocation: () => mockUseLocation(),
 }));
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -68,7 +89,7 @@ const arrangeMocks = <T extends boolean>({
 }: ArrangeMocksParams<T> = {}): ArrangeMocksReturn<T> => {
   jest.clearAllMocks();
 
-  (useLocation as jest.Mock).mockReturnValue({
+  (mockUseLocation as jest.Mock).mockReturnValue({
     pathname: isOnboarding
       ? ONBOARDING_PRIVACY_SETTINGS_ROUTE
       : '/any-other-path',
@@ -77,13 +98,13 @@ const arrangeMocks = <T extends boolean>({
   const store = configureStore({
     ...stateOverrides,
   });
-  const { getByTestId, getByTitle } = renderWithProvider(
+  const { getByTestId, getByRole } = renderWithProvider(
     <BasicConfigurationModal />,
     store,
   );
 
   const agreementCheckbox = stateOverrides?.metamask.useExternalServices
-    ? getByTitle('basic-configuration-checkbox')
+    ? getByRole('checkbox')
     : null;
   const toggleBasicFunctionalityButton = getByTestId(
     'basic-configuration-modal-toggle-button',
@@ -139,9 +160,7 @@ describe('BasicConfigurationModal', () => {
           },
         });
 
-      fireEvent.click(agreementCheckbox, {
-        target: { checked: true },
-      });
+      fireEvent.click(agreementCheckbox);
 
       expect(toggleBasicFunctionalityButton).toBeEnabled();
 
@@ -186,9 +205,7 @@ describe('BasicConfigurationModal', () => {
           },
         });
 
-      fireEvent.click(agreementCheckbox, {
-        target: { checked: true },
-      });
+      fireEvent.click(agreementCheckbox);
 
       waitFor(() => {
         expect(toggleBasicFunctionalityButton).toBeEnabled();

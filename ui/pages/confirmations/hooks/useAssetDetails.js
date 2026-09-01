@@ -1,16 +1,17 @@
 import { isEqual } from 'lodash';
-import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { getTokensByChainId } from '../../../ducks/metamask/metamask';
 import { getAssetDetails } from '../../../helpers/utils/token-util';
 import {
   hideLoadingIndication,
   showLoadingIndication,
 } from '../../../store/actions';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { selectNftsByChainId } from '../../../selectors';
+import { useDispatch } from '../../../store/hooks';
 
 export function useAssetDetails(
   tokenAddress,
@@ -18,6 +19,7 @@ export function useAssetDetails(
   transactionData,
   chainId,
 ) {
+  const isMounted = useRef(false);
   const dispatch = useDispatch();
 
   // state selectors
@@ -43,6 +45,13 @@ export function useAssetDetails(
   const prevTokenBalance = usePrevious(tokensWithBalances);
 
   useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
     if (!tokenAddress && !userAddress && !transactionData) {
       return;
     }
@@ -57,7 +66,9 @@ export function useAssetDetails(
           nfts,
           chainId,
         );
-        setCurrentAsset(assetDetails);
+        if (isMounted.current) {
+          setCurrentAsset(assetDetails);
+        }
       } catch (e) {
         console.warn('Unable to set asset details', {
           error: e,

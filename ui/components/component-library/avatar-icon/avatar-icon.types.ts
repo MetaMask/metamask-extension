@@ -3,6 +3,9 @@ import { IconName, IconProps, IconSize } from '../icon';
 import type { PolymorphicComponentPropWithRef } from '../box';
 import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum AvatarIconSize {
   Xs = 'xs',
   Sm = 'sm',
@@ -21,8 +24,10 @@ export const avatarIconSizeToIconSize: Record<AvatarIconSize, IconSize> = {
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface AvatarIconStyleUtilityProps
-  extends Omit<AvatarBaseStyleUtilityProps, 'size' | 'children' | 'color'> {
+export interface AvatarIconStyleUtilityProps extends Omit<
+  AvatarBaseStyleUtilityProps,
+  'size' | 'children' | 'color'
+> {
   /**
    * The name of the icon to display. Should be one of IconName
    */

@@ -2,7 +2,8 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { Severity } from '../../../../helpers/constants/design-system';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import {
   ConfirmAlertModalProps,
   ConfirmAlertModal,
@@ -68,7 +69,9 @@ describe('ConfirmAlertModal', () => {
       mockStore,
     );
 
-    expect(getByText('Your assets may be at risk')).toBeInTheDocument();
+    expect(
+      getByText(messages.confirmationAlertModalTitleDescription.message),
+    ).toBeInTheDocument();
   });
 
   it('disables submit button when confirm modal is not acknowledged', () => {
@@ -109,6 +112,39 @@ describe('ConfirmAlertModal', () => {
 
     fireEvent.click(getByTestId('confirm-alert-modal-review-all-alerts'));
     expect(getByTestId('alert-modal-button')).toBeInTheDocument();
+  });
+
+  it('enables submit button when danger alert has acknowledgeBypass flag', () => {
+    const bypassState = {
+      confirmAlerts: {
+        alerts: {
+          [OWNER_ID_MOCK]: [
+            {
+              key: DATA_ALERT_KEY_MOCK,
+              field: DATA_ALERT_KEY_MOCK,
+              severity: Severity.Danger,
+              message: DATA_ALERT_MESSAGE_MOCK,
+              acknowledgeBypass: true,
+            },
+          ],
+        },
+        confirmed: {
+          [OWNER_ID_MOCK]: {
+            [DATA_ALERT_KEY_MOCK]: false,
+          },
+        },
+      },
+    };
+
+    const bypassStore = configureMockStore([])(bypassState);
+
+    const { queryByTestId, getByTestId } = renderWithProvider(
+      <ConfirmAlertModal {...defaultProps} />,
+      bypassStore,
+    );
+
+    expect(queryByTestId('alert-modal-acknowledge-checkbox')).toBeNull();
+    expect(getByTestId('confirm-alert-modal-submit-button')).toBeEnabled();
   });
 
   describe('when there are multiple alerts', () => {

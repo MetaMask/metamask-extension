@@ -5,12 +5,17 @@ import {
 import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
 import { Json } from '@metamask/utils';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import {
+  createParameterizedSelector,
+  createShallowResultSelector,
+} from '../../shared/lib/selectors/selector-creators';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 export type ApprovalsMetaMaskState = {
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];
+    remoteFeatureFlags?: Record<string, unknown>;
   };
 };
 
@@ -50,23 +55,42 @@ export const getApprovalRequestsByType = (
   return pendingApprovalRequests;
 };
 
-export function getApprovalFlows(state: ApprovalsMetaMaskState) {
-  return state.metamask.approvalFlows;
+const getApprovalFlowsFromState = (state: ApprovalsMetaMaskState) =>
+  state.metamask.approvalFlows;
+
+export const getApprovalFlows = createShallowResultSelector(
+  getApprovalFlowsFromState,
+  (approvalFlows) => {
+    if (!approvalFlows?.length) {
+      return EMPTY_ARRAY;
+    }
+
+    return [...approvalFlows];
+  },
+);
+
+export function selectHasApprovalFlows(state: ApprovalsMetaMaskState) {
+  return (state.metamask.approvalFlows?.length ?? 0) > 0;
 }
 
-export function getPendingApprovals(state: ApprovalsMetaMaskState) {
-  return Object.values(state.metamask.pendingApprovals ?? {});
-}
+const getPendingApprovalsObject = (state: ApprovalsMetaMaskState) =>
+  state.metamask.pendingApprovals ?? EMPTY_OBJECT;
 
-export function pendingApprovalsSortedSelector(state: ApprovalsMetaMaskState) {
-  return getPendingApprovals(state).sort((a1, a2) => a1.time - a2.time);
-}
+export const getPendingApprovals = createShallowResultSelector(
+  getPendingApprovalsObject,
+  (approvals) => Object.values(approvals),
+);
+
+export const pendingApprovalsSortedSelector = createShallowResultSelector(
+  getPendingApprovals,
+  (approvals) => [...approvals].sort((a1, a2) => a1.time - a2.time),
+);
 
 /**
  * Returns pending approvals sorted by time for use in confirmation navigation.
  * Excludes duplicate watch asset approvals as they are combined into a single confirmation.
  */
-export const selectPendingApprovalsForNavigation = createDeepEqualSelector(
+export const selectPendingApprovalsForNavigation = createShallowResultSelector(
   pendingApprovalsSortedSelector,
   (sortedPendingApprovals) =>
     sortedPendingApprovals.filter((approval, index) => {
@@ -88,28 +112,21 @@ export const selectPendingApprovalsForNavigation = createDeepEqualSelector(
     }),
 );
 
-const internalSelectPendingApproval = createSelector(
+export const internalSelectPendingApproval = createSelector(
   getPendingApprovals,
   (_state: ApprovalsMetaMaskState, id: string) => id,
   (approvals, id) => approvals.find(({ id: approvalId }) => approvalId === id),
 );
 
-export const selectPendingApproval = createDeepEqualSelector(
-  internalSelectPendingApproval,
-  (approval) => approval,
+export const getApprovalsByOrigin = createParameterizedSelector(30)(
+  (state: ApprovalsMetaMaskState) => getPendingApprovals(state),
+  (_state: ApprovalsMetaMaskState, origin: string | undefined) => origin,
+  (pendingApprovals, origin) =>
+    pendingApprovals.filter(
+      (confirmation: ApprovalRequest<Record<string, Json>>) =>
+        confirmation.origin === origin,
+    ),
 );
-
-export const getApprovalsByOrigin = (
-  state: ApprovalsMetaMaskState,
-  origin: string,
-) => {
-  const pendingApprovals = getPendingApprovals(state);
-
-  return pendingApprovals?.filter(
-    (confirmation: ApprovalRequest<Record<string, Json>>) =>
-      confirmation.origin === origin,
-  );
-};
 
 function isWatchTokenApproval(approval: ApprovalRequest<Record<string, Json>>) {
   const tokenId = (approval.requestData?.asset as Record<string, string>)

@@ -7,7 +7,7 @@ import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row
 export const RevokeDetails = () => {
   return (
     <ConfirmInfoSection>
-      <NetworkRow isShownWithAlertsOnly />
+      <NetworkRow />
       <OriginRow />
       <SigningInWithRow />
     </ConfirmInfoSection>

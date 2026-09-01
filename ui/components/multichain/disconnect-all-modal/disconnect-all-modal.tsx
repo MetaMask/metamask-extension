@@ -1,50 +1,62 @@
 import React from 'react';
 import {
-  Button,
-  IconName,
+  FontWeight,
+  Text,
+  TextVariant,
+  TextColor,
   Modal,
   ModalBody,
-  ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text,
-} from '../../component-library';
+  ModalContent,
+} from '@metamask/design-system-react';
+import { Button } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getURLHost } from '../../../helpers/utils/util';
 
-// Maps to localizations for title and text
-export enum DisconnectType {
-  Account = 'disconnectAllAccountsText',
-  Snap = 'disconnectAllSnapsText',
-}
+type DisconnectAllModalProps = {
+  onClick: () => void;
+  onClose: () => void;
+  origin: string;
+};
 
 export const DisconnectAllModal = ({
   onClick,
   onClose,
-}: {
-  type: DisconnectType;
-  hostname: string;
-  onClick: () => void;
-  onClose: () => void;
-}) => {
+  origin,
+}: DisconnectAllModalProps) => {
   const t = useI18nContext();
+  const host = getURLHost(origin);
 
   return (
     <Modal isOpen onClose={onClose} data-testid="disconnect-all-modal">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose}>{t('disconnect')}</ModalHeader>
+        <ModalHeader
+          className=""
+          onClose={onClose}
+          closeButtonProps={{ ariaLabel: t('close') }}
+        >
+          {t('disconnectQuestion')}
+        </ModalHeader>
         <ModalBody>
-          {<Text>{t('disconnectAllDescriptionText')}</Text>}
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            {t('disconnectSiteDescriptionText', [
+              <Text
+                key="siteHost"
+                asChild
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+                fontWeight={FontWeight.Bold}
+              >
+                <span>{host}</span>
+              </Text>,
+            ])}
+          </Text>
         </ModalBody>
         <ModalFooter>
-          <Button
-            onClick={onClick}
-            startIconName={IconName.Logout}
-            block
-            danger
-            data-testid="disconnect-all"
-          >
+          <Button onClick={onClick} block data-testid="disconnect-all" danger>
             {t('disconnect')}
           </Button>
         </ModalFooter>

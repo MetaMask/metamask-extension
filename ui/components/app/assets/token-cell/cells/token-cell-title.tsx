@@ -1,38 +1,59 @@
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
-import { BtcAccountType, type KeyringAccountType } from '@metamask/keyring-api';
 import React from 'react';
 import { TokenFiatDisplayInfo } from '../../types';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
+import { AssetInactiveBadge } from '../../asset-inactive-badge/asset-inactive-badge';
 import { Tag } from '../../../../component-library';
+import { ACCOUNT_TYPE_LABELS } from '../../constants';
+import { useRWAToken } from '../../../../../pages/bridge/hooks/useRWAToken';
+import { StockBadge } from '../../stock-badge/stock-badge';
 
 type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;
 };
 
-const accountTypeLabel: Partial<Record<KeyringAccountType, string>> = {
-  [BtcAccountType.P2pkh]: 'Legacy',
-  [BtcAccountType.P2sh]: 'Nested SegWit',
-  [BtcAccountType.P2wpkh]: 'Native SegWit',
-  [BtcAccountType.P2tr]: 'Taproot',
-};
-
 export const TokenCellTitle = React.memo(
   ({ token }: TokenCellTitleProps) => {
     const label = token.accountType
-      ? accountTypeLabel[token.accountType]
+      ? ACCOUNT_TYPE_LABELS[token.accountType]
       : undefined;
+    const { isStockToken, isTokenTradingOpen } = useRWAToken();
+    const tokenIsStock = isStockToken(token);
+
     return (
-      <Box flexDirection={BoxFlexDirection.Row}>
-        <Box flexDirection={BoxFlexDirection.Row} gap={2}>
-          <AssetCellTitle title={token.title} />
-          {label && <Tag label={label} />}
-        </Box>
+      <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
+        <AssetCellTitle title={token.title} />
+        {label && <Tag label={label} />}
+        {token.tokenRequireActivate && <AssetInactiveBadge />}
+        {tokenIsStock && (
+          <StockBadge isMarketClosed={!isTokenTradingOpen(token)} />
+        )}
         {token.isStakeable && (
           <StakeableLink chainId={token.chainId} symbol={token.symbol} />
         )}
       </Box>
     );
   },
-  (prevProps, nextProps) => prevProps.token.title === nextProps.token.title, // Only rerender if the title changes
+  (prevProps, nextProps) =>
+    prevProps.token.title === nextProps.token.title &&
+    prevProps.token.rwaData?.instrumentType ===
+      nextProps.token.rwaData?.instrumentType &&
+    prevProps.token.rwaData?.market?.nextOpen ===
+      nextProps.token.rwaData?.market?.nextOpen &&
+    prevProps.token.rwaData?.market?.nextClose ===
+      nextProps.token.rwaData?.market?.nextClose &&
+    prevProps.token.rwaData?.nextPause?.start ===
+      nextProps.token.rwaData?.nextPause?.start &&
+    prevProps.token.rwaData?.nextPause?.end ===
+      nextProps.token.rwaData?.nextPause?.end &&
+    prevProps.token.rwaData?.offhours?.nextOpen ===
+      nextProps.token.rwaData?.offhours?.nextOpen &&
+    prevProps.token.rwaData?.offhours?.nextClose ===
+      nextProps.token.rwaData?.offhours?.nextClose &&
+    prevProps.token.address === nextProps.token.address &&
+    prevProps.token.chainId === nextProps.token.chainId &&
+    prevProps.token.symbol === nextProps.token.symbol &&
+    prevProps.token.tokenRequireActivate ===
+      nextProps.token.tokenRequireActivate,
 );

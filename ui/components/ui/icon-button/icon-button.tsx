@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import classNames from 'classnames';
+import classNames from 'clsx';
 import { Text, ButtonBase } from '../../component-library';
 import type { ButtonBaseProps } from '../../component-library/button-base/button-base.types';
 import {

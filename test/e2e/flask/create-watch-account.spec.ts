@@ -1,15 +1,17 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import FixtureBuilder from '../fixture-builder';
+import { NETWORK_CLIENT_ID } from '../constants';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import AccountDetailsModal from '../page-objects/pages/dialog/account-details-modal';
-import AccountListPage from '../page-objects/pages/account-list-page';
+import AccountDetailsPage from '../page-objects/pages/accounts/details-page';
+import AccountListPage from '../page-objects/pages/accounts/list-page';
 import ExperimentalSettings from '../page-objects/pages/settings/experimental-settings';
-import HeaderNavbar from '../page-objects/pages/header-navbar';
+import HeaderNavbar from '../page-objects/pages/home/header-navbar';
 import HomePage from '../page-objects/pages/home/homepage';
 import SettingsPage from '../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
+import { closeSettings } from '../page-objects/flows/settings.flow';
 import { watchEoaAddress } from '../page-objects/flows/watch-account.flow';
 
 const ACCOUNT_1 = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
@@ -17,16 +19,18 @@ const EOA_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 const SHORTENED_EOA_ADDRESS = '0xd8dA6...96045';
 const DEFAULT_WATCHED_ACCOUNT_NAME = 'Watched Account 1';
 
-describe('Account-watcher snap', function (this: Suite) {
+// #37563 - Creating a watch account with EOA address is not possible with BIP44 at the moment
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Account-watcher snap', function (this: Suite) {
   describe('Adding watched accounts', function () {
     it('adds watch account with valid EOA address', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
-            .withNetworkControllerOnMainnet()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
             .withEnabledNetworks({
               eip155: {
                 '0x1': true,
@@ -37,7 +41,7 @@ describe('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
 
           // new account should be displayed in the account list
@@ -51,11 +55,11 @@ describe('Account-watcher snap', function (this: Suite) {
     it("disables 'Send' and 'Swap' buttons for watch accounts", async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
-            .withNetworkControllerOnMainnet()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
             .withEnabledNetworks({
               eip155: {
                 '0x1': true,
@@ -66,7 +70,7 @@ describe('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
           const homePage = new HomePage(driver);
           await homePage.headerNavbar.checkAccountLabel(
@@ -74,10 +78,10 @@ describe('Account-watcher snap', function (this: Suite) {
           );
 
           // 'Send' button should be disabled
-          assert.equal(await homePage.checkIfSendButtonIsClickable(), false);
+          await homePage.checkSendButtonIsClickable(false);
 
           // 'Swap' button should be disabled
-          assert.equal(await homePage.checkIfSwapButtonIsClickable(), false);
+          await homePage.checkSwapButtonIsClickable(false);
         },
       );
     });
@@ -114,11 +118,11 @@ describe('Account-watcher snap', function (this: Suite) {
       it(`handles invalid input: ${description}`, async function () {
         await withFixtures(
           {
-            fixtures: new FixtureBuilder()
+            fixtures: new FixtureBuilderV2()
               .withPreferencesController({
                 watchEthereumAccountEnabled: true,
               })
-              .withNetworkControllerOnMainnet()
+              .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
               .withEnabledNetworks({
                 eip155: {
                   '0x1': true,
@@ -128,7 +132,7 @@ describe('Account-watcher snap', function (this: Suite) {
             title: this.test?.fullTitle(),
           },
           async ({ driver }: { driver: Driver }) => {
-            await loginWithBalanceValidation(driver);
+            await login(driver);
             const homePage = new HomePage(driver);
             await homePage.checkPageIsLoaded();
             await homePage.checkExpectedBalanceIsDisplayed();
@@ -152,11 +156,11 @@ describe('Account-watcher snap', function (this: Suite) {
 
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
-            .withNetworkControllerOnMainnet()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
             .withEnabledNetworks({
               eip155: {
                 '0x1': true,
@@ -167,7 +171,7 @@ describe('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address for ACCOUNT_2
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await watchEoaAddress(driver, ACCOUNT_2);
           const headerNavbar = new HeaderNavbar(driver);
           await headerNavbar.checkAccountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
@@ -187,11 +191,11 @@ describe('Account-watcher snap', function (this: Suite) {
     it("does not display 'Show private key' button for watch accounts", async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
-            .withNetworkControllerOnMainnet()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
             .withEnabledNetworks({
               eip155: {
                 '0x1': true,
@@ -202,7 +206,7 @@ describe('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
 
           // open account details modal in header navbar
@@ -211,9 +215,9 @@ describe('Account-watcher snap', function (this: Suite) {
           await headerNavbar.openAccountDetailsModalDetailsTab();
 
           // check 'Show private key' button should not be displayed
-          const accountDetailsModal = new AccountDetailsModal(driver);
-          await accountDetailsModal.checkPageIsLoaded();
-          await accountDetailsModal.checkShowPrivateKeyButtonIsNotDisplayed();
+          const accountDetailsPage = new AccountDetailsPage(driver);
+          await accountDetailsPage.checkPageIsLoaded();
+          await accountDetailsPage.checkShowPrivateKeyButtonIsNotDisplayed();
         },
       );
     });
@@ -221,11 +225,11 @@ describe('Account-watcher snap', function (this: Suite) {
     it('removes a watched account and recreate a watched account', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder()
+          fixtures: new FixtureBuilderV2()
             .withPreferencesController({
               watchEthereumAccountEnabled: true,
             })
-            .withNetworkControllerOnMainnet()
+            .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
             .withEnabledNetworks({
               eip155: {
                 '0x1': true,
@@ -236,7 +240,7 @@ describe('Account-watcher snap', function (this: Suite) {
         },
         async ({ driver }: { driver: Driver }) => {
           // watch an EOA address
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await watchEoaAddress(driver, EOA_ADDRESS);
           const homePage = new HomePage(driver);
           await homePage.headerNavbar.checkAccountLabel(
@@ -276,11 +280,11 @@ describe('Account-watcher snap', function (this: Suite) {
     it("will show the 'Watch an Ethereum account (Beta)' option when setting is enabled", async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
           await homePage.checkExpectedBalanceIsDisplayed();
@@ -300,7 +304,7 @@ describe('Account-watcher snap', function (this: Suite) {
             'Toggle should be off by default',
           );
           await experimentalSettings.toggleWatchAccount();
-          await settingsPage.closeSettingsPage();
+          await closeSettings(driver);
 
           // verify the 'Watch and Ethereum account (Beta)' option is available
           await homePage.checkPageIsLoaded();
@@ -316,11 +320,11 @@ describe('Account-watcher snap', function (this: Suite) {
     it('enables and then disables the toggle and the option to add a watch-only account behaves as expected', async function () {
       await withFixtures(
         {
-          fixtures: new FixtureBuilder().build(),
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
           await homePage.checkExpectedBalanceIsDisplayed();
@@ -333,7 +337,7 @@ describe('Account-watcher snap', function (this: Suite) {
           const experimentalSettings = new ExperimentalSettings(driver);
           await experimentalSettings.checkPageIsLoaded();
           await experimentalSettings.toggleWatchAccount();
-          await settingsPage.closeSettingsPage();
+          await closeSettings(driver);
 
           // verify the 'Watch and Ethereum account (Beta)' option is available
           await homePage.checkPageIsLoaded();
@@ -352,7 +356,7 @@ describe('Account-watcher snap', function (this: Suite) {
           await settingsPage.goToExperimentalSettings();
           await experimentalSettings.checkPageIsLoaded();
           await experimentalSettings.toggleWatchAccount();
-          await settingsPage.closeSettingsPage();
+          await closeSettings(driver);
 
           // verify the 'Watch and Ethereum account (Beta)' option is not available
           await homePage.checkPageIsLoaded();

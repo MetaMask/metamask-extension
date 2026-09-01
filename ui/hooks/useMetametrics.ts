@@ -1,11 +1,14 @@
 import { useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import {
   setParticipateInMetaMetrics,
+  setPna25Acknowledged,
   showLoadingIndication,
   hideLoadingIndication,
 } from '../store/actions';
+import { getPna25Acknowledged } from '../selectors/metametrics';
+import { useDispatch } from '../store/hooks';
 
 /**
  * Provides a hook to enable MetaMetrics tracking.
@@ -22,6 +25,7 @@ export function useEnableMetametrics(): {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const pna25Acknowledged = useSelector(getPna25Acknowledged);
 
   const enableMetametrics = useCallback(async () => {
     setLoading(true);
@@ -30,6 +34,9 @@ export function useEnableMetametrics(): {
 
     try {
       await dispatch(setParticipateInMetaMetrics(true));
+      if (pna25Acknowledged === false) {
+        await dispatch(setPna25Acknowledged(true));
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       log.error(e);
@@ -40,7 +47,7 @@ export function useEnableMetametrics(): {
     }
 
     dispatch(hideLoadingIndication());
-  }, [dispatch]);
+  }, [dispatch, pna25Acknowledged]);
 
   return {
     enableMetametrics,

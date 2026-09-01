@@ -3,6 +3,17 @@
 .unlock-page {
   max-width: 400px;
 
+  &__container {
+    &--light {
+      background-color: var(--welcome-bg-light);
+    }
+
+    &--dark {
+      background-color: var(--color-accent02-dark);
+    }
+  }
+
+
   &__mascot-container {
     position: relative;
 
@@ -10,6 +21,28 @@
       position: absolute;
       bottom: 10px;
       right: 0;
+    }
+
+    &__horizontal-logo {
+      margin-bottom: 24px;
+      width: 180px;
+      height: 180px;
+
+      &--popup {
+        margin-bottom: 24px;
+
+        @include design-system.screen-md-max {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    &__logo {
+      margin-bottom: 100px;
+
+      @include design-system.screen-md-max {
+        margin-bottom: 48px;
+      }
     }
   }
 }

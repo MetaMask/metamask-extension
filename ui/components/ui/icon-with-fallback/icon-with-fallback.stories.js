@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { BannerAlert } from '../../component-library';
 import { Severity } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
 import IconWithFallback from '.';
 
 const Deprecated = ({ children }) => (
@@ -25,11 +24,6 @@ export default {
   title: 'Components/UI/IconWithFallback',
 
   component: IconWithFallback,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     icon: {
       control: 'text',

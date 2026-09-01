@@ -5,7 +5,11 @@ import {
 import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { KeyringControllerState } from '@metamask/keyring-controller';
 import { Patch } from 'immer';
-import { sanitizePatches, sanitizeUIState } from './state-utils';
+import {
+  sanitizePatches,
+  sanitizeStateLogs,
+  sanitizeUIState,
+} from './state-utils';
 
 describe('State Utils', () => {
   describe('sanitizeUIState', () => {
@@ -34,13 +38,11 @@ describe('State Utils', () => {
           snap1: {
             id: 'snap1',
             test3: 123,
-            sourceCode: 'sourceCode1',
             auxiliaryFiles: 'auxiliaryFiles1',
           },
           snap2: {
             id: 'snap2',
             test4: 456,
-            sourceCode: 'sourceCode2',
             auxiliaryFiles: 'auxiliaryFiles2',
           },
         },
@@ -88,6 +90,7 @@ describe('State Utils', () => {
             profile: {
               identifierId: '',
               profileId: '',
+              canonicalProfileId: '',
               metaMetricsId: '',
             },
           },
@@ -106,6 +109,7 @@ describe('State Utils', () => {
             profile: {
               identifierId: '',
               profileId: '',
+              canonicalProfileId: '',
               metaMetricsId: '',
             },
           },
@@ -194,11 +198,6 @@ describe('State Utils', () => {
       const patches: Patch[] = [
         {
           op: 'replace',
-          path: ['snaps', 'snap1', 'sourceCode'],
-          value: 'value1',
-        },
-        {
-          op: 'replace',
           path: ['snaps', 'snap2', 'otherCode'],
           value: 'value2',
         },
@@ -226,9 +225,8 @@ describe('State Utils', () => {
           op: 'replace',
           path: ['snaps'],
           value: {
-            snap1: { sourceCode: 'value1', otherCode: 'value4' },
-            snap2: { otherCode: 'value2' },
-            snap3: { auxiliaryFiles: 'value3', otherCode: 'value5' },
+            snap1: { otherCode: 'value2' },
+            snap2: { auxiliaryFiles: 'value3', otherCode: 'value5' },
           },
         },
       ];
@@ -240,9 +238,8 @@ describe('State Utils', () => {
           op: 'replace',
           path: ['snaps'],
           value: {
-            snap1: { otherCode: 'value4' },
-            snap2: { otherCode: 'value2' },
-            snap3: { otherCode: 'value5' },
+            snap1: { otherCode: 'value2' },
+            snap2: { otherCode: 'value5' },
           },
         },
       ]);
@@ -424,6 +421,27 @@ describe('State Utils', () => {
           },
         },
       ]);
+    });
+  });
+
+  describe('sanitizeStateLogs', () => {
+    it('removes QR sync controller state from downloaded state logs', () => {
+      const state = {
+        completedOnboarding: true,
+        qrSyncPhase: 'displaying-qr',
+        qrSyncConnectionStatus: 'connected',
+        qrSyncSessionId: 'session-123',
+        qrSyncQrPayload: 'qr-payload',
+        syncOffer: { isOnboardingCompleted: true },
+        qrSyncSelectedAccountGroupIds: ['account-group-1'],
+        qrSyncError: { code: 'SYNC_FAILED', message: 'failed' },
+        qrSyncCreatedAt: 1,
+        qrSyncUpdatedAt: 2,
+      };
+
+      expect(sanitizeStateLogs(state)).toStrictEqual({
+        completedOnboarding: true,
+      });
     });
   });
 });

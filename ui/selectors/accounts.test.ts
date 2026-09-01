@@ -3,6 +3,7 @@ import {
   EthScope,
   BtcScope,
   SolScope,
+  XlmScope,
   CaipChainId,
 } from '@metamask/keyring-api';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
@@ -11,15 +12,21 @@ import {
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_ERC4337,
   MOCK_ACCOUNT_BIP122_P2WPKH,
+  MOCK_ACCOUNT_ID_BY_ADDRESS,
+  MOCK_ACCOUNT_STELLAR_PUBNET,
 } from '../../test/data/mock-accounts';
 import mockState from '../../test/data/mock-state.json';
 import {
-  AccountsState,
-  isSelectedInternalAccountEth,
+  type AccountsState,
   getSelectedInternalAccount,
+} from '../../shared/lib/selectors/accounts';
+import {
+  isSelectedInternalAccountEth,
   getInternalAccounts,
   getInternalAccountsObject,
   getInternalAccountsByScope,
+  getInternalAccountByAddress,
+  getAccountIdByAddress,
 } from './accounts';
 
 const MOCK_STATE: AccountsState = {
@@ -28,6 +35,7 @@ const MOCK_STATE: AccountsState = {
       selectedAccount: MOCK_ACCOUNT_EOA.id,
       accounts: MOCK_ACCOUNTS,
     },
+    accountIdByAddress: MOCK_ACCOUNT_ID_BY_ADDRESS,
   },
 };
 
@@ -46,7 +54,94 @@ describe('Accounts Selectors', () => {
     });
   });
 
+  describe('#getAccountIdByAddress', () => {
+    it('returns the mapping of addresses to account IDs', () => {
+      expect(getAccountIdByAddress(mockState as AccountsState)).toStrictEqual({
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc':
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        '0xb552685e3d2790efd64a175b00d51f02cdafee5d':
+          'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3',
+        '0xc42edfcc21ed14dda456aa0756c153f7985d8813':
+          '15e69915-2a1a-4019-93b3-916e11fd432f',
+        '0xca8f1f0245530118d0cf14a06b01daf8f76cf281':
+          '694225f4-d30b-4e77-a900-c8bbce735b42',
+        '0xeb9e64b93097bc15f01f13eae97015c57ab64823':
+          '784225f4-d30b-4e77-a900-c8bbce735b88',
+        '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b':
+          '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+      });
+    });
+  });
+
+  describe('#getInternalAccountByAddress', () => {
+    it('returns the internal account by address', () => {
+      expect(
+        getInternalAccountByAddress(
+          mockState as AccountsState,
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        ),
+      ).toStrictEqual({
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        metadata: {
+          importTime: 0,
+          name: 'Test Account',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {
+          entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        },
+        methods: [
+          'personal_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        scopes: ['eip155:0'],
+        type: 'eip155:eoa',
+      });
+    });
+
+    it('handles checksummed addresses', () => {
+      expect(
+        getInternalAccountByAddress(
+          mockState as AccountsState,
+          '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
+        ),
+      ).toStrictEqual({
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        metadata: {
+          importTime: 0,
+          name: 'Test Account',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        methods: [
+          'personal_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        options: {
+          entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        },
+        scopes: ['eip155:0'],
+        type: 'eip155:eoa',
+      });
+    });
+  });
+
   describe('#getSelectedInternalAccount', () => {
+    beforeEach(() => {
+      getSelectedInternalAccount.resetRecomputations();
+    });
+
     it('returns selected internalAccount', () => {
       expect(
         getSelectedInternalAccount(mockState as AccountsState),
@@ -83,6 +178,7 @@ describe('Accounts Selectors', () => {
               accounts: {},
               selectedAccount: '',
             },
+            accountIdByAddress: {},
           },
         }),
       ).toBeUndefined();
@@ -113,9 +209,27 @@ describe('Accounts Selectors', () => {
               },
               selectedAccount: mockInternalAccount.id,
             },
+            accountIdByAddress: {
+              [mockInternalAccount.address]: mockInternalAccount.id,
+            },
           },
         }),
       ).toStrictEqual(mockInternalAccount);
+    });
+
+    it('memoizes repeated calls for the same selected account inputs', () => {
+      const state = MOCK_STATE;
+
+      const result1 = getSelectedInternalAccount(state);
+      const result2 = getSelectedInternalAccount({
+        ...state,
+        metamask: {
+          ...state.metamask,
+        },
+      });
+
+      expect(result2).toBe(result1);
+      expect(getSelectedInternalAccount.recomputations()).toBe(1);
     });
   });
 
@@ -136,7 +250,8 @@ describe('Accounts Selectors', () => {
     ])(
       'returns $isEth if the account is: $type',
       ({ id, isEth }: { id: string; isEth: boolean }) => {
-        const state = MOCK_STATE;
+        // Ensure selector memoization works correctly by creating fresh state with new object references.
+        const state = structuredClone(MOCK_STATE);
 
         state.metamask.internalAccounts.selectedAccount = id;
         expect(isSelectedInternalAccountEth(state)).toBe(isEth);
@@ -144,10 +259,10 @@ describe('Accounts Selectors', () => {
     );
 
     it('returns false if no account is selected', () => {
-      const state = MOCK_STATE;
+      const state = structuredClone(MOCK_STATE);
 
       state.metamask.internalAccounts.selectedAccount = '';
-      expect(isSelectedInternalAccountEth(MOCK_STATE)).toBe(false);
+      expect(isSelectedInternalAccountEth(state)).toBe(false);
     });
   });
 
@@ -350,6 +465,46 @@ describe('Accounts Selectors', () => {
         BtcScope.Mainnet as CaipChainId,
       );
       expect(result).toEqual([]);
+    });
+
+    it('returns the pubnet stellar account when requesting the pubnet scope', () => {
+      const solanaAccount = {
+        ...MOCK_ACCOUNT_EOA,
+        id: `${MOCK_ACCOUNT_EOA.id}-sol1`,
+        scopes: [SolScope.Mainnet],
+      };
+      const anotherSolanaAccount = {
+        ...MOCK_ACCOUNT_ERC4337,
+        id: `${MOCK_ACCOUNT_ERC4337.id}-sol2`,
+        scopes: [SolScope.Mainnet],
+      };
+      const btcAccount = {
+        ...MOCK_ACCOUNT_BIP122_P2WPKH,
+      };
+      const stellarAccount = {
+        ...MOCK_ACCOUNT_STELLAR_PUBNET,
+      };
+
+      const state: AccountsState = {
+        metamask: {
+          internalAccounts: {
+            selectedAccount: solanaAccount.id,
+            accounts: {
+              [solanaAccount.id]: solanaAccount,
+              [anotherSolanaAccount.id]: anotherSolanaAccount,
+              [btcAccount.id]: btcAccount,
+              [stellarAccount.id]: stellarAccount,
+            },
+          },
+        },
+      } as unknown as AccountsState;
+
+      const result = getInternalAccountsByScope(
+        state,
+        XlmScope.Pubnet as CaipChainId,
+      );
+      expect(result).toEqual(expect.arrayContaining([stellarAccount]));
+      expect(result).toHaveLength(1);
     });
   });
 });

@@ -1,15 +1,5 @@
 @use "design-system";
 
-.account-overview {
-  &__balance-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    flex: 0 0 auto;
-  }
-}
-
 .account-overview-unknown {
   &__empty {
     margin-top: 24px;

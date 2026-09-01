@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import/no-commonjs */
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import type { To } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import {
   BlockSize,
   Display,
@@ -64,15 +63,19 @@ export type SRPQuizProps = {
   isOpen: boolean;
   onClose: () => void;
   closeAfterCompleting?: boolean;
+  navigate: {
+    (
+      to: To,
+      options?: { replace?: boolean; state?: Record<string, unknown> },
+    ): void;
+    (delta: number): void;
+  };
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
   const [stage, setStage] = useState<QuizStage>(QuizStage.introduction);
 
-  const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
@@ -237,7 +240,7 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
                 route = `${REVEAL_SEED_ROUTE}/${props.keyringId}`;
               }
 
-              history.push(route);
+              props.navigate(route);
               if (props.closeAfterCompleting) {
                 props.onClose();
               }
@@ -282,24 +285,25 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
   };
 
   // trackEvent shortcut specific to the SRP quiz
-  const trackEventSrp = useCallback((location) => {
-    trackEvent(
-      {
-        category: MetaMetricsEventCategory.Keys,
-        event: MetaMetricsEventName.KeyExportSelected,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          key_type: MetaMetricsEventKeyType.Srp,
-          location,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: hdEntropyIndex,
-        },
-      },
-      {},
-    );
-  }, []);
+  const trackEventSrp = useCallback(
+    (location: string) => {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.KeyExportSelected)
+          .addCategory(MetaMetricsEventCategory.Keys)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            key_type: MetaMetricsEventKeyType.Srp,
+            location,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          })
+          .build(),
+      );
+    },
+    [createEventBuilder, hdEntropyIndex, trackEvent],
+  );
 
   useEffect(() => {
     trackEventSrp(`stage_${stage}`); // Call MetaMetrics based on the current stage

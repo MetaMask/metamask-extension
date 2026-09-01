@@ -1,1 +1,0 @@
-export { SendPage } from './send';

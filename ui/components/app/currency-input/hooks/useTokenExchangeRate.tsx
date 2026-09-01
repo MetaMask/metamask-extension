@@ -1,100 +1,105 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { shallowEqual, useSelector } from 'react-redux';
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
-import { getTokenExchangeRates } from '../../../../selectors';
-import { Numeric } from '../../../../../shared/modules/Numeric';
+import { Hex } from '@metamask/utils';
 import {
-  getConversionRate,
-  getNativeCurrency,
-} from '../../../../ducks/metamask/metamask';
+  getCurrentChainId,
+  selectNetworkConfigurationByChainId,
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../../shared/lib/selectors/networks';
+import {
+  getCrossChainTokenExchangeRates,
+  selectConversionRateByChainId,
+} from '../../../../selectors';
+import { Numeric } from '../../../../../shared/lib/Numeric';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
-
-type ExchangeRate = number | typeof LOADING | typeof FAILED | undefined;
-
-const LOADING = 'loading';
-const FAILED = 'failed';
 
 /**
  * A hook that returns the exchange rate of the given token –– assumes native if no token address is passed.
  *
  * @param uncheckedTokenAddress - the address of the token. If not provided, the function will return the native exchange rate.
+ * @param overrideChainId - optional chainId to use instead of the currently selected chain. Useful when displaying values for a transaction on a different chain.
  * @returns the exchange rate of the token
  */
 export default function useTokenExchangeRate(
   uncheckedTokenAddress?: string,
+  overrideChainId?: Hex,
 ): Numeric | undefined {
   const tokenAddress = uncheckedTokenAddress
     ? toChecksumAddress(uncheckedTokenAddress)
     : undefined;
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const chainId = useSelector(getCurrentChainId);
 
-  const selectedNativeConversionRate = useSelector(getConversionRate);
+  const currentChainId = useSelector(getCurrentChainId);
+  const chainId = overrideChainId ?? currentChainId;
 
-  const contractExchangeRates: Record<string, number> = useSelector(
-    getTokenExchangeRates,
-    shallowEqual,
+  const networkConfig = useSelector(
+    (state: NetworkConfigurationsByChainIdState) =>
+      selectNetworkConfigurationByChainId(state, chainId),
+  );
+  const nativeCurrency = networkConfig?.nativeCurrency;
+
+  const selectedNativeConversionRate = useSelector((state) =>
+    selectConversionRateByChainId(state, chainId),
   );
 
-  const [exchangeRates, setExchangeRates] = useState<
-    Record<string, ExchangeRate>
-  >({});
+  const crossChainTokenExchangeRates: Record<
+    Hex,
+    Record<string, number>
+  > = useSelector(getCrossChainTokenExchangeRates, shallowEqual);
+
+  const reduxTokenRate = tokenAddress
+    ? crossChainTokenExchangeRates[chainId]?.[tokenAddress]
+    : undefined;
+
+  // Cache key includes chainId to prevent cross-chain rate contamination
+  const cacheKey = ['tokenExchangeRate', chainId, tokenAddress, nativeCurrency];
+
+  const { data: fetchedTokenRate } = useQuery({
+    queryKey: cacheKey,
+    queryFn: async () => {
+      if (!tokenAddress || !nativeCurrency) {
+        return null;
+      }
+
+      const exchangeRates = await fetchTokenExchangeRates(
+        nativeCurrency,
+        [tokenAddress],
+        chainId,
+      );
+      return exchangeRates[tokenAddress] ?? null;
+    },
+    enabled: Boolean(
+      tokenAddress && nativeCurrency && reduxTokenRate === undefined,
+    ),
+    retry: false,
+    staleTime: Infinity,
+  });
 
   return useMemo(() => {
     if (!selectedNativeConversionRate) {
       return undefined;
     }
 
-    const nativeConversionRate = new Numeric(selectedNativeConversionRate, 10);
+    const nativeConversionRate = new Numeric(
+      String(selectedNativeConversionRate),
+      10,
+    );
 
     if (!tokenAddress) {
       return nativeConversionRate;
     }
 
-    const isLoadingOrUnavailable = tokenAddress
-      ? ([LOADING, FAILED] as ExchangeRate[]).includes(
-          exchangeRates[tokenAddress],
-        )
-      : false;
-
-    if (isLoadingOrUnavailable) {
+    const tokenRate = reduxTokenRate ?? fetchedTokenRate;
+    if (tokenRate === undefined || tokenRate === null) {
       return undefined;
     }
 
-    const contractExchangeRate =
-      contractExchangeRates[tokenAddress] || exchangeRates[tokenAddress];
-
-    if (!contractExchangeRate) {
-      setExchangeRates((prev) => ({
-        ...prev,
-        [tokenAddress]: LOADING,
-      }));
-      fetchTokenExchangeRates(nativeCurrency, [tokenAddress], chainId)
-        .then((addressToExchangeRate) => {
-          setExchangeRates((prev) => ({
-            ...prev,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            [tokenAddress]: addressToExchangeRate[tokenAddress] || FAILED,
-          }));
-        })
-        .catch(() => {
-          setExchangeRates((prev) => ({
-            ...prev,
-            [tokenAddress]: FAILED,
-          }));
-        });
-      return undefined;
-    }
-
-    return new Numeric(contractExchangeRate, 10).times(nativeConversionRate);
+    return new Numeric(String(tokenRate), 10).times(nativeConversionRate);
   }, [
-    exchangeRates,
-    chainId,
-    nativeCurrency,
-    tokenAddress,
     selectedNativeConversionRate,
-    contractExchangeRates,
+    tokenAddress,
+    reduxTokenRate,
+    fetchedTokenRate,
   ]);
 }

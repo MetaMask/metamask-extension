@@ -1,16 +1,16 @@
-import React, { useCallback, useContext, useRef } from 'react';
-import classnames from 'classnames';
+import React, { useCallback, useRef } from 'react';
+import classnames from 'clsx';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { matchPath } from 'react-router-dom';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
   CONFIRM_TRANSACTION_ROUTE,
-  SWAPS_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 
 import {
@@ -21,24 +21,23 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
-import { getUnapprovedTransactions } from '../../../selectors';
 
 import { toggleNetworkMenu } from '../../../store/actions';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { getIsUnlocked } from '../../../ducks/metamask/metamask';
-import { SEND_STAGES, getSendStage } from '../../../ducks/send';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
+import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
-import { getNetworkIcon } from '../../../../shared/modules/network.utils';
+import { useDispatch } from '../../../store/hooks';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderContainer } from './app-header-container';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
 import { AppHeaderLockedContent } from './app-header-locked-content';
 
 export const AppHeader = ({ location }) => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const menuRef = useRef(null);
   const isUnlocked = useSelector(getIsUnlocked);
 
@@ -46,56 +45,46 @@ export const AppHeader = ({ location }) => {
     getSelectedMultichainNetworkConfiguration,
   );
 
-  const { chainId, isEvm } = multichainNetwork;
-  const networkIconSrc = getNetworkIcon(chainId, isEvm);
+  const { chainId } = multichainNetwork;
 
   const dispatch = useDispatch();
 
-  const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+  const environmentType = getEnvironmentType();
+  const popupStatus = environmentType === ENVIRONMENT_TYPE_POPUP;
+  const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
-  // Disable the network and account pickers if the user is in
-  // a critical flow
-  const sendStage = useSelector(getSendStage);
-  const isTransactionEditPage = [
-    SEND_STAGES.EDIT,
-    SEND_STAGES.DRAFT,
-    SEND_STAGES.ADD_RECIPIENT,
-  ].includes(sendStage);
+  // Disable the account picker if the user is in a critical flow
   const isConfirmationPage = Boolean(
-    matchPath(location.pathname, {
-      path: CONFIRM_TRANSACTION_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: CONFIRM_TRANSACTION_ROUTE,
+        end: false,
+      },
+      location?.pathname || '',
+    ),
   );
   const isSwapsPage = Boolean(
-    matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
+    matchPath(
+      { path: CROSS_CHAIN_SWAP_ROUTE, end: false },
+      location?.pathname || '',
+    ),
   );
 
-  const unapprovedTransactions = useSelector(getUnapprovedTransactions);
-
-  const hasUnapprovedTransactions =
-    Object.keys(unapprovedTransactions).length > 0;
-
   const disableAccountPicker = isConfirmationPage || isSwapsPage;
-
-  const disableNetworkPicker =
-    isSwapsPage ||
-    isTransactionEditPage ||
-    isConfirmationPage ||
-    hasUnapprovedTransactions;
 
   // Callback for network dropdown
   const networkOpenCallback = useCallback(() => {
     dispatch(toggleNetworkMenu());
-    trackEvent({
-      event: MetaMetricsEventName.NavNetworkMenuOpened,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        location: 'App header',
-        chain_id: chainId,
-      },
-    });
-  }, [chainId, dispatch, trackEvent]);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NavNetworkMenuOpened)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: 'App header',
+          chain_id: chainId,
+        })
+        .build(),
+    );
+  }, [chainId, dispatch, trackEvent, createEventBuilder]);
 
   const unlockedStyling = {
     alignItems: AlignItems.center,
@@ -119,7 +108,9 @@ export const AppHeader = ({ location }) => {
 
   return (
     <>
-      {isUnlocked && !popupStatus ? <MultichainMetaFoxLogo /> : null}
+      {isUnlocked && !popupStatus && !isSidepanel && true ? (
+        <MultichainMetaFoxLogo />
+      ) : null}
       <AppHeaderContainer isUnlocked={isUnlocked} popupStatus={popupStatus}>
         <>
           <Box
@@ -132,18 +123,12 @@ export const AppHeader = ({ location }) => {
           >
             {isUnlocked ? (
               <AppHeaderUnlockedContent
-                popupStatus={popupStatus}
-                currentNetwork={multichainNetwork}
-                networkIconSrc={networkIconSrc}
-                networkOpenCallback={networkOpenCallback}
-                disableNetworkPicker={disableNetworkPicker}
                 disableAccountPicker={disableAccountPicker}
                 menuRef={menuRef}
               />
             ) : (
               <AppHeaderLockedContent
                 currentNetwork={multichainNetwork}
-                networkIconSrc={networkIconSrc}
                 networkOpenCallback={networkOpenCallback}
               />
             )}

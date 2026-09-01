@@ -1,31 +1,31 @@
 import { strict as assert } from 'assert';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { getCleanAppState, withFixtures } from '../../helpers';
+import { MOCK_ANALYTICS_ID } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('MetaMetrics ID persistence', function () {
   it('MetaMetrics ID should persist when the user opts-out and then opts-in again of MetaMetrics collection', async function () {
-    const initialMetaMetricsId = 'test-metrics-id';
-
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: initialMetaMetricsId,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            consentDecisionMade: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         let uiState = await getCleanAppState(driver);
 
-        assert.equal(uiState.metamask.metaMetricsId, initialMetaMetricsId);
+        assert.equal(uiState.metamask.analyticsId, MOCK_ANALYTICS_ID);
 
         // goes to the privacy settings screen and toggle off participate in metaMetrics
         await new HomePage(driver).headerNavbar.openSettingsPage();
@@ -34,7 +34,9 @@ describe('MetaMetrics ID persistence', function () {
         await settingsPage.goToPrivacySettings();
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
-        await privacySettings.toggleParticipateInMetaMetrics();
+        await privacySettings.toggleParticipateInMetaMetrics({
+          targetState: 'off',
+        });
 
         // wait for state to update
         await driver.delay(500);
@@ -42,8 +44,8 @@ describe('MetaMetrics ID persistence', function () {
         uiState = await getCleanAppState(driver);
 
         assert.equal(
-          uiState.metamask.metaMetricsId,
-          initialMetaMetricsId,
+          uiState.metamask.analyticsId,
+          MOCK_ANALYTICS_ID,
           'Metametrics ID should be preserved when toggling off metametrics collection',
         );
 
@@ -56,8 +58,8 @@ describe('MetaMetrics ID persistence', function () {
         uiState = await getCleanAppState(driver);
 
         assert.equal(
-          uiState.metamask.metaMetricsId,
-          initialMetaMetricsId,
+          uiState.metamask.analyticsId,
+          MOCK_ANALYTICS_ID,
           'Metametrics ID should be preserved when toggling on metametrics collection',
         );
       },

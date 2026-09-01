@@ -1,6 +1,7 @@
-import { useDispatch } from 'react-redux';
+import { useCallback } from 'react';
 import { deleteNotificationsById } from '../store/actions';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
+import { useDispatch } from '../store/hooks';
 
 /**
  * This hook is used to enforce lifecycles for snap notifications.
@@ -15,11 +16,14 @@ import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notificatio
 export const useSnapNotificationTimeouts = () => {
   const dispatch = useDispatch();
 
-  const setNotificationTimeout = (id: string) => {
-    setTimeout(() => {
-      dispatch(deleteNotificationsById([id]));
-    }, NOTIFICATIONS_EXPIRATION_DELAY);
-  };
+  const setNotificationTimeout = useCallback(
+    (id: string) => {
+      setTimeout(() => {
+        dispatch(deleteNotificationsById([id]));
+      }, NOTIFICATIONS_EXPIRATION_DELAY);
+    },
+    [dispatch],
+  );
 
   return { setNotificationTimeout };
 };

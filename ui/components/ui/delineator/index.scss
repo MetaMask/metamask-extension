@@ -1,4 +1,8 @@
 .delineator {
+  &__wrapper {
+    overflow: auto;
+  }
+
   &__header {
     cursor: pointer;
 

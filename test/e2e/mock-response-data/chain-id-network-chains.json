@@ -204,8 +204,8 @@
     "faucets": [],
     "infoURL": "https://testnet.megaeth.com",
     "shortName": "megatest",
-    "chainId": 6342,
-    "networkId": 6342,
+    "chainId": 6343,
+    "networkId": 6343,
     "slip44": 1
   },
   {

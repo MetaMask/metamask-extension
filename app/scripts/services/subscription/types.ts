@@ -1,44 +1,95 @@
-import { RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   SubscriptionControllerGetBillingPortalUrlAction,
   SubscriptionControllerGetCryptoApproveTransactionParamsAction,
   SubscriptionControllerGetPricingAction,
   SubscriptionControllerGetSubscriptionsAction,
-  SubscriptionControllerStartShieldSubscriptionWithCardAction,
+  SubscriptionControllerStartSubscriptionWithCardAction,
   SubscriptionControllerUpdatePaymentMethodAction,
+  SubscriptionControllerSubmitSponsorshipIntentsAction,
+  SubscriptionControllerGetStateAction,
+  SubscriptionControllerLinkRewardsAction,
+  SubscriptionControllerSubmitSubscriptionCryptoApprovalAction,
+  SubscriptionControllerClearLastSelectedPaymentMethodAction,
 } from '@metamask/subscription-controller';
-import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
+import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
+import { TransactionControllerGetTransactionsAction } from '@metamask/transaction-controller';
+import { AccountsControllerGetStateAction } from '@metamask/accounts-controller';
+import { SmartTransactionsControllerGetStateAction } from '@metamask/smart-transactions-controller';
+import { NetworkControllerGetStateAction } from '@metamask/network-controller';
+import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
+import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
+import {
+  AppStateControllerSetPendingShieldCohortAction,
+  AppStateControllerSetPendingRedirectRouteAction,
+  AppStateControllerSetShieldSubscriptionErrorAction,
+} from '../../controllers/app-state-controller-method-action-types';
+import {
+  RewardsControllerGetHasAccountOptedInAction,
+  RewardsControllerGetSeasonMetadataAction,
+  RewardsControllerGetSeasonStatusAction,
+} from '../../controllers/rewards/rewards-controller-method-action-types';
+import { ShieldSubscriptionServiceMethodActions } from './shield-subscription-service-method-action-types';
 
-export const SERVICE_NAME = 'SubscriptionService';
+export type {
+  ShieldSubscriptionServiceUpdateSubscriptionCardPaymentMethodAction,
+  ShieldSubscriptionServiceUpdateSubscriptionCryptoPaymentMethodAction,
+  ShieldSubscriptionServiceStartSubscriptionWithCardAction,
+  ShieldSubscriptionServiceHandlePostTransactionAction,
+  ShieldSubscriptionServiceSubmitSubscriptionSponsorshipIntentAction,
+  ShieldSubscriptionServiceLinkRewardToExistingSubscriptionAction,
+} from './shield-subscription-service-method-action-types';
+
+export const SERVICE_NAME = 'ShieldSubscriptionService';
 
 export type ServiceName = typeof SERVICE_NAME;
 
-export type SubscriptionServiceAction =
+type AllowedActions =
   | SubscriptionControllerGetPricingAction
-  | SubscriptionControllerStartShieldSubscriptionWithCardAction
+  | SubscriptionControllerStartSubscriptionWithCardAction
   | SubscriptionControllerUpdatePaymentMethodAction
   | SubscriptionControllerGetSubscriptionsAction
   | SubscriptionControllerGetCryptoApproveTransactionParamsAction
   | SubscriptionControllerGetBillingPortalUrlAction
-  | AuthenticationControllerGetBearerToken;
+  | SubscriptionControllerSubmitSponsorshipIntentsAction
+  | SubscriptionControllerGetStateAction
+  | SubscriptionControllerLinkRewardsAction
+  | SubscriptionControllerSubmitSubscriptionCryptoApprovalAction
+  | SubscriptionControllerClearLastSelectedPaymentMethodAction
+  | TransactionControllerGetTransactionsAction
+  | PreferencesControllerGetStateAction
+  | AccountsControllerGetStateAction
+  | SmartTransactionsControllerGetStateAction
+  | NetworkControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction
+  | AuthenticationControllerGetBearerTokenAction
+  | AppStateControllerGetStateAction
+  | AppStateControllerSetPendingShieldCohortAction
+  | AppStateControllerSetPendingRedirectRouteAction
+  | AppStateControllerSetShieldSubscriptionErrorAction
+  | KeyringControllerGetStateAction // For metrics, to get the HD Keyrings metadata
+  // Rewards Integration
+  | RewardsControllerGetSeasonStatusAction // For rewards, to get the season status for claiming points with the shield subscription
+  | RewardsControllerGetSeasonMetadataAction // For rewards, to check if the season is active and can claim points
+  | RewardsControllerGetHasAccountOptedInAction; // For rewards, to check if the account has opted in to rewards
 
-export type SubscriptionServiceEvent = never;
+export type ShieldSubscriptionServiceEvent = never;
 
-export type SubscriptionServiceMessenger = RestrictedMessenger<
+export type ShieldSubscriptionServiceMessenger = Messenger<
   ServiceName,
-  SubscriptionServiceAction,
-  SubscriptionServiceEvent,
-  SubscriptionServiceAction['type'],
-  SubscriptionServiceEvent['type']
+  ShieldSubscriptionServiceMethodActions | AllowedActions,
+  ShieldSubscriptionServiceEvent
 >;
 
-export type SubscriptionServiceOptions = {
+export type ShieldSubscriptionServiceOptions = {
   /**
    * The messenger used to communicate with other services and controllers.
    */
-  messenger: SubscriptionServiceMessenger;
+  messenger: ShieldSubscriptionServiceMessenger;
 
   platform: ExtensionPlatform;
 

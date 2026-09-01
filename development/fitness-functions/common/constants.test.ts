@@ -66,8 +66,6 @@ describe('Regular Expressions used in Fitness Functions', (): void => {
     const PATHS_IT_SHOULD_MATCH = [
       'app/much/longer/path/file.js',
       'app/much/longer/path/file.jsx',
-      'offscreen/path/file.js',
-      'offscreen/path/file.jsx',
       'shared/file.js',
       'shared/file.jsx',
       'ui/much/longer/path/file.js',
@@ -83,7 +81,7 @@ describe('Regular Expressions used in Fitness Functions', (): void => {
       'file.ts',
       'path/file.ts',
       'much/longer/path/file.tsx',
-      // any JS or JSX files outside the app, offscreen, shared, and ui directories
+      // any JS or JSX files outside the app, shared, and ui directories
       'test/longer/path/file.js',
       'random/longer/path/file.jsx',
     ];

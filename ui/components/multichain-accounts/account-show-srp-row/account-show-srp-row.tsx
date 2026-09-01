@@ -1,22 +1,21 @@
 import React, { useState } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
-  TextVariant,
-  TextColor,
-  Display,
-  AlignItems,
-  IconColor,
-} from '../../../helpers/constants/design-system';
-import { AccountDetailsRow } from '../account-details-row/account-details-row';
-import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
   ButtonIcon,
+  ButtonIconSize,
+  FontWeight,
+  IconColor,
   IconName,
   Text,
-  Box,
-  ButtonIconSize,
-} from '../../component-library';
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import { AccountDetailsRow } from '../account-details-row/account-details-row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import { getMetaMaskHdKeyrings } from '../../../selectors';
@@ -29,7 +28,7 @@ type AccountShowSrpRowProps = {
 
 export const AccountShowSrpRow = ({ account }: AccountShowSrpRowProps) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
   const seedPhraseBackedUp = useSelector(getIsPrimarySeedPhraseBackedUp);
   const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
@@ -48,11 +47,16 @@ export const AccountShowSrpRow = ({ account }: AccountShowSrpRowProps) => {
         label={t('secretRecoveryPhrase')}
         value={''}
         endAccessory={
-          <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={1}
+          >
             {shouldShowBackupReminder && (
               <Text
-                variant={TextVariant.bodyMdMedium}
-                color={TextColor.errorDefault}
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.ErrorDefault}
               >
                 {t('backup')}
               </Text>
@@ -60,7 +64,7 @@ export const AccountShowSrpRow = ({ account }: AccountShowSrpRowProps) => {
             <ButtonIcon
               iconName={IconName.ArrowRight}
               ariaLabel={t('next')}
-              color={IconColor.iconAlternative}
+              iconProps={{ color: IconColor.IconAlternative }}
               size={ButtonIconSize.Md}
             />
           </Box>
@@ -68,7 +72,7 @@ export const AccountShowSrpRow = ({ account }: AccountShowSrpRowProps) => {
         onClick={() => {
           if (shouldShowBackupReminder) {
             const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
-            history.push(backUpSRPRoute);
+            navigate(backUpSRPRoute);
           } else {
             setSrpQuizModalVisible(true);
           }
@@ -80,6 +84,7 @@ export const AccountShowSrpRow = ({ account }: AccountShowSrpRowProps) => {
           isOpen={srpQuizModalVisible}
           onClose={() => setSrpQuizModalVisible(false)}
           closeAfterCompleting
+          navigate={navigate}
         />
       ) : null}
     </>

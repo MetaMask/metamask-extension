@@ -1,16 +1,25 @@
-/* eslint-disable camelcase */
-import { useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useSelector, shallowEqual } from 'react-redux';
 import {
-  formatProviderLabel,
+  getQuotesReceivedProperties,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
-  getQuoteRequest,
-  getValidationErrors,
+  getFromAmountInCurrency,
+  getFromToken,
+  getFromTokenBalanceInUsd,
+  getIsSlippageUserOverride,
+  getSlippage,
+  getToToken,
+  getWarningLabels,
+  type BridgeAppState,
 } from '../../ducks/bridge/selectors';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
+import { endTrace, TraceName } from '../../../shared/lib/trace';
+import { useDispatch } from '../../store/hooks';
+import { useIsTxSubmittable } from './useIsTxSubmittable';
+import { useHasSufficientGasForQuoteForMetrics } from './useHasSufficientGasForQuoteForMetrics';
 
 // This hook is used to track cross chain swaps events related to quote-fetching
 export const useQuoteFetchEvents = () => {
@@ -22,67 +31,93 @@ export const useQuoteFetchEvents = () => {
     activeQuote,
     recommendedQuote,
   } = useSelector(getBridgeQuotes);
-  const { insufficientBal } = useSelector(getQuoteRequest);
-  const validationErrors = useSelector(getValidationErrors);
+  const isTxSubmittable = useIsTxSubmittable();
+  const warnings = useSelector(
+    (state) => getWarningLabels(state as BridgeAppState, Date.now()),
+    shallowEqual,
+  );
 
-  const warnings = useMemo(() => {
-    const {
-      isEstimatedReturnLow,
-      isNoQuotesAvailable,
-      isInsufficientGasBalance,
-      isInsufficientGasForQuote,
-      isInsufficientBalance,
-    } = validationErrors;
+  const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
+  const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
+  const fromToken = useSelector(getFromToken);
+  const toToken = useSelector(getToToken);
+  const slippage = useSelector(getSlippage);
+  const isSlippageUserOverride = useSelector(getIsSlippageUserOverride);
 
-    const latestWarnings = [];
+  const getHasSufficientGasForQuote = useHasSufficientGasForQuoteForMetrics();
+  const hasSufficientGasForQuote = getHasSufficientGasForQuote(
+    activeQuote ?? null,
+  );
 
-    isEstimatedReturnLow && latestWarnings.push('low_return');
-    isNoQuotesAvailable && latestWarnings.push('no_quotes');
-    isInsufficientGasBalance && latestWarnings.push('insufficient_gas_balance');
-    isInsufficientGasForQuote &&
-      latestWarnings.push('insufficient_gas_for_selected_quote');
-    isInsufficientBalance && latestWarnings.push('insufficient_balance');
-
-    return latestWarnings;
-  }, [validationErrors]);
+  const firstQuoteRequestId = recommendedQuote?.quote.requestId;
 
   // Emitted each time quotes are fetched successfully
   useEffect(() => {
     if (!isLoading && quotesRefreshCount > 0 && !quoteFetchError) {
+      if (!firstQuoteRequestId) {
+        endTrace({
+          name: TraceName.SwapQuoteFetch,
+          timestamp: Date.now(),
+        });
+      }
       dispatch(
-        trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.QuotesReceived, {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          can_submit: !insufficientBal,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          gas_included: Boolean(activeQuote?.quote?.gasIncluded),
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          gas_included_7702: Boolean(activeQuote?.quote?.gasIncluded7702),
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          quoted_time_minutes: activeQuote?.estimatedProcessingTimeInSeconds
-            ? activeQuote.estimatedProcessingTimeInSeconds / 60
-            : 0,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          usd_quoted_gas: Number(activeQuote?.gasFee?.effective?.usd ?? 0),
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          usd_quoted_return: Number(activeQuote?.toTokenAmount?.usd ?? 0),
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          best_quote_provider: recommendedQuote
-            ? formatProviderLabel(recommendedQuote.quote)
-            : undefined,
-          provider: activeQuote ? formatProviderLabel(activeQuote.quote) : '_',
-          warnings,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          price_impact: Number(activeQuote?.quote.priceData?.priceImpact ?? 0),
-        }),
+        trackUnifiedSwapBridgeEvent(
+          UnifiedSwapBridgeEventName.QuotesReceived,
+          getQuotesReceivedProperties(
+            activeQuote ?? null,
+            warnings,
+            isTxSubmittable,
+            recommendedQuote,
+            fromTokenBalanceInUsd,
+            hasSufficientGasForQuote,
+            {
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+              custom_slippage: isSlippageUserOverride,
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+              slippage_limit:
+                slippage === undefined ? undefined : Number(slippage),
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+              usd_amount_source:
+                fromAmountInCurrency.usd.toNumber() || undefined,
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+              token_symbol_source: fromToken?.symbol,
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+              token_symbol_destination: toToken?.symbol,
+            },
+          ),
+        ),
       );
     }
   }, [quotesRefreshCount]);
+
+  // End the trace as soon as the first quote becomes available, including
+  // while the controller is still streaming additional quotes.
+  useEffect(() => {
+    if (firstQuoteRequestId) {
+      endTrace({
+        name: TraceName.SwapQuoteFetch,
+        timestamp: Date.now(),
+      });
+    }
+  }, [firstQuoteRequestId]);
+
+  useEffect(() => {
+    if (quoteFetchError) {
+      endTrace({
+        name: TraceName.SwapQuoteFetch,
+        timestamp: Date.now(),
+        data: { success: false },
+      });
+    }
+  }, [quoteFetchError]);
+
+  useEffect(() => {
+    return () => {
+      endTrace({
+        name: TraceName.SwapQuoteFetch,
+        timestamp: Date.now(),
+        data: { success: false },
+      });
+    };
+  }, []);
 };

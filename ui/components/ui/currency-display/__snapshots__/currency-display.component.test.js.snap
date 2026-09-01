@@ -79,3 +79,4 @@ exports[`CurrencyDisplay Component should render without title (tooltip) 1`] = `
   </div>
 </div>
 `;
+

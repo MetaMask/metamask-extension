@@ -7,9 +7,10 @@ import {
 } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import { unapprovedTypedSignMsgV4 } from '../../../../test/data/confirmations/typed_sign';
-// eslint-disable-next-line import/no-restricted-paths
-import { ResultType } from '../../../../app/scripts/lib/trust-signals/types';
+import { ResultType } from '../../../../shared/lib/trust-signals';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import * as useTransactionEventFragmentHook from '../../confirmations/hooks/useTransactionEventFragment';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import * as useSignatureEventFragmentHook from '../../confirmations/hooks/useSignatureEventFragment';
 import { useTrustSignalMetrics } from './useTrustSignalMetrics';
 
@@ -30,9 +31,15 @@ const SECURITY_ALERT_RESPONSE_MOCK = {
   reason: 'This address is associated with fraudulent activities',
 };
 
+const UNMAPPED_CHAIN_ID_MOCK = '0x123456789';
+
 const contractInteraction = genUnapprovedContractInteractionConfirmation({
-  chainId: '0x5',
+  chainId: '0x1',
 });
+const unmappedChainContractInteraction =
+  genUnapprovedContractInteractionConfirmation({
+    chainId: UNMAPPED_CHAIN_ID_MOCK,
+  });
 const TX_STATE_MOCK_NO_ALERT = getMockConfirmStateForTransaction(
   { ...contractInteraction, id: OWNER_ID_MOCK } as TransactionMeta,
   {
@@ -44,19 +51,36 @@ const TX_STATE_MOCK = getMockConfirmStateForTransaction(
   {
     metamask: {
       addressSecurityAlertResponses: {
-        [TARGET_ADDRESS_MOCK.toLowerCase()]: SECURITY_ALERT_RESPONSE_MOCK,
+        [`0x1:${TARGET_ADDRESS_MOCK.toLowerCase()}`]:
+          SECURITY_ALERT_RESPONSE_MOCK,
       },
     },
   },
 );
 
-const signatureRequest = { ...unapprovedTypedSignMsgV4, id: OWNER_ID_MOCK };
+const TX_STATE_MOCK_UNMAPPED_CHAIN = getMockConfirmStateForTransaction(
+  { ...unmappedChainContractInteraction, id: OWNER_ID_MOCK } as TransactionMeta,
+  {
+    metamask: {
+      addressSecurityAlertResponses: {
+        [`${UNMAPPED_CHAIN_ID_MOCK.toLowerCase()}:${TARGET_ADDRESS_MOCK.toLowerCase()}`]:
+          SECURITY_ALERT_RESPONSE_MOCK,
+      },
+    },
+  },
+);
+
+const signatureRequest = {
+  ...unapprovedTypedSignMsgV4,
+  id: OWNER_ID_MOCK,
+  chainId: '0x1',
+};
 const SIGNATURE_STATE_MOCK = getMockTypedSignConfirmStateForRequest(
   signatureRequest,
   {
     metamask: {
       addressSecurityAlertResponses: {
-        [SIGNATURE_VERIFYING_CONTRACT_MOCK.toLowerCase()]:
+        [`0x1:${SIGNATURE_VERIFYING_CONTRACT_MOCK.toLowerCase()}`]:
           SECURITY_ALERT_RESPONSE_MOCK,
       },
     },
@@ -105,20 +129,37 @@ describe('useTrustSignalMetrics', () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         address_alert_response: ResultType.Malicious,
-      };
-
-      const expectedAnonymousProperties = {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         address_label: 'Malicious',
       };
 
+      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledTimes(1);
       expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
         { properties: expectedProperties },
         OWNER_ID_MOCK,
       );
+      expect(mockUpdateSignatureEventFragment).not.toHaveBeenCalled();
+    });
+
+    it('updates event fragments from a cached response for a chain ID absent from the legacy mapping', () => {
+      renderHookWithConfirmContextProvider(
+        () => useTrustSignalMetrics(),
+        TX_STATE_MOCK_UNMAPPED_CHAIN,
+      );
+
+      const expectedProperties = {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        address_alert_response: ResultType.Malicious,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        address_label: 'Malicious',
+      };
+
+      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledTimes(1);
       expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
-        { sensitiveProperties: expectedAnonymousProperties },
+        { properties: expectedProperties },
         OWNER_ID_MOCK,
       );
       expect(mockUpdateSignatureEventFragment).not.toHaveBeenCalled();
@@ -141,9 +182,6 @@ describe('useTrustSignalMetrics', () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         address_alert_response: ResultType.Malicious,
-      };
-
-      const expectedAnonymousProperties = {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         address_label: 'Malicious',
@@ -154,11 +192,9 @@ describe('useTrustSignalMetrics', () => {
         SIGNATURE_STATE_MOCK,
       );
 
+      expect(mockUpdateSignatureEventFragment).toHaveBeenCalledTimes(1);
       expect(mockUpdateSignatureEventFragment).toHaveBeenCalledWith({
         properties: expectedProperties,
-      });
-      expect(mockUpdateSignatureEventFragment).toHaveBeenCalledWith({
-        sensitiveProperties: expectedAnonymousProperties,
       });
       expect(mockUpdateTransactionEventFragment).not.toHaveBeenCalled();
     });

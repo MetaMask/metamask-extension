@@ -1,15 +1,27 @@
-import FixtureBuilder from '../../fixture-builder';
 import {
-  withFixtures,
-  DAPP_URL,
   DAPP_ONE_URL,
+  DAPP_URL,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
   WINDOW_TITLES,
-} from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+} from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../helpers';
+import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import SignTypedDataConfirmation from '../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import SignTypedDataConfirmation from '../../page-objects/pages/confirmations/sign-typed-data-confirmation';
+import { SIGN_TYPED_DATA_EXPECTED } from '../confirmations/signatures/sign-typed-data-expected';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import { Driver } from '../../webdriver/driver';
+
+const EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO = {
+  aggregators: [],
+  decimals: 18,
+  image: '',
+  name: 'Ethereum',
+  symbol: 'ETH',
+  type: 'native' as const,
+};
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
   it('should queue signTypedData tx after eth_sendTransaction confirmation and signTypedData confirmation should target the correct network after eth_sendTransaction is confirmed', async function () {
@@ -17,12 +29,22 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 2 },
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerTripleNode()
-          .withSelectedNetworkControllerPerDomain()
+          .withAssetsController({
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                'eip155:1338/slip44:60': { amount: '25' },
+                'eip155:1000/slip44:60': { amount: '25' },
+              },
+            },
+            assetsInfo: {
+              'eip155:1338/slip44:60': EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO,
+              'eip155:1000/slip44:60': EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO,
+            },
+          })
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',
@@ -45,21 +67,19 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open and connect Dapp One
         const testDappOne = new TestDapp(driver);
         await testDappOne.openTestDappPage({ url: DAPP_URL });
         await testDappOne.checkPageIsLoaded();
-        await testDappOne.connectAccount({});
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await connectAccountToTestDapp(driver);
 
         // Open and connect to Dapp Two
         const testDappTwo = new TestDapp(driver);
         await testDappTwo.openTestDappPage({ url: DAPP_ONE_URL });
         await testDappTwo.checkPageIsLoaded();
-        await testDappTwo.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         // Switch Dapp Two to Localhost 8546
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
@@ -99,6 +119,9 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // eth_sendTransaction request
         await testDappOne.clickSimpleSendButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkNetworkIsDisplayed('Localhost 7777');
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
@@ -108,15 +131,19 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.
-        const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkNetworkIsDisplayed('Localhost 7777');
 
+        // The Review Alert appears while the balance is not yet loaded
+        await transactionConfirmation.waitForReviewAlertToDisappear();
         await transactionConfirmation.clickFooterConfirmButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the signTypedData confirmation.
         const signTypedDataConfirmation = new SignTypedDataConfirmation(driver);
+        await signTypedDataConfirmation.verifySignatureHeadingTitle(
+          SIGN_TYPED_DATA_EXPECTED.heading,
+        );
         await signTypedDataConfirmation.checkNetworkIsDisplayed(
           'Localhost 8546',
         );

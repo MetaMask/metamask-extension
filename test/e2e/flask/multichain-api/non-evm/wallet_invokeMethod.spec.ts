@@ -1,46 +1,49 @@
 import { strict as assert } from 'assert';
 import { isObject } from 'lodash';
-import { WINDOW_TITLES } from '../../../helpers';
+import { SOLANA_MAINNET_SCOPE, WINDOW_TITLES } from '../../../constants';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
-import { withSolanaAccountSnap } from '../../../tests/solana/common-solana';
-import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/snap-transaction-confirmation';
-import SnapSignInConfirmation from '../../../page-objects/pages/confirmations/redesign/snap-sign-in-confirmation';
+import { buildSolanaTestSpecificMock } from '../../../tests/solana/common-solana';
+import { withFixtures } from '../../../helpers';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import { login } from '../../../page-objects/flows/login.flow';
+import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
+import SnapSignInConfirmation from '../../../page-objects/pages/confirmations/snap-sign-in-confirmation';
+import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 
 describe('Multichain API - Non EVM', function () {
-  const SOLANA_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
   describe('Calling `wallet_invokeMethod`', function () {
     describe('signIn method', function () {
       it('Should match selected method to the expected confirmation UI', async function () {
-        await withSolanaAccountSnap(
+        await withFixtures(
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+            fixtures: new FixtureBuilderV2().build(),
             title: this.test?.fullTitle(),
           },
-          async (driver, _, extensionId) => {
+          async ({ driver, extensionId }) => {
+            await login(driver);
             const testDapp = new TestDappMultichain(driver);
+            const connectAccountConfirmation = new ConnectAccountConfirmation(
+              driver,
+            );
             await testDapp.openTestDappPage();
             await testDapp.connectExternallyConnectable(extensionId);
-            await testDapp.initCreateSessionScopes([SOLANA_SCOPE]);
-            await driver.clickElementAndWaitForWindowToClose({
-              text: 'Connect',
-              tag: 'button',
-            });
+            await testDapp.initCreateSessionScopes([SOLANA_MAINNET_SCOPE]);
+            await connectAccountConfirmation.confirmConnect();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
 
             await testDapp.invokeMethod({
-              scope: SOLANA_SCOPE,
+              scope: SOLANA_MAINNET_SCOPE,
               method: 'signIn',
             });
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
             const confirmation = new SnapSignInConfirmation(driver);
             await confirmation.checkPageIsLoaded();
-            await confirmation.checkAccountIsDisplayed('Solana 1');
             await confirmation.clickFooterConfirmButton();
           },
         );
@@ -49,21 +52,25 @@ describe('Multichain API - Non EVM', function () {
 
     describe('signAndSendTransaction method', function () {
       it('Should match selected method to the expected confirmation UI', async function () {
-        await withSolanaAccountSnap(
+        await withFixtures(
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+            fixtures: new FixtureBuilderV2().build(),
             title: this.test?.fullTitle(),
-            mockGetTransactionSuccess: true,
+            testSpecificMock: buildSolanaTestSpecificMock({
+              mockGetTransactionSuccess: true,
+            }),
           },
-          async (driver, _, extensionId) => {
+          async ({ driver, extensionId }) => {
+            await login(driver);
             const testDapp = new TestDappMultichain(driver);
+            const connectAccountConfirmation = new ConnectAccountConfirmation(
+              driver,
+            );
             await testDapp.openTestDappPage();
             await testDapp.connectExternallyConnectable(extensionId);
-            await testDapp.initCreateSessionScopes([SOLANA_SCOPE]);
-            await driver.clickElementAndWaitForWindowToClose({
-              text: 'Connect',
-              tag: 'button',
-            });
+            await testDapp.initCreateSessionScopes([SOLANA_MAINNET_SCOPE]);
+            await connectAccountConfirmation.confirmConnect();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
@@ -72,7 +79,7 @@ describe('Multichain API - Non EVM', function () {
             const invokeMethod = 'signAndSendTransaction';
 
             await testDapp.invokeMethod({
-              scope: SOLANA_SCOPE,
+              scope: SOLANA_MAINNET_SCOPE,
               method: invokeMethod,
             });
 
@@ -80,15 +87,15 @@ describe('Multichain API - Non EVM', function () {
 
             const confirmation = new SnapTransactionConfirmation(driver);
             await confirmation.checkPageIsLoaded();
-            await confirmation.checkAccountIsDisplayed('Solana 1');
-            await confirmation.clickFooterConfirmButton();
+            await confirmation.checkAccountIsDisplayed('Account 1');
+            await confirmation.clickFooterConfirmButtonAndWaitForWindowToClose();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
 
             const transactionResult = await testDapp.getInvokeMethodResult({
-              scope: SOLANA_SCOPE,
+              scope: SOLANA_MAINNET_SCOPE,
               method: invokeMethod,
             });
             const parsedTransactionResult = JSON.parse(transactionResult);

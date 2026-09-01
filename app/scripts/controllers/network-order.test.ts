@@ -1,9 +1,14 @@
-import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import {
   NetworkControllerGetStateAction,
-  NetworkControllerNetworkRemovedEvent,
   NetworkControllerSetActiveNetworkAction,
-  NetworkControllerStateChangeEvent,
   NetworkState,
   RpcEndpointType,
 } from '@metamask/network-controller';
@@ -110,7 +115,7 @@ describe('NetworkOrderController - constructor', () => {
         deriveStateFromMetadata(
           controller.state,
           controller.metadata,
-          'anonymous',
+          'includeInDebugSnapshot',
         ),
       ).toMatchInlineSnapshot(`
         {
@@ -176,21 +181,25 @@ describe('NetworkOrderController - constructor', () => {
 
 function arrangeMockMessenger() {
   const globalMessenger = new Messenger<
-    NetworkControllerGetStateAction | NetworkControllerSetActiveNetworkAction,
-    NetworkControllerStateChangeEvent | NetworkControllerNetworkRemovedEvent
-  >();
-  const messenger: NetworkOrderControllerMessenger =
-    globalMessenger.getRestricted({
-      name: 'NetworkOrderController',
-      allowedEvents: [
-        'NetworkController:stateChange',
-        'NetworkController:networkRemoved',
-      ],
-      allowedActions: [
-        'NetworkController:getState',
-        'NetworkController:setActiveNetwork',
-      ],
-    });
+    MockAnyNamespace,
+    MessengerActions<NetworkOrderControllerMessenger>,
+    MessengerEvents<NetworkOrderControllerMessenger>
+  >({ namespace: MOCK_ANY_NAMESPACE });
+  const messenger: NetworkOrderControllerMessenger = new Messenger({
+    namespace: 'NetworkOrderController',
+    parent: globalMessenger,
+  });
+  globalMessenger.delegate({
+    messenger,
+    events: [
+      'NetworkController:stateChange',
+      'NetworkController:networkRemoved',
+    ],
+    actions: [
+      'NetworkController:getState',
+      'NetworkController:setActiveNetwork',
+    ],
+  });
 
   const mockNetworkControllerGetState = jest
     .fn<

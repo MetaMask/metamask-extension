@@ -4,26 +4,29 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
   getTokenList,
-  getPreferences,
   getCurrencyRates,
   getUseCurrencyRateCheck,
-  useSafeChainsListValidationSelector,
+  getUseSafeChainsListValidation,
   getEnabledNetworksByNamespace,
+  getAllTokens,
+  selectAnyEnabledNetworksAreAvailable,
+  selectERC20TokensByChain,
 } from '../../../../selectors';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
   getMultichainCurrentChainId,
   getMultichainIsEvm,
 } from '../../../../selectors/multichain';
-import { getProviderConfig } from '../../../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../../../shared/lib/selectors/networks';
 
-import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { TokenWithFiatAmount } from '../types';
+import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { TokenCellProps } from './token-cell';
 import TokenCell from '.';
 
@@ -42,11 +45,27 @@ jest.mock('../../../../hooks/useTokenFiatAmount', () => {
   };
 });
 
-jest.mock('../../../../hooks/useIsOriginalTokenSymbol', () => {
+const mockShouldShowTokenListItemCta = jest.fn().mockReturnValue(false);
+jest.mock('../../../../hooks/musd', () => ({
+  useMusdCtaVisibility: () => ({
+    shouldShowTokenListItemCta: mockShouldShowTokenListItemCta,
+  }),
+  useMusdBalance: () => ({
+    hasMusdBalance: true,
+  }),
+}));
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
   return {
-    useIsOriginalTokenSymbol: jest.fn(),
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
   };
 });
+
+jest.mock('../../musd', () => ({
+  MusdConvertLink: () => <div data-testid="musd-convert-link-mock" />,
+}));
 
 describe('Token Cell', () => {
   const mockState = {
@@ -83,8 +102,6 @@ describe('Token Cell', () => {
       preferences: {},
     },
   };
-
-  (useIsOriginalTokenSymbol as jest.Mock).mockReturnValue(true);
 
   // two tokens with the same symbol but different addresses
   const MOCK_GET_TOKEN_LIST = {
@@ -156,6 +173,7 @@ describe('Token Cell', () => {
     ticker: 'ETH',
     rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
   });
+  let mockAnyEnabledNetworksAreAvailable = true;
   const useSelectorMock = useSelector;
   (useSelectorMock as jest.Mock).mockImplementation((selector) => {
     if (selector === getPreferences) {
@@ -185,17 +203,44 @@ describe('Token Cell', () => {
     if (selector === getUseCurrencyRateCheck) {
       return true;
     }
-    if (selector === useSafeChainsListValidationSelector) {
+    if (selector === getUseSafeChainsListValidation) {
       return true;
+    }
+    if (selector === selectAnyEnabledNetworksAreAvailable) {
+      return mockAnyEnabledNetworksAreAvailable;
     }
     if (selector === getEnabledNetworksByNamespace) {
       return {
         '0x1': true,
       };
     }
+    if (selector === getAllTokens) {
+      return {};
+    }
+    if (selector === selectERC20TokensByChain) {
+      // Keyed by chainId → { data: { [lowercaseAddress]: tokenEntry } }
+      // so useTokenDisplayInfo can resolve the tokenImage from it.
+      return {
+        '0x1': {
+          data: {
+            '0xanothertoken': {
+              iconUrl: './images/test_image.svg',
+              symbol: 'TEST',
+              name: 'TEST',
+              decimals: 18,
+              address: '0xAnotherToken',
+            },
+          },
+        },
+      };
+    }
     return undefined;
   });
   (useTokenFiatAmount as jest.Mock).mockReturnValue('5.00');
+
+  beforeEach(() => {
+    mockAnyEnabledNetworksAreAvailable = true;
+  });
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
@@ -242,6 +287,71 @@ describe('Token Cell', () => {
 
     expect(amountElement).toBeInTheDocument();
     expect(amountElement.textContent).toBe('5.00M TEST');
+  });
+
+  it('shows a skeleton for native token percentage while fiat is loading', () => {
+    mockAnyEnabledNetworksAreAvailable = false;
+
+    const nativeTokenWithoutFiatAmount = {
+      ...propToken,
+      isNative: true,
+      tokenFiatAmount: undefined,
+    };
+
+    const { getByTestId } = renderWithProvider(
+      <TokenCell
+        {...({
+          ...props,
+          token: nativeTokenWithoutFiatAmount,
+        } as TokenCellProps)}
+      />,
+      mockStore,
+    );
+
+    expect(
+      getByTestId('multichain-token-list-item-percentage-skeleton'),
+    ).toBeInTheDocument();
+  });
+
+  describe('musd.convert', () => {
+    it('does not show the mUSD convert CTA when musd.convert is not passed', () => {
+      mockShouldShowTokenListItemCta.mockReturnValue(true);
+
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell {...(props as TokenCellProps)} />,
+        mockStore,
+      );
+
+      expect(queryByTestId('musd-convert-link-mock')).not.toBeInTheDocument();
+    });
+
+    it('shows the mUSD convert CTA when musd.convert is set and token is eligible', () => {
+      mockShouldShowTokenListItemCta.mockReturnValue(true);
+
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell
+          {...(props as TokenCellProps)}
+          musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
+        />,
+        mockStore,
+      );
+
+      expect(queryByTestId('musd-convert-link-mock')).toBeInTheDocument();
+    });
+
+    it('does not show the mUSD convert CTA when musd.convert is set but token is not eligible', () => {
+      mockShouldShowTokenListItemCta.mockReturnValue(false);
+
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell
+          {...(props as TokenCellProps)}
+          musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
+        />,
+        mockStore,
+      );
+
+      expect(queryByTestId('musd-convert-link-mock')).not.toBeInTheDocument();
+    });
   });
 
   it('should show a scam warning if the native ticker does not match the expected ticker', async () => {

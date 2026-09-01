@@ -1,13 +1,12 @@
-/* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { merge } from 'lodash';
 import { BtcScope } from '@metamask/keyring-api';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import {
   SEPOLIA_DISPLAY_NAME,
   CHAIN_IDS,
@@ -166,21 +165,6 @@ describe('AccountListItem', () => {
     expect(
       document.querySelector('.multichain-account-list-item--selected'),
     ).toBeInTheDocument();
-    expect(
-      screen.getByTestId('account-list-item-selected-indicator'),
-    ).toBeInTheDocument();
-  });
-
-  it('does not render selection indicator if showSelectionIndicator is false', async () => {
-    render({ selected: true, showSelectionIndicator: false });
-    expect(
-      document.querySelector('.multichain-account-list-item--selected'),
-    ).toBeInTheDocument();
-    await waitFor(() => {
-      expect(
-        screen.queryByTestId('account-list-item-selected-indicator'),
-      ).not.toBeInTheDocument();
-    });
   });
 
   it('renders the account name tooltip for long names', () => {
@@ -241,9 +225,8 @@ describe('AccountListItem', () => {
     expect(container.querySelector('.mm-tag')).not.toBeInTheDocument();
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   it('renders the tag with the snap name for named snap accounts', () => {
-    const { container } = render(
+    render(
       {
         account: {
           ...mockAccount,
@@ -270,12 +253,13 @@ describe('AccountListItem', () => {
         },
       },
     );
-    const tag = container.querySelector('.mm-tag');
-    expect(tag.textContent).toBe(`${mockSnap.manifest.proposedName} (Beta)`);
+    expect(
+      screen.getByText(`${mockSnap.manifest.proposedName} (Beta)`),
+    ).toBeInTheDocument();
   });
 
   it('does not render the tag with the snap name for preinstalled snap accounts', () => {
-    const { container } = render(
+    render(
       {
         account: {
           ...mockAccount,
@@ -302,10 +286,10 @@ describe('AccountListItem', () => {
         },
       },
     );
-    const tag = container.querySelector('.mm-tag');
-    expect(tag).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(`${mockSnap.manifest.proposedName} (Beta)`),
+    ).not.toBeInTheDocument();
   });
-  ///: END:ONLY_INCLUDE_IF
 
   describe('Multichain Behaviour', () => {
     describe('currency display', () => {
@@ -372,7 +356,7 @@ describe('AccountListItem', () => {
   });
   describe('Account labels', () => {
     it('renders the SRP pill for account when multi SRP are present in state', () => {
-      const { container } = render(
+      render(
         {
           account: {
             ...mockAccount,
@@ -412,8 +396,7 @@ describe('AccountListItem', () => {
         },
       );
 
-      const tag = container.querySelector('.mm-tag');
-      expect(tag.textContent).toBe('SRP #1');
+      expect(screen.getByText('SRP #1')).toBeInTheDocument();
     });
 
     it('does not render the any account label when explicitly disabled', () => {

@@ -1,25 +1,119 @@
+import { QuoteResponseV1, TxData } from '@metamask/bridge-controller';
 import {
   GasFeeToken,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
+
+import {
+  genUnapprovedContractInteractionConfirmation,
+  mockBridgeQuotes,
+} from '../../../../../test/data/confirmations/contract-interaction';
+import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
-import { updateAndApproveTx } from '../../../../store/actions';
-import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';
-import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../../shared/constants/app';
+import {
+  attemptCloseNotificationPopup,
+  updateAndApproveTx,
+} from '../../../../store/actions';
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import { useHardwareWalletError } from '../../../../contexts/hardware-wallets';
+import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
+import * as DappSwapContext from '../../context/dapp-swap';
+import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
+import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
+import { useGasSponsorshipPreference } from '../gas/useGasSponsorshipPreference';
+import * as DappSwapActions from './dapp-swap-comparison/useDappSwapActions';
+import { useMoneyAccountWithdrawConfirm } from './useMoneyAccountWithdrawConfirm';
 import { useTransactionConfirm } from './useTransactionConfirm';
 
-jest.mock('../../../../../shared/modules/selectors');
+const mockGetEnvironmentType = jest.fn();
+const mockUseIsHardwareWalletAccount = jest.fn();
+
+jest.mock('../../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../../shared/lib/environment-type'),
+  getEnvironmentType: (...args: unknown[]) => mockGetEnvironmentType(...args),
+}));
+const mockIsHardwareWalletError = jest.fn();
+const mockIsUserRejectedHardwareWalletError = jest.fn();
+jest.mock('../../../../contexts/hardware-wallets', () => ({
+  ...jest.requireActual('../../../../contexts/hardware-wallets'),
+  useHardwareWalletError: jest.fn(() => ({
+    showErrorModal: jest.fn(),
+    dismissErrorModal: jest.fn(),
+    isErrorModalVisible: false,
+    setErrorModalSuppressed: jest.fn(),
+  })),
+  isHardwareWalletError: (...args: unknown[]) =>
+    mockIsHardwareWalletError(...args),
+  isUserRejectedHardwareWalletError: (...args: unknown[]) =>
+    mockIsUserRejectedHardwareWalletError(...args),
+}));
+jest.mock('../../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../../store/background-connection'),
+  submitRequestToBackground: jest.fn(() => Promise.resolve()),
+}));
+jest.mock('../../../../../shared/lib/selectors');
+jest.mock('../../../../../shared/lib/selectors/keyring', () => ({
+  ...jest.requireActual('../../../../../shared/lib/selectors/keyring'),
+  isHardwareWallet: jest.fn(),
+}));
+jest.mock('../../../../hooks/useIsHardwareWalletAccount', () => ({
+  useIsHardwareWalletAccount: (...args: unknown[]) =>
+    mockUseIsHardwareWalletAccount(...args),
+}));
 
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
+  attemptCloseNotificationPopup: jest.fn(),
   updateAndApproveTx: jest.fn(),
 }));
 
+jest.mock('./useMoneyAccountWithdrawConfirm');
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
+jest.mock('../gas/useIsGaslessSupported');
+
+jest.mock('../gas/useGaslessSupportedSmartTransactions');
+
+jest.mock('../gas/useGasSponsorshipPreference');
+
+const mockNavigateToHwSigningPage = jest.fn();
+jest.mock('../../../../hooks/bridge/useBridgeNavigation', () => ({
+  useBridgeNavigation: () => ({
+    navigateToHwSigningPage: mockNavigateToHwSigningPage,
+  }),
+}));
+
+const mockUseSendBundleAmountSymbol = jest.fn();
+jest.mock(
+  '../../../../hooks/hardware-wallets/useSendBundleAmountSymbol',
+  () => ({
+    useSendBundleAmountSymbol: (...args: unknown[]) =>
+      mockUseSendBundleAmountSymbol(...args),
+  }),
+);
+
+const mockPrepareWithdrawTransaction = jest.fn<
+  Promise<TransactionMeta | null>,
+  [TransactionMeta]
+>();
+
 const CUSTOM_NONCE_VALUE = '1234';
+const originalConsoleWarn = console.warn;
 
 const TRANSACTION_META_MOCK =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
@@ -27,42 +121,126 @@ const TRANSACTION_META_MOCK =
 function runHook({
   customNonceValue,
   gasFeeTokens,
+  isGasFeeSponsored,
+  isExternalSign,
   selectedGasFeeToken,
+  type,
 }: {
   customNonceValue?: string;
   gasFeeTokens?: GasFeeToken[];
+  isGasFeeSponsored?: boolean;
+  isExternalSign?: boolean;
   selectedGasFeeToken?: Hex;
+  type?: TransactionType;
 } = {}) {
+  const confirmation = genUnapprovedContractInteractionConfirmation({
+    gasFeeTokens,
+    isGasFeeSponsored,
+    isExternalSign,
+    selectedGasFeeToken,
+  }) as TransactionMeta;
+  if (type) {
+    confirmation.type = type;
+  }
+
   const { result } = renderHookWithConfirmContextProvider(
     useTransactionConfirm,
-    getMockConfirmStateForTransaction(
-      genUnapprovedContractInteractionConfirmation({
-        gasFeeTokens,
-        selectedGasFeeToken,
-      }),
-      {
-        appState: {
-          customNonceValue,
-        },
-        metamask: {},
+    getMockConfirmStateForTransaction(confirmation, {
+      appState: {
+        customNonceValue,
       },
-    ),
+      metamask: {},
+    }),
   );
 
-  return result.current;
+  return { ...result.current, confirmation };
 }
 
 describe('useTransactionConfirm', () => {
+  let consoleWarnSpy: jest.SpyInstance;
   const updateAndApproveTxMock = jest.mocked(updateAndApproveTx);
-  const getIsSmartTransactionMock = jest.mocked(getIsSmartTransaction);
-
+  const attemptCloseNotificationPopupMock = jest.mocked(
+    attemptCloseNotificationPopup,
+  );
+  const useHardwareWalletErrorMock = jest.mocked(useHardwareWalletError);
+  const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
+  const useGaslessSupportedSmartTransactionsMock = jest.mocked(
+    useGaslessSupportedSmartTransactions,
+  );
+  const isHardwareWalletMock = jest.mocked(isHardwareWallet);
+  const useGasSponsorshipPreferenceMock = jest.mocked(
+    useGasSponsorshipPreference,
+  );
+  const useMoneyAccountWithdrawConfirmMock = jest.mocked(
+    useMoneyAccountWithdrawConfirm,
+  );
   beforeEach(() => {
     jest.resetAllMocks();
+    consoleWarnSpy = jest
+      .spyOn(console, 'warn')
+      .mockImplementation((...args: unknown[]) => {
+        const message = args.map(String).join(' ');
+        if (
+          message.includes('MetaMask: Background connection not initialized')
+        ) {
+          return;
+        }
+        originalConsoleWarn(...args);
+      });
 
-    getIsSmartTransactionMock.mockReturnValue(false);
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: false,
+      pending: false,
+    });
     updateAndApproveTxMock.mockReturnValue(() =>
       Promise.resolve({} as TransactionMeta),
     );
+
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+
+    useGasSponsorshipPreferenceMock.mockReturnValue({
+      isSponsorshipOptedOut: false,
+      setSponsorshipOptedOut: jest.fn(),
+    });
+
+    updateAndApproveTxMock.mockReturnValue(() => Promise.resolve(null));
+    attemptCloseNotificationPopupMock.mockResolvedValue(undefined);
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_NOTIFICATION);
+    isHardwareWalletMock.mockReturnValue(false);
+    mockUseIsHardwareWalletAccount.mockReturnValue(false);
+    mockNavigateToHwSigningPage.mockReset();
+    mockUseSendBundleAmountSymbol.mockReset();
+    mockUseSendBundleAmountSymbol.mockReturnValue({
+      sendAmount: '1.5',
+      sendSymbol: 'ETH',
+    });
+    mockIsHardwareWalletError.mockReturnValue(false);
+    mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
+    mockPrepareWithdrawTransaction.mockResolvedValue(null);
+    useMoneyAccountWithdrawConfirmMock.mockReturnValue({
+      prepareWithdrawTransaction: mockPrepareWithdrawTransaction,
+    });
+    useHardwareWalletErrorMock.mockReturnValue({
+      showErrorModal: jest.fn(),
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    });
+  });
+
+  afterEach(() => {
+    consoleWarnSpy.mockRestore();
   });
 
   it('dispatches update and approve action', async () => {
@@ -88,7 +266,16 @@ describe('useTransactionConfirm', () => {
   });
 
   it('updates batch transaction if smart transaction and selected gas fee token', async () => {
-    getIsSmartTransactionMock.mockReturnValue(true);
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+      pending: false,
+    });
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
+    });
 
     const { onTransactionConfirm } = runHook({
       gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
@@ -115,8 +302,101 @@ describe('useTransactionConfirm', () => {
     ]);
   });
 
+  it('routes hardware wallet sendBundle sends to hardware wallet signing page', async () => {
+    isHardwareWalletMock.mockReturnValue(true);
+    mockUseIsHardwareWalletAccount.mockReturnValue(true);
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+      pending: false,
+    });
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      isGasFeeSponsored: true,
+      isExternalSign: true,
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+      type: TransactionType.simpleSend,
+    });
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(false);
+    expect(updateAndApproveTxMock).not.toHaveBeenCalled();
+    expect(mockNavigateToHwSigningPage).toHaveBeenCalledTimes(1);
+    const navigateState = mockNavigateToHwSigningPage.mock.calls[0][0];
+    expect(navigateState).toStrictEqual(
+      expect.objectContaining({
+        bridgeState: null,
+        token: null,
+        sendBundle: expect.objectContaining({
+          needsTwoConfirmations: true,
+          returnRoute: DEFAULT_ROUTE,
+          approvalRequestId: String(navigateState.sendBundle.txMeta.id),
+          sendAmount: '1.5',
+          sendSymbol: 'ETH',
+          txMeta: expect.objectContaining({
+            batchTransactions: [
+              expect.objectContaining({
+                type: TransactionType.gasPayment,
+              }),
+            ],
+            isExternalSign: false,
+            type: TransactionType.simpleSend,
+          }),
+        }),
+      }),
+    );
+  });
+
+  it('routes hardware wallet sends to signing page even when STX is disabled', async () => {
+    isHardwareWalletMock.mockReturnValue(true);
+    mockUseIsHardwareWalletAccount.mockReturnValue(true);
+
+    const { onTransactionConfirm } = runHook({
+      type: TransactionType.simpleSend,
+    });
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(false);
+    expect(updateAndApproveTxMock).not.toHaveBeenCalled();
+    expect(mockNavigateToHwSigningPage).toHaveBeenCalledTimes(1);
+    const navigateState = mockNavigateToHwSigningPage.mock.calls[0][0];
+    expect(navigateState).toStrictEqual(
+      expect.objectContaining({
+        bridgeState: null,
+        token: null,
+        sendBundle: expect.objectContaining({
+          needsTwoConfirmations: false,
+          returnRoute: DEFAULT_ROUTE,
+          approvalRequestId: String(navigateState.sendBundle.txMeta.id),
+          sendAmount: '1.5',
+          sendSymbol: 'ETH',
+          txMeta: expect.objectContaining({
+            type: TransactionType.simpleSend,
+          }),
+        }),
+      }),
+    );
+  });
+
   it('updates transaction params if smart transaction and selected gas fee token', async () => {
-    getIsSmartTransactionMock.mockReturnValue(true);
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+      pending: false,
+    });
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
+    });
 
     const { onTransactionConfirm } = runHook({
       gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
@@ -137,7 +417,11 @@ describe('useTransactionConfirm', () => {
   });
 
   it('does not update transaction params if smart transaction and no selected gas fee token', async () => {
-    getIsSmartTransactionMock.mockReturnValue(true);
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+      pending: false,
+    });
 
     const { onTransactionConfirm } = runHook({
       gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
@@ -155,5 +439,600 @@ describe('useTransactionConfirm', () => {
           TRANSACTION_META_MOCK.txParams.maxPriorityFeePerGas,
       }),
     );
+  });
+
+  it('calls handleSmartTransaction if chainSupportsSendBundle is true', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+      pending: false,
+    });
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actualTransactionMeta = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actualTransactionMeta.batchTransactions).toStrictEqual([
+      {
+        data: `0xa9059cbb000000000000000000000000${GAS_FEE_TOKEN_MOCK.recipient.slice(
+          2,
+        )}0000000000000000000000000000000000000000000000000000000000000${GAS_FEE_TOKEN_MOCK.amount.slice(
+          2,
+        )}`,
+        gas: GAS_FEE_TOKEN_MOCK.gasTransfer,
+        maxFeePerGas: GAS_FEE_TOKEN_MOCK.maxFeePerGas,
+        maxPriorityFeePerGas: GAS_FEE_TOKEN_MOCK.maxPriorityFeePerGas,
+        to: GAS_FEE_TOKEN_MOCK.tokenAddress,
+        type: TransactionType.gasPayment,
+      },
+    ]);
+  });
+
+  it('does not call handleSmartTransaction if chainSupportsSendBundle is false', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+      pending: false,
+    });
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: true,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actualTransactionMeta = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actualTransactionMeta.txParams).toStrictEqual(
+      expect.objectContaining({
+        gas: TRANSACTION_META_MOCK.txParams.gas,
+        maxFeePerGas: TRANSACTION_META_MOCK.txParams.maxFeePerGas,
+        maxPriorityFeePerGas:
+          TRANSACTION_META_MOCK.txParams.maxPriorityFeePerGas,
+      }),
+    );
+  });
+
+  it('returns false if chainId is undefined during chainSupportsSendBundle check', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: true,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      customNonceValue: CUSTOM_NONCE_VALUE,
+    });
+
+    await onTransactionConfirm();
+
+    expect(updateAndApproveTxMock).toHaveBeenCalledWith(
+      expect.not.objectContaining({
+        batchTransactions: expect.any(Array),
+      }),
+      true,
+      '',
+    );
+  });
+
+  it('dispatches update and approve action', async () => {
+    const { onTransactionConfirm } = runHook();
+
+    await onTransactionConfirm();
+
+    expect(updateAndApproveTxMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('updates custom nonce', async () => {
+    const { onTransactionConfirm } = runHook({ customNonceValue: '1234' });
+
+    await onTransactionConfirm();
+
+    const actualTransactionMeta = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actualTransactionMeta.customNonceValue).toBe(CUSTOM_NONCE_VALUE);
+  });
+
+  it('call function to capture swap submit', async () => {
+    const mockOnDappSwapCompleted = jest.fn();
+    jest.spyOn(DappSwapActions, 'useDappSwapActions').mockReturnValue({
+      onDappSwapCompleted: mockOnDappSwapCompleted,
+      updateSwapWithQuoteDetailsIfRequired: jest.fn(),
+    } as unknown as ReturnType<typeof DappSwapActions.useDappSwapActions>);
+
+    const { onTransactionConfirm } = runHook({ customNonceValue: '1234' });
+    await onTransactionConfirm();
+
+    expect(mockOnDappSwapCompleted).toHaveBeenCalledTimes(1);
+  });
+
+  it('updates batch transaction if smart transaction and selected gas fee token', async () => {
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.batchTransactions).toStrictEqual([
+      expect.objectContaining({
+        to: GAS_FEE_TOKEN_MOCK.tokenAddress,
+        type: TransactionType.gasPayment,
+      }),
+    ]);
+  });
+
+  it('updates swap with MM quote if available', async () => {
+    jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
+      isQuotedSwapDisplayedInInfo: true,
+      selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponseV1,
+      setSelectedQuote: jest.fn(),
+      setQuotedSwapDisplayedInInfo: jest.fn(),
+    } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
+
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.txParams).toStrictEqual(
+      expect.objectContaining({
+        authorizationList: undefined,
+        data: (mockBridgeQuotes[0].trade as TxData).data,
+        from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        gas: '0x3',
+        maxFeePerGas: '0x4',
+        maxPriorityFeePerGas: '0x5',
+        to: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
+        value: '0x0',
+      }),
+    );
+  });
+
+  it('updates transaction params if smart transaction and selected gas fee token', async () => {
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.txParams).toStrictEqual(
+      expect.objectContaining({
+        gas: GAS_FEE_TOKEN_MOCK.gas,
+        maxFeePerGas: GAS_FEE_TOKEN_MOCK.maxFeePerGas,
+        maxPriorityFeePerGas: GAS_FEE_TOKEN_MOCK.maxPriorityFeePerGas,
+      }),
+    );
+  });
+
+  it('uses 7702 flow if gasless supported and not smart tx supported', async () => {
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: false,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isExternalSign).toBe(true);
+    expect(actual.isGasFeeSponsored).toBe(
+      TRANSACTION_META_MOCK.isGasFeeSponsored,
+    );
+  });
+
+  it('does not call handleSmartTransaction if no selected gas fee token', async () => {
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.txParams).toStrictEqual(
+      expect.objectContaining({
+        gas: TRANSACTION_META_MOCK.txParams.gas,
+        maxFeePerGas: TRANSACTION_META_MOCK.txParams.maxFeePerGas,
+        maxPriorityFeePerGas:
+          TRANSACTION_META_MOCK.txParams.maxPriorityFeePerGas,
+      }),
+    );
+  });
+
+  it('preserves isGasFeeSponsored when gasless is supported', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: false,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isGasFeeSponsored).toBe(
+      TRANSACTION_META_MOCK.isGasFeeSponsored,
+    );
+  });
+
+  it('sets isGasFeeSponsored to false when user opted out via 7702 flow', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: false,
+      pending: false,
+    });
+    useGasSponsorshipPreferenceMock.mockReturnValue({
+      isSponsorshipOptedOut: true,
+      setSponsorshipOptedOut: jest.fn(),
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      isGasFeeSponsored: true,
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isGasFeeSponsored).toBe(false);
+  });
+
+  it('sets isGasFeeSponsored to false when user opted out via smart transaction flow', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
+    });
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
+    });
+    useGasSponsorshipPreferenceMock.mockReturnValue({
+      isSponsorshipOptedOut: true,
+      setSponsorshipOptedOut: jest.fn(),
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      isGasFeeSponsored: true,
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isGasFeeSponsored).toBe(false);
+  });
+
+  it('sets isGasFeeSponsored to false when user opted out without a selected gas fee token', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: false,
+      pending: false,
+    });
+    useGasSponsorshipPreferenceMock.mockReturnValue({
+      isSponsorshipOptedOut: true,
+      setSponsorshipOptedOut: jest.fn(),
+    });
+
+    const { onTransactionConfirm } = runHook({
+      isGasFeeSponsored: true,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isGasFeeSponsored).toBe(false);
+  });
+
+  it('clears isExternalSign when gasless is unsupported (e.g. hardware wallet on a sponsored chain)', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+    useGasSponsorshipPreferenceMock.mockReturnValue({
+      isSponsorshipOptedOut: false,
+      setSponsorshipOptedOut: jest.fn(),
+    });
+
+    const { onTransactionConfirm } = runHook({
+      isGasFeeSponsored: true,
+      isExternalSign: true,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isExternalSign).toBe(false);
+    expect(actual.isGasFeeSponsored).toBe(false);
+  });
+
+  it('keeps isExternalSign when gasless is supported and user has not opted out', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: false,
+      pending: false,
+    });
+    useGasSponsorshipPreferenceMock.mockReturnValue({
+      isSponsorshipOptedOut: false,
+      setSponsorshipOptedOut: jest.fn(),
+    });
+
+    const { onTransactionConfirm } = runHook({
+      isGasFeeSponsored: true,
+      isExternalSign: true,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isExternalSign).toBe(true);
+  });
+
+  it('returns true after successful transaction in popup environment', async () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+
+    const { onTransactionConfirm } = runHook();
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(true);
+    expect(updateAndApproveTxMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns true after successful transaction in sidepanel', async () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+
+    const { onTransactionConfirm } = runHook();
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(true);
+    expect(updateAndApproveTxMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns true on successful transaction confirm', async () => {
+    const { onTransactionConfirm } = runHook();
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(true);
+  });
+
+  it('returns false and shows error modal on hardware wallet error', async () => {
+    const hwError = new Error('Ledger error');
+    mockIsHardwareWalletError.mockReturnValue(true);
+    mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
+    updateAndApproveTxMock.mockReturnValue(() => Promise.reject(hwError));
+
+    const showErrorModalMock = jest.fn();
+    useHardwareWalletErrorMock.mockReturnValue({
+      showErrorModal: showErrorModalMock,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    });
+
+    const { onTransactionConfirm } = runHook();
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(false);
+    expect(showErrorModalMock).toHaveBeenCalledWith(hwError);
+  });
+
+  it('returns false and does not show error modal on hardware wallet user rejection', async () => {
+    const hwError = new Error('User rejected on device');
+    mockIsHardwareWalletError.mockReturnValue(true);
+    mockIsUserRejectedHardwareWalletError.mockReturnValue(true);
+    updateAndApproveTxMock.mockReturnValue(() => Promise.reject(hwError));
+
+    const showErrorModalMock = jest.fn();
+    useHardwareWalletErrorMock.mockReturnValue({
+      showErrorModal: showErrorModalMock,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    });
+
+    const { onTransactionConfirm } = runHook();
+
+    const result = await onTransactionConfirm();
+
+    expect(result).toBe(false);
+    expect(showErrorModalMock).not.toHaveBeenCalled();
+  });
+
+  it('rethrows non-hardware wallet errors', async () => {
+    const genericError = new Error('Network error');
+    mockIsHardwareWalletError.mockReturnValue(false);
+    updateAndApproveTxMock.mockReturnValue(() => Promise.reject(genericError));
+
+    const { onTransactionConfirm } = runHook();
+
+    await expect(onTransactionConfirm()).rejects.toThrow('Network error');
+  });
+
+  describe('money account withdraw', () => {
+    it('approves the transaction prepared by useMoneyAccountWithdrawConfirm', async () => {
+      const prepared = {
+        id: 'prepared-id',
+        type: TransactionType.moneyAccountWithdraw,
+        txParams: { from: '0xabc', to: '0xabc', data: '0xbatchdata' },
+      } as unknown as TransactionMeta;
+      mockPrepareWithdrawTransaction.mockResolvedValue(prepared);
+
+      const { confirmation, onTransactionConfirm } = runHook({
+        type: TransactionType.moneyAccountWithdraw,
+      });
+
+      const result = await onTransactionConfirm();
+
+      expect(result).toBe(true);
+      expect(mockPrepareWithdrawTransaction).toHaveBeenCalledWith(
+        expect.objectContaining({ id: confirmation.id }),
+      );
+      const approved = updateAndApproveTxMock.mock.calls[0][0];
+      expect(approved.id).toBe('prepared-id');
+      expect(approved.txParams.data).toBe('0xbatchdata');
+    });
+
+    it('does not prepare a withdraw for other transaction types', async () => {
+      const { onTransactionConfirm } = runHook();
+
+      await onTransactionConfirm();
+
+      expect(mockPrepareWithdrawTransaction).not.toHaveBeenCalled();
+      expect(updateAndApproveTxMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not approve when the withdraw could not be prepared', async () => {
+      mockPrepareWithdrawTransaction.mockResolvedValue(null);
+
+      const { onTransactionConfirm } = runHook({
+        type: TransactionType.moneyAccountWithdraw,
+      });
+
+      const result = await onTransactionConfirm();
+
+      expect(result).toBe(false);
+      expect(updateAndApproveTxMock).not.toHaveBeenCalled();
+    });
+
+    it('rethrows when preparing the withdraw fails', async () => {
+      mockPrepareWithdrawTransaction.mockRejectedValue(
+        new Error('Update Amount: Money Account Withdrawal: missing vault'),
+      );
+
+      const { onTransactionConfirm } = runHook({
+        type: TransactionType.moneyAccountWithdraw,
+      });
+
+      await expect(onTransactionConfirm()).rejects.toThrow(
+        'Update Amount: Money Account Withdrawal: missing vault',
+      );
+      expect(updateAndApproveTxMock).not.toHaveBeenCalled();
+    });
+
+    it('keeps gas sponsorship on money account withdraw when gasless support is unknown', async () => {
+      useIsGaslessSupportedMock.mockReturnValue({
+        isSupported: false,
+        isSmartTransaction: false,
+        pending: false,
+      });
+
+      const { confirmation, onTransactionConfirm } = runHook({
+        type: TransactionType.moneyAccountWithdraw,
+        isGasFeeSponsored: true,
+      });
+      mockPrepareWithdrawTransaction.mockResolvedValue(confirmation);
+
+      await onTransactionConfirm();
+
+      expect(updateAndApproveTxMock.mock.calls[0][0].isGasFeeSponsored).toBe(
+        true,
+      );
+    });
+
+    it('keeps isExternalSign on sponsored money account withdraw when gasless is unsupported', async () => {
+      useIsGaslessSupportedMock.mockReturnValue({
+        isSupported: false,
+        isSmartTransaction: false,
+        pending: false,
+      });
+
+      const { confirmation, onTransactionConfirm } = runHook({
+        type: TransactionType.moneyAccountWithdraw,
+        isGasFeeSponsored: true,
+        isExternalSign: true,
+      });
+      mockPrepareWithdrawTransaction.mockResolvedValue(confirmation);
+
+      await onTransactionConfirm();
+
+      const actual = updateAndApproveTxMock.mock.calls[0][0];
+      expect(actual.isExternalSign).toBe(true);
+      expect(actual.isGasFeeSponsored).toBe(true);
+    });
+
+    it('clears gas sponsorship on money account withdraw when the user opted out', async () => {
+      useGasSponsorshipPreferenceMock.mockReturnValue({
+        isSponsorshipOptedOut: true,
+        setSponsorshipOptedOut: jest.fn(),
+      });
+
+      const { confirmation, onTransactionConfirm } = runHook({
+        type: TransactionType.moneyAccountWithdraw,
+        isGasFeeSponsored: true,
+        isExternalSign: true,
+      });
+      mockPrepareWithdrawTransaction.mockResolvedValue(confirmation);
+
+      await onTransactionConfirm();
+
+      const actual = updateAndApproveTxMock.mock.calls[0][0];
+      expect(actual.isGasFeeSponsored).toBe(false);
+      expect(actual.isExternalSign).toBe(false);
+    });
   });
 });

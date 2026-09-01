@@ -8,13 +8,25 @@ import { MetamaskIdentityProvider } from '../../../../../contexts/identity';
 import { showModal } from '../../../../../store/actions';
 import { CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../confirm-turn-on-backup-and-sync-modal';
 import { BACKUPANDSYNC_ROUTE } from '../../../../../helpers/constants/routes';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   TurnOnBackupAndSyncModal,
   turnOnBackupAndSyncModalTestIds,
 } from './turn-on-backup-and-sync-modal';
 
 const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.mock('../../../../../hooks/useModalProps', () => ({
   useModalProps: jest.fn(),
@@ -26,12 +38,13 @@ jest.mock('react-redux', () => ({
   useDispatch: () => mockDispatch,
 }));
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const mockSetIsBackupAndSyncFeatureEnabled = jest.fn();
 jest.mock('../../../../../hooks/identity/useBackupAndSync', () => ({
@@ -47,7 +60,8 @@ const initialStore = () => ({
     isSignedIn: false,
     useExternalServices: true,
     isBackupAndSyncEnabled: true,
-    participateInMetaMetrics: false,
+    consentDecisionMade: true,
+    optedIn: false,
     isBackupAndSyncUpdateLoading: false,
     keyrings: [],
   },
@@ -87,11 +101,9 @@ describe('TurnOnBackupAndSyncModal', () => {
   it('sends a MetaMetrics event when the modal is dismissed', () => {
     const { getByLabelText } = render(
       <Redux.Provider store={mockStore(initialStore())}>
-        <MetaMetricsContext.Provider value={mockTrackEvent}>
-          <MetamaskIdentityProvider>
-            <TurnOnBackupAndSyncModal />
-          </MetamaskIdentityProvider>
-        </MetaMetricsContext.Provider>
+        <MetamaskIdentityProvider>
+          <TurnOnBackupAndSyncModal />
+        </MetamaskIdentityProvider>
       </Redux.Provider>,
     );
 
@@ -99,13 +111,14 @@ describe('TurnOnBackupAndSyncModal', () => {
     fireEvent.click(closeButton);
     expect(mockHideModal).toHaveBeenCalled();
     expect(mockTrackEvent).toHaveBeenCalledWith({
-      event: 'Profile Activity Updated',
-      category: 'Backup And Sync',
+      name: 'Profile Activity Updated',
       properties: {
+        category: 'Backup And Sync',
         // eslint-disable-next-line @typescript-eslint/naming-convention
         feature_name: 'Backup And Sync Carousel Modal',
         action: 'Modal Dismissed',
       },
+      sensitiveProperties: {},
     });
   });
 
@@ -151,7 +164,7 @@ describe('TurnOnBackupAndSyncModal', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(mockHistoryPush).toHaveBeenCalledWith(BACKUPANDSYNC_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(BACKUPANDSYNC_ROUTE);
       expect(mockSetIsBackupAndSyncFeatureEnabled).toHaveBeenCalledWith(
         BACKUPANDSYNC_FEATURES.main,
         true,
@@ -163,11 +176,9 @@ describe('TurnOnBackupAndSyncModal', () => {
   it('sends a MetaMetrics event when the button is clicked', async () => {
     const { getByTestId } = render(
       <Redux.Provider store={mockStore(initialStore())}>
-        <MetaMetricsContext.Provider value={mockTrackEvent}>
-          <MetamaskIdentityProvider>
-            <TurnOnBackupAndSyncModal />
-          </MetamaskIdentityProvider>
-        </MetaMetricsContext.Provider>
+        <MetamaskIdentityProvider>
+          <TurnOnBackupAndSyncModal />
+        </MetamaskIdentityProvider>
       </Redux.Provider>,
     );
 
@@ -175,13 +186,14 @@ describe('TurnOnBackupAndSyncModal', () => {
     fireEvent.click(button);
 
     expect(mockTrackEvent).toHaveBeenCalledWith({
-      event: 'Profile Activity Updated',
-      category: 'Backup And Sync',
+      name: 'Profile Activity Updated',
       properties: {
+        category: 'Backup And Sync',
         // eslint-disable-next-line @typescript-eslint/naming-convention
         feature_name: 'Backup And Sync Carousel Modal',
         action: 'Turned On',
       },
+      sensitiveProperties: {},
     });
   });
 });

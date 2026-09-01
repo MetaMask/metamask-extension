@@ -1,41 +1,44 @@
 import React, { useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import {
+  Box,
+  FontWeight,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useModalProps } from '../../../../../hooks/useModalProps';
 import {
   selectIsBackupAndSyncEnabled,
   selectIsBackupAndSyncUpdateLoading,
 } from '../../../../../selectors/identity/backup-and-sync';
 import { BACKUPANDSYNC_ROUTE } from '../../../../../helpers/constants/routes';
+import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import {
-  Box,
+  AlignItems,
+  FlexDirection,
+} from '../../../../../helpers/constants/design-system';
+import {
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalBody,
-  Text,
   ModalFooter,
 } from '../../../../component-library';
-import {
-  AlignItems,
-  BlockSize,
-  BorderRadius,
-  FlexDirection,
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
 import { useBackupAndSync } from '../../../../../hooks/identity/useBackupAndSync';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getUseExternalServices } from '../../../../../selectors';
 import { showModal } from '../../../../../store/actions';
 import { CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../confirm-turn-on-backup-and-sync-modal';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../../../hooks/useAnalytics';
+import { useDispatch } from '../../../../../store/hooks';
 
 export const TURN_ON_BACKUP_AND_SYNC_MODAL_NAME = 'TURN_ON_BACKUP_AND_SYNC';
 export const turnOnBackupAndSyncModalTestIds = {
@@ -43,14 +46,12 @@ export const turnOnBackupAndSyncModalTestIds = {
   button: 'turn-on-backup-and-sync-button',
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TurnOnBackupAndSyncModal() {
   const { hideModal } = useModalProps();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const isBasicFunctionalityEnabled = useSelector(getUseExternalServices);
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
@@ -61,35 +62,37 @@ export function TurnOnBackupAndSyncModal() {
   const { setIsBackupAndSyncFeatureEnabled, error } = useBackupAndSync();
 
   const handleDismissModal = () => {
-    trackEvent({
-      event: MetaMetricsEventName.ProfileActivityUpdated,
-      category: MetaMetricsEventCategory.BackupAndSync,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        feature_name: 'Backup And Sync Carousel Modal',
-        action: 'Modal Dismissed',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ProfileActivityUpdated)
+        .addCategory(MetaMetricsEventCategory.BackupAndSync)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          feature_name: 'Backup And Sync Carousel Modal',
+          action: 'Modal Dismissed',
+        })
+        .build(),
+    );
     hideModal();
   };
 
   const handleTurnOnBackupAndSync = async () => {
-    trackEvent({
-      event: MetaMetricsEventName.ProfileActivityUpdated,
-      category: MetaMetricsEventCategory.BackupAndSync,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        feature_name: 'Backup And Sync Carousel Modal',
-        action: 'Turned On',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ProfileActivityUpdated)
+        .addCategory(MetaMetricsEventCategory.BackupAndSync)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          feature_name: 'Backup And Sync Carousel Modal',
+          action: 'Turned On',
+        })
+        .build(),
+    );
 
     if (!isBasicFunctionalityEnabled) {
       dispatch(
         showModal({
           name: CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
           enableBackupAndSync: async () => {
-            history.push(BACKUPANDSYNC_ROUTE);
+            navigate(BACKUPANDSYNC_ROUTE);
             await setIsBackupAndSyncFeatureEnabled(
               BACKUPANDSYNC_FEATURES.main,
               true,
@@ -102,7 +105,7 @@ export function TurnOnBackupAndSyncModal() {
     if (!isBackupAndSyncEnabled) {
       await setIsBackupAndSyncFeatureEnabled(BACKUPANDSYNC_FEATURES.main, true);
     }
-    history.push(BACKUPANDSYNC_ROUTE);
+    navigate(BACKUPANDSYNC_ROUTE);
     hideModal();
   };
 
@@ -118,54 +121,62 @@ export function TurnOnBackupAndSyncModal() {
           {t('backupAndSyncEnable')}
         </ModalHeader>
         <ModalBody>
-          <Box
-            as="img"
+          <img
             src="./images/turn-on-backup-and-sync.png"
-            width={BlockSize.Full}
-            borderRadius={BorderRadius.MD}
-            marginBottom={4}
+            className="w-full rounded-md mb-4"
+            alt=""
           />
-          <Text
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
-            marginBottom={4}
-            as="div"
-          >
-            {t('backupAndSyncEnableDescription', [
-              <Text
-                as="a"
-                variant={TextVariant.bodySm}
-                href="https://support.metamask.io/privacy-and-security/profile-privacy"
-                target="_blank"
-                rel="noopener noreferrer"
-                key="privacy-link"
-                color={TextColor.infoDefault}
-              >
-                {t('backupAndSyncPrivacyLink')}
-              </Text>,
-            ])}
-          </Text>
-          <Text
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
-            marginBottom={4}
-            as="div"
-          >
-            {t('backupAndSyncEnableDescriptionUpdatePreferences', [
-              <Text
-                as="span"
-                key="backup-and-sync-enable-preferences"
-                variant={TextVariant.bodySmBold}
-              >
-                {t('backupAndSyncEnableDescriptionUpdatePreferencesPath')}
-              </Text>,
-            ])}
-          </Text>
+          <Box marginBottom={4}>
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              asChild
+            >
+              <div>
+                {t('backupAndSyncEnableDescription', [
+                  <Text
+                    asChild
+                    variant={TextVariant.BodySm}
+                    key="privacy-link"
+                    color={TextColor.InfoDefault}
+                  >
+                    <a
+                      href={ZENDESK_URLS.PROFILE_PRIVACY}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {t('backupAndSyncPrivacyLink')}
+                    </a>
+                  </Text>,
+                ])}
+              </div>
+            </Text>
+          </Box>
+          <Box marginBottom={4}>
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+              asChild
+            >
+              <div>
+                {t('backupAndSyncEnableDescriptionUpdatePreferences', [
+                  <Text
+                    asChild
+                    key="backup-and-sync-enable-preferences"
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Bold}
+                  >
+                    <span>
+                      {t('backupAndSyncEnableDescriptionUpdatePreferencesPath')}
+                    </span>
+                  </Text>,
+                ])}
+              </div>
+            </Text>
+          </Box>
         </ModalBody>
         <ModalFooter
           paddingTop={4}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={() => handleTurnOnBackupAndSync()}
           containerProps={{
             flexDirection: FlexDirection.Column,
@@ -179,8 +190,8 @@ export function TurnOnBackupAndSyncModal() {
           }}
         />
         {error && (
-          <Box paddingLeft={4} paddingRight={4}>
-            <Text as="p" color={TextColor.errorDefault} paddingTop={4}>
+          <Box paddingLeft={4} paddingRight={4} paddingTop={4}>
+            <Text color={TextColor.ErrorDefault}>
               {t('notificationsSettingsBoxError')}
             </Text>
           </Box>

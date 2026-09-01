@@ -50,18 +50,50 @@ const GAS_FEE_TOKEN_2_MOCK: GasFeeToken = {
 function getState({
   gasFeeTokens,
   noSelectedGasFeeToken,
-}: { gasFeeTokens?: GasFeeToken[]; noSelectedGasFeeToken?: boolean } = {}) {
+  excludeNativeTokenForFee,
+}: {
+  gasFeeTokens?: GasFeeToken[];
+  noSelectedGasFeeToken?: boolean;
+  excludeNativeTokenForFee?: boolean;
+} = {}) {
   return getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
       gasFeeTokens: gasFeeTokens ?? [GAS_FEE_TOKEN_MOCK, GAS_FEE_TOKEN_2_MOCK],
       selectedGasFeeToken: noSelectedGasFeeToken
         ? undefined
         : GAS_FEE_TOKEN_MOCK.tokenAddress,
+      excludeNativeTokenForFee,
     }),
     {
       metamask: {
         preferences: {
           showFiatInTestnets: true,
+        },
+        internalAccounts: {
+          accounts: {
+            'mock-account-id': {
+              address: '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b',
+              id: 'mock-account-id',
+              metadata: {
+                importTime: 0,
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [],
+              type: 'eip155:eoa',
+            },
+          },
+          selectedAccount: 'mock-account-id',
+        },
+        accountsByChainId: {
+          '0x5': {
+            '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b': {
+              balance: '0xde0b6b3a7640000',
+            },
+          },
         },
       },
     },
@@ -94,6 +126,7 @@ describe('GasFeeTokenModal', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
+      pending: false,
     });
   });
 
@@ -113,7 +146,15 @@ describe('GasFeeTokenModal', () => {
       store,
     );
 
-    expect(result.getByText('0.000066 ETH')).toBeInTheDocument();
+    expect(result.getByText('0.000125 ETH')).toBeInTheDocument();
+  });
+
+  it('never renders native list item if `excludeNativeTokenForFee` is set to `true`', () => {
+    const result = renderWithConfirmContextProvider(
+      <GasFeeTokenModal />,
+      configureStore(getState({ excludeNativeTokenForFee: true })),
+    );
+    expect(result.queryByText('0.000125 ETH')).not.toBeInTheDocument();
   });
 
   it('selects token matching selectedGasFeeToken', () => {
@@ -186,6 +227,7 @@ describe('GasFeeTokenModal', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: false,
       isSupported: true,
+      pending: false,
     });
 
     const result = renderWithConfirmContextProvider(

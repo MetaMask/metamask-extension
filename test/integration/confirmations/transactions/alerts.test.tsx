@@ -5,7 +5,6 @@ import nock from 'nock';
 import { SimulationTokenStandard } from '@metamask/transaction-controller';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
-import { createTestProviderTools } from '../../../stub/provider';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
 import {
@@ -16,7 +15,6 @@ import {
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -26,6 +24,10 @@ const backgroundConnectionMocked = {
 };
 export const pendingTransactionId = '48a75190-45ca-11ef-9001-f3886ec2397c';
 export const pendingTransactionTime = new Date().getTime();
+
+// Increased timeout: React 18's act() waits for ALL pending async work
+// (including Rive WASM loading) which can exceed the default 15s limit.
+jest.setTimeout(30_000);
 
 const getMetaMaskStateWithUnapprovedApproveTransaction = (
   accountAddress: string,
@@ -236,7 +238,7 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
@@ -262,14 +264,12 @@ const addTokenBalanceChangesToTransaction = (
 
 describe('Contract Interaction Confirmation Alerts', () => {
   beforeAll(() => {
-    const { provider } = createTestProviderTools({
-      networkId: 'sepolia',
-      chainId: '0xaa36a7',
-    });
+    global.ethereumProvider = {
+      request: jest.fn(),
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    global.ethereumProvider = provider as any;
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
   });
 
   beforeEach(() => {
@@ -314,14 +314,15 @@ describe('Contract Interaction Confirmation Alerts', () => {
       },
     };
 
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: {
-          ...mockedMetaMaskState,
-          transactions: [transactions],
-        },
-        backgroundConnection: backgroundConnectionMocked,
-      });
+    // Avoid wrapping in act() here: React 18's act() waits for ALL pending
+    // async work (including Rive WASM loading) which can exceed the timeout.
+    // findByTestId calls below handle async waiting instead.
+    await integrationTestRender({
+      preloadedState: {
+        ...mockedMetaMaskState,
+        transactions: [transactions],
+      },
+      backgroundConnection: backgroundConnectionMocked,
     });
 
     fireEvent.click(await screen.findByTestId('inline-alert'));
@@ -335,7 +336,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
     expect(
       await screen.findByTestId('alert-modal__selected-alert'),
     ).toHaveTextContent(
-      'We’re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there’s a risk the transaction will still fail.',
+      'We\u2019re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there\u2019s a risk the transaction will still fail.',
     );
 
     expect(await screen.findByTestId('alert-modal-button')).toBeInTheDocument();
@@ -490,15 +491,23 @@ describe('Contract Interaction Confirmation Alerts', () => {
       });
     });
 
-    expect(await screen.findByTestId('inline-alert')).toBeInTheDocument();
+    expect(await screen.findAllByTestId('inline-alert')).toHaveLength(2);
 
-    fireEvent.click(await screen.findByTestId('inline-alert'));
+    fireEvent.click((await screen.findAllByTestId('inline-alert'))[0]);
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 
     expect(
       await screen.findByTestId('alert-modal__selected-alert'),
     ).toBeInTheDocument();
+
+    expect(
+      await screen.findByTestId('alert-modal__selected-alert'),
+    ).toHaveTextContent(
+      'We can’t move forward with this transaction until you manually update the fee.',
+    );
+
+    fireEvent.click(await screen.findByTestId('alert-modal-next-button'));
 
     expect(
       await screen.findByTestId('alert-modal__selected-alert'),

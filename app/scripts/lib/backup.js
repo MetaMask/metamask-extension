@@ -1,4 +1,6 @@
-import { prependZero } from '../../../shared/modules/string-utils';
+import { prependZero } from '../../../shared/lib/string-utils';
+import { createEventBuilder, trackEvent } from '../controllers/analytics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 
 export default class Backup {
   constructor(opts = {}) {
@@ -7,25 +9,18 @@ export default class Backup {
       addressBookController,
       accountsController,
       networkController,
-      trackMetaMetricsEvent,
     } = opts;
 
     this.preferencesController = preferencesController;
     this.accountsController = accountsController;
     this.addressBookController = addressBookController;
     this.networkController = networkController;
-    this._trackMetaMetricsEvent = trackMetaMetricsEvent;
   }
 
   async restoreUserData(jsonString) {
-    const existingPreferences = this.preferencesController.state;
     const { preferences, addressBook, network, internalAccounts } =
       JSON.parse(jsonString);
     if (preferences) {
-      preferences.identities = existingPreferences.identities;
-      preferences.lostIdentities = existingPreferences.lostIdentities;
-      preferences.selectedAddress = existingPreferences.selectedAddress;
-
       this.preferencesController.update(preferences);
     }
 
@@ -42,10 +37,11 @@ export default class Backup {
     }
 
     if (preferences || addressBook || network || internalAccounts) {
-      this._trackMetaMetricsEvent({
-        event: 'User Data Imported',
-        category: 'Backup',
-      });
+      trackEvent(
+        createEventBuilder('User Data Imported')
+          .addCategory(MetaMetricsEventCategory.Backup)
+          .build(),
+      );
     }
   }
 
@@ -61,13 +57,6 @@ export default class Backup {
           this.networkController.state.networkConfigurationsByChainId,
       },
     };
-
-    /**
-     * We can remove these properties since we will won't be restoring identities from backup
-     */
-    delete userData.preferences.identities;
-    delete userData.preferences.lostIdentities;
-    delete userData.preferences.selectedAddress;
 
     const result = JSON.stringify(userData);
 

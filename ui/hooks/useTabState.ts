@@ -1,0 +1,23 @@
+import { useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import type { AccountOverviewTab } from '../../shared/constants/app-state';
+
+export function useTabState<TTab extends string = AccountOverviewTab>() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tab = searchParams.get('tab') as TTab;
+
+  const setTab = useCallback(
+    (value: TTab) =>
+      setSearchParams(
+        (prev) => {
+          prev.set('tab', value);
+          return prev;
+        },
+        // Clear stale location state when changing tabs via search params.
+        { state: null },
+      ),
+    [setSearchParams],
+  );
+
+  return [tab, setTab] as const;
+}

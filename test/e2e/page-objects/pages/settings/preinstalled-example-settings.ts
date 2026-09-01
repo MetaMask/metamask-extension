@@ -1,11 +1,30 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Settings sidebar entry for the Preinstalled Example Snap settings UI.
+ *
+ * Screen: `#/settings/snap/...` (Snap settings renderer), reached from
+ * `SettingsPage.goToPreInstalledExample`.
+ * Owns: Snap settings panel load, toggle on/off, dropdown and radio option
+ * selection/assertions rendered by the example Snap.
+ * Boundaries: Snap-rendered settings only. Experimental account-Snap toggles
+ * belong to `ExperimentalSettings`.
+ * Related: `SettingsPage`, `ExperimentalSettings`.
+ *
+ * @see ui/components/app/snaps/snap-settings-page/snap-settings-renderer.tsx
+ */
 class PreinstalledExampleSettings {
   private readonly driver: Driver;
 
+  private readonly settingsDropdown = '[data-testid="snaps-dropdown"]';
+
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   private readonly settingsPageTitle = {
-    text: 'General',
-    tag: 'h4',
+    text: 'Preferences and display',
+    tag: 'p',
   };
 
   private readonly snapRenderPanel = '.snap-ui-renderer__panel';
@@ -14,16 +33,20 @@ class PreinstalledExampleSettings {
 
   private readonly toggleButtonOn = '.toggle-button--on';
 
-  private readonly settingsDropdown = '[data-testid="snaps-dropdown"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async checkIsToggleOn(): Promise<void> {
+    console.log('Checking if the toggle is on');
+    await this.driver.waitForSelector(`${this.toggleButton}--on`);
   }
 
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.snapRenderPanel,
+        this.settingsPage,
         this.settingsPageTitle,
       ]);
     } catch (e) {
@@ -36,15 +59,36 @@ class PreinstalledExampleSettings {
     console.log('Pre-installed example Settings page is loaded');
   }
 
+  async checkSelectedDropdownOption(option: string): Promise<void> {
+    console.log(`Checking if the dropdown option "${option}" is selected`);
+    return this.driver.waitUntil(
+      async () => {
+        const dropdownOption = await this.driver.findElement(
+          `option[value="${option}"]`,
+        );
+        return (await dropdownOption.getAttribute('selected')) === 'true';
+      },
+      { timeout: this.driver.timeout, interval: 500 },
+    );
+  }
+
+  async checkSelectedRadioOption(option: string): Promise<void> {
+    console.log(`Checking if the radio option "${option}" is selected`);
+    return this.driver.waitUntil(
+      async () => {
+        const radioOption = await this.driver.findElement(
+          `input[type="radio"][value="${option}"]`,
+        );
+        return (await radioOption.getAttribute('checked')) === 'true';
+      },
+      { timeout: this.driver.timeout, interval: 500 },
+    );
+  }
+
   async clickToggleButtonOn(): Promise<void> {
     console.log('Toggling Setting on');
     await this.driver.clickElement(this.toggleButton);
     await this.driver.waitForSelector(this.toggleButtonOn);
-  }
-
-  async selectRadioOption(option: string): Promise<void> {
-    console.log(`Selecting option: ${option} radio button`);
-    await this.driver.clickElement({ text: option, tag: `label` });
   }
 
   async selectDropdownOption(option: string): Promise<void> {
@@ -53,26 +97,9 @@ class PreinstalledExampleSettings {
     await this.driver.clickElement({ text: option, tag: `option` });
   }
 
-  async checkIsToggleOn(): Promise<void> {
-    console.log('Checking if the toggle is on');
-    await this.driver.waitForSelector(`${this.toggleButton}--on`);
-  }
-
-  async checkSelectedRadioOption(option: string): Promise<boolean> {
-    console.log(`Checking if the radio option "${option}" is selected`);
-    const radioOption = await this.driver.findElement(
-      `input[type="radio"][id="${option}"]`,
-    );
-    const isChecked = (await radioOption.getAttribute('checked')) === 'true';
-    return isChecked;
-  }
-
-  async checkSelectedDropdownOption(option: string): Promise<void> {
-    console.log(`Checking if the dropdown option "${option}" is selected`);
-    await this.driver.waitForSelector({
-      css: this.settingsDropdown,
-      text: option,
-    });
+  async selectRadioOption(option: string): Promise<void> {
+    console.log(`Selecting option: ${option} radio button`);
+    await this.driver.clickElement({ text: option, tag: `label` });
   }
 }
 

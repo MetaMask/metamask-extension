@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { useSearchParams } from 'react-router-dom-v5-compat';
+import { useSearchParams } from 'react-router-dom';
 
 import {
   getCrossChainMetaMaskCachedBalances,
@@ -14,12 +14,14 @@ import {
 import {
   addHexes,
   multiplyHexes,
-} from '../../../../../../../shared/modules/conversion.utils';
-import { Numeric } from '../../../../../../../shared/modules/Numeric';
+} from '../../../../../../../shared/lib/conversion.utils';
+import { Numeric } from '../../../../../../../shared/lib/Numeric';
 import { updateEditableParams } from '../../../../../../store/actions';
 import { useConfirmContext } from '../../../../context/confirm';
 import { HEX_ZERO } from '../shared/constants';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
+import { useIsGaslessSupported } from '../../../../hooks/gas/useIsGaslessSupported';
+import { useDispatch } from '../../../../../../store/hooks';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
 
 /**
@@ -46,6 +48,7 @@ export const useMaxValueRefresher = () => {
     id: transactionId,
     txParams: { from },
   } = transactionMeta;
+  const { isSupported: isGaslessSupported } = useIsGaslessSupported();
   const isMaxAmountMode = useSelector((state) =>
     selectMaxValueModeForTransaction(state, transactionMeta?.id),
   );
@@ -80,18 +83,25 @@ export const useMaxValueRefresher = () => {
   useEffect(() => {
     if (
       !isMaxValueMode ||
-      transactionMeta.type !== TransactionType.simpleSend
+      transactionMeta.type !== TransactionType.simpleSend ||
+      transactionMeta.simulationFails
     ) {
       return;
     }
 
-    let gasFeeInHex = multiplyHexes(
-      gas,
-      supportsEIP1559 ? maxFeePerGas : gasPrice,
-    );
+    let gasFeeInHex = HEX_ZERO;
 
-    if (layer1GasFee) {
-      gasFeeInHex = addHexes(gasFeeInHex, layer1GasFee) as Hex;
+    // Gas Sponsorship means the user has no native gas to pay at all.
+    // This will allow to send the full max value of the native balance.
+    if (!transactionMeta.isGasFeeSponsored || !isGaslessSupported) {
+      gasFeeInHex = multiplyHexes(
+        gas,
+        supportsEIP1559 ? maxFeePerGas : gasPrice,
+      );
+
+      if (layer1GasFee) {
+        gasFeeInHex = addHexes(gasFeeInHex, layer1GasFee) as Hex;
+      }
     }
 
     const remainingBalance = new Numeric(balance || HEX_ZERO, 16).minus(
@@ -118,5 +128,6 @@ export const useMaxValueRefresher = () => {
     layer1GasFee,
     dispatch,
     transactionMeta,
+    isGaslessSupported,
   ]);
 };

@@ -1,11 +1,30 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import UpdateModal from './update-modal';
 import '@testing-library/jest-dom';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockStore = configureStore([thunk]);
 
@@ -96,5 +115,42 @@ describe('UpdateModal', () => {
   it('renders the modal', () => {
     setup({});
     expect(screen.getByTestId('update-modal')).toBeInTheDocument();
+  });
+
+  it('tracks ForceUpgradeUpdateNeededPromptViewed event when modal is displayed', () => {
+    setup({});
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: MetaMetricsEventName.ForceUpgradeUpdateNeededPromptViewed,
+      properties: {
+        category: MetaMetricsEventCategory.App,
+      },
+      sensitiveProperties: {},
+    });
+  });
+
+  it('tracks ForceUpgradeSkipped event when close button is clicked', () => {
+    setup({});
+    const closeButton = screen.getByTestId('update-modal-close-button');
+    fireEvent.click(closeButton);
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: MetaMetricsEventName.ForceUpgradeSkipped,
+      properties: {
+        category: MetaMetricsEventCategory.App,
+      },
+      sensitiveProperties: {},
+    });
+  });
+
+  it('tracks ForceUpgradeClickedUpdateToLatestVersion event when update button is clicked', () => {
+    setup({});
+    const updateButton = screen.getByTestId('update-modal-submit-button');
+    fireEvent.click(updateButton);
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: MetaMetricsEventName.ForceUpgradeClickedUpdateToLatestVersion,
+      properties: {
+        category: MetaMetricsEventCategory.App,
+      },
+      sensitiveProperties: {},
+    });
   });
 });

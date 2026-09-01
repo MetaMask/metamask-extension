@@ -124,8 +124,10 @@
     align-items: center;
 
     &-icon {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
       margin-right: 8px;
-      padding-top: 8px;
       color: var(--color-success-default);
     }
 
@@ -138,23 +140,6 @@
 
   &__error-message {
     left: 8px;
-  }
-
-  &__new-nft-notification {
-    margin-bottom: 24px;
-    margin-right: 8px;
-
-    &-icon {
-      margin-right: 10px;
-      padding-top: 6px;
-      color: var(--color-success-default);
-    }
-
-    &-close {
-      color: var(--color-icon-default);
-      background: none;
-      margin-left: 44px;
-    }
   }
 
   &__new-tokens-imported-notification {

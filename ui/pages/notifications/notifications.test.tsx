@@ -1,9 +1,9 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
+import { deleteExpiredNotifications } from '../../store/actions';
 import Notifications from './notifications';
 
 const mockDispatch = jest.fn();
@@ -27,6 +27,10 @@ jest.mock(
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),
   markMetamaskNotificationsAsRead: jest.fn(),
+  deleteExpiredNotifications: jest.fn(() => ({
+    type: 'MOCK_DELETE_EXPIRED_NOTIFICATIONS',
+  })),
+  getNotificationPreferences: jest.fn(() => () => Promise.resolve(null)),
 }));
 
 const initialState = {
@@ -34,7 +38,7 @@ const initialState = {
     ...mockState.metamask,
     theme: 'light',
     isMetamaskNotificationsEnabled: true,
-    isFeatureAnnouncementsEnabled: true,
+    isFeatureAnnouncementsEnabled: false,
     metamaskNotifications: [],
     internalAccounts: {
       accounts: [
@@ -59,21 +63,23 @@ const mockStore = configureStore(middlewares);
 const store = mockStore(initialState);
 
 describe('Notifications Component', () => {
+  beforeEach(() => {
+    mockDispatch.mockClear();
+    (deleteExpiredNotifications as jest.Mock).mockClear();
+  });
+
   it('renders correctly', () => {
     const { getByTestId } = renderWithProvider(<Notifications />, store);
 
     expect(getByTestId('notifications-page')).toBeInTheDocument();
   });
 
-  it('navigates to default route on back button click', () => {
-    const { getByTestId } = renderWithProvider(<Notifications />, store);
+  it('dispatches deleteExpiredNotifications on mount', () => {
+    renderWithProvider(<Notifications />, store);
 
-    fireEvent.click(getByTestId('back-button'));
-  });
-
-  it('navigates to settings on settings button click', () => {
-    const { getByTestId } = renderWithProvider(<Notifications />, store);
-
-    fireEvent.click(getByTestId('notifications-settings-button'));
+    expect(deleteExpiredNotifications).toHaveBeenCalledTimes(1);
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'MOCK_DELETE_EXPIRED_NOTIFICATIONS',
+    });
   });
 });

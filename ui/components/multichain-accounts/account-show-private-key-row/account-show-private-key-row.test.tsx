@@ -1,9 +1,9 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
 import { AccountShowPrivateKeyRow } from './account-show-private-key-row';
 
@@ -12,7 +12,6 @@ const mockStore = configureMockStore(middleware);
 
 jest.mock('../../../store/actions', () => ({
   exportAccount: () => ({ type: 'MOCK_EXPORT_ACCOUNT' }),
-  hideWarning: () => ({ type: 'MOCK_HIDE_WARNING' }),
 }));
 
 jest.mock('../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal', () => ({
@@ -126,14 +125,12 @@ describe('AccountShowPrivateKeyRow', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />
-        </MemoryRouter>,
+        <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />,
         store,
       );
 
-      expect(screen.getByText('Private key')).toBeInTheDocument();
-      expect(screen.getByLabelText('Next')).toBeInTheDocument();
+      expect(screen.getByText(messages.privateKey.message)).toBeInTheDocument();
+      expect(screen.getByLabelText(messages.next.message)).toBeInTheDocument();
     });
 
     it('does not render for non-exportable account (hardware)', () => {
@@ -148,9 +145,7 @@ describe('AccountShowPrivateKeyRow', () => {
       };
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowPrivateKeyRow account={hardwareAccount} />
-        </MemoryRouter>,
+        <AccountShowPrivateKeyRow account={hardwareAccount} />,
         store,
       );
 
@@ -169,9 +164,7 @@ describe('AccountShowPrivateKeyRow', () => {
       };
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowPrivateKeyRow account={snapAccount} />
-        </MemoryRouter>,
+        <AccountShowPrivateKeyRow account={snapAccount} />,
         store,
       );
 
@@ -185,18 +178,18 @@ describe('AccountShowPrivateKeyRow', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />
-        </MemoryRouter>,
+        <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />,
         store,
       );
 
-      const row = screen.getByText('Private key').closest('div');
+      const row = screen.getByText(messages.privateKey.message).closest('div');
       if (row) {
         fireEvent.click(row);
       }
 
-      expect(screen.getByText('Show private key')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.showPrivateKey.message),
+      ).toBeInTheDocument();
       expect(
         screen.getByTestId('account-details-authenticate'),
       ).toBeInTheDocument();
@@ -207,23 +200,23 @@ describe('AccountShowPrivateKeyRow', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />
-        </MemoryRouter>,
+        <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />,
         store,
       );
 
       // Open modal
-      const row = screen.getByText('Private key').closest('div');
+      const row = screen.getByText(messages.privateKey.message).closest('div');
       if (row) {
         fireEvent.click(row);
       }
 
       // Close modal
-      const closeButton = screen.getByLabelText('Close');
+      const closeButton = screen.getByLabelText(messages.close.message);
       fireEvent.click(closeButton);
 
-      expect(screen.queryByText('Show private key')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.showPrivateKey.message),
+      ).not.toBeInTheDocument();
     });
 
     it('closes modal when cancel button is clicked', () => {
@@ -231,14 +224,12 @@ describe('AccountShowPrivateKeyRow', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />
-        </MemoryRouter>,
+        <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />,
         store,
       );
 
       // Open modal
-      const row = screen.getByText('Private key').closest('div');
+      const row = screen.getByText(messages.privateKey.message).closest('div');
       if (row) {
         fireEvent.click(row);
       }
@@ -257,14 +248,12 @@ describe('AccountShowPrivateKeyRow', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />
-        </MemoryRouter>,
+        <AccountShowPrivateKeyRow account={MOCK_ACCOUNT_EOA} />,
         store,
       );
 
       // Open modal
-      const row = screen.getByText('Private key').closest('div');
+      const row = screen.getByText(messages.privateKey.message).closest('div');
       if (row) {
         fireEvent.click(row);
       }
@@ -290,13 +279,11 @@ describe('AccountShowPrivateKeyRow', () => {
       };
 
       renderWithProvider(
-        <MemoryRouter>
-          <AccountShowPrivateKeyRow account={accountWithoutKeyring} />
-        </MemoryRouter>,
+        <AccountShowPrivateKeyRow account={accountWithoutKeyring} />,
         store,
       );
 
-      expect(screen.getByText('Private key')).toBeInTheDocument();
+      expect(screen.getByText(messages.privateKey.message)).toBeInTheDocument();
     });
   });
 });

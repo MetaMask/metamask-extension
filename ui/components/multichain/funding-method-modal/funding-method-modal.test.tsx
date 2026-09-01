@@ -1,29 +1,40 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { FundingMethodModal } from './funding-method-modal';
 
-jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
+const mockGoToBuy = jest.fn().mockResolvedValue(true);
+jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: jest.fn(),
+  default: () => ({ goToBuy: mockGoToBuy }),
 }));
+
+const mockTrackEvent = jest.fn();
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockStore = configureMockStore([thunk]);
 
 describe('FundingMethodModal', () => {
   let store = configureMockStore([thunk])(mockState);
-  let openBuyCryptoInPdapp: jest.Mock<() => void>;
 
   beforeEach(() => {
     store = mockStore(mockState);
-    openBuyCryptoInPdapp = jest.fn();
-    (useRamps as jest.Mock).mockReturnValue({ openBuyCryptoInPdapp });
   });
 
   afterEach(() => {
@@ -37,6 +48,7 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
       />,
       store,
     );
@@ -52,6 +64,7 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
       />,
       store,
     );
@@ -59,19 +72,40 @@ describe('FundingMethodModal', () => {
     expect(queryByTestId('funding-method-modal')).toBeNull();
   });
 
-  it('should call openBuyCryptoInPdapp when the Token Marketplace item is clicked', () => {
+  it('routes the Token Marketplace item through goToBuy with the current chain', () => {
     const { getByText } = renderWithProvider(
       <FundingMethodModal
         isOpen={true}
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
       />,
       store,
     );
 
-    fireEvent.click(getByText('Token marketplace'));
-    expect(openBuyCryptoInPdapp).toHaveBeenCalled();
+    fireEvent.click(getByText(messages.tokenMarketplace.message));
+    // Preserves the chain context it passed to the Portfolio deeplink today;
+    // goToBuy handles the flag-off Portfolio fallback internally.
+    expect(mockGoToBuy).toHaveBeenCalledWith({ chainId: '0x5' });
+  });
+
+  it('does not track the buy click when the ramps gate blocks it', async () => {
+    mockGoToBuy.mockResolvedValueOnce(false);
+    const { getByText } = renderWithProvider(
+      <FundingMethodModal
+        isOpen={true}
+        onClose={jest.fn()}
+        title="Test Modal"
+        onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
+      />,
+      store,
+    );
+
+    fireEvent.click(getByText(messages.tokenMarketplace.message));
+    await waitFor(() => expect(mockGoToBuy).toHaveBeenCalled());
+    expect(mockTrackEvent).not.toHaveBeenCalled();
   });
 
   it('should call onClickReceive when the Receive Crypto item is clicked', () => {
@@ -82,11 +116,12 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={onClickReceive}
+        data-testid="funding-method-modal"
       />,
       store,
     );
 
-    fireEvent.click(getByText('Receive crypto'));
+    fireEvent.click(getByText(messages.receiveCrypto.message));
     expect(onClickReceive).toHaveBeenCalled();
   });
 
@@ -99,11 +134,12 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
       />,
       store,
     );
 
-    fireEvent.click(getByText('Transfer crypto'));
+    fireEvent.click(getByText(messages.transferCrypto.message));
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: expect.stringContaining('transfer'),
     });

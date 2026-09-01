@@ -26,12 +26,6 @@
   "accountSelectionRequired": {
     "message": "نیاز به انتخاب یک حساب دارید!"
   },
-  "activityLog": {
-    "message": "دفترچه فعالیت"
-  },
-  "addAcquiredTokens": {
-    "message": "رمزیاب های را که با استفاده از MetaMask بدست آورده اید، اضافه کنید"
-  },
   "addAlias": {
     "message": "نام مستعار اضافه کنید"
   },
@@ -81,17 +75,11 @@
   "autoLockTimeLimit": {
     "message": "زمان سنج خروج-خودکار (دقایق)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "زمان های بیکار را به شکل دقیقه قبل از خروج MetaMask تنظیم کنید"
-  },
   "average": {
     "message": "اوسط"
   },
   "back": {
     "message": "بازگشت"
-  },
-  "backupApprovalInfo": {
-    "message": "در صورت مفقود شدن دستگاه، فراموش شدن رمز عبور، لزوم نصب-دوباره MetaMask، یا اقدام دسترسی به کیف تان از دستگاه دیگر، کود مخفی جهت بازیابی کیف تان، لازم خواهد بود."
   },
   "backupApprovalNotice": {
     "message": "کود مخفی بازیابی تان را بخاطر امنیت کیف و پول های تان، پشتیبانی بگیرید."
@@ -184,23 +172,11 @@
   "createPassword": {
     "message": "ایجاد رمز عبور"
   },
-  "currencyConversion": {
-    "message": "تبادل واحد پول"
-  },
-  "currentLanguage": {
-    "message": "زبان فعلی"
-  },
   "custom": {
     "message": "پیشرفته"
   },
-  "customToken": {
-    "message": "رمزیاب دلخواه"
-  },
   "decimal": {
     "message": "اعشاریه های دقت"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "اعشاریه ها باید حد اقل 0، و بیشتر از 36 نباشند."
   },
   "delete": {
     "message": "حذف"
@@ -210,9 +186,6 @@
   },
   "done": {
     "message": "تمام"
-  },
-  "downloadGoogleChrome": {
-    "message": "دانلود گوگل کروم"
   },
   "downloadStateLogs": {
     "message": "دانلود دفترچه وضعیت"
@@ -229,14 +202,8 @@
   "enterPasswordContinue": {
     "message": "برای ادامه رمز عبور را وارد کنید"
   },
-  "ethereumPublicAddress": {
-    "message": "آدرس عمومی ایتریم"
-  },
   "etherscanView": {
     "message": "حساب را در Etherscan ببینید"
-  },
-  "expandView": {
-    "message": "توسعه ساحه دید"
   },
   "failed": {
     "message": "ناموفق شد"
@@ -278,9 +245,6 @@
   "hardwareWallets": {
     "message": "به کیف سخت افزار وصل کنید"
   },
-  "hardwareWalletsMsg": {
-    "message": "یک کیف سخت افزار را که میخواهید با MetaMast استفاده نمایید، انتخاب کنید"
-  },
   "here": {
     "message": "اینجا",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -307,9 +271,6 @@
   "imported": {
     "message": "وارد شده",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "معامله آغازین تان توسط شبکه تأیید شد. برای رفتن به عقب بالای OK کلیک کنید."
   },
   "insufficientBalance": {
     "message": "بیلانس ناکافی."
@@ -351,15 +312,6 @@
   "likeToImportTokens": {
     "message": "آیا میخواهید این رمزیاب ها را اضافه نمایید؟"
   },
-  "lineaGoerli": {
-    "message": "شبکه آزمایشی Linea Goerli"
-  },
-  "links": {
-    "message": "لینک ها"
-  },
-  "loadMore": {
-    "message": "بارگیری بیشتر"
-  },
   "loading": {
     "message": "در حال بارکردن…"
   },
@@ -384,15 +336,9 @@
   "metamaskVersion": {
     "message": "نسخه MetaMask"
   },
-  "mustSelectOne": {
-    "message": "باید حداقل 1 رمزیاب را انتخاب کنید."
-  },
   "needImportFile": {
     "message": "شما باید یک فایل برای وارد کردن را انتخاب کنید.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "نمیتوان مبالغ منفی ETH را ارسال کرد."
   },
   "networkName": {
     "message": "نام شبکه"
@@ -400,18 +346,9 @@
   "networks": {
     "message": "شبکه ها"
   },
-  "nevermind": {
-    "message": "توجه نکنید"
-  },
-  "newAccount": {
-    "message": "حساب جدید"
-  },
   "newAccountNumberName": {
     "message": "حساب $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "تماس جدید"
   },
   "newContract": {
     "message": "قرارداد جدید"
@@ -422,17 +359,11 @@
   "next": {
     "message": "بعدی"
   },
-  "noConversionRateAvailable": {
-    "message": "هیچ نرخ تغییر موجود نمیباشد"
-  },
   "noWebcamFound": {
     "message": "وب کم کمپیوتر تان پیدا نشد. لطفًا دوباره کوشش کنید."
   },
   "noWebcamFoundTitle": {
     "message": "وب کام پیدا نشد"
-  },
-  "notEnoughGas": {
-    "message": "گاز ناکافی است"
   },
   "ofTextNofM": {
     "message": "به"
@@ -499,12 +430,6 @@
   "rejectAll": {
     "message": "رد همه"
   },
-  "rejectTxsDescription": {
-    "message": "شما در حال رد دسته از معاملات 1$1 هستید."
-  },
-  "rejectTxsN": {
-    "message": "رد معاملات 1$1"
-  },
   "rejected": {
     "message": "رد شد"
   },
@@ -514,9 +439,6 @@
   "removeAccount": {
     "message": "حذف حساب"
   },
-  "removeAccountDescription": {
-    "message": "این حساب از کیف تان حذف خواهد شد. لطفًا مطمئن شوید که عبارت اصلی بازیاب و کلید شخصی را برای این حساب وارد شده قبل از ادامه با خود دارید. شما میتوانید حساب ها را دوباره از پایین حساب وارد یا ایجاد نمایید."
-  },
   "required": {
     "message": "لازم است"
   },
@@ -525,9 +447,6 @@
   },
   "restore": {
     "message": "بازیابی"
-  },
-  "revealSeedWords": {
-    "message": "کلمات بازیاب را آشکار کنید"
   },
   "revealSeedWordsWarning": {
     "message": "این کلمات را میتوان جهت سرقت همه حساب های تان استفاده نمود.",
@@ -575,9 +494,6 @@
   "showFiatConversionInTestnets": {
     "message": "نمایش تغییرات Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "این را جهت تبادل فیات بر تیست نیت ها انتخاب نمایید"
-  },
   "showHexData": {
     "message": "نمایش اطلاعات Hex"
   },
@@ -586,9 +502,6 @@
   },
   "sign": {
     "message": "علامت"
-  },
-  "signatureRequest": {
-    "message": "درخواست امضاء"
   },
   "signed": {
     "message": "وارد شد"
@@ -602,17 +515,11 @@
   "speedUpCancellation": {
     "message": "این لغو را تسریع بخشید"
   },
-  "speedUpTransaction": {
-    "message": "تسریع این معامله"
-  },
   "stateLogError": {
     "message": "خطا در بازیابی دفترچه وضعیت"
   },
   "stateLogs": {
     "message": "دفترچه وضعیت"
-  },
-  "stateLogsDescription": {
-    "message": "دفترچه وضعیت شامل آدرس های حساب عمومی و معاملات فرستاده شده تان میباشد."
   },
   "submitted": {
     "message": "ارائه شد"
@@ -650,38 +557,11 @@
   "transaction": {
     "message": "معامله"
   },
-  "transactionCancelAttempted": {
-    "message": "برای لغو معامله با فیس گاز 1$1 در 2$2 تلاش شده"
-  },
-  "transactionCancelSuccess": {
-    "message": "معامله به 1$2 موفقانه لغو شد"
-  },
-  "transactionConfirmed": {
-    "message": "معامله به 1$2 تأیید شد."
-  },
-  "transactionCreated": {
-    "message": "معامله با ارزش 1$1 در 2$2 ایجاد شد."
-  },
-  "transactionDropped": {
-    "message": "معامله به 1$2 نزول کرد."
-  },
   "transactionError": {
     "message": "خطا معامله. استثناء در کود قرارداد گذاشته شده است."
   },
   "transactionErrorNoContract": {
     "message": "در حال تلاش برای درخواست یک عملکرد مرتبط به آدرس غیر-قرارداد"
-  },
-  "transactionErrored": {
-    "message": "معامله با خطا مواجه شد."
-  },
-  "transactionResubmitted": {
-    "message": "معامله دوباره با فیس افزایش یافته گاز به 1$1 در 2$2 تسلیم داده شد"
-  },
-  "transactionSubmitted": {
-    "message": "معامله با فیس گاز 1$1 در 2$2 ارائه شد."
-  },
-  "transactionUpdated": {
-    "message": "معامله به 1$2 بروزرسانی شد."
   },
   "transfer": {
     "message": "انتقال"
@@ -713,12 +593,6 @@
   "usedByClients": {
     "message": "استفاده شده توسط گروهی از مشتریان مختلف"
   },
-  "userName": {
-    "message": "نام کاربری"
-  },
-  "viewContact": {
-    "message": "مشاهده تماس"
-  },
   "visitWebSite": {
     "message": "از وب سایت ما دیدن نمایید"
   },
@@ -727,8 +601,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "لازم است تا شما جهت استفاده از این مشخصه، به کمره اجازه دسترسی بدهید."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "عبارت بازیاب شخصی شما"
   }
 }

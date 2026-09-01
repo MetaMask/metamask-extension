@@ -3,9 +3,18 @@ import { migrate, version } from './164';
 const oldVersion = 163;
 
 describe(`migration #${version}`, () => {
-  afterEach(() => jest.resetAllMocks());
+  beforeEach(() => {
+    global.sentry = { captureException: jest.fn() };
+  });
+
+  afterEach(() => {
+    global.sentry = undefined;
+    jest.resetAllMocks();
+  });
 
   it('updates the version metadata', async () => {
+    const mockWarn = jest.spyOn(console, 'warn').mockImplementation(jest.fn());
+
     const oldStorage = {
       meta: { version: oldVersion },
       data: {},
@@ -14,6 +23,9 @@ describe(`migration #${version}`, () => {
     const newStorage = await migrate(oldStorage);
 
     expect(newStorage.meta).toStrictEqual({ version });
+    expect(mockWarn).toHaveBeenCalledWith(
+      `Migration ${version}: PermissionController not found.`,
+    );
   });
 
   it('removes permissions for deleted networks from CAIP-25 permissions', async () => {
@@ -430,7 +442,9 @@ describe(`migration #${version}`, () => {
     });
   });
 
-  it('returns unchanged state when PermissionController is missing', async () => {
+  it('logs a warning and returns unchanged state when PermissionController is missing', async () => {
+    const mockWarn = jest.spyOn(console, 'warn').mockImplementation(jest.fn());
+
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
@@ -442,10 +456,15 @@ describe(`migration #${version}`, () => {
 
     const newStorage = await migrate(oldStorage);
 
+    expect(mockWarn).toHaveBeenCalledWith(
+      `Migration ${version}: PermissionController not found.`,
+    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
-  it('returns unchanged state when NetworkController is missing', async () => {
+  it('logs a warning and returns unchanged state when NetworkController is missing', async () => {
+    const mockWarn = jest.spyOn(console, 'warn').mockImplementation(jest.fn());
+
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
@@ -457,6 +476,9 @@ describe(`migration #${version}`, () => {
 
     const newStorage = await migrate(oldStorage);
 
+    expect(mockWarn).toHaveBeenCalledWith(
+      `Migration ${version}: NetworkController not found.`,
+    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 

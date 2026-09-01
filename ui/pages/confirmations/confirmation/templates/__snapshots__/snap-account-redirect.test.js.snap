@@ -3,7 +3,8 @@
 exports[`snap-account-redirect confirmation should match snapshot 1`] = `
 <div>
   <div
-    class="confirmation-page"
+    class="confirmation-page h-full"
+    data-testid="parent-selector-template-confirmation-page"
   >
     <div
       class="mm-box confirmation-page__content mm-box--padding-0"
@@ -121,7 +122,7 @@ exports[`snap-account-redirect confirmation should match snapshot 1`] = `
                         data-testid="snap-account-redirect-url-icon"
                       >
                         <span
-                          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                          class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                           style="mask-image: url('./images/icons/export.svg');"
                         />
                       </button>

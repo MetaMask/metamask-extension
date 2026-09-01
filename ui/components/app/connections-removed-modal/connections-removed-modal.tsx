@@ -1,16 +1,14 @@
-import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
-  Display,
   IconColor,
-  JustifyContent,
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  Box,
   Modal,
   ModalContent,
   ModalHeader,
@@ -24,17 +22,25 @@ import {
   ModalBody,
   ButtonSize,
 } from '../../component-library';
-import { setShowConnectionsRemovedModal } from '../../../store/actions';
+import { resetWallet } from '../../../store/actions';
+import { isPopupOrSidePanelEnvironment } from '../../../../shared/lib/environment-type';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useDispatch } from '../../../store/hooks';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function ConnectionsRemovedModal() {
   const t = useI18nContext();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const onConfirm = useCallback(() => {
-    dispatch(setShowConnectionsRemovedModal(false));
-  }, [dispatch]);
+  const handleConfirm = async () => {
+    await dispatch(resetWallet());
+
+    if (isPopupOrSidePanelEnvironment()) {
+      globalThis.platform.openExtensionInBrowser?.(DEFAULT_ROUTE);
+    } else {
+      navigate(DEFAULT_ROUTE, { replace: true });
+    }
+  };
 
   return (
     <Modal
@@ -46,7 +52,7 @@ export default function ConnectionsRemovedModal() {
       <ModalContent alignItems={AlignItems.center}>
         <ModalHeader>
           <Box>
-            <Box display={Display.Flex} justifyContent={JustifyContent.center}>
+            <Box className="flex" justifyContent={BoxJustifyContent.Center}>
               <Icon
                 name={IconName.Danger}
                 size={IconSize.Xl}
@@ -64,7 +70,12 @@ export default function ConnectionsRemovedModal() {
         </ModalHeader>
         <ModalBody>{t('connectionsRemovedModalDescription')}</ModalBody>
         <ModalFooter>
-          <Button size={ButtonSize.Lg} block onClick={onConfirm}>
+          <Button
+            size={ButtonSize.Lg}
+            block
+            onClick={handleConfirm}
+            data-testid="connections-removed-modal-button"
+          >
             {t('gotIt')}
           </Button>
         </ModalFooter>

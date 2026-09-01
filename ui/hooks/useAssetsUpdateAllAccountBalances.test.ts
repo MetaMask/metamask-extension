@@ -1,13 +1,17 @@
-import { renderHook } from '@testing-library/react-hooks';
-import { useSelector, useDispatch } from 'react-redux';
+import { renderHook } from '@testing-library/react';
+import { useSelector } from 'react-redux';
 import { updateBalancesFoAccounts } from '../store/actions';
 import { getEnabledChainIds } from '../selectors';
+import { useDispatch } from '../store/hooks';
 import { useAssetsUpdateAllAccountBalances } from './useAssetsUpdateAllAccountBalances';
+
+jest.mock('../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 // Mock dependencies
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
-  useDispatch: jest.fn(),
 }));
 
 jest.mock('../store/actions', () => ({
@@ -19,7 +23,9 @@ jest.mock('../selectors', () => ({
 }));
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-const mockUseDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>;
+const mockUseAppDispatch = useDispatch as jest.MockedFunction<
+  typeof useDispatch
+>;
 const mockUpdateBalancesFoAccounts =
   updateBalancesFoAccounts as jest.MockedFunction<
     typeof updateBalancesFoAccounts
@@ -29,10 +35,11 @@ describe('useAssetsUpdateAllAccountBalances', () => {
   let mockDispatch: jest.Mock;
 
   beforeEach(() => {
-    mockDispatch = jest.fn();
-    mockUseDispatch.mockReturnValue(mockDispatch);
-    mockUpdateBalancesFoAccounts.mockReturnValue(
-      Promise.resolve() as Promise<void>,
+    mockDispatch = jest.fn().mockImplementation(() => Promise.resolve());
+    mockUseAppDispatch.mockReturnValue(mockDispatch);
+    // Mock returns a thunk function (action creator now returns ThunkAction)
+    mockUpdateBalancesFoAccounts.mockImplementation(
+      () => () => Promise.resolve(),
     );
 
     // Mock console.warn to avoid cluttering test output
@@ -69,13 +76,13 @@ describe('useAssetsUpdateAllAccountBalances', () => {
 
     renderHook(() => useAssetsUpdateAllAccountBalances());
 
-    expect(mockDispatch).toHaveBeenCalledWith(
-      mockUpdateBalancesFoAccounts(mockChainIds, true),
-    );
+    // Verify updateBalancesFoAccounts was called with correct args
     expect(mockUpdateBalancesFoAccounts).toHaveBeenCalledWith(
       mockChainIds,
-      true,
+      false,
     );
+    // Verify dispatch was called with a thunk function
+    expect(mockDispatch).toHaveBeenCalledWith(expect.any(Function));
   });
 
   it('should not call updateBalancesFoAccounts when enabledChainIds is empty', () => {
@@ -130,7 +137,7 @@ describe('useAssetsUpdateAllAccountBalances', () => {
     expect(mockDispatch).toHaveBeenCalledTimes(1);
     expect(mockUpdateBalancesFoAccounts).toHaveBeenCalledWith(
       initialChainIds,
-      true,
+      false,
     );
 
     // Update chain IDs and rerender
@@ -140,7 +147,7 @@ describe('useAssetsUpdateAllAccountBalances', () => {
     expect(mockDispatch).toHaveBeenCalledTimes(2);
     expect(mockUpdateBalancesFoAccounts).toHaveBeenCalledWith(
       updatedChainIds,
-      true,
+      false,
     );
   });
 
@@ -162,13 +169,13 @@ describe('useAssetsUpdateAllAccountBalances', () => {
     // Call updateBalances manually
     await result.current.updateBalances();
 
-    expect(mockDispatch).toHaveBeenCalledWith(
-      mockUpdateBalancesFoAccounts(mockChainIds, true),
-    );
+    // Verify updateBalancesFoAccounts was called with correct args
     expect(mockUpdateBalancesFoAccounts).toHaveBeenCalledWith(
       mockChainIds,
-      true,
+      false,
     );
+    // Verify dispatch was called with a thunk function
+    expect(mockDispatch).toHaveBeenCalledWith(expect.any(Function));
   });
 
   it('should not call updateBalances manually when enabledChainIds is empty', async () => {
@@ -203,15 +210,15 @@ describe('useAssetsUpdateAllAccountBalances', () => {
       return undefined;
     });
 
-    mockUpdateBalancesFoAccounts.mockRejectedValueOnce(mockError);
-    mockDispatch.mockImplementation((action) => action);
+    // Dispatch rejects when the thunk fails
+    mockDispatch.mockRejectedValueOnce(mockError);
 
     const { result } = renderHook(() => useAssetsUpdateAllAccountBalances());
 
     // Clear previous calls from useEffect
     mockDispatch.mockClear();
     mockUpdateBalancesFoAccounts.mockClear();
-    mockUpdateBalancesFoAccounts.mockRejectedValueOnce(mockError);
+    mockDispatch.mockRejectedValueOnce(mockError);
 
     // Call updateBalances manually and expect it to handle error gracefully
     await expect(result.current.updateBalances()).resolves.not.toThrow();
@@ -233,8 +240,8 @@ describe('useAssetsUpdateAllAccountBalances', () => {
       return undefined;
     });
 
-    mockUpdateBalancesFoAccounts.mockRejectedValueOnce(mockError);
-    mockDispatch.mockImplementation((action) => action);
+    // Dispatch rejects when the thunk fails
+    mockDispatch.mockRejectedValueOnce(mockError);
 
     // This should not throw
     expect(() => {

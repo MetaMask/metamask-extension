@@ -1,13 +1,21 @@
 import React from 'react';
 import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import { getToAccounts } from '../../../../ducks/bridge/selectors';
+import { setBackgroundConnection } from '../../../../store/background-connection';
 import { DestinationAccountPickerModal } from './destination-account-picker-modal';
+
+setBackgroundConnection({
+  tokenBalancesStartPolling: jest.fn(),
+  addPollingTokenToAppState: jest.fn(),
+  tokenBalancesStopPollingByPollingToken: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
+} as never);
 
 describe('DestinationAccountPickerModal', () => {
   it('should render the modal when no account is selected', () => {
-    const { getByTestId } = renderWithProvider(
+    const { getByTestId, getAllByTestId } = renderWithProvider(
       <DestinationAccountPickerModal
         isOpen={true}
         onClose={jest.fn()}
@@ -16,13 +24,14 @@ describe('DestinationAccountPickerModal', () => {
       />,
       configureStore(createBridgeMockStore()),
     );
+    expect(getAllByTestId('account-list-address')).toHaveLength(3);
     expect(getByTestId('destination-account-picker-modal')).toMatchSnapshot();
   });
 
   it('should render the modal when an account is selected', () => {
     const mockStore = configureStore(createBridgeMockStore());
     const selectedDestAccount = getToAccounts(mockStore.getState())[0];
-    const { getByTestId } = renderWithProvider(
+    const { getByTestId, getAllByTestId } = renderWithProvider(
       <DestinationAccountPickerModal
         isOpen={true}
         onClose={jest.fn()}
@@ -31,6 +40,7 @@ describe('DestinationAccountPickerModal', () => {
       />,
       mockStore,
     );
+    expect(getAllByTestId('account-list-address')).toHaveLength(3);
     expect(getByTestId('destination-account-picker-modal')).toMatchSnapshot();
   });
 });

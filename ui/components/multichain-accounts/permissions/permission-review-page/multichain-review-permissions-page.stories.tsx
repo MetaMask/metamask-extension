@@ -1,7 +1,6 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter, Route } from 'react-router-dom';
 import {
   Caip25EndowmentPermissionName,
   Caip25CaveatType,
@@ -18,9 +17,10 @@ export default {
     docs: {
       description: {
         component:
-          'A page for reviewing and managing multichain account permissions for a connected site',
+          'A page for editing which account groups a connected site can use',
       },
     },
+    path: '/review-permissions/:origin',
   },
 } as Meta<typeof MultichainReviewPermissions>;
 
@@ -86,15 +86,7 @@ const storeWithNoAccounts = createStoreWithState({
 
 const Template: StoryFn<{ store: any; origin: string }> = (args) => (
   <Provider store={args.store}>
-    <MemoryRouter
-      initialEntries={[
-        `/review-permissions/${encodeURIComponent(args.origin)}`,
-      ]}
-    >
-      <Route path="/review-permissions/:origin">
-        <MultichainReviewPermissions />
-      </Route>
-    </MemoryRouter>
+    <MultichainReviewPermissions />
   </Provider>
 );
 
@@ -102,33 +94,39 @@ export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 DefaultStory.args = {
   store: storeWithNoAccounts,
-  origin: 'https://test.dapp',
+};
+DefaultStory.parameters = {
+  initialEntries: [
+    `/review-permissions/${encodeURIComponent('https://test.dapp')}`,
+  ],
 };
 
 export const WithOneConnectedAccount = Template.bind({});
-WithOneConnectedAccount.storyName = 'With One Connected Account';
 WithOneConnectedAccount.args = {
   store: storeWithOneAccount,
-  origin: 'https://test.dapp',
 };
 WithOneConnectedAccount.parameters = {
   docs: {
     description: {
-      story: 'Shows the page with one connected account group',
+      story: 'Shows the edit accounts page with one connected account group',
     },
   },
+  initialEntries: [
+    `/review-permissions/${encodeURIComponent('https://test.dapp')}`,
+  ],
 };
 
 export const NoConnectedAccounts = Template.bind({});
-NoConnectedAccounts.storyName = 'No Connected Accounts';
 NoConnectedAccounts.args = {
   store: storeWithNoAccounts,
-  origin: 'https://test.dapp',
 };
 NoConnectedAccounts.parameters = {
   docs: {
     description: {
-      story: 'Shows the page with no connected account groups',
+      story: 'Shows the edit accounts page with no connected account groups',
     },
   },
+  initialEntries: [
+    `/review-permissions/${encodeURIComponent('https://test.dapp')}`,
+  ],
 };

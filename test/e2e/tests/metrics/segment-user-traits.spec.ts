@@ -1,15 +1,16 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   completeCreateNewWalletOnboardingFlow,
   createNewWalletOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
-import { MOCK_META_METRICS_ID } from '../../constants';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import { MOCK_ANALYTICS_ID } from '../../constants';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import { waitForExpectedTraits } from './helpers';
 
 async function mockSegment(mockServer: Mockttp) {
   return [
@@ -18,6 +19,7 @@ async function mockSegment(mockServer: Mockttp) {
       .withJsonBodyIncluding({
         batch: [{ type: 'identify' }],
       })
+      .always()
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -30,9 +32,9 @@ describe('Segment User Traits', function () {
   it('sends identify event when user opts in both metrics and data collection during onboarding', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
+            analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -41,13 +43,18 @@ describe('Segment User Traits', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await createNewWalletOnboardingFlow({
           driver,
-          participateInMetaMetrics: true,
+          consentDecisionMade: true,
+          optedIn: true,
           dataCollectionForMarketing: true,
         });
-        const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 1);
-        assert.deepStrictEqual(events[0].traits.is_metrics_opted_in, true);
-        assert.deepStrictEqual(events[0].traits.has_marketing_consent, true);
+        await waitForExpectedTraits(driver, mockedEndpoints, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_metrics_opted_in: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          has_marketing_consent: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'metamask',
+        });
       },
     );
   });
@@ -55,9 +62,9 @@ describe('Segment User Traits', function () {
   it('sends identify event when user opts into metrics but not data collection during onboarding', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
+            analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -66,13 +73,18 @@ describe('Segment User Traits', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await createNewWalletOnboardingFlow({
           driver,
-          participateInMetaMetrics: true,
+          consentDecisionMade: true,
+          optedIn: true,
           dataCollectionForMarketing: false,
         });
-        const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 1);
-        assert.deepStrictEqual(events[0].traits.is_metrics_opted_in, true);
-        assert.deepStrictEqual(events[0].traits.has_marketing_consent, false);
+        await waitForExpectedTraits(driver, mockedEndpoints, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_metrics_opted_in: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          has_marketing_consent: false,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'metamask',
+        });
       },
     );
   });
@@ -80,10 +92,9 @@ describe('Segment User Traits', function () {
   it('will not send identify event when user opts out of both metrics and data collection during onboarding', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -92,7 +103,8 @@ describe('Segment User Traits', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await createNewWalletOnboardingFlow({
           driver,
-          participateInMetaMetrics: false,
+          consentDecisionMade: true,
+          optedIn: false,
           dataCollectionForMarketing: false,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
@@ -104,22 +116,21 @@ describe('Segment User Traits', function () {
   it('sends identify event when user enables metrics in privacy settings after opting out during onboarding', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: false,
+            analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        let events = [];
         await completeCreateNewWalletOnboardingFlow({
           driver,
-          participateInMetaMetrics: false,
+          consentDecisionMade: true,
+          optedIn: false,
         });
-        events = await getEventPayloads(driver, mockedEndpoints);
+        const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 0);
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
@@ -129,10 +140,14 @@ describe('Segment User Traits', function () {
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleParticipateInMetaMetrics();
-        events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 1);
-        assert.deepStrictEqual(events[0].traits.is_metrics_opted_in, true);
-        assert.deepStrictEqual(events[0].traits.has_marketing_consent, false);
+        await waitForExpectedTraits(driver, mockedEndpoints, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_metrics_opted_in: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          has_marketing_consent: false,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'metamask',
+        });
       },
     );
   });
@@ -140,22 +155,21 @@ describe('Segment User Traits', function () {
   it('sends identify event when user opts in both metrics and data in privacy settings after opting out during onboarding', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: false,
+            analyticsId: MOCK_ANALYTICS_ID,
           })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        let events = [];
         await completeCreateNewWalletOnboardingFlow({
           driver,
-          participateInMetaMetrics: false,
+          consentDecisionMade: true,
+          optedIn: false,
         });
-        events = await getEventPayloads(driver, mockedEndpoints);
+        const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 0);
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
@@ -164,14 +178,16 @@ describe('Segment User Traits', function () {
 
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
-        // Toggle participate in meta metrics first, then toggle data collection for marketing
-        // Data Collection toggle is disabled if participate in meta metrics is off
         await privacySettings.toggleParticipateInMetaMetrics();
         await privacySettings.toggleDataCollectionForMarketing();
-        events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 1);
-        assert.deepStrictEqual(events[0].traits.is_metrics_opted_in, true);
-        assert.deepStrictEqual(events[0].traits.has_marketing_consent, true);
+        await waitForExpectedTraits(driver, mockedEndpoints, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_metrics_opted_in: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          has_marketing_consent: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'metamask',
+        });
       },
     );
   });

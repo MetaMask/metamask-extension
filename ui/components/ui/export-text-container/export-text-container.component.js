@@ -1,31 +1,35 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import React from 'react';
 import {
-  AlignItems,
-  BorderColor,
-  BorderRadius,
+  Box,
+  BoxAlignItems,
+  BoxBorderColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { MINUTE } from '../../../../shared/constants/time';
+import {
   Display,
-  FlexDirection,
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { ButtonSecondary, Text, Box } from '../../component-library';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { ButtonSecondary, Text } from '../../component-library';
 
 function ExportTextContainer({ text = '', onClickCopy = null }) {
-  const ONE_MINUTE = 1000 * 60;
   const t = useI18nContext();
-  const [copied, handleCopy] = useCopyToClipboard(ONE_MINUTE);
+
+  // useCopyToClipboard analysis: As of writing this, this is only used in RevealSeedPage, which is the sensitive SRP
+  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: MINUTE });
 
   return (
     <Box
-      display={Display.Flex}
-      justifyContent={JustifyContent.center}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
-      borderColor={BorderColor.borderDefault}
-      borderRadius={BorderRadius.MD}
+      className="flex rounded-md border border-solid"
+      justifyContent={BoxJustifyContent.Center}
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
+      borderColor={BoxBorderColor.BorderDefault}
       padding={4}
       gap={4}
     >

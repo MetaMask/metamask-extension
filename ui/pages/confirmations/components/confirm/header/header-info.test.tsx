@@ -12,9 +12,24 @@ import {
   getMockTypedSignConfirmState,
 } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { createEventBuilder } from '../../../../../../shared/lib/analytics/create-event-builder';
 import configureStore from '../../../../../store/store';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import HeaderInfo from './header-info';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder: actualCreateEventBuilder } = jest.requireActual(
+    '../../../../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder: actualCreateEventBuilder,
+    }),
+  };
+});
 
 const mockStore = getMockTypedSignConfirmState();
 
@@ -69,13 +84,13 @@ describe('Header', () => {
   });
   it('shows account info icon', async () => {
     const { getByLabelText } = render();
-    expect(getByLabelText('Account details')).toBeInTheDocument();
+    expect(getByLabelText(messages.accountDetails.message)).toBeInTheDocument();
   });
 
   describe('when account info icon is clicked', () => {
     it('shows account info modal with address', async () => {
       const { getByLabelText, getByText, queryByTestId } = render();
-      const accountInfoIcon = getByLabelText('Account details');
+      const accountInfoIcon = getByLabelText(messages.accountDetails.message);
       fireEvent.click(accountInfoIcon);
       await waitFor(() => {
         expect(queryByTestId('account-details-modal')).toBeInTheDocument();
@@ -85,17 +100,21 @@ describe('Header', () => {
 
     cases.forEach(({ description, store, expectedEvent }) => {
       it(`sends "${MetaMetricsEventName.AccountDetailsOpened}" metametric ${description}`, () => {
-        const mockTrackEvent = jest.fn();
+        mockTrackEvent.mockClear();
         const { getByLabelText } = renderWithConfirmContextProvider(
-          <MetaMetricsContext.Provider value={mockTrackEvent}>
-            <HeaderInfo />
-          </MetaMetricsContext.Provider>,
+          <HeaderInfo />,
           configureStore(store),
         );
-        const accountInfoIcon = getByLabelText('Account details');
+        const accountInfoIcon = getByLabelText(messages.accountDetails.message);
         fireEvent.click(accountInfoIcon);
 
-        expect(mockTrackEvent).toHaveBeenNthCalledWith(1, expectedEvent);
+        expect(mockTrackEvent).toHaveBeenNthCalledWith(
+          1,
+          createEventBuilder(expectedEvent.event)
+            .addCategory(expectedEvent.category)
+            .addProperties(expectedEvent.properties)
+            .build(),
+        );
       });
     });
   });

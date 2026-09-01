@@ -1,24 +1,34 @@
-const path = require('path');
+const designTokensPlugin = require('@metamask/eslint-plugin-design-tokens');
+const {
+  architecturalZones,
+  buildSystemZones,
+  routeIsolationZones,
+} = require('./development/eslint-restricted-paths-zones');
 
 module.exports = {
-  extends: [
-    '@metamask/eslint-config',
-    path.resolve(__dirname, '.eslintrc.jsdoc.js'),
-  ],
+  plugins: {
+    '@metamask/design-tokens': designTokensPlugin,
+  },
 
-  globals: {
-    document: 'readonly',
-    window: 'readonly',
-    // Our ESLint config is stuck at ES2017 because Browserify doesn't support the spread operator.
-    // We can remove this global after we've migrated away from Browserify and updated our ESLint
-    // config to at least ES2021.
-    AggregateError: 'readonly',
+  languageOptions: {
+    globals: {
+      document: 'readonly',
+      window: 'readonly',
+      // `AggregateError` (ES2021) is used in our source, but `@metamask/eslint-config`
+      // pins `parserOptions.ecmaVersion` to 2017 (a transitive dependency uses Esprima,
+      // which can't parse ES2018+ syntax such as object rest/spread). Declare it manually
+      // until that shared config is bumped to at least ES2021.
+      AggregateError: 'readonly',
+    },
+  },
+
+  settings: {
+    jsdoc: {
+      mode: 'typescript',
+    },
   },
 
   rules: {
-    // TODO: re-enable once the proposed feature at https://github.com/gajus/eslint-plugin-jsdoc/pull/964#issuecomment-1936470252 is available
-    'jsdoc/check-line-alignment': 'off',
-
     'default-param-last': 'off',
     'prefer-object-spread': 'error',
     'require-atomic-updates': 'off',
@@ -69,18 +79,122 @@ module.exports = {
     // It is common to import modules without assigning them to variables in
     // a browser context. For instance, we may import polyfills which change
     // global variables, or we may import stylesheets.
-    'import/no-unassigned-import': 'off',
+    'import-x/no-unassigned-import': 'off',
 
-    // import/no-named-as-default-member checks if default imports also have
+    // import-x/no-named-as-default-member checks if default imports also have
     // named exports matching properties used on the default import. Example:
     // in confirm-seed-phrase-component.test.js we import sinon from 'sinon'
     // and later access sinon.spy. spy is also exported from sinon directly and
     // thus triggers the error. Turning this rule off to prevent churn when
     // upgrading eslint and dependencies. This rule should be evaluated and
     // if agreeable turned on upstream in @metamask/eslint-config
-    'import/no-named-as-default-member': 'off',
+    'import-x/no-named-as-default-member': 'off',
 
-    // This is necessary to run eslint on Windows and not get a thousand CRLF errors
-    'prettier/prettier': ['error', { endOfLine: 'auto' }],
+    // Formatting is handled by oxfmt, not eslint-plugin-prettier
+    'prettier/prettier': 'off',
+
+    '@metamask/design-tokens/color-no-hex': 'error',
+    'import-x/no-restricted-paths': [
+      'error',
+      {
+        basePath: './',
+        zones: [
+          ...architecturalZones,
+          ...buildSystemZones,
+          ...routeIsolationZones,
+        ],
+      },
+    ],
+
+    /* JSDoc plugin rules */
+
+    // TODO: re-enable once the proposed feature at https://github.com/gajus/eslint-plugin-jsdoc/pull/964#issuecomment-1936470252 is available
+    'jsdoc/check-line-alignment': 'off',
+
+    // Allow tag `jest-environment` to work around Jest bug
+    // See: https://github.com/facebook/jest/issues/7780
+    'jsdoc/check-tag-names': ['error', { definedTags: ['jest-environment'] }],
+
+    // TODO: Re-enable these
+    'jsdoc/match-description': 'off',
+    'jsdoc/require-description': 'off',
+    'jsdoc/require-jsdoc': 'off',
+    'jsdoc/require-param-description': 'off',
+    'jsdoc/require-param-type': 'off',
+    'jsdoc/require-returns-description': 'off',
+    'jsdoc/require-returns-type': 'off',
+    'jsdoc/require-returns': 'off',
+    'jsdoc/valid-types': 'off',
+
+    // These rule modifications are removing changes to our shared ESLint config made after
+    // version v9. This is a temporary measure to get us to ESLint v9 compatible versions,
+    // at which point we can restore the intended rules and use error suppression instead.
+    //
+    // TODO: Remove these modifications after the ESLint v9 update
+    'no-loss-of-precision': 'off',
+    'no-restricted-globals': ['error', 'event'],
+    'id-denylist': 'off',
+    'id-length': 'off',
+    'import-x/order': [
+      'error',
+      {
+        groups: [
+          'builtin',
+          'external',
+          'internal',
+          'parent',
+          'sibling',
+          'index',
+        ],
+        pathGroups: [
+          {
+            pattern: '#*/**',
+            group: 'internal',
+          },
+        ],
+        'newlines-between': 'ignore',
+        alphabetize: {
+          order: 'ignore',
+          caseInsensitive: false,
+        },
+      },
+    ],
+    'import-x/no-nodejs-modules': 'off',
+    'jsdoc/no-undefined-types': 'off',
+    'jsdoc/tag-lines': 'off',
+    'no-restricted-syntax': [
+      'error',
+      {
+        selector: 'WithStatement',
+        message: 'With statements are not allowed',
+      },
+      // {
+      //   selector: "BinaryExpression[operator='in']",
+      //   message: 'The "in" operator is not allowed',
+      // },
+      {
+        selector: 'SequenceExpression',
+        message: 'Sequence expressions are not allowed',
+      },
+    ],
+    'no-unused-private-class-members': 'off',
+    'no-unused-vars': [
+      'error',
+      {
+        vars: 'all',
+        args: 'all',
+        argsIgnorePattern: '[_]+',
+        caughtErrors: 'none',
+        ignoreRestSiblings: true,
+      },
+    ],
+    'promise/always-return': 'off',
+    'promise/catch-or-return': 'off',
+    'promise/no-return-wrap': 'off',
+    'promise/param-names': 'off',
+
+    // TODO: Update to `@metamask/eslint-config@15`, which includes these changes
+    'promise/no-nesting': 'error',
+    'promise/no-callback-in-promise': 'error',
   },
 };

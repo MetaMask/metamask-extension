@@ -2,22 +2,24 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Anvil } from '../../../seeder/anvil';
 import { Driver } from '../../../webdriver/driver';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
-import FixtureBuilder from '../../../fixture-builder';
-import { WINDOW_TITLES, withFixtures } from '../../../helpers';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import Eip7702AndSendCalls from '../../../page-objects/pages/confirmations/redesign/batch-confirmation';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../../helpers';
+import { login } from '../../../page-objects/flows/login.flow';
+import Eip7702AndSendCalls from '../../../page-objects/pages/confirmations/batch-confirmation';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { mockEip7702FeatureFlag } from '../helpers';
 
-describe('Upgrade Account', function (this: Suite) {
+// Skipping these tests becasue on BIP44 EIP-7702 not supported on chain: 0x539
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Upgrade Account', function (this: Suite) {
   it('an EOA account can be upgraded when triggering a batch tx from a dapp in an odd chain id', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: [
@@ -40,7 +42,7 @@ describe('Upgrade Account', function (this: Suite) {
         driver: Driver;
         localNodes: Anvil[];
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // We check that we have an EOA account
         let accountBytecode = await localNodes[0].getCode(
@@ -55,9 +57,6 @@ describe('Upgrade Account', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
-
-        // acknowledge splash page
-        await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
 
         await upgradeAndBatchTxConfirmation.checkExpectedTxTypeIsDisplayed(
           'Smart account',
@@ -82,8 +81,8 @@ describe('Upgrade Account', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
         await homePage.checkExpectedBalanceIsDisplayed('24.9998', 'ETH');
 
         // We check that we have an upgraded account
@@ -99,8 +98,8 @@ describe('Upgrade Account', function (this: Suite) {
   it('an EOA account is not upgraded when rejecting a batch transaction, but can trigger a new send call', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: [
@@ -123,7 +122,7 @@ describe('Upgrade Account', function (this: Suite) {
         driver: Driver;
         localNodes: Anvil[];
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // We check that we have an EOA account
         let accountBytecode = await localNodes[0].getCode(
@@ -139,7 +138,6 @@ describe('Upgrade Account', function (this: Suite) {
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
 
         // Reject batch tx
-        await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
         await upgradeAndBatchTxConfirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
         // We check that we continue to have an EOA account

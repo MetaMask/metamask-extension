@@ -1,7 +1,7 @@
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   type FixtureCallbackArgs,
@@ -12,13 +12,13 @@ describe('Calling `eth_subscribe` on a particular network event', function () {
     await withFixtures(
       {
         title: this.test?.fullTitle(),
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToMultichainTestDapp()
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
           .build(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },
       async ({ driver, extensionId }: FixtureCallbackArgs) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
@@ -34,8 +34,6 @@ describe('Calling `eth_subscribe` on a particular network event', function () {
          * Currently we don't have `data-testid` setup for the desired result, so we click on all available results
          * to make the complete text available and later evaluate if scopes match.
          */
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         // TODO: temporarily leave this line in place, will migrate to POM once the ticket is resolved
         const resultSummaries = await driver.findElements('.result-summary');
         resultSummaries.forEach(async (element) => await element.click());

@@ -1,0 +1,99 @@
+import React from 'react';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  TextColor,
+  TextAlign,
+  TextVariant,
+  Text,
+  BoxAlignItems,
+  Icon,
+  IconName,
+  IconSize,
+  Skeleton,
+} from '@metamask/design-system-react';
+
+import Tooltip from '../../../../ui/tooltip';
+
+export const gatorPermissionDetailRowStyle = {
+  flex: '1',
+  alignSelf: 'center',
+} as const;
+
+export const gatorPermissionDetailRowLabelStyle = {
+  alignSelf: 'center',
+} as const;
+
+type GatorPermissionDetailRowProps = {
+  label: string;
+  value: React.ReactNode;
+  testId?: string;
+  isLoading?: boolean;
+  tooltip?: string;
+};
+
+/**
+ * Row layout for gator permission review / expanded details (label left, value right + skeleton).
+ * @param options0
+ * @param options0.label
+ * @param options0.value
+ * @param options0.testId
+ * @param options0.isLoading
+ * @param options0.tooltip
+ */
+export const GatorPermissionDetailRow = ({
+  label,
+  value,
+  testId,
+  isLoading = false,
+  tooltip,
+}: GatorPermissionDetailRowProps): JSX.Element => {
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
+      style={gatorPermissionDetailRowStyle}
+      gap={4}
+      marginTop={2}
+    >
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={1}
+        style={gatorPermissionDetailRowLabelStyle}
+      >
+        <Text
+          textAlign={TextAlign.Left}
+          color={TextColor.TextAlternative}
+          variant={TextVariant.BodyMd}
+        >
+          {label}
+        </Text>
+        {tooltip ? (
+          <Tooltip title={tooltip} position="bottom">
+            <Icon name={IconName.Question} size={IconSize.Sm} />
+          </Tooltip>
+        ) : null}
+      </Box>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.End}
+        style={gatorPermissionDetailRowStyle}
+        gap={2}
+        alignItems={BoxAlignItems.Center}
+      >
+        <Skeleton hideChildren={isLoading} width="100px" height="16px">
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            textAlign={TextAlign.Right}
+            data-testid={testId}
+          >
+            {value}
+          </Text>
+        </Skeleton>
+      </Box>
+    </Box>
+  );
+};

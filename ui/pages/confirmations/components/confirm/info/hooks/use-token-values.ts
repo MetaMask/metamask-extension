@@ -1,24 +1,32 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import { calcTokenAmount } from '../../../../../../../shared/lib/transactions-controller-utils';
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { getIntlLocale } from '../../../../../../ducks/locale/locale';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
-import { formatAmount } from '../../../simulation-details/formatAmount';
+import { formatAmount } from '../../../../../../../shared/lib/format-amount';
 import { useTokenTransactionData } from './useTokenTransactionData';
 
 export const useTokenValues = (transactionMeta: TransactionMeta) => {
   const locale = useSelector(getIntlLocale);
   const parsedTransactionData = useTokenTransactionData();
-  const exchangeRate = useTokenExchangeRate(transactionMeta?.txParams?.to);
+  const { txParams, txParamsOriginal } = transactionMeta;
+  const tokenAddress = txParamsOriginal?.to ?? txParams.to;
+  const userAddress = txParamsOriginal?.from ?? txParams.from;
+  const transactionData = txParamsOriginal?.data ?? txParams.data;
+  const exchangeRate = useTokenExchangeRate(
+    tokenAddress,
+    transactionMeta.chainId as Hex,
+  );
   const fiatFormatter = useFiatFormatter();
 
   const { decimals } = useAssetDetails(
-    transactionMeta.txParams.to,
-    transactionMeta.txParams.from,
-    transactionMeta.txParams.data,
+    tokenAddress,
+    userAddress,
+    transactionData,
     transactionMeta.chainId,
   );
 
@@ -47,10 +55,18 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
     new BigNumber(decodedTransferValue),
   );
 
+  // Fiat value is pending if token data hasn't loaded yet.
+  // Note: We don't include !exchangeRate here because exchange rates can be
+  // legitimately unavailable (API failed or token not supported), and we don't
+  // want to show a skeleton indefinitely. When exchange rate is unavailable,
+  // fiatDisplayValue will be undefined and nothing will render.
+  const pending = decimals === undefined || !value;
+
   return {
     decodedTransferValue,
     displayTransferValue,
     fiatDisplayValue,
     fiatValue,
+    pending,
   };
 };

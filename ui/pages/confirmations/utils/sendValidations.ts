@@ -6,9 +6,12 @@ import { confusables } from 'unicode-confusables';
 import {
   isBtcMainnetAddress,
   isSolanaAddress,
+  isStellarAddress,
+  isTronAddress,
 } from '../../../../shared/lib/multichain/accounts';
-import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
+
 import { RecipientValidationResult } from '../types/send';
+import { LOWER_CASED_BURN_ADDRESSES } from '../constants/token';
 
 export const findConfusablesInRecipient = (
   address: string,
@@ -49,14 +52,8 @@ export const findConfusablesInRecipient = (
   return {};
 };
 
-const LOWER_CASED_BURN_ADDRESSES = [
-  '0x0000000000000000000000000000000000000000',
-  '0x000000000000000000000000000000000000dead',
-];
-
-export const validateEvmHexAddress = async (
+export const validateEvmHexAddress = (
   address: string,
-  chainId?: string,
   assetAddress?: string,
 ) => {
   if (LOWER_CASED_BURN_ADDRESSES.includes(address.toLowerCase())) {
@@ -69,20 +66,6 @@ export const validateEvmHexAddress = async (
     return {
       error: 'contractAddressError',
     };
-  }
-
-  if (chainId) {
-    const tokenDetails = await getTokenStandardAndDetailsByChain(
-      address,
-      undefined,
-      undefined,
-      chainId,
-    );
-    if (tokenDetails?.standard) {
-      return {
-        error: 'tokenContractError',
-      };
-    }
   }
 
   return {};
@@ -112,6 +95,26 @@ export const validateSolanaAddress = (address: string) => {
 
 export const validateBtcAddress = (address: string) => {
   if (!isBtcMainnetAddress(address)) {
+    return {
+      error: 'invalidAddress',
+    };
+  }
+
+  return {};
+};
+
+export const validateTronAddress = (address: string) => {
+  if (!isTronAddress(address)) {
+    return {
+      error: 'invalidAddress',
+    };
+  }
+
+  return {};
+};
+
+export const validateStellarAddress = (address: string) => {
+  if (!isStellarAddress(address)) {
     return {
       error: 'invalidAddress',
     };

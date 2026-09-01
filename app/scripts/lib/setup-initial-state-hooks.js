@@ -1,31 +1,117 @@
-import { maskObject } from '../../../shared/modules/object.utils';
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
+import { maskObject } from '../../../shared/lib/object.utils';
 import ExtensionPlatform from '../platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from '../constants/sentry-state';
-import ReadOnlyNetworkStore from './stores/read-only-network-store';
-import ExtensionStore from './stores/extension-store';
-import { PersistenceManager } from './stores/persistence-manager';
+import { FixtureExtensionStore } from '../../../shared/lib/stores/fixture-extension-store';
+import ExtensionStore from '../../../shared/lib/stores/extension-store';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import { PersistenceManager } from '../../../shared/lib/stores/persistence-manager';
+import { trackVaultCorruptionEvent } from './state-corruption/track-vault-corruption';
+import { trackEarlySegmentEvent } from './segment/custom-segment-tracking';
 
 const platform = new ExtensionPlatform();
 
-// This instance of `localStore` is used by Sentry to get the persisted state
-const sentryLocalStore = new PersistenceManager({
-  localStore: process.env.IN_TEST
-    ? new ReadOnlyNetworkStore()
-    : new ExtensionStore(),
-});
+function createLocalStore() {
+  const useFixtureStore =
+    process.env.IN_TEST &&
+    getManifestFlags().testing?.forceExtensionStore !== true;
+  if (!useFixtureStore) {
+    return new ExtensionStore();
+  }
+  // Use globalThis.self (not window) so this works in both the UI and the background/service worker, where window is undefined.
+  const locationHref = globalThis.self?.location?.href;
+  if (!locationHref) {
+    throw new Error(
+      'setup-initial-state-hooks: globalThis.self?.location?.href is not defined; expected to run in a document or service worker context.',
+    );
+  }
+  const isBackground =
+    getEnvironmentType(locationHref) === ENVIRONMENT_TYPE_BACKGROUND;
+  return new FixtureExtensionStore({ initialize: isBackground });
+}
+
+const localStore = createLocalStore();
+
+function getStateForEarlySegmentEvent(manager) {
+  if (globalThis.stateHooks.getSentryAppState) {
+    return globalThis.stateHooks.getSentryAppState();
+  }
+
+  const persistedState =
+    manager.mostRecentRetrievedState ||
+    globalThis.stateHooks.getMostRecentPersistedState?.();
+
+  return persistedState?.data ?? null;
+}
+
+// Single PersistenceManager per context: one in background, one per UI context.
+export const persistenceManager = new PersistenceManager({ localStore })
+  .on('vaultCorruptionDetected', (payload) => {
+    trackVaultCorruptionEvent(
+      payload.backup,
+      MetaMetricsEventName.VaultCorruptionDetected,
+      payload.corruptionType,
+    );
+  })
+  .on('splitStateMigrationSucceeded', (payload) => {
+    trackEarlySegmentEvent({
+      state: payload.state,
+      event: MetaMetricsEventName.StateMigrationSucceeded,
+      category: MetaMetricsEventCategory.StateMigration,
+    });
+  })
+  .on('splitStateMigrationFailed', (payload) => {
+    trackEarlySegmentEvent({
+      state: payload.state,
+      event: MetaMetricsEventName.StateMigrationFailed,
+      category: MetaMetricsEventCategory.StateMigration,
+    });
+  })
+  .on('writeRetryRecovered', (payload) => {
+    trackEarlySegmentEvent({
+      state: getStateForEarlySegmentEvent(persistenceManager),
+      event: MetaMetricsEventName.DataPersistenceWriteRetryRecovered,
+      category: MetaMetricsEventCategory.Error,
+      properties: {
+        persistence_event: payload.event,
+        first_error_message: payload.firstErrorMessage,
+        first_error_name: payload.firstErrorName,
+        retry_delay_ms: payload.retryDelayMs,
+      },
+    });
+  });
 
 /**
  * Get the persisted wallet state.
  *
+ * @param options - Options for retrieving persisted state.
+ * @param options.reportErrors - Whether read errors should be reported to Sentry.
  * @returns The persisted wallet state.
  */
-globalThis.stateHooks.getPersistedState = async function () {
-  return await sentryLocalStore.get({ validateVault: false });
+globalThis.stateHooks.getPersistedState = async function (options = {}) {
+  const { reportErrors = true } = options;
+  return await persistenceManager.get({ validateVault: false, reportErrors });
+};
+
+/**
+ * Get the backup state from IndexedDB.
+ * This is used as a fallback when primary storage is unavailable.
+ *
+ * @returns The backup state, or null if unavailable.
+ */
+globalThis.stateHooks.getBackupState = async function () {
+  return (await persistenceManager.getBackup()) ?? null;
 };
 
 const persistedStateMask = {
   data: SENTRY_BACKGROUND_STATE,
   meta: {
+    storageKind: true,
     version: true,
   },
 };
@@ -50,7 +136,7 @@ globalThis.stateHooks.getSentryState = function () {
   };
   // If `getSentryAppState` is set, it implies that initialization has completed
   if (globalThis.stateHooks.getSentryAppState) {
-    sentryLocalStore.cleanUpMostRecentRetrievedState();
+    persistenceManager.cleanUpMostRecentRetrievedState();
     return {
       ...sentryState,
       state: globalThis.stateHooks.getSentryAppState(),
@@ -59,12 +145,12 @@ globalThis.stateHooks.getSentryState = function () {
     // This is truthy if Sentry has retrieved state at least once already. This
     // should always be true when getting context for an error report, but can
     // be unset when Sentry is performing the opt-in check.
-    sentryLocalStore.mostRecentRetrievedState ||
+    persistenceManager.mostRecentRetrievedState ||
     // This is only set in the background process.
     globalThis.stateHooks.getMostRecentPersistedState
   ) {
     const persistedState =
-      sentryLocalStore.mostRecentRetrievedState ||
+      persistenceManager.mostRecentRetrievedState ||
       globalThis.stateHooks.getMostRecentPersistedState();
     // This can be unset when this method is called in the background for an
     // opt-in check, but the state hasn't been loaded yet.

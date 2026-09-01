@@ -1,15 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import {
-  Box,
-  ButtonPrimary,
-  ButtonSecondary,
-  ButtonSecondarySize,
-} from '../../component-library';
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '@metamask/design-system-react';
+import { Box } from '../../component-library';
 import { Display } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import * as actions from '../../../store/actions';
 
 export default function BottomButtons({
   importAccountFunc,
@@ -17,21 +15,20 @@ export default function BottomButtons({
   onActionComplete,
 }) {
   const t = useI18nContext();
-  const dispatch = useDispatch();
 
   return (
     <Box display={Display.Flex} gap={4}>
-      <ButtonSecondary
+      <Button
         onClick={() => {
-          dispatch(actions.hideWarning());
           onActionComplete();
         }}
-        size={ButtonSecondarySize.Lg}
-        block
+        size={ButtonSize.Lg}
+        variant={ButtonVariant.Secondary}
+        isFullWidth
       >
         {t('cancel')}
-      </ButtonSecondary>
-      <ButtonPrimary
+      </Button>
+      <Button
         onClick={async () => {
           try {
             const result = await importAccountFunc();
@@ -42,13 +39,14 @@ export default function BottomButtons({
             // Take no action
           }
         }}
-        disabled={isPrimaryDisabled}
-        size={ButtonSecondarySize.Lg}
+        isDisabled={isPrimaryDisabled}
+        size={ButtonSize.Lg}
+        variant={ButtonVariant.Primary}
         data-testid="import-account-confirm-button"
-        block
+        isFullWidth
       >
         {t('import')}
-      </ButtonPrimary>
+      </Button>
     </Box>
   );
 }

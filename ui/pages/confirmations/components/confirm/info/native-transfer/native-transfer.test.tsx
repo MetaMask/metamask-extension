@@ -9,8 +9,8 @@ jest.mock('../../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
 }));
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useLocation: () => ({ pathname: '/' }),
   useSearchParams: jest.fn().mockReturnValue([{ get: () => null }]),
 }));
@@ -30,6 +30,21 @@ jest.mock('../../../../../../store/actions', () => ({
     lowerTimeBound: 0,
     upperTimeBound: 60000,
   }),
+}));
+
+jest.mock('../../../../hooks/gas/useIsGaslessSupported', () => ({
+  useIsGaslessSupported: jest.fn(() => ({
+    isSupported: false,
+    isSmartTransaction: false,
+    pending: false,
+  })),
+}));
+
+jest.mock('../../../../hooks/gas/useGasSponsorshipPreference', () => ({
+  useGasSponsorshipPreference: jest.fn(() => ({
+    isSponsorshipOptedOut: false,
+    setSponsorshipOptedOut: jest.fn(),
+  })),
 }));
 
 describe('NativeTransferInfo', () => {

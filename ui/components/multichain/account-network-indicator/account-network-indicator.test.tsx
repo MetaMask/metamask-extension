@@ -1,7 +1,7 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import {
   BNB_DISPLAY_NAME,
@@ -20,20 +20,18 @@ const render = (scopes = MOCK_SCOPES) => {
 
 describe('AccountNetworkIndicator', () => {
   it('renders the avatar group with network images', () => {
-    const { getByTestId, container } = render();
+    const { getByTestId, getAllByTestId, container } = render();
 
     const avatarGroup = getByTestId('avatar-group');
     expect(avatarGroup).toBeTruthy();
 
-    const networkImages = container.querySelectorAll(
-      '.mm-avatar-network__network-image',
-    );
+    const networkImages = getAllByTestId('avatar-group-network-image');
     expect(networkImages.length).toBeGreaterThan(0);
 
     expect(container).toMatchSnapshot('account-network-indicator');
   });
 
-  it('shows the tooltip when hovered', () => {
+  it('shows the tooltip when hovered', async () => {
     const { container, getByText } = render();
 
     const tooltipTrigger = container.querySelector('[data-tooltipped]');
@@ -43,7 +41,9 @@ describe('AccountNetworkIndicator', () => {
       fireEvent.mouseEnter(tooltipTrigger);
       expect(tooltipTrigger.getAttribute('aria-describedby')).not.toBeNull();
 
-      expect(getByText(POLYGON_DISPLAY_NAME)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(getByText(POLYGON_DISPLAY_NAME)).toBeInTheDocument();
+      });
       expect(getByText(BNB_DISPLAY_NAME)).toBeInTheDocument();
     }
   });

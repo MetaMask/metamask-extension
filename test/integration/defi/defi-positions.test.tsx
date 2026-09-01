@@ -11,6 +11,8 @@ import {
   clickElementById,
   clickElementByText,
   createMockImplementation,
+  getSelectedAccountGroupAccounts,
+  getSelectedAccountGroupName,
   waitForElementByText,
   waitForElementByTextToNotBePresent,
 } from '../helpers';
@@ -20,7 +22,19 @@ jest.setTimeout(20_000);
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
+}));
+
+jest.mock('../../../ui/hooks/musd/useMusdGeoBlocking', () => ({
+  ...jest.requireActual('../../../ui/hooks/musd/useMusdGeoBlocking'),
+  useMusdGeoBlocking: () => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+    error: null,
+    blockedRegions: [],
+    blockedMessage: null,
+    refreshGeolocation: jest.fn(),
+  }),
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -34,22 +48,19 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
 
-const account =
-  mockMetaMaskState.internalAccounts.accounts[
-    mockMetaMaskState.internalAccounts
-      .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-  ];
-
-const accountName = account.metadata.name;
+const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
+const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 
 const withMetamaskConnectedToMainnet = {
   ...mockMetaMaskState,
-  participateInMetaMetrics: true,
+  analyticsId: 'test-metametrics-id',
+  consentDecisionMade: true,
+  optedIn: true,
   dataCollectionForMarketing: false,
   selectedNetworkClientId: 'testNetworkConfigurationId',
   preferences: {
@@ -71,8 +82,11 @@ const withMetamaskConnectedToMainnet = {
       '0xe708': true,
     },
   },
+  // Pin legacy DeFi on / V2 off so these tests stay on the V1 UI regardless of
+  // remote client-config (V2 is currently enabled in development only).
   remoteFeatureFlags: {
     assetsDefiPositionsEnabled: true,
+    defiControllerV2: { enabled: false },
   },
   allDeFiPositions: {
     [account.address]: {
@@ -246,8 +260,6 @@ const withMetamaskConnectedToMainnet = {
   },
 };
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
-
 describe('Defi positions list', () => {
   beforeEach(() => {
     process.env.PORTFOLIO_VIEW = 'true';
@@ -300,10 +312,6 @@ describe('Defi positions list', () => {
     await screen.findByText(accountName);
 
     await clickElementById('account-overview__defi-tab');
-    if (!isGlobalNetworkSelectorRemoved) {
-      await clickElementById('sort-by-networks');
-      await clickElementById('network-filter-current__button');
-    }
     await waitForElementByText('AaveV3 Mainnet');
     await waitForElementByText('MetaMask Staking');
     await waitForElementByTextToNotBePresent('AaveV3 Polygon');
@@ -373,12 +381,11 @@ describe('Defi positions list', () => {
       metricsEvents =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.filter(
           (call) =>
-            call[0] === 'trackMetaMetricsEvent' &&
-            (call[1] as unknown as Record<string, unknown>[])[0]?.event ===
+            call[0] === 'trackAnalyticsEvent' &&
+            (call[1] as unknown as Record<string, unknown>[])[0]?.name ===
               MetaMetricsEventName.DeFiDetailsOpened,
         );
 
-      console.log(JSON.stringify(metricsEvents));
       expect(metricsEvents).toHaveLength(2);
     });
 
@@ -386,15 +393,23 @@ describe('Defi positions list', () => {
       string,
       unknown
     >;
+    const aaveOptions = metricsEvents?.[0]?.[1]?.[1] as unknown as Record<
+      string,
+      unknown
+    >;
     const stakingEvent = metricsEvents?.[1]?.[1]?.[0] as unknown as Record<
+      string,
+      unknown
+    >;
+    const stakingOptions = metricsEvents?.[1]?.[1]?.[1] as unknown as Record<
       string,
       unknown
     >;
 
     expect(aaveEvent).toMatchObject({
-      category: MetaMetricsEventCategory.DeFi,
-      event: MetaMetricsEventName.DeFiDetailsOpened,
+      name: MetaMetricsEventName.DeFiDetailsOpened,
       properties: {
+        category: MetaMetricsEventCategory.DeFi,
         location: 'Home',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -403,6 +418,8 @@ describe('Defi positions list', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         protocol_id: 'aave-v3',
       },
+    });
+    expect(aaveOptions).toMatchObject({
       environmentType: 'background',
       page: {
         path: '/',
@@ -412,9 +429,9 @@ describe('Defi positions list', () => {
     });
 
     expect(stakingEvent).toMatchObject({
-      category: MetaMetricsEventCategory.DeFi,
-      event: MetaMetricsEventName.DeFiDetailsOpened,
+      name: MetaMetricsEventName.DeFiDetailsOpened,
       properties: {
+        category: MetaMetricsEventCategory.DeFi,
         location: 'Home',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -423,6 +440,8 @@ describe('Defi positions list', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         protocol_id: 'metamask-staking',
       },
+    });
+    expect(stakingOptions).toMatchObject({
       environmentType: 'background',
       page: {
         path: '/',

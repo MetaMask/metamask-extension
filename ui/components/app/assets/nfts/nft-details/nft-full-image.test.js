@@ -5,10 +5,10 @@ import thunk from 'redux-thunk';
 import { toHex } from '@metamask/controller-utils';
 import { useSelector } from 'react-redux';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
 import * as UseGetAssetImageUrlModule from '../../../../../hooks/useGetAssetImageUrl';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
 import { getAllNfts } from '../../../../../ducks/metamask/metamask';
 import { getIpfsGateway, getOpenSeaEnabled } from '../../../../../selectors';
@@ -21,14 +21,15 @@ const selectedAddress =
 const nfts = mockState.metamask.allNfts[selectedAddress][toHex(5)];
 const mockAsset = nfts[0].address;
 const mockId = nfts[0].tokenId;
+
+const mockUseNavigate = jest.fn();
+const mockUseParams = jest.fn();
 jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
   return {
-    ...original,
-    useParams: () => ({
-      asset: mockAsset,
-      id: mockId,
-    }),
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+    useNavigationType: () => 'PUSH',
+    useParams: () => mockUseParams(),
   };
 });
 
@@ -62,8 +63,11 @@ describe('NFT full image', () => {
     return undefined;
   });
 
+  const mockParams = { asset: mockAsset, id: mockId };
+
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseParams.mockReturnValue(mockParams);
   });
 
   it('should match snapshot', async () => {

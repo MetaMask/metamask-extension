@@ -8,12 +8,26 @@ const useGetAssetImageUrl = (
   const [imageUrl, setImageUrl] = useState<string>('');
 
   useEffect(() => {
+    let isUnmounted = false;
+
     const getAssetImgUrl = async () => {
-      const assetImageUrl = await getAssetImageURL(image, ipfsGateway);
-      setImageUrl(assetImageUrl);
+      try {
+        const assetImageUrl = await getAssetImageURL(image, ipfsGateway);
+        if (!isUnmounted) {
+          setImageUrl(assetImageUrl);
+        }
+      } catch {
+        if (!isUnmounted) {
+          setImageUrl('');
+        }
+      }
     };
 
     getAssetImgUrl();
+
+    return () => {
+      isUnmounted = true;
+    };
   }, [image, ipfsGateway]);
 
   return imageUrl;

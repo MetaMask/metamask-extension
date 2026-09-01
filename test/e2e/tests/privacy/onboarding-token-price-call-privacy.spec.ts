@@ -1,12 +1,14 @@
 import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures, regularDelayMs } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { NETWORK_CLIENT_ID } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import {
   importSRPOnboardingFlow,
   createNewWalletOnboardingFlow,
+  handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 
 // Mock function implementation for Token Price requests
@@ -16,7 +18,7 @@ async function mockTokenPriceApi(
   return [
     // mainnet
     await mockServer
-      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
       .thenCallback(() => ({
         statusCode: 200,
         json: {},
@@ -28,8 +30,8 @@ describe('MetaMask onboarding', function () {
   it("doesn't make any token price API requests before create new wallet onboarding is completed", async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2({ onboarding: true })
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -64,6 +66,10 @@ describe('MetaMask onboarding', function () {
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
+
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
@@ -88,8 +94,8 @@ describe('MetaMask onboarding', function () {
   it("doesn't make any token price API requests before onboarding by import is completed", async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2({ onboarding: true })
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -118,6 +124,10 @@ describe('MetaMask onboarding', function () {
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
+
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 

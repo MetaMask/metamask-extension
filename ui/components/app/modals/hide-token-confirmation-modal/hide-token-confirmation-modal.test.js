@@ -1,25 +1,47 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import * as actions from '../../../../store/actions';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import HideTokenConfirmationModal from '.';
 
-const mockHistoryPush = jest.fn();
+const mockUseNavigate = jest.fn();
 const mockHideModal = jest.fn();
 const mockHideToken = jest.fn().mockResolvedValue();
+
+const mockHideAsset = jest.fn().mockReturnValue(jest.fn().mockResolvedValue());
+const mockRemoveCustomAsset = jest
+  .fn()
+  .mockReturnValue(jest.fn().mockResolvedValue());
 
 jest.mock('../../../../store/actions.ts', () => ({
   ...jest.requireActual('../../../../store/actions.ts'),
   hideModal: () => mockHideModal,
   hideToken: () => mockHideToken,
   ignoreTokens: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
+  hideAsset: (...args) => mockHideAsset(...args),
+  removeCustomAsset: (...args) => mockRemoveCustomAsset(...args),
+}));
+
+const mockGetIsAssetsUnifiedStateIncludedInBuild = jest
+  .fn()
+  .mockReturnValue(false);
+jest.mock('../../../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../../../shared/lib/environment'),
+  getIsAssetsUnifiedStateIncludedInBuild: () =>
+    mockGetIsAssetsUnifiedStateIncludedInBuild(),
 }));
 
 describe('Hide Token Confirmation Modal', () => {
+  beforeEach(() => {
+    mockGetIsAssetsUnifiedStateIncludedInBuild.mockReturnValue(false);
+    mockHideAsset.mockClear();
+    mockRemoveCustomAsset.mockClear();
+  });
+
   const tokenState = {
     address: '0xTokenAddress',
     symbol: 'TKN',
@@ -40,9 +62,7 @@ describe('Hide Token Confirmation Modal', () => {
       modal: {
         modalState: {
           props: {
-            history: {
-              push: mockHistoryPush,
-            },
+            navigate: mockUseNavigate,
             token: tokenState,
           },
         },
@@ -86,7 +106,8 @@ describe('Hide Token Confirmation Modal', () => {
 
     expect(mockHideModal).toHaveBeenCalled();
     expect(actions.ignoreTokens).toHaveBeenCalledWith({
-      tokensToIgnore: tokenState.address,
+      tokensToIgnore: [tokenState.address],
+      dontShowLoadingIndicator: false,
       networkClientId: 'goerli',
     });
   });
@@ -104,9 +125,7 @@ describe('Hide Token Confirmation Modal', () => {
         modal: {
           modalState: {
             props: {
-              history: {
-                push: mockHistoryPush,
-              },
+              navigate: mockUseNavigate,
               token: tokenState2,
             },
           },
@@ -129,8 +148,110 @@ describe('Hide Token Confirmation Modal', () => {
 
     expect(mockHideModal).toHaveBeenCalled();
     expect(actions.ignoreTokens).toHaveBeenCalledWith({
-      tokensToIgnore: tokenState2.address,
+      tokensToIgnore: [tokenState2.address],
+      dontShowLoadingIndicator: false,
       networkClientId: 'bsc',
+    });
+  });
+
+  describe('when the unified assets state is included in the build', () => {
+    const SELECTED_ACCOUNT_ID = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
+    const TOKEN_ADDRESS = '0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4';
+    const CHAIN_ID_GOERLI = '0x5';
+    // toAssetId produces CAIP-19 format with slash: chainId/assetType:reference
+    const ASSET_ID_GOERLI =
+      'eip155:5/erc20:0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4';
+
+    const tokenWithValidAddress = {
+      address: TOKEN_ADDRESS,
+      symbol: 'TKN',
+      image: '',
+      chainId: CHAIN_ID_GOERLI,
+    };
+
+    const baseUnifyState = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          accounts: {
+            ...mockState.metamask.internalAccounts.accounts,
+            [SELECTED_ACCOUNT_ID]: {
+              ...mockState.metamask.internalAccounts.accounts[
+                SELECTED_ACCOUNT_ID
+              ],
+              scopes: ['eip155:0', 'eip155:5'],
+            },
+          },
+        },
+      },
+      appState: {
+        ...mockState.appState,
+        modal: {
+          modalState: {
+            props: {
+              navigate: mockUseNavigate,
+              token: tokenWithValidAddress,
+            },
+          },
+        },
+      },
+    };
+
+    beforeEach(() => {
+      mockGetIsAssetsUnifiedStateIncludedInBuild.mockReturnValue(true);
+      mockHideAsset.mockClear();
+      mockRemoveCustomAsset.mockClear();
+    });
+
+    it('dispatches removeCustomAsset when the asset is in customAssets', async () => {
+      const stateWithCustomAsset = {
+        ...baseUnifyState,
+        metamask: {
+          ...baseUnifyState.metamask,
+          customAssets: {
+            [SELECTED_ACCOUNT_ID]: [ASSET_ID_GOERLI],
+          },
+        },
+      };
+      const store = configureMockStore([thunk])(stateWithCustomAsset);
+      const { queryByTestId } = renderWithProvider(
+        <HideTokenConfirmationModal />,
+        store,
+      );
+
+      fireEvent.click(queryByTestId('hide-token-confirmation__hide'));
+
+      await waitFor(() => {
+        expect(mockRemoveCustomAsset).toHaveBeenCalledWith(
+          SELECTED_ACCOUNT_ID,
+          ASSET_ID_GOERLI,
+        );
+        expect(mockHideAsset).not.toHaveBeenCalled();
+      });
+    });
+
+    it('dispatches hideAsset when the asset is not in customAssets', async () => {
+      const stateWithoutCustomAsset = {
+        ...baseUnifyState,
+        metamask: {
+          ...baseUnifyState.metamask,
+          customAssets: {},
+        },
+      };
+      const store = configureMockStore([thunk])(stateWithoutCustomAsset);
+      const { queryByTestId } = renderWithProvider(
+        <HideTokenConfirmationModal />,
+        store,
+      );
+
+      fireEvent.click(queryByTestId('hide-token-confirmation__hide'));
+
+      await waitFor(() => {
+        expect(mockHideAsset).toHaveBeenCalledWith(ASSET_ID_GOERLI);
+        expect(mockRemoveCustomAsset).not.toHaveBeenCalled();
+      });
     });
   });
 });

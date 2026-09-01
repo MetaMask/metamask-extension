@@ -1,25 +1,20 @@
 import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  Text,
+  TextButton,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import React from 'react';
-import {
-  Box,
-  ButtonLink,
-  ButtonLinkSize,
-  Text,
-} from '../../../../../components/component-library';
-import {
-  Display,
-  FlexDirection,
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
-
-// TODO: change to the correct URL
-const SHIELD_TERMS_OF_USE_URL = 'https://consensys.io/terms-of-use';
+import { SHIELD_TERMS_OF_USE_URL } from '../../../../../../shared/lib/ui-utils';
 
 const ShieldFooterAgreement = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -30,18 +25,26 @@ const ShieldFooterAgreement = () => {
   }
 
   return (
-    <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
-      <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Center}
+      gap={4}
+    >
+      <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
         {t('shieldFooterAgreement', [
-          <ButtonLink
-            href={SHIELD_TERMS_OF_USE_URL}
-            color={TextColor.textAlternative}
-            size={ButtonLinkSize.Inherit}
-            externalLink
+          <TextButton
+            asChild
             key="shield-footer-agreement-button"
+            className="inline font-normal"
           >
-            {t('snapsTermsOfUse')}
-          </ButtonLink>,
+            <a
+              href={SHIELD_TERMS_OF_USE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('snapsTermsOfUse')}
+            </a>
+          </TextButton>,
         ])}
       </Text>
     </Box>

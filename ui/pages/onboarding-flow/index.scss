@@ -6,7 +6,6 @@
 @import 'create-password/index';
 @import 'creation-successful/index';
 @import 'welcome/index';
-@import 'pin-extension/index';
 @import 'metametrics/index';
 
 .onboarding-flow {
@@ -15,18 +14,20 @@
     background-color: var(--color-accent03-light);
   }
 
-  &--welcome-login {
-    background: url('/images/welcome-page.png') no-repeat center top;
-    background-color: var(--color-accent02-dark);
-  }
-
   &__container {
-    padding-inline: 24px;
-    padding-top: 32px;
-    padding-bottom: 32px;
+    padding-inline: 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
     max-width: 446px;
     min-height: 627px;
     height: auto;
+    margin-bottom: 32px;
+
+    @include design-system.screen-sm-min {
+      padding-inline: 24px;
+      padding-top: 32px;
+      padding-bottom: 32px;
+    }
 
     &--full {
       padding-inline: 0;
@@ -37,12 +38,14 @@
       height: 100%;
     }
 
-    &--popup {
+    &--popup,
+    &--sidepanel {
       padding-inline: 16px;
       padding-top: 16px;
       padding-bottom: 24px;
       min-height: auto;
       height: 100%;
+      margin-bottom: 0;
     }
   }
 

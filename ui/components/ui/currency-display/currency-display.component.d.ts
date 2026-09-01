@@ -14,6 +14,7 @@ export type CurrencyDisplayProps = OverridingUnion<
     prefix?: string;
     suffix?: string | boolean;
     value?: string;
+    chainId?: string;
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,5 +26,7 @@ export type CurrencyDisplayProps = OverridingUnion<
   }
 >;
 
-declare const CurrencyDisplay: React.FC<CurrencyDisplayProps>;
+declare const CurrencyDisplay: React.ComponentType<
+  React.PropsWithChildren<CurrencyDisplayProps>
+>;
 export default CurrencyDisplay;

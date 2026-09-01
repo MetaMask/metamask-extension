@@ -1,7 +1,8 @@
 import { useEffect, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getEnabledChainIds } from '../selectors';
 import { updateBalancesFoAccounts } from '../store/actions';
+import { useDispatch } from '../store/hooks';
 
 /**
  * Assets hook to update balance state for ALL accounts when account lists are displayed.
@@ -37,7 +38,7 @@ export const useAssetsUpdateAllAccountBalances = (): {
         // Update balance state for ALL accounts across all enabled EVM chains
         // TokenBalancesController is configured with queryMultipleAccounts: true
         // so this will update balances for all accounts, not just the selected one
-        await dispatch(updateBalancesFoAccounts(enabledChainIds, true));
+        await dispatch(updateBalancesFoAccounts(enabledChainIds, false));
       }
     } catch (error) {
       console.warn('Error updating balances state for all accounts', error);

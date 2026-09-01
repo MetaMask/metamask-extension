@@ -26,12 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du skal vælge en konto!"
   },
-  "activityLog": {
-    "message": "aktivitetslog"
-  },
-  "addAcquiredTokens": {
-    "message": "Tilføj de tokens du har erhvervet ved hjælp af MetaMask"
-  },
   "addAlias": {
     "message": "Tilføj alias"
   },
@@ -81,17 +75,11 @@
   "autoLockTimeLimit": {
     "message": "Timer for automatisk udlogning (minutter)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Indstil den passive tid i minutter, før MetaMask automatisk logger dig ud"
-  },
   "average": {
     "message": "Gennemsnit"
   },
   "back": {
     "message": "Tilbage"
-  },
-  "backupApprovalInfo": {
-    "message": "Den hemmelige kode er påkrævet for at gendanne din pung, hvis du mister din enhed, glemmer dit kodeord, er nødt til at geninstallere MetaMask eller ønsker adgang til din pung fra en anden enhed."
   },
   "backupApprovalNotice": {
     "message": "Sikkerhedskopiér din Hemmelige Gendannelseskode for at holde din tegnebog og dine penge sikre."
@@ -184,23 +172,11 @@
   "createPassword": {
     "message": "Opret adgangskode"
   },
-  "currencyConversion": {
-    "message": "Valutakonvertering"
-  },
-  "currentLanguage": {
-    "message": "Nuværende sprog"
-  },
   "custom": {
     "message": "Avanceret"
   },
-  "customToken": {
-    "message": "Brugerdefineret Token"
-  },
   "decimal": {
     "message": "Decimalpræcision"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Decimaler skal være mindst 0 og højst 36."
   },
   "delete": {
     "message": "Slet"
@@ -210,9 +186,6 @@
   },
   "done": {
     "message": "Færdig"
-  },
-  "downloadGoogleChrome": {
-    "message": "Hent Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Download tilstandslogs"
@@ -229,14 +202,8 @@
   "enterPasswordContinue": {
     "message": "Indtast adgangskode for at fortsætte"
   },
-  "ethereumPublicAddress": {
-    "message": "Offentlig Ethereum-adresse"
-  },
   "etherscanView": {
     "message": "Se konto på Etherscan"
-  },
-  "expandView": {
-    "message": "Udvis Visning"
   },
   "failed": {
     "message": "Mislykkedes"
@@ -275,9 +242,6 @@
   "hardwareWallets": {
     "message": "Tilslut en hardware-tegnebog"
   },
-  "hardwareWalletsMsg": {
-    "message": "Vælg en hardware-pung du vil bruge med MetaMask"
-  },
   "here": {
     "message": "her",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -304,9 +268,6 @@
   "imported": {
     "message": "Importeret",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Din indledende transaktion blev bekræftet af netværket. Klik OK for at gå tilbage."
   },
   "insufficientBalance": {
     "message": "Utilstrækkelig balance."
@@ -348,12 +309,6 @@
   "likeToImportTokens": {
     "message": "Ønsker du at tilføje disse tokens?"
   },
-  "lineaGoerli": {
-    "message": "Linea-testnetværk"
-  },
-  "loadMore": {
-    "message": "Indlæs Mere"
-  },
   "loading": {
     "message": "Indlæser..."
   },
@@ -372,15 +327,9 @@
   "message": {
     "message": "Besked"
   },
-  "mustSelectOne": {
-    "message": "Skal vælge mindst 1 token."
-  },
   "needImportFile": {
     "message": "Du skal vælge en fil, der skal importeres.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Kan ikke sende en negativ mængde ETH."
   },
   "networkName": {
     "message": "Netværksnavn"
@@ -388,18 +337,9 @@
   "networks": {
     "message": "Netværk"
   },
-  "nevermind": {
-    "message": "Lige meget"
-  },
-  "newAccount": {
-    "message": "Ny konto"
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Ny kontakt"
   },
   "newContract": {
     "message": "Ny Kontrakt"
@@ -410,17 +350,11 @@
   "next": {
     "message": "Næste"
   },
-  "noConversionRateAvailable": {
-    "message": "Ingen tilgængelig omregningskurs"
-  },
   "noWebcamFound": {
     "message": "Din computers webkamera blev ikke fundet. Prøv venligst igen."
   },
   "noWebcamFoundTitle": {
     "message": "Webcam ikke fundet"
-  },
-  "notEnoughGas": {
-    "message": "Ikke nok gas"
   },
   "ofTextNofM": {
     "message": "af"
@@ -484,12 +418,6 @@
   "rejectAll": {
     "message": "Afvis Alle"
   },
-  "rejectTxsDescription": {
-    "message": "Du er ved at batchafvise $1-transaktioner."
-  },
-  "rejectTxsN": {
-    "message": "Afvis $1 transaktioner"
-  },
   "rejected": {
     "message": "Afvist"
   },
@@ -499,9 +427,6 @@
   "removeAccount": {
     "message": "Fjern konto"
   },
-  "removeAccountDescription": {
-    "message": "Denne konto fjernes fra din pung. Sikr dig venligst, at du har den originale seedfrase eller private nøgle til denne importerede konto, inden du fortsætter. Du kan importere eller skabe konti igen via kontomenuen."
-  },
   "required": {
     "message": "Nødvendig"
   },
@@ -510,9 +435,6 @@
   },
   "restore": {
     "message": "Gendan"
-  },
-  "revealSeedWords": {
-    "message": "Vis Seedord"
   },
   "revealSeedWordsWarning": {
     "message": "Disse ord kan bruges til at stjæle alle dine konti.",
@@ -557,9 +479,6 @@
   "showFiatConversionInTestnets": {
     "message": "Vis konvertering på testnet"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Vælg dette for at vise fiat-konvertering på Testnets"
-  },
   "showHexData": {
     "message": "Vis hex-data"
   },
@@ -568,9 +487,6 @@
   },
   "sign": {
     "message": "Underskriv"
-  },
-  "signatureRequest": {
-    "message": "Signaturforespørgsel"
   },
   "signed": {
     "message": "Underskrevet"
@@ -584,17 +500,11 @@
   "speedUpCancellation": {
     "message": "Gør denne annullering hurtigere"
   },
-  "speedUpTransaction": {
-    "message": "Gør denne transaktion hurtigere"
-  },
   "stateLogError": {
     "message": "Fejl ved hentning af tilstandslogfiler."
   },
   "stateLogs": {
     "message": "Tilstandslogs"
-  },
-  "stateLogsDescription": {
-    "message": "Status-logføringer indeholder dine offentlige kontoadresser og afsendte transaktioner."
   },
   "submitted": {
     "message": "Indsendt"
@@ -623,38 +533,11 @@
   "transaction": {
     "message": "transaktion"
   },
-  "transactionCancelAttempted": {
-    "message": "Forsøgt annullering af transaktion med brændstofgebyr $1 på $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaktionen blev annulleret ved $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaktion på $2 bekræftet."
-  },
-  "transactionCreated": {
-    "message": "Transaktion oprettet med en værdi på $1 til $2."
-  },
-  "transactionDropped": {
-    "message": "Transaktionen droppet til $2."
-  },
   "transactionError": {
     "message": "Transaktionsfejl. Undtagelse smidt i kontraktskode."
   },
   "transactionErrorNoContract": {
     "message": "Forsøger at hidkalde en funktion på en ikke-kontrakt adresse."
-  },
-  "transactionErrored": {
-    "message": "Transaktionen stødte på en fejl."
-  },
-  "transactionResubmitted": {
-    "message": "Transaktion genindsendt med brændstofgebyr forøget til $1 på $2"
-  },
-  "transactionSubmitted": {
-    "message": "Transaktion indsendt med brændstofgebyr på $1 til $2."
-  },
-  "transactionUpdated": {
-    "message": "Transaktion opdateret til $2."
   },
   "transfer": {
     "message": "Overfør"
@@ -686,12 +569,6 @@
   "usedByClients": {
     "message": "Brugt af forskellige kunder"
   },
-  "userName": {
-    "message": "Brugernavn"
-  },
-  "viewContact": {
-    "message": "Vis kontakt"
-  },
   "visitWebSite": {
     "message": "Besøg vores webside"
   },
@@ -700,8 +577,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du skal tillade kameraadgang for at bruge denne funktion."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Din private seed-sætning"
   }
 }

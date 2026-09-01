@@ -1,12 +1,13 @@
 import React from 'react';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, waitFor, within } from '@testing-library/react';
 import { EthAccountType, SolAccountType } from '@metamask/keyring-api';
 import {
   AccountGroupType,
   AccountWalletType,
   AccountGroupId,
 } from '@metamask/account-api';
-import { renderWithProvider } from '../../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import {
@@ -16,7 +17,28 @@ import {
 } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { createMockMultichainAccountsState } from '../../../../selectors/multichain-accounts/test-utils';
 import * as assetsSelectors from '../../../../selectors/assets';
-import { MultichainEditAccountsPage } from './multichain-edit-accounts-page';
+import {
+  MultichainEditAccountsPage,
+  SiteMetadata,
+  SnapsPermissionsRequestType,
+} from './multichain-edit-accounts-page';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
+const { Initial, Existing, None } = SnapsPermissionsRequestType;
 
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
@@ -36,6 +58,11 @@ const TEST_IDS = {
   MULTICHAIN_ACCOUNT_CELL: (groupId: string) =>
     `multichain-account-cell-${groupId}`,
   BACK_BUTTON: 'back-button',
+  DISCONNECT_BUTTON: 'disconnect-button',
+  SITE_INFO_BANNER: 'connected-site-info-banner',
+  DISCONNECT_ALL_MODAL: 'disconnect-all-modal',
+  SEARCH: 'multichain-edit-account-list-search',
+  SEARCH_CLEAR_BUTTON: 'text-field-search-clear-button',
 } as const;
 
 const mockEvmAccount1 = createMockInternalAccount({
@@ -91,6 +118,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
       entropy: {
         groupIndex: 0,
       },
+      lastSelected: 0,
     },
     accounts: [
       {
@@ -115,6 +143,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
       entropy: {
         groupIndex: 1,
       },
+      lastSelected: 0,
     },
     accounts: [
       {
@@ -139,6 +168,7 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
       entropy: {
         groupIndex: 2,
       },
+      lastSelected: 0,
     },
     accounts: [
       {
@@ -157,7 +187,6 @@ const createMockAccountGroups = (): AccountGroupWithInternalAccounts[] => [
 
 const createMockState = (overrides = {}) => {
   const accountTreeState = {
-    selectedAccountGroup: MOCK_GROUP_ID_1,
     wallets: {
       [MOCK_WALLET_ID]: {
         id: MOCK_WALLET_ID,
@@ -179,6 +208,7 @@ const createMockState = (overrides = {}) => {
               entropy: {
                 groupIndex: 0,
               },
+              lastSelected: 0,
             },
             accounts: [mockEvmAccount1.id, mockSolAccount1.id],
           },
@@ -192,6 +222,7 @@ const createMockState = (overrides = {}) => {
               entropy: {
                 groupIndex: 1,
               },
+              lastSelected: 0,
             },
             accounts: [mockEvmAccount2.id, mockSolAccount2.id],
           },
@@ -205,6 +236,7 @@ const createMockState = (overrides = {}) => {
               entropy: {
                 groupIndex: 2,
               },
+              lastSelected: 0,
             },
             accounts: [mockEvmAccount3.id, mockSolAccount3.id],
           },
@@ -246,6 +278,8 @@ const createMockState = (overrides = {}) => {
   const mockMultichainState = createMockMultichainAccountsState(
     accountTreeState as unknown as AccountTreeState,
     internalAccountsState as unknown as InternalAccountsState,
+    undefined,
+    MOCK_GROUP_ID_1,
   );
 
   return {
@@ -254,7 +288,20 @@ const createMockState = (overrides = {}) => {
       ...mockMultichainState.metamask,
       keyrings: [],
       defaultHomeActiveTabName: 'activity',
+      preferences: {
+        ...(
+          mockMultichainState.metamask as {
+            preferences?: Record<string, unknown>;
+          }
+        )?.preferences,
+        defaultAddressScope: 'eip155',
+      },
       ...overrides,
+    },
+    activeTab: {
+      origin: 'https://test-dapp.com',
+      protocol: 'https:',
+      url: 'https://test-dapp.com',
     },
   };
 };
@@ -265,6 +312,9 @@ const render = (
     defaultSelectedAccountGroups?: AccountGroupId[];
     onSubmit?: (accountGroups: AccountGroupId[]) => void;
     onClose?: () => void;
+    snapsPermissionsRequestType?: SnapsPermissionsRequestType;
+    siteMetadata?: SiteMetadata;
+    onDisconnect?: () => void;
   } = {},
   state = {},
 ) => {
@@ -273,6 +323,7 @@ const render = (
   const defaultProps = {
     supportedAccountGroups: createMockAccountGroups(),
     defaultSelectedAccountGroups: [MOCK_GROUP_ID_1],
+    snapsPermissionsRequestType: None,
     onSubmit: jest.fn(),
     onClose: jest.fn(),
     ...props,
@@ -298,7 +349,7 @@ describe('MultichainEditAccountsPage', () => {
 
   it('renders modal with correct title', () => {
     const { getByText } = render();
-    expect(getByText('Edit accounts')).toBeInTheDocument();
+    expect(getByText(messages.editAccounts.message)).toBeInTheDocument();
   });
 
   it('renders connect button', () => {
@@ -316,6 +367,53 @@ describe('MultichainEditAccountsPage', () => {
     expect(getByText('Test Group 1')).toBeInTheDocument();
     expect(getByText('Test Group 2')).toBeInTheDocument();
     expect(getByText('Test Group 3')).toBeInTheDocument();
+  });
+
+  it('displays the search field with correct placeholder', () => {
+    const { getByTestId } = render();
+
+    const searchContainer = getByTestId(TEST_IDS.SEARCH);
+    expect(searchContainer).toBeInTheDocument();
+
+    const searchInput = within(searchContainer).getByPlaceholderText(
+      messages.searchYourAccounts.message,
+    );
+    expect(searchInput).toBeInTheDocument();
+  });
+
+  it('filters accounts when search text is entered', () => {
+    const { getByTestId, getByText, queryByText } = render();
+
+    const searchContainer = getByTestId(TEST_IDS.SEARCH);
+    const searchInput = within(searchContainer).getByRole('searchbox');
+    fireEvent.change(searchInput, { target: { value: 'Test Group 2' } });
+
+    expect(getByText('Test Group 2')).toBeInTheDocument();
+    expect(queryByText('Test Group 1')).not.toBeInTheDocument();
+    expect(queryByText('Test Group 3')).not.toBeInTheDocument();
+  });
+
+  it('filters accounts when search text is an address', () => {
+    const { getByTestId, getByText, queryByText } = render();
+
+    const searchContainer = getByTestId(TEST_IDS.SEARCH);
+    const searchInput = within(searchContainer).getByRole('searchbox');
+    // search for the first 4 characters of mockEvmAccount2's address
+    fireEvent.change(searchInput, { target: { value: '0x2222' } });
+
+    expect(getByText('Test Group 2')).toBeInTheDocument();
+    expect(queryByText('Test Group 1')).not.toBeInTheDocument();
+    expect(queryByText('Test Group 3')).not.toBeInTheDocument();
+  });
+
+  it('shows "No accounts found" message when no accounts match search criteria', () => {
+    const { getByTestId, getByText } = render();
+
+    const searchContainer = getByTestId(TEST_IDS.SEARCH);
+    const searchInput = within(searchContainer).getByRole('searchbox');
+    fireEvent.change(searchInput, { target: { value: 'nonexistent account' } });
+
+    expect(getByText(messages.noAccountsFound.message)).toBeInTheDocument();
   });
 
   it('shows selected accounts with visual indication', () => {
@@ -396,7 +494,7 @@ describe('MultichainEditAccountsPage', () => {
       defaultSelectedAccountGroups: [],
     });
 
-    expect(getByText('Edit accounts')).toBeInTheDocument();
+    expect(getByText(messages.editAccounts.message)).toBeInTheDocument();
   });
 
   it('updates selected accounts when defaultSelectedAccountGroups prop changes', async () => {
@@ -420,6 +518,7 @@ describe('MultichainEditAccountsPage', () => {
         ]}
         onSubmit={jest.fn()}
         onClose={jest.fn()}
+        snapsPermissionsRequestType={None}
       />,
     );
 
@@ -433,6 +532,193 @@ describe('MultichainEditAccountsPage', () => {
       expect(
         getByTestId(TEST_IDS.MULTICHAIN_ACCOUNT_CELL(MOCK_GROUP_ID_3)),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('snapsPermissionsRequestType', () => {
+    describe('button disabled state', () => {
+      it('disables button when Initial and no accounts selected', () => {
+        const { getByTestId } = render({
+          defaultSelectedAccountGroups: [],
+          snapsPermissionsRequestType: Initial,
+        });
+
+        expect(
+          getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON),
+        ).toBeDisabled();
+      });
+
+      it('enables button when Initial and accounts selected', () => {
+        const { getByTestId } = render({
+          defaultSelectedAccountGroups: [MOCK_GROUP_ID_1],
+          snapsPermissionsRequestType: Initial,
+        });
+
+        expect(
+          getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON),
+        ).not.toBeDisabled();
+      });
+
+      it('enables button when Existing and no accounts selected', () => {
+        const { getByTestId } = render({
+          defaultSelectedAccountGroups: [],
+          snapsPermissionsRequestType: Existing,
+        });
+
+        expect(
+          getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON),
+        ).not.toBeDisabled();
+      });
+
+      it('disables button when None and no accounts selected', () => {
+        const { getByTestId } = render({
+          defaultSelectedAccountGroups: [],
+          snapsPermissionsRequestType: None,
+        });
+
+        expect(
+          getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON),
+        ).toBeDisabled();
+      });
+    });
+
+    describe('snap CSS class', () => {
+      it('applies snap class when snapsPermissionsRequestType is Initial', () => {
+        const { getByTestId } = render({
+          snapsPermissionsRequestType: Initial,
+        });
+
+        expect(getByTestId('modal-page')).toHaveClass(
+          'multichain-edit-accounts-page--snap',
+        );
+      });
+
+      it('applies snap class when snapsPermissionsRequestType is Existing', () => {
+        const { getByTestId } = render({
+          snapsPermissionsRequestType: Existing,
+        });
+
+        expect(getByTestId('modal-page')).toHaveClass(
+          'multichain-edit-accounts-page--snap',
+        );
+      });
+
+      it('does not apply snap class when snapsPermissionsRequestType is None', () => {
+        const { getByTestId } = render({
+          snapsPermissionsRequestType: None,
+        });
+
+        expect(getByTestId('modal-page')).not.toHaveClass(
+          'multichain-edit-accounts-page--snap',
+        );
+      });
+    });
+
+    describe('header visibility', () => {
+      it('shows header when snapsPermissionsRequestType is None', () => {
+        const { getByTestId } = render({
+          snapsPermissionsRequestType: None,
+        });
+
+        expect(getByTestId(TEST_IDS.BACK_BUTTON)).toBeInTheDocument();
+      });
+
+      it('hides header when snapsPermissionsRequestType is Initial', () => {
+        const { queryByTestId } = render({
+          snapsPermissionsRequestType: Initial,
+        });
+
+        expect(queryByTestId(TEST_IDS.BACK_BUTTON)).not.toBeInTheDocument();
+      });
+
+      it('hides header when snapsPermissionsRequestType is Existing', () => {
+        const { queryByTestId } = render({
+          snapsPermissionsRequestType: Existing,
+        });
+
+        expect(queryByTestId(TEST_IDS.BACK_BUTTON)).not.toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('site metadata banner', () => {
+    it('does not render banner when siteMetadata is not provided', () => {
+      const { queryByTestId } = render();
+
+      expect(queryByTestId(TEST_IDS.SITE_INFO_BANNER)).not.toBeInTheDocument();
+    });
+
+    it('renders banner when siteMetadata is provided', () => {
+      const { getByTestId } = render({
+        siteMetadata: {
+          origin: 'https://example.com',
+          name: 'Example Dapp',
+          iconUrl: 'https://example.com/icon.png',
+        },
+      });
+
+      expect(getByTestId(TEST_IDS.SITE_INFO_BANNER)).toBeInTheDocument();
+    });
+
+    it('shows site origin in banner', () => {
+      const { getByText, getByTestId } = render({
+        siteMetadata: {
+          origin: 'https://example.com',
+          name: 'Example Dapp',
+        },
+      });
+
+      const banner = getByTestId(TEST_IDS.SITE_INFO_BANNER);
+      expect(banner).toBeInTheDocument();
+      expect(getByText('example.com')).toBeInTheDocument();
+      expect(getByText(/can see your connected accounts/u)).toBeInTheDocument();
+    });
+  });
+
+  describe('disconnect button and modal', () => {
+    it('does not render disconnect button when onDisconnect is not provided', () => {
+      const { queryByTestId } = render();
+
+      expect(queryByTestId(TEST_IDS.DISCONNECT_BUTTON)).not.toBeInTheDocument();
+    });
+
+    it('renders disconnect button when onDisconnect is provided', () => {
+      const { getByTestId } = render({
+        onDisconnect: jest.fn(),
+        siteMetadata: {
+          origin: 'https://example.com',
+        },
+      });
+
+      expect(getByTestId(TEST_IDS.DISCONNECT_BUTTON)).toBeInTheDocument();
+    });
+
+    it('opens disconnect modal when disconnect button is clicked', () => {
+      const { getByTestId } = render({
+        onDisconnect: jest.fn(),
+        siteMetadata: {
+          origin: 'https://example.com',
+        },
+      });
+
+      fireEvent.click(getByTestId(TEST_IDS.DISCONNECT_BUTTON));
+
+      expect(getByTestId(TEST_IDS.DISCONNECT_ALL_MODAL)).toBeInTheDocument();
+    });
+
+    it('calls onDisconnect when modal confirm is clicked', () => {
+      const onDisconnect = jest.fn();
+      const { getByTestId } = render({
+        onDisconnect,
+        siteMetadata: {
+          origin: 'https://example.com',
+        },
+      });
+
+      fireEvent.click(getByTestId(TEST_IDS.DISCONNECT_BUTTON));
+      fireEvent.click(getByTestId('disconnect-all'));
+
+      expect(onDisconnect).toHaveBeenCalled();
     });
   });
 });

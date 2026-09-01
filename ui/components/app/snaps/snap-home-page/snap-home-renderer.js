@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { Box, Text } from '../../../component-library';
 import { SnapUIRenderer } from '../snap-ui-renderer';
 import {
   getSnapMetadata,
-  getMemoizedUnapprovedConfirmations,
-  getMemoizedUnapprovedTemplatedConfirmations,
+  getUnapprovedConfirmations,
+  getUnapprovedTemplatedConfirmations,
 } from '../../../../selectors';
 import { SnapDelineator } from '../snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
@@ -23,6 +23,7 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
 } from '../../../../helpers/constants/routes';
+import { useDispatch } from '../../../../store/hooks';
 import { useSnapHome } from './useSnapHome';
 
 export const SnapHomeRenderer = ({ snapId }) => {
@@ -33,12 +34,10 @@ export const SnapHomeRenderer = ({ snapId }) => {
   );
 
   const unapprovedTemplatedConfirmations = useSelector(
-    getMemoizedUnapprovedTemplatedConfirmations,
+    getUnapprovedTemplatedConfirmations,
   );
-  const unapprovedConfirmations = useSelector(
-    getMemoizedUnapprovedConfirmations,
-  );
-  const history = useHistory();
+  const unapprovedConfirmations = useSelector(getUnapprovedConfirmations);
+  const navigate = useNavigate();
 
   const { data, error, loading } = useSnapHome({ snapId });
 
@@ -46,7 +45,7 @@ export const SnapHomeRenderer = ({ snapId }) => {
 
   useEffect(() => {
     return () => interfaceId && dispatch(deleteInterface(interfaceId));
-  }, [interfaceId]);
+  }, [interfaceId, dispatch]);
 
   useEffect(() => {
     // Snaps are allowed to redirect to their own pending confirmations (templated or not)
@@ -58,11 +57,16 @@ export const SnapHomeRenderer = ({ snapId }) => {
     );
 
     if (templatedSnapApproval) {
-      history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
+      navigate(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
     } else if (snapApproval) {
-      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${snapApproval.id}`);
+      navigate(`${CONFIRM_TRANSACTION_ROUTE}/${snapApproval.id}`);
     }
-  }, [unapprovedTemplatedConfirmations, unapprovedConfirmations, history]);
+  }, [
+    unapprovedTemplatedConfirmations,
+    unapprovedConfirmations,
+    navigate,
+    snapId,
+  ]);
 
   if (error) {
     return (

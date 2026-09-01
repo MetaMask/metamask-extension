@@ -1,5 +1,30 @@
 import type { Browser, Manifest } from '../../helpers';
 
+export type BundleSizeCategory =
+  | 'background'
+  | 'ui'
+  | 'other'
+  | 'contentScripts';
+
+export type BundleSizeStatsOptions = {
+  /**
+   * Output file path template for the emitted summary, relative to webpack's
+   * output directory. Must include `[browser]` and end with `.json`, for example
+   * `bundle-size/[browser].json`.
+   */
+  outFile: string;
+
+  /**
+   * Whether to emit a sibling debug artifact with the raw classified entrypoint graph.
+   */
+  debug?: boolean;
+};
+
+export type HtmlEntrypointOptions = {
+  directory: string;
+  category: BundleSizeCategory;
+};
+
 export type BaseManifestPluginOptions<Zip extends boolean> = {
   /**
    * The browsers to build for.
@@ -9,15 +34,11 @@ export type BaseManifestPluginOptions<Zip extends boolean> = {
   /**
    * An array of strings specifying the paths of additional web-accessible resources.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   web_accessible_resources?: readonly string[];
 
   /**
    * An integer specifying the version of the manifest file format your package requires
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   manifest_version: 2 | 3;
 
   /**
@@ -67,6 +88,28 @@ export type BaseManifestPluginOptions<Zip extends boolean> = {
    * Whether or not to zip the individual browser builds.
    */
   zip: Zip;
+
+  /**
+   * The build type of the build being created.
+   */
+  buildType: string;
+
+  /**
+   * Whether to set a build ID in the emitted manifest. The build ID is a hash
+   * of the build contents that can be used to identify the build and detect
+   * when it has changed.
+   */
+  setBuildId?: boolean;
+
+  /**
+   * Optional bundle-size reporting configuration.
+   */
+  stats?: BundleSizeStatsOptions | false;
+
+  /**
+   * HTML entrypoint directories to collect and classify for bundle-size stats.
+   */
+  html?: readonly HtmlEntrypointOptions[];
 };
 
 export type ZipOptions = {

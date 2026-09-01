@@ -1,9 +1,10 @@
 import AddTokensModal from '../../page-objects/pages/dialog/add-tokens';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { login } from '../../page-objects/flows/login.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 
 describe('Multiple ERC20 Watch Asset', function () {
@@ -11,15 +12,16 @@ describe('Multiple ERC20 Watch Asset', function () {
     const tokenContract = SMART_CONTRACTS.HST;
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withEnabledNetworks({ eip155: { '0x539': true } })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract: [tokenContract, tokenContract, tokenContract],
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes, contractRegistry }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const contracts = contractRegistry.getAllDeployedContractAddresses();
 
         const testDapp = new TestDapp(driver);
@@ -57,7 +59,7 @@ describe('Multiple ERC20 Watch Asset', function () {
         );
 
         // Check all three tokens have been added to the token list.
-        const tokenList = new AssetListPage(driver);
+        const tokenList = new TokensTab(driver);
         await tokenList.checkTokenItemNumber(4); // 3 tokens plus ETH
         await tokenList.checkTokenExistsInList('Ether');
         await tokenList.checkTokenExistsInList('TST');

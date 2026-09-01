@@ -1,15 +1,17 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
-  setEnabledNetworks,
-  setTokenNetworkFilter,
-} from '../../../../../store/actions';
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { setEnabledNetworks } from '../../../../../store/actions';
 import {
   getCurrentNetwork,
   getShouldHideZeroBalanceTokens,
   getSelectedAccount,
   getAllChainsToPoll,
-  getTokenNetworkFilter,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getEnabledNetworksByNamespace,
 } from '../../../../../selectors';
@@ -17,19 +19,14 @@ import {
   getCurrentChainId,
   getIsAllNetworksFilterEnabled,
   getNetworkConfigurationsByChainId,
-} from '../../../../../../shared/modules/selectors/networks';
+} from '../../../../../../shared/lib/selectors/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SelectableListItem } from '../sort-control/sort-control';
 import { Text } from '../../../../component-library/text/text';
 import {
-  AlignItems,
-  BlockSize,
-  Display,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { Box } from '../../../../component-library/box/box';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -42,7 +39,7 @@ import {
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
-import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
+import { useDispatch } from '../../../../../store/hooks';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -63,7 +60,6 @@ const NetworkFilter = ({
   const currentNetwork = useSelector(getCurrentNetwork);
   const selectedAccount = useSelector(getSelectedAccount);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -98,33 +94,34 @@ const NetworkFilter = ({
       formattedTokensForAllNetworks,
     );
 
-  const handleFilter = (chainFilters: Record<string, boolean>) => {
-    if (handleFilterNetwork) {
-      handleFilterNetwork(chainFilters);
-    } else {
-      isGlobalNetworkSelectorRemoved
-        ? dispatch(setEnabledNetworks(chainId))
-        : dispatch(setTokenNetworkFilter(chainFilters));
-    }
+  const handleFilter = useCallback(
+    (chainFilters: Record<string, boolean>) => {
+      if (handleFilterNetwork) {
+        handleFilterNetwork(chainFilters);
+      } else {
+        dispatch(setEnabledNetworks(chainId));
+      }
 
-    // TODO Add metrics
-    handleClose();
-  };
+      // TODO Add metrics
+      handleClose();
+    },
+    [chainId, dispatch, handleClose, handleFilterNetwork],
+  );
 
   const allOpts = useSelector(getIsAllNetworksFilterEnabled);
 
-  const allAddedPopularNetworks = FEATURED_NETWORK_CHAIN_IDS.filter(
-    (chain) => allOpts[chain],
-  ).map((chain) => {
-    return allNetworks[chain].name;
-  });
+  const allAddedPopularNetworks = useMemo(
+    () =>
+      FEATURED_NETWORK_CHAIN_IDS.filter((chain) => allOpts[chain]).map(
+        (chain) => allNetworks[chain].name,
+      ),
+    [allNetworks, allOpts],
+  );
 
-  const networks = isGlobalNetworkSelectorRemoved
-    ? enabledNetworksByNamespace
-    : tokenNetworkFilter;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  const filter = networkFilter || networks;
+  const filter = useMemo(
+    () => networkFilter || enabledNetworksByNamespace,
+    [enabledNetworksByNamespace, networkFilter],
+  );
 
   return (
     <>
@@ -138,10 +135,10 @@ const NetworkFilter = ({
         testId="network-filter-all"
       >
         <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          width={BlockSize.Full}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
           gap={3}
+          className="flex w-full"
         >
           <Box>
             <Text
@@ -167,7 +164,11 @@ const NetworkFilter = ({
               </Text>
             )}
           </Box>
-          <Box display={Display.Flex} alignItems={AlignItems.center}>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            className="flex"
+          >
             <InfoTooltip
               position="bottom"
               contentText={allAddedPopularNetworks.join(', ')}
@@ -202,11 +203,11 @@ const NetworkFilter = ({
         testId="network-filter-current"
       >
         <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
           gap={3}
-          alignItems={AlignItems.center}
-          width={BlockSize.Full}
+          alignItems={BoxAlignItems.Center}
+          className="flex w-full"
         >
           <Box>
             <Text
@@ -233,8 +234,6 @@ const NetworkFilter = ({
           </Box>
           <AvatarNetwork
             size={AvatarNetworkSize.Sm}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             name={currentNetwork?.nickname || ''}
             src={currentNetwork?.rpcPrefs?.imageUrl}
           />

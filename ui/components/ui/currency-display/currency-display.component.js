@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { SensitiveText, Box } from '../../component-library';
@@ -33,19 +33,24 @@ export default function CurrencyDisplay({
   isAggregatedFiatOverviewBalance = false,
   privacyMode = false,
   onClick,
+  chainId,
   ...props
 }) {
-  const [title, parts] = useCurrencyDisplay(value, {
-    account,
-    displayValue,
-    prefix,
-    numberOfDecimals,
-    hideLabel,
-    denomination,
-    currency,
-    suffix,
-    isAggregatedFiatOverviewBalance,
-  });
+  const [title, parts] = useCurrencyDisplay(
+    value,
+    {
+      account,
+      displayValue,
+      prefix,
+      numberOfDecimals,
+      hideLabel,
+      denomination,
+      currency,
+      suffix,
+      isAggregatedFiatOverviewBalance,
+    },
+    chainId,
+  );
 
   return (
     <Box
@@ -114,6 +119,7 @@ const CurrencyDisplayPropTypes = {
   isAggregatedFiatOverviewBalance: PropTypes.bool,
   privacyMode: PropTypes.bool,
   onClick: PropTypes.func,
+  chainId: PropTypes.string,
 };
 
 CurrencyDisplay.propTypes = CurrencyDisplayPropTypes;

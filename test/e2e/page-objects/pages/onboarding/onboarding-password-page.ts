@@ -1,38 +1,69 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
-import { WALLET_PASSWORD } from '../../../helpers';
+import { WALLET_PASSWORD } from '../../../constants';
 
+/**
+ * Create-password step shared by create-wallet and import-SRP onboarding.
+ *
+ * Screen: `#/onboarding/create-password`
+ * Owns: new/confirm password inputs, terms checkbox, submit, and mismatch
+ * validation messaging.
+ * Boundaries: password creation only. Does not continue into passkey, SRP
+ * backup, or metrics.
+ * Related: preceded by `StartOnboardingPage` (create) or `OnboardingSrpPage`
+ * (import); next is usually `SetupPasskeyPage` (Chrome) then
+ * `SecureWalletPage` (create) or `OnboardingMetricsPage` (import);
+ * `flows/onboarding.flow.ts`.
+ *
+ * @see ui/pages/onboarding-flow/create-password/create-password.tsx
+ */
 class OnboardingPasswordPage {
-  private driver: Driver;
-
-  private readonly newPasswordInput =
-    '[data-testid="create-password-new-input"]';
-
   private readonly confirmPasswordInput =
     '[data-testid="create-password-confirm-input"]';
 
-  private readonly passwordTerms = '[data-testid="create-password-terms"]';
+  private readonly createPasswordButton =
+    '[data-testid="create-password-submit"]';
 
   private readonly createPasswordMessage = {
     text: 'MetaMask password',
     tag: 'h2',
   };
 
-  private readonly createPasswordButton =
-    '[data-testid="create-password-submit"]';
+  private driver: Driver;
 
   private readonly incorrectPasswordWarningMessage = {
     text: "Passwords don't match",
     testId: 'confirm-password-error',
   };
 
+  private readonly newPasswordInput =
+    '[data-testid="create-password-new-input"]';
+
+  private readonly page = '[data-testid="parent-selector-onboarding-password"]';
+
+  private readonly passwordTerms = '[data-testid="create-password-terms"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async checkConfirmPasswordButtonIsDisabled(): Promise<void> {
+    console.log('Check the confirm password button is disabled');
+    const confirmPasswordButton = await this.driver.findElement(
+      this.createPasswordButton,
+    );
+    assert.equal(await confirmPasswordButton.isEnabled(), false);
+  }
+
+  async checkIncorrectPasswordWarningMessageIsDisplayed(): Promise<void> {
+    console.log('Check the incorrect password warning message is displayed');
+    await this.driver.waitForSelector(this.incorrectPasswordWarningMessage);
   }
 
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.page,
         this.createPasswordMessage,
         this.newPasswordInput,
         this.confirmPasswordInput,
@@ -74,19 +105,6 @@ class OnboardingPasswordPage {
     await this.driver.fill(this.newPasswordInput, newPassword);
     await this.driver.fill(this.confirmPasswordInput, confirmPassword);
     await this.driver.clickElement(this.passwordTerms);
-  }
-
-  async checkConfirmPasswordButtonIsDisabled(): Promise<void> {
-    console.log('Check the confirm password button is disabled');
-    const confirmPasswordButton = await this.driver.findElement(
-      this.createPasswordButton,
-    );
-    assert.equal(await confirmPasswordButton.isEnabled(), false);
-  }
-
-  async checkIncorrectPasswordWarningMessageIsDisplayed(): Promise<void> {
-    console.log('Check the incorrect password warning message is displayed');
-    await this.driver.waitForSelector(this.incorrectPasswordWarningMessage);
   }
 }
 

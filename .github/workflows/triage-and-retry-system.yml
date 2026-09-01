@@ -1,0 +1,237 @@
+# Classify and retry failed main.yml workflow runs.
+#
+# Triggered by `workflow_run` on every main.yml completion. Skips successes
+# and cross-repo runs at the job level.
+#
+# For failures, it:
+#   1. Classifies each failed job (jobRetryable) and derives an overall
+#      is-retryable decision
+#   2. Writes a markdown report to the step summary
+#   3. Sends a structured log to Sentry (if SENTRY_DSN_PERFORMANCE is set)
+#
+# For cancelled runs on attempt > 1 (preempted retries), it:
+#   1. Emits a lightweight "cancelled" event to Sentry and exits
+#      (no full classification needed)
+#
+# Retry has two budgets for events that have an originating PR:
+#
+#   - pull_request / merge_group:
+#     Retry retryable failures once by default (attempt 1 → attempt 2).
+#     If the `retry-ci` label is present, retryable failures can retry up
+#     to attempt 4. Label-funded retries consume/remove the label.
+#     For merge_group, the PR number is extracted from the branch name
+#     (gh-readonly-queue/{base}/pr-{N}-{sha}).
+#
+#   - push to main/stable:
+#     Observation only — no retry (no originating PR to label).
+#
+# Reruns call `gh run rerun --failed`, which triggers a new main.yml
+# completion → workflow_run fires again. The default budget allows attempt 2;
+# retry-ci extends the budget through attempt 4. Keep these limits in sync with
+# classify-failures.mts and ci-status-gate.yml.
+#
+# Merge queue interaction:
+#   The merge queue requires two checks (configured via a repository
+#   ruleset, classic branch protection, or both — either works):
+#
+#   Rule 1 — Merge queue > "Require all queue entries to pass
+#     required checks" (ALLGREEN)
+#     Monitors check suites directly. When main.yml's suite fails, this
+#     rule wants to eject immediately.
+#
+#   Rule 2 — Status checks > "All jobs pass"
+#     Monitors the commit status posted by ci-status-gate.yml.
+#
+#   Both must agree before the queue merges or ejects. ci-status-gate
+#   exploits this: on early merge_group failures, it skips posting the
+#   commit status while a retry budget is still available, keeping Rule 2
+#   pending. This blocks Rule 1 from ejecting, giving triage time to retry.
+#
+#   When triage calls `gh run rerun --failed`, it resets main.yml's check
+#   suite to in_progress and triggers a new attempt. On the final
+#   attempt (no retry budget available), ci-status-gate posts the commit
+#   status, unblocking the queue to merge or eject.
+#
+#   Edge case: if ci-status-gate deferred but triage classifies the
+#   failure as non-retryable, this workflow must post the failure
+#   status itself to unblock the queue for ejection. Without this,
+#   "All jobs pass" stays pending forever and auto-merge re-queues
+#   the PR in an infinite loop.
+
+name: Triage and Retry System
+
+on:
+  workflow_run:
+    workflows: ['Main']
+    types: [completed]
+
+jobs:
+  classify-and-retry:
+    name: Classify & retry
+    # Gate: only spin up a runner for events worth classifying.
+    #
+    # Pseudocode:
+    #   if run.conclusion not in ['failure','cancelled'] → skip
+    #   if run.repo != run.head_repo          → skip (cross-repo — no permissions)
+    #   if run.event == 'merge_group'         → run  (retry budget via PR)
+    #   if run.event == 'pull_request'        → run  (retry budget via PR)
+    #   if run.event == 'push'
+    #     and run.branch in ['main','stable'] → run  (observation only — no retry)
+    #   else                                  → skip (release/*, workflow_dispatch, etc.)
+    #
+    # Cancelled runs are included so that preempted retries (attempt > 1,
+    # cancelled before completion) can emit a lightweight Sentry event.
+    # The classifier handles cancelled runs with an early exit.
+    if: >-
+      ${{
+        contains(fromJson('["failure","cancelled"]'), github.event.workflow_run.conclusion) &&
+        github.event.workflow_run.head_repository.full_name == github.event.workflow_run.repository.full_name &&
+        (
+          github.event.workflow_run.event == 'merge_group'
+          || github.event.workflow_run.event == 'pull_request'
+          || (github.event.workflow_run.event == 'push'
+              && contains(fromJson('["main","stable"]'), github.event.workflow_run.head_branch))
+        )
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+      checks: write
+      contents: read
+      pull-requests: write
+      statuses: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      MAIN_RUN_ID: ${{ github.event.workflow_run.id }}
+      RUN_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+      HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+      # Only populated for pull_request events; empty for merge_group/push.
+      # The "Resolve PR number" step also extracts PR from the branch name
+      # for merge_group events, so this env var is not the only source.
+      PR_NUMBER_FROM_EVENT: ${{ github.event.workflow_run.pull_requests[0].number }}
+      REPO: ${{ github.repository }}
+      SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
+      WORKFLOW_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+      WORKFLOW_EVENT: ${{ github.event.workflow_run.event }}
+    steps:
+      - name: Checkout .github/ directory
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .github
+            .nvmrc
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install Sentry SDK
+        run: npm install --no-save @sentry/node@^10.45.0
+
+      - name: Get version from package.json
+        run: |
+          TMPFILE=$(mktemp)
+          if curl -sSf -o "$TMPFILE" "https://raw.githubusercontent.com/${REPO}/${HEAD_SHA}/package.json"; then
+            echo "VERSION=$(node -p "JSON.parse(require('fs').readFileSync('$TMPFILE','utf8')).version")" >> "$GITHUB_ENV"
+          else
+            echo "::warning::Could not download package.json — VERSION will be 'unknown'"
+          fi
+          rm -f "$TMPFILE"
+
+      - name: Classify failures
+        id: classify
+        run: node .github/scripts/classify-failures.mts
+
+      - name: Verify current merge queue entry
+        id: verify-queue-entry
+        # The verifier posts a terminal failure status for stale or
+        # unverified entries; the retry step runs only for current entries.
+        if: >-
+          ${{
+            steps.classify.outputs.will-retry == 'true'
+            && env.WORKFLOW_EVENT == 'merge_group'
+          }}
+        env:
+          PR_NUMBER: ${{ steps.classify.outputs.pr-number }}
+        run: node .github/scripts/verify-merge-queue-entry.mts
+
+      # -- Retry retryable failures when a retry budget is available --
+      # The classify step decides whether this is an automatic retry or a
+      # retry-ci-funded retry, then outputs whether retry-ci should be consumed.
+      #
+      # Order matters: rerun BEFORE removing the label. If the rerun API
+      # call fails, the label stays on the PR — signaling that the retry
+      # was attempted but didn't go through.
+      - name: Retry (if retry budget available)
+        id: retry
+        if: >-
+          ${{
+            steps.classify.outputs.will-retry == 'true'
+            && (env.WORKFLOW_EVENT != 'merge_group'
+              || steps.verify-queue-entry.outputs.state == 'current')
+          }}
+        run: |
+          PR="${{ steps.classify.outputs.pr-number }}"
+          CONSUME_RETRY_LABEL="${{ steps.classify.outputs.consume-retry-label }}"
+
+          # A pushed commit can supersede this failed PR run before triage
+          # starts. Rerunning the old run would reuse its concurrency group and
+          # can cancel the current commit's CI, so only retry an exact head.
+          if [[ "$WORKFLOW_EVENT" == 'pull_request' ]]; then
+            if ! CURRENT_HEAD=$(gh api "repos/$REPO/pulls/$PR" --jq '.head.sha' 2>/dev/null); then
+              echo "::warning::Could not verify PR #$PR head — skipping retry"
+              exit 0
+            fi
+
+            if [[ "$CURRENT_HEAD" != "$HEAD_SHA" ]]; then
+              echo "PR #$PR advanced from $HEAD_SHA to $CURRENT_HEAD — skipping stale retry"
+              exit 0
+            fi
+
+            echo "PR #$PR head still matches failed run $HEAD_SHA"
+          fi
+
+          echo "Rerunning failed jobs..."
+          gh run rerun "$MAIN_RUN_ID" --failed --repo "$REPO"
+          echo "Rerun triggered."
+
+          if [[ "$CONSUME_RETRY_LABEL" == "true" ]]; then
+            echo "Removing retry-ci label from PR #$PR..."
+            gh pr edit "$PR" --repo "$REPO" --remove-label "retry-ci" \
+              || echo "::warning::Failed to remove retry-ci label from PR #$PR — label stays"
+          else
+            echo "Retry did not consume retry-ci label."
+          fi
+
+      # -- Rescue: post deferred failure status when triage job fails --
+      #
+      # If ci-status-gate deferred the commit status (merge_group + retry budget)
+      # and anything in this job failed or timed out, "All jobs pass" is
+      # stuck pending. Post it as failure so the merge queue can eject
+      # instead of stalling.
+      #
+      # Includes cancelled() for the timeout case: when timeout-minutes is
+      # hit, GitHub cancels the job (failure() returns false).
+      #
+      # The retry step makes label removal non-fatal (|| warning), so if
+      # the rerun succeeds the step still passes and failure() stays false.
+      # The rescue only fires when the classify step crashes, the rerun
+      # API call itself fails, or the job times out.
+      #
+      # Safe even when ci-status-gate didn't actually defer — posting a
+      # redundant failure status is harmless.
+      - name: Post deferred failure status (rescue)
+        if: ${{ (failure() || cancelled()) && env.WORKFLOW_EVENT == 'merge_group' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/$REPO/statuses/$HEAD_SHA" \
+            --method POST \
+            -f state=failure \
+            -f context="All jobs pass" \
+            -f description="Triage failed — posting deferred failure status"
+          echo "Posted rescue failure commit status on $HEAD_SHA"

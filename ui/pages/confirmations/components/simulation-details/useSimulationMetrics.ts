@@ -1,8 +1,10 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+/* eslint-disable @typescript-eslint/naming-convention */
 import {
   SimulationData,
   SimulationErrorCode,
 } from '@metamask/transaction-controller';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import {
@@ -11,7 +13,7 @@ import {
   useDisplayNames,
 } from '../../../../hooks/useDisplayName';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useAnalytics } from '../../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -80,12 +82,16 @@ export function useSimulationMetrics({
 
   const displayNames = useDisplayNames(displayNameRequests);
 
-  const displayNamesByAddress = displayNames.reduce(
-    (acc, displayNameResponse, index) => ({
-      ...acc,
-      [balanceChanges[index].asset.address ?? '']: displayNameResponse,
-    }),
-    {} as { [address: string]: UseDisplayNameResponse },
+  const displayNamesByAddress = useMemo(
+    () =>
+      displayNames.reduce(
+        (acc, displayNameResponse, index) => ({
+          ...acc,
+          [balanceChanges[index].asset.address ?? '']: displayNameResponse,
+        }),
+        {} as { [address: string]: UseDisplayNameResponse },
+      ),
+    [balanceChanges, displayNames],
   );
 
   const { updateTransactionEventFragment } = useTransactionEventFragment();
@@ -104,12 +110,12 @@ export function useSimulationMetrics({
   const simulationLatency = loadingTime;
 
   const properties = {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     simulation_response: simulationResponse,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     simulation_latency: simulationLatency,
+    simulation_receiving_assets_contract_address:
+      getContractAddresses(receivingAssets),
+    simulation_sending_assets_contract_address:
+      getContractAddresses(sendingAssets),
     ...getProperties(
       receivingAssets,
       'simulation_receiving_assets_',
@@ -122,9 +128,7 @@ export function useSimulationMetrics({
     ),
   };
 
-  const sensitiveProperties = {};
-
-  const params = { properties, sensitiveProperties };
+  const params = { properties };
 
   const shouldSkipMetrics =
     !enableMetrics ||
@@ -153,52 +157,81 @@ function useIncompleteAssetEvent(
     [address: string]: UseDisplayNameResponse | undefined;
   },
 ) {
-  const trackEvent = useContext(MetaMetricsContext);
-  const [processedAssets, setProcessedAssets] = useState<string[]>([]);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const processedAssetsRef = useRef<string[]>([]);
 
-  for (const change of balanceChanges) {
-    const assetAddress = change.asset.address ?? '';
-    const displayName = displayNamesByAddress[assetAddress];
+  useEffect(() => {
+    const assetsToTrack: {
+      assetAddress: string;
+      change: BalanceChange;
+      displayName: UseDisplayNameResponse | undefined;
+    }[] = [];
 
-    const isIncomplete =
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      (change.asset.address && !change.fiatAmount) ||
-      getPetnameType(change, displayName) === PetnameType.Unknown;
+    for (const change of balanceChanges) {
+      const assetAddress = change.asset.address ?? '';
+      const displayName = displayNamesByAddress[assetAddress];
 
-    const isProcessed = processedAssets.includes(assetAddress);
+      const isIncomplete =
+        (change.asset.address && !change.fiatAmount) ||
+        getPetnameType(change, displayName) === PetnameType.Unknown;
 
-    if (!isIncomplete || isProcessed) {
-      continue;
+      if (!isIncomplete || processedAssetsRef.current.includes(assetAddress)) {
+        continue;
+      }
+
+      assetsToTrack.push({ assetAddress, change, displayName });
     }
 
-    trackEvent({
-      event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
-      category: MetaMetricsEventCategory.Transactions,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        asset_address: change.asset.address,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        asset_petname: getPetnameType(change, displayName),
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        asset_symbol: displayName?.contractDisplayName,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        asset_type: getAssetType(change.asset.standard),
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        fiat_conversion_available: change.fiatAmount
-          ? FiatType.Available
-          : FiatType.NotAvailable,
-        location: 'confirmation',
-      },
-    });
+    if (assetsToTrack.length === 0) {
+      return;
+    }
 
-    setProcessedAssets([...processedAssets, assetAddress]);
-  }
+    for (const { change, displayName } of assetsToTrack) {
+      trackEvent(
+        createEventBuilder(
+          MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
+        )
+          .addCategory(MetaMetricsEventCategory.Transactions)
+          .addProperties({
+            asset_address: change.asset.address,
+            asset_petname: getPetnameType(change, displayName),
+            asset_symbol: displayName?.contractDisplayName,
+            asset_type: getAssetType(change.asset.standard),
+            fiat_conversion_available: change.fiatAmount
+              ? FiatType.Available
+              : FiatType.NotAvailable,
+            location: 'confirmation',
+          })
+          .build(),
+      );
+    }
+
+    processedAssetsRef.current = [
+      ...processedAssetsRef.current,
+      ...assetsToTrack.map(({ assetAddress }) => assetAddress),
+    ];
+  }, [balanceChanges, createEventBuilder, displayNamesByAddress, trackEvent]);
+}
+
+/** Placeholder used in metrics when asset has no contract address (e.g. native). */
+export const NATIVE_OR_MISSING_CONTRACT_PLACEHOLDER =
+  '0x0000000000000000000000000000000000000000';
+
+/**
+ * Returns contract addresses from balance changes as an array of hex strings.
+ * One entry per change: token assets use their contract address; native or
+ * missing addresses use the zero-address placeholder so indices align with
+ * other simulation_*_assets_* arrays.
+ *
+ * @param changes - Balance changes from simulation
+ * @returns Array of contract addresses (hex with 0x prefix), or placeholder
+ */
+function getContractAddresses(changes: BalanceChange[]): string[] {
+  return changes.map((change) =>
+    change.asset.address
+      ? (change.asset.address as string)
+      : NATIVE_OR_MISSING_CONTRACT_PLACEHOLDER,
+  );
 }
 
 function getProperties(
@@ -229,8 +262,6 @@ function getProperties(
   const totalValue = totalFiat ? Math.abs(totalFiat) : undefined;
 
   return getPrefixProperties(
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     { petname, quantity, type, value, total_value: totalValue },
     prefix,
   );
@@ -310,8 +341,6 @@ function getSimulationResponseType(
   return SimulationResponseType.Changes;
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function unique<T>(list: T[]): T[] {
   return Array.from(new Set(list));
 }

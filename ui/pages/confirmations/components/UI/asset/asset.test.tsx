@@ -3,9 +3,10 @@ import { fireEvent } from '@testing-library/react';
 import { BtcAccountType } from '@metamask/keyring-api';
 import createMockStore from 'redux-mock-store';
 
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
 import { AssetStandard } from '../../../types/send';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { Asset } from './asset';
 
 const mockTokenAsset = {
@@ -101,7 +102,45 @@ describe('TokenAsset', () => {
     );
 
     expect(getByTestId('token-asset-undefined-TEST')).toBeInTheDocument();
-    expect(queryByRole('img', { name: 'Ethereum' })).not.toBeInTheDocument();
+    expect(
+      queryByRole('img', { name: messages.networkNameEthereum.message }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('hides balances when hideBalances is true', () => {
+    const { container, queryByText } = render(
+      <Asset asset={mockTokenAsset} hideBalances />,
+    );
+
+    expect(queryByText('$100.00')).not.toBeInTheDocument();
+    expect(queryByText('10.5 TEST')).not.toBeInTheDocument();
+    expect(container).toMatchSnapshot();
+  });
+
+  it('does not call onClick when token is disabled', () => {
+    const mockOnClick = jest.fn();
+    const { getByTestId } = render(
+      <Asset
+        asset={{ ...mockTokenAsset, disabled: true }}
+        onClick={mockOnClick}
+      />,
+    );
+
+    fireEvent.click(getByTestId('token-asset-0x1-TEST'));
+    expect(mockOnClick).not.toHaveBeenCalled();
+  });
+
+  it('renders tags from tagRenderers next to the token name', () => {
+    const { getByTestId } = render(
+      <Asset
+        asset={mockTokenAsset}
+        tagRenderers={[
+          () => <span data-testid="custom-token-tag">No fee</span>,
+        ]}
+      />,
+    );
+
+    expect(getByTestId('custom-token-tag')).toBeInTheDocument();
   });
 });
 
@@ -171,7 +210,9 @@ describe('NFTAsset', () => {
     );
 
     expect(getByTestId('nft-asset')).toBeInTheDocument();
-    expect(queryByRole('img', { name: 'Ethereum' })).not.toBeInTheDocument();
+    expect(
+      queryByRole('img', { name: messages.networkNameEthereum.message }),
+    ).not.toBeInTheDocument();
   });
 
   it('uses collection imageUrl when asset image is not provided', () => {

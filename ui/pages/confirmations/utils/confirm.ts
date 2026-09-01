@@ -1,21 +1,83 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
 } from '../../../../shared/constants/signatures';
-import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
+import { parseTypedDataMessage } from '../../../../shared/lib/transaction.utils';
+import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { sanitizeMessage } from '../../../helpers/utils/util';
-import { Confirmation, SignatureRequestType } from '../types/confirm';
 import { TYPED_SIGNATURE_VERSIONS } from '../constants';
+import { PAY_TRANSACTION_TYPES } from '../constants/pay';
+import { Confirmation, SignatureRequestType } from '../types/confirm';
 
 export const SIGNATURE_TRANSACTION_TYPES = [
   TransactionType.personalSign,
   TransactionType.signTypedData,
 ];
 
+// DelegationFramework caveat enforcers revert with `Error(string)` messages of
+// the form `<EnforcerName>:<reason>` (Solidity convention).
+const CAVEAT_ENFORCER_REVERT_PATTERN = /^[A-Z][A-Za-z0-9]*Enforcer:/u;
+
+const REDEEM_DELEGATIONS_SELECTOR = '0xcef6d209';
+
 export const isSignatureTransactionType = (request?: Record<string, unknown>) =>
   request &&
   SIGNATURE_TRANSACTION_TYPES.includes(request.type as TransactionType);
+
+const MONEY_ACCOUNT_TRANSACTION_TYPES = [
+  TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
+] as const;
+
+/**
+ * Resolves the money-account type of a transaction, including batches.
+ *
+ * Money-account deposits and withdrawals are created via
+ * `addTransactionBatch`, so the top-level `type` is `batch` and the
+ * meaningful type sits on a nested transaction — and not necessarily the
+ * first one: deposits are `[approve, deposit]`, so `getTransactionType`
+ * would resolve them to `tokenMethodApprove`.
+ *
+ * @param transactionMeta - The transaction metadata to inspect.
+ * @returns The money-account type when present anywhere in the transaction,
+ * otherwise undefined.
+ */
+export function getMoneyAccountTransactionType(
+  transactionMeta: TransactionMeta | undefined,
+): TransactionType | undefined {
+  return MONEY_ACCOUNT_TRANSACTION_TYPES.find((transactionType) =>
+    hasTransactionType(transactionMeta, [transactionType]),
+  );
+}
+
+/**
+ * Resolves the type to route a confirmation by, accounting for pay batches.
+ *
+ * Pay flows created via `addTransactionBatch` carry their meaningful type on a
+ * nested transaction (the top-level `type` is `batch`), so prefer a matching
+ * pay type when present and fall back to the transaction's own type otherwise.
+ *
+ * @param transactionMeta - The transaction metadata to inspect.
+ * @returns The matching pay type when present, otherwise the top-level type.
+ */
+export function getConfirmationTransactionType(
+  transactionMeta: TransactionMeta | undefined,
+): TransactionType | undefined {
+  if (!transactionMeta) {
+    return undefined;
+  }
+
+  const payType = PAY_TRANSACTION_TYPES.find((type) =>
+    hasTransactionType(transactionMeta, [type]),
+  );
+
+  return payType ?? transactionMeta.type;
+}
 
 export const parseSanitizeTypedDataMessage = (dataToParse: string) => {
   const { message, primaryType, types } = parseTypedDataMessage(dataToParse);
@@ -109,3 +171,46 @@ export const toPunycodeURL = (urlString: string): string | undefined => {
     return undefined;
   }
 };
+
+/**
+ * Removes the protocol (http://, https://, etc.) from a URL
+ *
+ * @param urlString - The URL to strip the protocol from
+ * @returns The URL without the protocol
+ */
+export const stripProtocol = (urlString: string): string => {
+  return urlString.replace(/^\w+:\/\//u, '');
+};
+
+/**
+ * Detect whether a transaction was reverted on-chain by an enforced-simulations
+ * caveat enforcer (the DelegationFramework "protection" mechanism).
+ *
+ * Returns true when the transaction failed AND its `txParams.data` is a
+ * `redeemDelegations` call AND its decoded receipt revert reason matches the
+ * Solidity `<EnforcerName>:<reason>` revert format.
+ *
+ * @param transactionMeta - The transaction metadata. May be undefined.
+ * @returns Whether the transaction was reverted by an enforced-simulations caveat enforcer.
+ */
+export function isProtectedByEnforcedSimulations(
+  transactionMeta?: TransactionMeta,
+): boolean {
+  if (!transactionMeta || transactionMeta.status !== TransactionStatus.failed) {
+    return false;
+  }
+
+  const data = transactionMeta.txParams?.data;
+  const revertMessage = transactionMeta.revert?.receipt?.message;
+
+  if (
+    !data ||
+    !data.toLowerCase().startsWith(REDEEM_DELEGATIONS_SELECTOR) ||
+    !revertMessage ||
+    !CAVEAT_ENFORCER_REVERT_PATTERN.test(revertMessage)
+  ) {
+    return false;
+  }
+
+  return true;
+}

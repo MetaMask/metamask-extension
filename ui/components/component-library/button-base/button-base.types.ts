@@ -5,6 +5,9 @@ import { TextDirection, TextProps, TextStyleUtilityProps } from '../text';
 import { IconName } from '../icon';
 import type { IconProps } from '../icon';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum ButtonBaseSize {
   Sm = 'sm',
   Md = 'md',
@@ -15,8 +18,10 @@ export type ValidButtonTagType = 'button' | 'a';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface ButtonBaseStyleUtilityProps
-  extends Omit<TextStyleUtilityProps, 'as' | 'children' | 'ellipsis'> {
+export interface ButtonBaseStyleUtilityProps extends Omit<
+  TextStyleUtilityProps,
+  'as' | 'children' | 'ellipsis'
+> {
   /**
    * The polymorphic `as` prop allows you to change the root HTML element of the Button component between `button` and `a` tag
    *

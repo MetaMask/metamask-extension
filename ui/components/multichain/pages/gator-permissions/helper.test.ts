@@ -1,5 +1,5 @@
 import { NetworkConfiguration } from '@metamask/network-controller';
-import { extractNetworkName } from './helper';
+import { extractNetworkName, getDisplayOrigin } from './helper';
 
 describe('extractNetworkName', () => {
   const mockNetworks: Record<`0x${string}`, NetworkConfiguration> = {
@@ -159,5 +159,17 @@ describe('extractNetworkName', () => {
       const result = extractNetworkName({}, '0x1', true);
       expect(result).toBe('unknownNetworkForGatorPermissions');
     });
+  });
+});
+
+describe('getDisplayOrigin', () => {
+  it('should handle malformed URI components without throwing', () => {
+    // Test with malformed URI that would cause decodeURIComponent to throw
+    expect(() => {
+      getDisplayOrigin('%E0%A4%A');
+    }).not.toThrow();
+
+    // Should still remove protocol from valid origins
+    expect(getDisplayOrigin('https://example.com')).toBe('example.com');
   });
 });

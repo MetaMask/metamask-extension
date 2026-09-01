@@ -1,11 +1,11 @@
 import { MockttpServer } from 'mockttp';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import {
   expectMockRequest,
   expectNoMockRequest,
 } from '../../helpers/mock-server';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 async function mockSentrySession(mockServer: MockttpServer) {
   return [
@@ -26,9 +26,10 @@ describe('Sessions', function () {
   it('sends session in UI if metrics enabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            participateInMetaMetrics: true,
+            consentDecisionMade: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -38,7 +39,7 @@ describe('Sessions', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await expectMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
       },
     );
@@ -47,9 +48,10 @@ describe('Sessions', function () {
   it('does not send session in UI if metrics disabled', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            participateInMetaMetrics: false,
+            consentDecisionMade: true,
+            optedIn: false,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -59,7 +61,7 @@ describe('Sessions', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await expectNoMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
       },
     );

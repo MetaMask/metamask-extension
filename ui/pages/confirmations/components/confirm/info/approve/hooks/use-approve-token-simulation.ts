@@ -5,9 +5,9 @@ import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
-import { formatAmount } from '../../../../simulation-details/formatAmount';
+import { formatAmount } from '../../../../../../../../shared/lib/format-amount';
 import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../shared/constants';
-import { parseApprovalTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
+import { parseApprovalTransactionData } from '../../../../../../../../shared/lib/transaction.utils';
 import { useIsNFT } from './use-is-nft';
 
 export function isSpendingCapUnlimited(

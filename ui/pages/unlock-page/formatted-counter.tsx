@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextColor, TextVariant } from '../../helpers/constants/design-system';
-import { Text } from '../../components/component-library';
+import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
 
 const formatTimeToUnlock = (timeInSeconds: number) => {
   if (timeInSeconds <= 60) {
@@ -14,8 +13,6 @@ const formatTimeToUnlock = (timeInSeconds: number) => {
     .padStart(2, '0')}.`;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function FormattedCounter({
   startFrom,
   onCountdownEnd,
@@ -40,8 +37,8 @@ export default function FormattedCounter({
   }, [onCountdownEnd]);
 
   return (
-    <Text variant={TextVariant.inherit} color={TextColor.inherit} as="span">
-      {formatTimeToUnlock(time)}
+    <Text variant={TextVariant.BodySm} color={TextColor.Inherit} asChild>
+      <span>{formatTimeToUnlock(time)}</span>
     </Text>
   );
 }

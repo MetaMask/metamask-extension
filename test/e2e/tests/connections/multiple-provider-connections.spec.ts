@@ -1,183 +1,90 @@
 /**
  * This test suite is for testing connecting to a dapp with different wallet providers (EVM and Solana).
  */
-import { SolScope } from '@metamask/keyring-api';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { strict as assert } from 'assert';
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
+  ACCOUNT_2,
   DAPP_HOST_ADDRESS,
+  DAPP_PATH,
+  DAPP_URL,
   DEFAULT_FIXTURE_ACCOUNT as EVM_ADDRESS_ONE,
+  WINDOW_TITLES,
 } from '../../constants';
-import {
-  BASE_DISPLAY_NAME,
-  LINEA_MAINNET_DISPLAY_NAME,
-  LOCALHOST_DISPLAY_NAME,
-  MAINNET_DISPLAY_NAME,
-} from '../../../../shared/constants/network';
-import Homepage from '../../page-objects/pages/home/homepage';
-import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
-import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
+import { withFixtures } from '../../helpers';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
-import { withSolanaAccountSnap } from '../solana/common-solana';
-import FixtureBuilder from '../../fixture-builder';
-import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import {
-  connectSolanaTestDapp,
-  DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
-  account1 as SOLANA_ADDRESS_ONE,
-} from '../../flask/solana-wallet-standard/testHelpers';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
+import { login } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
-import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
-import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
+import { getEditConnectedAccountsPageForHost } from '../../page-objects/flows/permissions.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { buildSolanaFixtureScopes } from '../../fixtures/permission-scopes';
+import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
+import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import {
+  getPermittedChainIdsForOrigin,
+  getRequestPermissionsRequestObject,
+  getRestrictedNetworks,
+} from './helpers';
 
-const EVM_ADDRESS_TWO = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
-const SOLANA_ACCOUNT_ONE = `${SolScope.Mainnet}:${SOLANA_ADDRESS_ONE}`;
+const EVM_ADDRESS_TWO = ACCOUNT_2;
 
 const EVM_ACCOUNT_LABEL_ONE = 'Account 1';
 const EVM_ACCOUNT_LABEL_TWO = 'Account 2';
-const SOLANA_ACCOUNT_LABEL_ONE = 'Solana 1';
 
-const SOLANA_PERMISSIONS = {
-  isMultichainOrigin: true,
-  sessionProperties: {},
-  requiredScopes: {},
-  optionalScopes: {
-    [SolScope.Mainnet]: {
-      accounts: [SOLANA_ACCOUNT_ONE],
-    },
-  },
-};
+const SOLANA_PERMISSIONS = buildSolanaFixtureScopes();
 
 /**
- * Helper to open a permissions page for a specific app hostname
- *
- * @param driver - The driver to use.
- * @param hostname - The hostname to get the permissions page for.
- * @returns The permissions page for the given host.
+ * CAIP chain IDs granted by a default connect: every non-test network in the
+ * default fixture.
  */
-async function getPermissionsPageForHost(
-  driver: Driver,
-  hostname: string,
-): Promise<SitePermissionPage> {
-  const homepage = new Homepage(driver);
-  await homepage.headerNavbar.openPermissionsPage();
-  const permissionListPage = new PermissionListPage(driver);
-  await permissionListPage.checkPageIsLoaded();
-  await permissionListPage.openPermissionPageForSite(hostname);
-  const sitePermissionPage = new SitePermissionPage(driver);
-  await sitePermissionPage.checkPageIsLoaded(hostname);
-  return sitePermissionPage;
-}
+const DEFAULT_PERMITTED_CAIP_CHAIN_IDS = [
+  toEvmCaipChainId(CHAIN_IDS.MAINNET),
+  toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET),
+  toEvmCaipChainId(CHAIN_IDS.BASE),
+  toEvmCaipChainId(CHAIN_IDS.ARBITRUM),
+  toEvmCaipChainId(CHAIN_IDS.BSC),
+  toEvmCaipChainId(CHAIN_IDS.POLYGON),
+  toEvmCaipChainId(CHAIN_IDS.OPTIMISM),
+  toEvmCaipChainId(CHAIN_IDS.MONAD),
+  SolScope.Mainnet,
+  BtcScope.Mainnet,
+  TrxScope.Mainnet,
+];
+
 /**
- * Checks if an account is displayed
+ * Asserts, from the PermissionController state, that the dapp's permitted
+ * chains exactly match the expected CAIP chain IDs.
  *
- * @param driver - The test driver
- * @param account - The account to check
+ * @param driver - The webdriver instance.
+ * @param expectedCaipChainIds - The expected permitted CAIP chain IDs.
  */
-async function checkIsAccountDisplayed(
+async function checkPermittedChainIds(
   driver: Driver,
-  account: string,
+  expectedCaipChainIds: string[],
 ): Promise<void> {
-  await driver.waitForSelector({
-    text: account,
-    tag: 'button',
-  });
-}
-
-/**
- * Helper to check if the accounts and networks are displayed in the site permission page.
- *
- * @param driver - The test driver
- * @param sitePermissionPage - The site permission page to use.
- * @param networks - The networks to check.
- * @param accounts - The accounts to check.
- */
-async function checkAccountsAndNetworksDisplayed(
-  driver: Driver,
-  sitePermissionPage: SitePermissionPage,
-  networks: string[],
-  accounts: string[],
-) {
-  await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
-  await sitePermissionPage.openNetworkPermissionsModal();
-  const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
-  await networkPermissionSelectModal.checkPageIsLoaded();
-
-  await networkPermissionSelectModal.checkNetworkStatus(networks);
-
-  await networkPermissionSelectModal.clickConfirmEditButton();
-  await sitePermissionPage.openAccountPermissionsModal();
-  const accountPermissionSelectModal = new EditConnectedAccountsModal(driver);
-  await accountPermissionSelectModal.checkPageIsLoaded();
-
-  for (const account of accounts) {
-    await checkIsAccountDisplayed(driver, account);
-  }
-}
-
-/**
- * Helper to get a request permissions request object with a caveat.
- *
- * @param accounts - The accounts to be requested.
- * @returns The request permissions request object with the caveat.
- */
-function getRequestPermissionsRequestObject(accounts: string[] = []): string {
-  const caveats =
-    accounts.length > 0
-      ? {
-          caveats: [
-            {
-              type: 'restrictReturnedAccounts',
-              value: accounts,
-            },
-          ],
-        }
-      : {};
-
-  return JSON.stringify({
-    jsonrpc: '2.0',
-    method: 'wallet_requestPermissions',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    params: [{ eth_accounts: caveats }],
-  });
-}
-
-/**
- * Helper to get a request permissions request object with network restrictions.
- *
- * @param networks - Array of network IDs to restrict switching to
- * @returns the wallet_requestPermissions request string
- */
-function getRestrictedNetworks(networks: string[]): string {
-  const restrictNetworks = {
-    'endowment:permitted-chains': {
-      caveats: [
-        {
-          type: 'restrictNetworkSwitching',
-          value: networks,
-        },
-      ],
-    },
-  };
-
-  return JSON.stringify({
-    jsonrpc: '2.0',
-    method: 'wallet_requestPermissions',
-    params: [restrictNetworks],
-  });
+  const permittedChainIds = await getPermittedChainIdsForOrigin(
+    driver,
+    DAPP_URL,
+  );
+  assert.deepEqual(
+    [...permittedChainIds].sort(),
+    [...expectedCaipChainIds].sort(),
+  );
 }
 
 describe('Multiple Standard Dapp Connections', function () {
   it('should default account selection to already permitted account(s) plus the selected account (if not already permissioned) when `wallet_requestPermissions` is called with no accounts specified', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withKeyringControllerAdditionalAccountVault()
-          .withPreferencesControllerAdditionalAccountIdentities()
-          .withAccountsControllerAdditionalAccountIdentities()
+          .withAccountsControllerAdditionalAccountVault()
           .withPermissionControllerConnectedToTestDapp({
             account: EVM_ADDRESS_TWO,
           })
@@ -185,7 +92,7 @@ describe('Multiple Standard Dapp Connections', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const testDapp = new TestDapp(driver);
 
         const connectAccountConfirmation = new ConnectAccountConfirmation(
@@ -210,7 +117,9 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await connectAccountConfirmation.checkPageIsLoaded();
 
-        await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
+        await connectAccountConfirmation.checkForAccountsInPermissionList([
+          EVM_ACCOUNT_LABEL_TWO,
+        ]);
 
         await connectAccountConfirmation.confirmConnect();
 
@@ -223,11 +132,10 @@ describe('Multiple Standard Dapp Connections', function () {
   it('should default account selection to both accounts when `wallet_requestPermissions` is called with specific account while another is already connected', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withKeyringControllerAdditionalAccountVault()
-          .withPreferencesControllerAdditionalAccountIdentities()
-          .withAccountsControllerAdditionalAccountIdentities()
+          .withAccountsControllerAdditionalAccountVault()
           .withPermissionControllerConnectedToTestDapp({
             account: EVM_ADDRESS_TWO,
           })
@@ -235,7 +143,7 @@ describe('Multiple Standard Dapp Connections', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const testDapp = new TestDapp(driver);
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
@@ -258,11 +166,12 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await connectAccountConfirmation.checkPageIsLoaded();
 
-        await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_ONE);
+        await connectAccountConfirmation.checkForAccountsInPermissionList([
+          EVM_ACCOUNT_LABEL_ONE,
+          EVM_ACCOUNT_LABEL_TWO,
+        ]);
 
-        await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
-
-        await await connectAccountConfirmation.confirmConnect();
+        await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
@@ -273,18 +182,23 @@ describe('Multiple Standard Dapp Connections', function () {
   });
 
   it('should retain EVM permissions when connecting through the Solana Wallet Standard', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
-        ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+        fixtures: new FixtureBuilderV2()
+          .withKeyringControllerAdditionalAccountVault()
+          .withAccountsControllerAdditionalAccountVault()
+          .withPermissionControllerConnectedToTestDapp({
+            account: [EVM_ADDRESS_ONE.toLowerCase(), EVM_ADDRESS_TWO],
+          })
+          .build(),
         title: this.test?.fullTitle(),
-        withFixtureBuilder: (builder) =>
-          builder
-            .withKeyringControllerAdditionalAccountVault()
-            .withPreferencesControllerAdditionalAccountIdentities()
-            .withAccountsControllerAdditionalAccountIdentities()
-            .withPermissionControllerConnectedToTestDappWithTwoAccounts(),
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+        },
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await login(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         const testDapp = new TestDappSolana(driver);
 
         await testDapp.openTestDappPage();
@@ -296,89 +210,74 @@ describe('Multiple Standard Dapp Connections', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const sitePermissionPage = await getPermissionsPageForHost(
-          driver,
-          DAPP_HOST_ADDRESS,
-        );
+        const editConnectedAccountsPage =
+          await getEditConnectedAccountsPageForHost(driver, DAPP_HOST_ADDRESS);
 
-        await sitePermissionPage.checkConnectedAccountsNumber(3);
-        await sitePermissionPage.checkConnectedNetworksNumber(2);
+        await editConnectedAccountsPage.checkAccountsAreSelected([
+          EVM_ACCOUNT_LABEL_ONE,
+          EVM_ACCOUNT_LABEL_TWO,
+        ]);
 
-        await checkAccountsAndNetworksDisplayed(
-          driver,
-          sitePermissionPage,
-          ['Solana', LOCALHOST_DISPLAY_NAME],
-          [
-            EVM_ACCOUNT_LABEL_ONE,
-            EVM_ACCOUNT_LABEL_TWO,
-            SOLANA_ACCOUNT_LABEL_ONE,
-          ],
-        );
+        await checkPermittedChainIds(driver, DEFAULT_PERMITTED_CAIP_CHAIN_IDS);
       },
     );
   });
 
   it('should retain Solana permissions when connecting through the EVM provider', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp({
+            scopes: SOLANA_PERMISSIONS,
+          })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .build(),
         title: this.test?.fullTitle(),
-        withFixtureBuilder: (builder) =>
-          builder.withPermissionControllerConnectedToMultichainTestDapp({
-            // @ts-expect-error Type error is expected here since its being inferred as null
-            value: SOLANA_PERMISSIONS,
-          }),
+        dappOptions: { numberOfTestDapps: 1 },
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await login(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         const testDapp = new TestDapp(driver);
 
         await testDapp.openTestDappPage();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();
 
-        await testDapp.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const sitePermissionPage = await getPermissionsPageForHost(
-          driver,
-          DAPP_HOST_ADDRESS,
-        );
+        const editConnectedAccountsPage =
+          await getEditConnectedAccountsPageForHost(driver, DAPP_HOST_ADDRESS);
 
-        await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(4);
+        await editConnectedAccountsPage.checkAccountsAreSelected([
+          EVM_ACCOUNT_LABEL_ONE,
+        ]);
 
-        await checkAccountsAndNetworksDisplayed(
-          driver,
-          sitePermissionPage,
-          [
-            MAINNET_DISPLAY_NAME,
-            LINEA_MAINNET_DISPLAY_NAME,
-            BASE_DISPLAY_NAME,
-            'Solana',
-          ],
-          [EVM_ACCOUNT_LABEL_ONE, SOLANA_ACCOUNT_LABEL_ONE],
-        );
+        await checkPermittedChainIds(driver, DEFAULT_PERMITTED_CAIP_CHAIN_IDS);
       },
     );
   });
 
   it('should default account selection to already permissioned Solana account and requested Ethereum account when `wallet_requestPermissions` is called with specific Ethereum account', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2()
+          .withKeyringControllerAdditionalAccountVault()
+          .withAccountsControllerAdditionalAccountVault()
+          .withPermissionControllerConnectedToTestDapp({
+            scopes: SOLANA_PERMISSIONS,
+          })
+          .build(),
         title: this.test?.fullTitle(),
-        withFixtureBuilder: (builder) =>
-          builder
-            .withKeyringControllerAdditionalAccountVault()
-            .withPreferencesControllerAdditionalAccountIdentities()
-            .withAccountsControllerAdditionalAccountIdentities()
-            .withPermissionControllerConnectedToMultichainTestDapp({
-              // @ts-expect-error Type error is expected here since its being inferred as null
-              value: SOLANA_PERMISSIONS,
-            }),
+        dappOptions: { numberOfTestDapps: 1 },
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await login(driver);
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         const testDapp = new TestDapp(driver);
 
         await testDapp.openTestDappPage();
@@ -399,9 +298,11 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await connectAccountConfirmation.checkPageIsLoaded();
 
-        await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
-
-        await checkIsAccountDisplayed(driver, SOLANA_ACCOUNT_LABEL_ONE);
+        // Both the existing Solana account and the requested EVM account should be pre-selected
+        await connectAccountConfirmation.checkForAccountsInPermissionList([
+          EVM_ACCOUNT_LABEL_ONE,
+          EVM_ACCOUNT_LABEL_TWO,
+        ]);
 
         await connectAccountConfirmation.confirmConnect();
 
@@ -410,40 +311,33 @@ describe('Multiple Standard Dapp Connections', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const sitePermissionPage = await getPermissionsPageForHost(
-          driver,
-          DAPP_HOST_ADDRESS,
-        );
+        const editConnectedAccountsPage =
+          await getEditConnectedAccountsPageForHost(driver, DAPP_HOST_ADDRESS);
 
-        await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(4);
+        await editConnectedAccountsPage.checkAccountsAreSelected([
+          EVM_ACCOUNT_LABEL_ONE,
+          EVM_ACCOUNT_LABEL_TWO,
+        ]);
 
-        await checkAccountsAndNetworksDisplayed(
-          driver,
-          sitePermissionPage,
-          [
-            MAINNET_DISPLAY_NAME,
-            LINEA_MAINNET_DISPLAY_NAME,
-            BASE_DISPLAY_NAME,
-            'Solana',
-          ],
-          [EVM_ACCOUNT_LABEL_TWO, SOLANA_ACCOUNT_LABEL_ONE],
-        );
+        await checkPermittedChainIds(driver, DEFAULT_PERMITTED_CAIP_CHAIN_IDS);
       },
     );
   });
 
   it('should be able to request specific chains when connecting through the EVM provider with existing permissions', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp({
+            scopes: SOLANA_PERMISSIONS,
+          })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .build(),
         title: this.test?.fullTitle(),
-        withFixtureBuilder: (builder) =>
-          builder.withPermissionControllerConnectedToMultichainTestDapp({
-            // @ts-expect-error Type error is expected here since its being inferred as null
-            value: SOLANA_PERMISSIONS,
-          }),
+        dappOptions: { numberOfTestDapps: 1 },
       },
-      async (driver) => {
+      async ({ driver }) => {
+        await login(driver);
         const testDapp = new TestDapp(driver);
 
         await testDapp.openTestDappPage();
@@ -469,20 +363,17 @@ describe('Multiple Standard Dapp Connections', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const sitePermissionPage = await getPermissionsPageForHost(
-          driver,
-          DAPP_HOST_ADDRESS,
-        );
+        const editConnectedAccountsPage =
+          await getEditConnectedAccountsPageForHost(driver, DAPP_HOST_ADDRESS);
 
-        await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(2);
+        await editConnectedAccountsPage.checkAccountsAreSelected([
+          EVM_ACCOUNT_LABEL_ONE,
+        ]);
 
-        await checkAccountsAndNetworksDisplayed(
-          driver,
-          sitePermissionPage,
-          [MAINNET_DISPLAY_NAME, 'Solana'],
-          [EVM_ACCOUNT_LABEL_ONE, SOLANA_ACCOUNT_LABEL_ONE],
-        );
+        await checkPermittedChainIds(driver, [
+          toEvmCaipChainId(CHAIN_IDS.MAINNET),
+          SolScope.Mainnet,
+        ]);
       },
     );
   });

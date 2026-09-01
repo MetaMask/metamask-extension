@@ -1,42 +1,66 @@
-import { GasFeeToken } from '@metamask/transaction-controller';
+import { GasFeeToken, TransactionType } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
+
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
-import { useIsInsufficientBalance } from '../useIsInsufficientBalance';
+import { useHasInsufficientBalance } from '../useHasInsufficientBalance';
 import { useIsGaslessLoading } from './useIsGaslessLoading';
 import { useIsGaslessSupported } from './useIsGaslessSupported';
 
 jest.mock('./useIsGaslessSupported');
-jest.mock('../useIsInsufficientBalance');
+jest.mock('../useHasInsufficientBalance');
 
 const mockedUseIsGaslessSupported = jest.mocked(useIsGaslessSupported);
-const mockedUseIsInsufficientBalance = jest.mocked(useIsInsufficientBalance);
+const mockedUseHasInsufficientBalance = jest.mocked(useHasInsufficientBalance);
 
 async function runHook({
   simulationEnabled,
   gaslessSupported,
   insufficientBalance,
+  pending = false,
   gasFeeTokens,
+  selectedGasFeeToken,
+  excludeNativeTokenForFee,
+  isGasFeeSponsored,
+  type,
 }: {
   simulationEnabled: boolean;
   gaslessSupported: boolean;
   insufficientBalance: boolean;
+  pending?: boolean;
   gasFeeTokens?: GasFeeToken[];
+  selectedGasFeeToken?: Hex;
+  excludeNativeTokenForFee?: boolean;
+  isGasFeeSponsored?: boolean;
+  type?: TransactionType;
 }) {
   mockedUseIsGaslessSupported.mockReturnValue({
     isSupported: gaslessSupported,
     isSmartTransaction: true,
+    pending,
   });
-  mockedUseIsInsufficientBalance.mockReturnValue(insufficientBalance);
+  mockedUseHasInsufficientBalance.mockReturnValue({
+    hasInsufficientBalance: insufficientBalance,
+    isNativeBalanceKnown: true,
+    nativeCurrency: 'USD',
+  });
+
+  const confirmation = genUnapprovedContractInteractionConfirmation({
+    gasFeeTokens,
+    selectedGasFeeToken,
+    excludeNativeTokenForFee,
+    isGasFeeSponsored,
+  });
+  if (type) {
+    confirmation.type = type;
+  }
 
   const { result } = renderHookWithConfirmContextProvider(
     useIsGaslessLoading,
-    getMockConfirmStateForTransaction(
-      genUnapprovedContractInteractionConfirmation({
-        gasFeeTokens,
-      }),
-      { metamask: { useTransactionSimulations: simulationEnabled } },
-    ),
+    getMockConfirmStateForTransaction(confirmation, {
+      metamask: { useTransactionSimulations: simulationEnabled },
+    }),
   );
 
   return result.current;
@@ -67,11 +91,34 @@ describe('useIsGaslessLoading', () => {
     expect(result.isGaslessLoading).toBe(false);
   });
 
+  it('returns true if gasless support check is pending', async () => {
+    const result = await runHook({
+      simulationEnabled: true,
+      gaslessSupported: false,
+      insufficientBalance: true,
+      pending: true,
+    });
+
+    expect(result.isGaslessLoading).toBe(true);
+  });
+
   it('returns false if there is no insufficient balance', async () => {
     const result = await runHook({
       simulationEnabled: true,
       gaslessSupported: true,
       insufficientBalance: false,
+    });
+
+    expect(result.isGaslessLoading).toBe(false);
+  });
+
+  it('returns false for a money account withdraw even when gas fee tokens are still loading', async () => {
+    const result = await runHook({
+      simulationEnabled: true,
+      gaslessSupported: true,
+      insufficientBalance: true,
+      gasFeeTokens: undefined,
+      type: TransactionType.moneyAccountWithdraw,
     });
 
     expect(result.isGaslessLoading).toBe(false);
@@ -86,6 +133,30 @@ describe('useIsGaslessLoading', () => {
     });
 
     expect(result.isGaslessLoading).toBe(true);
+  });
+
+  it('returns false when gas is sponsored even if gas fee tokens are missing', async () => {
+    const result = await runHook({
+      simulationEnabled: true,
+      gaslessSupported: true,
+      insufficientBalance: true,
+      gasFeeTokens: undefined,
+      isGasFeeSponsored: true,
+    });
+
+    expect(result.isGaslessLoading).toBe(false);
+  });
+
+  it('returns false for a money-account deposit even if gas fee tokens are missing', async () => {
+    const result = await runHook({
+      simulationEnabled: true,
+      gaslessSupported: true,
+      insufficientBalance: true,
+      gasFeeTokens: undefined,
+      type: TransactionType.moneyAccountDeposit,
+    });
+
+    expect(result.isGaslessLoading).toBe(false);
   });
 
   it('returns false if gas fee tokens are present', async () => {
@@ -105,6 +176,74 @@ describe('useIsGaslessLoading', () => {
       gaslessSupported: true,
       insufficientBalance: true,
       gasFeeTokens: [],
+    });
+
+    expect(result.isGaslessLoading).toBe(false);
+  });
+
+  it('returns false if gas fee tokens are present and dont match selectedGasFeeToken (non-reg)', async () => {
+    const result = await runHook({
+      simulationEnabled: true,
+      gaslessSupported: true,
+      insufficientBalance: true,
+      gasFeeTokens: [{ tokenAddress: '0x123' }] as unknown as GasFeeToken[],
+      selectedGasFeeToken: '0x456',
+    });
+
+    expect(result.isGaslessLoading).toBe(false);
+  });
+
+  it('returns true if gas fee tokens are present and dont match selectedGasFeeToken with excludeNativeTokenForFee being true (Tempo)', async () => {
+    const result = await runHook({
+      simulationEnabled: true,
+      gaslessSupported: true,
+      insufficientBalance: true,
+      gasFeeTokens: [{ tokenAddress: '0x123' }] as unknown as GasFeeToken[],
+      selectedGasFeeToken: '0x456',
+      excludeNativeTokenForFee: true,
+    });
+
+    expect(result.isGaslessLoading).toBe(true);
+  });
+
+  it('returns false if gas fee tokens are present AND match selectedGasFeeToken with excludeNativeTokenForFee being true (Tempo)', async () => {
+    const result = await runHook({
+      simulationEnabled: true,
+      gaslessSupported: true,
+      insufficientBalance: true,
+      gasFeeTokens: [
+        { tokenAddress: '0x123' },
+        { tokenAddress: '0x789' },
+      ] as unknown as GasFeeToken[],
+      // Matches the first one
+      selectedGasFeeToken: '0x123',
+      excludeNativeTokenForFee: true,
+    });
+
+    expect(result.isGaslessLoading).toBe(false);
+  });
+
+  it('returns false if gas fee tokens are present AND selectedGasFeeToken is undefined with excludeNativeTokenForFee being true (Tempo)', async () => {
+    const result = await runHook({
+      simulationEnabled: true,
+      gaslessSupported: true,
+      insufficientBalance: true,
+      gasFeeTokens: [{ tokenAddress: '0x123' }] as unknown as GasFeeToken[],
+      selectedGasFeeToken: undefined,
+      excludeNativeTokenForFee: true,
+    });
+
+    expect(result.isGaslessLoading).toBe(false);
+  });
+
+  it('returns false if gas fee tokens are empty array with excludeNativeTokenForFee being true (Tempo)', async () => {
+    const result = await runHook({
+      simulationEnabled: true,
+      gaslessSupported: true,
+      insufficientBalance: true,
+      gasFeeTokens: [] as unknown as GasFeeToken[],
+      selectedGasFeeToken: '0x456',
+      excludeNativeTokenForFee: true,
     });
 
     expect(result.isGaslessLoading).toBe(false);

@@ -1,0 +1,186 @@
+import React, { useCallback } from 'react';
+import {
+  Box,
+  Text,
+  TextButton,
+  TextButtonSize,
+  TextVariant,
+  TextColor,
+  BoxFlexDirection,
+  BoxAlignItems,
+  Tag,
+} from '@metamask/design-system-react';
+
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useSegmentContext } from '../../../hooks/useSegmentContext';
+import { SUPPORT_LINK } from '../../../helpers/constants/common';
+import { isBeta } from '../../../../shared/lib/build-types';
+import {
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
+import { Divider } from '../shared';
+import { useBoolean } from '../../../hooks/useBoolean';
+
+export default function AboutInfo(): React.ReactElement {
+  const t = useI18nContext();
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const segmentContext = useSegmentContext();
+
+  const {
+    value: isVisitSupportDataConsentModalOpen,
+    toggle: toggleVisitSupportDataConsentModal,
+  } = useBoolean();
+
+  const version = process.env.METAMASK_VERSION ?? '';
+
+  const handleContactUsClick = useCallback(() => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
+          url: SUPPORT_LINK,
+          [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
+        })
+        .build(),
+    );
+  }, [createEventBuilder, segmentContext.page?.title, trackEvent]);
+
+  function renderInfoLinks(): React.ReactElement {
+    const privacyUrl = 'https://metamask.io/privacy.html';
+    const siteUrl = 'https://metamask.io/';
+
+    const linkProps = {
+      size: TextButtonSize.BodyMd,
+      className:
+        'w-full justify-start text-default !bg-transparent p-0 text-left',
+    };
+
+    const linkItemProps = {
+      paddingTop: 3 as const,
+      paddingBottom: 3 as const,
+      className: 'w-full',
+    };
+
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Start}
+        className="w-full"
+      >
+        <Box {...linkItemProps}>
+          <TextButton asChild {...linkProps}>
+            <a href={privacyUrl} target="_blank" rel="noopener noreferrer">
+              {t('privacyMsg')}
+            </a>
+          </TextButton>
+        </Box>
+        <Box {...linkItemProps}>
+          <TextButton asChild {...linkProps}>
+            <a
+              href="https://metamask.io/terms.html"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('terms')}
+            </a>
+          </TextButton>
+        </Box>
+        {isBeta() ? (
+          <Box {...linkItemProps}>
+            <TextButton asChild {...linkProps}>
+              <a
+                href="https://metamask.io/beta-terms"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t('betaTerms')} <Tag>{t('new')}</Tag>
+              </a>
+            </TextButton>
+          </Box>
+        ) : null}
+        <Box {...linkItemProps}>
+          <TextButton asChild {...linkProps}>
+            <a
+              href="https://raw.githubusercontent.com/MetaMask/metamask-extension/main/attribution.txt"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('attributions')}
+            </a>
+          </TextButton>
+        </Box>
+        <Divider />
+        <Box {...linkItemProps}>
+          <TextButton
+            onClick={toggleVisitSupportDataConsentModal}
+            {...linkProps}
+          >
+            {t('supportCenter')}
+          </TextButton>
+        </Box>
+        <Box {...linkItemProps}>
+          <TextButton asChild {...linkProps}>
+            <a href={siteUrl} target="_blank" rel="noopener noreferrer">
+              {t('visitWebSite')}
+            </a>
+          </TextButton>
+        </Box>
+        <Box {...linkItemProps}>
+          <TextButton asChild {...linkProps}>
+            <a
+              href={SUPPORT_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={handleContactUsClick}
+            >
+              {t('contactUs')}
+            </a>
+          </TextButton>
+        </Box>
+      </Box>
+    );
+  }
+
+  const versionLabel = isBeta()
+    ? t('betaMetamaskVersion')
+    : t('metamaskVersion');
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
+      paddingTop={3}
+      paddingBottom={6}
+      gap={4}
+      paddingHorizontal={4}
+    >
+      <Box>
+        <img
+          src="./images/logo/metamask-fox.svg"
+          alt="MetaMask Logo"
+          className="info-tab__logo w-24 h-24"
+        />
+      </Box>
+      <Box data-testid="info-tab-version">
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="info-tab__version-number"
+        >
+          {versionLabel} {version}
+        </Text>
+      </Box>
+      {renderInfoLinks()}
+      {isVisitSupportDataConsentModalOpen && (
+        <VisitSupportDataConsentModal
+          isOpen={isVisitSupportDataConsentModalOpen}
+          onClose={toggleVisitSupportDataConsentModal}
+        />
+      )}
+    </Box>
+  );
+}

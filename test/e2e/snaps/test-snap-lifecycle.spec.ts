@@ -1,22 +1,29 @@
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
-import FixtureBuilder from '../fixture-builder';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { unlockWallet, withFixtures, WINDOW_TITLES } from '../helpers';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
+import { login } from '../page-objects/flows/login.flow';
+import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockLifecycleHooksSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
+import LoginPage from '../page-objects/pages/onboarding/login-page';
 
 describe('Test Snap Lifecycle Hooks', function () {
   it('runs the `onInstall` lifecycle hook when the Snap is installed', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockLifecycleHooksSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);
@@ -45,7 +52,11 @@ describe('Test Snap Lifecycle Hooks', function () {
   it('runs the `onStart` lifecycle hook when the client is started', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
           .withSnapControllerOnStartLifecycleSnap()
           .build(),
         title: this.test?.fullTitle(),
@@ -62,9 +73,11 @@ describe('Test Snap Lifecycle Hooks', function () {
           } catch {
             return false;
           }
-        });
+        }, 15000);
 
-        await unlockWallet(driver, { navigate: false });
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
 
         // Validate the "onStart" lifecycle hook message.
         const snapInstall = new SnapInstall(driver);

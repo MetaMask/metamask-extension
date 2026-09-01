@@ -1,5 +1,5 @@
-import { getIsBrowserPrerenderBroken } from '../../shared/modules/browser-runtime.utils';
-import shouldInjectProvider from '../../shared/modules/provider-injection';
+import { getIsBrowserPrerenderBroken } from '../../shared/lib/browser-runtime.utils';
+import shouldInjectProvider from '../../shared/lib/provider-injection';
 import {
   destroyStreams,
   initStreams,

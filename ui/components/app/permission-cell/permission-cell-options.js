@@ -1,17 +1,24 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
 import Box from '../../ui/box';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { IconName, ButtonIcon, Text } from '../../component-library';
+import {
+  IconName,
+  ButtonIcon,
+  Text,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+} from '../../component-library';
 import { Menu, MenuItem } from '../../ui/menu';
 import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import Popover from '../../ui/popover/popover.component';
 import { DynamicSnapPermissions } from '../../../../shared/constants/snaps/permissions';
 import { revokeDynamicSnapPermissions } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 
 export const PermissionCellOptions = ({
   snapId,
@@ -90,13 +97,15 @@ export const PermissionCellOptions = ({
           )}
         </Menu>
       )}
-      {showDetails && (
-        <Popover title={t('details')} onClose={handleDetailsClose}>
-          <Box marginLeft={4} marginRight={4} marginBottom={4}>
+      <Modal isOpen={showDetails} onClose={handleDetailsClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader onClose={handleDetailsClose}>{t('details')}</ModalHeader>
+          <Box paddingLeft={4} paddingRight={4}>
             <Text>{description}</Text>
           </Box>
-        </Popover>
-      )}
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };

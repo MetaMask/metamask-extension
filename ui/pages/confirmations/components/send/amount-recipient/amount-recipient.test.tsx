@@ -1,4 +1,5 @@
 import React from 'react';
+import { act, waitFor } from '@testing-library/react';
 import { fireEvent } from '@testing-library/dom';
 
 import mockState from '../../../../../../test/data/mock-state.json';
@@ -6,7 +7,8 @@ import {
   EVM_ASSET,
   EVM_NATIVE_ASSET,
 } from '../../../../../../test/data/send/assets';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import * as AmountSelectionMetrics from '../../../hooks/send/metrics/useAmountSelectionMetrics';
 import * as AmountValidation from '../../../hooks/send/useAmountValidation';
@@ -14,12 +16,15 @@ import * as SendActions from '../../../hooks/send/useSendActions';
 import * as SendContext from '../../../context/send';
 import * as RecipientValidation from '../../../hooks/send/useRecipientValidation';
 import * as RecipientSelectionMetrics from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
+import { useAddressPoisoningDetection } from '../../../hooks/send/useAddressPoisoningDetection';
+import * as SendType from '../../../hooks/send/useSendType';
+import * as UnreliableNetworkRpcHook from '../../../hooks/send/useUnreliableNetworkRpc';
 import { AmountRecipient } from './amount-recipient';
 
 const MOCK_ADDRESS = '0xdB055877e6c13b6A6B25aBcAA29B393777dD0a73';
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useLocation: () => ({ pathname: '/send/asset' }),
   useSearchParams: jest.fn().mockReturnValue([{ get: () => null }]),
 }));
@@ -28,6 +33,24 @@ jest.mock('../../UI/send-hero', () => ({
   SendHero: () => <div data-testid="send-hero">SendHero</div>,
 }));
 
+jest.mock('../../../hooks/send/useAddressPoisoningDetection', () => ({
+  useAddressPoisoningDetection: jest.fn(() => ({
+    isPoisoningSuspect: false,
+    bestMatch: null,
+    matches: [],
+    pending: false,
+  })),
+}));
+
+// Stub to avoid hitting the background controller in tests that exercise the
+// real `useRecipientValidation` chain.
+jest.mock(
+  '../../../hooks/send/alerts/useFirstTimeInteractionSendAlert',
+  () => ({
+    useFirstTimeInteractionSendAlert: jest.fn(() => null),
+  }),
+);
+
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? mockState);
 
@@ -35,6 +58,19 @@ const render = (args?: Record<string, unknown>) => {
 };
 
 describe('AmountRecipient', () => {
+  const mockUseAddressPoisoningDetection = jest.mocked(
+    useAddressPoisoningDetection,
+  );
+
+  beforeEach(() => {
+    mockUseAddressPoisoningDetection.mockReturnValue({
+      isPoisoningSuspect: false,
+      bestMatch: null,
+      matches: [],
+      pending: false,
+    });
+  });
+
   it('should render correctly', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       toResolved: MOCK_ADDRESS,
@@ -54,9 +90,9 @@ describe('AmountRecipient', () => {
 
     const { getByText } = render();
 
-    expect(getByText('Amount')).toBeInTheDocument();
+    expect(getByText(messages.amount.message)).toBeInTheDocument();
     expect(getByText('SendHero')).toBeInTheDocument();
-    expect(getByText('Continue')).toBeInTheDocument();
+    expect(getByText(messages.continue.message)).toBeInTheDocument();
   });
 
   it('submit transaction when continue button is clicked', async () => {
@@ -103,18 +139,24 @@ describe('AmountRecipient', () => {
       recipientWarning: null,
       recipientResolvedLookup: null,
       recipientConfusableCharacters: [],
-      validateRecipient: jest.fn(),
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: jest.fn(),
     } as unknown as ReturnType<
       typeof RecipientValidation.useRecipientValidation
     >);
 
     const { getAllByRole, getByText } = render();
 
-    fireEvent.change(getAllByRole('textbox')[0], {
-      target: { value: MOCK_ADDRESS },
+    await act(async () => {
+      fireEvent.change(getAllByRole('textbox')[0], {
+        target: { value: MOCK_ADDRESS },
+      });
     });
 
-    fireEvent.click(getByText('Continue'));
+    await act(async () => {
+      fireEvent.click(getByText(messages.continue.message));
+    });
     expect(mockHandleSubmit).toHaveBeenCalled();
     expect(mockCaptureAmountSelected).toHaveBeenCalled();
     expect(mockCaptureRecipientSelected).toHaveBeenCalled();
@@ -134,7 +176,7 @@ describe('AmountRecipient', () => {
         typeof AmountSelectionMetrics.useAmountSelectionMetrics
       >);
     jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
-      amountError: 'Insufficient Funds',
+      amountError: messages.insufficientFundsSend.message,
     } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       toResolved: MOCK_ADDRESS,
@@ -151,11 +193,17 @@ describe('AmountRecipient', () => {
 
     const { getAllByRole, getByRole } = render();
 
-    fireEvent.change(getAllByRole('textbox')[1], {
-      target: { value: MOCK_ADDRESS },
+    await act(async () => {
+      fireEvent.change(getAllByRole('textbox')[1], {
+        target: { value: MOCK_ADDRESS },
+      });
     });
 
-    fireEvent.click(getByRole('button', { name: 'Insufficient Funds' }));
+    await act(async () => {
+      fireEvent.click(
+        getByRole('button', { name: messages.insufficientFundsSend.message }),
+      );
+    });
     expect(mockHandleSubmit).not.toHaveBeenCalled();
   });
 
@@ -204,11 +252,523 @@ describe('AmountRecipient', () => {
       },
     });
 
-    fireEvent.change(getAllByRole('textbox')[2], {
-      target: { value: '###' },
+    await act(async () => {
+      fireEvent.change(getAllByRole('textbox')[2], {
+        target: { value: '###' },
+      });
     });
 
-    fireEvent.click(getByRole('button', { name: 'Invalid hex data' }));
+    await act(async () => {
+      fireEvent.click(
+        getByRole('button', { name: messages.invalidHexData.message }),
+      );
+    });
     expect(mockHandleSubmit).not.toHaveBeenCalled();
+  });
+
+  it('allows Continue when the recipient is an address poisoning suspect', async () => {
+    const knownAddress = '0x111122223333444455556666777788889999aaaa';
+    const mockHandleSubmit = jest.fn();
+    const mockCaptureAmountSelected = jest.fn();
+    const mockCaptureRecipientSelected = jest.fn();
+    jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
+      handleSubmit: mockHandleSubmit,
+    } as unknown as ReturnType<typeof SendActions.useSendActions>);
+    jest
+      .spyOn(AmountSelectionMetrics, 'useAmountSelectionMetrics')
+      .mockReturnValue({
+        captureAmountSelected: mockCaptureAmountSelected,
+      } as unknown as ReturnType<
+        typeof AmountSelectionMetrics.useAmountSelectionMetrics
+      >);
+    jest
+      .spyOn(RecipientSelectionMetrics, 'useRecipientSelectionMetrics')
+      .mockReturnValue({
+        captureRecipientSelected: mockCaptureRecipientSelected,
+        setRecipientInputMethodManual: jest.fn(),
+      } as unknown as ReturnType<
+        typeof RecipientSelectionMetrics.useRecipientSelectionMetrics
+      >);
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      to: MOCK_ADDRESS,
+      toResolved: MOCK_ADDRESS,
+      asset: EVM_ASSET,
+      chainId: '0x1',
+      from: 'from-address',
+      updateAsset: jest.fn(),
+      updateCurrentPage: jest.fn(),
+      updateTo: jest.fn(),
+      updateToResolved: jest.fn(),
+      updateValue: jest.fn(),
+      value: '1',
+    } as unknown as ReturnType<typeof SendContext.useSendContext>);
+    jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
+      amountError: undefined,
+    } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
+    jest.spyOn(RecipientValidation, 'useRecipientValidation').mockReturnValue({
+      recipientError: null,
+      recipientWarning: null,
+      recipientResolvedLookup: null,
+      recipientConfusableCharacters: [],
+      toAddressValidated: MOCK_ADDRESS,
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: jest.fn(),
+      validateRecipient: jest.fn(),
+    } as unknown as ReturnType<
+      typeof RecipientValidation.useRecipientValidation
+    >);
+    mockUseAddressPoisoningDetection.mockReturnValue({
+      isPoisoningSuspect: true,
+      bestMatch: {
+        knownAddress,
+        prefixMatchLength: 4,
+        suffixMatchLength: 4,
+        poisoningScore: 8,
+        diffIndices: [6, 7],
+      },
+      matches: [],
+      pending: false,
+    });
+
+    const { getByRole } = render();
+
+    await act(async () => {
+      await new Promise(process.nextTick);
+    });
+
+    expect(mockUseAddressPoisoningDetection).toHaveBeenCalledWith(MOCK_ADDRESS);
+    const continueButton = getByRole('button', {
+      name: messages.continue.message,
+    });
+    expect(continueButton).not.toBeDisabled();
+
+    fireEvent.click(continueButton);
+
+    expect(mockHandleSubmit).toHaveBeenCalled();
+    expect(mockCaptureAmountSelected).toHaveBeenCalled();
+    expect(mockCaptureRecipientSelected).toHaveBeenCalled();
+  });
+
+  it('disables Continue while address poisoning detection is pending', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      to: MOCK_ADDRESS,
+      toResolved: MOCK_ADDRESS,
+      asset: EVM_ASSET,
+      chainId: '0x1',
+      from: 'from-address',
+      updateAsset: jest.fn(),
+      updateCurrentPage: jest.fn(),
+      updateTo: jest.fn(),
+      updateToResolved: jest.fn(),
+      updateValue: jest.fn(),
+      value: '1',
+    } as unknown as ReturnType<typeof SendContext.useSendContext>);
+    jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
+      amountError: undefined,
+    } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
+    jest.spyOn(RecipientValidation, 'useRecipientValidation').mockReturnValue({
+      recipientError: null,
+      recipientWarning: null,
+      recipientResolvedLookup: null,
+      recipientConfusableCharacters: [],
+      toAddressValidated: MOCK_ADDRESS,
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: jest.fn(),
+      validateRecipient: jest.fn(),
+    } as unknown as ReturnType<
+      typeof RecipientValidation.useRecipientValidation
+    >);
+    mockUseAddressPoisoningDetection.mockReturnValue({
+      isPoisoningSuspect: false,
+      bestMatch: null,
+      matches: [],
+      pending: true,
+    });
+
+    const { getByRole } = render();
+
+    await act(async () => {
+      await new Promise(process.nextTick);
+    });
+
+    expect(mockUseAddressPoisoningDetection).toHaveBeenCalledWith(MOCK_ADDRESS);
+    expect(
+      getByRole('button', { name: messages.continue.message }),
+    ).toBeDisabled();
+  });
+
+  it('should call validateNonEvmAmountAsync for non-EVM send type and submit if no error', async () => {
+    const mockHandleSubmit = jest.fn();
+    const mockValidateNonEvmAmountAsync = jest.fn().mockResolvedValue(null);
+    const mockCaptureAmountSelected = jest.fn();
+    const mockCaptureRecipientSelected = jest.fn();
+
+    jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
+      handleSubmit: mockHandleSubmit,
+    } as unknown as ReturnType<typeof SendActions.useSendActions>);
+
+    jest
+      .spyOn(AmountSelectionMetrics, 'useAmountSelectionMetrics')
+      .mockReturnValue({
+        captureAmountSelected: mockCaptureAmountSelected,
+      } as unknown as ReturnType<
+        typeof AmountSelectionMetrics.useAmountSelectionMetrics
+      >);
+
+    jest
+      .spyOn(RecipientSelectionMetrics, 'useRecipientSelectionMetrics')
+      .mockReturnValue({
+        captureRecipientSelected: mockCaptureRecipientSelected,
+        setRecipientInputMethodManual: jest.fn(),
+      } as unknown as ReturnType<
+        typeof RecipientSelectionMetrics.useRecipientSelectionMetrics
+      >);
+
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      toResolved: MOCK_ADDRESS,
+      asset: EVM_ASSET,
+      chainId: '0x1',
+      from: 'from-address',
+      updateAsset: jest.fn(),
+      updateCurrentPage: jest.fn(),
+      updateTo: jest.fn(),
+      updateToResolved: jest.fn(),
+      updateValue: jest.fn(),
+      value: '1',
+    } as unknown as ReturnType<typeof SendContext.useSendContext>);
+
+    jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
+      amountError: undefined,
+      validateNonEvmAmountAsync: mockValidateNonEvmAmountAsync,
+    } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
+
+    jest.spyOn(RecipientValidation, 'useRecipientValidation').mockReturnValue({
+      recipientError: null,
+      recipientWarning: null,
+      recipientResolvedLookup: null,
+      recipientConfusableCharacters: [],
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: jest.fn(),
+    } as unknown as ReturnType<
+      typeof RecipientValidation.useRecipientValidation
+    >);
+
+    jest.spyOn(SendType, 'useSendType').mockReturnValue({
+      isNonEvmSendType: true,
+    } as unknown as ReturnType<typeof SendType.useSendType>);
+
+    const { getAllByRole, getByText } = render();
+
+    await act(async () => {
+      fireEvent.change(getAllByRole('textbox')[0], {
+        target: { value: MOCK_ADDRESS },
+      });
+    });
+
+    await act(async () => {
+      fireEvent.click(getByText(messages.continue.message));
+    });
+
+    await waitFor(() => {
+      expect(mockValidateNonEvmAmountAsync).toHaveBeenCalled();
+    });
+    expect(mockHandleSubmit).toHaveBeenCalled();
+    expect(mockCaptureAmountSelected).toHaveBeenCalled();
+    expect(mockCaptureRecipientSelected).toHaveBeenCalled();
+  });
+
+  it('should call validateNonEvmAmountAsync for non-EVM send type and not submit if there is an error', async () => {
+    const mockHandleSubmit = jest.fn();
+    const mockValidateNonEvmAmountAsync = jest
+      .fn()
+      .mockResolvedValue('Amount required');
+    const mockCaptureAmountSelected = jest.fn();
+    const mockCaptureRecipientSelected = jest.fn();
+
+    jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
+      handleSubmit: mockHandleSubmit,
+    } as unknown as ReturnType<typeof SendActions.useSendActions>);
+
+    jest
+      .spyOn(AmountSelectionMetrics, 'useAmountSelectionMetrics')
+      .mockReturnValue({
+        captureAmountSelected: mockCaptureAmountSelected,
+      } as unknown as ReturnType<
+        typeof AmountSelectionMetrics.useAmountSelectionMetrics
+      >);
+
+    jest
+      .spyOn(RecipientSelectionMetrics, 'useRecipientSelectionMetrics')
+      .mockReturnValue({
+        captureRecipientSelected: mockCaptureRecipientSelected,
+        setRecipientInputMethodManual: jest.fn(),
+      } as unknown as ReturnType<
+        typeof RecipientSelectionMetrics.useRecipientSelectionMetrics
+      >);
+
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      toResolved: MOCK_ADDRESS,
+      asset: EVM_ASSET,
+      chainId: '0x1',
+      from: 'from-address',
+      updateAsset: jest.fn(),
+      updateCurrentPage: jest.fn(),
+      updateTo: jest.fn(),
+      updateToResolved: jest.fn(),
+      updateValue: jest.fn(),
+      value: '1',
+    } as unknown as ReturnType<typeof SendContext.useSendContext>);
+
+    jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
+      amountError: undefined,
+      validateNonEvmAmountAsync: mockValidateNonEvmAmountAsync,
+    } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
+
+    jest.spyOn(RecipientValidation, 'useRecipientValidation').mockReturnValue({
+      recipientError: null,
+      recipientWarning: null,
+      recipientResolvedLookup: null,
+      recipientConfusableCharacters: [],
+      alerts: [],
+      hasUnacknowledgedAlerts: false,
+      acknowledgeAlerts: jest.fn(),
+    } as unknown as ReturnType<
+      typeof RecipientValidation.useRecipientValidation
+    >);
+
+    jest.spyOn(SendType, 'useSendType').mockReturnValue({
+      isNonEvmSendType: true,
+    } as unknown as ReturnType<typeof SendType.useSendType>);
+
+    const { getAllByRole, getByText } = render();
+
+    await act(async () => {
+      fireEvent.change(getAllByRole('textbox')[0], {
+        target: { value: MOCK_ADDRESS },
+      });
+    });
+
+    await act(async () => {
+      fireEvent.click(getByText(messages.continue.message));
+    });
+
+    await waitFor(() => {
+      expect(mockValidateNonEvmAmountAsync).toHaveBeenCalled();
+    });
+    expect(mockHandleSubmit).not.toHaveBeenCalled();
+    expect(mockCaptureAmountSelected).not.toHaveBeenCalled();
+    expect(mockCaptureRecipientSelected).not.toHaveBeenCalled();
+  });
+
+  describe('send alert modal', () => {
+    const TOKEN_CONTRACT_ALERT = {
+      key: 'tokenContract',
+      title: 'Smart contract address',
+      message: 'This may result in fund loss.',
+    };
+
+    it('shows alert modal instead of submitting when there are unacknowledged alerts', async () => {
+      const mockHandleSubmit = jest.fn();
+      jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
+        handleSubmit: mockHandleSubmit,
+      } as unknown as ReturnType<typeof SendActions.useSendActions>);
+      jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+        toResolved: MOCK_ADDRESS,
+        asset: EVM_ASSET,
+        chainId: '0x1',
+        from: 'from-address',
+        updateAsset: jest.fn(),
+        updateCurrentPage: jest.fn(),
+        updateTo: jest.fn(),
+        updateToResolved: jest.fn(),
+        updateValue: jest.fn(),
+        value: '1',
+      } as unknown as ReturnType<typeof SendContext.useSendContext>);
+      jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
+        amountError: undefined,
+      } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
+      jest
+        .spyOn(RecipientValidation, 'useRecipientValidation')
+        .mockReturnValue({
+          recipientError: undefined,
+          recipientWarning: null,
+          recipientResolvedLookup: null,
+          recipientConfusableCharacters: [],
+          alerts: [TOKEN_CONTRACT_ALERT],
+          hasUnacknowledgedAlerts: true,
+          acknowledgeAlerts: jest.fn(),
+        } as unknown as ReturnType<
+          typeof RecipientValidation.useRecipientValidation
+        >);
+
+      const { getByText, getByTestId } = render();
+
+      const continueButton = getByText(messages.continue.message);
+      expect(continueButton).not.toBeDisabled();
+
+      await act(async () => {
+        fireEvent.click(continueButton);
+      });
+
+      expect(mockHandleSubmit).not.toHaveBeenCalled();
+      expect(
+        getByTestId('send-alert-modal-acknowledge-button'),
+      ).toBeInTheDocument();
+    });
+
+    it('proceeds with submit after acknowledging in modal', async () => {
+      const mockHandleSubmit = jest.fn();
+      const mockAcknowledgeAlerts = jest.fn();
+      jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
+        handleSubmit: mockHandleSubmit,
+      } as unknown as ReturnType<typeof SendActions.useSendActions>);
+      const mockCaptureAmountSelected = jest.fn();
+      const mockCaptureRecipientSelected = jest.fn();
+      jest
+        .spyOn(AmountSelectionMetrics, 'useAmountSelectionMetrics')
+        .mockReturnValue({
+          captureAmountSelected: mockCaptureAmountSelected,
+        } as unknown as ReturnType<
+          typeof AmountSelectionMetrics.useAmountSelectionMetrics
+        >);
+      jest
+        .spyOn(RecipientSelectionMetrics, 'useRecipientSelectionMetrics')
+        .mockReturnValue({
+          captureRecipientSelected: mockCaptureRecipientSelected,
+          setRecipientInputMethodManual: jest.fn(),
+        } as unknown as ReturnType<
+          typeof RecipientSelectionMetrics.useRecipientSelectionMetrics
+        >);
+      jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+        toResolved: MOCK_ADDRESS,
+        asset: EVM_ASSET,
+        chainId: '0x1',
+        from: 'from-address',
+        updateAsset: jest.fn(),
+        updateCurrentPage: jest.fn(),
+        updateTo: jest.fn(),
+        updateToResolved: jest.fn(),
+        updateValue: jest.fn(),
+        value: '1',
+      } as unknown as ReturnType<typeof SendContext.useSendContext>);
+      jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
+        amountError: undefined,
+      } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
+      jest
+        .spyOn(RecipientValidation, 'useRecipientValidation')
+        .mockReturnValue({
+          recipientError: undefined,
+          recipientWarning: null,
+          recipientResolvedLookup: null,
+          recipientConfusableCharacters: [],
+          alerts: [TOKEN_CONTRACT_ALERT],
+          hasUnacknowledgedAlerts: true,
+          acknowledgeAlerts: mockAcknowledgeAlerts,
+        } as unknown as ReturnType<
+          typeof RecipientValidation.useRecipientValidation
+        >);
+
+      const { getByText, getByTestId } = render();
+
+      await act(async () => {
+        fireEvent.click(getByText(messages.continue.message));
+      });
+      await act(async () => {
+        fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      });
+
+      await waitFor(() => {
+        expect(mockAcknowledgeAlerts).toHaveBeenCalledWith([
+          TOKEN_CONTRACT_ALERT.key,
+        ]);
+      });
+      expect(mockHandleSubmit).toHaveBeenCalled();
+    });
+
+    it('disables the Continue button when the asset network RPC is unreliable', async () => {
+      jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+        toResolved: MOCK_ADDRESS,
+        asset: EVM_ASSET,
+        chainId: '0x1',
+        from: 'from-address',
+        updateAsset: jest.fn(),
+        updateCurrentPage: jest.fn(),
+        updateTo: jest.fn(),
+        updateToResolved: jest.fn(),
+        updateValue: jest.fn(),
+        value: '1',
+      } as unknown as ReturnType<typeof SendContext.useSendContext>);
+      jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
+        amountError: undefined,
+      } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
+      jest
+        .spyOn(UnreliableNetworkRpcHook, 'useUnreliableNetworkRpc')
+        .mockReturnValue({
+          isUnreliable: true,
+          networkName: 'Ethereum',
+          navigateToEditNetwork: jest.fn(),
+        });
+
+      const { findByRole } = render();
+
+      expect(
+        await findByRole('button', { name: messages.continue.message }),
+      ).toBeDisabled();
+    });
+
+    it('does not submit when acknowledging from icon-triggered modal', async () => {
+      const mockHandleSubmit = jest.fn();
+      const mockAcknowledgeAlerts = jest.fn();
+      jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
+        handleSubmit: mockHandleSubmit,
+      } as unknown as ReturnType<typeof SendActions.useSendActions>);
+      jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+        toResolved: MOCK_ADDRESS,
+        asset: EVM_ASSET,
+        chainId: '0x1',
+        from: 'from-address',
+        updateAsset: jest.fn(),
+        updateCurrentPage: jest.fn(),
+        updateTo: jest.fn(),
+        updateToResolved: jest.fn(),
+        updateValue: jest.fn(),
+        value: '1',
+      } as unknown as ReturnType<typeof SendContext.useSendContext>);
+      jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
+        amountError: undefined,
+      } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
+      jest
+        .spyOn(RecipientValidation, 'useRecipientValidation')
+        .mockReturnValue({
+          recipientError: undefined,
+          recipientWarning: null,
+          recipientResolvedLookup: null,
+          recipientConfusableCharacters: [],
+          alerts: [TOKEN_CONTRACT_ALERT],
+          hasUnacknowledgedAlerts: true,
+          acknowledgeAlerts: mockAcknowledgeAlerts,
+        } as unknown as ReturnType<
+          typeof RecipientValidation.useRecipientValidation
+        >);
+
+      const { getByTestId } = render();
+
+      await act(async () => {
+        fireEvent.click(getByTestId('recipient-alert-icon'));
+      });
+      await act(async () => {
+        fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+      });
+
+      await waitFor(() => {
+        expect(mockAcknowledgeAlerts).toHaveBeenCalledWith([
+          TOKEN_CONTRACT_ALERT.key,
+        ]);
+      });
+      expect(mockHandleSubmit).not.toHaveBeenCalled();
+    });
   });
 });

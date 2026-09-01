@@ -1,85 +1,138 @@
+import { MiddlewareContext } from '@metamask/json-rpc-engine/v2';
 import { EthAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   TransactionController,
+  TransactionControllerAddTransactionAction,
+  TransactionControllerAddTransactionBatchAction,
   TransactionMeta,
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
 import {
   AddUserOperationOptions,
-  UserOperationController,
+  UserOperationControllerAddUserOperationFromTransactionAction,
+  UserOperationControllerStartPollingByNetworkClientIdAction,
 } from '@metamask/user-operation-controller';
-import type { Hex } from '@metamask/utils';
+import { KeyringControllerGetKeyringForAccountAction } from '@metamask/keyring-controller';
+import type { PhishingControllerScanAddressAction } from '@metamask/phishing-controller';
+import { MessengerActions, MessengerEvents } from '@metamask/messenger';
+import {
+  PRODUCT_TYPES,
+  SubscriptionControllerGetSubscriptionByProductAction,
+} from '@metamask/subscription-controller';
+import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
+import type { Hex, JsonRpcRequest } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';
-import { PPOMController } from '@metamask/ppom-validator';
-
+import log from 'loglevel';
 import {
   generateSecurityAlertId,
   handlePPOMError,
+  updateSecurityAlertResponse,
   validateRequestWithPPOM,
+  type PPOMMessenger,
 } from '../ppom/ppom-util';
-import {
-  SecurityAlertResponse,
-  UpdateSecurityAlertResponse,
-  GetSecurityAlertsConfig,
-} from '../ppom/types';
+import { SecurityAlertResponse } from '../ppom/types';
 import {
   LOADING_SECURITY_ALERT_RESPONSE,
   SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
 } from '../../../../shared/constants/security-provider';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { getShieldGatewayConfig } from '../../../../shared/lib/shield/shield';
 import { scanAddressAndAddToCache } from '../trust-signals/security-alerts-api';
-import { mapChainIdToSupportedEVMChain } from '../trust-signals/trust-signals-util';
+import { ScanAddressResponse } from '../../../../shared/lib/trust-signals';
+import { getTransactionDataRecipient } from '../../../../shared/lib/transaction.utils';
 import {
-  GetAddressSecurityAlertResponse,
-  AddAddressSecurityAlertResponse,
-} from '../trust-signals/types';
+  AppStateControllerAddAddressSecurityAlertResponseAction,
+  AppStateControllerGetAddressSecurityAlertResponseAction,
+} from '../../controllers/app-state-controller-method-action-types';
+import { RootMessenger } from '../messenger';
+import { accountSupports7702 } from '../account-supports-7702';
+import {
+  getTempoEvmTransactionArgs,
+  getTempoTransactionBatchArgs,
+  isTempoChain,
+  isTempoTransactionType,
+} from './tempo-tx-utils';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
 >;
 
+/**
+ * The messenger used by the shared transaction-add pipeline. It extends the
+ * {@link PPOMMessenger} (security validation) with the actions needed to add a
+ * transaction or user operation, resolve an account's keyring, scan a
+ * recipient address for trust signals, and read the security-alerts gateway
+ * configuration.
+ */
+export type AddTransactionMessenger = RootMessenger<
+  | MessengerActions<PPOMMessenger>
+  | TransactionControllerAddTransactionAction
+  | TransactionControllerAddTransactionBatchAction
+  | UserOperationControllerAddUserOperationFromTransactionAction
+  | UserOperationControllerStartPollingByNetworkClientIdAction
+  | KeyringControllerGetKeyringForAccountAction
+  | AppStateControllerGetAddressSecurityAlertResponseAction
+  | AppStateControllerAddAddressSecurityAlertResponseAction
+  | PhishingControllerScanAddressAction
+  | SubscriptionControllerGetSubscriptionByProductAction
+  | AuthenticationControllerGetBearerTokenAction,
+  MessengerEvents<PPOMMessenger>
+>;
+
 type BaseAddTransactionRequest = {
   chainId: Hex;
   networkClientId: string;
-  ppomController: PPOMController;
+  messenger: AddTransactionMessenger;
   securityAlertsEnabled: boolean;
   selectedAccount: InternalAccount;
   transactionParams: TransactionParams;
-  transactionController: TransactionController;
-  updateSecurityAlertResponse: UpdateSecurityAlertResponse;
-  userOperationController: UserOperationController;
   internalAccounts: InternalAccount[];
-  getSecurityAlertResponse: GetAddressSecurityAlertResponse;
-  addSecurityAlertResponse: AddAddressSecurityAlertResponse;
 };
 
-type FinalAddTransactionRequest = BaseAddTransactionRequest & {
+export type FinalAddTransactionRequest = BaseAddTransactionRequest & {
   transactionOptions: Partial<AddTransactionOptions>;
 };
 
 export type AddTransactionRequest = FinalAddTransactionRequest & {
   waitForSubmit: boolean;
-  getSecurityAlertsConfig?: GetSecurityAlertsConfig;
 };
 
 export type AddDappTransactionRequest = BaseAddTransactionRequest & {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dappRequest: Record<string, any>;
+  dappRequest: JsonRpcRequest;
+  requestContext: MiddlewareContext;
 };
+
+const TRANSFER_TYPES = [
+  TransactionType.tokenMethodTransfer,
+  TransactionType.tokenMethodTransferFrom,
+  TransactionType.tokenMethodSafeTransferFrom,
+];
+
+type AddTransactionResult = Promise<{
+  transactionMeta: TransactionMeta | undefined;
+  waitForHash: () => Promise<string | undefined>;
+}>;
 
 export async function addDappTransaction(
   request: AddDappTransactionRequest,
 ): Promise<string> {
-  const { dappRequest } = request;
-  const { id: actionId, method, origin } = dappRequest;
-  const { securityAlertResponse, traceContext } = dappRequest;
+  const { dappRequest, requestContext } = request;
+  const { id, method } = dappRequest;
+  const actionId = String(id);
+
+  // TODO: Find a home for and define the appropriate MiddlewareContext type
+  const origin = requestContext.assertGet('origin') as string;
+  const securityAlertResponse = requestContext.get('securityAlertResponse') as
+    | SecurityAlertResponse
+    | undefined;
+  const traceContext = requestContext.get('traceContext');
 
   const transactionOptions: Partial<AddTransactionOptions> = {
     actionId,
+    requestId: String(id),
     method,
     origin,
     // This is the default behaviour but specified here for clarity
@@ -89,19 +142,85 @@ export async function addDappTransaction(
 
   endTrace({ name: TraceName.Middleware, id: actionId });
 
-  const { waitForHash } = await addTransactionOrUserOperation({
+  const addTransactionRequest: FinalAddTransactionRequest = {
     ...request,
     transactionOptions: {
       ...transactionOptions,
       traceContext,
     },
-  });
+  };
+
+  const { waitForHash } = await addTransactionOrUserOperation(
+    addTransactionRequest,
+  );
 
   const hash = (await waitForHash()) as string;
 
   endTrace({ name: TraceName.Transaction, id: actionId });
 
   return hash;
+}
+
+async function addTransactionOnTempo(
+  request: FinalAddTransactionRequest,
+): AddTransactionResult {
+  const { chainId, messenger } = request;
+  const isEip7702SupportedByAccount = await accountSupports7702(
+    request.transactionParams.from,
+    messenger,
+  );
+
+  // Non-Tempo transaction (not type 0x76)
+  if (!isTempoTransactionType(request.transactionParams)) {
+    if (!request.transactionParams.to) {
+      log.debug(
+        'addTransactionOnTempo: Smart-Contract deployment tx detected. Fallback to classic tx.',
+      );
+      // Classic transaction
+      return addTransactionWithController(request);
+    }
+    if (!isEip7702SupportedByAccount) {
+      log.debug(
+        'addTransactionOnTempo: Tempo chain but wallet does not support 7702. Falling back to legacy transactions',
+      );
+      // Classic transaction
+      return addTransactionWithController(request);
+    }
+
+    // We make it a EIP-7702 tx, seting pathUSD as default gasToken
+    // and add excludeNativeTokenForFee to signal to ignore native.
+    return addTransactionWithController(
+      getTempoEvmTransactionArgs({ request, chainId }),
+    );
+    // Tempo transaction 0x76 + hardware wallet wont work for now.
+  } else if (!isEip7702SupportedByAccount) {
+    throw new Error('Wallet not supported for Tempo Transactions.');
+  }
+  // Checks and infer Tempo Transaction format for supported fields.
+  const result = await messenger.call(
+    'TransactionController:addTransactionBatch',
+    getTempoTransactionBatchArgs({ request, chainId }),
+  );
+  const { batchId } = result;
+  // We've got a batchId but we want to return a tx hash to the dApp
+  const transactionMeta = getTransactionByBatchId(batchId, messenger);
+
+  if (!transactionMeta) {
+    log.debug(`Batch ${batchId}: No matching transaction found.`);
+    throw new Error(
+      `Tempo Transaction: Unable to determine if transaction was successful.`,
+    );
+  } else if (!transactionMeta.hash) {
+    log.debug(`Batch ${batchId}: Hash missing from transaction object.`);
+    throw new Error(
+      `Tempo Transaction: Unable to determine if transaction was successful.`,
+    );
+  }
+
+  return {
+    transactionMeta,
+    waitForHash: async () => transactionMeta.hash,
+  };
 }
 
 export async function addTransaction(
@@ -124,7 +243,7 @@ export async function addTransaction(
 
   const finalTransactionMeta = getTransactionByHash(
     transactionHash as string,
-    request.transactionController,
+    request.messenger,
   );
 
   return finalTransactionMeta as TransactionMeta;
@@ -134,6 +253,10 @@ async function addTransactionOrUserOperation(
   request: FinalAddTransactionRequest,
 ) {
   const { selectedAccount } = request;
+  const isTempoChainId = isTempoChain(request.chainId);
+  if (isTempoChainId) {
+    return addTransactionOnTempo(request);
+  }
 
   const isSmartContractAccount =
     selectedAccount.type === EthAccountType.Erc4337;
@@ -148,18 +271,17 @@ async function addTransactionOrUserOperation(
 async function addTransactionWithController(
   request: FinalAddTransactionRequest,
 ) {
-  const {
-    transactionController,
-    transactionOptions,
-    transactionParams,
-    networkClientId,
-  } = request;
+  const { messenger, transactionOptions, transactionParams, networkClientId } =
+    request;
 
-  const { result, transactionMeta } =
-    await transactionController.addTransaction(transactionParams, {
+  const { result, transactionMeta } = await messenger.call(
+    'TransactionController:addTransaction',
+    transactionParams,
+    {
       ...transactionOptions,
       networkClientId,
-    });
+    },
+  );
 
   return {
     transactionMeta,
@@ -170,13 +292,8 @@ async function addTransactionWithController(
 async function addUserOperationWithController(
   request: FinalAddTransactionRequest,
 ) {
-  const {
-    networkClientId,
-    transactionController,
-    transactionOptions,
-    transactionParams,
-    userOperationController,
-  } = request;
+  const { messenger, networkClientId, transactionOptions, transactionParams } =
+    request;
 
   const { maxFeePerGas, maxPriorityFeePerGas } = transactionParams;
 
@@ -204,19 +321,43 @@ async function addUserOperationWithController(
     type,
   };
 
-  const result = await userOperationController.addUserOperationFromTransaction(
+  const result = await messenger.call(
+    'UserOperationController:addUserOperationFromTransaction',
     normalisedTransaction,
     options,
   );
 
-  userOperationController.startPollingByNetworkClientId(networkClientId);
+  messenger.call(
+    'UserOperationController:startPollingByNetworkClientId',
+    networkClientId,
+  );
 
-  const transactionMeta = getTransactionById(result.id, transactionController);
+  const transactionMeta = findTransaction(
+    messenger,
+    (tx) => tx.id === result.id,
+  );
 
   return {
     transactionMeta,
     waitForHash: result.transactionHash,
   };
+}
+
+/**
+ * Finds a transaction in the TransactionController state that matches the given
+ * predicate, reading state via the messenger.
+ *
+ * @param messenger - The messenger used to read the TransactionController state.
+ * @param predicate - The predicate used to find the transaction.
+ * @returns The matching transaction, or `undefined` if none is found.
+ */
+function findTransaction(
+  messenger: AddTransactionMessenger,
+  predicate: (tx: TransactionMeta) => boolean,
+): TransactionMeta | undefined {
+  return messenger
+    .call('TransactionController:getState')
+    .transactions.find(predicate);
 }
 
 export function getTransactionById(
@@ -230,17 +371,43 @@ export function getTransactionById(
 
 function getTransactionByHash(
   transactionHash: string,
-  transactionController: TransactionController,
+  messenger: AddTransactionMessenger,
 ) {
-  return transactionController.state.transactions.find(
-    (tx) => tx.hash === transactionHash,
-  );
+  return findTransaction(messenger, (tx) => tx.hash === transactionHash);
+}
+
+function getTransactionByBatchId(
+  batchId: string,
+  messenger: AddTransactionMessenger,
+) {
+  return findTransaction(messenger, (tx) => tx.batchId === batchId);
+}
+
+/**
+ * Builds the security-alerts API configuration (gateway URL and authorization
+ * header) from the messenger, reading the shield subscription and bearer token.
+ *
+ * @param messenger - The messenger used to read the subscription and token.
+ * @param url - The URL of the Security Alerts API.
+ * @returns The security-alerts gateway configuration.
+ */
+async function getSecurityAlertsConfig(
+  messenger: AddTransactionMessenger,
+  url: string,
+): Promise<{ newUrl?: string; authorization?: string }> {
+  const getShieldSubscription = () =>
+    messenger.call(
+      'SubscriptionController:getSubscriptionByProduct',
+      PRODUCT_TYPES.SHIELD,
+    );
+  const getToken = () =>
+    messenger.call('AuthenticationController:getBearerToken');
+  return getShieldGatewayConfig(getToken, getShieldSubscription, url);
 }
 
 function scanAddressForTrustSignals(request: AddTransactionRequest) {
   const {
-    getSecurityAlertResponse,
-    addSecurityAlertResponse,
+    messenger,
     securityAlertsEnabled,
     transactionOptions,
     transactionParams,
@@ -255,16 +422,38 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
     return;
   }
 
-  const supportedEVMChain = mapChainIdToSupportedEVMChain(chainId);
-  if (!supportedEVMChain) {
-    return;
-  }
+  const getAddressSecurityAlertResponseWithChain = (cacheKey: string) => {
+    return messenger.call(
+      'AppStateController:getAddressSecurityAlertResponse',
+      cacheKey,
+    );
+  };
+
+  const addAddressSecurityAlertResponseWithChain = (
+    cacheKey: string,
+    response: ScanAddressResponse,
+  ) => {
+    return messenger.call(
+      'AppStateController:addAddressSecurityAlertResponse',
+      cacheKey,
+      response,
+    );
+  };
+
+  // Satisfies scanAddressAndAddToCache's Pick<PhishingController, 'scanAddress'>
+  // parameter without holding a controller instance; the middleware caller
+  // passes the real PhishingController directly.
+  const phishingControllerScanAdapter = {
+    scanAddress: (scanChainId: string, address: string) =>
+      messenger.call('PhishingController:scanAddress', scanChainId, address),
+  };
 
   scanAddressAndAddToCache(
     to,
-    getSecurityAlertResponse,
-    addSecurityAlertResponse,
-    supportedEVMChain,
+    getAddressSecurityAlertResponseWithChain,
+    addAddressSecurityAlertResponseWithChain,
+    chainId,
+    phishingControllerScanAdapter,
   ).catch((error) => {
     console.error(
       '[scanAddressForTrustSignals] error scanning address for trust signals:',
@@ -276,17 +465,16 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
 async function validateSecurity(request: AddTransactionRequest) {
   const {
     chainId,
-    ppomController,
+    messenger,
     securityAlertsEnabled,
     transactionOptions,
     transactionParams,
-    updateSecurityAlertResponse,
     internalAccounts,
-    getSecurityAlertsConfig,
   } = request;
 
   scanAddressForTrustSignals(request);
   const { type } = transactionOptions;
+  const { data, value, to } = transactionParams;
 
   const typeIsExcludedFromPPOM =
     SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES.includes(
@@ -297,17 +485,21 @@ async function validateSecurity(request: AddTransactionRequest) {
     return;
   }
 
+  const isTransfer =
+    value === '0x0' && TRANSFER_TYPES.includes(type as TransactionType);
+
+  const recipient =
+    isTransfer && data ? getTransactionDataRecipient(data) : undefined;
+
   if (
-    internalAccounts.some(
-      ({ address }) =>
-        address.toLowerCase() === transactionParams.to?.toLowerCase(),
-    )
+    isInternalAccount(internalAccounts, to) ||
+    isInternalAccount(internalAccounts, recipient)
   ) {
     return;
   }
 
   try {
-    const { from, to, value, data } = transactionParams;
+    const { from } = transactionParams;
     const { actionId, origin } = transactionOptions;
 
     const ppomRequest = {
@@ -329,12 +521,18 @@ async function validateSecurity(request: AddTransactionRequest) {
 
     // Intentionally not awaited to avoid blocking the confirmation process while the validation occurs.
     validateRequestWithPPOM({
-      ppomController,
+      messenger,
       request: ppomRequest,
       securityAlertId,
       chainId,
-      updateSecurityAlertResponse,
-      getSecurityAlertsConfig,
+      updateSecurityAlertResponse: (method, id, securityAlertResponse) =>
+        updateSecurityAlertResponse({
+          messenger,
+          method,
+          securityAlertId: id,
+          securityAlertResponse,
+        }),
+      getSecurityAlertsConfig: (url) => getSecurityAlertsConfig(messenger, url),
     });
 
     const securityAlertResponseLoading: SecurityAlertResponse = {
@@ -347,4 +545,24 @@ async function validateSecurity(request: AddTransactionRequest) {
   } catch (error) {
     handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
   }
+}
+
+function normalizeAddress(address?: string): string | undefined {
+  return address?.toLowerCase();
+}
+
+function isInternalAccount(
+  internalAccounts: { address: string }[],
+  address?: string,
+): boolean {
+  const normalized = normalizeAddress(address);
+  if (!normalized) {
+    return false;
+  }
+
+  const internalSet = new Set(
+    internalAccounts.map((acc) => normalizeAddress(acc.address)),
+  );
+
+  return internalSet.has(normalized);
 }

@@ -23,15 +23,17 @@ import {
 } from '../../types/confirm';
 import { useConfirmContext } from '../../context/confirm';
 import useCurrentSignatureSecurityAlertResponse from '../useCurrentSignatureSecurityAlertResponse';
+import { useSendingAssetsFiatTotal } from './useSendingAssetsFiatTotal';
 import { normalizeProviderAlert } from './utils';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const zlib = require('zlib');
 
-const IGNORED_RESULT_TYPES = [
-  BlockaidResultType.Benign,
-  BlockaidResultType.Loading,
-];
+export const ALERT_RESULT_TYPES = [
+  BlockaidResultType.Malicious,
+  BlockaidResultType.Warning,
+  BlockaidResultType.Errored,
+] as BlockaidResultType[];
 
 type SecurityAlertResponsesState = {
   metamask: {
@@ -43,6 +45,7 @@ type SecurityAlertResponsesState = {
 const useBlockaidAlerts = (): Alert[] => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
+  const sendingFiatTotal = useSendingAssetsFiatTotal();
 
   const securityAlertId = (
     currentConfirmation?.securityAlertResponse as SecurityAlertResponse
@@ -65,15 +68,13 @@ const useBlockaidAlerts = (): Alert[] => {
   );
 
   const securityAlertResponse =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     signatureSecurityAlertResponse || transactionSecurityAlertResponse;
 
   const isTransactionTypeSupported =
     isCorrectDeveloperTransactionType(transactionType) ||
     SIGNATURE_TRANSACTION_TYPES.includes(transactionType);
 
-  const isResultTypeIgnored = IGNORED_RESULT_TYPES.includes(
+  const shouldShowAlert = ALERT_RESULT_TYPES.includes(
     securityAlertResponse?.result_type as BlockaidResultType,
   );
 
@@ -109,13 +110,13 @@ const useBlockaidAlerts = (): Alert[] => {
   return useMemo<Alert[]>(() => {
     if (
       !isTransactionTypeSupported ||
-      isResultTypeIgnored ||
+      !shouldShowAlert ||
       !securityAlertResponse
     ) {
       return [];
     }
 
-    let reportUrl = ZENDESK_URLS.SUPPORT_URL;
+    let reportUrl: string = ZENDESK_URLS.SUPPORT_URL;
     if (stringifiedJSONData) {
       const encodedData =
         zlib?.gzipSync?.(stringifiedJSONData) ?? stringifiedJSONData;
@@ -125,12 +126,20 @@ const useBlockaidAlerts = (): Alert[] => {
       )}&utm_source=${SECURITY_PROVIDER_UTM_SOURCE}`;
     }
 
-    return [normalizeProviderAlert(securityAlertResponse, t, reportUrl)];
+    return [
+      normalizeProviderAlert(
+        securityAlertResponse,
+        t,
+        reportUrl,
+        sendingFiatTotal,
+      ),
+    ];
   }, [
     isTransactionTypeSupported,
-    isResultTypeIgnored,
+    shouldShowAlert,
     securityAlertResponse,
     stringifiedJSONData,
+    sendingFiatTotal,
     t,
   ]);
 };

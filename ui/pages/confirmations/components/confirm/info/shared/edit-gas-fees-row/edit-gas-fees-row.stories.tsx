@@ -1,9 +1,9 @@
-import { Meta } from '@storybook/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
+import { DappSwapContextProvider } from '../../../../../context/dapp-swap';
 import { EditGasFeesRow } from './edit-gas-fees-row';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
@@ -37,7 +37,9 @@ const Story = {
   decorators: [
     (story: any, { args }) => (
       <Provider store={getStore(args ?? {})}>
-        <ConfirmContextProvider>{story()}</ConfirmContextProvider>
+        <ConfirmContextProvider>
+          <DappSwapContextProvider>{story()}</DappSwapContextProvider>
+        </ConfirmContextProvider>
       </Provider>
     ),
   ],
@@ -50,8 +52,6 @@ export const DefaultStory = () => (
     fiatFee="$1"
     nativeFee="0.001"
     fiatFeeWith18SignificantDigits="0.001234"
-    supportsEIP1559={true}
-    setShowCustomizeGasPopover={() => {}}
   />
 );
 
@@ -62,8 +62,6 @@ export const TokenStory = () => (
     fiatFee="$1"
     nativeFee="0.001"
     fiatFeeWith18SignificantDigits="0.001234"
-    supportsEIP1559={true}
-    setShowCustomizeGasPopover={() => {}}
   />
 );
 
@@ -75,8 +73,6 @@ export const AdvancedStory = () => (
     fiatFee="$1"
     nativeFee="0.001"
     fiatFeeWith18SignificantDigits="0.001234"
-    supportsEIP1559={true}
-    setShowCustomizeGasPopover={() => {}}
   />
 );
 
@@ -88,8 +84,6 @@ export const TokenAdvanced = () => (
     fiatFee="$1"
     nativeFee="0.001"
     fiatFeeWith18SignificantDigits="0.001234"
-    supportsEIP1559={true}
-    setShowCustomizeGasPopover={() => {}}
   />
 );
 

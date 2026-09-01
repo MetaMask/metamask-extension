@@ -1,29 +1,43 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import { fireEvent } from '../../../../test/jest';
+import { fireEvent, screen } from '@testing-library/react';
+import { renderWithLocalization } from '../../../../test/lib/render-helpers';
 
-import { DisconnectType } from './disconnect-all-modal';
 import { DisconnectAllModal } from '.';
 
 describe('DisconnectAllModal', () => {
   const onClick = jest.fn();
 
   const args = {
-    type: DisconnectType.Account,
-    hostname: 'app.metamask.io',
     onClose: jest.fn(),
     onClick,
+    origin: 'https://example.com',
   };
 
+  const renderModal = (props = {}) => {
+    return renderWithLocalization(<DisconnectAllModal {...args} {...props} />);
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should render correctly', () => {
-    const { container } = render(<DisconnectAllModal {...args} />);
+    const { container } = renderModal();
     expect(container).toMatchSnapshot();
   });
 
   it('should fire onClick when Disconnect All button is clicked', () => {
-    const { getByTestId } = render(<DisconnectAllModal {...args} />);
-    const disconnectAllButton = getByTestId('disconnect-all');
+    renderModal();
+    const disconnectAllButton = screen.getByTestId('disconnect-all');
     fireEvent.click(disconnectAllButton);
     expect(onClick).toHaveBeenCalled();
+  });
+
+  it('should render site-specific description with origin host', () => {
+    renderModal({ origin: 'https://example.com' });
+    expect(screen.getByText('example.com')).toBeInTheDocument();
+    expect(
+      screen.getByText(/disconnect all your accounts from/iu),
+    ).toBeInTheDocument();
   });
 });

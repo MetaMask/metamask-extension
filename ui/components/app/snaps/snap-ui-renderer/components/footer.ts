@@ -20,7 +20,7 @@ export const DEFAULT_FOOTER = {
     width: BlockSize.Full,
     gap: 4,
     padding: 4,
-    className: 'snap-ui-renderer__footer',
+    className: 'snap-ui-renderer__footer cta-footer',
     backgroundColor: BackgroundColor.backgroundDefault,
   },
 };

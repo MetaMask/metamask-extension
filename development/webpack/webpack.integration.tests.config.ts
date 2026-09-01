@@ -13,9 +13,11 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
+import * as sassEmbedded from 'sass-embedded';
 import tailwindcss from 'tailwindcss';
 
 const context = join(__dirname, '../../app');
+const nodeModules = join(__dirname, '../../node_modules');
 const browsersListPath = join(context, '../.browserslistrc');
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
 
@@ -26,6 +28,11 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // Copy rive.wasm for Rive animations
+      {
+        from: join(nodeModules, '@rive-app/canvas/rive.wasm'),
+        to: 'images/rive.wasm',
+      },
     ],
   }),
   new ProgressPlugin(),
@@ -65,6 +72,7 @@ const config = {
             loader: 'postcss-loader',
             options: {
               postcssOptions: {
+                config: false,
                 plugins: [
                   tailwindcss(),
                   autoprefixer({ overrideBrowserslist: browsersListQuery }),
@@ -81,32 +89,33 @@ const config = {
             loader: 'sass-loader',
             options: {
               // Use 'sass-embedded', as it is usually faster than 'sass'
-              implementation: 'sass-embedded',
+              implementation: sassEmbedded,
+              api: 'modern-compiler',
+              // Disable Webpack's Sass importer because Sass's native
+              // importer keeps stylesheet resolution independent of Webpack
+              // and is faster for our current import graph. All current
+              // non-relative imports resolve through the loadPaths below.
+              webpackImporter: false,
               sassOptions: {
-                api: 'modern',
                 // We don't need to specify the charset because the HTML
                 // already does and browsers use the HTML's charset for CSS.
                 // Additionally, webpack + sass can cause problems with the
                 // charset placement, as described here:
                 // https://github.com/webpack-contrib/css-loader/issues/1212
                 charset: false,
+                quietDeps: true,
+                // TODO: Remove after https://github.com/MetaMask/metamask-extension/issues/44725
+                silenceDeprecations: ['import'],
                 // Always compress for integration tests to avoid ENOBUFS errors
-                outputStyle: 'compressed',
-                // The order of includePaths is important; prefer our own
+                style: 'compressed',
+                // The order of loadPaths is important; prefer our own
                 // folders over `node_modules`
-                includePaths: [
+                loadPaths: [
                   // enables aliases to `@use design - system`,
                   // `@use utilities`, etc.
                   join(context, '../ui/css'),
                   join(context, '../node_modules'),
                 ],
-                // Disable the webpackImporter, as we:
-                //  a) don't want to rely on it in case we want to switch away
-                //     from webpack in the future
-                //  b) the sass importer is faster
-                //  c) the "modern" sass api doesn't work with the
-                //     webpackImporter yet.
-                webpackImporter: false,
               },
               sourceMap: true,
             },

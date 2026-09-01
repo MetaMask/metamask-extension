@@ -1,8 +1,12 @@
 import React from 'react';
 import { BigNumber } from 'bignumber.js';
-import { BatchTransactionParams } from '@metamask/transaction-controller';
-import { act } from '@testing-library/react';
+import {
+  BatchTransactionParams,
+  TransactionContainerType,
+} from '@metamask/transaction-controller';
+import { act, fireEvent } from '@testing-library/react';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
@@ -146,10 +150,21 @@ describe('BatchSimulationDetails', () => {
       value: [BALANCE_CHANGE_ERC20_MOCK],
     });
 
-    const { getByText } = render();
-    expect(getByText('You approve')).toBeInTheDocument();
+    const { getByTestId, getByText } = render(
+      genUnapprovedContractInteractionConfirmation({
+        containerTypes: [TransactionContainerType.EnforcedSimulations],
+        nestedTransactions: [NESTED_TRANSACTION_MOCK],
+        simulationData: {
+          tokenBalanceChanges: [],
+        },
+      }),
+    );
+    expect(getByText(messages.youApprove.message)).toBeInTheDocument();
     expect(getByText('123.6')).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
+    expect(getByTestId('simulation-details-layout').parentElement).toHaveClass(
+      'mm-box--margin-bottom-2',
+    );
   });
 
   it('renders unlimited ERC-20 approve row', () => {
@@ -159,8 +174,8 @@ describe('BatchSimulationDetails', () => {
     });
 
     const { getByText } = render();
-    expect(getByText('You approve')).toBeInTheDocument();
-    expect(getByText('Unlimited')).toBeInTheDocument();
+    expect(getByText(messages.youApprove.message)).toBeInTheDocument();
+    expect(getByText(messages.unlimited.message)).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
 
@@ -171,7 +186,7 @@ describe('BatchSimulationDetails', () => {
     });
 
     const { getByText } = render();
-    expect(getByText('You approve')).toBeInTheDocument();
+    expect(getByText(messages.youApprove.message)).toBeInTheDocument();
     expect(getByText('#321')).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
@@ -192,8 +207,8 @@ describe('BatchSimulationDetails', () => {
     });
 
     const { getByText } = render();
-    expect(getByText('You approve')).toBeInTheDocument();
-    expect(getByText('All')).toBeInTheDocument();
+    expect(getByText(messages.youApprove.message)).toBeInTheDocument();
+    expect(getByText(messages.all.message)).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
 
@@ -204,7 +219,7 @@ describe('BatchSimulationDetails', () => {
     });
 
     const { getByText } = render();
-    expect(getByText('You approve')).toBeInTheDocument();
+    expect(getByText(messages.youApprove.message)).toBeInTheDocument();
     expect(getByText('123 #321')).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
@@ -225,8 +240,8 @@ describe('BatchSimulationDetails', () => {
     });
 
     const { getByText } = render();
-    expect(getByText('You approve')).toBeInTheDocument();
-    expect(getByText('All')).toBeInTheDocument();
+    expect(getByText(messages.youApprove.message)).toBeInTheDocument();
+    expect(getByText(messages.all.message)).toBeInTheDocument();
     expect(getByText(ADDRESS_SHORT_MOCK)).toBeInTheDocument();
   });
 
@@ -237,27 +252,29 @@ describe('BatchSimulationDetails', () => {
     });
 
     const { getByText } = render();
-    expect(getByText('You approve')).toBeInTheDocument();
+    expect(getByText(messages.youApprove.message)).toBeInTheDocument();
     expect(getByText('123.6')).toBeInTheDocument();
     expect(getByText('#321')).toBeInTheDocument();
   });
 
   it('does not render approve row if no approve balance changes', () => {
     const { queryByText } = render();
-    expect(queryByText('You approve')).toBeNull();
+    expect(queryByText(messages.confirmSimulationApprove.message)).toBeNull();
   });
 
-  it('shows edit modal on edit click', () => {
+  it('shows edit modal on edit click', async () => {
     useBatchApproveBalanceChangesMock.mockReturnValue({
       pending: false,
       value: [BALANCE_CHANGE_ERC20_MOCK],
     });
 
-    const { getByTestId, getByText } = render();
+    const { getByTestId, findByText } = render();
 
-    getByTestId('balance-change-edit').click();
+    fireEvent.click(getByTestId('balance-change-edit'));
 
-    expect(getByText('Edit spending cap')).toBeInTheDocument();
+    expect(
+      await findByText(messages.editSpendingCap.message),
+    ).toBeInTheDocument();
   });
 
   it('updates nested transaction data on modal submit', async () => {
@@ -275,7 +292,7 @@ describe('BatchSimulationDetails', () => {
     });
 
     await act(async () => {
-      getByText('Save').click();
+      getByText(messages.save.message).click();
     });
 
     expect(updateAtomicBatchDataMock).toHaveBeenCalledTimes(1);
@@ -294,5 +311,16 @@ describe('BatchSimulationDetails', () => {
   it('return null for upgrade transaction if there are no nested transactions', () => {
     const { container } = render(upgradeAccountConfirmationOnly);
     expect(container.firstChild).toBeNull();
+  });
+
+  it('does not render SimulationDetails and EditSpendingCapModal while approvePending is true', () => {
+    useBatchApproveBalanceChangesMock.mockReturnValue({
+      pending: true,
+      value: [BALANCE_CHANGE_ERC20_MOCK],
+    });
+    const { queryByText, queryByTestId } = render();
+    expect(queryByText(messages.editSpendingCap.message)).toBeNull();
+    expect(queryByTestId('balance-change-edit')).toBeNull();
+    expect(queryByText(messages.confirmSimulationApprove.message)).toBeNull();
   });
 });

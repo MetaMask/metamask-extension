@@ -5,16 +5,19 @@ import React, {
   useRef,
   useMemo,
 } from 'react';
-import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { captureException } from '../../../../../../shared/lib/sentry';
+import { createSentryError } from '../../../../../../shared/lib/error';
 
 import {
   setMultichainAccountsIntroModalShown,
   alignMultichainWallets,
 } from '../../../../../store/actions';
 import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../../../helpers/constants/routes';
+import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
+import { useDispatch } from '../../../../../store/hooks';
+
 import {
   MultichainAccountIntroModal,
   MultichainAccountIntroModalProps,
@@ -24,24 +27,22 @@ type ContainerProps = {
   onClose: () => void;
 };
 
-export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
+export const MultichainAccountIntroModalContainer = ({
   onClose,
-}) => {
+}: ContainerProps) => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const isClosingRef = useRef(false);
 
   const MINIMUM_LOADING_TIME_MS = 2000;
-  const SUPPORT_URL =
-    'https://support.metamask.io/configure/accounts/multichain-accounts/';
+  const SUPPORT_URL = ZENDESK_URLS.MULTICHAIN_ACCOUNTS;
 
   // Create alignment promise - always defined, no conditionals needed
   const alignmentPromise = useMemo(
     () =>
       alignMultichainWallets().catch((err) => {
-        console.error('Wallet alignment failed:', err);
-        captureException(err);
+        captureException(createSentryError('Wallet alignment failed', err));
         // Even if alignment fails, we continue
         return Promise.resolve();
       }),
@@ -78,8 +79,8 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
     onClose();
 
     // Navigate to account list
-    history.push(ACCOUNT_LIST_PAGE_ROUTE);
-  }, [alignmentPromise, dispatch, history, onClose]);
+    navigate(ACCOUNT_LIST_PAGE_ROUTE);
+  }, [alignmentPromise, dispatch, navigate, onClose]);
 
   const handleLearnMore = useCallback(() => {
     // Open multichain accounts support page

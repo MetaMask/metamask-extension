@@ -1,6 +1,9 @@
 import type { PolymorphicComponentPropWithRef } from '../box';
 import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum AvatarTokenSize {
   Xs = 'xs',
   Sm = 'sm',
@@ -14,8 +17,10 @@ export enum AvatarTokenSize {
  */
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface AvatarTokenStyleUtilityProps
-  extends Omit<AvatarBaseStyleUtilityProps, 'size' | 'children'> {
+export interface AvatarTokenStyleUtilityProps extends Omit<
+  AvatarBaseStyleUtilityProps,
+  'size' | 'children'
+> {
   /**
    * The name accepts the string to render the first letter of the AvatarToken. This will be used as the fallback display if no image url is passed to the src
    */

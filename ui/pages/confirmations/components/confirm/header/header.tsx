@@ -4,12 +4,8 @@ import {
 } from '@metamask/transaction-controller';
 import React from 'react';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
-  Text,
-} from '../../../../../components/component-library';
+import { getConfirmationTransactionType } from '../../../utils/confirm';
+import { Box, Text } from '../../../../../components/component-library';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import {
   AlignItems,
@@ -18,16 +14,23 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { getAvatarNetworkColor } from '../../../../../helpers/utils/accounts';
 import { useConfirmContext } from '../../../context/confirm';
-import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import { Confirmation } from '../../../types/confirm';
 import { DAppInitiatedHeader } from './dapp-initiated-header';
 import HeaderInfo from './header-info';
+import { SimpleConfirmationHeader } from './simple-confirmation-header';
 import { WalletInitiatedHeader } from './wallet-initiated-header';
 
+const SIMPLE_HEADER_TYPES = [TransactionType.musdConversion];
+
 const CONFIRMATIONS_WITH_ALT_HEADER = [
+  ...SIMPLE_HEADER_TYPES,
+  TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
+  TransactionType.musdClaim,
+  TransactionType.perpsDeposit,
+  TransactionType.perpsWithdraw,
   TransactionType.simpleSend,
   TransactionType.shieldSubscriptionApprove,
   TransactionType.tokenMethodSafeTransferFrom,
@@ -36,24 +39,18 @@ const CONFIRMATIONS_WITH_ALT_HEADER = [
 ];
 
 const Header = () => {
-  const { networkImageUrl, networkDisplayName } = useConfirmationNetworkInfo();
   const {
     senderAddress: fromAddress,
     senderName: fromName,
     walletName,
-    isBIP44,
     hasMoreThanOneWallet,
   } = useConfirmationRecipientInfo();
 
   const { currentConfirmation } = useConfirmContext<Confirmation>();
   let secondaryText;
 
-  if (isBIP44) {
-    if (hasMoreThanOneWallet) {
-      secondaryText = walletName;
-    }
-  } else {
-    secondaryText = networkDisplayName;
+  if (hasMoreThanOneWallet) {
+    secondaryText = walletName;
   }
 
   const DefaultHeader = (
@@ -67,15 +64,6 @@ const Header = () => {
       <Box alignItems={AlignItems.flexStart} display={Display.Flex} padding={4}>
         <Box display={Display.Flex} marginTop={2}>
           <PreferredAvatar address={fromAddress} />
-          {!isBIP44 && (
-            <AvatarNetwork
-              src={networkImageUrl}
-              name={networkDisplayName}
-              size={AvatarNetworkSize.Xs}
-              backgroundColor={getAvatarNetworkColor(networkDisplayName)}
-              className="confirm_header__avatar-network"
-            />
-          )}
         </Box>
         <Box marginInlineStart={4} marginTop={secondaryText ? 0 : 3}>
           <Text
@@ -105,16 +93,33 @@ const Header = () => {
   // back button if it's a wallet initiated confirmation. The default header is
   // the original header for the redesigns and includes the sender and recipient
   // addresses as well.
+  const confirmationType = getConfirmationTransactionType(
+    currentConfirmation as TransactionMeta,
+  );
+
   const isConfirmationWithNewHeader =
-    currentConfirmation?.type &&
-    CONFIRMATIONS_WITH_ALT_HEADER.includes(currentConfirmation.type);
+    confirmationType &&
+    CONFIRMATIONS_WITH_ALT_HEADER.includes(confirmationType);
   const isWalletInitiated =
     (currentConfirmation as TransactionMeta)?.origin === ORIGIN_METAMASK;
+
+  const isSimpleHeader =
+    confirmationType && SIMPLE_HEADER_TYPES.includes(confirmationType);
+
+  if (isSimpleHeader && isWalletInitiated) {
+    return <SimpleConfirmationHeader />;
+  }
+
   if (isConfirmationWithNewHeader && isWalletInitiated) {
     return <WalletInitiatedHeader />;
   } else if (isConfirmationWithNewHeader && !isWalletInitiated) {
     return <DAppInitiatedHeader />;
   }
+
+  if (!fromName && !secondaryText) {
+    return null;
+  }
+
   return DefaultHeader;
 };
 

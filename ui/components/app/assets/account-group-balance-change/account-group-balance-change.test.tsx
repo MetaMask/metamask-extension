@@ -1,9 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { TextColor } from '../../../../helpers/constants/design-system';
-import { getIsMultichainAccountsState2Enabled } from '../../../../selectors';
 import { AccountGroupBalanceChange } from './account-group-balance-change';
 import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
 
@@ -19,26 +18,22 @@ describe('AccountGroupBalanceChange', () => {
     portfolioChange: null,
     amountChange: 200,
     percentChange: 0.1,
+    isLoading: false,
   });
 
   const arrange = () => {
-    const mockGetIsMultichainAccountsState2Enabled = jest
-      .mocked(getIsMultichainAccountsState2Enabled)
-      .mockReturnValue(true);
-
     const mockUseAccountGroupBalanceDisplay = jest
       .mocked(useAccountGroupBalanceDisplay)
       .mockReturnValue(createBalanceDisplayData());
 
     return {
-      mockGetIsMultichainAccountsState2Enabled,
       mockUseAccountGroupBalanceDisplay,
     };
   };
 
   const renderComponent = () =>
     renderWithProvider(
-      <AccountGroupBalanceChange period="1d" portfolioButton={() => null} />,
+      <AccountGroupBalanceChange period="1d" trailingChild={() => null} />,
       mockStore,
     );
 
@@ -75,12 +70,5 @@ describe('AccountGroupBalanceChange', () => {
       value: '••••••••••',
       percent: '••••••••••',
     });
-  });
-
-  it('returns null when feature flag is disabled', () => {
-    const mocks = arrange();
-    mocks.mockGetIsMultichainAccountsState2Enabled.mockReturnValue(false);
-    const { container } = renderComponent();
-    expect(container.firstChild).toBeNull();
   });
 });

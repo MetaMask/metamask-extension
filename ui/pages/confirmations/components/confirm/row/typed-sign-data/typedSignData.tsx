@@ -16,7 +16,6 @@ export const ConfirmInfoRowTypedSignData = ({
   chainId,
 }: {
   data: string;
-  isPermit?: boolean;
   tokenDecimals?: number;
   chainId: string;
 }) => {
@@ -34,7 +33,10 @@ export const ConfirmInfoRowTypedSignData = ({
         label={`${t('primaryType')}:`}
         style={{ paddingLeft: 0, paddingRight: 0 }}
       >
-        <ConfirmInfoRowText text={primaryType} />
+        <ConfirmInfoRowText
+          text={primaryType}
+          data-testid="confirmation__message-primary-type"
+        />
       </ConfirmInfoRow>
       <Box style={{ marginLeft: -8 }}>
         <DataTree

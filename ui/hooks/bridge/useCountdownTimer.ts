@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getBridgeQuotes,
@@ -17,26 +17,20 @@ export const useCountdownTimer = () => {
   const { quotesLastFetchedMs } = useSelector(getBridgeQuotes);
   const refreshRate = useSelector(getQuoteRefreshRate);
 
-  const [timeRemaining, setTimeRemaining] = useState(refreshRate);
-  const timeRemainingRef = useRef(refreshRate);
-
-  // Update ref whenever timeRemaining changes
-  useEffect(() => {
-    timeRemainingRef.current = timeRemaining;
-  }, [timeRemaining]);
-
-  useEffect(() => {
-    if (quotesLastFetchedMs) {
-      setTimeRemaining(refreshRate - (Date.now() - quotesLastFetchedMs) + STEP);
-    }
-  }, [quotesLastFetchedMs, refreshRate]);
+  // Tick clock so remaining time can be derived during render without Date.now().
+  // Lazy init is the supported way to seed an impure baseline once.
+  const [now, setNow] = useState(Date.now);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeRemaining(Math.max(0, timeRemainingRef.current - STEP));
+      setNow(Date.now());
     }, STEP);
     return () => clearInterval(interval);
   }, []);
+
+  const timeRemaining = quotesLastFetchedMs
+    ? Math.max(0, refreshRate - (now - quotesLastFetchedMs) + STEP)
+    : refreshRate + STEP;
 
   return Math.floor(timeRemaining / 1000);
 };

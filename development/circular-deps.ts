@@ -1,11 +1,13 @@
 #!/usr/bin/env -S node --require "./node_modules/tsx/dist/preflight.cjs" --import "./node_modules/tsx/dist/loader.mjs"
 
 import { writeFileSync, readFileSync, existsSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { stderr } from 'node:process';
 import chalk from 'chalk';
 import madge, { type MadgeConfig, type MadgeInstance } from 'madge';
 import micromatch from 'micromatch';
 import prettier from 'prettier';
+import ts from 'typescript';
 
 /**
  * Circular dependencies are represented as an array of arrays, where each
@@ -61,15 +63,39 @@ const ENTRYPOINTS = [
   // 'development/', // Development scripts and utilities
   // 'test/', // Tests
   'app/', // Main application code
-  'offscreen/', // Offscreen page for MV3
   'shared/', // Shared utilities and components
   'ui/', // UI components and styles
 ];
 
+function parseTsConfig(tsConfigPath: string): { options: ts.CompilerOptions } {
+  const configFile = ts.readJsonConfigFile(tsConfigPath, ts.sys.readFile);
+  const { options, errors } = ts.parseJsonSourceFileConfigFileContent(
+    configFile,
+    ts.sys,
+    dirname(tsConfigPath),
+  );
+
+  if (errors.length) {
+    const messages = errors.map((error) =>
+      ts.flattenDiagnosticMessageText(error.messageText, '\n'),
+    );
+    throw new Error(`Could not parse ${tsConfigPath}:\n${messages.join('\n')}`);
+  }
+
+  return { options };
+}
+
 // Common madge configuration
-const { allowedCircularGlob, ...MADGE_CONFIG } = JSON.parse(
+const { allowedCircularGlob, tsConfig, ...madgeRc } = JSON.parse(
   readFileSync('.madgerc', 'utf-8'),
 ) as MadgeRC;
+
+const MADGE_CONFIG: MadgeConfig = {
+  ...madgeRc,
+  ...(typeof tsConfig === 'string'
+    ? { tsConfig: parseTsConfig(tsConfig) }
+    : { tsConfig }),
+};
 
 async function update(): Promise<void> {
   try {
@@ -83,6 +109,7 @@ async function update(): Promise<void> {
         // get options from .prettierrc
         ...prettierOptions,
         filepath: TARGET_FILE,
+        trailingComma: 'none', // Ensure no trailing commas for JSONC compatibility
       },
     );
     writeFileSync(TARGET_FILE, formatted);

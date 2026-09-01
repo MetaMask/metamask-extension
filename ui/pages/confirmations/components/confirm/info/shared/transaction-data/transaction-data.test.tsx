@@ -21,10 +21,12 @@ import {
 } from '../../../../../../../../test/data/confirmations/transaction-decode';
 import { Confirmation } from '../../../../../types/confirm';
 import * as useDecodedTransactionDataModule from '../../hooks/useDecodedTransactionData';
+import * as DappSwapContextModule from '../../../../../context/dapp-swap';
 import {
   DecodedTransactionDataMethod,
   DecodedTransactionDataSource,
 } from '../../../../../../../../shared/types/transaction-decode';
+import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { TransactionData } from './transaction-data';
 
 const DATA_MOCK = '0x123456';
@@ -193,6 +195,22 @@ describe('TransactionData', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('renders nothing quoted swap and nested transaction index is undefined', async () => {
+    jest.spyOn(DappSwapContextModule, 'useDappSwapContext').mockReturnValue({
+      isQuotedSwapDisplayedInInfo: true,
+    } as unknown as ReturnType<
+      typeof DappSwapContextModule.useDappSwapContext
+    >);
+    decodeTransactionDataMock.mockResolvedValue(TRANSACTION_DECODE_NESTED);
+
+    const { container } = await renderTransactionData({
+      currentData: DATA_MOCK,
+      nestedTransactionIndex: undefined,
+    });
+
+    expect(container).toBeEmptyDOMElement();
+  });
+
   it('renders nothing if nested transactions and no data override', async () => {
     decodeTransactionDataMock.mockResolvedValue(undefined);
 
@@ -250,8 +268,8 @@ describe('TransactionData', () => {
 
     await waitFor(() => {
       expect(getByText('approve')).toBeInTheDocument();
-      expect(getByText('Spender')).toBeInTheDocument();
-      expect(getByText('Amount')).toBeInTheDocument();
+      expect(getByText(messages.spender.message)).toBeInTheDocument();
+      expect(getByText(messages.amount.message)).toBeInTheDocument();
       expect(getByText('10000000 ETH')).toBeInTheDocument();
     });
   });

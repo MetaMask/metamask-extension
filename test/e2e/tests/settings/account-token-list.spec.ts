@@ -1,23 +1,38 @@
-import { MockttpServer } from 'mockttp';
+import { MockttpServer, Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
-import FixtureBuilder from '../../fixture-builder';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+  getMainnet25EthAssetsControllerPatch,
+  MAINNET_NATIVE_ASSET_ID,
+} from '../tokens/utils/mocks';
+import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
+import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../constants';
+
+const SEPOLIA_NATIVE_ASSET_ID = 'eip155:11155111/slip44:60';
+
+const SEPOLIA_NATIVE_ASSET_INFO = {
+  aggregators: [],
+  decimals: 18,
+  image:
+    'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/11155111/slip44/60.png',
+  name: 'Sepolia Ether',
+  symbol: 'SepoliaETH',
+  type: 'native' as const,
+};
 
 const infuraSepoliaUrl =
   'https://sepolia.infura.io/v3/00000000000000000000000000000000';
 
-async function mockInfura(mockServer: MockttpServer): Promise<void> {
-  await mockServerJsonRpc(mockServer, [
+async function mockInfura(mockServer: Mockttp): Promise<void> {
+  await mockServerJsonRpc(mockServer as MockttpServer, [
     ['eth_blockNumber'],
     ['eth_getBlockByNumber'],
   ]);
@@ -33,25 +48,66 @@ async function mockInfura(mockServer: MockttpServer): Promise<void> {
       },
     }));
 }
+const ETH_CONVERSION_RATE_USD = 1700;
 
-async function mockInfuraResponses(mockServer: MockttpServer): Promise<void> {
-  await mockInfura(mockServer);
+async function mockPriceApi(mockServer: Mockttp) {
+  const price = ETH_CONVERSION_RATE_USD;
+  await mockServer
+    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:1/slip44:60': {
+          price,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+  await mockServer
+    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        eth: {
+          name: 'Ether',
+          ticker: 'eth',
+          value: 1 / ETH_CONVERSION_RATE_USD,
+          currencyType: 'crypto',
+        },
+        usd: {
+          name: 'US Dollar',
+          ticker: 'usd',
+          value: 1,
+          currencyType: 'fiat',
+        },
+      },
+    }));
 }
 
 describe('Settings', function () {
   it('Should match the value of token list item and account list item for eth conversion', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController(getMainnet25EthAssetsControllerPatch(1700))
+          .build(),
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockPriceApi(mockServer);
+        },
+
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        await new AssetListPage(driver).checkTokenAmountIsDisplayed('25 ETH');
+        await login(driver, { expectedBalance: '$42,500.00' });
         await new HeaderNavbar(driver).openAccountMenu();
-        await new AccountListPage(driver).checkAccountBalanceDisplayed(
-          '25 ETH',
-        );
+        await new AccountListPage(
+          driver,
+        ).checkMultichainAccountBalanceDisplayed({ balance: '$42,500.00' });
       },
     );
   });
@@ -59,27 +115,36 @@ describe('Settings', function () {
   it('Should match the value of token list item and account list item for fiat conversion', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withConversionRateEnabled()
-          .withShowFiatTestnetEnabled()
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
           .withPreferencesController({
-            preferences: { showTestNetworks: true },
+            preferences: { showFiatInTestnets: true, showTestNetworks: true },
           })
-          .withEnabledNetworks({
-            eip155: {
-              [CHAIN_IDS.LOCALHOST]: true,
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController({
+            ...getMainnet25EthAssetsControllerPatch(1700),
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                [MAINNET_NATIVE_ASSET_ID]: { amount: '25' },
+                [SEPOLIA_NATIVE_ASSET_ID]: { amount: '25' },
+              },
+            },
+            assetsInfo: {
+              [SEPOLIA_NATIVE_ASSET_ID]: SEPOLIA_NATIVE_ASSET_INFO,
             },
           })
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockInfuraResponses,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockPriceApi(mockServer);
+          await mockInfura(mockServer);
+        },
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed('42,500.00', 'USD');
-        await new AssetListPage(driver).checkTokenFiatAmountIsDisplayed(
+        await new TokensTab(driver).checkTokenFiatAmountIsDisplayed(
           '$42,500.00',
         );
 
@@ -94,12 +159,14 @@ describe('Settings', function () {
         // it will show the total that the test is expecting.
 
         // I think we can slightly modify this test to switch to Sepolia network before checking the account List item value
-        await switchToNetworkFromSendFlow(driver, 'Sepolia');
+        await switchToNetworkFromNetworkSelect(driver, 'Sepolia');
 
-        await new HeaderNavbar(driver).openAccountMenu();
-        await new AccountListPage(driver).checkAccountValueAndSuffixDisplayed(
-          '$42,500.00',
-        );
+        await homePage.headerNavbar.openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.toggleBalanceSetting();
+        await closeSettings(driver);
+        await homePage.checkExpectedBalanceIsDisplayed('25', 'SepoliaETH');
       },
     );
   });
@@ -107,21 +174,24 @@ describe('Settings', function () {
   it('Should show crypto value when price checker setting is off', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withConversionRateEnabled()
-          .withShowFiatTestnetEnabled()
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
-          .withConversionRateDisabled()
+        fixtures: new FixtureBuilderV2()
+          .withPreferencesController({
+            preferences: { showFiatInTestnets: true },
+          })
+          .withAssetsController({
+            ...getMainnet25EthAssetsControllerPatch(1700),
+          })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockInfuraResponses,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockPriceApi(mockServer);
+          await mockInfura(mockServer);
+        },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        await new HeaderNavbar(driver).openAccountMenu();
-        await new AccountListPage(driver).checkAccountBalanceDisplayed(
-          '25 ETH',
-        );
+        await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
       },
     );
   });

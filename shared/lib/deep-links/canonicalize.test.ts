@@ -1,5 +1,5 @@
 import { canonicalize } from './canonicalize';
-import { SIG_PARAM } from './constants';
+import { SIG_PARAM, SIG_PARAMS_PARAM } from './constants';
 
 describe('canonicalize', () => {
   it('removes the sig parameter and sorts the rest', () => {
@@ -43,5 +43,75 @@ describe('canonicalize', () => {
     const url = new URL(`https://example.com/path?a=1&${SIG_PARAM}=abc`);
     canonicalize(url);
     expect(url.searchParams.get(SIG_PARAM)).toBe('abc');
+  });
+
+  it('keeps only parameters listed in sig_params and re-sorts them', () => {
+    const url = new URL(
+      `https://example.com/path?a=2&b=1&c=9&${SIG_PARAM}=abc&${SIG_PARAMS_PARAM}=a%2Cb`,
+    );
+    // Only a and b should remain, plus sig_params itself, sorted by key
+    expect(canonicalize(url)).toBe(
+      'https://example.com/path?a=2&b=1&sig_params=a%2Cb',
+    );
+  });
+
+  it('preserves repeated values for allowed params listed in sig_params', () => {
+    const url = new URL(
+      `https://example.com/path?a=1&a=2&c=9&${SIG_PARAMS_PARAM}=a`,
+    );
+    expect(canonicalize(url)).toBe(
+      'https://example.com/path?a=1&a=2&sig_params=a',
+    );
+  });
+
+  it('includes only sig_params when none of the listed keys are present', () => {
+    const url = new URL(
+      `https://example.com/path?x=1&y=2&${SIG_PARAMS_PARAM}=c`,
+    );
+    // No c param present, so only sig_params should remain
+    expect(canonicalize(url)).toBe('https://example.com/path?sig_params=c');
+  });
+
+  it('does not mutate the original URL when sig_params is present', () => {
+    const original = new URL(
+      `https://example.com/path?a=2&b=1&${SIG_PARAM}=abc&${SIG_PARAMS_PARAM}=a,b`,
+    );
+    const before = original.toString();
+    canonicalize(original);
+    expect(original.toString()).toBe(before);
+    expect(original.searchParams.get(SIG_PARAM)).toBe('abc');
+    expect(original.searchParams.get(SIG_PARAMS_PARAM)).toBe('a,b');
+  });
+
+  it('removes all params when `sig_params` is present but empty (no params signed)', () => {
+    const url = new URL(
+      `https://example.com/path?a=2&b=1&${SIG_PARAM}=abc&${SIG_PARAMS_PARAM}`,
+    );
+    // No a or b params should be included, only sig_params= should remain
+    expect(canonicalize(url)).toBe('https://example.com/path?sig_params=');
+  });
+
+  it('removes all params when `sig_params=` is present but empty (no params signed)', () => {
+    const url = new URL(
+      `https://example.com/path?a=2&b=1&${SIG_PARAM}=abc&${SIG_PARAMS_PARAM}=`,
+    );
+    // No a or b params should be included,  only sig_params= should remain
+    expect(canonicalize(url)).toBe('https://example.com/path?sig_params=');
+  });
+
+  it('treats URLs with `sig_params` (when no other params are included) as valid sig_params', () => {
+    const url = new URL(
+      `https://example.com/path?${SIG_PARAM}=abc&${SIG_PARAMS_PARAM}`,
+    );
+    // No params were included, but sig_params should still remain
+    expect(canonicalize(url)).toBe('https://example.com/path?sig_params=');
+  });
+
+  it('treats URLs with `sig_params=` (when no other params are included) as valid sig_params', () => {
+    const url = new URL(
+      `https://example.com/path?${SIG_PARAM}=abc&${SIG_PARAMS_PARAM}=`,
+    );
+    // No params were included, but sig_params should still remain
+    expect(canonicalize(url)).toBe('https://example.com/path?sig_params=');
   });
 });

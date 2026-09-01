@@ -2,7 +2,8 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { merge } from 'lodash';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
@@ -129,7 +130,9 @@ describe('FiatDisplay', () => {
         <TotalFiatDisplay fiatAmounts={[FIAT_UNAVAILABLE, FIAT_UNAVAILABLE]} />,
         mockStoreWithShowingFiatOnTestnets,
       );
-      expect(screen.getByText('Not Available')).toBeInTheDocument();
+      expect(
+        screen.getByText(messages.simulationDetailsFiatNotAvailable.message),
+      ).toBeInTheDocument();
     });
   });
 });

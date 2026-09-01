@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
 import { useSendContext } from '../../../context/send';
@@ -72,6 +72,7 @@ describe('Recipient', () => {
           {
             recipientConfusableCharacters: [],
             recipientError: null,
+            hasUnacknowledgedAlerts: false,
             recipientWarning: null,
             recipientResolvedLookup: undefined,
           } as unknown as ReturnType<typeof useRecipientValidation>
@@ -237,6 +238,33 @@ describe('Recipient', () => {
     expect(queryByTestId('open-recipient-modal-btn')).not.toBeInTheDocument();
   });
 
+  it('renders address poisoning warning when a poisoning match exists', () => {
+    const recipientCandidateAddress =
+      '0x1111ffffffffffffffffffffffffffffffffaaaa';
+    const knownAddress = '0x111122223333444455556666777788889999aaaa';
+
+    const { getByTestId, getByText } = renderComponent({
+      recipientCandidateAddress,
+      addressPoisoningDetectionResult: {
+        isPoisoningSuspect: true,
+        bestMatch: {
+          knownAddress,
+          prefixMatchLength: 4,
+          suffixMatchLength: 4,
+          poisoningScore: 8,
+          diffIndices: [6, 7],
+        },
+        matches: [],
+        pending: false,
+      },
+    });
+
+    expect(getByTestId('address-poisoning-warning-banner')).toBeInTheDocument();
+    expect(getByText('ADDRESSPOISONINGTITLE')).toBeInTheDocument();
+    expect(getByText('ADDRESSPOISONINGMESSAGE')).toBeInTheDocument();
+    expect(getByText('COMPAREADDRESSES')).toBeInTheDocument();
+  });
+
   describe('metrics', () => {
     it('calls updateTo when recipient is selected from modal', () => {
       mockUseRecipients.mockReturnValue(mockRecipients);
@@ -249,6 +277,86 @@ describe('Recipient', () => {
         '0x1234567890abcdef1234567890abcdef12345678',
       );
       expect(mockSetRecipientInputMethodSelectAccount).toHaveBeenCalled();
+    });
+  });
+
+  describe('alerts', () => {
+    const tokenContractAddress = '0x1234567890abcdef1234567890abcdef12345678';
+
+    it('renders alert icon next to To label when there are unacknowledged alerts', () => {
+      mockUseSendContext.mockReturnValue({
+        to: tokenContractAddress,
+        updateTo: mockUpdateTo,
+        updateToResolved: jest.fn(),
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const { getByTestId } = renderComponent({
+        recipientValidationResult: {
+          recipientError: undefined,
+          hasUnacknowledgedAlerts: true,
+          toAddressValidated: tokenContractAddress,
+        },
+      });
+
+      expect(getByTestId('recipient-alert-icon')).toBeInTheDocument();
+    });
+
+    it('calls onAlertIconClick when alert icon is clicked', () => {
+      mockUseSendContext.mockReturnValue({
+        to: tokenContractAddress,
+        updateTo: mockUpdateTo,
+        updateToResolved: jest.fn(),
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const mockOnAlertIconClick = jest.fn();
+
+      const { getByTestId } = renderComponent({
+        recipientValidationResult: {
+          recipientError: undefined,
+          hasUnacknowledgedAlerts: true,
+          toAddressValidated: tokenContractAddress,
+        },
+        onAlertIconClick: mockOnAlertIconClick,
+      });
+
+      fireEvent.click(getByTestId('recipient-alert-icon'));
+      expect(mockOnAlertIconClick).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not render alert icon when there are no unacknowledged alerts', () => {
+      mockUseSendContext.mockReturnValue({
+        to: tokenContractAddress,
+        updateTo: mockUpdateTo,
+        updateToResolved: jest.fn(),
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const { queryByTestId } = renderComponent({
+        recipientValidationResult: {
+          recipientError: undefined,
+          hasUnacknowledgedAlerts: false,
+          toAddressValidated: tokenContractAddress,
+        },
+      });
+
+      expect(queryByTestId('recipient-alert-icon')).not.toBeInTheDocument();
+    });
+
+    it('shows inline error for hard error even when alert is active', () => {
+      mockUseSendContext.mockReturnValue({
+        to: tokenContractAddress,
+        updateTo: mockUpdateTo,
+        updateToResolved: jest.fn(),
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const { getByText } = renderComponent({
+        recipientValidationResult: {
+          recipientError: 'contractAddressError',
+          hasUnacknowledgedAlerts: true,
+          toAddressValidated: tokenContractAddress,
+        },
+      });
+
+      expect(getByText('contractAddressError')).toBeInTheDocument();
     });
   });
 });

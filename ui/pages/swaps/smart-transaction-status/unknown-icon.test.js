@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import UnknownIcon from './unknown-icon';
 
 describe('UnknownIcon', () => {

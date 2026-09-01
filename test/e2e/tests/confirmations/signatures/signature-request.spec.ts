@@ -1,13 +1,15 @@
-import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
+import SignTypedData from '../../../page-objects/pages/confirmations/sign-typed-data-confirmation';
 
-import { withFixtures, unlockWallet } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import { withFixtures } from '../../../helpers';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { Driver } from '../../../webdriver/driver';
 import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   WINDOW_TITLES,
 } from '../../../constants';
+import { login } from '../../../page-objects/flows/login.flow';
+import { SIGN_TYPED_DATA_EXPECTED } from './sign-typed-data-expected';
 
 const signatureRequestType = {
   signTypedData: 'Sign Typed Data',
@@ -32,8 +34,8 @@ describe('Sign Typed Data Signature Request', function () {
     it(`can queue multiple Signature Requests of ${data.type} and confirm`, async function () {
       await withFixtures(
         {
-          dapp: true,
-          fixtures: new FixtureBuilder()
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           title: this.test?.fullTitle(),
@@ -41,7 +43,7 @@ describe('Sign Typed Data Signature Request', function () {
         async ({ driver }) => {
           const confirmation = new SignTypedData(driver);
           const publicAddress = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
-          await unlockWallet(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
@@ -80,15 +82,15 @@ describe('Sign Typed Data Signature Request', function () {
     it(`can queue multiple Signature Requests of ${data.type} and reject`, async function () {
       await withFixtures(
         {
-          dapp: true,
-          fixtures: new FixtureBuilder()
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
           const confirmation = new SignTypedData(driver);
-          await unlockWallet(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
@@ -132,17 +134,23 @@ async function triggerSignatureRequest(driver: Driver, type: string) {
     case signatureRequestType.signTypedData:
       await testDapp.clickSignTypedData();
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      await confirmation.verifyConfirmationHeadingTitle();
+      await confirmation.verifySignatureHeadingTitle(
+        SIGN_TYPED_DATA_EXPECTED.heading,
+      );
       break;
     case signatureRequestType.signTypedDataV3:
       await testDapp.clickSignTypedDatav3();
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      await confirmation.verifyConfirmationHeadingTitle();
+      await confirmation.verifySignatureHeadingTitle(
+        SIGN_TYPED_DATA_EXPECTED.heading,
+      );
       break;
     case signatureRequestType.signTypedDataV4:
       await testDapp.clickSignTypedDatav4();
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      await confirmation.verifyConfirmationHeadingTitle();
+      await confirmation.verifySignatureHeadingTitle(
+        SIGN_TYPED_DATA_EXPECTED.heading,
+      );
       break;
     default:
       throw new Error(`Unsupported signature type: ${type}`);
@@ -200,16 +208,20 @@ async function verifyAndAssertRedesignedSignTypedData(
   type: string,
 ) {
   const confirmation = new SignTypedData(driver);
-  await confirmation.verifyConfirmationHeadingTitle();
-  await confirmation.verifyOrigin();
+  await confirmation.verifySignatureHeadingTitle(
+    SIGN_TYPED_DATA_EXPECTED.heading,
+  );
+  await confirmation.verifyOrigin(SIGN_TYPED_DATA_EXPECTED.origin);
 
   switch (type) {
     case signatureRequestType.signTypedData:
-      await confirmation.verifySignTypedDataMessage();
+      await confirmation.verifySignTypedDataMessage(
+        SIGN_TYPED_DATA_EXPECTED.v1Message,
+      );
       break;
     case signatureRequestType.signTypedDataV3:
     case signatureRequestType.signTypedDataV4:
-      await confirmation.verifyContents();
+      await confirmation.verifyContents(SIGN_TYPED_DATA_EXPECTED.contents);
       break;
     default:
       throw new Error(`Unsupported signature type: ${type}`);

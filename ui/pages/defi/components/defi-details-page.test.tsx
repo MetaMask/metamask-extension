@@ -1,26 +1,57 @@
 import React from 'react';
+import { Route, Routes } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { screen } from '@testing-library/react';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
+import { getIsDefiControllerV2Enabled } from '../../../selectors/defi-controller-v2/feature-flags';
 import DeFiPage from './defi-details-page';
 
-const mockUseParams = jest
-  .fn()
-  .mockReturnValue({ chainId: CHAIN_IDS.MAINNET, protocolId: 'aave' });
+const selectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: () => mockUseParams(),
+jest.mock('../../../selectors/defi-controller-v2/feature-flags', () => ({
+  getIsDefiControllerV2Enabled: jest.fn(() => false),
 }));
+
+jest.mock('../pages/defi-details-page-v2', () => {
+  const ReactActual = jest.requireActual<typeof import('react')>('react');
+  const moduleExports: { default: ReturnType<typeof jest.fn> } = {
+    default: jest.fn(() =>
+      ReactActual.createElement('div', {
+        'data-testid': 'defi-details-page-v2-stub',
+      }),
+    ),
+  };
+  Object.defineProperty(moduleExports, '__esModule', { value: true });
+  return moduleExports;
+});
+
+jest.mock('../../../../ui/hooks/musd/useMusdGeoBlocking', () => ({
+  ...jest.requireActual('../../../../ui/hooks/musd/useMusdGeoBlocking'),
+  useMusdGeoBlocking: () => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+    error: null,
+    blockedRegions: [],
+    blockedMessage: null,
+    refreshGeolocation: jest.fn(),
+  }),
+}));
+
+const mockGetIsDefiControllerV2Enabled = jest.mocked(
+  getIsDefiControllerV2Enabled,
+);
 
 describe('DeFiDetailsPage', () => {
   const mockStore = {
     ...mockState,
     metamask: {
+      ...mockState.metamask,
       allDeFiPositions: {
-        [mockState.metamask.selectedAddress]: {
+        [selectedAddress]: {
           '0x1': {
             aggregatedMarketValue: 20540,
             protocols: {
@@ -71,24 +102,43 @@ describe('DeFiDetailsPage', () => {
           },
         },
       },
-      ...mockState.metamask,
     },
   };
 
   const store = configureMockStore([thunk])(mockStore);
 
-  beforeAll(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
+    mockGetIsDefiControllerV2Enabled.mockReturnValue(false);
   });
 
   afterEach(() => {
     store.clearActions();
-    jest.restoreAllMocks();
   });
 
   it('renders defi asset page', () => {
-    const { container } = renderWithProvider(<DeFiPage />, store);
+    const { container } = renderWithProvider(
+      <Routes>
+        <Route path="/defi/:chainId/:protocolId" element={<DeFiPage />} />
+      </Routes>,
+      store,
+      `/defi/${CHAIN_IDS.MAINNET}/aave`,
+    );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('renders DeFiDetailsPageV2 when the V2 controller flag is enabled', () => {
+    mockGetIsDefiControllerV2Enabled.mockReturnValue(true);
+
+    renderWithProvider(
+      <Routes>
+        <Route path="/defi/:chainId/:protocolId" element={<DeFiPage />} />
+      </Routes>,
+      store,
+      `/defi/eip155:1/lido`,
+    );
+
+    expect(screen.getByTestId('defi-details-page-v2-stub')).toBeInTheDocument();
   });
 });

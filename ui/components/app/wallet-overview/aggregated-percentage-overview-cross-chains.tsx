@@ -1,40 +1,40 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
+import { Box, Skeleton } from '@metamask/design-system-react';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
-  getPreferences,
   getMarketData,
   getChainIdsToPoll,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { formatValue, isValidAmount } from '../../../../app/scripts/lib/util';
+import {
+  formatValue,
+  isValidAmount,
+} from '../../../../shared/lib/format-value';
 import { useFormatters } from '../../../hooks/useFormatters';
 import {
-  Display,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, SensitiveText } from '../../component-library';
+import { SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
-import { TokenWithBalance } from '../assets/types';
-import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
+import { TokenWithBalance } from '../../multichain/asset-picker-amount/asset-picker-modal/types';
 
 export const AggregatedPercentageOverviewCrossChains = ({
-  portfolioButton,
+  trailingChild,
 }: {
-  portfolioButton: () => JSX.Element | null;
+  trailingChild: () => JSX.Element | null;
 }) => {
   const { formatCurrencyCompact } = useFormatters();
   const fiatCurrency = useSelector(getCurrentCurrency);
@@ -62,27 +62,32 @@ export const AggregatedPercentageOverviewCrossChains = ({
     selectAnyEnabledNetworksAreAvailable,
   );
 
-  const getPerChainTotalFiat1dAgo = (
-    chainId: string,
-    tokenFiatBalances: (string | undefined)[],
-    tokensWithBalances: TokenWithBalance[],
-  ) => {
-    const totalPerChain1dAgoERC20 = tokensWithBalances.reduce(
-      (total1dAgo: number, item: { address: string }, idx: number) => {
-        const found =
-          crossChainMarketData?.[chainId]?.[toChecksumAddress(item.address)];
+  const getPerChainTotalFiat1dAgo = useCallback(
+    (
+      chainId: string,
+      tokenFiatBalances: (string | undefined)[],
+      tokensWithBalances: TokenWithBalance[],
+    ) => {
+      const totalPerChain1dAgoERC20 = tokensWithBalances.reduce(
+        (total1dAgo: number, item: { address: string }, idx: number) => {
+          const found =
+            crossChainMarketData?.[chainId as Hex]?.[
+              toChecksumAddress(item.address) as Hex
+            ];
 
-        const tokenFiat1dAgo = getCalculatedTokenAmount1dAgo(
-          tokenFiatBalances[idx],
-          found?.pricePercentChange1d,
-        );
-        return total1dAgo + Number(tokenFiat1dAgo);
-      },
-      0,
-    );
+          const tokenFiat1dAgo = getCalculatedTokenAmount1dAgo(
+            tokenFiatBalances[idx],
+            found?.pricePercentChange1d,
+          );
+          return total1dAgo + Number(tokenFiat1dAgo);
+        },
+        0,
+      );
 
-    return totalPerChain1dAgoERC20;
-  };
+      return totalPerChain1dAgoERC20;
+    },
+    [crossChainMarketData],
+  );
 
   const totalFiat1dAgoCrossChains = useMemo(() => {
     return tokenFiatBalancesCrossChains.reduce(
@@ -101,7 +106,7 @@ export const AggregatedPercentageOverviewCrossChains = ({
           item.tokensWithBalances,
         );
         const nativePricePercentChange1d =
-          crossChainMarketData?.[item.chainId]?.[
+          crossChainMarketData?.[item.chainId as Hex]?.[
             getNativeTokenAddress(item.chainId as Hex)
           ]?.pricePercentChange1d;
 
@@ -117,54 +122,63 @@ export const AggregatedPercentageOverviewCrossChains = ({
     ); // Initial total1dAgo is 0
   }, [tokenFiatBalancesCrossChains, crossChainMarketData]);
 
-  const totalCrossChainBalance: number = Number(totalFiatCrossChains);
-  const crossChainTotalBalance1dAgo = totalFiat1dAgoCrossChains;
+  const {
+    amountChangeCrossChains,
+    formattedPercentChangeCrossChains,
+    formattedAmountChangeCrossChains,
+    color,
+  } = useMemo(() => {
+    const totalCrossChainBalance: number = Number(totalFiatCrossChains);
+    const crossChainTotalBalance1dAgo = totalFiat1dAgoCrossChains;
+    const change = totalCrossChainBalance - crossChainTotalBalance1dAgo;
+    const pctChange =
+      crossChainTotalBalance1dAgo === 0
+        ? 0
+        : (change / crossChainTotalBalance1dAgo) * 100;
 
-  const amountChangeCrossChains =
-    totalCrossChainBalance - crossChainTotalBalance1dAgo;
-  const percentageChangeCrossChains =
-    crossChainTotalBalance1dAgo === 0
-      ? 0
-      : (amountChangeCrossChains / crossChainTotalBalance1dAgo) * 100;
+    const fmtPctChange = formatValue(change === 0 ? 0 : pctChange, true);
 
-  const formattedPercentChangeCrossChains = formatValue(
-    amountChangeCrossChains === 0 ? 0 : percentageChangeCrossChains,
-    true,
-  );
-
-  let formattedAmountChangeCrossChains = '';
-  if (isValidAmount(amountChangeCrossChains)) {
-    formattedAmountChangeCrossChains =
-      (amountChangeCrossChains as number) >= 0 ? '+' : '';
-
-    formattedAmountChangeCrossChains += formatCurrencyCompact(
-      amountChangeCrossChains,
-      fiatCurrency,
-    );
-  }
-
-  let color = TextColor.textDefault;
-
-  if (!privacyMode && isValidAmount(amountChangeCrossChains)) {
-    if ((amountChangeCrossChains as number) === 0) {
-      color = TextColor.textDefault;
-    } else if ((amountChangeCrossChains as number) > 0) {
-      color = TextColor.successDefault;
-    } else {
-      color = TextColor.errorDefault;
+    let fmtAmountChange = '';
+    if (isValidAmount(change)) {
+      fmtAmountChange = (change as number) >= 0 ? '+' : '';
+      fmtAmountChange += formatCurrencyCompact(change, fiatCurrency);
     }
-  } else {
-    color = TextColor.textAlternative;
-  }
+
+    let derivedColor = TextColor.textDefault;
+    if (!privacyMode && isValidAmount(change)) {
+      if ((change as number) === 0) {
+        derivedColor = TextColor.textDefault;
+      } else if ((change as number) > 0) {
+        derivedColor = TextColor.successDefault;
+      } else {
+        derivedColor = TextColor.errorDefault;
+      }
+    } else {
+      derivedColor = TextColor.textAlternative;
+    }
+
+    return {
+      amountChangeCrossChains: change,
+      formattedPercentChangeCrossChains: fmtPctChange,
+      formattedAmountChangeCrossChains: fmtAmountChange,
+      color: derivedColor,
+    };
+  }, [
+    totalFiatCrossChains,
+    totalFiat1dAgoCrossChains,
+    formatCurrencyCompact,
+    fiatCurrency,
+    privacyMode,
+  ]);
 
   return (
     <Skeleton
-      isLoading={
+      hideChildren={
         !anyEnabledNetworksAreAvailable &&
         isZeroAmount(formattedAmountChangeCrossChains)
       }
     >
-      <Box display={Display.Flex} className="gap-1">
+      <Box className="flex gap-1">
         <SensitiveText
           variant={TextVariant.bodyMdMedium}
           color={color}
@@ -187,7 +201,7 @@ export const AggregatedPercentageOverviewCrossChains = ({
           {formattedPercentChangeCrossChains}
         </SensitiveText>
       </Box>
-      {portfolioButton()}
+      {trailingChild()}
     </Skeleton>
   );
 };

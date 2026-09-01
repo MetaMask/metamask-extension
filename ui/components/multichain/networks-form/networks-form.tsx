@@ -1,0 +1,865 @@
+import log from 'loglevel';
+import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  IconName,
+  TextButton,
+  TextButtonSize,
+} from '@metamask/design-system-react';
+import {
+  type UpdateNetworkFields,
+  RpcEndpointType,
+} from '@metamask/network-controller';
+import { Hex, isStrictHexString, hexToNumber } from '@metamask/utils';
+import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsNetworkEventSource,
+} from '../../../../shared/constants/metametrics';
+import {
+  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
+  CHAIN_IDS,
+  infuraProjectId,
+  NETWORK_TO_NAME_MAP,
+} from '../../../../shared/constants/network';
+import { getFailoverUrlsForChainId } from '../../../../shared/constants/network-failover';
+import {
+  decimalToHex,
+  hexToDecimal,
+} from '../../../../shared/lib/conversion.utils';
+import {
+  isPrefixedFormattedHexString,
+  isSafeChainId,
+} from '../../../../shared/lib/network.utils';
+import { jsonRpcRequest } from '../../../../shared/lib/rpc.utils';
+import { submitRequestToBackground } from '../../../store/background-connection';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
+import {
+  addNetwork,
+  setEditedNetwork,
+  setEnabledNetworks,
+  setTokenNetworkFilter,
+  showDeprecatedNetworkModal,
+  toggleNetworkMenu,
+  updateNetwork,
+} from '../../../store/actions';
+import {
+  Box,
+  FormTextField,
+  FormTextFieldSize,
+  HelpText,
+  HelpTextSeverity,
+  Text,
+} from '../../component-library';
+import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  BorderRadius,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import RpcListItem, {
+  stripKeyFromInfuraUrl,
+  stripProtocol,
+} from '../network-list-menu/rpc-list-item';
+import {
+  DropdownEditor,
+  DropdownEditorStyle,
+} from '../dropdown-editor/dropdown-editor';
+import {
+  getIsRpcFailoverEnabled,
+  getTokenNetworkFilter,
+} from '../../../selectors';
+import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
+import { useDispatch } from '../../../store/hooks';
+import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
+import { useNetworkFormState } from './networks-form-state';
+
+export const NetworksForm = ({
+  networkFormState,
+  existingNetwork,
+  trackRpcUpdateFromBanner,
+  onRpcAdd,
+  onBlockExplorerAdd,
+  toggleNetworkMenuAfterSubmit = true,
+  usePageFooterStyle = false,
+  onComplete,
+  onEdit,
+  onAddFromChainlist,
+}: {
+  networkFormState: ReturnType<typeof useNetworkFormState>;
+  existingNetwork?: UpdateNetworkFields;
+  trackRpcUpdateFromBanner?: boolean;
+  onRpcAdd: () => void;
+  onBlockExplorerAdd: () => void;
+  toggleNetworkMenuAfterSubmit?: boolean;
+  usePageFooterStyle?: boolean;
+  onComplete?: () => void;
+  onEdit?: () => void;
+  onAddFromChainlist?: () => void;
+}) => {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const scrollableRef = useRef<HTMLDivElement>(null);
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
+
+  const {
+    name,
+    setName,
+    chainId,
+    setChainId,
+    ticker,
+    setTicker,
+    rpcUrls,
+    setRpcUrls,
+    blockExplorers,
+    setBlockExplorers,
+  } = networkFormState;
+
+  const defaultRpcEndpoint =
+    rpcUrls.defaultRpcEndpointIndex === undefined
+      ? undefined
+      : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
+
+  const networkChainIdHex = chainId === '' ? undefined : toHex(chainId);
+  const chainFailoverUrls = networkChainIdHex
+    ? getFailoverUrlsForChainId(networkChainIdHex)
+    : [];
+
+  // Failover only applies to Infura RPC endpoints. NetworkController wires
+  // failover URLs solely for Infura endpoints; applying them to custom RPCs
+  // would leak requests to the failover, so it does not. Only surface failover
+  // in the form for Infura endpoints so the UI matches the actual behaviour.
+  const failoverUrlsForEndpoint = (endpoint?: { url: string }) => {
+    return endpoint?.url &&
+      new URL(endpoint.url).hostname.endsWith('.infura.io')
+      ? chainFailoverUrls
+      : [];
+  };
+
+  const defaultFailoverUrls = failoverUrlsForEndpoint(defaultRpcEndpoint);
+
+  const { safeChains } = useSafeChains();
+
+  const [errors, setErrors] = useState<
+    Record<string, { key: string; msg: string } | undefined>
+  >({});
+
+  const [warnings, setWarnings] = useState<
+    Record<string, { key: string; msg: string } | undefined>
+  >({});
+
+  const [suggestedName, setSuggestedName] = useState<string>();
+  const [suggestedTicker, setSuggestedTicker] = useState<string>();
+  const [fetchedChainId, setFetchedChainId] = useState<string>();
+
+  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
+
+  const templateInfuraRpc = (endpoint: string) =>
+    endpoint.endsWith('{infuraProjectId}')
+      ? endpoint.replace('{infuraProjectId}', infuraProjectId ?? '')
+      : endpoint;
+
+  // Validate the network name when it changes
+  useEffect(() => {
+    const chainIdHex = chainId ? toHex(chainId) : undefined;
+    const expectedName = chainIdHex
+      ? (NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
+        NETWORKS_BYPASSING_VALIDATION[
+          chainIdHex as keyof typeof NETWORKS_BYPASSING_VALIDATION
+        ]?.name ??
+        safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)?.name)
+      : undefined;
+
+    const mismatch = expectedName && expectedName !== name;
+    setSuggestedName(mismatch ? expectedName : undefined);
+    setWarnings((state) => ({
+      ...state,
+      name: mismatch
+        ? {
+            key: 'wrongNetworkName',
+            msg: t('wrongNetworkName'),
+          }
+        : undefined,
+    }));
+  }, [chainId, name, safeChains]);
+
+  // Validate the ticker when it changes
+  useEffect(() => {
+    const chainIdHex = chainId ? toHex(chainId) : undefined;
+    const expectedSymbol = chainIdHex
+      ? (CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
+          chainIdHex as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
+        ] ??
+        safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)
+          ?.nativeCurrency?.symbol)
+      : undefined;
+
+    const isWhitelistedSymbol = chainIdHex
+      ? NETWORKS_BYPASSING_VALIDATION[
+          chainIdHex as keyof typeof NETWORKS_BYPASSING_VALIDATION
+        ]?.symbol?.toLowerCase() === ticker?.toLowerCase()
+      : false;
+
+    const mismatch =
+      expectedSymbol && expectedSymbol !== ticker && !isWhitelistedSymbol;
+
+    setSuggestedTicker(mismatch ? expectedSymbol : undefined);
+    setWarnings((state) => ({
+      ...state,
+      ticker: mismatch
+        ? {
+            key: 'chainListReturnedDifferentTickerSymbol',
+            msg: t('chainListReturnedDifferentTickerSymbol'),
+          }
+        : undefined,
+    }));
+  }, [chainId, ticker, safeChains]);
+
+  // Validate the chain ID when it changes
+  useEffect(() => {
+    let error: [string, string] | undefined;
+
+    if (chainId === undefined || chainId === '') {
+      error = undefined;
+    } else if (chainId.startsWith('0x')) {
+      if (!/^0x[0-9a-f]+$/iu.test(chainId)) {
+        error = ['invalidHexNumber', t('invalidHexNumber')];
+      } else if (!isPrefixedFormattedHexString(chainId)) {
+        error = ['invalidHexNumber', t('invalidHexNumberLeadingZeros')];
+      }
+    } else if (!/^[0-9]+$/u.test(chainId)) {
+      error = ['invalidNumber', t('invalidNumber')];
+    } else if (chainId.startsWith('0')) {
+      error = ['invalidNumberLeadingZeros', t('invalidNumberLeadingZeros')];
+    }
+
+    if (
+      chainId &&
+      !error &&
+      !isSafeChainId(parseInt(chainId, chainId.startsWith('0x') ? 16 : 10))
+    ) {
+      error = ['invalidChainIdTooBig', t('invalidChainIdTooBig')];
+    }
+
+    const chainIdHex = toHex(chainId);
+
+    if (!error && !existingNetwork) {
+      const matchingNetwork = chainIdHex
+        ? networkConfigurations[chainIdHex]
+        : undefined;
+      if (matchingNetwork) {
+        error = [
+          'existingChainId',
+          t('chainIdExistsErrorMsg', [matchingNetwork.name]),
+        ];
+      }
+    }
+
+    let rpcError: [string, string] | undefined;
+    if (fetchedChainId && chainIdHex && fetchedChainId !== chainIdHex) {
+      rpcError = [
+        'endpointReturnedDifferentChainId',
+        t('endpointReturnedDifferentChainId', [hexToDecimal(fetchedChainId)]),
+      ];
+    }
+
+    setErrors((state) => ({
+      ...state,
+      chainId: error ? { key: error[0], msg: error[1] } : undefined,
+      rpcUrl: rpcError ? { key: rpcError[0], msg: rpcError[1] } : undefined,
+    }));
+  }, [chainId, fetchedChainId, existingNetwork?.chainId]);
+
+  // Fetch the chain ID from the RPC endpoint when it changes
+  useEffect(() => {
+    const rpcUrl =
+      rpcUrls?.rpcEndpoints?.[rpcUrls?.defaultRpcEndpointIndex ?? -1]?.url;
+
+    if (rpcUrl) {
+      jsonRpcRequest(templateInfuraRpc(rpcUrl), 'eth_chainId')
+        .then((response) => {
+          setFetchedChainId(response as string);
+        })
+        .catch((err) => {
+          setFetchedChainId(undefined);
+          log.warn('Failed to fetch the chainId from the endpoint.', err);
+          setErrors((state) => ({
+            ...state,
+            rpcUrl: {
+              key: 'failedToFetchChainId',
+              msg: t('failedToFetchChainId'),
+            },
+          }));
+        });
+    }
+  }, [chainId, rpcUrls]);
+
+  const onSubmit = async () => {
+    try {
+      const chainIdHex = chainId ? toHex(chainId) : undefined;
+      if (chainIdHex === CHAIN_IDS.GOERLI) {
+        dispatch(showDeprecatedNetworkModal());
+      } else if (chainIdHex) {
+        const networkPayload = {
+          chainId: chainIdHex,
+          name,
+          nativeCurrency: ticker,
+          rpcEndpoints: rpcUrls?.rpcEndpoints,
+          defaultRpcEndpointIndex: rpcUrls?.defaultRpcEndpointIndex ?? 0,
+          blockExplorerUrls: blockExplorers?.blockExplorerUrls,
+          defaultBlockExplorerUrlIndex:
+            blockExplorers?.defaultBlockExplorerUrlIndex,
+        };
+
+        if (existingNetwork) {
+          const options = {
+            replacementSelectedRpcEndpointIndex:
+              chainIdHex === existingNetwork.chainId
+                ? rpcUrls?.defaultRpcEndpointIndex
+                : undefined,
+          };
+          await dispatch(updateNetwork(networkPayload, options));
+          if (
+            toggleNetworkMenuAfterSubmit &&
+            Object.keys(tokenNetworkFilter).length === 1
+          ) {
+            await dispatch(
+              setTokenNetworkFilter({
+                [existingNetwork.chainId]: true,
+              }),
+            );
+            await dispatch(setEnabledNetworks(existingNetwork.chainId));
+          }
+
+          // Track RPC update from network connection banner
+          // Wrapped in try-catch to prevent analytics failures from affecting the UI
+          // since the network update has already succeeded at this point
+          if (trackRpcUpdateFromBanner) {
+            try {
+              const newRpcEndpoint =
+                networkPayload.rpcEndpoints[
+                  networkPayload.defaultRpcEndpointIndex
+                ];
+              const oldRpcEndpoint =
+                existingNetwork.rpcEndpoints?.[
+                  existingNetwork.defaultRpcEndpointIndex ?? 0
+                ];
+
+              const chainIdAsDecimal = hexToNumber(chainIdHex);
+
+              const sanitizeRpcUrl = async (url: string) => {
+                const isPublic = await submitRequestToBackground<boolean>(
+                  'isPublicEndpointUrl',
+                  [url],
+                );
+                return isPublic ? onlyKeepHost(url) : 'custom';
+              };
+
+              const [fromRpcDomain, toRpcDomain] = await Promise.all([
+                oldRpcEndpoint?.url
+                  ? sanitizeRpcUrl(oldRpcEndpoint.url)
+                  : Promise.resolve('unknown'),
+                sanitizeRpcUrl(newRpcEndpoint.url),
+              ]);
+
+              trackEvent(
+                createEventBuilder(
+                  MetaMetricsEventName.NetworkConnectionBannerRpcUpdated,
+                )
+                  .addCategory(MetaMetricsEventCategory.Network)
+                  .addProperties({
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    chain_id_caip: `eip155:${chainIdAsDecimal}`,
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    from_rpc_domain: fromRpcDomain,
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    to_rpc_domain: toRpcDomain,
+                  })
+                  .build(),
+              );
+            } catch (error) {
+              // Analytics tracking failed, but network update succeeded - don't surface this error
+              console.error('Failed to track RPC update analytics:', error);
+            }
+          }
+        } else {
+          // When the form is rendered as a page (Networks page), do NOT switch
+          // the active network or update the homepage network filter. Adding a
+          // network from the Networks page should only persist the
+          // configuration; switching is reserved for the homepage network
+          // modal (`toggleNetworkMenuAfterSubmit=true`).
+          await dispatch(
+            addNetwork(networkPayload, {
+              setActive: toggleNetworkMenuAfterSubmit,
+            }),
+          );
+          if (toggleNetworkMenuAfterSubmit) {
+            await dispatch(setEnabledNetworks(networkPayload.chainId));
+          }
+        }
+
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.CustomNetworkAdded)
+            .addCategory(MetaMetricsEventCategory.Network)
+            .addProperties({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              block_explorer_url:
+                blockExplorers?.blockExplorerUrls?.[
+                  blockExplorers?.defaultBlockExplorerUrlIndex ?? -1
+                ],
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: chainIdHex,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              network_name: name,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              source_connection_method:
+                MetaMetricsNetworkEventSource.CustomNetworkForm,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              token_symbol: ticker,
+            })
+            .addSensitiveProperties({
+              rpcUrl: rpcIdentifierUtility(
+                rpcUrls?.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex ?? -1]
+                  ?.url,
+                safeChains ?? [],
+              ),
+            })
+            .build(),
+        );
+
+        dispatch(
+          setEditedNetwork({
+            chainId: chainIdHex,
+            nickname: name,
+            editCompleted: true,
+            newNetwork: !existingNetwork,
+          }),
+        );
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      toggleNetworkMenuAfterSubmit && dispatch(toggleNetworkMenu());
+      onComplete?.();
+    }
+  };
+
+  const isSaveDisabled =
+    !name ||
+    !chainId ||
+    !ticker ||
+    !rpcUrls?.rpcEndpoints?.length ||
+    Object.values(errors).some((error) => error);
+
+  return (
+    <Box
+      height={BlockSize.Full}
+      display={Display.Flex}
+      justifyContent={JustifyContent.spaceBetween}
+      flexDirection={FlexDirection.Column}
+      alignItems={AlignItems.center}
+      ref={scrollableRef}
+      className="networks-form__scrollable"
+    >
+      <Box
+        width={BlockSize.Full}
+        paddingLeft={4}
+        paddingRight={4}
+        paddingBottom={2}
+      >
+        {onAddFromChainlist && !existingNetwork ? (
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Lg}
+            startIconName={IconName.FlashFilled}
+            isFullWidth
+            onClick={onAddFromChainlist}
+            className="mb-4 rounded-xl"
+            data-testid="network-form-add-from-chainlist"
+          >
+            {t('addFromChainlist')}
+          </Button>
+        ) : null}
+
+        <FormTextField
+          id="networkName"
+          size={FormTextFieldSize.Lg}
+          placeholder={t('enterNetworkName')}
+          data-testid="network-form-name-input"
+          autoFocus
+          helpText={
+            ((name && warnings?.name?.msg) || suggestedName) && (
+              <>
+                {name && warnings?.name?.msg && (
+                  <HelpText
+                    variant={TextVariant.bodySm}
+                    severity={HelpTextSeverity.Warning}
+                  >
+                    {warnings.name.msg}
+                  </HelpText>
+                )}
+
+                {suggestedName && (
+                  <Text
+                    as="span"
+                    variant={TextVariant.bodySm}
+                    color={TextColor.textDefault}
+                    data-testid="network-form-name-suggestion"
+                  >
+                    {t('suggestedTokenName')}
+                    <TextButton
+                      size={TextButtonSize.BodySm}
+                      onClick={() => {
+                        setName(suggestedName);
+                      }}
+                      className="px-1 align-baseline"
+                    >
+                      {suggestedName}
+                    </TextButton>
+                  </Text>
+                )}
+              </>
+            )
+          }
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onChange={(e: any) => {
+            setName(e.target?.value);
+          }}
+          label={t('networkName')}
+          labelProps={{
+            children: undefined,
+            variant: TextVariant.bodyMdMedium,
+          }}
+          textFieldProps={{
+            borderRadius: BorderRadius.LG,
+          }}
+          inputProps={{
+            'data-testid': 'network-form-network-name',
+          }}
+          value={name}
+        />
+        <DropdownEditor
+          title={t('defaultRpcUrl')}
+          placeholder={t('addAUrl')}
+          style={DropdownEditorStyle.PopoverStyle}
+          items={rpcUrls.rpcEndpoints}
+          itemKey={(endpoint) => endpoint.url}
+          selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
+          error={Boolean(errors.rpcUrl)}
+          buttonDataTestId="test-add-rpc-drop-down"
+          renderItem={(item, isList) => {
+            const failoverUrls = failoverUrlsForEndpoint(item);
+            return isList ||
+              item?.name ||
+              item?.type === RpcEndpointType.Infura ||
+              failoverUrls.length > 0 ? (
+              <RpcListItem
+                rpcEndpoint={{
+                  ...item,
+                  failoverUrls,
+                }}
+              />
+            ) : (
+              // A custom (non Infura) endpoint never has a failover, so it just
+              // renders the URL with no failover tag.
+              <Text
+                as="span"
+                ellipsis
+                variant={TextVariant.bodyMd}
+                paddingTop={3}
+                paddingBottom={3}
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                gap={1}
+              >
+                {stripProtocol(stripKeyFromInfuraUrl(item.url))}
+              </Text>
+            );
+          }}
+          renderTooltip={(item, isList) => {
+            const url = stripKeyFromInfuraUrl(item.url);
+            return url.length > (isList ? 37 : 35) ? url : undefined;
+          }}
+          addButtonText={t('addRpcUrl')}
+          itemIsDeletable={(item, items) =>
+            items.length > 1 && item.type !== RpcEndpointType.Infura
+          }
+          onItemAdd={onRpcAdd}
+          onItemSelected={(index) =>
+            setRpcUrls((state) => ({
+              ...state,
+              defaultRpcEndpointIndex: index,
+            }))
+          }
+          onItemDeleted={(deletedIndex, newSelectedIndex) => {
+            setRpcUrls({
+              rpcEndpoints: rpcUrls.rpcEndpoints
+                ?.slice(0, deletedIndex)
+                .concat(rpcUrls.rpcEndpoints.slice(deletedIndex + 1)),
+              defaultRpcEndpointIndex: newSelectedIndex,
+            });
+          }}
+        />
+
+        {errors.rpcUrl?.msg && (
+          <Box>
+            <HelpText
+              variant={TextVariant.bodySm}
+              severity={HelpTextSeverity.Danger}
+              data-testid="network-form-chain-id-error"
+            >
+              {errors.rpcUrl?.msg}
+            </HelpText>
+          </Box>
+        )}
+
+        {isRpcFailoverEnabled && defaultFailoverUrls.length > 0 ? (
+          <FormTextField
+            id="failoverRpcUrl"
+            size={FormTextFieldSize.Lg}
+            paddingTop={4}
+            label={t('failoverRpcUrl')}
+            labelProps={{
+              children: undefined,
+              variant: TextVariant.bodyMdMedium,
+            }}
+            textFieldProps={{
+              borderRadius: BorderRadius.LG,
+            }}
+            value={onlyKeepHost(defaultFailoverUrls[0])}
+            disabled={true}
+          />
+        ) : null}
+
+        <FormTextField
+          id="chainId"
+          size={FormTextFieldSize.Lg}
+          placeholder={t('enterChainId')}
+          paddingTop={4}
+          data-testid="network-form-chain-id-input"
+          onChange={(e) => {
+            setChainId(e.target?.value.trim());
+          }}
+          error={Boolean(errors?.chainId)}
+          label={t('chainId')}
+          labelProps={{
+            children: undefined,
+            variant: TextVariant.bodyMdMedium,
+          }}
+          textFieldProps={{
+            borderRadius: BorderRadius.LG,
+          }}
+          inputProps={{
+            'data-testid': 'network-form-chain-id',
+          }}
+          value={chainId}
+          disabled={Boolean(existingNetwork)}
+        />
+
+        {errors.chainId?.msg ? (
+          <HelpText
+            variant={TextVariant.bodySm}
+            severity={HelpTextSeverity.Danger}
+            data-testid="network-form-chain-id-error"
+          >
+            {errors.chainId.msg}
+          </HelpText>
+        ) : null}
+        {errors.chainId?.key === 'existingChainId' ? (
+          <Box>
+            <HelpText
+              variant={TextVariant.bodySm}
+              severity={HelpTextSeverity.Danger}
+              data-testid="network-form-chain-id-error"
+            >
+              {t('updateOrEditNetworkInformations')}{' '}
+              <TextButton
+                size={TextButtonSize.BodySm}
+                onClick={() => {
+                  const chainIdHex = toHex(chainId);
+                  if (chainIdHex) {
+                    dispatch(
+                      setEditedNetwork({
+                        chainId: chainIdHex,
+                      }),
+                    );
+                    onEdit?.();
+                  }
+                }}
+              >
+                {t('editNetworkLink')}
+              </TextButton>
+            </HelpText>
+          </Box>
+        ) : null}
+        <FormTextField
+          id="nativeCurrency"
+          size={FormTextFieldSize.Lg}
+          placeholder={t('enterSymbol')}
+          paddingTop={4}
+          data-testid="network-form-ticker"
+          helpText={
+            suggestedTicker ? (
+              <Text
+                as="span"
+                variant={TextVariant.bodySm}
+                color={TextColor.textDefault}
+                data-testid="network-form-ticker-suggestion"
+              >
+                {t('suggestedCurrencySymbol')}
+                <TextButton
+                  size={TextButtonSize.BodySm}
+                  onClick={() => {
+                    setTicker(suggestedTicker);
+                  }}
+                  className="px-1 align-baseline"
+                >
+                  {suggestedTicker}
+                </TextButton>
+              </Text>
+            ) : null
+          }
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onChange={(e: any) => {
+            setTicker(e.target?.value);
+          }}
+          label={t('currencySymbol')}
+          labelProps={{
+            children: undefined,
+            variant: TextVariant.bodyMdMedium,
+          }}
+          textFieldProps={{
+            borderRadius: BorderRadius.LG,
+          }}
+          inputProps={{
+            'data-testid': 'network-form-ticker-input',
+          }}
+          value={ticker}
+        />
+        {ticker && warnings.ticker?.msg ? (
+          <HelpText
+            variant={TextVariant.bodySm}
+            severity={HelpTextSeverity.Warning}
+            data-testid="network-form-ticker-warning"
+          >
+            {warnings.ticker.msg}
+          </HelpText>
+        ) : null}
+
+        <DropdownEditor
+          title={t('blockExplorerUrl')}
+          placeholder={t('addAUrl')}
+          style={DropdownEditorStyle.BoxStyle}
+          items={blockExplorers.blockExplorerUrls}
+          itemKey={(item) => `${item}`}
+          selectedItemIndex={blockExplorers.defaultBlockExplorerUrlIndex}
+          addButtonText={t('addBlockExplorerUrl')}
+          onItemAdd={onBlockExplorerAdd}
+          buttonDataTestId="test-explorer-drop-down"
+          onItemSelected={(index) =>
+            setBlockExplorers((state) => ({
+              ...state,
+              defaultBlockExplorerUrlIndex: index,
+            }))
+          }
+          onItemDeleted={(deletedIndex, newSelectedIndex) => {
+            setBlockExplorers({
+              blockExplorerUrls: blockExplorers.blockExplorerUrls
+                ?.slice(0, deletedIndex)
+                .concat(
+                  blockExplorers.blockExplorerUrls.slice(deletedIndex + 1),
+                ),
+              defaultBlockExplorerUrlIndex: newSelectedIndex,
+            });
+          }}
+          // Scroll to bottom so all URLs are visible
+          onDropdownOpened={() => {
+            if (scrollableRef.current) {
+              scrollableRef.current.scrollTop =
+                scrollableRef.current.scrollHeight;
+            }
+          }}
+          renderItem={(item) => (
+            <Text
+              as="button"
+              paddingLeft={0}
+              paddingRight={0}
+              paddingTop={3}
+              paddingBottom={3}
+              color={TextColor.textDefault}
+              variant={TextVariant.bodyMd}
+              backgroundColor={BackgroundColor.transparent}
+              ellipsis
+            >
+              {stripProtocol(item)}
+            </Text>
+          )}
+          renderTooltip={(item) => (item.length > 36 ? item : undefined)}
+        />
+      </Box>
+      <Box
+        className={`networks-form__footer${
+          usePageFooterStyle ? ' networks-form__footer--page' : ''
+        }`}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        padding={4}
+        width={BlockSize.Full}
+      >
+        {usePageFooterStyle ? (
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            isDisabled={isSaveDisabled}
+            onClick={onSubmit}
+            className="w-full rounded-xl"
+            data-testid="page-container-footer-next"
+          >
+            {t('save')}
+          </Button>
+        ) : (
+          <Button
+            variant={ButtonVariant.Primary}
+            isDisabled={isSaveDisabled}
+            onClick={onSubmit}
+            size={ButtonSize.Lg}
+            isFullWidth
+            data-testid="page-container-footer-next"
+          >
+            {t('save')}
+          </Button>
+        )}
+      </Box>
+    </Box>
+  );
+};
+
+function toHex(value: string): Hex | undefined {
+  if (isStrictHexString(value)) {
+    return value;
+  } else if (/^\d+$/u.test(value)) {
+    return `0x${decimalToHex(value)}`;
+  }
+  return undefined;
+}
+
+export default NetworksForm;

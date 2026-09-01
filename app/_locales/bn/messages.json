@@ -26,12 +26,6 @@
   "accountSelectionRequired": {
     "message": "আপনাকে একটি অ্যাকাউন্ট নির্বাচন করতে হবে!"
   },
-  "activityLog": {
-    "message": "কার্যকলাপের লগ"
-  },
-  "addAcquiredTokens": {
-    "message": "MetaMask ব্যবহার করে আপনি যে টোকেনগুলি অর্জন করেছেন সেগুলি যোগ করুন"
-  },
   "addAlias": {
     "message": "উপনাম যোগ করুন"
   },
@@ -81,17 +75,11 @@
   "autoLockTimeLimit": {
     "message": "স্বয়ংক্রিয়-লগ আউট টাইমার (মিনিট)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "MetaMask স্বয়ংক্রিয়ভাবে লগ আউট করার আগে নিষ্ক্রিয় থাকার সময় মিনিটে সেট করুন"
-  },
   "average": {
     "message": "গড়"
   },
   "back": {
     "message": "ফিরুন"
-  },
-  "backupApprovalInfo": {
-    "message": "আপনি আপনার ডিভাইস হারিয়ে ফেললে, পাসওয়ার্ড ভুলে গেলে, MetaMask রিইনস্টল করতে হলে বা অন্য ডিভাইসে আপনার ওয়ালেট অ্যাক্সেস করার ক্ষেত্রে আপনার ওয়ালেট পুনরুদ্ধার করতে এই গোপন কোডটি প্রয়োজন।"
   },
   "backupApprovalNotice": {
     "message": "আপনার ওয়ালেট এবং তহবিল সুরক্ষিত রাখতে আপনার গোপন পুনরুদ্ধারের কোড ব্যাক আপ করুন।"
@@ -181,23 +169,11 @@
   "createPassword": {
     "message": "পাসওয়ার্ড তৈরি করুন"
   },
-  "currencyConversion": {
-    "message": "মুদ্রা বিনিময়"
-  },
-  "currentLanguage": {
-    "message": "বর্তমান ভাষা"
-  },
   "custom": {
     "message": "উন্নত"
   },
-  "customToken": {
-    "message": "কাস্টম টোকেন"
-  },
   "decimal": {
     "message": "নির্ভুলতার দশমিক"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "দশমিকগুলি অবশ্যই অন্তত 0 হতে হবে, এবং 36 এর উপর হবে না।"
   },
   "delete": {
     "message": "মুছুন"
@@ -207,9 +183,6 @@
   },
   "done": {
     "message": "সম্পন্ন "
-  },
-  "downloadGoogleChrome": {
-    "message": "Google Chrome ডাউনলোড করুন"
   },
   "downloadStateLogs": {
     "message": "স্টেট লগগুলি ডাউনলোড করুন"
@@ -226,14 +199,8 @@
   "enterPasswordContinue": {
     "message": "অবিরত রাখতে পাসওয়ার্ড লিখুন"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum পাবলিক অ্যাড্রেস"
-  },
   "etherscanView": {
     "message": "Etherscan এ অ্যাকাউন্ট দেখুন"
-  },
-  "expandView": {
-    "message": "ভিউ সম্প্রসারিত করুন"
   },
   "failed": {
     "message": "ব্যর্থ হয়েছে"
@@ -275,9 +242,6 @@
   "hardwareWallets": {
     "message": "একটি হার্ডওয়্যার ওয়ালেট সংযুক্ত করুন"
   },
-  "hardwareWalletsMsg": {
-    "message": "আপনি MetaMask এর সাথে ব্যবহার করতে চান এমন একটি হার্ডওয়্যার ওয়ালেট নির্বাচন করুন"
-  },
   "here": {
     "message": "এখানে",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -304,9 +268,6 @@
   "imported": {
     "message": "আমদানিকৃত",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "আপনার প্রারম্ভিক লেনদেনটি নেটওয়ার্ক নিশ্চিত করেছিল। ফিরে যেতে ঠিক আছে তে ক্লিক করুন।"
   },
   "insufficientBalance": {
     "message": "অপর্যাপ্ত ব্যালেন্স৷"
@@ -348,12 +309,6 @@
   "likeToImportTokens": {
     "message": "আপনি কি এই টোকেনগুলি যোগ করতে চান?"
   },
-  "links": {
-    "message": "লিঙ্কসমূহ"
-  },
-  "loadMore": {
-    "message": "আরও লোড করুন"
-  },
   "loading": {
     "message": "লোড হচ্ছে..."
   },
@@ -378,15 +333,9 @@
   "metamaskVersion": {
     "message": "MetaMask সংস্করণ"
   },
-  "mustSelectOne": {
-    "message": "অবশ্যই অন্তত 1টি টোকেন নির্বাচন করতে হবে।"
-  },
   "needImportFile": {
     "message": "আমদানি করার জন্য আপনাকে অবশ্যই একটি ফাইল নির্বাচন করতে হবে।",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "ETH এর ঋণাত্মক অর্থরাশিগুলি পাঠাতে পারবে না। "
   },
   "networkName": {
     "message": "নেটওয়ার্কের নাম"
@@ -394,18 +343,9 @@
   "networks": {
     "message": "নেটওয়ার্কসমূহ"
   },
-  "nevermind": {
-    "message": "কিছু মনে করবেন না"
-  },
-  "newAccount": {
-    "message": "নতুন আ্যাকাউন্ট"
-  },
   "newAccountNumberName": {
     "message": "অ্যাকাউন্ট $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "নতুন পরিচিতি"
   },
   "newContract": {
     "message": "নতুন কন্ট্র্যাক্ট"
@@ -416,17 +356,11 @@
   "next": {
     "message": "পরবর্তী"
   },
-  "noConversionRateAvailable": {
-    "message": "কোনো বিনিময় হার উপলভ্য নয়"
-  },
   "noWebcamFound": {
     "message": "আপনার কম্পিউটারের ওয়েবক্যাম খুঁজে পাওয়া যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
   },
   "noWebcamFoundTitle": {
     "message": "ওয়েবক্যাম খুঁজে পাওয়া যায় নি"
-  },
-  "notEnoughGas": {
-    "message": "পর্যাপ্ত গ্যাস নেই"
   },
   "ofTextNofM": {
     "message": "এর"
@@ -493,12 +427,6 @@
   "rejectAll": {
     "message": "সব খারিজ করুন"
   },
-  "rejectTxsDescription": {
-    "message": "আপনি $1টি লেনদেন ব্যাচ খারিজ করতে চলেছেন।"
-  },
-  "rejectTxsN": {
-    "message": "$1 লেনদেনগুলি খারিজ করুন"
-  },
   "rejected": {
     "message": "খারিজ করা হয়েছে"
   },
@@ -508,9 +436,6 @@
   "removeAccount": {
     "message": "অ্যাকাউন্ট সরান"
   },
-  "removeAccountDescription": {
-    "message": "এই অ্যাকাউন্টটি আপনার ওয়ালেট থেকে অপসারণ করা হবে। অবিরত রাখার আগে অনুগ্রহ করে নিশ্চিত করুন যে এই আমদানি করা অ্যাকাউন্টটির জন্য আপনার মূল সীড ফ্রেজ বা গোপন কী আছে। আপনি অ্যাকাউন্ট ড্রপ-ডাউন থেকে অ্যাকাউন্টগুলি আবার আমদানি বা তৈরি করতে পারবেন।"
-  },
   "required": {
     "message": "প্রয়োজন"
   },
@@ -519,9 +444,6 @@
   },
   "restore": {
     "message": "পুনরুদ্ধার করুন"
-  },
-  "revealSeedWords": {
-    "message": "সীড শব্দগুলি প্রকাশ করুন"
   },
   "revealSeedWordsWarning": {
     "message": "আপনার সমস্ত অ্যাকাউন্ট চুরি করতে এই শব্দগুলি ব্যবহার করা যাবে।",
@@ -569,9 +491,6 @@
   "showFiatConversionInTestnets": {
     "message": "Testnets এ রূপান্তর দেখান"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Testnets এ ফিয়াট বাক্যালাপগুলি দেখাতে এটি নির্বাচন করুন"
-  },
   "showHexData": {
     "message": "হেক্স ডেটা দেখান"
   },
@@ -580,9 +499,6 @@
   },
   "sign": {
     "message": "স্বাক্ষর করুন"
-  },
-  "signatureRequest": {
-    "message": "স্বাক্ষরের অনুরোধ"
   },
   "signed": {
     "message": "স্বাক্ষরিত"
@@ -596,17 +512,11 @@
   "speedUpCancellation": {
     "message": "এই বাতিলকরণটির গতি বাড়ান"
   },
-  "speedUpTransaction": {
-    "message": "এই লেনদেনটি দ্রুততর করুন "
-  },
   "stateLogError": {
     "message": "স্টেট লগগুলি পুনরুদ্ধার করার ত্রুটি।"
   },
   "stateLogs": {
     "message": "স্টেট লগসমূহ"
-  },
-  "stateLogsDescription": {
-    "message": "স্টেট লগগুলিতে আপনার পাবলিক অ্যাকাউন্টের ঠিকানা এবং প্রেরণ করার লেনদেনগুলি আছে।"
   },
   "submitted": {
     "message": "জমা করা হয়েছে"
@@ -644,38 +554,11 @@
   "transaction": {
     "message": "লেনদেন"
   },
-  "transactionCancelAttempted": {
-    "message": "$2 এ $1 এর গ্যাস ফী দিয়ে লেনদেন বাতিল করার প্রচেষ্টা করা হয়েছে"
-  },
-  "transactionCancelSuccess": {
-    "message": "$2 এ লেনদেন সফলভাবে বাতিল হয়েছে"
-  },
-  "transactionConfirmed": {
-    "message": " $2 এ লেনদেন নিশ্চিত হয়েছে।"
-  },
-  "transactionCreated": {
-    "message": "$2 এ $1 এর একটি মান দিয়ে লেনদেন তৈরি করা হয়েছে।"
-  },
-  "transactionDropped": {
-    "message": "লেনদেন $2 এ নেমে গেছে।"
-  },
   "transactionError": {
     "message": "লেনদেনের ত্রুটি। কন্ট্র্যাক্ট কোডে ব্যতিক্রম দেখাচ্ছে।"
   },
   "transactionErrorNoContract": {
     "message": "একটি অ-পরিচিতির ঠিকানায় একটি কল করার চেষ্টা করছে।"
-  },
-  "transactionErrored": {
-    "message": "লেনদেনে একটি ত্রুটি হয়েছে।"
-  },
-  "transactionResubmitted": {
-    "message": "$2 এ গ্যাস ফী $1 তে বাড়িয়ে লেনদেন আবার জমা করা হয়েছে"
-  },
-  "transactionSubmitted": {
-    "message": "$2 এ $1 এর গ্যাস ফী সহ লেনদেন জমা করা হয়েছে।"
-  },
-  "transactionUpdated": {
-    "message": "লেনদেন $2 এ আপডেট করা হয়েছে।"
   },
   "transfer": {
     "message": "ট্রান্সফার করুন"
@@ -707,12 +590,6 @@
   "usedByClients": {
     "message": "বিভিন্ন ধরণের গ্রাহকদের দ্বারা ব্যবহৃত হয়"
   },
-  "userName": {
-    "message": "ইউজারনেম"
-  },
-  "viewContact": {
-    "message": "পরিচিতি দেখুন"
-  },
   "visitWebSite": {
     "message": "আমাদের ওয়েবসাইট দেখুন"
   },
@@ -721,8 +598,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "এই বৈশিষ্ট্যটি ব্যবহার করতে আপনাকে ক্যামেরা অ্যাক্সেস করার অনুমতি দিতে হবে।"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "আপনার ব্যক্তিগত সীড ফ্রেজ"
   }
 }

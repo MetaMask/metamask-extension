@@ -4,13 +4,12 @@ import React, {
   useEffect,
   useMemo,
   useReducer,
+  useRef,
   useState,
-  useContext,
 } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
-import { isEqual } from 'lodash';
+import { useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import { produce } from 'immer';
 import log from 'loglevel';
 import {
@@ -18,7 +17,12 @@ import {
   NETWORKS_BYPASSING_VALIDATION,
 } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
-import { CHAIN_SPEC_URL } from '../../../../shared/constants/network';
+import {
+  CHAIN_SPEC_URL,
+  BUILT_IN_NETWORKS,
+  FEATURED_RPCS,
+} from '../../../../shared/constants/network';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   MetaMetricsEventCategory,
@@ -28,31 +32,33 @@ import MetaMaskTemplateRenderer from '../../../components/app/metamask-template-
 import ConfirmationWarningModal from '../components/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useHideToasts } from '../../../hooks/useHideToasts';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
-  getMemoizedUnapprovedTemplatedConfirmations,
+  getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
   getApprovalFlows,
   getTotalUnapprovedCount,
-  useSafeChainsListValidationSelector,
+  getUseSafeChainsListValidation,
   getSnapsMetadata,
   getHideSnapBranding,
+  getIsHardwareWalletErrorModalVisible,
 } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import Callout from '../../../components/ui/callout';
 import { Box } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
 import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
 import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
-///: END:ONLY_INCLUDE_IF
 import { DAY } from '../../../../shared/constants/time';
 import { Nav } from '../components/confirm/nav';
 import { ConfirmContextProvider } from '../context/confirm';
 import { useConfirmationNavigation } from '../hooks/useConfirmationNavigation';
+import { useDispatch } from '../../../store/hooks';
 import { TemplateAlertContextProvider } from './alerts/TemplateAlertContext';
 import ConfirmationFooter from './components/confirmation-footer';
+
 import {
   getTemplateValues,
   getTemplateAlerts,
@@ -61,6 +67,10 @@ import {
 
 const CONFIRMATION_TYPES_WITH_HEADER = ['result_success', 'result_error'];
 const SNAP_CUSTOM_UI_DIALOG = Object.values(DIALOG_APPROVAL_TYPES);
+const SNAP_DIALOG_TYPE = [
+  ...Object.values(DIALOG_APPROVAL_TYPES),
+  ...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES),
+];
 
 /**
  * a very simple reducer using produce from Immer to keep state manipulation
@@ -226,25 +236,30 @@ function Header({ confirmation, isSnapCustomUIDialog, onCancel }) {
 export default function ConfirmationPage({
   redirectToHomeOnZeroConfirmations = true,
 }) {
+  useHideToasts();
+
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const dispatch = useDispatch();
-  const history = useHistory();
-  const pendingConfirmations = useSelector(
-    getMemoizedUnapprovedTemplatedConfirmations,
-  );
+  const navigate = useNavigate();
+  const pendingConfirmations = useSelector(getUnapprovedTemplatedConfirmations);
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
-  const approvalFlows = useSelector(getApprovalFlows, isEqual);
+  const approvalFlows = useSelector(getApprovalFlows);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
+  const isHardwareWalletErrorModalVisible = useSelector(
+    getIsHardwareWalletErrorModalVisible,
+  );
   const useSafeChainsListValidation = useSelector(
-    useSafeChainsListValidationSelector,
+    getUseSafeChainsListValidation,
   );
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
-  const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
+  const approvalFlowLoadingText =
+    approvalFlows[approvalFlows.length - 1]?.loadingText ?? null;
 
   const { id } = useParams();
+
   const pendingRoutedConfirmation = pendingConfirmations.find(
     (confirmation) => confirmation.id === id,
   );
@@ -281,14 +296,6 @@ export default function ConfirmationPage({
 
   const name = snapsMetadata[pendingConfirmation?.origin]?.name;
 
-  const SNAP_DIALOG_TYPE = Object.values(DIALOG_APPROVAL_TYPES);
-
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  SNAP_DIALOG_TYPE.push(
-    ...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES),
-  );
-  ///: END:ONLY_INCLUDE_IF
-
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
   const isSnapCustomUIDialog = SNAP_CUSTOM_UI_DIALOG.includes(
     pendingConfirmation?.type,
@@ -321,7 +328,7 @@ export default function ConfirmationPage({
           },
           t,
           dispatch,
-          history,
+          navigate,
           {
             matchedChain,
             currencySymbolWarning,
@@ -332,17 +339,18 @@ export default function ConfirmationPage({
           },
           // Passing `t` in the contexts object is a bit redundant but since it's a
           // context too, it makes sense (for completeness)
-          { t, trackEvent },
+          { t, trackEvent, createEventBuilder },
         )
       : {};
   }, [
     pendingConfirmation,
     t,
     dispatch,
-    history,
+    navigate,
     matchedChain,
     currencySymbolWarning,
     trackEvent,
+    createEventBuilder,
     isSnapDialog,
     snapName,
     networkConfigurationsByChainId,
@@ -354,31 +362,43 @@ export default function ConfirmationPage({
     }
   }, [templatedValues]);
 
+  const lastConfirmationTypeRef = useRef(null);
+
   useEffect(() => {
+    if (pendingConfirmation?.type) {
+      lastConfirmationTypeRef.current = pendingConfirmation.type;
+    }
+
     // If the number of pending confirmations reduces to zero when the user
     // return them to the default route. Otherwise, if the number of pending
     // confirmations reduces to a number that is less than the currently
     // viewed index, reset the index.
-    if (
+    // Don't navigate away if:
+    // - Hardware wallet error modal is visible (for retry functionality)
+    const wouldNavigate =
       pendingConfirmations.length === 0 &&
       (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
-      redirectToHomeOnZeroConfirmations
-    ) {
-      history.push(DEFAULT_ROUTE);
+      redirectToHomeOnZeroConfirmations;
+
+    if (wouldNavigate && !isHardwareWalletErrorModalVisible) {
+      const shouldShowActivity = SNAP_DIALOG_TYPE.includes(
+        lastConfirmationTypeRef.current,
+      );
+      const to = shouldShowActivity
+        ? `${DEFAULT_ROUTE}?tab=activity`
+        : DEFAULT_ROUTE;
+
+      navigate(to);
     }
   }, [
+    pendingConfirmation?.type,
     pendingConfirmations,
     approvalFlows,
     totalUnapprovedCount,
-    history,
+    navigate,
     redirectToHomeOnZeroConfirmations,
+    isHardwareWalletErrorModalVisible,
   ]);
-
-  useEffect(() => {
-    const childFlow = approvalFlows[approvalFlows.length - 1];
-
-    setApprovalFlowLoadingText(childFlow?.loadingText ?? null);
-  }, [approvalFlows]);
 
   useEffect(() => {
     async function fetchSafeChainsList(_pendingConfirmation) {
@@ -473,20 +493,39 @@ export default function ConfirmationPage({
       pendingConfirmation?.requestData?.fromNetworkConfiguration?.chainId &&
       pendingConfirmation?.requestData?.toNetworkConfiguration?.chainId
     ) {
-      trackEvent({
-        category: MetaMetricsEventCategory.Network,
-        event: MetaMetricsEventName.NavNetworkSwitched,
-        properties: {
-          location: 'Switch Modal',
-          from_network:
-            pendingConfirmation.requestData.fromNetworkConfiguration.chainId,
-          to_network:
-            pendingConfirmation.requestData.toNetworkConfiguration.chainId,
-          referrer: {
-            url: window.location.origin,
-          },
-        },
-      });
+      // Check if the destination network is custom (not built-in, featured, or multichain)
+      const toChainId =
+        pendingConfirmation.requestData.toNetworkConfiguration.chainId;
+
+      const isBuiltInNetwork = Object.values(BUILT_IN_NETWORKS).some(
+        (builtInNetwork) => builtInNetwork.chainId === toChainId,
+      );
+      const isFeaturedRpc = FEATURED_RPCS.some(
+        (featuredRpc) => featuredRpc.chainId === toChainId,
+      );
+      const isMultichainProviderConfig = Object.values(MultichainNetworks).some(
+        (multichainNetwork) => multichainNetwork === toChainId,
+      );
+
+      const isCustomNetwork =
+        !isBuiltInNetwork && !isFeaturedRpc && !isMultichainProviderConfig;
+
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NavNetworkSwitched)
+          .addCategory(MetaMetricsEventCategory.Network)
+          .addProperties({
+            location: 'Switch Modal',
+            from_network:
+              pendingConfirmation.requestData.fromNetworkConfiguration.chainId,
+            to_network:
+              pendingConfirmation.requestData.toNetworkConfiguration.chainId,
+            custom_network: isCustomNetwork,
+            referrer: {
+              url: window.location.origin,
+            },
+          })
+          .build(),
+      );
     }
 
     if (templateState[pendingConfirmation.id]?.useWarningModal) {
@@ -509,12 +548,19 @@ export default function ConfirmationPage({
       : null);
 
   return (
-    <ConfirmContextProvider>
+    <ConfirmContextProvider confirmationId={id}>
       <TemplateAlertContextProvider
         confirmationId={pendingConfirmation.id}
         onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
       >
-        <div className="confirmation-page">
+        <div
+          className="confirmation-page h-full"
+          data-testid={
+            isSnapCustomUIDialog
+              ? 'parent-selector-snap-confirmation-page'
+              : 'parent-selector-template-confirmation-page'
+          }
+        >
           <Header
             confirmation={pendingConfirmation}
             isSnapCustomUIDialog={isSnapCustomUIDialog}

@@ -1,0 +1,15 @@
+diff --git a/src/Common/Utils.js b/src/Common/Utils.js
+index e923daa8a95ab70ae5f1dbc883f5e90420b14b1a..ca21e8ac6c566820236aa682becd03b6c05e592a 100644
+--- a/src/Common/Utils.js
++++ b/src/Common/Utils.js
+@@ -6,7 +6,9 @@
+  */
+ const transformToCommonJS = (code) => {
+   // import to require
+-  const importMatches = code.matchAll(/import (.+) from "(.+)";/g);
++  // LavaMoat is using an evasive transform to avoid 'import (' being in the source code
++  // which causes this regex to get messed up, so it needs to be escaped
++  const importMatches = code.matchAll(/import\s(.+) from "(.+)";/g);
+   for (const [match, variable, file] of importMatches) {
+     code = code.replace(match, `var ${variable} = require('${file}');`);
+   }

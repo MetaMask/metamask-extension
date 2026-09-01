@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { parseTypedDataMessage } from '../../../../../shared/modules/transaction.utils';
+import { parseTypedDataMessage } from '../../../../../shared/lib/transaction.utils';
 import { Confirmation, SignatureRequestType } from '../../types/confirm';
 import { DAI_CONTRACT_ADDRESS } from './info/shared/constants';
 

@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
+import { AvatarFavicon } from '@metamask/design-system-react';
 import {
   AlignItems,
   BackgroundColor,
@@ -16,7 +17,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  AvatarFavicon,
   Box,
   Icon,
   IconName,
@@ -25,26 +25,19 @@ import {
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { SnapIcon } from '../../../app/snaps/snap-icon';
-import {
-  getAllPermittedChainsForSelectedTab,
-  getIsMultichainAccountsState2Enabled,
-} from '../../../../selectors';
+import { getAllPermittedChainsForSelectedTab } from '../../../../selectors';
 import { getAccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   const isSnap = connection.subjectType === SubjectType.Snap;
-  const permittedChains = useSelector((state) =>
-    getAllPermittedChainsForSelectedTab(state, connection.origin),
+  const permittedChains = useSelector(
+    (state) => getAllPermittedChainsForSelectedTab(state, connection.origin),
+    shallowEqual,
   );
   const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
 
-  const isState2Enabled = useSelector(getIsMultichainAccountsState2Enabled);
-
   const accountAddressSet = useMemo(() => {
-    if (!isState2Enabled) {
-      return null;
-    }
     const set = new Set();
     (accountGroups ?? []).forEach((group) => {
       (group.accounts ?? []).forEach((account) => {
@@ -52,12 +45,9 @@ export const ConnectionListItem = ({ connection, onClick }) => {
       });
     });
     return set;
-  }, [isState2Enabled, accountGroups]);
+  }, [accountGroups]);
 
   const accountsToShow = useMemo(() => {
-    if (!isState2Enabled) {
-      return connection.addresses?.length ?? 0;
-    }
     if (!accountAddressSet || !connection.addresses?.length) {
       return 0;
     }
@@ -68,7 +58,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
       }
     }
     return count;
-  }, [isState2Enabled, accountAddressSet, connection.addresses]);
+  }, [accountAddressSet, connection.addresses]);
 
   return (
     <Box
@@ -124,12 +114,21 @@ export const ConnectionListItem = ({ connection, onClick }) => {
               color={TextColor.textAlternative}
               variant={TextVariant.bodyMd}
             >
-              {accountsToShow}{' '}
-              {accountsToShow === 1
-                ? t('accountSmallCase')
-                : t('accountsSmallCase')}
-              •&nbsp;
-              {permittedChains.length} {t('networksSmallCase')}
+              {accountsToShow === 0 && permittedChains.length === 0 ? (
+                <>
+                  {connection.advancedPermissionsCount}{' '}
+                  {connection.advancedPermissionsCount === 1
+                    ? t('advancedPermissionSmallCase')
+                    : t('advancedPermissionsSmallCase')}
+                </>
+              ) : (
+                <>
+                  {accountsToShow}{' '}
+                  {accountsToShow === 1
+                    ? t('accountSmallCase')
+                    : t('accountsSmallCase')}
+                </>
+              )}
             </Text>
           </Box>
         )}

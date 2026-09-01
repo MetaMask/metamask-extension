@@ -1,27 +1,27 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
-import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
-import { isIpfsURL } from '../../../helpers/utils/notification.util';
-
 import {
   AvatarIcon,
+  AvatarIconSeverity,
   AvatarIconSize,
   AvatarToken,
   AvatarTokenSize,
+  IconColor,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
+import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
+import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
+import { isIpfsURL } from '../../../helpers/utils/notification.util';
+import {
   BadgeWrapper,
   BadgeWrapperPosition,
   Box,
-  IconName,
-  IconSize,
 } from '../../component-library';
 import {
   BackgroundColor,
-  BorderColor,
   BorderRadius,
-  BorderStyle,
   Display,
-  IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
@@ -56,8 +56,8 @@ const AvatarTokenComponent = ({ src }: { src: string }): JSX.Element => (
   <AvatarToken
     data-testid="avatar-token"
     src={src}
-    borderStyle={BorderStyle.none}
     size={AvatarTokenSize.Md}
+    className="bg-transparent border-none p-1"
   />
 );
 
@@ -100,19 +100,15 @@ const getBadge = (badge: BadgeProps, children: JSX.Element): JSX.Element => {
   return (
     <BadgeWrapper
       data-testid="badge-wrapper"
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       position={badge.position || BadgeWrapperPosition.bottomRight}
       badge={
         <AvatarIcon
           iconName={badge.icon}
           size={AvatarIconSize.Sm}
-          backgroundColor={BackgroundColor.infoDefault}
-          borderColor={BorderColor.backgroundDefault}
-          borderWidth={2}
+          severity={AvatarIconSeverity.Info}
+          className="border-2 border-background-default bg-info-default"
           iconProps={{
-            name: badge.icon,
-            color: IconColor.infoInverse,
+            color: IconColor.InfoInverse,
             size: IconSize.Xs,
           }}
         />
@@ -140,11 +136,11 @@ const iconComponents = {
  * @param props.badge - The badge of the notification item icon.
  * @returns A JSX element.
  */
-export const NotificationListItemIcon: FC<NotificationListItemIconProps> = ({
+export const NotificationListItemIcon = ({
   type,
   value,
   badge,
-}): JSX.Element => {
+}: NotificationListItemIconProps): JSX.Element => {
   const IconComponent = iconComponents[type] || iconComponents.default;
   const NotificationIcon = <IconComponent src={value} />;
 

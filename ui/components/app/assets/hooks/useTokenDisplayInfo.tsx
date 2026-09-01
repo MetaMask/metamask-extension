@@ -1,15 +1,16 @@
 import { useSelector } from 'react-redux';
 import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import { isCaipChainId } from '@metamask/utils';
+import { CaipAssetType, isCaipChainId } from '@metamask/utils';
 import {
+  getAllTokens,
   getEnabledNetworksByNamespace,
-  getIsMultichainAccountsState2Enabled,
   getShowFiatInTestnets,
-  getTokenList,
+  getUseCurrencyRateCheck,
+  selectAnyEnabledNetworksAreAvailable,
   selectERC20TokensByChain,
 } from '../../../../selectors';
-import { TokenDisplayInfo, TokenWithFiatAmount } from '../types';
+import { Token, TokenDisplayInfo, TokenWithFiatAmount } from '../types';
 import {
   getImageForChainId,
   isChainIdMainnet,
@@ -21,6 +22,7 @@ import { useFormatters } from '../../../../hooks/useFormatters';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
+import { getIsAssetRequireActivate } from '../../../../selectors/stellar-assets';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
@@ -32,7 +34,7 @@ export const useTokenDisplayInfo = ({
   fixCurrencyToUSD,
 }: UseTokenDisplayInfoProps): TokenDisplayInfo => {
   const isEvm = isEvmChainId(token.chainId);
-  const tokenList = useSelector(getTokenList) || {};
+  const allTokens = useSelector(getAllTokens);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const currentCurrency = useSelector(getCurrentCurrency);
   const { formatCurrencyWithMinThreshold } = useFormatters();
@@ -44,9 +46,6 @@ export const useTokenDisplayInfo = ({
     getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
   );
 
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
   const showFiat = useMultichainSelector(
     makeGetMultichainShouldShowFiatByChainId(token.chainId),
     selectedAccount,
@@ -55,13 +54,17 @@ export const useTokenDisplayInfo = ({
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const isTestnetSelected = Boolean(
     Object.keys(enabledNetworksByNamespace).length === 1 &&
-      TEST_CHAINS.includes(
-        Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
-      ),
+    TEST_CHAINS.includes(
+      Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
+    ),
   );
 
   const isMainnet = !isTestnetSelected;
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+  const anyEnabledNetworksAreAvailable = useSelector(
+    selectAnyEnabledNetworksAreAvailable,
+  );
 
   // isTestnet value is tied to the value of state.metamask.selectedNetworkClientId;
   // In some cases; the user has "all popular networks" selected or a specific popular network selected, while being on a dapp that is connected to a testnet,
@@ -72,6 +75,9 @@ export const useTokenDisplayInfo = ({
 
   const shouldShowFiat =
     showFiat && (isMainnet || (isTestnetSelected && showFiatInTestnets));
+  const shouldAttemptFiat =
+    useCurrencyRateCheck &&
+    (isMainnet || (isTestnetSelected && showFiatInTestnets));
   // Format for fiat balance with currency style
   const secondary =
     shouldShowFiat &&
@@ -82,6 +88,10 @@ export const useTokenDisplayInfo = ({
           fixCurrencyToUSD ? 'USD' : currentCurrency,
         )
       : undefined;
+  const isFiatLoading =
+    shouldAttemptFiat &&
+    (token.tokenFiatAmount === null || token.tokenFiatAmount === undefined) &&
+    !anyEnabledNetworksAreAvailable;
 
   const isEvmMainnet =
     token.chainId && isEvm ? isChainIdMainnet(token.chainId) : false;
@@ -89,11 +99,19 @@ export const useTokenDisplayInfo = ({
   const isStakeable =
     token.isStakeable || (isEvmMainnet && isEvm && token.isNative);
 
+  const tokenRequireActivate = useSelector((state) =>
+    getIsAssetRequireActivate(state, {
+      assetId: (token.assetId as CaipAssetType | undefined) ?? '',
+    }),
+  );
+
   if (isEvm) {
-    const tokenData = Object.values(tokenList).find(
-      (tokenToFind) =>
-        isEqualCaseInsensitive(tokenToFind.symbol, token.symbol) &&
-        isEqualCaseInsensitive(tokenToFind.address, token.address),
+    const tokenData = (
+      Object.values(
+        allTokens[token.chainId as `0x${string}`] ?? {},
+      ).flat() as Token[]
+    ).find((tokenToFind) =>
+      isEqualCaseInsensitive(tokenToFind.address, token.address),
     );
 
     const title =
@@ -107,7 +125,7 @@ export const useTokenDisplayInfo = ({
       token.symbol;
 
     const tokenImage =
-      tokenData?.iconUrl ||
+      tokenData?.image ||
       (token.chainId &&
         erc20TokensByChain?.[token.chainId]?.data?.[token.address.toLowerCase()]
           ?.iconUrl) ||
@@ -119,6 +137,7 @@ export const useTokenDisplayInfo = ({
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       secondary,
+      isFiatLoading,
       isStakeable,
       tokenChainImage: tokenChainImage as string,
     };
@@ -126,18 +145,18 @@ export const useTokenDisplayInfo = ({
 
   // TODO BIP44 Refactor: type for secondary is wrongly set as number | null, when it is a string | null
   // Just changing it causes a number of errors all over the codebase
-  // When BIP44 flag is enabled and stable, this can be refactored to use the type from the new selector
-  const nonEvmSecondary = isMultichainAccountsState2Enabled
-    ? (secondary as unknown as number)
-    : token.secondary;
+  // The BIP44 flag is enabled and stable, so this can be refactored to use the type from the new selector
+  const nonEvmSecondary = secondary as unknown as number;
 
   // TODO non-evm assets. this is only the native token
   return {
     title: token.title,
     tokenImage: token.image,
     secondary: showFiat ? nonEvmSecondary : null,
+    isFiatLoading,
     isStakeable: false,
     tokenChainImage: token.image as string,
+    tokenRequireActivate,
   };
 };
 

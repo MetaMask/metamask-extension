@@ -1,0 +1,415 @@
+import { shallowEqual, useSelector } from 'react-redux';
+import { useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { BannerAlertSeverity } from '@metamask/design-system-react';
+import { getNativeAssetId } from '../../../../shared/lib/asset-utils';
+import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
+import {
+  getActiveQuoteInsufficientNativeReserveError,
+  type BridgeAppState,
+  getActiveQuotePriceData,
+  getBridgeUnavailableQuoteReason,
+  getDestAccountDisplayName,
+  getFormattedPriceImpactFiat,
+  getFormattedPriceImpactPercentage,
+  getFromChain,
+  getIsDestSameAsActiveAccount,
+  getToToken,
+  getValidationErrors,
+} from '../../../ducks/bridge/selectors';
+import { setFromTokenInputValue } from '../../../ducks/bridge/actions';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getMultichainNativeCurrency } from '../../../selectors/multichain';
+import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
+import { isQuoteExpiredOrInvalid, getDestChainId } from '../utils/quote';
+import { type BridgeAlert } from '../prepare/types';
+import { useDispatch } from '../../../store/hooks';
+import { useSecurityAlerts } from './useSecurityAlerts';
+import { useAssetSecurityData } from './useAssetSecurityData';
+
+/**
+ * Merges tx, token, and validation alert data used for displaying {@link BannerAlert}
+ * and {@link BridgeAlertModal} components
+ */
+export const useBridgeAlerts = () => {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const formattedPriceImpactPercentage = useSelector(
+    getFormattedPriceImpactPercentage,
+  );
+  const formattedPriceImpactFiat = useSelector(getFormattedPriceImpactFiat);
+  const insufficientNativeReserveError = useSelector(
+    getActiveQuoteInsufficientNativeReserveError,
+  );
+
+  const {
+    isNoQuotesAvailable,
+    isInsufficientGasForQuote,
+    isInsufficientBalance,
+    isStockMarketClosed,
+    isInOffHoursTrading,
+    isQuoteExpired,
+    isPriceImpactWarning,
+    isPriceImpactError,
+    isDestAssetRequireActivate,
+  } = useSelector(
+    (state: BridgeAppState) => getValidationErrors(state, Date.now()),
+    shallowEqual,
+  );
+  const bridgeUnavailableQuotesReason = useSelector(
+    getBridgeUnavailableQuoteReason,
+  );
+
+  const toToken = useSelector(getToToken);
+  const ticker = useMultichainSelector(getMultichainNativeCurrency);
+  const toTokenAssetId = toToken?.assetId;
+  const isDestSameAsActiveAccount = useSelector(getIsDestSameAsActiveAccount);
+  const destAccountDisplayName = useSelector(getDestAccountDisplayName);
+
+  const {
+    assetIsMalicious,
+    assetIsSuspicious,
+    assetMaliciousLocalizedFeatures,
+    assetSuspiciousLocalizedFeatures,
+  } = useAssetSecurityData(toToken);
+
+  const { txAlert } = useSecurityAlerts(toToken);
+  const { goToBuy } = useRampsNavigation();
+  const navigate = useNavigate();
+  const fromChain = useSelector(getFromChain);
+
+  // Lightweight CTA navigation — avoid useBridgeNavigation here because this
+  // hook mounts in multiple prepare-page children and the heavier bridge
+  // navigation hook spikes React act-warning counts in integration-style tests.
+  const navigateToDestAssetPage = useCallback(() => {
+    if (!toTokenAssetId) {
+      return;
+    }
+    navigate(buildAssetRoutePath(toTokenAssetId));
+  }, [navigate, toTokenAssetId]);
+
+  const activeQuotePriceData = useSelector(getActiveQuotePriceData);
+
+  const { isLoading, activeQuote: unvalidatedQuote } =
+    useSelector(getBridgeQuotes);
+  const activeQuote = isQuoteExpiredOrInvalid({
+    activeQuote: unvalidatedQuote ?? null,
+    toToken,
+    isQuoteExpired,
+  })
+    ? undefined
+    : unvalidatedQuote;
+
+  const isSwap = activeQuote
+    ? activeQuote.chainId === getDestChainId(activeQuote)
+    : false;
+
+  return useMemo(() => {
+    const alertsById: Partial<Record<BridgeAlert['id'], BridgeAlert>> = {};
+    const confirmationAlerts: BridgeAlert[] = [];
+    const bannerAlerts: BridgeAlert[] = [];
+
+    // Append alert to the appropriate alert lists
+    const categorizeAlert = (alert: BridgeAlert) => {
+      alertsById[alert.id] = alert;
+
+      if (alert.isConfirmationAlert) {
+        confirmationAlerts.push(alert);
+      }
+
+      if (alert.bannerAlertProps) {
+        bannerAlerts.push(alert);
+      }
+    };
+
+    if (isStockMarketClosed) {
+      categorizeAlert({
+        id: 'market-closed',
+        isDismissable: false,
+        severity: 'danger',
+        title: t('bridgeMarketClosedTitle'),
+        description: t('bridgeMarketClosedDescription'),
+        isConfirmationAlert: false,
+        bannerAlertProps: {
+          severity: BannerAlertSeverity.Danger,
+        },
+      });
+    }
+
+    if (isInOffHoursTrading) {
+      categorizeAlert({
+        id: 'off-hours',
+        isDismissable: false,
+        severity: 'warning',
+        title: t('bridgeOffHoursTitle'),
+        description: t('bridgeOffHoursDescription'),
+        isConfirmationAlert: false,
+        bannerAlertProps: {
+          severity: BannerAlertSeverity.Warning,
+        },
+      });
+    }
+
+    if (isNoQuotesAvailable && !isStockMarketClosed && !isQuoteExpired) {
+      categorizeAlert({
+        id: 'no-quotes',
+        isDismissable: false,
+        severity: 'danger',
+        description: t(bridgeUnavailableQuotesReason),
+        isConfirmationAlert: false,
+        bannerAlertProps: {
+          severity: BannerAlertSeverity.Danger,
+        },
+      });
+    }
+
+    if (txAlert && activeQuote) {
+      categorizeAlert({
+        ...txAlert,
+        isDismissable: false,
+        isConfirmationAlert: false,
+        bannerAlertProps: {
+          severity: BannerAlertSeverity.Danger,
+        },
+      });
+    }
+
+    if (toToken && (assetIsMalicious || assetIsSuspicious)) {
+      categorizeAlert({
+        id: 'token-security',
+        severity: assetIsMalicious ? 'danger' : 'warning',
+        title: t(
+          assetIsMalicious
+            ? 'bridgeTokenIsMaliciousBanner'
+            : 'bridgeTokenIsSuspiciousBanner',
+          [toToken.symbol],
+        ),
+        description: '',
+        modalProps: {
+          title: t(
+            assetIsMalicious
+              ? 'bridgeMaliciousTokenTitle'
+              : 'bridgeSuspiciousTokenTitle',
+          ),
+          description: t(
+            assetIsMalicious
+              ? 'bridgeTokenIsMaliciousModalDescription'
+              : 'bridgeTokenIsSuspiciousModalDescription',
+            [toToken.symbol],
+          ),
+          alertModalDescriptionType: assetIsMalicious ? 'banner' : 'text',
+          infoList: assetIsMalicious
+            ? assetMaliciousLocalizedFeatures
+            : assetSuspiciousLocalizedFeatures,
+        },
+        isConfirmationAlert: assetIsMalicious,
+        isDismissable: false,
+        openModalOnClick: true,
+        bannerAlertProps: {
+          severity: assetIsMalicious
+            ? BannerAlertSeverity.Danger
+            : BannerAlertSeverity.Warning,
+        },
+      });
+    }
+
+    if (unvalidatedQuote && !activeQuotePriceData) {
+      categorizeAlert({
+        id: 'price-data-unavailable',
+        severity: 'danger',
+        isDismissable: false,
+        title: t('bridgeNoPriceInfoTitle'),
+        description: t('bridgePriceDataUnavailableError'),
+        isConfirmationAlert: true,
+        bannerAlertProps: {
+          severity: BannerAlertSeverity.Danger,
+        },
+      });
+    }
+
+    if (
+      !isLoading &&
+      activeQuote &&
+      !isInsufficientBalance &&
+      isInsufficientGasForQuote
+    ) {
+      categorizeAlert({
+        id: 'insufficient-gas',
+        isDismissable: false,
+        severity: 'danger',
+        title: t('bridgeValidationInsufficientGasTitle', [ticker]),
+        description: t(
+          isSwap
+            ? 'swapValidationInsufficientGasMessage'
+            : 'bridgeValidationInsufficientGasMessage',
+          [ticker],
+        ),
+        isConfirmationAlert: false,
+        bannerAlertProps: {
+          severity: BannerAlertSeverity.Danger,
+          actionButtonLabel: t('buyMoreAsset', [ticker]),
+          // Pre-select the source chain's native gas token so the buy flow
+          // lands on build-quote for it; chainId also drives the flag-off
+          // Portfolio fallback.
+          actionButtonOnClick: () =>
+            goToBuy({
+              assetId: getNativeAssetId(fromChain?.chainId),
+              chainId: fromChain?.chainId,
+            }),
+        },
+      });
+    }
+
+    // Non-blocking warning: destination Stellar classic asset still needs a
+    // trustline. Can appear alongside other banners (e.g. insufficient gas).
+    // Cross-chain + activation gating lives in getValidationErrors /
+    // getWarningLabels (MixPanel).
+    // Same as active account → Activate CTA. Different dest → no CTA + switch copy.
+    if (isDestAssetRequireActivate && toToken) {
+      if (isDestSameAsActiveAccount) {
+        categorizeAlert({
+          id: 'stellar-trustline',
+          isDismissable: false,
+          severity: 'warning',
+          title: t('bridgeStellarTrustlineWarningTitle', [toToken.symbol]),
+          description: t('bridgeStellarTrustlineWarningMessage', [
+            toToken.symbol,
+          ]),
+          isConfirmationAlert: false,
+          bannerAlertProps: {
+            severity: BannerAlertSeverity.Warning,
+            actionButtonLabel: t('bridgeStellarTrustlineWarningCta', [
+              toToken.symbol,
+            ]),
+            actionButtonOnClick: () => navigateToDestAssetPage(),
+          },
+        });
+      } else {
+        categorizeAlert({
+          id: 'stellar-trustline',
+          isDismissable: false,
+          severity: 'warning',
+          title: t('bridgeStellarTrustlineWarningTitle', [toToken.symbol]),
+          description: t(
+            'bridgeStellarTrustlineWarningMessageDifferentAccount',
+            [destAccountDisplayName ?? '', toToken.symbol],
+          ),
+          isConfirmationAlert: false,
+          bannerAlertProps: {
+            severity: BannerAlertSeverity.Warning,
+          },
+        });
+      }
+    }
+
+    if (
+      !isInsufficientBalance &&
+      !isInsufficientGasForQuote &&
+      insufficientNativeReserveError &&
+      insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
+        '0'
+    ) {
+      categorizeAlert({
+        id: 'insufficient-native-reserve',
+        isDismissable: false,
+        severity: 'warning',
+        title: t('bridgeValidationInsufficientNativeReserveTitle', [ticker]),
+        description: t('bridgeValidationInsufficientNativeReserveMessage', [
+          insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount,
+          insufficientNativeReserveError.maxSwappableNativeBalance,
+          ticker,
+        ]),
+        isConfirmationAlert: false,
+        bannerAlertProps: {
+          severity: BannerAlertSeverity.Warning,
+          actionButtonLabel: t('bridgeUseMaxAmountAllowedWithReserve', [
+            ticker,
+          ]),
+          actionButtonOnClick: () =>
+            dispatch(
+              setFromTokenInputValue(
+                insufficientNativeReserveError.maxSwappableNativeBalance,
+              ),
+            ),
+        },
+      });
+    }
+
+    if (isPriceImpactWarning) {
+      categorizeAlert({
+        id: 'price-impact',
+        isDismissable: false,
+        severity: 'warning',
+        title: t('bridgePriceImpactHigh'),
+        description: t('bridgePriceImpactHighDescription', [
+          formattedPriceImpactPercentage,
+        ]),
+        isConfirmationAlert: false,
+      });
+    }
+
+    if (isPriceImpactError) {
+      categorizeAlert({
+        id: 'price-impact',
+        isDismissable: false,
+        severity: 'danger',
+        title: t('bridgePriceImpactVeryHigh'),
+        description: t('bridgePriceImpactVeryHighDescription', [
+          formattedPriceImpactPercentage,
+        ]),
+        isConfirmationAlert: true,
+        modalProps: formattedPriceImpactFiat
+          ? {
+              alertModalErrorMessage: t('bridgePriceImpactFiatAlert', [
+                formattedPriceImpactFiat,
+              ]),
+            }
+          : undefined,
+      });
+    }
+
+    return {
+      alertsById,
+      /** A list of alerts to be displayed as BannerAlerts */
+      bannerAlerts,
+      /** A sorted list of error alerts to be displayed in the confirmation modal */
+      confirmationAlerts,
+    };
+  }, [
+    activeQuote,
+    unvalidatedQuote,
+    activeQuotePriceData,
+    bridgeUnavailableQuotesReason,
+    formattedPriceImpactPercentage,
+    formattedPriceImpactFiat,
+    isInsufficientBalance,
+    isInOffHoursTrading,
+    isInsufficientGasForQuote,
+    isLoading,
+    isNoQuotesAvailable,
+    isQuoteExpired,
+    isPriceImpactError,
+    isPriceImpactWarning,
+    isStockMarketClosed,
+    isSwap,
+    insufficientNativeReserveError,
+    dispatch,
+    goToBuy,
+    navigateToDestAssetPage,
+    fromChain,
+    ticker,
+    toToken,
+    isDestAssetRequireActivate,
+    isDestSameAsActiveAccount,
+    destAccountDisplayName,
+    assetIsMalicious,
+    assetIsSuspicious,
+    assetMaliciousLocalizedFeatures,
+    assetSuspiciousLocalizedFeatures,
+    txAlert,
+    t,
+  ]);
+};

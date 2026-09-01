@@ -1,6 +1,5 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-// eslint-disable-next-line import/no-named-as-default
 import DOMPurify from 'dompurify';
 import { isOfTypeNodeGuard } from '../node-guard';
 import {
@@ -109,10 +108,10 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
           </Box>
         ),
       },
-    },
-    footer: {
-      type: NotificationComponentType.AnnouncementFooter,
-      ExtensionLink: ExtensionLinkButton,
-      ExternalLink: ExternalLinkButton,
+      footer: {
+        type: NotificationComponentType.AnnouncementFooter,
+        ExtensionLink: ExtensionLinkButton,
+        ExternalLink: ExternalLinkButton,
+      },
     },
   };

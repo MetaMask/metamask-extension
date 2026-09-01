@@ -1,5 +1,4 @@
 import React from 'react';
-import README from './README.mdx';
 import Dropdown from '.';
 
 const unnamedOptions = [...Array(10).keys()].map((index) => {
@@ -21,11 +20,6 @@ export default {
   title: 'Components/UI/Dropdown',
 
   component: Dropdown,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     className: { control: 'text' },
     disabled: { control: 'boolean' },

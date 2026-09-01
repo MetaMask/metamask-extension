@@ -13,7 +13,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { SnapUIAvatar } from '../snap-ui-avatar';
 import { useDisplayName } from '../../../../hooks/snaps/useDisplayName';
 
@@ -27,13 +27,13 @@ export type SnapUIAddressProps = {
   avatar?: boolean;
 };
 
-export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
+export const SnapUIAddress = ({
   address,
   avatarSize,
   truncate = true,
   displayName = false,
   avatar = true,
-}) => {
+}: SnapUIAddressProps) => {
   const caipIdentifier = useMemo(() => {
     if (isHexString(address)) {
       // For legacy address inputs we assume them to be Ethereum addresses.

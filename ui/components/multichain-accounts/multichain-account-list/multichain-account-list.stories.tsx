@@ -10,7 +10,7 @@ import React from 'react';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 
-const mockSelectedAccountGroup = mockState.metamask.accountTree
+const mockSelectedAccountGroup = mockState.metamask
   .selectedAccountGroup as AccountGroupId;
 
 const defaultArgs: MultichainAccountListProps = {
@@ -21,6 +21,11 @@ const defaultArgs: MultichainAccountListProps = {
 
 const store = configureStore({
   metamask: mockState.metamask,
+  activeTab: {
+    origin: 'https://metamask.github.io',
+    protocol: 'https:',
+    url: 'https://metamask.github.io/test-dapp/',
+  },
 });
 
 const meta: Meta<typeof MultichainAccountList> = {

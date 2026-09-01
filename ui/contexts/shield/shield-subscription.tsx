@@ -1,36 +1,51 @@
-import React, { useCallback, useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import React, { useCallback, useContext, useMemo, useRef } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  PRODUCT_TYPES,
+  COHORT_NAMES,
+  type Cohort,
+  CohortName,
+  ModalType,
+} from '@metamask/subscription-controller';
 import log from 'loglevel';
 import { useSubscriptionEligibility } from '../../hooks/subscription/useSubscription';
 import {
+  assignUserToCohort,
+  setPendingShieldCohort,
   setShowShieldEntryModalOnce,
-  subscriptionsStartPolling,
 } from '../../store/actions';
-import {
-  getSelectedInternalAccount,
-  getUseExternalServices,
-} from '../../selectors';
-import { useAccountTotalFiatBalance } from '../../hooks/useAccountTotalFiatBalance';
+import { getUseExternalServices } from '../../selectors';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
-import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/environment';
+import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/lib/environment';
+import { SUBSCRIPTIONS_POLLING_INPUT } from '../../../shared/constants/subscriptions';
 import {
   getHasShieldEntryModalShownOnce,
   getIsActiveShieldSubscription,
 } from '../../selectors/subscription';
-import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { useDispatch } from '../../store/hooks';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
+import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscriptionMetrics';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import { captureException } from '../../../shared/lib/sentry';
+import { createSentryError } from '../../../shared/lib/error';
+import usePolling from '../../hooks/usePolling';
+import {
+  subscriptionsStartPolling,
+  subscriptionsStopPolling,
+} from './subscriptionsPollingActions';
+
+const evaluatedShieldCohortsThisSession = new Set<string>();
+
+/** @internal */
+export function resetEvaluatedShieldCohortsForTesting(): void {
+  evaluatedShieldCohortsThisSession.clear();
+}
 
 export const ShieldSubscriptionContext = React.createContext<{
-  resetShieldEntryModalShownStatus: () => void;
-  setShieldEntryModalShownStatus: (
-    showShieldEntryModalOnce: boolean | null,
-  ) => void;
+  evaluateCohortEligibility: (entrypointCohort: string) => Promise<void>;
 }>({
-  resetShieldEntryModalShownStatus: () => {
-    // Default empty function
-  },
-  setShieldEntryModalShownStatus: () => {
-    // Default empty function
+  evaluateCohortEligibility: async () => {
+    // Default no-op implementation
   },
 });
 
@@ -44,7 +59,24 @@ export const useShieldSubscriptionContext = () => {
   return context;
 };
 
-export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
+/**
+ * Orchestrates Shield subscription eligibility evaluation and cohort assignment.
+ *
+ * Full eligibility requires (checked across the provider and its dependencies):
+ * 1. Shield feature flag enabled
+ * 2. Basic functionality enabled
+ * 3. User signed in and unlocked
+ * 4. No active Shield subscription
+ * 5. Entry modal not already shown this session
+ * 6. Server-side eligibility (balance category, cohort criteria) via `useSubscriptionEligibility`
+ * 7. Cohort assignment and modal display per flowchart (MetaMask-planning#6638)
+ *
+ * @param props - Component props
+ * @param props.children - Child elements to render
+ */
+export const ShieldSubscriptionProvider = ({
+  children,
+}: React.PropsWithChildren<unknown>) => {
   const dispatch = useDispatch();
   const isBasicFunctionalityEnabled = Boolean(
     useSelector(getUseExternalServices),
@@ -56,111 +88,257 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   const hasShieldEntryModalShownOnce = useSelector(
     getHasShieldEntryModalShownOnce,
   );
-  const selectedAccount = useSelector(getSelectedInternalAccount);
   const { getSubscriptionEligibility: getShieldSubscriptionEligibility } =
     useSubscriptionEligibility(PRODUCT_TYPES.SHIELD);
-  const { totalFiatBalance } = useAccountTotalFiatBalance(
-    selectedAccount,
-    false,
-    true, // use USD conversion rate instead of the current currency
+  const { captureShieldEligibilityCohortEvent } = useSubscriptionMetrics();
+
+  /**
+   * Assigns a user to a cohort based on eligibility rate (80/20 split).
+   * Returns the selected cohort or null.
+   */
+  const assignToCohort = useCallback(
+    async (cohorts: Cohort[], modalType: ModalType): Promise<Cohort | null> => {
+      if (cohorts.length === 0) {
+        return null;
+      }
+
+      const sortedCohorts = [...cohorts].sort(
+        (a, b) => a.priority - b.priority,
+      );
+
+      let selectedCohort: Cohort | null = null;
+
+      if (sortedCohorts.length === 1) {
+        selectedCohort = sortedCohorts[0];
+      } else if (sortedCohorts.length >= 2) {
+        const random = Math.random();
+        let cumulativeRate = 0;
+
+        for (const cohort of sortedCohorts) {
+          cumulativeRate += cohort.eligibilityRate;
+          if (random <= cumulativeRate) {
+            selectedCohort = cohort;
+            break;
+          }
+        }
+
+        // Fallback: assign the last cohort if none selected
+        if (!selectedCohort) {
+          selectedCohort = sortedCohorts[sortedCohorts.length - 1];
+        }
+      }
+
+      if (selectedCohort) {
+        try {
+          await dispatch(assignUserToCohort({ cohort: selectedCohort.cohort }));
+          await captureShieldEligibilityCohortEvent(
+            {
+              cohort: selectedCohort.cohort as CohortName,
+              modalType,
+              numberOfEligibleCohorts: cohorts.length,
+            },
+            MetaMetricsEventName.ShieldEligibilityCohortAssigned,
+          );
+          return selectedCohort;
+        } catch (error) {
+          log.error('[ShieldSubscription] Failed to assign cohort', error);
+          return null;
+        }
+      }
+
+      return null;
+    },
+    [dispatch, captureShieldEligibilityCohortEvent],
   );
 
   /**
-   * Check if the user's balance criteria is met to show the shield entry modal.
-   * Shield entry modal will be shown if:
-   * - Subscription is not active
-   * - User is signed in
-   * - User has a balance greater than the minimum fiat balance threshold (1K USD)
-   * - User has not shown the shield entry modal before
+   * Ref to hold the latest implementation of evaluateCohortEligibility.
+   * Assigned synchronously during render (not in useEffect) so the ref
+   * is populated before commit-phase callbacks (componentDidUpdate) fire.
+   * Uses a no-op initial value so useRef returns MutableRefObject (not RefObject).
    */
-  const evaluateShieldEntryPointModal = useCallback(async () => {
-    try {
-      if (isShieldSubscriptionActive) {
-        dispatch(setShowShieldEntryModalOnce(false));
-        return;
-      } else if (
-        !selectedAccount ||
-        !isSignedIn ||
-        !isUnlocked ||
-        hasShieldEntryModalShownOnce
-      ) {
-        return;
-      }
+  const evaluateCohortEligibilityRef = useRef<
+    (entrypointCohort: string) => Promise<void>
+    // eslint-disable-next-line no-empty-function
+  >(async () => {});
 
-      const shieldSubscriptionEligibility =
-        await getShieldSubscriptionEligibility();
-      if (
-        shieldSubscriptionEligibility?.canSubscribe &&
-        shieldSubscriptionEligibility?.canViewEntryModal &&
-        shieldSubscriptionEligibility?.minBalanceUSD &&
-        totalFiatBalance &&
-        Number(totalFiatBalance) >= shieldSubscriptionEligibility?.minBalanceUSD
-      ) {
-        const shouldSubmitUserEvents = true; // submits `shield_entry_modal_viewed` event
-        dispatch(setShowShieldEntryModalOnce(true, shouldSubmitUserEvents));
-      }
-    } catch (error) {
-      log.warn('[getIsUserBalanceCriteriaMet] error', error);
-    }
-  }, [
-    isShieldSubscriptionActive,
-    getShieldSubscriptionEligibility,
-    selectedAccount,
-    isSignedIn,
-    isUnlocked,
-    totalFiatBalance,
-    hasShieldEntryModalShownOnce,
-    dispatch,
-  ]);
-
-  useEffect(() => {
-    if (!isMetaMaskShieldFeatureEnabled || !isBasicFunctionalityEnabled) {
+  // eslint-disable-next-line react-hooks/refs
+  evaluateCohortEligibilityRef.current = async (
+    entrypointCohort: string,
+  ): Promise<void> => {
+    if (evaluatedShieldCohortsThisSession.has(entrypointCohort)) {
       return;
     }
 
-    evaluateShieldEntryPointModal();
-  }, [
-    dispatch,
-    isMetaMaskShieldFeatureEnabled,
-    evaluateShieldEntryPointModal,
-    isBasicFunctionalityEnabled,
-  ]);
-
-  useEffect(() => {
-    if (selectedAccount && isSignedIn && isUnlocked) {
-      // start polling for the subscriptions
-      dispatch(subscriptionsStartPolling());
-    }
-  }, [isSignedIn, selectedAccount, dispatch, isUnlocked]);
-
-  const resetShieldEntryModalShownStatus = useCallback(() => {
-    if (!isShieldSubscriptionActive) {
-      dispatch(setShowShieldEntryModalOnce(null));
-    }
-  }, [isShieldSubscriptionActive, dispatch]);
-
-  const setShieldEntryModalShownStatus = useCallback(
-    (showShieldEntryModalOnce: boolean | null) => {
-      if (!isShieldSubscriptionActive) {
-        const shouldSubmitUserEvents = Boolean(showShieldEntryModalOnce); // submits `shield_entry_modal_viewed` event
-        dispatch(
-          setShowShieldEntryModalOnce(
-            showShieldEntryModalOnce,
-            shouldSubmitUserEvents,
-          ),
-        );
+    try {
+      if (!isMetaMaskShieldFeatureEnabled || !isBasicFunctionalityEnabled) {
+        return;
       }
+
+      if (isShieldSubscriptionActive) {
+        evaluatedShieldCohortsThisSession.add(entrypointCohort);
+        dispatch(
+          setShowShieldEntryModalOnce({
+            show: false,
+          }),
+        );
+        return;
+      }
+
+      if (!isSignedIn || !isUnlocked || hasShieldEntryModalShownOnce) {
+        return;
+      }
+
+      evaluatedShieldCohortsThisSession.add(entrypointCohort);
+
+      // Clear the pending cohort before any async work to prevent a race
+      // condition: if #assignPostTxCohort sets POST_TX while the eligibility
+      // check is in-flight, a late clear would clobber the new value.
+      // The entrypointCohort argument already captures the value we need.
+      await dispatch(setPendingShieldCohort(null));
+
+      const shieldEligibility = await getShieldSubscriptionEligibility();
+
+      if (
+        !shieldEligibility?.canSubscribe ||
+        !shieldEligibility.canViewEntryModal
+      ) {
+        return;
+      }
+
+      const eligibleCohorts = shieldEligibility.cohorts.filter(
+        (c: Cohort) => c.eligible,
+      );
+      const assignedCohortName = shieldEligibility.assignedCohort;
+      const isUserPending = Boolean(assignedCohortName);
+      const hasExpired = shieldEligibility.hasAssignedCohortExpired;
+      const { modalType } = shieldEligibility;
+
+      // User has an assigned cohort
+      if (isUserPending) {
+        // At wallet_home entrypoint: wait for expiry before showing cohort 2
+        if (entrypointCohort !== COHORT_NAMES.POST_TX && !hasExpired) {
+          return;
+        }
+
+        // could continue if entrypointCohort is post_tx and assignedCohort has not expired
+        // so we need to check hasExpired here before recording the event
+        if (hasExpired) {
+          // User has an assigned cohort but it has expired
+          // track `shield_eligibility_cohort_timeout` event
+          await captureShieldEligibilityCohortEvent(
+            {
+              cohort: assignedCohortName as CohortName,
+              numberOfEligibleCohorts: eligibleCohorts.length,
+            },
+            MetaMetricsEventName.ShieldEligibilityCohortTimeout,
+          );
+        }
+
+        const cohort = eligibleCohorts.find(
+          (c) => c.cohort === entrypointCohort,
+        );
+        if (!cohort) {
+          log.warn(
+            '[evaluateCohortEligibility] error',
+            'user pending no cohort found',
+          );
+          return;
+        }
+
+        await dispatch(
+          setShowShieldEntryModalOnce({
+            show: true,
+            shouldSubmitEvents: true, // submits `shield_entry_modal_viewed` event
+            triggeringCohort: entrypointCohort,
+            modalType,
+            // we will show the modal but we won't update the background state yet,
+            // we will only update after the user has interacted with the modal
+            shouldUpdateBackgroundState: false,
+          }),
+        );
+        return;
+      }
+
+      // New user - only assign from wallet_home entrypoint
+      if (
+        entrypointCohort === COHORT_NAMES.WALLET_HOME &&
+        eligibleCohorts.length > 0 &&
+        modalType
+      ) {
+        const selectedCohort = await assignToCohort(eligibleCohorts, modalType);
+        if (selectedCohort?.cohort === COHORT_NAMES.WALLET_HOME) {
+          await dispatch(
+            setShowShieldEntryModalOnce({
+              show: true,
+              shouldSubmitEvents: true, // submits `shield_entry_modal_viewed` event to subscription backend
+              triggeringCohort: selectedCohort.cohort,
+              modalType,
+              // we will show the modal but we won't update the background state yet,
+              // we will only update after the user has interacted with the modal
+              shouldUpdateBackgroundState: false,
+            }),
+          );
+        }
+      }
+    } catch (error) {
+      evaluatedShieldCohortsThisSession.delete(entrypointCohort);
+      // Restore the pending cohort so it can be retried on the next
+      // componentDidUpdate cycle instead of being silently lost.
+      try {
+        await dispatch(setPendingShieldCohort(entrypointCohort));
+      } catch {
+        // if this also fails - the next transaction will re-set the cohort.
+      }
+      captureException(
+        createSentryError(
+          'Failed to evaluate cohort eligibility',
+          error as Error,
+        ),
+      );
+      log.warn('[evaluateCohortEligibility] error', error);
+    }
+  };
+
+  /**
+   * Stable callback wrapper that delegates to the ref.
+   * Safe to pass as a dependency or context value without causing re-renders.
+   */
+  const evaluateCohortEligibility = useCallback(
+    async (entrypointCohort: string): Promise<void> => {
+      await evaluateCohortEligibilityRef.current(entrypointCohort);
     },
-    [dispatch, isShieldSubscriptionActive],
+    [],
+  );
+
+  const shouldPoll =
+    isMetaMaskShieldFeatureEnabled &&
+    isBasicFunctionalityEnabled &&
+    isSignedIn &&
+    isUnlocked;
+
+  usePolling({
+    startPolling: subscriptionsStartPolling,
+    stopPollingByPollingToken: (pollingToken: string) => {
+      subscriptionsStopPolling(pollingToken).catch((error) => {
+        log.warn('[subscriptionsStopPolling] error', error);
+      });
+    },
+    input: SUBSCRIPTIONS_POLLING_INPUT,
+    enabled: shouldPoll,
+  });
+
+  /**
+   * Memoize the context value to prevent creating a new object reference
+   * on every render, which would cause unnecessary re-renders of consuming components.
+   */
+  const contextValue = useMemo(
+    () => ({ evaluateCohortEligibility }),
+    [evaluateCohortEligibility],
   );
 
   return (
-    <ShieldSubscriptionContext.Provider
-      value={{
-        resetShieldEntryModalShownStatus,
-        setShieldEntryModalShownStatus,
-      }}
-    >
+    <ShieldSubscriptionContext.Provider value={contextValue}>
       {children}
     </ShieldSubscriptionContext.Provider>
   );

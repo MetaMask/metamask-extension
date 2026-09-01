@@ -1,46 +1,83 @@
 import { strict as assert } from 'assert';
 import { pick } from 'lodash';
-import {
-  ACCOUNT_1,
-  ACCOUNT_2,
-  largeDelayMs,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
-import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
-import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import { ACCOUNT_1, ACCOUNT_2, WINDOW_TITLES } from '../../../constants';
+import { toEvmCaipAccountId } from '../../../../../shared/lib/multichain/scope-utils';
+import { withFixtures } from '../../../helpers';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
+import EditConnectedAccountsPage from '../../../page-objects/pages/permission/edit-connected-accounts-page';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
+import { Driver } from '../../../webdriver/driver';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   sendMultichainApiRequest,
   type FixtureCallbackArgs,
 } from '../testHelpers';
 
+/**
+ * `revokeSession()` only clicks the revoke button; wait until
+ * `wallet_getSession` returns empty scopes so revoke has finished
+ * before calling `wallet_invokeMethod`. Each `getSession` poll adds a
+ * result row, so increment `numberOfResultItems` on every attempt.
+ *
+ * Newest session-method row is prepended. If revoke resolves after
+ * getSession but before we read, index 0 can be `true` instead of
+ * a sessionScopes object — treat that as "not ready" and retry.
+ *
+ * @param driver - The E2E test Driver instance.
+ * @param testDapp - The multichain test dapp page object.
+ */
+async function waitForEmptySessionAfterRevoke(
+  driver: Driver,
+  testDapp: TestDappMultichain,
+): Promise<void> {
+  let numberOfResultItems = 3; // create + revoke + getSession
+  await driver.waitUntil(
+    async () => {
+      try {
+        const result = await testDapp.getSession({
+          numberOfResultItems,
+        });
+        const sessionScopes = result?.sessionScopes;
+        return (
+          typeof sessionScopes === 'object' &&
+          sessionScopes !== null &&
+          Object.keys(sessionScopes).length === 0
+        );
+      } catch {
+        return false;
+      } finally {
+        numberOfResultItems += 1;
+      }
+    },
+    { timeout: 10000, interval: 1000 },
+  );
+}
+
 describe('Initializing a session w/ several scopes and accounts, then calling `wallet_revokeSession`', function () {
-  const GANACHE_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
-  const CAIP_ACCOUNT_IDS = [`eip155:0:${ACCOUNT_1}`, `eip155:0:${ACCOUNT_2}`];
+  const EVM_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
+  const CAIP_ACCOUNT_IDS = [
+    toEvmCaipAccountId(ACCOUNT_1),
+    toEvmCaipAccountId(ACCOUNT_2),
+  ];
   it('Should return empty object from `wallet_getSession` call', async function () {
     await withFixtures(
       {
         title: this.test?.fullTitle(),
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerTripleNode()
           .build(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },
       async ({ driver, extensionId }: FixtureCallbackArgs) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
         await testDapp.connectExternallyConnectable(extensionId);
-        await testDapp.initCreateSessionScopes(
-          GANACHE_SCOPES,
-          CAIP_ACCOUNT_IDS,
-        );
+        await testDapp.initCreateSessionScopes(EVM_SCOPES, CAIP_ACCOUNT_IDS);
 
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
@@ -48,11 +85,9 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.openEditAccountsModal();
 
-        const editConnectedAccountsModal = new EditConnectedAccountsModal(
-          driver,
-        );
-        await editConnectedAccountsModal.checkPageIsLoaded();
-        await editConnectedAccountsModal.addNewEthereumAccount();
+        const editConnectedAccountsPage = new EditConnectedAccountsPage(driver);
+        await editConnectedAccountsPage.checkPageIsLoaded();
+        await editConnectedAccountsPage.addNewAccount();
 
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
@@ -71,7 +106,9 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
 
         await testDapp.revokeSession();
 
-        const parsedResult = await testDapp.getSession();
+        const parsedResult = await testDapp.getSession({
+          numberOfResultItems: 3,
+        });
         const resultSessionScopes = parsedResult.sessionScopes;
         assert.deepStrictEqual(
           resultSessionScopes,
@@ -86,7 +123,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
     await withFixtures(
       {
         title: this.test?.fullTitle(),
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerTripleNode()
           .build(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -98,28 +135,23 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
             'The requested account and/or method has not been authorized by the user.',
         };
 
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
         await testDapp.connectExternallyConnectable(extensionId);
 
-        await testDapp.initCreateSessionScopes(
-          GANACHE_SCOPES,
-          CAIP_ACCOUNT_IDS,
-        );
+        await testDapp.initCreateSessionScopes(EVM_SCOPES, CAIP_ACCOUNT_IDS);
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
         );
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.openEditAccountsModal();
 
-        const editConnectedAccountsModal = new EditConnectedAccountsModal(
-          driver,
-        );
-        await editConnectedAccountsModal.checkPageIsLoaded();
-        await editConnectedAccountsModal.addNewEthereumAccount();
+        const editConnectedAccountsPage = new EditConnectedAccountsPage(driver);
+        await editConnectedAccountsPage.checkPageIsLoaded();
+        await editConnectedAccountsPage.addNewAccount();
 
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
@@ -128,9 +160,9 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         await testDapp.checkPageIsLoaded();
 
         await testDapp.revokeSession();
-        await driver.delay(largeDelayMs);
+        await waitForEmptySessionAfterRevoke(driver, testDapp);
 
-        for (const scope of GANACHE_SCOPES) {
+        for (const scope of EVM_SCOPES) {
           const request = {
             jsonrpc: '2.0' as const,
             method: 'wallet_invokeMethod',

@@ -1,24 +1,39 @@
 import { CaipAssetType, Hex } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { errorCodes } from '@metamask/rpc-errors';
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
   SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { setDefaultHomeActiveTabName } from '../../../../store/actions';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SendPages } from '../../constants/send';
+import { ConfirmationLoader } from '../useConfirmationNavigation';
 import { sendMultichainTransactionForReview } from '../../utils/multichain-snaps';
-import { addLeadingZeroIfNeeded, submitEvmTransaction } from '../../utils/send';
+import {
+  addLeadingZeroIfNeeded,
+  normalizeAmount,
+  submitEvmTransaction,
+} from '../../utils/send';
 import { useSendContext } from '../../context/send';
+import { useDispatch } from '../../../../store/hooks';
 import { useSendType } from './useSendType';
+import { mapSnapErrorCodeIntoTranslation } from './useAmountValidation';
+
+type SnapConfirmSendResult = {
+  valid?: boolean;
+  errors?: { code: string }[];
+  transactionId?: string;
+};
 
 export const useSendActions = () => {
+  const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const {
     asset,
     chainId,
@@ -27,6 +42,7 @@ export const useSendActions = () => {
     hexData,
     maxValueMode,
     toResolved: to,
+    updateNonEVMSubmitError,
     value,
   } = useSendContext();
   const { isEvmSendType } = useSendType();
@@ -36,6 +52,10 @@ export const useSendActions = () => {
       return;
     }
     const toAddress = to;
+
+    // Clear any previous submit error
+    updateNonEVMSubmitError(undefined);
+
     if (isEvmSendType) {
       dispatch(
         await submitEvmTransaction({
@@ -44,29 +64,55 @@ export const useSendActions = () => {
           from: from as Hex,
           hexData: hexData as Hex,
           to: toAddress as Hex,
-          value: value as string,
+          value: normalizeAmount(value),
         }),
       );
-      const route = maxValueMode
-        ? `${CONFIRM_TRANSACTION_ROUTE}?maxValueMode=${maxValueMode}`
-        : CONFIRM_TRANSACTION_ROUTE;
-      history.push(route);
+      const params = new URLSearchParams();
+      if (maxValueMode) {
+        params.set('maxValueMode', String(maxValueMode));
+      }
+      params.set('loader', ConfirmationLoader.Send);
+      const route = `${CONFIRM_TRANSACTION_ROUTE}?${params.toString()}`;
+      navigate(route);
     } else {
-      history.push(`${SEND_ROUTE}/${SendPages.LOADER}`);
-      await dispatch(setDefaultHomeActiveTabName('activity'));
+      navigate(`${SEND_ROUTE}/${SendPages.LOADER}`);
       try {
-        await sendMultichainTransactionForReview(
+        const result = (await sendMultichainTransactionForReview(
           fromAccount as InternalAccount,
           {
             fromAccountId: fromAccount?.id as string,
             toAddress: toAddress as string,
             assetId: asset.assetId as CaipAssetType,
-            amount: addLeadingZeroIfNeeded(value) as string,
+            amount: addLeadingZeroIfNeeded(normalizeAmount(value)) as string,
           },
-        );
-        history.push(DEFAULT_ROUTE);
+        )) as SnapConfirmSendResult;
+
+        // Check if the snap returned a validation error
+        if (result?.valid === false) {
+          const errorMessage = result?.errors?.length
+            ? mapSnapErrorCodeIntoTranslation(result.errors[0].code, t)
+            : t('transactionError');
+          updateNonEVMSubmitError(errorMessage);
+          navigate(PREVIOUS_ROUTE);
+          return;
+        }
+
+        // Success
+        navigate(`${DEFAULT_ROUTE}?tab=activity`);
       } catch (error) {
-        // intentional empty catch
+        // Check for user rejection using error code (4001) - this is language-independent
+        const errorCode = (error as { code?: number })?.code;
+        const isUserRejection =
+          errorCode === errorCodes.provider.userRejectedRequest;
+
+        if (isUserRejection) {
+          // User deliberately cancelled - clear error and navigate back silently
+          updateNonEVMSubmitError(undefined);
+        } else {
+          // Actual snap/internal error - display error message to user
+          updateNonEVMSubmitError(t('transactionError'));
+        }
+        navigate(PREVIOUS_ROUTE);
       }
     }
   }, [
@@ -76,20 +122,22 @@ export const useSendActions = () => {
     from,
     fromAccount,
     hexData,
-    history,
+    navigate,
     isEvmSendType,
     maxValueMode,
+    t,
     to,
+    updateNonEVMSubmitError,
     value,
   ]);
 
   const handleBack = useCallback(() => {
-    history.goBack();
-  }, [history]);
+    navigate(PREVIOUS_ROUTE);
+  }, [navigate]);
 
   const handleCancel = useCallback(() => {
-    history.push(DEFAULT_ROUTE);
-  }, [history]);
+    navigate(DEFAULT_ROUTE);
+  }, [navigate]);
 
   return { handleSubmit, handleCancel, handleBack };
 };

@@ -27,12 +27,12 @@ import {
 import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
-} from '../../../shared/modules/swaps.utils';
+} from '../../../shared/lib/swaps.utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 
-import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
+import { isValidHexAddress } from '../../../shared/lib/hexstring-utils';
 import {
   calcGasTotal,
   calcTokenAmount,
@@ -49,7 +49,7 @@ import {
   decimalToHex,
   getValueFromWeiHex,
   sumHexes,
-} from '../../../shared/modules/conversion.utils';
+} from '../../../shared/lib/conversion.utils';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { estimateGasFee } from './swaps.util.gas';
 
@@ -420,8 +420,6 @@ export function getRenderableNetworkFeesForQuote({
   const gasTotalInWeiHex = sumHexes(
     tradeGasFeeTotalHex,
     approveGasFeeTotalHex,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     multiLayerL1FeeTotal || '0x0',
   );
 
@@ -461,8 +459,6 @@ export function getRenderableNetworkFeesForQuote({
   }
 
   const chainCurrencySymbolToUse =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol;
 
   return {
@@ -763,20 +759,6 @@ export const getSwapsLivenessForNetwork = (
   return {
     swapsFeatureIsLive: swapsFeatureFlags[networkName].fallbackToV1,
   };
-};
-
-/**
- * @param value
- * @returns number
- */
-
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const countDecimals = (value: any): number => {
-  if (!value || Math.floor(value) === value) {
-    return 0;
-  }
-  return value.toString().split('.')[1]?.length || 0;
 };
 
 export const showRemainingTimeInMinAndSec = (

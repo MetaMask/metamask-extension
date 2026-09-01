@@ -2,23 +2,28 @@ import { NameType } from '@metamask/name-controller';
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getDomainResolutions } from '../../../../ducks/domains';
 import { getNames, getNameSources } from '../../../../selectors';
 import { getNftContractsByAddressByChain } from '../../../../selectors/nft';
 import { setName, updateProposedNames } from '../../../../store/actions';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import { useDispatch } from '../../../../store/hooks';
 import NameDetails from './name-details';
+
+jest.mock('../../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 jest.mock('../../../../store/actions', () => ({
   setName: jest.fn(),
@@ -27,13 +32,27 @@ jest.mock('../../../../store/actions', () => ({
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 
 jest.mock('../../../../hooks/useDisplayName', () => ({
   useDisplayName: jest.fn(),
 }));
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.useFakeTimers();
 
@@ -118,7 +137,7 @@ async function saveNameUsingDropdown(
 ) {
   const { getByPlaceholderText, getByText } = component;
   const nameInput = getByPlaceholderText(placeholder);
-  const saveButton = getByText('Save');
+  const saveButton = getByText(messages.save.message);
 
   await act(async () => {
     fireEvent.click(nameInput);
@@ -142,7 +161,7 @@ async function saveNameUsingTextField(
 ) {
   const { getByPlaceholderText, getByText } = component;
   const nameInput = getByPlaceholderText(placeholder);
-  const saveButton = getByText('Save');
+  const saveButton = getByText(messages.save.message);
 
   await act(async () => {
     fireEvent.click(nameInput);
@@ -363,7 +382,7 @@ describe('NameDetails', () => {
     );
 
     const { getByPlaceholderText, baseElement } = component;
-    const nameInput = getByPlaceholderText('Choose a nickname...');
+    const nameInput = getByPlaceholderText(messages.nameSetPlaceholder.message);
 
     await act(async () => {
       fireEvent.click(nameInput);
@@ -524,7 +543,7 @@ describe('NameDetails', () => {
     });
   });
 
-  it('updates proposed names on regular interval', () => {
+  it('updates proposed names on regular interval', async () => {
     renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
@@ -536,18 +555,52 @@ describe('NameDetails', () => {
     );
 
     expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
-    jest.advanceTimersByTime(1999);
+    await act(async () => {
+      jest.advanceTimersByTime(1999);
+    });
     expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
-    jest.advanceTimersByTime(1);
+    await act(async () => {
+      jest.advanceTimersByTime(1);
+    });
     expect(updateProposedNamesMock).toHaveBeenCalledTimes(2);
-    jest.advanceTimersByTime(2000);
+    await act(async () => {
+      jest.advanceTimersByTime(2000);
+    });
     expect(updateProposedNamesMock).toHaveBeenCalledTimes(3);
+  });
+
+  it('does not reset polling interval during rerenders', () => {
+    const nameDetails = (
+      <NameDetails
+        type={NameType.ETHEREUM_ADDRESS}
+        value={ADDRESS_NO_NAME_MOCK}
+        variation={VARIATION_MOCK}
+        onClose={() => undefined}
+      />
+    );
+
+    const component = renderWithProvider(nameDetails, store);
+
+    expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
+
+    // Simulate frequent rerenders (e.g. redux updates) before the polling delay elapses.
+    act(() => {
+      for (let index = 0; index < 50; index++) {
+        component.rerender(nameDetails);
+      }
+    });
+
+    expect(updateProposedNamesMock).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      jest.advanceTimersByTime(2000);
+    });
+
+    expect(updateProposedNamesMock).toHaveBeenCalledTimes(2);
   });
 
   describe('metrics', () => {
     it('sends open modal event', async () => {
-      const trackEventMock = jest.fn();
-
       useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
           results: {
@@ -570,33 +623,33 @@ describe('NameDetails', () => {
 
       await act(async () => {
         renderWithProvider(
-          <MetaMetricsContext.Provider value={trackEventMock}>
-            <NameDetails
-              type={NameType.ETHEREUM_ADDRESS}
-              value={ADDRESS_SAVED_NAME_MOCK}
-              variation={VARIATION_MOCK}
-              onClose={() => undefined}
-            />
-          </MetaMetricsContext.Provider>,
+          <NameDetails
+            type={NameType.ETHEREUM_ADDRESS}
+            value={ADDRESS_SAVED_NAME_MOCK}
+            variation={VARIATION_MOCK}
+            onClose={() => undefined}
+          />,
           store,
         );
       });
 
-      expect(trackEventMock).toHaveBeenCalledWith({
-        event: MetaMetricsEventName.PetnameModalOpened,
-        category: MetaMetricsEventCategory.Petnames,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          has_petname: true,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          petname_category: NameType.ETHEREUM_ADDRESS,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PetnameModalOpened,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Petnames,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            has_petname: true,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_category: NameType.ETHEREUM_ADDRESS,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+          }),
+        }),
+      );
     });
 
     it('sends created event', async () => {
@@ -651,37 +704,36 @@ describe('NameDetails', () => {
         isAccount: false,
       });
 
-      const trackEventMock = jest.fn();
-
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={trackEventMock}>
-          <NameDetails
-            type={NameType.ETHEREUM_ADDRESS}
-            value={ADDRESS_NO_NAME_MOCK}
-            variation={VARIATION_MOCK}
-            onClose={() => undefined}
-          />
-        </MetaMetricsContext.Provider>,
+        <NameDetails
+          type={NameType.ETHEREUM_ADDRESS}
+          value={ADDRESS_NO_NAME_MOCK}
+          variation={VARIATION_MOCK}
+          onClose={() => undefined}
+        />,
         store,
       );
 
       await saveNameUsingDropdown(component, PROPOSED_NAME_MOCK);
 
-      expect(trackEventMock).toHaveBeenNthCalledWith(2, {
-        event: MetaMetricsEventName.PetnameCreated,
-        category: MetaMetricsEventCategory.Petnames,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          petname_category: NameType.ETHEREUM_ADDRESS,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          petname_source: SOURCE_ID_MOCK,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          name: MetaMetricsEventName.PetnameCreated,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Petnames,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_category: NameType.ETHEREUM_ADDRESS,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_source: SOURCE_ID_MOCK,
+          }),
+        }),
+      );
     });
 
     it('sends updated event', async () => {
@@ -755,17 +807,13 @@ describe('NameDetails', () => {
         isAccount: false,
       });
 
-      const trackEventMock = jest.fn();
-
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={trackEventMock}>
-          <NameDetails
-            type={NameType.ETHEREUM_ADDRESS}
-            value={ADDRESS_SAVED_NAME_MOCK}
-            variation={VARIATION_MOCK}
-            onClose={() => undefined}
-          />
-        </MetaMetricsContext.Provider>,
+        <NameDetails
+          type={NameType.ETHEREUM_ADDRESS}
+          value={ADDRESS_SAVED_NAME_MOCK}
+          variation={VARIATION_MOCK}
+          onClose={() => undefined}
+        />,
         store,
       );
 
@@ -775,24 +823,27 @@ describe('NameDetails', () => {
         'Choose a nickname...',
       );
 
-      expect(trackEventMock).toHaveBeenNthCalledWith(2, {
-        event: MetaMetricsEventName.PetnameUpdated,
-        category: MetaMetricsEventCategory.Petnames,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          petname_category: NameType.ETHEREUM_ADDRESS,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          petname_source: SOURCE_ID_2_MOCK,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          petname_previous_source: SOURCE_ID_MOCK,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          name: MetaMetricsEventName.PetnameUpdated,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Petnames,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_category: NameType.ETHEREUM_ADDRESS,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_source: SOURCE_ID_2_MOCK,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_previous_source: SOURCE_ID_MOCK,
+          }),
+        }),
+      );
     });
 
     it('sends deleted event', async () => {
@@ -866,37 +917,36 @@ describe('NameDetails', () => {
         isAccount: false,
       });
 
-      const trackEventMock = jest.fn();
-
       const component = renderWithProvider(
-        <MetaMetricsContext.Provider value={trackEventMock}>
-          <NameDetails
-            type={NameType.ETHEREUM_ADDRESS}
-            value={ADDRESS_SAVED_NAME_MOCK}
-            variation={VARIATION_MOCK}
-            onClose={() => undefined}
-          />
-        </MetaMetricsContext.Provider>,
+        <NameDetails
+          type={NameType.ETHEREUM_ADDRESS}
+          value={ADDRESS_SAVED_NAME_MOCK}
+          variation={VARIATION_MOCK}
+          onClose={() => undefined}
+        />,
         store,
       );
 
       await saveNameUsingTextField(component, '', 'Choose a nickname...');
 
-      expect(trackEventMock).toHaveBeenNthCalledWith(2, {
-        event: MetaMetricsEventName.PetnameDeleted,
-        category: MetaMetricsEventCategory.Petnames,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          petname_category: NameType.ETHEREUM_ADDRESS,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          petname_previous_source: SOURCE_ID_MOCK,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          name: MetaMetricsEventName.PetnameDeleted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Petnames,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_category: NameType.ETHEREUM_ADDRESS,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            petname_previous_source: SOURCE_ID_MOCK,
+          }),
+        }),
+      );
     });
   });
 
@@ -919,7 +969,12 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Malicious address')).toBeInTheDocument();
+      expect(
+        getByText(messages.alertReasonAddressTrustSignalMalicious.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(messages.alertMessageAddressTrustSignalMalicious.message),
+      ).toBeInTheDocument();
     });
 
     it('renders warning state correctly', () => {
@@ -940,7 +995,12 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Address Needs Review')).toBeInTheDocument();
+      expect(
+        getByText(messages.alertReasonAddressTrustSignalWarning.message),
+      ).toBeInTheDocument();
+      expect(
+        getByText(messages.alertMessageAddressTrustSignal.message),
+      ).toBeInTheDocument();
     });
 
     it('renders verified state correctly', () => {
@@ -961,7 +1021,9 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Verified address')).toBeInTheDocument();
+      expect(
+        getByText(messages.nameModalTitleVerified.message),
+      ).toBeInTheDocument();
     });
 
     it('shows footer warning for malicious state', () => {
@@ -982,7 +1044,9 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Only save addresses you trust.')).toBeInTheDocument();
+      expect(
+        getByText(messages.nameFooterTrustWarning.message),
+      ).toBeInTheDocument();
     });
 
     it('shows footer warning for warning state', () => {
@@ -1003,7 +1067,9 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Only save addresses you trust.')).toBeInTheDocument();
+      expect(
+        getByText(messages.nameFooterTrustWarning.message),
+      ).toBeInTheDocument();
     });
   });
 });

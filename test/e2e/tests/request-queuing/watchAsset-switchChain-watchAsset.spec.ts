@@ -1,13 +1,13 @@
 import { Suite } from 'mocha';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { DAPP_URL, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import AddTokensModal from '../../page-objects/pages/dialog/add-tokens';
-import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import { DAPP_URL } from '../../constants';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
 import { Anvil } from '../../seeder/anvil';
 
@@ -18,8 +18,8 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function (this
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -50,7 +50,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function (this
       }) => {
         const contractAddress =
           await contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
@@ -76,11 +76,7 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function (this
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const reviewPermissionsConfirmation =
             new ReviewPermissionsConfirmation(driver);
-          // Short timeout to check if permissions dialog exists
-          await driver.waitForSelector(
-            { text: 'Review permissions', tag: 'h3' },
-            { timeout: 3000 },
-          );
+          await reviewPermissionsConfirmation.checkPageIsLoaded();
           await reviewPermissionsConfirmation.confirmReviewPermissions();
         } catch (error) {
           // Permissions dialog doesn't appear (local environment)

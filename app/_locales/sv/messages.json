@@ -26,12 +26,6 @@
   "accountSelectionRequired": {
     "message": "Du måste välja ett konto!"
   },
-  "activityLog": {
-    "message": "aktivitetslogg"
-  },
-  "addAcquiredTokens": {
-    "message": "Lägg till de tokens du har skaffat med MetaMask"
-  },
   "addAlias": {
     "message": "Lägg till alias"
   },
@@ -81,17 +75,11 @@
   "autoLockTimeLimit": {
     "message": "Timer för automatisk utloggning (minuter)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Ställ in efter hur lång tids inaktivitet som MetaMask automatiskt loggar ut"
-  },
   "average": {
     "message": "Genomsnitt"
   },
   "back": {
     "message": "Bakåt"
-  },
-  "backupApprovalInfo": {
-    "message": "Den hemliga koden krävs för att komma åt din plånbok ifall du tappar bort din enhet, glömmer ditt lösenord, behöver installera om MetaMask eller om du vill komma åt din plånbok på en annan enhet."
   },
   "backupApprovalNotice": {
     "message": "Säkerhetskopiera din hemliga återställningskod för att se till att din plånbok och dina tillgångar är säkra."
@@ -178,23 +166,11 @@
   "createPassword": {
     "message": "Skapa lösenord"
   },
-  "currencyConversion": {
-    "message": "Valutaomvandling"
-  },
-  "currentLanguage": {
-    "message": "Aktuellt språk"
-  },
   "custom": {
     "message": "Avancerat"
   },
-  "customToken": {
-    "message": "Anpassad token"
-  },
   "decimal": {
     "message": "Decimalprecision"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalerna måste vara minst 0 och inte över 36."
   },
   "delete": {
     "message": "Radera"
@@ -204,9 +180,6 @@
   },
   "done": {
     "message": "Klart"
-  },
-  "downloadGoogleChrome": {
-    "message": "Ladda ner Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Ladda ner statusloggar"
@@ -223,14 +196,8 @@
   "enterPasswordContinue": {
     "message": "Ange lösenord för att fortsätta"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum offentlig adress"
-  },
   "etherscanView": {
     "message": "Visa konto på Etherscan"
-  },
-  "expandView": {
-    "message": "Expandera vy"
   },
   "failed": {
     "message": "Misslyckades"
@@ -272,9 +239,6 @@
   "hardwareWallets": {
     "message": "Anslut en hårdvaruplånbok"
   },
-  "hardwareWalletsMsg": {
-    "message": "Välj en hårdvaruplånbok som du vill använda med MetaMask"
-  },
   "here": {
     "message": "här",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -301,9 +265,6 @@
   "imported": {
     "message": "Importerade",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Din initiala transaktion har bekräftats av nätverket. Klicka på OK för att gå tillbaka."
   },
   "insufficientBalance": {
     "message": "Otillräcklig balans."
@@ -345,15 +306,6 @@
   "likeToImportTokens": {
     "message": "Vill du lägga till dessa tokens?"
   },
-  "lineaGoerli": {
-    "message": "Linea Goerli testnätverk"
-  },
-  "links": {
-    "message": "Länkar"
-  },
-  "loadMore": {
-    "message": "Ladda mer"
-  },
   "loading": {
     "message": "Läser in..."
   },
@@ -372,15 +324,9 @@
   "metamaskVersion": {
     "message": "MetaMask-version"
   },
-  "mustSelectOne": {
-    "message": "Minst 1 token måste väljas."
-  },
   "needImportFile": {
     "message": "Du måste välja en fil att importera.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Kan inte skicka negativa summor av ETH."
   },
   "networkName": {
     "message": "Nätverksnamn"
@@ -388,18 +334,9 @@
   "networks": {
     "message": "Nätverk"
   },
-  "nevermind": {
-    "message": "Strunt i det"
-  },
-  "newAccount": {
-    "message": "Nytt konto"
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Ny kontakt"
   },
   "newContract": {
     "message": "Nytt kontrakt"
@@ -410,17 +347,11 @@
   "next": {
     "message": "Nästa"
   },
-  "noConversionRateAvailable": {
-    "message": "Ingen omräkningskurs tillgänglig"
-  },
   "noWebcamFound": {
     "message": "Din dators webbkamera hittades inte. Vänligen försök igen."
   },
   "noWebcamFoundTitle": {
     "message": "Webbkamera hittades ej"
-  },
-  "notEnoughGas": {
-    "message": "Inte tillräckligt med gas"
   },
   "ofTextNofM": {
     "message": "av"
@@ -487,12 +418,6 @@
   "rejectAll": {
     "message": "Neka alla"
   },
-  "rejectTxsDescription": {
-    "message": "Du håller på att massneka överföringar på $1."
-  },
-  "rejectTxsN": {
-    "message": "Neka överföringar på $1"
-  },
   "rejected": {
     "message": "Nekad"
   },
@@ -502,9 +427,6 @@
   "removeAccount": {
     "message": "Ta bort konto"
   },
-  "removeAccountDescription": {
-    "message": "Detta konto kommer att avlägsnas från din plånbok. Säkerställ att du har din ursprungliga seed phrase eller den privata nyckeln till detta importerade konto innan du fortsätter. Du kan importera eller skapa konton igen via kontots rullgardinsmeny."
-  },
   "required": {
     "message": "Krävs"
   },
@@ -513,9 +435,6 @@
   },
   "restore": {
     "message": "Återställ"
-  },
-  "revealSeedWords": {
-    "message": "Visa seed-ord"
   },
   "revealSeedWordsWarning": {
     "message": "De här orden kan användas för att stjäla alla dina konton.",
@@ -563,9 +482,6 @@
   "showFiatConversionInTestnets": {
     "message": "Visa omvandling på testnätverk"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Välj denna för att visa fiatomvandlingar på Testnätverk"
-  },
   "showHexData": {
     "message": "Visa hex-information"
   },
@@ -574,9 +490,6 @@
   },
   "sign": {
     "message": "Signera"
-  },
-  "signatureRequest": {
-    "message": "Signaturbegäran"
   },
   "signed": {
     "message": "Signerat"
@@ -590,17 +503,11 @@
   "speedUpCancellation": {
     "message": "Snabba upp denna avbokning"
   },
-  "speedUpTransaction": {
-    "message": "Snabba upp den här transaktionen"
-  },
   "stateLogError": {
     "message": "Fel vid inhämtande av statusloggar."
   },
   "stateLogs": {
     "message": "Statushistorik"
-  },
-  "stateLogsDescription": {
-    "message": "Statusloggar innehåller dina publika kontoadresser och skickade transaktioner."
   },
   "submitted": {
     "message": "Inskickat"
@@ -629,38 +536,11 @@
   "transaction": {
     "message": "överföring"
   },
-  "transactionCancelAttempted": {
-    "message": "Överföringsavbrott har försökt göras med gasavgift på $1 vid $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Överföringen avbröts vid $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaktionen bekräftad på $2."
-  },
-  "transactionCreated": {
-    "message": "Transaktion skapad med ett värde på $1 på $2."
-  },
-  "transactionDropped": {
-    "message": "Transaktionen avbruten vid $2."
-  },
   "transactionError": {
     "message": "Överföringsfel. Undantag i kontraktskoden."
   },
   "transactionErrorNoContract": {
     "message": "Försöker åberopa en funktion på en icke-kontraktsadress."
-  },
-  "transactionErrored": {
-    "message": "Transaktionen påträffade ett fel."
-  },
-  "transactionResubmitted": {
-    "message": "Transaktion skickad igen med gas-avgift ökad till $1 på $2"
-  },
-  "transactionSubmitted": {
-    "message": "Överföring angedd med gasavgift på $1 vid $2."
-  },
-  "transactionUpdated": {
-    "message": "Transaktionen uppdaterades $2."
   },
   "transfer": {
     "message": "Överföring"
@@ -692,12 +572,6 @@
   "usedByClients": {
     "message": "Används av många olika klienter"
   },
-  "userName": {
-    "message": "Användarnamn"
-  },
-  "viewContact": {
-    "message": "Visa kontakt"
-  },
   "visitWebSite": {
     "message": "Besök vår hemsida"
   },
@@ -706,8 +580,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Du måste tillåta åtkomst till kameran för att använda den här funktionen."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Din privata seedphrase"
   }
 }

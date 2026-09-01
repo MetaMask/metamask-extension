@@ -1,7 +1,7 @@
 // ESLint complains that we are mixing imports and runtime code, which we are,
 // but we need to initialize React Devtools before importing React (which
 // happens in the UI code).
-/* eslint-disable import/first */
+/* eslint-disable import-x/first */
 
 // This import sets up safe intrinsics required for LavaDome to function securely.
 // It must be run before any less trusted code so that no such code can undermine it.
@@ -10,7 +10,7 @@ import '@lavamoat/lavadome-react';
 // This import sets up global functions required for Sentry to function.
 // It must be run as soon as possible in case an error is thrown later during initialization.
 import './lib/setup-initial-state-hooks';
-import '../../development/wdyr';
+import './development/wdyr';
 
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
@@ -23,27 +23,29 @@ if (reactDevtoolsCore && process.env.METAMASK_REACT_REDUX_DEVTOOLS) {
   connectToDevTools();
 }
 
-import PortStream from 'extension-port-stream';
 import browser from 'webextension-polyfill';
 
 import { StreamProvider } from '@metamask/providers';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
-import launchMetaMaskUi, {
+import { ExtensionPortStream } from 'extension-port-stream';
+import {
+  launchMetamaskUi,
   CriticalStartupErrorHandler,
   connectToBackground,
-  displayCriticalError,
+  displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
   // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../ui';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
-import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
+import { isManifestV3 } from '../../shared/lib/mv3.utils';
+import { checkForLastErrorAndLog } from '../../shared/lib/browser-runtime.utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
@@ -109,13 +111,14 @@ async function start() {
   );
   criticalErrorHandler.install();
 
-  const connectionStream = new PortStream(extensionPort);
+  const connectionStream = new ExtensionPortStream(extensionPort);
   const subStreams = connectSubstreams(connectionStream);
   const backgroundConnection = metaRPCClientFactory(subStreams.controller);
   connectToBackground(backgroundConnection, handleStartUISync);
 
-  async function handleStartUISync() {
+  async function handleStartUISync(initialState) {
     endTrace({ name: TraceName.BackgroundConnect });
+    criticalErrorHandler.startUiSyncReceived();
 
     // this means we've received a message from the background, and so
     // background startup has succeed, so we don't need to listen for error
@@ -134,6 +137,7 @@ async function start() {
       backgroundConnection,
       windowType,
       traceContext,
+      initialState,
     );
 
     if (isManifestV3) {
@@ -232,13 +236,20 @@ async function loadPhishingWarningPage() {
 }
 
 async function initializeUiWithTab(
-  tab,
-  connectionStream,
+  activeTab,
+  backgroundConnection,
   windowType,
   traceContext,
+  initialState,
 ) {
   try {
-    const store = await initializeUi(tab, connectionStream, traceContext);
+    const store = await launchMetamaskUi({
+      activeTab,
+      container,
+      backgroundConnection,
+      traceContext,
+      initialState,
+    });
 
     endTrace({ name: TraceName.UIStartup });
 
@@ -253,10 +264,13 @@ async function initializeUiWithTab(
       global.platform.openExtensionInBrowser();
     }
   } catch (error) {
-    await displayCriticalError(
+    // No port: by the time launchMetamaskUi throws, startSendingPatches may have already
+    // run and removed the repair listener, so a restore link would be non-functional.
+    await displayCriticalErrorMessage(
       container,
       CriticalErrorTranslationKey.TroubleStarting,
       error,
+      undefined,
     );
   }
 }
@@ -280,9 +294,12 @@ async function queryCurrentActiveTab(windowType) {
     }
   }
 
-  // At the time of writing we only have the `activeTab` permission which means
-  // that this query will only succeed in the popup context (i.e. after a "browserAction")
-  if (windowType !== ENVIRONMENT_TYPE_POPUP) {
+  // Only popup queries the active tab
+  // Sidepanel uses appActiveTab from tab listeners instead
+  if (
+    windowType !== ENVIRONMENT_TYPE_POPUP &&
+    windowType !== ENVIRONMENT_TYPE_SIDEPANEL
+  ) {
     return {};
   }
 
@@ -303,20 +320,11 @@ async function queryCurrentActiveTab(windowType) {
   return { id, title, origin, protocol, url };
 }
 
-async function initializeUi(activeTab, backgroundConnection, traceContext) {
-  return await launchMetaMaskUi({
-    activeTab,
-    container,
-    backgroundConnection,
-    traceContext,
-  });
-}
-
 /**
  * Establishes a connections between the PortStream (background) and various UI
  * streams.
  *
- * @param {PortStream} connectionStream - PortStream instance establishing a background connection
+ * @param {ExtensionPortStream} connectionStream - PortStream instance establishing a background connection
  * @returns The multiplexed streams
  */
 function connectSubstreams(connectionStream) {
@@ -325,6 +333,7 @@ function connectSubstreams(connectionStream) {
   const controllerSubstream = mx.createStream('controller');
   const providerSubstream = mx.createStream('provider');
   mx.ignoreStream('background-liveness');
+  mx.ignoreStream('app-init-liveness');
 
   return {
     controller: controllerSubstream,

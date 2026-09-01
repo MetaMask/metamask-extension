@@ -1,11 +1,29 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { ApprovalType } from '@metamask/controller-utils';
 import React, { useMemo } from 'react';
-import { isGatorPermissionsFeatureEnabled } from '../../../../../../shared/modules/environment';
+import { Skeleton } from '@metamask/design-system-react';
+import { getConfirmationTransactionType } from '../../../utils/confirm';
+import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permissions/useEnabledAdvancedPermissions';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useTrustSignalMetrics } from '../../../../trust-signals/hooks/useTrustSignalMetrics';
 import { useConfirmContext } from '../../../context/confirm';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';
 import { useTransactionFocusEffect } from '../../../hooks/useTransactionFocusEffect';
 import { SignatureRequestType } from '../../../types/confirm';
+import { AddEthereumChain } from '../../../external/add-ethereum-chain/add-ethereum-chain';
+import {
+  ConfirmationLoader,
+  useConfirmationNavigationOptions,
+} from '../../../hooks/useConfirmationNavigation';
+import { CustomAmountInfoSkeleton } from '../../info/custom-amount-info';
+import { MoneyAccountDepositInfo } from '../../info/money-account-deposit-info';
+import { MoneyAccountWithdrawInfo } from '../../info/money-account-withdraw-info';
+import { MusdConversionInfo } from '../../info/musd-conversion-info';
+import { PerpsDepositInfo } from './perps-deposit-info';
+import { PerpsWithdrawInfo } from './perps-withdraw-info';
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import NativeTransferInfo from './native-transfer/native-transfer';
@@ -18,10 +36,81 @@ import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 import TypedSignInfo from './typed-sign/typed-sign';
 import TypedSignPermissionInfo from './typed-sign/typed-sign-permission';
 
+const DefaultHeadingSkeleton = () => (
+  <>
+    <Skeleton
+      height="60px"
+      width="60px"
+      style={{
+        marginTop: 32,
+        marginBottom: 10,
+        borderRadius: '50%',
+        justifySelf: 'center',
+        alignSelf: 'center',
+      }}
+    />
+    <Skeleton
+      height="32px"
+      width="200px"
+      style={{ marginBottom: 20, justifySelf: 'center', alignSelf: 'center' }}
+    />
+  </>
+);
+
+const SendHeadingSkeleton = () => (
+  <div
+    data-testid="confirmation__send_info_skeleton"
+    style={{
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      padding: '16px',
+      marginBottom: '8px',
+    }}
+  >
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <Skeleton height="20px" width="60px" />
+      <Skeleton height="32px" width="200px" />
+      <Skeleton height="20px" width="80px" />
+    </div>
+    <Skeleton height="40px" width="40px" style={{ borderRadius: '50%' }} />
+  </div>
+);
+
+const SectionSkeletons = () => (
+  <>
+    <Skeleton
+      height="72px"
+      width="100%"
+      style={{ marginBottom: 12 }}
+      data-testid="confirmation__info_skeleton"
+    />
+    <Skeleton height="72px" width="100%" style={{ marginBottom: 12 }} />
+    <Skeleton height="72px" width="100%" style={{ marginBottom: 12 }} />
+  </>
+);
+
+export const InfoSkeleton = ({
+  variant,
+}: {
+  variant?: ConfirmationLoader.Send;
+}) => (
+  <>
+    {variant === ConfirmationLoader.Send ? (
+      <SendHeadingSkeleton />
+    ) : (
+      <DefaultHeadingSkeleton />
+    )}
+    <SectionSkeletons />
+  </>
+);
+
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
+  const { loader } = useConfirmationNavigationOptions();
+  const enabledPermissions = useEnabledAdvancedPermissions();
 
-  // TODO: Create TransactionInfo and SignatureInfo components.
   useSmartTransactionFeatureFlags();
   useTransactionFocusEffect();
 
@@ -45,8 +134,17 @@ const Info = () => {
           return TypedSignV1Info;
         }
         if (signatureRequest?.decodedPermission) {
-          if (!isGatorPermissionsFeatureEnabled()) {
-            throw new Error('Gator permissions feature is not enabled');
+          const requestedPermissionType =
+            signatureRequest.decodedPermission.permission.type;
+
+          if (!enabledPermissions.includes(requestedPermissionType)) {
+            // This should never happen, as `wallet_requestExecutionPermissions`
+            // only accepts permissions of enabled types. This is here as a
+            // security precaution, to ensure that permission types that are not
+            // yet enabled are never available to sign.
+            throw new Error(
+              `Invalid eth_signTypedData_v4 request - Advanced Permission type: ${requestedPermissionType} not enabled`,
+            );
           }
 
           return TypedSignPermissionInfo;
@@ -60,17 +158,45 @@ const Info = () => {
         SetApprovalForAllInfo,
       [TransactionType.tokenMethodTransfer]: () => TokenTransferInfo,
       [TransactionType.tokenMethodTransferFrom]: () => NFTTokenTransferInfo,
+
+      [ApprovalType.AddEthereumChain]: () => AddEthereumChain,
+
+      [TransactionType.moneyAccountDeposit]: () => MoneyAccountDepositInfo,
+      [TransactionType.moneyAccountWithdraw]: () => MoneyAccountWithdrawInfo,
+      // Merkl claiming was removed (MUSD-1223); the type stays mapped so a claim
+      // still in flight across the upgrade renders instead of throwing here.
+      [TransactionType.musdClaim]: () => BaseTransactionInfo,
+      [TransactionType.musdConversion]: () => MusdConversionInfo,
+      [TransactionType.perpsDeposit]: () => PerpsDepositInfo,
+      [TransactionType.perpsWithdraw]: () => PerpsWithdrawInfo,
     }),
-    [currentConfirmation],
+    [currentConfirmation, enabledPermissions],
   );
 
   if (!currentConfirmation?.type) {
-    return null;
+    if (loader === ConfirmationLoader.CustomAmount) {
+      return <CustomAmountInfoSkeleton />;
+    }
+
+    return (
+      <InfoSkeleton
+        variant={
+          loader === ConfirmationLoader.Send
+            ? ConfirmationLoader.Send
+            : undefined
+        }
+      />
+    );
   }
+
+  // Mirrors mobile's info-root routing.
+  const confirmationType = getConfirmationTransactionType(
+    currentConfirmation as TransactionMeta,
+  );
 
   const InfoComponent =
     ConfirmationInfoComponentMap[
-      currentConfirmation?.type as keyof typeof ConfirmationInfoComponentMap
+      confirmationType as keyof typeof ConfirmationInfoComponentMap
     ]();
 
   return <InfoComponent />;

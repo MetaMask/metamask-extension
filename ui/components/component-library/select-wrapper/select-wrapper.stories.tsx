@@ -1,26 +1,17 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import { actions } from '@storybook/addon-actions';
 import { SelectButton } from '../select-button';
 import { SelectOption } from '../select-option';
 import { Button } from '../button';
 import { Text } from '../text';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
 import { SelectWrapper } from './select-wrapper';
 import { useSelectContext } from './select-wrapper.context';
 
 export default {
   title: 'Components/ComponentLibrary/SelectWrapper',
   component: SelectWrapper,
-  parameters: {
-    docs: {
-      page: README,
-      story: {
-        inline: false,
-      },
-    },
-  },
+  tags: ['autodocs'],
   argTypes: {
     placeholder: {
       control: {
@@ -172,8 +163,8 @@ UncontrolledValue.args = {
 };
 
 export const UseSelectContext: StoryFn<typeof SelectWrapper> = (args) => {
-  // Note that the SelectContext is being used inside a component, because the SelectContext needs to be called within the SelectWrapper component and not before
   const CustomClose = () => {
+    // Note that the SelectContext is being used inside a component, because the SelectContext needs to be called within the SelectWrapper component and not before
     const { toggleUncontrolledOpen } = useSelectContext();
 
     return (
@@ -270,7 +261,6 @@ export const OnBlur: StoryFn<typeof SelectWrapper> = (args) => {
         {...args}
         onBlur={() => {
           setOnBlur(onBlur + 1);
-          actions('onBlur');
         }}
         placeholder=""
         triggerComponent={<SelectButton>onBlur Count: {onBlur}</SelectButton>}

@@ -22,7 +22,6 @@ import {
   setSwapsFeatureFlags,
   setSelectedQuoteAggId,
   setSwapsTxGasLimit,
-  fetchSmartTransactionsLiveness,
   signAndSendSmartTransaction,
   updateSmartTransaction,
   setSmartTransactionsRefreshInterval,
@@ -31,13 +30,8 @@ import {
   getTransactions,
 } from '../../store/actions';
 import {
-  AWAITING_SIGNATURES_ROUTE,
-  AWAITING_SWAP_ROUTE,
-  LOADING_QUOTES_ROUTE,
-  SWAPS_ERROR_ROUTE,
-  SWAPS_MAINTENANCE_ROUTE,
-  SMART_TRANSACTION_STATUS_ROUTE,
   PREPARE_SWAP_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   fetchSwapsFeatureFlags,
@@ -54,33 +48,36 @@ import {
   decimalToHex,
   getValueFromWeiHex,
   hexWEIToDecGWEI,
-} from '../../../shared/modules/conversion.utils';
+} from '../../../shared/lib/conversion.utils';
 import {
   getCurrentChainId,
   getSelectedNetworkClientId,
-} from '../../../shared/modules/selectors/networks';
-import { getFeatureFlagsByChainId } from '../../../shared/modules/selectors/feature-flags';
+} from '../../../shared/lib/selectors/networks';
 import {
   getSelectedAccount,
   getTokenExchangeRates,
   getUSDConversionRate,
   getSwapsDefaultToken,
-  isHardwareWallet,
-  getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
-  getSelectedInternalAccount,
   getSelectedNetwork,
   getHDEntropyIndex,
 } from '../../selectors';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import {
+  isHardwareWallet,
+  getHardwareWalletType,
+} from '../../../shared/lib/selectors/keyring';
 import {
   getSmartTransactionsEnabled,
+  getSmartTransactionsFeatureFlagsForChain,
   getSmartTransactionsOptInStatusForMetrics,
   getSmartTransactionsPreferenceEnabled,
-} from '../../../shared/modules/selectors';
+} from '../../../shared/lib/selectors';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
 import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
@@ -103,7 +100,7 @@ import {
   calcTokenAmount,
 } from '../../../shared/lib/transactions-controller-utils';
 import { EtherDenomination } from '../../../shared/constants/common';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { Numeric } from '../../../shared/lib/Numeric';
 import { calculateMaxGasLimit } from '../../../shared/lib/swaps-utils';
 import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
 
@@ -352,6 +349,9 @@ export const getSwapsQuotePrefetchingRefreshTime = (state) =>
 export const getBackgroundSwapRouteState = (state) =>
   state.metamask.swapsState.routeState;
 
+export const selectShowAwaitingSwapScreen = (state) =>
+  state.metamask.swapsState.routeState === 'awaiting';
+
 export const getCustomSwapsGas = (state) =>
   state.metamask.swapsState.customMaxGas;
 
@@ -370,6 +370,9 @@ export const getSwapsUserFeeLevel = (state) =>
 export const getFetchParams = (state) => state.metamask.swapsState.fetchParams;
 
 export const getQuotes = (state) => state.metamask.swapsState.quotes;
+
+export const selectHasSwapsQuotes = (state) =>
+  Boolean(Object.values(state.metamask.swapsState.quotes || {}).length);
 
 export const getQuotesLastFetched = (state) =>
   state.metamask.swapsState.quotesLastFetched;
@@ -525,12 +528,12 @@ export {
   slice as swapsSlice,
 };
 
-export const navigateBackToPrepareSwap = (history) => {
+export const navigateBackToPrepareSwap = (navigate) => {
   return async (dispatch) => {
     // TODO: Ensure any fetch in progress is cancelled
     await dispatch(setBackgroundSwapRouteState(''));
     dispatch(navigatedBackToBuildQuote());
-    history.push(PREPARE_SWAP_ROUTE);
+    navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
   };
 };
 
@@ -593,11 +596,6 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
       await dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
       if (ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId)) {
         await dispatch(setCurrentSmartTransactionsError(undefined));
-        await dispatch(
-          fetchSmartTransactionsLiveness({
-            networkClientId: getSelectedNetworkClientId(state),
-          }),
-        );
         const transactions = await getTransactions({
           searchCriteria: {
             chainId,
@@ -632,7 +630,7 @@ const isTokenAlreadyAdded = (tokenAddress, tokens) => {
 };
 
 export const fetchQuotesAndSetQuoteState = (
-  history,
+  navigate,
   inputValue,
   maxSlippage,
   trackEvent,
@@ -658,7 +656,7 @@ export const fetchQuotesAndSetQuoteState = (
     await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
 
     if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
-      await history.push(SWAPS_MAINTENANCE_ROUTE);
+      await navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       return;
     }
 
@@ -691,7 +689,7 @@ export const fetchQuotesAndSetQuoteState = (
     // In that case we just want to silently prefetch quotes without redirecting to the quotes loading page.
     if (!pageRedirectionDisabled) {
       await dispatch(setBackgroundSwapRouteState('loading'));
-      history.push(LOADING_QUOTES_ROUTE);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
     }
     dispatch(setFetchingQuotes(true));
 
@@ -783,38 +781,36 @@ export const fetchQuotesAndSetQuoteState = (
     const stablecoinsForChain = StablecoinsByChainId[chainId];
     const isStableTokenPair = Boolean(
       stablecoinsForChain &&
-        checkAddressInSetCaseInsensitive(
-          stablecoinsForChain,
-          fromTokenAddress,
-        ) &&
-        checkAddressInSetCaseInsensitive(stablecoinsForChain, toTokenAddress),
+      checkAddressInSetCaseInsensitive(stablecoinsForChain, fromTokenAddress) &&
+      checkAddressInSetCaseInsensitive(stablecoinsForChain, toTokenAddress),
     );
 
     const slippageForFetch = isStableTokenPair ? Slippage.stable : maxSlippage;
 
-    trackEvent({
-      event: MetaMetricsEventName.QuotesRequested,
-      category: MetaMetricsEventCategory.Swaps,
-      sensitiveProperties: {
-        token_from: fromTokenSymbol,
-        token_from_amount: String(inputValue),
-        token_to: toTokenSymbol,
-        request_type: balanceError ? 'Quote' : 'Order',
-        slippage: slippageForFetch,
-        custom_slippage:
-          slippageForFetch !== Slippage.default &&
-          slippageForFetch !== Slippage.stable,
-        is_hardware_wallet: hardwareWalletUsed,
-        hardware_wallet_type: hardwareWalletType,
-        stx_enabled: smartTransactionsEnabled,
-        current_stx_enabled: currentSmartTransactionsEnabled,
-        stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
-        anonymizedData: true,
-      },
-      properties: {
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.QuotesRequested)
+        .addCategory(MetaMetricsEventCategory.Swaps)
+        .addSensitiveProperties({
+          token_from: fromTokenSymbol,
+          token_from_amount: String(inputValue),
+          token_to: toTokenSymbol,
+          request_type: balanceError ? 'Quote' : 'Order',
+          slippage: slippageForFetch,
+          custom_slippage:
+            slippageForFetch !== Slippage.default &&
+            slippageForFetch !== Slippage.stable,
+          is_hardware_wallet: hardwareWalletUsed,
+          hardware_wallet_type: hardwareWalletType,
+          stx_enabled: smartTransactionsEnabled,
+          current_stx_enabled: currentSmartTransactionsEnabled,
+          stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
+          anonymizedData: true,
+        })
+        .addProperties({
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
 
     try {
       const fetchStartTime = Date.now();
@@ -853,25 +849,26 @@ export const fetchQuotesAndSetQuoteState = (
       ]);
 
       if (Object.values(fetchedQuotes)?.length === 0) {
-        trackEvent({
-          event: 'No Quotes Available',
-          category: MetaMetricsEventCategory.Swaps,
-          sensitiveProperties: {
-            token_from: fromTokenSymbol,
-            token_from_amount: String(inputValue),
-            token_to: toTokenSymbol,
-            request_type: balanceError ? 'Quote' : 'Order',
-            slippage: slippageForFetch,
-            custom_slippage:
-              slippageForFetch !== Slippage.default &&
-              slippageForFetch !== Slippage.stable,
-            is_hardware_wallet: hardwareWalletUsed,
-            hardware_wallet_type: hardwareWalletType,
-            stx_enabled: smartTransactionsEnabled,
-            current_stx_enabled: currentSmartTransactionsEnabled,
-            stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
-          },
-        });
+        trackEvent(
+          createEventBuilder('No Quotes Available')
+            .addCategory(MetaMetricsEventCategory.Swaps)
+            .addSensitiveProperties({
+              token_from: fromTokenSymbol,
+              token_from_amount: String(inputValue),
+              token_to: toTokenSymbol,
+              request_type: balanceError ? 'Quote' : 'Order',
+              slippage: slippageForFetch,
+              custom_slippage:
+                slippageForFetch !== Slippage.default &&
+                slippageForFetch !== Slippage.stable,
+              is_hardware_wallet: hardwareWalletUsed,
+              hardware_wallet_type: hardwareWalletType,
+              stx_enabled: smartTransactionsEnabled,
+              current_stx_enabled: currentSmartTransactionsEnabled,
+              stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
+            })
+            .build(),
+        );
         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
       } else {
         const newSelectedQuote = fetchedQuotes[selectedAggId];
@@ -888,34 +885,35 @@ export const fetchQuotesAndSetQuoteState = (
         // browsers.
         const tokenToAmountToString = tokenToAmountBN.toString(10);
 
-        trackEvent({
-          event: MetaMetricsEventName.QuotesReceived,
-          category: MetaMetricsEventCategory.Swaps,
-          sensitiveProperties: {
-            token_from: fromTokenSymbol,
-            token_from_amount: String(inputValue),
-            token_to: toTokenSymbol,
-            token_to_amount: tokenToAmountToString,
-            request_type: balanceError ? 'Quote' : 'Order',
-            slippage: slippageForFetch,
-            custom_slippage:
-              slippageForFetch !== Slippage.default &&
-              slippageForFetch !== Slippage.stable,
-            response_time: Date.now() - fetchStartTime,
-            best_quote_source: newSelectedQuote.aggregator,
-            available_quotes: Object.values(fetchedQuotes)?.length,
-            is_hardware_wallet: hardwareWalletUsed,
-            hardware_wallet_type: hardwareWalletType,
-            stx_enabled: smartTransactionsEnabled,
-            current_stx_enabled: currentSmartTransactionsEnabled,
-            stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
-            gas_included: newSelectedQuote.isGasIncludedTrade,
-            anonymizedData: true,
-          },
-          properties: {
-            hd_entropy_index: hdEntropyIndex,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.QuotesReceived)
+            .addCategory(MetaMetricsEventCategory.Swaps)
+            .addSensitiveProperties({
+              token_from: fromTokenSymbol,
+              token_from_amount: String(inputValue),
+              token_to: toTokenSymbol,
+              token_to_amount: tokenToAmountToString,
+              request_type: balanceError ? 'Quote' : 'Order',
+              slippage: slippageForFetch,
+              custom_slippage:
+                slippageForFetch !== Slippage.default &&
+                slippageForFetch !== Slippage.stable,
+              response_time: Date.now() - fetchStartTime,
+              best_quote_source: newSelectedQuote.aggregator,
+              available_quotes: Object.values(fetchedQuotes)?.length,
+              is_hardware_wallet: hardwareWalletUsed,
+              hardware_wallet_type: hardwareWalletType,
+              stx_enabled: smartTransactionsEnabled,
+              current_stx_enabled: currentSmartTransactionsEnabled,
+              stx_user_opt_in: getSmartTransactionsOptInStatusForMetrics(state),
+              gas_included: newSelectedQuote.isGasIncludedTrade,
+              anonymizedData: true,
+            })
+            .addProperties({
+              hd_entropy_index: hdEntropyIndex,
+            })
+            .build(),
+        );
 
         dispatch(setInitialGasEstimate(selectedAggId));
       }
@@ -938,7 +936,7 @@ export const fetchQuotesAndSetQuoteState = (
 export const signAndSendSwapsSmartTransaction = ({
   unsignedTransaction,
   trackEvent,
-  history,
+  navigate,
   additionalTrackingParams,
 }) => {
   return async (dispatch, getState) => {
@@ -952,11 +950,15 @@ export const signAndSendSwapsSmartTransaction = ({
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
     const usedQuote = getUsedQuote(state);
     const selectedNetwork = getSelectedNetwork(state);
-    const swapsFeatureFlags = getFeatureFlagsByChainId(state);
+    const chainId = getCurrentChainId(state);
+    const featureFlags = getSmartTransactionsFeatureFlagsForChain(
+      state,
+      chainId,
+    );
 
     dispatch(
       setSmartTransactionsRefreshInterval(
-        swapsFeatureFlags?.smartTransactions?.batchStatusPollingInterval,
+        featureFlags?.batchStatusPollingInterval,
       ),
     );
 
@@ -997,14 +999,15 @@ export const signAndSendSwapsSmartTransaction = ({
       gas_included: usedQuote.isGasIncludedTrade,
       ...additionalTrackingParams,
     };
-    trackEvent({
-      event: 'STX Swap Started',
-      category: MetaMetricsEventCategory.Swaps,
-      sensitiveProperties: swapMetaData,
-      properties: {
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
+    trackEvent(
+      createEventBuilder('STX Swap Started')
+        .addCategory(MetaMetricsEventCategory.Swaps)
+        .addSensitiveProperties(swapMetaData)
+        .addProperties({
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
 
     if (
       !isContractAddressValid(
@@ -1020,7 +1023,7 @@ export const signAndSendSwapsSmartTransaction = ({
         },
       });
       await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-      history.push(SWAPS_ERROR_ROUTE);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       return;
     }
 
@@ -1100,7 +1103,7 @@ export const signAndSendSwapsSmartTransaction = ({
           }),
         );
       }
-      history.push(SMART_TRANSACTION_STATUS_ROUTE);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       dispatch(setSwapsSTXSubmitLoading(false));
     } catch (e) {
       console.log('signAndSendSwapsSmartTransaction error', e);
@@ -1117,7 +1120,7 @@ export const signAndSendSwapsSmartTransaction = ({
 };
 
 export const signAndSendTransactions = (
-  history,
+  navigate,
   trackEvent,
   additionalTrackingParams,
 ) => {
@@ -1144,7 +1147,7 @@ export const signAndSendTransactions = (
     await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
 
     if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
-      await history.push(SWAPS_MAINTENANCE_ROUTE);
+      await navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       return;
     }
 
@@ -1156,7 +1159,7 @@ export const signAndSendTransactions = (
     await dispatch(stopPollingForQuotes());
 
     if (!hardwareWalletUsed) {
-      history.push(AWAITING_SWAP_ROUTE);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
     }
 
     const { fast: fastGasEstimate } = getSwapGasPriceEstimateData(state);
@@ -1289,14 +1292,15 @@ export const signAndSendTransactions = (
         tradeGasFeeEstimates?.baseAndPriorityFeePerGas;
     }
 
-    trackEvent({
-      event: MetaMetricsEventName.SwapStarted,
-      category: MetaMetricsEventCategory.Swaps,
-      sensitiveProperties: swapMetaData,
-      properties: {
-        hd_entropy_index: hdEntropyIndex,
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SwapStarted)
+        .addCategory(MetaMetricsEventCategory.Swaps)
+        .addSensitiveProperties(swapMetaData)
+        .addProperties({
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
 
     if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
       captureMessage('Invalid contract address', {
@@ -1307,16 +1311,16 @@ export const signAndSendTransactions = (
         },
       });
       await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-      history.push(SWAPS_ERROR_ROUTE);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       return;
     }
 
     let finalApproveTxMeta;
 
-    // For hardware wallets we go to the Awaiting Signatures page first and only after a user
-    // completes 1 or 2 confirmations, we redirect to the Awaiting Swap page.
+    // For hardware wallets we keep users on the unified cross-chain prepare page
+    // while confirmations are in progress.
     if (hardwareWalletUsed) {
-      history.push(AWAITING_SIGNATURES_ROUTE);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
     }
 
     if (approveTxParams) {
@@ -1363,7 +1367,7 @@ export const signAndSendTransactions = (
       } catch (e) {
         debugLog('Approve transaction failed', e);
         await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-        history.push(SWAPS_ERROR_ROUTE);
+        navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
         return;
       }
     }
@@ -1396,14 +1400,14 @@ export const signAndSendTransactions = (
         : SWAP_FAILED_ERROR;
       debugLog('Trade transaction failed', e);
       await dispatch(setSwapsErrorKey(errorKey));
-      history.push(SWAPS_ERROR_ROUTE);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       return;
     }
 
     // Only after a user confirms swapping on a hardware wallet (second `updateAndApproveTx` call above),
-    // we redirect to the Awaiting Swap page.
+    // we redirect back to the unified cross-chain prepare page.
     if (hardwareWalletUsed) {
-      history.push(AWAITING_SWAP_ROUTE);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
     }
 
     await forceUpdateMetamaskState(dispatch);
@@ -1505,13 +1509,11 @@ export function cancelSwapsSmartTransaction(uuid) {
   };
 }
 
-export const getIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
+export const useGetIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
   const sourceTokenAmount = calcTokenAmount(
     usedQuote?.sourceAmount,
     usedQuote?.sourceTokenInfo?.decimals,
   );
-  // Disabled because it's not a hook
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const sourceTokenFiatAmount = useTokenFiatAmount(
     usedQuote?.sourceTokenInfo?.address,
     sourceTokenAmount || 0,
@@ -1528,7 +1530,6 @@ export const getIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
     usedQuote?.destinationTokenInfo?.decimals,
   );
   // Disabled because it's not a hook
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const destinationTokenFiatAmount = useTokenFiatAmount(
     usedQuote?.destinationTokenInfo?.address,
     destinationTokenAmount || 0,

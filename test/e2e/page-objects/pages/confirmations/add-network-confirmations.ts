@@ -1,0 +1,106 @@
+import { Driver } from '../../../webdriver/driver';
+
+/**
+ * Add-network confirmation for `wallet_addEthereumChain` when the chain is new.
+ *
+ * Screen: `#/confirmation` with add-network info (title like "Add {name}"; not
+ * a dedicated networks hash route).
+ * Owns: approve/cancel footer, approve enabled check, page-loaded by network
+ * name, and opening/dismissing warning alerts via inline-alert.
+ * Boundaries: alert modal dismiss uses the shared alert button here; deeper
+ * alert assertions can use `AlertModal`. Updating an existing chain is
+ * `UpdateNetworkConfirmation`. Switching networks is
+ * `SwitchNetworkConfirmation`.
+ * Related: `UpdateNetworkConfirmation`, `AlertModal`.
+ *
+ * @see ui/pages/confirmations/external/add-ethereum-chain/add-ethereum-chain.tsx
+ * @see ui/pages/confirmations/confirm/confirm.tsx
+ */
+class AddNetworkConfirmation {
+  private readonly alertModalButton = { testId: 'alert-modal-button' };
+
+  private readonly approveButton = { testId: 'confirm-footer-button' };
+
+  private readonly cancelButton = { testId: 'confirm-footer-cancel-button' };
+
+  private readonly driver: Driver;
+
+  private readonly parentSelector = {
+    testId: 'parent-selector-confirmation-page',
+  };
+
+  constructor(driver: Driver) {
+    this.driver = driver;
+  }
+
+  /**
+   * Approves the add network on the confirmation dialog.
+   *
+   * @param windowShouldClose - Whether the window should close after approving the add network.
+   */
+  async approveAddNetwork(windowShouldClose: boolean = true) {
+    console.log('Approving add network on confirmation dialog');
+    if (windowShouldClose) {
+      await this.driver.clickElementAndWaitForWindowToClose(this.approveButton);
+    } else {
+      await this.driver.clickElement(this.approveButton);
+    }
+  }
+
+  async cancelAddNetwork() {
+    console.log('Cancelling add network on confirmation dialog');
+    await this.driver.clickElementAndWaitForWindowToClose(this.cancelButton);
+  }
+
+  /**
+   * Checks if the approve button is enabled on add network confirmation page.
+   */
+  async checkIsApproveButtonEnabled(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(this.approveButton, {
+        timeout: 1000,
+      });
+    } catch (e) {
+      console.log('Approve button not enabled', e);
+      return false;
+    }
+    console.log('Approve button is enabled');
+    return true;
+  }
+
+  /**
+   * @param networkName - The name of the network to check for in the confirmation page
+   */
+  async checkPageIsLoaded(networkName: string): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
+        {
+          text: `Add ${networkName}`,
+        },
+      ]);
+    } catch (e) {
+      console.log(
+        `Timeout while waiting for Add network ${networkName} confirmation page to be loaded`,
+        e,
+      );
+      throw e;
+    }
+    console.log(`Add network ${networkName} confirmation page is loaded`);
+  }
+
+  async checkWarningMessageIsDisplayed(key: string, message: string) {
+    console.log(
+      `Checking if warning message ${message} is displayed on add network confirmation page`,
+    );
+    await this.driver.clickElement({
+      xpath: `//*[@data-testid="inline-alert" and @data-alert-key="${key}"]`,
+    });
+    await this.driver.waitForSelector({
+      text: message,
+    });
+    await this.driver.clickElementAndWaitToDisappear(this.alertModalButton);
+  }
+}
+
+export default AddNetworkConfirmation;

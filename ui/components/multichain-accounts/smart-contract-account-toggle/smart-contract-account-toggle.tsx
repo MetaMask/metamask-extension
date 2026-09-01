@@ -1,19 +1,21 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Hex } from '@metamask/utils';
-import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontWeight,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
 import { useBatchAuthorizationRequests } from '../../../pages/confirmations/hooks/useBatchAuthorizationRequests';
 
 import ToggleButton from '../../ui/toggle-button';
-import { Box, Text } from '../../component-library';
-import {
-  Display,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import { EIP7702NetworkConfiguration } from '../../../pages/confirmations/hooks/useEIP7702Networks';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { unconfirmedTransactionsListSelector } from '../../../selectors';
@@ -23,6 +25,7 @@ import {
   selectToggleState,
 } from '../../../ducks/smart-accounts/smart-accounts';
 import type { MetaMaskReduxState } from '../../../store/store';
+import { useDispatch } from '../../../store/hooks';
 
 type SmartContractAccountToggleProps = {
   networkConfig: EIP7702NetworkConfiguration;
@@ -37,7 +40,7 @@ export const SmartContractAccountToggle = ({
 }: SmartContractAccountToggleProps) => {
   const { name, isSupported, upgradeContractAddress, chainIdHex } =
     networkConfig;
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const unconfirmedTransactions = useSelector(
     unconfirmedTransactionsListSelector,
@@ -137,7 +140,7 @@ export const SmartContractAccountToggle = ({
         dispatch(setRedirectAfterDefaultPage({ path: redirectPath, address }));
       }
 
-      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${latestTransaction.id}`);
+      navigate(`${CONFIRM_TRANSACTION_ROUTE}/${latestTransaction.id}`);
       return true;
     }
     return false;
@@ -145,7 +148,7 @@ export const SmartContractAccountToggle = ({
     unconfirmedTransactions,
     address,
     chainIdHex,
-    history,
+    navigate,
     returnToPage,
     dispatch,
   ]);
@@ -220,13 +223,14 @@ export const SmartContractAccountToggle = ({
 
   return (
     <Box
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
       marginTop={4}
     >
       <Text
-        variant={TextVariant.bodyMdMedium}
-        color={TextColor.textAlternative}
+        variant={TextVariant.BodyMd}
+        fontWeight={FontWeight.Medium}
+        color={TextColor.TextAlternative}
       >
         {name}
       </Text>

@@ -8,7 +8,8 @@ import {
 } from '@open-rpc/meta-schema';
 import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
 import { Driver } from '../webdriver/driver';
-import { WINDOW_TITLES, switchToOrOpenDapp } from '../helpers';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE, WINDOW_TITLES } from '../constants';
+import TestDapp from '../page-objects/pages/test-dapp';
 import { addToQueue } from './helpers';
 
 type ConfirmationsRejectRuleOptions = {
@@ -54,6 +55,9 @@ export class ConfirmationsRejectRule implements Rule {
                 params: [{ eth_accounts: {} }],
               });
 
+              const testDapp = new TestDapp(this.driver);
+              await testDapp.checkPageIsLoaded();
+
               await this.driver.executeScript(
                 `window.ethereum.request(${requestPermissionsRequest})`,
               );
@@ -67,8 +71,7 @@ export class ConfirmationsRejectRule implements Rule {
               await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
               await this.driver.findClickableElements({
-                text: 'Connect',
-                tag: 'button',
+                testId: 'confirm-btn',
               });
 
               const screenshotTwo = await this.driver.driver.takeScreenshot();
@@ -78,11 +81,14 @@ export class ConfirmationsRejectRule implements Rule {
               });
 
               await this.driver.clickElementAndWaitForWindowToClose({
-                text: 'Connect',
-                tag: 'button',
+                testId: 'confirm-btn',
               });
 
-              await switchToOrOpenDapp(this.driver);
+              await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+              await testDapp.checkConnectedAccounts(
+                DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              );
 
               const switchEthereumChainRequest = JSON.stringify({
                 jsonrpc: '2.0',
@@ -97,6 +103,7 @@ export class ConfirmationsRejectRule implements Rule {
               await this.driver.executeScript(
                 `window.ethereum.request(${switchEthereumChainRequest})`,
               );
+              await testDapp.checkNetworkIsConnected('0x539');
             }
           } catch (e) {
             console.log(e);
@@ -116,12 +123,16 @@ export class ConfirmationsRejectRule implements Rule {
           try {
             await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            const text = 'Cancel';
+            // Try cancel-btn (new MMDS UI), fall back to text-based (old UI)
+            let cancelButton;
+            try {
+              await this.driver.findClickableElement({ testId: 'cancel-btn' });
+              cancelButton = { testId: 'cancel-btn' };
+            } catch {
+              cancelButton = { text: 'Cancel', tag: 'button' };
+            }
 
-            await this.driver.findClickableElements({
-              text: 'Cancel',
-              tag: 'button',
-            });
+            await this.driver.findClickableElements(cancelButton);
 
             const screenshot = await this.driver.driver.takeScreenshot();
             call.attachments = call.attachments || [];
@@ -129,12 +140,15 @@ export class ConfirmationsRejectRule implements Rule {
               type: 'image',
               data: `data:image/png;base64,${screenshot}`,
             });
-            await this.driver.clickElementAndWaitForWindowToClose({
-              text,
-              tag: 'button',
-            });
+            await this.driver.clickElementAndWaitForWindowToClose(cancelButton);
             // make sure to switch back to the dapp or else the next test will fail on the wrong window
-            await switchToOrOpenDapp(this.driver);
+            await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+            const testDapp = new TestDapp(this.driver);
+            await testDapp.checkPageIsLoaded();
+            await testDapp.checkConnectedAccounts(
+              DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+              false,
+            );
           } catch (e) {
             console.log(e);
           }
@@ -202,6 +216,13 @@ export class ConfirmationsRejectRule implements Rule {
 
               await this.driver.executeScript(
                 `window.ethereum.request(${revokePermissionsRequest})`,
+              );
+
+              const testDapp = new TestDapp(this.driver);
+              await testDapp.checkPageIsLoaded();
+              await testDapp.checkConnectedAccounts(
+                DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+                false,
               );
             }
           } catch (e) {

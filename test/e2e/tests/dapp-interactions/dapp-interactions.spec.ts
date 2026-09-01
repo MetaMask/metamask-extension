@@ -1,25 +1,45 @@
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import { MockedEndpoint, Mockttp } from 'mockttp';
 import {
   DAPP_ONE_ADDRESS,
   DAPP_ONE_URL,
   DAPP_HOST_ADDRESS,
   DEFAULT_FIXTURE_ACCOUNT,
+  WINDOW_TITLES,
 } from '../../constants';
-import FixtureBuilder from '../../fixture-builder';
-import AddNetworkConfirmation from '../../page-objects/pages/confirmations/redesign/add-network-confirmations';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import Homepage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { Driver } from '../../webdriver/driver';
+import {
+  lockAndWaitForLoginPage,
+  login,
+} from '../../page-objects/flows/login.flow';
+import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
+
+async function mockNotificationsEndpoint(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
+  return [
+    await mockServer
+      .forPost('https://notification.api.cx.metamask.io/api/v4/notifications')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: [],
+      })),
+  ];
+}
 
 describe('Dapp interactions', function () {
   it('should trigger the add chain confirmation despite MetaMask being locked', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2().build(),
         localNodeOptions: [
           {
             type: 'anvil',
@@ -56,15 +76,23 @@ describe('Dapp interactions', function () {
   it('should connect a second Dapp despite MetaMask being locked', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 2 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
+        testSpecificMock: mockNotificationsEndpoint,
         title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({
+        driver,
+        mockedEndpoint: mockedEndpoints,
+      }: {
+        driver: Driver;
+        mockedEndpoint: MockedEndpoint[];
+      }) => {
         await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
 
         // Connect to 2nd dapp => DAPP_ONE
         const testDapp = new TestDapp(driver);
@@ -73,13 +101,23 @@ describe('Dapp interactions', function () {
         await testDapp.clickConnectAccountButton();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
         );
         await connectAccountConfirmation.checkPageIsLoaded();
+        await connectAccountConfirmation.checkForAccountsInPermissionList([
+          'Account 1',
+        ]);
+
+        // Wait until last request happens in the connect screen to ensure is ready
+        const [notificationsEndpoint] = mockedEndpoints;
+        await driver.wait(async () => {
+          const isPending = await notificationsEndpoint.isPending();
+          return isPending === false;
+        }, driver.timeout);
+
         await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT);
@@ -88,13 +126,13 @@ describe('Dapp interactions', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
+        await driver.navigate();
+
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
 
         // Assert Connection
-        await homepage.headerNavbar.openPermissionsPage();
+        await openPermissionsPageFlow(driver);
         const permissionListPage = new PermissionListPage(driver);
         await permissionListPage.checkPageIsLoaded();
         await permissionListPage.checkConnectedToSite(DAPP_HOST_ADDRESS);
@@ -111,16 +149,14 @@ describe('Dapp interactions', function () {
     }
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        // to avoid a race condition where some authentication requests are triggered once the wallet is locked
-        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 
@@ -128,15 +164,14 @@ describe('Dapp interactions', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        const homepage = new Homepage(driver);
-        await homepage.headerNavbar.lockMetaMask();
+        await lockAndWaitForLoginPage(driver);
+        const loginPage = new LoginPage(driver);
 
         // Attempt interaction with DApp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickCreateToken();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
         console.log('Prompted to unlock the wallet');
         await loginPage.loginToHomepage('123456');

@@ -1,11 +1,11 @@
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
-import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
-import NftListPage from '../../../page-objects/pages/home/nft-list';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import NFTDetailsPage from '../../../page-objects/pages/asset/nft-details-page';
+import NftsTab from '../../../page-objects/pages/home/nfts-tab';
+import { login } from '../../../page-objects/flows/login.flow';
 
 async function mockIPFSRequest(mockServer: MockttpServer) {
   return [
@@ -23,19 +23,19 @@ describe('View ERC1155 NFT details', function () {
   it('user should be able to view ERC1155 NFT details', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2().withNftControllerERC1155().build(),
         smartContract,
         title: this.test?.fullTitle(),
         testSpecificMock: mockIPFSRequest,
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         // Click to open the NFT details page and check displayed account
         await new Homepage(driver).goToNftTab();
-        const nftListPage = new NftListPage(driver);
-        await nftListPage.clickNFTIconOnActivityList();
+        const nftsTab = new NftsTab(driver);
+        await nftsTab.clickNFTIconOnActivityList();
 
         // Check the NFT details are correctly displayed on NFT details page
         const nftDetailsPage = new NFTDetailsPage(driver);

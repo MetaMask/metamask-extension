@@ -5,7 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 
-import { txParamsAreDappSuggested } from '../../../../../../shared/modules/transaction.utils';
+import { txParamsAreDappSuggested } from '../../../../../../shared/lib/transaction.utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import {
@@ -49,5 +49,5 @@ export function useNoGasPriceAlerts(): Alert[] {
         severity: Severity.Warning,
       },
     ];
-  }, [noGasPrice]);
+  }, [noGasPrice, t]);
 }

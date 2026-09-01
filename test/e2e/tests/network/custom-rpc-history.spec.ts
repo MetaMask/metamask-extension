@@ -1,13 +1,14 @@
 import { Suite } from 'mocha';
-import { mockNetworkStateOld } from '../../../stub/networks';
+import { NetworkStatus, RpcEndpointType } from '@metamask/network-controller';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
-import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { LOCALHOST_NETWORK_CLIENT_ID } from '../../constants';
+import AddEditNetworkPage from '../../page-objects/pages/networks/add-edit-network-page';
+import AddEditRpcUrlPage from '../../page-objects/pages/networks/add-edit-rpc-url-page';
 import Homepage from '../../page-objects/pages/home/homepage';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
+import NetworksPage from '../../page-objects/pages/networks/networks-page';
+import { login } from '../../page-objects/flows/login.flow';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 
 describe('Custom RPC history', function (this: Suite) {
   it(`creates first custom RPC entry`, async function () {
@@ -17,7 +18,7 @@ describe('Custom RPC history', function (this: Suite) {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         localNodeOptions: [
           {
             type: 'anvil',
@@ -33,37 +34,35 @@ describe('Custom RPC history', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const rpcUrl = `http://127.0.0.1:${port}`;
         const networkName = 'Secondary Local Testnet';
 
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.openAddCustomNetworkModal();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.openAddCustomNetworkPage();
 
-        const addEditNetworkModal = new AddEditNetworkModal(driver);
-        await addEditNetworkModal.checkPageIsLoaded();
-        await addEditNetworkModal.fillNetworkNameInputField(networkName);
-        await addEditNetworkModal.fillNetworkChainIdInputField(
+        const addEditNetworkPage = new AddEditNetworkPage(driver);
+        await addEditNetworkPage.checkPageIsLoaded();
+        await addEditNetworkPage.fillNetworkNameInputField(networkName);
+        await addEditNetworkPage.fillNetworkChainIdInputField(
           chainId.toString(),
         );
-        await addEditNetworkModal.fillCurrencySymbolInputField(symbol);
-        await addEditNetworkModal.openAddRpcUrlModal();
+        await addEditNetworkPage.fillCurrencySymbolInputField(symbol);
+        await addEditNetworkPage.openAddRpcUrlPage();
 
         // Add rpc url
-        const addRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        await addRpcUrlModal.checkPageIsLoaded();
-        await addRpcUrlModal.fillAddRpcUrlInput(rpcUrl);
-        await addRpcUrlModal.fillAddRpcNameInput('test-name');
-        await addRpcUrlModal.saveAddRpcUrl();
-        await addEditNetworkModal.saveEditedNetwork();
-
+        const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
+        await addEditRpcUrlPage.checkPageIsLoaded();
+        await addEditRpcUrlPage.fillAddRpcUrlInput(rpcUrl);
+        await addEditRpcUrlPage.fillAddRpcNameInput('test-name');
+        await addEditRpcUrlPage.saveAddRpcUrl();
+        await addEditNetworkPage.saveEditedNetwork();
         // Validate the network was added
-        const homepage = new Homepage(driver);
-        await homepage.checkPageIsLoaded();
-        await homepage.checkAddNetworkMessageIsDisplayed(networkName);
+        await networksPage.checkAddNetworkMessageIsDisplayed(networkName);
       },
     );
   });
@@ -71,33 +70,34 @@ describe('Custom RPC history', function (this: Suite) {
   it('warns user when they enter url for an already configured network', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Duplicate network
         const duplicateRpcUrl = 'https://mainnet.infura.io/v3/';
 
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.openAddCustomNetworkModal();
-        const addEditNetworkModal = new AddEditNetworkModal(driver);
-        await addEditNetworkModal.checkPageIsLoaded();
-        await addEditNetworkModal.openAddRpcUrlModal();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.openAddCustomNetworkPage();
+        const addEditNetworkPage = new AddEditNetworkPage(driver);
+        await addEditNetworkPage.checkPageIsLoaded();
+        await addEditNetworkPage.openAddRpcUrlPage();
 
         // Add rpc url
-        const addRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        await addRpcUrlModal.checkPageIsLoaded();
-        await addRpcUrlModal.fillAddRpcUrlInput(duplicateRpcUrl);
-        await addRpcUrlModal.fillAddRpcNameInput('test-name');
-        await addRpcUrlModal.saveAddRpcUrl();
+        const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
+        await addEditRpcUrlPage.checkPageIsLoaded();
+        await addEditRpcUrlPage.fillAddRpcUrlInput(duplicateRpcUrl);
+        await addEditRpcUrlPage.fillAddRpcNameInput('test-name');
+        await addEditRpcUrlPage.saveAddRpcUrl();
 
-        await addEditNetworkModal.checkPageIsLoaded();
-        await addEditNetworkModal.fillNetworkChainIdInputField('1');
-        await addEditNetworkModal.checkChainIdInputErrorMessageIsDisplayed(
+        await addEditNetworkPage.checkPageIsLoaded();
+        await addEditNetworkPage.fillNetworkChainIdInputField('1');
+        await addEditNetworkPage.checkChainIdInputErrorMessageIsDisplayed(
           'The RPC URL you have entered returned a different chain ID (1337).',
         );
       },
@@ -107,132 +107,166 @@ describe('Custom RPC history', function (this: Suite) {
   it('warns user when they enter chainId for an already configured network', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Duplicate network
         const duplicateChainId = '1';
 
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.openAddCustomNetworkModal();
-        const addEditNetworkModal = new AddEditNetworkModal(driver);
-        await addEditNetworkModal.checkPageIsLoaded();
-        await addEditNetworkModal.fillNetworkChainIdInputField(
-          duplicateChainId,
-        );
-        await addEditNetworkModal.checkChainIdInputErrorMessageIsDisplayed(
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.openAddCustomNetworkPage();
+        const addEditNetworkPage = new AddEditNetworkPage(driver);
+        await addEditNetworkPage.checkPageIsLoaded();
+        await addEditNetworkPage.fillNetworkChainIdInputField(duplicateChainId);
+        await addEditNetworkPage.checkChainIdInputErrorMessageIsDisplayed(
           'This Chain ID is currently used by the Ethereum network.',
         );
 
         // Add invalid rcp url
-        await addEditNetworkModal.openAddRpcUrlModal();
-        const addRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        await addRpcUrlModal.checkPageIsLoaded();
-        await addRpcUrlModal.fillAddRpcUrlInput('test');
-        await addRpcUrlModal.fillAddRpcNameInput('test-name');
-        await addRpcUrlModal.checkErrorMessageInvalidUrlIsDisplayed();
+        await addEditNetworkPage.openAddRpcUrlPage();
+        const addEditRpcUrlPage = new AddEditRpcUrlPage(driver);
+        await addEditRpcUrlPage.checkPageIsLoaded();
+        await addEditRpcUrlPage.fillAddRpcUrlInput('test');
+        await addEditRpcUrlPage.fillAddRpcNameInput('test-name');
+        await addEditRpcUrlPage.checkErrorMessageInvalidUrlIsDisplayed();
       },
     );
   });
 
   it('finds all recent RPCs in history', async function () {
-    const networkState = mockNetworkStateOld(
-      {
-        rpcUrl: 'http://127.0.0.1:8545/1',
-        chainId: '0x539',
-        ticker: 'ETH',
-        nickname: 'http://127.0.0.1:8545/1',
-      },
-      {
-        rpcUrl: 'http://127.0.0.1:8545/2',
-        chainId: '0x539',
-        ticker: 'ETH',
-        nickname: 'http://127.0.0.1:8545/2',
-      },
-    );
-    // Use type assertion to make selectedNetworkClientId optional
-    (
-      networkState as { selectedNetworkClientId?: string }
-    ).selectedNetworkClientId = undefined;
-
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkController(networkState)
+        fixtures: new FixtureBuilderV2()
+          .withNetworkController({
+            networkConfigurationsByChainId: {
+              '0x539': {
+                blockExplorerUrls: [],
+                chainId: '0x539',
+                defaultRpcEndpointIndex: 0,
+                name: 'Localhost 8545',
+                nativeCurrency: 'ETH',
+                rpcEndpoints: [
+                  {
+                    networkClientId: LOCALHOST_NETWORK_CLIENT_ID,
+                    type: RpcEndpointType.Custom,
+                    url: 'http://localhost:8545',
+                  },
+                  {
+                    networkClientId: 'rpc-id-1',
+                    type: RpcEndpointType.Custom,
+                    url: 'http://127.0.0.1:8545/1',
+                  },
+                  {
+                    networkClientId: 'rpc-id-2',
+                    type: RpcEndpointType.Custom,
+                    url: 'http://127.0.0.1:8545/2',
+                  },
+                ],
+              },
+            },
+            networksMetadata: {
+              'rpc-id-1': { EIPS: {}, status: NetworkStatus.Available },
+              'rpc-id-2': { EIPS: {}, status: NetworkStatus.Available },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
+        await login(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
 
         // Custom rpcs length is 1 because networks has been merged
-        await selectNetworkDialog.checkNetworkOptionIsDisplayed(
-          'Localhost 8545',
-        );
+        await networksPage.checkNetworkOptionIsDisplayed('Localhost 8545');
 
         // Only recent 3 are found and in correct order (most recent at the top)
-        await selectNetworkDialog.openNetworkRPC('eip155:1337');
-        await selectNetworkDialog.checkNetworkRPCNumber(3);
+        await networksPage.openNetworkRPC('eip155:1337');
+        await networksPage.checkNetworkRPCNumber(3);
       },
     );
   });
 
   it('deletes a custom RPC', async function () {
-    const networkState = mockNetworkStateOld(
-      {
-        rpcUrl: 'http://127.0.0.1:8545/1',
-        chainId: '0x539',
-        ticker: 'ETH',
-        nickname: 'http://127.0.0.1:8545/1',
-      },
-      {
-        rpcUrl: 'http://127.0.0.1:8545/2',
-        chainId: '0x540',
-        ticker: 'ETH',
-        nickname: 'http://127.0.0.1:8545/2',
-      },
-    );
-    // Use type assertion to make selectedNetworkClientId optional
-    (
-      networkState as { selectedNetworkClientId?: string }
-    ).selectedNetworkClientId = undefined;
-
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkController(networkState)
+        fixtures: new FixtureBuilderV2()
+          .withNetworkController({
+            networkConfigurationsByChainId: {
+              '0x539': {
+                blockExplorerUrls: [],
+                chainId: '0x539',
+                defaultRpcEndpointIndex: 0,
+                name: 'Localhost 8545',
+                nativeCurrency: 'ETH',
+                rpcEndpoints: [
+                  {
+                    networkClientId: LOCALHOST_NETWORK_CLIENT_ID,
+                    type: RpcEndpointType.Custom,
+                    url: 'http://localhost:8545',
+                  },
+                  {
+                    networkClientId: 'rpc-id-1',
+                    type: RpcEndpointType.Custom,
+                    url: 'http://127.0.0.1:8545/1',
+                  },
+                ],
+              },
+              '0x540': {
+                blockExplorerUrls: [],
+                chainId: '0x540',
+                defaultRpcEndpointIndex: 0,
+                name: 'http://127.0.0.1:8545/2',
+                nativeCurrency: 'ETH',
+                rpcEndpoints: [
+                  {
+                    networkClientId: 'rpc-id-2',
+                    type: RpcEndpointType.Custom,
+                    url: 'http://127.0.0.1:8545/2',
+                  },
+                ],
+              },
+            },
+            networksMetadata: {
+              'rpc-id-1': { EIPS: {}, status: NetworkStatus.Available },
+              'rpc-id-2': { EIPS: {}, status: NetworkStatus.Available },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.checkNetworkOptionIsDisplayed(
+        await login(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openGlobalNetworksMenu();
+        const networksPage = new NetworksPage(driver);
+        await networksPage.checkPageIsLoaded();
+        await networksPage.checkNetworkOptionIsDisplayed(
           'http://127.0.0.1:8545/2',
         );
 
         // Delete network from network list
-        await selectNetworkDialog.deleteNetwork('eip155:1344');
+        await networksPage.deleteNetwork('eip155:1344');
+        await networksPage.clickCloseButton();
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
+        await homepage.closeUseNetworkNotificationModal();
 
         // Check custom network http://127.0.0.1:8545/2 is removed from network list
         // need a hard delay to avoid the background error message "network configuration not found" for removed network
         await driver.delay(2000);
-        await switchToEditRPCViaGlobalMenuNetworks(driver);
-        await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.checkNetworkOptionIsDisplayed(
+        await headerNavbar.openGlobalNetworksMenu({ isDrawerOpen: true });
+        await networksPage.checkPageIsLoaded();
+        await networksPage.checkNetworkOptionIsDisplayed(
           'http://127.0.0.1:8545/2',
           false,
         );

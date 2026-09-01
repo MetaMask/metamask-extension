@@ -2,22 +2,15 @@ import React from 'react';
 import { fireEvent } from '@testing-library/dom';
 
 import mockState from '../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import { Header } from './header';
 
-const mockHistory = {
-  goBack: jest.fn(),
-  push: jest.fn(),
-};
-
+const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useHistory: () => mockHistory,
-}));
-
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockUseNavigate,
   useLocation: () => ({ pathname: '/send/asset' }),
   useSearchParams: jest
     .fn()
@@ -36,13 +29,13 @@ describe('Header', () => {
   it('should render correctly', () => {
     const { getByText } = render();
 
-    expect(getByText('Send')).toBeInTheDocument();
+    expect(getByText(messages.send.message)).toBeInTheDocument();
   });
 
   it('go to previous page when previous button is clicked', () => {
     const { getByRole } = render();
 
     fireEvent.click(getByRole('button'));
-    expect(mockHistory.goBack).toHaveBeenCalled();
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 });

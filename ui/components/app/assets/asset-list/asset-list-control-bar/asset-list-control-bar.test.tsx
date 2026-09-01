@@ -1,101 +1,146 @@
 import React from 'react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import type { NetworkConfiguration } from '@metamask/network-controller';
-import { fireEvent } from '../../../../../../test/jest';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../../../app/_locales/en/messages.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../../shared/constants/metametrics';
 import mockState from '../../../../../../test/data/mock-state.json';
 import * as actions from '../../../../../store/actions';
-import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
-import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
+import { setBackgroundConnection } from '../../../../../store/background-connection';
+import {
+  ASSETS_ROUTE,
+  NETWORKS_ROUTE,
+  TOKEN_MANAGEMENT_ROUTE,
+} from '../../../../../helpers/constants/routes';
+import { getIsAssetsUnifyStateEnabled } from '../../../../../selectors/assets-unify-state/feature-flags';
 import AssetListControlBar from './asset-list-control-bar';
 
-const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+type TooltipProps = {
+  children: React.ReactNode;
+  disabled?: boolean;
+  title?: string;
+};
+
+jest.mock('../../../../ui/tooltip', () => {
+  const MockTooltip = ({ children, disabled, title }: TooltipProps) => (
+    <div data-testid="tooltip" data-disabled={disabled} data-title={title}>
+      {children}
+    </div>
+  );
+
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: MockTooltip,
+  };
+});
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
 
-const createMockState = () => ({
-  ...mockState,
-  metamask: {
-    ...mockState.metamask,
-    selectedNetworkClientId: 'selectedNetworkClientId',
-    enabledNetworkMap: {
-      eip155: {
-        '0x1': true,
-      },
-    },
-    networkConfigurationsByChainId: {
-      '0x1': {
-        chainId: '0x1',
-        defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [
-          {
-            networkClientId: 'selectedNetworkClientId',
-          },
-        ],
-      },
-    } as unknown as Record<string, NetworkConfiguration>,
-    multichainNetworkConfigurationsByChainId:
-      AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-    selectedMultichainNetworkChainId: 'eip155:1',
-    isEvmSelected: true,
-    useNftDetection: true,
-    internalAccounts: {
-      selectedAccount: 'selectedAccount',
-      accounts: {
-        selectedAccount: createMockInternalAccount(),
-      },
-    },
+jest.mock('../../../../../selectors/assets-unify-state/feature-flags', () => ({
+  ...jest.requireActual(
+    '../../../../../selectors/assets-unify-state/feature-flags',
+  ),
+  getIsAssetsUnifyStateEnabled: jest.fn(() => false),
+}));
+
+const backgroundConnectionMock = new Proxy(
+  {},
+  {
+    get: () => jest.fn().mockResolvedValue(undefined),
   },
-});
+);
 
-describe('AssetListControlBar', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+const LEDGER_ACCOUNT_ID = '15e69915-2a1a-4019-93b3-916e11fd432f';
+const LEDGER_ACCOUNT_GROUP_ID =
+  'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+const DEFAULT_ACCOUNT_GROUP_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
+const SOLANA_ACCOUNT_ID = 'solana-account-id';
+const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 
-  it('should fire metrics event when refresh button is clicked', async () => {
-    const state = createMockState();
-    const store = configureMockStore([thunk])(state);
+const createMockState = () => {
+  const state = structuredClone(mockState);
 
-    const mockTrackEvent = jest.fn();
+  return {
+    ...state,
+    metamask: {
+      ...state.metamask,
+      internalAccounts: {
+        ...state.metamask.internalAccounts,
+        accounts: {
+          ...state.metamask.internalAccounts.accounts,
+        },
+      },
+      accountTree: structuredClone(state.metamask.accountTree),
+      multichainNetworkConfigurationsByChainId: {
+        ...state.metamask.multichainNetworkConfigurationsByChainId,
+      },
+      selectedNetworkClientId: 'selectedNetworkClientId',
+      completedOnboarding: true,
+      networkConfigurationsByChainId: {
+        '0x1': {
+          chainId: '0x1',
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [
+            {
+              networkClientId: 'selectedNetworkClientId',
+            },
+          ],
+        },
+      } as unknown as Record<string, NetworkConfiguration>,
+      useNftDetection: true,
+    },
+  };
+};
 
-    const { findByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <AssetListControlBar showTokensLinks />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
+const selectLedgerAccount = (state: ReturnType<typeof createMockState>) => {
+  state.metamask.internalAccounts.selectedAccount = LEDGER_ACCOUNT_ID;
+  state.metamask.selectedAccountGroup = LEDGER_ACCOUNT_GROUP_ID;
+};
 
-    const importButton = await findByTestId(
-      'asset-list-control-bar-action-button',
-    );
-    importButton.click();
+const addSolanaAccountToSelectedGroup = (
+  state: ReturnType<typeof createMockState>,
+) => {
+  (state.metamask.internalAccounts.accounts as Record<string, unknown>)[
+    SOLANA_ACCOUNT_ID
+  ] = {
+    address: '7Ec4p8d1VzC9QYQ35gzfSNJbdf2D2qTyhQEt9Dz6F5CQ',
+    id: SOLANA_ACCOUNT_ID,
+    metadata: {
+      importTime: 0,
+      name: 'Solana Account',
+      keyring: {
+        type: 'Snap Keyring',
+      },
+    },
+    options: {},
+    methods: ['solana_signTransaction'],
+    scopes: [SOLANA_CHAIN_ID],
+    type: 'solana:data-account',
+  };
+  state.metamask.accountTree.wallets[
+    'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+  ].groups[DEFAULT_ACCOUNT_GROUP_ID].accounts.push(SOLANA_ACCOUNT_ID);
+};
 
-    const refreshListItem = await findByTestId('refreshList__button');
-    refreshListItem.click();
-
-    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Tokens,
-      event: MetaMetricsEventName.TokenListRefreshed,
-    });
-  });
-});
+const selectSolanaAccount = (state: ReturnType<typeof createMockState>) => {
+  addSolanaAccountToSelectedGroup(state);
+  state.metamask.internalAccounts.selectedAccount = SOLANA_ACCOUNT_ID;
+  state.metamask.completedOnboarding = true;
+};
 
 describe('NFTs options', () => {
   afterEach(() => {
     jest.clearAllMocks();
+    jest.mocked(getIsAssetsUnifyStateEnabled).mockReturnValue(false);
   });
 
   it('should render a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', async () => {
@@ -110,10 +155,19 @@ describe('NFTs options', () => {
 
     const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
 
+    const sortButton = await findByTestId('sort-by-popover-toggle');
+    let tooltipWrapper = sortButton.closest('[data-testid="tooltip"]');
+    expect(tooltipWrapper).toHaveAttribute('data-disabled', 'false');
+
+    fireEvent.click(sortButton);
+
+    tooltipWrapper = sortButton.closest('[data-testid="tooltip"]');
+    expect(tooltipWrapper).toHaveAttribute('data-disabled', 'true');
+
     const actionButton = await findByTestId(
       'asset-list-control-bar-action-button',
     );
-    actionButton.click();
+    fireEvent.click(actionButton);
 
     const refreshButton = await findByTestId('refresh-list-button__button');
 
@@ -153,7 +207,7 @@ describe('NFTs options', () => {
     const actionButton = await findByTestId(
       'asset-list-control-bar-action-button',
     );
-    actionButton.click();
+    fireEvent.click(actionButton);
 
     const refreshButton = await findByTestId('refresh-list-button__button');
 
@@ -195,7 +249,7 @@ describe('NFTs options', () => {
     const actionButton = await findByTestId(
       'asset-list-control-bar-action-button',
     );
-    actionButton.click();
+    fireEvent.click(actionButton);
 
     const autodetectButton = await findByTestId(
       'enable-autodetect-button__button',
@@ -206,6 +260,393 @@ describe('NFTs options', () => {
     expect(autodetectButton).toBeInTheDocument();
 
     fireEvent.click(autodetectButton);
-    expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${ASSETS_ROUTE}#autodetect-tokens`,
+    );
+  });
+
+  it('shows Manage tokens instead of Import tokens when the token management feature flag is enabled', async () => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+    const state = createMockState();
+    state.metamask.remoteFeatureFlags = {
+      ...state.metamask.remoteFeatureFlags,
+      extensionUxTokenManagementFilter: true,
+    };
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId, queryByTestId } = renderWithProvider(
+      <AssetListControlBar showTokensLinks />,
+      store,
+    );
+
+    const actionButton = await findByTestId(
+      'asset-list-control-bar-action-button',
+    );
+    fireEvent.click(actionButton);
+
+    const manageTokensButton = await findByTestId('manageTokens__button');
+
+    expect(manageTokensButton).toHaveTextContent(messages.manageTokens.message);
+    expect(queryByTestId('importTokens__button')).not.toBeInTheDocument();
+
+    fireEvent.click(manageTokensButton);
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE, {
+      state: {
+        globalMenuTransition: 'forward',
+      },
+    });
+  });
+
+  it('navigates to the dedicated networks page from manage networks in the home modal', async () => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+    const state = createMockState();
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    fireEvent.click(await findByTestId('sort-by-networks'));
+    fireEvent.click(await findByTestId('home-network-filter-manage-networks'));
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
+  });
+
+  it('labels selected default networks as All networks when there are no custom or test networks visible', async () => {
+    const state = createMockState();
+    state.metamask.preferences.showTestNetworks = false;
+    state.metamask.enabledNetworkMap = {
+      eip155: {
+        '0x1': true,
+        '0x89': true,
+      },
+    };
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    const networkFilterButton = await findByTestId('sort-by-networks');
+    expect(networkFilterButton).toHaveTextContent(messages.allNetworks.message);
+
+    fireEvent.click(networkFilterButton);
+    expect(
+      await findByTestId('home-network-filter-all-default'),
+    ).toHaveTextContent(messages.allNetworks.message);
+  });
+
+  it('labels selected default networks as All default networks when custom networks exist', async () => {
+    const state = createMockState();
+    state.metamask.preferences.showTestNetworks = false;
+    state.metamask.enabledNetworkMap = {
+      eip155: {
+        '0x1': true,
+        '0x89': true,
+      },
+    };
+    state.metamask.networkConfigurationsByChainId = {
+      ...state.metamask.networkConfigurationsByChainId,
+      '0x123': {
+        chainId: '0x123',
+        name: 'Custom Network',
+        nativeCurrency: 'TST',
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [
+          {
+            networkClientId: 'customNetworkClientId',
+            type: 'custom',
+            url: 'https://custom-network.example',
+          },
+        ],
+        blockExplorerUrls: [],
+      } as unknown as NetworkConfiguration,
+    };
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    const networkFilterButton = await findByTestId('sort-by-networks');
+    expect(networkFilterButton).toHaveTextContent(
+      messages.allDefaultNetworks.message,
+    );
+
+    fireEvent.click(networkFilterButton);
+    expect(
+      await findByTestId('home-network-filter-all-default'),
+    ).toHaveTextContent(messages.allDefaultNetworks.message);
+  });
+
+  it('calls onNetworkSelect with CAIP IDs when one network is enabled', async () => {
+    const onNetworkSelect = jest.fn();
+    const state = createMockState();
+    state.metamask.enabledNetworkMap = {
+      eip155: {
+        '0x1': true,
+      },
+    };
+    const store = configureMockStore([thunk])(state);
+
+    renderWithProvider(
+      <AssetListControlBar onNetworkSelect={onNetworkSelect} />,
+      store,
+    );
+
+    await waitFor(() =>
+      expect(onNetworkSelect).toHaveBeenCalledWith(['eip155:1']),
+    );
+  });
+
+  it('falls back to all popular networks when a hardware wallet has an unsupported network filter', async () => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+    const enableAllPopularNetworksSpy = jest.spyOn(
+      actions,
+      'setEnabledAllPopularNetworks',
+    );
+    const state = createMockState();
+    selectLedgerAccount(state);
+    state.metamask.enabledNetworkMap = {
+      solana: {
+        [SOLANA_CHAIN_ID]: true,
+      },
+    };
+    const store = configureMockStore([thunk])(state);
+
+    renderWithProvider(<AssetListControlBar />, store);
+
+    await waitFor(() => expect(enableAllPopularNetworksSpy).toHaveBeenCalled());
+  });
+
+  it('falls back to all popular networks when a non-hardware EVM-only account has an unsupported network filter', async () => {
+    const enableAllPopularNetworksSpy = jest.spyOn(
+      actions,
+      'setEnabledAllPopularNetworks',
+    );
+    const state = createMockState();
+    state.metamask.enabledNetworkMap = {
+      solana: {
+        [SOLANA_CHAIN_ID]: true,
+      },
+    };
+    const store = configureMockStore([thunk])(state);
+
+    renderWithProvider(<AssetListControlBar />, store);
+
+    await waitFor(() => expect(enableAllPopularNetworksSpy).toHaveBeenCalled());
+  });
+
+  it('does not broaden an unsupported network filter when the selected account group supports that network', async () => {
+    const enableAllPopularNetworksSpy = jest.spyOn(
+      actions,
+      'setEnabledAllPopularNetworks',
+    );
+    const state = createMockState();
+    addSolanaAccountToSelectedGroup(state);
+    state.metamask.enabledNetworkMap = {
+      solana: {
+        [SOLANA_CHAIN_ID]: true,
+      },
+    };
+    const store = configureMockStore([thunk])(state);
+
+    renderWithProvider(<AssetListControlBar />, store);
+
+    await waitFor(() =>
+      expect(enableAllPopularNetworksSpy).not.toHaveBeenCalled(),
+    );
+  });
+
+  it('disables Non-EVM network rows in the home network filter for EVM-only account groups', async () => {
+    const state = createMockState();
+    selectLedgerAccount(state);
+    Object.assign(state.metamask, { useExternalServices: true });
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    fireEvent.click(await findByTestId('sort-by-networks'));
+
+    expect(
+      (
+        await findByTestId(`home-network-filter-network-${SOLANA_CHAIN_ID}`)
+      ).querySelector('.multichain-network-list-item--disabled'),
+    ).toBeInTheDocument();
+    expect(
+      (
+        await findByTestId(`home-network-filter-network-${SOLANA_CHAIN_ID}`)
+      ).querySelector(
+        `[data-title="${messages.networkNotSupportedByThisAccount.message}"]`,
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('shows Non-EVM network rows in the home network filter when the selected account group supports them', async () => {
+    const state = createMockState();
+    addSolanaAccountToSelectedGroup(state);
+    Object.assign(state.metamask, { useExternalServices: true });
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    fireEvent.click(await findByTestId('sort-by-networks'));
+
+    expect(
+      await findByTestId(`home-network-filter-network-${SOLANA_CHAIN_ID}`),
+    ).toBeInTheDocument();
+  });
+
+  it('opens the network filter modal and can navigate to manage networks', async () => {
+    const state = createMockState();
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
+
+    fireEvent.click(await findByTestId('sort-by-networks'));
+
+    fireEvent.click(await findByTestId('home-network-filter-manage-networks'));
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(NETWORKS_ROUTE);
+  });
+
+  it('shows Refresh list for non-EVM accounts on the tokens tab', async () => {
+    const state = createMockState();
+    selectSolanaAccount(state);
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(
+      <AssetListControlBar showTokensLinks />,
+      store,
+    );
+
+    fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
+
+    const refreshListButton = await findByTestId('refreshList__button');
+    expect(refreshListButton).toHaveTextContent(messages.refreshList.message);
+    expect(await findByTestId('manageTokens__button')).toBeInTheDocument();
+  });
+
+  it('refreshes via AssetsController when assets unify state is enabled', async () => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+    jest.mocked(getIsAssetsUnifyStateEnabled).mockReturnValue(true);
+    const refreshAssetsSpy = jest.spyOn(
+      actions,
+      'refreshAssetsForSelectedAccount',
+    );
+    const updateBalancesSpy = jest.spyOn(actions, 'updateBalancesFoAccounts');
+    const detectTokensSpy = jest.spyOn(actions, 'detectTokens');
+
+    const state = createMockState();
+    state.metamask.enabledNetworkMap = {
+      eip155: {
+        '0x1': true,
+      },
+    };
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(
+      <AssetListControlBar showTokensLinks />,
+      store,
+    );
+
+    fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
+    fireEvent.click(await findByTestId('refreshList__button'));
+
+    expect(refreshAssetsSpy).toHaveBeenCalledWith(
+      [expect.objectContaining({ id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3' })],
+      {
+        chainIds: ['eip155:1'],
+        assetTypes: ['token', 'price', 'metadata'],
+      },
+    );
+    expect(updateBalancesSpy).not.toHaveBeenCalled();
+    expect(detectTokensSpy).not.toHaveBeenCalled();
+  });
+
+  it('refreshes via the legacy token controllers when assets unify state is disabled', async () => {
+    setBackgroundConnection(backgroundConnectionMock as never);
+    const refreshAssetsSpy = jest.spyOn(
+      actions,
+      'refreshAssetsForSelectedAccount',
+    );
+    const updateBalancesSpy = jest.spyOn(actions, 'updateBalancesFoAccounts');
+    const detectTokensSpy = jest.spyOn(actions, 'detectTokens');
+
+    const state = createMockState();
+    state.metamask.enabledNetworkMap = {
+      eip155: {
+        '0x1': true,
+      },
+    };
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId } = renderWithProvider(
+      <AssetListControlBar showTokensLinks />,
+      store,
+    );
+
+    fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
+    fireEvent.click(await findByTestId('refreshList__button'));
+
+    expect(updateBalancesSpy).toHaveBeenCalledWith(['0x1'], false);
+    expect(detectTokensSpy).toHaveBeenCalledWith(['0x1']);
+    expect(refreshAssetsSpy).not.toHaveBeenCalled();
+  });
+
+  it('keeps the original NFT overflow menu for non-EVM accounts', async () => {
+    const state = createMockState();
+    selectSolanaAccount(state);
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId, queryByTestId } = renderWithProvider(
+      <AssetListControlBar />,
+      store,
+    );
+
+    fireEvent.click(await findByTestId('importTokens-button'));
+
+    expect(queryByTestId('refreshList__button')).not.toBeInTheDocument();
+    expect(queryByTestId('import-nfts')).not.toBeInTheDocument();
+    expect(mockUseNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE, {
+      state: {
+        globalMenuTransition: 'forward',
+      },
+    });
+  });
+
+  it('shows a refresh-only menu when onRefresh is provided and import token button is hidden', async () => {
+    const onRefresh = jest.fn();
+    const state = createMockState();
+    const store = configureMockStore([thunk])(state);
+
+    const { findByTestId, queryByTestId } = renderWithProvider(
+      <AssetListControlBar
+        showImportTokenButton={false}
+        onRefresh={onRefresh}
+      />,
+      store,
+    );
+
+    const actionButton = await findByTestId(
+      'asset-list-control-bar-action-button',
+    );
+    fireEvent.click(actionButton);
+
+    const refreshListButton = await findByTestId('refreshList__button');
+    expect(refreshListButton).toHaveTextContent(messages.refreshList.message);
+    expect(queryByTestId('manageTokens__button')).not.toBeInTheDocument();
+
+    fireEvent.click(refreshListButton);
+    expect(onRefresh).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not show the more-options menu when import token button is hidden and onRefresh is omitted', async () => {
+    const state = createMockState();
+    const store = configureMockStore([thunk])(state);
+
+    const { queryByTestId } = renderWithProvider(
+      <AssetListControlBar showImportTokenButton={false} />,
+      store,
+    );
+
+    expect(
+      queryByTestId('asset-list-control-bar-action-button'),
+    ).not.toBeInTheDocument();
   });
 });

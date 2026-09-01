@@ -1,35 +1,30 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { WalletDetailsPage } from './wallet-details-page';
 
-const mockHistoryGoBack = jest.fn();
-const mockHistoryPush = jest.fn();
-
 const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
 
-const mockUseParams = jest.fn().mockImplementation(() => ({
-  id: encodeURIComponent(walletId),
-}));
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    goBack: mockHistoryGoBack,
-    push: mockHistoryPush,
-  }),
-  useParams: () => mockUseParams(),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 describe('WalletDetailsPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  const renderComponent = (customMockedState = {}) => {
+  const renderComponent = (
+    customMockedState = {},
+    customWalletId: string = walletId,
+  ) => {
     const state = {
       activeTab: mockState.activeTab,
       metamask: {
@@ -40,7 +35,10 @@ describe('WalletDetailsPage', () => {
       },
     };
 
-    return renderWithProvider(<WalletDetailsPage />, configureStore(state));
+    return renderWithProvider(
+      <WalletDetailsPage params={{ id: encodeURIComponent(customWalletId) }} />,
+      configureStore(state),
+    );
   };
 
   it('renders the page with correct components and wallet information', () => {
@@ -49,21 +47,23 @@ describe('WalletDetailsPage', () => {
     expect(
       screen.getByRole('heading', { name: 'Wallet 1 / Accounts' }),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText('Back')).toBeInTheDocument();
-    expect(screen.getByText('Wallet name')).toBeInTheDocument();
+    expect(screen.getByLabelText(messages.back.message)).toBeInTheDocument();
+    expect(screen.getByText(messages.walletName.message)).toBeInTheDocument();
     expect(screen.getAllByText('Wallet 1')[0]).toBeInTheDocument();
-    expect(screen.getByText('Balance')).toBeInTheDocument();
-    expect(screen.getByText('Secret Recovery Phrase')).toBeInTheDocument();
+    expect(screen.getByText(messages.balance.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.secretRecoveryPhrase.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('Account 1')).toBeInTheDocument();
   });
 
-  it('calls history.goBack when back button is clicked', () => {
+  it('calls navigate when back button is clicked', () => {
     renderComponent();
 
-    const backButton = screen.getByLabelText('Back');
+    const backButton = screen.getByLabelText(messages.back.message);
     fireEvent.click(backButton);
 
-    expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('does not render backup reminder text when seedPhraseBackedUp is true', () => {
@@ -71,26 +71,22 @@ describe('WalletDetailsPage', () => {
       seedPhraseBackedUp: true,
     });
 
-    expect(screen.queryByText('Backup')).not.toBeInTheDocument();
+    expect(screen.queryByText(messages.backup.message)).not.toBeInTheDocument();
   });
 
   it('does not render SRP button for non-entropy wallets', () => {
     const ledgerWalletId = 'keyring:Ledger Hardware';
 
-    mockUseParams.mockImplementationOnce(() => ({
-      id: encodeURIComponent(ledgerWalletId),
-    }));
-
-    renderComponent();
+    renderComponent({}, ledgerWalletId);
 
     expect(
-      screen.queryByText('Secret Recovery Phrase'),
+      screen.queryByText(messages.secretRecoveryPhrase.message),
     ).not.toBeInTheDocument();
   });
 
   it('renders AddMultichainAccount component for entropy wallets', () => {
     renderComponent();
 
-    expect(screen.getByText('Create account')).toBeInTheDocument();
+    expect(screen.getByText(messages.addAccount.message)).toBeInTheDocument();
   });
 });

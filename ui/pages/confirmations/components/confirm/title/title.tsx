@@ -4,10 +4,18 @@ import {
 } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
 
+import { Skeleton } from '@metamask/design-system-react';
 import { TokenStandard } from '../../../../../../shared/constants/transaction';
+import {
+  getConfirmationTransactionType,
+  getMoneyAccountTransactionType,
+} from '../../../utils/confirm';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Box, Text } from '../../../../../components/component-library';
 import {
+  AlignItems,
+  Display,
+  FlexDirection,
   TextAlign,
   TextColor,
   TextVariant,
@@ -27,16 +35,37 @@ import { useSignatureEventFragment } from '../../../hooks/useSignatureEventFragm
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { NestedTransactionTag } from '../../transactions/nested-transaction-tag';
 import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
+import { getPermissionDescription } from '../info/typed-sign/typed-sign-permission/typed-sign-permission-util';
+import {
+  ConfirmationLoader,
+  useConfirmationNavigationOptions,
+} from '../../../hooks/useConfirmationNavigation';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
+
+const TRANSACTION_TYPES_HIDE_BANNER: string[] = [
+  TransactionType.moneyAccountDeposit,
+  TransactionType.moneyAccountWithdraw,
+  TransactionType.musdClaim,
+  TransactionType.musdConversion,
+  TransactionType.perpsDeposit,
+  TransactionType.perpsWithdraw,
+  TransactionType.predictDeposit,
+  TransactionType.predictWithdraw,
+];
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { generalAlerts } = useAlerts(ownerId);
   const { updateSignatureEventFragment } = useSignatureEventFragment();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
-  if (generalAlerts.length === 0) {
+  const transactionType = getConfirmationTransactionType(currentConfirmation);
+  const shouldHideBanner =
+    transactionType && TRANSACTION_TYPES_HIDE_BANNER.includes(transactionType);
+
+  if (generalAlerts.length === 0 || shouldHideBanner) {
     return null;
   }
 
@@ -86,67 +115,69 @@ const getTitle = (
   primaryType?: keyof typeof TypedSignSignaturePrimaryTypes,
   tokenStandard?: string,
   isUpgradeOnly?: boolean,
-) => {
-  if (pending) {
-    return '';
-  }
+): string | undefined => {
+  let title: string;
 
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
-      return t('confirmTitleTransaction');
+      title = t('confirmTitleTransaction');
+      break;
     case TransactionType.batch:
-      if (isUpgradeOnly) {
-        return t('confirmTitleAccountTypeSwitch');
-      }
-      return t('confirmTitleTransaction');
+      title = isUpgradeOnly
+        ? t('confirmTitleAccountTypeSwitch')
+        : t('confirmTitleTransaction');
+      break;
     case TransactionType.deployContract:
-      return t('confirmTitleDeployContract');
+      title = t('confirmTitleDeployContract');
+      break;
     case TransactionType.personalSign:
-      if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
-        return t('confirmTitleSIWESignature');
-      }
-      return t('confirmTitleSignature');
+      title = isSIWESignatureRequest(confirmation as SignatureRequestType)
+        ? t('confirmTitleSIWESignature')
+        : t('confirmTitleSignature');
+      break;
     case TransactionType.revokeDelegation:
-      return t('confirmTitleAccountTypeSwitch');
+      title = t('confirmTitleAccountTypeSwitch');
+      break;
     case TransactionType.signTypedData:
       if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
         const isRevokeDAIPermit = getIsRevokeDAIPermit(
           confirmation as SignatureRequestType,
         );
         if (isRevokeDAIPermit || customSpendingCap === '0') {
-          return t('confirmTitleRevokeApproveTransaction');
+          title = t('confirmTitleRevokeApproveTransaction');
+        } else if (tokenStandard === TokenStandard.ERC721) {
+          title = t('setApprovalForAllRedesignedTitle');
+        } else {
+          title = t('confirmTitlePermitTokens');
         }
-
-        if (tokenStandard === TokenStandard.ERC721) {
-          return t('setApprovalForAllRedesignedTitle');
-        }
-
-        return t('confirmTitlePermitTokens');
+      } else if ((confirmation as SignatureRequestType).decodedPermission) {
+        title = t('confirmTitlePermission');
+      } else {
+        title = t('confirmTitleSignature');
       }
-
-      if ((confirmation as SignatureRequestType).decodedPermission) {
-        return t('confirmTitlePermission');
-      }
-
-      return t('confirmTitleSignature');
+      break;
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
-        return t('confirmTitleApproveTransactionNFT');
+        title = t('confirmTitleApproveTransactionNFT');
+      } else if (customSpendingCap === '0') {
+        title = t('confirmTitleRevokeApproveTransaction');
+      } else {
+        title = t('confirmTitlePermitTokens');
       }
-      if (customSpendingCap === '0') {
-        return t('confirmTitleRevokeApproveTransaction');
-      }
-      return t('confirmTitlePermitTokens');
+      break;
     case TransactionType.tokenMethodIncreaseAllowance:
-      return t('confirmTitlePermitTokens');
+      title = t('confirmTitlePermitTokens');
+      break;
     case TransactionType.tokenMethodSetApprovalForAll:
-      if (isRevokeSetApprovalForAll) {
-        return t('confirmTitleSetApprovalForAllRevokeTransaction');
-      }
-      return t('setApprovalForAllRedesignedTitle');
+      title = isRevokeSetApprovalForAll
+        ? t('confirmTitleSetApprovalForAllRevokeTransaction')
+        : t('setApprovalForAllRedesignedTitle');
+      break;
     default:
-      return '';
+      return undefined;
   }
+
+  return pending ? '' : title;
 };
 
 const getDescription = (
@@ -197,7 +228,13 @@ const getDescription = (
         return t('confirmTitleDescPermitSignature');
       }
       if ((confirmation as SignatureRequestType).decodedPermission) {
-        return t('confirmTitleDescPermission');
+        const permissionType = (confirmation as SignatureRequestType)
+          .decodedPermission?.permission?.type;
+
+        return getPermissionDescription(
+          t as ReturnType<typeof useI18nContext>,
+          permissionType,
+        );
       }
 
       return t('confirmTitleDescSign');
@@ -222,10 +259,32 @@ const getDescription = (
   }
 };
 
-const ConfirmTitle: React.FC = memo(() => {
+export function TitleSkeleton() {
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      alignItems={AlignItems.center}
+      paddingTop={4}
+      paddingBottom={4}
+    >
+      <Skeleton
+        height="24px"
+        width="200px"
+        data-testid="confirm-title-skeleton"
+      />
+    </Box>
+  );
+}
+
+const ConfirmTitle = memo(() => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
+  const { loader } = useConfirmationNavigationOptions();
+  const isMoneyAccountTransaction = Boolean(
+    getMoneyAccountTransactionType(currentConfirmation as TransactionMeta),
+  );
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
@@ -296,28 +355,39 @@ const ConfirmTitle: React.FC = memo(() => {
   );
 
   if (!currentConfirmation) {
-    return null;
+    if (loader !== ConfirmationLoader.Default) {
+      return null;
+    }
+
+    return <TitleSkeleton />;
   }
+
+  // Show skeleton only if title is pending AND the type is handled by getTitle
+  const showTitleSkeleton = spendingCapPending && title !== undefined;
 
   return (
     <>
       <ConfirmBannerAlert ownerId={currentConfirmation.id} />
-      {title !== '' && (
+      {!isMoneyAccountTransaction && title ? (
         <Text
           variant={TextVariant.headingLg}
           paddingTop={4}
           paddingBottom={2}
           textAlign={TextAlign.Center}
+          data-testid="confirm-title-text"
         >
           {title}
         </Text>
+      ) : (
+        !isMoneyAccountTransaction && showTitleSkeleton && <TitleSkeleton />
       )}
-      <NestedTransactionTag />
-      {description !== '' && (
+      {!isMoneyAccountTransaction && <NestedTransactionTag />}
+      {!isMoneyAccountTransaction && description !== '' && (
         <Text
           paddingBottom={4}
           color={TextColor.textAlternative}
           textAlign={TextAlign.Center}
+          data-testid="confirm-title-description"
         >
           {description}
         </Text>

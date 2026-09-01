@@ -1,20 +1,25 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import {
+  ACCOUNT_2,
+  DAPP_PATH,
+  PRIVATE_KEY_TWO,
+  WINDOW_TITLES,
+} from '../../constants';
 import { Anvil } from '../../seeder/anvil';
-import { Ganache } from '../../seeder/ganache';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
-import { PRIVATE_KEY_TWO, withFixtures, WINDOW_TITLES } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
+import SnapSimpleKeyringPage from '../../page-objects/pages/snaps/simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
 describe('Snap Account Contract interaction', function (this: Suite) {
@@ -22,14 +27,16 @@ describe('Snap Account Contract interaction', function (this: Suite) {
   it('deposits to piggybank contract', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['test-dapp', 'snap-simple-keyring-site'],
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerSnapAccountConnectedToTestDapp()
-          .build(),
-        localNodeOptions: {
-          hardfork: 'london',
+        dappOptions: {
+          numberOfTestDapps: 1,
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .withPermissionControllerConnectedToTestDapp({
+            account: ACCOUNT_2,
+          })
+          .build(),
         smartContract,
         testSpecificMock: async (mockServer: Mockttp) => {
           const snapMocks = await mockSnapSimpleKeyringAndSite(
@@ -47,9 +54,9 @@ describe('Snap Account Contract interaction', function (this: Suite) {
       }: {
         driver: Driver;
         contractRegistry: ContractAddressRegistry;
-        localNodes: Anvil[] | Ganache[] | undefined[];
+        localNodes: Anvil[] | undefined[];
       }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         await installSnapSimpleKeyring(driver);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
@@ -61,7 +68,8 @@ describe('Snap Account Contract interaction', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.checkAccountLabel('SSK Account');
+        // BUG #37591 - With BIP44 the account mame is not retained.
+        await headerNavbar.checkAccountLabel('Snap Account 1');
 
         // Open Dapp with contract
         const testDapp = new TestDapp(driver);
@@ -71,7 +79,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
         await testDapp.openTestDappPage({ contractAddress });
         await testDapp.checkPageIsLoaded();
         await testDapp.createDepositTransaction();
-
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkPageIsLoaded();
         await transactionConfirmation.clickFooterConfirmButton();
@@ -83,9 +91,9 @@ describe('Snap Account Contract interaction', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity();
-        await activityList.checkTxAmountInActivity('-4 ETH');
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity();
+        await activityTab.checkTxAmountInActivity('-4 ETH');
       },
     );
   });

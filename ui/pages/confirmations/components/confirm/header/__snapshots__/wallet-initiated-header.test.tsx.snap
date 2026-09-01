@@ -12,17 +12,12 @@ exports[`<WalletInitiatedHeader /> should match snapshot 1`] = `
       data-testid="wallet-initiated-header-back-button"
     >
       <span
-        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+        class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/arrow-left.svg');"
       />
     </button>
-    <h4
-      class="mm-box mm-text mm-text--heading-sm mm-box--color-inherit"
-    >
-      Review
-    </h4>
     <div
-      class="mm-box mm-box--margin-right-1 mm-box--background-color-transparent mm-box--rounded-md"
+      class="mm-box mm-box--background-color-transparent mm-box--rounded-md"
     >
       <div>
         <div
@@ -39,7 +34,7 @@ exports[`<WalletInitiatedHeader /> should match snapshot 1`] = `
             data-testid="header-advanced-details-button"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/customize.svg');"
             />
           </button>

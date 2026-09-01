@@ -1,0 +1,74 @@
+import { Driver } from '../../../webdriver/driver';
+
+/**
+ * Legacy switch-network confirmation for `wallet_switchEthereumChain`.
+ *
+ * Screen: `#/confirmation` using the template confirmation chrome (not the
+ * redesigned confirm footer testids).
+ * Owns: "Allow this site to switch the network" copy and
+ * confirmation-submit / confirmation-cancel actions.
+ * Boundaries: add/update chain approvals are `AddNetworkConfirmation` /
+ * `UpdateNetworkConfirmation`. This object does not cover redesigned
+ * confirm footer buttons.
+ * Related: `AddNetworkConfirmation`, `UpdateNetworkConfirmation`.
+ *
+ * @see ui/pages/confirmations/confirmation/templates/switch-ethereum-chain.js
+ * @see ui/pages/confirmations/confirmation/components/confirmation-footer/confirmation-footer.js
+ * @see ui/pages/confirmations/confirmation/confirmation.js
+ */
+class SwitchNetworkConfirmation {
+  private readonly approveButton = { testId: 'confirmation-submit-button' };
+
+  private readonly cancelButton = { testId: 'confirmation-cancel-button' };
+
+  private readonly driver: Driver;
+
+  private readonly parentSelector = {
+    testId: 'parent-selector-template-confirmation-page',
+  };
+
+  private readonly switchNetworkMessage = {
+    text: 'Allow this site to switch the network',
+  };
+
+  constructor(driver: Driver) {
+    this.driver = driver;
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
+        this.switchNetworkMessage,
+        this.approveButton,
+        this.cancelButton,
+      ]);
+    } catch (e) {
+      console.log(
+        `Timeout while waiting for Switch network confirmation page to be loaded`,
+        e,
+      );
+      throw e;
+    }
+    console.log(`Switch network confirmation page is loaded`);
+  }
+
+  async clickApproveSwitchNetwork() {
+    console.log('Clicking approve switch network on confirmation dialog');
+    await this.driver.clickElement(this.approveButton);
+  }
+
+  async clickApproveSwitchNetworkAndWaitToClose() {
+    console.log(
+      'Clicking approve switch network on confirmation dialog and wait to close',
+    );
+    await this.driver.clickElementAndWaitForWindowToClose(this.approveButton);
+  }
+
+  async clickCancelSwitchNetwork() {
+    console.log('Clicking cancel switch network on confirmation dialog');
+    await this.driver.clickElement(this.cancelButton);
+  }
+}
+
+export default SwitchNetworkConfirmation;

@@ -1,110 +1,38 @@
-import { regularDelayMs } from '../../../helpers';
 import HomePage from './homepage';
+import TokensTab from './tokens-tab';
 
+/**
+ * Home account overview when a non-EVM account (Solana, Bitcoin, etc.) is
+ * selected.
+ *
+ * Screen: `#/` (DEFAULT_ROUTE) with a non-EVM account active.
+ * Owns: non-EVM token balance checks (delegates to `TokensTab`); inherits
+ * Send / Receive and other home actions from `HomePage`.
+ * Boundaries: EVM-specific overview and tab content stay on `HomePage` /
+ * the tab page objects. Token-list import/sort/hide belong to `TokensTab`.
+ * Related: `HomePage` (base), `TokensTab` (`checkExpectedTokenBalanceIsDisplayed`).
+ *
+ * @see ui/components/multichain/account-overview/account-overview-non-evm.tsx
+ */
 class NonEvmHomepage extends HomePage {
-  protected readonly buySellButton = '[data-testid="coin-overview-buy"]';
+  private readonly nonEvmPage = {
+    testId: 'parent-selector-non-evm-home',
+  };
 
-  protected readonly receiveButton = '[data-testid="coin-overview-receive"]';
-
-  protected readonly sendButton = '[data-testid="coin-overview-send"]';
-
-  protected readonly swapButton = '[data-testid="coin-overview-swap"]';
-
-  protected readonly balanceDiv =
-    '[data-testid="coin-overview__primary-currency"]';
-
-  protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
-
-  async checkPageIsLoaded(amount: string = ''): Promise<void> {
-    await super.checkPageIsLoaded();
-    await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
-    if (amount) {
-      await this.driver.wait(async () => {
-        await this.driver.waitForSelector({
-          text: `${amount}`,
-          tag: 'span',
-        });
-        return true;
-      }, 60000);
-    }
-  }
-
-  /**
-   * Clicks the bridge button on the non-EVM account homepage.
-   */
-  async clickOnBridgeButton(): Promise<void> {
-    await this.driver.waitForSelector(this.bridgeButton);
-    await this.driver.clickElement(this.bridgeButton);
-  }
-
-  /**
-   * Clicks the swap button on the non-EVM account homepage.
-   */
-  async clickOnSwapButton(): Promise<void> {
-    await this.driver.waitForSelector(this.swapButton);
-    await this.driver.clickElement(this.swapButton);
-  }
-
-  /**
-   * Clicks the send button on the non-EVM account homepage.
-   */
-  async clickOnSendButton(): Promise<void> {
-    await this.driver.waitForSelector(this.sendButton);
-    await this.driver.clickElement(this.sendButton);
-  }
-
-  /**
-   * Checks if the expected balance is displayed on homepage.
-   *
-   * @param balance
-   * @param token
-   */
-  async checkGetBalance(balance: string, token: string = 'SOL'): Promise<void> {
-    await this.driver.waitForSelector(
-      {
-        text: balance,
-        tag: 'span',
-      },
-      { timeout: 30000 },
-    );
-
-    await this.driver.waitForSelector(
-      {
-        text: token,
-        tag: 'span',
-      },
-      { timeout: 30000 },
+  async checkExpectedTokenBalanceIsDisplayed(
+    expectedTokenBalance: string,
+    symbol: string,
+  ): Promise<void> {
+    const tokensTab = new TokensTab(this.driver);
+    await tokensTab.checkExpectedTokenBalanceIsDisplayed(
+      expectedTokenBalance,
+      symbol,
     );
   }
 
-  /**
-   * Checks if the receive button is enabled on a non-evm account homepage.
-   */
-  async checkIsReceiveButtonEnabled(): Promise<boolean> {
-    try {
-      await this.driver.waitForSelector(this.receiveButton, { timeout: 5000 });
-    } catch (e) {
-      console.log('Receive button not enabled', e);
-      return false;
-    }
-    console.log('Receive button is enabled');
-    return true;
-  }
-
-  /**
-   * Checks if the buy/sell button is enabled on a non-evm account homepage.
-   */
-  async checkIfBuySellButtonIsClickable(): Promise<boolean> {
-    try {
-      await this.driver.waitForSelector(this.buySellButton, { timeout: 5000 });
-      const buySellButton = await this.driver.findClickableElement(
-        this.buySellButton,
-      );
-      return await buySellButton.isEnabled();
-    } catch (e) {
-      console.log('Buy/Sell button not enabled', e);
-      return false;
-    }
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForSelector(this.nonEvmPage);
+    console.log('Non-EVM home page is loaded');
   }
 }
 

@@ -1,20 +1,23 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  TransactionEnvelopeType,
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { useSelector } from 'react-redux';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import {
+  createEIP7702UpgradeTransaction,
+  createEIP7702DowngradeTransaction,
+  isAccountUpgraded,
+  EIP_7702_REVOKE_ADDRESS,
+} from '../../../../shared/lib/eip7702-utils';
 import {
   addTransactionAndRouteToConfirmationPage,
   getCode,
 } from '../../../store/actions';
-import { selectDefaultRpcEndpointByChainId } from '../../../selectors';
+import {
+  selectDefaultRpcEndpointByChainId,
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../shared/lib/selectors/networks';
+import { useDispatch } from '../../../store/hooks';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
-
-export const EIP_7702_REVOKE_ADDRESS =
-  '0x0000000000000000000000000000000000000000';
 
 export function useEIP7702Account(
   { chainId, onRedirect }: { chainId: Hex; onRedirect?: () => void } = {
@@ -24,8 +27,9 @@ export function useEIP7702Account(
   const dispatch = useDispatch();
   const [transactionId, setTransactionId] = useState<string | undefined>();
   const { confirmations, navigateToId } = useConfirmationNavigation();
-  const defaultRpcEndpoint = useSelector((state) =>
-    selectDefaultRpcEndpointByChainId(state, chainId),
+  const defaultRpcEndpoint = useSelector(
+    (state: NetworkConfigurationsByChainIdState) =>
+      selectDefaultRpcEndpointByChainId(state, chainId),
   ) ?? { defaultRpcEndpoint: {} };
   const { networkClientId } = defaultRpcEndpoint as { networkClientId: string };
 
@@ -35,60 +39,54 @@ export function useEIP7702Account(
 
   const downgradeAccount = useCallback(
     async (address: Hex) => {
-      const transactionMeta = (await dispatch(
-        addTransactionAndRouteToConfirmationPage(
-          {
-            authorizationList: [
-              {
-                address: EIP_7702_REVOKE_ADDRESS,
-              },
-            ],
-            from: address,
-            to: address,
-            type: TransactionEnvelopeType.setCode,
-          },
-          {
-            networkClientId,
-            type: TransactionType.revokeDelegation,
-          },
-        ),
-      )) as unknown as TransactionMeta;
+      const result = await createEIP7702DowngradeTransaction(
+        {
+          address,
+          networkClientId,
+        },
+        async (transactionParams, options) => {
+          const transactionMeta = (await dispatch(
+            addTransactionAndRouteToConfirmationPage(
+              transactionParams,
+              options,
+            ),
+          )) as unknown as TransactionMeta;
+          return transactionMeta;
+        },
+      );
 
-      setTransactionId(transactionMeta?.id);
+      setTransactionId(result.transactionId);
     },
     [dispatch, networkClientId],
   );
 
   const upgradeAccount = useCallback(
     async (address: Hex, upgradeContractAddress: Hex) => {
-      const transactionMeta = (await dispatch(
-        addTransactionAndRouteToConfirmationPage(
-          {
-            authorizationList: [
-              {
-                address: upgradeContractAddress,
-              },
-            ],
-            from: address,
-            to: address,
-            type: TransactionEnvelopeType.setCode,
-          },
-          {
-            networkClientId,
-            type: TransactionType.batch,
-          },
-        ),
-      )) as unknown as TransactionMeta;
+      const result = await createEIP7702UpgradeTransaction(
+        {
+          address,
+          upgradeContractAddress,
+          networkClientId,
+        },
+        async (transactionParams, options) => {
+          const transactionMeta = (await dispatch(
+            addTransactionAndRouteToConfirmationPage(
+              transactionParams,
+              options,
+            ),
+          )) as unknown as TransactionMeta;
+          return transactionMeta;
+        },
+      );
 
-      setTransactionId(transactionMeta?.id);
+      setTransactionId(result.transactionId);
     },
     [dispatch, networkClientId],
   );
 
   const isUpgraded = useCallback(
     async (address: Hex) => {
-      const code = await getCode(address, networkClientId);
-      return code?.length > 2;
+      return isAccountUpgraded(address, networkClientId, getCode);
     },
     [networkClientId],
   );
@@ -102,3 +100,5 @@ export function useEIP7702Account(
 
   return { isUpgraded, downgradeAccount, upgradeAccount };
 }
+
+export { EIP_7702_REVOKE_ADDRESS };

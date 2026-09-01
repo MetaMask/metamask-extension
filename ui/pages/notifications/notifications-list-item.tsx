@@ -1,11 +1,16 @@
-import React, { useContext, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import React, { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { hasProperty } from '@metamask/utils';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  type INotification,
+  isOnChainNotification,
+} from '@metamask/notification-services-controller/notification-services';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import { getNotificationTypeForAnalytics } from '../../helpers/utils/notification.util';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
@@ -20,42 +25,47 @@ import {
   TRIGGER_TYPES,
   hasNotificationComponents,
 } from './notification-components';
-import { type Notification } from './notification-components/types/notifications/notifications';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NotificationsListItem({
   notification,
 }: {
-  notification: Notification;
+  notification: INotification;
 }) {
   const navigate = useNavigate();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { setNotificationTimeout } = useSnapNotificationTimeouts();
 
   const { markNotificationAsRead } = useMarkNotificationAsRead();
 
   const handleNotificationClick = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.NotificationClicked,
-      properties: {
+    const otherNotificationProperties = () => {
+      if (
+        'notification_type' in notification &&
+        isOnChainNotification(notification) &&
+        notification.payload.chain_id
+      ) {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        notification_id: notification.id,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        notification_type: notification.type,
-        ...('chain_id' in notification && {
+        return { chain_id: notification.payload.chain_id };
+      }
+
+      return undefined;
+    };
+
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.NotificationClicked)
+        .addCategory(MetaMetricsEventCategory.NotificationInteraction)
+        .addProperties({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: notification.chain_id,
-        }),
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        previously_read: notification.isRead,
-      },
-    });
+          /* eslint-disable @typescript-eslint/naming-convention */
+          notification_id: notification.id,
+          notification_type: getNotificationTypeForAnalytics(notification),
+          notification_subtype: notification.notification_subtype,
+          ...otherNotificationProperties(),
+          /* eslint-enable @typescript-eslint/naming-convention */
+        })
+        .build(),
+    );
 
     markNotificationAsRead([
       {
@@ -73,8 +83,21 @@ export function NotificationsListItem({
       return;
     }
 
-    navigate(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
-  }, [notification, markNotificationAsRead, navigate]);
+    // If details component, perform navigation
+    if (
+      hasNotificationComponents(notification.type) &&
+      NotificationComponents[notification.type]?.details
+    ) {
+      navigate(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
+    }
+  }, [
+    trackEvent,
+    createEventBuilder,
+    notification,
+    markNotificationAsRead,
+    navigate,
+    setNotificationTimeout,
+  ]);
 
   if (!hasNotificationComponents(notification.type)) {
     return null;

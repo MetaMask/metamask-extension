@@ -1,10 +1,11 @@
 import { Suite } from 'mocha';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
+import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import {
+  enterBridgeQuote,
   getBridgeNegativeCasesFixtures,
   getInsufficientFundsFixtures,
   getQuoteNegativeCasesFixtures,
@@ -13,20 +14,28 @@ import {
   GET_QUOTE_INVALID_RESPONSE,
   FAILED_SOURCE_TRANSACTION,
   FAILED_DEST_TRANSACTION,
-  DEFAULT_BRIDGE_FEATURE_FLAGS,
+  BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
 } from './constants';
+
+const DEFAULT_LOCAL_NODE_USD_BALANCE = '24.998';
 
 describe('Bridge functionality', function (this: Suite) {
   it('should show that more funds are needed to execute the Bridge', async function () {
     await withFixtures(
-      getInsufficientFundsFixtures(
-        DEFAULT_BRIDGE_FEATURE_FLAGS,
-        this.test?.fullTitle(),
-      ),
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      {
+        ...getInsufficientFundsFixtures(
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          this.test?.fullTitle(),
+        ),
+      },
+      async ({ driver, localNodes }) => {
+        await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('$84,992.50', 'USD');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'ETH',
+        );
         await homePage.startSwapFlow();
 
         const bridgePage = new BridgeQuotePage(driver);
@@ -45,18 +54,24 @@ describe('Bridge functionality', function (this: Suite) {
 
   it('should show message that no trade route is available if getQuote returns error 500', async function () {
     await withFixtures(
-      getQuoteNegativeCasesFixtures(
-        {
-          statusCode: 500,
-          json: 'Internal server error',
-        },
-        DEFAULT_BRIDGE_FEATURE_FLAGS,
-        this.test?.fullTitle(),
-      ),
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      {
+        ...getQuoteNegativeCasesFixtures(
+          {
+            statusCode: 500,
+            json: 'Internal server error',
+          },
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          this.test?.fullTitle(),
+        ),
+      },
+      async ({ driver, localNodes }) => {
+        await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('$85,000.00', 'USD');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'ETH',
+        );
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -67,18 +82,23 @@ describe('Bridge functionality', function (this: Suite) {
 
   it('should show message that no trade route is available if getQuote returns empty array', async function () {
     await withFixtures(
-      getQuoteNegativeCasesFixtures(
-        {
-          statusCode: 200,
-          json: [],
-        },
-        DEFAULT_BRIDGE_FEATURE_FLAGS,
-        this.test?.fullTitle(),
-      ),
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      {
+        ...getQuoteNegativeCasesFixtures(
+          {
+            statusCode: 200,
+            json: [],
+          },
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          this.test?.fullTitle(),
+        ),
+      },
+      async ({ driver, localNodes }) => {
+        await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('$85,000.00', 'USD');
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'ETH',
+        );
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -89,18 +109,24 @@ describe('Bridge functionality', function (this: Suite) {
 
   it('should show message that no trade route is available if getQuote returns invalid response', async function () {
     await withFixtures(
-      getQuoteNegativeCasesFixtures(
-        {
-          statusCode: 200,
-          json: GET_QUOTE_INVALID_RESPONSE,
-        },
-        DEFAULT_BRIDGE_FEATURE_FLAGS,
-        this.test?.fullTitle(),
-      ),
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      {
+        ...getQuoteNegativeCasesFixtures(
+          {
+            statusCode: 200,
+            json: GET_QUOTE_INVALID_RESPONSE,
+          },
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          this.test?.fullTitle(),
+        ),
+      },
+      async ({ driver, localNodes }) => {
+        await login(driver, { localNode: localNodes[0] });
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('$85,000.00', 'USD');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'ETH',
+        );
 
         await homePage.startSwapFlow();
 
@@ -112,97 +138,127 @@ describe('Bridge functionality', function (this: Suite) {
 
   it('should show that bridge transaction is pending if getTxStatus returns error 500', async function () {
     await withFixtures(
-      getBridgeNegativeCasesFixtures(
-        {
-          statusCode: 500,
-          json: 'Internal server error',
-        },
-        DEFAULT_BRIDGE_FEATURE_FLAGS,
-        this.test?.fullTitle(),
-      ),
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      {
+        ...getBridgeNegativeCasesFixtures(
+          {
+            statusCode: 500,
+            json: 'Internal server error',
+          },
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          this.test?.fullTitle(),
+          { minedTx: 'reverted', isSettled: false },
+        ),
+      },
+      async ({ driver, localNodes }) => {
+        await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('$84,992.50', 'USD');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'USD',
+        );
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.submitQuote();
 
+        await bridgePage.submitQuote();
+        await bridgePage.approveModalIfPresent();
+        await driver.clickElementSafe({ text: 'View activity' });
         await homePage.goToActivityList();
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkPendingBridgeTransactionActivity();
+
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkPendingBridgeTransactionActivity();
+        await activityTab.checkBridgeTransactionDetails(
+          'Bridging ETH',
+          true,
+          'pending',
+          '1',
+          'ETH',
+        );
       },
     );
   });
 
   it('should show failed bridge activity if getTxStatus returns failed source transaction', async function () {
     await withFixtures(
-      getBridgeNegativeCasesFixtures(
-        {
-          statusCode: 200,
-          json: FAILED_SOURCE_TRANSACTION,
-        },
-        DEFAULT_BRIDGE_FEATURE_FLAGS,
-        this.test?.fullTitle(),
-      ),
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      {
+        ...getBridgeNegativeCasesFixtures(
+          {
+            statusCode: 200,
+            json: FAILED_SOURCE_TRANSACTION,
+          },
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          this.test?.fullTitle(),
+          { minedTx: 'reverted' },
+        ),
+      },
+      async ({ driver, localNodes }) => {
+        await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('$84,992.50', 'USD');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'ETH',
+        );
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.submitQuote();
-
+        await bridgePage.submitQuoteAndDismiss();
         await homePage.goToActivityList();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkFailedTxNumberDisplayedInActivity();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkFailedTxNumberDisplayedInActivity();
+        await activityTab.checkBridgeTransactionDetails(
+          'Bridge failed',
+          true,
+          'failed',
+          '1',
+          'ETH',
+        );
       },
     );
   });
 
   it('should show failed bridge activity if getTxStatus returns failed destination transaction', async function () {
     await withFixtures(
-      getBridgeNegativeCasesFixtures(
-        {
-          statusCode: 200,
-          json: FAILED_DEST_TRANSACTION,
-        },
-        DEFAULT_BRIDGE_FEATURE_FLAGS,
-        this.test?.fullTitle(),
-      ),
-      async ({ driver }) => {
-        await unlockWallet(driver);
+      {
+        ...getBridgeNegativeCasesFixtures(
+          {
+            statusCode: 200,
+            json: FAILED_DEST_TRANSACTION,
+          },
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          this.test?.fullTitle(),
+          { minedTx: 'reverted' },
+        ),
+      },
+      async ({ driver, localNodes }) => {
+        await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('$84,992.50', 'USD');
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'ETH',
+        );
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
-        await bridgePage.submitQuote();
-
+        await bridgePage.submitQuoteAndDismiss();
         await homePage.goToActivityList();
 
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkFailedTxNumberDisplayedInActivity();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkFailedTxNumberDisplayedInActivity();
+        await activityTab.checkBridgeTransactionDetails(
+          'Bridge failed',
+          true,
+          'failed',
+          '1',
+          'ETH',
+        );
       },
     );
   });
 });
-
-async function enterBridgeQuote(driver: Driver): Promise<BridgeQuotePage> {
-  const bridgePage = new BridgeQuotePage(driver);
-  await bridgePage.enterBridgeQuote({
-    amount: '1',
-    tokenFrom: 'ETH',
-    tokenTo: 'ETH',
-    fromChain: 'Ethereum',
-    toChain: 'Linea',
-  });
-
-  return bridgePage;
-}

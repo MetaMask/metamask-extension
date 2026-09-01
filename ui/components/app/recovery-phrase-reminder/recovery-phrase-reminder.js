@@ -1,27 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 // Helpers
 import {
+  AlignItems,
   TextAlign,
   TextVariant,
-  AlignItems,
-  IconColor,
-  Display,
-  FlexDirection,
-  BlockSize,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_REVEAL_SRP_ROUTE } from '../../../helpers/constants/routes';
 import {
-  Box,
   ButtonLink,
   ButtonLinkSize,
   ButtonPrimary,
   ButtonSize,
-  Icon,
-  IconName,
-  IconSize,
   Modal,
   ModalBody,
   ModalContent,
@@ -33,11 +31,11 @@ import {
 
 export default function RecoveryPhraseReminder({ onConfirm }) {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleBackUp = () => {
     const backUpSRPRoute = `${ONBOARDING_REVEAL_SRP_ROUTE}/?isFromReminder=true`;
-    history.push(backUpSRPRoute);
+    navigate(backUpSRPRoute);
   };
 
   return (
@@ -46,41 +44,35 @@ export default function RecoveryPhraseReminder({ onConfirm }) {
       <ModalContent alignItems={AlignItems.center}>
         <ModalHeader onClose={onConfirm}>
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
+            className="flex flex-col"
+            alignItems={BoxAlignItems.Center}
             gap={4}
           >
-            <Icon
-              name={IconName.Danger}
-              size={IconSize.Xl}
-              color={IconColor.warningDefault}
-            />
             <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
               {t('recoveryPhraseReminderTitle')}
             </Text>
           </Box>
         </ModalHeader>
         <ModalBody>
-          <Box width={BlockSize.Full} textAlign={TextAlign.Center}>
+          <Box
+            className="flex w-full"
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
+            marginBottom={4}
+          >
             <img
               src="images/forgot-password-lock.png"
-              width={154}
-              height={154}
+              width={100}
+              height={100}
               alt={t('recoveryPhraseReminderTitle')}
-              style={{
-                alignSelf: 'center',
-              }}
             />
           </Box>
-          <Text>{t('recoveryPhraseReminderSubText')}</Text>
+          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+            {t('recoveryPhraseReminderSubText')}
+          </Text>
         </ModalBody>
         <ModalFooter>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={2}
-          >
+          <Box className="flex flex-col" gap={2}>
             <ButtonPrimary size={ButtonSize.Lg} block onClick={handleBackUp}>
               {t('recoveryPhraseReminderBackupStart')}
             </ButtonPrimary>

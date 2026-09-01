@@ -1,57 +1,71 @@
+import { fireEvent, waitFor } from '@testing-library/react';
 import * as React from 'react';
-import { useSelector } from 'react-redux';
-import { fireEvent } from '@testing-library/react';
 import configureMockState from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { openWindow } from '../../../../helpers/utils/window';
-import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import mockState from '../../../../../test/data/mock-state.json';
+
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { selectSessionData } from '../../../../selectors/identity/authentication';
-import { getMetaMetricsId } from '../../../../selectors/selectors';
-import { getUserSubscriptions } from '../../../../selectors/subscription';
+import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
+import { buildSupportLinkWithUserData } from '../../../../../shared/lib/build-support-link';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { openWindow } from '../../../../helpers/utils/window';
+import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
+import { getCustomerServiceToken } from '../../../../store/actions';
 import VisitSupportDataConsentModal from './visit-support-data-consent-modal';
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
+jest.mock('../../../../hooks/useSegmentContext', () => ({
+  useSegmentContext: jest.fn(() => ({
+    page: { title: 'Settings' },
+  })),
 }));
 
 jest.mock('../../../../helpers/utils/window', () => ({
   openWindow: jest.fn(),
 }));
 
+jest.mock('../../../../hooks/subscription/useSubscription', () => ({
+  useUserSubscriptions: jest.fn(),
+}));
+
+jest.mock('../../../../store/actions', () => ({
+  getCustomerServiceToken: jest.fn(),
+}));
+
 describe('VisitSupportDataConsentModal', () => {
   const store = configureMockState([thunk])(mockState);
-  const mockTrackEvent = jest.fn();
   const mockOnClose = jest.fn();
-  const mockProfileId = 'test-profile-id';
-  const mockMetaMetricsId = 'test-metrics-id';
+  const mockCustomerServiceToken = 'test-customer-service-token';
   const mockShieldCustomerId = 'test-shield-customer-id';
-  const useSelectorMock = useSelector as jest.Mock;
+  const useUserSubscriptionsMock = useUserSubscriptions as jest.Mock;
+  const getCustomerServiceTokenMock = jest.mocked(getCustomerServiceToken);
 
   beforeEach(() => {
-    useSelectorMock.mockImplementation((selector) => {
-      if (selector === selectSessionData) {
-        return { profile: { profileId: mockProfileId } };
-      }
-      if (selector === getMetaMetricsId) {
-        return mockMetaMetricsId;
-      }
-      if (selector === getUserSubscriptions) {
-        return {
-          customerId: mockShieldCustomerId,
-          subscriptions: [],
-          trialedProducts: [],
-        };
-      }
-      return undefined;
+    getCustomerServiceTokenMock.mockResolvedValue(mockCustomerServiceToken);
+    useUserSubscriptionsMock.mockReturnValue({
+      customerId: mockShieldCustomerId,
+      subscriptions: [],
+      trialedProducts: [],
+      loading: false,
+      error: undefined,
     });
   });
 
@@ -67,9 +81,7 @@ describe('VisitSupportDataConsentModal', () => {
     };
 
     return renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <VisitSupportDataConsentModal {...defaultProps} />
-      </MetaMetricsContext.Provider>,
+      <VisitSupportDataConsentModal {...defaultProps} />,
       store,
     );
   };
@@ -80,28 +92,100 @@ describe('VisitSupportDataConsentModal', () => {
     expect(modal).toMatchSnapshot();
   });
 
-  it('handles clicking the accept button correctly', () => {
+  it('handles clicking the accept button correctly', async () => {
     const { getByTestId } = renderModal();
 
     fireEvent.click(
       getByTestId('visit-support-data-consent-modal-accept-button'),
     );
 
-    const expectedUrl = `${SUPPORT_LINK}?metamask_version=MOCK_VERSION&metamask_profile_id=${mockProfileId}&metamask_metametrics_id=${mockMetaMetricsId}&shield_id=${mockShieldCustomerId}`;
+    const expectedUrl = buildSupportLinkWithUserData(SUPPORT_LINK as string, {
+      version: 'MOCK_VERSION',
+      customerServiceToken: mockCustomerServiceToken,
+      shieldCustomerId: mockShieldCustomerId,
+    });
 
-    expect(mockTrackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
-          url: expectedUrl,
-        },
-      }),
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
+    await waitFor(() => {
+      expect(getCustomerServiceTokenMock).toHaveBeenCalled();
+      expect(mockOnClose).toHaveBeenCalled();
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.SupportLinkClicked,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Settings,
+            url: expectedUrl,
+            [MetaMetricsContextProp.PageTitle]: 'Settings',
+          }),
+        }),
+      );
+      expect(openWindow).toHaveBeenCalledWith(expectedUrl);
+    });
+  });
+
+  it('keeps the modal open and shows loading until the token request settles', async () => {
+    let resolveToken: (token: string | undefined) => void = () => undefined;
+    getCustomerServiceTokenMock.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveToken = resolve;
+        }),
     );
-    expect(openWindow).toHaveBeenCalledWith(expectedUrl);
+
+    const { getByTestId } = renderModal();
+    const acceptButton = getByTestId(
+      'visit-support-data-consent-modal-accept-button',
+    );
+    const rejectButton = getByTestId(
+      'visit-support-data-consent-modal-reject-button',
+    );
+
+    fireEvent.click(acceptButton);
+
+    await waitFor(() => {
+      expect(acceptButton).toBeDisabled();
+      expect(rejectButton).toBeDisabled();
+      expect(mockOnClose).not.toHaveBeenCalled();
+      expect(openWindow).not.toHaveBeenCalled();
+    });
+
+    resolveToken(mockCustomerServiceToken);
+
+    await waitFor(() => {
+      expect(mockOnClose).toHaveBeenCalled();
+      expect(openWindow).toHaveBeenCalled();
+    });
+  });
+
+  it('does not share data if the modal is dismissed while fetching the token', async () => {
+    let resolveToken: (token: string | undefined) => void = () => undefined;
+    getCustomerServiceTokenMock.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveToken = resolve;
+        }),
+    );
+
+    const { getByRole, getByTestId } = renderModal();
+
+    fireEvent.click(
+      getByTestId('visit-support-data-consent-modal-accept-button'),
+    );
+
+    await waitFor(() => {
+      expect(getCustomerServiceTokenMock).toHaveBeenCalled();
+      expect(openWindow).not.toHaveBeenCalled();
+    });
+
+    fireEvent.keyDown(getByRole('dialog'), { key: 'Escape' });
+
+    expect(mockOnClose).toHaveBeenCalled();
+
+    resolveToken(mockCustomerServiceToken);
+
+    await waitFor(() => {
+      expect(openWindow).not.toHaveBeenCalled();
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
   });
 
   it('handles clicking the reject button correctly', () => {
@@ -111,32 +195,31 @@ describe('VisitSupportDataConsentModal', () => {
       getByTestId('visit-support-data-consent-modal-reject-button'),
     );
 
+    // When user rejects, URL should preserve non-personal params (like utm_source)
+    const expectedUrl = SUPPORT_LINK;
+
     expect(mockOnClose).toHaveBeenCalled();
+    expect(getCustomerServiceTokenMock).not.toHaveBeenCalled();
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
-          url: SUPPORT_LINK,
-        },
+        name: MetaMetricsEventName.SupportLinkClicked,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Settings,
+          url: expectedUrl,
+          [MetaMetricsContextProp.PageTitle]: 'Settings',
+        }),
       }),
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
     );
-    expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);
+    expect(openWindow).toHaveBeenCalledWith(expectedUrl);
   });
 
-  it('handles clicking the accept button with undefined parameters', () => {
-    useSelectorMock.mockImplementation((selector) => {
-      if (selector === getUserSubscriptions) {
-        return {
-          customerId: undefined,
-          subscriptions: [],
-          trialedProducts: [],
-        };
-      }
-      return undefined;
+  it('handles clicking the accept button with undefined shield customer ID', async () => {
+    useUserSubscriptionsMock.mockReturnValue({
+      customerId: undefined,
+      subscriptions: [],
+      trialedProducts: [],
+      loading: false,
+      error: undefined,
     });
     const { getByTestId } = renderModal();
 
@@ -144,20 +227,178 @@ describe('VisitSupportDataConsentModal', () => {
       getByTestId('visit-support-data-consent-modal-accept-button'),
     );
 
-    const expectedUrl = `${SUPPORT_LINK}?metamask_version=MOCK_VERSION`;
+    const expectedUrl = buildSupportLinkWithUserData(SUPPORT_LINK as string, {
+      version: 'MOCK_VERSION',
+      customerServiceToken: mockCustomerServiceToken,
+    });
+
+    await waitFor(() => {
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.SupportLinkClicked,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Settings,
+            url: expectedUrl,
+            [MetaMetricsContextProp.PageTitle]: 'Settings',
+          }),
+        }),
+      );
+      expect(openWindow).toHaveBeenCalledWith(expectedUrl);
+    });
+  });
+
+  it('falls back to support link without token when token is unavailable', async () => {
+    getCustomerServiceTokenMock.mockResolvedValue(undefined);
+    useUserSubscriptionsMock.mockReturnValue({
+      customerId: undefined,
+      subscriptions: [],
+      trialedProducts: [],
+      loading: false,
+      error: undefined,
+    });
+
+    const { getByTestId } = renderModal();
+
+    fireEvent.click(
+      getByTestId('visit-support-data-consent-modal-accept-button'),
+    );
+
+    const expectedUrl = buildSupportLinkWithUserData(SUPPORT_LINK as string, {
+      version: 'MOCK_VERSION',
+    });
+
+    await waitFor(() => {
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.SupportLinkClicked,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Settings,
+            url: expectedUrl,
+            [MetaMetricsContextProp.PageTitle]: 'Settings',
+          }),
+        }),
+      );
+      expect(openWindow).toHaveBeenCalledWith(expectedUrl);
+    });
+  });
+
+  it('handles URL separator correctly when building support link', async () => {
+    const { getByTestId } = renderModal();
+
+    fireEvent.click(
+      getByTestId('visit-support-data-consent-modal-accept-button'),
+    );
+
+    await waitFor(() => {
+      expect(openWindow).toHaveBeenCalled();
+    });
+
+    const calledUrl = (openWindow as jest.Mock).mock.calls[0][0];
+    // Verify URL is properly formed with correct separator
+    expect(calledUrl).toMatch(/[?&]metamask_version=/u);
+    // Should not have double separators
+    expect(calledUrl).not.toContain('??');
+  });
+
+  it('handles reject button when SUPPORT_LINK is properly formed', () => {
+    const { getByTestId } = renderModal();
+
+    fireEvent.click(
+      getByTestId('visit-support-data-consent-modal-reject-button'),
+    );
+
+    // Should strip personal params but preserve URL structure
+    expect(openWindow).toHaveBeenCalled();
+    const calledUrl = (openWindow as jest.Mock).mock.calls[0][0];
+
+    // Verify personal params are not in URL
+    expect(calledUrl).not.toContain('customer_service_token');
+    expect(calledUrl).not.toContain('shield_id');
+    expect(calledUrl).not.toContain('metamask_version');
+  });
+
+  it('handles reject button and opens support link', async () => {
+    const { getByTestId } = renderModal();
+
+    fireEvent.click(
+      getByTestId('visit-support-data-consent-modal-reject-button'),
+    );
+
+    await waitFor(() => {
+      expect(mockOnClose).toHaveBeenCalled();
+    });
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
-          url: expectedUrl,
-        },
+        name: MetaMetricsEventName.SupportLinkClicked,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Settings,
+          [MetaMetricsContextProp.PageTitle]: 'Settings',
+        }),
       }),
-      {
-        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
-      },
     );
-    expect(openWindow).toHaveBeenCalledWith(expectedUrl);
+    expect(openWindow).toHaveBeenCalled();
+  });
+
+  it('does not render modal when isOpen is false', () => {
+    const { queryByTestId } = renderModal({ isOpen: false });
+    expect(queryByTestId('visit-support-data-consent-modal')).toBeNull();
+  });
+
+  it('passes onClose prop to modal component', () => {
+    const customOnClose = jest.fn();
+    renderModal({ onClose: customOnClose });
+
+    // The modal component receives the onClose prop
+    // This tests that the prop is correctly passed through
+    expect(customOnClose).not.toHaveBeenCalled();
+  });
+
+  it('renders modal with correct text content', () => {
+    const { getByTestId } = renderModal();
+    const modal = getByTestId('visit-support-data-consent-modal');
+    expect(modal).toBeInTheDocument();
+  });
+
+  it('calls trackEvent and openWindow in correct order on accept', async () => {
+    const callOrder: string[] = [];
+
+    mockTrackEvent.mockImplementation(() => {
+      callOrder.push('trackEvent');
+    });
+
+    (openWindow as jest.Mock).mockImplementation(() => {
+      callOrder.push('openWindow');
+    });
+
+    const { getByTestId } = renderModal();
+
+    fireEvent.click(
+      getByTestId('visit-support-data-consent-modal-accept-button'),
+    );
+
+    await waitFor(() => {
+      expect(callOrder).toEqual(['trackEvent', 'openWindow']);
+    });
+  });
+
+  it('calls trackEvent and openWindow in correct order on reject', () => {
+    const callOrder: string[] = [];
+
+    mockTrackEvent.mockImplementation(() => {
+      callOrder.push('trackEvent');
+    });
+
+    (openWindow as jest.Mock).mockImplementation(() => {
+      callOrder.push('openWindow');
+    });
+
+    const { getByTestId } = renderModal();
+
+    fireEvent.click(
+      getByTestId('visit-support-data-consent-modal-reject-button'),
+    );
+
+    expect(callOrder).toEqual(['trackEvent', 'openWindow']);
   });
 });

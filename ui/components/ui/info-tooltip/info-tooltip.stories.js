@@ -1,16 +1,10 @@
 import React from 'react';
-import README from './README.mdx';
 import InfoTooltip from './info-tooltip';
 
 export default {
   title: 'Components/UI/InfoTooltip',
 
   component: InfoTooltip,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     contentText: { control: 'text' },
     position: {

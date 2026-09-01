@@ -1,8 +1,8 @@
 import { strict as assert } from 'assert';
 import { PermissionConstraint } from '@metamask/permission-controller';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
+import { login } from '../page-objects/flows/login.flow';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { Driver } from '../webdriver/driver';
 
@@ -10,14 +10,14 @@ describe('wallet_getPermissions', function () {
   it('returns permissions when the wallet is unlocked', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.title,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -46,8 +46,8 @@ describe('wallet_getPermissions', function () {
   it('returns permissions when the wallet is locked', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.title,

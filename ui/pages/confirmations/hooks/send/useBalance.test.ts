@@ -1,16 +1,16 @@
-import { DefaultRootState } from 'react-redux';
+import type { MetaMaskReduxState } from '../../../../store/store';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import {
   EVM_NATIVE_ASSET,
   MOCK_NFT1155,
 } from '../../../../../test/data/send/assets';
-import { Numeric } from '../../../../../shared/modules/Numeric';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { Numeric } from '../../../../../shared/lib/Numeric';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import * as SendContext from '../../context/send';
 import { useBalance } from './useBalance';
 
-function renderHook(state?: DefaultRootState) {
+function renderHook(state?: MetaMaskReduxState) {
   const { result } = renderHookWithProvider(useBalance, state ?? mockState);
   return result.current;
 }

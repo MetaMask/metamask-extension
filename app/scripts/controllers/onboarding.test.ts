@@ -1,16 +1,29 @@
-import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import OnboardingController, {
+import {
+  OnboardingController,
+  OnboardingControllerMessenger,
   getDefaultOnboardingControllerState,
 } from './onboarding';
 
 function setupController(): OnboardingController {
-  const messenger = new Messenger();
-  const onboardingControllerMessenger = messenger.getRestricted({
-    name: 'OnboardingController',
-    allowedActions: [],
-    allowedEvents: [],
-  });
+  const messenger = new Messenger<
+    MockAnyNamespace,
+    MessengerActions<OnboardingControllerMessenger>,
+    MessengerEvents<OnboardingControllerMessenger>
+  >({ namespace: MOCK_ANY_NAMESPACE });
+  const onboardingControllerMessenger: OnboardingControllerMessenger =
+    new Messenger({
+      namespace: 'OnboardingController',
+      parent: messenger,
+    });
   const onboardingController = new OnboardingController({
     messenger: onboardingControllerMessenger,
     state: getDefaultOnboardingControllerState(),
@@ -33,6 +46,19 @@ describe('OnboardingController', () => {
     expect(controller.state.firstTimeFlowType).toBe(type);
   });
 
+  it('should set the hasSeenOnboardingCompletionPage property', () => {
+    const controller = setupController();
+    controller.setHasSeenOnboardingCompletionPage(true);
+    expect(controller.state.hasSeenOnboardingCompletionPage).toBe(true);
+  });
+
+  it('should reset hasSeenOnboardingCompletionPage when onboarding is reset', () => {
+    const controller = setupController();
+    controller.setHasSeenOnboardingCompletionPage(true);
+    controller.resetOnboarding();
+    expect(controller.state.hasSeenOnboardingCompletionPage).toBe(false);
+  });
+
   it('should register a site for onboarding', async () => {
     const controller = setupController();
     const location = 'example.com';
@@ -49,12 +75,13 @@ describe('OnboardingController', () => {
         deriveStateFromMetadata(
           controller.state,
           controller.metadata,
-          'anonymous',
+          'includeInDebugSnapshot',
         ),
       ).toMatchInlineSnapshot(`
         {
           "completedOnboarding": false,
           "firstTimeFlowType": null,
+          "hasSeenOnboardingCompletionPage": false,
           "seedPhraseBackedUp": null,
         }
       `);
@@ -73,6 +100,7 @@ describe('OnboardingController', () => {
         {
           "completedOnboarding": false,
           "firstTimeFlowType": null,
+          "hasSeenOnboardingCompletionPage": false,
           "onboardingTabs": {},
           "seedPhraseBackedUp": null,
         }
@@ -92,6 +120,7 @@ describe('OnboardingController', () => {
         {
           "completedOnboarding": false,
           "firstTimeFlowType": null,
+          "hasSeenOnboardingCompletionPage": false,
           "seedPhraseBackedUp": null,
         }
       `);
@@ -110,6 +139,7 @@ describe('OnboardingController', () => {
         {
           "completedOnboarding": false,
           "firstTimeFlowType": null,
+          "hasSeenOnboardingCompletionPage": false,
           "onboardingTabs": {},
           "seedPhraseBackedUp": null,
         }

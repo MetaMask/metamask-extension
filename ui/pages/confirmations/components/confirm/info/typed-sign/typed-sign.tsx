@@ -3,7 +3,7 @@ import { isValidAddress } from 'ethereumjs-util';
 
 import { isSnapId } from '@metamask/snaps-utils';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
-import { parseTypedDataMessage } from '../../../../../../../shared/modules/transaction.utils';
+import { parseTypedDataMessage } from '../../../../../../../shared/lib/transaction.utils';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import {
   ConfirmInfoRow,
@@ -20,21 +20,17 @@ import {
   isPermitSignatureRequest,
 } from '../../../../utils';
 import { useConfirmContext } from '../../../../context/confirm';
-import { useIsBIP44 } from '../../../../hooks/useIsBIP44';
 import { useTypesSignSimulationEnabledInfo } from '../../../../hooks/useTypesSignSimulationEnabledInfo';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import { NetworkRow } from '../shared/network-row/network-row';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 import { TypedSignV4Simulation } from './typed-sign-v4-simulation';
 
-const TypedSignInfo: React.FC = () => {
-  const t = useI18nContext();
+const useTokenContract = () => {
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
-  const isSimulationSupported = useTypesSignSimulationEnabledInfo();
-  const isBIP44 = useIsBIP44();
 
   if (!currentConfirmation?.msgParams) {
-    return null;
+    return { chainId: '' };
   }
 
   const {
@@ -45,9 +41,25 @@ const TypedSignInfo: React.FC = () => {
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const isOrder = isOrderSignatureRequest(currentConfirmation);
   const tokenContract = isPermit || isOrder ? verifyingContract : undefined;
-  const { decimalsNumber } = useGetTokenStandardAndDetails(tokenContract);
-
   const chainId = currentConfirmation.chainId as string;
+
+  return { tokenContract, verifyingContract, spender, isPermit, chainId };
+};
+
+const TypedSignInfo = () => {
+  const t = useI18nContext();
+  const isSimulationSupported = useTypesSignSimulationEnabledInfo();
+  const { tokenContract, verifyingContract, spender, isPermit, chainId } =
+    useTokenContract();
+  const { decimalsNumber } = useGetTokenStandardAndDetails(
+    tokenContract,
+    chainId,
+  );
+
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  if (!currentConfirmation?.msgParams) {
+    return null;
+  }
 
   const toolTipMessage = isSnapId(currentConfirmation.msgParams.origin)
     ? t('requestFromInfoSnap')
@@ -60,13 +72,17 @@ const TypedSignInfo: React.FC = () => {
       <ConfirmInfoSection data-testid="confirmation_request-section">
         {isPermit && (
           <>
-            <ConfirmInfoRow label={t('spender')}>
+            <ConfirmInfoAlertRow
+              alertKey={RowAlertKey.Spender}
+              ownerId={currentConfirmation.id}
+              label={t('spender')}
+            >
               <ConfirmInfoRowAddress address={spender} chainId={chainId} />
-            </ConfirmInfoRow>
+            </ConfirmInfoAlertRow>
             <ConfirmInfoRowDivider />
           </>
         )}
-        <NetworkRow isShownWithAlertsOnly={!isBIP44} />
+        <NetworkRow />
         <ConfirmInfoAlertRow
           alertKey={RowAlertKey.RequestFrom}
           ownerId={currentConfirmation.id}

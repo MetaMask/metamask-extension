@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { ALERT_STATE } from '../../../../ducks/alerts';
@@ -12,10 +12,11 @@ import Popover from '../../../ui/popover';
 import { Button, ButtonVariant } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
+import { useDispatch } from '../../../../store/hooks';
 
 const { ERROR, LOADING } = ALERT_STATE;
 
-const InvalidCustomNetworkAlert = ({ history }) => {
+const InvalidCustomNetworkAlert = ({ navigate }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const alertState = useSelector(getAlertState);
@@ -43,7 +44,7 @@ const InvalidCustomNetworkAlert = ({ history }) => {
           disabled={alertState === LOADING}
           onClick={async () => {
             await onClose();
-            history.push(NETWORKS_ROUTE);
+            navigate(NETWORKS_ROUTE);
           }}
           variant={ButtonVariant.Primary}
           className="invalid-custom-network-alert__footer-row-button"
@@ -82,7 +83,7 @@ const InvalidCustomNetworkAlert = ({ history }) => {
 };
 
 InvalidCustomNetworkAlert.propTypes = {
-  history: PropTypes.object.isRequired,
+  navigate: PropTypes.func.isRequired,
 };
 
 export default InvalidCustomNetworkAlert;

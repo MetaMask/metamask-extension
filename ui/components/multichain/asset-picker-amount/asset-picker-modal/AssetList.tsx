@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import classnames from 'classnames';
+import React, { useMemo, useState } from 'react';
+import classnames from 'clsx';
 import {
   AddNetworkFields,
   NetworkConfiguration,
@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { Box } from '../../../component-library';
+import { MarketClosedModal } from '../../../app/assets/market-closed-modal';
 import {
   AlignItems,
   BackgroundColor,
@@ -16,7 +17,7 @@ import {
   Display,
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
-import { TokenListItem } from '../..';
+import { TokenListItem } from '../../token-list-item';
 import LoadingScreen from '../../../ui/loading-screen';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -31,8 +32,9 @@ import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
   type SafeChain,
   useSafeChains,
-} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+} from '../../networks-form/use-safe-chains';
+import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
+import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
 import AssetComponent from './Asset';
 import { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
 
@@ -63,8 +65,6 @@ type AssetListProps = {
   isDestinationToken?: boolean;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AssetList({
   handleAssetChange,
   asset,
@@ -102,6 +102,8 @@ export default function AssetList({
   });
 
   const { safeChains } = useSafeChains();
+  const { isStockToken, isTokenTradingOpen } = useRWAToken();
+  const [showMarketClosedModal, setShowMarketClosedModal] = useState(false);
   const safeChainDetails: SafeChain | undefined = useMemo(
     () =>
       safeChains?.find((chain) => {
@@ -135,6 +137,7 @@ export default function AssetList({
         const isSelected = isMatchingChainId && isMatchingAddress;
 
         const isDisabled = isTokenDisabled?.(token) ?? false;
+        const tokenIsStock = isStockToken(token);
 
         return (
           <Box
@@ -154,6 +157,10 @@ export default function AssetList({
             data-testid="asset-list-item"
             onClick={() => {
               if (isDisabled) {
+                return;
+              }
+              if (tokenIsStock && !isTokenTradingOpen(token)) {
+                setShowMarketClosedModal(true);
                 return;
               }
               handleAssetChange(token);
@@ -187,6 +194,7 @@ export default function AssetList({
                     tokenImage={token.image}
                     tokenChainImage={getImageForChainId(token.chainId)}
                     nativeCurrencySymbol={nativeCurrencySymbol}
+                    rwaData={token.rwaData}
                     {...assetItemProps}
                     isTitleNetworkName={false}
                   />
@@ -208,6 +216,10 @@ export default function AssetList({
           </Box>
         );
       })}
+      <MarketClosedModal
+        isOpen={showMarketClosedModal}
+        onClose={() => setShowMarketClosedModal(false)}
+      />
     </Box>
   );
 }

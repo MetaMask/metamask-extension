@@ -1,0 +1,456 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import log from 'loglevel';
+import { useSelector } from 'react-redux';
+import { useNavigate, useLocation } from 'react-router-dom';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+  Box,
+  Text,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  ButtonSize,
+  ButtonVariant,
+  Button,
+  TextVariant,
+  TextColor,
+} from '@metamask/design-system-react';
+import {
+  FormTextField,
+  FormTextFieldSize,
+  TextFieldType,
+} from '../../../components/component-library';
+import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { transitionBack } from '../../../components/ui/transition';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { createSentryError } from '../../../../shared/lib/error';
+import {
+  getPasskeyAuthMethodKey,
+  translatePasskeyError,
+  isPasskeyCeremonySilentError,
+} from '../../../../shared/lib/passkey';
+import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
+import { captureException } from '../../../../shared/lib/sentry';
+import {
+  forceUpdateMetamaskState,
+  verifyPassword,
+} from '../../../store/actions';
+import { toast, ToastContent } from '../../../components/ui/toast/toast';
+import { SECOND } from '../../../../shared/constants/time';
+import { useDispatch } from '../../../store/hooks';
+import { usePasskeyPRFSupport } from '../../../hooks/usePasskeyPRFSupport';
+import { usePasskeyEnrollment } from '../../../hooks/passkey/usePasskeyEnrollment';
+
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import {
+  getIsPasskeyRegistered,
+  getPasskeyAuthenticatorId,
+  getPasskeyDerivationMethod,
+} from '../../../selectors';
+import {
+  PasskeyEnrollmentSteps,
+  type PasskeyEnrollmentStepStatus,
+} from '../../../components/app/passkey-enrollment-steps';
+
+const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
+
+/** Brief pause after verify succeeds so the completion icon is visible before navigation. */
+const PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS = 500;
+
+/** Default row status before enrollment starts or after the user silently dismisses WebAuthn. */
+const DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS: PasskeyEnrollmentStepStatus =
+  'idle';
+
+const PasskeyRegisterSteps = {
+  /** Shown when opening from side panel in a full tab so users see context before the password step. */
+  Intro: 0,
+  VerifyPassword: 1,
+  RegisterPasskey: 2,
+} as const;
+
+export default function PasskeyRegisterSubPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const { enrollWithPasskey } = usePasskeyEnrollment();
+  const t = useI18nContext() as (
+    key: string,
+    substitutions?: string[],
+  ) => string;
+  const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
+  const passkeyMethodSpecificLabel = t(
+    getPasskeyAuthMethodKey({ specific: true }),
+  );
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
+
+  const fromSidepanel =
+    new URLSearchParams(location.search).get('from') === 'sidepanel';
+
+  const [step, setStep] = useState<
+    (typeof PasskeyRegisterSteps)[keyof typeof PasskeyRegisterSteps]
+  >(() =>
+    fromSidepanel
+      ? PasskeyRegisterSteps.Intro
+      : PasskeyRegisterSteps.VerifyPassword,
+  );
+  const [walletPassword, setWalletPassword] = useState('');
+  const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
+    useState(false);
+  const [isVerifyingPassword, setIsVerifyingPassword] = useState(false);
+  const [isEnrollmentInProgress, setIsEnrollmentInProgress] = useState(false);
+  const [registerStepStatus, setRegisterStepStatus] =
+    useState<PasskeyEnrollmentStepStatus>(
+      DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS,
+    );
+  const [verifyStepStatus, setVerifyStepStatus] =
+    useState<PasskeyEnrollmentStepStatus>(
+      DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS,
+    );
+  const [enrollmentError, setEnrollmentError] = useState<string | null>(null);
+
+  usePasskeyPRFSupport({
+    enabled: !isPasskeyRegistered,
+    onUnsupported: useCallback(
+      () => navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true }),
+      [navigate],
+    ),
+  });
+
+  useEffect(() => {
+    // Only redirect when a passkey already exists before enrollment UI. During
+    // in-flight enrollment, `passkeyRecord` may be set mid-flow; do not redirect from RegisterPasskey.
+    if (
+      isPasskeyRegistered &&
+      (step === PasskeyRegisterSteps.Intro ||
+        step === PasskeyRegisterSteps.VerifyPassword)
+    ) {
+      navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
+    }
+  }, [isPasskeyRegistered, navigate, step]);
+
+  const goToSettings = useCallback(() => {
+    setWalletPassword('');
+    transitionBack(() =>
+      navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true }),
+    );
+  }, [navigate]);
+
+  const beginPasskeyCeremonyFlow = useCallback(async () => {
+    setEnrollmentError(null);
+    setRegisterStepStatus('loading');
+    setVerifyStepStatus(DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS);
+    setIsEnrollmentInProgress(true);
+
+    if (isPasskeyRegistered) {
+      goToSettings();
+      return;
+    }
+
+    const enrollmentStartedAt = Date.now();
+    let currentStep = 'register';
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.PasskeySetup)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
+          status: 'started',
+        })
+        .build(),
+    );
+
+    let registrationSucceeded = false;
+
+    try {
+      await enrollWithPasskey({
+        password: walletPassword,
+        onStageChange: (stage) => {
+          currentStep = stage;
+          if (stage === 'verify') {
+            setRegisterStepStatus('success');
+            setVerifyStepStatus('loading');
+            registrationSucceeded = true;
+          }
+        },
+      });
+      const newMetamaskState = await forceUpdateMetamaskState(dispatch);
+      setVerifyStepStatus('success');
+      setWalletPassword('');
+
+      currentStep = 'complete';
+      const derivationMethod = getPasskeyDerivationMethod({
+        metamask: newMetamaskState,
+      });
+      const authenticatorId = getPasskeyAuthenticatorId({
+        metamask: newMetamaskState,
+      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PasskeySetup)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            status: 'completed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            derivation_method: derivationMethod,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            authenticator_id: authenticatorId,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - enrollmentStartedAt,
+          })
+          .build(),
+      );
+
+      await new Promise((resolve) => {
+        setTimeout(resolve, PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS);
+      });
+      toast.success(
+        <ToastContent title={t('passkeyTurnedOn', [passkeyMethodLabel])} />,
+        {
+          duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
+        },
+      );
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_group: 'security_privacy',
+            settings_type: 'passkey',
+            old_value: false,
+            new_value: true,
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build(),
+      );
+      goToSettings();
+    } catch (error) {
+      const durationMs = Date.now() - enrollmentStartedAt;
+      if (isPasskeyCeremonySilentError(error)) {
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.PasskeySetup)
+            .addCategory(MetaMetricsEventCategory.Settings)
+            .addProperties({
+              status: 'cancelled',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              current_step: currentStep,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              duration_ms: durationMs,
+            })
+            .build(),
+        );
+        log.debug(
+          'Settings passkey enrollment ceremony cancelled or timed out',
+          error,
+        );
+        setRegisterStepStatus(DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS);
+        setVerifyStepStatus(DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS);
+        return;
+      }
+
+      const errorCode = getPasskeyErrorCode(error);
+      captureException(
+        createSentryError('Passkey registration in settings failed', error),
+        {
+          extra: { currentStep, durationMs, errorCode },
+        },
+      );
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PasskeySetup)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            status: 'failed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            error_step: currentStep,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: durationMs,
+            reason: errorCode,
+          })
+          .build(),
+      );
+      setEnrollmentError(
+        translatePasskeyError(error, t, passkeyMethodLabel) ??
+          (registrationSucceeded
+            ? t('passkeyErrorAuthenticationVerificationFailed', [
+                passkeyMethodLabel,
+              ])
+            : t('passkeyErrorRegistrationFailed', [passkeyMethodLabel])),
+      );
+    } finally {
+      setIsEnrollmentInProgress(false);
+      setRegisterStepStatus((prev) => (prev === 'loading' ? 'idle' : prev));
+      setVerifyStepStatus((prev) => (prev === 'loading' ? 'idle' : prev));
+    }
+  }, [
+    createEventBuilder,
+    dispatch,
+    enrollWithPasskey,
+    goToSettings,
+    isPasskeyRegistered,
+    passkeyMethodLabel,
+    t,
+    trackEvent,
+    walletPassword,
+  ]);
+
+  const handleSubmitCurrentPassword = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+    setIsVerifyingPassword(true);
+    setIsIncorrectPasswordError(false);
+    try {
+      await verifyPassword(walletPassword);
+      setStep(PasskeyRegisterSteps.RegisterPasskey);
+      await beginPasskeyCeremonyFlow();
+    } catch {
+      setIsIncorrectPasswordError(true);
+    } finally {
+      setIsVerifyingPassword(false);
+    }
+  };
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Start}
+      alignItems={BoxAlignItems.Stretch}
+      gap={6}
+      padding={4}
+      className="h-full min-h-0"
+    >
+      {step === PasskeyRegisterSteps.Intro && (
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          gap={6}
+          justifyContent={BoxJustifyContent.Start}
+          asChild
+          className="min-h-0 shrink-0"
+        >
+          <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+              data-testid="register-passkey-intro-description"
+            >
+              {t('passkeyDescription', [passkeyMethodSpecificLabel])}
+            </Text>
+            <Button
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              className="w-full shrink-0"
+              data-testid="register-passkey-intro-continue-button"
+              aria-label={t('setUpPasskey', [passkeyMethodLabel])}
+              onClick={() => {
+                setStep(PasskeyRegisterSteps.VerifyPassword);
+              }}
+            >
+              {t('setUpPasskey', [passkeyMethodLabel])}
+            </Button>
+          </Box>
+        </Box>
+      )}
+
+      {step === PasskeyRegisterSteps.VerifyPassword && (
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          gap={6}
+          justifyContent={BoxJustifyContent.Between}
+          asChild
+          className="min-h-0 shrink-0"
+        >
+          <form onSubmit={handleSubmitCurrentPassword}>
+            <FormTextField
+              id="register-passkey-current-password"
+              label={t('enterPasswordCurrent')}
+              textFieldProps={{ type: TextFieldType.Password }}
+              size={FormTextFieldSize.Lg}
+              labelProps={{
+                marginBottom: 1,
+              }}
+              inputProps={{
+                autoFocus: true,
+                'data-testid': 'register-passkey-password-input',
+              }}
+              value={walletPassword}
+              error={isIncorrectPasswordError}
+              helpText={
+                isIncorrectPasswordError
+                  ? t('unlockPageIncorrectPassword')
+                  : null
+              }
+              onChange={(e) => {
+                setWalletPassword(e.target.value);
+                setIsIncorrectPasswordError(false);
+              }}
+            />
+            <Button
+              type="submit"
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              className="w-full"
+              data-testid="register-passkey-verify-continue-button"
+              disabled={
+                !walletPassword ||
+                isVerifyingPassword ||
+                isIncorrectPasswordError
+              }
+              isLoading={isVerifyingPassword}
+            >
+              {t('continue')}
+            </Button>
+          </form>
+        </Box>
+      )}
+
+      {step === PasskeyRegisterSteps.RegisterPasskey && (
+        <>
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            data-testid="register-passkey-description"
+          >
+            {t('passkeyDescription', [passkeyMethodSpecificLabel])}
+          </Text>
+
+          {isEnrollmentInProgress ? (
+            <PasskeyEnrollmentSteps
+              registerStatus={registerStepStatus}
+              verifyStatus={verifyStepStatus}
+              registerLabel={t('passkeySetupStepRegister', [
+                passkeyMethodSpecificLabel,
+              ])}
+              verifyLabel={t('passkeySetupStepVerify', [
+                passkeyMethodSpecificLabel,
+              ])}
+              className="w-full"
+            />
+          ) : (
+            <>
+              {enrollmentError && (
+                <BannerAlert
+                  severity={BannerAlertSeverity.Danger}
+                  description={enrollmentError}
+                  data-testid="passkey-enrollment-error"
+                />
+              )}
+
+              <Button
+                variant={ButtonVariant.Primary}
+                size={ButtonSize.Lg}
+                className="w-full shrink-0"
+                data-testid="register-passkey-set-up-button"
+                aria-label={t('setUpPasskey', [passkeyMethodLabel])}
+                onClick={beginPasskeyCeremonyFlow}
+              >
+                {t('setUpPasskey', [passkeyMethodLabel])}
+              </Button>
+            </>
+          )}
+        </>
+      )}
+    </Box>
+  );
+}

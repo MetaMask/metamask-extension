@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import configureStore from '../../../../store/store';
 import { QuizStage } from '../types';
@@ -32,7 +32,8 @@ describe('srp-reveal-quiz', () => {
   });
 
   it('should go through the full sequence of steps', async () => {
-    renderWithProvider(<SRPQuiz isOpen />, store);
+    const mockNavigate = jest.fn();
+    renderWithProvider(<SRPQuiz isOpen navigate={mockNavigate} />, store);
 
     expect(screen.queryByTestId('srp-quiz-get-started')).toBeInTheDocument();
 
@@ -44,9 +45,7 @@ describe('srp-reveal-quiz', () => {
 
     await waitFor(() =>
       expect(openTabSpy).toHaveBeenCalledWith({
-        url: expect.stringMatching(
-          `${ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}#metamask-secret-recovery-phrase-dos-and-donts`,
-        ),
+        url: `${ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}#metamask-secret-recovery-phrase-dos-and-donts`,
       }),
     );
 

@@ -1,15 +1,13 @@
-import React, { ReactNode, useState } from 'react';
-import { Box } from '../../../../component-library';
+import React, { ReactNode } from 'react';
 import {
-  Display,
-  FlexDirection,
-  BlockSize,
-  JustifyContent,
-} from '../../../../../helpers/constants/design-system';
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { ASSET_CELL_HEIGHT } from '../../constants';
 
 type GenericAssetCellLayoutProps = {
   onClick?: () => void;
-  disableHover?: boolean;
   badge: ReactNode;
   headerLeftDisplay: ReactNode;
   headerRightDisplay: ReactNode;
@@ -17,81 +15,59 @@ type GenericAssetCellLayoutProps = {
   footerRightDisplay: ReactNode;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function GenericAssetCellLayout({
   onClick,
-  disableHover = false,
   badge,
   headerLeftDisplay,
   headerRightDisplay,
   footerLeftDisplay,
   footerRightDisplay,
 }: GenericAssetCellLayoutProps) {
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      width={BlockSize.Full}
-      height={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Row}
       gap={4}
+      className="flex h-full w-full [container-name:list-item] [container-type:inline-size]"
     >
-      <Box
-        as="a"
-        onClick={(e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-          e?.preventDefault();
-          if (onClick) {
-            onClick();
-          }
-        }}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        paddingTop={2}
-        paddingBottom={2}
-        paddingLeft={4}
-        paddingRight={4}
-        width={BlockSize.Full}
-        style={{
-          height: 62,
-          cursor: onClick ? 'pointer' : 'auto',
-          backgroundColor:
-            !disableHover && isHovered
-              ? 'var(--color-background-default-hover)'
-              : 'transparent',
-          transition: 'background-color 0.2s ease-in-out',
-        }}
-        onMouseEnter={() => !disableHover && setIsHovered(true)}
-        onMouseLeave={() => !disableHover && setIsHovered(false)}
-        data-testid="multichain-token-list-button"
-      >
-        {badge}
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          width={BlockSize.Full}
-          style={{ flexGrow: 1, overflow: 'hidden' }}
-          justifyContent={JustifyContent.center}
+      <Box asChild>
+        <a
+          onClick={(e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+            e?.preventDefault();
+            if (onClick) {
+              onClick();
+            }
+          }}
+          className={`flex w-full flex-row py-2 px-4 ${onClick ? 'hover:bg-hover cursor-pointer' : ''}`}
+          style={{
+            height: ASSET_CELL_HEIGHT,
+          }}
+          data-testid="multichain-token-list-button"
         >
+          {badge}
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceBetween}
+            flexDirection={BoxFlexDirection.Column}
+            justifyContent={BoxJustifyContent.Center}
+            className="flex w-full overflow-hidden grow"
           >
-            {headerLeftDisplay}
-            {headerRightDisplay}
-          </Box>
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              className="flex"
+            >
+              {headerLeftDisplay}
+              {headerRightDisplay}
+            </Box>
 
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceBetween}
-          >
-            {footerLeftDisplay}
-            {footerRightDisplay}
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              className="flex"
+            >
+              {footerLeftDisplay}
+              {footerRightDisplay}
+            </Box>
           </Box>
-        </Box>
+        </a>
       </Box>
     </Box>
   );

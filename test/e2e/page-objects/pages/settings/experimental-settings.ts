@@ -1,22 +1,40 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Settings → Experimental: beta account Snap and watch-account toggles.
+ *
+ * Screen: `#/settings/experimental`, reached from
+ * `SettingsPage.goToExperimentalSettings`.
+ * Owns: page load check, Add account Snap toggle, and Watch account toggle
+ * (including reading toggle state).
+ * Boundaries: experimental toggles only. Preinstalled Snap settings UI belongs
+ * to `PreinstalledExampleSettings`; developer/debug options belong to
+ * `SettingsPage` / developer-tools surfaces.
+ * Related: `SettingsPage`.
+ *
+ * @see ui/pages/settings/experimental-tab/experimental-tab.tsx
+ */
 class ExperimentalSettings {
-  private readonly driver: Driver;
-
   // Locators
   private readonly addAccountSnapToggle =
     '[data-testid="add-account-snap-toggle-div"]';
 
+  private readonly driver: Driver;
+
   private readonly experimentalPageTitle = {
-    text: 'Experimental',
-    tag: 'h4',
+    text: 'Enable "Add account Snap (Beta)"',
+    tag: 'p',
   };
 
-  private readonly watchAccountToggleState =
-    '[data-testid="watch-account-toggle"]';
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
 
   private readonly watchAccountToggle =
     '[data-testid="watch-account-toggle-div"]';
+
+  private readonly watchAccountToggleState =
+    '[data-testid="watch-account-toggle"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -24,7 +42,10 @@ class ExperimentalSettings {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.experimentalPageTitle);
+      await this.driver.waitForMultipleSelectors([
+        this.experimentalPageTitle,
+        this.settingsPage,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for Experimental Settings page to be loaded',

@@ -1,3 +1,4 @@
+import React from 'react';
 import { waitFor } from '@testing-library/react';
 import nock from 'nock';
 import mockMetaMaskState from '../data/onboarding-completion-route.json';
@@ -16,18 +17,43 @@ import {
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 }));
 
 jest.mock('../../../ui/ducks/bridge/actions', () => ({
   ...jest.requireActual('../../../ui/ducks/bridge/actions'),
 }));
 
+jest.mock(
+  '../../../ui/pages/onboarding-flow/welcome/fox-appear-animation',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => <div data-testid="fox-appear-animation" />,
+  }),
+);
+
+jest.mock(
+  '../../../ui/pages/onboarding-flow/welcome/metamask-wordmark-animation',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => <div data-testid="metamask-wordmark-animation" />,
+  }),
+);
+
+jest.mock(
+  '../../../ui/pages/onboarding-flow/creation-successful/wallet-ready-animation',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => <div data-testid="wallet-ready-animation" />,
+  }),
+);
+
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
-  callBackgroundMethod: jest.fn(),
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -78,28 +104,34 @@ describe('Import Wallet Events', () => {
       // Check for ExtensionPinned tracking event
       extensionPinnedEvent =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'trackMetaMetricsEvent',
+          (call) =>
+            call[0] === 'trackAnalyticsEvent' &&
+            call[1]?.[0]?.name === MetaMetricsEventName.OnboardingCompleted,
         );
 
       expect(completeOnboardingCall?.[0]).toBe('completeOnboarding');
-      expect(extensionPinnedEvent?.[0]).toBe('trackMetaMetricsEvent');
+      expect(extensionPinnedEvent?.[0]).toBe('trackAnalyticsEvent');
     });
 
     // Verify ExtensionPinned event has correct properties for import flow
     expect(extensionPinnedEvent?.[1]).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.ExtensionPinned,
-          properties: {
+          name: MetaMetricsEventName.OnboardingCompleted,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             wallet_setup_type: 'import',
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             new_wallet: false,
-          },
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_basic_functionality_enabled: true,
+          }),
         }),
+        expect.anything(),
       ]),
     );
   });

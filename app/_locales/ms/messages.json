@@ -26,12 +26,6 @@
   "accountSelectionRequired": {
     "message": "Anda perlu memilih akaun!"
   },
-  "activityLog": {
-    "message": "log aktiviti"
-  },
-  "addAcquiredTokens": {
-    "message": "Tambah token yang anda peroleh menggunakan MetaMask"
-  },
   "addAlias": {
     "message": "Tambah alias"
   },
@@ -81,17 +75,11 @@
   "autoLockTimeLimit": {
     "message": "Pemasa Logout Automatik (minit)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Tetapkan masa melahu dalam minit sebelum MetaMask log keluar secara automatik"
-  },
   "average": {
     "message": "Purata"
   },
   "back": {
     "message": "Kembali"
-  },
-  "backupApprovalInfo": {
-    "message": "Kod rahsia ini diperlukan untuk memulihkan dompet anda sekiranya anda kehilangan peranti anda, terlupa kata laluan anda, perlu memasang semua MetaMask, atau mahu mengakses dompet anda menggunakan peranti lain."
   },
   "backupApprovalNotice": {
     "message": "Sandarkan kod Pemulihan Rahsia anda untuk memastikan dompet dan dana anda sentiasa selamat."
@@ -184,23 +172,11 @@
   "createPassword": {
     "message": "Cipta Kata Laluan"
   },
-  "currencyConversion": {
-    "message": "Penukaran Mata Wang"
-  },
-  "currentLanguage": {
-    "message": "Bahasa Semasa"
-  },
   "custom": {
     "message": "Lanjutan"
   },
-  "customToken": {
-    "message": "Token Tersuai"
-  },
   "decimal": {
     "message": "Bilangan Perpuluhan Kejituan"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "Perpuluhan mestilah sekurang-kurangnya 0, dan tidak melebihi 36."
   },
   "delete": {
     "message": "Padam"
@@ -210,9 +186,6 @@
   },
   "done": {
     "message": "Selesai"
-  },
-  "downloadGoogleChrome": {
-    "message": "Muat Turun Google Chrome"
   },
   "downloadStateLogs": {
     "message": "Muat Turun Log Keadaan"
@@ -226,14 +199,8 @@
   "enterPasswordContinue": {
     "message": "Masukkan kata laluan untuk teruskan"
   },
-  "ethereumPublicAddress": {
-    "message": "Alamat Awam Ethereum"
-  },
   "etherscanView": {
     "message": "Lihat akaun di Etherscan"
-  },
-  "expandView": {
-    "message": "Kembangkan Paparan"
   },
   "failed": {
     "message": "Gagal"
@@ -275,9 +242,6 @@
   "hardwareWallets": {
     "message": "Sambungkan dompet perkakasan"
   },
-  "hardwareWalletsMsg": {
-    "message": "Pilih dompet perkakasan yang anda ingin gunakan dengan MetaMask"
-  },
   "here": {
     "message": "di sini",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -300,9 +264,6 @@
   "imported": {
     "message": "Diimport",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "Transaksi awal anda telah disahkan oleh rangkaian. Klik OK untuk kembali."
   },
   "insufficientBalance": {
     "message": "Baki tidak mencukupi."
@@ -344,15 +305,6 @@
   "likeToImportTokens": {
     "message": "Adakah anda ingin menambah token ini?"
   },
-  "lineaGoerli": {
-    "message": "Rangkaian Ujian Linea Goerli"
-  },
-  "links": {
-    "message": "Pautan"
-  },
-  "loadMore": {
-    "message": "Muat Lagi"
-  },
   "loading": {
     "message": "Memuatkan..."
   },
@@ -371,15 +323,9 @@
   "metamaskVersion": {
     "message": "Versi MetaMask"
   },
-  "mustSelectOne": {
-    "message": "Mesti memilih sekurang-kurangnya 1 token."
-  },
   "needImportFile": {
     "message": "Anda mesti pilih fail untuk diimport.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Tidak boleh hantar amaun ETH negatif."
   },
   "networkName": {
     "message": "Nama Rangkaian"
@@ -387,18 +333,9 @@
   "networks": {
     "message": "Rangkaian"
   },
-  "nevermind": {
-    "message": "Tidak mengapa"
-  },
-  "newAccount": {
-    "message": "Akaun Baru"
-  },
   "newAccountNumberName": {
     "message": "Akaun $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "Kenalan Baru"
   },
   "newContract": {
     "message": "Kontrak Baru"
@@ -409,17 +346,11 @@
   "next": {
     "message": "Seterusnya"
   },
-  "noConversionRateAvailable": {
-    "message": "Tiada Kadar Penukaran yang Tersedia"
-  },
   "noWebcamFound": {
     "message": "Webcam komputer anda tidak dijumpai. Sila cuba semula."
   },
   "noWebcamFoundTitle": {
     "message": "Kamera web tidak ditemui"
-  },
-  "notEnoughGas": {
-    "message": "Tidak Cukup Gas"
   },
   "ofTextNofM": {
     "message": "daripada"
@@ -483,12 +414,6 @@
   "rejectAll": {
     "message": "Tolak Semua"
   },
-  "rejectTxsDescription": {
-    "message": "Anda akan menolak secara kelompok $1 transaksi."
-  },
-  "rejectTxsN": {
-    "message": "Tolak transaksi $1"
-  },
   "rejected": {
     "message": "Ditolak"
   },
@@ -498,9 +423,6 @@
   "removeAccount": {
     "message": "Alih keluar akaun"
   },
-  "removeAccountDescription": {
-    "message": "Akaun ini akan dibuang daripada dompet anda. Sila pastikan anda mempunyai ungkapan benih asal atau kunci persendirian untuk akaun yang diimport ini sebelum meneruskan. Anda boleh import atau cipta akaun semula daripada juntai bawah akaun."
-  },
   "required": {
     "message": "Diwajibkan"
   },
@@ -509,9 +431,6 @@
   },
   "restore": {
     "message": "Pulihkan"
-  },
-  "revealSeedWords": {
-    "message": "Dedahkan Ungkapan Benih"
   },
   "revealSeedWordsWarning": {
     "message": "Perkataan ini boleh digunakan untuk mencuri kesemua akaun anda.",
@@ -559,9 +478,6 @@
   "showFiatConversionInTestnets": {
     "message": "Tunjukkan Penukaran di Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Pilih ini untuk menunjukkan penukaran fiat di Testnets"
-  },
   "showHexData": {
     "message": "Tunjukkan Data Heks"
   },
@@ -570,9 +486,6 @@
   },
   "sign": {
     "message": "Tandatangan"
-  },
-  "signatureRequest": {
-    "message": "Permintaan Tandatangan"
   },
   "signed": {
     "message": "Ditandatangani"
@@ -586,17 +499,11 @@
   "speedUpCancellation": {
     "message": "Cepatkan pembatalan ini"
   },
-  "speedUpTransaction": {
-    "message": "Percepatkan transaksi ini"
-  },
   "stateLogError": {
     "message": "Ralat mendapatkan semula log keadaan."
   },
   "stateLogs": {
     "message": "Log Keadaan"
-  },
-  "stateLogsDescription": {
-    "message": "Log keadaan mengandungi alamat akaun awam anda dan transaksi dihantar."
   },
   "submitted": {
     "message": "Dihantar"
@@ -631,38 +538,11 @@
   "transaction": {
     "message": "transaksi"
   },
-  "transactionCancelAttempted": {
-    "message": "Pembatalan transaksi dicuba dengan yuran gas sebanyak $1 pada $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaksi berjaya dibatalkan pada $2"
-  },
-  "transactionConfirmed": {
-    "message": "Transaksi disahkan pada $2."
-  },
-  "transactionCreated": {
-    "message": "Transaksi dicipta dengan nilai $1 pada $2."
-  },
-  "transactionDropped": {
-    "message": "Transaksi jatuh pada $2."
-  },
   "transactionError": {
     "message": "Ralat Transaksi. Pengecualian diberi dalam kod kontrak."
   },
   "transactionErrorNoContract": {
     "message": "Cuba memanggil fungsi untuk alamat bukan kontrak."
-  },
-  "transactionErrored": {
-    "message": "Transaksi berdepan ralat."
-  },
-  "transactionResubmitted": {
-    "message": "Transaksi dihantar semula dengan fi gas ditingkatkan kepada $1 pada $2."
-  },
-  "transactionSubmitted": {
-    "message": "Transaksi dihantar dengan fi gas sebanyak $1 pada $2."
-  },
-  "transactionUpdated": {
-    "message": "Transaksi dikemaskini pada $2."
   },
   "transfer": {
     "message": "Pindah"
@@ -694,12 +574,6 @@
   "usedByClients": {
     "message": "Digunakan oleh pelbagai klien berbeza"
   },
-  "userName": {
-    "message": "Nama pengguna"
-  },
-  "viewContact": {
-    "message": "Lihat Kenalan"
-  },
   "visitWebSite": {
     "message": "Kunjungi laman web kami"
   },
@@ -708,8 +582,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Anda perlu membenarkan akses kamera untuk menggunakan ciri ini."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Ungkapan benih peribadi anda"
   }
 }

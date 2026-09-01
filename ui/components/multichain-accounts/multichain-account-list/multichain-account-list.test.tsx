@@ -7,14 +7,66 @@ import {
   toAccountWalletId,
 } from '@metamask/account-api';
 import { AccountTreeWallets } from '../../../selectors/multichain-accounts/account-tree.types';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   MultichainAccountList,
   MultichainAccountListProps,
 } from './multichain-account-list';
+
+const backgroundConnectionMock = new Proxy(
+  {},
+  {
+    get: () => jest.fn().mockResolvedValue(undefined),
+  },
+);
+
+jest.mock('../../../../shared/lib/trace', () => {
+  const actual = jest.requireActual('../../../../shared/lib/trace');
+  return {
+    ...actual,
+    trace: jest.fn(),
+    endTrace: jest.fn(),
+  };
+});
+
+jest.mock('../../../selectors/multichain-accounts/account-tree', () => {
+  const actual = jest.requireActual(
+    '../../../selectors/multichain-accounts/account-tree',
+  );
+  return {
+    ...actual,
+    getAccountGroupsByAddress: jest.fn(),
+  };
+});
+
+jest.mock('@metamask/chain-agnostic-permission', () => {
+  const actual = jest.requireActual('@metamask/chain-agnostic-permission');
+  return {
+    ...actual,
+    isInternalAccountInPermittedAccountIds: jest.fn(),
+  };
+});
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
+const mockGetAccountGroupsByAddress = jest.requireMock(
+  '../../../selectors/multichain-accounts/account-tree',
+).getAccountGroupsByAddress;
+
+const mockIsInternalAccountInPermittedAccountIds = jest.requireMock(
+  '@metamask/chain-agnostic-permission',
+).isInternalAccountInPermittedAccountIds;
 
 jest.mock('../../../store/actions', () => {
   const actualActions = jest.requireActual('../../../store/actions');
@@ -27,6 +79,16 @@ jest.mock('../../../store/actions', () => {
       };
     }),
     setSelectedMultichainAccount: jest.fn().mockImplementation(() => {
+      return async function () {
+        await Promise.resolve();
+      };
+    }),
+    setAccountGroupPinned: jest.fn().mockImplementation(() => {
+      return async function () {
+        await Promise.resolve();
+      };
+    }),
+    setAccountGroupHidden: jest.fn().mockImplementation(() => {
       return async function () {
         await Promise.resolve();
       };
@@ -44,7 +106,7 @@ const mockSetSelectedMultichainAccount = jest.requireMock(
 
 const popoverOpenSelector = '.mm-popover--open';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
-const modalHeaderSelector = '.mm-modal-header';
+const modalHeaderTestId = 'account-edit-modal-header';
 const walletHeaderTestId = 'multichain-account-tree-wallet-header';
 const accountNameInputTestId = 'account-name-input';
 
@@ -84,6 +146,7 @@ const mockWallets = {
           },
           pinned: false,
           hidden: false,
+          lastSelected: 0,
         },
         accounts: ['cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'],
       },
@@ -109,6 +172,7 @@ const mockWallets = {
           },
           pinned: false,
           hidden: false,
+          lastSelected: 0,
         },
         accounts: ['784225f4-d30b-4e77-a900-c8bbce735b88'],
       },
@@ -133,6 +197,9 @@ describe('MultichainAccountList', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    setBackgroundConnection(backgroundConnectionMock as never);
+    mockGetAccountGroupsByAddress.mockReturnValue([]);
+    mockIsInternalAccountInPermittedAccountIds.mockReturnValue(false);
   });
 
   it('renders wallet headers and account cells correctly', () => {
@@ -155,6 +222,16 @@ describe('MultichainAccountList', () => {
     expect(screen.getByText('Account 1 from wallet 2')).toBeInTheDocument();
   });
 
+  it('renders no balance for account groups with no fetched balance', () => {
+    renderComponent();
+
+    // Balances are only fetched eagerly for the selected account group, and an
+    // unfetched group aggregates to 0 just like an empty one. Rendering "$0.00"
+    // would read as "your funds are gone", so nothing is rendered instead.
+    expect(screen.queryAllByTestId('balance-display')).toHaveLength(0);
+    expect(screen.queryByText('$0.00')).not.toBeInTheDocument();
+  });
+
   it('does not render wallet headers based on prop', () => {
     renderComponent({ displayWalletHeader: false });
 
@@ -171,38 +248,52 @@ describe('MultichainAccountList', () => {
     expect(screen.getByText('Account 1 from wallet 2')).toBeInTheDocument();
   });
 
-  it('marks only the selected account with a check icon and dispatches action on click', () => {
-    const { history } = renderComponent();
-    const mockHistoryPush = jest.spyOn(history, 'push');
+  it('marks only the selected account with a check icon and dispatches action on click', async () => {
+    renderComponent();
 
     // With default props, checkboxes should not be shown (showAccountCheckbox defaults to false)
     // Check that no checkboxes are present
     const checkboxes = screen.queryAllByRole('checkbox');
     expect(checkboxes).toHaveLength(0);
 
-    // Selected icon should be present for the selected account
-    expect(
-      screen.getByTestId(
-        `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
-      ),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByTestId(
-        `multichain-account-cell-${walletTwoGroupId}-selected-indicator`,
-      ),
-    ).not.toBeInTheDocument();
+    // Selected account should have is-selected class
+    const selectedCell = screen.getByTestId(
+      `multichain-account-cell-${walletOneGroupId}`,
+    );
+    expect(selectedCell).toHaveClass('is-selected');
 
     // Find and click the second account cell (wallet two)
     const accountCell = screen.getByTestId(
       `multichain-account-cell-${walletTwoGroupId}`,
     );
-    accountCell.click();
+    // useTransition schedules pending-state updates that must flush inside act
+    await act(async () => {
+      fireEvent.click(accountCell);
+    });
 
     // Verify that the action was dispatched with the correct account group ID
     expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
       walletTwoGroupId,
     );
-    expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+  });
+
+  it('does not wrap custom handleAccountClick in the default switch transition gate', async () => {
+    const customHandleAccountClick = jest.fn();
+    renderComponent({
+      handleAccountClick: customHandleAccountClick,
+    });
+
+    const accountCell = screen.getByTestId(
+      `multichain-account-cell-${walletTwoGroupId}`,
+    );
+    await act(async () => {
+      fireEvent.click(accountCell);
+    });
+
+    expect(customHandleAccountClick).toHaveBeenCalledWith(walletTwoGroupId);
+    expect(mockSetSelectedMultichainAccount).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 
   it('updates selected account when selectedAccountGroup changes', () => {
@@ -212,17 +303,11 @@ describe('MultichainAccountList', () => {
     let checkboxes = screen.queryAllByRole('checkbox');
     expect(checkboxes).toHaveLength(0);
 
-    // Selected icon should be present for the selected account
-    expect(
-      screen.getByTestId(
-        `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
-      ),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByTestId(
-        `multichain-account-cell-${walletTwoGroupId}-selected-indicator`,
-      ),
-    ).not.toBeInTheDocument();
+    // Selected account should have is-selected class
+    let selectedCell = screen.getByTestId(
+      `multichain-account-cell-${walletOneGroupId}`,
+    );
+    expect(selectedCell).toHaveClass('is-selected');
 
     // Change the selected account to wallet two
     rerender(
@@ -236,36 +321,18 @@ describe('MultichainAccountList', () => {
     checkboxes = screen.queryAllByRole('checkbox');
     expect(checkboxes).toHaveLength(0);
 
-    // Now wallet two should have the selected icon
-    expect(
-      screen.queryByTestId(
-        `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
-      ),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByTestId(
-        `multichain-account-cell-${walletTwoGroupId}-selected-indicator`,
-      ),
-    ).toBeInTheDocument();
+    // Now wallet two should have the is-selected class
+    selectedCell = screen.getByTestId(
+      `multichain-account-cell-${walletTwoGroupId}`,
+    );
+    expect(selectedCell).toHaveClass('is-selected');
   });
 
-  it('shows no checkboxes and no selected icons when selectedAccountGroups is empty', () => {
+  it('shows no checkboxes when selectedAccountGroups is empty', () => {
     renderComponent({ selectedAccountGroups: [] });
 
     // No checkboxes should be present
     expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
-
-    // No selected icons should be present since no accounts are marked as selected
-    expect(
-      screen.queryByTestId(
-        `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
-      ),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByTestId(
-        `multichain-account-cell-${walletTwoGroupId}-selected-indicator`,
-      ),
-    ).not.toBeInTheDocument();
   });
 
   it('handles multiple account groups within a single wallet', () => {
@@ -303,6 +370,7 @@ describe('MultichainAccountList', () => {
       },
     );
 
+    // With displayWalletHeader=true (default), wallet header should be shown
     expect(screen.queryAllByTestId(walletHeaderTestId)).toHaveLength(1);
     expect(
       screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
@@ -350,14 +418,12 @@ describe('MultichainAccountList', () => {
     });
 
     // Verify the modal is open by finding the modal header
-    const modalHeader = document.querySelector(modalHeaderSelector);
+    const modalHeader = screen.getByTestId(modalHeaderTestId);
     expect(modalHeader).toBeInTheDocument();
 
     // Find the header text inside the modal
-    if (modalHeader) {
-      const headerText = within(modalHeader as HTMLElement).getByText('Rename');
-      expect(headerText).toBeInTheDocument();
-    }
+    const headerText = within(modalHeader).getByText(messages.rename.message);
+    expect(headerText).toBeInTheDocument();
 
     // Find the actual input element directly
     const inputContainer = screen.getByTestId(accountNameInputTestId);
@@ -374,7 +440,7 @@ describe('MultichainAccountList', () => {
     });
 
     // Find and click the confirmation button
-    const confirmButton = screen.getByText('Confirm');
+    const confirmButton = screen.getByText(messages.confirm.message);
     expect(confirmButton).toBeInTheDocument();
 
     // The button should no longer be disabled after entering text
@@ -431,11 +497,11 @@ describe('MultichainAccountList', () => {
     });
 
     // Verify that the modal is open
-    const modalHeader = document.querySelector(modalHeaderSelector);
+    const modalHeader = screen.getByTestId(modalHeaderTestId);
     expect(modalHeader).toBeInTheDocument();
 
     // Find the close button by aria-label
-    const closeButton = screen.getByLabelText('Close');
+    const closeButton = screen.getByLabelText(messages.close.message);
     expect(closeButton).toBeInTheDocument();
 
     await act(async () => {
@@ -574,11 +640,10 @@ describe('MultichainAccountList', () => {
     });
 
     it('handles checkbox click to select unselected account', () => {
-      const { history } = renderComponent({
+      renderComponent({
         selectedAccountGroups: [walletOneGroupId],
         showAccountCheckbox: true,
       });
-      const mockHistoryPush = jest.spyOn(history, 'push');
 
       const checkboxes = screen.getAllByRole('checkbox');
 
@@ -589,15 +654,29 @@ describe('MultichainAccountList', () => {
       expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
         walletTwoGroupId,
       );
-      expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
+
+    it('invokes toggle handler only once when checkbox is clicked', () => {
+      const handleAccountClick = jest.fn();
+
+      renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showAccountCheckbox: true,
+        handleAccountClick,
+      });
+
+      fireEvent.click(screen.getAllByRole('checkbox')[1]);
+
+      expect(handleAccountClick).toHaveBeenCalledTimes(1);
+      expect(handleAccountClick).toHaveBeenCalledWith(walletTwoGroupId);
     });
 
     it('handles checkbox click to deselect selected account', () => {
-      const { history } = renderComponent({
+      renderComponent({
         selectedAccountGroups: [walletOneGroupId],
         showAccountCheckbox: true,
       });
-      const mockHistoryPush = jest.spyOn(history, 'push');
 
       const checkboxes = screen.getAllByRole('checkbox');
 
@@ -608,7 +687,7 @@ describe('MultichainAccountList', () => {
       expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
         walletOneGroupId,
       );
-      expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
 
     it('updates checkbox states when selectedAccountGroups prop changes', () => {
@@ -681,19 +760,18 @@ describe('MultichainAccountList', () => {
       expect(screen.getAllByRole('checkbox')[1]).not.toBeChecked();
     });
 
-    it('checkboxes and selected icons are mutually exclusive', () => {
+    it('shows is-selected class or checkboxes based on showAccountCheckbox prop', () => {
       const { rerender } = renderComponent({
         selectedAccountGroups: [walletOneGroupId],
         showAccountCheckbox: false,
       });
 
-      // With checkboxes disabled, selected icon should be visible
+      // With checkboxes disabled, is-selected class should be present
       expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
-      expect(
-        screen.getByTestId(
-          `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
-        ),
-      ).toBeInTheDocument();
+      const selectedCell = screen.getByTestId(
+        `multichain-account-cell-${walletOneGroupId}`,
+      );
+      expect(selectedCell).toHaveClass('is-selected');
 
       // Enable checkboxes
       rerender(
@@ -704,13 +782,575 @@ describe('MultichainAccountList', () => {
         />,
       );
 
-      // Now checkboxes should be visible and selected icon should be hidden
+      // Now checkboxes should be visible
       expect(screen.getAllByRole('checkbox')).toHaveLength(2);
+    });
+
+    it('hides account menu (3 dots) when showAccountCheckbox is true', () => {
+      const { rerender } = renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showAccountCheckbox: false,
+      });
+
+      // With checkboxes disabled, menu buttons should be visible
+      let menuButtons = document.querySelectorAll(menuButtonSelector);
+      expect(menuButtons.length).toBe(2);
+
+      // Enable checkboxes
+      rerender(
+        <MultichainAccountList
+          wallets={mockWallets}
+          selectedAccountGroups={[walletOneGroupId]}
+          showAccountCheckbox={true}
+        />,
+      );
+
+      // With checkboxes enabled, menu buttons should be hidden
+      menuButtons = document.querySelectorAll(menuButtonSelector);
+      expect(menuButtons.length).toBe(0);
+    });
+  });
+
+  describe('Connection Status', () => {
+    it('does not show connection status when showConnectionStatus is false', () => {
+      renderComponent({
+        showConnectionStatus: false,
+      });
+
       expect(
-        screen.queryByTestId(
-          `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
-        ),
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+
+      // Connection badge dot and tooltip should not render when disabled
+      expect(
+        screen.queryAllByTestId('multichain-badge-status__tooltip'),
+      ).toHaveLength(0);
+      expect(
+        document.querySelectorAll('.multichain-badge-status__badge').length,
+      ).toBe(0);
+    });
+
+    it('shows connected status for selected connected account', () => {
+      mockGetAccountGroupsByAddress.mockReturnValue([
+        {
+          id: walletOneGroupId,
+          accounts: [{ address: '0x123' }],
+        },
+      ]);
+      mockIsInternalAccountInPermittedAccountIds.mockReturnValue(true);
+
+      renderComponent({
+        showConnectionStatus: true,
+        selectedAccountGroups: [walletOneGroupId],
+      });
+
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+
+      expect(mockGetAccountGroupsByAddress).toHaveBeenCalled();
+
+      // BadgeStatus should be rendered for both accounts
+      const badgeStatuses = screen.getAllByTestId('multichain-badge-status');
+      expect(badgeStatuses).toHaveLength(2);
+
+      // The selected account (walletOneGroupId) should show as connected/active
+      // The connected account cell should have specific styling indicating active status
+      expect(mockIsInternalAccountInPermittedAccountIds).toHaveBeenCalled();
+    });
+
+    it('shows connected to another account status for non-selected connected account', () => {
+      mockGetAccountGroupsByAddress.mockReturnValue([
+        {
+          id: walletTwoGroupId,
+          accounts: [{ address: '0x456' }],
+        },
+      ]);
+      mockIsInternalAccountInPermittedAccountIds.mockReturnValue(true);
+
+      renderComponent({
+        showConnectionStatus: true,
+        selectedAccountGroups: [walletOneGroupId], // Only wallet one is selected
+      });
+
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+
+      expect(mockGetAccountGroupsByAddress).toHaveBeenCalled();
+
+      // BadgeStatus should be rendered for both accounts
+      const badgeStatuses = screen.getAllByTestId('multichain-badge-status');
+      expect(badgeStatuses).toHaveLength(2);
+
+      // Wallet two is connected but not selected, wallet one is selected but not connected
+      // This test verifies that connection status is displayed correctly for both scenarios
+      expect(mockIsInternalAccountInPermittedAccountIds).toHaveBeenCalled();
+    });
+  });
+  describe('Pinned accounts section', () => {
+    it('renders pinned section when there are pinned accounts', () => {
+      const walletsWithPinnedAccounts = {
+        [walletOneId]: {
+          ...mockWallets[walletOneId],
+          groups: {
+            [walletOneGroupId]: {
+              ...mockWallets[walletOneId].groups[walletOneGroupId],
+              metadata: {
+                ...mockWallets[walletOneId].groups[walletOneGroupId].metadata,
+                pinned: true,
+              },
+            },
+          },
+        },
+        [walletTwoId]: {
+          ...mockWallets[walletTwoId],
+          groups: {
+            [walletTwoGroupId]: {
+              ...mockWallets[walletTwoId].groups[walletTwoGroupId],
+              metadata: {
+                ...mockWallets[walletTwoId].groups[walletTwoGroupId].metadata,
+                pinned: true,
+              },
+            },
+          },
+        },
+      };
+
+      renderComponent({ wallets: walletsWithPinnedAccounts });
+
+      // Pinned section header should be present
+      expect(screen.getByText(messages.pinned.message)).toBeInTheDocument();
+
+      // Pinned accounts should be rendered
+      expect(screen.getByText('Account 1 from wallet 1')).toBeInTheDocument();
+      expect(screen.getByText('Account 1 from wallet 2')).toBeInTheDocument();
+    });
+
+    it('shows pinned section even with one pinned account', () => {
+      const walletsWithOnePinnedAccount = {
+        [walletOneId]: {
+          ...mockWallets[walletOneId],
+          groups: {
+            [walletOneGroupId]: {
+              ...mockWallets[walletOneId].groups[walletOneGroupId],
+              metadata: {
+                ...mockWallets[walletOneId].groups[walletOneGroupId].metadata,
+                pinned: true,
+              },
+            },
+          },
+        },
+        [walletTwoId]: mockWallets[walletTwoId],
+      };
+
+      renderComponent({ wallets: walletsWithOnePinnedAccount });
+
+      // Pinned section header should be present even with just 1 pinned account
+      expect(screen.getByText(messages.pinned.message)).toBeInTheDocument();
+      expect(screen.getByText('Account 1 from wallet 1')).toBeInTheDocument();
+    });
+
+    it('excludes pinned accounts from their wallet sections', () => {
+      const walletsWithPinnedAccount = {
+        [walletOneId]: {
+          ...mockWallets[walletOneId],
+          groups: {
+            [walletOneGroupId]: {
+              ...mockWallets[walletOneId].groups[walletOneGroupId],
+              metadata: {
+                ...mockWallets[walletOneId].groups[walletOneGroupId].metadata,
+                pinned: true,
+              },
+            },
+          },
+        },
+        [walletTwoId]: {
+          ...mockWallets[walletTwoId],
+          groups: {
+            [walletTwoGroupId]: {
+              ...mockWallets[walletTwoId].groups[walletTwoGroupId],
+              metadata: {
+                ...mockWallets[walletTwoId].groups[walletTwoGroupId].metadata,
+                pinned: true,
+              },
+            },
+          },
+        },
+      };
+
+      renderComponent(
+        { wallets: walletsWithPinnedAccount },
+        {
+          ...mockDefaultState,
+          metamask: {
+            ...mockDefaultState.metamask,
+            accountTree: {
+              ...mockDefaultState.metamask.accountTree,
+              // @ts-expect-error - walletsWithPinnedAccount does not follow the exact structure due to test simplification
+              wallets: walletsWithPinnedAccount,
+            },
+          },
+        },
+      );
+
+      // Pinned section should exist
+      expect(screen.getByText(messages.pinned.message)).toBeInTheDocument();
+
+      // Wallet headers should still be present
+      const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
+      expect(walletHeaders).toHaveLength(2);
+      expect(
+        within(walletHeaders[0]).getByText('Wallet 1'),
+      ).toBeInTheDocument();
+      expect(
+        within(walletHeaders[1]).getByText('Wallet 2'),
+      ).toBeInTheDocument();
+
+      // Accounts should appear in pinned section, not in wallet sections
+      // Only match the actual account cells, not indicators or accessories
+      // Regex matches entropy:ID/number but not -selected-indicator or other suffixes
+      const accountCells = screen.getAllByTestId(
+        /^multichain-account-cell-entropy:[^/]+\/\d+$/u,
+      );
+      // Should be 2 accounts total (both in pinned section)
+      expect(accountCells.length).toBe(2);
+    });
+
+    it('shows wallet headers when there is one wallet with pinned accounts', () => {
+      const walletsWithOnePinnedAccount = {
+        [walletOneId]: {
+          ...mockWallets[walletOneId],
+          groups: {
+            [walletOneGroupId]: {
+              ...mockWallets[walletOneId].groups[walletOneGroupId],
+              metadata: {
+                ...mockWallets[walletOneId].groups[walletOneGroupId].metadata,
+                pinned: true,
+              },
+            },
+          },
+        },
+      };
+
+      renderComponent(
+        { wallets: walletsWithOnePinnedAccount },
+        {
+          ...mockDefaultState,
+          metamask: {
+            ...mockDefaultState.metamask,
+            accountTree: {
+              ...mockDefaultState.metamask.accountTree,
+              // @ts-expect-error - walletsWithOnePinnedAccount does not follow the exact structure due to test simplification
+              wallets: walletsWithOnePinnedAccount,
+            },
+          },
+        },
+      );
+
+      // With one wallet but pinned accounts, wallet header should be shown
+      const walletHeader = screen.getByTestId(walletHeaderTestId);
+      expect(walletHeader).toBeInTheDocument();
+      // Wallet name should be in the header
+      expect(within(walletHeader).getByText('Wallet 1')).toBeInTheDocument();
+      expect(screen.getByText(messages.pinned.message)).toBeInTheDocument();
+    });
+  });
+
+  describe('Hidden accounts section', () => {
+    it('renders collapsible hidden section when there are hidden accounts', () => {
+      const walletsWithHiddenAccounts = {
+        [walletOneId]: mockWallets[walletOneId],
+        [walletTwoId]: {
+          ...mockWallets[walletTwoId],
+          groups: {
+            [walletTwoGroupId]: {
+              ...mockWallets[walletTwoId].groups[walletTwoGroupId],
+              metadata: {
+                ...mockWallets[walletTwoId].groups[walletTwoGroupId].metadata,
+                hidden: true,
+              },
+            },
+          },
+        },
+      };
+
+      renderComponent({ wallets: walletsWithHiddenAccounts });
+
+      // Hidden section header should be present
+      const hiddenHeader = screen.getByTestId(
+        'multichain-account-tree-hidden-header',
+      );
+      expect(hiddenHeader).toBeInTheDocument();
+      expect(screen.getByText('Hidden (1)')).toBeInTheDocument();
+
+      // Hidden account should NOT be visible initially (collapsed)
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
       ).not.toBeInTheDocument();
+    });
+
+    it('expands hidden section when clicked', async () => {
+      const walletsWithHiddenAccounts = {
+        [walletOneId]: mockWallets[walletOneId],
+        [walletTwoId]: {
+          ...mockWallets[walletTwoId],
+          groups: {
+            [walletTwoGroupId]: {
+              ...mockWallets[walletTwoId].groups[walletTwoGroupId],
+              metadata: {
+                ...mockWallets[walletTwoId].groups[walletTwoGroupId].metadata,
+                hidden: true,
+              },
+            },
+          },
+        },
+      };
+
+      renderComponent({ wallets: walletsWithHiddenAccounts });
+
+      const hiddenHeader = screen.getByTestId(
+        'multichain-account-tree-hidden-header',
+      );
+
+      // Initially hidden account should not be visible
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).not.toBeInTheDocument();
+
+      // Click to expand
+      await act(async () => {
+        fireEvent.click(hiddenHeader);
+      });
+
+      // Now hidden account should be visible
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+      expect(screen.getByText('Account 1 from wallet 2')).toBeInTheDocument();
+    });
+
+    it('collapses hidden section when clicked twice', async () => {
+      const walletsWithHiddenAccounts = {
+        [walletOneId]: mockWallets[walletOneId],
+        [walletTwoId]: {
+          ...mockWallets[walletTwoId],
+          groups: {
+            [walletTwoGroupId]: {
+              ...mockWallets[walletTwoId].groups[walletTwoGroupId],
+              metadata: {
+                ...mockWallets[walletTwoId].groups[walletTwoGroupId].metadata,
+                hidden: true,
+              },
+            },
+          },
+        },
+      };
+
+      renderComponent({ wallets: walletsWithHiddenAccounts });
+
+      const hiddenHeader = screen.getByTestId(
+        'multichain-account-tree-hidden-header',
+      );
+
+      // Click to expand
+      await act(async () => {
+        fireEvent.click(hiddenHeader);
+      });
+
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+
+      // Click again to collapse
+      await act(async () => {
+        fireEvent.click(hiddenHeader);
+      });
+
+      // Hidden account should not be visible again
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).not.toBeInTheDocument();
+    });
+
+    it('excludes hidden accounts from their wallet sections', () => {
+      const walletsWithHiddenAccount = {
+        [walletOneId]: mockWallets[walletOneId],
+        [walletTwoId]: {
+          ...mockWallets[walletTwoId],
+          groups: {
+            [walletTwoGroupId]: {
+              ...mockWallets[walletTwoId].groups[walletTwoGroupId],
+              metadata: {
+                ...mockWallets[walletTwoId].groups[walletTwoGroupId].metadata,
+                hidden: true,
+              },
+            },
+          },
+        },
+      };
+
+      renderComponent({ wallets: walletsWithHiddenAccount });
+
+      // Wallet headers should still be present
+      expect(screen.getByText('Wallet 1')).toBeInTheDocument();
+      expect(screen.getByText('Wallet 2')).toBeInTheDocument();
+
+      // Only one account should be visible in wallet section (not hidden one)
+      expect(screen.getByText('Account 1 from wallet 1')).toBeInTheDocument();
+
+      // Hidden account should not be in wallet section (collapsed by default)
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Collapsible section headers', () => {
+    it('collapses wallet section when wallet header is clicked', async () => {
+      renderComponent();
+
+      // Both wallet accounts should be visible initially
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+
+      // Click the first wallet header to collapse it
+      const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
+      await act(async () => {
+        fireEvent.click(walletHeaders[0]);
+      });
+
+      // Wallet 1's account should no longer be visible
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toBeInTheDocument();
+
+      // Wallet 2's account should still be visible
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+    });
+
+    it('collapses pinned section when pinned header is clicked', async () => {
+      const walletsWithPinnedAccount = {
+        [walletOneId]: {
+          ...mockWallets[walletOneId],
+          groups: {
+            [walletOneGroupId]: {
+              ...mockWallets[walletOneId].groups[walletOneGroupId],
+              metadata: {
+                ...mockWallets[walletOneId].groups[walletOneGroupId].metadata,
+                pinned: true,
+              },
+            },
+          },
+        },
+        [walletTwoId]: mockWallets[walletTwoId],
+      };
+
+      renderComponent({ wallets: walletsWithPinnedAccount });
+
+      // Pinned account should be visible initially
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+
+      // Click the pinned header to collapse it
+      const pinnedHeader = screen.getByTestId(
+        'multichain-account-tree-pinned-header',
+      );
+      await act(async () => {
+        fireEvent.click(pinnedHeader);
+      });
+
+      // Pinned account should no longer be visible
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toBeInTheDocument();
+
+      // Wallet 2's account should still be visible
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+    });
+
+    it('multiple sections can be collapsed independently', async () => {
+      renderComponent();
+
+      // Both wallet accounts should be visible initially
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+
+      const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
+
+      // Collapse Wallet 1
+      await act(async () => {
+        fireEvent.click(walletHeaders[0]);
+      });
+
+      // Wallet 1 collapsed, Wallet 2 still visible
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+
+      // Collapse Wallet 2
+      await act(async () => {
+        fireEvent.click(walletHeaders[1]);
+      });
+
+      // Both wallets now collapsed
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).not.toBeInTheDocument();
+
+      // Expand Wallet 1 again
+      await act(async () => {
+        fireEvent.click(walletHeaders[0]);
+      });
+
+      // Wallet 1 now visible, Wallet 2 still collapsed
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Trace events', () => {
+    it('ends AccountList and ShowAccountList traces on mount', () => {
+      renderComponent();
+      const traceLib = jest.requireMock('../../../../shared/lib/trace');
+      expect(traceLib.endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({ name: traceLib.TraceName.AccountList }),
+      );
+      expect(traceLib.endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({ name: traceLib.TraceName.ShowAccountList }),
+      );
     });
   });
 });

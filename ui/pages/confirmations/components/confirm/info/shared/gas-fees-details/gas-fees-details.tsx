@@ -1,11 +1,16 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { Dispatch, SetStateAction } from 'react';
-import { useSelector } from 'react-redux';
-import { Box } from '../../../../../../../components/component-library';
+/* eslint-disable @typescript-eslint/naming-convention */
 import {
-  AlignItems,
-  Display,
-} from '../../../../../../../helpers/constants/design-system';
+  TransactionContainerType,
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
@@ -18,12 +23,12 @@ import { GasFeesRow } from '../gas-fees-row/gas-fees-row';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { useAutomaticGasFeeTokenSelect } from '../../../../../hooks/useAutomaticGasFeeTokenSelect';
+import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
+import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
+import { useGasSponsorshipPreference } from '../../../../../hooks/gas/useGasSponsorshipPreference';
+import { useTransactionEventFragment } from '../../../../../hooks/useTransactionEventFragment';
 
-export const GasFeesDetails = ({
-  setShowCustomizeGasPopover,
-}: {
-  setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
-}) => {
+export const GasFeesDetails = (): JSX.Element | null => {
   const t = useI18nContext();
   useAutomaticGasFeeTokenSelect();
 
@@ -34,18 +39,12 @@ export const GasFeesDetails = ({
     useEIP1559TxFees(transactionMeta);
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
 
-  const hasLayer1GasFee = Boolean(transactionMeta?.layer1GasFee);
-
   const {
+    addedProtectionFeeFiat,
+    addedProtectionFeeUsd,
     estimatedFeeFiat,
     estimatedFeeFiatWith18SignificantDigits,
     estimatedFeeNative,
-    l1FeeFiat,
-    l1FeeFiatWith18SignificantDigits,
-    l1FeeNative,
-    l2FeeFiat,
-    l2FeeFiatWith18SignificantDigits,
-    l2FeeNative,
     maxFeeFiat,
     maxFeeFiatWith18SignificantDigits,
     maxFeeNative,
@@ -55,6 +54,51 @@ export const GasFeesDetails = ({
     selectConfirmationAdvancedDetailsOpen,
   );
 
+  const estimationFailed = useEstimationFailed();
+
+  const { isSupported: isGaslessSupported } = useIsGaslessSupported();
+  const { isSponsorshipOptedOut } = useGasSponsorshipPreference(
+    transactionMeta?.chainId,
+  );
+
+  const isSponsorshipEligible =
+    isGaslessSupported &&
+    transactionMeta?.isGasFeeSponsored &&
+    transactionMeta?.type !== TransactionType.revokeDelegation;
+
+  const isGasFeeSponsored = isSponsorshipEligible && !isSponsorshipOptedOut;
+  const showAddedProtectionFee = Boolean(
+    transactionMeta?.containerTypes?.includes(
+      TransactionContainerType.EnforcedSimulations,
+    ),
+  );
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
+  const transactionId = transactionMeta?.id;
+  const hasConfiguredContainers = transactionMeta?.containerTypes !== undefined;
+
+  useEffect(() => {
+    if (!transactionId || !hasConfiguredContainers) {
+      return;
+    }
+
+    updateTransactionEventFragment(
+      {
+        properties: {
+          enforced_simulation_added_network_fee_usd: showAddedProtectionFee
+            ? (addedProtectionFeeUsd ?? 0)
+            : 0,
+        },
+      },
+      transactionId,
+    );
+  }, [
+    addedProtectionFeeUsd,
+    hasConfiguredContainers,
+    showAddedProtectionFee,
+    transactionId,
+    updateTransactionEventFragment,
+  ]);
+
   if (!transactionMeta?.txParams) {
     return null;
   }
@@ -62,54 +106,39 @@ export const GasFeesDetails = ({
   return (
     <>
       <EditGasFeesRow
+        addedProtectionFeeFiat={addedProtectionFeeFiat}
+        showAddedProtectionFee={showAddedProtectionFee}
         fiatFee={estimatedFeeFiat}
         fiatFeeWith18SignificantDigits={estimatedFeeFiatWith18SignificantDigits}
         nativeFee={estimatedFeeNative}
-        supportsEIP1559={supportsEIP1559}
-        setShowCustomizeGasPopover={setShowCustomizeGasPopover}
       />
-      {showAdvancedDetails &&
-        hasLayer1GasFee &&
-        !transactionMeta.isGasFeeSponsored && (
-          <>
-            <GasFeesRow
-              data-testid="gas-fee-details-l1"
-              label={t('l1Fee')}
-              tooltipText={t('l1FeeTooltip')}
-              fiatFee={l1FeeFiat}
-              fiatFeeWith18SignificantDigits={l1FeeFiatWith18SignificantDigits}
-              nativeFee={l1FeeNative}
-            />
-            <GasFeesRow
-              data-testid="gas-fee-details-l2"
-              label={t('l2Fee')}
-              tooltipText={t('l2FeeTooltip')}
-              fiatFee={l2FeeFiat}
-              fiatFeeWith18SignificantDigits={l2FeeFiatWith18SignificantDigits}
-              nativeFee={l2FeeNative}
-            />
-          </>
-        )}
       {supportsEIP1559 &&
         !transactionMeta.selectedGasFeeToken &&
-        !transactionMeta.isGasFeeSponsored && (
+        !isGasFeeSponsored && (
           <ConfirmInfoAlertRow
             alertKey={RowAlertKey.Speed}
             data-testid="gas-fee-details-speed"
             label={t('speed')}
             ownerId={transactionMeta.id}
           >
-            <Box display={Display.Flex} alignItems={AlignItems.center}>
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+            >
               <GasTiming
+                chainId={transactionMeta.chainId}
+                networkClientId={transactionMeta.networkClientId}
                 maxFeePerGas={maxFeePerGas}
                 maxPriorityFeePerGas={maxPriorityFeePerGas}
+                userFeeLevelOverride={transactionMeta.userFeeLevel}
               />
             </Box>
           </ConfirmInfoAlertRow>
         )}
       {showAdvancedDetails &&
         !transactionMeta.selectedGasFeeToken &&
-        !transactionMeta.isGasFeeSponsored && (
+        !isGasFeeSponsored &&
+        !estimationFailed && (
           <GasFeesRow
             data-testid="gas-fee-details-max-fee"
             label={t('maxFee')}

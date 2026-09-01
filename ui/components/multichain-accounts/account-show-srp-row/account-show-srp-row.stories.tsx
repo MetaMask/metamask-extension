@@ -1,7 +1,6 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
@@ -10,7 +9,10 @@ import { AccountShowSrpRow } from './account-show-srp-row';
 const middleware = [thunk];
 const mockStore = configureMockStore(middleware);
 
-const createMockState = (seedPhraseBackedUp = true, firstTimeFlowType = 'import') => ({
+const createMockState = (
+  seedPhraseBackedUp = true,
+  firstTimeFlowType = 'import',
+) => ({
   metamask: {
     seedPhraseBackedUp,
     firstTimeFlowType,
@@ -31,9 +33,12 @@ export default {
   title: 'Components/MultichainAccounts/AccountShowSrpRow',
   component: AccountShowSrpRow,
   parameters: {
+    initialEntries: ['/'],
+    path: '*',
     docs: {
       description: {
-        component: 'A component that displays a Secret Recovery Phrase row with backup reminder functionality.',
+        component:
+          'A component that displays a Secret Recovery Phrase row with backup reminder functionality.',
       },
     },
     controls: { sort: 'alpha' },
@@ -47,11 +52,9 @@ export default {
   decorators: [
     (Story: StoryFn) => (
       <Provider store={mockStore(createMockState())}>
-        <MemoryRouter>
-          <div style={{ width: '360px', margin: '0 auto', padding: '20px' }}>
-            <Story />
-          </div>
-        </MemoryRouter>
+        <div style={{ width: '360px', margin: '0 auto', padding: '20px' }}>
+          <Story />
+        </div>
       </Provider>
     ),
   ],
@@ -65,7 +68,10 @@ export const Default = Template.bind({});
 Default.args = {
   account: {
     ...MOCK_ACCOUNT_EOA,
-    options: { ...MOCK_ACCOUNT_EOA.options, entropySource: 'mock-hd-keyring-id' },
+    options: {
+      ...MOCK_ACCOUNT_EOA.options,
+      entropySource: 'mock-hd-keyring-id',
+    },
   },
 };
 Default.storyName = 'Default (Seed Phrase Backed Up)';
@@ -74,18 +80,18 @@ export const WithBackupReminder = Template.bind({});
 WithBackupReminder.args = {
   account: {
     ...MOCK_ACCOUNT_EOA,
-    options: { ...MOCK_ACCOUNT_EOA.options, entropySource: 'mock-hd-keyring-id' },
+    options: {
+      ...MOCK_ACCOUNT_EOA.options,
+      entropySource: 'mock-hd-keyring-id',
+    },
   },
 };
 WithBackupReminder.decorators = [
   (Story: StoryFn) => (
     <Provider store={mockStore(createMockState(false, 'create'))}>
-      <MemoryRouter>
-        <div style={{ width: '360px', margin: '0 auto', padding: '20px' }}>
-          <Story />
-        </div>
-      </MemoryRouter>
+      <div style={{ width: '360px', margin: '0 auto', padding: '20px' }}>
+        <Story />
+      </div>
     </Provider>
   ),
 ];
-WithBackupReminder.storyName = 'With Backup Reminder';

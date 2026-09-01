@@ -2,6 +2,44 @@ import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confi
 import mockState from '../../../../test/data/mock-state.json';
 import useConfirmationAlerts from './useConfirmationAlerts';
 
+jest.mock('@metamask/react-data-query', () => ({
+  useQuery: () => ({ data: undefined, isLoading: false, isError: false }),
+}));
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
+// Mock async hooks used by useSpenderAlerts to prevent React Act warnings
+jest.mock('../components/confirm/info/approve/hooks/use-is-nft', () => ({
+  ...jest.requireActual('../components/confirm/info/approve/hooks/use-is-nft'),
+  useIsNFT: () => ({ isNFT: false, pending: false }),
+}));
+
+jest.mock('../../../hooks/useAsync', () => ({
+  ...jest.requireActual('../../../hooks/useAsync'),
+  useAsyncResult: () => ({ value: null, pending: false, error: undefined }),
+}));
+
+jest.mock('./send/useAddressPoisoningDetection', () => ({
+  useAddressPoisoningDetection: () => ({
+    isPoisoningSuspect: false,
+    bestMatch: null,
+    matches: [],
+    pending: false,
+  }),
+}));
+
+// Mock the async simulation balance-changes fetch used by useBlockaidAlerts
+// to prevent React Act warnings
+jest.mock('./alerts/useSendingAssetsFiatTotal', () => ({
+  useSendingAssetsFiatTotal: () => null,
+}));
+
 describe('useConfirmationAlerts', () => {
   it('returns empty array if no alerts', () => {
     const { result } = renderHookWithConfirmContextProvider(

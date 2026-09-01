@@ -1,106 +1,178 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import {
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
-import { Content, Header, Page } from '../page';
+import { Content, Footer, Header, Page } from '../page';
 import {
   Box,
+  Button,
   ButtonIcon,
   ButtonIconSize,
+  ButtonSize,
+  ButtonVariant,
   IconName,
-  Text,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { PermissionsEmptyState } from '../gator-permissions/components';
 import {
+  AlignItems,
   BackgroundColor,
   BlockSize,
   Color,
   Display,
   FlexDirection,
   JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
   REVIEW_PERMISSIONS,
-  GATOR_PERMISSIONS,
+  TOKEN_TRANSFER_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
+import {
+  getConnectedSitesListWithNetworkInfo,
+  getPermissionSubjects,
+} from '../../../../selectors';
+import { getMergedConnectionsListWithGatorPermissions } from '../../../../selectors/gator-permissions/gator-permissions';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
+import { removePermissionsFor } from '../../../../store/actions';
+import { useGlobalMenuRouteTransition } from '../../../../pages/routes/global-menu-route-transition';
+import { transitionForward } from '../../../ui/transition';
+import { DisconnectAllSitesModal } from '../../disconnect-all-modal';
+import { toast } from '../../../ui/toast/toast';
+import { useDispatch } from '../../../../store/hooks';
 import { ConnectionListItem } from './connection-list-item';
 
-export const PermissionsPage = () => {
+const PermissionsPage = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const runCloseTransition = useGlobalMenuRouteTransition();
+  const dispatch = useDispatch();
   const headerRef = useRef();
-  const [totalConnections, setTotalConnections] = useState(0);
-  const sitesConnectionsList = useSelector(
-    getConnectedSitesListWithNetworkInfo,
-  );
 
-  useEffect(() => {
-    setTotalConnections(Object.keys(sitesConnectionsList).length);
-  }, [sitesConnectionsList]);
+  const fromPath = searchParams.get('from') ?? DEFAULT_ROUTE;
 
-  const handleConnectionClick = (connection) => {
-    const hostName = connection.origin;
-    const safeEncodedHost = encodeURIComponent(hostName);
-
-    history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
+  const handleBack = () => {
+    if (fromPath === DEFAULT_ROUTE) {
+      runCloseTransition(() => navigate(-1));
+    } else {
+      navigate(DEFAULT_ROUTE);
+    }
   };
+  const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
 
-  const renderConnectionsList = (connectionList) =>
-    Object.entries(connectionList).map(([itemKey, connection]) => {
-      const isSnap = isSnapId(connection.origin);
-      return isSnap ? null : (
-        <ConnectionListItem
-          data-testid="connection-list-item"
-          key={itemKey}
-          connection={connection}
-          onClick={() => handleConnectionClick(connection)}
-        />
-      );
+  const mergedConnectionsList = useSelector((state) => {
+    if (!isGatorPermissionsRevocationFeatureEnabled()) {
+      return getConnectedSitesListWithNetworkInfo(state);
+    }
+    return getMergedConnectionsListWithGatorPermissions(state);
+  });
+
+  const subjects = useSelector(getPermissionSubjects);
+
+  const nonSnapConnections = useMemo(() => {
+    return Object.entries(mergedConnectionsList).filter(
+      ([origin]) => !isSnapId(origin),
+    );
+  }, [mergedConnectionsList]);
+
+  const handleDisconnectAll = useCallback(() => {
+    const errors = [];
+    const origins = nonSnapConnections.map(([origin]) => origin);
+
+    origins.forEach((origin) => {
+      try {
+        const subject = subjects[origin];
+        if (subject) {
+          const permissionMethodNames = Object.values(subject.permissions).map(
+            ({ parentCapability }) => parentCapability,
+          );
+          if (permissionMethodNames.length > 0) {
+            const permissionsRecord = {
+              [origin]: permissionMethodNames,
+            };
+            dispatch(removePermissionsFor(permissionsRecord));
+          }
+        }
+      } catch (error) {
+        errors.push({ origin, error });
+      }
     });
 
+    setShowDisconnectAllModal(false);
+
+    if (errors.length > 0) {
+      toast.error(t('disconnectAllSitesError'), {
+        id: 'disconnect-all-error-toast',
+      });
+    } else {
+      toast.success(t('disconnectAllSitesSuccess'), {
+        id: 'disconnect-all-success-toast',
+      });
+    }
+  }, [dispatch, nonSnapConnections, subjects, t]);
+
+  const handleConnectionClick = (connection) => {
+    const hasOnlyAdvancedPermissions =
+      !connection.addresses?.length &&
+      (connection.advancedPermissionsCount ?? 0) > 0;
+
+    transitionForward(() => {
+      if (hasOnlyAdvancedPermissions) {
+        navigate(
+          `${TOKEN_TRANSFER_ROUTE}/${encodeURIComponent(connection.origin)}`,
+        );
+        return;
+      }
+
+      navigate({
+        pathname: REVIEW_PERMISSIONS,
+        search: createSearchParams({
+          origin: connection.origin,
+        }).toString(),
+      });
+    });
+  };
+
+  const renderConnectionsList = () =>
+    nonSnapConnections.map(([itemKey, connection]) => (
+      <ConnectionListItem
+        data-testid="connection-list-item"
+        key={itemKey}
+        connection={connection}
+        onClick={() => handleConnectionClick(connection)}
+      />
+    ));
+
   return (
-    <Page className="main-container" data-testid="permissions-page">
+    <Page
+      className="main-container"
+      data-testid="parent-selector-permission-list"
+    >
       <Header
         backgroundColor={BackgroundColor.backgroundDefault}
         startAccessory={
           <ButtonIcon
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            className="connections-header__start-accessory"
             color={Color.iconDefault}
-            onClick={() =>
-              history.push(
-                isGatorPermissionsRevocationFeatureEnabled()
-                  ? GATOR_PERMISSIONS
-                  : DEFAULT_ROUTE,
-              )
-            }
-            size={ButtonIconSize.Sm}
+            onClick={handleBack}
+            size={ButtonIconSize.Md}
             data-testid="permissions-page-back"
           />
         }
+        textProps={{ 'data-testid': 'permissions-page-title' }}
       >
-        <Text
-          as="span"
-          variant={TextVariant.headingMd}
-          textAlign={TextAlign.Center}
-          data-testid="permissions-page-title"
-        >
-          {isGatorPermissionsRevocationFeatureEnabled()
-            ? t('sites')
-            : t('permissions')}
-        </Text>
+        {t('permissions')}
       </Header>
       <Content padding={0}>
         <Box ref={headerRef}></Box>
-        {totalConnections > 0 ? (
-          renderConnectionsList(sitesConnectionsList)
+        {nonSnapConnections.length > 0 ? (
+          renderConnectionsList()
         ) : (
           <Box
             data-testid="no-connections"
@@ -108,27 +180,41 @@ export const PermissionsPage = () => {
             flexDirection={FlexDirection.Column}
             justifyContent={JustifyContent.center}
             height={BlockSize.Full}
-            gap={2}
             padding={4}
           >
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              textAlign={TextAlign.Center}
-            >
-              {t('permissionsPageEmptyContent')}
-            </Text>
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              textAlign={TextAlign.Center}
-            >
-              {t('permissionsPageEmptySubContent')}
-            </Text>
+            <PermissionsEmptyState />
           </Box>
         )}
       </Content>
+      {nonSnapConnections.length > 0 && (
+        <Footer>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            width={BlockSize.Full}
+            gap={2}
+            alignItems={AlignItems.center}
+          >
+            <Button
+              size={ButtonSize.Lg}
+              block
+              variant={ButtonVariant.Secondary}
+              danger
+              onClick={() => setShowDisconnectAllModal(true)}
+              data-testid="disconnect-all-button"
+            >
+              {t('disconnectAllSites')}
+            </Button>
+          </Box>
+        </Footer>
+      )}
+      <DisconnectAllSitesModal
+        isOpen={showDisconnectAllModal}
+        onClose={() => setShowDisconnectAllModal(false)}
+        onClick={handleDisconnectAll}
+      />
     </Page>
   );
 };
+
+export default PermissionsPage;

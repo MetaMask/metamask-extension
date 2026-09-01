@@ -1,8 +1,9 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import ConfirmDeleteNetwork from '.';
 
 describe('Confirm Delete Network', () => {
@@ -10,7 +11,8 @@ describe('Confirm Delete Network', () => {
     hideModal: jest.fn(),
     onConfirm: jest.fn(),
     removeNetwork: jest.fn().mockResolvedValue(),
-    switchEvmNetwork: jest.fn(),
+    switchToEthereumNetwork: jest.fn(),
+    networkNickname: 'Goerli',
     target: '0x5',
     chainId: '0xe708',
     ethereumMainnetClientId: '0x1',
@@ -18,12 +20,12 @@ describe('Confirm Delete Network', () => {
 
   it('should match snapshot', () => {
     const mockStore = configureMockStore()(mockState);
-    const { container } = renderWithProvider(
+    const { baseElement } = renderWithProvider(
       <ConfirmDeleteNetwork {...props} />,
       mockStore,
     );
 
-    expect(container).toMatchSnapshot();
+    expect(baseElement).toMatchSnapshot();
   });
 
   it('should mention network name in modal', () => {
@@ -42,7 +44,7 @@ describe('Confirm Delete Network', () => {
       <ConfirmDeleteNetwork.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(queryByText('[cancel]'));
+    fireEvent.click(queryByText(messages.cancel.message));
 
     expect(props.removeNetwork).not.toHaveBeenCalled();
     expect(props.onConfirm).not.toHaveBeenCalled();
@@ -55,7 +57,7 @@ describe('Confirm Delete Network', () => {
       <ConfirmDeleteNetwork.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(queryByText('[delete]'));
+    fireEvent.click(queryByText(messages.delete.message));
 
     await waitFor(() => {
       expect(props.removeNetwork).toHaveBeenCalled();

@@ -1,28 +1,29 @@
 import React, { useEffect, useMemo } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   AccountGroupId,
   AccountWalletId,
   AccountWalletType,
 } from '@metamask/account-api';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import {
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
   ButtonIcon,
   ButtonIconSize,
+  FontWeight,
   IconName,
-  SensitiveText,
   Text,
-} from '../../../components/component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
+  TextVariant as DsrTextVariant,
+} from '@metamask/design-system-react';
+import { SensitiveText } from '../../../components/component-library';
+import {
+  TextColor as LegacyTextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
@@ -32,7 +33,10 @@ import {
 } from '../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getWalletsWithAccounts } from '../../../selectors/multichain-accounts/account-tree';
-import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ACCOUNT_LIST_PAGE_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
 import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell';
 import { AddMultichainAccount } from '../../../components/multichain-accounts/add-multichain-account';
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
@@ -41,13 +45,24 @@ import {
   useSingleWalletAccountsBalanceCallback,
   useSingleWalletDisplayBalance,
 } from '../../../hooks/multichain-accounts/useWalletBalance';
-import { getPreferences } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 
-export const WalletDetailsPage = () => {
+type WalletDetailsPageProps = {
+  params?: { id: string };
+};
+
+export const WalletDetailsPage = ({
+  params: propsParams,
+}: WalletDetailsPageProps = {}) => {
   const t = useI18nContext();
-  const history = useHistory();
-  const { id } = useParams();
-  const walletId = decodeURIComponent(id as string) as AccountWalletId;
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const walletId = (
+    propsParams?.id
+      ? decodeURIComponent(propsParams.id)
+      : searchParams.get('id')
+  ) as AccountWalletId;
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
   const wallet = walletsWithAccounts[walletId as AccountWalletId];
   const { multichainAccounts, keyringId, isSRPBackedUp } =
@@ -59,22 +74,22 @@ export const WalletDetailsPage = () => {
 
   useEffect(() => {
     if (!wallet) {
-      history.push(ACCOUNT_LIST_PAGE_ROUTE);
+      navigate(ACCOUNT_LIST_PAGE_ROUTE);
     }
-  }, [wallet, history]);
+  }, [wallet, navigate]);
 
   const isEntropyWallet = wallet?.type === AccountWalletType.Entropy;
   const shouldShowBackupReminder = isSRPBackedUp === false;
 
   const rowStylesProps = {
-    display: Display.Flex,
-    justifyContent: JustifyContent.spaceBetween,
-    alignItems: AlignItems.center,
-    backgroundColor: BackgroundColor.backgroundMuted,
+    flexDirection: BoxFlexDirection.Row,
+    justifyContent: BoxJustifyContent.Between,
+    alignItems: BoxAlignItems.Center,
+    backgroundColor: BoxBackgroundColor.BackgroundMuted,
   };
 
   const handleBack = () => {
-    history.goBack();
+    navigate(PREVIOUS_ROUTE);
   };
 
   const multichainAccountCells = useMemo(
@@ -84,7 +99,7 @@ export const WalletDetailsPage = () => {
           key={`multichain-account-cell-${group.id}`}
           accountId={group.id as AccountGroupId}
           accountName={group.metadata.name}
-          balance={walletAccountBalance(group.id) ?? ''}
+          balance={walletAccountBalance(group.id)}
           disableHoverEffect={true}
           privacyMode={privacyMode}
         />
@@ -97,7 +112,10 @@ export const WalletDetailsPage = () => {
   }, [wallet?.metadata.name, t]);
 
   return (
-    <Page className="multichain-wallet-details-page">
+    <Page
+      className="multichain-wallet-details-page"
+      data-testid="parent-selector-multichain-wallet-details-page"
+    >
       <Header
         textProps={{
           variant: TextVariant.headingSm,
@@ -128,14 +146,16 @@ export const WalletDetailsPage = () => {
             {...rowStylesProps}
           >
             <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.textDefault}
+              variant={DsrTextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.TextDefault}
             >
               {t('walletName')}
             </Text>
             <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.textAlternative}
+              variant={DsrTextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.TextAlternative}
             >
               {wallet?.metadata.name}
             </Text>
@@ -147,14 +167,15 @@ export const WalletDetailsPage = () => {
             {...rowStylesProps}
           >
             <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.textDefault}
+              variant={DsrTextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.TextDefault}
             >
               {t('balance')}
             </Text>
             <SensitiveText
               variant={TextVariant.bodyMdMedium}
-              color={TextColor.textAlternative}
+              color={LegacyTextColor.textAlternative}
               isHidden={privacyMode}
               ellipsis
             >
@@ -174,10 +195,9 @@ export const WalletDetailsPage = () => {
           ) : null}
         </Box>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          backgroundColor={BackgroundColor.backgroundMuted}
-          borderRadius={BorderRadius.XL}
+          flexDirection={BoxFlexDirection.Column}
+          backgroundColor={BoxBackgroundColor.BackgroundMuted}
+          className="rounded-xl"
         >
           {multichainAccountCells}
           {isEntropyWallet && <AddMultichainAccount walletId={walletId} />}

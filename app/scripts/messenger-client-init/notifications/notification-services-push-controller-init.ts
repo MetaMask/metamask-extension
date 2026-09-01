@@ -1,0 +1,137 @@
+import {
+  Controller as NotificationServicesPushController,
+  defaultState,
+} from '@metamask/notification-services-controller/push-services';
+import {
+  createRegToken,
+  deleteRegToken,
+  createSubscribeToPushNotifications,
+} from '@metamask/notification-services-controller/push-services/web';
+import { MessengerClientInitFunction } from '../types';
+import type {
+  NotificationServicesPushControllerMessenger,
+  NotificationServicesPushControllerInitMessenger,
+} from '../messengers/notifications';
+import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
+import {
+  onPushNotificationClicked,
+  onPushNotificationReceived,
+} from '../../controllers/push-notifications';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import ExtensionPlatform from '../../platforms/extension';
+
+/**
+ * Matches backend-safe extension versions: 2 to 4 dot-separated numeric
+ * segments (e.g. `7.80`, `7.80.0`, `12.18.3.0`). Rejects bare majors,
+ * prerelease (`-flask.1`), build metadata (`+build.1`), and `v` prefixes.
+ */
+const APP_VERSION_REGEX = /^\d+\.\d+(?:\.\d+){0,2}$/u;
+
+/**
+ * normalises the extension locale path to use hyphens ('-') instead of underscores ('_')
+ *
+ * @param locale - extension locale
+ * @returns normalised locale
+ */
+export const getNormalisedLocale = (locale: string): string =>
+  locale.replace('_', '-');
+
+/**
+ * Returns the extension version for push registration metadata, but only when
+ * it is in a backend-safe numeric format. Returns undefined otherwise (or if
+ * the version lookup fails) so the field is omitted from the registration.
+ *
+ * @param getVersion - Returns the extension version to validate.
+ * @returns The backend-safe app version, or undefined.
+ */
+export const getAppVersionForRegistration = (
+  getVersion: () => string = () => new ExtensionPlatform().getVersion(),
+): string | undefined => {
+  let appVersion: string;
+
+  try {
+    appVersion = getVersion();
+  } catch {
+    return undefined;
+  }
+
+  return APP_VERSION_REGEX.test(appVersion) ? appVersion : undefined;
+};
+
+export const NotificationServicesPushControllerInit: MessengerClientInitFunction<
+  NotificationServicesPushController,
+  NotificationServicesPushControllerMessenger,
+  NotificationServicesPushControllerInitMessenger
+> = ({
+  controllerMessenger,
+  initMessenger,
+  persistedState,
+  getMessengerClient,
+  platform,
+}) => {
+  const appVersion = getAppVersionForRegistration(() => platform.getVersion());
+
+  const messengerClient = new NotificationServicesPushController({
+    messenger: controllerMessenger,
+    state: {
+      ...defaultState,
+      ...persistedState.NotificationServicesPushController,
+    },
+    env: {
+      apiKey: process.env.FIREBASE_API_KEY ?? '',
+      authDomain: process.env.FIREBASE_AUTH_DOMAIN ?? '',
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET ?? '',
+      projectId: process.env.FIREBASE_PROJECT_ID ?? '',
+      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID ?? '',
+      appId: process.env.FIREBASE_APP_ID ?? '',
+      measurementId: process.env.FIREBASE_MEASUREMENT_ID ?? '',
+      vapidKey: process.env.VAPID_KEY ?? '',
+    },
+    config: {
+      isPushFeatureEnabled: isManifestV3 && !process.env.IN_TEST,
+      platform: 'extension',
+      pushService: {
+        createRegToken,
+        deleteRegToken,
+        subscribeToPushNotifications: createSubscribeToPushNotifications({
+          messenger: controllerMessenger,
+          onReceivedHandler: onPushNotificationReceived,
+          onClickHandler: onPushNotificationClicked,
+        }),
+      },
+      getLocale: () =>
+        getNormalisedLocale(
+          getMessengerClient('PreferencesController').state.currentLocale,
+        ),
+      ...(appVersion ? { appVersion } : {}),
+    },
+  });
+
+  initMessenger.subscribe(
+    'NotificationServicesPushController:pushNotificationClicked',
+    (notification) => {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PushNotificationClicked)
+          .addCategory(MetaMetricsEventCategory.PushNotifications)
+          .addProperties({
+            /* eslint-disable @typescript-eslint/naming-convention */
+            notification_id: notification.notification_id,
+            notification_type: notification.notification_type,
+            notification_subtype: notification.notification_subtype,
+            deeplink: `#notifications/${notification.notification_id}`,
+            ...(notification.chain_id && { chain_id: notification.chain_id }),
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build(),
+      );
+    },
+  );
+
+  return {
+    messengerClient,
+  };
+};

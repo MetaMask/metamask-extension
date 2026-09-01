@@ -19,16 +19,13 @@ import {
   createMockNotificationRocketPoolUnStakeCompleted,
   createMockFeatureAnnouncementRaw,
   createMockSnapNotification,
+  createMockPlatformNotification,
 } from '@metamask/notification-services-controller/notification-services/mocks';
-import {
-  SnapComponent,
-  SnapNotification,
-} from './notification-components/snap/snap';
 import { NotificationsListItem } from './notifications-list-item';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
-
-type Notification = NotificationServicesController.Types.INotification;
-const { processNotification } = NotificationServicesController.Processors;
+import {
+  type INotification,
+  processNotification,
+} from '@metamask/notification-services-controller/notification-services';
 
 const notificationMocks = {
   EthSent: createMockNotificationEthSent,
@@ -53,9 +50,10 @@ const notificationMocks = {
     mock.data.origin = 'npm:@metamask/example-snap';
     return mock;
   },
+  Platform: createMockPlatformNotification,
 } as const;
 
-const notifications: Notification[] = Object.values(notificationMocks).map(
+const notifications: INotification[] = Object.values(notificationMocks).map(
   (createMock) => processNotification(createMock()),
 );
 
@@ -64,10 +62,13 @@ export default {
   component: NotificationsListItem,
 } as Meta;
 
-const NotificationItemWrapper: React.FC<{
-  notification: Notification;
+const NotificationItemWrapper = ({
+  notification,
+  onRead,
+}: {
+  notification: INotification;
   onRead: (id: string) => void;
-}> = ({ notification, onRead }) => {
+}) => {
   const handleCustomNotificationClick = () => {
     onRead(notification.id);
   };

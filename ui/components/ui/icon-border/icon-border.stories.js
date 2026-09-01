@@ -5,8 +5,16 @@ import { BannerAlert } from '../../component-library';
 import IconBorder from './icon-border';
 
 export default {
-  title: 'Components/UI/IconBorder',
+  title: 'Components/UI/IconBorder (deprecated)',
   component: IconBorder,
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Deprecated**: This component is deprecated and will be removed in a future release. Please use the `<AvatarBase />` component instead.',
+      },
+    },
+  },
   argTypes: {
     className: {
       control: 'text',

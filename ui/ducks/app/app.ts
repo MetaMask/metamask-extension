@@ -4,28 +4,22 @@ import type {
 } from '@metamask/assets-controllers';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { Action, AnyAction } from 'redux';
+import { ModalType } from '@metamask/subscription-controller';
 import {
   HardwareTransportStates,
   WebHIDConnectedStatuses,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
-import {
-  PasswordChangeToastType,
-  ClaimSubmitToastType,
-} from '../../../shared/constants/app-state';
+import { ClaimSubmitToastType } from '../../../shared/constants/app-state';
 
 type AppState = {
   customNonceValue: string;
-  isAccountMenuOpen: boolean;
   isNetworkMenuOpen: boolean;
   nextNonce: string | null;
   pendingTokens: {
     [address: string]: Token & { isCustom?: boolean; unlisted?: boolean };
   };
-  welcomeScreenSeen: boolean;
   confirmationExchangeRates: ContractExchangeRates;
-  shouldClose: boolean;
-  menuOpen: boolean;
   modal: {
     open: boolean;
     modalState: {
@@ -52,7 +46,6 @@ type AppState = {
     tokenId?: string;
     ignoreErc20Token?: boolean;
   };
-  showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
   showSupportDataConsentModal: boolean;
   keyringRemovalSnapModal: {
@@ -60,38 +53,22 @@ type AppState = {
     result: 'success' | 'failure' | 'none';
   };
   showKeyringRemovalSnapModal: boolean;
-  importTokensModalOpen: boolean;
   deprecatedNetworkModalOpen: boolean;
   accountDetail: {
-    subview?: string;
-    accountExport?: string;
     privateKey?: string;
   };
   isLoading: boolean;
   isNftStillFetchingIndication: boolean;
-  showNftDetectionEnablementToast: boolean;
   loadingMessage: string | null;
-  scrollToBottom: boolean;
-  warning: string | null | undefined;
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  buyView: Record<string, any>;
   defaultHdPaths: {
     trezor: string;
     oneKey: string;
     ledger: string;
     lattice: string;
   };
-  networksTabSelectedRpcUrl: string | null;
   requestAccountTabs: Record<string, number>; // [url.origin]: tab.id
   openMetaMaskTabs: Record<string, boolean>; // openMetamaskTabsIDs[tab.id]): true/false
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
-  showWhatsNewPopup: boolean;
-  showTermsOfUsePopup: boolean;
   singleExceptions: {
     testKey: string | null;
   };
@@ -102,8 +79,7 @@ type AppState = {
   ledgerTransportStatus: HardwareTransportStates;
   showBasicFunctionalityModal: boolean;
   externalServicesOnboardingToggleState: boolean;
-  newNftAddedMessage: string;
-  removeNftMessage: string;
+  backupAndSyncOnboardingToggleState: boolean;
   newNetworkAddedName: string;
   editedNetwork:
     | {
@@ -111,6 +87,7 @@ type AppState = {
         nickname?: string;
         editCompleted?: boolean;
         newNetwork?: boolean;
+        trackRpcUpdateFromBanner?: boolean;
       }
     | undefined;
   newNetworkAddedConfigurationId: string;
@@ -121,23 +98,29 @@ type AppState = {
   onboardedInThisUISession: boolean;
   customTokenAmount: string;
   txId: string | null;
-  accountDetailsAddress: string;
   showDeleteMetaMetricsDataModal: boolean;
   showDataDeletionErrorModal: boolean;
-  snapsInstallPrivacyWarningShown: boolean;
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
   isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
-  showNewSrpAddedToast: boolean;
-  showPasswordChangeToast: PasswordChangeToastType | null;
-  showConnectionsRemovedModal: boolean;
-  showCopyAddressToast: boolean;
   showClaimSubmitToast: ClaimSubmitToastType | null;
+  showInfuraSwitchToast: boolean;
   shieldEntryModal?: {
     show: boolean;
     shouldSubmitEvents: boolean;
+    modalType?: ModalType;
+    triggeringCohort?: string;
+    /**
+     * Whether the user has interacted with the modal.
+     */
+    hasUserInteractedWithModal?: boolean;
   };
+  homeDeepLinkQrCode: {
+    deeplinkUrl: string;
+    descriptionKey: string;
+    titleKey: string;
+  } | null;
 };
 
 export type AppSliceState = {
@@ -147,14 +130,10 @@ export type AppSliceState = {
 // default state
 const initialState: AppState = {
   customNonceValue: '',
-  isAccountMenuOpen: false,
   isNetworkMenuOpen: false,
   nextNonce: null,
   pendingTokens: {},
-  welcomeScreenSeen: false,
   confirmationExchangeRates: {},
-  shouldClose: false,
-  menuOpen: false,
   modal: {
     open: false,
     modalState: {
@@ -170,16 +149,15 @@ const initialState: AppState = {
   qrCodeData: null,
   networkDropdownOpen: false,
   importNftsModal: { open: false },
-  showPermittedNetworkToastOpen: false,
   showIpfsModalOpen: false,
   showBasicFunctionalityModal: false,
   externalServicesOnboardingToggleState: true,
+  backupAndSyncOnboardingToggleState: true,
   keyringRemovalSnapModal: {
     snapName: '',
     result: 'none',
   },
   showKeyringRemovalSnapModal: false,
-  importTokensModalOpen: false,
   deprecatedNetworkModalOpen: false,
   accountDetail: {
     privateKey: '',
@@ -188,24 +166,15 @@ const initialState: AppState = {
   isLoading: false,
   // Used to show a spinner at the bottom of the page when we are still fetching nfts
   isNftStillFetchingIndication: false,
-  // Used to display a toast after the user enables the nft auto detection from the notice banner
-  showNftDetectionEnablementToast: false,
   loadingMessage: null,
-  // Used to display error text
-  warning: null,
-  buyView: {},
   defaultHdPaths: {
     trezor: `m/44'/60'/0'/0`,
     oneKey: `m/44'/60'/0'/0`,
     ledger: `m/44'/60'/0'/0/0`,
     lattice: `m/44'/60'/0'/0`,
   },
-  networksTabSelectedRpcUrl: '',
   requestAccountTabs: {},
   openMetaMaskTabs: {},
-  currentWindowTab: {},
-  showWhatsNewPopup: true,
-  showTermsOfUsePopup: true,
   singleExceptions: {
     testKey: null,
   },
@@ -214,8 +183,6 @@ const initialState: AppState = {
   smartTransactionsErrorMessageDismissed: false,
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses.unknown,
   ledgerTransportStatus: HardwareTransportStates.none,
-  newNftAddedMessage: '',
-  removeNftMessage: '',
   newNetworkAddedName: '',
   editedNetwork: undefined,
   newNetworkAddedConfigurationId: '',
@@ -225,22 +192,17 @@ const initialState: AppState = {
   newTokensImportedError: '',
   onboardedInThisUISession: false,
   customTokenAmount: '',
-  scrollToBottom: true,
   txId: null,
-  accountDetailsAddress: '',
   showDeleteMetaMetricsDataModal: false,
   showDataDeletionErrorModal: false,
-  snapsInstallPrivacyWarningShown: false,
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
   isAccessedFromDappConnectedSitePopover: false,
   errorInSettings: null,
-  showNewSrpAddedToast: false,
-  showPasswordChangeToast: null,
-  showCopyAddressToast: false,
   showClaimSubmitToast: null,
+  showInfuraSwitchToast: false,
   showSupportDataConsentModal: false,
-  showConnectionsRemovedModal: false,
+  homeDeepLinkQrCode: null,
 };
 
 export default function reduceApp(
@@ -257,12 +219,6 @@ export default function reduceApp(
       return {
         ...appState,
         customNonceValue: action.value,
-      };
-
-    case actionConstants.TOGGLE_ACCOUNT_MENU:
-      return {
-        ...appState,
-        isAccountMenuOpen: !appState.isAccountMenuOpen,
       };
 
     case actionConstants.SET_NEXT_NONCE: {
@@ -285,24 +241,11 @@ export default function reduceApp(
       };
     }
 
-    case actionConstants.CLOSE_WELCOME_SCREEN:
-      return {
-        ...appState,
-        welcomeScreenSeen: true,
-      };
-
     case actionConstants.SET_CONFIRMATION_EXCHANGE_RATES:
       return {
         ...appState,
         confirmationExchangeRates: action.value,
       };
-
-    case actionConstants.RESET_ONBOARDING: {
-      return {
-        ...appState,
-        welcomeScreenSeen: false,
-      };
-    }
 
     // dropdown methods
     case actionConstants.NETWORK_DROPDOWN_OPEN:
@@ -357,6 +300,17 @@ export default function reduceApp(
         externalServicesOnboardingToggleState: false,
       };
 
+    case actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_ON:
+      return {
+        ...appState,
+        backupAndSyncOnboardingToggleState: true,
+      };
+    case actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_OFF:
+      return {
+        ...appState,
+        backupAndSyncOnboardingToggleState: false,
+      };
+
     case actionConstants.SHOW_IPFS_MODAL_OPEN:
       return {
         ...appState,
@@ -367,30 +321,6 @@ export default function reduceApp(
       return {
         ...appState,
         showIpfsModalOpen: false,
-      };
-
-    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN:
-      return {
-        ...appState,
-        showPermittedNetworkToastOpen: true,
-      };
-
-    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_CLOSE:
-      return {
-        ...appState,
-        showPermittedNetworkToastOpen: false,
-      };
-
-    case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:
-      return {
-        ...appState,
-        importTokensModalOpen: true,
-      };
-
-    case actionConstants.IMPORT_TOKENS_POPOVER_CLOSE:
-      return {
-        ...appState,
-        importTokensModalOpen: false,
       };
 
     case actionConstants.DEPRECATED_NETWORK_POPOVER_OPEN:
@@ -419,13 +349,6 @@ export default function reduceApp(
         alertOpen: false,
         alertMessage: null,
       };
-
-    case actionConstants.SET_ACCOUNT_DETAILS_ADDRESS: {
-      return {
-        ...appState,
-        accountDetailsAddress: action.payload,
-      };
-    }
 
     // qr scanner methods
     case actionConstants.QR_CODE_DETECTED:
@@ -482,17 +405,6 @@ export default function reduceApp(
           privateKey: '',
         },
       };
-    case actionConstants.SHOW_SEND_TOKEN_PAGE:
-      return {
-        ...appState,
-        warning: null,
-      };
-
-    case actionConstants.LOCK_METAMASK:
-      return {
-        ...appState,
-        warning: null,
-      };
 
     // accounts
     case actionConstants.GO_HOME:
@@ -501,42 +413,25 @@ export default function reduceApp(
         accountDetail: {
           privateKey: '',
         },
-        warning: null,
       };
 
     case actionConstants.SHOW_ACCOUNTS_PAGE:
       return {
         ...appState,
         isLoading: false,
-        warning: null,
-        scrollToBottom: false,
       };
 
     case actionConstants.SHOW_CONF_TX_PAGE:
       return {
         ...appState,
         txId: action.id,
-        warning: null,
         isLoading: false,
       };
 
     case actionConstants.COMPLETED_TX:
       return {
         ...appState,
-        warning: null,
         txId: null,
-      };
-
-    case actionConstants.UNLOCK_FAILED:
-      return {
-        ...appState,
-        warning: action.value || 'Incorrect password. Try again.',
-      };
-
-    case actionConstants.UNLOCK_SUCCEEDED:
-      return {
-        ...appState,
-        warning: '',
       };
 
     case actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH: {
@@ -571,29 +466,11 @@ export default function reduceApp(
         ...appState,
         isNftStillFetchingIndication: true,
       };
-    case actionConstants.SHOW_NFT_DETECTION_ENABLEMENT_TOAST:
-      return {
-        ...appState,
-        showNftDetectionEnablementToast: action.payload,
-      };
 
     case actionConstants.HIDE_NFT_STILL_FETCHING_INDICATION:
       return {
         ...appState,
         isNftStillFetchingIndication: false,
-      };
-
-    case actionConstants.DISPLAY_WARNING:
-      return {
-        ...appState,
-        warning: action.payload,
-        isLoading: false,
-      };
-
-    case actionConstants.HIDE_WARNING:
-      return {
-        ...appState,
-        warning: undefined,
       };
 
     case actionConstants.SHOW_PRIVATE_KEY:
@@ -636,18 +513,6 @@ export default function reduceApp(
         newTokensImportedError: action.payload,
       };
 
-    case actionConstants.SET_NEW_NFT_ADDED_MESSAGE:
-      return {
-        ...appState,
-        newNftAddedMessage: action.payload,
-      };
-
-    case actionConstants.SET_REMOVE_NFT_MESSAGE:
-      return {
-        ...appState,
-        removeNftMessage: action.payload,
-      };
-
     case actionConstants.SET_REQUEST_ACCOUNT_TABS:
       return {
         ...appState,
@@ -658,12 +523,6 @@ export default function reduceApp(
       return {
         ...appState,
         openMetaMaskTabs: action.payload,
-      };
-
-    case actionConstants.HIDE_WHATS_NEW_POPUP:
-      return {
-        ...appState,
-        showWhatsNewPopup: false,
       };
 
     case actionConstants.CAPTURE_SINGLE_EXCEPTION:
@@ -717,6 +576,11 @@ export default function reduceApp(
         ),
         isNetworkMenuOpen: !appState.isNetworkMenuOpen,
       };
+    case actionConstants.CLOSE_NETWORK_MENU:
+      return {
+        ...appState,
+        isNetworkMenuOpen: false,
+      };
     case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
       return {
         ...appState,
@@ -747,7 +611,6 @@ export default function reduceApp(
         ...appState,
         errorInSettings: null,
       };
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
       return {
         ...appState,
@@ -765,29 +628,10 @@ export default function reduceApp(
           result: 'none',
         },
       };
-    ///: END:ONLY_INCLUDE_IF
-    case actionConstants.SET_SHOW_NEW_SRP_ADDED_TOAST:
+    case actionConstants.SET_SHOW_INFURA_SWITCH_TOAST:
       return {
         ...appState,
-        showNewSrpAddedToast: action.payload,
-      };
-
-    case actionConstants.SET_SHOW_PASSWORD_CHANGE_TOAST:
-      return {
-        ...appState,
-        showPasswordChangeToast: action.payload,
-      };
-
-    case actionConstants.SET_SHOW_COPY_ADDRESS_TOAST:
-      return {
-        ...appState,
-        showCopyAddressToast: action.payload,
-      };
-
-    case actionConstants.SET_SHOW_CLAIM_SUBMIT_TOAST:
-      return {
-        ...appState,
-        showClaimSubmitToast: action.payload,
+        showInfuraSwitchToast: action.payload,
       };
 
     case actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL:
@@ -796,17 +640,24 @@ export default function reduceApp(
         showSupportDataConsentModal: action.payload,
       };
 
-    case actionConstants.SET_SHOW_CONNECTIONS_REMOVED:
-      return {
-        ...appState,
-        showConnectionsRemovedModal: action.value,
-      };
-    case actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE:
+    case actionConstants.SET_SHIELD_ENTRY_MODAL_STATUS:
       return {
         ...appState,
         shieldEntryModal: {
           ...action.payload,
         },
+      };
+
+    case actionConstants.SET_HOME_DEEP_LINK_QR_CODE:
+      return {
+        ...appState,
+        homeDeepLinkQrCode: action.payload,
+      };
+
+    case actionConstants.CLEAR_HOME_DEEP_LINK_QR_CODE:
+      return {
+        ...appState,
+        homeDeepLinkQrCode: null,
       };
 
     default:
@@ -815,12 +666,6 @@ export default function reduceApp(
 }
 
 // Action Creators
-export function hideWhatsNewPopup(): Action {
-  return {
-    type: actionConstants.HIDE_WHATS_NEW_POPUP,
-  };
-}
-
 export function openBasicFunctionalityModal(): Action {
   return {
     type: actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN,
@@ -842,6 +687,18 @@ export function onboardingToggleBasicFunctionalityOn(): Action {
 export function onboardingToggleBasicFunctionalityOff(): Action {
   return {
     type: actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF,
+  };
+}
+
+export function onboardingToggleBackupAndSyncOn(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_ON,
+  };
+}
+
+export function onboardingToggleBackupAndSyncOff(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BACKUP_AND_SYNC_OFF,
   };
 }
 
@@ -873,23 +730,17 @@ export function setOnBoardedInThisUISession(
   return { type: actionConstants.ONBOARDED_IN_THIS_UI_SESSION, payload };
 }
 
-export function setShowCopyAddressToast(
-  payload: boolean,
-): PayloadAction<boolean> {
-  return { type: actionConstants.SET_SHOW_COPY_ADDRESS_TOAST, payload };
-}
-
 export function setCustomTokenAmount(payload: string): PayloadAction<string> {
   return { type: actionConstants.SET_CUSTOM_TOKEN_AMOUNT, payload };
 }
 
 /**
  * An action creator for display a error to the user in various places in the
- * UI. It will not be cleared until a new warning replaces it or `hideWarning`
+ * UI. It will not be cleared until a new error replaces it or `hideErrorInSettings`
  * is called.
  *
- * @param payload - The warning to show.
- * @returns The action to display the warning.
+ * @param payload - The error to show.
+ * @returns The action to display the error.
  */
 export function displayErrorInSettings(payload: string): PayloadAction<string> {
   return {
@@ -930,10 +781,6 @@ export function getShowSupportDataConsentModal(state: AppSliceState): boolean {
   return state.appState.showSupportDataConsentModal;
 }
 
-export function getShowCopyAddressToast(state: AppSliceState): boolean {
-  return state.appState.showCopyAddressToast;
-}
-
 export function openDeleteMetaMetricsDataModal(): Action {
   return {
     type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN,
@@ -955,5 +802,22 @@ export function openDataDeletionErrorModal(): Action {
 export function hideDataDeletionErrorModal(): Action {
   return {
     type: actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE,
+  };
+}
+
+export function setHomeDeepLinkQrCode(payload: {
+  deeplinkUrl: string;
+  descriptionKey: string;
+  titleKey: string;
+}): PayloadAction<typeof payload> {
+  return {
+    type: actionConstants.SET_HOME_DEEP_LINK_QR_CODE,
+    payload,
+  };
+}
+
+export function clearHomeDeepLinkQrCode(): Action {
+  return {
+    type: actionConstants.CLEAR_HOME_DEEP_LINK_QR_CODE,
   };
 }

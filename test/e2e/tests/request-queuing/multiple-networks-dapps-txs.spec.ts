@@ -1,17 +1,29 @@
+import assert from 'assert';
 import { Suite } from 'mocha';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
-import FixtureBuilder from '../../fixture-builder';
 import {
-  withFixtures,
-  DAPP_URL,
   DAPP_ONE_URL,
+  DAPP_URL,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
   WINDOW_TITLES,
-} from '../../helpers';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+} from '../../constants';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../helpers';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import { login } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
+
+const EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO = {
+  aggregators: [],
+  decimals: 18,
+  image: '',
+  name: 'Ethereum',
+  symbol: 'ETH',
+  type: 'native' as const,
+};
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks.', function (this: Suite) {
   it('should be possible to send requests from different dapps on different networks', async function () {
@@ -19,8 +31,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 2 },
+        fixtures: new FixtureBuilderV2()
           .withEnabledNetworks({
             eip155: {
               '0x53a': true,
@@ -28,8 +40,18 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
           })
           .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
+          .withPreferencesController({ securityAlertsEnabled: false })
+          .withAssetsController({
+            assetsBalance: {
+              [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                'eip155:1338/slip44:60': { amount: '25' },
+              },
+            },
+            assetsInfo: {
+              'eip155:1338/slip44:60': EXTRA_LOCAL_ANVIL_NATIVE_ETH_INFO,
+            },
+          })
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',
@@ -45,7 +67,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open Dapp One
         const testDapp = new TestDapp(driver);
@@ -53,14 +75,14 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await testDapp.checkPageIsLoaded();
 
         // Connect to dapp 1
-        await testDapp.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
         // Network Selector
-        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
+        await switchToNetworkFromNetworkSelect(driver, 'Localhost 8546');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
@@ -69,7 +91,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await testDappTwo.checkPageIsLoaded();
 
         // Connect to dapp 2
-        await testDappTwo.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         // Dapp one send tx
         await driver.switchToWindowWithUrl(DAPP_URL);
@@ -93,6 +115,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         // Reject Transaction
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkPageIsLoaded();
+        await transactionConfirmation.checkPageNumbers(1, 2);
         await transactionConfirmation.clickFooterCancelButton();
 
         // TODO: No second confirmation from dapp two will show, have to go back to the extension to see the switch chain & dapp two's tx.
@@ -104,18 +127,20 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await homepage.goToActivityList();
 
         // Check for unconfirmed transaction in tx list
-        const activityList = new ActivityListPage(driver);
-        await activityList.checkPendingTxNumberDisplayedInActivity(1);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkPendingTxNumberDisplayedInActivity(1);
 
-        // Click Unconfirmed Tx
-        await activityList.clickOnActivity(1);
-
-        // Confirm Tx
+        // Pending confirm stays in the dialog popup on Firefox.
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await transactionConfirmation.checkPageIsLoaded();
-        await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
+        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // Check for Confirmed Transaction
-        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
       },
     );
   });

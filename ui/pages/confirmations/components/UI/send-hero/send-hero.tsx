@@ -25,6 +25,7 @@ import {
 import { Asset, NFT_STANDARDS } from '../../../types/send';
 import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
 import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNameAndImage';
+import { getAssetImageUrl } from '../../../../../../shared/lib/asset-utils';
 
 const NFTHero = ({ asset }: { asset: Asset }) => {
   const nftData = asset;
@@ -135,7 +136,11 @@ const TokenHero = ({ asset }: { asset: Asset }) => {
       >
         <AvatarToken
           size={AvatarTokenSize.Xl}
-          src={image || nativeTokenImage}
+          src={
+            image ||
+            nativeTokenImage ||
+            (asset.assetId && getAssetImageUrl(asset.assetId, chainId as Hex))
+          }
           name={symbol}
           showHalo={false}
         />

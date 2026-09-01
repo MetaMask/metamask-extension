@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { SelectContext } from '../select-wrapper';
 import { Box, type PolymorphicRef } from '../box';
 import { Text } from '../text';
@@ -74,8 +74,6 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
       uncontrolledValue = '',
       defaultValue = '',
       placeholder = '',
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     } = selectContext || {};
 
     const contentToRender =
@@ -142,8 +140,6 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
           className,
         )}
         ref={ref}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         disabled={isDisabled || isDisabledProp || disabled}
         as="button"
         onClick={isWithinSelectWrapper ? toggleUncontrolledOpen : undefined}

@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
+import { Checkbox } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ButtonVariant,
@@ -135,7 +136,7 @@ export default function CreateNewVault({
           <Checkbox
             id="create-new-vault-terms-checkbox"
             data-testid="create-new-vault-terms-checkbox"
-            isChecked={termsChecked}
+            isSelected={termsChecked}
             onChange={toggleTermsCheck}
             label={termsOfUse}
           />

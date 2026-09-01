@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash';
-import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import { BigNumber } from 'bignumber.js';
 import { Platform } from '@metamask/profile-sync-controller/sdk';
@@ -10,13 +10,16 @@ import {
   updateSlides,
 } from '../../store/actions';
 import {
-  getRemoteFeatureFlags,
   getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
   getShowDownloadMobileAppSlide,
   getSlides,
   getUseExternalServices,
 } from '../../selectors';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getCurrentLocale } from '../../ducks/locale/locale';
+import { isMaintainedLocale } from '../../../shared/constants/locales';
+import { useDispatch } from '../../store/hooks';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
 type UseSlideManagementProps = { testDate?: string; enabled?: boolean };
@@ -100,11 +103,68 @@ export const useCarouselManagement = ({
   const useExternalServices = useSelector(getUseExternalServices);
   const showDownloadMobileAppSlide = useSelector(getShowDownloadMobileAppSlide);
   const prevSlidesRef = useRef<CarouselSlide[]>();
+  const slidesRef = useRef(slides);
+  slidesRef.current = slides;
   const hasZeroBalance = new BigNumber(totalBalance ?? ZERO_BALANCE).eq(
     ZERO_BALANCE,
   );
+  const currentLocale = useSelector(getCurrentLocale);
+  const contentfulEnabled =
+    remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
+
+  const [downloadEligible, setDownloadEligible] = useState<boolean>(false);
+  const [downloadEligibilityReady, setDownloadEligibilityReady] =
+    useState<boolean>(false);
 
   useEffect(() => {
+    const eligibilityNeeded =
+      contentfulEnabled && useExternalServices && showDownloadMobileAppSlide;
+
+    if (!eligibilityNeeded) {
+      setDownloadEligible(false);
+      setDownloadEligibilityReady(true);
+      return () => undefined;
+    }
+
+    setDownloadEligibilityReady(false);
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const lineage = await getUserProfileLineageAction();
+        if (!cancelled) {
+          const onMobile = Boolean(
+            lineage?.lineage?.some((l) => l.agent === Platform.MOBILE),
+          );
+          setDownloadEligible(!onMobile);
+          setDownloadEligibilityReady(true);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          log.warn('Failed to fetch user profile lineage:', error);
+          setDownloadEligible(false);
+          setDownloadEligibilityReady(true);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    selectedAccount.address,
+    useExternalServices,
+    showDownloadMobileAppSlide,
+    contentfulEnabled,
+  ]);
+
+  useEffect(() => {
+    // Wait until eligibility is resolved (or not required) to avoid double fetch
+    if (!downloadEligibilityReady) {
+      return;
+    }
+
     // If carousel is disabled, clear the slides
     if (!enabled) {
       const empty: CarouselSlide[] = [];
@@ -114,110 +174,100 @@ export const useCarouselManagement = ({
       }
       return;
     }
-    const maybeFetchContentful = async () => {
-      const contentfulEnabled =
-        remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
+    let cancelled = false;
 
+    const maybeFetchContentful = async () => {
       // Early Return if Contentful is disabled
       if (!contentfulEnabled) {
         const empty: CarouselSlide[] = [];
-        if (!isEqual(prevSlidesRef.current, empty)) {
+        if (!cancelled && !isEqual(prevSlidesRef.current, empty)) {
           dispatch(updateSlides(empty));
           prevSlidesRef.current = empty;
         }
         return;
       }
 
-      if (contentfulEnabled) {
-        try {
-          const { prioritySlides, regularSlides } =
-            await fetchCarouselSlidesFromContentful();
+      try {
+        const { prioritySlides, regularSlides } =
+          await fetchCarouselSlidesFromContentful(
+            isMaintainedLocale(currentLocale) ? currentLocale : undefined,
+          );
 
-          const pRaw = [...prioritySlides];
-          const rRaw = [...regularSlides];
+        if (cancelled) {
+          return;
+        }
 
-          const isNowActive = (s: CarouselSlide) =>
-            isActive(s, testDate ? new Date(testDate) : new Date());
+        const pRaw = [...prioritySlides];
+        const rRaw = [...regularSlides];
 
-          const normalizeList = (list: CarouselSlide[]) =>
-            list
-              .map((s) => normalize(s, slides))
-              .filter((s): s is CarouselSlide => Boolean(s))
-              .filter(isNowActive);
+        const isNowActive = (s: CarouselSlide) =>
+          isActive(s, testDate ? new Date(testDate) : new Date());
 
-          // Fund: force undismissable on zero balance
-          const fundCheck = (s: CarouselSlide): CarouselSlide => {
-            if (s.variableName === 'fund') {
-              return {
-                ...s,
-                undismissable: hasZeroBalance || s.undismissable,
-              };
-            }
-            return s;
-          };
+        const normalizeList = (list: CarouselSlide[]) =>
+          list
+            .map((s) => normalize(s, slidesRef.current ?? []))
+            .filter((s): s is CarouselSlide => Boolean(s))
+            .filter(isNowActive);
 
-          const downloadEligible = await (async () => {
-            if (!useExternalServices || !showDownloadMobileAppSlide) {
-              return false;
-            }
-            const lineage = await getUserProfileLineageAction();
-            const onMobile = Boolean(
-              lineage?.lineage?.some((l) => l.agent === Platform.MOBILE),
-            );
-            return !onMobile;
-          })();
-
-          const isEligible = (s: CarouselSlide) => {
-            // Show Download Mobile App (only if not already on mobile + flags)
-            if (s.variableName === 'downloadMobileApp') {
-              return downloadEligible;
-            }
-            return true;
-          };
-
-          const activePrioritySlides = normalizeList(pRaw)
-            .map(fundCheck)
-            .filter(isEligible);
-          const activeRegularSlides = normalizeList(rRaw)
-            .map(fundCheck)
-            .filter(isEligible);
-
-          // Order based on cardPlacement
-          const orderedNonPriority = orderByCardPlacement(activeRegularSlides);
-          const mergedSlides = [...activePrioritySlides, ...orderedNonPriority];
-
-          if (!isEqual(prevSlidesRef.current, mergedSlides)) {
-            dispatch(updateSlides(mergedSlides));
-            prevSlidesRef.current = mergedSlides;
+        // Fund: force undismissable on zero balance
+        const fundCheck = (s: CarouselSlide): CarouselSlide => {
+          if (s.variableName === 'fund') {
+            return {
+              ...s,
+              undismissable: hasZeroBalance || s.undismissable,
+            };
           }
-        } catch (err) {
-          log.warn('Failed to fetch Contentful slides:', err);
-          if (!isEqual(prevSlidesRef.current, [])) {
-            dispatch(updateSlides([]));
-            prevSlidesRef.current = [];
+          return s;
+        };
+
+        const isEligible = (s: CarouselSlide) => {
+          // Show Download Mobile App (only if not already on mobile + flags)
+          if (s.variableName === 'downloadMobileApp') {
+            return downloadEligible;
           }
+          return true;
+        };
+
+        const activePrioritySlides = normalizeList(pRaw)
+          .map(fundCheck)
+          .filter(isEligible);
+        const activeRegularSlides = normalizeList(rRaw)
+          .map(fundCheck)
+          .filter(isEligible);
+
+        // Order based on cardPlacement
+        const orderedNonPriority = orderByCardPlacement(activeRegularSlides);
+        const mergedSlides = [...activePrioritySlides, ...orderedNonPriority];
+
+        if (!isEqual(prevSlidesRef.current, mergedSlides)) {
+          dispatch(updateSlides(mergedSlides));
+          prevSlidesRef.current = mergedSlides;
+        }
+      } catch (err) {
+        log.warn('Failed to fetch Contentful slides:', err);
+        if (!cancelled && !isEqual(prevSlidesRef.current, [])) {
+          dispatch(updateSlides([]));
+          prevSlidesRef.current = [];
         }
       }
     };
 
-    (async () => {
-      try {
-        await maybeFetchContentful();
-      } catch (err) {
-        log.warn('Failed to load carousel slides:', err);
-      }
-    })();
+    maybeFetchContentful().catch((err) => {
+      log.warn('Failed to load carousel slides:', err);
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [
     enabled,
     dispatch,
     hasZeroBalance,
-    remoteFeatureFlags,
+    contentfulEnabled,
+    currentLocale,
     testDate,
     inTest,
-    slides,
-    selectedAccount.address,
-    useExternalServices,
-    showDownloadMobileAppSlide,
+    downloadEligibilityReady,
   ]);
 
   return { slides };

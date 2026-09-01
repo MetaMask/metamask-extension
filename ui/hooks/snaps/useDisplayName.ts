@@ -2,19 +2,23 @@ import {
   CaipChainId,
   KnownCaipNamespace,
   CaipNamespace,
+  Hex,
 } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
-  getMemoizedAccountName,
   getAddressBookEntryByNetwork,
   AddressBookMetaMaskState,
   AccountsMetaMaskState,
+  getAccountNameFromState,
 } from '../../selectors/snaps';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { decimalToHex } from '../../../shared/modules/conversion.utils';
+import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
+import { decimalToHex } from '../../../shared/lib/conversion.utils';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
-import { getIsMultichainAccountsState2Enabled } from '../../selectors';
+import {
+  EXPERIENCES_TYPE,
+  FIRST_PARTY_CONTRACT_NAMES,
+} from '../../../shared/constants/first-party-contracts';
 
 export type UseDisplayNameParams = {
   chain: {
@@ -44,33 +48,42 @@ export const useDisplayName = (
 
   const parsedAddress = isEip155 ? toChecksumHexAddress(address) : address;
 
-  const showAccountGroupName = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-
   const accountGroups = useSelector((state: MultichainAccountsState) =>
     getAccountGroupsByAddress(state, [parsedAddress]),
   );
 
   const accountGroupName = accountGroups[0]?.metadata.name;
   const accountName = useSelector((state: AccountsMetaMaskState) =>
-    getMemoizedAccountName(state, parsedAddress),
+    getAccountNameFromState(state, parsedAddress),
   );
 
-  const addressBookEntry = useSelector((state: AddressBookMetaMaskState) =>
+  const hexChainId = `0x${decimalToHex(isEip155 ? reference : `0`)}` as Hex;
+
+  const addressBookEntry = useSelector((state) =>
     getAddressBookEntryByNetwork(
-      state,
+      state as AddressBookMetaMaskState,
       parsedAddress,
-      `0x${decimalToHex(isEip155 ? reference : `0`)}`,
+      hexChainId,
     ),
   );
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const contractNames = Object.keys(
+    FIRST_PARTY_CONTRACT_NAMES,
+  ) as EXPERIENCES_TYPE[];
+
+  const firstPartyContractName =
+    isEip155 &&
+    contractNames.find((contractName) => {
+      return (
+        FIRST_PARTY_CONTRACT_NAMES[contractName][hexChainId] === parsedAddress
+      );
+    });
+
   return (
-    (showAccountGroupName && accountGroupName) ||
+    accountGroupName ||
     accountName ||
     (isEip155 && addressBookEntry?.name) ||
+    firstPartyContractName ||
     undefined
   );
 };

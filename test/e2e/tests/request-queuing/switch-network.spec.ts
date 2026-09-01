@@ -1,10 +1,11 @@
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 
 describe('Request Queuing - Extension and Dapp on different networks.', function () {
   it('should not switch to the dapps network automatically when mm network differs', async function () {
@@ -12,8 +13,8 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -32,7 +33,7 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         // Open dapp
         const testDapp = new TestDapp(driver);
@@ -43,7 +44,7 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
         );
 
         // Switch to second network
-        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
+        await switchToNetworkFromNetworkSelect(driver, 'Localhost 8546');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 

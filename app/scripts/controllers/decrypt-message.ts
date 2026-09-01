@@ -13,35 +13,41 @@ import type {
   DecryptMessageManagerState,
   DecryptMessageManagerUnapprovedMessageAddedEvent,
 } from '@metamask/message-manager';
-import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
 import {
-  AcceptRequest,
-  AddApprovalRequest,
-  RejectRequest,
+  BaseController,
+  ControllerGetStateAction,
+  StateMetadata,
+} from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import {
+  ApprovalControllerAcceptRequestAction,
+  ApprovalControllerAddRequestAction,
+  ApprovalControllerRejectRequestAction,
 } from '@metamask/approval-controller';
 import { ApprovalType, ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { Patch } from 'immer';
 import type { KeyringControllerDecryptMessageAction } from '@metamask/keyring-controller';
 import { Eip1024EncryptedData, hasProperty, isObject } from '@metamask/utils';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
+import { stripHexPrefix } from '../../../shared/lib/hexstring-utils';
 // This import is only used for the type.
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import type { MetaMaskReduxState } from '../../../ui/store/store';
+import { DecryptMessageControllerMethodActions } from './decrypt-message-method-action-types';
 
 const controllerName = 'DecryptMessageController';
 
-const stateMetadata = {
+const stateMetadata: StateMetadata<DecryptMessageControllerState> = {
   unapprovedDecryptMsgs: {
     includeInStateLogs: true,
     persist: false,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   unapprovedDecryptMsgCount: {
     includeInStateLogs: true,
     persist: false,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
 };
@@ -98,25 +104,27 @@ export type DecryptMessageControllerState = {
   unapprovedDecryptMsgCount: number;
 };
 
-export type GetDecryptMessageControllerState = {
-  type: `${typeof controllerName}:getState`;
-  handler: () => DecryptMessageControllerState;
-};
+export type DecryptMessageControllerGetStateAction = ControllerGetStateAction<
+  typeof controllerName,
+  DecryptMessageControllerState
+>;
 
 export type DecryptMessageControllerStateChange = {
   type: `${typeof controllerName}:stateChange`;
   payload: [DecryptMessageControllerState, Patch[]];
 };
 
-export type DecryptMessageControllerActions = GetDecryptMessageControllerState;
+export type DecryptMessageControllerActions =
+  | DecryptMessageControllerGetStateAction
+  | DecryptMessageControllerMethodActions;
 
 export type DecryptMessageControllerEvents =
   DecryptMessageControllerStateChange;
 
 export type AllowedActions =
-  | AddApprovalRequest
-  | AcceptRequest
-  | RejectRequest
+  | ApprovalControllerAddRequestAction
+  | ApprovalControllerAcceptRequestAction
+  | ApprovalControllerRejectRequestAction
   | KeyringControllerDecryptMessageAction;
 
 type DecryptMessageManagerStateChangeEvent = {
@@ -128,12 +136,10 @@ export type AllowedEvents =
   | DecryptMessageManagerStateChangeEvent
   | DecryptMessageManagerUnapprovedMessageAddedEvent;
 
-export type DecryptMessageControllerMessenger = RestrictedMessenger<
+export type DecryptMessageControllerMessenger = Messenger<
   typeof controllerName,
   DecryptMessageControllerActions | AllowedActions,
-  DecryptMessageControllerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  DecryptMessageControllerEvents | AllowedEvents
 >;
 
 export type DecryptMessageControllerOptions = {
@@ -146,10 +152,20 @@ export type DecryptMessageControllerOptions = {
   metricsEvent: (payload: any, options?: any) => void;
 };
 
+const MESSENGER_EXPOSED_METHODS = [
+  'resetState',
+  'clearUnapproved',
+  'newRequestDecryptMessage',
+  'decryptMessage',
+  'decryptMessageInline',
+  'cancelDecryptMessage',
+  'rejectUnapproved',
+] as const;
+
 /**
  * Controller for decrypt signing requests requiring user approval.
  */
-export default class DecryptMessageController extends BaseController<
+export class DecryptMessageController extends BaseController<
   typeof controllerName,
   DecryptMessageControllerState,
   DecryptMessageControllerMessenger
@@ -198,6 +214,11 @@ export default class DecryptMessageController extends BaseController<
         state.unapprovedDecryptMsgs = newMessages;
         state.unapprovedDecryptMsgCount = messageCount;
       },
+    );
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 
@@ -259,7 +280,7 @@ export default class DecryptMessageController extends BaseController<
         throw new Error('Invalid encrypted data.');
       }
 
-      const rawMessage = await this.messagingSystem.call(
+      const rawMessage = await this.messenger.call(
         'KeyringController:decryptMessage',
         cleanMessageParams,
       );
@@ -290,7 +311,7 @@ export default class DecryptMessageController extends BaseController<
     if (!isEIP1024EncryptedMessage(messageParams)) {
       throw new Error('Invalid encrypted data.');
     }
-    const rawMessage = await this.messagingSystem.call(
+    const rawMessage = await this.messenger.call(
       'KeyringController:decryptMessage',
       messageParams,
     );
@@ -330,7 +351,7 @@ export default class DecryptMessageController extends BaseController<
   }
 
   private _acceptApproval(messageId: string) {
-    this.messagingSystem.call('ApprovalController:acceptRequest', messageId);
+    this.messenger.call('ApprovalController:acceptRequest', messageId);
   }
 
   private _cancelAbstractMessage(
@@ -406,11 +427,9 @@ export default class DecryptMessageController extends BaseController<
 
   private _requestApproval(messageParams: AbstractMessageParamsMetamask) {
     const id = messageParams.metamaskId as string;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const origin = messageParams.origin || ORIGIN_METAMASK;
     try {
-      this.messagingSystem.call(
+      this.messenger.call(
         'ApprovalController:addRequest',
         {
           id,
@@ -432,7 +451,7 @@ export default class DecryptMessageController extends BaseController<
 
   private _rejectApproval(messageId: string) {
     try {
-      this.messagingSystem.call(
+      this.messenger.call(
         'ApprovalController:rejectRequest',
         messageId,
         'Cancel',

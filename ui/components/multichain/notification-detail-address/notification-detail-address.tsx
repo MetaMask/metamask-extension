@@ -1,5 +1,4 @@
 import React from 'react';
-import type { FC } from 'react';
 import { NotificationDetail } from '../notification-detail';
 import { NotificationDetailCopyButton } from '../notification-detail-copy-button';
 import { Text } from '../../component-library';
@@ -9,14 +8,14 @@ import {
 } from '../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { PreferredAvatar } from '../../app/preferred-avatar';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 
 export type NotificationDetailAddressProps = {
   side: string;
   address: string;
 };
 
-const SideText: FC<{ side: string }> = ({ side }) => (
+const SideText = ({ side }: { side: string }) => (
   <Text variant={TextVariant.bodyLgMedium} fontWeight={FontWeight.Medium}>
     {side}
   </Text>
@@ -30,10 +29,10 @@ const SideText: FC<{ side: string }> = ({ side }) => (
  * @param props.address - The address to display.
  * @returns The rendered component.
  */
-export const NotificationDetailAddress: FC<NotificationDetailAddressProps> = ({
+export const NotificationDetailAddress = ({
   side,
   address,
-}): JSX.Element => {
+}: NotificationDetailAddressProps): JSX.Element => {
   const checksummedAddress = toChecksumHexAddress(address);
   const displayAddress = shortenAddress(checksummedAddress);
 

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { BRIDGE_DEFAULT_SLIPPAGE } from '@metamask/bridge-controller';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+  Box,
+} from '@metamask/design-system-react';
 import {
   Button,
-  ButtonPrimary,
-  ButtonPrimarySize,
   ButtonSize,
   ButtonVariant,
   Modal,
@@ -16,26 +18,31 @@ import {
   Text,
   TextField,
   TextFieldType,
-  BannerAlert,
-  BannerAlertSeverity,
-  Box,
+  TextFieldSize,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  BackgroundColor,
   BlockSize,
   BorderColor,
-  BorderRadius,
   JustifyContent,
-  TextColor,
   TextVariant,
-  SEVERITIES,
+  BorderRadius,
 } from '../../../helpers/constants/design-system';
-import { getIsSolanaSwap, getSlippage } from '../../../ducks/bridge/selectors';
-import { setSlippage } from '../../../ducks/bridge/actions';
+import {
+  getIsSolanaSwap,
+  getIsRWASwap,
+  getSlippage,
+} from '../../../ducks/bridge/selectors';
+import { setSlippageUserOverride } from '../../../ducks/bridge/actions';
+import { SlippageValue } from '../utils/slippage-service';
 import { Column, Row, Tooltip } from '../layout';
+import { sanitizeAmountInput } from '../utils/quote';
+import { useDispatch } from '../../../store/hooks';
 
-const HARDCODED_SLIPPAGE_OPTIONS = [BRIDGE_DEFAULT_SLIPPAGE, 2];
+const HARDCODED_SLIPPAGE_OPTIONS = [
+  SlippageValue.EvmStablecoin,
+  SlippageValue.BridgeDefault,
+];
 
 export const BridgeTransactionSettingsModal = ({
   onClose,
@@ -44,56 +51,61 @@ export const BridgeTransactionSettingsModal = ({
   const t = useI18nContext();
 
   const dispatch = useDispatch();
-  const isSolanaSwap = useSelector(getIsSolanaSwap);
+  /**
+   * The current slippage value in the quote request
+   */
   const slippage = useSelector(getSlippage);
 
-  // AUTO option should only show for Solana-to-Solana swaps
-  const shouldShowAutoOption = isSolanaSwap;
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [inputValue, setInputValue] = useState<string>('');
+  const [isDirty, setIsDirty] = useState(false);
+  const [draftSlippageValue, setDraftSlippageValue] = useState<
+    number | undefined
+  >(slippage);
 
-  const [localSlippage, setLocalSlippage] = useState<number | undefined>(
-    undefined,
-  );
-  const [customSlippage, setCustomSlippage] = useState<string | undefined>(
-    undefined,
-  );
-  const [showCustomButton, setShowCustomButton] = useState(true);
-  const [isAutoSelected, setIsAutoSelected] = useState(false);
+  /**
+   * AUTO option shows for Solana-to-Solana swaps and any swap involving an RWA token.
+   */
+  const isSolanaSwap = useSelector(getIsSolanaSwap);
+  const isRWASwap = useSelector(getIsRWASwap);
+  const shouldShowAutoOption = isSolanaSwap || isRWASwap;
 
-  // Initialize state when modal opens
+  // While clean, follow the store value; drafts only apply after the user edits.
+  let slippageValue: number | undefined;
+  if (isDirty) {
+    slippageValue = draftSlippageValue;
+  } else if (isOpen) {
+    slippageValue = slippage;
+  } else {
+    slippageValue = undefined;
+  }
+
+  // Reset local draft UI when the modal closes (not during render).
   useEffect(() => {
     if (isOpen) {
-      // Simply display what's in the state
-      if (shouldShowAutoOption && slippage === undefined) {
-        setIsAutoSelected(true);
-        setLocalSlippage(undefined);
-        setCustomSlippage(undefined);
-      } else {
-        setIsAutoSelected(false);
-        if (!slippage || slippage === 0) {
-          // Default to first option if no slippage set, null, or 0
-          // This handles undefined, null, 0, and other falsy values
-          setLocalSlippage(BRIDGE_DEFAULT_SLIPPAGE);
-          setCustomSlippage(undefined);
-        } else if (HARDCODED_SLIPPAGE_OPTIONS.includes(slippage)) {
-          setLocalSlippage(slippage);
-          setCustomSlippage(undefined);
-        } else {
-          setLocalSlippage(undefined);
-          setCustomSlippage(slippage.toString());
-        }
-      }
+      return undefined;
     }
-  }, [slippage, shouldShowAutoOption, isOpen]);
+    queueMicrotask(() => {
+      setIsDirty(false);
+      setInputValue('');
+      setShowCustomInput(false);
+    });
+    return undefined;
+  }, [isOpen]);
+
+  const selectSlippageOption = (value: number | undefined) => {
+    setDraftSlippageValue(value);
+    setIsDirty(true);
+  };
 
   const getNotificationConfig = () => {
-    if (!customSlippage) {
+    if (slippageValue === undefined) {
       return null;
     }
 
-    const slippageValue = Number(customSlippage.replace(',', '.'));
     if (slippageValue < 0.5) {
       return {
-        severity: SEVERITIES.WARNING,
+        severity: BannerAlertSeverity.Warning,
         text: t('swapSlippageLowDescription', [slippageValue]),
         title: t('swapSlippageLowTitle'),
       };
@@ -102,16 +114,51 @@ export const BridgeTransactionSettingsModal = ({
     return null;
   };
 
+  /**
+   * Handles input field changes.
+   * When the input field blurs, slippageValue is updated to the input's value.
+   * The `bridge.slippage` state is only updated when the user clicks the Submit button
+   *
+   * @param event - The event that triggered the change
+   * @param value - The incoming slippage value to validate and use
+   */
+  const handleCustomSlippage = (
+    event:
+      | React.ClipboardEvent<HTMLInputElement>
+      | React.KeyboardEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLInputElement>,
+    value: string,
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const sanitizedValue = sanitizeAmountInput(value, false);
+    setInputValue(sanitizedValue);
+  };
+
+  const isCustomSlippage = !(
+    slippageValue === undefined ||
+    HARDCODED_SLIPPAGE_OPTIONS.includes(slippageValue)
+  );
+
   const notificationConfig = getNotificationConfig();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="bridge-settings-modal">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose}>{t('transactionSettings')}</ModalHeader>
-        <Column gap={3} padding={4}>
+        <ModalHeader
+          onClose={onClose}
+          closeButtonProps={{
+            'data-testid': 'bridge__tx-settings-modal-close-button',
+          }}
+        >
+          {t('transactionSettings')}
+        </ModalHeader>
+        <Column gap={3} paddingInline={4} paddingBottom={4}>
           <Row gap={1} justifyContent={JustifyContent.flexStart}>
-            <Text>{t('swapsMaxSlippage')}</Text>
+            <Text variant={TextVariant.bodyMdMedium}>
+              {t('swapsMaxSlippage')}
+            </Text>
             <Tooltip position={PopoverPosition.Top} style={{ zIndex: 1051 }}>
               {t('swapSlippageTooltip')}
             </Tooltip>
@@ -119,133 +166,92 @@ export const BridgeTransactionSettingsModal = ({
           <Row gap={2} justifyContent={JustifyContent.flexStart}>
             {shouldShowAutoOption && (
               <Button
-                size={ButtonSize.Sm}
+                size={ButtonSize.Md}
+                variant={
+                  slippageValue === undefined
+                    ? ButtonVariant.Primary
+                    : ButtonVariant.Secondary
+                }
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setLocalSlippage(undefined);
-                  setCustomSlippage(undefined);
-                  setIsAutoSelected(true);
+                  selectSlippageOption(undefined);
                 }}
-                variant={ButtonVariant.Secondary}
-                borderColor={
-                  isAutoSelected
-                    ? BorderColor.primaryDefault
-                    : BorderColor.borderDefault
-                }
-                borderWidth={isAutoSelected ? 2 : 1}
-                backgroundColor={
-                  isAutoSelected
-                    ? BackgroundColor.primaryMuted
-                    : BackgroundColor.backgroundDefault
-                }
               >
-                <Text
-                  color={
-                    isAutoSelected
-                      ? TextColor.primaryDefault
-                      : TextColor.textDefault
-                  }
-                >
-                  {t('swapSlippageAutoDescription')}
-                </Text>
+                {t('swapSlippageAutoDescription')}
               </Button>
             )}
             {HARDCODED_SLIPPAGE_OPTIONS.map((hardcodedSlippage) => {
-              const isSelected =
-                !isAutoSelected && localSlippage === hardcodedSlippage;
+              const isSelected = slippageValue === hardcodedSlippage;
               return (
                 <Button
                   key={hardcodedSlippage}
-                  size={ButtonSize.Sm}
+                  size={ButtonSize.Md}
+                  variant={
+                    isSelected ? ButtonVariant.Primary : ButtonVariant.Secondary
+                  }
                   onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setLocalSlippage(hardcodedSlippage);
-                    setCustomSlippage(undefined);
-                    setIsAutoSelected(false);
+                    selectSlippageOption(hardcodedSlippage);
                   }}
-                  variant={ButtonVariant.Secondary}
-                  borderColor={
-                    isSelected
-                      ? BorderColor.primaryDefault
-                      : BorderColor.borderDefault
-                  }
-                  borderWidth={isSelected ? 2 : 1}
-                  backgroundColor={
-                    isSelected
-                      ? BackgroundColor.primaryMuted
-                      : BackgroundColor.backgroundDefault
-                  }
                 >
-                  <Text
-                    color={
-                      isSelected
-                        ? TextColor.primaryDefault
-                        : TextColor.textDefault
-                    }
-                  >
-                    {hardcodedSlippage}%
-                  </Text>
+                  {hardcodedSlippage}%
                 </Button>
               );
             })}
-            {showCustomButton && (
+            {!showCustomInput && (
               <Button
-                size={ButtonSize.Sm}
-                variant={ButtonVariant.Secondary}
-                borderColor={
-                  customSlippage === undefined
-                    ? BorderColor.borderDefault
-                    : BorderColor.primaryDefault
-                }
-                borderWidth={customSlippage === undefined ? 1 : 2}
-                backgroundColor={
-                  customSlippage === undefined
-                    ? BackgroundColor.backgroundDefault
-                    : BackgroundColor.primaryMuted
+                size={ButtonSize.Md}
+                data-testid="bridge__tx-settings-modal-custom-button"
+                variant={
+                  isCustomSlippage
+                    ? ButtonVariant.Primary
+                    : ButtonVariant.Secondary
                 }
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setShowCustomButton(false);
-                  setIsAutoSelected(false);
+                  setInputValue(slippageValue?.toString() || '');
+                  setShowCustomInput(true);
                 }}
               >
-                <Text
-                  color={
-                    customSlippage === undefined
-                      ? TextColor.textDefault
-                      : TextColor.primaryDefault
-                  }
-                >
-                  {customSlippage === undefined
-                    ? t('customSlippage')
-                    : `${customSlippage}%`}
-                </Text>
+                {isCustomSlippage ? `${slippageValue}%` : t('customSlippage')}
               </Button>
             )}
-            {!showCustomButton && (
+            {showCustomInput && (
               <TextField
-                borderColor={BorderColor.primaryDefault}
-                borderWidth={2}
-                borderRadius={BorderRadius.pill}
+                size={TextFieldSize.Md}
+                borderColor={BorderColor.borderMuted}
+                testId="bridge__tx-settings-modal-custom-input"
+                borderRadius={BorderRadius.XL}
                 type={TextFieldType.Text}
-                value={customSlippage}
-                onChange={(e) => {
-                  const { value } = e.target;
-                  if (value === '' || /^\d*[.,]?\d*$/u.test(value)) {
-                    setLocalSlippage(undefined);
-                    setCustomSlippage(value);
-                    setIsAutoSelected(false);
+                value={inputValue}
+                onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
+                  handleCustomSlippage(e, e.clipboardData.getData('text'));
+                }}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                  // Only allows digits and decimal points
+                  if (!sanitizeAmountInput(e.key) && e.key.length === 1) {
+                    e.preventDefault();
+                    e.stopPropagation();
                   }
+                }}
+                onChange={(e) => {
+                  handleCustomSlippage(e, e.target.value);
                 }}
                 autoFocus={true}
                 onBlur={() => {
-                  setShowCustomButton(true);
+                  // If the user clicks outside the input, show the custom button
+                  setShowCustomInput(false);
+                  const newSlippage = Number(inputValue);
+                  if (!isNaN(newSlippage) && inputValue.length > 0) {
+                    selectSlippageOption(newSlippage);
+                  }
+                  setInputValue('');
                 }}
                 onFocus={() => {
-                  setShowCustomButton(false);
+                  setShowCustomInput(true);
                 }}
                 endAccessory={<Text variant={TextVariant.bodyMd}>%</Text>}
               />
@@ -254,45 +260,32 @@ export const BridgeTransactionSettingsModal = ({
           {notificationConfig && (
             <Box marginTop={5}>
               <BannerAlert
-                severity={notificationConfig.severity as BannerAlertSeverity}
+                severity={notificationConfig.severity}
                 title={notificationConfig.title}
                 titleProps={{ 'data-testid': 'swaps-banner-title' }}
-              >
-                <Text>{notificationConfig.text}</Text>
-              </BannerAlert>
+                description={notificationConfig.text}
+              />
             </Box>
           )}
         </Column>
         <ModalFooter>
-          <ButtonPrimary
+          <Button
             width={BlockSize.Full}
-            size={ButtonPrimarySize.Md}
-            variant={TextVariant.bodyMd}
-            disabled={(() => {
-              // Calculate what the new slippage would be
-              const newSlippage = isAutoSelected
-                ? undefined
-                : (localSlippage ??
-                  (customSlippage
-                    ? Number(customSlippage.replace(',', '.'))
-                    : undefined));
-
-              // Button is disabled if nothing has changed
-              return newSlippage === slippage;
-            })()}
+            size={ButtonSize.Lg}
+            variant={ButtonVariant.Primary}
+            data-testid="bridge__tx-settings-modal-submit-button"
+            disabled={
+              !isDirty ||
+              (showCustomInput &&
+                (isNaN(Number(inputValue)) || inputValue === ''))
+            }
             onClick={() => {
-              const newSlippage = isAutoSelected
-                ? undefined
-                : (localSlippage ?? Number(customSlippage?.replace(',', '.')));
-
-              if (newSlippage !== slippage) {
-                dispatch(setSlippage(newSlippage));
-                onClose();
-              }
+              dispatch(setSlippageUserOverride(slippageValue));
+              onClose();
             }}
           >
             {t('submit')}
-          </ButtonPrimary>
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

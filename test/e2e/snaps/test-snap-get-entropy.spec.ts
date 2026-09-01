@@ -1,8 +1,9 @@
 import { Suite } from 'mocha';
 import { Driver } from '../webdriver/driver';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
+import { login } from '../page-objects/flows/login.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
@@ -20,13 +21,19 @@ describe('Test Snap getEntropy', function (this: Suite) {
   it('can use snap_getEntropy inside a snap', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
+        fixtures: new FixtureBuilderV2()
+          .withKeyringControllerMultiSRP()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockGetEntropySnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         // We explicitly choose to await balances to prevent flakiness due to long login times.
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
 
@@ -77,10 +84,11 @@ describe('Test Snap getEntropy', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.clickApproveButton();
 
-        await driver.waitForBrowserAlert({
-          text: 'Entropy source with ID "invalid" not found.',
-          windowTitle: WINDOW_TITLES.TestSnaps,
-        });
+        // Dialog closes after approve; switch to Test Snaps, then validate+dismiss the alert.
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+        await driver.validateAlertTextAndClose(
+          'Entropy source with ID "invalid" not found.',
+        );
       },
     );
   });

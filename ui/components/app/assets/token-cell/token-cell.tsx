@@ -1,9 +1,17 @@
+import type { Hex } from '@metamask/utils';
 import React, { useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { useTokenDisplayInfo } from '../hooks';
+import { useNavigate } from 'react-router-dom';
+import { Button, ButtonVariant } from '@metamask/design-system-react';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
+import { useMusdCtaVisibility } from '../../../../hooks/musd';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  ButtonSecondary,
+  getSafeNativeCurrencySymbol,
+  type SafeChain,
+} from '../../../multichain/networks-form/use-safe-chains';
+import { setEditedNetwork } from '../../../../store/actions';
+import {
   Modal,
   ModalBody,
   ModalContent,
@@ -11,45 +19,46 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  getSafeNativeCurrencySymbol,
-  type SafeChain,
-} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
-import { setEditedNetwork } from '../../../../store/actions';
-import { type TokenWithFiatAmount } from '../types';
-import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
+import { MusdConvertLink } from '../../musd';
+import type { MusdConvertLinkEntryPoint } from '../../musd/musd-events';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
-import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
+import { useTokenDisplayInfo } from '../hooks';
+import { type TokenWithFiatAmount } from '../types';
+import { useDispatch } from '../../../../store/hooks';
+
 import {
-  TokenCellTitle,
   TokenCellPercentChange,
   TokenCellPrimaryDisplay,
   TokenCellSecondaryDisplay,
+  TokenCellTitle,
 } from './cells';
+
+export type TokenCellMusdOptions = {
+  /** When set, enables footer convert link (subject to `useMusdCtaVisibility` / balance rules). */
+  convert?: { entryPoint: MusdConvertLinkEntryPoint };
+};
 
 export type TokenCellProps = {
   token: TokenWithFiatAmount;
   privacyMode?: boolean;
-  disableHover?: boolean;
   onClick?: () => void;
   fixCurrencyToUSD?: boolean;
   safeChains?: SafeChain[];
+  /** mUSD convert surface; parent must pass an explicit analytics entry point. */
+  musd?: TokenCellMusdOptions;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function TokenCell({
   token,
   privacyMode = false,
   onClick,
-  disableHover = false,
   fixCurrencyToUSD = false,
   safeChains,
+  musd,
 }: TokenCellProps) {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const isEvm = isEvmChainId(token.chainId);
   const nativeCurrencySymbol = useMemo(
@@ -57,6 +66,25 @@ export default function TokenCell({
     [safeChains, token.chainId],
   );
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
+
+  const { shouldShowTokenListItemCta } = useMusdCtaVisibility();
+
+  const showMusdCta = useMemo(() => {
+    if (!musd?.convert || !token.address || !token.chainId) {
+      return false;
+    }
+    return shouldShowTokenListItemCta({
+      address: token.address as Hex,
+      chainId: token.chainId as Hex,
+      symbol: token.symbol,
+    });
+  }, [
+    musd?.convert,
+    token.address,
+    token.chainId,
+    token.symbol,
+    shouldShowTokenListItemCta,
+  ]);
 
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
@@ -75,6 +103,20 @@ export default function TokenCell({
     setShowScamWarningModal(arg);
   };
 
+  const renderFooterLeft = () => {
+    if (showMusdCta && musd?.convert) {
+      return (
+        <MusdConvertLink
+          tokenAddress={token.address as Hex}
+          chainId={token.chainId as Hex}
+          tokenSymbol={token.symbol}
+          entryPoint={musd.convert.entryPoint}
+        />
+      );
+    }
+    return <TokenCellPercentChange token={displayToken} />;
+  };
+
   if (!token.chainId) {
     return null;
   }
@@ -83,8 +125,15 @@ export default function TokenCell({
     <>
       <GenericAssetCellLayout
         onClick={showScamWarningModal ? undefined : onClick}
-        disableHover={disableHover}
-        badge={<AssetCellBadge {...displayToken} />}
+        badge={
+          <AssetCellBadge
+            chainId={token.chainId}
+            isNative={token.isNative}
+            tokenImage={displayToken.tokenImage}
+            symbol={token.symbol}
+            assetId={token.assetId}
+          />
+        }
         headerLeftDisplay={<TokenCellTitle token={displayToken} />}
         headerRightDisplay={
           <TokenCellSecondaryDisplay
@@ -93,7 +142,7 @@ export default function TokenCell({
             privacyMode={privacyMode}
           />
         }
-        footerLeftDisplay={<TokenCellPercentChange token={displayToken} />}
+        footerLeftDisplay={renderFooterLeft()}
         footerRightDisplay={
           <TokenCellPrimaryDisplay
             token={displayToken}
@@ -116,15 +165,16 @@ export default function TokenCell({
               ])}
             </ModalBody>
             <ModalFooter>
-              <ButtonSecondary
+              <Button
+                variant={ButtonVariant.Secondary}
                 onClick={() => {
                   dispatch(setEditedNetwork({ chainId: token.chainId }));
-                  history.push(NETWORKS_ROUTE);
+                  navigate(NETWORKS_ROUTE);
                 }}
-                block
+                isFullWidth
               >
                 {t('nativeTokenScamWarningConversion')}
-              </ButtonSecondary>
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

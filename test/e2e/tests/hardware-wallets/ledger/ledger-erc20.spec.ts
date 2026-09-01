@@ -1,29 +1,33 @@
 import { Suite } from 'mocha';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
-import FixtureBuilder from '../../../fixture-builder';
-import { WINDOW_TITLES, withFixtures } from '../../../helpers';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import { WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import CreateContractModal from '../../../page-objects/pages/dialog/create-contract';
-import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/legacy/watch-asset-confirmation';
+import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/watch-asset-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
+import ActivityTab from '../../../page-objects/pages/home/activity-tab';
+import TokensTab from '../../../page-objects/pages/home/tokens-tab';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import { mockEmptyPrices } from '../../tokens/utils/mocks';
 
 describe('Ledger Hardware', function (this: Suite) {
   it('can create an ERC20 token', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
+        testSpecificMock: mockEmptyPrices,
       },
       async ({ driver, localNodes }) => {
         const symbol = 'TST';
@@ -31,12 +35,10 @@ describe('Ledger Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '1208925.8196',
-        );
+        await login(driver, {
+          expectedBalance: '1.21M',
+          waitForNonEvmAccounts: false,
+        });
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
         await testDappPage.checkPageIsLoaded();
@@ -60,7 +62,8 @@ describe('Ledger Hardware', function (this: Suite) {
         );
         const homePage = new HomePage(driver);
         await homePage.goToTokensTab();
-        await homePage.checkExpectedTokenBalanceIsDisplayed('10', symbol);
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.checkExpectedTokenBalanceIsDisplayed('10', symbol);
       },
     );
   });
@@ -68,15 +71,15 @@ describe('Ledger Hardware', function (this: Suite) {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           })
-
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
+        testSpecificMock: mockEmptyPrices,
         smartContract: [
           {
             name: erc20,
@@ -92,12 +95,10 @@ describe('Ledger Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '1208925.8196',
-        );
+        await login(driver, {
+          expectedBalance: '1.21M',
+          waitForNonEvmAccounts: false,
+        });
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage({
@@ -124,12 +125,9 @@ describe('Ledger Hardware', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkTxAction({
-          action: `Sent ${symbol}`,
-          completedTxs: 1,
-        });
-        await activityListPage.checkTxAmountInActivity(`-1.5 ${symbol}`);
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkTxAction({ action: `Sent ${symbol}` });
+        await activityTab.checkTxAmountInActivity(`-1.5 ${symbol}`);
       },
     );
   });
@@ -137,14 +135,15 @@ describe('Ledger Hardware', function (this: Suite) {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
+        testSpecificMock: mockEmptyPrices,
         smartContract: [
           {
             name: erc20,
@@ -155,17 +154,14 @@ describe('Ledger Hardware', function (this: Suite) {
         ],
       },
       async ({ driver, localNodes, contractRegistry }) => {
-        const symbol = 'TST';
         (await localNodes?.[0]?.setAccountBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '1208925.8196',
-        );
+        await login(driver, {
+          expectedBalance: '1.21M',
+          waitForNonEvmAccounts: false,
+        });
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage({
@@ -184,11 +180,11 @@ describe('Ledger Hardware', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkTransactionActivityByText(
-          `Approve ${symbol} spending cap`,
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkTransactionActivityByText(
+          'Approved spending cap',
         );
-        await activityListPage.checkWaitForTransactionStatus('confirmed');
+        await activityTab.checkWaitForTransactionStatus('confirmed');
       },
     );
   });
@@ -196,14 +192,15 @@ describe('Ledger Hardware', function (this: Suite) {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
             account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
+        testSpecificMock: mockEmptyPrices,
         smartContract: [
           {
             name: erc20,
@@ -214,17 +211,14 @@ describe('Ledger Hardware', function (this: Suite) {
         ],
       },
       async ({ driver, localNodes, contractRegistry }) => {
-        const symbol = 'TST';
         (await localNodes?.[0]?.setAccountBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '1208925.8196',
-        );
+        await login(driver, {
+          expectedBalance: '1.21M',
+          waitForNonEvmAccounts: false,
+        });
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage({
@@ -232,7 +226,7 @@ describe('Ledger Hardware', function (this: Suite) {
         });
         await testDappPage.checkPageIsLoaded();
 
-        const activityListPage = new ActivityListPage(driver);
+        const activityTab = new ActivityTab(driver);
         const homePage = new HomePage(driver);
         // Increase token allowance
         await testDappPage.clickERC20IncreaseAllowanceButton();
@@ -243,10 +237,10 @@ describe('Ledger Hardware', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await homePage.goToActivityList();
-        await activityListPage.checkTransactionActivityByText(
-          `Increase ${symbol} spending cap`,
+        await activityTab.checkTransactionActivityByText(
+          'Increased spending cap',
         );
-        await activityListPage.checkWaitForTransactionStatus('confirmed');
+        await activityTab.checkWaitForTransactionStatus('confirmed');
       },
     );
   });

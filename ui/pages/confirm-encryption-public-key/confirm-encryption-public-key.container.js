@@ -1,7 +1,6 @@
+import React from 'react';
 import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
-
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   goHome,
   encryptionPublicKeyMsg,
@@ -16,6 +15,7 @@ import {
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
+import { useShallowEqualityCheck } from '../../hooks/useShallowEqualityCheck';
 import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.component';
 
 function mapStateToProps(state, ownProps) {
@@ -25,11 +25,7 @@ function mapStateToProps(state, ownProps) {
 
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
 
-  const {
-    match: {
-      params: { id: approvalId },
-    },
-  } = ownProps;
+  const approvalId = ownProps.params?.id;
 
   const txData = unconfirmedTransactions.find((tx) => tx.id === approvalId);
 
@@ -65,7 +61,20 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default compose(
-  withRouter,
-  connect(mapStateToProps, mapDispatchToProps),
+const ConnectedConfirmEncryptionPublicKey = connect(
+  mapStateToProps,
+  mapDispatchToProps,
 )(ConfirmEncryptionPublicKey);
+
+export default function ConfirmEncryptionPublicKeyContainer(props) {
+  const navigate = useNavigate();
+  const rawParams = useParams();
+  const params = useShallowEqualityCheck(rawParams);
+  return (
+    <ConnectedConfirmEncryptionPublicKey
+      {...props}
+      navigate={navigate}
+      params={params}
+    />
+  );
+}

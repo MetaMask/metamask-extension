@@ -3,7 +3,7 @@ import React, {
   createContext,
   useCallback,
   useContext,
-  useEffect,
+  useMemo,
   useState,
 } from 'react';
 import { Hex } from '@metamask/utils';
@@ -29,11 +29,13 @@ export type SendContextType = {
   from?: string;
   hexData?: Hex;
   maxValueMode?: boolean;
+  nonEVMSubmitError?: string;
   to?: string;
   toResolved?: string;
   updateAsset: (asset: Asset) => void;
   updateCurrentPage: (page: SendPages) => void;
   updateHexData: (data: Hex) => void;
+  updateNonEVMSubmitError: (error: string | undefined) => void;
   updateTo: (to: string) => void;
   updateToResolved: (to: string | undefined) => void;
   updateValue: (value: string, maxValueMode?: boolean) => void;
@@ -48,39 +50,73 @@ export const SendContext = createContext<SendContextType>({
   from: '',
   hexData: undefined,
   maxValueMode: undefined,
+  nonEVMSubmitError: undefined,
   to: undefined,
   toResolved: undefined,
   updateAsset: () => undefined,
   updateCurrentPage: () => undefined,
   updateHexData: () => undefined,
+  updateNonEVMSubmitError: () => undefined,
   updateTo: () => undefined,
   updateToResolved: () => undefined,
   updateValue: () => undefined,
   value: undefined,
 });
 
-export const SendContextProvider: React.FC<{
+export const SendContextProvider = ({
+  children,
+}: React.PropsWithChildren<{
   children: ReactElement[] | ReactElement;
-}> = ({ children }) => {
+}>) => {
   const [asset, setAsset] = useState<Asset>();
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const accountGroupWithInternalAccounts = useSelector(
     getAccountGroupWithInternalAccounts,
   );
-  const [fromAccount, updateFromAccount] = useState<InternalAccount>();
   const [hexData, updateHexData] = useState<Hex>();
   const [maxValueMode, updateMaxValueMode] = useState<boolean>();
-  const [to, updateTo] = useState<string>();
+  const [nonEVMSubmitError, updateNonEVMSubmitError] = useState<string>();
+  const [to, setTo] = useState<string>();
   const [toResolved, updateToResolved] = useState<string>();
   const [value, setValue] = useState<string>();
   const [currentPage, updateCurrentPage] = useState<SendPages>();
+
+  const fromAccount = useMemo(() => {
+    if (!asset?.accountId) {
+      return undefined;
+    }
+
+    const selectedAccountGroupWithInternalAccounts =
+      accountGroupWithInternalAccounts.find(
+        (accountGroup) => accountGroup.id === selectedAccountGroupId,
+      )?.accounts;
+
+    return selectedAccountGroupWithInternalAccounts?.find(
+      (account) => account.id === asset.accountId,
+    );
+  }, [asset, selectedAccountGroupId, accountGroupWithInternalAccounts]);
 
   const updateValue = useCallback(
     (val: string, maxMode?: boolean) => {
       updateMaxValueMode(maxMode ?? false);
       setValue(val);
+      // Clear submit error when user changes amount
+      if (nonEVMSubmitError) {
+        updateNonEVMSubmitError(undefined);
+      }
     },
-    [setValue, updateMaxValueMode],
+    [nonEVMSubmitError, setValue, updateMaxValueMode],
+  );
+
+  const updateTo = useCallback(
+    (newTo: string) => {
+      setTo(newTo);
+      // Clear submit error when user changes recipient
+      if (nonEVMSubmitError) {
+        updateNonEVMSubmitError(undefined);
+      }
+    },
+    [nonEVMSubmitError, setTo],
   );
 
   const updateAsset = useCallback(
@@ -106,24 +142,6 @@ export const SendContextProvider: React.FC<{
       ? toHex(asset.chainId)
       : asset?.chainId?.toString();
 
-  useEffect(() => {
-    if (asset?.accountId) {
-      const selectedAccountGroupWithInternalAccounts =
-        accountGroupWithInternalAccounts.find(
-          (accountGroup) => accountGroup.id === selectedAccountGroupId,
-        )?.accounts;
-
-      const selectedAccount = selectedAccountGroupWithInternalAccounts?.find(
-        (account) => account.id === asset?.accountId,
-      );
-      updateFromAccount(selectedAccount as InternalAccount);
-    }
-  }, [
-    asset?.accountId,
-    selectedAccountGroupId,
-    accountGroupWithInternalAccounts,
-  ]);
-
   return (
     <SendContext.Provider
       value={{
@@ -134,11 +152,13 @@ export const SendContextProvider: React.FC<{
         from: fromAccount?.address,
         hexData,
         maxValueMode,
+        nonEVMSubmitError,
         to,
         toResolved: toResolved ?? to,
         updateAsset,
         updateCurrentPage,
         updateHexData,
+        updateNonEVMSubmitError,
         updateTo,
         updateToResolved,
         updateValue,

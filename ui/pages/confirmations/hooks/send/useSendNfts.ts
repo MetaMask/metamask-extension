@@ -32,11 +32,13 @@ export const useSendNfts = () => {
         (accountGroup) => accountGroup.id === selectedAccountGroup,
       )?.accounts;
 
-    return transformNftsToAssets(
+    const allNfts = transformNftsToAssets(
       nftsOwnedByAccounts,
       selectedAccountGroupWithInternalAccounts as InternalAccount[],
       chainNetworkNAmeAndImageMap,
     );
+
+    return allNfts;
   }, [
     // using accountGroupWithInternalAccounts as dependency is somehow causing repeated renders
     accountGroupWithInternalAccounts?.length,
@@ -86,9 +88,12 @@ export const useSendNfts = () => {
 
     const updateNfts = async () => {
       const nftsWithBalances = await fetchNftsWithBalances(transformedNfts);
+      const ownedNftsWithoutBalances = nftsWithBalances.filter(
+        (nft) => (nft as Nft).isCurrentlyOwned === true,
+      );
 
       if (!isCancelled) {
-        setNfts(nftsWithBalances);
+        setNfts(ownedNftsWithoutBalances);
       }
     };
 

@@ -1,111 +1,100 @@
-import { Mockttp } from 'mockttp';
 import { Suite } from 'mocha';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import { withSolanaAccountSnap } from './common-solana';
-
-async function mockPrices(mockServer: Mockttp) {
-  return [
-    await mockServer
-      .forGet('https://price.api.cx.metamask.io/v1/exchange-rates/fiat')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            usd: {
-              name: 'US Dollar',
-              ticker: 'usd',
-              value: 1,
-              currencyType: 'fiat',
-            },
-          },
-        };
-      }),
-    await mockServer
-      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
-      .withQuery({ vsCurrency: 'usd' })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-              id: 'solana',
-              price: 163.74,
-              marketCap: 85240788097,
-              allTimeHigh: 293.31,
-              allTimeLow: 0.500801,
-              totalVolume: 4306381631,
-              high1d: 173.18,
-              low1d: 162.57,
-              circulatingSupply: 520522161.3627983,
-              dilutedMarketCap: 98555143736,
-              marketCapPercentChange1d: -5.2731,
-              priceChange1d: -9.122376720800048,
-              pricePercentChange1h: 0.5171225698118852,
-              pricePercentChange1d: -5.277226892974154,
-              pricePercentChange7d: -12.003587000905496,
-              pricePercentChange14d: -3.9104548446262988,
-              pricePercentChange30d: 11.535941297762168,
-              pricePercentChange200d: -22.05161310809915,
-              pricePercentChange1y: -1.0572936468057204,
-            },
-          },
-        };
-      }),
-  ];
-}
+import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
+import HomePage from '../../page-objects/pages/home/homepage';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { withFixtures } from '../../helpers';
+import { login } from '../../page-objects/flows/login.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import { buildSolanaTestSpecificMock } from './common-solana';
+import { buildSolanaPositiveBalanceFixture } from './unified-solana-assets';
 
 describe('Check balance', function (this: Suite) {
   this.timeout(300000);
   it('Just created Solana account shows 0 SOL when native token is enabled', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockZeroBalance: true,
+        testSpecificMock: buildSolanaTestSpecificMock({ balance: 0 }),
       },
-      async (driver) => {
-        const homePage = new NonEvmHomepage(driver);
-        await homePage.checkGetBalance('0', 'SOL');
+      async ({ driver }) => {
+        await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '0 SOL',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
       },
     );
   });
   it('Just created Solana account shows 0 USD when native token is not enabled', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: new FixtureBuilderV2()
+          .withShowNativeTokenAsMainBalanceDisabled()
+          .build(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: false,
-        mockZeroBalance: true,
-        withCustomMocks: mockPrices,
+        testSpecificMock: buildSolanaTestSpecificMock({ balance: 0 }),
       },
-      async (driver) => {
-        const homePage = new NonEvmHomepage(driver);
-        await homePage.checkGetBalance('$0.00', 'USD');
+      async ({ driver }) => {
+        await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '$0',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
       },
     );
   });
   it('For a non 0 balance account - USD balance', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: buildSolanaPositiveBalanceFixture({
+          showNativeTokenAsMainBalanceDisabled: true,
+        }),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: false,
-        mockZeroBalance: false,
-        withCustomMocks: mockPrices,
+        testSpecificMock: buildSolanaTestSpecificMock(),
       },
-      async (driver) => {
-        const homePage = new NonEvmHomepage(driver);
-        await homePage.checkGetBalance('$5,643.50', 'USD');
+      async ({ driver }) => {
+        await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '$5,643.50',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
       },
     );
   });
   it('For a non 0 balance account - SOL balance', async function () {
-    await withSolanaAccountSnap(
+    await withFixtures(
       {
+        fixtures: buildSolanaPositiveBalanceFixture(),
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
+        testSpecificMock: buildSolanaTestSpecificMock(),
       },
-      async (driver) => {
-        const homePage = new NonEvmHomepage(driver);
-        await homePage.checkGetBalance('50', 'SOL');
+      async ({ driver }) => {
+        await login(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
+        // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
+        await driver.refresh();
+        await homePage.checkExpectedBalanceIsDisplayed({
+          expectedBalance: '50 SOL',
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
+        });
       },
     );
   });

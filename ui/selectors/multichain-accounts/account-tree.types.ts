@@ -8,9 +8,9 @@ import { AccountId } from '@metamask/accounts-controller';
 import { CaipAccountId, CaipChainId } from '@metamask/keyring-api';
 import { MergedInternalAccount } from '../selectors.types';
 
-export type WalletMetadata = {
-  id: string;
+export type NormalizedGroupMetadata = {
   name: string;
+  accounts: string[];
 };
 
 export type AccountTreeWallets = {
@@ -19,7 +19,6 @@ export type AccountTreeWallets = {
 
 export type AccountTreeState = {
   wallets: AccountTreeWallets;
-  selectedAccountGroup: AccountGroupId;
 };
 
 export type InternalAccountsState = {
@@ -29,19 +28,21 @@ export type InternalAccountsState = {
 
 export type MultichainAccountsState = {
   metamask: {
+    selectedAccountGroup: AccountGroupId;
     accountTree: AccountTreeState;
     internalAccounts: InternalAccountsState;
+    accountIdByAddress: Record<string, AccountId>;
   };
 };
 
-export type ConsolidatedAccountGroup = {
+type ConsolidatedAccountGroup = {
   id: AccountGroupObject['id'];
   type: AccountGroupObject['type'];
   metadata: AccountGroupObject['metadata'];
   accounts: MergedInternalAccount[];
 };
 
-export type ConsolidatedAccountWallet = {
+type ConsolidatedAccountWallet = {
   id: AccountWalletObject['id'];
   type: AccountWalletObject['type'];
   metadata: AccountWalletObject['metadata'];
@@ -72,4 +73,14 @@ export type AccountGroupWithInternalAccounts = {
   [K in keyof AccountGroupObjectWithWalletNameAndId]: K extends 'accounts'
     ? InternalAccount[]
     : AccountGroupObjectWithWalletNameAndId[K];
+};
+
+/**
+ * Statistics about account groups in the account tree.
+ * Used for analytics tracking.
+ */
+export type AccountListStats = {
+  pinnedCount: number;
+  hiddenCount: number;
+  totalAccounts: number;
 };

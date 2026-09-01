@@ -1,4 +1,5 @@
 import React from 'react';
+import type { INotification } from '@metamask/notification-services-controller/notification-services';
 import { Box } from '../../../components/component-library';
 import {
   BlockSize,
@@ -7,14 +8,14 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import {
-  Notification,
   NotificationComponentType,
   type NotificationComponent,
+  // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 } from '../../notifications/notification-components/types/notifications/notifications';
 
 type NotificationDetailsFooterProps = {
-  footer: NotificationComponent['footer'];
-  notification: Notification;
+  footer: NonNullable<NotificationComponent['details']>['footer'];
+  notification: INotification;
 };
 
 export const NotificationDetailsFooter = ({

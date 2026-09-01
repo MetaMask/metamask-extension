@@ -1,23 +1,21 @@
 import React from 'react';
-import classnames from 'classnames';
-import { useDispatch } from 'react-redux';
+import classnames from 'clsx';
 import {
-  Display,
-  AlignItems,
-  JustifyContent,
-  BorderRadius,
-} from '../../../../../helpers/constants/design-system';
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { ButtonLink, Box } from '../../../../component-library';
+import { ButtonLink } from '../../../../component-library';
 import { showIpfsModal } from '../../../../../store/actions';
+import { useDispatch } from '../../../../../store/hooks';
 
 type NftDefaultImageProps = {
   className: string;
   clickable?: boolean;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NftDefaultImage({
   className,
   clickable,
@@ -29,13 +27,12 @@ export default function NftDefaultImage({
     <Box
       tabIndex={0}
       data-testid="nft-default-image"
-      className={classnames(className, 'nft-default', {
+      className={classnames('flex', className, 'nft-default', 'rounded-lg', {
         'nft-default--clickable': Boolean(clickable),
       })}
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
-      borderRadius={BorderRadius.LG}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Center}
     >
       {clickable && (
         <ButtonLink

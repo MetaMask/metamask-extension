@@ -1,5 +1,5 @@
 import React, { Fragment, useContext } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../../contexts/i18n';
 import { Button, ButtonVariant } from '../../../component-library';
@@ -57,7 +57,6 @@ MMMm*mMMMMMMMMMMm**......**mMMMMMMMMMMm*mMMM
 MMMMMMMMMMMMMMMMMm/....../mMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMmmmmmmmmMMMMMMMMMMMMMMMMMM`);
 
-/* eslint-disable no-irregular-whitespace */
 const EXPERIMENTAL_AREA = lineBreaksToBr(`█▀▀ ▄▀█ █░█ ▀█▀ █ █▀█ █▄░█ ▀
   █▄▄ █▀█ █▄█ ░█░ █ █▄█ █░▀█ ▄
 
@@ -66,7 +65,6 @@ const EXPERIMENTAL_AREA = lineBreaksToBr(`█▀▀ ▄▀█ █░█ ▀█�
 
   █▀ █▀█ █▀▀ ▀█▀ █░█░█ ▄▀█ █▀█ █▀▀
   ▄█ █▄█ █▀░ ░█░ ▀▄▀▄▀ █▀█ █▀▄ ██▄`);
-/* eslint-enable no-irregular-whitespace */
 
 export default function ExperimentalArea({ redirectTo }) {
   const t = useContext(I18nContext);

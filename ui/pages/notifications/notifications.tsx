@@ -1,8 +1,14 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { useSelector } from 'react-redux';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  type INotification,
+  TRIGGER_TYPES,
+  NOTIFICATION_API_TRIGGER_TYPES_SET,
+} from '@metamask/notification-services-controller/notification-services';
+import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useDeferredValue } from '../../hooks/useDeferredValue';
 import {
   IconName,
   IconSize,
@@ -13,16 +19,17 @@ import {
 import { Tabs, Tab } from '../../components/ui/tabs';
 import {
   DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
-import { NotificationsPage } from '../../components/multichain';
-import { Content, Header } from '../../components/multichain/pages/page';
+import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { useUnreadNotificationsCounter } from '../../hooks/metamask-notifications/useCounter';
+import { useSafeState } from '../../hooks/metamask-notifications/useNotifications';
 import { getNotifySnaps } from '../../selectors';
 import {
-  selectIsFeatureAnnouncementsEnabled,
   selectIsMetamaskNotificationsEnabled,
+  selectIsFeatureAnnouncementsEnabled,
   getMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import {
@@ -30,21 +37,54 @@ import {
   Display,
   JustifyContent,
 } from '../../helpers/constants/design-system';
-import { deleteExpiredNotifications } from '../../store/actions';
+import {
+  deleteExpiredNotifications,
+  getNotificationPreferences,
+} from '../../store/actions';
+import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
+import { useDispatch } from '../../store/hooks';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
 
-export type Notification = NotificationServicesController.Types.INotification;
+const useFeatureAnnouncementsEnabled = () => {
+  const dispatch = useDispatch();
+  const featureAnnouncementsEnabledInState = useSelector(
+    selectIsFeatureAnnouncementsEnabled,
+  );
+  const [areFeatureAnnouncementsEnabled, setAreFeatureAnnouncementsEnabled] =
+    useSafeState(featureAnnouncementsEnabledInState);
 
-const { TRIGGER_TYPES, TRIGGER_TYPES_WALLET_SET } =
-  NotificationServicesController.Constants;
+  useEffect(() => {
+    const loadPreferences = async () => {
+      try {
+        const preferences = (await dispatch(
+          getNotificationPreferences(),
+        )) as unknown as NotificationPreferences | null;
+
+        setAreFeatureAnnouncementsEnabled(
+          Boolean(preferences?.marketing.inAppNotificationsEnabled),
+        );
+      } catch {
+        setAreFeatureAnnouncementsEnabled(
+          Boolean(featureAnnouncementsEnabledInState),
+        );
+      }
+    };
+
+    loadPreferences();
+  }, [
+    dispatch,
+    featureAnnouncementsEnabledInState,
+    setAreFeatureAnnouncementsEnabled,
+  ]);
+
+  return areFeatureAnnouncementsEnabled;
+};
 
 // NOTE - these 2 data sources are combined in our controller.
 // FUTURE - we could separate these data sources into separate methods.
 const useMetaMaskNotifications = () => {
-  const isFeatureAnnouncementsEnabled = useSelector(
-    selectIsFeatureAnnouncementsEnabled,
-  );
+  const areFeatureAnnouncementsEnabled = useFeatureAnnouncementsEnabled();
 
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
@@ -53,12 +93,12 @@ const useMetaMaskNotifications = () => {
   const notificationsData = useSelector(getMetamaskNotifications);
 
   const featureAnnouncementNotifications = useMemo(() => {
-    return isFeatureAnnouncementsEnabled
+    return areFeatureAnnouncementsEnabled
       ? (notificationsData ?? []).filter(
           (n) => n.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
         )
       : [];
-  }, [isFeatureAnnouncementsEnabled, notificationsData]);
+  }, [areFeatureAnnouncementsEnabled, notificationsData]);
 
   const walletNotifications = useMemo(() => {
     return isMetamaskNotificationsEnabled
@@ -112,7 +152,7 @@ const useCombinedNotifications = () => {
 
 export const filterNotifications = (
   activeTab: TAB_KEYS,
-  notifications: Notification[],
+  notifications: INotification[],
 ) => {
   if (activeTab === TAB_KEYS.ALL) {
     return notifications;
@@ -121,7 +161,7 @@ export const filterNotifications = (
   if (activeTab === TAB_KEYS.WALLET) {
     return notifications.filter(
       (notification) =>
-        TRIGGER_TYPES_WALLET_SET.has(notification.type) ||
+        NOTIFICATION_API_TRIGGER_TYPES_SET.has(notification.type) ||
         notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
     );
   }
@@ -135,21 +175,32 @@ export const filterNotifications = (
   return notifications;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Notifications() {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const runCloseTransition = useGlobalMenuRouteTransition();
   const t = useI18nContext();
   const dispatch = useDispatch();
+
+  const fromPath = searchParams.get('from') ?? undefined;
+
+  const handleBack = () => {
+    if (fromPath === DEFAULT_ROUTE) {
+      runCloseTransition(() => navigate(PREVIOUS_ROUTE));
+    } else {
+      navigate(DEFAULT_ROUTE);
+    }
+  };
 
   const { isLoading, error } = useMetamaskNotificationsContext();
 
   const [activeTab, setActiveTab] = useState<TAB_KEYS>(TAB_KEYS.ALL);
   const combinedNotifications = useCombinedNotifications();
+  const deferredCombinedNotifications = useDeferredValue(combinedNotifications);
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const filteredNotifications = useMemo(
-    () => filterNotifications(activeTab, combinedNotifications),
-    [activeTab, combinedNotifications],
+    () => filterNotifications(activeTab, deferredCombinedNotifications),
+    [activeTab, deferredCombinedNotifications],
   );
 
   let hasNotifySnaps = false;
@@ -160,7 +211,7 @@ export default function Notifications() {
   }, [dispatch]);
 
   return (
-    <NotificationsPage>
+    <Page data-testid="notifications-page">
       {/* Back and Settings Buttons */}
       <Header
         startAccessory={
@@ -168,9 +219,7 @@ export default function Notifications() {
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Md}
-            onClick={() => {
-              navigate(DEFAULT_ROUTE);
-            }}
+            onClick={handleBack}
             data-testid="back-button"
           />
         }
@@ -195,7 +244,7 @@ export default function Notifications() {
       <Content padding={0}>
         {hasNotifySnaps && (
           <Tabs
-            defaultActiveTabKey={activeTab}
+            activeTab={activeTab}
             onTabClick={(tab: string) => setActiveTab(tab as TAB_KEYS)}
             tabListProps={{ className: 'px-4' }}
           >
@@ -235,6 +284,6 @@ export default function Notifications() {
           notificationsCount={notificationsUnreadCount}
         />
       </Content>
-    </NotificationsPage>
+    </Page>
   );
 }

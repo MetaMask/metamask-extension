@@ -1,13 +1,12 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { AccountGroupId } from '@metamask/account-api';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { MultichainAccountPrivateKeyListPage } from './multichain-account-private-key-list-page';
 
-const mockHistoryGoBack = jest.fn();
-const mockUseParams = jest.fn();
+const mockNavigate = jest.fn();
 const mockUseLocation = jest.fn();
 const backButtonTestId = 'multichain-account-address-list-page-back-button';
 
@@ -16,22 +15,35 @@ const MOCK_GROUP_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    goBack: mockHistoryGoBack,
-  }),
-  useParams: () => mockUseParams(),
+  useNavigate: () => mockNavigate,
   useLocation: () => mockUseLocation(),
+}));
+
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: jest.fn(),
+      createEventBuilder,
+    }),
+  };
+});
+
+jest.mock('../../../hooks/passkey/usePasskeyPrivateKeyExport', () => ({
+  usePasskeyPrivateKeyExport: () => jest.fn().mockResolvedValue([]),
 }));
 
 describe('MultichainAccountAddressListPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseLocation.mockReturnValue({ search: '' });
   });
 
   it('handles back button click', () => {
-    mockUseParams.mockReturnValue({
-      accountGroupId: MOCK_GROUP_ID,
+    mockUseLocation.mockReturnValue({
+      search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
     });
 
     const store = configureStore({
@@ -45,12 +57,12 @@ describe('MultichainAccountAddressListPage', () => {
     const backButton = screen.getByTestId(backButtonTestId);
     fireEvent.click(backButton);
 
-    expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('displays the proper account group name', () => {
-    mockUseParams.mockReturnValue({
-      accountGroupId: MOCK_GROUP_ID,
+    mockUseLocation.mockReturnValue({
+      search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
     });
     const store = configureStore({
       metamask: {
@@ -62,8 +74,8 @@ describe('MultichainAccountAddressListPage', () => {
   });
 
   it('renders fallback account name when no account is found', () => {
-    mockUseParams.mockReturnValue({
-      accountGroupId: 'invalid-group-id',
+    mockUseLocation.mockReturnValue({
+      search: `?accountGroupId=${encodeURIComponent('invalid-group-id')}`,
     });
     const store = configureStore({
       metamask: {
@@ -76,8 +88,8 @@ describe('MultichainAccountAddressListPage', () => {
   });
 
   it('renders warning banner', () => {
-    mockUseParams.mockReturnValue({
-      accountGroupId: MOCK_GROUP_ID,
+    mockUseLocation.mockReturnValue({
+      search: `?accountGroupId=${encodeURIComponent(MOCK_GROUP_ID)}`,
     });
     const store = configureStore({
       metamask: {

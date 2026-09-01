@@ -1,16 +1,21 @@
 import BigNumber from 'bignumber.js';
-import classNames from 'classnames';
+import classNames from 'clsx';
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { GasEstimateTypes } from '../../../../../shared/constants/gas';
+import {
+  GasEstimateTypes,
+  PriorityLevels,
+} from '../../../../../shared/constants/gas';
 import { Box, Text } from '../../../../components/component-library';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   getGasEstimateType,
+  getGasEstimateTypeByChainId,
   getGasFeeEstimates,
+  getGasFeeEstimatesByChainId,
   getIsGasEstimatesLoading,
+  getIsGasEstimatesLoadingByChainId,
 } from '../../../../ducks/metamask/metamask';
 import {
   Display,
@@ -19,13 +24,9 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  GAS_FORM_ERRORS,
-  PRIORITY_LEVEL_ICON_MAP,
-} from '../../../../helpers/constants/gas';
+import { GAS_FORM_ERRORS } from '../../../../helpers/constants/gas';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getGasFeeTimeEstimate } from '../../../../store/actions';
-import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransactionWithTxParams';
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
 
@@ -37,20 +38,40 @@ const toHumanReadableTime = (milliseconds = 1, t) => {
   }
   return t('gasTimingMinutesShort', [Math.ceil(seconds / 60)]);
 };
+// Preset levels show their label; others (e.g. PriorityLevels.tenPercentIncreased, custom) show as "Advanced"
+const PRESET_ESTIMATES = new Set(['low', 'medium', 'high']);
+
 export default function GasTiming({
+  chainId,
+  networkClientId,
   maxFeePerGas = '0',
   maxPriorityFeePerGas = '0',
   gasWarnings,
+  userFeeLevelOverride,
 }) {
-  const gasEstimateType = useSelector(getGasEstimateType);
-  const gasFeeEstimates = useSelector(getGasFeeEstimates);
-  const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
+  const chainGasEstimateType = useSelector((state) =>
+    getGasEstimateTypeByChainId(state, chainId),
+  );
+  const rootGasEstimateType = useSelector(getGasEstimateType);
+  const gasEstimateType = chainGasEstimateType ?? rootGasEstimateType;
 
-  const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
+  const chainGasFeeEstimates = useSelector((state) =>
+    getGasFeeEstimatesByChainId(state, chainId),
+  );
+  const gasFeeEstimatesFromRoot = useSelector(getGasFeeEstimates);
+
+  const chainIsGasEstimatesLoading = useSelector((state) =>
+    chainId
+      ? getIsGasEstimatesLoadingByChainId(state, { chainId, networkClientId })
+      : undefined,
+  );
+  const rootIsGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
+  const isGasEstimatesLoading =
+    chainIsGasEstimatesLoading ?? rootIsGasEstimatesLoading;
+
+  const gasFeeEstimates = chainGasFeeEstimates || gasFeeEstimatesFromRoot;
+  const [customEstimate, setCustomEstimate] = useState(null);
   const t = useContext(I18nContext);
-  const { estimateUsed } = useGasFeeContext();
-
-  const transactionData = useDraftTransactionWithTxParams();
 
   // If the user has chosen a value lower than the low gas fee estimate,
   // We'll need to use the useEffect hook below to make a call to calculate
@@ -62,7 +83,21 @@ export default function GasTiming({
 
   const previousMaxFeePerGas = usePrevious(maxFeePerGas);
   const previousMaxPriorityFeePerGas = usePrevious(maxPriorityFeePerGas);
-  const previousIsUnknownLow = usePrevious(isUnknownLow);
+  const customEstimatedTime =
+    customEstimate &&
+    customEstimate.maxFeePerGas === maxFeePerGas &&
+    customEstimate.maxPriorityFeePerGas === maxPriorityFeePerGas
+      ? customEstimate.result
+      : null;
+
+  const estimateTextMap = useMemo(
+    () => ({
+      [PriorityLevels.tenPercentIncreased]: t('tenPercentIncreased'),
+      [PriorityLevels.dAppSuggested]: t('dappSuggested'),
+      [PriorityLevels.dappSuggestedHigh]: t('dappSuggested'),
+    }),
+    [t],
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -84,13 +119,13 @@ export default function GasTiming({
           maxPriorityFeePerGas === priority &&
           isMounted
         ) {
-          setCustomEstimatedTime(result);
+          setCustomEstimate({
+            maxFeePerGas: fee,
+            maxPriorityFeePerGas: priority,
+            result,
+          });
         }
       });
-    }
-
-    if (isUnknownLow !== false && previousIsUnknownLow === true) {
-      setCustomEstimatedTime(null);
     }
 
     return () => {
@@ -102,7 +137,6 @@ export default function GasTiming({
     isUnknownLow,
     previousMaxFeePerGas,
     previousMaxPriorityFeePerGas,
-    previousIsUnknownLow,
   ]);
 
   if (
@@ -128,13 +162,15 @@ export default function GasTiming({
 
   const { low = {}, medium = {}, high = {} } = gasFeeEstimates;
 
-  const estimateToUse =
-    estimateUsed || transactionData.userFeeLevel || 'medium';
-  const estimateEmoji = PRIORITY_LEVEL_ICON_MAP[estimateToUse];
+  const estimateToUse = userFeeLevelOverride ?? 'medium';
 
+  const isPresetEstimate = PRESET_ESTIMATES.has(estimateToUse);
   const textTKey = estimateToUse === 'low' ? 'gasTimingLow' : estimateToUse;
-  let text = estimateEmoji ? `${estimateEmoji} ${t(textTKey)}` : t(textTKey);
+  let text =
+    estimateTextMap[estimateToUse] ??
+    (isPresetEstimate ? t(textTKey) : t('custom'));
   let time = '';
+  let timeMs = 0;
 
   // Anything medium or faster is positive
   if (
@@ -145,10 +181,12 @@ export default function GasTiming({
       Number(maxPriorityFeePerGas) < Number(high.suggestedMaxPriorityFeePerGas)
     ) {
       // Medium
-      time = toHumanReadableTime(low.maxWaitTimeEstimate, t);
+      timeMs = low.maxWaitTimeEstimate;
+      time = toHumanReadableTime(timeMs, t);
     } else {
       // High
-      time = toHumanReadableTime(high.minWaitTimeEstimate, t);
+      timeMs = high.minWaitTimeEstimate;
+      time = toHumanReadableTime(timeMs, t);
     }
   } else if (isUnknownLow) {
     // If the user has chosen a value less than our low estimate,
@@ -163,13 +201,12 @@ export default function GasTiming({
     ) {
       text = t('editGasTooLow');
     } else {
-      time = toHumanReadableTime(
-        Number(customEstimatedTime?.upperTimeBound),
-        t,
-      );
+      timeMs = Number(customEstimatedTime?.upperTimeBound);
+      time = toHumanReadableTime(timeMs, t);
     }
   } else {
-    time = toHumanReadableTime(low.maxWaitTimeEstimate, t);
+    timeMs = low.maxWaitTimeEstimate;
+    time = toHumanReadableTime(timeMs, t);
   }
 
   return (
@@ -186,7 +223,9 @@ export default function GasTiming({
 
       {time && (
         <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
-          <span data-testid="gas-timing-time">~{time}</span>
+          <span data-testid="gas-timing-time">
+            {timeMs > 0 && timeMs < 1000 ? `<${time}` : `~${time}`}
+          </span>
         </Text>
       )}
     </Box>
@@ -194,7 +233,10 @@ export default function GasTiming({
 }
 
 GasTiming.propTypes = {
+  chainId: PropTypes.string,
+  networkClientId: PropTypes.string,
   maxPriorityFeePerGas: PropTypes.string,
   maxFeePerGas: PropTypes.string,
   gasWarnings: PropTypes.object,
+  userFeeLevelOverride: PropTypes.string,
 };

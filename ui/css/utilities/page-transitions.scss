@@ -1,0 +1,126 @@
+/* Specs */
+:root {
+  --page-transition-duration: 180ms;
+  --page-transition-ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --page-transition-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --page-scale-distance: 0.97;
+}
+
+.global-menu-route-transition-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+
+.global-menu-route-transition-wrapper--animating {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1051;
+  width: 100%;
+  max-width: var(--width-max);
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.global-menu-route-transition-wrapper__content {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  background: var(--color-background-default);
+}
+
+.global-menu-route-transition-wrapper__content--forward {
+  animation: page-enter var(--page-transition-duration) var(--page-transition-ease-out) both;
+}
+
+.global-menu-route-transition-wrapper__content--back {
+  animation: page-exit var(--page-transition-duration) var(--page-transition-ease-in) both;
+}
+
+/* Clip overflow and make size changes instant (don't animate height) */
+::view-transition-group(root) {
+  overflow: hidden;
+  animation-duration: 0s;
+}
+
+/* Disable default crossfade blending */
+::view-transition-image-pair(root) {
+  isolation: auto;
+}
+
+/* No additive blending between old and new */
+::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+}
+
+/* Forward: old fades out, new fades in + scale up */
+:root[data-page-transition='forward']::view-transition-old(root) {
+  animation: fade-out var(--page-transition-duration) var(--page-transition-ease-in) both;
+}
+
+:root[data-page-transition='forward']::view-transition-new(root) {
+  animation: page-enter var(--page-transition-duration) var(--page-transition-ease-out) both;
+}
+
+/* Back: old fades out + scale down, new fades in */
+:root[data-page-transition='back']::view-transition-old(root) {
+  animation: page-exit var(--page-transition-duration) var(--page-transition-ease-in) both;
+}
+
+:root[data-page-transition='back']::view-transition-new(root) {
+  animation: fade-in var(--page-transition-duration) var(--page-transition-ease-out) both;
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: scale(var(--page-scale-distance));
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes page-exit {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(var(--page-scale-distance));
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms !important;
+  }
+
+  .global-menu-route-transition-wrapper__content--forward,
+  .global-menu-route-transition-wrapper__content--back {
+    animation-duration: 0.01ms !important;
+  }
+}

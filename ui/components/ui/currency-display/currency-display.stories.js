@@ -1,5 +1,5 @@
 import React from 'react';
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
+import { decimalToHex } from '../../../../shared/lib/conversion.utils';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import CurrencyDisplay from '.';
 

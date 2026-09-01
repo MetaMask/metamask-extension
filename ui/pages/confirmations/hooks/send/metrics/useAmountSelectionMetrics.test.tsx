@@ -1,25 +1,28 @@
-import React, { ReactChildren } from 'react';
+import React from 'react';
 
 import mockState from '../../../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useAmountSelectionMetrics } from './useAmountSelectionMetrics';
 
 const mockTrackEvent = jest.fn();
 
-const Container = ({ children }: { children: ReactChildren }) => (
-  <MetaMetricsContext.Provider value={mockTrackEvent}>
-    {children}
-  </MetaMetricsContext.Provider>
-);
+jest.mock('../../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 describe('captureAmountSelected', () => {
   it('captures metrics by calling trackEvent', () => {
     const { result } = renderHookWithProvider(
       () => useAmountSelectionMetrics(),
       mockState,
-      undefined,
-      Container,
     );
     result.current.captureAmountSelected();
     expect(mockTrackEvent).toHaveBeenCalled();

@@ -1,9 +1,24 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import { PercentageChange } from './percentage-change';
 
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn((selector) => selector()),
+}));
+
+jest.mock('../../../../../ducks/locale/locale', () => ({
+  getIntlLocale: jest.fn(),
+}));
+
+const mockGetIntlLocale = jest.mocked(getIntlLocale);
+
 describe('PercentageChange Component - Percentage Display', () => {
+  beforeEach(() => {
+    mockGetIntlLocale.mockReturnValue('en-US');
+  });
+
   describe('render', () => {
     it('renders correctly', () => {
       const { container } = render(
@@ -30,19 +45,19 @@ describe('PercentageChange Component - Percentage Display', () => {
     expect(valueElement).toBeInTheDocument();
   });
 
-  it('renders an empty string when value is null', () => {
+  it('renders a dash when value is null', () => {
     render(<PercentageChange value={null} address="0xAddress" />);
     const textElement = screen.getByTestId(
       'token-increase-decrease-percentage-0xAddress',
     );
-    expect(textElement).toHaveTextContent('');
+    expect(textElement).toHaveTextContent('-');
   });
 
-  it('renders an empty string when value is an invalid number', () => {
+  it('renders a dash when value is an invalid number', () => {
     render(<PercentageChange value={NaN} address="0xAddress" />);
     const textElement = screen.getByTestId(
       'token-increase-decrease-percentage-0xAddress',
     );
-    expect(textElement).toHaveTextContent('');
+    expect(textElement).toHaveTextContent('-');
   });
 });

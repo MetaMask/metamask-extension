@@ -1,15 +1,19 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
-
-const { unlockWallet, withFixtures } = require('../../helpers');
-const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
+const {
+  default: FixtureBuilderV2,
+} = require('../../fixtures/fixture-builder-v2');
+const { login } = require('../../page-objects/flows/login.flow');
+const { withFixtures } = require('../../helpers');
+const {
+  DAPP_URL_LOCALHOST,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const mockMaliciousAddress = '0x5fbdb2315678afecb367f032d93f642f64180aa3';
-
-const expectedMaliciousTitle = 'This is a deceptive request';
 
 const testBenignConfigs = [
   {
@@ -52,26 +56,30 @@ const testBenignConfigs = [
 const testMaliciousConfigs = [
   {
     btnSelector: '#maliciousPermit',
+    expectedTitle: 'High-risk approval',
     expectedDescription:
-      'If you approve this request, a third party known for scams might take all your assets.',
+      "You're giving an address flagged by security partners permission to move your assets.",
     expectedReason: 'permit_farming',
   },
   {
     btnSelector: '#maliciousRawEthButton',
+    expectedTitle: 'High-risk transfer',
     expectedDescription:
-      'If you approve this request, a third party known for scams will take all your assets.',
+      "You're sending assets to an address flagged by security partners. If this is a scam, your funds can't be recovered.",
     expectedReason: 'raw_native_token_transfer',
   },
   {
     btnSelector: '#maliciousSeaport',
+    expectedTitle: 'High-risk approval',
     expectedDescription:
-      'If you approve this request, someone can steal your assets listed on OpenSea.',
+      "You're giving an address flagged by security partners permission to move your assets listed on OpenSea.",
     expectedReason: 'seaport_farming',
   },
   {
     btnSelector: '#maliciousTradeOrder',
+    expectedTitle: 'High-risk signature',
     expectedDescription:
-      'If you approve this request, you might lose your assets.',
+      'Security partners flag this signature as high risk. Signing could authorize actions with your assets without your permission.',
     expectedReason: 'trade_order_farming',
   },
 ];
@@ -165,12 +173,17 @@ describe('Confirmation Security Alert - Blockaid', function () {
   it.skip('should not show security alerts for benign requests', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+            chainIds: [1],
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
           })
           .build(),
         testSpecificMock: mockInfura,
@@ -178,8 +191,8 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
-        await driver.openNewPage(DAPP_URL);
+        await login(driver, { expectedBalance: '1.37T ETH' });
+        await driver.openNewPage(DAPP_URL_LOCALHOST);
 
         for (const config of testBenignConfigs) {
           const { btnSelector, logExpectedDetail, method, params } = config;
@@ -227,12 +240,17 @@ describe('Confirmation Security Alert - Blockaid', function () {
   it.skip('should show security alerts for malicious requests', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+            chainIds: [1],
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
           })
           .build(),
         testSpecificMock: mockInfuraWithMaliciousResponses,
@@ -240,11 +258,16 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
-        await driver.openNewPage(DAPP_URL);
+        await login(driver, { expectedBalance: '1.37T ETH' });
+        await driver.openNewPage(DAPP_URL_LOCALHOST);
 
         for (const config of testMaliciousConfigs) {
-          const { expectedDescription, expectedReason, btnSelector } = config;
+          const {
+            expectedTitle,
+            expectedDescription,
+            expectedReason,
+            btnSelector,
+          } = config;
           console.log('config', config);
 
           // Click TestDapp button to send JSON-RPC request
@@ -260,13 +283,13 @@ describe('Confirmation Security Alert - Blockaid', function () {
           // Find element by title
           const bannerAlertFoundByTitle = await driver.findElement({
             css: bannerAlertSelector,
-            text: expectedMaliciousTitle,
+            text: expectedTitle,
           });
           const bannerAlertText = await bannerAlertFoundByTitle.getText();
 
           assert(
             bannerAlertFoundByTitle,
-            `Banner alert not found. Expected Title: ${expectedMaliciousTitle} \nExpected reason: ${expectedReason}\n`,
+            `Banner alert not found. Expected Title: ${expectedTitle} \nExpected reason: ${expectedReason}\n`,
           );
           assert(
             bannerAlertText.includes(expectedDescription),
@@ -282,15 +305,20 @@ describe('Confirmation Security Alert - Blockaid', function () {
   });
 
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should show "Request may not be safe" if the PPOM request fails to check transaction', async function () {
+  it.skip('should show "Security check unavailable" if the PPOM request fails to check transaction', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+            chainIds: [1],
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
           })
           .build(),
         testSpecificMock: mockInfuraWithFailedResponses,
@@ -298,8 +326,8 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
-        await driver.openNewPage(DAPP_URL);
+        await login(driver, { expectedBalance: '1.37T ETH' });
+        await driver.openNewPage(DAPP_URL_LOCALHOST);
 
         // Click TestDapp button to send JSON-RPC request
         await driver.clickElement('#maliciousApprovalButton');
@@ -309,7 +337,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
         await driver.delay(500);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const expectedTitle = 'Request may not be safe';
+        const expectedTitle = 'Security check unavailable';
 
         await driver.assertElementNotPresent('.loading-indicator');
 

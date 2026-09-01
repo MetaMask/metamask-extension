@@ -30,12 +30,6 @@
   "accountSelectionRequired": {
     "message": "يجب عليك تحديد حساب!"
   },
-  "activityLog": {
-    "message": "سجل النشاط"
-  },
-  "addAcquiredTokens": {
-    "message": "أضف العملات الرمزية التي اكتسبتها باستخدام MetaMask"
-  },
   "addAlias": {
     "message": "إضافة اسم مستعار"
   },
@@ -85,17 +79,11 @@
   "autoLockTimeLimit": {
     "message": "مؤقت تسجيل الخروج التلقائي (بالدقائق)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "اضبط مهلة السكون بالدقائق التي يقوم MetaMask بتسجيل الخروج بعدها تلقائيًا"
-  },
   "average": {
     "message": "المتوسط"
   },
   "back": {
     "message": "الرجوع إلى الوراء"
-  },
-  "backupApprovalInfo": {
-    "message": "هذا الرمز السري مطلوب لاسترداد محفظتك في حالة فقد جهازك أو نسيان كلمة مرورك أو إعادة تثبيت MetaMask أو الرغبة في الوصول إلى محفظتك عبر جهاز آخر."
   },
   "backupApprovalNotice": {
     "message": "قم بالنسخ الاحتياطي لرمز الاسترداد السري للحفاظ على محفظتك وأموالك بأمان."
@@ -188,23 +176,11 @@
   "createPassword": {
     "message": "إنشاء كلمة مرور"
   },
-  "currencyConversion": {
-    "message": "تحويل العملات"
-  },
-  "currentLanguage": {
-    "message": "اللغة الحالية"
-  },
   "custom": {
     "message": "إعدادات متقدمة"
   },
-  "customToken": {
-    "message": "عملة رمزية مخصصة"
-  },
   "decimal": {
     "message": "دقة بالكسور العشرية"
-  },
-  "decimalsMustZerotoTen": {
-    "message": "يجب أن تكون الكسور العشرية صفراً على الأقل، وألا تزيد عن 36 كسراً."
   },
   "delete": {
     "message": "حذف"
@@ -214,9 +190,6 @@
   },
   "done": {
     "message": "تم"
-  },
-  "downloadGoogleChrome": {
-    "message": "تنزيل جوجل كروم"
   },
   "downloadStateLogs": {
     "message": "تنزيل سجلات الحالة"
@@ -233,14 +206,8 @@
   "enterPasswordContinue": {
     "message": "أدخل كلمة المرور للمتابعة"
   },
-  "ethereumPublicAddress": {
-    "message": "عنوان الإيثيريوم العمومي"
-  },
   "etherscanView": {
     "message": "عرض الحساب على Etherscan"
-  },
-  "expandView": {
-    "message": "توسيع العرض"
   },
   "failed": {
     "message": "فشل"
@@ -282,9 +249,6 @@
   "hardwareWallets": {
     "message": "الاتصال بمحفظة hardware wallet"
   },
-  "hardwareWalletsMsg": {
-    "message": "حدد محفظة أجهزة ترغب في استخدامها مع MetaMask"
-  },
   "here": {
     "message": "هنا",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -311,9 +275,6 @@
   "imported": {
     "message": "المستوردة",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "initialTransactionConfirmed": {
-    "message": "تم تأكيد المعاملة الأولية الخاصة بك بواسطة الشبكة. انقر فوق موافق للعودة."
   },
   "insufficientBalance": {
     "message": "الرصيد غير كافٍ"
@@ -355,15 +316,6 @@
   "likeToImportTokens": {
     "message": "هل ترغب في إضافة هذه الرموز؟"
   },
-  "lineaGoerli": {
-    "message": "شبكة اختبار Linea Goerli"
-  },
-  "links": {
-    "message": "الروابط"
-  },
-  "loadMore": {
-    "message": "تحميل المزيد"
-  },
   "loading": {
     "message": "جارٍ التحميل..."
   },
@@ -385,15 +337,9 @@
   "metamaskVersion": {
     "message": "إصدار MetaMask "
   },
-  "mustSelectOne": {
-    "message": "يجب تحديد عملة رمزية واحدة على الأقل."
-  },
   "needImportFile": {
     "message": "يلزم تحديد ملف للاستيراد.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "لا يمكن إرسال مبالغ سلبية من ETH."
   },
   "networkName": {
     "message": "اسم الشبكة"
@@ -401,18 +347,9 @@
   "networks": {
     "message": "الشبكات"
   },
-  "nevermind": {
-    "message": "لا يهم"
-  },
-  "newAccount": {
-    "message": "حساب جديد"
-  },
   "newAccountNumberName": {
     "message": "حساب $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newContact": {
-    "message": "جهة اتصال جديدة"
   },
   "newContract": {
     "message": "عقد جديد"
@@ -423,17 +360,11 @@
   "next": {
     "message": "التالي"
   },
-  "noConversionRateAvailable": {
-    "message": "لا يوجد معدل تحويل متاح"
-  },
   "noWebcamFound": {
     "message": "لم يتم العثور على كاميرا ويب للكمبيوتر الخاص بك. حاول مرة اخرى."
   },
   "noWebcamFoundTitle": {
     "message": "لم يتم العثور على كاميرا متصلة بالإنترنت"
-  },
-  "notEnoughGas": {
-    "message": "لا توجد عملات جاس كافية"
   },
   "ofTextNofM": {
     "message": "من"
@@ -500,12 +431,6 @@
   "rejectAll": {
     "message": "رفض الكل"
   },
-  "rejectTxsDescription": {
-    "message": "أنت بصدد رفض المعاملات بقيمة $1 بدفعة واحدة."
-  },
-  "rejectTxsN": {
-    "message": "رفض معاملات $1"
-  },
   "rejected": {
     "message": "مرفوض"
   },
@@ -515,9 +440,6 @@
   "removeAccount": {
     "message": "إزالة الحساب"
   },
-  "removeAccountDescription": {
-    "message": "ستتم إزالة هذا الحساب من محفظتك. يرجى التأكد من وجود عبارة الأمان الأصلية أو المفتاح الخاص لهذا الحساب الذي تم استيراده قبل المتابعة. يمكنك استيراد أو إنشاء حسابات مرة أخرى من القائمة المنسدلة للحساب."
-  },
   "required": {
     "message": "مطلوب"
   },
@@ -526,9 +448,6 @@
   },
   "restore": {
     "message": "استعادة"
-  },
-  "revealSeedWords": {
-    "message": "كشف كلمات عبارات الأمان"
   },
   "revealSeedWordsWarning": {
     "message": "يمكن استخدام هذه الكلمات لسرقة جميع حساباتك.",
@@ -576,9 +495,6 @@
   "showFiatConversionInTestnets": {
     "message": "عرض التحويل على Testnets"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "حدد هذا لإظهار تحويل fiat على Testnets"
-  },
   "showHexData": {
     "message": "إظهار بيانات Hex"
   },
@@ -587,9 +503,6 @@
   },
   "sign": {
     "message": "توقيع"
-  },
-  "signatureRequest": {
-    "message": "طلب التوقيع"
   },
   "signed": {
     "message": "مسجل الدخول"
@@ -603,17 +516,11 @@
   "speedUpCancellation": {
     "message": "تسريع هذا الإلغاء"
   },
-  "speedUpTransaction": {
-    "message": "تعجيل هذه المعاملة"
-  },
   "stateLogError": {
     "message": "خطأ في استرداد سجلات الحالة."
   },
   "stateLogs": {
     "message": "سجلات الحالة"
-  },
-  "stateLogsDescription": {
-    "message": "تحتوي سجلات الحالة على عناوين حسابك العامة والمعاملات المرسلة."
   },
   "submitted": {
     "message": "المقدمة"
@@ -651,38 +558,11 @@
   "transaction": {
     "message": "المعاملة"
   },
-  "transactionCancelAttempted": {
-    "message": "تمت محاولة إلغاء المعاملة برسوم $1 من عملة جاس في $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "تم إلغاء المعاملة بنجاح عند $2"
-  },
-  "transactionConfirmed": {
-    "message": "تم تأكيد المعاملة بقيمة $2."
-  },
-  "transactionCreated": {
-    "message": "تم إنشاء المعاملة بقيمة $1 عند $2."
-  },
-  "transactionDropped": {
-    "message": "انخفضت المعاملة عند $2."
-  },
   "transactionError": {
     "message": "خطأ في المعاملة. استثناء تم طرحه في التعليمات البرمجية للعقد."
   },
   "transactionErrorNoContract": {
     "message": "جاري محاولة استدعاء وظيفة على عنوان غير ملتزم بعقد."
-  },
-  "transactionErrored": {
-    "message": "لقد حدث خطأ ما أثناء معالجة المعاملة."
-  },
-  "transactionResubmitted": {
-    "message": "زادت رسوم جاس على المعاملة التي أعيد تقديمها إلى $1 عند $2"
-  },
-  "transactionSubmitted": {
-    "message": "تم تقديم المعاملة برسوم $1 من عملة جاس في $2."
-  },
-  "transactionUpdated": {
-    "message": "تم تحديث المعاملة في $2."
   },
   "transfer": {
     "message": "تحويل"
@@ -714,12 +594,6 @@
   "usedByClients": {
     "message": "مستخدمة من قبل مجموعة متنوعة من العملاء المختلفة"
   },
-  "userName": {
-    "message": "اسم المستخدم"
-  },
-  "viewContact": {
-    "message": "عرض جهة الاتصال"
-  },
   "visitWebSite": {
     "message": "قم بزيارة موقعنا على الإنترنت"
   },
@@ -728,8 +602,5 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "أنت بحاجة إلى السماح بالوصول إلى الكاميرا لاستخدام هذه الميزة."
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "عبارة الأمان الشخصية الخاصة بك"
   }
 }

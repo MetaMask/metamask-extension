@@ -2,16 +2,26 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
+  BRIDGE_UAT_API_BASE_URL,
   ChainId,
+  formatChainIdToCaip,
+  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
+import type { CaipChainId, CaipAssetType } from '@metamask/utils';
 import { MultichainNetworks } from './multichain/networks';
-import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  CHAIN_IDS,
+  NETWORK_TO_NAME_MAP,
+} from './network';
+import { ENVIRONMENT } from './build';
 
-const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
+export const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
   MultichainNetworks.SOLANA,
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
   MultichainNetworks.BITCOIN,
-  ///: END:ONLY_INCLUDE_IF
+  MultichainNetworks.TRON,
+  MultichainNetworks.STELLAR,
 ];
 
 const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
@@ -25,6 +35,11 @@ const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.BASE,
   CHAIN_IDS.SEI,
+  CHAIN_IDS.MONAD,
+  CHAIN_IDS.HYPE,
+  CHAIN_IDS.MEGAETH_MAINNET,
+  CHAIN_IDS.ARC,
+  CHAIN_IDS.ROBINHOOD_CHAIN,
 ];
 
 export const ALLOWED_BRIDGE_CHAIN_IDS = [
@@ -33,7 +48,9 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.BASE,
   MultichainNetworks.SOLANA,
-];
+  MultichainNetworks.BITCOIN,
+  MultichainNetworks.TRON,
+] as const;
 
 export const ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP =
   ALLOWED_EVM_BRIDGE_CHAIN_IDS.map(toEvmCaipChainId).concat(
@@ -46,15 +63,65 @@ export const ALL_ALLOWED_BRIDGE_CHAIN_IDS = [
   ...Object.values(ChainId),
 ];
 
+/**
+ * Chains that are only allowed to be used for bridging.
+ */
+export const BRIDGE_ONLY_CHAINS: CaipChainId[] = [MultichainNetworks.BITCOIN];
+
 export type AllowedBridgeChainIds =
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number]
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number];
 
-export const BRIDGE_API_BASE_URL = process.env.BRIDGE_USE_DEV_APIS
-  ? BRIDGE_DEV_API_BASE_URL
-  : BRIDGE_PROD_API_BASE_URL;
+/**
+ * Resolves the Bridge API base URL to use based on the current MetaMask
+ * environment.
+ *
+ * @returns the Bridge API base URL for the current MetaMask environment
+ */
+export const getBridgeApiBaseUrlForMetaMaskEnv = (): string => {
+  if (process.env.BRIDGE_USE_CUSTOM_BASE_URL) {
+    return process.env.BRIDGE_USE_CUSTOM_BASE_URL;
+  }
 
-export const ETH_USDT_ADDRESS = '0xdac17f958d2ee523a2206206994597c13d831ec7';
+  switch (process.env.METAMASK_ENVIRONMENT) {
+    case 'exp':
+    case ENVIRONMENT.STAGING:
+      return BRIDGE_UAT_API_BASE_URL;
+    case 'e2e':
+    case 'dev':
+    case 'local':
+    case ENVIRONMENT.DEVELOPMENT:
+    case ENVIRONMENT.TESTING:
+    case ENVIRONMENT.OTHER:
+      return BRIDGE_DEV_API_BASE_URL;
+    case 'production':
+    case 'rc':
+    case 'pre-release':
+    case 'beta':
+    case ENVIRONMENT.RELEASE_CANDIDATE:
+    case ENVIRONMENT.PRODUCTION:
+    case ENVIRONMENT.PULL_REQUEST:
+    default:
+      return BRIDGE_PROD_API_BASE_URL;
+  }
+};
+
+// Allows developers to point the extension at a custom Bridge API deployment
+// (e.g. a local server or a one-off environment), bypassing the environment-based mapping above.
+export const BRIDGE_API_BASE_URL = getBridgeApiBaseUrlForMetaMaskEnv();
+
+export const BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP: Record<
+  (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number],
+  string
+> = ALLOWED_BRIDGE_CHAIN_IDS.reduce(
+  (acc, chainId) => {
+    acc[formatChainIdToCaip(chainId)] =
+      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];
+    return acc;
+  },
+  {} as Record<(typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number], string>,
+);
+
 export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   AllowedBridgeChainIds,
   string
@@ -75,25 +142,35 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [CHAIN_IDS.OPTIMISM]: NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM],
   [toEvmCaipChainId(CHAIN_IDS.OPTIMISM)]:
     NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM],
-  [CHAIN_IDS.ZKSYNC_ERA]: 'ZkSync Era',
-  [toEvmCaipChainId(CHAIN_IDS.ZKSYNC_ERA)]: 'ZkSync Era',
+  [CHAIN_IDS.ZKSYNC_ERA]: 'zkSync Era',
+  [toEvmCaipChainId(CHAIN_IDS.ZKSYNC_ERA)]: 'zkSync Era',
   [CHAIN_IDS.BASE]: 'Base',
   [toEvmCaipChainId(CHAIN_IDS.BASE)]: 'Base',
   [CHAIN_IDS.SEI]: 'Sei',
   [toEvmCaipChainId(CHAIN_IDS.SEI)]: 'Sei',
+  [CHAIN_IDS.MONAD]: 'Monad',
+  [toEvmCaipChainId(CHAIN_IDS.MONAD)]: 'Monad',
+  [CHAIN_IDS.HYPE]: 'HyperEVM',
+  [toEvmCaipChainId(CHAIN_IDS.HYPE)]: 'HyperEVM',
+  [CHAIN_IDS.MEGAETH_MAINNET]: 'MegaETH',
+  [toEvmCaipChainId(CHAIN_IDS.MEGAETH_MAINNET)]: 'MegaETH',
+  [CHAIN_IDS.ARC]: 'Arc',
+  [toEvmCaipChainId(CHAIN_IDS.ARC)]: 'Arc',
+  [CHAIN_IDS.ROBINHOOD_CHAIN]: 'Robinhood',
+  [toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)]: 'Robinhood',
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
   [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   [MultichainNetworks.BITCOIN]: 'Bitcoin',
   [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
   [MultichainNetworks.BITCOIN_SIGNET]: 'Bitcoin Mutinynet',
-  ///: END:ONLY_INCLUDE_IF
+  [MultichainNetworks.TRON]: 'Tron',
+  [MultichainNetworks.STELLAR]: 'Stellar',
 };
 
 export const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
 
-export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
+type BridgeChainTokenMap = Partial<
   Record<
     (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number],
     {
@@ -101,15 +178,32 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
       symbol: string;
       decimals: number;
       name: string;
+      assetId: CaipAssetType;
     }
   >
-> = {
+>;
+
+// We usually use the native asset as "from" token. In some chains we want to override that.
+export const BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN: BridgeChainTokenMap = {
+  [toEvmCaipChainId(CHAIN_IDS.ARC)]: {
+    // USDC on Arc
+    address: '0x3600000000000000000000000000000000000000',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USDC',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.ARC)}/erc20:${toChecksumHexAddress('0x3600000000000000000000000000000000000000')}`,
+  },
+};
+
+// This is actually for defining a default "toToken" when opening Bridge view
+export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: BridgeChainTokenMap = {
   [toEvmCaipChainId(CHAIN_IDS.MAINNET)]: {
     // ETH -> mUSD on mainnet
     address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
     symbol: 'mUSD',
     decimals: 6,
     name: 'MetaMask USD',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.MAINNET)}/erc20:${toChecksumHexAddress('0xaca92e438df0b2401ff60da7e4337b687a2435da')}`,
   },
   [toEvmCaipChainId(CHAIN_IDS.OPTIMISM)]: {
     // ETH -> USDC on Optimism
@@ -117,6 +211,7 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDC',
     decimals: 6,
     name: 'USD Coin',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.OPTIMISM)}/erc20:${toChecksumHexAddress('0x0b2c639c533813f4aa9d7837caf62653d097ff85')}`,
   },
   [toEvmCaipChainId(CHAIN_IDS.ARBITRUM)]: {
     // ETH -> USDC on Arbitrum
@@ -124,6 +219,7 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDC',
     decimals: 6,
     name: 'USD Coin',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.ARBITRUM)}/erc20:${toChecksumHexAddress('0xaf88d065e77c8cc2239327c5edb3a432268e5831')}`,
   },
   [toEvmCaipChainId(CHAIN_IDS.BASE)]: {
     // ETH -> USDC on Base
@@ -131,6 +227,7 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDC',
     decimals: 6,
     name: 'USD Coin',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.BASE)}/erc20:${toChecksumHexAddress('0x833589fcd6edb6e08f4c7c32d4f71b54bda02913')}`,
   },
   [toEvmCaipChainId(CHAIN_IDS.POLYGON)]: {
     // POL -> USDT on Polygon
@@ -138,6 +235,7 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDT',
     decimals: 6,
     name: 'Tether USD',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.POLYGON)}/erc20:${toChecksumHexAddress('0xc2132d05d31c914a87c6611c10748aeb04b58e8f')}`,
   },
   [toEvmCaipChainId(CHAIN_IDS.BSC)]: {
     // BNB -> USDT on BSC
@@ -145,6 +243,7 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDT',
     decimals: 18,
     name: 'Tether USD',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.BSC)}/erc20:${toChecksumHexAddress('0x55d398326f99059ff775485246999027b3197955')}`,
   },
   [toEvmCaipChainId(CHAIN_IDS.AVALANCHE)]: {
     // AVAX -> USDC on Avalanche
@@ -152,6 +251,7 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDC',
     decimals: 6,
     name: 'USD Coin',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.AVALANCHE)}/erc20:${toChecksumHexAddress('0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e')}`,
   },
   [toEvmCaipChainId(CHAIN_IDS.ZKSYNC_ERA)]: {
     // ETH -> USDT on zkSync Era
@@ -159,6 +259,7 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDT',
     decimals: 6,
     name: 'Tether USD',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.ZKSYNC_ERA)}/erc20:${toChecksumHexAddress('0x493257fd37edb34451f62edf8d2a0c418852ba4c')}`,
   },
   [toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET)]: {
     // ETH -> mUSD on Linea
@@ -166,13 +267,56 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'mUSD',
     decimals: 6,
     name: 'MetaMask USD',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET)}/erc20:${toChecksumHexAddress('0xaca92e438df0b2401ff60da7e4337b687a2435da')}`,
   },
   [toEvmCaipChainId(CHAIN_IDS.SEI)]: {
     // SEI -> USDC on Sei
-    address: '0x3894085Ef7Ff0f0aeDf52E2A2704928d1Ec074F1',
+    address: '0xe15fC38F6D8c56aF07bbCBe3BAf5708A2Bf42392',
     symbol: 'USDC',
     decimals: 6,
     name: 'USD Coin',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.SEI)}/erc20:${toChecksumHexAddress('0xe15fC38F6D8c56aF07bbCBe3BAf5708A2Bf42392')}`,
+  },
+  [toEvmCaipChainId(CHAIN_IDS.MONAD)]: {
+    // MON -> USDC on Monad
+    address: '0x754704Bc059F8C67012fEd69BC8A327a5aafb603',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USD Coin',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.MONAD)}/erc20:${toChecksumHexAddress('0x754704Bc059F8C67012fEd69BC8A327a5aafb603')}`,
+  },
+  [toEvmCaipChainId(CHAIN_IDS.HYPE)]: {
+    // HYPE -> USDC on HyperEVM
+    address: '0xb88339cb7199b77e23db6e890353e22632ba630f',
+    symbol: 'USDC',
+    decimals: 6,
+    name: 'USD Coin',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.HYPE)}/erc20:${toChecksumHexAddress('0xb88339cb7199b77e23db6e890353e22632ba630f')}`,
+  },
+  [toEvmCaipChainId(CHAIN_IDS.MEGAETH_MAINNET)]: {
+    // ETH -> USDT0 on MegaETH
+    address: '0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb',
+    symbol: 'USDT0',
+    decimals: 6,
+    name: 'USDT0',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.MEGAETH_MAINNET)}/erc20:${toChecksumHexAddress('0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb')}`,
+  },
+  // On Arc, setting EURC as "to asset", since USDC will be the default "from" asset.
+  [toEvmCaipChainId(CHAIN_IDS.ARC)]: {
+    // EURC on Arc
+    address: '0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1',
+    symbol: 'EURC',
+    decimals: 6,
+    name: 'EURC',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.ARC)}/erc20:${toChecksumHexAddress('0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1')}`,
+  },
+  [toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)]: {
+    // ETH -> USDG on Robinhood
+    address: '0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168',
+    symbol: 'USDG',
+    decimals: 6,
+    name: 'Global Dollar',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)}/erc20:${toChecksumHexAddress('0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168')}`,
   },
   [MultichainNetworks.SOLANA]: {
     // SOL -> USDC on Solana
@@ -180,5 +324,32 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDC',
     decimals: 6,
     name: 'USD Coin',
+    assetId: `${MultichainNetworks.SOLANA}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
+  },
+  [MultichainNetworks.BITCOIN]: getNativeAssetForChainId(CHAIN_IDS.MAINNET),
+  [MultichainNetworks.TRON]: {
+    // TRX -> USDT on Tron
+    address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+    symbol: 'USDT',
+    decimals: 6,
+    name: 'Tether USD',
+    assetId: `${MultichainNetworks.TRON}/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`,
+  },
+  [MultichainNetworks.STELLAR]: {
+    // XLM -> USDC on Stellar
+    address: 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+    symbol: 'USDC',
+    decimals: 7,
+    name: 'USDC',
+    assetId: `${MultichainNetworks.STELLAR}/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN`,
   },
 } as const;
+
+export const BRIDGE_ASSET_PICKER_HIDDEN_ASSETS = new Set([
+  // Arc blockchain: Two USDC - one native, one ERC20. Hiding native for convenience.
+  // Both the legacy erc20:0x0 placeholder and the current slip44:5042 ID are
+  // listed because persisted balance state may still carry the legacy ID
+  // until the pending state migration for the slip44 rollout lands.
+  'eip155:5042/erc20:0x0000000000000000000000000000000000000000',
+  'eip155:5042/slip44:5042',
+]);

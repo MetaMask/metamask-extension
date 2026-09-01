@@ -1,5 +1,9 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import {
+  AvatarFavicon,
+  AvatarFaviconSize,
+} from '@metamask/design-system-react';
 import {
   AlignItems,
   BackgroundColor,
@@ -10,8 +14,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  AvatarFavicon,
-  AvatarFaviconSize,
   Box,
   ButtonIcon,
   ButtonIconSize,
@@ -23,6 +25,7 @@ import {
 import { Header } from '../pages/page';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 
 export const PermissionsHeader = ({
   securedOrigin,
@@ -32,7 +35,7 @@ export const PermissionsHeader = ({
   connectedSubjectsMetadata?: { name: string; iconUrl: string };
 }) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <Header
@@ -45,9 +48,8 @@ export const PermissionsHeader = ({
           size={ButtonIconSize.Md}
           ariaLabel={t('back')}
           iconName={IconName.ArrowLeft}
-          className="connections-header__start-accessory"
           color={IconColor.iconDefault}
-          onClick={() => history.goBack()}
+          onClick={() => navigate(PREVIOUS_ROUTE)}
           data-testid="back-button"
         />
       }
@@ -57,7 +59,6 @@ export const PermissionsHeader = ({
         alignItems={AlignItems.center}
         gap={2}
         justifyContent={JustifyContent.center}
-        className="connections-header__title"
       >
         {connectedSubjectsMetadata?.iconUrl ? (
           <AvatarFavicon

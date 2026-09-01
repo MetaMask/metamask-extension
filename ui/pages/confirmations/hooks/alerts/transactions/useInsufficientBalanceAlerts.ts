@@ -1,24 +1,25 @@
-import { CaipChainId, Hex } from '@metamask/utils';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { TransactionMeta } from '@metamask/transaction-controller';
-
-import { sumHexes } from '../../../../../../shared/modules/conversion.utils';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import {
-  getMultichainNetworkConfigurationsByChainId,
-  getUseTransactionSimulations,
-  selectTransactionAvailableBalance,
-  selectTransactionFeeById,
-} from '../../../../../selectors';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { Severity } from '../../../../../helpers/constants/design-system';
 import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
-import { isBalanceSufficient } from '../../../send-legacy/send.utils';
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { getUseTransactionSimulations } from '../../../../../selectors';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { useConfirmContext } from '../../../context/confirm';
+import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
+import { useHasInsufficientBalance } from '../../useHasInsufficientBalance';
+import { useTransactionPayHasSourceAmount } from '../../pay/useTransactionPayHasSourceAmount';
+import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
+import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
+import { useTransactionPayWithdraw } from '../../pay/useTransactionPayWithdraw';
 
 export function useInsufficientBalanceAlerts({
   ignoreGasFeeToken,
@@ -27,53 +28,82 @@ export function useInsufficientBalanceAlerts({
 } = {}): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const {
-    id: transactionId,
-    chainId,
-    selectedGasFeeToken,
-    gasFeeTokens,
-    txParams: { value = '0x0' } = {},
-  } = currentConfirmation ?? {};
-
-  const batchTransactionValues =
-    currentConfirmation?.nestedTransactions?.map(
-      (trxn) => (trxn.value as Hex) ?? 0x0,
-    ) ?? [];
-
+  const { selectedGasFeeToken, gasFeeTokens, excludeNativeTokenForFee } =
+    currentConfirmation ?? {};
+  // Post-quote withdraw flows don't use the user's native balance for gas the
+  // same way as standard txs, so suppress the "insufficient balance" alert
+  // even when native balance is low. Gate on the post-quote flag rather than
+  // the transaction type: with post-quote disabled the withdraw falls back to
+  // a direct transfer, which does spend native balance on gas.
+  const { canSelectWithdrawToken: isPostQuoteWithdraw } =
+    useTransactionPayWithdraw();
+  const { hasInsufficientBalance, isNativeBalanceKnown, nativeCurrency } =
+    useHasInsufficientBalance();
   const isSimulationEnabled = useSelector(getUseTransactionSimulations);
+  const isSponsored = currentConfirmation?.isGasFeeSponsored;
+  const {
+    isSupported: isGaslessSupported,
+    pending: isGaslessSupportedPending,
+  } = useIsGaslessSupported();
 
-  const balance = useSelector((state) =>
-    selectTransactionAvailableBalance(state, transactionId, chainId),
-  );
+  const isUsingPay = useTransactionPayHasSourceAmount();
+  const { payToken } = useTransactionPayToken();
+  const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
 
-  const totalValue = sumHexes(value, ...batchTransactionValues);
+  const isPayPendingInput =
+    Boolean(payToken) && primaryRequiredToken?.amountRaw === '0';
 
-  const { hexMaximumTransactionFee } = useSelector((state) =>
-    selectTransactionFeeById(state, transactionId),
-  );
+  // Money-account batches execute from the money account, which has no native
+  // MON. Gas is sponsored, so the EOA native-balance check is wrong. Direct
+  // withdraws also skip initial gas estimate, so this alert otherwise blocks
+  // Send after the user types an amount.
+  const isMoneyAccountTransaction = hasTransactionType(currentConfirmation, [
+    TransactionType.moneyAccountDeposit,
+    TransactionType.moneyAccountWithdraw,
+  ]);
 
-  const [multichainNetworks, evmNetworks] = useSelector(
-    getMultichainNetworkConfigurationsByChainId,
-  );
+  const isGasFeeTokensEmpty = gasFeeTokens?.length === 0;
 
-  const nativeCurrency = (
-    multichainNetworks[chainId as CaipChainId] ?? evmNetworks[chainId]
-  )?.nativeCurrency;
+  // Check if gasless check has completed (regardless of result)
+  const isGaslessCheckComplete = !isGaslessSupportedPending;
 
-  const insufficientBalance = !isBalanceSufficient({
-    amount: totalValue,
-    gasTotal: hexMaximumTransactionFee,
-    balance,
-  });
+  // Transaction is sponsored only if it's marked as sponsored AND gasless is supported
+  const isSponsoredTransaction = isSponsored && isGaslessSupported;
 
-  const canSkipSimulationChecks = ignoreGasFeeToken || !isSimulationEnabled;
-  const hasGaslessSimulationFinished =
-    canSkipSimulationChecks || Boolean(gasFeeTokens);
+  // Simulation is complete if it's disabled, or if enabled and gasFeeTokens is loaded
+  const isSimulationComplete = !isSimulationEnabled || Boolean(gasFeeTokens);
+
+  // Check if user has selected a gas fee token (or we're ignoring that check)
+  // Note: In the case of chains with no native token (ex: Tempo), `selectedGasFeeToken`
+  // may be populated despite no gas token being available.
+  // For those chains, `excludeNativeTokenForFee` will always be `true`, hence we can
+  // rely on the combination of `excludeNativeTokenForFee` and `isGasFeeTokensEmpty`.
+  const hasNoGasFeeTokenSelected =
+    ignoreGasFeeToken ||
+    !selectedGasFeeToken ||
+    (excludeNativeTokenForFee && isGasFeeTokensEmpty);
+
+  // Gasless check is complete AND one of:
+  //  - Gasless is NOT supported (native currency needed for gas)
+  //  - Gasless IS supported but no alternative gas fee tokens are available
+  //  - Gas fee tokens are available but none is selected
+  const shouldCheckGaslessConditions =
+    isGaslessCheckComplete &&
+    (!isGaslessSupported ||
+      isGasFeeTokensEmpty ||
+      (!isGasFeeTokensEmpty && !selectedGasFeeToken));
 
   const showAlert =
-    insufficientBalance &&
-    hasGaslessSimulationFinished &&
-    (ignoreGasFeeToken || !selectedGasFeeToken);
+    hasInsufficientBalance &&
+    isNativeBalanceKnown &&
+    !isUsingPay &&
+    !isPayPendingInput &&
+    isSimulationComplete &&
+    hasNoGasFeeTokenSelected &&
+    shouldCheckGaslessConditions &&
+    !isSponsoredTransaction &&
+    !isPostQuoteWithdraw &&
+    !isMoneyAccountTransaction;
 
   return useMemo(() => {
     if (!showAlert) {

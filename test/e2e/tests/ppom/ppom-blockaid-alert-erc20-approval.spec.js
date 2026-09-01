@@ -1,8 +1,14 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
-
-const { unlockWallet, withFixtures } = require('../../helpers');
-const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
+const {
+  default: FixtureBuilderV2,
+} = require('../../fixtures/fixture-builder-v2');
+const { withFixtures } = require('../../helpers');
+const { login } = require('../../page-objects/flows/login.flow');
+const {
+  DAPP_URL_LOCALHOST,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
@@ -209,12 +215,17 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval', function () {
   it.skip('should show banner alert', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+            chainIds: [1],
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
           })
           .build(),
         testSpecificMock: mockInfura,
@@ -222,12 +233,12 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval', function () {
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
-        await driver.openNewPage(DAPP_URL);
+        await login(driver, { expectedBalance: '1.37T ETH' });
+        await driver.openNewPage(DAPP_URL_LOCALHOST);
 
-        const expectedTitle = 'This is a deceptive request';
+        const expectedTitle = 'Risk signals detected';
         const expectedDescription =
-          'If you approve this request, you might lose your assets.';
+          'Security partners found risk signals in this request. Review before continuing.';
 
         // Click TestDapp button to send JSON-RPC request
         await driver.clickElement('#maliciousApprovalButton');

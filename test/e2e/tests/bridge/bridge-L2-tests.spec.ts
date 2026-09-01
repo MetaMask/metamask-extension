@@ -1,67 +1,76 @@
 import { Suite } from 'mocha';
-import { unlockWallet, withFixtures } from '../../helpers';
-import { searchAndSwitchToNetworkFromGlobalMenuFlow } from '../../page-objects/flows/network.flow';
-import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
-import { bridgeTransaction, getBridgeL2Fixtures } from './bridge-test-utils';
+import { withFixtures } from '../../helpers';
+import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
+import { login } from '../../page-objects/flows/login.flow';
+import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
+import { getBridgeL2Fixtures } from './bridge-test-utils';
 
 describe('Bridge tests', function (this: Suite) {
   this.timeout(120000); // Needs a higher timeout as it's a longer tests
   it('should execute bridge transactions on L2 networks', async function () {
     await withFixtures(
-      getBridgeL2Fixtures(this.test?.fullTitle(), DEFAULT_BRIDGE_FEATURE_FLAGS),
+      getBridgeL2Fixtures(
+        this.test?.fullTitle(),
+        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+      ),
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await login(driver, { expectedBalance: '$225,730.11' });
 
-        // Add Arbitrum
-        await searchAndSwitchToNetworkFromGlobalMenuFlow(driver, 'Arbitrum');
-
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '1',
             tokenFrom: 'ETH',
             tokenTo: 'ETH',
             fromChain: 'Linea',
             toChain: 'Ethereum',
           },
-          1,
-        );
+          expectedTransactionsCount: 1,
+          expectedDestAmount: '0.991',
+          expectedActivityAmount: '+0.9909',
+        });
 
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '1',
             tokenFrom: 'ETH',
             tokenTo: 'ETH',
             fromChain: 'Linea',
             toChain: 'Arbitrum',
           },
-          2,
-        );
+          expectedTransactionsCount: 2,
+          expectedDestAmount: '0.991',
+          expectedActivityAmount: '+0.9911',
+        });
 
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '10',
             tokenFrom: 'DAI',
             tokenTo: 'DAI',
             fromChain: 'Linea',
             toChain: 'Arbitrum',
           },
-          4,
-        );
+          expectedTransactionsCount: 4,
+          expectedDestAmount: '9.905',
+          expectedActivityAmount: '+9.9046',
+        });
 
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '10',
             tokenFrom: 'DAI',
             tokenTo: 'DAI',
             fromChain: 'Linea',
             toChain: 'Ethereum',
           },
-          6,
-        );
+          expectedTransactionsCount: 6,
+          expectedDestAmount: '9.67',
+          expectedActivityAmount: '+9.6698',
+        });
       },
     );
   });

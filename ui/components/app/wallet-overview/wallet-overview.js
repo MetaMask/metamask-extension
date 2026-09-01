@@ -1,20 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import classnames from 'clsx';
 
-// TODO: Move this function to shared
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 
 const WalletOverview = ({ balance, buttons, className }) => {
+  const environmentType = getEnvironmentType();
+
   return (
     <div
       className={classnames(
         'wallet-overview',
         {
           'wallet-overview-fullscreen':
-            getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN,
+            environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
+            environmentType === ENVIRONMENT_TYPE_SIDEPANEL,
+          'wallet-overview-sidepanel':
+            environmentType === ENVIRONMENT_TYPE_SIDEPANEL,
         },
         className,
       )}

@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
-import classnames from 'classnames';
+import classnames from 'clsx';
 
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import {
@@ -37,8 +37,6 @@ import Tooltip from '../../../../../../../components/ui/tooltip';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficientBalance';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -50,6 +48,7 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
     id: transactionId,
     gasFeeTokens,
     selectedGasFeeToken,
+    excludeNativeTokenForFee,
   } = currentConfirmation;
 
   const hasFutureNativeToken =
@@ -109,38 +108,42 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
           paddingLeft={0}
           paddingRight={0}
         >
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.center}
-            marginInline={4}
-          >
-            <Title text={t('confirmGasFeeTokenModalPayETH')} noMargin />
-            {hasFutureNativeToken && (
-              <NativeToggle
-                isFuture={futureNativeSelected}
-                onChange={setFutureNativeSelected}
+          {!excludeNativeTokenForFee && (
+            <>
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Row}
+                justifyContent={JustifyContent.spaceBetween}
+                alignItems={AlignItems.center}
+                marginInline={4}
+              >
+                <Title text={t('confirmGasFeeTokenModalPayETH')} noMargin />
+                {hasFutureNativeToken && (
+                  <NativeToggle
+                    isFuture={futureNativeSelected}
+                    onChange={setFutureNativeSelected}
+                  />
+                )}
+              </Box>
+              <GasFeeTokenListItem
+                tokenAddress={
+                  futureNativeSelected ? NATIVE_TOKEN_ADDRESS : undefined
+                }
+                isSelected={
+                  !selectedGasFeeToken ||
+                  selectedGasFeeToken?.toLowerCase() === NATIVE_TOKEN_ADDRESS
+                }
+                onClick={handleTokenClick}
+                warning={
+                  hasInsufficientNative &&
+                  !futureNativeSelected &&
+                  t('confirmGasFeeTokenInsufficientBalance')
+                }
               />
-            )}
-          </Box>
-          <GasFeeTokenListItem
-            tokenAddress={
-              futureNativeSelected ? NATIVE_TOKEN_ADDRESS : undefined
-            }
-            isSelected={
-              !selectedGasFeeToken ||
-              selectedGasFeeToken?.toLowerCase() === NATIVE_TOKEN_ADDRESS
-            }
-            onClick={handleTokenClick}
-            warning={
-              hasInsufficientNative &&
-              !futureNativeSelected &&
-              t('confirmGasFeeTokenInsufficientBalance')
-            }
-          />
-          {hasGasFeeTokens && (
-            <Title text={t('confirmGasFeeTokenModalPayToken')} />
+              {hasGasFeeTokens && (
+                <Title text={t('confirmGasFeeTokenModalPayToken')} />
+              )}
+            </>
           )}
           {gasFeeTokenAddresses.map((tokenAddress) => (
             <GasFeeTokenListItem
@@ -150,8 +153,6 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
                 selectedGasFeeToken?.toLowerCase() ===
                 tokenAddress.toLowerCase()
               }
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={handleTokenClick}
             />
           ))}
@@ -220,10 +221,7 @@ function NativeToggle({
       >
         <img
           src="./images/logo/metamask-fox.svg"
-          height={15}
-          style={{
-            margin: 8,
-          }}
+          className="gas-fee-token-native-toggle-option__fox-icon"
         />
       </NativeToggleOption>
     </Box>

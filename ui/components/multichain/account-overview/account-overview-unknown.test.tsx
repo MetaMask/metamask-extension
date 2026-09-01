@@ -1,9 +1,8 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
-import { CompatRouter } from 'react-router-dom-v5-compat';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { createMockRouteMessenger } from '../../../../test/lib/mock-route-messenger';
 import {
   AccountOverviewUnknown,
   AccountOverviewUnknownProps,
@@ -15,20 +14,19 @@ const render = (props: AccountOverviewUnknownProps) => {
   });
 
   return renderWithProvider(
-    <MemoryRouter>
-      <CompatRouter>
-        <AccountOverviewUnknown {...props} />
-      </CompatRouter>
-    </MemoryRouter>,
+    <AccountOverviewUnknown {...props} />,
     store,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    createMockRouteMessenger(),
   );
 };
 
 describe('AccountOverviewUnknown', () => {
   it('shows only the activity tab', () => {
     const { queryByTestId } = render({
-      defaultHomeActiveTabName: null,
-      onTabClick: jest.fn(),
       setBasicFunctionalityModalOpen: jest.fn(),
       onSupportLinkClick: jest.fn(),
     });

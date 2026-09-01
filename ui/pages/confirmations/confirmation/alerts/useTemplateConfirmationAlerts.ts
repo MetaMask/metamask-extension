@@ -1,5 +1,4 @@
 import { ApprovalRequest } from '@metamask/approval-controller';
-import { useDispatch } from 'react-redux';
 import { useEffect, useMemo } from 'react';
 
 import {
@@ -7,6 +6,7 @@ import {
   clearAlerts,
   updateAlerts,
 } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { useDispatch } from '../../../../store/hooks';
 import { useUpdateEthereumChainAlerts } from './useUpdateEthereumChainAlerts';
 
 export const useTemplateConfirmationAlerts = (

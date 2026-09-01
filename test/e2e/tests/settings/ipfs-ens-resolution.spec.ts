@@ -1,11 +1,14 @@
-import { MockttpServer } from 'mockttp';
-import { tinyDelayMs, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import LoginPage from '../../page-objects/pages/login-page';
+import { MockedEndpoint, MockttpServer } from 'mockttp';
+import { getCleanAppState, tinyDelayMs, withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
+import { NETWORK_CLIENT_ID } from '../../constants';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 
 describe('Settings', function () {
   const ENS_NAME = 'metamask.eth';
@@ -31,7 +34,9 @@ describe('Settings', function () {
     // on the ".eth" hostname. The proxy does too much interference with 8000.
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockEns,
         driverOptions: {
@@ -40,6 +45,36 @@ describe('Settings', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+
+        // Wait for the live controller state (via Redux) to confirm the
+        // ipfsGateway and useAddressBarEnsResolution settings are active.
+        // Unlike getPersistedState (which reads IndexedDB fixture data
+        // immediately), getCleanAppState reflects the running controller
+        // state that has been synced to the UI after background init.
+        // Wait until NetworkController state resolves to mainnet.
+        await driver.waitUntil(
+          async () => {
+            const uiState = await getCleanAppState(driver);
+            const m = uiState?.metamask;
+            if (
+              m?.ipfsGateway !== 'dweb.link' ||
+              m?.useAddressBarEnsResolution !== true
+            ) {
+              return false;
+            }
+            try {
+              return getCurrentChainId({ metamask: m }) === CHAIN_IDS.MAINNET;
+            } catch {
+              return false;
+            }
+          },
+          {
+            interval: 1000,
+            stableFor: 2000,
+            timeout: 10000,
+          },
+        );
+
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
 
@@ -59,18 +94,29 @@ describe('Settings', function () {
   });
 
   it('Does not fetch ENS data for ENS Domain when ENS and IPFS switched off', async function () {
-    let server: MockttpServer;
+    async function ensDomainPassthrough(
+      mockServer: MockttpServer,
+    ): Promise<MockedEndpoint[]> {
+      // We want the browser to handle the request error
+      const ensNamePassThrough = await mockServer
+        .forGet(ENS_NAME_URL)
+        .thenPassThrough();
+      // This should never be hit, but in case it is, then we'll catch it
+      const ensDomainsPassThrough = await mockServer
+        .forGet(ENS_DESTINATION_URL)
+        .thenPassThrough();
+
+      return [ensNamePassThrough, ensDomainsPassThrough];
+    }
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (mockServer: MockttpServer) => {
-          server = mockServer;
-        },
+        testSpecificMock: ensDomainPassthrough,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // navigate to security & privacy settings screen
         await new HeaderNavbar(driver).openSettingsPage();
@@ -82,11 +128,8 @@ describe('Settings', function () {
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleIpfsGateway();
+        await privacySettings.goToThirdPartyApisSettings();
         await privacySettings.toggleEnsDomainResolution();
-
-        // Now that we no longer need the MetaMask UI, and want the browser
-        // to handle the request error, we need to stop the server
-        await server.stop();
 
         try {
           await driver.openNewPage(ENS_NAME_URL);

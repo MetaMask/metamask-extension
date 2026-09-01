@@ -1,7 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 import SnapInstall from '../pages/dialog/snap-install';
 import SnapInstallWarning from '../pages/dialog/snap-install-warning';
-import { WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
 
 /**
  * Grant permission to the snap installed with the optional warning dialog.
@@ -66,12 +66,12 @@ export async function completeSnapInstallSwitchToTestSnap(driver: Driver) {
 export async function approveAccount(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  await driver.waitForSelector({
-    text: 'Connect with MetaMask',
-    tag: 'h3',
+  // Use `contains(., 'Connect')` (the button's full string value) rather than
+  // `contains(text(), 'Connect')` so the selector still matches design-system
+  // buttons, which render their label inside a nested `<span>`.
+  await driver.clickElement({
+    xpath: "//button[contains(., 'Connect')]",
   });
-
-  await driver.clickElement({ text: 'Next' });
 
   await driver.waitForSelector({
     text: 'Review permissions',
@@ -85,7 +85,7 @@ export async function approveAccount(driver: Driver) {
 export async function approvePersonalSignMessage(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.waitForSelector({
-    text: 'Signature request',
+    text: 'Sign',
     tag: 'h2',
   });
 

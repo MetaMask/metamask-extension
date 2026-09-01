@@ -1,5 +1,4 @@
 import { hasProperty, Hex, isObject, isStrictHexString } from '@metamask/utils';
-import BN from 'bn.js';
 import { cloneDeep, mapKeys } from 'lodash';
 import log from 'loglevel';
 
@@ -296,12 +295,11 @@ function migrateData(state: Record<string, unknown>): void {
   }
 }
 
-function toHex(value: number | string | BN): Hex {
+function toHex(value: number | string | bigint): Hex {
   if (typeof value === 'string' && isStrictHexString(value)) {
     return value;
   }
-  const hexString = BN.isBN(value)
-    ? value.toString(16)
-    : new BN(value.toString(10), 10).toString(16);
+
+  const hexString = BigInt(value.toString()).toString(16);
   return `0x${hexString}`;
 }

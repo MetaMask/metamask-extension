@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { AvatarAccountSize } from '@metamask/design-system-react';
+import { CaipAccountId, parseCaipAccountId } from '@metamask/utils';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { PreferredAvatar } from '../../preferred-avatar';
+import { getAccountGroupsByAddress } from '../../../../selectors/multichain-accounts/account-tree';
+import { MultichainAccountsState } from '../../../../selectors/multichain-accounts/account-tree.types';
 
 type SnapUIAvatarProps = {
   // The address must be a CAIP-10 string.
@@ -8,9 +13,24 @@ type SnapUIAvatarProps = {
   size?: AvatarAccountSize;
 };
 
-export const SnapUIAvatar: React.FunctionComponent<SnapUIAvatarProps> = ({
-  address,
+export const SnapUIAvatar = ({
+  address: caipAddress,
   size,
-}) => {
-  return <PreferredAvatar address={address} size={size} />;
+}: SnapUIAvatarProps) => {
+  const { address } = useMemo(() => {
+    return parseCaipAccountId(caipAddress as CaipAccountId);
+  }, [caipAddress]);
+
+  const accountGroups = useSelector((state: MultichainAccountsState) =>
+    getAccountGroupsByAddress(state, [address]),
+  );
+
+  const accountGroupAddress = accountGroups[0]?.accounts.find((account) =>
+    isEvmAccountType(account.type),
+  )?.address;
+
+  // Display the account group address if it exists as the default.
+  const displayAddress = accountGroupAddress ?? caipAddress;
+
+  return <PreferredAvatar address={displayAddress} size={size} />;
 };

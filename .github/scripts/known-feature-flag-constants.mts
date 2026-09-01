@@ -1,0 +1,148 @@
+/**
+ * Known Feature Flag Constants — maps constant names to resolved flag strings.
+ * Used by check-feature-flag-registry.ts for bracket-access like `remoteFeatureFlags[CONSTANT]`.
+ *
+ * Enum values are imported directly. UI constants are resolved from source files
+ * (importing them would pull in browser APIs). Add new constants here when the
+ * CI job reports an "unresolved constant" error.
+ */
+
+import * as fs from 'fs';
+import * as path from 'path';
+import featureFlagsModule from '../../shared/lib/feature-flags';
+
+const { FeatureFlagNames } = featureFlagsModule;
+
+/** Auto-populated from the FeatureFlagNames enum. Key = `FeatureFlagNames.Member`. */
+const DIRECT_IMPORTS: Record<string, string> = Object.fromEntries(
+  Object.entries(FeatureFlagNames).map(([k, v]) => [
+    `FeatureFlagNames.${k}`,
+    v,
+  ]),
+);
+
+/**
+ * Constants that must be resolved by reading their source file (because
+ * importing them would pull in browser-only dependencies).
+ */
+const FILE_SOURCES: Array<{
+  key: string;
+  file: string;
+  exportName: string;
+}> = [
+  {
+    key: 'ASSETS_UNIFY_STATE_FLAG',
+    file: 'shared/lib/assets-unify-state/remote-feature-flag.ts',
+    exportName: 'ASSETS_UNIFY_STATE_FLAG',
+  },
+  {
+    key: 'MERKL_FEATURE_FLAG_KEY',
+    file: 'ui/components/app/musd/constants.ts',
+    exportName: 'MERKL_FEATURE_FLAG_KEY',
+  },
+  {
+    key: 'ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG',
+    file: 'shared/lib/gator-permissions/feature-flags.ts',
+    exportName: 'ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG',
+  },
+  {
+    key: 'SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS_FLAG',
+    file: 'shared/constants/smartTransactions.ts',
+    exportName: 'SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS_FLAG',
+  },
+  {
+    key: 'ACTIVE_TAB_DOMAIN_METRICS_FLAG',
+    file: 'shared/lib/active-tab-domain-metrics.ts',
+    exportName: 'ACTIVE_TAB_DOMAIN_METRICS_FLAG',
+  },
+  {
+    key: 'ENABLE_DMK_FEATURE_FLAG',
+    file: 'shared/lib/hardware-wallets/feature-flags.ts',
+    exportName: 'ENABLE_DMK_FEATURE_FLAG',
+  },
+  {
+    key: 'PAY_EXTENDED_FEATURE_FLAG',
+    file: 'shared/lib/transaction/pay-prefill.ts',
+    exportName: 'PAY_EXTENDED_FEATURE_FLAG',
+  },
+  {
+    key: 'DEFI_CONTROLLER_V2_FLAG',
+    file: 'shared/lib/defi-controller-v2/remote-feature-flag.ts',
+    exportName: 'DEFI_CONTROLLER_V2_FLAG',
+  },
+  {
+    key: 'EXTENSION_TRUST_AND_SECURITY_TDP_FLAG',
+    file: 'shared/lib/assets/security-trust-feature-flags.ts',
+    exportName: 'EXTENSION_TRUST_AND_SECURITY_TDP_FLAG',
+  },
+  {
+    key: 'MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_ACCOUNT_GEO_BLOCKED_COUNTRIES_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_ACCOUNT_GEO_BLOCKED_COUNTRIES_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_EARNING_SECTION_ENABLED_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_EARNING_SECTION_ENABLED_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME',
+    file: 'shared/lib/money/vault-config.ts',
+    exportName: 'MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_ACCOUNT_CHOMP_CONFIG_FLAG_NAME',
+    file: 'shared/lib/money/chomp-config.ts',
+    exportName: 'MONEY_ACCOUNT_CHOMP_CONFIG_FLAG_NAME',
+  },
+];
+
+/**
+ * Reads a source file and extracts the string value of an exported constant.
+ * Matches patterns like: `export const NAME = 'value';`
+ */
+function resolveConstantFromFile(
+  filePath: string,
+  constantName: string,
+): string | undefined {
+  try {
+    const fullPath = path.resolve(filePath);
+    const content = fs.readFileSync(fullPath, 'utf-8');
+    const escaped = constantName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp(
+      `export\\s+const\\s+${escaped}(?:\\s*:[^=]+)?\\s*=\\s*(?:'([^']+)'|"([^"]+)"|` +
+        '`([^`]+)`)',
+    );
+    const match = re.exec(content);
+    return match?.[1] ?? match?.[2] ?? match?.[3];
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Builds and returns the complete mapping of constant expressions to
+ * their resolved flag name strings.
+ */
+export function buildKnownFlagConstants(): Record<string, string> {
+  const constants: Record<string, string> = { ...DIRECT_IMPORTS };
+
+  for (const { key, file, exportName } of FILE_SOURCES) {
+    const resolved = resolveConstantFromFile(file, exportName);
+    if (resolved) {
+      constants[key] = resolved;
+    }
+  }
+
+  return constants;
+}

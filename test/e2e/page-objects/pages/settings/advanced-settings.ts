@@ -1,9 +1,23 @@
 import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Legacy “Advanced” settings helpers (auto-lock, state logs, hex data, STX).
+ *
+ * Screen: Settings V2 has no Advanced tab; tests reach the closest surface via
+ * `SettingsPage.goToAdvancedSettings` → `#/settings/developer-tools`. Some
+ * locators still target controls that now live on other tabs.
+ * Owns: auto-lock timeout input, clear activity data, download state logs /
+ * export data, show-testnets / fiat-on-testnets toggles, hex-data and smart
+ * transactions toggles when present.
+ * Boundaries: not the Settings hub. Prefer `TransactionsSettingsPage`,
+ * `PrivacySettings`, or `SettingsPage` for controls that moved in V2.
+ * Related: `SettingsPage` (navigation), `TransactionsSettingsPage`,
+ * `PrivacySettings`.
+ *
+ * @see ui/pages/settings/developer-tools-tab/developer-tools-tab.tsx
+ */
 class AdvancedSettings {
-  private readonly driver: Driver;
-
   private readonly autoLockoutButton = {
     testId: 'auto-lockout-button',
   };
@@ -13,11 +27,6 @@ class AdvancedSettings {
   private readonly autoLockoutTimeInput = {
     testId: 'auto-lockout-time',
   };
-
-  private readonly downloadDataButton = '[data-testid="export-data-button"]';
-
-  private readonly downloadStateLogsButton =
-    '[data-testid="advanced-setting-state-logs-button"]';
 
   private readonly clearActivityMessage = {
     text: 'Clear activity and nonce data?',
@@ -34,12 +43,28 @@ class AdvancedSettings {
     tag: 'button',
   };
 
+  private readonly downloadDataButton = '[data-testid="export-data-button"]';
+
+  private readonly downloadStateLogsButton =
+    '[data-testid="advanced-setting-state-logs-button"]';
+
+  private readonly driver: Driver;
+
   private readonly hexDataToggle = {
-    testId: 'advanced-setting-hex-data',
+    testId: 'transactions-show-hex-data-toggle',
   };
 
-  private readonly showConversionOnTestnetsToggle =
-    '.show-fiat-on-testnets-toggle';
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
+  private readonly showConversionOnTestnetsToggle = {
+    xpath:
+      "//label[contains(@class,'toggle-button')][.//*[@data-testid='developer-options-show-testnet-conversion-toggle']]",
+  };
+
+  private readonly showTestnetsToggle =
+    '[data-testid="advanced-setting-show-testnets"] .toggle-button';
 
   private readonly smartTransactionsToggle =
     '[data-testid="settings-page-stx-opt-in-toggle"]';
@@ -53,6 +78,7 @@ class AdvancedSettings {
       await this.driver.waitForMultipleSelectors([
         this.downloadStateLogsButton,
         this.downloadDataButton,
+        this.settingsPage,
       ]);
     } catch (e) {
       console.log(
@@ -123,6 +149,11 @@ class AdvancedSettings {
   async toggleShowConversionOnTestnets(): Promise<void> {
     console.log('Toggling show conversion on testnets in advanced settings');
     await this.driver.clickElement(this.showConversionOnTestnetsToggle);
+  }
+
+  async toggleShowTestnets(): Promise<void> {
+    console.log('Toggling show testnets in advanced settings');
+    await this.driver.clickElement(this.showTestnetsToggle);
   }
 
   async toggleSmartTransactions(): Promise<void> {

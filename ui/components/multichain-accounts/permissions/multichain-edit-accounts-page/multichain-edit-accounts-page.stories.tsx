@@ -32,6 +32,11 @@ export default {
 
 const store = configureStore({
   metamask: mockState.metamask,
+  activeTab: {
+    origin: 'https://metamask.github.io',
+    protocol: 'https:',
+    url: 'https://metamask.github.io/test-dapp/',
+  },
 });
 
 const walletOneId: AccountWalletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
@@ -52,6 +57,7 @@ const mockSupportedAccountGroups: AccountGroupWithInternalAccounts[] = [
       },
       hidden: false,
       pinned: false,
+      lastSelected: 0,
     },
     accounts: [
       {
@@ -71,6 +77,7 @@ const mockSupportedAccountGroups: AccountGroupWithInternalAccounts[] = [
       },
     ],
     walletName: 'Wallet 1',
+    walletId: walletOneId,
   },
   {
     id: walletTwoGroupId,
@@ -101,6 +108,7 @@ const mockSupportedAccountGroups: AccountGroupWithInternalAccounts[] = [
       },
     ],
     walletName: 'Wallet 2',
+    walletId: walletTwoId,
   },
   {
     id: walletThreeGroupId,
@@ -128,6 +136,7 @@ const mockSupportedAccountGroups: AccountGroupWithInternalAccounts[] = [
       },
     ],
     walletName: 'Wallet 3',
+    walletId: walletThreeId,
   },
 ];
 

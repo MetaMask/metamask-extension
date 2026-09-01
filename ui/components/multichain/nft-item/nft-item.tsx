@@ -1,10 +1,12 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import { useSelector } from 'react-redux';
-import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
+} from '@metamask/design-system-react';
+import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
+import {
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
   Box,
@@ -14,7 +16,6 @@ import {
 } from '../../component-library';
 import {
   AlignItems,
-  BackgroundColor,
   Display,
   IconColor,
   JustifyContent,
@@ -26,18 +27,17 @@ import {
   getOpenSeaEnabled,
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
+import { getAvatarNetworkStyleFromBackgroundColor } from '../../../helpers/utils/accounts';
 import { NFT } from '../asset-picker-amount/asset-picker-modal/types';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 
 type NftItemProps = {
   nft?: NFT;
   alt: string;
   src: string | undefined;
   name?: string;
-  tokenId?: string;
   networkName: string;
   networkSrc?: string;
   onClick?: () => void;
@@ -91,6 +91,14 @@ export const NftItem = ({
           alt={alt}
           display={Display.Block}
           justifyContent={JustifyContent.center}
+          onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+            // Keeping failed-src in DOM for production debugging and testing purposes
+            e.currentTarget.setAttribute(
+              'data-failed-src',
+              e.currentTarget.src,
+            );
+            e.currentTarget.removeAttribute('src');
+          }}
         ></Box>
         {privacyMode && (
           <Icon
@@ -134,15 +142,14 @@ export const NftItem = ({
           display={Display.Block}
           badge={
             <AvatarNetwork
-              className="nft-item__network-badge"
-              backgroundColor={testNetworkBackgroundColor}
+              className="nft-item__network-badge rounded-md border-2 border-background-default"
               data-testid="nft-network-badge"
               size={AvatarNetworkSize.Xs}
               name={networkName}
               src={networkSrc}
-              borderWidth={2}
-              // @ts-expect-error: We are using BackgroundColor.backgroundDefault here because there is no equivalent BorderColor to get the "cutout" effect
-              borderColor={BackgroundColor.backgroundDefault}
+              style={getAvatarNetworkStyleFromBackgroundColor(
+                testNetworkBackgroundColor,
+              )}
             />
           }
         >
@@ -156,8 +163,6 @@ export const NftItem = ({
             <>
               <span>{nft?.name}</span>
               <br />
-              {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
-              {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
               <span>{nft?.collection?.name || name}</span>
             </>
           }
@@ -175,8 +180,6 @@ export const NftItem = ({
             color={TextColor.textAlternative}
             ellipsis
           >
-            {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
-            {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
             {nft?.collection?.name || name}
           </Text>
         </Tooltip>

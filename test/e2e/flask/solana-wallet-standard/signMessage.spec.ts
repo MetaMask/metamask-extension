@@ -1,23 +1,25 @@
+import SnapSignMessageConfirmation from '../../page-objects/pages/confirmations/snap-sign-message-confirmation';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { largeDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../helpers';
-import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
-import {
-  account1,
-  assertSignedMessageIsValid,
-  clickConfirmButton,
-  connectSolanaTestDapp,
-  DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
-} from './testHelpers';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import { login } from '../../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { connectSolanaTestDapp } from '../../page-objects/flows/solana-dapp.flow';
+import { account1, assertSignedMessageIsValid } from './testHelpers';
 
 describe('Solana Wallet Standard - Sign Message', function () {
   describe('Sign a message', function () {
     it('Should sign a message', async function () {
-      await withSolanaAccountSnap(
+      await withFixtures(
         {
-          ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
-        async (driver) => {
+        async ({ driver }) => {
+          await login(driver);
           const messageToSign = 'Hello, world!';
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
@@ -29,13 +31,13 @@ describe('Solana Wallet Standard - Sign Message', function () {
 
           await signMessageTest.signMessage();
 
-          await driver.delay(veryLargeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          await clickConfirmButton(driver);
+          const signMsgConfirmation = new SnapSignMessageConfirmation(driver);
+          await signMsgConfirmation.checkPageIsLoaded();
+          await signMsgConfirmation.clickFooterConfirmButton();
 
           await testDapp.switchTo();
 
-          await driver.delay(largeDelayMs);
           const signedMessage = await signMessageTest.getSignedMessage();
 
           assertSignedMessageIsValid({

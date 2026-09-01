@@ -1,98 +1,72 @@
 import React, { useCallback, useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { isEvmAccountType } from '@metamask/keyring-api';
-import { CaipAssetType } from '@metamask/utils';
-///: END:ONLY_INCLUDE_IF
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
-import { startNewDraftTransaction } from '../../../ducks/send';
-import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import {
-  getNetworkConfigurationIdByChainId,
-  getSelectedMultichainNetworkConfiguration,
-  getIsMultichainAccountsState2Enabled,
-  getUseExternalServices,
-} from '../../../selectors';
+import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
+import { getUseExternalServices } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
-import { showModal, setActiveNetworkWithError } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { showModal } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { AssetType } from '../../../../shared/constants/transaction';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
-import { AssetType } from '../../../../shared/constants/transaction';
-import {
-  Display,
-  IconColor,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
 import IconButton from '../../../components/ui/icon-button/icon-button';
 import {
-  Box,
   Icon,
   IconName,
   IconSize,
 } from '../../../components/component-library';
-import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
-///: END:ONLY_INCLUDE_IF
-
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { Asset } from '../types/asset';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { navigateToSendRoute } from '../../confirmations/utils/send';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
-import { useRedesignedSendFlow } from '../../confirmations/hooks/useRedesignedSendFlow';
+import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
+import { useAssetActivation } from '../hooks/useAssetActivation';
+import { useBalanceAwareSwapDefaults } from '../hooks/useBalanceAwareSwapDefaults';
+import {
+  useAssetPageSecurityTrustCtaGate,
+  useAssetPageSecurityTrustCtaGateReady,
+} from './security-trust';
+import { AssetActivationErrorToast } from './asset-activation-error-toast';
 
 const TokenButtons = ({
   token,
-  account,
+  disableSendForNonEvm = false,
+  isMarketClosed = false,
 }: {
   token: Asset & { type: AssetType.token };
-  account: InternalAccount;
+  /** When true, disables the send button for non-EVM chains (used on asset page) */
+  disableSendForNonEvm?: boolean;
+  /** When true, disables the swap button because the stock market is closed */
+  isMarketClosed?: boolean;
 }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const navigate = useNavigate();
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
+  const gateCtaAction = useAssetPageSecurityTrustCtaGate();
+  const isCtaGateReady = useAssetPageSecurityTrustCtaGateReady();
   const isEvm = isEvmChainId(token.chainId);
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
-  const { chainId: multichainChainId } = useSelector(
-    getSelectedMultichainNetworkConfiguration,
+  const shouldShowSendButton = Boolean(
+    token.balance?.value && token.balance.value !== '0',
   );
 
-  const currentEvmChainId = useSelector(getCurrentChainId);
+  const currentChainId = token.chainId;
 
-  const currentChainId = (() => {
-    if (isMultichainAccountsState2Enabled) {
-      return token.chainId;
-    }
-
-    return isEvm ? currentEvmChainId : multichainChainId;
-  })();
-
-  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
-    string,
-    string
-  >;
-
-  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { goToBuy } = useRampsNavigation();
   const { openBridgeExperience } = useBridging();
-
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  const handleSendNonEvm = useHandleSendNonEvm(token.address as CaipAssetType);
-  ///: END:ONLY_INCLUDE_IF
+  const { sourceToken, destTokenAssetId } = useBalanceAwareSwapDefaults({
+    currentToken: token,
+    currentTokenBalance: token.balance?.value ?? token.balance?.display,
+  });
 
   useEffect(() => {
     if (token.isERC721) {
@@ -105,61 +79,56 @@ const TokenButtons = ({
     }
   }, [token.isERC721, token.address, dispatch]);
 
-  // TODO BIP 44 Refactor: Remove this code
-  const setCorrectChain = useCallback(async () => {
-    // If we aren't presently on the chain of the asset, change to it
-    if (
-      currentEvmChainId !== token.chainId &&
-      multichainChainId !== token.chainId &&
-      !isMultichainAccountsState2Enabled
-    ) {
-      try {
-        const networkConfigurationId = networks[token.chainId];
-        await dispatch(setActiveNetworkWithError(networkConfigurationId));
-      } catch (err) {
-        console.error(`Failed to switch chains.
-        Target chainId: ${token.chainId}, Current chainId: ${currentEvmChainId}.
-        ${
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          err
-        }`);
-        throw err;
+  const handleBuyAndSellOnClick = useCallback(async () => {
+    const runBuy = async () => {
+      const opened = await goToBuy({
+        assetId: toAssetId(token.address, token.chainId),
+        chainId: token.chainId,
+      });
+      // The ramps gate can block the buy and show its own modal; don't report a
+      // buy click in that case.
+      if (!opened) {
+        return;
       }
-    }
-  }, [
-    isMultichainAccountsState2Enabled,
-    currentEvmChainId,
-    multichainChainId,
-    networks,
-    token.chainId,
-    dispatch,
-  ]);
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
+          .addCategory(MetaMetricsEventCategory.Navigation)
+          .addProperties({
+            location: 'Token Overview',
+            text: 'Buy',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: currentChainId,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_symbol: token.symbol,
+          })
+          .build(),
+      );
+    };
 
-  const handleBuyAndSellOnClick = useCallback(() => {
-    openBuyCryptoInPdapp();
-    trackEvent({
-      event: MetaMetricsEventName.NavBuyButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        location: 'Token Overview',
-        text: 'Buy',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: currentChainId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_symbol: token.symbol,
-      },
-    });
-  }, [currentChainId, token.symbol, trackEvent, openBuyCryptoInPdapp]);
+    if (gateCtaAction) {
+      gateCtaAction(runBuy, 'buy');
+      return;
+    }
+
+    await runBuy();
+  }, [
+    currentChainId,
+    gateCtaAction,
+    token.address,
+    token.chainId,
+    token.symbol,
+    trackEvent,
+    createEventBuilder,
+    goToBuy,
+  ]);
 
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
-      {
-        event: MetaMetricsEventName.SendStarted,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
+      createEventBuilder(MetaMetricsEventName.SendStarted)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol: token.symbol,
@@ -168,28 +137,12 @@ const TokenButtons = ({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: token.chainId,
-        },
-      },
-      { excludeMetaMetricsId: false },
+        })
+        .build({ excludeMetaMetricsId: false }),
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    if (!isEvmAccountType(account.type) && !isSendRedesignEnabled) {
-      await handleSendNonEvm();
-      // Early return, not to let the non-EVM flow slip into the native send flow.
-      return;
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     try {
-      await setCorrectChain();
-      await dispatch(
-        startNewDraftTransaction({
-          type: AssetType.token,
-          details: token,
-        }),
-      );
-      navigateToSendRoute(history, isSendRedesignEnabled, {
+      navigateToSendRoute(navigate, {
         address: token.address,
         chainId: token.chainId,
       });
@@ -201,78 +154,113 @@ const TokenButtons = ({
         throw err;
       }
     }
-  }, [
-    trackEvent,
-    dispatch,
-    history,
-    token,
-    setCorrectChain,
-    account,
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    handleSendNonEvm,
-    ///: END:ONLY_INCLUDE_IF
-    isSendRedesignEnabled,
-  ]);
+  }, [trackEvent, createEventBuilder, navigate, token]);
 
-  const handleSwapOnClick = useCallback(async () => {
-    await setCorrectChain();
-    // Handle clicking from the asset details page
-    openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
-  }, [token, setCorrectChain, openBridgeExperience]);
+  const handleSwapOnClick = useCallback(() => {
+    const runSwap = () => {
+      openBridgeExperience(
+        MetaMetricsSwapsEventSource.TokenView,
+        sourceToken,
+        destTokenAssetId,
+      );
+    };
+
+    if (gateCtaAction) {
+      gateCtaAction(runSwap, 'swap');
+      return;
+    }
+
+    runSwap();
+  }, [destTokenAssetId, gateCtaAction, openBridgeExperience, sourceToken]);
+
+  const {
+    deactivateAsset,
+    canDeactivate,
+    dismissErrorMessage,
+    isDeactivating,
+    errorMessage,
+  } = useAssetActivation({
+    assetId: token.address,
+    assetSymbol: token.symbol,
+  });
 
   return (
-    <Box
-      display={Display.Flex}
-      gap={3}
-      justifyContent={JustifyContent.spaceEvenly}
-    >
-      <IconButton
-        className="token-overview__button"
-        Icon={
-          <Icon
-            name={IconName.Dollar}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
-          />
-        }
-        label={t('buy')}
-        data-testid="token-overview-buy"
-        onClick={handleBuyAndSellOnClick}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        disabled={token.isERC721 || !isBuyableChain}
-      />
+    <>
+      <Box className="flex" gap={3} justifyContent={BoxJustifyContent.Evenly}>
+        <IconButton
+          className="token-overview__button"
+          Icon={
+            <Icon
+              name={IconName.Dollar}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          }
+          label={t('buy')}
+          data-testid="token-overview-buy"
+          onClick={handleBuyAndSellOnClick}
+          disabled={token.isERC721 || !isCtaGateReady}
+        />
 
-      <IconButton
-        className="token-overview__button"
-        onClick={handleSendOnClick}
-        Icon={
-          <Icon
-            name={IconName.Send}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
+        {shouldShowSendButton ? (
+          <IconButton
+            className="token-overview__button"
+            onClick={handleSendOnClick}
+            Icon={
+              <Icon
+                name={IconName.Arrow2UpRight}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
+            }
+            label={t('send')}
+            data-testid="eth-overview-send"
+            disabled={
+              token.isERC721 ||
+              (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
+            }
           />
-        }
-        label={t('send')}
-        data-testid="eth-overview-send"
-        disabled={token.isERC721}
-      />
+        ) : null}
 
-      <IconButton
-        className="token-overview__button"
-        Icon={
-          <Icon
-            name={IconName.SwapVertical}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
+        <IconButton
+          className="token-overview__button"
+          Icon={
+            <Icon
+              name={IconName.SwapVertical}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          }
+          onClick={handleSwapOnClick}
+          data-testid="token-overview-swap"
+          label={t('swap')}
+          disabled={
+            !isExternalServicesEnabled || isMarketClosed || !isCtaGateReady
+          }
+        />
+
+        {canDeactivate ? (
+          <IconButton
+            className="token-overview__button"
+            Icon={
+              <Icon
+                name={IconName.Trash}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
+            }
+            onClick={deactivateAsset}
+            data-testid="token-overview-deactivate-asset"
+            label={t('assetDeactivate') as string}
+            disabled={isDeactivating}
           />
-        }
-        onClick={handleSwapOnClick}
-        data-testid="token-overview-swap"
-        label={t('swap')}
-        disabled={!isExternalServicesEnabled}
+        ) : null}
+      </Box>
+      <AssetActivationErrorToast
+        message={errorMessage}
+        onClose={dismissErrorMessage}
       />
-    </Box>
+    </>
   );
 };
 

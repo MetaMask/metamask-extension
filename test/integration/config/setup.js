@@ -1,5 +1,9 @@
+// Polyfill setImmediate which jsdom removes but tsx/cjs needs
+globalThis.setImmediate =
+  globalThis.setImmediate || ((fn, ...args) => setTimeout(fn, 0, ...args));
+
 require('@babel/register');
-require('ts-node').register({ transpileOnly: true });
+require('tsx/cjs');
 const v8 = require('v8');
 const fs = require('node:fs/promises');
 const path = require('path');
@@ -7,8 +11,6 @@ const path = require('path');
 require('../../helpers/setup-helper');
 
 // Fetch
-// fetch is part of node js in future versions, thus triggering no-shadow
-// eslint-disable-next-line no-shadow
 const { default: fetch, Headers, Request, Response } = require('node-fetch');
 
 const handleRelativePathRequest = async (url, localeRelativePathRequest) => {
@@ -53,9 +55,13 @@ global.fetch = shimmedFetch;
 
 global.metamask = {};
 
-
-const structuredClone = obj => {
+const structuredClone = (obj) => {
   return v8.deserialize(v8.serialize(obj));
 };
 
 global.structuredClone = structuredClone;
+
+// Mock DOM measurements for virtualizer
+Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
+  value: 800,
+});

@@ -1,12 +1,20 @@
 import { toHex } from '@metamask/controller-utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionContainerType,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 import { merge } from 'lodash';
+
 import {
   CONTRACT_INTERACTION_SENDER_ADDRESS,
   genUnapprovedContractInteractionConfirmation,
+  mockBridgeQuotes,
 } from '../../../../../../../test/data/confirmations/contract-interaction';
+import { CHAIN_IDS } from '../../../../../../../shared/constants/network';
+import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import mockState from '../../../../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers';
+import * as DappSwapContext from '../../../../context/dapp-swap';
 import { useFeeCalculations } from './useFeeCalculations';
 
 describe('useFeeCalculations', () => {
@@ -15,7 +23,7 @@ describe('useFeeCalculations', () => {
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
     }) as TransactionMeta;
 
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () =>
         useFeeCalculations({ ...transactionMeta, txParams: { from: '0x' } }),
       mockState,
@@ -23,18 +31,16 @@ describe('useFeeCalculations', () => {
 
     expect(result.current).toMatchInlineSnapshot(`
       {
+        "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
+        "calculateGasEstimate": [Function],
         "estimatedFeeFiat": "< $0.01",
         "estimatedFeeFiatWith18SignificantDigits": "0",
         "estimatedFeeNative": "0",
         "estimatedFeeNativeHex": "0x0",
-        "l1FeeFiat": "",
-        "l1FeeFiatWith18SignificantDigits": "",
-        "l1FeeNative": "",
-        "l2FeeFiat": "",
-        "l2FeeFiatWith18SignificantDigits": "",
-        "l2FeeNative": "",
         "maxFeeFiat": "< $0.01",
         "maxFeeFiatWith18SignificantDigits": "0",
+        "maxFeeHex": "0x0",
         "maxFeeNative": "0",
       }
     `);
@@ -43,28 +49,52 @@ describe('useFeeCalculations', () => {
   it('returns the correct estimate for a transaction', () => {
     const transactionMeta = genUnapprovedContractInteractionConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+      chainId: CHAIN_IDS.SEPOLIA,
     }) as TransactionMeta;
 
-    const { result } = renderHookWithProvider(
+    transactionMeta.containerTypes = [
+      TransactionContainerType.EnforcedSimulations,
+    ];
+    transactionMeta.txParamsOriginal = { ...transactionMeta.txParams };
+    transactionMeta.txParams.gas = toHex(87790);
+
+    const mockStateWithSepoliaNativeTicker = merge({}, mockState, {
+      metamask: {
+        currencyRates: {
+          ETH: {
+            usdConversionRate: 556.12,
+          },
+          SepoliaETH: {
+            conversionRate: 0,
+          },
+        },
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.SEPOLIA]: {
+            nativeCurrency: 'SepoliaETH',
+            ticker: 'SepoliaETH',
+          },
+        },
+      },
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
       () => useFeeCalculations(transactionMeta),
-      mockState,
+      mockStateWithSepoliaNativeTicker,
     );
 
     expect(result.current).toMatchInlineSnapshot(`
       {
-        "estimatedFeeFiat": "$0.04",
+        "addedProtectionFeeFiat": "$0.07",
+        "addedProtectionFeeUsd": 0.069707754,
+        "calculateGasEstimate": [Function],
+        "estimatedFeeFiat": "$0.14",
         "estimatedFeeFiatWith18SignificantDigits": null,
-        "estimatedFeeNative": "0.0001",
-        "estimatedFeeNativeHex": "0x3be226d2d900",
-        "l1FeeFiat": "",
-        "l1FeeFiatWith18SignificantDigits": "",
-        "l1FeeNative": "",
-        "l2FeeFiat": "",
-        "l2FeeFiatWith18SignificantDigits": "",
-        "l2FeeNative": "",
-        "maxFeeFiat": "$0.07",
+        "estimatedFeeNative": "0.0003",
+        "estimatedFeeNativeHex": "0xe4010fb9f92a",
+        "maxFeeFiat": "$0.14",
         "maxFeeFiatWith18SignificantDigits": null,
-        "maxFeeNative": "0.0001",
+        "maxFeeHex": "0xe4010fb9f92a",
+        "maxFeeNative": "0.0003",
       }
     `);
 
@@ -95,26 +125,91 @@ describe('useFeeCalculations', () => {
       chainId: '0x38',
     }) as TransactionMeta;
 
-    const { result: resultOnBNB } = renderHookWithProvider(
+    const { result: resultOnBNB } = renderHookWithConfirmContextProvider(
       () => useFeeCalculations(transactionOnBNB),
       mockStateWithBNBNetwork,
     );
 
     expect(resultOnBNB.current).toMatchInlineSnapshot(`
       {
-        "estimatedFeeFiat": "< $0.01",
-        "estimatedFeeFiatWith18SignificantDigits": "0.000065843",
+        "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
+        "calculateGasEstimate": [Function],
+        "estimatedFeeFiat": "",
+        "estimatedFeeFiatWith18SignificantDigits": null,
         "estimatedFeeNative": "0.0001",
-        "estimatedFeeNativeHex": "0x3be226d2d900",
-        "l1FeeFiat": "",
-        "l1FeeFiatWith18SignificantDigits": "",
-        "l1FeeNative": "",
-        "l2FeeFiat": "",
-        "l2FeeFiatWith18SignificantDigits": "",
-        "l2FeeNative": "",
-        "maxFeeFiat": "< $0.01",
-        "maxFeeFiatWith18SignificantDigits": "0.000125347",
+        "estimatedFeeNativeHex": "0x720087dcfc95",
+        "maxFeeFiat": "",
+        "maxFeeFiatWith18SignificantDigits": null,
+        "maxFeeHex": "0x720087dcfc95",
         "maxFeeNative": "0.0001",
+      }
+    `);
+  });
+
+  it('derives the added protection fee from the no-buffer original gas limit', () => {
+    const transactionMeta = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+      chainId: CHAIN_IDS.SEPOLIA,
+    }) as TransactionMeta;
+
+    transactionMeta.containerTypes = [
+      TransactionContainerType.EnforcedSimulations,
+    ];
+
+    // No-buffer original estimate (what the wrapped estimate should be compared
+    // against).
+    transactionMeta.gasLimitNoBuffer = toHex(50000);
+
+    // `txParamsOriginal.gas` retains the 1.5x buffer (75000). Using this as the
+    // baseline would understate the added fee (the bug).
+    transactionMeta.txParamsOriginal = {
+      ...transactionMeta.txParams,
+      gas: toHex(75000),
+    };
+
+    // No-buffer wrapped estimate returned by `applyTransactionContainers`.
+    transactionMeta.txParams.gas = toHex(90000);
+
+    const mockStateWithSepoliaNativeTicker = merge({}, mockState, {
+      metamask: {
+        currencyRates: {
+          ETH: {
+            usdConversionRate: 556.12,
+          },
+          SepoliaETH: {
+            conversionRate: 0,
+          },
+        },
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.SEPOLIA]: {
+            nativeCurrency: 'SepoliaETH',
+            ticker: 'SepoliaETH',
+          },
+        },
+      },
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useFeeCalculations(transactionMeta),
+      mockStateWithSepoliaNativeTicker,
+    );
+
+    // Added fee reflects the 90000 - 50000 = 40000 gas delta, not the buggy
+    // 90000 - 75000 = 15000 delta from the buffered original.
+    expect(result.current).toMatchInlineSnapshot(`
+      {
+        "addedProtectionFeeFiat": "$0.06",
+        "addedProtectionFeeUsd": 0.063522273,
+        "calculateGasEstimate": [Function],
+        "estimatedFeeFiat": "$0.14",
+        "estimatedFeeFiatWith18SignificantDigits": null,
+        "estimatedFeeNative": "0.0003",
+        "estimatedFeeNativeHex": "0xe9be6d60abb0",
+        "maxFeeFiat": "$0.14",
+        "maxFeeFiatWith18SignificantDigits": null,
+        "maxFeeHex": "0xe9be6d60abb0",
+        "maxFeeNative": "0.0003",
       }
     `);
   });
@@ -127,27 +222,26 @@ describe('useFeeCalculations', () => {
     // txParams.gas is 0xab77 or 43895 in decimals
     transactionMeta.gasLimitNoBuffer = toHex(39799);
 
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useFeeCalculations(transactionMeta),
       mockState,
     );
 
-    // The following assertions are meant as a snapshot test. These are
-    // currently unavailable after the prettier upgrade to v3, so I'm asserting
-    // each property individually instead.
-    expect(result.current.estimatedFeeFiat).toBe('$0.03');
-    expect(result.current.estimatedFeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.estimatedFeeNative).toBe('0.0001');
-    expect(result.current.estimatedFeeNativeHex).toBe('0x364ba3e2d900');
-    expect(result.current.l1FeeFiat).toBe('');
-    expect(result.current.l1FeeFiatWith18SignificantDigits).toBe('');
-    expect(result.current.l1FeeNative).toBe('');
-    expect(result.current.l2FeeFiat).toBe('');
-    expect(result.current.l2FeeFiatWith18SignificantDigits).toBe('');
-    expect(result.current.l2FeeNative).toBe('');
-    expect(result.current.maxFeeFiat).toBe('$0.06');
-    expect(result.current.maxFeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.maxFeeNative).toBe('0.0001');
+    expect(result.current).toMatchInlineSnapshot(`
+      {
+        "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
+        "calculateGasEstimate": [Function],
+        "estimatedFeeFiat": "$0.06",
+        "estimatedFeeFiatWith18SignificantDigits": null,
+        "estimatedFeeNative": "0.0001",
+        "estimatedFeeNativeHex": "0x675d37a7cc95",
+        "maxFeeFiat": "$0.06",
+        "maxFeeFiatWith18SignificantDigits": null,
+        "maxFeeHex": "0x675d37a7cc95",
+        "maxFeeNative": "0.0001",
+      }
+    `);
   });
 
   it('picks up gasUsed for network fee on estimations', () => {
@@ -160,27 +254,45 @@ describe('useFeeCalculations', () => {
     // so the estimates should be lower
     transactionMeta.gasUsed = toHex(37000);
 
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useFeeCalculations(transactionMeta),
       mockState,
     );
 
-    // The following assertions are meant as a snapshot test. These are
-    // currently unavailable after the prettier upgrade to v3, so I'm asserting
-    // each property individually instead.
-    expect(result.current.estimatedFeeFiat).toBe('$0.03');
-    expect(result.current.estimatedFeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.estimatedFeeNative).toBe('0.0001');
-    expect(result.current.estimatedFeeNativeHex).toBe('0x327a19c8f800');
-    expect(result.current.l1FeeFiat).toBe('');
-    expect(result.current.l1FeeFiatWith18SignificantDigits).toBe('');
-    expect(result.current.l1FeeNative).toBe('');
-    expect(result.current.l2FeeFiat).toBe('');
-    expect(result.current.l2FeeFiatWith18SignificantDigits).toBe('');
-    expect(result.current.l2FeeNative).toBe('');
-    expect(result.current.maxFeeFiat).toBe('$0.06');
-    expect(result.current.maxFeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.maxFeeNative).toBe('0.0001');
+    expect(result.current).toMatchInlineSnapshot(`
+      {
+        "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
+        "calculateGasEstimate": [Function],
+        "estimatedFeeFiat": "$0.06",
+        "estimatedFeeFiatWith18SignificantDigits": null,
+        "estimatedFeeNative": "0.0001",
+        "estimatedFeeNativeHex": "0x60183e087418",
+        "maxFeeFiat": "$0.06",
+        "maxFeeFiatWith18SignificantDigits": null,
+        "maxFeeHex": "0x60183e087418",
+        "maxFeeNative": "0.0001",
+      }
+    `);
+  });
+
+  it('uses txParams gas for balance checks without changing the estimated fee', () => {
+    const transactionMeta = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+    }) as TransactionMeta;
+
+    transactionMeta.gasUsed = toHex(37000);
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () =>
+        useFeeCalculations(transactionMeta, {
+          useBalanceCheckGasLimit: true,
+        }),
+      mockState,
+    );
+
+    expect(result.current.estimatedFeeNativeHex).toBe('0x60183e087418');
+    expect(result.current.maxFeeHex).toBe('0x720087dcfc95');
   });
 
   it('returns the correct estimate for a transaction with layer1GasFee', () => {
@@ -190,26 +302,81 @@ describe('useFeeCalculations', () => {
 
     transactionMeta.layer1GasFee = '0x10000000000000';
 
-    const { result } = renderHookWithProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       () => useFeeCalculations(transactionMeta),
       mockState,
     );
 
-    // The following assertions are meant as a snapshot test. These are
-    // currently unavailable after the prettier upgrade to v3, so I'm asserting
-    // each property individually instead.
-    expect(result.current.estimatedFeeFiat).toBe('$2.54');
-    expect(result.current.estimatedFeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.estimatedFeeNative).toBe('0.0046');
-    expect(result.current.estimatedFeeNativeHex).toBe('0x103be226d2d900');
-    expect(result.current.l1FeeFiat).toBe('$2.50');
-    expect(result.current.l1FeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.l1FeeNative).toBe('0.0045');
-    expect(result.current.l2FeeFiat).toBe('$0.04');
-    expect(result.current.l2FeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.l2FeeNative).toBe('0.0001');
-    expect(result.current.maxFeeFiat).toBe('$2.57');
-    expect(result.current.maxFeeFiatWith18SignificantDigits).toBe(null);
-    expect(result.current.maxFeeNative).toBe('0.0046');
+    expect(result.current).toMatchInlineSnapshot(`
+      {
+        "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
+        "calculateGasEstimate": [Function],
+        "estimatedFeeFiat": "$2.57",
+        "estimatedFeeFiatWith18SignificantDigits": null,
+        "estimatedFeeNative": "0.0046",
+        "estimatedFeeNativeHex": "0x10720087dcfc95",
+        "maxFeeFiat": "$2.57",
+        "maxFeeFiatWith18SignificantDigits": null,
+        "maxFeeHex": "0x10720087dcfc95",
+        "maxFeeNative": "0.0046",
+      }
+    `);
+  });
+
+  it('displays "< 0.0001" for very small non-zero estimated and max fees', () => {
+    const transactionMeta = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+    }) as TransactionMeta;
+
+    transactionMeta.txParams.gas = '0x1';
+    transactionMeta.gasLimitNoBuffer = undefined;
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useFeeCalculations(transactionMeta),
+      mockState,
+    );
+
+    expect(result.current.estimatedFeeNative).toBe('< 0.0001');
+    expect(result.current.maxFeeNative).toBe('< 0.0001');
+  });
+
+  it('uses quoted gas for balance checks if a quoted swap is displayed', () => {
+    jest.spyOn(DappSwapContext, 'useDappSwapContextOptional').mockReturnValue({
+      selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponseV1,
+      setSelectedQuote: jest.fn(),
+      setQuotedSwapDisplayedInInfo: jest.fn(),
+      isQuotedSwapDisplayedInInfo: true,
+      isQuotedSwapPresent: true,
+    } as DappSwapContext.DappSwapContextType);
+    const transactionMeta = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+    }) as TransactionMeta;
+
+    transactionMeta.layer1GasFee = '0x10000000000000';
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () =>
+        useFeeCalculations(transactionMeta, {
+          useBalanceCheckGasLimit: true,
+        }),
+      mockState,
+    );
+
+    expect(result.current).toMatchInlineSnapshot(`
+      {
+        "addedProtectionFeeFiat": null,
+        "addedProtectionFeeUsd": null,
+        "calculateGasEstimate": [Function],
+        "estimatedFeeFiat": "$3.24",
+        "estimatedFeeFiatWith18SignificantDigits": null,
+        "estimatedFeeNative": "0.0058",
+        "estimatedFeeNativeHex": "0x14b264dbe9b842",
+        "maxFeeFiat": "$3.24",
+        "maxFeeFiatWith18SignificantDigits": null,
+        "maxFeeHex": "0x14b264dbe9b842",
+        "maxFeeNative": "0.0058",
+      }
+    `);
   });
 });

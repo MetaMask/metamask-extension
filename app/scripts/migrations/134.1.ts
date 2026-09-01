@@ -73,9 +73,6 @@ function transformState(
     typeof internalAccounts.selectedAccount !== 'string' ||
     internalAccounts.selectedAccount === ''
   ) {
-    global.sentry?.captureException?.(
-      new Error(`Migration ${version}: Invalid or missing selectedAccount.`),
-    );
     return state;
   }
 

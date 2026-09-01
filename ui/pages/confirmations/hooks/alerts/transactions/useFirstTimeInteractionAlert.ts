@@ -24,7 +24,7 @@ export function useFirstTimeInteractionAlert(): Alert[] {
   const to = useTransferRecipient();
   const { isFirstTimeInteraction, chainId, txParams } =
     currentConfirmation ?? {};
-  const recipient = (txParams?.to ?? '0x') as Hex;
+  const recipient = (to ?? txParams?.to ?? '0x') as Hex;
 
   const isInternalAccount = internalAccounts.some(
     (account) => account.address?.toLowerCase() === to?.toLowerCase(),
@@ -33,6 +33,7 @@ export function useFirstTimeInteractionAlert(): Alert[] {
   const { state: trustSignalDisplayState } = useTrustSignal(
     recipient || '',
     NameType.ETHEREUM_ADDRESS,
+    chainId,
   );
 
   const isVerifiedAddress =

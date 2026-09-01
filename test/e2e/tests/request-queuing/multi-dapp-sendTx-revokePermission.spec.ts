@@ -1,9 +1,10 @@
 import { Suite } from 'mocha';
-import { withFixtures, unlockWallet, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import { DAPP_URL, DAPP_ONE_URL } from '../../constants';
+import { DAPP_URL, DAPP_ONE_URL, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks revokePermissions', function (this: Suite) {
   it('should close transaction for revoked permission of eth_accounts but show queued tx from second dapp on a different network.', async function () {
@@ -15,11 +16,10 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
 
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 2 },
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',
@@ -36,7 +36,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await login(driver);
 
         // Create TestDapp instances for both dapps
         const testDapp1 = new TestDapp(driver);
@@ -57,7 +57,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
         );
 
         // Network Selector
-        await switchToNetworkFromSendFlow(driver, hostname);
+        await switchToNetworkFromNetworkSelect(driver, hostname);
 
         // Wait for the first dapp's connect confirmation to disappear
         await driver.waitUntilXWindowHandles(2);

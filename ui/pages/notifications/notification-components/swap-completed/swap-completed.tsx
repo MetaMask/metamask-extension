@@ -1,5 +1,6 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { AvatarIconSeverity, IconName } from '@metamask/design-system-react';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import {
   NotificationComponentType,
@@ -18,23 +19,17 @@ import {
   NotificationDetailAddress,
 } from '../../../../components/multichain';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
-import {
-  BadgeWrapperPosition,
-  IconName,
-} from '../../../../components/component-library';
+import { BadgeWrapperPosition } from '../../../../components/component-library';
 
 import {
   createTextItems,
   getAmount,
   formatIsoDateString,
-  getNetworkDetailsByChainId,
+  getNativeCurrencyLogoByChainId,
+  getNetworkDetailsFromNotifPayload,
   getUsdAmount,
 } from '../../../../helpers/utils/notification.util';
-import {
-  TextVariant,
-  BackgroundColor,
-  TextColor,
-} from '../../../../helpers/constants/design-system';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -47,13 +42,9 @@ const isSwapCompletedNotification = isOfTypeNodeGuard([
 const getTitle = (n: SwapCompletedNotification) => {
   const items = createTextItems(
     [
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      t('notificationItemSwapped') || '',
-      n.data.token_in.symbol,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      t('notificationItemSwappedFor') || '',
+      t('notificationItemSwapped') ?? '',
+      n.payload.data.token_in.symbol,
+      t('notificationItemSwappedFor') ?? '',
     ],
     TextVariant.bodySm,
   );
@@ -61,7 +52,10 @@ const getTitle = (n: SwapCompletedNotification) => {
 };
 
 const getDescription = (n: SwapCompletedNotification) => {
-  const items = createTextItems([n.data.token_out.symbol], TextVariant.bodyMd);
+  const items = createTextItems(
+    [n.payload.data.token_out.symbol],
+    TextVariant.bodyMd,
+  );
   return items;
 };
 
@@ -74,7 +68,7 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
         isRead={notification.isRead}
         icon={{
           type: NotificationListItemIconType.Token,
-          value: notification.data.token_out.image,
+          value: notification.payload.data.token_out.image,
           badge: {
             icon: IconName.SwapHorizontal,
             position: BadgeWrapperPosition.bottomRight,
@@ -84,12 +78,12 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
         description={getDescription(notification)}
         createdAt={new Date(notification.createdAt)}
         amount={`${getAmount(
-          notification.data.token_out.amount,
-          notification.data.token_out.decimals,
+          notification.payload.data.token_out.amount,
+          notification.payload.data.token_out.decimals,
           {
             shouldEllipse: true,
           },
-        )} ${notification.data.token_out.symbol}`}
+        )} ${notification.payload.data.token_out.symbol}`}
         onClick={onClick}
       />
     );
@@ -97,10 +91,8 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
   details: {
     title: ({ notification }) => (
       <NotificationDetailTitle
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        title={`${t('notificationItemSwapped') || ''} ${
-          notification.data.token_out.symbol
+        title={`${t('notificationItemSwapped') ?? ''} ${
+          notification.payload.data.token_out.symbol
         }`}
         date={formatIsoDateString(notification.createdAt)}
       />
@@ -108,75 +100,69 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
     body: {
       type: NotificationComponentType.OnChainBody,
       Account: ({ notification }) => {
-        if (!notification.address) {
+        if (!notification.payload.address) {
           return null;
         }
         return (
           <NotificationDetailAddress
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            side={t('account') || ''}
-            address={notification.address}
+            side={t('account') ?? ''}
+            address={notification.payload.address}
           />
         );
       },
       Asset: ({ notification }) => {
-        const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-          notification.chain_id,
+        const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
+          notification.payload.chain_id,
         );
         return (
           <NotificationDetailAsset
             icon={{
-              src: notification.data.token_in.image,
+              src: notification.payload.data.token_in.image,
               badge: {
                 src: nativeCurrencyLogo,
                 position: BadgeWrapperPosition.topRight,
               },
             }}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            label={t('notificationItemSwapped') || ''}
-            detail={notification.data.token_in.symbol}
+            label={t('notificationItemSwapped') ?? ''}
+            detail={notification.payload.data.token_in.symbol}
             fiatValue={`$${getUsdAmount(
-              notification.data.token_in.amount,
-              notification.data.token_in.decimals,
-              notification.data.token_in.usd,
+              notification.payload.data.token_in.amount,
+              notification.payload.data.token_in.decimals,
+              notification.payload.data.token_in.usd,
             )}`}
             value={`${getAmount(
-              notification.data.token_in.amount,
-              notification.data.token_in.decimals,
+              notification.payload.data.token_in.amount,
+              notification.payload.data.token_in.decimals,
               { shouldEllipse: true },
-            )} ${notification.data.token_in.symbol}`}
+            )} ${notification.payload.data.token_in.symbol}`}
           />
         );
       },
       AssetReceived: ({ notification }) => {
-        const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-          notification.chain_id,
+        const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
+          notification.payload.chain_id,
         );
         return (
           <NotificationDetailAsset
             icon={{
-              src: notification.data.token_out.image,
+              src: notification.payload.data.token_out.image,
               badge: {
                 src: nativeCurrencyLogo,
                 position: BadgeWrapperPosition.topRight,
               },
             }}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            label={t('notificationItemTo') || ''}
-            detail={notification.data.token_out.symbol}
+            label={t('notificationItemTo') ?? ''}
+            detail={notification.payload.data.token_out.symbol}
             fiatValue={`$${getUsdAmount(
-              notification.data.token_out.amount,
-              notification.data.token_out.decimals,
-              notification.data.token_out.usd,
+              notification.payload.data.token_out.amount,
+              notification.payload.data.token_out.decimals,
+              notification.payload.data.token_out.usd,
             )}`}
             value={`${getAmount(
-              notification.data.token_out.amount,
-              notification.data.token_out.decimals,
+              notification.payload.data.token_out.amount,
+              notification.payload.data.token_out.decimals,
               { shouldEllipse: true },
-            )} ${notification.data.token_out.symbol}`}
+            )} ${notification.payload.data.token_out.symbol}`}
           />
         );
       },
@@ -184,38 +170,33 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
         <NotificationDetailInfo
           icon={{
             iconName: IconName.Check,
-            color: TextColor.successDefault,
-            backgroundColor: BackgroundColor.successMuted,
+            severity: AvatarIconSeverity.Success,
           }}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-          label={t('notificationItemStatus') || ''}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-          detail={t('notificationItemConfirmed') || ''}
+          label={t('notificationItemStatus') ?? ''}
+          detail={t('notificationItemConfirmed') ?? ''}
           action={
             <NotificationDetailCopyButton
               notification={notification}
-              text={notification.tx_hash}
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-              displayText={t('notificationItemTransactionId') || ''}
+              text={notification.payload.tx_hash}
+              displayText={t('notificationItemTransactionId') ?? ''}
             />
           }
         />
       ),
       Network: ({ notification }) => {
-        const { nativeCurrencyName, nativeCurrencyLogo } =
-          getNetworkDetailsByChainId(notification.chain_id);
+        const nativeCurrencyLogo = getNativeCurrencyLogoByChainId(
+          notification.payload.chain_id,
+        );
+        const { networkName } = getNetworkDetailsFromNotifPayload(
+          notification.payload.network,
+        );
         return (
           <NotificationDetailAsset
             icon={{
               src: nativeCurrencyLogo,
             }}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            label={t('notificationItemNetwork') || ''}
-            detail={nativeCurrencyName}
+            label={t('notificationItemNetwork') ?? ''}
+            detail={networkName}
           />
         );
       },
@@ -224,15 +205,12 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
           <NotificationDetailInfo
             icon={{
               iconName: IconName.SwapHorizontal,
-              color: TextColor.infoDefault,
-              backgroundColor: BackgroundColor.infoMuted,
+              severity: AvatarIconSeverity.Info,
             }}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             label={t('notificationItemRate') || ''}
-            detail={`1 ${notification.data.token_out.symbol} ≈ ${(
-              1 / parseFloat(notification.data.rate)
-            ).toFixed(5)} ${notification.data.token_in.symbol}`}
+            detail={`1 ${notification.payload.data.token_out.symbol} ≈ ${(
+              1 / parseFloat(notification.payload.data.rate)
+            ).toFixed(5)} ${notification.payload.data.token_in.symbol}`}
           />
         );
       },
@@ -240,17 +218,17 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
         return <NotificationDetailNetworkFee notification={notification} />;
       },
     },
-  },
-  footer: {
-    type: NotificationComponentType.OnChainFooter,
-    ScanLink: ({ notification }) => {
-      return (
-        <NotificationDetailBlockExplorerButton
-          notification={notification}
-          chainId={notification.chain_id}
-          txHash={notification.tx_hash}
-        />
-      );
+    footer: {
+      type: NotificationComponentType.OnChainFooter,
+      ScanLink: ({ notification }) => {
+        return (
+          <NotificationDetailBlockExplorerButton
+            notification={notification}
+            chainId={notification.payload.chain_id}
+            txHash={notification.payload.tx_hash}
+          />
+        );
+      },
     },
   },
 };

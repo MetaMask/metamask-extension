@@ -1,0 +1,93 @@
+[
+  {
+    "quote": {
+      "requestId": "0xgas-included-swap-usdc-dai-001",
+      "bridgeId": "openocean",
+      "srcChainId": 1,
+      "destChainId": 1,
+      "aggregator": "openocean",
+      "aggregatorType": "AGG",
+      "srcAsset": {
+        "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "chainId": 1,
+        "assetId": "eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USD Coin",
+        "coingeckoId": "usd-coin",
+        "aggregators": [],
+        "occurrences": 14,
+        "iconUrl": "https://raw.githubusercontent.com/MetaMask/contract-metadata/master/icons/eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48.svg",
+        "metadata": {}
+      },
+      "srcTokenAmount": "99125000",
+      "destAsset": {
+        "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+        "chainId": 1,
+        "assetId": "eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f",
+        "symbol": "DAI",
+        "decimals": 18,
+        "name": "Dai Stablecoin",
+        "coingeckoId": "dai",
+        "aggregators": [],
+        "occurrences": 15,
+        "iconUrl": "https://raw.githubusercontent.com/MetaMask/contract-metadata/master/icons/eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F.svg",
+        "metadata": {}
+      },
+      "destTokenAmount": "99000000000000000000",
+      "minDestTokenAmount": "97020000000000000000",
+      "walletAddress": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+      "destWalletAddress": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+      "feeData": {
+        "metabridge": {
+          "amount": "875000",
+          "asset": {
+            "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "chainId": 1,
+            "assetId": "eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "symbol": "USDC",
+            "decimals": 6,
+            "name": "USD Coin",
+            "coingeckoId": "usd-coin",
+            "aggregators": [],
+            "occurrences": 14,
+            "iconUrl": "https://raw.githubusercontent.com/MetaMask/contract-metadata/master/icons/eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48.svg",
+            "metadata": {}
+          },
+          "quoteBpsFee": 87.5,
+          "baseBpsFee": 87.5
+        }
+      },
+      "bridges": ["openocean"],
+      "protocols": ["openocean"],
+      "steps": [],
+      "slippage": 2,
+      "gasSponsored": false,
+      "gasIncluded": true,
+      "gasIncluded7702": false,
+      "priceData": {
+        "totalFromAmountUsd": "99.13",
+        "totalToAmountUsd": "99.00",
+        "priceImpact": "0.001",
+        "totalFeeAmountUsd": "0.00"
+      }
+    },
+    "approval": {
+      "chainId": 1,
+      "to": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "from": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+      "value": "0x00",
+      "data": "0x095ea7b30000000000000000000000000439e60f02a8900a951603950d8d4527f400c3f100000000000000000000000000000000000000000000000000000000059868c0",
+      "gasLimit": 60000
+    },
+    "trade": {
+      "chainId": 1,
+      "to": "0x881D40237659C251811CEC9c364ef91dC08D300C",
+      "from": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+      "value": "0x0",
+      "data": "0x5f575529000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005e69ec000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000136f70656e4f6365616e46656544796e616d696300000000000000000000000000",
+      "gasLimit": 448721
+    },
+    "estimatedProcessingTimeInSeconds": 0
+  }
+]

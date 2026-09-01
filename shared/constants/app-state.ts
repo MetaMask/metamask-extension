@@ -1,27 +1,21 @@
-import { NetworkClientId } from '@metamask/network-controller';
-import { Hex } from 'viem';
 import { TraceName } from '../lib/trace';
-import { MetaMetricsEventName } from './metametrics';
 
 export enum AccountOverviewTabKey {
   Tokens = 'tokens',
   Nfts = 'nfts',
   Activity = 'activity',
   DeFi = 'defi',
+  Perps = 'perps',
 }
 
-export const ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP = {
-  [AccountOverviewTabKey.Tokens]: MetaMetricsEventName.TokenScreenOpened,
-  [AccountOverviewTabKey.DeFi]: MetaMetricsEventName.DeFiScreenOpened,
-  [AccountOverviewTabKey.Nfts]: MetaMetricsEventName.NftScreenOpened,
-  [AccountOverviewTabKey.Activity]: MetaMetricsEventName.ActivityScreenOpened,
-} as const;
+export type AccountOverviewTab = `${AccountOverviewTabKey}`;
 
 export const ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP = {
   [AccountOverviewTabKey.Tokens]: TraceName.AccountOverviewAssetListTab,
   [AccountOverviewTabKey.Nfts]: TraceName.AccountOverviewNftsTab,
   [AccountOverviewTabKey.Activity]: TraceName.AccountOverviewActivityTab,
   [AccountOverviewTabKey.DeFi]: TraceName.AccountOverviewDeFiTab,
+  [AccountOverviewTabKey.Perps]: TraceName.AccountOverviewPerpsTab,
 } as const;
 
 export type CarouselSlide = {
@@ -39,21 +33,22 @@ export type CarouselSlide = {
   cardPlacement?: string;
 };
 
-export enum PasswordChangeToastType {
-  Success = 'success',
-  Errored = 'errored',
-}
-
 export enum ClaimSubmitToastType {
   Success = 'success',
   Errored = 'errored',
+  DraftSaved = 'draft-saved',
+  DraftSaveFailed = 'draft-save-failed',
+  DraftDeleted = 'draft-deleted',
+  DraftDeleteFailed = 'draft-delete-failed',
 }
 
-export type NetworkConnectionBanner =
-  | { status: 'unknown' | 'available' }
-  | {
-      status: 'degraded' | 'unavailable';
-      networkName: string;
-      networkClientId: NetworkClientId;
-      chainId: Hex;
-    };
+/**
+ * Type of storage write error that occurred.
+ * Used to show specific error messages in the storage error toast.
+ */
+export enum StorageWriteErrorType {
+  /** A general storage write error */
+  Default = 'default',
+  /** Device is out of disk space */
+  FileErrorNoSpace = 'file-error-no-space',
+}

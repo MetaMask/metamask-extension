@@ -1,173 +1,333 @@
-import React, { useCallback, useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
 import {
-  ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import ErrorBoundary from '../../app/error-boundary/error-boundary';
+import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
+  AccountOverviewTab,
 } from '../../../../shared/constants/app-state';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { endTrace, trace } from '../../../../shared/lib/trace';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { useTabState } from '../../../hooks/useTabState';
+import { useSafeChains } from '../networks-form/use-safe-chains';
 import {
-  getChainIdsToPoll,
-  getIsMultichainAccountsState2Enabled,
+  getDefaultHomeActiveTabName,
+  getEnabledChainIds,
+  getIsDefiPositionsEnabled,
 } from '../../../selectors';
-import { detectNfts, updateIncomingTransactions } from '../../../store/actions';
+import {
+  getIsPerpsExperienceAvailable,
+  getPerpsTabBadgeSeen,
+} from '../../../selectors/perps';
+import {
+  detectNfts,
+  setDefaultHomeActiveTabName,
+  setPerpsTabBadgeSeen,
+} from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
-import { useAssetListTokenDetection } from '../../app/assets/hooks';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
-import TransactionList from '../../app/transaction-list';
-import UnifiedTransactionList from '../../app/transaction-list/unified-transaction-list.component';
-import { Box } from '../../component-library';
+import { PerpsTab } from '../../app/perps/perps-tab';
 import { Tab, Tabs } from '../../ui/tabs';
+import { useABTest } from '../../../hooks/useABTest';
+import { useBottomNavBar } from '../../../hooks/useBottomNavBar';
+import {
+  PERPS_TAB_BADGE_AB_KEY,
+  PERPS_TAB_BADGE_VARIANTS,
+  PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA,
+} from '../../../../shared/lib/ab-testing/configs/perps-tab-badge';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
+import { ActivityList } from '../../../pages/activity/activity-list';
+import { usePrefetchTransactions } from '../../../pages/activity/useTransactionsQuery';
+import { transitionForward } from '../../ui/transition';
+import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics';
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
-  showTokens: boolean;
   showTokensLinks?: boolean;
-  showNfts: boolean;
-  showActivity: boolean;
+  showTokens?: boolean;
+  showNfts?: boolean;
   showDefi?: boolean;
+  showActivity?: boolean;
+};
+
+/**
+ * Isolated component that starts/stops EVM token balance polling.
+ *
+ * This intentionally returns null and only runs a hook. While that may seem
+ * like an anti-pattern, it is the correct React performance pattern here:
+ * `useTokenBalances` internally calls `useSelector(getTokenBalances)`, which
+ * subscribes the calling component to every token-balance state update
+ * (every ~30 s). By placing the call in this tiny component instead of in
+ * `AccountOverviewTabs`, only this component re-renders when balances change,
+ * rather than the entire tabs subtree and all of its children.
+ *
+ * @param options - Component options.
+ * @param options.chainIds - The chain IDs to poll balances for.
+ */
+const TokenBalancesPoller = ({ chainIds }: { chainIds: Hex[] }) => {
+  useTokenBalances({ chainIds });
+  return null;
 };
 
 export const AccountOverviewTabs = ({
-  onTabClick,
-  defaultHomeActiveTabName,
-  showTokens,
   showTokensLinks,
-  showNfts,
-  showActivity,
-  showDefi,
+  showTokens = true,
+  showNfts = true,
+  showDefi = true,
+  showActivity = true,
 }: AccountOverviewTabsProps) => {
-  const history = useHistory();
+  const persistedTab = useSelector(getDefaultHomeActiveTabName);
+  const [urlTab, setActiveTabKey] = useTabState();
+  const activeTabKey = urlTab || persistedTab;
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Tracks how the currently active tab was reached so screen-viewed events
+  // can distinguish a bottom-nav click (arriving at home) from a subtab click.
+  const [tabEntryPoint, setTabEntryPoint] = useState<
+    ScreenViewedEntryPoint | undefined
+  >(
+    location.state?.entryPoint === ScreenViewedEntryPoint.BottomNavClick
+      ? ScreenViewedEntryPoint.BottomNavClick
+      : undefined,
+  );
+
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
-  const selectedChainIds = useSelector(getChainIdsToPoll);
+  const selectedChainIds = useSelector(getEnabledChainIds);
+  const prefetchTransactions = usePrefetchTransactions();
+  const defiPositionsEnabled = useSelector(getIsDefiPositionsEnabled);
 
-  useAssetListTokenDetection();
+  const perpsTabBadgeSeen = useSelector(getPerpsTabBadgeSeen);
+  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const showBottomNav = useBottomNavBar();
 
-  // EVM specific tokenBalance polling, updates state via polling loop per chainId
-  useTokenBalances({
-    chainIds: selectedChainIds as Hex[],
-  });
+  // Track exposure only when the Perps tab is shown, gated on availability (not
+  // dismissal) so control and treatment record symmetrically once per session.
+  const { variant: perpsTabBadgeVariant } = useABTest(
+    PERPS_TAB_BADGE_AB_KEY,
+    PERPS_TAB_BADGE_VARIANTS,
+    PERPS_TAB_BADGE_AB_TEST_EXPOSURE_METADATA,
+    { trackExposure: isPerpsExperienceAvailable },
+  );
+  const showPerpsTabBadge =
+    isPerpsExperienceAvailable &&
+    perpsTabBadgeVariant.showBadge &&
+    !perpsTabBadgeSeen;
+
+  useEffect(() => {
+    if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
+      setDefaultHomeActiveTabName(activeTabKey);
+    }
+  }, [activeTabKey]);
+
+  // Whether the persisted/url active tab resolves to a tab that is actually
+  // rendered. Membership only — render order is irrelevant here.
+  const renderedTabKeys: Set<AccountOverviewTab> = new Set([
+    ...(showTokens ? [AccountOverviewTabKey.Tokens] : []),
+    ...(isPerpsExperienceAvailable && !showBottomNav
+      ? [AccountOverviewTabKey.Perps]
+      : []),
+    ...(showDefi && defiPositionsEnabled ? [AccountOverviewTabKey.DeFi] : []),
+    ...(showNfts ? [AccountOverviewTabKey.Nfts] : []),
+    ...(showActivity && !showBottomNav ? [AccountOverviewTabKey.Activity] : []),
+  ]);
+  // Perps is the effective active tab when it is explicitly selected, or when
+  // the active tab isn't rendered and Tabs clamps to the first rendered tab.
+  // Perps is that first tab whenever Tokens (the only tab that can precede it)
+  // is hidden and the Perps experience is available.
+  const perpsIsRendered = renderedTabKeys.has(AccountOverviewTabKey.Perps);
+  const perpsIsEffectiveActiveTab =
+    perpsIsRendered &&
+    (activeTabKey === AccountOverviewTabKey.Perps ||
+      (!renderedTabKeys.has(activeTabKey) && !showTokens));
+
+  // Mark the badge seen whenever Perps is the effective active tab — covers
+  // clicking in, landing directly on Perps (persisted default or ?tab=perps),
+  // and the clamped-active case above; a click handler alone would miss the last
+  // two. Gated on showPerpsTabBadge so control/seen/unavailable (badge never
+  // visible) never marks it seen.
+  useEffect(() => {
+    if (showPerpsTabBadge && perpsIsEffectiveActiveTab) {
+      dispatch(setPerpsTabBadgeSeen(true));
+    }
+  }, [showPerpsTabBadge, perpsIsEffectiveActiveTab, dispatch]);
+
+  // EVM token-balance polling is handled by TokenBalancesPoller (rendered below).
+  // Keeping it in an isolated child prevents balance updates from re-rendering
+  // this entire subtree every ~30 s.
 
   const handleTabClick = useCallback(
-    (tabName: AccountOverviewTabKey) => {
-      onTabClick(tabName);
+    (tabName: AccountOverviewTab) => {
+      if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
+        endTrace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[activeTabKey],
+        });
+      }
+
+      setTabEntryPoint(ScreenViewedEntryPoint.SubtabClick);
+      setActiveTabKey(tabName);
+
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
       }
-      if (tabName === AccountOverviewTabKey.Activity) {
-        dispatch(updateIncomingTransactions());
-      }
-      trackEvent({
-        category: MetaMetricsEventCategory.Home,
-        event: ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP[tabName],
-      });
-      if (defaultHomeActiveTabName) {
-        endTrace({
-          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-            defaultHomeActiveTabName
-          ],
+      if (tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
+        trace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
         });
       }
-      trace({
-        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
-      });
     },
-    [onTabClick],
+    [activeTabKey, setActiveTabKey, dispatch, selectedChainIds],
   );
 
   const onClickAsset = useCallback(
     (chainId: string, asset: string) =>
-      history.push(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
-    [history],
+      transitionForward(() =>
+        navigate(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
+      ),
+    [navigate],
   );
   const onClickDeFi = useCallback(
     (chainId: string, protocolId: string) =>
-      history.push(
-        `${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`,
+      transitionForward(() =>
+        navigate(`${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`),
       ),
-    [history],
+    [navigate],
   );
 
   const { safeChains } = useSafeChains();
 
-  const isBIP44FeatureFlagEnabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-  const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
-
   return (
-    <Tabs<AccountOverviewTabKey>
-      defaultActiveTabKey={defaultHomeActiveTabName ?? undefined}
-      onTabClick={handleTabClick}
-      tabListProps={{
-        className: 'px-4',
-      }}
-    >
-      {showTokens && (
-        <Tab
-          name={t('tokens')}
-          tabKey={AccountOverviewTabKey.Tokens}
-          data-testid="account-overview__asset-tab"
-        >
-          <Box marginBottom={2}>
-            <AssetList
-              showTokensLinks={showTokensLinks ?? true}
-              onClickAsset={onClickAsset}
-              safeChains={safeChains}
-            />
-          </Box>
-        </Tab>
-      )}
-      {showDefi && (
-        <Tab
-          name={t('defi')}
-          tabKey={AccountOverviewTabKey.DeFi}
-          data-testid="account-overview__defi-tab"
-        >
-          <Box>
-            <DeFiTab
-              showTokensLinks={showTokensLinks ?? true}
-              onClickAsset={onClickDeFi}
-              safeChains={safeChains}
-            />
-          </Box>
-        </Tab>
-      )}
+    <>
+      <TokenBalancesPoller chainIds={selectedChainIds as Hex[]} />
+      <Tabs<AccountOverviewTab>
+        animated
+        activeTab={activeTabKey}
+        onTabClick={handleTabClick}
+        tabListProps={{
+          className:
+            'mx-4 overflow-x-auto overscroll-x-contain [scrollbar-width:none] tablist-fade',
+        }}
+      >
+        {showTokens && (
+          <Tab
+            name={t('tokens')}
+            tabKey={AccountOverviewTabKey.Tokens}
+            data-testid="account-overview__asset-tab"
+          >
+            <ErrorBoundary key="tokens">
+              <AssetList
+                showTokensLinks={showTokensLinks ?? true}
+                onClickAsset={onClickAsset}
+                safeChains={safeChains}
+                entryPoint={tabEntryPoint}
+              />
+            </ErrorBoundary>
+          </Tab>
+        )}
 
-      {showNfts && (
-        <Tab
-          name={t('nfts')}
-          tabKey={AccountOverviewTabKey.Nfts}
-          data-testid="account-overview__nfts-tab"
-        >
-          <NftsTab />
-        </Tab>
-      )}
+        {isPerpsExperienceAvailable && !showBottomNav && (
+          <Tab
+            name={
+              showPerpsTabBadge ? (
+                <Box
+                  asChild
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  gap={1}
+                >
+                  <span>
+                    {t('perps')}
+                    <Box
+                      asChild
+                      flexDirection={BoxFlexDirection.Row}
+                      alignItems={BoxAlignItems.Center}
+                      backgroundColor={BoxBackgroundColor.PrimaryMuted}
+                      paddingLeft={2}
+                      paddingRight={2}
+                      className="rounded-sm"
+                      data-testid="perps-tab-new-badge"
+                    >
+                      <span>
+                        <Text
+                          asChild
+                          variant={TextVariant.BodySm}
+                          color={TextColor.PrimaryDefault}
+                        >
+                          <span>{t('perpsFilterNew')}</span>
+                        </Text>
+                      </span>
+                    </Box>
+                  </span>
+                </Box>
+              ) : (
+                t('perps')
+              )
+            }
+            tabKey={AccountOverviewTabKey.Perps}
+            data-testid="account-overview__perps-tab"
+          >
+            <PerpsTab />
+          </Tab>
+        )}
 
-      {showActivity && (
-        <Tab
-          name={t('activity')}
-          tabKey={AccountOverviewTabKey.Activity}
-          data-testid="account-overview__activity-tab"
-        >
-          {showUnifiedTransactionList ? (
-            <UnifiedTransactionList />
-          ) : (
-            <TransactionList />
-          )}
-        </Tab>
-      )}
-    </Tabs>
+        {showDefi && defiPositionsEnabled && (
+          <Tab
+            name={t('defi')}
+            tabKey={AccountOverviewTabKey.DeFi}
+            data-testid="account-overview__defi-tab"
+          >
+            <ErrorBoundary key="defi">
+              <DeFiTab
+                showTokensLinks={showTokensLinks ?? true}
+                onClickAsset={onClickDeFi}
+                safeChains={safeChains}
+                entryPoint={tabEntryPoint}
+              />
+            </ErrorBoundary>
+          </Tab>
+        )}
+
+        {showNfts && (
+          <Tab
+            name={t('nfts')}
+            tabKey={AccountOverviewTabKey.Nfts}
+            data-testid="account-overview__nfts-tab"
+          >
+            <ErrorBoundary key="nfts">
+              <NftsTab entryPoint={tabEntryPoint} />
+            </ErrorBoundary>
+          </Tab>
+        )}
+
+        {showActivity && !showBottomNav && (
+          <Tab
+            name={t('activity')}
+            tabKey={AccountOverviewTabKey.Activity}
+            data-testid="account-overview__activity-tab"
+            onMouseEnter={prefetchTransactions}
+          >
+            <ErrorBoundary key="activity">
+              <ActivityList entryPoint={tabEntryPoint} />
+            </ErrorBoundary>
+          </Tab>
+        )}
+      </Tabs>
+    </>
   );
 };

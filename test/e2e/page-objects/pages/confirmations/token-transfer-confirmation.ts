@@ -1,0 +1,119 @@
+import { tEn } from '../../../../lib/i18n-helpers';
+import { Driver } from '../../../webdriver/driver';
+import TransactionConfirmation from './transaction-confirmation';
+
+/**
+ * Token / native transfer confirmation on the redesigned confirm screen.
+ *
+ * Screen: `#/confirmation` for token or native send approvals.
+ * Owns: transfer amount/symbol heading, interacting-with / network /
+ * network-fee paragraphs, and loaded-state checks tied to expected fee.
+ * Boundaries: inherits advanced details and gas entry from
+ * `TransactionConfirmation`. Gas estimate editing is `GasFeeModal`; fee
+ * token selection is `GasFeeTokenModal`.
+ * Related: `TransactionConfirmation`, `GasFeeModal`.
+ *
+ * @see ui/pages/confirmations/components/confirm/info/token-transfer/token-transfer.tsx
+ * @see ui/pages/confirmations/components/confirm/info/native-transfer/native-transfer.tsx
+ */
+class TokenTransferTransactionConfirmation extends TransactionConfirmation {
+  private readonly confirmButton = '[data-testid="confirm-footer-button"]';
+
+  private readonly interactingWithParagraph = {
+    css: 'p',
+    text: tEn('interactingWith'),
+  };
+
+  private readonly networkFee = '[data-testid="first-gas-field"]';
+
+  private readonly networkFeeParagraph = {
+    css: 'p',
+    text: tEn('networkFee'),
+  };
+
+  private readonly networkParagraph = {
+    css: 'p',
+    text: tEn('transactionFlowNetwork'),
+  };
+
+  private readonly networkTextElement = (networkText: string) => ({
+    css: 'p',
+    text: networkText,
+  });
+
+  constructor(driver: Driver) {
+    super(driver);
+    this.driver = driver;
+  }
+
+  // Check Methods
+  async checkInteractingWithParagraph() {
+    await this.driver.waitForSelector(this.interactingWithParagraph);
+  }
+
+  /**
+   * Check if network text is displayed
+   *
+   * @param networkText - The expected network text to verify
+   */
+  async checkNetwork(networkText: string): Promise<void> {
+    console.log(`Checking for network text: ${networkText}`);
+    await this.driver.waitForSelector(this.networkTextElement(networkText));
+  }
+
+  async checkNetworkFeeParagraph() {
+    await this.driver.waitForSelector(this.networkFeeParagraph);
+  }
+
+  async checkNetworkParagraph() {
+    await this.driver.waitForSelector(this.networkParagraph);
+  }
+
+  /**
+   * Verifies that the confirm token transfer (redesigned) screen is fully loaded by checking for the presence of the expected symbol, token/gas values and buttons.
+   *
+   * @param transferAmount - The amount of tokens to be transferred.
+   * @param symbol - The symbol of the token to be transferred.
+   * @param expectedNetworkFee - The expected gas/network fee value to be displayed on the page.
+   * @returns A promise that resolves when all specified elements are verified to be present and contain the expected values, indicating the page has fully loaded.
+   * @example
+   * await tokenTransferTransactionConfirmation.checkTokenTransferPageIsLoaded('10', 'ETH', '0.01');
+   */
+  async checkTokenTransferPageIsLoaded(
+    transferAmount: string,
+    symbol: string,
+    expectedNetworkFee: string,
+  ): Promise<void> {
+    try {
+      await Promise.all([
+        this.driver.waitForSelector(this.confirmButton),
+        this.driver.waitForSelector({
+          text: `${transferAmount} ${symbol}`,
+          tag: 'h2',
+        }),
+        this.driver.waitForSelector({
+          css: this.networkFee,
+          text: `${expectedNetworkFee}`,
+        }),
+      ]);
+      console.log(
+        'Confirm token transfer (Redesigned) screen is loaded with expected values',
+      );
+    } catch (e) {
+      console.error(
+        `Timeout while waiting for confirm token transfer (redesigned) screen to be loaded, expected network fee is: ${expectedNetworkFee}, transfer amount is: ${transferAmount} and symbol is: ${symbol}`,
+        e,
+      );
+      throw e;
+    }
+  }
+
+  // Action Methods
+
+  async clickConfirmButton(): Promise<void> {
+    console.log('Click confirm button to confirm transaction');
+    await this.driver.clickElement(this.confirmButton);
+  }
+}
+
+export default TokenTransferTransactionConfirmation;

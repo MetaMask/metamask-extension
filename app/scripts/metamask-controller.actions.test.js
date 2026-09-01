@@ -9,22 +9,57 @@ import {
   METAMASK_STALELIST_FILE,
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
-import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
-import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
-import {
-  RecoveryError,
-  SeedlessOnboardingControllerErrorMessage,
-} from '@metamask/seedless-onboarding-controller';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
+import browser from 'webextension-polyfill';
 import mockEncryptor from '../../test/lib/mock-encryptor';
-import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import { HardwareKeyringNames } from '../../shared/constants/hardware-wallets';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../shared/lib/environment';
 import MetaMaskController from './metamask-controller';
 
-const { Ganache } = require('../../test/e2e/seeder/ganache');
+// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
+// so unify-state tests can exercise real feature-flag gating via controller state.
+jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () =>
+  jest.requireActual('../../shared/lib/assets-unify-state/remote-feature-flag'),
+);
 
-const ganacheServer = new Ganache();
+jest.mock('../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../shared/lib/environment'),
+  getIsAssetsUnifiedStateIncludedInBuild: jest.fn(),
+}));
 
-const browserPolyfillMock = {
+jest.mock('./messenger-client-init/perps-controller-init', () => ({
+  PerpsControllerInit: jest.fn().mockReturnValue({
+    messengerClient: {
+      state: {},
+      name: 'PerpsController',
+    },
+    api: {},
+  }),
+}));
+
+jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
+  SnapAccountServiceInit: jest
+    .fn()
+    .mockImplementation(({ controllerMessenger }) => {
+      controllerMessenger.registerActionHandler(
+        'SnapAccountService:ensureReady',
+        // Never-resolving promise: prevents any Snap provider from proceeding
+        // past `ensureReady`, so no Snap accounts get created during init.
+        () => new Promise(() => undefined),
+      );
+      return {
+        memStateKey: null,
+        persistedStateKey: null,
+        messengerClient: {
+          init: jest.fn().mockResolvedValue(undefined),
+          name: 'SnapAccountService',
+        },
+      };
+    }),
+}));
+
+jest.mock('webextension-polyfill', () => ({
   runtime: {
     id: 'fake-extension-id',
     onInstalled: {
@@ -37,11 +72,20 @@ const browserPolyfillMock = {
   },
   storage: {
     local: {
-      get: jest.fn().mockReturnValue({}),
-      set: jest.fn(),
+      get: jest.fn().mockResolvedValue({}),
+      set: jest.fn().mockResolvedValue(undefined),
+      remove: jest.fn().mockResolvedValue(undefined),
     },
   },
-};
+}));
+
+// Use the actual mocked module so all code importing webextension-polyfill
+// shares the same mock instance
+const browserPolyfillMock = jest.mocked(browser);
+
+const { LocalNodeStub } = require('../../test/stub/local-node');
+
+const localNodeServer = new LocalNodeStub();
 
 let loggerMiddlewareMock;
 const initializeMockMiddlewareLog = () => {
@@ -96,7 +140,7 @@ describe('MetaMaskController', function () {
   const noop = () => undefined;
 
   beforeAll(async function () {
-    await ganacheServer.start({ port: 32545 });
+    await localNodeServer.start({ port: 32545 });
   });
 
   beforeEach(function () {
@@ -124,6 +168,14 @@ describe('MetaMaskController', function () {
           { url: '127.0.0.1', targetList: 'blocklist', timestamp: 0 },
         ]),
       );
+    nock('https://on-ramp.uat-api.cx.metamask.io')
+      .get('/geolocation')
+      .reply(200, 'US')
+      .persist();
+    nock('https://on-ramp.api.cx.metamask.io')
+      .get('/geolocation')
+      .reply(200, 'US')
+      .persist();
     metamaskController = new MetaMaskController({
       showUserConfirmation: noop,
       encryptor: mockEncryptor,
@@ -133,14 +185,24 @@ describe('MetaMaskController', function () {
         getVersion: () => 'foo',
       },
       browser: browserPolyfillMock,
+      getRequestAccountTabIds: () => ({}),
+      getOpenMetamaskTabsIds: () => ({}),
+      notificationManager: {
+        markAsAutomaticallyClosed: jest.fn(),
+      },
       infuraProjectId: 'foo',
       cronjobControllerStorageManager: {
         init: noop,
         getInitialState: noop,
         set: noop,
       },
+      controllerMessenger: new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+        captureException: jest.fn(),
+      }),
     });
     initializeMockMiddlewareLog();
+    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(false);
 
     // Re-create the ULID generator to start over again the `mockULIDs` list.
     mockUlidGenerator = ulidGenerator();
@@ -153,7 +215,7 @@ describe('MetaMaskController', function () {
   });
 
   afterAll(async function () {
-    await ganacheServer.quit();
+    await localNodeServer.quit();
   });
 
   describe('Phishing Detection Mock', function () {
@@ -168,64 +230,26 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('#addNewAccount', function () {
-    it('two parallel calls with same accountCount give same result', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
-      const [addNewAccountResult1, addNewAccountResult2] = await Promise.all([
-        metamaskController.addNewAccount(1),
-        metamaskController.addNewAccount(1),
-      ]);
-      expect(addNewAccountResult1).toStrictEqual(addNewAccountResult2);
-    });
-
-    it('two successive calls with same accountCount give same result', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
-      const addNewAccountResult1 = await metamaskController.addNewAccount(1);
-      const addNewAccountResult2 = await metamaskController.addNewAccount(1);
-      expect(addNewAccountResult1).toStrictEqual(addNewAccountResult2);
-    });
-
-    it('two successive calls with different accountCount give different results', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
-      const addNewAccountResult1 = await metamaskController.addNewAccount(1);
-      const addNewAccountResult2 = await metamaskController.addNewAccount(2);
-      expect(addNewAccountResult1).not.toStrictEqual(addNewAccountResult2);
-    });
-  });
-
-  describe('#importAccountWithStrategy', function () {
-    it('throws an error when importing the same account twice', async function () {
-      const importPrivkey =
-        '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553';
-      await metamaskController.createNewVaultAndKeychain('test@123');
-
-      await metamaskController.importAccountWithStrategy('privateKey', [
-        importPrivkey,
-      ]);
-
-      await expect(
-        metamaskController.importAccountWithStrategy('privateKey', [
-          importPrivkey,
-        ]),
-      ).rejects.toThrow(
-        'KeyringController - The account you are trying to import is a duplicate',
-      );
-    });
-  });
-
   describe('#createNewVaultAndRestore', function () {
     it('two successive calls with same inputs give same result', async function () {
-      await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
+        'test@123',
+        TEST_SEED,
+      );
       const result1 = metamaskController.keyringController.state;
-      await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
+        'test@123',
+        TEST_SEED,
+      );
       const result2 = metamaskController.keyringController.state;
 
-      expect(result1.keyrings).toHaveLength(2);
+      // v2 Snap keyrings are created lazily per-snap, so a fresh restore
+      // produces only the primary HD keyring.
+      expect(result1.keyrings).toHaveLength(1);
       expect(result1.keyrings[0].metadata.id).toBe(mockULIDs[0]); // 0: Primary HD keyring
-      expect(result1.keyrings[1].metadata.id).toBe(mockULIDs[1]); // 1: Snap keyring
 
       // On restore, a new keyring metadata is generated.
-      const ulidNewIndex = 2;
+      const ulidNewIndex = 1;
       expect(result2).toStrictEqual({
         ...result1,
         keyrings: [
@@ -233,14 +257,7 @@ describe('MetaMaskController', function () {
             ...result1.keyrings[0],
             metadata: {
               ...result1.keyrings[0].metadata,
-              id: mockULIDs[ulidNewIndex + 0], // 0: New primary HD keyring
-            },
-          },
-          {
-            ...result1.keyrings[1],
-            metadata: {
-              ...result1.keyrings[1].metadata,
-              id: mockULIDs[ulidNewIndex + 1], // 1: New Snap keyring
+              id: mockULIDs[ulidNewIndex], // 0: New primary HD keyring
             },
           },
         ],
@@ -250,618 +267,119 @@ describe('MetaMaskController', function () {
 
   describe('#createNewVaultAndKeychain', function () {
     it('two successive calls with same inputs give same result', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+        'test@123',
+      );
       const result1 = metamaskController.keyringController.state;
-      await metamaskController.createNewVaultAndKeychain('test@123');
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+        'test@123',
+      );
       const result2 = metamaskController.keyringController.state;
       expect(result1).not.toStrictEqual(undefined);
       expect(result1).toStrictEqual(result2);
     });
   });
 
-  describe('#setLocked', function () {
-    it('should lock the wallet', async function () {
-      await metamaskController.createNewVaultAndKeychain('test@123');
+  describe('#createNewVaultAndGetSeedPhrase', function () {
+    it('creates a vault and returns the seed phrase', async function () {
+      const password = 'test@123';
+      const encodedSeedPhrase =
+        await metamaskController.legacyBackgroundApiService.createNewVaultAndGetSeedPhrase(
+          password,
+        );
+      const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
 
-      await metamaskController.setLocked();
-
-      expect(
-        metamaskController.keyringController.state.isUnlocked,
-      ).toStrictEqual(false);
-      expect(metamaskController.keyringController.state.keyrings).toStrictEqual(
-        [],
-      );
+      expect(seedPhrase.split(' ')).toHaveLength(12);
+      expect(metamaskController.keyringController.state.isUnlocked).toBe(true);
     });
+  });
 
-    it('should acquire the seedlessOperationMutex when social login flow is enabled', async function () {
-      jest
-        .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
-        .mockReturnValue(true);
-      const mockReleaseLock = jest.fn();
-      const acquireSpy = jest
-        .spyOn(metamaskController.seedlessOperationMutex, 'acquire')
-        .mockResolvedValue(mockReleaseLock);
-      const seedlessSetLockedSpy = jest
-        .spyOn(metamaskController.seedlessOnboardingController, 'setLocked')
-        .mockResolvedValue();
-      const keyringSetLockedSpy = jest
-        .spyOn(metamaskController.keyringController, 'setLocked')
-        .mockResolvedValue();
-
-      await metamaskController.setLocked();
-
-      expect(acquireSpy).toHaveBeenCalled();
-      expect(keyringSetLockedSpy).toHaveBeenCalled();
-      expect(seedlessSetLockedSpy).toHaveBeenCalled();
-      expect(mockReleaseLock).toHaveBeenCalled();
-    });
-
-    it('should throw an error if the `seedlessOnboardingController.setLocked` fails', async function () {
-      jest
-        .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
-        .mockReturnValue(true);
-      const seedlessSetLockedSpy = jest
-        .spyOn(metamaskController.seedlessOnboardingController, 'setLocked')
-        .mockRejectedValue(new Error('error while setting seedless locked'));
-      const keyringSetLockedSpy = jest
-        .spyOn(metamaskController.keyringController, 'setLocked')
-        .mockResolvedValue();
-
-      await expect(metamaskController.setLocked()).rejects.toThrow(
-        'error while setting seedless locked',
+  describe('#unlockAndGetSeedPhrase', function () {
+    it('unlocks the vault and returns the seed phrase', async function () {
+      const password = 'test@123';
+      await metamaskController.legacyBackgroundApiService.createNewVaultAndKeychain(
+        password,
       );
+      await metamaskController.keyringController.setLocked();
 
-      expect(seedlessSetLockedSpy).toHaveBeenCalled();
-      expect(keyringSetLockedSpy).not.toHaveBeenCalled();
+      const encodedSeedPhrase =
+        await metamaskController.legacyBackgroundApiService.unlockAndGetSeedPhrase(
+          password,
+        );
+      const seedPhrase = Buffer.from(encodedSeedPhrase).toString('utf8');
+
+      expect(seedPhrase.split(' ')).toHaveLength(12);
+      expect(metamaskController.keyringController.state.isUnlocked).toBe(true);
     });
   });
 
   describe('#addToken', function () {
-    const address = '0x514910771af9ca656af840dff83e8264ecf986ca';
-    const symbol = 'LINK';
-    const decimals = 18;
-
-    it('two parallel calls with same token details give same result', async function () {
-      const [token1, token2] = await Promise.all([
-        metamaskController
-          .getApi()
-          .addToken({ address, symbol, decimals, networkClientId: 'sepolia' }),
-        metamaskController
-          .getApi()
-          .addToken({ address, symbol, decimals, networkClientId: 'sepolia' }),
-      ]);
-      expect(token1).toStrictEqual(token2);
-    });
-
-    it('networkClientId is used when provided', async function () {
+    it('delegates to the legacy background API service addToken action', async function () {
+      const token = {
+        address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+        symbol: 'LINK',
+        decimals: 18,
+        networkClientId: 'sepolia',
+      };
       const callSpy = jest
         .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockReturnValueOnce({
-          configuration: { chainId: '0xa' },
-        })
-        .mockReturnValueOnce({
-          configuration: { chainId: '0xa' },
-        })
-        .mockReturnValueOnce({
-          networkConfigurationsByChainId: {
-            '0xa': {
-              nativeCurrency: 'ETH',
-              chainId: '0xa',
-            },
-          },
-        });
+        .mockResolvedValue(undefined);
 
-      await metamaskController.getApi().addToken({
-        address,
-        symbol,
-        decimals,
-        networkClientId: 'networkClientId1',
-      });
-      expect(callSpy.mock.calls[1]).toStrictEqual([
-        'NetworkController:getNetworkClientById',
-        'networkClientId1',
-      ]);
-    });
-  });
+      await metamaskController.getApi().addToken(token);
 
-  describe('#removePermissionsFor', function () {
-    it('should not propagate PermissionsRequestNotFoundError', function () {
-      const error = new PermissionsRequestNotFoundError('123');
-      metamaskController.permissionController = {
-        revokePermissions: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.removePermissionsFor({ subject: 'test_subject' }),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.permissionController = {
-        revokePermissions: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.removePermissionsFor({ subject: 'test_subject' }),
-      ).toThrow(error);
-    });
-  });
-
-  describe('#rejectPermissionsRequest', function () {
-    it('should not propagate PermissionsRequestNotFoundError', function () {
-      const error = new PermissionsRequestNotFoundError('123');
-      metamaskController.permissionController = {
-        rejectPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPermissionsRequest('DUMMY_ID'),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.permissionController = {
-        rejectPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPermissionsRequest('DUMMY_ID'),
-      ).toThrow(error);
-    });
-  });
-
-  describe('#acceptPermissionsRequest', function () {
-    it('should not propagate PermissionsRequestNotFoundError', function () {
-      const error = new PermissionsRequestNotFoundError('123');
-      metamaskController.permissionController = {
-        acceptPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.acceptPermissionsRequest('DUMMY_ID'),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than PermissionsRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.permissionController = {
-        acceptPermissionsRequest: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.acceptPermissionsRequest('DUMMY_ID'),
-      ).toThrow(error);
-    });
-  });
-
-  describe('#resolvePendingApproval', function () {
-    it('should not propagate ApprovalRequestNotFoundError', async function () {
-      const error = new ApprovalRequestNotFoundError('123');
-      metamaskController.approvalController = {
-        accept: () => {
-          throw error;
-        },
-      };
-      await expect(
-        metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE'),
-      ).resolves.not.toThrow(error);
-    });
-
-    it('should propagate Error other than ApprovalRequestNotFoundError', async function () {
-      const error = new Error();
-      metamaskController.approvalController = {
-        accept: () => {
-          throw error;
-        },
-      };
-      await expect(
-        metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE'),
-      ).rejects.toThrow(error);
-    });
-  });
-
-  describe('#rejectPendingApproval', function () {
-    it('should not propagate ApprovalRequestNotFoundError', function () {
-      const error = new ApprovalRequestNotFoundError('123');
-      metamaskController.approvalController = {
-        reject: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPendingApproval('DUMMY_ID', {
-          code: 1,
-          message: 'DUMMY_MESSAGE',
-          data: 'DUMMY_DATA',
-        }),
-      ).not.toThrow(error);
-    });
-
-    it('should propagate Error other than ApprovalRequestNotFoundError', function () {
-      const error = new Error();
-      metamaskController.approvalController = {
-        reject: () => {
-          throw error;
-        },
-      };
-      expect(() =>
-        metamaskController.rejectPendingApproval('DUMMY_ID', {
-          code: 1,
-          message: 'DUMMY_MESSAGE',
-          data: 'DUMMY_DATA',
-        }),
-      ).toThrow(error);
-    });
-  });
-
-  describe('#checkIsSeedlessPasswordOutdated', function () {
-    it('should return undefined if firstTimeFlowType is not seedless', async function () {
-      metamaskController.onboardingController.setFirstTimeFlowType(
-        FirstTimeFlowType.create,
+      expect(callSpy).toHaveBeenCalledWith(
+        'LegacyBackgroundApiService:addToken',
+        token,
       );
-      const result = await metamaskController.checkIsSeedlessPasswordOutdated();
-      expect(result).toBeFalsy();
     });
+  });
 
-    it('should return false if firstTimeFlowType is seedless and password is not outdated', async function () {
-      metamaskController.onboardingController.setFirstTimeFlowType(
-        FirstTimeFlowType.socialCreate,
-      );
-      metamaskController.onboardingController.completeOnboarding();
-      jest
+  describe('#approveHardwareWalletTransaction', function () {
+    it('should delegate to resolvePendingApproval with transaction payload and hardware wallet options', async function () {
+      const resolvePendingApprovalSpy = jest
         .spyOn(
-          metamaskController.seedlessOnboardingController,
-          'checkIsPasswordOutdated',
+          metamaskController.legacyBackgroundApiService,
+          'resolvePendingApproval',
         )
-        .mockResolvedValue(false);
-      const result = await metamaskController.checkIsSeedlessPasswordOutdated();
-      expect(result).toBe(false);
-      expect(
-        metamaskController.seedlessOnboardingController.checkIsPasswordOutdated,
-      ).toHaveBeenCalled();
-    });
+        .mockResolvedValue();
+      const txMeta = {
+        id: '42',
+        txParams: {
+          from: '0x0000000000000000000000000000000000000001',
+          to: '0x0000000000000000000000000000000000000002',
+        },
+      };
+      const actionId = mockULIDs[3];
 
-    it('should return true if firstTimeFlowType is seedless and password is outdated', async function () {
-      metamaskController.onboardingController.setFirstTimeFlowType(
-        FirstTimeFlowType.socialCreate,
+      await metamaskController.legacyBackgroundApiService.approveHardwareWalletTransaction(
+        {
+          txId: 42,
+          txMeta,
+          actionId,
+          walletType: HardwareKeyringNames.ledger,
+        },
       );
-      metamaskController.onboardingController.completeOnboarding();
-      jest
-        .spyOn(
-          metamaskController.seedlessOnboardingController,
-          'checkIsPasswordOutdated',
-        )
-        .mockResolvedValue(true);
-      const result = await metamaskController.checkIsSeedlessPasswordOutdated();
-      expect(result).toBe(true);
-      expect(
-        metamaskController.seedlessOnboardingController.checkIsPasswordOutdated,
-      ).toHaveBeenCalled();
+
+      expect(resolvePendingApprovalSpy).toHaveBeenCalledWith(
+        '42',
+        { txMeta, actionId },
+        { waitForResult: true, walletType: HardwareKeyringNames.ledger },
+      );
     });
   });
 
-  describe('#syncPasswordAndUnlockWallet', function () {
-    const password = 'test@123';
+  describe('resetWallet', function () {
+    it('delegates to LegacyBackgroundApiService', async function () {
+      const callSpy = jest
+        .spyOn(metamaskController.controllerMessenger, 'call')
+        .mockResolvedValue(undefined);
 
-    beforeEach(function () {
-      // Mock the mutex
-      metamaskController.seedlessOperationMutex = {
-        acquire: jest.fn().mockResolvedValue(() => undefined),
-      };
-    });
+      await metamaskController.getApi().resetWallet(true);
 
-    describe('non-social login flow', function () {
-      it('should call submitPassword directly when not social login flow', async function () {
-        jest
-          .spyOn(
-            metamaskController.onboardingController,
-            'getIsSocialLoginFlow',
-          )
-          .mockReturnValue(false);
-
-        const submitPasswordSpy = jest
-          .spyOn(metamaskController, 'submitPassword')
-          .mockResolvedValue();
-
-        await metamaskController.syncPasswordAndUnlockWallet(password);
-
-        expect(submitPasswordSpy).toHaveBeenCalledWith(password);
-        expect(
-          metamaskController.seedlessOperationMutex.acquire,
-        ).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('social login flow with non-outdated password', function () {
-      it('should call submitPassword directly when password is not outdated', async function () {
-        jest
-          .spyOn(
-            metamaskController.onboardingController,
-            'getIsSocialLoginFlow',
-          )
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'checkIsPasswordOutdated',
-          )
-          .mockResolvedValue(false);
-
-        const submitPasswordSpy = jest
-          .spyOn(metamaskController, 'submitPassword')
-          .mockResolvedValue();
-
-        await metamaskController.syncPasswordAndUnlockWallet(password);
-
-        expect(submitPasswordSpy).toHaveBeenCalledWith(password);
-        expect(
-          metamaskController.seedlessOperationMutex.acquire,
-        ).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('social login flow with outdated password', function () {
-      beforeEach(function () {
-        jest
-          .spyOn(
-            metamaskController.onboardingController,
-            'getIsSocialLoginFlow',
-          )
-          .mockReturnValue(true);
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'checkIsPasswordOutdated',
-          )
-          .mockResolvedValue(true);
-      });
-
-      it('should throw OutdatedPassword error when password verification succeeds', async function () {
-        jest
-          .spyOn(metamaskController.keyringController, 'verifyPassword')
-          .mockResolvedValue(true);
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'submitGlobalPassword',
-          )
-          .mockRejectedValue(
-            new RecoveryError(
-              SeedlessOnboardingControllerErrorMessage.IncorrectPassword,
-            ),
-          );
-        await expect(
-          metamaskController.syncPasswordAndUnlockWallet(password),
-        ).rejects.toThrow(
-          SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
-        );
-      });
-
-      it('should successfully sync password when password verification fails', async function () {
-        const currentPasswordEncryptionKey = 'encryption-key';
-        const releaseLock = jest.fn();
-
-        jest
-          .spyOn(metamaskController.keyringController, 'verifyPassword')
-          .mockRejectedValue(new Error('Incorrect password'));
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'submitGlobalPassword',
-          )
-          .mockResolvedValue();
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'loadKeyringEncryptionKey',
-          )
-          .mockResolvedValue(currentPasswordEncryptionKey);
-        jest
-          .spyOn(metamaskController, 'submitEncryptionKey')
-          .mockResolvedValue();
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'syncLatestGlobalPassword',
-          )
-          .mockResolvedValue();
-        jest
-          .spyOn(metamaskController.keyringController, 'changePassword')
-          .mockResolvedValue();
-        jest
-          .spyOn(metamaskController, 'syncKeyringEncryptionKey')
-          .mockResolvedValue();
-
-        metamaskController.seedlessOperationMutex.acquire.mockResolvedValue(
-          releaseLock,
-        );
-
-        await metamaskController.syncPasswordAndUnlockWallet(password);
-
-        expect(
-          metamaskController.seedlessOperationMutex.acquire,
-        ).toHaveBeenCalled();
-        expect(
-          metamaskController.keyringController.verifyPassword,
-        ).toHaveBeenCalledWith(password);
-        expect(
-          metamaskController.seedlessOnboardingController.submitGlobalPassword,
-        ).toHaveBeenCalledWith({
-          globalPassword: password,
-          maxKeyChainLength: 20,
-        });
-        expect(
-          metamaskController.seedlessOnboardingController
-            .loadKeyringEncryptionKey,
-        ).toHaveBeenCalled();
-        expect(metamaskController.submitEncryptionKey).toHaveBeenCalledWith(
-          currentPasswordEncryptionKey,
-        );
-        expect(
-          metamaskController.seedlessOnboardingController
-            .syncLatestGlobalPassword,
-        ).toHaveBeenCalledWith({
-          globalPassword: password,
-        });
-        expect(
-          metamaskController.keyringController.changePassword,
-        ).toHaveBeenCalledWith(password);
-        expect(metamaskController.syncKeyringEncryptionKey).toHaveBeenCalled();
-        expect(
-          metamaskController.seedlessOnboardingController
-            .checkIsPasswordOutdated,
-        ).toHaveBeenCalledWith({
-          skipCache: true,
-        });
-        expect(releaseLock).toHaveBeenCalled();
-      });
-
-      it('should lock wallet and throw error when sync fails', async function () {
-        const releaseLock = jest.fn();
-        const syncError = new Error('Sync failed');
-
-        jest
-          .spyOn(metamaskController.keyringController, 'verifyPassword')
-          .mockRejectedValue(new Error('Incorrect password'));
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'submitGlobalPassword',
-          )
-          .mockResolvedValue();
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'loadKeyringEncryptionKey',
-          )
-          .mockResolvedValue('encryption-key');
-        jest
-          .spyOn(metamaskController, 'submitEncryptionKey')
-          .mockResolvedValue();
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'syncLatestGlobalPassword',
-          )
-          .mockRejectedValue(syncError);
-        jest.spyOn(metamaskController, 'setLocked').mockResolvedValue();
-
-        metamaskController.seedlessOperationMutex.acquire.mockResolvedValue(
-          releaseLock,
-        );
-
-        await expect(
-          metamaskController.syncPasswordAndUnlockWallet(password),
-        ).rejects.toThrow('Sync failed');
-
-        expect(metamaskController.setLocked).toHaveBeenCalled();
-        expect(releaseLock).toHaveBeenCalled();
-      });
-
-      it('should lock wallet and throw error when changePassword fails', async function () {
-        const releaseLock = jest.fn();
-        const changePasswordError = new Error('Change password failed');
-
-        jest
-          .spyOn(metamaskController.keyringController, 'verifyPassword')
-          .mockRejectedValue(new Error('Incorrect password'));
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'submitGlobalPassword',
-          )
-          .mockResolvedValue();
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'loadKeyringEncryptionKey',
-          )
-          .mockResolvedValue('encryption-key');
-        jest
-          .spyOn(metamaskController, 'submitEncryptionKey')
-          .mockResolvedValue();
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'syncLatestGlobalPassword',
-          )
-          .mockResolvedValue();
-        jest
-          .spyOn(metamaskController.keyringController, 'changePassword')
-          .mockRejectedValue(changePasswordError);
-        jest.spyOn(metamaskController, 'setLocked').mockResolvedValue();
-
-        metamaskController.seedlessOperationMutex.acquire.mockResolvedValue(
-          releaseLock,
-        );
-
-        await expect(
-          metamaskController.syncPasswordAndUnlockWallet(password),
-        ).rejects.toThrow('Change password failed');
-
-        expect(metamaskController.setLocked).toHaveBeenCalled();
-        expect(releaseLock).toHaveBeenCalled();
-      });
-
-      it('should allow user to unlock the wallet even if checkIsPasswordOutdated fails', async function () {
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'checkIsPasswordOutdated',
-          )
-          .mockRejectedValue('Network Error');
-        const keyringSubmitPwdSpy = jest
-          .spyOn(metamaskController.keyringController, 'submitPassword')
-          .mockResolvedValue();
-        const seedlessSubmitPwdSpy = jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'submitPassword',
-          )
-          .mockResolvedValue();
-
-        // We now need the Snap keyring after unlocking the wallet.
-        jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
-
-        const syncAndUnlockResult =
-          await metamaskController.syncPasswordAndUnlockWallet(password);
-
-        expect(syncAndUnlockResult).toBe(true);
-        expect(keyringSubmitPwdSpy).toHaveBeenCalled();
-        expect(seedlessSubmitPwdSpy).toHaveBeenCalled();
-      });
-
-      it('should always release lock even when errors occur', async function () {
-        const releaseLock = jest.fn();
-
-        jest
-          .spyOn(metamaskController.keyringController, 'verifyPassword')
-          .mockRejectedValue(new Error('Incorrect password'));
-        jest
-          .spyOn(
-            metamaskController.seedlessOnboardingController,
-            'submitGlobalPassword',
-          )
-          .mockRejectedValue(new Error('Recovery failed'));
-
-        metamaskController.seedlessOperationMutex.acquire.mockResolvedValue(
-          releaseLock,
-        );
-
-        await expect(
-          metamaskController.syncPasswordAndUnlockWallet(password),
-        ).rejects.toThrow('Recovery failed');
-
-        expect(releaseLock).toHaveBeenCalled();
-      });
+      expect(callSpy).toHaveBeenCalledWith(
+        'LegacyBackgroundApiService:resetWallet',
+        true,
+      );
     });
   });
 });

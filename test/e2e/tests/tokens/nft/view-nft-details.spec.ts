@@ -1,12 +1,11 @@
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
-import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
-import NftListPage from '../../../page-objects/pages/home/nft-list';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import NFTDetailsPage from '../../../page-objects/pages/asset/nft-details-page';
+import NftsTab from '../../../page-objects/pages/home/nfts-tab';
+import { login } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
-import { Anvil } from '../../../seeder/anvil';
 
 describe('View NFT details', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -14,24 +13,18 @@ describe('View NFT details', function () {
   it('user should be able to view ERC721 NFT details', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2().withNftControllerERC721().build(),
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes: Anvil[];
-      }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { validateBalance: false });
 
         // Click to open the NFT details page and check title
         await new Homepage(driver).goToNftTab();
-        const nftListPage = new NftListPage(driver);
-        await nftListPage.clickNFTIconOnActivityList();
+        const nftsTab = new NftsTab(driver);
+        await nftsTab.clickNFTIconOnActivityList();
 
         // Check the NFT details are correctly displayed on NFT details page
         const nftDetailsPage = new NFTDetailsPage(driver);

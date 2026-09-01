@@ -1,7 +1,7 @@
 import { Hex } from '@metamask/utils';
 import React from 'react';
 import { PrimaryType } from '../../../../../../../../../shared/constants/signatures';
-import { parseTypedDataMessage } from '../../../../../../../../../shared/modules/transaction.utils';
+import { parseTypedDataMessage } from '../../../../../../../../../shared/lib/transaction.utils';
 import { ConfirmInfoRow } from '../../../../../../../../components/app/confirm/info/row';
 import { Box } from '../../../../../../../../components/component-library';
 import {
@@ -43,7 +43,7 @@ function extractTokenDetailsByPrimaryType(
   return isNonArrayObject ? [tokenDetails] : tokenDetails;
 }
 
-const PermitSimulation: React.FC<object> = () => {
+const PermitSimulation = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const msgData = currentConfirmation.msgParams?.data;

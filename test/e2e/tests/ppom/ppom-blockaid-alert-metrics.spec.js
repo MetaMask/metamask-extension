@@ -1,13 +1,16 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
 const {
-  unlockWallet,
-  withFixtures,
-  getEventPayloads,
-} = require('../../helpers');
-const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
+  default: FixtureBuilderV2,
+} = require('../../fixtures/fixture-builder-v2');
+const { withFixtures, getEventPayloads } = require('../../helpers');
+const { login } = require('../../page-objects/flows/login.flow');
+const {
+  DAPP_URL_LOCALHOST,
+  MOCK_ANALYTICS_ID,
+  NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
-const { MOCK_META_METRICS_ID } = require('./constants');
 
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const selectedAddressWithoutPrefix = '5cfe73b6021e818b776b421b1c4db2474086a7e1';
@@ -255,16 +258,22 @@ describe('Confirmation Security Alert - Blockaid', function () {
   it.skip('should capture metrics when security alerts is shown', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            securityAlertsEnabled: true,
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withPermissionControllerConnectedToTestDapp({
+            useLocalhostHostname: true,
+            chainIds: [1],
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
           })
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            consentDecisionMade: true,
+            optedIn: true,
           })
           .build(),
         title: this.test.fullTitle(),
@@ -272,8 +281,8 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
 
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
-        await driver.openNewPage(DAPP_URL);
+        await login(driver, { expectedBalance: '1.37T ETH' });
+        await driver.openNewPage(DAPP_URL_LOCALHOST);
 
         // Click TestDapp button for transaction
         await driver.clickElement('#maliciousApprovalButton');
@@ -317,7 +326,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
             ppom_debug_traceCall_count: 3,
             ppom_eth_call_count: 1,
           },
-          userId: MOCK_META_METRICS_ID,
+          userId: MOCK_ANALYTICS_ID,
           type: 'track',
         };
 
@@ -351,7 +360,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
             ppom_eth_call_count: 1,
             ppom_debug_traceCall_count: 1,
           },
-          userId: MOCK_META_METRICS_ID,
+          userId: MOCK_ANALYTICS_ID,
           type: 'track',
         };
 

@@ -1,7 +1,13 @@
 import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers';
 import { Hex, assert } from '@metamask/utils';
 import { Duration } from 'luxon';
+import {
+  processAssetParams,
+  resolveAssetRouteLookup,
+} from '../../../shared/lib/asset-route';
 import { PriceApiTimePeriod } from './types/PriceApiTimePeriod';
+
+export { processAssetParams, resolveAssetRouteLookup };
 
 /** Formats a datetime in a short human readable format like 'Feb 8, 12:11 PM' */
 export const getShortDateFormatter = () =>
@@ -19,6 +25,23 @@ export const getShortDateFormatterV2 = () =>
     month: 'short',
     day: 'numeric',
   });
+
+/**
+ * Returns a dynamically formatted date string.
+ * If the date is in the same year as the current date, it omits the year.
+ * Otherwise, it includes the year.
+ *
+ * @param date - The date to format, either as a Date object or timestamp.
+ * @returns A formatted date string.
+ */
+export const getDynamicShortDate = (date: Date | number) => {
+  const currentDate = new Date(date);
+  const now = new Date();
+  const isSameYear = currentDate.getFullYear() === now.getFullYear();
+  return isSameYear
+    ? getShortDateFormatter().format(date)
+    : getShortDateFormatterV2().format(date);
+};
 
 /**
  * Returns the number of decimals the fiat price should be formatted to.
@@ -47,6 +70,11 @@ export const chainSupportsPricing = (chainId: Hex) =>
 
 /** The opacity components should set during transition */
 export const loadingOpacity = 0.2;
+
+export const finiteFallback = <TFallback>(
+  value: number,
+  fallback: TFallback,
+): number | TFallback => (Number.isFinite(value) ? value : fallback);
 
 export const findAssetByAddress = <TItem extends { address: string }>(
   data: Record<string, TItem[]>,

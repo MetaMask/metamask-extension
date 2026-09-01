@@ -1,17 +1,17 @@
 import { ButtonVariant } from '@metamask/snaps-sdk';
 import React, { useCallback, useEffect } from 'react';
 import {
-  BlockaidReason,
-  SecurityProvider,
-} from '../../../../../shared/constants/security-provider';
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  Checkbox,
+} from '@metamask/design-system-react';
+import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
-  AlignItems,
-  BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
-  FlexDirection,
   IconColor,
   Severity,
   TextAlign,
@@ -21,11 +21,11 @@ import {
 import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
+import { useSendingAssetsFiatTotal } from '../../../../pages/confirmations/hooks/alerts/useSendingAssetsFiatTotal';
+import { REASON_TO_REQUEST_TYPE_TKEY } from '../../../../pages/confirmations/hooks/alerts/constants';
 import {
-  Box,
   Button,
   ButtonSize,
-  Checkbox,
   Icon,
   IconName,
   IconSize,
@@ -88,20 +88,28 @@ function getSeverityStyle(severity?: Severity) {
   switch (severity) {
     case Severity.Warning:
       return {
-        background: BackgroundColor.warningMuted,
+        background: BoxBackgroundColor.WarningMuted,
         icon: IconColor.warningDefault,
       };
     case Severity.Danger:
       return {
-        background: BackgroundColor.errorMuted,
+        background: BoxBackgroundColor.ErrorMuted,
         icon: IconColor.errorDefault,
       };
     default:
       return {
-        background: BackgroundColor.backgroundDefault,
+        background: BoxBackgroundColor.BackgroundDefault,
         icon: IconColor.infoDefault,
       };
   }
+}
+
+function requiresAcknowledgement(alert: Alert) {
+  return (
+    alert.severity === Severity.Danger &&
+    !alert.isBlocking &&
+    !alert.acknowledgeBypass
+  );
 }
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -114,19 +122,23 @@ function AlertHeader({
   customTitle?: string;
 }) {
   const t = useI18nContext();
-  const { severity, reason } = selectedAlert;
+  const { severity, reason, iconName, iconColor } = selectedAlert;
   const severityStyle = getSeverityStyle(severity);
   return (
     <Box
       gap={3}
-      display={Display.Block}
-      alignItems={AlignItems.center}
-      textAlign={TextAlign.Center}
+      className="block text-center"
+      alignItems={BoxAlignItems.Center}
     >
       <Icon
-        name={severity === Severity.Info ? IconName.Info : IconName.Danger}
+        name={
+          iconName ??
+          (severity === Severity.Info || severity === Severity.Success
+            ? IconName.Info
+            : IconName.Danger)
+        }
         size={IconSize.Xl}
-        color={severityStyle.icon}
+        color={iconColor ?? severityStyle.icon}
       />
       <Text
         variant={TextVariant.headingSm}
@@ -146,33 +158,20 @@ function BlockaidAlertDetails() {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
   const { securityAlertResponse } = currentConfirmation;
-  let copy;
-  switch (securityAlertResponse?.reason) {
-    case BlockaidReason.approvalFarming:
-    case BlockaidReason.setApprovalForAll:
-    case BlockaidReason.permitFarming:
-      copy = t('blockaidAlertDescriptionWithdraw');
-      break;
-    case BlockaidReason.transferFarming:
-    case BlockaidReason.transferFromFarming:
-    case BlockaidReason.rawNativeTokenTransfer:
-      copy = t('blockaidAlertDescriptionTokenTransfer');
-      break;
-    case BlockaidReason.seaportFarming:
-      copy = t('blockaidAlertDescriptionOpenSea');
-      break;
-    case BlockaidReason.blurFarming:
-      copy = t('blockaidAlertDescriptionBlur');
-      break;
-    case BlockaidReason.maliciousDomain:
-      copy = t('blockaidAlertDescriptionMalicious');
-      break;
-    case BlockaidReason.rawSignatureFarming:
-    case BlockaidReason.tradeOrderFarming:
-    case BlockaidReason.other:
-    default:
-      copy = t('blockaidAlertDescriptionOthers');
-  }
+  const sendingFiatTotal = useSendingAssetsFiatTotal();
+
+  const requestTypeNoun = t(
+    REASON_TO_REQUEST_TYPE_TKEY[
+      securityAlertResponse?.reason as keyof typeof REASON_TO_REQUEST_TYPE_TKEY
+    ] || 'blockaidRequestTypeRequest',
+  );
+
+  const copy = sendingFiatTotal
+    ? t('blockaidAlertModalMessageWithAmount', [
+        requestTypeNoun,
+        sendingFiatTotal,
+      ])
+    : t('blockaidAlertModalMessage', [requestTypeNoun]);
 
   return (
     <Text textAlign={TextAlign.Center} variant={TextVariant.bodyMd}>
@@ -192,14 +191,21 @@ function AlertDetails({
 }) {
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
+  const customAlertBg = selectedAlert.alertDetailsBackgroundColor;
+
   return (
     <Box
       key={selectedAlert.key}
-      display={Display.InlineBlock}
+      className="inline-block w-full rounded-sm"
       padding={customDetails ? 0 : 2}
-      width={BlockSize.Full}
-      backgroundColor={customDetails ? undefined : severityStyle.background}
-      borderRadius={BorderRadius.SM}
+      backgroundColor={
+        customDetails || customAlertBg ? undefined : severityStyle.background
+      }
+      style={
+        !customDetails && customAlertBg
+          ? { backgroundColor: `var(--color-${customAlertBg})` }
+          : undefined
+      }
     >
       {customDetails ?? (
         <Box>
@@ -217,12 +223,16 @@ function AlertDetails({
               {t('alertModalDetails')}
             </Text>
           ) : null}
-          <Box as="ul" className="alert-modal__alert-details" paddingLeft={6}>
-            {selectedAlert.alertDetails?.map((detail, index) => (
-              <Box as="li" key={`${selectedAlert.key}-detail-${index}`}>
-                <Text variant={TextVariant.bodyMd}>{detail}</Text>
-              </Box>
-            ))}
+          <Box asChild paddingLeft={6}>
+            <ul className="alert-modal__alert-details">
+              {selectedAlert.alertDetails?.map((detail, index) => (
+                <Box asChild key={`${selectedAlert.key}-detail-${index}`}>
+                  <li>
+                    <Text variant={TextVariant.bodyMd}>{detail}</Text>
+                  </li>
+                </Box>
+              ))}
+            </ul>
           </Box>
         </Box>
       )}
@@ -230,8 +240,6 @@ function AlertDetails({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AcknowledgeCheckboxBase({
   selectedAlert,
   onCheckboxClick,
@@ -243,30 +251,27 @@ export function AcknowledgeCheckboxBase({
   isConfirmed: boolean;
   label?: string;
 }) {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  if (selectedAlert.isBlocking || selectedAlert.severity !== Severity.Danger) {
+  const t = useI18nContext();
+  const severityStyle = getSeverityStyle(selectedAlert.severity);
+
+  if (!requiresAcknowledgement(selectedAlert)) {
     return null;
   }
 
-  const t = useI18nContext();
-  const severityStyle = getSeverityStyle(selectedAlert.severity);
   return (
     <Box
-      display={Display.Flex}
+      className="flex w-full rounded-lg"
       padding={4}
-      width={BlockSize.Full}
       backgroundColor={severityStyle.background}
-      borderRadius={BorderRadius.LG}
       marginTop={4}
     >
       <Checkbox
+        id="alert-modal-acknowledge-checkbox"
         label={label ?? t('alertModalAcknowledge')}
         data-testid="alert-modal-acknowledge-checkbox"
-        isChecked={isConfirmed}
+        isSelected={isConfirmed}
         onChange={onCheckboxClick}
-        alignItems={AlignItems.flexStart}
-        className="alert-modal__acknowledge-checkbox"
+        className="alert-modal__acknowledge-checkbox items-start"
       />
     </Box>
   );
@@ -279,11 +284,13 @@ function AcknowledgeButton({
   isConfirmed,
   hasActions,
   isBlocking,
+  label,
 }: {
   onAcknowledgeClick: () => void;
   isConfirmed: boolean;
   hasActions?: boolean;
   isBlocking?: boolean;
+  label?: string;
 }) {
   const t = useI18nContext();
 
@@ -296,7 +303,7 @@ function AcknowledgeButton({
       data-testid="alert-modal-button"
       disabled={!isBlocking && !isConfirmed}
     >
-      {t('gotIt')}
+      {label ?? t('gotIt')}
     </Button>
   );
 }
@@ -346,8 +353,6 @@ function ActionButton({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AlertModal({
   ownerId,
   onAcknowledgeClick,
@@ -364,8 +369,8 @@ export function AlertModal({
   const { trackAlertRender } = useAlertMetrics();
 
   const handleClose = useCallback(
-    (...args) => {
-      onClose(...args);
+    (request?: { recursive?: boolean } | void) => {
+      onClose(request ?? undefined);
     },
     [onClose],
   );
@@ -381,8 +386,8 @@ export function AlertModal({
   const isConfirmed = selectedAlert
     ? isAlertConfirmed(selectedAlert.key)
     : false;
-  const isAlertDanger = selectedAlert
-    ? selectedAlert.severity === Severity.Danger
+  const acknowledgementRequired = selectedAlert
+    ? requiresAcknowledgement(selectedAlert)
     : false;
 
   const handleCheckboxClick = useCallback(() => {
@@ -396,7 +401,12 @@ export function AlertModal({
   }
 
   return (
-    <Modal isOpen onClose={handleClose} data-testid="alert-modal">
+    <Modal
+      isOpen
+      onClose={handleClose}
+      data-testid="alert-modal"
+      autoFocus={false}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
@@ -429,19 +439,22 @@ export function AlertModal({
         </ModalBody>
         <ModalFooter>
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
+            className="flex w-full"
+            flexDirection={BoxFlexDirection.Column}
             gap={4}
             paddingTop={2}
-            width={BlockSize.Full}
           >
             {customAcknowledgeButton ?? (
               <>
                 <AcknowledgeButton
-                  onAcknowledgeClick={onAcknowledgeClick}
-                  isConfirmed={!isAlertDanger || isConfirmed}
+                  onAcknowledgeClick={
+                    selectedAlert.customAcknowledgeButtonOnClick ??
+                    onAcknowledgeClick
+                  }
+                  isConfirmed={acknowledgementRequired ? isConfirmed : true}
                   hasActions={Boolean(selectedAlert.actions)}
                   isBlocking={selectedAlert.isBlocking}
+                  label={selectedAlert.customAcknowledgeButtonText}
                 />
                 {(selectedAlert.actions ?? []).map(
                   (action: { key: string; label: string }) => (

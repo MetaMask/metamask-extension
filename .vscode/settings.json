@@ -1,5 +1,5 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "oxc.oxc-vscode",
   // Used for tailwind intellisense
   "editor.quickSuggestions": {
     "strings": true
@@ -13,7 +13,8 @@
   "gitlens.advanced.blame.customArguments": [
     "--ignore-revs-file .git-blame-ignore-revs"
   ],
-  "javascript.preferences.importModuleSpecifier": "relative",
+  "js/ts.preferences.importModuleSpecifier": "relative",
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
   "json.schemas": [
     {
       "fileMatch": ["app/manifest/*/*.json"],
@@ -25,8 +26,8 @@
       "url": "./.vscode/package.json-schema.json"
     }
   ],
+  "oxc.fmt.configPath": "oxfmt.config.mts",
   "tailwindCSS.classFunctions": ["classnames", "classNames"],
   "tailwindCSS.lint.cssConflict": "error",
-  "tailwindCSS.validate": true,
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "tailwindCSS.validate": true
 }

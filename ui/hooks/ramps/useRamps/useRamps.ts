@@ -1,14 +1,18 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { isSolanaChainId } from '@metamask/bridge-controller';
 import { CaipChainId, Hex, hexToNumber } from '@metamask/utils';
+import { formatChainIdToHex } from '@metamask/bridge-controller';
 import { ChainId } from '../../../../shared/constants/network';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import {
   getDataCollectionForMarketing,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
+  getAnalyticsId,
+  getConsentDecisionMade,
+  getOptedIn,
 } from '../../../selectors';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+
+const DEFAULT_PORTFOLIO_URL = 'https://app.metamask.io';
 
 type IUseRamps = {
   openBuyCryptoInPdapp: (chainId?: ChainId | CaipChainId) => void;
@@ -27,8 +31,10 @@ const useRamps = (
   metamaskEntry: RampsMetaMaskEntry = RampsMetaMaskEntry.BuySellButton,
 ): IUseRamps => {
   const chainId = useSelector(getCurrentChainId);
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
+  const analyticsId = useSelector(getAnalyticsId);
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
+  const isOptedIn = useSelector(getOptedIn);
+  const isMetaMetricsEnabled = consentDecisionMade && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const getBuyURI = useCallback(
@@ -38,28 +44,31 @@ const useRamps = (
         params.set('metamaskEntry', metamaskEntry);
 
         let numericChainId = '';
-        if (isSolanaChainId(_chainId)) {
-          numericChainId = _chainId;
+        if (isEvmChainId(_chainId)) {
+          // EVM chain ids may arrive as hex or CAIP (`eip155:1`); normalize to
+          // hex first so callers can pass whichever format they already have.
+          numericChainId = hexToNumber(formatChainIdToHex(_chainId)).toString();
         } else {
-          numericChainId = hexToNumber(_chainId).toString();
+          numericChainId = _chainId;
         }
+
         params.set('chainId', numericChainId);
-        if (metaMetricsId) {
-          params.set('metametricsId', metaMetricsId);
+        if (analyticsId) {
+          params.set('metametricsId', analyticsId);
         }
-        params.set('metricsEnabled', String(isMetaMetricsEnabled));
+        params.set('metricsEnabled', String(isMetaMetricsEnabled === true));
         if (isMarketingEnabled) {
           params.set('marketingEnabled', String(isMarketingEnabled));
         }
-        const url = new URL(process.env.PORTFOLIO_URL || '');
+        const url = new URL(process.env.PORTFOLIO_URL || DEFAULT_PORTFOLIO_URL);
         url.pathname = 'buy';
         url.search = params.toString();
         return url.toString();
       } catch {
-        return 'https://app.metamask.io/buy';
+        return `${DEFAULT_PORTFOLIO_URL}/buy`;
       }
     },
-    [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, metamaskEntry],
+    [isMarketingEnabled, isMetaMetricsEnabled, analyticsId, metamaskEntry],
   );
 
   const openBuyCryptoInPdapp = useCallback(

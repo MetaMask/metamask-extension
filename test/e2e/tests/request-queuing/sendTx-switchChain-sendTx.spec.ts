@@ -1,14 +1,15 @@
 import { Suite } from 'mocha';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import AlertModal from '../../page-objects/pages/confirmations/redesign/alert-modal';
-import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import AlertModal from '../../page-objects/pages/confirmations/alert-modal';
+import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import ActivityTab from '../../page-objects/pages/home/activity-tab';
 
 describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function (this: Suite) {
   it('switching network should reject pending confirmations', async function () {
@@ -16,8 +17,8 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function (this: Sui
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -37,13 +38,16 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function (this: Sui
       },
 
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 
         // Dapp Send Button
         await testDapp.clickSimpleSendButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkPageIsLoaded();
 
         // Navigate back to test dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -66,7 +70,6 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function (this: Sui
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.clickNextPage();
 
         // Confirm Switch Chain
@@ -86,8 +89,8 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function (this: Sui
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
 
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkNoTxInActivity();
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkNoTxInActivity();
       },
     );
   });

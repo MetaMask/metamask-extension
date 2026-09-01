@@ -18,6 +18,9 @@ export type UIComponentParams<T extends JSXElement> = {
   t: (key: string) => string;
   contentBackgroundColor: string | undefined;
   componentMap: COMPONENT_MAPPING;
+  isScrollableContainer?: boolean;
+  setScroll: () => void;
+  scrollableContainerRef: React.RefObject<HTMLDivElement>;
 };
 
 export type UIComponent = {

@@ -7,18 +7,18 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   getShouldShowFiat,
   txDataSelector,
-  getCurrentKeyring,
   getTokenExchangeRates,
-  getPreferences,
   selectConversionRateByChainId,
-  selectNetworkConfigurationByChainId,
 } from '../../../selectors';
+import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { selectNetworkConfigurationByChainId } from '../../../../shared/lib/selectors/networks';
 
 import {
   getCustomMaxFeePerGas,
   getCustomMaxPriorityFeePerGas,
 } from '../../../ducks/swaps/swaps';
-import { Numeric } from '../../../../shared/modules/Numeric';
+import { Numeric } from '../../../../shared/lib/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import {

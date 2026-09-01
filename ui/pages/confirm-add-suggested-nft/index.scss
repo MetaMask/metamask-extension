@@ -75,21 +75,8 @@
   }
 
   &.page-container {
-    $height-screen-sm-min: 720px;
-
     background-color: var(--color-background-alternative);
     transition: margin-top 0.3s ease-in-out, margin-bottom 0.3s ease-in-out;
-
-    @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
-      margin-top: 32px;
-      margin-bottom: 32px;
-    }
-
-    &.confirm-add-suggested-nft--has-app-header-multichain {
-      @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
-        margin-top: 0;
-      }
-    }
   }
 
   .page-container {

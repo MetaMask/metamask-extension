@@ -1,5 +1,7 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+/* eslint-disable @typescript-eslint/naming-convention */
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
@@ -61,32 +63,16 @@ const STATE_MOCK = getMockConfirmStateForTransaction(
 );
 
 const EXPECTED_PROPERTIES_BASE = {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_action_clicked: [],
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_key_clicked: [],
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_resolved: [],
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_resolved_count: 0,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_triggered: [
     ALERT_NAME_METRICS_MOCK,
     ALERTS_NAME_METRICS[AlertsName.Blockaid],
   ],
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_triggered_count: 2,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_visualized: [],
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_visualized_count: 0,
 };
 
@@ -100,6 +86,17 @@ beforeEach(() => {
 });
 
 describe('useConfirmationAlertMetrics', () => {
+  it('reports an unreadable Perps balance under its own metrics name', () => {
+    // The key was split from InsufficientPayTokenBalance so alert_triggered /
+    // alert_resolved stop conflating the two. `getAlertName` falls back to the
+    // raw key, so dropping or renaming the entry does not fail anything — it
+    // just silently changes the metric's shape mid-flight, emitting the
+    // camelCase `perpsWithdrawBalanceUnavailable` among snake_case names.
+    expect(
+      ALERTS_NAME_METRICS[AlertsName.PerpsWithdrawBalanceUnavailable],
+    ).toBe('perps_withdraw_balance_unavailable');
+  });
+
   it('initializes metrics properties correctly', () => {
     const { result } = renderHookWithConfirmContextProvider(
       () => useConfirmationAlertMetrics(),
@@ -129,11 +126,7 @@ describe('useConfirmationAlertMetrics', () => {
       alertKey: AlertsName.GasFeeLow,
       action: 'trackAlertRender',
       expectedProperties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_visualized: [ALERT_NAME_METRICS_MOCK],
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_visualized_count: 1,
       },
     },
@@ -143,8 +136,6 @@ describe('useConfirmationAlertMetrics', () => {
       alertKey: AlertsName.GasFeeLow,
       action: 'trackInlineAlertClicked',
       expectedProperties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_key_clicked: [ALERT_NAME_METRICS_MOCK],
       },
     },
@@ -154,8 +145,6 @@ describe('useConfirmationAlertMetrics', () => {
       alertKey: AlertsName.GasFeeLow,
       action: 'trackAlertActionClicked',
       expectedProperties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_action_clicked: [ALERT_NAME_METRICS_MOCK],
       },
     },
@@ -165,11 +154,7 @@ describe('useConfirmationAlertMetrics', () => {
       alertKey: UUID_ALERT_KEY_MOCK,
       action: 'trackAlertRender',
       expectedProperties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_visualized: [ALERTS_NAME_METRICS[AlertsName.Blockaid]],
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_visualized_count: 1,
       },
     },

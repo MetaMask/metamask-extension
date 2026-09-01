@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import {
   AlignItems,
   BackgroundColor,
@@ -32,6 +32,7 @@ export const AppHeaderContainer = ({
       alignItems={AlignItems.center}
       width={BlockSize.Full}
       backgroundColor={backgroundColor}
+      data-testid="parent-selector-header-navbar"
     >
       {children}
     </Box>

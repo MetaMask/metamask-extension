@@ -1,7 +1,6 @@
 import punycode from 'punycode/punycode';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
-import BN from 'bn.js';
 import { DateTime } from 'luxon';
 import {
   getFormattedIpfsUrl,
@@ -16,26 +15,22 @@ import { isObject, isStrictHexString } from '@metamask/utils';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { logErrorWithMessage } from '../../../shared/modules/error';
+import { logErrorWithMessage } from '../../../shared/lib/error';
 import {
   toChecksumHexAddress,
   stripHexPrefix,
-} from '../../../shared/modules/hexstring-utils';
+} from '../../../shared/lib/hexstring-utils';
 import {
   TRUNCATED_ADDRESS_START_CHARS,
   TRUNCATED_NAME_CHAR_LIMIT,
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
-import { Numeric } from '../../../shared/modules/Numeric';
+import { Numeric } from '../../../shared/lib/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 // formatData :: ( date: <Unix Timestamp> ) -> String
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import { hexToDecimal } from '../../../shared/lib/conversion.utils';
 import { SNAPS_VIEW_ROUTE } from '../constants/routes';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
 import { isMultichainWalletSnap } from '../../../shared/lib/accounts';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -97,28 +92,6 @@ function getOrdinalSuffix(day) {
       return 'th';
   }
 }
-/**
- * Determines if the provided chainId is a default MetaMask chain
- *
- * @param {string} chainId - chainId to check
- */
-export function isDefaultMetaMaskChain(chainId) {
-  if (
-    !chainId ||
-    chainId === CHAIN_IDS.MAINNET ||
-    chainId === CHAIN_IDS.LINEA_MAINNET ||
-    chainId === CHAIN_IDS.GOERLI ||
-    chainId === CHAIN_IDS.SEPOLIA ||
-    chainId === CHAIN_IDS.LINEA_GOERLI ||
-    chainId === CHAIN_IDS.LINEA_SEPOLIA ||
-    chainId === CHAIN_IDS.LOCALHOST
-  ) {
-    return true;
-  }
-
-  return false;
-}
-
 export function valuesFor(obj) {
   if (!obj) {
     return [];
@@ -126,26 +99,6 @@ export function valuesFor(obj) {
   return Object.keys(obj).map(function (key) {
     return obj[key];
   });
-}
-
-export function addressSummary(
-  address,
-  firstSegLength = 10,
-  lastSegLength = 4,
-  includeHex = true,
-) {
-  if (!address) {
-    return '';
-  }
-  let checked = normalizeSafeAddress(address);
-  if (!includeHex) {
-    checked = stripHexPrefix(checked);
-  }
-  return checked
-    ? `${checked.slice(0, firstSegLength)}...${checked.slice(
-        checked.length - lastSegLength,
-      )}`
-    : '...';
 }
 
 export function isValidDomainName(address) {
@@ -162,20 +115,91 @@ export function isValidDomainName(address) {
   return match !== null;
 }
 
-export function isOriginContractAddress(to, sendTokenAddress) {
-  if (!to || !sendTokenAddress) {
+/**
+ * Checks if a name could potentially be resolved by name resolution services or Snaps.
+ * This is more permissive than isValidDomainName to allow resolver Snaps to handle
+ * various name formats like email-like names (yulia@beast), scheme-based names (ens:vitalik),
+ * or other custom formats.
+ *
+ * @param {string} name - The name to check
+ * @returns {boolean} True if the name could potentially be resolved
+ */
+export function isResolvableName(name) {
+  // Must be a non-empty string
+  if (!name || typeof name !== 'string') {
     return false;
   }
-  return to.toLowerCase() === sendTokenAddress.toLowerCase();
+
+  const trimmed = name.trim();
+
+  // Minimum length of 2 characters
+  if (trimmed.length < 2) {
+    return false;
+  }
+
+  // Reject if it looks like an Ethereum address (0x followed by 40 hex chars)
+  if (/^0x[a-fA-F0-9]{40}$/u.test(trimmed)) {
+    return false;
+  }
+
+  // Reject pure numbers
+  if (/^\d+$/u.test(trimmed)) {
+    return false;
+  }
+
+  // Reject URLs - check for common URL schemes early to avoid false positives
+  const URL_SCHEMES = [
+    'http',
+    'https',
+    'ftp',
+    'ftps',
+    'file',
+    'mailto',
+    'tel',
+    'sms',
+    'data',
+    'blob',
+    'javascript',
+    'ws',
+    'wss',
+  ];
+  if (trimmed.includes(':')) {
+    const scheme = trimmed.split(':')[0].toLowerCase();
+    if (URL_SCHEMES.includes(scheme)) {
+      return false;
+    }
+  }
+
+  // Accept if it matches traditional domain name format
+  if (isValidDomainName(trimmed)) {
+    return true;
+  }
+
+  // Accept email-like formats (contains @ with text on both sides)
+  if (/^[^\s@]+@[^\s@]+$/u.test(trimmed)) {
+    return true;
+  }
+
+  // Accept scheme-based formats (e.g., ens:vitalik, lens:username)
+  if (/^[a-zA-Z][a-zA-Z0-9]*:[^\s]+$/u.test(trimmed)) {
+    return true;
+  }
+
+  return false;
 }
 
-// Takes wei Hex, returns wei BN, even if input is null
+// Takes wei hex, returns wei bigint, even if input is null
 export function numericBalance(balance) {
   if (!balance) {
-    return new BN(0, 16);
+    return 0n;
   }
+
   const stripped = stripHexPrefix(balance);
-  return new BN(stripped, 16);
+  if (!stripped) {
+    return 0n;
+  }
+
+  return BigInt(`0x${stripped}`);
 }
 
 // Takes  hex, returns [beforeDecimal, afterDecimal]
@@ -236,20 +260,6 @@ export function getContractAtAddress(tokenAddress) {
     abi,
     new Web3Provider(global.ethereumProvider),
   );
-}
-
-export function getRandomFileName() {
-  let fileName = '';
-  const charBank = [
-    ...'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
-  ];
-  const fileNameLength = Math.floor(Math.random() * 7 + 6);
-
-  for (let i = 0; i < fileNameLength; i++) {
-    fileName += charBank[Math.floor(Math.random() * charBank.length)];
-  }
-
-  return fileName;
 }
 
 /**
@@ -332,18 +342,6 @@ export function sortSelectedInternalAccounts(accounts) {
 
 /**
  * Strips the following schemes from URL strings:
- * - http
- * - https
- *
- * @param {string} urlString - The URL string to strip the scheme from.
- * @returns {string} The URL string, without the scheme, if it was stripped.
- */
-export function stripHttpSchemes(urlString) {
-  return urlString.replace(/^https?:\/\//u, '');
-}
-
-/**
- * Strips the following schemes from URL strings:
  * - https
  *
  * @param {string} urlString - The URL string to strip the scheme from.
@@ -411,20 +409,6 @@ export function checkExistingAddresses(address, list = []) {
   return list.some(matchesAddress);
 }
 
-export function checkExistingAllTokens(
-  address,
-  chainId,
-  accountAddress,
-  list = {},
-) {
-  if (!address) {
-    return false;
-  }
-  return list?.[chainId]?.[accountAddress]?.some(
-    (obj) => obj.address.toLowerCase() === address.toLowerCase(),
-  );
-}
-
 export function bnGreaterThan(a, b) {
   if (a === null || a === undefined || b === null || b === undefined) {
     return null;
@@ -483,6 +467,12 @@ export const toHumanReadableTime = (t, milliseconds) => {
   if (milliseconds === undefined || milliseconds === null) {
     return '';
   }
+
+  if (milliseconds < 1000) {
+    const decimalSeconds = (milliseconds / 1000).toFixed(1);
+    return t('gasTimingSecondsShort', [decimalSeconds]);
+  }
+
   const seconds = Math.ceil(milliseconds / 1000);
   if (seconds <= SECOND_CUTOFF) {
     return t('gasTimingSecondsShort', [seconds]);
@@ -680,7 +670,7 @@ export const getSnapName = (snapsMetadata) => {
 };
 
 export const getSnapRoute = (snapId) => {
-  return `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`;
+  return `${SNAPS_VIEW_ROUTE}?snapId=${encodeURIComponent(snapId)}`;
 };
 
 export const getDedupedSnaps = (request, permissions) => {
@@ -704,26 +694,28 @@ export const getDedupedSnaps = (request, permissions) => {
 
 export const IS_FLASK = process.env.METAMASK_BUILD_TYPE === 'flask';
 
-const REGEX_LTR_OVERRIDE = /\u202D/giu;
-const REGEX_RTL_OVERRIDE = /\u202E/giu;
-
 /**
- * The method escapes LTR and RTL override unicode in the string
+ * Escapes bidirectional and invisible Unicode control characters in a string.
+ * Prevents text direction manipulation attacks by making hidden characters visible.
+ * This is critical for user safety when signing transactions or messages.
  *
- * @param {*} value
- * @returns {(string|*)} escaped string or original param value
+ * @param {*} value - Input value to sanitize
+ * @returns {string|*} Escaped string or original value if not a string
+ * @example
+ * sanitizeString('Send 100\u200F0 ETH'); // Returns: 'Send 100\u200F0 ETH'
  */
 export const sanitizeString = (value) => {
-  if (!value) {
-    return value;
-  }
-  if (!lodash.isString(value)) {
+  if (!value || !lodash.isString(value)) {
     return value;
   }
 
-  return value
-    .replace(REGEX_LTR_OVERRIDE, '\\u202D')
-    .replace(REGEX_RTL_OVERRIDE, '\\u202E');
+  // Escape all Unicode Format characters (includes bidi controls and zero-width chars)
+  const INVISIBLE_CHARS = /\p{Cf}/gu;
+
+  return value.replace(INVISIBLE_CHARS, (char) => {
+    const hex = char.codePointAt(0).toString(16).toUpperCase().padStart(4, '0');
+    return `\\u${hex}`;
+  });
 };
 
 /**
@@ -732,11 +724,18 @@ export const sanitizeString = (value) => {
  * @param keyringType - The type of the keyring.
  * @returns {boolean} `false` if the keyring type includes 'Hardware' or 'Snap', `true` otherwise.
  */
-export const isAbleToExportAccount = (keyringType = '') => {
+export const isAbleToExportAccount = (keyringType) => {
+  if (typeof keyringType !== 'string') {
+    return false;
+  }
   return !keyringType.includes('Hardware') && !keyringType.includes('Snap');
 };
 
-export const isAbleToRevealSrp = (accountToExport, keyrings) => {
+export const isAbleToRevealSrp = (accountToExport, keyrings = []) => {
+  if (!isObject(accountToExport)) {
+    return false;
+  }
+
   const {
     metadata: {
       keyring: { type },

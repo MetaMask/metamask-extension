@@ -1,7 +1,8 @@
-import { withFixtures, WINDOW_TITLES, largeDelayMs } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
+import { withFixtures, largeDelayMs } from '../helpers';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { mockCronjobSnap } from '../mock-response-data/snaps/snap-binary-mocks';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { Driver } from '../webdriver/driver';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
@@ -11,12 +12,17 @@ describe('Test Snap Cronjob', function () {
   it('can trigger a cronjob to open a dialog every minute', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockCronjobSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver);
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);
         await openTestSnapClickButtonAndInstall(

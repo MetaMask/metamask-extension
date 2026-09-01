@@ -11,7 +11,7 @@ import useAlerts from '../../../../hooks/useAlerts';
 import { AlertActionHandlerProvider } from '../../../../components/app/alert-system/contexts/alertActionHandler';
 import { AlertMetricsProvider } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
-import { getMemoizedUnapprovedConfirmations } from '../../../../selectors';
+import { getUnapprovedConfirmations } from '../../../../selectors';
 import { useTemplateConfirmationAlerts } from './useTemplateConfirmationAlerts';
 import { useAlertsActions } from './useAlertsActions';
 
@@ -26,12 +26,16 @@ export const TemplateAlertContext = createContext<
   TemplateAlertContextType | undefined
 >(undefined);
 
-export const TemplateAlertContextProvider: React.FC<{
+export const TemplateAlertContextProvider = ({
+  children,
+  confirmationId,
+  onSubmit,
+}: React.PropsWithChildren<{
   children: ReactElement;
   confirmationId: string;
   onSubmit: () => void;
-}> = ({ children, confirmationId, onSubmit }) => {
-  const pendingConfirmations = useSelector(getMemoizedUnapprovedConfirmations);
+}>) => {
+  const pendingConfirmations = useSelector(getUnapprovedConfirmations);
 
   const pendingConfirmation =
     pendingConfirmations?.find(

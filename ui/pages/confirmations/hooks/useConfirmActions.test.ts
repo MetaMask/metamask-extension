@@ -7,6 +7,7 @@ import * as ConfirmSendNavigation from './useConfirmSendNavigation';
 import { useConfirmActions } from './useConfirmActions';
 
 const mockDispatch = jest.fn();
+const mockNavigate = jest.fn();
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -16,7 +17,12 @@ jest.mock('react-redux', () => {
   };
 });
 
-function renderHook() {
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
+function renderHook(pathname = '/') {
   const transactionMeta = genUnapprovedTokenTransferConfirmation({
     amountHex:
       '0000000000000000000000000000000000000000000000000000000000011170',
@@ -25,15 +31,34 @@ function renderHook() {
   const { result } = renderHookWithConfirmContextProvider(
     () => useConfirmActions(),
     getMockConfirmStateForTransaction(transactionMeta),
+    pathname,
   );
   return result.current;
 }
 
 describe('useConfirmActions', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('returns correct functions', () => {
     const result = renderHook();
     expect(result.onCancel).toBeDefined();
     expect(result.resetTransactionState).toBeDefined();
+  });
+
+  it('resetTransactionState dispatches actions to clear custom nonce and next nonce', () => {
+    const result = renderHook();
+    result.resetTransactionState();
+
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'UPDATE_CUSTOM_NONCE',
+      value: '',
+    });
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'SET_NEXT_NONCE',
+      payload: '',
+    });
   });
 
   it('call navigateBackIfSend when onCancel is called, if navigateBackForSend is true', () => {
@@ -54,5 +79,39 @@ describe('useConfirmActions', () => {
     const result = renderHook();
     result.onCancel({ location: 'dummy' });
     expect(mockNavigateBackIfSend).not.toHaveBeenCalled();
+  });
+
+  // TAT-3131: navigating back from a transient wallet-initiated confirmation
+  // (perpsDeposit / perpsWithdraw / musdClaim) must REPLACE the confirmation
+  // history entry, not push on top of it. Pushing left a phantom
+  // confirm-transaction entry that broke Perps order-screen back navigation
+  // (double-tap) and post-trade navigation.
+  it('navigates to goBackTo with replace when navigateBackToPreviousPage is true', async () => {
+    mockDispatch.mockResolvedValue(undefined);
+    const result = renderHook('/?goBackTo=%2Fasset%2F0x1%2F0xabc');
+    await result.onCancel({
+      location: 'dummy',
+      navigateBackToPreviousPage: true,
+    });
+    expect(mockNavigate).toHaveBeenCalledWith('/asset/0x1/0xabc', {
+      replace: true,
+    });
+  });
+
+  it('navigates to DEFAULT_ROUTE with replace when navigateBackToPreviousPage is true but no goBackTo', async () => {
+    mockDispatch.mockResolvedValue(undefined);
+    const result = renderHook();
+    await result.onCancel({
+      location: 'dummy',
+      navigateBackToPreviousPage: true,
+    });
+    expect(mockNavigate).toHaveBeenCalledWith('/', { replace: true });
+  });
+
+  it('does not navigate back by default', async () => {
+    mockDispatch.mockResolvedValue(undefined);
+    const result = renderHook('/?goBackTo=%2Fsome-page');
+    await result.onCancel({ location: 'dummy' });
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

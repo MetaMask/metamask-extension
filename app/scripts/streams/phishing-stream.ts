@@ -1,12 +1,12 @@
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
+// @ts-expect-error @types/readable-stream does not export pipeline
 import { pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
-import PortStream from 'extension-port-stream';
-import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
+import { ExtensionPortStream } from 'extension-port-stream';
+import { isObject } from '@metamask/utils';
+import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import {
   CONTENT_SCRIPT,
@@ -19,7 +19,7 @@ import {
   PHISHING_STREAM,
   PHISHING_WARNING_PAGE,
 } from '../constants/stream';
-import { logStreamDisconnectWarning, MessageType } from './stream-utils';
+import { logStreamDisconnectWarning } from './stream-utils';
 
 const phishingPageUrl = new URL(
   process.env.PHISHING_WARNING_PAGE_URL as string,
@@ -28,7 +28,7 @@ const phishingPageUrl = new URL(
 let phishingExtChannel: Substream,
   phishingExtMux: ObjectMultiplex,
   phishingExtPort: browser.Runtime.Port,
-  phishingExtStream: PortStream | null,
+  phishingExtStream: ExtensionPortStream | null,
   phishingPageChannel: Substream,
   phishingPageMux: ObjectMultiplex,
   extensionPhishingStream: Substream;
@@ -48,6 +48,34 @@ function setupPhishingPageStreams(): void {
   // so we can handle the channels individually
   phishingPageMux = new ObjectMultiplex();
   phishingPageMux.setMaxListeners(25);
+
+  /**
+   * Graceful shutdown handler for the phishing page mux.
+   *
+   * WHY THIS IS NEEDED:
+   * This code runs in EXTENSION CONTEXT (content script), not page context.
+   * When the page navigates or closes, the underlying transport (phishingPageStream)
+   * terminates, but the extension-side mux persists. Without this handler, the pipeline
+   * detects an abrupt stream closure and throws "ERR_STREAM_PREMATURE_CLOSE" errors.
+   *
+   * By proactively ending the mux when the transport terminates, we prevent these
+   * errors from occurring. This is critical for reducing error noise - "Premature close"
+   * is currently the #1 error in Sentry with 3.8M occurrences per month.
+   *
+   * See provider-stream.ts for more detailed explanation, and:
+   * - https://github.com/MetaMask/metamask-extension/issues/26337
+   * - https://github.com/MetaMask/metamask-extension/issues/35241
+   */
+  const endPhishingPageMuxIfOpen = () => {
+    if (!phishingPageMux.destroyed && !phishingPageMux.writableEnded) {
+      phishingPageMux.end();
+    }
+  };
+
+  // Attach handlers to detect when the underlying transport terminates
+  phishingPageStream.once?.('close', endPhishingPageMuxIfOpen);
+  phishingPageStream.once?.('end', endPhishingPageMuxIfOpen);
+
   pipeline(phishingPageMux, phishingPageStream, phishingPageMux, (err: Error) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
@@ -78,11 +106,29 @@ export const setupPhishingExtStreams = (): void => {
   phishingExtPort = browser.runtime.connect({
     name: CONTENT_SCRIPT,
   });
-  phishingExtStream = new PortStream(phishingExtPort);
+  phishingExtStream = new ExtensionPortStream(phishingExtPort, {
+    chunkSize: 0,
+  });
 
   // create and connect channel muxers so we can handle the channels individually
   phishingExtMux = new ObjectMultiplex();
   phishingExtMux.setMaxListeners(25);
+
+  /**
+   * Graceful shutdown handler for the phishing extension mux.
+   * See the comment in provider-stream.ts for detailed explanation of why these
+   * handlers are necessary in extension context but not in page context.
+   */
+  const endPhishingExtMuxIfOpen = () => {
+    if (!phishingExtMux.destroyed && !phishingExtMux.writableEnded) {
+      phishingExtMux.end();
+    }
+  };
+
+  // Attach handlers to detect when the underlying transport terminates
+  phishingExtStream?.once?.('close', endPhishingExtMuxIfOpen);
+  phishingExtStream?.once?.('end', endPhishingExtMuxIfOpen);
+
   pipeline(phishingExtMux, phishingExtStream, phishingExtMux, (err: Error) => {
     logStreamDisconnectWarning('MetaMask Background Multiplex', err);
     window.postMessage(
@@ -146,8 +192,6 @@ const onDisconnectDestroyPhishingStreams = (): void => {
    * once the port and connections are ready. Delay time is arbitrary.
    */
   if (err) {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.warn(`${err} Resetting the phishing streams.`);
     setTimeout(setupPhishingExtStreams, 1000);
   }
@@ -161,9 +205,9 @@ const onDisconnectDestroyPhishingStreams = (): void => {
  * @param msg.name - Custom property and name to identify the message received
  */
 const onMessageSetUpPhishingStreams = (
-  msg: MessageType,
-): Promise<string | undefined> | undefined => {
-  if (msg.name === EXTENSION_MESSAGES.READY) {
+  msg: unknown,
+): Promise<string> | undefined => {
+  if (isObject(msg) && msg.name === EXTENSION_MESSAGES.READY) {
     if (!phishingExtStream) {
       setupPhishingExtStreams();
     }
@@ -171,6 +215,7 @@ const onMessageSetUpPhishingStreams = (
       `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for phishing streams`,
     );
   }
+  // A Promise would claim the response channel from other message listeners.
   return undefined;
 };
 
@@ -187,8 +232,6 @@ export function redirectToPhishingWarning(): void {
   const baseUrl = process.env.PHISHING_WARNING_PAGE_URL;
 
   const querystring = new URLSearchParams({ hostname, href });
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   window.location.href = `${baseUrl}#${querystring}`;
   // eslint-disable-next-line no-constant-condition
   while (1) {

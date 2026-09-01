@@ -1,19 +1,16 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, Route } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
-export default function FeatureToggledRoute({ flag, redirectRoute, ...props }) {
-  const redirect = useMemo(
-    () => ({ pathname: redirectRoute }),
-    [redirectRoute],
-  );
+export default function FeatureToggledRoute({ flag, redirectRoute, element }) {
   if (flag) {
-    return <Route {...props} />;
+    return element;
   }
-  return <Redirect to={redirect} />;
+  return <Navigate to={redirectRoute} replace />;
 }
 
 FeatureToggledRoute.propTypes = {
   flag: PropTypes.bool.isRequired,
   redirectRoute: PropTypes.string.isRequired,
+  element: PropTypes.node.isRequired,
 };

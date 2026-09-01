@@ -3,7 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import {
   updateNetwork,
   setActiveNetwork,

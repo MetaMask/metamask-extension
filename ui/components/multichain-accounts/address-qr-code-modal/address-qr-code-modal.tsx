@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, {
+  useCallback,
+  useMemo,
+  useState,
+  useRef,
+  useEffect,
+} from 'react';
 import qrCode from 'qrcode-generator';
 import { CaipChainId } from '@metamask/utils';
 import {
@@ -8,6 +14,7 @@ import {
   TextColor,
   Button,
   IconName,
+  IconColor,
   ButtonVariant,
   ButtonSize,
   Box,
@@ -18,6 +25,10 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import {
+  BackgroundColor,
+  TextColor as DesignSystemTextColor,
+} from '../../../helpers/constants/design-system';
+import {
   Modal,
   ModalOverlay,
   ModalContent,
@@ -27,8 +38,8 @@ import {
 import type { ModalProps } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getBlockExplorerInfo } from '../../../helpers/utils/multichain/getBlockExplorerInfo';
 
 // Constants for QR code generation
@@ -54,7 +65,7 @@ export type AddressQRCodeModalProps = Omit<
   networkImageSrc?: string | undefined;
 };
 
-export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
+export const AddressQRCodeModal = ({
   isOpen,
   onClose,
   address,
@@ -62,10 +73,24 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
   networkName,
   chainId,
   networkImageSrc,
-}) => {
+}: AddressQRCodeModalProps) => {
   const t = useI18nContext();
-  const [copied, handleCopy] = useCopyToClipboard();
-  const trackEvent = useContext(MetaMetricsContext);
+
+  // useCopyToClipboard analysis: Copies one of your public addresses
+  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const { trackEvent, createEventBuilder } = useAnalytics();
+
+  const [addressCopied, setAddressCopied] = useState(false);
+  const timeoutRef = useRef<number | null>(null);
+
+  // Cleanup timeout when component unmounts
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   // Address segmentation for display
   const addressStart = address.substring(0, PREFIX_LEN);
@@ -90,6 +115,16 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
   // Handle copy address
   const handleCopyClick = useCallback(() => {
     handleCopy(address);
+    setAddressCopied(true);
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = window.setTimeout(() => {
+      setAddressCopied(false);
+      timeoutRef.current = null;
+    }, 1000);
   }, [address, handleCopy]);
 
   // Get block explorer info from network configuration
@@ -108,11 +143,16 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
       explorerInfo.addressUrl,
       'Address QR Code Modal',
       trackEvent,
+      createEventBuilder,
     );
-  }, [explorerInfo, trackEvent]);
+  }, [createEventBuilder, explorerInfo, trackEvent]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      data-testid="parent-selector-address-qr-code-modal"
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
@@ -200,12 +240,28 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
               </Text>
               <Button
                 variant={ButtonVariant.Tertiary}
-                endIconName={copied ? IconName.CopySuccess : IconName.Copy}
+                endIconName={
+                  addressCopied ? IconName.CopySuccess : IconName.Copy
+                }
+                endIconProps={{
+                  color: addressCopied
+                    ? IconColor.SuccessDefault
+                    : IconColor.IconDefault,
+                }}
                 size={ButtonSize.Lg}
                 isFullWidth
                 onClick={handleCopyClick}
+                style={
+                  addressCopied
+                    ? {
+                        backgroundColor: `var(--color-${BackgroundColor.successMuted})`,
+                        color: `var(--color-${DesignSystemTextColor.successDefault})`,
+                      }
+                    : undefined
+                }
+                data-testid="address-qr-code-modal-copy-button"
               >
-                {t('copyAddressShort')}
+                {addressCopied ? t('addressCopied') : t('copyAddressShort')}
               </Button>
             </Box>
 

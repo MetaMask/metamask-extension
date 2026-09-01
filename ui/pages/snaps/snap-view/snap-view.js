@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { hasProperty } from '@metamask/utils';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   AlignItems,
   BackgroundColor,
@@ -9,7 +9,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE, SNAPS_ROUTE } from '../../../helpers/constants/routes';
-import { getSnaps, getPermissions } from '../../../selectors';
+import { getPermissions, getSnap } from '../../../selectors';
 import {
   ButtonIcon,
   Box,
@@ -22,21 +22,18 @@ import { SnapHomeRenderer } from '../../../components/app/snaps/snap-home-page/s
 import SnapSettings from './snap-settings';
 
 function SnapView() {
-  const history = useHistory();
-  const location = useLocation();
-  const { pathname } = location;
-  // The snap ID is in URI-encoded form in the last path segment of the URL.
-  const snapId = decodeURIComponent(pathname.match(/[^/]+$/u)[0]);
-  const snaps = useSelector(getSnaps);
-  const snap = Object.entries(snaps)
-    .map(([_, snapState]) => snapState)
-    .find((snapState) => snapState.id === snapId);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // The snap ID is in URI-encoded form in the query parameter.
+  const snapId = searchParams.get('snapId');
+  const snap = useSelector((state) => getSnap(state, snapId));
 
   useEffect(() => {
     if (!snap) {
-      history.push(SNAPS_ROUTE);
+      navigate(SNAPS_ROUTE);
     }
-  }, [history, snap]);
+  }, [navigate, snap]);
 
   const permissions = useSelector(
     (state) => snap && getPermissions(state, snap.id),
@@ -66,11 +63,11 @@ function SnapView() {
 
   const handleBackClick = () => {
     if (snap.preinstalled && snap.hidden) {
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     } else if (showSettings && hasHomePage) {
       setShowSettings(false);
     } else {
-      history.push(SNAPS_ROUTE);
+      navigate(SNAPS_ROUTE);
     }
   };
 

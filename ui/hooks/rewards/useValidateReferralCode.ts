@@ -1,0 +1,259 @@
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { validateRewardsReferralCode } from '../../store/actions';
+import { useDispatch } from '../../store/hooks';
+
+export const REFERRAL_CODE_DEBOUNCE_MS = 1000;
+export const REFERRAL_CODE_MIN_LENGTH = 3;
+export const REFERRAL_CODE_MAX_LENGTH = 12;
+const REFERRAL_CODE_INVALID_ERROR = 'Invalid code';
+const REFERRAL_CODE_UNKNOWN_ERROR = 'Unknown error';
+const REFERRAL_CODE_PATTERN = /^[A-Z0-9-]+$/u;
+
+const normalizeReferralCode = (code: string) => code.trim().toUpperCase();
+const isReferralCodeFormatValid = (code: string) =>
+  code.length >= REFERRAL_CODE_MIN_LENGTH &&
+  code.length <= REFERRAL_CODE_MAX_LENGTH &&
+  REFERRAL_CODE_PATTERN.test(code);
+
+export type UseValidateReferralCodeResult = {
+  /**
+   * Current referral code value
+   */
+  referralCode: string;
+  /**
+   * Function to update the referral code and trigger validation
+   */
+  setReferralCode: (code: string) => void;
+  /**
+   * Function to validate a referral code without setting it
+   */
+  validateCode: (code: string) => Promise<string>;
+  /**
+   * Whether validation is currently in progress (during debounce period)
+   */
+  isValidating: boolean;
+  /**
+   * Whether the current referral code is valid
+   */
+  isValid: boolean;
+
+  /**
+   * Whether the current referral code is a VIP referral code. Already gated by
+   * the controller on both the rewards and VIP feature flags.
+   */
+  isVipCode: boolean;
+
+  /**
+   * Whether an unknown error occurred while validating the referral code
+   */
+  isUnknownError: boolean;
+};
+
+/**
+ * Custom hook for validating referral codes with debounced validation.
+ * Debounces backend validation for referral codes that pass the backend format
+ * constraints: 3-12 uppercase letters, numbers, or hyphens.
+ *
+ * @param initialValue - Initial referral code value (default: '')
+ * @param debounceMs - Debounce delay in milliseconds
+ * @returns UseValidateReferralCodeResult object with validation state and methods
+ */
+export const useValidateReferralCode = (
+  initialValue: string = '',
+  debounceMs: number = REFERRAL_CODE_DEBOUNCE_MS,
+): UseValidateReferralCodeResult => {
+  const initialReferralCode = normalizeReferralCode(initialValue);
+  const [referralCode, setReferralCodeState] = useState(initialReferralCode);
+  const [error, setError] = useState('');
+  const [isValidating, setIsValidating] = useState(
+    isReferralCodeFormatValid(initialReferralCode),
+  );
+  const [isVipCode, setIsVipCode] = useState(false);
+  const [trackedInitialValue, setTrackedInitialValue] = useState(initialValue);
+  const requestIdRef = useRef(0);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dispatch = useDispatch();
+
+  const clearDebounceTimer = useCallback(() => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = null;
+    }
+  }, []);
+
+  const invalidatePendingValidation = useCallback(() => {
+    requestIdRef.current += 1;
+    clearDebounceTimer();
+  }, [clearDebounceTimer]);
+
+  // Sync local state when the controlled initialValue prop changes (during render).
+  // Always invalidate in-flight/debounced work here — the effect early-return for
+  // short/invalid codes does not schedule a new request, so without this a late
+  // response can still apply and flip isUnknownError after the prop was cleared.
+  if (initialValue !== trackedInitialValue) {
+    setTrackedInitialValue(initialValue);
+    invalidatePendingValidation();
+    const normalized = normalizeReferralCode(initialValue);
+    setReferralCodeState(normalized);
+    if (normalized.length < REFERRAL_CODE_MIN_LENGTH) {
+      setIsValidating(false);
+      setError('');
+      setIsVipCode(false);
+    } else if (isReferralCodeFormatValid(normalized)) {
+      setIsValidating(true);
+      setError('');
+      setIsVipCode(false);
+    } else {
+      setIsValidating(false);
+      setError(REFERRAL_CODE_INVALID_ERROR);
+      setIsVipCode(false);
+    }
+  }
+
+  const validateCode = useCallback(
+    async (code: string): Promise<string> => {
+      const refinedCode = normalizeReferralCode(code);
+
+      if (!isReferralCodeFormatValid(refinedCode)) {
+        return REFERRAL_CODE_INVALID_ERROR;
+      }
+
+      try {
+        const { valid } = (await dispatch(
+          validateRewardsReferralCode(refinedCode),
+        )) as unknown as { valid: boolean; isVipCode: boolean };
+
+        if (!valid) {
+          return REFERRAL_CODE_INVALID_ERROR;
+        }
+        return '';
+      } catch {
+        return REFERRAL_CODE_UNKNOWN_ERROR;
+      }
+    },
+    [dispatch],
+  );
+
+  const scheduleValidation = useCallback(
+    (code: string) => {
+      requestIdRef.current += 1;
+      const currentRequestId = requestIdRef.current;
+
+      clearDebounceTimer();
+
+      debounceTimerRef.current = setTimeout(async () => {
+        const refinedCode = normalizeReferralCode(code);
+
+        if (!isReferralCodeFormatValid(refinedCode)) {
+          if (currentRequestId !== requestIdRef.current) {
+            return;
+          }
+          setError(REFERRAL_CODE_INVALID_ERROR);
+          setIsVipCode(false);
+          setIsValidating(false);
+          return;
+        }
+
+        try {
+          const result = (await dispatch(
+            validateRewardsReferralCode(refinedCode),
+          )) as unknown as { valid: boolean; isVipCode: boolean };
+
+          if (currentRequestId !== requestIdRef.current) {
+            return;
+          }
+
+          if (result.valid) {
+            setError('');
+            setIsVipCode(result.isVipCode ?? false);
+          } else {
+            setError(REFERRAL_CODE_INVALID_ERROR);
+            setIsVipCode(false);
+          }
+        } catch {
+          if (currentRequestId !== requestIdRef.current) {
+            return;
+          }
+          setError(REFERRAL_CODE_UNKNOWN_ERROR);
+          setIsVipCode(false);
+        }
+
+        setIsValidating(false);
+      }, debounceMs);
+    },
+    [clearDebounceTimer, debounceMs, dispatch],
+  );
+
+  const triggerValidation = useCallback(
+    (code: string) => {
+      setError('');
+      setIsValidating(true);
+      setIsVipCode(false);
+      scheduleValidation(code);
+    },
+    [scheduleValidation],
+  );
+
+  // Function to update referral code and trigger validation
+  const setReferralCode = useCallback(
+    (code: string) => {
+      const refinedCode = normalizeReferralCode(code);
+      setReferralCodeState(refinedCode);
+      // If below minimum length, do NOT validate; clear error/validating state
+      if (refinedCode.length < REFERRAL_CODE_MIN_LENGTH) {
+        invalidatePendingValidation();
+        setIsValidating(false);
+        setError('');
+        setIsVipCode(false);
+        return;
+      }
+
+      if (!isReferralCodeFormatValid(refinedCode)) {
+        invalidatePendingValidation();
+        setIsValidating(false);
+        setError(REFERRAL_CODE_INVALID_ERROR);
+        setIsVipCode(false);
+        return;
+      }
+
+      triggerValidation(refinedCode);
+    },
+    [invalidatePendingValidation, triggerValidation],
+  );
+
+  // Kick off debounced validation when initialValue is valid. Synchronous
+  // validating state is already set from useState / render-time prop sync.
+  // Short/invalid values are handled by the render-time sync (which invalidates
+  // pending work); do not invalidate here or we can cancel setReferralCode work
+  // while the controlled initialValue is still empty/unchanged.
+  useEffect(() => {
+    const normalized = normalizeReferralCode(initialValue);
+    if (!isReferralCodeFormatValid(normalized)) {
+      return undefined;
+    }
+    scheduleValidation(normalized);
+    return clearDebounceTimer;
+  }, [initialValue, scheduleValidation, clearDebounceTimer]);
+
+  useEffect(
+    () => () => {
+      requestIdRef.current += 1;
+      clearDebounceTimer();
+    },
+    [clearDebounceTimer],
+  );
+
+  const isValid =
+    isReferralCodeFormatValid(referralCode) && !error && !isValidating;
+  const isUnknownError = error === REFERRAL_CODE_UNKNOWN_ERROR;
+
+  return {
+    referralCode,
+    setReferralCode,
+    validateCode,
+    isValidating,
+    isValid,
+    isVipCode: isValid && isVipCode,
+    isUnknownError,
+  };
+};

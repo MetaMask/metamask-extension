@@ -4,7 +4,6 @@ import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-import README from './README.mdx';
 import { BannerTip } from './banner-tip';
 import { BannerTipLogoType } from './banner-tip.types';
 import { Box } from '../box';
@@ -15,10 +14,8 @@ import { ButtonPrimary } from '../button-primary';
 export default {
   title: 'Components/ComponentLibrary/BannerTip',
   component: BannerTip,
+  tags: ['autodocs'],
   parameters: {
-    docs: {
-      page: README,
-    },
     backgrounds: { default: 'alternative' },
   },
   argTypes: {

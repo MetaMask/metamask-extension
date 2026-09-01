@@ -9,11 +9,12 @@ import { SecretType } from '@metamask/seedless-onboarding-controller';
 import { bytesToBase64, stringToBytes } from '@metamask/utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils';
-import { E2E_SRP } from '../../default-fixture';
+import { E2E_SRP } from '../../constants';
 import {
   AuthServer,
   MetadataService,
   PasswordChangeItemId,
+  ProfileSyncServer,
   SSSBaseUrlRgx,
   SSSNodeKeyPairs,
 } from './constants';
@@ -29,23 +30,38 @@ import {
   InitialMockEncryptionKey,
   MockKeyShareData,
   MockJwtPrivateKey,
+  MockAuthPubKey2,
   NewMockPwdEncryptionKeyAfterPasswordChange,
 } from './data';
 
-function generateMockJwtToken(userId: string) {
+/**
+ * Generate a mock JWT token for OAuth Service.
+ *
+ * @param userId - The user ID.
+ * @param expiresIn - The expiration time in seconds.
+ * @param mode - Indicates if the token is a newly issued token or a refreshed token.
+ * @returns The mock JWT token.
+ */
+function generateMockJwtToken(
+  userId: string,
+  expiresIn: number = 120,
+  mode: 'new' | 'refreshed' = 'new',
+) {
   const iat = Math.floor(Date.now() / 1000);
   const payload = {
     iss: 'torus-key-test',
     aud: 'torus-key-test',
+    sub: userId,
     name: userId,
     email: userId,
     scope: 'email',
     iat,
-    eat: iat + 120,
+    mode, // Note: The actual tokens issued/refreshed do not have this `mode` field, it's only used for testing purposes to differentiate between newly issued and refreshed tokens.
+    eat: iat + expiresIn,
   };
 
   return sign(payload, MockJwtPrivateKey, {
-    expiresIn: 120,
+    expiresIn,
     algorithm: 'ES256',
   });
 }
@@ -104,56 +120,90 @@ async function generateBlindedOutput(
 }
 
 /**
- * Generate a mock encrypted secret data for Metadata Service.
+ * Generate mock encrypted secret data for Metadata Service.
  *
- * @param secretDataArr - The array of secret data.
- * @returns The encrypted secret data.
+ * @param secretDataArr - Array of secret data items.
+ * @returns Parallel arrays matching the server response format (data, ids, versions, dataTypes, createdAt).
  */
-async function generateEncryptedSecretData(
-  secretDataArr: { data: Uint8Array; timestamp?: number; type?: SecretType }[],
-) {
-  const encData = secretDataArr.map((secretData) => {
+function generateEncryptedSecretData(
+  secretDataArr: {
+    data: Uint8Array;
+    timestamp?: number;
+    type?: SecretType;
+    itemId?: string;
+    dataType?: number | null;
+    createdAt?: string | null;
+    version?: string;
+  }[],
+): {
+  data: string[];
+  ids: string[];
+  versions: string[];
+  dataTypes: (number | null)[];
+  createdAt: (string | null)[];
+} {
+  const data: string[] = [];
+  const ids: string[] = [];
+  const versions: string[] = [];
+  const dataTypes: (number | null)[] = [];
+  const createdAt: (string | null)[] = [];
+
+  for (const secretData of secretDataArr) {
     const b64SecretData = Buffer.from(secretData.data).toString('base64');
     const secretMetadata = JSON.stringify({
       data: b64SecretData,
       timestamp: secretData.timestamp ?? 1752564090656,
       type: secretData.type,
     });
-    const secretBytes = stringToBytes(secretMetadata);
 
     const aes = managedNonce(gcm)(InitialMockEncryptionKey);
-    const cipherText = aes.encrypt(secretBytes);
-    return bytesToBase64(cipherText);
-  });
-  return encData;
+    const cipherText = aes.encrypt(stringToBytes(secretMetadata));
+
+    data.push(bytesToBase64(cipherText));
+    ids.push(secretData.itemId ?? '');
+    versions.push(secretData.version ?? 'v2');
+    dataTypes.push(secretData.dataType === undefined ? 1 : secretData.dataType); // Default to PrimarySrp if not specified
+    createdAt.push(secretData.createdAt ?? null);
+  }
+
+  return { data, ids, versions, dataTypes, createdAt };
 }
 
 /**
- * Generate a mock encrypted password change item for Metadata Service.
- * This is to mock the password change operation for social login flow.
+ * Generate mock encrypted password change item for Metadata Service.
+ * Used to simulate the password outdated flow in social login.
  *
- * @returns The encrypted password change item.
+ * The PW_BACKUP is made self-referential (encKey points to itself) with a
+ * non-matching authKeyPair.pk, causing the SDK's password chain loop to
+ * exhaust and throw `maxKeyChainLengthExceeded`.
+ *
+ * @returns Encrypted password change item with metadata.
  */
-async function generateEncryptedPasswordChangeItem() {
-  const pwdChangeItem = {
-    itemId: PasswordChangeItemId,
-    data: utf8ToBytes(
-      JSON.stringify({
-        pw: 'newPassword',
-        encKey: bytesToHex(NewMockPwdEncryptionKeyAfterPasswordChange),
-        authKeyPair: {
-          sk: '1',
-          pk: 'deadbeef',
-        },
-      }),
-    ),
-  };
+function generateEncryptedPasswordChangeItem(): {
+  data: string;
+  id: string;
+  version: string;
+  dataType: null;
+  createdAt: null;
+} {
+  const pwdChangeItemData = utf8ToBytes(
+    JSON.stringify({
+      pw: 'newPassword',
+      encKey: bytesToHex(NewMockPwdEncryptionKeyAfterPasswordChange),
+      authKeyPair: { sk: '1', pk: 'deadbeef' },
+    }),
+  );
 
   const aes = managedNonce(gcm)(NewMockPwdEncryptionKeyAfterPasswordChange);
-  const cipherText = aes.encrypt(pwdChangeItem.data);
-  const encryptedPwdChangeItem = bytesToBase64(cipherText);
+  const cipherText = aes.encrypt(pwdChangeItemData);
 
-  return encryptedPwdChangeItem;
+  return {
+    data: bytesToBase64(cipherText),
+    id: PasswordChangeItemId,
+    version: 'v2',
+    dataType: null,
+    createdAt: null,
+  };
 }
 
 // Mock OAuth Service and Authentication Server
@@ -163,33 +213,68 @@ export class OAuthMockttpService {
 
   #latestAuthPubKey: string = MockAuthPubKey;
 
-  mockAuthServerToken(overrides?: {
-    statusCode?: number;
-    json?: Record<string, unknown>;
-    userEmail?: string;
-  }) {
+  #numbOfRequestTokensCalls: number = 0;
+
+  async mockAuthServerToken(
+    request: CompletedRequest,
+    overrides?: {
+      statusCode?: number;
+      json?: Record<string, unknown>;
+      userEmail?: string;
+      passwordOutdated?: boolean;
+      throwAuthenticationErrorAtUnlock?: boolean;
+      forceTokenExpiration?: boolean;
+    },
+  ) {
     const userEmail = overrides?.userEmail || `e2e-user-${crypto.randomUUID()}`;
-    const idToken = generateMockJwtToken(userEmail);
+    const jsonRpcRequestBody = await request.body.getJson();
+    const { grant_type: grantType } = jsonRpcRequestBody as {
+      grant_type: string;
+    };
+
+    // Check whether the request is for refresh token or social login authentication based on the grant type
+    // We wanna generate a different token payload for the access token based on the grant type, for example:
+    // - For social login authentication, the access token should have a `mode` field with value `new`
+    // - For refresh token, the access token should have a `mode` field with value `refreshed`
+    const isRefreshTokenGrantType = grantType === 'refresh_token';
+    const forceTokenExpiration = isRefreshTokenGrantType
+      ? false
+      : overrides?.forceTokenExpiration;
+    const expiresIn = forceTokenExpiration ? 0 : 120; // setting a very short expiration time for testing purposes if forceTokenExpiration is true
+
+    // Generate the mock JWT tokens for the request
+    const idToken = generateMockJwtToken(userEmail, expiresIn);
+    const accessToken = generateMockJwtToken(
+      userEmail,
+      expiresIn,
+      isRefreshTokenGrantType ? 'refreshed' : 'new',
+    );
+
+    // keep track of the number of request tokens calls
+    this.#numbOfRequestTokensCalls += 1;
+
+    if (
+      // on the second call, (assuming it's for unlock) we throw an authentication error when passwordOutdated & throwAuthenticationErrorAtUnlock are true
+      this.#numbOfRequestTokensCalls === 2 &&
+      overrides?.throwAuthenticationErrorAtUnlock &&
+      overrides?.passwordOutdated
+    ) {
+      return {
+        statusCode: 500,
+        json: {
+          message: 'Internal server error',
+        },
+      };
+    }
+
     return {
       statusCode: 200,
       json: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        access_token: idToken,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+        access_token: accessToken,
         id_token: idToken,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         expires_in: 3600,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         refresh_token: 'mock-refresh-token',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         revoke_token: 'mock-revoke-token',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         metadata_access_token: idToken,
       },
     };
@@ -198,13 +283,26 @@ export class OAuthMockttpService {
   /**
    * Mock the Auth Server's Request Token response.
    *
+   * @param request - The Mockttp request object.
    * @param overrides - The overrides for the mock response.
    * @param overrides.statusCode - The status code for the mock response.
    * @param overrides.userEmail - The email of the user to mock. If not provided, random generated email will be used.
+   * @param overrides.passwordOutdated - Whether the password is outdated. If not provided, false will be used.
+   * @param overrides.throwAuthenticationErrorAtUnlock - Whether to throw an authentication error at unlock. If not provided, false will be used.
+   * @param overrides.forceTokenExpiration - Whether to force the token expiration. If not provided, false will be used.
    * @returns The mock response for the Request Token endpoint.
    */
-  onPostToken(overrides?: { statusCode?: number; userEmail?: string }) {
-    return this.mockAuthServerToken(overrides);
+  onPostToken(
+    request: CompletedRequest,
+    overrides?: {
+      statusCode?: number;
+      userEmail?: string;
+      passwordOutdated?: boolean;
+      throwAuthenticationErrorAtUnlock?: boolean;
+      forceTokenExpiration?: boolean;
+    },
+  ) {
+    return this.mockAuthServerToken(request, overrides);
   }
 
   /**
@@ -230,12 +328,75 @@ export class OAuthMockttpService {
     return {
       statusCode: 200,
       json: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         refresh_token: 'new-mock-refresh-token',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         revoke_token: 'new-mock-revoke-token',
+      },
+    };
+  }
+
+  mockAuthServerMint(overrides?: {
+    userEmail?: string;
+    forceTokenExpiration?: boolean;
+  }) {
+    const userEmail = overrides?.userEmail || `e2e-user-${crypto.randomUUID()}`;
+    const expiresIn = overrides?.forceTokenExpiration ? 0 : 120;
+    const idToken = generateMockJwtToken(userEmail, expiresIn);
+    const accessToken = generateMockJwtToken(userEmail, expiresIn, 'new');
+
+    return {
+      statusCode: 200,
+      json: {
+        access_token: accessToken,
+        id_token: idToken,
+        expires_in: 3600,
+        refresh_token: 'mock-refresh-token',
+        revoke_token: 'mock-revoke-token',
+        metadata_access_token: idToken,
+      },
+    };
+  }
+
+  mockTelegramLoginInitiate(request: CompletedRequest) {
+    const requestUrl = new URL(request.url);
+    const appRedirectUri = requestUrl.searchParams.get('app_redirect_uri');
+    const state = requestUrl.searchParams.get('state') ?? '';
+
+    if (!appRedirectUri) {
+      throw new Error('Missing app_redirect_uri in Telegram initiate request');
+    }
+
+    const redirectUrl = new URL(appRedirectUri);
+    redirectUrl.searchParams.set('code', 'mock-telegram-auth-code');
+    redirectUrl.searchParams.set('state', state);
+
+    return {
+      statusCode: 302,
+      headers: {
+        Location: redirectUrl.toString(),
+      },
+    };
+  }
+
+  mockTelegramLoginVerify(overrides?: {
+    userEmail?: string;
+    forceTokenExpiration?: boolean;
+  }) {
+    const userEmail = overrides?.userEmail || `e2e-user-${crypto.randomUUID()}`;
+    const expiresIn = overrides?.forceTokenExpiration ? 0 : 120;
+
+    return {
+      statusCode: 200,
+      json: {
+        token: generateMockJwtToken(userEmail, expiresIn),
+      },
+    };
+  }
+
+  mockProfileSyncOidcToken() {
+    return {
+      statusCode: 200,
+      json: {
+        access_token: 'mocked-oidc-access-token',
       },
     };
   }
@@ -246,6 +407,28 @@ export class OAuthMockttpService {
 
   onPostRenewRefreshToken() {
     return this.mockAuthServerRenewRefreshToken();
+  }
+
+  onPostMintToken(overrides?: {
+    userEmail?: string;
+    forceTokenExpiration?: boolean;
+  }) {
+    return this.mockAuthServerMint(overrides);
+  }
+
+  onGetTelegramLoginInitiate(request: CompletedRequest) {
+    return this.mockTelegramLoginInitiate(request);
+  }
+
+  onPostTelegramLoginVerify(overrides?: {
+    userEmail?: string;
+    forceTokenExpiration?: boolean;
+  }) {
+    return this.mockTelegramLoginVerify(overrides);
+  }
+
+  onPostProfileSyncOidcToken() {
+    return this.mockProfileSyncOidcToken();
   }
 
   async onPostToprfCommitment(
@@ -322,7 +505,7 @@ export class OAuthMockttpService {
     };
   }
 
-  async onPostMetadataGet() {
+  async onPostMetadataGet(requestedItemId?: string) {
     const seedPhraseAsBuffer = Buffer.from(E2E_SRP, 'utf8');
     const indices = seedPhraseAsBuffer
       .toString()
@@ -330,24 +513,40 @@ export class OAuthMockttpService {
       .map((word: string) => wordlist.indexOf(word));
     const seedPhraseBytes = new Uint8Array(new Uint16Array(indices).buffer);
 
-    const secretData = [
+    // Server-side filtering
+    if (requestedItemId === PasswordChangeItemId) {
+      const pwdChangeItem = generateEncryptedPasswordChangeItem();
+      return {
+        statusCode: 200,
+        json: {
+          success: true,
+          data: [pwdChangeItem.data],
+          ids: [pwdChangeItem.id],
+          versions: [pwdChangeItem.version],
+          dataTypes: [pwdChangeItem.dataType],
+          createdAt: [pwdChangeItem.createdAt],
+        },
+      };
+    }
+
+    // Default: return SRP data only (PW_BACKUP excluded from regular queries)
+    const result = generateEncryptedSecretData([
       {
         data: seedPhraseBytes,
         timestamp: Date.now(),
         type: SecretType.Mnemonic,
+        itemId: crypto.randomUUID(),
+        dataType: 1,
+        createdAt: new Date().toISOString(),
+        version: 'v2',
       },
-    ];
-
-    const encryptedSecretData = await generateEncryptedSecretData(secretData);
-    const encryptedPwdChangeItem = await generateEncryptedPasswordChangeItem();
-    encryptedSecretData.push(encryptedPwdChangeItem);
+    ]);
 
     return {
       statusCode: 200,
       json: {
         success: true,
-        data: encryptedSecretData,
-        ids: ['', PasswordChangeItemId],
+        ...result,
       },
     };
   }
@@ -359,60 +558,90 @@ export class OAuthMockttpService {
    * @param options - The options for the mock server.
    * @param options.userEmail - The email of the user to mock. If not provided, random generated email will be used.
    * @param options.passwordOutdated - Whether the password is outdated. If not provided, false will be used.
+   * @param options.throwAuthenticationErrorAtUnlock - Whether to throw an authentication error at unlock. If not provided, false will be used.
+   * @param options.forceTokenExpiration - Whether to force the token expiration. If not provided, false will be used.
    */
   async setup(
     server: Mockttp,
     options?: {
       userEmail?: string;
       passwordOutdated?: boolean;
+      throwAuthenticationErrorAtUnlock?: boolean;
+      forceTokenExpiration?: boolean;
     },
   ) {
-    server
-      .forPost(AuthServer.RequestToken)
-      .always()
-      .thenCallback(() => {
-        return this.onPostToken(options);
-      });
+    const authServerMockResponses = [
+      await server
+        .forPost(AuthServer.RequestToken)
+        .always()
+        .thenCallback(async (request) => {
+          return this.onPostToken(request, options);
+        }),
 
-    server
-      .forPost(AuthServer.RevokeToken)
-      .always()
-      .thenCallback(() => {
-        return this.onPostRevokeToken();
-      });
+      await server
+        .forPost(AuthServer.RevokeToken)
+        .always()
+        .thenCallback(() => {
+          return this.onPostRevokeToken();
+        }),
 
-    server
-      .forGet(AuthServer.GetMarketingOptInStatus)
-      .always()
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            is_opt_in: true,
-          },
-        };
-      });
-    server
-      .forPost(AuthServer.GetMarketingOptInStatus)
-      .always()
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            is_opt_in: true,
-          },
-        };
-      });
+      await server
+        .forGet(AuthServer.GetMarketingOptInStatus)
+        .always()
+        .thenCallback(() => {
+          return {
+            statusCode: 200,
+            json: {
+              is_opt_in: true,
+            },
+          };
+        }),
+      await server
+        .forPost(AuthServer.GetMarketingOptInStatus)
+        .always()
+        .thenCallback(() => {
+          return {
+            statusCode: 200,
+            json: {
+              is_opt_in: true,
+            },
+          };
+        }),
 
-    server
-      .forPost(AuthServer.RenewRefreshToken)
-      .always()
-      .thenCallback(() => {
-        return this.onPostRenewRefreshToken();
-      });
+      await server
+        .forPost(AuthServer.RenewRefreshToken)
+        .always()
+        .thenCallback(() => {
+          return this.onPostRenewRefreshToken();
+        }),
+      await server
+        .forPost(AuthServer.MintToken)
+        .always()
+        .thenCallback(() => {
+          return this.onPostMintToken(options);
+        }),
+      await server
+        .forGet(ProfileSyncServer.OAuthInitiate)
+        .always()
+        .thenCallback((request) => {
+          return this.onGetTelegramLoginInitiate(request);
+        }),
+      await server
+        .forPost(ProfileSyncServer.OAuthVerify)
+        .always()
+        .thenCallback(() => {
+          return this.onPostTelegramLoginVerify(options);
+        }),
+      await server
+        .forPost(ProfileSyncServer.OIDCToken)
+        .always()
+        .thenCallback(() => {
+          return this.onPostProfileSyncOidcToken();
+        }),
+    ];
 
     // Intercept the TOPRF requests (Authentication, KeyGen, Eval, etc.) and mock the responses
-    server
+    const toprfMockResponses = await server
       .forPost(SSSBaseUrlRgx)
       .always()
       .thenCallback(async (request) => {
@@ -420,7 +649,14 @@ export class OAuthMockttpService {
       });
 
     // Intercept the Metadata requests and mock the responses
-    await this.#handleMetadataMockResponses(server);
+    const metadataMockResponses =
+      await this.#handleMetadataMockResponses(server);
+
+    return [
+      ...authServerMockResponses,
+      ...metadataMockResponses,
+      toprfMockResponses,
+    ];
   }
 
   /**
@@ -430,12 +666,14 @@ export class OAuthMockttpService {
    * @param options - The options for the mock responses.
    * @param options.userEmail - The email of the user to mock. If not provided, random generated email will be used.
    * @param options.passwordOutdated - Whether the password is outdated. If not provided, false will be used.
+   * @param options.throwAuthenticationErrorAtUnlock - Whether to throw an authentication error at unlock. If not provided, false will be used.
    */
   async #handleToprfMockResponses(
     request: CompletedRequest,
     options?: {
       userEmail?: string;
       passwordOutdated?: boolean;
+      throwAuthenticationErrorAtUnlock?: boolean;
     },
   ) {
     const nodeIndex = this.#extractNodeIndexFromUrl(request.url);
@@ -479,15 +717,20 @@ export class OAuthMockttpService {
         },
       };
     } else if (method === 'TOPRFGetPubKeyRequest') {
+      let pubKey = this.#latestAuthPubKey;
+      if (options?.throwAuthenticationErrorAtUnlock) {
+        // To throw the authentication error at unlock, we need to enforce the password outdated with different pub key
+        pubKey = MockAuthPubKey2;
+      } else if (options?.passwordOutdated) {
+        pubKey = MockAuthPubKey;
+      }
       return {
         statusCode: 200,
         json: {
           id: 1,
           jsonrpc: '2.0',
           result: {
-            pub_key: options?.passwordOutdated
-              ? MockAuthPubKey
-              : this.#latestAuthPubKey,
+            pub_key: pubKey,
             key_index: 1,
             node_index: nodeIndex,
           },
@@ -500,57 +743,57 @@ export class OAuthMockttpService {
   }
 
   async #handleMetadataMockResponses(server: Mockttp) {
-    server.forPost(MetadataService.Set).always().thenJson(200, {
-      success: true,
-      message: 'Metadata set successfully',
-    });
-
-    server
-      .forPost(MetadataService.Get)
-      .always()
-      .thenCallback(async (_request) => {
-        return this.onPostMetadataGet();
-      });
-
-    server
-      .forPost(MetadataService.AcquireLock)
-      .always()
-      .thenCallback(async (_request) => {
-        return {
-          statusCode: 200,
-          json: {
-            success: true,
-            status: 1,
-            id: 'MOCK_LOCK_ID',
-          },
-        };
-      });
-
-    server
-      .forPost(MetadataService.ReleaseLock)
-      .always()
-      .thenCallback(async (_request) => {
-        return {
-          statusCode: 200,
-          json: {
-            success: true,
-            status: 1,
-          },
-        };
-      });
-
-    server
-      .forPost(MetadataService.BatchSet)
-      .always()
-      .thenCallback(async (_request) => {
-        return {
-          statusCode: 200,
-          json: {
-            success: true,
-            message: 'Metadata set successfully',
-          },
-        };
-      });
+    return [
+      await server.forPost(MetadataService.Set).always().thenJson(200, {
+        success: true,
+        message: 'Metadata set successfully',
+      }),
+      await server
+        .forPost(MetadataService.Get)
+        .always()
+        .thenCallback(async (request) => {
+          const body = await request.body.getJson();
+          const requestedItemId = (body as { itemId?: string })?.itemId;
+          return this.onPostMetadataGet(requestedItemId);
+        }),
+      await server
+        .forPost(MetadataService.AcquireLock)
+        .always()
+        .thenCallback(async (_request) => {
+          return {
+            statusCode: 200,
+            json: {
+              success: true,
+              status: 1,
+              id: 'MOCK_LOCK_ID',
+            },
+          };
+        }),
+      await server
+        .forPost(MetadataService.ReleaseLock)
+        .always()
+        .thenCallback(async (_request) => {
+          return {
+            statusCode: 200,
+            json: {
+              success: true,
+              status: 1,
+            },
+          };
+        }),
+      await server
+        .forPost(MetadataService.BatchSet)
+        .always()
+        .thenCallback(async (_request) => {
+          return {
+            statusCode: 200,
+            json: {
+              success: true,
+              message: 'Metadata set successfully',
+            },
+          };
+        }),
+    ];
   }
 
   /**

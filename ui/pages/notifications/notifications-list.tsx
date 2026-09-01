@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { INotification } from '@metamask/notification-services-controller/notification-services';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
@@ -12,18 +13,22 @@ import Preloader from '../../components/ui/icon/preloader/preloader-icon.compone
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { NotificationsPlaceholder } from './notifications-list-placeholder';
-import { NotificationsListTurnOnNotifications } from './notifications-list-turn-on-notifications';
+import { NotificationsListDisabledNotifications } from './notifications-list-disabled-notifications';
 import { NotificationsListItem } from './notifications-list-item';
-import type { Notification } from './notifications';
 import { NotificationsListReadAllButton } from './notifications-list-read-all-button';
 
 export type NotificationsListProps = {
   activeTab: TAB_KEYS;
-  notifications: Notification[];
+  notifications: INotification[];
+  notificationsCount: number;
   isLoading: boolean;
   isError: boolean;
-  notificationsCount: number;
 };
+
+type NotificationsListStatesProps = Omit<
+  NotificationsListProps,
+  'notificationsCount'
+>;
 
 // NOTE - Tab filters could change once we support more notifications.
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -39,9 +44,7 @@ export const enum TAB_KEYS {
   WEB3 = 'notifications-other-tab',
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function LoadingContent() {
+const LoadingContent = () => {
   return (
     <Box
       height={BlockSize.Full}
@@ -55,11 +58,9 @@ function LoadingContent() {
       <Preloader size={36} />
     </Box>
   );
-}
+};
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function EmptyContent() {
+const EmptyContent = () => {
   const t = useI18nContext();
   return (
     <NotificationsPlaceholder
@@ -67,11 +68,9 @@ function EmptyContent() {
       text={t('notificationsPageNoNotificationsContent')}
     />
   );
-}
+};
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function ErrorContent() {
+const ErrorContent = () => {
   const t = useI18nContext();
   return (
     <NotificationsPlaceholder
@@ -79,30 +78,25 @@ function ErrorContent() {
       text={t('notificationsPageErrorContent')}
     />
   );
-}
+};
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function NotificationItem(props: { notification: Notification }) {
+const NotificationItem = (props: { notification: INotification }) => {
   const { notification } = props;
   return <NotificationsListItem notification={notification} />;
-}
+};
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function NotificationsListStates({
-  activeTab,
+const NotificationsListStates = ({
   notifications,
   isLoading,
   isError,
-}: NotificationsListProps) {
+}: NotificationsListStatesProps) => {
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
 
-  // Case when a user has not enabled wallet notifications yet
-  if (activeTab === TAB_KEYS.WALLET && !isMetamaskNotificationsEnabled) {
-    return <NotificationsListTurnOnNotifications />;
+  // Case when a user has not enabled notifications yet
+  if (!isMetamaskNotificationsEnabled) {
+    return <NotificationsListDisabledNotifications />;
   }
 
   // Loading State
@@ -126,11 +120,9 @@ function NotificationsListStates({
       ))}
     </>
   );
-}
+};
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export function NotificationsList(props: NotificationsListProps) {
+export const NotificationsList = (props: NotificationsListProps) => {
   return (
     <Box
       data-testid="notifications-list"
@@ -147,4 +139,4 @@ export function NotificationsList(props: NotificationsListProps) {
       ) : null}
     </Box>
   );
-}
+};

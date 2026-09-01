@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
-import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
+import { useNavigate, useLocation } from 'react-router-dom';
+import {
+  TRIGGER_TYPES,
+  type INotification,
+} from '@metamask/notification-services-controller/notification-services';
 import { Box } from '../../components/component-library';
 import {
   BlockSize,
@@ -10,16 +12,16 @@ import {
   JustifyContent,
 } from '../../helpers/constants/design-system';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
-import { NotificationsPage } from '../../components/multichain';
-import { Content } from '../../components/multichain/pages/page';
+import { Content, Page } from '../../components/multichain/pages/page';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
 import { getMetamaskNotificationById } from '../../selectors/metamask-notifications/metamask-notifications';
 import {
   NotificationComponents,
   hasNotificationComponents,
+  // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 } from '../notifications/notification-components';
-import { type Notification } from '../notifications/notification-components/types/notifications/notifications';
 import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';
+import { useAppSelector } from '../../store/hooks';
 import { getExtractIdentifier } from './utils/utils';
 import { NotificationDetailsHeader } from './notification-details-header/notification-details-header';
 import { NotificationDetailsBody } from './notification-details-body/notification-details-body';
@@ -28,14 +30,16 @@ import { NotificationDetailsFooter } from './notification-details-footer/notific
 function useNotificationByPath() {
   const { pathname } = useLocation();
   const id = getExtractIdentifier(pathname);
-  const notification = useSelector(getMetamaskNotificationById(id));
+  const notification = useAppSelector((state) =>
+    getMetamaskNotificationById(state, id),
+  );
 
   return {
     notification,
   };
 }
 
-function useEffectOnNotificationView(notificationData?: Notification) {
+function useEffectOnNotificationView(notificationData?: INotification) {
   const { markNotificationAsRead } = useMarkNotificationAsRead();
   const { setNotificationTimeout } = useSnapNotificationTimeouts();
 
@@ -58,8 +62,6 @@ function useEffectOnNotificationView(notificationData?: Notification) {
   }, []);
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NotificationDetails() {
   const navigate = useNavigate();
   const { notification } = useNotificationByPath();
@@ -78,9 +80,12 @@ export default function NotificationDetails() {
   }
 
   const ncs = NotificationComponents[notification.type];
+  if (!ncs.details) {
+    return null;
+  }
 
   return (
-    <NotificationsPage>
+    <Page>
       <NotificationDetailsHeader
         onClickBack={() => navigate(NOTIFICATIONS_ROUTE)}
       >
@@ -100,11 +105,11 @@ export default function NotificationDetails() {
             notification={notification}
           />
           <NotificationDetailsFooter
-            footer={ncs.footer}
+            footer={ncs.details.footer}
             notification={notification}
           />
         </Box>
       </Content>
-    </NotificationsPage>
+    </Page>
   );
 }

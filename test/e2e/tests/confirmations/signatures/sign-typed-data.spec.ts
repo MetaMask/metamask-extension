@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
@@ -8,22 +8,19 @@ import {
   withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
-import TestDapp from '../../../page-objects/pages/test-dapp';
+import SignTypedData from '../../../page-objects/pages/confirmations/sign-typed-data-confirmation';
+import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
+import { login } from '../../../page-objects/flows/login.flow';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
-  assertHeaderInfoBalance,
-  assertPastedAddress,
-  assertRejectedSignature,
   assertSignatureConfirmedMetrics,
   assertSignatureRejectedMetrics,
-  clickHeaderInfoBtn,
-  copyAddressAndPasteWalletAddress,
-  initializePages,
-  openDappAndTriggerSignature,
-  SignatureType,
+  WALLET_ETH_BALANCE,
 } from './signature-helpers';
+import { SIGN_TYPED_DATA_EXPECTED } from './sign-typed-data-expected';
 
 describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
   it('initiates and confirms', async function () {
@@ -36,20 +33,22 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
       }: TestSuiteArguments) => {
         const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
-        await initializePages(driver);
+        const confirmation = new Confirmation(driver);
+        const accountDetailsModal = new AccountDetailsModal(driver);
+        const testDapp = new TestDapp(driver);
 
-        await openDappAndTriggerSignature(driver, SignatureType.SignTypedData);
+        await login(driver);
+        await testDapp.openTestDappAndTriggerSignature(
+          SignatureType.SignTypedData,
+        );
 
-        await clickHeaderInfoBtn(driver);
-        await assertHeaderInfoBalance();
-
-        await copyAddressAndPasteWalletAddress(driver);
-        await assertPastedAddress();
+        await confirmation.clickHeaderAccountDetailsButton();
+        await accountDetailsModal.assertHeaderInfoBalance(WALLET_ETH_BALANCE);
+        await accountDetailsModal.clickAccountDetailsModalCloseButton();
 
         await assertInfoValues(driver);
 
-        await driver.clickElement('[data-testid="confirm-footer-button"]');
-        await driver.delay(1000);
+        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
         await assertAccountDetailsMetrics(
           driver,
@@ -77,10 +76,13 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
-        await initializePages(driver);
         const confirmation = new SignTypedData(driver);
+        const testDapp = new TestDapp(driver);
 
-        await openDappAndTriggerSignature(driver, SignatureType.SignTypedData);
+        await login(driver);
+        await testDapp.openTestDappAndTriggerSignature(
+          SignatureType.SignTypedData,
+        );
 
         await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
 
@@ -95,7 +97,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        await assertRejectedSignature();
+        await testDapp.assertUserRejectedRequest();
       },
       mockSignatureRejected,
     );
@@ -105,15 +107,17 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
 async function assertInfoValues(driver: Driver) {
   const signTypedData = new SignTypedData(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  signTypedData.verifySignTypedDataMessage();
-  signTypedData.verifyOrigin();
+  await signTypedData.verifySignTypedDataMessage(
+    SIGN_TYPED_DATA_EXPECTED.v1Message,
+  );
+  await signTypedData.verifyOrigin(SIGN_TYPED_DATA_EXPECTED.origin);
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.waitUntilXWindowHandles(2);
   const testDapp = new TestDapp(driver);
-  testDapp.checkSuccessSignTypedData(publicAddress);
-  testDapp.verifySuccessSignTypedDataResult(
+  await testDapp.checkSuccessSignTypedData(publicAddress);
+  await testDapp.verifySuccessSignTypedDataResult(
     '0x32791e3c41d40dd5bbfb42e66cf80ca354b0869ae503ad61cd19ba68e11d4f0d2e42a5835b0bfd633596b6a7834ef7d36033633a2479dacfdb96bda360d51f451b',
   );
 }

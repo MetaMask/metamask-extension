@@ -2,6 +2,20 @@ export const OFFSCREEN_LEDGER_INIT_TIMEOUT = 4000;
 export const OFFSCREEN_LOAD_TIMEOUT = OFFSCREEN_LEDGER_INIT_TIMEOUT + 1000;
 
 /**
+ * Max wait for Ledger device discovery in the offscreen DMK handler.
+ */
+export const LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS = 15_000;
+
+/**
+ * Background bridge timeout for connect/probe actions. Slightly longer than
+ * discovery so a full wait still returns the structured offscreen error
+ * (e.g. "No permitted Ledger device found") instead of racing
+ * "Ledger iframe timeout".
+ */
+export const LEDGER_BRIDGE_MESSAGE_TIMEOUT_MS =
+  LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS + 1000;
+
+/**
  * Defines legal targets for offscreen communication. These values are used to
  * filter and route messages to the correct target.
  */
@@ -37,6 +51,15 @@ export enum OffscreenCommunicationEvents {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   metamaskBackgroundReady = 'metamask-background-ready',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  connectivityChange = 'connectivity-change',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  ledgerModeReady = 'ledger-mode-ready',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  switchLedgerMode = 'switch-ledger-mode',
 }
 
 /**
@@ -61,6 +84,9 @@ export enum TrezorAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   signTypedData = 'trezor-sign-typed-data',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  getFeatures = 'trezor-get-features',
 }
 
 /**
@@ -69,13 +95,13 @@ export enum TrezorAction {
 export enum LedgerAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  getAppNameAndVersion = 'ledger-get-app-name-and-version',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   makeApp = 'ledger-make-app',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   updateTransport = 'ledger-update-transport',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  unlock = 'ledger-unlock',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   getPublicKey = 'ledger-unlock',
@@ -88,7 +114,35 @@ export enum LedgerAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   signTypedData = 'ledger-sign-typed-data',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  signDelegationAuthorization = 'ledger-sign-delegation-authorization',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  getAppConfiguration = 'ledger-get-app-configuration',
 }
+
+/**
+ * Selects which Ledger handler implementation the offscreen document should
+ * use. `DMK` uses the new `@metamask/eth-ledger-bridge-keyring` package
+ * (backed by the Ledger Device Management Kit). `Legacy` uses the historical
+ * `TransportWebHID` + `@ledgerhq/hw-app-eth` plumbing.
+ */
+export const LedgerHandlerMode = {
+  /**
+   * Ledger Device Management Kit handler. Uses the new
+   * `@metamask/eth-ledger-bridge-keyring` package.
+   */
+  DMK: 'dmk',
+  /**
+   * Legacy WebHID handler. Uses `TransportWebHID` +
+   * `@ledgerhq/hw-app-eth` directly.
+   */
+  Legacy: 'legacy',
+} as const;
+
+export type LedgerHandlerMode =
+  (typeof LedgerHandlerMode)[keyof typeof LedgerHandlerMode];
 
 /**
  * Defines domain origins that we expect to interface with in our offscreen

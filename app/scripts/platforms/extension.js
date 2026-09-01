@@ -6,7 +6,7 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { getURLHostName } from '../../../ui/helpers/utils/util';
 import { t } from '../../../shared/lib/translate';
 
@@ -201,7 +201,9 @@ export default class ExtensionPlatform {
     );
 
     const title = t('notificationTransactionSuccessTitle');
-    let message = t('notificationTransactionSuccessMessage', nonce);
+    let message = Number.isNaN(nonce)
+      ? t('notificationTransactionWithoutNonceSuccessMessage')
+      : t('notificationTransactionSuccessMessage', nonce);
 
     if (url.length) {
       message += ` ${t('notificationTransactionSuccessView', view)}`;
@@ -213,11 +215,10 @@ export default class ExtensionPlatform {
   async _showFailedTransaction(txMeta, errorMessage) {
     const nonce = parseInt(txMeta.txParams.nonce, 16);
     const title = t('notificationTransactionFailedTitle');
-    const message = t(
-      'notificationTransactionFailedMessage',
-      nonce,
-      errorMessage || txMeta.error.message,
-    );
+    const errorMessageText = errorMessage || txMeta.error.message;
+    const message = Number.isNaN(nonce)
+      ? t('notificationTransactionWithoutNonceFailedMessage', errorMessageText)
+      : t('notificationTransactionFailedMessage', nonce, errorMessageText);
     await this._showNotification(title, message);
   }
 

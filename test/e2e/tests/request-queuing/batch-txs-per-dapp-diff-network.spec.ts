@@ -1,15 +1,11 @@
-import FixtureBuilder from '../../fixture-builder';
-import {
-  withFixtures,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  WINDOW_TITLES,
-  largeDelayMs,
-} from '../../helpers';
+import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
+import { withFixtures, largeDelayMs } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import { login } from '../../page-objects/flows/login.flow';
+import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks', function () {
   it('should put confirmation txs for different dapps on different networks in single queue', async function () {
@@ -17,11 +13,10 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 2 },
+        fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',
@@ -38,7 +33,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
       },
 
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Open Dapp One
         const testDapp = new TestDapp(driver);
@@ -46,14 +41,14 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await testDapp.checkPageIsLoaded();
 
         // Connect to dapp 1
-        await testDapp.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
         // Network Selector
-        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
+        await switchToNetworkFromNetworkSelect(driver, 'Localhost 8546');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
@@ -62,7 +57,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await testDappTwo.checkPageIsLoaded();
 
         // Connect to dapp 2
-        await testDappTwo.connectAccount({});
+        await connectAccountToTestDapp(driver);
 
         // Dapp one send tx
         await driver.switchToWindowWithUrl(DAPP_URL);

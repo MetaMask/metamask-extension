@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
@@ -75,16 +75,6 @@ const renderUseAccountTotalFiatBalance = (address) => {
       },
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
 
-      allDetectedTokens: {
-        [CHAIN_IDS.MAINNET]: {
-          '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da': [
-            {
-              address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-              symbol: 'USDC',
-            },
-          ],
-        },
-      },
       tokensChainsCache: {
         [CHAIN_IDS.MAINNET]: {
           data: {

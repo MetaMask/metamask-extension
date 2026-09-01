@@ -1,0 +1,145 @@
+/* Animation specs */
+:root {
+  --tab-transition-duration: 200ms;
+  --tab-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --tab-transition-distance: 12px;
+  --tabs-list-fade-size: 1.5rem;
+}
+
+.tablist-fade {
+  container-type: scroll-state;
+
+  &::before,
+  &::after {
+    content: '';
+    position: sticky;
+    z-index: 1;
+    flex-shrink: 0;
+    align-self: stretch;
+    width: var(--tabs-list-fade-size);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--tab-transition-duration) var(--tab-transition-easing);
+  }
+
+  &::before {
+    inset-inline-start: 0;
+    margin-inline-end: calc(-1 * (1rem + var(--tabs-list-fade-size)));
+    background:
+      linear-gradient(
+        to right,
+        var(--color-background-default),
+        transparent
+      );
+
+    @container scroll-state(scrollable: inline-start) {
+      opacity: 1;
+    }
+  }
+
+  &::after {
+    inset-inline-end: 0;
+    margin-inline-start: calc(-1 * (1rem + var(--tabs-list-fade-size)));
+    background:
+      linear-gradient(
+        to right,
+        transparent,
+        var(--color-background-default)
+      );
+
+    @container scroll-state(scrollable: inline-end) {
+      opacity: 1;
+    }
+  }
+}
+
+/* Clip overflow and make size changes instant (don't animate height) */
+::view-transition-group(tab-content) {
+  overflow: hidden;
+  animation-duration: 0s;
+}
+
+/* Disable default crossfade blending */
+::view-transition-image-pair(tab-content) {
+  isolation: auto;
+}
+
+/* Avoids ghosting */
+::view-transition-old(tab-content),
+::view-transition-new(tab-content) {
+  mix-blend-mode: normal;
+}
+
+/* Forward: old exits left, new enters from right */
+:root[data-tab-transition-direction='forward']::view-transition-old(tab-content) {
+  animation: tab-slide-out-left var(--tab-transition-duration) var(--tab-transition-easing) both;
+}
+
+:root[data-tab-transition-direction='forward']::view-transition-new(tab-content) {
+  animation: tab-slide-in-from-right var(--tab-transition-duration) var(--tab-transition-easing) both;
+}
+
+/* Backward: old exits right, new enters from left */
+:root[data-tab-transition-direction='backward']::view-transition-old(tab-content) {
+  animation: tab-slide-out-right var(--tab-transition-duration) var(--tab-transition-easing) both;
+}
+
+:root[data-tab-transition-direction='backward']::view-transition-new(tab-content) {
+  animation: tab-slide-in-from-left var(--tab-transition-duration) var(--tab-transition-easing) both;
+}
+
+@keyframes tab-slide-out-left {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(calc(-1 * var(--tab-transition-distance)));
+  }
+}
+
+@keyframes tab-slide-in-from-right {
+  from {
+    opacity: 0.5;
+    transform: translateX(var(--tab-transition-distance));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes tab-slide-out-right {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(var(--tab-transition-distance));
+  }
+}
+
+@keyframes tab-slide-in-from-left {
+  from {
+    opacity: 0.5;
+    transform: translateX(calc(-1 * var(--tab-transition-distance)));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  :root[data-tab-transition-direction]::view-transition-old(tab-content),
+  :root[data-tab-transition-direction]::view-transition-new(tab-content) {
+    animation-duration: 0.01ms !important;
+  }
+}

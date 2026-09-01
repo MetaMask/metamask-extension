@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { ALERT_STATE } from '../../../../ducks/alerts';
 import {
@@ -12,9 +12,9 @@ import {
 import {
   getOriginOfCurrentTab,
   getOrderedConnectedAccountsForActiveTab,
-  getSelectedInternalAccount,
   getInternalAccounts,
 } from '../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { isExtensionUrl, getURLHost } from '../../../../helpers/utils/util';
 import Popover from '../../../ui/popover';
 
@@ -22,6 +22,8 @@ import Checkbox from '../../../ui/check-box';
 import Tooltip from '../../../ui/tooltip';
 import ConnectedAccountsList from '../../connected-accounts-list';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useDispatch } from '../../../../store/hooks';
+
 import {
   Icon,
   IconName,
@@ -40,16 +42,6 @@ const UnconnectedAccountAlert = () => {
     getOrderedConnectedAccountsForActiveTab,
   );
   const internalAccounts = useSelector(getInternalAccounts);
-  // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553
-  const internalAccountsMap = new Map(
-    internalAccounts.map((acc) => [acc.address, acc]),
-  );
-
-  const connectedAccountsWithName = connectedAccounts.map((account) => ({
-    ...account,
-    name: internalAccountsMap.get(account.address)?.metadata.name,
-  }));
-
   const origin = useSelector(getOriginOfCurrentTab);
   const account = useSelector(getSelectedInternalAccount);
   const { address: selectedAddress } = account;
@@ -116,7 +108,7 @@ const UnconnectedAccountAlert = () => {
       <ConnectedAccountsList
         accountToConnect={account}
         connectAccount={() => dispatch(connectAccount(selectedAddress))}
-        connectedAccounts={connectedAccountsWithName}
+        connectedAccounts={connectedAccounts}
         selectedAddress={selectedAddress}
         setSelectedAddress={(address) => {
           const { id: accountId } = internalAccounts.find(

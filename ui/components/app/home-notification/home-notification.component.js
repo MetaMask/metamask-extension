@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
-import classnames from 'classnames';
+import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import { Button, ButtonVariant, Icon, IconName } from '../../component-library';
 import Checkbox from '../../ui/check-box';
 import Tooltip from '../../ui/tooltip';
 import { IconColor } from '../../../helpers/constants/design-system';
 
+/**
+ * @param {object} props
+ * @param {import('react').ReactNode} [props.acceptText]
+ * @param {import('react').ReactNode} [props.checkboxText]
+ * @param {import('react').ReactNode} [props.checkboxTooltipText]
+ * @param {string[]} [props.classNames]
+ * @param {import('react').ReactNode} props.descriptionText
+ * @param {import('react').ReactNode} [props.ignoreText]
+ * @param {import('react').ReactNode} [props.infoText]
+ * @param {() => void} [props.onAccept]
+ * @param {(disable: boolean) => void} [props.onIgnore]
+ */
 const HomeNotification = ({
   acceptText,
   checkboxText,

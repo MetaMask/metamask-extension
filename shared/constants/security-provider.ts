@@ -95,7 +95,7 @@ export enum BlockaidResultType {
 
   // MetaMask defined result types
   NotApplicable = 'NotApplicable',
-  Loading = 'loading',
+  Loading = 'Loading',
 }
 
 export const FALSE_POSITIVE_REPORT_BASE_URL =

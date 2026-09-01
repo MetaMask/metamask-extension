@@ -1,10 +1,11 @@
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import AddTokenConfirmation from '../../page-objects/pages/confirmations/redesign/add-token-confirmations';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
+import AddTokenConfirmation from '../../page-objects/pages/confirmations/add-token-confirmations';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Add token using wallet_watchAsset', function () {
   const smartContract = SMART_CONTRACTS.HST;
@@ -12,8 +13,8 @@ describe('Add token using wallet_watchAsset', function () {
   it('opens a notification that adds a token when wallet_watchAsset is executed, then approves', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
@@ -22,7 +23,7 @@ describe('Add token using wallet_watchAsset', function () {
       async ({ driver, localNodes, contractRegistry }) => {
         const contractAddress =
           await contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -49,7 +50,7 @@ describe('Add token using wallet_watchAsset', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await new AssetListPage(driver).checkTokenAmountIsDisplayed('0 TST');
+        await new TokensTab(driver).checkTokenAmountIsDisplayed('0 TST');
       },
     );
   });
@@ -57,8 +58,8 @@ describe('Add token using wallet_watchAsset', function () {
   it('opens a notification that adds a token when wallet_watchAsset is executed, then rejects', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
@@ -67,7 +68,7 @@ describe('Add token using wallet_watchAsset', function () {
       async ({ driver, localNodes, contractRegistry }) => {
         const contractAddress =
           await contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -94,7 +95,7 @@ describe('Add token using wallet_watchAsset', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await new AssetListPage(driver).checkTokenItemNumber(1);
+        await new TokensTab(driver).checkTokenItemNumber(1);
       },
     );
   });

@@ -269,6 +269,7 @@ describe('useFirstTimeInteractionAlert', () => {
 
     expect(alerts).toEqual([]);
   });
+
   it('does not return alert when trust signal is still loading', () => {
     mockUseTrustSignal.mockReturnValue({
       state: TrustSignalDisplayState.Loading,
@@ -338,5 +339,100 @@ describe('useFirstTimeInteractionAlert', () => {
     });
 
     expect(alerts).toEqual([]);
+  });
+
+  it('checks trust signal for decoded token transfer recipient instead of contract address', () => {
+    // Mock trust signal to return Verified only for the actual recipient
+    mockUseTrustSignal.mockImplementation((address) => {
+      // Return Verified only for the actual token recipient
+      if (address.toLowerCase() === ACCOUNT_ADDRESS_2_MOCK.toLowerCase()) {
+        return {
+          state: TrustSignalDisplayState.Verified,
+          label: null,
+        };
+      }
+      // Return Unknown for the contract address
+      return {
+        state: TrustSignalDisplayState.Unknown,
+        label: null,
+      };
+    });
+
+    const firstTimeConfirmation = {
+      ...TRANSACTION_META_MOCK,
+      isFirstTimeInteraction: true,
+      type: TransactionType.tokenMethodTransfer,
+      txParams: {
+        ...TRANSACTION_META_MOCK.txParams,
+        to: CONTRACT_ADDRESS_MOCK, // Token contract, NOT the recipient
+        data: genUnapprovedTokenTransferConfirmation().txParams.data, // Contains actual recipient
+      },
+    };
+
+    const alerts = runHook({
+      currentConfirmation: firstTimeConfirmation,
+    });
+
+    // Trust signal is checked for decoded recipient (verified), so no alert shown
+    expect(alerts).toEqual([]);
+
+    // Verify useTrustSignal was called with the actual recipient, not contract address
+    expect(mockUseTrustSignal).toHaveBeenCalledWith(
+      expect.stringMatching(new RegExp(ACCOUNT_ADDRESS_2_MOCK, 'iu')),
+      expect.anything(),
+      expect.anything(),
+    );
+  });
+
+  it('returns alert when decoded token transfer recipient is not verified', () => {
+    // Mock trust signal to return Unknown for the actual recipient
+    mockUseTrustSignal.mockImplementation((address) => {
+      if (address.toLowerCase() === ACCOUNT_ADDRESS_2_MOCK.toLowerCase()) {
+        return {
+          state: TrustSignalDisplayState.Unknown,
+          label: null,
+        };
+      }
+      return {
+        state: TrustSignalDisplayState.Unknown,
+        label: null,
+      };
+    });
+
+    const firstTimeConfirmation = {
+      ...TRANSACTION_META_MOCK,
+      isFirstTimeInteraction: true,
+      type: TransactionType.tokenMethodTransfer,
+      txParams: {
+        ...TRANSACTION_META_MOCK.txParams,
+        to: CONTRACT_ADDRESS_MOCK, // Token contract, NOT the recipient
+        data: genUnapprovedTokenTransferConfirmation().txParams.data, // Contains actual recipient
+      },
+    };
+
+    const alerts = runHook({
+      currentConfirmation: firstTimeConfirmation,
+    });
+
+    // Trust signal is checked for decoded recipient (not verified), so alert is shown
+    expect(alerts).toEqual([
+      {
+        actions: [],
+        field: RowAlertKey.InteractingWith,
+        isBlocking: false,
+        key: 'firstTimeInteractionTitle',
+        message:
+          "You're interacting with this address for the first time. Make sure that it's correct before you continue.",
+        reason: '1st interaction',
+        severity: Severity.Warning,
+      },
+    ]);
+
+    // Verify useTrustSignal was called with the actual recipient, not contract address
+    expect(mockUseTrustSignal).toHaveBeenCalledWith(
+      expect.stringMatching(new RegExp(ACCOUNT_ADDRESS_2_MOCK, 'iu')),
+      expect.anything(),
+      expect.anything(),
+    );
   });
 });

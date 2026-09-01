@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import type { Store } from 'redux';
 import { Hex, Json } from '@metamask/utils';
@@ -11,29 +11,45 @@ import {
 } from '@metamask/transaction-controller';
 import { decodeDelegations } from '@metamask/delegation-core';
 import { ApprovalRequest } from '@metamask/approval-controller';
-import {
-  PermissionTypesWithCustom,
-  Signer,
-  StoredGatorPermissionSanitized,
-} from '@metamask/gator-permissions-controller';
+import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { addTransaction } from '../../store/actions';
-import { encodeDisableDelegation } from '../../../shared/lib/delegation/delegation';
+import {
+  addTransaction,
+  findNetworkClientIdByChainId,
+} from '../../store/actions';
+import {
+  encodeDisableDelegation,
+  getDelegationHashOffchain,
+} from '../../../shared/lib/delegation/delegation';
 import {
   getInternalAccounts,
-  selectDefaultRpcEndpointByChainId,
+  getInternalAccountByAddress,
 } from '../../selectors';
+import { selectDefaultRpcEndpointByChainId } from '../../../shared/lib/selectors/networks';
+import {
+  addPendingRevocation,
+  checkDelegationDisabled,
+} from '../../store/controller-actions/gator-permissions-controller';
 import { useRevokeGatorPermissions } from './useRevokeGatorPermissions';
 
 // Mock the dependencies
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),
   addTransaction: jest.fn(),
+  findNetworkClientIdByChainId: jest.fn(),
 }));
 
 jest.mock('../../store/controller-actions/transaction-controller', () => ({
   addTransactionBatch: jest.fn(),
 }));
+
+jest.mock(
+  '../../store/controller-actions/gator-permissions-controller',
+  () => ({
+    addPendingRevocation: jest.fn(),
+    checkDelegationDisabled: jest.fn(),
+  }),
+);
 
 jest.mock('@metamask/delegation-core', () => ({
   decodeDelegations: jest.fn(),
@@ -41,6 +57,7 @@ jest.mock('@metamask/delegation-core', () => ({
 
 jest.mock('../../../shared/lib/delegation/delegation', () => ({
   encodeDisableDelegation: jest.fn(),
+  getDelegationHashOffchain: jest.fn(),
 }));
 
 jest.mock('../../../shared/lib/delegation', () => ({
@@ -52,7 +69,7 @@ jest.mock('../../../shared/lib/delegation', () => ({
 // Mock the selectors
 jest.mock('../../selectors', () => ({
   getInternalAccounts: jest.fn(),
-  selectDefaultRpcEndpointByChainId: jest.fn(),
+  getInternalAccountByAddress: jest.fn(),
 }));
 
 // Mock useConfirmationNavigation hook
@@ -65,10 +82,18 @@ jest.mock('../../pages/confirmations/hooks/useConfirmationNavigation', () => ({
     navigateToId: mockNavigateToId,
   }),
 }));
+jest.mock('../../../shared/lib/selectors/networks', () => ({
+  ...jest.requireActual('../../../shared/lib/selectors/networks'),
+  selectDefaultRpcEndpointByChainId: jest.fn(),
+}));
 
 const mockAddTransaction = addTransaction as jest.MockedFunction<
   typeof addTransaction
 >;
+const mockFindNetworkClientIdByChainId =
+  findNetworkClientIdByChainId as unknown as jest.MockedFunction<
+    (chainId: string) => Promise<string>
+  >;
 const mockDecodeDelegations = decodeDelegations as jest.MockedFunction<
   typeof decodeDelegations
 >;
@@ -76,10 +101,26 @@ const mockEncodeDisableDelegation =
   encodeDisableDelegation as jest.MockedFunction<
     typeof encodeDisableDelegation
   >;
+const mockGetDelegationHashOffchain =
+  getDelegationHashOffchain as jest.MockedFunction<
+    typeof getDelegationHashOffchain
+  >;
+
+const mockAddPendingRevocation = addPendingRevocation as jest.MockedFunction<
+  typeof addPendingRevocation
+>;
+const mockCheckDelegationDisabled =
+  checkDelegationDisabled as jest.MockedFunction<
+    typeof checkDelegationDisabled
+  >;
 
 const mockGetInternalAccounts = getInternalAccounts as jest.MockedFunction<
   typeof getInternalAccounts
 >;
+const mockGetInternalAccountByAddress =
+  getInternalAccountByAddress as jest.MockedFunction<
+    typeof getInternalAccountByAddress
+  >;
 const mockSelectDefaultRpcEndpointByChainId =
   selectDefaultRpcEndpointByChainId as jest.MockedFunction<
     typeof selectDefaultRpcEndpointByChainId
@@ -98,13 +139,10 @@ describe('useRevokeGatorPermissions', () => {
     '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
   const mockNetworkClientId = 'mock-network-client-id';
 
-  const mockGatorPermission: StoredGatorPermissionSanitized<
-    Signer,
-    PermissionTypesWithCustom
-  > = {
+  const mockGatorPermission: PermissionInfoWithMetadata = {
     permissionResponse: {
       chainId: mockChainId,
-      address: mockSelectedAccountAddress,
+      from: mockSelectedAccountAddress,
       // expiry: 1750291200,
       permission: {
         type: 'native-token-stream',
@@ -119,17 +157,13 @@ describe('useRevokeGatorPermissions', () => {
         },
       },
       context: mockPermissionContext,
-      signerMeta: {
-        delegationManager: mockDelegationManagerAddress,
-      },
+      delegationManager: mockDelegationManagerAddress,
     },
     siteOrigin: 'http://localhost:8000',
+    status: 'Active',
   };
 
-  const mockGatorPermissions: StoredGatorPermissionSanitized<
-    Signer,
-    PermissionTypesWithCustom
-  >[] = [
+  const mockGatorPermissions: PermissionInfoWithMetadata[] = [
     mockGatorPermission,
     {
       ...mockGatorPermission,
@@ -223,30 +257,36 @@ describe('useRevokeGatorPermissions', () => {
     mockNavigateToId.mockClear();
 
     // Setup default mock implementations
+    mockFindNetworkClientIdByChainId.mockResolvedValue(mockNetworkClientId);
     mockDecodeDelegations.mockReturnValue([mockDelegation]);
     mockEncodeDisableDelegation.mockReturnValue(
       '0xencodeddata' as `0x${string}`,
     );
+    mockGetDelegationHashOffchain.mockReturnValue(
+      '0xfd165b374563126931d2be865bbec75623dca111840d148cf88492c0bb997f96' as `0x${string}`,
+    );
+    mockCheckDelegationDisabled.mockResolvedValue(false);
+    mockAddPendingRevocation.mockResolvedValue(undefined);
     mockAddTransaction.mockResolvedValue(mockTransactionMeta as never);
 
     // Setup selector mocks
-    mockGetInternalAccounts.mockReturnValue([
-      {
-        id: 'mock-account-id',
-        address: mockSelectedAccountAddress,
-        type: 'eip155:eoa',
-        options: {},
-        metadata: {
-          name: 'Mock Account',
-          importTime: Date.now(),
-          keyring: {
-            type: 'hd',
-          },
+    const mockAccount = {
+      id: 'mock-account-id',
+      address: mockSelectedAccountAddress,
+      type: 'eip155:eoa' as const,
+      options: {},
+      metadata: {
+        name: 'Mock Account',
+        importTime: Date.now(),
+        keyring: {
+          type: 'hd',
         },
-        scopes: ['eip155:1'],
-        methods: ['eth_sendTransaction'],
       },
-    ]);
+      scopes: ['eip155:1' as const],
+      methods: ['eth_sendTransaction'],
+    };
+    mockGetInternalAccounts.mockReturnValue([mockAccount]);
+    mockGetInternalAccountByAddress.mockReturnValue(mockAccount);
     mockSelectDefaultRpcEndpointByChainId.mockReturnValue({
       url: 'https://mainnet.infura.io/v3/test',
       networkClientId: mockNetworkClientId,
@@ -265,7 +305,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -306,7 +346,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -330,7 +370,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -357,9 +397,14 @@ describe('useRevokeGatorPermissions', () => {
         ...mockGatorPermission,
         permissionResponse: {
           ...mockGatorPermission.permissionResponse,
-          address: differentAccountAddress as `0x${string}`,
+          from: differentAccountAddress as Hex,
         },
       };
+
+      // Return undefined for the different address that doesn't exist
+      mockGetInternalAccountByAddress.mockReturnValue(
+        undefined as unknown as ReturnType<typeof getInternalAccountByAddress>,
+      );
 
       const { result } = renderHook(
         () =>
@@ -367,7 +412,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -406,7 +451,7 @@ describe('useRevokeGatorPermissions', () => {
             onRedirect: mockOnRedirect,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -433,7 +478,7 @@ describe('useRevokeGatorPermissions', () => {
             onRedirect: mockOnRedirect,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -447,33 +492,6 @@ describe('useRevokeGatorPermissions', () => {
       expect(mockOnRedirect).not.toHaveBeenCalled();
     });
 
-    it('should handle missing defaultRpcEndpoint', async () => {
-      // Override the selector mock to return undefined for this test
-      mockSelectDefaultRpcEndpointByChainId.mockReturnValue(undefined);
-
-      const { result } = renderHook(
-        () =>
-          useRevokeGatorPermissions({
-            chainId: mockChainId,
-          }),
-        {
-          wrapper: ({ children }) => (
-            <Provider store={store}>{children}</Provider>
-          ),
-        },
-      );
-
-      await act(async () => {
-        await expect(
-          result.current.revokeGatorPermission(mockGatorPermission),
-        ).rejects.toThrow('No default RPC endpoint found');
-      });
-
-      expect(mockDecodeDelegations).not.toHaveBeenCalled();
-      expect(mockEncodeDisableDelegation).not.toHaveBeenCalled();
-      expect(mockAddTransaction).not.toHaveBeenCalled();
-    });
-
     it('should throw error when no delegation is found in permission context', async () => {
       mockDecodeDelegations.mockReturnValue([]);
 
@@ -483,7 +501,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -513,7 +531,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -539,7 +557,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -572,7 +590,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -606,7 +624,7 @@ describe('useRevokeGatorPermissions', () => {
             onRedirect: mockOnRedirect,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -635,7 +653,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -646,71 +664,6 @@ describe('useRevokeGatorPermissions', () => {
       });
 
       expect(mockNavigateToId).toHaveBeenCalledWith('test-transaction-id');
-    });
-
-    it('should find delegator from internal accounts', () => {
-      const { result } = renderHook(
-        () =>
-          useRevokeGatorPermissions({
-            chainId: mockChainId,
-          }),
-        {
-          wrapper: ({ children }) => (
-            <Provider store={store}>{children}</Provider>
-          ),
-        },
-      );
-
-      const foundAccount = result.current.findInternalAccountByAddress(
-        mockSelectedAccountAddress as Hex,
-      );
-
-      expect(foundAccount).toBeDefined();
-      expect(foundAccount?.address).toBe(mockSelectedAccountAddress);
-      expect(foundAccount?.id).toBe('mock-account-id');
-    });
-
-    it('should return undefined when delegator is not found in internal accounts', () => {
-      const { result } = renderHook(
-        () =>
-          useRevokeGatorPermissions({
-            chainId: mockChainId,
-          }),
-        {
-          wrapper: ({ children }) => (
-            <Provider store={store}>{children}</Provider>
-          ),
-        },
-      );
-
-      const foundAccount = result.current.findInternalAccountByAddress(
-        '0x1234567890123456789012345678901234567890' as Hex,
-      );
-
-      expect(foundAccount).toBeUndefined();
-    });
-
-    it('should find account with case insensitive address matching', () => {
-      const { result } = renderHook(
-        () =>
-          useRevokeGatorPermissions({
-            chainId: mockChainId,
-          }),
-        {
-          wrapper: ({ children }) => (
-            <Provider store={store}>{children}</Provider>
-          ),
-        },
-      );
-
-      // Test with uppercase address
-      const foundAccount = result.current.findInternalAccountByAddress(
-        mockSelectedAccountAddress.toUpperCase() as Hex,
-      );
-
-      expect(foundAccount).toBeDefined();
-      expect(foundAccount?.address).toBe(mockSelectedAccountAddress);
-      expect(foundAccount?.id).toBe('mock-account-id');
     });
   });
 
@@ -726,7 +679,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -753,7 +706,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -777,7 +730,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -812,9 +765,14 @@ describe('useRevokeGatorPermissions', () => {
         ...mockGatorPermissions[0],
         permissionResponse: {
           ...mockGatorPermissions[0].permissionResponse,
-          address: differentAccountAddress as `0x${string}`,
+          from: differentAccountAddress as Hex,
         },
       };
+
+      // Return undefined for the different address that doesn't exist
+      mockGetInternalAccountByAddress.mockReturnValue(
+        undefined as unknown as ReturnType<typeof getInternalAccountByAddress>,
+      );
 
       const { result } = renderHook(
         () =>
@@ -822,7 +780,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -852,7 +810,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -882,7 +840,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -906,7 +864,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -945,7 +903,7 @@ describe('useRevokeGatorPermissions', () => {
             onRedirect: mockOnRedirect,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -968,7 +926,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -1000,7 +958,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -1028,7 +986,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -1053,7 +1011,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },
@@ -1086,7 +1044,7 @@ describe('useRevokeGatorPermissions', () => {
             chainId: mockChainId,
           }),
         {
-          wrapper: ({ children }) => (
+          wrapper: ({ children }: React.PropsWithChildren) => (
             <Provider store={store}>{children}</Provider>
           ),
         },

@@ -1,17 +1,19 @@
-import { renderHook } from '@testing-library/react-hooks';
-import { useDispatch } from 'react-redux';
+import { renderHook } from '@testing-library/react';
 
 import {
   findNetworkClientIdByChainId,
   getERC1155BalanceOf,
 } from '../../../../store/actions';
 import { Asset, AssetStandard } from '../../types/send';
+import { useDispatch } from '../../../../store/hooks';
 import { useERC1155BalanceChecker } from './useERC1155BalanceChecker';
 
-jest.mock('../../../../store/actions');
-jest.mock('react-redux', () => ({
+jest.mock('../../../../store/hooks', () => ({
   useDispatch: jest.fn(),
 }));
+
+jest.mock('../../../../store/actions');
+jest.mock('react-redux', () => ({}));
 
 const mockFindNetworkClientIdByChainId =
   findNetworkClientIdByChainId as jest.MockedFunction<
@@ -20,7 +22,9 @@ const mockFindNetworkClientIdByChainId =
 const mockGetERC1155BalanceOf = getERC1155BalanceOf as jest.MockedFunction<
   typeof getERC1155BalanceOf
 >;
-const mockUseDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>;
+const mockUseAppDispatch = useDispatch as jest.MockedFunction<
+  typeof useDispatch
+>;
 const mockDispatch = jest.fn();
 
 describe('useERC1155BalanceChecker', () => {
@@ -42,7 +46,7 @@ describe('useERC1155BalanceChecker', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseDispatch.mockReturnValue(mockDispatch);
+    mockUseAppDispatch.mockReturnValue(mockDispatch);
     mockFindNetworkClientIdByChainId.mockResolvedValue('mainnet' as never);
     mockGetERC1155BalanceOf.mockResolvedValue('5');
   });
@@ -84,12 +88,12 @@ describe('useERC1155BalanceChecker', () => {
   });
 
   it('converts string balance to number', async () => {
-    mockGetERC1155BalanceOf.mockResolvedValue('123');
+    mockGetERC1155BalanceOf.mockResolvedValue('06'); // 6 in hex
 
     const { result } = renderHook(() => useERC1155BalanceChecker());
     const response = await result.current.fetchBalanceForNft(mockERC1155Asset);
 
-    expect(response?.balance).toBe(123);
+    expect(response?.balance).toBe(6);
     expect(typeof response?.balance).toBe('number');
   });
 

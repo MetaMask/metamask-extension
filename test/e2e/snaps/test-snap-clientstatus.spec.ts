@@ -1,9 +1,16 @@
+import sdkPackageJson from '@metamask/snaps-sdk/package.json';
+import packageJson from '../../../package.json';
+
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import HeaderNavbar from '../page-objects/pages/header-navbar';
-import FixtureBuilder from '../fixture-builder';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import HeaderNavbar from '../page-objects/pages/home/header-navbar';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
+import {
+  login,
+  lockAndWaitForLoginPage,
+} from '../page-objects/flows/login.flow';
+import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockClientStatusSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 
@@ -11,12 +18,17 @@ describe('Test Snap Client Status', function () {
   it('can properly show client status locked state', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
+        fixtures: new FixtureBuilderV2()
+          .withSnapsPrivacyWarningAlreadyShown()
+          .build(),
         testSpecificMock: mockClientStatusSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         const headerNavbar = new HeaderNavbar(driver);
@@ -29,14 +41,19 @@ describe('Test Snap Client Status', function () {
         await testSnaps.scrollAndClickButton('submitClientStatusButton');
 
         // Validate the client status is false when the wallet is unlocked
-        await testSnaps.checkClientStatus('false');
+        await testSnaps.checkClientStatus({
+          locked: false,
+          active: true,
+          clientVersion: packageJson.version,
+          platformVersion: sdkPackageJson.version,
+        });
 
         // Switch to the extension MetaMask and lock it
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await headerNavbar.checkPageIsLoaded();
-        await headerNavbar.lockMetaMask();
+        await lockAndWaitForLoginPage(driver);
 
         // Click submit client status on test snap page
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
@@ -44,9 +61,12 @@ describe('Test Snap Client Status', function () {
         await testSnaps.scrollAndClickButton('submitClientStatusButton');
 
         // Validate the client status is accurate
-        await testSnaps.checkClientStatus(
-          JSON.stringify({ locked: true, active: true }, null, 2),
-        );
+        await testSnaps.checkClientStatus({
+          locked: true,
+          active: false,
+          clientVersion: packageJson.version,
+          platformVersion: sdkPackageJson.version,
+        });
       },
     );
   });

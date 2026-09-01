@@ -3,21 +3,22 @@ import {
   TransactionEnvelopeType,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { useDispatch } from 'react-redux';
 import {
   addTransactionAndRouteToConfirmationPage,
   getCode,
 } from '../../../store/actions';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { EIP_7702_REVOKE_ADDRESS } from '../../../../shared/lib/eip7702-utils';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { useDispatch } from '../../../store/hooks';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
-import {
-  EIP_7702_REVOKE_ADDRESS,
-  useEIP7702Account,
-} from './useEIP7702Account';
+import { useEIP7702Account } from './useEIP7702Account';
+
+jest.mock('../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
 }));
 
 jest.mock('../../../store/actions', () => ({
@@ -69,18 +70,17 @@ describe('useEIP7702Account', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
-    addTransactionAndRouteToConfirmationPageMock.mockReturnValue({
+    const mockDispatch = jest.fn().mockResolvedValue({
+      hash: TRANSACTION_ID_MOCK,
+      id: TRANSACTION_ID_MOCK,
       type: 'MockAction',
-    } as unknown as ReturnType<
-      typeof addTransactionAndRouteToConfirmationPageMock
-    >);
+    });
+    useDispatchMock.mockReturnValue(mockDispatch);
 
     useConfirmationNavigationMock.mockReturnValue({
       confirmations: [],
       navigateToId: jest.fn(),
     } as unknown as ReturnType<typeof useConfirmationNavigationMock>);
-
-    useDispatchMock.mockReturnValue(jest.fn());
   });
 
   describe('isUpgraded', () => {
@@ -120,6 +120,7 @@ describe('useEIP7702Account', () => {
         },
         {
           networkClientId: 'sepolia',
+          requireApproval: true,
           type: TransactionType.revokeDelegation,
         },
       );
@@ -135,6 +136,7 @@ describe('useEIP7702Account', () => {
 
       useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
+          hash: TRANSACTION_ID_MOCK,
           id: TRANSACTION_ID_MOCK,
         }),
       );
@@ -159,6 +161,7 @@ describe('useEIP7702Account', () => {
 
       useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
+          hash: TRANSACTION_ID_MOCK,
           id: TRANSACTION_ID_MOCK,
         }),
       );
@@ -192,6 +195,7 @@ describe('useEIP7702Account', () => {
         },
         {
           networkClientId: 'sepolia',
+          requireApproval: true,
           type: TransactionType.batch,
         },
       );
@@ -207,6 +211,7 @@ describe('useEIP7702Account', () => {
 
       useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
+          hash: TRANSACTION_ID_MOCK,
           id: TRANSACTION_ID_MOCK,
         }),
       );
@@ -231,6 +236,7 @@ describe('useEIP7702Account', () => {
 
       useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
+          hash: TRANSACTION_ID_MOCK,
           id: TRANSACTION_ID_MOCK,
         }),
       );

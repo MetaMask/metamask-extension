@@ -1,16 +1,12 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { isEqual } from 'lodash';
 import {
   generateCaip25Caveat,
   getAllNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
+  KnownSessionProperties,
 } from '@metamask/chain-agnostic-permission';
 import {
   CaipAccountId,
@@ -18,52 +14,42 @@ import {
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
-
-import { isEqual } from 'lodash';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
-import {
-  BoxBackgroundColor,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
-import { Tooltip } from 'react-tippy';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getPermissions } from '../../../selectors';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
 import {
   AvatarBase,
   AvatarBaseSize,
   AvatarFavicon,
   AvatarFaviconSize,
+  AvatarGroup,
+  AvatarGroupVariant,
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
   Button,
-  ButtonLink,
   ButtonSize,
   ButtonVariant,
   Icon,
+  IconColor,
   IconName,
   IconSize,
   Text,
-} from '../../../components/component-library';
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useBoolean } from '../../../hooks/useBoolean';
+import { getPermissions } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 import {
   Content,
   Footer,
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../shared/constants/network';
-import { Tab, Tabs } from '../../../components/ui/tabs';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
+import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../shared/constants/network';
 import {
   getAvatarFallbackLetter,
   isIpAddress,
@@ -73,7 +59,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../selectors/selectors.types';
 import { mergeCaip25CaveatValues } from '../../../../shared/lib/caip25-caveat-merger';
 import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell';
@@ -82,16 +68,23 @@ import { useAccountGroupsForPermissions } from '../../../hooks/useAccountGroupsF
 import {
   PermissionsRequest,
   getCaip25CaveatValueFromPermissions,
-} from '../../permissions-connect/connect-page/utils';
-import { MultichainSiteCell } from '../../../components/multichain-accounts/multichain-site-cell/multichain-site-cell';
+} from '../../../helpers/utils/caip25-permissions';
+import { getDefaultConnectChainIds } from '../../../helpers/utils/connect-default-chains';
 import { MultichainEditAccountsPage } from '../../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page';
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../shared/lib/multichain/scope-utils';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { getAccountGroupDisplayBalance } from '../../../helpers/utils/account-group-balance';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { ConnectionPermissionsList } from '../../../components/app/connection-permissions-list/connection-permissions-list';
+import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
+import { getAvatarType } from '../../../components/app/preferred-avatar/preferred-avatar';
+import { TrustSignalPill } from '../../../components/app/trust-signal-pill/trust-signal-pill';
+import { TrustSignalModal } from '../../../components/app/trust-signal-modal/trust-signal-modal';
 
 export type MultichainAccountsConnectPageRequest = {
   permissions?: PermissionsRequest;
@@ -121,22 +114,106 @@ export enum MultichainAccountsConnectPageMode {
   EditAccounts = 'edit-accounts',
 }
 
-export const MultichainAccountsConnectPage: React.FC<
-  MultichainConnectPageProps
-> = ({
+type SingleAccountCellProps = {
+  accountGroupId: AccountGroupObject['id'];
+  accountName: string;
+  balance?: string;
+  onEdit: () => void;
+  privacyMode?: boolean;
+};
+
+type MultiAccountRowProps = {
+  seedAddresses: string[];
+  onEdit: () => void;
+  accountsCount: number;
+};
+
+const SingleAccountCell = ({
+  accountGroupId,
+  accountName,
+  balance,
+  onEdit,
+  privacyMode = false,
+}: SingleAccountCellProps) => (
+  <MultichainAccountCell
+    accountId={accountGroupId}
+    accountName={accountName}
+    balance={balance}
+    balancePosition="subtitle"
+    disableHoverEffect
+    onClick={onEdit}
+    privacyMode={privacyMode}
+    endAccessory={
+      <Icon
+        name={IconName.ArrowRight}
+        size={IconSize.Sm}
+        color={IconColor.IconAlternative}
+      />
+    }
+  />
+);
+
+const MultiAccountRow = ({
+  seedAddresses,
+  onEdit,
+  accountsCount,
+}: MultiAccountRowProps) => {
+  const avatarVariant = useSelector(getAvatarType);
+  const avatarMembers = seedAddresses.map((address) => ({
+    address,
+    variant: avatarVariant,
+  }));
+  const t = useI18nContext();
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      padding={4}
+      gap={3}
+      onClick={onEdit}
+    >
+      <AvatarGroup
+        avatarPropsArr={avatarMembers}
+        variant={AvatarGroupVariant.Account}
+      />
+      <Text
+        variant={TextVariant.BodyMd}
+        color={TextColor.TextDefault}
+        data-testid={`accounts-count-${accountsCount}`}
+      >
+        {t('accountsCount', [accountsCount.toString()])}
+      </Text>
+      <Icon
+        name={IconName.ArrowRight}
+        size={IconSize.Sm}
+        color={IconColor.IconAlternative}
+        className="ml-auto"
+      />
+    </Box>
+  );
+};
+
+export const MultichainAccountsConnectPage = ({
   request,
   permissionsRequestId,
   rejectPermissionsRequest,
   approveConnection,
   targetSubjectMetadata,
-}) => {
+}: MultichainConnectPageProps) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const [pageMode, setPageMode] = useState<MultichainAccountsConnectPageMode>(
     MultichainAccountsConnectPageMode.Summary,
   );
+  const {
+    value: showRiskModal,
+    setTrue: openRiskModal,
+    setFalse: closeRiskModal,
+  } = useBoolean();
   const { isEip1193Request } = request.metadata ?? {};
   const { formatCurrencyWithMinThreshold } = useFormatters();
+  const { privacyMode } = useSelector(getPreferences);
   const allBalances = useSelector(selectBalanceForAllWallets);
   const wallets = allBalances?.wallets;
 
@@ -160,6 +237,38 @@ export const MultichainAccountsConnectPage: React.FC<
   const requestedCaip25CaveatValue = useMemo(
     () => getCaip25CaveatValueFromPermissions(request.permissions),
     [request.permissions],
+  );
+
+  const requestedScopes = getAllScopesFromCaip25CaveatValue(
+    requestedCaip25CaveatValue,
+  );
+
+  const isSolanaWalletStandardRequest =
+    requestedScopes.length === 1 &&
+    requestedScopes[0] === MultichainNetworks.SOLANA &&
+    Boolean(
+      requestedCaip25CaveatValue.sessionProperties[
+        KnownSessionProperties.SolanaAccountChangedNotifications
+      ],
+    );
+
+  const isTronWalletAdapterRequest =
+    requestedScopes.length === 1 &&
+    requestedScopes[0] === MultichainNetworks.TRON &&
+    Boolean(
+      requestedCaip25CaveatValue.sessionProperties[
+        KnownSessionProperties.TronAccountChangedNotifications
+      ],
+    );
+
+  // Requests carrying the `eip1193-compatible` session property come from
+  // EIP-1193 compatibility layers (e.g. `@metamask/connect-evm`) that route
+  // legacy-style dapp connections through the Multichain API. They should get
+  // the same all-networks pre-selection as legacy EIP-1193 requests.
+  const isEip1193CompatibleRequest = Boolean(
+    requestedCaip25CaveatValue.sessionProperties?.[
+      KnownSessionProperties.Eip1193Compatible
+    ],
   );
 
   const requestedCaip25CaveatValueWithExistingPermissions = useMemo(
@@ -203,7 +312,7 @@ export const MultichainAccountsConnectPage: React.FC<
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
           const caipChainId = chainId as CaipChainId;
           const isTestNetwork =
-            CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId);
+            CAIP_FORMATTED_TEST_CHAINS.includes(caipChainId);
           (isTestNetwork ? testNetworksList : nonTestNetworksList).push({
             ...network,
             caipChainId,
@@ -218,7 +327,7 @@ export const MultichainAccountsConnectPage: React.FC<
     [networkConfigurationsByCaipChainId],
   );
 
-  const currentlySelectedNetwork = useSelector(getMultichainNetwork);
+  const globallySelectedNetwork = useSelector(getMultichainNetwork);
 
   const alreadyConnectedCaipChainIds = useMemo(
     () => getAllScopesFromCaip25CaveatValue(existingCaip25CaveatValue),
@@ -236,82 +345,35 @@ export const MultichainAccountsConnectPage: React.FC<
     [requestedCaip25CaveatValue],
   );
 
-  const requestedAndAlreadyConnectedCaipChainIdsOrDefault = useMemo(() => {
-    const allNetworksList = [
-      ...nonTestNetworkConfigurations,
-      ...testNetworkConfigurations,
-    ].map(({ caipChainId }) => caipChainId);
-
-    const walletRequest =
-      requestedCaipChainIds.filter(
-        (caipChainId) =>
-          parseCaipChainId(caipChainId).namespace === KnownCaipNamespace.Wallet,
-      ).length > 0;
-
-    let additionalChains: CaipChainId[] = [];
-    if (walletRequest && isEip1193Request) {
-      additionalChains = nonTestNetworkConfigurations
-        .map(({ caipChainId }) => caipChainId)
-        .filter((caipChainId) =>
-          requestedNamespacesWithoutWallet.includes(
-            parseCaipChainId(caipChainId).namespace,
-          ),
-        );
-    }
-
-    const supportedRequestedCaipChainIds = Array.from(
-      new Set([
-        ...requestedCaipChainIds.filter((requestedCaipChainId) =>
-          allNetworksList.includes(requestedCaipChainId as CaipChainId),
-        ),
-        ...additionalChains,
-      ]),
-    );
-
-    // If globally selected network is a test network, include that in the default selected networks for connection request
-    const currentlySelectedNetworkChainId = currentlySelectedNetwork.chainId;
-    const selectedNetworkIsTestNetwork = testNetworkConfigurations.find(
-      (network: { caipChainId: CaipChainId }) =>
-        network.caipChainId === currentlySelectedNetworkChainId,
-    );
-
-    const defaultSelectedNetworkList = selectedNetworkIsTestNetwork
-      ? [...nonTestNetworkConfigurations, selectedNetworkIsTestNetwork].map(
-          ({ caipChainId }) => caipChainId,
-        )
-      : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
-
-    if (supportedRequestedCaipChainIds.length > 0) {
-      return Array.from(
-        new Set([
-          ...supportedRequestedCaipChainIds,
-          ...alreadyConnectedCaipChainIds,
-        ]),
-      );
-    }
-
-    if (requestedNamespaces.length > 0) {
-      return Array.from(
-        new Set(
-          defaultSelectedNetworkList.filter((caipChainId) => {
-            const { namespace } = parseCaipChainId(caipChainId);
-            return requestedNamespaces.includes(namespace);
-          }),
-        ),
-      );
-    }
-
-    return defaultSelectedNetworkList;
-  }, [
-    nonTestNetworkConfigurations,
-    testNetworkConfigurations,
-    requestedCaipChainIds,
-    isEip1193Request,
-    currentlySelectedNetwork.chainId,
-    requestedNamespaces,
-    requestedNamespacesWithoutWallet,
-    alreadyConnectedCaipChainIds,
-  ]);
+  const defaultConnectChainIds = useMemo(
+    () =>
+      getDefaultConnectChainIds({
+        nonTestNetworkConfigurations,
+        testNetworkConfigurations,
+        globallySelectedNetworkChainId: globallySelectedNetwork.chainId,
+        requestedCaipChainIds,
+        alreadyConnectedCaipChainIds,
+        requestedNamespaces,
+        requestedNamespacesWithoutWallet,
+        isEip1193Request,
+        isEip1193CompatibleRequest,
+        isSolanaWalletStandardRequest,
+        isTronWalletAdapterRequest,
+      }),
+    [
+      nonTestNetworkConfigurations,
+      testNetworkConfigurations,
+      requestedCaipChainIds,
+      isEip1193Request,
+      globallySelectedNetwork.chainId,
+      requestedNamespaces,
+      requestedNamespacesWithoutWallet,
+      alreadyConnectedCaipChainIds,
+      isEip1193CompatibleRequest,
+      isSolanaWalletStandardRequest,
+      isTronWalletAdapterRequest,
+    ],
+  );
 
   const {
     connectedAccountGroups,
@@ -322,26 +384,12 @@ export const MultichainAccountsConnectPage: React.FC<
   } = useAccountGroupsForPermissions(
     existingCaip25CaveatValue,
     requestedCaipAccountIds,
-    requestedAndAlreadyConnectedCaipChainIdsOrDefault,
+    defaultConnectChainIds,
     requestedNamespacesWithoutWallet,
   );
 
-  const [userHasModifiedSelection, setUserHasModifiedSelection] =
+  const [userHasModifiedAccountSelection, setUserHasModifiedAccountSelection] =
     useState(false);
-
-  const [selectedChainIds, setSelectedChainIds] = useState<CaipChainId[]>(
-    requestedAndAlreadyConnectedCaipChainIdsOrDefault,
-  );
-
-  const handleChainIdsSelected = useCallback(
-    (newSelectedChainIds: CaipChainId[], { isUserModified = true } = {}) => {
-      if (isUserModified) {
-        setUserHasModifiedSelection(true);
-      }
-      setSelectedChainIds(newSelectedChainIds);
-    },
-    [setUserHasModifiedSelection, setSelectedChainIds],
-  );
 
   const { suggestedAccountGroups, suggestedCaipAccountIds } = useMemo(() => {
     if (connectedAccountGroups.length > 0) {
@@ -366,7 +414,7 @@ export const MultichainAccountsConnectPage: React.FC<
         suggestedAccountGroups: [defaultSelectedAccountGroup],
         suggestedCaipAccountIds: getCaip25AccountIdsFromAccountGroupAndScope(
           [defaultSelectedAccountGroup],
-          requestedAndAlreadyConnectedCaipChainIdsOrDefault,
+          defaultConnectChainIds,
         ),
       };
     }
@@ -375,7 +423,7 @@ export const MultichainAccountsConnectPage: React.FC<
       suggestedAccountGroups: selectedAndRequestedAccountGroups,
       suggestedCaipAccountIds: getCaip25AccountIdsFromAccountGroupAndScope(
         selectedAndRequestedAccountGroups,
-        requestedAndAlreadyConnectedCaipChainIdsOrDefault,
+        defaultConnectChainIds,
       ),
     };
   }, [
@@ -385,7 +433,7 @@ export const MultichainAccountsConnectPage: React.FC<
     selectedAndRequestedAccountGroups,
     connectedAccountGroupWithRequested,
     caipAccountIdsOfConnectedAndRequestedAccountGroups,
-    requestedAndAlreadyConnectedCaipChainIdsOrDefault,
+    defaultConnectChainIds,
   ]);
 
   const [selectedAccountGroupIds, setSelectedAccountGroupIds] = useState(
@@ -402,14 +450,10 @@ export const MultichainAccountsConnectPage: React.FC<
       { isUserModified = true } = {},
     ) => {
       if (isUserModified) {
-        setUserHasModifiedSelection(true);
+        setUserHasModifiedAccountSelection(true);
       }
-      const updatedSelectedChains = [...selectedChainIds];
 
-      // Create lookup sets for selected account group IDs
       const selectedGroupIds = new Set(accountGroupIds);
-
-      // Filter to only selected account groups
       const selectedAccountGroups = supportedAccountGroups.filter(
         (group: AccountGroupWithInternalAccounts) =>
           selectedGroupIds.has(group.id),
@@ -417,25 +461,22 @@ export const MultichainAccountsConnectPage: React.FC<
 
       const caip25AccountIds = getCaip25AccountIdsFromAccountGroupAndScope(
         selectedAccountGroups,
-        updatedSelectedChains,
+        defaultConnectChainIds,
       );
 
-      handleChainIdsSelected(updatedSelectedChains, { isUserModified });
       setSelectedAccountGroupIds(accountGroupIds);
       setSelectedCaipAccountIds(caip25AccountIds);
       setPageMode(MultichainAccountsConnectPageMode.Summary);
     },
-    [selectedChainIds, supportedAccountGroups, handleChainIdsSelected],
+    [defaultConnectChainIds, supportedAccountGroups],
   );
 
-  // Ensures the selected account state is kept in sync with the default selected account value
-  // until the user makes modifications to the selected account/network values.
   useEffect(() => {
     const defaultAccountGroupIds = suggestedAccountGroups.map(
       (group) => group.id,
     );
     if (
-      !userHasModifiedSelection &&
+      !userHasModifiedAccountSelection &&
       !isEqual(defaultAccountGroupIds, selectedAccountGroupIds)
     ) {
       handleAccountGroupIdsSelected(defaultAccountGroupIds, {
@@ -443,23 +484,24 @@ export const MultichainAccountsConnectPage: React.FC<
       });
     }
   }, [
-    userHasModifiedSelection,
+    userHasModifiedAccountSelection,
     handleAccountGroupIdsSelected,
     selectedAccountGroupIds,
     suggestedAccountGroups,
   ]);
 
   const setModeToEditAccounts = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.ViewPermissionedAccounts,
-      properties: {
-        location:
-          'Connect view (accounts tab), Permissions toast, Permissions (dapp)',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ViewPermissionedAccounts)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location:
+            'Connect view (accounts tab), Permissions toast, Permissions (dapp)',
+        })
+        .build(),
+    );
     setPageMode(MultichainAccountsConnectPageMode.EditAccounts);
-  }, [trackEvent]);
+  }, [trackEvent, createEventBuilder]);
 
   const handleCancelConnection = useCallback(() => {
     rejectPermissionsRequest(permissionsRequestId);
@@ -473,7 +515,7 @@ export const MultichainAccountsConnectPage: React.FC<
         ...generateCaip25Caveat(
           requestedCaip25CaveatValueWithExistingPermissions,
           selectedCaipAccountIds,
-          selectedChainIds,
+          defaultConnectChainIds,
         ),
       },
     };
@@ -482,259 +524,202 @@ export const MultichainAccountsConnectPage: React.FC<
     request,
     requestedCaip25CaveatValueWithExistingPermissions,
     selectedCaipAccountIds,
-    selectedChainIds,
+    defaultConnectChainIds,
     approveConnection,
   ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
-  const originTrustSignals = useOriginTrustSignals(
+  const { state: trustSignalState } = useOriginTrustSignals(
     targetSubjectMetadata.origin,
   );
+  const isDangerousTrustSignal =
+    trustSignalState === TrustSignalDisplayState.Malicious ||
+    trustSignalState === TrustSignalDisplayState.Warning;
 
-  const renderAccountCell = useCallback(
-    (accountGroupId: AccountGroupObject['id']) => {
-      const accountGroup = supportedAccountGroups.find(
-        (group) => group.id === accountGroupId,
-      );
-
-      const account = accountGroup
-        ? wallets?.[accountGroup.walletId]?.groups?.[accountGroupId]
-        : undefined;
-      const balance = account?.totalBalanceInUserCurrency ?? 0;
-      const currency = account?.userCurrency ?? '';
-
-      return (
-        <MultichainAccountCell
-          accountId={accountGroupId}
-          accountName={accountGroup?.metadata.name || 'Unknown Account'}
-          balance={formatCurrencyWithMinThreshold(balance, currency)}
-          key={accountGroupId}
-          walletName={accountGroup?.walletName}
-        />
-      );
-    },
-    [supportedAccountGroups, wallets, formatCurrencyWithMinThreshold],
+  const seedAddresses = useSelector((state) =>
+    selectedAccountGroupIds.map((id) =>
+      getIconSeedAddressByAccountGroupId(state, id),
+    ),
   );
 
+  const singleAccountData = useMemo(() => {
+    if (selectedAccountGroupIds.length !== 1) {
+      return null;
+    }
+    const accountGroupId = selectedAccountGroupIds[0];
+    const accountGroup = supportedAccountGroups.find(
+      (group) => group.id === accountGroupId,
+    );
+    const account = accountGroup
+      ? wallets?.[accountGroup.walletId]?.groups?.[accountGroupId]
+      : undefined;
+    // Undefined when this group has no known balance yet, so the cell renders
+    // nothing instead of a misleading "$0.00".
+    const groupBalance = getAccountGroupDisplayBalance(account);
+
+    return {
+      accountGroupId,
+      accountName: accountGroup?.metadata.name ?? 'Unknown Account',
+      balance:
+        groupBalance &&
+        formatCurrencyWithMinThreshold(
+          groupBalance.amount,
+          groupBalance.currency,
+        ),
+    };
+  }, [
+    selectedAccountGroupIds,
+    supportedAccountGroups,
+    wallets,
+    formatCurrencyWithMinThreshold,
+  ]);
+
   return pageMode === MultichainAccountsConnectPageMode.Summary ? (
-    <Page
-      data-testid="connect-page"
-      className="main-container multichain-connect-page"
-      backgroundColor={BackgroundColor.backgroundDefault}
-    >
-      <Header paddingTop={8} paddingBottom={0}>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
-          marginBottom={8}
-        >
-          {targetSubjectMetadata.iconUrl ? (
-            <>
-              <Box
-                style={{
-                  filter: 'blur(16px) brightness(1.1)',
-                  position: 'absolute',
-                }}
-              >
-                <AvatarFavicon
-                  backgroundColor={BackgroundColor.backgroundMuted}
-                  size={AvatarFaviconSize.Xl}
-                  src={targetSubjectMetadata.iconUrl}
-                  name={title}
-                />
-              </Box>
+    <>
+      {showRiskModal && (
+        <TrustSignalModal
+          onContinue={() => {
+            closeRiskModal();
+            onConfirm();
+          }}
+          onCancel={closeRiskModal}
+        />
+      )}
+      <Page
+        data-testid="parent-selector-connect-page"
+        className="main-container multichain-connect-page"
+        backgroundColor={BackgroundColor.backgroundDefault}
+      >
+        <Header paddingTop={12} paddingBottom={6}>
+          <Box className="flex justify-center mt-4 mb-6">
+            {targetSubjectMetadata.iconUrl ? (
               <AvatarFavicon
-                backgroundColor={BackgroundColor.backgroundMuted}
+                className="bg-muted"
                 size={AvatarFaviconSize.Lg}
                 src={targetSubjectMetadata.iconUrl}
                 name={title}
-                style={{ zIndex: 1, background: 'transparent' }}
               />
-            </>
-          ) : (
-            <AvatarBase
-              size={AvatarBaseSize.Lg}
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-              color={TextColor.textAlternative}
-              style={{ borderWidth: '0px' }}
-              backgroundColor={BackgroundColor.backgroundMuted}
-            >
-              {isIpAddress(title) ? '?' : getAvatarFallbackLetter(title)}
-            </AvatarBase>
-          )}
-        </Box>
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-          gap={2}
-          marginBottom={1}
-        >
-          <Text
-            variant={TextVariant.headingLg}
-            style={{
-              wordBreak: 'break-word',
-              whiteSpace: 'normal',
-            }}
-          >
-            {title}
-          </Text>
-          {originTrustSignals.state === TrustSignalDisplayState.Verified && (
-            <Tooltip
-              title={t('alertReasonOriginTrustSignalVerified')}
-              position="bottom"
-              style={{ display: 'flex' }}
-            >
-              <Icon
-                name={IconName.VerifiedFilled}
-                color={IconColor.infoDefault}
-                size={IconSize.Sm}
-              />
-            </Tooltip>
-          )}
-        </Box>
-        <Box display={Display.Flex} justifyContent={JustifyContent.center}>
-          <Text color={TextColor.textAlternative}>
-            {t('connectionDescription')}
-          </Text>
-        </Box>
-      </Header>
-      <Content
-        paddingLeft={4}
-        paddingRight={4}
-        backgroundColor={BackgroundColor.transparent}
-      >
-        <Tabs
-          onTabClick={() => null}
-          backgroundColor={BoxBackgroundColor.Transparent}
-          defaultActiveTabKey="accounts"
-          tabListProps={{
-            backgroundColor: BoxBackgroundColor.Transparent,
-            justifyContent: BoxJustifyContent.Center,
-          }}
-        >
-          <Tab
-            className="multichain-connect-page__tab"
-            name={t('accounts')}
-            tabKey="accounts"
-            data-testid="accounts-tab"
-          >
-            <Box marginTop={4}>
-              <Box
-                backgroundColor={BackgroundColor.backgroundDefault}
-                borderRadius={BorderRadius.XL}
+            ) : (
+              <AvatarBase
+                size={AvatarBaseSize.Lg}
+                className="flex items-center justify-center text-alternative bg-muted border-0"
               >
-                {selectedAccountGroupIds.map(renderAccountCell)}
-              </Box>
-              {selectedAccountGroupIds.length === 0 && (
-                <Box
-                  className="connect-page__accounts-empty"
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.flexStart}
-                  alignItems={AlignItems.center}
-                  borderRadius={BorderRadius.XL}
-                >
-                  <ButtonLink
-                    onClick={setModeToEditAccounts}
-                    data-testid="edit"
-                  >
-                    {t('selectAccountToConnect')}
-                  </ButtonLink>
-                </Box>
-              )}
-              {selectedAccountGroupIds.length > 0 && (
-                <Box
-                  marginTop={4}
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.flexStart}
-                  padding={4}
-                >
-                  <Box
-                    className="connect-page__edit-icon"
-                    marginRight={4}
-                    display={Display.Flex}
-                    alignItems={AlignItems.center}
-                    justifyContent={JustifyContent.center}
-                    backgroundColor={BackgroundColor.infoMuted}
-                    borderRadius={BorderRadius.MD}
-                    padding={2}
-                  >
-                    <Icon
-                      name={IconName.Edit}
-                      size={IconSize.Md}
-                      color={IconColor.infoDefault}
-                    />
-                  </Box>
-                  <ButtonLink
-                    color={TextColor.infoDefault}
-                    onClick={setModeToEditAccounts}
-                    data-testid="edit"
-                  >
-                    {t('editAccounts')}
-                  </ButtonLink>
-                </Box>
-              )}
-            </Box>
-          </Tab>
-          <Tab
-            name={t('permissions')}
-            className="multichain-connect-page__tab"
-            tabKey="permissions"
-            data-testid="permissions-tab"
-            disabled={selectedAccountGroupIds.length === 0}
-          >
-            <Box marginTop={4}>
-              <MultichainSiteCell
-                nonTestNetworks={nonTestNetworkConfigurations}
-                testNetworks={testNetworkConfigurations}
-                supportedAccountGroups={supportedAccountGroups}
-                showEditAccounts={setModeToEditAccounts}
-                onSelectChainIds={handleChainIdsSelected}
-                selectedAccountGroupIds={selectedAccountGroupIds}
-                selectedChainIds={selectedChainIds}
-                isConnectFlow
-              />
-            </Box>
-          </Tab>
-        </Tabs>
-      </Content>
-      <Footer>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={4}
-          width={BlockSize.Full}
-        >
-          <Box display={Display.Flex} gap={4} width={BlockSize.Full}>
-            <Button
-              block
-              variant={ButtonVariant.Secondary}
-              size={ButtonSize.Lg}
-              data-testid="cancel-btn"
-              onClick={handleCancelConnection}
-            >
-              {t('cancel')}
-            </Button>
-            <Button
-              block
-              data-testid="confirm-btn"
-              size={ButtonSize.Lg}
-              onClick={onConfirm}
-              disabled={
-                selectedAccountGroupIds.length === 0 ||
-                selectedChainIds.length === 0
-              }
-            >
-              {t('connect')}
-            </Button>
+                {isIpAddress(title) ? '?' : getAvatarFallbackLetter(title)}
+              </AvatarBase>
+            )}
           </Box>
-        </Box>
-      </Footer>
-    </Page>
+          <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+            <Text
+              variant={TextVariant.HeadingMd}
+              className="break-words whitespace-normal"
+            >
+              {title}
+            </Text>
+            <Text
+              color={TextColor.TextAlternative}
+              variant={TextVariant.BodySm}
+            >
+              {t('connectionDescription')}
+            </Text>
+          </Box>
+          <Box className="flex justify-center mt-4">
+            <TrustSignalPill state={trustSignalState} />
+          </Box>
+        </Header>
+
+        <Content
+          paddingLeft={4}
+          paddingRight={4}
+          backgroundColor={BackgroundColor.transparent}
+          gap={6}
+        >
+          <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+            >
+              {t('account')}
+            </Text>
+            <Box
+              backgroundColor={BoxBackgroundColor.BackgroundMuted}
+              className="rounded-lg cursor-pointer"
+              data-testid="account-selection-section"
+            >
+              {singleAccountData && (
+                <SingleAccountCell
+                  accountGroupId={singleAccountData.accountGroupId}
+                  accountName={singleAccountData.accountName}
+                  balance={singleAccountData.balance}
+                  onEdit={setModeToEditAccounts}
+                  privacyMode={privacyMode}
+                />
+              )}
+              {selectedAccountGroupIds.length > 1 && (
+                <MultiAccountRow
+                  seedAddresses={seedAddresses}
+                  onEdit={setModeToEditAccounts}
+                  accountsCount={selectedAccountGroupIds.length}
+                />
+              )}
+            </Box>
+          </Box>
+          <ConnectionPermissionsList />
+        </Content>
+
+        <Footer>
+          <Box
+            className={`flex w-full gap-4 ${
+              isDangerousTrustSignal ? 'flex-col' : 'flex-row'
+            }`}
+          >
+            {isDangerousTrustSignal ? (
+              <>
+                <Button
+                  size={ButtonSize.Lg}
+                  data-testid="cancel-btn"
+                  onClick={handleCancelConnection}
+                >
+                  {t('backToSafety')}
+                </Button>
+                <Button
+                  variant={ButtonVariant.Secondary}
+                  size={ButtonSize.Lg}
+                  data-testid="confirm-btn"
+                  onClick={openRiskModal}
+                  isDanger
+                >
+                  {t('continueAtYourOwnRisk')}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  className="flex-1"
+                  variant={ButtonVariant.Secondary}
+                  size={ButtonSize.Lg}
+                  data-testid="cancel-btn"
+                  onClick={handleCancelConnection}
+                >
+                  {t('cancel')}
+                </Button>
+                <Button
+                  className="flex-1"
+                  data-testid="confirm-btn"
+                  size={ButtonSize.Lg}
+                  onClick={onConfirm}
+                >
+                  {t('connect')}
+                </Button>
+              </>
+            )}
+          </Box>
+        </Footer>
+      </Page>
+    </>
   ) : (
     <MultichainEditAccountsPage
+      title={t('selectAccounts')}
+      confirmButtonText={t('save')}
       supportedAccountGroups={supportedAccountGroups}
       defaultSelectedAccountGroups={selectedAccountGroupIds}
       onSubmit={handleAccountGroupIdsSelected}

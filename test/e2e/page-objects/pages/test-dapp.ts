@@ -1,41 +1,53 @@
 import { strict as assert } from 'assert';
-import { DAPP_URL } from '../../constants';
-import { WINDOW_TITLES } from '../../helpers';
+import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 
+/**
+ * Signature types for TestDapp.triggerSignature and openTestDappAndTriggerSignature.
+ */
+export enum SignatureType {
+  PersonalSign,
+  Permit,
+  NFTPermit,
+  SignTypedDataV3,
+  SignTypedDataV4,
+  SignTypedData,
+  SIWE,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  SIWE_BadDomain,
+}
+
+/**
+ * Canonical EVM test dapp for connect, sign, send, tokens, and chain APIs.
+ *
+ * Screen: `DAPP_URL` (`http://127.0.0.1:8080`) served from `@metamask/test-dapp`.
+ * Owns: connect/accounts/network display, signature triggers, eth_send
+ * transactions, ERC-20/721/1155 helpers, encryption/decrypt, and related
+ * dapp button interactions.
+ * Boundaries: the test dapp page only. MetaMask confirmations, permissions,
+ * and network switch UI belong to confirmation/dialog page objects.
+ * Related: `TestDappIndividualRequest` for single-method `/request` URLs;
+ * confirmation page objects under `pages/confirmations/`.
+ *
+ * @see node_modules/@metamask/test-dapp/dist/index.html
+ */
 class TestDapp {
-  private readonly driver: Driver;
+  private readonly addNetworkButton = '#addEthereumChain';
 
   private readonly addTokensToWalletButton = {
     text: 'Add Token(s) to Wallet',
     tag: 'button',
   };
 
-  private readonly addNetworkButton = '#addEthereumChain';
-
   private readonly approveTokensButton = '#approveTokens';
 
   private readonly approveTokensButtonWithoutGas = '#approveTokensWithoutGas';
 
-  private readonly confirmDepositButton =
-    '[data-testid="confirm-footer-button"]';
-
-  private readonly confirmDialogButton = '[data-testid="confirm-btn"]';
-
-  private readonly confirmDialogScrollButton =
-    '[data-testid="signature-request-scroll-button"]';
-
-  private readonly confirmScrollToBottomButtonRedesign =
-    '.confirm-scroll-to-bottom__button';
-
-  private readonly confirmSignatureButtonRedesign =
-    '[data-testid="confirm-footer-button"]';
-
   private readonly connectAccountButton = '#connectButton';
 
-  private readonly connectMetaMaskMessage = {
-    text: 'Connect this website with MetaMask',
-    tag: 'p',
+  private readonly connectDappButton = {
+    testId: 'confirm-btn',
   };
 
   private readonly connectedAccount = '#accounts';
@@ -45,13 +57,13 @@ class TestDapp {
     text: networkId,
   });
 
-  private readonly createTokenButton = { text: 'Create Token', tag: 'button' };
-
   private readonly decryptButton = '#decryptButton';
 
   private readonly decryptedMessage = '#cleartextDisplay';
 
   private readonly depositPiggyBankContractButton = '#depositButton';
+
+  private readonly driver: Driver;
 
   private readonly eip5792SendCallsError = '#eip5792SendCallsError';
 
@@ -81,16 +93,16 @@ class TestDapp {
 
   private readonly erc20CreateTokenButton = '#createToken';
 
+  private readonly erc20IncreaseTokensAllowanceButton =
+    '#increaseTokenAllowance';
+
   private readonly erc20TokenAddresses = '#erc20TokenAddresses';
 
   private readonly erc20TokenTransferButton = '#transferTokens';
 
   private readonly erc20WatchAssetButton = '#watchAssets';
 
-  private readonly erc20IncreaseTokensAllowanceButton =
-    '#increaseTokenAllowance';
-
-  private readonly erc721TokenAddresses = '#erc721TokenAddresses';
+  private readonly erc721ApproveButton = '#approveButton';
 
   private readonly erc721DeployButton = '#deployNFTsButton';
 
@@ -98,9 +110,14 @@ class TestDapp {
 
   private readonly erc721RevokeSetApprovalForAllButton = '#revokeButton';
 
-  private readonly erc721ApproveButton = '#approveButton';
-
   private readonly erc721SetApprovalForAllButton = '#setApprovalForAllButton';
+
+  private readonly erc721TokenAddresses = '#erc721TokenAddresses';
+
+  private readonly erc721TokenAddressesWithText = (value: string) => ({
+    css: this.erc721TokenAddresses,
+    text: value,
+  });
 
   private readonly erc721TransferFromButton = '#transferFromButton';
 
@@ -126,10 +143,6 @@ class TestDapp {
 
   private readonly getPermissionsResult = '#permissionsResult';
 
-  private readonly localhostNetworkMessage = { css: '#chainId', text: '0x539' };
-
-  private readonly mmlogo = '#mm-logo';
-
   private readonly maliciousApprovalButton = '#maliciousApprovalButton';
 
   private readonly maliciousContractInteractionButton =
@@ -140,16 +153,37 @@ class TestDapp {
 
   private readonly maliciousEthTransferButton = '#maliciousRawEthButton';
 
+  private readonly maliciousPermitButton = '#maliciousPermit';
+
   private readonly maliciousTradeOrderButton = '#maliciousTradeOrder';
+
+  private readonly mmlogo = '#mm-logo';
+
+  private readonly networkHost = (host: string) => ({
+    css: 'p',
+    text: host,
+  });
+
+  private readonly networkSelector = (networkId: string) => ({
+    testId: 'chainId',
+    text: networkId,
+  });
 
   private readonly personalSignButton = '#personalSign';
 
   private readonly personalSignResult = '#personalSignVerifyECRecoverResult';
 
-  private readonly personalSignVerifyButton = '#personalSignVerify';
-
   private personalSignSigUtilResultSelector =
     '#personalSignVerifySigUtilResult';
+
+  private readonly personalSignSigUtilResultSelectorWithText = (
+    publicKey: string,
+  ) => ({
+    css: this.personalSignSigUtilResultSelector,
+    text: publicKey,
+  });
+
+  private readonly personalSignVerifyButton = '#personalSignVerify';
 
   private readonly piggyBankContract = '#deployButton';
 
@@ -157,21 +191,43 @@ class TestDapp {
 
   private readonly revokePermissionButton = '#revokeAccountsPermission';
 
-  private readonly sign721PermitButton = '#sign721Permit';
-
   private readonly sendCallsButton = '#eip5792SendCallsButton';
 
-  private sign721PermitResult = '#sign721PermitResult';
+  private readonly sign721PermitButton = '#sign721Permit';
 
-  private sign721PermitResultR = '#sign721PermitResultR';
+  private readonly sign721PermitResult = '#sign721PermitResult';
 
-  private sign721PermitResultS = '#sign721PermitResultS';
+  private readonly sign721PermitResultR = '#sign721PermitResultR';
 
-  private sign721PermitResultV = '#sign721PermitResultV';
+  private readonly sign721PermitResultRWithText = (expectedR: string) => ({
+    css: this.sign721PermitResultR,
+    text: `r: ${expectedR}`,
+  });
 
-  private sign721PermitVerifyButton = '#sign721PermitVerify';
+  private readonly sign721PermitResultS = '#sign721PermitResultS';
 
-  private sign721PermitVerifyResult = '#sign721PermitVerifyResult';
+  private readonly sign721PermitResultSWithText = (expectedS: string) => ({
+    css: this.sign721PermitResultS,
+    text: `s: ${expectedS}`,
+  });
+
+  private readonly sign721PermitResultV = '#sign721PermitResultV';
+
+  private readonly sign721PermitResultVWithText = (expectedV: string) => ({
+    css: this.sign721PermitResultV,
+    text: `v: ${expectedV}`,
+  });
+
+  private readonly sign721PermitResultWithText = (
+    expectedSignature: string,
+  ) => ({
+    css: this.sign721PermitResult,
+    text: expectedSignature,
+  });
+
+  private readonly sign721PermitVerifyButton = '#sign721PermitVerify';
+
+  private readonly sign721PermitVerifyResult = '#sign721PermitVerifyResult';
 
   private readonly signPermitButton = '#signPermit';
 
@@ -179,9 +235,29 @@ class TestDapp {
 
   private readonly signPermitResultR = '#signPermitResultR';
 
+  private readonly signPermitResultRWithText = (expectedR: string) => ({
+    css: this.signPermitResultR,
+    text: `r: ${expectedR}`,
+  });
+
   private readonly signPermitResultS = '#signPermitResultS';
 
+  private readonly signPermitResultSWithText = (expectedS: string) => ({
+    css: this.signPermitResultS,
+    text: `s: ${expectedS}`,
+  });
+
   private readonly signPermitResultV = '#signPermitResultV';
+
+  private readonly signPermitResultVWithText = (expectedV: string) => ({
+    css: this.signPermitResultV,
+    text: `v: ${expectedV}`,
+  });
+
+  private readonly signPermitResultWithText = (expectedSignature: string) => ({
+    css: this.signPermitResult,
+    text: expectedSignature,
+  });
 
   private readonly signPermitSignatureRequestMessage = {
     text: 'Permit',
@@ -202,19 +278,19 @@ class TestDapp {
 
   private readonly signTypedDataResult = '#signTypedDataResult';
 
+  private readonly signTypedDataResultWithText = (result: string) => ({
+    css: this.signTypedDataResult,
+    text: result.toLowerCase(),
+  });
+
   private readonly signTypedDataV3Button = '#signTypedDataV3';
 
   private readonly signTypedDataV3Result = '#signTypedDataV3Result';
 
-  private readonly signTypedDataV3V4SignatureRequestMessage = {
-    text: 'Hello, Bob!',
-    tag: 'div',
-  };
-
-  private readonly signTypedDataV3V4SignatureRequestMessageRedesign = {
-    text: 'Hello, Bob!',
-    tag: 'p',
-  };
+  private readonly signTypedDataV3ResultWithText = (result: string) => ({
+    css: this.signTypedDataV3Result,
+    text: result.toLowerCase(),
+  });
 
   private readonly signTypedDataV3VerifyButton = '#signTypedDataV3Verify';
 
@@ -223,6 +299,11 @@ class TestDapp {
   private readonly signTypedDataV4Button = '#signTypedDataV4';
 
   private readonly signTypedDataV4Result = '#signTypedDataV4Result';
+
+  private readonly signTypedDataV4ResultWithText = (result: string) => ({
+    css: this.signTypedDataV4Result,
+    text: result.toLowerCase(),
+  });
 
   private readonly signTypedDataV4VerifyButton = '#signTypedDataV4Verify';
 
@@ -234,17 +315,10 @@ class TestDapp {
 
   private readonly simpleSendButton = '#sendButton';
 
-  private readonly transactionRequestMessage = {
-    text: 'Transaction request',
-    tag: 'h2',
-  };
-
-  private transferTokensButton = '#transferTokens';
-
-  private transferTokensWithoutGasButton = '#transferTokensWithoutGas';
+  private readonly transferTokensWithoutGasButton = '#transferTokensWithoutGas';
 
   private readonly userRejectedRequestMessage = {
-    tag: 'span',
+    tag: '*',
     text: 'Error: User rejected the request.',
   };
 
@@ -252,41 +326,29 @@ class TestDapp {
     this.driver = driver;
   }
 
-  private readonly networkSelector = (networkId: string) => ({
-    testId: 'chainId',
-    text: networkId,
-  });
+  async assertEip747ContractAddressInputValue(expectedValue: string) {
+    console.log('Assert EIP-747 contract address input value:', expectedValue);
+    const formFieldEl = await this.driver.findElement(
+      this.eip747ContractAddressInput,
+    );
+    assert.equal(await formFieldEl.getAttribute('value'), expectedValue);
+  }
 
-  private readonly networkHost = (host: string) => ({
-    css: 'p',
-    text: host,
-  });
-
-  private readonly connectDappButton = {
-    text: 'Connect',
-    tag: 'button',
-  };
+  async assertUserRejectedRequest() {
+    console.log('Assert user rejected request');
+    await this.driver.waitForSelector(this.userRejectedRequestMessage);
+  }
 
   /**
-   * Sends a JSON-RPC request to the connected wallet using window.ethereum.
+   * Asserts SIWE success message on test dapp.
+   * Waits for dialog to close, switches to TestDApp window, then verifies the signed message.
    *
-   * @param method - The RPC method name.
-   * @param params - The parameters for the RPC method.
-   * @returns The result of the RPC call.
+   * @param message - Expected signed message hex.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  async request<T>(method: string, params?: unknown[] | object): Promise<T> {
-    console.log(`Sending request: ${method}`, params);
-    return await this.driver.executeScript(
-      'return window.ethereum.request(arguments[0])',
-      [
-        {
-          method,
-          params,
-        },
-      ],
-    );
+  async assertVerifiedSiweMessage(message: string): Promise<void> {
+    await this.driver.waitUntilXWindowHandles(2);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+    await this.checkSuccessSiwe(message);
   }
 
   /**
@@ -314,6 +376,16 @@ class TestDapp {
     }
   }
 
+  async checkDappHostNetwork(host: string) {
+    console.log('Check Dapp host network:', host);
+    await this.driver.waitForSelector(this.networkHost(host));
+  }
+
+  async checkDappIsNotConnectedToNetwork(networkId: string) {
+    console.log('Check Dapp is not connected to network:', networkId);
+    await this.driver.assertElementNotPresent(this.networkSelector(networkId));
+  }
+
   /**
    * Verify the decrypted message on test dapp.
    *
@@ -337,6 +409,21 @@ class TestDapp {
       css: this.eip5792SendCallsError,
       text: expectedMessage,
     });
+  }
+
+  /**
+   * Checks the value of a ERC-721 token address once created.
+   *
+   * @param value - The address to be checked
+   */
+  async checkERC721TokenAddressesValue(value: string) {
+    console.log('Verify ERC-721 token address:', value);
+    await this.driver.waitForSelector(this.erc721TokenAddressesWithText(value));
+  }
+
+  async checkEthSignErrorMessage(): Promise<void> {
+    console.log('Check ETH sign error message');
+    await this.driver.waitForSelector(this.ethSignErrorMessage);
   }
 
   /**
@@ -478,7 +565,18 @@ class TestDapp {
     });
   }
 
+  /**
+   * Check if the test dapp is connected to the specified network.
+   *
+   * @param networkId - The network id to check if the test dapp is connected to.
+   */
+  async checkNetworkIsConnected(networkId: string) {
+    console.log(`Check testdapp is connected to network ${networkId}`);
+    await this.driver.waitForSelector(this.connectedNetwork(networkId));
+  }
+
   async checkPageIsLoaded(): Promise<void> {
+    console.log('Wait for Test Dapp page to be loaded');
     try {
       await this.driver.waitForSelector(this.mmlogo);
     } catch (e) {
@@ -510,7 +608,7 @@ class TestDapp {
    * @param publicKey - The public key to verify the signature with.
    */
   async checkSuccessPersonalSign(publicKey: string) {
-    console.log('Verify successful personal sign signature');
+    console.log('Verify successful personal sign signature:', publicKey);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.clickElement(this.personalSignVerifyButton);
     await this.driver.waitForSelector({
@@ -520,7 +618,7 @@ class TestDapp {
   }
 
   async checkSuccessSign721Permit(publicKey: string) {
-    console.log('Verify successful signPermit signature');
+    console.log('Verify successful signPermit signature:', publicKey);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.clickElement(this.sign721PermitVerifyButton);
     await this.driver.waitForSelector({
@@ -535,7 +633,7 @@ class TestDapp {
    * @param publicKey - The public key to verify the signature with.
    */
   async checkSuccessSignPermit(publicKey: string) {
-    console.log('Verify successful signPermit signature');
+    console.log('Verify successful signPermit signature:', publicKey);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.clickElement(this.signPermitVerifyButton);
     await this.driver.waitForSelector({
@@ -550,7 +648,7 @@ class TestDapp {
    * @param publicKey - The public key to verify the signature with.
    */
   async checkSuccessSignTypedData(publicKey: string) {
-    console.log('Verify successful signTypedData signature');
+    console.log('Verify successful signTypedData signature:', publicKey);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.clickElement(this.signTypedDataVerifyButton);
     await this.driver.waitForSelector({
@@ -565,7 +663,7 @@ class TestDapp {
    * @param publicKey - The public key to verify the signature with.
    */
   async checkSuccessSignTypedDataV3(publicKey: string) {
-    console.log('Verify successful signTypedDataV3 signature');
+    console.log('Verify successful signTypedDataV3 signature:', publicKey);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.clickElement(this.signTypedDataV3VerifyButton);
     await this.driver.waitForSelector({
@@ -580,7 +678,7 @@ class TestDapp {
    * @param publicKey - The public key to verify the signature with.
    */
   async checkSuccessSignTypedDataV4(publicKey: string) {
-    console.log('Verify successful signTypedDataV4 signature');
+    console.log('Verify successful signTypedDataV4 signature:', publicKey);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
     await this.driver.clickElement(this.signTypedDataV4VerifyButton);
     await this.driver.waitForSelector({
@@ -590,23 +688,10 @@ class TestDapp {
   }
 
   async checkSuccessSiwe(result: string) {
-    console.log('Verify successful SIWE signature');
+    console.log('Verify successful SIWE signature:', result);
     await this.driver.waitForSelector({
       css: this.signSiweVerifyResult,
       text: result.toLowerCase(),
-    });
-  }
-
-  /**
-   * Checks the value of a token address once created.
-   *
-   * @param value - The address to be checked
-   */
-  async checkTokenAddressesValue(value: string) {
-    console.log('Verify token address');
-    await this.driver.waitForSelector({
-      css: this.erc20TokenAddresses,
-      text: value,
     });
   }
 
@@ -616,7 +701,7 @@ class TestDapp {
    * @param expectedCount - The expected count of token addresses.
    */
   async checkTokenAddressesCount(expectedCount: number) {
-    console.log(`checking token addresses count: ${expectedCount}`);
+    console.log('Check token addresses count:', expectedCount);
     await this.driver.wait(async () => {
       const tokenAddressesElement = await this.driver.findElement(
         this.erc20TokenAddresses,
@@ -629,399 +714,266 @@ class TestDapp {
   }
 
   /**
-   * Checks the value of a ERC-721 token address once created.
+   * Checks the value of a token address once created.
    *
    * @param value - The address to be checked
    */
-  async checkERC721TokenAddressesValue(value: string) {
-    console.log('Verify ERC-721 token address');
+  async checkTokenAddressesValue(value: string) {
+    console.log('Verify token address:', value);
     await this.driver.waitForSelector({
-      css: this.erc721TokenAddresses,
+      css: this.erc20TokenAddresses,
       text: value,
     });
   }
 
-  async verifySuccessSignTypedDataResult(result: string) {
-    await this.driver.waitForSelector({
-      css: this.signTypedDataResult,
-      text: result.toLowerCase(),
-    });
-  }
-
-  async verifySuccessSignTypedDataV3Result(result: string) {
-    await this.driver.waitForSelector({
-      css: this.signTypedDataV3Result,
-      text: result.toLowerCase(),
-    });
-  }
-
-  async verifySuccessSignTypedDataV4Result(result: string) {
-    await this.driver.waitForSelector({
-      css: this.signTypedDataV4Result,
-      text: result.toLowerCase(),
-    });
-  }
-
-  async verifyPersonalSignSigUtilResult(publicKey: string) {
-    const sigUtilResult = await this.driver.waitForSelector({
-      css: this.personalSignSigUtilResultSelector,
-      text: publicKey,
-    });
-    assert.ok(
-      sigUtilResult,
-      `Sig Util result did not match address ${publicKey}`,
-    );
-  }
-
-  async verifySign721PermitResult(expectedSignature: string) {
-    await this.driver.waitForSelector({
-      css: this.sign721PermitResult,
-      text: expectedSignature,
-    });
-  }
-
-  async verifySign721PermitResultR(expectedR: string) {
-    await this.driver.waitForSelector({
-      css: this.sign721PermitResultR,
-      text: `r: ${expectedR}`,
-    });
-  }
-
-  async verifySign721PermitResultS(expectedS: string) {
-    await this.driver.waitForSelector({
-      css: this.sign721PermitResultS,
-      text: `s: ${expectedS}`,
-    });
-  }
-
-  async verifySign721PermitResultV(expectedV: string) {
-    await this.driver.waitForSelector({
-      css: this.sign721PermitResultV,
-      text: `v: ${expectedV}`,
-    });
-  }
-
-  async verifySignPermitResult(expectedSignature: string) {
-    await this.driver.waitForSelector({
-      css: this.signPermitResult,
-      text: expectedSignature,
-    });
-  }
-
-  async verifySignPermitResultR(expectedR: string) {
-    await this.driver.waitForSelector({
-      css: this.signPermitResultR,
-      text: `r: ${expectedR}`,
-    });
-  }
-
-  async verifySignPermitResultS(expectedS: string) {
-    await this.driver.waitForSelector({
-      css: this.signPermitResultS,
-      text: `s: ${expectedS}`,
-    });
-  }
-
-  async verifySignPermitResultV(expectedV: string) {
-    await this.driver.waitForSelector({
-      css: this.signPermitResultV,
-      text: `v: ${expectedV}`,
-    });
-  }
-
-  async checkEthSignErrorMessage(): Promise<void> {
-    await this.driver.waitForSelector(this.ethSignErrorMessage);
-  }
-
-  async assertEip747ContractAddressInputValue(expectedValue: string) {
-    const formFieldEl = await this.driver.findElement(
-      this.eip747ContractAddressInput,
-    );
-    assert.equal(await formFieldEl.getAttribute('value'), expectedValue);
-  }
-
-  async assertUserRejectedRequest() {
-    await this.driver.waitForSelector(this.userRejectedRequestMessage);
+  async clickAddNetworkButton() {
+    console.log('Click add network button');
+    await this.driver.clickElement(this.addNetworkButton);
   }
 
   async clickAddTokenToWallet() {
+    console.log('Click add token to wallet button');
     await this.driver.clickElement(this.addTokensToWalletButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
-  async clickAddNetworkButton() {
-    await this.driver.clickElement(this.addNetworkButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
+  async clickApproveTokens() {
+    console.log('Click approve tokens button');
+    await this.driver.clickElement(this.approveTokensButton);
+  }
+
+  async clickApproveTokensWithoutGas() {
+    console.log('Click approve tokens without gas button');
+    await this.driver.clickElement(this.approveTokensButtonWithoutGas);
   }
 
   async clickConnectAccountButton() {
+    console.log('Click connect account button');
     await this.driver.clickElement(this.connectAccountButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickConnectAccountButtonAndWaitForWindowToClose() {
+    console.log('Click connect account button and wait for window to close');
     await this.driver.clickElementAndWaitForWindowToClose(
       this.connectDappButton,
     );
   }
 
-  async clickRevokePermissionButton() {
-    await this.driver.clickElement(this.revokePermissionButton);
-  }
-
-  async checkDappIsNotConnectedToNetwork(networkId: string) {
-    await this.driver.assertElementNotPresent(this.networkSelector(networkId));
-  }
-
-  async checkDappHostNetwork(host: string) {
-    await this.driver.waitForSelector(this.networkHost(host));
-  }
-
-  async clickApproveTokens() {
-    await this.driver.clickElement(this.approveTokensButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
+  /**
+   * Scrolls to the create token button and clicks it.
+   */
+  async clickCreateToken() {
+    console.log('Click create token button');
+    await this.driver.clickElement(this.erc20CreateTokenButton);
   }
 
   async clickDecryptButton() {
+    console.log('Click decrypt button');
     await this.driver.clickElement(this.decryptButton);
   }
 
-  async clickApproveTokensWithoutGas() {
-    await this.driver.clickElement(this.approveTokensButtonWithoutGas);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
-  }
-
   async clickERC1155DeployButton() {
+    console.log('Click ERC1155 deploy button');
     await this.driver.clickElement(this.erc1155DeployButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC1155MintButton() {
+    console.log('Click ERC1155 mint button');
     await this.driver.clickElement(this.erc1155MintButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC1155RevokeSetApprovalForAllButton() {
+    console.log('Click ERC1155 revoke set approval for all button');
     await this.driver.clickElement(this.erc1155RevokeSetApprovalForAllButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC1155SetApprovalForAllButton() {
+    console.log('Click ERC1155 set approval for all button');
     await this.driver.clickElement(this.erc1155SetApprovalForAllButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC1155WatchButton() {
+    console.log('Click ERC1155 watch button');
     await this.driver.clickElement(this.erc1155WatchButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC20CreateTokenButton() {
+    console.log('Click ERC20 create token button');
     await this.driver.clickElement(this.erc20CreateTokenButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC20IncreaseAllowanceButton() {
+    console.log('Click ERC20 increase allowance button');
     await this.driver.clickElement(this.erc20IncreaseTokensAllowanceButton);
   }
 
   async clickERC20TokenTransferButton() {
+    console.log('Click ERC20 token transfer button');
     await this.driver.waitForSelector(this.erc20TokenTransferButton, {
       state: 'enabled',
     });
     await this.driver.clickElement(this.erc20TokenTransferButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC20WatchAssetButton() {
+    console.log('Click ERC20 watch asset button');
     await this.driver.clickElement(this.erc20WatchAssetButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
-  }
-
-  async clickERC721DeployButton() {
-    await this.driver.clickElement(this.erc721DeployButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
-  }
-
-  async clickERC721MintButton() {
-    await this.driver.clickElement(this.erc721MintButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
-  }
-
-  async clickERC721Permit() {
-    await this.driver.clickElement(this.sign721PermitButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
-  }
-
-  async clickERC721RevokeSetApprovalForAllButton() {
-    await this.driver.clickElement(this.erc721RevokeSetApprovalForAllButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC721ApproveButton() {
+    console.log('Click ERC721 approve button');
     await this.driver.clickElement(this.erc721ApproveButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
+  }
+
+  async clickERC721DeployButton() {
+    console.log('Click ERC721 deploy button');
+    await this.driver.clickElement(this.erc721DeployButton);
+  }
+
+  async clickERC721MintButton() {
+    console.log('Click ERC721 mint button');
+    await this.driver.clickElement(this.erc721MintButton);
+  }
+
+  async clickERC721Permit() {
+    console.log('Click ERC721 permit button');
+    await this.driver.clickElement(this.sign721PermitButton);
+  }
+
+  async clickERC721RevokeSetApprovalForAllButton() {
+    console.log('Click ERC721 revoke set approval for all button');
+    await this.driver.clickElement(this.erc721RevokeSetApprovalForAllButton);
   }
 
   async clickERC721SetApprovalForAllButton() {
+    console.log('Click ERC721 set approval for all button');
     await this.driver.clickElement(this.erc721SetApprovalForAllButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC721TransferFromButton() {
+    console.log('Click ERC721 transfer from button');
     await this.driver.clickElement(this.erc721TransferFromButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
-  }
-
-  async clickGetEncryptionKeyButton() {
-    await this.driver.clickElement(this.getEncryptionKeyButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
-  }
-
-  async clickPermit() {
-    await this.driver.clickElement(this.signPermitButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickEthSignButton() {
+    console.log('Click eth sign button');
     await this.driver.clickElement(this.ethSignButton);
   }
 
+  async clickGetEncryptionKeyButton() {
+    console.log('Click get encryption key button');
+    await this.driver.clickElement(this.getEncryptionKeyButton);
+  }
+
+  async clickMaliciousApprovalButton() {
+    console.log('Click malicious approval button');
+    await this.driver.clickElement(this.maliciousApprovalButton);
+  }
+
+  async clickMaliciousContractInteractionButton() {
+    console.log('Click malicious contract interaction button');
+    await this.driver.clickElement(this.maliciousContractInteractionButton);
+  }
+
+  async clickMaliciousERC20TransferButton() {
+    console.log('Click malicious ERC20 transfer button');
+    await this.driver.clickElement(this.maliciousERC20TransferButton);
+  }
+
+  async clickMaliciousEthTransferButton() {
+    console.log('Click malicious ETH transfer button');
+    await this.driver.clickElement(this.maliciousEthTransferButton);
+  }
+
+  async clickMaliciousPermitButton() {
+    console.log('Click malicious permit button');
+    await this.driver.clickElement(this.maliciousPermitButton);
+  }
+
+  async clickMaliciousTradeOrderButton() {
+    console.log('Click malicious trade order button');
+    await this.driver.clickElement(this.maliciousTradeOrderButton);
+  }
+
+  async clickPermit() {
+    console.log('Click permit button');
+    await this.driver.clickElement(this.signPermitButton);
+  }
+
   async clickPersonalSign() {
+    console.log('Click personal sign button');
     await this.driver.clickElement(this.personalSignButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickPiggyBankContract() {
+    console.log('Click piggy bank contract button');
     await this.driver.clickElement(this.piggyBankContract);
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  }
+
+  async clickRevokePermissionButton() {
+    console.log('Click revoke permission button');
+    await this.driver.clickElement(this.revokePermissionButton);
   }
 
   async clickSendCalls() {
+    console.log('Click send calls button');
     await this.driver.clickElement(this.sendCallsButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSignTypedData() {
+    console.log('Click sign typed data button');
     await this.driver.clickElement(this.signTypedDataButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSignTypedDatav3() {
+    console.log('Click sign typed data v3 button');
     await this.driver.clickElement(this.signTypedDataV3Button);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSignTypedDatav4() {
+    console.log('Click sign typed data v4 button');
     await this.driver.clickElement(this.signTypedDataV4Button);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSimpleSendButton() {
+    console.log('Click simple send button');
     await this.driver.waitForSelector(this.simpleSendButton, {
       state: 'enabled',
     });
     await this.driver.clickElement(this.simpleSendButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSiwe() {
+    console.log('Click siwe button');
     await this.driver.clickElement(this.signSiweButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSwieBadDomain() {
+    console.log('Click siwe bad domain button');
     await this.driver.clickElement(this.signSiweBadDomainButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickTransferTokens() {
-    await this.driver.clickElement(this.transferTokensButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
+    console.log('Click transfer tokens button');
+    await this.driver.clickElement(this.erc20TokenTransferButton);
   }
 
   async clickTransferTokensWithoutGas() {
+    console.log('Click transfer tokens without gas button');
     await this.driver.clickElement(this.transferTokensWithoutGasButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
-  }
-
-  async confirmConnectAccountModal() {
-    console.log('Confirm connect account modal in notification window');
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(this.connectMetaMaskMessage);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmDialogButton,
-    );
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  }
-
-  async clickMaliciousERC20TransferButton() {
-    await this.driver.clickElement(this.maliciousERC20TransferButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
-  }
-
-  async clickMaliciousApprovalButton() {
-    await this.driver.clickElement(this.maliciousApprovalButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
-  }
-
-  async clickMaliciousContractInteractionButton() {
-    await this.driver.clickElement(this.maliciousContractInteractionButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
-  }
-
-  async clickMaliciousEthTransferButton() {
-    await this.driver.clickElement(this.maliciousEthTransferButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
-  }
-
-  async clickMaliciousTradeOrderButton() {
-    await this.driver.clickElement(this.maliciousTradeOrderButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   /**
-   * Connect account to test dapp.
-   *
-   * @param options - Options for connecting account to test dapp.
-   * @param [options.connectAccountButtonEnabled] - Indicates if the connect account button should be enabled.
-   * @param options.publicAddress - The public address to connect to test dapp.
-   * @param [options.chainId] - The chain id to connect to, defaults to 0x539.
+   * Click connect account button in test dapp.
+   * Note: Dialog handling should be done separately in test files or use connectAccountToTestDapp flow helper.
    */
-  async connectAccount({
-    connectAccountButtonEnabled = true,
-    publicAddress,
-    chainId = '0x539',
-  }: {
-    connectAccountButtonEnabled?: boolean;
-    publicAddress?: string;
-    chainId?: string;
-  }) {
-    console.log('Connect account to test dapp');
+  async connectAccount() {
+    console.log('Connect account in test dapp');
     await this.clickConnectAccountButton();
-    if (connectAccountButtonEnabled) {
-      await this.confirmConnectAccountModal();
-    } else {
-      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      await this.driver.waitForSelector(this.connectMetaMaskMessage);
-      const confirmConnectDialogButton = await this.driver.findElement(
-        this.confirmDialogButton,
-      );
-      assert.equal(await confirmConnectDialogButton.isEnabled(), false);
-    }
-    if (publicAddress) {
-      await this.checkConnectedAccounts(publicAddress);
-      await this.driver.waitForSelector({
-        css: '#chainId',
-        text: chainId,
-      });
-    }
   }
 
   async createDepositTransaction() {
     console.log('Create a deposit transaction on test dapp page');
     await this.driver.clickElement(this.depositPiggyBankContractButton);
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   }
 
   /**
@@ -1053,19 +1005,34 @@ class TestDapp {
   }
 
   async fillERC1155TokenAmount(amount: string) {
+    console.log(`Fill ERC1155 token amount: ${amount}`);
     await this.driver.pasteIntoField(this.erc1155TokenAmountInput, amount);
   }
 
   async fillERC1155TokenID(tokenID: string) {
+    console.log(`Fill ERC1155 token ID: ${tokenID}`);
     await this.driver.pasteIntoField(this.erc1155TokenIDInput, tokenID);
   }
 
   /**
-   * Scrolls to the create token button and clicks it.
+   * Opens test dapp, clicks deploy NFTs, and switches to confirmation dialog.
    */
-  async clickCreateToken() {
-    await this.driver.clickElement(this.createTokenButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
+  async openTestDappAndTriggerDeploy(): Promise<void> {
+    await this.openTestDappPage({ url: DAPP_URL });
+    await this.clickERC721DeployButton();
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  }
+
+  /**
+   * Opens test dapp, triggers a signature by type, and switches to confirmation dialog.
+   *
+   * @param type - The signature type (SignatureType enum).
+   */
+  async openTestDappAndTriggerSignature(type: SignatureType): Promise<void> {
+    await this.openTestDappPage({ url: DAPP_URL });
+    await this.checkPageIsLoaded();
+    await this.triggerSignature(type);
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   }
 
   /**
@@ -1086,10 +1053,12 @@ class TestDapp {
     const dappUrl = contractAddress
       ? `${url}/?contract=${contractAddress}`
       : url;
+    console.log(`Open test dapp page: ${dappUrl}`);
     await this.driver.openNewPage(dappUrl);
   }
 
   async pasteIntoEip747ContractAddressInput() {
+    console.log('Paste into EIP-747 contract address input');
     await this.driver.findElement(this.eip747ContractAddressInput);
     await this.driver.pasteFromClipboardIntoField(
       this.eip747ContractAddressInput,
@@ -1097,85 +1066,207 @@ class TestDapp {
   }
 
   /**
-   * Sign a message with the personal sign method.
+   * Click personal sign button in test dapp.
+   * Note: Dialog handling should be done separately in test files.
    */
   async personalSign() {
     console.log('Sign message with personal sign');
     await this.clickPersonalSign();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButtonRedesign,
+  }
+
+  /**
+   * Sends a JSON-RPC request to the connected wallet using window.ethereum.
+   *
+   * @param method - The RPC method name.
+   * @param params - The parameters for the RPC method.
+   * @returns The result of the RPC call.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  async request<T>(method: string, params?: unknown[] | object): Promise<T> {
+    console.log(`Sending request: ${method}`, params);
+    return await this.driver.executeScript(
+      'return window.ethereum.request(arguments[0])',
+      [
+        {
+          method,
+          params,
+        },
+      ],
     );
   }
 
   /**
-   * Sign message with the signPermit method.
+   * Click permit sign button in test dapp.
+   * Note: Dialog handling should be done separately in test files.
    */
   async signPermit() {
     console.log('Sign message with signPermit');
     await this.clickPermit();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButtonRedesign,
-    );
   }
 
   /**
-   * Sign a message with the signTypedData method.
+   * Click sign typed data button in test dapp.
+   * Note: Dialog handling should be done separately in test files.
    */
   async signTypedData() {
     console.log('Sign message with signTypedData');
     await this.clickSignTypedData();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButtonRedesign,
-    );
   }
 
-  async signTypedDataV3Redesign() {
-    await this.clickSignTypedDatav3();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(
-      this.signTypedDataV3V4SignatureRequestMessageRedesign,
+  /**
+   * Triggers the given signature type on the test dapp.
+   *
+   * @param type - The signature type (SignatureType enum).
+   */
+  async triggerSignature(type: SignatureType): Promise<void> {
+    switch (type) {
+      case SignatureType.PersonalSign:
+        await this.clickPersonalSign();
+        break;
+      case SignatureType.Permit:
+        await this.clickPermit();
+        break;
+      case SignatureType.SignTypedData:
+        await this.clickSignTypedData();
+        break;
+      case SignatureType.SignTypedDataV3:
+        await this.clickSignTypedDatav3();
+        break;
+      case SignatureType.SignTypedDataV4:
+        await this.clickSignTypedDatav4();
+        break;
+      case SignatureType.SIWE:
+        await this.clickSiwe();
+        break;
+      case SignatureType.SIWE_BadDomain:
+        await this.clickSwieBadDomain();
+        break;
+      case SignatureType.NFTPermit:
+        await this.clickERC721Permit();
+        break;
+      default:
+        throw new Error('Invalid signature type');
+    }
+  }
+
+  /**
+   * Verify account connection and chain ID in test dapp.
+   * Should be called after switching back to TestDApp window.
+   *
+   * @param publicAddress - The public address to verify.
+   * @param chainId - The chain id to verify, defaults to 0x539.
+   */
+  async verifyAccountConnection(
+    publicAddress: string,
+    chainId: string = '0x539',
+  ): Promise<void> {
+    console.log(
+      `Verify account ${publicAddress} is connected to chain ${chainId}`,
     );
-    await this.driver.clickElementSafe(
-      this.confirmScrollToBottomButtonRedesign,
-      200,
+    await this.checkConnectedAccounts(publicAddress);
+    await this.driver.waitForSelector(this.connectedNetwork(chainId));
+  }
+
+  async verifyPersonalSignSigUtilResult(publicKey: string) {
+    console.log('Verify personal sign sigUtil result:', publicKey);
+    const sigUtilResult = await this.driver.waitForSelector(
+      this.personalSignSigUtilResultSelectorWithText(publicKey),
     );
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButtonRedesign,
+    assert.ok(
+      sigUtilResult,
+      `Sig Util result did not match address ${publicKey}`,
     );
   }
 
   /**
-   * Sign a message with the signTypedDataV4 method.
+   * Verifies personal sign success on the test dapp after the confirmation dialog closes.
    *
+   * @param publicKey - The public key to verify the signature with.
    */
-  async signTypedDataV4() {
-    console.log('Sign message with signTypedDataV4');
-    await this.clickSignTypedDatav4();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  async verifyPersonalSignSuccess(publicKey: string): Promise<void> {
+    console.log('Verify personal sign success on test dapp:', publicKey);
+    await this.checkSuccessPersonalSign(publicKey);
+    await this.verifyPersonalSignSigUtilResult(publicKey);
+  }
 
+  async verifySign721PermitResult(expectedSignature: string) {
+    console.log('Verify successful sign721Permit result:', expectedSignature);
     await this.driver.waitForSelector(
-      this.signTypedDataV3V4SignatureRequestMessageRedesign,
-    );
-    await this.driver.clickElementSafe(
-      this.confirmScrollToBottomButtonRedesign,
-      200,
-    );
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButtonRedesign,
+      this.sign721PermitResultWithText(expectedSignature),
     );
   }
 
-  /**
-   * Check if the test dapp is connected to the specified network.
-   *
-   * @param networkId - The network id to check if the test dapp is connected to.
-   */
-  async checkNetworkIsConnected(networkId: string) {
-    console.log(`Check testdapp is connected to network ${networkId}`);
-    await this.driver.waitForSelector(this.connectedNetwork(networkId));
+  async verifySign721PermitResultR(expectedR: string) {
+    console.log('Verify successful sign721Permit result R:', expectedR);
+    await this.driver.waitForSelector(
+      this.sign721PermitResultRWithText(expectedR),
+    );
+  }
+
+  async verifySign721PermitResultS(expectedS: string) {
+    console.log('Verify successful sign721Permit result S:', expectedS);
+    await this.driver.waitForSelector(
+      this.sign721PermitResultSWithText(expectedS),
+    );
+  }
+
+  async verifySign721PermitResultV(expectedV: string) {
+    console.log('Verify successful sign721Permit result V:', expectedV);
+    await this.driver.waitForSelector(
+      this.sign721PermitResultVWithText(expectedV),
+    );
+  }
+
+  async verifySignPermitResult(expectedSignature: string) {
+    console.log('Verify successful signPermit result:', expectedSignature);
+    await this.driver.waitForSelector(
+      this.signPermitResultWithText(expectedSignature),
+    );
+  }
+
+  async verifySignPermitResultR(expectedR: string) {
+    console.log('Verify successful signPermit result R:', expectedR);
+    await this.driver.waitForSelector(
+      this.signPermitResultRWithText(expectedR),
+    );
+  }
+
+  async verifySignPermitResultS(expectedS: string) {
+    console.log('Verify successful signPermit result S:', expectedS);
+    await this.driver.waitForSelector(
+      this.signPermitResultSWithText(expectedS),
+    );
+  }
+
+  async verifySignPermitResultV(expectedV: string) {
+    console.log('Verify successful signPermit result V:', expectedV);
+    await this.driver.waitForSelector(
+      this.signPermitResultVWithText(expectedV),
+    );
+  }
+
+  async verifySpanText(expectedText: string): Promise<void> {
+    await this.driver.waitForSelector({ text: expectedText, tag: 'span' });
+  }
+
+  async verifySuccessSignTypedDataResult(result: string) {
+    console.log('Verify successful signTypedData result:', result);
+    await this.driver.waitForSelector(this.signTypedDataResultWithText(result));
+  }
+
+  async verifySuccessSignTypedDataV3Result(result: string) {
+    console.log('Verify successful signTypedDataV3 result:', result);
+    await this.driver.waitForSelector(
+      this.signTypedDataV3ResultWithText(result),
+    );
+  }
+
+  async verifySuccessSignTypedDataV4Result(result: string) {
+    console.log('Verify successful signTypedDataV4 result:', result);
+    await this.driver.waitForSelector(
+      this.signTypedDataV4ResultWithText(result),
+    );
   }
 }
 

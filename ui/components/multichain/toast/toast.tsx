@@ -21,12 +21,20 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
+// eslint-disable-next-line jsdoc/require-param
+/**
+ * @deprecated Use the toast notification system in `ui/components/ui/toast/toast`
+ */
 export const ToastContainer = ({
   children,
 }: {
   children: React.ReactNode | string;
 }) => <Box className="toasts-container">{children}</Box>;
 
+// eslint-disable-next-line jsdoc/require-param
+/**
+ * @deprecated Use the toast notification system in `ui/components/ui/toast/toast`
+ */
 export const Toast = ({
   startAdornment,
   text,
@@ -37,6 +45,7 @@ export const Toast = ({
   onClose,
   borderRadius,
   textVariant,
+  textClassName,
   autoHideTime,
   onAutoHideToast,
   dataTestId,
@@ -44,7 +53,8 @@ export const Toast = ({
   contentProps,
 }: {
   startAdornment: React.ReactNode | React.ReactNode[];
-  text: string;
+  /** Plain string or rich content (e.g. inline `TextButton` via `t(key, [nodes])`). */
+  text: React.ReactNode;
   description?: string;
   descriptionVariant?: TextVariant;
   actionText?: string;
@@ -52,6 +62,8 @@ export const Toast = ({
   onClose: () => void;
   borderRadius?: BorderRadius;
   textVariant?: TextVariant;
+  /** Tailwind classes for the message text (e.g. "text-base") */
+  textClassName?: string;
   autoHideTime?: number;
   onAutoHideToast?: () => void;
   dataTestId?: string;
@@ -102,11 +114,19 @@ export const Toast = ({
         data-testid={dataTestId}
         {...contentProps}
       >
-        {startAdornment}
+        {startAdornment && (
+          <Box className="flex-shrink-0">{startAdornment}</Box>
+        )}
         <Box>
           <Text
-            className="toast-text"
-            variant={textVariant || TextVariant.bodyMdMedium}
+            className={
+              textClassName ? `toast-text ${textClassName}` : 'toast-text'
+            }
+            variant={
+              textClassName
+                ? undefined
+                : textVariant || TextVariant.bodyMdMedium
+            }
           >
             {text}
           </Text>

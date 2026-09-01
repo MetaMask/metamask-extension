@@ -74,6 +74,44 @@ describe(`migration #${newVersion}`, () => {
       ).toStrictEqual({
         eip155: {
           '0x1': true,
+          '0x89': false,
+          '0xa': true,
+        },
+      });
+    });
+
+    it('preserves EVM token filter entries and adds selected custom EVM chain', async () => {
+      const oldState = {
+        meta: {
+          version: oldVersion,
+        },
+        data: {
+          NetworkOrderController: {},
+          PreferencesController: {
+            preferences: {
+              tokenNetworkFilter: {
+                '0x1': true,
+                '0x89': false,
+              },
+            },
+          },
+          MultichainNetworkController: {
+            selectedMultichainNetworkChainId: '0x483',
+            isEvmSelected: true,
+          },
+        },
+      };
+
+      const newState = await migrate(oldState);
+
+      expect(
+        (newState.data.NetworkOrderController as Record<string, unknown>)
+          .enabledNetworkMap,
+      ).toStrictEqual({
+        eip155: {
+          '0x1': true,
+          '0x89': false,
+          '0x483': true,
         },
       });
     });
@@ -143,7 +181,7 @@ describe(`migration #${newVersion}`, () => {
   });
 
   describe('when tokenNetworkFilter is empty', () => {
-    it('should return state unchanged and capture exception', async () => {
+    it('should return state unchanged', async () => {
       const oldState = {
         meta: {
           version: oldVersion,
@@ -162,20 +200,9 @@ describe(`migration #${newVersion}`, () => {
         },
       };
 
-      const sentrySpy = jest
-        .spyOn(global.sentry, 'captureException')
-        .mockImplementation();
-
       const newState = await migrate(oldState);
 
-      expect(sentrySpy).toHaveBeenCalledWith(
-        new Error(
-          `Migration ${newVersion}: tokenNetworkFilter is empty, expected at least one network configuration.`,
-        ),
-      );
       expect(newState.data).toStrictEqual(oldState.data);
-
-      sentrySpy.mockRestore();
     });
   });
 
@@ -571,6 +598,7 @@ describe(`migration #${newVersion}`, () => {
       ).toStrictEqual({
         eip155: {
           '0x1': true,
+          '0x89': false,
         },
       });
 
@@ -633,6 +661,9 @@ describe(`migration #${newVersion}`, () => {
       ).toStrictEqual({
         eip155: {
           '0x1': true,
+          '0x89': false,
+          '0xa': true,
+          '0xa4b1': true,
         },
       });
     });

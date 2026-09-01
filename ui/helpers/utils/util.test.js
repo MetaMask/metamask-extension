@@ -1,8 +1,6 @@
 import Bowser from 'bowser';
-import BN from 'bn.js';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
 import { MinPermissionAbstractionDisplayCount } from '../../../shared/constants/permissions';
@@ -39,20 +37,6 @@ describe('util', () => {
       const input = '0x0';
       const output = util.parseBalance(input);
       expect(output).toStrictEqual(['0', '0']);
-    });
-  });
-
-  describe('#addressSummary', () => {
-    it('should add case-sensitive checksum', () => {
-      const address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825';
-      const result = util.addressSummary(address);
-      expect(result).toStrictEqual('0xFDEa65C8...b825');
-    });
-
-    it('should accept arguments for firstseg, lastseg, and keepPrefix', () => {
-      const address = '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825';
-      const result = util.addressSummary(address, 4, 4, false);
-      expect(result).toStrictEqual('FDEa...b825');
     });
   });
 
@@ -114,37 +98,82 @@ describe('util', () => {
     });
   });
 
-  describe('isOriginContractAddress', () => {
-    it('should return true when the send address is the same as the selected tokens contract address', () => {
-      expect(
-        util.isOriginContractAddress(
-          '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-          '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-        ),
-      ).toStrictEqual(true);
+  describe('isResolvableName', () => {
+    // Traditional domain names (should match isValidDomainName behavior)
+    it('should return true for valid domain names', () => {
+      expect(util.isResolvableName('vitalik.eth')).toStrictEqual(true);
+      expect(util.isResolvableName('foo.bar')).toStrictEqual(true);
+      expect(util.isResolvableName('wallet.crypto')).toStrictEqual(true);
     });
 
-    it('should return true when the send address is the same as the selected tokens contract address, capitalized input', () => {
-      expect(
-        util.isOriginContractAddress(
-          '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-          '0X8D6B81208414189A58339873AB429B6C47AB92D3',
-        ),
-      ).toStrictEqual(true);
+    // Email-like formats (0xName, Clusters, etc.)
+    it('should return true for email-like names', () => {
+      expect(util.isResolvableName('yulia@beast')).toStrictEqual(true);
+      expect(util.isResolvableName('user@domain')).toStrictEqual(true);
+      expect(util.isResolvableName('test@example')).toStrictEqual(true);
     });
 
-    it('should return false when the recipient address differs', () => {
+    // Scheme-based formats
+    it('should return true for scheme-based names', () => {
+      expect(util.isResolvableName('ens:vitalik')).toStrictEqual(true);
+      expect(util.isResolvableName('lens:username')).toStrictEqual(true);
+      expect(util.isResolvableName('cb:example')).toStrictEqual(true);
+    });
+
+    // Invalid inputs
+    it('should return false for empty or invalid inputs', () => {
+      expect(util.isResolvableName('')).toStrictEqual(false);
+      expect(util.isResolvableName(null)).toStrictEqual(false);
+      expect(util.isResolvableName(undefined)).toStrictEqual(false);
+      expect(util.isResolvableName('a')).toStrictEqual(false); // Too short
+    });
+
+    it('should return false for Ethereum addresses', () => {
       expect(
-        util.isOriginContractAddress(
-          '0x8d6b81208414189a58339873ab429b6c47ab92d3',
-          '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
-        ),
+        util.isResolvableName('0x1234567890123456789012345678901234567890'),
       ).toStrictEqual(false);
+      expect(
+        util.isResolvableName('0xAbCdEf1234567890123456789012345678901234'),
+      ).toStrictEqual(false);
+    });
+
+    it('should return false for pure numbers', () => {
+      expect(util.isResolvableName('12345')).toStrictEqual(false);
+      expect(util.isResolvableName('0')).toStrictEqual(false);
+    });
+
+    it('should return false for invalid email-like formats', () => {
+      expect(util.isResolvableName('@domain')).toStrictEqual(false);
+      expect(util.isResolvableName('user@')).toStrictEqual(false);
+    });
+
+    it('should return false for names without recognizable format', () => {
+      expect(util.isResolvableName('simpleword')).toStrictEqual(false);
+      expect(util.isResolvableName('no-special-chars')).toStrictEqual(false);
+    });
+
+    it('should return false for URLs', () => {
+      expect(util.isResolvableName('http://localhost:3000')).toStrictEqual(
+        false,
+      );
+      expect(util.isResolvableName('https://metamask.io')).toStrictEqual(false);
+      expect(util.isResolvableName('ftp://files.example.com')).toStrictEqual(
+        false,
+      );
+      expect(util.isResolvableName('mailto:test@example.com')).toStrictEqual(
+        false,
+      );
+      expect(util.isResolvableName('file:///path/to/file')).toStrictEqual(
+        false,
+      );
+      expect(util.isResolvableName('wss://socket.example.com')).toStrictEqual(
+        false,
+      );
     });
   });
 
   describe('#numericBalance', () => {
-    it('should return a BN 0 if given nothing', () => {
+    it('should return 0 if given nothing', () => {
       const result = util.numericBalance();
       expect(result.toString(10)).toStrictEqual('0');
     });
@@ -167,13 +196,13 @@ describe('util', () => {
     });
 
     it('should return 1.0000 ETH', () => {
-      const input = new BN(ethInWei, 10).toJSON();
+      const input = BigInt(ethInWei).toString(16);
       const result = util.formatBalance(input, 4);
       expect(result).toStrictEqual('1.0000 ETH');
     });
 
     it('should return 0.500 ETH', function () {
-      const input = new BN(ethInWei, 10).div(new BN('2', 10)).toJSON();
+      const input = (BigInt(ethInWei) / 2n).toString(16);
       const result = util.formatBalance(input, 3);
       expect(result).toStrictEqual('0.500 ETH');
     });
@@ -209,56 +238,56 @@ describe('util', () => {
     });
     it('should return false when given a modern chrome browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.52',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.6312.122 Safari/537.36',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated chrome browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.128 Safari/537.36',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:115.0) Gecko/20100101 Firefox/115.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern opera browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 OPR/101.0.0.0',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.6312.122 Safari/537.36 OPR/109.0.0.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated opera browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5615.165 Safari/537.36 OPR/98.0.4759.39',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.128 Safari/537.36 OPR/108.0.0.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern edge browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.126 Safari/537.36 Edg/113.0.1774.50',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.2420.81 Safari/537.36 Edg/123.0.2420.81',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated edge browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.3578.98 Safari/537.36 Edge/109.0.416.68',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.2365.92 Safari/537.36 Edg/122.0.2365.92',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
@@ -269,25 +298,6 @@ describe('util', () => {
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
-    });
-  });
-
-  describe('normalizing values', function () {
-    describe('#getRandomFileName', () => {
-      it('should only return a string containing alphanumeric characters', () => {
-        const result = util.getRandomFileName();
-        expect(result[0]).toStrictEqual(
-          expect.stringMatching(/^[a-zA-Z0-9]*$/gu),
-        );
-      });
-
-      // 50 samples
-      it('should return a string that is between 6 and 12 characters in length', () => {
-        for (let i = 0; i < 50; i++) {
-          const result = util.getRandomFileName();
-          expect(result.length >= 6 && result.length <= 12).toStrictEqual(true);
-        }
-      });
     });
   });
 
@@ -416,6 +426,9 @@ describe('util', () => {
     });
     it('should return value in hours for milliseconds passed very high above 5400000', () => {
       expect(util.toHumanReadableTime(t, 7200000)).toStrictEqual('2 hrs');
+    });
+    it('should return sub-second value when milliseconds < 1000', () => {
+      expect(util.toHumanReadableTime(t, 200)).toStrictEqual('0.2 sec');
     });
   });
   describe('sanitizeMessage', () => {
@@ -913,24 +926,56 @@ describe('util', () => {
       ).toStrictEqual('The Quick Brown Fox Jumps Over The Lazy Dog');
     });
 
-    it('should return a string that matches sanitizeString regex with the matched characters replaced', () => {
-      expect(
-        util.sanitizeString(
-          'The Quick ‭Brown \u202EFox Jumps Over \u202DThe Lazy Dog',
-        ),
-      ).toStrictEqual(
-        'The Quick \\u202DBrown \\u202EFox Jumps Over \\u202DThe Lazy Dog',
+    it('escapes RIGHT-TO-LEFT OVERRIDE (U+202E)', () => {
+      expect(util.sanitizeString('Send \u202E1000 ETH')).toStrictEqual(
+        'Send \\u202E1000 ETH',
       );
     });
-  });
 
-  describe('isDefaultMetaMaskChain()', () => {
-    it('should return true if the provided chainId is a default MetaMask chain', () => {
-      expect(util.isDefaultMetaMaskChain(CHAIN_IDS.GOERLI)).toBeTruthy();
+    it('escapes LEFT-TO-RIGHT OVERRIDE (U+202D)', () => {
+      expect(util.sanitizeString('Amount: \u202D1000')).toStrictEqual(
+        'Amount: \\u202D1000',
+      );
     });
 
-    it('should return false if the provided chainId is a not default MetaMask chain', () => {
-      expect(util.isDefaultMetaMaskChain(CHAIN_IDS.CELO)).toBeFalsy();
+    it('escapes RIGHT-TO-LEFT MARK (U+200F)', () => {
+      expect(util.sanitizeString('Send 100\u200F0 ETH')).toStrictEqual(
+        'Send 100\\u200F0 ETH',
+      );
+    });
+
+    it('escapes multiple bidi control characters', () => {
+      expect(util.sanitizeString('Send\u200F\u202E\u202D1000')).toStrictEqual(
+        'Send\\u200F\\u202E\\u202D1000',
+      );
+    });
+
+    it('escapes LTR/RTL isolates (U+2066–U+2069)', () => {
+      expect(util.sanitizeString('Check\u20661000\u2069')).toStrictEqual(
+        'Check\\u20661000\\u2069',
+      );
+    });
+
+    it('displays hidden bidi marks as escaped sequences in text containing numbers', () => {
+      expect(
+        util.sanitizeString(
+          'Pay ‏11‏1.1 USDC to 0x3333333333333333333333333333333333333333',
+        ),
+      ).toStrictEqual(
+        'Pay \\u200F11\\u200F1.1 USDC to 0x3333333333333333333333333333333333333333',
+      );
+    });
+
+    it('keeps clean text unchanged', () => {
+      expect(util.sanitizeString('Send 1000 ETH')).toStrictEqual(
+        'Send 1000 ETH',
+      );
+    });
+
+    it('keeps legitimate Unicode (emojis, non-Latin scripts)', () => {
+      expect(util.sanitizeString('Hello 👋 مرحبا')).toStrictEqual(
+        'Hello 👋 مرحبا',
+      );
     });
   });
 
@@ -1379,7 +1424,7 @@ describe('util', () => {
       ).toBe(true);
     });
 
-    it('returns false for third party Snap accounts derived from HD keyring', () => {
+    it('returns false for third-party Snap accounts derived from HD keyring', () => {
       const snapAccount = {
         address: '0x123',
         options: {
@@ -1498,57 +1543,6 @@ describe('util', () => {
       expect(util.transformOriginToTitle('http://[fe80::1]:9011/')).toBe(
         '[fe80::1]',
       );
-    });
-  });
-
-  describe('checkExistingAllTokens', () => {
-    const tokensList = {
-      1: {
-        '0xAccount1': [{ address: '0xToken1' }, { address: '0xToken2' }],
-      },
-      2: {
-        '0xAccount2': [{ address: '0xToken3' }],
-      },
-    };
-
-    it('should return false if address is not provided', () => {
-      const result = util.checkExistingAllTokens(
-        '',
-        1,
-        '0xAccount1',
-        tokensList,
-      );
-      expect(result).toBe(false);
-    });
-
-    it('should return false if token is not found in the list', () => {
-      const result = util.checkExistingAllTokens(
-        '0xNonExistentToken',
-        1,
-        '0xAccount1',
-        tokensList,
-      );
-      expect(result).toBe(false);
-    });
-
-    it('should return true if token is found (exact match)', () => {
-      const result = util.checkExistingAllTokens(
-        '0xToken1',
-        1,
-        '0xAccount1',
-        tokensList,
-      );
-      expect(result).toBe(true);
-    });
-
-    it('should return true if token is found (case insensitive)', () => {
-      const result = util.checkExistingAllTokens(
-        '0xtoken2',
-        1,
-        '0xAccount1',
-        tokensList,
-      );
-      expect(result).toBe(true);
     });
   });
 });

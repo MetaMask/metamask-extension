@@ -1,12 +1,11 @@
+import { act, renderHook, waitFor } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { renderHook, act } from '@testing-library/react-hooks';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { Store } from 'redux';
-import { GatorPermissionsMap } from '@metamask/gator-permissions-controller';
+import type { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
 import { fetchAndUpdateGatorPermissions } from '../../store/controller-actions/gator-permissions-controller';
-import { forceUpdateMetamaskState } from '../../store/actions';
 import { useGatorPermissions } from './useGatorPermissions';
 
 jest.mock(
@@ -16,94 +15,54 @@ jest.mock(
   }),
 );
 
-jest.mock('../../store/actions', () => ({
-  ...jest.requireActual('../../store/actions'),
-  forceUpdateMetamaskState: jest.fn(),
-}));
-
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
 const mockFetchAndUpdateGatorPermissions =
   fetchAndUpdateGatorPermissions as jest.MockedFunction<
     typeof fetchAndUpdateGatorPermissions
   >;
-const mockForceUpdateMetamaskState =
-  forceUpdateMetamaskState as jest.MockedFunction<
-    typeof forceUpdateMetamaskState
-  >;
+
+const createStoreWithCache = (
+  permissions: PermissionInfoWithMetadata[] = [
+    {
+      permissionResponse: {
+        chainId: '0x1',
+        from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+        permission: {
+          type: 'native-token-stream',
+          isAdjustmentAllowed: false,
+          data: { amountPerSecond: '0x0' },
+        },
+        context: '0x00000000',
+        delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+      },
+      siteOrigin: 'http://localhost:8000',
+      status: 'Active',
+    },
+  ],
+) =>
+  mockStore({
+    metamask: {
+      grantedPermissions: permissions,
+      isFetchingGatorPermissions: false,
+      pendingRevocations: [],
+    },
+  });
+
+const createStoreWithNoCache = () =>
+  mockStore({
+    metamask: {
+      grantedPermissions: [],
+      isFetchingGatorPermissions: false,
+      pendingRevocations: [],
+    },
+  });
 
 describe('useGatorPermissions', () => {
   let store: Store;
 
-  const mockGatorPermissionsMap: GatorPermissionsMap = {
-    'native-token-stream': {
-      '0x1': [
-        {
-          permissionResponse: {
-            chainId: '0x1',
-            address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
-            permission: {
-              isAdjustmentAllowed: false,
-              type: 'native-token-stream',
-              data: {
-                maxAmount: '0x22b1c8c1227a0000',
-                initialAmount: '0x6f05b59d3b20000',
-                amountPerSecond: '0x6f05b59d3b20000',
-                startTime: 1747699200,
-                justification:
-                  'This is a very important request for streaming allowance for some very important thing',
-              },
-            },
-            context: '0x00000000',
-            signerMeta: {
-              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-            },
-          },
-          siteOrigin: 'http://localhost:8000',
-        },
-      ],
-    },
-    'erc20-token-stream': {
-      '0x1': [
-        {
-          permissionResponse: {
-            chainId: '0x1',
-            address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
-            permission: {
-              type: 'erc20-token-stream',
-              isAdjustmentAllowed: false,
-              data: {
-                initialAmount: '0x22b1c8c1227a0000',
-                maxAmount: '0x6f05b59d3b20000',
-                amountPerSecond: '0x6f05b59d3b20000',
-                startTime: 1747699200,
-                tokenAddress: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
-                justification:
-                  'This is a very important request for streaming allowance for some very important thing',
-              },
-            },
-            context: '0x00000000',
-            signerMeta: {
-              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-            },
-          },
-          siteOrigin: 'http://localhost:8000',
-        },
-      ],
-    },
-    'native-token-periodic': {},
-    'erc20-token-periodic': {},
-    other: {},
-  };
-
   beforeEach(() => {
-    store = mockStore({
-      metamask: {
-        gatorPermissionsMapSerialized: '',
-        isGatorPermissionsEnabled: false,
-        isFetchingGatorPermissions: false,
-      },
-    });
+    store = createStoreWithNoCache();
 
     store.dispatch = jest.fn().mockImplementation((action) => {
       if (typeof action === 'function') {
@@ -113,137 +72,188 @@ describe('useGatorPermissions', () => {
     });
 
     jest.clearAllMocks();
-    mockFetchAndUpdateGatorPermissions.mockResolvedValue(
-      mockGatorPermissionsMap,
-    );
-    mockForceUpdateMetamaskState.mockResolvedValue(undefined);
+    mockFetchAndUpdateGatorPermissions.mockResolvedValue(undefined);
   });
 
-  it('should start with loading state and undefined data', () => {
+  it('should start with loading false when cache exists', async () => {
+    const storeWithCache = createStoreWithCache();
+
     const { result } = renderHook(() => useGatorPermissions(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={storeWithCache}>{children}</Provider>
+      ),
+    });
+
+    expect(result.current.loading).toBe(false);
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+  });
+
+  it('should start with loading true when no cache exists', async () => {
+    const { result } = renderHook(() => useGatorPermissions(), {
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
     });
 
     expect(result.current.loading).toBe(true);
-    expect(result.current.data).toBeUndefined();
-    expect(result.current.error).toBeUndefined();
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
   });
 
   it('should call fetchAndUpdateGatorPermissions on mount', async () => {
-    await act(async () => {
-      renderHook(() => useGatorPermissions(), {
-        wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
-        ),
-      });
+    const { result } = renderHook(() => useGatorPermissions(), {
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
     });
 
     expect(mockFetchAndUpdateGatorPermissions).toHaveBeenCalledTimes(1);
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
   });
 
-  it('should update state with data when both operations succeed', async () => {
-    const { result, waitForNextUpdate } = renderHook(
-      () => useGatorPermissions(),
-      {
-        wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
-        ),
-      },
-    );
+  it('should fetch when cache exists (background refresh)', async () => {
+    const storeWithCache = createStoreWithCache();
 
-    await waitForNextUpdate();
+    const { result } = renderHook(() => useGatorPermissions(), {
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={storeWithCache}>{children}</Provider>
+      ),
+    });
 
     expect(result.current.loading).toBe(false);
-    expect(result.current.data).toEqual(mockGatorPermissionsMap);
-    expect(result.current.error).toBeUndefined();
-    expect(mockForceUpdateMetamaskState).toHaveBeenCalledWith(store.dispatch);
+
+    expect(mockFetchAndUpdateGatorPermissions).toHaveBeenCalledTimes(1);
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
   });
 
-  it('should handle error when fetchAndUpdateGatorPermissions fails', async () => {
-    const error = new Error('Fetch permissions failed');
-    mockFetchAndUpdateGatorPermissions.mockRejectedValue(error);
-
-    const { result, waitForNextUpdate } = renderHook(
-      () => useGatorPermissions(),
-      {
-        wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
-        ),
-      },
+  it('should set loading to false when fetch fails', async () => {
+    mockFetchAndUpdateGatorPermissions.mockRejectedValue(
+      new Error('Fetch permissions failed'),
     );
 
-    await waitForNextUpdate();
+    const { result } = renderHook(() => useGatorPermissions(), {
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
+    });
 
-    // Add a small delay to ensure error handling completes
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    expect(result.current.loading).toBe(false);
-    expect(result.current.data).toBeUndefined();
-    expect(result.current.error).toBe(error);
+    await waitFor(() => expect(result.current.loading).toBe(false));
   });
 
-  it('should not update state if component is unmounted during async operation', async () => {
+  it('should not update state if component is unmounted during async operation', () => {
+    const storeWithCache = createStoreWithCache();
+
     const { result, unmount } = renderHook(() => useGatorPermissions(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={storeWithCache}>{children}</Provider>
+      ),
     });
 
     unmount();
 
-    expect(result.current.loading).toBe(true);
-    expect(result.current.data).toBeUndefined();
-    expect(result.current.error).toBeUndefined();
+    expect(result.current.loading).toBe(false);
   });
 
   it('should only run the effect once on mount', async () => {
-    await act(async () => {
-      const { rerender } = renderHook(() => useGatorPermissions(), {
-        wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
-        ),
-      });
+    const { result, rerender } = renderHook(() => useGatorPermissions(), {
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
+    });
 
+    await act(async () => {
       rerender();
       rerender();
       rerender();
     });
 
     expect(mockFetchAndUpdateGatorPermissions).toHaveBeenCalledTimes(1);
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
   });
 
-  it('should handle empty GatorPermissionsMap', async () => {
-    const emptyPermissionsList: GatorPermissionsMap = {
-      'native-token-stream': {},
-      'erc20-token-stream': {},
-      'native-token-periodic': {},
-      'erc20-token-periodic': {},
-      other: {},
-    };
+  it('should start with loading true when grantedPermissions is empty', async () => {
+    const { result } = renderHook(() => useGatorPermissions(), {
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
+    });
 
-    mockFetchAndUpdateGatorPermissions.mockResolvedValue(emptyPermissionsList);
+    expect(result.current.loading).toBe(true);
 
-    const { result, waitForNextUpdate } = renderHook(
-      () => useGatorPermissions(),
+    await waitFor(() => expect(result.current.loading).toBe(false));
+  });
+
+  it('should skip background refresh when refreshInBackground is false', async () => {
+    const storeWithCache = createStoreWithCache();
+
+    const { result } = renderHook(
+      () => useGatorPermissions({ refreshInBackground: false }),
       {
-        wrapper: ({ children }) => (
+        wrapper: ({ children }: React.PropsWithChildren) => (
+          <Provider store={storeWithCache}>{children}</Provider>
+        ),
+      },
+    );
+
+    expect(result.current.loading).toBe(false);
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
+
+    expect(mockFetchAndUpdateGatorPermissions).not.toHaveBeenCalled();
+  });
+
+  it('should fetch when no cache exists', async () => {
+    const { result } = renderHook(() => useGatorPermissions(), {
+      wrapper: ({ children }: React.PropsWithChildren) => (
+        <Provider store={store}>{children}</Provider>
+      ),
+    });
+
+    expect(result.current.loading).toBe(true);
+
+    await waitFor(() => {
+      expect(mockFetchAndUpdateGatorPermissions).toHaveBeenCalledTimes(1);
+      expect(result.current.loading).toBe(false);
+    });
+  });
+
+  it('should retry fetch when previous fetch failed', async () => {
+    mockFetchAndUpdateGatorPermissions.mockRejectedValue(
+      new Error('Fetch failed'),
+    );
+
+    const { result } = renderHook(
+      () => useGatorPermissions({ refreshInBackground: false }),
+      {
+        wrapper: ({ children }: React.PropsWithChildren) => (
           <Provider store={store}>{children}</Provider>
         ),
       },
     );
 
-    await waitForNextUpdate();
+    await waitFor(() => expect(result.current.loading).toBe(false));
 
-    expect(result.current.loading).toBe(false);
-    expect(result.current.data).toEqual(emptyPermissionsList);
-    expect(result.current.error).toBeUndefined();
-  });
+    expect(mockFetchAndUpdateGatorPermissions).toHaveBeenCalledTimes(1);
 
-  it('should not set error if component is unmounted during error handling', async () => {
-    const { result, unmount } = renderHook(() => useGatorPermissions(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
-    });
+    const { result: result2, rerender } = renderHook(
+      () => useGatorPermissions({ refreshInBackground: false }),
+      {
+        wrapper: ({ children }: React.PropsWithChildren) => (
+          <Provider store={store}>{children}</Provider>
+        ),
+      },
+    );
 
-    unmount();
+    rerender();
 
-    expect(result.current.error).toBeUndefined();
+    await waitFor(() => expect(result2.current.loading).toBe(false));
+
+    expect(mockFetchAndUpdateGatorPermissions).toHaveBeenCalledTimes(2);
   });
 });

@@ -3,7 +3,9 @@
 // the build process *might* inject a function, `fontPath`, that returns the
 // path to where the font awesome font files will be once the app is built.
 // the webpack version doesn't need an explicit font path.
-$fa-font-path: if(meta.function-exists('-mm-fa-path'), -mm-fa-path(), null);
+$fa-font-path: if(
+  sass(meta.function-exists('-mm-fa-path')): -mm-fa-path()
+);
 // our own fonts are relative to this file AND the built css file, so we don't
 // need to get fancy with our own fonts like we do with font awesome's
 $font-path: './fonts';
@@ -53,14 +55,28 @@ $font-path: './fonts';
 
 @font-face {
   font-family: 'Geist';
-  src: url('#{$font-path}/Geist/Geist-Bold.woff2') format('woff2');
+  src: url('#{$font-path}/Geist/Geist-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('#{$font-path}/Geist/Geist-SemiBoldItalic.woff2') format('woff2');
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('#{$font-path}/Geist/Geist-SemiBold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'Geist';
-  src: url('#{$font-path}/Geist/Geist-BoldItalic.woff2') format('woff2');
+  src: url('#{$font-path}/Geist/Geist-SemiBoldItalic.woff2') format('woff2');
   font-weight: 700;
   font-style: italic;
 }
@@ -81,9 +97,31 @@ $font-path: './fonts';
   font-style: normal;
 }
 
+/* MM Poly */
 @font-face {
   font-family: 'MMPoly';
   src: url('#{$font-path}/MMPoly/MM_Poly-Regular.woff2') format('woff2');
   font-weight: 400;
+  font-style: normal;
+}
+
+// Additional weight declarations to prevent browser font synthesis
+// The DisplayMd typography variant uses font-weight: 700 on small screens and
+// font-weight: 500 on larger screens. Without these declarations, browsers
+// would artificially synthesize bold text, resulting in blurry/muddy rendering.
+// By explicitly mapping weights 500 and 700 to the Regular font file, we ensure
+// consistent rendering quality across all screen sizes.
+// See: https://github.com/MetaMask/metamask-design-system/issues/928
+@font-face {
+  font-family: 'MMPoly';
+  src: url('#{$font-path}/MMPoly/MM_Poly-Regular.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MMPoly';
+  src: url('#{$font-path}/MMPoly/MM_Poly-Regular.woff2') format('woff2');
+  font-weight: 700;
   font-style: normal;
 }

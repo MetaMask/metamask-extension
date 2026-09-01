@@ -5,4 +5,9 @@
     background-color: var(--color-background-hover) !important;
     cursor: pointer;
   }
+
+  &__content {
+    min-width: 0;
+    flex: 1;
+  }
 }

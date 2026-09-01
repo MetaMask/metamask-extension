@@ -1,7 +1,8 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import type { FC } from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { isOnChainNotification } from '@metamask/notification-services-controller/notification-services';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -21,9 +22,9 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { getNotificationTypeForAnalytics } from '../../../helpers/utils/notification.util';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MINUTE } from '../../../../shared/constants/time';
 
 type Notification = NotificationServicesController.Types.INotification;
 
@@ -53,9 +54,10 @@ export const NotificationDetailCopyButton: FC<
   displayText,
   color = TextColor.textAlternative,
 }): JSX.Element => {
-  const [copied, handleCopy] = useCopyToClipboard(MINUTE);
+  // useCopyToClipboard analysis: Copies the text of the notification detail, which is never a private key
+  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');
   const tooltipTitle = tooltipText;
@@ -63,26 +65,34 @@ export const NotificationDetailCopyButton: FC<
   const onClick = () => {
     typeof handleCopy === 'function' && handleCopy(text);
     if (notification) {
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationInteraction,
-        event: MetaMetricsEventName.NotificationDetailClicked,
-        properties: {
+      const otherNotificationProperties = () => {
+        if (
+          'notification_type' in notification &&
+          isOnChainNotification(notification) &&
+          notification.payload.chain_id
+        ) {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          notification_id: notification.id,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          notification_type: notification.type,
-          ...('chain_id' in notification && {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: notification.chain_id,
-          }),
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          clicked_item: 'tx_id',
-        },
-      });
+          return { chain_id: notification.payload.chain_id };
+        }
+
+        return undefined;
+      };
+
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NotificationDetailClicked)
+          .addCategory(MetaMetricsEventCategory.NotificationInteraction)
+          .addProperties({
+            /* eslint-disable @typescript-eslint/naming-convention */
+            notification_id: notification.id,
+            notification_type: getNotificationTypeForAnalytics(notification),
+            notification_subtype: notification.notification_subtype,
+            ...otherNotificationProperties(),
+            clicked_item: 'tx_id',
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build(),
+      );
     }
   };
 

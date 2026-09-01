@@ -1,5 +1,5 @@
 const { PassThrough: ThroughStream } = require('stream');
-// eslint-ignore-next-line node/no-extraneous-require
+// eslint-ignore-next-line n/no-extraneous-require
 const duplexify = require('duplexify').obj;
 
 module.exports = {

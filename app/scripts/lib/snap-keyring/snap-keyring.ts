@@ -15,12 +15,15 @@ import {
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../../../shared/lib/translate';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { IconName } from '../../../../ui/components/component-library/icon';
-import MetaMetricsController from '../../controllers/metametrics-controller';
-import { getUniqueAccountName } from '../../../../shared/lib/accounts';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
-import { getSnapName } from '../../../../shared/lib/accounts/snaps';
+import {
+  getSnapName,
+  isMultichainWalletSnap,
+} from '../../../../shared/lib/accounts/snaps';
+import { isFlask } from '../../../../shared/lib/build-types';
+import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import { SnapKeyringBuilderMessenger } from './types';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
@@ -29,20 +32,8 @@ import { showError, showSuccess } from './utils/showResult';
  * Builder type for the Snap keyring.
  */
 export type SnapKeyringBuilder = {
-  name: 'SnapKeyringBuilder';
-  state: null;
-
   (): SnapKeyring;
   type: typeof SnapKeyring.type;
-};
-
-/**
- * Helpers for the Snap keyring implementation.
- */
-export type SnapKeyringHelpers = {
-  trackEvent: MetaMetricsController['trackEvent'];
-  persistKeyringHelper: () => Promise<void>;
-  removeAccountHelper: (address: string) => Promise<void>;
 };
 
 /**
@@ -78,60 +69,11 @@ export async function showAccountCreationDialog(
   }
 }
 
-/**
- * Show the account name suggestion confirmation dialog for a given Snap.
- *
- * @param snapId - Snap ID to show the account name suggestion dialog for.
- * @param messenger - The controller messenger instance.
- * @param accountNameSuggestion - Suggested name for the new account.
- * @returns The user's confirmation result.
- */
-export async function showAccountNameSuggestionDialog(
-  snapId: string,
-  messenger: SnapKeyringBuilderMessenger,
-  accountNameSuggestion: string,
-): Promise<{ success: boolean; name?: string }> {
-  try {
-    const confirmationResult = (await messenger.call(
-      'ApprovalController:addRequest',
-      {
-        origin: snapId,
-        type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
-        requestData: {
-          snapSuggestedAccountName: accountNameSuggestion,
-        },
-      },
-      true,
-    )) as { success: boolean; name?: string };
-    return confirmationResult;
-  } catch (e) {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    throw new Error(`Error occurred while showing name account dialog.\n${e}`);
-  }
-}
-
-class SnapKeyringImpl implements SnapKeyringCallbacks {
+export class SnapKeyringImpl implements SnapKeyringCallbacks {
   readonly #messenger: SnapKeyringBuilderMessenger;
 
-  readonly #trackEvent: SnapKeyringHelpers['trackEvent'];
-
-  readonly #persistKeyringHelper: SnapKeyringHelpers['persistKeyringHelper'];
-
-  readonly #removeAccountHelper: SnapKeyringHelpers['removeAccountHelper'];
-
-  constructor(
-    messenger: SnapKeyringBuilderMessenger,
-    {
-      trackEvent,
-      persistKeyringHelper,
-      removeAccountHelper,
-    }: SnapKeyringHelpers,
-  ) {
+  constructor(messenger: SnapKeyringBuilderMessenger) {
     this.#messenger = messenger;
-    this.#trackEvent = trackEvent;
-    this.#persistKeyringHelper = persistKeyringHelper;
-    this.#removeAccountHelper = removeAccountHelper;
   }
 
   async addressExists(address: string) {
@@ -182,7 +124,8 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
   }
 
   async saveState() {
-    await this.#persistKeyringHelper();
+    await this.#messenger.call('KeyringController:persistAllKeyrings');
+    await this.#messenger.call('AccountsController:updateAccounts');
   }
 
   async #withApprovalFlow<Return>(
@@ -199,102 +142,35 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     }
   }
 
-  /**
-   * Get the account name from the user through a dialog.
-   *
-   * @param snapId - ID of the Snap that created the account.
-   * @param accountNameSuggestion - Suggested name for the account.
-   * @returns The name that should be used for the account.
-   */
-  async #getAccountNameFromDialog(
-    snapId: SnapId,
-    accountNameSuggestion: string,
-  ): Promise<{ success: boolean; accountName?: string }> {
-    const { success, name: accountName } =
-      await showAccountNameSuggestionDialog(
-        snapId,
-        this.#messenger,
-        accountNameSuggestion,
-      );
-
-    return { success, accountName };
-  }
-
-  /**
-   * Use the account name suggestion to decide the name of the account.
-   *
-   * @param accountNameSuggestion - Suggested name for the account.
-   * @returns The name that should be used for the account.
-   */
-  async #getAccountNameFromSuggestion(
-    accountNameSuggestion: string,
-  ): Promise<{ success: boolean; accountName?: string }> {
-    const accounts = await this.#messenger.call(
-      'AccountsController:listMultichainAccounts',
-    );
-    const accountName = getUniqueAccountName(accounts, accountNameSuggestion);
-    return { success: true, accountName };
-  }
-
   async #addAccountConfirmations({
     snapId,
     skipConfirmationDialog,
-    skipAccountNameSuggestionDialog,
     skipApprovalFlow,
     handleUserInput,
-    accountNameSuggestion,
   }: {
     snapId: SnapId;
     skipConfirmationDialog: boolean;
-    skipAccountNameSuggestionDialog: boolean;
     skipApprovalFlow: boolean;
-    accountNameSuggestion: string;
     handleUserInput: (accepted: boolean) => Promise<void>;
-  }): Promise<{ accountName?: string }> {
-    // If both confirmation and name suggestion dialogs are skipped (preinstalled snap
-    // without confirmations), don't enter the approval flow at all to avoid
-    // unnecessary loader/flow UI. Just compute the name and signal acceptance.
+  }): Promise<void> {
+    // If the confirmation dialog is skipped (preinstalled snap without confirmations),
+    // don't enter the approval flow at all to avoid unnecessary loader/flow UI.
     if (skipApprovalFlow) {
-      const { success, accountName } = await this.#getAccountNameFromSuggestion(
-        accountNameSuggestion,
-      );
-      await handleUserInput(success);
-      if (!success) {
-        throw new Error('User denied account creation');
-      }
-      return { accountName };
+      return await handleUserInput(true);
     }
 
     return await this.#withApprovalFlow(async (_) => {
-      // 1. Show the account CREATION confirmation dialog.
-      {
-        // If confirmation dialog are skipped, we consider the account creation to be confirmed until the account name dialog is closed
-        const success =
-          skipConfirmationDialog ||
-          (await showAccountCreationDialog(snapId, this.#messenger));
+      // Show the account CREATION confirmation dialog.
+      // If confirmation dialog are skipped, we consider the account creation to be confirmed automatically.
+      const success =
+        skipConfirmationDialog ||
+        (await showAccountCreationDialog(snapId, this.#messenger));
 
-        if (!success) {
-          // User has cancelled account creation
-          await handleUserInput(success);
+      await handleUserInput(success);
 
-          throw new Error('User denied account creation');
-        }
-      }
-
-      // 2. Show the account RENAMING confirmation dialog. Note that
-      //    pre-installed Snaps can skip this dialog.
-      {
-        const { success, accountName } = skipAccountNameSuggestionDialog
-          ? await this.#getAccountNameFromSuggestion(accountNameSuggestion)
-          : await this.#getAccountNameFromDialog(snapId, accountNameSuggestion);
-
-        await handleUserInput(success);
-
-        if (!success) {
-          throw new Error('User denied account creation');
-        }
-
-        return { accountName };
+      if (!success) {
+        // User has cancelled account creation
+        throw new Error('User denied account creation');
       }
     });
   }
@@ -305,9 +181,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     skipConfirmationDialog,
     skipSetSelectedAccountStep,
     skipApprovalFlow,
-    accountName,
     onceSaved,
-    defaultAccountNameChosen,
   }: {
     address: string;
     snapId: SnapId;
@@ -315,35 +189,36 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     skipSetSelectedAccountStep: boolean;
     skipApprovalFlow: boolean;
     onceSaved: Promise<string>;
-    accountName?: string;
-    defaultAccountNameChosen: boolean;
   }) {
     const learnMoreLink =
-      'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/';
+      'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/?utm_source=extension';
 
     const snapName = getSnapName(snapId, this.#messenger);
 
     const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
-      this.#trackEvent({
-        event,
-        category: MetaMetricsEventCategory.Accounts,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: MetaMetricsEventAccountType.Snap,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          snap_id: snapId,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          snap_name: snapName,
-          ...(event === MetaMetricsEventName.AccountAdded && {
+      trackEvent(
+        createEventBuilder(event)
+          .addCategory(MetaMetricsEventCategory.Accounts)
+          .addProperties({
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_suggested_name: defaultAccountNameChosen,
-          }),
-        },
-      });
+            account_type: MetaMetricsEventAccountType.Snap,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_id: snapId,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_name: snapName,
+            ...(event === MetaMetricsEventName.AccountAdded && {
+              // NOTE: We keep this property for backward compatibility with existing
+              // metrics, but we're no longer naming those accounts, only account groups.
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              is_suggested_name: false,
+            }),
+          })
+          .build(),
+      );
     };
 
     const finalizeFn = async () => {
@@ -361,14 +236,6 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
           this.#messenger.call(
             'AccountsController:setSelectedAccount',
             accountId,
-          );
-        }
-
-        if (accountName) {
-          this.#messenger.call(
-            'AccountsController:setAccountName',
-            accountId,
-            accountName,
           );
         }
 
@@ -439,38 +306,43 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     snapId: string,
     handleUserInput: (accepted: boolean) => Promise<void>,
     onceSaved: Promise<string>,
-    accountNameSuggestion: string = '',
+    // Not used anymore.
+    // TODO: Update `SnapKeyring` interface to remove this parameter.
+    _accountNameSuggestion?: string,
     {
       displayConfirmation,
-      displayAccountNameSuggestion,
       setSelectedAccount,
     }: SnapKeyringInternalOptions = getDefaultInternalOptions(),
   ) {
     assertIsValidSnapId(snapId);
 
+    // Preinstalled Snaps can skip some confirmation dialogs.
+    const isPreinstalled = isSnapPreinstalled(snapId);
+
+    // Since the introduction of BIP-44, multichain wallet Snaps will skip them automatically too!
+    let skipAll = isPreinstalled && isMultichainWalletSnap(snapId);
+    // FIXME: We still rely on the old behavior in some e2e, so we do not skip them in this case.
+    if (process.env.IN_TEST) {
+      skipAll = false;
+    }
+
     // If Snap is preinstalled and does not request confirmation, skip the confirmation dialog.
     const skipConfirmationDialog =
-      isSnapPreinstalled(snapId) && !displayConfirmation;
-
-    // Only pre-installed Snaps can skip the account name suggestion dialog.
-    const skipAccountNameSuggestionDialog =
-      isSnapPreinstalled(snapId) && !displayAccountNameSuggestion;
+      skipAll || (isPreinstalled && !displayConfirmation);
 
     // Only pre-installed Snaps can skip the account from being selected.
     const skipSetSelectedAccountStep =
-      isSnapPreinstalled(snapId) && !setSelectedAccount;
+      skipAll || (isPreinstalled && !setSelectedAccount);
 
-    const skipApprovalFlow =
-      skipConfirmationDialog && skipAccountNameSuggestionDialog;
+    // Skip the approval flow if the confirmation dialog is skipped.
+    const skipApprovalFlow = skipConfirmationDialog;
 
-    // First part of the flow, which includes confirmation dialogs (if not skipped).
+    // First part of the flow, which includes confirmation dialog (if not skipped).
     // Once confirmed, we resume the Snap execution.
-    const { accountName } = await this.#addAccountConfirmations({
+    await this.#addAccountConfirmations({
       snapId,
       skipConfirmationDialog,
-      skipAccountNameSuggestionDialog,
       skipApprovalFlow,
-      accountNameSuggestion,
       handleUserInput,
     });
 
@@ -484,10 +356,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
       skipConfirmationDialog,
       skipSetSelectedAccountStep,
       skipApprovalFlow,
-      accountName,
       onceSaved,
-      defaultAccountNameChosen:
-        Boolean(accountNameSuggestion) && accountName === accountNameSuggestion,
     });
   }
 
@@ -504,24 +373,25 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     );
 
     const learnMoreLink =
-      'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-remove-an-account-from-your-metamask-wallet/';
+      'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-remove-an-account-from-your-metamask-wallet/?utm_source=extension';
 
     const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
-      this.#trackEvent({
-        event,
-        category: MetaMetricsEventCategory.Accounts,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: MetaMetricsEventAccountType.Snap,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          snap_id: snapId,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          snap_name: snapName,
-        },
-      });
+      trackEvent(
+        createEventBuilder(event)
+          .addCategory(MetaMetricsEventCategory.Accounts)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: MetaMetricsEventAccountType.Snap,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_id: snapId,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_name: snapName,
+          })
+          .build(),
+      );
     };
 
     // Since we use this in the finally, better to give it a default value if the controller call fails
@@ -541,9 +411,12 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
 
       if (confirmationResult) {
         try {
-          await this.#removeAccountHelper(address);
+          await this.#messenger.call(
+            'LegacyBackgroundApiService:removeAccount',
+            address,
+          );
           await handleUserInput(confirmationResult);
-          await this.#persistKeyringHelper();
+          await this.saveState();
 
           // TODO: Add events tracking to the dialog itself, so that events are more
           // "linked" to UI actions
@@ -614,30 +487,25 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
   }
 }
 
+export { getSnapKeyringBuilderMessenger } from '../../messenger-client-init/messengers/accounts/snap-keyring-builder-messenger';
+
 /**
  * Constructs a SnapKeyring builder with specified handlers for managing Snap accounts.
  *
- * @param messenger - The messenger instace.
- * @param helpers - Helpers required by the Snap keyring implementation.
+ * @param messenger - The messenger instance.
  * @returns A Snap keyring builder.
  */
-export function snapKeyringBuilder(
-  messenger: SnapKeyringBuilderMessenger,
-  helpers: SnapKeyringHelpers,
-) {
+export function snapKeyringBuilder(messenger: SnapKeyringBuilderMessenger) {
   const SnapKeyringBuilder = (() => {
     return new SnapKeyring({
       messenger,
-      callbacks: new SnapKeyringImpl(messenger, helpers),
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      callbacks: new SnapKeyringImpl(messenger),
       // Enables generic account creation for new chain integration. It's
       // Flask-only since production should use defined account types.
-      isAnyAccountTypeAllowed: true,
-      ///: END:ONLY_INCLUDE_IF
+      isAnyAccountTypeAllowed: isFlask(),
     });
   }) as SnapKeyringBuilder;
 
-  SnapKeyringBuilder.state = null;
   SnapKeyringBuilder.type = SnapKeyring.type;
 
   return SnapKeyringBuilder;

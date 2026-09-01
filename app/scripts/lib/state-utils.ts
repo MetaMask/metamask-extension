@@ -5,6 +5,7 @@ import { Snap } from '@metamask/snaps-utils';
 import { Patch } from 'immer';
 import { cloneDeep } from 'lodash';
 import { Json } from '@metamask/utils';
+import { QR_SYNC_STATE_LOG_KEYS } from '../controllers/qr-sync/metadata';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,10 +38,14 @@ const REMOVE_KEYS = [
   'revokeToken',
   'vaultEncryptionKey',
   'vaultEncryptionSalt',
+  'pendingToBeRevokedTokens',
 
   // SnapController
   'snapStates',
   'unencryptedSnapStates',
+
+  // RewardsController - sensitive tokens
+  'rewardsSubscriptionTokens',
 ];
 
 /*
@@ -52,7 +57,6 @@ const REMOVE_KEYS = [
 const REMOVE_PATHS: (string | true)[][] = [
   ['nodeAuthTokens', true, 'authToken'],
   ['snaps', true, 'auxiliaryFiles'],
-  ['snaps', true, 'sourceCode'],
   ['socialBackupsMetadata', true, 'hash'],
   ['srpSessionData', true, 'token', 'accessToken'],
 ];
@@ -87,6 +91,23 @@ export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
   return newState;
 }
 
+/**
+ * Removes controller state that must not appear in downloaded state logs.
+ * This is separate from {@link sanitizeUIState}, which only scrubs sensitive
+ * values while keeping the rest of the UI state intact.
+ *
+ * @param state - The state to sanitize.
+ */
+export function sanitizeStateLogs(state: FlattenedUIState): FlattenedUIState {
+  const newState = { ...state };
+
+  for (const key of QR_SYNC_STATE_LOG_KEYS) {
+    delete newState[key];
+  }
+
+  return newState;
+}
+
 function sanitizeSnapData(state: FlattenedUIState) {
   const snapsData = state.snaps as SnapControllerState['snaps'] | undefined;
 
@@ -108,7 +129,6 @@ function stripLargeSnapData(snapData: Snap): Partial<Snap> {
     ...snapData,
   };
 
-  delete newData.sourceCode;
   delete newData.auxiliaryFiles;
 
   return newData;

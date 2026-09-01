@@ -1,18 +1,18 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import log from 'loglevel';
+import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constants/smartTransactions';
 import {
-  getChainSupportsSmartTransactions,
+  getSmartTransactionsFeatureFlagsForChain,
   getSmartTransactionsPreferenceEnabled,
-} from '../../../../shared/modules/selectors';
-import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
+} from '../../../../shared/lib/selectors';
 import {
   fetchSmartTransactionsLiveness,
-  setSwapsFeatureFlags,
   setSmartTransactionsRefreshInterval,
 } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
+import { useDispatch } from '../../../store/hooks';
 
 export function useSmartTransactionFeatureFlags() {
   const dispatch = useDispatch();
@@ -20,7 +20,7 @@ export function useSmartTransactionFeatureFlags() {
   const {
     id: transactionId,
     txParams,
-    networkClientId,
+    chainId: transactionChainId,
   } = currentConfirmation ?? {};
   const isTransaction = Boolean(txParams);
 
@@ -28,8 +28,15 @@ export function useSmartTransactionFeatureFlags() {
     getSmartTransactionsPreferenceEnabled,
   );
 
-  const currentChainSupportsSmartTransactions = useSelector(
-    getChainSupportsSmartTransactions,
+  // TODO: replace with the new feature flags when we have them.
+  const chainSupportsSTX =
+    transactionChainId &&
+    getAllowedSmartTransactionsChainIds().includes(transactionChainId);
+
+  const featureFlags = useSelector((state) =>
+    transactionChainId
+      ? getSmartTransactionsFeatureFlagsForChain(state, transactionChainId)
+      : undefined,
   );
 
   useEffect(() => {
@@ -37,20 +44,16 @@ export function useSmartTransactionFeatureFlags() {
       !isTransaction ||
       !transactionId ||
       !smartTransactionsPreferenceEnabled ||
-      !currentChainSupportsSmartTransactions
+      !chainSupportsSTX
     ) {
       return;
     }
 
-    Promise.all([
-      fetchSwapsFeatureFlags(),
-      fetchSmartTransactionsLiveness({ networkClientId })(),
-    ])
-      .then(([swapsFeatureFlags]) => {
-        dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
+    fetchSmartTransactionsLiveness({ chainId: transactionChainId })()
+      .then(() => {
         dispatch(
           setSmartTransactionsRefreshInterval(
-            swapsFeatureFlags.smartTransactions?.batchStatusPollingInterval,
+            featureFlags?.batchStatusPollingInterval ?? 1000,
           ),
         );
       })
@@ -61,7 +64,9 @@ export function useSmartTransactionFeatureFlags() {
     isTransaction,
     transactionId,
     smartTransactionsPreferenceEnabled,
-    currentChainSupportsSmartTransactions,
-    networkClientId,
+    chainSupportsSTX,
+    transactionChainId,
+    featureFlags,
+    dispatch,
   ]);
 }

@@ -1,13 +1,24 @@
 import React from 'react';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { screen, fireEvent } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_REVIEW_SRP_ROUTE,
+  REVEAL_SEED_ROUTE,
+} from '../../../helpers/constants/routes';
 import { MultichainSrpBackup } from './multichain-srp-backup';
 
 const srpBackupRowTestId = 'multichain-srp-backup';
-const srpQuizHeaderTestId = 'srp-quiz-header';
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 describe('MultichainSrpBackup', () => {
   const renderComponent = (props = {}) => {
@@ -27,8 +38,12 @@ describe('MultichainSrpBackup', () => {
   it('renders with default props', () => {
     renderComponent();
 
-    expect(screen.getByText('Secret Recovery Phrase')).toBeInTheDocument();
-    expect(screen.getByText('Reveal')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.secretRecoveryPhrase.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.srpListStateBackedUp.message),
+    ).toBeInTheDocument();
 
     const buttonElement = screen.getByTestId(srpBackupRowTestId);
     expect(buttonElement).toHaveClass('multichain-srp-backup');
@@ -45,60 +60,44 @@ describe('MultichainSrpBackup', () => {
   it('displays "Reveal" text when shouldShowBackupReminder is false', () => {
     renderComponent({ shouldShowBackupReminder: false });
 
-    expect(screen.getByText('Reveal')).toBeInTheDocument();
-    expect(screen.queryByText('Back up')).not.toBeInTheDocument();
+    expect(
+      screen.getByText(messages.srpListStateBackedUp.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.accountDetailsSrpBackUpMessage.message),
+    ).not.toBeInTheDocument();
   });
 
   it('navigates to SRP review route when shouldShowBackupReminder is true', () => {
-    const { history } = renderComponent({ shouldShowBackupReminder: true });
-    const mockHistoryPush = jest.spyOn(history, 'push');
+    renderComponent({ shouldShowBackupReminder: true });
 
     fireEvent.click(screen.getByTestId(srpBackupRowTestId));
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`,
     );
   });
 
-  it('opens SRP quiz modal when shouldShowBackupReminder is false', async () => {
-    const { history } = renderComponent({
-      shouldShowBackupReminder: false,
-      keyringId: 'test-keyring-id',
-    });
-    const mockHistoryPush = jest.spyOn(history, 'push');
-
-    fireEvent.click(screen.getByTestId(srpBackupRowTestId));
-
-    await waitFor(() => {
-      expect(screen.getByText('Security quiz')).toBeInTheDocument();
-    });
-
-    expect(mockHistoryPush).not.toHaveBeenCalled();
-  });
-
-  it('closes SRP quiz modal when close button is clicked', async () => {
+  it('navigates to reveal seed page when shouldShowBackupReminder is false and keyringId is provided', () => {
     renderComponent({
       shouldShowBackupReminder: false,
       keyringId: 'test-keyring-id',
     });
 
     fireEvent.click(screen.getByTestId(srpBackupRowTestId));
-    await waitFor(() => {
-      expect(screen.getByText('Security quiz')).toBeInTheDocument();
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${REVEAL_SEED_ROUTE}/test-keyring-id`,
+    );
+  });
+
+  it('navigates to base reveal seed route when shouldShowBackupReminder is false and keyringId is missing', () => {
+    renderComponent({
+      shouldShowBackupReminder: false,
     });
 
-    const closeButton = screen
-      .getByTestId(srpQuizHeaderTestId)
-      .querySelector('button');
+    fireEvent.click(screen.getByTestId(srpBackupRowTestId));
 
-    if (closeButton) {
-      fireEvent.click(closeButton);
-    } else {
-      throw new Error('Close button not found in the modal header');
-    }
-
-    await waitFor(() => {
-      expect(screen.queryByText('Security quiz')).not.toBeInTheDocument();
-    });
+    expect(mockUseNavigate).toHaveBeenCalledWith(REVEAL_SEED_ROUTE);
   });
 });

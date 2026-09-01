@@ -1,51 +1,55 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   SortOrder,
-  BRIDGE_DEFAULT_SLIPPAGE,
-  formatChainIdToCaip,
-  getNativeAssetForChainId,
   calcLatestSrcBalance,
   isNonEvmChainId,
-  isCrossChain,
   formatChainIdToHex,
-  type GenericQuoteRequest,
+  isNativeAddress,
+  RequestStatus,
+  assetIdsMatch,
   type QuoteResponse,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
-import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
-import { endTrace, TraceName } from '../../../shared/lib/trace';
+import type { CaipAssetType, CaipChainId } from '@metamask/utils';
+import { fetchTxAlerts } from '../../../shared/lib/bridge-utils/security-alerts-api.util';
+import { trace, TraceName } from '../../../shared/lib/trace';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
-import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
+import type { BridgeState, TokenPayload } from './types';
 
-const initialState: BridgeState = {
-  toChainId: null,
+const clearSlippageState = (state: BridgeState) => {
+  state.slippage = undefined;
+  state.isSlippageUserOverride = false;
+};
+
+const didAssetPairChange = (
+  previousFromAssetId: CaipAssetType | undefined,
+  previousToAssetId: CaipAssetType | undefined,
+  nextFromAssetId: CaipAssetType | undefined,
+  nextToAssetId: CaipAssetType | undefined,
+) =>
+  !assetIdsMatch(previousFromAssetId, nextFromAssetId) ||
+  !assetIdsMatch(previousToAssetId, nextToAssetId);
+
+export const initialState: BridgeState = {
   fromToken: null,
   toToken: null,
   fromTokenInputValue: null,
   fromTokenExchangeRate: null,
-  toTokenExchangeRate: null,
-  toTokenUsdExchangeRate: null,
   fromTokenBalance: null,
   fromNativeBalance: null,
   sortOrder: SortOrder.COST_ASC,
   selectedQuote: null,
   wasTxDeclined: false,
-  slippage: BRIDGE_DEFAULT_SLIPPAGE,
+  slippage: undefined,
+  isSlippageUserOverride: false,
   txAlert: null,
+  txAlertStatus: RequestStatus.FETCHED,
+  isSrcAssetPickerOpen: false,
+  isDestAssetPickerOpen: false,
 };
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
   'bridge/setSrcTokenExchangeRates',
-  getTokenExchangeRate,
-);
-
-export const setDestTokenExchangeRates = createAsyncThunk(
-  'bridge/setDestTokenExchangeRates',
-  getTokenExchangeRate,
-);
-
-export const setDestTokenUsdExchangeRates = createAsyncThunk(
-  'bridge/setDestTokenUsdExchangeRates',
   getTokenExchangeRate,
 );
 
@@ -61,19 +65,32 @@ const getBalanceAmount = async ({
 }: {
   selectedAddress?: string;
   tokenAddress: string;
-  chainId: GenericQuoteRequest['srcChainId'];
+  chainId: CaipChainId;
 }) => {
   if (isNonEvmChainId(chainId) || !selectedAddress) {
     return null;
   }
-  return (
-    await calcLatestSrcBalance(
-      global.ethereumProvider,
-      selectedAddress,
-      tokenAddress,
-      formatChainIdToHex(chainId),
-    )
-  )?.toString();
+  const isNative = isNativeAddress(tokenAddress);
+
+  return await trace(
+    {
+      name: TraceName.BridgeBalancesUpdated,
+      data: {
+        srcChainId: chainId,
+        isNative,
+      },
+      startTime: Date.now(),
+    },
+    async () =>
+      (
+        await calcLatestSrcBalance(
+          global.ethereumProvider,
+          selectedAddress,
+          isNative ? zeroAddress() : tokenAddress,
+          formatChainIdToHex(chainId),
+        )
+      )?.toString(),
+  );
 };
 
 export const setEVMSrcNativeBalance = createAsyncThunk(
@@ -91,50 +108,59 @@ export const setEVMSrcNativeBalance = createAsyncThunk(
 
 export const setEVMSrcTokenBalance = createAsyncThunk(
   'bridge/setEVMSrcTokenBalance',
-  getBalanceAmount,
+  async (
+    token: Parameters<typeof getBalanceAmount>[0] & { assetId: CaipAssetType },
+  ) => await getBalanceAmount(token),
 );
 
 const bridgeSlice = createSlice({
   name: 'bridge',
   initialState: { ...initialState },
   reducers: {
-    setToChainId: (state, { payload }: ChainIdPayload) => {
-      state.toChainId = payload ? formatChainIdToCaip(payload) : null;
-      state.toToken = null;
-    },
-    setFromToken: (state, { payload }: TokenPayload) => {
-      state.fromToken = toBridgeToken(payload);
-      state.fromTokenBalance = null;
-      // Unset toToken if it's the same as the fromToken
+    setFromToken: (state, { payload }: { payload: TokenPayload }) => {
+      const previousFromAssetId = state.fromToken?.assetId;
+      const previousToAssetId = state.toToken?.assetId;
+      const currentFromToken = state.fromToken;
+      const newFromToken = toBridgeToken(payload);
+      state.isSrcAssetPickerOpen = false;
+      // Set toToken to previous fromToken if new fromToken is the same as the current toToken
+      if (assetIdsMatch(state.toToken?.assetId, newFromToken?.assetId)) {
+        state.toToken = currentFromToken;
+      }
+      if (!assetIdsMatch(previousFromAssetId, newFromToken?.assetId)) {
+        state.fromTokenInputValue = initialState.fromTokenInputValue;
+      }
+      state.fromToken = newFromToken;
+      state.fromTokenBalance = initialState.fromTokenBalance;
+      state.fromTokenExchangeRate = initialState.fromTokenExchangeRate;
+      state.fromNativeBalance = initialState.fromNativeBalance;
+      state.txAlertStatus = initialState.txAlertStatus;
+      state.txAlert = initialState.txAlert;
       if (
-        state.fromToken?.assetId &&
-        state.toToken?.assetId &&
-        // TODO: determine if this is necessary.
-        state.fromToken.assetId?.toLowerCase() ===
-          state.toToken.assetId?.toLowerCase()
+        didAssetPairChange(
+          previousFromAssetId,
+          previousToAssetId,
+          state.fromToken?.assetId,
+          state.toToken?.assetId,
+        )
       ) {
-        state.toToken = null;
+        clearSlippageState(state);
       }
     },
-    setToToken: (state, { payload }: TokenPayload) => {
-      const toToken = toBridgeToken(payload);
-      state.toToken = toToken
-        ? {
-            ...toToken,
-            address:
-              toToken.address ||
-              getNativeAssetForChainId(toToken.chainId)?.address,
-          }
-        : toToken;
-      // Update toChainId if it's different from the toToken chainId
+    setToToken: (state, { payload }: { payload: TokenPayload }) => {
+      const previousFromAssetId = state.fromToken?.assetId;
+      const previousToAssetId = state.toToken?.assetId;
+      state.toToken = payload ? toBridgeToken(payload) : null;
+      state.isDestAssetPickerOpen = false;
       if (
-        toToken?.chainId &&
-        (state.toChainId
-          ? formatChainIdToCaip(toToken.chainId) !==
-            formatChainIdToCaip(state.toChainId)
-          : true)
+        didAssetPairChange(
+          previousFromAssetId,
+          previousToAssetId,
+          state.fromToken?.assetId,
+          state.toToken?.assetId,
+        )
       ) {
-        state.toChainId = formatChainIdToCaip(toToken.chainId);
+        clearSlippageState(state);
       }
     },
     setFromTokenInputValue: (
@@ -143,16 +169,63 @@ const bridgeSlice = createSlice({
     ) => {
       state.fromTokenInputValue = payload;
     },
-    resetInputFields: () => ({
-      ...initialState,
-    }),
+    resetInputFields: (state: BridgeState) => {
+      state.fromToken = initialState.fromToken;
+      state.toToken = initialState.toToken;
+      state.fromTokenInputValue = initialState.fromTokenInputValue;
+      state.fromTokenExchangeRate = initialState.fromTokenExchangeRate;
+      state.fromTokenBalance = initialState.fromTokenBalance;
+      state.fromNativeBalance = initialState.fromNativeBalance;
+      state.sortOrder = initialState.sortOrder;
+      state.selectedQuote = initialState.selectedQuote;
+      state.wasTxDeclined = initialState.wasTxDeclined;
+      state.slippage = initialState.slippage;
+      state.isSlippageUserOverride = initialState.isSlippageUserOverride;
+      state.txAlert = initialState.txAlert;
+      state.txAlertStatus = initialState.txAlertStatus;
+      state.isSrcAssetPickerOpen = initialState.isSrcAssetPickerOpen;
+      state.isDestAssetPickerOpen = initialState.isDestAssetPickerOpen;
+    },
+    rehydrateBridgeStore: (
+      state,
+      { payload: { bridgeState: maybeBridgeState } },
+    ) => {
+      const bridgeState = maybeBridgeState ?? (initialState as BridgeState);
+      state.fromToken = bridgeState.fromToken;
+      state.toToken = bridgeState.toToken;
+      state.fromTokenInputValue = bridgeState.fromTokenInputValue;
+      state.fromTokenExchangeRate = bridgeState.fromTokenExchangeRate;
+      state.fromTokenBalance = bridgeState.fromTokenBalance;
+      state.fromNativeBalance = bridgeState.fromNativeBalance;
+      state.sortOrder = bridgeState.sortOrder;
+      state.selectedQuote = bridgeState.selectedQuote;
+      state.wasTxDeclined = bridgeState.wasTxDeclined;
+      state.slippage = bridgeState.slippage;
+      state.isSlippageUserOverride =
+        bridgeState.isSlippageUserOverride ?? false;
+      state.txAlert = bridgeState.txAlert;
+      state.txAlertStatus = bridgeState.txAlertStatus;
+      state.isSrcAssetPickerOpen = bridgeState.isSrcAssetPickerOpen;
+      state.isDestAssetPickerOpen = bridgeState.isDestAssetPickerOpen;
+    },
     restoreQuoteRequestFromState: (
       state,
-      { payload: quote }: { payload: QuoteResponse['quote'] },
+      { payload: { quote } }: { payload: QuoteResponse },
     ) => {
-      state.fromToken = toBridgeToken(quote.srcAsset);
-      state.toToken = toBridgeToken(quote.destAsset);
-      state.toChainId = formatChainIdToCaip(quote.destChainId);
+      const pairChanged = didAssetPairChange(
+        state.fromToken?.assetId,
+        state.toToken?.assetId,
+        quote.src.asset.assetId,
+        quote.dest.asset.assetId,
+      );
+
+      state.fromToken = toBridgeToken(quote.src.asset);
+      state.toToken = toBridgeToken(quote.dest.asset);
+      state.fromTokenInputValue = quote.src.normalizedAmount ?? null;
+      if (pairChanged || !state.isSlippageUserOverride) {
+        clearSlippageState(state);
+        state.slippage = quote.slippage ?? undefined;
+      }
     },
     setSortOrder: (state, action) => {
       state.sortOrder = action.payload;
@@ -166,68 +239,69 @@ const bridgeSlice = createSlice({
     setSlippage: (state, action) => {
       state.slippage = action.payload;
     },
+    setSlippageUserOverride: (
+      state,
+      { payload }: { payload: number | undefined },
+    ) => {
+      state.slippage = payload;
+      state.isSlippageUserOverride = true;
+    },
+    setIsSrcAssetPickerOpen: (state, action) => {
+      state.isSrcAssetPickerOpen = action.payload;
+    },
+    setIsDestAssetPickerOpen: (state, action) => {
+      state.isDestAssetPickerOpen = action.payload;
+    },
   },
   extraReducers: (builder) => {
-    builder.addCase(setDestTokenExchangeRates.pending, (state) => {
-      state.toTokenExchangeRate = null;
-    });
-    builder.addCase(setDestTokenUsdExchangeRates.pending, (state) => {
-      state.toTokenUsdExchangeRate = null;
-    });
     builder.addCase(setSrcTokenExchangeRates.pending, (state) => {
       state.fromTokenExchangeRate = null;
-    });
-    builder.addCase(setDestTokenExchangeRates.fulfilled, (state, action) => {
-      state.toTokenExchangeRate = action.payload ?? null;
-    });
-    builder.addCase(setDestTokenUsdExchangeRates.fulfilled, (state, action) => {
-      state.toTokenUsdExchangeRate = action.payload ?? null;
     });
     builder.addCase(setSrcTokenExchangeRates.fulfilled, (state, action) => {
       state.fromTokenExchangeRate = action.payload ?? null;
     });
     builder.addCase(setTxAlerts.pending, (state) => {
-      state.txAlert = null;
+      // Update status but persist the previous alert
+      // The txAlert is only reset the src token changes or if a new response is fetched
+      state.txAlertStatus = RequestStatus.LOADING;
     });
     builder.addCase(setTxAlerts.fulfilled, (state, action) => {
       state.txAlert = action.payload;
+      state.txAlertStatus = RequestStatus.FETCHED;
     });
-    builder.addCase(setTxAlerts.rejected, (state) => {
-      state.txAlert = null;
+    builder.addCase(setTxAlerts.rejected, (state, action) => {
+      // Ignore abort errors because they are expected when streaming quotes
+      if (action.error.name === 'AbortError') {
+        return;
+      }
+      state.txAlert = initialState.txAlert;
+      state.txAlertStatus = RequestStatus.ERROR;
     });
     builder.addCase(setEVMSrcTokenBalance.fulfilled, (state, action) => {
-      const isTokenInChain = !isCrossChain(
-        action.meta.arg.chainId,
-        state.fromToken?.chainId,
-      );
       if (
-        isTokenInChain && state.fromToken?.address
-          ? action.meta.arg.tokenAddress === state.fromToken.address
+        state.fromToken
+          ? assetIdsMatch(action.meta.arg.assetId, state.fromToken.assetId)
           : true
       ) {
-        state.fromTokenBalance = action.payload?.toString() ?? null;
+        state.fromTokenBalance =
+          action.payload ?? initialState.fromTokenBalance;
       }
-      endTrace({
-        name: TraceName.BridgeBalancesUpdated,
-      });
     });
     builder.addCase(setEVMSrcTokenBalance.rejected, (state) => {
-      state.fromTokenBalance = null;
-      endTrace({
-        name: TraceName.BridgeBalancesUpdated,
-      });
+      state.fromTokenBalance = initialState.fromTokenBalance;
     });
     builder.addCase(setEVMSrcNativeBalance.fulfilled, (state, action) => {
-      state.fromNativeBalance = action.payload?.toString() ?? null;
-      endTrace({
-        name: TraceName.BridgeBalancesUpdated,
-      });
+      if (
+        state.fromToken?.chainId
+          ? state.fromToken.chainId === action.meta.arg.chainId
+          : true
+      ) {
+        state.fromNativeBalance =
+          action.payload?.toString() ?? initialState.fromNativeBalance;
+      }
     });
     builder.addCase(setEVMSrcNativeBalance.rejected, (state) => {
-      state.fromNativeBalance = null;
-      endTrace({
-        name: TraceName.BridgeBalancesUpdated,
-      });
+      state.fromNativeBalance = initialState.fromNativeBalance;
     });
   },
 });

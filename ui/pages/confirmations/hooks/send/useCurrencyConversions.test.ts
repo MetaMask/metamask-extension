@@ -1,5 +1,3 @@
-import { DefaultRootState } from 'react-redux';
-
 import mockState from '../../../../../test/data/mock-state.json';
 import {
   EVM_ASSET,
@@ -7,11 +5,11 @@ import {
   MOCK_NFT1155,
   MOCK_NFT721,
 } from '../../../../../test/data/send/assets';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import * as SendContext from '../../context/send';
 import { useCurrencyConversions } from './useCurrencyConversions';
 
-function renderHook(args: DefaultRootState = {}) {
+function renderHook(args: Record<string, unknown> = {}) {
   const { result } = renderHookWithProvider(useCurrencyConversions, {
     ...mockState,
     metamask: { ...mockState.metamask, ...args },
@@ -41,7 +39,7 @@ describe('useCurrencyConversions', () => {
 
     const result = renderHook();
     expect(result.getFiatValue('10')).toEqual('20');
-    expect(result.getFiatDisplayValue('10')).toEqual('$ 20.00');
+    expect(result.getFiatDisplayValue('10')).toEqual('$20.00');
     expect(result.getNativeValue('5000')).toEqual('2500');
   });
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { render, renderHook } from '@testing-library/react';
 import { useAlertMetrics } from './alertMetricsContext';
 
 jest.mock('react', () => ({
@@ -19,7 +19,7 @@ describe('useAlertMetrics', () => {
       trackInlineAlertClicked: jest.fn(),
     });
     const ALERT_KEY_MOCK = 'testKey';
-    const { result } = renderHookWithProvider(useAlertMetrics);
+    const { result } = renderHook(() => useAlertMetrics());
 
     expect(result.current).toBeDefined();
     expect(typeof result.current.trackAlertActionClicked).toBe('function');
@@ -36,9 +36,23 @@ describe('useAlertMetrics', () => {
   });
 
   it('throws an error if used outside of AlertMetricsProvider', () => {
-    const { result } = renderHookWithProvider(() => useAlertMetrics());
-    expect(result.error).toEqual(
-      new Error('useAlertMetrics must be used within an AlertMetricsProvider'),
-    );
+    (React.useContext as jest.Mock).mockReturnValue(undefined);
+
+    const HookConsumer = () => {
+      useAlertMetrics();
+      return null;
+    };
+
+    const consoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    try {
+      expect(() => render(<HookConsumer />)).toThrow(
+        'useAlertMetrics must be used within an AlertMetricsProvider',
+      );
+    } finally {
+      consoleError.mockRestore();
+    }
   });
 });

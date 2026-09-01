@@ -1,9 +1,8 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Hex } from '@metamask/utils';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
-import { hexToDecimal } from '../../../../../../../../shared/modules/conversion.utils';
+import { hexToDecimal } from '../../../../../../../../shared/lib/conversion.utils';
 import {
   Modal,
   ModalBody,
@@ -32,8 +31,9 @@ import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
 import { ConfirmLoader } from '../../shared/confirm-loader/confirm-loader';
-import { parseApprovalTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
+import { parseApprovalTransactionData } from '../../../../../../../../shared/lib/transaction.utils';
 import { updateApprovalAmount } from '../../../../../../../../shared/lib/transactions/approvals';
+import { useDispatch } from '../../../../../../../store/hooks';
 
 export function countDecimalDigits(numberString: string) {
   return numberString.split('.')[1]?.length || 0;
@@ -99,12 +99,14 @@ export const EditSpendingCapModal = ({
 
   const [customSpendingCapInputValue, setCustomSpendingCapInputValue] =
     useState(spendingCap);
+  const [prevSpendingCap, setPrevSpendingCap] = useState(spendingCap);
 
-  useEffect(() => {
+  if (spendingCap !== prevSpendingCap) {
+    setPrevSpendingCap(spendingCap);
     if (spendingCap) {
       setCustomSpendingCapInputValue(spendingCap);
     }
-  }, [spendingCap]);
+  }
 
   const handleCancel = useCallback(() => {
     setIsOpenEditSpendingCapModal(false);
@@ -232,8 +234,6 @@ export const EditSpendingCapModal = ({
               >
                 {t('editSpendingCapAccountBalance', [
                   accountBalance,
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
                   tokenSymbol || '',
                 ])}
               </Text>
@@ -241,16 +241,12 @@ export const EditSpendingCapModal = ({
           )}
         </ModalBody>
         <ModalFooter
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           submitButtonProps={{
             children: t('save'),
             loading: pending || isModalSaving,
             disabled:
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               showDecimalError ||
               showSpecialCharacterError ||
               customSpendingCapInputValue === '',

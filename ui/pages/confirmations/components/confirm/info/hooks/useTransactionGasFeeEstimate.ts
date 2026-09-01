@@ -5,16 +5,19 @@ import {
   addHexes,
   decGWEIToHexWEI,
   multiplyHexes,
-} from '../../../../../../../shared/modules/conversion.utils';
-import { Numeric } from '../../../../../../../shared/modules/Numeric';
+} from '../../../../../../../shared/lib/conversion.utils';
+import { Numeric } from '../../../../../../../shared/lib/Numeric';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
 import { HEX_ZERO } from '../shared/constants';
 
 export function useTransactionGasFeeEstimate(
   transactionMeta: TransactionMeta,
   supportsEIP1559: boolean,
+  quotedGasLimit?: Hex,
 ): Hex {
-  let { gas: gasLimit, gasPrice } = transactionMeta.txParams;
+  const { gas } = transactionMeta.txParams;
+  let { gasPrice } = transactionMeta.txParams;
+  let gasLimit = quotedGasLimit || gas;
 
   const { gasFeeEstimates } = useGasFeeEstimates(
     transactionMeta.networkClientId,
@@ -23,18 +26,10 @@ export function useTransactionGasFeeEstimate(
     ?.estimatedBaseFee;
 
   // override with values from `dappSuggestedGasFees` if they exist
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   gasLimit = gasLimit || HEX_ZERO;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   gasPrice = gasPrice || HEX_ZERO;
   const maxPriorityFeePerGas =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     transactionMeta.txParams?.maxPriorityFeePerGas || HEX_ZERO;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const maxFeePerGas = transactionMeta.txParams?.maxFeePerGas || HEX_ZERO;
 
   let gasEstimate: Hex;

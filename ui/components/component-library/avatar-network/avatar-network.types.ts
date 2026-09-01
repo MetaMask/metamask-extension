@@ -1,6 +1,9 @@
 import type { PolymorphicComponentPropWithRef } from '../box';
 import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum AvatarNetworkSize {
   Xs = 'xs',
   Sm = 'sm',
@@ -14,8 +17,10 @@ export enum AvatarNetworkSize {
  */
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface AvatarNetworkStyleUtilityProps
-  extends Omit<AvatarBaseStyleUtilityProps, 'size' | 'children'> {
+export interface AvatarNetworkStyleUtilityProps extends Omit<
+  AvatarBaseStyleUtilityProps,
+  'size' | 'children'
+> {
   /**
    * The name accepts the string to render the first alphabet of the Avatar Name
    */

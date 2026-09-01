@@ -49,7 +49,7 @@ const expectedMaliciousAlert = {
   isBlocking: false,
   key: 'trustSignalMalicious',
   message: 'alertMessageAddressTrustSignalMalicious',
-  reason: 'nameModalTitleMalicious',
+  reason: 'alertReasonAddressTrustSignalMalicious',
   severity: Severity.Danger,
 };
 
@@ -59,7 +59,7 @@ const expectedWarningAlert = {
   isBlocking: false,
   key: 'trustSignalWarning',
   message: 'alertMessageAddressTrustSignal',
-  reason: 'nameModalTitleWarning',
+  reason: 'alertReasonAddressTrustSignalWarning',
   severity: Severity.Warning,
 };
 
@@ -113,6 +113,40 @@ describe('useTrustSignalAlerts', () => {
       expect(mockUseTrustSignal).toHaveBeenCalledWith(
         MALICIOUS_ADDRESS,
         NameType.ETHEREUM_ADDRESS,
+        CHAIN_IDS.GOERLI,
+      );
+    });
+
+    it('uses the original address when the transaction is wrapped', () => {
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Malicious,
+      });
+
+      const contractInteraction = genUnapprovedContractInteractionConfirmation({
+        chainId: CHAIN_IDS.GOERLI,
+      }) as TransactionMeta;
+      const currentConfirmation = {
+        ...contractInteraction,
+        txParams: {
+          ...contractInteraction.txParams,
+          to: SAFE_ADDRESS,
+        },
+        txParamsOriginal: {
+          ...contractInteraction.txParams,
+          to: MALICIOUS_ADDRESS,
+        },
+      } as TransactionMeta;
+
+      const { result } = renderHookWithConfirmContextProvider(
+        () => useAddressTrustSignalAlerts(),
+        getMockConfirmStateForTransaction(currentConfirmation),
+      );
+
+      expect(result.current).toEqual([expectedMaliciousAlert]);
+      expect(mockUseTrustSignal).toHaveBeenCalledWith(
+        MALICIOUS_ADDRESS,
+        NameType.ETHEREUM_ADDRESS,
+        CHAIN_IDS.GOERLI,
       );
     });
 
@@ -140,6 +174,7 @@ describe('useTrustSignalAlerts', () => {
       expect(mockUseTrustSignal).toHaveBeenCalledWith(
         WARNING_ADDRESS,
         NameType.ETHEREUM_ADDRESS,
+        CHAIN_IDS.GOERLI,
       );
     });
 
@@ -194,6 +229,7 @@ describe('useTrustSignalAlerts', () => {
       expect(mockUseTrustSignal).toHaveBeenCalledWith(
         MALICIOUS_ADDRESS,
         NameType.ETHEREUM_ADDRESS,
+        CHAIN_IDS.GOERLI,
       );
     });
 
@@ -241,6 +277,7 @@ describe('useTrustSignalAlerts', () => {
       expect(mockUseTrustSignal).toHaveBeenCalledWith(
         '',
         NameType.ETHEREUM_ADDRESS,
+        CHAIN_IDS.GOERLI,
       );
     });
 
@@ -264,6 +301,7 @@ describe('useTrustSignalAlerts', () => {
       expect(mockUseTrustSignal).toHaveBeenCalledWith(
         '',
         NameType.ETHEREUM_ADDRESS,
+        CHAIN_IDS.GOERLI,
       );
     });
   });

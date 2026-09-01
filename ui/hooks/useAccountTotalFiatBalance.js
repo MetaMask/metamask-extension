@@ -1,7 +1,7 @@
 import { shallowEqual, useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { useMemo } from 'react';
-import { getCurrentChainId } from '../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 import {
   getAllTokens,
   getMetaMaskCachedBalances,
@@ -15,12 +15,12 @@ import {
   getValueFromWeiHex,
   getWeiHexFromDecimalValue,
   sumDecimals,
-} from '../../shared/modules/conversion.utils';
+} from '../../shared/lib/conversion.utils';
 import {
-  getConversionRate,
   getNativeCurrency,
   getCurrentCurrency,
 } from '../ducks/metamask/metamask';
+import { getConversionRate } from '../ducks/metamask/base-selectors';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../helpers/utils/util';

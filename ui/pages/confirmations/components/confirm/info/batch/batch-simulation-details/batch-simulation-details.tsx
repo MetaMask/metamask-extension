@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import {
+  TransactionContainerType,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -19,8 +20,6 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
 import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function BatchSimulationDetails() {
   const t = useI18nContext();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
@@ -30,7 +29,7 @@ export function BatchSimulationDetails() {
 
   const { id, nestedTransactions } = transactionMeta;
 
-  const { value: approveBalanceChanges } =
+  const { value: approveBalanceChanges, pending: approvePending } =
     useBatchApproveBalanceChanges() ?? {};
 
   const [isEditApproveModalOpen, setIsEditApproveModalOpen] = useState(false);
@@ -58,13 +57,6 @@ export function BatchSimulationDetails() {
     [id, nestedTransactionIndexToEdit],
   );
 
-  if (
-    transactionMeta?.type === TransactionType.revokeDelegation ||
-    isUpgradeOnly
-  ) {
-    return null;
-  }
-
   const approveRows: StaticRow[] = useMemo(() => {
     const finalBalanceChanges = approveBalanceChanges?.map((change) => ({
       ...change,
@@ -80,32 +72,46 @@ export function BatchSimulationDetails() {
         balanceChanges: finalBalanceChanges ?? [],
       },
     ];
-  }, [approveBalanceChanges, handleEdit]);
+  }, [approveBalanceChanges, handleEdit, t]);
+
+  if (
+    transactionMeta?.type === TransactionType.revokeDelegation ||
+    isUpgradeOnly ||
+    !transactionMeta?.txParams
+  ) {
+    return null;
+  }
 
   const nestedTransactionToEdit =
     nestedTransactionIndexToEdit === undefined
       ? undefined
       : nestedTransactions?.[nestedTransactionIndexToEdit];
+  const isEnforcedSimulationsEnabled = transactionMeta.containerTypes?.includes(
+    TransactionContainerType.EnforcedSimulations,
+  );
 
   return (
     <>
-      {isEditApproveModalOpen && (
-        <EditSpendingCapModal
-          data={nestedTransactionToEdit?.data}
-          isOpenEditSpendingCapModal={true}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onSubmit={handleEditSubmit}
-          setIsOpenEditSpendingCapModal={setIsEditApproveModalOpen}
-          to={nestedTransactionToEdit?.to}
-        />
+      {!approvePending && (
+        <>
+          {isEditApproveModalOpen && (
+            <EditSpendingCapModal
+              data={nestedTransactionToEdit?.data}
+              isOpenEditSpendingCapModal={true}
+              onSubmit={handleEditSubmit}
+              setIsOpenEditSpendingCapModal={setIsEditApproveModalOpen}
+              to={nestedTransactionToEdit?.to}
+            />
+          )}
+          <SimulationDetails
+            transaction={transactionMeta}
+            staticRows={approveRows}
+            isTransactionsRedesign
+            sectionMarginBottom={isEnforcedSimulationsEnabled ? 2 : undefined}
+            enableMetrics
+          />
+        </>
       )}
-      <SimulationDetails
-        transaction={transactionMeta}
-        staticRows={approveRows}
-        isTransactionsRedesign
-        enableMetrics
-      />
     </>
   );
 }

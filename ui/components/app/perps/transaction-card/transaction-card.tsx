@@ -1,0 +1,278 @@
+import React, { useCallback } from 'react';
+import {
+  twMerge,
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  ButtonBase,
+  Text,
+  TextVariant,
+  TextColor,
+  FontWeight,
+  AvatarTokenSize,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { PerpsTokenLogo } from '../perps-token-logo';
+import { PerpsFillTag } from '../perps-fill-tag';
+import { getDisplaySymbol } from '../utils';
+import { getOrderStatusI18nKey } from '../utils/orderUtils';
+import { FillType } from '../types';
+import type { PerpsTransaction } from '../types';
+
+export type TransactionCardProps = {
+  transaction: PerpsTransaction;
+  onClick?: (transaction: PerpsTransaction) => void;
+  variant?: 'default' | 'muted';
+  showTopBorder?: boolean;
+  screenName?: string;
+};
+
+// `bridging` is treated the same as `pending` for display purposes — the
+// wallet doesn't currently emit a distinct in-progress-bridge state, but the
+// depositWithdrawal.status type supports it for other request-based sources.
+const DEPOSIT_WITHDRAWAL_STATUS_TO_I18N_KEY: Record<string, string> = {
+  completed: 'perpsStatusCompleted',
+  pending: 'perpsStatusPending',
+  bridging: 'perpsStatusPending',
+  failed: 'perpsStatusFailed',
+};
+
+/**
+ * TransactionCard component displays individual transaction information
+ * Two rows: logo + title/subtitle on left, amount + time on right
+ *
+ * @param options0 - Component props
+ * @param options0.transaction - The transaction data to display
+ * @param options0.onClick - Optional click handler
+ * @param options0.variant - Visual variant - 'default' for normal, 'muted' for subdued
+ * @param options0.showTopBorder
+ * @param options0.screenName - Forwarded to PerpsFillTag for analytics attribution
+ */
+export const TransactionCard = ({
+  transaction,
+  onClick,
+  variant = 'default',
+  showTopBorder = false,
+  screenName,
+}: TransactionCardProps) => {
+  const t = useI18nContext();
+  const displayName = getDisplaySymbol(transaction.symbol);
+
+  const handleClick = useCallback(() => {
+    if (onClick) {
+      onClick(transaction);
+    }
+  }, [transaction, onClick]);
+
+  const variantStyles =
+    variant === 'muted'
+      ? 'bg-muted hover:bg-muted-hover active:bg-muted-pressed'
+      : 'bg-default hover:bg-hover active:bg-pressed';
+
+  // Determine the amount to display based on transaction type
+  const getAmountDisplay = (): { text: string; color: TextColor } => {
+    if (transaction.fill) {
+      return {
+        text: transaction.fill.amount,
+        color: transaction.fill.isPositive
+          ? TextColor.SuccessDefault
+          : TextColor.ErrorDefault,
+      };
+    }
+    if (transaction.fundingAmount) {
+      return {
+        text: transaction.fundingAmount.fee,
+        color: transaction.fundingAmount.isPositive
+          ? TextColor.SuccessDefault
+          : TextColor.ErrorDefault,
+      };
+    }
+    if (transaction.depositWithdrawal) {
+      return {
+        text: transaction.depositWithdrawal.amount,
+        color: transaction.depositWithdrawal.isPositive
+          ? TextColor.SuccessDefault
+          : TextColor.ErrorDefault,
+      };
+    }
+    // For trades without realized PnL, return empty (don't show symbol)
+    if (transaction.type === 'trade') {
+      return { text: '', color: TextColor.TextDefault };
+    }
+    // For orders, show status in muted text
+    if (transaction.type === 'order' && transaction.order) {
+      const translatedStatus = t(getOrderStatusI18nKey(transaction.order.text));
+      return { text: translatedStatus, color: TextColor.TextMuted };
+    }
+    return { text: displayName, color: TextColor.TextDefault };
+  };
+
+  const amountDisplay = getAmountDisplay();
+
+  // Construct title display based on transaction type. Deposit/withdrawal
+  // titles are rendered directly (unlike the subtitle, there's no other
+  // override downstream), so the verb and empty-state text must be
+  // translated here rather than left as the transform's deterministic
+  // English string.
+  const getTitleDisplay = (): string => {
+    if (
+      (transaction.type === 'deposit' || transaction.type === 'withdrawal') &&
+      transaction.depositWithdrawal
+    ) {
+      const isDeposit = transaction.type === 'deposit';
+      const magnitude = Math.abs(transaction.depositWithdrawal.amountNumber);
+      if (magnitude === 0) {
+        return t(
+          isDeposit ? 'perpsDepositEmptyTitle' : 'perpsWithdrawalEmptyTitle',
+        );
+      }
+      const verb = t(isDeposit ? 'perpsDepositedVerb' : 'perpsWithdrewVerb');
+      return `${verb} ${magnitude.toFixed(2)} ${transaction.depositWithdrawal.asset}`;
+    }
+    return transaction.title;
+  };
+
+  // Construct subtitle display based on transaction type
+  const getSubtitleDisplay = (): string => {
+    if (transaction.type === 'trade' && transaction.fill) {
+      return `${transaction.fill.size} ${displayName}`;
+    }
+    // For orders, extract size + symbol from subtitle (format: "X SYMBOL @ $Y.YY")
+    if (transaction.type === 'order') {
+      const atIndex = transaction.subtitle.indexOf(' @');
+      if (atIndex > 0) {
+        return transaction.subtitle.substring(0, atIndex);
+      }
+    }
+    // For funding, show asset symbol
+    if (transaction.type === 'funding') {
+      return displayName;
+    }
+    // For deposits/withdrawals, show the transaction's real status (e.g. a
+    // wallet-tracked deposit/withdrawal may still be pending or have failed)
+    // instead of always displaying "Completed".
+    if (transaction.type === 'deposit' || transaction.type === 'withdrawal') {
+      const status = transaction.depositWithdrawal?.status ?? 'completed';
+      const i18nKey =
+        DEPOSIT_WITHDRAWAL_STATUS_TO_I18N_KEY[status] ?? 'perpsStatusCompleted';
+      return t(i18nKey);
+    }
+    return transaction.subtitle;
+  };
+
+  const isClickable = Boolean(onClick);
+  const hasInteractiveBadge =
+    transaction.fill?.fillType === FillType.AutoDeleveraging;
+
+  const content = (
+    <>
+      <PerpsTokenLogo
+        symbol={transaction.symbol}
+        size={AvatarTokenSize.Md}
+        className="shrink-0"
+      />
+
+      <Box
+        className="min-w-0 flex-1"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Start}
+        gap={1}
+      >
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+        >
+          <Text
+            fontWeight={FontWeight.Medium}
+            className="text-s-body-md @compact:text-s-body-sm"
+          >
+            {getTitleDisplay()}
+          </Text>
+          {!(isClickable && hasInteractiveBadge) && (
+            <PerpsFillTag transaction={transaction} screenName={screenName} />
+          )}
+        </Box>
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          {getSubtitleDisplay()}
+        </Text>
+      </Box>
+
+      <Box
+        className="shrink-0"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.End}
+        gap={1}
+      >
+        <Text
+          fontWeight={FontWeight.Medium}
+          color={amountDisplay.color}
+          className="text-s-body-md @compact:text-s-body-sm"
+        >
+          {amountDisplay.text}
+        </Text>
+      </Box>
+    </>
+  );
+
+  const sharedClassName = twMerge(
+    'gap-4 px-4 py-3',
+    '[container-name:list-item] [container-type:inline-size]',
+    variantStyles,
+    showTopBorder && 'border-t border-background-default',
+  );
+
+  if (isClickable && hasInteractiveBadge) {
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        className={twMerge(
+          '[container-name:list-item] [container-type:inline-size]',
+          variantStyles,
+          showTopBorder && 'border-t border-background-default',
+        )}
+        data-testid={`transaction-card-${transaction.id}`}
+      >
+        <ButtonBase
+          className="flex-1 justify-start rounded-none min-w-0 h-auto text-left cursor-pointer gap-4 px-4 py-3 bg-transparent"
+          onClick={handleClick}
+        >
+          {content}
+        </ButtonBase>
+        <Box className="pr-4 shrink-0">
+          <PerpsFillTag transaction={transaction} screenName={screenName} />
+        </Box>
+      </Box>
+    );
+  }
+
+  if (isClickable) {
+    return (
+      <ButtonBase
+        className={twMerge(
+          'justify-start rounded-none min-w-0 h-auto text-left cursor-pointer',
+          sharedClassName,
+        )}
+        isFullWidth
+        onClick={handleClick}
+        data-testid={`transaction-card-${transaction.id}`}
+      >
+        {content}
+      </ButtonBase>
+    );
+  }
+
+  return (
+    <Box
+      className={sharedClassName}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      data-testid={`transaction-card-${transaction.id}`}
+    >
+      {content}
+    </Box>
+  );
+};
+
+export default TransactionCard;

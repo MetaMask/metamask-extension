@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
@@ -12,9 +13,9 @@ import DownloadApp from './download-app';
 
 const mockUseNavigate = jest.fn();
 
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
@@ -22,7 +23,8 @@ jest.mock('react-router-dom-v5-compat', () => {
 type StateOverrides = {
   metamask: {
     isBackupAndSyncEnabled?: boolean;
-    participateInMetaMetrics?: boolean;
+    optedIn?: boolean;
+    consentDecisionMade?: boolean;
     isSignedIn?: boolean;
     useExternalServices?: boolean;
     internalAccounts?: {
@@ -54,7 +56,8 @@ type StateOverrides = {
 const initialState: StateOverrides = {
   metamask: {
     isBackupAndSyncEnabled: false,
-    participateInMetaMetrics: true,
+    consentDecisionMade: true,
+    optedIn: true,
     isSignedIn: false,
     useExternalServices: true,
     internalAccounts: {
@@ -104,7 +107,7 @@ describe('Download App Onboarding View', () => {
       const store = arrangeMocks();
 
       const { getByText } = renderWithProvider(<DownloadApp />, store);
-      const continueButton = getByText('Continue');
+      const continueButton = getByText(messages.continue.message);
 
       fireEvent.click(continueButton);
 

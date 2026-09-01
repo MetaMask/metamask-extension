@@ -1,4 +1,5 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import {
   TransactionStatus,
   TransactionType,
@@ -6,7 +7,7 @@ import {
 
 import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { fireEvent } from '../../../../../../test/jest';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
 import { ConfirmNav } from './nav';
@@ -15,6 +16,14 @@ jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => jest.fn(),
 }));
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const render = () => {
   const store = configureStore(
@@ -86,7 +95,7 @@ describe('ConfirmNav', () => {
     const { getAllByRole, getByText } = render();
     const buttons = getAllByRole('button');
     expect(buttons).toHaveLength(3);
-    expect(getByText('Reject all')).toBeInTheDocument();
+    expect(getByText(messages.rejectAll.message)).toBeInTheDocument();
   });
 
   it('renders button to navigate to previous or next confirmation', () => {
@@ -98,11 +107,13 @@ describe('ConfirmNav', () => {
   });
 
   it('invoke history replace method when next button is clicked', () => {
-    const { getByLabelText, history } = render();
-    const mockHistoryReplace = jest.spyOn(history, 'replace');
+    const { getByLabelText } = render();
     const nextButton = getByLabelText('Next Confirmation');
     fireEvent.click(nextButton);
-    expect(mockHistoryReplace).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/confirm-transaction/testApprovalId2/signature-request',
+      { replace: true },
+    );
   });
 
   it('invoke action rejectAllApprovals when "Reject all" button is clicked', () => {

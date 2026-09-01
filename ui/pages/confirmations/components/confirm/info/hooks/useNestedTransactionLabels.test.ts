@@ -1,5 +1,5 @@
 import { BatchTransactionParams } from '@metamask/transaction-controller';
-import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { useNestedTransactionLabels } from './useNestedTransactionLabels';
 

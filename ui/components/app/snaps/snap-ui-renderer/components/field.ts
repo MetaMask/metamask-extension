@@ -9,6 +9,7 @@ import {
   AddressInputElement,
   AssetSelectorElement,
   AccountSelectorElement,
+  DateTimePickerElement,
 } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { getPrimaryChildElementIndex, mapToTemplate } from '../utils';
@@ -18,6 +19,7 @@ import { checkbox as checkboxFn } from './checkbox';
 import { selector as selectorFn } from './selector';
 import { assetSelector as assetSelectorFn } from './asset-selector';
 import { accountSelector as accountSelectorFn } from './account-selector';
+import { dateTimePicker as dateTimePickerFn } from './date-time-picker';
 import { UIComponentFactory, UIComponentParams } from './types';
 import { constructInputProps } from './input';
 
@@ -235,6 +237,25 @@ export const field: UIComponentFactory<FieldElement> = ({
         element: 'SnapUIAccountSelector',
         props: {
           ...accountSelectorMapped.props,
+          label: element.props.label,
+          form,
+          error: element.props.error,
+        },
+      };
+    }
+
+    case 'DateTimePicker': {
+      const dateTimePicker = child as DateTimePickerElement;
+
+      const dateTimePickerMapped = dateTimePickerFn({
+        ...params,
+        element: dateTimePicker,
+      } as UIComponentParams<DateTimePickerElement>);
+      return {
+        ...dateTimePickerMapped,
+        element: 'SnapUIDateTimePicker',
+        props: {
+          ...dateTimePickerMapped.props,
           label: element.props.label,
           form,
           error: element.props.error,

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { usePopper } from 'react-popper';
-import classnames from 'classnames';
+import classnames from 'clsx';
 
 /**
  * @deprecated The `<Menu />` component has been deprecated in favor of the new `<Popover>` component from the component-library.
@@ -40,7 +40,11 @@ const Menu = ({
         onClick={onHide}
       />
       <div
-        className={classnames('menu__container', className)}
+        className={classnames(
+          'menu__container',
+          className,
+          'bg-elevated2 border border-alternative',
+        )}
         data-testid={className}
         ref={setPopperElement}
         style={styles.popper}
@@ -59,13 +63,7 @@ Menu.propTypes = {
   className: PropTypes.string,
   onHide: PropTypes.func.isRequired,
   popperOptions: PropTypes.object,
-  dataTestId: PropTypes.string,
-};
-
-Menu.defaultProps = {
-  anchorElement: undefined,
-  className: undefined,
-  popperOptions: undefined,
+  'data-testid': PropTypes.string,
 };
 
 export default Menu;

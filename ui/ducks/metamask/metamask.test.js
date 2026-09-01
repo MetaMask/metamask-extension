@@ -10,21 +10,20 @@ import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import reduceMetamask, {
-  getBlockGasLimit,
-  getConversionRate,
   getGasEstimateType,
   getGasEstimateTypeByChainId,
   getGasFeeEstimates,
   getGasFeeEstimatesByChainId,
   getIsNetworkBusyByChainId,
+  getPasskeyAutoUnlockSuppressed,
   getNativeCurrency,
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
-  isNotEIP1559Network,
   getCurrentCurrency,
   getAllNfts,
   getTokensByChainId,
 } from './metamask';
+import { getConversionRate, isNotEIP1559Network } from './base-selectors';
 
 jest.mock('@metamask/transaction-controller', () => ({
   ...jest.requireActual('@metamask/transaction-controller'),
@@ -119,10 +118,6 @@ describe('MetaMask Reducers', () => {
           selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
         cachedBalances: {},
-        currentBlockGasLimit: '0x4c1878',
-        currentBlockGasLimitByChainId: {
-          '0x5': '0x4c1878',
-        },
         useCurrencyRateCheck: true,
         currencyRates: {
           GoerliETH: {
@@ -131,32 +126,6 @@ describe('MetaMask Reducers', () => {
         },
         currentCurrency: 'usd',
         ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-        accounts: {
-          '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
-            code: '0x',
-            balance: '0x47c9d71831c76efe',
-            nonce: '0x1b',
-            address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
-          },
-          '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb': {
-            code: '0x',
-            balance: '0x37452b1315889f80',
-            nonce: '0xa',
-            address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
-          },
-          '0x2f8d4a878cfa04a6e60d46362f5644deab66572d': {
-            code: '0x',
-            balance: '0x30c9d71831c76efe',
-            nonce: '0x1c',
-            address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
-          },
-          '0xd85a4b6a394794842887b8284293d69163007bbb': {
-            code: '0x',
-            balance: '0x0',
-            nonce: '0x0',
-            address: '0xd85a4b6a394794842887b8284293d69163007bbb',
-          },
-        },
         accountsByChainId: {
           '0x5': {
             '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
@@ -241,6 +210,62 @@ describe('MetaMask Reducers', () => {
     expect(lockMetaMask.isUnlocked).toStrictEqual(false);
   });
 
+  it('updates metrics participation state', () => {
+    expect(
+      reduceMetamask(
+        {
+          analyticsId: 'old-analytics-id',
+          consentDecisionMade: true,
+          optedIn: true,
+        },
+        {
+          type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
+          value: null,
+        },
+      ),
+    ).toMatchObject({
+      analyticsId: 'old-analytics-id',
+      consentDecisionMade: false,
+      optedIn: false,
+    });
+
+    expect(
+      reduceMetamask(
+        {
+          analyticsId: null,
+          consentDecisionMade: false,
+          optedIn: false,
+        },
+        {
+          type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
+          value: true,
+        },
+      ),
+    ).toMatchObject({
+      analyticsId: null,
+      consentDecisionMade: true,
+      optedIn: true,
+    });
+
+    expect(
+      reduceMetamask(
+        {
+          analyticsId: 'old-analytics-id',
+          consentDecisionMade: false,
+          optedIn: true,
+        },
+        {
+          type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
+          value: false,
+        },
+      ),
+    ).toMatchObject({
+      analyticsId: 'old-analytics-id',
+      consentDecisionMade: true,
+      optedIn: false,
+    });
+  });
+
   it('sets account label', () => {
     const state = reduceMetamask(mockState.metamask, {
       type: actionConstants.SET_ACCOUNT_LABEL,
@@ -289,12 +314,6 @@ describe('MetaMask Reducers', () => {
   });
 
   describe('metamask state selectors', () => {
-    describe('getBlockGasLimit', () => {
-      it('should return the current block gas limit', () => {
-        expect(getBlockGasLimit(mockState)).toStrictEqual('0x4c1878');
-      });
-    });
-
     describe('getConversionRate()', () => {
       it('should return the eth conversion rate', () => {
         expect(getConversionRate(mockState)).toStrictEqual(1200.88200327);
@@ -807,6 +826,30 @@ describe('MetaMask Reducers', () => {
       };
       const tokens = getTokensByChainId(stateWithNoTokens, '0x1');
       expect(tokens).toStrictEqual([]);
+    });
+  });
+
+  describe('passkey selectors', () => {
+    describe('getPasskeyAutoUnlockSuppressed', () => {
+      it('returns true when passkey auto unlock is suppressed', () => {
+        const state = {
+          metamask: {
+            passkeyAutoUnlockSuppressed: true,
+          },
+        };
+
+        expect(getPasskeyAutoUnlockSuppressed(state)).toBe(true);
+      });
+
+      it('returns false when passkey auto unlock is not suppressed', () => {
+        const state = {
+          metamask: {
+            passkeyAutoUnlockSuppressed: false,
+          },
+        };
+
+        expect(getPasskeyAutoUnlockSuppressed(state)).toBe(false);
+      });
     });
   });
 });

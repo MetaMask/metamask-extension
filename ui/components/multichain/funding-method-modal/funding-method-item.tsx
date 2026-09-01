@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Text, Icon, IconName } from '../../component-library';
+import { Icon, IconName } from '@metamask/design-system-react';
+import { Box, Text } from '../../component-library';
 import {
   Display,
   FlexDirection,
@@ -15,12 +16,12 @@ type FundingMethodItemProps = {
   onClick: () => void;
 };
 
-const FundingMethodItem: React.FC<FundingMethodItemProps> = ({
+const FundingMethodItem = ({
   icon,
   title,
   description,
   onClick,
-}) => (
+}: FundingMethodItemProps) => (
   <Box
     display={[Display.Flex]}
     gap={2}

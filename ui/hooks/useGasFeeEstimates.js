@@ -1,6 +1,5 @@
 import isEqual from 'lodash/isEqual';
 import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
 import {
   getGasEstimateTypeByChainId,
   getGasFeeEstimatesByChainId,
@@ -10,9 +9,11 @@ import {
 import {
   gasFeeStartPollingByNetworkClientId,
   gasFeeStopPollingByPollingToken,
-  getNetworkConfigurationByNetworkClientId,
 } from '../store/actions';
-import { getSelectedNetworkClientId } from '../../shared/modules/selectors/networks';
+import {
+  getSelectedNetworkClientId,
+  getChainIdByNetworkClientId,
+} from '../../shared/lib/selectors/networks';
 import usePolling from './usePolling';
 
 /**
@@ -21,7 +22,7 @@ import usePolling from './usePolling';
  *   '@metamask/gas-fee-controller'
  * ).GasFeeState['gasFeeEstimates']} gasFeeEstimates - The estimate object
  * @property {object} gasEstimateType - The type of estimate provided
- * @property {boolean} isGasEstimateLoading - indicates whether the gas
+ * @property {boolean} isGasEstimatesLoading - indicates whether the gas
  *  estimates are currently loading.
  * @property {boolean} isNetworkBusy - indicates whether the network is busy.
  */
@@ -40,7 +41,9 @@ export function useGasFeeEstimates(_networkClientId, enabled = true) {
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
   const networkClientId = _networkClientId ?? selectedNetworkClientId;
 
-  const [chainId, setChainId] = useState('');
+  const chainId = useSelector((state) =>
+    getChainIdByNetworkClientId(state, networkClientId),
+  );
 
   const gasEstimateType = useSelector((state) =>
     getGasEstimateTypeByChainId(state, chainId),
@@ -58,27 +61,6 @@ export function useGasFeeEstimates(_networkClientId, enabled = true) {
   const isNetworkBusy = useSelector((state) =>
     getIsNetworkBusyByChainId(state, chainId),
   );
-
-  useEffect(() => {
-    if (!enabled) {
-      return () => {
-        // No cleanup needed when disabled
-      };
-    }
-
-    let isMounted = true;
-    getNetworkConfigurationByNetworkClientId(networkClientId).then(
-      (networkConfig) => {
-        if (networkConfig && isMounted) {
-          setChainId(networkConfig.chainId);
-        }
-      },
-    );
-
-    return () => {
-      isMounted = false;
-    };
-  }, [networkClientId, enabled]);
 
   usePolling({
     startPolling: (input) =>

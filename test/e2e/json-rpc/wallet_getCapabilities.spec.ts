@@ -1,0 +1,72 @@
+import { strict as assert } from 'assert';
+import { withFixtures } from '../helpers';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
+import TestDapp from '../page-objects/pages/test-dapp';
+import { login } from '../page-objects/flows/login.flow';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../constants';
+import { mockEip7702FeatureFlag } from '../tests/confirmations/helpers';
+
+describe('wallet_getCapabilities', function () {
+  it('should indicate auxiliaryFunds support for chains with bridge support', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1] })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockEip7702FeatureFlag,
+      },
+      async ({ driver }) => {
+        await login(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
+
+        const walletGetCapabilitiesRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'wallet_getCapabilities',
+          params: [DEFAULT_FIXTURE_ACCOUNT, ['0x1']],
+        });
+        const walletGetCapabilitiesResponse = await driver.executeScript(
+          `return window.ethereum.request(${walletGetCapabilitiesRequest})`,
+        );
+        assert.deepEqual(walletGetCapabilitiesResponse['0x1'].auxiliaryFunds, {
+          supported: true,
+        });
+      },
+    );
+  });
+
+  it('should not include auxiliaryFunds for chains without bridge support', async function () {
+    await withFixtures(
+      {
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockEip7702FeatureFlag,
+      },
+      async ({ driver }) => {
+        await login(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.checkPageIsLoaded();
+
+        const walletGetCapabilitiesRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'wallet_getCapabilities',
+          params: [DEFAULT_FIXTURE_ACCOUNT, ['0x539']],
+        });
+        const walletGetCapabilitiesResponse = await driver.executeScript(
+          `return window.ethereum.request(${walletGetCapabilitiesRequest})`,
+        );
+        assert.deepEqual(
+          walletGetCapabilitiesResponse['0x539'].auxiliaryFunds,
+          undefined,
+        );
+      },
+    );
+  });
+});

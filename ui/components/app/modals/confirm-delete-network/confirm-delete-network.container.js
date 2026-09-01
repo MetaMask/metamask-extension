@@ -5,14 +5,11 @@ import { removeNetwork, setEnabledNetworks } from '../../../../store/actions';
 import {
   getNetworkConfigurationsByChainId,
   getProviderConfig,
-} from '../../../../../shared/modules/selectors/networks';
-import { getIsMultichainAccountsState2Enabled } from '../../../../selectors';
+} from '../../../../../shared/lib/selectors/networks';
 import ConfirmDeleteNetwork from './confirm-delete-network.component';
 
 const mapStateToProps = (state, ownProps) => {
   const networks = getNetworkConfigurationsByChainId(state);
-  const isMultichainAccountsFeatureEnabled =
-    getIsMultichainAccountsState2Enabled(state);
 
   let selectedEvmChainId;
   try {
@@ -26,7 +23,6 @@ const mapStateToProps = (state, ownProps) => {
     chainId,
     networkNickname,
     isChainToDeleteSelected,
-    isMultichainAccountsFeatureEnabled,
   };
 };
 

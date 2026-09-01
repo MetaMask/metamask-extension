@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { ReactChildren } from 'react';
-
 import mockState from '../../../../../../test/data/mock-state.json';
 import {
   EVM_ASSET,
@@ -8,8 +6,12 @@ import {
   MOCK_NFT1155,
   SOLANA_NATIVE_ASSET,
 } from '../../../../../../test/data/send/assets';
-import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
+import { createEventBuilder } from '../../../../../../shared/lib/analytics/create-event-builder';
 import {
   AssetFilterMethod,
   useSendMetricsContext,
@@ -18,6 +20,18 @@ import { useSendAssets } from '../useSendAssets';
 import { useAssetSelectionMetrics } from './useAssetSelectionMetrics';
 
 const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder: actualCreateEventBuilder } = jest.requireActual(
+    '../../../../../../shared/lib/analytics/create-event-builder',
+  );
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder: actualCreateEventBuilder,
+    }),
+  };
+});
 const mockSetAssetFilterMethod = jest.fn();
 const mockUseSendMetricsContext = jest.mocked(useSendMetricsContext);
 const mockUseSendAssets = jest.mocked(useSendAssets);
@@ -29,12 +43,6 @@ jest.mock('../../../context/send-metrics', () => ({
 
 jest.mock('../useSendAssets');
 jest.mock('../useSendType');
-
-const Container = ({ children }: { children: ReactChildren }) => (
-  <MetaMetricsContext.Provider value={mockTrackEvent}>
-    {children}
-  </MetaMetricsContext.Provider>
-);
 
 describe('useAssetSelectionMetrics', () => {
   beforeEach(() => {
@@ -78,8 +86,6 @@ describe('useAssetSelectionMetrics', () => {
       const { result } = renderHookWithProvider(
         () => useAssetSelectionMetrics(),
         mockState,
-        undefined,
-        Container,
       );
 
       result.current.addAssetFilterMethod(AssetFilterMethod.Network);
@@ -94,8 +100,6 @@ describe('useAssetSelectionMetrics', () => {
       const { result } = renderHookWithProvider(
         () => useAssetSelectionMetrics(),
         mockState,
-        undefined,
-        Container,
       );
 
       result.current.addAssetFilterMethod(AssetFilterMethod.Search);
@@ -123,8 +127,6 @@ describe('useAssetSelectionMetrics', () => {
       const { result } = renderHookWithProvider(
         () => useAssetSelectionMetrics(),
         mockState,
-        undefined,
-        Container,
       );
 
       result.current.addAssetFilterMethod(AssetFilterMethod.Search);
@@ -157,8 +159,6 @@ describe('useAssetSelectionMetrics', () => {
       const { result } = renderHookWithProvider(
         () => useAssetSelectionMetrics(),
         mockState,
-        undefined,
-        Container,
       );
 
       result.current.removeAssetFilterMethod(AssetFilterMethod.Search);
@@ -186,8 +186,6 @@ describe('useAssetSelectionMetrics', () => {
       const { result } = renderHookWithProvider(
         () => useAssetSelectionMetrics(),
         mockState,
-        undefined,
-        Container,
       );
 
       result.current.removeAssetFilterMethod(AssetFilterMethod.Search);
@@ -215,8 +213,6 @@ describe('useAssetSelectionMetrics', () => {
       const { result } = renderHookWithProvider(
         () => useAssetSelectionMetrics(),
         mockState,
-        undefined,
-        Container,
       );
 
       result.current.removeAssetFilterMethod(AssetFilterMethod.Network);
@@ -232,17 +228,14 @@ describe('useAssetSelectionMetrics', () => {
       const { result } = renderHookWithProvider(
         () => useAssetSelectionMetrics(),
         mockState,
-        undefined,
-        Container,
       );
 
       result.current.captureAssetSelected(EVM_ASSET);
 
       expect(mockTrackEvent).toHaveBeenCalledWith(
-        {
-          event: 'Send Asset Selected',
-          category: 'Send',
-          properties: {
+        createEventBuilder(MetaMetricsEventName.SendAssetSelected)
+          .addCategory(MetaMetricsEventCategory.Send)
+          .addProperties({
             account_type: 'MetaMask',
             asset_type: 'token',
             asset_list_position: 1,
@@ -250,11 +243,8 @@ describe('useAssetSelectionMetrics', () => {
             chain_id: 5,
             chain_id_caip: 'eip155:5',
             filter_method: [AssetFilterMethod.None],
-          },
-        },
-        {
-          excludeMetaMetricsId: false,
-        },
+          })
+          .build({ excludeMetaMetricsId: false }),
       );
     });
 
@@ -264,17 +254,14 @@ describe('useAssetSelectionMetrics', () => {
       const { result } = renderHookWithProvider(
         () => useAssetSelectionMetrics(),
         mockState,
-        undefined,
-        Container,
       );
 
       result.current.captureAssetSelected(nativeAsset);
 
       expect(mockTrackEvent).toHaveBeenCalledWith(
-        {
-          event: 'Send Asset Selected',
-          category: 'Send',
-          properties: {
+        createEventBuilder(MetaMetricsEventName.SendAssetSelected)
+          .addCategory(MetaMetricsEventCategory.Send)
+          .addProperties({
             account_type: 'MetaMask',
             asset_type: 'native',
             asset_list_position: 2,
@@ -282,11 +269,8 @@ describe('useAssetSelectionMetrics', () => {
             chain_id: 5,
             chain_id_caip: 'eip155:5',
             filter_method: [AssetFilterMethod.None],
-          },
-        },
-        {
-          excludeMetaMetricsId: false,
-        },
+          })
+          .build({ excludeMetaMetricsId: false }),
       );
     });
 
@@ -294,17 +278,14 @@ describe('useAssetSelectionMetrics', () => {
       const { result } = renderHookWithProvider(
         () => useAssetSelectionMetrics(),
         mockState,
-        undefined,
-        Container,
       );
 
       result.current.captureAssetSelected(MOCK_NFT1155);
 
       expect(mockTrackEvent).toHaveBeenCalledWith(
-        {
-          event: 'Send Asset Selected',
-          category: 'Send',
-          properties: {
+        createEventBuilder(MetaMetricsEventName.SendAssetSelected)
+          .addCategory(MetaMetricsEventCategory.Send)
+          .addProperties({
             account_type: 'MetaMask',
             asset_type: 'nft',
             asset_list_position: 3,
@@ -312,11 +293,8 @@ describe('useAssetSelectionMetrics', () => {
             chain_id: 8453,
             chain_id_caip: 'eip155:33875',
             filter_method: [AssetFilterMethod.None],
-          },
-        },
-        {
-          excludeMetaMetricsId: false,
-        },
+          })
+          .build({ excludeMetaMetricsId: false }),
       );
     });
 
@@ -324,17 +302,14 @@ describe('useAssetSelectionMetrics', () => {
       const { result } = renderHookWithProvider(
         () => useAssetSelectionMetrics(),
         mockState,
-        undefined,
-        Container,
       );
 
       result.current.captureAssetSelected(SOLANA_NATIVE_ASSET);
 
       expect(mockTrackEvent).toHaveBeenCalledWith(
-        {
-          event: 'Send Asset Selected',
-          category: 'Send',
-          properties: {
+        createEventBuilder(MetaMetricsEventName.SendAssetSelected)
+          .addCategory(MetaMetricsEventCategory.Send)
+          .addProperties({
             account_type: 'MetaMask',
             asset_type: 'native',
             asset_list_position: 0,
@@ -342,11 +317,8 @@ describe('useAssetSelectionMetrics', () => {
             chain_id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
             chain_id_caip: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
             filter_method: [AssetFilterMethod.None],
-          },
-        },
-        {
-          excludeMetaMetricsId: false,
-        },
+          })
+          .build({ excludeMetaMetricsId: false }),
       );
     });
 
@@ -361,17 +333,14 @@ describe('useAssetSelectionMetrics', () => {
       const { result } = renderHookWithProvider(
         () => useAssetSelectionMetrics(),
         mockState,
-        undefined,
-        Container,
       );
 
       result.current.captureAssetSelected(unknownAsset);
 
       expect(mockTrackEvent).toHaveBeenCalledWith(
-        {
-          event: 'Send Asset Selected',
-          category: 'Send',
-          properties: {
+        createEventBuilder(MetaMetricsEventName.SendAssetSelected)
+          .addCategory(MetaMetricsEventCategory.Send)
+          .addProperties({
             account_type: 'MetaMask',
             asset_type: 'token',
             asset_list_position: 0,
@@ -379,11 +348,8 @@ describe('useAssetSelectionMetrics', () => {
             chain_id: 1,
             chain_id_caip: 1,
             filter_method: [AssetFilterMethod.None],
-          },
-        },
-        {
-          excludeMetaMetricsId: false,
-        },
+          })
+          .build({ excludeMetaMetricsId: false }),
       );
     });
   });
@@ -392,8 +358,6 @@ describe('useAssetSelectionMetrics', () => {
     const { result } = renderHookWithProvider(
       () => useAssetSelectionMetrics(),
       mockState,
-      undefined,
-      Container,
     );
     result.current.captureAssetSelected(EVM_ASSET, 1);
     expect(mockTrackEvent).toHaveBeenCalled();

@@ -1,10 +1,12 @@
 import { strict as assert } from 'assert';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
-import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
+import { WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
+import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
-import LoginPage from '../page-objects/pages/login-page';
+import { login } from '../page-objects/flows/login.flow';
+import LoginPage from '../page-objects/pages/onboarding/login-page';
+import TransactionConfirmation from '../page-objects/pages/confirmations/transaction-confirmation';
 
 describe('eth_sendTransaction', function () {
   const expectedHash =
@@ -13,15 +15,15 @@ describe('eth_sendTransaction', function () {
   it('confirms a new transaction', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -64,15 +66,15 @@ describe('eth_sendTransaction', function () {
   it('rejects a new transaction', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -124,8 +126,8 @@ describe('eth_sendTransaction', function () {
   it('prompts for unlock when the wallet is locked and the requesting origin has permission for the account specified in the "from" parameter', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: { hardfork: 'london' },
@@ -161,8 +163,10 @@ describe('eth_sendTransaction', function () {
         await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
 
-        const confirmation = new Confirmation(driver);
+        const confirmation = new TransactionConfirmation(driver);
         await confirmation.checkPageIsLoaded();
+        await confirmation.checkSiteSuggestedGas('~15 sec');
+        await confirmation.checkNoInLineAlertIsDisplayed();
         await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();

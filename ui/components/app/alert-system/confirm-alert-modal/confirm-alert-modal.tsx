@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import {
-  Box,
   Button,
   ButtonLink,
   ButtonLinkSize,
@@ -15,7 +15,6 @@ import {
 import {
   AlignItems,
   Severity,
-  TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -25,6 +24,7 @@ import { AcknowledgeCheckboxBase } from '../alert-modal/alert-modal';
 import { MultipleAlertModal } from '../multiple-alert-modal';
 import { MetaMetricsEventLocation } from '../../../../../shared/constants/metametrics';
 import type { OnCancelHandler } from '../../../../pages/confirmations/components/confirm/footer/footer';
+import { useBoolean } from '../../../../hooks/useBoolean';
 
 export type ConfirmAlertModalProps = {
   /** Callback function that is called when the cancel button is clicked. */
@@ -89,7 +89,7 @@ function ConfirmDetails({
   const t = useI18nContext();
   return (
     <>
-      <Box alignItems={AlignItems.center} textAlign={TextAlign.Center}>
+      <Box alignItems={BoxAlignItems.Center} className="text-center">
         <Text variant={TextVariant.bodyMd}>
           {t('confirmationAlertDetails')}
         </Text>
@@ -114,8 +114,6 @@ function ConfirmDetails({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function ConfirmAlertModal({
   onCancel,
   onClose,
@@ -126,7 +124,7 @@ export function ConfirmAlertModal({
   const { fieldAlerts, alerts, hasUnconfirmedFieldDangerAlerts } =
     useAlerts(ownerId);
 
-  const [confirmCheckbox, setConfirmCheckbox] = useState<boolean>(false);
+  const { value: confirmCheckbox, toggle } = useBoolean();
 
   const hasDangerBlockingAlerts = fieldAlerts.some(
     (alert) => alert.severity === Severity.Danger && alert.isBlocking,
@@ -141,8 +139,6 @@ export function ConfirmAlertModal({
       setMultipleAlertModalVisible(false);
 
       if (
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         request?.recursive ||
         hasUnconfirmedFieldDangerAlerts ||
         hasDangerBlockingAlerts
@@ -156,10 +152,6 @@ export function ConfirmAlertModal({
   const handleOpenMultipleAlertModal = useCallback(() => {
     setMultipleAlertModalVisible(true);
   }, []);
-
-  const handleConfirmCheckbox = useCallback(() => {
-    setConfirmCheckbox(!confirmCheckbox);
-  }, [confirmCheckbox]);
 
   if (multipleAlertModalVisible) {
     return (
@@ -178,6 +170,11 @@ export function ConfirmAlertModal({
     return null;
   }
 
+  const acknowledgementRequired =
+    selectedAlert.severity === Severity.Danger &&
+    !selectedAlert.isBlocking &&
+    !selectedAlert.acknowledgeBypass;
+
   return (
     <AlertModal
       ownerId={ownerId}
@@ -192,7 +189,7 @@ export function ConfirmAlertModal({
         <AcknowledgeCheckboxBase
           selectedAlert={selectedAlert}
           isConfirmed={confirmCheckbox}
-          onCheckboxClick={handleConfirmCheckbox}
+          onCheckboxClick={toggle}
           label={
             alerts.length === 1
               ? t('confirmAlertModalAcknowledgeSingle')
@@ -204,7 +201,7 @@ export function ConfirmAlertModal({
         <ConfirmButtons
           onCancel={onCancel}
           onSubmit={onSubmit}
-          isConfirmed={confirmCheckbox}
+          isConfirmed={acknowledgementRequired ? confirmCheckbox : true}
         />
       }
     />

@@ -8,8 +8,8 @@ import { PendingApproval } from './util';
 
 /**
  * A standard success confirmation to be reused across confirmation flows with minimal code.<br/><br/>
- * Automatically displayed via the `ConfirmationPage` component when using the `ApprovalController.success` method.<br/><br/>
- * The below arguments are properties in the `ApprovalController.success` request.
+ * Automatically displayed via the `ConfirmationPage` component when using the `ApprovalController.showSuccess` method.<br/><br/>
+ * The below arguments are properties in the `ApprovalController.showSuccess` request.
  */
 export default {
   title: 'Pages/ConfirmationPage/ResultSuccess',

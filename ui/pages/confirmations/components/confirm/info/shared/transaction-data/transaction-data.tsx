@@ -1,10 +1,10 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+/* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { hexStripZeros } from '@ethersproject/bytes';
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 import _ from 'lodash';
-import { Hex } from '@metamask/utils';
+import { Hex, isHexString } from '@metamask/utils';
 
 import { APPROVAL_METHOD_NAMES } from '../../../../../../../../shared/constants/transaction';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
@@ -30,10 +30,11 @@ import {
   DecodedTransactionDataSource,
 } from '../../../../../../../../shared/types/transaction-decode';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
+// eslint-disable-next-line import-x/no-restricted-paths
 import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
+import { useDappSwapContext } from '../../../../../context/dapp-swap';
+import { hasTransactionData } from '../../../../../../../../shared/lib/transaction.utils';
 import { renderShortTokenId } from '../../../../../../../components/app/assets/nfts/nft-details/utils';
 import { BatchedApprovalFunction } from '../batched-approval-function/batched-approval-function';
 
@@ -49,6 +50,7 @@ export const TransactionData = ({
   nestedTransactionIndex?: number;
 } = {}) => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
   const { nestedTransactions, txParams } = currentConfirmation ?? {};
   const { data: currentData, to: currentTo } = txParams ?? {};
   const transactionData = data ?? (currentData as Hex);
@@ -59,6 +61,10 @@ export const TransactionData = ({
     to: transactionTo,
   });
 
+  if (nestedTransactionIndex === undefined && isQuotedSwapDisplayedInInfo) {
+    return null;
+  }
+
   const { value, pending } = decodeResponse;
 
   // Don't show root transaction data if this is a batch transaction
@@ -66,12 +72,12 @@ export const TransactionData = ({
     return null;
   }
 
-  if (pending) {
-    return <Container isLoading noPadding={noPadding} />;
-  }
-
   if (!hasTransactionData(transactionData)) {
     return null;
+  }
+
+  if (pending) {
+    return <Container isLoading noPadding={noPadding} />;
   }
 
   if (!value) {
@@ -122,8 +128,6 @@ export const TransactionData = ({
   );
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function Container({
   children,
   isLoading,
@@ -146,8 +150,6 @@ export function Container({
         <ConfirmInfoRow
           label={t('advancedDetailsDataDesc')}
           copyEnabled={Boolean(transactionData)}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           copyText={transactionData || undefined}
         >
           <Box>{isLoading && <Preloader size={20} />}</Box>
@@ -158,8 +160,6 @@ export function Container({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function RawDataRow({ transactionData }: { transactionData: string }) {
   const t = useI18nContext();
   return (
@@ -172,8 +172,6 @@ function RawDataRow({ transactionData }: { transactionData: string }) {
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function FunctionContainer({
   method,
   source,
@@ -231,8 +229,6 @@ function FunctionContainer({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function ParamValue({
   param,
   source,
@@ -258,15 +254,17 @@ function ParamValue({
     valueString = renderShortTokenId(valueString, 5);
   }
 
-  if (!Array.isArray(value) && valueString.startsWith('0x')) {
+  if (
+    !Array.isArray(value) &&
+    valueString.startsWith('0x') &&
+    isHexString(valueString)
+  ) {
     valueString = hexStripZeros(valueString);
   }
 
   return <ConfirmInfoRowText text={valueString} />;
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function ParamRow({
   param,
   index,
@@ -305,8 +303,6 @@ function ParamRow({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function UniswapPath({
   pathPools,
   chainId,

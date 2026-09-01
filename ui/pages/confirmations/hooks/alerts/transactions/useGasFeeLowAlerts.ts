@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { PriorityLevels } from '../../../../../../shared/constants/gas';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -14,15 +13,9 @@ import { useConfirmContext } from '../../../context/confirm';
 export function useGasFeeLowAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
-  const { id: transactionId } = (currentConfirmation ?? {}) as TransactionMeta;
+  const transaction = currentConfirmation as TransactionMeta | undefined;
 
-  const { estimateUsed, transaction } = useGasFeeContext() as {
-    estimateUsed: PriorityLevels;
-    transaction: TransactionMeta;
-  };
-
-  const isLowEstimate =
-    transactionId === transaction?.id && estimateUsed === PriorityLevels.low;
+  const isLowEstimate = transaction?.userFeeLevel === PriorityLevels.low;
 
   return useMemo(() => {
     if (!isLowEstimate) {
@@ -44,5 +37,5 @@ export function useGasFeeLowAlerts(): Alert[] {
         severity: Severity.Warning,
       },
     ];
-  }, [isLowEstimate]);
+  }, [isLowEstimate, t]);
 }

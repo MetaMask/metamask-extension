@@ -3,7 +3,8 @@
 exports[`success template matches the snapshot 1`] = `
 <div>
   <div
-    class="confirmation-page"
+    class="confirmation-page h-full"
+    data-testid="parent-selector-template-confirmation-page"
   >
     <div
       class="mm-box confirmation-page__content mm-box--padding-0"

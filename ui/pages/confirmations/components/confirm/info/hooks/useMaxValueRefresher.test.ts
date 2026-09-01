@@ -1,6 +1,6 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import { useSearchParams } from 'react-router-dom-v5-compat';
+import { useSearchParams } from 'react-router-dom';
 import { merge } from 'lodash';
 
 import { updateEditableParams } from '../../../../../../store/actions';
@@ -10,11 +10,12 @@ import {
   getCrossChainMetaMaskCachedBalances,
   selectMaxValueModeForTransaction,
 } from '../../../../../../selectors';
+import { useIsGaslessSupported } from '../../../../hooks/gas/useIsGaslessSupported';
 import { useMaxValueRefresher } from './useMaxValueRefresher';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useLocation: () => ({ pathname: '/send/asset' }),
   useSearchParams: jest.fn().mockReturnValue([{ get: () => null }]),
 }));
@@ -41,6 +42,7 @@ jest.mock('../../../../context/confirm', () => ({
 }));
 
 jest.mock('../../../../hooks/useTransactionEventFragment');
+jest.mock('../../../../hooks/gas/useIsGaslessSupported');
 
 jest.mock('./useSupportsEIP1559', () => ({
   useSupportsEIP1559: jest.fn(),
@@ -61,6 +63,7 @@ describe('useMaxValueRefresher', () => {
   );
   const updateEditableParamsMock = jest.mocked(updateEditableParams);
   const mockUseSearchParams = jest.mocked(useSearchParams);
+  const mockUseIsGaslessSupported = jest.mocked(useIsGaslessSupported);
 
   const baseTransactionMeta = {
     id: 'test-transaction-id',
@@ -96,6 +99,12 @@ describe('useMaxValueRefresher', () => {
 
     useTransactionEventFragmentMock.mockReturnValue({
       updateTransactionEventFragment: updateTransactionEventFragmentMock,
+    });
+
+    mockUseIsGaslessSupported.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
     });
   });
 
@@ -177,6 +186,27 @@ describe('useMaxValueRefresher', () => {
 
     useConfirmContextMock.mockReturnValue({
       currentConfirmation: contractInteractionMeta,
+    } as unknown as ReturnType<typeof useConfirmContext>);
+
+    renderHook(() => useMaxValueRefresher());
+
+    expect(updateEditableParamsMock).not.toHaveBeenCalled();
+  });
+
+  it('does not update transaction value when gas estimation has failed', () => {
+    // Simulates a tx that reverted on-chain during gas estimation (e.g. a
+    // chain-enforced minimum balance being breached by a "send max" attempt).
+    // The resulting gas is an unreliable fallback, not a real cost, so the
+    // hook must not use it to shrink the value further.
+    const transactionMeta = merge({}, baseTransactionMeta, {
+      simulationFails: {
+        reason: 'execution reverted',
+        debug: {},
+      },
+    });
+
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: transactionMeta,
     } as unknown as ReturnType<typeof useConfirmContext>);
 
     renderHook(() => useMaxValueRefresher());
@@ -304,6 +334,63 @@ describe('useMaxValueRefresher', () => {
         // Balance: 0.1 ETH (0x16345785d8a0000)
         // Gas fee: 21000 * 2 gwei = 42000 gwei = 0x9c40 gwei = 0x9c4000000000 wei
         // Remaining: 0x16345785d8a0000 - 0x9c4000000000 = 0x1631f457a756000
+        expect(updateEditableParamsMock).toHaveBeenCalledWith(
+          transactionMeta.id,
+          {
+            value: '0x1631f457a756000',
+          },
+        );
+      });
+
+      it('calculates value as full balance if gas is sponsored', () => {
+        mockUseIsGaslessSupported.mockReturnValue({
+          isSmartTransaction: false,
+          isSupported: true,
+          pending: false,
+        });
+        const transactionMeta = merge({}, baseTransactionMeta, {
+          txParams: {
+            gas: '0x5208', // 21000
+            maxFeePerGas: '0x77359400', // 2 gwei
+          },
+          isGasFeeSponsored: true,
+        });
+
+        useConfirmContextMock.mockReturnValue({
+          currentConfirmation: transactionMeta,
+        } as unknown as ReturnType<typeof useConfirmContext>);
+
+        renderHook(() => useMaxValueRefresher());
+
+        expect(updateEditableParamsMock).toHaveBeenCalledWith(
+          transactionMeta.id,
+          {
+            value: defaultBalance,
+          },
+        );
+      });
+
+      it('calculates value using maxFeePerGas if gas is sponsored on network but gasless not supported (ex: Hardware Wallet)', () => {
+        mockUseIsGaslessSupported.mockReturnValue({
+          isSmartTransaction: false,
+          // Unsupported, often because account is Hardware Wallet
+          isSupported: false,
+          pending: false,
+        });
+        const transactionMeta = merge({}, baseTransactionMeta, {
+          txParams: {
+            gas: '0x5208', // 21000
+            maxFeePerGas: '0x77359400', // 2 gwei
+          },
+          isGasFeeSponsored: true,
+        });
+
+        useConfirmContextMock.mockReturnValue({
+          currentConfirmation: transactionMeta,
+        } as unknown as ReturnType<typeof useConfirmContext>);
+
+        renderHook(() => useMaxValueRefresher());
+
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
           transactionMeta.id,
           {

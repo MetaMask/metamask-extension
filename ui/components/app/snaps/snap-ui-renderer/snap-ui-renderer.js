@@ -1,11 +1,14 @@
-import React, { memo, useMemo, useRef } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Container } from '@metamask/snaps-sdk/jsx';
 
 import { isEqual } from 'lodash';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { ThemeProvider } from '@mui/material/styles';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
-import { getMemoizedInterface } from '../../../../selectors';
+import { getInterface } from '../../../../selectors';
 import { Box } from '../../../component-library';
 
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
@@ -18,16 +21,65 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { mapToExtensionCompatibleColor, mapToTemplate } from './utils';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import {
+  mapToExtensionCompatibleColor,
+  mapToTemplate,
+  muiPickerTheme,
+} from './utils';
 import { COMPONENT_MAPPING } from './components';
+import { PerformanceTracker } from './performance-tracker';
 
-// Component for tracking the number of re-renders
-// DO NOT USE IN PRODUCTION
-const PerformanceTracker = () => {
-  const rendersRef = useRef(0);
-  rendersRef.current += 1;
+// Renders snap UI with scroll refs passed as props so mapToTemplate receives a
+// real RefObject without crossing a parent useMemo closure (React Compiler safe).
+const SnapUIContent = ({
+  content,
+  onCancel,
+  useFooter,
+  promptLegacyProps,
+  t,
+  backgroundColor,
+  scrollableContainerRef,
+  setScroll,
+}) => {
+  const sections = useMemo(
+    () =>
+      mapToTemplate({
+        map: {},
+        element: content,
+        onCancel,
+        useFooter,
+        promptLegacyProps,
+        t,
+        contentBackgroundColor: backgroundColor,
+        componentMap: COMPONENT_MAPPING,
+        setScroll,
+        scrollableContainerRef,
+      }),
+    [
+      content,
+      onCancel,
+      useFooter,
+      promptLegacyProps,
+      t,
+      backgroundColor,
+      setScroll,
+      scrollableContainerRef,
+    ],
+  );
 
-  return <span data-testid="performance" data-renders={rendersRef.current} />;
+  return <MetaMaskTemplateRenderer sections={sections} />;
+};
+
+SnapUIContent.propTypes = {
+  content: PropTypes.object.isRequired,
+  onCancel: PropTypes.func,
+  useFooter: PropTypes.bool,
+  promptLegacyProps: PropTypes.object,
+  t: PropTypes.func.isRequired,
+  backgroundColor: PropTypes.string,
+  scrollableContainerRef: PropTypes.object.isRequired,
+  setScroll: PropTypes.func.isRequired,
 };
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
@@ -45,14 +97,31 @@ const SnapUIRendererComponent = ({
   contentBackgroundColor,
   PERF_DEBUG,
 }) => {
+  const scrollableContainerRef = useRef(null);
+  const scrollRef = useRef(0);
+
+  const setScroll = useCallback(() => {
+    if (scrollableContainerRef.current) {
+      scrollRef.current = scrollableContainerRef.current.scrollTop;
+    }
+    // ref objects are stable across renders and we read
+    // `.current` when scroll fires, so the callback does not need to be recreated.
+  }, []);
+
   const t = useI18nContext();
+  const locale = useSelector(getIntlLocale);
 
   const interfaceState = useSelector(
-    (state) => getMemoizedInterface(state, interfaceId),
+    (state) => getInterface(state, interfaceId),
     // We only want to update the state if the content has changed.
     // We do this to avoid useless re-renders.
-    (oldState, newState) => isEqual(oldState.content, newState.content),
+    (oldState, newState) => isEqual(oldState?.content, newState?.content),
   );
+
+  useEffect(() => {
+    scrollableContainerRef.current?.scrollTo?.(0, scrollRef.current);
+  }, [interfaceState?.content]);
+
   const rawContent = interfaceState?.content;
   const content =
     rawContent?.type === 'Container' || !rawContent
@@ -61,11 +130,13 @@ const SnapUIRendererComponent = ({
 
   const promptLegacyProps = useMemo(
     () =>
-      isPrompt && {
-        inputValue,
-        onInputChange,
-        placeholder,
-      },
+      isPrompt
+        ? {
+            inputValue,
+            onInputChange,
+            placeholder,
+          }
+        : undefined,
     [inputValue, onInputChange, placeholder, isPrompt],
   );
 
@@ -74,20 +145,13 @@ const SnapUIRendererComponent = ({
     mapToExtensionCompatibleColor(content?.props?.backgroundColor) ??
     BackgroundColor.backgroundAlternative;
 
-  const sections = useMemo(
-    () =>
-      content &&
-      mapToTemplate({
-        map: {},
-        element: content,
-        onCancel,
-        useFooter,
-        promptLegacyProps,
-        t,
-        contentBackgroundColor: backgroundColor,
-        componentMap: COMPONENT_MAPPING,
-      }),
-    [content, onCancel, useFooter, promptLegacyProps, t, backgroundColor],
+  const pickerLocaleText = useMemo(
+    () => ({
+      clearButtonLabel: t('clear'),
+      cancelButtonLabel: t('cancel'),
+      okButtonLabel: t('ok').toUpperCase(),
+    }),
+    [t],
   );
 
   if (isLoading || !content) {
@@ -106,28 +170,40 @@ const SnapUIRendererComponent = ({
 
   const { state: initialState } = interfaceState;
 
-  // The renderer should only have a footer if there is a default cancel action
-  // or if the footer component has been used.
-  const hasFooter = onCancel || content?.props?.children?.[1] !== undefined;
-
   return (
     <SnapInterfaceContextProvider
       snapId={snapId}
       interfaceId={interfaceId}
       initialState={initialState}
     >
-      <Box
-        className="snap-ui-renderer__content"
-        height={BlockSize.Full}
-        backgroundColor={backgroundColor}
-        style={{
-          overflowY: 'auto',
-          marginBottom: useFooter && hasFooter ? '80px' : '0',
-        }}
-      >
-        <MetaMaskTemplateRenderer sections={sections} />
-        {PERF_DEBUG && <PerformanceTracker />}
-      </Box>
+      <ThemeProvider theme={muiPickerTheme}>
+        <LocalizationProvider
+          dateAdapter={AdapterLuxon}
+          adapterLocale={locale}
+          localeText={pickerLocaleText}
+        >
+          <Box
+            className="snap-ui-renderer__content"
+            height={BlockSize.Full}
+            backgroundColor={backgroundColor}
+            style={{
+              overflowY: 'auto',
+            }}
+          >
+            <SnapUIContent
+              content={content}
+              onCancel={onCancel}
+              useFooter={useFooter}
+              promptLegacyProps={promptLegacyProps}
+              t={t}
+              backgroundColor={backgroundColor}
+              scrollableContainerRef={scrollableContainerRef}
+              setScroll={setScroll}
+            />
+            {PERF_DEBUG && <PerformanceTracker content={rawContent} />}
+          </Box>
+        </LocalizationProvider>
+      </ThemeProvider>
     </SnapInterfaceContextProvider>
   );
 };

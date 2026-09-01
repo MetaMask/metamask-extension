@@ -1,7 +1,5 @@
 @use "design-system";
 
-@import 'choose-account/index';
-@import 'connect-page/index';
 @import 'snaps/snap-install/index';
 @import 'snaps/snap-update/index';
 @import 'snaps/snap-result/index';
@@ -20,7 +18,7 @@
   background: var(--color-background-default);
   display: flex;
   flex-direction: column;
-  height: auto;
+  height: 100%;
   width: 100%;
 
   @include design-system.screen-sm-min {
@@ -38,6 +36,12 @@
 
   @include design-system.screen-lg-min {
     width: $width-screen-lg-min;
+  }
+
+  .app--sidepanel & {
+    width: 100%;
+    max-width: var(--width-max);
+    margin: 0 auto;
   }
 
   &__top-bar {

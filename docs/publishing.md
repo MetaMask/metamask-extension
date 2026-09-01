@@ -29,9 +29,7 @@ In the case that a new release has sensitive changes that cannot be fully verifi
 
 ## Building
 
-While we develop on the `main` branch, our production version is maintained on the `stable` branch.
-
-With each pull request, the @MetaMaskBot will comment with a build of that new pull request, so after bumping the version on `main`, open a pull request against `stable`, and once the pull request is reviewed and merged, you can download those builds for publication.
+While we develop on the `main` branch, our production builds are created from the release branch HEAD using the [`publish-release-from-release-head.yml`](../.github/workflows/publish-release-from-release-head.yml) workflow. This workflow builds, tags, and publishes from the release branch before it is merged to `stable`.
 
 ## Publishing
 
@@ -52,4 +50,4 @@ For this reason, when an urgent change is needed in production, its pull request
 - Use a hotfix tag.
 - Should be proposed against the `stable` branch.
 
-The version and changelog bump should then be made off the `stable` branch, and then merged to `main` to bring the two branches back into sync. Further time can be saved by incorporating the version/changelog bump into the PR against `stable`, since we rely on @MetaMaskBot to run tests before merging.
+Publishing is done from the hotfix branch HEAD using the [`publish-release-from-release-head.yml`](../.github/workflows/publish-release-from-release-head.yml) workflow. After publishing, the hotfix branch is merged to `stable`, and stable-sync PRs propagate changes back to `main`.

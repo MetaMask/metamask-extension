@@ -1,9 +1,9 @@
 import HomePage from '../pages/home/homepage';
-import SendTokenPage from '../pages/send/send-token-page';
 import { Driver } from '../../webdriver/driver';
-import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
-import TransactionConfirmation from '../pages/confirmations/redesign/transaction-confirmation';
-import ActivityListPage from '../pages/home/activity-list';
+import SnapSimpleKeyringPage from '../pages/snaps/simple-keyring-page';
+import TransactionConfirmation from '../pages/confirmations/transaction-confirmation';
+import ActivityTab from '../pages/home/activity-tab';
+import { createInternalTransaction } from './transaction.flow';
 
 /**
  * This function initiates the steps required to send a transaction from the homepage to final confirmation.
@@ -25,20 +25,16 @@ export const sendRedesignedTransactionToAddress = async ({
   console.log(
     `Start flow to send amount ${amount} to recipient ${recipientAddress} on home screen`,
   );
-  // click send button on homepage to start flow
-  const homePage = new HomePage(driver);
-  await homePage.startSendFlow();
 
-  // user should land on send token screen to fill recipient and amount
-  const sendToPage = new SendTokenPage(driver);
-  await sendToPage.checkPageIsLoaded();
-  await sendToPage.fillRecipient(recipientAddress);
-  await sendToPage.fillAmount(amount);
-  await sendToPage.goToNextScreen();
+  await createInternalTransaction({
+    driver,
+    recipientAddress,
+    amount,
+  });
 
   // confirm transaction when user lands on confirm transaction screen
-  const transactionConfirmationPage = new TransactionConfirmation(driver);
-  await transactionConfirmationPage.clickFooterConfirmButton();
+  const transactionConfirmation = new TransactionConfirmation(driver);
+  await transactionConfirmation.clickFooterConfirmButton();
 };
 
 /**
@@ -61,20 +57,15 @@ export const sendRedesignedTransactionToAccount = async ({
   console.log(
     `Start flow to send amount ${amount} to recipient account ${recipientAccount} on home screen`,
   );
-  // click send button on homepage to start flow
-  const homePage = new HomePage(driver);
-  await homePage.startSendFlow();
-
-  // user should land on send token screen to fill recipient and amount
-  const sendToPage = new SendTokenPage(driver);
-  await sendToPage.checkPageIsLoaded();
-  await sendToPage.selectRecipientAccount(recipientAccount);
-  await sendToPage.fillAmount(amount);
-  await sendToPage.goToNextScreen();
+  await createInternalTransaction({
+    driver,
+    recipientName: recipientAccount,
+    amount,
+  });
 
   // confirm transaction when user lands on confirm transaction screen
-  const transactionConfirmationPage = new TransactionConfirmation(driver);
-  await transactionConfirmationPage.clickFooterConfirmButton();
+  const transactionConfirmation = new TransactionConfirmation(driver);
+  await transactionConfirmation.clickFooterConfirmButton();
 };
 
 /**
@@ -112,12 +103,33 @@ export const sendRedesignedTransactionWithSnapAccount = async ({
   }
 };
 
-export const validateTransaction = async (driver: Driver, quantity: string) => {
-  const homePage = new HomePage(driver);
-  await homePage.goToActivityList();
-  const activityList = new ActivityListPage(driver);
-  await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+export const validateTransaction = async (
+  driver: Driver,
+  amount: string,
+): Promise<void> => {
+  const activityTab = new ActivityTab(driver);
+  await activityTab.goToActivityList();
+  await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
+  await activityTab.checkTxAction({ action: 'Sent ETH' });
+  await activityTab.checkTxAmountInActivity(`${amount} ETH`, 1);
+};
 
-  await activityList.checkTxAction({ action: 'Sent' });
-  await activityList.checkTxAmountInActivity(`${quantity} ETH`, 1);
+export const validateBalanceAndActivity = async (
+  driver: Driver,
+  expectedBalance: string,
+  expectedActivityEntries = 1,
+): Promise<void> => {
+  const homePage = new HomePage(driver);
+  await homePage.goToHomePage();
+  await homePage.checkExpectedBalanceIsDisplayed(expectedBalance);
+
+  const activityTab = new ActivityTab(driver);
+  await activityTab.goToActivityList();
+  await activityTab.checkConfirmedTxNumberDisplayedInActivity(
+    expectedActivityEntries,
+  );
+
+  if (expectedActivityEntries) {
+    await activityTab.checkTxAction({ action: 'Sent ETH' });
+  }
 };

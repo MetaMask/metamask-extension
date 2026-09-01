@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { render, renderHook } from '@testing-library/react';
 import { useAlertActionHandler } from './alertActionHandler';
 
 jest.mock('react', () => ({
@@ -9,12 +9,24 @@ jest.mock('react', () => ({
 
 describe('alertActionHandler', () => {
   it('throws an error if used outside of AlertActionHandlerProvider', () => {
-    const { result } = renderHookWithProvider(() => useAlertActionHandler());
-    expect(result.error).toEqual(
-      new Error(
+    (React.useContext as jest.Mock).mockReturnValue(undefined);
+
+    const HookConsumer = () => {
+      useAlertActionHandler();
+      return null;
+    };
+
+    const consoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    try {
+      expect(() => render(React.createElement(HookConsumer))).toThrow(
         'useAlertActionHandler must be used within an AlertActionHandlerProvider',
-      ),
-    );
+      );
+    } finally {
+      consoleError.mockRestore();
+    }
   });
 
   it('returns the context value when used within AlertActionHandlerProvider', () => {
@@ -23,9 +35,7 @@ describe('alertActionHandler', () => {
       processAction: mockProcessAction,
     });
 
-    const { result } = renderHookWithProvider(() => useAlertActionHandler(), {
-      processAction: mockProcessAction,
-    });
+    const { result } = renderHook(() => useAlertActionHandler());
 
     expect(result.current.processAction).toBe(mockProcessAction);
   });

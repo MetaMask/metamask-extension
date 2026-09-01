@@ -1,15 +1,18 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import {
+  type ApprovalsMetaMaskState,
   getApprovalFlows,
   getApprovalsByOrigin,
   getPendingApprovals,
   hasPendingApprovals,
+  selectPendingApprovalsForNavigation,
 } from './approvals';
 
 describe('approval selectors', () => {
   const mockedState = {
     metamask: {
       pendingApprovalCount: 3,
+      remoteFeatureFlags: {},
       pendingApprovals: {
         '1': {
           id: '1',
@@ -67,6 +70,13 @@ describe('approval selectors', () => {
 
       expect(result).toStrictEqual(mockedState.metamask.approvalFlows);
     });
+
+    it('should return same reference when state has not changed (memoization)', () => {
+      const result1 = getApprovalFlows(mockedState);
+      const result2 = getApprovalFlows(mockedState);
+
+      expect(result1).toBe(result2);
+    });
   });
 
   describe('getPendingApprovals', () => {
@@ -76,6 +86,69 @@ describe('approval selectors', () => {
       expect(result).toStrictEqual(
         Object.values(mockedState.metamask.pendingApprovals),
       );
+    });
+
+    it('should return same reference when state has not changed (memoization)', () => {
+      const result1 = getPendingApprovals(mockedState);
+      const result2 = getPendingApprovals(mockedState);
+
+      expect(result1).toBe(result2);
+    });
+
+    it('should return new reference when pendingApprovals change', () => {
+      const result1 = getPendingApprovals(mockedState);
+
+      const modifiedState = {
+        ...mockedState,
+        metamask: {
+          ...mockedState.metamask,
+          pendingApprovals: {
+            ...mockedState.metamask.pendingApprovals,
+            '3': {
+              id: '3',
+              origin: 'origin',
+              time: Date.now(),
+              type: ApprovalType.EthSignTypedData,
+              requestData: {},
+              requestState: null,
+              expectsResult: false,
+            },
+          },
+        },
+      };
+
+      const result2 = getPendingApprovals(modifiedState);
+
+      expect(result1).not.toBe(result2);
+      expect(result2.length).toBe(3);
+    });
+
+    it('should handle empty pendingApprovals', () => {
+      const emptyState = {
+        metamask: {
+          pendingApprovals: {},
+          approvalFlows: [],
+        },
+      };
+
+      const result = getPendingApprovals(emptyState);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('should handle null/undefined pendingApprovals', () => {
+      const nullState = {
+        metamask: {
+          pendingApprovals: null,
+          approvalFlows: [],
+        },
+      };
+
+      const result = getPendingApprovals(
+        nullState as unknown as ApprovalsMetaMaskState,
+      );
+
+      expect(result).toStrictEqual([]);
     });
   });
 
@@ -116,6 +189,33 @@ describe('approval selectors', () => {
       expect(result).toStrictEqual(
         Object.values(mockedState.metamask.pendingApprovals),
       );
+    });
+  });
+
+  describe('selectPendingApprovalsForNavigation', () => {
+    it('deduplicates watch NFT approvals', () => {
+      const watchNftApproval = {
+        id: 'nft-1',
+        origin: 'origin',
+        time: Date.now(),
+        type: ApprovalType.WatchAsset,
+        requestData: { asset: { tokenId: '1' } },
+        requestState: null,
+        expectsResult: false,
+      };
+      const state = {
+        metamask: {
+          ...mockedState.metamask,
+          pendingApprovals: {
+            'nft-1': watchNftApproval,
+            'nft-2': { ...watchNftApproval, id: 'nft-2', time: Date.now() + 1 },
+          },
+        },
+      };
+
+      expect(selectPendingApprovalsForNavigation(state)).toStrictEqual([
+        watchNftApproval,
+      ]);
     });
   });
 });

@@ -1,4 +1,8 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  type TransactionMeta,
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 
 import {
   orderSignatureMsg,
@@ -7,12 +11,16 @@ import {
 } from '../../../../test/data/confirmations/typed_sign';
 import { SignatureRequestType } from '../types/confirm';
 import {
+  getConfirmationTransactionType,
+  getMoneyAccountTransactionType,
   isOrderSignatureRequest,
   isPermitSignatureRequest,
+  isProtectedByEnforcedSimulations,
   isSignatureTransactionType,
   parseSanitizeTypedDataMessage,
   isValidASCIIURL,
   toPunycodeURL,
+  stripProtocol,
 } from './confirm';
 
 const typedDataMsg =
@@ -29,6 +37,92 @@ describe('confirm util', () => {
       expect(() => {
         parseSanitizeTypedDataMessage('{}');
       }).toThrow();
+    });
+  });
+
+  describe('getMoneyAccountTransactionType', () => {
+    it('returns moneyAccountDeposit when it is a nested transaction of a batch', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.tokenMethodApprove },
+          { type: TransactionType.moneyAccountDeposit },
+        ],
+      } as unknown as TransactionMeta;
+
+      expect(getMoneyAccountTransactionType(transactionMeta)).toBe(
+        TransactionType.moneyAccountDeposit,
+      );
+    });
+
+    it('returns moneyAccountWithdraw when it is the top-level type', () => {
+      const transactionMeta = {
+        type: TransactionType.moneyAccountWithdraw,
+      } as TransactionMeta;
+
+      expect(getMoneyAccountTransactionType(transactionMeta)).toBe(
+        TransactionType.moneyAccountWithdraw,
+      );
+    });
+
+    it('returns undefined for unrelated batch transactions', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.tokenMethodApprove },
+          { type: TransactionType.tokenMethodTransfer },
+        ],
+      } as unknown as TransactionMeta;
+
+      expect(getMoneyAccountTransactionType(transactionMeta)).toBeUndefined();
+    });
+
+    it('returns undefined when transactionMeta is undefined', () => {
+      expect(getMoneyAccountTransactionType(undefined)).toBeUndefined();
+    });
+  });
+
+  describe('getConfirmationTransactionType', () => {
+    it('returns the nested money-account type for batch transactions', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.tokenMethodApprove },
+          { type: TransactionType.moneyAccountDeposit },
+        ],
+      } as unknown as TransactionMeta;
+
+      expect(getConfirmationTransactionType(transactionMeta)).toBe(
+        TransactionType.moneyAccountDeposit,
+      );
+    });
+
+    it('returns the nested pay type for batch transactions', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.tokenMethodApprove },
+          { type: TransactionType.perpsDeposit },
+        ],
+      } as unknown as TransactionMeta;
+
+      expect(getConfirmationTransactionType(transactionMeta)).toBe(
+        TransactionType.perpsDeposit,
+      );
+    });
+
+    it('returns the top-level type when no pay type is present', () => {
+      const transactionMeta = {
+        type: TransactionType.simpleSend,
+      } as TransactionMeta;
+
+      expect(getConfirmationTransactionType(transactionMeta)).toBe(
+        TransactionType.simpleSend,
+      );
+    });
+
+    it('returns undefined when the transaction is undefined', () => {
+      expect(getConfirmationTransactionType(undefined)).toBeUndefined();
     });
   });
 
@@ -129,6 +223,105 @@ describe('confirm util', () => {
       expect(toPunycodeURL('https://www.google.com')).toStrictEqual(
         'https://www.google.com',
       );
+    });
+  });
+
+  describe('stripUrlProtocol', () => {
+    it('removes https protocol from URL', () => {
+      expect(stripProtocol('https://example.com')).toStrictEqual('example.com');
+    });
+
+    it('removes http protocol from URL', () => {
+      expect(stripProtocol('http://localhost:8545')).toStrictEqual(
+        'localhost:8545',
+      );
+    });
+  });
+
+  describe('isProtectedByEnforcedSimulations', () => {
+    const REDEEM_DELEGATIONS_DATA = '0xcef6d20900000000';
+
+    function makeFailedTx(
+      overrides: {
+        revertMessage?: string;
+        data?: string;
+        status?: TransactionStatus;
+      } = {},
+    ): TransactionMeta {
+      const {
+        revertMessage = 'NativeBalanceChangeEnforcer:hasnt-decreased-enough',
+        data = REDEEM_DELEGATIONS_DATA,
+        status = TransactionStatus.failed,
+      } = overrides;
+      return {
+        status,
+        revert: revertMessage
+          ? { receipt: { message: revertMessage } }
+          : undefined,
+        txParams: { data },
+      } as unknown as TransactionMeta;
+    }
+
+    it('returns true when status is failed, receipt revert matches an enforcer prefix and data has the redeemDelegations selector', () => {
+      expect(isProtectedByEnforcedSimulations(makeFailedTx())).toBe(true);
+    });
+
+    it('returns true regardless of the enforcer name (generic match)', () => {
+      expect(
+        isProtectedByEnforcedSimulations(
+          makeFailedTx({ revertMessage: 'SomeNewEnforcer:reason' }),
+        ),
+      ).toBe(true);
+    });
+
+    it('matches the redeemDelegations selector case-insensitively', () => {
+      expect(
+        isProtectedByEnforcedSimulations(
+          makeFailedTx({ data: '0xCEF6D20900000000' }),
+        ),
+      ).toBe(true);
+    });
+
+    it('returns false when status is not failed', () => {
+      expect(
+        isProtectedByEnforcedSimulations(
+          makeFailedTx({ status: TransactionStatus.confirmed }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when transactionMeta is undefined', () => {
+      expect(isProtectedByEnforcedSimulations(undefined)).toBe(false);
+    });
+
+    it('returns false when the data does not start with the redeemDelegations selector', () => {
+      expect(
+        isProtectedByEnforcedSimulations(
+          makeFailedTx({ data: '0xa9059cbb00000000' }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when receipt revert reason lacks an enforcer prefix', () => {
+      expect(
+        isProtectedByEnforcedSimulations(
+          makeFailedTx({ revertMessage: 'insufficient funds' }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when revert.receipt is missing', () => {
+      expect(
+        isProtectedByEnforcedSimulations(makeFailedTx({ revertMessage: '' })),
+      ).toBe(false);
+    });
+
+    it('does not match a revert reason starting with a lowercase letter', () => {
+      expect(
+        isProtectedByEnforcedSimulations(
+          makeFailedTx({ revertMessage: 'nativeBalanceChangeEnforcer:reason' }),
+        ),
+      ).toBe(false);
     });
   });
 });

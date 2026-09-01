@@ -1,7 +1,9 @@
 import { screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { useParams } from 'react-router-dom';
 import {
+  getMockAddEthereumChainConfirmState,
   getMockApproveConfirmState,
   getMockContractInteractionConfirmState,
   getMockPersonalSignConfirmState,
@@ -9,13 +11,24 @@ import {
   getMockTypedSignConfirmState,
   getMockTypedSignPermissionConfirmState,
 } from '../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import {
+  renderWithConfirmContextProvider,
+  renderWithConfirmContext,
+} from '../../../../../../test/lib/confirmations/render-helpers';
+import { unapprovedTypedSignMsgV4WithPermission } from '../../../../../../test/data/confirmations/typed_sign';
 import { useAssetDetails } from '../../../hooks/useAssetDetails';
-import { isGatorPermissionsFeatureEnabled } from '../../../../../../shared/modules/environment';
+import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permissions/useEnabledAdvancedPermissions';
+import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
+import { ConfirmationLoader } from '../../../hooks/useConfirmationNavigation';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import Info from './info';
 
 jest.mock('../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
+}));
+
+jest.mock('./hooks/useBatchApproveBalanceChanges', () => ({
+  useBatchApproveBalanceChanges: jest.fn(),
 }));
 
 jest.mock(
@@ -33,26 +46,125 @@ jest.mock('../../../../../store/actions', () => ({
     lowerTimeBound: 0,
     upperTimeBound: 60000,
   }),
+  getTokenStandardAndDetailsByChain: jest.fn().mockResolvedValue({
+    standard: 'ERC721',
+  }),
 }));
 
 jest.mock('../../../hooks/useAssetDetails', () => ({
   ...jest.requireActual('../../../hooks/useAssetDetails'),
-  useAssetDetails: jest.fn().mockResolvedValue({
+  useAssetDetails: jest.fn(() => ({
     decimals: '4',
-  }),
+  })),
+}));
+
+jest.mock('./approve/hooks/use-is-nft', () => ({
+  useIsNFT: jest.fn(() => ({
+    isNFT: true,
+    pending: false,
+  })),
 }));
 
 jest.mock('../../../hooks/useTransactionFocusEffect', () => ({
   useTransactionFocusEffect: jest.fn(),
 }));
 
-jest.mock('../../../../../../shared/modules/environment', () => ({
-  ...jest.requireActual('../../../../../../shared/modules/environment'),
-  isGatorPermissionsFeatureEnabled: jest.fn().mockReturnValue(true),
+jest.mock(
+  '../../../../../hooks/gator-permissions/useEnabledAdvancedPermissions',
+  () => ({
+    useEnabledAdvancedPermissions: jest
+      .fn()
+      .mockReturnValue(['native-token-stream']),
+  }),
+);
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useParams: jest.fn(),
 }));
+
+const mockUseConfirmationNavigationOptions = jest.fn();
+jest.mock('../../../hooks/useConfirmationNavigation', () => ({
+  ...jest.requireActual('../../../hooks/useConfirmationNavigation'),
+  useConfirmationNavigationOptions: () =>
+    mockUseConfirmationNavigationOptions(),
+}));
+
+let mockConfirmContextValue: ReturnType<
+  typeof import('../../../context/confirm').useConfirmContext
+> | null = null;
+
+jest.mock('../../../context/confirm', () => {
+  const actual = jest.requireActual('../../../context/confirm');
+  return {
+    ...actual,
+    useConfirmContext: () => {
+      if (mockConfirmContextValue !== null) {
+        return mockConfirmContextValue;
+      }
+      return actual.useConfirmContext();
+    },
+  };
+});
+
+jest.mock('../../../hooks/gas/useIsGaslessSupported', () => ({
+  useIsGaslessSupported: jest.fn(() => ({
+    isSupported: false,
+    isSmartTransaction: false,
+    pending: false,
+  })),
+}));
+
+jest.mock('../../../hooks/gas/useGasSponsorshipPreference', () => ({
+  useGasSponsorshipPreference: jest.fn(() => ({
+    isSponsorshipOptedOut: false,
+    setSponsorshipOptedOut: jest.fn(),
+  })),
+}));
+
+/**
+ * Tippy assigns incrementing IDs; normalize so snapshots are order-stable.
+ *
+ * @param container - Rendered DOM container to clone and normalize.
+ * @returns A clone of the container with Tippy aria IDs normalized.
+ */
+const normalizeTippyIds = (container: HTMLElement): HTMLElement => {
+  const clone = container.cloneNode(true) as HTMLElement;
+  clone
+    .querySelectorAll('[aria-describedby^="tippy-tooltip-"]')
+    .forEach((el) => {
+      el.setAttribute('aria-describedby', 'tippy-tooltip');
+    });
+  return clone;
+};
+
+/**
+ * Asserts that a render callback throws, while suppressing React's
+ * "The above error occurred in ..." console.error noise so it does not
+ * pollute the console baseline.
+ *
+ * @param render - Render callback that is expected to throw.
+ * @param expectedError - Expected error message or matcher.
+ */
+function expectRenderToThrow(render: () => void, expectedError: string): void {
+  const consoleError = jest
+    .spyOn(console, 'error')
+    .mockImplementation(() => undefined);
+
+  try {
+    expect(render).toThrow(expectedError);
+  } finally {
+    consoleError.mockRestore();
+  }
+}
 
 describe('Info', () => {
   const mockedAssetDetails = jest.mocked(useAssetDetails);
+  const mockedUseParams = jest.mocked(useParams);
+  const mockedUseEnabledAdvancedPermissions = jest.mocked(
+    useEnabledAdvancedPermissions,
+  );
+  const MOCK_CONFIRMATION_ID = '1';
 
   beforeEach(() => {
     mockedAssetDetails.mockImplementation(() => ({
@@ -60,6 +172,11 @@ describe('Info', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
+    mockedUseParams.mockReturnValue({});
+    mockedUseEnabledAdvancedPermissions.mockReturnValue([
+      'native-token-stream',
+    ]);
+    mockUseConfirmationNavigationOptions.mockReturnValue({ loader: null });
   });
 
   it('renders info section for personal sign request', () => {
@@ -77,19 +194,35 @@ describe('Info', () => {
   });
 
   it('renders info section for typed sign request with permission', () => {
-    const state = getMockTypedSignPermissionConfirmState();
+    const state = getMockTypedSignPermissionConfirmState(
+      unapprovedTypedSignMsgV4WithPermission.decodedPermission,
+    );
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
     expect(container).toMatchSnapshot();
   });
 
   it('throws an error if gator permissions feature is not enabled', () => {
-    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(false);
+    // the requested permission type is `native-token-stream`
+    mockedUseEnabledAdvancedPermissions.mockReturnValue([]);
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
-    expect(() => renderWithConfirmContextProvider(<Info />, mockStore)).toThrow(
-      'Gator permissions feature is not enabled',
+    expectRenderToThrow(
+      () => renderWithConfirmContext(<Info />, mockStore),
+      'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
+    );
+  });
+
+  it('throws an error if the specific permission type is not enabled', () => {
+    // the requested permission type is `native-token-stream`
+    mockedUseEnabledAdvancedPermissions.mockReturnValue(['erc20-token-stream']);
+
+    const state = getMockTypedSignPermissionConfirmState();
+    const mockStore = configureMockStore([])(state);
+    expectRenderToThrow(
+      () => renderWithConfirmContext(<Info />, mockStore),
+      'Invalid eth_signTypedData_v4 request - Advanced Permission type: native-token-stream not enabled',
     );
   });
 
@@ -106,10 +239,15 @@ describe('Info', () => {
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
 
     await waitFor(() => {
-      expect(screen.getByText('Speed')).toBeInTheDocument();
+      expect(screen.getByText(messages.speed.message)).toBeInTheDocument();
+      // useIsNFT pending renders Container loader (advanced-details-data-section);
+      // wait for the settled simulation before snapshotting.
+      expect(
+        screen.getByTestId('confirmation__simulation_section'),
+      ).toBeInTheDocument();
     });
 
-    expect(container).toMatchSnapshot();
+    expect(normalizeTippyIds(container)).toMatchSnapshot();
   });
 
   it('renders info section for setApprovalForAll request', async () => {
@@ -118,9 +256,85 @@ describe('Info', () => {
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
 
     await waitFor(() => {
-      expect(screen.getByText('Speed')).toBeInTheDocument();
+      expect(screen.getByText(messages.speed.message)).toBeInTheDocument();
+      expect(
+        screen.getByTestId('confirmation__simulation_section'),
+      ).toBeInTheDocument();
     });
 
-    expect(container).toMatchSnapshot();
+    expect(normalizeTippyIds(container)).toMatchSnapshot();
+  });
+
+  it('renders info section for addEthereumChain request', () => {
+    mockedUseParams.mockReturnValue({ id: MOCK_CONFIRMATION_ID });
+
+    const state = getMockAddEthereumChainConfirmState();
+    const mockStore = configureMockStore([])(state);
+    renderWithConfirmContextProvider(
+      <Info />,
+      mockStore,
+      DEFAULT_ROUTE,
+      MOCK_CONFIRMATION_ID,
+    );
+
+    expect(screen.getByText('Test Network')).toBeInTheDocument();
+    expect(screen.getByText('example.com')).toBeInTheDocument();
+    expect(screen.getByText('rpc.example.com')).toBeInTheDocument();
+    expect(screen.getByText('RPC')).toBeInTheDocument();
+  });
+
+  describe('when no confirmation type exists', () => {
+    beforeEach(() => {
+      mockConfirmContextValue = {
+        currentConfirmation: undefined as never,
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: jest.fn(),
+        goBackTo: undefined,
+      };
+    });
+
+    afterEach(() => {
+      mockConfirmContextValue = null;
+    });
+
+    it('renders InfoSkeleton when loader is not set', () => {
+      mockUseConfirmationNavigationOptions.mockReturnValue({ loader: null });
+
+      const state = getMockPersonalSignConfirmState();
+      const mockStore = configureMockStore([])(state);
+      renderWithConfirmContextProvider(<Info />, mockStore);
+
+      expect(
+        screen.getByTestId('confirmation__info_skeleton'),
+      ).toBeInTheDocument();
+    });
+
+    it('renders CustomAmountInfoSkeleton when loader is CustomAmount', () => {
+      mockUseConfirmationNavigationOptions.mockReturnValue({
+        loader: ConfirmationLoader.CustomAmount,
+      });
+
+      const state = getMockPersonalSignConfirmState();
+      const mockStore = configureMockStore([])(state);
+      renderWithConfirmContextProvider(<Info />, mockStore);
+
+      expect(
+        screen.getByTestId('custom-amount-info-skeleton'),
+      ).toBeInTheDocument();
+    });
+
+    it('renders send skeleton when loader is Send', () => {
+      mockUseConfirmationNavigationOptions.mockReturnValue({
+        loader: ConfirmationLoader.Send,
+      });
+
+      const state = getMockPersonalSignConfirmState();
+      const mockStore = configureMockStore([])(state);
+      renderWithConfirmContextProvider(<Info />, mockStore);
+
+      expect(
+        screen.getByTestId('confirmation__send_info_skeleton'),
+      ).toBeInTheDocument();
+    });
   });
 });

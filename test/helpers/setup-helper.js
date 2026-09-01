@@ -134,7 +134,24 @@ window.localStorage = {
 };
 
 // used for native dark/light mode detection
-window.matchMedia = () => true;
+window.matchMedia = (query) => ({
+  matches: false,
+  media: query,
+  onchange: null,
+  addListener: () => {
+    // deprecated - no-op
+  },
+  removeListener: () => {
+    // deprecated - no-op
+  },
+  addEventListener: () => {
+    // no-op for tests
+  },
+  removeEventListener: () => {
+    // no-op for tests
+  },
+  dispatchEvent: () => true,
+});
 
 // override @metamask/logo
 window.requestAnimationFrame = () => undefined;
@@ -144,23 +161,66 @@ if (!window.crypto) {
   window.crypto = {};
 }
 if (!window.crypto.getRandomValues) {
-  // eslint-disable-next-line node/global-require
+  // eslint-disable-next-line n/global-require
   window.crypto.getRandomValues = require('crypto').webcrypto.getRandomValues;
+}
+
+// Ensure `crypto.randomUUID` exists in the test environment (some Jest
+// environments don't expose the webcrypto `crypto.randomUUID` even on Node 18+).
+if (typeof window.crypto.randomUUID !== 'function') {
+  // eslint-disable-next-line n/global-require
+  const nodeCrypto = require('crypto');
+
+  if (typeof nodeCrypto.randomUUID === 'function') {
+    window.crypto.randomUUID = nodeCrypto.randomUUID.bind(nodeCrypto);
+  }
 }
 
 // TextEncoder/TextDecoder
 window.TextEncoder = TextEncoder;
 window.TextDecoder = TextDecoder;
 
-// Used to test `clearClipboard` function
+// Clipboard API is missing in JSDOM
 if (!window.navigator.clipboard) {
-  window.navigator.clipboard = {};
-}
-if (!window.navigator.clipboard.writeText) {
-  window.navigator.clipboard.writeText = () => undefined;
+  Object.defineProperty(window.navigator, 'clipboard', {
+    value: {
+      writeText: jest.fn(() => ({
+        then(onFulfilled) {
+          onFulfilled?.();
+          return Promise.resolve();
+        },
+      })),
+      readText: jest.fn(() => ({
+        then(onFulfilled) {
+          onFulfilled?.('');
+          return Promise.resolve('');
+        },
+      })),
+    },
+    writable: true,
+    configurable: true,
+  });
 }
 
 window.SVGPathElement = window.SVGPathElement || { prototype: {} };
 
 // scrollIntoView is not available in JSDOM
 window.HTMLElement.prototype.scrollIntoView = () => undefined;
+
+// ResizeObserver is not available in JSDOM
+if (typeof window.ResizeObserver === 'undefined') {
+  const ResizeObserver = function () {
+    // no-op for tests
+  };
+  ResizeObserver.prototype.observe = () => {
+    // no-op for tests
+  };
+  ResizeObserver.prototype.unobserve = () => {
+    // no-op for tests
+  };
+  ResizeObserver.prototype.disconnect = () => {
+    // no-op for tests
+  };
+  window.ResizeObserver = ResizeObserver;
+  global.ResizeObserver = ResizeObserver;
+}

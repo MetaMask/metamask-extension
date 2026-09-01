@@ -1,8 +1,8 @@
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
-import DeFiTab from '../../../page-objects/pages/defi-tab';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import DeFiTab from '../../../page-objects/pages/home/defi-tab';
+import { login } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
 import { mockDefiPositionsFailure } from '../../confirmations/helpers';
 
@@ -10,13 +10,13 @@ describe('View DeFi error state', function () {
   it('user should be able to view error message', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockDefiPositionsFailure,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await new Homepage(driver).goToDeFiTab();
 

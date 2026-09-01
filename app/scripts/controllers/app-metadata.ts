@@ -2,11 +2,24 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger,
+  StateMetadata,
 } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
+import { AppMetadataControllerMethodActions } from './app-metadata-method-action-types';
 
 // Unique name for the controller
 const controllerName = 'AppMetadataController';
+
+/**
+ * Information about when MetaMask was first installed.
+ * This is recorded on first installation and never changes.
+ */
+export type FirstTimeInfo = {
+  /** The MetaMask version when first installed */
+  version: string;
+  /** Timestamp (Date.now()) when first installed */
+  date: number;
+};
 
 /**
  * The options that AppMetadataController takes.
@@ -26,6 +39,8 @@ export type AppMetadataControllerState = {
   previousAppVersion: string;
   previousMigrationVersion: number;
   currentMigrationVersion: number;
+  /** Installation version and date - set once on first install, never changes */
+  firstTimeInfo?: FirstTimeInfo;
 };
 
 /**
@@ -37,6 +52,7 @@ export const getDefaultAppMetadataControllerState =
     previousAppVersion: '',
     previousMigrationVersion: 0,
     currentMigrationVersion: 0,
+    firstTimeInfo: undefined,
   });
 
 /**
@@ -50,7 +66,9 @@ export type AppMetadataControllerGetStateAction = ControllerGetStateAction<
 /**
  * Actions exposed by the {@link AppMetadataController}.
  */
-export type AppMetadataControllerActions = AppMetadataControllerGetStateAction;
+export type AppMetadataControllerActions =
+  | AppMetadataControllerGetStateAction
+  | AppMetadataControllerMethodActions;
 
 /**
  * Event emitted when the state of the {@link AppMetadataController} changes.
@@ -75,12 +93,10 @@ type AllowedEvents = never;
 /**
  * Messenger type for the {@link AppMetadataController}.
  */
-type AppMetadataControllerMessenger = RestrictedMessenger<
+export type AppMetadataControllerMessenger = Messenger<
   typeof controllerName,
   AppMetadataControllerActions | AllowedActions,
-  AppMetadataControllerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  AppMetadataControllerEvents | AllowedEvents
 >;
 
 /**
@@ -90,32 +106,43 @@ type AppMetadataControllerMessenger = RestrictedMessenger<
  * using the `persist` flag; and if they can be sent to Sentry or not, using
  * the `anonymous` flag.
  */
-const controllerMetadata = {
+const controllerMetadata: StateMetadata<AppMetadataControllerState> = {
   currentAppVersion: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: false,
   },
   previousAppVersion: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: false,
   },
   previousMigrationVersion: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: false,
   },
   currentMigrationVersion: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: false,
+  },
+  firstTimeInfo: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
     usedInUi: false,
   },
 };
+
+/**
+ * Methods exposed by the {@link AlertController} messenger.
+ */
+const MESSENGER_EXPOSED_METHODS = ['maybeRecordFirstTimeInfo'] as const;
 
 /**
  * The AppMetadata controller stores metadata about the current extension instance,
@@ -123,7 +150,7 @@ const controllerMetadata = {
  * run migration.
  *
  */
-export default class AppMetadataController extends BaseController<
+export class AppMetadataController extends BaseController<
   typeof controllerName,
   AppMetadataControllerState,
   AppMetadataControllerMessenger
@@ -156,6 +183,11 @@ export default class AppMetadataController extends BaseController<
     this.#maybeUpdateAppVersion(currentAppVersion);
 
     this.#maybeUpdateMigrationVersion(currentMigrationVersion);
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
   }
 
   /**
@@ -186,6 +218,24 @@ export default class AppMetadataController extends BaseController<
       this.update((state) => {
         state.previousMigrationVersion = oldCurrentMigrationVersion;
         state.currentMigrationVersion = maybeNewMigrationVersion;
+      });
+    }
+  }
+
+  /**
+   * Records the first time info if it hasn't been set yet.
+   * This captures the version and date when MetaMask was first installed.
+   * Once set, this value never changes.
+   *
+   * @param version - The current MetaMask version
+   */
+  maybeRecordFirstTimeInfo(version: string): void {
+    if (!this.state.firstTimeInfo) {
+      this.update((state) => {
+        state.firstTimeInfo = {
+          version,
+          date: Date.now(),
+        };
       });
     }
   }

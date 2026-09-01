@@ -14,6 +14,7 @@ import { getMockConfirmStateForTransaction } from '../../../../../../../../test/
 import { Confirmation } from '../../../../../types/confirm';
 import { TransactionData } from './transaction-data';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
+import { DappSwapContextProvider } from '../../../../../context/dapp-swap';
 
 const DATA_RAW_MOCK =
   '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
@@ -34,9 +35,7 @@ function getStore(transactionData?: string, to?: string) {
   return configureStore(
     getMockConfirmStateForTransaction(confirmation as Confirmation, {
       metamask: {
-        preferences: {
-          petnamesEnabled: true,
-        },
+        preferences: {},
       },
     }),
   );
@@ -58,7 +57,9 @@ function Template({
         }}
       >
         <ConfirmContextProvider>
-          <TransactionData />
+          <DappSwapContextProvider>
+            <TransactionData />
+          </DappSwapContextProvider>
         </ConfirmContextProvider>
       </div>
     </Provider>

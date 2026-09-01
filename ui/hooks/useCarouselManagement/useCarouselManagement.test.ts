@@ -1,23 +1,29 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-import { renderHook } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
-import { useDispatch, useSelector } from 'react-redux';
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { useSelector } from 'react-redux';
 import {
   getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
   getSlides,
   getUseExternalServices,
   getShowDownloadMobileAppSlide,
-  getRemoteFeatureFlags,
 } from '../../selectors';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getCurrentLocale } from '../../ducks/locale/locale';
 import { updateSlides } from '../../store/actions';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
+import { useDispatch } from '../../store/hooks';
 import { useCarouselManagement } from './useCarouselManagement';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
-jest.mock('./fetchCarouselSlidesFromContentful');
-jest.mock('react-redux', () => ({
+jest.mock('../../store/hooks', () => ({
   useDispatch: jest.fn(),
+}));
+
+jest.mock('./fetchCarouselSlidesFromContentful');
+jest.mock('../../ducks/locale/locale', () => ({
+  getCurrentLocale: jest.fn(),
+}));
+jest.mock('react-redux', () => ({
   useSelector: jest.fn((selector) => selector()),
 }));
 jest.mock('../../store/actions', () => ({
@@ -30,7 +36,7 @@ jest.mock('../../store/actions', () => ({
 const mockFetch = jest.mocked(fetchCarouselSlidesFromContentful);
 const mockUpdateSlides = jest.mocked(updateSlides);
 const mockUseSelector = jest.mocked(useSelector);
-const mockUseDispatch = jest.mocked(useDispatch);
+const mockUseAppDispatch = jest.mocked(useDispatch);
 
 const slide = (
   variableName: string,
@@ -55,9 +61,12 @@ const mockGetSelectedInternalAccount = jest
   .mockReturnValue({ address: '0xabc' });
 const mockGetShowDownloadMobileAppSlide = jest.fn().mockReturnValue(true);
 const mockGetRemoteFeatureFlags = jest.fn();
+const mockGetCurrentLocale = jest.fn().mockReturnValue('en-US');
 
 describe('useCarouselManagement (simple Contentful tests)', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
+
     mockFetch.mockResolvedValue({
       prioritySlides: [],
       regularSlides: [slide('fund'), slide('downloadMobileApp')],
@@ -65,7 +74,7 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
 
     type MockSelector = (state: unknown) => unknown;
 
-    mockUseDispatch.mockReturnValue(jest.fn());
+    mockUseAppDispatch.mockReturnValue(jest.fn());
     mockUseSelector.mockImplementation(
       <TSelected>(selector: (state: unknown) => TSelected): TSelected => {
         if (selector === getSlides) {
@@ -74,7 +83,7 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
         if (selector === getSelectedAccountCachedBalance) {
           return mockGetSelectedAccountCachedBalance() as TSelected;
         }
-        if (selector === getSelectedInternalAccount) {
+        if (selector === (getSelectedInternalAccount as MockSelector)) {
           return mockGetSelectedInternalAccount() as TSelected;
         }
         if (selector === getUseExternalServices) {
@@ -85,6 +94,9 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
         }
         if (selector === (getRemoteFeatureFlags as MockSelector)) {
           return mockGetRemoteFeatureFlags() as TSelected;
+        }
+        if (selector === (getCurrentLocale as MockSelector)) {
+          return mockGetCurrentLocale() as TSelected;
         }
         return undefined as unknown as TSelected;
       },
@@ -97,8 +109,7 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
     mockGetRemoteFeatureFlags.mockReturnValue({
       contentfulCarouselEnabled: true,
     });
-
-    jest.clearAllMocks();
+    mockGetCurrentLocale.mockReturnValue('en');
   });
 
   const getDispatchedSlides = (): CarouselSlide[] => {
@@ -126,5 +137,48 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
     await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
 
     expect(getDispatchedSlides()).toEqual([]);
+  });
+
+  test('lineage is called only once per account, not in infinite loop', async () => {
+    const mockGetUserProfileLineage = jest.requireMock(
+      '../../store/actions',
+    ).getUserProfileLineage;
+
+    mockGetUseExternalServices.mockReturnValue(true);
+    mockGetRemoteFeatureFlags.mockReturnValue({
+      contentfulCarouselEnabled: true,
+    });
+
+    const { rerender } = renderHook(() => useCarouselManagement());
+
+    // Flush async state updates from getUserProfileLineageAction() (React 18 requires act()).
+    await act(async () => {
+      await mockGetUserProfileLineage.mock.results[0]?.value;
+    });
+    await act(async () => {
+      await mockFetch.mock.results[0]?.value;
+    });
+    expect(mockUpdateSlides).toHaveBeenCalled();
+
+    mockGetUserProfileLineage.mockClear();
+    mockUpdateSlides.mockClear();
+
+    mockGetSlides.mockReturnValue([slide('fund')]);
+
+    rerender();
+
+    // Wait a bit to ensure any potential loops would manifest
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Lineage should NOT be called again just because slides changed
+    // (it should only be called when account/settings change)
+    expect(mockGetUserProfileLineage).not.toHaveBeenCalled();
+
+    mockGetSelectedInternalAccount.mockReturnValue({ address: '0xnew' });
+    rerender();
+
+    await waitFor(() => expect(mockGetUserProfileLineage).toHaveBeenCalled());
+
+    expect(mockGetUserProfileLineage).toHaveBeenCalledTimes(1);
   });
 });

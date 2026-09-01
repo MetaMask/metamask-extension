@@ -1,5 +1,5 @@
 import log from 'loglevel';
-import { parse } from './parse';
+import { NavigationOrigin, parse } from './parse';
 import { VALID, INVALID, MISSING, verify } from './verify';
 import { type Route, routes } from './routes';
 import { SIG_PARAM } from './constants';
@@ -8,6 +8,9 @@ const mockVerify = verify as jest.MockedFunction<typeof verify>;
 const mockRoutes = routes as jest.Mocked<Map<string, Route>>;
 
 jest.mock('./verify', () => ({
+  INVALID: 'invalid',
+  MISSING: 'missing',
+  VALID: 'valid',
   verify: jest.fn(),
 }));
 jest.mock('./routes', () => ({
@@ -70,7 +73,7 @@ describe('parse', () => {
       },
       signature: VALID,
     });
-    expect(mockHandler).toHaveBeenCalledWith(new URL(urlStr).searchParams);
+    expect(mockHandler).toHaveBeenCalledWith(new URLSearchParams());
   });
 
   it('returns a parsed deep link object with signature=invalid if signature is invalid', async () => {
@@ -131,5 +134,64 @@ describe('parse', () => {
     await parse(new URL(urlStr));
 
     expect(mockVerify).toHaveBeenCalledWith(new URL(urlStr));
+  });
+
+  it('skips signature verification when `navigationOrigin` is `NavigationOrigin.INTERNAL`', async () => {
+    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
+    mockHandler.mockReturnValue({
+      path: 'destination-value',
+      query: new URLSearchParams(),
+    });
+
+    const urlStr = 'https://example.com/test?sig=bar';
+    const result = await parse(new URL(urlStr), {
+      navigationOrigin: NavigationOrigin.INTERNAL,
+    });
+
+    expect(result).toStrictEqual({
+      destination: {
+        path: 'destination-value',
+        query: new URLSearchParams(),
+      },
+      route: {
+        handler: mockHandler,
+      },
+    });
+    expect(mockVerify).not.toHaveBeenCalled();
+  });
+
+  it("removes the SIG_PARAMS_PARAM from the handler's query parameters", async () => {
+    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
+    mockVerify.mockResolvedValue(VALID);
+
+    const urlStr1 = 'https://example.com/test?sig=bar&sig_params=';
+    await parse(new URL(urlStr1));
+    // `sig_params` should be removed from the handler's searchParams
+    expect(mockHandler).toHaveBeenCalledWith(new URLSearchParams());
+
+    const urlStr2 =
+      'https://example.com/test?sig=bar&sig_params=value&value=123';
+    await parse(new URL(urlStr2));
+    // `sig_params` should be removed from the handler's searchParams, `value`
+    // should remain because it is listed in `sig_params`
+    expect(mockHandler).toHaveBeenCalledWith(
+      new URLSearchParams([['value', '123']]),
+    );
+
+    const urlStr3 = 'https://example.com/test?sig=bar&sig_params=&value=123';
+    await parse(new URL(urlStr3));
+    // `sig_params` should be removed from the handler's searchParams, `value`
+    // should also be removed because it is not in `sig_params`
+    expect(mockHandler).toHaveBeenCalledWith(new URLSearchParams());
+
+    const urlStr4 =
+      'https://example.com/test?sig=bar&sig_params=value&value=123&foo=bar';
+    await parse(new URL(urlStr4));
+    // `sig_params` should be removed from the handler's searchParams, `value`
+    // should remain because it is listed in `sig_params`, `foo` should be removed
+    // because it is not listed in `sig_params`
+    expect(mockHandler).toHaveBeenCalledWith(
+      new URLSearchParams([['value', '123']]),
+    );
   });
 });

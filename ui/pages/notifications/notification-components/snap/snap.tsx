@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import {
   NotificationDetailTitle,
@@ -31,7 +31,8 @@ import { SnapFooterButton } from './snap-footer-button';
 
 export const components: NotificationComponent<SnapNotification> = {
   guardFn: isOfTypeNodeGuard([TRIGGER_TYPES.SNAP]),
-  item: ({ notification, onClick }) => {
+  // eslint-disable-next-line func-name-matching, @typescript-eslint/naming-convention
+  item: function Item({ notification, onClick }) {
     const navigate = useNavigate();
     const snapsMetadata = useSelector(getSnapsMetadata);
     const snapsNameGetter = getSnapName(snapsMetadata);
@@ -100,8 +101,16 @@ export const components: NotificationComponent<SnapNotification> = {
                 alignItems={AlignItems.center}
                 paddingBottom={2}
               >
-                <SnapIcon snapId={snapId} avatarSize={IconSize.Xl} />
-                <Text paddingLeft={4} fontWeight={FontWeight.Medium}>
+                <SnapIcon
+                  snapId={snapId}
+                  avatarSize={IconSize.Xl}
+                  data-testid="notification-details-snap-avatar"
+                />
+                <Text
+                  paddingLeft={4}
+                  fontWeight={FontWeight.Medium}
+                  data-testid="notification-details-snap-name"
+                >
                   {snapsNameGetter(snapId)}
                 </Text>
               </Box>
@@ -123,9 +132,9 @@ export const components: NotificationComponent<SnapNotification> = {
         );
       },
     },
-  },
-  footer: {
-    type: NotificationComponentType.SnapFooter,
-    Link: SnapFooterButton,
+    footer: {
+      type: NotificationComponentType.SnapFooter,
+      Link: SnapFooterButton,
+    },
   },
 };

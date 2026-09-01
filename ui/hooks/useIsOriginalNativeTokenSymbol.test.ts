@@ -1,6 +1,7 @@
 import { waitFor } from '@testing-library/react';
 import { CaipChainId, Hex } from '@metamask/utils';
-import { renderHookWithProviderTyped } from '../../test/lib/render-helpers';
+import { renderHookWithProviderTyped } from '../../test/lib/render-helpers-navigate';
+import type { MultichainNetwork } from '../selectors/multichain/networks';
 import * as SelectorsModule from '../selectors/selectors';
 import * as MultichainSelectorsModule from '../selectors/multichain';
 import * as IsOriginalNativeTokenSymbolModule from '../helpers/utils/isOriginalNativeTokenSymbol';
@@ -8,14 +9,12 @@ import { useIsOriginalNativeTokenSymbol } from './useIsOriginalNativeTokenSymbol
 
 const arrangeMocks = () => {
   // Mock Selectors
-  const mockUseSafeChainsListValidationSelector = jest
-    .spyOn(SelectorsModule, 'useSafeChainsListValidationSelector')
+  const mockGetUseSafeChainsListValidation = jest
+    .spyOn(SelectorsModule, 'getUseSafeChainsListValidation')
     .mockReturnValue(true);
 
   const createMockProviderConfig = () =>
-    ({
-      ticker: 'ETH',
-    }) as MultichainSelectorsModule.MultichainNetwork['network'];
+    ({ ticker: 'ETH' }) as MultichainNetwork['network'];
   const mockGetMultichainCurrentNetwork = jest
     .spyOn(MultichainSelectorsModule, 'getMultichainCurrentNetwork')
     .mockReturnValue(createMockProviderConfig());
@@ -26,7 +25,7 @@ const arrangeMocks = () => {
     .mockResolvedValue(true);
 
   return {
-    mockUseSafeChainsListValidationSelector,
+    mockGetUseSafeChainsListValidation,
     createMockProviderConfig,
     mockGetMultichainCurrentNetwork,
     mockIsOriginalNativeTokenSymbol,

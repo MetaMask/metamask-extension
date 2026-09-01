@@ -1,8 +1,7 @@
 import React, { useContext, useEffect } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { shallowEqual, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
-
 import { I18nContext } from '../../../contexts/i18n';
 import {
   getFetchParams,
@@ -13,15 +12,12 @@ import {
 import {
   isHardwareWallet,
   getHardwareWalletType,
-} from '../../../selectors/selectors';
+} from '../../../../shared/lib/selectors/keyring';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
-} from '../../../../shared/modules/selectors';
-import {
-  DEFAULT_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
+} from '../../../../shared/lib/selectors';
+import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import Box from '../../../components/ui/box';
 import {
@@ -32,14 +28,15 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import SwapsFooter from '../swaps-footer';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { Text } from '../../../components/component-library';
+import { useDispatch } from '../../../store/hooks';
 import SwapStepIcon from './swap-step-icon';
 
 export default function AwaitingSignatures() {
   const t = useContext(I18nContext);
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const fetchParams = useSelector(getFetchParams, isEqual);
   const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {};
@@ -54,28 +51,28 @@ export default function AwaitingSignatures() {
     getCurrentSmartTransactionsEnabled,
   );
   const needsTwoConfirmations = Boolean(approveTxParams);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   useEffect(() => {
-    trackEvent({
-      event: 'Awaiting Signature(s) on a HW wallet',
-      category: MetaMetricsEventCategory.Swaps,
-      sensitiveProperties: {
-        needs_two_confirmations: needsTwoConfirmations,
-        token_from: sourceTokenInfo?.symbol,
-        token_from_amount: fetchParams?.value,
-        token_to: destinationTokenInfo?.symbol,
-        request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
-        slippage: fetchParams?.slippage,
-        custom_slippage: fetchParams?.slippage === 2,
-        is_hardware_wallet: hardwareWalletUsed,
-        hardware_wallet_type: hardwareWalletType,
-        stx_enabled: smartTransactionsEnabled,
-        current_stx_enabled: currentSmartTransactionsEnabled,
-        stx_user_opt_in: smartTransactionsOptInStatus,
-      },
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    trackEvent(
+      createEventBuilder('Awaiting Signature(s) on a HW wallet')
+        .addCategory(MetaMetricsEventCategory.Swaps)
+        .addSensitiveProperties({
+          needs_two_confirmations: needsTwoConfirmations,
+          token_from: sourceTokenInfo?.symbol,
+          token_from_amount: fetchParams?.value,
+          token_to: destinationTokenInfo?.symbol,
+          request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
+          slippage: fetchParams?.slippage,
+          custom_slippage: fetchParams?.slippage === 2,
+          is_hardware_wallet: hardwareWalletUsed,
+          hardware_wallet_type: hardwareWalletType,
+          stx_enabled: smartTransactionsEnabled,
+          current_stx_enabled: currentSmartTransactionsEnabled,
+          stx_user_opt_in: smartTransactionsOptInStatus,
+        })
+        .build(),
+    );
   }, []);
 
   const headerText = needsTwoConfirmations
@@ -147,10 +144,8 @@ export default function AwaitingSignatures() {
       <SwapsFooter
         onSubmit={async () => {
           await dispatch(prepareToLeaveSwaps());
-          // Go to the default route and then to the build quote route in order to clean up
-          // the `inputValue` local state in `pages/swaps/index.js`
-          history.push(DEFAULT_ROUTE);
-          history.push(PREPARE_SWAP_ROUTE);
+          // prepareToLeaveSwaps() clears all swaps state, so we can navigate directly
+          navigate(PREPARE_SWAP_ROUTE);
         }}
         submitText={t('cancel')}
         hideCancel

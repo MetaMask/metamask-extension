@@ -1,6 +1,5 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import {
@@ -10,9 +9,13 @@ import {
 import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../../helpers/constants/routes';
 import { Loader } from './loader';
 
-jest.mock('react-router-dom', () => ({
-  useHistory: jest.fn(),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
@@ -26,17 +29,10 @@ jest.mock('../../../../../components/ui/loading-screen', () => ({
 }));
 
 describe('Loader', () => {
-  const mockUseHistory = jest.mocked(useHistory);
   const mockUseSelector = jest.mocked(useSelector);
 
-  const mockPush = jest.fn();
-
   beforeEach(() => {
-    mockUseHistory.mockReturnValue({
-      push: mockPush,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any);
-    mockPush.mockClear();
+    jest.clearAllMocks();
   });
 
   it('renders loading screen', () => {
@@ -56,8 +52,9 @@ describe('Loader', () => {
 
     render(<Loader />);
 
-    expect(mockPush).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       `${CONFIRMATION_V_NEXT_ROUTE}/test-id`,
+      { replace: true },
     );
   });
 
@@ -70,8 +67,9 @@ describe('Loader', () => {
 
     render(<Loader />);
 
-    expect(mockPush).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       `${CONFIRMATION_V_NEXT_ROUTE}/test-id-2`,
+      { replace: true },
     );
   });
 
@@ -80,7 +78,7 @@ describe('Loader', () => {
 
     render(<Loader />);
 
-    expect(mockPush).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 
   it('does not navigate when pending send has different origin', () => {
@@ -92,6 +90,6 @@ describe('Loader', () => {
 
     render(<Loader />);
 
-    expect(mockPush).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 });

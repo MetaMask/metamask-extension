@@ -1,10 +1,10 @@
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import { MOCK_META_METRICS_ID } from '../../constants';
-import FixtureBuilder from '../../fixture-builder';
+import { MOCK_ANALYTICS_ID } from '../../constants';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { emptyHtmlPage } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import MockedPage from '../../page-objects/pages/mocked-page';
 
 describe('Portfolio site', function () {
@@ -13,7 +13,7 @@ describe('Portfolio site', function () {
       .forGet('https://app.metamask.io/explore/tokens')
       .withQuery({
         metamaskEntry: 'ext_portfolio_button',
-        metametricsId: MOCK_META_METRICS_ID,
+        metametricsId: MOCK_ANALYTICS_ID,
         metricsEnabled: 'true',
         marketingEnabled: 'false',
       })
@@ -28,24 +28,25 @@ describe('Portfolio site', function () {
   it('should link to the portfolio site', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder()
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
-            metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
+            analyticsId: MOCK_ANALYTICS_ID,
+            consentDecisionMade: true,
+            optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockPortfolioSite,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await new HomePage(driver).openPortfolioPage();
         await driver.switchToWindowWithTitle('E2E Test Page');
 
         // Verify site
         await driver.waitForUrl({
-          url: `https://app.metamask.io/explore/tokens?metamaskEntry=ext_portfolio_button&metametricsId=${MOCK_META_METRICS_ID}&metricsEnabled=true&marketingEnabled=false`,
+          url: `https://app.metamask.io/explore/tokens?metamaskEntry=ext_portfolio_button&metametricsId=${MOCK_ANALYTICS_ID}&metricsEnabled=true&marketingEnabled=false`,
         });
         await new MockedPage(driver).checkDisplayedMessage(
           'Empty page by MetaMask',

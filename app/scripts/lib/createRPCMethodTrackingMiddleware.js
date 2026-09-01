@@ -1,4 +1,4 @@
-import { ApprovalType, detectSIWE } from '@metamask/controller-utils';
+import { detectSIWE } from '@metamask/controller-utils';
 import { errorCodes } from '@metamask/rpc-errors';
 import { isValidAddress } from 'ethereumjs-util';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
@@ -8,29 +8,29 @@ import {
   MetaMetricsEventUiCustomization,
   MetaMetricsRequestedThrough,
 } from '../../../shared/constants/metametrics';
-import { parseTypedDataMessage } from '../../../shared/modules/transaction.utils';
+import { parseTypedDataMessage } from '../../../shared/lib/transaction.utils';
 
 import {
   BlockaidResultType,
   BlockaidReason,
 } from '../../../shared/constants/security-provider';
+import { ResultType } from '../../../shared/lib/trust-signals';
 import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
 } from '../../../shared/constants/signatures';
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
-import { getErrorMessage } from '../../../shared/modules/error';
+import { getErrorMessage } from '../../../shared/lib/error';
 import {
   generateSignatureUniqueId,
   getBlockaidMetricsProps,
   // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../ui/helpers/utils/metrics';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { shouldUseRedesignForSignatures } from '../../../shared/lib/confirmation.utils';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
+import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
+import { getIframeProperties } from './getIframeProperties';
 
 /**
  * These types determine how the method tracking middleware handles incoming
@@ -74,15 +74,6 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.WALLET_GET_CALLS_STATUS]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.WALLET_GET_CAPABILITIES]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.WALLET_SEND_CALLS]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
-};
-
-const MESSAGE_TYPE_TO_APPROVAL_TYPE = {
-  [MESSAGE_TYPE.PERSONAL_SIGN]: ApprovalType.PersonalSign,
-  [MESSAGE_TYPE.SIGN]: ApprovalType.SignTransaction,
-  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: ApprovalType.EthSignTypedData,
-  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1]: ApprovalType.EthSignTypedData,
-  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3]: ApprovalType.EthSignTypedData,
-  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4]: ApprovalType.EthSignTypedData,
 };
 
 /**
@@ -240,13 +231,14 @@ function isMultichainRequestMethod(method) {
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
  * @param {Function} opts.getHardwareTypeForMetric
- * @param {RestrictedMessenger} opts.snapAndHardwareMessenger
+ * @param {Messenger} opts.snapAndHardwareMessenger
  * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
  * time window that should limit the number of method calls tracked to globalRateLimitMaxAmount.
  * @param {number} [opts.globalRateLimitMaxAmount] - max number of method calls that should
  * tracked within the globalRateLimitTimeout time window.
  * @param {AppStateController} [opts.appStateController]
  * @param {MetaMetricsController} [opts.metaMetricsController]
+ * @param {AnalyticsController} [opts.analyticsController]
  * @returns {Function}
  */
 
@@ -261,6 +253,7 @@ export default function createRPCMethodTrackingMiddleware({
   snapAndHardwareMessenger,
   appStateController,
   metaMetricsController,
+  analyticsController,
   getHDEntropyIndex,
 }) {
   return async function rpcMethodTrackingMiddleware(
@@ -268,7 +261,7 @@ export default function createRPCMethodTrackingMiddleware({
     /** @type {any} */ res,
     /** @type {Function} */ next,
   ) {
-    const { origin, method, params } = req;
+    const { origin, method, params, mainFrameOrigin, frameId } = req;
 
     const isMultichainRequest = isMultichainRequestMethod(method);
     // requestedThrough and eventCategory are currently redundant so we will want to
@@ -313,18 +306,25 @@ export default function createRPCMethodTrackingMiddleware({
       globalRateLimitMaxAmount > 0 &&
       globalRateLimitCount >= globalRateLimitMaxAmount;
 
-    // Get the participateInMetaMetrics state to determine if we should track
+    // Get the optedIn state to determine if we should track
     // anything. This is extra redundancy because this value is checked in
-    // the metametrics controller's trackEvent method as well.
-    const userParticipatingInMetaMetrics =
-      metaMetricsController.state.participateInMetaMetrics === true;
+    // the analytics controller's trackEvent method as well.
+    const { optedIn } = analyticsController.state;
+    const userParticipatingInMetaMetrics = optedIn === true;
 
     // Get the event type, each of which has APPROVED, REJECTED and REQUESTED
     // keys for the various events in the flow.
     const eventType = EVENT_NAME_MAP[invokedMethod];
 
+    const iframeProps = getIframeProperties({
+      frameId,
+      origin,
+      mainFrameOrigin,
+    });
+
     const eventProperties = {
       api_source: requestedThrough,
+      ...iframeProps,
     };
 
     if (multichainApiRequestScope) {
@@ -385,21 +385,11 @@ export default function createRPCMethodTrackingMiddleware({
           BlockaidResultType.NotApplicable;
         eventProperties.security_alert_reason =
           req.securityAlertResponse?.reason ?? BlockaidReason.notApplicable;
+        eventProperties.address_alert_response = ResultType.Loading;
 
         if (req.securityAlertResponse?.description) {
           eventProperties.security_alert_description =
             req.securityAlertResponse.description;
-        }
-
-        if (
-          shouldUseRedesignForSignatures({
-            approvalType: MESSAGE_TYPE_TO_APPROVAL_TYPE[invokedMethod],
-          })
-        ) {
-          eventProperties.ui_customizations = [
-            ...(eventProperties.ui_customizations || []),
-            MetaMetricsEventUiCustomization.RedesignedConfirmation,
-          ];
         }
 
         const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
@@ -479,14 +469,16 @@ export default function createRPCMethodTrackingMiddleware({
           eventCategory,
         );
       } else {
-        metaMetricsController.trackEvent({
-          event,
-          category: eventCategory,
-          referrer: {
-            url: origin,
-          },
-          properties: eventProperties,
-        });
+        trackEvent(
+          createEventBuilder(event)
+            .addCategory(eventCategory)
+            .addProperties(eventProperties)
+            .build({
+              referrer: {
+                url: origin,
+              },
+            }),
+        );
       }
 
       if (rateLimitType === RATE_LIMIT_TYPES.TIMEOUT) {
@@ -536,6 +528,20 @@ export default function createRPCMethodTrackingMiddleware({
 
       CUSTOM_PROPERTIES_MAP[invokedMethod]?.(req, res, stage, eventProperties);
 
+      if (eventType.REQUESTED === MetaMetricsEventName.SignatureRequested) {
+        // get the snap and hardware info again in case we were not able to during the initial request
+        // because the KeyringController was locked
+        const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
+          getAccountType,
+          getDeviceModel,
+          getHardwareTypeForMetric,
+          snapAndHardwareMessenger,
+        );
+
+        // merge the snapAndHardwareInfo into eventProperties
+        Object.assign(eventProperties, snapAndHardwareInfo);
+      }
+
       let blockaidMetricProps = {};
       if (SIGNING_METHODS.includes(invokedMethod)) {
         const securityAlertResponse =
@@ -547,11 +553,14 @@ export default function createRPCMethodTrackingMiddleware({
           securityAlertResponse,
         });
       }
+
       const properties = {
         ...eventProperties,
         ...blockaidMetricProps,
         location,
       };
+      // Exclude address_alert_response so useTrustSignalMetrics value is preserved during finalization
+      delete properties.address_alert_response;
 
       if (
         event === MetaMetricsEventName.SignatureRejected ||
@@ -575,14 +584,16 @@ export default function createRPCMethodTrackingMiddleware({
           fragmentPayload,
         );
       } else {
-        metaMetricsController.trackEvent({
-          event,
-          category: eventCategory,
-          referrer: {
-            url: origin,
-          },
-          properties,
-        });
+        trackEvent(
+          createEventBuilder(event)
+            .addCategory(eventCategory)
+            .addProperties(properties)
+            .build({
+              referrer: {
+                url: origin,
+              },
+            }),
+        );
       }
       return callback();
     });

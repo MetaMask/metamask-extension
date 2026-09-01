@@ -3,19 +3,19 @@ import {
   CaveatConstraint,
   PermissionConstraint,
 } from '@metamask/permission-controller';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import { CaveatTypes } from '../../../shared/constants/permissions';
-import { switchToEditRPCViaGlobalMenuNetworks } from '../page-objects/flows/network.flow';
-import AddNetworkConfirmation from '../page-objects/pages/confirmations/redesign/add-network-confirmations';
-import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
-import NetworkSwitchAlertModal from '../page-objects/pages/dialog/network-switch-alert-modal';
-import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import HeaderNavbar from '../page-objects/pages/home/header-navbar';
+import AddNetworkConfirmation from '../page-objects/pages/confirmations/add-network-confirmations';
+import Confirmation from '../page-objects/pages/confirmations/confirmation';
+import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
-import UpdateNetworkConfirmation from '../page-objects/pages/confirmations/redesign/update-network-confirmation';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import UpdateNetworkConfirmation from '../page-objects/pages/confirmations/update-network-confirmation';
+import { login } from '../page-objects/flows/login.flow';
 
 const getPermittedChains = async (driver: Driver) => {
   const getPermissionsRequest = JSON.stringify({
@@ -44,8 +44,8 @@ describe('Add Ethereum Chain', function () {
     it('automatically permits and switches to the chain when the rpc endpoint is added and no rpc endpoint previously existed for the chain', async function () {
       await withFixtures(
         {
-          dapp: true,
-          fixtures: new FixtureBuilder().build(),
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilderV2().build(),
           localNodeOptions: [
             {
               type: 'anvil',
@@ -61,7 +61,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -109,8 +109,8 @@ describe('Add Ethereum Chain', function () {
     it('automatically permits and switches to the chain when the rpc endpoint is added but a different rpc endpoint already existed for the chain', async function () {
       await withFixtures(
         {
-          dapp: true,
-          fixtures: new FixtureBuilder()
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
             .build(),
           localNodeOptions: [
@@ -128,7 +128,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -179,8 +179,8 @@ describe('Add Ethereum Chain', function () {
     it('prompts to switch to the chain when the rpc endpoint being added already exists', async function () {
       await withFixtures(
         {
-          dapp: true,
-          fixtures: new FixtureBuilder()
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
             .build(),
           localNodeOptions: [
@@ -198,7 +198,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -253,12 +253,12 @@ describe('Add Ethereum Chain', function () {
     it('automatically permits and switches to the chain when the rpc endpoint is added but a different rpc endpoint already existed for the chain', async function () {
       await withFixtures(
         {
-          dapp: true,
-          fixtures: new FixtureBuilder().build(),
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -309,14 +309,14 @@ describe('Add Ethereum Chain', function () {
     it('prompts to switch to the chain when the rpc endpoint being added already exists', async function () {
       await withFixtures(
         {
-          dapp: true,
-          fixtures: new FixtureBuilder()
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
             .build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -372,13 +372,12 @@ describe('Add Ethereum Chain', function () {
     it('automatically switches to the chain when the rpc endpoint is added but a different rpc endpoint already existed for the chain', async function () {
       await withFixtures(
         {
-          dapp: true,
-          fixtures: new FixtureBuilder()
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
-            .withPermissionControllerConnectedToTestDappWithChains([
-              '0x539',
-              '0x53a',
-            ])
+            .withPermissionControllerConnectedToTestDapp({
+              chainIds: [1337, 1338],
+            })
             .build(),
           localNodeOptions: [
             {
@@ -395,7 +394,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -451,13 +450,12 @@ describe('Add Ethereum Chain', function () {
     it('automatically switches to the chain when the rpc endpoint being added already exists for the chain', async function () {
       await withFixtures(
         {
-          dapp: true,
-          fixtures: new FixtureBuilder()
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
-            .withPermissionControllerConnectedToTestDappWithChains([
-              '0x539',
-              '0x53a',
-            ])
+            .withPermissionControllerConnectedToTestDapp({
+              chainIds: [1337, 1338],
+            })
             .build(),
           localNodeOptions: [
             {
@@ -474,7 +472,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -522,14 +520,14 @@ describe('Add Ethereum Chain', function () {
     it('prompts to add the rpc endpoint to the chain networkConfiguration and set it as the default', async function () {
       await withFixtures(
         {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilderV2()
+            .withPermissionControllerConnectedToTestDapp()
             .build(),
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -573,7 +571,8 @@ describe('Add Ethereum Chain', function () {
           );
 
           // go to network selector
-          await switchToEditRPCViaGlobalMenuNetworks(driver);
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.openGlobalNetworksMenu();
           await driver.findElement({ text: 'Localhost 8545' });
         },
       );
@@ -584,10 +583,10 @@ describe('Add Ethereum Chain', function () {
     it('alert user about pending confirmations', async function () {
       await withFixtures(
         {
-          dapp: true,
-          fixtures: new FixtureBuilder()
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilderV2()
             .withNetworkControllerDoubleNode()
-            .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
+            .withPermissionControllerConnectedToTestDapp()
             .build(),
           localNodeOptions: [
             {
@@ -604,11 +603,12 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
           await testDapp.clickPersonalSign();
+          await driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
 
           const beforePermittedChains = await getPermittedChains(driver);
           assert.deepEqual(beforePermittedChains, ['0x539']);
@@ -650,17 +650,6 @@ describe('Add Ethereum Chain', function () {
           );
           await updateNetworkConfirmation.checkPageIsLoaded('Localhost 8546');
           await updateNetworkConfirmation.approveUpdateNetwork();
-          const networkSwitchAlertModal = new NetworkSwitchAlertModal(driver);
-          await networkSwitchAlertModal.checkPageIsLoaded();
-          await networkSwitchAlertModal.clickShowPendingConfirmationButton();
-
-          // user confirms add network confirmation
-          await confirmation.checkPageIsLoaded();
-          await confirmation.clickNextPage();
-          await updateNetworkConfirmation.checkPageIsLoaded('Localhost 8546');
-          await updateNetworkConfirmation.approveUpdateNetwork();
-          await networkSwitchAlertModal.checkPageIsLoaded();
-          await networkSwitchAlertModal.clickGotItButton();
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await testDapp.checkPageIsLoaded();

@@ -1,5 +1,4 @@
 import React from 'react';
-import README from './README.mdx';
 import CheckBox, {
   CHECKED,
   INDETERMINATE,
@@ -18,11 +17,6 @@ export default {
   title: 'Components/UI/Check Box(Deprecated)',
 
   component: CheckBox,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     className: { control: 'text' },
     disabled: { control: 'boolean' },

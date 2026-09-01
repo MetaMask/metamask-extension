@@ -1,17 +1,14 @@
 import { NameOrigin, NameType } from '@metamask/name-controller';
-import { Hex } from '@metamask/utils';
+import { Hex, isStrictHexString } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import isEqual from 'lodash/isEqual';
 import {
   EXPERIENCES_TYPE,
   FIRST_PARTY_CONTRACT_NAMES,
 } from '../../shared/constants/first-party-contracts';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { getDomainResolutions } from '../ducks/domains';
-import {
-  getIsMultichainAccountsState2Enabled,
-  selectERC20TokensByChain,
-} from '../selectors';
 import { getNftContractsByAddressByChain } from '../selectors/nft';
 import { getTrustSignalIcon, IconProps } from '../helpers/utils/trust-signals';
 import { selectAccountGroupNameByInternalAccount } from '../pages/confirmations/selectors/accounts';
@@ -20,9 +17,11 @@ import {
   getWalletIdAndNameByAccountAddress,
   getAccountTree,
 } from '../selectors/multichain-accounts/account-tree';
+import { buildEvmCaip19AssetId } from '../../shared/lib/multichain/buildEvmCaip19AssetId';
+import { getAssetImageUrl } from '../../shared/lib/asset-utils';
 import { useNames } from './useName';
-import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 import { TrustSignalDisplayState, useTrustSignals } from './useTrustSignals';
+import { useTokensData } from './useTokensData';
 
 export type UseDisplayNameRequest = {
   preferContractSymbol?: boolean;
@@ -49,10 +48,12 @@ export function useDisplayNames(
 ): UseDisplayNameResponse[] {
   const nameEntries = useNames(requests);
   const firstPartyContractNames = useFirstPartyContractNames(requests);
-  const trustSignals = useTrustSignals(requests);
+  const trustSignals = useTrustSignals(
+    // For ETHEREUM_ADDRESS name requests the variation is a hex chain ID.
+    requests.map((req) => ({ ...req, chainId: req.variation as Hex })),
+  );
   const erc20Tokens = useERC20Tokens(requests);
   const watchedNFTNames = useWatchedNFTNames(requests);
-  const nfts = useNFTs(requests);
   const ens = useDomainResolutions(requests);
   const accountGroupEntries = useAccountGroupNames(requests, nameEntries);
 
@@ -62,24 +63,14 @@ export function useDisplayNames(
     const trustSignal = trustSignals[index];
     const erc20Token = erc20Tokens[index];
     const watchedNftName = watchedNFTNames[index];
-    const nft = nfts[index];
     const ensName = ens[index];
     const { accountGroupName, walletName } = accountGroupEntries[index];
     const subtitle = walletName;
 
     let name =
       accountGroupName ||
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       nameEntry?.name ||
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       firstPartyContractName ||
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      nft?.name ||
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       erc20Token?.name ||
       watchedNftName ||
       ensName ||
@@ -89,9 +80,7 @@ export function useDisplayNames(
 
     const displayState = getDisplayState(trustSignal?.state, hasPetname, name);
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    const image = nft?.image || erc20Token?.image;
+    const image = erc20Token?.image;
 
     const trustSignalIcon = getTrustSignalIcon(displayState);
     const trustSignalLabel = trustSignal?.label;
@@ -123,7 +112,18 @@ export function useDisplayName(
 function useERC20Tokens(
   nameRequests: UseDisplayNameRequest[],
 ): ({ name?: string; image?: string } | undefined)[] {
-  const erc20TokensByChain = useSelector(selectERC20TokensByChain);
+  const assetIds = nameRequests
+    .filter(
+      ({ type, value, variation }) =>
+        type === NameType.ETHEREUM_ADDRESS &&
+        value &&
+        isStrictHexString(variation),
+    )
+    .map(({ value, variation }) =>
+      buildEvmCaip19AssetId(value as string, variation as Hex),
+    );
+
+  const tokensByAssetId = useTokensData(assetIds);
 
   return nameRequests.map(
     ({ preferContractSymbol, type, value, variation }) => {
@@ -131,17 +131,24 @@ function useERC20Tokens(
         return undefined;
       }
 
-      const contractAddress = value.toLowerCase();
+      const token = isStrictHexString(variation)
+        ? tokensByAssetId[
+            buildEvmCaip19AssetId(value as string, variation as Hex)
+          ]
+        : undefined;
+      const name =
+        preferContractSymbol && token?.symbol ? token.symbol : token?.name;
 
-      const {
-        iconUrl: image,
-        name: tokenName,
-        symbol,
-      } = erc20TokensByChain?.[variation]?.data?.[contractAddress] ?? {};
+      // The token API omits `iconUrl` for some recognized tokens (e.g. mUSD)
+      // even though the canonical icon exists, so derive it from the address.
+      const image =
+        token &&
+        (token.iconUrl ||
+          (isStrictHexString(variation)
+            ? getAssetImageUrl(value as Hex, variation as Hex)
+            : undefined));
 
-      const name = preferContractSymbol && symbol ? symbol : tokenName;
-
-      return { name, image };
+      return { name, image: image || undefined };
     },
   );
 }
@@ -163,42 +170,6 @@ function useWatchedNFTNames(
 
     return watchedNftNamesByAddress?.[contractAddress]?.name;
   });
-}
-
-function useNFTs(
-  nameRequests: UseDisplayNameRequest[],
-): ({ name?: string; image?: string } | undefined)[] {
-  const requests = nameRequests
-    .filter(({ type }) => type === NameType.ETHEREUM_ADDRESS)
-    .map(({ value, variation }) => ({
-      chainId: variation,
-      contractAddress: value,
-    }));
-
-  const nftCollectionsByAddressByChain = useNftCollectionsMetadata(requests);
-
-  return nameRequests.map(
-    ({ type, value: contractAddress, variation: chainId }) => {
-      if (type !== NameType.ETHEREUM_ADDRESS) {
-        return undefined;
-      }
-
-      const nftCollectionProperties =
-        nftCollectionsByAddressByChain[chainId]?.[
-          contractAddress.toLowerCase()
-        ];
-
-      const isSpam = nftCollectionProperties?.isSpam !== false;
-
-      if (!nftCollectionProperties || isSpam) {
-        return undefined;
-      }
-
-      const { name, image } = nftCollectionProperties;
-
-      return { name, image };
-    },
-  );
 }
 
 function useDomainResolutions(nameRequests: UseDisplayNameRequest[]) {
@@ -297,10 +268,6 @@ function useAccountGroupNames(
   requests: UseAccountGroupNamesRequest[],
   nameEntries: ReturnType<typeof useNames>,
 ): UseAccountGroupNamesResponse[] {
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree ?? {};
   const haveMoreThanOneWallet = useMemo(
@@ -318,25 +285,30 @@ function useAccountGroupNames(
       .filter((item) => item.address !== null);
   }, [requests]);
 
-  const namesByAddress = useSelector((state: MultichainAccountsState) => {
-    const result: Record<string, UseAccountGroupNamesResponse> = {};
-    ethereumAddresses.forEach(({ address }) => {
-      if (address) {
-        const accountGroupName = selectAccountGroupNameByInternalAccount(
-          state,
-          address,
-        );
-        const walletInfo = getWalletIdAndNameByAccountAddress(state, address);
-        const walletName = walletInfo?.name || null;
+  const selectNamesByAddress = useCallback(
+    (state: MultichainAccountsState) => {
+      const result: Record<string, UseAccountGroupNamesResponse> = {};
+      ethereumAddresses.forEach(({ address }) => {
+        if (address) {
+          const accountGroupName = selectAccountGroupNameByInternalAccount(
+            state,
+            address,
+          );
+          const walletInfo = getWalletIdAndNameByAccountAddress(state, address);
+          const walletName = walletInfo?.name || null;
 
-        result[address] = {
-          accountGroupName,
-          walletName,
-        };
-      }
-    });
-    return result;
-  });
+          result[address] = {
+            accountGroupName,
+            walletName,
+          };
+        }
+      });
+      return result;
+    },
+    [ethereumAddresses],
+  );
+
+  const namesByAddress = useSelector(selectNamesByAddress, isEqual);
 
   return useMemo(() => {
     return requests.map(({ type, value }, index) => {
@@ -348,7 +320,6 @@ function useAccountGroupNames(
 
       if (
         type !== NameType.ETHEREUM_ADDRESS ||
-        !isMultichainAccountsState2Enabled ||
         nameEntry?.origin === NameOrigin.API
       ) {
         return { accountGroupName: null, walletName: null };
@@ -359,11 +330,5 @@ function useAccountGroupNames(
         walletName: haveMoreThanOneWallet ? names.walletName : null,
       };
     });
-  }, [
-    requests,
-    namesByAddress,
-    isMultichainAccountsState2Enabled,
-    nameEntries,
-    haveMoreThanOneWallet,
-  ]);
+  }, [requests, namesByAddress, nameEntries, haveMoreThanOneWallet]);
 }

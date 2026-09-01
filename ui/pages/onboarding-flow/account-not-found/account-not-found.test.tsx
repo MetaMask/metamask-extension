@@ -7,23 +7,32 @@ import {
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import initializedMockState from '../../../../test/data/mock-state.json';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import * as Actions from '../../../store/actions';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import AccountNotFound from './account-not-found';
+
+const backgroundConnectionMock = new Proxy(
+  {},
+  {
+    get: () => jest.fn().mockResolvedValue(undefined),
+  },
+);
 
 const mockUseNavigate = jest.fn();
 
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
 
 describe('Account Not Found Seedless Onboarding View', () => {
-  afterEach(() => {
-    jest.resetAllMocks();
+  beforeEach(() => {
+    setBackgroundConnection(backgroundConnectionMock as never);
   });
 
   afterEach(() => {
@@ -45,30 +54,24 @@ describe('Account Not Found Seedless Onboarding View', () => {
       customMockStore,
     );
 
-    expect(getByText('Wallet not found')).toBeInTheDocument();
+    expect(
+      getByText(messages.accountNotFoundTitle.message),
+    ).toBeInTheDocument();
     // should show the correct button
-    const loginButton = getByText('Yes, create a new wallet');
+    const loginButton = getByText(messages.accountNotFoundCreateOne.message);
     expect(loginButton).toBeInTheDocument();
-    expect(loginButton.nodeName).toBe('BUTTON');
   });
 
   it('should navigate to the create-password route when the button is clicked', async () => {
-    const setFirstTimeFlowTypeSpy = jest
-      .spyOn(Actions, 'setFirstTimeFlowType')
-      .mockReturnValue(jest.fn().mockResolvedValueOnce(null));
-
     const { getByText } = renderWithProvider(
       <AccountNotFound />,
       customMockStore,
     );
 
-    const loginButton = getByText('Yes, create a new wallet');
+    const loginButton = getByText(messages.accountNotFoundCreateOne.message);
     fireEvent.click(loginButton);
 
     await waitFor(() => {
-      expect(setFirstTimeFlowTypeSpy).toHaveBeenCalledWith(
-        FirstTimeFlowType.socialCreate,
-      );
       expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_CREATE_PASSWORD_ROUTE,
         {
@@ -78,12 +81,12 @@ describe('Account Not Found Seedless Onboarding View', () => {
     });
   });
 
-  it('should navigate to the welcome page when the firstTimeFlowType is not socialImport', () => {
+  it('should navigate to the welcome page when the firstTimeFlowType is not socialCreate', () => {
     const store = configureMockStore([thunk])({
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        firstTimeFlowType: FirstTimeFlowType.import,
       },
     });
 

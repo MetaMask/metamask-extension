@@ -1,13 +1,12 @@
 import { Suite } from 'mocha';
-import { toHex } from '@metamask/controller-utils';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
-import GeneralSettings from '../../page-objects/pages/settings/general-settings';
+import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 
 describe('Hide tokens without balance', function (this: Suite) {
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,54 +17,31 @@ describe('Hide tokens without balance', function (this: Suite) {
     const smartContract = SMART_CONTRACTS.HST;
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withTokensController({
-            allTokens: {
-              [toHex(1337)]: {
-                '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-                  {
-                    address: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
-                    decimals: 4,
-                    image: null,
-                    isERC721: false,
-                    symbol: 'TST',
-                  },
-                  {
-                    address: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945948',
-                    decimals: 4,
-                    image: null,
-                    isERC721: false,
-                    symbol: 'TST2',
-                  },
-                ],
-              },
-            },
-            tokens: [
-              {
-                address: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945948',
-                decimals: 4,
-                image: null,
-                isERC721: false,
-                symbol: 'TST2',
-              },
-              {
-                address: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
-                decimals: 4,
-                image: null,
-                isERC721: false,
-                symbol: 'TST',
-              },
-            ],
-          })
-          .build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         smartContract,
+        manifestFlags: {
+          remoteFeatureFlags: {
+            extensionUxTokenManagementFilter: true,
+          },
+        },
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
+        const tokensTab = new TokensTab(driver);
+        await tokensTab.importCustomTokenByChain(
+          '0x539',
+          '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+        );
+        await tokensTab.importCustomTokenByChain(
+          '0x539',
+          '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945948',
+          'TST2',
+          '4',
+        );
 
         // Verify that both zero-balance tokens and non-zero-balance tokens are displayed by default
-        const tokenList = new AssetListPage(driver);
+        const tokenList = new TokensTab(driver);
         await tokenList.checkTokenItemNumber(3);
         await tokenList.checkTokenExistsInList('Ethereum');
         await tokenList.checkTokenExistsInList('TST');
@@ -73,10 +49,10 @@ describe('Hide tokens without balance', function (this: Suite) {
 
         // Navigate to settings and toggle on "hide tokens without balance" feature
         await new HomePage(driver).headerNavbar.openSettingsPage();
-        const generalSettings = new GeneralSettings(driver);
-        await generalSettings.checkPageIsLoaded();
-        await generalSettings.toggleHideTokensWithoutBalance();
-        await new SettingsPage(driver).closeSettingsPage();
+        const assetsSettings = new PreferencesAndDisplaySettings(driver);
+        await assetsSettings.checkAssetsPageIsLoaded();
+        await assetsSettings.toggleHideTokensWithoutBalance();
+        await closeSettings(driver);
 
         // Check that tokens with zero balances are hidden, tokens with non-zero balances remain visible
         await new HomePage(driver).checkPageIsLoaded();

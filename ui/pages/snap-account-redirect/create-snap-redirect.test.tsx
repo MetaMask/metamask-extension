@@ -1,7 +1,7 @@
 import React from 'react';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../test/jest';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../../../test/e2e/constants';
 import SnapAccountRedirect from './snap-account-redirect';
 

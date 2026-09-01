@@ -1,0 +1,291 @@
+import React, { useState, useContext, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import {
+  Text,
+  Box,
+  Button,
+  ButtonVariant,
+  ButtonSize,
+  ButtonIcon,
+  IconName,
+  ButtonIconSize,
+  TextVariant,
+  TextColor,
+  IconColor,
+  TextAlign,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+  TextButton,
+  TextButtonSize,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  ONBOARDING_CONFIRM_SRP_ROUTE,
+  ONBOARDING_METAMETRICS,
+  ONBOARDING_REVEAL_SRP_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+  MANAGE_WALLET_RECOVERY_ROUTE,
+} from '../../../helpers/constants/routes';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
+import { getHDEntropyIndex, getFirstTimeFlowType } from '../../../selectors';
+import SRPDetailsModal from '../../../components/app/srp-details-modal';
+import { setSeedPhraseBackedUp } from '../../../store/actions';
+import { TraceName } from '../../../../shared/lib/trace';
+import { useIsFirefox } from '../../../hooks/useIsFirefox';
+import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { useDispatch } from '../../../store/hooks';
+import RecoveryPhraseChips from './recovery-phrase-chips';
+
+type RecoveryPhraseProps = {
+  secretRecoveryPhrase: string;
+};
+
+export default function RecoveryPhrase({
+  secretRecoveryPhrase,
+}: RecoveryPhraseProps) {
+  const navigate = useNavigate();
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const { bufferedEndTrace } = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
+  const [phraseRevealed, setPhraseRevealed] = useState(false);
+  const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
+  const isFirefox = useIsFirefox();
+  const { isFromReminder, isFromSettingsSecurity, nextRouteQueryString } =
+    useOnboardingSearchParams();
+
+  useEffect(() => {
+    if (!secretRecoveryPhrase) {
+      navigate(
+        {
+          pathname: ONBOARDING_REVEAL_SRP_ROUTE,
+          search: nextRouteQueryString ? `?${nextRouteQueryString}` : '',
+        },
+        {
+          replace: true,
+        },
+      );
+    } else if (hasSeedPhraseBackedUp) {
+      // if user has already done the Secure Wallet flow, we can redirect to the next page
+      navigate(
+        isFirefox ? ONBOARDING_COMPLETION_ROUTE : ONBOARDING_METAMETRICS,
+        { replace: true },
+      );
+    }
+  }, [
+    navigate,
+    secretRecoveryPhrase,
+    nextRouteQueryString,
+    hasSeedPhraseBackedUp,
+    isFirefox,
+  ]);
+
+  const handleContinue = useCallback(() => {
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.OnboardingWalletSecurityPhraseWrittenDown,
+      )
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
+
+    navigate({
+      pathname: ONBOARDING_CONFIRM_SRP_ROUTE,
+      search: nextRouteQueryString ? `?${nextRouteQueryString}` : '',
+    });
+  }, [
+    createEventBuilder,
+    hdEntropyIndex,
+    navigate,
+    trackEvent,
+    nextRouteQueryString,
+  ]);
+
+  const handleOnShowSrpDetailsModal = useCallback(() => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SrpDefinitionClicked)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          location: 'review_recovery_phrase',
+        })
+        .build(),
+    );
+    setShowSrpDetailsModal(true);
+  }, [createEventBuilder, trackEvent]);
+
+  const handleRemindLater = useCallback(async () => {
+    await dispatch(setSeedPhraseBackedUp(false));
+
+    trackEvent(
+      createEventBuilder(
+        MetaMetricsEventName.OnboardingWalletSecuritySkipConfirmed,
+      )
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hd_entropy_index: hdEntropyIndex,
+        })
+        .build(),
+    );
+    bufferedEndTrace?.({ name: TraceName.OnboardingNewSrpCreateWallet });
+    bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
+
+    if (isFirefox || firstTimeFlowType === FirstTimeFlowType.restore) {
+      navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
+    } else {
+      navigate(ONBOARDING_METAMETRICS, { replace: true });
+    }
+  }, [
+    bufferedEndTrace,
+    dispatch,
+    firstTimeFlowType,
+    hdEntropyIndex,
+    isFirefox,
+    navigate,
+    createEventBuilder,
+    trackEvent,
+  ]);
+
+  const handleBack = useCallback(() => {
+    navigate(
+      `${ONBOARDING_REVEAL_SRP_ROUTE}${
+        nextRouteQueryString ? `?${nextRouteQueryString}` : ''
+      }`,
+      { replace: true },
+    );
+  }, [navigate, nextRouteQueryString]);
+
+  const onClose = useCallback(() => {
+    navigate(MANAGE_WALLET_RECOVERY_ROUTE, { replace: true });
+  }, [navigate]);
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
+      alignItems={BoxAlignItems.Center}
+      gap={6}
+      className="recovery-phrase h-full"
+      data-testid="parent-selector-secure-wallet"
+    >
+      <Box>
+        {showSrpDetailsModal && (
+          <SRPDetailsModal onClose={() => setShowSrpDetailsModal(false)} />
+        )}
+        {isFromReminder && isFromSettingsSecurity ? (
+          <Box
+            className="recovery-phrase__header grid w-full"
+            alignItems={BoxAlignItems.Center}
+            gap={3}
+            marginBottom={4}
+          >
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              color={IconColor.IconDefault}
+              size={ButtonIconSize.Md}
+              data-testid="reveal-recovery-phrase-review-back-button"
+              onClick={handleBack}
+              ariaLabel={t('back')}
+            />
+            <Text variant={TextVariant.HeadingSm} textAlign={TextAlign.Center}>
+              {t('seedPhraseReviewTitleSettings')}
+            </Text>
+            <ButtonIcon
+              iconName={IconName.Close}
+              color={IconColor.IconDefault}
+              size={ButtonIconSize.Md}
+              data-testid="reveal-recovery-phrase-review-close-button"
+              onClick={onClose}
+              ariaLabel={t('close')}
+            />
+          </Box>
+        ) : (
+          <Box
+            justifyContent={BoxJustifyContent.Start}
+            marginBottom={4}
+            className="w-full"
+          >
+            <Text variant={TextVariant.HeadingLg}>
+              {t('seedPhraseReviewTitle')}
+            </Text>
+          </Box>
+        )}
+        <Box>
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            {t('seedPhraseReviewDetails', [
+              <TextButton
+                key="seedPhraseReviewDetails"
+                onClick={handleOnShowSrpDetailsModal}
+                className="hover:bg-transparent active:bg-transparent w-fit"
+              >
+                {t('secretRecoveryPhrase')}
+              </TextButton>,
+            ])}
+          </Text>
+        </Box>
+        <RecoveryPhraseChips
+          secretRecoveryPhrase={secretRecoveryPhrase.split(' ')}
+          phraseRevealed={phraseRevealed}
+          revealPhrase={() => {
+            trackEvent(
+              createEventBuilder(
+                MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
+              )
+                .addCategory(MetaMetricsEventCategory.Onboarding)
+                .addProperties({
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  hd_entropy_index: hdEntropyIndex,
+                })
+                .build(),
+            );
+            setPhraseRevealed(true);
+          }}
+        />
+      </Box>
+      <Box className="w-full" flexDirection={BoxFlexDirection.Column} gap={4}>
+        <Button
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          data-testid="recovery-phrase-continue"
+          className="recovery-phrase__footer--button w-full"
+          disabled={!phraseRevealed}
+          onClick={handleContinue}
+        >
+          {t('continue')}
+        </Button>
+        {!isFromReminder && (
+          <TextButton
+            size={TextButtonSize.BodyMd}
+            onClick={handleRemindLater}
+            className="w-full hover:bg-transparent active:bg-transparent"
+            data-testid="recovery-phrase-remind-later"
+          >
+            {t('secureWalletRemindLaterButton')}
+          </TextButton>
+        )}
+      </Box>
+    </Box>
+  );
+}
+
+RecoveryPhrase.propTypes = {
+  secretRecoveryPhrase: PropTypes.string,
+};

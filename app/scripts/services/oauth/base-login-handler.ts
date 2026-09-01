@@ -1,6 +1,13 @@
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
-import { OAuthErrorMessages } from '../../../../shared/modules/error';
-import { LoginHandlerOptions, AuthTokenResponse, OAuthUserInfo } from './types';
+import {
+  createErrorFromNetworkRequest,
+  OAuthErrorMessages,
+} from '../../../../shared/lib/error';
+import { AuthConnection } from '../../../../shared/constants/onboarding';
+import {
+  type LoginHandlerOptions,
+  type AuthTokenResponse,
+  type OAuthUserInfo,
+} from './types';
 
 export abstract class BaseLoginHandler {
   public options: LoginHandlerOptions;
@@ -51,7 +58,7 @@ export abstract class BaseLoginHandler {
    * @param code - The authorization code from the social login provider.
    * @returns The JWT Token from the Web3Auth Authentication Server.
    */
-  abstract getAuthIdToken(code?: string | null): Promise<AuthTokenResponse>;
+  abstract getAuthIdToken(code?: string): Promise<AuthTokenResponse>;
 
   /**
    * Generate the request body data to get the JWT Token from the Web3Auth Authentication Server.
@@ -112,7 +119,7 @@ export abstract class BaseLoginHandler {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       grant_type: 'refresh_token', // specify refresh token flow
     };
-    const res = await this.requestAuthToken(JSON.stringify(requestData));
+    const res = await this.requestAuthToken(JSON.stringify(requestData), true); // true for token refresh
     return res;
   }
 
@@ -140,7 +147,11 @@ export abstract class BaseLoginHandler {
     );
 
     if (!res.ok) {
-      throw new Error('Failed to revoke refresh token');
+      const error = await createErrorFromNetworkRequest(
+        res,
+        OAuthErrorMessages.FAILED_TO_REVOKE_TOKEN,
+      );
+      throw error;
     }
   }
 
@@ -178,7 +189,11 @@ export abstract class BaseLoginHandler {
     );
 
     if (!res.ok) {
-      throw new Error('Failed to renew refresh token');
+      const error = await createErrorFromNetworkRequest(
+        res,
+        OAuthErrorMessages.FAILED_TO_RENEW_REFRESH_TOKEN,
+      );
+      throw error;
     }
 
     const data = await res.json();
@@ -196,10 +211,12 @@ export abstract class BaseLoginHandler {
    * Make a request to the Web3Auth Authentication Server to get the JWT Token.
    *
    * @param requestData - The request data for the Web3Auth Authentication Server.
+   * @param tokenRefresh - Whether the request is for token refresh.
    * @returns The JWT Token from the Web3Auth Authentication Server.
    */
   protected async requestAuthToken(
     requestData: string,
+    tokenRefresh: boolean = false,
   ): Promise<AuthTokenResponse> {
     const res = await fetch(
       `${this.options.authServerUrl}${this.AUTH_SERVER_TOKEN_PATH}`,
@@ -213,7 +230,11 @@ export abstract class BaseLoginHandler {
     );
 
     if (!res.ok) {
-      throw new Error('Failed to get auth token');
+      const errorPrefix = tokenRefresh
+        ? OAuthErrorMessages.FAILED_TO_GET_AUTH_TOKEN_REFRESH_ERROR
+        : OAuthErrorMessages.FAILED_TO_GET_AUTH_TOKEN_ERROR;
+      const error = await createErrorFromNetworkRequest(res, errorPrefix);
+      throw error;
     }
 
     const data = await res.json();
