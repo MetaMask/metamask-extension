@@ -10,7 +10,7 @@ import {
 } from '@metamask/utils';
 import log from 'loglevel';
 import { HYPERLIQUID_ORIGIN } from '../../../../shared/constants/defi-referrals';
-import type { ExtendedJSONRPCRequest } from '../defi-referrals/createDefiReferralMiddleware';
+import { isOriginAwareJsonRpcRequest } from '../rpc-request-utils';
 import {
   HYPERLIQUID_APPROVE_AGENT_PRIMARY_TYPE,
   HYPERLIQUID_SIGN_TRANSACTION_DOMAIN_NAME,
@@ -22,7 +22,6 @@ const TYPED_DATA_PARAM_INDEX = 1;
 export type HyperliquidDepositContext = {
   origin: string;
   signerAddress?: string;
-  tabId: number;
   typedData: Record<string, unknown>;
 };
 
@@ -104,7 +103,7 @@ function getHyperliquidApproveAgentContext(
   req: JsonRpcRequest,
 ): HyperliquidDepositContext | undefined {
   if (
-    !isExtendedJSONRPCRequest(req) ||
+    !isOriginAwareJsonRpcRequest(req) ||
     req.origin !== HYPERLIQUID_ORIGIN ||
     req.method !== 'eth_signTypedData_v4'
   ) {
@@ -120,18 +119,8 @@ function getHyperliquidApproveAgentContext(
   return {
     origin: req.origin,
     signerAddress: getSignerAddressFromRequest(req),
-    tabId: req.tabId,
     typedData,
   };
-}
-
-function isExtendedJSONRPCRequest(
-  req: JsonRpcRequest,
-): req is ExtendedJSONRPCRequest {
-  return (
-    typeof (req as Partial<ExtendedJSONRPCRequest>).origin === 'string' &&
-    typeof (req as Partial<ExtendedJSONRPCRequest>).tabId === 'number'
-  );
 }
 
 function getSignerAddressFromRequest(req: JsonRpcRequest): string | undefined {

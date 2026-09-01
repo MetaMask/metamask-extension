@@ -1,6 +1,6 @@
 import type { Json, PendingJsonRpcResponse } from '@metamask/utils';
 import { HYPERLIQUID_ORIGIN } from '../../../../shared/constants/defi-referrals';
-import type { ExtendedJSONRPCRequest } from '../defi-referrals/createDefiReferralMiddleware';
+import type { OriginAwareJsonRpcRequest } from '../rpc-request-utils';
 import {
   HYPERLIQUID_APPROVE_AGENT_PRIMARY_TYPE,
   HYPERLIQUID_SIGN_TRANSACTION_DOMAIN_NAME,
@@ -60,18 +60,15 @@ const createMockRequest = ({
     '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     JSON.stringify(APPROVE_AGENT_TYPED_DATA),
   ],
-  tabId = 123,
 }: {
   origin?: string;
   params?: Json[];
-  tabId?: number;
-} = {}): ExtendedJSONRPCRequest => ({
+} = {}): OriginAwareJsonRpcRequest => ({
   id: 1,
   jsonrpc: '2.0',
   method: 'eth_signTypedData_v4',
   origin,
   params,
-  tabId,
 });
 
 const successResponse: PendingJsonRpcResponse<string> = {
@@ -93,7 +90,7 @@ describe('createHyperliquidDepositMiddleware', () => {
   });
 
   const runMiddleware = async (
-    request: ExtendedJSONRPCRequest,
+    request: OriginAwareJsonRpcRequest,
     response: PendingJsonRpcResponse<Json> = successResponse,
   ) => {
     const middleware = createHyperliquidDepositMiddleware({
@@ -116,14 +113,12 @@ describe('createHyperliquidDepositMiddleware', () => {
     expect(isEligible).toHaveBeenCalledWith({
       origin: HYPERLIQUID_ORIGIN,
       signerAddress: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-      tabId: 123,
       typedData: APPROVE_AGENT_TYPED_DATA,
     });
     expect(showDepositPrompt).toHaveBeenCalledTimes(1);
     expect(showDepositPrompt).toHaveBeenCalledWith({
       origin: HYPERLIQUID_ORIGIN,
       signerAddress: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-      tabId: 123,
       typedData: APPROVE_AGENT_TYPED_DATA,
     });
   });
