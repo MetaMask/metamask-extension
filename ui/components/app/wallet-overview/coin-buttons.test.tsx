@@ -1,6 +1,10 @@
 import React from 'react';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import {
+  ARC_USDC_TOKEN_ADDRESS,
+  CHAIN_IDS,
+} from '../../../../shared/constants/network';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import CoinButtons from './coin-buttons';
@@ -139,6 +143,19 @@ describe('CoinButtons – asset page swap token', () => {
       currentToken: expect.objectContaining({
         symbol: 'ETH',
         chainId: 'eip155:1',
+      }),
+    });
+  });
+
+  it('uses ERC20 USDC as the Arc swap source token', () => {
+    renderAssetPageCoinButtons(CHAIN_IDS.ARC);
+
+    expect(useBalanceAwareSwapDefaults).toHaveBeenCalledWith({
+      currentToken: expect.objectContaining({
+        symbol: 'USDC',
+        address: ARC_USDC_TOKEN_ADDRESS,
+        chainId: 'eip155:5042',
+        decimals: 6,
       }),
     });
   });

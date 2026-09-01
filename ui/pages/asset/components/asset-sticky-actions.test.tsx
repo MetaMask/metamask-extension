@@ -2,7 +2,10 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  ARC_USDC_TOKEN_ADDRESS,
+  CHAIN_IDS,
+} from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
@@ -144,6 +147,38 @@ describe('AssetStickyActions', () => {
           chain_id: fundedToken.chainId,
         }),
       }),
+    );
+  });
+
+  it('opens an Arc native swap with ERC20 USDC as the source asset', () => {
+    const arcNativeAsset = {
+      type: AssetType.native,
+      isOriginalNativeSymbol: true,
+      chainId: CHAIN_IDS.ARC,
+      decimals: 6,
+      symbol: 'USDC',
+      name: 'USDC',
+      image: '',
+      balance: { value: '1', display: '1', fiat: '1' },
+    } as Asset & { type: AssetType.native };
+
+    const { getByTestId } = renderWithProvider(
+      <AssetStickyActions asset={arcNativeAsset} />,
+      store,
+    );
+
+    fireEvent.click(getByTestId('asset-sticky-swap'));
+
+    expect(mockOpenBridgeExperience).toHaveBeenCalledWith(
+      MetaMetricsSwapsEventSource.MainView,
+      {
+        symbol: 'USDC',
+        address: ARC_USDC_TOKEN_ADDRESS,
+        chainId: 'eip155:5042',
+        decimals: 6,
+        name: 'USDC',
+      },
+      undefined,
     );
   });
 

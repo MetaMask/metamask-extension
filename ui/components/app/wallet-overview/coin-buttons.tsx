@@ -338,7 +338,7 @@ const CoinButtons = ({
       return null;
     }
 
-    const nativeSwapToken = getSwapNativeTokenWithOverridesForChain(chainId);
+    const nativeSwapToken = getDefaultBridgeFromToken(chainId);
     return {
       symbol: nativeSwapToken.symbol,
       address: nativeSwapToken.address,

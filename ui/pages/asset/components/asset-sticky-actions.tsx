@@ -112,7 +112,7 @@ export const AssetStickyActions = ({
 
     // Native swaps start from the chain's default bridge asset, which some
     // chains override (e.g. Arc swaps the ERC20 flavor of USDC).
-    const nativeSwapToken = getSwapNativeTokenWithOverridesForChain(chainId);
+    const nativeSwapToken = getDefaultBridgeFromToken(chainId);
     return {
       symbol: nativeSwapToken.symbol,
       address: nativeSwapToken.address,
