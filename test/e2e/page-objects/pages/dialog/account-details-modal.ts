@@ -8,7 +8,7 @@ import { Driver } from '../../../webdriver/driver';
  * Owns: shortened address / QR, copy address, editable label, close control,
  * show-private-key visibility checks, and copy-private-key after reveal.
  * Boundaries: stops at this modal. Multichain account details page flows belong
- * to `pages/multichain/multichain-account-details-page.ts`. Hold-to-reveal /
+ * to `pages/accounts/details-page.ts`. Hold-to-reveal /
  * export password steps beyond the selectors here are not fully owned.
  * Related: `AccountListPage`, `HeaderNavbar`, multichain account details page
  * objects.

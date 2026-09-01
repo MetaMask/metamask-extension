@@ -1,15 +1,9 @@
 import React from 'react';
-import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import CoinButtons from './coin-buttons';
-
-jest.mock('@metamask/design-system-react', () => ({
-  ...jest.requireActual('@metamask/design-system-react'),
-  usePureBlack: jest.fn(() => false),
-}));
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -37,6 +31,18 @@ jest.mock('../../../hooks/bridge/useBridging', () => ({
   __esModule: true,
   default: jest.fn(() => ({
     openBridgeExperience: jest.fn(),
+  })),
+}));
+
+jest.mock('../../../pages/asset/hooks/useBalanceAwareSwapDefaults', () => ({
+  useBalanceAwareSwapDefaults: jest.fn(() => ({
+    sourceToken: {
+      symbol: 'ETH',
+      address: '0x0000000000000000000000000000000000000000',
+      chainId: '0x1',
+      decimals: 18,
+      name: 'Ether',
+    },
   })),
 }));
 
@@ -90,59 +96,58 @@ const mockAccount = {
   type: EthAccountType.Eoa,
 };
 
-const renderCoinButtons = (batchSellEnabled = true) => {
-  const state = {
-    ...mockState,
-    metamask: {
-      ...mockState.metamask,
-      featureFlags: {
-        ...((mockState.metamask as Record<string, unknown>).featureFlags ?? {}),
-        batchSellEnabled,
-      },
-    },
-  };
-  const store = configureStore(state);
-
-  return renderWithProvider(
-    <CoinButtons
-      account={mockAccount as Parameters<typeof CoinButtons>[0]['account']}
-      chainId="0x1"
-      trackingLocation="home"
-      isSwapsChain={false}
-      isSigningEnabled
-    />,
-    store,
-    '/',
+describe('CoinButtons – asset page swap token', () => {
+  const { useBalanceAwareSwapDefaults } = jest.requireMock(
+    '../../../pages/asset/hooks/useBalanceAwareSwapDefaults',
   );
-};
 
-describe('CoinButtons – MoreButtonsGroup pure black dropdown', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    const { usePureBlack } = jest.requireMock('@metamask/design-system-react');
-    usePureBlack.mockReturnValue(false);
   });
 
-  it('uses bg-background-default for the dropdown in normal mode', async () => {
-    const { getByTestId, container } = renderCoinButtons();
-    fireEvent.click(getByTestId('coin-overview-more'));
+  const renderAssetPageCoinButtons = (chainId: string) =>
+    renderWithProvider(
+      <CoinButtons
+        account={mockAccount as Parameters<typeof CoinButtons>[0]['account']}
+        chainId={chainId as Parameters<typeof CoinButtons>[0]['chainId']}
+        trackingLocation="asset-page"
+        isSwapsChain
+        isSigningEnabled
+      />,
+      configureStore(mockState),
+      '/',
+    );
 
-    await waitFor(() => {
-      const dropdown = container.querySelector('.bg-background-default');
-      expect(dropdown).toBeInTheDocument();
+  it('describes the native token with a CAIP-2 chain id on a non-EVM chain', () => {
+    renderAssetPageCoinButtons('bip122:000000000019d6689c085ae165831e93');
+
+    expect(useBalanceAwareSwapDefaults).toHaveBeenCalledWith({
+      currentToken: expect.objectContaining({
+        symbol: 'BTC',
+        decimals: 8,
+        // The decimal chain id from `getNativeAssetForChainId` is not a chain
+        // the bridge entry point accepts.
+        chainId: 'bip122:000000000019d6689c085ae165831e93',
+      }),
     });
   });
 
-  it('uses bg-background-alternative for the dropdown in pure black mode', async () => {
-    const { usePureBlack } = jest.requireMock('@metamask/design-system-react');
-    usePureBlack.mockReturnValue(true);
+  it('describes the native token with a CAIP-2 chain id on an EVM chain', () => {
+    renderAssetPageCoinButtons('0x1');
 
-    const { getByTestId, container } = renderCoinButtons();
-    fireEvent.click(getByTestId('coin-overview-more'));
+    expect(useBalanceAwareSwapDefaults).toHaveBeenCalledWith({
+      currentToken: expect.objectContaining({
+        symbol: 'ETH',
+        chainId: 'eip155:1',
+      }),
+    });
+  });
 
-    await waitFor(() => {
-      const dropdown = container.querySelector('.bg-background-alternative');
-      expect(dropdown).toBeInTheDocument();
+  it('passes no token when the chain cannot open a swap', () => {
+    renderAssetPageCoinButtons('0x539');
+
+    expect(useBalanceAwareSwapDefaults).toHaveBeenCalledWith({
+      currentToken: null,
     });
   });
 });

@@ -35,6 +35,12 @@ class SnapTransactionConfirmation {
     tag: 'h2',
   };
 
+  private parentSelector = {
+    testId: 'parent-selector-snap-confirmation-page',
+  };
+
+  // This message is rendered by the Solana wallet snap from its own bundled
+  // locale, not from the extension's messages.json.
   private securityAlertsError = {
     tag: 'p',
     text: `Because of an error, we couldn't check for security alerts.`,
@@ -66,7 +72,12 @@ class SnapTransactionConfirmation {
     try {
       const waitOptions = timeout === undefined ? undefined : { timeout };
       await this.driver.waitForMultipleSelectors(
-        [this.header, this.cancelButton, this.confirmButton],
+        [
+          this.parentSelector,
+          this.header,
+          this.cancelButton,
+          this.confirmButton,
+        ],
         waitOptions,
       );
     } catch (e) {

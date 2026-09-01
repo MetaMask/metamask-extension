@@ -39,10 +39,7 @@ class OnboardingCompletePage {
   private readonly onboardingCompleteDoneButton =
     '[data-testid="onboarding-complete-done"]';
 
-  private readonly remindMeLaterButton = {
-    text: 'We’ll remind you later',
-    tag: 'h2',
-  };
+  private readonly page = '[data-testid="parent-selector-onboarding-complete"]';
 
   private readonly walletReadyMessage = {
     text: 'Your wallet is ready!',
@@ -59,6 +56,7 @@ class OnboardingCompletePage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.page,
         this.manageDefaultSettingsButton,
         this.onboardingCompleteDoneButton,
       ]);
@@ -75,6 +73,7 @@ class OnboardingCompletePage {
   async checkPageIsLoadedBackup(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.page,
         this.keepSrpSafeMessage,
         this.onboardingCompleteDoneButton,
       ]);
@@ -88,10 +87,6 @@ class OnboardingCompletePage {
     console.log('SRP backup complete page is loaded');
   }
 
-  async checkRemindMeLaterButtonIsDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.remindMeLaterButton);
-  }
-
   async checkWalletReadyMessageIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.walletReadyMessage);
   }
@@ -101,11 +96,6 @@ class OnboardingCompletePage {
     // navigating in the current window, so the button doesn't "disappear"
     // We just click it without waiting for it to disappear
     await this.driver.clickElement(this.onboardingCompleteDoneButton);
-  }
-
-  async completeBackup(): Promise<void> {
-    console.log('Complete backup');
-    await this.clickCreateWalletDoneButton();
   }
 
   async completeOnboarding(): Promise<void> {

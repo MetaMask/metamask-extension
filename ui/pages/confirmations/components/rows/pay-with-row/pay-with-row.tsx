@@ -139,11 +139,11 @@ export function PayWithRow({
     displayToken,
     balanceUsdFormatted,
     label,
-    canEdit,
     from,
     ownerId,
-    isPerpsWithdraw,
+    isPostQuoteWithdraw,
     isMoneyAccountSelected,
+    hasAvailableTokens,
     openModal,
     modal,
   } = usePayWithToken();
@@ -154,9 +154,15 @@ export function PayWithRow({
     (alert) => alert.key === AlertsName.AccountNoFunds,
   );
 
-  // When the selected account has no funding tokens, show an empty
-  // "Select payment method" placeholder instead of an endless skeleton.
-  if (!displayToken && !hasAccountNoFunds) {
+  // Same as mobile: skeleton only while funding tokens exist to auto-select
+  // from. Without tokens the skeleton never resolves — show the empty
+  // "Select payment method" placeholder instead.
+  if (
+    !displayToken &&
+    !hasAccountNoFunds &&
+    !isPostQuoteWithdraw &&
+    hasAvailableTokens
+  ) {
     return <PayWithRowSkeleton />;
   }
 
@@ -172,18 +178,18 @@ export function PayWithRow({
       >
         <Box
           data-testid="pay-with-pill"
-          onClick={canEdit ? openModal : undefined}
+          onClick={openModal}
           display={Display.InlineFlex}
           alignItems={AlignItems.center}
           gap={1}
-          style={{ cursor: canEdit ? 'pointer' : 'default' }}
+          style={{ cursor: 'pointer' }}
         >
           <PaySelectorContent
             displayToken={displayToken}
             emptyLabel={t('payWithEmptySelection')}
             balanceText={` (${balanceUsdFormatted})`}
-            showBalance={Boolean(displayToken) && !isPerpsWithdraw}
-            showArrow={canEdit && Boolean(from)}
+            showBalance={Boolean(displayToken) && !isPostQuoteWithdraw}
+            showArrow={Boolean(from)}
             isMoneyAccountSelected={isMoneyAccountSelected}
           />
         </Box>

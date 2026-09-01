@@ -21,6 +21,10 @@ import {
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { useInsufficientBalanceAlerts } from './useInsufficientBalanceAlerts';
 
+jest.mock('../../../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../../../store/background-connection'),
+  submitRequestToBackground: jest.fn(),
+}));
 jest.mock('../../gas/useIsGaslessSupported');
 jest.mock('../../pay/useTransactionPayHasSourceAmount');
 jest.mock('../../pay/useTransactionPayData');
@@ -79,12 +83,14 @@ function buildState({
   transaction,
   selectedNetworkClientId,
   chainId,
+  remoteFeatureFlags,
 }: {
   balance?: number;
   currentConfirmation?: Partial<TransactionMeta>;
   transaction?: Partial<TransactionMeta>;
   selectedNetworkClientId?: string;
   chainId?: string;
+  remoteFeatureFlags?: Record<string, unknown>;
 } = {}) {
   const accountAddress = transaction?.txParams?.from as string;
 
@@ -102,6 +108,7 @@ function buildState({
     metamask: {
       selectedNetworkClientId: selectedNetworkClientId ?? 'goerli',
       pendingApprovals,
+      ...(remoteFeatureFlags ? { remoteFeatureFlags } : {}),
       accountsByChainId: {
         [chainId ?? '0x5']: {
           [toChecksumHexAddress(accountAddress)]: {
@@ -379,6 +386,58 @@ describe('useInsufficientBalanceAlerts', () => {
     });
 
     expect(alerts).toEqual(ALERT);
+  });
+
+  it('returns no alerts for money account deposits even when native balance is insufficient', () => {
+    const moneyAccountDeposit = {
+      ...TRANSACTION_MOCK,
+      nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+    } as TransactionMeta;
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: moneyAccountDeposit,
+      transaction: moneyAccountDeposit,
+    });
+
+    expect(alerts).toEqual([]);
+  });
+
+  describe('post-quote withdraws', () => {
+    const WITHDRAW_TRANSACTION_MOCK = {
+      ...TRANSACTION_MOCK,
+      type: TransactionType.moneyAccountWithdraw,
+    } as Partial<TransactionMeta>;
+
+    const buildPostQuoteFlags = (enabled: boolean) => ({
+      /* eslint-disable @typescript-eslint/naming-convention */
+      confirmations_pay_post_quote: {
+        overrides: { moneyAccountWithdraw: { enabled } },
+      },
+      /* eslint-enable @typescript-eslint/naming-convention */
+    });
+
+    it('returns no alerts when post-quote is enabled for the type', () => {
+      const alerts = runHook({
+        balance: 7,
+        currentConfirmation: WITHDRAW_TRANSACTION_MOCK,
+        transaction: WITHDRAW_TRANSACTION_MOCK,
+        remoteFeatureFlags: buildPostQuoteFlags(true),
+      });
+
+      expect(alerts).toEqual([]);
+    });
+
+    it('returns no alerts for a direct money-account withdraw, which is sponsored from the money account', () => {
+      const alerts = runHook({
+        balance: 7,
+        currentConfirmation: WITHDRAW_TRANSACTION_MOCK,
+        transaction: WITHDRAW_TRANSACTION_MOCK,
+        remoteFeatureFlags: buildPostQuoteFlags(false),
+      });
+
+      expect(alerts).toEqual([]);
+    });
   });
 
   it('returns correct alert if selected chain is different from chain in confirmation', () => {

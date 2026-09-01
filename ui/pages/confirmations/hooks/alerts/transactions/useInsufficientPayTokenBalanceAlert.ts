@@ -3,14 +3,22 @@ import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
+import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import {
+  selectPaymentOverrideByTransactionId,
+  type TransactionPayState,
+} from '../../../../../selectors/transactionPayController';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
+import { usePayTokenAccountBalance } from '../../pay/usePayTokenAccountBalance';
+import { useTransactionPayWithdraw } from '../../pay/useTransactionPayWithdraw';
 import { useTokenWithBalance } from '../../tokens/useTokenWithBalance';
 import {
   useIsTransactionPayLoading,
@@ -36,10 +44,18 @@ export function useInsufficientPayTokenBalanceAlert({
   const isSourceGasFeeToken = totals?.fees.isSourceGasFeeToken ?? false;
   const isPendingAlert = Boolean(pendingAmountUsd !== undefined);
   const isMax = useTransactionPayIsMaxAmount();
+  const transactionId = currentConfirmation?.id ?? '';
+  const paymentOverride = useSelector((state: TransactionPayState) =>
+    selectPaymentOverrideByTransactionId(state, transactionId),
+  );
+  const isMoneyPaymentOverride =
+    paymentOverride === PaymentOverride.MoneyAccount;
 
-  // Post-quote (perps withdraw): `payToken` is the destination, not the
-  // source — skip input/fees checks; gas check runs against the tx chain.
-  const isPostQuote = isPerpsWithdrawTransaction(currentConfirmation);
+  // Post-quote withdraws: `payToken` is the destination, not the source —
+  // skip input/fees checks; gas check runs against the tx chain. Gate on the
+  // post-quote flag rather than the transaction type: with post-quote disabled
+  // the withdraw is a direct transfer with regular source-token semantics.
+  const { canSelectWithdrawToken: isPostQuote } = useTransactionPayWithdraw();
 
   const sourceChainId = (
     isPostQuote
@@ -77,7 +93,9 @@ export function useInsufficientPayTokenBalanceAlert({
       payToken.chainId === sourceChainId,
     );
 
-  const { balanceUsd, balanceRaw } = payToken ?? {};
+  // Live funding-account balance (USD already reconciles snapshot vs live
+  // rate inside `usePayTokenAccountBalance`).
+  const { balanceUsd, balanceRaw } = usePayTokenAccountBalance();
   const nativeBalanceRaw = nativeToken?.balanceRaw ?? '0';
 
   const totalAmountUsd = useMemo(() => {
@@ -122,29 +140,86 @@ export function useInsufficientPayTokenBalanceAlert({
     [balanceUsd, isPostQuote, payToken, totalAmountUsd],
   );
 
-  const isInsufficientForFees = useMemo(
+  const isInsufficientForFees = useMemo(() => {
+    if (isMoneyPaymentOverride || isPostQuote || isPendingAlert || !payToken) {
+      return false;
+    }
+
+    // A 0 raw snapshot is common on money-account deposits (tx `from` is the
+    // money account). Do not treat that as "user has no tokens" — fall back
+    // to USD when we have no positive raw balance to compare.
+    const hasRawBalance = new BigNumber(balanceRaw ?? '0').gt(0);
+    if (hasRawBalance) {
+      return totalSourceAmountRaw.gt(balanceRaw ?? '0');
+    }
+
+    const sourceUsd = new BigNumber(totals?.sourceAmount?.usd ?? '0').plus(
+      isPayTokenNative || isSourceGasFeeToken
+        ? new BigNumber(totals?.fees?.sourceNetwork?.max?.usd ?? '0')
+        : '0',
+    );
+
+    return sourceUsd.gt(0) && sourceUsd.gt(balanceUsd ?? '0');
+  }, [
+    balanceRaw,
+    balanceUsd,
+    isMoneyPaymentOverride,
+    isPayTokenNative,
+    isPendingAlert,
+    isPostQuote,
+    isSourceGasFeeToken,
+    payToken,
+    totalSourceAmountRaw,
+    totals,
+  ]);
+
+  // Pay-with Money Account: deposit amount and fees come from the same
+  // money-account balance. The input-only check can pass while amount+fees
+  // still exceed it. Skip for Max: atomic is cleared so the deposit amount
+  // is reduced to leave room for fees.
+  const isInsufficientForMoneyAccountTotal = useMemo(
     () =>
+      isMoneyPaymentOverride &&
+      !isMax &&
       !isPostQuote &&
       !isPendingAlert &&
-      payToken &&
-      totalSourceAmountRaw.gt(balanceRaw ?? '0'),
-    [balanceRaw, isPendingAlert, isPostQuote, payToken, totalSourceAmountRaw],
+      totals?.total?.usd !== undefined &&
+      new BigNumber(totals.total.usd).gt(balanceUsd ?? '0'),
+    [
+      balanceUsd,
+      isMax,
+      isMoneyPaymentOverride,
+      isPendingAlert,
+      isPostQuote,
+      totals,
+    ],
   );
 
   // Post-quote can run before `payToken` is set (auto-selection skipped);
   // gas check is independent of `payToken`.
+  // Only sponsored Money Account deposits skip the native-gas alert — not
+  // every Pay flow funded on Monad.
+  const isSponsoredMoneyAccountDeposit =
+    Boolean(currentConfirmation?.isGasFeeSponsored) &&
+    hasTransactionType(currentConfirmation, [
+      TransactionType.moneyAccountDeposit,
+    ]);
   const isInsufficientForSourceNetwork = useMemo(
     () =>
+      !isSponsoredMoneyAccountDeposit &&
+      !isMoneyPaymentOverride &&
       (payToken || isPostQuote) &&
       !isPayTokenNative &&
       !isPendingAlert &&
       !isSourceGasFeeToken &&
       totalSourceNetworkFeeRaw.gt(nativeBalanceRaw),
     [
+      isMoneyPaymentOverride,
       isPayTokenNative,
       isPendingAlert,
       isPostQuote,
       isSourceGasFeeToken,
+      isSponsoredMoneyAccountDeposit,
       nativeBalanceRaw,
       payToken,
       totalSourceNetworkFeeRaw,
@@ -165,6 +240,17 @@ export function useInsufficientPayTokenBalanceAlert({
           key: AlertsName.InsufficientPayTokenBalance,
           reason: t('alertInsufficientPayTokenBalance'),
           message: t('alertInsufficientPayTokenBalance'),
+        },
+      ];
+    }
+
+    if (isInsufficientForMoneyAccountTotal) {
+      return [
+        {
+          ...baseAlert,
+          key: AlertsName.InsufficientPayTokenBalance,
+          reason: t('alertInsufficientPayTokenBalance'),
+          message: t('alertInsufficientPayTokenBalanceFeesNoTarget'),
         },
       ];
     }
@@ -194,6 +280,7 @@ export function useInsufficientPayTokenBalanceAlert({
     return [];
   }, [
     isInsufficientForInput,
+    isInsufficientForMoneyAccountTotal,
     isInsufficientForFees,
     isInsufficientForSourceNetwork,
     ticker,

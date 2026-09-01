@@ -571,7 +571,9 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-order-entry'),
+      ).toBeInTheDocument();
       expect(screen.getByTestId('order-entry')).toBeInTheDocument();
     });
 
@@ -710,6 +712,43 @@ describe('PerpsOrderEntryPage', () => {
       expect(divider).toHaveAttribute('aria-valuemin', '22');
       expect(divider).toHaveAttribute('aria-valuemax', '60');
       expect(divider).toHaveAttribute('aria-valuenow', '33');
+    });
+
+    it('mounts the order book already open when the persisted preference is expanded', () => {
+      const state = createMockState();
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          proLayoutPreferences: { orderBookExpanded: true },
+        },
+      });
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.getByTestId('perps-order-book-toggle')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      expect(screen.getByTestId('perps-order-book')).toBeInTheDocument();
+    });
+
+    it('persists the open state when the order book is toggled', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const toggle = screen.getByTestId('perps-order-book-toggle');
+
+      fireEvent.click(toggle);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSetProLayoutPreferences',
+        [{ orderBookExpanded: true }],
+      );
+
+      fireEvent.click(toggle);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSetProLayoutPreferences',
+        [{ orderBookExpanded: false }],
+      );
     });
 
     it('resizes the split within bounds using the keyboard', () => {
@@ -1173,7 +1212,7 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       expect(
-        screen.queryByTestId('perps-order-entry-page'),
+        screen.queryByTestId('parent-selector-perps-order-entry'),
       ).not.toBeInTheDocument();
     });
 
@@ -1189,7 +1228,7 @@ describe('PerpsOrderEntryPage', () => {
         screen.queryByText(messages.perpsMarketNotFound.message),
       ).not.toBeInTheDocument();
       expect(
-        screen.queryByTestId('perps-order-entry-page'),
+        screen.queryByTestId('parent-selector-perps-order-entry'),
       ).not.toBeInTheDocument();
     });
 
@@ -1417,11 +1456,23 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
-    it('disables submit when long limit price is above current price', () => {
+    it('warns but still allows submit when long limit price is above current price', () => {
       mockSearchParams.set('orderType', 'limit');
       mockSearchParams.set('direction', 'long');
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      // Near-liquidation stays blocking and an extreme limit price trips it, so
+      // it is held off to isolate the unfavorable-price guard under test.
+      mockIsNearLiquidationPrice.mockReturnValue(false);
+
+      // An amount is required so the assertion isolates the unfavorable-price
+      // guard rather than tripping the minimum-order-size one.
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
 
       const limitContainer = screen.getByTestId('limit-price-input');
       const limitInput = limitContainer.querySelector('input');
@@ -1429,14 +1480,22 @@ describe('PerpsOrderEntryPage', () => {
         target: { value: '99999' },
       });
 
-      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      expect(screen.getByTestId('limit-price-warning')).toBeInTheDocument();
+      expect(screen.getByTestId('submit-order-button')).not.toBeDisabled();
     });
 
-    it('disables submit when short limit price is below current price', () => {
+    it('warns but still allows submit when short limit price is below current price', () => {
       mockSearchParams.set('orderType', 'limit');
       mockSearchParams.set('direction', 'short');
+      mockIsNearLiquidationPrice.mockReturnValue(false);
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
 
       const limitContainer = screen.getByTestId('limit-price-input');
       const limitInput = limitContainer.querySelector('input');
@@ -1444,7 +1503,8 @@ describe('PerpsOrderEntryPage', () => {
         target: { value: '1' },
       });
 
-      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      expect(screen.getByTestId('limit-price-warning')).toBeInTheDocument();
+      expect(screen.getByTestId('submit-order-button')).not.toBeDisabled();
     });
 
     it('does not disable submit for favorable long limit price', () => {
@@ -3287,7 +3347,9 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-order-entry'),
+      ).toBeInTheDocument();
     });
   });
 
@@ -3344,7 +3406,9 @@ describe('PerpsOrderEntryPage', () => {
         ]);
       });
 
-      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-order-entry'),
+      ).toBeInTheDocument();
     });
 
     it('preserves missing markPrice when absent from the stream update', async () => {
@@ -3364,7 +3428,9 @@ describe('PerpsOrderEntryPage', () => {
         ]);
       });
 
-      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-order-entry'),
+      ).toBeInTheDocument();
     });
 
     it('ignores price updates for other symbols', async () => {
@@ -3381,7 +3447,9 @@ describe('PerpsOrderEntryPage', () => {
         ]);
       });
 
-      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-order-entry'),
+      ).toBeInTheDocument();
     });
 
     it('processes order book updates from subscribeToOrderBook callback', async () => {
@@ -3400,7 +3468,9 @@ describe('PerpsOrderEntryPage', () => {
         });
       });
 
-      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-order-entry'),
+      ).toBeInTheDocument();
     });
 
     it('ignores empty order book updates', async () => {
@@ -3419,7 +3489,9 @@ describe('PerpsOrderEntryPage', () => {
         });
       });
 
-      expect(screen.getByTestId('perps-order-entry-page')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-order-entry'),
+      ).toBeInTheDocument();
     });
   });
 

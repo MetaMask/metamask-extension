@@ -8,7 +8,9 @@ const ALERTS_HIDE_RESULTS: string[] = [
   AlertsName.AccountNoFunds,
   AlertsName.DepositLimit,
   AlertsName.InsufficientPayTokenBalance,
+  AlertsName.InsufficientMoneyAccountBalance,
   AlertsName.PayHardwareAccount,
+  AlertsName.PerpsWithdrawBalanceUnavailable,
   AlertsName.SigningOrSubmitting,
 ];
 

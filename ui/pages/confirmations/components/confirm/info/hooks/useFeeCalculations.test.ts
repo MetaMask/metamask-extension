@@ -147,6 +147,73 @@ describe('useFeeCalculations', () => {
     `);
   });
 
+  it('derives the added protection fee from the no-buffer original gas limit', () => {
+    const transactionMeta = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+      chainId: CHAIN_IDS.SEPOLIA,
+    }) as TransactionMeta;
+
+    transactionMeta.containerTypes = [
+      TransactionContainerType.EnforcedSimulations,
+    ];
+
+    // No-buffer original estimate (what the wrapped estimate should be compared
+    // against).
+    transactionMeta.gasLimitNoBuffer = toHex(50000);
+
+    // `txParamsOriginal.gas` retains the 1.5x buffer (75000). Using this as the
+    // baseline would understate the added fee (the bug).
+    transactionMeta.txParamsOriginal = {
+      ...transactionMeta.txParams,
+      gas: toHex(75000),
+    };
+
+    // No-buffer wrapped estimate returned by `applyTransactionContainers`.
+    transactionMeta.txParams.gas = toHex(90000);
+
+    const mockStateWithSepoliaNativeTicker = merge({}, mockState, {
+      metamask: {
+        currencyRates: {
+          ETH: {
+            usdConversionRate: 556.12,
+          },
+          SepoliaETH: {
+            conversionRate: 0,
+          },
+        },
+        networkConfigurationsByChainId: {
+          [CHAIN_IDS.SEPOLIA]: {
+            nativeCurrency: 'SepoliaETH',
+            ticker: 'SepoliaETH',
+          },
+        },
+      },
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useFeeCalculations(transactionMeta),
+      mockStateWithSepoliaNativeTicker,
+    );
+
+    // Added fee reflects the 90000 - 50000 = 40000 gas delta, not the buggy
+    // 90000 - 75000 = 15000 delta from the buffered original.
+    expect(result.current).toMatchInlineSnapshot(`
+      {
+        "addedProtectionFeeFiat": "$0.06",
+        "addedProtectionFeeUsd": 0.063522273,
+        "calculateGasEstimate": [Function],
+        "estimatedFeeFiat": "$0.14",
+        "estimatedFeeFiatWith18SignificantDigits": null,
+        "estimatedFeeNative": "0.0003",
+        "estimatedFeeNativeHex": "0xe9be6d60abb0",
+        "maxFeeFiat": "$0.14",
+        "maxFeeFiatWith18SignificantDigits": null,
+        "maxFeeHex": "0xe9be6d60abb0",
+        "maxFeeNative": "0.0003",
+      }
+    `);
+  });
+
   it('picks up gasLimitNoBuffer for estimations', () => {
     const transactionMeta = genUnapprovedContractInteractionConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
@@ -209,6 +276,25 @@ describe('useFeeCalculations', () => {
     `);
   });
 
+  it('uses txParams gas for balance checks without changing the estimated fee', () => {
+    const transactionMeta = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+    }) as TransactionMeta;
+
+    transactionMeta.gasUsed = toHex(37000);
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () =>
+        useFeeCalculations(transactionMeta, {
+          useBalanceCheckGasLimit: true,
+        }),
+      mockState,
+    );
+
+    expect(result.current.estimatedFeeNativeHex).toBe('0x60183e087418');
+    expect(result.current.maxFeeHex).toBe('0x720087dcfc95');
+  });
+
   it('returns the correct estimate for a transaction with layer1GasFee', () => {
     const transactionMeta = genUnapprovedContractInteractionConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
@@ -255,7 +341,7 @@ describe('useFeeCalculations', () => {
     expect(result.current.maxFeeNative).toBe('< 0.0001');
   });
 
-  it('returns the correct estimate if quoted swap is displayed in info', () => {
+  it('uses quoted gas for balance checks if a quoted swap is displayed', () => {
     jest.spyOn(DappSwapContext, 'useDappSwapContextOptional').mockReturnValue({
       selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponseV1,
       setSelectedQuote: jest.fn(),
@@ -270,7 +356,10 @@ describe('useFeeCalculations', () => {
     transactionMeta.layer1GasFee = '0x10000000000000';
 
     const { result } = renderHookWithConfirmContextProvider(
-      () => useFeeCalculations(transactionMeta),
+      () =>
+        useFeeCalculations(transactionMeta, {
+          useBalanceCheckGasLimit: true,
+        }),
       mockState,
     );
 

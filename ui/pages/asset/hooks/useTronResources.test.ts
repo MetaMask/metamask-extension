@@ -1,6 +1,5 @@
 import React from 'react';
-import { renderHook, cleanup, waitFor } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { renderHook, cleanup } from '@testing-library/react';
 import { CaipAssetId } from '@metamask/keyring-api';
 import { Asset } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -11,22 +10,11 @@ import * as multichainSelectors from '../../../selectors/multichain';
 import * as assetsUnifyStateSelectors from '../../../selectors/assets-unify-state';
 import { useTronResources } from './useTronResources';
 
-const mockGetAccountBalances = jest.fn();
-
-jest.mock('@metamask/keyring-snap-client', () => ({
-  KeyringClient: jest.fn().mockImplementation(() => ({
-    getAccountBalances: mockGetAccountBalances,
-  })),
-}));
-
-jest.mock('../../../hooks/accounts/useMultichainWalletSnapSender', () => ({
-  MultichainWalletSnapSender: jest.fn(),
-}));
-
 // Mock the selectors
 jest.mock('../../../selectors/assets', () => ({
   ...jest.requireActual('../../../selectors/assets'),
   getAssetsBySelectedAccountGroupWithTronSpecialAssets: jest.fn(),
+  getAssetsBalance: jest.fn(),
 }));
 
 jest.mock('../../../selectors/multichain', () => ({
@@ -44,20 +32,10 @@ jest.mock('react-redux', () => ({
     selector({} as State),
 }));
 
-let queryClient: QueryClient;
-
-const createWrapper = () => {
-  return ({ children }: { children: React.ReactNode }) =>
-    React.createElement(QueryClientProvider, { client: queryClient }, children);
-};
-
 const renderTronResourcesHook = (
   account: InternalAccount | undefined,
   chainId: string,
-) =>
-  renderHook(() => useTronResources(account, chainId), {
-    wrapper: createWrapper(),
-  });
+) => renderHook(() => useTronResources(account, chainId));
 
 describe('useTronResources', () => {
   const mockAccount: InternalAccount = {
@@ -70,18 +48,6 @@ describe('useTronResources', () => {
       keyring: { type: 'HD Key Tree' },
     },
     methods: [],
-  } as unknown as InternalAccount;
-
-  const mockSnapAccount: InternalAccount = {
-    ...mockAccount,
-    metadata: {
-      ...mockAccount.metadata,
-      snap: {
-        id: 'npm:@metamask/tron-wallet-snap',
-        enabled: true,
-        name: 'Tron',
-      },
-    },
   } as unknown as InternalAccount;
 
   const chainId = MultichainNetworks.TRON;
@@ -102,6 +68,10 @@ describe('useTronResources', () => {
   const mockSelector = (
     assets: Record<string, Asset[]>,
     balances: Record<string, Record<string, { amount: string; unit: string }>>,
+    assetsControllerBalances: Record<
+      string,
+      Record<string, { amount: string }>
+    > = {},
     isAssetsUnifyStateEnabled = false,
   ) => {
     (
@@ -112,6 +82,10 @@ describe('useTronResources', () => {
       balances,
     );
 
+    (assetsSelectors.getAssetsBalance as jest.Mock).mockReturnValue(
+      assetsControllerBalances,
+    );
+
     (
       assetsUnifyStateSelectors.getIsAssetsUnifyStateEnabled as unknown as jest.Mock
     ).mockReturnValue(isAssetsUnifyStateEnabled);
@@ -119,23 +93,10 @@ describe('useTronResources', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetAccountBalances.mockReset();
-    queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-      },
-      logger: {
-        log: () => undefined,
-        warn: () => undefined,
-        // Silence expected error output from rejected snap queries.
-        error: () => undefined,
-      },
-    });
   });
 
   afterEach(() => {
     cleanup();
-    queryClient.clear();
   });
 
   describe('when account and chainId are provided', () => {
@@ -578,29 +539,22 @@ describe('useTronResources', () => {
     const maxBandwidthAssetId =
       `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_BANDWIDTH}` as CaipAssetId;
 
-    it('falls back to fetching balances directly from the snap', async () => {
-      // Redux state is empty because the new AssetsController strips assets
-      // without metadata. The hook should still surface values fetched from
-      // the snap directly.
-      mockSelector({}, {}, true);
+    it('reads resource balances from the AssetsController state', () => {
+      mockSelector(
+        {},
+        {},
+        {
+          [mockAccount.id]: {
+            [energyAssetId]: { amount: '500' },
+            [maxEnergyAssetId]: { amount: '1000' },
+            [bandwidthAssetId]: { amount: '300' },
+            [maxBandwidthAssetId]: { amount: '600' },
+          },
+        },
+        true,
+      );
 
-      mockGetAccountBalances.mockResolvedValue({
-        [energyAssetId]: { amount: '500', unit: 'energy' },
-        [maxEnergyAssetId]: { amount: '1000', unit: 'energy' },
-        [bandwidthAssetId]: { amount: '300', unit: 'bandwidth' },
-        [maxBandwidthAssetId]: { amount: '600', unit: 'bandwidth' },
-      });
-
-      const { result } = renderTronResourcesHook(mockSnapAccount, chainId);
-
-      await waitFor(() => expect(result.current.energy.current).toBe(500));
-
-      expect(mockGetAccountBalances).toHaveBeenCalledWith(mockSnapAccount.id, [
-        energyAssetId,
-        maxEnergyAssetId,
-        bandwidthAssetId,
-        maxBandwidthAssetId,
-      ]);
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -617,63 +571,15 @@ describe('useTronResources', () => {
       });
     });
 
-    it('does not call the snap when the account has no snap metadata', () => {
-      mockSelector({}, {}, true);
+    it('returns zero values when resource balances are absent', () => {
+      mockSelector({}, {}, {}, true);
 
-      renderTronResourcesHook(mockAccount, chainId);
+      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
-      expect(mockGetAccountBalances).not.toHaveBeenCalled();
-    });
-
-    it('returns zero values when the snap call fails', async () => {
-      mockSelector({}, {}, true);
-
-      mockGetAccountBalances.mockRejectedValue(new Error('snap blew up'));
-
-      const { result } = renderTronResourcesHook(mockSnapAccount, chainId);
-
-      await waitFor(() => expect(mockGetAccountBalances).toHaveBeenCalled());
-
-      expect(result.current.energy).toEqual({
-        type: 'energy',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
-
-      expect(result.current.bandwidth).toEqual({
-        type: 'bandwidth',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
-    });
-
-    it('does not call the snap when the feature flag is disabled', () => {
-      mockSelector({}, {}, false);
-
-      renderTronResourcesHook(mockSnapAccount, chainId);
-
-      expect(mockGetAccountBalances).not.toHaveBeenCalled();
-    });
-
-    it('does not call the snap when the chainId is not a Tron chain', () => {
-      mockSelector({}, {}, true);
-
-      renderTronResourcesHook(
-        mockSnapAccount,
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-      );
-
-      expect(mockGetAccountBalances).not.toHaveBeenCalled();
-    });
-
-    it('does not call the snap when the chainId is empty', () => {
-      mockSelector({}, {}, true);
-
-      renderTronResourcesHook(mockSnapAccount, '');
-
-      expect(mockGetAccountBalances).not.toHaveBeenCalled();
+      expect(result.current.energy.current).toBe(0);
+      expect(result.current.energy.max).toBe(0);
+      expect(result.current.bandwidth.current).toBe(0);
+      expect(result.current.bandwidth.max).toBe(0);
     });
   });
 });

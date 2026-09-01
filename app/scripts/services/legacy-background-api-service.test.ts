@@ -38,8 +38,15 @@ import {
   SolAccountType,
   TrxAccountType,
 } from '@metamask/keyring-api';
-import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
-import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/chain-agnostic-permission';
+import {
+  MethodNames,
+  PermissionDoesNotExistError,
+  PermissionsRequestNotFoundError,
+} from '@metamask/permission-controller';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
@@ -51,6 +58,7 @@ import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constan
 import { HardwareDeviceNames } from '../../../shared/constants/hardware-wallets';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { createSentryError } from '../../../shared/lib/error';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import { captureException } from '../../../shared/lib/sentry';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
@@ -74,6 +82,8 @@ import { checkGmxHasReferralCode } from '../lib/defi-referrals/referral-onchain-
 import { checkHyperliquidHasReferralCode } from '../lib/defi-referrals/referral-api-check';
 import { trackEvent } from '../controllers/analytics';
 import { createTestProviderTools } from '../../../test/stub/provider';
+import { flushPromises } from '../../../test/lib/timer-helpers';
+import * as NetworkSelectors from '../../../shared/lib/selectors/networks';
 import {
   HARDWARE_DEVICE_READ_TIMEOUT_MS,
   LegacyBackgroundApiService,
@@ -133,6 +143,15 @@ jest.mock('../../../shared/lib/trace', () => ({
   trace: jest.fn(),
   endTrace: jest.fn(),
 }));
+
+jest.mock('../../../shared/lib/selectors/networks', () => ({
+  ...jest.requireActual('../../../shared/lib/selectors/networks'),
+  getNetworkConfigurationsByCaipChainId: jest.fn(),
+}));
+
+const mockGetNetworkConfigurationsByCaipChainId = jest.mocked(
+  NetworkSelectors.getNetworkConfigurationsByCaipChainId,
+);
 
 describe('LegacyBackgroundApiService', () => {
   it('initializes a new instance of LegacyBackgroundApiService', async () => {
@@ -424,6 +443,152 @@ describe('LegacyBackgroundApiService', () => {
           expect.anything(),
         );
         expect(getAssetsHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('addToken', () => {
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+      jest.resetModules();
+      process.env = { ...originalEnv };
+    });
+
+    afterEach(() => {
+      process.env = originalEnv;
+    });
+
+    const token = {
+      address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+      symbol: 'DAI',
+      decimals: 18,
+      image: 'https://example.com/dai.png',
+      networkClientId: 'mainnet',
+    };
+
+    it('adds the token as a custom asset via the AssetsController when assets unify state is enabled', async () => {
+      await withService(async ({ serviceMessenger, rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
+
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: true, featureVersion: '1' },
+            },
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'AccountsController:getSelectedAccount',
+          jest.fn().mockReturnValue({ id: 'account-1' }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({ configuration: { chainId: '0x1' } }),
+        );
+
+        const addCustomAssetHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'AssetsController:addCustomAsset',
+          addCustomAssetHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call('LegacyBackgroundApiService:addToken', token),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'AssetsController:addCustomAsset',
+          'account-1',
+          toAssetId(token.address, '0x1'),
+          {
+            address: token.address,
+            symbol: token.symbol,
+            name: token.symbol,
+            decimals: token.decimals,
+            chainId: '0x1',
+            iconUrl: token.image,
+          },
+        );
+      });
+    });
+
+    it('throws when an assetId cannot be built for the token', async () => {
+      await withService(async ({ rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
+
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: true, featureVersion: '1' },
+            },
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'AccountsController:getSelectedAccount',
+          jest.fn().mockReturnValue({ id: 'account-1' }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({ configuration: { chainId: undefined } }),
+        );
+
+        const addCustomAssetHandler = jest.fn();
+        rootMessenger.registerActionHandler(
+          'AssetsController:addCustomAsset',
+          addCustomAssetHandler,
+        );
+
+        await expect(
+          rootMessenger.call('LegacyBackgroundApiService:addToken', token),
+        ).rejects.toThrow(
+          `MetaMask - Cannot build assetId for token ${token.address}`,
+        );
+
+        expect(addCustomAssetHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    it('adds the token via the TokensController when assets unify state is not enabled', async () => {
+      await withService(async ({ serviceMessenger, rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
+
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: false, featureVersion: '1' },
+            },
+          }),
+        );
+
+        const addTokenHandler = jest.fn().mockResolvedValue([]);
+        rootMessenger.registerActionHandler(
+          'TokensController:addToken',
+          addTokenHandler,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call('LegacyBackgroundApiService:addToken', token),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).toHaveBeenCalledWith('TokensController:addToken', {
+          address: token.address,
+          symbol: token.symbol,
+          decimals: token.decimals,
+          image: token.image,
+          networkClientId: token.networkClientId,
+        });
       });
     });
   });
@@ -4134,54 +4299,78 @@ describe('LegacyBackgroundApiService', () => {
     });
 
     it('serializes the change through the shared seedless operation mutex', async () => {
-      const seedlessOperationMutex = new Mutex();
-      const runExclusiveSpy = jest.spyOn(
-        seedlessOperationMutex,
-        'runExclusive',
-      );
+      const runExclusiveSpy = jest.spyOn(Mutex.prototype, 'runExclusive');
 
-      await withService(
-        { options: { seedlessOperationMutex } },
-        async ({ rootMessenger }) => {
-          rootMessenger.registerActionHandler(
-            'PasskeyController:changePasswordWithPasskeyVerification',
-            jest.fn().mockResolvedValue(undefined),
-          );
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          jest.fn().mockResolvedValue(undefined),
+        );
 
-          await rootMessenger.call(
-            'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
-            params,
-          );
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+          params,
+        );
 
-          expect(runExclusiveSpy).toHaveBeenCalledTimes(1);
-          // The lock is released once the delegated call resolves.
-          expect(seedlessOperationMutex.isLocked()).toBe(false);
-        },
-      );
+        expect(runExclusiveSpy).toHaveBeenCalledTimes(1);
+      });
+
+      runExclusiveSpy.mockRestore();
     });
 
     it('releases the mutex even when the passkey controller throws', async () => {
-      const seedlessOperationMutex = new Mutex();
+      const runExclusiveSpy = jest.spyOn(Mutex.prototype, 'runExclusive');
       const error = new Error('verification failed');
 
-      await withService(
-        { options: { seedlessOperationMutex } },
-        async ({ rootMessenger }) => {
-          rootMessenger.registerActionHandler(
-            'PasskeyController:changePasswordWithPasskeyVerification',
-            jest.fn().mockRejectedValue(error),
-          );
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          jest.fn().mockRejectedValue(error),
+        );
 
-          await expect(
-            rootMessenger.call(
-              'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
-              params,
-            ),
-          ).rejects.toThrow(error);
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+            params,
+          ),
+        ).rejects.toThrow(error);
 
-          expect(seedlessOperationMutex.isLocked()).toBe(false);
-        },
-      );
+        expect(runExclusiveSpy).toHaveBeenCalledTimes(1);
+      });
+
+      runExclusiveSpy.mockRestore();
+    });
+  });
+
+  describe('exportSeedPhraseWithPasskey', () => {
+    it('returns JSON-safe UTF-8 bytes while preserving the keyring id', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const mnemonic = new Uint8Array(new Uint16Array([0, 1]).buffer);
+        const exportHandler = jest.fn().mockResolvedValue(mnemonic);
+        rootMessenger.registerActionHandler(
+          'PasskeyController:exportSeedPhraseWithPasskey',
+          exportHandler,
+        );
+        const params = {
+          authenticationResponse: {
+            id: 'credential-id',
+          },
+          keyringId: 'keyring-id',
+        } as unknown as Parameters<
+          LegacyBackgroundApiService['exportSeedPhraseWithPasskey']
+        >[0];
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:exportSeedPhraseWithPasskey',
+            params,
+          ),
+        ).resolves.toStrictEqual(Array.from(Buffer.from('abandon ability')));
+        expect(exportHandler).toHaveBeenCalledWith(
+          params.authenticationResponse,
+          'keyring-id',
+        );
+      });
     });
   });
 
@@ -4224,33 +4413,31 @@ describe('LegacyBackgroundApiService', () => {
 
     it('releases the seedless operation mutex after a successful change', async () => {
       const releaseLock = jest.fn();
-      const seedlessOperationMutex = new Mutex();
-      jest
-        .spyOn(seedlessOperationMutex, 'acquire')
+      const acquireSpy = jest
+        .spyOn(Mutex.prototype, 'acquire')
         .mockResolvedValue(releaseLock);
 
-      await withService(
-        { options: { seedlessOperationMutex } },
-        async ({ rootMessenger }) => {
-          rootMessenger.registerActionHandler(
-            'OnboardingController:getIsSocialLoginFlow',
-            jest.fn().mockReturnValue(false),
-          );
-          rootMessenger.registerActionHandler(
-            'KeyringController:changePassword',
-            jest.fn().mockResolvedValue(undefined),
-          );
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(false),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:changePassword',
+          jest.fn().mockResolvedValue(undefined),
+        );
 
-          await rootMessenger.call(
-            'LegacyBackgroundApiService:changePassword',
-            'new-password',
-            'old-password',
-          );
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:changePassword',
+          'new-password',
+          'old-password',
+        );
 
-          expect(seedlessOperationMutex.acquire).toHaveBeenCalledTimes(1);
-          expect(releaseLock).toHaveBeenCalledTimes(1);
-        },
-      );
+        expect(acquireSpy).toHaveBeenCalledTimes(1);
+        expect(releaseLock).toHaveBeenCalledTimes(1);
+      });
+
+      acquireSpy.mockRestore();
     });
 
     it('also changes the seedless onboarding password and stores the new keyring encryption key for a social login flow', async () => {
@@ -4376,36 +4563,34 @@ describe('LegacyBackgroundApiService', () => {
 
     it('releases the lock and rethrows when the keyring password change fails', async () => {
       const releaseLock = jest.fn();
-      const seedlessOperationMutex = new Mutex();
-      jest
-        .spyOn(seedlessOperationMutex, 'acquire')
+      const acquireSpy = jest
+        .spyOn(Mutex.prototype, 'acquire')
         .mockResolvedValue(releaseLock);
 
-      await withService(
-        { options: { seedlessOperationMutex } },
-        async ({ rootMessenger }) => {
-          const error = new Error('keyring change failed');
+      await withService(async ({ rootMessenger }) => {
+        const error = new Error('keyring change failed');
 
-          rootMessenger.registerActionHandler(
-            'OnboardingController:getIsSocialLoginFlow',
-            jest.fn().mockReturnValue(false),
-          );
-          rootMessenger.registerActionHandler(
-            'KeyringController:changePassword',
-            jest.fn().mockRejectedValue(error),
-          );
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(false),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:changePassword',
+          jest.fn().mockRejectedValue(error),
+        );
 
-          await expect(
-            rootMessenger.call(
-              'LegacyBackgroundApiService:changePassword',
-              'new-password',
-              'old-password',
-            ),
-          ).rejects.toThrow(error);
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePassword',
+            'new-password',
+            'old-password',
+          ),
+        ).rejects.toThrow(error);
 
-          expect(releaseLock).toHaveBeenCalledTimes(1);
-        },
-      );
+        expect(releaseLock).toHaveBeenCalledTimes(1);
+      });
+
+      acquireSpy.mockRestore();
     });
   });
 
@@ -6259,6 +6444,7 @@ describe('LegacyBackgroundApiService', () => {
   describe('DeFi referral', () => {
     const HYPERLIQUID = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
     const GMX = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX];
+    const VARIATIONAL = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Variational];
     const mockTabId = 140;
     const mockPermittedAccount = '0x123';
     const mockPermittedAccounts = [mockPermittedAccount, '0x456'];
@@ -6363,6 +6549,26 @@ describe('LegacyBackgroundApiService', () => {
       rootMessenger.registerActionHandler(
         'NetworkController:getNetworkClientById',
         jest.fn().mockReturnValue({ provider: { request: jest.fn() } }),
+      );
+    }
+
+    /**
+     * Registers the network handlers used by the requiredChainId gate.
+     *
+     * @param rootMessenger - The root messenger to register handlers on.
+     * @param chainId - The active chain ID for the partner's domain.
+     */
+    function registerPartnerNetwork(
+      rootMessenger: RootMessenger,
+      chainId: string,
+    ) {
+      rootMessenger.registerActionHandler(
+        'SelectedNetworkController:getNetworkClientIdForDomain',
+        jest.fn().mockReturnValue('network-client-id'),
+      );
+      rootMessenger.registerActionHandler(
+        'NetworkController:getNetworkConfigurationByNetworkClientId',
+        jest.fn().mockReturnValue({ chainId }),
       );
     }
 
@@ -7057,6 +7263,69 @@ describe('LegacyBackgroundApiService', () => {
           );
         });
       });
+
+      describe('requiredChainId gate', () => {
+        it('does not proceed when the active chain does not match requiredChainId', async () => {
+          const getPermittedAccounts = jest
+            .fn()
+            .mockResolvedValue(mockPermittedAccounts);
+          await withService(
+            { options: { getPermittedAccounts } },
+            async ({ rootMessenger }) => {
+              const handlers = registerReferralHandlers(rootMessenger, {
+                featureFlags: { [DefiReferralPartner.Variational]: true },
+                referrals: { [DefiReferralPartner.Variational]: {} },
+              });
+              registerPartnerNetwork(rootMessenger, '0x1');
+
+              await rootMessenger.call(
+                'LegacyBackgroundApiService:handleDefiReferral',
+                VARIATIONAL,
+                mockTabId,
+                ReferralTriggerType.NewConnection,
+              );
+
+              expect(handlers.add).not.toHaveBeenCalled();
+              expect(handlers.addReferralPassedAccount).not.toHaveBeenCalled();
+            },
+          );
+        });
+
+        it('proceeds when the active chain matches requiredChainId', async () => {
+          const getPermittedAccounts = jest
+            .fn()
+            .mockResolvedValue(mockPermittedAccounts);
+          await withService(
+            { options: { getPermittedAccounts } },
+            async ({ rootMessenger }) => {
+              const handlers = registerReferralHandlers(rootMessenger, {
+                featureFlags: { [DefiReferralPartner.Variational]: true },
+                referrals: { [DefiReferralPartner.Variational]: {} },
+              });
+              registerPartnerNetwork(rootMessenger, '0xa4b1');
+
+              await rootMessenger.call(
+                'LegacyBackgroundApiService:handleDefiReferral',
+                VARIATIONAL,
+                mockTabId,
+                ReferralTriggerType.NewConnection,
+              );
+
+              expect(handlers.add).toHaveBeenCalledWith({
+                origin: VARIATIONAL.origin,
+                type: VARIATIONAL.approvalType,
+                requestData: {
+                  learnMoreUrl: VARIATIONAL.learnMoreUrl,
+                  partnerId: DefiReferralPartner.Variational,
+                  partnerName: VARIATIONAL.name,
+                  selectedAddress: mockPermittedAccount,
+                },
+                shouldShowRequest: true,
+              });
+            },
+          );
+        });
+      });
     });
 
     describe('handleDefiReferralOnPermittedAccountsAdded', () => {
@@ -7266,6 +7535,807 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
   });
+
+  describe('permission background API methods', () => {
+    const MOCK_NETWORK_CONFIG = {} as never;
+
+    beforeEach(() => {
+      mockGetNetworkConfigurationsByCaipChainId.mockReturnValue({});
+    });
+
+    /**
+     * Registers the controller action handlers used by the permission methods.
+     *
+     * @param rootMessenger - The root messenger to register handlers on.
+     * @param handlers - Optional handler mocks to override the defaults.
+     * @param handlers.getCaveat - Mock for `PermissionController:getCaveat`.
+     * @param handlers.updateCaveat - Mock for `PermissionController:updateCaveat`.
+     * @param handlers.revokePermission - Mock for `PermissionController:revokePermission`.
+     * @param handlers.grantPermissions - Mock for `PermissionController:grantPermissions`.
+     * @param handlers.addAndShowApprovalRequest - Mock for `ApprovalController:addAndShowApprovalRequest`.
+     * @param handlers.getAccountByAddress - Mock for `AccountsController:getAccountByAddress`.
+     * @returns The registered handler mocks.
+     */
+    function registerPermissionHandlers(
+      rootMessenger: RootMessenger,
+      handlers: {
+        getCaveat?: jest.Mock;
+        updateCaveat?: jest.Mock;
+        revokePermission?: jest.Mock;
+        grantPermissions?: jest.Mock;
+        addAndShowApprovalRequest?: jest.Mock;
+        getAccountByAddress?: jest.Mock;
+      } = {},
+    ) {
+      const mocks = {
+        getCaveat: handlers.getCaveat ?? jest.fn(),
+        updateCaveat: handlers.updateCaveat ?? jest.fn(),
+        revokePermission: handlers.revokePermission ?? jest.fn(),
+        grantPermissions: handlers.grantPermissions ?? jest.fn(),
+        addAndShowApprovalRequest:
+          handlers.addAndShowApprovalRequest ?? jest.fn(),
+        getAccountByAddress: handlers.getAccountByAddress ?? jest.fn(),
+      };
+      rootMessenger.registerActionHandler(
+        'PermissionController:getCaveat',
+        mocks.getCaveat,
+      );
+      rootMessenger.registerActionHandler(
+        'PermissionController:updateCaveat',
+        mocks.updateCaveat,
+      );
+      rootMessenger.registerActionHandler(
+        'PermissionController:revokePermission',
+        mocks.revokePermission,
+      );
+      rootMessenger.registerActionHandler(
+        'PermissionController:grantPermissions',
+        mocks.grantPermissions,
+      );
+      rootMessenger.registerActionHandler(
+        'ApprovalController:addAndShowApprovalRequest',
+        mocks.addAndShowApprovalRequest,
+      );
+      rootMessenger.registerActionHandler(
+        'AccountsController:getAccountByAddress',
+        mocks.getAccountByAddress,
+      );
+      rootMessenger.registerActionHandler(
+        'NetworkController:getState',
+        jest.fn().mockReturnValue({ networkConfigurationsByChainId: {} }),
+      );
+      rootMessenger.registerActionHandler(
+        'MultichainNetworkController:getState',
+        jest
+          .fn()
+          .mockReturnValue({ multichainNetworkConfigurationsByChainId: {} }),
+      );
+      rootMessenger.registerActionHandler(
+        'AccountsController:getState',
+        jest.fn().mockReturnValue({
+          internalAccounts: { accounts: {}, selectedAccount: '' },
+        }),
+      );
+      rootMessenger.registerActionHandler(
+        'SnapController:getState',
+        jest.fn().mockReturnValue({ snaps: {} }),
+      );
+      return mocks;
+    }
+
+    describe('addPermittedAccount', () => {
+      it('gets the CAIP-25 caveat', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { getCaveat } = registerPermissionHandlers(rootMessenger);
+
+          try {
+            rootMessenger.call(
+              'LegacyBackgroundApiService:addPermittedAccount',
+              'foo.com',
+              '0x1',
+            );
+          } catch {
+            // noop
+          }
+
+          expect(getCaveat).toHaveBeenCalledWith(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+            Caip25CaveatType,
+          );
+        });
+      });
+
+      it('throws an error if there is no existing CAIP-25 caveat', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockImplementation(() => {
+              throw new PermissionDoesNotExistError(
+                'foo.com',
+                Caip25EndowmentPermissionName,
+              );
+            }),
+          });
+
+          expect(() =>
+            rootMessenger.call(
+              'LegacyBackgroundApiService:addPermittedAccount',
+              'foo.com',
+              '0x1',
+            ),
+          ).toThrow(
+            'Cannot add account permissions for origin "foo.com": no permission currently exists for this origin.',
+          );
+        });
+      });
+
+      it('re-throws if getCaveat fails unexpectedly', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockImplementation(() => {
+              throw new Error('unexpected getCaveat error');
+            }),
+          });
+
+          expect(() =>
+            rootMessenger.call(
+              'LegacyBackgroundApiService:addPermittedAccount',
+              'foo.com',
+              '0x1',
+            ),
+          ).toThrow('unexpected getCaveat error');
+        });
+      });
+
+      it('updates the caveat with the account and all matching scopes added', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { updateCaveat } = registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockReturnValue({
+              value: {
+                requiredScopes: {
+                  'eip155:1': { accounts: [] },
+                },
+                optionalScopes: {
+                  'bip122:000000000019d6689c085ae165831e93': {
+                    accounts: [
+                      'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+                    ],
+                  },
+                },
+                isMultichainOrigin: true,
+              },
+            }),
+            getAccountByAddress: jest.fn().mockReturnValue({
+              address: '0x4',
+              scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+            }),
+          });
+          mockGetNetworkConfigurationsByCaipChainId.mockReturnValue({
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': MOCK_NETWORK_CONFIG,
+            'solana:foo': MOCK_NETWORK_CONFIG,
+            'solana:bar': MOCK_NETWORK_CONFIG,
+          });
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:addPermittedAccount',
+            'foo.com',
+            '0x4',
+          );
+
+          expect(updateCaveat).toHaveBeenCalledWith(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+            Caip25CaveatType,
+            {
+              requiredScopes: {
+                'eip155:1': { accounts: [] },
+              },
+              optionalScopes: {
+                'bip122:000000000019d6689c085ae165831e93': {
+                  accounts: [
+                    'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+                  ],
+                },
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+                  accounts: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:0x4'],
+                },
+                'solana:foo': {
+                  accounts: ['solana:foo:0x4'],
+                },
+                'solana:bar': {
+                  accounts: ['solana:bar:0x4'],
+                },
+              },
+              isMultichainOrigin: true,
+            },
+          );
+        });
+      });
+
+      it('triggers the DeFi referral flow when a new CAIP account id is added', async () => {
+        await withService(async ({ service, rootMessenger }) => {
+          const handleDefiReferralSpy = jest
+            .spyOn(service, 'handleDefiReferralOnPermittedAccountsAdded')
+            .mockReturnValue(undefined);
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockReturnValue({
+              value: {
+                requiredScopes: {
+                  'eip155:1': { accounts: ['eip155:1:0x1'] },
+                },
+                optionalScopes: {},
+                isMultichainOrigin: false,
+              },
+            }),
+            getAccountByAddress: jest.fn().mockReturnValue({
+              address: '0x2',
+              scopes: ['eip155:1'],
+            }),
+          });
+          mockGetNetworkConfigurationsByCaipChainId.mockReturnValue({
+            'eip155:1': MOCK_NETWORK_CONFIG,
+          });
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:addPermittedAccount',
+            'foo.com',
+            '0x2',
+          );
+
+          expect(handleDefiReferralSpy).toHaveBeenCalledWith({
+            origin: 'foo.com',
+            newCaipAccountIds: ['eip155:1:0x2'],
+          });
+        });
+      });
+
+      it('does not trigger the DeFi referral flow when the account was already permitted', async () => {
+        await withService(async ({ service, rootMessenger }) => {
+          const handleDefiReferralSpy = jest
+            .spyOn(service, 'handleDefiReferralOnPermittedAccountsAdded')
+            .mockReturnValue(undefined);
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockReturnValue({
+              value: {
+                requiredScopes: {
+                  'eip155:1': { accounts: ['eip155:1:0x2'] },
+                },
+                optionalScopes: {},
+                isMultichainOrigin: false,
+              },
+            }),
+            getAccountByAddress: jest.fn().mockReturnValue({
+              address: '0x2',
+              scopes: ['eip155:1'],
+            }),
+          });
+          mockGetNetworkConfigurationsByCaipChainId.mockReturnValue({
+            'eip155:1': MOCK_NETWORK_CONFIG,
+          });
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:addPermittedAccount',
+            'foo.com',
+            '0x2',
+          );
+
+          expect(handleDefiReferralSpy).not.toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('addPermittedAccounts', () => {
+      it('gets the accounts for each passed in address', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { getAccountByAddress } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              getCaveat: jest.fn().mockReturnValue({
+                value: {
+                  requiredScopes: {},
+                  optionalScopes: {},
+                  isMultichainOrigin: true,
+                },
+              }),
+            },
+          );
+
+          try {
+            rootMessenger.call(
+              'LegacyBackgroundApiService:addPermittedAccounts',
+              'foo.com',
+              ['0x4', '0x5'],
+            );
+          } catch {
+            // noop
+          }
+
+          expect(getAccountByAddress).toHaveBeenCalledWith('0x4');
+          expect(getAccountByAddress).toHaveBeenCalledWith('0x5');
+        });
+      });
+
+      it('throws an error if there is no existing CAIP-25 caveat', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockImplementation(() => {
+              throw new PermissionDoesNotExistError(
+                'foo.com',
+                Caip25EndowmentPermissionName,
+              );
+            }),
+          });
+
+          expect(() =>
+            rootMessenger.call(
+              'LegacyBackgroundApiService:addPermittedAccounts',
+              'foo.com',
+              ['0x1'],
+            ),
+          ).toThrow(
+            'Cannot add account permissions for origin "foo.com": no permission currently exists for this origin.',
+          );
+        });
+      });
+    });
+
+    describe('removePermittedAccount', () => {
+      it('throws an error if there is no existing CAIP-25 caveat', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockImplementation(() => {
+              throw new PermissionDoesNotExistError(
+                'foo.com',
+                Caip25EndowmentPermissionName,
+              );
+            }),
+          });
+
+          expect(() =>
+            rootMessenger.call(
+              'LegacyBackgroundApiService:removePermittedAccount',
+              'foo.com',
+              '0x1',
+            ),
+          ).toThrow(
+            'Cannot remove account "0x1": No permissions exist for origin "foo.com".',
+          );
+        });
+      });
+
+      it('does nothing if the account being removed does not exist', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { updateCaveat, revokePermission } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              getCaveat: jest.fn().mockReturnValue({
+                value: {
+                  requiredScopes: {
+                    'eip155:10': {
+                      accounts: ['eip155:10:0x1', 'eip155:10:0x2'],
+                    },
+                  },
+                  optionalScopes: {},
+                  isMultichainOrigin: true,
+                },
+              }),
+              getAccountByAddress: jest.fn().mockReturnValue({
+                address: '0xdeadbeef',
+                scopes: ['eip155:0'],
+              }),
+            },
+          );
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:removePermittedAccount',
+            'foo.com',
+            '0xdeadbeef',
+          );
+
+          expect(updateCaveat).not.toHaveBeenCalled();
+          expect(revokePermission).not.toHaveBeenCalled();
+        });
+      });
+
+      it('revokes the entire permission if the removed account is the only account', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { revokePermission } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              getCaveat: jest.fn().mockReturnValue({
+                value: {
+                  requiredScopes: {
+                    'eip155:10': { accounts: ['eip155:10:0x1'] },
+                  },
+                  optionalScopes: {
+                    'bip122:000000000019d6689c085ae165831e93': { accounts: [] },
+                  },
+                  isMultichainOrigin: true,
+                },
+              }),
+              getAccountByAddress: jest.fn().mockReturnValue({
+                address: '0x1',
+                scopes: ['eip155:0'],
+              }),
+            },
+          );
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:removePermittedAccount',
+            'foo.com',
+            '0x1',
+          );
+
+          expect(revokePermission).toHaveBeenCalledWith(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+          );
+        });
+      });
+    });
+
+    describe('setPermittedAccounts', () => {
+      it('throws an error if there is no existing CAIP-25 caveat', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockImplementation(() => {
+              throw new PermissionDoesNotExistError(
+                'foo.com',
+                Caip25EndowmentPermissionName,
+              );
+            }),
+          });
+
+          expect(() =>
+            rootMessenger.call(
+              'LegacyBackgroundApiService:setPermittedAccounts',
+              'foo.com',
+              ['eip155:1:0x1'],
+            ),
+          ).toThrow(
+            'Cannot set account permissions "eip155:1:0x1" for origin "foo.com": no permission currently exists for this origin.',
+          );
+        });
+      });
+
+      it('revokes the entire permission if no accounts are set', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { revokePermission } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              getCaveat: jest.fn().mockReturnValue({
+                value: {
+                  requiredScopes: {
+                    'eip155:10': { accounts: ['eip155:10:0x1'] },
+                  },
+                  optionalScopes: {},
+                  isMultichainOrigin: true,
+                },
+              }),
+            },
+          );
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:setPermittedAccounts',
+            'foo.com',
+            [],
+          );
+
+          expect(revokePermission).toHaveBeenCalledWith(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+          );
+        });
+      });
+    });
+
+    describe('addPermittedChain', () => {
+      it('throws an error if there is no existing CAIP-25 caveat', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockImplementation(() => {
+              throw new PermissionDoesNotExistError(
+                'foo.com',
+                Caip25EndowmentPermissionName,
+              );
+            }),
+          });
+
+          expect(() =>
+            rootMessenger.call(
+              'LegacyBackgroundApiService:addPermittedChain',
+              'foo.com',
+              'eip155:1',
+            ),
+          ).toThrow(
+            'Cannot add chain permissions for origin "foo.com": no permission currently exists for this origin.',
+          );
+        });
+      });
+
+      it('updates the caveat with the chain added and accounts synced across scopes', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { updateCaveat } = registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockReturnValue({
+              value: {
+                requiredScopes: {
+                  'eip155:1': { accounts: [] },
+                  'eip155:10': { accounts: ['eip155:10:0x1'] },
+                },
+                optionalScopes: {
+                  'eip155:1': { accounts: ['eip155:1:0x2'] },
+                },
+                isMultichainOrigin: true,
+              },
+            }),
+          });
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:addPermittedChain',
+            'foo.com',
+            'eip155:1337',
+          );
+
+          expect(updateCaveat).toHaveBeenCalledWith(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+            Caip25CaveatType,
+            {
+              requiredScopes: {
+                'eip155:1': { accounts: ['eip155:1:0x1', 'eip155:1:0x2'] },
+                'eip155:10': { accounts: ['eip155:10:0x1', 'eip155:10:0x2'] },
+              },
+              optionalScopes: {
+                'eip155:1': { accounts: ['eip155:1:0x1', 'eip155:1:0x2'] },
+                'eip155:1337': {
+                  accounts: ['eip155:1337:0x1', 'eip155:1337:0x2'],
+                },
+              },
+              isMultichainOrigin: true,
+            },
+          );
+        });
+      });
+    });
+
+    describe('addPermittedChains', () => {
+      it('updates the caveat with the chains added', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { updateCaveat } = registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockReturnValue({
+              value: {
+                requiredScopes: {
+                  'eip155:1': { accounts: ['eip155:1:0x1'] },
+                },
+                optionalScopes: {},
+                isMultichainOrigin: true,
+              },
+            }),
+          });
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:addPermittedChains',
+            'foo.com',
+            ['eip155:4', 'eip155:5'],
+          );
+
+          expect(updateCaveat).toHaveBeenCalledWith(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+            Caip25CaveatType,
+            {
+              requiredScopes: {
+                'eip155:1': { accounts: ['eip155:1:0x1'] },
+              },
+              optionalScopes: {
+                'eip155:4': { accounts: ['eip155:4:0x1'] },
+                'eip155:5': { accounts: ['eip155:5:0x1'] },
+              },
+              isMultichainOrigin: true,
+            },
+          );
+        });
+      });
+    });
+
+    describe('removePermittedChain', () => {
+      it('does nothing if the chain being removed does not exist', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { updateCaveat, revokePermission } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              getCaveat: jest.fn().mockReturnValue({
+                value: {
+                  requiredScopes: {
+                    'eip155:1': { accounts: [] },
+                  },
+                  optionalScopes: {},
+                  isMultichainOrigin: true,
+                },
+              }),
+            },
+          );
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:removePermittedChain',
+            'foo.com',
+            'eip155:12345',
+          );
+
+          expect(updateCaveat).not.toHaveBeenCalled();
+          expect(revokePermission).not.toHaveBeenCalled();
+        });
+      });
+
+      it('revokes the entire permission if the removed chain is the only scope', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { revokePermission } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              getCaveat: jest.fn().mockReturnValue({
+                value: {
+                  requiredScopes: { 'eip155:1': {} },
+                  optionalScopes: {},
+                  isMultichainOrigin: true,
+                },
+              }),
+            },
+          );
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:removePermittedChain',
+            'foo.com',
+            'eip155:1',
+          );
+
+          expect(revokePermission).toHaveBeenCalledWith(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+          );
+        });
+      });
+    });
+
+    describe('setPermittedChains', () => {
+      it('throws an error if there is no existing CAIP-25 caveat', async () => {
+        await withService(async ({ rootMessenger }) => {
+          registerPermissionHandlers(rootMessenger, {
+            getCaveat: jest.fn().mockImplementation(() => {
+              throw new PermissionDoesNotExistError(
+                'foo.com',
+                Caip25EndowmentPermissionName,
+              );
+            }),
+          });
+
+          expect(() =>
+            rootMessenger.call(
+              'LegacyBackgroundApiService:setPermittedChains',
+              'foo.com',
+              ['eip155:1'],
+            ),
+          ).toThrow(
+            'Cannot set permission for chainIds "eip155:1": No permissions exist for origin "foo.com".',
+          );
+        });
+      });
+
+      it('revokes the entire permission if no chains are set', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { revokePermission } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              getCaveat: jest.fn().mockReturnValue({
+                value: {
+                  requiredScopes: { 'eip155:1': {} },
+                  optionalScopes: {},
+                  isMultichainOrigin: true,
+                },
+              }),
+            },
+          );
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:setPermittedChains',
+            'foo.com',
+            [],
+          );
+
+          expect(revokePermission).toHaveBeenCalledWith(
+            'foo.com',
+            Caip25EndowmentPermissionName,
+          );
+        });
+      });
+    });
+
+    describe('requestAccountsAndChainPermissionsWithId', () => {
+      const approvedPermissions = {
+        [Caip25EndowmentPermissionName]: {
+          caveats: [
+            {
+              type: Caip25CaveatType,
+              value: {
+                requiredScopes: {},
+                optionalScopes: {
+                  'eip155:1': { accounts: ['eip155:1:0xdeadbeef'] },
+                },
+                isMultichainOrigin: false,
+              },
+            },
+          ],
+        },
+      };
+
+      it('requests approval and returns the request id', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { addAndShowApprovalRequest } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              addAndShowApprovalRequest: jest
+                .fn()
+                .mockResolvedValue({ permissions: approvedPermissions }),
+            },
+          );
+
+          const result = rootMessenger.call(
+            'LegacyBackgroundApiService:requestAccountsAndChainPermissionsWithId',
+            'foo.com',
+          );
+
+          const { id } = addAndShowApprovalRequest.mock.calls[0][0];
+          expect(result).toStrictEqual(id);
+          expect(addAndShowApprovalRequest).toHaveBeenCalledWith({
+            id,
+            origin: 'foo.com',
+            requestData: {
+              metadata: { id, origin: 'foo.com' },
+              permissions: {
+                [Caip25EndowmentPermissionName]: {
+                  caveats: [
+                    {
+                      type: Caip25CaveatType,
+                      value: {
+                        requiredScopes: {},
+                        optionalScopes: {},
+                        isMultichainOrigin: false,
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+            type: MethodNames.RequestPermissions,
+          });
+        });
+      });
+
+      it('grants the approved CAIP-25 permission', async () => {
+        await withService(async ({ rootMessenger }) => {
+          const { grantPermissions } = registerPermissionHandlers(
+            rootMessenger,
+            {
+              addAndShowApprovalRequest: jest
+                .fn()
+                .mockResolvedValue({ permissions: approvedPermissions }),
+            },
+          );
+
+          rootMessenger.call(
+            'LegacyBackgroundApiService:requestAccountsAndChainPermissionsWithId',
+            'foo.com',
+          );
+
+          await flushPromises();
+
+          expect(grantPermissions).toHaveBeenCalledWith({
+            subject: { origin: 'foo.com' },
+            approvedPermissions,
+          });
+        });
+      });
+    });
+  });
 });
 
 /**
@@ -7329,6 +8399,7 @@ function getMessenger(
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
       'NetworkController:getNetworkConfigurationByNetworkClientId',
+      'SelectedNetworkController:getNetworkClientIdForDomain',
       'NetworkController:getSelectedNetworkClient',
       'NetworkController:addNetwork',
       'NetworkController:setActiveNetwork',
@@ -7341,10 +8412,12 @@ function getMessenger(
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:setCurrentCurrency',
       'AssetsContractController:getTokenStandardAndDetails',
+      'AssetsController:addCustomAsset',
       'AssetsController:getAssets',
       'AssetsController:getState',
       'AssetsController:setSelectedCurrency',
       'TokenListController:getState',
+      'TokensController:addToken',
       'TokensController:getState',
       'KeyringController:exportSeedPhrase',
       'KeyringController:getState',
@@ -7384,6 +8457,13 @@ function getMessenger(
       'PermissionController:rejectPermissionsRequest',
       'PermissionController:revokePermissions',
       'PermissionController:updatePermissionsByCaveat',
+      'PermissionController:getCaveat',
+      'PermissionController:updateCaveat',
+      'PermissionController:grantPermissions',
+      'PermissionController:revokePermission',
+      'ApprovalController:addAndShowApprovalRequest',
+      'MultichainNetworkController:getState',
+      'SnapController:getState',
       'PreferencesController:getState',
       'PreferencesController:addReferralApprovedAccount',
       'PreferencesController:addReferralDeclinedAccount',
@@ -7393,6 +8473,7 @@ function getMessenger(
       'PreferencesController:setPasswordForgotten',
       'PasskeyController:unlockWithPasskey',
       'PasskeyController:changePasswordWithPasskeyVerification',
+      'PasskeyController:exportSeedPhraseWithPasskey',
       'OnboardingController:getState',
       'SeedlessOnboardingController:checkIsPasswordOutdated',
       'SeedlessOnboardingController:getState',
@@ -7518,7 +8599,6 @@ async function withService<ReturnValue>(
     markNotificationPopupAsAutomaticallyClosed: jest.fn(),
     requestSafeReload: jest.fn(),
     sendUpdate: jest.fn(),
-    seedlessOperationMutex: new Mutex(),
     offscreenPromise: Promise.resolve(),
     ...options,
   });
