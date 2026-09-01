@@ -7,14 +7,15 @@ name: Upload extension to Chrome Web Store
 # CWS API v2 upload (v1.1 sunsets 2026-10-15): chromewebstore.googleapis.com/upload/v2/...
 # INFRA-3649 — Runway sender verification (defense-in-depth; primary gate is WIF CEL on actor_id).
 # Idempotent re-run: after WIF auth, :fetchStatus skips upload when a draft for
-# CWS_EXPECTED_VERSION already exists (VERSION for production/dev; VERSION-flask.0 for flask)
-# or a prior async upload is still IN_PROGRESS (poll to terminal first).
+# CRX_VERSION already exists (4-part manifest version from cws-target-config.sh;
+# see development/webpack/utils/version.ts) or a prior async upload is still
+# IN_PROGRESS (poll to terminal first).
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Chrome manifest version (1–4 dot-separated integers, e.g. 13.0.0) — must match GitHub Release tag v{version}'
+        description: 'Release semver X.Y.Z (e.g. 13.43.0) — crxVersion is derived per target (prod/dev → X.Y.Z.0, flask → X.Y.Z.150)'
         required: true
         type: string
       target:
@@ -65,6 +66,12 @@ jobs:
       VERSION: ${{ inputs.version }}
       RELEASE_TAG: v${{ inputs.version }}
     steps:
+      - name: Checkout scripts
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: .github/scripts/cws-target-config.sh
+          sparse-checkout-cone-mode: false
+
       - name: Validate inputs and configuration
         env:
           TARGET: ${{ inputs.target }}
@@ -110,7 +117,6 @@ jobs:
               exit 1
             fi
           done
-          CWS_EXPECTED_VERSION="${VERSION}"
           if [[ "${TARGET}" == "dev" ]]; then
             WIF_PROVIDER="${WIF_PROVIDER_DEV}"
             WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_DEV}"
@@ -132,7 +138,6 @@ jobs:
             PUBLISHER_ID="${PUBLISHER_ID_FLASK}"
             PUBLISHER_EMAIL="${PUBLISHER_EMAIL_FLASK}"
             ZIP_NAME="metamask-chrome-${VERSION}-flask.0.zip"
-            CWS_EXPECTED_VERSION="${VERSION}-flask.0"
           else
             echo "::error::Invalid target: ${TARGET}"
             exit 1
@@ -181,14 +186,15 @@ jobs:
               exit 1
             fi
           fi
+          export TARGET="${TARGET}"
+          # shellcheck source=.github/scripts/cws-target-config.sh
+          # Source (not exec) so CRX_VERSION, EXTENSION_ID, PUBLISHER_ID, WIF_PROVIDER
+          # are available in this step's shell (as well as written to GITHUB_ENV).
+          # shellcheck disable=SC1091
+          source .github/scripts/cws-target-config.sh
           {
-            echo "WIF_PROVIDER=${WIF_PROVIDER}"
-            echo "WIF_SERVICE_ACCOUNT=${WIF_SERVICE_ACCOUNT}"
-            echo "EXTENSION_ID=${EXTENSION_ID}"
-            echo "PUBLISHER_ID=${PUBLISHER_ID}"
             echo "PUBLISHER_EMAIL=${PUBLISHER_EMAIL}"
             echo "ZIP_NAME=${ZIP_NAME}"
-            echo "CWS_EXPECTED_VERSION=${CWS_EXPECTED_VERSION}"
           } >> "${GITHUB_ENV}"
           {
             echo "## CWS upload"
@@ -196,7 +202,8 @@ jobs:
             echo "| Field | Value |"
             echo "|-------|-------|"
             echo "| Target | \`${TARGET}\` |"
-            echo "| Version | \`${VERSION}\` |"
+            echo "| Version input | \`${VERSION}\` |"
+            echo "| crxVersion | \`${CRX_VERSION}\` |"
             echo "| Release tag | \`${RELEASE_TAG}\` |"
             echo "| Asset | \`${ZIP_NAME}\` |"
             echo "| Extension ID | \`${EXTENSION_ID}\` |"
@@ -263,15 +270,17 @@ jobs:
           max_polls=6
           poll_interval_seconds=10
 
+          FETCH_STATUS_PREFLIGHT=/tmp/cws-fetch-status-preflight.json
+
           fetch_status() {
             local http_code
             http_code=$(curl -sS \
-              -o /tmp/fetch-status.json -w "%{http_code}" \
+              -o "${FETCH_STATUS_PREFLIGHT}" -w "%{http_code}" \
               -H "Authorization: Bearer ${ACCESS_TOKEN}" \
               "${FETCH_STATUS_URL}")
             if [[ "${http_code}" != "200" ]]; then
               echo "::error::fetchStatus failed with HTTP ${http_code}"
-              cat /tmp/fetch-status.json
+              cat "${FETCH_STATUS_PREFLIGHT}"
               exit 1
             fi
           }
@@ -281,24 +290,24 @@ jobs:
               [
                 .submittedItemRevisionStatus.distributionChannels[]?.crxVersion // empty
               ] | map(select(length > 0)) | first // empty
-            ' /tmp/fetch-status.json
+            ' "${FETCH_STATUS_PREFLIGHT}"
           }
 
           poll_async_upload() {
             local upload_state
-            upload_state=$(jq -r '.lastAsyncUploadState // empty' /tmp/fetch-status.json)
+            upload_state=$(jq -r '.lastAsyncUploadState // empty' "${FETCH_STATUS_PREFLIGHT}")
             local poll=0
             while [[ "${upload_state}" == "IN_PROGRESS" && $poll -lt ${max_polls} ]]; do
               poll=$((poll + 1))
               echo "Prior upload IN_PROGRESS; polling :fetchStatus (${poll}/${max_polls})..."
               sleep "${poll_interval_seconds}"
               fetch_status
-              upload_state=$(jq -r '.lastAsyncUploadState // empty' /tmp/fetch-status.json)
+              upload_state=$(jq -r '.lastAsyncUploadState // empty' "${FETCH_STATUS_PREFLIGHT}")
               echo "Poll ${poll}/${max_polls}: lastAsyncUploadState=${upload_state:-<unset>}"
             done
             if [[ "${upload_state}" == "IN_PROGRESS" ]]; then
               echo "::error::CWS upload still IN_PROGRESS after ${max_polls} polls (${poll_interval_seconds}s apart); check CWS console or re-run"
-              cat /tmp/fetch-status.json
+              cat "${FETCH_STATUS_PREFLIGHT}"
               exit 1
             fi
             echo "${upload_state}"
@@ -310,8 +319,8 @@ jobs:
           async_state=$(poll_async_upload)
           draft_version=$(draft_crx_version)
 
-          if [[ -n "${draft_version}" && "${draft_version}" == "${CWS_EXPECTED_VERSION}" ]]; then
-            echo "Draft for version ${CWS_EXPECTED_VERSION} already exists in CWS (crxVersion=${draft_version}). Skipping download and upload."
+          if [[ -n "${draft_version}" && "${draft_version}" == "${CRX_VERSION}" ]]; then
+            echo "Draft for crxVersion ${CRX_VERSION} already exists in CWS (crxVersion=${draft_version}). Skipping download and upload."
             {
               echo "skip_upload=true"
               echo "upload_state=SKIPPED_ALREADY_EXISTS"
@@ -320,7 +329,7 @@ jobs:
             exit 0
           fi
 
-          echo "No matching draft for version ${CWS_EXPECTED_VERSION} (draft=${draft_version:-<none>}, lastAsyncUploadState=${async_state:-<none>}). Proceeding with upload."
+          echo "No matching draft for crxVersion ${CRX_VERSION} (draft=${draft_version:-<none>}, lastAsyncUploadState=${async_state:-<none>}). Proceeding with upload."
           {
             echo "skip_upload=false"
             echo "upload_state="
@@ -381,11 +390,13 @@ jobs:
       # Dev listing rejects manifest.key tied to production extension ID (POC lesson).
       - name: Strip manifest key from zip (dev only)
         if: inputs.target == 'dev' && !inputs.dry-run && steps.cws-precheck.outputs.skip_upload != 'true'
+        env:
+          CRX_VERSION: ${{ env.CRX_VERSION }}
         run: |
           set -euo pipefail
           mkdir -p /tmp/extension
           unzip -q "${ZIP_NAME}" -d /tmp/extension
-          jq 'del(.key) | .version = env.VERSION' /tmp/extension/manifest.json > /tmp/extension/manifest-tmp.json
+          jq 'del(.key) | .version = env.CRX_VERSION' /tmp/extension/manifest.json > /tmp/extension/manifest-tmp.json
           mv /tmp/extension/manifest-tmp.json /tmp/extension/manifest.json
           cd /tmp/extension
           zip -r -q "${GITHUB_WORKSPACE}/${ZIP_NAME}" .
@@ -409,8 +420,31 @@ jobs:
           UPLOAD_URL="https://chromewebstore.googleapis.com/upload/v2/publishers/${PUBLISHER_ID}/items/${EXTENSION_ID}:upload"
           FETCH_STATUS_URL="https://chromewebstore.googleapis.com/v2/publishers/${PUBLISHER_ID}/items/${EXTENSION_ID}:fetchStatus"
 
+          UPLOAD_RESPONSE=/tmp/cws-upload-response.json
+          FETCH_STATUS_POLL=/tmp/cws-fetch-status-poll.json
+
+          crx_from_fetch_status() {
+            jq -r '
+              (.submittedItemRevisionStatus.distributionChannels // [])[0].crxVersion // empty
+            ' "$1"
+          }
+
+          fetch_upload_crx_version() {
+            local http_code
+            http_code=$(curl -sS \
+              -o "${FETCH_STATUS_POLL}" -w "%{http_code}" \
+              -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+              "${FETCH_STATUS_URL}")
+            if [[ "${http_code}" != "200" ]]; then
+              echo "::error::fetchStatus failed with HTTP ${http_code} while resolving upload crxVersion"
+              cat "${FETCH_STATUS_POLL}"
+              exit 1
+            fi
+            crx_from_fetch_status "${FETCH_STATUS_POLL}"
+          }
+
           HTTP_CODE=$(curl -sS \
-            -o /tmp/response.json -w "%{http_code}" \
+            -o "${UPLOAD_RESPONSE}" -w "%{http_code}" \
             -X POST \
             -H "Authorization: Bearer ${ACCESS_TOKEN}" \
             -T "${ZIP_NAME}" \
@@ -419,52 +453,72 @@ jobs:
           echo "http_code=${HTTP_CODE}" >> "${GITHUB_OUTPUT}"
           echo "HTTP Status: ${HTTP_CODE}"
           echo ""
-          cat /tmp/response.json
+          cat "${UPLOAD_RESPONSE}"
           echo ""
 
           if [[ "${HTTP_CODE}" != "200" ]]; then
             echo "::error::Upload failed with HTTP ${HTTP_CODE}"
-            cat /tmp/response.json
+            cat "${UPLOAD_RESPONSE}"
             exit 1
           fi
 
-          UPLOAD_STATE=$(jq -r '.uploadState // empty' /tmp/response.json)
+          UPLOAD_STATE=$(jq -r '.uploadState // empty' "${UPLOAD_RESPONSE}")
+          UPLOAD_CRX=$(jq -r '.crxVersion // empty' "${UPLOAD_RESPONSE}")
+
           if [[ "${UPLOAD_STATE}" == "IN_PROGRESS" ]]; then
             max_polls=6
             poll_interval_seconds=10
-            echo "Upload in progress; polling :fetchStatus (up to ${max_polls}×${poll_interval_seconds}s)..."
+            echo "Upload in progress; polling :fetchStatus for lastAsyncUploadState (up to ${max_polls}×${poll_interval_seconds}s)..."
             poll=0
             while [[ "${UPLOAD_STATE}" == "IN_PROGRESS" && $poll -lt ${max_polls} ]]; do
               poll=$((poll + 1))
               sleep "${poll_interval_seconds}"
               FETCH_HTTP_CODE=$(curl -sS \
-                -o /tmp/fetch-status.json -w "%{http_code}" \
+                -o "${FETCH_STATUS_POLL}" -w "%{http_code}" \
                 -H "Authorization: Bearer ${ACCESS_TOKEN}" \
                 "${FETCH_STATUS_URL}")
               if [[ "${FETCH_HTTP_CODE}" != "200" ]]; then
                 echo "::error::fetchStatus failed with HTTP ${FETCH_HTTP_CODE} (poll ${poll}/${max_polls})"
-                cat /tmp/fetch-status.json
+                cat "${FETCH_STATUS_POLL}"
                 exit 1
               fi
-              UPLOAD_STATE=$(jq -r '.lastAsyncUploadState // empty' /tmp/fetch-status.json)
-              echo "Poll ${poll}/${max_polls}: uploadState=${UPLOAD_STATE:-<unset>}"
+              UPLOAD_STATE=$(jq -r '.lastAsyncUploadState // empty' "${FETCH_STATUS_POLL}")
+              echo "Poll ${poll}/${max_polls}: lastAsyncUploadState=${UPLOAD_STATE:-<unset>}"
             done
             if [[ "${UPLOAD_STATE}" == "IN_PROGRESS" ]]; then
               echo "::error::CWS upload still IN_PROGRESS after ${max_polls} polls (${poll_interval_seconds}s apart); check CWS console or re-run"
-              cat /tmp/fetch-status.json
+              cat "${FETCH_STATUS_POLL}"
               exit 1
-            fi
-            if [[ -f /tmp/fetch-status.json ]]; then
-              cp /tmp/fetch-status.json /tmp/response.json
             fi
           fi
 
           echo "upload_state=${UPLOAD_STATE}" >> "${GITHUB_OUTPUT}"
           if [[ "${UPLOAD_STATE}" != "SUCCEEDED" ]]; then
             echo "::error::CWS upload failed: uploadState=${UPLOAD_STATE:-<missing>}"
-            cat /tmp/response.json
+            cat "${UPLOAD_RESPONSE}"
             exit 1
           fi
+
+          # After SUCCEEDED, prefer :upload crxVersion (manifest of the package just uploaded).
+          # Do not read crxVersion during IN_PROGRESS polls — submittedItemRevisionStatus may
+          # still reflect a prior in-review revision. Fall back to :fetchStatus only when the
+          # upload response omitted crxVersion (async IN_PROGRESS path per CWS API docs).
+          UPLOAD_CRX=$(jq -r '.crxVersion // empty' "${UPLOAD_RESPONSE}")
+          if [[ -z "${UPLOAD_CRX}" ]]; then
+            UPLOAD_CRX="$(fetch_upload_crx_version)"
+          fi
+          if [[ -z "${UPLOAD_CRX}" ]]; then
+            echo "::error::CWS upload succeeded but crxVersion was not returned by :upload or :fetchStatus; cannot verify draft is ${CRX_VERSION}"
+            cat "${UPLOAD_RESPONSE}"
+            exit 1
+          fi
+          if [[ "${UPLOAD_CRX}" != "${CRX_VERSION}" ]]; then
+            echo "::error::CWS upload crxVersion ${UPLOAD_CRX} does not match expected ${CRX_VERSION}"
+            cat "${UPLOAD_RESPONSE}"
+            exit 1
+          fi
+          echo "upload_crx_version=${UPLOAD_CRX}" >> "${GITHUB_OUTPUT}"
+          echo "Verified CWS upload crxVersion=${UPLOAD_CRX}"
 
           echo "Package uploaded (draft/pending review). Not published to users."
 
@@ -476,6 +530,7 @@ jobs:
           DRAFT_VERSION: ${{ steps.cws-precheck.outputs.draft_version }}
           HTTP_CODE: ${{ steps.cws-upload.outputs.http_code }}
           UPLOAD_STATE: ${{ steps.cws-upload.outputs.upload_state }}
+          UPLOAD_CRX: ${{ steps.cws-upload.outputs.upload_crx_version }}
           ATTEST_OUTCOME: ${{ steps.verify-attestation.outcome }}
           SHA_OUTCOME: ${{ steps.verify-sha256sums.outcome }}
         run: |
@@ -500,6 +555,8 @@ jobs:
             echo "| CWS uploadState | \`${result_state}\` |"
             if [[ "${SKIP_UPLOAD}" == "true" && -n "${DRAFT_VERSION}" ]]; then
               echo "| Draft crxVersion | \`${DRAFT_VERSION}\` |"
+            elif [[ -n "${UPLOAD_CRX:-}" ]]; then
+              echo "| Upload crxVersion | \`${UPLOAD_CRX}\` |"
             fi
             echo "| Attestation verified | ${attest_display} |"
             echo "| SHA256SUMS verified | ${sha_display} |"
