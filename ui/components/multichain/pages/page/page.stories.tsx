@@ -54,9 +54,7 @@ export const HeaderStory = (args) => (
       >
         Connect
       </Header>
-      <Content className="bg-success-default">
-        Contents!
-      </Content>
+      <Content className="bg-success-default">Contents!</Content>
     </Page>
   </div>
 );
@@ -75,9 +73,7 @@ export const FullscreenStory = (args) => (
       >
         Connect
       </Header>
-      <Content className="bg-success-default">
-        {scrollingContent}
-      </Content>
+      <Content className="bg-success-default">{scrollingContent}</Content>
       <Footer className="bg-warning-default">
         <Button variant={ButtonVariant.Primary} isFullWidth isDisabled>
           Cancel
@@ -110,9 +106,7 @@ export const HeaderFooterStory = (args) => (
       >
         Connect
       </Header>
-      <Content className="bg-success-default">
-        Content
-      </Content>
+      <Content className="bg-success-default">Content</Content>
       <Footer className="bg-warning-default">
         <Button variant={ButtonVariant.Primary} isFullWidth isDisabled>
           Cancel
@@ -142,9 +136,7 @@ export const ScrollingStory = (args) => (
       >
         Connect
       </Header>
-      <Content className="bg-success-default">
-        {scrollingContent}
-      </Content>
+      <Content className="bg-success-default">{scrollingContent}</Content>
       <Footer className="bg-warning-default">
         <Button variant={ButtonVariant.Primary} isFullWidth isDisabled>
           Cancel
