@@ -203,7 +203,7 @@ export const MoneyAccountBalance = () => {
         isLoading={isDepositLoading}
         data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
         onClick={() =>
-          initiateDeposit({ intent: 'addMusd' }).catch((error) =>
+          initiateDeposit().catch((error) =>
             console.error('Failed to initiate money account deposit', error),
           )
         }

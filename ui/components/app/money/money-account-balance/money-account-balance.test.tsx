@@ -210,7 +210,9 @@ describe('MoneyAccountBalance', () => {
     expect(getByText(tEn('moneyBalanceInfoWithdrawals'))).toBeInTheDocument();
   });
 
-  it('initiates a deposit with the addMusd intent when Add is clicked', () => {
+  it('initiates a generic deposit when Add is clicked', () => {
+    // No intent: consumers derive it from the transaction's actual payment
+    // method, exactly as mobile's MoneyBalanceCard does.
     arrange({ totalFiatFormatted: '$2,384.34' });
 
     const { getByTestId } = render();
@@ -218,7 +220,7 @@ describe('MoneyAccountBalance', () => {
     fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID));
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
-    expect(mockInitiateDeposit).toHaveBeenCalledWith({ intent: 'addMusd' });
+    expect(mockInitiateDeposit).toHaveBeenCalledWith();
   });
 
   it('disables the Add button while a deposit is being initiated', () => {
