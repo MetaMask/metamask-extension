@@ -20,9 +20,9 @@ import { Numeric } from '../../../shared/lib/Numeric';
 import {
   ALL_ALLOWED_BRIDGE_CHAIN_IDS,
   BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
-  BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN,
 } from '../../../shared/constants/bridge';
 import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
+import { getDefaultBridgeFromToken } from '../../../shared/lib/bridge-utils/default-tokens';
 import { BridgeAssetSecurityDataType } from '../../pages/bridge/utils/tokens';
 import type { TokenPayload, BridgeToken } from './types';
 
@@ -214,15 +214,7 @@ export const toBridgeToken = (
 };
 
 export const getDefaultFromToken = (fromChainId: CaipChainId) => {
-  const defaultFromTokenForChain =
-    BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN[fromChainId];
-  // If commonPair is defined and is not the same as the fromToken, return it
-  if (defaultFromTokenForChain) {
-    return toBridgeToken(defaultFromTokenForChain);
-  }
-
-  // Last resort: native token
-  return toBridgeToken(getNativeAssetForChainId(fromChainId));
+  return toBridgeToken(getDefaultBridgeFromToken(fromChainId));
 };
 
 export const getDefaultToToken = (

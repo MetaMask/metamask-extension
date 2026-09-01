@@ -16,7 +16,7 @@ import {
   MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
-import { getSwapNativeTokenWithOverridesForChain } from '../../../components/app/wallet-overview/coin-buttons';
+import { getDefaultBridgeFromToken } from '../../../../shared/lib/bridge-utils/default-tokens';
 import { transitionForward } from '../../../components/ui/transition';
 import { I18nContext } from '../../../contexts/i18n';
 import { showBuyTabOpenedToast } from '../../../helpers/utils/show-buy-tab-opened-toast';
@@ -137,7 +137,7 @@ export const AssetStickyActions = ({
           openBridgeExperience(
             MetaMetricsSwapsEventSource.MainView,
             ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId)
-              ? getSwapNativeTokenWithOverridesForChain(chainId)
+              ? getDefaultBridgeFromToken(chainId)
               : undefined,
           ),
         );
