@@ -106,7 +106,6 @@ import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
 import { onUpdate } from './on-update';
-import { createPostUpdateReloadDecisionTracker } from './lib/post-update-reload-decision';
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 import {
@@ -206,7 +205,7 @@ log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
 const isFirefox = getPlatform() === PLATFORM_FIREFOX;
-const postUpdateReloadDecisionTracker = createPostUpdateReloadDecisionTracker();
+const postUpdateReloadAbortController = new AbortController();
 
 if (!isFirefox) {
   browser.action.enable().catch((error) => {
@@ -420,10 +419,10 @@ const handleOnConnect = async (port) => {
   const { isMetaMaskUIPort } = parsePortInfo(port);
   if (
     isMetaMaskUIPort &&
-    !postUpdateReloadDecisionTracker.hasInternalUiConnectionAttempt()
+    !postUpdateReloadAbortController.signal.aborted
   ) {
     log.info('[post-update-reload] Internal UI connection attempt observed');
-    postUpdateReloadDecisionTracker.recordInternalUiConnectionAttempt();
+    postUpdateReloadAbortController.abort();
   }
   if (process.env.IN_TEST) {
     const simulatedDelay =
@@ -1990,7 +1989,7 @@ async function handleOnInstalled([details]) {
     }
     await isInitialized;
     await onUpdate(controller, platform, previousVersion, requestSafeReload, {
-      postUpdateReloadDecisionTracker,
+      postUpdateReloadAbortSignal: postUpdateReloadAbortController.signal,
     });
   }
 }

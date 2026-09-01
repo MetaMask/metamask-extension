@@ -5,7 +5,6 @@ import { getPlatform } from './lib/util';
 import type MetaMaskController from './metamask-controller';
 import type ExtensionPlatform from './platforms/extension';
 import { AppStateController } from './controllers/app-state-controller';
-import type { PostUpdateReloadDecisionTracker } from './lib/post-update-reload-decision';
 
 const IN_FLIGHT_UI_CONNECTION_WAIT_MS = 150;
 const METAMASK_UI_CONTEXT_TYPES: Runtime.ContextType[] = [
@@ -17,8 +16,35 @@ const METAMASK_UI_CONTEXT_TYPES: Runtime.ContextType[] = [
 export type PostUpdateReloadDecision = 'reload' | 'cancelled-by-ui';
 
 type OnUpdateOptions = {
-  postUpdateReloadDecisionTracker: PostUpdateReloadDecisionTracker;
+  postUpdateReloadAbortSignal: AbortSignal;
 };
+
+/**
+ * Waits for a signal to abort until the timeout elapses.
+ *
+ * @param signal - The signal to observe.
+ * @param timeoutMs - The maximum time to wait in milliseconds.
+ * @returns Whether the provided signal aborted before the timeout elapsed.
+ */
+function waitForAbort(
+  signal: AbortSignal,
+  timeoutMs: number,
+): Promise<boolean> {
+  const waitSignal = AbortSignal.any([
+    signal,
+    AbortSignal.timeout(timeoutMs),
+  ]);
+
+  if (waitSignal.aborted) {
+    return Promise.resolve(signal.aborted);
+  }
+
+  return new Promise((resolve) => {
+    waitSignal.addEventListener('abort', () => resolve(signal.aborted), {
+      once: true,
+    });
+  });
+}
 
 async function enableToolbarAction(): Promise<void> {
   try {
@@ -31,10 +57,10 @@ async function enableToolbarAction(): Promise<void> {
 async function decidePostUpdateReload(
   currentVersion: string,
   requestSafeReload: () => Promise<void>,
-  tracker: PostUpdateReloadDecisionTracker,
+  abortSignal: AbortSignal,
 ): Promise<PostUpdateReloadDecision> {
-  const cancelIfUiConnected = async () => {
-    if (!tracker.hasInternalUiConnectionAttempt()) {
+  const cancelIfReloadAborted = async () => {
+    if (!abortSignal.aborted) {
       return false;
     }
 
@@ -45,7 +71,7 @@ async function decidePostUpdateReload(
     return true;
   };
 
-  if (await cancelIfUiConnected()) {
+  if (await cancelIfReloadAborted()) {
     return 'cancelled-by-ui';
   }
 
@@ -57,7 +83,7 @@ async function decidePostUpdateReload(
       '[post-update-reload] Failed to disable the toolbar action',
       error,
     );
-    if (await cancelIfUiConnected()) {
+    if (await cancelIfReloadAborted()) {
       return 'cancelled-by-ui';
     }
     log.info(
@@ -67,7 +93,7 @@ async function decidePostUpdateReload(
     return 'reload';
   }
 
-  if (await cancelIfUiConnected()) {
+  if (await cancelIfReloadAborted()) {
     return 'cancelled-by-ui';
   }
 
@@ -85,21 +111,19 @@ async function decidePostUpdateReload(
     waitForConnection = true;
   }
 
-  if (await cancelIfUiConnected()) {
+  if (await cancelIfReloadAborted()) {
     return 'cancelled-by-ui';
   }
 
   if (
     waitForConnection &&
-    (await tracker.waitForInternalUiConnectionAttempt(
-      IN_FLIGHT_UI_CONNECTION_WAIT_MS,
-    ))
+    (await waitForAbort(abortSignal, IN_FLIGHT_UI_CONNECTION_WAIT_MS))
   ) {
-    await cancelIfUiConnected();
+    await cancelIfReloadAborted();
     return 'cancelled-by-ui';
   }
 
-  if (await cancelIfUiConnected()) {
+  if (await cancelIfReloadAborted()) {
     return 'cancelled-by-ui';
   }
 
@@ -122,7 +146,7 @@ async function decidePostUpdateReload(
  * @param requestSafeReload - A function to request a safe reload of the
  * extension background process.
  * @param options - Post-update reload coordination dependencies.
- * @param options.postUpdateReloadDecisionTracker
+ * @param options.postUpdateReloadAbortSignal
  * @returns The post-update reload decision, or undefined when no Chromium
  * reload decision is needed.
  */
@@ -136,7 +160,7 @@ export async function onUpdate(
   platform: ExtensionPlatform,
   previousVersion: string,
   requestSafeReload: () => Promise<void>,
-  { postUpdateReloadDecisionTracker }: OnUpdateOptions,
+  { postUpdateReloadAbortSignal }: OnUpdateOptions,
 ): Promise<PostUpdateReloadDecision | undefined> {
   const { appStateController } = controller;
   const { lastUpdatedFromVersion } = appStateController.state;
@@ -176,6 +200,6 @@ export async function onUpdate(
   return await decidePostUpdateReload(
     platform.getVersion(),
     requestSafeReload,
-    postUpdateReloadDecisionTracker,
+    postUpdateReloadAbortSignal,
   );
 }

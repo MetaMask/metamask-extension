@@ -1,8 +1,11 @@
+/**
+ * @jest-environment node
+ */
+
 import { jest } from '@jest/globals';
 import browser, { Runtime } from 'webextension-polyfill';
 import { PLATFORM_CHROME, PLATFORM_FIREFOX } from '../../shared/constants/app';
 import * as util from './lib/util';
-import { createPostUpdateReloadDecisionTracker } from './lib/post-update-reload-decision';
 import { onUpdate } from './on-update';
 
 jest.mock('webextension-polyfill', () => ({
@@ -54,6 +57,10 @@ const platform = {
 
 describe('onUpdate', () => {
   let requestSafeReload: jest.Mock<() => Promise<void>>;
+  let postUpdateReloadAbortController: AbortController;
+  let update: (
+    controller: Parameters<typeof onUpdate>[0],
+  ) => ReturnType<typeof onUpdate>;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -62,6 +69,12 @@ describe('onUpdate', () => {
     mockBrowser.action.enable.mockResolvedValue(undefined);
     mockBrowser.runtime.getContexts.mockResolvedValue([]);
     requestSafeReload = jest.fn<() => Promise<void>>(async () => undefined);
+    postUpdateReloadAbortController = new AbortController();
+    update = (controller) =>
+      onUpdate(controller, platform, '1.0.0', requestSafeReload, {
+        postUpdateReloadAbortSignal:
+          postUpdateReloadAbortController.signal,
+      });
   });
 
   afterEach(() => {
@@ -70,14 +83,9 @@ describe('onUpdate', () => {
 
   it('cancels the reload when an internal UI connection was already observed', async () => {
     const { appStateController, controller } = createController();
-    const tracker = createPostUpdateReloadDecisionTracker();
-    tracker.recordInternalUiConnectionAttempt();
+    postUpdateReloadAbortController.abort();
 
-    await expect(
-      onUpdate(controller, platform, '1.0.0', requestSafeReload, {
-        postUpdateReloadDecisionTracker: tracker,
-      }),
-    ).resolves.toBe('cancelled-by-ui');
+    await expect(update(controller)).resolves.toBe('cancelled-by-ui');
 
     expect(appStateController.setLastUpdatedFromVersion).toHaveBeenCalledWith(
       '1.0.0',
@@ -89,13 +97,8 @@ describe('onUpdate', () => {
 
   it('reloads when no internal UI is connecting', async () => {
     const { controller } = createController();
-    const tracker = createPostUpdateReloadDecisionTracker();
 
-    await expect(
-      onUpdate(controller, platform, '1.0.0', requestSafeReload, {
-        postUpdateReloadDecisionTracker: tracker,
-      }),
-    ).resolves.toBe('reload');
+    await expect(update(controller)).resolves.toBe('reload');
 
     expect(mockBrowser.action.disable).toHaveBeenCalledTimes(1);
     expect(mockBrowser.runtime.getContexts).toHaveBeenCalledWith({
@@ -106,7 +109,6 @@ describe('onUpdate', () => {
 
   it('cancels the reload when a UI connects while the action is being disabled', async () => {
     const { controller } = createController();
-    const tracker = createPostUpdateReloadDecisionTracker();
     let resolveDisable!: () => void;
     mockBrowser.action.disable.mockReturnValue(
       new Promise((resolve) => {
@@ -114,15 +116,9 @@ describe('onUpdate', () => {
       }),
     );
 
-    const decisionPromise = onUpdate(
-      controller,
-      platform,
-      '1.0.0',
-      requestSafeReload,
-      { postUpdateReloadDecisionTracker: tracker },
-    );
+    const decisionPromise = update(controller);
     await new Promise<void>((resolve) => setImmediate(resolve));
-    tracker.recordInternalUiConnectionAttempt();
+    postUpdateReloadAbortController.abort();
     resolveDisable();
 
     await expect(decisionPromise).resolves.toBe('cancelled-by-ui');
@@ -132,17 +128,12 @@ describe('onUpdate', () => {
 
   it('cancels the reload when an in-flight side panel connects', async () => {
     const { controller } = createController();
-    const tracker = createPostUpdateReloadDecisionTracker();
     mockBrowser.runtime.getContexts.mockImplementation(async () => {
-      setTimeout(() => tracker.recordInternalUiConnectionAttempt(), 0);
+      setTimeout(() => postUpdateReloadAbortController.abort(), 0);
       return [SIDE_PANEL_CONTEXT];
     });
 
-    await expect(
-      onUpdate(controller, platform, '1.0.0', requestSafeReload, {
-        postUpdateReloadDecisionTracker: tracker,
-      }),
-    ).resolves.toBe('cancelled-by-ui');
+    await expect(update(controller)).resolves.toBe('cancelled-by-ui');
 
     expect(mockBrowser.runtime.getContexts).toHaveBeenCalledTimes(1);
     expect(mockBrowser.action.enable).toHaveBeenCalledTimes(1);
@@ -151,44 +142,29 @@ describe('onUpdate', () => {
 
   it('reloads when an in-flight side panel never connects', async () => {
     const { controller } = createController();
-    const tracker = createPostUpdateReloadDecisionTracker();
     mockBrowser.runtime.getContexts.mockResolvedValue([SIDE_PANEL_CONTEXT]);
 
-    await expect(
-      onUpdate(controller, platform, '1.0.0', requestSafeReload, {
-        postUpdateReloadDecisionTracker: tracker,
-      }),
-    ).resolves.toBe('reload');
+    await expect(update(controller)).resolves.toBe('reload');
 
     expect(requestSafeReload).toHaveBeenCalledTimes(1);
   });
 
   it('uses the bounded connection wait when querying contexts fails', async () => {
     const { controller } = createController();
-    const tracker = createPostUpdateReloadDecisionTracker();
     mockBrowser.runtime.getContexts.mockRejectedValue(
       new Error('getContexts failed'),
     );
 
-    await expect(
-      onUpdate(controller, platform, '1.0.0', requestSafeReload, {
-        postUpdateReloadDecisionTracker: tracker,
-      }),
-    ).resolves.toBe('reload');
+    await expect(update(controller)).resolves.toBe('reload');
 
     expect(requestSafeReload).toHaveBeenCalledTimes(1);
   });
 
   it('reloads when disabling the action fails and no UI connected', async () => {
     const { controller } = createController();
-    const tracker = createPostUpdateReloadDecisionTracker();
     mockBrowser.action.disable.mockRejectedValue(new Error('disable failed'));
 
-    await expect(
-      onUpdate(controller, platform, '1.0.0', requestSafeReload, {
-        postUpdateReloadDecisionTracker: tracker,
-      }),
-    ).resolves.toBe('reload');
+    await expect(update(controller)).resolves.toBe('reload');
 
     expect(mockBrowser.runtime.getContexts).not.toHaveBeenCalled();
     expect(requestSafeReload).toHaveBeenCalledTimes(1);
@@ -197,13 +173,8 @@ describe('onUpdate', () => {
   it('preserves Firefox update behavior without coordinating a reload', async () => {
     const { appStateController, controller } = createController();
     jest.spyOn(util, 'getPlatform').mockReturnValue(PLATFORM_FIREFOX);
-    const tracker = createPostUpdateReloadDecisionTracker();
 
-    await expect(
-      onUpdate(controller, platform, '1.0.0', requestSafeReload, {
-        postUpdateReloadDecisionTracker: tracker,
-      }),
-    ).resolves.toBeUndefined();
+    await expect(update(controller)).resolves.toBeUndefined();
 
     expect(appStateController.setLastUpdatedFromVersion).toHaveBeenCalledWith(
       '1.0.0',
@@ -214,13 +185,8 @@ describe('onUpdate', () => {
 
   it('ignores a duplicate update event', async () => {
     const { appStateController, controller } = createController('1.0.0');
-    const tracker = createPostUpdateReloadDecisionTracker();
 
-    await expect(
-      onUpdate(controller, platform, '1.0.0', requestSafeReload, {
-        postUpdateReloadDecisionTracker: tracker,
-      }),
-    ).resolves.toBeUndefined();
+    await expect(update(controller)).resolves.toBeUndefined();
 
     expect(appStateController.setLastUpdatedAt).not.toHaveBeenCalled();
     expect(mockBrowser.action.disable).not.toHaveBeenCalled();
