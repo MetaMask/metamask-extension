@@ -2743,6 +2743,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  extensionUxHyperliquidDepositPrompt: {
+    inProd: true,
+    name: 'extensionUxHyperliquidDepositPrompt',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.38.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   extensionUxNetworkManagement: {
     inProd: true,
     name: 'extensionUxNetworkManagement',
