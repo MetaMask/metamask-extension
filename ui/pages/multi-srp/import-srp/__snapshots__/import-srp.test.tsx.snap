@@ -10,11 +10,10 @@ exports[`ImportSrp renders matches snapshot 1`] = `
       class="mm-box import-srp__multi-srp mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
+        class="grid grid-cols-[1fr_auto_1fr] items-center multichain-page-header p-4 w-full px-0"
       >
         <div
-          class="mm-box"
-          style="min-width: 0px;"
+          class="col-start-1 justify-self-start"
         >
           <button
             aria-label="back"
@@ -33,7 +32,7 @@ exports[`ImportSrp renders matches snapshot 1`] = `
           </button>
         </div>
         <div
-          class="mm-box"
+          class="col-start-2 col-end-3"
         >
           <p
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
@@ -42,8 +41,7 @@ exports[`ImportSrp renders matches snapshot 1`] = `
           </p>
         </div>
         <div
-          class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
-          style="min-width: 0px;"
+          class="col-start-3 justify-self-end"
         >
           <button
             aria-label="close"

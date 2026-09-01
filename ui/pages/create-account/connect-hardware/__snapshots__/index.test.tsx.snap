@@ -11,11 +11,10 @@ exports[`ConnectHardwareForm initial render render matches snapshot 1`] = `
       data-testid="parent-selector-connect-hardware-wallet-page"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
+        class="grid grid-cols-[1fr_auto_1fr] items-center multichain-page-header p-4 w-full"
       >
         <div
-          class="mm-box"
-          style="min-width: 0px;"
+          class="col-start-1 justify-self-start"
         >
           <button
             aria-label="Back"
@@ -35,7 +34,7 @@ exports[`ConnectHardwareForm initial render render matches snapshot 1`] = `
           </button>
         </div>
         <div
-          class="mm-box"
+          class="col-start-2 col-end-3"
         >
           <h4
             class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"

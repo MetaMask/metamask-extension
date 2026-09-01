@@ -91,7 +91,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
         >
           <input
             aria-invalid="false"
-            class="peer size-6 shrink-0 cursor-pointer appearance-none rounded border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-transparent enabled:hover:bg-hover enabled:active:bg-pressed border-default"
+            class="peer size-6 shrink-0 cursor-pointer appearance-none rounded border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-default enabled:hover:bg-default-hover enabled:active:bg-default-pressed border-default"
             id="metametrics-datacollection-opt-in"
             type="checkbox"
           />
@@ -232,7 +232,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
         >
           <input
             aria-invalid="false"
-            class="peer size-6 shrink-0 cursor-pointer appearance-none rounded border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-transparent enabled:hover:bg-hover enabled:active:bg-pressed border-default"
+            class="peer size-6 shrink-0 cursor-pointer appearance-none rounded border-2 p-0 transition-transform enabled:active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default disabled:cursor-not-allowed bg-default enabled:hover:bg-default-hover enabled:active:bg-default-pressed border-default"
             id="metametrics-datacollection-opt-in"
             type="checkbox"
           />

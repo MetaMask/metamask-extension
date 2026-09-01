@@ -11,10 +11,10 @@ exports[`MultichainConnectPage renders correctly 1`] = `
       data-testid="parent-selector-connect-page"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-12 mm-box--padding-bottom-6 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
+        class="grid grid-cols-[1fr_auto_1fr] items-center multichain-page-header p-4 w-full pt-12 pb-6 mb-0"
       >
         <div
-          class="mm-box"
+          class="col-start-2 col-end-3"
         >
           <p
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
@@ -286,10 +286,10 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
       data-testid="parent-selector-connect-page"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-12 mm-box--padding-bottom-6 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
+        class="grid grid-cols-[1fr_auto_1fr] items-center multichain-page-header p-4 w-full pt-12 pb-6 mb-0"
       >
         <div
-          class="mm-box"
+          class="col-start-2 col-end-3"
         >
           <p
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
@@ -561,10 +561,10 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
       data-testid="parent-selector-connect-page"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-12 mm-box--padding-bottom-6 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
+        class="grid grid-cols-[1fr_auto_1fr] items-center multichain-page-header p-4 w-full pt-12 pb-6 mb-0"
       >
         <div
-          class="mm-box"
+          class="col-start-2 col-end-3"
         >
           <p
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
