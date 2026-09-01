@@ -1,0 +1,44 @@
+name: Deploy Platform API Docs
+
+on:
+  workflow_call:
+
+jobs:
+  deploy:
+    name: Build and deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    environment: default-branch
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: true
+          persist-credentials: false
+
+      - name: Generate and build Platform API docs
+        env:
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: |
+          yarn docs:platform-api:build \
+            --site-url "https://${REPO_OWNER}.github.io" \
+            --site-base-url "/${REPO_NAME}/platform-api-docs/"
+
+      - name: Get access token
+        id: get-token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: write
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
+        with:
+          personal_token: ${{ steps.get-token.outputs.token }}
+          publish_dir: ./.platform-api-docs/build
+          destination_dir: platform-api-docs
+          keep_files: true
