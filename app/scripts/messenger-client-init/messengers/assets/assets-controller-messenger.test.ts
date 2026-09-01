@@ -22,6 +22,7 @@ const ASSETS_CONTROLLER_DELEGATED_ACTIONS = [
 const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
   'AccountTreeController:selectedAccountGroupChange',
   'AccountTreeController:initialized',
+  'AccountTreeController:uninitialized',
   'AccountTreeController:stateChange',
   'ClientController:stateChange',
   'NetworkEnablementController:stateChange',

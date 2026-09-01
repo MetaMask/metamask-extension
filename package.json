@@ -335,8 +335,9 @@
     "postcss@npm:^7.0.16": "patch:postcss@npm%3A7.0.39#~/.yarn/patches/postcss-npm-7.0.39-0f8737296e.patch",
     "@ledgerhq/context-module/ethers": "^6.15.0",
     "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
-    "@metamask/assets-controller@npm:^13.1.0": "patch:@metamask/assets-controller@npm%3A13.1.4#~/.yarn/patches/@metamask-assets-controller-npm-13.1.4-ee83e2c2d8.patch",
-    "@metamask/assets-controller@npm:^13.1.2": "patch:@metamask/assets-controller@npm%3A13.1.4#~/.yarn/patches/@metamask-assets-controller-npm-13.1.4-ee83e2c2d8.patch",
+    "@metamask/assets-controller@npm:^13.1.0": "patch:@metamask/assets-controller@npm%3A14.0.2#~/.yarn/patches/@metamask-assets-controller-npm-14.0.2-3eec54a369.patch",
+    "@metamask/assets-controller@npm:^13.1.2": "patch:@metamask/assets-controller@npm%3A14.0.2#~/.yarn/patches/@metamask-assets-controller-npm-14.0.2-3eec54a369.patch",
+    "@metamask/assets-controller@npm:^14.0.2": "patch:@metamask/assets-controller@npm%3A14.0.2#~/.yarn/patches/@metamask-assets-controller-npm-14.0.2-3eec54a369.patch",
     "@metamask/bridge-controller@npm:^80.1.0": "patch:@metamask/bridge-controller@npm%3A80.1.0#~/.yarn/patches/@metamask-bridge-controller-npm-80.1.0-ea41d41dd2.patch"
   },
   "dependencies": {
@@ -375,7 +376,7 @@
     "@metamask/analytics-controller": "^2.0.0",
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^9.0.0",
-    "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A13.1.4#~/.yarn/patches/@metamask-assets-controller-npm-13.1.4-ee83e2c2d8.patch",
+    "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A14.0.2#~/.yarn/patches/@metamask-assets-controller-npm-14.0.2-3eec54a369.patch",
     "@metamask/assets-controllers": "^111.1.2",
     "@metamask/authenticated-user-storage": "^3.0.2",
     "@metamask/base-controller": "^9.0.1",

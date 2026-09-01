@@ -64,8 +64,10 @@ export function getAssetsControllerMessenger(
     events: [
       // core#9388: RPC balance refresh on account-group switch / tree updates
       'AccountTreeController:selectedAccountGroupChange',
-      // core#9892: start asset tracking only after the tree is fully built
+      // core#9892: start asset tracking only after the tree is fully built,
+      // and stop it when the tree is torn down
       'AccountTreeController:initialized',
+      'AccountTreeController:uninitialized',
       // core#9478: use exported :stateChange (not local :stateChanged aliases)
       // Still needed for post-init account-set changes (e.g. snap accounts)
       'AccountTreeController:stateChange',
