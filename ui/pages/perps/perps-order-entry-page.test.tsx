@@ -1456,11 +1456,23 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
-    it('disables submit when long limit price is above current price', () => {
+    it('warns but still allows submit when long limit price is above current price', () => {
       mockSearchParams.set('orderType', 'limit');
       mockSearchParams.set('direction', 'long');
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      // Near-liquidation stays blocking and an extreme limit price trips it, so
+      // it is held off to isolate the unfavorable-price guard under test.
+      mockIsNearLiquidationPrice.mockReturnValue(false);
+
+      // An amount is required so the assertion isolates the unfavorable-price
+      // guard rather than tripping the minimum-order-size one.
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
 
       const limitContainer = screen.getByTestId('limit-price-input');
       const limitInput = limitContainer.querySelector('input');
@@ -1468,14 +1480,22 @@ describe('PerpsOrderEntryPage', () => {
         target: { value: '99999' },
       });
 
-      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      expect(screen.getByTestId('limit-price-warning')).toBeInTheDocument();
+      expect(screen.getByTestId('submit-order-button')).not.toBeDisabled();
     });
 
-    it('disables submit when short limit price is below current price', () => {
+    it('warns but still allows submit when short limit price is below current price', () => {
       mockSearchParams.set('orderType', 'limit');
       mockSearchParams.set('direction', 'short');
+      mockIsNearLiquidationPrice.mockReturnValue(false);
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      fireEvent.change(amountInput as HTMLInputElement, {
+        target: { value: '100' },
+      });
 
       const limitContainer = screen.getByTestId('limit-price-input');
       const limitInput = limitContainer.querySelector('input');
@@ -1483,7 +1503,8 @@ describe('PerpsOrderEntryPage', () => {
         target: { value: '1' },
       });
 
-      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      expect(screen.getByTestId('limit-price-warning')).toBeInTheDocument();
+      expect(screen.getByTestId('submit-order-button')).not.toBeDisabled();
     });
 
     it('does not disable submit for favorable long limit price', () => {

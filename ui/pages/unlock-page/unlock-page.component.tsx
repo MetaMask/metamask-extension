@@ -122,7 +122,6 @@ type LoginError = {
 
 const FoxAppearAnimation = lazy(
   () =>
-    // @ts-expect-error - Build system resolves without extension, but TS wants .js
     // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
     import('../onboarding-flow/welcome/fox-appear-animation') as Promise<{
       default: ComponentType<
@@ -671,6 +670,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
         backgroundColor={BoxBackgroundColor.BackgroundDefault}
         className="w-full"
         paddingBottom={12} // offset header to center content
+        data-testid="parent-selector-login-page"
       >
         {showResetPasswordModal && (
           <ResetPasswordModal

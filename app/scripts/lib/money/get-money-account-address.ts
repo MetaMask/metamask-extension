@@ -37,7 +37,9 @@ type PrimarySeed = {
 async function getPrimarySeed(
   messenger: MoneyAccountAddressMessenger,
 ): Promise<PrimarySeed> {
-  return (await messenger.call(
+  // `withKeyringUnsafe`'s generic callback result is not preserved on the
+  // action handler type, so `messenger.call` resolves to `unknown`.
+  const seed = (await messenger.call(
     'KeyringController:withKeyringUnsafe',
     { type: KeyringTypes.hd },
     async ({ keyring, metadata }) => {
@@ -56,7 +58,9 @@ async function getPrimarySeed(
         mnemonic: encodeMnemonic(mnemonic),
       };
     },
-  )) as unknown as PrimarySeed;
+  )) as PrimarySeed;
+
+  return seed;
 }
 
 /**
