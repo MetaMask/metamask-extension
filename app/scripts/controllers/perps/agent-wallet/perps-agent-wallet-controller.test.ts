@@ -15,12 +15,15 @@ import {
 import type {
   AgentRegistration,
   PerpsAgentWalletControllerMessenger,
+  PerpsAgentWalletControllerState,
 } from './types';
 
 const MASTER = '0x1111111111111111111111111111111111111111';
 const PASSWORD = 'correct horse battery staple';
 
-const buildController = () => {
+const buildController = (
+  state: Partial<PerpsAgentWalletControllerState> = {},
+) => {
   const keyringCalls: string[] = [];
   // Real root messenger. A child messenger owns the KeyringController
   // namespace (mirroring the real KeyringController) with recorded stubs for
@@ -52,7 +55,7 @@ const buildController = () => {
   }
 
   const messenger = getPerpsAgentWalletControllerMessenger(rootMessenger);
-  const controller = new PerpsAgentWalletController({ messenger, state: {} });
+  const controller = new PerpsAgentWalletController({ messenger, state });
   return { controller, messenger, keyringCalls };
 };
 
@@ -192,6 +195,74 @@ describe('PerpsAgentWalletController', () => {
       expect(
         controller.getActiveAgent('0x9999999999999999999999999999999999999999'),
       ).toBeNull();
+    });
+
+    it('returns the persisted registration after a restart with an empty setup status map, and resolves a working signer after onUnlock', async () => {
+      // Instance 1: complete setup to produce a real registration + ciphertext.
+      const first = buildController();
+      const { handle, registration } = await completeAgentSetup(
+        first.controller,
+      );
+      const persistedState = {
+        agentsByAccount: { [MASTER]: registration },
+        agentKeyVaultByAccount: {
+          [MASTER]: first.controller.state.agentKeyVaultByAccount[MASTER],
+        },
+      };
+
+      // Instance 2: app restart — registration and vault persisted,
+      // setupStatusByAccount empty (persist: false).
+      const { controller } = buildController(persistedState);
+      expect(controller.state.setupStatusByAccount[MASTER]).toBeUndefined();
+      expect(controller.getActiveAgent(MASTER)).toEqual(registration);
+      // Locked: no plaintext in memory yet, so no signer despite activity.
+      expect(controller.getAgentSigner(MASTER)).toBeNull();
+      await controller.onUnlock({ password: PASSWORD });
+      const signer = controller.getAgentSigner(MASTER);
+      expect(signer?.address).toBe(handle.address);
+      // The restored signer actually signs with the agent key.
+      const signature = await signer?.signTypedData(
+        { name: 'Test', version: '1', chainId: 1 },
+        { Test: [{ name: 'value', type: 'string' }] },
+        { value: 'restart' },
+      );
+      expect(typeof signature).toBe('string');
+      expect(signature).toMatch(/^0x[0-9a-fA-F]+$/u);
+    });
+
+    it.each([
+      'generating',
+      'awaiting-approval',
+      'submitting',
+    ] as const)(
+      'returns null while setup is mid-flight (%s) even with an existing registration',
+      async (midFlightStatus) => {
+        const first = buildController();
+        const { registration } = await completeAgentSetup(first.controller);
+        const { controller } = buildController({
+          agentsByAccount: { [MASTER]: registration },
+          setupStatusByAccount: { [MASTER]: midFlightStatus },
+        });
+        expect(controller.getActiveAgent(MASTER)).toBeNull();
+      },
+    );
+
+    it('returns null while re-running setup (awaiting-approval) over an existing registration', async () => {
+      const { controller } = buildController();
+      await completeAgentSetup(controller);
+      await controller.beginSetup(MASTER);
+      expect(controller.state.setupStatusByAccount[MASTER]).toBe(
+        'awaiting-approval',
+      );
+      expect(controller.getActiveAgent(MASTER)).toBeNull();
+    });
+
+    it('still returns the registration when the status is failed (a failed re-setup does not disable the agent)', async () => {
+      const { controller } = buildController();
+      const { registration } = await completeAgentSetup(controller);
+      controller.failSetup(MASTER, 're-setup rejected');
+      expect(controller.state.setupStatusByAccount[MASTER]).toBe('failed');
+      expect(controller.getActiveAgent(MASTER)).toEqual(registration);
     });
   });
 });

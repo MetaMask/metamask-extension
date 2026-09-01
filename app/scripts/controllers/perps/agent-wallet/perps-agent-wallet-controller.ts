@@ -104,17 +104,30 @@ export class PerpsAgentWalletController extends BaseController<
 
   /**
    * Returns the completed agent registration for the given master account, or
-   * null when the account has no active agent.
+   * null when the account has no registration or a setup is currently
+   * mid-flight for it.
+   *
+   * Activity derives from the persisted registration, not the transient setup
+   * status ({@link PerpsAgentWalletControllerState.setupStatusByAccount} is
+   * `persist:false`, so it is empty after a restart while registrations
+   * survive). Only a setup that is currently mid-flight suppresses the
+   * registration — including a failed re-setup, which must not disable an
+   * already-registered agent.
    *
    * @param masterAccountAddress - The master account address.
    * @returns The agent registration, or null.
    */
   getActiveAgent(masterAccountAddress: string): AgentRegistration | null {
     const agent = this.state.agentsByAccount[masterAccountAddress];
-    return this.state.setupStatusByAccount[masterAccountAddress] === 'active' &&
-      agent
-      ? agent
-      : null;
+    if (!agent) {
+      return null;
+    }
+    const status = this.state.setupStatusByAccount[masterAccountAddress];
+    const isSetupMidFlight =
+      status === 'generating' ||
+      status === 'awaiting-approval' ||
+      status === 'submitting';
+    return isSetupMidFlight ? null : agent;
   }
 
   /**
