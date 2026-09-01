@@ -374,4 +374,185 @@ describe('MultichainAccountCell', () => {
       expect(avatarContainer).toBeInTheDocument();
     });
   });
+
+  describe('Mode defaults', () => {
+    it('defaults isHidden and isEditMode to false when props are omitted', () => {
+      renderWithProvider(
+        <MultichainAccountCell
+          accountId={defaultProps.accountId}
+          accountName="Default Mode Account"
+          balance="$100"
+          endAccessory={<span data-testid="end-accessory">More</span>}
+        />,
+        store,
+      );
+
+      const cellElement = screen.getByTestId(
+        `multichain-account-cell-${defaultProps.accountId}`,
+      );
+
+      expect(cellElement).not.toHaveClass('multichain-account-cell--hidden');
+      expect(cellElement).not.toHaveClass('multichain-account-cell--edit-mode');
+      expect(cellElement).not.toHaveAttribute('data-hidden');
+      expect(cellElement).not.toHaveAttribute('data-edit-mode');
+      expect(screen.getByTestId('end-accessory')).toBeInTheDocument();
+    });
+  });
+
+  describe('Hidden mode', () => {
+    it('applies hidden styling and data attribute when isHidden is true', () => {
+      renderWithProvider(
+        <MultichainAccountCell {...defaultProps} isHidden={true} />,
+        store,
+      );
+
+      const cellElement = screen.getByTestId(
+        `multichain-account-cell-${defaultProps.accountId}`,
+      );
+
+      expect(cellElement).toHaveClass('multichain-account-cell--hidden');
+      expect(cellElement).toHaveAttribute('data-hidden', 'true');
+    });
+  });
+
+  describe('Edit mode', () => {
+    it('applies edit-mode styling and suppresses end accessory', () => {
+      renderWithProvider(
+        <MultichainAccountCell
+          {...defaultProps}
+          isEditMode={true}
+          showDefaultAddress={true}
+        />,
+        store,
+      );
+
+      const cellElement = screen.getByTestId(
+        `multichain-account-cell-${defaultProps.accountId}`,
+      );
+
+      expect(cellElement).toHaveClass('multichain-account-cell--edit-mode');
+      expect(cellElement).toHaveAttribute('data-edit-mode', 'true');
+      expect(screen.queryByTestId('end-accessory')).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('multichain-account-cell-hovered-addresses'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not show connection status badge in edit mode', () => {
+      renderWithProvider(
+        <MultichainAccountCell
+          {...defaultProps}
+          isEditMode={true}
+          connectionStatus={STATUS_CONNECTED}
+        />,
+        store,
+      );
+
+      const tooltipElement = document.querySelector(
+        '[data-original-title="Active"]',
+      );
+      expect(tooltipElement).not.toBeInTheDocument();
+    });
+
+    it('shows eye icon next to balance in visible edit mode', () => {
+      renderWithProvider(
+        <MultichainAccountCell {...defaultProps} isEditMode={true} />,
+        store,
+      );
+
+      expect(
+        screen.getByTestId('multichain-account-cell-edit-mode-visible-icon'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('multichain-account-cell-edit-mode-hidden-icon'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows crossed eye icon next to balance in hidden edit mode', () => {
+      renderWithProvider(
+        <MultichainAccountCell
+          {...defaultProps}
+          isEditMode={true}
+          isHidden={true}
+        />,
+        store,
+      );
+
+      expect(
+        screen.getByTestId('multichain-account-cell-edit-mode-hidden-icon'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('multichain-account-cell-edit-mode-visible-icon'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not show edit mode visibility icon when not in edit mode', () => {
+      renderWithProvider(<MultichainAccountCell {...defaultProps} />, store);
+
+      expect(
+        screen.queryByTestId('multichain-account-cell-edit-mode-visible-icon'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('multichain-account-cell-edit-mode-hidden-icon'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not render startAccessory when in edit mode', () => {
+      renderWithProvider(
+        <MultichainAccountCell
+          {...defaultProps}
+          isEditMode={true}
+          startAccessory={<span data-testid="start-accessory">Start</span>}
+        />,
+        store,
+      );
+
+      expect(screen.queryByTestId('start-accessory')).not.toBeInTheDocument();
+    });
+
+    it('calls onVisibilityIconClick when the visibility icon is clicked', () => {
+      const handleVisibilityIconClick = jest.fn();
+      const handleCellClick = jest.fn();
+
+      renderWithProvider(
+        <MultichainAccountCell
+          {...defaultProps}
+          isEditMode={true}
+          onClick={handleCellClick}
+          onVisibilityIconClick={handleVisibilityIconClick}
+        />,
+        store,
+      );
+
+      fireEvent.click(
+        screen.getByTestId('multichain-account-cell-edit-mode-visible-icon'),
+      );
+
+      expect(handleVisibilityIconClick).toHaveBeenCalledTimes(1);
+      expect(handleVisibilityIconClick).toHaveBeenCalledWith(
+        defaultProps.accountId,
+      );
+      expect(handleCellClick).not.toHaveBeenCalled();
+    });
+
+    it('does not call onVisibilityIconClick when pending is true', () => {
+      const handleVisibilityIconClick = jest.fn();
+
+      renderWithProvider(
+        <MultichainAccountCell
+          {...defaultProps}
+          isEditMode={true}
+          pending={true}
+          onVisibilityIconClick={handleVisibilityIconClick}
+        />,
+        store,
+      );
+
+      fireEvent.click(
+        screen.getByTestId('multichain-account-cell-edit-mode-visible-icon'),
+      );
+
+      expect(handleVisibilityIconClick).not.toHaveBeenCalled();
+    });
+  });
 });

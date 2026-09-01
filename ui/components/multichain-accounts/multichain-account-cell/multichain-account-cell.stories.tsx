@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import { MultichainAccountCell } from './multichain-account-cell';
 import { MultichainAccountCellProps } from './multichain-account-cell';
@@ -48,7 +48,7 @@ export default {
     docs: {
       description: {
         component:
-          'A reusable component for displaying account information in a compact cell format.',
+          'A reusable component for displaying account information in a compact cell format. Supports `isHidden` and `isEditMode` props (both default to `false`).',
       },
     },
     controls: { sort: 'alpha' },
@@ -89,12 +89,30 @@ export default {
       description:
         'Whether to show the network avatars and copy functionality with optional default address',
     },
+    isHidden: {
+      control: 'boolean',
+      description: 'Whether the account is in hidden mode with muted styling',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    isEditMode: {
+      control: 'boolean',
+      description:
+        'Whether the cell is in edit mode, suppressing menu and default-address controls',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    onVisibilityIconClick: {
+      control: false,
+      description: 'Called when the edit-mode visibility icon is clicked',
+      action: 'visibilityIconClicked',
+    },
   },
   args: {
     accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
     accountName: 'Account 1',
     balance: '$2,400.00',
     selected: false,
+    isHidden: false,
+    isEditMode: false,
     endAccessory: <MoreOptionsAccessory />,
   },
 } as Meta<typeof MultichainAccountCell>;
@@ -242,4 +260,32 @@ WithHoverableNetworkGroup.parameters = {
         'Shows the network avatars and copy functionality below the account name with optional default address.',
     },
   },
+};
+
+export const Hidden = Template.bind({});
+Hidden.args = {
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+  accountName: 'Hidden Account',
+  balance: '$2,400.00',
+  isHidden: true,
+  endAccessory: <MoreOptionsAccessory />,
+};
+
+export const Edit = Template.bind({});
+Edit.args = {
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+  accountName: 'Account in Edit Mode',
+  balance: '$2,400.00',
+  isEditMode: true,
+  onVisibilityIconClick: () => console.log('Visibility icon clicked'),
+};
+
+export const HiddenAndEdit = Template.bind({});
+HiddenAndEdit.args = {
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+  accountName: 'Hidden Account in Edit Mode',
+  balance: '$2,400.00',
+  isHidden: true,
+  isEditMode: true,
+  onVisibilityIconClick: () => console.log('Visibility icon clicked'),
 };
