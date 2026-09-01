@@ -23,12 +23,6 @@ export type EnsureMoneyChainConfigured = (
  * Create a function that ensures the Money Account chain is configured in the
  * NetworkController, adding it from the featured networks when missing.
  *
- * Both `MoneyAccountAvailabilityService` (so "available" implies the chain is
- * usable) and the Money Account upgrade bootstrap (whose EIP-7702 step looks
- * the chain up by id) need this, each with its own in-flight dedupe so
- * concurrent callers share one configuration attempt. Failures are not cached;
- * the next call retries.
- *
  * @param messenger - The messenger used to reach the NetworkController and
  * LegacyBackgroundApiService.
  * @returns The configuring function.
