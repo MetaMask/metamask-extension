@@ -3,6 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { usePerpsLiveMarketListData } from '../../../../hooks/perps/stream';
 import {
   PERPS_MARKET_DETAIL_ROUTE,
@@ -96,6 +97,25 @@ describe('PerpsTopMovers', () => {
         screen.getByTestId('perps-top-movers-gainers'),
       ).toBeInTheDocument();
       expect(screen.getByTestId('perps-top-movers-losers')).toBeInTheDocument();
+    });
+
+    it('displays the section heading copy', () => {
+      renderSection();
+
+      expect(screen.getByTestId('perps-top-movers-header')).toHaveTextContent(
+        messages.perpsTopMovers.message,
+      );
+    });
+
+    it('displays the toggle copy on both directions', () => {
+      renderSection();
+
+      expect(screen.getByTestId('perps-top-movers-gainers')).toHaveTextContent(
+        messages.perpsTopMoversGainers.message,
+      );
+      expect(screen.getByTestId('perps-top-movers-losers')).toHaveTextContent(
+        messages.perpsTopMoversLosers.message,
+      );
     });
 
     it('selects gainers by default', () => {
