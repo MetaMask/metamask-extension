@@ -197,24 +197,26 @@ describe('PerpsTopMovers', () => {
   });
 
   describe('navigation', () => {
-    it.each([
-      ['desc', undefined],
-      ['asc', 'perps-top-movers-losers'],
-    ])(
-      'opens the market list pre-sorted by price change %s from the header',
-      (expectedDirection, toggleTestId) => {
-        renderSection();
-        if (toggleTestId) {
-          fireEvent.click(screen.getByTestId(toggleTestId));
-        }
+    it('opens the market list pre-sorted by descending price change', () => {
+      renderSection();
 
-        fireEvent.click(screen.getByTestId('perps-top-movers-header'));
+      fireEvent.click(screen.getByTestId('perps-top-movers-header'));
 
-        expect(mockNavigate).toHaveBeenCalledWith(
-          `${PERPS_MARKET_LIST_ROUTE}?sort=priceChange&direction=${expectedDirection}`,
-        );
-      },
-    );
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `${PERPS_MARKET_LIST_ROUTE}?sort=priceChange&direction=desc`,
+      );
+    });
+
+    it('carries the losers direction into the market list sort', () => {
+      renderSection();
+
+      fireEvent.click(screen.getByTestId('perps-top-movers-losers'));
+      fireEvent.click(screen.getByTestId('perps-top-movers-header'));
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `${PERPS_MARKET_LIST_ROUTE}?sort=priceChange&direction=asc`,
+      );
+    });
 
     it('opens the market detail page from a pill', () => {
       renderSection();
@@ -246,39 +248,39 @@ describe('PerpsTopMovers', () => {
       );
     });
 
-    it.each([
-      [
-        'gainers',
-        undefined,
-        'ETH',
-        PERPS_EVENT_VALUE.SOURCE_SECTION.TOP_GAINERS,
-      ],
-      [
-        'losers',
-        'perps-top-movers-losers',
-        'SOL',
-        PERPS_EVENT_VALUE.SOURCE_SECTION.TOP_LOSERS,
-      ],
-    ])(
-      'attributes a pill tap to the %s section',
-      (_name, toggleTestId, symbol, sourceSection) => {
-        renderSection();
-        if (toggleTestId) {
-          fireEvent.click(screen.getByTestId(toggleTestId));
-        }
+    it('attributes a pill tap to the gainers section', () => {
+      renderSection();
 
-        fireEvent.click(screen.getByTestId(`perps-top-movers-pill-${symbol}`));
+      fireEvent.click(screen.getByTestId('perps-top-movers-pill-ETH'));
 
-        expect(mockTrack).toHaveBeenCalledWith(
-          MetaMetricsEventName.PerpsUiInteraction,
-          {
-            [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-              PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
-            [PERPS_EVENT_PROPERTY.ASSET]: symbol,
-            [PERPS_EVENT_PROPERTY.SOURCE_SECTION]: sourceSection,
-          },
-        );
-      },
-    );
+      expect(mockTrack).toHaveBeenCalledWith(
+        MetaMetricsEventName.PerpsUiInteraction,
+        {
+          [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+            PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
+          [PERPS_EVENT_PROPERTY.ASSET]: 'ETH',
+          [PERPS_EVENT_PROPERTY.SOURCE_SECTION]:
+            PERPS_EVENT_VALUE.SOURCE_SECTION.TOP_GAINERS,
+        },
+      );
+    });
+
+    it('attributes a pill tap to the losers section', () => {
+      renderSection();
+
+      fireEvent.click(screen.getByTestId('perps-top-movers-losers'));
+      fireEvent.click(screen.getByTestId('perps-top-movers-pill-SOL'));
+
+      expect(mockTrack).toHaveBeenCalledWith(
+        MetaMetricsEventName.PerpsUiInteraction,
+        {
+          [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+            PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
+          [PERPS_EVENT_PROPERTY.ASSET]: 'SOL',
+          [PERPS_EVENT_PROPERTY.SOURCE_SECTION]:
+            PERPS_EVENT_VALUE.SOURCE_SECTION.TOP_LOSERS,
+        },
+      );
+    });
   });
 });

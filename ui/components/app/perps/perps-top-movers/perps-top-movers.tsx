@@ -4,6 +4,7 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
   ButtonBase,
+  ButtonFilter,
   Text,
   TextVariant,
   TextColor,
@@ -181,56 +182,42 @@ export const PerpsTopMovers = ({
         />
       </ButtonBase>
 
-      {/* One joined segmented track, split in half — mobile's SegmentedControl */}
-      <Box paddingLeft={4} paddingRight={4}>
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          className="w-full rounded-full border border-muted p-0.5"
-          data-testid="perps-top-movers-toggle"
+      {/* Segmented track: ButtonFilter supplies the selected fill/contrast
+          (bg-icon-default + inverse text), matching mobile's SegmentedControl. */}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={1}
+        paddingLeft={4}
+        paddingRight={4}
+        className="w-full rounded-full border border-muted p-1"
+        data-testid="perps-top-movers-toggle"
+      >
+        <ButtonFilter
+          isActive={isGainers}
+          onClick={handleSelectGainers}
+          aria-pressed={isGainers}
+          className="flex-1 h-7 rounded-full"
+          data-testid="perps-top-movers-gainers"
         >
-          <ButtonBase
-            className={`flex-1 h-8 rounded-full ${
-              isGainers ? 'bg-muted' : 'bg-transparent hover:bg-hover'
-            }`}
-            onClick={handleSelectGainers}
-            aria-pressed={isGainers}
-            data-testid="perps-top-movers-gainers"
-          >
-            <Text
-              variant={TextVariant.BodySm}
-              fontWeight={FontWeight.Medium}
-              color={
-                isGainers ? TextColor.TextDefault : TextColor.TextAlternative
-              }
-            >
-              {t('perpsTopMoversGainers')}
-            </Text>
-          </ButtonBase>
-          <ButtonBase
-            className={`flex-1 h-8 rounded-full ${
-              isGainers ? 'bg-transparent hover:bg-hover' : 'bg-muted'
-            }`}
-            onClick={handleSelectLosers}
-            aria-pressed={!isGainers}
-            data-testid="perps-top-movers-losers"
-          >
-            <Text
-              variant={TextVariant.BodySm}
-              fontWeight={FontWeight.Medium}
-              color={
-                isGainers ? TextColor.TextAlternative : TextColor.TextDefault
-              }
-            >
-              {t('perpsTopMoversLosers')}
-            </Text>
-          </ButtonBase>
-        </Box>
+          {t('perpsTopMoversGainers')}
+        </ButtonFilter>
+        <ButtonFilter
+          isActive={!isGainers}
+          onClick={handleSelectLosers}
+          aria-pressed={!isGainers}
+          className="flex-1 h-7 rounded-full"
+          data-testid="perps-top-movers-losers"
+        >
+          {t('perpsTopMoversLosers')}
+        </ButtonFilter>
       </Box>
 
       {isLoading ? (
         <Box
-          className="flex-col gap-1.5 overflow-hidden px-4"
+          flexDirection={BoxFlexDirection.Column}
+          gap={3}
+          className="overflow-hidden px-4"
           data-testid="perps-top-movers-skeleton"
         >
           {Array.from({ length: PILL_ROW_COUNT }).map((_, rowIndex) => (
@@ -238,7 +225,8 @@ export const PerpsTopMovers = ({
               key={`perps-top-movers-skeleton-row-${rowIndex}`}
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
-              className="flex-nowrap gap-2"
+              gap={2}
+              className="flex-nowrap"
             >
               {SKELETON_PILL_KEYS.map((pillKey) => (
                 <Skeleton
@@ -251,7 +239,9 @@ export const PerpsTopMovers = ({
         </Box>
       ) : (
         <Box
-          className="flex-col gap-1.5 overflow-x-auto px-4"
+          flexDirection={BoxFlexDirection.Column}
+          gap={3}
+          className="px-4"
           data-testid="perps-top-movers-list"
         >
           {pillRows.map((row, rowIndex) => (
@@ -259,7 +249,8 @@ export const PerpsTopMovers = ({
               key={`perps-top-movers-row-${rowIndex}`}
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
-              className="w-max flex-nowrap gap-2"
+              gap={2}
+              className="w-full flex-wrap"
               data-testid={`perps-top-movers-list-row-${rowIndex}`}
             >
               {row.map((market) => (
