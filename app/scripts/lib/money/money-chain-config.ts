@@ -21,19 +21,31 @@ export type EnsureMoneyChainConfigured = (
 ) => Promise<void>;
 
 /**
+ * The in-flight state shared by every configurator by default, so
+ * configurators owned by different services (availability and upgrade) still
+ * dedupe and serialize their `addNetwork` calls against each other.
+ */
+export type MoneyChainConfigLock = {
+  inFlight?: Promise<void>;
+  inFlightChainId?: Hex;
+};
+
+const sharedLock: MoneyChainConfigLock = {};
+
+/**
  * Create a function that ensures the Money Account chain is configured in the
  * NetworkController, adding it from the featured networks when missing.
  *
  * @param messenger - The messenger used to reach the NetworkController and
  * LegacyBackgroundApiService.
+ * @param lock - The in-flight state to coordinate through. Defaults to a
+ * process-wide lock shared by all configurators; tests may pass their own.
  * @returns The configuring function.
  */
 export function createMoneyChainConfigurator(
   messenger: MoneyChainConfigMessenger,
+  lock: MoneyChainConfigLock = sharedLock,
 ): EnsureMoneyChainConfigured {
-  let inFlight: Promise<void> | undefined;
-  let inFlightChainId: Hex | undefined;
-
   const configureChain = async (
     vaultConfig: MoneyAccountVaultConfig,
   ): Promise<void> => {
@@ -63,8 +75,8 @@ export function createMoneyChainConfigurator(
   return async function ensureMoneyChainConfigured(
     vaultConfig: MoneyAccountVaultConfig,
   ): Promise<void> {
-    if (inFlight && inFlightChainId === vaultConfig.chainId) {
-      return await inFlight;
+    if (lock.inFlight && lock.inFlightChainId === vaultConfig.chainId) {
+      return await lock.inFlight;
     }
 
     // A request for a different chain must not join the in-flight run — it
@@ -72,22 +84,22 @@ export function createMoneyChainConfigurator(
     // it either: `addNetwork` temporarily mutates the enabled-network map and
     // restores it afterwards, so two interleaved runs could clobber each
     // other's restore. Queue behind the in-flight run instead.
-    const previous = inFlight;
+    const previous = lock.inFlight;
     const configuration = (async () => {
       if (previous) {
         await previous.catch(() => undefined);
       }
       await configureChain(vaultConfig);
     })();
-    inFlight = configuration;
-    inFlightChainId = vaultConfig.chainId;
+    lock.inFlight = configuration;
+    lock.inFlightChainId = vaultConfig.chainId;
 
     try {
       await configuration;
     } finally {
-      if (inFlight === configuration) {
-        inFlight = undefined;
-        inFlightChainId = undefined;
+      if (lock.inFlight === configuration) {
+        lock.inFlight = undefined;
+        lock.inFlightChainId = undefined;
       }
     }
   };

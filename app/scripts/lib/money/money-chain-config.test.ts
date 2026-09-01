@@ -3,6 +3,7 @@ import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import type { MoneyAccountVaultConfig } from '../../../../shared/lib/money/vault-config';
 import {
   createMoneyChainConfigurator,
+  type MoneyChainConfigLock,
   type MoneyChainConfigMessenger,
 } from './money-chain-config';
 
@@ -26,9 +27,11 @@ const SEI_NETWORK_CONFIGURATION = FEATURED_RPCS.find(
 function createConfigurator({
   networkConfigured = false,
   addNetwork = jest.fn().mockResolvedValue(MONAD_NETWORK_CONFIGURATION),
+  lock = {},
 }: {
   networkConfigured?: boolean;
   addNetwork?: jest.Mock;
+  lock?: MoneyChainConfigLock;
 } = {}) {
   const call = jest.fn((action: string, ...args: unknown[]) => {
     if (action === 'NetworkController:getState') {
@@ -47,7 +50,7 @@ function createConfigurator({
   const messenger = { call } as unknown as MoneyChainConfigMessenger;
 
   return {
-    ensureMoneyChainConfigured: createMoneyChainConfigurator(messenger),
+    ensureMoneyChainConfigured: createMoneyChainConfigurator(messenger, lock),
     addNetwork,
   };
 }
@@ -99,6 +102,42 @@ describe('createMoneyChainConfigurator', () => {
     await Promise.all([first, second]);
 
     expect(addNetwork).toHaveBeenCalledTimes(1);
+  });
+
+  it('shares the in-flight configuration between separate configurator instances by default', async () => {
+    let resolveAddNetwork: (value?: unknown) => void = () => undefined;
+    const firstAddNetwork = jest.fn().mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveAddNetwork = resolve;
+        }),
+    );
+    const secondAddNetwork = jest
+      .fn()
+      .mockResolvedValue(MONAD_NETWORK_CONFIGURATION);
+    const buildMessenger = (addNetwork: jest.Mock) =>
+      ({
+        call: jest.fn((action: string, ...args: unknown[]) => {
+          if (action === 'NetworkController:getState') {
+            return { networkConfigurationsByChainId: {} };
+          }
+          return addNetwork(...args);
+        }),
+      }) as unknown as MoneyChainConfigMessenger;
+    const firstConfigurator = createMoneyChainConfigurator(
+      buildMessenger(firstAddNetwork),
+    );
+    const secondConfigurator = createMoneyChainConfigurator(
+      buildMessenger(secondAddNetwork),
+    );
+
+    const first = firstConfigurator(VAULT_CONFIG);
+    const second = secondConfigurator(VAULT_CONFIG);
+    resolveAddNetwork();
+    await Promise.all([first, second]);
+
+    expect(firstAddNetwork).toHaveBeenCalledTimes(1);
+    expect(secondAddNetwork).not.toHaveBeenCalled();
   });
 
   it('runs a configuration for a different chain after the in-flight one instead of joining it', async () => {
