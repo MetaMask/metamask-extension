@@ -40,11 +40,9 @@ function getMockDateStore(initial: Record<string, string> = {}) {
  * @param events - The events to seed.
  */
 function seedEvents(events: Record<string, Json>) {
-  jest
-    .mocked(browser)
-    .storage.local.get.mockImplementation(async () => ({
-      [CronjobControllerStorageKey]: { events },
-    }));
+  jest.mocked(browser).storage.local.get.mockImplementation(async () => ({
+    [CronjobControllerStorageKey]: { events },
+  }));
 }
 
 jest.mock('webextension-polyfill', () => {
@@ -198,11 +196,9 @@ describe('CronjobControllerStorageManager', () => {
     });
 
     it('leaves state alone when it holds no events', async () => {
-      jest
-        .mocked(browser)
-        .storage.local.get.mockImplementation(async () => ({
-          [CronjobControllerStorageKey]: null,
-        }));
+      jest.mocked(browser).storage.local.get.mockImplementation(async () => ({
+        [CronjobControllerStorageKey]: null,
+      }));
       const { store } = getMockDateStore();
       const manager = new CronjobControllerStorageManager(store);
 
@@ -238,7 +234,9 @@ describe('CronjobControllerStorageManager', () => {
 
   describe('deleteEventDate', () => {
     it('removes the date from the date store', async () => {
-      const { store, dates } = getMockDateStore({ foo: '2026-06-01T12:00:00.000Z' });
+      const { store, dates } = getMockDateStore({
+        foo: '2026-06-01T12:00:00.000Z',
+      });
       seedEvents({});
       const manager = new CronjobControllerStorageManager(store);
       await manager.init();
