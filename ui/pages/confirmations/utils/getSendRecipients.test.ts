@@ -1,3 +1,5 @@
+import { Interface } from '@ethersproject/abi';
+import { abiERC1155 } from '@metamask/metamask-eth-abis';
 import {
   TransactionMeta,
   TransactionType,
@@ -18,6 +20,16 @@ const TRANSFER_FROM_DATA = `0x23b872dd000000000000000000000000${FROM_ADDRESS.sli
 )}000000000000000000000000${TOKEN_RECIPIENT.slice(
   2,
 )}0000000000000000000000000000000000000000000000000000000000000064`;
+
+const ERC1155_SAFE_BATCH_TRANSFER_FROM_DATA = new Interface(
+  abiERC1155,
+).encodeFunctionData('safeBatchTransferFrom', [
+  FROM_ADDRESS,
+  TOKEN_RECIPIENT,
+  ['1'],
+  ['1'],
+  '0x',
+]);
 
 function buildTransactionMeta({
   data,
@@ -117,6 +129,17 @@ describe('getSendRecipients', () => {
         }),
       ),
     ).toEqual([]);
+  });
+
+  it('returns the decoded payee for ERC-1155 safeBatchTransferFrom contract interactions', () => {
+    expect(
+      getSendRecipients(
+        buildTransactionMeta({
+          data: ERC1155_SAFE_BATCH_TRANSFER_FROM_DATA,
+          type: TransactionType.contractInteraction,
+        }),
+      ).map((address) => address.toLowerCase()),
+    ).toEqual([TOKEN_RECIPIENT]);
   });
 
   it('returns swapAndSendRecipient for swap-and-send transactions', () => {
@@ -316,6 +339,24 @@ describe('getSendRecipients', () => {
               data: TRANSFER_DATA,
               to: TOKEN_CONTRACT,
               type: TransactionType.tokenMethodTransfer,
+            },
+          ],
+          type: TransactionType.batch,
+        }),
+      ).map((address) => address.toLowerCase()),
+    ).toEqual([TOKEN_RECIPIENT]);
+  });
+
+  it('includes a nested ERC-1155 safeBatchTransferFrom payee from a batch', () => {
+    expect(
+      getSendRecipients(
+        buildTransactionMeta({
+          data: '0xdeadbeef',
+          nestedTransactions: [
+            {
+              data: ERC1155_SAFE_BATCH_TRANSFER_FROM_DATA,
+              to: TOKEN_CONTRACT,
+              type: TransactionType.contractInteraction,
             },
           ],
           type: TransactionType.batch,
