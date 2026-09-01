@@ -2,9 +2,11 @@ import React, { useCallback, useMemo, useState } from 'react';
 import {
   Box,
   BoxFlexDirection,
+  BoxAlignItems,
   ButtonBase,
-  ButtonFilter,
   Text,
+  TextVariant,
+  TextColor,
   FontWeight,
   Icon,
   IconName,
@@ -25,7 +27,7 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
 import type { SortDirection } from '../../../../pages/perps/utils/sortMarkets';
-import { MARKET_SORTING_CONFIG, PERPS_CONSTANTS } from '../constants';
+import { MARKET_SORTING_CONFIG } from '../constants';
 import { usePerpsTopMovers } from '../hooks/usePerpsTopMovers';
 import type { PerpsMarketData } from '../types';
 import { PerpsTopMoverPill } from './perps-top-mover-pill';
@@ -39,11 +41,40 @@ const GAINERS_DIRECTION: SortDirection =
   MARKET_SORTING_CONFIG.DEFAULT_DIRECTION;
 const LOSERS_DIRECTION: SortDirection = 'asc';
 
+/** Pills are split evenly across this many rows, as mobile's PillScrollList does. */
+const PILL_ROW_COUNT = 2;
+
+/** Skeleton pill footprint, matching mobile's SectionPillsSkeleton (104x32). */
+const SKELETON_PILL_STYLES = 'h-8 w-[104px] shrink-0 rounded-full';
+const SKELETON_PILL_KEYS = ['a', 'b', 'c', 'd', 'e', 'f'];
+
 /**
- * Two columns wide, so `PERPS_CONSTANTS.TOP_MOVERS_LIMIT` (8) pills fill four
- * stacked rows and the section never needs to scroll.
+ * Splits the ranked markets evenly across rows, filling each row in turn —
+ * the same distribution mobile's `PillScrollList` uses, so the two clients
+ * order their pills identically.
+ *
+ * @param markets - Ranked markets to lay out.
+ * @param rowCount - How many rows to split across.
+ * @returns One array of markets per row.
  */
-const PILL_GRID_STYLES = 'grid grid-cols-2 gap-2 px-4';
+const splitIntoRows = (
+  markets: PerpsMarketData[],
+  rowCount: number,
+): PerpsMarketData[][] => {
+  const rows: PerpsMarketData[][] = [];
+  let start = 0;
+
+  for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+    const rowSize = Math.ceil((markets.length - start) / (rowCount - rowIndex));
+    const row = markets.slice(start, start + rowSize);
+    if (row.length > 0) {
+      rows.push(row);
+    }
+    start += rowSize;
+  }
+
+  return rows;
+};
 
 export type PerpsTopMoversProps = {
   /** Live markets to rank, owned by the Perps tab's market-list stream. */
@@ -54,9 +85,9 @@ export type PerpsTopMoversProps = {
 
 /**
  * PerpsTopMovers ranks the live perps markets by 24h price change and shows
- * the strongest movers as a 2-column pill grid. The Gainers/Losers toggle
- * flips the ranking direction in place, and the header opens the full market
- * list already sorted by price change in the selected direction.
+ * the strongest movers as two horizontally scrolling rows of pills. The
+ * Gainers/Losers toggle flips the ranking direction in place, and the header
+ * opens the full market list already sorted by price change in that direction.
  *
  * Receives markets from the Perps tab rather than subscribing itself, so the
  * tab keeps a single owner of the shared market-list price stream.
@@ -116,17 +147,9 @@ export const PerpsTopMovers = ({
     [isGainers, navigate, track],
   );
 
-  const skeletonPills = useMemo(
-    () =>
-      Array.from({ length: PERPS_CONSTANTS.TOP_MOVERS_LIMIT }).map(
-        (_, index) => (
-          <Skeleton
-            key={`perps-top-movers-skeleton-pill-${index}`}
-            className="h-12 w-full rounded-xl"
-          />
-        ),
-      ),
-    [],
+  const pillRows = useMemo(
+    () => splitIntoRows(markets, PILL_ROW_COUNT),
+    [markets],
   );
 
   // Once the markets have loaded, an empty ranking means there is nothing to
@@ -139,61 +162,114 @@ export const PerpsTopMovers = ({
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
-      gap={2}
+      gap={3}
       data-testid="perps-top-movers"
     >
+      {/* Heading with the chevron tucked directly after the title, as on mobile */}
       <ButtonBase
-        className="w-full flex flex-row justify-between items-center px-4 py-3 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
+        className="w-auto self-start h-auto justify-start gap-1 bg-transparent px-4 pt-4 rounded-none hover:bg-transparent active:bg-transparent"
         onClick={handleSeeAll}
         data-testid="perps-top-movers-header"
       >
-        <Text fontWeight={FontWeight.Medium}>{t('perpsTopMovers')}</Text>
+        <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
+          {t('perpsTopMovers')}
+        </Text>
         <Icon
           name={IconName.ArrowRight}
-          size={IconSize.Sm}
+          size={IconSize.Md}
           color={IconColor.IconAlternative}
         />
       </ButtonBase>
 
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        gap={2}
-        paddingLeft={4}
-        paddingRight={4}
-      >
-        <ButtonFilter
-          isActive={isGainers}
-          onClick={handleSelectGainers}
-          aria-pressed={isGainers}
-          data-testid="perps-top-movers-gainers"
+      {/* One joined segmented track, split in half — mobile's SegmentedControl */}
+      <Box paddingLeft={4} paddingRight={4}>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          className="w-full rounded-lg border border-muted p-1"
+          data-testid="perps-top-movers-toggle"
         >
-          {t('perpsTopMoversGainers')}
-        </ButtonFilter>
-        <ButtonFilter
-          isActive={!isGainers}
-          onClick={handleSelectLosers}
-          aria-pressed={!isGainers}
-          data-testid="perps-top-movers-losers"
-        >
-          {t('perpsTopMoversLosers')}
-        </ButtonFilter>
+          <ButtonBase
+            className={`flex-1 h-8 rounded-md ${
+              isGainers ? 'bg-muted' : 'bg-transparent hover:bg-hover'
+            }`}
+            onClick={handleSelectGainers}
+            aria-pressed={isGainers}
+            data-testid="perps-top-movers-gainers"
+          >
+            <Text
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={
+                isGainers ? TextColor.TextDefault : TextColor.TextAlternative
+              }
+            >
+              {t('perpsTopMoversGainers')}
+            </Text>
+          </ButtonBase>
+          <ButtonBase
+            className={`flex-1 h-8 rounded-md ${
+              isGainers ? 'bg-transparent hover:bg-hover' : 'bg-muted'
+            }`}
+            onClick={handleSelectLosers}
+            aria-pressed={!isGainers}
+            data-testid="perps-top-movers-losers"
+          >
+            <Text
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={
+                isGainers ? TextColor.TextAlternative : TextColor.TextDefault
+              }
+            >
+              {t('perpsTopMoversLosers')}
+            </Text>
+          </ButtonBase>
+        </Box>
       </Box>
 
       {isLoading ? (
         <Box
-          className={PILL_GRID_STYLES}
+          className="flex-col gap-2 overflow-hidden px-4"
           data-testid="perps-top-movers-skeleton"
         >
-          {skeletonPills}
+          {Array.from({ length: PILL_ROW_COUNT }).map((_, rowIndex) => (
+            <Box
+              key={`perps-top-movers-skeleton-row-${rowIndex}`}
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              className="flex-nowrap gap-2"
+            >
+              {SKELETON_PILL_KEYS.map((pillKey) => (
+                <Skeleton
+                  key={`perps-top-movers-skeleton-pill-${rowIndex}-${pillKey}`}
+                  className={SKELETON_PILL_STYLES}
+                />
+              ))}
+            </Box>
+          ))}
         </Box>
       ) : (
-        <Box className={PILL_GRID_STYLES} data-testid="perps-top-movers-list">
-          {markets.map((market) => (
-            <PerpsTopMoverPill
-              key={market.symbol}
-              market={market}
-              onPress={handleMarketClick}
-            />
+        <Box
+          className="flex-col gap-2 overflow-x-auto px-4"
+          data-testid="perps-top-movers-list"
+        >
+          {pillRows.map((row, rowIndex) => (
+            <Box
+              key={`perps-top-movers-row-${rowIndex}`}
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              className="w-max flex-nowrap gap-2"
+              data-testid={`perps-top-movers-list-row-${rowIndex}`}
+            >
+              {row.map((market) => (
+                <PerpsTopMoverPill
+                  key={market.symbol}
+                  market={market}
+                  onPress={handleMarketClick}
+                />
+              ))}
+            </Box>
           ))}
         </Box>
       )}

@@ -141,6 +141,40 @@ describe('PerpsTopMovers', () => {
       expect(getPillSymbols()).toHaveLength(PERPS_CONSTANTS.TOP_MOVERS_LIMIT);
     });
 
+    it('splits the ranked pills evenly across two rows', () => {
+      renderSection(
+        Array.from({ length: PERPS_CONSTANTS.TOP_MOVERS_LIMIT }, (_, index) =>
+          createMarket(`SYM${index}`, `+${index}.00%`),
+        ),
+      );
+
+      const rowCounts = [0, 1].map(
+        (rowIndex) =>
+          screen.getByTestId(`perps-top-movers-list-row-${rowIndex}`)
+            .childElementCount,
+      );
+
+      expect(rowCounts).toStrictEqual([4, 4]);
+    });
+
+    it('keeps the ranking order when splitting an odd number of pills', () => {
+      renderSection([
+        createMarket('AAA', '+9.00%'),
+        createMarket('BBB', '+5.00%'),
+        createMarket('CCC', '+1.00%'),
+      ]);
+
+      expect(
+        screen.getByTestId('perps-top-movers-list-row-0'),
+      ).toHaveTextContent('AAA');
+      expect(
+        screen.getByTestId('perps-top-movers-list-row-0'),
+      ).toHaveTextContent('BBB');
+      expect(
+        screen.getByTestId('perps-top-movers-list-row-1'),
+      ).toHaveTextContent('CCC');
+    });
+
     it('renders the loading skeleton while market data is loading', () => {
       renderSection([], true);
 
