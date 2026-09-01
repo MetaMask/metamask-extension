@@ -42,10 +42,17 @@ import {
   selectBridgeHistoryItemByHash,
 } from '../ducks/bridge-status/selectors';
 import { getInternalAccountsObject } from './accounts';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
+import {
+  getInternalAccountBySelectedAccountGroupAndCaip,
+  getSelectedAccountGroup,
+} from './multichain-accounts/account-tree';
 import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
+import { extractWalletIdFromGroupId } from './multichain-accounts/utils';
 import { enrichLocalActivity } from './activity/enrich-local-activity';
-import { selectPrimaryMoneyAccount } from './money-account';
+import {
+  selectPrimaryMoneyAccount,
+  type PrimaryMoneyAccount,
+} from './money-account';
 import { getAssetsMetadata } from './assets';
 import {
   groupAndSortTransactionsByNonce,
@@ -69,6 +76,30 @@ const selectTransactionPayData = (state: MetaMaskReduxState) =>
   (state.metamask as unknown as TransactionPayControllerState)
     .transactionData ??
   (EMPTY_OBJECT as TransactionPayControllerState['transactionData']);
+
+/**
+ * Whether the selected account group belongs to the same HD entropy wallet that
+ * owns the primary money account. Money-account activity is only surfaced for
+ * that wallet so switching to another SRP does not leak unrelated rows.
+ *
+ * @param selectedAccountGroup - Currently selected account group id.
+ * @param primaryMoneyAccount - Primary money account, when present.
+ * @returns Whether money-account batches should appear in activity.
+ */
+function isSelectedGroupOwnedByMoneyAccountEntropy(
+  selectedAccountGroup: string | null | undefined,
+  primaryMoneyAccount: PrimaryMoneyAccount | undefined,
+): boolean {
+  const entropyId = primaryMoneyAccount?.options?.entropy?.id;
+  if (!selectedAccountGroup || !entropyId) {
+    return false;
+  }
+
+  return (
+    extractWalletIdFromGroupId(selectedAccountGroup as never) ===
+    `entropy:${entropyId}`
+  );
+}
 
 /**
  * Money-account deposits and withdrawals execute from the Money Keyring
@@ -120,6 +151,7 @@ export const selectLocalTransactions = createSelector(
   selectRequiredTransactionIds,
   selectRequiredTransactionHashes,
   selectPrimaryMoneyAccount,
+  getSelectedAccountGroup,
   (
     transactions,
     evmAddress,
@@ -127,6 +159,7 @@ export const selectLocalTransactions = createSelector(
     internalTxIds,
     internalTxHashes,
     primaryMoneyAccount,
+    selectedAccountGroup,
   ): TransactionGroup[] => {
     if (!evmAddress) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
@@ -134,6 +167,11 @@ export const selectLocalTransactions = createSelector(
 
     const selectedAddress = evmAddress.toLowerCase();
     const moneyAccountAddress = primaryMoneyAccount?.address.toLowerCase();
+    const includeMoneyAccountTransactions =
+      isSelectedGroupOwnedByMoneyAccountEntropy(
+        selectedAccountGroup,
+        primaryMoneyAccount,
+      );
 
     const isInternalRequiredTransaction = (
       tx: Pick<Partial<TransactionMeta>, 'id' | 'hash'>,
@@ -150,7 +188,8 @@ export const selectLocalTransactions = createSelector(
     const filtered = (transactions ?? []).filter(
       (tx) =>
         (isFromSelectedAccount(tx, selectedAddress) ||
-          isMoneyAccountTransaction(tx, moneyAccountAddress)) &&
+          (includeMoneyAccountTransactions &&
+            isMoneyAccountTransaction(tx, moneyAccountAddress))) &&
         !isInternalRequiredTransaction(tx),
     );
 

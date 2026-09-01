@@ -427,4 +427,65 @@ describe('selectLocalTransactions', () => {
     ).toStrictEqual(['money-account-tx', 'selected-account-tx']);
     expect(groups.every((group) => group.transactions.length === 1)).toBe(true);
   });
+
+  it('excludes money-account transactions when another SRP account group is selected', () => {
+    const state = buildStateWithMoneyAccount(buildMoneyAccountTransaction());
+    const otherEntropyWalletId = 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8';
+    const otherEntropyGroupId = `${otherEntropyWalletId}/0`;
+    const otherAccountId = MOCK_ACCOUNT_SOLANA_MAINNET.id;
+
+    // Point selection at a different entropy wallet's group with an EVM account
+    // so selectEvmAddress still resolves, but money-account ownership does not.
+    const otherEvmAccount = {
+      ...typedMockState.metamask.internalAccounts.accounts[
+        typedMockState.metamask.internalAccounts.selectedAccount
+      ],
+      id: 'other-srp-evm-account',
+      address: '0x1111111111111111111111111111111111111111',
+      options: {
+        ...typedMockState.metamask.internalAccounts.accounts[
+          typedMockState.metamask.internalAccounts.selectedAccount
+        ].options,
+        entropySource: '01JKAF3PJ247KAM6C03G5Q0NP8',
+      },
+    };
+
+    state.metamask.selectedAccountGroup = otherEntropyGroupId as never;
+    state.metamask.internalAccounts.selectedAccount = otherEvmAccount.id;
+    state.metamask.internalAccounts.accounts = {
+      ...state.metamask.internalAccounts.accounts,
+      [otherEvmAccount.id]: otherEvmAccount,
+      [otherAccountId]: MOCK_ACCOUNT_SOLANA_MAINNET,
+    } as typeof state.metamask.internalAccounts.accounts;
+
+    state.metamask.accountTree.wallets[otherEntropyWalletId as never] = {
+      id: otherEntropyWalletId,
+      type: 'entropy',
+      groups: {
+        [otherEntropyGroupId]: {
+          id: otherEntropyGroupId,
+          type: 'multichain-account',
+          accounts: [otherEvmAccount.id],
+          metadata: {
+            name: 'Other SRP Account',
+            entropy: { groupIndex: 0 },
+            pinned: false,
+            hidden: false,
+          },
+        },
+      },
+      metadata: {
+        name: 'Other Wallet',
+        entropy: { id: '01JKAF3PJ247KAM6C03G5Q0NP8' },
+      },
+    } as never;
+
+    const groups = selectLocalTransactions(state);
+
+    expect(
+      groups.some(
+        (group) => group.initialTransaction.id === 'money-account-tx',
+      ),
+    ).toBe(false);
+  });
 });
