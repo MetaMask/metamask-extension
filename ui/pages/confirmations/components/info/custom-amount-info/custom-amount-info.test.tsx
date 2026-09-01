@@ -83,6 +83,16 @@ jest.mock('../../rows/total-row/total-row', () => ({
 const MOCK_TRANSACTION_META =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
 
+// Withdraws are batches, so the money-account type sits on a nested transaction.
+const MOCK_MONEY_ACCOUNT_WITHDRAW_TRANSACTION_META = {
+  ...MOCK_TRANSACTION_META,
+  type: TransactionType.batch,
+  nestedTransactions: [
+    { type: TransactionType.moneyAccountWithdraw },
+    { type: TransactionType.tokenMethodTransfer },
+  ],
+} as TransactionMeta;
+
 const mockStore = configureMockStore([]);
 
 const DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN = {
@@ -128,8 +138,10 @@ const MOCK_PRIMARY_REQUIRED_TOKEN = {
 
 function render(
   options: {
+    amountDetails?: (amountFiat: string) => React.ReactNode;
     disableAutomaticToken?: boolean;
     disablePay?: boolean;
+    disablePercentageButtons?: boolean;
     displayPercentageButtons?: boolean;
     hidePayTokenAmount?: boolean;
     availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
@@ -150,8 +162,10 @@ function render(
   } = {},
 ) {
   const {
+    amountDetails,
     disableAutomaticToken,
     disablePay = false,
+    disablePercentageButtons,
     displayPercentageButtons = false,
     hidePayTokenAmount = false,
     availableTokens = [MOCK_AVAILABLE_TOKEN],
@@ -265,8 +279,10 @@ function render(
 
   return renderWithConfirmContextProvider(
     <CustomAmountInfo
+      amountDetails={amountDetails}
       disableAutomaticToken={disableAutomaticToken}
       disablePay={disablePay}
+      disablePercentageButtons={disablePercentageButtons}
       displayPercentageButtons={displayPercentageButtons}
       hidePayTokenAmount={hidePayTokenAmount}
     />,
@@ -328,6 +344,16 @@ describe('CustomAmountInfo', () => {
 
     expect(getByTestId('custom-amount')).toHaveTextContent('123');
     expect(queryByTestId('custom-amount-skeleton')).not.toBeInTheDocument();
+  });
+
+  it('renders amount details under the amount input', () => {
+    const { getByTestId } = render({
+      amountDetails: (amountFiat) => (
+        <div data-testid="amount-details">{amountFiat}</div>
+      ),
+    });
+
+    expect(getByTestId('amount-details')).toHaveTextContent('100');
   });
 
   it('calls useAutomaticTransactionPayToken with disable false when both props unset', () => {
@@ -448,9 +474,36 @@ describe('CustomAmountInfo', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('does not render the skeleton for a withdraw when no primary required token is resolved', () => {
+      const { getByTestId, queryByTestId } = render({
+        disablePay: false,
+        primaryRequiredToken: undefined,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: true },
+      });
+
+      expect(getByTestId('custom-amount-info')).toBeInTheDocument();
+      expect(
+        queryByTestId('custom-amount-info-skeleton'),
+      ).not.toBeInTheDocument();
+    });
+
     it('renders the full UI once a primary required token is resolved', () => {
       const { getByTestId, queryByTestId } = render({
         disablePay: false,
+      });
+
+      expect(getByTestId('custom-amount-info')).toBeInTheDocument();
+      expect(
+        queryByTestId('custom-amount-info-skeleton'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not render the skeleton for a money-account withdraw without a required token', () => {
+      const { getByTestId, queryByTestId } = render({
+        disablePay: false,
+        primaryRequiredToken: undefined,
+        transactionMeta: MOCK_MONEY_ACCOUNT_WITHDRAW_TRANSACTION_META,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
       });
 
       expect(getByTestId('custom-amount-info')).toBeInTheDocument();
@@ -573,6 +626,21 @@ describe('CustomAmountInfo', () => {
       getByTestId('percentage-button-50').click();
       expect(updatePendingAmountPercentage).not.toHaveBeenCalled();
     });
+
+    it('disables percentage buttons when disablePercentageButtons is true', () => {
+      const updatePendingAmountPercentage = jest.fn();
+      const { getByTestId } = renderMoneyAccount({
+        disablePercentageButtons: true,
+        customAmountHookReturn: {
+          ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+          updatePendingAmountPercentage,
+        },
+      });
+
+      expect(getByTestId('percentage-button-50')).toBeDisabled();
+      getByTestId('percentage-button-50').click();
+      expect(updatePendingAmountPercentage).not.toHaveBeenCalled();
+    });
   });
 
   describe('result rows', () => {
@@ -598,6 +666,17 @@ describe('CustomAmountInfo', () => {
         isQuotesLoading: false,
       });
 
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+    });
+
+    it('renders the total without a fee row for disablePay withdraws', () => {
+      const { getByTestId, queryByTestId } = render({
+        disablePay: true,
+        hasQuotes: false,
+        isQuotesLoading: false,
+      });
+
+      expect(getByTestId('total-row')).toBeInTheDocument();
       expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
     });
 

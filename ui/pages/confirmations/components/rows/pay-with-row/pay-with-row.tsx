@@ -143,6 +143,7 @@ export function PayWithRow({
     ownerId,
     isPostQuoteWithdraw,
     isMoneyAccountSelected,
+    hasAvailableTokens,
     openModal,
     modal,
   } = usePayWithToken();
@@ -153,11 +154,15 @@ export function PayWithRow({
     (alert) => alert.key === AlertsName.AccountNoFunds,
   );
 
-  // When the selected account has no funding tokens, show an empty
-  // "Select payment method" placeholder instead of an endless skeleton.
-  // Post-quote withdraws also avoid an endless skeleton — destination tokens
-  // may still be importing/enriching; show an empty Receive selector instead.
-  if (!displayToken && !hasAccountNoFunds && !isPostQuoteWithdraw) {
+  // Same as mobile: skeleton only while funding tokens exist to auto-select
+  // from. Without tokens the skeleton never resolves — show the empty
+  // "Select payment method" placeholder instead.
+  if (
+    !displayToken &&
+    !hasAccountNoFunds &&
+    !isPostQuoteWithdraw &&
+    hasAvailableTokens
+  ) {
     return <PayWithRowSkeleton />;
   }
 

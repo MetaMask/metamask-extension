@@ -91,9 +91,19 @@ const FILE_SOURCES: Array<{
     exportName: 'MONEY_EARNING_SECTION_ENABLED_FLAG_NAME',
   },
   {
+    key: 'MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME',
+  },
+  {
     key: 'MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME',
     file: 'shared/lib/money/vault-config.ts',
     exportName: 'MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_ACCOUNT_CHOMP_CONFIG_FLAG_NAME',
+    file: 'shared/lib/money/chomp-config.ts',
+    exportName: 'MONEY_ACCOUNT_CHOMP_CONFIG_FLAG_NAME',
   },
 ];
 

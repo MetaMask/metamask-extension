@@ -586,7 +586,7 @@ describe('enforced-simulations', () => {
         ).toBe(false);
       });
 
-      it('returns true when a chain with no slug mapping has a non-trusted cached result', () => {
+      it('returns false when the chain is not address-scan supported even with a non-trusted cached result', () => {
         expect(
           isEnforcedSimulationsEligible(
             {
@@ -599,7 +599,37 @@ describe('enforced-simulations', () => {
               UNSUPPORTED_CHAIN_ID,
             ),
           ),
-        ).toBe(true);
+        ).toBe(false);
+      });
+
+      it('returns false when the chain is not address-scan supported and the cached verdict is ErrorResult', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              chainId: UNSUPPORTED_CHAIN_ID,
+            },
+            buildState(
+              ResultType.ErrorResult,
+              [UNSUPPORTED_CHAIN_ID],
+              UNSUPPORTED_CHAIN_ID,
+            ),
+          ),
+        ).toBe(false);
+      });
+
+      it('returns false on a 7702 chain that Blockaid cannot address-screen', () => {
+        const celoChainId = '0xa4ec' as Hex;
+
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              chainId: celoChainId,
+            },
+            buildState(ResultType.ErrorResult, [celoChainId], celoChainId),
+          ),
+        ).toBe(false);
       });
 
       it('returns false when an unmapped chain recipient has a cached Trusted verdict', () => {
@@ -634,7 +664,7 @@ describe('enforced-simulations', () => {
         ).toBe(false);
       });
 
-      it('still enforces when the cached verdict is ErrorResult', () => {
+      it('still enforces when the cached verdict is ErrorResult on an address-scan supported chain', () => {
         expect(
           isEnforcedSimulationsEligible(
             {
@@ -891,6 +921,22 @@ describe('enforced-simulations', () => {
           isEnforcedSimulationsEligible(
             BASE_TRANSACTION_META,
             buildState(ResultType.Trusted),
+          ),
+        ).toBe(true);
+      });
+
+      it('returns true even when the chain is not address-scan supported', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              chainId: UNSUPPORTED_CHAIN_ID,
+            },
+            buildState(
+              ResultType.Trusted,
+              [UNSUPPORTED_CHAIN_ID],
+              UNSUPPORTED_CHAIN_ID,
+            ),
           ),
         ).toBe(true);
       });

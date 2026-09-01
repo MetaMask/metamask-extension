@@ -34,6 +34,8 @@ import {
   Json,
   NonEmptyArray,
   parseCaipAccountId,
+  parseCaipChainId,
+  toCaipAccountId,
 } from '@metamask/utils';
 import { Mutex } from 'async-mutex';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
@@ -120,11 +122,13 @@ import {
   GetTokenListState,
   TokenDetectionControllerDisableAction,
   TokenDetectionControllerEnableAction,
+  TokensControllerAddTokenAction,
   TokensControllerGetStateAction,
 } from '@metamask/assets-controllers';
 import {
   AccountId,
   Asset,
+  AssetsControllerAddCustomAssetAction,
   AssetsControllerGetAssetsAction,
   AssetsControllerGetStateAction,
   AssetsControllerSetSelectedCurrencyAction,
@@ -141,6 +145,7 @@ import {
 import {
   ApprovalControllerAcceptRequestAction,
   ApprovalControllerAddAction,
+  ApprovalControllerAddAndShowApprovalRequestAction,
   ApprovalControllerGetStateAction,
   ApprovalControllerHasRequestAction,
   ApprovalControllerRejectRequestAction,
@@ -176,12 +181,18 @@ import {
 import {
   CaveatSpecificationConstraint,
   ExtractPermission,
+  MethodNames,
   OriginString,
   PermissionControllerAcceptPermissionsRequestAction,
   PermissionControllerClearStateAction,
+  PermissionControllerGetCaveatAction,
+  PermissionControllerGrantPermissionsAction,
   PermissionControllerRejectPermissionsRequestAction,
+  PermissionControllerRevokePermissionAction,
   PermissionControllerRevokePermissionsAction,
+  PermissionControllerUpdateCaveatAction,
   PermissionControllerUpdatePermissionsByCaveatAction,
+  PermissionDoesNotExistError,
   PermissionSpecificationConstraint,
   PermissionsRequest,
   PermissionsRequestNotFoundError,
@@ -190,12 +201,23 @@ import {
   Caip25CaveatMutators,
   Caip25CaveatType,
   Caip25CaveatValue,
+  Caip25EndowmentPermissionName,
+  getAllScopesFromCaip25CaveatValue,
+  getCaipAccountIdsFromCaip25CaveatValue,
+  isCaipAccountIdInPermittedAccountIds,
+  isInternalAccountInPermittedAccountIds,
+  setChainIdsInCaip25CaveatValue,
+  setNonSCACaipAccountIdsInCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { SnapId } from '@metamask/snaps-sdk';
+import { isSnapId } from '@metamask/snaps-utils';
 import {
   SnapControllerClearStateAction,
+  SnapControllerGetStateAction,
   SnapInterfaceControllerDeleteInterfaceAction,
 } from '@metamask/snaps-controllers';
+import { MultichainNetworkControllerGetStateAction } from '@metamask/multichain-network-controller';
+import { nanoid } from 'nanoid';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import {
   ApprovalType,
@@ -267,6 +289,7 @@ import {
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { getAllEnabledNetworkClientIds } from '../../../shared/lib/network.utils';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import {
   fetchTokenBalance,
@@ -274,6 +297,10 @@ import {
 } from '../../../shared/lib/token-util';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import {
+  getNetworkConfigurationsByCaipChainId,
+  getProviderConfig,
+} from '../../../shared/lib/selectors/networks';
 import { DecodedTransactionDataResponse } from '../../../shared/types/transaction-decode';
 import { captureException } from '../../../shared/lib/sentry';
 import {
@@ -380,7 +407,7 @@ import {
 } from '../../../shared/lib/hardware-wallets';
 import { isDmkFeatureEnabled } from '../../../shared/lib/hardware-wallets/feature-flags';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
-import { getProviderConfig } from '../../../shared/lib/selectors/networks';
+import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import {
   LatticeKeyringV2,
   LatticeCreateAccountOptions,
@@ -455,6 +482,11 @@ type TokenStandardAndDetails = {
 const MESSENGER_EXPOSED_METHODS = [
   'acceptPermissionsRequest',
   'addNetwork',
+  'addPermittedAccount',
+  'addPermittedAccounts',
+  'addPermittedChain',
+  'addPermittedChains',
+  'addToken',
   'addTransaction',
   'addTransactionAndWaitForPublish',
   'applyTransactionContainersExisting',
@@ -515,6 +547,9 @@ const MESSENGER_EXPOSED_METHODS = [
   'resolvePendingApproval',
   'removeAccount',
   'removePermissionsFor',
+  'removePermittedAccount',
+  'removePermittedChain',
+  'requestAccountsAndChainPermissionsWithId',
   'requestSafeReload',
   'resetAccount',
   'resetWallet',
@@ -524,6 +559,8 @@ const MESSENGER_EXPOSED_METHODS = [
   'setEnabledAllPopularNetworks',
   'setEnabledNetworks',
   'setLocked',
+  'setPermittedAccounts',
+  'setPermittedChains',
   'setSelectedInternalAccount',
   'submitPasswordOrEncryptionKey',
   'syncKeyringEncryptionKey',
@@ -572,6 +609,7 @@ type AllowedActions =
   | AddressBookControllerClearAction
   | ApprovalControllerAcceptRequestAction
   | ApprovalControllerAddAction
+  | ApprovalControllerAddAndShowApprovalRequestAction
   | ApprovalControllerGetStateAction
   | ApprovalControllerHasRequestAction
   | ApprovalControllerRejectRequestAction
@@ -584,6 +622,7 @@ type AllowedActions =
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
   | AppStateControllerSetTrezorModelAction
   | AssetsContractControllerGetTokenStandardAndDetailsAction
+  | AssetsControllerAddCustomAssetAction
   | AssetsControllerGetAssetsAction
   | AssetsControllerGetStateAction
   | AssetsControllerSetSelectedCurrencyAction
@@ -626,6 +665,7 @@ type AllowedActions =
   | MultichainAccountServiceInitAction
   | MultichainAccountServiceRemoveMultichainAccountWalletAction
   | MultichainAccountServiceResyncAccountsAction
+  | MultichainNetworkControllerGetStateAction
   | NetworkControllerAddNetworkAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
@@ -649,8 +689,12 @@ type AllowedActions =
   | PasskeyControllerUnlockWithPasskeyAction
   | PermissionControllerAcceptPermissionsRequestAction
   | PermissionControllerClearStateAction
+  | PermissionControllerGetCaveatAction
+  | PermissionControllerGrantPermissionsAction
   | PermissionControllerRejectPermissionsRequestAction
+  | PermissionControllerRevokePermissionAction
   | PermissionControllerRevokePermissionsAction
+  | PermissionControllerUpdateCaveatAction
   | PermissionControllerUpdatePermissionsByCaveatAction
   | PhishingControllerMaybeUpdateStateAction
   | PhishingControllerScanAddressAction
@@ -689,6 +733,7 @@ type AllowedActions =
   | ShieldControllerStopAction
   | SmartTransactionsControllerWipeSmartTransactionsAction
   | SnapControllerClearStateAction
+  | SnapControllerGetStateAction
   | SnapInterfaceControllerDeleteInterfaceAction
   | SubscriptionControllerClearStateAction
   | SubscriptionControllerGetStateAction
@@ -697,6 +742,7 @@ type AllowedActions =
   | GetTokenListState
   | TokenDetectionControllerDisableAction
   | TokenDetectionControllerEnableAction
+  | TokensControllerAddTokenAction
   | TokensControllerGetStateAction
   | TransactionControllerAddTransactionAction
   | TransactionControllerAddTransactionBatchAction
@@ -903,6 +949,75 @@ export class LegacyBackgroundApiService {
       ...options,
       forceUpdate: true,
     });
+  }
+
+  /**
+   * Adds a token to the wallet.
+   *
+   * When the assets unify state feature is enabled, the token is added as a
+   * custom asset on the AssetsController for the currently selected account
+   * (resolving the chain ID from the given network client and building the
+   * CAIP-19 asset ID from the address). Otherwise, it is added via the
+   * TokensController.
+   *
+   * @param token - The token to add.
+   * @param token.address - The token contract address.
+   * @param token.symbol - The token symbol.
+   * @param token.decimals - The number of decimals the token uses.
+   * @param token.image - An optional icon URL for the token.
+   * @param token.networkClientId - The ID of the network client the token is on.
+   */
+  async addToken({
+    address,
+    symbol,
+    decimals,
+    image,
+    networkClientId,
+  }: {
+    address: string;
+    symbol: string;
+    decimals: number;
+    image?: string;
+    networkClientId: string;
+  }): Promise<void> {
+    if (getIsAssetsUnifiedStateIncludedInBuild()) {
+      const selectedAccount = this.#messenger.call(
+        'AccountsController:getSelectedAccount',
+      );
+      const {
+        configuration: { chainId },
+      } = this.#messenger.call(
+        'NetworkController:getNetworkClientById',
+        networkClientId,
+      );
+      const assetId = toAssetId(address, chainId);
+      if (!assetId) {
+        throw new Error(
+          `MetaMask - Cannot build assetId for token ${address} on ${chainId}`,
+        );
+      }
+      await this.#messenger.call(
+        'AssetsController:addCustomAsset',
+        selectedAccount.id,
+        assetId,
+        {
+          address,
+          symbol,
+          name: symbol,
+          decimals,
+          chainId,
+          ...(image ? { iconUrl: image } : {}),
+        },
+      );
+    } else {
+      await this.#messenger.call('TokensController:addToken', {
+        address,
+        symbol,
+        decimals,
+        image,
+        networkClientId,
+      });
+    }
   }
 
   /**
@@ -4892,5 +5007,457 @@ export class LegacyBackgroundApiService {
         error,
       );
     }
+  }
+
+  /**
+   * Returns the CAIP-25 caveat for the given origin, or `undefined` if the
+   * origin does not currently have the CAIP-25 permission.
+   *
+   * @param origin - The origin to get the CAIP-25 caveat for.
+   * @returns The CAIP-25 caveat, or `undefined` if it does not exist.
+   */
+  #getCaip25Caveat(origin: string): { value: Caip25CaveatValue } | undefined {
+    try {
+      return this.#messenger.call(
+        'PermissionController:getCaveat',
+        origin,
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+      ) as { value: Caip25CaveatValue } | undefined;
+    } catch (err) {
+      // suppress expected error in case that the origin
+      // does not have the target permission yet
+      if (err instanceof PermissionDoesNotExistError) {
+        return undefined;
+      }
+      throw err;
+    }
+  }
+
+  /**
+   * Adds a permitted account for the given origin.
+   *
+   * @param origin - The origin to add the permitted account for.
+   * @param address - The address of the account to permit.
+   */
+  addPermittedAccount(origin: string, address: string): void {
+    this.#addMoreAccounts(origin, [address]);
+  }
+
+  /**
+   * Adds permitted accounts for the given origin.
+   *
+   * @param origin - The origin to add the permitted accounts for.
+   * @param addresses - The addresses of the accounts to permit.
+   */
+  addPermittedAccounts(origin: string, addresses: string[]): void {
+    this.#addMoreAccounts(origin, addresses);
+  }
+
+  /**
+   * Removes a permitted account for the given origin.
+   *
+   * @param origin - The origin to remove the permitted account for.
+   * @param address - The address of the account to remove.
+   */
+  removePermittedAccount(origin: string, address: string): void {
+    const caip25Caveat = this.#getCaip25Caveat(origin);
+    if (!caip25Caveat) {
+      throw new Error(
+        `Cannot remove account "${address}": No permissions exist for origin "${origin}".`,
+      );
+    }
+
+    const existingAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
+      caip25Caveat.value,
+    );
+
+    const internalAccount = this.#messenger.call(
+      'AccountsController:getAccountByAddress',
+      address,
+    ) as InternalAccount;
+
+    const remainingAccountIds = existingAccountIds.filter(
+      (existingAccountId) => {
+        return !isInternalAccountInPermittedAccountIds(internalAccount, [
+          existingAccountId,
+        ]);
+      },
+    );
+
+    if (existingAccountIds.length === remainingAccountIds.length) {
+      return;
+    }
+
+    this.setPermittedAccounts(origin, remainingAccountIds);
+  }
+
+  /**
+   * Sets the permitted accounts for the given origin, syncing chain scopes for
+   * each account's namespace. Revokes the entire permission when no accounts
+   * are provided.
+   *
+   * @param origin - The origin to set the permitted accounts for.
+   * @param caipAccountIds - The CAIP account ids to permit.
+   */
+  setPermittedAccounts(origin: string, caipAccountIds: string[]): void {
+    const caip25Caveat = this.#getCaip25Caveat(origin);
+    if (!caip25Caveat) {
+      throw new Error(
+        `Cannot set account permissions "${caipAccountIds.join(
+          ', ',
+        )}" for origin "${origin}": no permission currently exists for this origin.`,
+      );
+    }
+
+    if (caipAccountIds.length === 0) {
+      this.#messenger.call(
+        'PermissionController:revokePermission',
+        origin,
+        Caip25EndowmentPermissionName,
+      );
+      return;
+    }
+
+    const existingPermittedChainIds = getAllScopesFromCaip25CaveatValue(
+      caip25Caveat.value,
+    );
+
+    let updatedPermittedChainIds = [...existingPermittedChainIds];
+
+    const { networkConfigurationsByChainId } = this.#messenger.call(
+      'NetworkController:getState',
+    );
+    const { multichainNetworkConfigurationsByChainId } = this.#messenger.call(
+      'MultichainNetworkController:getState',
+    );
+    const { internalAccounts } = this.#messenger.call(
+      'AccountsController:getState',
+    );
+    const { snaps } = this.#messenger.call('SnapController:getState');
+
+    const allNetworksList = Object.keys(
+      getNetworkConfigurationsByCaipChainId({
+        networkConfigurationsByChainId,
+        multichainNetworkConfigurationsByChainId,
+        internalAccounts,
+        snaps,
+      }),
+    );
+
+    caipAccountIds.forEach((caipAccountAddress) => {
+      const {
+        chain: { namespace: accountNamespace },
+      } = parseCaipAccountId(caipAccountAddress as CaipAccountId);
+
+      const existsSelectedChainForNamespace = updatedPermittedChainIds.some(
+        (caipChainId) => {
+          try {
+            const { namespace: chainNamespace } = parseCaipChainId(
+              caipChainId as CaipChainId,
+            );
+            return accountNamespace === chainNamespace;
+          } catch (err) {
+            return false;
+          }
+        },
+      );
+
+      if (!existsSelectedChainForNamespace) {
+        const chainIdsForNamespace = allNetworksList.filter((caipChainId) => {
+          try {
+            const { namespace: chainNamespace } = parseCaipChainId(
+              caipChainId as CaipChainId,
+            );
+            return accountNamespace === chainNamespace;
+          } catch (err) {
+            return false;
+          }
+        });
+
+        updatedPermittedChainIds = [
+          ...updatedPermittedChainIds,
+          ...(chainIdsForNamespace as CaipChainId[]),
+        ];
+      }
+    });
+
+    const updatedCaveatValueWithChainIds = setChainIdsInCaip25CaveatValue(
+      caip25Caveat.value,
+      updatedPermittedChainIds as CaipChainId[],
+    );
+
+    const updatedCaveatValueWithAccountIds =
+      setNonSCACaipAccountIdsInCaip25CaveatValue(
+        updatedCaveatValueWithChainIds,
+        caipAccountIds as CaipAccountId[],
+      );
+
+    this.#messenger.call(
+      'PermissionController:updateCaveat',
+      origin,
+      Caip25EndowmentPermissionName,
+      Caip25CaveatType,
+      updatedCaveatValueWithAccountIds,
+    );
+  }
+
+  /**
+   * Adds a permitted chain for the given origin.
+   *
+   * @param origin - The origin to add the permitted chain for.
+   * @param chainId - The chain id to permit.
+   */
+  addPermittedChain(origin: string, chainId: string): void {
+    this.#addMoreChains(origin, [chainId]);
+  }
+
+  /**
+   * Adds permitted chains for the given origin.
+   *
+   * @param origin - The origin to add the permitted chains for.
+   * @param chainIds - The chain ids to permit.
+   */
+  addPermittedChains(origin: string, chainIds: string[]): void {
+    this.#addMoreChains(origin, chainIds);
+  }
+
+  /**
+   * Removes a permitted chain for the given origin.
+   *
+   * @param origin - The origin to remove the permitted chain for.
+   * @param chainId - The chain id to remove.
+   */
+  removePermittedChain(origin: string, chainId: string): void {
+    const caip25Caveat = this.#getCaip25Caveat(origin);
+    if (!caip25Caveat) {
+      throw new Error(
+        `Cannot remove permission for chainId "${chainId}": No permissions exist for origin "${origin}".`,
+      );
+    }
+
+    const existingChainIds = getAllScopesFromCaip25CaveatValue(
+      caip25Caveat.value,
+    );
+
+    const remainingChainIds = existingChainIds.filter(
+      (existingChainId) => existingChainId !== chainId,
+    );
+
+    if (existingChainIds.length === remainingChainIds.length) {
+      return;
+    }
+
+    this.setPermittedChains(origin, remainingChainIds);
+  }
+
+  /**
+   * Sets the permitted chains for the given origin, preserving existing
+   * permitted accounts. Revokes the entire permission when no chains are
+   * provided (unless the origin is a Snap).
+   *
+   * @param origin - The origin to set the permitted chains for.
+   * @param chainIds - The chain ids to permit.
+   */
+  setPermittedChains(origin: string, chainIds: string[]): void {
+    const caip25Caveat = this.#getCaip25Caveat(origin);
+    if (!caip25Caveat) {
+      throw new Error(
+        `Cannot set permission for chainIds "${chainIds.join(
+          ', ',
+        )}": No permissions exist for origin "${origin}".`,
+      );
+    }
+
+    if (chainIds.length === 0 && !isSnapId(origin)) {
+      this.#messenger.call(
+        'PermissionController:revokePermission',
+        origin,
+        Caip25EndowmentPermissionName,
+      );
+    } else {
+      const updatedCaveatValueWithChainIds = setChainIdsInCaip25CaveatValue(
+        caip25Caveat.value,
+        chainIds as CaipChainId[],
+      );
+
+      const existingPermittedAccountIds =
+        getCaipAccountIdsFromCaip25CaveatValue(caip25Caveat.value);
+
+      const updatedCaveatValueWithAccountIds =
+        setNonSCACaipAccountIdsInCaip25CaveatValue(
+          updatedCaveatValueWithChainIds,
+          existingPermittedAccountIds,
+        );
+
+      this.#messenger.call(
+        'PermissionController:updateCaveat',
+        origin,
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+        updatedCaveatValueWithAccountIds,
+      );
+    }
+  }
+
+  /**
+   * Requests `eth_accounts` and `endowment:permitted-chains` permissions via an
+   * approval flow and returns the id of the created request.
+   *
+   * @param origin - The origin requesting the permissions.
+   * @returns The id of the created approval request.
+   */
+  requestAccountsAndChainPermissionsWithId(origin: string): string {
+    const id = nanoid();
+    // eslint-disable-next-line no-void
+    void this.#requestAccountsAndChainPermissions(origin, id);
+    return id;
+  }
+
+  /**
+   * Extends the permitted accounts for an origin with the accounts for the
+   * given addresses, then triggers the DeFi referral flow for any newly
+   * permitted CAIP account ids.
+   *
+   * @param origin - The origin to add the accounts for.
+   * @param addresses - The addresses of the accounts to permit.
+   */
+  #addMoreAccounts(origin: string, addresses: string[]): void {
+    const caip25Caveat = this.#getCaip25Caveat(origin);
+    if (!caip25Caveat) {
+      throw new Error(
+        `Cannot add account permissions for origin "${origin}": no permission currently exists for this origin.`,
+      );
+    }
+
+    const internalAccounts = addresses.map(
+      (address) =>
+        this.#messenger.call(
+          'AccountsController:getAccountByAddress',
+          address,
+        ) as InternalAccount,
+    );
+
+    // Only the first scope in the scopes array is needed because
+    // setPermittedAccounts currently sets accounts on all matching
+    // namespaces, not just the exact CaipChainId.
+    const caipAccountIds = internalAccounts.map((internalAccount) => {
+      const { namespace, reference } = parseCaipChainId(
+        internalAccount.scopes[0],
+      );
+      return toCaipAccountId(namespace, reference, internalAccount.address);
+    });
+
+    const existingPermittedAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
+      caip25Caveat.value,
+    );
+
+    const updatedAccountIds = Array.from(
+      new Set<CaipAccountId>([
+        ...existingPermittedAccountIds,
+        ...caipAccountIds,
+      ]),
+    );
+
+    const newCaipAccountIds = caipAccountIds.filter(
+      (id) =>
+        !isCaipAccountIdInPermittedAccountIds(id, existingPermittedAccountIds),
+    );
+
+    this.setPermittedAccounts(origin, updatedAccountIds);
+
+    if (newCaipAccountIds.length > 0) {
+      try {
+        this.handleDefiReferralOnPermittedAccountsAdded({
+          origin,
+          newCaipAccountIds,
+        });
+      } catch (error) {
+        log.error(
+          'DeFi referral handler threw after permitted accounts added:',
+          error,
+        );
+      }
+    }
+  }
+
+  /**
+   * Extends the permitted chains for an origin with the given chain ids.
+   *
+   * @param origin - The origin to add the chains for.
+   * @param chainIds - The chain ids to permit.
+   */
+  #addMoreChains(origin: string, chainIds: string[]): void {
+    const caip25Caveat = this.#getCaip25Caveat(origin);
+    if (!caip25Caveat) {
+      throw new Error(
+        `Cannot add chain permissions for origin "${origin}": no permission currently exists for this origin.`,
+      );
+    }
+
+    const existingPermittedChainIds = getAllScopesFromCaip25CaveatValue(
+      caip25Caveat.value,
+    );
+
+    const updatedChainIds = Array.from(
+      new Set([...existingPermittedChainIds, ...chainIds]),
+    );
+
+    this.setPermittedChains(origin, updatedChainIds as CaipChainId[]);
+  }
+
+  /**
+   * Requests an approval for a legacy CAIP-25 permission and grants it once the
+   * user approves.
+   *
+   * Note that we are purposely requesting an approval from the ApprovalController
+   * and then manually forming the permission that is then granted via the
+   * PermissionController rather than calling the PermissionController.requestPermissions()
+   * directly because the CAIP-25 permission is missing the factory method implementation.
+   * After the factory method is added, we can move to requesting "endowment:caip25"
+   * directly from the PermissionController instead.
+   *
+   * @param origin - The origin requesting the permissions.
+   * @param id - The id of the approval request.
+   */
+  async #requestAccountsAndChainPermissions(
+    origin: string,
+    id: string,
+  ): Promise<void> {
+    const { permissions } = (await this.#messenger.call(
+      'ApprovalController:addAndShowApprovalRequest',
+      {
+        id,
+        origin,
+        requestData: {
+          metadata: {
+            id,
+            origin,
+          },
+          permissions: {
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {},
+                    isMultichainOrigin: false,
+                  },
+                },
+              ],
+            },
+          },
+        },
+        type: MethodNames.RequestPermissions,
+      },
+    )) as { permissions: Record<string, unknown> };
+
+    this.#messenger.call('PermissionController:grantPermissions', {
+      subject: { origin },
+      approvedPermissions: permissions as Parameters<
+        PermissionControllerGrantPermissionsAction['handler']
+      >[0]['approvedPermissions'],
+    });
   }
 }

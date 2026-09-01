@@ -9,12 +9,12 @@ import {
   lockAndWaitForLoginPage,
 } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import AccountDetailsPage from '../../page-objects/pages/accounts/details-page';
-import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
+import ResetPasswordPage from '../../page-objects/pages/onboarding/reset-password-page';
 import { Driver } from '../../webdriver/driver';
 import {
   getMainnet25EthAssetsControllerPatch,
@@ -66,10 +66,9 @@ describe('Add account', function () {
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
         );
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           wallet: 'Wallet 1',
           account: SECOND_ACCOUNT_NAME,
-          balance: '$0.00',
         });
         await accountListPage.closeMultichainAccountsPage();
 
@@ -197,10 +196,9 @@ describe('Add account', function () {
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
         );
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           account: SECOND_ACCOUNT_NAME,
           wallet: 'Wallet 1',
-          balance: '$0.00',
         });
         await accountListPage.openMultichainAccountMenu({
           accountLabel: SECOND_ACCOUNT_NAME,
@@ -222,10 +220,9 @@ describe('Add account', function () {
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
         );
-        await accountListPage.checkMultichainAccountBalanceDisplayed({
+        await accountListPage.checkMultichainAccountBalanceNotDisplayed({
           account: IMPORTED_ACCOUNT_NAME,
           wallet: 'Imported accounts',
-          balance: '$0.00',
         });
 
         // Remove the 3rd account imported with a private key
