@@ -8111,7 +8111,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/polling-controller@npm:^16.0.7, @metamask/polling-controller@npm:^16.0.8, @metamask/polling-controller@npm:^16.0.9":
+"@metamask/polling-controller@npm:^16.0.7, @metamask/polling-controller@npm:^16.0.9":
   version: 16.0.9
   resolution: "@metamask/polling-controller@npm:16.0.9"
   dependencies:
@@ -8578,9 +8578,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:25.0.0":
-  version: 25.0.0
-  resolution: "@metamask/smart-transactions-controller@npm:25.0.0"
+"@metamask/smart-transactions-controller@npm:^26.0.0":
+  version: 26.0.0
+  resolution: "@metamask/smart-transactions-controller@npm:26.0.0"
   dependencies:
     "@babel/runtime": "npm:^7.23.9"
     "@ethersproject/bytes": "npm:^5.7.0"
@@ -8591,44 +8591,17 @@ __metadata:
     "@metamask/eth-json-rpc-provider": "npm:^6.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/network-controller": "npm:^34.0.0"
-    "@metamask/polling-controller": "npm:^16.0.8"
-    "@metamask/profile-sync-controller": "npm:^28.2.0"
-    "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/transaction-controller": "npm:^68.3.0"
+    "@metamask/network-controller": "npm:^36.0.0"
+    "@metamask/polling-controller": "npm:^16.0.9"
+    "@metamask/profile-sync-controller": "npm:^29.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^6.1.0"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/transaction-controller": "npm:^69.6.1"
     "@metamask/utils": "npm:^11.11.0"
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     reselect: "npm:^5.1.1"
-  checksum: 10/fadc5632b4efd1de8b027fddde459f575989ee252500ad21e7d2ed03fd720b362122228c62d7399e17b103eab592d492a4cb26270c52c9b9c106ebe76ba9c18b
-  languageName: node
-  linkType: hard
-
-"@metamask/smart-transactions-controller@patch:@metamask/smart-transactions-controller@npm%3A25.0.0#~/.yarn/patches/@metamask-smart-transactions-controller-npm-25.0.0-3afc599382.patch":
-  version: 25.0.0
-  resolution: "@metamask/smart-transactions-controller@patch:@metamask/smart-transactions-controller@npm%3A25.0.0#~/.yarn/patches/@metamask-smart-transactions-controller-npm-25.0.0-3afc599382.patch::version=25.0.0&hash=7f8f78"
-  dependencies:
-    "@babel/runtime": "npm:^7.23.9"
-    "@ethersproject/bytes": "npm:^5.7.0"
-    "@ethersproject/keccak256": "npm:^5.8.0"
-    "@ethersproject/transactions": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/eth-json-rpc-provider": "npm:^6.0.1"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/network-controller": "npm:^34.0.0"
-    "@metamask/polling-controller": "npm:^16.0.8"
-    "@metamask/profile-sync-controller": "npm:^28.2.0"
-    "@metamask/remote-feature-flag-controller": "npm:^4.2.2"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/transaction-controller": "npm:^68.3.0"
-    "@metamask/utils": "npm:^11.11.0"
-    bignumber.js: "npm:^9.1.2"
-    lodash: "npm:^4.17.21"
-    reselect: "npm:^5.1.1"
-  checksum: 10/1e210a79c3bbfcf10cc2d7da4425635be5505080b93de2b8ae511bf4a4f96700044cf2da7373a8e5cbdc5cdf614fba82e35312948194560ffdf55a688252d82a
+  checksum: 10/39deafd299db7fda207da4b0d89ddd7b18c6d6b686b80dd3d5cb7f7b1c864660be0ceb71b8ef0c7c859f121e3e9746a23ad75fb0982355a0158e9397d849ac54
   languageName: node
   linkType: hard
 
@@ -9066,7 +9039,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^68.1.1, @metamask/transaction-controller@npm:^68.2.2, @metamask/transaction-controller@npm:^68.3.0":
+"@metamask/transaction-controller@npm:^68.1.1, @metamask/transaction-controller@npm:^68.2.2":
   version: 68.4.0
   resolution: "@metamask/transaction-controller@npm:68.4.0"
   dependencies:
@@ -33491,7 +33464,7 @@ __metadata:
     "@metamask/shield-controller": "npm:^6.0.1"
     "@metamask/signature-controller": "npm:^39.2.6"
     "@metamask/skills": "npm:^0.1.0"
-    "@metamask/smart-transactions-controller": "patch:@metamask/smart-transactions-controller@npm%3A25.0.0#~/.yarn/patches/@metamask-smart-transactions-controller-npm-25.0.0-3afc599382.patch"
+    "@metamask/smart-transactions-controller": "npm:^26.0.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
     "@metamask/snap-account-service": "npm:^2.1.2"
     "@metamask/snap-simple-keyring-site": "npm:^2.1.1"
