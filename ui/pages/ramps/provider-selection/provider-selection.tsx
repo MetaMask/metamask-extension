@@ -341,7 +341,7 @@ export function RampsProviderSelectionModal({
             </Text>
           </Box>
         ) : null}
-        <ScrollContainer className="max-h-80 overflow-y-auto">
+        <ScrollContainer className="max-h-[60vh] overflow-y-auto">
           <Box flexDirection={BoxFlexDirection.Column}>
             {listRows.map((row) => (
               <RampsProviderListItem
@@ -375,7 +375,8 @@ export function RampsProviderSelectionModal({
     >
       <ModalOverlay />
       <ModalContent
-        size={ModalContentSize.Sm}
+        size={ModalContentSize.Md}
+        className="items-center"
         modalDialogProps={{
           'data-testid': testId,
           paddingLeft: 0,

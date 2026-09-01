@@ -22,11 +22,11 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
       data-focus-lock-disabled="false"
     >
       <div
-        class="fixed inset-0 z-[1050] flex items-start justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2"
+        class="fixed inset-0 z-[1050] flex justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2 items-center"
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[360px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-modal"
           role="dialog"
         >
@@ -68,7 +68,7 @@ exports[`RampsProviderSelectionModal keeps the provider list visible while quote
             tabindex="0"
           >
             <div
-              class="max-h-80 overflow-y-auto"
+              class="max-h-[60vh] overflow-y-auto"
             >
               <div
                 class="flex flex-col"
@@ -225,11 +225,11 @@ exports[`RampsProviderSelectionModal matches snapshot when empty 1`] = `
       data-focus-lock-disabled="false"
     >
       <div
-        class="fixed inset-0 z-[1050] flex items-start justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2"
+        class="fixed inset-0 z-[1050] flex justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2 items-center"
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[360px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-empty"
           role="dialog"
         >
@@ -314,11 +314,11 @@ exports[`RampsProviderSelectionModal matches snapshot when no providers return q
       data-focus-lock-disabled="false"
     >
       <div
-        class="fixed inset-0 z-[1050] flex items-start justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2"
+        class="fixed inset-0 z-[1050] flex justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2 items-center"
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[360px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-empty"
           role="dialog"
         >
@@ -403,11 +403,11 @@ exports[`RampsProviderSelectionModal matches snapshot while loading 1`] = `
       data-focus-lock-disabled="false"
     >
       <div
-        class="fixed inset-0 z-[1050] flex items-start justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2"
+        class="fixed inset-0 z-[1050] flex justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2 items-center"
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[360px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-loading"
           role="dialog"
         >
@@ -566,11 +566,11 @@ exports[`RampsProviderSelectionModal matches snapshot with only providers that r
       data-focus-lock-disabled="false"
     >
       <div
-        class="fixed inset-0 z-[1050] flex items-start justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2"
+        class="fixed inset-0 z-[1050] flex justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2 items-center"
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[360px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-modal"
           role="dialog"
         >
@@ -612,7 +612,7 @@ exports[`RampsProviderSelectionModal matches snapshot with only providers that r
             tabindex="0"
           >
             <div
-              class="max-h-80 overflow-y-auto"
+              class="max-h-[60vh] overflow-y-auto"
             >
               <div
                 class="flex flex-col"
@@ -707,11 +707,11 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
       data-focus-lock-disabled="false"
     >
       <div
-        class="fixed inset-0 z-[1050] flex items-start justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2"
+        class="fixed inset-0 z-[1050] flex justify-center p-4 sm:py-8 md:py-12 [@media(max-height:475px)]:p-2 items-center"
       >
         <section
           aria-modal="true"
-          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[360px]"
+          class="flex-col items-stretch justify-start pt-4 pr-0 pb-4 pl-0 border border-alternative bg-elevated1 flex max-h-full w-full rounded-lg shadow-lg motion-safe:animate-slide-up max-w-[480px]"
           data-testid="ramps-provider-selection-modal"
           role="dialog"
         >
@@ -753,7 +753,7 @@ exports[`RampsProviderSelectionModal matches snapshot with providers 1`] = `
             tabindex="0"
           >
             <div
-              class="max-h-80 overflow-y-auto"
+              class="max-h-[60vh] overflow-y-auto"
             >
               <div
                 class="flex flex-col"
