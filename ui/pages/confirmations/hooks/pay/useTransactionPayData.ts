@@ -1,10 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import {
-  TransactionPayStrategy,
-  type TransactionPayTotals,
-} from '@metamask/transaction-pay-controller';
+import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import {
   selectIsTransactionPayLoadingByTransactionId,
   selectTransactionPayIsMaxAmountByTransactionId,
@@ -59,19 +56,8 @@ export function useIsTransactionPayLoading() {
   return useTransactionPayData(selectIsTransactionPayLoadingByTransactionId);
 }
 
-// Compatibility type until the installed controller package declares the
-// controller-owned field. The field remains optional for totals created before
-// the controller calculated it.
-export type TransactionPayTotalsWithInputBased = TransactionPayTotals & {
-  isInputBased?: boolean;
-};
-
-export function useTransactionPayTotals():
-  | TransactionPayTotalsWithInputBased
-  | undefined {
-  return useTransactionPayData(selectTransactionPayTotalsByTransactionId) as
-    | TransactionPayTotalsWithInputBased
-    | undefined;
+export function useTransactionPayTotals() {
+  return useTransactionPayData(selectTransactionPayTotalsByTransactionId);
 }
 
 export function useTransactionPayIsMaxAmount() {

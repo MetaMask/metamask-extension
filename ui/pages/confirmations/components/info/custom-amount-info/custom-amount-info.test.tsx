@@ -3,7 +3,10 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
+import {
+  TransactionPayStrategy,
+  type TransactionPayTotals,
+} from '@metamask/transaction-pay-controller';
 import configureMockStore from 'redux-mock-store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
@@ -16,7 +19,6 @@ import * as useIsMoneyAccountFlagDefaultModule from '../../../hooks/pay/useIsMon
 import * as useTransactionPayMetricsModule from '../../../hooks/pay/useTransactionPayMetrics';
 import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
-import type { TransactionPayTotalsWithInputBased } from '../../../hooks/pay/useTransactionPayData';
 import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransactionPayToken';
 import * as useTransactionPayWithdrawModule from '../../../hooks/pay/useTransactionPayWithdraw';
 import * as usePayWithNoFeeTokenModule from '../../../hooks/pay/usePayWithNoFeeToken';
@@ -159,7 +161,7 @@ function render(
     hasPositiveRequiredAmount?: boolean;
     isNativePayToken?: boolean;
     isNoFeePayToken?: boolean;
-    totals?: TransactionPayTotalsWithInputBased;
+    totals?: TransactionPayTotals;
     sourceAmounts?: { targetTokenAddress: string }[];
     requiredTokens?: { address: string; skipIfBalance: boolean }[];
     primaryRequiredToken?: typeof MOCK_PRIMARY_REQUIRED_TOKEN | undefined;
@@ -692,7 +694,7 @@ describe('CustomAmountInfo', () => {
         totals: {
           isInputBased: true,
           targetAmount: { fiat: '95', usd: '95' },
-        } as TransactionPayTotalsWithInputBased,
+        } as TransactionPayTotals,
       });
 
       expect(getByTestId('receive-row')).toBeInTheDocument();
@@ -704,7 +706,7 @@ describe('CustomAmountInfo', () => {
         hasQuotes: true,
         totals: {
           isInputBased: false,
-        } as TransactionPayTotalsWithInputBased,
+        } as TransactionPayTotals,
       });
 
       expect(getByTestId('total-row')).toBeInTheDocument();

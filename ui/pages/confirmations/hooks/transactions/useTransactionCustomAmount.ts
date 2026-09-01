@@ -115,8 +115,8 @@ export function useTransactionCustomAmount({
   const userEditedRef = useRef(false);
   // Full-precision human amount from payToken.balanceRaw for money-account
   // deposit Max. Bypasses the lossy fiat roundtrip (ROUND_DOWN → ÷ rate →
-  // ROUND_UP) that can request more than the wallet holds. Matches mobile
-  // `depositMaxHumanRef`. Never paired with isMaxAmount on this flow.
+  // ROUND_UP) that can request more than the wallet holds. The controller's
+  // isMaxAmount path uses the same raw payment-token balance.
   const depositMaxHumanRef = useRef<string | null>(null);
   // Mirrors `userEditedRef` for render-time use: the ref is needed to block
   // prefill synchronously, before the next render, while the state is what the
@@ -343,11 +343,11 @@ export function useTransactionCustomAmount({
       const newAmountFiatValue = new BigNumber(percentage)
         .dividedBy(100)
         .times(balanceUsdValue);
-      // Max deposits also set isMaxAmount, with isMoneyAccountDeposit so TPC
-      // runs them non-atomic instead of substituting token.balanceRaw.
-      // Do not set isMaxAmount for money-account withdraw. TPC would
-      // substitute on-chain mUSD `token.balanceRaw` instead of the typed
-      // vault withdrawable (`vmusdValueInMusd`) total. Matches mobile.
+      // Max deposits set isMaxAmount so TPC uses the exact payment-token raw
+      // balance; isMoneyAccountDeposit also makes the Relay flow non-atomic.
+      // Do not set isMaxAmount for money-account withdraw. The background
+      // controller cannot synchronously read the UI's vault-withdrawable
+      // balance override, so the already-typed amount remains authoritative.
       const shouldSetMaxAmountMode =
         percentage === 100 && !hasBalanceUsdOverride && !isMoneyAccountWithdraw;
       // Keep the displayed fiat rounded except for balanceUsdOverride Max

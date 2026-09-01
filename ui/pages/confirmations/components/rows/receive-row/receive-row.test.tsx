@@ -1,6 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import type { TransactionPayQuote } from '@metamask/transaction-pay-controller';
+import type {
+  TransactionPayQuote,
+  TransactionPayTotals,
+} from '@metamask/transaction-pay-controller';
 import type { Json } from '@metamask/utils';
 import { getMockPersonalSignConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -8,7 +11,6 @@ import {
   useIsTransactionPayQuotePending,
   useTransactionPayQuotes,
   useTransactionPayTotals,
-  type TransactionPayTotalsWithInputBased,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
@@ -51,7 +53,7 @@ describe('ReceiveRow', () => {
         targetNetwork: { usd: '0.05' },
         metaMask: { usd: '0.25' },
       },
-    } as TransactionPayTotalsWithInputBased);
+    } as TransactionPayTotals);
 
     useIsTransactionPayQuotePendingMock.mockReturnValue(false);
 
@@ -93,7 +95,7 @@ describe('ReceiveRow', () => {
         metaMask: { usd: '0.25' },
       },
       targetAmount: { fiat: '9', usd: '9' },
-    } as TransactionPayTotalsWithInputBased);
+    } as TransactionPayTotals);
 
     const { getByTestId } = render({ inputAmountUsd: '10' });
 
@@ -107,7 +109,7 @@ describe('ReceiveRow', () => {
         sourceNetwork: { estimate: { usd: '0.20' } },
         targetNetwork: { usd: '0.05' },
       },
-    } as TransactionPayTotalsWithInputBased);
+    } as TransactionPayTotals);
 
     const { getByTestId } = render({ inputAmountUsd: '10' });
 

@@ -8,6 +8,7 @@ import {
   TransactionPayQuote,
   TransactionPayRequiredToken,
   TransactionPaySourceAmount,
+  type TransactionPayTotals,
 } from '@metamask/transaction-pay-controller';
 import type { Json } from '@metamask/utils';
 import { ConfirmContext } from '../../context/confirm';
@@ -23,7 +24,6 @@ import {
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
   useTransactionPayTotals,
-  type TransactionPayTotalsWithInputBased,
 } from './useTransactionPayData';
 
 const TRANSACTION_ID_MOCK = 'transaction-id-mock';
@@ -48,7 +48,7 @@ const SOURCE_AMOUNT_MOCK = {} as TransactionPaySourceAmount;
 const TOTALS_MOCK = {
   isInputBased: true,
   total: { usd: '1000', fiat: '1234' },
-} as unknown as TransactionPayTotalsWithInputBased;
+} as unknown as TransactionPayTotals;
 
 const mockStore = configureStore([]);
 
@@ -231,10 +231,10 @@ describe('useTransactionPayData', () => {
       expect(result.current?.isInputBased).toBe(false);
     });
 
-    it('returns totals when the compatibility field is missing', () => {
+    it('returns totals when the optional field is missing', () => {
       const totals = {
         total: { usd: '1000', fiat: '1234' },
-      } as unknown as TransactionPayTotalsWithInputBased;
+      } as unknown as TransactionPayTotals;
       const { result } = renderHook(() => useTransactionPayTotals(), {
         wrapper: createWrapper({ totals }),
       });

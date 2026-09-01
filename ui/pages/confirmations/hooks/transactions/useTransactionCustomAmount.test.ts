@@ -3,7 +3,10 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { PaymentOverride } from '@metamask/transaction-pay-controller';
+import {
+  PaymentOverride,
+  type TransactionPayTotals,
+} from '@metamask/transaction-pay-controller';
 import { act } from '@testing-library/react';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
@@ -13,7 +16,6 @@ import * as TransactionPayControllerActions from '../../../../store/controller-a
 import * as useTokenFiatRatesModule from '../tokens/useTokenFiatRates';
 import * as usePayWithNoFeeTokenModule from '../pay/usePayWithNoFeeToken';
 import * as useTransactionPayDataModule from '../pay/useTransactionPayData';
-import type { TransactionPayTotalsWithInputBased } from '../pay/useTransactionPayData';
 import * as useTransactionPayTokenModule from '../pay/useTransactionPayToken';
 import * as usePayTokenAccountBalanceModule from '../pay/usePayTokenAccountBalance';
 import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
@@ -89,7 +91,7 @@ function runHook({
   isNoFeePayToken?: boolean;
   isMaxAmount?: boolean;
   requiredTokens?: { amountUsd?: string; skipIfBalance?: boolean }[];
-  totals?: TransactionPayTotalsWithInputBased;
+  totals?: TransactionPayTotals;
   updateTokenAmountMock?: jest.Mock;
   prefillMaxOnLoad?: boolean;
   transactionMeta?: TransactionMeta;
@@ -215,7 +217,7 @@ describe('useTransactionCustomAmount', () => {
         totals: {
           isInputBased: false,
           targetAmount: { usd: '123.456' },
-        } as TransactionPayTotalsWithInputBased,
+        } as TransactionPayTotals,
       });
 
       expect(result.current.amountFiat).toBe('123.46');
@@ -230,7 +232,7 @@ describe('useTransactionCustomAmount', () => {
         isMaxAmount: true,
         totals: {
           targetAmount: { usd: '123.456' },
-        } as TransactionPayTotalsWithInputBased,
+        } as TransactionPayTotals,
         requiredTokens: [{ amountUsd: '10', skipIfBalance: false }],
       });
 
@@ -242,7 +244,7 @@ describe('useTransactionCustomAmount', () => {
         totals: {
           isInputBased: true,
           sourceAmount: { usd: '0' },
-        } as TransactionPayTotalsWithInputBased,
+        } as TransactionPayTotals,
       });
 
       act(() => {
@@ -275,7 +277,7 @@ describe('useTransactionCustomAmount', () => {
         totals: {
           isInputBased: true,
           sourceAmount: { usd: '100' },
-        } as TransactionPayTotalsWithInputBased,
+        } as TransactionPayTotals,
       });
 
       expect(result.current.amountFiat).toBe('100');
@@ -296,7 +298,9 @@ describe('useTransactionCustomAmount', () => {
       const { result } = runHook({
         tokenFiatRate: 2,
         isMaxAmount: true,
-        totals: { targetAmount: { usd: '100' } },
+        totals: {
+          targetAmount: { fiat: '100', usd: '100' },
+        } as TransactionPayTotals,
       });
 
       // amountFiat = 100, tokenFiatRate = 2, so amountHuman = 100 / 2 = 50
@@ -505,6 +509,18 @@ describe('useTransactionCustomAmount', () => {
           type: TransactionType.moneyAccountWithdraw,
         } as TransactionMeta,
         payTokenBalanceUsd: 100,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(100);
+      });
+
+      expect(setIsMaxAmountMock).not.toHaveBeenCalled();
+    });
+
+    it('does not set isMaxAmount when Max uses an external balance', () => {
+      const { result } = runHook({
+        balanceUsdOverride: 100,
       });
 
       act(() => {
