@@ -22,6 +22,14 @@ const MASTER = '0x1111111111111111111111111111111111111111';
 const PASSWORD = 'correct horse battery staple';
 const EXCHANGE_ENDPOINT = 'https://api.hyperliquid.xyz/exchange';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../analytics', () => ({
+  createEventBuilder:
+    jest.requireActual('../../analytics').createEventBuilder,
+  trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+}));
+
 // Valid 65-byte signature hex: r (0x + 64 chars) + s (64 chars) + v ('1c' = 28).
 const SIGNATURE = `0x${'11'.repeat(32)}${'22'.repeat(32)}1c`;
 
@@ -99,6 +107,158 @@ const mockFetchErr = () =>
 describe('setupAgentWallet', () => {
   afterEach(() => {
     jest.restoreAllMocks();
+  });
+
+  beforeEach(() => {
+    mockTrackEvent.mockClear();
+  });
+
+  describe('metrics', () => {
+    it('emits setup started then setup completed with the Perps category on the happy path', async () => {
+      mockFetchOk();
+      const harness = buildHarness();
+
+      await setupAgentWallet(harness.flowController, harness.messenger, {
+        masterAccountAddress: MASTER,
+        isTestnet: false,
+        password: PASSWORD,
+      });
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          name: 'Perp Agent Setup Started',
+          properties: {
+            category: 'Perps',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_testnet: false,
+          },
+        }),
+      );
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          name: 'Perp Agent Setup Completed',
+          properties: {
+            category: 'Perps',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_testnet: false,
+          },
+        }),
+      );
+    });
+
+    it('emits only the anonymous setup failed event with the rejection category when the password is wrong', async () => {
+      mockFetchOk();
+      const harness = buildHarness();
+      harness.verifyPassword.mockRejectedValue(
+        new Error('Incorrect password'),
+      );
+
+      await expect(
+        setupAgentWallet(harness.flowController, harness.messenger, {
+          masterAccountAddress: MASTER,
+          isTestnet: false,
+          password: 'wrong password',
+        }),
+      ).rejects.toThrow(AgentSetupRejectionError);
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Perp Agent Setup Failed',
+          options: { excludeMetaMetricsId: true },
+          properties: {
+            category: 'Perps',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            failure_category: 'rejection',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_testnet: false,
+          },
+        }),
+      );
+    });
+
+    it('emits the setup failed event with the rejection category when the master signature is rejected', async () => {
+      mockFetchOk();
+      const harness = buildHarness();
+      harness.signTypedMessage.mockRejectedValue(
+        new Error('User rejected the request.'),
+      );
+
+      await expect(
+        setupAgentWallet(harness.flowController, harness.messenger, {
+          masterAccountAddress: MASTER,
+          isTestnet: false,
+          password: PASSWORD,
+        }),
+      ).rejects.toThrow(AgentSetupRejectionError);
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
+      expect(mockTrackEvent).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          name: 'Perp Agent Setup Failed',
+          options: { excludeMetaMetricsId: true },
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            failure_category: 'rejection',
+          }),
+        }),
+      );
+    });
+
+    it('emits the setup failed event with the submission category when the exchange rejects the submission', async () => {
+      mockFetchErr();
+      const harness = buildHarness();
+
+      await expect(
+        setupAgentWallet(harness.flowController, harness.messenger, {
+          masterAccountAddress: MASTER,
+          isTestnet: false,
+          password: PASSWORD,
+        }),
+      ).rejects.toThrow(AgentSetupSubmissionError);
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
+      expect(mockTrackEvent).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          name: 'Perp Agent Setup Failed',
+          options: { excludeMetaMetricsId: true },
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            failure_category: 'submission',
+          }),
+        }),
+      );
+    });
+
+    it('emits the setup failed event with the submission category when fetch fails with a network error', async () => {
+      jest
+        .spyOn(global, 'fetch')
+        .mockRejectedValue(new TypeError('fetch failed'));
+      const harness = buildHarness();
+
+      await expect(
+        setupAgentWallet(harness.flowController, harness.messenger, {
+          masterAccountAddress: MASTER,
+          isTestnet: false,
+          password: PASSWORD,
+        }),
+      ).rejects.toThrow(AgentSetupSubmissionError);
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
+      expect(mockTrackEvent).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          name: 'Perp Agent Setup Failed',
+          options: { excludeMetaMetricsId: true },
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            failure_category: 'submission',
+          }),
+        }),
+      );
+    });
   });
 
   describe('happy path', () => {

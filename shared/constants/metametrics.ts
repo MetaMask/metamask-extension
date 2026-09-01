@@ -1118,6 +1118,13 @@ export enum MetaMetricsEventName {
   PerpsSearchQuery = 'Perp Search Query',
   PerpsSearchResultTapped = 'Perp Search Result Tapped',
   PerpsSearchAbandoned = 'Perp Search Abandoned',
+  // Perps agent wallet (rollout observability). The signed-action event counts
+  // every agent-mode signTypedData invocation — orders, cancels, and modifies
+  // alike (plan ruling R11) — so it is a counter event, one emission per action.
+  PerpsAgentSetupStarted = 'Perp Agent Setup Started',
+  PerpsAgentSetupCompleted = 'Perp Agent Setup Completed',
+  PerpsAgentSetupFailed = 'Perp Agent Setup Failed',
+  PerpsAgentSignedAction = 'Perp Agent Signed Action',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
   PrepareSwapPageLoaded = 'Prepare Swap Page Loaded',

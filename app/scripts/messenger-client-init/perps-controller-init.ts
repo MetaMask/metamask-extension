@@ -7,6 +7,11 @@ import {
 } from '@metamask/perps-controller';
 import { SERVICE_NAME as STORAGE_SERVICE_NAME } from '@metamask/storage-service';
 import log from 'loglevel';
+import { createEventBuilder, trackEvent } from '../controllers/analytics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
 import { isBenignDisconnectError } from '../controllers/perps/perps-error-utils';
 import { MessengerClientInitFunction } from './types';
@@ -119,11 +124,32 @@ export const PerpsControllerInit: MessengerClientInitFunction<
     // Single-path wallet seam: when the selected master account has an active
     // agent key (in-memory plaintext, only while unlocked), HyperLiquid actions
     // sign with the agent key and never contact the keyring.
-    getAgentSigner: async (masterAccountAddress) =>
-      controllerMessenger.call(
+    getAgentSigner: async (masterAccountAddress) => {
+      const signer = await controllerMessenger.call(
         'PerpsAgentWalletController:getAgentSigner',
         masterAccountAddress,
-      ),
+      );
+      if (!signer) {
+        return null;
+      }
+      // Rollout observability (plan ruling R11): count one agent-signed
+      // action per agent-mode signTypedData invocation — orders, cancels,
+      // and modifies alike. Wrap-and-forward: increment the counter, then
+      // delegate to the real signer. Emission cannot throw (trackEvent
+      // reports delivery failures internally), so counting never blocks or
+      // fails a trade.
+      return {
+        address: signer.address,
+        signTypedData: (domain, types, value) => {
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.PerpsAgentSignedAction)
+              .addCategory(MetaMetricsEventCategory.Perps)
+              .build(),
+          );
+          return signer.signTypedData(domain, types, value);
+        },
+      };
+    },
   });
   messengerClientRef.current = messengerClient;
 

@@ -22,6 +22,16 @@ import type {
 const MASTER = '0x1111111111111111111111111111111111111111';
 const PASSWORD = 'correct horse battery staple';
 
+// The setup flow emits perps agent setup metrics; stub delivery so these
+// tests never depend on (or trip) the unconfigured analytics singleton.
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../analytics', () => ({
+  createEventBuilder:
+    jest.requireActual('../../analytics').createEventBuilder,
+  trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+}));
+
 const buildController = (
   state: Partial<PerpsAgentWalletControllerState> = {},
 ) => {

@@ -1,6 +1,38 @@
+import { createEventBuilder, trackEvent } from '../../analytics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
 import { buildApproveAgentTypedData } from './approve-agent-action';
 
 const EXCHANGE_ENDPOINT = 'https://api.hyperliquid.xyz/exchange';
+
+/**
+ * Emits one anonymous perps agent setup metric. Never throws: `trackEvent`
+ * swallows and reports delivery failures internally.
+ * @param eventName
+ * @param properties
+ */
+function trackAgentSetupEvent(
+  eventName:
+    | MetaMetricsEventName.PerpsAgentSetupStarted
+    | MetaMetricsEventName.PerpsAgentSetupCompleted
+    | MetaMetricsEventName.PerpsAgentSetupFailed,
+  properties: Record<string, boolean | string>,
+): void {
+  trackEvent(
+    createEventBuilder(eventName)
+      .addCategory(MetaMetricsEventCategory.Perps)
+      .addProperties(properties)
+      // Failure details are non-identifying by construction; emit the event
+      // anonymously so it never carries the user's metrics id.
+      .build(
+        eventName === MetaMetricsEventName.PerpsAgentSetupFailed
+          ? { excludeMetaMetricsId: true }
+          : undefined,
+      ),
+  );
+}
 
 /** Thrown when the master signature is rejected or the password is wrong. */
 export class AgentSetupRejectionError extends Error {}
@@ -29,6 +61,10 @@ function splitSignature(signature: string): { r: string; s: string; v: 27 | 28 }
  * master signature is rejected, and {@link AgentSetupSubmissionError} when the
  * exchange submission fails; any mid-flight setup is marked failed via
  * {@link failSetup}.
+ *
+ * Emits the perps agent setup metrics: started (after the password verify),
+ * completed (after activation), and failed (anonymously, with a
+ * `failure_category` of `rejection` or `submission`).
  *
  * (For hardware wallets, `KeyringController:signTypedMessage` is the same path
  * used by all perps signing today — the device prompt appears with the
@@ -62,8 +98,18 @@ export async function setupAgentWallet(
   try {
     await messenger.call('KeyringController:verifyPassword', opts.password);
   } catch {
+    trackAgentSetupEvent(MetaMetricsEventName.PerpsAgentSetupFailed, {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      failure_category: 'rejection',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_testnet: opts.isTestnet,
+    });
     throw new AgentSetupRejectionError('Incorrect password');
   }
+  trackAgentSetupEvent(MetaMetricsEventName.PerpsAgentSetupStarted, {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    is_testnet: opts.isTestnet,
+  });
   const handle = await controller.beginSetup(opts.masterAccountAddress);
   const agentName = 'metamask-perps';
   const nonce = Date.now();
@@ -76,6 +122,12 @@ export async function setupAgentWallet(
       { from: opts.masterAccountAddress, data }, 'V4')) as string;
   } catch (err) {
     controller.failSetup(opts.masterAccountAddress, String(err));
+    trackAgentSetupEvent(MetaMetricsEventName.PerpsAgentSetupFailed, {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      failure_category: 'rejection',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_testnet: opts.isTestnet,
+    });
     throw new AgentSetupRejectionError('Master signature rejected');
   }
   // HL API expects {r,s,v}, not a hex signature string
@@ -94,15 +146,31 @@ export async function setupAgentWallet(
     json = (await res.json()) as { status?: string };
   } catch (err) {
     controller.failSetup(opts.masterAccountAddress, `submission failed: ${String(err)}`);
+    trackAgentSetupEvent(MetaMetricsEventName.PerpsAgentSetupFailed, {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      failure_category: 'submission',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_testnet: opts.isTestnet,
+    });
     throw new AgentSetupSubmissionError(`submission failed: ${String(err)}`);
   }
   if (!ok || json.status === 'err') {
     controller.failSetup(opts.masterAccountAddress, `submission failed: ${JSON.stringify(json)}`);
+    trackAgentSetupEvent(MetaMetricsEventName.PerpsAgentSetupFailed, {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      failure_category: 'submission',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_testnet: opts.isTestnet,
+    });
     throw new AgentSetupSubmissionError(JSON.stringify(json));
   }
   await controller.completeSetup(opts.masterAccountAddress, {
     agentAddress: handle.address, agentName,
     masterAccountAddress: opts.masterAccountAddress, createdAt: Date.now(),
   }, opts.password);
+  trackAgentSetupEvent(MetaMetricsEventName.PerpsAgentSetupCompleted, {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    is_testnet: opts.isTestnet,
+  });
   return { agentAddress: handle.address };
 }

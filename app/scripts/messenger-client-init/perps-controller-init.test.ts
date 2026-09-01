@@ -8,7 +8,7 @@ import {
   PERPS_EVENT_VALUE,
   PerpsAnalyticsEvent,
 } from '../../../shared/constants/perps-events';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory, MetaMetricsEventName  } from '../../../shared/constants/metametrics';
 import {
   createPerpsInfrastructure,
   type InfrastructureDeps,
@@ -232,6 +232,63 @@ describe('PerpsControllerInit', () => {
         '0xabc',
       );
       expect(result).resolves.toBe(null);
+    });
+
+    it('getAgentSigner wraps the signer to emit one agent-signed action metric per signTypedData and then delegates to the real signer', async () => {
+      const request = getInitRequestMock();
+      const realSignTypedData = jest.fn().mockResolvedValue('0xsig');
+      const messengerCall = request.controllerMessenger.call as jest.Mock;
+      messengerCall.mockResolvedValue({
+        address: AGENT,
+        signTypedData: realSignTypedData,
+      });
+
+      PerpsControllerInit(request);
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      const { getAgentSigner } = constructorCall;
+      const wrappedSigner = await getAgentSigner?.('0xmaster');
+      expect(messengerCall).toHaveBeenCalledWith(
+        'PerpsAgentWalletController:getAgentSigner',
+        '0xmaster',
+      );
+      expect(wrappedSigner).toBeDefined();
+      expect(wrappedSigner?.address).toBe(AGENT);
+      expect(wrappedSigner?.signTypedData).not.toBe(realSignTypedData);
+      expect(mockTrackAnalyticsEvent).not.toHaveBeenCalled();
+
+      // Delegation: same arguments in, same signature out.
+      const domain = {
+        name: 'HyperliquidSignTransaction',
+        version: '1',
+        chainId: 1337,
+        verifyingContract:
+          '0x0000000000000000000000000000000000000001' as `0x${string}`,
+      };
+      const types = { Foo: [{ name: 'bar', type: 'string' }] };
+      const value = { bar: 'baz' };
+      const signature = await wrappedSigner?.signTypedData(
+        domain,
+        types,
+        value,
+      );
+      expect(signature).toBe('0xsig');
+      expect(realSignTypedData).toHaveBeenCalledWith(
+        domain,
+        types,
+        value,
+      );
+
+      // Exactly one agent-signed action metric per invocation (ruling R11).
+      expect(mockTrackAnalyticsEvent).toHaveBeenCalledTimes(1);
+      expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsAgentSignedAction,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
+          }),
+        }),
+      );
     });
 
     it('applies the agent signer override when an agent activates', async () => {
