@@ -49,7 +49,7 @@ function buildTransactionMeta({
   originalType?: TransactionType;
   swapAndSendRecipient?: string;
   to?: string;
-  txParamsOriginal?: { from: string; to: string };
+  txParamsOriginal?: { data?: string; from: string; to: string };
   type?: TransactionType;
 }) {
   return {
@@ -208,6 +208,43 @@ describe('getSendRecipients', () => {
           originalType: TransactionType.simpleSend,
           to: FROM_ADDRESS,
           type: TransactionType.cancel,
+        }),
+      ),
+    ).toEqual([]);
+  });
+
+  it('returns no recipients for a cancellation with stale original ERC-1155 batch calldata', () => {
+    expect(
+      getSendRecipients(
+        buildTransactionMeta({
+          to: FROM_ADDRESS,
+          txParamsOriginal: {
+            data: ERC1155_SAFE_BATCH_TRANSFER_FROM_DATA,
+            from: FROM_ADDRESS,
+            to: TOKEN_CONTRACT,
+          },
+          type: TransactionType.cancel,
+        }),
+      ),
+    ).toEqual([]);
+  });
+
+  it('returns no recipients for a sped-up cancellation with stale send metadata', () => {
+    const nestedSendRecipient = '0x1234dddddddddddddddddddddddddddddddd9abc';
+
+    expect(
+      getSendRecipients(
+        buildTransactionMeta({
+          nestedTransactions: [
+            {
+              to: nestedSendRecipient,
+              type: TransactionType.simpleSend,
+            },
+          ],
+          originalType: TransactionType.cancel,
+          swapAndSendRecipient: TOKEN_RECIPIENT,
+          to: FROM_ADDRESS,
+          type: TransactionType.retry,
         }),
       ),
     ).toEqual([]);
