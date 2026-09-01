@@ -11,6 +11,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   Icon,
+  IconSize,
   TextColor,
   TextVariant,
   IconColor,
@@ -19,6 +20,7 @@ import {
   BoxAlignItems,
   FontWeight,
   TextButton,
+  TextAlign,
 } from '@metamask/design-system-react';
 import { addUrlProtocolPrefix } from '../../../../shared/lib/url-utils';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
@@ -264,7 +266,7 @@ export default function PrivacySettings() {
                 <ButtonIcon
                   iconName={IconName.ArrowLeft}
                   ariaLabel="Back"
-                  size={ButtonIconSize.Lg}
+                  size={ButtonIconSize.Md}
                   data-testid="privacy-settings-back-button"
                   onClick={handleSubmit}
                 />
@@ -274,30 +276,31 @@ export default function PrivacySettings() {
                   justifyContent={BoxJustifyContent.Center}
                   className="w-full"
                 >
-                  <Text variant={TextVariant.HeadingMd}>
+                  <Text
+                    variant={TextVariant.HeadingSm}
+                    textAlign={TextAlign.Center}
+                  >
                     {t('defaultSettingsTitle')}
                   </Text>
                 </Box>
                 <Box className="privacy-settings__empty-space" />
               </Box>
               <Text
-                variant={TextVariant.BodyLg}
-                fontWeight={FontWeight.Medium}
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
                 className="mt-5"
               >
                 {t('defaultSettingsSubTitle')}
               </Text>
-              <a
-                href={ZENDESK_URLS.PRIVACY_BEST_PRACTICES}
-                target="_blank"
-                rel="noreferrer"
-                key="learnMoreAboutPrivacy"
-                style={{
-                  fontSize: 'var(--font-size-5)',
-                }}
-              >
-                {t('learnMoreAboutPrivacy')}
-              </a>
+              <TextButton asChild className="mt-1 self-start">
+                <a
+                  href={ZENDESK_URLS.PRIVACY_BEST_PRACTICES}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {t('learnMoreAboutPrivacy')}
+                </a>
+              </TextButton>
             </Box>
             <Box>
               <Box
@@ -322,17 +325,15 @@ export default function PrivacySettings() {
                         data-testid={`category-item-${item.title}`}
                       >
                         <Text
-                          variant={TextVariant.BodyLg}
+                          variant={TextVariant.BodyMd}
                           fontWeight={FontWeight.Medium}
                         >
                           {item.title}
                         </Text>
-                        <ButtonIcon
-                          iconName={IconName.ArrowRight}
-                          ariaLabel="Next"
-                          size={ButtonIconSize.Lg}
+                        <Icon
+                          name={IconName.ArrowRight}
+                          size={IconSize.Md}
                           color={IconColor.IconDefault}
-                          onClick={() => handleItemSelected(item)}
                         />
                       </Box>
                       <Text
@@ -360,12 +361,13 @@ export default function PrivacySettings() {
               marginBottom={5}
               flexDirection={BoxFlexDirection.Row}
               justifyContent={BoxJustifyContent.Between}
+              alignItems={BoxAlignItems.Center}
             >
               <ButtonIcon
                 data-testid="category-back-button"
                 iconName={IconName.ArrowLeft}
                 ariaLabel="Back"
-                size={ButtonIconSize.Lg}
+                size={ButtonIconSize.Md}
                 onClick={handleBack}
               />
               <Box
@@ -374,7 +376,10 @@ export default function PrivacySettings() {
                 justifyContent={BoxJustifyContent.Center}
                 className="w-full"
               >
-                <Text variant={TextVariant.HeadingLg}>
+                <Text
+                  variant={TextVariant.HeadingSm}
+                  textAlign={TextAlign.Center}
+                >
                   {selectedItem?.title}
                 </Text>
               </Box>
