@@ -45,6 +45,10 @@ import { ApprovalType, ERC20 } from '@metamask/controller-utils';
 import { parseCaipAccountId } from '@metamask/utils';
 
 import { createTestProviderTools } from '../../test/stub/provider';
+import {
+  InternalKeyringType,
+  SnapKeyringType,
+} from '../../shared/constants/keyring';
 import { KEYRING_DEVICE_PROPERTY_MAP } from '../../shared/constants/hardware-wallets';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import mockEncryptor from '../../test/lib/mock-encryptor';
@@ -2223,6 +2227,86 @@ describe('MetaMaskController', () => {
           expect(result).toBe(KEYRING_DEVICE_PROPERTY_MAP[type]);
           expect(result).toBeDefined();
         });
+      });
+    });
+
+    describe('isEip7702Supported', () => {
+      const ADDRESS = '0x123';
+      const CHAIN_ID = '0x1';
+
+      const mockKeyringType = (type) =>
+        jest
+          .spyOn(metamaskController.keyringController, 'getKeyringForAccount')
+          .mockResolvedValue({ type });
+
+      const mockAtomicBatchSupport = () =>
+        jest
+          .spyOn(metamaskController.txController, 'isAtomicBatchSupported')
+          .mockResolvedValue([
+            {
+              chainId: CHAIN_ID,
+              isSupported: false,
+              upgradeContractAddress: '0xabc',
+            },
+          ]);
+
+      it.each([InternalKeyringType.hdKeyTree, InternalKeyringType.imported])(
+        'consults atomic batch support for %s keyrings',
+        async (type) => {
+          mockKeyringType(type);
+          const isAtomicBatchSupported = mockAtomicBatchSupport();
+
+          const result = await metamaskController.isEip7702Supported({
+            address: ADDRESS,
+            chainId: CHAIN_ID,
+          });
+
+          expect(isAtomicBatchSupported).toHaveBeenCalledWith({
+            address: ADDRESS,
+            chainIds: [CHAIN_ID],
+          });
+          expect(result.upgradeContractAddress).toBe('0xabc');
+        },
+      );
+
+      it.each([
+        KeyringTypeV2.Ledger,
+        KeyringTypeV2.Trezor,
+        SnapKeyringType.snap,
+      ])('reports %s keyrings as unsupported', async (type) => {
+        mockKeyringType(type);
+        const isAtomicBatchSupported = mockAtomicBatchSupport();
+
+        const result = await metamaskController.isEip7702Supported({
+          address: ADDRESS,
+          chainId: CHAIN_ID,
+        });
+
+        expect(result).toStrictEqual({
+          isSupported: false,
+          upgradeContractAddress: null,
+        });
+        expect(isAtomicBatchSupported).not.toHaveBeenCalled();
+      });
+
+      it('reports unsupported when the keyring lookup fails', async () => {
+        jest
+          .spyOn(metamaskController.keyringController, 'getKeyringForAccount')
+          .mockRejectedValue(
+            new Error('No keyring found for the requested account.'),
+          );
+        const isAtomicBatchSupported = mockAtomicBatchSupport();
+
+        const result = await metamaskController.isEip7702Supported({
+          address: ADDRESS,
+          chainId: CHAIN_ID,
+        });
+
+        expect(result).toStrictEqual({
+          isSupported: false,
+          upgradeContractAddress: null,
+        });
+        expect(isAtomicBatchSupported).not.toHaveBeenCalled();
       });
     });
 
