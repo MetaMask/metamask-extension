@@ -56,6 +56,7 @@ import {
 } from './metadata';
 import { InMemoryKvStore } from './kv-store';
 import { getMwpDappClient } from './mwp-dapp-client-factory';
+import { ExportStateOptions } from '@metamask/account-tree-controller';
 
 export class QrSyncController extends BaseController<
   typeof QR_SYNC_CONTROLLER_NAME,
@@ -194,22 +195,30 @@ export class QrSyncController extends BaseController<
       QR_SYNC_PHASES.REVIEWING_SYNC_OFFER,
     ]);
 
-    if (selectedAccountGroupIds.length === 0) {
-      throw new Error(QrSyncErrorMessages.NO_ACCOUNT_GROUPS_SELECTED);
+    let exportData: QrSyncReadyData;
+    try {
+      if (selectedAccountGroupIds.length === 0) {
+        throw new Error(QrSyncErrorMessages.NO_ACCOUNT_GROUPS_SELECTED);
+      }
+
+      let snapshot = await this.messenger.call(
+        'AccountTreeController:exportState',
+        { includeSecrets: true, password },
+      );
+
+      const selectedPayloadIds = new Set(
+        selectedAccountGroupIds.map((groupId) =>
+          snapshot.toPayloadId(groupId),
+        ),
+      );
+      snapshot = snapshot.filterAllGroups((payloadGroup) =>
+        selectedPayloadIds.has(payloadGroup.id),
+      );
+      exportData = snapshot.serialize();
+    } catch (error) {
+      this.#reportToSentry('Failed to export account tree for QR sync', error);
+      throw error;
     }
-
-    let snapshot = await this.messenger.call(
-      'AccountTreeController:exportState',
-      { includeSecrets: true, password },
-    );
-
-    const selectedPayloadIds = new Set(
-      selectedAccountGroupIds.map((groupId) => snapshot.toPayloadId(groupId)),
-    );
-    snapshot = snapshot.filterAllGroups((payloadGroup) =>
-      selectedPayloadIds.has(payloadGroup.id),
-    );
-    const exportData = snapshot.serialize();
 
     const deadline = Date.now() + QR_SYNC_TIMEOUT_MS.SYNC_COMPLETION_TIMEOUT;
 
