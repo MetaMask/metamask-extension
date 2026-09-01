@@ -6,6 +6,7 @@ import {
 } from '#shared/constants/metametrics';
 import { getInstallAttribution } from '#shared/lib/install-attribution';
 import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import type MetaMaskController from '../../metamask-controller';
 import { onUpdate } from '../../on-update';
 import {
   handleOnInstalled,
@@ -39,7 +40,7 @@ function createController(
     consentDecisionMade: boolean;
     optedIn: boolean;
   }> = {},
-) {
+): InstallLifecycleDependencies['controller'] {
   return {
     metaMetricsController: {
       updateTraits: jest.fn(),
@@ -55,11 +56,13 @@ function createController(
       consentDecisionMade: overrides.consentDecisionMade ?? false,
       optedIn: overrides.optedIn ?? true,
     }),
-    store: {},
+    store: {} as MetaMaskController['store'],
   };
 }
 
-function createPlatform(overrides: Partial<{ getVersion: () => string }> = {}) {
+function createPlatform(
+  overrides: Partial<{ getVersion: () => string }> = {},
+): InstallLifecycleDependencies['platform'] {
   return {
     openExtensionInBrowser: jest.fn(),
     getVersion: overrides.getVersion ?? jest.fn(() => '13.0.0'),
