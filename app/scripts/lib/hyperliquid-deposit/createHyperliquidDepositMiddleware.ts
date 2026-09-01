@@ -37,7 +37,9 @@ type CreateHyperliquidDepositMiddlewareOptions = {
   isEligible?: (
     context: HyperliquidDepositContext,
   ) => boolean | Promise<boolean>;
-  showDepositPrompt: (context: HyperliquidDepositContext) => void | Promise<void>;
+  showDepositPrompt: (
+    context: HyperliquidDepositContext,
+  ) => void | Promise<void>;
   startPlaceholderFlow?: (
     context: HyperliquidDepositContext,
   ) => HyperliquidDepositPromptFlow | undefined;
@@ -122,7 +124,10 @@ export function createHyperliquidDepositMiddleware({
           try {
             await Promise.resolve(endPlaceholderFlow(placeholderFlow));
           } catch (error) {
-            log.error('Failed to end Hyperliquid deposit placeholder flow', error);
+            log.error(
+              'Failed to end Hyperliquid deposit placeholder flow',
+              error,
+            );
           }
         }
       }
