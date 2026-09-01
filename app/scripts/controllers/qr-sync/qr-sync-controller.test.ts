@@ -889,10 +889,16 @@ describe('QrSyncController', () => {
       // Both mnemonic wallets are present
       expect(syncReadyPayload?.data?.wallets).toHaveLength(2);
       expect(syncReadyPayload?.data?.wallets[0]).toEqual(
-        expect.objectContaining({ type: 'mnemonic', id: 'wallet:primary-entropy-id' }),
+        expect.objectContaining({
+          type: 'mnemonic',
+          id: 'wallet:primary-entropy-id',
+        }),
       );
       expect(syncReadyPayload?.data?.wallets[1]).toEqual(
-        expect.objectContaining({ type: 'mnemonic', id: 'wallet:secondary-entropy-id' }),
+        expect.objectContaining({
+          type: 'mnemonic',
+          id: 'wallet:secondary-entropy-id',
+        }),
       );
       // Primary wallet is first -- mobile uses position, not a flag
       expect(syncReadyPayload?.data?.wallets[0].metadata.name).toBe('Wallet 1');

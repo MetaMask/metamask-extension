@@ -156,8 +156,20 @@ The `sync-ready` message carries the `AccountTreePayload` in `data`, with `deadl
         "value": "<EncodedBytes -- BIP-39 mnemonic>",
         "metadata": { "name": "Wallet 1" },
         "groups": [
-          { "id": "wallet:<entropySourceId>/0", "groupIndex": 0, "metadata": { "name": "Account 1", "pinned": true, "hidden": false } },
-          { "id": "wallet:<entropySourceId>/2", "groupIndex": 2, "metadata": { "name": "Hidden Account", "pinned": false, "hidden": true } }
+          {
+            "id": "wallet:<entropySourceId>/0",
+            "groupIndex": 0,
+            "metadata": { "name": "Account 1", "pinned": true, "hidden": false }
+          },
+          {
+            "id": "wallet:<entropySourceId>/2",
+            "groupIndex": 2,
+            "metadata": {
+              "name": "Hidden Account",
+              "pinned": false,
+              "hidden": true
+            }
+          }
         ]
       },
       {
@@ -167,8 +179,15 @@ The `sync-ready` message carries the `AccountTreePayload` in `data`, with `deadl
         "groups": [
           {
             "id": "wallet:private-key/<address>",
-            "value": { "privateKey": "<EncodedBytes>", "encoding": "hexadecimal" },
-            "metadata": { "name": "Imported Account", "pinned": false, "hidden": false }
+            "value": {
+              "privateKey": "<EncodedBytes>",
+              "encoding": "hexadecimal"
+            },
+            "metadata": {
+              "name": "Imported Account",
+              "pinned": false,
+              "hidden": false
+            }
           }
         ]
       }
@@ -191,14 +210,14 @@ Encoding of secret material (`value` fields) is handled entirely by
 
 ### Design decisions (do not change without mobile alignment)
 
-| Decision                                                    | Rationale                                                                        |
-| ----------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| No `sel` / selection bitmap in payload                      | User already chose accounts in extension UI; mobile imports exactly what is sent |
-| No `address` fields on export entries                       | User verifies correctness manually on mobile                                     |
-| First mnemonic wallet in `wallets[]` is primary             | Mobile uses position to determine the primary wallet, not a flag                 |
-| `deadline` on MWP envelope, not nested                      | Same level as `type` and `version`                                               |
-| One `mnemonic` entry per entropy source (SRP)               | Multiple HD keyrings -> multiple mnemonic entries, each with its own `groups[]`  |
-| One `private-key` entry for all imported accounts           | All simple-keyring accounts are merged into one wallet entry with one group per account |
+| Decision                                          | Rationale                                                                               |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| No `sel` / selection bitmap in payload            | User already chose accounts in extension UI; mobile imports exactly what is sent        |
+| No `address` fields on export entries             | User verifies correctness manually on mobile                                            |
+| First mnemonic wallet in `wallets[]` is primary   | Mobile uses position to determine the primary wallet, not a flag                        |
+| `deadline` on MWP envelope, not nested            | Same level as `type` and `version`                                                      |
+| One `mnemonic` entry per entropy source (SRP)     | Multiple HD keyrings -> multiple mnemonic entries, each with its own `groups[]`         |
+| One `private-key` entry for all imported accounts | All simple-keyring accounts are merged into one wallet entry with one group per account |
 
 ---
 
@@ -206,13 +225,13 @@ Encoding of secret material (`value` fields) is handled entirely by
 
 The wallet picker reads from Redux account tree (`getAccountTree` selector).
 
-| `AccountWalletType`                                 | Typical contents                   | Exportable?               | Shown in picker?       |
-| --------------------------------------------------- | ---------------------------------- | ------------------------- | ---------------------- |
-| `AccountWalletType.Entropy`                         | HD / SRP wallets (multichain tree) | **Yes** -> `"mnemonic"`   | **Yes** (whole wallet) |
-| `AccountWalletType.Keyring` + `KeyringTypes.hd`     | HD keyring wallets                 | **Yes** -> `"mnemonic"`   | **Yes** (whole wallet) |
-| `AccountWalletType.Keyring` + `KeyringTypes.simple` | Imported private-key accounts      | **Yes** -> `"private-key"`| **Yes** (whole wallet) |
-| `Keyring` (hardware)                                | Ledger, Trezor, ...                | **No**                    | **Hidden**             |
-| `Snap`                                              | Snap-managed wallets               | **No**                    | **Hidden**             |
+| `AccountWalletType`                                 | Typical contents                   | Exportable?                | Shown in picker?       |
+| --------------------------------------------------- | ---------------------------------- | -------------------------- | ---------------------- |
+| `AccountWalletType.Entropy`                         | HD / SRP wallets (multichain tree) | **Yes** -> `"mnemonic"`    | **Yes** (whole wallet) |
+| `AccountWalletType.Keyring` + `KeyringTypes.hd`     | HD keyring wallets                 | **Yes** -> `"mnemonic"`    | **Yes** (whole wallet) |
+| `AccountWalletType.Keyring` + `KeyringTypes.simple` | Imported private-key accounts      | **Yes** -> `"private-key"` | **Yes** (whole wallet) |
+| `Keyring` (hardware)                                | Ledger, Trezor, ...                | **No**                     | **Hidden**             |
+| `Snap`                                              | Snap-managed wallets               | **No**                     | **Hidden**             |
 
 Within an entropy wallet, each **account group** maps to one HD derivation index:
 
@@ -245,10 +264,13 @@ Imported private-key accounts export via `KeyringController:exportAccount` → `
 
 ```typescript
 try {
-  let snapshot = await this.messenger.call('AccountTreeController:exportState', {
-    includeSecrets: true,
-    password,
-  });
+  let snapshot = await this.messenger.call(
+    'AccountTreeController:exportState',
+    {
+      includeSecrets: true,
+      password,
+    },
+  );
 
   const selectedPayloadIds = new Set(
     selectedAccountGroupIds.map((groupId) => snapshot.toPayloadId(groupId)),
@@ -283,8 +305,8 @@ resulting `AccountTreeSnapshot` down to the selected account groups
 
 ### Messenger delegation
 
-| Messenger                         | Delegated actions                  |
-| ---------------------------------- | ----------------------------------- |
+| Messenger                         | Delegated actions                   |
+| --------------------------------- | ----------------------------------- |
 | `qr-sync-controller-messenger.ts` | `AccountTreeController:exportState` |
 
 ---
@@ -398,14 +420,14 @@ Summary for PMs:
 
 ### Core implementation
 
-| File                                                                                    | Purpose                                                                |
-| ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| File                                                                                   | Purpose                                                                |
+| -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | `app/scripts/controllers/qr-sync/qr-sync-controller.ts`                                | MWP session lifecycle, `syncAccounts` (calls `exportState`), messaging |
 | `app/scripts/controllers/qr-sync/types.ts`                                             | Payload types, messenger types, controller state                       |
 | `app/scripts/controllers/qr-sync/constants.ts`                                         | Message version, action types, error messages                          |
-| `app/scripts/controllers/qr-sync/utils.ts`                                             | `isQrSyncOffer`, `parseMwpError`, timeouts                              |
+| `app/scripts/controllers/qr-sync/utils.ts`                                             | `isQrSyncOffer`, `parseMwpError`, timeouts                             |
 | `app/scripts/controllers/qr-sync/metadata.ts`                                          | Controller state defaults + metadata                                   |
-| `app/scripts/messenger-client-init/messengers/qr-sync/qr-sync-controller-messenger.ts` | Controller messenger — delegates `AccountTreeController:exportState`  |
+| `app/scripts/messenger-client-init/messengers/qr-sync/qr-sync-controller-messenger.ts` | Controller messenger — delegates `AccountTreeController:exportState`   |
 
 ### UI
 
