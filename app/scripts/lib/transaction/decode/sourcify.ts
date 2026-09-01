@@ -12,7 +12,7 @@ export type SourcifyResponse = {
     inputs: { name: string; type: string }[];
   }[];
   devdoc?: {
-    methods: {
+    methods?: {
       [signature: string]: {
         details?: string;
         params?: { [name: string]: string };
@@ -20,7 +20,7 @@ export type SourcifyResponse = {
     };
   };
   userdoc?: {
-    methods: {
+    methods?: {
       [signature: string]: {
         notice?: string;
         params?: { [name: string]: string };
@@ -69,8 +69,8 @@ export async function decodeTransactionDataWithSourcify(
 
   const { name, inputs } = functionData;
   const signature = buildSignature(name, inputs);
-  const userDoc = userdoc?.methods[signature];
-  const devDoc = devdoc?.methods[signature];
+  const userDoc = userdoc?.methods?.[signature];
+  const devDoc = devdoc?.methods?.[signature];
   const description = userDoc?.notice ?? devDoc?.details;
 
   log('Extracted NatSpec', { signature, userDoc, devDoc });

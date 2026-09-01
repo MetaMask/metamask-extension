@@ -74,6 +74,22 @@ describe('Sourcify', () => {
       );
     });
 
+    it('decodes when devdoc is present but has no methods', async () => {
+      // Curve tricrypto2 0xD51a44d3 answers with devdoc: {} on mainnet
+      fetchMock.mockResolvedValue({
+        ok: true,
+        json: async () => ({ ...SOURCIFY_RESPONSE, devdoc: {} }),
+      });
+
+      const result = await decodeTransactionDataWithSourcify(
+        TRANSACTION_DATA_SOURCIFY,
+        CONTRACT_ADDRESS_MOCK,
+        CHAIN_ID_MOCK,
+      );
+
+      expect(result?.name).toBe('transfer');
+    });
+
     it('returns expected data with tuples and arrays', async () => {
       fetchMock.mockResolvedValue({
         ok: true,
