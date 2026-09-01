@@ -89,7 +89,6 @@ export async function isHyperliquidDepositPromptEligible({
   tokenBalancesController,
   tokensController,
 }: IsHyperliquidDepositPromptEligibleOptions): Promise<boolean> {
-  // Return false if perps is not available
   if (!isPerpsExperienceAvailable(remoteFeatureFlagController)) {
     return false;
   }
@@ -98,7 +97,6 @@ export async function isHyperliquidDepositPromptEligible({
     return false;
   }
 
-  // Return false if required dependencies are missing
   if (
     !signerAddress ||
     !accountTrackerController ||
@@ -109,7 +107,6 @@ export async function isHyperliquidDepositPromptEligible({
     return false;
   }
 
-  // Return false if Hyperliquid account state is not available
   const accountState = await getHyperliquidAccountState({
     logger,
     perpsController,
@@ -120,7 +117,6 @@ export async function isHyperliquidDepositPromptEligible({
     return false;
   }
 
-  // Refresh Arbitrum USDC balance
   const didRefreshUsdcBalance = await refreshArbitrumUsdcBalance({
     logger,
     tokenBalancesController,
@@ -130,7 +126,6 @@ export async function isHyperliquidDepositPromptEligible({
     return false;
   }
 
-  // Return true if all conditions are met
   return (
     hasZeroHyperliquidPerpsBalance({
       accountState,
