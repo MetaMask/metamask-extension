@@ -5460,7 +5460,7 @@ export default class MetamaskController extends EventEmitter {
       // successful ApproveAgent ("Enable trading") signature.
       engine.push(
         createHyperliquidDepositMiddleware({
-          endDepositPromptFlow: (flow) => this.approvalController.endFlow(flow),
+          endPlaceholderFlow: (flow) => this.approvalController.endFlow(flow),
           isEligible: ({ signerAddress }) =>
             isHyperliquidDepositPromptEligible({
               accountTrackerController: this.accountTrackerController,
@@ -5470,14 +5470,14 @@ export default class MetamaskController extends EventEmitter {
               tokenBalancesController: this.tokenBalancesController,
               tokensController: this.tokensController,
             }),
-          openDepositFlow: ({ origin: promptOrigin, signerAddress }) =>
+          showDepositPrompt: ({ origin: promptOrigin, signerAddress }) =>
             showHyperliquidDepositPromptApproval({
               approvalController: this.approvalController,
               origin: promptOrigin,
               selectedAddress: signerAddress,
             }),
-          // Only called once the eligibility gate has passed
-          startDepositPromptFlow: () =>
+          // Keeps confirmation UI active during the gap between signature and prompt
+          startPlaceholderFlow: () =>
             this.approvalController.startFlow({ show: false }),
         }),
       );

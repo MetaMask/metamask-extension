@@ -82,20 +82,20 @@ const successResponse: PendingJsonRpcResponse<string> = {
 
 describe('createHyperliquidDepositMiddleware', () => {
   let mockNext: jest.Mock;
-  let openDepositFlow: jest.Mock;
+  let showDepositPrompt: jest.Mock;
   let isEligible: jest.Mock;
-  let startDepositPromptFlow: jest.Mock;
-  let endDepositPromptFlow: jest.Mock;
+  let startPlaceholderFlow: jest.Mock;
+  let endPlaceholderFlow: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockNext = jest.fn((cb) => cb?.());
-    openDepositFlow = jest.fn().mockResolvedValue(undefined);
+    showDepositPrompt = jest.fn().mockResolvedValue(undefined);
     isEligible = jest.fn().mockResolvedValue(true);
-    startDepositPromptFlow = jest.fn().mockReturnValue({
+    startPlaceholderFlow = jest.fn().mockReturnValue({
       id: 'hyperliquid-deposit-flow',
     });
-    endDepositPromptFlow = jest.fn();
+    endPlaceholderFlow = jest.fn();
   });
 
   const runMiddleware = async (
@@ -103,10 +103,10 @@ describe('createHyperliquidDepositMiddleware', () => {
     response: PendingJsonRpcResponse<Json> = successResponse,
   ) => {
     const middleware = createHyperliquidDepositMiddleware({
-      endDepositPromptFlow,
+      endPlaceholderFlow,
       isEligible,
-      openDepositFlow,
-      startDepositPromptFlow,
+      showDepositPrompt,
+      startPlaceholderFlow,
     });
 
     await new Promise<void>((resolve) => {
@@ -114,7 +114,7 @@ describe('createHyperliquidDepositMiddleware', () => {
     });
   };
 
-  it('opens the deposit flow after a successful Hyperliquid ApproveAgent signature', async () => {
+  it('shows the deposit prompt after a successful Hyperliquid ApproveAgent signature', async () => {
     await runMiddleware(createMockRequest());
 
     expect(mockNext).toHaveBeenCalledTimes(1);
@@ -124,8 +124,8 @@ describe('createHyperliquidDepositMiddleware', () => {
       tabId: 123,
       typedData: APPROVE_AGENT_TYPED_DATA,
     });
-    expect(openDepositFlow).toHaveBeenCalledTimes(1);
-    expect(openDepositFlow).toHaveBeenCalledWith({
+    expect(showDepositPrompt).toHaveBeenCalledTimes(1);
+    expect(showDepositPrompt).toHaveBeenCalledWith({
       origin: HYPERLIQUID_ORIGIN,
       signerAddress: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
       tabId: 123,
@@ -141,34 +141,34 @@ describe('createHyperliquidDepositMiddleware', () => {
 
     await runMiddleware(createMockRequest());
 
-    expect(openDepositFlow).toHaveBeenCalledTimes(1);
+    expect(showDepositPrompt).toHaveBeenCalledTimes(1);
     expect(isEligible.mock.invocationCallOrder[0]).toBeLessThan(
       mockNext.mock.invocationCallOrder[0],
     );
   });
 
-  it('keeps a confirmation flow active until the deposit prompt is added', async () => {
-    openDepositFlow.mockImplementation(() => {
-      expect(endDepositPromptFlow).not.toHaveBeenCalled();
+  it('keeps a placeholder flow active until the deposit prompt is shown', async () => {
+    showDepositPrompt.mockImplementation(() => {
+      expect(endPlaceholderFlow).not.toHaveBeenCalled();
     });
 
     await runMiddleware(createMockRequest());
 
-    expect(startDepositPromptFlow).toHaveBeenCalledWith({
+    expect(startPlaceholderFlow).toHaveBeenCalledWith({
       origin: HYPERLIQUID_ORIGIN,
       signerAddress: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
       tabId: 123,
       typedData: APPROVE_AGENT_TYPED_DATA,
     });
-    expect(openDepositFlow).toHaveBeenCalledTimes(1);
-    expect(endDepositPromptFlow).toHaveBeenCalledWith({
+    expect(showDepositPrompt).toHaveBeenCalledTimes(1);
+    expect(endPlaceholderFlow).toHaveBeenCalledWith({
       id: 'hyperliquid-deposit-flow',
     });
-    expect(startDepositPromptFlow.mock.invocationCallOrder[0]).toBeLessThan(
-      openDepositFlow.mock.invocationCallOrder[0],
+    expect(startPlaceholderFlow.mock.invocationCallOrder[0]).toBeLessThan(
+      showDepositPrompt.mock.invocationCallOrder[0],
     );
-    expect(openDepositFlow.mock.invocationCallOrder[0]).toBeLessThan(
-      endDepositPromptFlow.mock.invocationCallOrder[0],
+    expect(showDepositPrompt.mock.invocationCallOrder[0]).toBeLessThan(
+      endPlaceholderFlow.mock.invocationCallOrder[0],
     );
   });
 
@@ -182,17 +182,17 @@ describe('createHyperliquidDepositMiddleware', () => {
       }),
     );
 
-    expect(openDepositFlow).toHaveBeenCalledTimes(1);
+    expect(showDepositPrompt).toHaveBeenCalledTimes(1);
   });
 
-  it('does not open the deposit flow for non-Hyperliquid origins', async () => {
+  it('does not show the deposit prompt for non-Hyperliquid origins', async () => {
     await runMiddleware(createMockRequest({ origin: 'https://example.com' }));
 
     expect(isEligible).not.toHaveBeenCalled();
-    expect(openDepositFlow).not.toHaveBeenCalled();
+    expect(showDepositPrompt).not.toHaveBeenCalled();
   });
 
-  it('does not open the deposit flow for an API key revocation (zero agent address)', async () => {
+  it('does not show the deposit prompt for an API key revocation (zero agent address)', async () => {
     await runMiddleware(
       createMockRequest({
         params: [
@@ -203,11 +203,11 @@ describe('createHyperliquidDepositMiddleware', () => {
     );
 
     expect(isEligible).not.toHaveBeenCalled();
-    expect(openDepositFlow).not.toHaveBeenCalled();
-    expect(startDepositPromptFlow).not.toHaveBeenCalled();
+    expect(showDepositPrompt).not.toHaveBeenCalled();
+    expect(startPlaceholderFlow).not.toHaveBeenCalled();
   });
 
-  it('does not open the deposit flow for other Hyperliquid signatures', async () => {
+  it('does not show the deposit prompt for other Hyperliquid signatures', async () => {
     await runMiddleware(
       createMockRequest({
         params: [
@@ -218,10 +218,10 @@ describe('createHyperliquidDepositMiddleware', () => {
     );
 
     expect(isEligible).not.toHaveBeenCalled();
-    expect(openDepositFlow).not.toHaveBeenCalled();
+    expect(showDepositPrompt).not.toHaveBeenCalled();
   });
 
-  it('does not open the deposit flow when the signature request is rejected', async () => {
+  it('does not show the deposit prompt when the signature request is rejected', async () => {
     await runMiddleware(createMockRequest(), {
       id: 1,
       jsonrpc: '2.0',
@@ -229,31 +229,31 @@ describe('createHyperliquidDepositMiddleware', () => {
     });
 
     expect(isEligible).toHaveBeenCalledTimes(1);
-    expect(openDepositFlow).not.toHaveBeenCalled();
-    expect(endDepositPromptFlow).toHaveBeenCalledWith({
+    expect(showDepositPrompt).not.toHaveBeenCalled();
+    expect(endPlaceholderFlow).toHaveBeenCalledWith({
       id: 'hyperliquid-deposit-flow',
     });
   });
 
-  it('does not open the deposit flow or start a confirmation flow when the eligibility gate rejects it', async () => {
+  it('does not show the deposit prompt or start a placeholder flow when the eligibility gate rejects it', async () => {
     isEligible.mockResolvedValue(false);
 
     await runMiddleware(createMockRequest());
 
     expect(isEligible).toHaveBeenCalledTimes(1);
-    expect(openDepositFlow).not.toHaveBeenCalled();
-    expect(startDepositPromptFlow).not.toHaveBeenCalled();
-    expect(endDepositPromptFlow).not.toHaveBeenCalled();
+    expect(showDepositPrompt).not.toHaveBeenCalled();
+    expect(startPlaceholderFlow).not.toHaveBeenCalled();
+    expect(endPlaceholderFlow).not.toHaveBeenCalled();
   });
 
-  it('logs when opening the deposit flow fails', async () => {
+  it('logs when showing the deposit prompt fails', async () => {
     const error = new Error('Popup failed');
-    openDepositFlow.mockRejectedValue(error);
+    showDepositPrompt.mockRejectedValue(error);
 
     await runMiddleware(createMockRequest());
 
     expect(mockLogError).toHaveBeenCalledWith(
-      'Failed to open Hyperliquid deposit prompt',
+      'Failed to show Hyperliquid deposit prompt',
       error,
     );
   });
