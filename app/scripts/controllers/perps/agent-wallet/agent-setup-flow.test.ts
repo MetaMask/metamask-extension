@@ -448,6 +448,47 @@ describe('setupAgentWallet', () => {
     });
   });
 
+  describe('malformed signature guard', () => {
+    it('calls failSetup and throws the submission error when the signature is not 0x + 130 hex chars, without contacting the exchange', async () => {
+      const fetchMock = mockFetchOk();
+      const harness = buildHarness();
+      // 131 characters: 0x + 64 + 64 + 1 (truncated v byte).
+      const shortSignature = `0x${'11'.repeat(32)}${'22'.repeat(32)}1`;
+      expect(shortSignature).toHaveLength(131);
+      harness.signTypedMessage.mockResolvedValue(shortSignature);
+
+      await expect(
+        setupAgentWallet(harness.flowController, harness.messenger, {
+          masterAccountAddress: MASTER,
+          isTestnet: false,
+          password: PASSWORD,
+        }),
+      ).rejects.toThrow(AgentSetupSubmissionError);
+
+      expect(harness.failSetup).toHaveBeenCalledWith(
+        MASTER,
+        expect.stringContaining('malformed signature'),
+      );
+      // Not left mid-flight: the setup is marked failed.
+      expect(harness.controller.state.setupStatusByAccount[MASTER]).toBe(
+        'failed',
+      );
+      // Nothing reached the exchange.
+      expect(fetchMock).not.toHaveBeenCalled();
+      // Classified as a submission failure, emitted anonymously.
+      expect(mockTrackEvent).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          name: 'Perp Agent Setup Failed',
+          options: { excludeMetaMetricsId: true },
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            failure_category: 'submission',
+          }),
+        }),
+      );
+    });
+  });
+
   describe('submission failure', () => {
     it('calls failSetup and throws AGENT_SETUP_SUBMISSION_FAILED when the exchange answers {status: err}', async () => {
       mockFetchErr();

@@ -117,7 +117,9 @@ import { MoneyAccountBalanceService } from '@metamask/money-account-balance-serv
 import { MoneyAccountController } from '@metamask/money-account-controller';
 import { MoneyAccountAvailabilityService } from '../lib/money/money-account-availability';
 import { OnboardingController } from '../controllers/onboarding';
-import { PerpsAgentWalletController } from '../controllers/perps/agent-wallet/perps-agent-wallet-controller';
+// Type-only: keeps the controller's `ethers` dependency out of this module
+// graph (this module only references the controller's types).
+import type { PerpsAgentWalletController } from '../controllers/perps/agent-wallet/perps-agent-wallet-controller';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 import { NetworkOrderController } from '../controllers/network-order';

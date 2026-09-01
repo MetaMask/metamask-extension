@@ -46,12 +46,10 @@ const perpsAgentWalletControllerMetadata = {
 const MESSENGER_EXPOSED_METHODS = [
   'getActiveAgent',
   'getAgentSigner',
-  'beginSetup',
-  'completeSetup',
-  'failSetup',
+  'canSetupAgentWallet',
   'onUnlock',
   'onPasswordChange',
-  'onLock',
+  'onInaccessibleKeys',
 ] as const;
 
 // Error codes thrown by `completeSetup` before any state mutation.
@@ -367,6 +365,29 @@ export class PerpsAgentWalletController extends BaseController<
   /** Clears all in-memory plaintext keys and revokes this session's setup eligibility. */
   onLock(): void {
     this.#canSetupAgentWallet = false;
+    this.#store.clearPlaintext();
+  }
+
+  /**
+   * Clears all agent registrations and encrypted key material after a wallet
+   * password change that did not go through {@link onPasswordChange}.
+   *
+   * Passkey-verified password changes never provide the old password, so no
+   * plaintext agent key exists in memory to re-encrypt: once the vault key
+   * rotates, the stored ciphertexts can never be decrypted again. Per the
+   * controller ruling, the safe degradation is to clear the now-unreadable
+   * state — the agent goes inert and the user re-runs setup; funds remain
+   * master-custodied throughout. Called best-effort from the service and must
+   * never be allowed to fail the password change.
+   */
+  onInaccessibleKeys(): void {
+    log.warn(
+      'PerpsAgentWalletController: agent keys are inaccessible after the password change (passkey path — no plaintext in memory to re-encrypt); clearing agent registrations',
+    );
+    this.update((state) => {
+      state.agentsByAccount = {};
+      state.agentKeyVaultByAccount = {};
+    });
     this.#store.clearPlaintext();
   }
 }

@@ -123,7 +123,10 @@ export const PerpsControllerInit: MessengerClientInitFunction<
     deferEligibilityCheck: !completedOnboarding || !useExternalServices,
     // Single-path wallet seam: when the selected master account has an active
     // agent key (in-memory plaintext, only while unlocked), HyperLiquid actions
-    // sign with the agent key and never contact the keyring.
+    // sign with the agent key and never contact the keyring. This seam is
+    // independent of the `perpsAgentWalletEnabled` remote flag: the flag gates
+    // only the setup UI/CTA, while `getAgentSigner` keeps serving
+    // already-registered agents whether the flag is on or off.
     getAgentSigner: async (masterAccountAddress) => {
       const signer = await controllerMessenger.call(
         'PerpsAgentWalletController:getAgentSigner',

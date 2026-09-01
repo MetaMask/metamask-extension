@@ -178,10 +178,13 @@ describe('AgentWalletSetup', () => {
       );
     });
 
-    it('collects the wallet password in a password input', async () => {
+    it('collects the wallet password in a password input with browser autocomplete off', async () => {
       await openReview();
       const input = screen.getByTestId('perps-agent-wallet-password-input');
       expect(input).toBeInTheDocument();
+      // TextField `autoComplete={false}` renders autocomplete="off" so the
+      // browser never offers to save the wallet password.
+      expect(input).toHaveAttribute('autocomplete', 'off');
       fireEvent.change(input, { target: { value: 'my-secret' } });
       expect(input).toHaveValue('my-secret');
     });

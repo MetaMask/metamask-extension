@@ -125,8 +125,10 @@ export const getIsPerpsOrderBookEnabled = createSelector(
  * Remote flag `perpsAgentWalletEnabled` — the camel-cased form of
  * `perps-agent-wallet-enabled`. The flag defaults to disabled so the agent
  * wallet surface ships dark, and follows the same `{ enabled, minimumVersion }`
- * rollout shape as `perpsEnabledVersion`. When disabled, the setup CTA and
- * status row never render; perps signing falls back to the master keyring path.
+ * rollout shape as `perpsEnabledVersion`. The flag gates the SETUP UI only:
+ * when disabled, the setup CTA and status row never render, but signing still
+ * uses the agent key for any already-registered agent — `getAgentSigner`
+ * serves existing agents regardless of this flag.
  */
 export const getIsPerpsAgentWalletEnabled = createSelector(
   getRemoteFeatureFlags,

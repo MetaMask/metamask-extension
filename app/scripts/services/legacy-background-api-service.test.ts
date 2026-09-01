@@ -1,4 +1,5 @@
 import { Mutex } from 'async-mutex';
+import log from 'loglevel';
 import {
   Messenger,
   MessengerActions,
@@ -4298,6 +4299,51 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
+    it('clears the inaccessible perps agent keys after a successful passkey change', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        const onInaccessibleKeys = jest.fn().mockResolvedValue(undefined);
+        rootMessenger.registerActionHandler(
+          'PerpsAgentWalletController:onInaccessibleKeys',
+          onInaccessibleKeys,
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+          params,
+        );
+
+        expect(onInaccessibleKeys).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('does not fail the password change when clearing the perps agent keys throws', async () => {
+      const warnSpy = jest.spyOn(log, 'warn').mockImplementation(() => undefined);
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PasskeyController:changePasswordWithPasskeyVerification',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'PerpsAgentWalletController:onInaccessibleKeys',
+          jest.fn().mockRejectedValue(new Error('clear failed')),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:changePasswordWithPasskeyVerification',
+            params,
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(warnSpy).toHaveBeenCalled();
+      });
+      warnSpy.mockRestore();
+    });
+
     it('serializes the change through the shared seedless operation mutex', async () => {
       const runExclusiveSpy = jest.spyOn(Mutex.prototype, 'runExclusive');
 
@@ -8557,6 +8603,7 @@ function getMessenger(
       'AddressBookController:clear',
       'PreferencesController:resetState',
       'OnboardingController:resetOnboarding',
+      'PerpsAgentWalletController:onInaccessibleKeys',
     ],
     events: [
       'NetworkEnablementController:stateChange',

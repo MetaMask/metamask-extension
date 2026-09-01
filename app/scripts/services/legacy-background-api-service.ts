@@ -322,6 +322,7 @@ import type { UsePPOMAction } from '../lib/ppom/ppom-util';
 import type {
   PerpsAgentWalletControllerOnUnlockAction,
   PerpsAgentWalletControllerOnPasswordChangeAction,
+  PerpsAgentWalletControllerOnInaccessibleKeysAction,
 } from '../controllers/perps/agent-wallet/types';
 import {
   OnboardingControllerGetIsSocialLoginFlowAction,
@@ -702,6 +703,7 @@ type AllowedActions =
   | PermissionControllerUpdatePermissionsByCaveatAction
   | PerpsAgentWalletControllerOnPasswordChangeAction
   | PerpsAgentWalletControllerOnUnlockAction
+  | PerpsAgentWalletControllerOnInaccessibleKeysAction
   | PhishingControllerMaybeUpdateStateAction
   | PhishingControllerScanAddressAction
   | PhishingControllerTestOriginAction
@@ -2582,6 +2584,20 @@ export class LegacyBackgroundApiService {
         params,
       ),
     );
+    // Passkey-verified changes bypass the `KeyringController:changePassword`
+    // hook, so `PerpsAgentWalletController:onPasswordChange` never runs and no
+    // plaintext agent key exists in memory to re-encrypt with the new password
+    // — the stored agent ciphertexts become permanently undecryptable once
+    // the vault key rotates. Best-effort clear them (safe degradation: the
+    // agent goes inert and the user re-runs setup; funds stay master-custodied)
+    // without ever blocking or failing the password change itself.
+    try {
+      await this.#messenger.call(
+        'PerpsAgentWalletController:onInaccessibleKeys',
+      );
+    } catch (error) {
+      log.warn('error while clearing perps agent wallets', error);
+    }
   }
 
   /**

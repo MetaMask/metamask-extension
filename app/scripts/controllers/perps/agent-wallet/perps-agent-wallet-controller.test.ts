@@ -52,7 +52,10 @@ const buildController = (
   const keyringStubs: Record<string, (...args: never[]) => unknown> = {
     'KeyringController:addNewKeyring': () => undefined,
     'KeyringController:getKeyringsByType': () => [],
-    'KeyringController:signTypedMessage': () => Promise.resolve('0x'),
+    'KeyringController:signTypedMessage': () =>
+      // Valid 132-char signature (0x + 130 hex): the setup flow rejects
+      // malformed signatures before submitting to the exchange.
+      Promise.resolve(`0x${'11'.repeat(32)}${'22'.repeat(32)}1c`),
     'KeyringController:getState': () => ({}),
     'KeyringController:verifyPassword': () => Promise.resolve(true),
   };
@@ -243,6 +246,33 @@ describe('PerpsAgentWalletController', () => {
       controller.onLock();
       await controller.onUnlock({ password: 'new password' });
       expect(controller.getAgentSigner(MASTER)?.address).toBe(handle.address);
+    });
+  });
+
+  describe('onInaccessibleKeys', () => {
+    it('clears all agent registrations, ciphertexts, and in-memory plaintext, logging a warning', async () => {
+      const warnSpy = jest
+        .spyOn(log, 'warn')
+        .mockImplementation(() => undefined);
+      const { controller, messenger } = buildController();
+      await completeAgentSetup(controller);
+      expect(controller.getActiveAgent(MASTER)).not.toBeNull();
+      expect(controller.state.agentKeyVaultByAccount[MASTER]).toBeDefined();
+
+      // Called via the messenger: proves the action is registered externally.
+      expect(
+        messenger.call('PerpsAgentWalletController:onInaccessibleKeys'),
+      ).toBeUndefined();
+
+      expect(controller.state.agentsByAccount).toEqual({});
+      expect(controller.state.agentKeyVaultByAccount).toEqual({});
+      // Signing is dead even if a registration somehow remained: the
+      // plaintext is gone.
+      expect(controller.getAgentSigner(MASTER)).toBeNull();
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('inaccessible'),
+      );
+      warnSpy.mockRestore();
     });
   });
 

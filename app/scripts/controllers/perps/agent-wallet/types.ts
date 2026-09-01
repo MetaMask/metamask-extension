@@ -63,19 +63,9 @@ export type PerpsAgentWalletControllerGetAgentSignerAction = {
   handler: PerpsAgentWalletController['getAgentSigner'];
 };
 
-export type PerpsAgentWalletControllerBeginSetupAction = {
-  type: 'PerpsAgentWalletController:beginSetup';
-  handler: PerpsAgentWalletController['beginSetup'];
-};
-
-export type PerpsAgentWalletControllerCompleteSetupAction = {
-  type: 'PerpsAgentWalletController:completeSetup';
-  handler: PerpsAgentWalletController['completeSetup'];
-};
-
-export type PerpsAgentWalletControllerFailSetupAction = {
-  type: 'PerpsAgentWalletController:failSetup';
-  handler: PerpsAgentWalletController['failSetup'];
+export type PerpsAgentWalletControllerCanSetupAgentWalletAction = {
+  type: 'PerpsAgentWalletController:canSetupAgentWallet';
+  handler: PerpsAgentWalletController['canSetupAgentWallet'];
 };
 
 export type PerpsAgentWalletControllerOnUnlockAction = {
@@ -88,21 +78,23 @@ export type PerpsAgentWalletControllerOnPasswordChangeAction = {
   handler: PerpsAgentWalletController['onPasswordChange'];
 };
 
-export type PerpsAgentWalletControllerOnLockAction = {
-  type: 'PerpsAgentWalletController:onLock';
-  handler: PerpsAgentWalletController['onLock'];
+export type PerpsAgentWalletControllerOnInaccessibleKeysAction = {
+  type: 'PerpsAgentWalletController:onInaccessibleKeys';
+  handler: PerpsAgentWalletController['onInaccessibleKeys'];
 };
 
+// The setup lifecycle methods (`beginSetup`, `completeSetup`, `failSetup`)
+// and `onLock` are deliberately NOT messenger actions: they are internal to
+// the controller (`agent-setup-flow.ts` and the lock subscription call the
+// controller instance directly), so they stay off the external surface.
 export type PerpsAgentWalletControllerActions =
   | PerpsAgentWalletControllerGetStateAction
   | PerpsAgentWalletControllerGetActiveAgentAction
   | PerpsAgentWalletControllerGetAgentSignerAction
-  | PerpsAgentWalletControllerBeginSetupAction
-  | PerpsAgentWalletControllerCompleteSetupAction
-  | PerpsAgentWalletControllerFailSetupAction
+  | PerpsAgentWalletControllerCanSetupAgentWalletAction
   | PerpsAgentWalletControllerOnUnlockAction
   | PerpsAgentWalletControllerOnPasswordChangeAction
-  | PerpsAgentWalletControllerOnLockAction;
+  | PerpsAgentWalletControllerOnInaccessibleKeysAction;
 
 export type PerpsAgentWalletControllerAgentActivatedEvent = {
   type: 'PerpsAgentWalletController:agentActivated';

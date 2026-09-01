@@ -320,6 +320,8 @@ export const AgentWalletSetup = () => {
                     error={error === 'wrong-password'}
                     disabled={isSubmitting}
                     width={BlockSize.Full}
+                    // Never offer to save the wallet password in the browser.
+                    autoComplete={false}
                     testId="perps-agent-wallet-password-input"
                   />
                   {error === 'wrong-password' ? (

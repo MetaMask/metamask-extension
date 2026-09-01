@@ -41,6 +41,15 @@ export class AgentSetupRejectionError extends Error {}
 export class AgentSetupSubmissionError extends Error {}
 
 function splitSignature(signature: string): { r: string; s: string; v: 27 | 28 } {
+  // The slicing below assumes the canonical keyring layout:
+  // `0x` + r (64 chars) + s (64 chars) + v (2 chars) = 132 characters.
+  // Guard BEFORE slicing so malformed keyring output surfaces as a typed
+  // failure instead of garbage {r,s,v} being submitted to the exchange.
+  if (!/^0x[0-9a-fA-F]{130}$/u.test(signature)) {
+    throw new AgentSetupSubmissionError(
+      `malformed signature: expected 132-character hex string (0x + 130 chars), got ${signature.length} characters`,
+    );
+  }
   const r = signature.slice(0, 66);
   // HyperLiquid's ApproveAgentRequest schema requires Hex(66) (0x + 64 chars)
   // for both r and s, same as r.
@@ -130,8 +139,23 @@ export async function setupAgentWallet(
     });
     throw new AgentSetupRejectionError('Master signature rejected');
   }
-  // HL API expects {r,s,v}, not a hex signature string
-  const { r, s, v } = splitSignature(signature);
+  // HL API expects {r,s,v}, not a hex signature string. A malformed signature
+  // is routed through the same failure path as a failed submission
+  // (failSetup + anonymous metric) so the setup never stays stuck mid-flight.
+  let split: { r: string; s: string; v: 27 | 28 };
+  try {
+    split = splitSignature(signature);
+  } catch (err) {
+    controller.failSetup(opts.masterAccountAddress, String(err));
+    trackAgentSetupEvent(MetaMetricsEventName.PerpsAgentSetupFailed, {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      failure_category: 'submission',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_testnet: opts.isTestnet,
+    });
+    throw err;
+  }
+  const { r, s, v } = split;
   const body = JSON.stringify({
     action: { type: 'approveAgent', hyperliquidChain: opts.isTestnet ? 'Testnet' : 'Mainnet',
               signatureChainId: '0xa4b1', agentAddress: handle.address, agentName, nonce },
