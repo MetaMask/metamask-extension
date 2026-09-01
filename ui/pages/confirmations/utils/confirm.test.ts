@@ -62,8 +62,7 @@ describe('confirm util', () => {
           primaryType: 'Permit',
           domain: {
             name: 'Token',
-            verifyingContract:
-              '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+            verifyingContract: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
           },
           message: { value: '1' },
         }),
@@ -119,9 +118,7 @@ describe('confirm util', () => {
     };
 
     it('returns a normalized schema-declared uint256 token ID', () => {
-      expect(getEip712TokenId({ tokenId: '0x2a' }, types, 'Permit')).toBe(
-        '42',
-      );
+      expect(getEip712TokenId({ tokenId: '0x2a' }, types, 'Permit')).toBe('42');
     });
 
     it('ignores an undeclared token ID', () => {

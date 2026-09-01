@@ -164,13 +164,10 @@ const HEXADECIMAL_UINT256_PATTERN = /^0x[\da-f]{1,64}$/iu;
  * @param value - The value to normalize.
  * @returns The normalized decimal value, or undefined when invalid.
  */
-export const normalizeUint256 = (
-  value: unknown,
-): string | undefined => {
+export const normalizeUint256 = (value: unknown): string | undefined => {
   if (
     (typeof value !== 'string' && typeof value !== 'number') ||
-    (typeof value === 'number' &&
-      (!Number.isSafeInteger(value) || value < 0))
+    (typeof value === 'number' && (!Number.isSafeInteger(value) || value < 0))
   ) {
     return undefined;
   }

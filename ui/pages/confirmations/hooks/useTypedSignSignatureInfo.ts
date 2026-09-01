@@ -36,10 +36,11 @@ export const useTypedSignSignatureInfo = (
       return undefined;
     }
 
-    const { message, types, primaryType: messagePrimaryType } =
-      parseSanitizeTypedDataMessage(
-        confirmation?.msgParams?.data as string,
-      );
+    const {
+      message,
+      types,
+      primaryType: messagePrimaryType,
+    } = parseSanitizeTypedDataMessage(confirmation?.msgParams?.data as string);
 
     if (getEip712TokenId(message, types, messagePrimaryType) !== undefined) {
       return TokenStandard.ERC721;

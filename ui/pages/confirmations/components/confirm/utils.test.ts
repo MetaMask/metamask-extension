@@ -56,9 +56,9 @@ describe('confirm - utils', () => {
     });
 
     it('ignores allowed false for non-DAI permits', () => {
-      expect(
-        getIsRevokeDAIPermit(permitSignatureMsgWithUnsignedFields),
-      ).toBe(false);
+      expect(getIsRevokeDAIPermit(permitSignatureMsgWithUnsignedFields)).toBe(
+        false,
+      );
     });
   });
 
