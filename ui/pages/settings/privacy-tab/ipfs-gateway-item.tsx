@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Box, BoxFlexDirection } from '@metamask/design-system-react';
-import { FormTextField } from '../../../components/component-library';
+import { Box, BoxFlexDirection, FormTextField  } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import {
@@ -107,7 +106,7 @@ export const IpfsGatewayItem = () => {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               handleIpfsGatewayChange(e.target.value)
             }
-            error={Boolean(ipfsGatewayError)}
+            isError={Boolean(ipfsGatewayError)}
             helpText={ipfsGatewayError}
           />
         </Box>

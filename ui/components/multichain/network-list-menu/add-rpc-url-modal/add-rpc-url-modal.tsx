@@ -1,13 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   ButtonSize,
   ButtonVariant,
+  FormTextField,
+  TextFieldSize,
+  TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
 import {
   Box,
-  FormTextField,
-  FormTextFieldSize,
   HelpText,
   HelpTextSeverity,
 } from '../../../component-library';
@@ -32,7 +33,7 @@ const AddRpcUrlModal = ({
 
   const [url, setUrl] = useState<string>();
   const [error, setError] = useState<string>();
-  const nameRef = useRef<HTMLInputElement>(null);
+  const [name, setName] = useState('');
 
   useEffect(() => {
     if (url && !isWebUrl(url)) {
@@ -53,18 +54,18 @@ const AddRpcUrlModal = ({
       <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
         <FormTextField
           id="rpcUrl"
-          size={FormTextFieldSize.Lg}
-          error={Boolean(error)}
+          size={TextFieldSize.Lg}
+          isError={Boolean(error)}
           label={t('rpcUrl')}
           placeholder={t('enterRpcUrl')}
-          textFieldProps={{ borderRadius: BorderRadius.LG }}
+          value={url ?? ''}
+          textFieldProps={{ className: 'rounded-lg' }}
           labelProps={{
-            children: undefined,
-            variant: TextVariant.bodyMdMedium,
+            variant: DsTextVariant.BodyMd,
           }}
-          inputProps={{
-            'data-testid': 'rpc-url-input-test',
-          }}
+          inputProps={
+            { 'data-testid': 'rpc-url-input-test' } as React.InputHTMLAttributes<HTMLInputElement>
+          }
           onChange={(e) => setUrl(e.target.value)}
           autoFocus
         />
@@ -73,18 +74,18 @@ const AddRpcUrlModal = ({
         )}
         <FormTextField
           id="rpcName"
-          size={FormTextFieldSize.Lg}
-          inputProps={{
-            'data-testid': 'rpc-name-input-test',
-          }}
+          size={TextFieldSize.Lg}
+          inputProps={
+            { 'data-testid': 'rpc-name-input-test' } as React.InputHTMLAttributes<HTMLInputElement>
+          }
           placeholder={t('enterANameToIdentifyTheUrl')}
-          paddingTop={4}
-          inputRef={nameRef}
+          className="pt-4"
           label={t('rpcNameOptional')}
-          textFieldProps={{ borderRadius: BorderRadius.LG }}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          textFieldProps={{ className: 'rounded-lg' }}
           labelProps={{
-            children: undefined,
-            variant: TextVariant.bodyMdMedium,
+            variant: DsTextVariant.BodyMd,
           }}
         />
       </Box>
@@ -102,8 +103,8 @@ const AddRpcUrlModal = ({
           variant={ButtonVariant.Primary}
           data-testid="add-rpc-url-button"
           onClick={async () => {
-            if (url && !error && nameRef.current) {
-              onAdded(url, nameRef.current.value || undefined);
+            if (url && !error) {
+              onAdded(url, name || undefined);
             }
           }}
         >

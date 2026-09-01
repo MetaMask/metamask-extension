@@ -5,6 +5,9 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
+  FormTextField,
+  TextFieldSize,
+  TextVariant as DsTextVariant,
   IconName,
   TextButton,
   TextButtonSize,
@@ -51,8 +54,6 @@ import {
 } from '../../../store/actions';
 import {
   Box,
-  FormTextField,
-  FormTextFieldSize,
   HelpText,
   HelpTextSeverity,
   Text,
@@ -61,7 +62,6 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
@@ -501,7 +501,7 @@ export const NetworksForm = ({
 
         <FormTextField
           id="networkName"
-          size={FormTextFieldSize.Lg}
+          size={TextFieldSize.Lg}
           placeholder={t('enterNetworkName')}
           data-testid="network-form-name-input"
           autoFocus
@@ -546,15 +546,12 @@ export const NetworksForm = ({
           }}
           label={t('networkName')}
           labelProps={{
-            children: undefined,
-            variant: TextVariant.bodyMdMedium,
+            variant: DsTextVariant.BodyMd,
           }}
-          textFieldProps={{
-            borderRadius: BorderRadius.LG,
-          }}
-          inputProps={{
-            'data-testid': 'network-form-network-name',
-          }}
+          textFieldProps={{ className: 'rounded-lg' }}
+          inputProps={
+            { 'data-testid': 'network-form-network-name' } as React.InputHTMLAttributes<HTMLInputElement>
+          }
           value={name}
         />
         <DropdownEditor
@@ -635,44 +632,38 @@ export const NetworksForm = ({
         {isRpcFailoverEnabled && defaultFailoverUrls.length > 0 ? (
           <FormTextField
             id="failoverRpcUrl"
-            size={FormTextFieldSize.Lg}
-            paddingTop={4}
+            size={TextFieldSize.Lg}
+            className="pt-4"
             label={t('failoverRpcUrl')}
             labelProps={{
-              children: undefined,
-              variant: TextVariant.bodyMdMedium,
+              variant: DsTextVariant.BodyMd,
             }}
-            textFieldProps={{
-              borderRadius: BorderRadius.LG,
-            }}
+            textFieldProps={{ className: 'rounded-lg' }}
             value={onlyKeepHost(defaultFailoverUrls[0])}
-            disabled={true}
+            isDisabled
           />
         ) : null}
 
         <FormTextField
           id="chainId"
-          size={FormTextFieldSize.Lg}
+          size={TextFieldSize.Lg}
           placeholder={t('enterChainId')}
-          paddingTop={4}
+          className="pt-4"
           data-testid="network-form-chain-id-input"
           onChange={(e) => {
             setChainId(e.target?.value.trim());
           }}
-          error={Boolean(errors?.chainId)}
+          isError={Boolean(errors?.chainId)}
           label={t('chainId')}
           labelProps={{
-            children: undefined,
-            variant: TextVariant.bodyMdMedium,
+            variant: DsTextVariant.BodyMd,
           }}
-          textFieldProps={{
-            borderRadius: BorderRadius.LG,
-          }}
-          inputProps={{
-            'data-testid': 'network-form-chain-id',
-          }}
+          textFieldProps={{ className: 'rounded-lg' }}
+          inputProps={
+            { 'data-testid': 'network-form-chain-id' } as React.InputHTMLAttributes<HTMLInputElement>
+          }
           value={chainId}
-          disabled={Boolean(existingNetwork)}
+          isDisabled={Boolean(existingNetwork)}
         />
 
         {errors.chainId?.msg ? (
@@ -713,9 +704,9 @@ export const NetworksForm = ({
         ) : null}
         <FormTextField
           id="nativeCurrency"
-          size={FormTextFieldSize.Lg}
+          size={TextFieldSize.Lg}
           placeholder={t('enterSymbol')}
-          paddingTop={4}
+          className="pt-4"
           data-testid="network-form-ticker"
           helpText={
             suggestedTicker ? (
@@ -745,15 +736,12 @@ export const NetworksForm = ({
           }}
           label={t('currencySymbol')}
           labelProps={{
-            children: undefined,
-            variant: TextVariant.bodyMdMedium,
+            variant: DsTextVariant.BodyMd,
           }}
-          textFieldProps={{
-            borderRadius: BorderRadius.LG,
-          }}
-          inputProps={{
-            'data-testid': 'network-form-ticker-input',
-          }}
+          textFieldProps={{ className: 'rounded-lg' }}
+          inputProps={
+            { 'data-testid': 'network-form-ticker-input' } as React.InputHTMLAttributes<HTMLInputElement>
+          }
           value={ticker}
         />
         {ticker && warnings.ticker?.msg ? (
