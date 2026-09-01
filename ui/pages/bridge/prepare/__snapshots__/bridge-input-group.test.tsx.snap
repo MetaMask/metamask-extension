@@ -116,11 +116,11 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
                 data-testid="network-list-item-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-8 w-8 rounded-md"
                 >
                   <img
-                    alt="Solana logo"
-                    class="mm-avatar-network__network-image"
+                    alt="Solana"
+                    class="size-full object-contain"
                     src="./images/solana-logo.svg"
                   />
                 </div>
@@ -162,11 +162,11 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
                 data-testid="network-list-item-bip122:000000000019d6689c085ae165831e93"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-8 w-8 rounded-md"
                 >
                   <img
-                    alt="Bitcoin logo"
-                    class="mm-avatar-network__network-image"
+                    alt="Bitcoin"
+                    class="size-full object-contain"
                     src="./images/bitcoin-logo.svg"
                   />
                 </div>
@@ -208,11 +208,11 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
                 data-testid="network-list-item-eip155:1"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-8 w-8 rounded-md"
                 >
                   <img
-                    alt="Ethereum logo"
-                    class="mm-avatar-network__network-image"
+                    alt="Ethereum"
+                    class="size-full object-contain"
                     src="./images/eth_logo.svg"
                   />
                 </div>
@@ -254,11 +254,11 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
                 data-testid="network-list-item-eip155:10"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-8 w-8 rounded-md"
                 >
                   <img
-                    alt="OP logo"
-                    class="mm-avatar-network__network-image"
+                    alt="OP"
+                    class="size-full object-contain"
                     src="./images/optimism.svg"
                   />
                 </div>
@@ -300,11 +300,11 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
                 data-testid="network-list-item-eip155:137"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-8 w-8 rounded-md"
                 >
                   <img
-                    alt="Polygon logo"
-                    class="mm-avatar-network__network-image"
+                    alt="Polygon"
+                    class="size-full object-contain"
                     src="./images/pol-token.svg"
                   />
                 </div>
@@ -346,11 +346,11 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
                 data-testid="network-list-item-eip155:56"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-8 w-8 rounded-md"
                 >
                   <img
-                    alt="BNB Chain logo"
-                    class="mm-avatar-network__network-image"
+                    alt="BNB Chain"
+                    class="size-full object-contain"
                     src="./images/bnb.svg"
                   />
                 </div>
@@ -392,11 +392,11 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
                 data-testid="network-list-item-tron:728126428"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-8 w-8 rounded-md"
                 >
                   <img
-                    alt="Tron logo"
-                    class="mm-avatar-network__network-image"
+                    alt="Tron"
+                    class="size-full object-contain"
                     src="./images/tron-logo.svg"
                   />
                 </div>
@@ -558,11 +558,11 @@ exports[`BridgeInputGroup should render source networks 1`] = `
                 data-testid="network-list-item-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-8 w-8 rounded-md"
                 >
                   <img
-                    alt="Solana logo"
-                    class="mm-avatar-network__network-image"
+                    alt="Solana"
+                    class="size-full object-contain"
                     src="./images/solana-logo.svg"
                   />
                 </div>
@@ -604,11 +604,11 @@ exports[`BridgeInputGroup should render source networks 1`] = `
                 data-testid="network-list-item-bip122:000000000019d6689c085ae165831e93"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-8 w-8 rounded-md"
                 >
                   <img
-                    alt="Bitcoin logo"
-                    class="mm-avatar-network__network-image"
+                    alt="Bitcoin"
+                    class="size-full object-contain"
                     src="./images/bitcoin-logo.svg"
                   />
                 </div>
@@ -650,11 +650,11 @@ exports[`BridgeInputGroup should render source networks 1`] = `
                 data-testid="network-list-item-eip155:1"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-8 w-8 rounded-md"
                 >
                   <img
-                    alt="Ethereum logo"
-                    class="mm-avatar-network__network-image"
+                    alt="Ethereum"
+                    class="size-full object-contain"
                     src="./images/eth_logo.svg"
                   />
                 </div>
@@ -696,11 +696,11 @@ exports[`BridgeInputGroup should render source networks 1`] = `
                 data-testid="network-list-item-eip155:10"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-8 w-8 rounded-md"
                 >
                   <img
-                    alt="OP logo"
-                    class="mm-avatar-network__network-image"
+                    alt="OP"
+                    class="size-full object-contain"
                     src="./images/optimism.svg"
                   />
                 </div>
@@ -742,11 +742,11 @@ exports[`BridgeInputGroup should render source networks 1`] = `
                 data-testid="network-list-item-eip155:137"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-8 w-8 rounded-md"
                 >
                   <img
-                    alt="Polygon logo"
-                    class="mm-avatar-network__network-image"
+                    alt="Polygon"
+                    class="size-full object-contain"
                     src="./images/pol-token.svg"
                   />
                 </div>
@@ -788,11 +788,11 @@ exports[`BridgeInputGroup should render source networks 1`] = `
                 data-testid="network-list-item-eip155:56"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-8 w-8 rounded-md"
                 >
                   <img
-                    alt="BNB Chain logo"
-                    class="mm-avatar-network__network-image"
+                    alt="BNB Chain"
+                    class="size-full object-contain"
                     src="./images/bnb.svg"
                   />
                 </div>

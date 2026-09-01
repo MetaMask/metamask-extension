@@ -4,6 +4,7 @@ import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navi
 import {
   useRWAToken,
   isTokenTradingOpenAt,
+  isTokenInOffHoursAt,
   isStockRWAToken,
   type RWATokenLike,
 } from './useRWAToken';
@@ -230,6 +231,71 @@ describe('isTokenTradingOpenAt', () => {
   });
 });
 
+describe('isTokenInOffHoursAt', () => {
+  it('returns false when token is undefined', () => {
+    expect(isTokenInOffHoursAt(undefined, NOON)).toBe(false);
+  });
+
+  it('returns false when rwaData is undefined', () => {
+    expect(
+      isTokenInOffHoursAt({ rwaData: undefined } as RWATokenLike, NOON),
+    ).toBe(false);
+  });
+
+  it('returns false when no offhours data is present', () => {
+    expect(isTokenInOffHoursAt(buildToken(), NOON)).toBe(false);
+  });
+
+  it('returns true when inside the off-hours window', () => {
+    const token = buildToken({
+      offhours: {
+        nextOpen: '2026-03-02T11:00:00.000Z',
+        nextClose: '2026-03-02T13:00:00.000Z',
+      },
+    });
+    expect(isTokenInOffHoursAt(token, NOON)).toBe(true);
+  });
+
+  it('returns false when outside the off-hours window', () => {
+    const token = buildToken({
+      offhours: {
+        nextOpen: '2026-03-02T14:00:00.000Z',
+        nextClose: '2026-03-02T16:00:00.000Z',
+      },
+    });
+    expect(isTokenInOffHoursAt(token, NOON)).toBe(false);
+  });
+
+  it('returns false when offhours nextOpen is missing', () => {
+    const token = buildToken({
+      offhours: {
+        nextClose: '2026-03-02T13:00:00.000Z',
+      },
+    });
+    expect(isTokenInOffHoursAt(token, NOON)).toBe(false);
+  });
+
+  it('returns false when offhours nextClose is missing', () => {
+    const token = buildToken({
+      offhours: {
+        nextOpen: '2026-03-02T11:00:00.000Z',
+      },
+    });
+    expect(isTokenInOffHoursAt(token, NOON)).toBe(false);
+  });
+
+  it('supports overnight off-hours windows', () => {
+    const lateEvening = new Date('2026-03-02T23:30:00.000Z').getTime();
+    const token = buildToken({
+      offhours: {
+        nextOpen: '2026-03-02T22:00:00.000Z',
+        nextClose: '2026-03-03T04:00:00.000Z',
+      },
+    });
+    expect(isTokenInOffHoursAt(token, lateEvening)).toBe(true);
+  });
+});
+
 describe('useRWAToken', () => {
   beforeEach(() => {
     jest.useFakeTimers();
@@ -354,6 +420,79 @@ describe('useRWAToken', () => {
           nextPause: {
             start: undefined,
             end: '2026-03-02T12:30:00.000Z',
+          },
+        }),
+      ),
+    ).toBe(false);
+  });
+
+  it('returns true when regular market is closed but off-hours trading is open', () => {
+    jest.setSystemTime(new Date('2026-03-02T20:00:00.000Z'));
+    const { result } = renderHookWithProvider(
+      () => useRWAToken(),
+      enabledState,
+    );
+
+    expect(
+      result.current.isTokenTradingOpen(
+        buildToken({
+          market: {
+            nextOpen: '2026-03-03T14:30:00.000Z',
+            nextClose: '2026-03-03T21:00:00.000Z',
+          },
+          offhours: {
+            nextOpen: '2026-03-02T18:00:00.000Z',
+            nextClose: '2026-03-02T22:00:00.000Z',
+          },
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it('returns true during off-hours even when a regular-hours pause is present', () => {
+    jest.setSystemTime(new Date('2026-03-02T20:00:00.000Z'));
+    const { result } = renderHookWithProvider(
+      () => useRWAToken(),
+      enabledState,
+    );
+
+    expect(
+      result.current.isTokenTradingOpen(
+        buildToken({
+          market: {
+            nextOpen: '2026-03-03T14:30:00.000Z',
+            nextClose: '2026-03-03T21:00:00.000Z',
+          },
+          nextPause: {
+            start: '2026-03-02T19:00:00.000Z',
+            end: '2026-03-02T21:00:00.000Z',
+          },
+          offhours: {
+            nextOpen: '2026-03-02T18:00:00.000Z',
+            nextClose: '2026-03-02T22:00:00.000Z',
+          },
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false when both regular market and off-hours are closed', () => {
+    jest.setSystemTime(new Date('2026-03-02T03:00:00.000Z'));
+    const { result } = renderHookWithProvider(
+      () => useRWAToken(),
+      enabledState,
+    );
+
+    expect(
+      result.current.isTokenTradingOpen(
+        buildToken({
+          market: {
+            nextOpen: '2026-03-02T14:30:00.000Z',
+            nextClose: '2026-03-02T21:00:00.000Z',
+          },
+          offhours: {
+            nextOpen: '2026-03-02T18:00:00.000Z',
+            nextClose: '2026-03-02T22:00:00.000Z',
           },
         }),
       ),
