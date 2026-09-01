@@ -81,15 +81,15 @@ export function createHyperliquidDepositMiddleware({
         return;
       }
 
-      if (!(await eligibilityPromise)) {
-        return;
-      }
-
-      try {
-        await Promise.resolve(showDepositPrompt(context));
-      } catch (error) {
-        log.error('Failed to show Hyperliquid deposit prompt', error);
-      }
+      // Fire-and-forget: don't block the RPC response to Hyperliquid while
+      // checking eligibility or showing the prompt.
+      eligibilityPromise
+        ?.then((eligible) =>
+          eligible ? showDepositPrompt(context) : undefined,
+        )
+        .catch((error) => {
+          log.error('Failed to show Hyperliquid deposit prompt', error);
+        });
     },
   );
 }

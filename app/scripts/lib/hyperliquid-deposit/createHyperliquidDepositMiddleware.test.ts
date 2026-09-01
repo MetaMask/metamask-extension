@@ -104,6 +104,9 @@ describe('createHyperliquidDepositMiddleware', () => {
     await new Promise<void>((resolve) => {
       middleware(request, response, mockNext, () => resolve());
     });
+
+    // Allow fire-and-forget promises (eligibility check, prompt display) to settle.
+    await new Promise(process.nextTick);
   };
 
   it('shows the deposit prompt after a successful Hyperliquid ApproveAgent signature', async () => {
