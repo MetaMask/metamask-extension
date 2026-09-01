@@ -5203,7 +5203,7 @@
     "message": "Log in"
   },
   "loginErrorSessionExpiredDescription": {
-    "message": "Your session has expired. Log in again."
+    "message": "Log in again to continue."
   },
   "loginErrorSessionExpiredTitle": {
     "message": "Session has expired"
