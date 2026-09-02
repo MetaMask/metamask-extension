@@ -4,6 +4,7 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { getHumanReadableTokenAmount } from '../../../shared/lib/activity/fiat';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 import { enrichLocalActivity } from './enrich-local-activity';
@@ -119,6 +120,13 @@ describe('enrichLocalActivity', () => {
         assetId: `eip155:143/erc20:${MONAD_USDC_ADDRESS}`,
       },
     });
+    // List/display amount is derived from the enriched token in the same
+    // pass as calldata parsing (issue #45799: show the sent amount, not -0).
+    const token = 'token' in enriched.data ? enriched.data.token : undefined;
+    if (!token) {
+      throw new Error('expected enriched token');
+    }
+    expect(getHumanReadableTokenAmount(token)).toBe('10000000000000');
   });
 
   it('keeps existing transferInformation amount', () => {
