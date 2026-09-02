@@ -10,7 +10,11 @@ import {
   AvatarNetworkSize,
   AvatarToken,
   Button,
+  ButtonIcon,
+  ButtonIconSize,
   ButtonVariant,
+  IconColor,
+  IconName,
   Tag,
   Modal,
   ModalBody,
@@ -27,7 +31,6 @@ import {
   Display,
   FlexDirection,
   FontWeight,
-  IconColor,
   JustifyContent,
   TextAlign,
   TextColor,
@@ -38,9 +41,6 @@ import { useRWAToken } from '../../../pages/bridge/hooks/useRWAToken';
 import {
   BadgeWrapper,
   Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
   SensitiveText,
   SensitiveTextLength,
   Text,
@@ -406,9 +406,8 @@ export const TokenListItemComponent = ({
                   e.stopPropagation();
                   setShowScamWarningModal(true);
                 }}
-                color={IconColor.errorDefault}
+                iconProps={{ className: IconColor.ErrorDefault }}
                 size={ButtonIconSize.Md}
-                backgroundColor={BackgroundColor.transparent}
                 data-testid="scam-warning"
                 ariaLabel=""
               />
@@ -494,7 +493,7 @@ export const TokenListItemComponent = ({
               setShowTokenInsights(true);
             }}
             className="multichain-token-list-item__info-icon"
-            color={IconColor.iconAlternative}
+            iconProps={{ className: IconColor.IconAlternative }}
             ariaLabel={t('viewTokenDetails')}
           />
         )}

@@ -83,17 +83,6 @@ export type MetaMetricsControllerUpdateExtensionUninstallUrlAction = {
   handler: MetaMetricsController['updateExtensionUninstallUrl'];
 };
 
-/**
- * Setter for the `participateInMetaMetrics` property
- *
- * @param participateInMetaMetrics - Whether or not the user wants to participate in MetaMetrics if not set
- * @returns The string of the new metametrics id, or null
- */
-export type MetaMetricsControllerSetParticipateInMetaMetricsAction = {
-  type: `MetaMetricsController:setParticipateInMetaMetrics`;
-  handler: MetaMetricsController['setParticipateInMetaMetrics'];
-};
-
 export type MetaMetricsControllerSetDataCollectionForMarketingAction = {
   type: `MetaMetricsController:setDataCollectionForMarketing`;
   handler: MetaMetricsController['setDataCollectionForMarketing'];
@@ -158,7 +147,6 @@ export type MetaMetricsControllerMethodActions =
   | MetaMetricsControllerDeleteEventFragmentAction
   | MetaMetricsControllerFinalizeEventFragmentAction
   | MetaMetricsControllerUpdateExtensionUninstallUrlAction
-  | MetaMetricsControllerSetParticipateInMetaMetricsAction
   | MetaMetricsControllerSetDataCollectionForMarketingAction
   | MetaMetricsControllerSetMarketingCampaignCookieIdAction
   | MetaMetricsControllerTrackTracesAfterMetricsOptInAction
