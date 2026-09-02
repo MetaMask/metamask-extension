@@ -6,6 +6,7 @@ import {
 import { TransactionType } from '@metamask/transaction-controller';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
+import { getTokenMetadataFromKnownToken } from '../../../shared/lib/activity/adapters/helpers';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 import {
@@ -55,14 +56,27 @@ function enrichTokenTransferActivity(
   } else if (parsedAmount !== undefined && parsedAmount !== null) {
     amount = parsedAmount.toString();
   }
+  // Resolve known token metadata (e.g. bridge default tokens such as Monad
+  // USDC) so the activity row gets a logo (assetId), symbol, and decimals
+  // even when the token is not in the user's watched-tokens list and the
+  // transaction controller has not populated transferInformation yet.
+  const contractAddress = transferInformation?.contractAddress ?? txParams?.to;
+  const knownTokenMetadata = getTokenMetadataFromKnownToken(
+    contractAddress,
+    'out',
+    transactionGroup.initialTransaction.chainId,
+  );
   const symbol =
     transferInformation?.symbol ??
     transactionGroup.contractTokenMetadata?.symbol ??
+    knownTokenMetadata?.symbol ??
     activity.data.token?.symbol;
   const decimals =
     transferInformation?.decimals ??
     transactionGroup.contractTokenMetadata?.decimals ??
+    knownTokenMetadata?.decimals ??
     activity.data.token?.decimals;
+  const assetId = activity.data.token?.assetId ?? knownTokenMetadata?.assetId;
 
   const nextTo =
     typeof recipient === 'string' && recipient !== activity.data.to
@@ -73,7 +87,8 @@ function enrichTokenTransferActivity(
     nextTo === activity.data.to &&
     amount === activity.data.token?.amount &&
     symbol === activity.data.token?.symbol &&
-    decimals === activity.data.token?.decimals
+    decimals === activity.data.token?.decimals &&
+    assetId === activity.data.token?.assetId
   ) {
     return activity;
   }
@@ -85,9 +100,7 @@ function enrichTokenTransferActivity(
       to: nextTo,
       token: {
         direction: activity.data.token?.direction ?? 'out',
-        ...(activity.data.token?.assetId
-          ? { assetId: activity.data.token.assetId }
-          : {}),
+        ...(assetId ? { assetId } : {}),
         ...(symbol ? { symbol } : {}),
         ...(decimals === undefined ? {} : { decimals }),
         ...(amount ? { amount } : {}),

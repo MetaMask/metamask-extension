@@ -75,6 +75,28 @@ describe('getHumanReadableTokenAmount', () => {
     ).toBe('0');
   });
 
+  it('treats omitted zero native amounts as 0 for native assetType', () => {
+    expect(
+      getHumanReadableTokenAmount({
+        decimals: 18,
+        direction: 'out',
+        symbol: 'MON',
+        assetType: 'native',
+      }),
+    ).toBe('0');
+  });
+
+  it('returns undefined for a non-native (erc20) token with a missing amount', () => {
+    expect(
+      getHumanReadableTokenAmount({
+        decimals: 6,
+        direction: 'out',
+        symbol: 'USDC',
+        assetId: 'eip155:143/erc20:0x754704bc059f8c67012fed69bc8a327a5aafb603',
+      }),
+    ).toBeUndefined();
+  });
+
   it('returns undefined when amount and token metadata are both missing', () => {
     expect(
       getHumanReadableTokenAmount({

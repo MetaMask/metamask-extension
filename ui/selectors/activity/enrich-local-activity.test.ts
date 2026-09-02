@@ -9,6 +9,7 @@ import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 import { enrichLocalActivity } from './enrich-local-activity';
 
 const DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';
+const MONAD_USDC_ADDRESS = '0x754704Bc059F8C67012fEd69BC8A327a5aafb603';
 const RECIPIENT = '0x2222222222222222222222222222222222222222';
 const TRANSFER_DATA =
   '0xa9059cbb00000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000008ac7230489e80000';
@@ -73,6 +74,49 @@ describe('enrichLocalActivity', () => {
         symbol: 'DAI',
         decimals: 18,
         amount: '10000000000000000000',
+      },
+    });
+  });
+
+  it('backfills assetId, symbol, and decimals for a known Monad USDC send without contractTokenMetadata', () => {
+    const group = buildTokenTransferGroup({
+      chainId: CHAIN_IDS.MONAD,
+      txParams: {
+        from: '0x1111111111111111111111111111111111111111',
+        to: MONAD_USDC_ADDRESS,
+        data: TRANSFER_DATA,
+        value: '0x0',
+      },
+    });
+    // Simulate the post-confirmation state where the transaction controller
+    // has not populated transferInformation and the token is not in the
+    // user's watched-tokens list, so no contractTokenMetadata is available.
+    group.contractTokenMetadata = undefined;
+
+    const activity = {
+      type: 'send',
+      chainId: 'eip155:143',
+      status: 'success',
+      timestamp: 1,
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        to: MONAD_USDC_ADDRESS,
+        // mapLocalTransaction leaves the token with only direction when
+        // transferInformation and contractTokenMetadata are both missing.
+        token: { direction: 'out' },
+      },
+    } as ActivityListItem;
+
+    const enriched = enrichLocalActivity(activity, group);
+
+    expect(enriched.data).toMatchObject({
+      to: RECIPIENT,
+      token: {
+        direction: 'out',
+        symbol: 'USDC',
+        decimals: 6,
+        amount: '10000000000000000000',
+        assetId: `eip155:143/erc20:${MONAD_USDC_ADDRESS}`,
       },
     });
   });

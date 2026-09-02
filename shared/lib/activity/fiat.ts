@@ -34,6 +34,21 @@ export function getDisplaySignPrefix(
   return '';
 }
 
+// A token amount represents a chain's native asset when it is explicitly
+// marked as native, or its CAIP-19 asset id uses a native/slip44 reference.
+// Used to scope the zero-amount display fallback to native tokens only.
+function isNativeTokenAmount(token: TokenAmount): boolean {
+  if (token.assetType === 'native') {
+    return true;
+  }
+  if (token.assetId) {
+    return (
+      token.assetId.includes('/slip44:') || token.assetId.includes('/native:')
+    );
+  }
+  return false;
+}
+
 // Converts TokenAmount to unsigned human-readable numeric string (e.g. "1", "1.5")
 export function getHumanReadableTokenAmount(
   token: TokenAmount,
@@ -45,8 +60,12 @@ export function getHumanReadableTokenAmount(
   ) {
     // `@metamask/client-utils` omits zero native `txParams.value` from mapped
     // tokens but still provides symbol/asset metadata. Treat that as 0 so
-    // Activity can render "-0 ETH" for zero-value contract calls / sends.
-    if (token.symbol || token.assetId) {
+    // Activity can render "-0 ETH" for zero-value native contract calls /
+    // sends. Non-native (ERC-20) tokens with a missing amount must not
+    // render a misleading "-0" — return undefined so the row stays blank
+    // until the amount is resolved (e.g. Monad USDC sends where the amount
+    // has not been backfilled yet).
+    if (isNativeTokenAmount(token) && (token.symbol || token.assetId)) {
       return '0';
     }
     return undefined;
