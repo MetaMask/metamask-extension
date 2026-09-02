@@ -306,6 +306,46 @@ async function mockEligibleFeatureFlags(
     }));
 }
 
+const GAS_API_BASE_URL = 'https://gas.api.cx.metamask.io';
+
+async function mockArbitrumGasData(server: Mockttp): Promise<void> {
+  await server
+    .forGet(
+      `${GAS_API_BASE_URL}/networks/${ARBITRUM_CHAIN_ID_DECIMAL}/suggestedGasFees`,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        low: {
+          suggestedMaxPriorityFeePerGas: '0.01',
+          suggestedMaxFeePerGas: '0.02',
+          minWaitTimeEstimate: 15000,
+          maxWaitTimeEstimate: 30000,
+        },
+        medium: {
+          suggestedMaxPriorityFeePerGas: '0.025',
+          suggestedMaxFeePerGas: '0.05',
+          minWaitTimeEstimate: 15000,
+          maxWaitTimeEstimate: 45000,
+        },
+        high: {
+          suggestedMaxPriorityFeePerGas: '0.05',
+          suggestedMaxFeePerGas: '0.1',
+          minWaitTimeEstimate: 15000,
+          maxWaitTimeEstimate: 60000,
+        },
+        estimatedBaseFee: '0.01',
+        networkCongestion: 0.1,
+        latestPriorityFeeRange: ['0.01', '0.05'],
+        historicalPriorityFeeRange: ['0.01', '0.1'],
+        historicalBaseFeeRange: ['0.01', '0.02'],
+        priorityFeeTrend: 'stable',
+        baseFeeTrend: 'stable',
+      },
+    }));
+}
+
 async function mockArbitrumUsdcPriceData(server: Mockttp): Promise<void> {
   await server
     .forGet(`${PRICE_API_BASE_URL}/v1/exchange-rates`)
@@ -687,6 +727,7 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         confirmations_pay_post_quote: PERPS_WITHDRAW_CONFIRMATION_ENABLED_FLAG,
       });
+      await mockArbitrumGasData(server);
       await mockArbitrumUsdcPriceData(server);
       await mockRelayWithdrawData(server);
     },
