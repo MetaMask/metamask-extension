@@ -226,6 +226,7 @@ import {
   createEventBuilder,
   trackEvent,
   trackPage,
+  updateEventFragment,
 } from './controllers/analytics';
 import Backup from './lib/backup';
 import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
@@ -3513,15 +3514,7 @@ export default class MetamaskController extends EventEmitter {
       trackAnalyticsEvent: trackEvent,
       trackAnalyticsPage: trackPage,
       trackMetaMetricsPage: trackPage,
-      createEventFragment: metaMetricsController.createEventFragment.bind(
-        metaMetricsController,
-      ),
-      updateEventFragment: metaMetricsController.updateEventFragment.bind(
-        metaMetricsController,
-      ),
-      finalizeEventFragment: metaMetricsController.finalizeEventFragment.bind(
-        metaMetricsController,
-      ),
+      updateEventFragment,
       updateMetaMetricsTraits: metaMetricsController.updateTraits.bind(
         metaMetricsController,
       ),
@@ -5393,7 +5386,6 @@ export default class MetamaskController extends EventEmitter {
         getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
         snapAndHardwareMessenger,
         appStateController: this.appStateController,
-        metaMetricsController: this.metaMetricsController,
         analyticsController: this.analyticsController,
       }),
     );
@@ -5743,7 +5735,6 @@ export default class MetamaskController extends EventEmitter {
         getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
         snapAndHardwareMessenger,
         appStateController: this.appStateController,
-        metaMetricsController: this.metaMetricsController,
         analyticsController: this.analyticsController,
       }),
     );
@@ -6235,7 +6226,7 @@ export default class MetamaskController extends EventEmitter {
 
   getTransactionUIMetricsFragment(transactionId) {
     return this.controllerMessenger.call(
-      'MetaMetricsController:getEventFragmentById',
+      'AnalyticsController:getEventFragmentById',
       this.getTransactionUIMetricsFragmentId(transactionId),
     );
   }

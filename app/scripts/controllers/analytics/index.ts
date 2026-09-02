@@ -9,9 +9,14 @@ export type {
 export {
   configureAnalytics,
   canSubmitAnalytics,
+  createEventFragment,
+  finalizeEventFragment,
+  getEventFragmentById,
   identify,
   trackEvent,
   trackPage,
+  updateEventFragment,
   updateProfileSessionData,
+  upsertEventFragment,
   validateIdentifyPayload,
 } from './analytics';

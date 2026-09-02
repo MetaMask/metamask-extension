@@ -44,6 +44,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   AnalyticsController: {
     analyticsId: true,
     consentDecisionMade: true,
+    eventFragments: false,
     eventQueue: false,
     optedIn: true,
     preConsentEventQueue: false,
@@ -208,7 +209,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   MetaMetricsController: {
     tracesBeforeMetricsOptIn: false,
-    fragments: false,
     traits: false,
     dataCollectionForMarketing: false,
     marketingCampaignCookieId: true,

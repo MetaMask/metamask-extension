@@ -5,10 +5,15 @@ import {
 } from '@metamask/messenger';
 import type {
   AnalyticsControllerMessenger,
+  AnalyticsControllerCreateEventFragmentAction,
+  AnalyticsControllerFinalizeEventFragmentAction,
+  AnalyticsControllerGetEventFragmentByIdAction,
   AnalyticsControllerGetStateAction,
   AnalyticsControllerIdentifyAction,
   AnalyticsControllerTrackEventAction,
   AnalyticsControllerTrackViewAction,
+  AnalyticsControllerUpdateEventFragmentAction,
+  AnalyticsControllerUpsertEventFragmentAction,
 } from '@metamask/analytics-controller';
 import type { MultichainNetworkControllerGetStateAction } from '@metamask/multichain-network-controller';
 import type {
@@ -30,7 +35,12 @@ type InitActions =
   | AnalyticsControllerGetStateAction
   | AnalyticsControllerTrackEventAction
   | AnalyticsControllerIdentifyAction
-  | AnalyticsControllerTrackViewAction;
+  | AnalyticsControllerTrackViewAction
+  | AnalyticsControllerCreateEventFragmentAction
+  | AnalyticsControllerUpsertEventFragmentAction
+  | AnalyticsControllerUpdateEventFragmentAction
+  | AnalyticsControllerGetEventFragmentByIdAction
+  | AnalyticsControllerFinalizeEventFragmentAction;
 
 type InitEvents = never;
 
@@ -96,6 +106,11 @@ export function getAnalyticsControllerInitMessenger(
       'AnalyticsController:trackEvent',
       'AnalyticsController:identify',
       'AnalyticsController:trackView',
+      'AnalyticsController:createEventFragment',
+      'AnalyticsController:upsertEventFragment',
+      'AnalyticsController:updateEventFragment',
+      'AnalyticsController:getEventFragmentById',
+      'AnalyticsController:finalizeEventFragment',
     ],
     events: [],
   });

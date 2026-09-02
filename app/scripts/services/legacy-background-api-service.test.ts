@@ -3716,50 +3716,7 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
-    it('updates the fragment if it already exists', async () => {
-      const transactionId = 'transaction-id';
-      const fragmentId = `transaction-ui-${transactionId}`;
-      const payload = { properties: { foo: 'bar' } };
-
-      await withService(async ({ rootMessenger, serviceMessenger }) => {
-        const getEventFragmentByIdHandler = jest
-          .fn()
-          .mockReturnValue({ id: fragmentId });
-        const updateEventFragmentHandler = jest.fn();
-        const createEventFragmentHandler = jest.fn();
-
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:getEventFragmentById',
-          getEventFragmentByIdHandler,
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:updateEventFragment',
-          updateEventFragmentHandler,
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:createEventFragment',
-          createEventFragmentHandler,
-        );
-
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        rootMessenger.call(
-          'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
-          transactionId,
-          payload,
-        );
-
-        expect(getEventFragmentByIdHandler).toHaveBeenCalledWith(fragmentId);
-        expect(callSpy).toHaveBeenCalledWith(
-          'MetaMetricsController:updateEventFragment',
-          fragmentId,
-          payload,
-        );
-        expect(createEventFragmentHandler).not.toHaveBeenCalled();
-      });
-    });
-
-    it('creates the fragment if it does not exist', async () => {
+    it('upserts the fragment keyed by transaction id', async () => {
       const transactionId = 'transaction-id';
       const fragmentId = `transaction-ui-${transactionId}`;
       const payload = {
@@ -3768,23 +3725,11 @@ describe('LegacyBackgroundApiService', () => {
       };
 
       await withService(async ({ rootMessenger, serviceMessenger }) => {
-        const getEventFragmentByIdHandler = jest
-          .fn()
-          .mockReturnValue(undefined);
-        const updateEventFragmentHandler = jest.fn();
-        const createEventFragmentHandler = jest.fn();
+        const upsertEventFragmentHandler = jest.fn();
 
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:getEventFragmentById',
-          getEventFragmentByIdHandler,
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:updateEventFragment',
-          updateEventFragmentHandler,
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:createEventFragment',
-          createEventFragmentHandler,
+          'AnalyticsController:upsertEventFragment',
+          upsertEventFragmentHandler,
         );
 
         const callSpy = jest.spyOn(serviceMessenger, 'call');
@@ -3796,49 +3741,13 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(callSpy).toHaveBeenCalledWith(
-          'MetaMetricsController:createEventFragment',
-          {
-            uniqueIdentifier: fragmentId,
-            successEvent: 'Transaction Fragment Created',
-            category: MetaMetricsEventCategory.Transactions,
-            canDeleteIfAbandoned: true,
-            properties: payload.properties,
-            sensitiveProperties: payload.sensitiveProperties,
-          },
+          'AnalyticsController:upsertEventFragment',
+          fragmentId,
+          payload,
         );
-        expect(updateEventFragmentHandler).not.toHaveBeenCalled();
-      });
-    });
-
-    it('defaults properties and sensitiveProperties to empty objects when creating', async () => {
-      const transactionId = 'transaction-id';
-      const fragmentId = `transaction-ui-${transactionId}`;
-
-      await withService(async ({ rootMessenger, serviceMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:getEventFragmentById',
-          jest.fn().mockReturnValue(undefined),
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:createEventFragment',
-          jest.fn(),
-        );
-
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        rootMessenger.call(
-          'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
-          transactionId,
-          { category: MetaMetricsEventCategory.Transactions },
-        );
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'MetaMetricsController:createEventFragment',
-          expect.objectContaining({
-            uniqueIdentifier: fragmentId,
-            properties: {},
-            sensitiveProperties: {},
-          }),
+        expect(upsertEventFragmentHandler).toHaveBeenCalledWith(
+          fragmentId,
+          payload,
         );
       });
     });
@@ -5181,7 +5090,7 @@ describe('LegacyBackgroundApiService', () => {
         });
 
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:getEventFragmentById',
+          'AnalyticsController:getEventFragmentById',
           jest.fn().mockReturnValue({
             properties: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -5189,10 +5098,10 @@ describe('LegacyBackgroundApiService', () => {
             },
           }),
         );
-        const updateEventFragmentMock = jest.fn();
+        const upsertEventFragmentMock = jest.fn();
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:updateEventFragment',
-          updateEventFragmentMock,
+          'AnalyticsController:upsertEventFragment',
+          upsertEventFragmentMock,
         );
         rootMessenger.registerActionHandler(
           'TransactionController:getState',
@@ -5225,7 +5134,7 @@ describe('LegacyBackgroundApiService', () => {
             gas: ESTIMATE_GAS_MOCK,
           }),
         );
-        expect(updateEventFragmentMock).toHaveBeenCalledWith(
+        expect(upsertEventFragmentMock).toHaveBeenCalledWith(
           expect.any(String),
           {
             properties: {
@@ -5287,7 +5196,7 @@ describe('LegacyBackgroundApiService', () => {
         } as TransactionMeta;
 
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:getEventFragmentById',
+          'AnalyticsController:getEventFragmentById',
           jest.fn().mockReturnValue({
             properties: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -5295,10 +5204,10 @@ describe('LegacyBackgroundApiService', () => {
             },
           }),
         );
-        const updateEventFragmentMock = jest.fn();
+        const upsertEventFragmentMock = jest.fn();
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:updateEventFragment',
-          updateEventFragmentMock,
+          'AnalyticsController:upsertEventFragment',
+          upsertEventFragmentMock,
         );
         rootMessenger.registerActionHandler(
           'TransactionController:getState',
@@ -5333,7 +5242,7 @@ describe('LegacyBackgroundApiService', () => {
           'Failed to estimate gas for transaction containers: Failed to simulate wrapped transaction',
         );
 
-        expect(updateEventFragmentMock).toHaveBeenCalledWith(
+        expect(upsertEventFragmentMock).toHaveBeenCalledWith(
           expect.any(String),
           {
             properties: {
@@ -7689,9 +7598,8 @@ function getMessenger(
       'AppStateController:setPasskeyAutoUnlockSuppressed',
       'AppStateController:setTrezorModel',
       'KeyringController:withKeyringV2Unsafe',
-      'MetaMetricsController:getEventFragmentById',
-      'MetaMetricsController:updateEventFragment',
-      'MetaMetricsController:createEventFragment',
+      'AnalyticsController:getEventFragmentById',
+      'AnalyticsController:upsertEventFragment',
       'MetaMetricsController:bufferedTrace',
       'MetaMetricsController:bufferedEndTrace',
       'TransactionController:updateEditableParams',

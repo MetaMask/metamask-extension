@@ -162,40 +162,43 @@ export type MetaMetricsEventOptions = {
   contextPropsIntoEventProperties?: string | string[];
 };
 
-export type MetaMetricsEventFragment = {
+/**
+ * Options accepted when opening an event fragment.
+ *
+ * Fragments themselves live in the `AnalyticsController`, which stores the
+ * platform-agnostic `properties`, `sensitiveProperties` and `context`. The
+ * extension-specific fields below are flattened into those by
+ * `app/scripts/controllers/analytics`, so every event a fragment emits is
+ * shaped exactly like one built through `trackEvent`.
+ */
+export type MetaMetricsEventFragmentOptions = {
+  /**
+   * The fragment id. Generated when not supplied.
+   */
+  id?: string;
+  /**
+   * An event name to fire immediately upon fragment creation. This is useful
+   * for building funnels and for reduction of code duplication.
+   */
+  initialEvent?: string;
   /**
    * The event name to fire when the fragment is closed in an affirmative action.
    */
-  successEvent: string;
+  successEvent?: string;
   /**
    * The event name to fire when the fragment is closed with a rejection.
    */
   failureEvent?: string;
   /**
-   * An event name to fire immediately upon fragment creation. This is useful
-   * for building funnels in mixpanel and for reduction of code duplication.
-   */
-  initialEvent?: string;
-  /**
-   * The event category to use for both the success and failure events.
+   * The event category to use for every event the fragment fires.
    */
   category?: string;
   /**
-   * Should this fragment be persisted in state and progressed after the
-   * extension is locked and unlocked.
+   * Should this fragment survive a restart of the background process. Fragments
+   * that do not set this are discarded on the next initialization, since the
+   * journey they belonged to cannot be resumed.
    */
   persist?: boolean;
-  /**
-   * Time in seconds the event should be persisted for. After the timeout the
-   * fragment will be closed as abandoned. If not supplied the fragment is
-   * stored indefinitely.
-   */
-  timeout?: number;
-  /**
-   * `Date.now()` when the fragment was last updated. Used to determine if the
-   * timeout has expired and the fragment should be closed.
-   */
-  lastUpdated?: number;
   /**
    * Custom values to track. Keys in this object must be `snake_case`.
    */
@@ -207,18 +210,10 @@ export type MetaMetricsEventFragment = {
    */
   sensitiveProperties?: Record<string, Json>;
   /**
-   * Amount of currency that the event creates in revenue for MetaMask.
+   * The type of environment the fragment was opened in. Defaults to the
+   * background process type.
    */
-  revenue?: number;
-  /**
-   * ISO-4127-formatted currency for events with revenue. Defaults to US
-   * dollars.
-   */
-  currency?: string;
-  /**
-   * Abstract business "value" attributable to customers who trigger this event.
-   */
-  value?: number;
+  environmentType?: string;
   /**
    * The page/route that the event occurred on.
    */
@@ -227,32 +222,15 @@ export type MetaMetricsEventFragment = {
    * The origin of the dapp that triggered this event.
    */
   referrer?: MetaMetricsReferrerObject;
-  /**
-   * Overrides the automatic generation of UUID for the event fragment. This is
-   * useful when tracking events for subsystems that already generate UUIDs so
-   * to avoid unnecessary lookups and reduce accidental duplication.
-   */
-  uniqueIdentifier?: string;
-  /*
-   * The event id.
-   */
-  id: string;
-  /*
-   * The environment type.
-   */
-  environmentType?: string;
-  /*
-   * The event name.
-   */
-  event?: string;
-
-  /**
-   * HACK: "transaction-submitted-<id>" fragment hack
-   * If this is true and the fragment is found as an abandoned fragment,
-   * then delete the fragment instead of finalizing it.
-   */
-  canDeleteIfAbandoned?: boolean;
 };
+
+/**
+ * The fields that can be written to an already open event fragment.
+ */
+export type MetaMetricsEventFragmentPayload = Pick<
+  MetaMetricsEventFragmentOptions,
+  'properties' | 'sensitiveProperties'
+>;
 
 /**
  * Data sent to the `segment.track` method.

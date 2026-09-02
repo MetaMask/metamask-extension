@@ -5737,6 +5737,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/analytics-controller@npm:@metamask-previews/analytics-controller@2.0.0-preview-0d04fb622":
+  version: 2.0.0-preview-0d04fb622
+  resolution: "@metamask-previews/analytics-controller@npm:2.0.0-preview-0d04fb622"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/geolocation-controller": "npm:^1.0.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/utils": "npm:^11.11.0"
+    lodash: "npm:^4.17.21"
+    uuid: "npm:^8.3.2"
+  checksum: 10/53f5f496b9f221c076301d026d413d267fcff07edb7b99409e6854ad144a1596507a7f3b94ebff39afbca006d7df4fde6dd2b9de46686e5d9f592ee2f64fd5b5
+  languageName: node
+  linkType: hard
+
 "@metamask/analytics-controller@npm:^1.2.1":
   version: 1.2.1
   resolution: "@metamask/analytics-controller@npm:1.2.1"
@@ -5747,20 +5761,6 @@ __metadata:
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
   checksum: 10/378bdfe9663c532587fc397f0e80368d02a51b443b0af89ef7c0b78dd158ad59531415a2ad26673bfde1d302954655561e00fa16d41e3099f67fd3a5bdec3d04
-  languageName: node
-  linkType: hard
-
-"@metamask/analytics-controller@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/analytics-controller@npm:2.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/geolocation-controller": "npm:^1.0.0"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/utils": "npm:^11.11.0"
-    lodash: "npm:^4.17.21"
-    uuid: "npm:^8.3.2"
-  checksum: 10/ec15f5d4ef5e9d6405f5ba6366760714e52f514fdba6913523b40848259e503637339f4a73fa9d6579b44cf15b2a3b4bdc9484b50c371f40f33f0054422c0411
   languageName: node
   linkType: hard
 

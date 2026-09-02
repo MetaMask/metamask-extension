@@ -404,7 +404,6 @@
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": false,
-      "fragments": {},
       "marketingCampaignCookieId": null,
       "tracesBeforeMetricsOptIn": [],
       "traits": {}

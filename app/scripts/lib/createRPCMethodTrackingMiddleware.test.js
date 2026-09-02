@@ -108,6 +108,100 @@ messenger.registerActionHandler(
 messenger.registerActionHandler('AnalyticsController:identify', jest.fn());
 messenger.registerActionHandler('AnalyticsController:trackView', jest.fn());
 
+// Stands in for the event fragment store owned by the AnalyticsController, so
+// that the events the signature funnel emits through its fragment can be
+// asserted on alongside the events tracked directly.
+const eventFragments = new Map();
+
+function mergeFragmentContext(base, override) {
+  if (base === undefined && override === undefined) {
+    return undefined;
+  }
+  return { ...base, ...override };
+}
+
+function emitFragmentEvent(fragment, name, context) {
+  const properties = { ...fragment.properties };
+  const sensitiveProperties = { ...fragment.sensitiveProperties };
+
+  messenger.call(
+    'AnalyticsController:trackEvent',
+    {
+      name,
+      properties,
+      sensitiveProperties,
+      saveDataRecording: false,
+      hasProperties:
+        Object.keys(properties).length > 0 ||
+        Object.keys(sensitiveProperties).length > 0,
+    },
+    context,
+  );
+}
+
+messenger.registerActionHandler(
+  'AnalyticsController:createEventFragment',
+  (options = {}) => {
+    const fragment = {
+      ...options,
+      properties: { ...options.properties },
+      sensitiveProperties: { ...options.sensitiveProperties },
+    };
+
+    eventFragments.set(fragment.id, fragment);
+
+    if (fragment.initialEvent) {
+      emitFragmentEvent(fragment, fragment.initialEvent, fragment.context);
+    }
+
+    return fragment;
+  },
+);
+
+messenger.registerActionHandler(
+  'AnalyticsController:updateEventFragment',
+  (id, payload = {}) => {
+    const fragment = eventFragments.get(id);
+
+    if (!fragment) {
+      throw new Error(`Event fragment with id ${id} does not exist.`);
+    }
+
+    eventFragments.set(id, {
+      ...fragment,
+      properties: { ...fragment.properties, ...payload.properties },
+      sensitiveProperties: {
+        ...fragment.sensitiveProperties,
+        ...payload.sensitiveProperties,
+      },
+      context: mergeFragmentContext(fragment.context, payload.context),
+    });
+  },
+);
+
+messenger.registerActionHandler(
+  'AnalyticsController:finalizeEventFragment',
+  (id, { abandoned = false, context } = {}) => {
+    const fragment = eventFragments.get(id);
+
+    if (!fragment) {
+      throw new Error(`Event fragment with id ${id} does not exist.`);
+    }
+
+    const name = abandoned ? fragment.failureEvent : fragment.successEvent;
+
+    if (name) {
+      emitFragmentEvent(
+        fragment,
+        name,
+        mergeFragmentContext(fragment.context, context),
+      );
+    }
+
+    eventFragments.delete(id);
+  },
+);
+
 const controllerMessenger = new Messenger({
   namespace: 'MetaMetricsController',
   parent: messenger,
@@ -142,7 +236,6 @@ const analyticsController = {
 const metaMetricsController = new MetaMetricsController({
   state: {
     ...getDefaultMetaMetricsControllerState(),
-    fragments: {},
   },
   messenger: controllerMessenger,
   version: '0.0.1',
@@ -186,7 +279,6 @@ const createHandler = (opts) =>
     globalRateLimitTimeout: 0,
     globalRateLimitMaxAmount: 0,
     appStateController,
-    metaMetricsController,
     analyticsController,
     getHDEntropyIndex: jest.fn(),
     ...opts,
@@ -235,6 +327,7 @@ jest.mock('@metamask/controller-utils', () => {
 describe('createRPCMethodTrackingMiddleware', () => {
   beforeEach(() => {
     trackEventSpy.mockClear();
+    eventFragments.clear();
   });
   afterEach(() => {
     jest.resetAllMocks();

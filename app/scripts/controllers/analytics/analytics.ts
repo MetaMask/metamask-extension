@@ -1,5 +1,6 @@
 import type {
   AnalyticsContext,
+  AnalyticsEventFragment,
   AnalyticsEventProperties,
   AnalyticsTrackingEvent,
   AnalyticsUserTraits,
@@ -20,7 +21,11 @@ import {
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
   MetaMetricsEventName,
   type MetaMetricsContext,
+  type MetaMetricsEventFragmentOptions,
+  type MetaMetricsEventFragmentPayload,
+  type MetaMetricsPageObject,
   type MetaMetricsPagePayload,
+  type MetaMetricsReferrerObject,
   type MetaMetricsUserTraits,
   type SegmentEventPayload,
 } from '../../../../shared/constants/metametrics';
@@ -383,6 +388,141 @@ export function trackPage(payload: MetaMetricsPagePayload): void {
       pagePayload.properties,
       pagePayload.context,
     );
+  } catch (error) {
+    sentryCaptureException(error);
+  }
+}
+
+/**
+ * Flatten the extension-specific fragment fields into the generic properties
+ * the AnalyticsController stores, matching what `trackEvent` sends.
+ *
+ * @param options - The fragment options supplied by the caller.
+ * @param options.category
+ * @param options.environmentType
+ * @param options.properties
+ * @returns Properties carried by every event the fragment emits.
+ */
+function buildFragmentProperties({
+  category,
+  environmentType = ENVIRONMENT_TYPE_BACKGROUND,
+  properties,
+}: MetaMetricsEventFragmentOptions): AnalyticsEventProperties {
+  return omitBy(
+    {
+      ...properties,
+      category,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      environment_type: environmentType,
+    },
+    (propertyValue) => propertyValue === undefined,
+  ) as AnalyticsEventProperties;
+}
+
+function buildFragmentContext(
+  referrer?: MetaMetricsReferrerObject,
+  page?: MetaMetricsPageObject,
+): AnalyticsContext {
+  return buildContext(referrer, page) as AnalyticsContext;
+}
+
+/**
+ * Open an event fragment, a bag of properties that later events in the same
+ * user journey are emitted with.
+ *
+ * @param options - Fragment settings and the properties to open it with.
+ */
+export function createEventFragment(
+  options: MetaMetricsEventFragmentOptions,
+): void {
+  try {
+    getMessenger().call('AnalyticsController:createEventFragment', {
+      id: options.id,
+      initialEvent: options.initialEvent,
+      successEvent: options.successEvent,
+      failureEvent: options.failureEvent,
+      persist: options.persist,
+      properties: buildFragmentProperties(options),
+      sensitiveProperties: options.sensitiveProperties,
+      context: buildFragmentContext(options.referrer, options.page),
+    });
+  } catch (error) {
+    sentryCaptureException(error);
+  }
+}
+
+/**
+ * Merge properties into an open event fragment.
+ *
+ * @param id - The id of the fragment to update.
+ * @param payload - The properties to merge in.
+ */
+export function updateEventFragment(
+  id: string,
+  payload: MetaMetricsEventFragmentPayload,
+): void {
+  try {
+    getMessenger().call('AnalyticsController:updateEventFragment', id, payload);
+  } catch (error) {
+    sentryCaptureException(error);
+  }
+}
+
+/**
+ * Merge properties into an event fragment, opening it when it does not exist
+ * yet. Used by journeys where any of several steps may run first.
+ *
+ * @param id - The id of the fragment to write to.
+ * @param payload - The properties to merge in.
+ */
+export function upsertEventFragment(
+  id: string,
+  payload: MetaMetricsEventFragmentPayload,
+): void {
+  try {
+    getMessenger().call('AnalyticsController:upsertEventFragment', id, payload);
+  } catch (error) {
+    sentryCaptureException(error);
+  }
+}
+
+/**
+ * Read an open event fragment.
+ *
+ * @param id - The id of the fragment to read.
+ * @returns The fragment, or `undefined` when no fragment has that id.
+ */
+export function getEventFragmentById(
+  id: string,
+): AnalyticsEventFragment | undefined {
+  try {
+    return getMessenger().call(
+      'AnalyticsController:getEventFragmentById',
+      id,
+    );
+  } catch (error) {
+    sentryCaptureException(error);
+    return undefined;
+  }
+}
+
+/**
+ * Close an event fragment, emitting its success or failure event and
+ * discarding it.
+ *
+ * @param id - The id of the fragment to close.
+ * @param options - Finalize options.
+ * @param options.abandoned - Emit the failure event instead of the success one.
+ */
+export function finalizeEventFragment(
+  id: string,
+  { abandoned = false }: { abandoned?: boolean } = {},
+): void {
+  try {
+    getMessenger().call('AnalyticsController:finalizeEventFragment', id, {
+      abandoned,
+    });
   } catch (error) {
     sentryCaptureException(error);
   }

@@ -161,7 +161,6 @@
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": null,
-      "fragments": {},
       "marketingCampaignCookieId": null,
       "tracesBeforeMetricsOptIn": [
         {
