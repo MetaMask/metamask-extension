@@ -16,6 +16,7 @@ import {
 } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
+import postcss from 'postcss';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import * as sassEmbedded from 'sass-embedded';
@@ -64,10 +65,15 @@ const browsersListPath = join(root, '.browserslistrc');
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
 const { variables, safeVariables, version, buildEnvVarDeclarations } =
   getVariables(args, buildTypes);
-const webAccessibleResources =
-  args.devtool === 'source-map'
+const webAccessibleResources = [
+  ...(args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
-    : [];
+    : []),
+  // Fetched via runtime.getURL from the X page.
+  'scripts/cashtag/pill/page.css',
+  'scripts/cashtag/widget/page.css',
+  'images/*',
+];
 
 // #region cache
 const cache = args.cache
@@ -147,6 +153,25 @@ const manifestPlugin = new ManifestPlugin({
     : false,
 });
 
+async function buildCashtagWidgetCss(content: Buffer | string, from: string) {
+  // Inline design-tokens
+  const tokens = readFileSync(
+    join(nodeModules, '@metamask/design-tokens/dist/styles.css'),
+    'utf8',
+  );
+  const source = content
+    .toString()
+    .replace(
+      /@import\s+['"]@metamask\/design-tokens\/styles\.css['"];?\s*/u,
+      '',
+    );
+  const result = await postcss([
+    tailwindcss(),
+    autoprefixer({ overrideBrowserslist: browsersListQuery }),
+  ]).process(source, { from });
+  return `${tokens}\n${result.css}`;
+}
+
 const plugins: WebpackPluginInstance[] = [
   manifestPlugin,
   // HtmlBundlerPlugin treats HTML files as entry points
@@ -156,7 +181,16 @@ const plugins: WebpackPluginInstance[] = [
     test: /\.html$/u, // default is eta/html, we only want html
     data: { isTest: args.test },
     // In watch mode, inject the dev-only background client into the relevant HTML page.
-    beforeEmit: (content, entry, compilation) => {
+    beforeEmit: (_content, entry, compilation) => {
+      let content = _content;
+      // When the source HTML directly imported the entry script, the HtmlBundler automatically pulled
+      // it into the shared UI chunk. That shared runtime contained Snow which caused the cashtag widget to break.
+      if (entry.name === 'cashtag-widget') {
+        content = content.replace(
+          '</body>',
+          '<script src="cashtag-widget-frame.js" defer></script></body>',
+        );
+      }
       if (!args.watch) {
         return content;
       }
@@ -203,6 +237,21 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // X ticker widget CSS (fetched at runtime into page / shadow)
+      {
+        from: join(context, 'scripts/cashtag/pill/page.css'),
+        to: 'scripts/cashtag/pill/page.css',
+      },
+      {
+        from: join(context, 'scripts/cashtag/widget/page.css'),
+        to: 'scripts/cashtag/widget/page.css',
+      },
+      {
+        from: join(context, 'scripts/cashtag/widget/widget.css'),
+        to: 'scripts/cashtag/widget/widget.css',
+        transform: async (content, absoluteFrom) =>
+          buildCashtagWidgetCss(content, absoluteFrom),
+      },
       // TODO: automatically bundle build-type specific images
       ...(args.type === 'flask'
         ? [
@@ -311,10 +360,16 @@ const reactRefreshJsxLoader = getSwcLoader(
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
 
+const isCashtagWidgetEntry = (chunk: Chunk) =>
+  chunk.name === 'cashtag-widget-frame';
 const isChunkableInitial = (chunk: Chunk) =>
-  manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
+  !isCashtagWidgetEntry(chunk) &&
+  manifestPlugin.canBeChunked(chunk) &&
+  chunk.canBeInitial();
 const isChunkableAsync = (chunk: Chunk) =>
-  manifestPlugin.canBeChunked(chunk) && !chunk.canBeInitial();
+  !isCashtagWidgetEntry(chunk) &&
+  manifestPlugin.canBeChunked(chunk) &&
+  !chunk.canBeInitial();
 
 const threadLoader = getThreadLoader(args);
 const reactCompiler = getReactCompilerLoader({
@@ -325,9 +380,14 @@ const reactCompiler = getReactCompilerLoader({
 });
 
 const config = {
-  // All entries are added dynamically by ManifestPlugin
-  // an empty entry object prevents webpack's default entry.
-  entry: {},
+  // Most entries are added dynamically by ManifestPlugin. The cashtag frame
+  // stays explicit so it can be self-contained when embedded by x.com.
+  entry: {
+    'cashtag-widget-frame': {
+      import: join(context, 'scripts', 'cashtag', 'widget', 'frame.tsx'),
+      filename: 'cashtag-widget-frame.js',
+    },
+  },
   cache,
   plugins,
   context,
@@ -599,7 +659,9 @@ const config = {
       // casting to string as webpack's types are wrong, `false` is allowed, and
       // is actually the default value.
       name: (chunk) =>
-        (manifestPlugin.canBeChunked(chunk) ? 'runtime' : false) as string,
+        (isCashtagWidgetEntry(chunk) || !manifestPlugin.canBeChunked(chunk)
+          ? false
+          : 'runtime') as string,
     },
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations

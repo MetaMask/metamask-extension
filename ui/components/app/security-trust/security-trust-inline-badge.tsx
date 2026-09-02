@@ -12,26 +12,17 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { TokenTrustConfig } from '#shared/lib/token-search/types';
 
 export type SecurityTrustTranslate = (
   key: string,
   substitutions?: string[],
 ) => string;
 
-export type SecurityTrustInlineBadgeConfig = {
-  icon: IconName;
-  iconColor: IconColor;
-  alertSeverity?: 'success' | 'warning' | 'danger';
-  label: string | null;
-  accessibleLabel?: string;
-  backgroundColor?: 'warning-muted' | 'error-muted';
-  textColor?: TextColor;
-};
-
 export const getSecurityTrustBadgeConfig = (
   resultType: string | undefined,
   t: SecurityTrustTranslate,
-): SecurityTrustInlineBadgeConfig | null => {
+): TokenTrustConfig | null => {
   switch (resultType) {
     case 'Verified':
       return {
@@ -65,7 +56,7 @@ export const getSecurityTrustBadgeConfig = (
 };
 
 type SecurityTrustInlineBadgeProps = {
-  badge: SecurityTrustInlineBadgeConfig;
+  badge: TokenTrustConfig;
   testId?: string;
   onClick?: () => void;
 };
@@ -147,7 +138,7 @@ export const SecurityTrustVerifiedBadge = ({
   testId = 'security-badge-verified',
   onClick,
 }: {
-  badge: SecurityTrustInlineBadgeConfig;
+  badge: TokenTrustConfig;
   testId?: string;
   onClick?: () => void;
 }) => (
