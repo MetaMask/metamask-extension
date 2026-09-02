@@ -598,3 +598,12 @@ jobs:
       needs-json: ${{ toJson(needs) }}
       skip-builds: ${{ needs.get-requirements.outputs.skip-builds }}
     secrets: inherit
+
+  deploy-platform-api-docs:
+    name: Deploy Platform API Docs
+    needs: lint-workflows
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/deploy-platform-api-docs.yml
