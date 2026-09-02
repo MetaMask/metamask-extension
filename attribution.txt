@@ -3364,7 +3364,7 @@ THE SOFTWARE.
 ******************************
 
 baseline-browser-mapping
-2.10.33 <https://github.com/web-platform-dx/baseline-browser-mapping>
+2.11.20 <https://github.com/web-platform-dx/baseline-browser-mapping>
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -4134,10 +4134,10 @@ SOFTWARE.
 ******************************
 
 browserslist
-4.28.1 <https://github.com/browserslist/browserslist>
+4.28.8 <https://github.com/browserslist/browserslist>
 The MIT License (MIT)
 
-Copyright 2014 Andrey Sitnik <andrey@sitnik.ru> and other contributors
+Copyright 2014 Andrey Sitnik <andrey@sitnik.es> and other contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -4478,7 +4478,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ******************************
 
 caniuse-lite
-1.0.30001793 <https://github.com/browserslist/caniuse-lite>
+1.0.30001810 <https://github.com/browserslist/caniuse-lite>
 Attribution 4.0 International
 
 =======================================================================
@@ -6934,7 +6934,7 @@ SOFTWARE.
 ******************************
 
 electron-to-chromium
-1.5.267 <https://github.com/kilian/electron-to-chromium>
+1.5.416 <https://github.com/Kilian/electron-to-chromium>
 Copyright 2018 Kilian Valkhof
 
 Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
@@ -31305,7 +31305,7 @@ THE SOFTWARE.
 ******************************
 
 node-releases
-2.0.27 <https://github.com/chicoxyzzy/node-releases>
+2.0.54 <https://github.com/chicoxyzzy/node-releases>
 The MIT License
 
 Copyright (c) 2017 Sergey Rubanov (https://github.com/chicoxyzzy)
@@ -43900,10 +43900,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 update-browserslist-db
-1.2.3 <https://github.com/browserslist/update-db>
+1.3.2 <https://github.com/browserslist/update-db>
 The MIT License (MIT)
 
-Copyright 2022 Andrey Sitnik <andrey@sitnik.ru> and other contributors
+Copyright 2022 Andrey Sitnik <andrey@sitnik.es> and other contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
