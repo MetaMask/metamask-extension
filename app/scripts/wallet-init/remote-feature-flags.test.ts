@@ -18,12 +18,14 @@ const UPDATE_ACTION = 'RemoteFeatureFlagController:updateRemoteFeatureFlags';
  *
  * @param preferencesState - The initial PreferencesController state.
  * @param onboardingState - The initial OnboardingController state.
+ * @param authenticationState - The initial AuthenticationController state.
  * @returns The captured stateChange handlers, the child messenger `call` mock,
  * and the parent `delegate` mock.
  */
 function setupToggle(
   preferencesState: Partial<ToggleArgs['preferencesState']>,
   onboardingState: Partial<ToggleArgs['onboardingState']>,
+  authenticationState: Partial<ToggleArgs['authenticationState']> = {},
 ) {
   const handlers: Record<string, (state: unknown) => void> = {};
   // The toggle drives the controller over a namespaced child messenger it
@@ -48,6 +50,8 @@ function setupToggle(
     messenger,
     preferencesState: preferencesState as ToggleArgs['preferencesState'],
     onboardingState: onboardingState as ToggleArgs['onboardingState'],
+    authenticationState:
+      authenticationState as ToggleArgs['authenticationState'],
   });
 
   return { handlers, call, delegate };
@@ -58,7 +62,7 @@ describe('setupRemoteFeatureFlagToggle', () => {
     jest.clearAllMocks();
   });
 
-  it('delegates the watched actions and events and subscribes to Preferences and Onboarding state changes', () => {
+  it('delegates the watched actions and events and subscribes to Preferences, Onboarding, and Authentication state changes', () => {
     const { handlers, delegate } = setupToggle(
       { useExternalServices: true },
       { completedOnboarding: true },
@@ -74,12 +78,14 @@ describe('setupRemoteFeatureFlagToggle', () => {
         events: [
           'PreferencesController:stateChange',
           'OnboardingController:stateChange',
+          'AuthenticationController:stateChange',
         ],
       }),
     );
     expect(Object.keys(handlers)).toStrictEqual([
       'PreferencesController:stateChange',
       'OnboardingController:stateChange',
+      'AuthenticationController:stateChange',
     ]);
   });
 
@@ -192,5 +198,97 @@ describe('setupRemoteFeatureFlagToggle', () => {
       error,
     );
     consoleErrorSpy.mockRestore();
+  });
+
+  describe('canonical profile id refresh', () => {
+    const authStateWithCanonicalId = (canonicalProfileId?: string) => ({
+      srpSessionData: canonicalProfileId
+        ? {
+            'srp-1': { profile: { canonicalProfileId } },
+          }
+        : {},
+    });
+
+    it('force-refreshes flags when a canonical profile id first becomes available', () => {
+      const { handlers, call } = setupToggle(
+        { useExternalServices: true },
+        { completedOnboarding: true },
+      );
+
+      handlers['AuthenticationController:stateChange'](
+        authStateWithCanonicalId('canonical-id'),
+      );
+
+      expect(call).toHaveBeenCalledWith(UPDATE_ACTION, true);
+    });
+
+    it('does not refresh flags when the canonical profile id is unchanged', () => {
+      const { handlers, call } = setupToggle(
+        { useExternalServices: true },
+        { completedOnboarding: true },
+        authStateWithCanonicalId('canonical-id'),
+      );
+
+      handlers['AuthenticationController:stateChange'](
+        authStateWithCanonicalId('canonical-id'),
+      );
+
+      expect(call).not.toHaveBeenCalled();
+    });
+
+    it('force-refreshes flags when the canonical profile id changes', () => {
+      const { handlers, call } = setupToggle(
+        { useExternalServices: true },
+        { completedOnboarding: true },
+        authStateWithCanonicalId('canonical-id-1'),
+      );
+
+      handlers['AuthenticationController:stateChange'](
+        authStateWithCanonicalId('canonical-id-2'),
+      );
+
+      expect(call).toHaveBeenCalledWith(UPDATE_ACTION, true);
+    });
+
+    it('force-refreshes flags when the canonical profile id is cleared', () => {
+      const { handlers, call } = setupToggle(
+        { useExternalServices: true },
+        { completedOnboarding: true },
+        authStateWithCanonicalId('canonical-id'),
+      );
+
+      handlers['AuthenticationController:stateChange'](
+        authStateWithCanonicalId(),
+      );
+
+      expect(call).toHaveBeenCalledWith(UPDATE_ACTION, true);
+    });
+
+    it('logs and swallows a failed force refresh instead of throwing', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      const error = new Error('network down');
+      const { handlers, call } = setupToggle(
+        { useExternalServices: true },
+        { completedOnboarding: true },
+      );
+      call.mockImplementation((action: string) =>
+        action === UPDATE_ACTION ? Promise.reject(error) : undefined,
+      );
+
+      expect(() =>
+        handlers['AuthenticationController:stateChange'](
+          authStateWithCanonicalId('canonical-id'),
+        ),
+      ).not.toThrow();
+      await flushPromises();
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Failed to update remote feature flags:',
+        error,
+      );
+      consoleErrorSpy.mockRestore();
+    });
   });
 });
