@@ -2319,11 +2319,38 @@ async function setupMocking(
 
   await server
     .forPost(/^https:\/\/api\.hyperliquid\.xyz\/exchange$/u)
-    .thenCallback((request) => {
-      const body = request.body?.json ?? {};
-      const actionType = body.action?.type;
+    .thenCallback(async (request) => {
+      // Mockttp's CompletedBody exposes `getJson()`, not a `.json` property —
+      // reading `request.body.json` always yielded undefined, so every action
+      // fell through to the generic `{ type: 'default' }` response below. Parse
+      // it the same defensive way the /info handler above does.
+      const body = (await request.body?.getJson().catch(() => undefined)) ?? {};
+      const action = body.action ?? {};
+      const actionType = action.type;
 
       if (actionType === 'order') {
+        const orders = Array.isArray(action.orders) ? action.orders : [];
+        // perps-controller requires exactly one status per submitted order, so
+        // a TP/SL batch (take profit + stop loss) must answer with two. Trigger
+        // orders rest until their price is crossed; plain orders fill.
+        const statuses = orders.map((order, index) => {
+          const orderType = order?.t;
+          const isTrigger =
+            typeof orderType === 'object' &&
+            orderType !== null &&
+            'trigger' in orderType;
+          if (isTrigger) {
+            return { resting: { oid: 100001 + index } };
+          }
+          return {
+            filled: {
+              totalSz: '4.0',
+              avgPx: '25.05',
+              oid: 100001 + index,
+            },
+          };
+        });
+
         return {
           statusCode: 200,
           json: {
@@ -2331,16 +2358,29 @@ async function setupMocking(
             response: {
               type: 'order',
               data: {
-                statuses: [
-                  {
-                    filled: {
-                      totalSz: '4.0',
-                      avgPx: '25.05',
-                      oid: 100001,
-                    },
-                  },
-                ],
+                statuses: statuses.length
+                  ? statuses
+                  : [
+                      {
+                        filled: { totalSz: '4.0', avgPx: '25.05', oid: 100001 },
+                      },
+                    ],
               },
+            },
+          },
+        };
+      }
+
+      if (actionType === 'cancel') {
+        const cancels = Array.isArray(action.cancels) ? action.cancels : [];
+        // Same one-status-per-request contract as `order`.
+        return {
+          statusCode: 200,
+          json: {
+            status: 'ok',
+            response: {
+              type: 'cancel',
+              data: { statuses: cancels.map(() => 'success') },
             },
           },
         };
