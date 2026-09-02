@@ -66,6 +66,9 @@ export function getAssetsControllerMessenger(
       'AccountTreeController:selectedAccountGroupChange',
       // core#9478: use exported :stateChange (not local :stateChanged aliases)
       'AccountTreeController:stateChange',
+      // core#9892: asset tracking starts only after the account tree is fully initialized
+      'AccountTreeController:initialized',
+      'AccountTreeController:uninitialized',
       // core#9388: RPC balance refresh when enabling custom RPC networks (e.g. DXC)
       // StakedBalanceDataSource also listens to this
       'NetworkEnablementController:stateChange',
