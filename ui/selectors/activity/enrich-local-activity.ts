@@ -56,10 +56,11 @@ function enrichTokenTransferActivity(
   } else if (parsedAmount !== undefined && parsedAmount !== null) {
     amount = parsedAmount.toString();
   }
-  // Resolve known token metadata (e.g. bridge default tokens such as Monad
-  // USDC) so the activity row gets a logo (assetId), symbol, and decimals
-  // even when the token is not in the user's watched-tokens list and the
-  // transaction controller has not populated transferInformation yet.
+  // Intentionally backfill any known bridge token (not only Monad USDC)
+  // when symbol, decimals, or assetId is missing. Known-token metadata
+  // supplies the logo (assetId), symbol, and decimals even if the token
+  // is not in the user's watched-tokens list and transferInformation is
+  // still incomplete. Amount/recipient parsing from calldata is unchanged.
   const contractAddress = transferInformation?.contractAddress ?? txParams?.to;
 
   const needsKnownTokenMetadata =
