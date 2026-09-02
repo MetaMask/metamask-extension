@@ -8347,14 +8347,6 @@
   "rampsPaymentDelayMinutes": {
     "message": "phút"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "Tối đa $1",
-    "description": "$1 is the maximum fiat buy amount"
-  },
   "rampsPaymentMethodMinLimit": {
     "message": "Tối thiểu $1",
     "description": "$1 is the minimum fiat buy amount"
