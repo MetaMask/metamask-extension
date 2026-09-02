@@ -294,7 +294,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await confirmation.clickFooterConfirmButton();
 
         const activityTab = new ActivityTab(driver);
-        await activityTab.checkTxAction({ action: 'Sent USDC' });
+        await activityTab.checkTxAction({ action: 'Sent USDC', confirmedTx: 1 });
 
         if (isUnifiedAssetsEnabled) {
           await activityTab.checkTransactionAmount('0.1');

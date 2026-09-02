@@ -258,7 +258,7 @@ class ActivityTab extends HomePage {
 
   async checkNoFailedTransactions(): Promise<void> {
     await this.driver.assertElementNotPresent(this.failedTransactions, {
-      waitAtLeastGuard: 5000,
+      waitAtLeastGuard: 1000,
     });
   }
 

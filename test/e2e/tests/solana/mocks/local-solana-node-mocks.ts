@@ -25,9 +25,6 @@ async function proxyPost(
  * solana-test-validator instance. External service mocks such as prices,
  * phishing detection, and token metadata should still be registered separately.
  *
- * Priority 99 ensures this proxy beats the default mock-e2e.js rules
- * (DEFAULT priority = 1), including the `getSignaturesForAddress` empty mock.
- *
  * @param mockServer - The mockttp server instance.
  * @param localNode - Local Solana node instance, or its base URL.
  * @returns The registered mocked endpoints.
@@ -42,7 +39,6 @@ export async function proxySolanaBlockchainCalls(
   return [
     await mockServer
       .forPost(SOLANA_PROVIDER_URL_REGEX)
-      .asPriority(99)
       .always()
       .thenCallback(async (req) =>
         proxyPost(localNodeUrl, await req.body.getText()),
