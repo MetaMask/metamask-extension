@@ -140,7 +140,9 @@ export function getEnforcedSimulationsSlippageBasisPoints(
  * recipient address is loaded and not trusted, based on cached trust signal
  * scan results keyed by chain and address. A recipient with no cache entry,
  * or one still loading, does not disqualify the transaction; only a cached
- * non-Trusted verdict does.
+ * non-Trusted verdict does. Callers that persist a trust-dependent default
+ * must separately wait for pending signals via
+ * {@link hasPendingEnforcedSimulationsTrustSignals}.
  *
  * @param transactionMeta - The transaction metadata.
  * @param state - Trust signal state and EIP-7702 supported chains.
@@ -221,6 +223,26 @@ export function isEnforcedSimulationsDefaultEnabled(
   );
 }
 
+/**
+ * Determines whether any relevant recipient still has a pending trust signal.
+ *
+ * @param transactionMeta - The transaction metadata.
+ * @param state - Trust signal state and EIP-7702 supported chains.
+ * @returns Whether a relevant recipient trust signal is still loading.
+ */
+export function hasPendingEnforcedSimulationsTrustSignals(
+  transactionMeta: TransactionMeta,
+  state: EnforcedSimulationsState,
+): boolean {
+  if (isEnforcedSimulationsForceEnabled()) {
+    return false;
+  }
+
+  return getRelevantTrustSignalResults(transactionMeta, state).includes(
+    ResultType.Loading,
+  );
+}
+
 function getEnforcedSimulationsFlag({
   remoteFeatureFlags,
 }: FeatureFlagSource): EnforcedSimulationsFeatureFlag | undefined {
@@ -233,9 +255,9 @@ function isTrusted(
   transactionMeta: TransactionMeta,
   state: EnforcedSimulationsState,
 ): boolean {
-  return getRelevantTrustSignalResults(transactionMeta, state).every(
-    (resultType) => resultType === ResultType.Trusted,
-  );
+  return getRelevantTrustSignalResults(transactionMeta, state)
+    .filter((resultType) => resultType !== ResultType.Loading)
+    .every((resultType) => resultType === ResultType.Trusted);
 }
 
 function getRelevantTrustSignalResults(
@@ -296,11 +318,14 @@ function getRelevantTrustSignalResults(
       state.addressSecurityAlertResponses[createCacheKey(chainId, to)];
 
     // Unknown or still-loading signals don't make a call untrusted.
-    if (!cached || cached.result_type === ResultType.Loading) {
-      log(`${label} - Trusted - Unknown Signal`, {
-        ...props,
-        resultType: cached?.result_type,
-      });
+    if (!cached) {
+      log(`${label} - Trusted - Unknown Signal`, props);
+      continue;
+    }
+
+    if (cached.result_type === ResultType.Loading) {
+      log(`${label} - Trusted - Loading Signal`, props);
+      resultTypes.push(cached.result_type);
       continue;
     }
 

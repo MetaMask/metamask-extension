@@ -17,6 +17,7 @@ import {
   EnforcedSimulationsState,
   getEnforcedSimulationsSlippage,
   getEnforcedSimulationsSlippageBasisPoints,
+  hasPendingEnforcedSimulationsTrustSignals,
   isEnforcedSimulationsDefaultEnabled,
   isEnforcedSimulationsEligible,
 } from './enforced-simulations';
@@ -214,6 +215,25 @@ describe('enforced-simulations', () => {
         isEnforcedSimulationsDefaultEnabled(
           BASE_TRANSACTION_META,
           buildState(ResultType.Benign),
+        ),
+      ).toBe(true);
+    });
+  });
+
+  describe('hasPendingEnforcedSimulationsTrustSignals', () => {
+    it('returns true when a nested recipient is loading alongside a benign recipient', () => {
+      expect(
+        hasPendingEnforcedSimulationsTrustSignals(
+          {
+            ...BASE_TRANSACTION_META,
+            nestedTransactions: [
+              { to: NESTED_ADDRESS_A as `0x${string}`, data: '0xabcd' },
+            ],
+          },
+          buildStateForAddresses({
+            [TO_ADDRESS]: ResultType.Benign,
+            [NESTED_ADDRESS_A]: ResultType.Loading,
+          }),
         ),
       ).toBe(true);
     });

@@ -5,6 +5,7 @@ import isEqual from 'lodash/isEqual';
 import {
   EnforcedSimulationsState,
   getInternalEvmAddresses,
+  hasPendingEnforcedSimulationsTrustSignals,
   isEnforcedSimulationsDefaultEnabled,
   isEnforcedSimulationsEligible,
   isEnforcedSimulationsForceEnabled,
@@ -25,6 +26,7 @@ function selectEip7702SupportedChains(state: {
 export function useEnforcedSimulationsEligibility(): {
   isEligible: boolean;
   isDefaultEnabled: boolean;
+  hasPendingTrustSignals: boolean;
 } {
   const currentConfirmation = useTransactionMetadataRequestOptional();
 
@@ -56,7 +58,11 @@ export function useEnforcedSimulationsEligibility(): {
     !currentConfirmation ||
     isHardwareWallet
   ) {
-    return { isEligible: false, isDefaultEnabled: false };
+    return {
+      isEligible: false,
+      isDefaultEnabled: false,
+      hasPendingTrustSignals: false,
+    };
   }
 
   const enforcedSimulationsState = {
@@ -68,14 +74,22 @@ export function useEnforcedSimulationsEligibility(): {
     currentConfirmation,
     enforcedSimulationsState,
   );
+  const hasPendingTrustSignals =
+    isEligible &&
+    hasPendingEnforcedSimulationsTrustSignals(
+      currentConfirmation,
+      enforcedSimulationsState,
+    );
 
   return {
     isEligible,
     isDefaultEnabled:
       isEligible &&
+      !hasPendingTrustSignals &&
       isEnforcedSimulationsDefaultEnabled(
         currentConfirmation,
         enforcedSimulationsState,
       ),
+    hasPendingTrustSignals,
   };
 }

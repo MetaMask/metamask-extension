@@ -57,6 +57,7 @@ const updateTransactionEventFragmentMock = jest.fn();
 function render({
   isEligible = true,
   isDefaultEnabled = true,
+  hasPendingTrustSignals = false,
   containerTypes,
   origin,
   delegationAddress,
@@ -64,6 +65,7 @@ function render({
 }: {
   isEligible?: boolean;
   isDefaultEnabled?: boolean;
+  hasPendingTrustSignals?: boolean;
   containerTypes?: TransactionContainerType[];
   origin?: string;
   delegationAddress?: string;
@@ -72,6 +74,7 @@ function render({
   useEnforcedSimulationsEligibilityMock.mockReturnValue({
     isEligible,
     isDefaultEnabled,
+    hasPendingTrustSignals,
   });
 
   useI18nContextMock.mockReturnValue(((key: string) => {
@@ -163,9 +166,21 @@ describe('EnforcedSimulationsRow', () => {
     }
 
     useEnforcedSimulationsEligibilityMock
-      .mockReturnValueOnce({ isEligible: true, isDefaultEnabled: true })
-      .mockReturnValueOnce({ isEligible: false, isDefaultEnabled: false })
-      .mockReturnValue({ isEligible: true, isDefaultEnabled: true });
+      .mockReturnValueOnce({
+        isEligible: true,
+        isDefaultEnabled: true,
+        hasPendingTrustSignals: false,
+      })
+      .mockReturnValueOnce({
+        isEligible: false,
+        isDefaultEnabled: false,
+        hasPendingTrustSignals: false,
+      })
+      .mockReturnValue({
+        isEligible: true,
+        isDefaultEnabled: true,
+        hasPendingTrustSignals: false,
+      });
     jest
       .mocked(applyTransactionContainersExisting)
       .mockImplementationOnce(() => firstRequest)
@@ -187,6 +202,46 @@ describe('EnforcedSimulationsRow', () => {
 
     expect(consoleError).not.toHaveBeenCalled();
     consoleError.mockRestore();
+  });
+
+  it('waits for pending trust signals before initializing the default', async () => {
+    function RerenderableRow() {
+      const [, setRenderCount] = React.useState(0);
+
+      return (
+        <>
+          <button
+            data-testid="settle-trust-signals"
+            onClick={() => setRenderCount((count) => count + 1)}
+          />
+          <EnforcedSimulationsRow />
+        </>
+      );
+    }
+
+    const { getByTestId } = render({
+      isDefaultEnabled: false,
+      hasPendingTrustSignals: true,
+      containerTypes: undefined,
+      component: <RerenderableRow />,
+    });
+
+    expect(applyTransactionContainersExisting).not.toHaveBeenCalled();
+
+    useEnforcedSimulationsEligibilityMock.mockReturnValue({
+      isEligible: true,
+      isDefaultEnabled: true,
+      hasPendingTrustSignals: false,
+    });
+    fireEvent.click(getByTestId('settle-trust-signals'));
+
+    await waitFor(() => {
+      expect(applyTransactionContainersExisting).toHaveBeenCalledTimes(1);
+      expect(applyTransactionContainersExisting).toHaveBeenCalledWith(
+        expect.any(String),
+        [TransactionContainerType.EnforcedSimulations],
+      );
+    });
   });
 
   it('enables enforced simulations by default for warning or malicious transactions', async () => {

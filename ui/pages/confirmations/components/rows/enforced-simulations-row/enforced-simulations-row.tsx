@@ -42,7 +42,8 @@ export function EnforcedSimulationsRow() {
 
   const { containerTypes, id: transactionId } = currentConfirmation ?? {};
 
-  const { isEligible, isDefaultEnabled } = useEnforcedSimulationsEligibility();
+  const { isEligible, isDefaultEnabled, hasPendingTrustSignals } =
+    useEnforcedSimulationsEligibility();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const [isUnavailable, setIsUnavailable] = useState(false);
   const initializationRequestId = useRef(0);
@@ -65,7 +66,13 @@ export function EnforcedSimulationsRow() {
   }
 
   useEffect(() => {
-    if (isUnavailable || !isEligible || hasInitialized || !transactionId) {
+    if (
+      isUnavailable ||
+      !isEligible ||
+      hasPendingTrustSignals ||
+      hasInitialized ||
+      !transactionId
+    ) {
       return;
     }
 
@@ -117,6 +124,7 @@ export function EnforcedSimulationsRow() {
   }, [
     currentConfirmation,
     isEligible,
+    hasPendingTrustSignals,
     hasInitialized,
     isDefaultEnabled,
     transactionId,
