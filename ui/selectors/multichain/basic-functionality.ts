@@ -14,6 +14,7 @@ export const BFT_CHILD_PREFERENCES = [
   'openSeaEnabled',
   'useNftDetection',
   'useExternalNameSources',
+  'useAddressBarEnsResolution',
 ] as const;
 
 /**
@@ -21,8 +22,7 @@ export const BFT_CHILD_PREFERENCES = [
  */
 export const getIsBasicFunctionalityToggleEnabled = createSelector(
   getRemoteFeatureFlags,
-  ({ extensionBasicFunctionalityToggle }) =>
-    getBooleanFeatureFlag(extensionBasicFunctionalityToggle, false),
+  ({ extensionBasicFunctionalityToggle }) => true
 );
 
 /**

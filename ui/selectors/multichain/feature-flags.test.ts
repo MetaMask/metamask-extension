@@ -290,7 +290,7 @@ describe('getIsBasicFunctionalityConsolidationEnabled', () => {
     ).toBe(true);
   });
 
-  it('returns false for a mixed legacy BFT user', () => {
+  it('returns true for a mixed legacy BFT user when the remote flag is enabled', () => {
     expect(
       getIsBasicFunctionalityConsolidationEnabled(
         buildBftState(true, true, {
@@ -299,7 +299,7 @@ describe('getIsBasicFunctionalityConsolidationEnabled', () => {
           typeof getIsBasicFunctionalityConsolidationEnabled
         >[0],
       ),
-    ).toBe(false);
+    ).toBe(true);
   });
 
   it('returns false for a consistent legacy BFT user when the remote flag is disabled', () => {
@@ -321,13 +321,13 @@ describe('getIsBasicFunctionalityConsolidationEnabled', () => {
     ).toBe(true);
   });
 
-  it('returns false when the remote flag is true but the persisted cohort marker is false', () => {
+  it('returns true when the remote flag is true but the persisted cohort marker is false', () => {
     expect(
       getIsBasicFunctionalityConsolidationEnabled(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         buildState({ extensionBasicFunctionalityToggle: true }, false) as any,
       ),
-    ).toBe(false);
+    ).toBe(true);
   });
 
   it('returns false when the persisted cohort marker is true but the remote flag is false', () => {

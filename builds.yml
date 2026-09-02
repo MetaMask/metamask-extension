@@ -447,7 +447,7 @@ env:
   - PASSKEY_ENABLED: true
 
   # Basic Functionality toggle (required for onboarding)
-  - BFT_CONSOLIDATION_ENABLED: false
+  - BFT_CONSOLIDATION_ENABLED: true
 
   # Sentry browser SDK serverless environment checks
   - FUNCTIONS_WORKER_RUNTIME: ''
