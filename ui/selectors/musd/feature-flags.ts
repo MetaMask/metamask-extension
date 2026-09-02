@@ -111,19 +111,6 @@ export const selectIsMusdRewardsUiEnabled = createSelector(
     ),
 );
 
-/**
- * Select whether Merkl campaign claiming is enabled
- * Supports version-gated and progressive rollout flag formats
- */
-export const selectIsMerklClaimingEnabled = createSelector(
-  selectMusdRemoteFeatureFlags,
-  (flags): boolean =>
-    getBooleanFeatureFlag(
-      flags.earnMerklCampaignClaiming,
-      DEFAULT_MUSD_BOOLEAN_FLAG,
-    ),
-);
-
 // ============================================================================
 // Token List Selectors
 // ============================================================================

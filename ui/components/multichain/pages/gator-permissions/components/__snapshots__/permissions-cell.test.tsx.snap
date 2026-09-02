@@ -68,11 +68,11 @@ exports[`PermissionsCell renders correctly with required props 1`] = `
                   style="margin-left: 0px;"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
                   >
                     <img
-                      alt="Polygon logo"
-                      class="mm-avatar-token__token-image"
+                      alt="Polygon"
+                      class="size-full object-contain"
                       src="./images/pol-token.svg"
                     />
                   </div>
@@ -82,11 +82,11 @@ exports[`PermissionsCell renders correctly with required props 1`] = `
                   style="margin-left: -8px;"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-4 w-4"
                   >
                     <img
-                      alt="Ethereum Mainnet logo"
-                      class="mm-avatar-token__token-image"
+                      alt="Ethereum Mainnet"
+                      class="size-full object-contain"
                       src="./images/eth_logo.svg"
                     />
                   </div>

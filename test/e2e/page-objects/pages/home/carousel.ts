@@ -15,11 +15,6 @@ import { Driver } from '../../../webdriver/driver';
  * @see ui/components/multichain/carousel/carousel.tsx
  */
 export default class CarouselPage {
-  private readonly carouselContainer = '[data-testid="carousel-container"]';
-
-  private readonly carouselSlide =
-    '[data-testid^="carousel-slide-"]:not([data-testid$="-close-button"])';
-
   private readonly currentSlide =
     '.carousel-card--current[data-testid^="carousel-slide-"]';
 
@@ -34,13 +29,17 @@ export default class CarouselPage {
 
   private readonly driver: Driver;
 
+  private readonly page = {
+    testId: 'parent-selector-carousel',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   async checkCarouselIsNotVisible(): Promise<void> {
     console.log('Check carousel is not visible');
-    await this.driver.assertElementNotPresent(this.carouselContainer, {
+    await this.driver.assertElementNotPresent(this.page, {
       waitAtLeastGuard: 1000,
     });
   }
@@ -54,7 +53,7 @@ export default class CarouselPage {
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check carousel page is loaded');
-    await this.driver.waitForSelector(this.carouselContainer);
+    await this.driver.waitForSelector(this.page);
     await this.driver.waitForSelector(this.currentSlide);
   }
 
@@ -93,6 +92,6 @@ export default class CarouselPage {
   }
 
   async isCarouselPresent(): Promise<boolean> {
-    return this.driver.isElementPresentAndVisible(this.carouselContainer);
+    return this.driver.isElementPresentAndVisible(this.page);
   }
 }

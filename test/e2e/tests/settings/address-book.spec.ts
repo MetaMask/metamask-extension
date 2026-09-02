@@ -6,7 +6,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import ContactsPage from '../../page-objects/pages/settings/contacts-settings';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { login } from '../../page-objects/flows/login.flow';
 import SelectNetworkModal from '../../page-objects/pages/networks/select-network-modal';

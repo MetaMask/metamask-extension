@@ -39,6 +39,10 @@ export default class ChangePasswordPage {
 
   private readonly saveButton = '[data-testid="change-password-button"]';
 
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   private readonly verifyCurrentPasswordButton =
     '[data-testid="verify-current-password-button"]';
 
@@ -59,7 +63,10 @@ export default class ChangePasswordPage {
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check change password page is loaded');
-    await this.driver.waitForSelector(this.currentPasswordInput);
+    await this.driver.waitForMultipleSelectors([
+      this.currentPasswordInput,
+      this.settingsPage,
+    ]);
   }
 
   async checkPasswordChangedWarning(): Promise<void> {

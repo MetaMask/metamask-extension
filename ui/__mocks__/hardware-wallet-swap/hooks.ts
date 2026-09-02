@@ -13,19 +13,18 @@ import { hwSwapStoryState } from './story-state';
 const FROM_ADDRESS = '0x1234567890123456789012345678901234567890';
 const TO_ADDRESS = '0x0987654321098765432109876543210987654321';
 const SPENDER_ADDRESS = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd';
-const FROM_TOKEN = { symbol: 'ETH' };
-const TO_TOKEN = { symbol: 'USDC' };
+const FROM_TOKEN = { symbol: 'ETH', chainId: 'eip155:1' };
+const TO_TOKEN = { symbol: 'USDC', chainId: 'eip155:1' };
 
 type Dispatch = (action: HardwareWalletSignaturesAction) => void;
 
 function buildLockedQuote(needsTwoConfirmations: boolean) {
   return {
-    sentAmount: { amount: '1.5' },
     trade: { from: FROM_ADDRESS, to: TO_ADDRESS },
     approval: needsTwoConfirmations ? { to: SPENDER_ADDRESS } : undefined,
     quote: {
-      srcTokenAmount: '1500000000000000000',
-      destTokenAmount: '3000000000',
+      src: { normalizedAmount: '1.5' },
+      dest: { normalizedAmount: '3000' },
       requestId: 'story-request-id',
     },
   };

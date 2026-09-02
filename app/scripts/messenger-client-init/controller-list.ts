@@ -85,6 +85,7 @@ import {
   BackendWebSocketService,
 } from '@metamask/core-backend';
 import { AuthenticatedUserStorageService } from '@metamask/authenticated-user-storage';
+import { ChompApiService } from '@metamask/chomp-api-service';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
 import { ClientController } from '@metamask/client-controller';
 import {
@@ -113,6 +114,7 @@ import { AnalyticsController } from '@metamask/analytics-controller';
 import { SentinelApiService } from '@metamask/sentinel-api-service';
 import { MoneyAccountApiDataService } from '@metamask/money-account-api-data-service';
 import { MoneyAccountBalanceService } from '@metamask/money-account-balance-service';
+import { MoneyAccountController } from '@metamask/money-account-controller';
 import { MoneyAccountAvailabilityService } from '../lib/money/money-account-availability';
 import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
@@ -135,6 +137,7 @@ import { StaticAssetsController } from '../controllers/static-assets-controller'
 import { QrSyncController } from '../controllers/qr-sync/qr-sync-controller';
 import { QrSyncDataService } from '../controllers/qr-sync/qr-sync-data-service';
 import { DataDeletionService } from '../services/data-deletion-service';
+import { UserTraitsService } from '../services/user-traits-service';
 import { LegacyBackgroundApiService } from '../services/legacy-background-api-service';
 
 /**
@@ -156,10 +159,12 @@ export type MessengerClient =
   | AuthenticatedUserStorageService
   | BridgeController
   | BridgeStatusController
+  | ChompApiService
   | ClaimsController
   | CronjobController
   | CurrencyRateController
   | DataDeletionService
+  | UserTraitsService
   | DecryptMessageController
   | DecryptMessageManager
   | DelegationController
@@ -181,6 +186,7 @@ export type MessengerClient =
   | MoneyAccountApiDataService
   | MoneyAccountAvailabilityService
   | MoneyAccountBalanceService
+  | MoneyAccountController
   | MultichainAssetsController
   | MultichainAssetsRatesController
   | MultichainBalancesController

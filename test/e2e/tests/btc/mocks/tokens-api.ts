@@ -74,6 +74,7 @@ export const mockTokensV3Assets = (mockServer: Mockttp) =>
           name: 'USD Coin',
           symbol: 'USDC',
           decimals: 6,
+          occurrences: 3,
         });
       }
       if (
@@ -86,6 +87,7 @@ export const mockTokensV3Assets = (mockServer: Mockttp) =>
           name: 'Tether USD',
           symbol: 'USDT',
           decimals: 6,
+          occurrences: 3,
         });
       }
 
