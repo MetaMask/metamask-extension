@@ -514,7 +514,6 @@ class BridgeQuotePage {
     }
 
     if (network) {
-      await this.driver.waitForSelector(this.networkSelector);
       await this.driver.clickElement(this.networkSelector);
       await this.driver.clickElementAndWaitToDisappear(
         this.networkNameSelector(network),
