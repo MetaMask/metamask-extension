@@ -4,8 +4,9 @@
 
 import type { MessengerActions, MessengerEvents } from '@metamask/messenger';
 import { Messenger } from '@metamask/messenger';
+import type { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
 import log from 'loglevel';
-import { getRootMessenger } from '../../../lib/messenger';
+import { getRootMessenger, type RootMessenger } from '../../../lib/messenger';
 import { getPerpsAgentWalletControllerMessenger } from '../../../messenger-client-init/messengers/perps-agent-wallet-controller-messenger';
 import type { AgentKeyHandle } from './agent-secret-store';
 import {
@@ -60,7 +61,18 @@ const buildController = (
     MessengerActions<PerpsAgentWalletControllerMessenger>,
     MessengerEvents<PerpsAgentWalletControllerMessenger>
   >();
-  const keyringMessenger = new Messenger({
+  // Typed with the one keyring event the harness publishes (and the root
+  // messenger as parent) so the publish payload typechecks; action stubs stay
+  // registered via `as never` casts.
+  const keyringMessenger = new Messenger<
+    'KeyringController',
+    never,
+    KeyringControllerAccountRemovedEvent,
+    RootMessenger<
+      MessengerActions<PerpsAgentWalletControllerMessenger>,
+      MessengerEvents<PerpsAgentWalletControllerMessenger>
+    >
+  >({
     namespace: 'KeyringController',
     parent: rootMessenger,
   });
