@@ -158,6 +158,7 @@ export const getDefaultPreferencesControllerState =
       featureNotificationsEnabled: false,
       hideZeroBalanceTokens: false,
       isBasicFunctionalityConsolidatedEnabled: false,
+      basicFunctionalityMigrationNotification: null,
       privacyMode: false,
       showConfirmationAdvancedDetails: false,
       showDefaultAddress: true,

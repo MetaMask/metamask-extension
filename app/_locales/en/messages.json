@@ -6605,6 +6605,15 @@
   "openSettings": {
     "message": "Open settings"
   },
+  "basicFunctionalityMigrationModalTitle": {
+    "message": "Your settings have changed"
+  },
+  "basicFunctionalityMigrationModalDescription": {
+    "message": "Third-party APIs are now part of Basic Functionality. Basic Functionality has been enabled to keep your wallet working as expected. You can review these settings in Privacy."
+  },
+  "basicFunctionalityMigrationToastDescription": {
+    "message": "Your settings have changed. Third-party APIs are now part of Basic Functionality."
+  },
   "openWallet": {
     "message": "Open wallet"
   },
