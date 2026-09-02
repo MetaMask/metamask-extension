@@ -46,6 +46,7 @@ describe('ReceiveRow', () => {
     useIsPaidByMetaMaskMock.mockReturnValue(false);
 
     useTransactionPayTotalsMock.mockReturnValue({
+      isInputBased: false,
       fees: {
         provider: { usd: '1.00' },
         sourceNetwork: { estimate: { usd: '0.20' } },
@@ -84,7 +85,24 @@ describe('ReceiveRow', () => {
     expect(getByTestId('receive-value')).toHaveTextContent('$8.50');
   });
 
-  it('treats a missing metaMask fee as zero', () => {
+  it('uses the target amount for input-based totals', () => {
+    useTransactionPayTotalsMock.mockReturnValue({
+      isInputBased: true,
+      fees: {
+        provider: { usd: '1.00' },
+        sourceNetwork: { estimate: { usd: '0.20' } },
+        targetNetwork: { usd: '0.05' },
+        metaMask: { usd: '0.25' },
+      },
+      targetAmount: { fiat: '9', usd: '9' },
+    } as TransactionPayTotals);
+
+    const { getByTestId } = render({ inputAmountUsd: '10' });
+
+    expect(getByTestId('receive-value')).toHaveTextContent('$9.00');
+  });
+
+  it('uses withdrawal fee calculation when isInputBased is missing', () => {
     useTransactionPayTotalsMock.mockReturnValue({
       fees: {
         provider: { usd: '1.00' },
@@ -122,9 +140,7 @@ describe('ReceiveRow', () => {
   });
 
   it('renders an empty value when totals are not available', () => {
-    useTransactionPayTotalsMock.mockReturnValue(
-      undefined as unknown as TransactionPayTotals,
-    );
+    useTransactionPayTotalsMock.mockReturnValue(undefined);
 
     const { getByTestId } = render();
 
