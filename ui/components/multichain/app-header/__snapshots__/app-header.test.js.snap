@@ -486,13 +486,13 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                       to="/snaps?from=%2F"
                     >
                       <div
-                        class="relative inline-flex self-start"
+                        class="relative inline-flex self-start mr-3"
                       >
                         <div
                           class="inline-flex"
                         >
                           <svg
-                            class="inline-block w-6 h-6 text-icon-alternative mr-2"
+                            class="inline-block w-6 h-6 text-icon-alternative"
                             fill="currentColor"
                             viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg"
