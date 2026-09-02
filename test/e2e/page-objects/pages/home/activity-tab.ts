@@ -28,10 +28,6 @@ class ActivityTab extends HomePage {
   private readonly backButton =
     '[data-testid="transaction-details-back-button"]';
 
-  private readonly baseFeeLabel = {
-    xpath: "//div[contains(text(), 'Base fee')]",
-  };
-
   private readonly bridgeTransactionCompleted = '[data-tx-status="confirmed"]';
 
   private readonly bridgeTransactionPending = '[data-tx-status="pending"]';
@@ -47,11 +43,6 @@ class ActivityTab extends HomePage {
   };
 
   private readonly failedTransactions = '[data-tx-status="failed"]';
-
-  private readonly feeValues = '.currency-display-component__text';
-
-  private readonly gasPrice =
-    '[data-testid="transaction-breakdown__gas-price"]';
 
   private readonly pendingTransactionItems =
     '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"]';
