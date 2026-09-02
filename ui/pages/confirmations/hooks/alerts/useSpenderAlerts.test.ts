@@ -328,6 +328,32 @@ describe('useSpenderAlerts', () => {
       expect(result.current).toHaveLength(0);
     });
 
+    it('ignores a missing schema-declared spender field', () => {
+      setupDefaultMocks();
+      setupConfirmContext({
+        id: MOCK_TRANSACTION_ID,
+        type: 'eth_signTypedData',
+        msgParams: {
+          data: JSON.stringify({
+            primaryType: 'Permit',
+            domain: {},
+            message: { value: '1' },
+            types: {
+              Permit: [
+                { name: 'spender', type: 'address' },
+                { name: 'value', type: 'uint256' },
+              ],
+            },
+          }),
+        },
+      });
+      setupTrustSignal(TrustSignalDisplayState.Malicious, 'Phishing address');
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      expect(result.current).toHaveLength(0);
+    });
+
     it('returns warning alert for warning spender in permit signature', () => {
       setupDefaultMocks();
       const mockSignatureRequest = buildPermitSignatureRequest();
