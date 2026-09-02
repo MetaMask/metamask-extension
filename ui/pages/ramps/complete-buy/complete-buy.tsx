@@ -42,7 +42,6 @@ function isCompleteBuyState(
     candidate.checkoutUrl.length > 0 &&
     typeof candidate.providerName === 'string' &&
     typeof candidate.tokenSymbol === 'string' &&
-    typeof candidate.paymentMethodLabel === 'string' &&
     typeof candidate.walletAddress === 'string' &&
     typeof candidate.createdAt === 'number'
   );
@@ -60,13 +59,6 @@ export default function RampsCompleteBuyScreen() {
   const handleBackToWallet = useCallback(() => {
     navigate(DEFAULT_ROUTE);
   }, [navigate]);
-
-  const handleGoToProvider = useCallback(() => {
-    if (!state?.checkoutUrl) {
-      return;
-    }
-    global.platform.openTab({ url: state.checkoutUrl });
-  }, [state]);
 
   if (!state) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
@@ -105,39 +97,44 @@ export default function RampsCompleteBuyScreen() {
         justifyContent={BoxJustifyContent.Between}
       >
         <Box
-          className="flex flex-col gap-4 pt-2"
+          className="flex w-full flex-col gap-4 pt-2"
           flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Center}
         >
-          <BadgeWrapper
-            className="my-2"
-            position={BadgeWrapperPosition.BottomRight}
-            positionAnchorShape={BadgeWrapperPositionAnchorShape.Circular}
-            badgeContainerProps={{
-              color: BackgroundColor.backgroundDefault,
-            }}
-            badge={
-              networkImageUrl ? (
-                <AvatarNetwork
-                  name={state.tokenSymbol}
-                  src={networkImageUrl}
-                  style={{
-                    width: 24,
-                    height: 24,
-                    borderWidth: 2,
-                  }}
-                  hasBorder
-                />
-              ) : null
-            }
+          <Box
+            className="my-2 w-full"
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Center}
+            alignItems={BoxAlignItems.Center}
           >
-            <AvatarToken
-              name={state.tokenSymbol}
-              src={state.tokenIconUrl ?? ''}
-              size={AvatarTokenSize.Xl}
-              data-testid="ramps-complete-buy-token-avatar"
-            />
-          </BadgeWrapper>
+            <BadgeWrapper
+              position={BadgeWrapperPosition.BottomRight}
+              positionAnchorShape={BadgeWrapperPositionAnchorShape.Circular}
+              badgeContainerProps={{
+                color: BackgroundColor.backgroundDefault,
+              }}
+              badge={
+                networkImageUrl ? (
+                  <AvatarNetwork
+                    name={state.tokenSymbol}
+                    src={networkImageUrl}
+                    style={{
+                      width: 24,
+                      height: 24,
+                      borderWidth: 2,
+                    }}
+                    hasBorder
+                  />
+                ) : null
+              }
+            >
+              <AvatarToken
+                name={state.tokenSymbol}
+                src={state.tokenIconUrl ?? ''}
+                size={AvatarTokenSize.Xl}
+                data-testid="ramps-complete-buy-token-avatar"
+              />
+            </BadgeWrapper>
+          </Box>
 
           <BannerAlert
             severity={BannerAlertSeverity.Info}
@@ -161,9 +158,9 @@ export default function RampsCompleteBuyScreen() {
               testId="ramps-complete-buy-estimated-receive"
             />
             <Row
-              label={t('paidWith')}
-              value={state.paymentMethodLabel}
-              testId="ramps-complete-buy-paid-with"
+              label={t('rampsPaymentMethod')}
+              value={state.providerName}
+              testId="ramps-complete-buy-payment-method"
             />
             <Row
               label={t('account')}
@@ -174,15 +171,6 @@ export default function RampsCompleteBuyScreen() {
         </Box>
 
         <Footer>
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            className="w-full"
-            onClick={handleGoToProvider}
-            data-testid="ramps-complete-buy-go-to-provider"
-          >
-            {t('rampsGoToProvider', [state.providerName])}
-          </Button>
           <Button
             variant={ButtonVariant.Secondary}
             size={ButtonSize.Lg}

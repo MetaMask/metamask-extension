@@ -38,7 +38,7 @@ export function Row({
 
 export function Section({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <section className="flex flex-col gap-2 py-2 empty:hidden">
+    <section className="flex w-full flex-col gap-2 py-2 empty:hidden">
       {children}
     </section>
   );

@@ -36,39 +36,43 @@ exports[`RampsCompleteBuyScreen matches snapshot 1`] = `
       class="justify-between flex flex-1 flex-col px-4 pb-4"
     >
       <div
-        class="items-center flex flex-col gap-4 pt-2"
+        class="flex w-full flex-col gap-4 pt-2"
       >
         <div
-          class="relative inline-flex self-start my-2"
+          class="flex flex-row items-center justify-center my-2 w-full"
         >
           <div
-            class="inline-flex"
+            class="relative inline-flex self-start"
           >
             <div
-              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-12 w-12"
-              data-testid="ramps-complete-buy-token-avatar"
+              class="inline-flex"
             >
-              <img
-                alt="ETH"
-                class="size-full object-contain"
-                src="https://example.com/eth.png"
-              />
+              <div
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-12 w-12"
+                data-testid="ramps-complete-buy-token-avatar"
+              >
+                <img
+                  alt="ETH"
+                  class="size-full object-contain"
+                  src="https://example.com/eth.png"
+                />
+              </div>
             </div>
-          </div>
-          <div
-            class="absolute"
-            color="background-default"
-            style="bottom: 0px; right: 0px;"
-          >
             <div
-              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
-              style="width: 24px; height: 24px; border-width: 2px;"
+              class="absolute"
+              color="background-default"
+              style="bottom: 0px; right: 0px;"
             >
-              <img
-                alt="ETH"
-                class="size-full object-contain"
-                src="https://example.com/network.png"
-              />
+              <div
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
+                style="width: 24px; height: 24px; border-width: 2px;"
+              >
+                <img
+                  alt="ETH"
+                  class="size-full object-contain"
+                  src="https://example.com/network.png"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -106,7 +110,7 @@ exports[`RampsCompleteBuyScreen matches snapshot 1`] = `
           </div>
         </div>
         <section
-          class="flex flex-col gap-2 py-2 empty:hidden"
+          class="flex w-full flex-col gap-2 py-2 empty:hidden"
         >
           <div
             class="flex min-h-8 items-center justify-between gap-4"
@@ -144,19 +148,19 @@ exports[`RampsCompleteBuyScreen matches snapshot 1`] = `
           </div>
           <div
             class="flex min-h-8 items-center justify-between gap-4"
-            data-testid="ramps-complete-buy-paid-with"
+            data-testid="ramps-complete-buy-payment-method"
           >
             <p
               class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-alternative @compact:text-s-body-sm"
               data-testid="transaction-breakdown-row-title"
             >
-              Paid with
+              Payment method
             </p>
             <div
               class="min-w-0 break-words text-end @compact:text-s-body-sm"
               data-testid="transaction-breakdown-row-value"
             >
-              Debit card
+              Transak
             </div>
           </div>
           <div
@@ -185,17 +189,6 @@ exports[`RampsCompleteBuyScreen matches snapshot 1`] = `
       <div
         class="mt-auto flex flex-col gap-4 pt-4"
       >
-        <button
-          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
-          data-testid="ramps-complete-buy-go-to-provider"
-          role="button"
-        >
-          <span
-            class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-          >
-            Go to Transak
-          </span>
-        </button>
         <button
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
           data-testid="ramps-complete-buy-back-to-wallet"

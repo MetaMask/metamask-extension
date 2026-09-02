@@ -8544,10 +8544,6 @@
     "message": "Estimated to receive",
     "description": "Label for the estimated crypto amount on the ramps complete-buy interstitial"
   },
-  "rampsGoToProvider": {
-    "message": "Go to $1",
-    "description": "Primary button that re-opens the provider checkout tab; $1 is the provider name"
-  },
   "rampsChangeProvider": {
     "message": "Change provider."
   },
@@ -8687,6 +8683,10 @@
   },
   "rampsPaymentDelayMinutes": {
     "message": "mins"
+  },
+  "rampsPaymentMethod": {
+    "message": "Payment method",
+    "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
   },
   "rampsPaymentMethodLimits": {
     "message": "$1 – $2",

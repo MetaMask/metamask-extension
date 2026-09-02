@@ -5,7 +5,6 @@ export type RampsCompleteBuyLocationState = {
   tokenSymbol: string;
   tokenIconUrl?: string;
   tokenChainId?: string;
-  paymentMethodLabel: string;
   walletAddress: string;
   createdAt: number;
 };

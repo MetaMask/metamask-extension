@@ -45,8 +45,6 @@ jest.mock('../../../components/app/transaction/account-name', () => ({
   ),
 }));
 
-const mockOpenTab = jest.fn();
-
 const createStore = () =>
   configureStore({
     metamask: {
@@ -74,7 +72,6 @@ const completeBuyState: RampsCompleteBuyLocationState = {
   tokenSymbol: 'ETH',
   tokenIconUrl: 'https://example.com/eth.png',
   tokenChainId: 'eip155:1',
-  paymentMethodLabel: 'Debit card',
   walletAddress: '0xabc123',
   createdAt: 1_783_382_400_000,
 };
@@ -83,9 +80,6 @@ describe('RampsCompleteBuyScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockLocationState = completeBuyState;
-    (
-      global as unknown as { platform: { openTab: typeof mockOpenTab } }
-    ).platform = { openTab: mockOpenTab };
   });
 
   it('matches snapshot', () => {
@@ -111,20 +105,6 @@ describe('RampsCompleteBuyScreen', () => {
       'data-to',
       DEFAULT_ROUTE,
     );
-  });
-
-  it('re-opens the provider checkout tab', () => {
-    renderWithProvider(
-      <RampsCompleteBuyScreen />,
-      createStore(),
-      '/ramps/complete-buy',
-    );
-
-    fireEvent.click(screen.getByTestId('ramps-complete-buy-go-to-provider'));
-
-    expect(mockOpenTab).toHaveBeenCalledWith({
-      url: 'https://provider.example/checkout',
-    });
   });
 
   it('navigates home when back to wallet is pressed', () => {
