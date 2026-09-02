@@ -44,6 +44,7 @@ import {
   useTransactionPayHasPositiveRequiredAmount,
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
+  useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayMetrics } from '../../../hooks/pay/useTransactionPayMetrics';
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
@@ -376,11 +377,11 @@ function BottomContainer({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
-  // Gate the Receive row on the flag, not the transaction type: with post-quote
-  // disabled the withdraw falls back to a direct transfer, which has a regular
-  // total rather than a bridged "you'll receive" amount. Mirrors mobile
-  // `CustomAmountTotals`.
+  // Withdrawals show Receive only when post-quote token selection is enabled;
+  // otherwise the direct transfer keeps its regular Total. Input-based quotes
+  // show Receive according to the controller-owned totals semantics.
   const { canSelectWithdrawToken } = useTransactionPayWithdraw();
+  const isInputBased = useTransactionPayTotals()?.isInputBased === true;
 
   return (
     <Box
@@ -406,7 +407,7 @@ function BottomContainer({
               <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
             </>
           )}
-          {canSelectWithdrawToken && disablePay !== true ? (
+          {(canSelectWithdrawToken || isInputBased) && disablePay !== true ? (
             <ReceiveRow
               inputAmountUsd={amountFiat}
               variant={ConfirmInfoRowSize.Small}
