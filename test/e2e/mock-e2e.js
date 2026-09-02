@@ -2267,6 +2267,50 @@ async function setupMocking(
       if (type === 'openOrders') {
         return { statusCode: 200, json: [] };
       }
+      if (type === 'frontendOpenOrders') {
+        // perps-controller reads TP/SL triggers with `frontendOpenOrders`, not
+        // `openOrders`, and immediately calls `.forEach` on the result. The
+        // catch-all below returns `{}`, which is not iterable.
+        return { statusCode: 200, json: [] };
+      }
+      if (type === 'userNonFundingLedgerUpdates') {
+        // `#isWalletOnHyperliquid` treats a non-array or empty ledger as "this
+        // wallet has no Hyperliquid account", which silently defers the
+        // unified-account migration and the referral write.
+        return {
+          statusCode: 200,
+          json: [
+            {
+              time: 1735689600000,
+              hash: '0x0000000000000000000000000000000000000000000000000000000000000001',
+              delta: {
+                type: 'deposit',
+                amount: '10000.0',
+                nonce: 1,
+                usdc: '10000.0',
+              },
+            },
+          ],
+        };
+      }
+      if (type === 'userAbstraction') {
+        // A compatible mode, so the controller skips the EIP-712 migration that
+        // 15.1.0 drives at action time.
+        return { statusCode: 200, json: 'unifiedAccount' };
+      }
+      if (type === 'userToMultiSigSigners') {
+        // Hyperliquid returns null for single-signer accounts;
+        // `#isHyperliquidMultiSigAccount` reads any non-null answer as multi-sig.
+        return { statusCode: 200, json: null };
+      }
+      if (type === 'referral') {
+        // Mirrors the WS INFO POST mock: already referred by the MetaMask
+        // builder, so the controller skips the setReferrer /exchange call.
+        return {
+          statusCode: 200,
+          json: { referredBy: '0xea2c82b5aba243ab631c0ce151763d5e38df75b3' },
+        };
+      }
       if (type === 'userFills') {
         return { statusCode: 200, json: [] };
       }
