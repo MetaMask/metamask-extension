@@ -97,7 +97,7 @@ async function switchEthereumChainImplementation(
   try {
     chainId = validateSwitchEthereumChainParams(req);
   } catch (error) {
-    return end(error as Parameters<JsonRpcEngineEndCallback>[0]);
+    return end(error);
   }
 
   const { origin } = req;

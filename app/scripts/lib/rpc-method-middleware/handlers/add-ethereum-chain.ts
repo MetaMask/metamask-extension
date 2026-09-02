@@ -135,7 +135,7 @@ async function addEthereumChainImplementation(
   try {
     validParams = validateAddEthereumChainParams(req.params?.[0]);
   } catch (error) {
-    return end(error as Parameters<JsonRpcEngineEndCallback>[0]);
+    return end(error);
   }
 
   const {
@@ -200,6 +200,7 @@ async function addEthereumChainImplementation(
       if (existingNetwork) {
         // A network for this chain id already exists.
         // Update it with any new information.
+        // Type assertion: This is the final type we want to pass into `updateNetwork`.
         const clonedNetwork = cloneDeep(existingNetwork) as UpdateNetworkFields;
 
         // If the RPC endpoint doesn't exist, add a new one
@@ -281,7 +282,7 @@ async function addEthereumChainImplementation(
         });
       }
     } catch (error) {
-      return end(error as Parameters<JsonRpcEngineEndCallback>[0]);
+      return end(error);
     }
   }
 

@@ -24,20 +24,6 @@ type SwitchEthereumChainParams = {
   chainId: string;
 };
 
-type AddEthereumChainNativeCurrency = {
-  decimals: number;
-  symbol: string;
-};
-
-type AddEthereumChainParameter = {
-  blockExplorerUrls?: string[];
-  chainId: string;
-  chainName: string;
-  iconUrls?: string[];
-  nativeCurrency: AddEthereumChainNativeCurrency | null;
-  rpcUrls: string[];
-};
-
 type RequestPermittedChainsPermissionIncrementalArgs = {
   autoApprove?: boolean;
   chainId: string;
@@ -104,6 +90,7 @@ export function validateChainId(chainId: unknown): Hex {
     });
   }
 
+  // Type assertion: We validated that the chain ID is hex above.
   return validatedChainId as Hex;
 }
 
@@ -118,8 +105,15 @@ export function validateSwitchEthereumChainParams(req: {
     });
   }
 
-  const { chainId, ...otherParams } = req
-    .params[0] as SwitchEthereumChainParams & Record<string, unknown>;
+  if (!('chainId' in req.params[0])) {
+    throw rpcErrors.invalidParams({
+      message: `Expected single object parameter to have a "chainId". Received:\n${JSON.stringify(
+        req.params,
+      )}`,
+    });
+  }
+
+  const { chainId, ...otherParams } = req.params[0];
 
   if (Object.keys(otherParams).length > 0) {
     throw rpcErrors.invalidParams({
@@ -143,6 +137,22 @@ export function validateAddEthereumChainParams(
     });
   }
 
+  if (
+    !(
+      'chainId' in params &&
+      'chainName' in params &&
+      'blockExplorerUrls' in params &&
+      'nativeCurrency' in params &&
+      'rpcUrls' in params
+    )
+  ) {
+    throw rpcErrors.invalidParams({
+      message: `Expected single object parameter to contain "chainId", "chainName", "blockExplorerUrls", "nativeCurrency" and "rpcUrls". Received:\n${JSON.stringify(
+        params,
+      )}`,
+    });
+  }
+
   const {
     chainId,
     chainName,
@@ -150,7 +160,7 @@ export function validateAddEthereumChainParams(
     nativeCurrency,
     rpcUrls,
     ...otherParams
-  } = params as AddEthereumChainParameter & Record<string, unknown>;
+  } = params;
 
   const otherKeys = Object.keys(otherParams).filter(
     // iconUrls is a valid optional but not currently used parameter
@@ -195,7 +205,7 @@ export function validateAddEthereumChainParams(
 
   if (typeof chainName !== 'string' || !chainName) {
     throw rpcErrors.invalidParams({
-      message: `Expected non-empty string 'chainName'. Received:\n${chainName}`,
+      message: `Expected non-empty string 'chainName'. Received:\n${String(chainName)}`,
     });
   }
 
@@ -208,15 +218,22 @@ export function validateAddEthereumChainParams(
         message: `Expected null or object 'nativeCurrency'. Received:\n${String(nativeCurrency)}`,
       });
     }
-    if (nativeCurrency.decimals !== 18) {
+    if (
+      !('decimals' in nativeCurrency) ||
+      typeof nativeCurrency.decimals !== 'number' ||
+      nativeCurrency.decimals !== 18
+    ) {
       throw rpcErrors.invalidParams({
-        message: `Expected the number 18 for 'nativeCurrency.decimals' when 'nativeCurrency' is provided. Received: ${nativeCurrency.decimals}`,
+        message: `Expected the number 18 for 'nativeCurrency.decimals' when 'nativeCurrency' is provided. Received: ${'decimals' in nativeCurrency ? String(nativeCurrency.decimals) : 'undefined'}`,
       });
     }
 
-    if (!nativeCurrency.symbol || typeof nativeCurrency.symbol !== 'string') {
+    if (
+      !('symbol' in nativeCurrency) ||
+      typeof nativeCurrency.symbol !== 'string'
+    ) {
       throw rpcErrors.invalidParams({
-        message: `Expected a string 'nativeCurrency.symbol'. Received: ${nativeCurrency.symbol}`,
+        message: `Expected a string 'nativeCurrency.symbol'. Received: ${'symbol' in nativeCurrency ? String(nativeCurrency.symbol) : 'undefined'}`,
       });
     }
   }
@@ -227,7 +244,7 @@ export function validateAddEthereumChainParams(
     (typeof ticker !== 'string' || ticker.length < 1 || ticker.length > 6)
   ) {
     throw rpcErrors.invalidParams({
-      message: `Expected 1-6 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,
+      message: `Expected 1-6 character string 'nativeCurrency.symbol'. Received:\n${String(ticker)}`,
     });
   }
 
@@ -250,21 +267,21 @@ export function validateAddEthereumChainParams(
  * @param chainId - The chainId being switched to.
  * @param networkClientId - The network client being switched to.
  * @param hooks - The hooks object.
- * @param hooks.origin
- * @param hooks.isAddFlow
- * @param hooks.isSwitchFlow
- * @param hooks.autoApprove
- * @param hooks.setActiveNetwork
- * @param hooks.getCaveat
- * @param hooks.requestPermittedChainsPermissionIncrementalForOrigin
- * @param hooks.setTokenNetworkFilter
- * @param hooks.setEnabledNetworks
- * @param hooks.getEnabledNetworks
- * @param hooks.rejectApprovalRequestsForOrigin
- * @param hooks.requestUserApproval
- * @param hooks.hasApprovalRequestsForOrigin
- * @param hooks.toNetworkConfiguration
- * @param hooks.fromNetworkConfiguration
+ * @param hooks.origin - The origin sending this request.
+ * @param hooks.isAddFlow - Variable to check if its add flow.
+ * @param hooks.isSwitchFlow - Variable to check if its switch flow.
+ * @param [hooks.autoApprove] - A boolean indicating whether the request should prompt the user or be automatically approved.
+ * @param hooks.setActiveNetwork - The callback to change the current network for the origin.
+ * @param hooks.getCaveat - The callback to get the CAIP-25 caveat for the origin.
+ * @param hooks.requestPermittedChainsPermissionIncrementalForOrigin - The callback to add a new chain to the permittedChains-equivalent CAIP-25 permission.
+ * @param hooks.setTokenNetworkFilter - The callback to set the token network filter.
+ * @param hooks.setEnabledNetworks - The callback to set the enabled networks.
+ * @param hooks.getEnabledNetworks - The callback to get the current enabled networks for a namespace.
+ * @param hooks.rejectApprovalRequestsForOrigin - The callback to reject all pending approval requests for the origin.
+ * @param hooks.requestUserApproval - The callback to trigger user approval flow.
+ * @param hooks.hasApprovalRequestsForOrigin - Function to check if there are pending approval requests from the origin.
+ * @param hooks.toNetworkConfiguration - Network configutation of network switching to.
+ * @param hooks.fromNetworkConfiguration - Network configutation of network switching from.
  * @returns A null response on success or an error on failure.
  */
 export async function switchChain(
@@ -382,7 +399,7 @@ export async function switchChain(
     response.result = null;
     return end();
   } catch (error) {
-    return end(error as Parameters<JsonRpcEngineEndCallback>[0]);
+    return end(error);
   }
 }
 

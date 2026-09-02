@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash';
-import { DependencyList, useRef } from 'react';
+import { DependencyList, useEffect, useState } from 'react';
 
 /**
  * Identical to `useMemo`, but compares dependencies using deep equality.
@@ -15,13 +15,24 @@ export function useDeepMemo<Type>(
   factory: () => Type,
   deps: DependencyList,
 ): Type {
-  const depsRef = useRef<DependencyList | undefined>(undefined);
-  const resultRef = useRef<Type>();
+  const [cache, setCache] = useState<{ deps: DependencyList; value: Type }>(
+    () => ({
+      deps,
+      value: factory(),
+    }),
+  );
 
-  if (!isEqual(depsRef.current, deps)) {
-    depsRef.current = deps;
-    resultRef.current = factory();
-  }
+  const depsChanged = !isEqual(cache.deps, deps);
+  const value = depsChanged ? factory() : cache.value;
 
-  return resultRef.current as Type;
+  useEffect(() => {
+    if (!depsChanged) {
+      return;
+    }
+    queueMicrotask(() => {
+      setCache({ deps, value });
+    });
+  }, [deps, depsChanged, value]);
+
+  return value;
 }

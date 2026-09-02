@@ -1046,11 +1046,6 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/hooks/useDeepMemo.ts": {
-    "react-hooks/refs": {
-      "count": 4
-    }
-  },
   "ui/pages/confirmations/hooks/useLedgerConnection.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
