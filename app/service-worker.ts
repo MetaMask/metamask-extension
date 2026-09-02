@@ -1,20 +1,26 @@
 // This file is used only for manifest version 3
+// eslint-disable-next-line spaced-comment
+/// <reference lib="webworker" />
 
 import './scripts/load/bootstrap';
 import { APP_INIT_LIVENESS_METHOD } from '../shared/constants/ui-initialization';
 import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/extension-lazy-listener';
-import {
-  ExtensionStartup,
-  type ExtensionStartupServiceWorker,
-} from './scripts/lib/extension-startup';
+import { PostUpdateReloadCoordinator } from './scripts/lib/post-update-reload-coordinator';
+
+// The DOM library types `self` as Window; override it only in this module.
+// eslint-disable-next-line consistent-this
+declare const self: ServiceWorkerGlobalScope;
 
 const { chrome } = globalThis;
 
 const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
 
-const serviceWorker = self as unknown as ExtensionStartupServiceWorker;
-const extensionStartup = new ExtensionStartup(chrome, serviceWorker);
-globalThis.stateHooks.extensionStartup = extensionStartup;
+const isServiceWorkerActivated = self.serviceWorker.state === 'activated';
+const postUpdateReloadCoordinator = new PostUpdateReloadCoordinator(
+  chrome,
+  isServiceWorkerActivated,
+);
+globalThis.stateHooks.postUpdateReloadCoordinator = postUpdateReloadCoordinator;
 
 function saveTimestamp() {
   const timestamp = new Date().toISOString();
@@ -52,10 +58,10 @@ async function runImportScripts() {
     // eslint-disable-next-line import-x/extensions
     await import('./scripts/background.js');
   } catch (error) {
-    // If background startup fails before it can schedule the update recovery
-    // reload, expose the UI so its existing critical-startup-error flow can
-    // recover or guide the user.
-    extensionStartup.markReady();
+    // If background initialization fails before it can schedule the recovery
+    // reload, complete coordination so the UI can show its existing critical
+    // startup error flow.
+    postUpdateReloadCoordinator.complete();
     throw error;
   }
 
@@ -107,6 +113,6 @@ chrome.runtime.onConnect.addListener((port) => {
  * that whenever the already installed service worker is stopped and then restarted, the state
  * is 'activated'.
  */
-if (serviceWorker.serviceWorker.state === 'activated') {
+if (isServiceWorkerActivated) {
   runImportScripts();
 }

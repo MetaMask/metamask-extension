@@ -3,12 +3,18 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import type { Driver } from '../../webdriver/driver';
 
-const WORKER_RESTART_TIMEOUT_MS = 30_000;
+// Service-worker restarts normally finish in a few seconds, but slower CI hosts
+// need additional headroom before the test is considered failed.
+const ENTRY_POINT_ENABLEMENT_TIMEOUT_MS = 30_000;
 
-async function isWorkerReady(driver: Driver): Promise<boolean> {
+// Check often enough to observe recovery promptly without tight-looping CDP
+// calls while Chrome restarts the service worker.
+const ENTRY_POINT_ENABLEMENT_POLL_INTERVAL_MS = 250;
+
+async function areEntryPointsEnabled(driver: Driver): Promise<boolean> {
   try {
     return (await driver.executeScriptInExtensionServiceWorker(`
-      if (globalThis.__updateTestWorkerMarker === true) {
+      if (globalThis.__reloadExtensionAfterProbe === true) {
         // Reload after this probe returns so its CDP response is not discarded.
         globalThis.setTimeout(() => chrome.runtime.reload());
         return false;
@@ -24,15 +30,15 @@ async function isWorkerReady(driver: Driver): Promise<boolean> {
   }
 }
 
-async function waitForReadyWorker(driver: Driver): Promise<void> {
-  await driver.waitUntil(() => isWorkerReady(driver), {
-    interval: 250,
-    timeout: WORKER_RESTART_TIMEOUT_MS,
+async function waitForEntryPoints(driver: Driver): Promise<void> {
+  await driver.waitUntil(() => areEntryPointsEnabled(driver), {
+    interval: ENTRY_POINT_ENABLEMENT_POLL_INTERVAL_MS,
+    timeout: ENTRY_POINT_ENABLEMENT_TIMEOUT_MS,
   });
 }
 
-describe('Extension service-worker lifecycle', function () {
-  it('restores browser entry points after an extension reload', async function () {
+describe('Post-update reload coordination', function () {
+  it('restores browser entry points after a recovery reload', async function () {
     if (process.env.SELENIUM_BROWSER !== Browser.CHROME) {
       this.skip();
     }
@@ -43,11 +49,11 @@ describe('Extension service-worker lifecycle', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await waitForReadyWorker(driver);
+        await waitForEntryPoints(driver);
         await driver.executeScriptInExtensionServiceWorker(
-          'globalThis.__updateTestWorkerMarker = true;',
+          'globalThis.__reloadExtensionAfterProbe = true;',
         );
-        await waitForReadyWorker(driver);
+        await waitForEntryPoints(driver);
       },
     );
   });

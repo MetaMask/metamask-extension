@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
-import { ExtensionStartup } from './extension-startup';
+import { PostUpdateReloadCoordinator } from './post-update-reload-coordinator';
 
 const CURRENT_VERSION = '2.0.0';
-const UPDATE = {
+const GENUINE_UPDATE = {
   reason: 'update',
   previousVersion: '1.0.0',
 } as const;
@@ -16,9 +16,8 @@ function createEvent<Args extends unknown[]>() {
   };
 }
 
-function createStartup(serviceWorkerState = 'installing') {
+function createCoordinator(isServiceWorkerActivated = false) {
   const installed = createEvent<[chrome.runtime.InstalledDetails]>();
-  const activate = createEvent<[]>();
   const enableAction = jest
     .fn<() => Promise<void>>()
     .mockResolvedValue(undefined);
@@ -35,91 +34,86 @@ function createStartup(serviceWorkerState = 'installing') {
         .fn<(options: chrome.sidePanel.PanelOptions) => Promise<void>>()
         .mockResolvedValue(undefined),
     },
-  } as unknown as ConstructorParameters<typeof ExtensionStartup>[0];
-  const serviceWorker = {
-    addEventListener: (_type: 'activate', listener: (...args: []) => void) =>
-      activate.addListener(listener),
-    serviceWorker: { state: serviceWorkerState },
-  };
-  const startup = new ExtensionStartup(browser, serviceWorker);
+  } as unknown as ConstructorParameters<typeof PostUpdateReloadCoordinator>[0];
+  const coordinator = new PostUpdateReloadCoordinator(
+    browser,
+    isServiceWorkerActivated,
+  );
 
   return {
-    activate: activate.emit,
+    dispatchInstalled: installed.emit,
     enableAction,
-    install: installed.emit,
-    startup,
+    coordinator,
   };
 }
 
-describe('ExtensionStartup', () => {
+describe('PostUpdateReloadCoordinator', () => {
   afterEach(() => {
     jest.useRealTimers();
     jest.restoreAllMocks();
   });
 
-  it('marks startup ready when no recovery reload is needed', async () => {
-    const { enableAction, install, startup } = createStartup();
+  it('completes when no recovery reload is needed', async () => {
+    const { coordinator, dispatchInstalled, enableAction } =
+      createCoordinator();
 
-    install({ reason: 'update', previousVersion: CURRENT_VERSION });
+    dispatchInstalled({ reason: 'update', previousVersion: CURRENT_VERSION });
 
-    await expect(startup.ready).resolves.toBeUndefined();
+    await expect(coordinator.completion).resolves.toBeUndefined();
     expect(enableAction).toHaveBeenCalledTimes(1);
   });
 
-  it('marks startup ready when an activated worker restarts', async () => {
-    const { enableAction, startup } = createStartup('activated');
+  it('completes when an activated worker restarts', async () => {
+    const { coordinator, enableAction } = createCoordinator(true);
 
-    await expect(startup.ready).resolves.toBeUndefined();
+    await expect(coordinator.completion).resolves.toBeUndefined();
     expect(enableAction).toHaveBeenCalledTimes(1);
   });
 
-  it('keeps a claimed recovery reload closed through its deadline', async () => {
+  it('remains incomplete after the recovery reload begins', async () => {
     jest.useFakeTimers();
-    const { activate, enableAction, install, startup } = createStartup();
-    let ready = false;
-    startup.ready.then(() => {
-      ready = true;
-    });
+    const { coordinator, dispatchInstalled, enableAction } =
+      createCoordinator();
 
-    install(UPDATE);
-    activate();
-    expect(startup.claimReload()).toBe(true);
+    dispatchInstalled(GENUINE_UPDATE);
+    expect(coordinator.tryBeginReload()).toBe(true);
     await jest.runOnlyPendingTimersAsync();
 
-    expect(ready).toBe(false);
-    expect(startup.claimReload()).toBe(false);
+    expect(coordinator.tryBeginReload()).toBe(false);
     expect(enableAction).not.toHaveBeenCalled();
   });
 
-  it('fails open when initialization misses the recovery reload deadline', async () => {
+  it('completes when the recovery reload does not begin before the deadline', async () => {
     jest.useFakeTimers();
-    const { enableAction, install, startup } = createStartup();
-    install(UPDATE);
+    const { coordinator, dispatchInstalled, enableAction } =
+      createCoordinator();
+    dispatchInstalled(GENUINE_UPDATE);
 
     await jest.runOnlyPendingTimersAsync();
 
-    await expect(startup.ready).resolves.toBeUndefined();
-    expect(startup.claimReload()).toBe(false);
+    await expect(coordinator.completion).resolves.toBeUndefined();
+    expect(coordinator.tryBeginReload()).toBe(false);
     expect(enableAction).toHaveBeenCalledTimes(1);
   });
 
-  it('allows an explicit fail-open decision to release gated work', async () => {
-    const { enableAction, install, startup } = createStartup();
+  it('allows callers to complete coordination explicitly', async () => {
+    const { coordinator, dispatchInstalled, enableAction } =
+      createCoordinator();
     const gatedWork = jest.fn();
-    const gatedWorkPromise = startup.ready.then(gatedWork);
-    install(UPDATE);
+    const gatedWorkPromise = coordinator.completion.then(gatedWork);
+    dispatchInstalled(GENUINE_UPDATE);
 
     await Promise.resolve();
     expect(gatedWork).not.toHaveBeenCalled();
 
-    startup.markReady();
+    coordinator.complete();
     await gatedWorkPromise;
 
     expect(gatedWork).toHaveBeenCalledTimes(1);
     expect(enableAction).toHaveBeenCalledTimes(1);
   });
 
-  it('resolves readiness once while retrying entry-point enablement', async () => {
+  it('retries entry-point enablement when error reporting fails', async () => {
     jest.useFakeTimers();
     const firstError = new Error('first failure');
     const secondError = new Error('second failure');
@@ -129,15 +123,14 @@ describe('ExtensionStartup', () => {
       .mockImplementationOnce(() => {
         throw new Error('reporting failed');
       });
-    const { enableAction, startup } = createStartup();
+    const { coordinator, enableAction } = createCoordinator();
     enableAction
       .mockRejectedValueOnce(firstError)
       .mockRejectedValueOnce(secondError);
 
-    startup.markReady();
-    startup.markReady();
+    coordinator.complete();
 
-    await expect(startup.ready).resolves.toBeUndefined();
+    await expect(coordinator.completion).resolves.toBeUndefined();
     expect(enableAction).toHaveBeenCalledTimes(1);
 
     await jest.runOnlyPendingTimersAsync();

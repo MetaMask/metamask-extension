@@ -15,7 +15,7 @@ import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { onUpdate } from '../../on-update';
 import type ExtensionPlatform from '../../platforms/extension';
-import type { ExtensionStartup } from '../extension-startup';
+import type { PostUpdateReloadCoordinator } from '../post-update-reload-coordinator';
 
 type OnUpdateController = Parameters<typeof onUpdate>[0];
 type OnUpdatePlatform = Parameters<typeof onUpdate>[1];
@@ -41,7 +41,10 @@ export type InstallLifecycleDependencies = {
   platform: InstallLifecyclePlatform;
   isInitialized: Promise<void>;
   requestSafeReload: () => Promise<void>;
-  extensionStartup: Pick<ExtensionStartup, 'claimReload' | 'markReady'>;
+  postUpdateReloadCoordinator: Pick<
+    PostUpdateReloadCoordinator,
+    'tryBeginReload' | 'complete'
+  >;
 };
 
 /**
@@ -127,20 +130,19 @@ export async function handleOnInstalled(
     details.previousVersion !== deps.platform.getVersion()
   ) {
     await deps.isInitialized;
-    if (
-      (await onUpdate(
-        deps.controller,
-        deps.platform,
-        details.previousVersion,
-        deps.requestSafeReload,
-        deps.extensionStartup.claimReload(),
-      )) === 'reload'
-    ) {
+    const reloadScheduled = await onUpdate(
+      deps.controller,
+      deps.platform,
+      details.previousVersion,
+      deps.requestSafeReload,
+      deps.postUpdateReloadCoordinator.tryBeginReload(),
+    );
+    if (reloadScheduled) {
       return;
     }
   }
 
-  deps.extensionStartup.markReady();
+  deps.postUpdateReloadCoordinator.complete();
 }
 
 /**

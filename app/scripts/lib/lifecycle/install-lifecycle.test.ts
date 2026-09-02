@@ -80,9 +80,9 @@ function createDeps(
     platform: createPlatform(),
     isInitialized,
     requestSafeReload: jest.fn(async () => undefined),
-    extensionStartup: {
-      claimReload: jest.fn(() => true),
-      markReady: jest.fn(),
+    postUpdateReloadCoordinator: {
+      tryBeginReload: jest.fn(() => true),
+      complete: jest.fn(),
     },
     ...overrides,
     resolveInitialization,
@@ -96,7 +96,7 @@ const installDetails = {
 describe('install-lifecycle', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    onUpdateMock.mockResolvedValue('ready');
+    onUpdateMock.mockResolvedValue(false);
     jest.useFakeTimers();
     jest.setSystemTime(new Date('2026-08-20T12:34:56.789Z'));
   });
@@ -200,9 +200,9 @@ describe('install-lifecycle', () => {
           platform: createPlatform(),
           isInitialized: Promise.resolve(),
           requestSafeReload: jest.fn(async () => undefined),
-          extensionStartup: {
-            claimReload: jest.fn(() => true),
-            markReady: jest.fn(),
+          postUpdateReloadCoordinator: {
+            tryBeginReload: jest.fn(() => true),
+            complete: jest.fn(),
           },
         };
 
@@ -268,12 +268,13 @@ describe('install-lifecycle', () => {
           deps.requestSafeReload,
           true,
         );
-        expect(deps.extensionStartup.claimReload).toHaveBeenCalledTimes(1);
-        expect(deps.extensionStartup.markReady).toHaveBeenCalledTimes(1);
+        expect(deps.postUpdateReloadCoordinator.complete).toHaveBeenCalledTimes(
+          1,
+        );
       });
 
-      it('keeps entry points disabled when the recovery reload is scheduled', async () => {
-        onUpdateMock.mockResolvedValueOnce('reload');
+      it('leaves coordination incomplete when the recovery reload is scheduled', async () => {
+        onUpdateMock.mockResolvedValueOnce(true);
         const deps = createDeps({
           platform: createPlatform({
             getVersion: jest.fn(() => '13.1.0'),
@@ -288,7 +289,9 @@ describe('install-lifecycle', () => {
         deps.resolveInitialization();
         await handlePromise;
 
-        expect(deps.extensionStartup.markReady).not.toHaveBeenCalled();
+        expect(
+          deps.postUpdateReloadCoordinator.complete,
+        ).not.toHaveBeenCalled();
       });
 
       it('ignores update events when the previous version matches the current version', async () => {
@@ -305,7 +308,9 @@ describe('install-lifecycle', () => {
         await handleOnInstalled([details], deps);
 
         expect(onUpdateMock).not.toHaveBeenCalled();
-        expect(deps.extensionStartup.markReady).toHaveBeenCalledTimes(1);
+        expect(deps.postUpdateReloadCoordinator.complete).toHaveBeenCalledTimes(
+          1,
+        );
       });
     });
   });

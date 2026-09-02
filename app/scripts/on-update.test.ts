@@ -49,8 +49,8 @@ describe('onUpdate', () => {
     const { appStateController, controller } = createController();
 
     await expect(
-      onUpdate(controller, platform, '1.0.0', requestSafeReload),
-    ).resolves.toBe('reload');
+      onUpdate(controller, platform, '1.0.0', requestSafeReload, true),
+    ).resolves.toBe(true);
 
     expect(appStateController.setLastUpdatedAt).toHaveBeenCalledWith(
       expect.any(Number),
@@ -64,13 +64,13 @@ describe('onUpdate', () => {
     expect(requestSafeReload).toHaveBeenCalledTimes(1);
   });
 
-  it('reports ready after recording a Firefox update', async () => {
+  it('does not reload after recording a Firefox update', async () => {
     const { appStateController, controller } = createController();
     jest.spyOn(util, 'getPlatform').mockReturnValue(PLATFORM_FIREFOX);
 
     await expect(
-      onUpdate(controller, platform, '1.0.0', requestSafeReload),
-    ).resolves.toBe('ready');
+      onUpdate(controller, platform, '1.0.0', requestSafeReload, true),
+    ).resolves.toBe(false);
 
     expect(appStateController.setLastUpdatedFromVersion).toHaveBeenCalledWith(
       '1.0.0',
@@ -78,12 +78,12 @@ describe('onUpdate', () => {
     expect(requestSafeReload).not.toHaveBeenCalled();
   });
 
-  it('reports ready without reloading when the startup deadline elapsed', async () => {
+  it('does not reload when the recovery reload was not started', async () => {
     const { appStateController, controller } = createController();
 
     await expect(
       onUpdate(controller, platform, '1.0.0', requestSafeReload, false),
-    ).resolves.toBe('ready');
+    ).resolves.toBe(false);
 
     expect(appStateController.setLastUpdatedFromVersion).toHaveBeenCalledWith(
       '1.0.0',
@@ -91,12 +91,12 @@ describe('onUpdate', () => {
     expect(requestSafeReload).not.toHaveBeenCalled();
   });
 
-  it('reports ready without changing metadata for a duplicate update event', async () => {
+  it('ignores a duplicate update event', async () => {
     const { appStateController, controller } = createController('1.0.0');
 
     await expect(
-      onUpdate(controller, platform, '1.0.0', requestSafeReload),
-    ).resolves.toBe('ready');
+      onUpdate(controller, platform, '1.0.0', requestSafeReload, true),
+    ).resolves.toBe(false);
 
     expect(appStateController.setLastUpdatedAt).not.toHaveBeenCalled();
     expect(appStateController.setLastUpdatedFromVersion).not.toHaveBeenCalled();
@@ -112,7 +112,7 @@ describe('onUpdate', () => {
     requestSafeReload.mockRejectedValue(error);
 
     await expect(
-      onUpdate(controller, platform, '1.0.0', requestSafeReload),
+      onUpdate(controller, platform, '1.0.0', requestSafeReload, true),
     ).rejects.toThrow(error);
   });
 });
