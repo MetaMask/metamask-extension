@@ -44,7 +44,7 @@ exports[`Token Cell should match snapshot 1`] = `
           class="flex-row justify-between flex"
         >
           <div
-            class="min-w-0 items-center gap-2 flex"
+            class="flex items-center gap-2 min-w-0"
           >
             <p
               class="mm-box mm-text text-s-body-md @compact:text-s-body-sm mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"

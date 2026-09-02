@@ -17,12 +17,6 @@ type Props = {
   assetIds: CaipAssetType[];
 };
 
-/**
- * Loads security result types for multiple tokens from the shared TokenAsset cache.
- *
- * @param props.assetIds - CAIP-19 asset identifiers to resolve.
- * @returns Map of asset ID to security resultType (e.g. Verified, Warning, Malicious).
- */
 export function useTokenAssetSecurityResults({ assetIds }: Props) {
   const allowExternalServices = useSelector(getUseExternalServices);
   const isSecurityTrustEnabled = useSelector(getIsSecurityTrustTdpEnabled);

@@ -16,14 +16,6 @@ type Props = {
   enabled?: boolean;
 };
 
-/**
- * Reads a single TokenAsset from the shared per-asset cache.
- *
- * @param props.assetId - CAIP-19 asset identifier. Invalid values disable the query.
- * @param props.fetchOnMiss - When true, fetches from the Token API if the asset is not cached. Defaults to false.
- * @param props.enabled - When false, the query is disabled. Defaults to true.
- * @returns TanStack Query result for the TokenAsset, or null when missing.
- */
 export const useTokenAssetQuery = ({
   assetId,
   fetchOnMiss = false,

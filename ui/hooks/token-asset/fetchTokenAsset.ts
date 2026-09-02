@@ -34,11 +34,9 @@ const tokenAssetBatcher = create<CaipAssetType, TokenAsset>({
         isCaipAssetType(token.assetId) &&
         normalizeTokenAssetId(token.assetId) === normalizeTokenAssetId(assetId),
     ) ?? null,
-  getKey: (assetId) => normalizeTokenAssetId(assetId),
+  getKey: normalizeTokenAssetId,
 });
 
-export async function fetchTokenAsset(
-  assetId: CaipAssetType,
-): Promise<TokenAsset | null> {
+export async function fetchTokenAsset(assetId: CaipAssetType) {
   return (await tokenAssetBatcher.fetch(assetId)) ?? null;
 }

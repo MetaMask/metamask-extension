@@ -1,5 +1,4 @@
 import React from 'react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Box,
   BoxAlignItems,
@@ -13,6 +12,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export type SecurityTrustTranslate = (
   key: string,

@@ -31,6 +31,8 @@ import {
 import { useTokenAssetSecurityResults } from '#ui/hooks/token-asset/useTokenAssetSecurityResults';
 import {
   getNativeAssetId,
+  isEvmChainId,
+  isTronSpecialAsset,
   normalizeTokenAssetId,
 } from '#shared/lib/asset-utils';
 import { buildEvmCaip19AssetId } from '#shared/lib/multichain/buildEvmCaip19AssetId';
@@ -60,10 +62,6 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
-import {
-  isEvmChainId,
-  isTronSpecialAsset,
-} from '../../../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
 import { isMusdToken } from '../../musd/constants';

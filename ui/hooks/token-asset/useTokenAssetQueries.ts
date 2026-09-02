@@ -20,14 +20,6 @@ function selectTokenAsset(data: TokenAsset | null | undefined) {
   return data;
 }
 
-/**
- * Fetches TokenAsset data for multiple CAIP-19 asset IDs via the shared per-asset cache.
- *
- * @param props.assetIds - CAIP-19 asset identifiers to load.
- * @param props.enabled - When false, no fetches are started. Defaults to true.
- * @param props.select - Optional selector applied to each cached TokenAsset.
- * @returns TanStack `useQueries` results in the same order as deduped, sorted asset IDs.
- */
 export function useTokenAssetQueries<TSelected = TokenAsset | null>({
   assetIds,
   enabled = true,
