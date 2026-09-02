@@ -16,7 +16,7 @@ const microtaskScheduler = (flush: () => void) => {
 export function create<TItem, TResult>({
   fetcher,
   resolver,
-  getKey = (item) => String(item),
+  getKey = String,
   scheduler = microtaskScheduler,
 }: CreateBatcherOptions<TItem, TResult>): Batcher<TItem, TResult> {
   type PendingFetch = {

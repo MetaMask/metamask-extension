@@ -3,7 +3,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fetchTokenAssets } from '@metamask/assets-controllers';
 import { CaipAssetType, Hex } from '@metamask/utils';
-import { getTokenAssetQueryKey } from '#ui/hooks/token-asset/tokenAssetQuery';
+import { getTokenAssetQueryKey } from '#ui/hooks/token-asset/token-asset-query';
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { getRouteAssetChainId, useRouteAssetToken } from './useRouteAssetToken';
 

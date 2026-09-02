@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fetchTokenAssets } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import type { TokenAsset } from '@metamask/assets-controllers';
-import { getTokenAssetQueryKey } from './tokenAssetQuery';
+import { getTokenAssetQueryKey } from './token-asset-query';
 import { useTokenAssetQueries } from './useTokenAssetQueries';
 
 jest.mock('@metamask/assets-controllers', () => ({

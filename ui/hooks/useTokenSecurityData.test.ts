@@ -4,8 +4,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fetchTokenAssets } from '@metamask/assets-controllers';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
-import { getTokenAssetQueryKey } from './token-asset/tokenAssetQuery';
-import * as fetchTokenAssetModule from './token-asset/fetchTokenAsset';
+import { getTokenAssetQueryKey } from './token-asset/token-asset-query';
+import * as tokenAssetBatcherModule from './token-asset/token-asset-batcher';
 import { useTokenSecurityData } from './useTokenSecurityData';
 
 jest.mock('@metamask/assets-controllers', () => ({
@@ -224,7 +224,7 @@ describe('useTokenSecurityData', () => {
     });
 
     const fetchTokenAssetSpy = jest
-      .spyOn(fetchTokenAssetModule, 'fetchTokenAsset')
+      .spyOn(tokenAssetBatcherModule, 'fetchTokenAsset')
       .mockImplementation(async (assetId) => {
         if (assetId === firstAssetId) {
           await firstFetchPromise;

@@ -5,7 +5,7 @@ import { type CaipAssetType } from '@metamask/utils';
 import { getUseExternalServices } from '../../selectors';
 import { getIsSecurityTrustTdpEnabled } from '../../selectors/multichain/feature-flags';
 import { useTokenAssetQueries } from './useTokenAssetQueries';
-import { getUniqueTokenAssetIds } from './tokenAssetQuery';
+import { getUniqueTokenAssetIds } from './token-asset-query';
 
 const emptyResults: Record<string, string | undefined> = {};
 

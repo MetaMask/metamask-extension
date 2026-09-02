@@ -10,6 +10,7 @@ const tokenAssetBatchSize = 25;
 
 async function fetchTokenAssetBatch(assetIds: CaipAssetType[]) {
   const tokens: TokenAsset[] = [];
+  let chunkError: unknown;
 
   for (
     let offset = 0;
@@ -17,10 +18,19 @@ async function fetchTokenAssetBatch(assetIds: CaipAssetType[]) {
     offset += tokenAssetBatchSize
   ) {
     const chunkAssetIds = assetIds.slice(offset, offset + tokenAssetBatchSize);
-    const chunkTokens = await fetchTokenAssets(chunkAssetIds, {
-      includeTokenSecurityData: true,
-    });
-    tokens.push(...chunkTokens);
+
+    try {
+      const chunkTokens = await fetchTokenAssets(chunkAssetIds, {
+        includeTokenSecurityData: true,
+      });
+      tokens.push(...chunkTokens);
+    } catch (error) {
+      chunkError ??= error;
+    }
+  }
+
+  if (chunkError !== undefined && tokens.length === 0) {
+    throw chunkError;
   }
 
   return tokens;

@@ -1,7 +1,7 @@
 import { fetchTokenAssets } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import type { TokenAsset } from '@metamask/assets-controllers';
-import { fetchTokenAsset } from './fetchTokenAsset';
+import { fetchTokenAsset } from './token-asset-batcher';
 
 jest.mock('@metamask/assets-controllers', () => ({
   fetchTokenAssets: jest.fn(),
@@ -22,7 +22,7 @@ const createTokenAsset = (assetId: CaipAssetType): TokenAsset =>
     decimals: 18,
   }) as TokenAsset;
 
-describe('fetchTokenAsset', () => {
+describe('token-asset-batcher', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -51,5 +51,35 @@ describe('fetchTokenAsset', () => {
     mockFetchTokenAssets.mockResolvedValue([]);
 
     await expect(fetchTokenAsset(usdcAssetId)).resolves.toBeNull();
+  });
+
+  it('resolves tokens from successful chunks when a later chunk fails', async () => {
+    const assetIds = Array.from(
+      { length: 26 },
+      (_, index) => `eip155:1/erc20:0x${String(index).padStart(40, '0')}`,
+    ) as CaipAssetType[];
+
+    mockFetchTokenAssets
+      .mockResolvedValueOnce(
+        assetIds.slice(0, 25).map((assetId) => createTokenAsset(assetId)),
+      )
+      .mockRejectedValueOnce(new Error('Token API unavailable'));
+
+    const results = await Promise.all(
+      assetIds.map((assetId) => fetchTokenAsset(assetId)),
+    );
+
+    expect(mockFetchTokenAssets).toHaveBeenCalledTimes(2);
+    expect(results[0]?.assetId).toBe(assetIds[0]);
+    expect(results[24]?.assetId).toBe(assetIds[24]);
+    expect(results[25]).toBeNull();
+  });
+
+  it('rejects when every chunk fails', async () => {
+    mockFetchTokenAssets.mockRejectedValue(new Error('Token API unavailable'));
+
+    await expect(fetchTokenAsset(usdcAssetId)).rejects.toThrow(
+      'Token API unavailable',
+    );
   });
 });

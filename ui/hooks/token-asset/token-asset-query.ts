@@ -2,22 +2,18 @@ import { MINUTE } from '@metamask/controller-utils';
 import { type CaipAssetType } from '@metamask/utils';
 import { normalizeTokenAssetId } from '#shared/lib/asset-utils';
 
-const tokenAssetQueryKeyRoot = [
-  'metamask-extension',
-  'tokenAsset',
-  'v1',
-] as const;
+const queryKeyRoot = ['metamask-extension', 'tokenAsset', 'v1'] as const;
 
 const cacheTimeMs = 15 * MINUTE;
 
-export const tokenAssetGcTimeMs = cacheTimeMs;
-export const tokenAssetStaleTimeMs = cacheTimeMs;
+export const queryGcTimeMs = cacheTimeMs;
+export const queryStaleTimeMs = cacheTimeMs;
 
 export const getTokenAssetQueryKey = (assetId: CaipAssetType) =>
-  [...tokenAssetQueryKeyRoot, normalizeTokenAssetId(assetId)] as const;
+  [...queryKeyRoot, normalizeTokenAssetId(assetId)] as const;
 
 export const getDisabledTokenAssetQueryKey = () =>
-  [...tokenAssetQueryKeyRoot, 'disabled'] as const;
+  [...queryKeyRoot, 'disabled'] as const;
 
 export function getUniqueTokenAssetIds(
   assetIds: CaipAssetType[],
@@ -26,7 +22,5 @@ export function getUniqueTokenAssetIds(
     return [];
   }
 
-  return [
-    ...new Set(assetIds.map((assetId) => normalizeTokenAssetId(assetId))),
-  ].sort() as CaipAssetType[];
+  return Array.from(new Set(assetIds.map(normalizeTokenAssetId))).toSorted();
 }

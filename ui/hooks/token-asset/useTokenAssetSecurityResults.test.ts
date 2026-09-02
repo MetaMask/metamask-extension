@@ -6,7 +6,7 @@ import type { CaipAssetType } from '@metamask/utils';
 import type { TokenAsset } from '@metamask/assets-controllers';
 import { getUseExternalServices } from '../../selectors';
 import { getIsSecurityTrustTdpEnabled } from '../../selectors/multichain/feature-flags';
-import { getTokenAssetQueryKey } from './tokenAssetQuery';
+import { getTokenAssetQueryKey } from './token-asset-query';
 import { useTokenAssetSecurityResults } from './useTokenAssetSecurityResults';
 
 jest.mock('@metamask/assets-controllers', () => ({

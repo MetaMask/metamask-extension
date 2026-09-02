@@ -1,4 +1,4 @@
-import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import { Box } from '@metamask/design-system-react';
 import React from 'react';
 import { TokenFiatDisplayInfo } from '../../types';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';

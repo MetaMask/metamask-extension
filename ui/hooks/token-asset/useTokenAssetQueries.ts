@@ -2,13 +2,13 @@ import { useMemo } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import type { TokenAsset } from '@metamask/assets-controllers';
 import { type CaipAssetType } from '@metamask/utils';
-import { fetchTokenAsset } from './fetchTokenAsset';
+import { fetchTokenAsset } from './token-asset-batcher';
 import {
   getTokenAssetQueryKey,
   getUniqueTokenAssetIds,
-  tokenAssetGcTimeMs,
-  tokenAssetStaleTimeMs,
-} from './tokenAssetQuery';
+  queryGcTimeMs,
+  queryStaleTimeMs,
+} from './token-asset-query';
 
 type Props<TSelected> = {
   assetIds: CaipAssetType[];
@@ -39,8 +39,8 @@ export function useTokenAssetQueries<TSelected = TokenAsset | null>({
         queryFn: () => fetchTokenAsset(assetId),
         enabled,
         select,
-        staleTime: tokenAssetStaleTimeMs,
-        gcTime: tokenAssetGcTimeMs,
+        staleTime: queryStaleTimeMs,
+        gcTime: queryGcTimeMs,
         refetchOnMount: false,
         refetchOnWindowFocus: false,
       })),

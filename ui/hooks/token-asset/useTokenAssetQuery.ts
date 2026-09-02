@@ -2,13 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 import type { TokenAsset } from '@metamask/assets-controllers';
 import { isCaipAssetType, type CaipAssetType } from '@metamask/utils';
 import { normalizeTokenAssetId } from '#shared/lib/asset-utils';
-import { fetchTokenAsset } from './fetchTokenAsset';
+import { fetchTokenAsset } from './token-asset-batcher';
 import {
   getDisabledTokenAssetQueryKey,
   getTokenAssetQueryKey,
-  tokenAssetGcTimeMs,
-  tokenAssetStaleTimeMs,
-} from './tokenAssetQuery';
+  queryGcTimeMs,
+  queryStaleTimeMs,
+} from './token-asset-query';
 
 type Props = {
   assetId?: CaipAssetType | string | null;
@@ -30,8 +30,8 @@ export const useTokenAssetQuery = ({
       : getDisabledTokenAssetQueryKey(),
     queryFn: () => fetchTokenAsset(normalizedAssetId as CaipAssetType),
     enabled: enabled && Boolean(normalizedAssetId) && fetchOnMiss,
-    staleTime: tokenAssetStaleTimeMs,
-    gcTime: tokenAssetGcTimeMs,
+    staleTime: queryStaleTimeMs,
+    gcTime: queryGcTimeMs,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
