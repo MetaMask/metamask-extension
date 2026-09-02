@@ -7,6 +7,132 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.46.1]
+
+### Fixed
+
+- Fixed spam tokens persisting in the wallet by cleaning up low-occurrence ERC-20 tokens on unlock (#45844)
+- Fixed bridge quotes to sort by total cost and display cost, so the lowest-cost quote is ranked first (#45875)
+
+## [13.46.0]
+
+### Added
+
+- Added live monthly and lifetime earnings to funded Money Accounts (#45632)
+- Added referral prompt to Variational (#45582)
+- Added new field, `authenticator_id` to AppUnlocked and PasskeySetup metrics (#45623)
+- Added an “Earn on your crypto” section showing eligible assets and projected earnings (#45603)
+- Added a funded Money Home view with earnings and educational content (#45600)
+- Added new field, `authenticator_id` to AppUnlocked and PasskeySetup metrics (#45594)
+- Added a sticky Buy and Swap action bar to the token detail page (#45593)
+- Added persistence for the perps order book panel, so it stays open or closed between visits (#45587)
+- Added money balance hook (#45534)
+- Added the initial Money Home screen with live balance and APY information (#45466)
+- Added the option to withdraw Perps funds to Money account (#45453)
+- Hid Money Account from users in geo-blocked regions (#45653)
+- Simplify mUSD conversion (#45629)
+- Support for adding featured networks when enabling tokens found by address search (#45636)
+- Prevented Perps withdrawals from submitting before a payment quote was ready (#45604)
+
+### Changed
+
+- Improved extension storage efficiency when enumerating StorageService keys (#45510)
+- Improved storage resilience and stability by using IndexedDB for StorageService data (#45685)
+- Updated the withdrawal token picker to say "Receive" and "Search tokens" instead of "Pay with" and "Search for an asset to send" (#45613)
+- Updated security alert titles and messages to describe the flagged risk per attack type and to show the simulated value at risk where available (#45509)
+- Changed address security screening to use the shared PhishingController chain support instead of a hardcoded network list (#45107)
+- Renamed the Agentic CLI notifications category to Agent wallet in Settings (#45540)
+- Rename Dapp Connections global menu item to Permissions and update child page UX (#45461)
+- Patch @metamask/assets-controller to default-track Arc native USDC (#45500)
+- Switch Arc bridge asset id to slip44:5042 (#45270)
+
+### Removed
+
+- Removed Edit Networks screen and preceding summary screen from Permissions menu (#45607)
+- Removed old network manager old (#45602)
+
+### Fixed
+
+- Fixed conflicting transaction fee information on mUSD convert, Perps deposit and money account confirmations, where a fee or "Paid by MetaMask" was shown before an amount was entered (#45659)
+- Fixed the buy provider list showing providers that could not provide a quote (#45657)
+- Fixed a bug that prevented hardware wallet accounts from selecting a token in the MMPay confirmation flow (#45660)
+- Fixed a memory leak that would get worse the longer MetaMask ran (#45650)
+- Fixed ledger gen 5 712 permit signing (#45637)
+- Fixed a bug that prevented hardware wallet accounts from selecting a token in the MMPay confirmation flow (#45648)
+- Fixed a bug that caused all quotes to be unavailable when buying non-EVM assets (#45293)
+- Fixed a bug where the back button on the token detail page navigated to a stale mUSD conversion confirmation screen instead of the home page (#45649)
+- Fixed the Perps available-to-trade percentage showing a truncated decimal on initial load (#45561)
+- Fixed a crash when reopening the extension on a Perps page (#45756)
+- Fixed a bug where the Perps withdrawal confirmation could allow or block a withdrawal based on an out-of-date balance (#45191)
+- Fixed backend-driven extension push notifications failing to register an FCM token on LavaMoat production builds (#45610)
+- Fixed an issue where networks wouldn't properly display fallback URLs (#45601)
+- Fixed the hamburger menu back icon color to match other menu icons (#45429)
+- Stopped enforced simulations from running for wallet-initiated transactions (#45801)
+- Fixed confusing passkey biometrics setup errors by adding informative messages when PRF is not supported (#45802)
+- Fixed deep links to exclude unsigned parameters from the QR code destinations generated for `batch-sell`, `predict`, and `trending` (#45103)
+- Fixed redundant token selection logic when re-selecting the already active payment token in the Pay With modal (#45402)
+- Swap dest asset selection sets src asset (dev) (#45388)
+
+## [13.45.1]
+
+### Fixed
+
+- Fixed transactions from dapps that send a numeric `chainId` being rejected with an "Invalid params" error instead of opening a confirmation (#45774)
+
+## [13.45.0]
+
+### Added
+
+- Added a maximum deposit limit for MetaMask Pay deposit flows based on remote feature flags (#45139)
+- Added 0G network icon and currency symbol (#45153)
+- Added trust signal pills to Dapp connection screen and updated trust signal modal (#45490)
+- Added a details view for Perps orders, trades, and funding payments, and fixed activity list items that opened the wrong screen or did nothing when clicked (#44738)
+- Added an order book layout setting to pin the order book to the left or right of the order entry screen (#45430)
+- Added currency formatting to search results (#45353)
+- Added the network and token logos for Gravity Mainnet (L1) (#45436)
+- Added a fiat/token denomination toggle for source amounts in the swap and bridge flow (#45147)
+- Added support for Somnia (#45089)
+- Added value-based network ordering for eligible Unified Swaps users (#45308)
+- Added status toasts for ramp buy and sell orders (#45186)
+- Migrated to QuoteResponse V2 (phase 1) (#44202)
+- Added ramp buy and sell orders to Activity with order details (#45185)
+- Added a Money Account balance service (#45371)
+- Added the total result count to search (#45298)
+
+### Changed
+
+- Updated `@metamask/eth-json-rpc-middleware` to `^24.0.0` which adds strict validation for `eth_sendTransaction`/`eth_signTransaction` params to prevent malformed requests from bypassing PPOM security scans (#45273)
+- Improved Secret Recovery Phrase backup screen styling and automatically showed confirmation after selecting the quiz words (#45480)
+- Updated the logos for Ape Chain (#45441)
+- Bumped `@metamask/assets-controller` from `^13.1.1` to `^13.1.2` (#45382)
+- Updated edit accounts page UI for dapp connection management and disconnection modal UI (#45363)
+- Updated the mUSD convert CTA to say "Get mUSD" and removed the convert section from the mUSD asset page (#45292)
+- Updated the dapp connection screen to the latest design (#45407)
+- Updated Money Account utilities and configuration (#45295)
+- Reduced logging storage use (#45486)
+
+### Removed
+
+- Removed the permitted network toast shown on dapp connection network switch (#45442)
+- Removed the Permissions tab from Dapp Connection screen (#45197)
+
+### Fixed
+
+- Fixed QR code not being fully scannable in popup mode (#45384)
+- Fixed the swap price impact display and updated related controllers (#45476)
+- Fixed the missing swap no-price banner when price impact is unavailable (#45426)
+- Fixed Ledger reconnect repair showing “Device not detected” when blind signing was disabled instead of prompting to enable blind signing (#45433)
+- Fixed Tabs so keyboard users can switch tabs with arrow keys, Home, and End (#45383)
+- Fixed the swap source amount becoming undefined or uncontrolled after switching tokens (#45469)
+- Fixed institutional wallet onboarding issues by upgrading to snap version 2.0.0 (#45299)
+- Fixed the connection screen to pre-select all enabled networks for MetaMask Connect (EIP-1193 compatible) connection requests, matching the behavior of injected provider connections (#45261)
+- Fixed an issue that prevented importing longer Secret Recovery Phrases when their first 12 words formed a valid phrase (#45391)
+- Fixed gas estimation failing on networks whose RPC nodes reject hex values with leading zeros (such as `0x00`) (#45289)
+- Fixed POL detection on token pages (#45311)
+- Fixed layout jump when pasting a Secret Recovery Phrase during import (#45290)
+- Fixed a bug where the Buy token selection loading spinner could prevent users from navigating back if the token list never loaded (#45318)
+- Fixed component mount state handling to prevent ref issues in StrictMode (#45285)
+
 ## [13.44.0]
 
 ### Added
@@ -2953,7 +3079,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.44.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.46.1...HEAD
+[13.46.1]: https://github.com/MetaMask/metamask-extension/compare/v13.46.0...v13.46.1
+[13.46.0]: https://github.com/MetaMask/metamask-extension/compare/v13.45.1...v13.46.0
+[13.45.1]: https://github.com/MetaMask/metamask-extension/compare/v13.45.0...v13.45.1
+[13.45.0]: https://github.com/MetaMask/metamask-extension/compare/v13.44.0...v13.45.0
 [13.44.0]: https://github.com/MetaMask/metamask-extension/compare/v13.43.0...v13.44.0
 [13.43.0]: https://github.com/MetaMask/metamask-extension/compare/v13.42.0...v13.43.0
 [13.42.0]: https://github.com/MetaMask/metamask-extension/compare/v13.41.0...v13.42.0

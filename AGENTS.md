@@ -57,9 +57,9 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 Read these files for detailed coding standards:
 
 - Controller patterns: `.cursor/rules/mms-controller-guidelines/RULE.md`
-- Unit testing standards: `.cursor/rules/mms-unit-testing/RULE.md`
-- E2E testing standards: `./test/e2e/AGENTS.md`
-- E2E test creation workflow (Agent Skill): `.agents/skills/mms-e2e-testing/SKILL.md`
+- Testing (unit + E2E create/maintain): `.cursor/rules/mms-extension-testing/RULE.md` — primary entrypoint; see `knowledge/extension-testing-layers.md`
+- E2E testing standards (repo index): `./test/e2e/AGENTS.md`
+- E2E create/maintain (nested refs): `.agents/skills/mms-extension-testing/SKILL.md` → `references/e2e.md`
 - CI workflows: `.github/AGENTS.md`
 - Front-end performance:
   - `.cursor/rules/mms-perf-rendering/RULE.md` (rendering performance - start here)
@@ -187,7 +187,7 @@ yarn test:e2e:benchmark    # Performance benchmarks
 - Unit tests should be colocated with source files (`.test.ts`/`.test.tsx`)
 - Always create a test build before running E2E tests
 - Use `--leave-running` to debug failed E2E tests
-- See `.cursor/rules/mms-unit-testing/RULE.md` for testing standards
+- See `.cursor/rules/mms-extension-testing/RULE.md` for testing standards
 
 ### Linting & Formatting
 
@@ -305,7 +305,7 @@ yarn test:e2e:single test/e2e/tests/new-test.spec.js --browser=chrome
 # 1. Identify file type and read relevant guidelines
 # - Controller? Read .cursor/rules/mms-controller-guidelines/RULE.md
 # - React component? Read .cursor/rules/mms-coding-guidelines/RULE.md
-# - Test? Read .cursor/rules/mms-unit-testing/RULE.md
+# - Test? Read .cursor/rules/mms-extension-testing/RULE.md
 
 # 2. Make changes following guidelines
 
@@ -716,7 +716,7 @@ metamask-extension/
 - Unit tests colocated with source files (`.test.ts`)
 - Jest for unit tests, Playwright for E2E
 - Test files organized with `describe` blocks by method/function
-- See `.cursor/rules/mms-unit-testing/RULE.md` for testing patterns
+- See `.cursor/rules/mms-extension-testing/RULE.md` for testing patterns
 
 ### File Modification Patterns
 
@@ -984,7 +984,7 @@ describe('TokensController', () => {
 });
 ```
 
-**Detailed Guidelines:** See `.cursor/rules/mms-unit-testing/RULE.md`
+**Detailed Guidelines:** See `.cursor/rules/mms-extension-testing/RULE.md`
 
 ### E2E Tests
 
@@ -1693,8 +1693,8 @@ Performance Checks (React Components):
 ### Coding Guidelines
 
 - **Controller Patterns:** [.cursor/rules/mms-controller-guidelines/RULE.md](./.cursor/rules/mms-controller-guidelines/RULE.md)
-- **Unit Testing:** [.cursor/rules/mms-unit-testing/RULE.md](./.cursor/rules/mms-unit-testing/RULE.md)
-- **E2E Testing:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
+- **Unit Testing:** [.cursor/rules/mms-extension-testing/RULE.md](./.cursor/rules/mms-extension-testing/RULE.md) → `references/unit.md`
+- **E2E Testing:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md) and [.cursor/rules/mms-extension-testing/RULE.md](./.cursor/rules/mms-extension-testing/RULE.md) → `references/e2e.md`
 - **E2E CI Decision Tree:** [.github/guidelines/E2E_DECISION_TREE.md](./.github/guidelines/E2E_DECISION_TREE.md)
 - **E2E Deprecated Patterns:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
 - **CI Workflows:** [.github/AGENTS.md](./.github/AGENTS.md)
