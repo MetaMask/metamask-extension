@@ -140,7 +140,9 @@ describe('Send flow', function (this: Suite) {
         const activityTab = new ActivityTab(driver);
         await activityTab.checkTxAction({ action: 'Sent SOL' });
         await activityTab.checkTxAmountInActivity('-0.1 SOL', 1);
-        await activityTab.checkConfirmedTxNumberDisplayedInActivity();
+        // 2 confirmed txs: the send + the initial funding airdrop from the
+        // local solana-test-validator (requestAirdrop in the seeder).
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(2);
       },
     );
   });
