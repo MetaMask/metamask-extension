@@ -32,6 +32,21 @@ jest.mock('../../analytics', () => ({
   trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
 }));
 
+// The setup flow is wrapped so the setupAgentWallet tests can assert what the
+// controller forwards into it. When the wrapper has no stubbed return value
+// it delegates to the real flow, so the existing end-to-end tests run
+// unchanged.
+const mockSetupAgentWalletFlow = jest.fn();
+
+jest.mock('./agent-setup-flow', () => {
+  const actual = jest.requireActual('./agent-setup-flow');
+  return {
+    ...actual,
+    setupAgentWallet: (...args: unknown[]) =>
+      mockSetupAgentWalletFlow(...args) ?? actual.setupAgentWallet(...args),
+  };
+});
+
 const buildController = (
   state: Partial<PerpsAgentWalletControllerState> = {},
 ) => {
@@ -470,6 +485,68 @@ describe('PerpsAgentWalletController', () => {
       ).rejects.toThrow();
       expect(controller.canSetupAgentWallet()).toBe(false);
       fetchMock.mockRestore();
+    });
+  });
+
+  describe('setupAgentWallet', () => {
+    it('passes isRotation true to the flow when the account already has an agent', async () => {
+      mockSetupAgentWalletFlow.mockReset();
+      const registration: AgentRegistration = {
+        agentAddress: '0x2222222222222222222222222222222222222222',
+        agentName: 'metamask-perps',
+        masterAccountAddress: MASTER,
+        createdAt: 1_700_000_000_000,
+      };
+      const { controller, messenger } = buildController({
+        agentsByAccount: { [MASTER]: registration },
+      });
+      mockSetupAgentWalletFlow.mockResolvedValue({
+        agentAddress: '0x3333333333333333333333333333333333333333',
+      });
+
+      await controller.setupAgentWallet({
+        masterAccountAddress: MASTER,
+        isTestnet: false,
+        password: PASSWORD,
+      });
+
+      expect(mockSetupAgentWalletFlow).toHaveBeenCalledTimes(1);
+      expect(mockSetupAgentWalletFlow).toHaveBeenCalledWith(
+        controller,
+        messenger,
+        {
+          masterAccountAddress: MASTER,
+          isTestnet: false,
+          password: PASSWORD,
+          isRotation: true,
+        },
+      );
+    });
+
+    it('passes isRotation false to the flow when the account has no agent', async () => {
+      mockSetupAgentWalletFlow.mockReset();
+      const { controller, messenger } = buildController();
+      mockSetupAgentWalletFlow.mockResolvedValue({
+        agentAddress: '0x3333333333333333333333333333333333333333',
+      });
+
+      await controller.setupAgentWallet({
+        masterAccountAddress: MASTER,
+        isTestnet: false,
+        password: PASSWORD,
+      });
+
+      expect(mockSetupAgentWalletFlow).toHaveBeenCalledTimes(1);
+      expect(mockSetupAgentWalletFlow).toHaveBeenCalledWith(
+        controller,
+        messenger,
+        {
+          masterAccountAddress: MASTER,
+          isTestnet: false,
+          password: PASSWORD,
+          isRotation: false,
+        },
+      );
     });
   });
 });

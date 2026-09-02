@@ -134,6 +134,7 @@ describe('setupAgentWallet', () => {
       await setupAgentWallet(harness.flowController, harness.messenger, {
         masterAccountAddress: MASTER,
         isTestnet: false,
+        isRotation: false,
         password: PASSWORD,
       });
 
@@ -146,6 +147,8 @@ describe('setupAgentWallet', () => {
             category: 'Perps',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             is_testnet: false,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_rotation: false,
           },
         }),
       );
@@ -158,8 +161,56 @@ describe('setupAgentWallet', () => {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             is_testnet: false,
             // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_rotation: false,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             trading_wallet_ready: true,
           },
+        }),
+      );
+    });
+
+    it('reports is_rotation true when a registration already exists', async () => {
+      mockFetchOk();
+      // A registration already present means this run is a rotation; the
+      // controller computes isRotation from state.agentsByAccount and passes
+      // it into the flow opts, which the metrics must carry.
+      const harness = buildHarness({
+        agentsByAccount: {
+          [MASTER]: {
+            agentAddress: '0x2222222222222222222222222222222222222222',
+            agentName: 'metamask-perps',
+            masterAccountAddress: MASTER,
+            createdAt: 1_700_000_000_000,
+          },
+        },
+      });
+
+      await setupAgentWallet(harness.flowController, harness.messenger, {
+        masterAccountAddress: MASTER,
+        isTestnet: false,
+        password: PASSWORD,
+        isRotation: true,
+      });
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(2);
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          name: 'Perp Agent Setup Started',
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_rotation: true,
+          }),
+        }),
+      );
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          name: 'Perp Agent Setup Completed',
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_rotation: true,
+          }),
         }),
       );
     });
@@ -175,6 +226,7 @@ describe('setupAgentWallet', () => {
         setupAgentWallet(harness.flowController, harness.messenger, {
           masterAccountAddress: MASTER,
           isTestnet: false,
+          isRotation: false,
           password: 'wrong password',
         }),
       ).rejects.toThrow(AgentSetupRejectionError);
@@ -190,6 +242,8 @@ describe('setupAgentWallet', () => {
             failure_category: 'rejection',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             is_testnet: false,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_rotation: false,
           },
         }),
       );
@@ -206,6 +260,7 @@ describe('setupAgentWallet', () => {
         setupAgentWallet(harness.flowController, harness.messenger, {
           masterAccountAddress: MASTER,
           isTestnet: false,
+          isRotation: false,
           password: PASSWORD,
         }),
       ).rejects.toThrow(AgentSetupRejectionError);
@@ -231,6 +286,7 @@ describe('setupAgentWallet', () => {
         setupAgentWallet(harness.flowController, harness.messenger, {
           masterAccountAddress: MASTER,
           isTestnet: false,
+          isRotation: false,
           password: PASSWORD,
         }),
       ).rejects.toThrow(AgentSetupSubmissionError);
@@ -258,6 +314,7 @@ describe('setupAgentWallet', () => {
         setupAgentWallet(harness.flowController, harness.messenger, {
           masterAccountAddress: MASTER,
           isTestnet: false,
+          isRotation: false,
           password: PASSWORD,
         }),
       ).rejects.toThrow(AgentSetupSubmissionError);
@@ -297,6 +354,7 @@ describe('setupAgentWallet', () => {
         {
           masterAccountAddress: MASTER,
           isTestnet: false,
+          isRotation: false,
           password: PASSWORD,
         },
       );
@@ -422,6 +480,7 @@ describe('setupAgentWallet', () => {
       const result = await setupAgentWallet(harness.flowController, harness.messenger, {
         masterAccountAddress: MASTER,
         isTestnet: false,
+        isRotation: false,
         password: PASSWORD,
       });
 
@@ -454,6 +513,7 @@ describe('setupAgentWallet', () => {
       const result = await setupAgentWallet(harness.flowController, harness.messenger, {
         masterAccountAddress: MASTER,
         isTestnet: false,
+        isRotation: false,
         password: PASSWORD,
       });
 
@@ -494,6 +554,7 @@ describe('setupAgentWallet', () => {
         setupAgentWallet(harness.flowController, harness.messenger, {
           masterAccountAddress: MASTER,
           isTestnet: false,
+          isRotation: false,
           password: 'wrong password',
         }),
       ).rejects.toThrow(new AgentSetupRejectionError('Incorrect password'));
@@ -518,6 +579,7 @@ describe('setupAgentWallet', () => {
         setupAgentWallet(harness.flowController, harness.messenger, {
           masterAccountAddress: MASTER,
           isTestnet: false,
+          isRotation: false,
           password: PASSWORD,
         }),
       ).rejects.toThrow(new AgentSetupRejectionError('Master signature rejected'));
@@ -546,6 +608,7 @@ describe('setupAgentWallet', () => {
         setupAgentWallet(harness.flowController, harness.messenger, {
           masterAccountAddress: MASTER,
           isTestnet: false,
+          isRotation: false,
           password: PASSWORD,
         }),
       ).rejects.toThrow(AgentSetupSubmissionError);
@@ -583,6 +646,7 @@ describe('setupAgentWallet', () => {
         setupAgentWallet(harness.flowController, harness.messenger, {
           masterAccountAddress: MASTER,
           isTestnet: false,
+          isRotation: false,
           password: PASSWORD,
         }),
       ).rejects.toThrow(AgentSetupSubmissionError);
@@ -607,6 +671,7 @@ describe('setupAgentWallet', () => {
         setupAgentWallet(harness.flowController, harness.messenger, {
           masterAccountAddress: MASTER,
           isTestnet: false,
+          isRotation: false,
           password: PASSWORD,
         }),
       ).rejects.toThrow(

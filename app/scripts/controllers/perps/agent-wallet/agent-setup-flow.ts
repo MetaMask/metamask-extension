@@ -98,6 +98,8 @@ function splitSignature(signature: string): { r: string; s: string; v: 27 | 28 }
  * @param opts.masterAccountAddress - The master account the agent is created for.
  * @param opts.isTestnet - Whether the agent targets Hyperliquid testnet.
  * @param opts.password - The wallet password (gates encryption of the agent key).
+ * @param opts.isRotation - Whether this run replaces an existing agent
+ * registration (rotation); carried on every setup metric as `is_rotation`.
  * @returns The activated agent address.
  */
 export async function setupAgentWallet(
@@ -109,7 +111,12 @@ export async function setupAgentWallet(
   // types and whose response union is not always a Promise (strictFunctionTypes
   // checks property function types strictly). Every call below is awaited.
   messenger: { call(a: string, ...args: unknown[]): unknown },
-  opts: { masterAccountAddress: string; isTestnet: boolean; password: string },
+  opts: {
+    masterAccountAddress: string;
+    isTestnet: boolean;
+    password: string;
+    isRotation: boolean;
+  },
 ): Promise<{ agentAddress: `0x${string}` }> {
   // Password gates encryption of the agent key; verify against the vault first.
   try {
@@ -120,12 +127,16 @@ export async function setupAgentWallet(
       failure_category: 'rejection',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       is_testnet: opts.isTestnet,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_rotation: opts.isRotation,
     });
     throw new AgentSetupRejectionError('Incorrect password');
   }
   trackAgentSetupEvent(MetaMetricsEventName.PerpsAgentSetupStarted, {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     is_testnet: opts.isTestnet,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    is_rotation: opts.isRotation,
   });
   const handle = await controller.beginSetup(opts.masterAccountAddress);
   const agentName = 'metamask-perps';
@@ -144,6 +155,8 @@ export async function setupAgentWallet(
       failure_category: 'rejection',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       is_testnet: opts.isTestnet,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_rotation: opts.isRotation,
     });
     throw new AgentSetupRejectionError('Master signature rejected');
   }
@@ -160,6 +173,8 @@ export async function setupAgentWallet(
       failure_category: 'submission',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       is_testnet: opts.isTestnet,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_rotation: opts.isRotation,
     });
     throw err;
   }
@@ -183,6 +198,8 @@ export async function setupAgentWallet(
       failure_category: 'submission',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       is_testnet: opts.isTestnet,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_rotation: opts.isRotation,
     });
     throw new AgentSetupSubmissionError(`submission failed: ${String(err)}`);
   }
@@ -193,6 +210,8 @@ export async function setupAgentWallet(
       failure_category: 'submission',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       is_testnet: opts.isTestnet,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_rotation: opts.isRotation,
     });
     throw new AgentSetupSubmissionError(JSON.stringify(json));
   }
@@ -217,6 +236,8 @@ export async function setupAgentWallet(
   trackAgentSetupEvent(MetaMetricsEventName.PerpsAgentSetupCompleted, {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     is_testnet: opts.isTestnet,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    is_rotation: opts.isRotation,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     trading_wallet_ready: tradingWalletReady,
   });

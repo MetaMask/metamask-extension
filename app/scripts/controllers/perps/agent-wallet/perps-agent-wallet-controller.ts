@@ -336,7 +336,16 @@ export class PerpsAgentWalletController extends BaseController<
     isTestnet: boolean;
     password: string;
   }): Promise<{ agentAddress: `0x${string}` }> {
-    const result = await setupAgentWallet(this, this.messenger, params);
+    // A registration already present means this run is a rotation: the new
+    // same-name approveAgent auto-replaces the old agent on Hyperliquid
+    // (name-collision pruning), and the fresh keypair enforces never-reuse.
+    const isRotation = Boolean(
+      this.state.agentsByAccount[params.masterAccountAddress],
+    );
+    const result = await setupAgentWallet(this, this.messenger, {
+      ...params,
+      isRotation,
+    });
     // A completed setup proves the flow's password verification succeeded,
     // so agent setup is possible in this session even if the unlock used an
     // encryption key.
