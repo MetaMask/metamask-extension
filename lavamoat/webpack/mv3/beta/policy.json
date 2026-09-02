@@ -3906,6 +3906,7 @@
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
+        "console.warn": true,
         "document.visibilityState": true,
         "removeEventListener": true,
         "setInterval": true,
