@@ -10,6 +10,7 @@ import thunk from 'redux-thunk';
 import { CaipChainId, Hex } from '@metamask/utils';
 import type { AccountGroupAssets, Asset } from '@metamask/assets-controllers';
 import { useTokenAssetSecurityResults } from '#ui/hooks/token-asset/useTokenAssetSecurityResults';
+import type { RWATokenLike } from '../../../../pages/bridge/hooks/useRWAToken';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import {
   MetaMetricsEventCategory,
@@ -126,6 +127,17 @@ jest.mock('#ui/hooks/token-asset/useTokenAssetSecurityResults', () => ({
   useTokenAssetSecurityResults: jest.fn(() => ({})),
 }));
 
+const mockIsStockToken = jest.fn<boolean, [RWATokenLike | undefined]>(
+  () => false,
+);
+
+jest.mock('../../../../pages/bridge/hooks/useRWAToken', () => ({
+  useRWAToken: () => ({
+    isStockToken: mockIsStockToken,
+    isTokenTradingOpen: jest.fn(() => true),
+  }),
+}));
+
 const getMockTrackEvent = () =>
   jest.requireMock('../../../../hooks/useAnalytics')
     .mockTrackEvent as jest.Mock;
@@ -199,6 +211,7 @@ describe('TokenList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     getMockTrackEvent().mockClear();
+    mockIsStockToken.mockReturnValue(false);
 
     jest
       .mocked(getPreferences)
@@ -531,6 +544,36 @@ describe('TokenList', () => {
         'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         'eip155:1/slip44:60',
       ],
+    });
+  });
+
+  it('excludes stock tokens from security fetches', () => {
+    mockIsStockToken.mockImplementation(
+      (token) => token?.rwaData?.instrumentType === 'stock',
+    );
+
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
+      createAccountGroupAssets([
+        createAsset({
+          symbol: 'USDC',
+          fiatBalance: 25,
+          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        }),
+        {
+          ...createAsset({
+            symbol: 'AAPLx',
+            fiatBalance: 50,
+            address: '0x1111111111111111111111111111111111111111',
+          }),
+          rwaData: { instrumentType: 'stock' },
+        },
+      ]),
+    );
+
+    render();
+
+    expect(useTokenAssetSecurityResults).toHaveBeenCalledWith({
+      assetIds: ['eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
     });
   });
 });

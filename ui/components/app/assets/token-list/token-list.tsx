@@ -69,6 +69,7 @@ import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
 import { isMusdToken } from '../../musd/constants';
 import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
 
 type TokenListProps = {
   onTokenClick: (
@@ -237,6 +238,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   );
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const { isStockToken } = useRWAToken();
   const [isLowValueAssetsExpanded, setIsLowValueAssetsExpanded] = useState(
     getInitialLowValueAssetsExpanded,
   );
@@ -350,8 +352,10 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       [
         ...visibleTokens,
         ...(isLowValueAssetsExpanded ? lowValueTokens : []),
-      ].flatMap((token) => (token.caipAssetId ? [token.caipAssetId] : [])),
-    [isLowValueAssetsExpanded, lowValueTokens, visibleTokens],
+      ].flatMap((token) =>
+        token.caipAssetId && !isStockToken(token) ? [token.caipAssetId] : [],
+      ),
+    [isLowValueAssetsExpanded, isStockToken, lowValueTokens, visibleTokens],
   );
 
   const deferredDisplayedAssetIds = useDeferredValue(displayedAssetIds);
