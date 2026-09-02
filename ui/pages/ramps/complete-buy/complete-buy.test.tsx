@@ -6,6 +6,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { getImageForChainId } from '../../../selectors/multichain';
 import RampsCompleteBuyScreen from './complete-buy';
 import type { RampsCompleteBuyLocationState } from './types';
 
@@ -30,13 +31,7 @@ jest.mock('../../../hooks/ramps/useRampsScreenViewed', () => ({
 
 jest.mock('../../../selectors/multichain', () => ({
   ...jest.requireActual('../../../selectors/multichain'),
-  getImageForChainId: () => 'https://example.com/network.png',
-}));
-
-jest.mock('../../../ducks/bridge/utils', () => ({
-  ...jest.requireActual('../../../ducks/bridge/utils'),
-  getMaybeHexChainId: (chainId?: string) =>
-    chainId?.startsWith('eip155:') ? '0x1' : undefined,
+  getImageForChainId: jest.fn(() => 'https://example.com/network.png'),
 }));
 
 jest.mock('../../../components/app/transaction/account-name', () => ({
@@ -117,5 +112,25 @@ describe('RampsCompleteBuyScreen', () => {
     fireEvent.click(screen.getByTestId('ramps-complete-buy-back-to-wallet'));
 
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+  });
+
+  it('resolves the network badge from a non-EVM CAIP chain id', () => {
+    mockLocationState = {
+      ...completeBuyState,
+      tokenSymbol: 'SOL',
+      tokenIconUrl: 'https://example.com/sol.png',
+      tokenChainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    };
+
+    const { container } = renderWithProvider(
+      <RampsCompleteBuyScreen />,
+      createStore(),
+      '/ramps/complete-buy',
+    );
+
+    expect(container).toMatchSnapshot();
+    expect(getImageForChainId).toHaveBeenCalledWith(
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    );
   });
 });

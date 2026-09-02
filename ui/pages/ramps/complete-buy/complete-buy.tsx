@@ -21,7 +21,6 @@ import {
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { AccountName } from '../../../components/app/transaction/account-name';
-import { getMaybeHexChainId } from '../../../ducks/bridge/utils';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
@@ -74,9 +73,8 @@ export default function RampsCompleteBuyScreen() {
         })
       : undefined;
 
-  const hexChainId = getMaybeHexChainId(state.tokenChainId);
-  const networkImageUrl = hexChainId
-    ? getImageForChainId(hexChainId)
+  const networkImageUrl = state.tokenChainId
+    ? getImageForChainId(state.tokenChainId)
     : undefined;
 
   const detailRows: { label: string; value: ReactNode; testId: string }[] = [
