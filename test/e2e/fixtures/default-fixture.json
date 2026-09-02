@@ -188,7 +188,6 @@
       "browserEnvironment": {
         "browser": "chrome"
       },
-      "canTrackWalletFundsObtained": false,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
