@@ -35,9 +35,9 @@ describe('Transaction activity list', function (this: Suite) {
         await homePage.goToActivityList();
 
         const activityTab = new ActivityTab(driver);
-        await activityTab.checkNoFailedTransactions();
-        await activityTab.checkTxAction({ action: 'Sent SOL', confirmedTx: 1 });
+        await activityTab.checkTxAction({ action: 'Sent SOL' });
         await activityTab.checkTxAmountInActivity('-0.007079 SOL', 1);
+        await activityTab.checkNoFailedTransactions();
         await activityTab.clickOnActivity(1);
         const transactionDetails = new TransactionDetailsPage(driver);
         await transactionDetails.checkStatusByTestId('success');
