@@ -142,9 +142,11 @@ describe('PerpsTopMovers', () => {
         ),
       );
 
-      expect(screen.getByTestId('perps-top-movers-list')).toHaveClass(
-        'overflow-x-auto',
-      );
+      const list = screen.getByTestId('perps-top-movers-list');
+
+      expect(list).toHaveClass('overflow-x-auto');
+      expect(list).not.toHaveClass('px-4');
+      expect(list.firstElementChild).toHaveClass('w-max', 'px-4');
       expect(screen.getByTestId('perps-top-movers-list-row-0')).toHaveClass(
         'w-max',
         'flex-nowrap',

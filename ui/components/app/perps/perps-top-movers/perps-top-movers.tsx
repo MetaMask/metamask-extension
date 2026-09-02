@@ -240,30 +240,34 @@ export const PerpsTopMovers = ({
           ))}
         </Box>
       ) : (
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          gap={3}
-          className="overflow-x-auto px-4"
-          data-testid="perps-top-movers-list"
-        >
-          {pillRows.map((row, rowIndex) => (
-            <Box
-              key={`perps-top-movers-row-${rowIndex}`}
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
-              gap={2}
-              className="w-max flex-nowrap"
-              data-testid={`perps-top-movers-list-row-${rowIndex}`}
-            >
-              {row.map((market) => (
-                <PerpsTopMoverPill
-                  key={market.symbol}
-                  market={market}
-                  onPress={handleMarketClick}
-                />
-              ))}
-            </Box>
-          ))}
+        <Box className="overflow-x-auto" data-testid="perps-top-movers-list">
+          {/* Padding lives on the scroll content, matching mobile's
+              PillScrollList. On a flex overflow container, px-4 on the
+              scroller itself is dropped at the inline end. */}
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            gap={3}
+            className="w-max px-4"
+          >
+            {pillRows.map((row, rowIndex) => (
+              <Box
+                key={`perps-top-movers-row-${rowIndex}`}
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                gap={2}
+                className="w-max flex-nowrap"
+                data-testid={`perps-top-movers-list-row-${rowIndex}`}
+              >
+                {row.map((market) => (
+                  <PerpsTopMoverPill
+                    key={market.symbol}
+                    market={market}
+                    onPress={handleMarketClick}
+                  />
+                ))}
+              </Box>
+            ))}
+          </Box>
         </Box>
       )}
     </Box>
