@@ -2,7 +2,9 @@ import type { Expect } from './type-test-utils';
 import type {
   ControllerStatePropertiesEnumerated,
   FlattenedBackgroundStateProxy,
+  ControllerStateTypesMerged,
 } from './background';
+import type { IsEquivalent } from './type-level-utils';
 
 type Describe_FlattenedBackgroundStateProxy = [
   /**
@@ -17,4 +19,10 @@ type Describe_FlattenedBackgroundStateProxy = [
     FlattenedBackgroundStateProxy,
     { isInitialized: boolean } & ControllerStatePropertiesEnumerated
   >,
+  IsEquivalent<
+    ControllerStatePropertiesEnumerated,
+    ControllerStateTypesMerged
+  > extends true
+    ? true
+    : never,
 ];
