@@ -19,10 +19,10 @@ type Describe_FlattenedBackgroundStateProxy = [
     FlattenedBackgroundStateProxy,
     { isInitialized: boolean } & ControllerStatePropertiesEnumerated
   >,
-  IsEquivalent<
-    ControllerStatePropertiesEnumerated,
-    ControllerStateTypesMerged
-  > extends true
-    ? true
-    : never,
+  Expect<
+    IsEquivalent<
+      ControllerStatePropertiesEnumerated,
+      ControllerStateTypesMerged
+    >
+  >,
 ];
