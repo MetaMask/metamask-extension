@@ -9,7 +9,10 @@ import {
 
 import { BadgeWrapper } from './badge-wrapper';
 import { AvatarNetwork, AvatarNetworkSize } from '../avatar-network';
-import { AvatarAccount } from '@metamask/design-system-react';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '@metamask/design-system-react';
 
 type BadgeWrapperProps = React.ComponentProps<typeof BadgeWrapper>;
 
@@ -18,6 +21,7 @@ export default {
   component: BadgeWrapper,
   tags: ['autodocs'],
   parameters: {
+    layout: 'centered',
     docs: {
       description: {
         component:
@@ -65,7 +69,10 @@ export const DefaultStory: StoryObj<typeof BadgeWrapper> = {
       {args.children ? (
         args.children
       ) : (
-        <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" />
+        <AvatarAccount
+          address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+          size={AvatarAccountSize.Lg}
+        />
       )}
     </BadgeWrapper>
   ),

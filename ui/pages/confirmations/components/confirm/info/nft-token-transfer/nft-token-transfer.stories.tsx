@@ -1,6 +1,11 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { getMockTokenTransferConfirmState } from '../../../../../../../test/data/confirmations/helper';
+import { TransactionType } from '@metamask/transaction-controller';
+import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
+import {
+  genUnapprovedTokenTransferConfirmation,
+  TRANSFER_FROM_TRANSACTION_DATA,
+} from '../../../../../../../test/data/confirmations/token-transfer';
 import { Box } from '../../../../../../components/component-library';
 import {
   AlignItems,
@@ -14,7 +19,19 @@ import { DappSwapContextProvider } from '../../../../context/dapp-swap';
 import { GasFeeModalContextProvider } from '../../../../context/gas-fee-modal';
 import NFTTokenTransferInfo from './nft-token-transfer';
 
-const store = configureStore(getMockTokenTransferConfirmState({}));
+const nftTransferConfirmation = genUnapprovedTokenTransferConfirmation({});
+
+const store = configureStore(
+  getMockConfirmStateForTransaction({
+    ...nftTransferConfirmation,
+    type: TransactionType.tokenMethodTransferFrom,
+    txParams: {
+      ...nftTransferConfirmation.txParams,
+      data: TRANSFER_FROM_TRANSACTION_DATA,
+      value: '0x0',
+    },
+  }),
+);
 
 const Story = {
   title: 'Components/App/Confirm/info/NFTTransferInfo',
