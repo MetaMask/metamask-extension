@@ -2,6 +2,10 @@ import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confi
 import mockState from '../../../../test/data/mock-state.json';
 import useConfirmationAlerts from './useConfirmationAlerts';
 
+jest.mock('@metamask/react-data-query', () => ({
+  useQuery: () => ({ data: undefined, isLoading: false, isError: false }),
+}));
+
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
   return {

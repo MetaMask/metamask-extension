@@ -1149,7 +1149,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       {
         scope: {
           type: 'threshold',
-          value: 0.5,
+          value: 1,
         },
         thresholdName: 'control',
         thresholdVersion: 2,
@@ -1180,7 +1180,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       {
         scope: {
           type: 'threshold',
-          value: 1,
+          value: 0,
         },
         thresholdName: 'treatment',
         thresholdVersion: 2,
@@ -2336,14 +2336,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         name: 'control',
         scope: {
           type: 'threshold',
-          value: 0.5,
+          value: 1,
         },
       },
       {
         name: 'treatment',
         scope: {
           type: 'threshold',
-          value: 1,
+          value: 0,
         },
       },
     ],
@@ -2359,14 +2359,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         name: 'control',
         scope: {
           type: 'threshold',
-          value: 0.95,
+          value: 1,
         },
       },
       {
         name: 'treatment',
         scope: {
           type: 'threshold',
-          value: 1,
+          value: 0,
         },
       },
     ],
@@ -3122,7 +3122,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
             name: 'treatment',
             scope: {
               type: 'threshold',
-              value: 1,
+              value: 0,
             },
           },
         ],
