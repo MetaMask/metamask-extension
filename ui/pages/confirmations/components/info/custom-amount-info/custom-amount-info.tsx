@@ -33,6 +33,8 @@ import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transac
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomaticTransactionPayToken';
+import { useDefaultPaySelectedSection } from '../../../hooks/pay/useDefaultPaySelectedSection';
+import { useIsMoneyAccountFlagDefault } from '../../../hooks/pay/useIsMoneyAccountFlagDefault';
 import { useTransactionPayPostQuote } from '../../../hooks/pay/useTransactionPayPostQuote';
 import { useTransactionPayWithdraw } from '../../../hooks/pay/useTransactionPayWithdraw';
 import type { SetPayTokenRequest } from '../../../hooks/pay/types';
@@ -126,8 +128,13 @@ export const CustomAmountInfo = React.memo(
     prefillMaxOnLoad,
     preferredToken,
   }: CustomAmountInfoProps) => {
+    const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
+    useDefaultPaySelectedSection();
     useAutomaticTransactionPayToken({
-      disable: Boolean(disablePay) || Boolean(disableAutomaticToken),
+      disable:
+        Boolean(disablePay) ||
+        Boolean(disableAutomaticToken) ||
+        isDefaultMoneyAccount,
       preferredToken,
     });
     // Configures post-quote mode for withdraw flows; no-op for other flows.

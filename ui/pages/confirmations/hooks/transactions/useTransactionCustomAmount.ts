@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { debounce, type DebouncedFunc } from 'lodash';
 import { BigNumber } from 'bignumber.js';
 import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import {
   setIsMaxAmount,
@@ -12,6 +14,11 @@ import {
 } from '../../../../store/controller-actions/transaction-pay-controller';
 import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
+import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
+import {
+  selectPaymentOverrideByTransactionId,
+  type TransactionPayState,
+} from '../../../../selectors/transactionPayController';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 import { useConfirmContext } from '../../context/confirm';
 import { usePayWithNoFeeToken } from '../pay/usePayWithNoFeeToken';
@@ -562,10 +569,34 @@ export function useTransactionCustomAmount({
 }
 
 function usePayTokenBalanceUsd(balanceUsdOverride?: number) {
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
+  const transactionId = transactionMeta?.id ?? '';
+  const paymentOverride = useSelector((state: TransactionPayState) =>
+    selectPaymentOverrideByTransactionId(state, transactionId),
+  );
+  const isMoneyPaymentOverride =
+    paymentOverride === PaymentOverride.MoneyAccount;
+  const { withdrawableFiatRaw } = useMoneyAccountWithdrawableFiat(
+    isMoneyPaymentOverride,
+  );
   const { balanceUsd } = usePayTokenAccountBalance();
 
   if (balanceUsdOverride !== undefined) {
     return balanceUsdOverride;
+  }
+
+  if (isMoneyPaymentOverride) {
+    if (!withdrawableFiatRaw) {
+      return 0;
+    }
+    // ROUND_DOWN to cents before Max/percentage math so we never set an
+    // amount above the spendable withdrawable balance after display rounding.
+    // `round(dp, rm)`, not `decimalPlaces`: this repo pins `bignumber.js@4`
+    // where `decimalPlaces` is a getter that returns the place *count*.
+    return new BigNumber(withdrawableFiatRaw)
+      .round(2, BigNumber.ROUND_DOWN)
+      .toNumber();
   }
 
   return new BigNumber(balanceUsd ?? 0).toNumber();
