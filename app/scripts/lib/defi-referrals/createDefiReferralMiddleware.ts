@@ -2,7 +2,7 @@ import {
   createAsyncMiddleware,
   type AsyncJsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
-import type { Json, PendingJsonRpcResponse } from '@metamask/utils';
+import type { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import log from 'loglevel';
 import { SECOND } from '../../../../shared/constants/time';
 import {
