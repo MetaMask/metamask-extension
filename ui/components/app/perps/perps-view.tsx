@@ -61,6 +61,7 @@ import {
 } from './perps-skeletons';
 import { PerpsSupportLearn } from './perps-support-learn';
 import { PerpsTutorialModal } from './perps-tutorial-modal';
+import { PerpsTopMovers } from './perps-top-movers';
 import { PerpsWatchlist } from './perps-watchlist';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
@@ -107,6 +108,7 @@ export const PerpsView = () => {
     usePerpsLiveOrders();
   const { account, isInitialLoading: accountLoading } = usePerpsLiveAccount();
   const {
+    allMarkets,
     exploreMarkets,
     watchlistMarkets,
     isInitialLoading: marketsLoading,
@@ -491,6 +493,9 @@ export const PerpsView = () => {
 
       {/* Watchlist */}
       <PerpsWatchlist markets={watchlistMarkets} />
+
+      {/* Top movers */}
+      <PerpsTopMovers markets={allMarkets} isLoading={marketsLoading} />
 
       {/* Explore markets */}
       <PerpsExploreMarkets markets={exploreMarkets} />
