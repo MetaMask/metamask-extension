@@ -58,9 +58,8 @@ async function runImportScripts() {
     // eslint-disable-next-line import-x/extensions
     await import('./scripts/background.js');
   } catch (error) {
-    // If background initialization fails before it can schedule the recovery
-    // reload, complete coordination so the UI can show its existing critical
-    // startup error flow.
+    // If importing background.js fails, enable the toolbar action; it and the
+    // manifest-declared side panel can then surface the critical startup error.
     postUpdateReloadCoordinator.complete();
     throw error;
   }

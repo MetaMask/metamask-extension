@@ -1,3 +1,4 @@
+import assert from 'node:assert/strict';
 import { Browser } from 'selenium-webdriver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
@@ -20,14 +21,22 @@ async function areEntryPointsEnabled(driver: Driver): Promise<boolean> {
         return false;
       }
       const sidePanel = await chrome.sidePanel.getOptions({});
+      const sidePanelBehavior = await chrome.sidePanel.getPanelBehavior();
       return await chrome.action.isEnabled() &&
         sidePanel.enabled === true &&
-        sidePanel.path === 'sidepanel.html';
+        sidePanel.path === 'sidepanel.html' &&
+        sidePanelBehavior.openPanelOnActionClick === true;
     `)) as boolean;
   } catch {
     // The worker and its APIs can be briefly unavailable while Chrome starts it.
     return false;
   }
+}
+
+async function isActionPinned(driver: Driver): Promise<boolean> {
+  return (await driver.executeScriptInExtensionServiceWorker(`
+    return (await chrome.action.getUserSettings()).isOnToolbar;
+  `)) as boolean;
 }
 
 async function waitForEntryPoints(driver: Driver): Promise<void> {
@@ -50,10 +59,12 @@ describe('Post-update reload coordination', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await waitForEntryPoints(driver);
+        const wasActionPinned = await isActionPinned(driver);
         await driver.executeScriptInExtensionServiceWorker(
           'globalThis.__reloadExtensionAfterProbe = true;',
         );
         await waitForEntryPoints(driver);
+        assert.equal(await isActionPinned(driver), wasActionPinned);
       },
     );
   });

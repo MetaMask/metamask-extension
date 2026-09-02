@@ -29,11 +29,6 @@ function createCoordinator(isServiceWorkerActivated = false) {
       getManifest: () => ({ version: CURRENT_VERSION }),
       onInstalled: installed,
     },
-    sidePanel: {
-      setOptions: jest
-        .fn<(options: chrome.sidePanel.PanelOptions) => Promise<void>>()
-        .mockResolvedValue(undefined),
-    },
   } as unknown as ConstructorParameters<typeof PostUpdateReloadCoordinator>[0];
   const coordinator = new PostUpdateReloadCoordinator(
     browser,
@@ -113,11 +108,11 @@ describe('PostUpdateReloadCoordinator', () => {
     expect(enableAction).toHaveBeenCalledTimes(1);
   });
 
-  it('retries entry-point enablement when error reporting fails', async () => {
+  it('retries enabling the toolbar action when error reporting fails', async () => {
     jest.useFakeTimers();
     const firstError = new Error('first failure');
     const secondError = new Error('second failure');
-    const onEntryPointEnablementError = jest
+    const onActionEnableError = jest
       .spyOn(console, 'error')
       .mockImplementation(() => undefined)
       .mockImplementationOnce(() => {
@@ -137,14 +132,14 @@ describe('PostUpdateReloadCoordinator', () => {
     await jest.runOnlyPendingTimersAsync();
 
     expect(enableAction).toHaveBeenCalledTimes(3);
-    expect(onEntryPointEnablementError).toHaveBeenNthCalledWith(
+    expect(onActionEnableError).toHaveBeenNthCalledWith(
       1,
-      'MetaMask - Failed to enable extension UI entry points; retrying',
+      'MetaMask - Failed to enable extension toolbar action; retrying',
       firstError,
     );
-    expect(onEntryPointEnablementError).toHaveBeenNthCalledWith(
+    expect(onActionEnableError).toHaveBeenNthCalledWith(
       2,
-      'MetaMask - Failed to enable extension UI entry points; retrying',
+      'MetaMask - Failed to enable extension toolbar action; retrying',
       secondError,
     );
   });

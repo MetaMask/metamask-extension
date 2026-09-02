@@ -10,5 +10,8 @@
     "matches": ["http://*/*", "https://*/*"],
     "ids": ["*"]
   },
-  "minimum_chrome_version": "123"
+  "minimum_chrome_version": "123",
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  }
 }
