@@ -1,3 +1,4 @@
+import type { MarketType } from '@metamask/perps-controller';
 import { renderHookWithProviderTyped } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import type { PerpsMarketData } from '../types';
@@ -23,13 +24,13 @@ const CRYPTO_MARKET = createMarket('BTC');
 
 const createHip3Market = (
   symbol: string,
-  marketType: string,
+  marketType: MarketType,
 ): PerpsMarketData =>
   createMarket(symbol, {
     marketSource: 'xyz',
     isHip3: true,
     marketType,
-  } as Partial<PerpsMarketData>);
+  });
 
 const renderCategories = (markets: PerpsMarketData[]) =>
   renderHookWithProviderTyped(

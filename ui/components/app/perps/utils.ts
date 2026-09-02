@@ -493,11 +493,21 @@ export const isCryptoMarket = (market: PerpsMarketData): boolean => {
 /**
  * Check whether a market belongs to a market category.
  *
- * `crypto` is the main DEX rather than a data-model category, so it is matched
- * on the absence of a `marketSource`; every other category is matched on the
- * controller's own classification. Single source of truth so the Perps tab
- * category pills only offer a category whose destination — the market list,
- * which filters through this same function — actually has markets in it.
+ * One classifier for the whole Extension UI, so the Perps tab category pills
+ * only offer a category whose destination — the market list, which filters
+ * through this same function — actually has markets in it.
+ *
+ * Deliberately NOT the controller's `matchesCategory`, which is the equivalent
+ * classifier at the core level. The two agree on every category except
+ * `crypto`: the controller counts a HIP-3 market explicitly typed
+ * `marketType: 'crypto'` as crypto (`!isHip3Market(m) || m.marketType ===
+ * 'crypto'`), while this keeps the Extension's long-standing `marketSource`
+ * rule and does not. That rule is what the market list's `crypto` filter has
+ * always applied, so swapping in `matchesCategory` here would silently change
+ * which markets the Crypto filter shows — a user-visible behaviour change that
+ * belongs in its own ticket, not in the one that added the pills. Revisit
+ * together with `isCryptoMarket`, which the mobile-extension map lists as a
+ * duplicated-with-mobile utility.
  *
  * @param market - The market data to test.
  * @param category - The market category to test against.

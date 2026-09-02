@@ -53,9 +53,17 @@ const STOCK_MARKET = createMarket('xyz:TSLA', {
   marketSource: 'xyz',
   isHip3: true,
   marketType: 'stock',
-} as Partial<PerpsMarketData>);
+});
 
 const MARKETS = [CRYPTO_MARKET, STOCK_MARKET];
+
+/**
+ * The rail reserves a fixed footprint while loading: this many skeleton pills at
+ * the real pill's height, so nothing below the rail shifts when the categories
+ * arrive. Both loading tests pin these, so a changed footprint fails loudly.
+ */
+const SKELETON_PILL_COUNT = 5;
+const PILL_HEIGHT = 'h-8';
 
 const renderSection = (markets = MARKETS, isLoading = false) =>
   renderWithProvider(
@@ -126,24 +134,26 @@ describe('PerpsMarketCategories', () => {
   });
 
   describe('loading state', () => {
-    it('renders the skeleton rail at the loaded rail height while market data loads', () => {
-      const { unmount } = renderSection([], true);
+    it('reserves the rail height with skeleton pills while market data loads', () => {
+      renderSection([], true);
+
       const skeletonPills = Array.from(
         screen.getByTestId('perps-market-categories-skeleton').children,
       );
 
-      expect(skeletonPills.length).toBeGreaterThan(0);
-      skeletonPills.forEach((pill) => expect(pill).toHaveClass('h-8'));
+      expect(skeletonPills).toHaveLength(SKELETON_PILL_COUNT);
+      skeletonPills.forEach((pill) => expect(pill).toHaveClass(PILL_HEIGHT));
       expect(
         screen.queryByTestId('perps-market-categories-list'),
       ).not.toBeInTheDocument();
+    });
 
-      unmount();
+    it('renders the pills at the reserved skeleton height once market data arrives', () => {
       renderSection();
 
       expect(
         screen.getByTestId('perps-market-categories-pill-crypto'),
-      ).toHaveClass('h-8');
+      ).toHaveClass(PILL_HEIGHT);
       expect(
         screen.queryByTestId('perps-market-categories-skeleton'),
       ).not.toBeInTheDocument();
