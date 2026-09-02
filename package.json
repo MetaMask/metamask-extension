@@ -336,7 +336,16 @@
     "@ledgerhq/context-module/ethers": "^6.15.0",
     "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
     "@metamask/assets-controller@npm:^13.1.0": "patch:@metamask/assets-controller@npm%3A13.1.4#~/.yarn/patches/@metamask-assets-controller-npm-13.1.4-ee83e2c2d8.patch",
-    "@metamask/assets-controller@npm:^13.1.2": "patch:@metamask/assets-controller@npm%3A13.1.4#~/.yarn/patches/@metamask-assets-controller-npm-13.1.4-ee83e2c2d8.patch"
+    "@metamask/assets-controller@npm:^13.1.2": "patch:@metamask/assets-controller@npm%3A13.1.4#~/.yarn/patches/@metamask-assets-controller-npm-13.1.4-ee83e2c2d8.patch",
+    "@metamask/utils@npm:^11.0.1": "patch:@metamask/utils@npm%3A11.12.0#~/.yarn/patches/@metamask-utils-npm-11.12.0-7df3a5b1f9.patch",
+    "@metamask/utils@npm:^11.11.0": "patch:@metamask/utils@npm%3A11.12.0#~/.yarn/patches/@metamask-utils-npm-11.12.0-7df3a5b1f9.patch",
+    "@metamask/utils@npm:^11.4.0": "patch:@metamask/utils@npm%3A11.12.0#~/.yarn/patches/@metamask-utils-npm-11.12.0-7df3a5b1f9.patch",
+    "@metamask/utils@npm:^11.9.0": "patch:@metamask/utils@npm%3A11.12.0#~/.yarn/patches/@metamask-utils-npm-11.12.0-7df3a5b1f9.patch",
+    "@metamask/utils@npm:^11.4.2": "patch:@metamask/utils@npm%3A11.12.0#~/.yarn/patches/@metamask-utils-npm-11.12.0-7df3a5b1f9.patch",
+    "@metamask/utils@npm:^11.8.1": "patch:@metamask/utils@npm%3A11.12.0#~/.yarn/patches/@metamask-utils-npm-11.12.0-7df3a5b1f9.patch",
+    "@metamask/utils@npm:^11.0.0": "patch:@metamask/utils@npm%3A11.12.0#~/.yarn/patches/@metamask-utils-npm-11.12.0-7df3a5b1f9.patch",
+    "@metamask/utils@npm:^11.1.0": "patch:@metamask/utils@npm%3A11.12.0#~/.yarn/patches/@metamask-utils-npm-11.12.0-7df3a5b1f9.patch",
+    "@metamask/utils@npm:^11.12.0": "patch:@metamask/utils@npm%3A11.12.0#~/.yarn/patches/@metamask-utils-npm-11.12.0-7df3a5b1f9.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -496,7 +505,7 @@
     "@metamask/transaction-pay-controller": "^27.1.0",
     "@metamask/tron-wallet-snap": "^3.2.0",
     "@metamask/user-operation-controller": "^41.2.5",
-    "@metamask/utils": "^11.11.0",
+    "@metamask/utils": "patch:@metamask/utils@npm%3A11.12.0#~/.yarn/patches/@metamask-utils-npm-11.12.0-7df3a5b1f9.patch",
     "@metamask/wallet": "^11.0.0",
     "@mui/material": "^5.18.0",
     "@mui/system": "^5.18.0",
