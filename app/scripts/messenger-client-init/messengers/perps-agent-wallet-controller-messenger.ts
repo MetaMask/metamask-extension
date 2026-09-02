@@ -20,6 +20,10 @@ import type { RootMessenger } from '../../lib/messenger';
  * agent key). The `KeyringController:lock` event drives clearing of
  * in-memory plaintext.
  *
+ * `PerpsController:prepareTradingWallet` is used by the agent setup flow to
+ * run the trading-readiness steps (unified account enablement, builder fee
+ * approval) immediately after activation.
+ *
  * @param messenger - The root messenger used to create the restricted
  * messenger.
  * @returns A restricted messenger for the PerpsAgentWalletController.
@@ -44,6 +48,7 @@ export function getPerpsAgentWalletControllerMessenger(
       'KeyringController:getState',
       'KeyringController:signTypedMessage',
       'KeyringController:verifyPassword',
+      'PerpsController:prepareTradingWallet',
     ],
     events: ['KeyringController:lock'],
   });

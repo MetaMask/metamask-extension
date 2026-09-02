@@ -7208,6 +7208,9 @@
   "perpsAddToFavorites": {
     "message": "Add to favorites"
   },
+  "perpsAgentWalletApprovingFees": {
+    "message": "Approving trading fees — confirm on your device"
+  },
   "perpsAgentWalletCapabilityLine": {
     "message": "Trade and move funds between your Hyperliquid balances — withdrawals always require your wallet"
   },

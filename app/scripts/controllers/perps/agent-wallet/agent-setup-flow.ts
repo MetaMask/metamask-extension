@@ -1,3 +1,4 @@
+import log from 'loglevel';
 import { createEventBuilder, trackEvent } from '../../analytics';
 import {
   MetaMetricsEventCategory,
@@ -64,7 +65,12 @@ function splitSignature(signature: string): { r: string; s: string; v: 27 | 28 }
  * agent keypair ({@link beginSetup}), has the MASTER account sign the
  * Hyperliquid `approveAgent` EIP-712 typed data via the keyring, submits the
  * action to the exchange, and — on success — activates the agent via
- * {@link completeSetup}.
+ * {@link completeSetup}. After activation it best-effort runs the perps
+ * trading-readiness steps (`PerpsController:prepareTradingWallet`: unified
+ * account enablement, builder fee approval) so hardware wallet users give
+ * every master signature in this one guided session; a readiness failure is
+ * logged and reported in metrics but never fails the setup (the agent is
+ * live, and the builder fee is retried at first order by the provider).
  *
  * Throws {@link AgentSetupRejectionError} when the password is wrong or the
  * master signature is rejected, and {@link AgentSetupSubmissionError} when the
@@ -72,7 +78,8 @@ function splitSignature(signature: string): { r: string; s: string; v: 27 | 28 }
  * {@link failSetup}.
  *
  * Emits the perps agent setup metrics: started (after the password verify),
- * completed (after activation), and failed (anonymously, with a
+ * completed (after the readiness attempt settles, with a
+ * `trading_wallet_ready` property), and failed (anonymously, with a
  * `failure_category` of `rejection` or `submission`).
  *
  * (For hardware wallets, `KeyringController:signTypedMessage` is the same path
@@ -83,8 +90,9 @@ function splitSignature(signature: string): { r: string; s: string; v: 27 | 28 }
  * @param controller.beginSetup - Generates the agent keypair.
  * @param controller.completeSetup - Persists and activates the agent.
  * @param controller.failSetup - Marks an in-flight setup failed.
- * @param messenger - Messenger with `KeyringController:verifyPassword` and
- * `KeyringController:signTypedMessage` access.
+ * @param messenger - Messenger with `KeyringController:verifyPassword`,
+ * `KeyringController:signTypedMessage`, and
+ * `PerpsController:prepareTradingWallet` access.
  * @param messenger.call - The messenger call method.
  * @param opts - The setup options.
  * @param opts.masterAccountAddress - The master account the agent is created for.
@@ -192,9 +200,25 @@ export async function setupAgentWallet(
     agentAddress: handle.address, agentName,
     masterAccountAddress: opts.masterAccountAddress, createdAt: Date.now(),
   }, opts.password);
+  // Fold the trading-readiness signatures (builder-fee approval etc.) into
+  // this guided session. Best-effort: the agent is live once completeSetup
+  // resolves, so a readiness failure must never fail the setup — the
+  // provider retries the builder fee at first order (pre-existing behavior).
+  let tradingWalletReady = true;
+  try {
+    await messenger.call('PerpsController:prepareTradingWallet');
+  } catch (err) {
+    tradingWalletReady = false;
+    log.warn(
+      'PerpsAgentWalletController: post-activation trading-readiness preparation failed (builder fee will retry at first order)',
+      err,
+    );
+  }
   trackAgentSetupEvent(MetaMetricsEventName.PerpsAgentSetupCompleted, {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     is_testnet: opts.isTestnet,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    trading_wallet_ready: tradingWalletReady,
   });
   return { agentAddress: handle.address };
 }

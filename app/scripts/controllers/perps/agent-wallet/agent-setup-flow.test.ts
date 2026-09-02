@@ -4,6 +4,7 @@
 
 import type { MessengerActions, MessengerEvents } from '@metamask/messenger';
 import { Messenger } from '@metamask/messenger';
+import log from 'loglevel';
 import { getRootMessenger } from '../../../lib/messenger';
 import { getPerpsAgentWalletControllerMessenger } from '../../../messenger-client-init/messengers/perps-agent-wallet-controller-messenger';
 import {
@@ -36,7 +37,9 @@ const SIGNATURE = `0x${'11'.repeat(32)}${'22'.repeat(32)}1c`;
 const buildHarness = (state: Partial<PerpsAgentWalletControllerState> = {}) => {
   // Real root + restricted messengers; the KeyringController namespace is a
   // child messenger with recorded stubs (mirroring the real KeyringController),
-  // so every keyring call the flow makes is observable and mockable.
+  // so every keyring call the flow makes is observable and mockable. The
+  // PerpsController namespace is stubbed the same way for the post-activation
+  // trading-readiness call.
   const rootMessenger = getRootMessenger<
     MessengerActions<PerpsAgentWalletControllerMessenger>,
     MessengerEvents<PerpsAgentWalletControllerMessenger>
@@ -54,6 +57,15 @@ const buildHarness = (state: Partial<PerpsAgentWalletControllerState> = {}) => {
   keyringMessenger.registerActionHandler(
     'KeyringController:signTypedMessage' as never,
     signTypedMessage as never,
+  );
+  const perpsMessenger = new Messenger({
+    namespace: 'PerpsController',
+    parent: rootMessenger,
+  });
+  const prepareTradingWallet = jest.fn().mockResolvedValue(undefined);
+  perpsMessenger.registerActionHandler(
+    'PerpsController:prepareTradingWallet' as never,
+    prepareTradingWallet as never,
   );
 
   const messenger = getPerpsAgentWalletControllerMessenger(rootMessenger);
@@ -88,6 +100,7 @@ const buildHarness = (state: Partial<PerpsAgentWalletControllerState> = {}) => {
     verifyPassword,
     signTypedMessage,
     failSetup,
+    prepareTradingWallet,
     getHandle: () => handle,
   };
 };
@@ -144,6 +157,8 @@ describe('setupAgentWallet', () => {
             category: 'Perps',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             is_testnet: false,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            trading_wallet_ready: true,
           },
         }),
       );
@@ -396,6 +411,76 @@ describe('setupAgentWallet', () => {
       ).toBe('Testnet');
       const body = JSON.parse(fetchMock.mock.calls[0][1]?.body as string);
       expect(body.action.hyperliquidChain).toBe('Testnet');
+    });
+  });
+
+  describe('trading-readiness preparation', () => {
+    it('calls PerpsController:prepareTradingWallet after completeSetup and reports readiness in the completed metric', async () => {
+      mockFetchOk();
+      const harness = buildHarness();
+
+      const result = await setupAgentWallet(harness.flowController, harness.messenger, {
+        masterAccountAddress: MASTER,
+        isTestnet: false,
+        password: PASSWORD,
+      });
+
+      const handle = harness.getHandle();
+      expect(result).toEqual({ agentAddress: handle?.address });
+      expect(harness.prepareTradingWallet).toHaveBeenCalledTimes(1);
+      // Readiness runs after activation: the agent is already persisted.
+      expect(
+        harness.controller.state.agentsByAccount[MASTER],
+      ).toBeDefined();
+      expect(mockTrackEvent).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          name: 'Perp Agent Setup Completed',
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            trading_wallet_ready: true,
+          }),
+        }),
+      );
+    });
+
+    it('completes the agent setup even when the trading-readiness preparation throws', async () => {
+      mockFetchOk();
+      const harness = buildHarness();
+      harness.prepareTradingWallet.mockRejectedValue(
+        new Error('CLIENT_NOT_INITIALIZED'),
+      );
+      const warnSpy = jest.spyOn(log, 'warn').mockImplementation(() => undefined);
+
+      const result = await setupAgentWallet(harness.flowController, harness.messenger, {
+        masterAccountAddress: MASTER,
+        isTestnet: false,
+        password: PASSWORD,
+      });
+
+      // The agent is live despite the readiness failure.
+      const handle = harness.getHandle();
+      expect(result).toEqual({ agentAddress: handle?.address });
+      expect(harness.controller.state.agentsByAccount[MASTER]).toMatchObject({
+        agentAddress: handle?.address,
+      });
+      expect(harness.controller.state.setupStatusByAccount[MASTER]).toBe(
+        'active',
+      );
+      // Best-effort failure is logged, not thrown, and surfaced in metrics.
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('trading-readiness preparation failed'),
+        expect.any(Error),
+      );
+      expect(mockTrackEvent).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          name: 'Perp Agent Setup Completed',
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            trading_wallet_ready: false,
+          }),
+        }),
+      );
+      warnSpy.mockRestore();
     });
   });
 

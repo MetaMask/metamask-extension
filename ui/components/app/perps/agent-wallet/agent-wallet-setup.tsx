@@ -371,6 +371,16 @@ export const AgentWalletSetup = () => {
                       : t('confirm')}
                   </Button>
                 </Box>
+
+                {isSubmitting && agent ? (
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                    data-testid="perps-agent-wallet-approving-fees"
+                  >
+                    {t('perpsAgentWalletApprovingFees')}
+                  </Text>
+                ) : null}
               </Box>
             </ModalBody>
           </ModalContent>

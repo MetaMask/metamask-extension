@@ -11,6 +11,7 @@ import type {
   KeyringControllerSignTypedMessageAction,
   KeyringControllerVerifyPasswordAction,
 } from '@metamask/keyring-controller';
+import type { PerpsControllerPrepareTradingWalletAction } from '@metamask/perps-controller';
 import type { PerpsAgentWalletController } from './perps-agent-wallet-controller';
 
 /** Registration metadata for a perps agent wallet, keyed by master account. */
@@ -122,13 +123,19 @@ export type PerpsAgentWalletControllerEvents =
 // setup flow (`agent-setup-flow.ts`): `signTypedMessage` (the MASTER account
 // signs the approveAgent typed data) and `verifyPassword` (the password gates
 // encryption of the agent key).
+// The PerpsController allowance is used deliberately by the setup flow to run
+// the trading-readiness steps (unified account enablement, builder fee
+// approval) right after activation, so hardware wallet users give every
+// master signature in one guided session instead of being re-prompted on
+// their first order.
 export type PerpsAgentWalletControllerAllowedActions =
   | PerpsAgentWalletControllerActions
   | KeyringControllerAddNewKeyringAction
   | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerGetStateAction
   | KeyringControllerSignTypedMessageAction
-  | KeyringControllerVerifyPasswordAction;
+  | KeyringControllerVerifyPasswordAction
+  | PerpsControllerPrepareTradingWalletAction;
 
 export type PerpsAgentWalletControllerAllowedEvents =
   | PerpsAgentWalletControllerEvents

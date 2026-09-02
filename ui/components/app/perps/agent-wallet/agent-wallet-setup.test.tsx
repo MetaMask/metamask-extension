@@ -296,6 +296,53 @@ describe('AgentWalletSetup', () => {
       // Retry: confirm stays available.
       expect(screen.getByTestId('perps-agent-wallet-confirm')).toBeEnabled();
     });
+
+    it('shows the approving-fees step while the post-activation readiness call is in flight, then the active row once it settles', async () => {
+      // The agent registration appears (activation done) while the setup
+      // request is still in flight: the flow runs the trading-readiness
+      // steps after completeSetup before resolving. The review auto-opens
+      // for an awaiting-approval status, so the confirm can be driven.
+      let resolveSetup: (value: unknown) => void = () => undefined;
+      mockSubmitRequestToBackground.mockImplementation(
+        (method: string) =>
+          new Promise((resolve) => {
+            if (method === 'perpsCanSetupAgentWallet') {
+              resolve(true);
+            } else if (method === 'perpsSetupAgentWallet') {
+              resolveSetup = resolve;
+            }
+          }) as never,
+      );
+      const store = buildStore({
+        agentsByAccount: { [SELECTED_ADDRESS]: AGENT_REGISTRATION },
+        setupStatusByAccount: { [SELECTED_ADDRESS]: 'awaiting-approval' },
+      });
+      renderWithProvider(<AgentWalletSetup />, store);
+      await screen.findByTestId('perps-agent-wallet-review');
+      fireEvent.change(screen.getByTestId('perps-agent-wallet-password-input'), {
+        target: { value: 'my-secret' },
+      });
+      fireEvent.click(screen.getByTestId('perps-agent-wallet-confirm'));
+
+      // Readiness in flight: step indicator visible, wizard not closed.
+      expect(
+        await screen.findByTestId('perps-agent-wallet-approving-fees'),
+      ).toHaveTextContent(messages.perpsAgentWalletApprovingFees.message);
+      expect(
+        screen.getByTestId('perps-agent-wallet-review'),
+      ).toBeInTheDocument();
+
+      // Settles: indicator gone, active status row shown.
+      resolveSetup({ agentAddress: AGENT_REGISTRATION.agentAddress });
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId('perps-agent-wallet-approving-fees'),
+        ).not.toBeInTheDocument();
+      });
+      expect(
+        screen.getByTestId('perps-agent-wallet-status-active'),
+      ).toBeInTheDocument();
+    });
   });
 
   describe('failed status', () => {

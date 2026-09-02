@@ -79,6 +79,18 @@ export const PerpsAgentWalletControllerInit: MessengerClientInitFunction<
      */
     perpsCanSetupAgentWallet: (): boolean =>
       messengerClient.canSetupAgentWallet(),
+
+    /**
+     * Runs the perps trading-readiness steps (unified account enablement,
+     * builder fee approval) for the active provider and the selected
+     * account. No params: the readiness is network/account scoped inside the
+     * PerpsController. Any required master signature surfaces here — this is
+     * also invoked best-effort by the setup flow right after agent
+     * activation so hardware wallet users sign everything in one session.
+     */
+    perpsPrepareTradingWallet: async (): Promise<void> => {
+      await controllerMessenger.call('PerpsController:prepareTradingWallet');
+    },
   };
 
   return {

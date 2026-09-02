@@ -24,6 +24,7 @@ type AgentWalletInitApi = {
     password: string;
   }) => Promise<{ agentAddress: string }>;
   perpsCanSetupAgentWallet: () => boolean;
+  perpsPrepareTradingWallet: () => Promise<void>;
 };
 
 const buildInitResult = (
@@ -51,6 +52,18 @@ const buildInitResult = (
     'KeyringController:signTypedMessage' as never,
     signTypedMessage as never,
   );
+  // Stub PerpsController namespace (mirrors the real registration) so the
+  // trading-readiness action invoked by the setup flow and the
+  // `perpsPrepareTradingWallet` API entry is observable.
+  const perpsMessenger = new Messenger({
+    namespace: 'PerpsController',
+    parent: rootMessenger,
+  });
+  const prepareTradingWallet = jest.fn().mockResolvedValue(undefined);
+  perpsMessenger.registerActionHandler(
+    'PerpsController:prepareTradingWallet' as never,
+    prepareTradingWallet as never,
+  );
 
   const controllerMessenger =
     getPerpsAgentWalletControllerMessenger(rootMessenger);
@@ -60,7 +73,11 @@ const buildInitResult = (
     initMessenger: undefined,
   });
 
-  return { result, api: result.api as AgentWalletInitApi };
+  return {
+    result,
+    api: result.api as AgentWalletInitApi,
+    prepareTradingWallet,
+  };
 };
 
 describe('PerpsAgentWalletControllerInit', () => {
@@ -69,12 +86,21 @@ describe('PerpsAgentWalletControllerInit', () => {
     expect(result.messengerClient).toBeDefined();
     expect(typeof api.perpsSetupAgentWallet).toBe('function');
     expect(typeof api.perpsCanSetupAgentWallet).toBe('function');
+    expect(typeof api.perpsPrepareTradingWallet).toBe('function');
   });
 
   describe('perpsCanSetupAgentWallet', () => {
     it('returns false for a fresh session', () => {
       const { api } = buildInitResult();
       expect(api.perpsCanSetupAgentWallet()).toBe(false);
+    });
+  });
+
+  describe('perpsPrepareTradingWallet', () => {
+    it('delegates to the PerpsController:prepareTradingWallet action', async () => {
+      const { api, prepareTradingWallet } = buildInitResult();
+      await api.perpsPrepareTradingWallet();
+      expect(prepareTradingWallet).toHaveBeenCalledTimes(1);
     });
   });
 
