@@ -149,13 +149,16 @@ export function useInsufficientPayTokenBalanceAlert({
     return new BigNumber(totals?.fees.sourceNetwork.max.raw ?? '0');
   }, [isLoading, totals]);
 
+  // Money Account → Perps (and other Money payment overrides) may not have a
+  // wallet payToken selected yet while the amount is being typed; balance still
+  // comes from withdrawable money-account fiat, so allow the input check.
   const isInsufficientForInput = useMemo(
     () =>
       !isPostQuote &&
-      payToken &&
+      (Boolean(payToken) || isMoneyPaymentOverride) &&
       balanceUsd !== undefined &&
       totalAmountUsd.gt(balanceUsd),
-    [balanceUsd, isPostQuote, payToken, totalAmountUsd],
+    [balanceUsd, isMoneyPaymentOverride, isPostQuote, payToken, totalAmountUsd],
   );
 
   const isInsufficientForFees = useMemo(() => {

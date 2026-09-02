@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
@@ -26,7 +26,6 @@ import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-token
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountDeposit } from '../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInterest } from '../../hooks/money/useMoneyAccountInterest';
-import { useMoneyAccountWithdrawal } from '../../hooks/money/useMoneyAccountWithdrawal';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
 import { moneyFormatUsd } from '../../helpers/money/format';
@@ -36,6 +35,7 @@ import { MoneyActivityList } from './components/money-activity-list';
 import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards';
 import { MoneyPotentialEarnings } from './components/money-potential-earnings';
 import { MoneyPositionPlaceholder } from './components/money-position-placeholder';
+import { MoneyTransferSheet } from './components/money-transfer-sheet';
 
 const MONEY_FUNDED_BALANCE_THRESHOLD = 0.01;
 const MONEY_ONBOARDING_ARTWORK = './images/money-onboarding-stepper-step-1.png';
@@ -72,6 +72,7 @@ type ActionCardProps = {
   label: string;
   onClick?: () => void;
   disabled?: boolean;
+  testId?: string;
 };
 
 const MoneyActionCard = ({
@@ -79,12 +80,14 @@ const MoneyActionCard = ({
   label,
   onClick,
   disabled,
+  testId,
 }: ActionCardProps) => {
   return (
     <button
       type="button"
       disabled={disabled}
       onClick={onClick}
+      data-testid={testId}
       className="flex h-[76px] flex-1 flex-col items-center justify-center gap-0.5 rounded-xl bg-background-muted disabled:cursor-default disabled:opacity-100"
     >
       <Icon name={icon} size={IconSize.Lg} color={IconColor.IconDefault} />
@@ -102,6 +105,7 @@ const MoneySectionDivider = () => {
 export function MoneyHomePage() {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const [isTransferSheetOpen, setIsTransferSheetOpen] = useState(false);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
   const {
@@ -164,13 +168,12 @@ export function MoneyHomePage() {
       console.error('Failed to initiate money account deposit', error),
     );
   }, [initiateDeposit]);
-  const { initiateWithdrawal, isLoading: isWithdrawalLoading } =
-    useMoneyAccountWithdrawal();
-  const handleSend = useCallback(() => {
-    initiateWithdrawal().catch((error) =>
-      console.error('Failed to initiate money account withdrawal', error),
-    );
-  }, [initiateWithdrawal]);
+  const handleOpenTransferSheet = useCallback(() => {
+    setIsTransferSheetOpen(true);
+  }, []);
+  const handleCloseTransferSheet = useCallback(() => {
+    setIsTransferSheetOpen(false);
+  }, []);
 
   if (isAvailabilityLoading || (availability.isAvailable && isBalanceLoading)) {
     return (
@@ -205,219 +208,230 @@ export function MoneyHomePage() {
   );
 
   return (
-    <main
-      className="min-h-full bg-background-default pb-5"
-      data-testid="money-home-page"
-    >
-      <header className="flex h-14 items-center justify-between px-4">
-        <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
-          {t('money')}
-        </Text>
-        <ButtonIcon
-          iconName={IconName.MoreVertical}
-          ariaLabel={t('moneyMoreOptions')}
-          disabled
-        />
-      </header>
-
-      <div className="flex flex-col gap-2 px-4 pt-2 sm:items-center">
-        <div className="flex w-full max-w-[784px] flex-col gap-1 sm:items-center">
-          <Text
-            variant={TextVariant.DisplayLg}
-            fontWeight={FontWeight.Medium}
-            data-testid="money-balance"
-          >
-            {balanceDisplay}
+    <>
+      <main
+        className="min-h-full bg-background-default pb-5"
+        data-testid="money-home-page"
+      >
+        <header className="flex h-14 items-center justify-between px-4">
+          <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
+            {t('money')}
           </Text>
-          <div className="flex h-6 items-center gap-1">
-            {vaultApyQuery.isLoading && !apyDisplay ? (
-              <Skeleton className="h-4 w-24" />
-            ) : (
-              <>
-                {apyDisplay ? (
+          <ButtonIcon
+            iconName={IconName.MoreVertical}
+            ariaLabel={t('moneyMoreOptions')}
+            disabled
+          />
+        </header>
+
+        <div className="flex flex-col gap-2 px-4 pt-2 sm:items-center">
+          <div className="flex w-full max-w-[784px] flex-col gap-1 sm:items-center">
+            <Text
+              variant={TextVariant.DisplayLg}
+              fontWeight={FontWeight.Medium}
+              data-testid="money-balance"
+            >
+              {balanceDisplay}
+            </Text>
+            <div className="flex h-6 items-center gap-1">
+              {vaultApyQuery.isLoading && !apyDisplay ? (
+                <Skeleton className="h-4 w-24" />
+              ) : (
+                <>
+                  {apyDisplay ? (
+                    <Text
+                      variant={TextVariant.BodyMd}
+                      className="text-success-default"
+                    >
+                      {t('moneyApy', [apyDisplay])}
+                    </Text>
+                  ) : null}
                   <Text
                     variant={TextVariant.BodyMd}
-                    className="text-success-default"
+                    color={TextColor.TextAlternative}
                   >
-                    {t('moneyApy', [apyDisplay])}
+                    {apyDisplay ? `• ${t('moneyMusd')}` : t('moneyMusd')}
                   </Text>
-                ) : null}
+                  <Icon
+                    name={IconName.Info}
+                    size={IconSize.Sm}
+                    color={IconColor.IconAlternative}
+                  />
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-2 flex w-full max-w-[389px] gap-2 py-2">
+            <MoneyActionCard
+              icon={IconName.Add}
+              label={t('moneyAdd')}
+              onClick={handleAddFunds}
+              disabled={isDepositLoading}
+              testId="money-add-button"
+            />
+            <MoneyActionCard
+              icon={IconName.Arrow2UpRight}
+              label={t('moneySend')}
+              onClick={handleOpenTransferSheet}
+              testId="money-send-button"
+            />
+          </div>
+
+          {isFunded ? null : (
+            <section className="mt-1 flex w-full max-w-[389px] flex-col gap-4 overflow-hidden rounded-2xl bg-background-muted p-4">
+              <img
+                src={MONEY_ONBOARDING_ARTWORK}
+                alt=""
+                className="h-[185px] w-full rounded-[14px] object-cover"
+              />
+              <div>
+                <Text
+                  variant={TextVariant.HeadingLg}
+                  fontWeight={FontWeight.Bold}
+                >
+                  {apyDisplay
+                    ? t('moneyEarnApyTitle', [apyDisplay])
+                    : t('moneyEarnTitle')}
+                </Text>
                 <Text
                   variant={TextVariant.BodyMd}
                   color={TextColor.TextAlternative}
+                  className="mt-1"
                 >
-                  {apyDisplay ? `• ${t('moneyMusd')}` : t('moneyMusd')}
+                  {apyDisplay
+                    ? t('moneyFundDescriptionWithApy', [apyDisplay])
+                    : t('moneyFundDescription')}
                 </Text>
-                <Icon
-                  name={IconName.Info}
-                  size={IconSize.Sm}
-                  color={IconColor.IconAlternative}
-                />
-              </>
-            )}
-          </div>
+              </div>
+              <Button
+                className="w-full"
+                isLoading={isDepositLoading}
+                onClick={handleAddFunds}
+              >
+                {t('addFunds')}
+              </Button>
+            </section>
+          )}
         </div>
 
-        <div className="mt-2 flex w-full max-w-[389px] gap-2 py-2">
-          <MoneyActionCard
-            icon={IconName.Add}
-            label={t('moneyAdd')}
-            onClick={handleAddFunds}
-            disabled={isDepositLoading}
-          />
-          <MoneyActionCard
-            icon={IconName.Arrow2UpRight}
-            label={t('moneySend')}
-            onClick={handleSend}
-            disabled={isWithdrawalLoading}
-          />
-        </div>
+        <div
+          className={`mx-auto w-full max-w-[816px] ${isFunded ? '' : 'mt-3'}`}
+        >
+          {isFunded ? (
+            <>
+              {isMoneyEarningSectionEnabled ? (
+                <>
+                  <MoneyPositionPlaceholder
+                    monthlyEarnings={monthlyEarnings}
+                    lifetimeEarnings={lifetimeEarnings}
+                    isMonthlyLoading={isMonthlyEarningsLoading}
+                    isLifetimeLoading={isLifetimeEarningsLoading}
+                  />
+                  <MoneySectionDivider />
+                </>
+              ) : null}
+              <MoneyActivityList
+                items={activityItems}
+                privacyMode={privacyMode}
+                onViewAll={handleViewAllActivity}
+                onItemClick={handleActivityItemClick}
+              />
+              <MoneySectionDivider />
+              {earnOnYourCryptoSection}
+              <MoneySectionDivider />
+              <MoneyCondensedInfoCards />
+            </>
+          ) : (
+            <>
+              <section className="px-4 py-3">
+                <div className="flex items-center gap-1">
+                  <Text
+                    variant={TextVariant.HeadingMd}
+                    fontWeight={FontWeight.Bold}
+                  >
+                    {t('moneyHowItWorks')}
+                  </Text>
+                  <Icon
+                    name={IconName.ArrowRight}
+                    size={IconSize.Md}
+                    color={IconColor.IconAlternative}
+                  />
+                </div>
+                <Text
+                  variant={TextVariant.BodyMd}
+                  color={TextColor.TextAlternative}
+                  className="mt-2"
+                  data-testid="money-how-it-works-description"
+                >
+                  {apyDisplay
+                    ? t('moneyHowItWorksDescriptionWithApy', [
+                        <span key="apy" className="text-success-default">
+                          {t('moneyApy', [apyDisplay])}
+                        </span>,
+                      ])
+                    : t('moneyHowItWorksDescription')}
+                </Text>
+              </section>
 
-        {isFunded ? null : (
-          <section className="mt-1 flex w-full max-w-[389px] flex-col gap-4 overflow-hidden rounded-2xl bg-background-muted p-4">
-            <img
-              src={MONEY_ONBOARDING_ARTWORK}
-              alt=""
-              className="h-[185px] w-full rounded-[14px] object-cover"
-            />
-            <div>
-              <Text
-                variant={TextVariant.HeadingLg}
-                fontWeight={FontWeight.Bold}
-              >
-                {apyDisplay
-                  ? t('moneyEarnApyTitle', [apyDisplay])
-                  : t('moneyEarnTitle')}
-              </Text>
-              <Text
-                variant={TextVariant.BodyMd}
-                color={TextColor.TextAlternative}
-                className="mt-1"
-              >
-                {apyDisplay
-                  ? t('moneyFundDescriptionWithApy', [apyDisplay])
-                  : t('moneyFundDescription')}
-              </Text>
-            </div>
-            <Button
-              className="w-full"
-              isLoading={isDepositLoading}
-              onClick={handleAddFunds}
-            >
-              {t('addFunds')}
-            </Button>
-          </section>
-        )}
-      </div>
+              <MoneySectionDivider />
+              <MoneyActivityList
+                items={activityItems}
+                privacyMode={privacyMode}
+                onViewAll={handleViewAllActivity}
+                onItemClick={handleActivityItemClick}
+              />
 
-      <div className={`mx-auto w-full max-w-[816px] ${isFunded ? '' : 'mt-3'}`}>
-        {isFunded ? (
-          <>
-            {isMoneyEarningSectionEnabled ? (
-              <>
-                <MoneyPositionPlaceholder
-                  monthlyEarnings={monthlyEarnings}
-                  lifetimeEarnings={lifetimeEarnings}
-                  isMonthlyLoading={isMonthlyEarningsLoading}
-                  isLifetimeLoading={isLifetimeEarningsLoading}
-                />
-                <MoneySectionDivider />
-              </>
-            ) : null}
-            <MoneyActivityList
-              items={activityItems}
-              privacyMode={privacyMode}
-              onViewAll={handleViewAllActivity}
-              onItemClick={handleActivityItemClick}
-            />
-            <MoneySectionDivider />
-            {earnOnYourCryptoSection}
-            <MoneySectionDivider />
-            <MoneyCondensedInfoCards />
-          </>
-        ) : (
-          <>
-            <section className="px-4 py-3">
-              <div className="flex items-center gap-1">
+              <MoneySectionDivider />
+              {earnOnYourCryptoSection}
+
+              <MoneySectionDivider />
+              <section className="px-4 py-3">
                 <Text
                   variant={TextVariant.HeadingMd}
                   fontWeight={FontWeight.Bold}
                 >
-                  {t('moneyHowItWorks')}
+                  {t('moneyBenefits')}
                 </Text>
-                <Icon
-                  name={IconName.ArrowRight}
-                  size={IconSize.Md}
-                  color={IconColor.IconAlternative}
-                />
-              </div>
-              <Text
-                variant={TextVariant.BodyMd}
-                color={TextColor.TextAlternative}
-                className="mt-2"
-                data-testid="money-how-it-works-description"
-              >
-                {apyDisplay
-                  ? t('moneyHowItWorksDescriptionWithApy', [
-                      <span key="apy" className="text-success-default">
-                        {t('moneyApy', [apyDisplay])}
-                      </span>,
-                    ])
-                  : t('moneyHowItWorksDescription')}
-              </Text>
-            </section>
-
-            <MoneySectionDivider />
-            <MoneyActivityList
-              items={activityItems}
-              privacyMode={privacyMode}
-              onViewAll={handleViewAllActivity}
-              onItemClick={handleActivityItemClick}
-            />
-
-            <MoneySectionDivider />
-            {earnOnYourCryptoSection}
-
-            <MoneySectionDivider />
-            <section className="px-4 py-3">
-              <Text
-                variant={TextVariant.HeadingMd}
-                fontWeight={FontWeight.Bold}
-              >
-                {t('moneyBenefits')}
-              </Text>
-              <ul className="mt-3 flex flex-col gap-3">
-                {[
-                  apyDisplay
-                    ? t('moneyBenefitAutoEarnWithApy', [apyDisplay])
-                    : t('moneyBenefitAutoEarn'),
-                  t('moneyBenefitStablecoin'),
-                  t('moneyBenefitLiquidity'),
-                  t('moneyBenefitSend'),
-                ].map((benefit) => (
-                  <li key={benefit} className="flex items-start gap-3">
-                    <Icon
-                      name={IconName.Check}
-                      size={IconSize.Md}
-                      color={IconColor.SuccessDefault}
-                      className="mt-0.5 shrink-0"
-                    />
-                    <Text variant={TextVariant.BodyMd}>{benefit}</Text>
-                  </li>
-                ))}
-              </ul>
-              <Button
-                variant={ButtonVariant.Secondary}
-                disabled
-                className="mt-4 w-full"
-              >
-                {t('moneyLearnMore')}
-              </Button>
-            </section>
-          </>
-        )}
-      </div>
-    </main>
+                <ul className="mt-3 flex flex-col gap-3">
+                  {[
+                    apyDisplay
+                      ? t('moneyBenefitAutoEarnWithApy', [apyDisplay])
+                      : t('moneyBenefitAutoEarn'),
+                    t('moneyBenefitStablecoin'),
+                    t('moneyBenefitLiquidity'),
+                    t('moneyBenefitSend'),
+                  ].map((benefit) => (
+                    <li key={benefit} className="flex items-start gap-3">
+                      <Icon
+                        name={IconName.Check}
+                        size={IconSize.Md}
+                        color={IconColor.SuccessDefault}
+                        className="mt-0.5 shrink-0"
+                      />
+                      <Text variant={TextVariant.BodyMd}>{benefit}</Text>
+                    </li>
+                  ))}
+                </ul>
+                <Button
+                  variant={ButtonVariant.Secondary}
+                  disabled
+                  className="mt-4 w-full"
+                >
+                  {t('moneyLearnMore')}
+                </Button>
+              </section>
+            </>
+          )}
+        </div>
+      </main>
+      {isTransferSheetOpen ? (
+        <MoneyTransferSheet
+          isOpen={isTransferSheetOpen}
+          onClose={handleCloseTransferSheet}
+        />
+      ) : null}
+    </>
   );
 }
 

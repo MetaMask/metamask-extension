@@ -1,8 +1,5 @@
 import React, { useCallback } from 'react';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import {
   Skeleton,
@@ -16,7 +13,7 @@ import { formatPerpsFiat } from '../../../../../../shared/lib/perps-formatters';
 import { updateEditableParams } from '../../../../../store/actions';
 import { useDispatch } from '../../../../../store/hooks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequestOptional } from '../../../hooks/transactions/useTransactionMetadataRequest';
 import {
   PayWithOption,
   useConfirmationNavigationOptions,
@@ -76,17 +73,17 @@ const formatBalance = (account: SubAccountInfo): React.ReactNode => {
 const PerpsAccountPickerRowContent = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequestOptional();
   const { subAccounts, selectedSubAccount } = usePerpsSubAccounts();
 
   const handleSelect = useCallback(
     (id: string) => {
-      const transactionId = currentConfirmation?.id;
+      const transactionId = transactionMeta?.id;
       if (!transactionId) {
         return;
       }
 
-      const from = currentConfirmation?.txParams?.from ?? '';
+      const from = transactionMeta?.txParams?.from ?? '';
       if (id.toLowerCase() === from.toLowerCase()) {
         return;
       }
@@ -99,7 +96,7 @@ const PerpsAccountPickerRowContent = () => {
         console.error('Failed to update perps deposit destination', error);
       });
     },
-    [currentConfirmation, dispatch],
+    [transactionMeta, dispatch],
   );
 
   return (
@@ -123,11 +120,11 @@ const PerpsAccountPickerRowContent = () => {
  */
 export function PerpsAccountPickerRow() {
   const { payWithOption } = useConfirmationNavigationOptions();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequestOptional();
 
   const isMoneyAccountPerpsDeposit =
     payWithOption === PayWithOption.MoneyAccount &&
-    hasTransactionType(currentConfirmation, [TransactionType.perpsDeposit]);
+    hasTransactionType(transactionMeta, [TransactionType.perpsDeposit]);
 
   if (!isMoneyAccountPerpsDeposit) {
     return null;
