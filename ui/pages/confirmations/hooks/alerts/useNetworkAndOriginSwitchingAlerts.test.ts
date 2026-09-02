@@ -12,6 +12,19 @@ import * as Actions from '../../../../store/actions';
 import { useNetworkAndOriginSwitchingAlerts } from './useNetworkAndOriginSwitchingAlerts';
 
 describe('useNetworkAndOriginSwitchingAlerts', () => {
+  beforeEach(() => {
+    jest
+      .spyOn(Actions, 'getLastInteractedConfirmationInfo')
+      .mockResolvedValue(undefined);
+    jest
+      .spyOn(Actions, 'setLastInteractedConfirmationInfo')
+      .mockResolvedValue(undefined as never);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('returns an empty array when there is no current confirmation', () => {
     const { result } = renderHookWithConfirmContextProvider(
       () => useNetworkAndOriginSwitchingAlerts(),
