@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
 import {
@@ -17,8 +18,18 @@ import {
   type PreferredPayToken,
 } from '../../selectors/feature-flags';
 import { type RelayFixedSpreadConfig } from '../../utils/relay-fixed-spread';
+import {
+  selectPaymentOverrideByTransactionId,
+  type TransactionPayState,
+} from '../../../../selectors/transactionPayController';
+import { selectMoneyAccountVaultConfig } from '../../../../selectors/money/money-account-feature-flags';
+import {
+  getMoneyAccountPayToken,
+  type MoneyAccountPayToken,
+} from '../../utils/money-account-pay-token';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useImportPayToken } from './useImportPayToken';
+import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
@@ -49,6 +60,17 @@ export function useAutomaticTransactionPayToken({
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id;
+  const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
+  const paymentOverride = useSelector((state: TransactionPayState) =>
+    selectPaymentOverrideByTransactionId(state, transactionId ?? ''),
+  );
+  const isMoneyPaymentOverride =
+    paymentOverride === PaymentOverride.MoneyAccount;
+  const vaultConfig = useSelector(selectMoneyAccountVaultConfig);
+  const moneyAccountPayToken = useMemo(
+    () => getMoneyAccountPayToken(vaultConfig),
+    [vaultConfig],
+  );
   // Batch txs use top-level type `batch`. Prefer the money-account nested type
   // when present — deposits are `[approve, deposit]`, so plain
   // `getTransactionType` would resolve them to `tokenMethodApprove`.
@@ -125,10 +147,12 @@ export function useAutomaticTransactionPayToken({
     () =>
       getBestToken({
         isHardwareWallet,
+        isMoneyPaymentOverride,
         isPostQuoteWithdraw,
         isPostQuoteWithdrawTokenFilterApplied,
         isPostQuoteWithdrawTokenAllowed,
         minimumRequiredTokenBalance,
+        moneyAccountPayToken,
         preferredToken,
         preferredTokensFromFlags,
         relayFixedSpread,
@@ -137,10 +161,12 @@ export function useAutomaticTransactionPayToken({
       }),
     [
       isHardwareWallet,
+      isMoneyPaymentOverride,
       isPostQuoteWithdraw,
       isPostQuoteWithdrawTokenFilterApplied,
       isPostQuoteWithdrawTokenAllowed,
       minimumRequiredTokenBalance,
+      moneyAccountPayToken,
       preferredToken,
       preferredTokensFromFlags,
       relayFixedSpread,
@@ -150,11 +176,15 @@ export function useAutomaticTransactionPayToken({
   );
 
   useEffect(() => {
+    // Deposits auto-select a funding token immediately. Withdraws wait on
+    // post-quote destination enrichment, so they do not race the money-account
+    // override. Skip crypto auto-select when the flag defaults to Money Account.
     if (
       disable ||
       payToken ||
       !transactionId ||
-      isUpdated.current === transactionId
+      isUpdated.current === transactionId ||
+      isDefaultMoneyAccount
     ) {
       return;
     }
@@ -198,6 +228,7 @@ export function useAutomaticTransactionPayToken({
   }, [
     automaticToken,
     disable,
+    isDefaultMoneyAccount,
     isPostQuoteWithdraw,
     payToken,
     preferredToken,
@@ -215,7 +246,7 @@ export function useAutomaticTransactionPayToken({
 
   useEffect(() => {
     const accountKey = `${from ?? ''}:${accountOverride ?? ''}`;
-    if (disable || !from || isPostQuoteWithdraw) {
+    if (disable || !from || isPostQuoteWithdraw || isDefaultMoneyAccount) {
       return;
     }
 
@@ -255,6 +286,7 @@ export function useAutomaticTransactionPayToken({
     disable,
     emptyAccountReselectTimedOut,
     from,
+    isDefaultMoneyAccount,
     isPostQuoteWithdraw,
     setPayToken,
     tokensWithBalance.length,
@@ -289,14 +321,41 @@ export function useAutomaticTransactionPayToken({
     isPostQuoteWithdraw,
     tokensWithBalance.length,
   ]);
+
+  const prevIsMoneyPaymentOverrideRef = useRef(false);
+  useEffect(() => {
+    // Only handle the transition *into* Money Account funding. Reselect the
+    // vault pay token (typically Monad mUSD) because a manually chosen token
+    // would otherwise remain selected after the override flips on.
+    const prev = prevIsMoneyPaymentOverrideRef.current;
+    prevIsMoneyPaymentOverrideRef.current = Boolean(isMoneyPaymentOverride);
+
+    if (
+      disable ||
+      !from ||
+      isMoneyPaymentOverride !== true ||
+      isMoneyPaymentOverride === prev
+    ) {
+      return;
+    }
+
+    if (automaticToken) {
+      setPayToken({
+        address: automaticToken.address,
+        chainId: automaticToken.chainId,
+      });
+    }
+  }, [automaticToken, disable, from, isMoneyPaymentOverride, setPayToken]);
 }
 
 function getBestToken({
   isHardwareWallet,
+  isMoneyPaymentOverride,
   isPostQuoteWithdraw,
   isPostQuoteWithdrawTokenFilterApplied,
   isPostQuoteWithdrawTokenAllowed,
   minimumRequiredTokenBalance,
+  moneyAccountPayToken,
   preferredToken,
   preferredTokensFromFlags,
   relayFixedSpread,
@@ -304,6 +363,7 @@ function getBestToken({
   tokens,
 }: {
   isHardwareWallet: boolean;
+  isMoneyPaymentOverride: boolean;
   isPostQuoteWithdraw: boolean;
   isPostQuoteWithdrawTokenFilterApplied: boolean;
   isPostQuoteWithdrawTokenAllowed: (
@@ -311,6 +371,7 @@ function getBestToken({
     address: string,
   ) => boolean;
   minimumRequiredTokenBalance: number;
+  moneyAccountPayToken: MoneyAccountPayToken;
   preferredToken?: SetPayTokenRequest;
   preferredTokensFromFlags: PreferredPayToken[];
   relayFixedSpread: RelayFixedSpreadConfig;
@@ -326,6 +387,10 @@ function getBestToken({
 
   if (isHardwareWallet) {
     return targetTokenFallback;
+  }
+
+  if (isMoneyPaymentOverride) {
+    return moneyAccountPayToken;
   }
 
   // Without a post-quote withdraw allowlist, `preferredToken` is the
