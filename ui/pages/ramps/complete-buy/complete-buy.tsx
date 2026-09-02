@@ -28,6 +28,10 @@ import { getImageForChainId } from '../../../selectors/multichain';
 import RampsTokenSelectionHeader from '../token-selection/components/ramps-token-selection-header';
 import type { RampsCompleteBuyLocationState } from './types';
 
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.length > 0;
+}
+
 function isCompleteBuyState(
   state: unknown,
 ): state is RampsCompleteBuyLocationState {
@@ -37,12 +41,12 @@ function isCompleteBuyState(
 
   const candidate = state as Partial<RampsCompleteBuyLocationState>;
   return (
-    typeof candidate.checkoutUrl === 'string' &&
-    candidate.checkoutUrl.length > 0 &&
-    typeof candidate.providerName === 'string' &&
-    typeof candidate.tokenSymbol === 'string' &&
-    typeof candidate.walletAddress === 'string' &&
-    typeof candidate.createdAt === 'number'
+    isNonEmptyString(candidate.checkoutUrl) &&
+    isNonEmptyString(candidate.providerName) &&
+    isNonEmptyString(candidate.tokenSymbol) &&
+    isNonEmptyString(candidate.walletAddress) &&
+    typeof candidate.createdAt === 'number' &&
+    Number.isFinite(candidate.createdAt)
   );
 }
 
@@ -150,7 +154,11 @@ export default function RampsCompleteBuyScreen() {
             >
               <AvatarToken
                 name={state.tokenSymbol}
-                src={state.tokenIconUrl ?? ''}
+                src={
+                  isNonEmptyString(state.tokenIconUrl)
+                    ? state.tokenIconUrl
+                    : undefined
+                }
                 size={AvatarTokenSize.Xl}
                 data-testid="ramps-complete-buy-token-avatar"
               />

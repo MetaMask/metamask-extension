@@ -11,7 +11,10 @@ import RampsCompleteBuyScreen from './complete-buy';
 import type { RampsCompleteBuyLocationState } from './types';
 
 const mockNavigate = jest.fn();
-let mockLocationState: RampsCompleteBuyLocationState | null = null;
+let mockLocationState:
+  | RampsCompleteBuyLocationState
+  | null
+  | Record<string, unknown> = null;
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -90,16 +93,61 @@ describe('RampsCompleteBuyScreen', () => {
   it('redirects home when location state is missing', () => {
     mockLocationState = null;
 
-    renderWithProvider(
+    const { container } = renderWithProvider(
       <RampsCompleteBuyScreen />,
       createStore(),
       '/ramps/complete-buy',
     );
 
-    expect(screen.getByTestId('navigate-redirect')).toHaveAttribute(
-      'data-to',
-      DEFAULT_ROUTE,
+    expect(container).toMatchSnapshot();
+  });
+
+  it('redirects home when the provider name is empty', () => {
+    mockLocationState = { ...completeBuyState, providerName: '' };
+
+    const { container } = renderWithProvider(
+      <RampsCompleteBuyScreen />,
+      createStore(),
+      '/ramps/complete-buy',
     );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('redirects home when the token symbol is empty', () => {
+    mockLocationState = { ...completeBuyState, tokenSymbol: '' };
+
+    const { container } = renderWithProvider(
+      <RampsCompleteBuyScreen />,
+      createStore(),
+      '/ramps/complete-buy',
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('redirects home when the wallet address is empty', () => {
+    mockLocationState = { ...completeBuyState, walletAddress: '' };
+
+    const { container } = renderWithProvider(
+      <RampsCompleteBuyScreen />,
+      createStore(),
+      '/ramps/complete-buy',
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('redirects home when createdAt is not finite', () => {
+    mockLocationState = { ...completeBuyState, createdAt: Number.NaN };
+
+    const { container } = renderWithProvider(
+      <RampsCompleteBuyScreen />,
+      createStore(),
+      '/ramps/complete-buy',
+    );
+
+    expect(container).toMatchSnapshot();
   });
 
   it('navigates home when back to wallet is pressed', () => {
@@ -132,5 +180,20 @@ describe('RampsCompleteBuyScreen', () => {
     expect(getImageForChainId).toHaveBeenCalledWith(
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
     );
+  });
+
+  it('matches snapshot when the token has no icon url', () => {
+    mockLocationState = {
+      ...completeBuyState,
+      tokenIconUrl: '',
+    };
+
+    const { container } = renderWithProvider(
+      <RampsCompleteBuyScreen />,
+      createStore(),
+      '/ramps/complete-buy',
+    );
+
+    expect(container).toMatchSnapshot();
   });
 });

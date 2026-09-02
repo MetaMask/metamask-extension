@@ -198,6 +198,249 @@ exports[`RampsCompleteBuyScreen matches snapshot 1`] = `
 </div>
 `;
 
+exports[`RampsCompleteBuyScreen matches snapshot when the token has no icon url 1`] = `
+<div>
+  <div
+    class="flex h-full flex-col bg-background-default"
+    data-testid="ramps-complete-buy-screen"
+  >
+    <div
+      class="flex-col relative flex min-h-16 items-center justify-center px-4 py-3"
+    >
+      <button
+        aria-label="Back"
+        class="inline-flex items-center justify-center font-medium text-default overflow-hidden transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
+        data-testid="ramps-complete-buy-back"
+        role="button"
+      >
+        <svg
+          class="inline-block w-5 h-5 text-icon-default"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+          />
+        </svg>
+      </button>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+      >
+        Complete buy
+      </p>
+    </div>
+    <div
+      class="justify-between flex flex-1 flex-col px-4 pb-4"
+    >
+      <div
+        class="flex w-full flex-col gap-4 pt-2"
+      >
+        <div
+          class="flex flex-row items-center justify-center my-2 w-full"
+        >
+          <div
+            class="relative inline-flex self-start"
+          >
+            <div
+              class="inline-flex"
+            >
+              <div
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-12 w-12"
+                data-testid="ramps-complete-buy-token-avatar"
+              >
+                <span
+                  class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+                >
+                  E
+                </span>
+              </div>
+            </div>
+            <div
+              class="absolute"
+              color="background-default"
+              style="bottom: 0px; right: 0px;"
+            >
+              <div
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
+                style="width: 24px; height: 24px; border-width: 2px;"
+              >
+                <img
+                  alt="ETH"
+                  class="size-full object-contain"
+                  src="https://example.com/network.png"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex flex-row gap-4 items-start pt-3 pr-4 pb-3 pl-4 bg-primary-muted rounded-xl w-full"
+          data-testid="ramps-complete-buy-banner"
+        >
+          <svg
+            class="inline-block w-6 h-6 text-primary-default"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+            />
+          </svg>
+          <div
+            class="min-w-0 flex-1"
+          >
+            <p
+              class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+            >
+              Continue in browser
+            </p>
+            <div
+              class="mt-0.5"
+            >
+              <p
+                class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+              >
+                Complete your purchase in Transak tab
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex w-full flex-col gap-2 py-2"
+        >
+          <div
+            class="flex-row flex min-h-8 w-full items-center justify-between gap-4"
+            data-testid="ramps-complete-buy-date"
+          >
+            <p
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-alternative"
+            >
+              Date
+            </p>
+            <div
+              class="min-w-0 break-words text-end"
+            >
+              Jul 7, 2026, 12:00 AM
+            </div>
+          </div>
+          <div
+            class="flex-row flex min-h-8 w-full items-center justify-between gap-4"
+            data-testid="ramps-complete-buy-estimated-receive"
+          >
+            <p
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-alternative"
+            >
+              Estimated to receive
+            </p>
+            <div
+              class="min-w-0 break-words text-end"
+            >
+              0.042 ETH
+            </div>
+          </div>
+          <div
+            class="flex-row flex min-h-8 w-full items-center justify-between gap-4"
+            data-testid="ramps-complete-buy-payment-method"
+          >
+            <p
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-alternative"
+            >
+              Payment method
+            </p>
+            <div
+              class="min-w-0 break-words text-end"
+            >
+              Transak
+            </div>
+          </div>
+          <div
+            class="flex-row flex min-h-8 w-full items-center justify-between gap-4"
+            data-testid="ramps-complete-buy-account"
+          >
+            <p
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-alternative"
+            >
+              Account
+            </p>
+            <div
+              class="min-w-0 break-words text-end"
+            >
+              <span
+                data-testid="account-name"
+              >
+                0xabc123
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mt-auto flex flex-col gap-4 pt-4"
+      >
+        <button
+          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
+          data-testid="ramps-complete-buy-back-to-wallet"
+          role="button"
+        >
+          <span
+            class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
+          >
+            Back to wallet
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RampsCompleteBuyScreen redirects home when createdAt is not finite 1`] = `
+<div>
+  <div
+    data-testid="navigate-redirect"
+    data-to="/"
+  />
+</div>
+`;
+
+exports[`RampsCompleteBuyScreen redirects home when location state is missing 1`] = `
+<div>
+  <div
+    data-testid="navigate-redirect"
+    data-to="/"
+  />
+</div>
+`;
+
+exports[`RampsCompleteBuyScreen redirects home when the provider name is empty 1`] = `
+<div>
+  <div
+    data-testid="navigate-redirect"
+    data-to="/"
+  />
+</div>
+`;
+
+exports[`RampsCompleteBuyScreen redirects home when the token symbol is empty 1`] = `
+<div>
+  <div
+    data-testid="navigate-redirect"
+    data-to="/"
+  />
+</div>
+`;
+
+exports[`RampsCompleteBuyScreen redirects home when the wallet address is empty 1`] = `
+<div>
+  <div
+    data-testid="navigate-redirect"
+    data-to="/"
+  />
+</div>
+`;
+
 exports[`RampsCompleteBuyScreen resolves the network badge from a non-EVM CAIP chain id 1`] = `
 <div>
   <div

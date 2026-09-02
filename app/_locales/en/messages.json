@@ -8510,6 +8510,10 @@
   "quotedTotalCost": {
     "message": "Total cost: $1"
   },
+  "rampsBackToWallet": {
+    "message": "Back to wallet",
+    "description": "Secondary button on the ramps complete-buy interstitial that returns to the wallet home"
+  },
   "rampsBestRate": {
     "message": "Best rate"
   },
@@ -8524,9 +8528,8 @@
     "message": "Buying via $1.",
     "description": "$1 is the ramp provider name"
   },
-  "rampsBackToWallet": {
-    "message": "Back to wallet",
-    "description": "Secondary button on the ramps complete-buy interstitial that returns to the wallet home"
+  "rampsChangeProvider": {
+    "message": "Change provider."
   },
   "rampsCompleteBuyTitle": {
     "message": "Complete buy",
@@ -8540,13 +8543,6 @@
     "message": "Continue in browser",
     "description": "Banner title on the ramps complete-buy interstitial"
   },
-  "rampsEstimatedToReceive": {
-    "message": "Estimated to receive",
-    "description": "Label for the estimated crypto amount on the ramps complete-buy interstitial"
-  },
-  "rampsChangeProvider": {
-    "message": "Change provider."
-  },
   "rampsEligibilityFailedDescription": {
     "message": "Please try again, or contact support if this keeps happening."
   },
@@ -8558,6 +8554,10 @@
   },
   "rampsErrorLoadingTokens": {
     "message": "Error loading tokens"
+  },
+  "rampsEstimatedToReceive": {
+    "message": "Estimated to receive",
+    "description": "Label for the estimated crypto amount on the ramps complete-buy interstitial"
   },
   "rampsMaxPurchaseLimit": {
     "message": "Maximum purchase is $1",
