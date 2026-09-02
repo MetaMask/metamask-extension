@@ -27,7 +27,10 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useDispatch } from '../../../../store/hooks';
-import { setupPerpsAgentWallet } from '../../../../store/actions';
+import {
+  setupPerpsAgentWallet,
+  removePerpsAgentWallet,
+} from '../../../../store/actions';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { PERPS_AGENT_SETUP_ERROR_CODES } from '../../../../../shared/constants/perps';
 import { getIsPerpsAgentWalletEnabled } from '../../../../selectors/perps/feature-flags';
@@ -90,13 +93,14 @@ export const classifyAgentSetupError = (
  * Drives the perps agent wallet setup surface for the selected EVM account.
  *
  * @returns The setup state: the account's lifecycle `status`, the active
- * `agent` registration (or null), a `setup` callback, whether the session
- * `canSetup` (password-unlocked, ruling R1), the last failure `error` kind,
- * and whether the remote flag `isFlagEnabled`.
+ * `agent` registration (or null), a `setup` callback, a passwordless `remove`
+ * callback, whether the session `canSetup` (password-unlocked, ruling R1),
+ * the last failure `error` kind, and whether the remote flag `isFlagEnabled`.
  */
 export function usePerpsAgentWalletSetup(): {
   status: PerpsAgentWalletSetupStatus;
   setup: (password: string) => Promise<boolean>;
+  remove: () => Promise<boolean>;
   agent: AgentRegistration | null;
   canSetup: boolean;
   error: PerpsAgentWalletSetupErrorKind | null;
@@ -162,9 +166,23 @@ export function usePerpsAgentWalletSetup(): {
     [address, dispatch],
   );
 
+  const remove = useCallback(async (): Promise<boolean> => {
+    if (!address) {
+      return false;
+    }
+    setError(null);
+    try {
+      await dispatch(removePerpsAgentWallet());
+      return true;
+    } catch {
+      return false;
+    }
+  }, [address, dispatch]);
+
   return {
     status,
     setup,
+    remove,
     agent,
     canSetup: canSetup && isFlagEnabled && Boolean(address),
     error,
@@ -180,12 +198,14 @@ export function usePerpsAgentWalletSetup(): {
  */
 export const AgentWalletSetup = () => {
   const t = useI18nContext();
-  const { status, setup, agent, canSetup, error, isFlagEnabled } =
+  const { status, setup, remove, agent, canSetup, error, isFlagEnabled } =
     usePerpsAgentWalletSetup();
   // Hardware wallets sign the approveAgent on the device; this switches the
   // confirm helper copy ONLY — never the setup logic.
   const isHardwareWallet = useIsHardwareWalletAccount();
   const [isReviewOpen, setIsReviewOpen] = useState(false);
+  const [isRotating, setIsRotating] = useState(false);
+  const [isRemoveOpen, setIsRemoveOpen] = useState(false);
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -195,12 +215,14 @@ export const AgentWalletSetup = () => {
     setIsSubmitting(false);
     if (ok) {
       setIsReviewOpen(false);
+      setIsRotating(false);
       setPassword('');
     }
   }, [password, setup]);
 
   const handleCancel = useCallback(() => {
     setIsReviewOpen(false);
+    setIsRotating(false);
     setPassword('');
   }, []);
 
@@ -227,6 +249,29 @@ export const AgentWalletSetup = () => {
       <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
         {agent.agentAddress}
       </Text>
+      <Box flexDirection={BoxFlexDirection.Row} gap={2} paddingTop={2}>
+        <Button
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Sm}
+          onClick={() => {
+            setIsRotating(true);
+            setIsReviewOpen(true);
+          }}
+          isDisabled={isSubmitting || status === 'submitting'}
+          data-testid="perps-agent-wallet-rotate"
+        >
+          {t('perpsAgentWalletRotateButton')}
+        </Button>
+        <Button
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Sm}
+          onClick={() => setIsRemoveOpen(true)}
+          isDisabled={isSubmitting || status === 'submitting'}
+          data-testid="perps-agent-wallet-remove"
+        >
+          {t('perpsAgentWalletRemoveButton')}
+        </Button>
+      </Box>
     </Box>
   ) : null;
 
@@ -267,7 +312,9 @@ export const AgentWalletSetup = () => {
           <ModalOverlay />
           <ModalContent size={ModalContentSize.Sm}>
             <ModalHeader onClose={handleCancel}>
-              {t('perpsAgentWalletReviewTitle')}
+              {isRotating
+                ? t('perpsAgentWalletRotateTitle')
+                : t('perpsAgentWalletReviewTitle')}
             </ModalHeader>
             <ModalBody>
               <Box flexDirection={BoxFlexDirection.Column} gap={4}>
@@ -381,6 +428,56 @@ export const AgentWalletSetup = () => {
                     {t('perpsAgentWalletApprovingFees')}
                   </Text>
                 ) : null}
+              </Box>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      ) : null}
+
+      {isRemoveOpen ? (
+        <Modal
+          isOpen
+          onClose={() => setIsRemoveOpen(false)}
+          data-testid="perps-agent-wallet-remove-dialog"
+        >
+          <ModalOverlay />
+          <ModalContent size={ModalContentSize.Sm}>
+            <ModalHeader onClose={() => setIsRemoveOpen(false)}>
+              {t('perpsAgentWalletRemoveTitle')}
+            </ModalHeader>
+            <ModalBody>
+              <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+                <Text
+                  variant={TextVariant.BodyMd}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('perpsAgentWalletRemoveDescription')}
+                </Text>
+                <Box flexDirection={BoxFlexDirection.Row} gap={4}>
+                  <Button
+                    isFullWidth
+                    variant={ButtonVariant.Secondary}
+                    size={ButtonSize.Lg}
+                    onClick={() => setIsRemoveOpen(false)}
+                    data-testid="perps-agent-wallet-remove-cancel"
+                  >
+                    {t('cancel')}
+                  </Button>
+                  <Button
+                    isFullWidth
+                    variant={ButtonVariant.Primary}
+                    size={ButtonSize.Lg}
+                    onClick={async () => {
+                      const ok = await remove();
+                      if (ok) {
+                        setIsRemoveOpen(false);
+                      }
+                    }}
+                    data-testid="perps-agent-wallet-remove-confirm"
+                  >
+                    {t('perpsAgentWalletRemoveConfirm')}
+                  </Button>
+                </Box>
               </Box>
             </ModalBody>
           </ModalContent>

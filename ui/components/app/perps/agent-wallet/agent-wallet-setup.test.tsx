@@ -345,6 +345,73 @@ describe('AgentWalletSetup', () => {
     });
   });
 
+  describe('manage: rotate and remove', () => {
+    const seedActiveAgent = () =>
+      buildStore({
+        agentsByAccount: { [SELECTED_ADDRESS]: AGENT_REGISTRATION },
+      });
+
+    it('renders rotate and remove controls on the active status row', async () => {
+      renderWithProvider(<AgentWalletSetup />, seedActiveAgent());
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-agent-wallet-rotate'),
+        ).toBeInTheDocument();
+      });
+      expect(
+        screen.getByTestId('perps-agent-wallet-rotate'),
+      ).toHaveTextContent(messages.perpsAgentWalletRotateButton.message);
+      expect(
+        screen.getByTestId('perps-agent-wallet-remove'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-agent-wallet-remove'),
+      ).toHaveTextContent(messages.perpsAgentWalletRemoveButton.message);
+    });
+
+    it('opens the review modal in rotate mode with the rotate title', async () => {
+      renderWithProvider(<AgentWalletSetup />, seedActiveAgent());
+      fireEvent.click(await screen.findByTestId('perps-agent-wallet-rotate'));
+      await screen.findByTestId('perps-agent-wallet-review');
+      expect(
+        screen.getByText(messages.perpsAgentWalletRotateTitle.message),
+      ).toBeInTheDocument();
+    });
+
+    it('opens the remove dialog and dispatches removal on confirm', async () => {
+      renderWithProvider(<AgentWalletSetup />, seedActiveAgent());
+      fireEvent.click(await screen.findByTestId('perps-agent-wallet-remove'));
+      expect(
+        await screen.findByTestId('perps-agent-wallet-remove-dialog'),
+      ).toBeInTheDocument();
+      fireEvent.click(screen.getByTestId('perps-agent-wallet-remove-confirm'));
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsRemoveAgentWallet',
+          [{ masterAccountAddress: SELECTED_ADDRESS }],
+        );
+      });
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId('perps-agent-wallet-remove-dialog'),
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    it('disables rotate and remove while a setup is submitting', async () => {
+      const store = buildStore({
+        agentsByAccount: { [SELECTED_ADDRESS]: AGENT_REGISTRATION },
+        setupStatusByAccount: { [SELECTED_ADDRESS]: 'submitting' },
+      });
+      renderWithProvider(<AgentWalletSetup />, store);
+      const rotate = await screen.findByTestId('perps-agent-wallet-rotate');
+      const remove = screen.getByTestId('perps-agent-wallet-remove');
+      expect(rotate).toBeDisabled();
+      expect(remove).toBeDisabled();
+    });
+  });
+
   describe('failed status', () => {
     it('renders the retry CTA with a failure hint when the setup failed', async () => {
       const store = buildStore({

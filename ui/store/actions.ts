@@ -7866,3 +7866,24 @@ export function setupPerpsAgentWallet(password: string): ThunkAction<
     );
   };
 }
+
+/**
+ * Removes the selected account's perps agent wallet (local key destruction;
+ * see PerpsAgentWalletController.removeAgent). No password — removal only
+ * deletes state.
+ */
+export function removePerpsAgentWallet(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (_dispatch, getState) => {
+    log.debug(`background.perpsRemoveAgentWallet`);
+    const state = getState();
+    const selectedAccount = getSelectedInternalAccount(state);
+    return await submitRequestToBackground<void>('perpsRemoveAgentWallet', [
+      { masterAccountAddress: selectedAccount.address },
+    ]);
+  };
+}

@@ -5082,6 +5082,27 @@ describe('Actions', () => {
     });
   });
 
+  describe('#removePerpsAgentWallet', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('dispatches removePerpsAgentWallet and submits selected account address', async () => {
+      const store = mockStore();
+
+      background.perpsRemoveAgentWallet = sinon.stub().resolves();
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.removePerpsAgentWallet());
+      expect(background.perpsRemoveAgentWallet.callCount).toStrictEqual(1);
+      expect(
+        background.perpsRemoveAgentWallet.getCall(0).args[0],
+      ).toStrictEqual({
+        masterAccountAddress: '0xFirstAddress',
+      });
+    });
+  });
+
   describe('#setPendingRedirectRoute', () => {
     afterEach(() => {
       sinon.restore();
