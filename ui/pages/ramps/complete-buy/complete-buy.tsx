@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, type ReactNode } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import {
   AvatarNetwork,
@@ -16,6 +16,7 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
+  Text,
 } from '@metamask/design-system-react';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
@@ -26,7 +27,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
 import { getImageForChainId } from '../../../selectors/multichain';
 import RampsTokenSelectionHeader from '../token-selection/components/ramps-token-selection-header';
-import { Footer, Row, Section } from './complete-buy-layout';
 import type { RampsCompleteBuyLocationState } from './types';
 
 function isCompleteBuyState(
@@ -78,6 +78,29 @@ export default function RampsCompleteBuyScreen() {
   const networkImageUrl = hexChainId
     ? getImageForChainId(hexChainId)
     : undefined;
+
+  const detailRows: { label: string; value: ReactNode; testId: string }[] = [
+    {
+      label: t('date'),
+      value: formatDateTime(state.createdAt),
+      testId: 'ramps-complete-buy-date',
+    },
+    {
+      label: t('rampsEstimatedToReceive'),
+      value: estimatedReceive,
+      testId: 'ramps-complete-buy-estimated-receive',
+    },
+    {
+      label: t('rampsPaymentMethod'),
+      value: state.providerName,
+      testId: 'ramps-complete-buy-payment-method',
+    },
+    {
+      label: t('account'),
+      value: <AccountName address={state.walletAddress} />,
+      testId: 'ramps-complete-buy-account',
+    },
+  ];
 
   return (
     <Box
@@ -146,31 +169,36 @@ export default function RampsCompleteBuyScreen() {
             className="w-full"
           />
 
-          <Section>
-            <Row
-              label={t('date')}
-              value={formatDateTime(state.createdAt)}
-              testId="ramps-complete-buy-date"
-            />
-            <Row
-              label={t('rampsEstimatedToReceive')}
-              value={estimatedReceive}
-              testId="ramps-complete-buy-estimated-receive"
-            />
-            <Row
-              label={t('rampsPaymentMethod')}
-              value={state.providerName}
-              testId="ramps-complete-buy-payment-method"
-            />
-            <Row
-              label={t('account')}
-              value={<AccountName address={state.walletAddress} />}
-              testId="ramps-complete-buy-account"
-            />
-          </Section>
+          <Box
+            className="flex w-full flex-col gap-2 py-2"
+            flexDirection={BoxFlexDirection.Column}
+          >
+            {detailRows.map(({ label, value, testId }) => {
+              if (value === undefined || value === null || value === '') {
+                return null;
+              }
+
+              return (
+                <Box
+                  key={testId}
+                  className="flex min-h-8 w-full items-center justify-between gap-4"
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  justifyContent={BoxJustifyContent.Between}
+                  data-testid={testId}
+                >
+                  <Text className="text-alternative">{label}</Text>
+                  <Box className="min-w-0 break-words text-end">{value}</Box>
+                </Box>
+              );
+            })}
+          </Box>
         </Box>
 
-        <Footer>
+        <Box
+          className="mt-auto flex flex-col gap-4 pt-4"
+          flexDirection={BoxFlexDirection.Column}
+        >
           <Button
             variant={ButtonVariant.Secondary}
             size={ButtonSize.Lg}
@@ -180,7 +208,7 @@ export default function RampsCompleteBuyScreen() {
           >
             {t('rampsBackToWallet')}
           </Button>
-        </Footer>
+        </Box>
       </Box>
     </Box>
   );

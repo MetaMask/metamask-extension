@@ -109,73 +109,65 @@ exports[`RampsCompleteBuyScreen matches snapshot 1`] = `
             </div>
           </div>
         </div>
-        <section
-          class="flex w-full flex-col gap-2 py-2 empty:hidden"
+        <div
+          class="flex w-full flex-col gap-2 py-2"
         >
           <div
-            class="flex min-h-8 items-center justify-between gap-4"
+            class="flex-row flex min-h-8 w-full items-center justify-between gap-4"
             data-testid="ramps-complete-buy-date"
           >
             <p
-              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-alternative @compact:text-s-body-sm"
-              data-testid="transaction-breakdown-row-title"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-alternative"
             >
               Date
             </p>
             <div
-              class="min-w-0 break-words text-end @compact:text-s-body-sm"
-              data-testid="transaction-breakdown-row-value"
+              class="min-w-0 break-words text-end"
             >
               Jul 7, 2026, 12:00 AM
             </div>
           </div>
           <div
-            class="flex min-h-8 items-center justify-between gap-4"
+            class="flex-row flex min-h-8 w-full items-center justify-between gap-4"
             data-testid="ramps-complete-buy-estimated-receive"
           >
             <p
-              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-alternative @compact:text-s-body-sm"
-              data-testid="transaction-breakdown-row-title"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-alternative"
             >
               Estimated to receive
             </p>
             <div
-              class="min-w-0 break-words text-end @compact:text-s-body-sm"
-              data-testid="transaction-breakdown-row-value"
+              class="min-w-0 break-words text-end"
             >
               0.042 ETH
             </div>
           </div>
           <div
-            class="flex min-h-8 items-center justify-between gap-4"
+            class="flex-row flex min-h-8 w-full items-center justify-between gap-4"
             data-testid="ramps-complete-buy-payment-method"
           >
             <p
-              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-alternative @compact:text-s-body-sm"
-              data-testid="transaction-breakdown-row-title"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-alternative"
             >
               Payment method
             </p>
             <div
-              class="min-w-0 break-words text-end @compact:text-s-body-sm"
-              data-testid="transaction-breakdown-row-value"
+              class="min-w-0 break-words text-end"
             >
               Transak
             </div>
           </div>
           <div
-            class="flex min-h-8 items-center justify-between gap-4"
+            class="flex-row flex min-h-8 w-full items-center justify-between gap-4"
             data-testid="ramps-complete-buy-account"
           >
             <p
-              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-alternative @compact:text-s-body-sm"
-              data-testid="transaction-breakdown-row-title"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-alternative"
             >
               Account
             </p>
             <div
-              class="min-w-0 break-words text-end @compact:text-s-body-sm"
-              data-testid="transaction-breakdown-row-value"
+              class="min-w-0 break-words text-end"
             >
               <span
                 data-testid="account-name"
@@ -184,7 +176,7 @@ exports[`RampsCompleteBuyScreen matches snapshot 1`] = `
               </span>
             </div>
           </div>
-        </section>
+        </div>
       </div>
       <div
         class="mt-auto flex flex-col gap-4 pt-4"
