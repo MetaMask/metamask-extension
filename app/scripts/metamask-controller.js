@@ -185,6 +185,7 @@ import {
 } from '../../shared/lib/selectors/assets-migration';
 import { isPerpsRemoteConfigSatisfied } from '../../shared/lib/perps-feature-flags';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
+import { accountSupports7702 } from './lib/account-supports-7702';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
@@ -224,6 +225,7 @@ import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import {
   createEventBuilder,
+  setParticipateInMetaMetrics,
   trackEvent,
   trackPage,
 } from './controllers/analytics';
@@ -243,7 +245,6 @@ import { createDefiReferralMiddleware } from './lib/defi-referrals/createDefiRef
 
 import {
   diffMap,
-  getPermissionBackgroundApiMethods,
   getPermittedAccountsByOrigin,
   getPermittedChainsByOrigin,
   NOTIFICATION_NAMES,
@@ -903,7 +904,6 @@ export default class MetamaskController extends EventEmitter {
 
           // update preferences and metrics optin status after shield subscription is active
           updatePreferencesAndMetricsForShieldSubscription(
-            this.metaMetricsController,
             this.preferencesController,
           );
           this.shieldController.start();
@@ -2508,10 +2508,8 @@ export default class MetamaskController extends EventEmitter {
       gatorPermissionsController,
       metaMetricsController,
       networkController,
-      multichainNetworkController,
       announcementController,
       onboardingController,
-      permissionController,
       preferencesController,
       tokensController,
       smartTransactionsController,
@@ -2606,10 +2604,7 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setUseAddressBarEnsResolution.bind(
           preferencesController,
         ),
-      setParticipateInMetaMetrics:
-        metaMetricsController.setParticipateInMetaMetrics.bind(
-          metaMetricsController,
-        ),
+      setParticipateInMetaMetrics,
       setDataCollectionForMarketing:
         metaMetricsController.setDataCollectionForMarketing.bind(
           metaMetricsController,
@@ -3356,18 +3351,43 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:rejectPermissionsRequest',
       ),
-      ...getPermissionBackgroundApiMethods({
-        permissionController,
-        approvalController,
-        accountsController,
-        networkController,
-        multichainNetworkController,
-        snapController: this.snapController,
-        onPermittedAccountsAdded: this.controllerMessenger.call.bind(
+      addPermittedAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addPermittedAccount',
+      ),
+      addPermittedAccounts: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addPermittedAccounts',
+      ),
+      removePermittedAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:removePermittedAccount',
+      ),
+      setPermittedAccounts: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setPermittedAccounts',
+      ),
+      addPermittedChain: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addPermittedChain',
+      ),
+      addPermittedChains: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addPermittedChains',
+      ),
+      removePermittedChain: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:removePermittedChain',
+      ),
+      setPermittedChains: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setPermittedChains',
+      ),
+      requestAccountsAndChainPermissionsWithId:
+        this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'LegacyBackgroundApiService:handleDefiReferralOnPermittedAccountsAdded',
+          'LegacyBackgroundApiService:requestAccountsAndChainPermissionsWithId',
         ),
-      }),
 
       // Snaps
       disableSnap: this.controllerMessenger.call.bind(
@@ -7068,12 +7088,27 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} request - The request object
    * @param {string} request.address - The account address
    * @param {string} request.chainId - The chain ID to check
-   * @returns {Promise<{isSupported: boolean, upgradeContractAddress: string | null}>}
+   * @returns {Promise<{isSupported: boolean, upgradeContractAddress: string | null}>} Whether the account can be upgraded and, if so, the contract address it should delegate to.
    */
   async isEip7702Supported(request) {
     const { address, chainId } = request;
     const normalizedAccount = address;
 
+    // Accounts whose keyring cannot sign EIP-7702 authorizations (e.g.
+    // hardware and snap keyrings) can never be upgraded. Fail closed on
+    // lookup errors so callers do not attempt an upgrade that must fail.
+    if (
+      !(await accountSupports7702(
+        normalizedAccount,
+        this.keyringController,
+        false,
+      ))
+    ) {
+      return { isSupported: false, upgradeContractAddress: null };
+    }
+
+    // Although this method is named for atomic batch support, it also checks
+    // the LaunchDarkly flag used to enable the EIP-7702/7715 flow.
     const atomicBatchSupport = await this.txController.isAtomicBatchSupported({
       address: normalizedAccount,
       chainIds: [chainId],
