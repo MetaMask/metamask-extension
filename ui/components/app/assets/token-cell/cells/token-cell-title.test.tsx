@@ -46,8 +46,8 @@ jest.mock('../../asset-inactive-badge/asset-inactive-badge', () => ({
   AssetInactiveBadge: () => <span data-testid="asset-inactive-badge" />,
 }));
 
-jest.mock('../../safety-badge/safety-badge', () => ({
-  SafetyBadge: () => null,
+jest.mock('../../../security-trust/security-trust-inline-badge', () => ({
+  SecurityBadge: () => null,
 }));
 
 const mockIsStockToken = jest.fn();

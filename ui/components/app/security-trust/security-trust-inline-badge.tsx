@@ -1,4 +1,5 @@
 import React from 'react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Box,
   BoxAlignItems,
@@ -140,4 +141,15 @@ export const SecurityTrustInlineBadge = ({
       {tag}
     </button>
   );
+};
+
+export const SecurityBadge = ({ value }: { value?: string }) => {
+  const t = useI18nContext() as SecurityTrustTranslate;
+  const badge = getSecurityTrustBadgeConfig(value, t);
+
+  if (!badge) {
+    return null;
+  }
+
+  return <SecurityTrustInlineBadge badge={badge} testId="security-badge" />;
 };

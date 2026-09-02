@@ -8,7 +8,7 @@ import { Tag } from '../../../../component-library';
 import { ACCOUNT_TYPE_LABELS } from '../../constants';
 import { useRWAToken } from '../../../../../pages/bridge/hooks/useRWAToken';
 import { StockBadge } from '../../stock-badge/stock-badge';
-import { SafetyBadge } from '../../safety-badge/safety-badge';
+import { SecurityBadge } from '../../../security-trust/security-trust-inline-badge';
 
 type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;
@@ -25,7 +25,7 @@ export const TokenCellTitle = React.memo(
     return (
       <Box className="flex items-center gap-2 min-w-0">
         <AssetCellTitle title={token.title} />
-        <SafetyBadge value={token.safetyResult} />
+        {!tokenIsStock && <SecurityBadge value={token.safetyResult} />}
         {label && <Tag label={label} />}
         {token.tokenRequireActivate && <AssetInactiveBadge />}
         {tokenIsStock && (
