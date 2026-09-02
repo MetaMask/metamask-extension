@@ -1931,6 +1931,8 @@
         "@metamask/base-controller": true,
         "@metamask/delegation-core": true,
         "@metamask/delegation-deployments": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/money-account-utils": true,
         "@metamask/utils": true
       }
     },
@@ -1938,7 +1940,8 @@
       "packages": {
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
-        "@metamask/transaction-controller": true
+        "@metamask/money-account-utils>@metamask/transaction-controller": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/multichain-account-service": {

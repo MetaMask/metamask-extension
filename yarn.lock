@@ -6094,7 +6094,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/chomp-api-service@npm:^4.0.0":
+"@metamask/chomp-api-service@npm:^4.0.0, @metamask/chomp-api-service@npm:^4.0.1":
   version: 4.0.1
   resolution: "@metamask/chomp-api-service@npm:4.0.1"
   dependencies:
@@ -7549,34 +7549,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/money-account-upgrade-controller@npm:^3.0.2":
-  version: 3.0.2
-  resolution: "@metamask/money-account-upgrade-controller@npm:3.0.2"
+"@metamask/money-account-upgrade-controller@npm:@metamask-previews/money-account-upgrade-controller@3.0.2-preview-1ee21f9e0":
+  version: 3.0.2-preview-1ee21f9e0
+  resolution: "@metamask-previews/money-account-upgrade-controller@npm:3.0.2-preview-1ee21f9e0"
   dependencies:
-    "@metamask/authenticated-user-storage": "npm:^3.0.1"
+    "@metamask/authenticated-user-storage": "npm:^3.0.2"
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/chomp-api-service": "npm:^4.0.0"
+    "@metamask/chomp-api-service": "npm:^4.0.1"
     "@metamask/delegation-controller": "npm:^3.0.2"
     "@metamask/delegation-core": "npm:^2.2.1"
     "@metamask/delegation-deployments": "npm:^1.4.0"
     "@metamask/keyring-controller": "npm:^27.1.1"
     "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/money-account-utils": "npm:^1.1.0"
     "@metamask/network-controller": "npm:^36.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^6.1.0"
     "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/54e9fe1d121f48811c43b3ee506489576b16d1fa4cccf1d617a6ce43c2ddff0875b471b4d56c1f2f1c56d445dd6cd7e2d681f0a904028071576c98ad46e17e9c
+  checksum: 10/14a7bc37d0ba02fa350741cb1c4eeb7fa0f1c2a632dd1fd05258aa4bd16b15dfb3edbeaec42ed9413af2eb901c2a9412902025196c63b7729ae4692a01c0882c
   languageName: node
   linkType: hard
 
-"@metamask/money-account-utils@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/money-account-utils@npm:1.1.0"
+"@metamask/money-account-utils@npm:@metamask-previews/money-account-utils@1.1.0-preview-1ee21f9e0":
+  version: 1.1.0-preview-1ee21f9e0
+  resolution: "@metamask-previews/money-account-utils@npm:1.1.0-preview-1ee21f9e0"
   dependencies:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/abstract-provider": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
-    "@metamask/transaction-controller": "npm:^69.4.0"
+    "@metamask/transaction-controller": "npm:^69.7.0"
     "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/1117c232b37d6551af0b2e68b3f7ced9ec5d9b7bc025089bf54feeb15d627fcc474c9b65e5cf47b9c000cad19773cc9ea0ee5410aaa035ef250820d54b7efdd5
+  checksum: 10/37fdbf7016001b327d367a8ae98338d8d33724b1d138f8068bff36cbb49065b136f8e9acfa4d2066bb1f38502e9c1384d20963259da421a47975eb4202226f50
   languageName: node
   linkType: hard
 
@@ -8958,6 +8960,45 @@ __metadata:
     "@babel/runtime": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
   checksum: 10/8527dd4b4abc9e65148df05ded4f711ab976b367b51a87c71641842f9c9f60cbe909b7a30f6faa2c114120f1c2742111c6e38a49581c4534d2257394656ec8b6
+  languageName: node
+  linkType: hard
+
+"@metamask/transaction-controller@npm:^69.7.0":
+  version: 69.7.0
+  resolution: "@metamask/transaction-controller@npm:69.7.0"
+  dependencies:
+    "@ethereumjs/common": "npm:^4.4.0"
+    "@ethereumjs/rlp": "npm:^5.0.2"
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/wallet": "npm:^5.7.0"
+    "@metamask/accounts-controller": "npm:^39.1.1"
+    "@metamask/approval-controller": "npm:^9.0.2"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/core-backend": "npm:^9.0.0"
+    "@metamask/gas-fee-controller": "npm:^26.3.2"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/network-controller": "npm:^36.0.0"
+    "@metamask/nonce-tracker": "npm:^6.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^6.1.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.11.0"
+    async-mutex: "npm:^0.5.0"
+    bignumber.js: "npm:^9.1.2"
+    bn.js: "npm:^5.2.1"
+    eth-method-registry: "npm:^4.0.0"
+    ethereum-cryptography: "npm:^2.1.2"
+    fast-json-patch: "npm:^3.1.1"
+    lodash: "npm:^4.17.21"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+    "@metamask/eth-block-tracker": ">=9"
+  checksum: 10/25f82f339509c72fe65d74b85dd1ac9a4c0fee2bfdaf80c2493f93eeacb22eea5325629e62c6744e00f6842671df89d5ab7fa5bbc995971dce0eba51aa4eaebd
   languageName: node
   linkType: hard
 
