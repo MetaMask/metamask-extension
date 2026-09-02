@@ -8,6 +8,11 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../shared/constants/perps-events';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { PerpsDepositToast } from './perps-deposit-toast';
 
@@ -16,8 +21,14 @@ const mockToastError = jest.fn();
 const mockToastLoading = jest.fn();
 const mockToastSuccess = jest.fn();
 
+const mockTrack = jest.fn();
+
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
+}));
+
+jest.mock('../../../hooks/perps/usePerpsEventTracking', () => ({
+  usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
 
 jest.mock('../../ui/toast/toast', () => ({
@@ -225,6 +236,13 @@ describe('PerpsDepositToast', () => {
       {
         id: 'perps-deposit-toast',
         duration: 5000,
+      },
+    );
+    expect(mockTrack).toHaveBeenCalledWith(
+      MetaMetricsEventName.PerpsUiInteraction,
+      {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.DEPOSIT_CONFIRMED,
       },
     );
   });

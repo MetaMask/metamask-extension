@@ -7,8 +7,11 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
+  Button,
   ButtonIcon,
   ButtonIconSize,
+  ButtonSize,
+  ButtonVariant,
   IconName,
   IconColor,
 } from '@metamask/design-system-react';
@@ -27,6 +30,7 @@ import { TextField, TextFieldSize } from '../../../../../component-library';
 import { PerpsSlider } from '../../../perps-slider';
 import { getDisplaySymbol } from '../../../utils';
 import type { AmountInputProps } from '../../order-entry.types';
+import { PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC } from '../../../constants';
 import {
   formatNumberForInput,
   isDigitsOnlyInput,
@@ -405,15 +409,28 @@ export const AmountInput = ({
           <SensitiveText variant={TextVariant.BodySm} isHidden={privacyMode}>
             {`${formatNumber(availableBalance, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDC`}
           </SensitiveText>
-          <ButtonIcon
-            iconName={IconName.AddCircle}
-            size={ButtonIconSize.Xs}
-            iconProps={{ color: IconColor.IconAlternative }}
-            ariaLabel="Add Funds"
-            type="button"
-            onClick={onAddFunds}
-            data-testid="amount-input-add-funds"
-          />
+          {onAddFunds &&
+          availableBalance < PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC ? (
+            <Button
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Sm}
+              type="button"
+              onClick={onAddFunds}
+              data-testid="amount-input-add-funds"
+            >
+              {t('addFunds')}
+            </Button>
+          ) : (
+            <ButtonIcon
+              iconName={IconName.AddCircle}
+              size={ButtonIconSize.Xs}
+              iconProps={{ color: IconColor.IconAlternative }}
+              ariaLabel="Add Funds"
+              type="button"
+              onClick={onAddFunds}
+              data-testid="amount-input-add-funds"
+            />
+          )}
         </Box>
       </Box>
 

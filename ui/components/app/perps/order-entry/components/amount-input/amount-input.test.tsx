@@ -81,6 +81,24 @@ describe('AmountInput', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('renders a labeled Add funds control when available balance is zero', () => {
+      const onAddFunds = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          availableBalance={0}
+          onAddFunds={onAddFunds}
+        />,
+        mockStore,
+      );
+
+      const addFunds = screen.getByTestId('amount-input-add-funds');
+      expect(addFunds).toHaveTextContent(messages.addFunds.message);
+
+      fireEvent.click(addFunds);
+      expect(onAddFunds).toHaveBeenCalledTimes(1);
+    });
+
     it('renders the denomination toggle', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 

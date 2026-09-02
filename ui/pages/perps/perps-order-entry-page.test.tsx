@@ -1334,7 +1334,7 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
     });
 
-    it('disables submit button and shows add funds label when balance is zero', () => {
+    it('enables submit button and shows add funds to trade when balance is zero', async () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
@@ -1346,14 +1346,41 @@ describe('PerpsOrderEntryPage', () => {
       });
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
+      mockAnalyticsTrackEvent.mockClear();
 
       const submitButton = screen.getByTestId('submit-order-button');
 
-      expect(submitButton).toBeDisabled();
-      expect(submitButton).toHaveTextContent(messages.addFunds.message);
+      expect(submitButton).not.toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        messages.perpsAddFundsToTrade.message,
+      );
+      expect(
+        screen.getByTestId('perps-unfunded-add-funds-hint'),
+      ).toHaveTextContent(messages.perpsAddFundsHint.message);
+
+      await act(async () => {
+        fireEvent.click(submitButton);
+      });
+
+      expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsUiInteraction,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
+            [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+              PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+            [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+              PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
+            [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+              PERPS_EVENT_VALUE.BUTTON_LOCATION.TRADING,
+            [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: false,
+          }),
+        }),
+      );
     });
 
-    it('disables submit button when user is not eligible and balance is zero', () => {
+    it('opens geo-block modal when user is not eligible and balance is zero', async () => {
       mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
       mockLiveAccount.mockReturnValue({
         account: {
@@ -1368,7 +1395,14 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       const submitButton = screen.getByTestId('submit-order-button');
-      expect(submitButton).toBeDisabled();
+      expect(submitButton).not.toBeDisabled();
+
+      await act(async () => {
+        fireEvent.click(submitButton);
+      });
+
+      expect(mockTriggerDeposit).not.toHaveBeenCalled();
+      expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
     });
 
     it('gates the amount input add funds action when compliance blocks the selected wallet', async () => {
@@ -1414,7 +1448,7 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
     });
 
-    it('disables submit while account state is still loading for a new order', () => {
+    it('shows add funds to trade while account state is still loading at zero balance', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
@@ -1427,7 +1461,11 @@ describe('PerpsOrderEntryPage', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      expect(screen.getByTestId('submit-order-button')).toBeDisabled();
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).not.toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        messages.perpsAddFundsToTrade.message,
+      );
     });
 
     it('disables submit when selected account address is missing', async () => {

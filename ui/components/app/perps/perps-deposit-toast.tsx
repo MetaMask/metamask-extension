@@ -1,7 +1,13 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../shared/constants/perps-events';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { usePerpsEventTracking } from '../../../hooks/perps/usePerpsEventTracking';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
   selectPerpsDepositPending,
@@ -9,6 +15,7 @@ import {
   selectPerpsShouldShowDepositToast,
 } from '../../../selectors/perps-controller';
 import { toast, ToastContent } from '../../ui/toast/toast';
+import { isUnfundedDepositFunnelActive } from './utils/unfunded-deposit-funnel';
 
 const id = 'perps-deposit-toast';
 const duration = 5 * SECOND;
@@ -20,6 +27,7 @@ const clearDepositResult = () =>
 
 export function PerpsDepositToast() {
   const t = useI18nContext();
+  const { track } = usePerpsEventTracking();
   const depositInProgress = useSelector(selectPerpsDepositPending);
   const lastDepositResult = useSelector(selectPerpsLastDepositResult);
   const shouldShowDepositToast = useSelector(selectPerpsShouldShowDepositToast);
@@ -47,6 +55,13 @@ export function PerpsDepositToast() {
 
     if (isSuccess) {
       toast.success(content, options);
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.DEPOSIT_CONFIRMED,
+        ...(isUnfundedDepositFunnelActive()
+          ? { [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: false }
+          : {}),
+      });
     } else {
       toast.error(content, options);
     }
@@ -65,6 +80,7 @@ export function PerpsDepositToast() {
     lastDepositResultSuccess,
     lastDepositResultTimestamp,
     t,
+    track,
   ]);
 
   useEffect(() => {
