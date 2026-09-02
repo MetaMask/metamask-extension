@@ -38,7 +38,7 @@ import {
 import {
   filterMarketsByQuery,
   isHip3Market,
-  isCryptoMarket,
+  marketMatchesCategory,
 } from '../../../components/app/perps/utils';
 import {
   DEFAULT_ROUTE,
@@ -179,19 +179,17 @@ const filterByType = (
         watchlistSymbols.has(m.symbol.toUpperCase()),
       );
     }
-    case 'crypto': {
-      return markets.filter(isCryptoMarket);
-    }
     case 'new': {
       return markets.filter((m) =>
         isUncategorizedHip3Market(m, allowedHip3Sources),
       );
     }
     default: {
-      // Any controller market category (stock, pre-ipo, index, etf, commodity,
-      // forex, …) is matched generically so a new category works without a new
-      // case here.
-      return markets.filter((m) => getMarketTypeFilter(m) === filter);
+      // Any controller market category (crypto, stock, pre-ipo, index, etf,
+      // commodity, forex, …) is matched generically so a new category works
+      // without a new case here. Shared with the Perps tab category pills so
+      // a pill can never open a category this list would show as empty.
+      return markets.filter((m) => marketMatchesCategory(m, filter));
     }
   }
 };

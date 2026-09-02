@@ -7563,6 +7563,10 @@
   "perpsMarket": {
     "message": "Market"
   },
+  "perpsMarketCategories": {
+    "message": "Market categories",
+    "description": "Accessible name of the Perps tab row of market category pills"
+  },
   "perpsMarketNotFound": {
     "message": "Market not found"
   },
