@@ -17,7 +17,11 @@ import thunk from 'redux-thunk';
 
 import mockState from '../../../test/data/mock-state.json';
 import { enLocale as messages, tEn } from '../../../test/lib/i18n-helpers';
-import { PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
+import {
+  PERPS_MIN_MARKET_ORDER_USD,
+  PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC,
+} from '../../components/app/perps/constants';
+import { markUnfundedDepositFunnel } from '../../components/app/perps/utils/unfunded-deposit-funnel';
 import { bpsToPercent } from '../../components/app/perps/constants/slippageConfig';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
@@ -421,6 +425,7 @@ describe('PerpsOrderEntryPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    sessionStorage.clear();
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     const { isNearLiquidationPrice: realIsNearLiquidation } =
       jest.requireActual(
@@ -1378,6 +1383,37 @@ describe('PerpsOrderEntryPage', () => {
           }),
         }),
       );
+    });
+
+    it('enables add funds to trade when tradeable balance is dust below the unfunded threshold', async () => {
+      expect(PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC).toBeGreaterThan(0.009);
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          spendableBalance: '0.009',
+          withdrawableBalance: '0.009',
+          totalBalance: '0.009',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const submitButton = screen.getByTestId('submit-order-button');
+
+      expect(submitButton).not.toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        messages.perpsAddFundsToTrade.message,
+      );
+      expect(
+        screen.getByTestId('perps-unfunded-add-funds-hint'),
+      ).toHaveTextContent(messages.perpsAddFundsHint.message);
+
+      await act(async () => {
+        fireEvent.click(submitButton);
+      });
+
+      expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
     });
 
     it('opens geo-block modal when user is not eligible and balance is zero', async () => {
@@ -2703,6 +2739,30 @@ describe('PerpsOrderEntryPage', () => {
         expect.objectContaining({
           key: 'perpsToastOrderSubmitted',
           autoHideTime: 3000,
+        }),
+      );
+    });
+
+    it('tracks trade_submitted_after_deposit after a successful order when the unfunded funnel is active', async () => {
+      markUnfundedDepositFunnel();
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('1000');
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsUiInteraction,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+              PERPS_EVENT_VALUE.INTERACTION_TYPE.TRADE_SUBMITTED_AFTER_DEPOSIT,
+            [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
+            [PERPS_EVENT_PROPERTY.ASSET]: 'ETH',
+          }),
         }),
       );
     });

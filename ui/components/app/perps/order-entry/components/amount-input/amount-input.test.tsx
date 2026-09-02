@@ -99,6 +99,23 @@ describe('AmountInput', () => {
       expect(onAddFunds).toHaveBeenCalledTimes(1);
     });
 
+    it('labels the add funds icon with the translated add funds string when funded', () => {
+      const onAddFunds = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          availableBalance={100}
+          onAddFunds={onAddFunds}
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('amount-input-add-funds')).toHaveAttribute(
+        'aria-label',
+        messages.addFunds.message,
+      );
+    });
+
     it('renders the denomination toggle', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 
