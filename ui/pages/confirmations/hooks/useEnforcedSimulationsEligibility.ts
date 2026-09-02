@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -12,10 +11,10 @@ import {
 } from '../../../../shared/lib/transaction/enforced-simulations';
 import { getEip7702SupportedChains } from '../../../../shared/lib/eip7702-support-utils';
 import { useIsHardwareWalletAccount } from '../../../hooks/useIsHardwareWalletAccount';
-import { useConfirmContext } from '../context/confirm';
 import { selectIsEnforcedSimulationsEnabled } from '../selectors/feature-flags';
 import { getInternalAccounts } from '../../../selectors/accounts';
 import { EMPTY_OBJECT } from '../../../selectors/shared';
+import { useTransactionMetadataRequestOptional } from './transactions/useTransactionMetadataRequest';
 
 function selectEip7702SupportedChains(state: {
   metamask: RemoteFeatureFlagControllerState;
@@ -27,7 +26,7 @@ export function useEnforcedSimulationsEligibility(): {
   isEligible: boolean;
   isDefaultEnabled: boolean;
 } {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequestOptional();
 
   const addressSecurityAlertResponses = useSelector(
     (state: { metamask: EnforcedSimulationsState }) =>
