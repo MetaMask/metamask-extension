@@ -3416,6 +3416,9 @@
   "deepLink_thePredictPage": {
     "message": "the prediction markets page"
   },
+  "deepLink_thePrivacySettingsPage": {
+    "message": "the privacy settings page"
+  },
   "deepLink_theRewardsPage": {
     "message": "the MetaMask Rewards page"
   },
@@ -4489,6 +4492,10 @@
   "hardwareWalletErrorContinueButton": {
     "message": "Continue"
   },
+  "hardwareWalletErrorOnlyV4SupportedDescription": {
+    "message": "Your $1 can only sign version 4 (V4) typed data. This site requested an older signature type that isn't supported",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWalletErrorReconnectButton": {
     "message": "Reconnect and try again",
     "description": "Button label shown when a hardware wallet is disconnected during signing."
@@ -4532,6 +4539,9 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 locked",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleUnsupportedSignature": {
+    "message": "Signature not supported"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "Make sure your $1 device is set up with the Secret Recovery Phrase or passphrase for the selected account",
@@ -8072,6 +8082,18 @@
   "perpsToastUpdateSuccess": {
     "message": "TP/SL updated successfully",
     "description": "Success toast text shown when TP/SL settings are updated"
+  },
+  "perpsTopMovers": {
+    "message": "Top movers",
+    "description": "Heading of the Perps tab section ranking markets by 24h price change"
+  },
+  "perpsTopMoversGainers": {
+    "message": "Gainers",
+    "description": "Toggle option showing the markets that rose the most over 24h in the Top movers section"
+  },
+  "perpsTopMoversLosers": {
+    "message": "Losers",
+    "description": "Toggle option showing the markets that fell the most over 24h in the Top movers section"
   },
   "perpsTrades": {
     "message": "Trades"
