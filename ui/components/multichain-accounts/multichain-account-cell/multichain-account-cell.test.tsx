@@ -376,7 +376,7 @@ describe('MultichainAccountCell', () => {
   });
 
   describe('Mode defaults', () => {
-    it('defaults isHidden and isEditMode to false when props are omitted', () => {
+    it('defaults isHidden, isEditMode, and isDeleteMode to false when props are omitted', () => {
       renderWithProvider(
         <MultichainAccountCell
           accountId={defaultProps.accountId}
@@ -393,8 +393,10 @@ describe('MultichainAccountCell', () => {
 
       expect(cellElement).not.toHaveClass('multichain-account-cell--hidden');
       expect(cellElement).not.toHaveClass('multichain-account-cell--edit-mode');
+      expect(cellElement).not.toHaveClass('multichain-account-cell--delete-mode');
       expect(cellElement).not.toHaveAttribute('data-hidden');
       expect(cellElement).not.toHaveAttribute('data-edit-mode');
+      expect(cellElement).not.toHaveAttribute('data-delete-mode');
       expect(screen.getByTestId('end-accessory')).toBeInTheDocument();
     });
   });
@@ -412,6 +414,127 @@ describe('MultichainAccountCell', () => {
 
       expect(cellElement).toHaveClass('multichain-account-cell--hidden');
       expect(cellElement).toHaveAttribute('data-hidden', 'true');
+    });
+  });
+
+  describe('Delete mode', () => {
+    it('shows delete icon instead of visibility icon when in edit and delete mode', () => {
+      renderWithProvider(
+        <MultichainAccountCell
+          {...defaultProps}
+          isEditMode={true}
+          isDeleteMode={true}
+        />,
+        store,
+      );
+
+      const cellElement = screen.getByTestId(
+        `multichain-account-cell-${defaultProps.accountId}`,
+      );
+
+      expect(cellElement).toHaveClass('multichain-account-cell--delete-mode');
+      expect(cellElement).toHaveAttribute('data-delete-mode', 'true');
+      expect(
+        screen.getByTestId('multichain-account-cell-edit-mode-delete-icon'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('multichain-account-cell-edit-mode-visible-icon'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('multichain-account-cell-edit-mode-hidden-icon'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not show delete icon when isDeleteMode is true but not in edit mode', () => {
+      renderWithProvider(
+        <MultichainAccountCell {...defaultProps} isDeleteMode={true} />,
+        store,
+      );
+
+      const cellElement = screen.getByTestId(
+        `multichain-account-cell-${defaultProps.accountId}`,
+      );
+
+      expect(cellElement).not.toHaveClass(
+        'multichain-account-cell--delete-mode',
+      );
+      expect(cellElement).not.toHaveAttribute('data-delete-mode');
+      expect(
+        screen.queryByTestId('multichain-account-cell-edit-mode-delete-icon'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('treats delete mode as mutually exclusive with hidden mode', () => {
+      renderWithProvider(
+        <MultichainAccountCell
+          {...defaultProps}
+          isEditMode={true}
+          isDeleteMode={true}
+          isHidden={true}
+        />,
+        store,
+      );
+
+      const cellElement = screen.getByTestId(
+        `multichain-account-cell-${defaultProps.accountId}`,
+      );
+
+      expect(cellElement).toHaveClass('multichain-account-cell--delete-mode');
+      expect(cellElement).not.toHaveClass('multichain-account-cell--hidden');
+      expect(cellElement).not.toHaveAttribute('data-hidden');
+      expect(
+        screen.getByTestId('multichain-account-cell-edit-mode-delete-icon'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('multichain-account-cell-edit-mode-hidden-icon'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('calls onDeleteIconClick when the delete icon is clicked', () => {
+      const handleDeleteIconClick = jest.fn();
+      const handleCellClick = jest.fn();
+
+      renderWithProvider(
+        <MultichainAccountCell
+          {...defaultProps}
+          isEditMode={true}
+          isDeleteMode={true}
+          onClick={handleCellClick}
+          onDeleteIconClick={handleDeleteIconClick}
+        />,
+        store,
+      );
+
+      fireEvent.click(
+        screen.getByTestId('multichain-account-cell-edit-mode-delete-icon'),
+      );
+
+      expect(handleDeleteIconClick).toHaveBeenCalledTimes(1);
+      expect(handleDeleteIconClick).toHaveBeenCalledWith(
+        defaultProps.accountId,
+      );
+      expect(handleCellClick).not.toHaveBeenCalled();
+    });
+
+    it('does not call onDeleteIconClick when pending is true', () => {
+      const handleDeleteIconClick = jest.fn();
+
+      renderWithProvider(
+        <MultichainAccountCell
+          {...defaultProps}
+          isEditMode={true}
+          isDeleteMode={true}
+          pending={true}
+          onDeleteIconClick={handleDeleteIconClick}
+        />,
+        store,
+      );
+
+      fireEvent.click(
+        screen.getByTestId('multichain-account-cell-edit-mode-delete-icon'),
+      );
+
+      expect(handleDeleteIconClick).not.toHaveBeenCalled();
     });
   });
 
@@ -434,8 +557,8 @@ describe('MultichainAccountCell', () => {
       expect(cellElement).toHaveAttribute('data-edit-mode', 'true');
       expect(screen.queryByTestId('end-accessory')).not.toBeInTheDocument();
       expect(
-        screen.queryByTestId('multichain-account-cell-hovered-addresses'),
-      ).not.toBeInTheDocument();
+        screen.getByTestId('multichain-account-cell-hovered-addresses'),
+      ).toBeInTheDocument();
     });
 
     it('does not show connection status badge in edit mode', () => {

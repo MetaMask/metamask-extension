@@ -97,7 +97,7 @@ export default {
     isEditMode: {
       control: 'boolean',
       description:
-        'Whether the cell is in edit mode, suppressing menu and default-address controls',
+        'Whether the cell is in edit mode, suppressing menu controls',
       table: { defaultValue: { summary: 'false' } },
     },
     onVisibilityIconClick: {
@@ -288,4 +288,14 @@ HiddenAndEdit.args = {
   isHidden: true,
   isEditMode: true,
   onVisibilityIconClick: () => console.log('Visibility icon clicked'),
+};
+
+export const Delete = Template.bind({});
+Delete.args = {
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+  accountName: 'Removable Account in Edit Mode',
+  balance: '$2,400.00',
+  isEditMode: true,
+  isDeleteMode: true,
+  onDeleteIconClick: () => console.log('Delete icon clicked'),
 };

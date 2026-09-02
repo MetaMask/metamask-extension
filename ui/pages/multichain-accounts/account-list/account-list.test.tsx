@@ -78,6 +78,27 @@ describe('AccountList', () => {
     expect(screen.getByText('Account 2')).toBeInTheDocument();
   });
 
+  it('toggles edit mode on account cells when settings gear is clicked', () => {
+    renderComponent();
+
+    const accountCell = screen.getByTestId(
+      'multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+    );
+    expect(accountCell).not.toHaveClass('multichain-account-cell--edit-mode');
+
+    fireEvent.click(screen.getByTestId('account-list-page-settings-button'));
+
+    expect(accountCell).toHaveClass('multichain-account-cell--edit-mode');
+    expect(
+      screen.getAllByTestId('multichain-account-cell-edit-mode-visible-icon')
+        .length,
+    ).toBeGreaterThan(0);
+
+    fireEvent.click(screen.getByTestId('account-list-page-settings-button'));
+
+    expect(accountCell).not.toHaveClass('multichain-account-cell--edit-mode');
+  });
+
   it('navigates back when arrived via in-app navigation', () => {
     mockLocationKey = 'abc123';
 
