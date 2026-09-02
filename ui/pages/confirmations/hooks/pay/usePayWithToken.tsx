@@ -18,11 +18,11 @@ import {
 } from '../../../../selectors/transactionPayController';
 import { useConfirmContext } from '../../context/confirm';
 import { PayWithModal } from '../../components/modals/pay-with-modal';
+import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
-import { MONEY_ACCOUNT_DUMMY_BALANCE_FIAT } from './sections/usePayWithMoneyAccountSection';
 
 export type PayWithDisplayToken = {
   chainId: string;
@@ -70,6 +70,9 @@ export function usePayWithToken(): PayWithToken {
   const isMoneyAccountSelected =
     paymentOverride === PaymentOverride.MoneyAccount ||
     (isDefaultMoneyAccount && !payToken);
+  const { withdrawableFiatFormatted } = useMoneyAccountWithdrawableFiat(
+    isMoneyAccountSelected,
+  );
 
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
@@ -103,12 +106,17 @@ export function usePayWithToken(): PayWithToken {
 
   const balanceUsdFormatted = useMemo(() => {
     if (isMoneyAccountSelected) {
-      return MONEY_ACCOUNT_DUMMY_BALANCE_FIAT;
+      return withdrawableFiatFormatted ?? '';
     }
     return fiatFormatter(
       new BigNumber(resolvedToken?.balanceUsd ?? '0').toNumber(),
     );
-  }, [fiatFormatter, isMoneyAccountSelected, resolvedToken?.balanceUsd]);
+  }, [
+    fiatFormatter,
+    isMoneyAccountSelected,
+    resolvedToken?.balanceUsd,
+    withdrawableFiatFormatted,
+  ]);
 
   let displayToken: PayWithDisplayToken | undefined;
   if (isMoneyAccountSelected) {
@@ -116,7 +124,7 @@ export function usePayWithToken(): PayWithToken {
       chainId: resolvedToken?.chainId ?? '',
       address: '',
       symbol: t('payWithMoneyAccount'),
-      balanceUsd: MONEY_ACCOUNT_DUMMY_BALANCE_FIAT,
+      balanceUsd: withdrawableFiatFormatted ?? '',
     };
   } else if (resolvedToken?.chainId) {
     displayToken = {

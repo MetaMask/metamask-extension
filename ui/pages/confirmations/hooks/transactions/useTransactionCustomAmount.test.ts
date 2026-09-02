@@ -3,6 +3,7 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { act } from '@testing-library/react';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
@@ -14,6 +15,7 @@ import * as usePayWithNoFeeTokenModule from '../pay/usePayWithNoFeeToken';
 import * as useTransactionPayDataModule from '../pay/useTransactionPayData';
 import * as useTransactionPayTokenModule from '../pay/useTransactionPayToken';
 import * as usePayTokenAccountBalanceModule from '../pay/usePayTokenAccountBalance';
+import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { MUSD_TOKEN_ADDRESS } from '../../constants/musd';
 import {
   useTransactionCustomAmount,
@@ -28,6 +30,11 @@ jest.mock('../pay/usePayWithNoFeeToken');
 jest.mock('../pay/useTransactionPayData');
 jest.mock('../pay/useTransactionPayToken');
 jest.mock('../pay/usePayTokenAccountBalance');
+jest.mock('../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
+  useMoneyAccountWithdrawableFiat: jest.fn(() => ({
+    withdrawableFiatRaw: undefined,
+  })),
+}));
 jest.mock('./useDepositPrefillAmount');
 jest.mock('./useUpdateTokenAmount');
 jest.mock('../../../../store/actions', () => ({
@@ -65,6 +72,8 @@ function runHook({
   prefillMaxOnLoad = false,
   transactionMeta = MOCK_TRANSACTION_META,
   depositPrefill = DISABLED_DEPOSIT_PREFILL,
+  paymentOverride,
+  moneyAccountWithdrawableFiatRaw,
 }: {
   currency?: string;
   disableUpdate?: boolean;
@@ -84,6 +93,8 @@ function runHook({
   prefillMaxOnLoad?: boolean;
   transactionMeta?: TransactionMeta;
   depositPrefill?: ReturnType<typeof useDepositPrefillAmount>;
+  paymentOverride?: PaymentOverride;
+  moneyAccountWithdrawableFiatRaw?: string;
 } = {}) {
   jest
     .mocked(useTokenFiatRatesModule.useTokenFiatRate)
@@ -150,6 +161,10 @@ function runHook({
     isUpdating: false,
   });
   useDepositPrefillAmountMock.mockReturnValue(depositPrefill);
+  jest.mocked(useMoneyAccountWithdrawableFiat).mockReturnValue({
+    withdrawableFiatRaw: moneyAccountWithdrawableFiatRaw,
+    withdrawableFiatFormatted: undefined,
+  });
 
   return renderHookWithConfirmContextProvider(
     () =>
@@ -159,7 +174,15 @@ function runHook({
         disableUpdate,
         prefillMaxOnLoad,
       }),
-    getMockConfirmStateForTransaction(transactionMeta),
+    getMockConfirmStateForTransaction(transactionMeta, {
+      metamask: paymentOverride
+        ? {
+            transactionData: {
+              [transactionMeta.id]: { paymentOverride },
+            },
+          }
+        : {},
+    }),
   );
 }
 
@@ -460,6 +483,33 @@ describe('useTransactionCustomAmount', () => {
         false,
         { isMoneyAccountDeposit: false },
       );
+    });
+
+    it('uses money account withdrawable balance when payment override is MoneyAccount', () => {
+      const { result } = runHook({
+        paymentOverride: PaymentOverride.MoneyAccount,
+        moneyAccountWithdrawableFiatRaw: '12.349',
+        payTokenBalanceUsd: 100,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(100);
+      });
+
+      expect(result.current.amountFiat).toBe('12.34');
+    });
+
+    it('returns 0 for Max when payment override is MoneyAccount but withdrawable balance is missing', () => {
+      const { result } = runHook({
+        paymentOverride: PaymentOverride.MoneyAccount,
+        payTokenBalanceUsd: 100,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(100);
+      });
+
+      expect(result.current.amountFiat).toBe('0');
     });
 
     it('does not inflate max amount with token fiat rate when balanceUsdOverride is provided', () => {
