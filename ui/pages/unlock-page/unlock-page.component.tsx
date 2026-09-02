@@ -546,19 +546,16 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
           >
             {error}
             {unlockDelayPeriod > 0 && (
-              <>
-                <FormattedCounter
-                  startFrom={unlockDelayPeriod}
-                  onCountdownEnd={() =>
-                    this.setState({
-                      isLocked: false,
-                      error: null,
-                      unlockDelayPeriod: 0,
-                    })
-                  }
-                />
-                {'.'}
-              </>
+              <FormattedCounter
+                startFrom={unlockDelayPeriod}
+                onCountdownEnd={() =>
+                  this.setState({
+                    isLocked: false,
+                    error: null,
+                    unlockDelayPeriod: 0,
+                  })
+                }
+              />
             )}
           </Text>
         )}
