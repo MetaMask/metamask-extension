@@ -1,21 +1,15 @@
-import { RecommendedAction } from '@metamask/phishing-controller';
-import { useSelector } from 'react-redux';
-import { getUrlScanCacheResult } from '../selectors/selectors';
+import { useMemo } from 'react';
+import { useQuery } from '@metamask/react-data-query';
+import {
+  getPhishingDetectionScanUrlParam,
+  RecommendedAction,
+  type PhishingDetectionScanResult,
+} from '@metamask/phishing-controller';
 import { TrustSignalDisplayState, TrustSignalResult } from './useTrustSignals';
 
-type UrlScanCacheResult = {
-  data: {
-    hostname?: string;
-    recommendedAction: string;
-  };
-  timestamp: number;
-};
-
 function getTrustState(
-  cachedResult: UrlScanCacheResult | undefined,
+  recommendedAction: RecommendedAction | undefined,
 ): TrustSignalDisplayState {
-  const recommendedAction = cachedResult?.data?.recommendedAction;
-
   if (!recommendedAction) {
     return TrustSignalDisplayState.Unknown;
   }
@@ -33,23 +27,37 @@ function getTrustState(
   }
 }
 
+/**
+ * Hook to get trust signals for an origin URL. The scan result is read from
+ * (and kept fresh by) the PhishingDataService query cache.
+ *
+ * @param origin - The origin URL to check.
+ * @returns The trust signal state, and a null label since origins have none.
+ */
 export function useOriginTrustSignals(origin: string): TrustSignalResult {
-  let hostname: string | undefined;
-
-  if (origin) {
-    try {
-      const url = new URL(origin);
-      hostname = url.hostname;
-    } catch (e) {
-      hostname = undefined;
+  // The same parameter `PhishingController.scanUrl` derives, so the UI shares
+  // the cache entry the background scan primes rather than keying a second one.
+  const scanUrlParam = useMemo(() => {
+    if (!origin) {
+      return undefined;
     }
-  }
 
-  const urlScanCacheResult = useSelector((state) =>
-    getUrlScanCacheResult(state, hostname),
+    const [param, ok] = getPhishingDetectionScanUrlParam(origin);
+    return ok ? param : undefined;
+  }, [origin]);
+
+  const { data: scanResult } = useQuery<PhishingDetectionScanResult>({
+    // The key must stay a `[string, ...Json[]]`, so the parameter is stubbed
+    // while it is unknown. The query is disabled then, so the stub key is
+    // never fetched against.
+    queryKey: ['PhishingDataService:scanUrl', scanUrlParam ?? ''],
+    enabled: Boolean(scanUrlParam),
+  });
+
+  const state = useMemo(
+    () => getTrustState(scanResult?.recommendedAction),
+    [scanResult],
   );
-
-  const state = getTrustState(urlScanCacheResult);
 
   return {
     state,

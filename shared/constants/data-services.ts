@@ -8,4 +8,5 @@
 export const DATA_SERVICES: string[] = [
   'MoneyAccountBalanceService',
   'MoneyAccountApiDataService',
+  'PhishingDataService',
 ];

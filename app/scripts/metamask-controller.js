@@ -367,6 +367,7 @@ import { PermissionLogControllerInit } from './messenger-client-init/permission-
 import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
 import { AccountOrderControllerInit } from './messenger-client-init/account-order-controller-init';
 import { PhishingControllerInit } from './messenger-client-init/phishing-controller-init';
+import { PhishingDataServiceInit } from './messenger-client-init/phishing-data-service-init';
 import { AlertControllerInit } from './messenger-client-init/alert-controller-init';
 import { MetaMetricsDataDeletionControllerInit } from './messenger-client-init/metametrics-data-deletion-controller-init';
 import { LoggingControllerInit } from './messenger-client-init/logging-controller-init';
@@ -620,6 +621,7 @@ export default class MetamaskController extends EventEmitter {
         : {}),
       PPOMController: PPOMControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
+      PhishingDataService: PhishingDataServiceInit,
       PhishingController: PhishingControllerInit,
       TransactionPayController: TransactionPayControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,

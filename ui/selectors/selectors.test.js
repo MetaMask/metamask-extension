@@ -1312,8 +1312,6 @@ describe('Selectors', () => {
     const selectedAccountAddress = '0x123';
     const chainIdOne = CHAIN_IDS.MAINNET;
     const chainIdTwo = CHAIN_IDS.LINEA_MAINNET;
-    const tokenAddressOne = '0xaaa';
-    const tokenAddressTwo = '0xbbb';
 
     const state = {
       metamask: {
@@ -1331,25 +1329,12 @@ describe('Selectors', () => {
             [chainIdTwo]: [{ address: '0xnft-2' }],
           },
         },
-        tokenScanCache: {
-          [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
-            result_type: 'Malicious',
-          },
-          [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
-            result_type: 'Warning',
-          },
-          [`${chainIdTwo.toLowerCase()}:${tokenAddressOne}`]: {
-            result_type: 'Benign',
-          },
-        },
       },
     };
 
     beforeEach(() => {
       selectors.selectNftsByChainId.clearCache();
       selectors.selectNftsByChainId.resetRecomputations();
-      selectors.getTokenScanResultsForAddresses.clearCache();
-      selectors.getTokenScanResultsForAddresses.resetRecomputations();
     });
 
     it('caches NFT lookups per chain ID', () => {
@@ -1366,71 +1351,6 @@ describe('Selectors', () => {
       ]);
 
       expect(selectors.selectNftsByChainId.recomputations()).toBe(2);
-    });
-
-    it('caches token scan lookups across equivalent address arrays', () => {
-      const addressesForChainOne = [tokenAddressOne, tokenAddressTwo];
-      const equivalentAddressesForChainOne = [tokenAddressOne, tokenAddressTwo];
-
-      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(
-        0,
-      );
-
-      expect(
-        selectors.getTokenScanResultsForAddresses(
-          state,
-          chainIdOne,
-          addressesForChainOne,
-        ),
-      ).toStrictEqual({
-        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
-          result_type: 'Malicious',
-        },
-        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
-          result_type: 'Warning',
-        },
-      });
-      expect(
-        selectors.getTokenScanResultsForAddresses(
-          state,
-          chainIdOne,
-          equivalentAddressesForChainOne,
-        ),
-      ).toStrictEqual({
-        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
-          result_type: 'Malicious',
-        },
-        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
-          result_type: 'Warning',
-        },
-      });
-      expect(
-        selectors.getTokenScanResultsForAddresses(state, chainIdTwo, [
-          tokenAddressOne,
-          tokenAddressTwo,
-        ]),
-      ).toStrictEqual({
-        [`${chainIdTwo.toLowerCase()}:${tokenAddressOne}`]: {
-          result_type: 'Benign',
-        },
-      });
-      expect(
-        selectors.getTokenScanResultsForAddresses(state, chainIdOne, [
-          tokenAddressOne,
-          tokenAddressTwo,
-        ]),
-      ).toStrictEqual({
-        [`${chainIdOne.toLowerCase()}:${tokenAddressOne}`]: {
-          result_type: 'Malicious',
-        },
-        [`${chainIdOne.toLowerCase()}:${tokenAddressTwo}`]: {
-          result_type: 'Warning',
-        },
-      });
-
-      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(
-        2,
-      );
     });
   });
 
@@ -4338,41 +4258,6 @@ describe('getInternalAccountsSortedByKeyring', () => {
   });
 });
 
-describe('getUrlScanCacheResult', () => {
-  it('returns undefined for empty hostname', () => {
-    const result = selectors.getUrlScanCacheResult(mockState, '');
-    expect(result).toBeUndefined();
-  });
-
-  it('returns undefined for invalid URL hostname', () => {
-    const result = selectors.getUrlScanCacheResult(
-      mockState,
-      'not-a-valid-url',
-    );
-    expect(result).toBeUndefined();
-  });
-
-  it('returns the cached url scan result for a given hostname', () => {
-    mockState.metamask.urlScanCache = {
-      'example.com': {
-        result: {
-          domainName: 'example.com',
-          recommendedAction: 'BLOCK',
-        },
-        timestamp: 1234567890,
-      },
-    };
-
-    const result = selectors.getUrlScanCacheResult(mockState, 'example.com');
-    expect(result).toStrictEqual({
-      result: {
-        domainName: 'example.com',
-        recommendedAction: 'BLOCK',
-      },
-      timestamp: 1234567890,
-    });
-  });
-});
 
 describe('getGasFeesSponsoredNetworkEnabled', () => {
   it('returns the gasFeesSponsoredNetwork flag value for different scenarios', () => {

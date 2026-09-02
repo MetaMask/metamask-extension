@@ -37,7 +37,6 @@ import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { KeyringType as KeyringTypeV2 } from '@metamask/keyring-api/v2';
 
 import log from 'loglevel';
-import { generateTokenCacheKey } from '../helpers/utils/token-scan';
 import {
   getCurrentChainId,
   getProviderConfig,
@@ -499,10 +498,6 @@ const createChainIdSelector = createParameterizedShallowEqualSelector(10);
 // networks during a render cycle. Ten entries accommodate the current
 // multichain asset-view network fanout without expanding the LRU unnecessarily.
 const NFT_SELECTOR_CACHE_SIZE = 10;
-// Cache recent chainId + address-list combinations for token trust signal lookups
-// across asset pages and confirmation flows. Thirty entries supports several
-// address-list variants across a handful of active networks in a single view.
-const TOKEN_SCAN_RESULTS_SELECTOR_CACHE_SIZE = 30;
 
 /**
  * Get MetaMask accounts, including account name and balance.
@@ -3047,66 +3042,6 @@ export function getAddressSecurityAlertResponse(state, cacheKey) {
 
   return state.metamask.addressSecurityAlertResponses?.[cacheKey];
 }
-
-/**
- * Gets the cached url scan result for a given hostname
- *
- * @param {*} state
- * @param {string | undefined} hostname - The hostname to get the url scan result for
- * @returns the cached url scan result for the given hostname or undefined if the hostname is not provided
- */
-export function getUrlScanCacheResult(state, hostname) {
-  if (!hostname) {
-    return undefined;
-  }
-
-  return state.metamask.urlScanCache?.[hostname];
-}
-
-/**
- * Gets the token scan cache from state
- *
- * @param {*} state
- * @returns The token scan cache object
- */
-export function getTokenScanCache(state) {
-  return state.metamask.tokenScanCache;
-}
-
-/**
- * Gets specific token scan results for given addresses.
- *
- * @param {*} state
- * @param {string} chainId
- * @param {string[]} tokenAddresses
- * @returns {Record<string, TokenScanCacheResult>}
- *
- */
-export const getTokenScanResultsForAddresses =
-  createParameterizedShallowEqualSelector(
-    TOKEN_SCAN_RESULTS_SELECTOR_CACHE_SIZE,
-  )(
-    getTokenScanCache,
-    (_state, chainId) => chainId,
-    (_state, _chainId, tokenAddresses) => tokenAddresses,
-    (tokenScanCache, chainId, tokenAddresses) => {
-      if (!chainId || !tokenAddresses || !Array.isArray(tokenAddresses)) {
-        return {};
-      }
-
-      const results = {};
-      tokenAddresses.forEach((tokenAddress) => {
-        if (tokenAddress) {
-          const cacheKey = generateTokenCacheKey(chainId, tokenAddress);
-          if (tokenScanCache?.[cacheKey]) {
-            results[cacheKey] = tokenScanCache[cacheKey];
-          }
-        }
-      });
-
-      return results;
-    },
-  );
 
 /**
  * Get the state of the `addSnapAccountEnabled` flag.

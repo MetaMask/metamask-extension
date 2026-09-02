@@ -5,15 +5,10 @@ import { TransactionStatus, TransactionType } from '@metamask/keyring-api';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import type { MetaMaskReduxState } from '../store/store';
-import { generateTokenCacheKey } from '../helpers/utils/token-scan';
 import mockState from '../../test/data/mock-state.json';
 import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../test/data/mock-accounts';
 import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
-import {
-  selectNonEvmActivityItems,
-  selectNonEvmTransactionsForActivity,
-  selectEvmAddress,
-} from './activity';
+import { selectNonEvmActivityItems, selectEvmAddress } from './activity';
 
 const typedMockState = mockState as unknown as MultichainAccountsState;
 
@@ -22,15 +17,6 @@ type NonEvmTransactionsMap =
 
 function buildState(
   nonEvmTransactions: NonEvmTransactionsMap,
-  tokenScanCache?: Record<
-    string,
-    {
-      data?: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        result_type?: string;
-      };
-    }
-  >,
 ): MetaMaskReduxState {
   const baseState = structuredClone(mockState);
 
@@ -42,63 +28,9 @@ function buildState(
       enabledNetworkMap: {
         solana: { [MultichainNetworks.SOLANA]: true },
       },
-      tokenScanCache: tokenScanCache ?? {},
     },
   } as unknown as MetaMaskReduxState;
 }
-
-describe('selectNonEvmTransactionsForActivity', () => {
-  it('filters malicious non-EVM token transactions', () => {
-    const maliciousTx = {
-      id: 'bad-tx',
-      chain: MultichainNetworks.SOLANA,
-      from: [
-        {
-          asset: {
-            fungible: true,
-            type: `${MultichainNetworks.SOLANA}/token:BadMint111`,
-          },
-        },
-      ],
-      to: [],
-    } as unknown as Transaction;
-    const benignTx = {
-      id: 'good-tx',
-      chain: MultichainNetworks.SOLANA,
-      from: [
-        {
-          asset: {
-            fungible: true,
-            type: `${MultichainNetworks.SOLANA}/token:GoodMint222`,
-          },
-        },
-      ],
-      to: [],
-    } as unknown as Transaction;
-
-    const state = buildState(
-      {
-        [mockState.metamask.internalAccounts.selectedAccount]: {
-          [MultichainNetworks.SOLANA]: {
-            transactions: [maliciousTx, benignTx],
-            next: null,
-            lastUpdated: 0,
-          },
-        },
-      },
-      {
-        [generateTokenCacheKey(MultichainNetworks.SOLANA, 'BadMint111')]: {
-          data: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            result_type: 'Malicious',
-          },
-        },
-      },
-    ) as unknown as MetaMaskReduxState & MultichainAccountsState;
-
-    expect(selectNonEvmTransactionsForActivity(state)).toEqual([benignTx]);
-  });
-});
 
 describe('selectNonEvmActivityItems', () => {
   const solanaAddress = '8FnX3xo2yYw3EUE6w3nQA4GfXGS9wpK6oj3veJpbFzLo';
