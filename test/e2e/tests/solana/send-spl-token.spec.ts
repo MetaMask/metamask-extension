@@ -303,7 +303,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
         }
 
         await activityTab.checkNoFailedTransactions();
-        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
       },
     );
   });

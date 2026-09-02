@@ -57,6 +57,7 @@ describe('Ledger Swap', function (this: Suite) {
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedTxNumberDisplayedInActivity();
         await activityTab.checkNoFailedTransactions();
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity();
         await activityTab.checkTxAction({ action: 'Swapped' });
         await activityTab.checkTxAmountInActivity(`+4,625.9799 DAI`, 1);
       },
