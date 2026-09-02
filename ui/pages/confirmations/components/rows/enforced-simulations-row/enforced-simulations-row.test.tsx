@@ -8,7 +8,7 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { applyTransactionContainersExisting } from '../../../../../store/actions';
-import { useIsEnforcedSimulationsEligible } from '../../../hooks/useIsEnforcedSimulationsEligible';
+import { useEnforcedSimulationsEligibility } from '../../../hooks/useEnforcedSimulationsEligibility';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { EnforcedSimulationsRow } from './enforced-simulations-row';
@@ -18,7 +18,7 @@ jest.mock('../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../store/actions'),
   applyTransactionContainersExisting: jest.fn().mockResolvedValue({}),
 }));
-jest.mock('../../../hooks/useIsEnforcedSimulationsEligible');
+jest.mock('../../../hooks/useEnforcedSimulationsEligibility');
 jest.mock('../../../hooks/useTransactionEventFragment');
 jest.mock('../../../../../components/ui/tooltip', () => {
   const react = jest.requireActual('react');
@@ -45,8 +45,8 @@ jest.mock('../../../../../components/ui/tooltip', () => {
 
 const mockStore = configureMockStore([]);
 
-const useIsEnforcedSimulationsEligibleMock = jest.mocked(
-  useIsEnforcedSimulationsEligible,
+const useEnforcedSimulationsEligibilityMock = jest.mocked(
+  useEnforcedSimulationsEligibility,
 );
 const useI18nContextMock = jest.mocked(useI18nContext);
 const useTransactionEventFragmentMock = jest.mocked(
@@ -56,18 +56,23 @@ const updateTransactionEventFragmentMock = jest.fn();
 
 function render({
   isEligible = true,
+  isDefaultEnabled = true,
   containerTypes,
   origin,
   delegationAddress,
   component = <EnforcedSimulationsRow />,
 }: {
   isEligible?: boolean;
+  isDefaultEnabled?: boolean;
   containerTypes?: TransactionContainerType[];
   origin?: string;
   delegationAddress?: string;
   component?: React.ReactElement;
 } = {}) {
-  useIsEnforcedSimulationsEligibleMock.mockReturnValue(isEligible);
+  useEnforcedSimulationsEligibilityMock.mockReturnValue({
+    isEligible,
+    isDefaultEnabled,
+  });
 
   useI18nContextMock.mockReturnValue(((key: string) => {
     const translations: Record<string, string> = {
@@ -157,10 +162,10 @@ describe('EnforcedSimulationsRow', () => {
       return <EnforcedSimulationsRow />;
     }
 
-    useIsEnforcedSimulationsEligibleMock
-      .mockReturnValueOnce(true)
-      .mockReturnValueOnce(false)
-      .mockReturnValue(true);
+    useEnforcedSimulationsEligibilityMock
+      .mockReturnValueOnce({ isEligible: true, isDefaultEnabled: true })
+      .mockReturnValueOnce({ isEligible: false, isDefaultEnabled: false })
+      .mockReturnValue({ isEligible: true, isDefaultEnabled: true });
     jest
       .mocked(applyTransactionContainersExisting)
       .mockImplementationOnce(() => firstRequest)
@@ -184,19 +189,43 @@ describe('EnforcedSimulationsRow', () => {
     consoleError.mockRestore();
   });
 
-  it('records when enforced simulations are enabled by default', async () => {
+  it('enables enforced simulations by default for warning or malicious transactions', async () => {
     jest.mocked(applyTransactionContainersExisting).mockResolvedValueOnce({
       enforcedSimulationsSlippage: 2.5,
     });
 
-    render({ containerTypes: undefined });
+    render({ isDefaultEnabled: true, containerTypes: undefined });
 
     await waitFor(() => {
+      expect(applyTransactionContainersExisting).toHaveBeenCalledWith(
+        expect.any(String),
+        [TransactionContainerType.EnforcedSimulations],
+      );
       expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
         {
           properties: {
             enforced_simulations_default_enabled: true,
             enforced_simulation_slippage_bps: 250,
+          },
+        },
+        expect.any(String),
+      );
+    });
+  });
+
+  it('initializes benign transactions with enforced simulations opted out', async () => {
+    render({ isDefaultEnabled: false, containerTypes: undefined });
+
+    await waitFor(() => {
+      expect(applyTransactionContainersExisting).toHaveBeenCalledWith(
+        expect.any(String),
+        [],
+      );
+      expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
+        {
+          properties: {
+            enforced_simulations_default_enabled: false,
+            enforced_simulation_slippage_bps: null,
           },
         },
         expect.any(String),

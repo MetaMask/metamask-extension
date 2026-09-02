@@ -195,6 +195,32 @@ export function isEnforcedSimulationsEligible(
   return true;
 }
 
+/**
+ * Determines whether an eligible transaction should have enforced
+ * simulations enabled by default.
+ *
+ * Enforced simulations are enabled by default when at least one relevant
+ * recipient has a Warning or Malicious trust signal. Force-enabled
+ * transactions keep the existing enabled-by-default behavior.
+ *
+ * @param transactionMeta - The transaction metadata.
+ * @param state - Trust signal state and EIP-7702 supported chains.
+ * @returns Whether enforced simulations should be enabled by default.
+ */
+export function isEnforcedSimulationsDefaultEnabled(
+  transactionMeta: TransactionMeta,
+  state: EnforcedSimulationsState,
+): boolean {
+  if (isEnforcedSimulationsForceEnabled()) {
+    return true;
+  }
+
+  return getRelevantTrustSignalResults(transactionMeta, state).some(
+    (resultType) =>
+      resultType === ResultType.Warning || resultType === ResultType.Malicious,
+  );
+}
+
 function getEnforcedSimulationsFlag({
   remoteFeatureFlags,
 }: FeatureFlagSource): EnforcedSimulationsFeatureFlag | undefined {
@@ -207,6 +233,15 @@ function isTrusted(
   transactionMeta: TransactionMeta,
   state: EnforcedSimulationsState,
 ): boolean {
+  return getRelevantTrustSignalResults(transactionMeta, state).every(
+    (resultType) => resultType === ResultType.Trusted,
+  );
+}
+
+function getRelevantTrustSignalResults(
+  transactionMeta: TransactionMeta,
+  state: EnforcedSimulationsState,
+): ResultType[] {
   const { chainId, type, txParams, txParamsOriginal, nestedTransactions } =
     transactionMeta;
 
@@ -223,7 +258,7 @@ function isTrusted(
   // outer batch target (`txParamsOriginal.to`, the upgraded EOA for a 7702
   // batch) is never scanned, so its cache miss never disqualifies.
   if (!chainId) {
-    return false;
+    return [];
   }
 
   // Use the original `to` address before any container wrapping,
@@ -235,7 +270,7 @@ function isTrusted(
   // calls, treated uniformly.
   const calls = [{ to: originalTo, data, type }, ...(nestedTransactions ?? [])];
 
-  let trusted = true;
+  const resultTypes: ResultType[] = [];
 
   for (let index = 0; index < calls.length; index++) {
     const { to, data: callData, type: callType } = calls[index];
@@ -271,12 +306,12 @@ function isTrusted(
 
     if (cached.result_type === ResultType.Trusted) {
       log(`${label} - Trusted - Trusted Signal`, props);
-      continue;
+    } else {
+      log(`${label} - Not Trusted - ${cached.result_type}`, props);
     }
 
-    log(`${label} - Not Trusted - ${cached.result_type}`, props);
-    trusted = false;
+    resultTypes.push(cached.result_type);
   }
 
-  return trusted;
+  return resultTypes;
 }

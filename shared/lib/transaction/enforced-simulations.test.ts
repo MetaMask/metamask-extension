@@ -17,6 +17,7 @@ import {
   EnforcedSimulationsState,
   getEnforcedSimulationsSlippage,
   getEnforcedSimulationsSlippageBasisPoints,
+  isEnforcedSimulationsDefaultEnabled,
   isEnforcedSimulationsEligible,
 } from './enforced-simulations';
 
@@ -133,6 +134,79 @@ describe('enforced-simulations', () => {
   describe('getEnforcedSimulationsSlippageBasisPoints', () => {
     it('converts percentages to basis points', () => {
       expect(getEnforcedSimulationsSlippageBasisPoints(2.5)).toBe(250);
+    });
+  });
+
+  describe('isEnforcedSimulationsDefaultEnabled', () => {
+    afterEach(() => {
+      delete process.env.FORCE_ENFORCED_SIMULATIONS;
+    });
+
+    for (const resultType of [ResultType.Warning, ResultType.Malicious]) {
+      it(`returns true for a ${resultType} trust signal`, () => {
+        expect(
+          isEnforcedSimulationsDefaultEnabled(
+            BASE_TRANSACTION_META,
+            buildState(resultType),
+          ),
+        ).toBe(true);
+      });
+    }
+
+    for (const resultType of [
+      ResultType.Benign,
+      ResultType.Trusted,
+      ResultType.ErrorResult,
+      ResultType.Loading,
+    ]) {
+      it(`returns false for a ${resultType} trust signal`, () => {
+        expect(
+          isEnforcedSimulationsDefaultEnabled(
+            BASE_TRANSACTION_META,
+            buildState(resultType),
+          ),
+        ).toBe(false);
+      });
+    }
+
+    it('returns true when a nested recipient has a Warning trust signal', () => {
+      expect(
+        isEnforcedSimulationsDefaultEnabled(
+          {
+            ...BASE_TRANSACTION_META,
+            nestedTransactions: [
+              { to: NESTED_ADDRESS_A as `0x${string}`, data: '0xabcd' },
+            ],
+          },
+          buildStateForAddresses({
+            [TO_ADDRESS]: ResultType.Benign,
+            [NESTED_ADDRESS_A]: ResultType.Warning,
+          }),
+        ),
+      ).toBe(true);
+    });
+
+    it('ignores Warning trust signals for simple sends', () => {
+      expect(
+        isEnforcedSimulationsDefaultEnabled(
+          {
+            ...BASE_TRANSACTION_META,
+            type: TransactionType.simpleSend,
+          },
+          buildState(ResultType.Warning),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns true when enforced simulations are force enabled', () => {
+      process.env.FORCE_ENFORCED_SIMULATIONS = 'true';
+
+      expect(
+        isEnforcedSimulationsDefaultEnabled(
+          BASE_TRANSACTION_META,
+          buildState(ResultType.Benign),
+        ),
+      ).toBe(true);
     });
   });
 

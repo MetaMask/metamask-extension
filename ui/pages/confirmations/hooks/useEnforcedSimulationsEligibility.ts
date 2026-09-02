@@ -6,6 +6,7 @@ import isEqual from 'lodash/isEqual';
 import {
   EnforcedSimulationsState,
   getInternalEvmAddresses,
+  isEnforcedSimulationsDefaultEnabled,
   isEnforcedSimulationsEligible,
   isEnforcedSimulationsForceEnabled,
 } from '../../../../shared/lib/transaction/enforced-simulations';
@@ -22,7 +23,10 @@ function selectEip7702SupportedChains(state: {
   return getEip7702SupportedChains(state.metamask);
 }
 
-export function useIsEnforcedSimulationsEligible(): boolean {
+export function useEnforcedSimulationsEligibility(): {
+  isEligible: boolean;
+  isDefaultEnabled: boolean;
+} {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const addressSecurityAlertResponses = useSelector(
@@ -53,12 +57,26 @@ export function useIsEnforcedSimulationsEligible(): boolean {
     !currentConfirmation ||
     isHardwareWallet
   ) {
-    return false;
+    return { isEligible: false, isDefaultEnabled: false };
   }
 
-  return isEnforcedSimulationsEligible(currentConfirmation, {
+  const enforcedSimulationsState = {
     addressSecurityAlertResponses,
     eip7702SupportedChains,
     internalAddresses,
-  });
+  };
+  const isEligible = isEnforcedSimulationsEligible(
+    currentConfirmation,
+    enforcedSimulationsState,
+  );
+
+  return {
+    isEligible,
+    isDefaultEnabled:
+      isEligible &&
+      isEnforcedSimulationsDefaultEnabled(
+        currentConfirmation,
+        enforcedSimulationsState,
+      ),
+  };
 }
