@@ -84,6 +84,8 @@ export const PERPS_EVENT_VALUE = {
       CONTROLLER_PERPS_EVENT_VALUE.BUTTON_LOCATION.PERPS_TAB,
     /** @deprecated Use TRADE_MENU_ACTION / keep trading location string */
     TRADING: 'trading',
+    /** Extension trade-screen available-to-trade row Add funds control. */
+    AMOUNT_INPUT: 'amount_input',
   },
   BUTTON_CLICKED: {
     ...CONTROLLER_PERPS_EVENT_VALUE.BUTTON_CLICKED,
@@ -112,6 +114,13 @@ export const PERPS_EVENT_VALUE = {
     /** Extension order-entry chart panel open/close (not yet in controller contract). */
     CHART_OPENED: 'chart_opened',
     CHART_CLOSED: 'chart_closed',
+    /**
+     * Unfunded trade-screen deposit funnel (not yet in the controller contract).
+     * Click is BUTTON_CLICKED + DEPOSIT; these cover the later drop-off points.
+     */
+    DEPOSIT_FLOW_OPENED: 'deposit_flow_opened',
+    DEPOSIT_CONFIRMED: 'deposit_confirmed',
+    TRADE_SUBMITTED_AFTER_DEPOSIT: 'trade_submitted_after_deposit',
   },
   ERROR_TYPE: {
     ...CONTROLLER_PERPS_EVENT_VALUE.ERROR_TYPE,

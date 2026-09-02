@@ -1,6 +1,11 @@
 import { act } from '@testing-library/react';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
 import {
   ConfirmationLoader,
@@ -10,6 +15,7 @@ import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
 import { usePerpsDepositConfirmation } from './usePerpsDepositConfirmation';
 
 const mockNavigate = jest.fn();
+const mockTrack = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -18,6 +24,10 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('./createPerpsDepositTransaction', () => ({
   createPerpsDepositTransaction: jest.fn(),
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsEventTracking', () => ({
+  usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
 
 const mockEnsureArbitrumNetworkExists = jest.fn().mockResolvedValue(undefined);
@@ -63,6 +73,13 @@ describe('usePerpsDepositConfirmation', () => {
       { replace: true },
     );
     expect(triggerResult).toStrictEqual({ transactionId: 'tx-123' });
+    expect(mockTrack).toHaveBeenCalledWith(
+      MetaMetricsEventName.PerpsUiInteraction,
+      {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.DEPOSIT_FLOW_OPENED,
+      },
+    );
   });
 
   it('ensures the Arbitrum network exists before creating the deposit transaction', async () => {
