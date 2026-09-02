@@ -1,3 +1,4 @@
+import log from 'loglevel';
 import {
   hasVault,
   type Backup,
@@ -69,6 +70,13 @@ export class CriticalErrorHandler {
 
   #getBackup: (() => Promise<Backup | null>) | null = null;
 
+  /**
+   * Backup captured from a PersistenceError at init-failure time. Preferred
+   * over a later IndexedDB re-read so Recover can still run if that second
+   * read fails.
+   */
+  #cachedBackup: Backup | null = null;
+
   #portDisconnectHandlers = new WeakMap<chrome.runtime.Port, () => void>();
 
   #restoreListener = (message: Message): void => {
@@ -127,6 +135,27 @@ export class CriticalErrorHandler {
   }
 
   /**
+   * Stores the backup captured when a PersistenceError is thrown so repair can
+   * reuse it without sending vault data over the UI port.
+   *
+   * @param backup - Error-time backup snapshot, or `null` to clear.
+   */
+  cacheBackup(backup: Backup | null): void {
+    this.#cachedBackup = backup;
+  }
+
+  /**
+   * Returns the error-time backup when present, otherwise re-reads via
+   * `getBackup`.
+   */
+  async #resolveBackup(): Promise<Backup | null> {
+    if (this.#cachedBackup !== null) {
+      return this.#cachedBackup;
+    }
+    return (await this.#getBackup?.()) ?? null;
+  }
+
+  /**
    * Handles a message from the UI to restore/reset after a critical error.
    *
    * @param message
@@ -149,11 +178,20 @@ export class CriticalErrorHandler {
       return;
     }
 
-    const backup = await this.#getBackup();
+    const backup = await this.#resolveBackup();
+    const backupHasVault = hasVault(backup);
     if (
-      repairAction === CriticalErrorRepairAction.Recover &&
-      !hasVault(backup)
+      !(
+        (repairAction === CriticalErrorRepairAction.Recover &&
+          backupHasVault) ||
+        (repairAction === CriticalErrorRepairAction.Reset && !backupHasVault)
+      )
     ) {
+      log.warn(
+        'critical-error-repair: ignoring unexpected repairAction',
+        repairAction,
+        { backupHasVault },
+      );
       return;
     }
     const criticalErrorType = getCriticalErrorType(params);
@@ -196,6 +234,8 @@ export class CriticalErrorHandler {
       });
     } catch (repairError) {
       captureException(repairError);
+    } finally {
+      this.#cachedBackup = null;
     }
   }
 
@@ -209,7 +249,7 @@ export class CriticalErrorHandler {
     )
       ? (params.repairAction as CriticalErrorRepairAction)
       : CriticalErrorRepairAction.None;
-    const backup = (await this.#getBackup?.()) ?? null;
+    const backup = await this.#resolveBackup();
     const criticalErrorType = getCriticalErrorType(params);
 
     if (isStateCorruptionErrorType(criticalErrorType)) {

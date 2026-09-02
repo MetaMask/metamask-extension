@@ -530,6 +530,9 @@ const handleOnConnect = async (port) => {
         const stateCorruptionErrorType = getStateCorruptionErrorType(errorLike);
         const isStateCorruption = stateCorruptionErrorType !== undefined;
         const backup = isStateCorruption ? getErrorBackup(error) : undefined;
+        if (isObject(backup)) {
+          criticalErrorHandler.cacheBackup(backup);
+        }
         const repairAction = hasVault(backup)
           ? CriticalErrorRepairAction.Recover
           : CriticalErrorRepairAction.Reset;
@@ -2277,7 +2280,7 @@ async function initOrRestoreBackground() {
   if (repairSession) {
     await clearCriticalErrorRepairSession(browser);
 
-    if (repairAction === CriticalErrorRepairAction.Reset) {
+    if (repairAction === CriticalErrorRepairAction.Reset && !backupHasVault) {
       await persistenceManager.reset();
       initBackground(null);
       try {

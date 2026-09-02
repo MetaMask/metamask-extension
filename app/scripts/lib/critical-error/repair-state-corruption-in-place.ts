@@ -60,9 +60,11 @@ export async function repairStateCorruptionInPlace({
   setRestoreFlowType,
   tryPostMessage,
 }: RepairStateCorruptionInPlaceOptions): Promise<void> {
+  const backupHasVault = hasVault(backup);
   const canRecover =
-    repairAction === CriticalErrorRepairAction.Recover && hasVault(backup);
-  const shouldReset = repairAction === CriticalErrorRepairAction.Reset;
+    repairAction === CriticalErrorRepairAction.Recover && backupHasVault;
+  const shouldReset =
+    repairAction === CriticalErrorRepairAction.Reset && !backupHasVault;
 
   try {
     if (!canRecover && !shouldReset) {

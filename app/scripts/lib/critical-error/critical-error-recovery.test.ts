@@ -218,6 +218,74 @@ describe('CriticalErrorHandler', () => {
       expect(jest.mocked(captureException)).not.toHaveBeenCalled();
     });
 
+    it('recovers from a cached error-time backup when the IndexedDB re-read has no vault', async () => {
+      const cachedBackup: Backup = {
+        KeyringController: { vault: 'encrypted-vault' },
+      };
+      const getBackup = jest.fn().mockResolvedValue({ KeyringController: {} });
+      const repairCallback = jest.fn().mockResolvedValue(true);
+      const config = createConfig({ getBackup, repairCallback });
+
+      handler.cacheBackup(cachedBackup);
+      handler.registerPortForCriticalError(config);
+
+      const portWithEmit = config.port as chrome.runtime.Port & {
+        emitTestMessage: (message: unknown) => void;
+      };
+      portWithEmit.emitTestMessage(createRepairMessage());
+
+      await flushPromises();
+
+      expect(getBackup).not.toHaveBeenCalled();
+      expect(repairCallback).toHaveBeenCalledWith({
+        repairAction: CriticalErrorRepairAction.Recover,
+        criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        backup: cachedBackup,
+        connectedPorts: expect.any(Set),
+      });
+    });
+
+    it('clears the cached backup after repair so a later recover re-reads IndexedDB', async () => {
+      const cachedBackup: Backup = {
+        KeyringController: { vault: 'cached-vault' },
+      };
+      const indexedDbBackup: Backup = {
+        KeyringController: { vault: 'indexeddb-vault' },
+      };
+      const getBackup = jest.fn().mockResolvedValue(indexedDbBackup);
+      const repairCallback = jest.fn().mockResolvedValue(true);
+      const firstConfig = createConfig({ getBackup, repairCallback });
+
+      handler.cacheBackup(cachedBackup);
+      handler.registerPortForCriticalError(firstConfig);
+
+      const firstPort = firstConfig.port as chrome.runtime.Port & {
+        emitTestMessage: (message: unknown) => void;
+      };
+      firstPort.emitTestMessage(createRepairMessage());
+      await flushPromises();
+
+      expect(getBackup).not.toHaveBeenCalled();
+      expect(repairCallback).toHaveBeenCalledTimes(1);
+      expect(repairCallback).toHaveBeenLastCalledWith(
+        expect.objectContaining({ backup: cachedBackup }),
+      );
+
+      const secondConfig = createConfig({ getBackup, repairCallback });
+      handler.registerPortForCriticalError(secondConfig);
+      const secondPort = secondConfig.port as chrome.runtime.Port & {
+        emitTestMessage: (message: unknown) => void;
+      };
+      secondPort.emitTestMessage(createRepairMessage());
+      await flushPromises();
+
+      expect(getBackup).toHaveBeenCalledTimes(1);
+      expect(repairCallback).toHaveBeenCalledTimes(2);
+      expect(repairCallback).toHaveBeenLastCalledWith(
+        expect.objectContaining({ backup: indexedDbBackup }),
+      );
+    });
+
     it('removes listeners from all connected ports before restore', async () => {
       const backup: Backup = {
         KeyringController: { vault: 'encrypted-vault' },
@@ -289,6 +357,33 @@ describe('CriticalErrorHandler', () => {
         },
       );
     });
+
+    it('does not reset when a recoverable vault is still present', async () => {
+      const backup: Backup = {
+        KeyringController: { vault: 'encrypted-vault' },
+      };
+      const repairCallback = jest.fn().mockResolvedValue(true);
+      const config = createConfig({
+        getBackup: jest.fn().mockResolvedValue(backup),
+        repairCallback,
+      });
+      handler.registerPortForCriticalError(config);
+
+      const portWithEmit = config.port as chrome.runtime.Port & {
+        emitTestMessage: (message: unknown) => void;
+      };
+      portWithEmit.emitTestMessage(
+        createRepairMessage({
+          repairAction: CriticalErrorRepairAction.Reset,
+          criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+        }),
+      );
+
+      await flushPromises();
+
+      expect(repairCallback).not.toHaveBeenCalled();
+      expect(handler.connectedPorts.has(config.port)).toBe(true);
+    });
   });
 
   describe('when port receives CRITICAL_ERROR_SCREEN_VIEWED', () => {
@@ -311,6 +406,38 @@ describe('CriticalErrorHandler', () => {
         backup,
         MetaMetricsEventName.CriticalErrorScreenViewed,
         CriticalErrorType.BackgroundStateSyncTimeout,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          repair_action: CriticalErrorRepairAction.Recover,
+        },
+      );
+    });
+
+    it('uses a cached error-time backup for screen view tracking without re-reading IndexedDB', async () => {
+      const cachedBackup: Backup = { KeyringController: { vault: 'vault' } };
+      const getBackup = jest.fn().mockResolvedValue(null);
+      const config = createConfig({ getBackup });
+
+      handler.cacheBackup(cachedBackup);
+      handler.registerPortForCriticalError(config);
+
+      const portWithEmit = config.port as chrome.runtime.Port & {
+        emitTestMessage: (message: unknown) => void;
+      };
+      portWithEmit.emitTestMessage(
+        createScreenViewedMessage({
+          repairAction: CriticalErrorRepairAction.Recover,
+          criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+        }),
+      );
+
+      await flushPromises();
+
+      expect(getBackup).not.toHaveBeenCalled();
+      expect(jest.mocked(trackCriticalErrorEvent)).toHaveBeenCalledWith(
+        cachedBackup,
+        MetaMetricsEventName.CriticalErrorScreenViewed,
+        CriticalErrorType.MissingVaultInDatabase,
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           repair_action: CriticalErrorRepairAction.Recover,

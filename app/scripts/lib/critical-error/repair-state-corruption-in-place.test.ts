@@ -119,6 +119,32 @@ describe('repairStateCorruptionInPlace', () => {
     expect(tryPostMessage).not.toHaveBeenCalled();
   });
 
+  it('does not reset persistence when a recoverable vault is still present', async () => {
+    const backup: Backup = {
+      KeyringController: { vault: 'vault-data' },
+    };
+    const connectedPorts = new Set<chrome.runtime.Port>();
+
+    await expect(
+      repairStateCorruptionInPlace({
+        repairAction: CriticalErrorRepairAction.Reset,
+        backup,
+        connectedPorts,
+        initBackground,
+        backgroundIsInitialized,
+        persistenceManager,
+        setGlobalInitializers,
+        setRestoreFlowType,
+        tryPostMessage,
+      }),
+    ).rejects.toThrow('Unexpected state corruption repair action');
+
+    expect(persistenceManager.reset).not.toHaveBeenCalled();
+    expect(setGlobalInitializers).not.toHaveBeenCalled();
+    expect(initBackground).not.toHaveBeenCalled();
+    expect(tryPostMessage).not.toHaveBeenCalled();
+  });
+
   it('reloads connected UI windows when recover initialization fails', async () => {
     const backup: Backup = {
       KeyringController: { vault: 'vault-data' },
