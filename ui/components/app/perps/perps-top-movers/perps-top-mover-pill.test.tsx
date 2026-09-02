@@ -41,6 +41,16 @@ describe('PerpsTopMoverPill', () => {
     expect(screen.getByTestId('perps-top-movers-pill-BTC')).toBeInTheDocument();
   });
 
+  it('sizes to its label instead of stretching or shrinking in a row', () => {
+    renderPill();
+
+    const pill = screen.getByTestId('perps-top-movers-pill-BTC');
+
+    expect(pill).toHaveClass('w-auto', 'shrink-0');
+    expect(pill).not.toHaveClass('flex-1');
+    expect(pill).not.toHaveClass('min-w-0');
+  });
+
   it('displays the ticker', () => {
     renderPill();
 

@@ -108,6 +108,17 @@ describe('PerpsTopMovers', () => {
       );
     });
 
+    it('keeps the bordered toggle track inset from the screen edges', () => {
+      renderSection();
+
+      const track = screen.getByTestId('perps-top-movers-toggle');
+
+      expect(track).toHaveClass('p-1');
+      expect(track).not.toHaveClass('pl-4');
+      expect(track).not.toHaveClass('pr-4');
+      expect(track.parentElement).toHaveClass('pl-4', 'pr-4');
+    });
+
     it('splits the ranked pills evenly across two rows', () => {
       renderSection(
         Array.from({ length: PERPS_CONSTANTS.TOP_MOVERS_LIMIT }, (_, index) =>

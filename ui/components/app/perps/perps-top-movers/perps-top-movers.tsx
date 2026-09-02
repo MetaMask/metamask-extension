@@ -183,34 +183,36 @@ export const PerpsTopMovers = ({
       </ButtonBase>
 
       {/* Segmented track: ButtonFilter supplies the selected fill/contrast
-          (bg-icon-default + inverse text), matching mobile's SegmentedControl. */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        gap={1}
-        paddingLeft={4}
-        paddingRight={4}
-        className="w-full rounded-full border border-muted p-1"
-        data-testid="perps-top-movers-toggle"
-      >
-        <ButtonFilter
-          isActive={isGainers}
-          onClick={handleSelectGainers}
-          aria-pressed={isGainers}
-          className="flex-1 h-7 rounded-full"
-          data-testid="perps-top-movers-gainers"
+          (bg-icon-default + inverse text), matching mobile's SegmentedControl.
+          Inset lives on a wrapper because Box twMerges className last, so
+          `p-1` on the same node would drop `paddingLeft`/`paddingRight`. */}
+      <Box paddingLeft={4} paddingRight={4}>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
+          className="w-full rounded-full border border-muted p-1"
+          data-testid="perps-top-movers-toggle"
         >
-          {t('perpsTopMoversGainers')}
-        </ButtonFilter>
-        <ButtonFilter
-          isActive={!isGainers}
-          onClick={handleSelectLosers}
-          aria-pressed={!isGainers}
-          className="flex-1 h-7 rounded-full"
-          data-testid="perps-top-movers-losers"
-        >
-          {t('perpsTopMoversLosers')}
-        </ButtonFilter>
+          <ButtonFilter
+            isActive={isGainers}
+            onClick={handleSelectGainers}
+            aria-pressed={isGainers}
+            className="flex-1 h-7 rounded-full"
+            data-testid="perps-top-movers-gainers"
+          >
+            {t('perpsTopMoversGainers')}
+          </ButtonFilter>
+          <ButtonFilter
+            isActive={!isGainers}
+            onClick={handleSelectLosers}
+            aria-pressed={!isGainers}
+            className="flex-1 h-7 rounded-full"
+            data-testid="perps-top-movers-losers"
+          >
+            {t('perpsTopMoversLosers')}
+          </ButtonFilter>
+        </Box>
       </Box>
 
       {isLoading ? (

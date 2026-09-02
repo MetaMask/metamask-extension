@@ -27,7 +27,7 @@ export type PerpsTopMoverPillProps = {
 // hugs its label the way mobile's do; `h-auto` prevents the fixed `h-12` from
 // stretching the capsule.
 const PILL_STYLES =
-  'flex-1 h-auto min-w-0 justify-center gap-1.5 rounded-full bg-muted px-2 py-1.5 cursor-pointer hover:bg-hover active:bg-pressed';
+  'w-auto shrink-0 h-auto justify-center gap-1.5 rounded-full bg-muted px-2 py-1.5 cursor-pointer hover:bg-hover active:bg-pressed';
 
 /**
  * PerpsTopMoverPill renders one ranked market as a horizontal pill: token
