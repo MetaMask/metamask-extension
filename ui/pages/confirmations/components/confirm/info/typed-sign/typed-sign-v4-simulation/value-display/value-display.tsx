@@ -45,7 +45,7 @@ type PermitSimulationValueDisplayParams = {
    * We currently accept strings since we have a patch that accepts a custom string
    * {@see .yarn/patches/@metamask-eth-json-rpc-middleware-npm-14.0.1-b6c2ccbe8c.patch}
    */
-  tokenContract: Hex | string;
+  tokenContract?: Hex | string;
 
   /** The token amount */
   value?: number | string;
@@ -102,7 +102,7 @@ const PermitSimulationValueDisplay = ({
   const { tokenValue, tokenValueMaxPrecision, shouldShowUnlimitedValue } =
     useMemo(() => {
       const isDAIPermit =
-        tokenContract.toLowerCase() === DAI_CONTRACT_ADDRESS.toLowerCase();
+        tokenContract?.toLowerCase() === DAI_CONTRACT_ADDRESS.toLowerCase();
       const showUnlimitedDueToDAIContract =
         isDAIPermit && message?.allowed === true;
 

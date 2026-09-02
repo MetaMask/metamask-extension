@@ -1,5 +1,5 @@
 import React from 'react';
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 
 import mockState from '../../../../../../../../../test/data/mock-state.json';
@@ -12,6 +12,11 @@ import { DAI_CONTRACT_ADDRESS } from '../../../shared/constants';
 import PermitSimulationValueDisplay from './value-display';
 
 const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../../../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../../../../../../../shared/lib/sentry'),
+  captureException: jest.fn(),
+}));
 
 jest.mock('../../../../../../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -59,6 +64,21 @@ describe('PermitSimulationValueDisplay', () => {
 
     expect(await findByText('0.432')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
+  });
+
+  it('returns null if the token contract is missing', async () => {
+    const mockStore = configureMockStore([])(mockState);
+
+    const { container } = renderWithProvider(
+      <PermitSimulationValueDisplay chainId="0x1" />,
+      mockStore,
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(container).toBeEmptyDOMElement();
   });
 
   it('does not let an invalid token ID suppress the token value', async () => {
