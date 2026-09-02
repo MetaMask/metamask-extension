@@ -3,13 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@metamask/react-data-query';
-import { MUSD_DECIMALS } from '@metamask/money-account-utils';
 import type {
   CanonicalMoneyAccountBalanceResponse,
   NormalizedVaultApyResponse,
 } from '@metamask/money-account-balance-service';
 import { MoneyAccountBalanceServiceQueryKeys } from '../../../shared/lib/money/query-keys';
+import { MUSD_UNIT } from '../../../shared/lib/money/withdrawable-balance';
 import { moneyFormatUsd } from '../../helpers/money/format';
+import { projectVmusdValueInMusdToHuman } from '../../helpers/money/withdrawable-balance';
 import { invalidateMoneyAccountBalanceCaches } from '../../helpers/money/invalidate-balance-caches';
 import { setLastKnownMoneyBalance } from '../../ducks/money-balance';
 import {
@@ -27,15 +28,6 @@ const PERCENT = 100;
 
 /** Decimal places the APY percentage is presented to. */
 const APY_PERCENT_DP = 1;
-
-/**
- * The unit scale of an mUSD minimal unit, as a divisor.
- *
- * `dividedBy(10 ** MUSD_DECIMALS)` rather than mobile's `shiftedBy(-n)`:
- * `shiftedBy` does not exist in the `bignumber.js@4` this repo pins, and would
- * fail as a `TypeError` at runtime.
- */
-const MUSD_UNIT = 10 ** MUSD_DECIMALS;
 
 export type UseMoneyAccountBalanceResult = {
   moneyBalanceQuery: UseQueryResult<CanonicalMoneyAccountBalanceResponse>;
@@ -139,11 +131,10 @@ export function useMoneyAccountBalance({
         : new BigNumber(0);
 
       // the withdrawable amount.
-      const vmusdDecimal = moneyBalanceQuery.data?.vmusdValueInMusd
-        ? new BigNumber(moneyBalanceQuery.data.vmusdValueInMusd).dividedBy(
-            MUSD_UNIT,
-          )
-        : new BigNumber(0);
+      const vmusdDecimal =
+        projectVmusdValueInMusdToHuman(
+          moneyBalanceQuery.data?.vmusdValueInMusd,
+        ) ?? new BigNumber(0);
 
       // Undefined while loading or on error so callers can distinguish from a genuine zero.
       const computedWithdrawableMusd =
@@ -228,7 +219,10 @@ export function useMoneyAccountBalance({
   const apyPercent =
     apyDecimal === undefined
       ? undefined
-      : new BigNumber(apyDecimal)
+      : // `.toString()` because `bignumber.js@4` throws on a *number* argument
+        // with more than 15 significant digits, and live service APYs carry
+        // full float precision (e.g. 0.06632893279913232). Strings are exempt.
+        new BigNumber(apyDecimal.toString())
           .times(PERCENT)
           // `round(dp, rm)`, not mobile's `dp(dp, rm)`: in `bignumber.js@4`
           // `decimalPlaces`/`dp` is a getter that ignores both arguments and

@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { AnyAction, Dispatch } from 'redux';
-import { usePureBlack } from '@metamask/design-system-react';
 
 import { connect } from 'react-redux';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
@@ -8,7 +7,6 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import * as actions from '../../../store/actions';
 
-import { NetworkManager } from '../../multichain/network-manager';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../../../contexts/hardware-wallets/constants';
 import {
   CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
@@ -220,16 +218,6 @@ const MODALS: Record<string, ModalConfig> = {
     },
   },
 
-  NETWORK_MANAGER: {
-    contents: <NetworkManager />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-  },
-
   [HARDWARE_WALLET_ERROR_MODAL_NAME]: {
     contents: <HardwareWalletErrorModal />,
     testId: 'hardware-wallet-error-modal',
@@ -300,7 +288,6 @@ type ModalProps = {
  * If you would like to help with the replacement of the old Modal component, please submit a pull request
  */
 export function Modal({ active, hideModal, modalState }: ModalProps) {
-  const isPureBlack = usePureBlack();
   const modalRef = useRef<FadeModalRef | null>(null);
 
   useEffect(() => {
@@ -313,13 +300,10 @@ export function Modal({ active, hideModal, modalState }: ModalProps) {
 
   const modal = MODALS[modalState.name ?? 'DEFAULT'];
   const { contents: children, disableBackdropClick = false, testId } = modal;
-  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
   const modalStyle = {
     ...modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'],
-    ...(isPureBlack && {
-      backgroundColor: 'var(--color-background-alternative)',
-      border: '1px solid var(--color-border-muted)',
-    }),
+    backgroundColor: 'var(--color-background-elevated1)',
+    border: '1px solid var(--color-border-alternative)',
   };
   const contentStyle = modal.contentStyle ?? {};
 

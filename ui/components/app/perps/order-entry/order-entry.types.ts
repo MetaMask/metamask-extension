@@ -312,4 +312,9 @@ export type CloseAmountSectionProps = {
   currentPrice: number;
   /** Market size decimals for controller-based position-size formatting */
   sizeDecimals?: number;
+  /**
+   * Callback when the user changes the close amount via a specific input
+   * control (keypad/slider/percentage/max), for analytics attribution.
+   */
+  onInputMethodChange?: (inputMethod: InputMethod) => void;
 };

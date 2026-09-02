@@ -79,7 +79,7 @@ import LoadingScreen from '../../components/ui/loading-screen';
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import { useTheme } from '../../hooks/useTheme';
-import { RouteWithMessenger } from '../../layouts/route-with-messenger';
+import { RouteMessengerProvider } from '../../contexts/route-messenger';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { isFlask } from '../../../shared/lib/build-types';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
@@ -477,25 +477,25 @@ export default function OnboardingFlow() {
               <Route
                 path={toRelativePath(ONBOARDING_SETUP_PASSKEY_ROUTE)}
                 element={
-                  <RouteWithMessenger
+                  <RouteMessengerProvider
                     path={ONBOARDING_SETUP_PASSKEY_ROUTE}
                     capabilities={PASSKEY_SETUP_ROUTE_CAPABILITIES}
                   >
                     <SetupPasskey />
-                  </RouteWithMessenger>
+                  </RouteMessengerProvider>
                 }
               />
               <Route
                 path={toRelativePath(ONBOARDING_REVEAL_SRP_ROUTE)}
                 element={
-                  <RouteWithMessenger
+                  <RouteMessengerProvider
                     path={ONBOARDING_REVEAL_SRP_ROUTE}
                     capabilities={REVEAL_RECOVERY_PHRASE_ROUTE_CAPABILITIES}
                   >
                     <RevealRecoveryPhrase
                       setSecretRecoveryPhrase={setSecretRecoveryPhrase}
                     />
-                  </RouteWithMessenger>
+                  </RouteMessengerProvider>
                 }
               />
               <Route
@@ -525,7 +525,7 @@ export default function OnboardingFlow() {
               <Route
                 path={toRelativePath(ONBOARDING_UNLOCK_ROUTE)}
                 element={
-                  <RouteWithMessenger
+                  <RouteMessengerProvider
                     path={ONBOARDING_UNLOCK_ROUTE}
                     capabilities={ONBOARDING_UNLOCK_ROUTE_CAPABILITIES}
                   >
@@ -533,7 +533,7 @@ export default function OnboardingFlow() {
                       onSubmit={handleUnlock}
                       navigateAfterUnlock={handleNavigationAfterUnlock}
                     />
-                  </RouteWithMessenger>
+                  </RouteMessengerProvider>
                 }
               />
               <Route

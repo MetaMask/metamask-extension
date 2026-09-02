@@ -1,4 +1,8 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+  type NestedTransactionMetadata,
+} from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import {
   PaymentOverride,
@@ -7,12 +11,89 @@ import {
 } from '@metamask/transaction-pay-controller';
 import { BigNumber } from 'bignumber.js';
 import { isTestNetwork } from '../../../helpers/utils/network-helper';
-import { isPostQuoteWithdrawTransaction } from '../../../../shared/lib/transactions.utils';
+import {
+  hasTransactionType,
+  isPostQuoteWithdrawTransaction,
+} from '../../../../shared/lib/transactions.utils';
+import { updateAtomicBatchData } from '../../../store/controller-actions/transaction-controller';
 import { setPaymentOverride } from '../../../store/controller-actions/transaction-pay-controller';
 import type { BlockedPayTokensListConfig } from '../selectors/feature-flags';
 import { Asset, AssetStandard } from '../types/send';
 
 const FOUR_BYTE_TOKEN_TRANSFER = '0xa9059cbb';
+
+function toAddressWord(address: string): string {
+  return address.toLowerCase().replace(/^0x/u, '').padStart(64, '0');
+}
+
+/**
+ * Replace every occurrence of `oldAddress` (encoded as a 32-byte ABI word)
+ * inside the `data` of each nested transaction with `newAddress`, and persist
+ * the change via `updateAtomicBatchData`. No-ops when there are no nested
+ * transactions or no old address to replace.
+ *
+ * Mirrors mobile `replaceAccountInNestedTransactions`. Used when the From-row
+ * changes the withdraw recipient so the transfer calldata is rewritten
+ * immediately, not only on the next amount encode.
+ *
+ * @param params - Replacement inputs.
+ * @param params.transactionId - Id of the parent batch transaction.
+ * @param params.nestedTransactions - Nested calls to scan.
+ * @param params.oldAddress - Address currently encoded in calldata.
+ * @param params.newAddress - Address to write in its place.
+ * @returns Resolves when all nested rewrites have persisted.
+ */
+export async function replaceAccountInNestedTransactions({
+  transactionId,
+  nestedTransactions,
+  oldAddress,
+  newAddress,
+}: {
+  transactionId: string;
+  nestedTransactions: NestedTransactionMetadata[] | undefined;
+  oldAddress: string | undefined;
+  newAddress: string;
+}): Promise<void> {
+  if (!oldAddress || !nestedTransactions?.length) {
+    return;
+  }
+
+  const oldWord = toAddressWord(oldAddress);
+  const newWord = toAddressWord(newAddress);
+
+  if (oldWord === newWord) {
+    return;
+  }
+
+  const updates: Promise<void>[] = [];
+
+  nestedTransactions.forEach((nested, index) => {
+    const { data } = nested;
+    if (!data) {
+      return;
+    }
+
+    const lowerData = data.toLowerCase();
+    if (!lowerData.includes(oldWord)) {
+      return;
+    }
+
+    const newData = lowerData.split(oldWord).join(newWord) as Hex;
+
+    updates.push(
+      updateAtomicBatchData({
+        transactionId,
+        transactionIndex: index,
+        transactionData: newData,
+      }).catch((error) => {
+        console.error('Failed to update account in nested transaction', error);
+        throw error;
+      }),
+    );
+  });
+
+  await Promise.all(updates);
+}
 
 export function getTokenTransferData(
   transactionMeta: TransactionMeta | undefined,
@@ -170,7 +251,8 @@ export function isTokenBlocked(
 /**
  * Selects Money Account as the payment method for a confirmation.
  * Sets `paymentOverride` and, for deposit flows, refunds leftover funds to the
- * money account address.
+ * money account address. Perps/Predict withdraws to Money Account run
+ * non-atomically so the post-Relay transfer is submitted after the quote.
  *
  * @param transactionId - Confirmation transaction id.
  * @param moneyAccountAddress - Derived money account address, when known.
@@ -181,11 +263,16 @@ export function applyMoneyAccountOverride(
   moneyAccountAddress: string | undefined,
   transactionMeta: TransactionMeta | undefined,
 ): void {
-  const isWithdraw = isPostQuoteWithdrawTransaction(transactionMeta);
+  const isPerpsOrPredictWithdraw = hasTransactionType(transactionMeta, [
+    TransactionType.perpsWithdraw,
+    TransactionType.predictWithdraw,
+  ]);
+  const isPostQuoteWithdraw = isPostQuoteWithdrawTransaction(transactionMeta);
 
   setPaymentOverride(transactionId, {
+    ...(isPerpsOrPredictWithdraw ? { atomic: false } : {}),
     paymentOverride: PaymentOverride.MoneyAccount,
-    ...(!isWithdraw && moneyAccountAddress
+    ...(!isPostQuoteWithdraw && moneyAccountAddress
       ? { refundTo: moneyAccountAddress as Hex }
       : {}),
   }).catch((error) => {

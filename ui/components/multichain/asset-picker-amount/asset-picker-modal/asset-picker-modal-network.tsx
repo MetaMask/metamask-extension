@@ -7,12 +7,20 @@ import {
 } from '@metamask/network-controller';
 import type { CaipChainId } from '@metamask/utils';
 import {
+  AvatarNetworkSize,
   Checkbox,
   FontWeight,
   IconName,
   Text as DsText,
   TextColor as DsTextColor,
   TextVariant as DsTextVariant,
+  TextButton,
+  TextButtonSize,
+  Modal,
+  ModalContent,
+  ModalOverlay,
+  ModalHeader,
+  ModalBody,
 } from '@metamask/design-system-react';
 import {
   Display,
@@ -24,17 +32,7 @@ import {
   BackgroundColor,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import {
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  Modal,
-  Box,
-  ButtonLink,
-  Text,
-  AvatarNetworkSize,
-} from '../../../component-library';
+import { Box, Text } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { NetworkListItem } from '../../network-list-item';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
@@ -187,17 +185,32 @@ export const AssetPickerModalNetwork = ({
     >
       <ModalOverlay />
       <ModalContent
-        padding={0}
-        modalDialogProps={{ padding: 0, height: BlockSize.Full }}
+        className="p-0"
+        modalDialogProps={{
+          padding: 0,
+          className: 'h-full overflow-hidden',
+        }}
       >
         <ModalHeader
-          onBack={network ? onBack : undefined}
-          onClose={isMultiselectEnabled ? undefined : onClose}
+          {...({
+            ...(network
+              ? {
+                  onBack: onBack as () => void,
+                  backButtonProps: { ariaLabel: t('back') },
+                }
+              : {}),
+            ...(isMultiselectEnabled
+              ? {}
+              : {
+                  onClose,
+                  closeButtonProps: { ariaLabel: t('close') },
+                }),
+          } as React.ComponentProps<typeof ModalHeader>)}
           endAccessory={
             isMultiselectEnabled && selectedChainIds ? (
-              <ButtonLink
-                variant={TextVariant.bodyMdMedium}
-                disabled={Object.values(checkedChainIds).every((v) => !v)}
+              <TextButton
+                size={TextButtonSize.BodyMd}
+                isDisabled={Object.values(checkedChainIds).every((v) => !v)}
                 onClick={() => {
                   onMultiselectSubmit?.(
                     Object.keys(checkedChainIds).filter(
@@ -208,7 +221,7 @@ export const AssetPickerModalNetwork = ({
                 }}
               >
                 {t('apply')}
-              </ButtonLink>
+              </TextButton>
             ) : undefined
           }
         >
@@ -228,25 +241,18 @@ export const AssetPickerModalNetwork = ({
                 handleToggleAllNetworks();
               }}
             />
-            <ButtonLink
-              variant={TextVariant.bodyMdMedium}
+            <TextButton
+              size={TextButtonSize.BodyMd}
               onClick={() => {
                 handleToggleAllNetworks();
               }}
-              style={{
-                alignSelf: AlignItems.flexStart,
-                paddingInline: 16,
-              }}
+              className="self-start px-4"
             >
               {t('selectAll')}
-            </ButtonLink>
+            </TextButton>
           </Box>
         )}
-        <ModalBody
-          paddingLeft={0}
-          paddingRight={0}
-          className="multichain-asset-picker__network-list flex min-h-0 flex-1 flex-col overflow-auto"
-        >
+        <ModalBody className="multichain-asset-picker__network-list min-h-0 flex-1 overflow-auto px-0">
           {networkSections.map((section, index) => (
             <Box
               key={section.key}
