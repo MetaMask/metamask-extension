@@ -1,6 +1,9 @@
 import { Messenger } from '@metamask/messenger';
 import { getRootMessenger } from '../../lib/messenger';
-import { getMoneyAccountUpgradeControllerMessenger } from './money-account-upgrade-controller-messenger';
+import {
+  getMoneyAccountUpgradeControllerInitMessenger,
+  getMoneyAccountUpgradeControllerMessenger,
+} from './money-account-upgrade-controller-messenger';
 
 describe('getMoneyAccountUpgradeControllerMessenger', () => {
   it('returns a restricted messenger', () => {
@@ -11,7 +14,7 @@ describe('getMoneyAccountUpgradeControllerMessenger', () => {
     );
   });
 
-  it('delegates the actions the upgrade sequence needs', () => {
+  it('delegates the actions and events the upgrade sequence and its bootstrap need', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');
 
@@ -30,12 +33,51 @@ describe('getMoneyAccountUpgradeControllerMessenger', () => {
           'ChompApiService:getServiceDetails',
           'ChompApiService:verifyDelegation',
           'DelegationController:signDelegation',
+          'KeyringController:getState',
           'KeyringController:signEip7702Authorization',
           'KeyringController:signPersonalMessage',
           'NetworkController:findNetworkClientIdByChainId',
           'NetworkController:getNetworkClientById',
+          'RemoteFeatureFlagController:getState',
         ],
-        events: [],
+        events: [
+          'KeyringController:stateChanged',
+          'RemoteFeatureFlagController:stateChanged',
+        ],
+      }),
+    );
+  });
+});
+
+describe('getMoneyAccountUpgradeControllerInitMessenger', () => {
+  it('returns a restricted messenger', () => {
+    const messenger = getRootMessenger<never, never>();
+
+    expect(
+      getMoneyAccountUpgradeControllerInitMessenger(messenger),
+    ).toBeInstanceOf(Messenger);
+  });
+
+  it('delegates the actions and events the bootstrap hooks need', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getMoneyAccountUpgradeControllerInitMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: [
+          'GeolocationController:getGeolocation',
+          'LegacyBackgroundApiService:addNetwork',
+          'NetworkController:getState',
+          'OnboardingController:getState',
+          'PreferencesController:getState',
+          'RemoteFeatureFlagController:getState',
+        ],
+        events: [
+          'OnboardingController:stateChange',
+          'PreferencesController:stateChange',
+        ],
       }),
     );
   });

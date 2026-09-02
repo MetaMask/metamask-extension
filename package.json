@@ -171,6 +171,8 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/money-account-upgrade-controller": "npm:@metamask-previews/money-account-upgrade-controller@3.0.2-preview-1ee21f9e0",
+    "@metamask/money-account-utils": "npm:@metamask-previews/money-account-utils@1.1.0-preview-1ee21f9e0",
     "@metamask/eth-sig-util": "^9.0.0",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "35.0.0",
