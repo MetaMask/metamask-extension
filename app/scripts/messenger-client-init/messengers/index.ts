@@ -192,6 +192,7 @@ import { getGeolocationControllerMessenger } from './geolocation-controller-mess
 import { getComplianceControllerMessenger } from './compliance-controller-messenger';
 import { getComplianceServiceMessenger } from './compliance-service-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
+import { getPerpsAgentWalletControllerMessenger } from './perps-agent-wallet-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
 import { getUserTraitsServiceMessenger } from './user-traits-service-messenger';
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
@@ -290,6 +291,8 @@ export type { ComplianceServiceMessenger } from './compliance-service-messenger'
 export { getComplianceServiceMessenger } from './compliance-service-messenger';
 export type { PerpsControllerMessenger } from './perps-controller-messenger';
 export { getPerpsControllerMessenger } from './perps-controller-messenger';
+export type { PerpsAgentWalletControllerMessenger } from '../../controllers/perps/agent-wallet/types';
+export { getPerpsAgentWalletControllerMessenger } from './perps-agent-wallet-controller-messenger';
 export { getPhishingControllerMessenger } from './phishing-controller-messenger';
 export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export type { SignatureControllerInitMessenger } from './signature-controller-messenger';
@@ -561,6 +564,10 @@ export const MESSENGER_FACTORIES = {
   },
   PerpsController: {
     getMessenger: getPerpsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  PerpsAgentWalletController: {
+    getMessenger: getPerpsAgentWalletControllerMessenger,
     getInitMessenger: noop,
   },
   PhishingController: {

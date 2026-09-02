@@ -6,6 +6,12 @@ import {
   type UserHistoryItem,
 } from '@metamask/perps-controller';
 import { SERVICE_NAME as STORAGE_SERVICE_NAME } from '@metamask/storage-service';
+import log from 'loglevel';
+import { createEventBuilder, trackEvent } from '../controllers/analytics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
 import { isBenignDisconnectError } from '../controllers/perps/perps-error-utils';
 import { MessengerClientInitFunction } from './types';
@@ -115,8 +121,110 @@ export const PerpsControllerInit: MessengerClientInitFunction<
         : {}),
     },
     deferEligibilityCheck: !completedOnboarding || !useExternalServices,
+    // Single-path wallet seam: when the selected master account has an active
+    // agent key (in-memory plaintext, only while unlocked), HyperLiquid actions
+    // sign with the agent key and never contact the keyring. This seam is
+    // independent of the `perpsAgentWalletEnabled` remote flag: the flag gates
+    // only the setup UI/CTA, while `getAgentSigner` keeps serving
+    // already-registered agents whether the flag is on or off.
+    getAgentSigner: async (masterAccountAddress) => {
+      const signer = await controllerMessenger.call(
+        'PerpsAgentWalletController:getAgentSigner',
+        masterAccountAddress,
+      );
+      if (!signer) {
+        return null;
+      }
+      // Rollout observability (plan ruling R11): count one agent-signed
+      // action per agent-mode signTypedData invocation — orders, cancels,
+      // and modifies alike. Wrap-and-forward: increment the counter, then
+      // delegate to the real signer. Emission cannot throw (trackEvent
+      // reports delivery failures internally), so counting never blocks or
+      // fails a trade.
+      return {
+        address: signer.address,
+        signTypedData: (domain, types, value) => {
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.PerpsAgentSignedAction)
+              .addCategory(MetaMetricsEventCategory.Perps)
+              .build(),
+          );
+          return signer.signTypedData(domain, types, value);
+        },
+      };
+    },
   });
   messengerClientRef.current = messengerClient;
+
+  // Switch the HyperLiquid trading wallet to the agent signer when an agent
+  // activates, and back to the master keyring path when the wallet locks
+  // (the in-memory agent plaintext is cleared on lock, so `getAgentSigner`
+  // returns null and master signing fails with KEYRING_LOCKED while locked,
+  // exactly as before this seam existed). Best-effort: the provider may not
+  // be initialized yet; the next activation/lock event re-syncs.
+  controllerMessenger.subscribe(
+    'PerpsAgentWalletController:agentActivated',
+    ({ masterAccountAddress }: { masterAccountAddress: string }) => {
+      let signer;
+      try {
+        signer = controllerMessenger.call(
+          'PerpsAgentWalletController:getAgentSigner',
+          masterAccountAddress,
+        );
+      } catch (error) {
+        log.warn(
+          'PerpsController: failed to get agent signer for override',
+          error,
+        );
+        return;
+      }
+      (controllerMessenger as PackagePerpsControllerMessenger)
+        .call('PerpsController:setTradingWalletOverride', signer)
+        .catch((error) => {
+          log.warn(
+            'PerpsController: failed to apply agent trading wallet override',
+            error,
+          );
+        });
+    },
+  );
+
+  controllerMessenger.subscribe('KeyringController:lock', () => {
+    (controllerMessenger as PackagePerpsControllerMessenger)
+      .call('PerpsController:setTradingWalletOverride', null)
+      .catch((error) => {
+        log.warn(
+          'PerpsController: failed to reset agent trading wallet override',
+          error,
+        );
+      });
+  });
+
+  // A deactivated agent must never keep signing: reset the trading wallet
+  // override so trading immediately falls back to the master keyring path.
+  // Unconditional reset is safe for every removal source — if the removed
+  // agent belonged to a different account than the current override holder,
+  // that account merely degrades to master signing (always functional) until
+  // its next activation or unlock. The reason feeds the revoke metric.
+  controllerMessenger.subscribe(
+    'PerpsAgentWalletController:agentDeactivated',
+    ({ reason }: { reason: string }) => {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PerpsAgentRevoked)
+          .addCategory(MetaMetricsEventCategory.Perps)
+          .addProperties({ reason })
+          .build({ excludeMetaMetricsId: true }),
+      );
+      (controllerMessenger as PackagePerpsControllerMessenger)
+        .call('PerpsController:setTradingWalletOverride', null)
+        .catch((error) => {
+          log.warn(
+            'PerpsController: failed to reset agent trading wallet override after deactivation',
+            error,
+          );
+        });
+    },
+  );
 
   const api = getApi(
     messengerClient,

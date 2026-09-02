@@ -63,6 +63,7 @@ import { PerpsSupportLearn } from './perps-support-learn';
 import { PerpsTutorialModal } from './perps-tutorial-modal';
 import { PerpsTopMovers } from './perps-top-movers';
 import { PerpsWatchlist } from './perps-watchlist';
+import { AgentWalletSetup } from './agent-wallet';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
 /**
@@ -473,6 +474,11 @@ export const PerpsView = () => {
           onLearnMore={() => dispatch(setTutorialModalOpen(true))}
         />
       </Box>
+
+      {/* One-tap trading (agent wallet) CTA / status — self-gating on the
+          remote flag, the session's password-unlock state, and whether an
+          agent is already active for the selected account. */}
+      <AgentWalletSetup />
 
       {/* Positions + Orders sections */}
       {batchActionError ? (

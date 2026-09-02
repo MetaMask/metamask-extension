@@ -320,6 +320,11 @@ import {
 } from '../../../shared/constants/metametrics';
 import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
 import type { UsePPOMAction } from '../lib/ppom/ppom-util';
+import type {
+  PerpsAgentWalletControllerOnUnlockAction,
+  PerpsAgentWalletControllerOnPasswordChangeAction,
+  PerpsAgentWalletControllerOnInaccessibleKeysAction,
+} from '../controllers/perps/agent-wallet/types';
 import {
   OnboardingControllerGetIsSocialLoginFlowAction,
   OnboardingControllerResetOnboardingAction,
@@ -697,6 +702,9 @@ type AllowedActions =
   | PermissionControllerRevokePermissionsAction
   | PermissionControllerUpdateCaveatAction
   | PermissionControllerUpdatePermissionsByCaveatAction
+  | PerpsAgentWalletControllerOnPasswordChangeAction
+  | PerpsAgentWalletControllerOnUnlockAction
+  | PerpsAgentWalletControllerOnInaccessibleKeysAction
   | PhishingControllerMaybeUpdateStateAction
   | PhishingControllerScanAddressAction
   | PhishingControllerTestOriginAction
@@ -2287,6 +2295,19 @@ export class LegacyBackgroundApiService {
           throw err;
         }
       }
+
+      // Best-effort: re-encrypt perps agent keys with the new password. Must
+      // never fail the password change flow.
+      try {
+        await this.#messenger.call(
+          'PerpsAgentWalletController:onPasswordChange',
+          {
+            password: newPassword,
+          },
+        );
+      } catch (error) {
+        log.warn('error while re-encrypting perps agent wallets', error);
+      }
     } catch (error) {
       log.error('error while changing password', error);
       throw error;
@@ -2519,6 +2540,17 @@ export class LegacyBackgroundApiService {
           password,
         );
       }
+      // Best-effort: decrypt perps agent keys now that the vault is unlocked.
+      // Must never block the unlock flow, and is skipped for encryptionKey
+      // unlocks (passkey / social-login recovery) — agent signing stays
+      // inactive for that session and perps falls back to master signing.
+      try {
+        await this.#messenger.call('PerpsAgentWalletController:onUnlock', {
+          password,
+        });
+      } catch (error) {
+        log.warn('error while unlocking perps agent wallets', error);
+      }
     }
 
     await this.#initAccountsAfterUnlock();
@@ -2553,6 +2585,20 @@ export class LegacyBackgroundApiService {
         params,
       ),
     );
+    // Passkey-verified changes bypass the `KeyringController:changePassword`
+    // hook, so `PerpsAgentWalletController:onPasswordChange` never runs and no
+    // plaintext agent key exists in memory to re-encrypt with the new password
+    // — the stored agent ciphertexts become permanently undecryptable once
+    // the vault key rotates. Best-effort clear them (safe degradation: the
+    // agent goes inert and the user re-runs setup; funds stay master-custodied)
+    // without ever blocking or failing the password change itself.
+    try {
+      await this.#messenger.call(
+        'PerpsAgentWalletController:onInaccessibleKeys',
+      );
+    } catch (error) {
+      log.warn('error while clearing perps agent wallets', error);
+    }
   }
 
   /**

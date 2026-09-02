@@ -8,7 +8,7 @@ import {
   PERPS_EVENT_VALUE,
   PerpsAnalyticsEvent,
 } from '../../../shared/constants/perps-events';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory, MetaMetricsEventName  } from '../../../shared/constants/metametrics';
 import {
   createPerpsInfrastructure,
   type InfrastructureDeps,
@@ -17,6 +17,8 @@ import { buildControllerInitRequestMock } from './test/utils';
 import { PerpsControllerInit } from './perps-controller-init';
 import type { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
 import type { MessengerClientInitRequest } from './types';
+
+const AGENT = '0x2222222222222222222222222222222222222222' as const;
 
 const mockTrackAnalyticsEvent = jest.fn();
 
@@ -160,6 +162,8 @@ function getInitRequestMock(): InitRequest {
     ...buildControllerInitRequestMock(),
     controllerMessenger: {
       call: jest.fn(),
+      subscribe: jest.fn(),
+      unsubscribe: jest.fn(),
     } as unknown as PerpsControllerMessenger,
     initMessenger: undefined as never,
   };
@@ -207,7 +211,235 @@ describe('PerpsControllerInit', () => {
           fallbackBlockedRegions: [],
         },
         deferEligibilityCheck: true,
+        getAgentSigner: expect.any(Function),
       });
+    });
+
+    it('wires getAgentSigner through the agent wallet controller action', () => {
+      const request = getInitRequestMock();
+      PerpsControllerInit(request);
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      const { getAgentSigner } = constructorCall;
+      expect(getAgentSigner).toBeDefined();
+
+      const messengerCall = request.controllerMessenger.call as jest.Mock;
+      (messengerCall as jest.Mock).mockResolvedValue(null);
+
+      const result = getAgentSigner?.('0xabc');
+      expect(messengerCall).toHaveBeenCalledWith(
+        'PerpsAgentWalletController:getAgentSigner',
+        '0xabc',
+      );
+      expect(result).resolves.toBe(null);
+    });
+
+    it('getAgentSigner wraps the signer to emit one agent-signed action metric per signTypedData and then delegates to the real signer', async () => {
+      const request = getInitRequestMock();
+      const realSignTypedData = jest.fn().mockResolvedValue('0xsig');
+      const messengerCall = request.controllerMessenger.call as jest.Mock;
+      messengerCall.mockResolvedValue({
+        address: AGENT,
+        signTypedData: realSignTypedData,
+      });
+
+      PerpsControllerInit(request);
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      const { getAgentSigner } = constructorCall;
+      const wrappedSigner = await getAgentSigner?.('0xmaster');
+      expect(messengerCall).toHaveBeenCalledWith(
+        'PerpsAgentWalletController:getAgentSigner',
+        '0xmaster',
+      );
+      expect(wrappedSigner).toBeDefined();
+      expect(wrappedSigner?.address).toBe(AGENT);
+      expect(wrappedSigner?.signTypedData).not.toBe(realSignTypedData);
+      expect(mockTrackAnalyticsEvent).not.toHaveBeenCalled();
+
+      // Delegation: same arguments in, same signature out.
+      const domain = {
+        name: 'HyperliquidSignTransaction',
+        version: '1',
+        chainId: 1337,
+        verifyingContract:
+          '0x0000000000000000000000000000000000000001' as `0x${string}`,
+      };
+      const types = { Foo: [{ name: 'bar', type: 'string' }] };
+      const value = { bar: 'baz' };
+      const signature = await wrappedSigner?.signTypedData(
+        domain,
+        types,
+        value,
+      );
+      expect(signature).toBe('0xsig');
+      expect(realSignTypedData).toHaveBeenCalledWith(
+        domain,
+        types,
+        value,
+      );
+
+      // Exactly one agent-signed action metric per invocation (ruling R11).
+      expect(mockTrackAnalyticsEvent).toHaveBeenCalledTimes(1);
+      expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsAgentSignedAction,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
+          }),
+        }),
+      );
+    });
+
+    it('applies the agent signer override when an agent activates', async () => {
+      const request = getInitRequestMock();
+      const mockSigner = { address: AGENT, signTypedData: jest.fn() };
+      const messengerCall = request.controllerMessenger.call as jest.Mock;
+      messengerCall.mockImplementation((action: string) => {
+        if (action === 'PerpsAgentWalletController:getAgentSigner') {
+          return mockSigner;
+        }
+        return Promise.resolve(undefined);
+      });
+
+      PerpsControllerInit(request);
+
+      const subscribe = request.controllerMessenger.subscribe as jest.Mock;
+      const activationSubscription = subscribe.mock.calls.find(
+        ([eventType]) =>
+          eventType === 'PerpsAgentWalletController:agentActivated',
+      );
+      expect(activationSubscription).toBeDefined();
+      const activationHandler = activationSubscription?.[1] as (payload: {
+        masterAccountAddress: string;
+      }) => void;
+
+      await activationHandler({ masterAccountAddress: '0xmaster' });
+
+      expect(messengerCall).toHaveBeenCalledWith(
+        'PerpsAgentWalletController:getAgentSigner',
+        '0xmaster',
+      );
+      expect(messengerCall).toHaveBeenCalledWith(
+        'PerpsController:setTradingWalletOverride',
+        mockSigner,
+      );
+    });
+
+    it('clears the trading wallet override when the keyring locks', async () => {
+      const request = getInitRequestMock();
+      const messengerCall = request.controllerMessenger.call as jest.Mock;
+      messengerCall.mockResolvedValue(undefined);
+
+      PerpsControllerInit(request);
+
+      const subscribe = request.controllerMessenger.subscribe as jest.Mock;
+      const lockSubscription = subscribe.mock.calls.find(
+        ([eventType]) => eventType === 'KeyringController:lock',
+      );
+      expect(lockSubscription).toBeDefined();
+      const lockHandler = lockSubscription?.[1] as () => void;
+
+      await lockHandler();
+
+      expect(messengerCall).toHaveBeenCalledWith(
+        'PerpsController:setTradingWalletOverride',
+        null,
+      );
+    });
+
+    it('resets the trading wallet override when an agent is deactivated', async () => {
+      const request = getInitRequestMock();
+      const messengerCall = request.controllerMessenger.call as jest.Mock;
+      messengerCall.mockResolvedValue(undefined);
+
+      PerpsControllerInit(request);
+
+      const subscribe = request.controllerMessenger.subscribe as jest.Mock;
+      const deactivationSubscription = subscribe.mock.calls.find(
+        ([eventType]) =>
+          eventType === 'PerpsAgentWalletController:agentDeactivated',
+      );
+      expect(deactivationSubscription).toBeDefined();
+      const deactivationHandler = deactivationSubscription?.[1] as (payload: {
+        masterAccountAddress: string;
+        reason: string;
+      }) => void;
+
+      await deactivationHandler({
+        masterAccountAddress: '0xmaster',
+        reason: 'user',
+      });
+
+      expect(messengerCall).toHaveBeenCalledWith(
+        'PerpsController:setTradingWalletOverride',
+        null,
+      );
+    });
+
+    it('emits the PerpsAgentRevoked metric anonymously with the removal reason when an agent is deactivated', async () => {
+      const request = getInitRequestMock();
+      const messengerCall = request.controllerMessenger.call as jest.Mock;
+      messengerCall.mockResolvedValue(undefined);
+
+      PerpsControllerInit(request);
+
+      const subscribe = request.controllerMessenger.subscribe as jest.Mock;
+      const deactivationSubscription = subscribe.mock.calls.find(
+        ([eventType]) =>
+          eventType === 'PerpsAgentWalletController:agentDeactivated',
+      );
+      expect(deactivationSubscription).toBeDefined();
+      const deactivationHandler = deactivationSubscription?.[1] as (payload: {
+        masterAccountAddress: string;
+        reason: string;
+      }) => void;
+
+      await deactivationHandler({
+        masterAccountAddress: '0xmaster',
+        reason: 'account-removal',
+      });
+
+      expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsAgentRevoked,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
+            reason: 'account-removal',
+          }),
+        }),
+      );
+    });
+
+    it('does not throw when applying the override fails', async () => {
+      const request = getInitRequestMock();
+      const messengerCall = request.controllerMessenger.call as jest.Mock;
+      messengerCall.mockImplementation((action: string) => {
+        if (action === 'PerpsAgentWalletController:getAgentSigner') {
+          throw new Error('override failed');
+        }
+        return Promise.resolve(undefined);
+      });
+
+      PerpsControllerInit(request);
+
+      const subscribe = request.controllerMessenger.subscribe as jest.Mock;
+      const activationSubscription = subscribe.mock.calls.find(
+        ([eventType]) =>
+          eventType === 'PerpsAgentWalletController:agentActivated',
+      );
+      const activationHandler = activationSubscription?.[1] as (payload: {
+        masterAccountAddress: string;
+      }) => void;
+
+      expect(() =>
+        activationHandler({ masterAccountAddress: '0xmaster' }),
+      ).not.toThrow();
+      await new Promise<void>((resolve) => setTimeout(resolve, 0));
+      expect(messengerCall).not.toHaveBeenCalledWith(
+        'PerpsController:setTradingWalletOverride',
+        expect.anything(),
+      );
     });
 
     /**
@@ -333,6 +565,8 @@ describe('PerpsControllerInit', () => {
       const request = getInitRequestMock();
       request.controllerMessenger = {
         call,
+        subscribe: jest.fn(),
+        unsubscribe: jest.fn(),
       } as unknown as PerpsControllerMessenger;
       let capturedDeps: InfrastructureDeps | undefined;
 
@@ -399,6 +633,8 @@ describe('PerpsControllerInit', () => {
       const request = getInitRequestMock();
       request.controllerMessenger = {
         call,
+        subscribe: jest.fn(),
+        unsubscribe: jest.fn(),
       } as unknown as PerpsControllerMessenger;
       let capturedDeps: InfrastructureDeps | undefined;
 

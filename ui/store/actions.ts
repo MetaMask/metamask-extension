@@ -128,6 +128,7 @@ import {
   getFirstTimeFlowType,
 } from '../selectors';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
+import { selectPerpsIsTestnet } from '../selectors/perps-controller';
 import {
   getSelectedNetworkClientId,
   getProviderConfig,
@@ -7827,4 +7828,62 @@ export async function perpsToggleTestnet(): Promise<void> {
   } catch (error) {
     logErrorWithMessage(error);
   }
+}
+
+/**
+ * Runs the perps agent wallet setup flow for the currently selected EVM
+ * account: verifies the wallet password, generates the agent keypair, has the
+ * master account sign the Hyperliquid `approveAgent` typed data, and submits
+ * it to the exchange.
+ *
+ * Unlike most fire-and-forget background actions, rejections intentionally
+ * propagate to the caller so the setup review screen can classify them
+ * (wrong password / rejected vs. submission failed) and offer a retry.
+ *
+ * @param password - The wallet password, verified background-side before the
+ * agent key is encrypted.
+ * @returns The activated agent address.
+ */
+export function setupPerpsAgentWallet(password: string): ThunkAction<
+  Promise<{ agentAddress: string }>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (_dispatch, getState) => {
+    log.debug(`background.perpsSetupAgentWallet`);
+    const state = getState();
+    const selectedAccount = getSelectedInternalAccount(state);
+    return await submitRequestToBackground<{ agentAddress: string }>(
+      'perpsSetupAgentWallet',
+      [
+        {
+          masterAccountAddress: selectedAccount.address,
+          isTestnet: selectPerpsIsTestnet(state),
+          password,
+        },
+      ],
+    );
+  };
+}
+
+/**
+ * Removes the selected account's perps agent wallet (local key destruction;
+ * see PerpsAgentWalletController.removeAgent). No password — removal only
+ * deletes state.
+ */
+export function removePerpsAgentWallet(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (_dispatch, getState) => {
+    log.debug(`background.perpsRemoveAgentWallet`);
+    const state = getState();
+    const selectedAccount = getSelectedInternalAccount(state);
+    return await submitRequestToBackground<void>('perpsRemoveAgentWallet', [
+      { masterAccountAddress: selectedAccount.address },
+    ]);
+  };
 }

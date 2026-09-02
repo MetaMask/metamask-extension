@@ -107,34 +107,58 @@ describe('usePayHardwareAccountAlert', () => {
   // but are not yet in REDESIGN_USER_TRANSACTION_TYPES (confirmation.utils.ts),
   // so currentConfirmation is undefined for those types and the hook cannot fire.
   // Tests below cover the types that go through the redesigned confirmation flow.
-  describe('PAY_HARDWARE_ALERT_TRANSACTION_TYPES — always blocked regardless of flag', () => {
-    const alwaysBlockedTypes = [
+  describe('perps transaction types — unblocked for hardware wallets', () => {
+    const unblockedTypes = [
       TransactionType.perpsDeposit,
       TransactionType.perpsWithdraw,
     ];
 
-    for (const txType of alwaysBlockedTypes) {
-      it(`returns alert for ${txType} when flag is enabled`, async () => {
+    for (const txType of unblockedTypes) {
+      it(`returns no alert for ${txType} with hardware wallet when flag is enabled`, async () => {
         const { result } = runHook(txType, KeyringTypes.ledger, true);
         await waitFor(() => {
-          expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+          expect(result.current).toStrictEqual([]);
         });
       });
 
-      it(`returns alert for ${txType} when flag is disabled`, async () => {
+      it(`returns no alert for ${txType} with hardware wallet when flag is disabled`, async () => {
         const { result } = runHook(txType, KeyringTypes.ledger, false);
         await waitFor(() => {
-          expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+          expect(result.current).toStrictEqual([]);
         });
       });
 
-      it(`returns no alert for ${txType} when non-hardware wallet`, async () => {
+      it(`returns no alert for ${txType} with non-hardware wallet`, async () => {
         const { result } = runHook(txType, 'HD Key Tree', true);
         await waitFor(() => {
           expect(result.current).toStrictEqual([]);
         });
       });
     }
+  });
+
+  describe('PAY_HARDWARE_ALERT_TRANSACTION_TYPES — always blocked regardless of flag', () => {
+    it('returns alert for moneyAccountDeposit when flag is enabled', async () => {
+      const { result } = runHook(
+        TransactionType.moneyAccountDeposit,
+        KeyringTypes.ledger,
+        true,
+      );
+      await waitFor(() => {
+        expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+      });
+    });
+
+    it('returns alert for moneyAccountDeposit when flag is disabled', async () => {
+      const { result } = runHook(
+        TransactionType.moneyAccountDeposit,
+        KeyringTypes.ledger,
+        false,
+      );
+      await waitFor(() => {
+        expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+      });
+    });
   });
 
   describe('PAY_HARDWARE_FLAG_GATED_TYPES — blocked only when flag is disabled', () => {
@@ -175,7 +199,7 @@ describe('usePayHardwareAccountAlert', () => {
   describe('hardware wallet keyring types', () => {
     it('returns alert for Ledger', async () => {
       const { result } = runHook(
-        TransactionType.perpsDeposit,
+        TransactionType.moneyAccountDeposit,
         KeyringTypes.ledger,
         false,
       );
@@ -186,7 +210,7 @@ describe('usePayHardwareAccountAlert', () => {
 
     it('returns alert for Trezor', async () => {
       const { result } = runHook(
-        TransactionType.perpsDeposit,
+        TransactionType.moneyAccountDeposit,
         KeyringTypes.trezor,
         false,
       );
@@ -197,7 +221,7 @@ describe('usePayHardwareAccountAlert', () => {
 
     it('returns alert for Lattice', async () => {
       const { result } = runHook(
-        TransactionType.perpsDeposit,
+        TransactionType.moneyAccountDeposit,
         KeyringTypes.lattice,
         false,
       );

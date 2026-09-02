@@ -7254,6 +7254,45 @@
   "perpsAddToFavorites": {
     "message": "Add to favorites"
   },
+  "perpsAgentWalletApprovingFees": {
+    "message": "Approving trading fees — confirm on your device"
+  },
+  "perpsAgentWalletCapabilityLine": {
+    "message": "Trade and move funds between your Hyperliquid balances — withdrawals always require your wallet"
+  },
+  "perpsAgentWalletConfirmOnDevice": {
+    "message": "Confirm on your device"
+  },
+  "perpsAgentWalletCta": {
+    "message": "Set up one-tap trading"
+  },
+  "perpsAgentWalletRemoveButton": {
+    "message": "Remove"
+  },
+  "perpsAgentWalletRemoveConfirm": {
+    "message": "Remove"
+  },
+  "perpsAgentWalletRemoveDescription": {
+    "message": "Your trading key will be deleted from MetaMask, and every trade will require your confirmation again. Your funds and positions are not affected."
+  },
+  "perpsAgentWalletRemoveTitle": {
+    "message": "Remove one-tap trading?"
+  },
+  "perpsAgentWalletReviewTitle": {
+    "message": "One-tap trading"
+  },
+  "perpsAgentWalletRotateButton": {
+    "message": "Rotate key"
+  },
+  "perpsAgentWalletRotateTitle": {
+    "message": "Rotate your trading key"
+  },
+  "perpsAgentWalletRotationLine": {
+    "message": "You can rotate or remove this anytime"
+  },
+  "perpsAgentWalletStatusActive": {
+    "message": "One-tap trading is on for this account"
+  },
   "perpsAutoClose": {
     "message": "Auto close"
   },

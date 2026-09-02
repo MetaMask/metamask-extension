@@ -300,6 +300,7 @@ import { ComplianceControllerInit } from './messenger-client-init/compliance-con
 import { RampsServiceInit } from './messenger-client-init/ramps-service-init';
 import { RampsControllerInit } from './messenger-client-init/ramps-controller-init';
 import { PerpsControllerInit } from './messenger-client-init/perps-controller-init';
+import { PerpsAgentWalletControllerInit } from './messenger-client-init/perps-agent-wallet-controller-init';
 import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './messenger-client-init/smart-transactions/smart-transactions-controller-init';
@@ -616,7 +617,10 @@ export default class MetamaskController extends EventEmitter {
       RampsService: RampsServiceInit,
       RampsController: RampsControllerInit,
       ...(getIsPerpsIncludedInBuild()
-        ? { PerpsController: PerpsControllerInit }
+        ? {
+            PerpsController: PerpsControllerInit,
+            PerpsAgentWalletController: PerpsAgentWalletControllerInit,
+          }
         : {}),
       PPOMController: PPOMControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,

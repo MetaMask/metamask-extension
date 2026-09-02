@@ -28,6 +28,12 @@ import type {
   AuthenticatedUserStorageServiceGetNotificationPreferencesAction,
   AuthenticatedUserStorageServicePutNotificationPreferencesAction,
 } from '@metamask/authenticated-user-storage';
+import type { KeyringControllerLockEvent } from '@metamask/keyring-controller';
+import type {
+  PerpsAgentWalletControllerAgentActivatedEvent,
+  PerpsAgentWalletControllerAgentDeactivatedEvent,
+  PerpsAgentWalletControllerGetAgentSignerAction,
+} from '../../controllers/perps/agent-wallet/types';
 import { RewardsControllerGetPerpsDiscountForAccountAction } from '../../controllers/rewards/rewards-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
 
@@ -46,12 +52,16 @@ type AllowedActions =
   | StorageServiceSetItemAction
   | StorageServiceRemoveItemAction
   | RewardsControllerGetPerpsDiscountForAccountAction
+  | PerpsAgentWalletControllerGetAgentSignerAction
   | AuthenticatedUserStorageServiceGetNotificationPreferencesAction
   | AuthenticatedUserStorageServicePutNotificationPreferencesAction;
 
 type AllowedEvents =
   | RemoteFeatureFlagControllerStateChangeEvent
-  | AccountTreeControllerSelectedAccountGroupChangeEvent;
+  | AccountTreeControllerSelectedAccountGroupChangeEvent
+  | PerpsAgentWalletControllerAgentActivatedEvent
+  | PerpsAgentWalletControllerAgentDeactivatedEvent
+  | KeyringControllerLockEvent;
 
 export type PerpsControllerMessenger = Messenger<
   'PerpsController',
@@ -94,10 +104,14 @@ export function getPerpsControllerMessenger(
       'StorageService:setItem',
       'StorageService:removeItem',
       'RewardsController:getPerpsDiscountForAccount',
+      'PerpsAgentWalletController:getAgentSigner',
     ],
     events: [
       'RemoteFeatureFlagController:stateChange',
       'AccountTreeController:selectedAccountGroupChange',
+      'PerpsAgentWalletController:agentActivated',
+      'PerpsAgentWalletController:agentDeactivated',
+      'KeyringController:lock',
     ],
   });
 
