@@ -185,7 +185,7 @@ function BasicFunctionalityMigrationToast() {
   const shouldShow = useSelector(
     (state) =>
       state.metamask.preferences?.basicFunctionalityMigrationNotification ===
-      'toast',
+        'toast' && !state.metamask.authConnection,
   );
 
   const dismiss = () => {

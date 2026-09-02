@@ -52,10 +52,22 @@ export const migrate = ((versionedData) => {
     (preference) => preferencesController[preference] === true,
   ).length;
   const isSocialLogin =
-    SOCIAL_LOGIN_FLOWS.includes(
+    !basicFunctionalityEnabled &&
+    (SOCIAL_LOGIN_FLOWS.includes(
       (data.OnboardingController as Record<string, unknown> | undefined)
         ?.firstTimeFlowType as string,
-    ) && !basicFunctionalityEnabled;
+    ) ||
+      Boolean(
+        (
+          data.SeedlessOnboardingController as
+            | Record<string, unknown>
+            | undefined
+        )?.socialBackupsMetadata,
+      ) ||
+      Boolean(
+        (data.AuthenticationController as Record<string, unknown> | undefined)
+          ?.authConnection,
+      ));
   const landingState =
     basicFunctionalityEnabled || isSocialLogin || enabledChildren > 9;
 

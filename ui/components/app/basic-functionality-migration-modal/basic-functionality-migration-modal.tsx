@@ -29,7 +29,10 @@ export function BasicFunctionalityMigrationModal() {
   const isOpen = useSelector(
     (state) =>
       state.metamask.preferences?.basicFunctionalityMigrationNotification ===
-      'modal',
+        'modal' ||
+      (state.metamask.preferences?.basicFunctionalityMigrationNotification ===
+        'toast' &&
+        Boolean(state.metamask.authConnection)),
   );
 
   const close = () => {

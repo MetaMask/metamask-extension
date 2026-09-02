@@ -23,11 +23,18 @@ export const BasicFunctionalityToggleItem = () => {
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const useExternalServices = useSelector(getUseExternalServices);
+  const isSocialLoginUser = useSelector((state) =>
+    Boolean(state.metamask.authConnection),
+  );
   const isBasicFunctionalityConsolidationEnabled = useSelector(
     getIsBasicFunctionalityConsolidationEnabled,
   );
 
   const handleToggle = (value: boolean) => {
+    if (isSocialLoginUser) {
+      return;
+    }
+
     if (value) {
       dispatch(openBasicFunctionalityModal());
     } else {
@@ -64,6 +71,7 @@ export const BasicFunctionalityToggleItem = () => {
       description={description}
       value={useExternalServices}
       onToggle={handleToggle}
+      disabled={isSocialLoginUser}
       dataTestId="basic-functionality-toggle"
     />
   );
