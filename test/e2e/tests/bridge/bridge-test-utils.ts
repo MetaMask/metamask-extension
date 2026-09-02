@@ -980,10 +980,10 @@ async function mockAccountsTransactions(mockServer: Mockttp) {
     });
 }
 
-async function mockLineaTransactionDetails(mockServer: Mockttp) {
+async function mockTransactionDetails(mockServer: Mockttp) {
   return await mockServer
     .forGet(
-      /^https:\/\/accounts\.api\.cx\.metamask\.io\/v1\/networks\/59144\/transactions\/0x[0-9a-fA-F]+/u,
+      /^https:\/\/accounts\.api\.cx\.metamask\.io\/v1\/networks\/\d+\/transactions\/0x[0-9a-fA-F]+/u,
     )
     .always()
     .thenCallback(() => ({
@@ -1592,6 +1592,7 @@ export const getBridgeFixtures = ({
           STX_MAINNET_NETWORK_CONFIG,
         ),
         await mockAccountsTransactions(mockServer),
+        await mockTransactionDetails(mockServer),
         await mockAccountsBalances(mockServer),
         await mockPriceSpotPricesV3(mockServer),
         await mockSwapAggregatorLinea(mockServer),
@@ -1928,7 +1929,7 @@ export const getBridgeL2Fixtures = (
           featureFlags,
           STX_LINEA_NETWORK_CONFIG,
         ),
-        await mockLineaTransactionDetails(mockServer),
+        await mockTransactionDetails(mockServer),
         await mockAccountsBalances(mockServer),
         await mockSwapAggregatorMetadataLinea(mockServer),
         await mockSwapTokensLinea(mockServer),

@@ -20,6 +20,7 @@ import { useConfirmContext } from '../../context/confirm';
 import { PayWithModal } from '../../components/modals/pay-with-modal';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
+import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 import { MONEY_ACCOUNT_DUMMY_BALANCE_FIAT } from './sections/usePayWithMoneyAccountSection';
 
 export type PayWithDisplayToken = {
@@ -37,6 +38,7 @@ type PayWithToken = {
   ownerId: string;
   isPostQuoteWithdraw: boolean;
   isMoneyAccountSelected: boolean;
+  hasAvailableTokens: boolean;
   openModal: () => void;
   modal: React.ReactNode;
 };
@@ -54,6 +56,7 @@ export function usePayWithToken(): PayWithToken {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { payToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
+  const availableTokens = useTransactionPayAvailableTokens();
   const fiatFormatter = useFiatFormatter({ overrideCurrency: 'usd' });
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -86,6 +89,11 @@ export function usePayWithToken(): PayWithToken {
   const firstRequiredToken = requiredTokens?.[0];
   const resolvedToken =
     payToken ?? (shouldWaitForPayToken ? undefined : firstRequiredToken);
+
+  const hasAvailableTokens = useMemo(
+    () => (availableTokens ?? []).some((token) => !token.disabled),
+    [availableTokens],
+  );
 
   const balanceUsdFormatted = useMemo(() => {
     if (isMoneyAccountSelected) {
@@ -121,6 +129,7 @@ export function usePayWithToken(): PayWithToken {
     ownerId: currentConfirmation?.id ?? '',
     isPostQuoteWithdraw,
     isMoneyAccountSelected,
+    hasAvailableTokens,
     openModal,
     modal: isModalOpen ? (
       <PayWithModal isOpen={isModalOpen} onClose={closeModal} />
