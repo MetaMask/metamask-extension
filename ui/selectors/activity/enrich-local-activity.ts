@@ -5,7 +5,10 @@ import {
 } from '@metamask/money-account-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
-import type { ActivityListItem } from '../../../shared/lib/activity/types';
+import type {
+  ActivityListItem,
+  TokenAmount,
+} from '../../../shared/lib/activity/types';
 import { getTokenMetadataFromKnownToken } from '../../../shared/lib/activity/adapters/helpers';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
@@ -27,6 +30,52 @@ type LocalActivitySource = TransactionGroup & {
   contractTokenMetadata?: { symbol?: string; decimals?: number };
 };
 
+type TransferInformation = NonNullable<
+  LocalActivitySource['initialTransaction']['transferInformation']
+>;
+
+function resolveTransferAmount(
+  transferInformation: TransferInformation | undefined,
+  parsedAmount: unknown,
+): string | undefined {
+  if (
+    transferInformation?.amount !== undefined &&
+    transferInformation.amount !== null
+  ) {
+    return String(transferInformation.amount);
+  }
+  if (parsedAmount !== undefined && parsedAmount !== null) {
+    return String(parsedAmount);
+  }
+  return undefined;
+}
+
+/**
+ * Whether known-token metadata should be consulted for logo/symbol/decimals.
+ *
+ * Intentionally applies to any known bridge token (not only Monad USDC) when
+ * symbol, decimals, or assetId is missing from transfer info, watched tokens,
+ * or the existing activity token.
+ * @param transferInformation
+ * @param contractTokenMetadata
+ * @param token
+ */
+function shouldLookupKnownTokenMetadata(
+  transferInformation: TransferInformation | undefined,
+  contractTokenMetadata: LocalActivitySource['contractTokenMetadata'],
+  token: TokenAmount | undefined,
+): boolean {
+  const missingSymbol =
+    !transferInformation?.symbol &&
+    !contractTokenMetadata?.symbol &&
+    !token?.symbol;
+  const missingDecimals =
+    transferInformation?.decimals === undefined &&
+    contractTokenMetadata?.decimals === undefined &&
+    token?.decimals === undefined;
+  return missingSymbol || missingDecimals || !token?.assetId;
+}
+
 function enrichTokenTransferActivity(
   activity: ActivityListItem,
   transactionGroup: LocalActivitySource,
@@ -47,32 +96,19 @@ function enrichTokenTransferActivity(
   const recipient = transactionData?.args?._to ?? transactionData?.args?.to;
   const parsedAmount =
     transactionData?.args?._value ?? transactionData?.args?.value;
-  let amount: string | undefined;
-  if (
-    transferInformation?.amount !== undefined &&
-    transferInformation.amount !== null
-  ) {
-    amount = String(transferInformation.amount);
-  } else if (parsedAmount !== undefined && parsedAmount !== null) {
-    amount = parsedAmount.toString();
-  }
-  // Intentionally backfill any known bridge token (not only Monad USDC)
-  // when symbol, decimals, or assetId is missing. Known-token metadata
-  // supplies the logo (assetId), symbol, and decimals even if the token
-  // is not in the user's watched-tokens list and transferInformation is
-  // still incomplete. Amount/recipient parsing from calldata is unchanged.
+  const amount = resolveTransferAmount(transferInformation, parsedAmount);
+  // Known-token metadata supplies logo (assetId), symbol, and decimals when
+  // watched-token / transferInformation sources are incomplete. Amount and
+  // recipient still come from transferInformation or calldata parsing above.
   const contractAddress = transferInformation?.contractAddress ?? txParams?.to;
+  const activityToken =
+    'token' in activity.data ? activity.data.token : undefined;
 
-  const needsKnownTokenMetadata =
-    (!transferInformation?.symbol &&
-      !transactionGroup.contractTokenMetadata?.symbol &&
-      !activity.data.token?.symbol) ||
-    (transferInformation?.decimals === undefined &&
-      transactionGroup.contractTokenMetadata?.decimals === undefined &&
-      activity.data.token?.decimals === undefined) ||
-    !activity.data.token?.assetId;
-
-  const knownTokenMetadata = needsKnownTokenMetadata
+  const knownTokenMetadata = shouldLookupKnownTokenMetadata(
+    transferInformation,
+    transactionGroup.contractTokenMetadata,
+    activityToken,
+  )
     ? getTokenMetadataFromKnownToken(
         contractAddress,
         'out',
@@ -83,13 +119,13 @@ function enrichTokenTransferActivity(
     transferInformation?.symbol ??
     transactionGroup.contractTokenMetadata?.symbol ??
     knownTokenMetadata?.symbol ??
-    activity.data.token?.symbol;
+    activityToken?.symbol;
   const decimals =
     transferInformation?.decimals ??
     transactionGroup.contractTokenMetadata?.decimals ??
     knownTokenMetadata?.decimals ??
-    activity.data.token?.decimals;
-  const assetId = activity.data.token?.assetId ?? knownTokenMetadata?.assetId;
+    activityToken?.decimals;
+  const assetId = activityToken?.assetId ?? knownTokenMetadata?.assetId;
 
   const nextTo =
     typeof recipient === 'string' && recipient !== activity.data.to
@@ -98,10 +134,10 @@ function enrichTokenTransferActivity(
 
   if (
     nextTo === activity.data.to &&
-    amount === activity.data.token?.amount &&
-    symbol === activity.data.token?.symbol &&
-    decimals === activity.data.token?.decimals &&
-    assetId === activity.data.token?.assetId
+    amount === activityToken?.amount &&
+    symbol === activityToken?.symbol &&
+    decimals === activityToken?.decimals &&
+    assetId === activityToken?.assetId
   ) {
     return activity;
   }
@@ -112,7 +148,7 @@ function enrichTokenTransferActivity(
       ...activity.data,
       to: nextTo,
       token: {
-        direction: activity.data.token?.direction ?? 'out',
+        direction: activityToken?.direction ?? 'out',
         ...(assetId ? { assetId } : {}),
         ...(symbol ? { symbol } : {}),
         ...(decimals === undefined ? {} : { decimals }),
