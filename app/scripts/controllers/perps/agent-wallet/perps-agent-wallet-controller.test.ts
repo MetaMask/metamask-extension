@@ -71,7 +71,7 @@ const buildController = (
 
   const messenger = getPerpsAgentWalletControllerMessenger(rootMessenger);
   const controller = new PerpsAgentWalletController({ messenger, state });
-  return { controller, messenger, keyringCalls };
+  return { controller, messenger, keyringCalls, keyringMessenger };
 };
 
 const completeAgentSetup = async (
@@ -205,6 +205,75 @@ describe('PerpsAgentWalletController', () => {
       controller.failSetup(MASTER, 'user rejected');
       expect(controller.state.setupStatusByAccount[MASTER]).toBe('failed');
       expect(controller.getActiveAgent(MASTER)).toBeNull();
+    });
+  });
+
+  describe('removeAgent', () => {
+    it('deletes the registration, ciphertext, and setup status, clears plaintext, and emits agentDeactivated', async () => {
+      const { controller, messenger } = buildController();
+      const events: { masterAccountAddress: string; reason: string }[] =
+        [];
+      messenger.subscribe(
+        'PerpsAgentWalletController:agentDeactivated',
+        (payload: { masterAccountAddress: string; reason: string }) => {
+          events.push(payload);
+        },
+      );
+      const master = '0x1111111111111111111111111111111111111111';
+      const handle = await controller.beginSetup(master);
+      await controller.completeSetup(
+        master,
+        {
+          agentAddress: handle.address,
+          agentName: 'metamask-perps',
+          masterAccountAddress: master,
+          createdAt: 1_700_000_000_000,
+        },
+        'correct horse battery staple',
+      );
+      expect(controller.getAgentSigner(master)).not.toBeNull();
+
+      controller.removeAgent(master, 'user');
+
+      expect(controller.state.agentsByAccount[master]).toBeUndefined();
+      expect(controller.state.agentKeyVaultByAccount[master]).toBeUndefined();
+      expect(controller.state.setupStatusByAccount[master]).toBeUndefined();
+      expect(controller.getAgentSigner(master)).toBeNull();
+      expect(events).toEqual([
+        { masterAccountAddress: master, reason: 'user' },
+      ]);
+    });
+
+    it('is a no-op (no event) for an account with no registration', () => {
+      const { controller, messenger } = buildController();
+      const events: string[] = [];
+      messenger.subscribe('PerpsAgentWalletController:agentDeactivated', () => {
+        events.push('fired');
+      });
+      controller.removeAgent('0x3333333333333333333333333333333333333333', 'user');
+      expect(events).toHaveLength(0);
+    });
+
+    it('cleans up when KeyringController:accountRemoved fires for a registered account', async () => {
+      const { controller, keyringMessenger } = buildController();
+      const master = '0x1111111111111111111111111111111111111111';
+      const handle = await controller.beginSetup(master);
+      await controller.completeSetup(
+        master,
+        {
+          agentAddress: handle.address,
+          agentName: 'metamask-perps',
+          masterAccountAddress: master,
+          createdAt: 1_700_000_000_000,
+        },
+        'correct horse battery staple',
+      );
+
+      keyringMessenger.publish('KeyringController:accountRemoved', master);
+
+      expect(controller.state.agentsByAccount[master]).toBeUndefined();
+      expect(controller.state.agentKeyVaultByAccount[master]).toBeUndefined();
+      expect(controller.getAgentSigner(master)).toBeNull();
     });
   });
 

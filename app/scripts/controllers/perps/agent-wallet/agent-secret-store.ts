@@ -50,4 +50,12 @@ export class AgentSecretStore {
   clearPlaintext(): void {
     this.#plaintext.clear();
   }
+
+  /**
+   * Clears the in-memory plaintext for one master account (revoke/removal).
+   * @param masterAccountAddress
+   */
+  clearPlaintextFor(masterAccountAddress: string): void {
+    this.#plaintext.delete(masterAccountAddress);
+  }
 }

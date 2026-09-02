@@ -10,6 +10,7 @@ import type { AgentKeyHandle } from './agent-secret-store';
 import { setupAgentWallet } from './agent-setup-flow';
 import type {
   AgentRegistration,
+  PerpsAgentRemovalReason,
   PerpsAgentSigner,
   PerpsAgentWalletControllerMessenger,
   PerpsAgentWalletControllerState,
@@ -113,6 +114,15 @@ export class PerpsAgentWalletController extends BaseController<
     );
 
     this.messenger.subscribe('KeyringController:lock', () => this.onLock());
+
+    // Per-account cleanup when an account is removed from the wallet
+    // (TokensController pattern: the payload is the account address, which is
+    // exactly the key shape of this controller's state maps). Local-only: the
+    // removed account can never sign a Hyperliquid removal action, and the
+    // destroyed key makes the HL-side delegation permanently inert.
+    this.messenger.subscribe('KeyringController:accountRemoved', (address) =>
+      this.removeAgent(address, 'account-removal'),
+    );
   }
 
   /**
@@ -247,6 +257,46 @@ export class PerpsAgentWalletController extends BaseController<
     this.update((state) => {
       state.setupStatusByAccount[masterAccountAddress] = 'failed';
     });
+  }
+
+  /**
+   * Removes one master account's agent: deletes the registration, the
+   * encrypted key ciphertext, and any transient setup status, clears the
+   * account's in-memory plaintext, and — when a registration existed —
+   * publishes `agentDeactivated` so the perps trading wallet override resets
+   * and trading falls back to master signing.
+   *
+   * Hyperliquid has no agent-removal API (verified): deregistration happens
+   * only by same-name replacement (rotation), expiry, or a funded-account
+   * check. Destroying the local key therefore IS the revocation — the
+   * delegation record on HL can never be used again because the key no
+   * longer exists anywhere.
+   *
+   * Also runs silently (reason `account-removal`) from the
+   * `KeyringController:accountRemoved` subscription.
+   *
+   * @param masterAccountAddress - The master account whose agent is removed.
+   * @param reason - Whether this was a user action or account-removal cleanup.
+   */
+  removeAgent(
+    masterAccountAddress: string,
+    reason: PerpsAgentRemovalReason,
+  ): void {
+    const hadRegistration = Boolean(
+      this.state.agentsByAccount[masterAccountAddress],
+    );
+    this.update((state) => {
+      delete state.agentsByAccount[masterAccountAddress];
+      delete state.agentKeyVaultByAccount[masterAccountAddress];
+      delete state.setupStatusByAccount[masterAccountAddress];
+    });
+    this.#store.clearPlaintextFor(masterAccountAddress);
+    if (hadRegistration) {
+      this.messenger.publish('PerpsAgentWalletController:agentDeactivated', {
+        masterAccountAddress,
+        reason,
+      });
+    }
   }
 
   /**

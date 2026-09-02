@@ -18,7 +18,8 @@ import type { RootMessenger } from '../../lib/messenger';
  * account signs the approveAgent typed data) and
  * `KeyringController:verifyPassword` (the password gates encryption of the
  * agent key). The `KeyringController:lock` event drives clearing of
- * in-memory plaintext.
+ * in-memory plaintext, and `KeyringController:accountRemoved` drives the
+ * per-account agent cleanup when an account is removed from the wallet.
  *
  * `PerpsController:prepareTradingWallet` is used by the agent setup flow to
  * run the trading-readiness steps (unified account enablement, builder fee
@@ -50,7 +51,7 @@ export function getPerpsAgentWalletControllerMessenger(
       'KeyringController:verifyPassword',
       'PerpsController:prepareTradingWallet',
     ],
-    events: ['KeyringController:lock'],
+    events: ['KeyringController:lock', 'KeyringController:accountRemoved'],
   });
 
   return perpsAgentWalletControllerMessenger;

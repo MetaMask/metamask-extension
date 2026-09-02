@@ -36,6 +36,17 @@ describe('AgentSecretStore', () => {
     expect(store.getPlaintext(MASTER)).toBeNull();
   });
 
+  it('clears plaintext for one account without touching others', () => {
+    const store = new AgentSecretStore(encryptorFactory(600_000));
+    const masterA = '0x1111111111111111111111111111111111111111';
+    const masterB = '0x2222222222222222222222222222222222222222';
+    store.setPlaintext(masterA, '0xa');
+    store.setPlaintext(masterB, '0xb');
+    store.clearPlaintextFor(masterA);
+    expect(store.getPlaintext(masterA)).toBeNull();
+    expect(store.getPlaintext(masterB)).toBe('0xb');
+  });
+
   it('generates a unique keypair per call (never-reuse rule)', () => {
     expect(generateAgentKeypair().privateKey).not.toBe(
       generateAgentKeypair().privateKey,

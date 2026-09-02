@@ -4,6 +4,7 @@ import type {
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import type {
+  KeyringControllerAccountRemovedEvent,
   KeyringControllerAddNewKeyringAction,
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerGetStateAction,
@@ -29,6 +30,9 @@ export type PerpsAgentWalletSetupStatus =
   | 'submitting'
   | 'active'
   | 'failed';
+
+/** Why an agent was removed: explicit user action or account-removal cleanup. */
+export type PerpsAgentRemovalReason = 'user' | 'account-removal';
 
 export type PerpsAgentWalletControllerState = {
   /** Completed agent registrations by master account address. */
@@ -107,6 +111,13 @@ export type PerpsAgentWalletControllerAgentActivatedEvent = {
   ];
 };
 
+export type PerpsAgentWalletControllerAgentDeactivatedEvent = {
+  type: 'PerpsAgentWalletController:agentDeactivated';
+  payload: [
+    { masterAccountAddress: string; reason: PerpsAgentRemovalReason },
+  ];
+};
+
 export type PerpsAgentWalletControllerStateChangeEvent =
   ControllerStateChangedEvent<
     'PerpsAgentWalletController',
@@ -115,7 +126,8 @@ export type PerpsAgentWalletControllerStateChangeEvent =
 
 export type PerpsAgentWalletControllerEvents =
   | PerpsAgentWalletControllerStateChangeEvent
-  | PerpsAgentWalletControllerAgentActivatedEvent;
+  | PerpsAgentWalletControllerAgentActivatedEvent
+  | PerpsAgentWalletControllerAgentDeactivatedEvent;
 
 // Allowances for KeyringController actions exist so that any accidental
 // keyring access is possible-but-observable; the controller never registers
@@ -139,7 +151,8 @@ export type PerpsAgentWalletControllerAllowedActions =
 
 export type PerpsAgentWalletControllerAllowedEvents =
   | PerpsAgentWalletControllerEvents
-  | KeyringControllerLockEvent;
+  | KeyringControllerLockEvent
+  | KeyringControllerAccountRemovedEvent;
 
 export type PerpsAgentWalletControllerMessenger = Messenger<
   'PerpsAgentWalletController',
