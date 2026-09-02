@@ -5,6 +5,7 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   getAllEnabledNetworksForAllNamespaces,
   getAllMultichainNetworkConfigurations,
+  selectEnabledNetworksAsCaipChainIds,
 } from '../../../../selectors/multichain/networks';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
@@ -21,7 +22,7 @@ const toCaipChainId = (chainId: string) =>
 export function useNetworkFilterButtonIcon():
   | { name: string; src?: string }
   | undefined {
-  const enabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
+  const enabledNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
   const allNetworks = useSelector(getAllMultichainNetworkConfigurations);
 
   return useMemo(() => {
@@ -29,7 +30,7 @@ export function useNetworkFilterButtonIcon():
       return undefined;
     }
 
-    const network = allNetworks[toCaipChainId(enabledNetworks[0])];
+    const network = allNetworks[enabledNetworks[0]];
     return network
       ? { name: network.name, src: getNetworkIcon(network) }
       : undefined;

@@ -1,5 +1,11 @@
 import React from 'react';
-import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import {
   en as messages,
   renderWithProvider,
@@ -672,6 +678,18 @@ describe('TokenManagementPage', () => {
         name: 'Ethereum Mainnet',
       }),
     ).toHaveAttribute('src', ETH_TOKEN_IMAGE_URL);
+  });
+
+  it('omits the network filter icon when multiple networks are enabled', () => {
+    renderPage(
+      createState({
+        enabledNetworks: { '0x1': true, '0x5': true },
+      }),
+    );
+
+    expect(
+      screen.queryByTestId('token-management-network-filter-icon'),
+    ).not.toBeInTheDocument();
   });
 
   it('navigates to the dedicated networks page from manage networks in the shared modal', async () => {
