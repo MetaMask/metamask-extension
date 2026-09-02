@@ -1,8 +1,12 @@
-import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { CHAIN_IDS, TransactionType } from '@metamask/transaction-controller';
 import { waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../test/data/mock-state.json';
-import { getMockContractInteractionConfirmState } from '../../../../../test/data/confirmations/helper';
+import {
+  getMockConfirmStateForTransaction,
+  getMockContractInteractionConfirmState,
+} from '../../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import * as Actions from '../../../../store/actions';
 import { useNetworkAndOriginSwitchingAlerts } from './useNetworkAndOriginSwitchingAlerts';
@@ -104,4 +108,36 @@ describe('useNetworkAndOriginSwitchingAlerts', () => {
       ]);
     });
   });
+
+  [TransactionType.moneyAccountDeposit, TransactionType.perpsDeposit].forEach(
+    (nestedType) => {
+      it(`returns no alerts for ${nestedType} when network or origin changed`, async () => {
+        jest
+          .spyOn(Actions, 'getLastInteractedConfirmationInfo')
+          .mockResolvedValue({
+            id: '123',
+            timestamp: new Date().getTime() - 10,
+            chainId: '0x1',
+            origin: 'https://example.com',
+          });
+
+        const confirmation = {
+          ...genUnapprovedContractInteractionConfirmation({
+            address: '0x0',
+          }),
+          type: TransactionType.batch,
+          nestedTransactions: [{ type: nestedType }],
+        };
+
+        const { result } = renderHookWithConfirmContextProvider(
+          () => useNetworkAndOriginSwitchingAlerts(),
+          getMockConfirmStateForTransaction(confirmation),
+        );
+
+        await waitFor(() => {
+          expect(result.current).toEqual([]);
+        });
+      });
+    },
+  );
 });
