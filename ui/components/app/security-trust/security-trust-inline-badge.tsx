@@ -141,21 +141,3 @@ export const SecurityTrustInlineBadge = ({
     </button>
   );
 };
-
-export const SecurityTrustVerifiedBadge = ({
-  badge,
-  testId = 'security-badge-verified',
-  onClick,
-}: {
-  badge: SecurityTrustInlineBadgeConfig;
-  testId?: string;
-  onClick?: () => void;
-}) => (
-  <Box
-    flexDirection={BoxFlexDirection.Row}
-    alignItems={BoxAlignItems.Center}
-    data-testid={onClick ? undefined : testId}
-  >
-    <SecurityTrustInlineBadge badge={badge} testId={testId} onClick={onClick} />
-  </Box>
-);

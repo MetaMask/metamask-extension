@@ -23,7 +23,7 @@ export const TokenCellTitle = React.memo(
     const tokenIsStock = isStockToken(token);
 
     return (
-      <Box className="min-w-0 items-center gap-2 flex">
+      <Box className="flex items-center gap-2 min-w-0">
         <AssetCellTitle title={token.title} />
         <SafetyBadge value={token.safetyResult} />
         {label && <Tag label={label} />}
