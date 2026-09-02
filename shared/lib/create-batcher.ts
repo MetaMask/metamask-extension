@@ -1,12 +1,12 @@
 type CreateBatcherOptions<TItem, TResult> = {
   fetcher: (items: TItem[]) => Promise<TResult[]>;
-  resolver: (results: TResult[], item: TItem) => TResult | undefined;
+  resolver: (results: TResult[], item: TItem) => TResult | null | undefined;
   getKey?: (item: TItem) => string;
   scheduler?: (flush: () => void) => void;
 };
 
 type Batcher<TItem, TResult> = {
-  fetch: (item: TItem) => Promise<TResult | undefined>;
+  fetch: (item: TItem) => Promise<TResult | null | undefined>;
 };
 
 const microtaskScheduler = (flush: () => void) => {
@@ -22,12 +22,16 @@ export function create<TItem, TResult>({
   type PendingFetch = {
     item: TItem;
     resolve: (
-      result: TResult | undefined | PromiseLike<TResult | undefined>,
+      result:
+        | TResult
+        | null
+        | undefined
+        | PromiseLike<TResult | null | undefined>,
     ) => void;
     reject: (error: unknown) => void;
   };
 
-  let pendingFetches: PendingFetch[] = [];
+  const pendingFetches: PendingFetch[] = [];
   let isFlushScheduled = false;
 
   const flush = async () => {
@@ -57,7 +61,7 @@ export function create<TItem, TResult>({
 
   return {
     fetch: (item) =>
-      new Promise<TResult | undefined>((resolve, reject) => {
+      new Promise<TResult | null | undefined>((resolve, reject) => {
         pendingFetches.push({ item, resolve, reject });
 
         if (isFlushScheduled) {

@@ -1,11 +1,19 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   type CaipAssetType,
   type CaipChainId,
   type Hex,
   isCaipAssetType,
+  isStrictHexString,
 } from '@metamask/utils';
+import type { Asset } from '@metamask/assets-controllers';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import {
   Box,
@@ -20,9 +28,12 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { toCaipAssetId } from '../util/toCaipAssetId';
-import { usePrefetchTokenAssets } from '#ui/hooks/token-asset/usePrefetchTokenAssets';
-import { useDeferredValue } from '../../../../hooks/useDeferredValue';
+import { useTokenAssetSecurityResults } from '#ui/hooks/token-asset/useTokenAssetSecurityResults';
+import {
+  getNativeAssetId,
+  normalizeTokenAssetId,
+} from '#shared/lib/asset-utils';
+import { buildEvmCaip19AssetId } from '#shared/lib/multichain/buildEvmCaip19AssetId';
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {
@@ -94,6 +105,26 @@ const getInitialLowValueAssetsExpanded = () => {
 
 const setLowValueAssetsExpandedSessionValue = (isExpanded: boolean) => {
   lowValueAssetsExpandedSessionValue = isExpanded;
+};
+
+const toCaipAssetId = (asset: Asset): CaipAssetType | undefined => {
+  const { assetId, chainId, isNative } = asset;
+
+  if (assetId && isCaipAssetType(assetId)) {
+    return normalizeTokenAssetId(assetId);
+  }
+
+  if (isNative) {
+    const nativeAssetId = getNativeAssetId(chainId as Hex | undefined);
+    return nativeAssetId ? normalizeTokenAssetId(nativeAssetId) : undefined;
+  }
+
+  const evmAddress = 'address' in asset ? asset.address : assetId;
+  if (evmAddress && isStrictHexString(chainId)) {
+    return buildEvmCaip19AssetId(evmAddress, chainId) as CaipAssetType;
+  }
+
+  return undefined;
 };
 
 const getLowValueAssetFiatThreshold = (currencyRates?: CurrencyRates) => {
@@ -314,11 +345,31 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
   const lowValueAssetCount = lowValueTokens.length;
 
+  const displayedAssetIds = useMemo(
+    () =>
+      [
+        ...visibleTokens,
+        ...(isLowValueAssetsExpanded ? lowValueTokens : []),
+      ].flatMap((token) => (token.caipAssetId ? [token.caipAssetId] : [])),
+    [isLowValueAssetsExpanded, lowValueTokens, visibleTokens],
+  );
+
+  const deferredDisplayedAssetIds = useDeferredValue(displayedAssetIds);
+
+  const securityResultByAssetId = useTokenAssetSecurityResults({
+    assetIds: deferredDisplayedAssetIds,
+  });
+
   const tokenListItems = useMemo<TokenListDisplayItem[]>(() => {
     const visibleTokenItems: TokenListDisplayItem[] = visibleTokens.map(
       (token) => ({
         type: 'token',
-        token,
+        token: {
+          ...token,
+          safetyResult: token.caipAssetId
+            ? securityResultByAssetId[token.caipAssetId]
+            : undefined,
+        },
       }),
     );
 
@@ -335,7 +386,12 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       ...(isLowValueAssetsExpanded
         ? lowValueTokens.map((token) => ({
             type: 'token' as const,
-            token,
+            token: {
+              ...token,
+              safetyResult: token.caipAssetId
+                ? securityResultByAssetId[token.caipAssetId]
+                : undefined,
+            },
           }))
         : []),
     ];
@@ -343,22 +399,9 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     isLowValueAssetsExpanded,
     lowValueAssetCount,
     lowValueTokens,
+    securityResultByAssetId,
     visibleTokens,
   ]);
-
-  const displayedAssetIds = useMemo(
-    () =>
-      tokenListItems.flatMap((item) =>
-        item.type === 'token' && item.token.caipAssetId
-          ? [item.token.caipAssetId]
-          : [],
-      ),
-    [tokenListItems],
-  );
-
-  usePrefetchTokenAssets({
-    assetIds: displayedAssetIds,
-  });
 
   useEffect(() => {
     if (sortedFilteredTokens) {

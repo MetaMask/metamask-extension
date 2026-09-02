@@ -18,8 +18,8 @@ describe('create', () => {
 
     expect(fetcher).toHaveBeenCalledTimes(1);
     expect(fetcher).toHaveBeenCalledWith([1, 2]);
-    expect(first).toEqual({ id: 1, label: 'item-1' });
-    expect(second).toEqual({ id: 2, label: 'item-2' });
+    expect(first).toStrictEqual({ id: 1, label: 'item-1' });
+    expect(second).toStrictEqual({ id: 2, label: 'item-2' });
   });
 
   it('deduplicates items before calling the fetcher', async () => {

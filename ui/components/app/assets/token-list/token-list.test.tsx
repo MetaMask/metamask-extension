@@ -9,12 +9,12 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { CaipChainId, Hex } from '@metamask/utils';
 import type { AccountGroupAssets, Asset } from '@metamask/assets-controllers';
+import { useTokenAssetSecurityResults } from '#ui/hooks/token-asset/useTokenAssetSecurityResults';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { usePrefetchTokenAssets } from '#ui/hooks/token-asset/usePrefetchTokenAssets';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
   getCurrencyRates,
@@ -27,6 +27,7 @@ import {
   getIsEvmMultichainNetworkSelected,
   getSelectedMultichainNetworkConfiguration,
 } from '../../../../selectors/multichain/networks';
+import { getIsSecurityTrustTdpEnabled } from '../../../../selectors/multichain/feature-flags';
 import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
@@ -112,13 +113,17 @@ jest.mock('../../../../selectors/multichain/networks', () => ({
   getSelectedMultichainNetworkConfiguration: jest.fn(),
 }));
 
+jest.mock('../../../../selectors/multichain/feature-flags', () => ({
+  getIsSecurityTrustTdpEnabled: jest.fn(),
+}));
+
 jest.mock('../../../../selectors/assets', () => ({
   getAssetsBySelectedAccountGroup: jest.fn(),
   selectAccountGroupBalanceForEmptyState: jest.fn(),
 }));
 
-jest.mock('#ui/hooks/token-asset/usePrefetchTokenAssets', () => ({
-  usePrefetchTokenAssets: jest.fn(),
+jest.mock('#ui/hooks/token-asset/useTokenAssetSecurityResults', () => ({
+  useTokenAssetSecurityResults: jest.fn(() => ({})),
 }));
 
 const getMockTrackEvent = () =>
@@ -210,6 +215,7 @@ describe('TokenList', () => {
       sortCallback: 'stringNumeric',
     });
     jest.mocked(getUseExternalServices).mockReturnValue(true);
+    jest.mocked(getIsSecurityTrustTdpEnabled).mockReturnValue(true);
     jest
       .mocked(getAllEnabledNetworksForAllNamespaces)
       .mockReturnValue([CHAIN_ID as Hex | CaipChainId] as ReturnType<
@@ -506,7 +512,7 @@ describe('TokenList', () => {
     expect(screen.getByTestId('token-cell-DUST')).toBeInTheDocument();
   });
 
-  it('prefetches CAIP-19 asset ids for displayed tokens', () => {
+  it('loads security data for displayed tokens', () => {
     jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
       createAccountGroupAssets([
         createAsset({
@@ -520,7 +526,7 @@ describe('TokenList', () => {
 
     render();
 
-    expect(usePrefetchTokenAssets).toHaveBeenCalledWith({
+    expect(useTokenAssetSecurityResults).toHaveBeenCalledWith({
       assetIds: [
         'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         'eip155:1/slip44:60',

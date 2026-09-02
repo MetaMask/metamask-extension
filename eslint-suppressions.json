@@ -764,11 +764,6 @@
       "count": 1
     }
   },
-  "ui/hooks/useTokenSecurityData.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/hooks/useTokenTracker.js": {
     "react-hooks/set-state-in-effect": {
       "count": 1

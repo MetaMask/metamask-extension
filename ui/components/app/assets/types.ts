@@ -64,6 +64,7 @@ export type TokenWithFiatAmount = Token &
     isStakeable?: boolean;
     title: string;
     rwaData?: TokenListToken['rwaData'];
+    safetyResult?: string;
     // TODO BIP44: This will not need to be optional once BIP44 is enabled
     accountType?: KeyringAccountType;
   };

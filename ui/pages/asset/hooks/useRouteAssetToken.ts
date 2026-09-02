@@ -9,16 +9,16 @@ import type { TokenAsset } from '@metamask/assets-controllers';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
 import { useTokenAssetQuery } from '#ui/hooks/token-asset/useTokenAssetQuery';
-import {
-  Token,
-  TokenWithFiatAmount,
-} from '../../../components/app/assets/types';
 import { decimalToPrefixedHex } from '#shared/lib/conversion.utils';
 import {
   getCaipAssetImageUrl,
   isEvmChainId,
   isNativeCaipAssetId,
 } from '#shared/lib/asset-utils';
+import {
+  Token,
+  TokenWithFiatAmount,
+} from '../../../components/app/assets/types';
 
 export type LocationStateToken = {
   address: string;
@@ -137,7 +137,7 @@ export const useRouteAssetToken = ({
 
   return {
     token,
-    isLoading: shouldFetchTokenAsset && tokenAssetLoading,
+    isLoading: Boolean(shouldFetchTokenAsset && tokenAssetLoading),
     hasError:
       (shouldFetchNative && !nativeToken) ||
       (shouldFetchTokenAsset && Boolean(tokenAssetError)),

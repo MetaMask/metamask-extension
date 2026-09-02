@@ -8,7 +8,7 @@ import { normalizeTokenAssetId } from '#shared/lib/asset-utils';
 
 const tokenAssetBatchSize = 25;
 
-const fetchTokenAssetBatch = async (assetIds: CaipAssetType[]) => {
+async function fetchTokenAssetBatch(assetIds: CaipAssetType[]) {
   const tokens: TokenAsset[] = [];
 
   for (
@@ -24,18 +24,21 @@ const fetchTokenAssetBatch = async (assetIds: CaipAssetType[]) => {
   }
 
   return tokens;
-};
+}
 
-const tokenAssetBatcher = create({
+const tokenAssetBatcher = create<CaipAssetType, TokenAsset>({
   fetcher: fetchTokenAssetBatch,
   resolver: (tokens, assetId) =>
     tokens.find(
       (token) =>
         isCaipAssetType(token.assetId) &&
         normalizeTokenAssetId(token.assetId) === normalizeTokenAssetId(assetId),
-    ),
+    ) ?? null,
   getKey: (assetId) => normalizeTokenAssetId(assetId),
 });
 
-export const fetchTokenAsset = (assetId: CaipAssetType) =>
-  tokenAssetBatcher.fetch(assetId);
+export async function fetchTokenAsset(
+  assetId: CaipAssetType,
+): Promise<TokenAsset | null> {
+  return (await tokenAssetBatcher.fetch(assetId)) ?? null;
+}

@@ -23,9 +23,9 @@ export const TokenCellTitle = React.memo(
     const tokenIsStock = isStockToken(token);
 
     return (
-      <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
+      <Box className="min-w-0 items-center gap-2 flex">
         <AssetCellTitle title={token.title} />
-        <SafetyBadge assetId={token.caipAssetId} />
+        <SafetyBadge value={token.safetyResult} />
         {label && <Tag label={label} />}
         {token.tokenRequireActivate && <AssetInactiveBadge />}
         {tokenIsStock && (
@@ -54,9 +54,9 @@ export const TokenCellTitle = React.memo(
     prevProps.token.rwaData?.offhours?.nextClose ===
       nextProps.token.rwaData?.offhours?.nextClose &&
     prevProps.token.address === nextProps.token.address &&
-    prevProps.token.caipAssetId === nextProps.token.caipAssetId &&
     prevProps.token.chainId === nextProps.token.chainId &&
     prevProps.token.symbol === nextProps.token.symbol &&
     prevProps.token.tokenRequireActivate ===
-      nextProps.token.tokenRequireActivate,
+      nextProps.token.tokenRequireActivate &&
+    prevProps.token.safetyResult === nextProps.token.safetyResult,
 );

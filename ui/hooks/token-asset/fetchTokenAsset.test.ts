@@ -47,9 +47,9 @@ describe('fetchTokenAsset', () => {
     expect(weth?.assetId).toBe(wethAssetId);
   });
 
-  it('resolves undefined when the token is missing from the API response', async () => {
+  it('resolves null when the token is missing from the API response', async () => {
     mockFetchTokenAssets.mockResolvedValue([]);
 
-    await expect(fetchTokenAsset(usdcAssetId)).resolves.toBeUndefined();
+    await expect(fetchTokenAsset(usdcAssetId)).resolves.toBeNull();
   });
 });

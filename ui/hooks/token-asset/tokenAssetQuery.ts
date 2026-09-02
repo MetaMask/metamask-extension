@@ -1,4 +1,3 @@
-import type { TokenAsset } from '@metamask/assets-controllers';
 import { MINUTE } from '@metamask/controller-utils';
 import { type CaipAssetType } from '@metamask/utils';
 import { normalizeTokenAssetId } from '#shared/lib/asset-utils';
@@ -12,20 +11,22 @@ const tokenAssetQueryKeyRoot = [
 const cacheTimeMs = 15 * MINUTE;
 
 export const tokenAssetGcTimeMs = cacheTimeMs;
-
-export const getTokenAssetStaleTime = (query: {
-  state: { data?: TokenAsset };
-}) => {
-  const token = query.state.data;
-  if (token && !token.securityData) {
-    return 0;
-  }
-
-  return cacheTimeMs;
-};
+export const tokenAssetStaleTimeMs = cacheTimeMs;
 
 export const getTokenAssetQueryKey = (assetId: CaipAssetType) =>
   [...tokenAssetQueryKeyRoot, normalizeTokenAssetId(assetId)] as const;
 
 export const getDisabledTokenAssetQueryKey = () =>
   [...tokenAssetQueryKeyRoot, 'disabled'] as const;
+
+export function getUniqueTokenAssetIds(
+  assetIds: CaipAssetType[],
+): CaipAssetType[] {
+  if (assetIds.length === 0) {
+    return [];
+  }
+
+  return [
+    ...new Set(assetIds.map((assetId) => normalizeTokenAssetId(assetId))),
+  ].sort() as CaipAssetType[];
+}
