@@ -169,6 +169,15 @@ describe('enforced-simulations', () => {
       });
     }
 
+    it('returns false when chainId is undefined', () => {
+      expect(
+        isEnforcedSimulationsDefaultEnabled(
+          { ...BASE_TRANSACTION_META, chainId: undefined as never },
+          buildState(ResultType.Warning),
+        ),
+      ).toBe(false);
+    });
+
     it('returns true when a nested recipient has a Warning trust signal', () => {
       expect(
         isEnforcedSimulationsDefaultEnabled(
