@@ -6303,6 +6303,14 @@
       "comment_id": 5515780516,
       "created_at": "2026-09-02T20:15:08Z",
       "repoId": 42009758
+    },
+    {
+      "id": 1281377,
+      "name": "lorenzosantos",
+      "pullRequestNo": 45840,
+      "comment_id": 5517522020,
+      "created_at": "2026-09-02T22:50:29Z",
+      "repoId": 42009758
     }
   ]
 }
