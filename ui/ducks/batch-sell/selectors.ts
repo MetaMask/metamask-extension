@@ -12,7 +12,6 @@ import {
   selectBatchSellQuotes,
   selectBatchSellTrades,
   selectMinimumBalanceForRentExemptionInSOL,
-  QuoteMetadataMigrationPhase,
 } from '@metamask/bridge-controller';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/network';
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
@@ -42,6 +41,7 @@ import {
   BATCH_SELL_SUPPORTED_CHAIN_IDS,
   ONDO_TOKENIZED_TOKEN_NAME,
 } from '../../../shared/constants/batch-sell';
+import { BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE } from '../../../shared/constants/bridge';
 import { isStockRWAToken } from '../../pages/bridge/hooks/useRWAToken';
 import { BatchSellAsset } from './types';
 
@@ -339,7 +339,7 @@ export const getBatchSellQuotes = createSelector(
       sortOrder,
       requestCount,
       selectedQuote,
-      migrationPhase: QuoteMetadataMigrationPhase.V1Data,
+      migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
     });
   },
 );
