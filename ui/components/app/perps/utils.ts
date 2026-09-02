@@ -1,5 +1,9 @@
 import { TextColor } from '@metamask/design-system-react';
-import { getPerpsDisplaySymbol } from '@metamask/perps-controller';
+import {
+  getMarketTypeFilter,
+  getPerpsDisplaySymbol,
+  type MarketType,
+} from '@metamask/perps-controller';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import type {
   Order,
@@ -485,6 +489,27 @@ export const isHip3Market = (
 export const isCryptoMarket = (market: PerpsMarketData): boolean => {
   return !market.marketSource;
 };
+
+/**
+ * Check whether a market belongs to a market category.
+ *
+ * `crypto` is the main DEX rather than a data-model category, so it is matched
+ * on the absence of a `marketSource`; every other category is matched on the
+ * controller's own classification. Single source of truth so the Perps tab
+ * category pills only offer a category whose destination — the market list,
+ * which filters through this same function — actually has markets in it.
+ *
+ * @param market - The market data to test.
+ * @param category - The market category to test against.
+ * @returns True if the market belongs to the category.
+ */
+export const marketMatchesCategory = (
+  market: PerpsMarketData,
+  category: MarketType,
+): boolean =>
+  category === 'crypto'
+    ? isCryptoMarket(market)
+    : getMarketTypeFilter(market) === category;
 
 export function getPnlDisplayColor(pnl: number): TextColor {
   if (pnl > 0) {
