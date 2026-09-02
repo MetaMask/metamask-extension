@@ -18,6 +18,7 @@ import {
 } from '../../../../selectors/transactionPayController';
 import { useConfirmContext } from '../../context/confirm';
 import { PayWithModal } from '../../components/modals/pay-with-modal';
+import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
@@ -65,15 +66,20 @@ export function usePayWithToken(): PayWithToken {
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
+  const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
   const isMoneyAccountSelected =
-    paymentOverride === PaymentOverride.MoneyAccount;
+    paymentOverride === PaymentOverride.MoneyAccount ||
+    (isDefaultMoneyAccount && !payToken);
 
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
   // Avoid flashing the destination/required token (e.g. mUSD on Monad) while
   // payToken is cleared during account switches or initial auto-select.
+  // Also wait when Money Account is the flag default so deposits do not flash
+  // the required destination token before the override lands.
   const shouldWaitForPayToken =
     isPostQuoteWithdraw ||
+    isDefaultMoneyAccount ||
     hasTransactionType(currentConfirmation, [
       TransactionType.moneyAccountDeposit,
     ]);
