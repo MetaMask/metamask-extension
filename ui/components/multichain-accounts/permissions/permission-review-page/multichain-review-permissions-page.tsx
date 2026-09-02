@@ -7,19 +7,7 @@ import {
   getCaipAccountIdsFromCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import log from 'loglevel';
-import {
-  AvatarFavicon,
-  AvatarFaviconSize,
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  Button,
-  ButtonSize,
-  ButtonVariant,
-  IconName,
-} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
   getAllPermittedChainsForSelectedTab,
   getConnectedSitesList,
@@ -28,21 +16,12 @@ import {
 } from '../../../../selectors';
 import {
   removePermissionsFor,
-  requestAccountsAndChainPermissionsWithId,
   setPermittedAccounts,
-  setPermittedChains,
 } from '../../../../store/actions';
-import { toast, ToastContent } from '../../../ui/toast/toast';
-import { Content, Footer, Page } from '../../../multichain/pages/page';
 import { SubjectsType } from '../../../multichain/pages/connections/components/connections.types';
-import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
-import { DisconnectAllModal } from '../../../multichain/disconnect-all-modal/disconnect-all-modal';
-import { DisconnectPermissionsModal } from '../../../multichain/disconnect-permissions-modal/disconnect-permissions-modal';
-import { PermissionsHeader } from '../../../multichain/permissions-header/permissions-header';
-import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
-import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../../shared/constants/network';
+import { PREVIOUS_ROUTE } from '../../../../helpers/constants/routes';
+import { DisconnectAllGatorPermissionsModal } from '../../../multichain/disconnect-all-gator-permissions-modal';
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
-import { MultichainSiteCell } from '../../multichain-site-cell/multichain-site-cell';
 import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
 import { getCaip25CaveatValueFromPermissions } from '../../../../helpers/utils/caip25-permissions';
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../../shared/lib/multichain/scope-utils';
@@ -52,18 +31,10 @@ import {
   getTokenTransferPermissionsByOrigin,
   getPermissionMetaDataByOrigin,
 } from '../../../../selectors/gator-permissions/gator-permissions';
-import {
-  PermissionsCell,
-  PermissionsEmptyState,
-} from '../../../multichain/pages/gator-permissions/components';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import { useRevokeGatorPermissionsMultiChain } from '../../../../hooks/gator-permissions/useRevokeGatorPermissionsMultiChain';
 import { useDispatch } from '../../../../store/hooks';
-
-export enum MultichainReviewPermissionsPageMode {
-  Summary = 'summary',
-  EditAccounts = 'edit-accounts',
-}
+import { toast } from '../../../ui/toast/toast';
+import { getURLHost } from '../../../../helpers/utils/util';
 
 export const MultichainReviewPermissions = () => {
   const t = useI18nContext();
@@ -73,22 +44,9 @@ export const MultichainReviewPermissions = () => {
 
   const originParam = searchParams.get('origin');
   const securedOrigin = decodeURIComponent(originParam ?? '');
-  const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
-  const [showDisconnectPermissionsModal, setShowDisconnectPermissionsModal] =
+  const [showGatorPermissionsModal, setShowGatorPermissionsModal] =
     useState(false);
-  const [pageMode, setPageMode] = useState<MultichainReviewPermissionsPageMode>(
-    MultichainReviewPermissionsPageMode.Summary,
-  );
   const activeTabOrigin: string = securedOrigin;
-
-  const requestAccountsAndChainPermissions = async () => {
-    const requestId = await dispatch(
-      requestAccountsAndChainPermissionsWithId(activeTabOrigin),
-    );
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    navigate(`${CONNECT_ROUTE}/${requestId}`);
-  };
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -98,20 +56,7 @@ export const MultichainReviewPermissions = () => {
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
   const subjects = useSelector(getPermissionSubjects);
 
-  const showNetworkPermissionToast = useCallback(() => {
-    toast.success(<ToastContent title={t('networkPermissionToast')} />, {
-      id: 'network-permission-toast',
-      icon: (
-        <AvatarFavicon
-          name={connectedSubjectsMetadata?.name}
-          size={AvatarFaviconSize.Sm}
-          src={connectedSubjectsMetadata?.iconUrl}
-        />
-      ),
-    });
-  }, [connectedSubjectsMetadata?.iconUrl, connectedSubjectsMetadata?.name, t]);
-
-  const disconnectAllPermissions = () => {
+  const disconnectAllPermissions = useCallback(() => {
     const subject = (subjects as SubjectsType)[activeTabOrigin];
 
     if (subject) {
@@ -127,59 +72,11 @@ export const MultichainReviewPermissions = () => {
         dispatch(removePermissionsFor(permissionsRecord));
       }
     }
-  };
-
-  const handleDisconnectClick = () => {
-    setShowDisconnectAllModal(true);
-  };
-
-  const handleSkipPermissions = () => {
-    setShowDisconnectPermissionsModal(false);
-    // Skip permissions and disconnect directly
-    trace({ name: TraceName.DisconnectAllModal });
-    disconnectAllPermissions();
-    endTrace({ name: TraceName.DisconnectAllModal });
-  };
-
-  const networkConfigurationsByCaipChainId = useSelector(
-    getAllNetworkConfigurationsByCaipChainId,
-  );
-
-  const [nonTestNetworks, testNetworks] = useMemo(
-    () =>
-      Object.entries(networkConfigurationsByCaipChainId).reduce(
-        ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
-          const caipChainId = chainId as CaipChainId;
-          const isTestNetwork =
-            CAIP_FORMATTED_TEST_CHAINS.includes(caipChainId);
-          (isTestNetwork ? testNetworksList : nonTestNetworksList).push({
-            ...network,
-            caipChainId,
-          });
-          return [nonTestNetworksList, testNetworksList];
-        },
-        [
-          [] as EvmAndMultichainNetworkConfigurationsWithCaipChainId[],
-          [] as EvmAndMultichainNetworkConfigurationsWithCaipChainId[],
-        ],
-      ),
-    [networkConfigurationsByCaipChainId],
-  );
+  }, [activeTabOrigin, dispatch, subjects]);
 
   const connectedChainIds = useSelector((state) =>
     getAllPermittedChainsForSelectedTab(state, activeTabOrigin),
   ) as CaipChainId[];
-
-  const handleSelectChainIds = async (chainIds: string[]) => {
-    if (chainIds.length === 0) {
-      setShowDisconnectAllModal(true);
-      return;
-    }
-
-    dispatch(setPermittedChains(activeTabOrigin, chainIds));
-
-    showNetworkPermissionToast();
-  };
 
   const existingPermissions = useSelector((state) =>
     getPermissions(state, activeTabOrigin),
@@ -208,52 +105,22 @@ export const MultichainReviewPermissions = () => {
     ? getAllScopesFromCaip25CaveatValue(existingCaip25CaveatValue)
     : [];
 
-  const {
-    supportedAccountGroups,
-    connectedAccountGroups,
-    existingConnectedCaipAccountIds,
-  } = useAccountGroupsForPermissions(
-    existingCaip25CaveatValue ?? {
-      requiredScopes: {},
-      optionalScopes: {},
-      sessionProperties: {},
-      isMultichainOrigin: false,
-    },
-    existingCaip25AccountIds,
-    existingCaipChainIds,
-    [],
-  );
+  const { supportedAccountGroups, connectedAccountGroups } =
+    useAccountGroupsForPermissions(
+      existingCaip25CaveatValue ?? {
+        requiredScopes: {},
+        optionalScopes: {},
+        sessionProperties: {},
+        isMultichainOrigin: false,
+      },
+      existingCaip25AccountIds,
+      existingCaipChainIds,
+      [],
+    );
 
   const selectedAccountGroupIds = useMemo(
     () => connectedAccountGroups.map((group) => group.id),
     [connectedAccountGroups],
-  );
-
-  const setModeToEditAccounts = useCallback(() => {
-    setPageMode(MultichainReviewPermissionsPageMode.EditAccounts);
-  }, []);
-
-  const handleAccountGroupIdsSelected = useCallback(
-    (accountGroupIds: string[]) => {
-      if (accountGroupIds.length === 0) {
-        setPageMode(MultichainReviewPermissionsPageMode.Summary);
-        setShowDisconnectAllModal(true);
-        return;
-      }
-
-      const accountGroups = supportedAccountGroups.filter((group) =>
-        accountGroupIds.includes(group.id),
-      );
-
-      const caipAccountIds = getCaip25AccountIdsFromAccountGroupAndScope(
-        accountGroups,
-        connectedChainIds,
-      );
-
-      setPageMode(MultichainReviewPermissionsPageMode.Summary);
-      dispatch(setPermittedAccounts(activeTabOrigin, caipAccountIds));
-    },
-    [activeTabOrigin, connectedChainIds, dispatch, supportedAccountGroups],
   );
 
   const gatorPermissionsGroupMetaData = useSelector((state) =>
@@ -283,7 +150,7 @@ export const MultichainReviewPermissions = () => {
   const { revokeGatorPermissionsBatchMultiChain } =
     useRevokeGatorPermissionsMultiChain();
 
-  // Format permissions for the DisconnectPermissionsModal
+  // Format permissions for the DisconnectAllGatorPermissionsModal
   const formattedPermissions = useMemo(() => {
     return tokenTransferPermissions.map((permission) => ({
       permission,
@@ -292,182 +159,119 @@ export const MultichainReviewPermissions = () => {
     }));
   }, [tokenTransferPermissions]);
 
-  const shouldRenderGatorPermissionGroupDetails = useMemo(() => {
-    if (!gatorPermissionsGroupMetaData) {
-      return false;
-    }
-
-    const isPermissionGroupDetailsMapEmpty = Object.values(
-      gatorPermissionsGroupMetaData,
-    ).every((details) => details.count === 0);
-
-    return (
-      isGatorPermissionsRevocationFeatureEnabled() &&
-      !isPermissionGroupDetailsMapEmpty
-    );
-  }, [gatorPermissionsGroupMetaData]);
-
-  // Handle disconnect flow with gator permissions check: if token transfer
-  // permissions exist, shows the permissions modal, else disconnect directly
-  const handleDisconnectWithGatorCheck = () => {
-    const hasTokenTransferPermissions =
+  const hasTokenTransferPermissions = useMemo(
+    () =>
       gatorPermissionsGroupMetaData &&
       Object.values(gatorPermissionsGroupMetaData).some(
         (details) => details.count > 0,
+      ),
+    [gatorPermissionsGroupMetaData],
+  );
+
+  // Unified disconnect handler
+  const handleDisconnect = useCallback(
+    async (options?: { revokeGatorPermissions?: boolean }) => {
+      try {
+        trace({ name: TraceName.DisconnectAllModal });
+        disconnectAllPermissions();
+        endTrace({ name: TraceName.DisconnectAllModal });
+
+        setShowGatorPermissionsModal(false);
+
+        // Revoke gator permissions if they exist (run in background)
+        if (
+          options?.revokeGatorPermissions &&
+          tokenTransferPermissions.length > 0
+        ) {
+          await revokeGatorPermissionsBatchMultiChain(permissionsByChainId);
+        }
+
+        toast.success(
+          t('disconnectSiteSuccess', [getURLHost(activeTabOrigin)]),
+          {
+            id: 'disconnect-site-success-toast',
+          },
+        );
+      } catch (error) {
+        log.error('Error removing permissions:', error);
+      } finally {
+        navigate(PREVIOUS_ROUTE);
+      }
+    },
+    [
+      activeTabOrigin,
+      disconnectAllPermissions,
+      navigate,
+      permissionsByChainId,
+      revokeGatorPermissionsBatchMultiChain,
+      t,
+      tokenTransferPermissions.length,
+    ],
+  );
+
+  // Shows gator permissions modal if needed, otherwise disconnects directly
+  const handleDisconnectWithGatorCheck = useCallback(() => {
+    if (hasTokenTransferPermissions) {
+      setShowGatorPermissionsModal(true);
+      return;
+    }
+    handleDisconnect();
+  }, [handleDisconnect, hasTokenTransferPermissions]);
+
+  const handleAccountGroupIdsSelected = useCallback(
+    (accountGroupIds: string[]) => {
+      if (accountGroupIds.length === 0) {
+        handleDisconnectWithGatorCheck();
+        return;
+      }
+
+      const accountGroups = supportedAccountGroups.filter((group) =>
+        accountGroupIds.includes(group.id),
       );
 
-    if (hasTokenTransferPermissions) {
-      setShowDisconnectPermissionsModal(true);
-    } else {
-      trace({ name: TraceName.DisconnectAllModal });
-      disconnectAllPermissions();
-      endTrace({ name: TraceName.DisconnectAllModal });
-    }
-  };
+      const caipAccountIds = getCaip25AccountIdsFromAccountGroupAndScope(
+        accountGroups,
+        connectedChainIds,
+      );
 
-  const handleRemoveAllPermissions = async () => {
-    try {
-      trace({ name: TraceName.DisconnectAllModal });
-      disconnectAllPermissions();
-      endTrace({ name: TraceName.DisconnectAllModal });
+      dispatch(setPermittedAccounts(activeTabOrigin, caipAccountIds));
+      navigate(PREVIOUS_ROUTE);
+    },
+    [
+      activeTabOrigin,
+      connectedChainIds,
+      dispatch,
+      handleDisconnectWithGatorCheck,
+      navigate,
+      supportedAccountGroups,
+    ],
+  );
 
-      // Close the permissions modal immediately for better UX
-      setShowDisconnectPermissionsModal(false);
-
-      // Revoke gator permissions if they exist (run in background)
-      if (tokenTransferPermissions.length > 0) {
-        await revokeGatorPermissionsBatchMultiChain(permissionsByChainId);
-      }
-    } catch (error) {
-      log.error('Error removing permissions:', error);
-      // Still proceed to disconnect even if revocation fails
-      setShowDisconnectPermissionsModal(false);
-    }
-  };
-
-  return pageMode === MultichainReviewPermissionsPageMode.Summary ? (
-    <Page
-      data-testid="parent-selector-site-permission"
-      className="main-container connections-page"
-    >
-      <>
-        <PermissionsHeader
-          securedOrigin={securedOrigin}
-          connectedSubjectsMetadata={connectedSubjectsMetadata}
+  return (
+    <>
+      <MultichainEditAccountsPage
+        title={t('manageConnectedAccounts')}
+        confirmButtonText={t('save')}
+        supportedAccountGroups={supportedAccountGroups}
+        defaultSelectedAccountGroups={selectedAccountGroupIds}
+        onSubmit={handleAccountGroupIdsSelected}
+        onClose={() => navigate(PREVIOUS_ROUTE)}
+        siteMetadata={{
+          origin: activeTabOrigin,
+          name: connectedSubjectsMetadata?.name,
+          iconUrl: connectedSubjectsMetadata?.iconUrl,
+        }}
+        onDisconnect={handleDisconnectWithGatorCheck}
+      />
+      {showGatorPermissionsModal ? (
+        <DisconnectAllGatorPermissionsModal
+          isOpen={showGatorPermissionsModal}
+          onClose={() => setShowGatorPermissionsModal(false)}
+          onSkip={() => handleDisconnect()}
+          onRemoveAll={() => handleDisconnect({ revokeGatorPermissions: true })}
+          permissions={formattedPermissions}
         />
-        <Content padding={0}>
-          {connectedAccountGroups.length > 0 ? (
-            <MultichainSiteCell
-              nonTestNetworks={nonTestNetworks}
-              testNetworks={testNetworks}
-              supportedAccountGroups={supportedAccountGroups}
-              showEditAccounts={setModeToEditAccounts}
-              onSelectChainIds={handleSelectChainIds}
-              selectedAccountGroupIds={selectedAccountGroupIds}
-              selectedChainIds={connectedChainIds}
-            />
-          ) : null}
-
-          {shouldRenderGatorPermissionGroupDetails
-            ? Object.entries(gatorPermissionsGroupMetaData).map(
-                ([permissionGroupName, details]) => (
-                  <PermissionsCell
-                    key={permissionGroupName}
-                    nonTestNetworks={nonTestNetworks}
-                    testNetworks={testNetworks}
-                    totalCount={details.count}
-                    chainIds={details.chains}
-                    paddingTop={connectedAccountGroups.length === 0 ? 4 : 0}
-                    origin={activeTabOrigin}
-                  />
-                ),
-              )
-            : null}
-
-          {connectedAccountGroups.length === 0 &&
-          !shouldRenderGatorPermissionGroupDetails ? (
-            <Box className="flex justify-center items-center h-full">
-              <PermissionsEmptyState />
-            </Box>
-          ) : null}
-
-          {showDisconnectAllModal ? (
-            <DisconnectAllModal
-              origin={activeTabOrigin}
-              onClose={() => setShowDisconnectAllModal(false)}
-              onClick={() => {
-                setShowDisconnectAllModal(false);
-                handleDisconnectWithGatorCheck();
-              }}
-            />
-          ) : null}
-          {showDisconnectPermissionsModal ? (
-            <DisconnectPermissionsModal
-              isOpen={showDisconnectPermissionsModal}
-              onClose={() => setShowDisconnectPermissionsModal(false)}
-              onSkip={handleSkipPermissions}
-              onRemoveAll={handleRemoveAllPermissions}
-              permissions={formattedPermissions}
-            />
-          ) : null}
-        </Content>
-        <Footer>
-          <>
-            {existingConnectedCaipAccountIds.length > 0 ? (
-              <Box
-                flexDirection={BoxFlexDirection.Column}
-                className="flex w-full"
-                gap={2}
-                alignItems={BoxAlignItems.Center}
-              >
-                <Button
-                  size={ButtonSize.Lg}
-                  isFullWidth
-                  variant={ButtonVariant.Secondary}
-                  startIconName={IconName.Logout}
-                  isDanger
-                  onClick={handleDisconnectClick}
-                  data-test-id="disconnect-all"
-                >
-                  {t('disconnect')}
-                </Button>
-              </Box>
-            ) : (
-              <>
-                {connectedAccountGroups.length > 0 ? (
-                  <Button
-                    variant={ButtonVariant.Primary}
-                    size={ButtonSize.Lg}
-                    isFullWidth
-                    data-test-id="no-connections-button"
-                    onClick={requestAccountsAndChainPermissions}
-                  >
-                    {t('connectAccounts')}
-                  </Button>
-                ) : null}
-              </>
-            )}
-          </>
-        </Footer>
-      </>
-    </Page>
-  ) : (
-    <MultichainEditAccountsPage
-      title={t('manageConnectedAccounts')}
-      confirmButtonText={t('save')}
-      supportedAccountGroups={supportedAccountGroups}
-      defaultSelectedAccountGroups={selectedAccountGroupIds}
-      onSubmit={handleAccountGroupIdsSelected}
-      onClose={() => setPageMode(MultichainReviewPermissionsPageMode.Summary)}
-      siteMetadata={{
-        origin: activeTabOrigin,
-        name: connectedSubjectsMetadata?.name,
-        iconUrl: connectedSubjectsMetadata?.iconUrl,
-      }}
-      onDisconnect={() => {
-        handleDisconnectWithGatorCheck();
-        setPageMode(MultichainReviewPermissionsPageMode.Summary);
-      }}
-    />
+      ) : null}
+    </>
   );
 };

@@ -5,10 +5,8 @@ type NamedSelection = {
   name: string;
 } | null;
 
-/** Fields used for provider quote matching. */
 type QuoteSelectionItem = Pick<Quote, 'provider'>;
 
-/** Fields used for provider quote error display. */
 type QuoteErrorItem = Pick<QuoteError, 'provider' | 'error'>;
 
 /**

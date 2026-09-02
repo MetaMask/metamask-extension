@@ -96,6 +96,10 @@ class SendPage {
   private readonly sendAlertAcknowledgeButton =
     '[data-testid="send-alert-modal-acknowledge-button"]';
 
+  private readonly sendPage = {
+    testId: 'parent-selector-send-page',
+  };
+
   private readonly solanaNetwork = {
     text: 'Solana',
   };
@@ -287,6 +291,7 @@ class SendPage {
       await this.driver.waitForMultipleSelectors([
         this.header,
         this.networkPicker,
+        this.sendPage,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for send page to be loaded', e);
