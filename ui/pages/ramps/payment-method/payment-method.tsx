@@ -20,7 +20,7 @@ import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed'
 import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../hooks/ramps/utils/normalizeAssetIdForApi';
-import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import RampsListSkeleton from '../components/ramps-list-skeleton';
@@ -65,7 +65,22 @@ export function RampsPaymentMethodScreen() {
   } = useRampsController();
   const fiatCurrency = userRegion?.country?.currency ?? 'USD';
   const regionCode = userRegion?.regionCode ?? '';
-  const formatFiat = useFiatFormatter({ overrideCurrency: fiatCurrency });
+  const locale = useSelector(getIntlLocale);
+  const formatLimitFiat = useCallback(
+    (amount: number) => {
+      try {
+        return new Intl.NumberFormat(locale, {
+          style: 'currency',
+          currency: fiatCurrency,
+          maximumFractionDigits: 0,
+          minimumFractionDigits: 0,
+        }).format(amount);
+      } catch {
+        return new Intl.NumberFormat(locale).format(amount);
+      }
+    },
+    [fiatCurrency, locale],
+  );
   const { formatCurrency } = useFormatters();
   useRampsScreenViewed('Payment Method');
   const [isSelecting, setIsSelecting] = useState(false);
@@ -241,7 +256,7 @@ export function RampsPaymentMethodScreen() {
                     fiatCurrency,
                     paymentMethod.id,
                   ),
-                  formatFiat,
+                  formatLimitFiat,
                   t,
                 )}
                 showQuote={amount > 0}
