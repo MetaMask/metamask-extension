@@ -61,11 +61,23 @@ function enrichTokenTransferActivity(
   // even when the token is not in the user's watched-tokens list and the
   // transaction controller has not populated transferInformation yet.
   const contractAddress = transferInformation?.contractAddress ?? txParams?.to;
-  const knownTokenMetadata = getTokenMetadataFromKnownToken(
-    contractAddress,
-    'out',
-    transactionGroup.initialTransaction.chainId,
-  );
+
+  const needsKnownTokenMetadata =
+    (!transferInformation?.symbol &&
+      !transactionGroup.contractTokenMetadata?.symbol &&
+      !activity.data.token?.symbol) ||
+    (transferInformation?.decimals === undefined &&
+      transactionGroup.contractTokenMetadata?.decimals === undefined &&
+      activity.data.token?.decimals === undefined) ||
+    !activity.data.token?.assetId;
+
+  const knownTokenMetadata = needsKnownTokenMetadata
+    ? getTokenMetadataFromKnownToken(
+        contractAddress,
+        'out',
+        transactionGroup.initialTransaction.chainId,
+      )
+    : undefined;
   const symbol =
     transferInformation?.symbol ??
     transactionGroup.contractTokenMetadata?.symbol ??
