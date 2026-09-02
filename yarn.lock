@@ -7549,9 +7549,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/money-account-upgrade-controller@npm:@metamask-previews/money-account-upgrade-controller@3.0.2-preview-1ee21f9e0":
-  version: 3.0.2-preview-1ee21f9e0
-  resolution: "@metamask-previews/money-account-upgrade-controller@npm:3.0.2-preview-1ee21f9e0"
+"@metamask/money-account-upgrade-controller@npm:@metamask-previews/money-account-upgrade-controller@3.0.2-preview-cfd35b8dd":
+  version: 3.0.2-preview-cfd35b8dd
+  resolution: "@metamask-previews/money-account-upgrade-controller@npm:3.0.2-preview-cfd35b8dd"
   dependencies:
     "@metamask/authenticated-user-storage": "npm:^3.0.2"
     "@metamask/base-controller": "npm:^9.1.0"
@@ -7565,20 +7565,20 @@ __metadata:
     "@metamask/network-controller": "npm:^36.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^6.1.0"
     "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/14a7bc37d0ba02fa350741cb1c4eeb7fa0f1c2a632dd1fd05258aa4bd16b15dfb3edbeaec42ed9413af2eb901c2a9412902025196c63b7729ae4692a01c0882c
+  checksum: 10/9453b3dcbb9536af73b8c5cce4e54f015ddfc18484bade75171ff8ae2ba96e77e09a1d31a203da4b8511760944dd3e596fed405514b3a50fb937304b53ba2a50
   languageName: node
   linkType: hard
 
-"@metamask/money-account-utils@npm:@metamask-previews/money-account-utils@1.1.0-preview-1ee21f9e0":
-  version: 1.1.0-preview-1ee21f9e0
-  resolution: "@metamask-previews/money-account-utils@npm:1.1.0-preview-1ee21f9e0"
+"@metamask/money-account-utils@npm:@metamask-previews/money-account-utils@1.1.0-preview-cfd35b8dd":
+  version: 1.1.0-preview-cfd35b8dd
+  resolution: "@metamask-previews/money-account-utils@npm:1.1.0-preview-cfd35b8dd"
   dependencies:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/abstract-provider": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@metamask/transaction-controller": "npm:^69.7.0"
     "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/37fdbf7016001b327d367a8ae98338d8d33724b1d138f8068bff36cbb49065b136f8e9acfa4d2066bb1f38502e9c1384d20963259da421a47975eb4202226f50
+  checksum: 10/8c1d754b4aa10d3234039b8d67a220316cbeface046eb816e31872ed6fbeed4fd00e3653d24a612c32df56d7d38b4637717d0eda0d9a01e79ef2a2a6790d48ee
   languageName: node
   linkType: hard
 
