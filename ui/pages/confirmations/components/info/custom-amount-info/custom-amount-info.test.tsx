@@ -12,6 +12,7 @@ import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import * as useTransactionCustomAmountModule from '../../../hooks/transactions/useTransactionCustomAmount';
 import * as useTransactionCustomAmountAlertsModule from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import * as useAutomaticTransactionPayTokenModule from '../../../hooks/pay/useAutomaticTransactionPayToken';
+import * as useIsMoneyAccountFlagDefaultModule from '../../../hooks/pay/useIsMoneyAccountFlagDefault';
 import * as useTransactionPayMetricsModule from '../../../hooks/pay/useTransactionPayMetrics';
 import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
@@ -27,6 +28,8 @@ import {
 jest.mock('../../../hooks/transactions/useTransactionCustomAmount');
 jest.mock('../../../hooks/transactions/useTransactionCustomAmountAlerts');
 jest.mock('../../../hooks/pay/useAutomaticTransactionPayToken');
+jest.mock('../../../hooks/pay/useDefaultPaySelectedSection');
+jest.mock('../../../hooks/pay/useIsMoneyAccountFlagDefault');
 jest.mock('../../../hooks/pay/useTransactionPayPostQuote');
 jest.mock('../../../hooks/pay/useTransactionPayWithdraw');
 jest.mock('../../../hooks/pay/useTransactionPayMetrics');
@@ -159,6 +162,7 @@ function render(
     requiredTokens?: { address: string; skipIfBalance: boolean }[];
     primaryRequiredToken?: typeof MOCK_PRIMARY_REQUIRED_TOKEN | undefined;
     withdraw?: { isWithdraw: boolean; canSelectWithdrawToken: boolean };
+    isDefaultMoneyAccount?: boolean;
   } = {},
 ) {
   const {
@@ -182,6 +186,7 @@ function render(
     sourceAmounts = [],
     requiredTokens = [],
     withdraw = { isWithdraw: false, canSelectWithdrawToken: false },
+    isDefaultMoneyAccount = false,
   } = options;
   const primaryRequiredToken = Object.prototype.hasOwnProperty.call(
     options,
@@ -202,6 +207,9 @@ function render(
       useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
     )
     .mockReturnValue(undefined);
+  jest
+    .mocked(useIsMoneyAccountFlagDefaultModule.useIsMoneyAccountFlagDefault)
+    .mockReturnValue(isDefaultMoneyAccount);
   jest
     .mocked(useTransactionPayMetricsModule.useTransactionPayMetrics)
     .mockReturnValue(undefined);
@@ -380,6 +388,18 @@ describe('CustomAmountInfo', () => {
 
   it('calls useAutomaticTransactionPayToken with disable true when disablePay is true', () => {
     render({ disablePay: true });
+    expect(
+      useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        disable: true,
+      }),
+    );
+  });
+
+  it('calls useAutomaticTransactionPayToken with disable true when Money Account is the flag default', () => {
+    render({ isDefaultMoneyAccount: true });
+
     expect(
       useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
     ).toHaveBeenCalledWith(
