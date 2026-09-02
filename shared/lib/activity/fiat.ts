@@ -34,9 +34,16 @@ export function getDisplaySignPrefix(
   return '';
 }
 
-// A token amount represents a chain's native asset when it is explicitly
-// marked as native, or its CAIP-19 asset id uses a native/slip44 reference.
-// Used to scope the zero-amount display fallback to native tokens only.
+/**
+ * Whether a token amount represents a chain's native asset.
+ *
+ * True when the amount is explicitly marked as native, or when its CAIP-19
+ * asset id uses a native/slip44 reference. Used to scope the zero-amount
+ * display fallback to native tokens only.
+ *
+ * @param token - The token amount to inspect.
+ * @returns Whether the token amount is a native asset.
+ */
 function isNativeTokenAmount(token: TokenAmount): boolean {
   if (token.assetType === 'native') {
     return true;
