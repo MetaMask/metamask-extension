@@ -526,7 +526,6 @@
     "hadAdvancedGasFeesSetPriorToMigration92_3": "boolean",
     "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
     "hasShownMultichainAccountsIntroModal": "boolean",
-    "hiddenAccountList": [],
     "hip3ConfigVersion": "number",
     "historicalPrices": {},
     "ignoredNfts": [],
@@ -909,7 +908,6 @@
     ],
     "permissionHistory": {},
     "perpsBalances": {},
-    "pinnedAccountList": [],
     "popupGasPollTokens": [],
     "preferences": {
       "avatarType": "string",

@@ -1,4 +1,3 @@
-import { AccountsControllerGetAccountAction } from '@metamask/accounts-controller';
 import {
   Messenger,
   MessengerActions,
@@ -6,7 +5,6 @@ import {
 } from '@metamask/messenger';
 import type { AccountTreeControllerMessenger } from '@metamask/account-tree-controller';
 import { RootMessenger } from '../../../lib/messenger';
-import { AccountOrderControllerGetStateAction } from '../../../controllers/account-order';
 
 /**
  * Get a restricted messenger for the account tree controller. This is scoped to the
@@ -55,10 +53,6 @@ export function getAccountTreeControllerMessenger(
   return accountTreeControllerMessenger;
 }
 
-export type AllowedInitializationActions =
-  | AccountsControllerGetAccountAction
-  | AccountOrderControllerGetStateAction;
-
 export type AccountTreeControllerInitMessenger = ReturnType<
   typeof getAccountTreeControllerInitMessenger
 >;
@@ -71,11 +65,11 @@ export type AccountTreeControllerInitMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getAccountTreeControllerInitMessenger(
-  messenger: RootMessenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<never, never>,
 ) {
   const accountTreeControllerInitMessenger = new Messenger<
     'AccountTreeControllerInit',
-    AllowedInitializationActions,
+    never,
     never,
     typeof messenger
   >({
@@ -84,10 +78,7 @@ export function getAccountTreeControllerInitMessenger(
   });
   messenger.delegate({
     messenger: accountTreeControllerInitMessenger,
-    actions: [
-      'AccountsController:getAccount',
-      'AccountOrderController:getState',
-    ],
+    actions: [],
     events: [],
   });
   return accountTreeControllerInitMessenger;

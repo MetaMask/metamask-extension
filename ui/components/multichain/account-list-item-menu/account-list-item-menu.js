@@ -1,28 +1,16 @@
-import React, { useCallback, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 
-import { IconName, Text, TextVariant } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { TextVariant } from '@metamask/design-system-react';
 import { useEventListener } from '../../../hooks/useEventListener';
-import {
-  getPinnedAccountsList,
-  getHiddenAccountsList,
-} from '../../../selectors';
 
-import { MenuItem } from '../../ui/menu';
 import {
   ModalFocus,
   Popover,
   PopoverPosition,
   PopoverRole,
 } from '../../component-library';
-import {
-  updateAccountsList,
-  updateHiddenAccountsList,
-} from '../../../store/actions';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
-import { useDispatch } from '../../../store/hooks';
 
 const METRICS_LOCATION = 'Account Options';
 
@@ -32,40 +20,8 @@ export const AccountListItemMenu = ({
   closeMenu,
   account,
   isOpen,
-  isPinned,
-  isHidden,
   isRemovable: _isRemovable, // Accepted for API compatibility; remove-account action is no longer shown
 }) => {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const pinnedAccountList = useSelector(getPinnedAccountsList);
-  const hiddenAccountList = useSelector(getHiddenAccountsList);
-
-  // Handle Tab key press for accessibility inside the popover and will close the popover on the last MenuItem
-  const lastItemRef = useRef(null);
-  const accountDetailsItemRef = useRef(null);
-  const hideMenuItemRef = useRef(null);
-
-  // Checks the MenuItems from the bottom to top to set lastItemRef on the last MenuItem that is not disabled
-  useEffect(() => {
-    if (hideMenuItemRef.current) {
-      lastItemRef.current = hideMenuItemRef.current;
-    } else {
-      lastItemRef.current = accountDetailsItemRef.current;
-    }
-  }, []);
-
-  const handleKeyDown = useCallback(
-    (event) => {
-      if (event.key === 'Tab' && event.target === lastItemRef.current) {
-        // If Tab is pressed at the last item to close popover and focus to next element in DOM
-        onClose();
-      }
-    },
-    [onClose],
-  );
-
   // Handle click outside of the popover to close it
   const popoverDialogRef = useRef(null);
 
@@ -83,39 +39,6 @@ export const AccountListItemMenu = ({
 
   useEventListener('mousedown', handleClickOutside);
 
-  const handlePinning = (address) => {
-    const updatedPinnedAccountList = [...pinnedAccountList, address];
-    dispatch(updateAccountsList(updatedPinnedAccountList));
-  };
-
-  const handleUnpinning = (address) => {
-    const updatedPinnedAccountList = pinnedAccountList.filter(
-      (item) => item !== address,
-    );
-    dispatch(updateAccountsList(updatedPinnedAccountList));
-  };
-
-  const handleHidding = (address) => {
-    // If the account is already hidden, we do not add it again
-    // TODO: The controller should handle this logic
-    if (hiddenAccountList.includes(address)) {
-      return;
-    }
-
-    const updatedHiddenAccountList = [...hiddenAccountList, address];
-    if (pinnedAccountList.includes(address)) {
-      handleUnpinning(address);
-    }
-    dispatch(updateHiddenAccountsList(updatedHiddenAccountList));
-  };
-
-  const handleUnhidding = (address) => {
-    const updatedHiddenAccountList = hiddenAccountList.filter(
-      (item) => item !== address,
-    );
-    dispatch(updateHiddenAccountsList(updatedHiddenAccountList));
-  };
-
   return (
     <Popover
       className="multichain-account-list-item-menu__popover"
@@ -130,7 +53,7 @@ export const AccountListItemMenu = ({
       flip
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
-        <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
+        <div ref={popoverDialogRef}>
           <AccountDetailsMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
@@ -143,37 +66,6 @@ export const AccountListItemMenu = ({
             textProps={{ variant: TextVariant.BodySm }}
             account={account}
           />
-          {isHidden ? null : (
-            <MenuItem
-              data-testid="account-list-menu-pin"
-              onClick={() => {
-                isPinned
-                  ? handleUnpinning(account.address)
-                  : handlePinning(account.address);
-                onClose();
-              }}
-              iconNameLegacy={isPinned ? IconName.Unpin : IconName.Pin}
-            >
-              <Text variant={TextVariant.BodySm}>
-                {isPinned ? t('unpin') : t('pinToTop')}
-              </Text>
-            </MenuItem>
-          )}
-          <MenuItem
-            ref={hideMenuItemRef}
-            data-testid="account-list-menu-hide"
-            onClick={() => {
-              isHidden
-                ? handleUnhidding(account.address)
-                : handleHidding(account.address);
-              onClose();
-            }}
-            iconNameLegacy={isHidden ? IconName.Eye : IconName.EyeSlash}
-          >
-            <Text variant={TextVariant.BodySm}>
-              {isHidden ? t('showAccount') : t('hideAccount')}
-            </Text>
-          </MenuItem>
         </div>
       </ModalFocus>
     </Popover>
@@ -203,14 +95,6 @@ AccountListItemMenu.propTypes = {
    * Accepted for API compatibility; remove-account action is no longer shown
    */
   isRemovable: PropTypes.bool,
-  /**
-   * Represents pinned accounts
-   */
-  isPinned: PropTypes.bool,
-  /**
-   * Represents hidden accounts
-   */
-  isHidden: PropTypes.bool,
   /**
    * An account object that has name, address, and balance data
    */
