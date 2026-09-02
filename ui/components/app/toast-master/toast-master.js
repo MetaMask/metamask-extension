@@ -21,6 +21,7 @@ import {
   TRANSACTION_SHIELD_ROUTE,
 } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getSocialLoginType } from '../../../selectors';
 import { setPreference, toggleDefaultView } from '../../../store/actions';
 import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
@@ -184,13 +185,19 @@ function BasicFunctionalityMigrationToast() {
   const dispatch = useDispatch();
   const shouldShow = useSelector(
     (state) =>
-      state.metamask.preferences?.basicFunctionalityMigrationNotification ===
-        'toast' && !state.metamask.authConnection,
+      Boolean(
+        state.metamask.preferences
+          ?.basicFunctionalityMigrationNotificationPending,
+      ) && !getSocialLoginType(state),
   );
 
   const dismiss = () => {
     dispatch(
-      setPreference('basicFunctionalityMigrationNotification', null, false),
+      setPreference(
+        'basicFunctionalityMigrationNotificationPending',
+        false,
+        false,
+      ),
     );
   };
 

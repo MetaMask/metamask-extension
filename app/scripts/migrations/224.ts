@@ -76,9 +76,7 @@ export const migrate = ((versionedData) => {
   }
   preferencesController.useExternalServices = landingState;
   preferences.isBasicFunctionalityConsolidatedEnabled = true;
-  preferences.basicFunctionalityMigrationNotification = isSocialLogin
-    ? 'modal'
-    : 'toast';
+  preferences.basicFunctionalityMigrationNotificationPending = true;
 
   versionedData.meta.version = version;
 }) satisfies Migrate;

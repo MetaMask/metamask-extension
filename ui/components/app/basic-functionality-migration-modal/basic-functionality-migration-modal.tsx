@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import {
   Button,
   ButtonSize,
@@ -19,25 +18,29 @@ import {
 } from '../../component-library';
 import { PRIVACY_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getSocialLoginType } from '../../../selectors';
 import { setPreference } from '../../../store/actions';
-import { useDispatch } from '../../../store/hooks';
+import { useAppSelector, useDispatch } from '../../../store/hooks';
 
 export function BasicFunctionalityMigrationModal() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isOpen = useSelector(
+  const isOpen = useAppSelector(
     (state) =>
-      state.metamask.preferences?.basicFunctionalityMigrationNotification ===
-        'modal' ||
-      (state.metamask.preferences?.basicFunctionalityMigrationNotification ===
-        'toast' &&
-        Boolean(state.metamask.authConnection)),
+      Boolean(
+        state.metamask.preferences
+          ?.basicFunctionalityMigrationNotificationPending,
+      ) && Boolean(getSocialLoginType(state)),
   );
 
   const close = () => {
     dispatch(
-      setPreference('basicFunctionalityMigrationNotification', null, false),
+      setPreference(
+        'basicFunctionalityMigrationNotificationPending',
+        false,
+        false,
+      ),
     );
   };
 
