@@ -251,7 +251,7 @@ export const MultichainAccountCell = ({
           : BoxBackgroundColor.Transparent
       }
     >
-      {startAccessory && !isEditMode ? startAccessory : null}
+      {!isEditMode && startAccessory}
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
