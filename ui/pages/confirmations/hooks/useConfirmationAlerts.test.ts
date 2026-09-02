@@ -1,4 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
+import { act } from '@testing-library/react';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import {
   getMockConfirmStateForTransaction,
@@ -8,12 +9,19 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../test/d
 import mockState from '../../../../test/data/mock-state.json';
 import { Severity } from '../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../components/app/confirm/info/row/constants';
+import * as Actions from '../../../store/actions';
 import useConfirmationAlerts from './useConfirmationAlerts';
 import { useNoPayTokenQuotesAlert } from './alerts/transactions/useNoPayTokenQuotesAlert';
 import { AlertsName } from './alerts/constants';
 
 jest.mock('@metamask/react-data-query', () => ({
   useQuery: () => ({ data: undefined, isLoading: false, isError: false }),
+}));
+
+jest.mock('../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../store/background-connection'),
+  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+  callBackgroundMethod: jest.fn(),
 }));
 
 const mockUseNavigate = jest.fn();
@@ -54,20 +62,40 @@ jest.mock('./alerts/transactions/useNoPayTokenQuotesAlert');
 
 const useNoPayTokenQuotesAlertMock = jest.mocked(useNoPayTokenQuotesAlert);
 
+async function renderAlertsHook(state: Record<string, unknown>) {
+  let renderResult!: ReturnType<typeof renderHookWithConfirmContextProvider>;
+  await act(async () => {
+    renderResult = renderHookWithConfirmContextProvider(
+      useConfirmationAlerts,
+      state,
+    );
+    // Flush microtasks from mocked background / last-confirmation reads.
+    await Promise.resolve();
+  });
+  return renderResult;
+}
+
 describe('useConfirmationAlerts', () => {
   beforeEach(() => {
     useNoPayTokenQuotesAlertMock.mockReturnValue([]);
+    jest
+      .spyOn(Actions, 'getLastInteractedConfirmationInfo')
+      .mockResolvedValue(undefined);
+    jest
+      .spyOn(Actions, 'setLastInteractedConfirmationInfo')
+      .mockResolvedValue(undefined as never);
   });
 
-  it('returns empty array if no alerts', () => {
-    const { result } = renderHookWithConfirmContextProvider(
-      useConfirmationAlerts,
-      mockState,
-    );
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('returns empty array if no alerts', async () => {
+    const { result } = await renderAlertsHook(mockState);
     expect(result.current).toEqual([]);
   });
 
-  it('strips row field associations for MM Pay transactions', () => {
+  it('strips row field associations for MM Pay transactions', async () => {
     useNoPayTokenQuotesAlertMock.mockReturnValue([
       {
         key: AlertsName.NoPayTokenQuotes,
@@ -85,8 +113,7 @@ describe('useConfirmationAlerts', () => {
       nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
     };
 
-    const { result } = renderHookWithConfirmContextProvider(
-      useConfirmationAlerts,
+    const { result } = await renderAlertsHook(
       getMockConfirmStateForTransaction(confirmation),
     );
 
@@ -101,7 +128,7 @@ describe('useConfirmationAlerts', () => {
     ]);
   });
 
-  it('keeps row field associations for non-pay transactions', () => {
+  it('keeps row field associations for non-pay transactions', async () => {
     useNoPayTokenQuotesAlertMock.mockReturnValue([
       {
         key: AlertsName.NoPayTokenQuotes,
@@ -113,10 +140,7 @@ describe('useConfirmationAlerts', () => {
       },
     ]);
 
-    const { result } = renderHookWithConfirmContextProvider(
-      useConfirmationAlerts,
-      getMockConfirmState(),
-    );
+    const { result } = await renderAlertsHook(getMockConfirmState());
 
     expect(result.current).toEqual([
       {
