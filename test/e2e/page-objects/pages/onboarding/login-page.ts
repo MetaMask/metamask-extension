@@ -30,7 +30,7 @@ class LoginPage {
 
   private readonly incorrectPasswordMessage: object = {
     testId: 'unlock-page-help-text',
-    text: 'Password is incorrect. Please try again.',
+    text: 'Incorrect password. Try again.',
   };
 
   private readonly parentSelector: object = {
