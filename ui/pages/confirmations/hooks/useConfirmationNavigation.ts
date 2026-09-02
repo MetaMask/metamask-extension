@@ -29,6 +29,15 @@ export enum ConfirmationLoader {
   Send = 'send',
 }
 
+/**
+ * Pre-selected payment method for a confirmation, passed as a query param.
+ * Mirrors mobile `PayWithOption` so Money Account → Perps (and similar)
+ * entry points can lock the source of funds without showing the token picker.
+ */
+export enum PayWithOption {
+  MoneyAccount = 'money_account',
+}
+
 const CONNECT_APPROVAL_TYPES = [
   ApprovalType.WalletRequestPermissions,
   'wallet_installSnap',
@@ -39,6 +48,7 @@ const CONNECT_APPROVAL_TYPES = [
 export type ConfirmationNavigationOptions = {
   loader?: ConfirmationLoader;
   goBackTo?: string;
+  payWithOption?: PayWithOption;
 };
 
 export function useConfirmationNavigation() {
@@ -106,6 +116,10 @@ export function useConfirmationNavigation() {
 
       if (options.goBackTo) {
         params.set('goBackTo', options.goBackTo);
+      }
+
+      if (options.payWithOption) {
+        params.set('payWithOption', options.payWithOption);
       }
 
       navigate({
@@ -212,8 +226,15 @@ export function useConfirmationNavigationOptions(): ConfirmationNavigationOption
 
   const goBackTo = sanitizeRedirectUrl(searchParams.get('goBackTo'));
 
+  const payWithOptionParam = searchParams.get('payWithOption');
+  const payWithOption =
+    payWithOptionParam === PayWithOption.MoneyAccount
+      ? PayWithOption.MoneyAccount
+      : undefined;
+
   return {
     loader,
     goBackTo,
+    payWithOption,
   };
 }

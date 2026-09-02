@@ -436,6 +436,14 @@ describe('PayWithRow', () => {
       '($12.34)',
     );
   });
+
+  it('hides the token select when payWithOption is MoneyAccount', () => {
+    const store = mockStore(getMockState());
+    renderWithProvider(<PayWithRow />, store, '/?payWithOption=money_account');
+
+    expect(screen.queryByTestId('pay-with-row')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('pay-with-pill')).not.toBeInTheDocument();
+  });
 });
 
 describe('PayWithRowSkeleton', () => {

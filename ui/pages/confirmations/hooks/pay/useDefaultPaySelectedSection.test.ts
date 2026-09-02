@@ -4,6 +4,10 @@ import { useSelector } from 'react-redux';
 import { selectPrimaryMoneyAccount } from '../../../../selectors/money-account';
 import { applyMoneyAccountOverride } from '../../utils/transaction-pay';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
+import {
+  PayWithOption,
+  useConfirmationNavigationOptions,
+} from '../useConfirmationNavigation';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { useDefaultPaySelectedSection } from './useDefaultPaySelectedSection';
 
@@ -14,6 +18,10 @@ jest.mock('react-redux', () => ({
 jest.mock('../transactions/useTransactionMetadataRequest');
 jest.mock('./useIsMoneyAccountFlagDefault', () => ({
   useIsMoneyAccountFlagDefault: jest.fn(),
+}));
+jest.mock('../useConfirmationNavigation', () => ({
+  PayWithOption: { MoneyAccount: 'money_account' },
+  useConfirmationNavigationOptions: jest.fn(),
 }));
 jest.mock('../../utils/transaction-pay', () => ({
   applyMoneyAccountOverride: jest.fn(),
@@ -30,6 +38,9 @@ describe('useDefaultPaySelectedSection', () => {
   const useIsMoneyAccountFlagDefaultMock = jest.mocked(
     useIsMoneyAccountFlagDefault,
   );
+  const useConfirmationNavigationOptionsMock = jest.mocked(
+    useConfirmationNavigationOptions,
+  );
   const applyMoneyAccountOverrideMock = jest.mocked(applyMoneyAccountOverride);
 
   function mockConfirmation(
@@ -44,6 +55,9 @@ describe('useDefaultPaySelectedSection', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     useIsMoneyAccountFlagDefaultMock.mockReturnValue(false);
+    useConfirmationNavigationOptionsMock.mockReturnValue({
+      payWithOption: undefined,
+    } as ReturnType<typeof useConfirmationNavigationOptions>);
     useSelectorMock.mockImplementation((selector: unknown) => {
       if (selector === selectPrimaryMoneyAccount) {
         return { address: MONEY_ACCOUNT_ADDRESS };
@@ -53,7 +67,7 @@ describe('useDefaultPaySelectedSection', () => {
     mockConfirmation();
   });
 
-  it('does nothing when the flag default is inactive', () => {
+  it('does nothing when the flag default is inactive and payWithOption is unset', () => {
     renderHook(() => useDefaultPaySelectedSection());
 
     expect(applyMoneyAccountOverrideMock).not.toHaveBeenCalled();
@@ -109,6 +123,24 @@ describe('useDefaultPaySelectedSection', () => {
       MONEY_ACCOUNT_ADDRESS,
       expect.objectContaining({
         type: TransactionType.predictWithdraw,
+      }),
+    );
+  });
+
+  it('applies the money account override when payWithOption is MoneyAccount', () => {
+    useConfirmationNavigationOptionsMock.mockReturnValue({
+      payWithOption: PayWithOption.MoneyAccount,
+    } as ReturnType<typeof useConfirmationNavigationOptions>);
+    mockConfirmation(TransactionType.perpsDeposit);
+
+    renderHook(() => useDefaultPaySelectedSection());
+
+    expect(applyMoneyAccountOverrideMock).toHaveBeenCalledWith(
+      TRANSACTION_ID,
+      MONEY_ACCOUNT_ADDRESS,
+      expect.objectContaining({
+        id: TRANSACTION_ID,
+        type: TransactionType.perpsDeposit,
       }),
     );
   });

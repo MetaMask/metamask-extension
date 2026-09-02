@@ -15,6 +15,7 @@ import {
 } from '../../../helpers/constants/routes';
 import {
   ConfirmationLoader,
+  PayWithOption,
   useConfirmationNavigation,
   useConfirmationNavigationOptions,
 } from './useConfirmationNavigation';
@@ -416,6 +417,20 @@ describe('useConfirmationNavigation', () => {
         search: 'loader=customAmount&goBackTo=%2Fhome%3Ftab%3Dtokens',
       });
     });
+
+    it('navigates with payWithOption param when provided', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-300', {
+        loader: ConfirmationLoader.CustomAmount,
+        payWithOption: PayWithOption.MoneyAccount,
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-300`,
+        search: 'loader=customAmount&payWithOption=money_account',
+      });
+    });
   });
 });
 
@@ -485,5 +500,33 @@ describe('useConfirmationNavigationOptions', () => {
     const result = renderOptionsHook(searchParams);
 
     expect(result.goBackTo).toBeUndefined();
+  });
+
+  it('returns MoneyAccount payWithOption from search params', () => {
+    const searchParams = new URLSearchParams({
+      payWithOption: PayWithOption.MoneyAccount,
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.payWithOption).toBe(PayWithOption.MoneyAccount);
+  });
+
+  it('returns undefined payWithOption when the value is not recognized', () => {
+    const searchParams = new URLSearchParams({
+      payWithOption: 'unknown',
+    });
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.payWithOption).toBeUndefined();
+  });
+
+  it('returns undefined payWithOption when not present in search params', () => {
+    const searchParams = new URLSearchParams();
+
+    const result = renderOptionsHook(searchParams);
+
+    expect(result.payWithOption).toBeUndefined();
   });
 });
