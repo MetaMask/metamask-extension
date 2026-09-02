@@ -243,7 +243,7 @@ export const PerpsTopMovers = ({
         <Box
           flexDirection={BoxFlexDirection.Column}
           gap={3}
-          className="px-4"
+          className="overflow-x-auto px-4"
           data-testid="perps-top-movers-list"
         >
           {pillRows.map((row, rowIndex) => (
@@ -252,7 +252,7 @@ export const PerpsTopMovers = ({
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
               gap={2}
-              className="w-full flex-wrap"
+              className="w-max flex-nowrap"
               data-testid={`perps-top-movers-list-row-${rowIndex}`}
             >
               {row.map((market) => (

@@ -135,6 +135,25 @@ describe('PerpsTopMovers', () => {
       expect(rowCounts).toStrictEqual([4, 4]);
     });
 
+    it('keeps each pill row on one line so a narrow popup can scroll instead of wrapping', () => {
+      renderSection(
+        Array.from({ length: PERPS_CONSTANTS.TOP_MOVERS_LIMIT }, (_, index) =>
+          createMarket(`SYM${index}`, `+${index}.00%`),
+        ),
+      );
+
+      expect(screen.getByTestId('perps-top-movers-list')).toHaveClass(
+        'overflow-x-auto',
+      );
+      expect(screen.getByTestId('perps-top-movers-list-row-0')).toHaveClass(
+        'w-max',
+        'flex-nowrap',
+      );
+      expect(screen.getByTestId('perps-top-movers-list-row-0')).not.toHaveClass(
+        'flex-wrap',
+      );
+    });
+
     it('keeps the ranking order when splitting an odd number of pills', () => {
       renderSection([
         createMarket('AAA', '+9.00%'),
