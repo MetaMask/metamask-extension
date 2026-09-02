@@ -20,6 +20,8 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { toCaipAssetId } from '../util/toCaipAssetId';
+import { usePrefetchTokenAssets } from '#ui/hooks/token-asset/usePrefetchTokenAssets';
 import { useDeferredValue } from '../../../../hooks/useDeferredValue';
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
@@ -270,6 +272,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
         title: asset.name,
         address: 'address' in asset ? asset.address : (asset.assetId as Hex),
         chainId: asset.chainId as Hex,
+        caipAssetId: toCaipAssetId(asset),
       };
 
       return token;
@@ -342,6 +345,20 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     lowValueTokens,
     visibleTokens,
   ]);
+
+  const displayedAssetIds = useMemo(
+    () =>
+      tokenListItems.flatMap((item) =>
+        item.type === 'token' && item.token.caipAssetId
+          ? [item.token.caipAssetId]
+          : [],
+      ),
+    [tokenListItems],
+  );
+
+  usePrefetchTokenAssets({
+    assetIds: displayedAssetIds,
+  });
 
   useEffect(() => {
     if (sortedFilteredTokens) {

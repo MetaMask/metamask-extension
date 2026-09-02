@@ -46,6 +46,10 @@ jest.mock('../../asset-inactive-badge/asset-inactive-badge', () => ({
   AssetInactiveBadge: () => <span data-testid="asset-inactive-badge" />,
 }));
 
+jest.mock('../../safety-badge/safety-badge', () => ({
+  SafetyBadge: () => null,
+}));
+
 const mockIsStockToken = jest.fn();
 const mockIsTokenTradingOpen = jest.fn();
 

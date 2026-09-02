@@ -1,14 +1,22 @@
+import React from 'react';
 import { renderHook, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { fetchTokenAssets } from '@metamask/assets-controllers';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
-import { fetchCachedTokenAssets } from '../pages/bridge/utils/token-security';
+import { getTokenAssetQueryKey } from './token-asset/tokenAssetQuery';
+import * as fetchTokenAssetModule from './token-asset/fetchTokenAsset';
 import { useTokenSecurityData } from './useTokenSecurityData';
 
-jest.mock('../pages/bridge/utils/token-security', () => ({
-  fetchCachedTokenAssets: jest.fn(),
+jest.mock('@metamask/assets-controllers', () => ({
+  fetchTokenAssets: jest.fn(),
 }));
 
-const mockFetchCachedTokenAssets = jest.mocked(fetchCachedTokenAssets);
+jest.mock('react-redux', () => ({
+  useSelector: (selector: (state: unknown) => unknown) => selector({}),
+}));
+
+const mockFetchCachedTokenAssets = jest.mocked(fetchTokenAssets);
 
 const mockSecurityData: TokenSecurityData = {
   resultType: 'Verified',
@@ -44,6 +52,20 @@ const mockSecurityData: TokenSecurityData = {
   created: '2023-01-01T00:00:00Z',
 };
 
+const createQueryClient = () =>
+  new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+
+const createWrapper = (queryClient: QueryClient) =>
+  function wrapper({ children }: { children: React.ReactNode }) {
+    return React.createElement(
+      QueryClientProvider,
+      { client: queryClient },
+      children,
+    );
+  };
+
 describe('useTokenSecurityData', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -52,11 +74,13 @@ describe('useTokenSecurityData', () => {
   it('returns prefetched data immediately without fetching', () => {
     const assetId = 'eip155:1/erc20:0x1234' as CaipAssetType;
 
-    const { result } = renderHook(() =>
-      useTokenSecurityData({
-        assetId,
-        prefetchedData: mockSecurityData,
-      }),
+    const { result } = renderHook(
+      () =>
+        useTokenSecurityData({
+          assetId,
+          prefetchedData: mockSecurityData,
+        }),
+      { wrapper: createWrapper(createQueryClient()) },
     );
 
     expect(result.current.securityData).toBe(mockSecurityData);
@@ -77,7 +101,9 @@ describe('useTokenSecurityData', () => {
       },
     ]);
 
-    const { result } = renderHook(() => useTokenSecurityData({ assetId }));
+    const { result } = renderHook(() => useTokenSecurityData({ assetId }), {
+      wrapper: createWrapper(createQueryClient()),
+    });
 
     expect(result.current.isLoading).toBe(true);
 
@@ -85,13 +111,36 @@ describe('useTokenSecurityData', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    expect(mockFetchCachedTokenAssets).toHaveBeenCalledWith([assetId]);
+    expect(mockFetchCachedTokenAssets).toHaveBeenCalledWith([assetId], {
+      includeTokenSecurityData: true,
+    });
     expect(result.current.securityData).toBe(mockSecurityData);
     expect(result.current.error).toBeNull();
     expect(result.current.symbol).toBe('TEST');
     expect(result.current.decimals).toBe(18);
     expect(result.current.address).toBe('0x1234');
     expect(result.current.isNative).toBe(false);
+  });
+
+  it('reads a warm cache without fetching', () => {
+    const assetId = 'eip155:1/erc20:0x1234' as CaipAssetType;
+    const queryClient = createQueryClient();
+    queryClient.setQueryData(getTokenAssetQueryKey(assetId), {
+      assetId,
+      name: 'Cached Token',
+      symbol: 'CACHE',
+      decimals: 18,
+      securityData: mockSecurityData,
+    });
+
+    const { result } = renderHook(() => useTokenSecurityData({ assetId }), {
+      wrapper: createWrapper(queryClient),
+    });
+
+    expect(result.current.securityData).toBe(mockSecurityData);
+    expect(result.current.symbol).toBe('CACHE');
+    expect(result.current.isLoading).toBe(false);
+    expect(mockFetchCachedTokenAssets).not.toHaveBeenCalled();
   });
 
   it('clears stale data when assetId changes', async () => {
@@ -130,7 +179,10 @@ describe('useTokenSecurityData', () => {
     const { result, rerender } = renderHook(
       ({ assetId }: { assetId: CaipAssetType }) =>
         useTokenSecurityData({ assetId }),
-      { initialProps: { assetId: firstAssetId } },
+      {
+        initialProps: { assetId: firstAssetId },
+        wrapper: createWrapper(createQueryClient()),
+      },
     );
 
     await waitFor(() => {
@@ -171,37 +223,36 @@ describe('useTokenSecurityData', () => {
       };
     });
 
-    mockFetchCachedTokenAssets.mockImplementation(async (assetIds) => {
-      const requestedAssetId = assetIds[0];
-
-      if (requestedAssetId === firstAssetId) {
-        await firstFetchPromise;
-        return [
-          {
+    const fetchTokenAssetSpy = jest
+      .spyOn(fetchTokenAssetModule, 'fetchTokenAsset')
+      .mockImplementation(async (assetId) => {
+        if (assetId === firstAssetId) {
+          await firstFetchPromise;
+          return {
             assetId: firstAssetId,
             name: 'First Token',
             symbol: 'FIRST',
             decimals: 18,
             securityData: mockSecurityData,
-          },
-        ];
-      }
+          };
+        }
 
-      return [
-        {
+        return {
           assetId: secondAssetId,
           name: 'Second Token',
           symbol: 'SECOND',
           decimals: 6,
           securityData: secondSecurityData,
-        },
-      ];
-    });
+        };
+      });
 
     const { result, rerender } = renderHook(
       ({ assetId }: { assetId: CaipAssetType }) =>
         useTokenSecurityData({ assetId }),
-      { initialProps: { assetId: firstAssetId } },
+      {
+        initialProps: { assetId: firstAssetId },
+        wrapper: createWrapper(createQueryClient()),
+      },
     );
 
     rerender({ assetId: secondAssetId });
@@ -216,11 +267,13 @@ describe('useTokenSecurityData', () => {
     resolveFirstFetch?.();
 
     await waitFor(() => {
-      expect(mockFetchCachedTokenAssets).toHaveBeenCalledTimes(2);
+      expect(fetchTokenAssetSpy).toHaveBeenCalledTimes(2);
     });
 
     expect(result.current.securityData).toBe(secondSecurityData);
     expect(result.current.symbol).toBe('SECOND');
+
+    fetchTokenAssetSpy.mockRestore();
   });
 
   it('derives native asset metadata from slip44 asset id', async () => {
@@ -235,7 +288,9 @@ describe('useTokenSecurityData', () => {
       },
     ]);
 
-    const { result } = renderHook(() => useTokenSecurityData({ assetId }));
+    const { result } = renderHook(() => useTokenSecurityData({ assetId }), {
+      wrapper: createWrapper(createQueryClient()),
+    });
 
     expect(result.current.isNative).toBe(true);
     expect(result.current.address).toBe('60');
@@ -249,7 +304,9 @@ describe('useTokenSecurityData', () => {
     const assetId = 'eip155:1/erc20:0x1234' as CaipAssetType;
     mockFetchCachedTokenAssets.mockRejectedValue(new Error('Fetch failed'));
 
-    const { result } = renderHook(() => useTokenSecurityData({ assetId }));
+    const { result } = renderHook(() => useTokenSecurityData({ assetId }), {
+      wrapper: createWrapper(createQueryClient()),
+    });
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);

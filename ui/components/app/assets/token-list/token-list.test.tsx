@@ -14,6 +14,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { usePrefetchTokenAssets } from '#ui/hooks/token-asset/usePrefetchTokenAssets';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
   getCurrencyRates,
@@ -31,7 +32,6 @@ import {
   selectAccountGroupBalanceForEmptyState,
 } from '../../../../selectors/assets';
 import { MUSD_TOKEN_ADDRESS } from '../../musd/constants';
-
 import TokenList from './token-list';
 
 jest.mock('../../../../hooks/useAnalytics', () => {
@@ -115,6 +115,10 @@ jest.mock('../../../../selectors/multichain/networks', () => ({
 jest.mock('../../../../selectors/assets', () => ({
   getAssetsBySelectedAccountGroup: jest.fn(),
   selectAccountGroupBalanceForEmptyState: jest.fn(),
+}));
+
+jest.mock('#ui/hooks/token-asset/usePrefetchTokenAssets', () => ({
+  usePrefetchTokenAssets: jest.fn(),
 }));
 
 const getMockTrackEvent = () =>
@@ -500,5 +504,27 @@ describe('TokenList', () => {
     render();
 
     expect(screen.getByTestId('token-cell-DUST')).toBeInTheDocument();
+  });
+
+  it('prefetches CAIP-19 asset ids for displayed tokens', () => {
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
+      createAccountGroupAssets([
+        createAsset({
+          symbol: 'USDC',
+          fiatBalance: 25,
+          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        }),
+        createAsset({ symbol: 'ETH', fiatBalance: 10, isNative: true }),
+      ]),
+    );
+
+    render();
+
+    expect(usePrefetchTokenAssets).toHaveBeenCalledWith({
+      assetIds: [
+        'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        'eip155:1/slip44:60',
+      ],
+    });
   });
 });

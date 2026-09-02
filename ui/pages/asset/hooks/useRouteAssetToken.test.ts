@@ -1,17 +1,39 @@
-import { renderHook } from '@testing-library/react';
+import React from 'react';
+import { renderHook, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { fetchTokenAssets } from '@metamask/assets-controllers';
 import { CaipAssetType, Hex } from '@metamask/utils';
-import { useAsyncResult } from '../../../hooks/useAsync';
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
-import { buildTokenFromCaipAssetId } from '../build-token-from-caip-asset-id';
+import { getTokenAssetQueryKey } from '#ui/hooks/token-asset/tokenAssetQuery';
 import { getRouteAssetChainId, useRouteAssetToken } from './useRouteAssetToken';
 
-jest.mock('../../../hooks/useAsync');
-jest.mock('../build-token-from-caip-asset-id');
+jest.mock('@metamask/assets-controllers', () => ({
+  fetchTokenAssets: jest.fn(),
+}));
+
+jest.mock('#ui/selectors/multichain/feature-flags', () => ({
+  getIsSecurityTrustTdpEnabled: jest.fn(() => true),
+}));
+
+jest.mock('react-redux', () => ({
+  useSelector: (selector: (state: unknown) => unknown) => selector({}),
+}));
+
+const mockFetchTokenAssets = jest.mocked(fetchTokenAssets);
+
+const createWrapper = (queryClient?: QueryClient) => {
+  const client =
+    queryClient ??
+    new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+
+  return function wrapper({ children }: { children: React.ReactNode }) {
+    return React.createElement(QueryClientProvider, { client }, children);
+  };
+};
 
 describe('useRouteAssetToken', () => {
-  const mockUseAsyncResult = jest.mocked(useAsyncResult);
-  const mockBuildTokenFromCaipAssetId = jest.mocked(buildTokenFromCaipAssetId);
-
   const daiAssetId =
     'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f' as CaipAssetType;
 
@@ -35,98 +57,112 @@ describe('useRouteAssetToken', () => {
     decimals: 18,
   };
 
-  const fetchedToken = {
-    address: '0x6b175474e89094c44da98b954eedeac495271d0f' as Hex,
+  const fetchedTokenAsset = {
+    assetId: daiAssetId,
     symbol: 'DAI',
     name: 'Dai Stablecoin',
-    chainId: '0x1' as Hex,
     decimals: 18,
-    image: '',
-    isNative: false,
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseAsyncResult.mockReturnValue({
-      value: undefined,
-      pending: false,
-      error: undefined,
-      status: 'success',
-      idle: false,
-    });
+    mockFetchTokenAssets.mockResolvedValue([fetchedTokenAsset]);
   });
 
   it('returns the owned token without fetching metadata', () => {
-    const { result } = renderHook(() =>
-      useRouteAssetToken({
-        ownedToken,
-        assetId: daiAssetId,
-      }),
+    const { result } = renderHook(
+      () =>
+        useRouteAssetToken({
+          ownedToken,
+          assetId: daiAssetId,
+        }),
+      { wrapper: createWrapper() },
     );
 
     expect(result.current.token).toBe(ownedToken);
     expect(result.current.isLoading).toBe(false);
     expect(result.current.hasError).toBe(false);
-    expect(mockUseAsyncResult).toHaveBeenCalledWith(expect.any(Function), [
-      false,
-      daiAssetId,
-    ]);
+    expect(mockFetchTokenAssets).not.toHaveBeenCalled();
   });
 
   it('returns the location state token when no owned token is available', () => {
-    const { result } = renderHook(() =>
-      useRouteAssetToken({
-        locationStateToken,
-        assetId: daiAssetId,
-      }),
+    const { result } = renderHook(
+      () =>
+        useRouteAssetToken({
+          locationStateToken,
+          assetId: daiAssetId,
+        }),
+      { wrapper: createWrapper() },
     );
 
     expect(result.current.token).toBe(locationStateToken);
     expect(result.current.isLoading).toBe(false);
     expect(result.current.hasError).toBe(false);
-    expect(mockUseAsyncResult).toHaveBeenCalledWith(expect.any(Function), [
-      false,
-      daiAssetId,
-    ]);
+    expect(mockFetchTokenAssets).not.toHaveBeenCalled();
   });
 
-  it('returns the fetched token when metadata is resolved', () => {
-    mockUseAsyncResult.mockReturnValue({
-      value: fetchedToken,
-      pending: false,
-      error: undefined,
-      status: 'success',
-      idle: false,
-    });
-
-    const { result } = renderHook(() =>
-      useRouteAssetToken({
-        assetId: daiAssetId,
-      }),
+  it('maps TokenAsset metadata for an unowned ERC-20', async () => {
+    const { result } = renderHook(
+      () =>
+        useRouteAssetToken({
+          assetId: daiAssetId,
+        }),
+      { wrapper: createWrapper() },
     );
 
-    expect(result.current.token).toEqual(fetchedToken);
-    expect(result.current.isLoading).toBe(false);
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.token).toMatchObject({
+      address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+      symbol: 'DAI',
+      name: 'Dai Stablecoin',
+      chainId: '0x1',
+      decimals: 18,
+      isNative: false,
+    });
     expect(result.current.hasError).toBe(false);
-    expect(mockUseAsyncResult).toHaveBeenCalledWith(expect.any(Function), [
-      true,
-      daiAssetId,
-    ]);
+    expect(mockFetchTokenAssets).toHaveBeenCalledWith([daiAssetId], {
+      includeTokenSecurityData: true,
+    });
+  });
+
+  it('uses a warm TokenAsset cache without fetching', () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    queryClient.setQueryData(
+      getTokenAssetQueryKey(daiAssetId),
+      fetchedTokenAsset,
+    );
+
+    const { result } = renderHook(
+      () =>
+        useRouteAssetToken({
+          assetId: daiAssetId,
+        }),
+      { wrapper: createWrapper(queryClient) },
+    );
+
+    expect(result.current.token).toMatchObject({
+      symbol: 'DAI',
+      name: 'Dai Stablecoin',
+      decimals: 18,
+    });
+    expect(result.current.isLoading).toBe(false);
+    expect(mockFetchTokenAssets).not.toHaveBeenCalled();
   });
 
   it('reports loading while metadata fetch is pending', () => {
-    mockUseAsyncResult.mockReturnValue({
-      value: undefined,
-      pending: true,
-      error: undefined,
-      status: 'pending',
-      idle: false,
-    });
+    mockFetchTokenAssets.mockImplementation(() => new Promise(() => undefined));
 
-    const { result } = renderHook(() =>
-      useRouteAssetToken({
-        assetId: daiAssetId,
-      }),
+    const { result } = renderHook(
+      () =>
+        useRouteAssetToken({
+          assetId: daiAssetId,
+        }),
+      { wrapper: createWrapper() },
     );
 
     expect(result.current.token).toBeUndefined();
@@ -134,71 +170,58 @@ describe('useRouteAssetToken', () => {
     expect(result.current.hasError).toBe(false);
   });
 
-  it('reports an error when metadata fetch fails', () => {
-    mockUseAsyncResult.mockReturnValue({
-      value: undefined,
-      pending: false,
-      error: new Error('Token API unavailable'),
-      status: 'error',
-      idle: false,
-    });
+  it('reports an error when metadata fetch fails', async () => {
+    mockFetchTokenAssets.mockRejectedValue(new Error('Token API unavailable'));
 
-    const { result } = renderHook(() =>
-      useRouteAssetToken({
-        assetId: daiAssetId,
-      }),
+    const { result } = renderHook(
+      () =>
+        useRouteAssetToken({
+          assetId: daiAssetId,
+        }),
+      { wrapper: createWrapper() },
     );
 
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
     expect(result.current.token).toBeUndefined();
-    expect(result.current.isLoading).toBe(false);
     expect(result.current.hasError).toBe(true);
   });
 
   it('does not fetch metadata when assetId is invalid', () => {
-    const { result } = renderHook(() =>
-      useRouteAssetToken({
-        assetId: 'not-a-caip-asset-id' as CaipAssetType,
-      }),
+    const { result } = renderHook(
+      () =>
+        useRouteAssetToken({
+          assetId: 'not-a-caip-asset-id' as CaipAssetType,
+        }),
+      { wrapper: createWrapper() },
     );
 
     expect(result.current.token).toBeUndefined();
     expect(result.current.isLoading).toBe(false);
     expect(result.current.hasError).toBe(false);
-    expect(mockUseAsyncResult).toHaveBeenCalledWith(expect.any(Function), [
-      false,
-      'not-a-caip-asset-id',
-    ]);
+    expect(mockFetchTokenAssets).not.toHaveBeenCalled();
   });
 
-  it('builds token metadata from assetId via buildTokenFromCaipAssetId', async () => {
-    mockBuildTokenFromCaipAssetId.mockResolvedValue(fetchedToken);
-
-    renderHook(() =>
-      useRouteAssetToken({
-        assetId: daiAssetId,
-      }),
+  it('builds native token metadata without calling the Token API', () => {
+    const { result } = renderHook(
+      () =>
+        useRouteAssetToken({
+          assetId: 'eip155:1/slip44:60' as CaipAssetType,
+        }),
+      { wrapper: createWrapper() },
     );
 
-    const fetchMetadata = mockUseAsyncResult.mock.calls[0][0];
-    const token = await fetchMetadata();
-
-    expect(mockBuildTokenFromCaipAssetId).toHaveBeenCalledWith(daiAssetId);
-    expect(token).toEqual(fetchedToken);
-  });
-
-  it('skips metadata fetch when an owned token is already available', async () => {
-    renderHook(() =>
-      useRouteAssetToken({
-        ownedToken,
-        assetId: daiAssetId,
-      }),
-    );
-
-    const fetchMetadata = mockUseAsyncResult.mock.calls[0][0];
-    const token = await fetchMetadata();
-
-    expect(token).toBeUndefined();
-    expect(mockBuildTokenFromCaipAssetId).not.toHaveBeenCalled();
+    expect(result.current.token).toMatchObject({
+      symbol: 'ETH',
+      chainId: '0x1',
+      decimals: 18,
+      isNative: true,
+    });
+    expect(result.current.isLoading).toBe(false);
+    expect(result.current.hasError).toBe(false);
+    expect(mockFetchTokenAssets).not.toHaveBeenCalled();
   });
 });
 

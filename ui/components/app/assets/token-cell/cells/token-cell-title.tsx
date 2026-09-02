@@ -8,6 +8,7 @@ import { Tag } from '../../../../component-library';
 import { ACCOUNT_TYPE_LABELS } from '../../constants';
 import { useRWAToken } from '../../../../../pages/bridge/hooks/useRWAToken';
 import { StockBadge } from '../../stock-badge/stock-badge';
+import { SafetyBadge } from '../../safety-badge/safety-badge';
 
 type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;
@@ -24,6 +25,7 @@ export const TokenCellTitle = React.memo(
     return (
       <Box flexDirection={BoxFlexDirection.Row} gap={2} className="min-w-0">
         <AssetCellTitle title={token.title} />
+        <SafetyBadge assetId={token.caipAssetId} />
         {label && <Tag label={label} />}
         {token.tokenRequireActivate && <AssetInactiveBadge />}
         {tokenIsStock && (
@@ -52,6 +54,7 @@ export const TokenCellTitle = React.memo(
     prevProps.token.rwaData?.offhours?.nextClose ===
       nextProps.token.rwaData?.offhours?.nextClose &&
     prevProps.token.address === nextProps.token.address &&
+    prevProps.token.caipAssetId === nextProps.token.caipAssetId &&
     prevProps.token.chainId === nextProps.token.chainId &&
     prevProps.token.symbol === nextProps.token.symbol &&
     prevProps.token.tokenRequireActivate ===
