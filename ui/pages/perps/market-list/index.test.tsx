@@ -404,12 +404,16 @@ describe('MarketListView', () => {
       });
     });
 
-    it.each([
+    const priceChangeSortCases: [
+      queryDirection: 'asc' | 'desc',
+      expectedOrder: string[],
+    ][] = [
       ['asc', ['SOL', 'BTC', 'ETH']],
       ['desc', ['ETH', 'BTC', 'SOL']],
-    ])(
-      'ranks the list by %s price change from the query params',
-      async (queryDirection, expectedOrder) => {
+    ];
+
+    priceChangeSortCases.forEach(([queryDirection, expectedOrder]) => {
+      it(`ranks the list by ${queryDirection} price change from the query params`, async () => {
         mockUsePerpsLiveMarketListData.mockReturnValue({
           markets: [
             {
@@ -449,8 +453,8 @@ describe('MarketListView', () => {
             .getAllByTestId(/^market-row-/u)
             .map((row) => row.dataset.testid?.replace('market-row-', '')),
         ).toStrictEqual(expectedOrder);
-      },
-    );
+      });
+    });
 
     it('falls back to the volume sort when the query params are unknown', async () => {
       renderWithProvider(
