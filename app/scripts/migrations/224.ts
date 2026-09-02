@@ -3,32 +3,42 @@ import type { Migrate } from './types';
 
 export const version = 224;
 
+const OBSOLETE_APP_STATE_CONTROLLER_PROPERTIES = [
+  'canTrackWalletFundsObtained',
+] as const;
+
 /**
- * Removes the obsolete `canTrackWalletFundsObtained` property from
- * AppStateController state. The Wallet Funds Obtained metric and its monitor
- * have been removed.
+ * Removes obsolete AppStateController properties that no longer have product
+ * code paths that can read or update them.
  *
  * @param versionedData - The versioned data object to migrate.
  * @param changedControllers - A set used to record controllers that were modified.
  */
 export const migrate = (async (versionedData, changedControllers) => {
   versionedData.meta.version = version;
-  transformState(versionedData.data, changedControllers);
+
+  if (removeObsoleteAppStateControllerProperties(versionedData.data)) {
+    changedControllers.add('AppStateController');
+  }
 }) satisfies Migrate;
 
-function transformState(
+function removeObsoleteAppStateControllerProperties(
   state: Record<string, unknown>,
-  changedControllers: Set<string>,
-): void {
+): boolean {
   if (
     !hasProperty(state, 'AppStateController') ||
     !isObject(state.AppStateController)
   ) {
-    return;
+    return false;
   }
 
-  if (hasProperty(state.AppStateController, 'canTrackWalletFundsObtained')) {
-    delete state.AppStateController.canTrackWalletFundsObtained;
-    changedControllers.add('AppStateController');
+  let changed = false;
+  for (const property of OBSOLETE_APP_STATE_CONTROLLER_PROPERTIES) {
+    if (hasProperty(state.AppStateController, property)) {
+      delete state.AppStateController[property];
+      changed = true;
+    }
   }
+
+  return changed;
 }
