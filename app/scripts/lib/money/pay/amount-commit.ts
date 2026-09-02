@@ -30,7 +30,7 @@ const latestIntentByTransactionId = new Map<string, number>();
  */
 export function parseMusdHumanAmount(
   amountHuman: string,
-  roundingMode: BigNumber.RoundingMode = BigNumber.ROUND_UP,
+  roundingMode: number = BigNumber.ROUND_UP,
 ): bigint | undefined {
   // BigNumber is configured to throw on non-numeric input in this repo.
   let value: BigNumber;
