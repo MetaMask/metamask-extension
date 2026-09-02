@@ -1,3 +1,4 @@
+import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { Wallet } from '@metamask/wallet';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
@@ -108,6 +109,11 @@ export function initializeWallet(request: InitializeWalletRequest) {
     preferencesState: {
       useExternalServices:
         state.PreferencesController?.useExternalServices !== false,
+    },
+    authenticationState: {
+      srpSessionData: state.AuthenticationController?.srpSessionData as
+        | AuthenticationControllerState['srpSessionData']
+        | undefined,
     },
   });
 
