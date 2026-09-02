@@ -300,6 +300,37 @@ const mockUsePerpsLiveOrderBook = jest.fn(() => ({
   reconnect: jest.fn(),
 }));
 
+const mockLiveCandles = jest.fn(() => ({
+  candleData: {
+    symbol: 'ETH',
+    interval: '5m',
+    candles: [] as {
+      time: number;
+      open: string;
+      high: string;
+      low: string;
+      close: string;
+      volume: string;
+    }[],
+  } as {
+    symbol: string;
+    interval: string;
+    candles: {
+      time: number;
+      open: string;
+      high: string;
+      low: string;
+      close: string;
+      volume: string;
+    }[];
+  } | null,
+  isInitialLoading: false,
+  isLoadingMore: false,
+  hasHistoricalData: false,
+  error: null as Error | null,
+  fetchMoreHistory: jest.fn(),
+}));
+
 jest.mock('../../hooks/perps/stream', () => ({
   usePerpsLivePositions: () => mockLivePositions(),
   usePerpsLiveOrders: () => ({
@@ -308,20 +339,24 @@ jest.mock('../../hooks/perps/stream', () => ({
   }),
   usePerpsLiveAccount: () => mockLiveAccount(),
   usePerpsLiveMarketData: () => mockLiveMarketData(),
-  usePerpsLiveCandles: () => ({
-    candleData: {
-      symbol: 'ETH',
-      interval: '5m',
-      candles: [],
-    },
-    isInitialLoading: false,
-    isLoadingMore: false,
-    hasHistoricalData: false,
-    error: null,
-    fetchMoreHistory: jest.fn(),
-  }),
+  usePerpsLiveCandles: () => mockLiveCandles(),
   usePerpsLiveOrderBook: () => mockUsePerpsLiveOrderBook(),
 }));
+
+jest.mock('../../components/app/perps/perps-candlestick-chart', () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const mockReact = require('react');
+  return {
+    PerpsCandlestickChart: mockReact.forwardRef(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (props: any, _ref: any) =>
+        mockReact.createElement('div', {
+          'data-testid': 'perps-candlestick-chart',
+          'data-price-lines': JSON.stringify(props.priceLines ?? []),
+        }),
+    ),
+  };
+});
 
 jest.mock('../../hooks/perps/useUserHistory', () => ({
   useUserHistory: () => ({
@@ -453,6 +488,18 @@ describe('PerpsOrderEntryPage', () => {
       isInitialLoading: false,
       connectionStatus: 'connected',
       reconnect: jest.fn(),
+    });
+    mockLiveCandles.mockReturnValue({
+      candleData: {
+        symbol: 'ETH',
+        interval: '5m',
+        candles: [],
+      },
+      isInitialLoading: false,
+      isLoadingMore: false,
+      hasHistoricalData: false,
+      error: null,
+      fetchMoreHistory: jest.fn(),
     });
     mockUsePerpsEstimatedSlippage.mockReturnValue({
       estimatedSlippageBps: 50,
@@ -1180,6 +1227,300 @@ describe('PerpsOrderEntryPage', () => {
         .getByTestId('limit-price-input')
         .querySelector('input');
       expect(limitInput).toHaveValue('3501');
+    });
+  });
+
+  describe('chart toggle', () => {
+    const expandChart = () => {
+      fireEvent.click(screen.getByTestId('perps-order-entry-chart-toggle'));
+    };
+
+    it('renders the chart toggle collapsed by default', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const toggle = screen.getByTestId('perps-order-entry-chart-toggle');
+      expect(toggle).toHaveAttribute('aria-pressed', 'false');
+      expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      expect(toggle).toHaveAttribute(
+        'aria-controls',
+        'perps-order-entry-chart',
+      );
+      expect(toggle).toHaveAttribute('aria-label', 'Expand chart');
+      expect(screen.getByTestId('perps-order-entry-chart')).toHaveAttribute(
+        'aria-hidden',
+        'true',
+      );
+      expect(
+        screen.queryByTestId('perps-candlestick-chart'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-candle-period-selector'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('keeps the chart toggle when the order-book flag is off', () => {
+      const state = createMockState();
+      state.metamask.remoteFeatureFlags.perpsOrderBookEnabled = {
+        enabled: false,
+        minimumVersion: '99.99.99',
+      };
+      const store = mockStore(state);
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(
+        screen.queryByTestId('perps-order-book-toggle'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-order-entry-chart-toggle'),
+      ).toBeInTheDocument();
+    });
+
+    it('mounts the chart already open when the persisted preference is expanded', () => {
+      const state = createMockState();
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          proLayoutPreferences: { chartExpanded: true },
+        },
+      });
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(
+        screen.getByTestId('perps-order-entry-chart-toggle'),
+      ).toHaveAttribute('aria-pressed', 'true');
+      expect(screen.getByTestId('perps-order-entry-chart')).toHaveAttribute(
+        'aria-hidden',
+        'false',
+      );
+      expect(screen.getByTestId('perps-candlestick-chart')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-candle-period-selector'),
+      ).toBeInTheDocument();
+    });
+
+    it('shows the chart in modify and close modes', () => {
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+
+      mockSearchParams.set('mode', 'modify');
+      const modifyState = createMockState();
+      const modifyStore = mockStore({
+        ...modifyState,
+        metamask: {
+          ...modifyState.metamask,
+          proLayoutPreferences: { chartExpanded: true },
+        },
+      });
+      const { unmount } = renderWithProvider(
+        <PerpsOrderEntryPage />,
+        modifyStore,
+      );
+      expect(screen.getByTestId('perps-candlestick-chart')).toBeInTheDocument();
+      unmount();
+
+      mockSearchParams.set('mode', 'close');
+      const closeState = createMockState();
+      const closeStore = mockStore({
+        ...closeState,
+        metamask: {
+          ...closeState.metamask,
+          proLayoutPreferences: { chartExpanded: true },
+        },
+      });
+      renderWithProvider(<PerpsOrderEntryPage />, closeStore);
+      expect(screen.getByTestId('perps-candlestick-chart')).toBeInTheDocument();
+    });
+
+    it('persists the open state when the chart is toggled', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const toggle = screen.getByTestId('perps-order-entry-chart-toggle');
+
+      fireEvent.click(toggle);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSetProLayoutPreferences',
+        [{ chartExpanded: true }],
+      );
+      expect(toggle).toHaveAttribute('aria-label', 'Collapse chart');
+
+      fireEvent.click(toggle);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSetProLayoutPreferences',
+        [{ chartExpanded: false }],
+      );
+    });
+
+    it('keeps the chart open when persistence fails', async () => {
+      mockSubmitRequestToBackground.mockRejectedValueOnce(
+        new Error('persist failed'),
+      );
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-order-entry-chart-toggle'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('perps-order-entry-chart')).toHaveAttribute(
+          'aria-hidden',
+          'false',
+        );
+      });
+    });
+
+    it('tracks chart_opened and chart_closed interactions', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+      mockAnalyticsTrackEvent.mockClear();
+
+      fireEvent.click(screen.getByTestId('perps-order-entry-chart-toggle'));
+
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsUiInteraction,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
+            [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+              PERPS_EVENT_VALUE.INTERACTION_TYPE.CHART_OPENED,
+            [PERPS_EVENT_PROPERTY.ASSET]: 'ETH',
+          }),
+        }),
+      );
+
+      mockAnalyticsTrackEvent.mockClear();
+      fireEvent.click(screen.getByTestId('perps-order-entry-chart-toggle'));
+
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsUiInteraction,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
+            [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+              PERPS_EVENT_VALUE.INTERACTION_TYPE.CHART_CLOSED,
+            [PERPS_EVENT_PROPERTY.ASSET]: 'ETH',
+          }),
+        }),
+      );
+    });
+
+    it('does not change the order-book divider when the chart is toggled', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
+      const divider = screen.getByTestId('perps-order-book-resize-handle');
+      expect(divider).toHaveAttribute('aria-valuenow', '33');
+
+      expandChart();
+
+      expect(screen.getByTestId('perps-candlestick-chart')).toBeInTheDocument();
+      expect(screen.getByTestId('perps-order-book')).toBeInTheDocument();
+      expect(divider).toHaveAttribute('aria-valuenow', '33');
+    });
+
+    it('persists a shared candle period from the selector', async () => {
+      const state = createMockState();
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          proLayoutPreferences: { chartExpanded: true },
+        },
+      });
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('perps-candle-period-15m'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'setPreference',
+        ['perpsSelectedCandlePeriod', '15m'],
+      );
+    });
+
+    it('shows a loading skeleton while candles have not arrived', () => {
+      mockLiveCandles.mockReturnValue({
+        candleData: null,
+        isInitialLoading: true,
+        isLoadingMore: false,
+        hasHistoricalData: false,
+        error: null,
+        fetchMoreHistory: jest.fn(),
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expandChart();
+
+      expect(
+        screen.getByTestId('perps-chart-content-loading'),
+      ).toBeInTheDocument();
+    });
+
+    it('shows the localized error when candle loading fails', () => {
+      mockLiveCandles.mockReturnValue({
+        candleData: null,
+        isInitialLoading: false,
+        isLoadingMore: false,
+        hasHistoricalData: false,
+        error: new Error('stream failed'),
+        fetchMoreHistory: jest.fn(),
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expandChart();
+
+      expect(screen.getByTestId('perps-chart-content-error')).toHaveTextContent(
+        'Failed to load chart data',
+      );
+    });
+
+    it('passes existing-position overlays to the chart', () => {
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockLiveCandles.mockReturnValue({
+        candleData: {
+          symbol: 'ETH',
+          interval: '5m',
+          candles: [
+            {
+              time: 1768188300000,
+              open: '2880.0',
+              high: '2920.0',
+              low: '2870.0',
+              close: '2900.0',
+              volume: '100.0',
+            },
+          ],
+        },
+        isInitialLoading: false,
+        isLoadingMore: false,
+        hasHistoricalData: true,
+        error: null,
+        fetchMoreHistory: jest.fn(),
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expandChart();
+
+      const chart = screen.getByTestId('perps-candlestick-chart');
+      const priceLines = JSON.parse(
+        chart.getAttribute('data-price-lines') ?? '[]',
+      ) as { label: string; price: number }[];
+
+      expect(priceLines.map((line) => line.label)).toEqual(
+        expect.arrayContaining(['', 'TP', 'Entry', 'SL', 'Liq']),
+      );
+      expect(priceLines.find((line) => line.label === 'Liq')?.price).toBe(2400);
     });
   });
 

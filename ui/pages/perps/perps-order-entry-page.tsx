@@ -54,7 +54,9 @@ import {
   getIsPerpsSlippageConfigEnabled,
 } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useTheme } from '../../hooks/useTheme';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
@@ -73,11 +75,20 @@ import {
   selectPerpsActiveProvider,
   selectOrderBookPosition,
   selectOrderBookExpanded,
+  selectChartExpanded,
 } from '../../selectors/perps-controller';
 import {
   CandlePeriod,
   TimeDuration,
+  ZOOM_CONFIG,
 } from '../../components/app/perps/constants/chartConfig';
+import type { PerpsCandlestickChartRef } from '../../components/app/perps/perps-candlestick-chart';
+import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
+import {
+  PerpsChartContent,
+  PerpsExpandableChartPanel,
+  buildPerpsChartPriceLines,
+} from '../../components/app/perps/perps-chart-content';
 import {
   usePerpsEligibility,
   usePerpsEstimatedSlippage,
@@ -284,6 +295,8 @@ function buildClosePositionParams(
  */
 const PerpsOrderEntryPage = () => {
   const t = useI18nContext();
+  const theme = useTheme();
+  const isDark = theme === 'dark';
   const { formatNumber } = useFormatters();
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
@@ -303,6 +316,8 @@ const PerpsOrderEntryPage = () => {
   const [isOrderBookOpen, setIsOrderBookOpen] = useState(
     persistedOrderBookExpanded,
   );
+  const persistedChartExpanded = useSelector(selectChartExpanded);
+  const [isChartOpen, setIsChartOpen] = useState(persistedChartExpanded);
   const [orderBookWidthPct, setOrderBookWidthPct] = useState(
     ORDER_BOOK_DEFAULT_WIDTH_PCT,
   );
@@ -436,10 +451,30 @@ const PerpsOrderEntryPage = () => {
     });
   }, [setFlowAttribution]);
 
-  // Same candle stream as market detail (default 5m) so header price matches chart line.
-  const { candleData } = usePerpsLiveCandles({
+  const { perpsSelectedCandlePeriod: persistedCandlePeriod } = useSelector(
+    getPreferences,
+  ) as {
+    perpsSelectedCandlePeriod?: string;
+  };
+  const resolvedPersistedPeriod =
+    persistedCandlePeriod &&
+    Object.values(CandlePeriod).includes(persistedCandlePeriod as CandlePeriod)
+      ? (persistedCandlePeriod as CandlePeriod)
+      : CandlePeriod.FiveMinutes;
+  const [localPeriodOverride, setLocalPeriodOverride] =
+    useState<CandlePeriod | null>(null);
+  const selectedPeriod = localPeriodOverride ?? resolvedPersistedPeriod;
+  const chartRef = useRef<PerpsCandlestickChartRef>(null);
+
+  // Same candle stream as market detail so header price matches the chart line.
+  const {
+    candleData,
+    isInitialLoading: isCandleLoading,
+    error: candleError,
+    fetchMoreHistory,
+  } = usePerpsLiveCandles({
     symbol: decodedSymbol ?? '',
-    interval: CandlePeriod.FiveMinutes,
+    interval: selectedPeriod,
     duration: TimeDuration.YearToDate,
     throttleMs: 1000,
   });
@@ -856,6 +891,36 @@ const PerpsOrderEntryPage = () => {
 
   const currentPrice = chartCurrentPrice > 0 ? chartCurrentPrice : marketPrice;
   currentPriceRef.current = currentPrice;
+
+  const chartPriceLines = useMemo(
+    () =>
+      buildPerpsChartPriceLines({
+        chartCurrentPrice,
+        isDark,
+        position: position
+          ? {
+              entryPrice: position.entryPrice,
+              takeProfitPrice: position.takeProfitPrice,
+              stopLossPrice: position.stopLossPrice,
+              liquidationPrice: position.liquidationPrice,
+            }
+          : null,
+      }),
+    [chartCurrentPrice, isDark, position],
+  );
+
+  const handlePeriodChange = useCallback((period: CandlePeriod) => {
+    setLocalPeriodOverride(period);
+    submitRequestToBackground('setPreference', [
+      'perpsSelectedCandlePeriod',
+      period,
+    ]).catch(() => {
+      // Preference save is best-effort; chart still updates via local state.
+    });
+    if (chartRef.current) {
+      chartRef.current.applyZoom(ZOOM_CONFIG.DEFAULT_CANDLES, true);
+    }
+  }, []);
 
   // Oracle mark price from HyperLiquid's activeAssetCtx feed (oraclePx).
   // This is the price the exchange uses for actual margin assessment and liquidation
@@ -1453,6 +1518,24 @@ const PerpsOrderEntryPage = () => {
       }),
     });
   }, [isOrderBookOpen, track, decodedSymbol]);
+
+  const handleToggleChart = useCallback(() => {
+    const next = !isChartOpen;
+    setIsChartOpen(next);
+    submitRequestToBackground('perpsSetProLayoutPreferences', [
+      { chartExpanded: next },
+    ]).catch((error) =>
+      console.error('Failed to persist chart open state', error),
+    );
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]: next
+        ? PERPS_EVENT_VALUE.INTERACTION_TYPE.CHART_OPENED
+        : PERPS_EVENT_VALUE.INTERACTION_TYPE.CHART_CLOSED,
+      ...(decodedSymbol && {
+        [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
+      }),
+    });
+  }, [isChartOpen, track, decodedSymbol]);
 
   // Tapping an order-book price turns the order into a limit order prefilled
   // with that price. Switching the type is a no-op when already on limit.
@@ -2268,29 +2351,75 @@ const PerpsOrderEntryPage = () => {
         displayChange={displayChange}
         onBack={() => handleBackClick()}
         rightAccessory={
-          isOrderBookEnabled ? (
+          <>
+            {isOrderBookEnabled ? (
+              <button
+                type="button"
+                data-testid="perps-order-book-toggle"
+                onClick={handleToggleOrderBook}
+                aria-label={t('perpsOrderBook')}
+                aria-pressed={isOrderBookOpen}
+                className={twMerge(
+                  'flex items-center justify-center w-9 h-9 shrink-0 cursor-pointer rounded-lg border border-transparent bg-transparent',
+                  isOrderBookOpen && 'bg-muted border-primary-default',
+                )}
+              >
+                <Icon
+                  name={IconName.Book}
+                  size={IconSize.Lg}
+                  className={
+                    isOrderBookOpen ? 'text-default' : 'text-alternative'
+                  }
+                />
+              </button>
+            ) : null}
             <button
               type="button"
-              data-testid="perps-order-book-toggle"
-              onClick={handleToggleOrderBook}
-              aria-label={t('perpsOrderBook')}
-              aria-pressed={isOrderBookOpen}
+              data-testid="perps-order-entry-chart-toggle"
+              onClick={handleToggleChart}
+              aria-label={
+                isChartOpen ? t('perpsCollapseChart') : t('perpsExpandChart')
+              }
+              aria-pressed={isChartOpen}
+              aria-expanded={isChartOpen}
+              aria-controls="perps-order-entry-chart"
               className={twMerge(
                 'flex items-center justify-center w-9 h-9 shrink-0 cursor-pointer rounded-lg border border-transparent bg-transparent',
-                isOrderBookOpen && 'bg-muted border-primary-default',
+                isChartOpen && 'bg-muted border-primary-default',
               )}
             >
               <Icon
-                name={IconName.Book}
+                name={IconName.Candlestick}
                 size={IconSize.Lg}
-                className={
-                  isOrderBookOpen ? 'text-default' : 'text-alternative'
-                }
+                className={isChartOpen ? 'text-default' : 'text-alternative'}
               />
             </button>
-          ) : undefined
+          </>
         }
       />
+
+      <PerpsExpandableChartPanel
+        isExpanded={isChartOpen}
+        id="perps-order-entry-chart"
+        label={t('perpsChart')}
+      >
+        <Box paddingLeft={4} paddingRight={4} paddingTop={2}>
+          <PerpsChartContent
+            ref={chartRef}
+            isLoading={isCandleLoading}
+            error={candleError}
+            candleData={candleData}
+            selectedPeriod={selectedPeriod}
+            currentPrice={currentPrice}
+            priceLines={chartPriceLines}
+            onNeedMoreHistory={fetchMoreHistory}
+          />
+        </Box>
+        <PerpsCandlePeriodSelector
+          selectedPeriod={selectedPeriod}
+          onPeriodChange={handlePeriodChange}
+        />
+      </PerpsExpandableChartPanel>
 
       {/* Body: form content + sliding order book, ordered by
           `orderBookPosition`. Scrolls horizontally as a fallback when a narrow

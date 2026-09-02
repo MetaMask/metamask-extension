@@ -31,9 +31,7 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
-  Skeleton,
 } from '@metamask/design-system-react';
-import { brandColor } from '@metamask/design-tokens';
 import type { PriceUpdate } from '@metamask/perps-controller';
 import {
   formatFundingRate,
@@ -81,12 +79,12 @@ import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsMarketRecentActivity } from '../../components/app/perps/perps-market-recent-activity';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
-import {
-  PerpsCandlestickChart,
-  PerpsCandlestickChartRef,
-} from '../../components/app/perps/perps-candlestick-chart';
-import type { ChartPriceLine } from '../../components/app/perps/perps-candlestick-chart';
+import type { PerpsCandlestickChartRef } from '../../components/app/perps/perps-candlestick-chart';
 import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
+import {
+  PerpsChartContent,
+  buildPerpsChartPriceLines,
+} from '../../components/app/perps/perps-chart-content';
 import {
   CandlePeriod,
   TimeDuration,
@@ -688,88 +686,28 @@ const PerpsMarketDetailPage = () => {
     livePrice?.percentChange24h ?? market?.change24hPercent ?? '',
   );
 
-  // Build price lines for chart overlay (current price + TP, Entry, SL)
-  // Current price line is always shown; TP/Entry/SL only when position exists.
-  const chartPriceLines = useMemo((): ChartPriceLine[] => {
-    const lines: ChartPriceLine[] = [];
-
-    // Current price line — always shown, derived from last candle close
-    if (chartCurrentPrice > 0) {
-      lines.push({
-        price: chartCurrentPrice,
-        label: '',
-        // Matches mobile `background.muted`: dark=#ffffff0a (~4%), light=#b4b4b528 (~16%)
-        color: isDark ? '#ffffff0a' : '#b4b4b528',
-        lineStyle: 2,
-        lineWidth: 2,
-      });
-    }
-
-    // Position-specific lines (only when user has an open position)
-    if (position) {
-      // Take Profit line — matches mobile `success.default`
-      if (effectiveTakeProfitPrice) {
-        const tpPrice = parsePerpsDisplayPrice(effectiveTakeProfitPrice);
-        if (!isNaN(tpPrice) && tpPrice > 0) {
-          lines.push({
-            price: tpPrice,
-            label: 'TP',
-            color: isDark ? brandColor.lime100 : brandColor.lime500,
-            lineStyle: 2,
-          });
-        }
-      }
-
-      // Entry price line — matches mobile `text.muted`
-      if (position.entryPrice) {
-        const entryPrice = parsePerpsDisplayPrice(position.entryPrice);
-        if (!isNaN(entryPrice) && entryPrice > 0) {
-          lines.push({
-            price: entryPrice,
-            label: 'Entry',
-            color: isDark ? brandColor.grey600 : brandColor.grey200,
-            lineStyle: 2,
-          });
-        }
-      }
-
-      // Stop Loss line — matches mobile `background.alternative`
-      // Intentionally subtle: SL is a reference marker, not a danger indicator like Liq.
-      if (effectiveStopLossPrice) {
-        const slPrice = parsePerpsDisplayPrice(effectiveStopLossPrice);
-        if (!isNaN(slPrice) && slPrice > 0) {
-          lines.push({
-            price: slPrice,
-            label: 'SL',
-            color: isDark ? brandColor.grey1000 : brandColor.grey050,
-            lineStyle: 2,
-          });
-        }
-      }
-
-      // Liquidation price line — matches mobile `error.default`
-      // Same as down candles so traders immediately recognise the danger level.
-      if (position.liquidationPrice) {
-        const liqPrice = parsePerpsDisplayPrice(position.liquidationPrice);
-        if (!isNaN(liqPrice) && liqPrice > 0) {
-          lines.push({
-            price: liqPrice,
-            label: 'Liq',
-            color: isDark ? brandColor.red300 : brandColor.red500,
-            lineStyle: 2,
-          });
-        }
-      }
-    }
-
-    return lines;
-  }, [
-    position,
-    chartCurrentPrice,
-    isDark,
-    effectiveTakeProfitPrice,
-    effectiveStopLossPrice,
-  ]);
+  const chartPriceLines = useMemo(
+    () =>
+      buildPerpsChartPriceLines({
+        chartCurrentPrice,
+        isDark,
+        position: position
+          ? {
+              entryPrice: position.entryPrice,
+              takeProfitPrice: effectiveTakeProfitPrice,
+              stopLossPrice: effectiveStopLossPrice,
+              liquidationPrice: position.liquidationPrice,
+            }
+          : null,
+      }),
+    [
+      position,
+      chartCurrentPrice,
+      isDark,
+      effectiveTakeProfitPrice,
+      effectiveStopLossPrice,
+    ],
+  );
 
   // Handle candle period change
   //
@@ -1127,47 +1065,18 @@ const PerpsMarketDetailPage = () => {
     ? market.name || displayName
     : displayName;
 
-  // Render the chart area: skeleton during initial load, error state on failure,
-  // or the live chart once data is available.
-  const renderChartContent = () => {
-    if (isCandleLoading && !candleData) {
-      return <Skeleton className="h-[250px] w-full rounded-lg" />;
-    }
-
-    if (candleError && !candleData) {
-      return (
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Center}
-          justifyContent={BoxJustifyContent.Center}
-          className="h-[250px] w-full rounded-lg bg-muted"
-          gap={2}
-        >
-          <Icon
-            name={IconName.Warning}
-            size={IconSize.Lg}
-            color={IconColor.IconAlternative}
-          />
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('perpsChartLoadError') ?? 'Failed to load chart data'}
-          </Text>
-        </Box>
-      );
-    }
-
-    return (
-      <PerpsCandlestickChart
-        ref={chartRef}
-        height={250}
-        selectedPeriod={selectedPeriod}
-        candleData={candleData}
-        currentPrice={currentPrice}
-        priceLines={chartPriceLines}
-        onNeedMoreHistory={fetchMoreHistory}
-        // onCrosshairMove={setHoveredCandle}
-      />
-    );
-  };
+  const renderChartContent = () => (
+    <PerpsChartContent
+      ref={chartRef}
+      isLoading={isCandleLoading}
+      error={candleError}
+      candleData={candleData}
+      selectedPeriod={selectedPeriod}
+      currentPrice={currentPrice}
+      priceLines={chartPriceLines}
+      onNeedMoreHistory={fetchMoreHistory}
+    />
+  );
 
   return (
     <Box

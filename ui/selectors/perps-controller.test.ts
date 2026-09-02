@@ -32,6 +32,7 @@ import {
   selectProLayoutPreferences,
   selectOrderBookPosition,
   selectOrderBookExpanded,
+  selectChartExpanded,
 } from './perps-controller';
 
 function buildState(overrides: Record<string, unknown> = {}) {
@@ -870,6 +871,23 @@ describe('perps-controller selectors', () => {
       expect(selectOrderBookExpanded(buildState())).toBe(false);
       expect(
         selectOrderBookExpanded(buildState({ proLayoutPreferences: {} })),
+      ).toBe(false);
+    });
+  });
+
+  describe('selectChartExpanded', () => {
+    it('returns the persisted open state', () => {
+      expect(
+        selectChartExpanded(
+          buildState({ proLayoutPreferences: { chartExpanded: true } }),
+        ),
+      ).toBe(true);
+    });
+
+    it('defaults to closed', () => {
+      expect(selectChartExpanded(buildState())).toBe(false);
+      expect(
+        selectChartExpanded(buildState({ proLayoutPreferences: {} })),
       ).toBe(false);
     });
   });

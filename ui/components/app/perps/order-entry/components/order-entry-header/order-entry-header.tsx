@@ -35,8 +35,9 @@ export type OrderEntryHeaderProps = {
  * @param props.displayChange - Formatted 24-hour price change.
  * @param props.onBack - Called when the back control is selected.
  * @param props.testIdPrefix - Prefix used for test identifiers.
- * @param props.rightAccessory - Optional trailing control (e.g. an order-book
- * toggle). Falls back to a spacer that keeps the centered title symmetric.
+ * @param props.rightAccessory - Optional trailing controls (e.g. order-book
+ * and chart toggles). Falls back to an empty flexible column that keeps the
+ * title exactly centered.
  */
 export const OrderEntryHeader = ({
   displayName,
@@ -50,18 +51,18 @@ export const OrderEntryHeader = ({
 
   return (
     <Box
-      flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       paddingLeft={4}
       paddingRight={4}
       paddingTop={4}
       paddingBottom={4}
+      className="grid grid-cols-[1fr_auto_1fr]"
     >
       <Box
         data-testid={`${testIdPrefix}-back-button`}
         onClick={onBack}
         aria-label={t('back')}
-        className="w-9 shrink-0 cursor-pointer"
+        className="w-9 shrink-0 cursor-pointer justify-self-start"
       >
         <Icon
           name={IconName.ArrowLeft}
@@ -73,7 +74,7 @@ export const OrderEntryHeader = ({
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
-        className="flex-1 min-w-0"
+        className="min-w-0"
       >
         <Text
           variant={TextVariant.BodyMd}
@@ -106,7 +107,16 @@ export const OrderEntryHeader = ({
           ) : null}
         </Box>
       </Box>
-      {rightAccessory ?? <Box className="w-9 shrink-0" aria-hidden="true" />}
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.End}
+        gap={1}
+        className="min-w-0 justify-self-end"
+        data-testid={`${testIdPrefix}-right-accessory`}
+      >
+        {rightAccessory}
+      </Box>
     </Box>
   );
 };
