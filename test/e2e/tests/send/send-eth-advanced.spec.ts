@@ -75,6 +75,7 @@ describe('Send ETH - Advanced', function () {
 
           await activityTab.goToActivityList();
           await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activityTab.checkNoFailedTransactions();
         },
       );
     });

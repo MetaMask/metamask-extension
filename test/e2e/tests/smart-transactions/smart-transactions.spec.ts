@@ -136,6 +136,8 @@ describe('Smart Transactions', function () {
         await txToastNotification.closeToastNotification();
 
         await homePage.goToActivityList();
+        await activityTab.checkCompletedTxNumberDisplayedInActivity(1);
+        await activityTab.checkNoFailedTransactions();
         await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityTab.checkTxAmountInActivity(`-0.01 ETH`, 1);
       },
@@ -170,6 +172,8 @@ describe('Smart Transactions', function () {
         await homePage.goToActivityList();
 
         const activityTab = new ActivityTab(driver);
+        await activityTab.checkCompletedTxNumberDisplayedInActivity();
+        await activityTab.checkNoFailedTransactions();
         await activityTab.checkConfirmedTxNumberDisplayedInActivity();
         await activityTab.checkTxAction({ action: 'Swapped' });
         await activityTab.checkTxAmountInActivity(`+4,625.9799 DAI`, 1);
@@ -201,6 +205,8 @@ describe('Smart Transactions', function () {
         await homePage.goToActivityList();
 
         const activityTab = new ActivityTab(driver);
+        await activityTab.checkCompletedTxNumberDisplayedInActivity();
+        await activityTab.checkNoFailedTransactions();
         await activityTab.checkConfirmedTxNumberDisplayedInActivity();
       },
     );
@@ -226,6 +232,8 @@ describe('Smart Transactions', function () {
         await homepage.goToActivityList();
 
         const activityTab = new ActivityTab(driver);
+        await activityTab.checkCompletedTxNumberDisplayedInActivity();
+        await activityTab.checkNoFailedTransactions();
         await activityTab.checkConfirmedTxNumberDisplayedInActivity();
       },
     );

@@ -302,7 +302,8 @@ describe('Send flow - SPL Token', function (this: Suite) {
           await activityTab.checkTxAmountInActivity('-0.1 USDC', 1);
         }
 
-        await activityTab.checkConfirmedTxNumberDisplayedInActivity();
+        await activityTab.checkNoFailedTransactions();
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
       },
     );
   });

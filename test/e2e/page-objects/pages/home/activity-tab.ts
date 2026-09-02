@@ -60,8 +60,6 @@ class ActivityTab extends HomePage {
 
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
 
-  private readonly tooltip = '.tippy-tooltip-content';
-
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
@@ -256,6 +254,12 @@ class ActivityTab extends HomePage {
     console.log(
       `${expectedNumber} failed transactions found in activity list on homepage`,
     );
+  }
+
+  async checkNoFailedTransactions(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.failedTransactions, {
+      waitAtLeastGuard: 5000,
+    });
   }
 
   async checkNoTxInActivity(): Promise<void> {
