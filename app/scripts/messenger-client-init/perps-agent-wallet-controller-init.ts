@@ -81,6 +81,21 @@ export const PerpsAgentWalletControllerInit: MessengerClientInitFunction<
       messengerClient.canSetupAgentWallet(),
 
     /**
+     * Removes the selected-account agent (local key destruction — Hyperliquid
+     * has no removal API; the destroyed key makes the delegation permanently
+     * inert). No password required: removal only deletes state. Trading falls
+     * back to master signing immediately via the agentDeactivated override
+     * reset.
+     * @param params
+     * @param params.masterAccountAddress - The master account whose agent is removed.
+     */
+    perpsRemoveAgentWallet: async (params: {
+      masterAccountAddress: string;
+    }): Promise<void> => {
+      messengerClient.removeAgent(params.masterAccountAddress, 'user');
+    },
+
+    /**
      * Runs the perps trading-readiness steps (unified account enablement,
      * builder fee approval) for the active provider and the selected
      * account. No params: the readiness is network/account scoped inside the

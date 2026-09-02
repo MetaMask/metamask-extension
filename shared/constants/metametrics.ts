@@ -1125,6 +1125,7 @@ export enum MetaMetricsEventName {
   PerpsAgentSetupCompleted = 'Perp Agent Setup Completed',
   PerpsAgentSetupFailed = 'Perp Agent Setup Failed',
   PerpsAgentSignedAction = 'Perp Agent Signed Action',
+  PerpsAgentRevoked = 'Perp Agent Revoked',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
   PrepareSwapPageLoaded = 'Prepare Swap Page Loaded',

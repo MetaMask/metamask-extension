@@ -200,6 +200,32 @@ export const PerpsControllerInit: MessengerClientInitFunction<
       });
   });
 
+  // A deactivated agent must never keep signing: reset the trading wallet
+  // override so trading immediately falls back to the master keyring path.
+  // Unconditional reset is safe for every removal source — if the removed
+  // agent belonged to a different account than the current override holder,
+  // that account merely degrades to master signing (always functional) until
+  // its next activation or unlock. The reason feeds the revoke metric.
+  controllerMessenger.subscribe(
+    'PerpsAgentWalletController:agentDeactivated',
+    ({ reason }: { reason: string }) => {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PerpsAgentRevoked)
+          .addCategory(MetaMetricsEventCategory.Perps)
+          .addProperties({ reason })
+          .build({ excludeMetaMetricsId: true }),
+      );
+      (controllerMessenger as PackagePerpsControllerMessenger)
+        .call('PerpsController:setTradingWalletOverride', null)
+        .catch((error) => {
+          log.warn(
+            'PerpsController: failed to reset agent trading wallet override after deactivation',
+            error,
+          );
+        });
+    },
+  );
+
   const api = getApi(
     messengerClient,
     () => {

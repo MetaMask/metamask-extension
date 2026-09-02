@@ -25,6 +25,9 @@ type AgentWalletInitApi = {
   }) => Promise<{ agentAddress: string }>;
   perpsCanSetupAgentWallet: () => boolean;
   perpsPrepareTradingWallet: () => Promise<void>;
+  perpsRemoveAgentWallet: (params: {
+    masterAccountAddress: string;
+  }) => Promise<void>;
 };
 
 const buildInitResult = (
@@ -93,6 +96,20 @@ describe('PerpsAgentWalletControllerInit', () => {
     it('returns false for a fresh session', () => {
       const { api } = buildInitResult();
       expect(api.perpsCanSetupAgentWallet()).toBe(false);
+    });
+  });
+
+  describe('perpsRemoveAgentWallet', () => {
+    it('perpsRemoveAgentWallet removes the agent for the given master account', async () => {
+      const { result, api } = buildInitResult();
+      const removeSpy = jest.spyOn(result.messengerClient, 'removeAgent');
+      await api.perpsRemoveAgentWallet({
+        masterAccountAddress: '0x1111111111111111111111111111111111111111',
+      });
+      expect(removeSpy).toHaveBeenCalledWith(
+        '0x1111111111111111111111111111111111111111',
+        'user',
+      );
     });
   });
 

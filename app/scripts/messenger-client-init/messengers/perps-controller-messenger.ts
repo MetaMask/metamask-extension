@@ -31,6 +31,7 @@ import type {
 import type { KeyringControllerLockEvent } from '@metamask/keyring-controller';
 import type {
   PerpsAgentWalletControllerAgentActivatedEvent,
+  PerpsAgentWalletControllerAgentDeactivatedEvent,
   PerpsAgentWalletControllerGetAgentSignerAction,
 } from '../../controllers/perps/agent-wallet/types';
 import { RewardsControllerGetPerpsDiscountForAccountAction } from '../../controllers/rewards/rewards-controller-method-action-types';
@@ -59,6 +60,7 @@ type AllowedEvents =
   | RemoteFeatureFlagControllerStateChangeEvent
   | AccountTreeControllerSelectedAccountGroupChangeEvent
   | PerpsAgentWalletControllerAgentActivatedEvent
+  | PerpsAgentWalletControllerAgentDeactivatedEvent
   | KeyringControllerLockEvent;
 
 export type PerpsControllerMessenger = Messenger<
@@ -108,6 +110,7 @@ export function getPerpsControllerMessenger(
       'RemoteFeatureFlagController:stateChange',
       'AccountTreeController:selectedAccountGroupChange',
       'PerpsAgentWalletController:agentActivated',
+      'PerpsAgentWalletController:agentDeactivated',
       'KeyringController:lock',
     ],
   });

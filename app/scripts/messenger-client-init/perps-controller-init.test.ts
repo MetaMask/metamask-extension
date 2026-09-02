@@ -348,6 +348,69 @@ describe('PerpsControllerInit', () => {
       );
     });
 
+    it('resets the trading wallet override when an agent is deactivated', async () => {
+      const request = getInitRequestMock();
+      const messengerCall = request.controllerMessenger.call as jest.Mock;
+      messengerCall.mockResolvedValue(undefined);
+
+      PerpsControllerInit(request);
+
+      const subscribe = request.controllerMessenger.subscribe as jest.Mock;
+      const deactivationSubscription = subscribe.mock.calls.find(
+        ([eventType]) =>
+          eventType === 'PerpsAgentWalletController:agentDeactivated',
+      );
+      expect(deactivationSubscription).toBeDefined();
+      const deactivationHandler = deactivationSubscription?.[1] as (payload: {
+        masterAccountAddress: string;
+        reason: string;
+      }) => void;
+
+      await deactivationHandler({
+        masterAccountAddress: '0xmaster',
+        reason: 'user',
+      });
+
+      expect(messengerCall).toHaveBeenCalledWith(
+        'PerpsController:setTradingWalletOverride',
+        null,
+      );
+    });
+
+    it('emits the PerpsAgentRevoked metric anonymously with the removal reason when an agent is deactivated', async () => {
+      const request = getInitRequestMock();
+      const messengerCall = request.controllerMessenger.call as jest.Mock;
+      messengerCall.mockResolvedValue(undefined);
+
+      PerpsControllerInit(request);
+
+      const subscribe = request.controllerMessenger.subscribe as jest.Mock;
+      const deactivationSubscription = subscribe.mock.calls.find(
+        ([eventType]) =>
+          eventType === 'PerpsAgentWalletController:agentDeactivated',
+      );
+      expect(deactivationSubscription).toBeDefined();
+      const deactivationHandler = deactivationSubscription?.[1] as (payload: {
+        masterAccountAddress: string;
+        reason: string;
+      }) => void;
+
+      await deactivationHandler({
+        masterAccountAddress: '0xmaster',
+        reason: 'account-removal',
+      });
+
+      expect(mockTrackAnalyticsEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsAgentRevoked,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Perps,
+            reason: 'account-removal',
+          }),
+        }),
+      );
+    });
+
     it('does not throw when applying the override fails', async () => {
       const request = getInitRequestMock();
       const messengerCall = request.controllerMessenger.call as jest.Mock;
