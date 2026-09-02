@@ -222,6 +222,31 @@ describe('Delegation 7702 Publish Hook', () => {
       });
     });
 
+    it('throws for a sponsored transaction when EIP-7702 is not supported', async () => {
+      // Sponsored transactions skip local signing; a silent skip here would
+      // raw-send an unsigned payload ("Transaction decoding error").
+      const upgradedElsewhere = '0x12345678901234567890123456789012345678ff';
+      isAtomicBatchSupportedMock.mockResolvedValueOnce([
+        {
+          chainId: TRANSACTION_META_MOCK.chainId,
+          delegationAddress: upgradedElsewhere as never,
+          isSupported: false,
+        },
+      ]);
+
+      await expect(
+        hookClass.getHook()(
+          {
+            ...TRANSACTION_META_MOCK,
+            isGasFeeSponsored: true,
+          },
+          SIGNED_TX_MOCK,
+        ),
+      ).rejects.toThrow(
+        'Chain must support EIP-7702 for sponsored or gas included transaction',
+      );
+    });
+
     it('no gas fee tokens', async () => {
       isAtomicBatchSupportedMock.mockResolvedValueOnce([
         {
@@ -505,6 +530,59 @@ describe('Delegation 7702 Publish Hook', () => {
     expect(signDelegationControllerMock).toHaveBeenCalledTimes(1);
     const signArgs = signDelegationControllerMock.mock.calls[0][0];
     expect(signArgs.delegation.caveats).toHaveLength(2);
+  });
+
+  it('relays the parent execute as a single execution for sponsored batches with nested calls', async () => {
+    // Money Account withdrawals are `[withdraw, transfer]` batches sponsored
+    // on Monad. Same as mobile: the delegation must enforce the parent
+    // `execute()` (single ExactExecution), not a batch of the nested calls —
+    // the batch shape mined on-chain without moving funds.
+    isAtomicBatchSupportedMock.mockResolvedValueOnce([
+      {
+        chainId: TRANSACTION_META_MOCK.chainId,
+        delegationAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        isSupported: true,
+        upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+      },
+    ]);
+
+    await hookClass.getHook()(
+      {
+        ...TRANSACTION_META_MOCK,
+        type: TransactionType.batch,
+        isGasFeeSponsored: true,
+        txParams: {
+          ...TRANSACTION_META_MOCK.txParams,
+          data: '0xdeadbeef',
+        },
+        nestedTransactions: [
+          {
+            to: '0x1111111111111111111111111111111111111111',
+            data: '0xaaaa',
+          },
+          {
+            to: '0x2222222222222222222222222222222222222222',
+            data: '0xbbbb',
+          },
+        ],
+      } as unknown as TransactionMeta,
+      SIGNED_TX_MOCK,
+    );
+
+    expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
+    expect(signDelegationControllerMock).toHaveBeenCalledTimes(1);
+
+    const { caveatEnforcers } = getDeleGatorEnvironment(
+      parseInt(TRANSACTION_META_MOCK.chainId, 16),
+    );
+    const signArgs = signDelegationControllerMock.mock.calls[0][0];
+    const enforcers = signArgs.delegation.caveats.map(
+      (caveat: { enforcer: string }) => caveat.enforcer,
+    );
+    expect(enforcers).toContain(caveatEnforcers.ExactExecutionEnforcer);
+    expect(enforcers).not.toContain(
+      caveatEnforcers.ExactExecutionBatchEnforcer,
+    );
   });
 
   it('signs delegation for gasless 7702 swap without gas fee tokens', async () => {

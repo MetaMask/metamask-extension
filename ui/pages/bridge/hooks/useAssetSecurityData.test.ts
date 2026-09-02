@@ -34,7 +34,7 @@ const makeFeature = (
 describe('useAssetSecurityData', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.mocked(useI18nContext).mockReturnValue(mockT as never);
+    jest.mocked(useI18nContext).mockReturnValue(mockT);
   });
 
   // ─── assetHasSecurityData ──────────────────────────────────────────────────
