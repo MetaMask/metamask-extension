@@ -2249,6 +2249,21 @@ async function setupMocking(
         }
         return { statusCode: 200, json: candles };
       }
+      if (type === 'maxBuilderFee') {
+        // Mirrors the WS INFO POST mock in perps/mocks/websocketDefaultMocks.ts:
+        // 0.001 is the configured MaxFeeDecimal, so the controller treats the
+        // builder fee as already approved and skips the approveBuilderFee
+        // /exchange call. perps-controller queries this over HTTP (not the WS
+        // info client) from the TP/SL and order paths, so the WS mock alone is
+        // not enough.
+        return { statusCode: 200, json: 0.001 };
+      }
+      if (type === 'perpDexs') {
+        // Mirrors the WS INFO POST mock: [null] where null = the main DEX. The
+        // controller derives perpDexIndex from this, and omitting null skips the
+        // main-DEX mapping entirely.
+        return { statusCode: 200, json: [null] };
+      }
       if (type === 'openOrders') {
         return { statusCode: 200, json: [] };
       }
