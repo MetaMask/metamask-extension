@@ -15,10 +15,12 @@ import {
   getConfirmationTransactionType,
   getEip712TokenId,
   getMoneyAccountTransactionType,
+  isEip712PrimaryTypeField,
   isOrderSignatureRequest,
   isPermitSignatureRequest,
   isProtectedByEnforcedSimulations,
   isSignatureTransactionType,
+  normalizeUint256,
   parseSanitizeTypedDataMessage,
   isValidASCIIURL,
   toPunycodeURL,
@@ -93,6 +95,39 @@ describe('confirm util', () => {
     });
   });
 
+  describe('isEip712PrimaryTypeField', () => {
+    const types = {
+      Permit: [{ name: 'spender', type: 'address' }],
+    };
+
+    it('finds a field with or without an expected type', () => {
+      expect(isEip712PrimaryTypeField(types, 'Permit', 'spender')).toBe(true);
+      expect(
+        isEip712PrimaryTypeField(types, 'Permit', 'spender', 'address'),
+      ).toBe(true);
+    });
+
+    it('rejects missing fields and fields with a different type', () => {
+      expect(isEip712PrimaryTypeField(types, 'Permit', 'value')).toBe(false);
+      expect(
+        isEip712PrimaryTypeField(types, 'Permit', 'spender', 'bytes32'),
+      ).toBe(false);
+      expect(isEip712PrimaryTypeField(types, 'Order', 'spender')).toBe(false);
+    });
+  });
+
+  describe('normalizeUint256', () => {
+    it('normalizes safe non-negative numbers', () => {
+      expect(normalizeUint256(42)).toBe('42');
+    });
+
+    it('rejects unsupported, negative, and unsafe numeric values', () => {
+      expect(normalizeUint256({})).toBeUndefined();
+      expect(normalizeUint256(-1)).toBeUndefined();
+      expect(normalizeUint256(Number.MAX_SAFE_INTEGER + 1)).toBeUndefined();
+    });
+  });
+
   describe('getEip712TokenId', () => {
     const types = {
       Permit: [{ name: 'tokenId', type: 'uint256' }],
@@ -102,8 +137,15 @@ describe('confirm util', () => {
       expect(getEip712TokenId({ tokenId: '0x2a' }, types, 'Permit')).toBe('42');
     });
 
-    it('ignores an undeclared token ID', () => {
+    it('ignores an undeclared token ID or one declared with another type', () => {
       expect(getEip712TokenId({ tokenId: '42' }, {}, 'Permit')).toBeUndefined();
+      expect(
+        getEip712TokenId(
+          { tokenId: '42' },
+          { Permit: [{ name: 'tokenId', type: 'string' }] },
+          'Permit',
+        ),
+      ).toBeUndefined();
     });
 
     it('ignores malformed and out-of-range token IDs', () => {
