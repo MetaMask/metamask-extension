@@ -14,7 +14,7 @@
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import { prepareCustomNetwork } from '../../helpers/custom-network-harness';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 
@@ -50,7 +50,6 @@ describe('HyperEVM unsupported crypto handling', function () {
         await homePage.startMonitoringBlockingErrorToast();
 
         await homePage.checkPageIsLoaded();
-        await homePage.waitForNonEvmAccountsLoaded();
         await tokensTab.checkTokenListIsDisplayed();
         await tokensTab.checkTokenExistsInList(network.nativeSymbol);
 
@@ -58,7 +57,7 @@ describe('HyperEVM unsupported crypto handling', function () {
         // em-dash placeholder, not a recovered rate from spot-prices fallback.
         await tokensTab.checkNoConversionRateDisplayed();
 
-        await homePage.assertNoBlockingErrorToastWasObserved();
+        await homePage.checkNoBlockingErrorToastWasObserved();
       },
     );
   });

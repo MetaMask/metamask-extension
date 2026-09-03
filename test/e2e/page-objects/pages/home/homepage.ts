@@ -1,14 +1,15 @@
+import { strict as assert } from 'assert';
 import { ACTIVITY_ROUTE } from '../../../../../ui/helpers/constants/routes';
 import { Driver } from '../../../webdriver/driver';
 import { Anvil } from '../../../seeder/anvil';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
-import { installBlockingErrorToastMonitor } from '../../../helpers/blocking-error-toast-monitor';
 import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../../constants';
 import {
   BASE_ACCOUNT_SYNC_INTERVAL,
   BASE_ACCOUNT_SYNC_TIMEOUT,
   POST_UNLOCK_DELAY,
 } from '../../../tests/identity/account-syncing/helpers';
+import { installBlockingErrorToastMonitor } from './blocking-error-toast-monitor';
 import HeaderNavbar from './header-navbar';
 
 export type CheckExpectedBalanceOptions = {
@@ -91,6 +92,8 @@ class HomePage {
   private readonly emptyBalance =
     '[data-testid="coin-overview-balance-empty-state"]';
 
+  private readonly errorToast = '[data-testid="error-toast"]';
+
   private readonly fundYourWalletBanner = {
     text: 'Fund your wallet',
   };
@@ -158,25 +161,6 @@ class HomePage {
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
-  }
-
-  /**
-   * Fails if {@link startMonitoringBlockingErrorToast} recorded a matching
-   * toast, then re-checks that none is currently displayed.
-   */
-  async assertNoBlockingErrorToastWasObserved(): Promise<void> {
-    console.log(
-      'Assert no blocking error toast was observed during homepage load',
-    );
-    const seen = (await this.driver.executeScript(
-      'return window.__mmE2eBlockingErrorToasts || [];',
-    )) as string[];
-    if (Array.isArray(seen) && seen.length > 0) {
-      throw new Error(
-        `Blocking error toast was displayed: ${JSON.stringify(seen)}`,
-      );
-    }
-    await this.checkNoErrorToastIsDisplayed();
   }
 
   /**
@@ -373,6 +357,21 @@ class HomePage {
     });
   }
 
+  /**
+   * Fails if {@link startMonitoringBlockingErrorToast} recorded a matching
+   * toast, then re-checks that none is currently displayed.
+   */
+  async checkNoBlockingErrorToastWasObserved(): Promise<void> {
+    console.log(
+      'Check no blocking error toast was observed during homepage load',
+    );
+    const seen = (await this.driver.executeScript(
+      'return window.__mmE2eBlockingErrorToasts || [];',
+    )) as string[];
+    assert.deepEqual(seen, []);
+    await this.checkNoErrorToastIsDisplayed();
+  }
+
   async checkNoErrorToastIsDisplayed(): Promise<void> {
     console.log('Check no blocking error toast is displayed on homepage');
     await this.driver.assertElementNotPresent(this.storageErrorToast, {
@@ -383,26 +382,10 @@ class HomePage {
       waitAtLeastGuard: regularDelayMs,
       timeout: 5000,
     });
-    await this.driver.assertElementNotPresent(
-      {
-        css: '.toast-container',
-        text: 'cryptocurrencies',
-      },
-      {
-        waitAtLeastGuard: regularDelayMs,
-        timeout: 5000,
-      },
-    );
-    await this.driver.assertElementNotPresent(
-      {
-        css: '.toast-container',
-        text: 'unsupported',
-      },
-      {
-        waitAtLeastGuard: regularDelayMs,
-        timeout: 5000,
-      },
-    );
+    await this.driver.assertElementNotPresent(this.errorToast, {
+      waitAtLeastGuard: regularDelayMs,
+      timeout: 5000,
+    });
   }
 
   async checkNoShieldEntryModalIsDisplayed(): Promise<void> {
