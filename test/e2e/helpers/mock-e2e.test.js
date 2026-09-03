@@ -115,7 +115,10 @@ describe('isLocalAnvilRpc', () => {
   it('matches Anvil host headers and URLs', () => {
     expect(isLocalAnvilRpc('localhost:8545', undefined)).toBe(true);
     expect(isLocalAnvilRpc('127.0.0.1:8546', undefined)).toBe(true);
+    expect(isLocalAnvilRpc('[::1]:8545', undefined)).toBe(true);
+    expect(isLocalAnvilRpc('localhost', 'http://localhost:8545/')).toBe(true);
     expect(isLocalAnvilRpc(undefined, 'http://localhost:7777/')).toBe(true);
+    expect(isLocalAnvilRpc('localhost', undefined)).toBe(false);
     expect(
       isLocalAnvilRpc('mainnet.infura.io', 'https://mainnet.infura.io/v3/x'),
     ).toBe(false);

@@ -27,37 +27,64 @@ const { PERPS_WS_PORT } = require('./websocket/perps-mocks');
 
 const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 
-/** Host:port pairs for local Anvil nodes used by E2E (`anvil.ts` defaults + extra nodes). */
-const LOCAL_ANVIL_RPC_HOSTS = new Set([
-  'localhost:8545',
-  'localhost:8546',
-  'localhost:7777',
-  '127.0.0.1:8545',
-  '127.0.0.1:8546',
-  '127.0.0.1:7777',
-]);
+const LOCAL_ANVIL_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
+const LOCAL_ANVIL_PORTS = new Set(['8545', '8546', '7777']);
 
 /**
  * Whether this request is JSON-RPC to a local Anvil node.
  *
- * @param {string|undefined} host - Request Host header (`localhost:8545`).
+ * @param {string|undefined} host - Request Host header.
  * @param {string|undefined} url - Absolute request URL.
  * @returns {boolean}
  */
 function isLocalAnvilRpc(host, url) {
-  if (host && LOCAL_ANVIL_RPC_HOSTS.has(host)) {
-    return true;
+  const endpoints = [];
+
+  if (host) {
+    endpoints.push(parseHostHeader(host));
   }
-  if (!url) {
-    return false;
+  if (url) {
+    try {
+      const parsed = new URL(url);
+      endpoints.push({ hostname: parsed.hostname, port: parsed.port });
+    } catch {
+      // ignore invalid URLs
+    }
   }
-  try {
-    const parsed = new URL(url);
-    const port = parsed.port || (parsed.protocol === 'https:' ? '443' : '80');
-    return LOCAL_ANVIL_RPC_HOSTS.has(`${parsed.hostname}:${port}`);
-  } catch {
-    return false;
+
+  return endpoints.some(
+    (endpoint) =>
+      endpoint &&
+      LOCAL_ANVIL_HOSTNAMES.has(stripIpv6Brackets(endpoint.hostname)) &&
+      LOCAL_ANVIL_PORTS.has(endpoint.port),
+  );
+}
+
+/**
+ * @param {string} hostname
+ * @returns {string}
+ */
+function stripIpv6Brackets(hostname) {
+  return hostname.replace(/^\[|\]$/gu, '');
+}
+
+/**
+ * @param {string} host
+ * @returns {{ hostname: string, port: string|undefined }}
+ */
+function parseHostHeader(host) {
+  const ipv6WithPort = host.match(/^\[([^\]]+)\]:(\d+)$/u);
+  if (ipv6WithPort) {
+    return { hostname: ipv6WithPort[1], port: ipv6WithPort[2] };
   }
+  const lastColon = host.lastIndexOf(':');
+  if (lastColon > 0 && host.indexOf(':') === lastColon) {
+    return {
+      hostname: host.slice(0, lastColon),
+      port: host.slice(lastColon + 1),
+    };
+  }
+  return { hostname: host, port: undefined };
 }
 
 const {
