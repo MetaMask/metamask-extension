@@ -62,9 +62,7 @@ const InteractiveTemplate: StoryFn = () => {
 
   return (
     <>
-      <Button onClick={() => setIsOpen(true)}>
-        Open Delete Confirm Modal
-      </Button>
+      <Button onClick={() => setIsOpen(true)}>Open Delete Confirm Modal</Button>
       <AccountDeleteConfirmModal
         isOpen={isOpen}
         accountName="Account 3"
