@@ -11,6 +11,7 @@ import {
   AssetStandard,
   type Asset,
 } from '../../../pages/confirmations/types/send';
+import { selectBlockedPayTokens } from '../../../pages/confirmations/selectors/feature-flags';
 import { HyperliquidDepositPrompt } from './hyperliquid-deposit-prompt';
 
 jest.mock('../../../pages/confirmations/hooks/send/useSendTokens');
@@ -26,7 +27,10 @@ jest.mock('../perps/hooks/usePerpsDepositConfirmation', () => ({
 jest.mock('../../../store/controller-actions/transaction-pay-controller');
 
 jest.mock('../../../pages/confirmations/selectors/feature-flags', () => ({
-  selectBlockedPayTokens: () => [],
+  selectBlockedPayTokens: jest.fn(() => ({
+    chainIds: [],
+    tokens: [],
+  })),
 }));
 
 jest.mock('../../../pages/confirmations/components/send/asset/asset', () => ({
@@ -54,6 +58,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 const mockUseSendTokens = jest.mocked(useSendTokens);
+const mockSelectBlockedPayTokens = jest.mocked(selectBlockedPayTokens);
 const mockUpdateTransactionPaymentToken = jest.mocked(
   updateTransactionPaymentToken,
 );
@@ -108,6 +113,10 @@ const renderComponent = (
 describe('HyperliquidDepositPrompt', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSelectBlockedPayTokens.mockReturnValue({
+      chainIds: [],
+      tokens: [],
+    });
     mockUseSendTokens.mockReturnValue([ETH_TOKEN, USDC_TOKEN]);
     mockStartPerpsDeposit.mockResolvedValue({
       transactionId: 'transaction-id-mock',
@@ -183,6 +192,41 @@ describe('HyperliquidDepositPrompt', () => {
       },
       { replace: true },
     );
+  });
+
+  it('defaults to the first selectable token when the largest balance is blocked', () => {
+    mockSelectBlockedPayTokens.mockReturnValue({
+      chainIds: [],
+      tokens: [{ address: ETH_TOKEN.address, chainId: ETH_TOKEN.chainId }],
+    });
+
+    renderComponent();
+
+    expect(
+      screen.getByTestId('hyperliquid-deposit-prompt-token-name'),
+    ).toHaveTextContent('USD Coin');
+    expect(
+      screen.getByTestId('hyperliquid-deposit-prompt-continue'),
+    ).toBeEnabled();
+  });
+
+  it('disables continue when every available token is blocked', () => {
+    mockSelectBlockedPayTokens.mockReturnValue({
+      chainIds: [],
+      tokens: [
+        { address: ETH_TOKEN.address, chainId: ETH_TOKEN.chainId },
+        { address: USDC_TOKEN.address, chainId: USDC_TOKEN.chainId },
+      ],
+    });
+
+    renderComponent();
+
+    expect(
+      screen.getByText(messages.swapSelectToken.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('hyperliquid-deposit-prompt-continue'),
+    ).toBeDisabled();
   });
 
   it('shows an error and keeps the prompt open when the deposit fails to start', async () => {

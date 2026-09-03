@@ -179,9 +179,12 @@ export const HyperliquidDepositPrompt: React.FC<
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  // Tokens are sorted by descending fiat balance, so the default selection is
-  // the user's largest funding source.
-  const displayToken = selectedToken ?? tokens[0];
+  const selectableTokens = useMemo(
+    () => tokens.filter((token) => !token.disabled),
+    [tokens],
+  );
+
+  const displayToken = selectedToken ?? selectableTokens[0];
 
   const handleClose = useCallback(() => {
     onActionComplete({ action: 'dismiss' });
