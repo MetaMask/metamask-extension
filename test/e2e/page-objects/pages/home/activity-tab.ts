@@ -132,11 +132,7 @@ class ActivityTab extends HomePage {
       const totalValue = await this.driver.waitForSelector(
         '[data-testid="transaction-breakdown-value-amount"] [data-testid="transaction-breakdown-row-value"]',
       );
-      const totalText = (await totalValue.getText()).trim();
-      assert.ok(
-        totalText.length > 0,
-        'Bridge total amount should be non-empty',
-      );
+      await this.driver.waitForNonEmptyElement(totalValue);
     } else {
       console.log('Checking displayed amounts');
       if (expectedSrcAmount) {
