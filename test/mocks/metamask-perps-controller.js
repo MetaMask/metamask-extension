@@ -54,6 +54,7 @@ const mockPerpsEventPropertyKeys = {
   ORDER_TIMESTAMP: 'order_timestamp',
   ENTRY_POINT: 'entry_point',
   DISCOVERY_SOURCE: 'discovery_source',
+  SOURCE_SECTION: 'source_section',
   PERP_DISCOVERY_SOURCE: 'perp_discovery_source',
   HL_FEE_RATE: 'hl_fee_rate',
   BULK_ACTION_ID: 'bulk_action_id',
@@ -175,6 +176,7 @@ const mockPerpsEventValueLiterals = {
     SUPPORT: 'support',
     FEEDBACK: 'give_feedback',
     GIVE_FEEDBACK: 'give_feedback',
+    TOP_MOVERS: 'top_movers',
   },
   MAX_SLIPPAGE_SOURCE: {
     DEFAULT: 'default',
@@ -217,6 +219,10 @@ const mockPerpsEventValueLiterals = {
     PERPS_MARKET_LIST_ALL: 'perps_market_list_all',
     PERP_MARKET_SEARCH: 'perp_market_search',
   },
+  SOURCE_SECTION: {
+    TOP_GAINERS: 'top_gainers',
+    TOP_LOSERS: 'top_losers',
+  },
   ACTION: {
     CREATE_POSITION: 'create_position',
     INCREASE_EXPOSURE: 'increase_exposure',
@@ -236,6 +242,8 @@ const mockPerpsEventValueLiterals = {
     TRADING: 'trading',
     WALLET_HOME_PERPS_TAB: 'perps_tab',
     PERPS_TAB: 'perps_tab',
+    PERPS_HOME: 'perps_home',
+    PERPS_HOME_EMPTY_STATE: 'perps_home_empty_state',
   },
 };
 

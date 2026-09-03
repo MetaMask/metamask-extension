@@ -896,12 +896,24 @@
     "message": "Đã bán $1",
     "description": "$1 is the token symbol"
   },
+  "activity_receive_failed_description": {
+    "message": "Từ $1",
+    "description": "$1 is the shortened sender address"
+  },
   "activity_receive_failed_title": {
     "message": "Nhận thất bại"
+  },
+  "activity_receive_pending_description": {
+    "message": "Từ $1",
+    "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
     "message": "Đang nhận $1",
     "description": "$1 is the token symbol"
+  },
+  "activity_receive_success_description": {
+    "message": "Từ $1",
+    "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
     "message": "Đã nhận $1",
@@ -950,12 +962,24 @@
     "message": "Đã bán $1",
     "description": "$1 is the token symbol"
   },
+  "activity_send_failed_description": {
+    "message": "Đến $1",
+    "description": "$1 is the shortened recipient address"
+  },
   "activity_send_failed_title": {
     "message": "Gửi thất bại"
+  },
+  "activity_send_pending_description": {
+    "message": "Đến $1",
+    "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
     "message": "Đang gửi $1",
     "description": "$1 is the token symbol"
+  },
+  "activity_send_success_description": {
+    "message": "Đến $1",
+    "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
     "message": "Đã gửi $1",
@@ -1428,10 +1452,10 @@
     "message": "Kẻ tấn công đôi khi bắt chước các trang web bằng cách thực hiện những thay đổi nhỏ trong địa chỉ trang web. Đảm bảo bạn đang tương tác với trang web dự định trước khi tiếp tục."
   },
   "alertMessageAddressTrustSignal": {
-    "message": "Chúng tôi không thể xác minh địa chỉ này. Có thể đây là địa chỉ mới hoặc chưa được xác minh. Chỉ tiếp tục nếu bạn tin tưởng nguồn này."
+    "message": "Các đối tác bảo mật không có đủ lịch sử đáng tin cậy để xác minh địa chỉ này."
   },
   "alertMessageAddressTrustSignalMalicious": {
-    "message": "Nếu bạn xác nhận yêu cầu này, bạn có thể sẽ mất tài sản vào tay kẻ lừa đảo."
+    "message": "Các đối tác bảo mật đã gắn cờ địa chỉ này do có hoạt động độc hại."
   },
   "alertMessageBurnAddress": {
     "message": "Bạn đang gửi tài sản của mình đến địa chỉ đốt. Nếu tiếp tục, bạn sẽ mất tài sản."
@@ -1501,6 +1525,12 @@
   },
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Không thể kiểm tra số dư Hợp đồng vĩnh cửu của bạn. Hãy thử lại."
+  },
+  "alertReasonAddressTrustSignalMalicious": {
+    "message": "Địa chỉ được gắn cờ là có rủi ro cao"
+  },
+  "alertReasonAddressTrustSignalWarning": {
+    "message": "Tín hiệu về địa chỉ còn hạn chế"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "Tương tác lần đầu tiên"
@@ -2146,6 +2176,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "Không có thông tin giá"
   },
+  "bridgeOffHoursDescription": {
+    "message": "Thị trường đã đóng cửa: Giá do tổ chức phát hành tính toán, không phải dữ liệu thị trường theo thời gian thực. Giá có thể khác khi thị trường mở cửa trở lại vào phiên giao dịch khả dụng tiếp theo."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Giao dịch ngoài giờ"
+  },
   "bridgePoints": {
     "message": "Điểm ước tính",
     "description": "Label for estimated points that can be earned from a bridge or swap"
@@ -2376,6 +2412,22 @@
   },
   "bridgeSendLoading": {
     "message": "Đang gửi từ chuỗi nguồn"
+  },
+  "bridgeStellarTrustlineWarningCta": {
+    "message": "Kích hoạt $1",
+    "description": "CTA on the Stellar trustline warning banner. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessage": {
+    "message": "Lệnh hoán đổi này có thể thất bại. Trên Stellar, tài khoản của bạn không thể nhận $1 cho đến khi token được kích hoạt trong ví của bạn bằng một đường tín nhiệm hợp lệ.",
+    "description": "Body of the Stellar trustline warning on cross-chain swaps when destination is the active account. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessageDifferentAccount": {
+    "message": "Lệnh hoán đổi này có thể thất bại. Trên Stellar, $1 không thể nhận $2 cho đến khi bạn chuyển sang tài khoản đó và kích hoạt token bằng một đường tín nhiệm hợp lệ.",
+    "description": "Body of the Stellar trustline warning when the destination account is not the active account. $1 is the destination account name; $2 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningTitle": {
+    "message": "Trước tiên, hãy kích hoạt $1 trên Stellar",
+    "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
   },
   "bridgeSuspicious": {
     "message": "Đáng ngờ"
@@ -3355,6 +3407,9 @@
   "defiTabErrorTitle": {
     "message": "Chúng tôi không thể tải trang này."
   },
+  "defiUnsupportedEmptyDescription": {
+    "message": "DeFi không được hỗ trợ trên mạng này."
+  },
   "delete": {
     "message": "Xóa"
   },
@@ -3477,6 +3532,10 @@
   },
   "disconnectSiteDescriptionText": {
     "message": "Thao tác này sẽ ngắt kết nối tất cả tài khoản của bạn khỏi $1. Bạn sẽ cần kết nối lại để sử dụng lại dapp này.",
+    "description": "$1 is the site hostname"
+  },
+  "disconnectSiteSuccess": {
+    "message": "Đã ngắt kết nối thành công khỏi $1.",
     "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
@@ -4312,9 +4371,25 @@
     "message": "Người chi tiêu: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
+  "hardwareSwapAmount": {
+    "message": "Hoán đổi $1 $2 lấy $3 $4",
+    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappedAmount": {
+    "message": "Đã hoán đổi $1 $2 lấy $3 $4",
+    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappingAmount": {
+    "message": "Đang hoán đổi $1 $2 lấy $3 $4",
+    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
   "hardwareToAddress": {
     "message": "Đến: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareToken": {
+    "message": "Token: $1",
+    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "Bạn đã từ chối giao dịch này trên thiết bị của mình",
@@ -4372,6 +4447,9 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 đã bị khóa",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleUnsupportedSignature": {
+    "message": "Chữ ký không được hỗ trợ"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "Đảm bảo thiết bị $1 của bạn được thiết lập với Cụm từ khôi phục bí mật hoặc cụm mật khẩu cho tài khoản đã chọn",
@@ -5172,10 +5250,6 @@
   "memo": {
     "message": "bản ghi nhớ"
   },
-  "merklRewardsClaimBonus": {
-    "message": "Nhận thưởng",
-    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
-  },
   "merklRewardsToastFailed": {
     "message": "Yêu cầu nhận thưởng mUSD của bạn đã thất bại",
     "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
@@ -5187,10 +5261,6 @@
   "merklRewardsToastSuccess": {
     "message": "Khoản thưởng mUSD của bạn đã có!",
     "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
-  },
-  "merklRewardsUnexpectedError": {
-    "message": "Lỗi không mong muốn. Vui lòng thử lại.",
-    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "Thông báo"
@@ -5276,17 +5346,107 @@
   "money": {
     "message": "Tài chính"
   },
+  "moneyAccountApyPitch": {
+    "message": "Sinh lời với APY $1%",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchInfo": {
+    "message": "Thông tin APY"
+  },
+  "moneyAccountApyTooltip": {
+    "message": "Tỷ suất hiển thị là Lợi suất phần trăm hằng năm (APY) ước tính dựa trên điều kiện thị trường hiện tại. APY có thể thay đổi và không được đảm bảo."
+  },
+  "moneyAccountAvailableBalance": {
+    "message": "Số dư khả dụng: $1",
+    "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountProjectedBalance": {
+    "message": "Số dư dự kiến sau 1 năm:"
+  },
+  "moneyAccountProjectedBalanceInfo": {
+    "message": "Số dư dự kiến sau 1 năm"
+  },
+  "moneyAccountProjectedBalanceTooltip": {
+    "message": "Dự đoán này giả định rằng Lợi suất phần trăm hằng năm (APY) $1% không thay đổi trong vòng một năm. APY có thể thay đổi và không được đảm bảo.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyActivity": {
     "message": "Hoạt động"
   },
+  "moneyActivityConversionFailed": {
+    "message": "Chuyển đổi thất bại"
+  },
+  "moneyActivityConverted": {
+    "message": "Đã chuyển đổi"
+  },
+  "moneyActivityConverting": {
+    "message": "Đang chuyển đổi"
+  },
+  "moneyActivityDepositFailed": {
+    "message": "Nạp tiền thất bại"
+  },
+  "moneyActivityDeposited": {
+    "message": "Đã nạp"
+  },
+  "moneyActivityDepositing": {
+    "message": "Đang gửi tiền"
+  },
+  "moneyActivityEmpty": {
+    "message": "Chưa có hoạt động"
+  },
+  "moneyActivityFilterAll": {
+    "message": "Tất cả"
+  },
+  "moneyActivityFilterDeposits": {
+    "message": "Nạp tiền"
+  },
+  "moneyActivityFilterSends": {
+    "message": "Gửi"
+  },
+  "moneyActivityPending": {
+    "message": "Chờ xử lý"
+  },
   "moneyActivityPlaceholderDescription": {
     "message": "Hoạt động Money của bạn sẽ xuất hiện tại đây."
+  },
+  "moneyActivityReceived": {
+    "message": "Đã nhận"
+  },
+  "moneyActivityReceivedFrom": {
+    "message": "Từ: $1"
+  },
+  "moneyActivityReceiving": {
+    "message": "Đang nhận"
+  },
+  "moneyActivitySendFailed": {
+    "message": "Gửi thất bại"
+  },
+  "moneyActivitySending": {
+    "message": "Đang gửi"
+  },
+  "moneyActivitySent": {
+    "message": "Đã gửi"
+  },
+  "moneyActivityViewAll": {
+    "message": "Xem tất cả"
   },
   "moneyAdd": {
     "message": "Thêm"
   },
   "moneyApy": {
     "message": "APY $1"
+  },
+  "moneyBalanceInfoBody": {
+    "message": "Số dư mUSD được bảo chứng bằng đô-la của bạn luôn sẵn sàng để chi tiêu, gửi hoặc giao dịch bất cứ lúc nào. Chúng tôi không tính số dư này vào tổng số dư tài khoản của bạn."
+  },
+  "moneyBalanceInfoWithdrawals": {
+    "message": "Yêu cầu rút tiền được xử lý ngay lập tức, tùy thuộc vào thời gian xác nhận mạng tiêu chuẩn trên chuỗi khối tương ứng. Nếu thanh khoản thấp, có thể xảy ra chậm trễ tạm thời."
+  },
+  "moneyBalanceLastKnown": {
+    "message": "Số dư gần nhất được ghi nhận"
+  },
+  "moneyBalanceTitle": {
+    "message": "Số dư Tài chính"
   },
   "moneyBalanceUnavailable": {
     "message": "Số dư không khả dụng"
@@ -5458,54 +5618,6 @@
     "message": "$1 muốn sử dụng $2 Snap",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdAssetBonusAccruing": {
-    "message": "Đang tích lũy khoản thưởng tiếp theo",
-    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
-  },
-  "musdAssetBonusClaimAmount": {
-    "message": "Nhận thưởng $1",
-    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
-  },
-  "musdAssetBonusEstimatedAnnual": {
-    "message": "Thưởng hằng năm ước tính",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusInfoAria": {
-    "message": "Thông tin thưởng của bạn",
-    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
-  },
-  "musdAssetBonusInfoEstimatedAnnual": {
-    "message": "Dự đoán số tiền bạn sẽ nhận được trong một năm dựa trên số dư và lãi suất hiện tại. Lãi suất có thể thay đổi.",
-    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLearnMore": {
-    "message": "Tìm hiểu thêm.",
-    "description": "Link label at the bottom of the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLifetimeClaimed": {
-    "message": "Tổng khoản thưởng bạn đã nhận được kể từ khi bắt đầu.",
-    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoYourBonus": {
-    "message": "$1% khoản thưởng theo năm mà bạn nhận được chỉ bằng cách nắm giữ mUSD. Bạn có thể nhận thưởng hằng ngày trên Linea. $2",
-    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
-  },
-  "musdAssetBonusLifetimeClaimed": {
-    "message": "Thưởng trọn đời đã nhận được",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusNoAccruing": {
-    "message": "Không có thưởng tích lũy",
-    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
-  },
-  "musdAssetBonusRate": {
-    "message": "Thưởng $1%",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
-  "musdAssetBonusTitle": {
-    "message": "Thưởng của bạn",
-    "description": "Section title on the mUSD asset details page"
-  },
   "musdAssetConvertBenefitDailyBonus": {
     "message": "Thưởng hằng ngày",
     "description": "Benefit tag on the mUSD asset details convert section"
@@ -5569,14 +5681,6 @@
   "musdBuyMusd": {
     "message": "Mua mUSD"
   },
-  "musdClaimSendingTo": {
-    "message": "Đang gửi đến",
-    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
-  },
-  "musdClaimSendingToWallet": {
-    "message": "Đang gửi đến $1",
-    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
-  },
   "musdClaimTitle": {
     "message": "Nhận thưởng",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5639,10 +5743,6 @@
     "message": "Chỉ lưu những địa chỉ mà bạn tin tưởng.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "Địa chỉ này đã được xác định là độc hại. Chúng tôi khuyên bạn không nên tương tác với địa chỉ này.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "Nếu bạn biết địa chỉ này, hãy đặt biệt danh để dễ nhận biết trong tương lai.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5654,10 +5754,6 @@
   "nameInstructionsSaved": {
     "message": "Trước đây bạn đã thêm biệt danh cho địa chỉ này rồi. Bạn có thể chỉnh sửa hoặc xem các biệt danh được đề xuất khác.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "Chúng tôi không thể xác minh địa chỉ này. Có thể đây là địa chỉ mới hoặc chưa được xác minh. Hãy đặt tên hiển thị cá nhân để nhận dạng sau này.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Biệt danh",
@@ -5686,10 +5782,6 @@
   "nameModalTitleVerified": {
     "message": "Địa chỉ đã xác minh",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Cần xem xét địa chỉ",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Được đề xuất bởi $1",
@@ -5945,6 +6037,9 @@
   },
   "nftTokenIdPlaceholder": {
     "message": "Nhập mã token"
+  },
+  "nftUnsupportedEmptyDescription": {
+    "message": "NFT không được hỗ trợ trên mạng này."
   },
   "nftWarningContent": {
     "message": "Bạn đang cấp quyền truy cập vào $1, bao gồm bất cứ tài sản nào mà bạn có thể sở hữu trong tương lai. Bên được cấp quyền có thể chuyển các NFT này khỏi ví của bạn bất cứ lúc nào mà không cần hỏi bạn cho đến khi bạn thu hồi sự chấp thuận này. $2",
@@ -6536,7 +6631,7 @@
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNotSupported": {
-    "message": "Không hỗ trợ mã khóa",
+    "message": "MetaMask không thể sử dụng mã khóa được lưu tại đây. Hãy thử lại và lưu mã khóa vào trình quản lý mật khẩu.",
     "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
@@ -7034,9 +7129,6 @@
   "perpsAddFunds": {
     "message": "Nạp tiền"
   },
-  "perpsAddFundsDescription": {
-    "message": "Nạp tiền để bắt đầu giao dịch hợp đồng vĩnh cửu có đòn bẩy"
-  },
   "perpsAddMargin": {
     "message": "Nạp tiền ký quỹ"
   },
@@ -7119,6 +7211,21 @@
   "perpsCloseAmount": {
     "message": "Số lượng đóng"
   },
+  "perpsCloseAmountCappedAtPosition": {
+    "message": "Số tiền đóng vị thế được giới hạn ở giá trị vị thế của bạn."
+  },
+  "perpsCloseAmountInPercent": {
+    "message": "%"
+  },
+  "perpsCloseAmountInPercentLabel": {
+    "message": "Nhập số tiền đóng vị thế theo tỷ lệ phần trăm của vị thế"
+  },
+  "perpsCloseAmountInUsd": {
+    "message": "$"
+  },
+  "perpsCloseAmountInUsdLabel": {
+    "message": "Nhập số tiền đóng vị thế bằng đô-la Mỹ"
+  },
   "perpsCloseLimitPriceOutsideOracleBand": {
     "message": "Giá không được chênh lệch quá 95% so với giá thị trường"
   },
@@ -7130,6 +7237,9 @@
   },
   "perpsClosePartialMinNotional": {
     "message": "Lệnh đóng một phần phải có giá trị tối thiểu là $1 theo USD. Hãy tăng số tiền đóng lệnh hoặc đóng toàn bộ vị thế."
+  },
+  "perpsClosePercentCappedAtMax": {
+    "message": "Tỷ lệ đóng vị thế được giới hạn ở 100%."
   },
   "perpsClosePosition": {
     "message": "Đóng vị thế"
@@ -7881,12 +7991,6 @@
     "message": "Đã cập nhật Chốt lời/Cắt lỗ thành công",
     "description": "Success toast text shown when TP/SL settings are updated"
   },
-  "perpsTotalBalance": {
-    "message": "Tổng số dư"
-  },
-  "perpsTradePerps": {
-    "message": "Giao dịch hợp đồng vĩnh cửu"
-  },
   "perpsTrades": {
     "message": "Giao dịch"
   },
@@ -8432,33 +8536,15 @@
   "rampsPaymentDelayMinutes": {
     "message": "phút"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "Tối đa $1",
-    "description": "$1 is the maximum fiat buy amount"
-  },
   "rampsPaymentMethodMinLimit": {
     "message": "Tối thiểu $1",
     "description": "$1 is the minimum fiat buy amount"
-  },
-  "rampsPreviouslyUsed": {
-    "message": "Đã sử dụng trước đây"
-  },
-  "rampsProviders": {
-    "message": "Nhà cung cấp"
   },
   "rampsQuoteFetchError": {
     "message": "Tìm nạp báo giá không thành công."
   },
   "rampsQuoteUnavailable": {
     "message": "Không có báo giá."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Báo giá được hiển thị cho $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Chọn phương thức thanh toán"
@@ -9291,16 +9377,16 @@
     "message": "Độc hại"
   },
   "securityTrustMaliciousTokenBannerDescription": {
-    "message": "$1 bị đánh dấu là độc hại. Có khả năng sẽ đánh cắp tài sản từ bất kỳ ai tương tác với nó."
+    "message": "Các đối tác bảo mật gắn cờ $1 là có rủi ro cao."
   },
   "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
-    "message": "Token này bị đánh dấu là độc hại. Có khả năng sẽ đánh cắp tài sản từ bất kỳ ai tương tác với nó."
+    "message": "Các đối tác bảo mật gắn cờ token này là có rủi ro cao."
   },
   "securityTrustMaliciousTokenSheetDescription": {
-    "message": "Phát hiện tín hiệu rủi ro nghiêm trọng đối với $1. Chúng tôi khuyến nghị không giao dịch token này."
+    "message": "Các đối tác bảo mật gắn cờ $1 là có rủi ro cao."
   },
   "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
-    "message": "Phát hiện các dấu hiệu rủi ro nghiêm trọng đối với token này. Chúng tôi khuyến nghị không giao dịch token này."
+    "message": "Các đối tác bảo mật gắn cờ token này là có rủi ro cao."
   },
   "securityTrustMaliciousTokenTitle": {
     "message": "Token độc hại"
@@ -9330,10 +9416,10 @@
     "message": "Rủi ro"
   },
   "securityTrustRiskyTokenDescription": {
-    "message": "$1 bị đánh dấu là đáng ngờ. Hãy xem xét các rủi ro trước khi tiếp tục."
+    "message": "Các đối tác bảo mật đã phát hiện tín hiệu rủi ro trong hợp đồng hoặc hoạt động giao dịch của $1."
   },
   "securityTrustRiskyTokenDescriptionNoSymbol": {
-    "message": "Token này bị đánh dấu là đáng ngờ. Hãy xem xét các rủi ro trước khi tiếp tục."
+    "message": "Các đối tác bảo mật đã phát hiện tín hiệu rủi ro trong hợp đồng hoặc hoạt động giao dịch của token này."
   },
   "securityTrustRiskyTokenTitle": {
     "message": "Token đáng ngờ"
@@ -9345,13 +9431,13 @@
     "message": "Không phát hiện tín hiệu rủi ro. Luôn nghiên cứu bất kỳ tài sản nào trước khi giao dịch."
   },
   "securityTrustSubtitleMalicious": {
-    "message": "Phát hiện tín hiệu rủi ro nghiêm trọng. Chúng tôi khuyến nghị tránh giao dịch với tài sản này."
+    "message": "Các đối tác bảo mật gắn cờ token này là có rủi ro cao."
   },
   "securityTrustSubtitleNoIssues": {
     "message": "Không phát hiện tín hiệu rủi ro. Luôn nghiên cứu bất kỳ tài sản nào trước khi giao dịch."
   },
   "securityTrustSubtitleSuspicious": {
-    "message": "Phát hiện tín hiệu cảnh báo. Hãy xem xét kỹ các vấn đề đã được đánh dấu trước khi giao dịch tài sản này."
+    "message": "Các đối tác bảo mật đã phát hiện tín hiệu rủi ro trong hợp đồng hoặc hoạt động giao dịch của token này."
   },
   "securityTrustSubtitleUnavailable": {
     "message": "Không thể tải phân tích bảo mật cho token này."
@@ -9360,10 +9446,10 @@
     "message": "Đáng ngờ"
   },
   "securityTrustSuspiciousTokenDescription": {
-    "message": "$1 là một token đáng ngờ."
+    "message": "Các đối tác bảo mật đã phát hiện tín hiệu rủi ro trong hợp đồng hoặc hoạt động giao dịch của $1."
   },
   "securityTrustSuspiciousTokenDescriptionNoSymbol": {
-    "message": "Đây là một token đáng ngờ."
+    "message": "Các đối tác bảo mật đã phát hiện tín hiệu rủi ro trong hợp đồng hoặc hoạt động giao dịch của token này."
   },
   "securityTrustTelegram": {
     "message": "Telegram"
