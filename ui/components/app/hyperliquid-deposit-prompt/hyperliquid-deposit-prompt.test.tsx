@@ -35,6 +35,7 @@ jest.mock('../../../store/controller-actions/transaction-pay-controller');
 
 const mockUsePerpsHomeRoute = jest.fn(() => PERPS_HOME_PAGE_ROUTE);
 jest.mock('../../../hooks/perps/usePerpsHomeRoute', () => ({
+  ...jest.requireActual('../../../hooks/perps/usePerpsHomeRoute'),
   usePerpsHomeRoute: () => mockUsePerpsHomeRoute(),
 }));
 
