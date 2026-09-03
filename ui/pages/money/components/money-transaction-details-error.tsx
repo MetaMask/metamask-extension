@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 import {
   FontWeight,
   Text,
+  TextAlign,
   TextButton,
   TextButtonSize,
   TextColor,
@@ -16,6 +17,10 @@ export type MoneyTransactionDetailsErrorProps = {
 /**
  * Failed-status error copy that folds to one line with Show more / Show less.
  *
+ * Truncation and overflow measurement live on the text node itself. Design-system
+ * `Text` renders a block `p` and does not forward refs, so `asChild` merges
+ * styles onto an element we can measure.
+ *
  * @param options0 - Component props.
  * @param options0.message - The error message to display.
  * @returns Foldable error text.
@@ -24,7 +29,7 @@ export function MoneyTransactionDetailsError({
   message,
 }: MoneyTransactionDetailsErrorProps) {
   const t = useI18nContext();
-  const textRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLParagraphElement>(null);
   const [expanded, setExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
 
@@ -37,20 +42,20 @@ export function MoneyTransactionDetailsError({
   }, [message]);
 
   return (
-    <div className="flex max-w-full flex-col items-end gap-0.5">
-      <div
-        ref={textRef}
-        className={expanded ? 'text-right' : 'max-w-full truncate'}
+    <div className="flex w-full min-w-0 max-w-full flex-col items-end gap-0.5">
+      <Text
+        asChild
+        variant={TextVariant.BodySm}
+        fontWeight={FontWeight.Medium}
+        color={TextColor.ErrorDefault}
+        ellipsis={!expanded}
+        textAlign={expanded ? TextAlign.Right : undefined}
+        className="max-w-full"
       >
-        <Text
-          variant={TextVariant.BodySm}
-          fontWeight={FontWeight.Medium}
-          color={TextColor.ErrorDefault}
-          data-testid="money-transaction-details-error"
-        >
+        <p ref={textRef} data-testid="money-transaction-details-error">
           {message}
-        </Text>
-      </div>
+        </p>
+      </Text>
       {isOverflowing || expanded ? (
         <TextButton
           size={TextButtonSize.BodySm}
