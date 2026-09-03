@@ -1420,6 +1420,68 @@ describe('createTrustSignalsMiddleware', () => {
     });
   });
 
+  describe('Multichain API (CAIP) requests', () => {
+    // `wallet_invokeMethod` unwraps the inner request in place before this
+    // middleware runs, so the request arrives under its EIP-1193 method name
+    // with `networkClientId` already resolved from the request's own scope.
+    const createUnwrappedRequest = (
+      method: string,
+      params: Json[] = [],
+      origin = 'https://example.com',
+    ) => ({
+      ...createMockRequest(method, params, origin),
+      scope: 'eip155:1',
+    });
+
+    it('scans transaction addresses for a request unwrapped from wallet_invokeMethod', async () => {
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.BENIGN,
+      );
+      const { middleware, appStateController, phishingController } =
+        createMiddleware();
+      appStateController.getAddressSecurityAlertResponse.mockReturnValue(
+        undefined,
+      );
+      const req = createUnwrappedRequest('eth_sendTransaction', [
+        createTransactionParams(),
+      ]);
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      await middleware(req, res, next);
+
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+        TEST_ADDRESSES.TO,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        CHAIN_IDS.MAINNET,
+        phishingController,
+      );
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(req.origin);
+      expect(next).toHaveBeenCalled();
+    });
+
+    // Connect-time coverage is PSAFE-589 part B. These methods are answered by
+    // `createMultichainApiMethodMiddleware`, which sits above this middleware
+    // in the CAIP engine, so they do not reach it at all today.
+    [
+      MESSAGE_TYPE.WALLET_CREATE_SESSION,
+      MESSAGE_TYPE.WALLET_GET_SESSION,
+    ].forEach((method) => {
+      it(`does not scan the origin for ${method}`, async () => {
+        const { middleware, phishingController } = createMiddleware();
+        const req = createMockRequest(method);
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        await middleware(req, res, next);
+
+        expect(phishingController.scanUrl).not.toHaveBeenCalled();
+        expect(next).toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('non-transaction methods', () => {
     it('ignores non-transaction RPC methods', async () => {
       const { middleware, appStateController } = createMiddleware();

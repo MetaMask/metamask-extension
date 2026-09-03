@@ -408,6 +408,42 @@ describe('RampsPaymentMethodScreen', () => {
     expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
+  it('does not reuse a provider error across payment methods', () => {
+    mockLocationState = { amount: 100 };
+    mockUseRampsQuotes.mockReturnValue({
+      data: {
+        success: [],
+        sorted: [],
+        error: [
+          {
+            provider: selectedProvider.id,
+            error: 'Minimum purchase is 24 USD',
+          },
+        ],
+        customActions: [],
+      },
+      loading: false,
+      status: 'success',
+      isSuccess: true,
+      error: null,
+      getQuotes: jest.fn(),
+      getBuyWidgetData: jest.fn(),
+    });
+
+    renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    expect(
+      screen.getByTestId('ramps-payment-method-item-debit-credit-card'),
+    ).toHaveTextContent('Quote unavailable');
+    expect(
+      screen.getByTestId('ramps-payment-method-item-bank-transfer'),
+    ).toHaveTextContent('Quote unavailable');
+  });
+
   it('selects a payment method and navigates back', async () => {
     renderWithProvider(
       <RampsPaymentMethodScreen />,
