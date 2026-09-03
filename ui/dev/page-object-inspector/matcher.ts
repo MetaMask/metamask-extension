@@ -271,6 +271,7 @@ export function stampOwnership(
   clearStamps(root);
 
   const owners = new Map<Element, { classNames: Set<string>; first: string }>();
+  const genericSelectorIds = new Set<string>();
   let failed = 0;
   let unsupported = 0;
 
@@ -304,8 +305,6 @@ export function stampOwnership(
       genericSelectorIds.add(selector.id);
     }
   };
-
-  const genericSelectorIds = new Set<string>();
 
   for (const pageObject of index.pageObjects) {
     for (const selector of pageObject.selectors) {
