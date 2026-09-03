@@ -536,7 +536,7 @@ async function mockETHtoETH(mockServer: Mockttp, sseEnabled?: boolean) {
       })
       .thenStream(
         200,
-        mockSseEventSource(MOCK_BRIDGE_ETH_TO_ETH_ROBINHOOD),
+        mockSseEventSource(MOCK_BRIDGE_ETH_TO_ETH_ROBINHOOD, 0),
         SSE_RESPONSE_HEADER,
       );
   }
