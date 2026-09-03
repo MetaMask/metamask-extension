@@ -264,6 +264,8 @@ const DEFAULT_MAX_LEVERAGE = 50;
 const DEFAULT_LEVERAGE = 3;
 const ORDER_ENTRY_CHART_HEIGHT = 250;
 const ORDER_ENTRY_CHART_STYLE = { height: ORDER_ENTRY_CHART_HEIGHT };
+// Clears the fixed CTA's padded height plus breathing room from scroll content.
+const FIXED_CTA_CLEARANCE_PX = 96;
 
 /**
  * How long the order form must be idle before PERPS_TRANSACTION_CONSIDERED is
@@ -337,6 +339,8 @@ const PerpsOrderEntryPage = () => {
   // after the markets-loading skeleton — a plain useRef + [] effect would
   // see null on the cold-load first commit and never retry.
   const [bodyEl, setBodyEl] = useState<HTMLDivElement | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
   const orderTypeInteractionSkippedRef = useRef(false);
   const trackRef = useRef(track);
   trackRef.current = track;
@@ -1482,9 +1486,8 @@ const PerpsOrderEntryPage = () => {
     if (!isChartOpen || !bodyEl || typeof ResizeObserver === 'undefined') {
       return undefined;
     }
-    const form = bodyEl.querySelector('form');
-    const cta =
-      form?.querySelector<HTMLElement>('[type="submit"]')?.parentElement;
+    const form = formRef.current;
+    const cta = ctaRef.current;
     if (!form || !cta) {
       return undefined;
     }
@@ -2208,6 +2211,7 @@ const PerpsOrderEntryPage = () => {
   // order form.
   const formPane = (
     <form
+      ref={formRef}
       key="form"
       style={{
         minWidth: isOrderBookOpen ? ORDER_BOOK_FORM_MIN_WIDTH_PX : undefined,
@@ -2223,7 +2227,9 @@ const PerpsOrderEntryPage = () => {
         paddingLeft={4}
         paddingRight={4}
         paddingBottom={4}
-        style={{ paddingBottom: isChartOpen ? 96 : undefined }}
+        style={{
+          paddingBottom: isChartOpen ? FIXED_CTA_CLEARANCE_PX : undefined,
+        }}
         flexDirection={BoxFlexDirection.Column}
         gap={4}
         data-testid="perps-order-form-content"
@@ -2315,6 +2321,7 @@ const PerpsOrderEntryPage = () => {
       </Box>
 
       <Box
+        ref={ctaRef}
         paddingLeft={4}
         paddingRight={4}
         paddingBottom={4}
@@ -2485,7 +2492,6 @@ const PerpsOrderEntryPage = () => {
               aria-label={
                 isChartOpen ? t('perpsCollapseChart') : t('perpsExpandChart')
               }
-              aria-pressed={isChartOpen}
               aria-expanded={isChartOpen}
               aria-controls="perps-order-entry-chart"
               className={twMerge(

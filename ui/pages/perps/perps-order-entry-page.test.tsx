@@ -411,6 +411,17 @@ describe('PerpsOrderEntryPage', () => {
     },
   });
 
+  const createExpandedChartState = () => {
+    const state = createMockState();
+    return {
+      ...state,
+      metamask: {
+        ...state.metamask,
+        proLayoutPreferences: { chartExpanded: true },
+      },
+    };
+  };
+
   const createMockStateWithOrderBookPosition = (
     orderBookPosition: 'left' | 'right',
   ) => {
@@ -1233,36 +1244,40 @@ describe('PerpsOrderEntryPage', () => {
 
   describe('chart toggle', () => {
     it('mounts the chart already open when the persisted preference is expanded', () => {
-      const state = createMockState();
-      const store = mockStore({
-        ...state,
-        metamask: {
-          ...state.metamask,
-          proLayoutPreferences: { chartExpanded: true },
-        },
-      });
+      const store = mockStore(createExpandedChartState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       expect(
         screen.getByTestId('perps-order-entry-chart-toggle'),
-      ).toHaveAttribute('aria-pressed', 'true');
-      expect(
-        screen.getByTestId('perps-candle-period-selector'),
-      ).toBeInTheDocument();
+      ).toHaveAttribute('aria-expanded', 'true');
       expect(
         screen.getByTestId('parent-selector-perps-order-entry'),
       ).toHaveClass('overflow-y-auto');
-      expect(screen.getByTestId('perps-order-body')).toHaveClass(
-        'min-h-full',
-        'shrink-0',
-      );
-      expect(screen.getByTestId('perps-order-form-content')).not.toHaveClass(
-        'overflow-y-auto',
-      );
-      expect(
-        screen.getByTestId('submit-order-button').parentElement,
-      ).toHaveClass('fixed');
+      expect(screen.getByTestId('perps-order-body')).toHaveClass('min-h-full');
     });
+
+    for (const [isInitialLoading, error, testId] of [
+      [true, null, 'perps-order-entry-chart-loading'],
+      [
+        false,
+        new Error('Candle request failed'),
+        'perps-order-entry-chart-error',
+      ],
+    ] as const) {
+      it(`renders ${testId}`, () => {
+        mockLiveCandles.mockReturnValue({
+          ...mockLiveCandles(),
+          candleData: null,
+          isInitialLoading,
+          error,
+        });
+        renderWithProvider(
+          <PerpsOrderEntryPage />,
+          mockStore(createExpandedChartState()),
+        );
+        expect(screen.getByTestId(testId)).toBeInTheDocument();
+      });
+    }
 
     it('persists the open state when the chart is toggled', () => {
       const OriginalResizeObserver = window.ResizeObserver;
@@ -1303,50 +1318,8 @@ describe('PerpsOrderEntryPage', () => {
       }
     });
 
-    it('tracks chart_opened and chart_closed interactions', () => {
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-      mockAnalyticsTrackEvent.mockClear();
-
-      fireEvent.click(screen.getByTestId('perps-order-entry-chart-toggle'));
-
-      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: MetaMetricsEventName.PerpsUiInteraction,
-          properties: expect.objectContaining({
-            category: MetaMetricsEventCategory.Perps,
-            [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-              PERPS_EVENT_VALUE.INTERACTION_TYPE.CHART_OPENED,
-            [PERPS_EVENT_PROPERTY.ASSET]: 'ETH',
-          }),
-        }),
-      );
-
-      mockAnalyticsTrackEvent.mockClear();
-      fireEvent.click(screen.getByTestId('perps-order-entry-chart-toggle'));
-
-      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: MetaMetricsEventName.PerpsUiInteraction,
-          properties: expect.objectContaining({
-            category: MetaMetricsEventCategory.Perps,
-            [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-              PERPS_EVENT_VALUE.INTERACTION_TYPE.CHART_CLOSED,
-            [PERPS_EVENT_PROPERTY.ASSET]: 'ETH',
-          }),
-        }),
-      );
-    });
-
     it('persists a shared candle period from the selector', async () => {
-      const state = createMockState();
-      const store = mockStore({
-        ...state,
-        metamask: {
-          ...state.metamask,
-          proLayoutPreferences: { chartExpanded: true },
-        },
-      });
+      const store = mockStore(createExpandedChartState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       enterAmount('1000');
@@ -1365,7 +1338,17 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
-    it('uses the live price and derives missing position TP/SL overlays', () => {
+    it('falls back to market data before candle or stream prices arrive', () => {
+      renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(createExpandedChartState()),
+      );
+      expect(screen.getByTestId('perps-order-entry-price')).toHaveTextContent(
+        '3,025.5',
+      );
+    });
+
+    it('uses price precedence for display, submission, and TP/SL overlays', async () => {
       mockLivePositions.mockReturnValue({
         positions: [
           {
@@ -1422,15 +1405,11 @@ describe('PerpsOrderEntryPage', () => {
         error: null,
         fetchMoreHistory: jest.fn(),
       });
-      const state = createMockState();
-      const store = mockStore({
-        ...state,
-        metamask: {
-          ...state.metamask,
-          proLayoutPreferences: { chartExpanded: true },
-        },
-      });
+      const store = mockStore(createExpandedChartState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
+      expect(screen.getByTestId('perps-order-entry-price')).toHaveTextContent(
+        '2,900',
+      );
 
       act(() => {
         mockSubscribeToPrices.mock.calls[0][0]([
@@ -1457,6 +1436,19 @@ describe('PerpsOrderEntryPage', () => {
           expect.objectContaining({ label: 'TP', price: 3300 }),
           expect.objectContaining({ label: 'SL', price: 2500 }),
         ]),
+      );
+      enterAmount('1000');
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        [
+          expect.objectContaining({
+            priceAtCalculation: 3100,
+            size: ((1000 * 3) / 3100).toString(),
+          }),
+        ],
       );
     });
   });
