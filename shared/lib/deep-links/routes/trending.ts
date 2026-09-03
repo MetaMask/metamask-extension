@@ -7,26 +7,20 @@ import { DISCOVER_SEARCH_ROUTE, Route } from './route';
 
 const SEARCH_SCREEN = 'search';
 const SEARCH_QUERY_PARAM = 'q';
-const SEARCH_QUERY_ALIAS_PARAM = 'query';
 
 /**
  * Deeplink for trending content and Explore Search.
  *
- * Supported Explore Search URL formats:
- * - https://link.metamask.io/trending?screen=search&q=Apple
- * - https://link.metamask.io/trending?screen=search&query=Apple
- *
- * Other `/trending` URLs retain the mobile QR-code flow.
+ * Signed `/trending` deeplinks with `screen=search` open Explore Search,
+ * optionally pre-populated from `q`. Other `/trending` deeplinks retain the
+ * mobile QR-code flow.
  */
 export const trending = new Route({
   pathname: '/trending',
   getTitle: (_: URLSearchParams) => 'deepLink_theTrendingPage',
   handler: function handler(params: URLSearchParams) {
     if (params.get('screen') === SEARCH_SCREEN) {
-      const query =
-        params.get(SEARCH_QUERY_PARAM) ||
-        params.get(SEARCH_QUERY_ALIAS_PARAM) ||
-        '';
+      const query = params.get(SEARCH_QUERY_PARAM);
       const searchParams = new URLSearchParams();
 
       if (query) {

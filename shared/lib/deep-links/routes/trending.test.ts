@@ -20,21 +20,20 @@ describe('trending deep link route', () => {
     );
   });
 
-  it('uses the query alias when q is empty', () => {
+  it('does not treat query as an alias for q', () => {
     const params = new URLSearchParams({
       screen: 'search',
-      q: '',
       query: 'Apple',
     });
 
     const destination = trending.handler(params);
 
-    expect((destination as { query: URLSearchParams }).query.get('q')).toBe(
-      'Apple',
+    expect((destination as { query: URLSearchParams }).query.toString()).toBe(
+      '',
     );
   });
 
-  it('opens Discover Search without a query when q and query are missing', () => {
+  it('opens Discover Search without a query when q is missing', () => {
     const params = new URLSearchParams({ screen: 'search' });
 
     const destination = trending.handler(params);
