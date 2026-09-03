@@ -131,4 +131,19 @@ describe('useGasEstimateFailedAlerts', () => {
       ),
     ).toEqual([]);
   });
+
+  it('returns no alerts when simulationFails is a Monad reserve balance violation', () => {
+    expect(
+      runHook(
+        getMockConfirmStateForTransaction({
+          ...CONFIRMATION_MOCK,
+          chainId: '0x8f',
+          simulationFails: {
+            reason: 'execution reverted: reserve balance violation',
+            debug: {},
+          },
+        }),
+      ),
+    ).toEqual([]);
+  });
 });

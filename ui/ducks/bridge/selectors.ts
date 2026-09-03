@@ -78,6 +78,10 @@ import {
   HardwareKeyringType,
 } from '../../../shared/constants/hardware-wallets';
 import { Numeric } from '../../../shared/lib/Numeric';
+import {
+  MONAD_MAINNET_CAIP_CHAIN_ID,
+  MONAD_RESERVE_BALANCE_MON,
+} from '../../../shared/lib/monad-reserve-balance';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   getIsSmartTransaction,
@@ -230,7 +234,8 @@ const getChainRanking = (state: BridgeAppState) =>
 
 const MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN: { [key: CaipChainId]: string } =
   {
-    'eip155:143': '10',
+    // Monad mainnet protocol reserve (shared/lib/monad-reserve-balance.ts)
+    [MONAD_MAINNET_CAIP_CHAIN_ID]: MONAD_RESERVE_BALANCE_MON,
     [MultichainNetworks.BITCOIN]: '0.00003',
   };
 
