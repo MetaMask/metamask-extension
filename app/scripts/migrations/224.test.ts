@@ -10,8 +10,8 @@ describe(`migration #${VERSION}`, () => {
       meta: { version: OLD_VERSION },
       data: {
         RemoteFeatureFlagController: {
-          remoteFeatureFlags: { otaUpdatesEnabled: true },
-          rawRemoteFeatureFlags: { otaUpdatesEnabled: true },
+          remoteFeatureFlags: { addBitcoinAccountDummyFlag: true },
+          rawRemoteFeatureFlags: { addBitcoinAccountDummyFlag: true },
           cacheTimestamp: 123,
         },
         OtherController: { preserved: true },
@@ -26,7 +26,7 @@ describe(`migration #${VERSION}`, () => {
       meta: { version: VERSION },
       data: {
         RemoteFeatureFlagController: {
-          remoteFeatureFlags: { otaUpdatesEnabled: true },
+          remoteFeatureFlags: { addBitcoinAccountDummyFlag: true },
           cacheTimestamp: 123,
         },
         OtherController: { preserved: true },
