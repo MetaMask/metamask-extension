@@ -5511,6 +5511,9 @@
   "moneyActivityDepositing": {
     "message": "Depositing"
   },
+  "moneyActivityDetailsTransactionId": {
+    "message": "Transaction ID"
+  },
   "moneyActivityEmpty": {
     "message": "No activity yet"
   },
