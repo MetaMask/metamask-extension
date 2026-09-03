@@ -94,6 +94,11 @@ jest.mock('../../../store/actions', () => {
         await Promise.resolve();
       };
     }),
+    removeAccount: jest.fn().mockImplementation(() => {
+      return async function () {
+        await Promise.resolve();
+      };
+    }),
   };
 });
 
@@ -104,6 +109,14 @@ const mockSetAccountGroupName = jest.requireMock(
 const mockSetSelectedMultichainAccount = jest.requireMock(
   '../../../store/actions',
 ).setSelectedMultichainAccount;
+
+const mockRemoveAccount = jest.requireMock(
+  '../../../store/actions',
+).removeAccount;
+
+const mockSetAccountGroupHidden = jest.requireMock(
+  '../../../store/actions',
+).setAccountGroupHidden;
 
 const popoverOpenSelector = '.mm-popover--open';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
@@ -186,6 +199,10 @@ const mockWallets = {
   },
 } as AccountTreeWallets;
 
+const privateKeyAccountId = 'imported-account-1';
+const privateKeyAccountAddress =
+  '0x1111111111111111111111111111111111111111';
+
 const mockWalletsWithPrivateKey = {
   ...mockWallets,
   [privateKeyWalletId]: {
@@ -208,7 +225,7 @@ const mockWalletsWithPrivateKey = {
           hidden: false,
           lastSelected: 0,
         },
-        accounts: ['imported-account-1'] as [string],
+        accounts: [privateKeyAccountId] as [string],
       },
     },
   },
@@ -308,15 +325,105 @@ describe('MultichainAccountList', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('opens the delete confirmation modal when the private-key delete icon is clicked', () => {
-    const consoleLogSpy = jest
-      .spyOn(console, 'log')
-      .mockImplementation(() => undefined);
+  it('optimistically moves an account into the hidden section when hide is clicked in edit mode', () => {
+    const visibleGroupId = `${walletOneId}/0` as AccountGroupId;
+    const otherVisibleGroupId = `${walletOneId}/1` as AccountGroupId;
+
+    const walletsWithTwoVisibleAccounts = {
+      [walletOneId]: {
+        ...mockWallets[walletOneId],
+        groups: {
+          [visibleGroupId]: {
+            ...mockWallets[walletOneId].groups[walletOneGroupId],
+            id: visibleGroupId,
+            metadata: {
+              ...mockWallets[walletOneId].groups[walletOneGroupId].metadata,
+              name: 'Visible Account',
+              hidden: false,
+            },
+          },
+          [otherVisibleGroupId]: {
+            ...mockWallets[walletOneId].groups[walletOneGroupId],
+            id: otherVisibleGroupId,
+            metadata: {
+              ...mockWallets[walletOneId].groups[walletOneGroupId].metadata,
+              name: 'Other Visible Account',
+              hidden: false,
+              entropy: {
+                groupIndex: 1,
+              },
+            },
+            accounts: ['other-visible-account'],
+          },
+        },
+      },
+    } as AccountTreeWallets;
 
     renderComponent({
-      wallets: mockWalletsWithPrivateKey,
+      wallets: walletsWithTwoVisibleAccounts,
       isEditMode: true,
     });
+
+    const accountCell = screen.getByTestId(
+      `multichain-account-cell-${visibleGroupId}`,
+    );
+    expect(accountCell).not.toHaveClass('multichain-account-cell--hidden');
+
+    fireEvent.click(
+      within(accountCell).getByTestId(
+        'multichain-account-cell-edit-mode-visible-icon',
+      ),
+    );
+
+    expect(mockSetAccountGroupHidden).toHaveBeenCalledWith(visibleGroupId, true);
+
+    const updatedCell = screen.getByTestId(
+      `multichain-account-cell-${visibleGroupId}`,
+    );
+    expect(updatedCell).toHaveClass('multichain-account-cell--hidden');
+    expect(
+      within(updatedCell).getByTestId(
+        'multichain-account-cell-edit-mode-hidden-icon',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('removes the private-key account when delete is confirmed', () => {
+    const stateWithPrivateKeyAccount = {
+      ...mockDefaultState,
+      metamask: {
+        ...mockDefaultState.metamask,
+        internalAccounts: {
+          ...mockDefaultState.metamask.internalAccounts,
+          accounts: {
+            ...mockDefaultState.metamask.internalAccounts.accounts,
+            [privateKeyAccountId]: {
+              address: privateKeyAccountAddress,
+              id: privateKeyAccountId,
+              metadata: {
+                importTime: 0,
+                name: 'Imported Account 1',
+                keyring: {
+                  type: KeyringTypes.simple,
+                },
+              },
+              options: {},
+              methods: [],
+              scopes: ['eip155:0'],
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
+    };
+
+    renderComponent(
+      {
+        wallets: mockWalletsWithPrivateKey,
+        isEditMode: true,
+      },
+      stateWithPrivateKeyAccount,
+    );
 
     fireEvent.click(
       screen.getByTestId('multichain-account-cell-edit-mode-delete-icon'),
@@ -334,12 +441,11 @@ describe('MultichainAccountList', () => {
       screen.getByTestId('account-delete-confirm-modal-remove-button'),
     );
 
-    expect(consoleLogSpy).toHaveBeenCalledWith('this account will be deleted');
+    expect(mockRemoveAccount).toHaveBeenCalledTimes(1);
+    expect(mockRemoveAccount).toHaveBeenCalledWith(privateKeyAccountAddress);
     expect(
       screen.queryByTestId('account-delete-confirm-modal'),
     ).not.toBeInTheDocument();
-
-    consoleLogSpy.mockRestore();
   });
 
   it('renders no balance for account groups with no fetched balance', () => {

@@ -6,6 +6,7 @@ import React, {
   useState,
   useTransition,
 } from 'react';
+import { flushSync } from 'react-dom';
 
 import {
   AccountGroupId,
@@ -37,6 +38,7 @@ import {
   MultichainAccountsState,
 } from '../../../selectors/multichain-accounts/account-tree.types';
 import {
+  removeAccount,
   setAccountGroupHidden,
   setSelectedMultichainAccount,
 } from '../../../store/actions';
@@ -56,6 +58,7 @@ import {
   getDefaultHomeActiveTabName,
   getHDEntropyIndex,
 } from '../../../selectors';
+import { getInternalAccountsObject } from '../../../selectors/accounts';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';
@@ -107,6 +110,101 @@ function isPrivateKeyWallet(wallet: AccountWalletObject): boolean {
   );
 }
 
+const ACCOUNT_LIST_FLIP_DURATION_MS = 280;
+const ACCOUNT_LIST_FLIP_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)';
+
+/**
+ * FLIP-animates account rows after a synchronous list reorder.
+ *
+ * Uses the CSS `translate` property so it composes with VirtualizedList's
+ * `transform: translateY(...)` positioning instead of fighting it. Avoids the
+ * document-level View Transitions API, which was flashing translucent page
+ * snapshots over the virtualized list.
+ *
+ * @param update - Synchronous state update that reorders the list.
+ */
+function animateAccountListReorder(update: () => void): void {
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+  if (process.env.IN_TEST || prefersReducedMotion) {
+    update();
+    return;
+  }
+
+  const previousNodes = Array.from(
+    document.querySelectorAll<HTMLElement>('[data-account-list-flip-id]'),
+  );
+  const firstTops = new Map<string, number>();
+  for (const node of previousNodes) {
+    const id = node.dataset.accountListFlipId;
+    if (id) {
+      firstTops.set(id, node.getBoundingClientRect().top);
+    }
+  }
+
+  flushSync(update);
+
+  const nextNodes = document.querySelectorAll<HTMLElement>(
+    '[data-account-list-flip-id]',
+  );
+  nextNodes.forEach((node) => {
+    const id = node.dataset.accountListFlipId;
+    if (!id) {
+      return;
+    }
+
+    const firstTop = firstTops.get(id);
+    if (firstTop === undefined) {
+      return;
+    }
+
+    const dy = firstTop - node.getBoundingClientRect().top;
+    if (Math.abs(dy) < 1) {
+      return;
+    }
+
+    node.style.transition = 'none';
+    node.style.translate = `0 ${dy}px`;
+    // Force layout so the inverted position is committed before playing.
+    // eslint-disable-next-line no-void
+    void node.offsetHeight;
+    node.style.transition = `translate ${ACCOUNT_LIST_FLIP_DURATION_MS}ms ${ACCOUNT_LIST_FLIP_EASING}`;
+    node.style.translate = '0 0';
+
+    const cleanup = (event: TransitionEvent) => {
+      if (event.propertyName !== 'translate') {
+        return;
+      }
+      node.style.transition = '';
+      node.style.translate = '';
+      node.removeEventListener('transitionend', cleanup);
+    };
+    node.addEventListener('transitionend', cleanup);
+  });
+}
+
+/**
+ * Resolves whether a group is currently treated as hidden, preferring any
+ * optimistic override used for hide/reveal animations.
+ *
+ * @param groupId - Account group id.
+ * @param metadataHidden - Hidden flag from account tree metadata.
+ * @param visibilityOverrides - Pending optimistic visibility map.
+ * @returns Effective hidden state for list ordering and cell styling.
+ */
+function getEffectiveIsHidden(
+  groupId: string,
+  metadataHidden: boolean | undefined,
+  visibilityOverrides: Record<string, boolean>,
+): boolean {
+  if (Object.prototype.hasOwnProperty.call(visibilityOverrides, groupId)) {
+    return visibilityOverrides[groupId];
+  }
+  return metadataHidden ?? false;
+}
+
 type ListItem =
   | {
       type: 'header';
@@ -152,6 +250,7 @@ export const MultichainAccountList = ({
   const allBalances = useSelector(selectBalanceForAllWallets);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const { privacyMode } = useSelector(getPreferences);
+  const internalAccountsById = useSelector(getInternalAccountsObject);
 
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
@@ -167,7 +266,14 @@ export const MultichainAccountList = ({
   const [accountToDelete, setAccountToDelete] = useState<{
     groupId: AccountGroupId;
     accountName: string;
+    address?: string;
+    walletType?: AccountWalletType;
   } | null>(null);
+
+  // Optimistic visibility used so hide/reveal can animate before Redux catches up.
+  const [visibilityOverrides, setVisibilityOverrides] = useState<
+    Record<string, boolean>
+  >({});
 
   const [openMenuAccountId, setOpenMenuAccountId] =
     useState<AccountGroupId | null>(null);
@@ -231,9 +337,67 @@ export const MultichainAccountList = ({
   }, []);
 
   const handleAccountDeleteConfirm = useCallback(() => {
-    console.log('this account will be deleted');
+    const address = accountToDelete?.address;
+    if (address) {
+      dispatch(removeAccount(address));
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.AccountRemoved)
+          .addCategory(MetaMetricsEventCategory.Accounts)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: accountToDelete?.walletType,
+          })
+          .build(),
+      );
+    }
     setAccountToDelete(null);
-  }, []);
+  }, [accountToDelete, createEventBuilder, dispatch, trackEvent]);
+
+  const handleVisibilityToggle = useCallback(
+    (accountGroupId: AccountGroupId, currentlyHidden: boolean) => {
+      const nextHidden = !currentlyHidden;
+
+      animateAccountListReorder(() => {
+        setVisibilityOverrides((previous) => ({
+          ...previous,
+          [accountGroupId]: nextHidden,
+        }));
+      });
+
+      dispatch(setAccountGroupHidden(accountGroupId, nextHidden));
+    },
+    [dispatch],
+  );
+
+  // Drop optimistic overrides once account-tree metadata matches them.
+  useEffect(() => {
+    setVisibilityOverrides((previous) => {
+      const overrideIds = Object.keys(previous);
+      if (overrideIds.length === 0) {
+        return previous;
+      }
+
+      const next = { ...previous };
+      let changed = false;
+
+      for (const groupId of overrideIds) {
+        for (const wallet of Object.values(wallets)) {
+          const group = wallet.groups?.[groupId as AccountGroupId];
+          if (!group) {
+            continue;
+          }
+          if ((group.metadata.hidden ?? false) === previous[groupId]) {
+            delete next[groupId];
+            changed = true;
+          }
+          break;
+        }
+      }
+
+      return changed ? next : previous;
+    });
+  }, [wallets]);
 
   const handleMenuToggle = useCallback((accountGroupId: AccountGroupId) => {
     // If the same menu is clicked, close it, otherwise open the new one
@@ -349,7 +513,11 @@ export const MultichainAccountList = ({
       const isDeleteMode = isEditMode && isRemovable;
       const isHidden = isDeleteMode
         ? false
-        : (groupData.metadata.hidden ?? false);
+        : getEffectiveIsHidden(
+            groupId,
+            groupData.metadata.hidden,
+            visibilityOverrides,
+          );
 
       const isConnectedAccount = connectedAccountGroups.find(
         (accountGroup) => accountGroup.id === groupId,
@@ -393,21 +561,22 @@ export const MultichainAccountList = ({
             onVisibilityIconClick={
               isEditMode && !isDeleteMode
                 ? (accountGroupId) => {
-                    dispatch(
-                      setAccountGroupHidden(
-                        accountGroupId,
-                        !(groupData.metadata.hidden ?? false),
-                      ),
-                    );
+                    handleVisibilityToggle(accountGroupId, isHidden);
                   }
                 : undefined
             }
             onDeleteIconClick={
               isDeleteMode
                 ? () => {
+                    const firstAccountId = groupData.accounts[0];
+                    const address = firstAccountId
+                      ? internalAccountsById[firstAccountId]?.address
+                      : undefined;
                     setAccountToDelete({
                       groupId: groupId as AccountGroupId,
                       accountName: groupData.metadata.name,
+                      address,
+                      walletType: wallet?.type,
                     });
                   }
                 : undefined
@@ -467,6 +636,9 @@ export const MultichainAccountList = ({
       isEditMode,
       dispatch,
       setAccountToDelete,
+      internalAccountsById,
+      visibilityOverrides,
+      handleVisibilityToggle,
     ],
   );
 
@@ -523,7 +695,13 @@ export const MultichainAccountList = ({
             showWalletName: false,
           };
 
-          if (groupData.metadata?.hidden) {
+          if (
+            getEffectiveIsHidden(
+              groupId,
+              groupData.metadata?.hidden,
+              visibilityOverrides,
+            )
+          ) {
             hiddenAccounts.push(accountItem);
           } else {
             visibleAccounts.push(accountItem);
@@ -581,6 +759,7 @@ export const MultichainAccountList = ({
     collapsedSectionKeys,
     showDefaultAddress,
     isEditMode,
+    visibilityOverrides,
     t,
   ]);
 
@@ -594,6 +773,18 @@ export const MultichainAccountList = ({
         data={walletTreeData}
         estimatedItemSize={64}
         keyExtractor={(item) => item.key}
+        itemRef={(node, { item }) => {
+          if (!node) {
+            return;
+          }
+          if (item.type === 'account') {
+            node.dataset.accountListFlipId = item.groupId;
+            return;
+          }
+          delete node.dataset.accountListFlipId;
+          node.style.translate = '';
+          node.style.transition = '';
+        }}
         renderItem={({ item }) => {
           if (item.type === 'header') {
             if (item.isCollapsible && item.sectionKey) {
