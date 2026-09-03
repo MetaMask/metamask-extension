@@ -393,7 +393,9 @@ describe('MultichainAccountCell', () => {
 
       expect(cellElement).not.toHaveClass('multichain-account-cell--hidden');
       expect(cellElement).not.toHaveClass('multichain-account-cell--edit-mode');
-      expect(cellElement).not.toHaveClass('multichain-account-cell--delete-mode');
+      expect(cellElement).not.toHaveClass(
+        'multichain-account-cell--delete-mode',
+      );
       expect(cellElement).not.toHaveAttribute('data-hidden');
       expect(cellElement).not.toHaveAttribute('data-edit-mode');
       expect(cellElement).not.toHaveAttribute('data-delete-mode');
