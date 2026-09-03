@@ -1,6 +1,7 @@
 import React, {
   useState,
   useCallback,
+  useDeferredValue,
   useMemo,
   useEffect,
   useRef,
@@ -26,8 +27,6 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useDeferredValue } from '../../../../hooks/useDeferredValue';
-
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
   getAllTokens,

@@ -225,7 +225,7 @@ app/scripts/controller-init/smart-transactions    @MetaMask/transactions
 app/scripts/lib/smart-transaction                 @MetaMask/transactions
 
 # Networks Team
-shared/lib/multichain/addresses/* @MetaMask/networks
+shared/lib/multichain/addresses/* @MetaMask/networks @MetaMask/emerging-opportunities
 
 # QA Team - E2E Framework
 test/e2e/page-objects/                                                @MetaMask/qa
@@ -311,9 +311,12 @@ development/metamaskbot-build-announce/               @MetaMask/extension-platfo
 
 # Store submission
 /.github/workflows/upload-extension-to-cws.yml             @MetaMask/extension-security-team @MetaMask/release-team
+/.github/workflows/cws-publish.yml                         @MetaMask/extension-security-team @MetaMask/release-team
 /.github/workflows/adjust-cws-rollout.yml                  @MetaMask/extension-security-team @MetaMask/release-team
 /.github/workflows/upload-extension-to-amo.yml             @MetaMask/extension-security-team @MetaMask/release-team
 /.github/scripts/release-create-gh-release.sh              @MetaMask/extension-security-team @MetaMask/release-team
+/.github/scripts/cws-publish-plan.sh                       @MetaMask/extension-security-team @MetaMask/release-team
+/.github/scripts/cws-target-config.sh                      @MetaMask/extension-security-team @MetaMask/release-team
 
 # Build
 development/build/                                    @MetaMask/extension-platform @itsyoboieltr
