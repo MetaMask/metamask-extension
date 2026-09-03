@@ -1,4 +1,4 @@
-# Beta and Flask production builds. Not on the E2E critical path.
+# Beta and Flask production builds. Not on the PR E2E critical path.
 
 name: Builds beta/flask
 
@@ -10,38 +10,10 @@ on:
         type: string
 
 jobs:
-  build-beta-webpack:
-    name: build-beta-webpack
-    uses: ./.github/workflows/run-build.yml
+  run-builds:
+    uses: ./.github/workflows/run-build-group.yml
     with:
-      build-name: build-beta-webpack
-      build-command: yarn webpack:lavamoat:build --type beta --zip
-      builds-from-run: ${{ inputs.builds-from-run }}
-    secrets: inherit
-
-  build-beta-mv2-webpack:
-    name: build-beta-mv2-webpack
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-beta-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --type beta --zip
-      builds-from-run: ${{ inputs.builds-from-run }}
-    secrets: inherit
-
-  build-flask-webpack:
-    name: build-flask-webpack
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-flask-webpack
-      build-command: yarn webpack:lavamoat:build --type flask --zip
-      builds-from-run: ${{ inputs.builds-from-run }}
-    secrets: inherit
-
-  build-flask-mv2-webpack:
-    name: build-flask-mv2-webpack
-    uses: ./.github/workflows/run-build.yml
-    with:
-      build-name: build-flask-mv2-webpack
-      build-command: yarn webpack:lavamoat:build:mv2 --type flask --zip
+      group: beta-flask
+      group-name: Builds beta/flask
       builds-from-run: ${{ inputs.builds-from-run }}
     secrets: inherit

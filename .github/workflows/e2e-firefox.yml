@@ -1,7 +1,7 @@
 # This workflow is meant to better structure the main.yaml one for readability reasons.
 # It is not meant to be a reusable workflow.
 
-name: e2e Firefox
+name: E2E Firefox
 
 on:
   workflow_call:
@@ -13,7 +13,7 @@ on:
       use-matrix:
         required: true
         type: string
-        description: The matrix for the e2e jobs
+        description: The matrix for the E2E jobs
     secrets:
       INFURA_PROJECT_ID:
         required: false

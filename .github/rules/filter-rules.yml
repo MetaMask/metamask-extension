@@ -117,6 +117,8 @@ e2e_test_files:
 # forcing fresh builds.
 build_affecting_ci_files:
   - '.github/workflows/run-build.yml'
+  - '.github/workflows/run-build-group.yml'
+  - '.github/scripts/ci-run-build-group.sh'
 
 # Unit/integration test files — changes require running unit/integration even when builds are reused
 unit_integration_test_files:

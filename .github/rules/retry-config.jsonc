@@ -26,11 +26,6 @@
     // Jobs that are frequently flaky and should always be retried.
     "alwaysRetryable": {
       "patterns": [
-        "^e2e Chrome",
-        "^e2e Firefox",
-        "^Prep e2e Chrome",
-        "^Prep e2e Firefox",
-        "^Prep e2e",
         "^e2e-",
         "^prep-e2e"
       ]

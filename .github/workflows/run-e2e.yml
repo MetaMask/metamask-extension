@@ -1,4 +1,4 @@
-name: Run e2e
+name: Run E2E
 
 on:
   workflow_call:
@@ -6,7 +6,7 @@ on:
       test-suite-name:
         required: true
         type: string
-        description: The name of the e2e test suite
+        description: The name of the E2E test suite
       build-artifact:
         type: string
         default: ''
@@ -154,7 +154,7 @@ jobs:
         if: ${{ contains(inputs.test-command, 'firefox') }}
         run: .github/scripts/pin-geckodriver.sh
 
-      - name: Run e2e tests
+      - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
         run: ${{ inputs.test-command }} --retries 1
         env:

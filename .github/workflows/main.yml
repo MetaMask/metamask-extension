@@ -341,9 +341,11 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     uses: ./.github/workflows/validate-lavamoat-policies.yml
 
-  # Webpack-only build groups. Artifact names are unchanged
-  # (build-dist-webpack, build-test-webpack, …) so E2E and publish keep working.
-  # MV3/MV2 are split so Chrome E2E does not wait on Firefox builds and vice versa.
+  # Webpack build groups (up to 3 runners: MV3, MV2, optional beta/flask). Each group
+  # runs its builds sequentially on one runner (one checkout/tsc). Artifact names are
+  # unchanged so E2E and publish keep working. MV3/MV2 stay split so Chrome E2E does not
+  # wait on Firefox builds. beta/flask prod builds skip on pull_request (see
+  # needs-beta-flask-builds in get-requirements.yml (skipped on feature PRs only).
   builds-mv3:
     name: Builds MV3
     needs:
@@ -368,7 +370,11 @@ jobs:
     name: Builds beta/flask
     needs:
       - get-requirements
-    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
+    if: >-
+      ${{
+        needs.get-requirements.outputs.skip-everything != 'true' &&
+        needs.get-requirements.outputs.needs-beta-flask-builds == 'true'
+      }}
     uses: ./.github/workflows/builds-beta-flask.yml
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -491,48 +497,37 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/bundle-size
           path: test-artifacts/chrome
 
-  e2e-prep-chrome:
-    name: Prep e2e Chrome
+  prep-e2e:
     needs:
       - get-requirements
       - prep-deps
     if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
-    uses: ./.github/workflows/prep-e2e-chrome.yml
-
-  e2e-prep-firefox:
-    name: Prep e2e Firefox
-    needs:
-      - get-requirements
-      - prep-deps
-    if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
-    uses: ./.github/workflows/prep-e2e-firefox.yml
+    uses: ./.github/workflows/prep-e2e.yml
 
   e2e-chrome:
-    name: e2e Chrome
     needs:
       - get-requirements
-      - e2e-prep-chrome
+      - prep-e2e
       - builds-mv3
     uses: ./.github/workflows/e2e-chrome.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      use-matrix: ${{ needs.e2e-prep-chrome.outputs.use-matrix }}
+      use-matrix: ${{ needs.prep-e2e.outputs.use-matrix }}
     secrets: inherit
 
   e2e-firefox:
-    name: e2e Firefox
     needs:
       - get-requirements
-      - e2e-prep-firefox
+      - prep-e2e
       - builds-mv2
     uses: ./.github/workflows/e2e-firefox.yml
     # Without this `if`, when builds-from-run is activated, the build jobs are considered skipped, and the downstream E2E tests won't run
     if: ${{ !cancelled() && needs.get-requirements.outputs.needs-e2e == 'true' && !contains(needs.*.result, 'failure') }}
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
-      use-matrix: ${{ needs.e2e-prep-firefox.outputs.use-matrix }}
+      use-matrix: ${{ needs.prep-e2e.outputs.use-matrix }}
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
@@ -702,8 +697,7 @@ jobs:
     # named here. A failing job can cause downstream jobs to be `skipped`, which can hide the true failure unless
     # the upstream job is also included.
     #
-    # For instance, if e2e-prep-chrome or e2e-prep-firefox fails, the matching E2E
-    # workflow is skipped, so we need the direct prep result.
+    # For instance, if prep-e2e fails, e2e-chrome and e2e-firefox are skipped, so we need the direct result of prep-e2e.
     #
     # Jobs intentionally excluded:
     # - Publish jobs (not required for CI pass)
@@ -711,7 +705,7 @@ jobs:
     # - code-coverage / SonarCloud (informational; does not gate merge)
     #
     # Builds are grouped by consumer: MV3 (Chrome E2E), MV2 (Firefox E2E),
-    # and beta/flask production variants (not on the E2E critical path).
+    # and beta/flask production variants (skipped on feature pull_requests).
     needs:
       - get-requirements
       - locales-changed-only
@@ -726,8 +720,7 @@ jobs:
       - performance-benchmarks
       - unit-and-integration-tests
       - bundle-size
-      - e2e-prep-chrome
-      - e2e-prep-firefox
+      - prep-e2e
       - e2e-chrome
       - e2e-firefox
       - build-ts-migration-dashboard
