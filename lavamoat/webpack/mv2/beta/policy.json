@@ -770,7 +770,7 @@
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "@metamask/profile-sync-controller": true,
+        "@metamask/account-tree-controller>@metamask/profile-sync-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1106,7 +1106,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/polling-controller": true,
-        "@metamask/profile-sync-controller": true,
+        "@metamask/config-registry-controller>@metamask/profile-sync-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true
       }
@@ -2245,7 +2245,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/polling-controller": true,
-        "@metamask/profile-sync-controller": true,
+        "@metamask/profile-metrics-controller>@metamask/profile-sync-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -2298,6 +2298,8 @@
         "AbortController": true,
         "URL": true,
         "clearInterval": true,
+        "console.error": true,
+        "crypto": true,
         "setInterval": true
       },
       "meta": {
@@ -2308,7 +2310,8 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "cockatiel": true
+        "cockatiel": true,
+        "eslint>fast-deep-equal": true
       }
     },
     "@metamask/rate-limit-controller": {
