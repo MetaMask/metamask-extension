@@ -30,6 +30,8 @@ describe('Bridge Monad to Base', function (this: Suite) {
           expectedDestAmount: '1,642',
           expectedActivityAmount: '+1,642.0043',
           expectedStatus: 'success',
+          expectedInitialSourceToken: 'MON',
+          expectedInitialDestToken: 'USDC',
           // Monad gas estimation does not populate `$X.XX` in this mocked setup;
           // ticket coverage is Activity labeling + details, not prepare-page fees.
           skipNetworkFeeCheck: true,
