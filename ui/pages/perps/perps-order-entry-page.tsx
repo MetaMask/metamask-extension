@@ -1502,6 +1502,8 @@ const PerpsOrderEntryPage = () => {
       observer.disconnect();
       window.removeEventListener('resize', updateBounds);
       bodyEl.removeEventListener('scroll', updateBounds);
+      cta.style.removeProperty('left');
+      cta.style.removeProperty('width');
     };
   }, [bodyEl, isChartOpen, isOrderBookOnLeft]);
 
@@ -2220,7 +2222,8 @@ const PerpsOrderEntryPage = () => {
       <Box
         paddingLeft={4}
         paddingRight={4}
-        paddingBottom={isChartOpen ? 24 : 4}
+        paddingBottom={4}
+        style={{ paddingBottom: isChartOpen ? 96 : undefined }}
         flexDirection={BoxFlexDirection.Column}
         gap={4}
         data-testid="perps-order-form-content"

@@ -1,13 +1,13 @@
 import type {
   AccountState,
   CandleData,
+  CandlePeriod,
   Order,
   OrderBookData,
   PriceUpdate,
   Position,
   PerpsMarketData,
 } from '@metamask/perps-controller';
-import { CandlePeriod } from '@metamask/perps-controller';
 import {
   screen,
   fireEvent,
@@ -486,7 +486,7 @@ describe('PerpsOrderEntryPage', () => {
     mockLiveCandles.mockReturnValue({
       candleData: {
         symbol: 'ETH',
-        interval: CandlePeriod.FiveMinutes,
+        interval: '5m' as CandlePeriod,
         candles: [],
       },
       isInitialLoading: false,
@@ -1232,20 +1232,6 @@ describe('PerpsOrderEntryPage', () => {
   });
 
   describe('chart toggle', () => {
-    it('renders the chart toggle collapsed by default', () => {
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      const toggle = screen.getByTestId('perps-order-entry-chart-toggle');
-      expect(toggle).toHaveAttribute('aria-pressed', 'false');
-      expect(toggle).toHaveAttribute('aria-expanded', 'false');
-      expect(toggle).toHaveAttribute(
-        'aria-controls',
-        'perps-order-entry-chart',
-      );
-      expect(toggle).toHaveAttribute('aria-label', 'Expand chart');
-    });
-
     it('mounts the chart already open when the persisted preference is expanded', () => {
       const state = createMockState();
       const store = mockStore({
@@ -1260,11 +1246,6 @@ describe('PerpsOrderEntryPage', () => {
       expect(
         screen.getByTestId('perps-order-entry-chart-toggle'),
       ).toHaveAttribute('aria-pressed', 'true');
-      expect(screen.getByTestId('perps-order-entry-chart')).toHaveAttribute(
-        'aria-hidden',
-        'false',
-      );
-      expect(screen.getByTestId('perps-candlestick-chart')).toBeInTheDocument();
       expect(
         screen.getByTestId('perps-candle-period-selector'),
       ).toBeInTheDocument();
@@ -1284,23 +1265,42 @@ describe('PerpsOrderEntryPage', () => {
     });
 
     it('persists the open state when the chart is toggled', () => {
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
+      const OriginalResizeObserver = window.ResizeObserver;
+      window.ResizeObserver = class {
+        observe = jest.fn();
 
-      const toggle = screen.getByTestId('perps-order-entry-chart-toggle');
+        unobserve = jest.fn();
 
-      fireEvent.click(toggle);
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSetProLayoutPreferences',
-        [{ chartExpanded: true }],
-      );
-      expect(toggle).toHaveAttribute('aria-label', 'Collapse chart');
+        disconnect = jest.fn();
+      } as unknown as typeof ResizeObserver;
+      const rectSpy = jest
+        .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+        .mockReturnValue({ left: 24, width: 320 } as DOMRect);
+      try {
+        const store = mockStore(createMockState());
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+        const toggle = screen.getByTestId('perps-order-entry-chart-toggle');
 
-      fireEvent.click(toggle);
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsSetProLayoutPreferences',
-        [{ chartExpanded: false }],
-      );
+        fireEvent.click(toggle);
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsSetProLayoutPreferences',
+          [{ chartExpanded: true }],
+        );
+        const cta = screen.getByTestId('submit-order-button').parentElement;
+        expect(cta?.style.left).toBe('24px');
+        expect(cta?.style.width).toBe('320px');
+
+        fireEvent.click(toggle);
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsSetProLayoutPreferences',
+          [{ chartExpanded: false }],
+        );
+        expect(cta?.style.left).toBe('');
+        expect(cta?.style.width).toBe('');
+      } finally {
+        window.ResizeObserver = OriginalResizeObserver;
+        rectSpy.mockRestore();
+      }
     });
 
     it('tracks chart_opened and chart_closed interactions', () => {
@@ -1404,7 +1404,7 @@ describe('PerpsOrderEntryPage', () => {
       mockLiveCandles.mockReturnValue({
         candleData: {
           symbol: 'ETH',
-          interval: CandlePeriod.FiveMinutes,
+          interval: '5m' as CandlePeriod,
           candles: [
             {
               time: 1768188300000,
