@@ -7,66 +7,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.47.0]
+
+### Added
+
+- Added address trust-signal scanning for dapp requests made through the Multichain API (#45640)
+- Added Stellar account support behind a feature flag (#45692)
+- Added a warning banner for missing Stellar trustlines during cross-chain swaps (#45693)
+- Added support for Money Accounts (#45744)
+- Added an Activity list on Money Home for deposits, conversions, receives, and sends (#45761)
+- Added an accounts search bar to dapp connection and connected-account management pages (#45776)
+- Added dollar and percentage amount entry when partially closing a Perps position (#45700)
+- Added a warning banner for off-hours trading of RWA stock tokens, including the next regular market open time (#45231)
+- Added a full Activity page for Money Account with All, Deposits, and Sends filters (#45829)
+
+### Changed
+
+- Updated design system libraries, including checkbox colors (#45733)
+- Stopped enforced simulations from running for wallet-initiated transactions (#45698)
+- Centered legacy approval screens on wider viewports (#45779)
+- Updated subscription checkout and crypto approval support (#45715)
+- Updated the Permissions page to show an empty state after disconnecting all sites and a confirmation after disconnecting a site (#45697)
+- Automatically configured Monad for eligible Money Account users without changing their selected network (#45695)
+- Updated Money Account deposit and withdrawal support (#45748)
+- Added performance tracing for Swap and Bridge quote requests (#45667)
+- Updated DeFi protocol list token avatars to use the design system component (#45768)
+- Improved storage resilience by moving Storage Service data to IndexedDB on Chromium, with a fallback where unavailable (#44010)
+- Updated hardware wallet Swap and Bridge signing data handling (#45760)
+- Removed the colon from send activity subtitles (#45725)
+- Updated account data parsing (#45666)
+
+### Fixed
+
+- Stopped showing added protection on networks that do not support address screening (#45732)
+- Stopped showing an account balance of zero before the balance has been fetched (#45675)
+- Restored DeFi referral images for Hyperliquid and AsterDEX (#45755)
+- Fixed passkey setup guidance when a device does not support the required passkey capability (#45757) (#45802)
+- Fixed an issue that could make vault recovery repeat after MetaMask restarted (#45762)
+- Fixed provider quote errors and amount-limit handling in the Buy flow (#45786)
+- Fixed the Buy flow for supported tokens opened from the Token Details page (#45778)
+- Fixed small USDC-to-SOL swaps being incorrectly displayed as sends in Solana activity (#44928)
+- Fixed an issue that allowed transactions to be submitted when the native balance could not cover the maximum network fee (#45701)
+- Fixed an issue where the low-confidence "Unconfirmed impersonator" security signal was shown as a warning on the Token Details page (#45661)
+- Restored the DeFi and NFTs tabs with tailored empty states for non-EVM networks (#45717)
+- Fixed a bug that required hardware wallet users to click Cancel twice to dismiss a signature request after it was already rejected or completed on the device (#45740)
+- Fixed a crash and unresponsive back arrow when reopening the extension on a Perps screen (#45734) (#45756)
+- Fixed "Earn on your crypto" not appearing on funded Money Accounts (#45699)
+
 ## [13.46.1]
 
 ### Fixed
 
 - Fixed spam tokens persisting in the wallet by cleaning up low-occurrence ERC-20 tokens on unlock (#45844)
 - Fixed bridge quotes to sort by total cost and display cost, so the lowest-cost quote is ranked first (#45875)
-## [13.47.0]
-
-### Uncategorized
-
-- Upgraded design system libraries which update the Checkbox colors (#45733)
-- Stopped showing added protection on networks that do not support address screening (#45732)
-- Do not render balance as zero in the accounts list when we have not fetched the balance. Leave the row empty instead. (#45675)
-- Stopped enforced simulations from running for wallet-initiated transactions (#45698)
-- Horizontally center legacy approval screens (#45779)
-- Reinstate defi referral prompt images for Hyperliquid and Asterdex (#45755)
-- Reinstate showing DeFi and NFTs tabs on the home page with specific empty states when viewing a non-EVM network (#45717)
-- Upgraded `@metamask/subscriptions-controller` to v8 and `@metamask/wallet` to v11 (#45715)
-- Make permissions page show empty state after disconnecting sites and add success toast (#45697)
-- Automatically configured Monad when eligible users accessed Money Account (#45695)
-
-### Added
-
-- Added address trust-signal scanning for dapp requests made through the Multichain API (#45640)
-- Added a full Activity page for Money Account with All, Deposits, and Sends filters (#45829)
-- Added a warning banner for missing Stellar trustlines during cross-chain swaps (#45693)
-- Added an accounts search bar to dapp connection accounts pages (#45776)
-- Added dollar and percentage amount entry when partially closing a perps position (#45700)
-- Added informative error and messages for the passkey PRF not supported error (#45802)
-- Added an Activity list on Money Home for deposits, conversions, receives, and sends (#45761)
-- Added money account hooks (#45748)
-- Added informative error and messages for the passkey PRF not supported error (#45757)
-- Added money account keyring (#45744)
-- Added a warning banner for off-hours trading when swapping or bridging RWA stock tokens, informing users that prices may differ from regular market hours (#45231)
-- Added Mobile-parity SwapQuoteFetch traces (#45667)
-- Added Stellar SNAP (#45692)
-
-### Changed
-
-- Updated the DeFi protocol list token avatars to use the design-system AvatarGroup component (#45768)
-- Improved storage resilience and stability (#44010)
-
-### Removed
-
-- Removed the colon in activity list send rows (#45725)
-
-### Fixed
-
-- Fixed an issue that could make vault recovery repeat after MetaMask restarted (#45762)
-- Fixed provider quote errors and amount-limit handling in the buy flow (#45786)
-- Fixed the Buy flow for supported tokens opened from the Token Details Page (#45778)
-- Fixed small USDC-to-SOL swaps being incorrectly displayed as sends in Solana activity (#44928)
-- Fixed an issue that allowed transactions to be submitted when the native balance could not cover the maximum network fee (#45701)
-- Fixed an issue where the low-confidence "Unconfirmed impersonator" security signal was shown as a warning on the token details page (#45661)
-- Fixed DeFi positions loading (#45666)
-- Removed QuoteMetadata references in useHardwareWalletSignatures (#45760)
-- Fixed a bug that required hardware wallet users to click Cancel twice to dismiss a signature request after it was already rejected or completed on the device (#45740)
-- Fixed a crash when reopening the extension on a Perps screen, which briefly showed an error page and left the back arrow unresponsive (#45756)
-- Fixed a crash when reopening the extension on a Perps screen, which briefly showed an error page and left the back arrow unresponsive (#45734)
-- Fixed Earn on your crypto not showing on funded Money Accounts (#45699)
 
 ## [13.46.0]
 
@@ -3133,10 +3126,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.46.1...HEAD
-[13.46.1]: https://github.com/MetaMask/metamask-extension/compare/v13.46.0...v13.46.1
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.47.0...HEAD
-[13.47.0]: https://github.com/MetaMask/metamask-extension/compare/v13.46.0...v13.47.0
+[13.47.0]: https://github.com/MetaMask/metamask-extension/compare/v13.46.1...v13.47.0
+[13.46.1]: https://github.com/MetaMask/metamask-extension/compare/v13.46.0...v13.46.1
 [13.46.0]: https://github.com/MetaMask/metamask-extension/compare/v13.45.1...v13.46.0
 [13.45.1]: https://github.com/MetaMask/metamask-extension/compare/v13.45.0...v13.45.1
 [13.45.0]: https://github.com/MetaMask/metamask-extension/compare/v13.44.0...v13.45.0
