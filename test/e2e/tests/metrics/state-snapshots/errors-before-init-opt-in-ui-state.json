@@ -49,6 +49,7 @@
       "previousMigrationVersion": 0
     },
     "AppStateController": {
+      "arcUsageNoticeShown": "boolean",
       "browserEnvironment": {
         "browser": "string",
         "os": "string"
