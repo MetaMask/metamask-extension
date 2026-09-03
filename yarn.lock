@@ -8872,10 +8872,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/stellar-wallet-snap@npm:@metamask-previews/stellar-wallet-snap@0.1.0-preview-dc0688bf":
-  version: 0.1.0-preview-dc0688bf
-  resolution: "@metamask-previews/stellar-wallet-snap@npm:0.1.0-preview-dc0688bf"
-  checksum: 10/bc57c2ba012d3d8b76f5054d68fa5408d92865f5c0dcf93e47e5029e646a026b17859b03b3dae79024ec000c18f0c9644b0dbc58df5fb9776ac286df7b326e1b
+"@metamask/stellar-wallet-snap@npm:@metamask-previews/stellar-wallet-snap@0.1.0-preview-44f19c3d":
+  version: 0.1.0-preview-44f19c3d
+  resolution: "@metamask-previews/stellar-wallet-snap@npm:0.1.0-preview-44f19c3d"
+  checksum: 10/a95f1c089dea4b5a5de9e127db7c4a1c27ca6fe7623ae4dcd038d83f82daaa3ead13cb5068b90cf4f9dd044bb029ab03721798629d751d545c6bf5232508769f
   languageName: node
   linkType: hard
 
