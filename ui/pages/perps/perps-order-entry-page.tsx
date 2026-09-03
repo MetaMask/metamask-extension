@@ -2364,6 +2364,9 @@ const PerpsOrderEntryPage = () => {
 
   const handleAddFunds = useCallback(async () => {
     await gate(async () => {
+      if (isLoadingAccount) {
+        return;
+      }
       if (!isEligible) {
         setIsGeoBlockModalOpen(true);
         return;
@@ -2395,6 +2398,7 @@ const PerpsOrderEntryPage = () => {
     decodedSymbol,
     gate,
     hasNoAvailableBalance,
+    isLoadingAccount,
     isDepositLoading,
     isEligible,
     selectedAddress,
@@ -2543,6 +2547,7 @@ const PerpsOrderEntryPage = () => {
           midPrice={topOfBook?.midPrice}
           onOrderTypeChange={handleOrderTypeChange}
           onAddFunds={handleAddFunds}
+          isLoadingAccount={isLoadingAccount}
           initialLeverage={initialLeverage}
           initialDraft={restoredOrderDraft}
           onLeverageChange={handleLeverageChange}
