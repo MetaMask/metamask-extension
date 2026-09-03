@@ -192,17 +192,29 @@ export async function mockTokenAndPriceApis(
       return { statusCode: 200, json: exchangeRates };
     });
 
+  const respondWithAssetsMetadata = (request: { url: string }) => {
+    const { assetsMetadata } = catalogResponses({
+      assets,
+      priceMode,
+      requestedAssetIds: requestedAssetIdsFromUrl(request.url),
+    });
+    return { statusCode: 200, json: assetsMetadata };
+  };
+
   const assetsMetadataMock = await mockServer
     .forGet('https://tokens.api.cx.metamask.io/v3/assets')
     .always()
-    .thenCallback((request) => {
-      const { assetsMetadata } = catalogResponses({
-        assets,
-        priceMode,
-        requestedAssetIds: requestedAssetIdsFromUrl(request.url),
-      });
-      return { statusCode: 200, json: assetsMetadata };
-    });
+    .thenCallback(respondWithAssetsMetadata);
 
-  return [spotPricesMock, exchangeRatesMock, assetsMetadataMock];
+  const tokenAssetsMetadataMock = await mockServer
+    .forGet('https://token.api.cx.metamask.io/assets')
+    .always()
+    .thenCallback(respondWithAssetsMetadata);
+
+  return [
+    spotPricesMock,
+    exchangeRatesMock,
+    assetsMetadataMock,
+    tokenAssetsMetadataMock,
+  ];
 }
