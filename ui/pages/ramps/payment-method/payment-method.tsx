@@ -10,17 +10,14 @@ import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { selectRampsOrdersForSelectedAccount } from '../../../selectors/rampsController';
-import {
-  PREVIOUS_ROUTE,
-  RAMPS_PROVIDER_SELECTION_ROUTE,
-} from '../../../helpers/constants/routes';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
 import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
 import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallbackBaseUrl';
 import { normalizeAssetIdForApi } from '../../../hooks/ramps/utils/normalizeAssetIdForApi';
-import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import RampsListSkeleton from '../components/ramps-list-skeleton';
@@ -29,6 +26,7 @@ import {
   RampsSelectionPage,
 } from '../components/ramps-selection-page';
 import { getProviderLimitMessage } from '../utils/getProviderLimitMessage';
+import { RampsProviderSelectionModal } from '../provider-selection';
 import RampsChangeProviderFooter from './components/ramps-change-provider-footer';
 import RampsPaymentMethodListItem from './components/ramps-payment-method-list-item';
 import {
@@ -65,10 +63,26 @@ export function RampsPaymentMethodScreen() {
   } = useRampsController();
   const fiatCurrency = userRegion?.country?.currency ?? 'USD';
   const regionCode = userRegion?.regionCode ?? '';
-  const formatFiat = useFiatFormatter({ overrideCurrency: fiatCurrency });
+  const locale = useSelector(getIntlLocale);
+  const formatLimitFiat = useCallback(
+    (amount: number) => {
+      try {
+        return new Intl.NumberFormat(locale, {
+          style: 'currency',
+          currency: fiatCurrency,
+          maximumFractionDigits: 0,
+          minimumFractionDigits: 0,
+        }).format(amount);
+      } catch {
+        return new Intl.NumberFormat(locale).format(amount);
+      }
+    },
+    [fiatCurrency, locale],
+  );
   const { formatCurrency } = useFormatters();
   useRampsScreenViewed('Payment Method');
   const [isSelecting, setIsSelecting] = useState(false);
+  const [isProviderModalOpen, setIsProviderModalOpen] = useState(false);
   const isSelectingRef = useRef(false);
 
   const chainAccount = useSelector((state) =>
@@ -93,7 +107,7 @@ export function RampsPaymentMethodScreen() {
     [paymentMethods],
   );
 
-  // Mirrors the provider list's "Previously used" pill, sourced the same way:
+  // Mirrors the provider list's "Last used" pill, sourced the same way:
   // payment methods the user has already completed an order with.
   const previouslyUsedPaymentMethodIds = useMemo(
     () =>
@@ -145,10 +159,12 @@ export function RampsPaymentMethodScreen() {
   }, [navigate]);
 
   const handleChangeProvider = useCallback(() => {
-    navigate(RAMPS_PROVIDER_SELECTION_ROUTE, {
-      state: { amount },
-    });
-  }, [amount, navigate]);
+    setIsProviderModalOpen(true);
+  }, []);
+
+  const handleCloseProviderModal = useCallback(() => {
+    setIsProviderModalOpen(false);
+  }, []);
 
   const handlePaymentMethodSelect = useCallback(
     async (paymentMethod: PaymentMethod) => {
@@ -241,7 +257,7 @@ export function RampsPaymentMethodScreen() {
                     fiatCurrency,
                     paymentMethod.id,
                   ),
-                  formatFiat,
+                  formatLimitFiat,
                   t,
                 )}
                 showQuote={amount > 0}
@@ -277,6 +293,13 @@ export function RampsPaymentMethodScreen() {
           providerName={selectedProvider.name}
           isDisabled={isSelecting}
           onChangeProvider={handleChangeProvider}
+        />
+      ) : null}
+      {isProviderModalOpen ? (
+        <RampsProviderSelectionModal
+          isOpen
+          onClose={handleCloseProviderModal}
+          amount={amount}
         />
       ) : null}
     </RampsSelectionPage>

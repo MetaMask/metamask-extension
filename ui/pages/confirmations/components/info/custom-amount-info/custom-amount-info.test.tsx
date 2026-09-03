@@ -3,7 +3,10 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
+import {
+  TransactionPayStrategy,
+  type TransactionPayTotals,
+} from '@metamask/transaction-pay-controller';
 import configureMockStore from 'redux-mock-store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
@@ -161,6 +164,7 @@ function render(
     hasPositiveRequiredAmount?: boolean;
     isNativePayToken?: boolean;
     isNoFeePayToken?: boolean;
+    totals?: TransactionPayTotals;
     sourceAmounts?: { targetTokenAddress: string }[];
     requiredTokens?: { address: string; skipIfBalance: boolean }[];
     primaryRequiredToken?: typeof MOCK_PRIMARY_REQUIRED_TOKEN | undefined;
@@ -186,6 +190,7 @@ function render(
     hasPositiveRequiredAmount = true,
     isNativePayToken = false,
     isNoFeePayToken = false,
+    totals,
     sourceAmounts = [],
     requiredTokens = [],
     withdraw = { isWithdraw: false, canSelectWithdrawToken: false },
@@ -235,6 +240,9 @@ function render(
         ? [{ strategy: TransactionPayStrategy.Relay } as never]
         : undefined,
     );
+  jest
+    .mocked(useTransactionPayDataModule.useTransactionPayTotals)
+    .mockReturnValue(totals);
   jest
     .mocked(useTransactionPayDataModule.useIsTransactionPayQuotePending)
     .mockReturnValue(
@@ -687,6 +695,38 @@ describe('CustomAmountInfo', () => {
       expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
       expect(getByTestId('bridge-time-row')).toBeInTheDocument();
       expect(getByTestId('total-row')).toBeInTheDocument();
+    });
+
+    it('renders the receive row for input-based totals', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        totals: {
+          isInputBased: true,
+          targetAmount: { fiat: '95', usd: '95' },
+        } as TransactionPayTotals,
+      });
+
+      expect(getByTestId('receive-row')).toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('keeps the total row for output-based totals', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        totals: {
+          isInputBased: false,
+        } as TransactionPayTotals,
+      });
+
+      expect(getByTestId('total-row')).toBeInTheDocument();
+      expect(queryByTestId('receive-row')).not.toBeInTheDocument();
+    });
+
+    it('keeps the total row when totals are missing', () => {
+      const { getByTestId, queryByTestId } = render({ hasQuotes: true });
+
+      expect(getByTestId('total-row')).toBeInTheDocument();
+      expect(queryByTestId('receive-row')).not.toBeInTheDocument();
     });
 
     it('does not render result rows when no quotes and not loading', () => {

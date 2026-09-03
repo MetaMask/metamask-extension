@@ -177,6 +177,7 @@ describe('PayWithRow', () => {
       withdrawableFiatRaw: '12.34',
     });
     useAlertsMock.mockReturnValue({
+      alerts: [],
       getFieldAlerts: getFieldAlertsMock,
     } as never);
 
@@ -291,7 +292,10 @@ describe('PayWithRow', () => {
       isNative: false,
     });
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
-    getFieldAlertsMock.mockReturnValue([{ key: AlertsName.AccountNoFunds }]);
+    useAlertsMock.mockReturnValue({
+      alerts: [{ key: AlertsName.AccountNoFunds }],
+      getFieldAlerts: getFieldAlertsMock,
+    } as never);
 
     const store = mockStore(getMockState());
     renderWithProvider(<PayWithRow />, store);
