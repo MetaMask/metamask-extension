@@ -50,6 +50,10 @@ export function getAssetsControllerMessenger(
     actions: [
       // Account group + network context for RpcDataSource (core#9388)
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
+      // core#10059: lifecycle checks read controller state on demand
+      'AccountTreeController:isInitialized',
+      'ClientController:getState',
+      'KeyringController:isUnlocked',
       'ConfigRegistryController:getNetworkConfigByCaip2ChainId',
       'NetworkEnablementController:getState',
       'NetworkController:getState',
@@ -64,8 +68,11 @@ export function getAssetsControllerMessenger(
     events: [
       // core#9388: RPC balance refresh on account-group switch / tree updates
       'AccountTreeController:selectedAccountGroupChange',
-      // core#9478: use exported :stateChange (not local :stateChanged aliases)
-      'AccountTreeController:stateChange',
+      // core#9892: start asset tracking only after the account tree is fully built
+      'AccountTreeController:initialized',
+      // Stop asset tracking when the account tree is cleared
+      'AccountTreeController:uninitialized',
+      // core#10059: AccountTreeController:stateChange is no longer subscribed
       // core#9388: RPC balance refresh when enabling custom RPC networks (e.g. DXC)
       // StakedBalanceDataSource also listens to this
       'NetworkEnablementController:stateChange',
