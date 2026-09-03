@@ -62,6 +62,7 @@ import { OrderTypeToggle } from './components/order-type-toggle';
  * @param props.autoFocusLimitPrice
  * @param props.usdPlaceholder
  * @param props.limitPricePrefill
+ * @param props.pendingDraft
  * @param props.onInputMethodChange
  */
 export const OrderEntry = ({
@@ -89,6 +90,7 @@ export const OrderEntry = ({
   autoFocusLimitPrice = false,
   usdPlaceholder,
   limitPricePrefill,
+  pendingDraft,
 }: OrderEntryProps) => {
   const t = useI18nContext();
   const activeProvider = useSelector(selectPerpsActiveProvider);
@@ -141,6 +143,7 @@ export const OrderEntry = ({
     markPrice,
     feeRate,
     limitPricePrefill,
+    pendingDraft,
   });
 
   const isLong = formState.direction === 'long';

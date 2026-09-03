@@ -60,12 +60,32 @@ const mockOrderBook = {
   maxTotal: '0.62',
 };
 
-function makeStore(orderBookPosition?: 'left' | 'right') {
+function makeStore({
+  orderBookPosition,
+  orderBookGrouping,
+  preferences,
+}: {
+  orderBookPosition?: 'left' | 'right';
+  orderBookGrouping?: number;
+  preferences?: Record<string, unknown>;
+} = {}) {
   return configureStore({
     metamask: {
       ...mockState.metamask,
       ...(orderBookPosition && {
         proLayoutPreferences: { orderBookPosition },
+      }),
+      ...(orderBookGrouping !== undefined && {
+        tradeConfigurations: {
+          mainnet: { BTC: { orderBookGrouping } },
+          testnet: {},
+        },
+      }),
+      ...(preferences && {
+        preferences: {
+          ...mockState.metamask.preferences,
+          ...preferences,
+        },
       }),
     },
   });
@@ -76,6 +96,8 @@ function renderOrderBook(props?: {
   marketPrice?: number;
   onSelectPrice?: (price: string) => void;
   orderBookPosition?: 'left' | 'right';
+  orderBookGrouping?: number;
+  preferences?: Record<string, unknown>;
 }) {
   return renderWithProvider(
     <PerpsOrderBook
@@ -84,7 +106,11 @@ function renderOrderBook(props?: {
       marketPrice={props?.marketPrice ?? 73776}
       onSelectPrice={props?.onSelectPrice}
     />,
-    makeStore(props?.orderBookPosition),
+    makeStore({
+      orderBookPosition: props?.orderBookPosition,
+      orderBookGrouping: props?.orderBookGrouping,
+      preferences: props?.preferences,
+    }),
   );
 }
 
@@ -465,6 +491,60 @@ describe('PerpsOrderBook', () => {
       expect(
         screen.queryByText(messages.perpsOrderBookConfigTitle.message),
       ).not.toBeInTheDocument();
+    });
+
+    it('persists grouping and listed-by preferences on apply', () => {
+      renderOrderBook();
+
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-currency-base'),
+      );
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-metric-size'),
+      );
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-grouping-1'),
+      );
+      fireEvent.click(
+        screen.getByTestId('perps-order-book-config-modal-apply'),
+      );
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSaveOrderBookGrouping',
+        ['BTC', 1],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'setPreference',
+        ['perpsOrderBookCurrency', 'base'],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'setPreference',
+        ['perpsOrderBookMetric', 'size'],
+      );
+    });
+
+    it('seeds listed-by currency and metric from preferences', () => {
+      renderOrderBook({
+        preferences: {
+          perpsOrderBookCurrency: 'base',
+          perpsOrderBookMetric: 'size',
+        },
+      });
+
+      expect(
+        screen.getByText(`${messages.perpsOrderBookSize.message} (BTC)`),
+      ).toBeInTheDocument();
+    });
+
+    it('seeds grouping from the saved per-market configuration', () => {
+      renderOrderBook({ orderBookGrouping: 1 });
+
+      fireEvent.click(screen.getByTestId('perps-order-book-grouping-trigger'));
+
+      expect(
+        screen.getByTestId('perps-order-book-config-modal-grouping-1'),
+      ).toHaveAttribute('aria-checked', 'true');
     });
 
     it('does not persist a layout the user did not change', () => {

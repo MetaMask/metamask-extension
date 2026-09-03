@@ -24,6 +24,7 @@ describe('usePerpsOrderForm', () => {
   };
 
   beforeEach(() => {
+    jest.mocked(submitRequestToBackground).mockClear();
     jest.mocked(submitRequestToBackground).mockImplementation((method) => {
       const immediate = <ResolvedValue>(
         value: ResolvedValue,
@@ -415,6 +416,47 @@ describe('usePerpsOrderForm', () => {
       });
 
       expect(result.current.formState.leverage).toBe(10);
+    });
+
+    it('persists leverage for new orders', () => {
+      const { result } = renderHookWithProvider(
+        () => usePerpsOrderForm(defaultOptions),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleLeverageChange(10);
+      });
+
+      expect(submitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSaveTradeConfiguration',
+        ['BTC', 10],
+      );
+    });
+
+    it('does not persist leverage in modify mode', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            mode: 'modify',
+            existingPosition: {
+              size: '1',
+              leverage: 3,
+              entryPrice: '44000',
+            },
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleLeverageChange(10);
+      });
+
+      expect(submitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsSaveTradeConfiguration',
+        expect.anything(),
+      );
     });
 
     it('handleAutoCloseEnabledChange updates autoCloseEnabled', () => {
@@ -849,6 +891,65 @@ describe('usePerpsOrderForm', () => {
           amount: '500',
         }),
       );
+    });
+  });
+
+  describe('pending draft restore', () => {
+    const pendingDraft = {
+      amount: '250',
+      leverage: 8,
+      takeProfitPrice: '50000',
+      stopLossPrice: '40000',
+      limitPrice: '45000',
+    };
+
+    it('restores size, leverage, TP/SL, and limit price', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            availableBalance: 1000,
+            pendingDraft,
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState).toMatchObject({
+        amount: '250',
+        leverage: 8,
+        takeProfitPrice: '50000',
+        stopLossPrice: '40000',
+        limitPrice: '45000',
+        autoCloseEnabled: true,
+      });
+    });
+
+    it('does not re-apply the draft when only direction changes', () => {
+      let initialDirection: 'long' | 'short' = 'long';
+      const { result, rerender } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            availableBalance: 1000,
+            szDecimals: 6,
+            initialDirection,
+            pendingDraft,
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.amount).toBe('250');
+
+      initialDirection = 'short';
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.direction).toBe('short');
+      expect(result.current.formState.amount).not.toBe('250');
+      expect(result.current.formState.takeProfitPrice).toBe('');
+      expect(result.current.formState.stopLossPrice).toBe('');
+      expect(result.current.formState.limitPrice).toBe('');
     });
   });
 });

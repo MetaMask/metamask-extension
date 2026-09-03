@@ -410,6 +410,35 @@ describe('PerpsOrderEntryPage', () => {
     },
   });
 
+  const createMockStateWithPending = (
+    pendingConfig: Record<string, unknown>,
+    extra?: {
+      preferences?: Record<string, unknown>;
+      leverage?: number;
+    },
+  ) => {
+    const state = createMockState();
+    (state.metamask as Record<string, unknown>).tradeConfigurations = {
+      mainnet: {
+        ETH: {
+          ...(extra?.leverage !== undefined && { leverage: extra.leverage }),
+          pendingConfig,
+        },
+      },
+      testnet: {},
+    };
+    if (extra?.preferences) {
+      (
+        state.metamask as { preferences?: Record<string, unknown> }
+      ).preferences = {
+        ...((state.metamask as { preferences?: Record<string, unknown> })
+          .preferences ?? {}),
+        ...extra.preferences,
+      };
+    }
+    return state;
+  };
+
   afterEach(async () => {
     // The abandon emit is deferred one macrotask (StrictMode probe guard). RTL
     // has already unmounted by now, so drain it here — otherwise it fires
@@ -1299,6 +1328,156 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       expect(screen.getByTestId('limit-price-input')).toBeInTheDocument();
+    });
+
+    it('restores session order type from preferences when the URL omits it', () => {
+      const store = mockStore(
+        createMockStateWithPending(
+          { timestamp: Date.now() },
+          { preferences: { perpsSelectedOrderType: 'limit' } },
+        ),
+      );
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.getByTestId('limit-price-input')).toBeInTheDocument();
+      expect(screen.getByTestId('order-type-limit')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+    });
+  });
+
+  describe('order form persistence', () => {
+    const freshPending = {
+      amount: '250',
+      leverage: 8,
+      orderType: 'limit' as const,
+      direction: 'short' as const,
+      limitPrice: '3000',
+      takeProfitPrice: '3500',
+      stopLossPrice: '2500',
+      timestamp: Date.now(),
+    };
+
+    it('restores a fresh pending draft for the same market', () => {
+      const store = mockStore(createMockStateWithPending(freshPending));
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountInput = screen
+        .getByTestId('amount-input-field')
+        .querySelector('input');
+      const leverageInput = screen
+        .getByTestId('leverage-input')
+        .querySelector('input');
+      const limitInput = screen
+        .getByTestId('limit-price-input')
+        .querySelector('input');
+      const tpInput = screen
+        .getByTestId('tp-price-input')
+        .querySelector('input');
+
+      expect(amountInput).toHaveValue('250');
+      expect(leverageInput).toHaveValue('8');
+      expect(limitInput).toHaveValue('3000');
+      expect(tpInput).toHaveValue('3500');
+      expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
+        'Open short',
+      );
+    });
+
+    it('does not restore an expired pending draft', () => {
+      const store = mockStore(
+        createMockStateWithPending({
+          ...freshPending,
+          timestamp: Date.now() - 61_000,
+        }),
+      );
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountInput = screen
+        .getByTestId('amount-input-field')
+        .querySelector('input');
+      expect(amountInput).not.toHaveValue('250');
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+      expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
+        'Open long',
+      );
+    });
+
+    it('does not restore a pending draft when the URL direction conflicts', () => {
+      mockSearchParams.set('direction', 'long');
+      const store = mockStore(createMockStateWithPending(freshPending));
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountInput = screen
+        .getByTestId('amount-input-field')
+        .querySelector('input');
+      expect(amountInput).not.toHaveValue('250');
+      expect(screen.getByTestId('submit-order-button')).toHaveTextContent(
+        'Open long',
+      );
+    });
+
+    it('saves the live form when leaving the market', () => {
+      const { unmount } = renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(createMockState()),
+      );
+
+      enterAmount('100');
+      unmount();
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSavePendingTradeConfiguration',
+        [
+          'ETH',
+          expect.objectContaining({
+            amount: '100',
+            direction: 'long',
+            orderType: 'market',
+          }),
+        ],
+      );
+    });
+
+    it('clears the draft after a successful order and does not re-save on unmount', async () => {
+      mockSubmitRequestToBackground.mockResolvedValue({ success: true });
+      const { unmount } = renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(createMockState()),
+      );
+
+      enterAmount('100');
+      await waitFor(() =>
+        expect(screen.getByTestId('submit-order-button')).not.toBeDisabled(),
+      );
+      mockSubmitRequestToBackground.mockClear();
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsClearPendingTradeConfiguration',
+        ['ETH'],
+      );
+
+      unmount();
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsSavePendingTradeConfiguration',
+        expect.anything(),
+      );
+    });
+
+    it('persists the chosen order type for the session', () => {
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+
+      fireEvent.click(screen.getByTestId('order-type-limit'));
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'setPreference',
+        ['perpsSelectedOrderType', 'limit'],
+      );
     });
   });
 
@@ -2666,6 +2845,10 @@ describe('PerpsOrderEntryPage', () => {
           key: 'perpsToastOrderSubmitted',
           autoHideTime: 3000,
         }),
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsClearPendingTradeConfiguration',
+        ['ETH'],
       );
     });
 

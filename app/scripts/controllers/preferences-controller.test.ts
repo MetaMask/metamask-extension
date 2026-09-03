@@ -564,6 +564,26 @@ describe('preferences controller', () => {
       expect(controller.getPreferences().perpsSelectedCandlePeriod).toBe('1h');
     });
 
+    it('stores perpsSelectedOrderType as a string preference', () => {
+      const { controller } = setupController({});
+      controller.setPreference('perpsSelectedOrderType', 'limit');
+      expect(controller.getPreferences().perpsSelectedOrderType).toBe('limit');
+    });
+
+    it('stores perps order-book listed-by preferences', () => {
+      const { controller } = setupController({});
+      controller.setPreference('perpsOrderBookCurrency', 'base');
+      controller.setPreference('perpsOrderBookMetric', 'size');
+      expect(controller.getPreferences().perpsOrderBookCurrency).toBe('base');
+      expect(controller.getPreferences().perpsOrderBookMetric).toBe('size');
+    });
+
+    it('stores perpsVisibleCandleCount as a number preference', () => {
+      const { controller } = setupController({});
+      controller.setPreference('perpsVisibleCandleCount', 60);
+      expect(controller.getPreferences().perpsVisibleCandleCount).toBe(60);
+    });
+
     it('enables side panel default when disabling full screen view', () => {
       const { controller: defaultController } = setupController({});
       const { controller } = setupController({

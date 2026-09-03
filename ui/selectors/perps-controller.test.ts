@@ -2,6 +2,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { PERPS_PENDING_TRADE_CONFIG_TTL_MS } from '../hooks/perps/perps-pending-trade-config';
 import {
   selectPerpsIsEligible,
   selectPerpsInitializationState,
@@ -32,6 +33,8 @@ import {
   selectProLayoutPreferences,
   selectOrderBookPosition,
   selectOrderBookExpanded,
+  selectPendingTradeConfiguration,
+  selectPerpsOrderBookGrouping,
 } from './perps-controller';
 
 function buildState(overrides: Record<string, unknown> = {}) {
@@ -871,6 +874,82 @@ describe('perps-controller selectors', () => {
       expect(
         selectOrderBookExpanded(buildState({ proLayoutPreferences: {} })),
       ).toBe(false);
+    });
+  });
+
+  describe('selectPendingTradeConfiguration', () => {
+    const pendingConfig = {
+      amount: '250',
+      leverage: 8,
+      orderType: 'limit' as const,
+      direction: 'short' as const,
+      timestamp: 1_000,
+    };
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('returns a fresh draft for the active network', () => {
+      jest.spyOn(Date, 'now').mockReturnValue(1_000 + 1_000);
+
+      expect(
+        selectPendingTradeConfiguration(
+          buildState({
+            isTestnet: false,
+            tradeConfigurations: {
+              mainnet: { BTC: { pendingConfig } },
+              testnet: {},
+            },
+          }),
+          'BTC',
+        ),
+      ).toStrictEqual(pendingConfig);
+    });
+
+    it('returns undefined when the draft has expired', () => {
+      jest
+        .spyOn(Date, 'now')
+        .mockReturnValue(1_000 + PERPS_PENDING_TRADE_CONFIG_TTL_MS + 1);
+
+      expect(
+        selectPendingTradeConfiguration(
+          buildState({
+            tradeConfigurations: {
+              mainnet: { BTC: { pendingConfig } },
+              testnet: {},
+            },
+          }),
+          'BTC',
+        ),
+      ).toBeUndefined();
+    });
+
+    it('returns undefined when the symbol has no draft', () => {
+      expect(
+        selectPendingTradeConfiguration(buildState(), 'BTC'),
+      ).toBeUndefined();
+    });
+  });
+
+  describe('selectPerpsOrderBookGrouping', () => {
+    it('returns the saved grouping for the active network', () => {
+      expect(
+        selectPerpsOrderBookGrouping(
+          buildState({
+            isTestnet: true,
+            tradeConfigurations: {
+              mainnet: { BTC: { orderBookGrouping: 1 } },
+              testnet: { BTC: { orderBookGrouping: 10 } },
+            },
+          }),
+          'BTC',
+        ),
+      ).toBe(10);
+    });
+
+    it('returns undefined when none is saved', () => {
+      expect(selectPerpsOrderBookGrouping(buildState(), 'BTC')).toBeUndefined();
     });
   });
 });

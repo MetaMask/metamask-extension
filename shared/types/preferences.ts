@@ -29,5 +29,13 @@ export type Preferences = {
   useNativeCurrencyAsPrimaryCurrency: boolean;
   useSidePanelAsDefault?: boolean;
   perpsSelectedCandlePeriod?: string;
+  /** Session-wide perps order type. Market-agnostic; survives the 60s draft TTL. */
+  perpsSelectedOrderType?: 'market' | 'limit';
+  /** Order-book listed-by currency. Market-agnostic. */
+  perpsOrderBookCurrency?: 'base' | 'usd';
+  /** Order-book listed-by metric. Market-agnostic. */
+  perpsOrderBookMetric?: 'size' | 'total';
+  /** Number of candles shown on the perps chart. Session- and market-agnostic. */
+  perpsVisibleCandleCount?: number;
   gasSponsorshipOptOutByChainId: Record<string, boolean>;
 };

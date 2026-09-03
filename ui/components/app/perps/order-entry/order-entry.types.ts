@@ -150,6 +150,17 @@ export type OrderEntryProps = {
    * price input while manual edits between selections are preserved.
    */
   limitPricePrefill?: { price: string };
+  /**
+   * Fresh per-market draft restored when returning to this symbol inside the
+   * product TTL. Overlays size, leverage, TP/SL, and limit price.
+   */
+  pendingDraft?: {
+    amount?: string;
+    leverage?: number;
+    takeProfitPrice?: string;
+    stopLossPrice?: string;
+    limitPrice?: string;
+  };
 };
 
 /**

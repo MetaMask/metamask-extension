@@ -54,6 +54,7 @@ import {
   getIsPerpsSlippageConfigEnabled,
 } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   DEFAULT_ROUTE,
@@ -67,12 +68,14 @@ import {
   usePerpsLiveCandles,
 } from '../../hooks/perps/stream';
 import {
+  type PerpsState,
   selectPerpsDepositPending,
   selectPerpsTradeConfigurations,
   selectPerpsIsTestnet,
   selectPerpsActiveProvider,
   selectOrderBookPosition,
   selectOrderBookExpanded,
+  selectPendingTradeConfiguration,
 } from '../../selectors/perps-controller';
 import {
   CandlePeriod,
@@ -83,6 +86,7 @@ import {
   usePerpsEstimatedSlippage,
   usePerpsEventTracking,
   usePerpsMaxSlippage,
+  usePerpsSavePendingConfig,
 } from '../../hooks/perps';
 import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
 import { usePerpsAbandonOrderTracking } from '../../hooks/perps/usePerpsAbandonOrderTracking';
@@ -99,6 +103,7 @@ import { useSelectedAccountComplianceGate } from '../../components/app/complianc
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
+import type { MetaMaskReduxState } from '../../store/store';
 import type { PerpsBackgroundResult } from '../../components/app/perps/types';
 import {
   getDisplaySymbol,
@@ -181,6 +186,18 @@ export function shouldShowPerpsOrderSubmissionToasts(
   hasPendingPerpsDeposit: boolean,
 ) {
   return !hasPendingPerpsDeposit;
+}
+
+function isOrderDirection(
+  value: string | null | undefined,
+): value is OrderDirection {
+  return value === 'long' || value === 'short';
+}
+
+function isPerpsOrderType(
+  value: string | null | undefined,
+): value is OrderType {
+  return value === 'market' || value === 'limit';
 }
 
 /**
@@ -344,6 +361,8 @@ const PerpsOrderEntryPage = () => {
   const activeProvider = useSelector(selectPerpsActiveProvider);
   const hasPendingPerpsDeposit = useSelector(selectPerpsDepositPending);
   const orderBookPosition = useSelector(selectOrderBookPosition);
+  const { perpsSelectedOrderType: persistedOrderTypePreference } =
+    useSelector(getPreferences);
   const isOrderBookOnLeft = orderBookPosition === 'left';
   const { trigger: triggerDeposit, isLoading: isDepositLoading } =
     usePerpsDepositConfirmation();
@@ -364,6 +383,10 @@ const PerpsOrderEntryPage = () => {
     }
     return safeDecodeURIComponent(symbol);
   }, [symbol]);
+
+  const pendingTradeConfig = useSelector((state: MetaMaskReduxState) =>
+    selectPendingTradeConfiguration(state as PerpsState, decodedSymbol ?? ''),
+  );
 
   // Computed before the screen-view tracking below so the trading event can be
   // gated on the market existing (an unknown symbol renders the error state).
@@ -447,12 +470,24 @@ const PerpsOrderEntryPage = () => {
   const directionParam = searchParams.get('direction');
   const modeParam = searchParams.get('mode');
   const orderTypeParam = searchParams.get('orderType');
+  const urlDirection = isOrderDirection(directionParam)
+    ? directionParam
+    : undefined;
+  const urlOrderType = isPerpsOrderType(orderTypeParam)
+    ? orderTypeParam
+    : undefined;
+  const persistedOrderType = isPerpsOrderType(persistedOrderTypePreference)
+    ? persistedOrderTypePreference
+    : undefined;
+  const pendingOrderType = isPerpsOrderType(pendingTradeConfig?.orderType)
+    ? pendingTradeConfig.orderType
+    : undefined;
 
   const [orderDirection, setOrderDirection] = useState<OrderDirection>(
-    (directionParam === 'short' ? 'short' : 'long') as OrderDirection,
+    urlDirection ?? pendingTradeConfig?.direction ?? 'long',
   );
   const [orderType, setOrderType] = useState<OrderType>(
-    (orderTypeParam === 'limit' ? 'limit' : 'market') as OrderType,
+    urlOrderType ?? persistedOrderType ?? pendingOrderType ?? 'market',
   );
   // One-shot limit-price prefill from tapping an order-book price row. A fresh
   // object per tap lets the form re-apply the same price after a manual edit.
@@ -467,11 +502,24 @@ const PerpsOrderEntryPage = () => {
   const [orderFormState, setOrderFormState] = useState<OrderFormState | null>(
     null,
   );
+  const shouldRestorePendingDraft =
+    orderMode === 'new' &&
+    Boolean(pendingTradeConfig) &&
+    (!urlDirection ||
+      !pendingTradeConfig?.direction ||
+      urlDirection === pendingTradeConfig.direction);
   const [orderCalculations, setOrderCalculations] =
     useState<OrderCalculations | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSlippageModalOpen, setIsSlippageModalOpen] = useState(false);
+
+  usePerpsSavePendingConfig({
+    asset: decodedSymbol,
+    formState: orderFormState,
+    enabled: orderMode === 'new',
+    skipRef: hasSubmittedOrderRef,
+  });
   const {
     maxSlippageBps,
     maxSlippageSource,
@@ -1305,6 +1353,16 @@ const PerpsOrderEntryPage = () => {
     [],
   );
 
+  const persistOrderType = useCallback((nextType: OrderType) => {
+    setOrderType(nextType);
+    submitRequestToBackground('setPreference', [
+      'perpsSelectedOrderType',
+      nextType,
+    ]).catch((error) => {
+      console.warn('[Perps] Save order type preference failed:', error);
+    });
+  }, []);
+
   const handleDirectionChange = useCallback(
     (direction: OrderDirection) => {
       track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -1456,10 +1514,13 @@ const PerpsOrderEntryPage = () => {
 
   // Tapping an order-book price turns the order into a limit order prefilled
   // with that price. Switching the type is a no-op when already on limit.
-  const handleOrderBookPriceSelect = useCallback((price: string) => {
-    setOrderType('limit');
-    setLimitPricePrefill({ price });
-  }, []);
+  const handleOrderBookPriceSelect = useCallback(
+    (price: string) => {
+      persistOrderType('limit');
+      setLimitPricePrefill({ price });
+    },
+    [persistOrderType],
+  );
 
   const handleOrderSubmit = useCallback(async () => {
     if (!isEligible) {
@@ -1860,6 +1921,14 @@ const PerpsOrderEntryPage = () => {
             PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
             PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_ORDER,
           );
+          submitRequestToBackground('perpsClearPendingTradeConfiguration', [
+            orderFormState.asset,
+          ]).catch((error) => {
+            console.warn(
+              '[Perps] Clear pending trade configuration failed:',
+              error,
+            );
+          });
           handleBackClick();
           return;
         }
@@ -1868,6 +1937,14 @@ const PerpsOrderEntryPage = () => {
       // block's failure toast renders on the current page. Navigating before
       // the await previously unmounted this page and orphaned the Promise
       // response, leaving the "Submitting your trade" toast stuck forever.
+      submitRequestToBackground('perpsClearPendingTradeConfiguration', [
+        orderFormState.asset,
+      ]).catch((error) => {
+        console.warn(
+          '[Perps] Clear pending trade configuration failed:',
+          error,
+        );
+      });
       handleBackClick(
         orderFormState.type === 'market'
           ? {
@@ -2114,13 +2191,16 @@ const PerpsOrderEntryPage = () => {
           orderType={orderType}
           existingPosition={existingPositionForOrder}
           midPrice={topOfBook?.midPrice}
-          onOrderTypeChange={setOrderType}
+          onOrderTypeChange={persistOrderType}
           onAddFunds={handleAddFunds}
           initialLeverage={initialLeverage}
           autoFocusUsd={orderMode !== 'close'}
           autoFocusLimitPrice={orderMode !== 'close'}
           sizeDecimals={marketInfo?.szDecimals}
           limitPricePrefill={limitPricePrefill ?? undefined}
+          pendingDraft={
+            shouldRestorePendingDraft ? pendingTradeConfig : undefined
+          }
         />
       </Box>
 
