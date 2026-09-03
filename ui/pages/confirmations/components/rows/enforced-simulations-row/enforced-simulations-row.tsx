@@ -30,7 +30,7 @@ import Tooltip from '../../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { applyTransactionContainersExisting } from '../../../../../store/actions';
-import { useIsEnforcedSimulationsEligible } from '../../../hooks/useIsEnforcedSimulationsEligible';
+import { useEnforcedSimulationsEligibility } from '../../../hooks/useEnforcedSimulationsEligibility';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { getEnforcedSimulationsSlippageBasisPoints } from '../../../../../../shared/lib/transaction/enforced-simulations';
 
@@ -42,13 +42,14 @@ export function EnforcedSimulationsRow() {
 
   const { containerTypes, id: transactionId } = currentConfirmation ?? {};
 
-  const isEligible = useIsEnforcedSimulationsEligible();
+  const { isEligible, isDefaultEnabled, hasPendingTrustSignals } =
+    useEnforcedSimulationsEligibility();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const [isUnavailable, setIsUnavailable] = useState(false);
-  const autoEnableRequestId = useRef(0);
+  const initializationRequestId = useRef(0);
   const currentTransactionIdRef = useRef(transactionId);
 
-  const hasAutoEnabled = containerTypes !== undefined;
+  const hasInitialized = containerTypes !== undefined;
 
   const hasEnforcedSimulations = containerTypes?.includes(
     TransactionContainerType.EnforcedSimulations,
@@ -63,20 +64,30 @@ export function EnforcedSimulationsRow() {
   }, [transactionId]);
 
   useEffect(() => {
-    if (isUnavailable || !isEligible || hasAutoEnabled || !transactionId) {
+    if (
+      isUnavailable ||
+      !isEligible ||
+      hasPendingTrustSignals ||
+      hasInitialized ||
+      !transactionId
+    ) {
       return;
     }
 
-    const requestId = autoEnableRequestId.current + 1;
-    autoEnableRequestId.current = requestId;
+    const requestId = initializationRequestId.current + 1;
+    initializationRequestId.current = requestId;
 
-    applyTransactionContainersExisting(transactionId, [
+    const initialContainerTypes: TransactionContainerType[] = [
       ...(containerTypes ?? []),
-      TransactionContainerType.EnforcedSimulations,
-    ])
+    ];
+    if (isDefaultEnabled) {
+      initialContainerTypes.push(TransactionContainerType.EnforcedSimulations);
+    }
+
+    applyTransactionContainersExisting(transactionId, initialContainerTypes)
       .then(({ enforcedSimulationsSlippage }) => {
         if (
-          requestId !== autoEnableRequestId.current ||
+          requestId !== initializationRequestId.current ||
           transactionId !== currentTransactionIdRef.current
         ) {
           return;
@@ -85,7 +96,7 @@ export function EnforcedSimulationsRow() {
         updateTransactionEventFragment(
           {
             properties: {
-              enforced_simulations_default_enabled: true,
+              enforced_simulations_default_enabled: isDefaultEnabled,
               enforced_simulation_slippage_bps:
                 getEnforcedSimulationsSlippageMetric(
                   enforcedSimulationsSlippage,
@@ -97,7 +108,7 @@ export function EnforcedSimulationsRow() {
       })
       .catch((error) => {
         if (
-          requestId !== autoEnableRequestId.current ||
+          requestId !== initializationRequestId.current ||
           transactionId !== currentTransactionIdRef.current
         ) {
           return;
@@ -111,7 +122,9 @@ export function EnforcedSimulationsRow() {
   }, [
     currentConfirmation,
     isEligible,
-    hasAutoEnabled,
+    hasPendingTrustSignals,
+    hasInitialized,
+    isDefaultEnabled,
     transactionId,
     containerTypes,
     isUnavailable,
@@ -155,7 +168,7 @@ export function EnforcedSimulationsRow() {
     [transactionId, updateTransactionEventFragment],
   );
 
-  if (isUnavailable || !hasAutoEnabled) {
+  if (isUnavailable || !hasInitialized) {
     return null;
   }
 
