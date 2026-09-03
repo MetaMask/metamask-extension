@@ -14751,16 +14751,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/types@npm:^0.1.23":
-  version: 0.1.23
-  resolution: "@swc/types@npm:0.1.23"
-  dependencies:
-    "@swc/counter": "npm:^0.1.3"
-  checksum: 10/8d9d73dd1fc9335105105da57595ab913bad6addd4fbcb2eb147300694630232225eb7dc74b733205af33352803e4fcefc18e3a36f8924cf821ef91384767670
-  languageName: node
-  linkType: hard
-
-"@swc/types@npm:^0.1.28":
+"@swc/types@npm:^0.1.23, @swc/types@npm:^0.1.28":
   version: 0.1.28
   resolution: "@swc/types@npm:0.1.28"
   dependencies:
