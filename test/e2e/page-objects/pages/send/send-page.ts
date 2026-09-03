@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
 /**
@@ -245,40 +244,29 @@ class SendPage {
   }
 
   /**
-   * Waits until Max has populated a positive amount, then asserts it is less
-   * than the available balance so native sends reserve gas.
+   * Waits until Max has populated a positive amount that is less than the
+   * available balance so native sends reserve gas.
    */
   async checkMaxAmountReservesGas(): Promise<void> {
     console.log('Checking that Max amount reserves gas from available balance');
     await this.waitForSendAmountBalance();
     await this.driver.waitUntil(
       async () => {
-        const amount = parseFloat(await this.getAmountInputValue());
-        return amount > 0;
+        const maxAmount = parseFloat(await this.getAmountInputValue());
+        const element = await this.driver.findElement(this.amountBalance);
+        const text = await element.getText();
+        const availableBalance = parseFloat(text.replace(/[^0-9.]/gu, ''));
+        return (
+          Number.isFinite(maxAmount) &&
+          maxAmount > 0 &&
+          Number.isFinite(availableBalance) &&
+          availableBalance > 0 &&
+          maxAmount < availableBalance
+        );
       },
       { interval: 100, timeout: 15000 },
     );
     await this.waitForContinueButtonStablyEnabled();
-
-    const availableBalance = await this.getAvailableBalanceNumeric();
-    const maxAmount = parseFloat(await this.getAmountInputValue());
-
-    assert.ok(
-      Number.isFinite(availableBalance) && availableBalance > 0,
-      `Available balance must be a positive number, got ${availableBalance}`,
-    );
-    assert.ok(
-      Number.isFinite(maxAmount) && maxAmount > 0,
-      `Max amount must be a positive number, got ${maxAmount}`,
-    );
-    assert.ok(
-      maxAmount <= availableBalance,
-      `Max amount ${maxAmount} must be <= available balance ${availableBalance}`,
-    );
-    assert.ok(
-      maxAmount < availableBalance,
-      `Max amount ${maxAmount} must reserve gas (available ${availableBalance})`,
-    );
   }
 
   async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
@@ -447,18 +435,6 @@ class SendPage {
   async getAmountInputValue(): Promise<string> {
     const inputElement = await this.driver.findElement(this.amountInput);
     return (await inputElement.getAttribute('value')) ?? '';
-  }
-
-  /**
-   * Parses the numeric "available" balance shown on the amount screen.
-   *
-   * @returns The available balance as a number, or `NaN` if it cannot be parsed.
-   */
-  async getAvailableBalanceNumeric(): Promise<number> {
-    await this.waitForSendAmountBalance();
-    const element = await this.driver.findElement(this.amountBalance);
-    const text = await element.getText();
-    return parseFloat(text.replace(/[^0-9.]/gu, ''));
   }
 
   /**
