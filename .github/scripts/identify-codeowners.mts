@@ -139,6 +139,13 @@ function matchFilesToCodeowners(files: PullRequestFile[], codeowners: CodeOwnerR
   files.forEach(file => {
     for (const { pattern, owners } of codeowners) {
       if (isFileMatchingPattern(file.filename, pattern)) {
+        // Later unowned patterns (CODEOWNERS exclusions) clear prior owners,
+        // matching GitHub's last-match-wins behavior for lines with no owners.
+        if (owners.length === 0) {
+          fileOwners.delete(file.filename);
+          continue;
+        }
+
         // Not breaking here to allow for multiple patterns to match the same file
         const ownerSet = fileOwners.get(file.filename);
         if (!ownerSet) {
