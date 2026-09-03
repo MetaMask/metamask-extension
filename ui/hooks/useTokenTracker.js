@@ -130,11 +130,7 @@ export function useTokenTracker({
       return;
     }
 
-    // Defer tracker construction so its synchronous balance update callback is
-    // not treated as setState-in-effect.
-    queueMicrotask(() => {
-      buildTracker(userAddress, memoizedTokens);
-    });
+    buildTracker(userAddress, memoizedTokens);
   }, [
     userAddress,
     teardownTracker,

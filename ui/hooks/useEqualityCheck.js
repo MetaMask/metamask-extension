@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState, useLayoutEffect } from 'react';
 
 import { isEqual } from 'lodash';
 
@@ -16,15 +16,12 @@ import { isEqual } from 'lodash';
  */
 export function useEqualityCheck(value, equalityFn = isEqual) {
   const [computedValue, setComputedValue] = useState(value);
-  const prevValueRef = useRef(value);
 
-  useEffect(() => {
-    if (equalityFn(value, prevValueRef.current)) {
-      return;
+  useLayoutEffect(() => {
+    if (!equalityFn(value, computedValue)) {
+      setComputedValue(value);
     }
-    prevValueRef.current = value;
-    queueMicrotask(() => setComputedValue(value));
-  }, [value, equalityFn]);
+  }, [value, equalityFn, computedValue]);
 
   return computedValue;
 }
