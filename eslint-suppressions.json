@@ -14,11 +14,6 @@
       "count": 1
     }
   },
-  "ui/__mocks__/hardware-wallet-swap/hooks.ts": {
-    "react-hooks/refs": {
-      "count": 5
-    }
-  },
   "ui/components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar.tsx": {
     "react-hooks/refs": {
       "count": 4
@@ -334,24 +329,13 @@
     }
   },
   "ui/contexts/hardware-wallets/HardwareWalletContext.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    },
     "react-hooks/immutability": {
       "count": 2
-    },
-    "react-hooks/refs": {
-      "count": 18
     }
   },
   "ui/contexts/hardware-wallets/HardwareWalletErrorProvider.tsx": {
     "react-hooks/set-state-in-effect": {
       "count": 1
-    }
-  },
-  "ui/contexts/hardware-wallets/HardwareWalletStateManager.tsx": {
-    "react-hooks/refs": {
-      "count": 4
     }
   },
   "ui/contexts/hardware-wallets/useHardwareFooter.ts": {
@@ -439,26 +423,8 @@
       "count": 1
     }
   },
-  "ui/hooks/hardware-wallets/useHwSwapConfirmationMonitoring.ts": {
-    "react-hooks/refs": {
-      "count": 2
-    }
-  },
   "ui/hooks/hardware-wallets/useHwSwapQrState.ts": {
-    "react-hooks/refs": {
-      "count": 2
-    },
     "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/hooks/hardware-wallets/useHwSwapQuoteData.ts": {
-    "react-hooks/refs": {
-      "count": 4
-    }
-  },
-  "ui/hooks/hardware-wallets/useHwSwapSubmission.ts": {
-    "react-hooks/refs": {
       "count": 1
     }
   },
@@ -768,18 +734,10 @@
   "ui/pages/confirmations/components/confirm/scroll-to-bottom/scroll-to-bottom.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 2
-    },
-    "react-hooks/refs": {
-      "count": 2
     }
   },
   "ui/pages/confirmations/components/developer/perps-withdraw-button/perps-withdraw-button.tsx": {
     "react-hooks/preserve-manual-memoization": {
-      "count": 1
-    }
-  },
-  "ui/pages/confirmations/components/info-popover-tooltip/info-popover-tooltip.tsx": {
-    "react-hooks/refs": {
       "count": 1
     }
   },
@@ -821,16 +779,6 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/hooks/pay/useTransactionPayMetrics.ts": {
-    "react-hooks/refs": {
-      "count": 13
-    }
-  },
-  "ui/pages/confirmations/hooks/send/useAmountValidation.ts": {
-    "react-hooks/refs": {
-      "count": 2
-    }
-  },
   "ui/pages/confirmations/hooks/send/useContactRecipients.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -838,11 +786,6 @@
   },
   "ui/pages/confirmations/hooks/send/useMaxAmount.ts": {
     "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/pages/confirmations/hooks/send/useRecipientValidation.ts": {
-    "react-hooks/refs": {
       "count": 1
     }
   },
@@ -863,11 +806,6 @@
   },
   "ui/pages/confirmations/hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo.ts": {
     "react-hooks/preserve-manual-memoization": {
-      "count": 3
-    }
-  },
-  "ui/pages/confirmations/hooks/transactions/dapp-swap-comparison/useDappSwapComparisonLatencyMetrics.ts": {
-    "react-hooks/refs": {
       "count": 3
     }
   },
@@ -899,11 +837,6 @@
   "ui/pages/confirmations/hooks/useDecodedSignatureMetrics.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
-    }
-  },
-  "ui/pages/confirmations/hooks/useDeepMemo.ts": {
-    "react-hooks/refs": {
-      "count": 4
     }
   },
   "ui/pages/confirmations/hooks/useLedgerConnection.ts": {
@@ -970,9 +903,6 @@
     }
   },
   "ui/pages/hardware-wallets/swap/hooks/useHardwareWalletSignatures.ts": {
-    "react-hooks/refs": {
-      "count": 3
-    },
     "react-hooks/set-state-in-effect": {
       "count": 3
     }
