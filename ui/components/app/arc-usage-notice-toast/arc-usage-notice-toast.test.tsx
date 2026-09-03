@@ -19,9 +19,10 @@ const mockSubmit = submitRequestToBackground as jest.MockedFunction<
 >;
 
 const ARC_ACCOUNT = '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc';
+const NATIVE_ASSET = '0x0000000000000000000000000000000000000000';
 
 function createArcStore(overrides: {
-  balance?: string;
+  balance: string;
   arcUsageNoticeShown?: boolean;
 }) {
   return configureStore({
@@ -29,15 +30,10 @@ function createArcStore(overrides: {
       ...mockState.metamask,
       isUnlocked: true,
       arcUsageNoticeShown: overrides.arcUsageNoticeShown ?? false,
-      accountsByChainId: {
-        ...mockState.metamask.accountsByChainId,
-        ...(overrides.balance === undefined
-          ? {}
-          : {
-              [CHAIN_IDS.ARC]: {
-                [ARC_ACCOUNT]: { balance: overrides.balance },
-              },
-            }),
+      tokenBalances: {
+        [ARC_ACCOUNT]: {
+          [CHAIN_IDS.ARC]: { [NATIVE_ASSET]: overrides.balance },
+        },
       },
     },
     appState: { ...mockState.appState },

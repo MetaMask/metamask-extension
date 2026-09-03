@@ -67,6 +67,7 @@ describe('ToastMaster routing', () => {
 });
 
 const ARC_ACCOUNT = '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc';
+const NATIVE_ASSET = '0x0000000000000000000000000000000000000000';
 
 function createArcStore() {
   return configureStore({
@@ -74,9 +75,10 @@ function createArcStore() {
       ...mockState.metamask,
       isUnlocked: true,
       arcUsageNoticeShown: false,
-      accountsByChainId: {
-        ...mockState.metamask.accountsByChainId,
-        [CHAIN_IDS.ARC]: { [ARC_ACCOUNT]: { balance: '0xde0b6b3a7640000' } },
+      tokenBalances: {
+        [ARC_ACCOUNT]: {
+          [CHAIN_IDS.ARC]: { [NATIVE_ASSET]: '0xde0b6b3a7640000' },
+        },
       },
     },
     appState: { ...mockState.appState },

@@ -5,7 +5,6 @@ import {
   IconColor as DsIconColor,
   IconName as DsIconName,
 } from '@metamask/design-system-react';
-import { BorderRadius } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { Toast } from '../../multichain/toast';
@@ -42,7 +41,6 @@ export function ArcUsageNoticeToast() {
       }
       text={t('arcUsageNoticeTitle')}
       description={t('arcUsageNoticeDescription')}
-      borderRadius={BorderRadius.LG}
       onClose={() => setVisible(false)}
     />
   );

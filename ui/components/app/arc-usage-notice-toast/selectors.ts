@@ -1,9 +1,6 @@
 import { MetaMaskReduxState } from '../../../store/store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import {
-  getAccountTrackerControllerAccountsByChainId,
-  getTokenBalancesControllerTokenBalances,
-} from '../../../../shared/lib/selectors/assets-migration';
+import { getTokenBalancesControllerTokenBalances } from '../../../../shared/lib/selectors/assets-migration';
 
 const hasNonZeroBalance = (balance?: string) =>
   balance ? BigInt(balance) > 0n : false;
@@ -20,15 +17,6 @@ export function selectShowArcUsageNoticeToast(
 ): boolean {
   if (state.metamask.arcUsageNoticeShown) {
     return false;
-  }
-
-  const arcAccounts =
-    getAccountTrackerControllerAccountsByChainId(state)[CHAIN_IDS.ARC] ?? {};
-
-  if (
-    Object.values(arcAccounts).some(({ balance }) => hasNonZeroBalance(balance))
-  ) {
-    return true;
   }
 
   const tokenBalances = getTokenBalancesControllerTokenBalances(state);
