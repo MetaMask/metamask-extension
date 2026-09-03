@@ -32,11 +32,8 @@ import {
   mockPriceApiSpotPriceSwap,
   mockSendSolanaTransaction,
   mockSolanaBalanceQuote,
-  mockTokenApiAssets,
   simulateSolanaTransaction,
 } from './common-solana';
-
-const isUnifiedAssetsEnabled = true;
 
 const SOL_ACCOUNT_ID = '688e01b8-3134-4ef4-80e6-8772bab38ef7';
 const SOL_CAIP_ASSET = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
@@ -46,7 +43,7 @@ const SOL_PRICE = 168.88;
 const USDC_PRICE = 0.999761;
 const USDC_BALANCE_HUMAN = '8.908267';
 
-// --- Unified-assets-only helpers ---
+// --- Helpers ---
 
 const SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE = {
   assetsBalance: {
@@ -168,12 +165,8 @@ async function mockSolanaTokenApiAssets(mockServer: Mockttp) {
 const mockSendWithUSDCVisible = async (
   mockServer: Mockttp,
 ): Promise<MockedEndpoint[]> => [
-  ...(isUnifiedAssetsEnabled
-    ? [
-        await mockAccountsApiV2SupportedNetworks(mockServer),
-        await mockAccountsApiV5MultiaccountBalances(mockServer),
-      ]
-    : []),
+  await mockAccountsApiV2SupportedNetworks(mockServer),
+  await mockAccountsApiV5MultiaccountBalances(mockServer),
   await mockGetTokenAccountsUSDCOnly(mockServer),
   await mockGetTokenAccountBalance(mockServer),
   await simulateSolanaTransaction(mockServer),
@@ -189,22 +182,15 @@ const mockSendWithUSDCVisible = async (
   await mockGetTokenAccountBalance(mockServer),
   await mockGetSuccessSplTokenTransaction(mockServer),
   await mockGetMintAccountInfo(mockServer),
-
-  isUnifiedAssetsEnabled
-    ? await mockSolanaTokenApiAssets(mockServer)
-    : await mockTokenApiAssets(mockServer),
+  await mockSolanaTokenApiAssets(mockServer),
 ];
 
 async function mockSendSPLTokenFailed(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint[]> {
   return [
-    ...(isUnifiedAssetsEnabled
-      ? [
-          await mockAccountsApiV2SupportedNetworks(mockServer),
-          await mockAccountsApiV5MultiaccountBalances(mockServer),
-        ]
-      : []),
+    await mockAccountsApiV2SupportedNetworks(mockServer),
+    await mockAccountsApiV5MultiaccountBalances(mockServer),
     await mockGetTokenAccountsUSDCOnly(mockServer),
     await mockGetTokenAccountBalance(mockServer),
     await simulateSolanaTransaction(mockServer),
@@ -220,9 +206,7 @@ async function mockSendSPLTokenFailed(
     await mockGetFailedSignaturesForAddress(mockServer),
     await mockGetFailedTransaction(mockServer),
     await mockGetMintAccountInfo(mockServer),
-    isUnifiedAssetsEnabled
-      ? await mockSolanaTokenApiAssets(mockServer)
-      : await mockTokenApiAssets(mockServer),
+    await mockSolanaTokenApiAssets(mockServer),
   ];
 }
 
@@ -231,9 +215,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
     await withFixtures(
       {
         fixtures: (() => {
-          if (!isUnifiedAssetsEnabled) {
-            return new FixtureBuilderV2().build();
-          }
           const fixture = new FixtureBuilderV2()
             .withAssetsController(SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE)
             .build();
@@ -260,9 +241,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new HomePage(driver);
-        if (isUnifiedAssetsEnabled) {
-          await homePage.waitForNonEvmAccountsLoaded();
-        }
+        await homePage.waitForNonEvmAccountsLoaded();
 
         const selectNetworkModal = new SelectNetworkModal(driver);
         const networkFilter = new NetworkFilter(driver);
@@ -294,13 +273,12 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await confirmation.clickFooterConfirmButton();
 
         const activityTab = new ActivityTab(driver);
-        await activityTab.checkTxAction({ action: 'Sent USDC' });
+        await activityTab.checkTxAction({
+          action: 'Sent USDC',
+          confirmedTx: 1,
+        });
 
-        if (isUnifiedAssetsEnabled) {
-          await activityTab.checkTransactionAmount('0.1');
-        } else {
-          await activityTab.checkTxAmountInActivity('-0.1 USDC', 1);
-        }
+        await activityTab.checkTransactionAmount('0.1');
 
         await activityTab.checkNoFailedTransactions();
       },
@@ -311,9 +289,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
     await withFixtures(
       {
         fixtures: (() => {
-          if (!isUnifiedAssetsEnabled) {
-            return new FixtureBuilderV2().build();
-          }
           const fixture = new FixtureBuilderV2()
             .withAssetsController(SOLANA_SPL_ASSETS_CONTROLLER_FIXTURE)
             .build();
@@ -341,9 +316,7 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await login(driver);
 
         const homePage = new HomePage(driver);
-        if (isUnifiedAssetsEnabled) {
-          await homePage.waitForNonEvmAccountsLoaded();
-        }
+        await homePage.waitForNonEvmAccountsLoaded();
 
         const selectNetworkModal = new SelectNetworkModal(driver);
         const networkFilter = new NetworkFilter(driver);
