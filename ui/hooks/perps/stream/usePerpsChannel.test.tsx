@@ -361,104 +361,89 @@ describe('usePerpsChannel', () => {
     expect(result.current.isInitialLoading).toBe(true);
     expect(manager.orderBookAggregated.hasCachedData()).toBe(false);
   });
+
   describe('account fetch failure', () => {
     const EMPTY_ACCOUNT: AccountState | null = null;
 
+    let consoleErrorSpy: jest.SpyInstance;
+
     beforeEach(() => {
       jest.useFakeTimers();
+      consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
     });
 
     afterEach(() => {
+      consoleErrorSpy.mockRestore();
       jest.useRealTimers();
     });
 
+    /**
+     * Renders the account channel with `perpsGetAccountState` rejecting, then
+     * advances past the WebSocket grace period so the REST fallback has run.
+     *
+     * @param error - The rejection surfaced to the account channel.
+     * @returns The stream manager and the rendered hook result.
+     */
+    async function renderAccountChannelAfterFailedFetch(error: Error) {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsGetAccountState') {
+          return Promise.reject(error);
+        }
+        return Promise.resolve(undefined);
+      });
+
+      const manager = new PerpsStreamManager();
+      mockUsePerpsStreamManager.mockReturnValue({
+        streamManager: manager,
+        isInitializing: false,
+        error: null,
+        selectedAddress: '0xacc',
+      });
+
+      const { result } = renderHook(() =>
+        usePerpsChannel((sm) => sm.account, EMPTY_ACCOUNT),
+      );
+
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(3_000);
+      });
+
+      return { manager, result };
+    }
+
     it('keeps the loading state when the account fetch fails, so the balance header cannot render a fabricated $0.00', async () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
+      const { result } = await renderAccountChannelAfterFailedFetch(
+        new Error(
+          'Failed to fetch account state (failedDexs=[main,xyz], spotError=WebSocket connection permanently terminated)',
+        ),
+      );
 
-      try {
-        mockSubmitRequestToBackground.mockImplementation((method: string) => {
-          if (method === 'perpsGetAccountState') {
-            return Promise.reject(
-              new Error(
-                'Failed to fetch account state (failedDexs=[main,xyz], spotError=WebSocket connection permanently terminated)',
-              ),
-            );
-          }
-          return Promise.resolve(undefined);
-        });
-
-        const manager = new PerpsStreamManager();
-        mockUsePerpsStreamManager.mockReturnValue({
-          streamManager: manager,
-          isInitializing: false,
-          error: null,
-          selectedAddress: '0xacc',
-        });
-
-        const { result } = renderHook(() =>
-          usePerpsChannel((sm) => sm.account, EMPTY_ACCOUNT),
-        );
-
-        await act(async () => {
-          await jest.advanceTimersByTimeAsync(3_000);
-        });
-
-        // Still loading: PerpsMarketBalanceActions renders its skeleton here.
-        // If the failure were delivered as data, isInitialLoading would flip to
-        // false and `account?.totalBalance ?? '0'` would render $0.00 with the
-        // Withdraw button hidden on a funded account.
-        expect(result.current.isInitialLoading).toBe(true);
-        expect(result.current.data).toBeNull();
-      } finally {
-        consoleErrorSpy.mockRestore();
-      }
+      // Still loading: PerpsMarketBalanceActions renders its skeleton here.
+      // If the failure were delivered as data, isInitialLoading would flip to
+      // false and `account?.totalBalance ?? '0'` would render $0.00 with the
+      // Withdraw button hidden on a funded account.
+      expect(result.current.isInitialLoading).toBe(true);
+      expect(result.current.data).toBeNull();
     });
 
     it('clears the loading state once account data arrives after a failed fetch', async () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
+      const { manager, result } = await renderAccountChannelAfterFailedFetch(
+        new Error('network'),
+      );
+      expect(result.current.isInitialLoading).toBe(true);
 
-      try {
-        mockSubmitRequestToBackground.mockImplementation((method: string) => {
-          if (method === 'perpsGetAccountState') {
-            return Promise.reject(new Error('network'));
-          }
-          return Promise.resolve(undefined);
+      const recoveredAccount = { totalBalance: '632.69' } as AccountState;
+      act(() => {
+        manager.handleBackgroundUpdate({
+          channel: 'account',
+          data: recoveredAccount,
         });
+      });
 
-        const manager = new PerpsStreamManager();
-        mockUsePerpsStreamManager.mockReturnValue({
-          streamManager: manager,
-          isInitializing: false,
-          error: null,
-          selectedAddress: '0xacc',
-        });
-
-        const { result } = renderHook(() =>
-          usePerpsChannel((sm) => sm.account, EMPTY_ACCOUNT),
-        );
-
-        await act(async () => {
-          await jest.advanceTimersByTimeAsync(3_000);
-        });
-        expect(result.current.isInitialLoading).toBe(true);
-
-        const recoveredAccount = { totalBalance: '632.69' } as AccountState;
-        act(() => {
-          manager.handleBackgroundUpdate({
-            channel: 'account',
-            data: recoveredAccount,
-          });
-        });
-
-        expect(result.current.isInitialLoading).toBe(false);
-        expect(result.current.data).toBe(recoveredAccount);
-      } finally {
-        consoleErrorSpy.mockRestore();
-      }
+      expect(result.current.isInitialLoading).toBe(false);
+      expect(result.current.data).toBe(recoveredAccount);
     });
   });
 });

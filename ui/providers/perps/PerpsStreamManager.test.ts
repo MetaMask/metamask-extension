@@ -1349,6 +1349,10 @@ describe('PerpsStreamManager', () => {
       );
     });
 
+    // Pre-existing-behaviour guard, not proof of this fix: the old code's
+    // `!hasCachedData()` check already suppressed the push once a cache
+    // existed, so this passes with or without the fix. Kept to pin the
+    // behaviour that a later failure must never clobber a good balance.
     it('keeps previously cached account data when a later REST fallback fails', async () => {
       const cachedAccount = { totalBalance: '632.69' };
       manager.handleBackgroundUpdate({
