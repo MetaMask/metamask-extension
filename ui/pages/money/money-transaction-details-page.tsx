@@ -38,7 +38,7 @@ import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { selectMoneyActivityDetailsEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
-import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getInternalAccountByAddress } from '../../selectors/accounts';
 import {
   getMoneyActivityDisplayInfo,
   type MoneyActivityTranslate,
@@ -90,7 +90,6 @@ export function MoneyTransactionDetailsPage() {
   const { transactionId } = useParams<{ transactionId: string }>();
   const privacyMode = useSelector(getPrivacyMode);
   const detailsEnabled = useSelector(selectMoneyActivityDetailsEnabled);
-  const selectedAccount = useSelector(getSelectedInternalAccount);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
   const { items } = useMoneyActivityItems();
@@ -105,6 +104,10 @@ export function MoneyTransactionDetailsPage() {
   const item = useMemo(
     () => items.find((candidate) => candidate.id === transactionId),
     [items, transactionId],
+  );
+  const fromAddress = item?.tx.txParams.from;
+  const fromAccount = useSelector((state) =>
+    fromAddress ? getInternalAccountByAddress(state, fromAddress) : undefined,
   );
 
   const explorerUrl = item
@@ -138,9 +141,12 @@ export function MoneyTransactionDetailsPage() {
     const status = getMoneyActivityStatus(tx);
     const errorMessage = getMoneyActivityErrorMessage(tx);
     const paidWith = getMoneyActivityPaidWith(tx);
-    const accountLabel = selectedAccount
-      ? `${selectedAccount.metadata.name} (${shortenMoneyActivityHex(selectedAccount.address)})`
+    let accountLabel = fromAddress
+      ? shortenMoneyActivityHex(fromAddress)
       : undefined;
+    if (accountLabel && fromAccount) {
+      accountLabel = `${fromAccount.metadata.name} (${accountLabel})`;
+    }
     const transactionHash = tx.hash;
 
     body = (

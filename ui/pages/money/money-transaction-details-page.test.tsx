@@ -14,7 +14,7 @@ import {
 } from '../../helpers/constants/routes';
 import { getPrivacyMode } from '../../selectors/selectors';
 import { selectMoneyActivityDetailsEnabled } from '../../selectors/money/money-account-feature-flags';
-import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getInternalAccountByAddress } from '../../selectors/accounts';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import MOCK_MONEY_TRANSACTIONS from './constants/mock-activity-data';
 import { onchainItem } from './types/money-activity';
@@ -30,7 +30,9 @@ const mockGetPrivacyMode = jest.mocked(getPrivacyMode);
 const mockSelectMoneyActivityDetailsEnabled = jest.mocked(
   selectMoneyActivityDetailsEnabled,
 );
-const mockGetSelectedInternalAccount = jest.mocked(getSelectedInternalAccount);
+const mockGetInternalAccountByAddress = jest.mocked(
+  getInternalAccountByAddress,
+);
 const mockUseCopyToClipboard = jest.mocked(useCopyToClipboard);
 
 jest.mock('react-redux', () => ({
@@ -47,9 +49,9 @@ jest.mock('../../selectors/money/money-account-feature-flags', () => ({
   selectMoneyActivityDetailsEnabled: jest.fn(),
 }));
 
-jest.mock('../../../shared/lib/selectors/accounts', () => ({
-  ...jest.requireActual('../../../shared/lib/selectors/accounts'),
-  getSelectedInternalAccount: jest.fn(),
+jest.mock('../../selectors/accounts', () => ({
+  ...jest.requireActual('../../selectors/accounts'),
+  getInternalAccountByAddress: jest.fn(),
 }));
 
 jest.mock('../../hooks/useCopyToClipboard', () => ({
@@ -92,10 +94,10 @@ describe('MoneyTransactionDetailsPage', () => {
     jest.clearAllMocks();
     mockGetPrivacyMode.mockReturnValue(false);
     mockSelectMoneyActivityDetailsEnabled.mockReturnValue(true);
-    mockGetSelectedInternalAccount.mockReturnValue({
-      address: '0x23212abcde12321ffffffffffffffffffffffffff',
+    mockGetInternalAccountByAddress.mockReturnValue({
+      address: deposited.tx.txParams.from,
       metadata: { name: 'Defi account' },
-    } as ReturnType<typeof getSelectedInternalAccount>);
+    } as ReturnType<typeof getInternalAccountByAddress>);
     mockUseCopyToClipboard.mockReturnValue([
       false,
       mockCopyToClipboard,
@@ -186,13 +188,27 @@ describe('MoneyTransactionDetailsPage', () => {
     ).toHaveTextContent('Transak');
     expect(
       screen.getByTestId('money-transaction-details-account'),
-    ).toHaveTextContent('Defi account (0x2321...ffff)');
+    ).toHaveTextContent('Defi account (0x0000...0001)');
+    expect(mockGetInternalAccountByAddress).toHaveBeenCalledWith(
+      undefined,
+      deposited.tx.txParams.from,
+    );
     expect(
       screen.queryByTestId('money-transaction-details-hash'),
     ).not.toBeInTheDocument();
     expect(
       screen.queryByTestId('money-transaction-details-explorer'),
     ).not.toBeInTheDocument();
+  });
+
+  it('renders the origin address when it does not belong to an internal account', () => {
+    mockGetInternalAccountByAddress.mockReturnValue(undefined);
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-account'),
+    ).toHaveTextContent('0x0000...0001');
   });
 
   it('navigates back when the back button is clicked', () => {
