@@ -154,7 +154,7 @@ export const AccountList = () => {
           />
         }
       >
-        {t('accounts')}
+        {isEditMode ? t('manageAccounts') : t('accounts')}
       </Header>
       <div className="account-list-page__content flex flex-col min-h-0 overflow-auto">
         <Box

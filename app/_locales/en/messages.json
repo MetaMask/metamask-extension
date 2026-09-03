@@ -5256,6 +5256,10 @@
   "manage": {
     "message": "Manage"
   },
+  "manageAccounts": {
+    "message": "Manage Accounts",
+    "description": "Title shown on the account list page while edit mode is active"
+  },
   "manageConnectedAccounts": {
     "message": "Manage connected accounts"
   },

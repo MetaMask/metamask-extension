@@ -85,10 +85,15 @@ describe('AccountList', () => {
       'multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
     );
     expect(accountCell).not.toHaveClass('multichain-account-cell--edit-mode');
+    expect(screen.getByText(messages.accounts.message)).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('account-list-page-settings-button'));
 
     expect(accountCell).toHaveClass('multichain-account-cell--edit-mode');
+    expect(
+      screen.getByText(messages.manageAccounts.message),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(messages.accounts.message)).not.toBeInTheDocument();
     expect(
       screen.getAllByTestId('multichain-account-cell-edit-mode-visible-icon')
         .length,
@@ -97,6 +102,10 @@ describe('AccountList', () => {
     fireEvent.click(screen.getByTestId('account-list-page-settings-button'));
 
     expect(accountCell).not.toHaveClass('multichain-account-cell--edit-mode');
+    expect(screen.getByText(messages.accounts.message)).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.manageAccounts.message),
+    ).not.toBeInTheDocument();
   });
 
   it('navigates back when arrived via in-app navigation', () => {
