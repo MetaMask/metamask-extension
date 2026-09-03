@@ -15,12 +15,10 @@ jest.mock('../../../../shared/lib/feature-flags/version-gating', () => ({
 }));
 
 /**
- * Build the `RemoteFeatureFlagController` instance options with a messenger
- * whose `AnalyticsController:getState` resolves to the given metaMetrics id.
+ * Build a minimal `AuthenticationController` state object for messenger mocks.
  *
- * @param state - The persisted state passed to the builder.
- * @param analyticsId - The metaMetrics id the messenger resolves.
- * @returns The built instance options.
+ * @param overrides - Fields merged onto the default unsigned-in state.
+ * @returns The mocked authentication state.
  */
 function mockAuthState(
   overrides: Record<string, unknown> = {},
