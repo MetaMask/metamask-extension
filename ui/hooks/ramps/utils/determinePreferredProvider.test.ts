@@ -95,49 +95,4 @@ describe('completedOrdersFromRampsOrders', () => {
 
     expect(orders).toEqual([{ providerId: 'moonpay', completedAt: 1000 }]);
   });
-
-  it('normalizes Portfolio timestamps before selecting the latest provider', () => {
-    const completedOrders = completedOrdersFromRampsOrders([
-      {
-        id: 'older',
-        status: RampsOrderStatus.Completed,
-        createdAt: 1784717900514,
-        provider: transakProvider,
-      },
-      {
-        id: 'portfolio',
-        status: RampsOrderStatus.Completed,
-        createdAt: '2026-09-03T20:53:56.153Z',
-        provider: moonpayProvider,
-      },
-    ] as unknown as RampsOrder[]);
-
-    expect({
-      completedOrders,
-      preferredProvider: determinePreferredProvider(completedOrders, [
-        moonpayProvider,
-        transakProvider,
-      ]),
-    }).toMatchInlineSnapshot(`
-      {
-        "completedOrders": [
-          {
-            "completedAt": 1784717900514,
-            "providerId": "transak",
-          },
-          {
-            "completedAt": 1788468836153,
-            "providerId": "moonpay",
-          },
-        ],
-        "preferredProvider": {
-          "autoSelected": false,
-          "provider": {
-            "id": "moonpay",
-            "name": "MoonPay",
-          },
-        },
-      }
-    `);
-  });
 });

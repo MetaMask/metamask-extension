@@ -3,7 +3,6 @@ import {
   type RampsOrder,
   RampsOrderStatus,
 } from '@metamask/ramps-controller';
-import { toRampsOrderTimestamp } from './toRampsOrderTimestamp';
 
 export type CompletedOrderInfo = {
   providerId: string;
@@ -29,10 +28,7 @@ export function completedOrdersFromRampsOrders(
     .reduce<CompletedOrderInfo[]>((acc, order) => {
       const providerId = order.provider?.id;
       if (providerId) {
-        acc.push({
-          providerId,
-          completedAt: toRampsOrderTimestamp(order.createdAt),
-        });
+        acc.push({ providerId, completedAt: order.createdAt });
       }
       return acc;
     }, []);
