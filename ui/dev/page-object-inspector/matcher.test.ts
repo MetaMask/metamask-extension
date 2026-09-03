@@ -60,9 +60,9 @@ describe('stampOwnership', () => {
       }),
     );
 
-    expect(document.querySelector('button')?.hasAttribute('data-po-owner')).toBe(
-      false,
-    );
+    expect(
+      document.querySelector('button')?.hasAttribute('data-po-owner'),
+    ).toBe(false);
   });
 
   it('matches a testId selector', () => {
@@ -82,14 +82,13 @@ describe('stampOwnership', () => {
       }),
     );
 
-    expect(
-      document.querySelector('div')?.getAttribute('data-po-owner'),
-    ).toBe('TokensTab');
+    expect(document.querySelector('div')?.getAttribute('data-po-owner')).toBe(
+      'TokensTab',
+    );
   });
 
   it('matches a compound selector anchored on a test id', () => {
-    document.body.innerHTML =
-      '<div data-testid="name-input"><input /></div>';
+    document.body.innerHTML = '<div data-testid="name-input"><input /></div>';
 
     stampOwnership(
       document,
@@ -200,14 +199,14 @@ describe('stampOwnership', () => {
     );
 
     expect(
-      document.querySelector('[data-testid="container"]')?.hasAttribute(
-        'data-po-conflict',
-      ),
+      document
+        .querySelector('[data-testid="container"]')
+        ?.hasAttribute('data-po-conflict'),
     ).toBe(false);
     expect(
-      document.querySelector('[data-testid="child"]')?.hasAttribute(
-        'data-po-conflict',
-      ),
+      document
+        .querySelector('[data-testid="child"]')
+        ?.hasAttribute('data-po-conflict'),
     ).toBe(false);
   });
 
@@ -245,9 +244,9 @@ describe('stampOwnership', () => {
     );
 
     expect(result.failed).toBe(1);
-    expect(document.querySelector('button')?.getAttribute('data-po-owner')).toBe(
-      'HomePage',
-    );
+    expect(
+      document.querySelector('button')?.getAttribute('data-po-owner'),
+    ).toBe('HomePage');
   });
 
   it('clears stamps from a previous pass', () => {

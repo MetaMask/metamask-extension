@@ -100,7 +100,11 @@ export function toRuntimeIndex(index: PageObjectIndex): RuntimePageObjectIndex {
  * @param options.files - Every page-object source file to index.
  * @returns The index, including cross-file overlaps and a coverage summary.
  */
-export function buildIndex({ files }: { files: SourceFile[] }): PageObjectIndex {
+export function buildIndex({
+  files,
+}: {
+  files: SourceFile[];
+}): PageObjectIndex {
   const pageObjects: PageObject[] = [];
   const unresolved: UnresolvedSelector[] = [];
 

@@ -122,15 +122,15 @@ describe('parseCliArgs', () => {
     });
 
     it('disables color when --no-color is passed', () => {
-      expect(
-        parseRun(['--no-color'], { env: {}, isTTY: true }).color,
-      ).toBe(false);
+      expect(parseRun(['--no-color'], { env: {}, isTTY: true }).color).toBe(
+        false,
+      );
     });
 
     it('disables color when NO_COLOR is set', () => {
-      expect(
-        parseRun([], { env: { NO_COLOR: '1' }, isTTY: true }).color,
-      ).toBe(false);
+      expect(parseRun([], { env: { NO_COLOR: '1' }, isTTY: true }).color).toBe(
+        false,
+      );
     });
 
     it('disables color when stdout is not a TTY', () => {

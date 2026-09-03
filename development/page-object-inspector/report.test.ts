@@ -252,21 +252,21 @@ describe('shouldFail', () => {
   ];
 
   it('returns false when no fail-on flag is set', () => {
-    expect(
-      shouldFail(shadowing, { failOnOverlap: false, failOn: [] }),
-    ).toBe(false);
+    expect(shouldFail(shadowing, { failOnOverlap: false, failOn: [] })).toBe(
+      false,
+    );
   });
 
   it('returns false when the filtered set is empty', () => {
-    expect(
-      shouldFail([], { failOnOverlap: true, failOn: ['shadowing'] }),
-    ).toBe(false);
+    expect(shouldFail([], { failOnOverlap: true, failOn: ['shadowing'] })).toBe(
+      false,
+    );
   });
 
   it('returns true when --fail-on-overlap sees remaining overlaps', () => {
-    expect(
-      shouldFail(shadowing, { failOnOverlap: true, failOn: [] }),
-    ).toBe(true);
+    expect(shouldFail(shadowing, { failOnOverlap: true, failOn: [] })).toBe(
+      true,
+    );
   });
 
   it('returns true when a remaining overlap matches --fail-on', () => {
@@ -408,7 +408,9 @@ describe('formatOverlapReport', () => {
     expect(text).toContain(
       'SHADOWING — 1 selector(s) — fix: delete the subclass copy',
     );
-    expect(text.indexOf('CROSS-FAMILY')).toBeLessThan(text.indexOf('SHADOWING'));
+    expect(text.indexOf('CROSS-FAMILY')).toBeLessThan(
+      text.indexOf('SHADOWING'),
+    );
   });
 
   it('numbers items and prefixes declarations for click-through', () => {
@@ -424,7 +426,9 @@ describe('formatOverlapReport', () => {
     }).join('\n');
 
     expect(text).toContain('1. [data-testid="sort-by-networks"]');
-    expect(text).toContain(`${PAGE_OBJECTS_PREFIX}pages/home.ts:10  HomePage.toggle`);
+    expect(text).toContain(
+      `${PAGE_OBJECTS_PREFIX}pages/home.ts:10  HomePage.toggle`,
+    );
   });
 
   it('caps each classification and reports the hidden count', () => {

@@ -207,7 +207,9 @@ describe('buildIndex', () => {
 
     expect(index.overlaps).toHaveLength(1);
     expect(index.overlaps[0].classification).toBe('cross-family');
-    expect(index.overlaps[0].declarations.map((d) => d.relativePath)).toStrictEqual([
+    expect(
+      index.overlaps[0].declarations.map((d) => d.relativePath),
+    ).toStrictEqual([
       'pages/network-manager.ts',
       'pages/home-network-filter.ts',
     ]);

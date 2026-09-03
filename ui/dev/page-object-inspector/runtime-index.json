@@ -759,13 +759,8 @@
           "kind": "testId",
           "propertyName": "assetInfoIcon",
           "line": 15,
-          "chunks": [
-            "bridge-asset-info-icon-",
-            ""
-          ],
-          "params": [
-            "assetId"
-          ]
+          "chunks": ["bridge-asset-info-icon-", ""],
+          "params": ["assetId"]
         },
         {
           "id": "BridgeQuotePage.assetPickerModal",
@@ -807,13 +802,8 @@
           "kind": "css",
           "propertyName": "destinationAmount",
           "line": 32,
-          "chunks": [
-            "[data-testid=\"to-amount\"][value=\"",
-            "\"]"
-          ],
-          "params": [
-            "amount"
-          ]
+          "chunks": ["[data-testid=\"to-amount\"][value=\"", "\"]"],
+          "params": ["amount"]
         },
         {
           "id": "BridgeQuotePage.destinationAssetPickerButton",
@@ -1279,13 +1269,8 @@
           "kind": "testId",
           "propertyName": "accountListItem",
           "line": 4,
-          "chunks": [
-            "multichain-account-cell-name-",
-            ""
-          ],
-          "params": [
-            "accountName"
-          ]
+          "chunks": ["multichain-account-cell-name-", ""],
+          "params": ["accountName"]
         },
         {
           "id": "ConnectAccountConfirmation.cancelConnectButton",
@@ -1618,13 +1603,8 @@
           "kind": "css",
           "propertyName": "listItem",
           "line": 6,
-          "chunks": [
-            "[data-testid=\"gas-fee-token-list-item-",
-            "\"]"
-          ],
-          "params": [
-            "symbol"
-          ]
+          "chunks": ["[data-testid=\"gas-fee-token-list-item-", "\"]"],
+          "params": ["symbol"]
         },
         {
           "id": "GasFeeTokenModal.listItemAmountFiat",
@@ -1730,13 +1710,8 @@
           "kind": "css",
           "propertyName": "dataTreeRowWithText",
           "line": 26,
-          "chunks": [
-            "[data-testid^=\"confirmation_data-",
-            "\"]"
-          ],
-          "params": [
-            "field"
-          ]
+          "chunks": ["[data-testid^=\"confirmation_data-", "\"]"],
+          "params": ["field"]
         },
         {
           "id": "PermitConfirmation.origin",
@@ -1809,9 +1784,7 @@
             "//*[@data-testid='wallet-initiated-header-back-button']/following-sibling::*[normalize-space(.)='",
             "']"
           ],
-          "params": [
-            "tEn(\n      'perpsWithdrawFundsTitle',\n    )"
-          ]
+          "params": ["tEn(\n      'perpsWithdrawFundsTitle',\n    )"]
         },
         {
           "id": "PerpsWithdrawConfirmation.payWithRow",
@@ -1955,13 +1928,8 @@
           "kind": "css",
           "propertyName": "dataTreeRowWithText",
           "line": 16,
-          "chunks": [
-            "[data-testid^=\"confirmation_data-",
-            "\"]"
-          ],
-          "params": [
-            "field"
-          ]
+          "chunks": ["[data-testid^=\"confirmation_data-", "\"]"],
+          "params": ["field"]
         },
         {
           "id": "SignTypedData.networkDisplay",
@@ -3176,13 +3144,8 @@
           "kind": "testId",
           "propertyName": "accountName",
           "line": 8,
-          "chunks": [
-            "multichain-account-cell-name-",
-            ""
-          ],
-          "params": [
-            "accountLabel"
-          ]
+          "chunks": ["multichain-account-cell-name-", ""],
+          "params": ["accountLabel"]
         },
         {
           "id": "EditConnectedAccountsModal.addNewAccountButton",
@@ -3327,9 +3290,7 @@
             "[data-testid=\"popular-network-",
             "\"] [data-testid=\"test-add-button\"]"
           ],
-          "params": [
-            "chainId"
-          ]
+          "params": ["chainId"]
         },
         {
           "id": "SelectNetwork.closeButton",
@@ -4055,9 +4016,7 @@
             ".multichain-network-list-item--selected [data-testid=\"",
             "\"]"
           ],
-          "params": [
-            "networkName"
-          ]
+          "params": ["networkName"]
         },
         {
           "id": "HeaderNavbar.settingsButton",
@@ -4234,22 +4193,15 @@
             "[data-testid=\"transaction-breakdown-row\"]:nth-child(",
             ") [data-testid=\"transaction-breakdown-row-value\"]"
           ],
-          "params": [
-            "2 + rowIndex"
-          ]
+          "params": ["2 + rowIndex"]
         },
         {
           "id": "ActivityTab.transactionStatusLabel",
           "kind": "testId",
           "propertyName": "transactionStatusLabel",
           "line": 57,
-          "chunks": [
-            "transaction-details-status-",
-            ""
-          ],
-          "params": [
-            "status"
-          ]
+          "chunks": ["transaction-details-status-", ""],
+          "params": ["status"]
         },
         {
           "id": "ActivityTab.viewTransactionOnExplorerButton",
@@ -5796,10 +5748,7 @@
             ".multichain-network-list-item--deselected, ",
             " .multichain-network-list-item--deselected)"
           ],
-          "params": [
-            "selector",
-            "selector"
-          ]
+          "params": ["selector", "selector"]
         },
         {
           "id": "NetworkManager.multichainNetworkListItemByName",
@@ -5821,26 +5770,16 @@
           "kind": "css",
           "propertyName": "networkItemMenuButtonByChainId",
           "line": 38,
-          "chunks": [
-            "[data-testid=\"network-list-item-options-button-",
-            "\"]"
-          ],
-          "params": [
-            "chainId"
-          ]
+          "chunks": ["[data-testid=\"network-list-item-options-button-", "\"]"],
+          "params": ["chainId"]
         },
         {
           "id": "NetworkManager.networkListItem",
           "kind": "css",
           "propertyName": "networkListItem",
           "line": 41,
-          "chunks": [
-            "[data-testid=\"network-list-item-",
-            "\"]"
-          ],
-          "params": [
-            "networkName"
-          ]
+          "chunks": ["[data-testid=\"network-list-item-", "\"]"],
+          "params": ["networkName"]
         },
         {
           "id": "NetworkManager.networkManagerCloseButton",
@@ -5880,10 +5819,7 @@
             ".multichain-network-list-item--selected, ",
             " .multichain-network-list-item--selected)"
           ],
-          "params": [
-            "selector",
-            "selector"
-          ]
+          "params": ["selector", "selector"]
         },
         {
           "id": "NetworkManager.tabList",
@@ -6089,13 +6025,8 @@
           "kind": "css",
           "propertyName": "notificationListItem",
           "line": 6,
-          "chunks": [
-            "[data-testid=\"notification-list-item-",
-            "\"]"
-          ],
-          "params": [
-            "id"
-          ]
+          "chunks": ["[data-testid=\"notification-list-item-", "\"]"],
+          "params": ["id"]
         },
         {
           "id": "NotificationsListPage.notificationsListPageTitle",
@@ -8362,13 +8293,8 @@
           "kind": "css",
           "propertyName": "sectionButton",
           "line": 48,
-          "chunks": [
-            "[data-testid=\"notifications-settings-section-",
-            "\"]"
-          ],
-          "params": [
-            "section"
-          ]
+          "chunks": ["[data-testid=\"notifications-settings-section-", "\"]"],
+          "params": ["section"]
         },
         {
           "id": "NotificationsSettingsPage.sectionContent",
@@ -8379,9 +8305,7 @@
             "[data-testid=\"notifications-settings-section-content-",
             "\"]"
           ],
-          "params": [
-            "section"
-          ]
+          "params": ["section"]
         },
         {
           "id": "NotificationsSettingsPage.sectionInAppNotificationsInput",
@@ -8392,22 +8316,15 @@
             "[data-testid=\"",
             "-in-app-notifications-toggle-input\"]"
           ],
-          "params": [
-            "section"
-          ]
+          "params": ["section"]
         },
         {
           "id": "NotificationsSettingsPage.sectionInAppNotificationsToggle",
           "kind": "css",
           "propertyName": "sectionInAppNotificationsToggle",
           "line": 58,
-          "chunks": [
-            "[data-testid=\"",
-            "-in-app-notifications-toggle-box\"]"
-          ],
-          "params": [
-            "section"
-          ]
+          "chunks": ["[data-testid=\"", "-in-app-notifications-toggle-box\"]"],
+          "params": ["section"]
         }
       ]
     },
@@ -8937,13 +8854,8 @@
           "kind": "css",
           "propertyName": "srpShowAccountsButtonByIndex",
           "line": 180,
-          "chunks": [
-            "[data-testid=\"srp-list-show-accounts-",
-            "\"]"
-          ],
-          "params": [
-            "srpIndex - 1"
-          ]
+          "chunks": ["[data-testid=\"srp-list-show-accounts-", "\"]"],
+          "params": ["srpIndex - 1"]
         },
         {
           "id": "PrivacySettings.tapToRevealButton",
@@ -9244,13 +9156,8 @@
           "kind": "css",
           "propertyName": "networkListItem",
           "line": 45,
-          "chunks": [
-            "[data-testid=\"network-list-item-",
-            "\"]"
-          ],
-          "params": [
-            "chainId"
-          ]
+          "chunks": ["[data-testid=\"network-list-item-", "\"]"],
+          "params": ["chainId"]
         },
         {
           "id": "ShieldClaimPage.networkSelectorButton",
@@ -9314,13 +9221,8 @@
           "kind": "css",
           "propertyName": "claimItem",
           "line": 14,
-          "chunks": [
-            "[data-testid=\"claim-item-",
-            "\"]"
-          ],
-          "params": [
-            "claimId"
-          ]
+          "chunks": ["[data-testid=\"claim-item-", "\"]"],
+          "params": ["claimId"]
         },
         {
           "id": "ShieldClaimsListPage.claimsButton",
@@ -9794,13 +9696,8 @@
           "kind": "css",
           "propertyName": "qrSyncWalletRowId",
           "line": 37,
-          "chunks": [
-            "[data-testid=\"qr-sync-wallet-row-",
-            "\"]"
-          ],
-          "params": [
-            "walletId"
-          ]
+          "chunks": ["[data-testid=\"qr-sync-wallet-row-", "\"]"],
+          "params": ["walletId"]
         },
         {
           "id": "SyncAccountsSettingsPage.sessionExpiredErrorMessage",
@@ -9833,10 +9730,7 @@
             "\"][data-synced-account-count=\"",
             "\"]"
           ],
-          "params": [
-            "walletCount",
-            "accountCount"
-          ]
+          "params": ["walletCount", "accountCount"]
         },
         {
           "id": "SyncAccountsSettingsPage.syncButton",
@@ -10838,13 +10732,8 @@
           "kind": "css",
           "propertyName": "scopeCheckboxByName",
           "line": 42,
-          "chunks": [
-            "input[name=\"",
-            "\"]"
-          ],
-          "params": [
-            "scope"
-          ]
+          "chunks": ["input[name=\"", "\"]"],
+          "params": ["scope"]
         },
         {
           "id": "TestDappMultichain.walletCreateSessionButton",
@@ -11968,11 +11857,7 @@
             "/tx/",
             "\"]"
           ],
-          "params": [
-            "this.explorerTestId",
-            "explorerUrl",
-            "txHash"
-          ]
+          "params": ["this.explorerTestId", "explorerUrl", "txHash"]
         },
         {
           "id": "TransactionDetailsPage.status",
@@ -11987,13 +11872,8 @@
           "kind": "testId",
           "propertyName": "statusByTestId",
           "line": 45,
-          "chunks": [
-            "transaction-details-status-",
-            ""
-          ],
-          "params": [
-            "status"
-          ]
+          "chunks": ["transaction-details-status-", ""],
+          "params": ["status"]
         },
         {
           "id": "TransactionDetailsPage.viewDetailsLink",

@@ -145,7 +145,7 @@ export function filterOverlaps(
     ) {
       return false;
     }
-    const {file} = options;
+    const { file } = options;
     if (
       file &&
       !overlap.declarations.some((declaration) =>
@@ -367,8 +367,7 @@ export function formatOverlapReport({
     );
 
     shown.forEach((overlap, index) => {
-      const placeLabel =
-        overlap.declarations.length === 1 ? 'place' : 'places';
+      const placeLabel = overlap.declarations.length === 1 ? 'place' : 'places';
       lines.push(
         `  ${styles.dim(`${index + 1}.`)} ${styles.bold(overlap.display)}  ${styles.dim(`·  ${overlap.declarations.length} ${placeLabel}`)}`,
       );
@@ -381,10 +380,7 @@ export function formatOverlapReport({
     });
 
     if (hidden > 0) {
-      lines.push(
-        '',
-        styles.dim(`  … ${hidden} more. Re-run with --all`),
-      );
+      lines.push('', styles.dim(`  … ${hidden} more. Re-run with --all`));
     }
   }
 
@@ -418,27 +414,28 @@ function formatSummaryRows(
   summary: IndexSummary,
   styles: ReportStyles,
 ): string[] {
-  const rows: { label: string; value: number; paint: (text: string) => string }[] =
-    [
-      { label: 'files', value: summary.files, paint: identity },
-      { label: 'page objects', value: summary.pageObjects, paint: identity },
-      { label: 'selectors', value: summary.selectors, paint: identity },
-      {
-        label: 'unresolved',
-        value: summary.unresolved,
-        paint: summary.unresolved > 0 ? styles.yellow : styles.green,
-      },
-      {
-        label: 'overlaps',
-        value: summary.overlaps,
-        paint: summary.overlaps > 0 ? styles.red : styles.green,
-      },
-    ];
+  const rows: {
+    label: string;
+    value: number;
+    paint: (text: string) => string;
+  }[] = [
+    { label: 'files', value: summary.files, paint: identity },
+    { label: 'page objects', value: summary.pageObjects, paint: identity },
+    { label: 'selectors', value: summary.selectors, paint: identity },
+    {
+      label: 'unresolved',
+      value: summary.unresolved,
+      paint: summary.unresolved > 0 ? styles.yellow : styles.green,
+    },
+    {
+      label: 'overlaps',
+      value: summary.overlaps,
+      paint: summary.overlaps > 0 ? styles.red : styles.green,
+    },
+  ];
 
   const labelWidth = Math.max(...rows.map((row) => row.label.length));
-  const valueWidth = Math.max(
-    ...rows.map((row) => String(row.value).length),
-  );
+  const valueWidth = Math.max(...rows.map((row) => String(row.value).length));
 
   return rows.map((row) => {
     const label = row.label.padEnd(labelWidth);
@@ -468,8 +465,8 @@ function formatOverlapClassRows(
     ...CLASSIFICATIONS.map((classification) => classification.length),
   );
   const valueWidth = Math.max(
-    ...CLASSIFICATIONS.map((classification) =>
-      String(counts[classification]).length,
+    ...CLASSIFICATIONS.map(
+      (classification) => String(counts[classification]).length,
     ),
   );
 

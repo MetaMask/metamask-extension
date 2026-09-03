@@ -40,7 +40,9 @@ describe('extractFromSource', () => {
 
     it('extracts a testId locator', () => {
       expect(
-        selectorsFor(`  private readonly loading = { testId: 'import-tokens-loading' };`),
+        selectorsFor(
+          `  private readonly loading = { testId: 'import-tokens-loading' };`,
+        ),
       ).toStrictEqual([
         {
           id: 'Example.loading',
@@ -55,7 +57,9 @@ describe('extractFromSource', () => {
 
     it('extracts a tag and text locator, keeping tag and text separate', () => {
       expect(
-        selectorsFor(`  private readonly title = { text: 'Token imported', tag: 'h6' };`),
+        selectorsFor(
+          `  private readonly title = { text: 'Token imported', tag: 'h6' };`,
+        ),
       ).toStrictEqual([
         {
           id: 'Example.title',
@@ -108,7 +112,9 @@ describe('extractFromSource', () => {
 
     it('extracts an xpath locator', () => {
       expect(
-        selectorsFor(`  private readonly toggle = { xpath: '//label[@id="x"]' };`),
+        selectorsFor(
+          `  private readonly toggle = { xpath: '//label[@id="x"]' };`,
+        ),
       ).toStrictEqual([
         {
           id: 'Example.toggle',

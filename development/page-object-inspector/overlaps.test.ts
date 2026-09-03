@@ -189,7 +189,7 @@ describe('detectOverlaps', () => {
     ]);
 
     expect(overlaps).toHaveLength(1);
-    expect(overlaps[0].display).toBe('p + text tEn(\'interactingWith\')');
+    expect(overlaps[0].display).toBe("p + text tEn('interactingWith')");
   });
 
   it('distinguishes selectors that differ only by kind', () => {

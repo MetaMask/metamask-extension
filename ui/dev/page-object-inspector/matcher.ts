@@ -162,7 +162,7 @@ function findByText(root: Document, selector: Selector): Element[] | null {
     return null;
   }
 
-  const {text} = selector;
+  const { text } = selector;
   return Array.from(root.querySelectorAll('*')).filter(
     (element) =>
       !element.closest(`[${INSPECTOR_ROOT_ATTRIBUTE}]`) &&

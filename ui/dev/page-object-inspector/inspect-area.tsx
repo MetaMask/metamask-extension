@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { colorForClass } from './colors';
+import { isGoodLocator } from './locator';
 import type { StampResult } from './matcher';
 import {
   CONFLICT_ATTRIBUTE,
@@ -137,21 +138,11 @@ const TODO_BADGE_STYLE: React.CSSProperties = {
   color: 'var(--color-error-default)',
 };
 
-const TODO_ROW_BG = 'color-mix(in srgb, var(--color-error-default) 22%, transparent)';
+const TODO_ROW_BG =
+  'color-mix(in srgb, var(--color-error-default) 22%, transparent)';
 
 /** Extra right padding on pinned/list rows so text never renders under the unpin/close button. */
 const ROW_PADDING_WITH_BUTTON = '10px 40px 10px 16px';
-
-function isGoodLocator(selector: Selector): boolean {
-  if (selector.kind === 'testId') {
-    return true;
-  }
-  if (selector.kind === 'css') {
-    const raw = selector.chunks ? selector.chunks.join('') : selector.value ?? '';
-    return raw.includes('data-testid');
-  }
-  return false;
-}
 
 function kindBadgeStyle(good: boolean): React.CSSProperties {
   if (good) {
@@ -209,9 +200,7 @@ const KindBadge = ({ selector }: { selector: Selector }) => {
       </span>
     );
   }
-  return (
-    <span style={TODO_BADGE_STYLE}>TODO - Migrate to data-testid</span>
-  );
+  return <span style={TODO_BADGE_STYLE}>TODO - Migrate to data-testid</span>;
 };
 
 const TargetInfo = ({ target }: { target: Target }) => {
@@ -276,7 +265,12 @@ const PinnedRow = ({
   if (pin.isUncovered) {
     return (
       <div
-        style={{ padding: ROW_PADDING_WITH_BUTTON, borderBottom: '1px solid var(--color-border-muted)', position: 'relative' as const, background: bgColor }}
+        style={{
+          padding: ROW_PADDING_WITH_BUTTON,
+          borderBottom: '1px solid var(--color-border-muted)',
+          position: 'relative' as const,
+          background: bgColor,
+        }}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
@@ -288,7 +282,9 @@ const PinnedRow = ({
           &times;
         </button>
         <div style={{ color: 'var(--color-warning-default)' }}>
-          <span style={{ fontWeight: 700, marginRight: 6 }}>#{displayIndex}</span>
+          <span style={{ fontWeight: 700, marginRight: 6 }}>
+            #{displayIndex}
+          </span>
           No page object covers this element.
           {pin.uncoveredTestId && (
             <div style={{ opacity: 0.8, marginTop: 4 }}>
@@ -305,7 +301,13 @@ const PinnedRow = ({
 
   return (
     <div
-      style={{ padding: ROW_PADDING_WITH_BUTTON, borderBottom: '1px solid var(--color-border-muted)', position: 'relative' as const, background: bgColor, cursor: 'pointer' }}
+      style={{
+        padding: ROW_PADDING_WITH_BUTTON,
+        borderBottom: '1px solid var(--color-border-muted)',
+        position: 'relative' as const,
+        background: bgColor,
+        cursor: 'pointer',
+      }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
@@ -317,7 +319,9 @@ const PinnedRow = ({
         &times;
       </button>
       <div style={{ marginBottom: 4, wordBreak: 'break-word' }}>
-        <span style={{ fontWeight: 700, opacity: 0.5, marginRight: 6 }}>#{displayIndex}</span>
+        <span style={{ fontWeight: 700, opacity: 0.5, marginRight: 6 }}>
+          #{displayIndex}
+        </span>
         <span
           style={{
             color: colorForClass(pin.ownerClassName),
@@ -377,9 +381,7 @@ function collectUniqueListItems(tab: TabKind): {
   totalCount: number;
 } {
   const cssSelector =
-    tab === 'conflicting'
-      ? `[${CONFLICT_ATTRIBUTE}]`
-      : `[${OWNER_ATTRIBUTE}]`;
+    tab === 'conflicting' ? `[${CONFLICT_ATTRIBUTE}]` : `[${OWNER_ATTRIBUTE}]`;
   const elements = document.querySelectorAll(cssSelector);
   const byKey = new Map<string, ListPanelItem>();
 
@@ -410,7 +412,10 @@ function collectUniqueListItems(tab: TabKind): {
   return { items: [...byKey.values()], totalCount: elements.length };
 }
 
-function tabButtonStyle(active: boolean, variant: TabKind): React.CSSProperties {
+function tabButtonStyle(
+  active: boolean,
+  variant: TabKind,
+): React.CSSProperties {
   return {
     width: TAB_STRIP_WIDTH,
     padding: '10px 12px',
@@ -458,7 +463,10 @@ const TabStrip = ({
     </button>
     {conflictingCount > 0 && (
       <button
-        style={tabButtonStyle(isOpen && activeTab === 'conflicting', 'conflicting')}
+        style={tabButtonStyle(
+          isOpen && activeTab === 'conflicting',
+          'conflicting',
+        )}
         onClick={() => onSelect('conflicting')}
       >
         {conflictingCount} conflicting
@@ -528,7 +536,14 @@ const SlidingLeftPanel = ({
         </button>
       </div>
       {activeTab === 'conflicting' && (
-        <div style={{ padding: '8px 16px', opacity: 0.6, fontSize: 12, borderBottom: '1px solid var(--color-border-muted)' }}>
+        <div
+          style={{
+            padding: '8px 16px',
+            opacity: 0.6,
+            fontSize: 12,
+            borderBottom: '1px solid var(--color-border-muted)',
+          }}
+        >
           Multiple page objects claim the same element. Only one should own it.
         </div>
       )}
@@ -543,7 +558,8 @@ const SlidingLeftPanel = ({
               cursor: item.selectorId ? 'pointer' : undefined,
             }}
             onMouseEnter={() =>
-              item.selectorId && onHighlight(item.selectorId, highlightColorForTab)
+              item.selectorId &&
+              onHighlight(item.selectorId, highlightColorForTab)
             }
             onMouseLeave={() => onHighlight(null)}
           >
@@ -553,10 +569,14 @@ const SlidingLeftPanel = ({
                 <span style={COUNT_BADGE_STYLE}>×{item.matchCount}</span>
               )}
               {item.needsMigration && (
-                <span style={TODO_BADGE_STYLE}>TODO - Migrate to data-testid</span>
+                <span style={TODO_BADGE_STYLE}>
+                  TODO - Migrate to data-testid
+                </span>
               )}
             </div>
-            <div style={{ opacity: 0.6, fontSize: 12, marginTop: 2 }}>{item.detail}</div>
+            <div style={{ opacity: 0.6, fontSize: 12, marginTop: 2 }}>
+              {item.detail}
+            </div>
             {item.conflictors && item.conflictors.length > 0 && (
               <div style={{ marginTop: 6, fontSize: 12 }}>
                 {item.conflictors.map((name) => (
@@ -590,9 +610,7 @@ export function InspectArea({
 
   const owned = useMemo(
     () =>
-      result
-        ? collectUniqueListItems('owned')
-        : { items: [], totalCount: 0 },
+      result ? collectUniqueListItems('owned') : { items: [], totalCount: 0 },
     [result],
   );
   const conflicting = useMemo(
@@ -666,7 +684,9 @@ export function InspectArea({
                 displayIndex={idx + 1}
                 actualIndex={idx}
                 onUnpin={onUnpin}
-                onMouseEnter={() => onHighlight(pin.selector.id || null, 'cyan')}
+                onMouseEnter={() =>
+                  onHighlight(pin.selector.id || null, 'cyan')
+                }
                 onMouseLeave={() => onHighlight(null)}
               />
             ))

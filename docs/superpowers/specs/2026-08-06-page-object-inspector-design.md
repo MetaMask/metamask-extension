@@ -9,13 +9,13 @@ engine, overlay UI, and build wiring not yet started.
 Recorded as the design met reality. See
 [Implementation deviations](#implementation-deviations) for detail.
 
-| Metric | Measured against the live codebase |
-| --- | --- |
-| Files parsed | 190 |
-| Page-object classes | 152 |
-| Selectors extracted | 1,534 |
-| Unresolved | 11 (5 unanchored, 6 uninterpretable) |
-| Overlaps found | 120 (111 cross-family, 8 sibling, 1 shadowing) |
+| Metric              | Measured against the live codebase             |
+| ------------------- | ---------------------------------------------- |
+| Files parsed        | 190                                            |
+| Page-object classes | 152                                            |
+| Selectors extracted | 1,534                                          |
+| Unresolved          | 11 (5 unanchored, 6 uninterpretable)           |
+| Overlaps found      | 120 (111 cross-family, 8 sibling, 1 shadowing) |
 
 ## Problem
 
@@ -27,8 +27,8 @@ and others — but the mapping between a screen a developer is looking at and th
 page-object file that models it is not discoverable.
 
 The concrete failure this causes: a developer writing an E2E test sees a UI
-element and has no reliable way to answer *"which page object owns this, and
-which method do I call?"* short of grepping 190 files.
+element and has no reliable way to answer _"which page object owns this, and
+which method do I call?"_ short of grepping 190 files.
 
 **Overlap is already measurably present.** Of 656 distinct `data-testid` values
 referenced across the page-object layer, **84 are declared in two or more
@@ -55,7 +55,7 @@ welcome side effects but do not drive the design.
 ## Key insight
 
 `data-testid` is already a join key between the running UI and the page-object
-layer, and at runtime *every* selector shape becomes resolvable.
+layer, and at runtime _every_ selector shape becomes resolvable.
 
 `test/e2e/page-objects/common.ts` already defines the authoritative locator
 contract, referenced 111 times across the layer:
@@ -72,14 +72,14 @@ The generator's taxonomy must mirror this union rather than invent its own.
 Measured key occurrences across `test/e2e/page-objects/**` (these are raw key
 counts and are not disjoint — a `{ css, text }` object contributes to two rows):
 
-| Shape | Occurrences |
-| --- | --- |
+| Shape                                     | Occurrences                  |
+| ----------------------------------------- | ---------------------------- |
 | `data-testid="…"` inside selector strings | 800, across 115 of 190 files |
-| `text:` key | 756 |
-| `css:` key | 326 |
-| `tag:` key | 312 |
-| `testId:` key | 288 |
-| `xpath:` key | 25 |
+| `text:` key                               | 756                          |
+| `css:` key                                | 326                          |
+| `tag:` key                                | 312                          |
+| `testId:` key                             | 288                          |
+| `xpath:` key                              | 25                           |
 
 The wider app defines 2,633 `data-testid` attributes across `ui/` and `app/`,
 so the page-object layer references roughly a third of them. That delta is
@@ -177,7 +177,7 @@ inspector can report the exact call to write. Extraction is tiered: plain string
 literals first, then template patterns, then an `unresolved` bucket.
 
 **Patterns with no literal anchor must be rejected.** Four files declare
-`` `[data-testid="${networkName}"]` ``, which as a pattern would match *every*
+`` `[data-testid="${networkName}"]` ``, which as a pattern would match _every_
 element carrying any testid and claim ownership of the whole DOM. Any pattern
 whose literal portion is empty — or shorter than a minimum threshold — goes to
 `unresolved` rather than becoming a matcher.
@@ -207,14 +207,14 @@ When selectors declared by two unrelated classes match the same element, both
 are stamped and the element is marked as conflicting. Resolution is a human
 decision, so the engine's job is to make the conflict impossible to miss.
 
-Two cases must *not* be treated as conflicts, or the signal drowns:
+Two cases must _not_ be treated as conflicts, or the signal drowns:
 
 - **Inheritance.** A selector declared on `HomePage` and reached through
   `TokensTab` has one owner, `HomePage`. The engine compares `declaredBy`, not
   the classes that can access the selector.
 - **Nesting.** Stamps are per-element, so a child owned by `TokensTab` inside a
   container owned by `HomePage` produces two separately-stamped elements, not a
-  conflict. Only two owners on the *same* node count.
+  conflict. Only two owners on the _same_ node count.
 
 Each selector executes inside its own try/catch. A malformed selector increments
 a diagnostics counter rather than aborting the pass.
@@ -304,7 +304,7 @@ Tier 1's raw duplicates are not all the same defect. Using the resolved
 
 ### Tier 3 — distinct selectors, same element (runtime)
 
-Only the overlay can catch two *different* selectors resolving to one node — say
+Only the overlay can catch two _different_ selectors resolving to one node — say
 `HomePage` matching by testid and another class matching the same button by
 `{ tag, text }`. Static analysis cannot see this because the strings differ.
 

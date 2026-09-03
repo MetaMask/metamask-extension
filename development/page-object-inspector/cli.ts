@@ -54,9 +54,7 @@ function readPageObjectFiles(): SourceFile[] {
  * @param index - The built page-object index.
  * @returns Repo-relative paths of the files that were written.
  */
-function writeIndexArtifacts(
-  index: ReturnType<typeof buildIndex>,
-): string[] {
+function writeIndexArtifacts(index: ReturnType<typeof buildIndex>): string[] {
   fs.mkdirSync(path.dirname(OUTPUT_PATH), { recursive: true });
   fs.writeFileSync(
     OUTPUT_PATH,
@@ -106,8 +104,7 @@ function runCommand(options: CliOptions): number {
   const index = buildIndex({ files: readPageObjectFiles() });
   const overlaps = filterOverlaps(index.overlaps, options);
   const unresolved = filterUnresolved(index.unresolved, options);
-  const wrote =
-    options.command === 'index' ? writeIndexArtifacts(index) : [];
+  const wrote = options.command === 'index' ? writeIndexArtifacts(index) : [];
 
   if (options.json) {
     console.log(

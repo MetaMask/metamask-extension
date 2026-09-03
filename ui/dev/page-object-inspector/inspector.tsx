@@ -1,6 +1,13 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { colorForClass, tintForClass } from './colors';
 import { InspectArea } from './inspect-area';
+import { isGoodLocator } from './locator';
 import { stampOwnership, type StampResult } from './matcher';
 import {
   readInspectorSettings,
@@ -53,6 +60,8 @@ const DWELL_RADIUS_PX = 5;
 const MAX_PINS = 5;
 
 const CONFLICT_COLOR = 'var(--color-error-default)';
+const GOOD_LOCATOR_HIGHLIGHT = 'var(--color-success-default)';
+const BAD_LOCATOR_HIGHLIGHT = 'var(--color-error-default)';
 
 const TOOLTIP_STYLE: React.CSSProperties = {
   position: 'fixed',
@@ -134,7 +143,9 @@ export function PageObjectInspector({ index }: { index: PageObjectIndex }) {
   const [pinnedElements, setPinnedElements] = useState<PinnedElement[]>([]);
   const [showPinButton, setShowPinButton] = useState(false);
   const [pinButtonPosition, setPinButtonPosition] = useState({ x: 0, y: 0 });
-  const [highlightSelectorId, setHighlightSelectorId] = useState<string | null>(null);
+  const [highlightSelectorId, setHighlightSelectorId] = useState<string | null>(
+    null,
+  );
   const [highlightColor, setHighlightColor] = useState<string>('cyan');
 
   const dwellTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -211,9 +222,7 @@ export function PageObjectInspector({ index }: { index: PageObjectIndex }) {
     };
 
     setPinnedElements((prev) => {
-      const deduped = prev.filter(
-        (p) => p.selector.id !== newPin.selector.id,
-      );
+      const deduped = prev.filter((p) => p.selector.id !== newPin.selector.id);
       const next = [newPin, ...deduped];
       if (next.length > MAX_PINS) {
         next.pop();
@@ -250,6 +259,7 @@ export function PageObjectInspector({ index }: { index: PageObjectIndex }) {
       if (!owned || !entry || owned.hasAttribute(VIEWPORT_ATTRIBUTE)) {
         setTarget(null);
         currentTargetRef.current = null;
+        setHighlightSelectorId(null);
       } else {
         const conflict = owned.getAttribute(CONFLICT_ATTRIBUTE);
         const newTarget: Target = {
@@ -262,6 +272,16 @@ export function PageObjectInspector({ index }: { index: PageObjectIndex }) {
         };
         setTarget(newTarget);
         currentTargetRef.current = newTarget;
+        if (newTarget.canPin) {
+          setHighlightSelectorId(entry.selector.id);
+          setHighlightColor(
+            isGoodLocator(entry.selector)
+              ? GOOD_LOCATOR_HIGHLIGHT
+              : BAD_LOCATOR_HIGHLIGHT,
+          );
+        } else {
+          setHighlightSelectorId(null);
+        }
       }
 
       const dx = event.clientX - lastMousePosRef.current.x;
@@ -272,8 +292,7 @@ export function PageObjectInspector({ index }: { index: PageObjectIndex }) {
         if (showPinButtonRef.current) {
           const btnPos = pinButtonPosRef.current;
           const distToBtn = Math.sqrt(
-            (event.clientX - btnPos.x) ** 2 +
-              (event.clientY - btnPos.y) ** 2,
+            (event.clientX - btnPos.x) ** 2 + (event.clientY - btnPos.y) ** 2,
           );
           if (distToBtn < 80) {
             return;
@@ -314,6 +333,7 @@ export function PageObjectInspector({ index }: { index: PageObjectIndex }) {
     const onBlur = () => {
       setTarget(null);
       currentTargetRef.current = null;
+      setHighlightSelectorId(null);
       clearDwellTimer();
     };
 

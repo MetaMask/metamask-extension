@@ -435,7 +435,7 @@ function classifyArrowFunction(
     return null;
   }
 
-  let {body} = node;
+  let { body } = node;
   while (ts.isParenthesizedExpression(body)) {
     body = body.expression;
   }
