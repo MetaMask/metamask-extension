@@ -33,9 +33,7 @@ import type {
   LCPMetricWithAttribution,
   CLSMetricWithAttribution,
   FCPMetricWithAttribution,
-  // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'web-vitals/attribution';
-// @ts-expect-error suppress CommonJS vs ECMAScript error
 import { onINP, onLCP, onCLS, onFCP } from 'web-vitals/attribution';
 import type { WebVitalsMetrics } from '../../../shared/constants/benchmarks';
 

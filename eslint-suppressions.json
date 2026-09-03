@@ -540,11 +540,6 @@
       "count": 1
     }
   },
-  "ui/hooks/useTokenSecurityData.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/hooks/useTokenTracker.js": {
     "react-hooks/set-state-in-effect": {
       "count": 1
@@ -665,10 +660,7 @@
   },
   "ui/pages/confirmations/components/confirm/scroll-to-bottom/scroll-to-bottom.tsx": {
     "react-hooks/exhaustive-deps": {
-      "count": 2
-    },
-    "react-hooks/refs": {
-      "count": 2
+      "count": 1
     }
   },
   "ui/pages/confirmations/components/developer/perps-withdraw-button/perps-withdraw-button.tsx": {
@@ -678,11 +670,6 @@
   },
   "ui/pages/confirmations/components/info-popover-tooltip/info-popover-tooltip.tsx": {
     "react-hooks/refs": {
-      "count": 1
-    }
-  },
-  "ui/pages/confirmations/components/rows/from-account-row/from-account-row.tsx": {
-    "react-hooks/preserve-manual-memoization": {
       "count": 1
     }
   },
@@ -782,11 +769,6 @@
   "ui/pages/confirmations/hooks/transactions/useDepositPrefillAmount.ts": {
     "react-hooks/set-state-in-effect": {
       "count": 1
-    }
-  },
-  "ui/pages/confirmations/hooks/transactions/useTransactionConfirm.ts": {
-    "react-hooks/immutability": {
-      "count": 4
     }
   },
   "ui/pages/confirmations/hooks/transactions/useTransactionCustomAmount.ts": {

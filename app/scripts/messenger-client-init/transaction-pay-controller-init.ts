@@ -12,12 +12,16 @@ import {
 } from '../lib/transaction/delegation';
 import { createMoneyAccountDepositTransaction } from '../lib/money/pay/create-deposit-transaction';
 import { createMoneyAccountWithdrawTransaction } from '../lib/money/pay/create-withdraw-transaction';
+import { getPaymentOverrideData } from '../lib/money/pay/payment-override-callback';
 import {
   getMoneyAccountAmountData,
   updateMoneyAccountDepositAmount,
 } from '../lib/money/pay/update-deposit-amount';
 import { updateMoneyAccountWithdrawAmount } from '../lib/money/pay/update-withdraw-amount';
-import type { MoneyPayMessenger } from '../lib/money/pay/pay-context';
+import type {
+  MoneyPayMessenger,
+  PaymentOverrideMessenger,
+} from '../lib/money/pay/pay-context';
 import type {
   MessengerClientInitFunction,
   MessengerClientInitResult,
@@ -53,6 +57,11 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
         amountDataRequest,
       ),
     getDelegationTransaction: getDelegationTransactionCallback,
+    getPaymentOverrideData: (paymentOverrideRequest) =>
+      getPaymentOverrideData(
+        paymentOverrideRequest,
+        initMessenger as PaymentOverrideMessenger,
+      ),
     getStrategy,
     messenger: controllerMessenger,
     state: persistedState.TransactionPayController,
@@ -139,23 +148,27 @@ function getApi(
     updateMoneyAccountWithdrawAmount: (
       transactionId: string,
       amountHuman: string,
+      recipientOverride?: Hex,
     ) => {
-      const accountOverride =
+      const resolvedRecipient =
+        recipientOverride ??
         messengerClient.state?.transactionData?.[transactionId]
           ?.accountOverride;
       return updateMoneyAccountWithdrawAmount(
         moneyPayMessenger,
         transactionId,
         amountHuman,
-        accountOverride,
+        resolvedRecipient,
       );
     },
     setTransactionPayPaymentOverride: (
       transactionId: string,
       {
+        atomic,
         paymentOverride,
         refundTo,
       }: {
+        atomic?: boolean;
         paymentOverride?: PaymentOverride;
         refundTo?: Hex;
       } = {},
@@ -163,8 +176,12 @@ function getApi(
       messengerClient.setTransactionConfig(transactionId, (config) => {
         config.paymentOverride = paymentOverride;
         if (paymentOverride === undefined) {
+          config.atomic = undefined;
           config.refundTo = undefined;
           return;
+        }
+        if (atomic !== undefined) {
+          config.atomic = atomic;
         }
         if (refundTo !== undefined) {
           config.refundTo = refundTo;

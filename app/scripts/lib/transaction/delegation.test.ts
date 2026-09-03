@@ -291,6 +291,56 @@ describe('delegation', () => {
       );
     });
 
+    it('uses the parent txParams execution when useParentExecution is set, even with nestedTransactions', async () => {
+      // Mirrors the mobile publish hook: sponsored Money Account withdrawals
+      // must relay the parent `execute()` as a single execution — redeeming
+      // the nested calls directly mined on Monad without moving funds.
+      const transaction = {
+        ...TRANSACTION_META_MOCK,
+        nestedTransactions: [
+          {
+            to: '0x1111111111111111111111111111111111111111',
+            value: '0x2',
+            data: '0xaaaa',
+          },
+          {
+            to: '0x2222222222222222222222222222222222222222',
+            value: '0x3',
+            data: '0xbbbb',
+          },
+        ],
+      } as unknown as TransactionMeta;
+
+      await convertTransactionToRedeemDelegations({
+        transaction,
+        messenger,
+        useParentExecution: true,
+      });
+
+      expect(createExactExecutionTermsMock).toHaveBeenCalledWith({
+        execution: {
+          target: TRANSACTION_META_MOCK.txParams.to,
+          value: 256n,
+          callData: '0xdeadbeef',
+        },
+      });
+      expect(createExactExecutionBatchTermsMock).not.toHaveBeenCalled();
+
+      expect(encodeRedeemDelegationsMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          executions: [
+            [
+              {
+                target: TRANSACTION_META_MOCK.txParams.to,
+                value: 256n,
+                callData: '0xdeadbeef',
+              },
+            ],
+          ],
+        }),
+      );
+    });
+
     it('normalizes nestedTransactions callData', async () => {
       const transaction = {
         ...TRANSACTION_META_MOCK,

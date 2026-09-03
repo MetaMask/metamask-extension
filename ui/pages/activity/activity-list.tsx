@@ -1,5 +1,10 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { useDeferredValue } from '../../hooks/useDeferredValue';
+import React, {
+  useCallback,
+  useDeferredValue,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
 import { TransactionActivityEmptyState } from '../../components/app/transaction-activity-empty-state';

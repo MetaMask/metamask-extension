@@ -18,6 +18,7 @@ import {
 } from '../../../../store/controller-actions/transaction-pay-controller';
 import { useTransactionPayPrimaryRequiredToken } from '../pay/useTransactionPayData';
 import { useDispatch } from '../../../../store/hooks';
+import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 
 const ERC20_ABI = ['function transfer(address to, uint256 amount)'];
 let erc20Interface: Interface | null = null;
@@ -63,6 +64,7 @@ export function useUpdateTokenAmount() {
   );
 
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+  const accountOverride = useTransactionAccountOverride();
 
   const decimals = primaryRequiredToken?.decimals;
 
@@ -106,17 +108,20 @@ export function useUpdateTokenAmount() {
         return;
       }
 
-      // Same shape as deposits: the placeholder withdraw + transfer batch
-      // has no transfer calldata to parse on the parent.
+      // Placeholder withdraw + transfer batch has no calldata to parse. The
+      // background commit re-encodes both calls (vault rate + recipient).
+      // Confirm patches the returned hexes onto the approval clone.
       if (moneyAccountFlow === MoneyAccountFlow.Withdraw) {
-        updateMoneyAccountWithdrawAmount(transactionId, amountHuman).catch(
-          (error) => {
-            console.error(
-              'Failed to update money account withdrawal amount',
-              error,
-            );
-          },
-        );
+        updateMoneyAccountWithdrawAmount(
+          transactionId,
+          amountHuman,
+          accountOverride,
+        ).catch((error) => {
+          console.error(
+            'Failed to update money account withdrawal amount',
+            error,
+          );
+        });
         return;
       }
 
@@ -166,6 +171,7 @@ export function useUpdateTokenAmount() {
       );
     },
     [
+      accountOverride,
       amountRaw,
       data,
       decimals,

@@ -9,6 +9,7 @@ import {
   getMoneyAccountAmountData,
   updateMoneyAccountDepositAmount,
 } from '../lib/money/pay/update-deposit-amount';
+import { getPaymentOverrideData } from '../lib/money/pay/payment-override-callback';
 import { updateMoneyAccountWithdrawAmount } from '../lib/money/pay/update-withdraw-amount';
 import { getDelegationTransaction } from '../lib/transaction/delegation';
 import { MessengerClientInitRequest } from './types';
@@ -34,6 +35,9 @@ jest.mock('../lib/money/pay/update-deposit-amount', () => ({
   getMoneyAccountAmountData: jest.fn(),
   updateMoneyAccountDepositAmount: jest.fn(),
 }));
+jest.mock('../lib/money/pay/payment-override-callback', () => ({
+  getPaymentOverrideData: jest.fn(),
+}));
 jest.mock('../lib/money/pay/update-withdraw-amount', () => ({
   updateMoneyAccountWithdrawAmount: jest.fn(),
 }));
@@ -47,6 +51,7 @@ const createWithdrawTransactionMock = jest.mocked(
 const updateDepositAmountMock = jest.mocked(updateMoneyAccountDepositAmount);
 const updateWithdrawAmountMock = jest.mocked(updateMoneyAccountWithdrawAmount);
 const getMoneyAccountAmountDataMock = jest.mocked(getMoneyAccountAmountData);
+const getPaymentOverrideDataMock = jest.mocked(getPaymentOverrideData);
 
 function getInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<
@@ -79,6 +84,7 @@ describe('TransactionPayControllerInit', () => {
     expect(controllerMock).toHaveBeenCalledWith({
       getAmountData: expect.any(Function),
       getDelegationTransaction: expect.any(Function),
+      getPaymentOverrideData: expect.any(Function),
       getStrategy: expect.any(Function),
       messenger: expect.any(Object),
       state: undefined,
@@ -308,15 +314,39 @@ describe('TransactionPayControllerInit', () => {
       const config: {
         paymentOverride?: string;
         refundTo?: string;
+        atomic?: boolean;
       } = {
         paymentOverride: 'moneyAccount',
         refundTo: '0xabc',
+        atomic: false,
       };
       updater(config as never);
 
       expect(config).toEqual({
         paymentOverride: undefined,
         refundTo: undefined,
+        atomic: undefined,
+      });
+    });
+
+    it('writes atomic when supplied', () => {
+      const { api, setTransactionConfigMock } = initApi();
+
+      api.setTransactionPayPaymentOverride('tx-3', {
+        paymentOverride: 'moneyAccount' as never,
+        atomic: false,
+      });
+
+      const updater = setTransactionConfigMock.mock.calls[0][1];
+      const config: {
+        paymentOverride?: string;
+        atomic?: boolean;
+      } = {};
+      updater(config as never);
+
+      expect(config).toEqual({
+        paymentOverride: 'moneyAccount',
+        atomic: false,
       });
     });
   });
@@ -463,21 +493,58 @@ describe('TransactionPayControllerInit', () => {
         transactionData: { 'tx-1': { accountOverride } },
       };
       updateWithdrawAmountMock.mockResolvedValue({
-        didCommit: true,
-        recipient: accountOverride,
+        withdrawData: '0xaaa1',
+        transferData: '0xbbb2',
       });
 
       const result = await api.updateMoneyAccountWithdrawAmount('tx-1', '10');
 
       expect(result).toStrictEqual({
-        didCommit: true,
-        recipient: accountOverride,
+        withdrawData: '0xaaa1',
+        transferData: '0xbbb2',
       });
       expect(updateWithdrawAmountMock).toHaveBeenCalledWith(
         expect.anything(),
         'tx-1',
         '10',
         accountOverride,
+      );
+    });
+
+    it('prefers the recipient override over the Pay account override', async () => {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      const payOverride = '0xabcdef1234567890abcdef1234567890abcdef12' as const;
+      const recipientOverride =
+        '0x1111111111111111111111111111111111111111' as const;
+      (
+        messengerClient as {
+          state: {
+            transactionData: Record<string, { accountOverride?: string }>;
+          };
+        }
+      ).state = {
+        transactionData: { 'tx-1': { accountOverride: payOverride } },
+      };
+      updateWithdrawAmountMock.mockResolvedValue({
+        withdrawData: '0xaaa1',
+        transferData: '0xbbb2',
+      });
+
+      await api.updateMoneyAccountWithdrawAmount(
+        'tx-1',
+        '10',
+        recipientOverride,
+      );
+
+      expect(updateWithdrawAmountMock).toHaveBeenCalledWith(
+        expect.anything(),
+        'tx-1',
+        '10',
+        recipientOverride,
       );
     });
   });
@@ -499,6 +566,27 @@ describe('TransactionPayControllerInit', () => {
     expect(getMoneyAccountAmountDataMock).toHaveBeenCalledWith(
       expect.anything(),
       request,
+    );
+  });
+
+  it('forwards getPaymentOverrideData to the money-account callback', async () => {
+    TransactionPayControllerInit(getInitRequestMock());
+
+    const controllerMock = jest.mocked(TransactionPayController);
+    const lastCall =
+      controllerMock.mock.calls[controllerMock.mock.calls.length - 1][0];
+    getPaymentOverrideDataMock.mockResolvedValue({ calls: [] });
+
+    const request = {
+      amount: '10',
+      transaction: { id: 'tx-1' },
+      transactionData: {},
+    };
+    await lastCall.getPaymentOverrideData?.(request as never);
+
+    expect(getPaymentOverrideDataMock).toHaveBeenCalledWith(
+      request,
+      expect.anything(),
     );
   });
 });

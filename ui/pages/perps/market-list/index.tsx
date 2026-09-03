@@ -51,12 +51,17 @@ import {
   getHip3AllowedSourcesSet,
 } from '../../../selectors/perps/feature-flags';
 import {
+  selectPerpsIsTestnet,
+  selectPerpsWatchlistMarkets,
+} from '../../../selectors/perps-controller';
+import {
   sortMarkets,
   type SortField,
   type SortDirection,
 } from '../utils/sortMarkets';
 import {
   normalizeMarketFilter,
+  WATCHLIST_MARKET_FILTER,
   type MarketFilter,
 } from '../../../../shared/constants/perps';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
@@ -65,7 +70,7 @@ import { usePerpsAttribution } from '../../../hooks/perps/usePerpsAttribution';
 import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
 import { MarketRow } from '../../../components/app/perps/market-row';
 import { MarketRowSkeleton } from './components/market-row-skeleton';
-import { SortDropdown } from './components/sort-dropdown';
+import { SortDropdown, SORT_FIELD_OPTIONS } from './components/sort-dropdown';
 import { SearchInput } from './components/search-input';
 import { FilterSelect } from './components/filter-select';
 
@@ -88,6 +93,21 @@ const SEARCH_MODE = {
 
 /** A short ticker-like token ("btc", "hype2") reads as a targeted lookup. */
 const TICKER_LIKE_QUERY = /^[a-z0-9]{1,6}$/u;
+
+/**
+ * Sort values accepted on the `sort` / `direction` search params. The fields
+ * are the ones the sort dropdown itself offers, so a deeplink can never select
+ * a ranking the user could not reach from the UI.
+ */
+const SORT_DIRECTIONS: SortDirection[] = ['asc', 'desc'];
+const DEFAULT_SORT_FIELD: SortField = 'volume';
+const DEFAULT_SORT_DIRECTION: SortDirection = 'desc';
+
+const isSortField = (value: string | null): value is SortField =>
+  SORT_FIELD_OPTIONS.some((option) => option.id === value);
+
+const isSortDirection = (value: string | null): value is SortDirection =>
+  SORT_DIRECTIONS.some((direction) => direction === value);
 
 /**
  * Classify a search for the funnel `mode` property: chips/category narrow the
@@ -142,16 +162,23 @@ const isUncategorizedHip3Market = (
  * @param markets - Array of markets to filter
  * @param filter - Market type filter
  * @param allowedHip3Sources - Set of allowed HIP-3 market sources (used for "new" tab only)
+ * @param watchlistSymbols - Upper-cased watchlisted symbols (used for the "watchlist" filter only)
  * @returns Filtered array of markets
  */
 const filterByType = (
   markets: PerpsMarketData[],
   filter: MarketFilter,
   allowedHip3Sources: Set<string>,
+  watchlistSymbols: Set<string>,
 ): PerpsMarketData[] => {
   switch (filter) {
     case 'all': {
       return markets;
+    }
+    case WATCHLIST_MARKET_FILTER: {
+      return markets.filter((m) =>
+        watchlistSymbols.has(m.symbol.toUpperCase()),
+      );
     }
     case 'crypto': {
       return markets.filter(isCryptoMarket);
@@ -179,6 +206,8 @@ export const MarketListView = () => {
   const [searchParams] = useSearchParams();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const allowedHip3Sources = useSelector(getHip3AllowedSourcesSet);
+  const watchlistMarketsState = useSelector(selectPerpsWatchlistMarkets);
+  const isTestnet = useSelector(selectPerpsIsTestnet);
   const { track } = usePerpsEventTracking();
   const { setFlowAttribution } = usePerpsAttribution();
 
@@ -187,6 +216,20 @@ export const MarketListView = () => {
     usePerpsLiveMarketListData();
   const { account } = usePerpsLiveAccount();
 
+  // Upper-cased so lookups match `PerpsMarketData.symbol` casing.
+  const watchlistSymbols = useMemo(
+    () =>
+      new Set(
+        (isTestnet
+          ? watchlistMarketsState.testnet
+          : watchlistMarketsState.mainnet
+        ).map((symbol) => symbol.toUpperCase()),
+      ),
+    [isTestnet, watchlistMarketsState],
+  );
+
+  const hasWatchlistMarkets = watchlistSymbols.size > 0;
+
   // Read initial filter from URL params (set by deeplink)
   const initialFilter = useMemo<MarketFilter>(() => {
     const filterParam = searchParams.get('filter');
@@ -194,17 +237,45 @@ export const MarketListView = () => {
       // normalizeMarketFilter resolves legacy aliases (e.g. `stocks`) and returns
       // null for unknown values, so no extra validation is needed here.
       const normalizedFilter = normalizeMarketFilter(filterParam);
+      // The watchlist option is hidden while the watchlist is empty, so a stale
+      // link to it would otherwise select an option that is not in the list.
+      if (
+        normalizedFilter === WATCHLIST_MARKET_FILTER &&
+        !hasWatchlistMarkets
+      ) {
+        return 'all';
+      }
       if (normalizedFilter) {
         return normalizedFilter;
       }
     }
     return 'all';
+  }, [searchParams, hasWatchlistMarkets]);
+
+  // Read the initial sort from URL params so entry points that already know how
+  // the user wants the list ranked (the Perps tab's Top movers header) land on
+  // that ranking instead of the default volume sort. Unrecognised values fall
+  // back to the default, so an old or hand-edited link never renders unsorted.
+  const initialSort = useMemo<{
+    field: SortField;
+    direction: SortDirection;
+  }>(() => {
+    const sortParam = searchParams.get('sort');
+    const directionParam = searchParams.get('direction');
+    return {
+      field: isSortField(sortParam) ? sortParam : DEFAULT_SORT_FIELD,
+      direction: isSortDirection(directionParam)
+        ? directionParam
+        : DEFAULT_SORT_DIRECTION,
+    };
   }, [searchParams]);
 
   // State
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortField, setSortField] = useState<SortField>('volume');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [sortField, setSortField] = useState<SortField>(initialSort.field);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(
+    initialSort.direction,
+  );
   const [selectedFilter, setSelectedFilter] =
     useState<MarketFilter>(initialFilter);
 
@@ -245,7 +316,12 @@ export const MarketListView = () => {
       markets = filterMarketsByQuery(allMarkets, searchQuery);
     } else {
       // Not searching: apply filters
-      markets = filterByType(allMarkets, selectedFilter, allowedHip3Sources);
+      markets = filterByType(
+        allMarkets,
+        selectedFilter,
+        allowedHip3Sources,
+        watchlistSymbols,
+      );
     }
 
     markets = sortMarkets({
@@ -258,6 +334,7 @@ export const MarketListView = () => {
     allMarkets,
     selectedFilter,
     allowedHip3Sources,
+    watchlistSymbols,
     searchQuery,
     sortField,
     sortDirection,
@@ -658,6 +735,7 @@ export const MarketListView = () => {
             value={selectedFilter}
             onChange={handleFilterChange}
             showNewFilter={hasUncategorizedMarkets}
+            showWatchlistFilter={hasWatchlistMarkets}
           />
           <SortDropdown
             selectedField={sortField}
