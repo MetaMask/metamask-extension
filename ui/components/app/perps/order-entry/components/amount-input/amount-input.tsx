@@ -65,6 +65,7 @@ const handleNumericFocusSelectAll = (
  * @param options0.currentPrice
  * @param options0.currentPositionSize
  * @param options0.onAddFunds
+ * @param options0.isLoadingAccount
  * @param options0.szDecimals
  * @param options0.autoFocus
  * @param options0.usdPlaceholder
@@ -84,6 +85,7 @@ export const AmountInput = ({
   szDecimals,
   currentPositionSize,
   onAddFunds,
+  isLoadingAccount = false,
   autoFocus = false,
   usdPlaceholder = '0.00',
   usdInputRef,
@@ -410,6 +412,7 @@ export const AmountInput = ({
             {`${formatNumber(availableBalance, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDC`}
           </SensitiveText>
           {onAddFunds &&
+          !isLoadingAccount &&
           availableBalance < PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC ? (
             <Button
               variant={ButtonVariant.Secondary}
@@ -427,7 +430,8 @@ export const AmountInput = ({
               iconProps={{ color: IconColor.IconAlternative }}
               ariaLabel={t('addFunds')}
               type="button"
-              onClick={onAddFunds}
+              onClick={isLoadingAccount ? undefined : onAddFunds}
+              isDisabled={isLoadingAccount}
               data-testid="amount-input-add-funds"
             />
           )}
