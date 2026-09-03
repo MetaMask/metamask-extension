@@ -11,7 +11,10 @@ import {
   AssetStandard,
   type Asset,
 } from '../../../pages/confirmations/types/send';
-import { selectBlockedPayTokens } from '../../../pages/confirmations/selectors/feature-flags';
+import {
+  selectBlockedPayTokens,
+  type BlockedPayTokenEntry,
+} from '../../../pages/confirmations/selectors/feature-flags';
 import { HyperliquidDepositPrompt } from './hyperliquid-deposit-prompt';
 
 jest.mock('../../../pages/confirmations/hooks/send/useSendTokens');
@@ -88,6 +91,11 @@ const USDC_TOKEN: Asset = {
   standard: AssetStandard.ERC20,
   symbol: 'USDC',
 };
+
+const toBlockedPayTokenEntry = (token: Asset): BlockedPayTokenEntry => ({
+  address: token.address as string,
+  chainId: String(token.chainId),
+});
 
 const mockStore = configureMockStore([]);
 
@@ -197,7 +205,7 @@ describe('HyperliquidDepositPrompt', () => {
   it('defaults to the first selectable token when the largest balance is blocked', () => {
     mockSelectBlockedPayTokens.mockReturnValue({
       chainIds: [],
-      tokens: [{ address: ETH_TOKEN.address, chainId: ETH_TOKEN.chainId }],
+      tokens: [toBlockedPayTokenEntry(ETH_TOKEN)],
     });
 
     renderComponent();
@@ -214,8 +222,8 @@ describe('HyperliquidDepositPrompt', () => {
     mockSelectBlockedPayTokens.mockReturnValue({
       chainIds: [],
       tokens: [
-        { address: ETH_TOKEN.address, chainId: ETH_TOKEN.chainId },
-        { address: USDC_TOKEN.address, chainId: USDC_TOKEN.chainId },
+        toBlockedPayTokenEntry(ETH_TOKEN),
+        toBlockedPayTokenEntry(USDC_TOKEN),
       ],
     });
 
