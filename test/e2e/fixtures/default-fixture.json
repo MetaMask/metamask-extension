@@ -170,11 +170,16 @@
       "unconnectedAccountAlertShownOrigins": {},
       "web3ShimUsageOrigins": {}
     },
+    "AnalyticsController": {
+      "analyticsId": null,
+      "consentDecisionMade": true,
+      "optedIn": false
+    },
     "AnnouncementController": {
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 214,
+      "currentMigrationVersion": 224,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -183,7 +188,6 @@
       "browserEnvironment": {
         "browser": "chrome"
       },
-      "canTrackWalletFundsObtained": false,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -197,8 +201,9 @@
       "newPrivacyPolicyToastClickedOrClosed": true,
       "newPrivacyPolicyToastShownDate": 1770282512702,
       "outdatedBrowserWarningLastShown": null,
-      "pendingShieldCohort": null,
+      "pendingShieldCohort": "wallet_home",
       "pendingShieldCohortTxType": null,
+      "perpsTabBadgeSeen": false,
       "pna25Acknowledged": true,
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
@@ -339,7 +344,11 @@
       "selectedCurrency": "usd"
     },
     "AuthenticationController": {},
+    "BridgeController": {
+      "inputPrimaryDenomination": "token_amount"
+    },
     "BridgeStatusController": {
+      "quoteUpdateStatusStore": {},
       "txHistory": {}
     },
     "ClaimsController": {
@@ -349,6 +358,18 @@
         "validSubmissionWindowDays": 21
       },
       "drafts": []
+    },
+    "ComplianceController": {
+      "lastCheckedAt": null,
+      "walletComplianceStatusMap": {}
+    },
+    "ConfigRegistryController": {
+      "configs": {
+        "networks": {}
+      },
+      "etag": null,
+      "lastFetched": null,
+      "version": null
     },
     "CurrencyController": {
       "currencyRates": {
@@ -360,52 +381,8 @@
       },
       "currentCurrency": "usd"
     },
-    "EnsController": {
-      "ensEntries": {
-        "0x1": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x1",
-            "ensName": "."
-          }
-        },
-        "0x3": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x3",
-            "ensName": "."
-          }
-        },
-        "0x4": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x4",
-            "ensName": "."
-          }
-        },
-        "0x4268": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x4268",
-            "ensName": "."
-          }
-        },
-        "0x5": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0x5",
-            "ensName": "."
-          }
-        },
-        "0xaa36a7": {
-          ".": {
-            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-            "chainId": "0xaa36a7",
-            "ensName": "."
-          }
-        }
-      },
-      "ensResolutionsByAddress": {}
+    "DeFiPositionsControllerV2": {
+      "allDeFiPositionsV2": {}
     },
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},
@@ -424,22 +401,19 @@
     "LoggingController": {
       "logs": {}
     },
-    "AnalyticsController": {
-      "analyticsId": null,
-      "optedIn": false
-    },
     "MetaMetricsController": {
       "dataCollectionForMarketing": false,
-      "eventsBeforeMetricsOptIn": [],
       "fragments": {},
       "marketingCampaignCookieId": null,
-      "completedMetaMetricsOnboarding": true,
       "tracesBeforeMetricsOptIn": [],
       "traits": {}
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
+    },
+    "MoneyAccountController": {
+      "moneyAccounts": {}
     },
     "MultichainAssetsController": {
       "accountsAssets": {
@@ -551,6 +525,18 @@
           "isEvm": false,
           "name": "Solana Devnet",
           "nativeCurrency": "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501"
+        },
+        "stellar:pubnet": {
+          "chainId": "stellar:pubnet",
+          "isEvm": false,
+          "name": "Stellar",
+          "nativeCurrency": "stellar:pubnet/slip44:148"
+        },
+        "stellar:testnet": {
+          "chainId": "stellar:testnet",
+          "isEvm": false,
+          "name": "Stellar Testnet",
+          "nativeCurrency": "stellar:testnet/slip44:148"
         },
         "tron:2494104990": {
           "chainId": "tron:2494104990",
@@ -894,6 +880,10 @@
           "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": false,
           "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": false
         },
+        "stellar": {
+          "stellar:pubnet": false,
+          "stellar:testnet": false
+        },
         "tron": {
           "tron:2494104990": false,
           "tron:3448148188": false,
@@ -958,13 +948,10 @@
       "fcmToken": "",
       "isPushEnabled": true
     },
-    "ComplianceController": {
-      "lastCheckedAt": null,
-      "walletComplianceStatusMap": {}
-    },
     "OnboardingController": {
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
+      "hasSeenOnboardingCompletionPage": true,
       "seedPhraseBackedUp": null
     },
     "PPOMController": {
@@ -1028,7 +1015,6 @@
       "advancedGasFee": {},
       "currentLocale": "en",
       "dismissSeedBackUpReminder": false,
-      "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "ipfsGateway": "dweb.link",
@@ -1044,7 +1030,9 @@
         "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
+        "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
+        "isBasicFunctionalityConsolidatedEnabled": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -1053,6 +1041,7 @@
         "showMultiRpcModal": false,
         "showNativeTokenAsMainBalance": true,
         "showTestNetworks": true,
+        "showTickerWidget": true,
         "skipDeepLinkInterstitial": false,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
@@ -1070,7 +1059,8 @@
       "referrals": {
         "asterdex": {},
         "gmx": {},
-        "hyperliquid": {}
+        "hyperliquid": {},
+        "variational": {}
       },
       "securityAlertsEnabled": true,
       "showSidePanelMigrationToast": false,
@@ -1092,7 +1082,8 @@
     },
     "ProfileMetricsController": {
       "initialDelayEndTimestamp": 1770282498299,
-      "initialEnqueueCompleted": true,
+      "initialEnqueueCompleted": false,
+      "proofBackfillEnqueued": false,
       "syncQueue": {
         "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
           {
@@ -1110,8 +1101,28 @@
         ]
       }
     },
+    "RampsController": {
+      "orders": [],
+      "providerAutoSelected": false,
+      "userRegion": null
+    },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 1770282502510,
+      "featureFlagThresholdGroups": {
+        "assetsAccountsApiV6": "feature is OFF",
+        "assetsEnableNotificationsByDefaultV2": "feature is ON",
+        "backendWebSocketConnection": "feature is ON",
+        "coreExtensionUxCeux1096AbtestReferralUi": "treatment",
+        "coreExtensionUxCeux1141AbtestBottomNav": "control",
+        "extensionSignedDeepLinkWarningEnabled": "Warning enabled",
+        "perpsTAT3382AbtestTabBadge": "control",
+        "platformSplitStateGradualRollout": "feature is ON",
+        "stxMigrationBatchStatus": "sentinel on",
+        "stxMigrationCancel": "sentinel on",
+        "stxMigrationGetFees": "sentinel on",
+        "stxMigrationSubmitTransactions": "sentinel on",
+        "swapsSWAPS4827AbtestChainValueOrder": "control"
+      },
       "localOverrides": {},
       "remoteFeatureFlags": {
         "feature1": true,
@@ -1153,7 +1164,13 @@
           "subscriptionId": null
         }
       },
-      "rewardsActiveAccount": null,
+      "rewardsActiveAccount": {
+        "account": "eip155:0:0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
+        "lastFreshOptInStatusCheck": 1783610142869,
+        "lastPerpsDiscountRateFetched": null,
+        "perpsFeeDiscount": null,
+        "subscriptionId": null
+      },
       "rewardsPointsEstimateHistory": [],
       "rewardsSeasonStatuses": {},
       "rewardsSeasons": {},
@@ -1170,39 +1187,20 @@
       "domains": {
         "http://localhost:3000": "mainnet",
         "http://localhost:8000": "mainnet",
-        "https://alpha.mycactus.io": "mainnet",
         "https://app-beta.signer.cubist.dev": "mainnet",
         "https://app-gamma.signer.cubist.dev": "mainnet",
-        "https://app.bitgo-test.com": "mainnet",
-        "https://app.bitgo.com": "mainnet",
         "https://app.metamask.io": "mainnet",
         "https://app.signer.cubist.dev": "mainnet",
-        "https://apps-portal.safe.global": "mainnet",
-        "https://console.dev.mpcvault.com": "mainnet",
-        "https://console.fireblocks.io": "mainnet",
-        "https://console.mpcvault.com": "mainnet",
-        "https://debug.mycactus.dev:1443": "mainnet",
-        "https://dev10-console.waterballoons.xyz": "mainnet",
-        "https://dev4-console.waterballoons.xyz": "mainnet",
         "https://developer.metamask.io": "mainnet",
         "https://docs.metamask.io": "mainnet",
-        "https://eu-console.fireblocks.io": "mainnet",
-        "https://eu2-console.fireblocks.io": "mainnet",
-        "https://local.waterballoons.xyz:4200": "mainnet",
         "https://localhost:3000": "mainnet",
-        "https://neptune-custody-ui.metamask-institutional.io": "mainnet",
         "https://portfolio-builds.metafi-dev.codefi.network": "mainnet",
         "https://portfolio.metamask.io": "mainnet",
-        "https://pre.mycactus.com": "mainnet",
-        "https://sandbox.fireblocks.io": "mainnet",
-        "https://saturn-custody-ui.metamask-institutional.io": "mainnet",
         "https://ui-preprod-v2.qa.zodia.io": "mainnet",
         "https://ui-preprod-v2.uat.zodia.io": "mainnet",
         "https://ui-v2.qa.zodia.io": "mainnet",
         "https://ui-v2.sit.zodia.io": "mainnet",
         "https://v2.custody.zodia.io": "mainnet",
-        "https://www.mycactus.com": "mainnet",
-        "https://www.mycactus.dev": "mainnet",
         "localhost:8000": "mainnet",
         "npm:@metamask/bitcoin-wallet-snap": "mainnet",
         "npm:@metamask/ens-resolver-snap": "mainnet",
@@ -1211,6 +1209,7 @@
         "npm:@metamask/message-signing-snap": "mainnet",
         "npm:@metamask/permissions-kernel-snap": "mainnet",
         "npm:@metamask/solana-wallet-snap": "mainnet",
+        "npm:@metamask/stellar-wallet-snap": "mainnet",
         "npm:@metamask/tron-wallet-snap": "mainnet"
       }
     },
@@ -1263,6 +1262,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 214
+    "version": 224
   }
 }

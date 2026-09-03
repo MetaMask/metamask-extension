@@ -11,7 +11,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { MOCK_ANALYTICS_ID } from '../../constants';
 import { PAGES } from '../../webdriver/driver';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
@@ -64,7 +64,7 @@ describe('Port Stream Chunking', function () {
           .withTransactionController({ transactions: largeTransactions })
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),

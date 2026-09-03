@@ -12,7 +12,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
-import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
+import TokenOverviewPage from '../../page-objects/pages/asset/token-overview-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockEmptyPrices } from '../tokens/utils/mocks';
 
@@ -42,7 +42,7 @@ describe('Send ERC20 - Contract Warning', function () {
         testSpecificMock: mocks,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
       },
@@ -67,7 +67,10 @@ describe('Send ERC20 - Contract Warning', function () {
         await tokenOverviewPage.clickSend();
 
         const sendPage = new SendPage(driver);
-        await sendPage.fillRecipient(contractAddress);
+        await sendPage.fillRecipient({
+          recipientAddress: contractAddress,
+          validAddress: false,
+        });
 
         // Verify warning
         const warningText =

@@ -8,3 +8,4 @@ export {
   type GatorTokenInfo,
   type UseGatorPermissionTokenInfoResult,
 } from './useGatorPermissionTokenInfo';
+export { useAdvancedPermissionTranslationsMap } from './useAdvancedPermissionTranslationsMap';

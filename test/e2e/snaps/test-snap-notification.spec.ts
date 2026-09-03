@@ -1,11 +1,11 @@
 import { Driver } from '../webdriver/driver';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import HeaderNavbar from '../page-objects/pages/header-navbar';
+import HeaderNavbar from '../page-objects/pages/home/header-navbar';
 import { withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
-import NotificationsListPage from '../page-objects/pages/notifications-list-page';
-import NotificationDetailsPage from '../page-objects/pages/notification-details-page';
+import NotificationsListPage from '../page-objects/pages/notifications/notifications-list-page';
+import NotificationDetailsPage from '../page-objects/pages/notifications/notification-details-page';
 import { mockNotificationSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { login } from '../page-objects/flows/login.flow';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
@@ -45,13 +45,7 @@ describe('Test Snap Notification', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await headerNavbar.checkNotificationCountInMenuOption(1);
-
-        // close the drawer by clicking the back button
-        await headerNavbar.clickDrawerBackButton();
-
-        // click the notification options and validate the message in the notification list
-        await headerNavbar.clickNotificationsOptions();
+        await headerNavbar.checkNotificationCountAndOpenNotifications(1);
         await notificationsListPage.checkPageIsLoaded();
         await notificationsListPage.checkSnapsNotificationMessage(
           'Hello from within MetaMask!',
@@ -95,13 +89,7 @@ describe('Test Snap Notification', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await headerNavbar.checkNotificationCountInMenuOption(1);
-
-        // this click will close the menu
-        await headerNavbar.clickDrawerBackButton();
-
-        // click the notification options
-        await headerNavbar.clickNotificationsOptions();
+        await headerNavbar.checkNotificationCountAndOpenNotifications(1);
         await notificationsListPage.checkPageIsLoaded();
         await notificationsListPage.checkSnapsNotificationMessage(
           'Hello from MetaMask, click here for an expanded view!',

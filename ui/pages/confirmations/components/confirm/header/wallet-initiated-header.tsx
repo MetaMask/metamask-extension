@@ -5,6 +5,8 @@ import {
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
+import { getConfirmationTransactionType } from '../../../utils/confirm';
 import {
   Box,
   ButtonIcon,
@@ -25,6 +27,7 @@ import {
 import { SHIELD_PLAN_ROUTE } from '../../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
+import { PAY_TRANSACTION_TYPES } from '../../../constants/pay';
 import { SEND_TRANSACTION_TYPES } from '../../../constants/send';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { AdvancedDetailsButton } from './advanced-details-button';
@@ -35,24 +38,19 @@ export const WalletInitiatedHeader = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const navigate = useNavigate();
 
+  const confirmationType = getConfirmationTransactionType(currentConfirmation);
+
   const isSendTransaction =
-    currentConfirmation?.type &&
-    SEND_TRANSACTION_TYPES.includes(currentConfirmation.type);
+    confirmationType && SEND_TRANSACTION_TYPES.includes(confirmationType);
 
   const handleBackButtonClick = useCallback(() => {
-    if (
-      currentConfirmation.type === TransactionType.shieldSubscriptionApprove
-    ) {
+    if (confirmationType === TransactionType.shieldSubscriptionApprove) {
       onCancel({ location: MetaMetricsEventLocation.Confirmation });
       navigate(SHIELD_PLAN_ROUTE);
       return;
     }
 
-    if (
-      currentConfirmation.type === TransactionType.musdClaim ||
-      currentConfirmation.type === TransactionType.perpsDeposit ||
-      currentConfirmation.type === TransactionType.perpsWithdraw
-    ) {
+    if (hasTransactionType(currentConfirmation, PAY_TRANSACTION_TYPES)) {
       onCancel({
         location: MetaMetricsEventLocation.Confirmation,
         navigateBackToPreviousPage: true,
@@ -60,13 +58,12 @@ export const WalletInitiatedHeader = () => {
       return;
     }
 
-    const isNativeSend =
-      currentConfirmation.type === TransactionType.simpleSend;
+    const isNativeSend = confirmationType === TransactionType.simpleSend;
     const isERC20TokenSend =
-      currentConfirmation.type === TransactionType.tokenMethodTransfer;
+      confirmationType === TransactionType.tokenMethodTransfer;
     const isNFTTokenSend =
-      currentConfirmation.type === TransactionType.tokenMethodTransferFrom ||
-      currentConfirmation.type === TransactionType.tokenMethodSafeTransferFrom;
+      confirmationType === TransactionType.tokenMethodTransferFrom ||
+      confirmationType === TransactionType.tokenMethodSafeTransferFrom;
 
     if (isNativeSend || isERC20TokenSend || isNFTTokenSend) {
       onCancel({
@@ -74,24 +71,28 @@ export const WalletInitiatedHeader = () => {
         navigateBackForSend: true,
       });
     }
-  }, [currentConfirmation, navigate, onCancel]);
+  }, [confirmationType, currentConfirmation, navigate, onCancel]);
 
   const getHeaderTitle = () => {
     if (isSendTransaction) {
       return null;
     }
-    if (
-      currentConfirmation?.type === TransactionType.shieldSubscriptionApprove
-    ) {
+    if (confirmationType === TransactionType.shieldSubscriptionApprove) {
       return t('shieldConfirmMembership');
     }
-    if (currentConfirmation?.type === TransactionType.musdClaim) {
+    if (confirmationType === TransactionType.moneyAccountDeposit) {
+      return t('addFunds');
+    }
+    if (confirmationType === TransactionType.moneyAccountWithdraw) {
+      return t('send');
+    }
+    if (confirmationType === TransactionType.musdClaim) {
       return null;
     }
-    if (currentConfirmation?.type === TransactionType.perpsDeposit) {
+    if (confirmationType === TransactionType.perpsDeposit) {
       return t('perpsDepositFundsTitle');
     }
-    if (currentConfirmation?.type === TransactionType.perpsWithdraw) {
+    if (confirmationType === TransactionType.perpsWithdraw) {
       return t('perpsWithdrawFundsTitle');
     }
     return t('review');
@@ -115,8 +116,6 @@ export const WalletInitiatedHeader = () => {
         iconName={IconName.ArrowLeft}
         ariaLabel={t('back')}
         size={ButtonIconSize.Md}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={handleBackButtonClick}
         data-testid="wallet-initiated-header-back-button"
         color={IconColor.iconDefault}

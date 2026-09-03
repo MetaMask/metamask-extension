@@ -22,7 +22,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
-import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { Popover, PopoverPosition } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
@@ -33,6 +32,7 @@ import {
 import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { getAccountGroupDisplayBalance } from '../../../helpers/utils/account-group-balance';
 import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
 import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list-row';
 import { DefaultAddress } from './default-address';
@@ -150,15 +150,25 @@ export const MultichainTriggeredAddressRowsList = ({
 
   const allAccountGroups = useSelector(getAllAccountGroups);
   const allBalances = useSelector(selectBalanceForAllWallets);
-  const { balance, currency, accountGroup } = useMemo(() => {
-    const group = allAccountGroups.find((g) => g.id === groupId);
-    const account = allBalances?.wallets?.[group?.walletId]?.groups?.[groupId];
-    const bal = account?.totalBalanceInUserCurrency ?? 0;
-    const curr = account?.userCurrency ?? '';
-    return { balance: bal, currency: curr, accountGroup: group };
-  }, [allBalances, groupId, allAccountGroups]);
-
   const { formatCurrencyWithMinThreshold } = useFormatters();
+
+  const { balance, accountGroup } = useMemo(() => {
+    const group = allAccountGroups.find((g) => g.id === groupId);
+    // Undefined when this group has no known balance yet, so nothing is
+    // rendered instead of a misleading "$0.00".
+    const groupBalance = getAccountGroupDisplayBalance(
+      allBalances?.wallets?.[group?.walletId]?.groups?.[groupId],
+    );
+    return {
+      balance:
+        groupBalance &&
+        formatCurrencyWithMinThreshold(
+          groupBalance.amount,
+          groupBalance.currency,
+        ),
+      accountGroup: group,
+    };
+  }, [allBalances, groupId, allAccountGroups, formatCurrencyWithMinThreshold]);
 
   const getAccountsSpreadByNetworkByGroupId = useSelector((state) =>
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),
@@ -381,7 +391,6 @@ export const MultichainTriggeredAddressRowsList = ({
         isOpen={isOpen}
         position={dynamicPosition}
         hasArrow={true}
-        backgroundColor={BackgroundColor.backgroundDefault}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClickOutside={handlePopoverClose}
@@ -415,7 +424,7 @@ export const MultichainTriggeredAddressRowsList = ({
                 fontWeight={FontWeight.Medium}
                 color={TextColor.TextAlternative}
               >
-                {formatCurrencyWithMinThreshold(balance, currency)}
+                {balance}
               </Text>
             </Box>
           )}

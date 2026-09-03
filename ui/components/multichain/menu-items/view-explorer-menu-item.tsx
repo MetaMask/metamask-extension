@@ -1,9 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { parseCaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { IconName } from '@metamask/design-system-react';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   getMultichainAccountUrl,
   getMultichainBlockExplorerUrl,
@@ -11,15 +13,12 @@ import {
 
 import { MenuItem } from '../../ui/menu';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
   MetaMetricsEventName,
-  MetaMetricsEventOptions,
-  MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
-import { IconName, Text } from '../../component-library';
+import { Text } from '../../component-library';
 import {
   getBlockExplorerLinkText,
   getIsCustomNetwork,
@@ -53,28 +52,30 @@ export type ViewExplorerMenuItemProps = {
   account: InternalAccount;
 };
 
+type TrackEvent = ReturnType<typeof useAnalytics>['trackEvent'];
+type CreateEventBuilder = ReturnType<typeof useAnalytics>['createEventBuilder'];
+
 export const openBlockExplorer = (
   addressLink: string,
   metricsLocation: string,
-  trackEvent: (
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
-  ) => Promise<void>,
+  trackEvent: TrackEvent,
+  createEventBuilder: CreateEventBuilder,
   closeMenu?: () => void,
 ) => {
-  trackEvent({
-    event: MetaMetricsEventName.ExternalLinkClicked,
-    category: MetaMetricsEventCategory.Navigation,
-    properties: {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      link_type: MetaMetricsEventLinkType.AccountTracker,
-      location: metricsLocation,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      url_domain: getURLHostName(addressLink),
-    },
-  });
+  trackEvent(
+    createEventBuilder(MetaMetricsEventName.ExternalLinkClicked)
+      .addCategory(MetaMetricsEventCategory.Navigation)
+      .addProperties({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        link_type: MetaMetricsEventLinkType.AccountTracker,
+        location: metricsLocation,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        url_domain: getURLHostName(addressLink),
+      })
+      .build(),
+  );
 
   global.platform.openTab({
     url: addressLink,
@@ -89,7 +90,7 @@ export const ViewExplorerMenuItem = ({
   account,
 }: ViewExplorerMenuItemProps) => {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();
 
   const multichainNetwork = useMultichainSelector(
@@ -150,24 +151,26 @@ export const ViewExplorerMenuItem = ({
               actualAddressLink,
               metricsLocation,
               trackEvent,
+              createEventBuilder,
               closeMenu,
             );
 
-        trackEvent({
-          event: MetaMetricsEventName.BlockExplorerLinkClicked,
-          category: MetaMetricsEventCategory.Accounts,
-          properties: {
-            location: metricsLocation,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: chainId,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.BlockExplorerLinkClicked)
+            .addCategory(MetaMetricsEventCategory.Accounts)
+            .addProperties({
+              location: metricsLocation,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: chainId,
+            })
+            .build(),
+        );
 
         closeMenu?.();
       }}
       subtitle={blockExplorerUrlSubTitle || null}
-      iconNameLegacy={IconName.Export}
+      iconName={IconName.Export}
       data-testid="account-list-menu-open-explorer"
     >
       {textProps ? <Text {...textProps}>{LABEL}</Text> : LABEL}

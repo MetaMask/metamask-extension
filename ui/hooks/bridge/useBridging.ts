@@ -1,13 +1,15 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
+  FeatureId,
   formatChainIdToCaip,
   GenericQuoteRequest,
   getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
+  MetaMetricsSwapsEventSource,
 } from '@metamask/bridge-controller';
 import { parseCaipChainId } from '@metamask/utils';
-import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
+import { MetaMetricsSwapsEventSource as ExtendedMetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
@@ -20,10 +22,13 @@ import {
 } from '../../ducks/bridge/selectors';
 import {
   resetInputFields,
+  setBridgeLocation,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
 import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
+import { useDispatch } from '../../store/hooks';
+
 import {
   BridgeNavigationOptions,
   useBridgeNavigation,
@@ -62,7 +67,9 @@ const useBridging = () => {
    */
   const openBridgeExperience = useCallback(
     (
-      location: MetaMetricsSwapsEventSource | 'Carousel',
+      location:
+        | MetaMetricsSwapsEventSource
+        | ExtendedMetaMetricsSwapsEventSource,
       sourceToken?: {
         symbol: string;
         address: string;
@@ -77,6 +84,8 @@ const useBridging = () => {
         name: TraceName.SwapViewLoaded,
         startTime: Date.now(),
       });
+      // TODO: pick the correct location type
+      dispatch(setBridgeLocation(location as MetaMetricsSwapsEventSource));
       dispatch(
         trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.ButtonClicked, {
           location: location as never,
@@ -86,9 +95,9 @@ const useBridging = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol_destination: '',
-          // TODO: Remove @ts-expect-error once @metamask/bridge-controller is
-          // updated to 75.2.0, which adds environment_type to the type.
-          // @ts-expect-error environment_type is not yet in the package type
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: getEnvironmentType(),
         }),

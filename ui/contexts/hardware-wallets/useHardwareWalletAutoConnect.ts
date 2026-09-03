@@ -58,6 +58,7 @@ export const useHardwareWalletAutoConnect = ({
     connectRef,
     hasAutoConnectedRef,
     lastConnectedAccountRef,
+    isSigningInProgressRef,
   } = refs;
 
   useEffect(
@@ -149,6 +150,19 @@ export const useHardwareWalletAutoConnect = ({
           return;
         }
 
+        // WORKAROUND: The Trezor Connect SDK (offscreen document) closes its
+        // WebUSB transport after signing, which fires a native disconnect event
+        // indistinguishable from a physical unplug — even
+        // navigator.usb.getDevices() returns empty. Suppress teardown while
+        // signing is in flight. Real physical disconnects during signing will
+        // cause the signing operation to fail, which the tracker
+        // (useHwSignTracker in batch mode) handles via TransactionFailed.
+        //
+        // See isSigningInProgressRef in HardwareWalletStateManager for details.
+        if (isSigningInProgressRef.current) {
+          return;
+        }
+
         handleDisconnect();
 
         const currentPermissionState =
@@ -210,7 +224,6 @@ export const useHardwareWalletAutoConnect = ({
       };
     },
     // Ignore refs in dep array
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       isHardwareWalletAccount,
@@ -300,7 +313,6 @@ export const useHardwareWalletAutoConnect = ({
       };
     },
     // Ignore refs in dep array
-    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       isHardwareWalletAccount,

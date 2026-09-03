@@ -5,6 +5,17 @@ import liveMigrations from '../../migrations';
 import data from '../../first-time-state';
 import Migrator from '.';
 
+jest.mock('webextension-polyfill', () => ({
+  runtime: { getManifest: jest.fn(() => ({})) },
+  storage: {
+    local: {
+      getKeys: jest.fn(() => {
+        return [];
+      }),
+    },
+  },
+}));
+
 const stubMigrations = [
   {
     version: 1,
@@ -68,7 +79,6 @@ describe('migrations', () => {
       const testNumbers = fileNames
         .reduce((acc, filename) => {
           const name = filename.split('.test.')[0];
-          // eslint-disable-next-line jest/no-if
           if (/^\d+$/u.test(name)) {
             acc.push(name);
           }

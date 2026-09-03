@@ -44,8 +44,28 @@ export const selectTransactionPaySourceAmountsByTransactionId = createSelector(
 
 export const selectTransactionPayIsMaxAmountByTransactionId = createSelector(
   selectTransactionDataByTransactionId,
-  // TODO: Remove type assertion once isMaxAmount is added to @metamask/transaction-pay-controller
-  (transactionData) =>
-    (transactionData as { isMaxAmount?: boolean } | undefined)?.isMaxAmount ??
-    false,
+  (transactionData) => transactionData?.isMaxAmount ?? false,
+);
+
+export const selectTransactionPayIsPostQuoteByTransactionId = createSelector(
+  selectTransactionDataByTransactionId,
+  (transactionData) => transactionData?.isPostQuote ?? false,
+);
+
+/**
+ * Funding account override for a transaction, when the user picks a different
+ * "From" account on money-account deposit (or similar) confirmations.
+ */
+export const selectTransactionPayAccountOverrideByTransactionId =
+  createSelector(
+    selectTransactionDataByTransactionId,
+    (transactionData) => transactionData?.accountOverride,
+  );
+
+/**
+ * Alternate payment strategy override (e.g. Money Account) for a transaction.
+ */
+export const selectPaymentOverrideByTransactionId = createSelector(
+  selectTransactionDataByTransactionId,
+  (transactionData) => transactionData?.paymentOverride,
 );

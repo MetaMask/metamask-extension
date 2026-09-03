@@ -7,8 +7,8 @@ import { generateWalletState } from '../../../../../app/scripts/fixtures/generat
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { withFixtures } from '../../../helpers';
 import { login } from '../../../page-objects/flows/login.flow';
-import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import AccountListPage from '../../../page-objects/pages/accounts/list-page';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -104,7 +104,7 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         );
 
         // Measure: Review transaction
-        await sendPage.fillRecipient(RECIPIENT_ADDRESS);
+        await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
         await sendPage.fillAmount('0.00001');
         await sendPage.pressContinueButton();
         steps.push(

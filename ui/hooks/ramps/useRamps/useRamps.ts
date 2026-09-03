@@ -1,12 +1,13 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { CaipChainId, Hex, hexToNumber } from '@metamask/utils';
+import { formatChainIdToHex } from '@metamask/bridge-controller';
 import { ChainId } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import {
   getDataCollectionForMarketing,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
 } from '../../../selectors';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
@@ -31,11 +32,9 @@ const useRamps = (
 ): IUseRamps => {
   const chainId = useSelector(getCurrentChainId);
   const analyticsId = useSelector(getAnalyticsId);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
-  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const isMetaMetricsEnabled = consentDecisionMade && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const getBuyURI = useCallback(
@@ -46,7 +45,9 @@ const useRamps = (
 
         let numericChainId = '';
         if (isEvmChainId(_chainId)) {
-          numericChainId = hexToNumber(_chainId).toString();
+          // EVM chain ids may arrive as hex or CAIP (`eip155:1`); normalize to
+          // hex first so callers can pass whichever format they already have.
+          numericChainId = hexToNumber(formatChainIdToHex(_chainId)).toString();
         } else {
           numericChainId = _chainId;
         }

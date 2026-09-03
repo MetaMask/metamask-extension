@@ -8,11 +8,6 @@ import {
   TextVariant,
   TextColor,
   FontWeight,
-  ButtonBase,
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
   Skeleton,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +17,7 @@ import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../../shared/co
 import { PERPS_EVENT_VALUE } from '../../../../../shared/constants/perps-events';
 import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
 import { PerpsCardSkeleton } from '../perps-skeletons/perps-card-skeleton';
+import { PerpsSectionHeader } from '../perps-section-header';
 import type { PerpsTransaction } from '../types';
 
 export type PerpsRecentActivityProps = {
@@ -132,19 +128,12 @@ export const PerpsRecentActivity = ({
       data-testid="perps-recent-activity"
     >
       {/* Section Header */}
-      <ButtonBase
-        className="w-full flex flex-row justify-between items-center px-4 py-3 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
+      <PerpsSectionHeader
+        label={t('perpsRecentActivity')}
         onClick={handleSeeAll}
         data-testid="perps-recent-activity-see-all"
         aria-label={`${t('perpsRecentActivity')}, ${t('perpsSeeAll')}`}
-      >
-        <Text fontWeight={FontWeight.Medium}>{t('perpsRecentActivity')}</Text>
-        <Icon
-          name={IconName.ArrowRight}
-          size={IconSize.Sm}
-          color={IconColor.IconAlternative}
-        />
-      </ButtonBase>
+      />
 
       {/* Transaction List */}
       <Box flexDirection={BoxFlexDirection.Column}>
@@ -153,7 +142,7 @@ export const PerpsRecentActivity = ({
             key={transaction.id}
             transaction={transaction}
             onClick={handleRowClick}
-            screenName={PERPS_EVENT_VALUE.SCREEN_NAME.WALLET_HOME_PERPS_TAB}
+            screenName={PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_HOME}
           />
         ))}
       </Box>

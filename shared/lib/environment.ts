@@ -1,5 +1,15 @@
 import { ENVIRONMENT } from '../constants/build';
 
+/**
+ * Get a boolean value for a string or boolean value.
+ *
+ * @param value - The value to convert to a boolean.
+ * @returns `true` if the value is `'true'` or `true`, otherwise `false`.
+ */
+export function getBooleanFlag(value: string | boolean | undefined): boolean {
+  return value === true || value === 'true';
+}
+
 export const isProduction = (): boolean => {
   return (
     process.env.METAMASK_ENVIRONMENT !== ENVIRONMENT.DEVELOPMENT &&
@@ -34,6 +44,17 @@ export const getIsAssetsUnifiedStateIncludedInBuild = (): boolean => {
   return process.env.ASSETS_UNIFIED_STATE_ENABLED?.toString() === 'true';
 };
 
+/**
+ * Compile-time gate (`BFT_CONSOLIDATION_ENABLED`): controls whether onboarding
+ * assigns new users to the consolidated Basic Functionality experience. This
+ * is intentionally separate from the remote rollout flag because onboarding
+ * completes before remote feature flags are reliably available.
+ */
+export const getIsBasicFunctionalityConsolidationEnabledInBuild =
+  (): boolean => {
+    return process.env.BFT_CONSOLIDATION_ENABLED?.toString() === 'true';
+  };
+
 export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
   return process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS?.toString() === 'true';
 };
@@ -42,6 +63,15 @@ export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
   return (
     process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED?.toString() === 'true'
   );
+};
+
+/**
+ * Compile-time gate (`QR_SYNC_ENABLED`): when true the
+ * Add Device tab is shown in Settings, allowing users to pair a second device
+ * via QR code scan and verification code.
+ */
+export const getIsQrSyncEnabled = (): boolean => {
+  return process.env.QR_SYNC_ENABLED?.toString() === 'true';
 };
 
 /**

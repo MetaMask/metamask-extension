@@ -9,6 +9,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { CaipChainId, Hex } from '@metamask/utils';
 import type { AccountGroupAssets, Asset } from '@metamask/assets-controllers';
+import { useTokenAssetSecurityResults } from '#ui/hooks/token-asset/useTokenAssetSecurityResults';
+import type { RWATokenLike } from '../../../../pages/bridge/hooks/useRWAToken';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import {
   MetaMetricsEventCategory,
@@ -26,12 +28,27 @@ import {
   getIsEvmMultichainNetworkSelected,
   getSelectedMultichainNetworkConfiguration,
 } from '../../../../selectors/multichain/networks';
+import { getIsSecurityTrustTdpEnabled } from '../../../../selectors/multichain/feature-flags';
 import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
 } from '../../../../selectors/assets';
 import { MUSD_TOKEN_ADDRESS } from '../../musd/constants';
 import TokenList from './token-list';
+
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const mockTrackEvent = jest.fn();
+
+  return {
+    useAnalytics: () => ({
+      createEventBuilder: jest.requireActual(
+        '../../../../../shared/lib/analytics/create-event-builder',
+      ).createEventBuilder,
+      trackEvent: mockTrackEvent,
+    }),
+    mockTrackEvent,
+  };
+});
 
 jest.mock('../token-cell', () => {
   const ReactActual = jest.requireActual('react');
@@ -56,21 +73,6 @@ jest.mock('../token-cell', () => {
         },
         token.title,
       ),
-  };
-});
-
-jest.mock('../../../../contexts/metametrics', () => {
-  const ReactActual = jest.requireActual('react');
-  const mockTrackEvent = jest.fn();
-
-  return {
-    MetaMetricsContext: ReactActual.createContext({
-      trackEvent: mockTrackEvent,
-      bufferedTrace: jest.fn(),
-      bufferedEndTrace: jest.fn(),
-      onboardingParentContext: { current: null },
-    }),
-    mockTrackEvent,
   };
 });
 
@@ -112,10 +114,33 @@ jest.mock('../../../../selectors/multichain/networks', () => ({
   getSelectedMultichainNetworkConfiguration: jest.fn(),
 }));
 
+jest.mock('../../../../selectors/multichain/feature-flags', () => ({
+  getIsSecurityTrustTdpEnabled: jest.fn(),
+}));
+
 jest.mock('../../../../selectors/assets', () => ({
   getAssetsBySelectedAccountGroup: jest.fn(),
   selectAccountGroupBalanceForEmptyState: jest.fn(),
 }));
+
+jest.mock('#ui/hooks/token-asset/useTokenAssetSecurityResults', () => ({
+  useTokenAssetSecurityResults: jest.fn(() => ({})),
+}));
+
+const mockIsStockToken = jest.fn<boolean, [RWATokenLike | undefined]>(
+  () => false,
+);
+
+jest.mock('../../../../pages/bridge/hooks/useRWAToken', () => ({
+  useRWAToken: () => ({
+    isStockToken: mockIsStockToken,
+    isTokenTradingOpen: jest.fn(() => true),
+  }),
+}));
+
+const getMockTrackEvent = () =>
+  jest.requireMock('../../../../hooks/useAnalytics')
+    .mockTrackEvent as jest.Mock;
 
 const CHAIN_ID = '0x1' as Hex;
 const LINEA_CHAIN_ID = '0xe708' as Hex;
@@ -124,10 +149,15 @@ const ACCOUNT_ID = 'account-1';
 const lowValueAssetsLabel = (count: number) =>
   messages.lowValueAssets.message.replace('$1', String(count));
 
-const getMockTrackEvent = () =>
-  jest.requireMock('../../../../contexts/metametrics')
-    .mockTrackEvent as jest.Mock;
+const render = () => {
+  const store = configureMockStore([thunk])({});
 
+  return renderComponent(
+    <Provider store={store}>
+      <TokenList onTokenClick={jest.fn()} />
+    </Provider>,
+  );
+};
 const createAsset = ({
   symbol,
   fiatBalance,
@@ -177,20 +207,11 @@ const createAccountGroupAssets = (assets: Asset[]): AccountGroupAssets => ({
   [CHAIN_ID]: assets,
 });
 
-const render = () => {
-  const store = configureMockStore([thunk])({});
-
-  return renderComponent(
-    <Provider store={store}>
-      <TokenList onTokenClick={jest.fn()} />
-    </Provider>,
-  );
-};
-
 describe('TokenList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     getMockTrackEvent().mockClear();
+    mockIsStockToken.mockReturnValue(false);
 
     jest
       .mocked(getPreferences)
@@ -207,6 +228,7 @@ describe('TokenList', () => {
       sortCallback: 'stringNumeric',
     });
     jest.mocked(getUseExternalServices).mockReturnValue(true);
+    jest.mocked(getIsSecurityTrustTdpEnabled).mockReturnValue(true);
     jest
       .mocked(getAllEnabledNetworksForAllNamespaces)
       .mockReturnValue([CHAIN_ID as Hex | CaipChainId] as ReturnType<
@@ -417,26 +439,69 @@ describe('TokenList', () => {
     fireEvent.click(toggle);
 
     expect(screen.getByTestId('token-cell-DUST')).toBeInTheDocument();
-    expect(getMockTrackEvent()).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Home,
-      event: MetaMetricsEventName.LowValueAssetsToggled,
-      properties: {
-        state: 'expanded',
-        count: 1,
-      },
-    });
+    expect(getMockTrackEvent()).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.LowValueAssetsToggled,
+        properties: {
+          category: MetaMetricsEventCategory.Home,
+          state: 'expanded',
+          count: 1,
+        },
+        sensitiveProperties: {},
+      }),
+    );
 
     fireEvent.click(toggle);
 
     expect(screen.queryByTestId('token-cell-DUST')).not.toBeInTheDocument();
-    expect(getMockTrackEvent()).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Home,
-      event: MetaMetricsEventName.LowValueAssetsToggled,
-      properties: {
-        state: 'collapsed',
-        count: 1,
-      },
-    });
+    expect(getMockTrackEvent()).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.LowValueAssetsToggled,
+        properties: {
+          category: MetaMetricsEventCategory.Home,
+          state: 'collapsed',
+          count: 1,
+        },
+        sensitiveProperties: {},
+      }),
+    );
+  });
+
+  it('renders newly selected account assets immediately after account switch', () => {
+    jest
+      .mocked(getAssetsBySelectedAccountGroup)
+      .mockReturnValue(
+        createAccountGroupAssets([
+          createAsset({ symbol: 'USDC', fiatBalance: 25 }),
+        ]),
+      );
+
+    const initialStore = configureMockStore([thunk])({});
+    const { rerender } = renderComponent(
+      <Provider store={initialStore}>
+        <TokenList onTokenClick={jest.fn()} />
+      </Provider>,
+    );
+
+    expect(screen.getByTestId('token-cell-USDC')).toBeInTheDocument();
+    expect(screen.queryByTestId('token-cell-DAI')).not.toBeInTheDocument();
+
+    jest
+      .mocked(getAssetsBySelectedAccountGroup)
+      .mockReturnValue(
+        createAccountGroupAssets([
+          createAsset({ symbol: 'DAI', fiatBalance: 10 }),
+        ]),
+      );
+
+    rerender(
+      <Provider store={configureMockStore([thunk])({ accountSwitch: true })}>
+        <TokenList onTokenClick={jest.fn()} />
+      </Provider>,
+    );
+
+    expect(screen.getByTestId('token-cell-DAI')).toBeInTheDocument();
+    expect(screen.queryByTestId('token-cell-USDC')).not.toBeInTheDocument();
   });
 
   it('persists expansion for the browser session', () => {
@@ -458,5 +523,57 @@ describe('TokenList', () => {
     render();
 
     expect(screen.getByTestId('token-cell-DUST')).toBeInTheDocument();
+  });
+
+  it('loads security data for displayed tokens', () => {
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
+      createAccountGroupAssets([
+        createAsset({
+          symbol: 'USDC',
+          fiatBalance: 25,
+          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        }),
+        createAsset({ symbol: 'ETH', fiatBalance: 10, isNative: true }),
+      ]),
+    );
+
+    render();
+
+    expect(useTokenAssetSecurityResults).toHaveBeenCalledWith({
+      assetIds: [
+        'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        'eip155:1/slip44:60',
+      ],
+    });
+  });
+
+  it('excludes stock tokens from security fetches', () => {
+    mockIsStockToken.mockImplementation(
+      (token) => token?.rwaData?.instrumentType === 'stock',
+    );
+
+    jest.mocked(getAssetsBySelectedAccountGroup).mockReturnValue(
+      createAccountGroupAssets([
+        createAsset({
+          symbol: 'USDC',
+          fiatBalance: 25,
+          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        }),
+        {
+          ...createAsset({
+            symbol: 'AAPLx',
+            fiatBalance: 50,
+            address: '0x1111111111111111111111111111111111111111',
+          }),
+          rwaData: { instrumentType: 'stock' },
+        },
+      ]),
+    );
+
+    render();
+
+    expect(useTokenAssetSecurityResults).toHaveBeenCalledWith({
+      assetIds: ['eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
+    });
   });
 });

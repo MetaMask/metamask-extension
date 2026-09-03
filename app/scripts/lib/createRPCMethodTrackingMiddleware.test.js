@@ -24,6 +24,11 @@ import {
   orderSignatureMsg,
 } from '../../../test/data/confirmations/typed_sign';
 import { getDefaultPreferencesControllerState } from '../controllers/preferences-controller';
+import {
+  configureAnalytics,
+  setParticipateInMetaMetrics,
+} from '../controllers/analytics';
+import { getAnalyticsControllerInitMessenger } from '../messenger-client-init/messengers/analytics-controller-messenger';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 import * as snapKeyringMetrics from './snap-keyring/metrics';
 
@@ -35,15 +40,6 @@ jest.mock('./snap-keyring/metrics', () => {
 const MockSnapKeyringMetrics = jest.mocked(snapKeyringMetrics);
 
 const MOCK_ID = '123';
-
-const expectedMetametricsEventUndefinedProps = {
-  currency: undefined,
-  environmentType: undefined,
-  page: undefined,
-  revenue: undefined,
-  sensitiveProperties: undefined,
-  value: undefined,
-};
 
 const appStateController = {
   state: {
@@ -66,16 +62,13 @@ messenger.registerActionHandler('PreferencesController:getState', () => ({
   currentLocale: 'en_US',
 }));
 
-messenger.registerActionHandler(
-  'NetworkController:getState',
-  jest.fn().mockReturnValue({
-    selectedNetworkClientId: 'selectedNetworkClientId',
-  }),
-);
+messenger.registerActionHandler('NetworkController:getState', () => ({
+  selectedNetworkClientId: 'selectedNetworkClientId',
+}));
 
 messenger.registerActionHandler(
   'NetworkController:getNetworkClientById',
-  jest.fn().mockReturnValue({
+  () => ({
     configuration: {
       chainId: '0x1338',
     },
@@ -85,6 +78,7 @@ messenger.registerActionHandler(
 const analyticsControllerState = {
   analyticsId: '00000000-0000-4000-8000-000000000001',
   optedIn: false,
+  consentDecisionMade: false,
 };
 
 messenger.registerActionHandler('AnalyticsController:getState', () => ({
@@ -93,13 +87,27 @@ messenger.registerActionHandler('AnalyticsController:getState', () => ({
 
 messenger.registerActionHandler('AnalyticsController:optIn', () => {
   analyticsControllerState.optedIn = true;
+  analyticsControllerState.consentDecisionMade = true;
 });
 
 messenger.registerActionHandler('AnalyticsController:optOut', () => {
   analyticsControllerState.optedIn = false;
+  analyticsControllerState.consentDecisionMade = true;
 });
 
-messenger.registerActionHandler('AnalyticsController:trackEvent', jest.fn());
+messenger.registerActionHandler(
+  'AnalyticsController:resetConsentDecision',
+  () => {
+    analyticsControllerState.optedIn = false;
+    analyticsControllerState.consentDecisionMade = false;
+  },
+);
+
+const trackEventSpy = jest.fn();
+messenger.registerActionHandler(
+  'AnalyticsController:trackEvent',
+  trackEventSpy,
+);
 messenger.registerActionHandler('AnalyticsController:identify', jest.fn());
 messenger.registerActionHandler('AnalyticsController:trackView', jest.fn());
 
@@ -112,11 +120,6 @@ messenger.delegate({
   messenger: controllerMessenger,
   actions: [
     'AnalyticsController:getState',
-    'AnalyticsController:optIn',
-    'AnalyticsController:optOut',
-    'AnalyticsController:trackEvent',
-    'AnalyticsController:identify',
-    'AnalyticsController:trackView',
     'PreferencesController:getState',
     'NetworkController:getState',
     'NetworkController:getNetworkClientById',
@@ -148,6 +151,30 @@ const metaMetricsController = new MetaMetricsController({
     },
   },
 });
+
+messenger.registerActionHandler('MultichainNetworkController:getState', () => ({
+  isEvmSelected: true,
+  selectedMultichainNetworkChainId: 'eip155:1',
+}));
+
+messenger.registerActionHandler('RemoteFeatureFlagController:getState', () => ({
+  remoteFeatureFlags: {},
+}));
+
+configureAnalytics({
+  messenger: getAnalyticsControllerInitMessenger(messenger),
+});
+
+function getTrackedEventCall(callIndex) {
+  const [trackingEvent, context] = trackEventSpy.mock.calls[callIndex];
+  return {
+    event: trackingEvent.name,
+    category: trackingEvent.properties?.category,
+    properties: trackingEvent.properties,
+    sensitiveProperties: trackingEvent.sensitiveProperties,
+    referrer: context?.referrer,
+  };
+}
 
 const createHandler = (opts) =>
   createRPCMethodTrackingMiddleware({
@@ -203,16 +230,12 @@ jest.mock('@metamask/controller-utils', () => {
 });
 
 describe('createRPCMethodTrackingMiddleware', () => {
-  let trackEventSpy;
-
   beforeEach(() => {
-    trackEventSpy = jest
-      .spyOn(MetaMetricsController.prototype, 'trackEvent')
-      .mockImplementation(() => undefined);
+    trackEventSpy.mockClear();
   });
-  afterEach(() => {
+  afterEach(async () => {
     jest.resetAllMocks();
-    metaMetricsController.setParticipateInMetaMetrics(null);
+    await setParticipateInMetaMetrics(null);
   });
 
   describe('before participateInMetaMetrics is set', () => {
@@ -235,8 +258,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
   });
 
   describe('participateInMetaMetrics is set to false', () => {
-    beforeEach(() => {
-      metaMetricsController.setParticipateInMetaMetrics(false);
+    beforeEach(async () => {
+      await setParticipateInMetaMetrics(false);
     });
 
     it('should not track an event for a signature request', async () => {
@@ -258,8 +281,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
   });
 
   describe('participateInMetaMetrics is set to true', () => {
-    beforeEach(() => {
-      metaMetricsController.setParticipateInMetaMetrics(true);
+    beforeEach(async () => {
+      await setParticipateInMetaMetrics(true);
     });
 
     it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event`, async () => {
@@ -283,7 +306,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
 
       expect(trackEventSpy).toHaveBeenCalledTimes(1);
-      expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+      expect(getTrackedEventCall(0)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
@@ -348,7 +371,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
 
       expect(trackEventSpy).toHaveBeenCalledTimes(1);
-      expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+      expect(getTrackedEventCall(0)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
@@ -385,12 +408,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
       const handler = createHandler();
       await handler(req, res, next);
       expect(trackEventSpy).toHaveBeenCalledTimes(1);
-      expect(trackEventSpy.mock.calls[0][0]).toStrictEqual({
-        ...expectedMetametricsEventUndefinedProps,
+      expect(getTrackedEventCall(0)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRequested,
         properties: {
-          hd_entropy_index: undefined,
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           security_alert_response: BlockaidResultType.Malicious,
           security_alert_reason: BlockaidReason.maliciousDomain,
@@ -423,7 +444,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -459,7 +480,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRejected,
         properties: {
@@ -494,13 +515,50 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureRejected,
         properties: {
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
           location: 'some_location',
+        },
+        referrer: { url: 'some.dapp' },
+      });
+    });
+
+    it(`should track a ${MetaMetricsEventName.EncryptionPublicKeyRejected} event if the user rejects`, async () => {
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+        origin: 'some.dapp',
+      };
+
+      const res = {
+        error: {
+          code: errorCodes.provider.userRejectedRequest,
+        },
+      };
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+      expect(trackEventSpy).toHaveBeenCalledTimes(2);
+      expect(getTrackedEventCall(0)).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.EncryptionPublicKeyRequested,
+        properties: {
+          method: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+          api_source: MetaMetricsRequestedThrough.EthereumProvider,
+        },
+        referrer: { url: 'some.dapp' },
+      });
+      expect(getTrackedEventCall(1)).toMatchObject({
+        category: MetaMetricsEventCategory.InpageProvider,
+        event: MetaMetricsEventName.EncryptionPublicKeyRejected,
+        properties: {
+          method: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+          api_source: MetaMetricsRequestedThrough.EthereumProvider,
         },
         referrer: { url: 'some.dapp' },
       });
@@ -519,7 +577,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.PermissionsApproved,
         properties: {
@@ -622,8 +680,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
           const expectedNumberOfCalls = 2 * eventsTrackedPerRequest;
           expect(trackEventSpy).toHaveBeenCalledTimes(expectedNumberOfCalls);
-          trackEventSpy.mock.calls.forEach((call) => {
-            expect(call[0].properties.method).toBe(method);
+          trackEventSpy.mock.calls.forEach((_, index) => {
+            expect(getTrackedEventCall(index).properties.method).toBe(method);
           });
         },
       );
@@ -670,8 +728,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
           const expectedNumberOfCalls = 2 * eventsTrackedPerRequest;
           expect(trackEventSpy).toHaveBeenCalledTimes(expectedNumberOfCalls);
-          trackEventSpy.mock.calls.forEach((call) => {
-            expect(call[0].properties.method).toBe(method);
+          trackEventSpy.mock.calls.forEach((_, index) => {
+            expect(getTrackedEventCall(index).properties.method).toBe(method);
           });
         },
       );
@@ -707,8 +765,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
         }
 
         expect(trackEventSpy).toHaveBeenCalledTimes(3);
-        trackEventSpy.mock.calls.forEach((call) => {
-          expect(call[0].properties.method).toBe(
+        trackEventSpy.mock.calls.forEach((_, index) => {
+          expect(getTrackedEventCall(index).properties.method).toBe(
             'some_method_rate_limited_by_sample',
           );
         });
@@ -732,7 +790,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -763,7 +821,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -795,7 +853,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -824,7 +882,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -853,7 +911,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
 
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -879,7 +937,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await handler(req, res, next);
       await executeMiddlewareStack();
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -911,7 +969,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       await executeMiddlewareStack();
 
       expect(trackEventSpy).toHaveBeenCalledTimes(2);
-      expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+      expect(getTrackedEventCall(1)).toMatchObject({
         category: MetaMetricsEventCategory.InpageProvider,
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
@@ -940,7 +998,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
 
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
-        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+        expect(getTrackedEventCall(0)).toMatchObject({
           category: MetaMetricsEventCategory.InpageProvider,
           event: MetaMetricsEventName.SignatureRequested,
           properties: {
@@ -1053,7 +1111,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
 
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
-        expect(trackEventSpy.mock.calls[0][0].properties.params).toStrictEqual(
+        expect(getTrackedEventCall(0).properties.params).toStrictEqual(
           expected,
         );
       },
@@ -1133,10 +1191,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
 
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
-        expect(trackEventSpy.mock.calls[0][0].event).toBe(event);
-        expect(trackEventSpy.mock.calls[0][0].properties).toStrictEqual(
-          properties,
-        );
+        expect(getTrackedEventCall(0).event).toBe(event);
+        expect(getTrackedEventCall(0).properties).toMatchObject(properties);
       },
     );
     describe('iframe detection properties', () => {
@@ -1155,7 +1211,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
 
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
-        expect(trackEventSpy.mock.calls[0][0].properties).toMatchObject({
+        expect(getTrackedEventCall(0).properties).toMatchObject({
           is_iframe: false,
           is_cross_origin_iframe: false,
           iframe_origin: null,
@@ -1178,7 +1234,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
 
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
-        expect(trackEventSpy.mock.calls[0][0].properties).toMatchObject({
+        expect(getTrackedEventCall(0).properties).toMatchObject({
           is_iframe: true,
           is_cross_origin_iframe: true,
           iframe_origin: 'https://iframe.malicious.com',
@@ -1201,7 +1257,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
 
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
-        expect(trackEventSpy.mock.calls[0][0].properties).toMatchObject({
+        expect(getTrackedEventCall(0).properties).toMatchObject({
           is_iframe: true,
           is_cross_origin_iframe: false,
           iframe_origin: null,
@@ -1222,7 +1278,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
 
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
-        expect(trackEventSpy.mock.calls[0][0].properties).toMatchObject({
+        expect(getTrackedEventCall(0).properties).toMatchObject({
           is_iframe: false,
           is_cross_origin_iframe: false,
           iframe_origin: null,
@@ -1254,7 +1310,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await executeMiddlewareStack();
 
         expect(trackEventSpy).toHaveBeenCalledTimes(2);
-        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+        expect(getTrackedEventCall(0)).toMatchObject({
           event: MetaMetricsEventName.PermissionsRequested,
           properties: {
             is_iframe: true,
@@ -1262,7 +1318,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
             top_level_origin: 'https://top-level.dapp.com',
           },
         });
-        expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        expect(getTrackedEventCall(1)).toMatchObject({
           event: MetaMetricsEventName.PermissionsApproved,
           properties: {
             is_iframe: true,
@@ -1294,7 +1350,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await executeMiddlewareStack();
 
         expect(trackEventSpy).toHaveBeenCalledTimes(2);
-        expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        expect(getTrackedEventCall(1)).toMatchObject({
           event: MetaMetricsEventName.PermissionsRejected,
           properties: {
             is_iframe: true,
@@ -1319,7 +1375,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
 
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
-        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+        expect(getTrackedEventCall(0)).toMatchObject({
           event: MetaMetricsEventName.SignatureRequested,
           properties: {
             is_iframe: true,
@@ -1331,8 +1387,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
     });
 
     describe('Multichain API requests', () => {
-      beforeEach(() => {
-        metaMetricsController.setParticipateInMetaMetrics(true);
+      beforeEach(async () => {
+        await setParticipateInMetaMetrics(true);
       });
 
       it('should track `wallet_createSession` events with multichain category and properties', async () => {
@@ -1364,7 +1420,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await handler(req, res, next);
         expect(trackEventSpy).toHaveBeenCalledTimes(1);
 
-        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+        expect(getTrackedEventCall(0)).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.PermissionsRequested,
           properties: {
@@ -1381,7 +1437,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await executeMiddlewareStack();
         expect(trackEventSpy).toHaveBeenCalledTimes(2);
 
-        expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        expect(getTrackedEventCall(1)).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.PermissionsApproved,
           properties: {
@@ -1414,7 +1470,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await executeMiddlewareStack();
 
         expect(trackEventSpy).toHaveBeenCalledTimes(2);
-        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+        expect(getTrackedEventCall(0)).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.SignatureRequested,
           properties: {
@@ -1426,7 +1482,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           referrer: { url: 'multichain.dapp' },
         });
 
-        expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        expect(getTrackedEventCall(1)).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.SignatureApproved,
           properties: {
@@ -1464,7 +1520,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         await executeMiddlewareStack();
 
         expect(trackEventSpy).toHaveBeenCalledTimes(2);
-        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+        expect(getTrackedEventCall(0)).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.SignatureRequested,
           properties: {
@@ -1476,7 +1532,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           referrer: { url: 'multichain.dapp' },
         });
 
-        expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+        expect(getTrackedEventCall(1)).toMatchObject({
           category: MetaMetricsEventCategory.MultichainApi,
           event: MetaMetricsEventName.SignatureRejected,
           properties: {

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import semver from 'semver';
@@ -43,6 +43,7 @@ import SnapUpdateAlert from '../../../components/app/snaps/snap-update-alert';
 import { CONNECT_ROUTE } from '../../../helpers/constants/routes';
 import { ShowMore } from '../../../components/app/snaps/show-more';
 import { useMessenger } from '../../../hooks/useMessenger';
+import { useDispatch } from '../../../store/hooks';
 import { KeyringSnapRemovalResultStatus } from './constants';
 import { useUpdate } from './hooks/useUpdate';
 import { useKeyringSnap } from './hooks/useKeyringSnap';
@@ -110,9 +111,15 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
     return t('connectedSites');
   };
 
+  const prevInitRemoveRef = useRef(undefined);
+  useEffect(() => {
+    if (initRemove && !prevInitRemoveRef.current) {
+      queueMicrotask(() => setIsShowingRemoveWarning(true));
+    }
+    prevInitRemoveRef.current = initRemove;
+  }, [initRemove]);
   useEffect(() => {
     if (initRemove) {
-      setIsShowingRemoveWarning(true);
       resetInitRemove();
     }
   }, [initRemove, resetInitRemove]);

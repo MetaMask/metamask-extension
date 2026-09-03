@@ -1,6 +1,6 @@
 import {
   Infer,
-  object,
+  type,
   boolean,
   nullable,
   string,
@@ -22,11 +22,12 @@ import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/envi
 /**
  * Feature flag structure for assets-unify-state feature
  */
-const AssetsUnifyStateFeatureFlag = object({
+const AssetsUnifyStateFeatureFlag = type({
   enabled: boolean(),
   featureVersion: nullable(string()),
   minimumVersion: optional(nullable(string())),
   deprecatedControllers: optional(array(string())),
+  tracesEnabled: optional(boolean()),
 });
 
 /**

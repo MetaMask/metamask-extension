@@ -2,9 +2,11 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
+  BRIDGE_UAT_API_BASE_URL,
   ChainId,
   formatChainIdToCaip,
   getNativeAssetForChainId,
+  QuoteMetadataMigrationPhase,
 } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import type { CaipChainId, CaipAssetType } from '@metamask/utils';
@@ -14,11 +16,13 @@ import {
   CHAIN_IDS,
   NETWORK_TO_NAME_MAP,
 } from './network';
+import { ENVIRONMENT } from './build';
 
 export const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
   MultichainNetworks.SOLANA,
   MultichainNetworks.BITCOIN,
   MultichainNetworks.TRON,
+  MultichainNetworks.STELLAR,
 ];
 
 const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
@@ -36,6 +40,7 @@ const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
   CHAIN_IDS.HYPE,
   CHAIN_IDS.MEGAETH_MAINNET,
   CHAIN_IDS.ARC,
+  CHAIN_IDS.ROBINHOOD_CHAIN,
 ];
 
 export const ALLOWED_BRIDGE_CHAIN_IDS = [
@@ -68,9 +73,46 @@ export type AllowedBridgeChainIds =
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number]
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number];
 
-export const BRIDGE_API_BASE_URL = process.env.BRIDGE_USE_DEV_APIS
-  ? BRIDGE_DEV_API_BASE_URL
-  : BRIDGE_PROD_API_BASE_URL;
+export const BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE =
+  QuoteMetadataMigrationPhase.V2WithV1Fallback;
+
+/**
+ * Resolves the Bridge API base URL to use based on the current MetaMask
+ * environment.
+ *
+ * @returns the Bridge API base URL for the current MetaMask environment
+ */
+export const getBridgeApiBaseUrlForMetaMaskEnv = (): string => {
+  if (process.env.BRIDGE_USE_CUSTOM_BASE_URL) {
+    return process.env.BRIDGE_USE_CUSTOM_BASE_URL;
+  }
+
+  switch (process.env.METAMASK_ENVIRONMENT) {
+    case 'exp':
+    case ENVIRONMENT.STAGING:
+      return BRIDGE_UAT_API_BASE_URL;
+    case 'e2e':
+    case 'dev':
+    case 'local':
+    case ENVIRONMENT.DEVELOPMENT:
+    case ENVIRONMENT.TESTING:
+    case ENVIRONMENT.OTHER:
+      return BRIDGE_DEV_API_BASE_URL;
+    case 'production':
+    case 'rc':
+    case 'pre-release':
+    case 'beta':
+    case ENVIRONMENT.RELEASE_CANDIDATE:
+    case ENVIRONMENT.PRODUCTION:
+    case ENVIRONMENT.PULL_REQUEST:
+    default:
+      return BRIDGE_PROD_API_BASE_URL;
+  }
+};
+
+// Allows developers to point the extension at a custom Bridge API deployment
+// (e.g. a local server or a one-off environment), bypassing the environment-based mapping above.
+export const BRIDGE_API_BASE_URL = getBridgeApiBaseUrlForMetaMaskEnv();
 
 export const BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP: Record<
   (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number],
@@ -118,6 +160,8 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [toEvmCaipChainId(CHAIN_IDS.MEGAETH_MAINNET)]: 'MegaETH',
   [CHAIN_IDS.ARC]: 'Arc',
   [toEvmCaipChainId(CHAIN_IDS.ARC)]: 'Arc',
+  [CHAIN_IDS.ROBINHOOD_CHAIN]: 'Robinhood',
+  [toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)]: 'Robinhood',
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
   [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
@@ -125,6 +169,7 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
   [MultichainNetworks.BITCOIN_SIGNET]: 'Bitcoin Mutinynet',
   [MultichainNetworks.TRON]: 'Tron',
+  [MultichainNetworks.STELLAR]: 'Stellar',
 };
 
 export const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
@@ -269,6 +314,14 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: BridgeChainTokenMap = {
     name: 'EURC',
     assetId: `${toEvmCaipChainId(CHAIN_IDS.ARC)}/erc20:${toChecksumHexAddress('0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1')}`,
   },
+  [toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)]: {
+    // ETH -> USDG on Robinhood
+    address: '0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168',
+    symbol: 'USDG',
+    decimals: 6,
+    name: 'Global Dollar',
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN)}/erc20:${toChecksumHexAddress('0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168')}`,
+  },
   [MultichainNetworks.SOLANA]: {
     // SOL -> USDC on Solana
     address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
@@ -286,9 +339,21 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: BridgeChainTokenMap = {
     name: 'Tether USD',
     assetId: `${MultichainNetworks.TRON}/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`,
   },
+  [MultichainNetworks.STELLAR]: {
+    // XLM -> USDC on Stellar
+    address: 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+    symbol: 'USDC',
+    decimals: 7,
+    name: 'USDC',
+    assetId: `${MultichainNetworks.STELLAR}/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN`,
+  },
 } as const;
 
 export const BRIDGE_ASSET_PICKER_HIDDEN_ASSETS = new Set([
-  // Arc blockchain: Two USDC - one native, one ERC20. Hidding native for convenience.
+  // Arc blockchain: Two USDC - one native, one ERC20. Hiding native for convenience.
+  // Both the legacy erc20:0x0 placeholder and the current slip44:5042 ID are
+  // listed because persisted balance state may still carry the legacy ID
+  // until the pending state migration for the slip44 rollout lands.
   'eip155:5042/erc20:0x0000000000000000000000000000000000000000',
+  'eip155:5042/slip44:5042',
 ]);

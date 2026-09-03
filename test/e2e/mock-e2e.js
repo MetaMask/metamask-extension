@@ -1,10 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const { escapeRegExp } = require('lodash');
+const { RulePriority } = require('mockttp');
 
 const {
   ACCOUNTS_PROD_API_BASE_URL,
 } = require('../../shared/constants/accounts');
+const { REWARDS_API_URL } = require('../../shared/constants/rewards');
 const {
   GAS_API_BASE_URL,
   SWAPS_API_V2_BASE_URL,
@@ -14,6 +16,7 @@ const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_BTC_CONVERSION_RATE,
+  LOCAL_NODE_ACCOUNT,
 } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 const { SOLANA_WS_PORT } = require('./websocket/solana-mocks');
@@ -96,11 +99,15 @@ const blocklistedHosts = [
   'sei-mainnet.infura.io',
   'sepolia.infura.io',
   'testnet-rpc.monad.xyz',
+  'monad-mainnet.infura.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
 const { mockIdentityServices } = require('./tests/identity/mocks');
+const {
+  mockAuthenticatedUserStorageNotificationPreferences,
+} = require('./helpers/authenticated-user-storage/mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
@@ -113,6 +120,302 @@ const emptyHtmlPage = () => `<!DOCTYPE html>
     Empty page by MetaMask
   </body>
 </html>`;
+
+const BITCOIN_DISCOVERY_BLOCKS = [
+  {
+    id: '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409',
+    height: 932936,
+    version: 1073676288,
+    timestamp: 1768825157,
+    tx_count: 1104,
+    size: 2006326,
+    weight: 3993304,
+    merkle_root:
+      '68b04e69caac6a24c585e8a357fd9a5de8b084bda8b043690efaafcd11343c2a',
+    previousblockhash:
+      '000000000000000000013d73c3bd23225714f2fd8b801ed076818f2971897748',
+    mediantime: 1768823212,
+    nonce: 1426240500,
+    bits: 386001906,
+    difficulty: 146472570619930.78,
+  },
+];
+
+const BITCOIN_DISCOVERY_CHAIN_TIP_HASH =
+  '00000000000000000001d3a19bc9dbde9d1d26b25aa49269b575282bb6d74409';
+
+// The canonical Bitcoin mainnet genesis block hash (height 0). The snap fetches
+// `/block-height/0` and verifies it against this known value during discovery.
+const BITCOIN_MAINNET_GENESIS_HASH =
+  '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f';
+
+const BITCOIN_DISCOVERY_FEE_ESTIMATES = {
+  1: 1,
+  2: 1,
+  3: 1,
+  6: 1,
+  144: 1,
+};
+
+// The canonical Solana mainnet genesis hash. `getGenesisHash` is the network
+// identity check the Solana snap runs during discovery — like Bitcoin's
+// `/block-height/0`, returning any other value makes the snap reject the network.
+const SOLANA_MAINNET_GENESIS_HASH =
+  '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
+
+const SOLANA_RPC_CONTEXT = { apiVersion: '2.0.18', slot: 308460925 };
+
+// Well-formed empty/identity results for every JSON-RPC method the Solana snap
+// calls during account discovery. Mirrors the shapes in
+// `test/e2e/tests/solana/common-solana.ts`. Returning these (instead of letting
+// the requests fall through to the empty-200 catch-all) lets discovery resolve
+// to "no extra accounts" in a single pass instead of a retry storm.
+const SOLANA_DISCOVERY_RPC_RESULTS = {
+  getGenesisHash: SOLANA_MAINNET_GENESIS_HASH,
+  getHealth: 'ok',
+  getVersion: { 'solana-core': '2.0.18', 'feature-set': 3271415109 },
+  getSlot: SOLANA_RPC_CONTEXT.slot,
+  getBalance: { context: SOLANA_RPC_CONTEXT, value: 0 },
+  getAccountInfo: { context: SOLANA_RPC_CONTEXT, value: null },
+  getMultipleAccounts: { context: SOLANA_RPC_CONTEXT, value: [] },
+  getProgramAccounts: [],
+  getTokenAccountsByOwner: { context: SOLANA_RPC_CONTEXT, value: [] },
+  getTokenAccountBalance: {
+    context: SOLANA_RPC_CONTEXT,
+    value: { amount: '0', decimals: 9, uiAmount: null, uiAmountString: '0' },
+  },
+  getLatestBlockhash: {
+    context: SOLANA_RPC_CONTEXT,
+    value: {
+      blockhash: '6E9FiVcuvavWyKTfYC7N9ezJWkNgJVQsroDTHvqApncg',
+      lastValidBlockHeight: 341034515,
+    },
+  },
+  getMinimumBalanceForRentExemption: 890880,
+  getFeeForMessage: { context: SOLANA_RPC_CONTEXT, value: 5000 },
+  getEpochInfo: {
+    absoluteSlot: 308460925,
+    blockHeight: 286665030,
+    epoch: 762,
+    slotIndex: 156925,
+    slotsInEpoch: 432000,
+    transactionCount: 386021115957,
+  },
+};
+
+// Every host the Tron snap sends provider requests to: mainnet via Infura or
+// TronGrid, plus the Shasta/Nile testnets (current `*.api.trongrid.io` and
+// legacy `*.trongrid.io` hostnames).
+const TRON_PROVIDER_HOSTS =
+  'https:\\/\\/(?:tron-mainnet\\.infura\\.io\\/v3\\/[^/]+|(?:api|shasta\\.api|nile\\.api|shasta|nile)\\.trongrid\\.io)';
+
+// TronGrid account endpoints polled during discovery and the snap's account
+// sync cronjob. Group 1 is the base58 address, group 2 the list-endpoint
+// suffix (`/transactions`, `/transactions/trc20`, or `/trc20/balance`).
+const TRON_ACCOUNT_URL_RE = new RegExp(
+  `^${TRON_PROVIDER_HOSTS}\\/v1\\/accounts\\/([A-Za-z0-9]{20,})(\\/transactions(?:\\/trc20)?|\\/trc20\\/balance)?(\\?.*)?$`,
+  'u',
+);
+
+// The JSON-RPC endpoint TronWeb hits when initialising a network provider.
+const TRON_JSONRPC_URL_RE = new RegExp(
+  `^${TRON_PROVIDER_HOSTS}\\/jsonrpc$`,
+  'u',
+);
+
+// Zero-balance TronGrid account, mirroring the shape produced by
+// `createTronGridAccountResponse` in `test/e2e/seeder/tron/assets.ts`, which
+// the snap's response validation is known to accept.
+const tronEmptyAccountResponse = (address) => ({
+  data: [
+    {
+      address,
+      assetV2: [],
+      balance: 0,
+      free_asset_net_usageV2: [],
+      frozenV2: [],
+      trc20: [],
+    },
+  ],
+  success: true,
+  meta: { at: Date.now(), page_size: 1 },
+});
+
+const tronEmptyListResponse = () => ({
+  data: [],
+  success: true,
+  meta: { at: Date.now(), page_size: 0 },
+});
+
+/**
+ * Registers default non-EVM discovery mocks for the shared E2E environment.
+ *
+ * These handlers keep Bitcoin esplora discovery, Solana signature lookups, and
+ * Tron account polling from falling through to the generic empty-200
+ * catch-all, which otherwise causes provider retries and slow non-EVM icon
+ * rendering in multichain flows.
+ *
+ * @param {Mockttp} server - The mock server used for E2E network mocks.
+ * @returns {Promise<void>}
+ */
+async function setupDefaultNonEvmDiscoveryMocks(server) {
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/blocks$/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: BITCOIN_DISCOVERY_BLOCKS,
+    }));
+
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/blocks\/tip\/height$/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      body: String(BITCOIN_DISCOVERY_BLOCKS[0].height),
+    }));
+
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/blocks\/tip\/hash$/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      body: BITCOIN_DISCOVERY_CHAIN_TIP_HASH,
+    }));
+
+  // The Bitcoin snap fetches `/block-height/0` and verifies the genesis hash
+  // before deriving accounts — a network-identity check not covered by the
+  // discovery mocks above (#43817) nor by the Solana-scoped completion work
+  // (#43961/#43958), so this handler stays. Unmocked, the request falls to the
+  // empty-200 catch-all, whose malformed body retry-storms discovery and
+  // delays the non-EVM account icons past the default wait. Height 0 must
+  // return the real genesis hash: the snap's chain check rejects a tip hash
+  // there and crashes account creation.
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/block-height\/(?<height>\d+)$/u,
+    )
+    .always()
+    .thenCallback((request) => {
+      const height = request.url.match(/block-height\/(?<h>\d+)/u)?.groups?.h;
+      return {
+        statusCode: 200,
+        body:
+          height === '0'
+            ? BITCOIN_MAINNET_GENESIS_HASH
+            : BITCOIN_DISCOVERY_CHAIN_TIP_HASH,
+      };
+    });
+
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/scripthash\/[0-9a-f]{64}\/txs$/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [],
+    }));
+
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/scripthash\/[0-9a-f]{64}\/utxo$/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [],
+    }));
+
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[a-f0-9]{32}\/esplora\/fee-estimates$/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: BITCOIN_DISCOVERY_FEE_ESTIMATES,
+    }));
+
+  await server
+    .forPost(/^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3\/.*/u)
+    .withBodyIncluding('getSignaturesForAddress')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        id: '1337',
+        jsonrpc: '2.0',
+        result: [],
+      },
+    }));
+
+  // The Solana snap calls many more JSON-RPC methods than `getSignaturesForAddress`
+  // during discovery (balance, account info, blockhash, the `getGenesisHash`
+  // network check, …). Mock each with a well-formed empty/identity result so the
+  // request doesn't fall through to the empty-200 catch-all and trigger a retry
+  // storm. Registered at FALLBACK priority: mockttp always prefers a matching
+  // DEFAULT-priority rule (`.always()` rules included), so test-specific mocks
+  // that need richer Solana responses (e.g. the solana-wallet-standard specs)
+  // take precedence, and these defaults only answer methods no spec mocked.
+  // They still beat the empty-200 catch-all, which is also FALLBACK priority
+  // but loses to these rules within the set (`.always()` wins the first pass).
+  for (const [method, result] of Object.entries(SOLANA_DISCOVERY_RPC_RESULTS)) {
+    await server
+      .forPost(/^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3\/.*/u)
+      .withJsonBodyIncluding({ method })
+      .asPriority(RulePriority.FALLBACK)
+      .always()
+      .thenCallback(async (request) => {
+        const body = await request.body.getJson();
+        return {
+          statusCode: 200,
+          json: { id: body?.id ?? '1337', jsonrpc: '2.0', result },
+        };
+      });
+  }
+
+  // The Tron snap (preinstalled, v3+) polls TronGrid account state during
+  // BIP44 discovery and its 60-second sync cronjob, and TronWeb POSTs to
+  // `/jsonrpc` when initialising the Shasta/Nile testnet providers. None of
+  // these had shared mocks, so in flows without Tron-specific mocks (e.g. the
+  // benchmarks) every call fell to the empty-200 catch-all and retry-stormed
+  // the snap's service policy. Registered at FALLBACK priority like the
+  // Solana defaults above so Tron-specific spec mocks take precedence.
+  await server
+    .forGet(TRON_ACCOUNT_URL_RE)
+    .asPriority(RulePriority.FALLBACK)
+    .always()
+    .thenCallback((request) => {
+      const match = request.url.match(TRON_ACCOUNT_URL_RE);
+      const address = match?.[1] ?? '';
+      const isListEndpoint = Boolean(match?.[2]);
+      return {
+        statusCode: 200,
+        json: isListEndpoint
+          ? tronEmptyListResponse()
+          : tronEmptyAccountResponse(address),
+      };
+    });
+
+  await server
+    .forPost(TRON_JSONRPC_URL_RE)
+    .asPriority(RulePriority.FALLBACK)
+    .always()
+    .thenCallback(async (request) => {
+      const body = await request.body.getJson();
+      return {
+        statusCode: 200,
+        json: { jsonrpc: '2.0', id: body?.id ?? 1, result: null },
+      };
+    });
+}
 
 /**
  * The browser makes requests to domains within its own namespace for
@@ -174,31 +477,38 @@ async function setupMocking(
 ) {
   let numNetworkReqs = 0;
   const privacyReport = new Set();
-  await server.forAnyRequest().thenPassThrough({
-    beforeRequest: ({ headers: { host }, url }) => {
-      if (!host || !url) {
+  // FALLBACK priority so that this catch-all only handles requests no other
+  // DEFAULT-priority mock matches. This also lets other FALLBACK-priority
+  // defaults (e.g. the Solana discovery mocks below) take precedence over the
+  // catch-all while still yielding to test-specific and shared DEFAULT mocks.
+  await server
+    .forAnyRequest()
+    .asPriority(RulePriority.FALLBACK)
+    .thenPassThrough({
+      beforeRequest: ({ headers: { host }, url }) => {
+        if (!host || !url) {
+          return {
+            response: {
+              statusCode: 200,
+            },
+          };
+        }
+        if (blocklistedHosts.includes(host)) {
+          return {
+            url: 'http://localhost:8545',
+          };
+        } else if (ALLOWLISTED_URLS.includes(url)) {
+          // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
+          return {};
+        }
         return {
+          // If the URL or the host is not in the allowlist nor blocklisted, we return a 200.
           response: {
             statusCode: 200,
           },
         };
-      }
-      if (blocklistedHosts.includes(host)) {
-        return {
-          url: 'http://localhost:8545',
-        };
-      } else if (ALLOWLISTED_URLS.includes(url)) {
-        // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
-        return {};
-      }
-      return {
-        // If the URL or the host is not in the allowlist nor blocklisted, we return a 200.
-        response: {
-          statusCode: 200,
-        },
-      };
-    },
-  });
+      },
+    });
 
   function getNetworkReport() {
     return { numNetworkReqs };
@@ -213,6 +523,8 @@ async function setupMocking(
 
   // Snaps execution ACL registry
   await setupSnapRegistryMocks(server);
+
+  await setupDefaultNonEvmDiscoveryMocks(server);
 
   // remote feature flags — production-accurate defaults from the registry
   // FF will apply to all environments: rc, prod and dev
@@ -267,11 +579,13 @@ async function setupMocking(
     });
 
   // Rewards API
-  await server
-    .forPost('https://rewards.uat-api.cx.metamask.io/public/rewards/ois')
-    .thenCallback(() => {
-      return { statusCode: 200, json: { ois: [], sids: [] } };
-    });
+  for (const rewardsApiUrl of [REWARDS_API_URL.UAT, REWARDS_API_URL.PRD]) {
+    await server
+      .forPost(`${rewardsApiUrl}/public/rewards/ois`)
+      .thenCallback(() => {
+        return { statusCode: 200, json: { ois: [], sids: [] } };
+      });
+  }
 
   // User Profile Lineage
   await server
@@ -383,18 +697,23 @@ async function setupMocking(
       };
     });
 
-  // SENTRY_DSN_PERFORMANCE
+  // `SENTRY_DSN_PERFORMANCE`
+  // Intercept with a canned 200 rather than passing through: tracing emits
+  // hundreds of performance envelopes per test, and the real-network
+  // round-trips starve startup, flake the non-EVM account render, and consume
+  // the `metamask-performance` quota from CI.
   await server
     .forPost('https://sentry.io/api/4510302346608640/envelope/')
-    .thenPassThrough({
-      beforeRequest: (req) => {
-        console.log(
-          'Request going to Sentry metamask-performance ============',
-          req.url,
-          false,
-        );
-        return {};
-      },
+    .thenCallback((req) => {
+      console.log(
+        'Request going to Sentry metamask-performance ============',
+        req.url,
+        false,
+      );
+      return {
+        statusCode: 200,
+        json: {},
+      };
     });
 
   await server
@@ -624,6 +943,24 @@ async function setupMocking(
           },
         ],
       };
+    });
+
+  // Token API: per-chain suggested occurrence floors — mocked globally so token
+  // list / spam-filter fetches do not hit the live endpoint in E2E.
+  await server
+    .forGet('https://token.api.cx.metamask.io/v1/suggestedOccurrenceFloors')
+    .always()
+    .thenJson(200, {
+      1: 3,
+      143: 1,
+      204: 1,
+      232: 1,
+      690: 1,
+      1329: 1,
+      4663: 1,
+      10143: 1,
+      59144: 1,
+      98866: 1,
     });
 
   const TOKEN_BLOCKLIST = fs.readFileSync(TOKEN_BLOCKLIST_PATH);
@@ -1199,12 +1536,15 @@ async function setupMocking(
   // .always() ensures every fetch returns [] (not just the first one).
   // Notification-specific tests re-register this endpoint via testSpecificMock.
   await server
-    .forPost('https://notification.api.cx.metamask.io/api/v3/notifications')
+    .forPost('https://notification.api.cx.metamask.io/api/v4/notifications')
     .always()
     .thenCallback(() => ({ statusCode: 200, json: [] }));
 
   // Identity APIs
   await mockIdentityServices(server);
+
+  // Authenticated User Storage APIs
+  mockAuthenticatedUserStorageNotificationPreferences(server);
 
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {
@@ -1254,6 +1594,99 @@ async function setupMocking(
   // all other requests get an empty array. Tests can override via testSpecificMock.
   await server
     .forGet('https://tokens.api.cx.metamask.io/v3/assets')
+    .always()
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const assetIds = url.searchParams.getAll('assetIds').join(',');
+
+      const results = [];
+
+      const pushIf = (predicate, entry) => {
+        if (predicate) {
+          results.push(entry);
+        }
+      };
+
+      pushIf(assetIds.includes('eip155:1/slip44:60'), {
+        assetId: 'eip155:1/slip44:60',
+        name: 'Ethereum',
+        symbol: 'ETH',
+        decimals: 18,
+      });
+
+      // Chain 1337 uses slip44:1 per nativeAssetIdentifiers in the fixture.
+      // Support both slip44:1 and slip44:60 requests for backward compat.
+      pushIf(
+        assetIds.includes('eip155:1337/slip44:1') ||
+          assetIds.includes('eip155:1337/slip44:60'),
+        {
+          assetId: 'eip155:1337/slip44:1',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+        },
+      );
+
+      const wethMainnet =
+        'eip155:1/erc20:0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+      const usdcMainnet =
+        'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+      const usdtMainnet =
+        'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7';
+      const daiMainnet =
+        'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F';
+
+      if (
+        assetIds.includes(wethMainnet) ||
+        assetIds.includes(wethMainnet.toLowerCase())
+      ) {
+        results.push({
+          assetId: wethMainnet,
+          name: 'Wrapped Ether',
+          symbol: 'WETH',
+          decimals: 18,
+        });
+      }
+      if (
+        assetIds.includes(usdcMainnet) ||
+        assetIds.includes(usdcMainnet.toLowerCase())
+      ) {
+        results.push({
+          assetId: usdcMainnet,
+          name: 'USD Coin',
+          symbol: 'USDC',
+          decimals: 6,
+        });
+      }
+      if (
+        assetIds.includes(usdtMainnet) ||
+        assetIds.includes(usdtMainnet.toLowerCase())
+      ) {
+        results.push({
+          assetId: usdtMainnet,
+          name: 'Tether USD',
+          symbol: 'USDT',
+          decimals: 6,
+        });
+      }
+      if (
+        assetIds.includes(daiMainnet) ||
+        assetIds.includes(daiMainnet.toLowerCase())
+      ) {
+        results.push({
+          assetId: daiMainnet,
+          name: 'Dai Stablecoin',
+          symbol: 'DAI',
+          decimals: 18,
+        });
+      }
+
+      return { statusCode: 200, json: results };
+    });
+
+  // Token API assets: used by fetchTokenAssets (TokenAsset cache / TDP deep links).
+  await server
+    .forGet('https://token.api.cx.metamask.io/assets')
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);
@@ -1418,7 +1851,7 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: {
-          fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352, 1337],
+          fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352],
           partialSupport: {
             balances: [42220, 43114],
           },
@@ -1426,12 +1859,48 @@ async function setupMocking(
       };
     });
 
-  // Merkl rewards API: return empty rewards so mUSD reward polling doesn't crash
-  // tests with SyntaxError when the catch-all returns an empty body.
+  // Veda performance API: vault APY, fetched by MoneyAccountBalanceService
+  // whenever a Money Account surface renders. A minimal valid response stops
+  // TanStack Query from retrying against the catch-all.
   await server
-    .forGet(/^https:\/\/api\.merkl\.xyz\/v4\/users\/[^/]+\/rewards/u)
+    .forGet(/^https:\/\/api\.sevenseas\.capital\/performance\/[^/]+\/[^/]+$/u)
     .always()
-    .thenCallback(() => ({ statusCode: 200, json: [] }));
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        Response: {
+          apy: 0.045,
+          timestamp: '2026-01-01T00:00:00Z',
+        },
+      },
+    }));
+
+  // Money API: positions for a Money account, fetched as the API leg of
+  // MoneyAccountBalanceService:fetchBalanceWithFallback. A zero balance
+  // satisfies the service's balance invariant (musd + vmusd === total).
+  await server
+    .forGet(/^https:\/\/money\.api\.cx\.metamask\.io\/v1\/positions\/[^/]+$/u)
+    .always()
+    .thenCallback((req) => {
+      const url = new URL(req.url);
+      const address = url.pathname.split('/').pop();
+      return {
+        statusCode: 200,
+        json: {
+          address,
+          as_of_block: 1,
+          as_of_timestamp: '2026-01-01T00:00:00Z',
+          data_freshness: 'live',
+          indexer_lag_seconds: 0,
+          balance: {
+            musd_balance: '0',
+            vmusd_value_in_musd: '0',
+            total_balance: '0',
+          },
+          positions: [],
+        },
+      };
+    });
 
   // Accounts API: v5 multi-account balances (used by AccountsApiDataSource when assetsUnifyState is enabled).
   // Default: 25 ETH native per requested chain for the default fixture account. Override via
@@ -1465,15 +1934,27 @@ async function setupMocking(
 
       const balances = [];
       for (const id of accountIds) {
-        if (!id.toLowerCase().includes(DEFAULT_FIXTURE_ACCOUNT_LOWERCASE)) {
+        const parts = id.split(':');
+        if (parts[0] !== 'eip155' || parts.length < 3) {
           continue;
         }
-        const parts = id.split(':');
         const chainRef = parts[1];
-        let nativeBalance = '25';
-        if (chainRef === '1' && mainnetNativeOverride !== null) {
+        const accountAddress = parts.slice(2).join(':').toLowerCase();
+        const isKnownFundedTestAccount =
+          accountAddress === DEFAULT_FIXTURE_ACCOUNT_LOWERCASE ||
+          accountAddress === LOCAL_NODE_ACCOUNT.toLowerCase();
+        // Seed known E2E accounts with 25 ETH; newly added accounts (e.g. hardware
+        // wallets) start at zero unless overridden via unifiedEvmAccountsApiBalances.
+        let nativeBalance = isKnownFundedTestAccount ? '25' : '0';
+        if (defaultNativeOverride === '0' && !isKnownFundedTestAccount) {
+          nativeBalance = '0';
+        } else if (chainRef === '1' && mainnetNativeOverride !== null) {
           nativeBalance = mainnetNativeOverride;
-        } else if (chainRef === '1337' && localhostNativeOverride !== null) {
+        } else if (
+          chainRef === '1337' &&
+          localhostNativeOverride !== null &&
+          isKnownFundedTestAccount
+        ) {
           nativeBalance = localhostNativeOverride;
         } else if (defaultNativeOverride !== null) {
           nativeBalance = defaultNativeOverride;
@@ -1578,9 +2059,10 @@ async function setupMocking(
       };
     });
 
-  // On Ramp: Geolocation (production and dev environments)
+  // On Ramp: Geolocation (production, staging, and dev environments)
   for (const host of [
     'on-ramp.api.cx.metamask.io',
+    'on-ramp.uat-api.cx.metamask.io',
     'on-ramp.dev-api.cx.metamask.io',
   ]) {
     await server.forGet(`https://${host}/geolocation`).thenCallback(() => {
@@ -1592,6 +2074,36 @@ async function setupMocking(
         },
       };
     });
+  }
+
+  // Geolocation API v2 (GeolocationController -> GeolocationApiService).
+  // Mirrors the legacy on-ramp mock above (US-TX) but in the v2 JSON shape.
+  for (const host of [
+    'geolocation.api.cx.metamask.io',
+    'geolocation.dev-api.cx.metamask.io',
+  ]) {
+    await server.forGet(`https://${host}/v2/geolocation`).thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: { country: 'US', region: 'TX', timezone: 'America/Chicago' },
+      };
+    });
+  }
+
+  // On Ramp: Countries list (RampsController.init on startup)
+  for (const host of [
+    'on-ramp-cache.api.cx.metamask.io',
+    'on-ramp-cache.uat-api.cx.metamask.io',
+    'on-ramp.dev-api.cx.metamask.io',
+  ]) {
+    await server
+      .forGet(`https://${host}/v2/regions/countries`)
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: [],
+        };
+      });
   }
 
   // Snaps: Execution environment html
@@ -1797,13 +2309,27 @@ async function setupMocking(
         const coin = (parsed && parsed.req && parsed.req.coin) || 'BTC';
         const prices = { BTC: '50000', ETH: '3000', AVAX: '25' };
         const price = prices[coin] || '100';
-        const now = Date.now();
+        // Respect endTime so load-more fetches don't overlap with existing candles.
+        // Use 40 candles (> DEFAULT_CANDLES=30 + EDGE_DETECTION_THRESHOLD=5) so the
+        // chart's initial visible range starts above the edge-detection threshold and
+        // onNeedMoreHistory does not fire immediately on first render.
+        //
+        // Place the LAST candle one full interval before endTime: endTime is
+        // oldestExistingCandle.time - 1 ms, which truncates to the same second as
+        // the oldest existing candle. Placing the last returned candle at
+        // endTime - interval guarantees at least one full period gap between the
+        // "older" batch and the existing candles so setData never receives
+        // duplicate second-level timestamps.
+        const endTime =
+          (parsed && parsed.req && parsed.req.endTime) || Date.now();
         const interval = 300000; // 5m in ms
+        const count = 40;
+        const lastCandleTime = endTime - interval;
         const candles = [];
-        for (let i = 4; i >= 0; i--) {
+        for (let i = count - 1; i >= 0; i--) {
           candles.push({
-            t: now - i * interval,
-            T: now - i * interval + interval - 1,
+            t: lastCandleTime - i * interval,
+            T: lastCandleTime - i * interval + interval - 1,
             s: coin,
             i: (parsed && parsed.req && parsed.req.interval) || '5m',
             o: price,
@@ -1816,8 +2342,67 @@ async function setupMocking(
         }
         return { statusCode: 200, json: candles };
       }
+      if (type === 'maxBuilderFee') {
+        // Mirrors the WS INFO POST mock in perps/mocks/websocketDefaultMocks.ts:
+        // 0.001 is the configured MaxFeeDecimal, so the controller treats the
+        // builder fee as already approved and skips the approveBuilderFee
+        // /exchange call. perps-controller queries this over HTTP (not the WS
+        // info client) from the TP/SL and order paths, so the WS mock alone is
+        // not enough.
+        return { statusCode: 200, json: 0.001 };
+      }
+      if (type === 'perpDexs') {
+        // Mirrors the WS INFO POST mock: [null] where null = the main DEX. The
+        // controller derives perpDexIndex from this, and omitting null skips the
+        // main-DEX mapping entirely.
+        return { statusCode: 200, json: [null] };
+      }
       if (type === 'openOrders') {
         return { statusCode: 200, json: [] };
+      }
+      if (type === 'frontendOpenOrders') {
+        // perps-controller reads TP/SL triggers with `frontendOpenOrders`, not
+        // `openOrders`, and immediately calls `.forEach` on the result. The
+        // catch-all below returns `{}`, which is not iterable.
+        return { statusCode: 200, json: [] };
+      }
+      if (type === 'userNonFundingLedgerUpdates') {
+        // `#isWalletOnHyperliquid` treats a non-array or empty ledger as "this
+        // wallet has no Hyperliquid account", which silently defers the
+        // unified-account migration and the referral write.
+        return {
+          statusCode: 200,
+          json: [
+            {
+              time: 1735689600000,
+              hash: '0x0000000000000000000000000000000000000000000000000000000000000001',
+              delta: {
+                type: 'deposit',
+                amount: '10000.0',
+                nonce: 1,
+                usdc: '10000.0',
+              },
+            },
+          ],
+        };
+      }
+      if (type === 'userAbstraction') {
+        // A compatible mode, so the controller skips the EIP-712 migration that
+        // 15.1.0 drives at action time.
+        return { statusCode: 200, json: 'unifiedAccount' };
+      }
+      if (type === 'userToMultiSigSigners') {
+        // Hyperliquid returns null for single-signer accounts;
+        // `#isHyperliquidMultiSigAccount` reads any non-null answer as multi-sig.
+        return { statusCode: 200, json: null };
+      }
+      if (type === 'referral') {
+        // Mirrors the WS INFO POST mock: already referred by the MetaMask
+        // builder, so the controller skips the setReferrer /exchange call.
+        return {
+          statusCode: 200,
+          json: { referredBy: '0xea2c82b5aba243ab631c0ce151763d5e38df75b3' },
+        };
       }
       if (type === 'userFills') {
         return { statusCode: 200, json: [] };
@@ -1827,11 +2412,38 @@ async function setupMocking(
 
   await server
     .forPost(/^https:\/\/api\.hyperliquid\.xyz\/exchange$/u)
-    .thenCallback((request) => {
-      const body = request.body?.json ?? {};
-      const actionType = body.action?.type;
+    .thenCallback(async (request) => {
+      // Mockttp's CompletedBody exposes `getJson()`, not a `.json` property —
+      // reading `request.body.json` always yielded undefined, so every action
+      // fell through to the generic `{ type: 'default' }` response below. Parse
+      // it the same defensive way the /info handler above does.
+      const body = (await request.body?.getJson().catch(() => undefined)) ?? {};
+      const action = body.action ?? {};
+      const actionType = action.type;
 
       if (actionType === 'order') {
+        const orders = Array.isArray(action.orders) ? action.orders : [];
+        // perps-controller requires exactly one status per submitted order, so
+        // a TP/SL batch (take profit + stop loss) must answer with two. Trigger
+        // orders rest until their price is crossed; plain orders fill.
+        const statuses = orders.map((order, index) => {
+          const orderType = order?.t;
+          const isTrigger =
+            typeof orderType === 'object' &&
+            orderType !== null &&
+            'trigger' in orderType;
+          if (isTrigger) {
+            return { resting: { oid: 100001 + index } };
+          }
+          return {
+            filled: {
+              totalSz: '4.0',
+              avgPx: '25.05',
+              oid: 100001 + index,
+            },
+          };
+        });
+
         return {
           statusCode: 200,
           json: {
@@ -1839,16 +2451,29 @@ async function setupMocking(
             response: {
               type: 'order',
               data: {
-                statuses: [
-                  {
-                    filled: {
-                      totalSz: '4.0',
-                      avgPx: '25.05',
-                      oid: 100001,
-                    },
-                  },
-                ],
+                statuses: statuses.length
+                  ? statuses
+                  : [
+                      {
+                        filled: { totalSz: '4.0', avgPx: '25.05', oid: 100001 },
+                      },
+                    ],
               },
+            },
+          },
+        };
+      }
+
+      if (actionType === 'cancel') {
+        const cancels = Array.isArray(action.cancels) ? action.cancels : [];
+        // Same one-status-per-request contract as `order`.
+        return {
+          statusCode: 200,
+          json: {
+            status: 'ok',
+            response: {
+              type: 'cancel',
+              data: { statuses: cancels.map(() => 'success') },
             },
           },
         };
@@ -1924,7 +2549,12 @@ async function setupMocking(
    * @returns {string[]} privacy report for the current test suite.
    */
   function getPrivacyReport() {
-    return [...privacyReport].sort();
+    return [...privacyReport]
+      .filter(
+        (host) =>
+          typeof host === 'string' && host.length > 0 && host !== 'null',
+      )
+      .sort();
   }
 
   /**
@@ -1947,7 +2577,7 @@ async function setupMocking(
     const privateHosts = new Set();
 
     for (const { pattern, host: privateHost } of privateHostMatchers) {
-      if (request.headers.host.match(pattern)) {
+      if (privateHost && request.headers.host?.match(pattern)) {
         privateHosts.add(privateHost);
       }
     }
@@ -1977,6 +2607,7 @@ async function setupMocking(
     }
 
     if (
+      request.headers.host &&
       request.headers.host.match(browserAPIRequestDomains) === null &&
       !portfolioRequestsMatcher(request)
     ) {

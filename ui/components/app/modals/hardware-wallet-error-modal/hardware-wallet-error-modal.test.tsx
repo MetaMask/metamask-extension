@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention, camelcase -- Segment analytics payload keys use snake_case */
+/* eslint-disable @typescript-eslint/naming-convention -- Segment analytics payload keys use snake_case */
 import React from 'react';
 import { render, fireEvent, waitFor, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
@@ -23,7 +23,6 @@ import {
   MetaMetricsHardwareWalletDeviceType,
   MetaMetricsHardwareWalletRecoveryErrorType,
 } from '../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { createHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import configureStore from '../../../../store/store';
@@ -34,6 +33,18 @@ import {
 import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
 
 const mockTrackEvent = jest.fn();
+jest.mock('../../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 jest.mock('../../../../../shared/lib/environment-type', () => ({
   getEnvironmentType: jest.fn(() => 'fullscreen'),
@@ -101,13 +112,6 @@ const createTestError = (
   return createHardwareWalletError(code, walletType, userMessage || message);
 };
 
-const metricsProviderValue = {
-  trackEvent: mockTrackEvent,
-  bufferedTrace: jest.fn(),
-  bufferedEndTrace: jest.fn(),
-  onboardingParentContext: { current: null },
-};
-
 const memoryRouterFuture = {
   ['v7_startTransition' as keyof NonNullable<MemoryRouterProps['future']>]:
     true,
@@ -129,14 +133,7 @@ function wrapHardwareWalletModalTree(
     <Provider store={store}>
       <MemoryRouter initialEntries={['/']} future={memoryRouterFuture}>
         <Routes>
-          <Route
-            path="*"
-            element={
-              <MetaMetricsContext.Provider value={metricsProviderValue}>
-                {ui}
-              </MetaMetricsContext.Provider>
-            }
-          />
+          <Route path="*" element={ui} />
         </Routes>
       </MemoryRouter>
     </Provider>
@@ -280,7 +277,7 @@ describe('HardwareWalletErrorModal', () => {
       await waitFor(() => {
         const modalViewed = mockTrackEvent.mock.calls.filter(
           (call) =>
-            call[0].event ===
+            call[0].name ===
             MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
         );
         expect(modalViewed).toHaveLength(1);
@@ -353,6 +350,29 @@ describe('HardwareWalletErrorModal', () => {
           '[hardwareWalletErrorTitleBlindSignNotSupportedInstruction2]',
         ),
       ).toBeInTheDocument();
+    });
+
+    it('displays unsupported signature copy for DeviceStateOnlyV4Supported', () => {
+      const error = createTestError(
+        ErrorCode.DeviceStateOnlyV4Supported,
+        'Ledger: Only version 4 of typed data signing is supported',
+        'This device can only sign version 4 (V4) typed data.',
+      );
+
+      const { getByText, queryByText } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
+
+      expect(
+        getByText('[hardwareWalletErrorTitleUnsupportedSignature]'),
+      ).toBeInTheDocument();
+      expect(
+        getByText('[hardwareWalletErrorOnlyV4SupportedDescription]'),
+      ).toBeInTheDocument();
+      expect(getByText('[confirm]')).toBeInTheDocument();
+      expect(
+        queryByText('[hardwareWalletErrorReconnectButton]'),
+      ).not.toBeInTheDocument();
     });
 
     it('displays app instructions for DeviceStateEthAppClosed', () => {
@@ -429,14 +449,14 @@ describe('HardwareWalletErrorModal', () => {
       expect(
         mockTrackEvent.mock.calls.some(
           (call) =>
-            call[0].event ===
+            call[0].name ===
             MetaMetricsEventName.HardwareWalletRecoveryRepairCtaClicked,
         ),
       ).toBe(true);
       expect(
         mockTrackEvent.mock.calls.some(
           (call) =>
-            call[0].event ===
+            call[0].name ===
             MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
         ),
       ).toBe(false);
@@ -470,7 +490,7 @@ describe('HardwareWalletErrorModal', () => {
       expect(
         mockTrackEvent.mock.calls.some(
           (call) =>
-            call[0].event ===
+            call[0].name ===
             MetaMetricsEventName.HardwareWalletRecoveryRepairCtaClicked,
         ),
       ).toBe(false);
@@ -625,7 +645,7 @@ describe('HardwareWalletErrorModal', () => {
         await waitFor(() => {
           const modalViewed = mockTrackEvent.mock.calls.filter(
             (call) =>
-              call[0].event ===
+              call[0].name ===
               MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
           );
           expect(modalViewed).toHaveLength(1);
@@ -655,7 +675,7 @@ describe('HardwareWalletErrorModal', () => {
         await waitFor(() => {
           const modalViewed = mockTrackEvent.mock.calls.filter(
             (call) =>
-              call[0].event ===
+              call[0].name ===
               MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
           );
           expect(modalViewed).toHaveLength(1);
@@ -691,7 +711,7 @@ describe('HardwareWalletErrorModal', () => {
         await waitFor(() => {
           const ctaClicked = mockTrackEvent.mock.calls.filter(
             (call) =>
-              call[0].event ===
+              call[0].name ===
               MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
           );
           expect(ctaClicked).toHaveLength(1);
@@ -873,7 +893,7 @@ describe('HardwareWalletErrorModal', () => {
       await waitFor(() => {
         const modalViewed = mockTrackEvent.mock.calls.filter(
           (call) =>
-            call[0].event ===
+            call[0].name ===
             MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
         );
         expect(modalViewed).toHaveLength(1);
@@ -887,7 +907,7 @@ describe('HardwareWalletErrorModal', () => {
       await waitFor(() => {
         const modalViewed = mockTrackEvent.mock.calls.filter(
           (call) =>
-            call[0].event ===
+            call[0].name ===
             MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
         );
         expect(modalViewed.length).toBeGreaterThanOrEqual(2);
@@ -913,7 +933,7 @@ describe('HardwareWalletErrorModal', () => {
         expect(
           mockTrackEvent.mock.calls.some(
             (call) =>
-              call[0].event ===
+              call[0].name ===
               MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
           ),
         ).toBe(true);
@@ -933,7 +953,7 @@ describe('HardwareWalletErrorModal', () => {
       await waitFor(() => {
         const modalViewed = mockTrackEvent.mock.calls.filter(
           (call) =>
-            call[0].event ===
+            call[0].name ===
             MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
         );
         expect(modalViewed.length).toBeGreaterThanOrEqual(2);

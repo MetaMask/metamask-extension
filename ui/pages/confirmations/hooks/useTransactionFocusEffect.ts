@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useCallback, useEffect, useRef } from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
 
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
@@ -7,6 +6,7 @@ import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { setTransactionActive } from '../../../store/actions';
 import { useWindowFocus } from '../../../hooks/useWindowFocus';
 import { useConfirmContext } from '../context/confirm';
+import { useDispatch } from '../../../store/hooks';
 
 const FOCUSABLE_TYPES: Set<TransactionType> = new Set([
   TransactionType.batch,
@@ -24,9 +24,7 @@ export const useTransactionFocusEffect = () => {
   const { id, type } = currentConfirmation ?? {};
   const isWindowFocused = useWindowFocus();
   const dispatch = useDispatch();
-  const [focusedConfirmationId, setFocusedConfirmationId] = useState<
-    string | null
-  >(null);
+  const focusedConfirmationIdRef = useRef<string | null>(null);
   const isSidepanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
 
   const setTransactionFocus = useCallback(
@@ -38,13 +36,14 @@ export const useTransactionFocusEffect = () => {
 
   useEffect(() => {
     const isFocusable = FOCUSABLE_TYPES.has(type as TransactionType);
+    const focusedConfirmationId = focusedConfirmationIdRef.current;
 
     if (!isFocusable) {
       // If the transaction type is not one of the types that should be focused,
       // we need to unfocus the previous focused confirmation and reset the focused confirmation
       if (focusedConfirmationId) {
         setTransactionFocus(focusedConfirmationId, false);
-        setFocusedConfirmationId(null);
+        focusedConfirmationIdRef.current = null;
       }
       return;
     }
@@ -58,21 +57,17 @@ export const useTransactionFocusEffect = () => {
       if (focusedConfirmationId) {
         setTransactionFocus(focusedConfirmationId, false);
       }
-      // Set the focused confirmation to the current one
-      setFocusedConfirmationId(id);
-      setTransactionFocus(id, true);
+      if (id) {
+        focusedConfirmationIdRef.current = id;
+        setTransactionFocus(id, true);
+      } else {
+        focusedConfirmationIdRef.current = null;
+      }
     } else if (!isFocused && focusedConfirmationId) {
       // If the window is not focused (and not sidepanel) and there is a focused confirmation,
       // we need to unfocus the focused confirmation
       setTransactionFocus(focusedConfirmationId, false);
-      setFocusedConfirmationId(null);
+      focusedConfirmationIdRef.current = null;
     }
-  }, [
-    focusedConfirmationId,
-    id,
-    isSidepanel,
-    isWindowFocused,
-    setTransactionFocus,
-    type,
-  ]);
+  }, [id, isSidepanel, isWindowFocused, setTransactionFocus, type]);
 };

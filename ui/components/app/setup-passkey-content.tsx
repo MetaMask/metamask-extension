@@ -1,6 +1,5 @@
 import React, {
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -8,6 +7,8 @@ import React, {
 } from 'react';
 import log from 'loglevel';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   Text,
   BoxFlexDirection,
@@ -20,14 +21,14 @@ import {
   TextVariant,
   FontWeight,
   TextColor,
-  TextAlign,
 } from '@metamask/design-system-react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   getFirstTimeFlowType,
   getIsPasskeyRegistered,
   getIsSocialLoginFlow,
+  getPasskeyAuthenticatorId,
   getPasskeyDerivationMethod,
   getSocialLoginType,
 } from '../../selectors';
@@ -41,19 +42,16 @@ import { createSentryError } from '../../../shared/lib/error';
 import { getPasskeyErrorCode } from '../../../shared/lib/passkey/passkey-error';
 import {
   getPasskeyAuthMethodKey,
-  startPasskeyRegistration,
-  startPasskeyAuthentication,
   translatePasskeyError,
   isPasskeyCeremonySilentError,
 } from '../../../shared/lib/passkey';
 import { captureException } from '../../../shared/lib/sentry';
-import {
-  protectVaultKeyWithPasskey,
-  generatePasskeyRegistrationOptions,
-  generatePasskeyPostRegistrationAuthenticationOptions,
-  forceUpdateMetamaskState,
-} from '../../store/actions';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { forceUpdateMetamaskState } from '../../store/actions';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import { useDispatch } from '../../store/hooks';
+import { usePasskeyPRFSupport } from '../../hooks/usePasskeyPRFSupport';
+import { usePasskeyEnrollment } from '../../hooks/passkey/usePasskeyEnrollment';
+
 import {
   PasskeyEnrollmentSteps,
   type PasskeyEnrollmentStepStatus,
@@ -83,7 +81,8 @@ export default function SetupPasskeyContent({
   password,
 }: SetupPasskeyContentProps) {
   const dispatch = useDispatch();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { enrollWithPasskey } = usePasskeyEnrollment();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext() as (
     key: string,
     substitutions?: string[],
@@ -142,6 +141,11 @@ export default function SetupPasskeyContent({
     onNext();
   }, [onNext]);
 
+  usePasskeyPRFSupport({
+    enabled: !isPasskeyRegistered,
+    onUnsupported: goToNextStep,
+  });
+
   useEffect(() => {
     isMountedRef.current = true;
 
@@ -156,15 +160,16 @@ export default function SetupPasskeyContent({
     }
 
     hasTrackedView.current = true;
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.PasskeyOnboardingSetup,
-      properties: {
-        ...baseProperties,
-        status: 'viewed',
-      },
-    });
-  }, [baseProperties, isPasskeyRegistered, trackEvent]);
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.PasskeyOnboardingSetup)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          ...baseProperties,
+          status: 'viewed',
+        })
+        .build(),
+    );
+  }, [baseProperties, isPasskeyRegistered, trackEvent, createEventBuilder]);
 
   useEffect(() => {
     if (!isPasskeyRegistered || isEnrollmentInProgress) {
@@ -175,14 +180,15 @@ export default function SetupPasskeyContent({
   }, [goToNextStep, isEnrollmentInProgress, isPasskeyRegistered]);
 
   const handleMaybeLater = () => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.PasskeyOnboardingSetup,
-      properties: {
-        ...baseProperties,
-        status: 'skipped',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.PasskeyOnboardingSetup)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          ...baseProperties,
+          status: 'skipped',
+        })
+        .build(),
+    );
 
     goToNextStep();
   };
@@ -196,37 +202,27 @@ export default function SetupPasskeyContent({
     setVerifyStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
     setIsEnrollmentInProgress(true);
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.PasskeySetup,
-      properties: {
-        ...baseProperties,
-        status: 'started',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.PasskeySetup)
+        .addCategory(MetaMetricsEventCategory.Onboarding)
+        .addProperties({
+          ...baseProperties,
+          status: 'started',
+        })
+        .build(),
+    );
 
     try {
-      const registrationOptions = await generatePasskeyRegistrationOptions();
-      const registrationResponse =
-        await startPasskeyRegistration(registrationOptions);
-
-      setRegisterStepPhase('success');
-      setVerifyStepPhase('loading');
-
-      currentStep = 'verify';
-      const postRegAuthOptions =
-        await generatePasskeyPostRegistrationAuthenticationOptions(
-          registrationResponse,
-        );
-      const postRegAuthenticationResponse =
-        await startPasskeyAuthentication(postRegAuthOptions);
-
-      currentStep = 'enroll';
-      await protectVaultKeyWithPasskey(
-        registrationResponse,
-        postRegAuthenticationResponse,
+      await enrollWithPasskey({
         password,
-      );
+        onStageChange: (stage) => {
+          currentStep = stage;
+          if (stage === 'verify') {
+            setRegisterStepPhase('success');
+            setVerifyStepPhase('loading');
+          }
+        },
+      });
 
       const newMetamaskState = await forceUpdateMetamaskState(dispatch);
       setVerifyStepPhase('success');
@@ -235,19 +231,25 @@ export default function SetupPasskeyContent({
       const derivationMethod = getPasskeyDerivationMethod({
         metamask: newMetamaskState,
       });
-
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.PasskeySetup,
-        properties: {
-          ...baseProperties,
-          status: 'completed',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          derivation_method: derivationMethod,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: Date.now() - enrollmentStartedAt,
-        },
+      const authenticatorId = getPasskeyAuthenticatorId({
+        metamask: newMetamaskState,
       });
+
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PasskeySetup)
+          .addCategory(MetaMetricsEventCategory.Onboarding)
+          .addProperties({
+            ...baseProperties,
+            status: 'completed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            derivation_method: derivationMethod,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            authenticator_id: authenticatorId,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - enrollmentStartedAt,
+          })
+          .build(),
+      );
 
       await new Promise((resolve) => {
         setTimeout(resolve, PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS);
@@ -260,18 +262,19 @@ export default function SetupPasskeyContent({
       const durationMs = Date.now() - enrollmentStartedAt;
       if (isPasskeyCeremonySilentError(error)) {
         log.debug('Passkey enrollment ceremony cancelled or timed out', error);
-        trackEvent({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.PasskeySetup,
-          properties: {
-            ...baseProperties,
-            status: 'cancelled',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            current_step: currentStep,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: durationMs,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.PasskeySetup)
+            .addCategory(MetaMetricsEventCategory.Onboarding)
+            .addProperties({
+              ...baseProperties,
+              status: 'cancelled',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              current_step: currentStep,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              duration_ms: durationMs,
+            })
+            .build(),
+        );
 
         if (isMountedRef.current) {
           setRegisterStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
@@ -291,19 +294,20 @@ export default function SetupPasskeyContent({
           extra: { currentStep, durationMs, errorCode },
         },
       );
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.PasskeySetup,
-        properties: {
-          ...baseProperties,
-          status: 'failed',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_step: currentStep,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: durationMs,
-          reason: errorCode,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.PasskeySetup)
+          .addCategory(MetaMetricsEventCategory.Onboarding)
+          .addProperties({
+            ...baseProperties,
+            status: 'failed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            error_step: currentStep,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: durationMs,
+            reason: errorCode,
+          })
+          .build(),
+      );
 
       if (isMountedRef.current) {
         setEnrollmentError(
@@ -321,10 +325,12 @@ export default function SetupPasskeyContent({
   }, [
     baseProperties,
     dispatch,
+    enrollWithPasskey,
     goToNextStep,
     t,
     passkeyMethodLabel,
     trackEvent,
+    createEventBuilder,
     password,
   ]);
 
@@ -333,7 +339,12 @@ export default function SetupPasskeyContent({
   }
 
   return (
-    <Box flexDirection={BoxFlexDirection.Column} gap={4} className="h-full">
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      gap={4}
+      className="h-full"
+      data-testid="parent-selector-setup-passkey"
+    >
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Center}
@@ -384,14 +395,11 @@ export default function SetupPasskeyContent({
           </Text>
 
           {enrollmentError ? (
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.ErrorDefault}
-              textAlign={TextAlign.Center}
+            <BannerAlert
+              severity={BannerAlertSeverity.Danger}
+              description={enrollmentError}
               data-testid="passkey-enrollment-error"
-            >
-              {enrollmentError}
-            </Text>
+            />
           ) : null}
 
           <Box

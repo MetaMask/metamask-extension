@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'clsx';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
@@ -20,7 +20,7 @@ import {
 import TokenBalance from '../../components/ui/token-balance';
 import { PageContainerFooter } from '../../components/ui/page-container';
 import { I18nContext } from '../../contexts/i18n';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useAnalytics } from '../../hooks/useAnalytics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getTokens } from '../../ducks/metamask/metamask';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
@@ -39,6 +39,7 @@ import { getSuggestedTokens } from '../../selectors';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { Nav } from '../confirmations/components/confirm/nav';
 import { hideAppHeader } from '../routes/utils';
+import { useDispatch } from '../../store/hooks';
 
 function getTokenName(name, symbol) {
   return name === undefined ? symbol : `${name} (${symbol})`;
@@ -100,7 +101,7 @@ const ConfirmAddSuggestedToken = () => {
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const suggestedTokens = useSelector(getSuggestedTokens);
   const tokens = useSelector(getTokens);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const approvalId = suggestedTokens[0]?.id;
 
   const knownTokenBannerAlert = useMemo(() => {
@@ -141,23 +142,31 @@ const ConfirmAddSuggestedToken = () => {
       suggestedTokens.map(async ({ requestData: { asset }, id }) => {
         await dispatch(resolvePendingApproval(id, null));
 
-        trackEvent({
-          event: MetaMetricsEventName.TokenAdded,
-          category: MetaMetricsEventCategory.Wallet,
-          sensitiveProperties: {
-            token_symbol: asset.symbol,
-            token_contract_address: asset.address,
-            token_decimal_precision: asset.decimals,
-            unlisted: asset.unlisted,
-            source: MetaMetricsTokenEventSource.Dapp,
-            token_standard: ERC20,
-            asset_type: AssetType.token,
-          },
-        });
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.TokenAdded)
+            .addCategory(MetaMetricsEventCategory.Wallet)
+            .addSensitiveProperties({
+              token_symbol: asset.symbol,
+              token_contract_address: asset.address,
+              token_decimal_precision: asset.decimals,
+              unlisted: asset.unlisted,
+              source: MetaMetricsTokenEventSource.Dapp,
+              token_standard: ERC20,
+              asset_type: AssetType.token,
+            })
+            .build(),
+        );
       }),
     );
     navigate(mostRecentOverviewPage);
-  }, [dispatch, navigate, trackEvent, mostRecentOverviewPage, suggestedTokens]);
+  }, [
+    createEventBuilder,
+    dispatch,
+    navigate,
+    trackEvent,
+    mostRecentOverviewPage,
+    suggestedTokens,
+  ]);
 
   const handleCancelTokenClick = useCallback(async () => {
     await Promise.all(
@@ -173,18 +182,18 @@ const ConfirmAddSuggestedToken = () => {
     navigate(mostRecentOverviewPage);
   }, [dispatch, navigate, mostRecentOverviewPage, suggestedTokens]);
 
-  const goBackIfNoSuggestedTokensOnFirstRender = () => {
+  // Go back if there are no suggested tokens to render
+  useEffect(() => {
     if (!suggestedTokens.length) {
       navigate(mostRecentOverviewPage);
     }
-  };
-
-  useEffect(() => {
-    goBackIfNoSuggestedTokensOnFirstRender();
-  }, []);
+  }, [suggestedTokens.length, navigate, mostRecentOverviewPage]);
 
   return (
-    <div className={classNames}>
+    <div
+      className={classNames}
+      data-testid="parent-selector-add-token-confirmation"
+    >
       <Nav confirmationId={approvalId} />
       <div className="page-container__header">
         <div className="page-container__title">{t('addSuggestedTokens')}</div>

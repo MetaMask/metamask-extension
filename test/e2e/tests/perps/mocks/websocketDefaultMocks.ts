@@ -14,6 +14,40 @@
 
 import type { WebSocketMessageMock } from '../../../websocket/types';
 
+const WS_MOCK_DEFAULT_USER = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+
+/**
+ * Single non-funding ledger entry served by the default
+ * `userNonFundingLedgerUpdates` mock. Its only job is to be a non-empty array:
+ * `#isWalletOnHyperliquid` in perps-controller only checks that the wallet has
+ * interacted with Hyperliquid at least once.
+ */
+const WS_DEFAULT_LEDGER_DEPOSIT = {
+  time: 1735689600000,
+  hash: '0x0000000000000000000000000000000000000000000000000000000000000001',
+  delta: {
+    type: 'deposit',
+    amount: '10000.0',
+    nonce: 1,
+    usdc: '10000.0',
+  },
+};
+
+/**
+ * Fills returned by the default `userFills` subscribe / POST mocks.
+ * `pushUserFillsClosePositionSnapshot` updates this so a home remount
+ * re-subscribe still delivers the close fill.
+ */
+let pendingUserFills: object[] = [];
+
+export function setPendingUserFills(fills: object[]): void {
+  pendingUserFills = fills;
+}
+
+export function clearPendingUserFills(): void {
+  pendingUserFills = [];
+}
+
 export function getResponsePayload(mock: WebSocketMessageMock): object | null {
   if (!mock.response) {
     return null;
@@ -412,13 +446,26 @@ export const DEFAULT_HYPERLIQUID_WS_MOCKS: WebSocketMessageMock[] = [
         AVAX: '25',
       };
       const price = prices[coin] || '100';
-      const now = Date.now();
+      // Respect endTime so load-more fetches don't overlap with existing candles.
+      // Use 40 candles (> DEFAULT_CANDLES=30 + EDGE_DETECTION_THRESHOLD=5) so the
+      // chart's initial visible range starts above the edge-detection threshold and
+      // onNeedMoreHistory does not fire immediately on first render.
+      //
+      // Place the LAST candle one full interval before endTime: endTime is
+      // oldestExistingCandle.time - 1 ms, which truncates to the same second as
+      // the oldest existing candle. Placing the last returned candle at
+      // endTime - interval guarantees at least one full period gap between the
+      // "older" batch and the existing candles so setData never receives
+      // duplicate second-level timestamps.
+      const endTime = (req.req?.endTime as number) || Date.now();
       const interval = 300000;
+      const count = 40;
+      const lastCandleTime = endTime - interval;
       const candles = [];
-      for (let i = 4; i >= 0; i--) {
+      for (let i = count - 1; i >= 0; i--) {
         candles.push({
-          t: now - i * interval,
-          T: now - i * interval + interval - 1,
+          t: lastCandleTime - i * interval,
+          T: lastCandleTime - i * interval + interval - 1,
           s: coin,
           i: (req.req?.interval as string) || '5m',
           o: price,
@@ -433,6 +480,68 @@ export const DEFAULT_HYPERLIQUID_WS_MOCKS: WebSocketMessageMock[] = [
     },
     delay: 50,
     logMessage: 'Hyperliquid WS candleSnapshot POST received',
+  },
+  {
+    // Prefer pending close-fill snapshots (set by pushUserFillsClosePositionSnapshot)
+    // over the generic POST catch-all that returns {}.
+    messageIncludes: ['"method":"post"', '"type":"userFills"'],
+    dynamicResponse: (message: string) => {
+      const req = parseWsPost(message);
+      return req
+        ? buildWsPostResponse(req.id, req.type, pendingUserFills)
+        : null;
+    },
+    delay: 50,
+    logMessage: 'Hyperliquid WS POST userFills',
+  },
+  {
+    // WS INFO POST for userNonFundingLedgerUpdates — perps-controller 15.1.0 probes
+    // this from `#isWalletOnHyperliquid` before the unified-account migration and
+    // the referral write, and treats a non-array or empty ledger as "wallet has no
+    // Hyperliquid account yet". The generic catch-all below answers `{}`, so every
+    // fixture looked unregistered. Returning one deposit matches the funded
+    // clearinghouse state the other default mocks serve.
+    messageIncludes: [
+      '"method":"post"',
+      '"type":"userNonFundingLedgerUpdates"',
+    ],
+    dynamicResponse: (message: string) => {
+      const req = parseWsPost(message);
+      return req
+        ? buildWsPostResponse(req.id, req.type, [WS_DEFAULT_LEDGER_DEPOSIT])
+        : null;
+    },
+    delay: 50,
+    logMessage: 'Hyperliquid WS userNonFundingLedgerUpdates POST received',
+  },
+  {
+    // WS INFO POST for userAbstraction — 15.1.0 reads the account's abstraction
+    // mode here (12.x asked `userDexAbstraction`, which is a different request and
+    // is still mocked above for the exchange action). `unifiedAccount` is a
+    // compatible mode, so the controller skips the EIP-712 migration it now drives
+    // at action time instead of on Perps section open.
+    messageIncludes: ['"method":"post"', '"type":"userAbstraction"'],
+    dynamicResponse: (message: string) => {
+      const req = parseWsPost(message);
+      return req
+        ? buildWsPostResponse(req.id, req.type, 'unifiedAccount')
+        : null;
+    },
+    delay: 50,
+    logMessage: 'Hyperliquid WS userAbstraction POST received',
+  },
+  {
+    // WS INFO POST for userToMultiSigSigners — `#isHyperliquidMultiSigAccount`
+    // treats any non-null/undefined answer as a multi-sig account, so the generic
+    // `{}` made every fixture look multi-sig. Hyperliquid returns null for a
+    // single-signer account.
+    messageIncludes: ['"method":"post"', '"type":"userToMultiSigSigners"'],
+    dynamicResponse: (message: string) => {
+      const req = parseWsPost(message);
+      return req ? buildWsPostResponse(req.id, req.type, null) : null;
+    },
+    delay: 50,
+    logMessage: 'Hyperliquid WS userToMultiSigSigners POST received',
   },
   {
     // Generic catch-all for any remaining WS POST (userFills, historicalOrders,
@@ -478,7 +587,14 @@ export const DEFAULT_HYPERLIQUID_WS_MOCKS: WebSocketMessageMock[] = [
   {
     messageIncludes: ['"method":"subscribe"', '"type":"userFills"'],
     dynamicResponse: buildSubscribedConfirmation,
-    followUpResponse: { channel: 'userFills', data: [], time: 0 },
+    dynamicFollowUp: () => ({
+      channel: 'userFills',
+      data: {
+        user: WS_MOCK_DEFAULT_USER,
+        isSnapshot: true,
+        fills: pendingUserFills,
+      },
+    }),
     followUpDelay: 50,
     delay: 50,
     logMessage: 'Hyperliquid userFills subscribe message received',

@@ -4,6 +4,7 @@ exports[`Unlock Page should match snapshot 1`] = `
 <div>
   <div
     class="flex flex-col items-center justify-center pb-12 bg-default w-full"
+    data-testid="parent-selector-login-page"
   >
     <form
       class="flex flex-col items-center justify-center p-4 unlock-page w-full"

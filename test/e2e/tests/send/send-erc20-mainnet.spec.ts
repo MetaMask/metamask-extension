@@ -12,7 +12,7 @@ import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
-import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
+import TokenOverviewPage from '../../page-objects/pages/asset/token-overview-page';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
 import { login } from '../../page-objects/flows/login.flow';
 import { NETWORK_CLIENT_ID } from '../../constants';
@@ -91,7 +91,7 @@ describe('Send ERC20 - Mainnet', function () {
         testSpecificMock: mockSpotPriceV3ForDai,
         manifestFlags: {
           remoteFeatureFlags: {
-            extensionUxTokenManagementFilter: false,
+            extensionUxTokenManagementFilter: true,
           },
         },
         localNodeOptions: [
@@ -122,9 +122,9 @@ describe('Send ERC20 - Mainnet', function () {
         await tokenOverviewPage.clickSend();
 
         const sendPage = new SendPage(driver);
-        await sendPage.fillRecipient(
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-        );
+        await sendPage.fillRecipient({
+          recipientAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        });
         await sendPage.fillAmount('10');
         await sendPage.pressContinueButton();
 

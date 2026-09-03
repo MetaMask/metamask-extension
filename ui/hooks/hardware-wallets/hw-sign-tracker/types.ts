@@ -1,4 +1,5 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 
 /** Action types dispatched by the sign tracker to the hardware wallet state machine. */
@@ -12,6 +13,30 @@ export type HwSignTrackerAction =
 export type EventResult = { action: HwSignTrackerAction | null };
 
 /**
+ * Sentinel {@link EventResult} returned by tracking strategies when a processed
+ * event should not dispatch any state-machine action.
+ *
+ * Shared as a single frozen-ish reference so strategies can return it from many
+ * code paths without allocating a new object each time.
+ */
+export const NO_ACTION: EventResult = { action: null };
+
+/**
+ * Inspects a signed transaction and decides which state-machine action (if any)
+ * it maps to. Returning `null` means the transaction does not correspond to a
+ * tracked signature event.
+ *
+ * Used by tracking strategies to classify `signed` status updates; the default
+ * implementation lives in `shared-filters.ts` and flows may override it.
+ *
+ * @param transactionMeta - The transaction metadata to classify.
+ * @returns The matching tracker action, or `null` if no action applies.
+ */
+export type SignedEventClassifier = (
+  transactionMeta: TransactionMeta,
+) => HwSignTrackerAction | null;
+
+/**
  * Strategy interface for batch or sequential tracking.
  * Each strategy encapsulates the state and filtering logic for one tracking mode.
  */
@@ -21,18 +46,29 @@ export type TrackingStrategy = {
    * When the generation bumps, previously seen batches/txs are marked stale.
    *
    * @param retryGenerationRef - External ref that gets bumped on retry.
-   * @param lastSeenGenerationRef - Internal ref tracking the last-seen generation.
+   * @param lastSeenGeneration - The last-seen generation value to compare against.
+   * @returns The new last-seen generation when a retry-generation bump was
+   * applied, otherwise `null`; the caller owns persisting the returned value.
    */
   checkRetryGeneration(
     retryGenerationRef: React.RefObject<number | undefined> | undefined,
-    lastSeenGenerationRef: React.MutableRefObject<number>,
-  ): void;
+    lastSeenGeneration: number,
+  ): number | null;
 
   /**
    * Process a transactionStatusUpdated event.
    * Handles `signed` and `failed` statuses.
+   *
+   * @param transactionMeta - The transaction whose status changed.
+   * @param classifySignedTransactionType - Optional classifier used to map a
+   * `signed` transaction to a tracker action; defaults to
+   * `defaultEventClassifier` when omitted.
+   * @returns The tracker action to dispatch, or `NO_ACTION` if none applies.
    */
-  processStatusUpdated(transactionMeta: TransactionMeta): EventResult;
+  processStatusUpdated(
+    transactionMeta: TransactionMeta,
+    classifySignedTransactionType?: SignedEventClassifier,
+  ): EventResult;
 
   /** Process a transactionRejected event. */
   processRejected(transactionMeta: TransactionMeta): EventResult;
@@ -43,12 +79,36 @@ export type TrackingStrategy = {
   /** Get all currently tracked transaction IDs (for abort). */
   getTrackedTxIds(): Set<string>;
 
+  /**
+   * True when every tracked tx has finished signing.
+   * Cancel uses this to skip waiting for abort confirmations.
+   */
+  hasSettledSigning(): boolean;
+
   /** Reset all tracking state (called on cancel, subscription teardown, enable toggle). */
   reset(): void;
+};
+
+/** Expected transaction parameters for tracking. */
+export type ExpectedTransactionParams = {
+  data?: Hex;
+  to?: string;
+  value?: string;
 };
 
 /** Options for configuring the hardware wallet signature tracker. */
 export type UseHwSignTrackerOptions = {
   enabled?: boolean;
   useBatchTracking: boolean;
+  includeSendBundleTransactions?: boolean;
+  /**
+   * Optional transaction ID allowlist for flows that can otherwise share broad
+   * transaction types with unrelated same-address sends.
+   */
+  expectedTxIds?: string[];
+  /**
+   * Optional transaction param allowlist for generated batch members whose IDs
+   * are not known before TransactionController creates the batch.
+   */
+  expectedTransactionParams?: ExpectedTransactionParams[];
 };

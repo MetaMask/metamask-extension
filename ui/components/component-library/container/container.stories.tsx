@@ -1,6 +1,5 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
-import README from './README.mdx';
 import { Box } from '../box';
 import {
   Display,
@@ -15,11 +14,6 @@ export default {
   title: 'Components/ComponentLibrary/Container',
   component: Container,
   tags: ['autodocs'],
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   args: {
     children:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget nunc.',

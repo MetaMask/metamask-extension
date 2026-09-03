@@ -1,23 +1,9 @@
-import {
-  isEqual,
-  memoize,
-  merge,
-  omit,
-  omitBy,
-  pickBy,
-  size,
-  sum,
-} from 'lodash';
+import { merge, omitBy } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import { NameType } from '@metamask/name-controller';
 import { getErrorMessage } from '@metamask/utils';
 import type {
-  AnalyticsControllerActions,
+  AnalyticsControllerGetStateAction,
   AnalyticsControllerState,
-  AnalyticsContext,
-  AnalyticsEventProperties,
-  AnalyticsTrackingEvent,
-  AnalyticsUserTraits,
 } from '@metamask/analytics-controller';
 import type {
   NetworkClientId,
@@ -27,12 +13,7 @@ import type {
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type { MultichainNetworkControllerGetStateAction } from '@metamask/multichain-network-controller';
-import type {
-  SeedlessOnboardingControllerGetStateAction,
-  SeedlessOnboardingControllerState,
-} from '@metamask/seedless-onboarding-controller';
 import type { Browser } from 'webextension-polyfill';
-import type { Nft } from '@metamask/assets-controllers';
 import {
   BaseController,
   type ControllerGetStateAction,
@@ -41,42 +22,19 @@ import {
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import type { Json, Hex } from '@metamask/utils';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
-import {
-  ENVIRONMENT_TYPE_BACKGROUND,
-  PLATFORM_FIREFOX,
-} from '../../../shared/constants/app';
-import {
-  METAMETRICS_BACKGROUND_PAGE_OBJECT,
-  MetaMetricsEventAccountType,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsUserTrait,
-} from '../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import type {
   MetaMetricsEventFragment,
   MetaMetricsUserTraits,
-  SegmentEventPayload,
-  MetaMetricsContext,
   MetaMetricsEventPayload,
-  MetaMetricsEventOptions,
-  MetaMetricsPagePayload,
   MetaMetricsPageObject,
   MetaMetricsReferrerObject,
 } from '../../../shared/constants/metametrics';
-import { UTM_PARAMETERS } from '../../../shared/types/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
-import {
-  checkAlarmExists,
-  getDeviceType,
-  getInstallType,
-  getOs,
-  getPlatform,
-} from '../lib/util';
+import { checkAlarmExists } from '../lib/util';
 import { TransactionMetaMetricsEvent } from '../../../shared/constants/transaction';
-import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import {
   trace,
   endTrace,
@@ -84,31 +42,21 @@ import {
   type EndTraceRequest,
   type TraceCallback,
 } from '../../../shared/lib/trace';
-import { ENVIRONMENT } from '../../../shared/constants/build';
-import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
-import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
-import {
-  hasABTestAnalyticsMappingForEvent,
-  enrichWithABTests,
-  getRemoteFeatureFlagsWithManifestOverrides,
-} from '../../../shared/lib/ab-testing/ab-test-analytics';
-import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
-import { isMain } from '../../../shared/lib/build-types';
-import { trackSegmentEventWhileOptedOut } from '../lib/segment/custom-segment-tracking';
+import { registerABTestAnalyticsMapping } from '../../../shared/lib/ab-testing/ab-test-analytics';
+import { CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING } from '../../../shared/lib/ab-testing/configs/chain-value-order';
+import { PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING } from '../../../shared/lib/ab-testing/configs/perps-tab-badge';
 import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
 import { MetaMetricsControllerMethodActions } from './metametrics-controller-method-action-types';
-import { ANONYMOUS_EVENT_PROPERTY } from './analytics/platform-adapter';
+import * as analytics from './analytics';
 
 // Unique name for the controller
 const controllerName = 'MetaMetricsController';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
-const MARKETING_UTM_PARAMETERS = [...UTM_PARAMETERS];
-
 const defaultCaptureException = (err: unknown) => {
   // throw error on clean stack so its captured by platform integrations (eg sentry)
   // but does not interrupt the call stack
@@ -121,6 +69,46 @@ const exceptionsToFilter: Record<string, boolean> = {
   [`You must pass either an "anonymousId" or a "userId".`]: true,
 };
 
+function trackLegacyMetaMetricsPayload(payload: MetaMetricsEventPayload): void {
+  if (!payload.event) {
+    throw new Error(
+      `Must specify event. Event was: ${
+        payload.event
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      }. Payload keys were: ${Object.keys(payload)}. ${
+        typeof payload.properties === 'object'
+          ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `Payload property keys were: ${Object.keys(payload.properties)}`
+          : ''
+      }`,
+    );
+  }
+
+  analytics.trackEvent(
+    analytics
+      .createEventBuilder(payload.event)
+      .addProperties({
+        ...(payload.properties ?? {}),
+        ...(payload.category === undefined
+          ? {}
+          : { category: payload.category }),
+        ...(payload.revenue === undefined ? {} : { revenue: payload.revenue }),
+        ...(payload.value === undefined ? {} : { value: payload.value }),
+        ...(payload.currency === undefined
+          ? {}
+          : { currency: payload.currency }),
+      })
+      .addSensitiveProperties(payload.sensitiveProperties)
+      .build({
+        environmentType: payload.environmentType,
+        page: payload.page,
+        referrer: payload.referrer,
+      }),
+  );
+}
+
 /**
  * Represents a buffered trace that is stored before user consent.
  * Simplified for JSON serialization - doesn't include callback functions.
@@ -131,41 +119,6 @@ type BufferedTrace = {
   parentTraceName?: string;
 };
 
-export type MetaMaskState = Pick<
-  FlattenedBackgroundStateProxy,
-  | 'ledgerTransportType'
-  | 'networkConfigurationsByChainId'
-  | 'internalAccounts'
-  | 'allNfts'
-  | 'allTokens'
-  | 'theme'
-  | 'dataCollectionForMarketing'
-  | 'useNftDetection'
-  | 'openSeaEnabled'
-  | 'securityAlertsEnabled'
-  | 'useTokenDetection'
-  | 'names'
-  | 'addressBook'
-  | 'currentCurrency'
-  | 'srpSessionData'
-  | 'keyrings'
-  | 'multichainNetworkConfigurationsByChainId'
-  | 'firstTimeFlowType'
-  | 'analyticsId'
-  | 'optedIn'
-  | 'completedMetaMetricsOnboarding'
-  // TODO: Remove as this is no longer a top-level property of the flattened background state object.
-  // | 'security_providers'
-> & {
-  preferences: Pick<
-    FlattenedBackgroundStateProxy['preferences'],
-    | 'privacyMode'
-    | 'tokenNetworkFilter'
-    | 'showNativeTokenAsMainBalance'
-    | 'tokenSortConfig'
-  >;
-};
-
 /**
  * {@link MetaMetricsController}'s metadata.
  *
@@ -174,23 +127,11 @@ export type MetaMaskState = Pick<
  * the `anonymous` flag.
  */
 const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
-  completedMetaMetricsOnboarding: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
   fragments: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: false,
     usedInUi: true,
-  },
-  eventsBeforeMetricsOptIn: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: false,
-    usedInUi: false,
   },
   tracesBeforeMetricsOptIn: {
     includeInStateLogs: true,
@@ -221,32 +162,14 @@ const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
 /**
  * The state that MetaMetricsController stores.
  *
- * @property completedMetaMetricsOnboarding - Whether the user has completed the metrics participation prompt (onboarding/settings).
  * @property fragments - Object keyed by UUID with stored fragments as values.
- * @property eventsBeforeMetricsOptIn - Array of queued events added before a user opts into metrics.
  * @property tracesBeforeMetricsOptIn - Array of queued traces added before a user opts into metrics.
  * @property traits - Traits that are not derived from other state keys.
  * @property dataCollectionForMarketing - Flag to determine if data collection for marketing is enabled.
  * @property marketingCampaignCookieId - The marketing campaign cookie id.
  */
-type SegmentTrackPayload = Omit<
-  SegmentEventPayload,
-  'properties' | 'timestamp'
-> & {
-  properties: AnalyticsEventProperties;
-  sensitiveProperties?: Record<string, Json>;
-};
-
-type SegmentPagePayload = {
-  name: string;
-  properties: AnalyticsEventProperties;
-  context: AnalyticsContext;
-};
-
 export type MetaMetricsControllerState = {
-  completedMetaMetricsOnboarding: boolean;
   fragments: Record<string, MetaMetricsEventFragment>;
-  eventsBeforeMetricsOptIn: MetaMetricsEventPayload[];
   tracesBeforeMetricsOptIn: BufferedTrace[];
   traits: MetaMetricsUserTraits;
   dataCollectionForMarketing: boolean | null;
@@ -287,8 +210,7 @@ export type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
   | MultichainNetworkControllerGetStateAction
-  | SeedlessOnboardingControllerGetStateAction
-  | AnalyticsControllerActions;
+  | AnalyticsControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -322,37 +244,26 @@ export type MetaMetricsControllerOptions = {
  */
 export const getDefaultMetaMetricsControllerState =
   (): MetaMetricsControllerState => ({
-    completedMetaMetricsOnboarding: false,
     dataCollectionForMarketing: null,
     marketingCampaignCookieId: null,
-    eventsBeforeMetricsOptIn: [],
     tracesBeforeMetricsOptIn: [],
     traits: {},
     fragments: {},
   });
 
 const MESSENGER_EXPOSED_METHODS = [
-  'addEventBeforeMetricsOptIn',
   'addTraceBeforeMetricsOptIn',
   'bufferedEndTrace',
   'bufferedTrace',
-  'clearEventsAfterMetricsOptIn',
   'clearTracesAfterMetricsOptIn',
   'createEventFragment',
   'deleteEventFragment',
   'finalizeAbandonedFragments',
   'finalizeEventFragment',
   'getEventFragmentById',
-  'getMetaMetricsId',
-  'handleMetaMaskStateUpdate',
-  'identify',
   'processAbandonedFragment',
   'setDataCollectionForMarketing',
   'setMarketingCampaignCookieId',
-  'setParticipateInMetaMetrics',
-  'trackEvent',
-  'trackEventsAfterMetricsOptIn',
-  'trackPage',
   'trackTracesAfterMetricsOptIn',
   'updateEventFragment',
   'updateExtensionUninstallUrl',
@@ -369,8 +280,6 @@ export class MetaMetricsController extends BaseController<
   chainId: Hex;
 
   locale: string;
-
-  previousUserTraits?: MetaMetricsUserTraits;
 
   version: MetaMetricsControllerOptions['version'];
 
@@ -427,6 +336,11 @@ export class MetaMetricsController extends BaseController<
     this.#extension = extension;
     this.#environment = environment;
 
+    // Register A/B test analytics mappings so that matching events are
+    // enriched with their `active_ab_tests` assignment.
+    registerABTestAnalyticsMapping(CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING);
+    registerABTestAnalyticsMapping(PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING);
+
     this.messenger.registerMethodActionHandlers(
       this,
       MESSENGER_EXPOSED_METHODS,
@@ -464,7 +378,6 @@ export class MetaMetricsController extends BaseController<
     // a timeout can be specified that will cause an abandoned event to be
     // tracked if the event isn't progressed within that amount of time.
     if (isManifestV3) {
-      /* eslint-disable no-undef */
       this.#extension.alarms.getAll().then((alarms) => {
         const hasAlarm = checkAlarmExists(
           alarms,
@@ -500,8 +413,6 @@ export class MetaMetricsController extends BaseController<
    */
   #getCurrentChainId(networkClientId?: NetworkClientId): Hex {
     const selectedNetworkClientId =
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       networkClientId ||
       this.messenger.call('NetworkController:getState').selectedNetworkClientId;
     const {
@@ -592,7 +503,7 @@ export class MetaMetricsController extends BaseController<
     });
 
     if (fragment.initialEvent) {
-      this.trackEvent({
+      trackLegacyMetaMetricsPayload({
         event: fragment.initialEvent,
         category: fragment.category,
         properties: fragment.properties,
@@ -729,7 +640,7 @@ export class MetaMetricsController extends BaseController<
 
     const eventName = abandoned ? fragment.failureEvent : fragment.successEvent;
 
-    this.trackEvent({
+    trackLegacyMetaMetricsPayload({
       event: eventName ?? '',
       category: fragment.category,
       properties: fragment.properties,
@@ -770,62 +681,9 @@ export class MetaMetricsController extends BaseController<
     // this.extension not currently defined in tests
     if (this.#extension && this.#extension.runtime) {
       this.#extension.runtime.setUninstallURL(
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `${EXTENSION_UNINSTALL_URL}?${queryString}`,
       );
     }
-  }
-
-  /**
-   * Setter for the `participateInMetaMetrics` property
-   *
-   * @param participateInMetaMetrics - Whether or not the user wants to participate in MetaMetrics if not set
-   * @returns The string of the new metametrics id, or null
-   */
-  async setParticipateInMetaMetrics(
-    participateInMetaMetrics: boolean | null,
-  ): Promise<string | null> {
-    const analyticsId = this.getMetaMetricsId();
-
-    if (participateInMetaMetrics === true) {
-      this.messenger.call('AnalyticsController:optIn');
-    } else {
-      this.messenger.call('AnalyticsController:optOut');
-    }
-
-    this.update((state) => {
-      state.completedMetaMetricsOnboarding = participateInMetaMetrics !== null;
-    });
-
-    if (participateInMetaMetrics) {
-      this.trackEventsAfterMetricsOptIn();
-      this.clearEventsAfterMetricsOptIn();
-      this.trackTracesAfterMetricsOptIn();
-      this.clearTracesAfterMetricsOptIn();
-    } else {
-      if (participateInMetaMetrics === false) {
-        // Drop any UI-buffered pre-submit events/traces; they must not be sent after opt-out.
-        this.clearEventsAfterMetricsOptIn();
-        this.clearTracesAfterMetricsOptIn();
-      }
-      if (this.state.marketingCampaignCookieId) {
-        this.setMarketingCampaignCookieId(null);
-      }
-    }
-
-    if (
-      isMain() &&
-      this.#environment !== ENVIRONMENT.DEVELOPMENT &&
-      participateInMetaMetrics !== null
-    ) {
-      this.updateExtensionUninstallUrl(
-        participateInMetaMetrics === true,
-        analyticsId,
-      );
-    }
-
-    return analyticsId;
   }
 
   setDataCollectionForMarketing(dataCollectionForMarketing: boolean): string {
@@ -845,315 +703,6 @@ export class MetaMetricsController extends BaseController<
   setMarketingCampaignCookieId(marketingCampaignCookieId: string | null): void {
     this.update((state) => {
       state.marketingCampaignCookieId = marketingCampaignCookieId;
-    });
-  }
-
-  /**
-   * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
-   *
-   * @param payload - details of the event
-   * @param options - options for handling/routing the event
-   */
-  trackEvent(
-    payload: MetaMetricsEventPayload,
-    options?: MetaMetricsEventOptions,
-  ): void {
-    // validation is not caught and handled
-    this.#validateTrackEventPayload(payload);
-
-    try {
-      if (!this.#canSubmitAnalytics(payload.event)) {
-        return;
-      }
-
-      const eventPayload = this.#buildTrackEventPayload(payload);
-
-      if (payload.event === MetaMetricsEventName.MetricsOptOut) {
-        this.#trackMetricsOptOutEvent(eventPayload);
-        return;
-      }
-
-      this.#applyAnonymousEventOptions(eventPayload, options);
-      this.#applyLegacyEventOptions(eventPayload, options);
-
-      const properties = this.#removeUtmPropertiesWithoutMarketingConsent(
-        eventPayload.properties,
-      );
-      const sensitiveProperties =
-        this.#removeUtmPropertiesWithoutMarketingConsent(
-          eventPayload.sensitiveProperties ?? {},
-        );
-
-      this.messenger.call(
-        'AnalyticsController:trackEvent',
-        {
-          name: eventPayload.event,
-          properties,
-          sensitiveProperties,
-          saveDataRecording: false, // Legacy property that is ignored by the analytics controller and will be removed from the type in the future.
-          hasProperties:
-            Object.keys(properties).length > 0 ||
-            Object.keys(sensitiveProperties).length > 0,
-        } satisfies AnalyticsTrackingEvent,
-        eventPayload.context as AnalyticsContext | undefined,
-      );
-    } catch (err) {
-      this.#captureException(err);
-    }
-  }
-
-  #isAnonymousTrackEvent(eventPayload: SegmentTrackPayload): boolean {
-    return eventPayload.properties[ANONYMOUS_EVENT_PROPERTY] === true;
-  }
-
-  /**
-   * Identifies the user with valid user traits if they are participating in
-   * the MetaMetrics analytics program.
-   *
-   * @param userTraits
-   */
-  identify(userTraits: Partial<MetaMetricsUserTraits>): void {
-    const identifyPayload = this.#validateIdentifyPayload(userTraits);
-
-    if (!identifyPayload) {
-      return;
-    }
-
-    try {
-      if (!this.#canSubmitAnalytics()) {
-        return;
-      }
-
-      this.messenger.call(
-        'AnalyticsController:identify',
-        identifyPayload,
-        undefined,
-      );
-    } catch (err) {
-      this.#captureException(err);
-    }
-  }
-
-  /**
-   * Track a page view through AnalyticsController.
-   *
-   * @param payload - details of the page viewed.
-   */
-  trackPage(payload: MetaMetricsPagePayload): void {
-    this.#validateTrackPagePayload(payload);
-
-    try {
-      if (!this.#canSubmitAnalytics()) {
-        return;
-      }
-
-      const pagePayload = this.#buildTrackPagePayload(payload);
-
-      this.messenger.call(
-        'AnalyticsController:trackView',
-        pagePayload.name,
-        pagePayload.properties,
-        pagePayload.context,
-      );
-    } catch (err) {
-      this.#captureException(err);
-    }
-  }
-
-  #validateTrackEventPayload(payload: MetaMetricsEventPayload): void {
-    // event and category are required fields for all payloads
-    if (!payload.event) {
-      throw new Error(
-        `Must specify event. Event was: ${
-          payload.event
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        }. Payload keys were: ${Object.keys(payload)}. ${
-          typeof payload.properties === 'object'
-            ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              `Payload property keys were: ${Object.keys(payload.properties)}`
-            : ''
-        }`,
-      );
-    }
-  }
-
-  #validateTrackPagePayload(payload: MetaMetricsPagePayload): void {
-    if (!payload || typeof payload !== 'object') {
-      throw new Error(
-        `MetaMetricsController#trackPage: payload parameter must be an object. Received type: ${typeof payload}`,
-      );
-    }
-  }
-
-  #validateIdentifyPayload(
-    userTraits: Partial<MetaMetricsUserTraits>,
-  ): AnalyticsUserTraits | undefined {
-    if (!userTraits) {
-      return undefined;
-    }
-    if (typeof userTraits !== 'object') {
-      console.warn(
-        `MetaMetricsController#identify: userTraits parameter must be an object. Received type: ${typeof userTraits}`,
-      );
-      return undefined;
-    }
-
-    const validTraits: Record<string, string> = {};
-
-    for (const [key, value] of Object.entries(userTraits)) {
-      if (this.#isValidTraitDate(value)) {
-        validTraits[key] = value.toISOString();
-      } else if (this.#isValidTrait(value)) {
-        (validTraits as Record<string, typeof value>)[key] = value;
-      } else {
-        console.warn(
-          `MetaMetricsController: "${key}" value is not a valid trait type`,
-        );
-      }
-    }
-
-    if (Object.keys(validTraits).length === 0) {
-      return undefined;
-    }
-
-    return validTraits as AnalyticsUserTraits;
-  }
-
-  /**
-   * Builds the event payload, processing all fields into a format that can be
-   * routed through AnalyticsController.
-   *
-   * @private
-   * @param rawPayload - raw payload provided to trackEvent
-   * @returns formatted analytics track event payload
-   */
-  #buildTrackEventPayload(
-    rawPayload: MetaMetricsEventPayload,
-  ): SegmentTrackPayload {
-    const enrichedPayload = this.#enrichWithABTestAnalytics(rawPayload);
-
-    const {
-      event,
-      properties,
-      revenue,
-      value,
-      currency,
-      category,
-      page,
-      referrer,
-      environmentType = ENVIRONMENT_TYPE_BACKGROUND,
-      sensitiveProperties,
-    } = enrichedPayload;
-
-    let chainId;
-    if (
-      properties &&
-      'chain_id_caip' in properties &&
-      typeof properties.chain_id_caip === 'string'
-    ) {
-      chainId = null;
-    } else if (
-      properties &&
-      'chain_id' in properties &&
-      typeof properties.chain_id === 'string'
-    ) {
-      chainId = properties.chain_id;
-    } else {
-      chainId = this.chainId;
-    }
-
-    return {
-      event,
-      properties: omitBy(
-        {
-          // These values are omitted from properties because they have special meaning
-          // in the Segment track spec: https://segment.com/docs/connections/spec/track/#properties.
-          // To avoid accidentally using these inappropriately,
-          // add them as top level properties on the event payload. We also exclude locale
-          // to prevent consumers from overwriting this context level property. We track it
-          // as a property because not all destinations map locale from context.
-          ...omit(properties, ['revenue', 'locale', 'currency', 'value']),
-          revenue,
-          value,
-          currency,
-          category,
-          locale: this.locale,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: chainId,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: environmentType,
-        },
-        (propertyValue) => propertyValue === undefined,
-      ) as AnalyticsEventProperties,
-      context: this.#buildContext(referrer, page),
-      sensitiveProperties,
-    };
-  }
-
-  #buildTrackPagePayload(payload: MetaMetricsPagePayload): SegmentPagePayload {
-    const { name, params, environmentType, page, referrer } = payload;
-
-    const { isEvmSelected, selectedMultichainNetworkChainId } =
-      this.messenger.call('MultichainNetworkController:getState');
-
-    return {
-      name: name ?? '',
-      properties: omitBy(
-        {
-          params,
-          locale: this.locale,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: isEvmSelected ? this.chainId : null,
-          ...(isEvmSelected
-            ? {}
-            : {
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                chain_id_caip: selectedMultichainNetworkChainId,
-              }),
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: environmentType,
-        },
-        (propertyValue) => propertyValue === undefined,
-      ) as AnalyticsEventProperties,
-      context: this.#buildContext(referrer, page) as AnalyticsContext,
-    };
-  }
-
-  handleMetaMaskStateUpdate(newState: MetaMaskState): void {
-    const userTraits = this._buildUserTraitsObject(newState);
-    if (userTraits) {
-      this.identify(userTraits);
-    }
-  }
-
-  // Track all queued events after a user opted into metrics.
-  trackEventsAfterMetricsOptIn(): void {
-    const { eventsBeforeMetricsOptIn } = this.state;
-    eventsBeforeMetricsOptIn.forEach((eventBeforeMetricsOptIn) => {
-      this.trackEvent(eventBeforeMetricsOptIn);
-    });
-  }
-
-  // Once we track queued events after a user opts into metrics, we want to clear the event queue.
-  clearEventsAfterMetricsOptIn(): void {
-    this.update((state) => {
-      const metaMetricsState = state as unknown as MetaMetricsControllerState;
-      metaMetricsState.eventsBeforeMetricsOptIn = [];
-    });
-  }
-
-  // It adds an event into a queue, which is only tracked if a user opts into metrics.
-  addEventBeforeMetricsOptIn(event: MetaMetricsEventPayload): void {
-    this.update((state) => {
-      const metaMetricsState = state as unknown as MetaMetricsControllerState;
-      metaMetricsState.eventsBeforeMetricsOptIn.push(event);
     });
   }
 
@@ -1248,524 +797,5 @@ export class MetaMetricsController extends BaseController<
     this.update((state) => {
       state.traits = { ...state.traits, ...newTraits };
     });
-  }
-
-  // Retrieve the client metametrics id from AnalyticsController state
-  getMetaMetricsId(): string {
-    const { analyticsId } = this.#analyticsGetState();
-    return analyticsId;
-  }
-
-  #isBasicFunctionalityEnabled(): boolean {
-    const { useExternalServices } = this.messenger.call(
-      'PreferencesController:getState',
-    );
-    return useExternalServices;
-  }
-
-  #canSubmitAnalytics(eventName?: string): boolean {
-    if (!this.#isBasicFunctionalityEnabled()) {
-      return false;
-    }
-
-    if (eventName === MetaMetricsEventName.MetricsOptOut) {
-      return true;
-    }
-
-    const { analyticsId, optedIn } = this.#analyticsGetState();
-    return optedIn && analyticsId.length > 0;
-  }
-
-  #enrichWithABTestAnalytics(
-    payload: MetaMetricsEventPayload,
-  ): MetaMetricsEventPayload {
-    let normalizedPayload = payload;
-
-    if (payload.properties?.active_ab_tests !== undefined) {
-      try {
-        normalizedPayload = enrichWithABTests(payload, null, []);
-      } catch {
-        normalizedPayload = payload;
-      }
-    }
-
-    if (!hasABTestAnalyticsMappingForEvent(payload.event)) {
-      return normalizedPayload;
-    }
-
-    try {
-      return enrichWithABTests(
-        normalizedPayload,
-        this.#getRemoteFeatureFlags(),
-      );
-    } catch {
-      return normalizedPayload;
-    }
-  }
-
-  #applyAnonymousEventOptions(
-    eventPayload: SegmentTrackPayload,
-    options?: MetaMetricsEventOptions,
-  ): void {
-    if (
-      eventPayload.sensitiveProperties &&
-      options?.excludeMetaMetricsId === true
-    ) {
-      throw new Error(
-        'sensitiveProperties was specified in an event payload that also set the excludeMetaMetricsId flag',
-      );
-    }
-
-    let excludeMetaMetricsId = options?.excludeMetaMetricsId ?? false;
-    // This is carried over from the old implementation, and will likely need
-    // to be updated to work with the new tracking plan. I think we should use
-    // a config setting for this instead of trying to match the event name
-    const isSendFlow = Boolean(eventPayload.event.match(/^send|^confirm/iu));
-    // do not filter if excludeMetaMetricsId is explicitly set to false
-    if (options?.excludeMetaMetricsId !== false && isSendFlow) {
-      excludeMetaMetricsId = true;
-    }
-
-    // The platform adapter reads the "anonymous" marker from track `properties`
-    // and swaps the user id for the shared anonymous id when marked is true.
-    if (excludeMetaMetricsId) {
-      (eventPayload.properties as Record<string, Json>)[
-        ANONYMOUS_EVENT_PROPERTY
-      ] = true;
-    }
-  }
-
-  #applyLegacyEventOptions(
-    eventPayload: SegmentTrackPayload,
-    options?: MetaMetricsEventOptions,
-  ): void {
-    if (options?.matomoEvent === true) {
-      eventPayload.properties.legacy_event = true;
-    }
-  }
-
-  #removeUtmPropertiesWithoutMarketingConsent<
-    TProperties extends Record<string, Json>,
-  >(properties: TProperties): TProperties {
-    if (this.state.dataCollectionForMarketing) {
-      return properties;
-    }
-
-    return omit(properties, MARKETING_UTM_PARAMETERS) as TProperties;
-  }
-
-  /** PRIVATE METHODS */
-
-  /**
-   * Build the context object to attach to page and track events.
-   *
-   * @private
-   * @param referrer - dapp origin that initialized
-   * the notification window.
-   * @param page - page object describing the current
-   * view of the extension. Defaults to the background-process object.
-   */
-  #buildContext(
-    referrer: MetaMetricsContext['referrer'],
-    page: MetaMetricsContext['page'] = METAMETRICS_BACKGROUND_PAGE_OBJECT,
-  ): MetaMetricsContext {
-    return {
-      app: {
-        name: 'MetaMask Extension',
-        version: this.version,
-      },
-      userAgent: window.navigator.userAgent,
-      page,
-      referrer,
-      marketingCampaignCookieId: this.state.marketingCampaignCookieId,
-    };
-  }
-
-  #getRemoteFeatureFlags(): Record<string, unknown> {
-    return getRemoteFeatureFlagsWithManifestOverrides(
-      this.messenger.call('RemoteFeatureFlagController:getState')
-        ?.remoteFeatureFlags as Record<string, unknown> | undefined,
-    );
-  }
-
-  /**
-   * This method generates the MetaMetrics user traits object, omitting any
-   * traits that have not changed since the last invocation of this method.
-   *
-   * @param metamaskState - Full metamask state object.
-   * @returns traits that have changed since last update
-   */
-  _buildUserTraitsObject(
-    metamaskState: MetaMaskState,
-  ): Partial<MetaMetricsUserTraits> | null {
-    const { traits } = this.state;
-    const storageKindTrait = traits[MetaMetricsUserTrait.StorageKind];
-    const cookieIdTrait = traits[MetaMetricsUserTrait.CookieId];
-    const gaClientIdTrait = traits[MetaMetricsUserTrait.GaClientId];
-
-    const currentTraits: MetaMetricsUserTraits = {
-      [MetaMetricsUserTrait.AddressBookEntries]: sum(
-        Object.values(metamaskState.addressBook).map(size),
-      ),
-      [MetaMetricsUserTrait.InstallDateExt]:
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        traits[MetaMetricsUserTrait.InstallDateExt] || '',
-      ...(storageKindTrait
-        ? { [MetaMetricsUserTrait.StorageKind]: storageKindTrait }
-        : {}),
-      [MetaMetricsUserTrait.LedgerConnectionType]:
-        metamaskState.ledgerTransportType,
-      [MetaMetricsUserTrait.NetworksAdded]: Object.values(
-        metamaskState.networkConfigurationsByChainId,
-      ).map((networkConfiguration) => networkConfiguration.chainId),
-      [MetaMetricsUserTrait.NetworksWithoutTicker]: Object.values(
-        metamaskState.networkConfigurationsByChainId,
-      )
-        .filter(({ nativeCurrency }) => !nativeCurrency)
-        .map(({ chainId }) => chainId),
-      // caip-2 formatted
-      [MetaMetricsUserTrait.ChainIdList]: [
-        ...Object.keys(metamaskState.networkConfigurationsByChainId).map(
-          (hexChainId) => `eip155:${parseInt(hexChainId, 16)}`,
-        ),
-        ...Object.keys(
-          metamaskState?.multichainNetworkConfigurationsByChainId || {},
-        ), // the state here is already caip-2 formatted
-      ],
-      [MetaMetricsUserTrait.NftAutodetectionEnabled]:
-        metamaskState.useNftDetection,
-      [MetaMetricsUserTrait.NumberOfAccounts]: Object.values(
-        metamaskState.internalAccounts.accounts,
-      ).length,
-      [MetaMetricsUserTrait.NumberOfNftCollections]:
-        this.#getAllUniqueNFTAddressesLength(metamaskState.allNfts),
-      [MetaMetricsUserTrait.NumberOfNfts]: this.#getAllNFTsFlattened(
-        metamaskState.allNfts,
-      ).length,
-      [MetaMetricsUserTrait.NumberOfTokens]: this.#getNumberOfTokens(
-        getTokensControllerAllTokens({ metamask: metamaskState }),
-      ),
-      [MetaMetricsUserTrait.OpenSeaApiEnabled]: metamaskState.openSeaEnabled,
-      [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
-      [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
-      [MetaMetricsUserTrait.TokenDetectionEnabled]:
-        metamaskState.useTokenDetection,
-      [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]:
-        metamaskState.preferences?.showNativeTokenAsMainBalance ?? false,
-      [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
-      [MetaMetricsUserTrait.SecurityProviders]:
-        metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
-      [MetaMetricsUserTrait.PetnameAddressCount]:
-        this.#getPetnameAddressCount(metamaskState),
-      [MetaMetricsUserTrait.IsMetricsOptedIn]:
-        metamaskState.completedMetaMetricsOnboarding === true
-          ? metamaskState.optedIn === true
-          : null,
-      [MetaMetricsUserTrait.HasMarketingConsent]:
-        metamaskState.dataCollectionForMarketing,
-      [MetaMetricsUserTrait.TokenSortPreference]:
-        metamaskState.preferences?.tokenSortConfig?.key || '',
-      [MetaMetricsUserTrait.PrivacyModeEnabled]:
-        metamaskState.preferences?.privacyMode ?? false,
-      [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
-        metamaskState.preferences?.tokenNetworkFilter || {},
-      ),
-      [MetaMetricsUserTrait.ProfileId]: Object.entries(
-        metamaskState.srpSessionData || {},
-      )?.[0]?.[1]?.profile?.profileId,
-      [MetaMetricsUserTrait.AccountType]: this.#getAccountTypeTrait(
-        metamaskState.firstTimeFlowType,
-      ),
-      [MetaMetricsUserTrait.Platform]: getPlatform(),
-      [MetaMetricsUserTrait.InstallType]: getInstallType(),
-      [MetaMetricsUserTrait.DeviceType]: getDeviceType(),
-      [MetaMetricsUserTrait.Os]: getOs(),
-      ...this.#getAccountCompositionTraits(metamaskState),
-    };
-
-    if (cookieIdTrait !== undefined) {
-      currentTraits[MetaMetricsUserTrait.CookieId] = cookieIdTrait;
-    }
-
-    if (gaClientIdTrait !== undefined) {
-      currentTraits[MetaMetricsUserTrait.GaClientId] = gaClientIdTrait;
-    }
-
-    if (
-      !this.previousUserTraits &&
-      metamaskState.completedMetaMetricsOnboarding === true &&
-      metamaskState.optedIn === true
-    ) {
-      this.previousUserTraits = currentTraits;
-      return currentTraits;
-    }
-
-    if (
-      this.previousUserTraits &&
-      !isEqual(this.previousUserTraits, currentTraits)
-    ) {
-      const updates = pickBy(currentTraits, (v, k) => {
-        // @ts-expect-error It's okay that `k` may not be a key of `this.previousUserTraits`, because we assume `isEqual` can handle it
-        const previous = this.previousUserTraits[k];
-        return !isEqual(previous, v);
-      });
-
-      if (
-        metamaskState.completedMetaMetricsOnboarding === true &&
-        metamaskState.optedIn === true
-      ) {
-        this.previousUserTraits = currentTraits;
-      }
-
-      return updates;
-    }
-
-    return null;
-  }
-
-  #getAccountTypeTrait(
-    firstTimeFlowType: MetaMaskState['firstTimeFlowType'],
-  ): NonNullable<MetaMetricsUserTraits[MetaMetricsUserTrait.AccountType]> {
-    switch (firstTimeFlowType) {
-      case FirstTimeFlowType.import:
-      case FirstTimeFlowType.restore:
-        return MetaMetricsEventAccountType.Imported;
-      case FirstTimeFlowType.socialImport:
-        return this.#getSocialAccountType(MetaMetricsEventAccountType.Imported);
-      case FirstTimeFlowType.socialCreate:
-        return this.#getSocialAccountType(MetaMetricsEventAccountType.Default);
-      case FirstTimeFlowType.create:
-      default:
-        return MetaMetricsEventAccountType.Default;
-    }
-  }
-
-  #getSocialAccountType(
-    baseType:
-      | MetaMetricsEventAccountType.Default
-      | MetaMetricsEventAccountType.Imported,
-  ): NonNullable<MetaMetricsUserTraits[MetaMetricsUserTrait.AccountType]> {
-    const authConnection = this.#getSeedlessOnboardingState()?.authConnection;
-    return authConnection ? `${baseType}_${authConnection}` : baseType;
-  }
-
-  #getSeedlessOnboardingState():
-    | Partial<SeedlessOnboardingControllerState>
-    | undefined {
-    try {
-      return this.messenger.call('SeedlessOnboardingController:getState');
-    } catch {
-      return undefined;
-    }
-  }
-
-  /**
-   * Returns an array of all of the NFTs the user
-   * possesses across all networks and accounts.
-   *
-   * @param allNfts
-   */
-  #getAllNFTsFlattened = memoize((allNfts: MetaMaskState['allNfts'] = {}) => {
-    return Object.values(allNfts).reduce((result: Nft[], chainNFTs) => {
-      return result.concat(...Object.values(chainNFTs));
-    }, []);
-  });
-
-  /**
-   * Returns the number of unique NFT addresses the user
-   * possesses across all networks and accounts.
-   *
-   * @param allNfts
-   */
-  #getAllUniqueNFTAddressesLength(
-    allNfts: MetaMaskState['allNfts'] = {},
-  ): number {
-    const allNFTAddresses = this.#getAllNFTsFlattened(allNfts).map(
-      (nft) => nft.address,
-    );
-    const uniqueAddresses = new Set(allNFTAddresses);
-    return uniqueAddresses.size;
-  }
-
-  /**
-   * @param allTokens
-   * @returns number of unique token addresses
-   */
-  #getNumberOfTokens(allTokens: MetaMaskState['allTokens']): number {
-    return Object.values(allTokens).reduce((result, accountsByChain) => {
-      return result + sum(Object.values(accountsByChain).map(size));
-    }, 0);
-  }
-
-  /**
-   * Computes wallet composition traits from internalAccounts, which is always
-   * available regardless of lock state (unlike keyrings).
-   *
-   * number_of_account_groups deduplicates BIP44 multichain accounts by their
-   * entropy source and group index so that EVM + BTC + SOL addresses derived
-   * from the same SRP slot count as one account group, matching what users see
-   * in the Account Management UI.
-   *
-   * @param metamaskState
-   */
-  #getAccountCompositionTraits(
-    metamaskState: MetaMaskState,
-  ): Partial<MetaMetricsUserTraits> {
-    const accountGroupKeys = new Set<string>();
-    const hdEntropyIds = new Set<string>();
-    let numberOfImportedAccounts = 0;
-    let numberOfLedgerAccounts = 0;
-    let numberOfTrezorAccounts = 0;
-    let numberOfLatticeAccounts = 0;
-    let numberOfQrHardwareAccounts = 0;
-
-    for (const [accountId, account] of Object.entries(
-      metamaskState.internalAccounts.accounts,
-    )) {
-      const keyringType = account.metadata?.keyring?.type;
-
-      switch (keyringType) {
-        case KeyringType.imported:
-          numberOfImportedAccounts += 1;
-          break;
-        case KeyringType.ledger:
-          numberOfLedgerAccounts += 1;
-          break;
-        case KeyringType.trezor:
-          numberOfTrezorAccounts += 1;
-          break;
-        case KeyringType.lattice:
-          numberOfLatticeAccounts += 1;
-          break;
-        case KeyringType.qr:
-        case KeyringType.oneKey:
-          numberOfQrHardwareAccounts += 1;
-          break;
-        default:
-          break;
-      }
-
-      // BIP44 multichain accounts share an entropy source id and group index
-      // across all chains (EVM, BTC, SOL, …). Deduplicating on that key gives
-      // the count of account groups rather than individual chain addresses.
-      const entropy: InternalAccount['options']['entropy'] =
-        account.options?.entropy;
-
-      if (
-        entropy?.type === 'mnemonic' &&
-        'id' in entropy &&
-        'groupIndex' in entropy
-      ) {
-        accountGroupKeys.add(`${entropy.id}:${entropy.groupIndex}`);
-        hdEntropyIds.add(entropy.id);
-      } else {
-        accountGroupKeys.add(accountId);
-      }
-    }
-
-    return {
-      [MetaMetricsUserTrait.NumberOfHDEntropies]: hdEntropyIds.size,
-      [MetaMetricsUserTrait.NumberOfAccountGroups]: accountGroupKeys.size,
-      [MetaMetricsUserTrait.NumberOfImportedAccounts]: numberOfImportedAccounts,
-      [MetaMetricsUserTrait.NumberOfLedgerAccounts]: numberOfLedgerAccounts,
-      [MetaMetricsUserTrait.NumberOfTrezorAccounts]: numberOfTrezorAccounts,
-      [MetaMetricsUserTrait.NumberOfLatticeAccounts]: numberOfLatticeAccounts,
-      [MetaMetricsUserTrait.NumberOfQrHardwareAccounts]:
-        numberOfQrHardwareAccounts,
-      // MetaMask enforces one paired device per hardware wallet type, so
-      // "types in use" equals "distinct devices".
-      [MetaMetricsUserTrait.NumberOfHardwareWallets]:
-        (numberOfLedgerAccounts > 0 ? 1 : 0) +
-        (numberOfTrezorAccounts > 0 ? 1 : 0) +
-        (numberOfLatticeAccounts > 0 ? 1 : 0) +
-        (numberOfQrHardwareAccounts > 0 ? 1 : 0),
-    };
-  }
-
-  /**
-   * Validates the trait value so AnalyticsController receives values supported
-   * by the configured analytics destinations.
-   *
-   * @param value
-   */
-  #isValidTrait(value: unknown): boolean {
-    const type = typeof value;
-
-    return (
-      type === 'string' ||
-      type === 'boolean' ||
-      type === 'number' ||
-      this.#isValidTraitArray(value) ||
-      this.#isValidTraitDate(value)
-    );
-  }
-
-  /**
-   * Validates trait arrays.
-   *
-   * @param value
-   */
-  #isValidTraitArray(value: unknown): boolean {
-    return (
-      Array.isArray(value) &&
-      (value.every((element) => {
-        return typeof element === 'string';
-      }) ||
-        value.every((element) => {
-          return typeof element === 'boolean';
-        }) ||
-        value.every((element) => {
-          return typeof element === 'number';
-        }))
-    );
-  }
-
-  /**
-   * Returns true if the value is an accepted date type
-   *
-   * @param value
-   */
-  #isValidTraitDate(value: unknown): value is Date {
-    return Object.prototype.toString.call(value) === '[object Date]';
-  }
-
-  #trackMetricsOptOutEvent(payload: SegmentTrackPayload): void {
-    const { analyticsId } = this.#analyticsGetState();
-
-    if (analyticsId.length === 0 || getPlatform() === PLATFORM_FIREFOX) {
-      return;
-    }
-
-    trackSegmentEventWhileOptedOut({
-      analyticsId,
-      event: MetaMetricsEventName.MetricsOptOut,
-      properties: payload.properties as Record<string, Json> | undefined,
-      context: payload.context as AnalyticsContext | undefined,
-    });
-  }
-
-  /**
-   * Returns the total number of Ethereum addresses with saved petnames,
-   * including all chain ID variations.
-   *
-   * @param metamaskState
-   */
-  #getPetnameAddressCount(metamaskState: MetaMaskState): number {
-    const addressNames = metamaskState.names?.[NameType.ETHEREUM_ADDRESS] ?? {};
-
-    return Object.keys(addressNames).reduce((totalCount, address) => {
-      const addressEntry = addressNames[address];
-
-      const addressNameCount = Object.keys(addressEntry).reduce(
-        (count, chainId) => {
-          const hasName = Boolean(addressEntry[chainId].name?.length);
-          return count + (hasName ? 1 : 0);
-        },
-        0,
-      );
-
-      return totalCount + addressNameCount;
-    }, 0);
   }
 }

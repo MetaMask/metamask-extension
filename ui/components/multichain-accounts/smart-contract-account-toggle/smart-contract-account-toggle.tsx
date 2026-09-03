@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Hex } from '@metamask/utils';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import {
@@ -25,6 +25,7 @@ import {
   selectToggleState,
 } from '../../../ducks/smart-accounts/smart-accounts';
 import type { MetaMaskReduxState } from '../../../store/store';
+import { useDispatch } from '../../../store/hooks';
 
 type SmartContractAccountToggleProps = {
   networkConfig: EIP7702NetworkConfiguration;

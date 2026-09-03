@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -11,21 +10,15 @@ import {
   TextVariant,
   TextColor,
   FontWeight,
-} from '@metamask/design-system-react';
-import {
   Modal,
-  ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-} from '../../../components/component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
+  ModalContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { resetAccount } from '../../../store/actions';
+import { useDispatch } from '../../../store/hooks';
 
 type DeleteActivityModalProps = {
   onClose: () => void;
@@ -50,13 +43,15 @@ export default function DeleteActivityModal({
     >
       <ModalOverlay />
       <ModalContent
-        alignItems={AlignItems.center}
+        className="items-center"
         modalDialogProps={{
-          display: Display.Flex,
-          flexDirection: FlexDirection.Column,
+          flexDirection: BoxFlexDirection.Column,
         }}
       >
-        <ModalHeader onClose={onClose}>
+        <ModalHeader
+          onClose={onClose}
+          closeButtonProps={{ ariaLabel: t('close') }}
+        >
           <Box
             flexDirection={BoxFlexDirection.Column}
             alignItems={BoxAlignItems.Center}

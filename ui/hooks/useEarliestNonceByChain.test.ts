@@ -1,25 +1,36 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { CHAIN_IDS } from '../../shared/constants/network';
-import { useEarliestNonceByChain } from './useEarliestNonceByChain';
+import {
+  getEarliestNonceKey,
+  isTransactionEarliestNonce,
+  useEarliestNonceByChain,
+} from './useEarliestNonceByChain';
+
+const SENDER_A = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+const SENDER_B = '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
 
 function buildGroup(
   nonce: string | undefined,
   chainId: string,
   status: string = 'submitted',
+  from: string = SENDER_A,
 ) {
   return {
     nonce,
     primaryTransaction: { status },
-    initialTransaction: { chainId },
+    initialTransaction: {
+      chainId,
+      txParams: { from },
+    },
   };
 }
 
 describe('useEarliestNonceByChain', () => {
-  it('should calculate earliest nonce per chain', () => {
+  it('should calculate earliest nonce per chain and sender', () => {
     const transactionGroups = [
-      buildGroup('0x5', CHAIN_IDS.GOERLI),
-      buildGroup('0xa', CHAIN_IDS.MAINNET),
-      buildGroup('0x6', CHAIN_IDS.GOERLI),
+      buildGroup('0x5', CHAIN_IDS.GOERLI, 'submitted', SENDER_A),
+      buildGroup('0xa', CHAIN_IDS.MAINNET, 'submitted', SENDER_A),
+      buildGroup('0x6', CHAIN_IDS.GOERLI, 'submitted', SENDER_A),
     ];
 
     const { result } = renderHook(() =>
@@ -27,8 +38,8 @@ describe('useEarliestNonceByChain', () => {
     );
 
     expect(result.current).toEqual({
-      [CHAIN_IDS.GOERLI]: 5,
-      [CHAIN_IDS.MAINNET]: 10,
+      [getEarliestNonceKey(CHAIN_IDS.GOERLI, SENDER_A)]: 5,
+      [getEarliestNonceKey(CHAIN_IDS.MAINNET, SENDER_A)]: 10,
     });
   });
 
@@ -43,7 +54,7 @@ describe('useEarliestNonceByChain', () => {
     );
 
     expect(result.current).toEqual({
-      [CHAIN_IDS.GOERLI]: 0,
+      [getEarliestNonceKey(CHAIN_IDS.GOERLI, SENDER_A)]: 0,
     });
   });
 
@@ -58,7 +69,7 @@ describe('useEarliestNonceByChain', () => {
     );
 
     expect(result.current).toEqual({
-      [CHAIN_IDS.GOERLI]: 5,
+      [getEarliestNonceKey(CHAIN_IDS.GOERLI, SENDER_A)]: 5,
     });
   });
 
@@ -73,7 +84,7 @@ describe('useEarliestNonceByChain', () => {
     );
 
     expect(result.current).toEqual({
-      [CHAIN_IDS.GOERLI]: 5,
+      [getEarliestNonceKey(CHAIN_IDS.GOERLI, SENDER_A)]: 5,
     });
   });
 
@@ -91,7 +102,7 @@ describe('useEarliestNonceByChain', () => {
     // 0x18b (395) and 0x18c (396) are confirmed so they must be ignored.
     // Only 0x18d (397) is pending and should be the earliest.
     expect(result.current).toEqual({
-      [CHAIN_IDS.SEPOLIA]: 397,
+      [getEarliestNonceKey(CHAIN_IDS.SEPOLIA, SENDER_A)]: 397,
     });
   });
 
@@ -119,7 +130,49 @@ describe('useEarliestNonceByChain', () => {
     );
 
     expect(result.current).toEqual({
-      [CHAIN_IDS.MAINNET]: 5,
+      [getEarliestNonceKey(CHAIN_IDS.MAINNET, SENDER_A)]: 5,
     });
+  });
+
+  it('keeps earliest nonces independent for different senders on the same chain', () => {
+    const transactionGroups = [
+      buildGroup('0x0', CHAIN_IDS.MAINNET, 'submitted', SENDER_B),
+      buildGroup('0x5', CHAIN_IDS.MAINNET, 'submitted', SENDER_A),
+      buildGroup('0x6', CHAIN_IDS.MAINNET, 'submitted', SENDER_A),
+    ];
+
+    const { result } = renderHook(() =>
+      useEarliestNonceByChain(transactionGroups),
+    );
+
+    expect(result.current).toEqual({
+      [getEarliestNonceKey(CHAIN_IDS.MAINNET, SENDER_A)]: 5,
+      [getEarliestNonceKey(CHAIN_IDS.MAINNET, SENDER_B)]: 0,
+    });
+
+    expect(
+      isTransactionEarliestNonce(
+        '0x5',
+        CHAIN_IDS.MAINNET,
+        SENDER_A,
+        result.current,
+      ),
+    ).toBe(true);
+    expect(
+      isTransactionEarliestNonce(
+        '0x6',
+        CHAIN_IDS.MAINNET,
+        SENDER_A,
+        result.current,
+      ),
+    ).toBe(false);
+    expect(
+      isTransactionEarliestNonce(
+        '0x0',
+        CHAIN_IDS.MAINNET,
+        SENDER_B,
+        result.current,
+      ),
+    ).toBe(true);
   });
 });

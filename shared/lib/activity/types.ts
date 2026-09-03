@@ -1,187 +1,34 @@
-import type { CaipChainId } from '@metamask/utils';
+import type {
+  ActivityItem,
+  ActivityKind as ClientActivityKind,
+} from '@metamask/client-utils';
 
-export type Status = 'pending' | 'success' | 'failed' | 'cancelled';
+export type {
+  Status,
+  TokenAmount,
+  FiatAmount,
+  Fee as ActivityFee,
+} from '@metamask/client-utils';
 
-export type ActivityKind =
-  | 'receive'
-  | 'sell'
-  | 'buy'
-  | 'deposit'
-  | 'swap'
-  | 'swapIncomplete'
-  | 'claim'
-  | 'claimMusdBonus'
-  | 'send'
-  | 'wrap'
-  | 'unwrap'
-  | 'approveSpendingCap'
-  | 'revokeSpendingCap'
-  | 'increaseSpendingCap'
-  | 'contractInteraction'
-  | 'contractDeployment'
-  | 'bridge'
-  | 'convert'
-  | 'nftBuy'
-  | 'nftMint'
-  | 'nftSell'
-  | 'smartAccountUpgrade'
-  | 'lendingDeposit'
-  | 'lendingWithdrawal'
-  | 'predictionsAddFunds'
-  | 'predictionsWithdrawFunds'
-  | 'predictionClaimWinnings'
-  | 'predictionCashedOut'
-  | 'predictionPlaced'
-  | 'perpsAddFunds'
-  | 'perpsWithdraw'
-  | 'perpsOpenLong'
-  | 'perpsCloseLong'
-  | 'perpsCloseLongLiquidated'
-  | 'perpsCloseLongStopLoss'
-  | 'perpsOpenShort'
-  | 'perpsCloseShort'
-  | 'perpsCloseShortLiquidated'
-  | 'perpsCloseShortStopLoss'
-  | 'perpsPaidFundingFees'
-  | 'perpsReceivedFundingFees'
-  | 'perpsCloseShortTakeProfit'
-  | 'perpsCloseLongTakeProfit'
-  | 'marketShort'
-  | 'stopMarketCloseShort'
-  | 'marketCloseShort';
+/**
+ * Money-account deposits and withdrawals are extension-local activity kinds:
+ * `@metamask/client-utils` has no money-account mapping (the transactions are
+ * EIP-7702 batches it classifies as `contractInteraction`), so
+ * `enrichLocalActivity` re-types them. They reuse the perps MM Pay data shape
+ * (`fiat` + `token`) because the rows render the same way: a signed fiat
+ * amount and token avatar without a counterparty address.
+ */
+export type MoneyAccountActivityKind =
+  | 'moneyAccountDeposit'
+  | 'moneyAccountWithdraw';
 
-export type TokenAmount = {
-  amount?: string;
-  decimals?: number;
-  symbol?: string;
-  assetId?: string;
-  direction: 'in' | 'out';
+export type MoneyAccountActivityItem = Omit<
+  Extract<ActivityItem, { type: 'perpsAddFunds' | 'perpsWithdraw' }>,
+  'type'
+> & {
+  type: MoneyAccountActivityKind;
 };
 
-export type ActivityFee = {
-  type: string;
-  amount?: string;
-  decimals?: number;
-  symbol?: string;
-  assetId?: string;
-};
+export type ActivityKind = ClientActivityKind | MoneyAccountActivityKind;
 
-export type FiatAmount = {
-  amount: string;
-  currency?: string;
-};
-
-type ActivityData<Type extends ActivityKind, Data> = {
-  type: Type;
-  chainId: CaipChainId;
-  status: Status;
-  timestamp: number;
-  isEarliestNonce?: boolean;
-  hash?: string;
-  data: Data & {
-    from?: string;
-  };
-};
-
-export type ActivityListItem =
-  | ActivityData<
-      'send' | 'receive',
-      {
-        from: string;
-        to: string;
-        token?: TokenAmount;
-        fees?: ActivityFee[];
-      }
-    >
-  | ActivityData<
-      | 'swap'
-      | 'convert'
-      | 'lendingDeposit'
-      | 'lendingWithdrawal'
-      | 'wrap'
-      | 'unwrap',
-      {
-        sourceToken?: TokenAmount;
-        destinationToken?: TokenAmount;
-        fees?: ActivityFee[];
-      }
-    >
-  | ActivityData<
-      'swapIncomplete',
-      {
-        sourceToken?: TokenAmount;
-      }
-    >
-  | ActivityData<
-      'bridge',
-      {
-        sourceToken?: TokenAmount;
-        destinationToken?: TokenAmount;
-        fees?: ActivityFee[];
-      }
-    >
-  | ActivityData<
-      'buy' | 'claim',
-      {
-        token?: TokenAmount;
-      }
-    >
-  | ActivityData<
-      'deposit',
-      {
-        token?: TokenAmount;
-        from?: string;
-      }
-    >
-  | ActivityData<
-      'perpsAddFunds' | 'perpsWithdraw',
-      {
-        fiat?: FiatAmount;
-        networkFee?: FiatAmount;
-        token?: TokenAmount;
-      }
-    >
-  | ActivityData<
-      'claimMusdBonus',
-      {
-        token?: TokenAmount;
-      }
-    >
-  | ActivityData<
-      'approveSpendingCap' | 'revokeSpendingCap' | 'increaseSpendingCap',
-      {
-        token?: TokenAmount;
-        fees?: ActivityFee[];
-      }
-    >
-  | ActivityData<
-      'nftBuy' | 'nftMint',
-      {
-        from?: string;
-        to?: string;
-        token?: TokenAmount;
-        paymentToken?: TokenAmount;
-      }
-    >
-  | ActivityData<
-      'nftSell',
-      {
-        from?: string;
-        to?: string;
-        token?: TokenAmount;
-        paymentToken?: TokenAmount;
-      }
-    >
-  | ActivityData<
-      'contractInteraction',
-      {
-        from: string;
-        to: string;
-        token?: TokenAmount;
-        fees?: ActivityFee[];
-        methodId?: string;
-        transactionCategory?: string;
-        transactionProtocol?: string;
-        transactionType?: string;
-      }
-    >;
+export type ActivityListItem = ActivityItem | MoneyAccountActivityItem;

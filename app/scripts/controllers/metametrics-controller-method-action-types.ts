@@ -83,17 +83,6 @@ export type MetaMetricsControllerUpdateExtensionUninstallUrlAction = {
   handler: MetaMetricsController['updateExtensionUninstallUrl'];
 };
 
-/**
- * Setter for the `participateInMetaMetrics` property
- *
- * @param participateInMetaMetrics - Whether or not the user wants to participate in MetaMetrics if not set
- * @returns The string of the new metametrics id, or null
- */
-export type MetaMetricsControllerSetParticipateInMetaMetricsAction = {
-  type: `MetaMetricsController:setParticipateInMetaMetrics`;
-  handler: MetaMetricsController['setParticipateInMetaMetrics'];
-};
-
 export type MetaMetricsControllerSetDataCollectionForMarketingAction = {
   type: `MetaMetricsController:setDataCollectionForMarketing`;
   handler: MetaMetricsController['setDataCollectionForMarketing'];
@@ -102,58 +91,6 @@ export type MetaMetricsControllerSetDataCollectionForMarketingAction = {
 export type MetaMetricsControllerSetMarketingCampaignCookieIdAction = {
   type: `MetaMetricsController:setMarketingCampaignCookieId`;
   handler: MetaMetricsController['setMarketingCampaignCookieId'];
-};
-
-/**
- * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
- *
- * @param payload - details of the event
- * @param options - options for handling/routing the event
- */
-export type MetaMetricsControllerTrackEventAction = {
-  type: `MetaMetricsController:trackEvent`;
-  handler: MetaMetricsController['trackEvent'];
-};
-
-/**
- * Identifies the user with valid user traits if they are participating in
- * the MetaMetrics analytics program.
- *
- * @param userTraits
- */
-export type MetaMetricsControllerIdentifyAction = {
-  type: `MetaMetricsController:identify`;
-  handler: MetaMetricsController['identify'];
-};
-
-/**
- * Track a page view through AnalyticsController.
- *
- * @param payload - details of the page viewed.
- */
-export type MetaMetricsControllerTrackPageAction = {
-  type: `MetaMetricsController:trackPage`;
-  handler: MetaMetricsController['trackPage'];
-};
-
-export type MetaMetricsControllerHandleMetaMaskStateUpdateAction = {
-  type: `MetaMetricsController:handleMetaMaskStateUpdate`;
-  handler: MetaMetricsController['handleMetaMaskStateUpdate'];
-};
-
-export type MetaMetricsControllerTrackEventsAfterMetricsOptInAction = {
-  type: `MetaMetricsController:trackEventsAfterMetricsOptIn`;
-  handler: MetaMetricsController['trackEventsAfterMetricsOptIn'];
-};
-
-export type MetaMetricsControllerClearEventsAfterMetricsOptInAction = {
-  type: `MetaMetricsController:clearEventsAfterMetricsOptIn`;
-  handler: MetaMetricsController['clearEventsAfterMetricsOptIn'];
-};
-
-export type MetaMetricsControllerAddEventBeforeMetricsOptInAction = {
-  type: `MetaMetricsController:addEventBeforeMetricsOptIn`;
-  handler: MetaMetricsController['addEventBeforeMetricsOptIn'];
 };
 
 export type MetaMetricsControllerTrackTracesAfterMetricsOptInAction = {
@@ -198,11 +135,6 @@ export type MetaMetricsControllerUpdateTraitsAction = {
   handler: MetaMetricsController['updateTraits'];
 };
 
-export type MetaMetricsControllerGetMetaMetricsIdAction = {
-  type: `MetaMetricsController:getMetaMetricsId`;
-  handler: MetaMetricsController['getMetaMetricsId'];
-};
-
 /**
  * Union of all MetaMetricsController action types.
  */
@@ -215,20 +147,11 @@ export type MetaMetricsControllerMethodActions =
   | MetaMetricsControllerDeleteEventFragmentAction
   | MetaMetricsControllerFinalizeEventFragmentAction
   | MetaMetricsControllerUpdateExtensionUninstallUrlAction
-  | MetaMetricsControllerSetParticipateInMetaMetricsAction
   | MetaMetricsControllerSetDataCollectionForMarketingAction
   | MetaMetricsControllerSetMarketingCampaignCookieIdAction
-  | MetaMetricsControllerTrackEventAction
-  | MetaMetricsControllerIdentifyAction
-  | MetaMetricsControllerTrackPageAction
-  | MetaMetricsControllerHandleMetaMaskStateUpdateAction
-  | MetaMetricsControllerTrackEventsAfterMetricsOptInAction
-  | MetaMetricsControllerClearEventsAfterMetricsOptInAction
-  | MetaMetricsControllerAddEventBeforeMetricsOptInAction
   | MetaMetricsControllerTrackTracesAfterMetricsOptInAction
   | MetaMetricsControllerClearTracesAfterMetricsOptInAction
   | MetaMetricsControllerAddTraceBeforeMetricsOptInAction
   | MetaMetricsControllerBufferedTraceAction
   | MetaMetricsControllerBufferedEndTraceAction
-  | MetaMetricsControllerUpdateTraitsAction
-  | MetaMetricsControllerGetMetaMetricsIdAction;
+  | MetaMetricsControllerUpdateTraitsAction;

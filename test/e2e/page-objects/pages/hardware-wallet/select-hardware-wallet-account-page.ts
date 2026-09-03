@@ -1,25 +1,37 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Represents the select hardware wallet account page.
- * This page allows users to select accounts to connect.
+ * Hardware wallet account list: pick accounts to unlock or forget the device.
+ *
+ * Screen: account-selection step after `#/new-account/connect` device connect.
+ * Owns: page-loaded checks, counting/displayed addresses, unlocking selected
+ * accounts, cancel, and forget-device.
+ * Boundaries: the account list only. Device-type selection is
+ * `ConnectHardwareWalletPage`; wallet UI after unlock is outside this object.
+ * Related: `ConnectHardwareWalletPage` (how tests get here).
+ *
+ * @see ui/pages/create-account/connect-hardware/account-list.tsx
  */
 class SelectHardwareWalletAccountPage {
-  protected driver: Driver;
+  protected readonly accountCheckbox = '.hw-account-list__item__checkbox';
 
   protected readonly cancelButton = {
     testId: 'connect-hardware-account-list-cancel-btn',
   };
 
+  protected readonly connectHardwareAccountListPage = {
+    testId: 'parent-selector-connect-hardware-account-list-page',
+  };
+
+  protected driver: Driver;
+
+  protected readonly forgetDeviceButton =
+    '[data-testid="hardware-forget-device-button"]';
+
   protected readonly selectAccountPageTitle = {
     text: 'Select an account',
     tag: 'h3',
   };
-
-  protected readonly accountCheckbox = '.hw-account-list__item__checkbox';
-
-  protected readonly forgetDeviceButton =
-    '[data-testid="hardware-forget-device-button"]';
 
   protected readonly unlockButton = {
     testId: 'connect-hardware-account-list-unlock-btn',
@@ -27,55 +39,6 @@ class SelectHardwareWalletAccountPage {
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.selectAccountPageTitle,
-        this.cancelButton,
-      ]);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for select account page to be loaded',
-        e,
-      );
-      throw e;
-    }
-    console.log('Select account page is loaded');
-  }
-
-  async clickUnlockButton(): Promise<void> {
-    console.log(`Click unlock button on select account page`);
-    await this.driver.clickElement(this.unlockButton);
-  }
-
-  async clickForgetDeviceButton(): Promise<void> {
-    console.log(`Click forget device button on select account page`);
-    await this.driver.clickElement(this.forgetDeviceButton);
-  }
-
-  async selectAccount(accountIndex: number): Promise<void> {
-    console.log(`Select account ${accountIndex}`);
-    await this.driver.clickElement(`label[for="address-${accountIndex - 1}"]`);
-  }
-
-  async unlockAccount(accountIndex: number): Promise<void> {
-    console.log(`Unlock account ${accountIndex}`);
-    await this.selectAccount(accountIndex);
-    await this.clickUnlockButton();
-  }
-
-  /**
-   * Check that the specified address is displayed in the list of accounts.
-   *
-   * @param address - The address to check for.
-   */
-  async checkAddressIsDisplayed(address: string): Promise<void> {
-    console.log(
-      `Check that account address ${address} is displayed on select account page`,
-    );
-    await this.driver.waitForSelector({ text: address });
   }
 
   /**
@@ -93,6 +56,56 @@ class SelectHardwareWalletAccountPage {
     console.log(
       `Expected number of account items ${expectedNumber} is displayed.`,
     );
+  }
+
+  /**
+   * Check that the specified address is displayed in the list of accounts.
+   *
+   * @param address - The address to check for.
+   */
+  async checkAddressIsDisplayed(address: string): Promise<void> {
+    console.log(
+      `Check that account address ${address} is displayed on select account page`,
+    );
+    await this.driver.waitForSelector({ text: address });
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.connectHardwareAccountListPage,
+        this.selectAccountPageTitle,
+        this.cancelButton,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for select account page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Select account page is loaded');
+  }
+
+  async clickForgetDeviceButton(): Promise<void> {
+    console.log(`Click forget device button on select account page`);
+    await this.driver.clickElement(this.forgetDeviceButton);
+  }
+
+  async clickUnlockButton(): Promise<void> {
+    console.log(`Click unlock button on select account page`);
+    await this.driver.clickElement(this.unlockButton);
+  }
+
+  async selectAccount(accountIndex: number): Promise<void> {
+    console.log(`Select account ${accountIndex}`);
+    await this.driver.clickElement(`label[for="address-${accountIndex - 1}"]`);
+  }
+
+  async unlockAccount(accountIndex: number): Promise<void> {
+    console.log(`Unlock account ${accountIndex}`);
+    await this.selectAccount(accountIndex);
+    await this.clickUnlockButton();
   }
 }
 

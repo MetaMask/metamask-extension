@@ -18,11 +18,12 @@ import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
 import { Mockttp } from '../mock-e2e';
 import TestDapp from '../page-objects/pages/test-dapp';
 import TestDappIndividualRequest from '../page-objects/pages/test-dapp-individual-request';
-import SnapAccountAbstractionKeyringPage from '../page-objects/pages/snap-account-abstraction-keyring-page';
+import SnapAccountAbstractionKeyringPage from '../page-objects/pages/snaps/account-abstraction-keyring-page';
 import ActivityTab from '../page-objects/pages/home/activity-tab';
 import TransactionConfirmation from '../page-objects/pages/confirmations/transaction-confirmation';
 import { mockSnapAccountAbstractionKeyRingAndSite } from '../mock-response-data/snaps/snap-local-sites/account-abstraction-keyring-site-mocks';
 import { createInternalTransaction } from '../page-objects/flows/transaction.flow';
+import { installAccountAbstractionSnap } from '../page-objects/flows/snap-account-abstraction.flow';
 import { login } from '../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../page-objects/flows/test-dapp.flow';
 
@@ -133,9 +134,10 @@ async function withAccountSnap(
     }) => {
       await login(driver, { validateBalance: false });
 
+      await installAccountAbstractionSnap(driver);
+
       const snapAccountAbstractionKeyringPage =
         new SnapAccountAbstractionKeyringPage(driver);
-      await snapAccountAbstractionKeyringPage.install();
       await snapAccountAbstractionKeyringPage.setChainConfig({
         bundlerUrl: BUNDLER_URL,
         entrypoint: ENTRYPOINT,

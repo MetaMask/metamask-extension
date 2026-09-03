@@ -1,21 +1,16 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useSendContext } from '../../../context/send';
 import { useUnreliableNetworkRpc } from '../../../hooks/send/useUnreliableNetworkRpc';
 import { SendAlertModal } from '../send-alert-modal';
 
-type SendAlertsProps = {
-  isSmartContractAlertOpen: boolean;
-  onSmartContractClose: () => void;
-  onSmartContractAcknowledge: () => void;
+type NetworkAlertDismissState = {
+  networkStatusKey: string;
+  userClosed: boolean;
 };
 
-export const SendAlerts = ({
-  isSmartContractAlertOpen,
-  onSmartContractClose,
-  onSmartContractAcknowledge,
-}: SendAlertsProps) => {
+export const SendAlerts = () => {
   const t = useI18nContext();
   const { chainId } = useSendContext();
   const {
@@ -24,49 +19,53 @@ export const SendAlerts = ({
     navigateToEditNetwork,
   } = useUnreliableNetworkRpc();
 
-  const [isNetworkAlertOpen, setIsNetworkAlertOpen] = useState(false);
-  const lastAutoOpenedChainIdRef = useRef<string | undefined>(undefined);
+  const networkStatusKey = isNetworkUnreliable
+    ? `${chainId}|open`
+    : `${chainId}|closed`;
+  const [dismissState, setDismissState] = useState<NetworkAlertDismissState>({
+    networkStatusKey,
+    userClosed: false,
+  });
 
-  useEffect(() => {
-    if (isNetworkUnreliable) {
-      if (lastAutoOpenedChainIdRef.current !== chainId) {
-        setIsNetworkAlertOpen(true);
-        lastAutoOpenedChainIdRef.current = chainId;
-      }
-    } else {
-      lastAutoOpenedChainIdRef.current = undefined;
-      setIsNetworkAlertOpen(false);
-    }
-  }, [chainId, isNetworkUnreliable]);
+  if (dismissState.networkStatusKey !== networkStatusKey) {
+    setDismissState({ networkStatusKey, userClosed: false });
+  }
+
+  const userClosed =
+    dismissState.networkStatusKey === networkStatusKey
+      ? dismissState.userClosed
+      : false;
+  const isNetworkAlertOpen = Boolean(isNetworkUnreliable && !userClosed);
 
   const handleNetworkClose = useCallback(() => {
-    setIsNetworkAlertOpen(false);
-  }, []);
+    setDismissState({ networkStatusKey, userClosed: true });
+  }, [networkStatusKey]);
 
   const handleNetworkAcknowledge = useCallback(() => {
-    setIsNetworkAlertOpen(false);
+    setDismissState({ networkStatusKey, userClosed: true });
     navigateToEditNetwork();
-  }, [navigateToEditNetwork]);
+  }, [networkStatusKey, navigateToEditNetwork]);
+
+  const networkAlerts = useMemo(
+    () => [
+      {
+        key: 'networkUnreliable',
+        title: t('unavailableNetworkConnection'),
+        message: t('unavailableNetworkConnectionDescription', [
+          unreliableNetworkName ?? '',
+        ]),
+        acknowledgeButtonLabel: t('update'),
+      },
+    ],
+    [t, unreliableNetworkName],
+  );
 
   return (
-    <>
-      <SendAlertModal
-        isOpen={isNetworkAlertOpen}
-        title={t('unavailableNetworkConnection')}
-        errorMessage={t('unavailableNetworkConnectionDescription', [
-          unreliableNetworkName ?? '',
-        ])}
-        acknowledgeLabel={t('update')}
-        onAcknowledge={handleNetworkAcknowledge}
-        onClose={handleNetworkClose}
-      />
-      <SendAlertModal
-        isOpen={isSmartContractAlertOpen}
-        title={t('smartContractAddress')}
-        errorMessage={t('smartContractAddressWarning')}
-        onAcknowledge={onSmartContractAcknowledge}
-        onClose={onSmartContractClose}
-      />
-    </>
+    <SendAlertModal
+      isOpen={isNetworkAlertOpen}
+      alerts={networkAlerts}
+      onAcknowledge={handleNetworkAcknowledge}
+      onClose={handleNetworkClose}
+    />
   );
 };

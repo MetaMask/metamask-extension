@@ -74,6 +74,7 @@ export const mockTokensV3Assets = (mockServer: Mockttp) =>
           name: 'USD Coin',
           symbol: 'USDC',
           decimals: 6,
+          occurrences: 3,
         });
       }
       if (
@@ -86,6 +87,7 @@ export const mockTokensV3Assets = (mockServer: Mockttp) =>
           name: 'Tether USD',
           symbol: 'USDT',
           decimals: 6,
+          occurrences: 3,
         });
       }
 
@@ -155,6 +157,7 @@ export const mockTokensV3Assets = (mockServer: Mockttp) =>
           name: 'Tron',
           symbol: 'TRX',
           decimals: 6,
+          type: 'native',
           iconUrl:
             'https://static.cx.metamask.io/api/v2/tokenIcons/assets/tron/728126428/slip44/195.png',
           coingeckoId: 'tron',

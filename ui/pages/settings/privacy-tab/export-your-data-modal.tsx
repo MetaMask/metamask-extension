@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -9,26 +9,19 @@ import {
   Text,
   TextVariant,
   TextColor,
-} from '@metamask/design-system-react';
-import {
   Modal,
-  ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-} from '../../../components/component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
+  ModalContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   exportAsFile,
   ExportableContentType,
 } from '../../../helpers/utils/export-utils';
 import { captureException } from '../../../../shared/lib/sentry';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { backupUserData } from '../../../store/actions';
 
 type BackupUserDataResponse = {
@@ -45,7 +38,7 @@ export default function ExportYourDataModal({
   onClose,
 }: Readonly<ExportYourDataModalProps>) {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const handleDownload = async () => {
     try {
@@ -58,11 +51,9 @@ export default function ExportYourDataModal({
         ExportableContentType.JSON,
       );
 
-      await trackEvent({
-        event: 'User Data Exported',
-        category: 'Backup',
-        properties: {},
-      });
+      trackEvent(
+        createEventBuilder('User Data Exported').addCategory('Backup').build(),
+      );
     } catch (error) {
       captureException(error);
     }
@@ -73,13 +64,15 @@ export default function ExportYourDataModal({
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
       <ModalContent
-        alignItems={AlignItems.center}
+        className="items-center"
         modalDialogProps={{
-          display: Display.Flex,
-          flexDirection: FlexDirection.Column,
+          flexDirection: BoxFlexDirection.Column,
         }}
       >
-        <ModalHeader onClose={onClose}>
+        <ModalHeader
+          onClose={onClose}
+          closeButtonProps={{ ariaLabel: t('close') }}
+        >
           <Box
             flexDirection={BoxFlexDirection.Column}
             alignItems={BoxAlignItems.Center}

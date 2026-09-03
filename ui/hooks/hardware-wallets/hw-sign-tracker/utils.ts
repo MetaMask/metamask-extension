@@ -1,5 +1,8 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
+import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import { UNKNOWN_BATCH_ID } from './constants';
+import type { HwSignTrackerAction } from './types';
 
 /**
  * Checks whether a transaction belongs to the currently tracked batch (or is
@@ -27,45 +30,37 @@ export function isFromCurrentBatch(
 }
 
 /**
- * Returns true when no batch has been identified yet, meaning rejection and
- * finished events should be blocked until the first signed event establishes
- * the active batch.
- *
- * @param currentBatchId - The current batch ID state. `undefined` means no
- * batch has been identified yet, `null` means a retry cleared the active
- * batch (stale cleared), and a string means the batch is locked to that ID.
- */
-export function shouldBlockPendingEvent(
-  currentBatchId: string | null | undefined,
-): boolean {
-  return currentBatchId === undefined;
-}
-
-/**
  * Determines whether a pending (rejected/finished/failed) event should be
- * ignored because no batch is locked yet, or because the event belongs to a
- * stale or non-current batch.
+ * ignored because it belongs to a stale or non-current batch, or because no
+ * batch is locked yet and the transaction was never observed in this flow.
+ *
+ * In the freshly-(re)created state (`currentBatchId === undefined`) a pending
+ * event is ignored unless the transaction was already tracked earlier in this
+ * flow (i.e. observed via `transactionStatusUpdated` when it was created). This
+ * lets a legitimate first-signature failure/rejection through — e.g. the
+ * approval tx failing before any signature locks the batch, which would
+ * otherwise leave the signing UI stuck on the awaiting-signature screen — while
+ * still ignoring stale leftovers from a previous flow/re-subscribe. The
+ * retry-pending (`null`) and locked (string) states filter via
+ * {@link isFromCurrentBatch}.
  *
  * @param transactionMeta - The transaction metadata to check.
- * @param currentBatchId - The current batch ID state (see shouldBlockPendingEvent).
+ * @param currentBatchId - The current batch ID state.
  * @param staleBatchIds - Set of batch IDs superseded by retries.
+ * @param wasTracked - Whether the transaction was already tracked earlier in
+ * this flow (observed via a prior `transactionStatusUpdated`).
  * @returns True when the event must be ignored.
  */
 export function shouldIgnoreBatchEvent(
   transactionMeta: TransactionMeta,
   currentBatchId: string | null | undefined,
   staleBatchIds: Set<string>,
+  wasTracked: boolean,
 ): boolean {
-  if (shouldBlockPendingEvent(currentBatchId)) {
-    return true;
+  if (currentBatchId === undefined) {
+    return !wasTracked;
   }
-  if (
-    currentBatchId !== undefined &&
-    !isFromCurrentBatch(transactionMeta, currentBatchId, staleBatchIds)
-  ) {
-    return true;
-  }
-  return false;
+  return !isFromCurrentBatch(transactionMeta, currentBatchId, staleBatchIds);
 }
 
 /**
@@ -95,30 +90,49 @@ export function checkPendingAbort(
 /**
  * Detects a retry-generation bump and, when it advanced, moves every entry
  * from `seenSet` into `staleSet` and clears `seenSet`. Shared by both tracking
- * strategies so the bump handling stays consistent.
+ * strategies so the bump handling stays consistent. Pure with respect to the
+ * last-seen generation: the caller owns persisting the returned value.
  *
  * @param retryGenerationRef - External ref bumped on retry (undefined disables).
- * @param lastSeenGenerationRef - Mutable ref tracking the last-seen generation; updated in place.
+ * @param lastSeenGeneration - The last-seen generation value to compare against.
  * @param seenSet - The currently-seen IDs/batch IDs (mutated: cleared on bump).
  * @param staleSet - The stale IDs/batch IDs (mutated: receives seen entries on bump).
- * @returns True if a bump was detected and applied.
+ * @returns The new last-seen generation when a bump was detected and applied,
+ * otherwise `null`.
  */
 export function applyRetryGenerationBump(
   retryGenerationRef: React.RefObject<number | undefined> | undefined,
-  lastSeenGenerationRef: React.MutableRefObject<number>,
+  lastSeenGeneration: number,
   seenSet: Set<string>,
   staleSet: Set<string>,
-): boolean {
+): number | null {
   if (
     !retryGenerationRef ||
-    retryGenerationRef.current === lastSeenGenerationRef.current
+    retryGenerationRef.current === lastSeenGeneration
   ) {
-    return false;
+    return null;
   }
-  lastSeenGenerationRef.current = retryGenerationRef.current ?? 0;
+  const newLastSeenGeneration = retryGenerationRef.current ?? 0;
   for (const id of seenSet) {
     staleSet.add(id);
   }
   seenSet.clear();
-  return true;
+  return newLastSeenGeneration;
+}
+
+/**
+ * Maps a rejected or failed {@link TransactionStatus} to the corresponding
+ * {@link HwSignTrackerAction}. Shared by both tracking strategies so the
+ * status→action mapping stays consistent.
+ *
+ * @param status - The terminal transaction status.
+ * @returns The corresponding action.
+ */
+export function getStatusAction(
+  status: TransactionStatus.rejected | TransactionStatus.failed,
+): HwSignTrackerAction {
+  if (status === TransactionStatus.rejected) {
+    return { type: HardwareWalletSignatureEvent.TransactionRejected };
+  }
+  return { type: HardwareWalletSignatureEvent.TransactionFailed };
 }

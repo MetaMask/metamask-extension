@@ -4,13 +4,12 @@ import React, {
   useEffect,
   useMemo,
   useReducer,
+  useRef,
   useState,
-  useContext,
 } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
 import {
@@ -34,7 +33,7 @@ import ConfirmationWarningModal from '../components/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useHideToasts } from '../../../hooks/useHideToasts';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
@@ -51,17 +50,15 @@ import { Box } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
 import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
 import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
-import {
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
-} from '../../../../shared/constants/app';
-import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { DAY } from '../../../../shared/constants/time';
 import { Nav } from '../components/confirm/nav';
 import { ConfirmContextProvider } from '../context/confirm';
 import { useConfirmationNavigation } from '../hooks/useConfirmationNavigation';
+import { useDispatch } from '../../../store/hooks';
 import { TemplateAlertContextProvider } from './alerts/TemplateAlertContext';
 import ConfirmationFooter from './components/confirmation-footer';
+
 import {
   getTemplateValues,
   getTemplateAlerts,
@@ -70,6 +67,10 @@ import {
 
 const CONFIRMATION_TYPES_WITH_HEADER = ['result_success', 'result_error'];
 const SNAP_CUSTOM_UI_DIALOG = Object.values(DIALOG_APPROVAL_TYPES);
+const SNAP_DIALOG_TYPE = [
+  ...Object.values(DIALOG_APPROVAL_TYPES),
+  ...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES),
+];
 
 /**
  * a very simple reducer using produce from Immer to keep state manipulation
@@ -238,12 +239,12 @@ export default function ConfirmationPage({
   useHideToasts();
 
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const pendingConfirmations = useSelector(getUnapprovedTemplatedConfirmations);
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
-  const approvalFlows = useSelector(getApprovalFlows, isEqual);
+  const approvalFlows = useSelector(getApprovalFlows);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
   const isHardwareWalletErrorModalVisible = useSelector(
     getIsHardwareWalletErrorModalVisible,
@@ -254,10 +255,8 @@ export default function ConfirmationPage({
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
-  const skipSmartTransactionStatusPage = useSelector(
-    getExtensionSkipTransactionStatusPage,
-  );
-  const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
+  const approvalFlowLoadingText =
+    approvalFlows[approvalFlows.length - 1]?.loadingText ?? null;
 
   const { id } = useParams();
 
@@ -297,12 +296,6 @@ export default function ConfirmationPage({
 
   const name = snapsMetadata[pendingConfirmation?.origin]?.name;
 
-  const SNAP_DIALOG_TYPE = Object.values(DIALOG_APPROVAL_TYPES);
-
-  SNAP_DIALOG_TYPE.push(
-    ...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES),
-  );
-
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
   const isSnapCustomUIDialog = SNAP_CUSTOM_UI_DIALOG.includes(
     pendingConfirmation?.type,
@@ -315,10 +308,6 @@ export default function ConfirmationPage({
 
   // When pendingConfirmation is undefined, this will also be undefined
   const snapName = isSnapDialog && name;
-
-  const isSmartTransactionStatus =
-    pendingConfirmation?.type ===
-    SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage;
 
   const hasHeaderMaybe = isSnapDialog;
   const hasHeader =
@@ -350,7 +339,7 @@ export default function ConfirmationPage({
           },
           // Passing `t` in the contexts object is a bit redundant but since it's a
           // context too, it makes sense (for completeness)
-          { t, trackEvent },
+          { t, trackEvent, createEventBuilder },
         )
       : {};
   }, [
@@ -361,6 +350,7 @@ export default function ConfirmationPage({
     matchedChain,
     currencySymbolWarning,
     trackEvent,
+    createEventBuilder,
     isSnapDialog,
     snapName,
     networkConfigurationsByChainId,
@@ -372,18 +362,13 @@ export default function ConfirmationPage({
     }
   }, [templatedValues]);
 
-  const [lastConfirmationType, setLastConfirmationType] = useState(null);
+  const lastConfirmationTypeRef = useRef(null);
 
   useEffect(() => {
     if (pendingConfirmation?.type) {
-      setLastConfirmationType(pendingConfirmation.type);
+      lastConfirmationTypeRef.current = pendingConfirmation.type;
     }
-  }, [pendingConfirmation?.type]);
 
-  // send-tron.spec expects Activity tab
-  const shouldShowActivity = SNAP_DIALOG_TYPE.includes(lastConfirmationType);
-
-  useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
     // return them to the default route. Otherwise, if the number of pending
     // confirmations reduces to a number that is less than the currently
@@ -396,6 +381,9 @@ export default function ConfirmationPage({
       redirectToHomeOnZeroConfirmations;
 
     if (wouldNavigate && !isHardwareWalletErrorModalVisible) {
+      const shouldShowActivity = SNAP_DIALOG_TYPE.includes(
+        lastConfirmationTypeRef.current,
+      );
       const to = shouldShowActivity
         ? `${DEFAULT_ROUTE}?tab=activity`
         : DEFAULT_ROUTE;
@@ -403,20 +391,14 @@ export default function ConfirmationPage({
       navigate(to);
     }
   }, [
+    pendingConfirmation?.type,
     pendingConfirmations,
     approvalFlows,
     totalUnapprovedCount,
     navigate,
     redirectToHomeOnZeroConfirmations,
-    shouldShowActivity,
     isHardwareWalletErrorModalVisible,
   ]);
-
-  useEffect(() => {
-    const childFlow = approvalFlows[approvalFlows.length - 1];
-
-    setApprovalFlowLoadingText(childFlow?.loadingText ?? null);
-  }, [approvalFlows]);
 
   useEffect(() => {
     async function fetchSafeChainsList(_pendingConfirmation) {
@@ -485,10 +467,6 @@ export default function ConfirmationPage({
     return null;
   }
 
-  if (isSmartTransactionStatus && skipSmartTransactionStatusPage) {
-    return null;
-  }
-
   const hasInputState = (type) => {
     return INPUT_STATE_CONFIRMATIONS.includes(type);
   };
@@ -532,21 +510,22 @@ export default function ConfirmationPage({
       const isCustomNetwork =
         !isBuiltInNetwork && !isFeaturedRpc && !isMultichainProviderConfig;
 
-      trackEvent({
-        category: MetaMetricsEventCategory.Network,
-        event: MetaMetricsEventName.NavNetworkSwitched,
-        properties: {
-          location: 'Switch Modal',
-          from_network:
-            pendingConfirmation.requestData.fromNetworkConfiguration.chainId,
-          to_network:
-            pendingConfirmation.requestData.toNetworkConfiguration.chainId,
-          custom_network: isCustomNetwork,
-          referrer: {
-            url: window.location.origin,
-          },
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NavNetworkSwitched)
+          .addCategory(MetaMetricsEventCategory.Network)
+          .addProperties({
+            location: 'Switch Modal',
+            from_network:
+              pendingConfirmation.requestData.fromNetworkConfiguration.chainId,
+            to_network:
+              pendingConfirmation.requestData.toNetworkConfiguration.chainId,
+            custom_network: isCustomNetwork,
+            referrer: {
+              url: window.location.origin,
+            },
+          })
+          .build(),
+      );
     }
 
     if (templateState[pendingConfirmation.id]?.useWarningModal) {
@@ -574,7 +553,14 @@ export default function ConfirmationPage({
         confirmationId={pendingConfirmation.id}
         onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
       >
-        <div className="confirmation-page h-full">
+        <div
+          className="confirmation-page h-full"
+          data-testid={
+            isSnapCustomUIDialog
+              ? 'parent-selector-snap-confirmation-page'
+              : 'parent-selector-template-confirmation-page'
+          }
+        >
           <Header
             confirmation={pendingConfirmation}
             isSnapCustomUIDialog={isSnapCustomUIDialog}

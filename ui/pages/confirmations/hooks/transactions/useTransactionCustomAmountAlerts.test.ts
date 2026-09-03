@@ -88,6 +88,57 @@ describe('useTransactionCustomAmountAlerts', () => {
     });
   });
 
+  it('sets hideResults to true when DepositLimit alert exists', () => {
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: AlertsName.DepositLimit,
+            reason: 'Max deposit: $100,000',
+            message: 'Max deposit: $100,000',
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      disableUpdate: false,
+      hideResults: true,
+    });
+  });
+
+  it('sets hideResults to true when InsufficientMoneyAccountBalance alert exists', () => {
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: AlertsName.InsufficientMoneyAccountBalance,
+            message: 'Insufficient funds',
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      disableUpdate: false,
+      hideResults: true,
+    });
+  });
+
   it('sets hideResults to true when InsufficientPayTokenBalance alert exists', () => {
     useAlertsMock.mockReturnValue(
       createMockUseAlertsReturnValue({
@@ -108,6 +159,60 @@ describe('useTransactionCustomAmountAlerts', () => {
     const { result } = runHook();
 
     expect(result.current).toStrictEqual({
+      disableUpdate: false,
+      hideResults: true,
+    });
+  });
+
+  it('sets hideResults and disableUpdate when AccountNoFunds alert exists', () => {
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: AlertsName.AccountNoFunds,
+            reason: 'Insufficient funds',
+            message: 'No funds available. Use a different account.',
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      alertMessage: 'No funds available. Use a different account.',
+      disableUpdate: true,
+      hideResults: true,
+    });
+  });
+
+  it('sets hideResults to true when PerpsWithdrawBalanceUnavailable alert exists', () => {
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: AlertsName.PerpsWithdrawBalanceUnavailable,
+            message: "Couldn't check your Perps balance. Try again.",
+            reason: 'Balance unavailable',
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      alertMessage: "Couldn't check your Perps balance. Try again.",
       disableUpdate: false,
       hideResults: true,
     });

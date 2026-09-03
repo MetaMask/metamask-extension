@@ -1,19 +1,24 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
+import { TransactionType } from '@metamask/transaction-controller';
 import {
   TransactionPayStrategy,
   TransactionPayQuote,
-  TransactionPayTotals,
   TransactionPayRequiredToken,
   TransactionPaySourceAmount,
+  type TransactionPayTotals,
 } from '@metamask/transaction-pay-controller';
 import type { Json } from '@metamask/utils';
 import { ConfirmContext } from '../../context/confirm';
 import {
+  useIsTransactionPayQuotePending,
   useIsTransactionPayLoading,
+  useTransactionPayHasExecutableQuote,
+  useTransactionPayHasPositiveRequiredAmount,
   useTransactionPayIsMaxAmount,
+  useTransactionPayIsPostQuote,
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
   useTransactionPayRequiredTokens,
@@ -24,11 +29,12 @@ import {
 const TRANSACTION_ID_MOCK = 'transaction-id-mock';
 
 const QUOTE_MOCK = {
-  strategy: TransactionPayStrategy.Test,
+  strategy: TransactionPayStrategy.Relay,
 } as TransactionPayQuote<Json>;
 
 const REQUIRED_TOKEN_MOCK = {
   address: '0x123',
+  amountRaw: '1000000',
   skipIfBalance: false,
 } as unknown as TransactionPayRequiredToken;
 
@@ -40,6 +46,7 @@ const GAS_TOKEN_MOCK = {
 const SOURCE_AMOUNT_MOCK = {} as TransactionPaySourceAmount;
 
 const TOTALS_MOCK = {
+  isInputBased: true,
   total: { usd: '1000', fiat: '1234' },
 } as unknown as TransactionPayTotals;
 
@@ -51,6 +58,7 @@ const STATE_MOCK = {
       [TRANSACTION_ID_MOCK]: {
         isLoading: true,
         isMaxAmount: true,
+        isPostQuote: true,
         quotes: [QUOTE_MOCK],
         sourceAmounts: [SOURCE_AMOUNT_MOCK],
         tokens: [REQUIRED_TOKEN_MOCK],
@@ -64,6 +72,7 @@ function createWrapper(
   stateOverrides?: Partial<
     (typeof STATE_MOCK)['metamask']['transactionData'][typeof TRANSACTION_ID_MOCK]
   >,
+  transactionType?: TransactionType,
 ) {
   const state = stateOverrides
     ? {
@@ -81,7 +90,7 @@ function createWrapper(
   const store = mockStore(state);
 
   const confirmContextValue = {
-    currentConfirmation: { id: TRANSACTION_ID_MOCK },
+    currentConfirmation: { id: TRANSACTION_ID_MOCK, type: transactionType },
     isScrollToBottomCompleted: true,
     setIsScrollToBottomCompleted: jest.fn(),
   };
@@ -105,12 +114,79 @@ describe('useTransactionPayData', () => {
     });
   });
 
+  describe('useTransactionPayHasExecutableQuote', () => {
+    it('returns true when an executable quote exists', () => {
+      const { result } = renderHook(
+        () => useTransactionPayHasExecutableQuote(),
+        {
+          wrapper: createWrapper(),
+        },
+      );
+
+      expect(result.current).toBe(true);
+    });
+
+    it('returns false when quotes use the none strategy', () => {
+      const { result } = renderHook(
+        () => useTransactionPayHasExecutableQuote(),
+        {
+          wrapper: createWrapper({
+            quotes: [
+              {
+                strategy: TransactionPayStrategy.None,
+              } as TransactionPayQuote<Json>,
+            ],
+          }),
+        },
+      );
+
+      expect(result.current).toBe(false);
+    });
+
+    it('returns false when quotes are unavailable', () => {
+      const { result } = renderHook(
+        () => useTransactionPayHasExecutableQuote(),
+        {
+          wrapper: createWrapper({ quotes: undefined }),
+        },
+      );
+
+      expect(result.current).toBe(false);
+    });
+  });
+
   describe('useTransactionPayRequiredTokens', () => {
     it('returns required tokens', () => {
       const { result } = renderHook(() => useTransactionPayRequiredTokens(), {
         wrapper: createWrapper(),
       });
       expect(result.current).toStrictEqual([REQUIRED_TOKEN_MOCK]);
+    });
+  });
+
+  describe('useTransactionPayHasPositiveRequiredAmount', () => {
+    it('returns true when a required token has a positive amount', () => {
+      const { result } = renderHook(
+        () => useTransactionPayHasPositiveRequiredAmount(),
+        {
+          wrapper: createWrapper(),
+        },
+      );
+
+      expect(result.current).toBe(true);
+    });
+
+    it('returns false when the required amount is zero', () => {
+      const { result } = renderHook(
+        () => useTransactionPayHasPositiveRequiredAmount(),
+        {
+          wrapper: createWrapper({
+            tokens: [{ ...REQUIRED_TOKEN_MOCK, amountRaw: '0' }],
+          }),
+        },
+      );
+
+      expect(result.current).toBe(false);
     });
   });
 
@@ -133,11 +209,38 @@ describe('useTransactionPayData', () => {
   });
 
   describe('useTransactionPayTotals', () => {
-    it('returns totals', () => {
+    it('returns input-based totals', () => {
       const { result } = renderHook(() => useTransactionPayTotals(), {
         wrapper: createWrapper(),
       });
+
       expect(result.current).toStrictEqual(TOTALS_MOCK);
+      expect(result.current?.isInputBased).toBe(true);
+    });
+
+    it('returns output-based totals', () => {
+      const totals = {
+        ...TOTALS_MOCK,
+        isInputBased: false,
+      };
+      const { result } = renderHook(() => useTransactionPayTotals(), {
+        wrapper: createWrapper({ totals }),
+      });
+
+      expect(result.current).toStrictEqual(totals);
+      expect(result.current?.isInputBased).toBe(false);
+    });
+
+    it('returns totals when the optional field is missing', () => {
+      const totals = {
+        total: { usd: '1000', fiat: '1234' },
+      } as unknown as TransactionPayTotals;
+      const { result } = renderHook(() => useTransactionPayTotals(), {
+        wrapper: createWrapper({ totals }),
+      });
+
+      expect(result.current).toStrictEqual(totals);
+      expect(result.current?.isInputBased).toBeUndefined();
     });
   });
 
@@ -147,6 +250,80 @@ describe('useTransactionPayData', () => {
         wrapper: createWrapper(),
       });
       expect(result.current).toBe(true);
+    });
+  });
+
+  describe('useTransactionPayIsPostQuote', () => {
+    it('returns isPostQuote state', () => {
+      const { result } = renderHook(() => useTransactionPayIsPostQuote(), {
+        wrapper: createWrapper(),
+      });
+      expect(result.current).toBe(true);
+    });
+  });
+
+  describe('useIsTransactionPayQuotePending', () => {
+    it('returns false for Perps Withdraw before an amount is entered', () => {
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          {
+            isLoading: true,
+            isPostQuote: false,
+            tokens: [{ ...REQUIRED_TOKEN_MOCK, amountRaw: '0' }],
+          },
+          TransactionType.perpsWithdraw,
+        ),
+      });
+
+      expect(result.current).toBe(false);
+    });
+
+    it('returns true while Perps Withdraw post-quote setup is pending', () => {
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          { isLoading: false, isPostQuote: false },
+          TransactionType.perpsWithdraw,
+        ),
+      });
+
+      expect(result.current).toBe(true);
+    });
+
+    it('returns false after Perps Withdraw post-quote setup completes', () => {
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          { isLoading: false, isPostQuote: true },
+          TransactionType.perpsWithdraw,
+        ),
+      });
+
+      expect(result.current).toBe(false);
+    });
+
+    it('uses the existing loading state for other transaction types', () => {
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          { isLoading: false, isPostQuote: false },
+          TransactionType.musdConversion,
+        ),
+      });
+
+      expect(result.current).toBe(false);
+    });
+
+    it('returns false for money-account withdraw before an amount is entered', () => {
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          {
+            isLoading: true,
+            isPostQuote: false,
+            tokens: [],
+          },
+          TransactionType.moneyAccountWithdraw,
+        ),
+      });
+
+      expect(result.current).toBe(false);
     });
   });
 

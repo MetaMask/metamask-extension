@@ -3,10 +3,9 @@ import {
   HYPERLIQUID_APPROVAL_TYPE,
   ASTERDEX_APPROVAL_TYPE,
   GMX_APPROVAL_TYPE,
+  VARIATIONAL_APPROVAL_TYPE,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../../../shared/constants/app';
-import smartTransactionStatusPage from './smart-transaction-status-page';
 import createSnapAccount from './create-snap-account';
 import removeSnapAccount from './remove-snap-account';
 import snapAccountRedirect from './snap-account-redirect';
@@ -29,8 +28,6 @@ export const APPROVAL_TEMPLATES = {
   // Use ApprovalType from utils controller
   [ApprovalType.ResultSuccess]: success,
   [ApprovalType.ResultError]: error,
-  [SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage]:
-    smartTransactionStatusPage,
   [ApprovalType.SnapDialogAlert]: snapAlert,
   [ApprovalType.SnapDialogConfirmation]: snapConfirmation,
   [ApprovalType.SnapDialogPrompt]: snapPrompt,
@@ -44,4 +41,5 @@ export const APPROVAL_TEMPLATES = {
   [HYPERLIQUID_APPROVAL_TYPE]: defiReferralConsent,
   [ASTERDEX_APPROVAL_TYPE]: defiReferralConsent,
   [GMX_APPROVAL_TYPE]: defiReferralConsent,
+  [VARIATIONAL_APPROVAL_TYPE]: defiReferralConsent,
 } as const;

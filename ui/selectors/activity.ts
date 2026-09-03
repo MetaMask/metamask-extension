@@ -13,6 +13,10 @@ import {
   type Transaction as KeyringTransaction,
 } from '@metamask/keyring-api';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
+import {
+  mapKeyringTransaction,
+  mapLocalTransaction,
+} from '@metamask/client-utils';
 import { ResultType } from '../../shared/lib/trust-signals';
 import { EXCLUDED_TRANSACTION_TYPES } from '../helpers/constants/transactions';
 import {
@@ -24,20 +28,31 @@ import type { TransactionGroup } from '../../shared/lib/multichain/types';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
 import type { MetaMaskReduxState } from '../store/store';
-import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
-import { selectBridgeHistoryItemForTxHash } from '../ducks/bridge-status/selectors';
-import { mapKeyringTransaction } from '../../shared/lib/activity/adapters/keyring-transaction';
-import { mapLocalTransaction } from '../../shared/lib/activity/adapters/local-transaction';
-import { isProtectedByEnforcedSimulations } from '../pages/confirmations/utils/confirm';
-import { Status } from '../../shared/lib/activity/types';
+import {
+  getMoneyAccountTransactionType,
+  isProtectedByEnforcedSimulations,
+} from '../pages/confirmations/utils/confirm';
+import { ActivityListItem, Status } from '../../shared/lib/activity/types';
+import {
+  selectBridgeHistoryForOriginalTxMetaId,
+  selectBridgeHistoryItemByHash,
+} from '../ducks/bridge-status/selectors';
 import { getInternalAccountsObject } from './accounts';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
+import {
+  getInternalAccountBySelectedAccountGroupAndCaip,
+  getSelectedAccountGroup,
+} from './multichain-accounts/account-tree';
 import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
-import { enrichLocalMusdClaimActivity } from './activity/enrich-local-musd-claim';
+import { extractWalletIdFromGroupId } from './multichain-accounts/utils';
+import { enrichLocalActivity } from './activity/enrich-local-activity';
+import {
+  selectPrimaryMoneyAccount,
+  type PrimaryMoneyAccount,
+} from './money-account';
 import { getAssetsMetadata } from './assets';
 import {
   groupAndSortTransactionsByNonce,
@@ -47,6 +62,7 @@ import { selectCurrentAccountNonEvmTransactions } from './multichain-transaction
 import {
   selectOrderedTransactions,
   selectRequiredTransactionHashes,
+  selectRequiredTransactionIds,
 } from './transactionController';
 import type { TokenScanCacheResults } from './token-scan';
 import {
@@ -56,17 +72,57 @@ import {
 } from './selectors';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
-// @deprecated - Migrate to selectBridgeHistoryItem
-const selectBridgeHistory = (state: MetaMaskReduxState) =>
-  (state.metamask.txHistory ?? EMPTY_OBJECT) as Record<
-    string,
-    BridgeHistoryItem
-  >;
-
 const selectTransactionPayData = (state: MetaMaskReduxState) =>
   (state.metamask as unknown as TransactionPayControllerState)
     .transactionData ??
   (EMPTY_OBJECT as TransactionPayControllerState['transactionData']);
+
+/**
+ * Whether the selected account group belongs to the same HD entropy wallet that
+ * owns the primary money account. Money-account activity is only surfaced for
+ * that wallet so switching to another SRP does not leak unrelated rows.
+ *
+ * @param selectedAccountGroup - Currently selected account group id.
+ * @param primaryMoneyAccount - Primary money account, when present.
+ * @returns Whether money-account batches should appear in activity.
+ */
+function isSelectedGroupOwnedByMoneyAccountEntropy(
+  selectedAccountGroup: string | null | undefined,
+  primaryMoneyAccount: PrimaryMoneyAccount | undefined,
+): boolean {
+  const entropyId = primaryMoneyAccount?.options?.entropy?.id;
+  if (!selectedAccountGroup || !entropyId) {
+    return false;
+  }
+
+  return (
+    extractWalletIdFromGroupId(selectedAccountGroup as never) ===
+    `entropy:${entropyId}`
+  );
+}
+
+/**
+ * Money-account deposits and withdrawals execute from the Money Keyring
+ * account rather than the selected account, so the selected-address filter
+ * alone would drop them from the activity list even though the user
+ * initiated them. Mirrors mobile, which surfaces money-account transactions
+ * in activity despite their sender being the money account.
+ *
+ * @param tx - The transaction to check.
+ * @param moneyAccountAddress - Lowercased primary money account address.
+ * @returns Whether the transaction is a money-account transaction sent by
+ * the money account.
+ */
+function isMoneyAccountTransaction(
+  tx: TransactionMeta,
+  moneyAccountAddress: string | undefined,
+) {
+  return Boolean(
+    moneyAccountAddress &&
+    tx.txParams?.from?.toLowerCase() === moneyAccountAddress &&
+    getMoneyAccountTransactionType(tx),
+  );
+}
 
 function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   // Ported from selectedAddressTxListSelector
@@ -80,35 +136,70 @@ function isFromSelectedAccount(tx: TransactionMeta, selectedAddress: string) {
   return true;
 }
 
+// Selects the EVM address of the currently selected account group, irrespective of the currently selected network
+export const selectEvmAddress = createSelector(
+  (state: MultichainAccountsState) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
+  (account) =>
+    account && isEvmAccountType(account.type) ? account.address : undefined,
+);
+
 export const selectLocalTransactions = createSelector(
   selectOrderedTransactions,
-  getSelectedInternalAccount,
+  selectEvmAddress,
   smartTransactionsListSelector,
+  selectRequiredTransactionIds,
   selectRequiredTransactionHashes,
+  selectPrimaryMoneyAccount,
+  getSelectedAccountGroup,
   (
     transactions,
-    selectedAccount,
+    evmAddress,
     smartTransactions,
+    internalTxIds,
     internalTxHashes,
+    primaryMoneyAccount,
+    selectedAccountGroup,
   ): TransactionGroup[] => {
-    if (!selectedAccount?.address) {
+    if (!evmAddress) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
     }
 
-    const selectedAddress = selectedAccount.address.toLowerCase();
+    const selectedAddress = evmAddress.toLowerCase();
+    const moneyAccountAddress = primaryMoneyAccount?.address.toLowerCase();
+    const includeMoneyAccountTransactions =
+      isSelectedGroupOwnedByMoneyAccountEntropy(
+        selectedAccountGroup,
+        primaryMoneyAccount,
+      );
 
-    const filtered = (transactions ?? []).filter((tx) => {
-      if (!isFromSelectedAccount(tx, selectedAddress)) {
-        return false;
+    const isInternalRequiredTransaction = (
+      tx: Pick<Partial<TransactionMeta>, 'id' | 'hash'>,
+    ) => {
+      if (tx.id && internalTxIds.has(tx.id)) {
+        return true;
       }
-
       if (tx.hash && internalTxHashes.has(tx.hash.toLowerCase())) {
-        return false;
+        return true;
       }
-      return true;
-    });
+      return false;
+    };
 
-    const combined = [...filtered, ...smartTransactions];
+    const filtered = (transactions ?? []).filter(
+      (tx) =>
+        (isFromSelectedAccount(tx, selectedAddress) ||
+          (includeMoneyAccountTransactions &&
+            isMoneyAccountTransaction(tx, moneyAccountAddress))) &&
+        !isInternalRequiredTransaction(tx),
+    );
+
+    const filteredSmartTransactions = smartTransactions.filter(
+      (tx) =>
+        !(tx.type && EXCLUDED_TRANSACTION_TYPES.has(tx.type)) &&
+        !isInternalRequiredTransaction(tx),
+    );
+
+    const combined = [...filtered, ...filteredSmartTransactions];
 
     if (!combined.length) {
       return EMPTY_ARRAY as unknown as TransactionGroup[];
@@ -155,9 +246,15 @@ export const selectLocalTransactionsByHash = createSelector(
         // Also index by id so signing/queued transactions (no hash yet) can be
         // looked up — the activity adapter sets hash = primaryTransaction.id
         // as a fallback when no real tx hash exists.
-        const id = transaction.id?.toLowerCase();
-        if (id && !transactionsByHash.has(id)) {
-          transactionsByHash.set(id, transactionGroup);
+        // id may be a number (legacy TransactionMeta) or string.
+        if (
+          typeof transaction.id === 'string' ||
+          typeof transaction.id === 'number'
+        ) {
+          const id = String(transaction.id).toLowerCase();
+          if (!transactionsByHash.has(id)) {
+            transactionsByHash.set(id, transactionGroup);
+          }
         }
       }
     }
@@ -197,10 +294,37 @@ export const selectNonEvmTransactionsForActivity = createSelector(
   },
 );
 
-const selectBridgeHistoryItem = createSelector(
+export const selectBridgeHistoryItemForTx = (
+  state: MetaMaskReduxState,
+  tx: { hash?: string; id?: string } | undefined,
+) => {
+  if (!tx) {
+    return undefined;
+  }
+
+  const byHash = selectBridgeHistoryItemByHash(state, tx.hash);
+  if (byHash) {
+    return byHash;
+  }
+
+  if (tx.id) {
+    const bridgeHistory = (state.metamask.txHistory ?? EMPTY_OBJECT) as Record<
+      string,
+      BridgeHistoryItem
+    >;
+    const directById = bridgeHistory[tx.id];
+    if (directById) {
+      return directById;
+    }
+  }
+
+  return selectBridgeHistoryForOriginalTxMetaId(state, tx.id);
+};
+
+const selectBridgeHistory = createSelector(
   [(state: MetaMaskReduxState) => state],
-  (state) => (txHash?: string) =>
-    txHash ? selectBridgeHistoryItemForTxHash(state, txHash) : undefined,
+  (state) => (tx?: { hash?: string; id?: string }) =>
+    selectBridgeHistoryItemForTx(state, tx),
 );
 
 export const selectNonEvmActivityItems = createSelector(
@@ -208,17 +332,40 @@ export const selectNonEvmActivityItems = createSelector(
     selectNonEvmTransactionsForActivity,
     getAssetsMetadata,
     getInternalAccountsObject,
-    selectBridgeHistoryItem,
+    selectBridgeHistory,
   ],
   (transactions, assetsMetadata, internalAccountsById, getBridgeHistory) =>
-    transactions.map((transaction) =>
-      mapKeyringTransaction({
+    transactions.map((transaction) => {
+      const subjectAddress =
+        internalAccountsById?.[transaction.account]?.address;
+      const activity = mapKeyringTransaction({
         // Unified assets caused Snap token movements with empty or placeholder units.
         transaction: patchKeyringTransaction(transaction, assetsMetadata),
-        subjectAddress: internalAccountsById?.[transaction.account]?.address,
-        bridgeHistory: getBridgeHistory(transaction.id),
-      }),
-    ),
+        subjectAddress,
+      });
+
+      const bridgeHistoryEntry = getBridgeHistory({ hash: transaction.id });
+      const { quote } = bridgeHistoryEntry ?? {};
+
+      if (quote && isCrossChain(quote.srcChainId, quote.destChainId)) {
+        const tokens = getSwapTokens(bridgeHistoryEntry);
+        const status = getBridgeActivityStatus(bridgeHistoryEntry);
+        const fees = 'fees' in activity.data ? activity.data.fees : undefined;
+
+        return {
+          ...activity,
+          type: 'bridge',
+          ...(status ? { status } : {}),
+          data: {
+            from: subjectAddress,
+            ...tokens,
+            ...(fees === undefined ? {} : { fees }),
+          },
+        } as ActivityListItem;
+      }
+
+      return activity;
+    }),
 );
 
 export const selectNonEvmActivityItemsById = createSelector(
@@ -277,55 +424,6 @@ function patchUnit(
       unit: metadata.symbol,
     },
   };
-}
-
-function normalizeBridgeHistoryLookupKey(value: unknown) {
-  return typeof value === 'string' || typeof value === 'number'
-    ? String(value).toLowerCase()
-    : undefined;
-}
-
-// @deprecated - Migrate to selectBridgeHistoryItem
-function getBridgeHistoryItem(
-  bridgeHistory: Record<string, BridgeHistoryItem>,
-  transactionGroup: TransactionGroup,
-) {
-  const { initialTransaction, primaryTransaction } = transactionGroup;
-  const lookupValues = [
-    initialTransaction.id,
-    primaryTransaction.id,
-    initialTransaction.hash,
-    primaryTransaction.hash,
-    (initialTransaction as Record<string, unknown>).actionId,
-    (primaryTransaction as Record<string, unknown>).actionId,
-  ].flatMap((value) => {
-    const normalizedValue = normalizeBridgeHistoryLookupKey(value);
-    return normalizedValue ? [normalizedValue] : [];
-  });
-  const lookupValueSet = new Set(lookupValues);
-
-  const directEntry = lookupValues
-    .map((value) => bridgeHistory[value])
-    .find(Boolean);
-
-  return (
-    directEntry ??
-    Object.values(bridgeHistory).find((item) => {
-      const itemLookupValues = [
-        item.txMetaId,
-        item.actionId,
-        item.originalTransactionId,
-        item.approvalTxId,
-        item.status.srcChain?.txHash,
-        item.status.destChain?.txHash,
-      ].flatMap((value) => {
-        const normalizedValue = normalizeBridgeHistoryLookupKey(value);
-        return normalizedValue ? [normalizedValue] : [];
-      });
-
-      return itemLookupValues.some((value) => lookupValueSet.has(value));
-    })
-  );
 }
 
 function getSwapTokens(bridgeHistoryItem?: BridgeHistoryItem) {
@@ -389,17 +487,17 @@ export const selectLocalActivityItems = createSelector(
   selectBridgeHistory,
   selectTransactionPayData,
   getNetworkConfigurationsByChainId,
-  getSelectedInternalAccount,
+  selectEvmAddress,
   getTokensControllerAllTokens,
   (
     transactionGroups,
-    bridgeHistory,
+    getBridgeHistory,
     transactionPayData,
     networkConfigurationsByChainId,
-    selectedAccount,
+    evmAddress,
     allTokens,
   ) => {
-    const selectedAddress = selectedAccount?.address?.toLowerCase();
+    const selectedAddress = evmAddress?.toLowerCase();
 
     // Resolves symbol/decimals for an ERC-20 contract address from the user's
     // watched-tokens list (TokensController). The static mainnet token list
@@ -492,51 +590,67 @@ export const selectLocalActivityItems = createSelector(
         type === TransactionType.swapAndSend ||
         type === TransactionType.bridge
       ) {
-        const bridgeHistoryItem = getBridgeHistoryItem(
-          bridgeHistory,
-          transactionGroup,
+        const bridgeHistoryItem = getBridgeHistory(
+          transactionGroup.initialTransaction,
         );
         const activityStatus = getBridgeActivityStatus(bridgeHistoryItem);
         const fees = getLocalTransactionFees(transactionGroup);
 
-        return enrichLocalMusdClaimActivity(
-          mapLocalTransaction({
-            ...transactionGroup,
-            ...getSwapTokens(bridgeHistoryItem),
-            ...(activityStatus ? { activityStatus } : {}),
-            fees,
-            nativeAssetSymbol,
-            contractTokenMetadata,
-          }),
-          transactionGroup,
-        );
-      }
-
-      return enrichLocalMusdClaimActivity(
-        mapLocalTransaction({
+        const prepared = {
           ...transactionGroup,
+          ...getSwapTokens(bridgeHistoryItem),
+          ...(activityStatus ? { activityStatus } : {}),
+          fees,
           nativeAssetSymbol,
           contractTokenMetadata,
-          ...(sourceToken ? { sourceToken } : {}),
-        }),
-        transactionGroup,
-      );
+        };
+
+        return enrichLocalActivity(mapLocalTransaction(prepared), prepared);
+      }
+
+      const prepared = {
+        ...transactionGroup,
+        nativeAssetSymbol,
+        contractTokenMetadata,
+        ...(sourceToken ? { sourceToken } : {}),
+      };
+
+      return enrichLocalActivity(mapLocalTransaction(prepared), prepared);
     });
   },
 );
 
 export const selectLocalActivityItemsByIdentifier = createSelector(
+  selectLocalTransactions,
   selectLocalActivityItems,
-  (items) => {
-    const itemsByIdentifier = new Map();
+  (transactionGroups, items) => {
+    const itemsByIdentifier = new Map<string, ActivityListItem>();
 
-    for (const item of items) {
-      const hash = item.hash?.toLowerCase();
-
-      if (hash) {
-        itemsByIdentifier.set(hash, item);
+    transactionGroups.forEach((transactionGroup, index) => {
+      const item = items[index];
+      if (!item) {
+        return;
       }
-    }
+
+      for (const transaction of [
+        transactionGroup.primaryTransaction,
+        transactionGroup.initialTransaction,
+      ]) {
+        const hash = transaction.hash?.toLowerCase();
+        if (hash) {
+          itemsByIdentifier.set(hash, item);
+        }
+
+        // Also index by id so both pending transactions and toast listeners can resolve the item
+        // id may be a number (legacy TransactionMeta) or string.
+        if (
+          typeof transaction.id === 'string' ||
+          typeof transaction.id === 'number'
+        ) {
+          itemsByIdentifier.set(String(transaction.id).toLowerCase(), item);
+        }
+      }
+    });
 
     return itemsByIdentifier;
   },
@@ -574,12 +688,4 @@ export const selectMarketRates = createSelector(
 
     return rates;
   },
-);
-
-// Selects the EVM address of the currently selected account group, irrespective of the currently selected network
-export const selectEvmAddress = createSelector(
-  (state: MultichainAccountsState) =>
-    getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
-  (account) =>
-    account && isEvmAccountType(account.type) ? account.address : undefined,
 );

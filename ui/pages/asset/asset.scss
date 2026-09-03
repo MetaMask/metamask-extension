@@ -3,7 +3,18 @@
 .asset {
   &__container {
     background-color: var(--color-background-default);
+    // `.main-container` owns `overflow-y: auto`, but the app shell's flex chain
+    // lets it keep its full content height, so it never actually scrolls — the
+    // scrolling happens further up on `.app`. That silently breaks
+    // `position: sticky` for the bottom CTA bar, whose nearest scrollport is
+    // then this non-scrolling box. Letting it shrink makes it the real
+    // scrollport so the CTA bar can pin to the bottom of the viewport.
+    min-height: 0;
   }
+}
+
+.main-container-wrapper:has(> .asset__container) {
+  min-height: 0;
 }
 
 .asset-navigation {
@@ -58,6 +69,14 @@
   flex-shrink: 0;
   height: 0;
   margin-inline: 16px;
+  border: 0;
+  border-top: 1px solid var(--color-border-muted);
+}
+
+.security-trust__section-divider {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  height: 0;
   border: 0;
   border-top: 1px solid var(--color-border-muted);
 }

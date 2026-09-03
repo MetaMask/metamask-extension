@@ -1,10 +1,12 @@
 import React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AddressPoisoningAlertContent } from '../../../components/send/address-poisoning-alert-content/address-poisoning-alert-content';
-import { useTransferRecipient } from '../../../components/confirm/info/hooks/useTransferRecipient';
+import { getSendRecipients } from '../../../utils/getSendRecipients';
+import { useTransactionMetadataRequestOptional } from '../../transactions/useTransactionMetadataRequest';
 import {
   type AddressPoisoningDetectionResult,
   useAddressPoisoningDetection,
@@ -13,11 +15,19 @@ import { AlertsName } from '../constants';
 import { useAddressPoisoningAlert } from './useAddressPoisoningAlert';
 
 jest.mock('../../../../../hooks/useI18nContext');
-jest.mock('../../../components/confirm/info/hooks/useTransferRecipient');
-jest.mock('../../send/useAddressPoisoningDetection');
+jest.mock('../../../utils/getSendRecipients');
+jest.mock('../../transactions/useTransactionMetadataRequest', () => ({
+  useTransactionMetadataRequestOptional: jest.fn(),
+}));
+jest.mock('../../send/useAddressPoisoningDetection', () => ({
+  useAddressPoisoningDetection: jest.fn(),
+}));
 
 const mockUseI18nContext = jest.mocked(useI18nContext);
-const mockUseTransferRecipient = jest.mocked(useTransferRecipient);
+const mockGetSendRecipients = jest.mocked(getSendRecipients);
+const mockUseTransactionMetadataRequestOptional = jest.mocked(
+  useTransactionMetadataRequestOptional,
+);
 const mockUseAddressPoisoningDetection = jest.mocked(
   useAddressPoisoningDetection,
 );
@@ -37,7 +47,10 @@ describe('useAddressPoisoningAlert', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseI18nContext.mockReturnValue((key: string) => key);
-    mockUseTransferRecipient.mockReturnValue(recipient);
+    mockUseTransactionMetadataRequestOptional.mockReturnValue(
+      {} as TransactionMeta,
+    );
+    mockGetSendRecipients.mockReturnValue([recipient]);
     mockUseAddressPoisoningDetection.mockReturnValue({
       isPoisoningSuspect: false,
       bestMatch: null,
@@ -85,7 +98,9 @@ describe('useAddressPoisoningAlert', () => {
 
   for (const { name, recipientAddress, detection } of noAlertCases) {
     it(`returns no alerts when ${name}`, () => {
-      mockUseTransferRecipient.mockReturnValue(recipientAddress);
+      mockGetSendRecipients.mockReturnValue(
+        recipientAddress ? [recipientAddress] : [],
+      );
       mockUseAddressPoisoningDetection.mockReturnValue(detection);
 
       const { result } = renderHook(() => useAddressPoisoningAlert());
@@ -93,6 +108,21 @@ describe('useAddressPoisoningAlert', () => {
       expect(result.current).toEqual([]);
     });
   }
+
+  it('returns no alerts when transaction metadata is missing', () => {
+    mockUseTransactionMetadataRequestOptional.mockReturnValue(undefined);
+    mockUseAddressPoisoningDetection.mockReturnValue({
+      isPoisoningSuspect: true,
+      bestMatch: match,
+      matches: [match],
+      pending: false,
+    });
+
+    const { result } = renderHook(() => useAddressPoisoningAlert());
+
+    expect(result.current).toEqual([]);
+    expect(mockGetSendRecipients).not.toHaveBeenCalled();
+  });
 
   it('returns an address poisoning alert for a suspect recipient', () => {
     mockUseAddressPoisoningDetection.mockReturnValue({

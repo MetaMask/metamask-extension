@@ -1,20 +1,20 @@
 import React, {
   ReactElement,
   createContext,
+  useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 
 export type DappSwapContextType = {
   isQuotedSwapDisplayedInInfo: boolean;
   isQuotedSwapPresent: boolean;
-  selectedQuote: QuoteResponse | undefined;
-  setSelectedQuote: (selectedQuote: QuoteResponse | undefined) => void;
+  selectedQuote: QuoteResponseV1 | undefined;
+  setSelectedQuote: (selectedQuote: QuoteResponseV1 | undefined) => void;
   setQuotedSwapDisplayedInInfo: (isQuotedSwapDisplayedInInfo: boolean) => void;
 };
 
@@ -22,28 +22,69 @@ export const DappSwapContext = createContext<DappSwapContextType | undefined>(
   undefined,
 );
 
+type DappSwapState = {
+  confirmationId: string | undefined;
+  selectedQuote: QuoteResponseV1 | undefined;
+  isQuotedSwapDisplayedInInfo: boolean;
+};
+
 export const DappSwapContextProvider = ({
   children,
 }: React.PropsWithChildren<{
   children: ReactElement;
 }>) => {
   const { currentConfirmation } = useCurrentConfirmation();
-  const [selectedQuote, setSelectedQuote] = useState<QuoteResponse | undefined>(
-    undefined,
+  const confirmationId = currentConfirmation?.id;
+  const [swapState, setSwapState] = useState<DappSwapState>({
+    confirmationId,
+    selectedQuote: undefined,
+    isQuotedSwapDisplayedInInfo: false,
+  });
+
+  const selectedQuote =
+    swapState.confirmationId === confirmationId
+      ? swapState.selectedQuote
+      : undefined;
+
+  const isQuotedSwapDisplayedInInfoState =
+    swapState.confirmationId === confirmationId
+      ? swapState.isQuotedSwapDisplayedInInfo
+      : false;
+
+  const setSelectedQuote = useCallback(
+    (quote: QuoteResponseV1 | undefined) => {
+      setSwapState((prev) => {
+        let isQuotedSwapDisplayedInInfo = false;
+        if (quote !== undefined && prev.confirmationId === confirmationId) {
+          isQuotedSwapDisplayedInInfo = prev.isQuotedSwapDisplayedInInfo;
+        }
+        return {
+          confirmationId,
+          selectedQuote: quote,
+          isQuotedSwapDisplayedInInfo,
+        };
+      });
+    },
+    [confirmationId],
   );
-  const [isQuotedSwapDisplayedInInfo, setQuotedSwapDisplayedInInfo] =
-    useState(false);
 
-  useEffect(() => {
-    setSelectedQuote(undefined);
-    setQuotedSwapDisplayedInInfo(false);
-  }, [currentConfirmation?.id, setSelectedQuote, setQuotedSwapDisplayedInInfo]);
+  const setQuotedSwapDisplayedInInfo = useCallback(
+    (displayed: boolean) => {
+      setSwapState((prev) => ({
+        confirmationId,
+        selectedQuote:
+          prev.confirmationId === confirmationId
+            ? prev.selectedQuote
+            : undefined,
+        isQuotedSwapDisplayedInInfo: displayed,
+      }));
+    },
+    [confirmationId],
+  );
 
-  useEffect(() => {
-    if (!selectedQuote) {
-      setQuotedSwapDisplayedInInfo(false);
-    }
-  }, [selectedQuote, setQuotedSwapDisplayedInInfo]);
+  const isQuotedSwapDisplayedInInfo = Boolean(
+    selectedQuote && isQuotedSwapDisplayedInInfoState,
+  );
 
   const value = useMemo(
     () => ({

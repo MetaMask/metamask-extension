@@ -70,11 +70,17 @@ describe('Send - Edit Transaction', function () {
 
         await transactionConfirmation.checkGasFeeFiat('$0.07');
 
+        // Adding unrelated check for stability, to prevent issue where clicking Back navigates to Homepage instead of Sendpage(#CONF-1865)
+        await transactionConfirmation.checkSecurityProviderBannerAlertIsNotPresent();
+
         await transactionConfirmation.clickBackButton();
 
         await sendPage.editAmountByKeys([driver.Key.BACK_SPACE, '2', '.', '2']);
 
         await sendPage.pressContinueButton();
+
+        // Wait for the gas fee to load before opening the gas fee modal
+        await transactionConfirmation.checkGasFeeFiat('$0.07');
 
         // Open gas fee modal and set custom legacy gas values
         await transactionConfirmation.openGasFeeModal();
@@ -131,11 +137,17 @@ describe('Send - Edit Transaction', function () {
 
         await transactionConfirmation.checkGasFeeFiat('$0.75');
 
+        // Adding unrelated check for stability, to prevent issue where clicking Back navigates to Homepage instead of Sendpage(#CONF-1865)
+        await transactionConfirmation.checkSecurityProviderBannerAlertIsNotPresent();
+
         await transactionConfirmation.clickBackButton();
 
         await sendPage.editAmountByKeys([driver.Key.BACK_SPACE, '2', '.', '2']);
 
         await sendPage.pressContinueButton();
+
+        // Wait for the gas fee to load before opening the gas fee modal
+        await transactionConfirmation.checkGasFeeFiat('$0.75');
 
         // Open gas fee modal and set custom EIP-1559 gas values
         await transactionConfirmation.openGasFeeModal();

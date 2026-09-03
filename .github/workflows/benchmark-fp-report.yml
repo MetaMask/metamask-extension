@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
   pull-requests: read
   checks: read
 
@@ -22,7 +23,6 @@ jobs:
     timeout-minutes: 15
     environment: default-branch
     env:
-      EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -37,10 +37,21 @@ jobs:
       - name: Setup Node.js
         uses: metamask/github-tools/.github/actions/setup-environment@v1
 
+      - name: Get token
+        id: token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          target-repository: MetaMask/extension_benchmark_stats
+          permissions: |
+            contents: write
+
       - name: Clone extension_benchmark_stats
+        env:
+          EXTENSION_BENCHMARK_STATS_TOKEN: ${{ steps.token.outputs.token }}
         run: |
           rm -rf "${STATS_CLONE_DIR}"
-          git clone --depth 1 "https://metamaskbot:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${STATS_REPO}.git" "${STATS_CLONE_DIR}"
+          git clone --depth 1 "https://x-access-token:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${STATS_REPO}.git" "${STATS_CLONE_DIR}"
 
       - name: Compute FP rate and update ${{ env.STATS_FILE }}
         run: yarn tsx .github/scripts/benchmark-fp-rate.mts
@@ -58,4 +69,6 @@ jobs:
           git config user.name "MetaMask Bot"
           git add "${STATS_FILE}"
           git commit -m "Update benchmark FP rate report"
-          git push "https://metamaskbot:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${STATS_REPO}" HEAD:main
+          git push "https://x-access-token:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${STATS_REPO}" HEAD:main
+        env:
+          EXTENSION_BENCHMARK_STATS_TOKEN: ${{ steps.token.outputs.token }}

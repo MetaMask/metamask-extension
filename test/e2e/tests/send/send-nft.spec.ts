@@ -13,7 +13,7 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Mockttp } from 'mockttp';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
-import NFTDetailsPage from '../../page-objects/pages/nft-details-page';
+import NFTDetailsPage from '../../page-objects/pages/asset/nft-details-page';
 import NftsTab from '../../page-objects/pages/home/nfts-tab';
 import SendPage from '../../page-objects/pages/send/send-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -154,7 +154,9 @@ describe('Send NFT', function () {
             await nftDetailsPage.clickNFTSendButton();
 
             const sendPage = new SendPage(driver);
-            await sendPage.fillRecipient(DEFAULT_RECIPIENT);
+            await sendPage.fillRecipient({
+              recipientAddress: DEFAULT_RECIPIENT,
+            });
             await sendPage.pressContinueButton();
 
             const tokenTransferConfirmation =
@@ -289,7 +291,9 @@ describe('Send NFT', function () {
             await nftDetailsPage.clickNFTSendButton();
 
             const sendPage = new SendPage(driver);
-            await sendPage.fillRecipient(DEFAULT_RECIPIENT);
+            await sendPage.fillRecipient({
+              recipientAddress: DEFAULT_RECIPIENT,
+            });
             await sendPage.fillAmount('1');
             await sendPage.pressContinueButton();
 

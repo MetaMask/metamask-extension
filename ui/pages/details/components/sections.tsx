@@ -3,19 +3,22 @@ import type {
   ActivityListItem,
   TokenAmount,
 } from '../../../../shared/lib/activity/types';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useFormatters } from '../../../hooks/useFormatters';
-import { NetworkName } from '../../../components/app/transaction/network-name';
-import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
+import { isValidTransactionHash } from '../../../../shared/lib/transactions.utils';
 import { AccountName } from '../../../components/app/transaction/account-name';
+import { NetworkName } from '../../../components/app/transaction/network-name';
 import { TransactionId } from '../../../components/app/transaction/transaction-id';
+import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
+import { useFormatters } from '../../../hooks/useFormatters';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Row, Section } from './shared';
 import { TokenRow } from './token-row';
 
 export function TokensSection({
   tokens,
+  showBadge,
 }: {
   tokens: { label?: string; token?: TokenAmount }[];
+  showBadge?: boolean;
 }) {
   const visibleTokens = tokens.flatMap(({ label, token }) =>
     token ? [{ label, token }] : [],
@@ -30,7 +33,7 @@ export function TokensSection({
       {visibleTokens.map(({ label, token }) => (
         <div key={token?.assetId}>
           {label && <p className="text-alternative mb-1">{label}</p>}
-          <TokenRow token={token} />
+          <TokenRow token={token} showNetworkBadge={showBadge} />
         </div>
       ))}
     </div>
@@ -48,12 +51,17 @@ export function MetadataSection({
   const { formatDateTime } = useFormatters();
   const accountAddress = item.data.from;
   const showAddressRows = Boolean(addressRows?.from && addressRows?.to);
+  const txId =
+    item.hash &&
+    (!item.chainId.startsWith('eip155:') || isValidTransactionHash(item.hash))
+      ? item.hash
+      : undefined;
 
   return (
     <Section>
       <Row
         label={t('status')}
-        value={<TransactionStatus status={item.status} />}
+        value={<TransactionStatus status={item.status} hash={item.hash} />}
       />
 
       <Row label={t('date')} value={formatDateTime(item.timestamp)} />
@@ -83,7 +91,7 @@ export function MetadataSection({
 
       <Row
         label={t('transactionIdLabel')}
-        value={<TransactionId value={item.hash} />}
+        value={txId ? <TransactionId value={txId} /> : null}
       />
     </Section>
   );

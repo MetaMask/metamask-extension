@@ -14,6 +14,7 @@ import {
   getUseSafeChainsListValidation,
   getEnabledNetworksByNamespace,
   getAllTokens,
+  selectAnyEnabledNetworksAreAvailable,
   selectERC20TokensByChain,
 } from '../../../../selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
@@ -23,7 +24,6 @@ import {
 } from '../../../../selectors/multichain';
 import { getProviderConfig } from '../../../../../shared/lib/selectors/networks';
 
-import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { TokenWithFiatAmount } from '../types';
 import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
@@ -45,12 +45,6 @@ jest.mock('../../../../hooks/useTokenFiatAmount', () => {
   };
 });
 
-jest.mock('../../../../hooks/useIsOriginalTokenSymbol', () => {
-  return {
-    useIsOriginalTokenSymbol: jest.fn(),
-  };
-});
-
 const mockShouldShowTokenListItemCta = jest.fn().mockReturnValue(false);
 jest.mock('../../../../hooks/musd', () => ({
   useMusdCtaVisibility: () => ({
@@ -69,18 +63,8 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-const mockUseMerklRewards = jest.fn().mockReturnValue({
-  isEligible: false,
-  hasClaimableReward: false,
-  hasClaimedBefore: false,
-  claimableRewardDisplay: null,
-  refetch: jest.fn(),
-});
 jest.mock('../../musd', () => ({
-  ClaimBonusBadge: () => <div data-testid="claim-bonus-badge-mock" />,
   MusdConvertLink: () => <div data-testid="musd-convert-link-mock" />,
-  isEligibleForMerklRewards: jest.fn().mockReturnValue(false),
-  useMerklRewards: (...args: unknown[]) => mockUseMerklRewards(...args),
 }));
 
 describe('Token Cell', () => {
@@ -118,8 +102,6 @@ describe('Token Cell', () => {
       preferences: {},
     },
   };
-
-  (useIsOriginalTokenSymbol as jest.Mock).mockReturnValue(true);
 
   // two tokens with the same symbol but different addresses
   const MOCK_GET_TOKEN_LIST = {
@@ -163,9 +145,6 @@ describe('Token Cell', () => {
     token: {
       ...propToken,
     },
-    musd: {
-      merklClaimBonus: TOKEN_LIST_CELL_MUSD_OPTIONS.merklClaimBonus,
-    },
     onClick: jest.fn(),
   };
   const propAnotherToken: Partial<TokenWithFiatAmount> & {
@@ -187,9 +166,6 @@ describe('Token Cell', () => {
     token: {
       ...propAnotherToken,
     },
-    musd: {
-      merklClaimBonus: TOKEN_LIST_CELL_MUSD_OPTIONS.merklClaimBonus,
-    },
     onClick: jest.fn(),
   };
   const mockProviderConfig = jest.fn().mockReturnValue({
@@ -197,6 +173,7 @@ describe('Token Cell', () => {
     ticker: 'ETH',
     rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
   });
+  let mockAnyEnabledNetworksAreAvailable = true;
   const useSelectorMock = useSelector;
   (useSelectorMock as jest.Mock).mockImplementation((selector) => {
     if (selector === getPreferences) {
@@ -229,6 +206,9 @@ describe('Token Cell', () => {
     if (selector === getUseSafeChainsListValidation) {
       return true;
     }
+    if (selector === selectAnyEnabledNetworksAreAvailable) {
+      return mockAnyEnabledNetworksAreAvailable;
+    }
     if (selector === getEnabledNetworksByNamespace) {
       return {
         '0x1': true,
@@ -257,6 +237,10 @@ describe('Token Cell', () => {
     return undefined;
   });
   (useTokenFiatAmount as jest.Mock).mockReturnValue('5.00');
+
+  beforeEach(() => {
+    mockAnyEnabledNetworksAreAvailable = true;
+  });
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
@@ -305,6 +289,30 @@ describe('Token Cell', () => {
     expect(amountElement.textContent).toBe('5.00M TEST');
   });
 
+  it('shows a skeleton for native token percentage while fiat is loading', () => {
+    mockAnyEnabledNetworksAreAvailable = false;
+
+    const nativeTokenWithoutFiatAmount = {
+      ...propToken,
+      isNative: true,
+      tokenFiatAmount: undefined,
+    };
+
+    const { getByTestId } = renderWithProvider(
+      <TokenCell
+        {...({
+          ...props,
+          token: nativeTokenWithoutFiatAmount,
+        } as TokenCellProps)}
+      />,
+      mockStore,
+    );
+
+    expect(
+      getByTestId('multichain-token-list-item-percentage-skeleton'),
+    ).toBeInTheDocument();
+  });
+
   describe('musd.convert', () => {
     it('does not show the mUSD convert CTA when musd.convert is not passed', () => {
       mockShouldShowTokenListItemCta.mockReturnValue(true);
@@ -343,69 +351,6 @@ describe('Token Cell', () => {
       );
 
       expect(queryByTestId('musd-convert-link-mock')).not.toBeInTheDocument();
-    });
-  });
-
-  describe('ClaimBonusBadge visibility', () => {
-    afterEach(() => {
-      mockUseMerklRewards.mockReturnValue({
-        isEligible: false,
-        hasClaimableReward: false,
-        hasClaimedBefore: false,
-        claimableRewardDisplay: null,
-        refetch: jest.fn(),
-      });
-    });
-
-    it('shows ClaimBonusBadge when isEligible and hasClaimableReward are both true', () => {
-      mockUseMerklRewards.mockReturnValue({
-        isEligible: true,
-        hasClaimableReward: true,
-        hasClaimedBefore: false,
-        claimableRewardDisplay: '10.50',
-        refetch: jest.fn(),
-      });
-
-      const { queryByTestId } = renderWithProvider(
-        <TokenCell {...(props as TokenCellProps)} />,
-        mockStore,
-      );
-
-      expect(queryByTestId('claim-bonus-badge-mock')).toBeInTheDocument();
-    });
-
-    it('does not show ClaimBonusBadge when isEligible is false', () => {
-      mockUseMerklRewards.mockReturnValue({
-        isEligible: false,
-        hasClaimableReward: true,
-        hasClaimedBefore: false,
-        claimableRewardDisplay: null,
-        refetch: jest.fn(),
-      });
-
-      const { queryByTestId } = renderWithProvider(
-        <TokenCell {...(props as TokenCellProps)} />,
-        mockStore,
-      );
-
-      expect(queryByTestId('claim-bonus-badge-mock')).not.toBeInTheDocument();
-    });
-
-    it('does not show ClaimBonusBadge when hasClaimableReward is false', () => {
-      mockUseMerklRewards.mockReturnValue({
-        isEligible: true,
-        hasClaimableReward: false,
-        hasClaimedBefore: false,
-        claimableRewardDisplay: null,
-        refetch: jest.fn(),
-      });
-
-      const { queryByTestId } = renderWithProvider(
-        <TokenCell {...(props as TokenCellProps)} />,
-        mockStore,
-      );
-
-      expect(queryByTestId('claim-bonus-badge-mock')).not.toBeInTheDocument();
     });
   });
 

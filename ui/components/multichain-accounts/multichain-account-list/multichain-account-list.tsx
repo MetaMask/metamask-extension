@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useState,
+  useTransition,
 } from 'react';
 
 import {
@@ -11,7 +12,7 @@ import {
   AccountWalletId,
   AccountWalletType,
 } from '@metamask/account-api';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { parseCaipAccountId } from '@metamask/utils';
 import {
@@ -39,6 +40,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
@@ -50,7 +52,6 @@ import {
   getHDEntropyIndex,
 } from '../../../selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';
 import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
@@ -60,8 +61,11 @@ import {
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
 } from '../../../helpers/constants/connected-sites';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
+import { EMPTY_ARRAY } from '../../../selectors/shared';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { getAccountGroupDisplayBalance } from '../../../helpers/utils/account-group-balance';
 import { VirtualizedList } from '../../ui/virtualized-list/virtualized-list';
+import { useDispatch } from '../../../store/hooks';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -111,7 +115,8 @@ export const MultichainAccountList = ({
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const [isPending, startTransition] = useTransition();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
   const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
     getDefaultHomeActiveTabName,
@@ -150,7 +155,7 @@ export const MultichainAccountList = ({
   const selectConnectedAccountGroups = useCallback(
     (state: MultichainAccountsState) => {
       if (!showConnectionStatus || permittedAddresses.length === 0) {
-        return [];
+        return EMPTY_ARRAY;
       }
       return getAccountGroupsByAddress(state, permittedAddresses);
     },
@@ -234,16 +239,17 @@ export const MultichainAccountList = ({
 
   const defaultHandleAccountClick = useCallback(
     (accountGroupId: AccountGroupId) => {
-      trackEvent({
-        category: MetaMetricsEventCategory.Navigation,
-        event: MetaMetricsEventName.NavAccountSwitched,
-        properties: {
-          location: 'Main Menu',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: hdEntropyIndex,
-        },
-      });
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NavAccountSwitched)
+          .addCategory(MetaMetricsEventCategory.Navigation)
+          .addProperties({
+            location: 'Main Menu',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: hdEntropyIndex,
+          })
+          .build(),
+      );
       endTrace({
         name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
           defaultHomeActiveTabName
@@ -255,19 +261,36 @@ export const MultichainAccountList = ({
         ],
       });
 
-      dispatch(setSelectedMultichainAccount(accountGroupId));
-      navigate(DEFAULT_ROUTE);
+      // Defer expensive Home/Routes re-renders so the account list shell stays responsive.
+      startTransition(() => {
+        dispatch(setSelectedMultichainAccount(accountGroupId));
+        navigate(DEFAULT_ROUTE);
+      });
     },
-    [trackEvent, hdEntropyIndex, defaultHomeActiveTabName, dispatch, navigate],
+    [
+      trackEvent,
+      createEventBuilder,
+      hdEntropyIndex,
+      defaultHomeActiveTabName,
+      dispatch,
+      navigate,
+      startTransition,
+    ],
   );
 
   const handleAccountClickToUse = useCallback(
     (accountGroupId: AccountGroupId) => {
+      // Only gate the default switch path; custom handlers own their own pending UX.
+      if (isPending && !handleAccountClick) {
+        return;
+      }
       const handlerToUse = handleAccountClick ?? defaultHandleAccountClick;
       handlerToUse?.(accountGroupId);
     },
-    [handleAccountClick, defaultHandleAccountClick],
+    [handleAccountClick, defaultHandleAccountClick, isPending],
   );
+
+  const isSwitchPending = isPending && !handleAccountClick;
 
   const renderAccountCell = useCallback(
     (
@@ -276,10 +299,17 @@ export const MultichainAccountList = ({
       walletId: string,
       showWalletName: boolean,
     ) => {
-      // If prop is provided, attempt render balance. Otherwise do not render balance.
-      const account = allBalances?.wallets?.[walletId]?.groups?.[groupId];
-      const balance = account?.totalBalanceInUserCurrency ?? 0;
-      const currency = account?.userCurrency ?? '';
+      // Undefined when this group has no known balance yet, so the cell renders
+      // nothing instead of a misleading "$0.00".
+      const groupBalance = getAccountGroupDisplayBalance(
+        allBalances?.wallets?.[walletId]?.groups?.[groupId],
+      );
+      const balance =
+        groupBalance &&
+        formatCurrencyWithMinThreshold(
+          groupBalance.amount,
+          groupBalance.currency,
+        );
 
       // TODO: Implement logic for removable accounts
       const isRemovable = false;
@@ -308,9 +338,10 @@ export const MultichainAccountList = ({
             accountId={groupId as AccountGroupId}
             accountName={groupData.metadata.name}
             accountNameString={groupData.metadata.name}
-            balance={formatCurrencyWithMinThreshold(balance, currency)}
+            balance={balance}
             selected={selectedAccountGroupsSet.has(groupId as AccountGroupId)}
             onClick={handleAccountClickToUse}
+            pending={isSwitchPending}
             connectionStatus={
               connectedStatus as
                 | typeof STATUS_CONNECTED
@@ -332,6 +363,7 @@ export const MultichainAccountList = ({
                     isSelected={selectedAccountGroupsSet.has(
                       groupId as AccountGroupId,
                     )}
+                    isDisabled={isSwitchPending}
                     onChange={() => {
                       handleAccountClickToUse(groupId as AccountGroupId);
                     }}
@@ -361,6 +393,7 @@ export const MultichainAccountList = ({
       showConnectionStatus,
       selectedAccountGroupsSet,
       handleAccountClickToUse,
+      isSwitchPending,
       privacyMode,
       showAccountCheckbox,
       wallets,

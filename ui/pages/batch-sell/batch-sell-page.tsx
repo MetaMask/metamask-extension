@@ -10,6 +10,7 @@ import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { transitionBack } from '../../components/ui/transition';
 import { useBatchSellNavigation } from '../../hooks/batch-sell/useBatchSellNavigation';
+import { useEventListener } from '../../hooks/useEventListener';
 import { toRelativeRoutePath } from '../routes/utils';
 import {
   BATCH_SELL_REVIEW_ROUTE,
@@ -18,6 +19,8 @@ import {
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { getIsBatchSellEnabled } from '../../selectors/batch-sell/feature-flags';
+import { resetBridgeController } from '../../ducks/bridge/actions';
+import { useDispatch } from '../../store/hooks';
 import { BatchSellSelectPage } from './pages/select/batch-sell-select-page';
 import { BatchSellReviewPage } from './pages/review/batch-sell-review-page';
 import { BatchSellInfoModalProvider } from './providers/batch-sell-info-modal-provider';
@@ -25,10 +28,16 @@ import { BatchSellSelectionProvider } from './providers/batch-sell-selection-pro
 
 const BatchSellPage = () => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const { pathname } = useLocation();
   const { navigateToDefaultRoute, navigateToBatchSellSelectPage } =
     useBatchSellNavigation();
   const batchSellEnabled = useSelector(getIsBatchSellEnabled);
+
+  // Reset controller and inputs before unloading the page
+  useEventListener('beforeunload', () => {
+    dispatch(resetBridgeController());
+  });
 
   const handleBack = () => {
     const isOnConfirmPage = pathname === BATCH_SELL_REVIEW_ROUTE;

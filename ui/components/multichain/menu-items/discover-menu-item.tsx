@@ -1,21 +1,20 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { Box } from '@metamask/design-system-react';
+import { Box, IconName } from '@metamask/design-system-react';
 import { MenuItem } from '../../ui/menu';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   getDataCollectionForMarketing,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
 } from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { IconName } from '../../component-library';
 
 export const DiscoverMenuItem = ({
   closeMenu,
@@ -25,13 +24,11 @@ export const DiscoverMenuItem = ({
   metricsLocation: string;
 }) => {
   const analyticsId = useSelector(getAnalyticsId);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
-  const isMetaMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const isMetaMetricsEnabled = consentDecisionMade && isOptedIn;
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
 
   const handlePortfolioOnClick = useCallback(() => {
@@ -43,26 +40,29 @@ export const DiscoverMenuItem = ({
       isMarketingEnabled === true,
     );
     global.platform.openTab({ url });
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PortfolioLinkClicked,
-      properties: {
-        location: metricsLocation,
-        text: 'Portfolio',
-      },
-    });
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.PortfolioLinkClicked)
+        .addCategory(MetaMetricsEventCategory.Navigation)
+        .addProperties({
+          location: metricsLocation,
+          text: 'Portfolio',
+        })
+        .build(),
+    );
     closeMenu();
   }, [
     closeMenu,
     isMarketingEnabled,
     isMetaMetricsEnabled,
     analyticsId,
+    metricsLocation,
     trackEvent,
+    createEventBuilder,
   ]);
 
   return (
     <MenuItem
-      iconNameLegacy={IconName.Export}
+      iconName={IconName.Export}
       onClick={() => handlePortfolioOnClick()}
       data-testid="portfolio-menu-item"
     >

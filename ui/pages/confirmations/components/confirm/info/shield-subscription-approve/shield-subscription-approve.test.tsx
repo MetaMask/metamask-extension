@@ -69,6 +69,21 @@ jest.mock('../../../../../../store/actions', () => ({
   }),
 }));
 
+jest.mock('../../../../hooks/gas/useIsGaslessSupported', () => ({
+  useIsGaslessSupported: jest.fn(() => ({
+    isSupported: false,
+    isSmartTransaction: false,
+    pending: false,
+  })),
+}));
+
+jest.mock('../../../../hooks/gas/useGasSponsorshipPreference', () => ({
+  useGasSponsorshipPreference: jest.fn(() => ({
+    isSponsorshipOptedOut: false,
+    setSponsorshipOptedOut: jest.fn(),
+  })),
+}));
+
 const mockSubscriptionPricing: PricingResponse = {
   products: [
     {
@@ -133,11 +148,14 @@ describe('ShieldSubscriptionApproveInfo', () => {
     state.metamask.pricing = mockSubscriptionPricing;
 
     const mockStore = configureMockStore([])(state);
-    const { getByText } = renderWithConfirmContextProvider(
+    const { getByTestId, getByText } = renderWithConfirmContextProvider(
       <ShieldSubscriptionApproveInfo />,
       mockStore,
     );
 
+    expect(
+      getByTestId('parent-selector-shield-subscription-approve-page'),
+    ).toBeInTheDocument();
     expect(getByText(tEn('transactionShield'))).toBeInTheDocument();
     expect(getByText('$8/month (Monthly)')).toBeInTheDocument();
     expect(getByText(tEn('freeTrialDays', ['14']))).toBeInTheDocument();

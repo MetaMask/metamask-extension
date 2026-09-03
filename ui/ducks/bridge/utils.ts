@@ -1,8 +1,8 @@
 import {
+  parseCaipAssetType,
   type CaipAssetType,
   type CaipChainId,
   type Hex,
-  parseCaipAssetType,
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
@@ -13,6 +13,7 @@ import {
   formatChainIdToHex,
   formatAddressToCaipReference,
   ChainId,
+  assetIdsMatch,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { Numeric } from '../../../shared/lib/Numeric';
@@ -99,8 +100,6 @@ const fetchTokenExchangeRates = async (
     includeMarketData: 'true',
     vsCurrency: currency,
   });
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   const url = `https://price.api.cx.metamask.io/v3/spot-prices?${queryParams}`;
   const tokenV3PriceResponse = (await handleFetch(url, {
     method: 'GET',
@@ -232,10 +231,7 @@ export const getDefaultToToken = (
 ) => {
   const commonPair = BRIDGE_CHAINID_COMMON_TOKEN_PAIR[toChainId];
   // If commonPair is defined and is not the same as the fromToken, return it
-  if (
-    commonPair &&
-    fromAssetId.toLowerCase() !== commonPair.assetId.toLowerCase()
-  ) {
+  if (commonPair && !assetIdsMatch(fromAssetId, commonPair.assetId)) {
     return toBridgeToken(commonPair);
   }
 

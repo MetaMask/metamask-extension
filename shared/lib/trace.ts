@@ -42,6 +42,7 @@ export enum TraceName {
   SendCompleted = 'Send Completed',
   SetupStore = 'Setup Store',
   Signature = 'Signature',
+  SwapQuoteFetch = 'Swap Quote Fetch',
   SwapQuotesFetched = 'Swap Quotes Fetched',
   SwapViewLoaded = 'Swap View Loaded',
   Transaction = 'Transaction',
@@ -396,35 +397,6 @@ export function continueTraceContext<ResultType>(
   return sentryContinueTrace(sentryTrace, () =>
     sentryWithIsolationScope(() => fn()),
   );
-}
-
-/**
- * Serialize a trace context from a specific span and request metadata.
- * Includes both name/id (for same-process map lookup) and traceId/spanId
- * (for cross-process distributed tracing).
- *
- * @param span - The Sentry span to extract IDs from.
- * @param request - Request metadata for same-process lookup fallback.
- * @param request.name - The trace name for same-process map lookup.
- * @param request.id - Optional trace ID for same-process map lookup.
- * @returns Serialized trace context.
- */
-export function serializeTraceContext(
-  span: Sentry.Span | null | undefined,
-  request: { name: string; id?: string },
-): SerializedTraceContext {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const ctx: SerializedTraceContext = { _name: request.name, _id: request.id };
-  if (span) {
-    try {
-      const spanCtx = span.spanContext();
-      ctx._traceId = spanCtx.traceId;
-      ctx._spanId = spanCtx.spanId;
-    } catch {
-      // Span may have ended or be invalid
-    }
-  }
-  return ctx;
 }
 
 function traceCallback<ResultType>(

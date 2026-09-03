@@ -63,11 +63,26 @@ describe('BatchTrackingStrategy', () => {
   });
 
   describe('processStatusUpdated (failed)', () => {
-    it('blocks failed before batch is identified', () => {
+    it('blocks failed before batch is identified when the tx was never tracked', () => {
       const result = strategy.processStatusUpdated(
         createTxMeta({ status: TransactionStatus.failed }),
       );
       expect(result.action).toBeNull();
+    });
+
+    it('dispatches TransactionFailed before batch is identified when the tx was tracked', () => {
+      // The tx is observed first via an initial status update (e.g. unapproved
+      // on creation), so a subsequent failure is the current flow failing —
+      // not a stale leftover — and must surface instead of leaving the UI stuck.
+      strategy.processStatusUpdated(
+        createTxMeta({ status: TransactionStatus.unapproved }),
+      );
+      const result = strategy.processStatusUpdated(
+        createTxMeta({ status: TransactionStatus.failed }),
+      );
+      expect(result.action).toEqual({
+        type: HardwareWalletSignatureEvent.TransactionFailed,
+      });
     });
 
     it('dispatches TransactionFailed after batch is identified (same batch)', () => {
@@ -95,9 +110,19 @@ describe('BatchTrackingStrategy', () => {
   });
 
   describe('processRejected', () => {
-    it('blocks rejection before batch is identified', () => {
+    it('blocks rejection before batch is identified when the tx was never tracked', () => {
       const result = strategy.processRejected(createTxMeta());
       expect(result.action).toBeNull();
+    });
+
+    it('dispatches TransactionRejected before batch is identified when the tx was tracked', () => {
+      strategy.processStatusUpdated(
+        createTxMeta({ status: TransactionStatus.unapproved }),
+      );
+      const result = strategy.processRejected(createTxMeta());
+      expect(result.action).toEqual({
+        type: HardwareWalletSignatureEvent.TransactionRejected,
+      });
     });
 
     it('dispatches TransactionRejected after batch identified (same batch)', () => {
@@ -122,11 +147,23 @@ describe('BatchTrackingStrategy', () => {
   });
 
   describe('processFinished', () => {
-    it('blocks rejected before batch is identified', () => {
+    it('blocks rejected (finished) before batch is identified when the tx was never tracked', () => {
       const result = strategy.processFinished(
         createTxMeta({ status: TransactionStatus.rejected }),
       );
       expect(result.action).toBeNull();
+    });
+
+    it('dispatches TransactionRejected (finished) before batch is identified when the tx was tracked', () => {
+      strategy.processStatusUpdated(
+        createTxMeta({ status: TransactionStatus.unapproved }),
+      );
+      const result = strategy.processFinished(
+        createTxMeta({ status: TransactionStatus.rejected }),
+      );
+      expect(result.action).toEqual({
+        type: HardwareWalletSignatureEvent.TransactionRejected,
+      });
     });
 
     it('dispatches TransactionRejected after batch identified (same batch)', () => {
@@ -182,12 +219,12 @@ describe('BatchTrackingStrategy', () => {
   describe('checkRetryGeneration', () => {
     it('marks seen batches as stale when generation bumps', () => {
       const retryGenRef = createRetryGenRef(0);
-      const lastSeenRef = { current: 0 };
 
       strategy.processStatusUpdated(createTxMeta({ batchId: 'batch-old' }));
 
       retryGenRef.current = 1;
-      strategy.checkRetryGeneration(retryGenRef, lastSeenRef);
+      // The call returns the new last-seen generation for the caller to persist.
+      expect(strategy.checkRetryGeneration(retryGenRef, 0)).toBe(1);
 
       // Old batch should now be stale — finished event blocked
       const result = strategy.processFinished(
@@ -201,12 +238,11 @@ describe('BatchTrackingStrategy', () => {
 
     it('allows new batch events after generation reset', () => {
       const retryGenRef = createRetryGenRef(0);
-      const lastSeenRef = { current: 0 };
 
       strategy.processStatusUpdated(createTxMeta({ batchId: 'batch-old' }));
 
       retryGenRef.current = 1;
-      strategy.checkRetryGeneration(retryGenRef, lastSeenRef);
+      expect(strategy.checkRetryGeneration(retryGenRef, 0)).toBe(1);
 
       const result = strategy.processStatusUpdated(
         createTxMeta({
@@ -221,12 +257,11 @@ describe('BatchTrackingStrategy', () => {
 
     it('allows rejection from new batch before signed event establishes batch (null state)', () => {
       const retryGenRef = createRetryGenRef(0);
-      const lastSeenRef = { current: 0 };
 
       strategy.processStatusUpdated(createTxMeta({ batchId: 'batch-old' }));
 
       retryGenRef.current = 1;
-      strategy.checkRetryGeneration(retryGenRef, lastSeenRef);
+      expect(strategy.checkRetryGeneration(retryGenRef, 0)).toBe(1);
 
       const result = strategy.processRejected(
         createTxMeta({ batchId: 'batch-new' }),
@@ -238,12 +273,11 @@ describe('BatchTrackingStrategy', () => {
 
     it('blocks stale signed events after retry', () => {
       const retryGenRef = createRetryGenRef(0);
-      const lastSeenRef = { current: 0 };
 
       strategy.processStatusUpdated(createTxMeta({ batchId: 'batch-old' }));
 
       retryGenRef.current = 1;
-      strategy.checkRetryGeneration(retryGenRef, lastSeenRef);
+      expect(strategy.checkRetryGeneration(retryGenRef, 0)).toBe(1);
 
       const result = strategy.processStatusUpdated(
         createTxMeta({
@@ -252,6 +286,19 @@ describe('BatchTrackingStrategy', () => {
         }),
       );
       expect(result.action).toBeNull();
+    });
+
+    it('returns null when the generation has not bumped', () => {
+      const retryGenRef = createRetryGenRef(1);
+
+      // Already seen generation 1 → no bump, nothing to persist.
+      expect(strategy.checkRetryGeneration(retryGenRef, 1)).toBeNull();
+    });
+
+    it('returns null when retry tracking is disabled', () => {
+      strategy.processStatusUpdated(createTxMeta({ batchId: 'batch-1' }));
+
+      expect(strategy.checkRetryGeneration(undefined, 0)).toBeNull();
     });
   });
 

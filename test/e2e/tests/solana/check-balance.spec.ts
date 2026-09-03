@@ -1,11 +1,12 @@
 import { Suite } from 'mocha';
-import { SNAP_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
+import { HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { buildSolanaTestSpecificMock } from './common-solana';
+import { buildSolanaPositiveBalanceFixture } from './unified-solana-assets';
 
 describe('Check balance', function (this: Suite) {
   this.timeout(300000);
@@ -20,12 +21,12 @@ describe('Check balance', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '0 SOL',
-          timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );
@@ -43,24 +44,22 @@ describe('Check balance', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '$0',
-          timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );
   });
   it('For a non 0 balance account - USD balance', async function () {
-    const fixture = new FixtureBuilderV2()
-      .withShowNativeTokenAsMainBalanceDisabled()
-      .build();
-
     await withFixtures(
       {
-        fixtures: fixture,
+        fixtures: buildSolanaPositiveBalanceFixture({
+          showNativeTokenAsMainBalanceDisabled: true,
+        }),
         title: this.test?.fullTitle(),
         testSpecificMock: buildSolanaTestSpecificMock(),
       },
@@ -68,12 +67,12 @@ describe('Check balance', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '$5,643.50',
-          timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );
@@ -81,7 +80,7 @@ describe('Check balance', function (this: Suite) {
   it('For a non 0 balance account - SOL balance', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: buildSolanaPositiveBalanceFixture(),
         title: this.test?.fullTitle(),
         testSpecificMock: buildSolanaTestSpecificMock(),
       },
@@ -89,12 +88,12 @@ describe('Check balance', function (this: Suite) {
         await login(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
+        await switchToNetworkFromNetworkSelect(driver, 'Solana');
         // Refresh re-hydrates the UI from background state so the asynchronously-fetched Snap balance is shown reliably.
         await driver.refresh();
         await homePage.checkExpectedBalanceIsDisplayed({
           expectedBalance: '50 SOL',
-          timeout: SNAP_BALANCE_ASSERTION_TIMEOUT_MS,
+          timeout: HOMEPAGE_BALANCE_ASSERTION_TIMEOUT_MS,
         });
       },
     );

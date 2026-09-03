@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -10,22 +10,15 @@ import {
   TextVariant,
   TextColor,
   FontWeight,
-} from '@metamask/design-system-react';
-import {
   Modal,
-  ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-} from '../../../components/component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
+  ModalContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -45,31 +38,23 @@ export default function DeleteMetametricsModal({
   onError,
 }: Readonly<DeleteMetametricsModalProps>) {
   const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
+  const { trackEvent, createEventBuilder } = useAnalytics();
 
   const deleteMetaMetricsData = async () => {
     try {
       await createMetaMetricsDataDeletionTask();
       trackEvent(
-        {
-          category: MetaMetricsEventCategory.Settings,
-          event: MetaMetricsEventName.MetricsDataDeletionRequest,
-        },
-        {
-          excludeMetaMetricsId: true,
-        },
+        createEventBuilder(MetaMetricsEventName.MetricsDataDeletionRequest)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .build({ excludeMetaMetricsId: true }),
       );
       onSuccess();
     } catch (error) {
       captureException(error);
       trackEvent(
-        {
-          category: MetaMetricsEventCategory.Settings,
-          event: MetaMetricsEventName.ErrorOccured,
-        },
-        {
-          excludeMetaMetricsId: true,
-        },
+        createEventBuilder(MetaMetricsEventName.ErrorOccured)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .build({ excludeMetaMetricsId: true }),
       );
       onError();
     } finally {
@@ -81,13 +66,15 @@ export default function DeleteMetametricsModal({
     <Modal isOpen onClose={onClose} data-testid="delete-metametrics-modal">
       <ModalOverlay />
       <ModalContent
-        alignItems={AlignItems.center}
+        className="items-center"
         modalDialogProps={{
-          display: Display.Flex,
-          flexDirection: FlexDirection.Column,
+          flexDirection: BoxFlexDirection.Column,
         }}
       >
-        <ModalHeader onClose={onClose}>
+        <ModalHeader
+          onClose={onClose}
+          closeButtonProps={{ ariaLabel: t('close') }}
+        >
           <Box
             flexDirection={BoxFlexDirection.Column}
             alignItems={BoxAlignItems.Center}

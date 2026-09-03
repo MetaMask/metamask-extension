@@ -50,7 +50,20 @@ export const PERPS_CONSTANTS = {
 
   /** Max markets shown in the explore section (aligned with mobile). */
   EXPLORE_MARKETS_LIMIT: 8,
+
+  /**
+   * Max markets ranked in the Top movers section. Matches mobile's
+   * `TOP_MOVERS_LIMIT` and fills the design's 2-column x 4-row grid exactly,
+   * so the pills stack without scrolling.
+   */
+  TOP_MOVERS_LIMIT: 8,
 } as const;
+
+/**
+ * Collateral asset used to settle perps positions. Shown in market pair labels
+ * such as "BTC-USDC perp".
+ */
+export const PERPS_COLLATERAL_SYMBOL = 'USDC';
 
 /**
  * Minimum USD notional for market / reduce-only orders on HyperLiquid (mainnet and testnet).

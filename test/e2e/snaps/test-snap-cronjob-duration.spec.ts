@@ -1,10 +1,10 @@
 import { Driver } from '../webdriver/driver';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import HeaderNavbar from '../page-objects/pages/header-navbar';
+import HeaderNavbar from '../page-objects/pages/home/header-navbar';
 import { withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
-import NotificationsListPage from '../page-objects/pages/notifications-list-page';
+import NotificationsListPage from '../page-objects/pages/notifications/notifications-list-page';
 import { mockCronjobDurationSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { login } from '../page-objects/flows/login.flow';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
@@ -44,14 +44,7 @@ describe('Test Snap Cronjob Duration', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await headerNavbar.checkNotificationCountInMenuOption(1);
-
-        // This click will close the menu.
-        await headerNavbar.clickDrawerBackButton();
-
-        // Click the notification options and validate the message in the
-        // notification list.
-        await headerNavbar.clickNotificationsOptions();
+        await headerNavbar.checkNotificationCountAndOpenNotifications(1);
         await notificationsListPage.checkPageIsLoaded();
         await notificationsListPage.checkSnapsNotificationMessage(
           'This notification was triggered by a cronjob using an ISO 8601 duration.',

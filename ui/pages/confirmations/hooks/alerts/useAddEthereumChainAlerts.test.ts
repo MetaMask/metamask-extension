@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { Severity } from '../../../../helpers/constants/design-system';
 import * as confirmContext from '../../context/confirm';
 import * as safeChains from '../../../../components/multichain/networks-form/use-safe-chains';
@@ -25,7 +25,10 @@ const mockJsonRpcRequest = jest.fn();
 
 const renderHookWithWait = async () => {
   const hookResult = renderHook(() => useAddEthereumChainAlerts());
-  await hookResult.waitForNextUpdate();
+  const prevUpdate0 = hookResult.result.current;
+  await waitFor(() => {
+    expect(hookResult.result.current).not.toBe(prevUpdate0);
+  });
   return hookResult;
 };
 
@@ -63,8 +66,11 @@ describe('useAddEthereumChainAlerts', () => {
       currentConfirmation: undefined,
     });
 
-    const { result } = renderHook(() => useAddEthereumChainAlerts());
+    const { result, rerender } = renderHook(() => useAddEthereumChainAlerts());
     expect(result.current).toEqual([]);
+    const first = result.current;
+    rerender();
+    expect(result.current).toBe(first);
   });
 
   it('returns empty array when chain is not in safe list', async () => {

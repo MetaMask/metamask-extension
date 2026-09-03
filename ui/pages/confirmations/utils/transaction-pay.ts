@@ -1,15 +1,99 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+  type NestedTransactionMetadata,
+} from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import type {
-  TransactionPayRequiredToken,
-  TransactionPaymentToken,
+import {
+  PaymentOverride,
+  type TransactionPayRequiredToken,
+  type TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
-import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
 import { isTestNetwork } from '../../../helpers/utils/network-helper';
+import {
+  hasTransactionType,
+  isPostQuoteWithdrawTransaction,
+} from '../../../../shared/lib/transactions.utils';
+import { updateAtomicBatchData } from '../../../store/controller-actions/transaction-controller';
+import { setPaymentOverride } from '../../../store/controller-actions/transaction-pay-controller';
+import type { BlockedPayTokensListConfig } from '../selectors/feature-flags';
 import { Asset, AssetStandard } from '../types/send';
 
 const FOUR_BYTE_TOKEN_TRANSFER = '0xa9059cbb';
+
+function toAddressWord(address: string): string {
+  return address.toLowerCase().replace(/^0x/u, '').padStart(64, '0');
+}
+
+/**
+ * Replace every occurrence of `oldAddress` (encoded as a 32-byte ABI word)
+ * inside the `data` of each nested transaction with `newAddress`, and persist
+ * the change via `updateAtomicBatchData`. No-ops when there are no nested
+ * transactions or no old address to replace.
+ *
+ * Mirrors mobile `replaceAccountInNestedTransactions`. Used when the From-row
+ * changes the withdraw recipient so the transfer calldata is rewritten
+ * immediately, not only on the next amount encode.
+ *
+ * @param params - Replacement inputs.
+ * @param params.transactionId - Id of the parent batch transaction.
+ * @param params.nestedTransactions - Nested calls to scan.
+ * @param params.oldAddress - Address currently encoded in calldata.
+ * @param params.newAddress - Address to write in its place.
+ * @returns Resolves when all nested rewrites have persisted.
+ */
+export async function replaceAccountInNestedTransactions({
+  transactionId,
+  nestedTransactions,
+  oldAddress,
+  newAddress,
+}: {
+  transactionId: string;
+  nestedTransactions: NestedTransactionMetadata[] | undefined;
+  oldAddress: string | undefined;
+  newAddress: string;
+}): Promise<void> {
+  if (!oldAddress || !nestedTransactions?.length) {
+    return;
+  }
+
+  const oldWord = toAddressWord(oldAddress);
+  const newWord = toAddressWord(newAddress);
+
+  if (oldWord === newWord) {
+    return;
+  }
+
+  const updates: Promise<void>[] = [];
+
+  nestedTransactions.forEach((nested, index) => {
+    const { data } = nested;
+    if (!data) {
+      return;
+    }
+
+    const lowerData = data.toLowerCase();
+    if (!lowerData.includes(oldWord)) {
+      return;
+    }
+
+    const newData = lowerData.split(oldWord).join(newWord) as Hex;
+
+    updates.push(
+      updateAtomicBatchData({
+        transactionId,
+        transactionIndex: index,
+        transactionData: newData,
+      }).catch((error) => {
+        console.error('Failed to update account in nested transaction', error);
+        throw error;
+      }),
+    );
+  });
+
+  await Promise.all(updates);
+}
 
 export function getTokenTransferData(
   transactionMeta: TransactionMeta | undefined,
@@ -64,10 +148,12 @@ export function getAvailableTokens({
   payToken,
   requiredTokens,
   tokens,
+  blockedTokens,
 }: {
   payToken?: TransactionPaymentToken;
   requiredTokens?: TransactionPayRequiredToken[];
   tokens: Asset[];
+  blockedTokens?: BlockedPayTokensListConfig;
 }): Asset[] {
   return tokens
     .filter((token) => {
@@ -108,28 +194,101 @@ export function getAvailableTokens({
       return new BigNumber(token.balance ?? 0).gt(0);
     })
     .map((token) => {
-      const chainId = (token.chainId as Hex) ?? '0x0';
-
-      const nativeToken = tokens.find(
-        (t) =>
-          t.chainId === chainId && t.address === getNativeTokenAddress(chainId),
-      );
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const noNativeBalance =
-        !nativeToken || new BigNumber(nativeToken.balance ?? 0).isZero();
-
-      // Temporary pending gas station feature flag integration.
-      const disabled = false;
-
+      const blocked = isTokenBlocked(token, blockedTokens);
       const isSelected =
         payToken?.address.toLowerCase() === token.address?.toLowerCase() &&
         payToken?.chainId === token.chainId;
 
       return {
         ...token,
-        disabled,
+        disabled: blocked,
         isSelected,
       };
-    });
+    })
+    .sort((a, b) => Number(a.disabled) - Number(b.disabled));
+}
+
+/**
+ * Whether a token is blocked by the MM Pay LD blocklist
+ * (`confirmations_pay_tokens.blockedTokens`).
+ *
+ * @param token - Token address/chain to check.
+ * @param token.address - Token contract address.
+ * @param token.chainId - Token chain id.
+ * @param blockedConfig - Resolved blocklist for the current transaction type.
+ */
+export function isTokenBlocked(
+  token: { address?: string; chainId?: string | number },
+  blockedConfig?: BlockedPayTokensListConfig,
+): boolean {
+  if (!blockedConfig) {
+    return false;
+  }
+
+  const { address, chainId: tokenChainId } = token;
+  const chainId = tokenChainId ? String(tokenChainId) : undefined;
+
+  if (
+    chainId &&
+    (blockedConfig.chainIds ?? []).some(
+      (id) => id.toLowerCase() === chainId.toLowerCase(),
+    )
+  ) {
+    return true;
+  }
+
+  if (!address || !chainId) {
+    return false;
+  }
+
+  return (blockedConfig.tokens ?? []).some(
+    (blocked) =>
+      blocked.address.toLowerCase() === address.toLowerCase() &&
+      blocked.chainId.toLowerCase() === chainId.toLowerCase(),
+  );
+}
+
+/**
+ * Selects Money Account as the payment method for a confirmation.
+ * Sets `paymentOverride` and, for deposit flows, refunds leftover funds to the
+ * money account address. Perps/Predict withdraws to Money Account run
+ * non-atomically so the post-Relay transfer is submitted after the quote.
+ *
+ * @param transactionId - Confirmation transaction id.
+ * @param moneyAccountAddress - Derived money account address, when known.
+ * @param transactionMeta - Current confirmation metadata.
+ */
+export function applyMoneyAccountOverride(
+  transactionId: string,
+  moneyAccountAddress: string | undefined,
+  transactionMeta: TransactionMeta | undefined,
+): void {
+  const isPerpsOrPredictWithdraw = hasTransactionType(transactionMeta, [
+    TransactionType.perpsWithdraw,
+    TransactionType.predictWithdraw,
+  ]);
+  const isPostQuoteWithdraw = isPostQuoteWithdrawTransaction(transactionMeta);
+
+  setPaymentOverride(transactionId, {
+    ...(isPerpsOrPredictWithdraw ? { atomic: false } : {}),
+    paymentOverride: PaymentOverride.MoneyAccount,
+    ...(!isPostQuoteWithdraw && moneyAccountAddress
+      ? { refundTo: moneyAccountAddress as Hex }
+      : {}),
+  }).catch((error) => {
+    console.error('Failed to apply money account payment override', error);
+  });
+}
+
+/**
+ * Clears a Money Account (or other) payment override on the confirmation.
+ *
+ * @param transactionId - Confirmation transaction id.
+ */
+export function clearPaymentOverride(transactionId: string): void {
+  setPaymentOverride(transactionId, {
+    paymentOverride: undefined,
+  }).catch((error) => {
+    console.error('Failed to clear payment override', error);
+  });
 }

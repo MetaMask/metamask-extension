@@ -39,17 +39,19 @@ import {
   Page,
 } from '../../../components/multichain/pages/page';
 import { getSnapRoute } from '../../../helpers/utils/util';
+import { useGlobalMenuRouteTransition } from '../../routes/global-menu-route-transition';
 
 const SnapList = () => {
   const t = useI18nContext();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const runCloseTransition = useGlobalMenuRouteTransition();
 
   const fromPath = searchParams.get('from') ?? undefined;
 
   const handleBack = () => {
     if (fromPath === DEFAULT_ROUTE) {
-      navigate(PREVIOUS_ROUTE);
+      runCloseTransition(() => navigate(PREVIOUS_ROUTE));
     } else {
       navigate(DEFAULT_ROUTE);
     }
@@ -63,7 +65,7 @@ const SnapList = () => {
   const snapUpdateMap = useSelector(getAllSnapAvailableUpdates);
 
   return (
-    <div className="snaps">
+    <div className="snaps" data-testid="parent-selector-snap-list-page">
       <Page backgroundColor={BackgroundColor.backgroundDefault}>
         <Header
           backgroundColor={BackgroundColor.backgroundDefault}

@@ -92,7 +92,7 @@ describe('compare-benchmarks', () => {
       // startupStandardHome.uiStartup IS in GATED_METRICS — fail breach blocks.
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-startupStandardHome',
+          name: 'benchmark-chrome-webpack-startupStandardHome',
           data: {
             startupStandardHome: makeBenchmarkResults('uiStartup', {
               p75: { uiStartup: 99999 },
@@ -136,6 +136,80 @@ describe('compare-benchmarks', () => {
         ),
       ).toBe(true);
       expect(result.comparisons[0].hasWarning).toBe(true);
+    });
+
+    const DEMOTED_BIMODAL_METRICS: {
+      artifactName: string;
+      benchmarkName: string;
+      metricId: string;
+    }[] = [
+      {
+        artifactName: 'benchmark-chrome-webpack-userJourneyOnboardingNew',
+        benchmarkName: 'onboardingNewWallet',
+        metricId: 'total',
+      },
+      {
+        artifactName: 'benchmark-chrome-webpack-userJourneyOnboardingNew',
+        benchmarkName: 'onboardingNewWallet',
+        metricId: 'doneButtonToAssetList',
+      },
+      {
+        artifactName: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
+        benchmarkName: 'onboardingImportWallet',
+        metricId: 'doneButtonToHomeScreen',
+      },
+    ];
+
+    for (const {
+      artifactName,
+      benchmarkName,
+      metricId,
+    } of DEMOTED_BIMODAL_METRICS) {
+      it(`does not fail on the bimodal metric ${benchmarkName}.${metricId} (demoted, restore condition #45266)`, () => {
+        const benchmarks = [
+          {
+            name: artifactName,
+            data: {
+              [benchmarkName]: makeBenchmarkResults(metricId, {
+                p75: { [metricId]: 99999 },
+                p95: { [metricId]: 99999 },
+                mean: { [metricId]: 99999 },
+              }),
+            },
+          },
+        ];
+
+        const result = runComparison(benchmarks, {});
+        expect(result.anyFailed).toBe(false);
+        expect(result.comparisons[0].absoluteFailed).toBe(false);
+        expect(
+          result.comparisons[0].absoluteViolations.every(
+            (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+          ),
+        ).toBe(true);
+        expect(result.comparisons[0].hasWarning).toBe(true);
+      });
+    }
+
+    it('still fails on onboardingImportWallet.total, which is unimodal and stays gated', () => {
+      // The control for the three cases above: the same flow's total absorbs
+      // the slow step into a following one, so it keeps its gate.
+      const benchmarks = [
+        {
+          name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
+          data: {
+            onboardingImportWallet: makeBenchmarkResults('total', {
+              p75: { total: 99999 },
+              p95: { total: 99999 },
+              mean: { total: 99999 },
+            }),
+          },
+        },
+      ];
+
+      const result = runComparison(benchmarks, {});
+      expect(result.anyFailed).toBe(true);
+      expect(result.comparisons[0].absoluteFailed).toBe(true);
     });
 
     it('includes relative metrics when baseline is available', () => {
@@ -290,7 +364,7 @@ describe('compare-benchmarks', () => {
       // surface in WARN, not FAIL, and not change the overall PASS verdict.
       const benchmarks = [
         {
-          name: 'benchmark-chrome-browserify-userJourneyOnboardingImport',
+          name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
           data: {
             onboardingImportWallet: makeBenchmarkResults(
               'importWalletToSocialScreen',
@@ -663,6 +737,45 @@ describe('buildMetricLines', () => {
 
     expect(lines[0].icon).toBe(COMPARISON_SEVERITY.Regression.icon);
     expect(lines[0].hasIssue).toBe(true);
+  });
+
+  it('reports the absolute ceiling, not the relative improvement, on an absolute-only fail', () => {
+    // Observed on a live benchmark run (onboardingImportWallet total.p75):
+    // the metric fails the absolute ceiling (11291 > 11050ms) while the
+    // relative delta is a stale-baseline improvement (-72.1%). The line must
+    // attribute the failure to the ceiling, never paint the improvement as
+    // the reason.
+    const lines = buildMetricLines(
+      makeComparison({
+        relativeMetrics: [
+          {
+            metric: 'total',
+            percentile: 'p75',
+            current: 11291,
+            baseline: 40000,
+            delta: -28709,
+            deltaPercent: -0.721,
+            severity: COMPARISON_SEVERITY.Pass.value,
+            indication: COMPARISON_SEVERITY.Pass.icon,
+          },
+        ],
+        absoluteViolations: [
+          {
+            metricId: 'total',
+            percentile: 'p75',
+            value: 11291,
+            threshold: 11050,
+            severity: THRESHOLD_SEVERITY.Fail,
+          },
+        ],
+      }),
+    );
+
+    const { details } = lines[0];
+    expect(details).toContain('absolute ceiling exceeded');
+    expect(details).toContain('11291ms');
+    expect(details).toContain('11050ms');
+    expect(details).not.toContain('-72.1%');
   });
 
   it('overrides icon with 🟡 when absolute Warn violation matches the metric', () => {

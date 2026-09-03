@@ -3,20 +3,36 @@ import { screen, fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { TransactionType } from '@metamask/transaction-controller';
+import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
+import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import { useSendTokens } from '../../../hooks/send/useSendTokens';
 import { useConfirmContext } from '../../../context/confirm';
+import useAlerts from '../../../../../hooks/useAlerts';
+import { AlertsName } from '../../../hooks/alerts/constants';
+import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
 import { PayWithRow, PayWithRowSkeleton } from './pay-with-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayData');
+jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
+jest.mock('../../../selectors/feature-flags', () => ({
+  ...jest.requireActual('../../../selectors/feature-flags'),
+  selectIsMoneyAccountTransactionEnabled: jest.fn(() => false),
+}));
 jest.mock('../../../hooks/send/useSendTokens');
 jest.mock('../../../context/confirm');
 jest.mock('../../../../multichain-accounts/account-details/account-type-utils');
+jest.mock('../../../../../hooks/useAlerts');
+jest.mock('../../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
+  useMoneyAccountWithdrawableFiat: jest.fn(() => ({
+    withdrawableFiatFormatted: '$12.34',
+  })),
+}));
 
 jest.mock(
   '../../../../../components/app/alert-system/contexts/alertMetricsContext',
@@ -27,14 +43,6 @@ jest.mock(
     }),
   }),
 );
-
-jest.mock('../../../../../hooks/useAlerts', () => ({
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __esModule: true,
-  default: () => ({
-    getFieldAlerts: () => [],
-  }),
-}));
 
 jest.mock('../../modals/pay-with-modal', () => ({
   PayWithModal: ({
@@ -59,7 +67,32 @@ const FROM_ADDRESS_MOCK = '0xabcdef1234567890abcdef1234567890abcdef12';
 
 const mockStore = configureStore([thunk]);
 
-const getMockState = () => ({
+const MOCK_PAY_TOKEN = {
+  address: ADDRESS_MOCK,
+  balanceHuman: '1.5',
+  balanceFiat: '$150.00',
+  balanceRaw: '1500000000000000000',
+  balanceUsd: '150',
+  chainId: CHAIN_ID_MOCK,
+  decimals: 18,
+  symbol: 'ETH',
+} as const;
+
+const MOCK_REQUIRED_TOKEN = {
+  ...MOCK_PAY_TOKEN,
+  allowUnderMinimum: false,
+  amountFiat: '$50.00',
+  amountHuman: '0.5',
+  amountRaw: '500000000000000000',
+  amountUsd: '50',
+  skipIfBalance: false,
+} as const;
+
+const getMockState = ({
+  paymentOverride,
+}: {
+  paymentOverride?: PaymentOverride;
+} = {}) => ({
   metamask: {
     internalAccounts: {
       accounts: {
@@ -104,44 +137,49 @@ const getMockState = () => ({
       },
     },
     multichainNetworkConfigurationsByChainId: {},
+    transactionData: {
+      'test-id': {
+        paymentOverride,
+        paymentToken: MOCK_PAY_TOKEN,
+      },
+    },
   },
 });
-
-const MOCK_PAY_TOKEN = {
-  address: ADDRESS_MOCK,
-  balanceHuman: '1.5',
-  balanceFiat: '$150.00',
-  balanceRaw: '1500000000000000000',
-  balanceUsd: '150',
-  chainId: CHAIN_ID_MOCK,
-  decimals: 18,
-  symbol: 'ETH',
-} as const;
-
-const MOCK_REQUIRED_TOKEN = {
-  ...MOCK_PAY_TOKEN,
-  allowUnderMinimum: false,
-  amountFiat: '$50.00',
-  amountHuman: '0.5',
-  amountRaw: '500000000000000000',
-  amountUsd: '50',
-  skipIfBalance: false,
-} as const;
 
 describe('PayWithRow', () => {
   const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
   );
+  const useTransactionPayAvailableTokensMock = jest.mocked(
+    useTransactionPayAvailableTokens,
+  );
   const useSendTokensMock = jest.mocked(useSendTokens);
   const useConfirmContextMock = jest.mocked(useConfirmContext);
+  const useAlertsMock = jest.mocked(useAlerts);
   const isHardwareAccountMock = jest.mocked(isHardwareAccount);
+  const useMoneyAccountWithdrawableFiatMock = jest.mocked(
+    useMoneyAccountWithdrawableFiat,
+  );
+  const getFieldAlertsMock = jest.fn(
+    (_field?: string | undefined): { key: string }[] => [],
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
 
     useSendTokensMock.mockReturnValue([]);
+    useTransactionPayAvailableTokensMock.mockReturnValue([]);
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
+    getFieldAlertsMock.mockReturnValue([]);
+    useMoneyAccountWithdrawableFiatMock.mockReturnValue({
+      withdrawableFiatFormatted: '$12.34',
+      withdrawableFiatRaw: '12.34',
+    });
+    useAlertsMock.mockReturnValue({
+      alerts: [],
+      getFieldAlerts: getFieldAlertsMock,
+    } as never);
 
     useTransactionPayTokenMock.mockReturnValue({
       payToken: MOCK_PAY_TOKEN,
@@ -206,7 +244,7 @@ describe('PayWithRow', () => {
     expect(screen.queryByTestId('pay-with-modal')).not.toBeInTheDocument();
   });
 
-  it('returns null when no display token available', () => {
+  it('renders empty selection when no display token and no available tokens', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: undefined,
       setPayToken: jest.fn(),
@@ -215,9 +253,60 @@ describe('PayWithRow', () => {
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
 
     const store = mockStore(getMockState());
-    const { container } = renderWithProvider(<PayWithRow />, store);
+    renderWithProvider(<PayWithRow />, store);
 
-    expect(container.firstChild).toBeNull();
+    expect(
+      screen.queryByTestId('pay-with-row-skeleton'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
+    expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
+      'Select payment method',
+    );
+  });
+
+  it('renders skeleton while available tokens exist and pay token is not set', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      setPayToken: jest.fn(),
+      isNative: false,
+    });
+    useTransactionPayRequiredTokensMock.mockReturnValue([]);
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: ADDRESS_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        disabled: false,
+      },
+    ] as never);
+
+    const store = mockStore(getMockState());
+    renderWithProvider(<PayWithRow />, store);
+
+    expect(screen.getByTestId('pay-with-row-skeleton')).toBeInTheDocument();
+  });
+
+  it('renders empty selection placeholder when account has no funds', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      setPayToken: jest.fn(),
+      isNative: false,
+    });
+    useTransactionPayRequiredTokensMock.mockReturnValue([]);
+    useAlertsMock.mockReturnValue({
+      alerts: [{ key: AlertsName.AccountNoFunds }],
+      getFieldAlerts: getFieldAlertsMock,
+    } as never);
+
+    const store = mockStore(getMockState());
+    renderWithProvider(<PayWithRow />, store);
+
+    expect(
+      screen.queryByTestId('pay-with-row-skeleton'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
+    expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
+      'Select payment method',
+    );
   });
 
   it('falls back to first required token when no pay token', () => {
@@ -235,61 +324,60 @@ describe('PayWithRow', () => {
     expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent('ETH');
   });
 
-  it('does not open modal when hardware account', () => {
-    isHardwareAccountMock.mockReturnValue(true);
+  [TransactionType.perpsWithdraw, TransactionType.moneyAccountDeposit].forEach(
+    (transactionType) => {
+      describe(`${transactionType} fallback behaviour`, () => {
+        beforeEach(() => {
+          useTransactionPayTokenMock.mockReturnValue({
+            payToken: undefined,
+            setPayToken: jest.fn(),
+            isNative: false,
+          });
+          useTransactionPayRequiredTokensMock.mockReturnValue([
+            MOCK_REQUIRED_TOKEN,
+          ]);
+          useConfirmContextMock.mockReturnValue({
+            currentConfirmation: {
+              id: 'test-id',
+              type: transactionType,
+              chainId: CHAIN_ID_MOCK,
+              txParams: { from: FROM_ADDRESS_MOCK },
+            },
+          } as never);
+        });
 
-    const store = mockStore(getMockState());
-    renderWithProvider(<PayWithRow />, store);
+        it('does not flash the required token while waiting for payToken', () => {
+          const store = mockStore(getMockState());
+          renderWithProvider(<PayWithRow />, store);
 
-    fireEvent.click(screen.getByTestId('pay-with-pill'));
+          // No funding tokens yet: show the empty selector instead of an
+          // endless skeleton (same as mobile).
+          expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
+          expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
+            'Select payment method',
+          );
+        });
 
-    expect(screen.queryByTestId('pay-with-modal')).not.toBeInTheDocument();
-  });
+        it('renders the resolved payToken once it is set', () => {
+          useTransactionPayTokenMock.mockReturnValue({
+            payToken: MOCK_PAY_TOKEN,
+            setPayToken: jest.fn(),
+            isNative: true,
+          });
 
-  describe('perpsWithdraw fallback behaviour', () => {
-    beforeEach(() => {
-      useTransactionPayTokenMock.mockReturnValue({
-        payToken: undefined,
-        setPayToken: jest.fn(),
-        isNative: false,
+          const store = mockStore(getMockState());
+          renderWithProvider(<PayWithRow />, store);
+
+          expect(
+            screen.queryByTestId('pay-with-row-skeleton'),
+          ).not.toBeInTheDocument();
+          expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
+            'ETH',
+          );
+        });
       });
-      useTransactionPayRequiredTokensMock.mockReturnValue([
-        MOCK_REQUIRED_TOKEN,
-      ]);
-      useConfirmContextMock.mockReturnValue({
-        currentConfirmation: {
-          id: 'test-id',
-          type: TransactionType.perpsWithdraw,
-          chainId: CHAIN_ID_MOCK,
-          txParams: { from: FROM_ADDRESS_MOCK },
-        },
-      } as never);
-    });
-
-    it('renders the skeleton (not the required token) until payToken resolves', () => {
-      const store = mockStore(getMockState());
-      renderWithProvider(<PayWithRow />, store);
-
-      expect(screen.getByTestId('pay-with-row-skeleton')).toBeInTheDocument();
-      expect(screen.queryByTestId('pay-with-symbol')).not.toBeInTheDocument();
-    });
-
-    it('renders the resolved payToken once it is set', () => {
-      useTransactionPayTokenMock.mockReturnValue({
-        payToken: MOCK_PAY_TOKEN,
-        setPayToken: jest.fn(),
-        isNative: true,
-      });
-
-      const store = mockStore(getMockState());
-      renderWithProvider(<PayWithRow />, store);
-
-      expect(
-        screen.queryByTestId('pay-with-row-skeleton'),
-      ).not.toBeInTheDocument();
-      expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent('ETH');
-    });
-  });
+    },
+  );
 
   describe('Default variant (inline row with pill selector)', () => {
     it('renders row with symbol in pill', () => {
@@ -307,15 +395,50 @@ describe('PayWithRow', () => {
 
       expect(screen.getByTestId('pay-with-arrow')).toBeInTheDocument();
     });
+  });
 
-    it('hides arrow icon for hardware account', () => {
-      isHardwareAccountMock.mockReturnValue(true);
+  describe('USD balance', () => {
+    it('renders the parenthesized balance in the default inline row', () => {
+      const store = mockStore(getMockState());
+      renderWithProvider(<PayWithRow />, store);
+
+      expect(screen.getByTestId('pay-with-balance')).toHaveTextContent(
+        '($150.00)',
+      );
+    });
+
+    it('does not render the balance for a perps withdraw', () => {
+      useConfirmContextMock.mockReturnValue({
+        currentConfirmation: {
+          id: 'test-id',
+          type: TransactionType.perpsWithdraw,
+          chainId: CHAIN_ID_MOCK,
+          txParams: { from: FROM_ADDRESS_MOCK },
+        },
+      } as never);
 
       const store = mockStore(getMockState());
       renderWithProvider(<PayWithRow />, store);
 
-      expect(screen.queryByTestId('pay-with-arrow')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('pay-with-balance')).not.toBeInTheDocument();
     });
+  });
+
+  it('renders the Money account icon and balance when selected', () => {
+    const store = mockStore(
+      getMockState({ paymentOverride: PaymentOverride.MoneyAccount }),
+    );
+    renderWithProvider(<PayWithRow />, store);
+
+    expect(
+      screen.getByTestId('pay-with-money-account-icon'),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
+      'Money account',
+    );
+    expect(screen.getByTestId('pay-with-balance')).toHaveTextContent(
+      '($12.34)',
+    );
   });
 });
 

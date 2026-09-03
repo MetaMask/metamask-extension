@@ -10,8 +10,9 @@ export const getDataCollectionForMarketing = (state) =>
 export const getOptedIn = (state) => state.metamask.optedIn === true;
 
 // return true once the user has completed the metrics participation prompt (yes or no)
-export const getCompletedMetaMetricsOnboarding = (state) =>
-  state.metamask.completedMetaMetricsOnboarding === true;
+// Backed by AnalyticsController.consentDecisionMade.
+export const getConsentDecisionMade = (state) =>
+  state.metamask.consentDecisionMade === true;
 
 export const getPna25Acknowledged = (state) => state.metamask.pna25Acknowledged;
 
