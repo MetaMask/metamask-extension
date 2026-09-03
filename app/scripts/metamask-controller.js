@@ -3050,8 +3050,18 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setNewPrivacyPolicyToastShownDate.bind(
           appStateController,
         ),
-      setArcUsageNoticeShown:
-        appStateController.setArcUsageNoticeShown.bind(appStateController),
+      setArcUsageNoticeShown: () => {
+        if (appStateController.state.arcUsageNoticeShown) {
+          return;
+        }
+        appStateController.setArcUsageNoticeShown();
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.ArcUsageNoticeToastViewed)
+            .addCategory(MetaMetricsEventCategory.Home)
+            .addProperties({ chain_id_caip: 'eip155:5042' })
+            .build(),
+        );
+      },
       setSnapsInstallPrivacyWarningShownStatus:
         appStateController.setSnapsInstallPrivacyWarningShownStatus.bind(
           appStateController,
