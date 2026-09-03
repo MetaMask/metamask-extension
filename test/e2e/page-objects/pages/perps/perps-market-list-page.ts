@@ -177,4 +177,13 @@ export class PerpsMarketListPage {
   async waitForFilterSortRow(): Promise<void> {
     await this.driver.waitForSelector(this.filterSortRow);
   }
+
+  /**
+   * Waits for a specific market row to be visible in the list.
+   *
+   * @param symbol - Market symbol, e.g. 'BTC'.
+   */
+  async waitForMarketRow(symbol: string): Promise<void> {
+    await this.driver.waitForSelector({ testId: `market-row-${symbol}` });
+  }
 }
