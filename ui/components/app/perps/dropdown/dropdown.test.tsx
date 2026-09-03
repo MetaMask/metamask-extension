@@ -1,8 +1,8 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import configureStore from '../../../../../store/store';
-import mockState from '../../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../../store/store';
+import mockState from '../../../../../test/data/mock-state.json';
 import { Dropdown, type DropdownOption } from './dropdown';
 
 const mockStore = configureStore({

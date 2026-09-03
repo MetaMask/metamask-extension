@@ -11,6 +11,7 @@ import {
   IconColor,
   ButtonBase,
   ButtonBaseSize,
+  twMerge,
 } from '@metamask/design-system-react';
 
 export type DropdownOption<OptionId extends string> = {
@@ -21,12 +22,32 @@ export type DropdownOption<OptionId extends string> = {
 export type DropdownProps<OptionId extends string> = {
   /** Available options */
   options: DropdownOption<OptionId>[];
-  /** Currently selected option ID */
-  selectedId: OptionId;
+  /**
+   * Currently selected option ID, or `null` when the menu holds no selection —
+   * the category rail's overflow menu never does, because the active category
+   * is promoted into the visible row instead.
+   */
+  selectedId: OptionId | null;
   /** Callback when selection changes */
   onChange: (id: OptionId) => void;
   /** Test ID prefix for testing */
   testId: string;
+  /**
+   * Trigger text. Defaults to the selected option's label, which is what a
+   * picker wants; the category rail's overflow menu passes a standing "More"
+   * instead, because its trigger names the menu rather than the selection.
+   */
+  triggerLabel?: string;
+  /** Extra trigger classes, merged after the default picker styling. */
+  triggerClassName?: string;
+  /** Accessible name for the trigger, when its label is not descriptive alone. */
+  triggerAriaLabel?: string;
+  /**
+   * Extra menu classes, merged after the default left-anchored positioning. A
+   * trigger sitting at the inline end needs `right-0 left-auto`, or its menu
+   * opens past the edge of a narrow window.
+   */
+  menuClassName?: string;
 };
 
 /**
@@ -37,12 +58,20 @@ export type DropdownProps<OptionId extends string> = {
  * @param props.selectedId - Currently selected option ID
  * @param props.onChange - Callback when selection changes
  * @param props.testId - Test ID prefix for testing
+ * @param props.triggerLabel - Trigger text, defaulting to the selected label
+ * @param props.triggerClassName - Extra trigger classes
+ * @param props.triggerAriaLabel - Accessible name for the trigger
+ * @param props.menuClassName - Extra menu classes, for anchoring the menu
  */
 export const Dropdown = <OptionId extends string>({
   options,
   selectedId,
   onChange,
   testId,
+  triggerLabel,
+  triggerClassName,
+  triggerAriaLabel,
+  menuClassName,
 }: DropdownProps<OptionId>) => {
   const [isOpen, setIsOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
@@ -163,15 +192,19 @@ export const Dropdown = <OptionId extends string>({
       <ButtonBase
         ref={triggerRef}
         size={ButtonBaseSize.Sm}
-        className="flex items-center justify-start gap-1 rounded-lg bg-background-muted px-3 py-2 hover:bg-hover active:opacity-70"
+        className={twMerge(
+          'flex items-center justify-start gap-1 rounded-lg bg-background-muted px-3 py-2 hover:bg-hover active:opacity-70',
+          triggerClassName,
+        )}
         onClick={handleToggle}
         onKeyDown={handleTriggerKeyDown}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
+        aria-label={triggerAriaLabel}
         data-testid={`${testId}-button`}
       >
         <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
-          {selectedOption?.label ?? ''}
+          {triggerLabel ?? selectedOption?.label ?? ''}
         </Text>
         <Icon
           name={isOpen ? IconName.ArrowUp : IconName.ArrowDown}
@@ -184,7 +217,10 @@ export const Dropdown = <OptionId extends string>({
       {/* Dropdown menu */}
       {isOpen && (
         <Box
-          className="absolute left-0 top-full z-10 mt-1 min-w-[120px] overflow-hidden rounded-lg border border-border-muted bg-background-default shadow-lg"
+          className={twMerge(
+            'absolute left-0 top-full z-10 mt-1 min-w-[120px] overflow-hidden rounded-lg border border-border-muted bg-background-default shadow-lg',
+            menuClassName,
+          )}
           flexDirection={BoxFlexDirection.Column}
           role="listbox"
           aria-activedescendant={
