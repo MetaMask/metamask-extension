@@ -453,7 +453,7 @@
     "@metamask/network-connection-banner-controller": "^0.2.0",
     "@metamask/network-controller": "^35.0.0",
     "@metamask/network-enablement-controller": "^6.0.0",
-    "@metamask/notification-services-controller": "npm:@metamask-previews/notification-services-controller@26.0.1-preview-1a9713847",
+    "@metamask/notification-services-controller": "^27.0.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
     "@metamask/passkey-controller": "^3.0.0",

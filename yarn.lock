@@ -7946,9 +7946,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:@metamask-previews/notification-services-controller@26.0.1-preview-1a9713847":
-  version: 26.0.1-preview-1a9713847
-  resolution: "@metamask-previews/notification-services-controller@npm:26.0.1-preview-1a9713847"
+"@metamask/notification-services-controller@npm:^27.0.0":
+  version: 27.0.0
+  resolution: "@metamask/notification-services-controller@npm:27.0.0"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
     "@metamask/authenticated-user-storage": "npm:^3.0.2"
@@ -7957,14 +7957,14 @@ __metadata:
     "@metamask/keyring-controller": "npm:^27.1.1"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/profile-sync-controller": "npm:^29.0.0"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^11.12.0"
     bignumber.js: "npm:^9.1.2"
     firebase: "npm:^11.2.0"
     lodash: "npm:^4.17.21"
     loglevel: "npm:^1.8.1"
     semver: "npm:^7.6.3"
     uuid: "npm:^8.3.2"
-  checksum: 10/0e5a5910e5d12ca480c7fc760014ac2b624cbb28d589a40d5950d4aad94ffa90845ad49c63cf76d85a9b985ee6d6cfa85b83e69798a6f2c4534cc104c7f7532f
+  checksum: 10/883bc05ec810d3b3e258d460a8b77e74bb5fe24575ae25b9eefc952b3ed53961e675e17a628687ba9c384da5073a50f46055be0884176e2bd61afa6426b59b75
   languageName: node
   linkType: hard
 
@@ -9222,6 +9222,26 @@ __metadata:
     semver: "npm:^7.5.4"
     uuid: "npm:^9.0.1"
   checksum: 10/c4381b9e451a9616bde84ac659bc0d1848ef06b6e605f877bfa065b78c8ed5015706683ea88a3387de5eaeb3a50d1af9af0994f04f9e06258d992598fe2be3bf
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^11.12.0":
+  version: 11.12.0
+  resolution: "@metamask/utils@npm:11.12.0"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@metamask/scure-bip39": "npm:^2.0.3"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@noble/hashes": "npm:^1.3.1"
+    "@scure/base": "npm:^1.1.3"
+    "@types/debug": "npm:^4.1.7"
+    "@types/lodash": "npm:^4.17.20"
+    debug: "npm:^4.3.4"
+    lodash: "npm:^4.17.21"
+    pony-cause: "npm:^2.1.10"
+    semver: "npm:^7.5.4"
+    uuid: "npm:^9.0.1"
+  checksum: 10/91b21f92858e96499d780ac408b2a6e99aadde9eb566f7413b425f0583aa746d7bfcd7bf4310578723939aa940d3724e91761e68d1db49caac233f533f108052
   languageName: node
   linkType: hard
 
@@ -33460,7 +33480,7 @@ __metadata:
     "@metamask/network-connection-banner-controller": "npm:^0.2.0"
     "@metamask/network-controller": "npm:^35.0.0"
     "@metamask/network-enablement-controller": "npm:^6.0.0"
-    "@metamask/notification-services-controller": "npm:@metamask-previews/notification-services-controller@26.0.1-preview-1a9713847"
+    "@metamask/notification-services-controller": "npm:^27.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/passkey-controller": "npm:^3.0.0"
