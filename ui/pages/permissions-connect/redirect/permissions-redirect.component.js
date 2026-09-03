@@ -29,8 +29,8 @@ import PermissionsConnectFooter from '../../../components/app/permissions-connec
 
 export default function PermissionsRedirect({ subjectMetadata }) {
   const t = useContext(I18nContext);
-  const [lastValidSubjectMetadata, setLastValidSubjectMetadata] = useState(
-    () => (subjectMetadata?.origin ? subjectMetadata : null),
+  const [lastValidSubjectMetadata, setLastValidSubjectMetadata] = useState(() =>
+    subjectMetadata?.origin ? subjectMetadata : null,
   );
 
   // While this redirecting screen is showing, the subject metadata will become invalidated
