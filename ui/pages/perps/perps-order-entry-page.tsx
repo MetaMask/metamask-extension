@@ -2155,13 +2155,13 @@ const PerpsOrderEntryPage = () => {
   // preference flips instead of remounting them and discarding a part-filled
   // order form.
   const formPane = (
-    <Box
+    <form
       key="form"
-      flexDirection={BoxFlexDirection.Column}
       style={{
         minWidth: isOrderBookOpen ? ORDER_BOOK_FORM_MIN_WIDTH_PX : undefined,
       }}
-      className="flex-1 min-w-0 h-full overflow-hidden"
+      className="flex flex-col flex-1 min-w-0 h-full overflow-hidden"
+      onSubmit={handleFormSubmit}
     >
       {/* Scrollable form */}
       <Box
@@ -2280,7 +2280,7 @@ const PerpsOrderEntryPage = () => {
           {isOrderPending ? t('perpsSubmitting') : resolvedButtonText}
         </Button>
       </Box>
-    </Box>
+    </form>
   );
 
   // Draggable divider: resize the order book / form split.
@@ -2340,10 +2340,9 @@ const PerpsOrderEntryPage = () => {
     : [formPane, resizeDivider, orderBookPane];
 
   return (
-    <form
+    <div
       className="main-container asset__container relative overflow-hidden"
       data-testid="parent-selector-perps-order-entry"
-      onSubmit={handleFormSubmit}
     >
       <OrderEntryHeader
         displayName={displayName}
@@ -2471,7 +2470,7 @@ const PerpsOrderEntryPage = () => {
           }
         />
       )}
-    </form>
+    </div>
   );
 };
 

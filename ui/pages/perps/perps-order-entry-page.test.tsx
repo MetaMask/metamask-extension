@@ -1433,6 +1433,8 @@ describe('PerpsOrderEntryPage', () => {
       });
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
+      enterAmount('1000');
+
       await act(async () => {
         fireEvent.click(screen.getByTestId('perps-candle-period-15m'));
       });
@@ -1440,6 +1442,10 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'setPreference',
         ['perpsSelectedCandlePeriod', '15m'],
+      );
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
       );
     });
 
