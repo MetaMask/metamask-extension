@@ -150,6 +150,7 @@ ui/pages/details/templates/ramps/               @MetaMask/money-movement
 ui/pages/permissions-connect/                   @MetaMask/core-extension-ux
 ui/pages/settings                               @MetaMask/core-extension-ux
 ui/components/multichain/                       @MetaMask/core-extension-ux
+app/scripts/lib/defi-referrals/createDefiReferralMiddleware.ts @MetaMask/core-extension-ux
 ui/pages/settings/notifications-tab/**          @MetaMask/core-extension-ux @MetaMask/engagement
 ui/components/multichain/notification*/**       @MetaMask/core-extension-ux @MetaMask/engagement
 ui/components/multichain/notifications*/**      @MetaMask/core-extension-ux @MetaMask/engagement
@@ -250,7 +251,6 @@ test/e2e/benchmarks/utils/thresholds.ts                               @MetaMask/
 # Wallet Integrations
 test/e2e/page-objects/benchmark                                       @MetaMask/core-platform
 test/e2e/playwright/benchmark                                         @MetaMask/core-platform
-app/scripts/lib/defi-referrals/createDefiReferralMiddleware.ts        @MetaMask/core-extension-ux
 app/scripts/lib/rpc-method-middleware                                 @MetaMask/core-platform
 shared/lib/caip25-caveat-merger.ts                                    @MetaMask/core-platform
 test/e2e/flask/multichain-api                                         @MetaMask/core-platform
