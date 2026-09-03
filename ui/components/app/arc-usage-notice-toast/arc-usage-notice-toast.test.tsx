@@ -1,9 +1,10 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { UPDATE_METAMASK_STATE } from '../../../store/actionConstants';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { ArcUsageNoticeToast } from './arc-usage-notice-toast';
 
@@ -68,6 +69,40 @@ describe('ArcUsageNoticeToast', () => {
     );
 
     expect(mockSubmit).toHaveBeenCalledWith('setArcUsageNoticeShown');
+    expect(mockSubmit).toHaveBeenCalledTimes(1);
+  });
+
+  it('stays visible after the background sync flips the flag', () => {
+    const store = createArcStore({ balance: '0xde0b6b3a7640000' });
+    renderWithProvider(<ArcUsageNoticeToast />, store);
+
+    act(() => {
+      store.dispatch({
+        type: UPDATE_METAMASK_STATE,
+        value: { arcUsageNoticeShown: true },
+      });
+    });
+
+    expect(screen.getByTestId('arc-usage-notice-toast')).toBeInTheDocument();
+    expect(mockSubmit).toHaveBeenCalledTimes(1);
+  });
+
+  it('stays hidden after being closed while the flag has not synced yet', () => {
+    const store = createArcStore({ balance: '0xde0b6b3a7640000' });
+    renderWithProvider(<ArcUsageNoticeToast />, store);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+
+    act(() => {
+      store.dispatch({
+        type: UPDATE_METAMASK_STATE,
+        value: { ...store.getState().metamask },
+      });
+    });
+
+    expect(
+      screen.queryByTestId('arc-usage-notice-toast'),
+    ).not.toBeInTheDocument();
   });
 
   it('hides the toast when closed', () => {
