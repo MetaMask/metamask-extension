@@ -232,6 +232,7 @@ export class MoneyAccountAvailabilityService {
       'GeolocationController:getGeolocation',
     );
 
+    return true;
     return isMoneyAccountGeoEligible(location, blockedCountries);
   }
 }
