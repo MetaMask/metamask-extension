@@ -3,7 +3,12 @@ import { screen } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ToastMaster } from './toast-master';
+
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+}));
 
 jest.mock('../perps/perps-withdraw-toast', () => ({
   PerpsWithdrawToast: () => (
@@ -58,5 +63,39 @@ describe('ToastMaster routing', () => {
         screen.queryByTestId('mock-perps-withdraw-toast'),
       ).not.toBeInTheDocument();
     });
+  });
+});
+
+const ARC_ACCOUNT = '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc';
+
+function createArcStore() {
+  return configureStore({
+    metamask: {
+      ...mockState.metamask,
+      isUnlocked: true,
+      arcUsageNoticeShown: false,
+      accountsByChainId: {
+        ...mockState.metamask.accountsByChainId,
+        [CHAIN_IDS.ARC]: { [ARC_ACCOUNT]: { balance: '0xde0b6b3a7640000' } },
+      },
+    },
+    appState: { ...mockState.appState },
+  });
+}
+
+describe('on the home route', () => {
+  it('renders ArcUsageNoticeToast on / and not on /settings', () => {
+    const { unmount } = renderWithProvider(
+      <ToastMaster />,
+      createArcStore(),
+      '/',
+    );
+    expect(screen.getByTestId('arc-usage-notice-toast')).toBeInTheDocument();
+    unmount();
+
+    renderWithProvider(<ToastMaster />, createArcStore(), '/settings');
+    expect(
+      screen.queryByTestId('arc-usage-notice-toast'),
+    ).not.toBeInTheDocument();
   });
 });

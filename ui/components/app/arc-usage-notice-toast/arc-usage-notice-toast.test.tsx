@@ -1,0 +1,112 @@
+import React from 'react';
+import { fireEvent, screen } from '@testing-library/react';
+import configureStore from '../../../store/store';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { submitRequestToBackground } from '../../../store/background-connection';
+import { ArcUsageNoticeToast } from './arc-usage-notice-toast';
+
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+}));
+
+const mockSubmit = submitRequestToBackground as jest.MockedFunction<
+  typeof submitRequestToBackground
+>;
+
+const ARC_ACCOUNT = '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc';
+
+function createArcStore(overrides: {
+  balance?: string;
+  arcUsageNoticeShown?: boolean;
+}) {
+  return configureStore({
+    metamask: {
+      ...mockState.metamask,
+      isUnlocked: true,
+      arcUsageNoticeShown: overrides.arcUsageNoticeShown ?? false,
+      accountsByChainId: {
+        ...mockState.metamask.accountsByChainId,
+        ...(overrides.balance === undefined
+          ? {}
+          : {
+              [CHAIN_IDS.ARC]: {
+                [ARC_ACCOUNT]: { balance: overrides.balance },
+              },
+            }),
+      },
+    },
+    appState: { ...mockState.appState },
+  });
+}
+
+describe('ArcUsageNoticeToast', () => {
+  beforeEach(() => {
+    mockSubmit.mockClear();
+  });
+
+  it('renders when an account holds a non-zero Arc balance and the notice was never shown', () => {
+    renderWithProvider(
+      <ArcUsageNoticeToast />,
+      createArcStore({ balance: '0xde0b6b3a7640000' }),
+    );
+
+    expect(screen.getByTestId('arc-usage-notice-toast')).toBeInTheDocument();
+    expect(screen.getByText('Notice')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'To facilitate and verify your usage of Arc chain, we may share information with Arc team.',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('marks the notice as shown once it renders', () => {
+    renderWithProvider(
+      <ArcUsageNoticeToast />,
+      createArcStore({ balance: '0xde0b6b3a7640000' }),
+    );
+
+    expect(mockSubmit).toHaveBeenCalledWith('setArcUsageNoticeShown');
+  });
+
+  it('hides the toast when closed', () => {
+    renderWithProvider(
+      <ArcUsageNoticeToast />,
+      createArcStore({ balance: '0xde0b6b3a7640000' }),
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+
+    expect(
+      screen.queryByTestId('arc-usage-notice-toast'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not render when the Arc balance is zero', () => {
+    renderWithProvider(
+      <ArcUsageNoticeToast />,
+      createArcStore({ balance: '0x0' }),
+    );
+
+    expect(
+      screen.queryByTestId('arc-usage-notice-toast'),
+    ).not.toBeInTheDocument();
+    expect(mockSubmit).not.toHaveBeenCalled();
+  });
+
+  it('does not render once the notice was shown', () => {
+    renderWithProvider(
+      <ArcUsageNoticeToast />,
+      createArcStore({
+        balance: '0xde0b6b3a7640000',
+        arcUsageNoticeShown: true,
+      }),
+    );
+
+    expect(
+      screen.queryByTestId('arc-usage-notice-toast'),
+    ).not.toBeInTheDocument();
+    expect(mockSubmit).not.toHaveBeenCalled();
+  });
+});
