@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -33,7 +33,7 @@ const AssetOptions = ({
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
   const navigate = useNavigate();
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
-  const ref = useRef(false);
+  const [menuAnchorElement, setMenuAnchorElement] = useState(null);
 
   const routeToAddBlockExplorerUrl = () => {
     navigate(`${NETWORKS_ROUTE}#blockExplorerUrl`);
@@ -66,7 +66,7 @@ const AssetOptions = ({
   };
 
   return (
-    <div ref={ref}>
+    <div ref={setMenuAnchorElement}>
       <ButtonIcon
         className="asset-options__button"
         data-testid="asset-options__button"
@@ -78,7 +78,7 @@ const AssetOptions = ({
       />
       {assetOptionsOpen ? (
         <Menu
-          anchorElement={ref.current}
+          anchorElement={menuAnchorElement}
           onHide={() => setAssetOptionsOpen(false)}
         >
           <MenuItem

@@ -19,29 +19,14 @@
       "count": 1
     }
   },
-  "ui/components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar.tsx": {
-    "react-hooks/refs": {
-      "count": 4
-    }
-  },
   "ui/components/app/assets/nfts/nft-details/nft-full-image.tsx": {
     "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/components/app/assets/nfts/nft-options/nft-options.tsx": {
-    "react-hooks/refs": {
       "count": 1
     }
   },
   "ui/components/app/balance-empty-state/balance-empty-state.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 2
-    }
-  },
-  "ui/components/app/change-password/change-password.tsx": {
-    "react-hooks/refs": {
-      "count": 1
     }
   },
   "ui/components/app/compliance/useComplianceGate.ts": {
@@ -691,26 +676,8 @@
       "count": 1
     }
   },
-  "ui/pages/activity/activity-list.tsx": {
-    "react-hooks/refs": {
-      "count": 3
-    }
-  },
-  "ui/pages/activity/useActivityScreenViewed.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    },
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
   "ui/pages/activity/useTransactionsQuery.ts": {
     "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/pages/asset/components/asset-options.js": {
-    "react-hooks/refs": {
       "count": 1
     }
   },
@@ -1138,11 +1105,6 @@
   "ui/pages/swaps/countdown-timer/countdown-timer.js": {
     "react-hooks/refs": {
       "count": 1
-    }
-  },
-  "ui/pages/token-management/token-management.tsx": {
-    "react-hooks/refs": {
-      "count": 2
     }
   }
 }
