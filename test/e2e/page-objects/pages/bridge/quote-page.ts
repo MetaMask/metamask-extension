@@ -84,6 +84,8 @@ class BridgeQuotePage {
 
   private moreETHneededForGas = '[data-testid="bridge-insufficient-gas"]';
 
+  private moreQuotesButton = '[aria-label="More quotes"]';
+
   private networkFees = '[data-testid="network-fees"]';
 
   private networkNameSelector = (network: string) =>
@@ -95,6 +97,12 @@ class BridgeQuotePage {
 
   private priceImpactQuoteCardButton =
     '[data-testid="price-impact-warning-button"]';
+
+  private quoteOption = '.bridge-quote-option';
+
+  private quotesModal = '.quotes-modal';
+
+  private quotesModalBackButton = '.quotes-modal [aria-label="Back"]';
 
   private rwaGeoRestrictedMessage = {
     css: '[data-testid="bridge-no-quotes"]',
@@ -287,6 +295,50 @@ class BridgeQuotePage {
     );
   };
 
+  /**
+   * Opens the Select quote dialog from More quotes and asserts the Total cost
+   * of every quote, then closes the dialog with Back so the quote selected on
+   * the quote page is left unchanged.
+   *
+   * @param expectedTotalCosts - Total cost values as rendered, cheapest first,
+   * e.g. `['$38.95']` or `['0.0143 ETH']`. Derive them from the mocked quotes
+   * with `getExpectedQuoteTotalCosts` rather than writing amounts by hand.
+   */
+  async checkQuoteTotalCost(expectedTotalCosts: string[]): Promise<void> {
+    await this.driver.clickElement(this.moreQuotesButton);
+    await this.driver.waitForSelector({
+      css: this.quotesModal,
+      text: 'Select quote',
+    });
+
+    // Quotes stream in, so the list keeps re-sorting until the last one lands.
+    await this.driver.waitUntil(
+      async () => {
+        const costs = await this.readQuoteTotalCosts();
+        return costs.length >= expectedTotalCosts.length;
+      },
+      { timeout: this.driver.timeout, interval: 500 },
+    );
+
+    const costs = await this.readQuoteTotalCosts();
+    // Comparing the whole list in order also covers the cheapest-first sorting.
+    assert.deepEqual(
+      costs,
+      expectedTotalCosts,
+      `Unexpected Total cost values: ${costs.join(', ')}`,
+    );
+
+    await this.driver.waitForSelector({
+      css: `${this.quotesModal} ${this.quoteOption}:first-child`,
+      text: 'Lowest cost',
+    });
+
+    await this.driver.clickElementAndWaitToDisappear(
+      this.quotesModalBackButton,
+    );
+    console.log(`Quote total costs are as expected: ${costs.join(', ')}`);
+  }
+
   async checkRwaGeoRestrictedMessageIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.rwaGeoRestrictedMessage);
@@ -469,6 +521,35 @@ class BridgeQuotePage {
     await this.driver.delay(QUOTE_PARAMS_DEBOUNCE_MS);
     await this.driver.clickElement(pickerButton);
   };
+
+  /**
+   * Reads the Total cost of each row in the Select quote dialog, in display
+   * order. Values are returned as rendered, so either a fiat amount (`$2.26`)
+   * or, when the quote has no fiat cost, the native network fee (`0.0143 ETH`).
+   * Rows whose cost has not rendered yet are skipped so callers can wait for
+   * the streamed quotes to arrive.
+   */
+  private async readQuoteTotalCosts(): Promise<string[]> {
+    const costs = (await this.driver.executeScript(`
+      const label = 'Total cost:';
+      return Array.from(
+        document.querySelectorAll('${this.quotesModal} ${this.quoteOption}'),
+      )
+        .map((row) => {
+          const costElement = Array.from(row.querySelectorAll('*')).find(
+            (element) =>
+              element.children.length === 0 &&
+              (element.textContent || '').trim().startsWith(label),
+          );
+          return costElement
+            ? costElement.textContent.trim().slice(label.length).trim()
+            : '';
+        })
+        .filter(Boolean);
+    `)) as string[];
+
+    return costs;
+  }
 
   rejectModal = async () => {
     await this.driver.clickElement(this.warningModalCancelButton);
