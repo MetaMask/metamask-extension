@@ -3,6 +3,8 @@ import { act, fireEvent, screen } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../app/_locales/en/messages.json';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { UPDATE_METAMASK_STATE } from '../../../store/actionConstants';
 import { submitRequestToBackground } from '../../../store/background-connection';
@@ -54,11 +56,11 @@ describe('ArcUsageNoticeToast', () => {
     );
 
     expect(screen.getByTestId('arc-usage-notice-toast')).toBeInTheDocument();
-    expect(screen.getByText('Notice')).toBeInTheDocument();
     expect(
-      screen.getByText(
-        'To facilitate and verify your usage of Arc chain, we may share information with Arc team.',
-      ),
+      screen.getByText(messages.arcUsageNoticeTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.arcUsageNoticeDescription.message),
     ).toBeInTheDocument();
   });
 
@@ -91,7 +93,9 @@ describe('ArcUsageNoticeToast', () => {
     const store = createArcStore({ balance: '0xde0b6b3a7640000' });
     renderWithProvider(<ArcUsageNoticeToast />, store);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.close.message }),
+    );
 
     act(() => {
       store.dispatch({
@@ -111,7 +115,9 @@ describe('ArcUsageNoticeToast', () => {
       createArcStore({ balance: '0xde0b6b3a7640000' }),
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.close.message }),
+    );
 
     expect(
       screen.queryByTestId('arc-usage-notice-toast'),

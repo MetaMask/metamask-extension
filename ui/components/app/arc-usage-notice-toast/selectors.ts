@@ -1,10 +1,16 @@
 import { MetaMaskReduxState } from '../../../store/store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { getAccountTrackerControllerAccountsByChainId } from '../../../../shared/lib/selectors/assets-migration';
+import {
+  getAccountTrackerControllerAccountsByChainId,
+  getTokenBalancesControllerTokenBalances,
+} from '../../../../shared/lib/selectors/assets-migration';
+
+const hasNonZeroBalance = (balance?: string) =>
+  balance ? BigInt(balance) > 0n : false;
 
 /**
  * Whether to show the one-time Arc usage notice: any account holds a non-zero
- * native USDC balance on Arc and the notice has not been shown yet.
+ * balance of any asset on Arc and the notice has not been shown yet.
  *
  * @param state - Redux state object.
  * @returns True if the toast should be shown.
@@ -19,7 +25,15 @@ export function selectShowArcUsageNoticeToast(
   const arcAccounts =
     getAccountTrackerControllerAccountsByChainId(state)[CHAIN_IDS.ARC] ?? {};
 
-  return Object.values(arcAccounts).some(
-    ({ balance }) => Boolean(balance) && BigInt(balance) > 0n,
+  if (
+    Object.values(arcAccounts).some(({ balance }) => hasNonZeroBalance(balance))
+  ) {
+    return true;
+  }
+
+  const tokenBalances = getTokenBalancesControllerTokenBalances(state);
+
+  return Object.values(tokenBalances).some((chains) =>
+    Object.values(chains[CHAIN_IDS.ARC] ?? {}).some(hasNonZeroBalance),
   );
 }
