@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 
@@ -18,22 +18,21 @@ export function useShouldAnimateGasEstimations() {
   );
 
   // Do the animation only when gas prices have changed...
-  const lastGasEstimates = useRef(gasFeeEstimates);
-  const gasEstimatesChanged = !isEqual(
-    lastGasEstimates.current,
-    gasFeeEstimates,
-  );
+  const [lastGasEstimates, setLastGasEstimates] = useState(gasFeeEstimates);
+  const gasEstimatesChanged = !isEqual(lastGasEstimates, gasFeeEstimates);
 
   // ... and only if gas didn't just load
   // Removing this line will cause the initial loading screen to stay empty
-  const gasJustLoaded = isEqual(lastGasEstimates.current, {});
+  const gasJustLoaded = isEqual(lastGasEstimates, {});
 
   if (gasEstimatesChanged) {
-    lastGasEstimates.current = gasFeeEstimates;
+    setLastGasEstimates(gasFeeEstimates);
   }
 
   const showLoadingAnimation =
     isGasEstimatesLoading || (gasEstimatesChanged && !gasJustLoaded);
+
+  const hideAnimationTimerRef = useRef(undefined);
 
   useEffect(() => {
     if (
@@ -45,17 +44,16 @@ export function useShouldAnimateGasEstimations() {
   }, [dispatch, isGasLoadingAnimationActive, showLoadingAnimation]);
 
   useEffect(() => {
-    let timer;
-
     if (isGasLoadingAnimationActive && !showLoadingAnimation) {
-      timer = setTimeout(() => {
+      hideAnimationTimerRef.current = setTimeout(() => {
         dispatch(toggleGasLoadingAnimation(false));
       }, 2000);
     }
 
     return () => {
-      if (timer) {
-        clearTimeout(timer);
+      if (hideAnimationTimerRef.current) {
+        clearTimeout(hideAnimationTimerRef.current);
+        hideAnimationTimerRef.current = undefined;
       }
     };
   }, [dispatch, isGasLoadingAnimationActive, showLoadingAnimation]);

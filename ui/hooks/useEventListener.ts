@@ -22,7 +22,10 @@ export function useEventListener<EventType extends Event = Event>(
   element?: EventTargetOrRef,
 ): void {
   const savedHandler = useRef(handler);
-  savedHandler.current = handler;
+
+  useEffect(() => {
+    savedHandler.current = handler;
+  }, [handler]);
 
   useEffect(() => {
     const target = resolveTarget(element);
