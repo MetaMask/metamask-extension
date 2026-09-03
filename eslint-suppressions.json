@@ -131,18 +131,13 @@
       "count": 1
     }
   },
-  "ui/components/app/qr-hardware-popover/qr-hardware-popover.tsx": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
   "ui/components/app/qr-hardware-popover/qr-hardware-sign-request/qr-hardware-sign-request/qr-hardware-sign-request.tsx": {
     "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
   "ui/components/app/snaps/snap-ui-address-input/snap-ui-address-input.tsx": {
-    "react-hooks/exhaustive-deps": {
+    "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
@@ -152,12 +147,7 @@
     }
   },
   "ui/components/app/snaps/snap-ui-date-time-picker/snap-ui-date-time-picker.tsx": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
-  "ui/components/app/snaps/snap-ui-input/snap-ui-input.tsx": {
-    "react-hooks/exhaustive-deps": {
+    "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
@@ -403,11 +393,6 @@
   "ui/contexts/hardware-wallets/useHardwareWalletConnection.ts": {
     "react-hooks/immutability": {
       "count": 8
-    }
-  },
-  "ui/contexts/snaps/snap-interface.tsx": {
-    "react-hooks/refs": {
-      "count": 2
     }
   },
   "ui/helpers/higher-order-components/with-router-hooks/with-router-hooks.tsx": {
@@ -1143,6 +1128,11 @@
   "ui/pages/token-management/token-management.tsx": {
     "react-hooks/refs": {
       "count": 2
+    }
+  },
+  "ui/components/app/snaps/snap-ui-renderer/snap-ui-renderer.js": {
+    "react-hooks/refs": {
+      "count": 1
     }
   }
 }
