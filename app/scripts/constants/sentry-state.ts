@@ -441,7 +441,6 @@ export const SENTRY_UI_STATE: SentryReduxRootMask = {
     snapsAddSnapAccountModalDismissed: false,
     newPrivacyPolicyToastClickedOrClosed: false,
     newPrivacyPolicyToastShownDate: false,
-    arcUsageNoticeShown: false,
   },
   unconnectedAccount: true,
 };
