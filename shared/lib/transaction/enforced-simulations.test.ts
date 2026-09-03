@@ -221,6 +221,10 @@ describe('enforced-simulations', () => {
   });
 
   describe('hasPendingEnforcedSimulationsTrustSignals', () => {
+    afterEach(() => {
+      delete process.env.FORCE_ENFORCED_SIMULATIONS;
+    });
+
     it('returns true when a nested recipient is loading alongside a benign recipient', () => {
       expect(
         hasPendingEnforcedSimulationsTrustSignals(
@@ -236,6 +240,17 @@ describe('enforced-simulations', () => {
           }),
         ),
       ).toBe(true);
+    });
+
+    it('returns false when enforced simulations are force enabled', () => {
+      process.env.FORCE_ENFORCED_SIMULATIONS = 'true';
+
+      expect(
+        hasPendingEnforcedSimulationsTrustSignals(
+          BASE_TRANSACTION_META,
+          buildState(ResultType.Loading),
+        ),
+      ).toBe(false);
     });
   });
 
