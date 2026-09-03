@@ -17,6 +17,7 @@ import { isPerpsRemoteConfigSatisfied } from '../../../../shared/lib/perps-featu
 import { getBooleanFeatureFlag } from '../../../../shared/lib/remote-feature-flag-utils';
 import {
   HYPERLIQUID_DEPOSIT_USDC_CAIP_ID,
+  HYPERLIQUID_DEPOSIT_USDC_DECIMALS,
   HYPERLIQUID_DEPOSIT_USDC_THRESHOLD,
 } from './constants';
 
@@ -284,17 +285,34 @@ function isDecimalBalanceBelowThreshold(
   threshold: bigint,
 ): boolean {
   try {
-    // AssetsController stores amounts as decimal strings (e.g., "0.1" for 0.1 USDC)
-    // USDC has 6 decimals, so multiply by 10^6 to get raw units
-    const decimalAmount = Number.parseFloat(amount);
-    if (!Number.isFinite(decimalAmount)) {
+    const rawAmount = decimalBalanceToRawUnits(
+      amount,
+      HYPERLIQUID_DEPOSIT_USDC_DECIMALS,
+    );
+    if (rawAmount === undefined) {
       return true;
     }
-    const rawAmount = BigInt(Math.floor(decimalAmount * 1_000_000));
     return rawAmount < threshold;
   } catch {
     return true;
   }
+}
+
+function decimalBalanceToRawUnits(
+  amount: string,
+  decimals: number,
+): bigint | undefined {
+  const trimmed = amount.trim();
+  if (!trimmed || !/^\d+(\.\d+)?$/u.test(trimmed)) {
+    return undefined;
+  }
+
+  const [integerPart = '0', fractionalPart = ''] = trimmed.split('.');
+  const scaledFraction = fractionalPart
+    .padEnd(decimals, '0')
+    .slice(0, decimals);
+
+  return BigInt(`${integerPart}${scaledFraction}`);
 }
 
 function isPositiveDecimalBalance(amount: string | undefined): boolean {

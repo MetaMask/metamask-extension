@@ -8,6 +8,8 @@ export const HYPERLIQUID_DEPOSIT_USDC_CAIP_ID =
 // USDC has 6 decimals, so $10 = 10 × 10^6 = 10,000,000.
 export const HYPERLIQUID_DEPOSIT_USDC_THRESHOLD = 10_000_000n;
 
+export const HYPERLIQUID_DEPOSIT_USDC_DECIMALS = 6;
+
 // EIP-712 typed data identifiers for Hyperliquid's "Enable trading" signature.
 export const HYPERLIQUID_APPROVE_AGENT_PRIMARY_TYPE =
   'HyperliquidTransaction:ApproveAgent';

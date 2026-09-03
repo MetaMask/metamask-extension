@@ -125,6 +125,17 @@ describe('hyperliquid-deposit eligibility', () => {
       ).toBe(true);
     });
 
+    it('returns true for sub-threshold balances without floating-point rounding errors', () => {
+      expect(
+        hasLowArbitrumUsdcBalance({
+          accountId: ACCOUNT_ID,
+          assetsController: createAssetsController(ACCOUNT_ID, {
+            [USDC_ARBITRUM_CAIP]: { amount: '9.999999' },
+          }),
+        }),
+      ).toBe(true);
+    });
+
     it('returns false when Arbitrum USDC balance is at $10 threshold', () => {
       expect(
         hasLowArbitrumUsdcBalance({
