@@ -225,6 +225,23 @@ describe('rpc-error-utils', () => {
         ErrorCode.DeviceDisconnected,
       );
     });
+
+    it('extracts code from a duck-typed KeyringControllerError across the RPC boundary', () => {
+      const error = {
+        name: 'KeyringControllerError',
+        message: 'sign operation failed',
+        cause: new HardwareWalletError('device unavailable', {
+          code: ErrorCode.DeviceDisconnected,
+          severity: Severity.Err,
+          category: Category.Connection,
+          userMessage: 'device unavailable',
+        }),
+      };
+
+      expect(getHardwareWalletErrorCode(error)).toBe(
+        ErrorCode.DeviceDisconnected,
+      );
+    });
   });
 
   describe('toHardwareWalletError', () => {
@@ -842,6 +859,25 @@ describe('rpc-error-utils', () => {
       expect(result.message).toBe(
         'Ledger: Only version 4 of typed data signing is supported',
       );
+    });
+
+    it('maps a duck-typed KeyringControllerError wrapping a HardwareWalletError cause', () => {
+      const error = {
+        name: 'KeyringControllerError',
+        message: 'sign operation failed',
+        cause: new HardwareWalletError('device unavailable', {
+          code: ErrorCode.DeviceDisconnected,
+          severity: Severity.Err,
+          category: Category.Connection,
+          userMessage: 'device unavailable',
+        }),
+      };
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.DeviceDisconnected);
+      expect(result.message).toBe('device unavailable');
     });
 
     it('preserves DeviceStateOnlyV4Supported from a serialized HardwareWalletError', () => {

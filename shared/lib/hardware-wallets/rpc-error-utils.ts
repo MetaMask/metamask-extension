@@ -24,7 +24,10 @@ import {
   refine,
   type Infer,
 } from '@metamask/superstruct';
-import { KeyringControllerError } from '@metamask/keyring-controller';
+import {
+  isKeyringControllerError,
+  KeyringControllerError,
+} from '@metamask/keyring-controller';
 import { TREZOR_DESKTOP_CONNECTION_MISSING_CODE } from '../../constants/hardware-wallets';
 import { extractMessageFromUnknownError } from '../error';
 import { HardwareWalletType } from './types';
@@ -642,21 +645,10 @@ function mapCodeToErrorCode(code: string | number): ErrorCode {
  * @returns The ErrorCode if found, null otherwise
  */
 export function getHardwareWalletErrorCode(error: unknown): ErrorCode | null {
-  if (error instanceof KeyringControllerError) {
+  if (isKeyringControllerError(error) && error.cause !== error) {
     const causeCode = getHardwareWalletErrorCode(error.cause);
     if (causeCode !== null) {
       return causeCode;
-    }
-  } else {
-    const errorAsAny = error as { name?: string; cause?: unknown };
-    if (
-      errorAsAny?.name === 'KeyringControllerError' &&
-      errorAsAny.cause !== error
-    ) {
-      const causeCode = getHardwareWalletErrorCode(errorAsAny.cause);
-      if (causeCode !== null) {
-        return causeCode;
-      }
     }
   }
 
@@ -695,7 +687,7 @@ export function getHardwareWalletErrorCode(error: unknown): ErrorCode | null {
  * @returns True if the error matches known HW error shapes
  */
 export function isHardwareWalletError(error: unknown): boolean {
-  if (error instanceof KeyringControllerError) {
+  if (isKeyringControllerError(error) && error.cause !== error) {
     return isHardwareWalletError(error.cause);
   }
 
@@ -717,15 +709,12 @@ export function isHardwareWalletError(error: unknown): boolean {
 
   const errorAsAny = error as {
     name?: string;
-    cause?: unknown;
     data?: { cause?: { name?: string } };
   };
 
   return (
     errorAsAny?.name === 'HardwareWalletError' ||
-    errorAsAny?.data?.cause?.name === 'HardwareWalletError' ||
-    (errorAsAny?.name === 'KeyringControllerError' &&
-      isHardwareWalletError(errorAsAny?.cause))
+    errorAsAny?.data?.cause?.name === 'HardwareWalletError'
   );
 }
 
@@ -1074,7 +1063,7 @@ export function toHardwareWalletError(
     return error;
   }
 
-  if (error instanceof KeyringControllerError) {
+  if (isKeyringControllerError(error)) {
     return fromKeyringControllerError(error, walletType);
   }
 
