@@ -3050,6 +3050,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setNewPrivacyPolicyToastShownDate.bind(
           appStateController,
         ),
+      setArcUsageNoticeShown:
+        appStateController.setArcUsageNoticeShown.bind(appStateController),
       setSnapsInstallPrivacyWarningShownStatus:
         appStateController.setSnapsInstallPrivacyWarningShownStatus.bind(
           appStateController,
