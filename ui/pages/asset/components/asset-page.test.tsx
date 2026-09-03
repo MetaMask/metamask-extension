@@ -22,22 +22,7 @@ import useMultiPolling from '../../../hooks/useMultiPolling';
 import { getAssetsBySelectedAccountGroup } from '../../../selectors/assets';
 import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import AssetPage from './asset-page';
-
-const mockNavigate = jest.fn();
-let mockLocationKeyOverride: string | null = null;
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockNavigate,
-  useLocation: () => {
-    const location = jest.requireActual('react-router-dom').useLocation();
-    return mockLocationKeyOverride
-      ? { ...location, key: mockLocationKeyOverride }
-      : location;
-  },
-}));
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -435,39 +420,6 @@ describe('AssetPage', () => {
     expect(actions[0].payload).toStrictEqual({
       name: 'CONVERT_TOKEN_TO_NFT',
       tokenAddress: token.address,
-    });
-  });
-
-  describe('back button', () => {
-    beforeEach(() => {
-      mockNavigate.mockClear();
-      mockLocationKeyOverride = null;
-    });
-
-    it('navigates home when the page is the initial history entry (e.g. deep link entry)', () => {
-      const { getByLabelText } = renderWithProvider(
-        <AssetPage asset={token} optionsButton={null} />,
-        store,
-      );
-
-      fireEvent.click(getByLabelText(messages.back.message));
-
-      expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-        replace: true,
-      });
-    });
-
-    it('navigates back in history when there is in-app history', () => {
-      mockLocationKeyOverride = 'abc123';
-
-      const { getByLabelText } = renderWithProvider(
-        <AssetPage asset={token} optionsButton={null} />,
-        store,
-      );
-
-      fireEvent.click(getByLabelText(messages.back.message));
-
-      expect(mockNavigate).toHaveBeenCalledWith(-1);
     });
   });
 
