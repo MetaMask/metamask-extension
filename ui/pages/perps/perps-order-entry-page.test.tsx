@@ -400,6 +400,7 @@ describe('PerpsOrderEntryPage', () => {
     ...mockState,
     metamask: {
       ...mockState.metamask,
+      proLayoutPreferences: { chartExpanded: false },
       remoteFeatureFlags: {
         ...mockState.metamask.remoteFeatureFlags,
         perpsEnabledVersion: perpsEnabled

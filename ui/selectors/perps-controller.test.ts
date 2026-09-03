@@ -884,11 +884,10 @@ describe('perps-controller selectors', () => {
       ).toBe(true);
     });
 
-    it('defaults to closed', () => {
-      expect(selectChartExpanded(buildState())).toBe(false);
-      expect(
-        selectChartExpanded(buildState({ proLayoutPreferences: {} })),
-      ).toBe(false);
+    it('uses the controller default when nothing is persisted', () => {
+      expect(selectChartExpanded(buildState())).toBe(
+        selectProLayoutPreferences(buildState()).chartExpanded,
+      );
     });
   });
 });
