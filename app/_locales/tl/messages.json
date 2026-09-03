@@ -896,12 +896,24 @@
     "message": "Naibenta ang $1",
     "description": "$1 is the token symbol"
   },
+  "activity_receive_failed_description": {
+    "message": "Mula $1",
+    "description": "$1 is the shortened sender address"
+  },
   "activity_receive_failed_title": {
     "message": "Nabigong matanggap"
+  },
+  "activity_receive_pending_description": {
+    "message": "Mula $1",
+    "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
     "message": "Tinatanggap ang $1",
     "description": "$1 is the token symbol"
+  },
+  "activity_receive_success_description": {
+    "message": "Mula $1",
+    "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
     "message": "Natanggap ang $1",
@@ -950,12 +962,24 @@
     "message": "Naibenta ang $1",
     "description": "$1 is the token symbol"
   },
+  "activity_send_failed_description": {
+    "message": "Hanggang $1",
+    "description": "$1 is the shortened recipient address"
+  },
   "activity_send_failed_title": {
     "message": "Nabigong ipadala"
+  },
+  "activity_send_pending_description": {
+    "message": "Hanggang $1",
+    "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
     "message": "Ipinapadala ang $1",
     "description": "$1 is the token symbol"
+  },
+  "activity_send_success_description": {
+    "message": "Hanggang $1",
+    "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
     "message": "Nagpadala ng $1",
@@ -1428,10 +1452,10 @@
     "message": "Minsan ginagaya ng mga umaatake ang mga site sa pamamagitan ng paggawa ng maliliit na pagbabago sa address ng site. Tiyaking nakikipag-ugnayan ka sa nilalayong site bago ka magpatuloy."
   },
   "alertMessageAddressTrustSignal": {
-    "message": "Hindi namin maberipika ang address na ito. Maaring ito ay bago o hindi pa nabeberipika. Magpatuloy lamang kung pinagkakatiwalaan mo ang pinagmulan nito."
+    "message": "Walang sapat na maaasahang history ang mga partner sa seguridad para ma-verify ang address na ito."
   },
   "alertMessageAddressTrustSignalMalicious": {
-    "message": "Kapag kinumpirma mo ang kahilingang ito, malamang na makuha ang mga asset mo ng isang scammer."
+    "message": "Na-flag ng mga partner sa seguridad ang address na ito dahil sa mapaminsalang aktibidad."
   },
   "alertMessageBurnAddress": {
     "message": "Ipapadala mo ang mga asset mo sa burn address. Kapag nagpatuloy ka, mawawala sa iyo ang mga asset mo."
@@ -1501,6 +1525,12 @@
   },
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Hindi masuri ang balanse ng Perps mo. Subukan muli."
+  },
+  "alertReasonAddressTrustSignalMalicious": {
+    "message": "Na-flag ang address bilang may mataas na panganib"
+  },
+  "alertReasonAddressTrustSignalWarning": {
+    "message": "Limitadong mga signal ng adres"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "Unang interaksyon"
@@ -2146,6 +2176,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "Walang impormasyon sa presyo"
   },
+  "bridgeOffHoursDescription": {
+    "message": "Sarado ang Market: Kinalkula ng issuer ang presyo, hindi data ng live market. Maaaring mag-iba ito kapag muling magbukas ang mga merkado sa susunod na available na sesyon ng trading."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Pag-trade pagkatapos ng mga oras"
+  },
   "bridgePoints": {
     "message": "Tinatayang mga point",
     "description": "Label for estimated points that can be earned from a bridge or swap"
@@ -2376,6 +2412,22 @@
   },
   "bridgeSendLoading": {
     "message": "Ipinapadala mula sa chain ng pinagmulan"
+  },
+  "bridgeStellarTrustlineWarningCta": {
+    "message": "I-activate ang $1",
+    "description": "CTA on the Stellar trustline warning banner. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessage": {
+    "message": "Maaaring mabigo ang pag-swap na ito. Sa Stellar, hindi makakatanggap ang iyong account ng $1 hanggang ma-activate ang token sa wallet mo gamit ang valid na trustline.",
+    "description": "Body of the Stellar trustline warning on cross-chain swaps when destination is the active account. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessageDifferentAccount": {
+    "message": "Maaaring mabigo ang pag-swap na ito. Sa Stellar $1 hindi makakatanggap $2 ang iyong account ng hanggang ma-activate ang token sa wallet mo gamit ang valid na trustline.",
+    "description": "Body of the Stellar trustline warning when the destination account is not the active account. $1 is the destination account name; $2 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningTitle": {
+    "message": "I-activate muna ang $1 sa Stellar",
+    "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
   },
   "bridgeSuspicious": {
     "message": "Kahina-hinala"
@@ -3355,6 +3407,9 @@
   "defiTabErrorTitle": {
     "message": "Hindi namin mai-load ang page na ito."
   },
+  "defiUnsupportedEmptyDescription": {
+    "message": "Hindi suportado ng network na ito ang DeFi."
+  },
   "delete": {
     "message": "Tanggalin"
   },
@@ -3477,6 +3532,10 @@
   },
   "disconnectSiteDescriptionText": {
     "message": "Ididiskonekta nito ang lahat ng account mo mula sa $1. Kailangan mong muling kumonekta para magamit muli ito.",
+    "description": "$1 is the site hostname"
+  },
+  "disconnectSiteSuccess": {
+    "message": "Matagumpay na nadiskonekta mula sa $1.",
     "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
@@ -4308,9 +4367,25 @@
     "message": "Gumastos: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
+  "hardwareSwapAmount": {
+    "message": "I-swap ang $1 $2 para sa $3 $4",
+    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappedAmount": {
+    "message": "Na-swap ang $1 $2 para sa $3 $4",
+    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappingAmount": {
+    "message": "Nagsa-swap ang $1 $2 para sa $3 $4",
+    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
   "hardwareToAddress": {
     "message": "Para kay/sa: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareToken": {
+    "message": "Token: $1",
+    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "Tinanggihan mo ang transaksyong ito sa iyong device",
@@ -4368,6 +4443,9 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "Naka-lock ang $1",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleUnsupportedSignature": {
+    "message": "Hindi sinusuportahang lagda"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "Tiyaking ang device mo na $1 ay naka-set up gamit ang Secret Recovery Phrase o passphrase para sa piniling account",
@@ -5272,17 +5350,107 @@
   "money": {
     "message": "Pera"
   },
+  "moneyAccountApyPitch": {
+    "message": "Kumita ng $1% APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchInfo": {
+    "message": "Impormasyon ng APY"
+  },
+  "moneyAccountApyTooltip": {
+    "message": "Ang rate na ipinapakita ay ang tinatayang Annual Percentage Yield (APY) batay sa mga kasalukuyang kondisyon ng market. Nagbabago ang APY at hindi ito garantisado."
+  },
+  "moneyAccountAvailableBalance": {
+    "message": "Available na balanse: $1",
+    "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountProjectedBalance": {
+    "message": "Tinatayang balanse sa 1 taon:"
+  },
+  "moneyAccountProjectedBalanceInfo": {
+    "message": "Tinatayang balanse sa 1 taon"
+  },
+  "moneyAccountProjectedBalanceTooltip": {
+    "message": "Ipinagpapalagay sa pagtatantiya na ang $1% Annual Percentage Yield (APY) ay hindi nagbabago sa loob ng isang taon. Nagbabago ang APY at hindi ito garantisado.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyActivity": {
     "message": "Aktibidad"
   },
+  "moneyActivityConversionFailed": {
+    "message": "Pumalya ang pag-convert"
+  },
+  "moneyActivityConverted": {
+    "message": "Na-convert"
+  },
+  "moneyActivityConverting": {
+    "message": "Ikino-convert"
+  },
+  "moneyActivityDepositFailed": {
+    "message": "Nabigo ang pagdeposito"
+  },
+  "moneyActivityDeposited": {
+    "message": "Naideposito"
+  },
+  "moneyActivityDepositing": {
+    "message": "Idinideposito"
+  },
+  "moneyActivityEmpty": {
+    "message": "Wala pang aktibidad"
+  },
+  "moneyActivityFilterAll": {
+    "message": "Lahat"
+  },
+  "moneyActivityFilterDeposits": {
+    "message": "Mga deposito"
+  },
+  "moneyActivityFilterSends": {
+    "message": "Ipinapadala"
+  },
+  "moneyActivityPending": {
+    "message": "Nakabinbin"
+  },
   "moneyActivityPlaceholderDescription": {
     "message": "Lilitaw ang aktibidad mo sa Money dito."
+  },
+  "moneyActivityReceived": {
+    "message": "Natanggap"
+  },
+  "moneyActivityReceivedFrom": {
+    "message": "Mula kay/sa: $1"
+  },
+  "moneyActivityReceiving": {
+    "message": "Pagtanggap"
+  },
+  "moneyActivitySendFailed": {
+    "message": "Nabigong ipadala"
+  },
+  "moneyActivitySending": {
+    "message": "Ipinapadala"
+  },
+  "moneyActivitySent": {
+    "message": "Ipinadala"
+  },
+  "moneyActivityViewAll": {
+    "message": "Tingnan lahat"
   },
   "moneyAdd": {
     "message": "Idagdag"
   },
   "moneyApy": {
     "message": "$1 APY"
+  },
+  "moneyBalanceInfoBody": {
+    "message": "Laging available ang balanse mong sinusuportahan ng mUSD, gastusin, ipadala, o i-trade ito anumang oras. Hindi namin ito isinasama sa pagkalkula ng kabuuang balanse ng account mo."
+  },
+  "moneyBalanceInfoWithdrawals": {
+    "message": "Kaagad pinoproseso ang mga withdrawal, napapailalim mga oras ng kumpirmasyon ng standard network sa nauugnay na blockchain. Kung mahigpit ang liquidity, posibleng magkaroon ng mga pagkaantala. "
+  },
+  "moneyBalanceLastKnown": {
+    "message": "Huling kilalang balanse"
+  },
+  "moneyBalanceTitle": {
+    "message": "Balanse sa Money"
   },
   "moneyBalanceUnavailable": {
     "message": "Hindi available ang balanse"
@@ -5942,6 +6110,9 @@
   "nftTokenIdPlaceholder": {
     "message": "Ilagay ang id ng token"
   },
+  "nftUnsupportedEmptyDescription": {
+    "message": "Hindi suporta ang mga NFT sa network na ito."
+  },
   "nftWarningContent": {
     "message": "Nagbibigay ka ng access sa $1, kabilang ang anumang maaaring maging pag-aari mo sa hinaharap. Ang partido sa kabilang panig ay maaaring maglipat ng mga NFT na ito mula sa iyong wallet sa anumang oras nang hindi ka tinatanong hanggang sa bawiin mo ang pag-aprubang ito. $2",
     "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
@@ -6532,7 +6703,7 @@
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNotSupported": {
-    "message": "Hindi sinusuportahan ang passkey",
+    "message": "Hindi magagamit ang mga passkey na naka-save sa MetaMask. Subukan muli at i-save ito sa password manager.",
     "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
@@ -7115,6 +7286,15 @@
   "perpsCloseAmount": {
     "message": "Isara ang halaga"
   },
+  "perpsCloseAmountCappedAtPosition": {
+    "message": "Naka-cap ang saradong  halaga sa halaga ng iyong posisyon."
+  },
+  "perpsCloseAmountInPercentLabel": {
+    "message": "Ilagay halaga ng pagsasara bilang porsiyento ng iyong posisyon"
+  },
+  "perpsCloseAmountInUsdLabel": {
+    "message": "Ilagay ang halaga ng pagsasara sa dolyar ng US"
+  },
   "perpsCloseLimitPriceOutsideOracleBand": {
     "message": "Hindi maaaring malayo ng higit sa 95% ang presyo sa market price"
   },
@@ -7126,6 +7306,9 @@
   },
   "perpsClosePartialMinNotional": {
     "message": "Ang mga bahagyang pagsasara ay dapat na hindi bababa sa $1 sa halaga ng USD. Dagdagan ang halaga ng pagsasara o isara ang buong posisyon."
+  },
+  "perpsClosePercentCappedAtMax": {
+    "message": "Naka-cap ang porsiyento ng pagsasara sa 100%."
   },
   "perpsClosePosition": {
     "message": "Isara ang posisyon"
@@ -8436,12 +8619,6 @@
     "message": "Pinakamababa $1",
     "description": "$1 is the minimum fiat buy amount"
   },
-  "rampsPreviouslyUsed": {
-    "message": "Dating ginamit"
-  },
-  "rampsProviders": {
-    "message": "Mga Provider"
-  },
   "rampsQuoteFetchError": {
     "message": "Nabigong kunin ang quote."
   },
@@ -9283,16 +9460,16 @@
     "message": "Mapaminsala"
   },
   "securityTrustMaliciousTokenBannerDescription": {
-    "message": "Na-flag na mapaminsala ang $1. Malamang na magnakaw ito ng pondo mula sa sinumang gagamit nito."
+    "message": "Na-flag ng mga security partner ang $1 bilang mataas na panganib."
   },
   "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
-    "message": "Na-flag na mapaminsala ang token na ito. Malamang na magnakaw ito ng pondo mula sa sinumang gagamit nito."
+    "message": "Nag-flag ng mga security partner ang token na ito bilang mataas na panganib."
   },
   "securityTrustMaliciousTokenSheetDescription": {
-    "message": "Natuklasan ang mga senyales ng malubhang panganib sa $1. Inirerekomenda namin na huwag i-trade ang token na ito."
+    "message": "Na-flag ng mga security partner ang $1 bilang mataas na panganib."
   },
   "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
-    "message": "Natuklasan ang mga senyales ng malubhang panganib sa token na ito. Inirerekomenda namin na huwag i-trade ang token na ito."
+    "message": "Nag-flag ng mga security partner ang token na ito bilang mataas na panganib."
   },
   "securityTrustMaliciousTokenTitle": {
     "message": "Mapanganib na token"
@@ -9322,10 +9499,10 @@
     "message": "Mapanganib"
   },
   "securityTrustRiskyTokenDescription": {
-    "message": "Na-flag na kahina-hinala ang $1. Alamin ang mga panganib bago magpatuloy."
+    "message": "Nakita ng mga security partner ang mga signal ng panganib sa kontrata ng $1 at aktibidad ng pagti-trade."
   },
   "securityTrustRiskyTokenDescriptionNoSymbol": {
-    "message": "Na-flag na mapaminsala ang token na ito. Tingnan ang mga panganib bago ka magpatuloy."
+    "message": "Nakita ng mga security partner ang mga signal ng panganib sa kontrata ng token na ito at aktibidad ng pagti-trade."
   },
   "securityTrustRiskyTokenTitle": {
     "message": "Kahina-hinalang token"
@@ -9337,13 +9514,13 @@
     "message": "Walang natuklasang mga senyales ng panganib. Laging saliksikin ang anumang asset bago mag-trade."
   },
   "securityTrustSubtitleMalicious": {
-    "message": "Natuklasan ang mga senyales ng malubhang panganib. Inirerekomenda namin na iwasan ang asset na ito."
+    "message": "Nag-flag ng mga security partner ang token na ito bilang mataas na panganib."
   },
   "securityTrustSubtitleNoIssues": {
     "message": "Walang natuklasang mga senyales ng panganib. Laging saliksikin ang anumang asset bago mag-trade."
   },
   "securityTrustSubtitleSuspicious": {
-    "message": "Natuklasan ang mga senyales ng pag-iingat sa. Maingat na suriin ang mga nai-flag na isyu bago i-trade ang asset na ito."
+    "message": "Nakita ng mga security partner ang mga signal ng panganib sa kontrata ng token na ito at aktibidad ng pagti-trade."
   },
   "securityTrustSubtitleUnavailable": {
     "message": "Hindi mai-load ang pagsusuri sa seguridad para sa token na ito."
@@ -9352,10 +9529,10 @@
     "message": "Kahina-hinala"
   },
   "securityTrustSuspiciousTokenDescription": {
-    "message": "Ang $1 ay isang kahina-hinalang token."
+    "message": "Nakita ng mga security partner ang mga signal ng panganib sa kontrata ng $1 at aktibidad ng pagti-trade."
   },
   "securityTrustSuspiciousTokenDescriptionNoSymbol": {
-    "message": "Ito ay isang kahina-hinalang token."
+    "message": "Nakita ng mga security partner ang mga signal ng panganib sa kontrata ng token na ito at aktibidad ng pagti-trade."
   },
   "securityTrustTelegram": {
     "message": "Telegram"
