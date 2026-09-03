@@ -7,6 +7,100 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.48.0]
+
+### Uncategorized
+
+- Allowed withdrawals from the money account (#45999)
+- Wire up money account deposit buttons (#45930)
+- Opening Swap from a token's detail page now starts with a token you can actually swap, instead of a token with no balance (#45606)
+- Redesigned the Perps tab header on the wallet home to match the mobile layout: title, large total balance, "$X available", and persistent Withdraw and Add funds buttons. Aggregate unrealized P&L now appears under "Your positions". (#45860)
+- Upgraded design system libraries which update the Checkbox colors (#45733)
+- Stopped showing added protection on networks that do not support address screening (#45732)
+- Do not render balance as zero in the accounts list when we have not fetched the balance. Leave the row empty instead. (#45675)
+- Stopped enforced simulations from running for wallet-initiated transactions (#45698)
+- Horizontally center legacy approval screens (#45779)
+- Reinstate defi referral prompt images for Hyperliquid and Asterdex (#45755)
+- Reinstate showing DeFi and NFTs tabs on the home page with specific empty states when viewing a non-EVM network (#45717)
+- Upgraded `@metamask/subscriptions-controller` to v8 and `@metamask/wallet` to v11 (#45715)
+- Make permissions page show empty state after disconnecting sites and add success toast (#45697)
+- Automatically configured Monad when eligible users accessed Money Account (#45695)
+
+### Added
+
+- Added a transaction details page for Money Account activity (#46004)
+- Added a Complete buy screen after starting a purchase so users can finish checkout in the provider tab with their order details in view (#45981)
+- Added an expandable price chart and live price calculations to the Perps order page (#45985)
+- Added a prompt to fund Hyperliquid with MetaMask Pay when enabling trading on Hyperliquid (#45925)
+- Added security and trust indicators to the token list (#45955)
+- Added a "Top movers" section to the Perps tab, with a Gainers/Losers toggle and a header link to the market list sorted by 24h price change (#45940)
+- Added a Watchlist filter to the Perps market list, and made the Perps tab Watchlist header open it (#45911)
+- Enabled swaps QuoteResponse migration phase 1.5 (#44967)
+- Added a deep link (https://link.metamask.io/privacy) that opens the Privacy & Security settings scrolled to the MetaMetrics or marketing data collection toggle, and fixed the scroll target being lost when the wallet had to be unlocked first (#45504)
+- Added connection trust signals to the connect screen for dapps that connect through MetaMask Connect (#45817)
+- Added address security screening for the targets of batched (EIP-5792) transactions (#45210)
+- Added money account balance to home (#45828)
+- Added chomp API service (#45803)
+- Added address trust-signal scanning for dapp requests made through the Multichain API (#45640)
+- Added a full Activity page for Money Account with All, Deposits, and Sends filters (#45829)
+- Added a warning banner for missing Stellar trustlines during cross-chain swaps (#45693)
+- Added an accounts search bar to dapp connection accounts pages (#45776)
+- Added dollar and percentage amount entry when partially closing a perps position (#45700)
+- Added an Activity list on Money Home for deposits, conversions, receives, and sends (#45761)
+- Added money account hooks (#45748)
+- Added informative error and messages for the passkey PRF not supported error (#45757)
+- Added money account keyring (#45744)
+- Added a warning banner for off-hours trading when swapping or bridging RWA stock tokens, informing users that prices may differ from regular market hours (#45231)
+- Added Mobile-parity SwapQuoteFetch traces (#45667)
+- Added Stellar SNAP (#45692)
+
+### Changed
+
+- Changed Added protection to start disabled for benign transactions while remaining enabled for warning and malicious transactions (#46001)
+- Changed Added protection to start disabled for benign transactions while remaining enabled for warning and malicious transactions (#45962)
+- Migrated users with all toggles on/off to consolidated toggle on/off state (#45958)
+- Changed buy provider selection from a full page to a modal on the payment method screen (#45937)
+- Updated ramps payment method limits to show an “Up to” maximum instead of a min–max range (#45976)
+- Updated input-based confirmations to keep the entered source amount and show the amount received (#45753)
+- Updated the default Robinhood Bridge destination token to USDG (#45888)
+- Updated support link for private keys (#45893)
+- Updated security alert copy for flagged addresses and approval spenders, and the token security risk descriptions (#45513)
+- Updated the DeFi protocol list token avatars to use the design-system AvatarGroup component (#45768)
+- Improved storage resilience and stability (#44010)
+
+### Removed
+
+- Removed the colon in activity list send rows (#45725)
+
+### Fixed
+
+- Display swap quote cost provided by the bridge-api (#45984)
+- Fixed hardware wallet swap and send signing so a disconnected, locked, or timed-out device shows a reconnect prompt instead of a generic transaction failure (#45825)
+- Fixed Ramps provider selection and improved amount input alignment in the buy flow (#46009)
+- Fixed token permit confirmations that could display misleading permission and amount details (#45941)
+- Fixed buying crypto from token pages for tokens whose catalog asset ids differ in address casing, such as mUSD (#45980)
+- Fixed a bug that could cause high CPU usage when rendering badge overlays on avatars and icons (#45949)
+- Fixed the Money tab to display a filled icon when selected (#45952)
+- Fixed a false address poisoning warning on token approvals and other non-send confirmations (#45724)
+- Fixed inconsistent network badge sizing and borders in the Swaps asset picker (#45922)
+- Fixed an uninformative "Something went wrong" error shown when signing version 3 (V3) typed data with a Ledger device; The app now explains that Ledger only supports version 4 (V4) typed data signatures (#45824)
+- Fixed a bug that prevented placing a Perps limit order when the limit price would fill immediately at market (#45874)
+- Fixed SUN -> USDT swaps routed through Rango and SunSwap displaying a zero SUN amount in transaction activity (#45294)
+- Fixed a bug where a crypto purchase could stay stuck on "Pending" in Activity after the funds had already arrived (#45866)
+- Patch spam asset cleanup on unlock (#45865)
+- Fixed hardware wallet confirmations showing incorrect recipients, spenders, and swap details (#45769)
+- Fixed an issue that could make vault recovery repeat after MetaMask restarted (#45762)
+- Fixed provider quote errors and amount-limit handling in the buy flow (#45786)
+- Fixed the Buy flow for supported tokens opened from the Token Details Page (#45778)
+- Fixed small USDC-to-SOL swaps being incorrectly displayed as sends in Solana activity (#44928)
+- Fixed an issue that allowed transactions to be submitted when the native balance could not cover the maximum network fee (#45701)
+- Fixed an issue where the low-confidence "Unconfirmed impersonator" security signal was shown as a warning on the token details page (#45661)
+- Fixed DeFi positions loading (#45666)
+- Removed QuoteMetadata references in useHardwareWalletSignatures (#45760)
+- Fixed a bug that required hardware wallet users to click Cancel twice to dismiss a signature request after it was already rejected or completed on the device (#45740)
+- Fixed a crash when reopening the extension on a Perps screen, which briefly showed an error page and left the back arrow unresponsive (#45734)
+- Fixed Earn on your crypto not showing on funded Money Accounts (#45699)
+
 ## [13.46.1]
 
 ### Fixed
@@ -3079,7 +3173,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.46.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.48.0...HEAD
+[13.48.0]: https://github.com/MetaMask/metamask-extension/compare/v13.46.1...v13.48.0
 [13.46.1]: https://github.com/MetaMask/metamask-extension/compare/v13.46.0...v13.46.1
 [13.46.0]: https://github.com/MetaMask/metamask-extension/compare/v13.45.1...v13.46.0
 [13.45.1]: https://github.com/MetaMask/metamask-extension/compare/v13.45.0...v13.45.1
