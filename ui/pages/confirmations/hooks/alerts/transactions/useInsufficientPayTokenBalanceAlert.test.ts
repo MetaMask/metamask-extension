@@ -25,12 +25,18 @@ import { useTokenWithBalance } from '../../tokens/useTokenWithBalance';
 import { AlertsName } from '../constants';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
+import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { useInsufficientPayTokenBalanceAlert } from './useInsufficientPayTokenBalanceAlert';
 
 jest.mock('../../pay/useTransactionPayToken');
 jest.mock('../../pay/useTransactionPayData');
 jest.mock('../../send/useSendTokens');
 jest.mock('../../tokens/useTokenWithBalance');
+jest.mock('../../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
+  useMoneyAccountWithdrawableFiat: jest.fn(() => ({
+    withdrawableFiatRaw: '10',
+  })),
+}));
 
 const PAY_TOKEN_MOCK = {
   address: '0x123' as Hex,
@@ -142,12 +148,19 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
     useIsTransactionPayLoading,
   );
   const useSendTokensMock = jest.mocked(useSendTokens);
+  const useMoneyAccountWithdrawableFiatMock = jest.mocked(
+    useMoneyAccountWithdrawableFiat,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
 
     // Empty list so the alert falls back to the pay-token snapshot under test.
     useSendTokensMock.mockReturnValue([]);
+    useMoneyAccountWithdrawableFiatMock.mockReturnValue({
+      withdrawableFiatFormatted: '$10.00',
+      withdrawableFiatRaw: '10',
+    });
     useTransactionPayRequiredTokensMock.mockReturnValue([REQUIRED_TOKEN_MOCK]);
     useTransactionPayTotalsMock.mockReturnValue(TOTALS_MOCK);
     useTransactionPayIsMaxAmountMock.mockReturnValue(false);

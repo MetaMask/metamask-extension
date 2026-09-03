@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { debounce, type DebouncedFunc } from 'lodash';
 import { BigNumber } from 'bignumber.js';
 import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import {
   setIsMaxAmount,
@@ -12,6 +14,11 @@ import {
 } from '../../../../store/controller-actions/transaction-pay-controller';
 import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
+import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
+import {
+  selectPaymentOverrideByTransactionId,
+  type TransactionPayState,
+} from '../../../../selectors/transactionPayController';
 import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 import { useConfirmContext } from '../../context/confirm';
 import { usePayWithNoFeeToken } from '../pay/usePayWithNoFeeToken';
@@ -108,8 +115,8 @@ export function useTransactionCustomAmount({
   const userEditedRef = useRef(false);
   // Full-precision human amount from payToken.balanceRaw for money-account
   // deposit Max. Bypasses the lossy fiat roundtrip (ROUND_DOWN → ÷ rate →
-  // ROUND_UP) that can request more than the wallet holds. Matches mobile
-  // `depositMaxHumanRef`. Never paired with isMaxAmount on this flow.
+  // ROUND_UP) that can request more than the wallet holds. The controller's
+  // isMaxAmount path uses the same raw payment-token balance.
   const depositMaxHumanRef = useRef<string | null>(null);
   // Mirrors `userEditedRef` for render-time use: the ref is needed to block
   // prefill synchronously, before the next render, while the state is what the
@@ -163,9 +170,15 @@ export function useTransactionCustomAmount({
   }, [disableUpdate, transactionId, updateTokenAmountCallback]);
 
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+  const isInputBased = totals?.isInputBased === true;
+  // A remounted input-based confirmation must restore the source total, not
+  // the post-fee target amount stored on the required token.
+  const initialAmountUsd = isInputBased
+    ? totals.sourceAmount.usd
+    : primaryRequiredToken?.amountUsd;
 
   const [amountFiatState, setAmountFiat] = useState(
-    new BigNumber(primaryRequiredToken?.amountUsd ?? '0')
+    new BigNumber(initialAmountUsd ?? '0')
       .round(2, BigNumber.ROUND_HALF_UP)
       .toString(10),
   );
@@ -177,7 +190,11 @@ export function useTransactionCustomAmount({
     // fees, not the mUSD being withdrawn — keep the typed amount.
     const targetAmountUsd = totals?.targetAmount?.usd;
 
+    // For input-based quotes, the quote target is the amount received after
+    // fees, not the total source amount selected by Max. Keep the input amount
+    // in state so it does not jump down when the quote resolves.
     if (
+      !isInputBased &&
       !isMoneyAccountWithdraw &&
       isMaxAmount &&
       targetAmountUsd &&
@@ -191,6 +208,7 @@ export function useTransactionCustomAmount({
     return amountFiatState;
   }, [
     amountFiatState,
+    isInputBased,
     isMaxAmount,
     isMoneyAccountWithdraw,
     totals?.targetAmount?.usd,
@@ -325,11 +343,11 @@ export function useTransactionCustomAmount({
       const newAmountFiatValue = new BigNumber(percentage)
         .dividedBy(100)
         .times(balanceUsdValue);
-      // Max deposits also set isMaxAmount, with isMoneyAccountDeposit so TPC
-      // runs them non-atomic instead of substituting token.balanceRaw.
-      // Do not set isMaxAmount for money-account withdraw. TPC would
-      // substitute on-chain mUSD `token.balanceRaw` instead of the typed
-      // vault withdrawable (`vmusdValueInMusd`) total. Matches mobile.
+      // Max deposits set isMaxAmount so TPC uses the exact payment-token raw
+      // balance; isMoneyAccountDeposit also makes the Relay flow non-atomic.
+      // Do not set isMaxAmount for money-account withdraw. The background
+      // controller cannot synchronously read the UI's vault-withdrawable
+      // balance override, so the already-typed amount remains authoritative.
       const shouldSetMaxAmountMode =
         percentage === 100 && !hasBalanceUsdOverride && !isMoneyAccountWithdraw;
       // Keep the displayed fiat rounded except for balanceUsdOverride Max
@@ -562,10 +580,34 @@ export function useTransactionCustomAmount({
 }
 
 function usePayTokenBalanceUsd(balanceUsdOverride?: number) {
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
+  const transactionId = transactionMeta?.id ?? '';
+  const paymentOverride = useSelector((state: TransactionPayState) =>
+    selectPaymentOverrideByTransactionId(state, transactionId),
+  );
+  const isMoneyPaymentOverride =
+    paymentOverride === PaymentOverride.MoneyAccount;
+  const { withdrawableFiatRaw } = useMoneyAccountWithdrawableFiat(
+    isMoneyPaymentOverride,
+  );
   const { balanceUsd } = usePayTokenAccountBalance();
 
   if (balanceUsdOverride !== undefined) {
     return balanceUsdOverride;
+  }
+
+  if (isMoneyPaymentOverride) {
+    if (!withdrawableFiatRaw) {
+      return 0;
+    }
+    // ROUND_DOWN to cents before Max/percentage math so we never set an
+    // amount above the spendable withdrawable balance after display rounding.
+    // `round(dp, rm)`, not `decimalPlaces`: this repo pins `bignumber.js@4`
+    // where `decimalPlaces` is a getter that returns the place *count*.
+    return new BigNumber(withdrawableFiatRaw)
+      .round(2, BigNumber.ROUND_DOWN)
+      .toNumber();
   }
 
   return new BigNumber(balanceUsd ?? 0).toNumber();

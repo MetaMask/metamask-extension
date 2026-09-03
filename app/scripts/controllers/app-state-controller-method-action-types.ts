@@ -75,6 +75,11 @@ export type AppStateControllerSetNewPrivacyPolicyToastShownDateAction = {
   handler: AppStateController['setNewPrivacyPolicyToastShownDate'];
 };
 
+export type AppStateControllerSetArcUsageNoticeShownAction = {
+  type: `AppStateController:setArcUsageNoticeShown`;
+  handler: AppStateController['setArcUsageNoticeShown'];
+};
+
 export type AppStateControllerSetPna25AcknowledgedAction = {
   type: `AppStateController:setPna25Acknowledged`;
   handler: AppStateController['setPna25Acknowledged'];
@@ -494,11 +499,6 @@ export type AppStateControllerSetPendingShieldCohortAction = {
   handler: AppStateController['setPendingShieldCohort'];
 };
 
-export type AppStateControllerSetCanTrackWalletFundsObtainedAction = {
-  type: `AppStateController:setCanTrackWalletFundsObtained`;
-  handler: AppStateController['setCanTrackWalletFundsObtained'];
-};
-
 export type AppStateControllerSetIsWalletResetInProgressAction = {
   type: `AppStateController:setIsWalletResetInProgress`;
   handler: AppStateController['setIsWalletResetInProgress'];
@@ -580,6 +580,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
   | AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction
   | AppStateControllerSetNewPrivacyPolicyToastShownDateAction
+  | AppStateControllerSetArcUsageNoticeShownAction
   | AppStateControllerSetPna25AcknowledgedAction
   | AppStateControllerSetShieldPausedToastLastClickedOrClosedAction
   | AppStateControllerSetShieldEndingToastLastClickedOrClosedAction
@@ -625,7 +626,6 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetPendingRedirectRouteAction
   | AppStateControllerSetLastVisitedRouteAction
   | AppStateControllerSetPendingShieldCohortAction
-  | AppStateControllerSetCanTrackWalletFundsObtainedAction
   | AppStateControllerSetIsWalletResetInProgressAction
   | AppStateControllerGetIsWalletResetInProgressAction
   | AppStateControllerSetDefaultSubscriptionPaymentOptionsAction

@@ -26,16 +26,18 @@ export async function updateTransactionPaymentToken({
 export async function setPaymentOverride(
   transactionId: string,
   {
+    atomic,
     paymentOverride,
     refundTo,
   }: {
+    atomic?: boolean;
     paymentOverride?: PaymentOverride;
     refundTo?: Hex;
   } = {},
 ): Promise<void> {
   return await submitRequestToBackground('setTransactionPayPaymentOverride', [
     transactionId,
-    { paymentOverride, refundTo },
+    { atomic, paymentOverride, refundTo },
   ]);
 }
 
