@@ -361,7 +361,7 @@ const PerpsOrderEntryPage = () => {
   const vipTier = useVipTier();
 
   const { positions: allPositions } = usePerpsLivePositions();
-  const { account } = usePerpsLiveAccount();
+  const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
     usePerpsLiveMarketData();
 
@@ -882,6 +882,7 @@ const PerpsOrderEntryPage = () => {
   const availableBalance = Number.parseFloat(getTradeableBalance(account));
   const hasNoAvailableBalance =
     orderMode === 'new' &&
+    !isLoadingAccount &&
     (!Number.isFinite(availableBalance) ||
       availableBalance < PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC);
   const isPrimaryTradeAction = orderMode !== 'new' || !hasNoAvailableBalance;
@@ -1079,6 +1080,7 @@ const PerpsOrderEntryPage = () => {
 
   const isSubmitDisabled =
     !selectedAddress ||
+    isLoadingAccount ||
     isDepositLoading ||
     isOrderPending ||
     (isPrimaryTradeAction &&

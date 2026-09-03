@@ -1339,6 +1339,25 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('submit-order-button')).toBeDisabled();
     });
 
+    it('does not treat a loading account as unfunded', () => {
+      mockLiveAccount.mockReturnValue({
+        account: null,
+        isInitialLoading: true,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const submitButton = screen.getByTestId('submit-order-button');
+
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).not.toHaveTextContent(
+        messages.perpsAddFundsToTrade.message,
+      );
+      expect(
+        screen.queryByTestId('perps-unfunded-add-funds-hint'),
+      ).not.toBeInTheDocument();
+    });
+
     it('enables submit button and shows add funds to trade when balance is zero', async () => {
       mockLiveAccount.mockReturnValue({
         account: {
@@ -1459,6 +1478,59 @@ describe('PerpsOrderEntryPage', () => {
       expect(mockTriggerDeposit).not.toHaveBeenCalled();
     });
 
+    it('tracks the unfunded amount-input add funds click', async () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          spendableBalance: '0',
+          withdrawableBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+      mockAnalyticsTrackEvent.mockClear();
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('amount-input-add-funds'));
+      });
+
+      expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsUiInteraction,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+              PERPS_EVENT_VALUE.BUTTON_LOCATION.AMOUNT_INPUT,
+            [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: false,
+          }),
+        }),
+      );
+    });
+
+    it('tracks the funded amount-input add funds click', async () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+      mockAnalyticsTrackEvent.mockClear();
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('amount-input-add-funds'));
+      });
+
+      expect(mockTriggerDeposit).toHaveBeenCalledTimes(1);
+      expect(mockAnalyticsTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.PerpsUiInteraction,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+              PERPS_EVENT_VALUE.BUTTON_LOCATION.AMOUNT_INPUT,
+            [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
+          }),
+        }),
+      );
+    });
+
     it('shows geo-block modal instead of placing order when user is not eligible and has balance', async () => {
       mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
       const store = mockStore(createMockState());
@@ -1484,7 +1556,7 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
     });
 
-    it('shows add funds to trade while account state is still loading at zero balance', () => {
+    it('does not show add funds to trade while account state is still loading at zero balance', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
@@ -1498,8 +1570,8 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       const submitButton = screen.getByTestId('submit-order-button');
-      expect(submitButton).not.toBeDisabled();
-      expect(submitButton).toHaveTextContent(
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).not.toHaveTextContent(
         messages.perpsAddFundsToTrade.message,
       );
     });
