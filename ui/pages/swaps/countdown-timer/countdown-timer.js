@@ -42,13 +42,15 @@ export default function CountdownTimer({
 }) {
   const t = useContext(I18nContext);
   const intervalRef = useRef();
-  const initialTimeStartedRef = useRef();
+  const [initialTimeStarted, setInitialTimeStarted] = useState(
+    () => timeStarted || Date.now(),
+  );
 
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
   const swapsQuotePrefetchingRefreshTime = useSelector(
     getSwapsQuotePrefetchingRefreshTime,
   );
-  const refreshTime = initialTimeStartedRef.current
+  const refreshTime = initialTimeStarted
     ? swapsQuoteRefreshTime
     : swapsQuotePrefetchingRefreshTime;
   const timerStart = Number(timerBase) || refreshTime;
@@ -70,14 +72,15 @@ export default function CountdownTimer({
     };
   }, []);
 
-  // Reset the timer that timer has hit '0:00' and the timeStarted prop has changed
+  const shouldResetTimer = timer === 0 && timeStarted !== initialTimeStarted;
+
   useEffect(() => {
-    if (!initialTimeStartedRef.current) {
-      initialTimeStartedRef.current = timeStarted || Date.now();
+    if (!shouldResetTimer) {
+      return undefined;
     }
 
-    if (timer === 0 && timeStarted !== initialTimeStartedRef.current) {
-      initialTimeStartedRef.current = timeStarted;
+    queueMicrotask(() => {
+      setInitialTimeStarted(timeStarted);
       const newCurrentTime = Date.now();
       setCurrentTime(newCurrentTime);
       setTimer(getNewTimer(newCurrentTime, timeStarted, timerStart));
@@ -86,8 +89,10 @@ export default function CountdownTimer({
       intervalRef.current = setInterval(() => {
         setTimer(decreaseTimerByOne);
       }, SECOND);
-    }
-  }, [timeStarted, timer, timerStart]);
+    });
+
+    return undefined;
+  }, [shouldResetTimer, timeStarted, timerStart, initialTimeStarted]);
 
   const formattedTimer = Duration.fromMillis(timer).toFormat('m:ss');
   let time;
