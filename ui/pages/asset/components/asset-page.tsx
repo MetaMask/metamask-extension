@@ -403,11 +403,6 @@ const AssetPage = ({
     setIsMarketClosedModalOpen(true);
   }, []);
 
-  // When the UI was entered directly at this page (e.g. a deep link
-  // redirecting the tab into the extension), there is no in-app history to go
-  // back to — `navigate(-1)` would pop browser history and leave the wallet.
-  // Detect this via location.key being 'default' (initial entry) and navigate
-  // to the home page instead.
   const handleBack = useCallback(() => {
     if (location.key === 'default') {
       navigate(DEFAULT_ROUTE, { replace: true });
