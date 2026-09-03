@@ -97,7 +97,5 @@ export async function importPrivateKeyAccount(
   await accountListPage.checkPageIsLoaded(options.accountListTimeout);
   await accountListPage.addNewImportedAccount(privateKey);
   await homepage.checkPageIsLoaded();
-  // The success toast sits at the bottom of home and intercepts clicks on
-  // later screens (for example the deep-link continue button).
   await homepage.dismissAccountImportedToast();
 }

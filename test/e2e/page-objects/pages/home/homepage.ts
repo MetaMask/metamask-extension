@@ -540,7 +540,6 @@ class HomePage {
   }
 
   async dismissAccountImportedToast(): Promise<void> {
-    console.log('Dismiss account imported toast');
     await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
   }
 
