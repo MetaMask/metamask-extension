@@ -37,33 +37,18 @@ export function usePerpsChannel<TData>(
   const { streamManager, isInitializing } = usePerpsStreamManager();
 
   const getChannelRef = useRef(getChannel);
-  getChannelRef.current = getChannel;
-
   const emptyValueRef = useRef(emptyValue);
-  emptyValueRef.current = emptyValue;
-
   const prevResetKeyRef = useRef<string | number | undefined>(undefined);
 
-  // Initialize state from cache if available (synchronous)
-  const [data, setData] = useState<TData>(() => {
-    if (streamManager) {
-      return getChannelRef.current(streamManager).getCachedData();
-    }
-    return emptyValue;
-  });
+  useLayoutEffect(() => {
+    getChannelRef.current = getChannel;
+    emptyValueRef.current = emptyValue;
+  }, [getChannel, emptyValue]);
 
-  // Track whether we've received real data
+  const [data, setData] = useState<TData>(emptyValue);
+
   const hasReceivedData = useRef(false);
-  const [isInitialLoading, setIsInitialLoading] = useState(() => {
-    if (streamManager) {
-      const channel = getChannelRef.current(streamManager);
-      if (channel.hasCachedData()) {
-        hasReceivedData.current = true;
-        return false;
-      }
-    }
-    return true;
-  });
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useLayoutEffect(() => {
     if (resetKey === undefined || !streamManager) {
