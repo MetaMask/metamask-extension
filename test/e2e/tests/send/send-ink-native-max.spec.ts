@@ -81,10 +81,13 @@ const INK_SUGGESTED_GAS_FEES = {
 const INK_GAS_FEE_STATE = {
   gasFeeEstimates: INK_SUGGESTED_GAS_FEES,
   gasEstimateType: GasEstimateTypes.feeMarket,
+  estimatedGasFeeTimeBounds: {},
 };
 
 function buildInkFixtures(): ReturnType<FixtureBuilderV2['build']> {
-  const fixtures = new FixtureBuilderV2()
+  // Send Max reads `gasFeeEstimatesByChainId` and does not start polling, so
+  // estimates must already be present or Max fills the full balance.
+  return new FixtureBuilderV2()
     .withNetworkController({
       selectedNetworkClientId: INK_NETWORK_CLIENT_ID,
       networkConfigurationsByChainId: {
@@ -136,18 +139,15 @@ function buildInkFixtures(): ReturnType<FixtureBuilderV2['build']> {
         },
       },
     })
+    .withGasFeeController({
+      gasEstimateType: GasEstimateTypes.feeMarket,
+      gasFeeEstimates: INK_SUGGESTED_GAS_FEES,
+      gasFeeEstimatesByChainId: {
+        [INK_CHAIN_ID_HEX]: INK_GAS_FEE_STATE,
+        [INK_CHAIN_ID_DECIMAL_STRING]: INK_GAS_FEE_STATE,
+      },
+    })
     .build();
-
-  // Send Max reads `gasFeeEstimatesByChainId` and does not start polling, so
-  // estimates must already be present or Max fills the full balance.
-  fixtures.data.GasFeeController.gasEstimateType = GasEstimateTypes.feeMarket;
-  fixtures.data.GasFeeController.gasFeeEstimates = INK_SUGGESTED_GAS_FEES;
-  fixtures.data.GasFeeController.gasFeeEstimatesByChainId = {
-    [INK_CHAIN_ID_HEX]: INK_GAS_FEE_STATE,
-    [INK_CHAIN_ID_DECIMAL_STRING]: INK_GAS_FEE_STATE,
-  };
-
-  return fixtures;
 }
 
 async function mockInkApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {

@@ -17,6 +17,7 @@ import type {
   TokenListState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
+import type { GasFeeState } from '@metamask/gas-fee-controller';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
 import { type NameControllerState, NameType } from '@metamask/name-controller';
 import type { PersistedSnapControllerState } from '@metamask/snaps-controllers';
@@ -291,6 +292,15 @@ class FixtureBuilderV2 {
 
   withCurrencyController(data: Partial<CurrencyRateState>): this {
     merge(this.fixture.data.CurrencyController, data);
+    return this;
+  }
+
+  withGasFeeController(
+    data: Partial<{
+      [P in keyof GasFeeState]: GasFeeState[P];
+    }>,
+  ): this {
+    merge(this.fixture.data.GasFeeController, data);
     return this;
   }
 
