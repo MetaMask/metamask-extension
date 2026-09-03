@@ -896,12 +896,24 @@
     "message": "已出售 $1",
     "description": "$1 is the token symbol"
   },
+  "activity_receive_failed_description": {
+    "message": "从 $1",
+    "description": "$1 is the shortened sender address"
+  },
   "activity_receive_failed_title": {
     "message": "接收失败"
+  },
+  "activity_receive_pending_description": {
+    "message": "从 $1",
+    "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
     "message": "正在接收 $1",
     "description": "$1 is the token symbol"
+  },
+  "activity_receive_success_description": {
+    "message": "从 $1",
+    "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
     "message": "已接收 $1",
@@ -950,12 +962,24 @@
     "message": "已出售 $1",
     "description": "$1 is the token symbol"
   },
+  "activity_send_failed_description": {
+    "message": "到 $1",
+    "description": "$1 is the shortened recipient address"
+  },
   "activity_send_failed_title": {
     "message": "发送失败"
+  },
+  "activity_send_pending_description": {
+    "message": "到 $1",
+    "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
     "message": "正在发送 $1",
     "description": "$1 is the token symbol"
+  },
+  "activity_send_success_description": {
+    "message": "到 $1",
+    "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
     "message": "已发送 $1",
@@ -1428,10 +1452,10 @@
     "message": "攻击者有时会通过对网站地址进行细微更改来模仿网站。在继续操作之前，请确保您是与目标网站进行交互。"
   },
   "alertMessageAddressTrustSignal": {
-    "message": "我们无法验证此地址。它可能是新地址或未经验证的地址。除非您信任该来源，否则请勿继续操作。"
+    "message": "安全合作伙伴没有足够可靠的历史记录来验证此地址。"
   },
   "alertMessageAddressTrustSignalMalicious": {
-    "message": "如果您确认此请求，您的资产可能会被骗子窃取。"
+    "message": "安全合作伙伴已将此地址标记为恶意活动。"
   },
   "alertMessageBurnAddress": {
     "message": "您正在将资产发送至销毁地址。若继续操作，您将损失该笔资产。"
@@ -1501,6 +1525,12 @@
   },
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "无法检查您的永续合约余额。请重试。"
+  },
+  "alertReasonAddressTrustSignalMalicious": {
+    "message": "地址已标记为高风险"
+  },
+  "alertReasonAddressTrustSignalWarning": {
+    "message": "地址信号有限"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "首次交互"
@@ -2146,6 +2176,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "无价格信息"
   },
+  "bridgeOffHoursDescription": {
+    "message": "市场已收盘：价格由发行方计算，并非实时市场行情数据。下一交易日市场重新开盘后，价格可能发生变动。"
+  },
+  "bridgeOffHoursTitle": {
+    "message": "非交易时段交易"
+  },
   "bridgePoints": {
     "message": "预计积分",
     "description": "Label for estimated points that can be earned from a bridge or swap"
@@ -2376,6 +2412,22 @@
   },
   "bridgeSendLoading": {
     "message": "正从源链发送"
+  },
+  "bridgeStellarTrustlineWarningCta": {
+    "message": "激活 $1",
+    "description": "CTA on the Stellar trustline warning banner. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessage": {
+    "message": "此兑换可能失败。在 Stellar 网络上，您的账户只有在钱包中通过有效的信任线激活该代币后，才能接收 $1。",
+    "description": "Body of the Stellar trustline warning on cross-chain swaps when destination is the active account. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessageDifferentAccount": {
+    "message": "此兑换可能失败。在 Stellar 网络上，$1 无法接收 $2，除非您切换到该账户并通过有效的信任线激活该代币。",
+    "description": "Body of the Stellar trustline warning when the destination account is not the active account. $1 is the destination account name; $2 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningTitle": {
+    "message": "请先在 Stellar 上激活 $1",
+    "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
   },
   "bridgeSuspicious": {
     "message": "可疑"
@@ -3355,6 +3407,9 @@
   "defiTabErrorTitle": {
     "message": "我们无法加载此页面。"
   },
+  "defiUnsupportedEmptyDescription": {
+    "message": "该网络不支持 DeFi。"
+  },
   "delete": {
     "message": "删除"
   },
@@ -3477,6 +3532,10 @@
   },
   "disconnectSiteDescriptionText": {
     "message": "这将断开您的所有账户与 $1 的连接。您需要重新连接后才能再次使用此 dapp。",
+    "description": "$1 is the site hostname"
+  },
+  "disconnectSiteSuccess": {
+    "message": "已成功断开与 $1 的连接。",
     "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
@@ -4308,9 +4367,25 @@
     "message": "支出方：$1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
+  "hardwareSwapAmount": {
+    "message": "将 $1 $2 兑换为 $3 $4",
+    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappedAmount": {
+    "message": "已将 $1 $2 兑换为 $3 $4",
+    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappingAmount": {
+    "message": "正在将 $1 $2 兑换为 $3 $4",
+    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
   "hardwareToAddress": {
     "message": "至：$1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareToken": {
+    "message": "代币：$1",
+    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "您已在设备上拒绝此交易",
@@ -4368,6 +4443,9 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 已锁定",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleUnsupportedSignature": {
+    "message": "签名不受支持"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "确保您的 $1 设备已使用所选账户对应的私钥助记词或密语进行设置",
@@ -5264,17 +5342,107 @@
   "money": {
     "message": "Money"
   },
+  "moneyAccountApyPitch": {
+    "message": "赚取 $1% 年化收益率",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchInfo": {
+    "message": "年收益率信息"
+  },
+  "moneyAccountApyTooltip": {
+    "message": "显示的利率是根据当前市场行情估算的年化收益率 (APY) 。 APY 会随市场波动，并非固定保证。"
+  },
+  "moneyAccountAvailableBalance": {
+    "message": "可用余额：$1",
+    "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountProjectedBalance": {
+    "message": "预计 1 年后余额:"
+  },
+  "moneyAccountProjectedBalanceInfo": {
+    "message": "预计 1 年后余额"
+  },
+  "moneyAccountProjectedBalanceTooltip": {
+    "message": "预测基于 $1% 的年化收益率（APY）在一年内保持不变。APY 会随市场波动，并非固定保证。",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyActivity": {
     "message": "活动"
   },
+  "moneyActivityConversionFailed": {
+    "message": "兑换失败"
+  },
+  "moneyActivityConverted": {
+    "message": "已兑换"
+  },
+  "moneyActivityConverting": {
+    "message": "正在兑换"
+  },
+  "moneyActivityDepositFailed": {
+    "message": "存款失败"
+  },
+  "moneyActivityDeposited": {
+    "message": "已存款"
+  },
+  "moneyActivityDepositing": {
+    "message": "正在存入"
+  },
+  "moneyActivityEmpty": {
+    "message": "暂无活动"
+  },
+  "moneyActivityFilterAll": {
+    "message": "所有"
+  },
+  "moneyActivityFilterDeposits": {
+    "message": "保证金"
+  },
+  "moneyActivityFilterSends": {
+    "message": "发送"
+  },
+  "moneyActivityPending": {
+    "message": "待定"
+  },
   "moneyActivityPlaceholderDescription": {
     "message": "您的 Money 活动将显示在此处。"
+  },
+  "moneyActivityReceived": {
+    "message": "已收到"
+  },
+  "moneyActivityReceivedFrom": {
+    "message": "从：$1"
+  },
+  "moneyActivityReceiving": {
+    "message": "正在接收"
+  },
+  "moneyActivitySendFailed": {
+    "message": "发送失败"
+  },
+  "moneyActivitySending": {
+    "message": "发送中"
+  },
+  "moneyActivitySent": {
+    "message": "已发送"
+  },
+  "moneyActivityViewAll": {
+    "message": "查看全部"
   },
   "moneyAdd": {
     "message": "添加"
   },
   "moneyApy": {
     "message": "$1 年化收益率"
+  },
+  "moneyBalanceInfoBody": {
+    "message": "您的美元挂钩 mUSD 余额可随时用于消费、转账或交易。我们不会将其计入您的账户总余额。"
+  },
+  "moneyBalanceInfoWithdrawals": {
+    "message": "提现立即处理，但需遵守相关区块链的标准网络确认时间。如果流动性紧张，可能会有临时延迟。"
+  },
+  "moneyBalanceLastKnown": {
+    "message": "最后已知余额"
+  },
+  "moneyBalanceTitle": {
+    "message": "Money 余额"
   },
   "moneyBalanceUnavailable": {
     "message": "余额不可用"
@@ -5866,6 +6034,9 @@
   "nftTokenIdPlaceholder": {
     "message": "输入代币ID"
   },
+  "nftUnsupportedEmptyDescription": {
+    "message": "该网络不支持 NFT。"
+  },
   "nftWarningContent": {
     "message": "您正在授予对 $1 的访问权限，包括您将来可能拥有的任何 NFT。另一端的一方可以随时从您的钱包中转账这些NFT，而无需询问您，直到您撤销此授权。$2",
     "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
@@ -6456,7 +6627,7 @@
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNotSupported": {
-    "message": "不支持通行密钥",
+    "message": "MetaMask 无法使用保存在此处的通行密钥。请重试并将其保存到密码管理工具中。",
     "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
@@ -7036,6 +7207,21 @@
   "perpsCloseAmount": {
     "message": "平仓金额"
   },
+  "perpsCloseAmountCappedAtPosition": {
+    "message": "平仓金额上限为您的仓位价值。"
+  },
+  "perpsCloseAmountInPercent": {
+    "message": "%"
+  },
+  "perpsCloseAmountInPercentLabel": {
+    "message": "请输入平仓金额，作为您仓位的百分比"
+  },
+  "perpsCloseAmountInUsd": {
+    "message": "$"
+  },
+  "perpsCloseAmountInUsdLabel": {
+    "message": "请输入以美元计的平仓金额"
+  },
   "perpsCloseLimitPriceOutsideOracleBand": {
     "message": "价格与市场价格的偏差不能超过 95%"
   },
@@ -7047,6 +7233,9 @@
   },
   "perpsClosePartialMinNotional": {
     "message": "部分平仓的美元价值不得低于 $1。请增加平仓金额，或平掉全部仓位。"
+  },
+  "perpsClosePercentCappedAtMax": {
+    "message": "平仓百分比上限为 100%。"
   },
   "perpsClosePosition": {
     "message": "平仓"
@@ -8343,9 +8532,6 @@
     "message": "最低 $1",
     "description": "$1 is the minimum fiat buy amount"
   },
-  "rampsPreviouslyUsed": {
-    "message": "先前使用的"
-  },
   "rampsQuoteFetchError": {
     "message": "获取报价失败。"
   },
@@ -9183,16 +9369,16 @@
     "message": "恶意"
   },
   "securityTrustMaliciousTokenBannerDescription": {
-    "message": "$1 已被标记为恶意。任何与之交互的人都可能被窃取资金。"
+    "message": "安全合作伙伴将 $1 标记为高风险。"
   },
   "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
-    "message": "此代币已被标记为恶意。任何与之交互的人都可能被窃取资金。"
+    "message": "安全合作伙伴将此代币标记为高风险。"
   },
   "securityTrustMaliciousTokenSheetDescription": {
-    "message": "在 $1 上检测到严重风险信号。建议不要交易此代币。"
+    "message": "安全合作伙伴将 $1 标记为高风险。"
   },
   "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
-    "message": "检测到此代币存在严重风险信号。我们建议不要交易此代币。"
+    "message": "安全合作伙伴将此代币标记为高风险。"
   },
   "securityTrustMaliciousTokenTitle": {
     "message": "恶意代币"
@@ -9222,10 +9408,10 @@
     "message": "高风险"
   },
   "securityTrustRiskyTokenDescription": {
-    "message": "$1 已被标记为可疑。请在继续前仔细查看相关风险。"
+    "message": "安全合作伙伴在 $1 的合约或交易活动中检测到风险信号。"
   },
   "securityTrustRiskyTokenDescriptionNoSymbol": {
-    "message": "此代币已被标记为可疑。请在继续前仔细查看相关风险。"
+    "message": "安全合作伙伴在此代币的合约或交易活动中检测到风险信号。"
   },
   "securityTrustRiskyTokenTitle": {
     "message": "可疑代币"
@@ -9237,13 +9423,13 @@
     "message": "未检测到风险信号。交易任何资产前请务必自行研究。"
   },
   "securityTrustSubtitleMalicious": {
-    "message": "检测到严重风险信号。建议规避此资产。"
+    "message": "安全合作伙伴将此代币标记为高风险。"
   },
   "securityTrustSubtitleNoIssues": {
     "message": "未检测到风险信号。交易任何资产前请务必自行研究。"
   },
   "securityTrustSubtitleSuspicious": {
-    "message": "检测到警示信号。交易此资产前请仔细查看标记的问题。"
+    "message": "安全合作伙伴在此代币的合约或交易活动中检测到风险信号。"
   },
   "securityTrustSubtitleUnavailable": {
     "message": "无法加载此代币的安全分析。"
@@ -9252,10 +9438,10 @@
     "message": "可疑"
   },
   "securityTrustSuspiciousTokenDescription": {
-    "message": "$1 是可疑代币。"
+    "message": "安全合作伙伴在 $1 的合约或交易活动中检测到风险信号。"
   },
   "securityTrustSuspiciousTokenDescriptionNoSymbol": {
-    "message": "此代币是可疑代币。"
+    "message": "安全合作伙伴在此代币的合约或交易活动中检测到风险信号。"
   },
   "securityTrustTelegram": {
     "message": "Telegram"
