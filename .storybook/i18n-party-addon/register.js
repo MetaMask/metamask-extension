@@ -1,7 +1,7 @@
 // Storybook 9: manager APIs live in storybook/manager-api; UI in storybook/internal/components
 const { useGlobals, addons, types } = require('storybook/manager-api');
 const React = require('react');
-const { Icons, IconButton } = require('storybook/internal/components');
+const { IconButton } = require('storybook/internal/components');
 const localeList = require('../../app/_locales/index.json');
 const { useEffect } = React;
 
@@ -31,7 +31,9 @@ addons.register('i18n-party', () => {
         <IconButton
           onClick={() => updateGlobals({ localeParty: !globals.localeParty })}
         >
-          <Icons icon={globals.localeParty ? 'star' : 'starhollow'} />
+          <span aria-hidden="true">
+            {globals.localeParty ? '★' : '☆'}
+          </span>
           <span>&nbsp;Shuffle i18n locale</span>
         </IconButton>
       );
