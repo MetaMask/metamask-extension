@@ -112,16 +112,18 @@ describe('PerpsMarketCategories', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('keeps the pills on one line so a narrow popup scrolls instead of wrapping', () => {
+    it('never turns the rail into a horizontal scroller', () => {
       renderSection();
 
-      const rail = screen.getByTestId('perps-market-categories');
-      const row = screen.getByTestId('perps-market-categories-list');
+      const row = screen.getByTestId('perps-market-categories-row');
 
-      expect(rail).toHaveClass('overflow-x-auto');
-      expect(rail).not.toHaveClass('px-4');
-      expect(row).toHaveClass('w-max', 'flex-nowrap', 'px-4');
-      expect(row).not.toHaveClass('flex-wrap');
+      // Horizontal scroll is the pattern this rail exists to avoid: it hides
+      // pills behind a gesture mouse users cannot see coming and keyboard users
+      // cannot track focus through. Anything that does not fit goes to the
+      // overflow menu instead.
+      expect(row).toHaveClass('overflow-x-clip');
+      expect(row).not.toHaveClass('overflow-x-auto');
+      expect(row).not.toHaveClass('w-max');
     });
 
     it('hides the rail when loading finished with no markets', () => {
@@ -144,7 +146,7 @@ describe('PerpsMarketCategories', () => {
       expect(skeletonPills).toHaveLength(SKELETON_PILL_COUNT);
       skeletonPills.forEach((pill) => expect(pill).toHaveClass(PILL_HEIGHT));
       expect(
-        screen.queryByTestId('perps-market-categories-list'),
+        screen.queryByTestId('perps-market-categories'),
       ).not.toBeInTheDocument();
     });
 

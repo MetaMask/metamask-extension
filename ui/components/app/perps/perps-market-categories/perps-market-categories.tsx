@@ -1,12 +1,6 @@
 import React, { useCallback } from 'react';
-import {
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  Skeleton,
-} from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
-import type { MarketCategoryFilter } from '../../../../../shared/constants/perps';
+import type { MarketFilter } from '../../../../../shared/constants/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsEventTracking } from '../../../../hooks/perps';
 import { PERPS_MARKET_LIST_ROUTE } from '../../../../helpers/constants/routes';
@@ -17,15 +11,7 @@ import {
 } from '../../../../../shared/constants/perps-events';
 import { usePerpsMarketCategories } from '../hooks/usePerpsMarketCategories';
 import type { PerpsMarketData } from '../types';
-import { PerpsMarketCategoryPill } from './perps-market-category-pill';
-
-/**
- * Skeleton pill footprint. Height matches the real pill so the rail occupies
- * its final height from first paint and nothing below it shifts when the
- * categories arrive.
- */
-const SKELETON_PILL_STYLES = 'h-8 w-20 shrink-0 rounded-full';
-const SKELETON_PILL_KEYS = ['a', 'b', 'c', 'd', 'e'];
+import { PerpsCategoryRail } from './perps-category-rail';
 
 export type PerpsMarketCategoriesProps = {
   /** Live markets, owned by the Perps tab's market-list stream. */
@@ -39,10 +25,9 @@ export type PerpsMarketCategoriesProps = {
  * market category present in the live data, each opening the full market list
  * already narrowed to that category.
  *
- * The design system ships no filter-group primitive for web — checked the
- * installed 0.35.1 and the latest published 0.38.0 of
- * `@metamask/design-system-react`, neither exports one — so the rail is
- * composed from `ButtonFilter` inside a horizontal scroller.
+ * The tab holds no filter of its own — a pill navigates rather than filters —
+ * so the rail is given no selection and no clear affordance. The market list it
+ * lands on renders the same rail with both.
  *
  * Receives markets from the Perps tab rather than subscribing itself, so the
  * tab keeps a single owner of the shared market-list price stream.
@@ -61,7 +46,7 @@ export const PerpsMarketCategories = ({
   const categories = usePerpsMarketCategories(markets);
 
   const handleCategoryPress = useCallback(
-    (category: MarketCategoryFilter) => {
+    (category: MarketFilter) => {
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.FILTER_APPLIED,
@@ -74,57 +59,19 @@ export const PerpsMarketCategories = ({
     [navigate, track],
   );
 
-  if (isLoading) {
-    return (
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        gap={2}
-        className="flex-nowrap overflow-hidden px-4"
-        data-testid="perps-market-categories-skeleton"
-      >
-        {SKELETON_PILL_KEYS.map((pillKey) => (
-          <Skeleton
-            key={`perps-market-categories-skeleton-pill-${pillKey}`}
-            className={SKELETON_PILL_STYLES}
-          />
-        ))}
-      </Box>
-    );
-  }
-
   // Once the markets have loaded, a rail carrying only the `all` shortcut means
   // no market data reached the tab at all, so there is nothing to categorise.
-  if (categories.length <= 1) {
+  if (!isLoading && categories.length <= 1) {
     return null;
   }
 
   return (
-    <Box
-      className="overflow-x-auto"
-      role="group"
-      aria-label={t('perpsMarketCategories')}
-      data-testid="perps-market-categories"
-    >
-      {/* Padding lives on the scroll content, matching Top movers: on a flex
-          overflow container, px-4 on the scroller itself is dropped at the
-          inline end. */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        gap={2}
-        className="w-max flex-nowrap px-4"
-        data-testid="perps-market-categories-list"
-      >
-        {categories.map((category) => (
-          <PerpsMarketCategoryPill
-            key={category}
-            category={category}
-            onPress={handleCategoryPress}
-          />
-        ))}
-      </Box>
-    </Box>
+    <PerpsCategoryRail
+      categories={categories}
+      onSelect={handleCategoryPress}
+      isLoading={isLoading}
+      ariaLabel={t('perpsMarketCategories')}
+    />
   );
 };
 
