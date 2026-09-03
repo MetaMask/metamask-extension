@@ -9715,6 +9715,9 @@
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."
   },
+  "selectPerpsAccount": {
+    "message": "Select perps account"
+  },
   "selectRecipient": {
     "message": "Select recipient"
   },
@@ -9755,6 +9758,9 @@
   },
   "sendSelectSendAsset": {
     "message": "Select asset to send"
+  },
+  "sendToPerps": {
+    "message": "Send to Perps"
   },
   "sendingAsset": {
     "message": "Sending $1"
