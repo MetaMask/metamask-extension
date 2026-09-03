@@ -4,12 +4,24 @@
 
 import type { MessengerActions, MessengerEvents } from '@metamask/messenger';
 import { Messenger } from '@metamask/messenger';
+import type { PerpsAgentWalletControllerMessenger } from '@metamask/perps-controller';
 import { getRootMessenger } from '../lib/messenger';
 import { PERPS_AGENT_SETUP_ERROR_CODES } from '../../../shared/constants/perps';
-import type { PerpsAgentWalletControllerMessenger } from '../controllers/perps/agent-wallet/types';
 import { getPerpsAgentWalletControllerMessenger } from './messengers/perps-agent-wallet-controller-messenger';
 import { buildControllerInitRequestMock } from './test/utils';
 import { PerpsAgentWalletControllerInit } from './perps-agent-wallet-controller-init';
+
+// The repo-wide Jest stub for `@metamask/perps-controller` does not include
+// the agent-wallet classes this suite exercises for real. Re-export the stub
+// (for the rest of the module graph) plus the real agent-wallet chunk; the
+// direct file path bypasses the moduleNameMapper stub and the package's
+// exports map, and avoids loading the SDK-heavy PerpsController graph.
+jest.mock('@metamask/perps-controller', () => ({
+  ...jest.requireActual('../../../test/mocks/metamask-perps-controller.js'),
+  ...jest.requireActual(
+    '../../../node_modules/@metamask/perps-controller/dist/agent-wallet/index.cjs',
+  ),
+}));
 
 const MASTER = '0x1111111111111111111111111111111111111111';
 const PASSWORD = 'correct horse battery staple';

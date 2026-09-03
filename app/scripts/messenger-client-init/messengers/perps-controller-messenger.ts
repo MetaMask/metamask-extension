@@ -33,7 +33,7 @@ import type {
   PerpsAgentWalletControllerAgentActivatedEvent,
   PerpsAgentWalletControllerAgentDeactivatedEvent,
   PerpsAgentWalletControllerGetAgentSignerAction,
-} from '../../controllers/perps/agent-wallet/types';
+} from '@metamask/perps-controller';
 import { RewardsControllerGetPerpsDiscountForAccountAction } from '../../controllers/rewards/rewards-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
 

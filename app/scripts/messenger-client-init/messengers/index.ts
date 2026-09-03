@@ -291,7 +291,7 @@ export type { ComplianceServiceMessenger } from './compliance-service-messenger'
 export { getComplianceServiceMessenger } from './compliance-service-messenger';
 export type { PerpsControllerMessenger } from './perps-controller-messenger';
 export { getPerpsControllerMessenger } from './perps-controller-messenger';
-export type { PerpsAgentWalletControllerMessenger } from '../../controllers/perps/agent-wallet/types';
+export type { PerpsAgentWalletControllerMessenger } from '@metamask/perps-controller';
 export { getPerpsAgentWalletControllerMessenger } from './perps-agent-wallet-controller-messenger';
 export { getPhishingControllerMessenger } from './phishing-controller-messenger';
 export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';

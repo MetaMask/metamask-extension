@@ -11,6 +11,10 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import type {
+  AgentRegistration,
+  PerpsAgentWalletSetupStatus,
+} from '@metamask/perps-controller';
 import {
   Modal,
   ModalBody,
@@ -37,12 +41,6 @@ import { getIsPerpsAgentWalletEnabled } from '../../../../selectors/perps/featur
 // The controller types are type-only (erased at build); the flattened-state
 // type deliberately omits perps controller slices, so the UI mirrors the
 // runtime shape locally below and reuses the controller's exported types here.
-/* eslint-disable import-x/no-restricted-paths */
-import type {
-  AgentRegistration,
-  PerpsAgentWalletSetupStatus,
-} from '../../../../../app/scripts/controllers/perps/agent-wallet/types';
-/* eslint-enable import-x/no-restricted-paths */
 
 /**
  * The PerpsAgentWalletController state is flattened onto `state.metamask` by

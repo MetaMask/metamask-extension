@@ -278,6 +278,11 @@ import type {
   PasskeyControllerUnlockWithPasskeyAction,
 } from '@metamask/passkey-controller';
 import { cloneDeep, merge } from 'lodash';
+import type {
+  PerpsAgentWalletControllerOnUnlockAction,
+  PerpsAgentWalletControllerOnPasswordChangeAction,
+  PerpsAgentWalletControllerOnInaccessibleKeysAction,
+} from '@metamask/perps-controller';
 import {
   convertEnglishWordlistIndicesToCodepoints,
   isPublicEndpointUrl,
@@ -319,11 +324,6 @@ import {
 } from '../../../shared/constants/metametrics';
 import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
 import type { UsePPOMAction } from '../lib/ppom/ppom-util';
-import type {
-  PerpsAgentWalletControllerOnUnlockAction,
-  PerpsAgentWalletControllerOnPasswordChangeAction,
-  PerpsAgentWalletControllerOnInaccessibleKeysAction,
-} from '../controllers/perps/agent-wallet/types';
 import {
   OnboardingControllerGetIsSocialLoginFlowAction,
   OnboardingControllerResetOnboardingAction,

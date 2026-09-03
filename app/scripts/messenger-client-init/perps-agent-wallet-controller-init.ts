@@ -1,10 +1,16 @@
-import { PERPS_AGENT_SETUP_ERROR_CODES } from '../../../shared/constants/perps';
 import {
   AgentSetupRejectionError,
   AgentSetupSubmissionError,
-} from '../controllers/perps/agent-wallet/agent-setup-flow';
-import { PerpsAgentWalletController } from '../controllers/perps/agent-wallet/perps-agent-wallet-controller';
-import type { PerpsAgentWalletControllerMessenger } from '../controllers/perps/agent-wallet/types';
+  PerpsAgentWalletController,
+} from '@metamask/perps-controller';
+import type { PerpsAgentWalletControllerMessenger } from '@metamask/perps-controller';
+import log from 'loglevel';
+import { PERPS_AGENT_SETUP_ERROR_CODES } from '../../../shared/constants/perps';
+import {
+  agentWalletAnalytics,
+  agentWalletCrypto,
+  agentWalletEncryptor,
+} from '../controllers/perps/agent-wallet-adapters';
 import type { MessengerClientInitFunction } from './types';
 
 /**
@@ -55,6 +61,10 @@ export const PerpsAgentWalletControllerInit: MessengerClientInitFunction<
   const messengerClient = new PerpsAgentWalletController({
     messenger: controllerMessenger,
     state: persistedState.PerpsAgentWalletController,
+    crypto: agentWalletCrypto,
+    encryptor: agentWalletEncryptor,
+    analytics: agentWalletAnalytics,
+    logger: log,
   });
 
   const api = {

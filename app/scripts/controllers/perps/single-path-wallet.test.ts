@@ -19,11 +19,11 @@ import {
   type PerpsControllerMessenger,
 } from '@metamask/perps-controller';
 
-import { createPerpsInfrastructure } from '../infrastructure';
+import { createPerpsInfrastructure } from './infrastructure';
 
 jest.mock('@metamask/perps-controller', () =>
   jest.requireActual(
-    '../../../../../node_modules/@metamask/perps-controller',
+    '../../../../node_modules/@metamask/perps-controller',
   ),
 );
 
@@ -53,8 +53,8 @@ jest.mock('@nktkas/hyperliquid', () => ({
 }));
 
 const mockTrackEvent = jest.fn();
-jest.mock('../../analytics', () => {
-  const actual = jest.requireActual('../../analytics');
+jest.mock('../analytics', () => {
+  const actual = jest.requireActual('../analytics');
   return {
     ...actual,
     trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
@@ -62,7 +62,7 @@ jest.mock('../../analytics', () => {
 });
 
 const mockCaptureException = jest.fn();
-jest.mock('../../../../../shared/lib/sentry', () => ({
+jest.mock('../../../../shared/lib/sentry', () => ({
   captureException: (...args: unknown[]) => mockCaptureException(...args),
   initSentry: () => undefined,
 }));

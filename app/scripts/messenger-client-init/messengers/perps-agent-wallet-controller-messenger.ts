@@ -3,8 +3,8 @@ import {
   type MessengerActions,
   type MessengerEvents,
 } from '@metamask/messenger';
+import type { PerpsAgentWalletControllerMessenger } from '@metamask/perps-controller';
 
-import type { PerpsAgentWalletControllerMessenger } from '../../controllers/perps/agent-wallet/types';
 import type { RootMessenger } from '../../lib/messenger';
 
 /**
