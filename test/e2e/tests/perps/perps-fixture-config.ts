@@ -10,6 +10,7 @@ import {
   getProductionRemoteFlagDefaults,
 } from '../../feature-flags/feature-flag-registry';
 import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatUnits } from '../../../../shared/lib/unit';
 import {
   MOCK_ETH_OPEN_LONG_FILL,
@@ -31,15 +32,13 @@ const {
   ...PERPS_PROD_REMOTE_FLAGS
 } = PROD_REMOTE_FLAGS;
 
-const ARBITRUM_CHAIN_ID = '0xa4b1';
-const ARBITRUM_CHAIN_ID_DECIMAL = Number(ARBITRUM_CHAIN_ID);
+const ARBITRUM_CHAIN_ID_DECIMAL = Number(CHAIN_IDS.ARBITRUM);
 const ARBITRUM_USDC_ADDRESS: Hex = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831';
 const ARBITRUM_USDC_ASSET_ID =
   'eip155:42161/erc20:0xaf88d065e77c8cc2239327c5edb3a432268e5831';
 const ARBITRUM_NATIVE_ASSET_ID = 'eip155:42161/slip44:60';
 const ARBITRUM_USDC_PRICE_IN_ETH = 1 / 1700;
-const HYPERCORE_CHAIN_ID = '0x539';
-const HYPERCORE_CHAIN_ID_DECIMAL = Number(HYPERCORE_CHAIN_ID);
+const HYPERCORE_CHAIN_ID_DECIMAL = Number(CHAIN_IDS.LOCALHOST);
 const PRICE_API_BASE_URL = 'https://price.api.cx.metamask.io';
 const RELAY_API_BASE_URL = 'https://api.relay.link';
 const RELAY_REQUEST_ID = 'perps-withdraw-e2e-request-id';
@@ -303,6 +302,62 @@ async function mockEligibleFeatureFlags(
       ok: true,
       statusCode: 200,
       json: eligibleFlags,
+    }));
+}
+
+const GAS_API_BASE_URL = 'https://gas.api.cx.metamask.io';
+
+async function mockArbitrumGasData(server: Mockttp): Promise<void> {
+  // Mock the supportedNetworks endpoint to include Arbitrum.
+  // GasFeeController checks this to determine which networks can use gas estimates.
+  await server
+    .forGet(`${GAS_API_BASE_URL}/v1/supportedNetworks`)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.POLYGON,
+        CHAIN_IDS.BSC,
+        CHAIN_IDS.OPTIMISM,
+        CHAIN_IDS.ARBITRUM,
+      ],
+    }));
+
+  await server
+    .forGet(
+      `${GAS_API_BASE_URL}/networks/${ARBITRUM_CHAIN_ID_DECIMAL}/suggestedGasFees`,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        low: {
+          suggestedMaxPriorityFeePerGas: '0.01',
+          suggestedMaxFeePerGas: '0.02',
+          minWaitTimeEstimate: 15000,
+          maxWaitTimeEstimate: 30000,
+        },
+        medium: {
+          suggestedMaxPriorityFeePerGas: '0.025',
+          suggestedMaxFeePerGas: '0.05',
+          minWaitTimeEstimate: 15000,
+          maxWaitTimeEstimate: 45000,
+        },
+        high: {
+          suggestedMaxPriorityFeePerGas: '0.05',
+          suggestedMaxFeePerGas: '0.1',
+          minWaitTimeEstimate: 15000,
+          maxWaitTimeEstimate: 60000,
+        },
+        estimatedBaseFee: '0.01',
+        networkCongestion: 0.1,
+        latestPriorityFeeRange: ['0.01', '0.05'],
+        historicalPriorityFeeRange: ['0.01', '0.1'],
+        historicalBaseFeeRange: ['0.01', '0.02'],
+        priorityFeeTrend: 'stable',
+        baseFeeTrend: 'stable',
+      },
     }));
 }
 
@@ -608,7 +663,7 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
       })
       .withTokensController({
         allTokens: {
-          [ARBITRUM_CHAIN_ID]: {
+          [CHAIN_IDS.ARBITRUM]: {
             [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: [
               {
                 address: ARBITRUM_USDC_ADDRESS,
@@ -625,7 +680,7 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
       })
       .withTokenRatesController({
         marketData: {
-          [ARBITRUM_CHAIN_ID]: {
+          [CHAIN_IDS.ARBITRUM]: {
             [ARBITRUM_USDC_ADDRESS]: ARBITRUM_USDC_MARKET_DATA,
           },
         },
@@ -687,6 +742,7 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         confirmations_pay_post_quote: PERPS_WITHDRAW_CONFIRMATION_ENABLED_FLAG,
       });
+      await mockArbitrumGasData(server);
       await mockArbitrumUsdcPriceData(server);
       await mockRelayWithdrawData(server);
     },
