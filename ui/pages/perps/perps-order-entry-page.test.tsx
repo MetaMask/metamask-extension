@@ -7,6 +7,7 @@ import type {
   Position,
   PerpsMarketData,
 } from '@metamask/perps-controller';
+import { CandlePeriod } from '@metamask/perps-controller';
 import {
   screen,
   fireEvent,
@@ -485,7 +486,7 @@ describe('PerpsOrderEntryPage', () => {
     mockLiveCandles.mockReturnValue({
       candleData: {
         symbol: 'ETH',
-        interval: '5m',
+        interval: CandlePeriod.FiveMinutes,
         candles: [],
       },
       isInitialLoading: false,
@@ -1231,10 +1232,6 @@ describe('PerpsOrderEntryPage', () => {
   });
 
   describe('chart toggle', () => {
-    const expandChart = () => {
-      fireEvent.click(screen.getByTestId('perps-order-entry-chart-toggle'));
-    };
-
     it('renders the chart toggle collapsed by default', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
@@ -1407,7 +1404,7 @@ describe('PerpsOrderEntryPage', () => {
       mockLiveCandles.mockReturnValue({
         candleData: {
           symbol: 'ETH',
-          interval: '5m',
+          interval: CandlePeriod.FiveMinutes,
           candles: [
             {
               time: 1768188300000,
@@ -1441,6 +1438,7 @@ describe('PerpsOrderEntryPage', () => {
             symbol: 'ETH',
             price: '3100',
             timestamp: Date.now(),
+            isTradable: true,
           },
         ]);
       });
