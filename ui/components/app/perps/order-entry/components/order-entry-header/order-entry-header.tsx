@@ -4,11 +4,11 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
+  ButtonIcon,
+  ButtonIconSize,
   FontWeight,
-  Icon,
   IconColor,
   IconName,
-  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -58,18 +58,15 @@ export const OrderEntryHeader = ({
       paddingBottom={4}
       className="grid grid-cols-[1fr_auto_1fr]"
     >
-      <Box
+      <ButtonIcon
+        iconName={IconName.ArrowLeft}
+        ariaLabel={t('back')}
+        size={ButtonIconSize.Md}
+        color={IconColor.IconAlternative}
         data-testid={`${testIdPrefix}-back-button`}
         onClick={onBack}
-        aria-label={t('back')}
-        className="w-9 shrink-0 cursor-pointer justify-self-start"
-      >
-        <Icon
-          name={IconName.ArrowLeft}
-          size={IconSize.Md}
-          color={IconColor.IconAlternative}
-        />
-      </Box>
+        className="w-9 h-9 shrink-0 justify-self-start"
+      />
       <Box
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Center}

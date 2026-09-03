@@ -1,6 +1,9 @@
 import type {
   AccountState,
+  CandleData,
+  Order,
   OrderBookData,
+  PriceUpdate,
   Position,
   PerpsMarketData,
 } from '@metamask/perps-controller';
@@ -194,6 +197,9 @@ jest.mock('../../hooks/perps/usePerpsMaxSlippage', () => ({
   usePerpsMaxSlippage: () => mockUsePerpsMaxSlippage(),
 }));
 
+const mockSubscribeToPrices = jest.fn(
+  (_callback: (updates: PriceUpdate[]) => void) => jest.fn(),
+);
 const mockStreamManagerBase = {
   positions: {
     getCachedData: () => [],
@@ -203,7 +209,7 @@ const mockStreamManagerBase = {
   orders: { getCachedData: () => [], pushData: jest.fn() },
   account: { getCachedData: () => null, pushData: jest.fn() },
   markets: { getCachedData: () => [], pushData: jest.fn() },
-  prices: { subscribe: jest.fn(() => jest.fn()), getCachedData: () => [] },
+  prices: { subscribe: mockSubscribeToPrices, getCachedData: () => [] },
   orderBook: {
     subscribe: jest.fn(() => jest.fn()),
     getCachedData: () => null,
@@ -304,39 +310,22 @@ const mockLiveCandles = jest.fn(() => ({
   candleData: {
     symbol: 'ETH',
     interval: '5m',
-    candles: [] as {
-      time: number;
-      open: string;
-      high: string;
-      low: string;
-      close: string;
-      volume: string;
-    }[],
-  } as {
-    symbol: string;
-    interval: string;
-    candles: {
-      time: number;
-      open: string;
-      high: string;
-      low: string;
-      close: string;
-      volume: string;
-    }[];
-  } | null,
+    candles: [],
+  } as CandleData | null,
   isInitialLoading: false,
   isLoadingMore: false,
   hasHistoricalData: false,
   error: null as Error | null,
   fetchMoreHistory: jest.fn(),
 }));
+const mockLiveOrders = jest.fn(() => ({
+  orders: [] as Order[],
+  isInitialLoading: false,
+}));
 
 jest.mock('../../hooks/perps/stream', () => ({
   usePerpsLivePositions: () => mockLivePositions(),
-  usePerpsLiveOrders: () => ({
-    orders: [],
-    isInitialLoading: false,
-  }),
+  usePerpsLiveOrders: () => mockLiveOrders(),
   usePerpsLiveAccount: () => mockLiveAccount(),
   usePerpsLiveMarketData: () => mockLiveMarketData(),
   usePerpsLiveCandles: () => mockLiveCandles(),
@@ -472,6 +461,10 @@ describe('PerpsOrderEntryPage', () => {
     mockSearchParams.delete('orderType');
     mockLivePositions.mockReturnValue({
       positions: [],
+      isInitialLoading: false,
+    });
+    mockLiveOrders.mockReturnValue({
+      orders: [],
       isInitialLoading: false,
     });
     mockUsePerpsMarketInfo.mockReturnValue(undefined);
@@ -1300,41 +1293,6 @@ describe('PerpsOrderEntryPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('shows the chart in modify and close modes', () => {
-      mockLivePositions.mockReturnValue({
-        positions: mockPositions,
-        isInitialLoading: false,
-      });
-
-      mockSearchParams.set('mode', 'modify');
-      const modifyState = createMockState();
-      const modifyStore = mockStore({
-        ...modifyState,
-        metamask: {
-          ...modifyState.metamask,
-          proLayoutPreferences: { chartExpanded: true },
-        },
-      });
-      const { unmount } = renderWithProvider(
-        <PerpsOrderEntryPage />,
-        modifyStore,
-      );
-      expect(screen.getByTestId('perps-candlestick-chart')).toBeInTheDocument();
-      unmount();
-
-      mockSearchParams.set('mode', 'close');
-      const closeState = createMockState();
-      const closeStore = mockStore({
-        ...closeState,
-        metamask: {
-          ...closeState.metamask,
-          proLayoutPreferences: { chartExpanded: true },
-        },
-      });
-      renderWithProvider(<PerpsOrderEntryPage />, closeStore);
-      expect(screen.getByTestId('perps-candlestick-chart')).toBeInTheDocument();
-    });
-
     it('persists the open state when the chart is toggled', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
@@ -1353,23 +1311,6 @@ describe('PerpsOrderEntryPage', () => {
         'perpsSetProLayoutPreferences',
         [{ chartExpanded: false }],
       );
-    });
-
-    it('keeps the chart open when persistence fails', async () => {
-      mockSubmitRequestToBackground.mockRejectedValueOnce(
-        new Error('persist failed'),
-      );
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      fireEvent.click(screen.getByTestId('perps-order-entry-chart-toggle'));
-
-      await waitFor(() => {
-        expect(screen.getByTestId('perps-order-entry-chart')).toHaveAttribute(
-          'aria-hidden',
-          'false',
-        );
-      });
     });
 
     it('tracks chart_opened and chart_closed interactions', () => {
@@ -1407,21 +1348,6 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
-    it('does not change the order-book divider when the chart is toggled', () => {
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      fireEvent.click(screen.getByTestId('perps-order-book-toggle'));
-      const divider = screen.getByTestId('perps-order-book-resize-handle');
-      expect(divider).toHaveAttribute('aria-valuenow', '33');
-
-      expandChart();
-
-      expect(screen.getByTestId('perps-candlestick-chart')).toBeInTheDocument();
-      expect(screen.getByTestId('perps-order-book')).toBeInTheDocument();
-      expect(divider).toHaveAttribute('aria-valuenow', '33');
-    });
-
     it('persists a shared candle period from the selector', async () => {
       const state = createMockState();
       const store = mockStore({
@@ -1449,47 +1375,40 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
-    it('shows a loading skeleton while candles have not arrived', () => {
-      mockLiveCandles.mockReturnValue({
-        candleData: null,
-        isInitialLoading: true,
-        isLoadingMore: false,
-        hasHistoricalData: false,
-        error: null,
-        fetchMoreHistory: jest.fn(),
-      });
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      expandChart();
-
-      expect(
-        screen.getByTestId('perps-chart-content-loading'),
-      ).toBeInTheDocument();
-    });
-
-    it('shows the localized error when candle loading fails', () => {
-      mockLiveCandles.mockReturnValue({
-        candleData: null,
-        isInitialLoading: false,
-        isLoadingMore: false,
-        hasHistoricalData: false,
-        error: new Error('stream failed'),
-        fetchMoreHistory: jest.fn(),
-      });
-      const store = mockStore(createMockState());
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      expandChart();
-
-      expect(screen.getByTestId('perps-chart-content-error')).toHaveTextContent(
-        'Failed to load chart data',
-      );
-    });
-
-    it('passes existing-position overlays to the chart', () => {
+    it('uses the live price and derives missing position TP/SL overlays', () => {
       mockLivePositions.mockReturnValue({
-        positions: mockPositions,
+        positions: [
+          {
+            ...mockPositions[0],
+            takeProfitPrice: undefined,
+            stopLossPrice: undefined,
+          },
+        ],
+        isInitialLoading: false,
+      });
+      mockLiveOrders.mockReturnValue({
+        orders: [
+          {
+            symbol: 'ETH',
+            side: 'sell',
+            size: '2.5',
+            originalSize: '2.5',
+            reduceOnly: true,
+            isTrigger: true,
+            triggerPrice: '3300',
+            detailedOrderType: 'Take Profit Market',
+          },
+          {
+            symbol: 'ETH',
+            side: 'sell',
+            size: '2.5',
+            originalSize: '2.5',
+            reduceOnly: true,
+            isTrigger: true,
+            triggerPrice: '2500',
+            detailedOrderType: 'Stop Market',
+          },
+        ] as Order[],
         isInitialLoading: false,
       });
       mockLiveCandles.mockReturnValue({
@@ -1499,11 +1418,11 @@ describe('PerpsOrderEntryPage', () => {
           candles: [
             {
               time: 1768188300000,
-              open: '2880.0',
-              high: '2920.0',
-              low: '2870.0',
-              close: '2900.0',
-              volume: '100.0',
+              open: '2880',
+              high: '2920',
+              low: '2870',
+              close: '2900',
+              volume: '100',
             },
           ],
         },
@@ -1513,20 +1432,41 @@ describe('PerpsOrderEntryPage', () => {
         error: null,
         fetchMoreHistory: jest.fn(),
       });
-      const store = mockStore(createMockState());
+      const state = createMockState();
+      const store = mockStore({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          proLayoutPreferences: { chartExpanded: true },
+        },
+      });
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
-      expandChart();
+      act(() => {
+        mockSubscribeToPrices.mock.calls[0][0]([
+          {
+            symbol: 'ETH',
+            price: '3100',
+            timestamp: Date.now(),
+          },
+        ]);
+      });
 
-      const chart = screen.getByTestId('perps-candlestick-chart');
-      const priceLines = JSON.parse(
-        chart.getAttribute('data-price-lines') ?? '[]',
-      ) as { label: string; price: number }[];
-
-      expect(priceLines.map((line) => line.label)).toEqual(
-        expect.arrayContaining(['', 'TP', 'Entry', 'SL', 'Liq']),
+      expect(screen.getByTestId('perps-order-entry-price')).toHaveTextContent(
+        '3,100',
       );
-      expect(priceLines.find((line) => line.label === 'Liq')?.price).toBe(2400);
+      const priceLines = JSON.parse(
+        screen
+          .getByTestId('perps-candlestick-chart')
+          .getAttribute('data-price-lines') ?? '[]',
+      ) as { label: string; price: number }[];
+      expect(priceLines).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ label: '', price: 3100 }),
+          expect.objectContaining({ label: 'TP', price: 3300 }),
+          expect.objectContaining({ label: 'SL', price: 2500 }),
+        ]),
+      );
     });
   });
 

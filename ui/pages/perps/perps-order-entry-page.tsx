@@ -29,6 +29,7 @@ import {
   Button,
   ButtonVariant,
   ButtonSize,
+  Skeleton,
 } from '@metamask/design-system-react';
 import {
   ORDER_SLIPPAGE_CONFIG,
@@ -64,6 +65,7 @@ import {
 } from '../../helpers/constants/routes';
 import {
   usePerpsLivePositions,
+  usePerpsLiveOrders,
   usePerpsLiveAccount,
   usePerpsLiveMarketData,
   usePerpsLiveCandles,
@@ -82,13 +84,13 @@ import {
   TimeDuration,
   ZOOM_CONFIG,
 } from '../../components/app/perps/constants/chartConfig';
-import type { PerpsCandlestickChartRef } from '../../components/app/perps/perps-candlestick-chart';
-import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
 import {
-  PerpsChartContent,
-  PerpsExpandableChartPanel,
-  buildPerpsChartPriceLines,
-} from '../../components/app/perps/perps-chart-content';
+  PerpsCandlestickChart,
+  type PerpsCandlestickChartRef,
+} from '../../components/app/perps/perps-candlestick-chart';
+import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
+import { PerpsExpandableChartPanel } from '../../components/app/perps/perps-chart-content/perps-expandable-chart-panel';
+import { buildPerpsChartPriceLines } from '../../components/app/perps/perps-chart-content/build-perps-chart-price-lines';
 import {
   usePerpsEligibility,
   usePerpsEstimatedSlippage,
@@ -120,6 +122,7 @@ import {
   willFlipPosition,
   getPositionDirection,
 } from '../../components/app/perps/utils';
+import { derivePositionTpslPricesFromOrders } from '../../components/app/perps/utils/orderUtils';
 import { derivePerpsTradeAction } from '../../components/app/perps/utils/deriveTradeAction';
 import {
   parsePerpsDisplayPrice,
@@ -259,6 +262,8 @@ const DEFAULT_MAX_LEVERAGE = 50;
 
 /** Leverage the form seeds when the user has no saved configuration. */
 const DEFAULT_LEVERAGE = 3;
+const ORDER_ENTRY_CHART_HEIGHT = 250;
+const ORDER_ENTRY_CHART_STYLE = { height: ORDER_ENTRY_CHART_HEIGHT };
 
 /**
  * How long the order form must be idle before PERPS_TRANSACTION_CONSIDERED is
@@ -369,6 +374,7 @@ const PerpsOrderEntryPage = () => {
   const vipTier = useVipTier();
 
   const { positions: allPositions } = usePerpsLivePositions();
+  const { orders: allOrders } = usePerpsLiveOrders();
   const { account, isInitialLoading: isLoadingAccount } = usePerpsLiveAccount();
   const { markets: allMarkets, isInitialLoading: marketsLoading } =
     usePerpsLiveMarketData();
@@ -451,11 +457,8 @@ const PerpsOrderEntryPage = () => {
     });
   }, [setFlowAttribution]);
 
-  const { perpsSelectedCandlePeriod: persistedCandlePeriod } = useSelector(
-    getPreferences,
-  ) as {
-    perpsSelectedCandlePeriod?: string;
-  };
+  const { perpsSelectedCandlePeriod: persistedCandlePeriod } =
+    useSelector(getPreferences);
   const resolvedPersistedPeriod =
     persistedCandlePeriod &&
     Object.values(CandlePeriod).includes(persistedCandlePeriod as CandlePeriod)
@@ -889,24 +892,50 @@ const PerpsOrderEntryPage = () => {
     return lastCandle?.close ? Number.parseFloat(lastCandle.close) : 0;
   }, [candleData]);
 
-  const currentPrice = chartCurrentPrice > 0 ? chartCurrentPrice : marketPrice;
+  const liveStreamPrice = Number.parseFloat(livePrice?.price ?? '');
+  let currentPrice = marketPrice;
+  if (chartCurrentPrice > 0) {
+    currentPrice = chartCurrentPrice;
+  }
+  if (Number.isFinite(liveStreamPrice) && liveStreamPrice > 0) {
+    currentPrice = liveStreamPrice;
+  }
   currentPriceRef.current = currentPrice;
+
+  const marketOrders = useMemo(
+    () => allOrders.filter((order) => order.symbol === decodedSymbol),
+    [allOrders, decodedSymbol],
+  );
+  const derivedPositionTpsl = useMemo(
+    () => derivePositionTpslPricesFromOrders(marketOrders, position),
+    [marketOrders, position],
+  );
+  const effectiveTakeProfitPrice =
+    position?.takeProfitPrice ?? derivedPositionTpsl.takeProfitPrice;
+  const effectiveStopLossPrice =
+    position?.stopLossPrice ?? derivedPositionTpsl.stopLossPrice;
 
   const chartPriceLines = useMemo(
     () =>
       buildPerpsChartPriceLines({
-        chartCurrentPrice,
+        chartCurrentPrice: currentPrice,
         isDark,
         position: position
           ? {
               entryPrice: position.entryPrice,
-              takeProfitPrice: position.takeProfitPrice,
-              stopLossPrice: position.stopLossPrice,
+              takeProfitPrice: effectiveTakeProfitPrice,
+              stopLossPrice: effectiveStopLossPrice,
               liquidationPrice: position.liquidationPrice,
             }
           : null,
       }),
-    [chartCurrentPrice, isDark, position],
+    [
+      currentPrice,
+      effectiveStopLossPrice,
+      effectiveTakeProfitPrice,
+      isDark,
+      position,
+    ],
   );
 
   const handlePeriodChange = useCallback((period: CandlePeriod) => {
@@ -1182,14 +1211,8 @@ const PerpsOrderEntryPage = () => {
   }, [position]);
 
   const displayPrice = useMemo(() => {
-    if (chartCurrentPrice > 0) {
-      return formatPerpsFiat(chartCurrentPrice, {
-        ranges: PRICE_RANGES_UNIVERSAL,
-      });
-    }
-    const liveStreamPrice = Number.parseFloat(livePrice?.price ?? '');
-    if (Number.isFinite(liveStreamPrice) && liveStreamPrice > 0) {
-      return formatPerpsFiat(liveStreamPrice, {
+    if (currentPrice > 0) {
+      return formatPerpsFiat(currentPrice, {
         ranges: PRICE_RANGES_UNIVERSAL,
       });
     }
@@ -1204,7 +1227,7 @@ const PerpsOrderEntryPage = () => {
       }
     }
     return '$0.00';
-  }, [market?.price, livePrice?.price, chartCurrentPrice]);
+  }, [currentPrice, market?.price]);
 
   // 24h change prefers live stream updates when available, with market-data fallback.
   const displayChange = formatSignedChangePercent(
@@ -2339,6 +2362,50 @@ const PerpsOrderEntryPage = () => {
     ? [orderBookPane, resizeDivider, formPane]
     : [formPane, resizeDivider, orderBookPane];
 
+  let chartContent: React.ReactNode;
+  if (isCandleLoading && !candleData) {
+    chartContent = (
+      <Skeleton
+        className="w-full rounded-lg"
+        style={ORDER_ENTRY_CHART_STYLE}
+        data-testid="perps-order-entry-chart-loading"
+      />
+    );
+  } else if (candleError && !candleData) {
+    chartContent = (
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+        className="w-full rounded-lg bg-muted"
+        style={ORDER_ENTRY_CHART_STYLE}
+        gap={2}
+        data-testid="perps-order-entry-chart-error"
+      >
+        <Icon
+          name={IconName.Warning}
+          size={IconSize.Lg}
+          color={IconColor.IconAlternative}
+        />
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          {t('perpsChartLoadError')}
+        </Text>
+      </Box>
+    );
+  } else {
+    chartContent = (
+      <PerpsCandlestickChart
+        ref={chartRef}
+        height={ORDER_ENTRY_CHART_HEIGHT}
+        selectedPeriod={selectedPeriod}
+        candleData={candleData}
+        currentPrice={currentPrice}
+        priceLines={chartPriceLines}
+        onNeedMoreHistory={fetchMoreHistory}
+      />
+    );
+  }
+
   return (
     <div
       className="main-container asset__container relative overflow-hidden"
@@ -2403,16 +2470,7 @@ const PerpsOrderEntryPage = () => {
         label={t('perpsChart')}
       >
         <Box paddingLeft={4} paddingRight={4} paddingTop={2}>
-          <PerpsChartContent
-            ref={chartRef}
-            isLoading={isCandleLoading}
-            error={candleError}
-            candleData={candleData}
-            selectedPeriod={selectedPeriod}
-            currentPrice={currentPrice}
-            priceLines={chartPriceLines}
-            onNeedMoreHistory={fetchMoreHistory}
-          />
+          {chartContent}
         </Box>
         <PerpsCandlePeriodSelector
           selectedPeriod={selectedPeriod}

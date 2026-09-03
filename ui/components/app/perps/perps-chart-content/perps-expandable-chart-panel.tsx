@@ -1,8 +1,6 @@
 import React from 'react';
 import { twMerge } from '@metamask/design-system-react';
 
-export const CHART_COLLAPSE_DURATION_MS = 300;
-
 export type PerpsExpandableChartPanelProps = {
   isExpanded: boolean;
   id: string;
@@ -35,7 +33,7 @@ export const PerpsExpandableChartPanel = ({
       aria-hidden={!isExpanded}
       data-testid={id}
       className={twMerge(
-        'grid shrink-0 motion-reduce:transition-none motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-in-out',
+        'grid shrink-0 motion-reduce:transition-none motion-safe:transition-[grid-template-rows,opacity] motion-safe:duration-300 motion-safe:ease-in-out',
         isExpanded
           ? 'grid-rows-[1fr] opacity-100'
           : 'grid-rows-[0fr] opacity-0',

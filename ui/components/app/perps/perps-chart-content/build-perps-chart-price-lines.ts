@@ -48,51 +48,40 @@ export function buildPerpsChartPriceLines({
     return lines;
   }
 
-  if (position.takeProfitPrice) {
-    const tpPrice = parsePerpsDisplayPrice(position.takeProfitPrice);
-    if (!Number.isNaN(tpPrice) && tpPrice > 0) {
-      lines.push({
-        price: tpPrice,
-        label: 'TP',
-        color: isDark ? brandColor.lime100 : brandColor.lime500,
-        lineStyle: 2,
-      });
-    }
-  }
+  const markers = [
+    {
+      value: position.takeProfitPrice,
+      label: 'TP',
+      color: isDark ? brandColor.lime100 : brandColor.lime500,
+    },
+    {
+      value: position.entryPrice,
+      label: 'Entry',
+      color: isDark ? brandColor.grey600 : brandColor.grey200,
+    },
+    {
+      value: position.stopLossPrice,
+      label: 'SL',
+      color: isDark ? brandColor.grey1000 : brandColor.grey050,
+    },
+    {
+      value: position.liquidationPrice,
+      label: 'Liq',
+      color: isDark ? brandColor.red300 : brandColor.red500,
+    },
+  ];
 
-  if (position.entryPrice) {
-    const entryPrice = parsePerpsDisplayPrice(position.entryPrice);
-    if (!Number.isNaN(entryPrice) && entryPrice > 0) {
-      lines.push({
-        price: entryPrice,
-        label: 'Entry',
-        color: isDark ? brandColor.grey600 : brandColor.grey200,
-        lineStyle: 2,
-      });
-    }
-  }
-
-  if (position.stopLossPrice) {
-    const slPrice = parsePerpsDisplayPrice(position.stopLossPrice);
-    if (!Number.isNaN(slPrice) && slPrice > 0) {
-      lines.push({
-        price: slPrice,
-        label: 'SL',
-        color: isDark ? brandColor.grey1000 : brandColor.grey050,
-        lineStyle: 2,
-      });
-    }
-  }
-
-  if (position.liquidationPrice) {
-    const liqPrice = parsePerpsDisplayPrice(position.liquidationPrice);
-    if (!Number.isNaN(liqPrice) && liqPrice > 0) {
-      lines.push({
-        price: liqPrice,
-        label: 'Liq',
-        color: isDark ? brandColor.red300 : brandColor.red500,
-        lineStyle: 2,
-      });
+  for (const { value, label, color } of markers) {
+    if (value) {
+      const price = parsePerpsDisplayPrice(value);
+      if (!Number.isNaN(price) && price > 0) {
+        lines.push({
+          price,
+          label,
+          color,
+          lineStyle: 2,
+        });
+      }
     }
   }
 

@@ -49,7 +49,12 @@ describe('OrderEntryHeader', () => {
       mockStore,
     );
 
-    fireEvent.click(screen.getByTestId('perps-order-entry-back-button'));
+    const backButton = screen.getByRole('button', { name: 'Back' });
+    expect(backButton).toHaveAttribute(
+      'data-testid',
+      'perps-order-entry-back-button',
+    );
+    fireEvent.click(backButton);
 
     expect(onBack).toHaveBeenCalledTimes(1);
   });
