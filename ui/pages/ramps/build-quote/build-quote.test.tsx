@@ -204,6 +204,24 @@ describe('RampsBuildQuoteScreen', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('matches snapshot when quote fetch fails with a technical HTTP error', () => {
+    useRampsQuotes.mockReturnValue({
+      data: null,
+      loading: false,
+      error: new Error(
+        "Fetching 'https://on-ramp.dev-api.cx.metamask.io/v2/quotes?action=buy&region=us-ut' failed with status '401'",
+      ),
+    });
+
+    const { container } = renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
   it('disables continue until a quote is available', () => {
     useRampsQuotes.mockReturnValue({
       data: { success: [], error: [] },
