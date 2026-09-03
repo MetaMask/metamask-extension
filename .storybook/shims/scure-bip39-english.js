@@ -1,6 +1,4 @@
-const {
-  wordlist,
-} = require('@metamask/scure-bip39/dist/wordlists/english.js');
+const { wordlist } = require('@storybook-shims/scure-bip39-english-wordlist');
 
 module.exports = {
   __esModule: true,
