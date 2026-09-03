@@ -309,6 +309,7 @@ export type ControllerStatePropertiesEnumerated = {
   allTokens: TokensControllerState['allTokens'];
   tokensChainsCache: TokenListState['tokensChainsCache'];
   marketData: TokenRatesControllerState['marketData'];
+  batchTransactionCounts: TransactionControllerState['batchTransactionCounts'];
   lastFetchedBlockNumbers: TransactionControllerState['lastFetchedBlockNumbers'];
   methodData: TransactionControllerState['methodData'];
   transactions: TransactionControllerState['transactions'];

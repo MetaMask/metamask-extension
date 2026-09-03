@@ -297,6 +297,7 @@
     },
     "batchSellTrades": "null",
     "batchSellTradesLoadingStatus": "null",
+    "batchTransactionCounts": {},
     "browserEnvironment": {
       "browser": "string",
       "os": "string"
