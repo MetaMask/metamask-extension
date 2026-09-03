@@ -1059,7 +1059,6 @@ export enum MetaMetricsEventName {
   TokenImportClicked = 'Token Import Clicked',
   ToastDisplayed = 'Toast Displayed',
   WalletSetupStarted = 'Wallet Setup Started',
-  WalletFundsObtained = 'Wallet Funds Obtained',
   WalletImportStarted = 'Wallet Import Started',
   WalletImportAttempted = 'Wallet Import Attempted',
   WalletImported = 'Wallet Imported',
