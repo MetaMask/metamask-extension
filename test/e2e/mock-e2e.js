@@ -2249,8 +2249,67 @@ async function setupMocking(
         }
         return { statusCode: 200, json: candles };
       }
+      if (type === 'maxBuilderFee') {
+        // Mirrors the WS INFO POST mock in perps/mocks/websocketDefaultMocks.ts:
+        // 0.001 is the configured MaxFeeDecimal, so the controller treats the
+        // builder fee as already approved and skips the approveBuilderFee
+        // /exchange call. perps-controller queries this over HTTP (not the WS
+        // info client) from the TP/SL and order paths, so the WS mock alone is
+        // not enough.
+        return { statusCode: 200, json: 0.001 };
+      }
+      if (type === 'perpDexs') {
+        // Mirrors the WS INFO POST mock: [null] where null = the main DEX. The
+        // controller derives perpDexIndex from this, and omitting null skips the
+        // main-DEX mapping entirely.
+        return { statusCode: 200, json: [null] };
+      }
       if (type === 'openOrders') {
         return { statusCode: 200, json: [] };
+      }
+      if (type === 'frontendOpenOrders') {
+        // perps-controller reads TP/SL triggers with `frontendOpenOrders`, not
+        // `openOrders`, and immediately calls `.forEach` on the result. The
+        // catch-all below returns `{}`, which is not iterable.
+        return { statusCode: 200, json: [] };
+      }
+      if (type === 'userNonFundingLedgerUpdates') {
+        // `#isWalletOnHyperliquid` treats a non-array or empty ledger as "this
+        // wallet has no Hyperliquid account", which silently defers the
+        // unified-account migration and the referral write.
+        return {
+          statusCode: 200,
+          json: [
+            {
+              time: 1735689600000,
+              hash: '0x0000000000000000000000000000000000000000000000000000000000000001',
+              delta: {
+                type: 'deposit',
+                amount: '10000.0',
+                nonce: 1,
+                usdc: '10000.0',
+              },
+            },
+          ],
+        };
+      }
+      if (type === 'userAbstraction') {
+        // A compatible mode, so the controller skips the EIP-712 migration that
+        // 15.1.0 drives at action time.
+        return { statusCode: 200, json: 'unifiedAccount' };
+      }
+      if (type === 'userToMultiSigSigners') {
+        // Hyperliquid returns null for single-signer accounts;
+        // `#isHyperliquidMultiSigAccount` reads any non-null answer as multi-sig.
+        return { statusCode: 200, json: null };
+      }
+      if (type === 'referral') {
+        // Mirrors the WS INFO POST mock: already referred by the MetaMask
+        // builder, so the controller skips the setReferrer /exchange call.
+        return {
+          statusCode: 200,
+          json: { referredBy: '0xea2c82b5aba243ab631c0ce151763d5e38df75b3' },
+        };
       }
       if (type === 'userFills') {
         return { statusCode: 200, json: [] };
@@ -2260,11 +2319,38 @@ async function setupMocking(
 
   await server
     .forPost(/^https:\/\/api\.hyperliquid\.xyz\/exchange$/u)
-    .thenCallback((request) => {
-      const body = request.body?.json ?? {};
-      const actionType = body.action?.type;
+    .thenCallback(async (request) => {
+      // Mockttp's CompletedBody exposes `getJson()`, not a `.json` property —
+      // reading `request.body.json` always yielded undefined, so every action
+      // fell through to the generic `{ type: 'default' }` response below. Parse
+      // it the same defensive way the /info handler above does.
+      const body = (await request.body?.getJson().catch(() => undefined)) ?? {};
+      const action = body.action ?? {};
+      const actionType = action.type;
 
       if (actionType === 'order') {
+        const orders = Array.isArray(action.orders) ? action.orders : [];
+        // perps-controller requires exactly one status per submitted order, so
+        // a TP/SL batch (take profit + stop loss) must answer with two. Trigger
+        // orders rest until their price is crossed; plain orders fill.
+        const statuses = orders.map((order, index) => {
+          const orderType = order?.t;
+          const isTrigger =
+            typeof orderType === 'object' &&
+            orderType !== null &&
+            'trigger' in orderType;
+          if (isTrigger) {
+            return { resting: { oid: 100001 + index } };
+          }
+          return {
+            filled: {
+              totalSz: '4.0',
+              avgPx: '25.05',
+              oid: 100001 + index,
+            },
+          };
+        });
+
         return {
           statusCode: 200,
           json: {
@@ -2272,16 +2358,29 @@ async function setupMocking(
             response: {
               type: 'order',
               data: {
-                statuses: [
-                  {
-                    filled: {
-                      totalSz: '4.0',
-                      avgPx: '25.05',
-                      oid: 100001,
-                    },
-                  },
-                ],
+                statuses: statuses.length
+                  ? statuses
+                  : [
+                      {
+                        filled: { totalSz: '4.0', avgPx: '25.05', oid: 100001 },
+                      },
+                    ],
               },
+            },
+          },
+        };
+      }
+
+      if (actionType === 'cancel') {
+        const cancels = Array.isArray(action.cancels) ? action.cancels : [];
+        // Same one-status-per-request contract as `order`.
+        return {
+          statusCode: 200,
+          json: {
+            status: 'ok',
+            response: {
+              type: 'cancel',
+              data: { statuses: cancels.map(() => 'success') },
             },
           },
         };
