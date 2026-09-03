@@ -539,6 +539,11 @@ class HomePage {
     );
   }
 
+  async dismissAccountImportedToast(): Promise<void> {
+    console.log('Dismiss account imported toast');
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
+  }
+
   async dismissSrpAddedToast(): Promise<void> {
     console.log('Dismiss SRP added toast');
     // The toast can take some time to appear
