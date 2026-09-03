@@ -1684,6 +1684,99 @@ async function setupMocking(
       return { statusCode: 200, json: results };
     });
 
+  // Token API assets: used by fetchTokenAssets (TokenAsset cache / TDP deep links).
+  await server
+    .forGet('https://token.api.cx.metamask.io/assets')
+    .always()
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const assetIds = url.searchParams.getAll('assetIds').join(',');
+
+      const results = [];
+
+      const pushIf = (predicate, entry) => {
+        if (predicate) {
+          results.push(entry);
+        }
+      };
+
+      pushIf(assetIds.includes('eip155:1/slip44:60'), {
+        assetId: 'eip155:1/slip44:60',
+        name: 'Ethereum',
+        symbol: 'ETH',
+        decimals: 18,
+      });
+
+      // Chain 1337 uses slip44:1 per nativeAssetIdentifiers in the fixture.
+      // Support both slip44:1 and slip44:60 requests for backward compat.
+      pushIf(
+        assetIds.includes('eip155:1337/slip44:1') ||
+          assetIds.includes('eip155:1337/slip44:60'),
+        {
+          assetId: 'eip155:1337/slip44:1',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+        },
+      );
+
+      const wethMainnet =
+        'eip155:1/erc20:0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+      const usdcMainnet =
+        'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+      const usdtMainnet =
+        'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7';
+      const daiMainnet =
+        'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F';
+
+      if (
+        assetIds.includes(wethMainnet) ||
+        assetIds.includes(wethMainnet.toLowerCase())
+      ) {
+        results.push({
+          assetId: wethMainnet,
+          name: 'Wrapped Ether',
+          symbol: 'WETH',
+          decimals: 18,
+        });
+      }
+      if (
+        assetIds.includes(usdcMainnet) ||
+        assetIds.includes(usdcMainnet.toLowerCase())
+      ) {
+        results.push({
+          assetId: usdcMainnet,
+          name: 'USD Coin',
+          symbol: 'USDC',
+          decimals: 6,
+        });
+      }
+      if (
+        assetIds.includes(usdtMainnet) ||
+        assetIds.includes(usdtMainnet.toLowerCase())
+      ) {
+        results.push({
+          assetId: usdtMainnet,
+          name: 'Tether USD',
+          symbol: 'USDT',
+          decimals: 6,
+        });
+      }
+      if (
+        assetIds.includes(daiMainnet) ||
+        assetIds.includes(daiMainnet.toLowerCase())
+      ) {
+        results.push({
+          assetId: daiMainnet,
+          name: 'Dai Stablecoin',
+          symbol: 'DAI',
+          decimals: 18,
+        });
+      }
+
+      return { statusCode: 200, json: results };
+    });
+
   // Tokens API: v2 supported networks — mocked globally so all tests work.
   await server
     .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
