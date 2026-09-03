@@ -122,9 +122,7 @@ export function getRemoteFeatureFlagControllerInstanceOptions({
     ],
     getMetaMetricsId: () => {
       try {
-        return (
-          messenger.call('AnalyticsController:getState').analyticsId ?? ''
-        );
+        return messenger.call('AnalyticsController:getState').analyticsId ?? '';
       } catch {
         // `wallet.init()` runs before AnalyticsController is registered.
         return '';
