@@ -1556,6 +1556,30 @@ describe('PerpsOrderEntryPage', () => {
       expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument();
     });
 
+    it('does not show the labeled row Add funds control while account state is still loading at zero balance', async () => {
+      mockLiveAccount.mockReturnValue({
+        account: {
+          ...mockAccountState,
+          spendableBalance: '0',
+          withdrawableBalance: '0',
+          totalBalance: '0',
+        },
+        isInitialLoading: true,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const addFunds = screen.getByTestId('amount-input-add-funds');
+      expect(addFunds).toHaveAttribute('aria-label', messages.addFunds.message);
+      expect(addFunds).not.toHaveTextContent(messages.addFunds.message);
+
+      await act(async () => {
+        fireEvent.click(addFunds);
+      });
+
+      expect(mockTriggerDeposit).not.toHaveBeenCalled();
+    });
+
     it('does not show add funds to trade while account state is still loading at zero balance', () => {
       mockLiveAccount.mockReturnValue({
         account: {
