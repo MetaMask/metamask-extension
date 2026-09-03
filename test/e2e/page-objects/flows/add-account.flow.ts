@@ -77,6 +77,7 @@ export const addMultipleAccounts = async ({
 
 /**
  * Opens the account menu and imports an account from a private key.
+ * After a successful import, the wallet is on home with the imported account selected.
  *
  * @param driver - The WebDriver instance.
  * @param privateKey - The private key to import.
@@ -95,5 +96,5 @@ export async function importPrivateKeyAccount(
   const accountListPage = new AccountListPage(driver);
   await accountListPage.checkPageIsLoaded(options.accountListTimeout);
   await accountListPage.addNewImportedAccount(privateKey);
-  await accountListPage.closeMultichainAccountsPage();
+  await homepage.checkPageIsLoaded();
 }

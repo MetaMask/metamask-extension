@@ -38,6 +38,9 @@ const NON_EVM_ICON_TIMEOUT = 20_000;
  * @see ui/pages/home/home.tsx
  */
 class HomePage {
+  private readonly accountImportedToast =
+    '[data-testid="account-imported-toast"]';
+
   protected readonly activityTab = {
     testId: 'account-overview__activity-tab',
   };
@@ -157,6 +160,13 @@ class HomePage {
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
+  }
+
+  async checkAccountImportedToastIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.accountImportedToast,
+      text: 'Account imported',
+    });
   }
 
   /**
