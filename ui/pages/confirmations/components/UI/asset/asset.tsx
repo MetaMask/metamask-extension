@@ -210,13 +210,8 @@ const TokenAsset = ({
         flexDirection={FlexDirection.Column}
         style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}
       >
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
-          style={{ minWidth: 0, overflow: 'hidden' }}
-        >
-          <Box style={{ minWidth: 0, overflow: 'hidden' }} marginRight={1}>
+        <div className="flex min-w-0 flex-row items-center overflow-hidden">
+          <div className="mr-1 min-w-0 overflow-hidden">
             <Text
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
@@ -224,10 +219,10 @@ const TokenAsset = ({
             >
               {name}
             </Text>
-          </Box>
-          {tag ? <Box style={{ flexShrink: 0 }}>{tag}</Box> : null}
+          </div>
+          {tag ? <div className="shrink-0">{tag}</div> : null}
           <AccountTypeLabel label={typeLabel} />
-        </Box>
+        </div>
         <Text
           variant={TextVariant.bodySmMedium}
           color={TextColor.textAlternative}

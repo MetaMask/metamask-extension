@@ -42,12 +42,10 @@ exports[`TokenAsset hides balances when hideBalances is true 1`] = `
       style="flex: 1; min-width: 0; overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
-        style="min-width: 0; overflow: hidden;"
+        class="flex min-w-0 flex-row items-center overflow-hidden"
       >
         <div
-          class="mm-box mm-box--margin-right-1"
-          style="min-width: 0; overflow: hidden;"
+          class="mr-1 min-w-0 overflow-hidden"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
