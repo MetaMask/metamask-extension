@@ -718,15 +718,7 @@ class HomePage {
     console.log('Waiting for selected network status to be available in Redux');
     await this.driver.waitUntil(
       async () => {
-        const isAvailable = await this.isSelectedNetworkAvailable();
-        if (!isAvailable) {
-          await this.driver.executeScript(`
-            return window.stateHooks?.submitRequestToBackground?.(
-              'lookupSelectedNetworks',
-            );
-          `);
-        }
-        return isAvailable;
+        return await this.isSelectedNetworkAvailable();
       },
       { timeout: 30000, interval: 2000, stableFor: 2000 },
     );
