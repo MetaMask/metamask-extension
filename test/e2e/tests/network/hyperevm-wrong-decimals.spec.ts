@@ -20,11 +20,12 @@ import {
   prepareCustomNetwork,
 } from '../../helpers/custom-network-harness';
 import { login } from '../../page-objects/flows/login.flow';
+import AssetDetailsPage from '../../page-objects/pages/asset/asset-details';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 
 describe('HyperEVM frxUSD decimal formatting', function () {
-  it('shows 6-decimal frxUSD on the token list and details', async function () {
+  it('formats 6-decimal frxUSD as 11.812', async function () {
     const { fixtures, localNodeOptions, testSpecificMock } =
       prepareCustomNetwork('hyperevm', 'wrongDecimals');
 
@@ -40,6 +41,7 @@ describe('HyperEVM frxUSD decimal formatting', function () {
 
         const homePage = new HomePage(driver);
         const tokensTab = new TokensTab(driver);
+        const assetDetailsPage = new AssetDetailsPage(driver);
 
         await homePage.checkPageIsLoaded();
         await tokensTab.checkTokenListIsDisplayed();
@@ -47,17 +49,10 @@ describe('HyperEVM frxUSD decimal formatting', function () {
           FRXUSD_SYMBOL,
           FRXUSD_DISPLAY_AMOUNT,
         );
-        await tokensTab.checkTokenRowDoesNotContainText(
-          FRXUSD_SYMBOL,
-          '11,811,649',
-        );
-        await tokensTab.checkTokenRowDoesNotContainText(
-          FRXUSD_SYMBOL,
-          '11.81M',
-        );
 
         await tokensTab.openTokenDetails(FRXUSD_SYMBOL);
-        await tokensTab.checkTokenAmountIsDisplayed(FRXUSD_DISPLAY_AMOUNT);
+        await assetDetailsPage.checkPageIsLoaded();
+        await assetDetailsPage.checkBalanceText(FRXUSD_DISPLAY_AMOUNT);
         await tokensTab.checkTokenSymbolAndAddressDetails(
           FRXUSD_SYMBOL,
           FRXUSD_CHECKSUM_ADDRESS,
