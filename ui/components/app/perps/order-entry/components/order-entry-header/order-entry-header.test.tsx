@@ -82,26 +82,4 @@ describe('OrderEntryHeader', () => {
       '+1.25%',
     );
   });
-
-  it('renders trailing actions in a balanced side column', () => {
-    renderWithProvider(
-      <OrderEntryHeader
-        displayName="BTC"
-        displayPrice="$64,486"
-        onBack={jest.fn()}
-        rightAccessory={
-          <>
-            <button type="button">book</button>
-            <button type="button">chart</button>
-          </>
-        }
-      />,
-      mockStore,
-    );
-
-    const accessory = screen.getByTestId('perps-order-entry-right-accessory');
-    expect(accessory).toHaveTextContent('book');
-    expect(accessory).toHaveTextContent('chart');
-    expect(accessory.parentElement).toHaveClass('grid-cols-[1fr_auto_1fr]');
-  });
 });

@@ -1478,6 +1478,33 @@ const PerpsOrderEntryPage = () => {
     return () => observer.disconnect();
   }, [bodyEl]);
 
+  useEffect(() => {
+    if (!isChartOpen || !bodyEl || typeof ResizeObserver === 'undefined') {
+      return undefined;
+    }
+    const form = bodyEl.querySelector('form');
+    const cta =
+      form?.querySelector<HTMLElement>('[type="submit"]')?.parentElement;
+    if (!form || !cta) {
+      return undefined;
+    }
+    const updateBounds = () => {
+      const { left, width } = form.getBoundingClientRect();
+      cta.style.left = `${left}px`;
+      cta.style.width = `${width}px`;
+    };
+    updateBounds();
+    const observer = new ResizeObserver(updateBounds);
+    observer.observe(form);
+    window.addEventListener('resize', updateBounds);
+    bodyEl.addEventListener('scroll', updateBounds);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', updateBounds);
+      bodyEl.removeEventListener('scroll', updateBounds);
+    };
+  }, [bodyEl, isChartOpen, isOrderBookOnLeft]);
+
   const handleOrderBookResizeKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
       const containerWidth = bodyEl?.getBoundingClientRect().width;
@@ -2183,18 +2210,23 @@ const PerpsOrderEntryPage = () => {
       style={{
         minWidth: isOrderBookOpen ? ORDER_BOOK_FORM_MIN_WIDTH_PX : undefined,
       }}
-      className="flex flex-col flex-1 min-w-0 h-full overflow-hidden"
+      className={twMerge(
+        'flex flex-col flex-1 min-w-0',
+        isChartOpen ? 'min-h-full' : 'h-full overflow-hidden',
+      )}
       onSubmit={handleFormSubmit}
     >
       {/* Scrollable form */}
       <Box
         paddingLeft={4}
         paddingRight={4}
-        paddingBottom={4}
+        paddingBottom={isChartOpen ? 24 : 4}
         flexDirection={BoxFlexDirection.Column}
         gap={4}
+        data-testid="perps-order-form-content"
         className={twMerge(
-          'flex-1 overflow-y-auto overflow-x-hidden',
+          'overflow-x-hidden',
+          !isChartOpen && 'flex-1 overflow-y-auto',
           isOrderPending && 'pointer-events-none opacity-50',
         )}
       >
@@ -2228,18 +2260,6 @@ const PerpsOrderEntryPage = () => {
           sizeDecimals={marketInfo?.szDecimals}
           limitPricePrefill={limitPricePrefill ?? undefined}
         />
-      </Box>
-
-      {/* Sticky bottom: summary + button */}
-      <Box
-        paddingLeft={4}
-        paddingRight={4}
-        paddingBottom={4}
-        paddingTop={3}
-        flexDirection={BoxFlexDirection.Column}
-        gap={4}
-        className="shrink-0"
-      >
         {orderCalculations && (
           <OrderSummary
             marginRequired={orderCalculations.marginRequired}
@@ -2289,6 +2309,18 @@ const PerpsOrderEntryPage = () => {
             {submitError}
           </Text>
         )}
+      </Box>
+
+      <Box
+        paddingLeft={4}
+        paddingRight={4}
+        paddingBottom={4}
+        paddingTop={3}
+        className={twMerge(
+          'bottom-0 z-10 bg-background-default',
+          isChartOpen ? 'fixed left-0 w-full' : 'sticky shrink-0',
+        )}
+      >
         <Button
           type="submit"
           variant={ButtonVariant.Primary}
@@ -2342,7 +2374,8 @@ const PerpsOrderEntryPage = () => {
         minWidth: isOrderBookOpen ? ORDER_BOOK_MIN_WIDTH_PX : 0,
       }}
       className={twMerge(
-        'shrink-0 h-full overflow-hidden',
+        'shrink-0 overflow-hidden',
+        isChartOpen ? 'self-stretch' : 'h-full',
         !isResizingOrderBook && 'transition-all duration-300 ease-in-out',
       )}
     >
@@ -2408,7 +2441,10 @@ const PerpsOrderEntryPage = () => {
 
   return (
     <div
-      className="main-container asset__container relative overflow-hidden"
+      className={twMerge(
+        'main-container asset__container relative',
+        isChartOpen ? 'overflow-y-auto' : 'overflow-hidden',
+      )}
       data-testid="parent-selector-perps-order-entry"
     >
       <OrderEntryHeader
@@ -2486,7 +2522,10 @@ const PerpsOrderEntryPage = () => {
       <div
         ref={setBodyEl}
         data-testid="perps-order-body"
-        className="flex flex-row flex-1 min-h-0 w-full overflow-x-auto"
+        className={twMerge(
+          'flex flex-row w-full overflow-x-auto',
+          isChartOpen ? 'min-h-full shrink-0' : 'flex-1 min-h-0',
+        )}
       >
         {bodyPanes}
       </div>

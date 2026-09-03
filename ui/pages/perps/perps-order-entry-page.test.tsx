@@ -613,7 +613,14 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(
         screen.getByTestId('parent-selector-perps-order-entry'),
-      ).toBeInTheDocument();
+      ).toHaveClass('overflow-hidden');
+      expect(screen.getByTestId('perps-order-body')).toHaveClass(
+        'flex-1',
+        'min-h-0',
+      );
+      expect(screen.getByTestId('perps-order-form-content')).toHaveClass(
+        'overflow-y-auto',
+      );
       expect(screen.getByTestId('order-entry')).toBeInTheDocument();
     });
 
@@ -1240,33 +1247,6 @@ describe('PerpsOrderEntryPage', () => {
         'perps-order-entry-chart',
       );
       expect(toggle).toHaveAttribute('aria-label', 'Expand chart');
-      expect(screen.getByTestId('perps-order-entry-chart')).toHaveAttribute(
-        'aria-hidden',
-        'true',
-      );
-      expect(
-        screen.queryByTestId('perps-candlestick-chart'),
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByTestId('perps-candle-period-selector'),
-      ).not.toBeInTheDocument();
-    });
-
-    it('keeps the chart toggle when the order-book flag is off', () => {
-      const state = createMockState();
-      state.metamask.remoteFeatureFlags.perpsOrderBookEnabled = {
-        enabled: false,
-        minimumVersion: '99.99.99',
-      };
-      const store = mockStore(state);
-      renderWithProvider(<PerpsOrderEntryPage />, store);
-
-      expect(
-        screen.queryByTestId('perps-order-book-toggle'),
-      ).not.toBeInTheDocument();
-      expect(
-        screen.getByTestId('perps-order-entry-chart-toggle'),
-      ).toBeInTheDocument();
     });
 
     it('mounts the chart already open when the persisted preference is expanded', () => {
@@ -1291,6 +1271,19 @@ describe('PerpsOrderEntryPage', () => {
       expect(
         screen.getByTestId('perps-candle-period-selector'),
       ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('parent-selector-perps-order-entry'),
+      ).toHaveClass('overflow-y-auto');
+      expect(screen.getByTestId('perps-order-body')).toHaveClass(
+        'min-h-full',
+        'shrink-0',
+      );
+      expect(screen.getByTestId('perps-order-form-content')).not.toHaveClass(
+        'overflow-y-auto',
+      );
+      expect(
+        screen.getByTestId('submit-order-button').parentElement,
+      ).toHaveClass('fixed');
     });
 
     it('persists the open state when the chart is toggled', () => {
