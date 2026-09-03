@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  BorderRadius,
-  IconColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+  Icon as DsIcon,
+  IconColor as DsIconColor,
+  IconName as DsIconName,
+} from '@metamask/design-system-react';
+import { BorderRadius } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import { Icon, IconName } from '../../component-library';
 import { Toast } from '../../multichain/toast';
 import { selectShowArcUsageNoticeToast } from './selectors';
 
@@ -38,12 +38,11 @@ export function ArcUsageNoticeToast() {
     <Toast
       dataTestId="arc-usage-notice-toast"
       startAdornment={
-        <Icon name={IconName.Info} color={IconColor.iconDefault} />
+        <DsIcon name={DsIconName.Info} color={DsIconColor.IconDefault} />
       }
       text={t('arcUsageNoticeTitle')}
       description={t('arcUsageNoticeDescription')}
       borderRadius={BorderRadius.LG}
-      textVariant={TextVariant.bodyMd}
       onClose={() => setVisible(false)}
     />
   );
