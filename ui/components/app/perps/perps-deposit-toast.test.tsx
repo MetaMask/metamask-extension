@@ -20,6 +20,12 @@ jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
+jest.mock('../../../store/actions', () => ({
+  setHyperliquidDepositPromptTxId: jest.fn(() => ({
+    type: 'SET_HYPERLIQUID_DEPOSIT_PROMPT_TX_ID',
+  })),
+}));
+
 jest.mock('../../ui/toast/toast', () => ({
   toast: {
     dismiss: (...args: unknown[]) => mockToastDismiss(...args),
@@ -638,5 +644,78 @@ describe('PerpsDepositToast', () => {
     renderWithProvider(<PerpsDepositToast />, store);
 
     expect(mockToastLoading).not.toHaveBeenCalled();
+  });
+
+  it('renders custom Hyperliquid success toast when deposit was initiated from Hyperliquid prompt', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'hyperliquid-deposit-tx',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'hyperliquid-deposit-tx',
+        hyperliquidDepositPromptTxId: 'hyperliquid-deposit-tx',
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          title: messages.perpsDepositToastSuccessTitle.message,
+          description:
+            messages.hyperliquidDepositToastSuccessDescription.message,
+        }),
+      }),
+      {
+        id: 'perps-deposit-toast',
+        duration: 5000,
+      },
+    );
+  });
+
+  it('renders standard success toast when hyperliquidDepositPromptTxId does not match', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'regular-deposit-tx',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'regular-deposit-tx',
+        hyperliquidDepositPromptTxId: 'different-tx-id',
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          title: messages.perpsDepositToastSuccessTitle.message,
+          description: messages.perpsDepositToastSuccessDescription.message,
+        }),
+      }),
+      {
+        id: 'perps-deposit-toast',
+        duration: 5000,
+      },
+    );
   });
 });

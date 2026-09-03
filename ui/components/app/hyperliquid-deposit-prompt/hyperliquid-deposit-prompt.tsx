@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
@@ -28,7 +28,9 @@ import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/acc
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
+import { setHyperliquidDepositPromptTxId } from '../../../store/actions';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
+import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { TokenIcon } from '../../../pages/confirmations/components/token-icon/token-icon';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import { ConfirmationLoader } from '../../../pages/confirmations/hooks/useConfirmationNavigation';
@@ -153,6 +155,7 @@ export const HyperliquidDepositPrompt: React.FC<
 > = ({ onActionComplete, selectedAddress }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const tokens = useHyperliquidDepositTokens();
   const currentAccount = useSelector(getSelectedInternalAccount);
 
@@ -211,6 +214,9 @@ export const HyperliquidDepositPrompt: React.FC<
 
     const { transactionId } = result;
 
+    // Store the transaction ID so the deposit toast can show custom message
+    // dispatch(setHyperliquidDepositPromptTxId(transactionId));
+
     if (displayToken?.address && displayToken.chainId) {
       try {
         await updateTransactionPaymentToken({
@@ -237,7 +243,7 @@ export const HyperliquidDepositPrompt: React.FC<
     );
 
     onActionComplete({ action: 'continue', transactionId });
-  }, [displayToken, navigate, onActionComplete, startPerpsDeposit]);
+  }, [dispatch, displayToken, navigate, onActionComplete, startPerpsDeposit]);
 
   return (
     <Box

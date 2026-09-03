@@ -192,6 +192,12 @@ export type AppStateControllerState = {
    * Used to avoid immediately re-prompting biometrics after the user manually locks the wallet.
    */
   passkeyAutoUnlockSuppressed: boolean;
+
+  /**
+   * Transaction ID of a perps deposit initiated from the Hyperliquid deposit prompt.
+   * Used to show a custom success toast message. Cleared after the toast is shown.
+   */
+  hyperliquidDepositPromptTxId: string | null;
 };
 
 const controllerName = 'AppStateController';
@@ -325,6 +331,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   dappSwapComparisonData: {},
   storageWriteErrorType: null,
   passkeyAutoUnlockSuppressed: false,
+  hyperliquidDepositPromptTxId: null,
   ...getInitialStateOverrides(),
 });
 
@@ -683,6 +690,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  hyperliquidDepositPromptTxId: {
+    includeInStateLogs: false,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   deferredDeepLink: {
     includeInStateLogs: false,
     persist: true,
@@ -723,6 +736,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setDefaultSubscriptionPaymentOptions',
   'setDeferredDeepLink',
   'setHasShownMultichainAccountsIntroModal',
+  'setHyperliquidDepositPromptTxId',
   'setIsWalletResetInProgress',
   'setLastActiveTime',
   'setLastInteractedConfirmationInfo',
@@ -1319,6 +1333,18 @@ export class AppStateController extends BaseController<
   setPerpsTabBadgeSeen(value: boolean): void {
     this.update((state) => {
       state.perpsTabBadgeSeen = value;
+    });
+  }
+
+  /**
+   * Sets the transaction ID of a perps deposit initiated from the Hyperliquid
+   * deposit prompt. Used to show a custom success toast message.
+   *
+   * @param transactionId - The transaction ID, or null to clear
+   */
+  setHyperliquidDepositPromptTxId(transactionId: string | null): void {
+    this.update((state) => {
+      state.hyperliquidDepositPromptTxId = transactionId;
     });
   }
 

@@ -1,13 +1,17 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
   selectPerpsDepositPending,
   selectPerpsLastDepositResult,
+  selectPerpsLastDepositTransactionId,
   selectPerpsShouldShowDepositToast,
 } from '../../../selectors/perps-controller';
+import { selectHyperliquidDepositPromptTxId } from '../../../selectors/perps/persisted-state';
+import { setHyperliquidDepositPromptTxId } from '../../../store/actions';
+import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { toast, ToastContent } from '../../ui/toast/toast';
 
 const id = 'perps-deposit-toast';
@@ -20,13 +24,25 @@ const clearDepositResult = () =>
 
 export function PerpsDepositToast() {
   const t = useI18nContext();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const depositInProgress = useSelector(selectPerpsDepositPending);
   const lastDepositResult = useSelector(selectPerpsLastDepositResult);
+  const lastDepositTransactionId = useSelector(
+    selectPerpsLastDepositTransactionId,
+  );
+  const hyperliquidDepositPromptTxId = useSelector(
+    selectHyperliquidDepositPromptTxId,
+  );
   const shouldShowDepositToast = useSelector(selectPerpsShouldShowDepositToast);
   const hasDepositResult = Boolean(lastDepositResult);
   const lastDepositResultError = lastDepositResult?.error;
   const lastDepositResultSuccess = lastDepositResult?.success;
   const lastDepositResultTimestamp = lastDepositResult?.timestamp;
+
+  // Check if this deposit was initiated from the Hyperliquid deposit prompt
+  const isHyperliquidDeposit =
+    hyperliquidDepositPromptTxId !== null &&
+    hyperliquidDepositPromptTxId === lastDepositTransactionId;
 
   useEffect(() => {
     if (!hasDepositResult) {
@@ -34,12 +50,20 @@ export function PerpsDepositToast() {
     }
 
     const isSuccess = lastDepositResultSuccess === true;
-    const title = isSuccess
-      ? t('perpsDepositToastSuccessTitle')
-      : t('perpsDepositToastErrorTitle');
-    const description = isSuccess
-      ? t('perpsDepositToastSuccessDescription')
-      : lastDepositResultError || t('perpsDepositToastErrorDescription');
+
+    let title = t('perpsDepositToastSuccessTitle');
+    let description: string;
+
+    if (isSuccess && isHyperliquidDeposit) {
+      description = t('hyperliquidDepositToastSuccessDescription');
+    } else if (isSuccess) {
+      description = t('perpsDepositToastSuccessDescription');
+    } else {
+      title = t('perpsDepositToastErrorTitle');
+      description =
+        lastDepositResultError || t('perpsDepositToastErrorDescription');
+    }
+
     const content = (
       <ToastContent title={title} description={description} dataTestId={id} />
     );
@@ -51,6 +75,11 @@ export function PerpsDepositToast() {
       toast.error(content, options);
     }
 
+    // Clear the Hyperliquid deposit transaction ID after showing the toast
+    if (isHyperliquidDeposit) {
+      dispatch(setHyperliquidDepositPromptTxId(null));
+    }
+
     const timeoutId = setTimeout(() => {
       clearDepositResult();
     }, duration);
@@ -60,7 +89,9 @@ export function PerpsDepositToast() {
       toast.dismiss(id);
     };
   }, [
+    dispatch,
     hasDepositResult,
+    isHyperliquidDeposit,
     lastDepositResultError,
     lastDepositResultSuccess,
     lastDepositResultTimestamp,
