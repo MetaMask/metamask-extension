@@ -1,7 +1,7 @@
-// Storybook 8 migration: @storybook/api → @storybook/manager-api, @storybook/addons → @storybook/manager-api
-const { useGlobals, addons, types } = require('@storybook/manager-api');
+// Storybook 9: manager APIs live in storybook/manager-api; UI in storybook/internal/components
+const { useGlobals, addons, types } = require('storybook/manager-api');
 const React = require('react');
-const { Icons, IconButton } = require('@storybook/components');
+const { Icons, IconButton } = require('storybook/internal/components');
 const localeList = require('../../app/_locales/index.json');
 const { useEffect } = React;
 
