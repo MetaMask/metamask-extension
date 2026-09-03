@@ -2,9 +2,16 @@ import { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
+import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
 import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
+import { isUnfundedDepositFunnelActive } from '../utils/unfunded-deposit-funnel';
 import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
 import { usePerpsNetworkManagement } from './usePerpsNetworkManagement';
 
@@ -39,6 +46,7 @@ export function usePerpsDepositConfirmation(
   const location = useLocation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const { ensureArbitrumNetworkExists } = usePerpsNetworkManagement();
+  const { track } = usePerpsEventTracking();
   const [isLoading, setIsLoading] = useState(false);
 
   // Guard against accidental double-trigger in the same tick
@@ -64,6 +72,14 @@ export function usePerpsDepositConfirmation(
       await ensureArbitrumNetworkExists();
 
       const { transactionId } = await createPerpsDepositTransaction({});
+
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.DEPOSIT_FLOW_OPENED,
+        ...(isUnfundedDepositFunnelActive()
+          ? { [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: false }
+          : {}),
+      });
 
       if (navigateOnCreate) {
         const params = new URLSearchParams({
@@ -98,6 +114,7 @@ export function usePerpsDepositConfirmation(
     ensureArbitrumNetworkExists,
     isLoading,
     location.pathname,
+    track,
     location.search,
     navigate,
     navigateOnCreate,

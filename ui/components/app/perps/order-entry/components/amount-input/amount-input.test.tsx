@@ -81,6 +81,61 @@ describe('AmountInput', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('keeps the add funds icon while the account is still loading at zero balance', () => {
+      const onAddFunds = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          availableBalance={0}
+          isLoadingAccount
+          onAddFunds={onAddFunds}
+        />,
+        mockStore,
+      );
+
+      const addFunds = screen.getByTestId('amount-input-add-funds');
+      expect(addFunds).toHaveAttribute('aria-label', messages.addFunds.message);
+      expect(addFunds).not.toHaveTextContent(messages.addFunds.message);
+
+      fireEvent.click(addFunds);
+      expect(onAddFunds).not.toHaveBeenCalled();
+    });
+
+    it('renders a labeled Add funds control when available balance is zero', () => {
+      const onAddFunds = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          availableBalance={0}
+          onAddFunds={onAddFunds}
+        />,
+        mockStore,
+      );
+
+      const addFunds = screen.getByTestId('amount-input-add-funds');
+      expect(addFunds).toHaveTextContent(messages.addFunds.message);
+
+      fireEvent.click(addFunds);
+      expect(onAddFunds).toHaveBeenCalledTimes(1);
+    });
+
+    it('labels the add funds icon with the translated add funds string when funded', () => {
+      const onAddFunds = jest.fn();
+      renderWithProvider(
+        <AmountInput
+          {...defaultProps}
+          availableBalance={100}
+          onAddFunds={onAddFunds}
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('amount-input-add-funds')).toHaveAttribute(
+        'aria-label',
+        messages.addFunds.message,
+      );
+    });
+
     it('renders the denomination toggle', () => {
       renderWithProvider(<AmountInput {...defaultProps} />, mockStore);
 

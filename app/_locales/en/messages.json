@@ -7249,6 +7249,12 @@
   "perpsAddFunds": {
     "message": "Add funds"
   },
+  "perpsAddFundsHint": {
+    "message": "You need funds in your Perps account to place this order."
+  },
+  "perpsAddFundsToTrade": {
+    "message": "Add funds to trade"
+  },
   "perpsAddMargin": {
     "message": "Add margin"
   },
