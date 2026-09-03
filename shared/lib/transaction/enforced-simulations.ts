@@ -140,7 +140,9 @@ export function getEnforcedSimulationsSlippageBasisPoints(
  * recipient address is loaded and not trusted, based on cached trust signal
  * scan results keyed by chain and address. A recipient with no cache entry,
  * or one still loading, does not disqualify the transaction; only a cached
- * non-Trusted verdict does.
+ * non-Trusted verdict does. Callers that persist a trust-dependent default
+ * must separately wait for pending signals via
+ * {@link hasPendingEnforcedSimulationsTrustSignals}.
  *
  * @param transactionMeta - The transaction metadata.
  * @param state - Trust signal state and EIP-7702 supported chains.
@@ -195,6 +197,52 @@ export function isEnforcedSimulationsEligible(
   return true;
 }
 
+/**
+ * Determines whether an eligible transaction should have enforced
+ * simulations enabled by default.
+ *
+ * Enforced simulations are enabled by default when at least one relevant
+ * recipient has a Warning or Malicious trust signal. Force-enabled
+ * transactions keep the existing enabled-by-default behavior.
+ *
+ * @param transactionMeta - The transaction metadata.
+ * @param state - Trust signal state and EIP-7702 supported chains.
+ * @returns Whether enforced simulations should be enabled by default.
+ */
+export function isEnforcedSimulationsDefaultEnabled(
+  transactionMeta: TransactionMeta,
+  state: EnforcedSimulationsState,
+): boolean {
+  if (isEnforcedSimulationsForceEnabled()) {
+    return true;
+  }
+
+  return getRelevantTrustSignalResults(transactionMeta, state).some(
+    (resultType) =>
+      resultType === ResultType.Warning || resultType === ResultType.Malicious,
+  );
+}
+
+/**
+ * Determines whether any relevant recipient still has a pending trust signal.
+ *
+ * @param transactionMeta - The transaction metadata.
+ * @param state - Trust signal state and EIP-7702 supported chains.
+ * @returns Whether a relevant recipient trust signal is still loading.
+ */
+export function hasPendingEnforcedSimulationsTrustSignals(
+  transactionMeta: TransactionMeta,
+  state: EnforcedSimulationsState,
+): boolean {
+  if (isEnforcedSimulationsForceEnabled()) {
+    return false;
+  }
+
+  return getRelevantTrustSignalResults(transactionMeta, state).includes(
+    ResultType.Loading,
+  );
+}
+
 function getEnforcedSimulationsFlag({
   remoteFeatureFlags,
 }: FeatureFlagSource): EnforcedSimulationsFeatureFlag | undefined {
@@ -207,6 +255,15 @@ function isTrusted(
   transactionMeta: TransactionMeta,
   state: EnforcedSimulationsState,
 ): boolean {
+  return getRelevantTrustSignalResults(transactionMeta, state)
+    .filter((resultType) => resultType !== ResultType.Loading)
+    .every((resultType) => resultType === ResultType.Trusted);
+}
+
+function getRelevantTrustSignalResults(
+  transactionMeta: TransactionMeta,
+  state: EnforcedSimulationsState,
+): ResultType[] {
   const { chainId, type, txParams, txParamsOriginal, nestedTransactions } =
     transactionMeta;
 
@@ -221,7 +278,7 @@ function isTrusted(
   // `to`, so nested `wallet_sendCalls` recipients are never scanned, and
   // nothing is scanned at all when the user has security alerts disabled.
   if (!chainId) {
-    return false;
+    return [];
   }
 
   // Use the original `to` address before any container wrapping,
@@ -233,7 +290,7 @@ function isTrusted(
   // calls, treated uniformly.
   const calls = [{ to: originalTo, data, type }, ...(nestedTransactions ?? [])];
 
-  let trusted = true;
+  const resultTypes: ResultType[] = [];
 
   for (let index = 0; index < calls.length; index++) {
     const { to, data: callData, type: callType } = calls[index];
@@ -259,22 +316,25 @@ function isTrusted(
       state.addressSecurityAlertResponses[createCacheKey(chainId, to)];
 
     // Unknown or still-loading signals don't make a call untrusted.
-    if (!cached || cached.result_type === ResultType.Loading) {
-      log(`${label} - Trusted - Unknown Signal`, {
-        ...props,
-        resultType: cached?.result_type,
-      });
+    if (!cached) {
+      log(`${label} - Trusted - Unknown Signal`, props);
+      continue;
+    }
+
+    if (cached.result_type === ResultType.Loading) {
+      log(`${label} - Trusted - Loading Signal`, props);
+      resultTypes.push(cached.result_type);
       continue;
     }
 
     if (cached.result_type === ResultType.Trusted) {
       log(`${label} - Trusted - Trusted Signal`, props);
-      continue;
+    } else {
+      log(`${label} - Not Trusted - ${cached.result_type}`, props);
     }
 
-    log(`${label} - Not Trusted - ${cached.result_type}`, props);
-    trusted = false;
+    resultTypes.push(cached.result_type);
   }
 
-  return trusted;
+  return resultTypes;
 }
