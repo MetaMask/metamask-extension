@@ -1378,6 +1378,7 @@ describe('PerpsStreamManager', () => {
       manager.account.subscribe(onData);
 
       await jest.advanceTimersByTimeAsync(3_000);
+
       expect(onData).not.toHaveBeenCalled();
 
       const recoveredAccount = { totalBalance: '632.69' };

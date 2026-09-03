@@ -432,6 +432,7 @@ describe('usePerpsChannel', () => {
       const { manager, result } = await renderAccountChannelAfterFailedFetch(
         new Error('network'),
       );
+
       expect(result.current.isInitialLoading).toBe(true);
 
       const recoveredAccount = { totalBalance: '632.69' } as AccountState;
