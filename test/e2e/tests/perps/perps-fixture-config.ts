@@ -18,6 +18,7 @@ import {
   MOCK_ETH_FUNDING,
   MOCK_USDC_DEPOSIT,
 } from './mocks/websocketActivityMocks';
+import { ETH_LONG_CLEARING_HOUSE_STATE } from './mocks/websocketPositionMocks';
 
 /**
  * Production remote flag defaults used as the base for Perps remote flag state
@@ -638,6 +639,37 @@ export function getPerpsConfigEligible(title?: string) {
     title,
     manifestFlags: PERPS_ELIGIBLE_FLAG,
     testSpecificMock: (server: Mockttp) => mockEligibleFeatureFlags(server),
+  };
+}
+
+/**
+ * Eligible Perps fixture for specs that act on an existing ETH long position.
+ *
+ * Serves the same account over REST that `WS_USER_WITH_ETH_LONG_POSITION` serves
+ * over the WebSocket. perps-controller 15.1.0 reads positions for a symbol
+ * operation from the current-connection DEX slice *or* from an HTTP
+ * `clearinghouseState` read, and never merges the two sources. The shared REST
+ * mock reports a funded account with no positions, so whenever the stream slice
+ * is not current the controller concludes the position does not exist and the
+ * operation fails. Overriding REST here keeps both transports telling the same
+ * story.
+ *
+ * @param title - The test title for debugging.
+ * @returns Partial withFixtures config to spread into withFixtures().
+ */
+export function getPerpsConfigEligibleWithEthLongPosition(title?: string) {
+  return {
+    ...getPerpsConfigEligible(title),
+    testSpecificMock: async (server: Mockttp) => {
+      await mockEligibleFeatureFlags(server);
+      await server
+        .forPost('https://api.hyperliquid.xyz/info')
+        .withJsonBodyIncluding({ type: 'clearinghouseState' })
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: ETH_LONG_CLEARING_HOUSE_STATE,
+        }));
+    },
   };
 }
 
