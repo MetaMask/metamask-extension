@@ -797,6 +797,7 @@ describe('MetaMaskController', () => {
                   decimals: '4',
                   symbol: 'TST',
                   image: 'https://example.com/icon.svg',
+                  chainId: MAINNET_CHAIN_ID,
                 },
               }),
             }),
