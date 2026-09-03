@@ -66,6 +66,8 @@ type MetamaskOverrides = Partial<{
   tokens: ResourceState<TokensResponse | null, RampsToken | null>;
   subjects: Record<string, unknown>;
   permissionHistory: Record<string, unknown>;
+  isBackupAndSyncEnabled: boolean;
+  isRampsSyncingEnabled: boolean;
 }>;
 
 const buildState = (over: MetamaskOverrides = {}) => ({
@@ -88,6 +90,8 @@ const buildState = (over: MetamaskOverrides = {}) => ({
     },
     subjects: {},
     permissionHistory: {},
+    isBackupAndSyncEnabled: true,
+    isRampsSyncingEnabled: true,
     ...over,
   },
 });
@@ -192,6 +196,29 @@ describe('useRampsNavigation goToBuy', () => {
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
     expect(openTab).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
+  });
+
+  it('skips Portfolio migration when ramps syncing is disabled', async () => {
+    const { result } = run(
+      buildState({
+        permissionHistory: { [PORTFOLIO_ORIGINS[0]]: {} },
+        isRampsSyncingEnabled: false,
+      }),
+    );
+
+    await goToBuy(result);
+    expect(mockRunPortfolioBuyOrdersMigration).not.toHaveBeenCalled();
+  });
+
+  it('skips Portfolio migration when Backup & Sync is disabled', async () => {
+    const { result } = run(
+      buildState({
+        permissionHistory: { [PORTFOLIO_ORIGINS[0]]: {} },
+        isBackupAndSyncEnabled: false,
+      }),
+    );
+    await goToBuy(result);
+    expect(mockRunPortfolioBuyOrdersMigration).not.toHaveBeenCalled();
   });
 
   it('service disruption → shows RAMPS_SERVICE_DISRUPTION (before geolocation)', async () => {

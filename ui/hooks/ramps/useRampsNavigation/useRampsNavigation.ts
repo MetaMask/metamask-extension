@@ -25,6 +25,10 @@ import {
   selectProviders,
   selectTokens,
 } from '../../../selectors/rampsController';
+import {
+  selectIsBackupAndSyncEnabled,
+  selectIsRampsSyncingEnabled,
+} from '../../../selectors/identity/backup-and-sync';
 import useRamps from '../useRamps/useRamps';
 import { hasEverConnectedToPortfolio } from '../utils/portfolioConnection';
 import { normalizeAssetIdForApi } from '../utils/normalizeAssetIdForApi';
@@ -111,10 +115,6 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
 /**
  * Provides the `goToBuy` navigation gate for the Ramps buy entry point.
  *
- * When native ramps are enabled and the wallet has previously connected to
- * Portfolio, runs a one-shot silent Portfolio migrate (upload Buy orders →
- * sync into Extension) before opening the in-wallet buy flow. Never-connected
- * wallets skip Portfolio entirely.
  * When the flag is off, everyone is redirected to Portfolio.
  *
  * @returns An object with `goToBuy`, an async callback taking an optional
@@ -134,6 +134,8 @@ export default function useRampsNavigation() {
   const providers = useSelector(selectProviders);
   const tokens = useSelector(selectTokens);
   const everConnectedToPortfolio = useSelector(hasEverConnectedToPortfolio);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
+  const isRampsSyncingEnabled = useSelector(selectIsRampsSyncingEnabled);
 
   const goToBuy = useCallback(
     async (intent?: RampIntent): Promise<boolean> => {
@@ -180,9 +182,11 @@ export default function useRampsNavigation() {
         return false;
       }
 
-      // 4b. One-shot Portfolio Buy-history migrate for wallets that may have
-      // localStorage orders on app.metamask.io. Never-connected → skip.
-      if (everConnectedToPortfolio) {
+      if (
+        everConnectedToPortfolio &&
+        isBackupAndSyncEnabled &&
+        isRampsSyncingEnabled
+      ) {
         try {
           await runPortfolioBuyOrdersMigration();
         } catch (error) {
@@ -232,16 +236,14 @@ export default function useRampsNavigation() {
       providers,
       tokens,
       everConnectedToPortfolio,
+      isBackupAndSyncEnabled,
+      isRampsSyncingEnabled,
       dispatch,
       navigate,
       openBuyCryptoInPdapp,
     ],
   );
 
-  // Expose whether Buy leaves the extension so callers can gate follow-up UI
-  // (e.g. the "tab opened" toast) without re-deriving the destination. With
-  // Profile Sync migrate in place, Portfolio-connected wallets stay in-app
-  // when the flag is on — only the flag-off path opens a Portfolio tab.
   return {
     goToBuy,
     opensBuyInPortfolioTab: !isEnabled,
