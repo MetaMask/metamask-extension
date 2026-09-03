@@ -4750,6 +4750,10 @@
   "honeypotTitle": {
     "message": "Honey pot"
   },
+  "hyperliquidDepositPromptTitle": {
+    "message": "Fund Hyperliquid with MetaMask",
+    "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Apply a MetaMask referral code to all future trades per Hyperliquid's $1. MetaMask earns a fee.",
     "description": "The checkbox label in the redesigned Hyperliquid referral confirmation screen. $1 is the terms link"
@@ -7315,6 +7319,12 @@
   "perpsCandlePeriodMinutes": {
     "message": "Minutes"
   },
+  "perpsChart": {
+    "message": "Price chart"
+  },
+  "perpsChartLoadError": {
+    "message": "Failed to load chart data"
+  },
   "perpsCloseAll": {
     "message": "Close all"
   },
@@ -7368,6 +7378,9 @@
   },
   "perpsCloseShort": {
     "message": "Close short"
+  },
+  "perpsCollapseChart": {
+    "message": "Collapse chart"
   },
   "perpsConfirmCloseLong": {
     "message": "Close long"
@@ -7466,6 +7479,9 @@
   "perpsExchangeAccountNotFound": {
     "message": "Add funds to start trading.",
     "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
+  },
+  "perpsExpandChart": {
+    "message": "Expand chart"
   },
   "perpsExploreMarkets": {
     "message": "Explore markets"
