@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
@@ -36,16 +36,21 @@ type Story = StoryObj<typeof NetworkListItemMenu>;
 
 const NetworkListItemMenuWithButton = (args: any) => {
   const [isOpen, setIsOpen] = useState(false);
-  const anchorRef = useRef<HTMLButtonElement>(null);
+  const [anchorElement, setAnchorElement] = useState<HTMLButtonElement | null>(
+    null,
+  );
+  const setAnchorRef = useCallback((node: HTMLButtonElement | null) => {
+    setAnchorElement(node);
+  }, []);
 
   return (
     <div>
-      <Button ref={anchorRef} onClick={() => setIsOpen(!isOpen)}>
+      <Button ref={setAnchorRef} onClick={() => setIsOpen(!isOpen)}>
         Toggle Network Menu
       </Button>
       <NetworkListItemMenu
         {...args}
-        anchorElement={anchorRef.current}
+        anchorElement={anchorElement}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
       />
