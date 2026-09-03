@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
+import { IconColor } from '@metamask/design-system-react';
 
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
@@ -53,6 +54,9 @@ describe('OrderEntryHeader', () => {
     expect(backButton).toHaveAttribute(
       'data-testid',
       'perps-order-entry-back-button',
+    );
+    expect(backButton.querySelector('svg')).toHaveClass(
+      IconColor.IconAlternative,
     );
     fireEvent.click(backButton);
 
