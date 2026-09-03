@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
@@ -28,9 +28,8 @@ import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/acc
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
-import { setHyperliquidDepositPromptTxId } from '../../../store/actions';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
-import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { TokenIcon } from '../../../pages/confirmations/components/token-icon/token-icon';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import { ConfirmationLoader } from '../../../pages/confirmations/hooks/useConfirmationNavigation';
@@ -155,7 +154,6 @@ export const HyperliquidDepositPrompt: React.FC<
 > = ({ onActionComplete, selectedAddress }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const tokens = useHyperliquidDepositTokens();
   const currentAccount = useSelector(getSelectedInternalAccount);
 
@@ -214,24 +212,19 @@ export const HyperliquidDepositPrompt: React.FC<
 
     const { transactionId } = result;
 
-    // Store the transaction ID so the deposit toast can show custom message
-    // dispatch(setHyperliquidDepositPromptTxId(transactionId));
-
+    // Pre-select the payment token. Fire-and-forget: the confirmation falls
+    // back to its automatic pay token selection if this fails or hangs.
     if (displayToken?.address && displayToken.chainId) {
-      try {
-        await updateTransactionPaymentToken({
-          transactionId,
-          tokenAddress: displayToken.address as Hex,
-          chainId: displayToken.chainId as Hex,
-        });
-      } catch (error) {
-        // The confirmation falls back to its automatic pay token selection,
-        // so a failed pre-selection should not block the deposit.
+      updateTransactionPaymentToken({
+        transactionId,
+        tokenAddress: displayToken.address as Hex,
+        chainId: displayToken.chainId as Hex,
+      }).catch((error: unknown) => {
         log.error(
           'HyperliquidDepositPrompt: Failed to pre-select payment token',
           error,
         );
-      }
+      });
     }
 
     navigate(
@@ -243,7 +236,18 @@ export const HyperliquidDepositPrompt: React.FC<
     );
 
     onActionComplete({ action: 'continue', transactionId });
-  }, [dispatch, displayToken, navigate, onActionComplete, startPerpsDeposit]);
+
+    // Store the transaction ID so the deposit toast can show a custom message.
+    // Called after navigation/approval to avoid interfering with the render cycle.
+    submitRequestToBackground('setHyperliquidDepositPromptTxId', [
+      transactionId,
+    ]).catch((error: unknown) => {
+      log.error(
+        'HyperliquidDepositPrompt: Failed to store transaction ID for toast',
+        error,
+      );
+    });
+  }, [displayToken, navigate, onActionComplete, startPerpsDeposit]);
 
   return (
     <Box

@@ -7462,22 +7462,6 @@ export function setPerpsTabBadgeSeen(value: boolean) {
 }
 
 /**
- * Store the transaction ID of a perps deposit initiated from the Hyperliquid
- * deposit prompt. Used to show a custom success toast message.
- *
- * @param transactionId - The transaction ID, or null to clear
- */
-export function setHyperliquidDepositPromptTxId(
-  transactionId: string | null,
-) {
-  return async () => {
-    await submitRequestToBackground('setHyperliquidDepositPromptTxId', [
-      transactionId,
-    ]);
-  };
-}
-
-/**
  * Persist a dismissed mUSD asset-detail CTA key (chainId-tokenAddress).
  * Stored in AppStateController until uninstall.
  *

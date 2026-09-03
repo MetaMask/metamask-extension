@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
@@ -10,8 +10,6 @@ import {
   selectPerpsShouldShowDepositToast,
 } from '../../../selectors/perps-controller';
 import { selectHyperliquidDepositPromptTxId } from '../../../selectors/perps/persisted-state';
-import { setHyperliquidDepositPromptTxId } from '../../../store/actions';
-import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { toast, ToastContent } from '../../ui/toast/toast';
 
 const id = 'perps-deposit-toast';
@@ -22,9 +20,13 @@ const clearDepositResult = () =>
     () => undefined,
   );
 
+const clearHyperliquidDepositPromptTxId = () =>
+  submitRequestToBackground('setHyperliquidDepositPromptTxId', [null]).catch(
+    () => undefined,
+  );
+
 export function PerpsDepositToast() {
   const t = useI18nContext();
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const depositInProgress = useSelector(selectPerpsDepositPending);
   const lastDepositResult = useSelector(selectPerpsLastDepositResult);
   const lastDepositTransactionId = useSelector(
@@ -77,7 +79,7 @@ export function PerpsDepositToast() {
 
     // Clear the Hyperliquid deposit transaction ID after showing the toast
     if (isHyperliquidDeposit) {
-      dispatch(setHyperliquidDepositPromptTxId(null));
+      clearHyperliquidDepositPromptTxId();
     }
 
     const timeoutId = setTimeout(() => {
@@ -89,7 +91,6 @@ export function PerpsDepositToast() {
       toast.dismiss(id);
     };
   }, [
-    dispatch,
     hasDepositResult,
     isHyperliquidDeposit,
     lastDepositResultError,

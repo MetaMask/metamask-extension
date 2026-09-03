@@ -26,10 +26,8 @@ jest.mock('../perps/hooks/usePerpsDepositConfirmation', () => ({
 
 jest.mock('../../../store/controller-actions/transaction-pay-controller');
 
-jest.mock('../../../store/actions', () => ({
-  setHyperliquidDepositPromptTxId: jest.fn(() => ({
-    type: 'SET_HYPERLIQUID_DEPOSIT_PROMPT_TX_ID',
-  })),
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn(() => Promise.resolve()),
 }));
 
 jest.mock('../../../pages/confirmations/selectors/feature-flags', () => ({

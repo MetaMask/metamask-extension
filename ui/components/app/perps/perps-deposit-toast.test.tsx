@@ -20,12 +20,6 @@ jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
-jest.mock('../../../store/actions', () => ({
-  setHyperliquidDepositPromptTxId: jest.fn(() => ({
-    type: 'SET_HYPERLIQUID_DEPOSIT_PROMPT_TX_ID',
-  })),
-}));
-
 jest.mock('../../ui/toast/toast', () => ({
   toast: {
     dismiss: (...args: unknown[]) => mockToastDismiss(...args),
