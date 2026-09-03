@@ -143,4 +143,15 @@ describe('mapRampsOrderSafely', () => {
 
     expect(mapRampsOrderSafely(order)?.chainId).toBe('eip155:1');
   });
+
+  it('normalizes a Portfolio ISO timestamp for Activity sorting', () => {
+    const order = {
+      ...baseOrder,
+      createdAt: '2026-09-03T20:53:56.153Z',
+    } as unknown as RampsOrder;
+
+    expect(mapRampsOrderSafely(order)?.timestamp).toMatchInlineSnapshot(
+      `1788468836153`,
+    );
+  });
 });

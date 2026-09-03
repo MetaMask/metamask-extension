@@ -1,6 +1,18 @@
 import { mapRampsOrder, type RampsOrderLike } from '@metamask/client-utils';
 import type { RampsOrder } from '@metamask/ramps-controller';
 import { hasPositiveNumericAmount } from './hasPositiveNumericAmount';
+import { toRampsOrderTimestamp } from './toRampsOrderTimestamp';
+
+/**
+ * Coerces `createdAt` to epoch milliseconds so Activity rows sort numerically.
+ *
+ * @param order - The raw ramps order.
+ * @returns The order with a numeric `createdAt`.
+ */
+function withNormalizedCreatedAt(order: RampsOrder): RampsOrder {
+  const createdAt = toRampsOrderTimestamp(order.createdAt);
+  return createdAt === order.createdAt ? order : { ...order, createdAt };
+}
 
 /**
  * Seeds `network` when the order only has chain info on `cryptoCurrency`.
@@ -62,7 +74,9 @@ export function mapRampsOrderSafely(
   order: RampsOrder,
 ): NonNullable<ReturnType<typeof mapRampsOrder>> | undefined {
   try {
-    const prepared = seedNetworkIfNeeded(withNormalizedTxHash(order));
+    const prepared = seedNetworkIfNeeded(
+      withNormalizedTxHash(withNormalizedCreatedAt(order)),
+    );
     const item =
       mapRampsOrder(prepared as unknown as RampsOrderLike) ?? undefined;
     if (!item || (item.type !== 'rampBuy' && item.type !== 'rampSell')) {
