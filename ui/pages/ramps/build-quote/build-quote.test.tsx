@@ -172,6 +172,25 @@ describe('RampsBuildQuoteScreen', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('sizes the amount input from an inaccessible text twin', () => {
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    const amountInput = screen.getByTestId('ramps-build-quote-amount-input');
+    const amountSizeContainer = amountInput.parentElement;
+    const amountSizeTwin = amountSizeContainer?.querySelector(
+      '[aria-hidden="true"]',
+    );
+
+    expect(amountSizeContainer).toHaveClass('relative', 'w-max', 'min-w-[1ch]');
+    expect(amountSizeTwin).toHaveTextContent('100');
+    expect(amountInput).toHaveClass('absolute', 'inset-0');
+    expect(amountInput).not.toHaveAttribute('size');
+  });
+
   it('matches snapshot while quote is loading', () => {
     useRampsQuotes.mockReturnValue({
       data: null,

@@ -76,12 +76,16 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     }
 
     setHasScrolledToBottom(false);
+<<<<<<< HEAD
   }, [
     currentConfirmation?.id,
     previousId,
     scrollElement,
     setHasScrolledToBottom,
   ]);
+=======
+  }, [currentConfirmation?.id, previousId, ref]);
+>>>>>>> origin/main
 
   useEffect(() => {
     if (isTransactionRedesign) {
