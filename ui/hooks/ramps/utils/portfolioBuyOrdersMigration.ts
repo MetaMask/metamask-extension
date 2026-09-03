@@ -9,7 +9,6 @@ import {
   syncRampsOrdersWithUserStorage,
 } from '../../../store/controller-actions/ramps-controller';
 
-// Bump when migrate must re-run after Profile Sync session-handling fixes.
 export const PORTFOLIO_BUY_ORDERS_MIGRATION_STORAGE_KEY =
   'portfolio-buy-orders-migration-v13';
 export const EXT_MIGRATE_ORDERS_ENTRY = 'ext_migrate_orders';
@@ -38,7 +37,6 @@ type PlatformTabApi = {
 type MigrationOptions = {
   platform?: PlatformTabApi;
   timeoutMs?: number;
-  syncTimeoutMs?: number;
   syncOrders?: () => Promise<void>;
 };
 
@@ -47,10 +45,6 @@ export async function hasCompletedPortfolioBuyOrdersMigration(): Promise<boolean
     PORTFOLIO_BUY_ORDERS_MIGRATION_STORAGE_KEY,
   );
   return value === true || value === '1';
-}
-
-export async function markPortfolioBuyOrdersMigrationCompleted(): Promise<void> {
-  await setStorageItem(PORTFOLIO_BUY_ORDERS_MIGRATION_STORAGE_KEY, true);
 }
 
 export function getPortfolioMigrateOrdersUrl(
@@ -77,42 +71,12 @@ function isMigrateDoneUrl(candidateUrl: string | undefined): boolean {
   }
 }
 
-async function withTimeout<Result>(
-  promise: Promise<Result>,
-  timeoutMs: number,
-  label: string,
-): Promise<Result> {
-  let timeoutId: ReturnType<typeof setTimeout> | undefined;
-  try {
-    return await Promise.race([
-      promise,
-      new Promise<Result>((_, reject) => {
-        timeoutId = setTimeout(() => {
-          reject(new Error(`${label} timed out after ${timeoutMs}ms`));
-        }, timeoutMs);
-      }),
-    ]);
-  } finally {
-    if (timeoutId !== undefined) {
-      clearTimeout(timeoutId);
-    }
-  }
-}
-
 let migrationInFlight: Promise<void> | null = null;
 
-/**
- * Opens Portfolio migrate tab, syncs orders, marks complete after sync. @param options
- * @param options
- */
 export async function runPortfolioBuyOrdersMigration(
   options?: MigrationOptions,
 ): Promise<void> {
-  if (migrationInFlight) {
-    await migrationInFlight;
-    return;
-  }
-  migrationInFlight = runPortfolioBuyOrdersMigrationInner(options).finally(
+  migrationInFlight ??= runPortfolioBuyOrdersMigrationInner(options).finally(
     () => {
       migrationInFlight = null;
     },
@@ -130,14 +94,13 @@ async function runPortfolioBuyOrdersMigrationInner(
   const platform =
     options?.platform ?? (globalThis as { platform?: PlatformTabApi }).platform;
   if (!platform?.openTab || !platform?.closeTab) {
-    await markPortfolioBuyOrdersMigrationCompleted();
     return;
   }
 
   const timeoutMs = options?.timeoutMs ?? MIGRATE_TIMEOUT_MS;
-  const syncTimeoutMs = options?.syncTimeoutMs ?? SYNC_TIMEOUT_MS;
   const syncOrders = options?.syncOrders ?? syncRampsOrdersWithUserStorage;
   let openedTabId: number | undefined;
+  let didMigrate = false;
 
   try {
     const openedTab = await platform.openTab({
@@ -146,46 +109,43 @@ async function runPortfolioBuyOrdersMigrationInner(
     });
     openedTabId = openedTab.id;
     if (openedTabId !== undefined) {
-      await waitForMigrateDone(platform, openedTabId, timeoutMs);
+      didMigrate = await waitForMigrateDone(platform, openedTabId, timeoutMs);
     }
   } catch (error) {
     console.error('Portfolio Buy-order migration tab failed', error);
   } finally {
     if (openedTabId !== undefined) {
-      try {
-        await platform.closeTab(openedTabId);
-      } catch {
-        // Tab may already be closed.
-      }
+      await platform.closeTab(openedTabId).catch(() => undefined);
     }
+  }
+
+  if (!didMigrate) {
+    return;
   }
 
   try {
     if (!isProduction()) {
-      try {
-        await submitRequestToBackground('performSignOut');
-      } catch (signOutError) {
-        console.error(
-          'performSignOut before migrate sync failed',
-          signOutError,
-        );
-      }
-    }
-    await submitRequestToBackground('performSignIn');
-    await withTimeout(
-      syncOrders(),
-      syncTimeoutMs,
-      'syncRampsOrdersWithUserStorage',
-    );
-    try {
-      await setRampsSelectedProvider(null);
-    } catch (clearError) {
-      console.error(
-        'Failed to clear selected provider after migrate sync',
-        clearError,
+      await submitRequestToBackground('performSignOut').catch((error) =>
+        console.error('performSignOut before migrate sync failed', error),
       );
     }
-    await markPortfolioBuyOrdersMigrationCompleted();
+    await submitRequestToBackground('performSignIn');
+    await Promise.race([
+      syncOrders(),
+      new Promise((_, reject) =>
+        setTimeout(
+          () => reject(new Error('Ramps order sync timed out')),
+          SYNC_TIMEOUT_MS,
+        ),
+      ),
+    ]);
+    await setRampsSelectedProvider(null).catch((error) =>
+      console.error(
+        'Failed to clear selected provider after migrate sync',
+        error,
+      ),
+    );
+    await setStorageItem(PORTFOLIO_BUY_ORDERS_MIGRATION_STORAGE_KEY, true);
   } catch (error) {
     console.error(
       'syncRampsOrdersWithUserStorage after Portfolio migrate failed',
@@ -198,14 +158,14 @@ function waitForMigrateDone(
   platform: PlatformTabApi,
   openedTabId: number,
   timeoutMs: number,
-): Promise<void> {
+): Promise<boolean> {
   return new Promise((resolve) => {
     const wait = {
       settled: false,
       timeoutId: undefined as ReturnType<typeof setTimeout> | undefined,
     };
 
-    const finish = () => {
+    const finish = (didMigrate: boolean) => {
       if (wait.settled) {
         return;
       }
@@ -216,7 +176,7 @@ function waitForMigrateDone(
       if (wait.timeoutId !== undefined) {
         clearTimeout(wait.timeoutId);
       }
-      resolve();
+      resolve(didMigrate);
     };
 
     function onUpdated(
@@ -230,11 +190,11 @@ function waitForMigrateDone(
       if (
         isMigrateDoneUrl(changeInfo?.url || changeInfo?.pendingUrl || tab?.url)
       ) {
-        finish();
+        finish(true);
       }
     }
 
-    wait.timeoutId = setTimeout(finish, timeoutMs);
+    wait.timeoutId = setTimeout(() => finish(false), timeoutMs);
     platform.addTabUpdatedListener(onUpdated);
   });
 }

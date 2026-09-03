@@ -107,4 +107,25 @@ describe('portfolioBuyOrdersMigration', () => {
     );
     errorSpy.mockRestore();
   });
+
+  it('does not sync or mark complete when Portfolio times out', async () => {
+    const platform = createPlatform(8);
+    platform.addTabUpdatedListener.mockImplementation();
+    const syncOrders = jest.fn();
+
+    await runPortfolioBuyOrdersMigration({
+      platform,
+      syncOrders,
+      timeoutMs: 0,
+    });
+
+    expect(syncOrders).not.toHaveBeenCalled();
+    expect(mockSetStorageItem).not.toHaveBeenCalled();
+  });
+
+  it('does not mark complete without the tab API', async () => {
+    await runPortfolioBuyOrdersMigration({ platform: {} as never });
+
+    expect(mockSetStorageItem).not.toHaveBeenCalled();
+  });
 });
