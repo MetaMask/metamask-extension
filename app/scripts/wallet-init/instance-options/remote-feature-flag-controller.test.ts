@@ -106,6 +106,26 @@ describe('getRemoteFeatureFlagControllerInstanceOptions', () => {
     expect(options.getCanonicalProfileId?.()).toBe('');
   });
 
+  it('returns an empty MetaMetrics id when AnalyticsController is not registered', () => {
+    const messenger = createMockMessenger();
+    const options = getRemoteFeatureFlagControllerInstanceOptions({
+      messenger,
+      state: {},
+    });
+
+    expect(options.getMetaMetricsId?.()).toBe('');
+  });
+
+  it('returns an empty canonical profile id when AuthenticationController is not registered', () => {
+    const messenger = createMockMessenger();
+    const options = getRemoteFeatureFlagControllerInstanceOptions({
+      messenger,
+      state: {},
+    });
+
+    expect(options.getCanonicalProfileId?.()).toBe('');
+  });
+
   it('includes empty defaultFeatureFlags and metaMetricsFlags stubs', () => {
     const options = buildOptions({});
 

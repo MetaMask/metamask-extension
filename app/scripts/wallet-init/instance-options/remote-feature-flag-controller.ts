@@ -120,17 +120,30 @@ export function getRemoteFeatureFlagControllerInstanceOptions({
       // Example:
       // 'feature-flag-name',
     ],
-    getMetaMetricsId: () =>
-      messenger.call('AnalyticsController:getState').analyticsId,
+    getMetaMetricsId: () => {
+      try {
+        return (
+          messenger.call('AnalyticsController:getState').analyticsId ?? ''
+        );
+      } catch {
+        // `wallet.init()` runs before AnalyticsController is registered.
+        return '';
+      }
+    },
     getCanonicalProfileId: () => {
-      const { srpSessionData } = messenger.call(
-        'AuthenticationController:getState',
-      );
+      try {
+        const { srpSessionData } = messenger.call(
+          'AuthenticationController:getState',
+        );
 
-      return (
-        Object.entries(srpSessionData ?? {})?.[0]?.[1]?.profile
-          ?.canonicalProfileId ?? ''
-      );
+        return (
+          Object.entries(srpSessionData ?? {})?.[0]?.[1]?.profile
+            ?.canonicalProfileId ?? ''
+        );
+      } catch {
+        // `wallet.init()` runs before AuthenticationController is registered.
+        return '';
+      }
     },
     clientVersion: getBaseSemVerVersion(),
     prevClientVersion: state.AppMetadataController?.currentAppVersion as
