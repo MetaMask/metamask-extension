@@ -353,6 +353,26 @@ describe('Ethereum Chain Utils', () => {
         ticker: 'ETH',
       });
     });
+
+    it('accepts params when blockExplorerUrls is omitted', () => {
+      expect(
+        EthChainUtils.validateAddEthereumChainParams({
+          chainId: '0x1',
+          chainName: 'Mainnet',
+          rpcUrls: ['https://test.com/rpc'],
+          nativeCurrency: {
+            symbol: 'ETH',
+            decimals: 18,
+          },
+        }),
+      ).toStrictEqual({
+        chainId: '0x1',
+        chainName: 'Mainnet',
+        firstValidBlockExplorerUrl: null,
+        firstValidRPCUrl: 'https://test.com/rpc',
+        ticker: 'ETH',
+      });
+    });
   });
 
   describe('validateSwitchEthereumChainParams', () => {

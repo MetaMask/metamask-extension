@@ -141,30 +141,23 @@ export function validateAddEthereumChainParams(
     !(
       'chainId' in params &&
       'chainName' in params &&
-      'blockExplorerUrls' in params &&
       'nativeCurrency' in params &&
       'rpcUrls' in params
     )
   ) {
     throw rpcErrors.invalidParams({
-      message: `Expected single object parameter to contain "chainId", "chainName", "blockExplorerUrls", "nativeCurrency" and "rpcUrls". Received:\n${JSON.stringify(
+      message: `Expected single object parameter to contain at least "chainId", "chainName", "nativeCurrency" and "rpcUrls". Received:\n${JSON.stringify(
         params,
       )}`,
     });
   }
 
-  const {
-    chainId,
-    chainName,
-    blockExplorerUrls,
-    nativeCurrency,
-    rpcUrls,
-    ...otherParams
-  } = params;
+  const { chainId, chainName, nativeCurrency, rpcUrls, ...otherParams } =
+    params;
 
   const otherKeys = Object.keys(otherParams).filter(
-    // iconUrls is a valid optional but not currently used parameter
-    (value) => !['iconUrls'].includes(value),
+    // iconUrls and blockExplorerUrls are valid optional parameters
+    (value) => !['iconUrls', 'blockExplorerUrls'].includes(value),
   );
 
   if (otherKeys.length > 0) {
@@ -191,11 +184,13 @@ export function validateAddEthereumChainParams(
   };
 
   const firstValidRPCUrl = rpcUrls.find((rpcUrl) => isLocalhostOrHttps(rpcUrl));
-  const firstValidBlockExplorerUrl = Array.isArray(blockExplorerUrls)
-    ? (blockExplorerUrls.find((blockExplorerUrl) =>
-        isLocalhostOrHttps(blockExplorerUrl),
-      ) ?? null)
-    : null;
+  const firstValidBlockExplorerUrl =
+    'blockExplorerUrls' in otherParams &&
+    Array.isArray(otherParams.blockExplorerUrls)
+      ? (otherParams.blockExplorerUrls.find((blockExplorerUrl) =>
+          isLocalhostOrHttps(blockExplorerUrl),
+        ) ?? null)
+      : null;
 
   if (!firstValidRPCUrl) {
     throw rpcErrors.invalidParams({
