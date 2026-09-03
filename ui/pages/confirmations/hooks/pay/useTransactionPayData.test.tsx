@@ -6,9 +6,9 @@ import { TransactionType } from '@metamask/transaction-controller';
 import {
   TransactionPayStrategy,
   TransactionPayQuote,
-  TransactionPayTotals,
   TransactionPayRequiredToken,
   TransactionPaySourceAmount,
+  type TransactionPayTotals,
 } from '@metamask/transaction-pay-controller';
 import type { Json } from '@metamask/utils';
 import { ConfirmContext } from '../../context/confirm';
@@ -46,6 +46,7 @@ const GAS_TOKEN_MOCK = {
 const SOURCE_AMOUNT_MOCK = {} as TransactionPaySourceAmount;
 
 const TOTALS_MOCK = {
+  isInputBased: true,
   total: { usd: '1000', fiat: '1234' },
 } as unknown as TransactionPayTotals;
 
@@ -208,11 +209,38 @@ describe('useTransactionPayData', () => {
   });
 
   describe('useTransactionPayTotals', () => {
-    it('returns totals', () => {
+    it('returns input-based totals', () => {
       const { result } = renderHook(() => useTransactionPayTotals(), {
         wrapper: createWrapper(),
       });
+
       expect(result.current).toStrictEqual(TOTALS_MOCK);
+      expect(result.current?.isInputBased).toBe(true);
+    });
+
+    it('returns output-based totals', () => {
+      const totals = {
+        ...TOTALS_MOCK,
+        isInputBased: false,
+      };
+      const { result } = renderHook(() => useTransactionPayTotals(), {
+        wrapper: createWrapper({ totals }),
+      });
+
+      expect(result.current).toStrictEqual(totals);
+      expect(result.current?.isInputBased).toBe(false);
+    });
+
+    it('returns totals when the optional field is missing', () => {
+      const totals = {
+        total: { usd: '1000', fiat: '1234' },
+      } as unknown as TransactionPayTotals;
+      const { result } = renderHook(() => useTransactionPayTotals(), {
+        wrapper: createWrapper({ totals }),
+      });
+
+      expect(result.current).toStrictEqual(totals);
+      expect(result.current?.isInputBased).toBeUndefined();
     });
   });
 
