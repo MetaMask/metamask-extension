@@ -178,9 +178,9 @@ describe('MoneyTransactionDetailsPage', () => {
     expect(
       screen.getByTestId('money-transaction-details-status-value'),
     ).toHaveTextContent(messages.confirmed.message);
-    expect(screen.getByTestId('money-transaction-details-date')).toHaveTextContent(
-      formatMoneyActivityDetailsDate(deposited.time),
-    );
+    expect(
+      screen.getByTestId('money-transaction-details-date'),
+    ).toHaveTextContent(formatMoneyActivityDetailsDate(deposited.time));
     expect(
       screen.getByTestId('money-transaction-details-paid-with'),
     ).toHaveTextContent('Transak');
@@ -198,7 +198,9 @@ describe('MoneyTransactionDetailsPage', () => {
   it('navigates back when the back button is clicked', () => {
     renderWithLocalization(<MoneyTransactionDetailsPage />);
 
-    fireEvent.click(screen.getByTestId('money-transaction-details-back-button'));
+    fireEvent.click(
+      screen.getByTestId('money-transaction-details-back-button'),
+    );
     expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 

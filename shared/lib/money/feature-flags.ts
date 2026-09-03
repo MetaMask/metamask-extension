@@ -186,8 +186,7 @@ export function isMoneyActivityMockDataEnabled(
 export function isMoneyActivityDetailsEnabled(
   remoteFeatureFlags: Record<string, unknown> | undefined,
 ): boolean {
-  const remote =
-    remoteFeatureFlags?.[MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME];
+  const remote = remoteFeatureFlags?.[MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME];
   if (typeof remote === 'boolean') {
     return remote;
   }

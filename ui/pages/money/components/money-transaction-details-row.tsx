@@ -58,7 +58,10 @@ export function MoneyTransactionDetailsRow({
         </Text>
         {labelEnd}
       </Box>
-      <Box className="min-w-0 text-right" flexDirection={BoxFlexDirection.Column}>
+      <Box
+        className="min-w-0 text-right"
+        flexDirection={BoxFlexDirection.Column}
+      >
         {typeof value === 'string' ? (
           <Text
             variant={TextVariant.BodyMd}

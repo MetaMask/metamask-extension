@@ -246,7 +246,9 @@ describe('MoneyActivityPage', () => {
 
     renderWithLocalization(<MoneyActivityPage />);
 
-    fireEvent.click(screen.getByTestId(`money-activity-row-${mockItems[0].id}`));
+    fireEvent.click(
+      screen.getByTestId(`money-activity-row-${mockItems[0].id}`),
+    );
     expect(onItemClick).toHaveBeenCalledWith(mockItems[0]);
   });
 

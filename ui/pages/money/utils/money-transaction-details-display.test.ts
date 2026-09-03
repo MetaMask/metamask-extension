@@ -57,13 +57,13 @@ describe('formatMoneyActivityDetailsDate', () => {
         month: 'long',
         day: 'numeric',
         year: 'numeric',
-      }).format(new Date(Date.UTC(2025, 6, 9, 14, 56))) 
-        } at ${ 
-        new Intl.DateTimeFormat('en-US', {
-          hour: 'numeric',
-          minute: '2-digit',
-          hour12: true,
-        }).format(new Date(Date.UTC(2025, 6, 9, 14, 56)))}`,
+      }).format(
+        new Date(Date.UTC(2025, 6, 9, 14, 56)),
+      )} at ${new Intl.DateTimeFormat('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+      }).format(new Date(Date.UTC(2025, 6, 9, 14, 56)))}`,
     );
   });
 });
