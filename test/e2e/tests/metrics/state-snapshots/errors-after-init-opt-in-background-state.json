@@ -44,7 +44,6 @@
     "activeQrCodeScanRequest": null,
     "addressSecurityAlertResponses": "object",
     "browserEnvironment": { "browser": "string", "os": "string" },
-    "canTrackWalletFundsObtained": false,
     "connectedStatusPopoverHasBeenShown": true,
     "currentExtensionPopupId": "number",
     "dappSwapComparisonData": "object",
@@ -178,6 +177,9 @@
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionTimestamp": 0
+  },
+  "MoneyAccountController": {
+    "moneyAccounts": "object"
   },
   "MultichainAssetsController": {
     "accountsAssets": "object",

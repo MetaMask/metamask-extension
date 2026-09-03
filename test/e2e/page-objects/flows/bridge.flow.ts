@@ -1,13 +1,14 @@
 import type { CaipAssetType, Hex } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
 import { Driver } from '../../webdriver/driver';
-import AccountListPage from '../pages/account-list-page';
+import AccountListPage from '../pages/accounts/list-page';
 import ActivityTab from '../pages/home/activity-tab';
 import BridgeQuotePage, { type BridgeQuote } from '../pages/bridge/quote-page';
 import HomePage from '../pages/home/homepage';
-import TokenOverviewPage from '../pages/token-overview-page';
+import TokenOverviewPage from '../pages/asset/token-overview-page';
 
 export const verifySubmittedSwapTransaction = async ({
   driver,
@@ -134,7 +135,7 @@ export const bridgeTransaction = async ({
   openPickersWithDebounce?: boolean;
 }) => {
   const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
+  await homePage.goToHomePage();
   await homePage.startSwapFlow();
 
   const bridgePage = new BridgeQuotePage(driver);
@@ -203,8 +204,9 @@ const waitForAssetPageNavigation = async (
 };
 
 /**
- * Searches for a token in the asset picker, clicks the info icon to navigate
- * to the token's asset overview page, and waits for it to load.
+ * Searches for a token in the asset picker (filtering to the token's network),
+ * clicks the info icon to navigate to the token's asset overview page, and
+ * waits for it to load.
  *
  * @param params - The parameters for navigating to the asset page.
  * @param params.driver - The driver instance.
@@ -232,26 +234,18 @@ export const goToAssetPage = async ({
   if (!assetId) {
     throw new Error('Unable to resolve asset id for bridge flow');
   }
-  // Bridge search results use lowercase erc20 addresses; wallet-held assets may
-  // use checksummed CAIP-19 ids from toAssetId().
-  const normalizedAssetId = assetId.toLowerCase() as typeof assetId;
 
-  try {
-    await bridgePage.searchAndClickAssetInfo({
-      token,
-      assetId: normalizedAssetId,
-      assetPicker: picker,
-    });
-  } catch (error) {
-    if (assetId === normalizedAssetId) {
-      throw error;
-    }
-    await bridgePage.searchAndClickAssetInfo({
-      token,
-      assetId,
-      assetPicker: picker,
-    });
-  }
+  const network =
+    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+      chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+    ];
+
+  await bridgePage.searchAndClickAssetInfo({
+    token,
+    assetId,
+    assetPicker: picker,
+    network,
+  });
 
   await waitForAssetPageNavigation(driver, { chainId, address, assetId });
   const assetPage = new TokenOverviewPage(driver);

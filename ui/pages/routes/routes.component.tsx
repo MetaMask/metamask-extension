@@ -49,7 +49,6 @@ import {
   RAMPS_BUILD_QUOTE_ROUTE,
   RAMPS_TOKEN_SELECTION_ROUTE,
   RAMPS_PAYMENT_METHOD_ROUTE,
-  RAMPS_PROVIDER_SELECTION_ROUTE,
   DEEP_LINK_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -79,6 +78,7 @@ import {
   ACTIVITY_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
   MONEY_HOME_ROUTE,
+  MONEY_ACTIVITY_ROUTE,
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
@@ -149,6 +149,7 @@ import { Toaster } from '../../components/ui/toast/toast';
 import { ToastListener } from '../../components/app/toast-listener/toast-listener';
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { ALLOWED_CAPABILITIES as HOME_ROUTE_ALLOWED_CAPABILITIES } from '../home/messenger';
+import { ALLOWED_CAPABILITIES as MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES } from '../money/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import { UNLOCK_ROUTE_CAPABILITIES } from '../unlock-page/messenger';
 import { RESTORE_VAULT_ROUTE_CAPABILITIES } from '../keychains/restore-vault-messenger';
@@ -231,9 +232,6 @@ const RampsTokenSelection = mmLazy(
 const RampsPaymentMethod = mmLazy(
   () => import('../ramps/payment-method/index.ts'),
 );
-const RampsProviderSelection = mmLazy(
-  () => import('../ramps/provider-selection/index.ts'),
-);
 const PermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/permissions-page/permissions-page.js'),
@@ -276,6 +274,9 @@ const PerpsTransactionDetailsPage = mmLazy(
 const ActivityPage = mmLazy(() => import('../activity/activity-page.tsx'));
 const PerpsPage = mmLazy(() => import('../perps/perps-home-page.tsx'));
 const MoneyHomePage = mmLazy(() => import('../money/index.ts'));
+const MoneyActivityPage = mmLazy(
+  () => import('../money/money-activity-page.tsx'),
+);
 const PerpsWithdrawPage = mmLazy(
   () => import('../perps/perps-withdraw-page.tsx'),
 );
@@ -609,10 +610,6 @@ export const routeConfig = [
             element: <RampsPaymentMethod />,
           },
           {
-            path: RAMPS_PROVIDER_SELECTION_ROUTE,
-            element: <RampsProviderSelection />,
-          },
-          {
             path: `${MUSD_CONVERSION_ROUTE}/*`,
             element: <MusdConversionPage />,
           },
@@ -661,10 +658,16 @@ export const routeConfig = [
             path: PERPS_HOME_PAGE_ROUTE,
             element: <PerpsPage />,
           },
-          {
+          createRouteWithMessenger({
             path: MONEY_HOME_ROUTE,
+            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
             element: <MoneyHomePage />,
-          },
+          }),
+          createRouteWithMessenger({
+            path: MONEY_ACTIVITY_ROUTE,
+            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+            element: <MoneyActivityPage />,
+          }),
         ],
       },
     ],

@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   type CaipAssetType,
@@ -209,6 +215,13 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
 
+  // Defer only the hide-zero-balance preference so Settings toggles stay
+  // responsive while this list recomputes. Account assets must update
+  // immediately on account switch to avoid showing stale tokens.
+  const deferredShouldHideZeroBalanceTokens = useDeferredValue(
+    shouldHideZeroBalanceTokens,
+  );
+
   const useExternalServices = useSelector(getUseExternalServices);
   const lowValueAssetFiatThreshold = useMemo(
     () => getLowValueAssetFiatThreshold(currencyRates),
@@ -231,7 +244,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
           if (isTronSpecialAsset(asset.assetId)) {
             return false;
           }
-          if (shouldHideZeroBalanceTokens && asset.balance === '0') {
+          if (deferredShouldHideZeroBalanceTokens && asset.balance === '0') {
             return false;
           }
           return true;
@@ -272,7 +285,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     tokenSortConfig,
     accountGroupIdAssets,
     allEnabledNetworksForAllNamespaces,
-    shouldHideZeroBalanceTokens,
+    deferredShouldHideZeroBalanceTokens,
     useExternalServices,
   ]);
 

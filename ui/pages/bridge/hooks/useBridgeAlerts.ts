@@ -1,15 +1,19 @@
 import { shallowEqual, useSelector } from 'react-redux';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BannerAlertSeverity } from '@metamask/design-system-react';
 import { getNativeAssetId } from '../../../../shared/lib/asset-utils';
+import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
 import {
   getActiveQuoteInsufficientNativeReserveError,
   type BridgeAppState,
   getActiveQuotePriceData,
   getBridgeUnavailableQuoteReason,
+  getDestAccountDisplayName,
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
   getFromChain,
+  getIsDestSameAsActiveAccount,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
@@ -46,9 +50,11 @@ export const useBridgeAlerts = () => {
     isInsufficientGasForQuote,
     isInsufficientBalance,
     isStockMarketClosed,
+    isInOffHoursTrading,
     isQuoteExpired,
     isPriceImpactWarning,
     isPriceImpactError,
+    isDestAssetRequireActivate,
   } = useSelector(
     (state: BridgeAppState) => getValidationErrors(state, Date.now()),
     shallowEqual,
@@ -59,6 +65,9 @@ export const useBridgeAlerts = () => {
 
   const toToken = useSelector(getToToken);
   const ticker = useMultichainSelector(getMultichainNativeCurrency);
+  const toTokenAssetId = toToken?.assetId;
+  const isDestSameAsActiveAccount = useSelector(getIsDestSameAsActiveAccount);
+  const destAccountDisplayName = useSelector(getDestAccountDisplayName);
 
   const {
     assetIsMalicious,
@@ -69,7 +78,18 @@ export const useBridgeAlerts = () => {
 
   const { txAlert } = useSecurityAlerts(toToken);
   const { goToBuy } = useRampsNavigation();
+  const navigate = useNavigate();
   const fromChain = useSelector(getFromChain);
+
+  // Lightweight CTA navigation — avoid useBridgeNavigation here because this
+  // hook mounts in multiple prepare-page children and the heavier bridge
+  // navigation hook spikes React act-warning counts in integration-style tests.
+  const navigateToDestAssetPage = useCallback(() => {
+    if (!toTokenAssetId) {
+      return;
+    }
+    navigate(buildAssetRoutePath(toTokenAssetId));
+  }, [navigate, toTokenAssetId]);
 
   const activeQuotePriceData = useSelector(getActiveQuotePriceData);
 
@@ -115,6 +135,20 @@ export const useBridgeAlerts = () => {
         isConfirmationAlert: false,
         bannerAlertProps: {
           severity: BannerAlertSeverity.Danger,
+        },
+      });
+    }
+
+    if (isInOffHoursTrading) {
+      categorizeAlert({
+        id: 'off-hours',
+        isDismissable: false,
+        severity: 'warning',
+        title: t('bridgeOffHoursTitle'),
+        description: t('bridgeOffHoursDescription'),
+        isConfirmationAlert: false,
+        bannerAlertProps: {
+          severity: BannerAlertSeverity.Warning,
         },
       });
     }
@@ -229,6 +263,48 @@ export const useBridgeAlerts = () => {
       });
     }
 
+    // Non-blocking warning: destination Stellar classic asset still needs a
+    // trustline. Can appear alongside other banners (e.g. insufficient gas).
+    // Cross-chain + activation gating lives in getValidationErrors /
+    // getWarningLabels (MixPanel).
+    // Same as active account → Activate CTA. Different dest → no CTA + switch copy.
+    if (isDestAssetRequireActivate && toToken) {
+      if (isDestSameAsActiveAccount) {
+        categorizeAlert({
+          id: 'stellar-trustline',
+          isDismissable: false,
+          severity: 'warning',
+          title: t('bridgeStellarTrustlineWarningTitle', [toToken.symbol]),
+          description: t('bridgeStellarTrustlineWarningMessage', [
+            toToken.symbol,
+          ]),
+          isConfirmationAlert: false,
+          bannerAlertProps: {
+            severity: BannerAlertSeverity.Warning,
+            actionButtonLabel: t('bridgeStellarTrustlineWarningCta', [
+              toToken.symbol,
+            ]),
+            actionButtonOnClick: () => navigateToDestAssetPage(),
+          },
+        });
+      } else {
+        categorizeAlert({
+          id: 'stellar-trustline',
+          isDismissable: false,
+          severity: 'warning',
+          title: t('bridgeStellarTrustlineWarningTitle', [toToken.symbol]),
+          description: t(
+            'bridgeStellarTrustlineWarningMessageDifferentAccount',
+            [destAccountDisplayName ?? '', toToken.symbol],
+          ),
+          isConfirmationAlert: false,
+          bannerAlertProps: {
+            severity: BannerAlertSeverity.Warning,
+          },
+        });
+      }
+    }
+
     if (
       !isInsufficientBalance &&
       !isInsufficientGasForQuote &&
@@ -310,6 +386,7 @@ export const useBridgeAlerts = () => {
     formattedPriceImpactPercentage,
     formattedPriceImpactFiat,
     isInsufficientBalance,
+    isInOffHoursTrading,
     isInsufficientGasForQuote,
     isLoading,
     isNoQuotesAvailable,
@@ -321,9 +398,13 @@ export const useBridgeAlerts = () => {
     insufficientNativeReserveError,
     dispatch,
     goToBuy,
+    navigateToDestAssetPage,
     fromChain,
     ticker,
     toToken,
+    isDestAssetRequireActivate,
+    isDestSameAsActiveAccount,
+    destAccountDisplayName,
     assetIsMalicious,
     assetIsSuspicious,
     assetMaliciousLocalizedFeatures,

@@ -164,9 +164,7 @@ describe('build-quote utils', () => {
           hasQuoteFetchError: false,
           quotesResponse: {
             success: [],
-            error: [
-              { provider: 'transak', error: 'Minimum purchase is $5 USD' },
-            ],
+            error: [{ provider: 'transak', error: 'Something opaque' }],
           },
           selectedQuote: null,
         }),

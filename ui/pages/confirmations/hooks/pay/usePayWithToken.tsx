@@ -12,18 +12,17 @@ import {
 } from '../../../../../shared/lib/transactions.utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
-import { getInternalAccountByAddress } from '../../../../selectors/accounts';
 import {
   selectPaymentOverrideByTransactionId,
   type TransactionPayState,
 } from '../../../../selectors/transactionPayController';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { isHardwareAccount } from '../../../multichain-accounts/account-details/account-type-utils';
 import { useConfirmContext } from '../../context/confirm';
 import { PayWithModal } from '../../components/modals/pay-with-modal';
+import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
+import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
-import { MONEY_ACCOUNT_DUMMY_BALANCE_FIAT } from './sections/usePayWithMoneyAccountSection';
+import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 
 export type PayWithDisplayToken = {
   chainId: string;
@@ -36,11 +35,11 @@ type PayWithToken = {
   displayToken: PayWithDisplayToken | undefined;
   balanceUsdFormatted: string;
   label: string;
-  canEdit: boolean;
   from: string | undefined;
   ownerId: string;
   isPostQuoteWithdraw: boolean;
   isMoneyAccountSelected: boolean;
+  hasAvailableTokens: boolean;
   openModal: () => void;
   modal: React.ReactNode;
 };
@@ -58,37 +57,39 @@ export function usePayWithToken(): PayWithToken {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { payToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
+  const availableTokens = useTransactionPayAvailableTokens();
   const fiatFormatter = useFiatFormatter({ overrideCurrency: 'usd' });
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const from = currentConfirmation?.txParams?.from;
   const transactionId = currentConfirmation?.id ?? '';
-
-  const fromAccount = useSelector((state) =>
-    getInternalAccountByAddress(state, from ?? ''),
-  );
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
+  const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
   const isMoneyAccountSelected =
-    paymentOverride === PaymentOverride.MoneyAccount;
+    paymentOverride === PaymentOverride.MoneyAccount ||
+    (isDefaultMoneyAccount && !payToken);
+  const { withdrawableFiatFormatted } = useMoneyAccountWithdrawableFiat(
+    isMoneyAccountSelected,
+  );
 
-  const canEdit = fromAccount ? !isHardwareAccount(fromAccount) : true;
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);
   // Avoid flashing the destination/required token (e.g. mUSD on Monad) while
   // payToken is cleared during account switches or initial auto-select.
+  // Also wait when Money Account is the flag default so deposits do not flash
+  // the required destination token before the override lands.
   const shouldWaitForPayToken =
     isPostQuoteWithdraw ||
+    isDefaultMoneyAccount ||
     hasTransactionType(currentConfirmation, [
       TransactionType.moneyAccountDeposit,
     ]);
 
   const openModal = useCallback(() => {
-    if (canEdit) {
-      setIsModalOpen(true);
-    }
-  }, [canEdit]);
+    setIsModalOpen(true);
+  }, []);
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
@@ -98,14 +99,24 @@ export function usePayWithToken(): PayWithToken {
   const resolvedToken =
     payToken ?? (shouldWaitForPayToken ? undefined : firstRequiredToken);
 
+  const hasAvailableTokens = useMemo(
+    () => (availableTokens ?? []).some((token) => !token.disabled),
+    [availableTokens],
+  );
+
   const balanceUsdFormatted = useMemo(() => {
     if (isMoneyAccountSelected) {
-      return MONEY_ACCOUNT_DUMMY_BALANCE_FIAT;
+      return withdrawableFiatFormatted ?? '';
     }
     return fiatFormatter(
       new BigNumber(resolvedToken?.balanceUsd ?? '0').toNumber(),
     );
-  }, [fiatFormatter, isMoneyAccountSelected, resolvedToken?.balanceUsd]);
+  }, [
+    fiatFormatter,
+    isMoneyAccountSelected,
+    resolvedToken?.balanceUsd,
+    withdrawableFiatFormatted,
+  ]);
 
   let displayToken: PayWithDisplayToken | undefined;
   if (isMoneyAccountSelected) {
@@ -113,7 +124,7 @@ export function usePayWithToken(): PayWithToken {
       chainId: resolvedToken?.chainId ?? '',
       address: '',
       symbol: t('payWithMoneyAccount'),
-      balanceUsd: MONEY_ACCOUNT_DUMMY_BALANCE_FIAT,
+      balanceUsd: withdrawableFiatFormatted ?? '',
     };
   } else if (resolvedToken?.chainId) {
     displayToken = {
@@ -128,11 +139,11 @@ export function usePayWithToken(): PayWithToken {
     displayToken,
     balanceUsdFormatted,
     label: isPostQuoteWithdraw ? t('withdrawTo') : t('payWith'),
-    canEdit,
     from,
     ownerId: currentConfirmation?.id ?? '',
     isPostQuoteWithdraw,
     isMoneyAccountSelected,
+    hasAvailableTokens,
     openModal,
     modal: isModalOpen ? (
       <PayWithModal isOpen={isModalOpen} onClose={closeModal} />

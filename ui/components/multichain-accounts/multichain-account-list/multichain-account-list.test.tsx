@@ -222,6 +222,16 @@ describe('MultichainAccountList', () => {
     expect(screen.getByText('Account 1 from wallet 2')).toBeInTheDocument();
   });
 
+  it('renders no balance for account groups with no fetched balance', () => {
+    renderComponent();
+
+    // Balances are only fetched eagerly for the selected account group, and an
+    // unfetched group aggregates to 0 just like an empty one. Rendering "$0.00"
+    // would read as "your funds are gone", so nothing is rendered instead.
+    expect(screen.queryAllByTestId('balance-display')).toHaveLength(0);
+    expect(screen.queryByText('$0.00')).not.toBeInTheDocument();
+  });
+
   it('does not render wallet headers based on prop', () => {
     renderComponent({ displayWalletHeader: false });
 

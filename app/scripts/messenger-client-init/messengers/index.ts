@@ -180,6 +180,10 @@ import {
 } from './user-operation-controller-messenger';
 import { getRewardsDataServiceMessenger } from './reward-data-service-messenger';
 import { getAuthenticatedUserStorageServiceMessenger } from './authenticated-user-storage-service-messenger';
+import {
+  getChompApiServiceInitMessenger,
+  getChompApiServiceMessenger,
+} from './chomp-api-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getProofOfOwnershipServiceMessenger } from './proof-of-ownership-service-messenger';
@@ -189,12 +193,17 @@ import { getComplianceControllerMessenger } from './compliance-controller-messen
 import { getComplianceServiceMessenger } from './compliance-service-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
+import { getUserTraitsServiceMessenger } from './user-traits-service-messenger';
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
 import { getConfigRegistryApiServiceMessenger } from './config-registry-api-service-messenger';
 import { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
 import { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
 import { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
 import { getMoneyAccountAvailabilityServiceMessenger } from './money-account-availability-service-messenger';
+import {
+  getMoneyAccountControllerInitMessenger,
+  getMoneyAccountControllerMessenger,
+} from './money-account-controller-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
@@ -263,9 +272,18 @@ export { getPermissionLogControllerMessenger } from './permission-log-controller
 export { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
 export { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
 export { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
+export type { ChompApiServiceInitMessenger } from './chomp-api-service-messenger';
+export {
+  getChompApiServiceMessenger,
+  getChompApiServiceInitMessenger,
+} from './chomp-api-service-messenger';
 export { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
 export { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
 export { getMoneyAccountAvailabilityServiceMessenger } from './money-account-availability-service-messenger';
+export {
+  getMoneyAccountControllerInitMessenger,
+  getMoneyAccountControllerMessenger,
+} from './money-account-controller-messenger';
 export type { ComplianceControllerMessenger } from './compliance-controller-messenger';
 export { getComplianceControllerMessenger } from './compliance-controller-messenger';
 export type { ComplianceServiceMessenger } from './compliance-service-messenger';
@@ -372,6 +390,10 @@ export const MESSENGER_FACTORIES = {
   NetworkConnectionBannerController: {
     getMessenger: getNetworkConnectionBannerControllerMessenger,
     getInitMessenger: noop,
+  },
+  ChompApiService: {
+    getMessenger: getChompApiServiceMessenger,
+    getInitMessenger: getChompApiServiceInitMessenger,
   },
   ClientController: {
     getMessenger: getClientControllerMessenger,
@@ -480,6 +502,10 @@ export const MESSENGER_FACTORIES = {
   MoneyAccountBalanceService: {
     getMessenger: getMoneyAccountBalanceServiceMessenger,
     getInitMessenger: noop,
+  },
+  MoneyAccountController: {
+    getMessenger: getMoneyAccountControllerMessenger,
+    getInitMessenger: getMoneyAccountControllerInitMessenger,
   },
   MultichainAssetsController: {
     getMessenger: getMultichainAssetsControllerMessenger,
@@ -715,6 +741,10 @@ export const MESSENGER_FACTORIES = {
   },
   ProofOfOwnershipService: {
     getMessenger: getProofOfOwnershipServiceMessenger,
+    getInitMessenger: noop,
+  },
+  UserTraitsService: {
+    getMessenger: getUserTraitsServiceMessenger,
     getInitMessenger: noop,
   },
 } as const;
