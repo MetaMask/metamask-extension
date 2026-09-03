@@ -17,7 +17,7 @@ jest.mock('react', () => ({
 
 jest.mock('../../../../hooks/useTransactionEventFragment');
 jest.mock('../../../../hooks/useDeepMemo', () => ({
-  useDeepMemo: <Type,>(factory: () => Type) => factory(),
+  useDeepMemo: <Type>(factory: () => Type) => factory(),
 }));
 
 describe('useSimulationMetrics', () => {
