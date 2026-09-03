@@ -38,7 +38,9 @@ function isValidMetaData(value: unknown): value is MetaData {
     typeof value.version === 'number' &&
     (value.storageKind === undefined ||
       value.storageKind === 'data' ||
-      value.storageKind === 'split')
+      value.storageKind === 'split') &&
+    (value.platformSplitStateGradualRolloutAttempted === undefined ||
+      typeof value.platformSplitStateGradualRolloutAttempted === 'boolean')
   );
 }
 
