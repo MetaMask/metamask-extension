@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
 import type { TokenSecurityData } from '@metamask/assets-controllers';
 import { parseCaipAssetType, type CaipAssetType } from '@metamask/utils';
-import { fetchCachedTokenAssets } from '../pages/bridge/utils/token-security';
+import { isNativeCaipAssetId } from '#shared/lib/asset-utils';
+import { useTokenAssetQuery } from '#ui/hooks/token-asset/useTokenAssetQuery';
 
 type UseTokenSecurityDataOpts = {
   /** CAIP-19 asset ID. When null, no fetch is attempted. */
@@ -28,10 +28,10 @@ const getAssetMetadataFromAssetId = (
   assetId: CaipAssetType,
 ): TokenSecurityAssetMetadata => {
   try {
-    const { assetReference, assetNamespace } = parseCaipAssetType(assetId);
+    const { assetReference } = parseCaipAssetType(assetId);
     return {
       address: assetReference,
-      isNative: assetNamespace === 'slip44',
+      isNative: isNativeCaipAssetId(assetId),
     };
   } catch {
     return {};
@@ -45,9 +45,6 @@ const isValidTokenSecurityData = (data: unknown): data is TokenSecurityData =>
   typeof (data as TokenSecurityData).resultType === 'string' &&
   Array.isArray((data as TokenSecurityData).features);
 
-// TODO(security-trust): Once home page Security & Trust signals land (separate PR)
-// via TanStack Query, read from the shared query cache first and fall back to REST
-// (`fetchCachedTokenAssets`) when cached data is unavailable.
 export const useTokenSecurityData = ({
   assetId,
   prefetchedData: rawPrefetchedData,
@@ -56,69 +53,40 @@ export const useTokenSecurityData = ({
     ? rawPrefetchedData
     : undefined;
 
-  const [fetchedAssetId, setFetchedAssetId] = useState<CaipAssetType | null>(
-    prefetchedData ? assetId : null,
-  );
-  const [securityData, setSecurityData] = useState<TokenSecurityData | null>(
-    prefetchedData ?? null,
-  );
-  const [error, setError] = useState<Error | null>(null);
-  const [assetMetadata, setAssetMetadata] =
-    useState<TokenSecurityAssetMetadata>({});
-  const activeAssetIdRef = useRef<CaipAssetType | null>(null);
+  const { data, isLoading, error } = useTokenAssetQuery({
+    assetId,
+    fetchOnMiss: !prefetchedData,
+    enabled: Boolean(assetId) && !prefetchedData,
+  });
 
-  const fetchData = useCallback(async (requestAssetId: CaipAssetType) => {
-    try {
-      const assets = await fetchCachedTokenAssets([requestAssetId]);
-      if (requestAssetId !== activeAssetIdRef.current) {
-        return;
-      }
-      const asset = assets?.[0];
-      setSecurityData(asset?.securityData ?? null);
-      setAssetMetadata(
-        asset
-          ? {
-              symbol: asset.symbol,
-              name: asset.name,
-              decimals: asset.decimals,
-              ...getAssetMetadataFromAssetId(requestAssetId),
-            }
-          : getAssetMetadataFromAssetId(requestAssetId),
-      );
-      setError(null);
-      setFetchedAssetId(requestAssetId);
-    } catch (err) {
-      if (requestAssetId !== activeAssetIdRef.current) {
-        return;
-      }
-      setError(err as Error);
-      setFetchedAssetId(requestAssetId);
-    }
-  }, []);
+  const parsedAssetMetadata = assetId
+    ? getAssetMetadataFromAssetId(assetId)
+    : {};
 
-  useEffect(() => {
-    if (prefetchedData || !assetId) {
-      activeAssetIdRef.current = assetId;
-      return undefined;
-    }
-
-    activeAssetIdRef.current = assetId;
-    queueMicrotask(() => {
-      fetchData(assetId);
-    });
-
-    return () => {
-      activeAssetIdRef.current = null;
+  if (prefetchedData) {
+    return {
+      securityData: prefetchedData,
+      isLoading: false,
+      error: null,
+      ...parsedAssetMetadata,
     };
-  }, [assetId, prefetchedData, fetchData]);
+  }
 
-  const hasCurrentResult = Boolean(assetId) && fetchedAssetId === assetId;
-  const pendingMetadata = assetId ? getAssetMetadataFromAssetId(assetId) : {};
+  if (!assetId) {
+    return {
+      securityData: null,
+      isLoading: false,
+      error: null,
+    };
+  }
 
   return {
-    securityData: prefetchedData ?? (hasCurrentResult ? securityData : null),
-    isLoading: !prefetchedData && Boolean(assetId) && !hasCurrentResult,
-    error: hasCurrentResult ? error : null,
-    ...(hasCurrentResult ? assetMetadata : pendingMetadata),
+    securityData: data?.securityData ?? null,
+    isLoading,
+    error: error ?? null,
+    symbol: data?.symbol,
+    name: data?.name,
+    decimals: data?.decimals,
+    ...parsedAssetMetadata,
   };
 };

@@ -730,9 +730,6 @@
       "MetaMask: Background connection not initialized": 163,
       "Reselect: Identity function warnings": 1
     },
-    "ui/pages/confirmations/hooks/alerts/useNetworkAndOriginSwitchingAlerts.test.ts": {
-      "MetaMask: Background connection not initialized": 6
-    },
     "ui/pages/confirmations/hooks/send/metrics/useRecipientSelectionMetrics.test.tsx": {
       "error: Unexpected key \"state\" found in": 1
     },
@@ -753,8 +750,6 @@
       "MetaMask: Background connection not initialized": 2
     },
     "ui/pages/confirmations/hooks/useConfirmationAlerts.test.ts": {
-      "MetaMask: Background connection not initialized": 5,
-      "React: Act warnings (component updates not wrapped)": 3,
       "Reselect: Identity function warnings": 1
     },
     "ui/pages/confirmations/hooks/useEIP7702Account.test.ts": {

@@ -668,6 +668,11 @@
       "count": 1
     }
   },
+  "ui/hooks/useTokenTracker.js": {
+    "react-hooks/set-state-in-effect": {
+      "count": 1
+    }
+  },
   "ui/pages/activity/activity-list.tsx": {
     "react-hooks/refs": {
       "count": 3

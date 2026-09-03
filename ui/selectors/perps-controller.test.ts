@@ -799,7 +799,7 @@ describe('perps-controller selectors', () => {
         ),
       ).toStrictEqual({
         orderBookExpanded: false,
-        chartExpanded: false,
+        chartExpanded: true,
         orderBookPosition: 'right',
         orderFormPosition: 'right',
         positionsSideFilter: 'all',
@@ -814,7 +814,7 @@ describe('perps-controller selectors', () => {
     it('returns the defaults when nothing is persisted', () => {
       expect(selectProLayoutPreferences(buildState())).toStrictEqual({
         orderBookExpanded: false,
-        chartExpanded: false,
+        chartExpanded: true,
         orderBookPosition: 'left',
         orderFormPosition: 'right',
         positionsSideFilter: 'all',
