@@ -11,7 +11,6 @@ import {
   CandlestickSeries,
   HistogramSeries,
   ISeriesApi,
-  // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'lightweight-charts';
 import { useSelector } from 'react-redux';
 import { brandColor } from '@metamask/design-tokens';

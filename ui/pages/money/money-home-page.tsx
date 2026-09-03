@@ -24,6 +24,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
+import { useMoneyAccountDeposit } from '../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInterest } from '../../hooks/money/useMoneyAccountInterest';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
@@ -68,13 +69,21 @@ const formatInterestEarned = (value: string | undefined) => {
 type ActionCardProps = {
   icon: IconName;
   label: string;
+  onClick?: () => void;
+  disabled?: boolean;
 };
 
-const MoneyActionCard = ({ icon, label }: ActionCardProps) => {
+const MoneyActionCard = ({
+  icon,
+  label,
+  onClick,
+  disabled,
+}: ActionCardProps) => {
   return (
     <button
       type="button"
-      disabled
+      disabled={disabled}
+      onClick={onClick}
       className="flex h-[76px] flex-1 flex-col items-center justify-center gap-0.5 rounded-xl bg-background-muted disabled:cursor-default disabled:opacity-100"
     >
       <Icon name={icon} size={IconSize.Lg} color={IconColor.IconDefault} />
@@ -144,9 +153,16 @@ export function MoneyHomePage() {
   const privacyMode = useSelector(getPrivacyMode);
   const { items: activityItems } = useMoneyActivityItems();
   const handleActivityItemClick = useMoneyActivityItemClick();
+  const { initiateDeposit, isLoading: isDepositLoading } =
+    useMoneyAccountDeposit();
   const handleViewAllActivity = useCallback(() => {
     navigate(MONEY_ACTIVITY_ROUTE);
   }, [navigate]);
+  const handleAddFunds = useCallback(() => {
+    initiateDeposit().catch((error) =>
+      console.error('Failed to initiate money account deposit', error),
+    );
+  }, [initiateDeposit]);
 
   if (isAvailabilityLoading || (availability.isAvailable && isBalanceLoading)) {
     return (
@@ -235,10 +251,16 @@ export function MoneyHomePage() {
         </div>
 
         <div className="mt-2 flex w-full max-w-[389px] gap-2 py-2">
-          <MoneyActionCard icon={IconName.Add} label={t('moneyAdd')} />
+          <MoneyActionCard
+            icon={IconName.Add}
+            label={t('moneyAdd')}
+            onClick={handleAddFunds}
+            disabled={isDepositLoading}
+          />
           <MoneyActionCard
             icon={IconName.Arrow2UpRight}
             label={t('moneySend')}
+            disabled
           />
         </div>
 
@@ -268,7 +290,11 @@ export function MoneyHomePage() {
                   : t('moneyFundDescription')}
               </Text>
             </div>
-            <Button disabled className="w-full">
+            <Button
+              className="w-full"
+              isLoading={isDepositLoading}
+              onClick={handleAddFunds}
+            >
               {t('addFunds')}
             </Button>
           </section>

@@ -7,17 +7,19 @@ import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
+import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import { useSendTokens } from '../../../hooks/send/useSendTokens';
 import { useConfirmContext } from '../../../context/confirm';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { AlertsName } from '../../../hooks/alerts/constants';
+import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
-import { MONEY_ACCOUNT_DUMMY_BALANCE_FIAT } from '../../../hooks/pay/sections/usePayWithMoneyAccountSection';
 import { PayWithRow, PayWithRowSkeleton } from './pay-with-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayData');
+jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../selectors/feature-flags', () => ({
   ...jest.requireActual('../../../selectors/feature-flags'),
   selectIsMoneyAccountTransactionEnabled: jest.fn(() => false),
@@ -26,6 +28,11 @@ jest.mock('../../../hooks/send/useSendTokens');
 jest.mock('../../../context/confirm');
 jest.mock('../../../../multichain-accounts/account-details/account-type-utils');
 jest.mock('../../../../../hooks/useAlerts');
+jest.mock('../../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
+  useMoneyAccountWithdrawableFiat: jest.fn(() => ({
+    withdrawableFiatFormatted: '$12.34',
+  })),
+}));
 
 jest.mock(
   '../../../../../components/app/alert-system/contexts/alertMetricsContext',
@@ -144,10 +151,16 @@ describe('PayWithRow', () => {
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
   );
+  const useTransactionPayAvailableTokensMock = jest.mocked(
+    useTransactionPayAvailableTokens,
+  );
   const useSendTokensMock = jest.mocked(useSendTokens);
   const useConfirmContextMock = jest.mocked(useConfirmContext);
   const useAlertsMock = jest.mocked(useAlerts);
   const isHardwareAccountMock = jest.mocked(isHardwareAccount);
+  const useMoneyAccountWithdrawableFiatMock = jest.mocked(
+    useMoneyAccountWithdrawableFiat,
+  );
   const getFieldAlertsMock = jest.fn(
     (_field?: string | undefined): { key: string }[] => [],
   );
@@ -156,9 +169,15 @@ describe('PayWithRow', () => {
     jest.resetAllMocks();
 
     useSendTokensMock.mockReturnValue([]);
+    useTransactionPayAvailableTokensMock.mockReturnValue([]);
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
     getFieldAlertsMock.mockReturnValue([]);
+    useMoneyAccountWithdrawableFiatMock.mockReturnValue({
+      withdrawableFiatFormatted: '$12.34',
+      withdrawableFiatRaw: '12.34',
+    });
     useAlertsMock.mockReturnValue({
+      alerts: [],
       getFieldAlerts: getFieldAlertsMock,
     } as never);
 
@@ -225,13 +244,40 @@ describe('PayWithRow', () => {
     expect(screen.queryByTestId('pay-with-modal')).not.toBeInTheDocument();
   });
 
-  it('renders skeleton when no display token available', () => {
+  it('renders empty selection when no display token and no available tokens', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: undefined,
       setPayToken: jest.fn(),
       isNative: false,
     });
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
+
+    const store = mockStore(getMockState());
+    renderWithProvider(<PayWithRow />, store);
+
+    expect(
+      screen.queryByTestId('pay-with-row-skeleton'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
+    expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
+      'Select payment method',
+    );
+  });
+
+  it('renders skeleton while available tokens exist and pay token is not set', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      setPayToken: jest.fn(),
+      isNative: false,
+    });
+    useTransactionPayRequiredTokensMock.mockReturnValue([]);
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: ADDRESS_MOCK,
+        chainId: CHAIN_ID_MOCK,
+        disabled: false,
+      },
+    ] as never);
 
     const store = mockStore(getMockState());
     renderWithProvider(<PayWithRow />, store);
@@ -246,7 +292,10 @@ describe('PayWithRow', () => {
       isNative: false,
     });
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
-    getFieldAlertsMock.mockReturnValue([{ key: AlertsName.AccountNoFunds }]);
+    useAlertsMock.mockReturnValue({
+      alerts: [{ key: AlertsName.AccountNoFunds }],
+      getFieldAlerts: getFieldAlertsMock,
+    } as never);
 
     const store = mockStore(getMockState());
     renderWithProvider(<PayWithRow />, store);
@@ -301,21 +350,12 @@ describe('PayWithRow', () => {
           const store = mockStore(getMockState());
           renderWithProvider(<PayWithRow />, store);
 
-          if (transactionType === TransactionType.perpsWithdraw) {
-            // Post-quote withdraws show an empty Receive selector instead of an
-            // endless skeleton while the destination token is imported.
-            expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
-            expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
-              'Select payment method',
-            );
-          } else {
-            expect(
-              screen.getByTestId('pay-with-row-skeleton'),
-            ).toBeInTheDocument();
-            expect(
-              screen.queryByTestId('pay-with-symbol'),
-            ).not.toBeInTheDocument();
-          }
+          // No funding tokens yet: show the empty selector instead of an
+          // endless skeleton (same as mobile).
+          expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
+          expect(screen.getByTestId('pay-with-symbol')).toHaveTextContent(
+            'Select payment method',
+          );
         });
 
         it('renders the resolved payToken once it is set', () => {
@@ -384,7 +424,7 @@ describe('PayWithRow', () => {
     });
   });
 
-  it('renders the Money account icon and dummy balance when selected', () => {
+  it('renders the Money account icon and balance when selected', () => {
     const store = mockStore(
       getMockState({ paymentOverride: PaymentOverride.MoneyAccount }),
     );
@@ -397,7 +437,7 @@ describe('PayWithRow', () => {
       'Money account',
     );
     expect(screen.getByTestId('pay-with-balance')).toHaveTextContent(
-      `(${MONEY_ACCOUNT_DUMMY_BALANCE_FIAT})`,
+      '($12.34)',
     );
   });
 });
