@@ -159,7 +159,18 @@ export function useInsufficientPayTokenBalanceAlert({
   );
 
   const isInsufficientForFees = useMemo(() => {
-    if (isMoneyPaymentOverride || isPostQuote || isPendingAlert || !payToken) {
+    // Skip for Max: source amount is the full pay-token balance (or already
+    // reduced to leave room for gas). Quote rounding and adding source-network
+    // fees on top of that amount can make source+fees > live balance even
+    // though Max is valid — same class of false positive as money-account Max
+    // (mobile CONF-1811 / metamask-mobile#35247).
+    if (
+      isMax ||
+      isMoneyPaymentOverride ||
+      isPostQuote ||
+      isPendingAlert ||
+      !payToken
+    ) {
       return false;
     }
 
@@ -181,6 +192,7 @@ export function useInsufficientPayTokenBalanceAlert({
   }, [
     balanceRaw,
     balanceUsd,
+    isMax,
     isMoneyPaymentOverride,
     isPayTokenNative,
     isPendingAlert,
