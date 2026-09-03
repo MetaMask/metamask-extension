@@ -18,8 +18,9 @@ import {
   getMoneyAccountVaultConfig,
   type MoneyAccountVaultConfig,
 } from '../../../../../shared/lib/money/vault-config';
+import type { DelegationMessengerActions } from '../../transaction/delegation';
 
-type MoneyPayActions =
+export type MoneyPayActions =
   | AccountsControllerGetSelectedAccountAction
   | RemoteFeatureFlagControllerGetStateAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
@@ -37,6 +38,17 @@ type MoneyPayEvents = TransactionControllerUnapprovedTransactionAddedEvent;
 export type MoneyPayMessenger = Messenger<
   string,
   MoneyPayActions,
+  MoneyPayEvents
+>;
+
+/**
+ * Messenger required by `getPaymentOverrideData`: Money Pay context actions
+ * plus the delegation / EIP-7702 signing capabilities used when wrapping
+ * vault calls for Relay.
+ */
+export type PaymentOverrideMessenger = Messenger<
+  string,
+  MoneyPayActions | DelegationMessengerActions,
   MoneyPayEvents
 >;
 

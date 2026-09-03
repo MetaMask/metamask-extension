@@ -23,13 +23,13 @@ exports[`BridgeAsset should render ERC20 asset 1`] = `
       </div>
     </div>
     <div
-      class="absolute"
+      class="absolute inline-flex items-center justify-center"
       color="background-default"
-      style="bottom: 0px; right: 0px;"
+      style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
-        style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[34px] w-[34px] border-background-default border rounded-md"
+        style="width: 15px; height: 15px; border-width: 1px;"
       >
         <img
           alt="Ethereum"
@@ -118,13 +118,13 @@ exports[`BridgeAsset should render asset with accountType 1`] = `
       </div>
     </div>
     <div
-      class="absolute"
+      class="absolute inline-flex items-center justify-center"
       color="background-default"
-      style="bottom: 0px; right: 0px;"
+      style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
-        style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[34px] w-[34px] border-background-default border rounded-md"
+        style="width: 15px; height: 15px; border-width: 1px;"
       >
         <img
           alt="Bitcoin"
@@ -222,13 +222,13 @@ exports[`BridgeAsset should render asset with balance 1`] = `
       </div>
     </div>
     <div
-      class="absolute"
+      class="absolute inline-flex items-center justify-center"
       color="background-default"
-      style="bottom: 0px; right: 0px;"
+      style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
-        style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[34px] w-[34px] border-background-default border rounded-md"
+        style="width: 15px; height: 15px; border-width: 1px;"
       >
         <img
           alt="Ethereum"
@@ -325,13 +325,13 @@ exports[`BridgeAsset should render native asset 1`] = `
       </div>
     </div>
     <div
-      class="absolute"
+      class="absolute inline-flex items-center justify-center"
       color="background-default"
-      style="bottom: 0px; right: 0px;"
+      style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
-        style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[34px] w-[34px] border-background-default border rounded-md"
+        style="width: 15px; height: 15px; border-width: 1px;"
       >
         <img
           alt="Ethereum"

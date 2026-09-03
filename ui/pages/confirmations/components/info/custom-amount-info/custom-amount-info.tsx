@@ -33,6 +33,8 @@ import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transac
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomaticTransactionPayToken';
+import { useDefaultPaySelectedSection } from '../../../hooks/pay/useDefaultPaySelectedSection';
+import { useIsMoneyAccountFlagDefault } from '../../../hooks/pay/useIsMoneyAccountFlagDefault';
 import { useTransactionPayPostQuote } from '../../../hooks/pay/useTransactionPayPostQuote';
 import { useTransactionPayWithdraw } from '../../../hooks/pay/useTransactionPayWithdraw';
 import type { SetPayTokenRequest } from '../../../hooks/pay/types';
@@ -42,6 +44,7 @@ import {
   useTransactionPayHasPositiveRequiredAmount,
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
+  useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayMetrics } from '../../../hooks/pay/useTransactionPayMetrics';
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
@@ -126,8 +129,13 @@ export const CustomAmountInfo = React.memo(
     prefillMaxOnLoad,
     preferredToken,
   }: CustomAmountInfoProps) => {
+    const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
+    useDefaultPaySelectedSection();
     useAutomaticTransactionPayToken({
-      disable: Boolean(disablePay) || Boolean(disableAutomaticToken),
+      disable:
+        Boolean(disablePay) ||
+        Boolean(disableAutomaticToken) ||
+        isDefaultMoneyAccount,
       preferredToken,
     });
     // Configures post-quote mode for withdraw flows; no-op for other flows.
@@ -369,11 +377,11 @@ function BottomContainer({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
-  // Gate the Receive row on the flag, not the transaction type: with post-quote
-  // disabled the withdraw falls back to a direct transfer, which has a regular
-  // total rather than a bridged "you'll receive" amount. Mirrors mobile
-  // `CustomAmountTotals`.
+  // Withdrawals show Receive only when post-quote token selection is enabled;
+  // otherwise the direct transfer keeps its regular Total. Input-based quotes
+  // show Receive according to the controller-owned totals semantics.
   const { canSelectWithdrawToken } = useTransactionPayWithdraw();
+  const isInputBased = useTransactionPayTotals()?.isInputBased === true;
 
   return (
     <Box
@@ -399,7 +407,7 @@ function BottomContainer({
               <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
             </>
           )}
-          {canSelectWithdrawToken && disablePay !== true ? (
+          {(canSelectWithdrawToken || isInputBased) && disablePay !== true ? (
             <ReceiveRow
               inputAmountUsd={amountFiat}
               variant={ConfirmInfoRowSize.Small}

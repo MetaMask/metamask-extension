@@ -149,8 +149,10 @@ export function PayWithRow({
   } = usePayWithToken();
   // Read the registered confirmation alert so empty-placeholder visibility
   // stays in sync with useConfirmationAlerts (do not re-run the wait timer).
-  const { getFieldAlerts } = useAlerts(ownerId);
-  const hasAccountNoFunds = getFieldAlerts(RowAlertKey.PayWith).some(
+  // MM Pay strips row `field` associations, so look up by alert key instead of
+  // getFieldAlerts(PayWith).
+  const { alerts } = useAlerts(ownerId);
+  const hasAccountNoFunds = alerts.some(
     (alert) => alert.key === AlertsName.AccountNoFunds,
   );
 
