@@ -1526,12 +1526,6 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "무기한 선물 잔액을 확인할 수 없습니다. 다시 시도하세요."
   },
-  "alertReasonAddressTrustSignalMalicious": {
-    "message": "고위험으로 표시된 주소"
-  },
-  "alertReasonAddressTrustSignalWarning": {
-    "message": "제한적 주소 신호"
-  },
   "alertReasonFirstTimeInteraction": {
     "message": "첫 상호작용"
   },
@@ -4371,25 +4365,9 @@
     "message": "지출자: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
-  "hardwareSwapAmount": {
-    "message": "$1 $2을(를) $3 $4(으)로 스왑",
-    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappedAmount": {
-    "message": "$1 $2을(를) $3 $4(으)로 스왑 완료",
-    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappingAmount": {
-    "message": "$1 $2을(를) $3 $4(으)로 스왑 중",
-    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
   "hardwareToAddress": {
     "message": "수신: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
-  },
-  "hardwareToken": {
-    "message": "토큰: $1",
-    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "기기에서 이 트랜잭션이 거부되었습니다",
@@ -4447,9 +4425,6 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 잠김",
     "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletErrorTitleUnsupportedSignature": {
-    "message": "지원되지 않는 서명"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "선택한 계정의 비밀복구구문 또는 패스프레이즈로 $1 장치가 설정되어 있는지 확인하세요",
@@ -5354,30 +5329,6 @@
   "money": {
     "message": "머니"
   },
-  "moneyAccountApyPitch": {
-    "message": "$1% APY 수익 적립",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "APY 정보"
-  },
-  "moneyAccountApyTooltip": {
-    "message": "표시된 수익률은 현재 시장 상황에 기반한 예상 연간수익률(APY)입니다. APY는 변동되며 보장되지 않습니다."
-  },
-  "moneyAccountAvailableBalance": {
-    "message": "사용 가능한 잔액: $1",
-    "description": "$1 is the formatted Money Account vault withdrawable balance"
-  },
-  "moneyAccountProjectedBalance": {
-    "message": "1년 후 예상 잔액:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "1년 후 예상 잔액"
-  },
-  "moneyAccountProjectedBalanceTooltip": {
-    "message": "이 예상치는 연간수익률(APY) $1%가 1년 동안 변함 없이 유지된다는 가정하에 계산되었습니다. APY는 변동되며 보장되지 않습니다.",
-    "description": "$1 is the APY percentage used in the one-year projection"
-  },
   "moneyActivity": {
     "message": "활동"
   },
@@ -5443,18 +5394,6 @@
   },
   "moneyApy": {
     "message": "$1 APY"
-  },
-  "moneyBalanceInfoBody": {
-    "message": "항상 사용 가능한 달러 기반 mUSD 잔액으로, 언제든지 결제하거나 송금하거나 거래할 수 있습니다. 해당 금액은 총 계정 잔액 계산에 포함되지 않습니다."
-  },
-  "moneyBalanceInfoWithdrawals": {
-    "message": "출금은 즉시 처리되며, 관련 블록체인의 일반적인 네트워크 확인 시간이 적용됩니다. 유동성이 부족한 경우 일시적으로 지연될 수 있습니다."
-  },
-  "moneyBalanceLastKnown": {
-    "message": "마지막으로 확인된 잔액"
-  },
-  "moneyBalanceTitle": {
-    "message": "머니 잔액"
   },
   "moneyBalanceUnavailable": {
     "message": "잔액을 확인할 수 없음"

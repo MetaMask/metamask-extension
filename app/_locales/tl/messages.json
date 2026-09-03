@@ -1526,12 +1526,6 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Hindi masuri ang balanse ng Perps mo. Subukan muli."
   },
-  "alertReasonAddressTrustSignalMalicious": {
-    "message": "Na-flag ang address bilang may mataas na panganib"
-  },
-  "alertReasonAddressTrustSignalWarning": {
-    "message": "Limitadong mga signal ng adres"
-  },
   "alertReasonFirstTimeInteraction": {
     "message": "Unang interaksyon"
   },
@@ -4367,25 +4361,9 @@
     "message": "Gumastos: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
-  "hardwareSwapAmount": {
-    "message": "I-swap ang $1 $2 para sa $3 $4",
-    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappedAmount": {
-    "message": "Na-swap ang $1 $2 para sa $3 $4",
-    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappingAmount": {
-    "message": "Nagsa-swap ang $1 $2 para sa $3 $4",
-    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
   "hardwareToAddress": {
     "message": "Para kay/sa: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
-  },
-  "hardwareToken": {
-    "message": "Token: $1",
-    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "Tinanggihan mo ang transaksyong ito sa iyong device",
@@ -4443,9 +4421,6 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "Naka-lock ang $1",
     "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletErrorTitleUnsupportedSignature": {
-    "message": "Hindi sinusuportahang lagda"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "Tiyaking ang device mo na $1 ay naka-set up gamit ang Secret Recovery Phrase o passphrase para sa piniling account",
@@ -5350,30 +5325,6 @@
   "money": {
     "message": "Pera"
   },
-  "moneyAccountApyPitch": {
-    "message": "Kumita ng $1% APY",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Impormasyon ng APY"
-  },
-  "moneyAccountApyTooltip": {
-    "message": "Ang rate na ipinapakita ay ang tinatayang Annual Percentage Yield (APY) batay sa mga kasalukuyang kondisyon ng market. Nagbabago ang APY at hindi ito garantisado."
-  },
-  "moneyAccountAvailableBalance": {
-    "message": "Available na balanse: $1",
-    "description": "$1 is the formatted Money Account vault withdrawable balance"
-  },
-  "moneyAccountProjectedBalance": {
-    "message": "Tinatayang balanse sa 1 taon:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Tinatayang balanse sa 1 taon"
-  },
-  "moneyAccountProjectedBalanceTooltip": {
-    "message": "Ipinagpapalagay sa pagtatantiya na ang $1% Annual Percentage Yield (APY) ay hindi nagbabago sa loob ng isang taon. Nagbabago ang APY at hindi ito garantisado.",
-    "description": "$1 is the APY percentage used in the one-year projection"
-  },
   "moneyActivity": {
     "message": "Aktibidad"
   },
@@ -5439,18 +5390,6 @@
   },
   "moneyApy": {
     "message": "$1 APY"
-  },
-  "moneyBalanceInfoBody": {
-    "message": "Laging available ang balanse mong sinusuportahan ng mUSD, gastusin, ipadala, o i-trade ito anumang oras. Hindi namin ito isinasama sa pagkalkula ng kabuuang balanse ng account mo."
-  },
-  "moneyBalanceInfoWithdrawals": {
-    "message": "Kaagad pinoproseso ang mga withdrawal, napapailalim mga oras ng kumpirmasyon ng standard network sa nauugnay na blockchain. Kung mahigpit ang liquidity, posibleng magkaroon ng mga pagkaantala. "
-  },
-  "moneyBalanceLastKnown": {
-    "message": "Huling kilalang balanse"
-  },
-  "moneyBalanceTitle": {
-    "message": "Balanse sa Money"
   },
   "moneyBalanceUnavailable": {
     "message": "Hindi available ang balanse"

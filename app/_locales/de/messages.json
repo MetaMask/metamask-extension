@@ -1526,12 +1526,6 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Ihr Perps-Guthaben konnte nicht überprüft werden. Bitte versuchen Sie es erneut."
   },
-  "alertReasonAddressTrustSignalMalicious": {
-    "message": "Adresse als hochriskant eingestuft"
-  },
-  "alertReasonAddressTrustSignalWarning": {
-    "message": "Begrenzte Adresssignale"
-  },
   "alertReasonFirstTimeInteraction": {
     "message": "1. Interaktion"
   },
@@ -4367,25 +4361,9 @@
     "message": "Spender: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
-  "hardwareSwapAmount": {
-    "message": "Swap von $1 $2 für $3 $4",
-    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappedAmount": {
-    "message": "$1 $2 für $3 $4 geswappt",
-    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappingAmount": {
-    "message": "Swappen von $1 $2 für $3 $4",
-    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
   "hardwareToAddress": {
     "message": "An: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
-  },
-  "hardwareToken": {
-    "message": "Token: $1",
-    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "Sie haben diese Transaktion auf Ihrem Gerät abgelehnt",
@@ -4443,9 +4421,6 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 entsperrt",
     "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletErrorTitleUnsupportedSignature": {
-    "message": "Signatur wird nicht unterstützt"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "Stellen Sie sicher, dass Ihr $1-Gerät mit der geheimen Wiederherstellungsphrase oder dem Passwort für das ausgewählte Konto eingerichtet ist.",
@@ -5350,30 +5325,6 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitch": {
-    "message": "$1 % Effektivertrag verdienen",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Info zum effektiven Jahreszins (APY)"
-  },
-  "moneyAccountApyTooltip": {
-    "message": "Der angegebene effektive Jahreszins (APY) ist ein auf den aktuellen Marktbedingungen basierender Schätzwert. Der effektive Jahreszins ist variabel und wird nicht garantiert."
-  },
-  "moneyAccountAvailableBalance": {
-    "message": "Verfügbares Guthaben: $1",
-    "description": "$1 is the formatted Money Account vault withdrawable balance"
-  },
-  "moneyAccountProjectedBalance": {
-    "message": "Prognostizierter 1-Jahres-Saldo:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Prognostizierter 1-Jahres-Saldo"
-  },
-  "moneyAccountProjectedBalanceTooltip": {
-    "message": "Die Prognose geht davon aus, dass der effektive Jahreszins (APY) von $1 % über einen Zeitraum von einem Jahr unverändert bleibt. Der Effektivertrag ist variabel und wird nicht garantiert. Keine Garantie für die Rendite.",
-    "description": "$1 is the APY percentage used in the one-year projection"
-  },
   "moneyActivity": {
     "message": "Aktivität"
   },
@@ -5439,18 +5390,6 @@
   },
   "moneyApy": {
     "message": "$1 APY"
-  },
-  "moneyBalanceInfoBody": {
-    "message": "Ihr durch den US-Dollar gedecktes mUSD-Guthaben steht Ihnen jederzeit zum Ausgeben, Versenden oder Handeln zur Verfügung. Wir rechnen dies nicht in Ihren Gesamtkontostand ein."
-  },
-  "moneyBalanceInfoWithdrawals": {
-    "message": "Auszahlungen werden umgehend bearbeitet, vorbehaltlich der üblichen Bestätigungszeiten des Netzwerks auf der jeweiligen Blockchain. Bei knapper Liquidität kann es zu vorübergehenden Verzögerungen kommen."
-  },
-  "moneyBalanceLastKnown": {
-    "message": "Letzter bekannter Kontostand"
-  },
-  "moneyBalanceTitle": {
-    "message": "Money-Saldo"
   },
   "moneyBalanceUnavailable": {
     "message": "Kontostand nicht verfügbar"

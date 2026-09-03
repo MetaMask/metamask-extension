@@ -1526,12 +1526,6 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "无法检查您的永续合约余额。请重试。"
   },
-  "alertReasonAddressTrustSignalMalicious": {
-    "message": "地址已标记为高风险"
-  },
-  "alertReasonAddressTrustSignalWarning": {
-    "message": "地址信号有限"
-  },
   "alertReasonFirstTimeInteraction": {
     "message": "首次交互"
   },
@@ -4367,25 +4361,9 @@
     "message": "支出方：$1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
-  "hardwareSwapAmount": {
-    "message": "将 $1 $2 兑换为 $3 $4",
-    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappedAmount": {
-    "message": "已将 $1 $2 兑换为 $3 $4",
-    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappingAmount": {
-    "message": "正在将 $1 $2 兑换为 $3 $4",
-    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
   "hardwareToAddress": {
     "message": "至：$1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
-  },
-  "hardwareToken": {
-    "message": "代币：$1",
-    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "您已在设备上拒绝此交易",
@@ -4443,9 +4421,6 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 已锁定",
     "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletErrorTitleUnsupportedSignature": {
-    "message": "签名不受支持"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "确保您的 $1 设备已使用所选账户对应的私钥助记词或密语进行设置",
@@ -5350,30 +5325,6 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitch": {
-    "message": "赚取 $1% 年化收益率",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "年收益率信息"
-  },
-  "moneyAccountApyTooltip": {
-    "message": "显示的利率是根据当前市场行情估算的年化收益率 (APY) 。 APY 会随市场波动，并非固定保证。"
-  },
-  "moneyAccountAvailableBalance": {
-    "message": "可用余额：$1",
-    "description": "$1 is the formatted Money Account vault withdrawable balance"
-  },
-  "moneyAccountProjectedBalance": {
-    "message": "预计 1 年后余额:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "预计 1 年后余额"
-  },
-  "moneyAccountProjectedBalanceTooltip": {
-    "message": "预测基于 $1% 的年化收益率（APY）在一年内保持不变。APY 会随市场波动，并非固定保证。",
-    "description": "$1 is the APY percentage used in the one-year projection"
-  },
   "moneyActivity": {
     "message": "活动"
   },
@@ -5439,18 +5390,6 @@
   },
   "moneyApy": {
     "message": "$1 年化收益率"
-  },
-  "moneyBalanceInfoBody": {
-    "message": "您的美元挂钩 mUSD 余额可随时用于消费、转账或交易。我们不会将其计入您的账户总余额。"
-  },
-  "moneyBalanceInfoWithdrawals": {
-    "message": "提现立即处理，但需遵守相关区块链的标准网络确认时间。如果流动性紧张，可能会有临时延迟。"
-  },
-  "moneyBalanceLastKnown": {
-    "message": "最后已知余额"
-  },
-  "moneyBalanceTitle": {
-    "message": "Money 余额"
   },
   "moneyBalanceUnavailable": {
     "message": "余额不可用"

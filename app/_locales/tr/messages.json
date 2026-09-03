@@ -1526,12 +1526,6 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Perps bakiyeniz kontrol edilemedi. Tekrar deneyin."
   },
-  "alertReasonAddressTrustSignalMalicious": {
-    "message": "Adres yüksek riskli olarak işaretlendi"
-  },
-  "alertReasonAddressTrustSignalWarning": {
-    "message": "Sınırlı adres sinyali"
-  },
   "alertReasonFirstTimeInteraction": {
     "message": "1. etkileşim"
   },
@@ -4371,25 +4365,9 @@
     "message": "Harcama Yapan Taraf: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
-  "hardwareSwapAmount": {
-    "message": "$1 $2 varlığı $3 $4 ile takas edin",
-    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappedAmount": {
-    "message": "$1 $2, $3 $4 ile takas edildi",
-    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappingAmount": {
-    "message": "$1 $2, $3 $4 ile takas ediliyor",
-    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
   "hardwareToAddress": {
     "message": "Alıcı: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
-  },
-  "hardwareToken": {
-    "message": "Token: $1",
-    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "Bu işlemi cihazınızda reddettiniz",
@@ -4447,9 +4425,6 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 kilitli",
     "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletErrorTitleUnsupportedSignature": {
-    "message": "İmza desteklenmiyor"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "$1 cihazınızın seçili hesap için Gizli Kurtarma İfadesi veya parola ile kurulumunun yapıldığından emin olun",
@@ -5354,30 +5329,6 @@
   "money": {
     "message": "Bakiye"
   },
-  "moneyAccountApyPitch": {
-    "message": "%$1 APY kazanın",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Yıllık Yüzde Getiri (APY) bilgisi"
-  },
-  "moneyAccountApyTooltip": {
-    "message": "Gösterilen oran, mevcut piyasa koşullarına dayalı tahmini Yıllık Yüzde Getiridir (APY). APY değişken olup garanti edilmemektedir."
-  },
-  "moneyAccountAvailableBalance": {
-    "message": "Kullanılabilir bakiye: $1",
-    "description": "$1 is the formatted Money Account vault withdrawable balance"
-  },
-  "moneyAccountProjectedBalance": {
-    "message": "Öngörülen 1 yıllık bakiye:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Öngörülen 1 yıllık bakiye"
-  },
-  "moneyAccountProjectedBalanceTooltip": {
-    "message": "Projeksiyon, %$1 Yıllık Yüzde Getirinin (APY) bir yıl boyunca değişmeden kaldığı varsayımına dayanmaktadır. APY değişkendir ve garanti edilmez.",
-    "description": "$1 is the APY percentage used in the one-year projection"
-  },
   "moneyActivity": {
     "message": "İşlemler"
   },
@@ -5443,18 +5394,6 @@
   },
   "moneyApy": {
     "message": "$1 APY"
-  },
-  "moneyBalanceInfoBody": {
-    "message": "Her zaman harcamaya, gönderime veya işlem yapmaya hazır olan dolara endeksli bakiyeniz. Bunu toplam hesap bakiyenize yansıtmayız."
-  },
-  "moneyBalanceInfoWithdrawals": {
-    "message": "Para çekme işlemleri, ilgili blokzinciri üzerindeki standart ağ onay sürelerine tabi olmak kaydıyla anında gerçekleşir. Likiditenin sıkışık olduğu durumlarda geçici gecikmeler yaşanabilir."
-  },
-  "moneyBalanceLastKnown": {
-    "message": "Bilinen son bakiye"
-  },
-  "moneyBalanceTitle": {
-    "message": "Para bakiyesi"
   },
   "moneyBalanceUnavailable": {
     "message": "Bakiye kullanılamıyor"

@@ -1526,12 +1526,6 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Não foi possível verificar seu saldo de Perps. Tente novamente."
   },
-  "alertReasonAddressTrustSignalMalicious": {
-    "message": "Endereço sinalizado como de alto risco"
-  },
-  "alertReasonAddressTrustSignalWarning": {
-    "message": "Sinais limitados sobre o endereço"
-  },
   "alertReasonFirstTimeInteraction": {
     "message": "1ª interação"
   },
@@ -4367,25 +4361,9 @@
     "message": "Gastador: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
-  "hardwareSwapAmount": {
-    "message": "Trocar $1 $2 por $3 $4",
-    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappedAmount": {
-    "message": "$1 $2 trocados por $3 $4",
-    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappingAmount": {
-    "message": "Trocando $1 $2 por $3 $4",
-    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
   "hardwareToAddress": {
     "message": "Para: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
-  },
-  "hardwareToken": {
-    "message": "Token: $1",
-    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "Você rejeitou esta transação no seu dispositivo",
@@ -4443,9 +4421,6 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 bloqueada",
     "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletErrorTitleUnsupportedSignature": {
-    "message": "Assinatura não suportada"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "Certifique-se de que seu dispositivo $1 esteja configurado com a Frase de Recuperação Secreta ou senha para a conta selecionada",
@@ -5350,30 +5325,6 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitch": {
-    "message": "Ganhe $1% de APY",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Informações sobre APY"
-  },
-  "moneyAccountApyTooltip": {
-    "message": "A taxa apresentada é uma estimativa da Taxa Anual Efetiva (APY) com base nas condições atuais do mercado. A APY é variável e não é garantida."
-  },
-  "moneyAccountAvailableBalance": {
-    "message": "Saldo disponível: $1",
-    "description": "$1 is the formatted Money Account vault withdrawable balance"
-  },
-  "moneyAccountProjectedBalance": {
-    "message": "Saldo projetado para 1 anos:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Saldo projetado para 1 anos"
-  },
-  "moneyAccountProjectedBalanceTooltip": {
-    "message": "A projeção pressupõe que a Taxa Anual Efetiva (APY) de $1% permanecerá inalterada por um ano. A APY é variável e não é garantida.",
-    "description": "$1 is the APY percentage used in the one-year projection"
-  },
   "moneyActivity": {
     "message": "Atividade"
   },
@@ -5439,18 +5390,6 @@
   },
   "moneyApy": {
     "message": "$1 de APY"
-  },
-  "moneyBalanceInfoBody": {
-    "message": "Seu saldo em mUSD lastreado em dólar, sempre disponível. Use para pagar, enviar ou negociar a qualquer momento. Não contabilizamos esse valor no saldo total da sua conta."
-  },
-  "moneyBalanceInfoWithdrawals": {
-    "message": "Os saques são processados imediatamente, sujeitos aos prazos padrão de confirmação da rede na blockchain correspondente. Se a liquidez estiver baixa, podem ocorrer atrasos temporários."
-  },
-  "moneyBalanceLastKnown": {
-    "message": "Último saldo conhecido"
-  },
-  "moneyBalanceTitle": {
-    "message": "Saldo monetário"
   },
   "moneyBalanceUnavailable": {
     "message": "Saldo indisponível"

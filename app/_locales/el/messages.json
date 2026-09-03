@@ -1526,12 +1526,6 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Δεν ήταν δυνατός ο έλεγχος του υπολοίπου των Perps. Προσπαθήστε ξανά."
   },
-  "alertReasonAddressTrustSignalMalicious": {
-    "message": "Η διεύθυνση έχει επισημανθεί ως υψηλού κινδύνου"
-  },
-  "alertReasonAddressTrustSignalWarning": {
-    "message": "Περιορισμένες ενδείξεις για τη διεύθυνση"
-  },
   "alertReasonFirstTimeInteraction": {
     "message": "1η αλληλεπίδραση"
   },
@@ -4367,25 +4361,9 @@
     "message": "Εξουσιοδοτημένος χρήστης: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
-  "hardwareSwapAmount": {
-    "message": "Ανταλλάξτε $1 $2 με $3 $4",
-    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappedAmount": {
-    "message": "Ανταλλάξατε $1 $2 με $3 $4",
-    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappingAmount": {
-    "message": "Ανταλλαγή $1 $2 με $3 $4",
-    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
   "hardwareToAddress": {
     "message": "Προς: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
-  },
-  "hardwareToken": {
-    "message": "Token: $1",
-    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "Απορρίψατε αυτή τη συναλλαγή στη συσκευή σας",
@@ -4443,9 +4421,6 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "Το $1 είναι κλειδωμένο",
     "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletErrorTitleUnsupportedSignature": {
-    "message": "Η υπογραφή δεν υποστηρίζεται"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "Βεβαιωθείτε ότι η συσκευή $1 έχει ρυθμιστεί με την Μυστική Φράση Ανάκτησης ή την φράση πρόσβασης για τον επιλεγμένο λογαριασμό",
@@ -5350,30 +5325,6 @@
   "money": {
     "message": "Οικονομικά"
   },
-  "moneyAccountApyPitch": {
-    "message": "Κερδίστε $1% APY",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Πληροφορίες για την Ετήσια Ποσοστιαία Απόδοση (APY)"
-  },
-  "moneyAccountApyTooltip": {
-    "message": "Το επιτόκιο που εμφανίζεται είναι μια εκτιμώμενη Ετήσια Ποσοστιαία Απόδοση (APY) με βάση τις τρέχουσες συνθήκες της αγοράς. Το APY είναι μεταβλητό και δεν είναι εγγυημένο."
-  },
-  "moneyAccountAvailableBalance": {
-    "message": "Διαθέσιμο υπόλοιπο: $1",
-    "description": "$1 is the formatted Money Account vault withdrawable balance"
-  },
-  "moneyAccountProjectedBalance": {
-    "message": "Προβλεπόμενο υπόλοιπο 1ετίας:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Προβλεπόμενο υπόλοιπο 1ετίας"
-  },
-  "moneyAccountProjectedBalanceTooltip": {
-    "message": "Η εκτίμηση υποθέτει ότι το $1% Ετήσιο Ποσοστό Απόδοσης (APY) παραμένει αμετάβλητο για ένα έτος. Το APY είναι μεταβλητό και δεν είναι εγγυημένο.",
-    "description": "$1 is the APY percentage used in the one-year projection"
-  },
   "moneyActivity": {
     "message": "Δραστηριότητα"
   },
@@ -5439,18 +5390,6 @@
   },
   "moneyApy": {
     "message": "$1 APY"
-  },
-  "moneyBalanceInfoBody": {
-    "message": "Το υπόλοιπό σας σε mUSD, που υποστηρίζεται από δολάρια και είναι πάντα διαθέσιμο για αγορές, μεταφορές ή συναλλαγές, οποιαδήποτε στιγμή. Δεν υπολογίζουμε αυτό το ποσό στο συνολικό υπόλοιπο του λογαριασμού σας."
-  },
-  "moneyBalanceInfoWithdrawals": {
-    "message": "Οι αναλήψεις διεκπεραιώνονται άμεσα, με την επιφύλαξη των τυπικών χρόνων επιβεβαίωσης του δικτύου στο αντίστοιχο blockchain. Αν η ρευστότητα είναι περιορισμένη, ενδέχεται να υπάρξουν προσωρινές καθυστερήσεις."
-  },
-  "moneyBalanceLastKnown": {
-    "message": "Υπόλοιπο κατά την τελευταία ενημέρωση"
-  },
-  "moneyBalanceTitle": {
-    "message": "Υπόλοιπο χρημάτων"
   },
   "moneyBalanceUnavailable": {
     "message": "Το υπόλοιπο δεν είναι διαθέσιμο"

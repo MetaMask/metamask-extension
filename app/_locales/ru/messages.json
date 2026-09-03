@@ -1526,12 +1526,6 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Не удалось проверить ваш баланс перпов. Попробуйте еще раз."
   },
-  "alertReasonAddressTrustSignalMalicious": {
-    "message": "Адрес отмечен как высокорискованный"
-  },
-  "alertReasonAddressTrustSignalWarning": {
-    "message": "Мало данных об адресе"
-  },
   "alertReasonFirstTimeInteraction": {
     "message": "1-е взаимодействие"
   },
@@ -4367,25 +4361,9 @@
     "message": "Лицо, производящие расходы: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
-  "hardwareSwapAmount": {
-    "message": "Обменять $1 $2 на $3 $4",
-    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappedAmount": {
-    "message": "Обменяно $1 $2 на $3 $4",
-    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappingAmount": {
-    "message": "Обмен $1 $2 на $3 $4",
-    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
   "hardwareToAddress": {
     "message": "Адресат: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
-  },
-  "hardwareToken": {
-    "message": "Токен: $1",
-    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "Вы отклонили эту транзакцию на своем устройстве",
@@ -4443,9 +4421,6 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 заблокирован",
     "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletErrorTitleUnsupportedSignature": {
-    "message": "Подпись не поддерживается"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "Убедитесь, что на вашем устройстве $1 настроена секретная фраза для восстановления или пароль от выбранного счета",
@@ -5350,30 +5325,6 @@
   "money": {
     "message": "Финансы"
   },
-  "moneyAccountApyPitch": {
-    "message": "Зарабатывайте $1% годовых (APY)",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Информация о годовом процентном доходе (APY)"
-  },
-  "moneyAccountApyTooltip": {
-    "message": "Указанная ставка является предполагаемой годовой процентной доходностью (APY), основанной на текущих рыночных условиях. APY может меняться и не гарантируется."
-  },
-  "moneyAccountAvailableBalance": {
-    "message": "Доступный баланс: $1",
-    "description": "$1 is the formatted Money Account vault withdrawable balance"
-  },
-  "moneyAccountProjectedBalance": {
-    "message": "Прогнозируемый баланс через 1 лет:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Прогнозируемый баланс через 1 лет"
-  },
-  "moneyAccountProjectedBalanceTooltip": {
-    "message": "Прогноз предполагает, что годовая процентная доходность (APY) в размере $1% останется неизменной в течение одного года. APY может меняться и не гарантируется.",
-    "description": "$1 is the APY percentage used in the one-year projection"
-  },
   "moneyActivity": {
     "message": "Активность"
   },
@@ -5439,18 +5390,6 @@
   },
   "moneyApy": {
     "message": "$1 годовых"
-  },
-  "moneyBalanceInfoBody": {
-    "message": "Ваш обеспеченный долларом баланс в mUSD, который всегда доступен для траты, отправки или обмена в любое время. Мы не учитываем его в общем балансе вашего счета."
-  },
-  "moneyBalanceInfoWithdrawals": {
-    "message": "Вывод средств обрабатывается немедленно, в зависимости от стандартного времени подтверждения сети в соответствующем блокчейне. В случае нехватки ликвидности возможны временные задержки."
-  },
-  "moneyBalanceLastKnown": {
-    "message": "Последний известный баланс"
-  },
-  "moneyBalanceTitle": {
-    "message": "Баланс Money"
   },
   "moneyBalanceUnavailable": {
     "message": "Баланс недоступен"

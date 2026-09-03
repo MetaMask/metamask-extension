@@ -1526,12 +1526,6 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Không thể kiểm tra số dư Hợp đồng vĩnh cửu của bạn. Hãy thử lại."
   },
-  "alertReasonAddressTrustSignalMalicious": {
-    "message": "Địa chỉ được gắn cờ là có rủi ro cao"
-  },
-  "alertReasonAddressTrustSignalWarning": {
-    "message": "Tín hiệu về địa chỉ còn hạn chế"
-  },
   "alertReasonFirstTimeInteraction": {
     "message": "Tương tác lần đầu tiên"
   },
@@ -4371,25 +4365,9 @@
     "message": "Người chi tiêu: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
-  "hardwareSwapAmount": {
-    "message": "Hoán đổi $1 $2 lấy $3 $4",
-    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappedAmount": {
-    "message": "Đã hoán đổi $1 $2 lấy $3 $4",
-    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappingAmount": {
-    "message": "Đang hoán đổi $1 $2 lấy $3 $4",
-    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
   "hardwareToAddress": {
     "message": "Đến: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
-  },
-  "hardwareToken": {
-    "message": "Token: $1",
-    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "Bạn đã từ chối giao dịch này trên thiết bị của mình",
@@ -4447,9 +4425,6 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 đã bị khóa",
     "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletErrorTitleUnsupportedSignature": {
-    "message": "Chữ ký không được hỗ trợ"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "Đảm bảo thiết bị $1 của bạn được thiết lập với Cụm từ khôi phục bí mật hoặc cụm mật khẩu cho tài khoản đã chọn",
@@ -5354,30 +5329,6 @@
   "money": {
     "message": "Tài chính"
   },
-  "moneyAccountApyPitch": {
-    "message": "Sinh lời với APY $1%",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Thông tin APY"
-  },
-  "moneyAccountApyTooltip": {
-    "message": "Tỷ suất hiển thị là Lợi suất phần trăm hằng năm (APY) ước tính dựa trên điều kiện thị trường hiện tại. APY có thể thay đổi và không được đảm bảo."
-  },
-  "moneyAccountAvailableBalance": {
-    "message": "Số dư khả dụng: $1",
-    "description": "$1 is the formatted Money Account vault withdrawable balance"
-  },
-  "moneyAccountProjectedBalance": {
-    "message": "Số dư dự kiến sau 1 năm:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Số dư dự kiến sau 1 năm"
-  },
-  "moneyAccountProjectedBalanceTooltip": {
-    "message": "Dự đoán này giả định rằng Lợi suất phần trăm hằng năm (APY) $1% không thay đổi trong vòng một năm. APY có thể thay đổi và không được đảm bảo.",
-    "description": "$1 is the APY percentage used in the one-year projection"
-  },
   "moneyActivity": {
     "message": "Hoạt động"
   },
@@ -5443,18 +5394,6 @@
   },
   "moneyApy": {
     "message": "APY $1"
-  },
-  "moneyBalanceInfoBody": {
-    "message": "Số dư mUSD được bảo chứng bằng đô-la của bạn luôn sẵn sàng để chi tiêu, gửi hoặc giao dịch bất cứ lúc nào. Chúng tôi không tính số dư này vào tổng số dư tài khoản của bạn."
-  },
-  "moneyBalanceInfoWithdrawals": {
-    "message": "Yêu cầu rút tiền được xử lý ngay lập tức, tùy thuộc vào thời gian xác nhận mạng tiêu chuẩn trên chuỗi khối tương ứng. Nếu thanh khoản thấp, có thể xảy ra chậm trễ tạm thời."
-  },
-  "moneyBalanceLastKnown": {
-    "message": "Số dư gần nhất được ghi nhận"
-  },
-  "moneyBalanceTitle": {
-    "message": "Số dư Tài chính"
   },
   "moneyBalanceUnavailable": {
     "message": "Số dư không khả dụng"

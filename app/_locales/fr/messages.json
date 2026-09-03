@@ -1526,12 +1526,6 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Impossible de vérifier le solde de votre compte Perps. Veuillez réessayer."
   },
-  "alertReasonAddressTrustSignalMalicious": {
-    "message": "Adresse signalée comme présentant un risque élevé"
-  },
-  "alertReasonAddressTrustSignalWarning": {
-    "message": "Signaux limités concernant cette adresse"
-  },
   "alertReasonFirstTimeInteraction": {
     "message": "1re interaction"
   },
@@ -4367,25 +4361,9 @@
     "message": "Dépenseur : $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
-  "hardwareSwapAmount": {
-    "message": "Échanger $1 $2 contre $3 $4",
-    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappedAmount": {
-    "message": "$1 $2 ont été échangés contre $3 $4",
-    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappingAmount": {
-    "message": "Échange de $1 $2 contre $3 $4",
-    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
   "hardwareToAddress": {
     "message": "Vers : $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
-  },
-  "hardwareToken": {
-    "message": "Jeton : $1",
-    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "Vous avez rejeté cette transaction sur votre appareil",
@@ -4443,9 +4421,6 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 verrouillé",
     "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletErrorTitleUnsupportedSignature": {
-    "message": "Signature non prise en charge"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "Assurez-vous que votre appareil $1 est configuré avec la phrase secrète de récupération ou la phrase secrète du compte sélectionné",
@@ -5350,30 +5325,6 @@
   "money": {
     "message": "Money"
   },
-  "moneyAccountApyPitch": {
-    "message": "Obtenez un taux de rendement annuel de $1 %",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Informations sur le taux de rendement annuel"
-  },
-  "moneyAccountApyTooltip": {
-    "message": "Le taux indiqué est un taux de rendement annuel estimé en fonction des conditions actuelles du marché. Ce taux est variable et n’est pas garanti."
-  },
-  "moneyAccountAvailableBalance": {
-    "message": "Solde disponible : $1",
-    "description": "$1 is the formatted Money Account vault withdrawable balance"
-  },
-  "moneyAccountProjectedBalance": {
-    "message": "Solde prévu au bout de 1 ans :"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Solde prévu au bout de 1 ans "
-  },
-  "moneyAccountProjectedBalanceTooltip": {
-    "message": "La projection suppose que le taux de rendement annuel de $1 % restera inchangé pendant un an. Le taux de rendement annuel est variable et n’est pas garanti.",
-    "description": "$1 is the APY percentage used in the one-year projection"
-  },
   "moneyActivity": {
     "message": "Activité"
   },
@@ -5439,18 +5390,6 @@
   },
   "moneyApy": {
     "message": "Rendement annuel de $1"
-  },
-  "moneyBalanceInfoBody": {
-    "message": "Vous aurez toujours accès à votre solde en mUSD adossé au dollar. Utilisez-le, transférez-le ou tradez-le à tout moment. Ce solde est comptabilisé séparément du solde total de votre compte."
-  },
-  "moneyBalanceInfoWithdrawals": {
-    "message": "Les retraits sont traités immédiatement, sous réserve des délais de confirmation standard du réseau sur la blockchain concernée. En cas de manque de liquidité, des retards peuvent survenir."
-  },
-  "moneyBalanceLastKnown": {
-    "message": "Dernier solde connu"
-  },
-  "moneyBalanceTitle": {
-    "message": "Solde du compte Money"
   },
   "moneyBalanceUnavailable": {
     "message": "Solde non disponible"

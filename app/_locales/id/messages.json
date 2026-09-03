@@ -1526,12 +1526,6 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Tidak dapat memeriksa saldo Perp Anda. Coba lagi."
   },
-  "alertReasonAddressTrustSignalMalicious": {
-    "message": "Alamat ditandai sebagai berisiko tinggi"
-  },
-  "alertReasonAddressTrustSignalWarning": {
-    "message": "Sinyal alamat terbatas"
-  },
   "alertReasonFirstTimeInteraction": {
     "message": "Interaksi pertama"
   },
@@ -4371,25 +4365,9 @@
     "message": "Spender: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
-  "hardwareSwapAmount": {
-    "message": "Swap $1 $2 dengan $3 $4",
-    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappedAmount": {
-    "message": "Menukar $1 $2 dengan $3 $4",
-    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappingAmount": {
-    "message": "Menukar $1 $2 dengan $3 $4",
-    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
   "hardwareToAddress": {
     "message": "Ke: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
-  },
-  "hardwareToken": {
-    "message": "Token: $1",
-    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "Anda menolak transaksi ini di perangkat Anda",
@@ -4447,9 +4425,6 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 terkunci",
     "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletErrorTitleUnsupportedSignature": {
-    "message": "Tanda tangan tidak didukung"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "Pastikan perangkat $1 Anda telah diatur dengan Frasa Pemulihan Rahasia atau passphrase untuk akun yang dipilih",
@@ -5354,30 +5329,6 @@
   "money": {
     "message": "Dana"
   },
-  "moneyAccountApyPitch": {
-    "message": "Dapatkan APY $1%",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "Informasi APY"
-  },
-  "moneyAccountApyTooltip": {
-    "message": "Nilai yang ditampilkan merupakan estimasi Persentase Hasil Tahunan (APY) berdasarkan kondisi pasar saat ini. APY bersifat variabel dan tidak dijamin."
-  },
-  "moneyAccountAvailableBalance": {
-    "message": "Saldo tersedia: $1",
-    "description": "$1 is the formatted Money Account vault withdrawable balance"
-  },
-  "moneyAccountProjectedBalance": {
-    "message": "Proyeksi saldo 1 tahun:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "Proyeksi saldo 1 tahun"
-  },
-  "moneyAccountProjectedBalanceTooltip": {
-    "message": "Proyeksi ini mengasumsikan bahwa Persentase Hasil Tahunan (APY) sebesar $1% tetap tidak berubah selama satu tahun. APY bersifat variabel dan tidak dijamin.",
-    "description": "$1 is the APY percentage used in the one-year projection"
-  },
   "moneyActivity": {
     "message": "Aktivitas"
   },
@@ -5443,18 +5394,6 @@
   },
   "moneyApy": {
     "message": "$1 APY"
-  },
-  "moneyBalanceInfoBody": {
-    "message": "Saldo mUSD yang didukung dolar selalu tersedia untuk digunakan, dikirim, atau diperdagangkan setiap saat. Kami tidak menghitung saldo ini ke dalam total saldo akun Anda."
-  },
-  "moneyBalanceInfoWithdrawals": {
-    "message": "Penarikan diproses segera, bergantung pada waktu konfirmasi jaringan standar di blockchain terkait. Jika likuiditas terbatas, mungkin terjadi penundaan sementara."
-  },
-  "moneyBalanceLastKnown": {
-    "message": "Saldo terakhir yang diketahui"
-  },
-  "moneyBalanceTitle": {
-    "message": "Saldo dana"
   },
   "moneyBalanceUnavailable": {
     "message": "Saldo tidak tersedia"

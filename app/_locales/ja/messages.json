@@ -1526,12 +1526,6 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "パーペチュアル残高を確認できませんでした。もう一度お試しください。"
   },
-  "alertReasonAddressTrustSignalMalicious": {
-    "message": "アドレスが高リスクと判断されました"
-  },
-  "alertReasonAddressTrustSignalWarning": {
-    "message": "アドレスのシグナルが限定的"
-  },
   "alertReasonFirstTimeInteraction": {
     "message": "初回のやり取り"
   },
@@ -4371,25 +4365,9 @@
     "message": "使用者：$1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
-  "hardwareSwapAmount": {
-    "message": "$1 $2を$3 $4にスワップ",
-    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappedAmount": {
-    "message": "$1 $2を$3 $4にスワップ済み",
-    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappingAmount": {
-    "message": "$1 $2を$3 $4にスワップ中",
-    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
   "hardwareToAddress": {
     "message": "移動先: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
-  },
-  "hardwareToken": {
-    "message": "トークン：$1",
-    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "デバイス上でこのトランザクションを拒否しました",
@@ -4447,9 +4425,6 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1がロックされています",
     "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletErrorTitleUnsupportedSignature": {
-    "message": "署名がサポートされていません"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "$1デバイスが選択されたアカウントのシークレットリカバリーフレーズまたはパスフレーズででセットアップされていることを確認します",
@@ -5354,30 +5329,6 @@
   "money": {
     "message": "マネー"
   },
-  "moneyAccountApyPitch": {
-    "message": "年換算利率 (APY) $1%を獲得",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "APY情報"
-  },
-  "moneyAccountApyTooltip": {
-    "message": "表示されている利率は、現在の市況に基づく予想年換算利率 (APY) です。APYは変動制で、保証されるものではありません。"
-  },
-  "moneyAccountAvailableBalance": {
-    "message": "利用可能残高：$1",
-    "description": "$1 is the formatted Money Account vault withdrawable balance"
-  },
-  "moneyAccountProjectedBalance": {
-    "message": "1年後の予想残高:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "1年後の予想残高"
-  },
-  "moneyAccountProjectedBalanceTooltip": {
-    "message": "予測では、$1%の年換算利率 (APY) が1年間変わらないと仮定されています。APYは変動制で、保証されるものではありません。",
-    "description": "$1 is the APY percentage used in the one-year projection"
-  },
   "moneyActivity": {
     "message": "アクティビティ"
   },
@@ -5443,18 +5394,6 @@
   },
   "moneyApy": {
     "message": "$1のAPY"
-  },
-  "moneyBalanceInfoBody": {
-    "message": "ドルの裏付けのあるmUSD残高は、いつでもショッピング、送金、取引などにご利用いただけます。この残高は、アカウントの合計残高には算入されません。"
-  },
-  "moneyBalanceInfoWithdrawals": {
-    "message": "出金は、該当するブロックチェーンの標準的なネットワーク確認時間に従って、即座に処理されます。流動性が低い場合は、一時的に遅延が生じる可能性があります。"
-  },
-  "moneyBalanceLastKnown": {
-    "message": "直近の残高"
-  },
-  "moneyBalanceTitle": {
-    "message": "マネー残高"
   },
   "moneyBalanceUnavailable": {
     "message": "残高が利用できません"

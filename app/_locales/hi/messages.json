@@ -1526,12 +1526,6 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "आपका पर्प्स बैलेंस चेक नहीं किया जा सका। फिर से कोशिश करें।"
   },
-  "alertReasonAddressTrustSignalMalicious": {
-    "message": "एड्रेस को हाई रिस्क के तौर पर फ़्लैग किया गया है"
-  },
-  "alertReasonAddressTrustSignalWarning": {
-    "message": "कम एड्रेस सिग्नल"
-  },
   "alertReasonFirstTimeInteraction": {
     "message": "पहला इंटरैक्शन"
   },
@@ -4367,25 +4361,9 @@
     "message": "खर्च करने वाला: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
-  "hardwareSwapAmount": {
-    "message": "$3 $4 के लिए $1 $2 को स्वैप करें",
-    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappedAmount": {
-    "message": "$3 $4 के लिए $1 $2 को स्वैप किया गया",
-    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
-  "hardwareSwappingAmount": {
-    "message": "$3 $4 के लिए $1 $2 को स्वैप क्र रहे हिन्",
-    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
-  },
   "hardwareToAddress": {
     "message": "प्रति: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
-  },
-  "hardwareToken": {
-    "message": "टोकन: $1",
-    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "आपने अपने डिवाइस पर इस ट्रांज़ैक्शन को रिजेक्ट कर दिया है",
@@ -4443,9 +4421,6 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 लॉक किया गया",
     "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWalletErrorTitleUnsupportedSignature": {
-    "message": "सिग्नेचर सपोर्टेड नहीं है"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "पक्का करें कि चुने गए अकाउंट के लिए आपका $1 डिवाइस सीक्रेट रिकवरी फ्रेज़ या पासफ्रेज़ के साथ सेट अप है",
@@ -5350,30 +5325,6 @@
   "money": {
     "message": "वित्त"
   },
-  "moneyAccountApyPitch": {
-    "message": "$1 APY कमाएं",
-    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
-  },
-  "moneyAccountApyPitchInfo": {
-    "message": "एपीवाय की जानकारी"
-  },
-  "moneyAccountApyTooltip": {
-    "message": "दिखाया गया रेट मौजूदा मार्केट कंडीशन के आधार पर एक अनुमानित एनुअल परसेंटेज यील्ड (APY) है। APY वेरिएबल है और इसकी गारंटी नहीं है।"
-  },
-  "moneyAccountAvailableBalance": {
-    "message": "उपलब्ध बैलेंस: $1",
-    "description": "$1 is the formatted Money Account vault withdrawable balance"
-  },
-  "moneyAccountProjectedBalance": {
-    "message": "अनुमानित 1-वर्षीय बैलेंस:"
-  },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "अनुमानित 1-वर्षीय बैलेंस"
-  },
-  "moneyAccountProjectedBalanceTooltip": {
-    "message": "प्रोजेक्शन में माना गया है कि $1% एनुअल परसेंटेज यील्ड (APY) एक वर्ष तक अपरिवर्तित रहती है। APY परिवर्तनशील है और इसकी गारंटी नहीं है।",
-    "description": "$1 is the APY percentage used in the one-year projection"
-  },
   "moneyActivity": {
     "message": "गतिविधि"
   },
@@ -5439,18 +5390,6 @@
   },
   "moneyApy": {
     "message": "$1 APY"
-  },
-  "moneyBalanceInfoBody": {
-    "message": "आपका डॉलर-बैक्ड mUSD बैलेंस जो हमेशा खर्च करने, भेजने या कभी भी ट्रेड करने\n के लिए उपलब्ध है। हम इसे आपके कुल अकाउंट बैलेंस में कैलकुलेट नहीं करते हैं।"
-  },
-  "moneyBalanceInfoWithdrawals": {
-    "message": "विदड्रॉल तुरंत प्रोसेस होते हैं, जो रिलेवेंट ब्लॉकचेन पर स्टैंडर्ड नेटवर्क कन्फर्मेशन टाइम के अधीन होते हैं। अगर लिक्विडिटी टाइट है, तो टेम्पररी डिले हो सकता है।"
-  },
-  "moneyBalanceLastKnown": {
-    "message": "आखिरी ज्ञात बैलेंस"
-  },
-  "moneyBalanceTitle": {
-    "message": "Money बैलेंस"
   },
   "moneyBalanceUnavailable": {
     "message": "बैलेंस अनुपलब्ध है"
