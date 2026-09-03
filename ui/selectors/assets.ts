@@ -1528,7 +1528,7 @@ const getStateForAssetSelector = createSelector(
   },
 );
 
-export const getAssetsBySelectedAccountGroup = createSelector(
+export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
   getStateForAssetSelector,
   (assetListState: AssetListState) =>
     filterExcludedAssets(selectAssetsBySelectedAccountGroup(assetListState)),

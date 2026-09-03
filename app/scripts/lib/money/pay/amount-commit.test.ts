@@ -1,6 +1,7 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
 import {
   commitTransactionPayUpdates,
   parseMusdHumanAmount,
@@ -39,8 +40,14 @@ describe('parseMusdHumanAmount', () => {
     expect(parseMusdHumanAmount('1')).toBe(1_000_000n);
   });
 
-  it('rounds fractional mUSD up to the next base unit', () => {
+  it('rounds fractional mUSD up to the next base unit by default', () => {
     expect(parseMusdHumanAmount('1.0000001')).toBe(1_000_001n);
+  });
+
+  it('rounds fractional mUSD down when ROUND_DOWN is requested', () => {
+    expect(parseMusdHumanAmount('1.0000001', BigNumber.ROUND_DOWN)).toBe(
+      1_000_000n,
+    );
   });
 
   it('returns undefined for zero, negative, or non-numeric input', () => {
