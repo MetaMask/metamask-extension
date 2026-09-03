@@ -87,10 +87,6 @@ module.exports = {
     ] = hwSwapHooksMock;
     config.resolve.alias['../../../../hooks/bridge/useBridgeNavigation$'] =
       hwSwapHooksMock;
-    // Unique specifier used only by the Storybook shim so webpack does not
-    // remap the real wordlist require back to the shim (circular alias).
-    config.resolve.alias['@storybook-shims/scure-bip39-english-wordlist'] =
-      require.resolve('@metamask/scure-bip39/dist/wordlists/english.js');
     config.resolve.alias['@metamask/scure-bip39/dist/wordlists/english.js'] =
       require.resolve('./shims/scure-bip39-english.js');
 
