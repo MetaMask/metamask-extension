@@ -6,6 +6,7 @@ const { RulePriority } = require('mockttp');
 const {
   ACCOUNTS_PROD_API_BASE_URL,
 } = require('../../shared/constants/accounts');
+const { REWARDS_API_URL } = require('../../shared/constants/rewards');
 const {
   GAS_API_BASE_URL,
   SWAPS_API_V2_BASE_URL,
@@ -578,11 +579,13 @@ async function setupMocking(
     });
 
   // Rewards API
-  await server
-    .forPost('https://rewards.uat-api.cx.metamask.io/public/rewards/ois')
-    .thenCallback(() => {
-      return { statusCode: 200, json: { ois: [], sids: [] } };
-    });
+  for (const rewardsApiUrl of [REWARDS_API_URL.UAT, REWARDS_API_URL.PRD]) {
+    await server
+      .forPost(`${rewardsApiUrl}/public/rewards/ois`)
+      .thenCallback(() => {
+        return { statusCode: 200, json: { ois: [], sids: [] } };
+      });
+  }
 
   // User Profile Lineage
   await server
@@ -1681,6 +1684,99 @@ async function setupMocking(
       return { statusCode: 200, json: results };
     });
 
+  // Token API assets: used by fetchTokenAssets (TokenAsset cache / TDP deep links).
+  await server
+    .forGet('https://token.api.cx.metamask.io/assets')
+    .always()
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const assetIds = url.searchParams.getAll('assetIds').join(',');
+
+      const results = [];
+
+      const pushIf = (predicate, entry) => {
+        if (predicate) {
+          results.push(entry);
+        }
+      };
+
+      pushIf(assetIds.includes('eip155:1/slip44:60'), {
+        assetId: 'eip155:1/slip44:60',
+        name: 'Ethereum',
+        symbol: 'ETH',
+        decimals: 18,
+      });
+
+      // Chain 1337 uses slip44:1 per nativeAssetIdentifiers in the fixture.
+      // Support both slip44:1 and slip44:60 requests for backward compat.
+      pushIf(
+        assetIds.includes('eip155:1337/slip44:1') ||
+          assetIds.includes('eip155:1337/slip44:60'),
+        {
+          assetId: 'eip155:1337/slip44:1',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+        },
+      );
+
+      const wethMainnet =
+        'eip155:1/erc20:0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+      const usdcMainnet =
+        'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+      const usdtMainnet =
+        'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7';
+      const daiMainnet =
+        'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F';
+
+      if (
+        assetIds.includes(wethMainnet) ||
+        assetIds.includes(wethMainnet.toLowerCase())
+      ) {
+        results.push({
+          assetId: wethMainnet,
+          name: 'Wrapped Ether',
+          symbol: 'WETH',
+          decimals: 18,
+        });
+      }
+      if (
+        assetIds.includes(usdcMainnet) ||
+        assetIds.includes(usdcMainnet.toLowerCase())
+      ) {
+        results.push({
+          assetId: usdcMainnet,
+          name: 'USD Coin',
+          symbol: 'USDC',
+          decimals: 6,
+        });
+      }
+      if (
+        assetIds.includes(usdtMainnet) ||
+        assetIds.includes(usdtMainnet.toLowerCase())
+      ) {
+        results.push({
+          assetId: usdtMainnet,
+          name: 'Tether USD',
+          symbol: 'USDT',
+          decimals: 6,
+        });
+      }
+      if (
+        assetIds.includes(daiMainnet) ||
+        assetIds.includes(daiMainnet.toLowerCase())
+      ) {
+        results.push({
+          assetId: daiMainnet,
+          name: 'Dai Stablecoin',
+          symbol: 'DAI',
+          decimals: 18,
+        });
+      }
+
+      return { statusCode: 200, json: results };
+    });
+
   // Tokens API: v2 supported networks — mocked globally so all tests work.
   await server
     .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
@@ -1763,12 +1859,48 @@ async function setupMocking(
       };
     });
 
-  // Merkl rewards API: return empty rewards so mUSD reward polling doesn't crash
-  // tests with SyntaxError when the catch-all returns an empty body.
+  // Veda performance API: vault APY, fetched by MoneyAccountBalanceService
+  // whenever a Money Account surface renders. A minimal valid response stops
+  // TanStack Query from retrying against the catch-all.
   await server
-    .forGet(/^https:\/\/api\.merkl\.xyz\/v4\/users\/[^/]+\/rewards/u)
+    .forGet(/^https:\/\/api\.sevenseas\.capital\/performance\/[^/]+\/[^/]+$/u)
     .always()
-    .thenCallback(() => ({ statusCode: 200, json: [] }));
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        Response: {
+          apy: 0.045,
+          timestamp: '2026-01-01T00:00:00Z',
+        },
+      },
+    }));
+
+  // Money API: positions for a Money account, fetched as the API leg of
+  // MoneyAccountBalanceService:fetchBalanceWithFallback. A zero balance
+  // satisfies the service's balance invariant (musd + vmusd === total).
+  await server
+    .forGet(/^https:\/\/money\.api\.cx\.metamask\.io\/v1\/positions\/[^/]+$/u)
+    .always()
+    .thenCallback((req) => {
+      const url = new URL(req.url);
+      const address = url.pathname.split('/').pop();
+      return {
+        statusCode: 200,
+        json: {
+          address,
+          as_of_block: 1,
+          as_of_timestamp: '2026-01-01T00:00:00Z',
+          data_freshness: 'live',
+          indexer_lag_seconds: 0,
+          balance: {
+            musd_balance: '0',
+            vmusd_value_in_musd: '0',
+            total_balance: '0',
+          },
+          positions: [],
+        },
+      };
+    });
 
   // Accounts API: v5 multi-account balances (used by AccountsApiDataSource when assetsUnifyState is enabled).
   // Default: 25 ETH native per requested chain for the default fixture account. Override via
@@ -2210,8 +2342,67 @@ async function setupMocking(
         }
         return { statusCode: 200, json: candles };
       }
+      if (type === 'maxBuilderFee') {
+        // Mirrors the WS INFO POST mock in perps/mocks/websocketDefaultMocks.ts:
+        // 0.001 is the configured MaxFeeDecimal, so the controller treats the
+        // builder fee as already approved and skips the approveBuilderFee
+        // /exchange call. perps-controller queries this over HTTP (not the WS
+        // info client) from the TP/SL and order paths, so the WS mock alone is
+        // not enough.
+        return { statusCode: 200, json: 0.001 };
+      }
+      if (type === 'perpDexs') {
+        // Mirrors the WS INFO POST mock: [null] where null = the main DEX. The
+        // controller derives perpDexIndex from this, and omitting null skips the
+        // main-DEX mapping entirely.
+        return { statusCode: 200, json: [null] };
+      }
       if (type === 'openOrders') {
         return { statusCode: 200, json: [] };
+      }
+      if (type === 'frontendOpenOrders') {
+        // perps-controller reads TP/SL triggers with `frontendOpenOrders`, not
+        // `openOrders`, and immediately calls `.forEach` on the result. The
+        // catch-all below returns `{}`, which is not iterable.
+        return { statusCode: 200, json: [] };
+      }
+      if (type === 'userNonFundingLedgerUpdates') {
+        // `#isWalletOnHyperliquid` treats a non-array or empty ledger as "this
+        // wallet has no Hyperliquid account", which silently defers the
+        // unified-account migration and the referral write.
+        return {
+          statusCode: 200,
+          json: [
+            {
+              time: 1735689600000,
+              hash: '0x0000000000000000000000000000000000000000000000000000000000000001',
+              delta: {
+                type: 'deposit',
+                amount: '10000.0',
+                nonce: 1,
+                usdc: '10000.0',
+              },
+            },
+          ],
+        };
+      }
+      if (type === 'userAbstraction') {
+        // A compatible mode, so the controller skips the EIP-712 migration that
+        // 15.1.0 drives at action time.
+        return { statusCode: 200, json: 'unifiedAccount' };
+      }
+      if (type === 'userToMultiSigSigners') {
+        // Hyperliquid returns null for single-signer accounts;
+        // `#isHyperliquidMultiSigAccount` reads any non-null answer as multi-sig.
+        return { statusCode: 200, json: null };
+      }
+      if (type === 'referral') {
+        // Mirrors the WS INFO POST mock: already referred by the MetaMask
+        // builder, so the controller skips the setReferrer /exchange call.
+        return {
+          statusCode: 200,
+          json: { referredBy: '0xea2c82b5aba243ab631c0ce151763d5e38df75b3' },
+        };
       }
       if (type === 'userFills') {
         return { statusCode: 200, json: [] };
@@ -2221,11 +2412,38 @@ async function setupMocking(
 
   await server
     .forPost(/^https:\/\/api\.hyperliquid\.xyz\/exchange$/u)
-    .thenCallback((request) => {
-      const body = request.body?.json ?? {};
-      const actionType = body.action?.type;
+    .thenCallback(async (request) => {
+      // Mockttp's CompletedBody exposes `getJson()`, not a `.json` property —
+      // reading `request.body.json` always yielded undefined, so every action
+      // fell through to the generic `{ type: 'default' }` response below. Parse
+      // it the same defensive way the /info handler above does.
+      const body = (await request.body?.getJson().catch(() => undefined)) ?? {};
+      const action = body.action ?? {};
+      const actionType = action.type;
 
       if (actionType === 'order') {
+        const orders = Array.isArray(action.orders) ? action.orders : [];
+        // perps-controller requires exactly one status per submitted order, so
+        // a TP/SL batch (take profit + stop loss) must answer with two. Trigger
+        // orders rest until their price is crossed; plain orders fill.
+        const statuses = orders.map((order, index) => {
+          const orderType = order?.t;
+          const isTrigger =
+            typeof orderType === 'object' &&
+            orderType !== null &&
+            'trigger' in orderType;
+          if (isTrigger) {
+            return { resting: { oid: 100001 + index } };
+          }
+          return {
+            filled: {
+              totalSz: '4.0',
+              avgPx: '25.05',
+              oid: 100001 + index,
+            },
+          };
+        });
+
         return {
           statusCode: 200,
           json: {
@@ -2233,16 +2451,29 @@ async function setupMocking(
             response: {
               type: 'order',
               data: {
-                statuses: [
-                  {
-                    filled: {
-                      totalSz: '4.0',
-                      avgPx: '25.05',
-                      oid: 100001,
-                    },
-                  },
-                ],
+                statuses: statuses.length
+                  ? statuses
+                  : [
+                      {
+                        filled: { totalSz: '4.0', avgPx: '25.05', oid: 100001 },
+                      },
+                    ],
               },
+            },
+          },
+        };
+      }
+
+      if (actionType === 'cancel') {
+        const cancels = Array.isArray(action.cancels) ? action.cancels : [];
+        // Same one-status-per-request contract as `order`.
+        return {
+          statusCode: 200,
+          json: {
+            status: 'ok',
+            response: {
+              type: 'cancel',
+              data: { statuses: cancels.map(() => 'success') },
             },
           },
         };

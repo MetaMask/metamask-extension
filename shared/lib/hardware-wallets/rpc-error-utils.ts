@@ -12,7 +12,6 @@ import {
 } from '@metamask/hw-wallet-sdk';
 import {
   is,
-  object,
   type as superstructType,
   string,
   number,
@@ -35,17 +34,23 @@ import { createHardwareWalletError } from './errors';
  * Structs for serialized HardwareWalletError cause objects.
  * This supports both legacy and extended shapes across the RPC boundary.
  *
- * We use exact `object()` structs so legacy and extended remain mutually
- * exclusive (extended includes extra fields that legacy does not accept).
+ * Uses loose `superstructType()` structs (not exact `object()`) because a
+ * `HardwareWalletError` thrown from a background method that isn't
+ * explicitly wrapped (e.g. via `rpcErrors.internal({ data: {...} })`) falls
+ * through `@metamask/rpc-errors`' generic `serializeError()` fallback path,
+ * which flattens *every* own enumerable property of the error (including
+ * `metadata`, `id`, `timestamp`) into `data.cause`. An exact struct would
+ * reject that shape outright and the error would be misclassified as
+ * `ErrorCode.Unknown` further down in `toHardwareWalletError()`.
  */
-const LegacySerializedHardwareWalletErrorCauseStruct = object({
+const LegacySerializedHardwareWalletErrorCauseStruct = superstructType({
   name: literal('HardwareWalletError'),
   message: string(),
   stack: optional(string()),
   code: number(),
 });
 
-const ExtendedSerializedHardwareWalletErrorCauseStruct = object({
+const ExtendedSerializedHardwareWalletErrorCauseStruct = superstructType({
   // Extended fields added by HardwareWalletError serialization.
   category: string(),
   severity: string(),
@@ -426,6 +431,22 @@ function mapStringCodeToErrorCode(stringCode: string): ErrorCode {
 function extractHexStatusCodeFromMessage(message: string): string | null {
   const hexMatch = /0x[\da-fA-F]{4}/u.exec(message);
   return hexMatch ? hexMatch[0].toLowerCase() : null;
+}
+
+/**
+ * Ledger devices can only sign EIP-712 typed data with version V4.
+ * The keyring throws "Ledger: Only version 4 of typed data signing is
+ * supported" for V1/V3 requests.
+ *
+ * @param message - The error message to inspect
+ * @returns True when the message indicates only V4 typed data is supported
+ */
+function isOnlyV4TypedDataErrorMessage(message: string): boolean {
+  const normalizedMessage = message.toLowerCase();
+  return (
+    normalizedMessage.includes('version 4 of typed data') ||
+    normalizedMessage.includes('only version 4')
+  );
 }
 
 /**
@@ -828,6 +849,56 @@ function tryInferTrezorKeyringError(
 }
 
 /**
+ * Infer a Ledger ErrorCode from a KeyringControllerError when the cause
+ * code is missing or Unknown.
+ *
+ * Retrying cannot succeed for unsupported typed-data versions, so this maps
+ * the keyring's V3/V1 rejection onto DeviceStateOnlyV4Supported.
+ *
+ * @param error - The KeyringControllerError to inspect
+ * @param walletType - The hardware wallet type
+ * @param causeCode - The already-extracted cause ErrorCode, if any
+ * @returns A HardwareWalletError if a Ledger code was inferred, otherwise null
+ */
+function tryInferLedgerKeyringError(
+  error: KeyringControllerError,
+  walletType: HardwareWalletType,
+  causeCode: ErrorCode | null,
+): HardwareWalletError | null {
+  if (
+    walletType !== HardwareWalletType.Ledger ||
+    (causeCode !== ErrorCode.Unknown && causeCode !== null)
+  ) {
+    return null;
+  }
+
+  const causeMessage = getErrorMessage(error.cause);
+  if (isOnlyV4TypedDataErrorMessage(causeMessage)) {
+    return createHardwareWalletError(
+      ErrorCode.DeviceStateOnlyV4Supported,
+      walletType,
+      causeMessage,
+      {
+        cause: getErrorCause(error.cause),
+      },
+    );
+  }
+
+  if (isOnlyV4TypedDataErrorMessage(error.message)) {
+    return createHardwareWalletError(
+      ErrorCode.DeviceStateOnlyV4Supported,
+      walletType,
+      error.message,
+      {
+        cause: getErrorCause(error.cause),
+      },
+    );
+  }
+
+  return null;
+}
+
+/**
  * Reconstruct a HardwareWalletError from a KeyringControllerError.
  *
  * @param error - The KeyringControllerError to reconstruct from
@@ -847,6 +918,15 @@ function fromKeyringControllerError(
   );
   if (trezorInferred) {
     return trezorInferred;
+  }
+
+  const ledgerInferred = tryInferLedgerKeyringError(
+    error,
+    walletType,
+    causeCode,
+  );
+  if (ledgerInferred) {
+    return ledgerInferred;
   }
 
   if (causeCode !== null) {
@@ -895,12 +975,13 @@ function fromSerializedTopLevelHardwareWalletError(
 }
 
 /**
- * Try to reconstruct a HardwareWalletError from a Ledger status code
- * embedded in the error message.
+ * Try to reconstruct a HardwareWalletError from a Ledger error message.
+ * Handles transport status codes (e.g. 0x5515) and keyring-level V1/V3
+ * typed data rejections that are not tied to a status code.
  *
  * @param error - The error to inspect
  * @param walletType - The hardware wallet type
- * @returns A HardwareWalletError if a Ledger status code was found, otherwise null
+ * @returns A HardwareWalletError if a Ledger error was recognized, otherwise null
  */
 function tryFromLedgerErrorMessage(
   error: unknown,
@@ -931,14 +1012,25 @@ function tryFromLedgerErrorMessage(
   }
 
   const hexStatusCode = extractHexStatusCodeFromMessage(errorMessage);
-  if (!hexStatusCode) {
-    return null;
+  if (hexStatusCode) {
+    const errorCode = mapLedgerStatusCodeToErrorCode(hexStatusCode);
+    return createHardwareWalletError(errorCode, walletType, errorMessage, {
+      cause: getErrorCause(error),
+    });
   }
 
-  const errorCode = mapLedgerStatusCodeToErrorCode(hexStatusCode);
-  return createHardwareWalletError(errorCode, walletType, errorMessage, {
-    cause: getErrorCause(error),
-  });
+  if (isOnlyV4TypedDataErrorMessage(errorMessage)) {
+    return createHardwareWalletError(
+      ErrorCode.DeviceStateOnlyV4Supported,
+      walletType,
+      errorMessage,
+      {
+        cause: getErrorCause(error),
+      },
+    );
+  }
+
+  return null;
 }
 
 /**

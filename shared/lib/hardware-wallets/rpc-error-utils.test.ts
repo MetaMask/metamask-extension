@@ -628,6 +628,41 @@ describe('rpc-error-utils', () => {
       });
     });
 
+    it('reconstructs from a generic @metamask/rpc-errors serializeError() fallback cause', () => {
+      // This is the shape produced when a HardwareWalletError is thrown from a
+      // background method that isn't explicitly wrapped via
+      // rpcErrors.internal({ data: {...} }) (e.g. getAppNameAndVersion).
+      // @metamask/rpc-errors' generic serializeError() fallback flattens every
+      // own enumerable property of the original error into data.cause,
+      // including fields the "legacy"/"extended" cause shapes don't declare
+      // (metadata here; id/timestamp in other cases).
+      const serializedRpcError = {
+        code: -32603,
+        message: 'DMK device locked',
+        data: {
+          cause: {
+            message: 'DMK device locked',
+            name: 'HardwareWalletError',
+            code: ErrorCode.AuthenticationDeviceLocked,
+            severity: Severity.Err,
+            category: Category.Authentication,
+            userMessage: 'Please unlock your Ledger device to continue.',
+            metadata: { walletType: HardwareWalletType.Ledger },
+            stack: 'serialized stack trace',
+          },
+        },
+      };
+
+      const result = toHardwareWalletError(
+        serializedRpcError,
+        HardwareWalletType.Ledger,
+      );
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.AuthenticationDeviceLocked);
+      expect(result.message).toBe('DMK device locked');
+    });
+
     it('uses explicit code from KeyringControllerError cause when available', () => {
       const error = new KeyringControllerError('sign operation failed', {
         cause: new HardwareWalletError('User cancelled on device', {
@@ -753,6 +788,73 @@ describe('rpc-error-utils', () => {
       expect(result).toBeInstanceOf(HardwareWalletError);
       expect(result.code).toBe(ErrorCode.AuthenticationDeviceLocked);
       expect(result.message).toContain('0x5515');
+    });
+
+    it('maps Ledger V3 typed data keyring message to DeviceStateOnlyV4Supported', () => {
+      const result = toHardwareWalletError(
+        new Error('Ledger: Only version 4 of typed data signing is supported'),
+        HardwareWalletType.Ledger,
+      );
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.DeviceStateOnlyV4Supported);
+      expect(result.message).toBe(
+        'Ledger: Only version 4 of typed data signing is supported',
+      );
+    });
+
+    it('maps "only version 4" typed data message to DeviceStateOnlyV4Supported', () => {
+      const result = toHardwareWalletError(
+        new Error('only version 4 of typed data signing is supported'),
+        HardwareWalletType.Ledger,
+      );
+
+      expect(result.code).toBe(ErrorCode.DeviceStateOnlyV4Supported);
+    });
+
+    it('does not map V4 typed data messages for non-Ledger wallets', () => {
+      const result = toHardwareWalletError(
+        new Error('Ledger: Only version 4 of typed data signing is supported'),
+        HardwareWalletType.Trezor,
+      );
+
+      expect(result.code).toBe(ErrorCode.Unknown);
+    });
+
+    it('maps KeyringControllerError wrapping a V4-only Ledger message', () => {
+      const error = Object.assign(
+        Object.create(KeyringControllerError.prototype),
+        {
+          name: 'KeyringControllerError',
+          message: 'sign operation failed',
+          cause: {
+            name: 'HardwareWalletError',
+            message:
+              'Ledger: Only version 4 of typed data signing is supported',
+          },
+        },
+      );
+
+      const result = toHardwareWalletError(error, HardwareWalletType.Ledger);
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.DeviceStateOnlyV4Supported);
+      expect(result.message).toBe(
+        'Ledger: Only version 4 of typed data signing is supported',
+      );
+    });
+
+    it('preserves DeviceStateOnlyV4Supported from a serialized HardwareWalletError', () => {
+      const result = toHardwareWalletError(
+        {
+          name: 'HardwareWalletError',
+          message: 'Ledger: Only version 4 of typed data signing is supported',
+          code: ErrorCode.DeviceStateOnlyV4Supported,
+        },
+        HardwareWalletType.Ledger,
+      );
+
+      expect(result.code).toBe(ErrorCode.DeviceStateOnlyV4Supported);
     });
 
     it('maps Ledger offscreen/runtime bridge failures to ConnectionTransportMissing', () => {

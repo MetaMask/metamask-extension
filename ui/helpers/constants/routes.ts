@@ -196,7 +196,6 @@ export const RAMPS_ROUTE = '/ramps';
 export const RAMPS_BUILD_QUOTE_ROUTE = '/ramps/build-quote';
 export const RAMPS_TOKEN_SELECTION_ROUTE = '/ramps/token-selection';
 export const RAMPS_PAYMENT_METHOD_ROUTE = '/ramps/payment-method';
-export const RAMPS_PROVIDER_SELECTION_ROUTE = '/ramps/provider-selection';
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';
@@ -208,6 +207,7 @@ export const PERPS_WITHDRAW_ROUTE = '/perps/withdraw';
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 export const PERPS_HOME_PAGE_ROUTE = '/perps-home';
 export const MONEY_HOME_ROUTE = '/money-home';
+export const MONEY_ACTIVITY_ROUTE = '/money-home/activity';
 
 // Window during which reopening the extension resumes the last Perps screen
 // instead of landing on the wallet home. Keeps the cap short so stale sessions
@@ -479,11 +479,6 @@ export const ROUTES = [
   {
     path: RAMPS_PAYMENT_METHOD_ROUTE,
     label: 'Ramps Payment Method Page',
-    trackInAnalytics: false,
-  },
-  {
-    path: RAMPS_PROVIDER_SELECTION_ROUTE,
-    label: 'Ramps Provider Selection Page',
     trackInAnalytics: false,
   },
   {

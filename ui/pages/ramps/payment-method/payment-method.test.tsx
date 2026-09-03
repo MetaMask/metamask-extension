@@ -408,6 +408,42 @@ describe('RampsPaymentMethodScreen', () => {
     expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
+  it('does not reuse a provider error across payment methods', () => {
+    mockLocationState = { amount: 100 };
+    mockUseRampsQuotes.mockReturnValue({
+      data: {
+        success: [],
+        sorted: [],
+        error: [
+          {
+            provider: selectedProvider.id,
+            error: 'Minimum purchase is 24 USD',
+          },
+        ],
+        customActions: [],
+      },
+      loading: false,
+      status: 'success',
+      isSuccess: true,
+      error: null,
+      getQuotes: jest.fn(),
+      getBuyWidgetData: jest.fn(),
+    });
+
+    renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    expect(
+      screen.getByTestId('ramps-payment-method-item-debit-credit-card'),
+    ).toHaveTextContent('Quote unavailable');
+    expect(
+      screen.getByTestId('ramps-payment-method-item-bank-transfer'),
+    ).toHaveTextContent('Quote unavailable');
+  });
+
   it('selects a payment method and navigates back', async () => {
     renderWithProvider(
       <RampsPaymentMethodScreen />,
@@ -475,10 +511,20 @@ describe('RampsPaymentMethodScreen', () => {
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('navigates to provider selection when change provider is clicked', () => {
+  it('opens provider selection modal when change provider is clicked', () => {
     mockLocationState = { amount: 100 };
+    useRampsController.mockReturnValue({
+      ...defaultControllerState,
+      providers: [
+        {
+          id: '/providers/transak',
+          name: 'Transak',
+          supportedCryptoCurrencies: { 'eip155:1/slip44:60': true },
+        },
+      ],
+    });
 
-    renderWithProvider(
+    const { baseElement } = renderWithProvider(
       <RampsPaymentMethodScreen />,
       createStore(),
       '/ramps/payment-method',
@@ -486,9 +532,11 @@ describe('RampsPaymentMethodScreen', () => {
 
     fireEvent.click(screen.getByTestId('ramps-change-provider-button'));
 
-    expect(mockNavigate).toHaveBeenCalledWith('/ramps/provider-selection', {
-      state: { amount: 100 },
-    });
+    expect(
+      screen.getByTestId('ramps-provider-selection-modal'),
+    ).toBeInTheDocument();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(baseElement).toMatchSnapshot();
   });
 
   it('uses the chain-matching account address for non-EVM assets', () => {

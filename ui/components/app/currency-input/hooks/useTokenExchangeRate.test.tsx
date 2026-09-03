@@ -14,11 +14,6 @@ const createQueryClient = () =>
     defaultOptions: {
       queries: { retry: false },
     },
-    logger: {
-      log: () => undefined,
-      warn: () => undefined,
-      error: () => undefined,
-    },
   });
 
 const renderUseTokenExchangeRate = (

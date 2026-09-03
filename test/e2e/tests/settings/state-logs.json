@@ -304,7 +304,6 @@
     "cachedMarketDataByProvider": "object",
     "cachedUserDataByProvider": "object",
     "cacheTimestamp": "number",
-    "canTrackWalletFundsObtained": "boolean",
     "claims": [],
     "claimsConfigurations": {
       "supportedNetworks": ["string"],
@@ -733,6 +732,7 @@
     "migrationVersion": "number",
     "minimumBalanceForRentExemptionInLamports": "string",
     "mode": "string",
+    "moneyAccounts": {},
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {
         "chainId": "string",
@@ -871,6 +871,10 @@
     "onboardingTabs": {},
     "openSeaEnabled": "boolean",
     "optedIn": "boolean",
+    "orderBookPreferences": {
+      "currency": "string",
+      "metric": "string"
+    },
     "orderedNetworkList": [
       {
         "networkId": "string"
@@ -1058,6 +1062,7 @@
     "selectedAccountGroup": "string",
     "selectedCurrency": "string",
     "selectedMultichainNetworkChainId": "string",
+    "selectedOrderType": "string",
     "selectedPaymentToken": "null",
     "selectedNetworkClientId": "string",
     "shieldSubscriptionError": "null",
@@ -1275,6 +1280,7 @@
     "useTransactionSimulations": "boolean",
     "version": "null",
     "versionInfo": [],
+    "visibleCandleCount": "number",
     "watchEthereumAccountEnabled": "boolean",
     "watchlistMarkets": {
       "testnet": [],

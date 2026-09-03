@@ -1,5 +1,9 @@
 import React from 'react';
-import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import { render } from '@testing-library/react';
+import type {
+  ActivityListItem,
+  MoneyAccountActivityItem,
+} from '../../../../shared/lib/activity/types';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useGetDisplayName } from '../../../hooks/useGetDisplayName';
 import { useActivityRowContent } from './useActivityRowContent';
@@ -342,5 +346,78 @@ describe('useActivityRowContent', () => {
     expect(result.current.subtitle).toBe(
       'activity_receive_success_description|Bob',
     );
+  });
+
+  describe('money account rows', () => {
+    const MUSD_ASSET_ID = 'eip155:1/erc20:0xmusd';
+
+    const buildMoneyActivity = (
+      type: MoneyAccountActivityItem['type'],
+      fiatAmount?: string,
+    ): MoneyAccountActivityItem => ({
+      type,
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      hash: '0xabc',
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        ...(fiatAmount === undefined ? {} : { fiat: { amount: fiatAmount } }),
+        token: {
+          assetId: MUSD_ASSET_ID,
+          direction: type === 'moneyAccountDeposit' ? 'in' : 'out',
+          symbol: 'mUSD',
+        },
+      },
+    });
+
+    it('renders a deposit as a positive USD amount flowing in', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(
+          buildMoneyActivity('moneyAccountDeposit', '25.5'),
+        ),
+      );
+
+      expect(mockFormatCurrencyWithMinThreshold).toHaveBeenCalledWith(
+        25.5,
+        'usd',
+      );
+      expect(result.current.primaryAmount.props.children).toBe('25.5 usd');
+      expect(result.current.primaryAmount.props.className).toBe(
+        'text-success-default',
+      );
+    });
+
+    it('negates the withdrawal amount and does not mark it as incoming', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(
+          buildMoneyActivity('moneyAccountWithdraw', '25.5'),
+        ),
+      );
+
+      expect(mockFormatCurrencyWithMinThreshold).toHaveBeenCalledWith(
+        -25.5,
+        'usd',
+      );
+      expect(result.current.primaryAmount.props.children).toBe('-25.5 usd');
+      expect(result.current.primaryAmount.props.className).toBe('');
+    });
+
+    it('omits the amount when the activity has no fiat value', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(buildMoneyActivity('moneyAccountDeposit')),
+      );
+
+      expect(result.current.primaryAmount).toBeUndefined();
+    });
+
+    it('shows the mUSD token avatar', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(buildMoneyActivity('moneyAccountDeposit', '1')),
+      );
+
+      const { getByTestId } = render(result.current.avatar);
+      expect(getByTestId('activity-avatar')).toHaveTextContent(MUSD_ASSET_ID);
+    });
   });
 });

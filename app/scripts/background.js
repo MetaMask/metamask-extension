@@ -62,7 +62,6 @@ import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
-import { getInstallAttribution } from '../../shared/lib/install-attribution';
 import {
   createEvent,
   shouldTrackDeepLinkNavigation,
@@ -105,7 +104,10 @@ import {
 import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
-import { onUpdate } from './on-update';
+import {
+  handleOnInstalled,
+  onUpdateAvailable,
+} from './lib/lifecycle/install-lifecycle';
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 import {
@@ -125,6 +127,7 @@ import {
 import { requestRepair } from './lib/repair';
 import {
   createSidepanelOpener,
+  setupSidePanelToolbarBehavior,
   shouldUseSidepanel,
 } from './sidepanel/background';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
@@ -251,10 +254,6 @@ if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
   );
 }
 
-lazyListener.once('runtime', 'onInstalled').then((details) => {
-  handleOnInstalled(details);
-});
-
 /**
  * This deferred Promise is used to track whether initialization has finished.
  *
@@ -288,21 +287,25 @@ function setGlobalInitializers() {
 setGlobalInitializers();
 
 /**
- * Prefer opening the side panel on toolbar click as soon as the service worker starts.
- * Without this, the first click after a cold start can use manifest `default_popup` until
- * {@link setupSidePanelToolbarBehavior} runs after {@link isInitialized}.
+ * Install/update lifecycle dependencies. `controller` is accessed via a getter
+ * because `onInstalled` can fire (and be buffered) before `controller` is assigned.
+ *
+ * @returns {import('./lib/lifecycle/install-lifecycle').InstallLifecycleDependencies}
  */
-function applyEarlySidePanelToolbarBehavior() {
-  if (!browser?.sidePanel?.setPanelBehavior) {
-    return;
-  }
-  browser.sidePanel
-    .setPanelBehavior({ openPanelOnActionClick: true })
-    .catch(() => {
-      // Non-fatal: `applyToolbarSidePanelBehavior` applies persisted preference once ready.
-    });
+function getInstallLifecycleDeps() {
+  return {
+    get controller() {
+      return controller;
+    },
+    platform,
+    isInitialized,
+    requestSafeReload,
+  };
 }
-applyEarlySidePanelToolbarBehavior();
+
+lazyListener.once('runtime', 'onInstalled').then((details) => {
+  handleOnInstalled(details, getInstallLifecycleDeps());
+});
 
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
@@ -986,13 +989,25 @@ export async function loadStateFromPersistence(backup) {
     }
   } else if (persistenceManager.storageKind === 'split') {
     if (writeAllKeysToState) {
-      for (const [key, value] of Object.entries(versionedData.data)) {
-        persistenceManager.update(key, value);
+      // New state needs every controller persisted.
+      for (const key of Object.keys(versionedData.data)) {
+        persistenceManager.update(key, versionedData.data[key]);
       }
     } else {
-      // write changes only
+      // Existing state starts with explicitly changed controllers.
       for (const key of changedKeys) {
         persistenceManager.update(key, versionedData.data[key]);
+      }
+      if (backup) {
+        // Recovery also needs every backed-up controller.
+        for (const key of backedUpStateKeys) {
+          const value = versionedData.data[key];
+          // Avoid queuing the same key twice.
+          // Missing backup values would delete existing state.
+          if (!changedKeys.has(key) && value !== undefined) {
+            persistenceManager.update(key, value);
+          }
+        }
       }
     }
     // write to disk
@@ -1923,89 +1938,9 @@ async function triggerUi() {
   }
 }
 
-// It queues the "App Installed" event before consent, or tracks it immediately if consent already exists.
-const addAppInstalledEvent = async (installAttributionPromise) => {
-  const { deferredDeepLink, traits: installAttributionTraits } =
-    await installAttributionPromise;
-
-  controller.metaMetricsController.updateTraits({
-    [MetaMetricsUserTrait.InstallDateExt]: new Date()
-      .toISOString()
-      .split('T')[0], // yyyy-mm-dd
-    ...installAttributionTraits,
-  });
-  const eventProperties = {};
-
-  if (deferredDeepLink) {
-    controller.appStateController.setDeferredDeepLink(deferredDeepLink);
-    eventProperties.install_source = 'deeplink';
-    eventProperties.deeplink_path = deferredDeepLink.referringLink;
-  }
-
-  const { consentDecisionMade, optedIn } = controller.getState();
-
-  if (consentDecisionMade === true && optedIn === false) {
-    // We can skip tracking completely if they've already explicitly opted out
-    return;
-  }
-
-  trackEvent(
-    createEventBuilder(MetaMetricsEventName.AppInstalled)
-      .addCategory(MetaMetricsEventCategory.App)
-      .addProperties(eventProperties)
-      .build(),
-  );
-};
-
-/**
- * Handles the onInstalled event.
- *
- * @param {[chrome.runtime.InstalledDetails]} params - Array containing a single installation details object.
- */
-async function handleOnInstalled([details]) {
-  if (details.reason === 'install') {
-    await onInstall();
-  } else if (details.reason === 'update') {
-    const { previousVersion } = details;
-    if (!previousVersion || previousVersion === platform.getVersion()) {
-      return;
-    }
-    await isInitialized;
-    onUpdate(controller, platform, previousVersion, requestSafeReload);
-  }
-}
-
-/**
- * Trigger actions that should happen only upon initial install (e.g. open tab for onboarding).
- */
-async function onInstall() {
-  log.debug('First install detected');
-  const installAttributionPromise = getInstallAttribution();
-
-  if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
-    platform.openExtensionInBrowser();
-  }
-
-  // The controller must exist before we can persist install attribution.
-  await isInitialized;
-
-  await addAppInstalledEvent(installAttributionPromise);
-}
-
-/**
- * Trigger actions that should happen only when an update is available
- *
- * @param {object} details - Event details from runtime.onUpdateAvailable (e.g. details.version)
- */
-async function onUpdateAvailable(details) {
-  await isInitialized;
-  log.info('An update is available', details?.version);
-  controller.appStateController.setPendingExtensionVersion(
-    details?.version ?? null,
-  );
-}
-
-browser.runtime.onUpdateAvailable.addListener(onUpdateAvailable);
+browser.runtime.onUpdateAvailable.addListener((details) => {
+  onUpdateAvailable(details, getInstallLifecycleDeps());
+});
 
 function onNavigateToTab() {
   browser.tabs.onActivated.addListener((onActivatedTab) => {
@@ -2056,54 +1991,10 @@ function onNavigateToTab() {
   });
 }
 
-// Sidepanel-specific functionality
-async function applyToolbarSidePanelBehavior() {
-  if (!browser?.sidePanel?.setPanelBehavior) {
-    return;
-  }
-  const useSidePanelAsDefault =
-    controller?.preferencesController?.state?.preferences
-      ?.useSidePanelAsDefault ?? true;
-  await browser.sidePanel.setPanelBehavior({
-    openPanelOnActionClick: useSidePanelAsDefault,
-  });
-}
-
-/**
- * Sets initial side panel toolbar behavior after startup, then subscribes only to
- * `useSidePanelAsDefault` changes (not every PreferencesController update).
- */
-const setupSidePanelToolbarBehavior = async () => {
-  if (!browser?.sidePanel) {
-    return;
-  }
-
-  try {
-    await isInitialized;
-    await applyToolbarSidePanelBehavior();
-
-    controller?.controllerMessenger?.subscribe(
-      'PreferencesController:stateChange',
-      (useSidePanelAsDefault) => {
-        if (browser?.sidePanel?.setPanelBehavior) {
-          browser.sidePanel
-            .setPanelBehavior({
-              openPanelOnActionClick: useSidePanelAsDefault,
-            })
-            .catch((error) =>
-              console.error('Error updating panel behavior:', error),
-            );
-        }
-      },
-      (preferencesControllerState) =>
-        preferencesControllerState?.preferences?.useSidePanelAsDefault ?? true,
-    );
-  } catch (error) {
-    console.error('Error setting side panel toolbar behavior:', error);
-  }
-};
-
-setupSidePanelToolbarBehavior();
+setupSidePanelToolbarBehavior({
+  getController: () => controller,
+  waitUntilInitialized: async () => await isInitialized,
+});
 
 // Initialize appActiveTab by querying the current active tab on startup
 const initializeAppActiveTab = async () => {

@@ -122,6 +122,15 @@ const TX_ID = 'send-bundle-tx-1';
 const BATCH_TX_ID = 'batch-tx-1';
 const FROM_ADDRESS = '0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452';
 const TO_ADDRESS = '0x0987654321098765432109876543210987654321';
+const TOKEN_CONTRACT_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+const TOKEN_SEND_RECIPIENT = '0x2222222222222222222222222222222222222222';
+const APPROVAL_SPENDER_ADDRESS = '0xb90357f2b86dbfd59c3502215d4060f71df8ca0e';
+// ERC20 `transfer(TOKEN_SEND_RECIPIENT, 10 tokens)` calldata.
+const ERC20_TRANSFER_DATA =
+  '0xa9059cbb00000000000000000000000022222222222222222222222222222222222222220000000000000000000000000000000000000000000000008ac7230489e80000';
+// ERC20 `approve(APPROVAL_SPENDER_ADDRESS, 1400000)` calldata.
+const ERC20_APPROVE_DATA =
+  '0x095ea7b3000000000000000000000000b90357f2b86dbfd59c3502215d4060f71df8ca0e0000000000000000000000000000000000000000000000000000000000d59f80';
 
 const mockCancelCurrentBatch = jest.fn().mockResolvedValue(undefined);
 const mockResetConnectionError = jest.fn();
@@ -453,6 +462,40 @@ describe('useHardwareWalletSignatures', () => {
       expect(result.current.stepList.hasSigningRequest).toBe(true);
       expect(result.current.stepList.needsTwoConfirmations).toBe(true);
       expect(result.current.stepList.firstStepLabel).toContain('1.5');
+    });
+
+    it('shows the decoded calldata recipient for token sends', async () => {
+      const tokenSendTxMeta = createSendBundleTxMeta({
+        type: TransactionType.tokenMethodTransfer,
+        txParams: {
+          from: FROM_ADDRESS,
+          to: TOKEN_CONTRACT_ADDRESS,
+          value: '0x0',
+          gas: '0x5208',
+          maxFeePerGas: '0x1',
+          maxPriorityFeePerGas: '0x1',
+          data: ERC20_TRANSFER_DATA,
+        },
+      });
+
+      const { result } = await renderUseHardwareWalletSignaturesAndFlush({
+        locationState: createSendBundleLocationState({
+          txMeta: tokenSendTxMeta,
+        }),
+      });
+
+      await waitFor(() => {
+        expect(result.current.signatureStatus).toBe(
+          HardwareWalletSignatureStatus.Submitted,
+        );
+      });
+
+      expect(result.current.stepList.firstStepDescription).toStrictEqual({
+        to: 'To: 0x22222...22222',
+      });
+      expect(result.current.stepList.firstStepDescription?.to).not.toContain(
+        '0xa0b86',
+      );
     });
 
     it('marks the flow failed when the pending approval is gone', async () => {
@@ -925,6 +968,84 @@ describe('useHardwareWalletSignatures', () => {
 
       expect(mockCancelCurrentBatch).toHaveBeenCalled();
       expect(mockAddTransaction).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('bridge/swap approval flow', () => {
+    function mockSwapQuoteData() {
+      mockUseHwSwapQuoteData.mockReturnValue({
+        activeQuote: null,
+        lockedQuote: {
+          quote: {
+            requestId: 'quote-1',
+            src: { normalizedAmount: '10' },
+            dest: { normalizedAmount: '9.9' },
+          },
+          approval: {
+            from: FROM_ADDRESS,
+            to: TOKEN_CONTRACT_ADDRESS,
+            value: '0x0',
+            data: ERC20_APPROVE_DATA,
+          },
+          trade: { from: FROM_ADDRESS, to: TO_ADDRESS },
+        },
+        fromToken: { symbol: 'USDC', chainId: '0x1' },
+        toToken: { symbol: 'USDT', chainId: '0x1' },
+        hardwareWalletType: 'ledger',
+      } as never);
+    }
+
+    it('derives the spender from the approve calldata args', async () => {
+      mockSwapQuoteData();
+
+      const { result } = await renderUseHardwareWalletSignaturesAndFlush();
+
+      expect(result.current.stepList.firstStepDescription).toStrictEqual({
+        token: 'Token: 0xa0b86...6eb48',
+        spender: 'Spender: 0xB9035...8ca0e',
+      });
+      // The spender is decoded from the calldata args, not from
+      // `approval.to` (which is the token contract).
+      expect(result.current.stepList.firstStepDescription?.spender).not.toBe(
+        'Spender: 0xa0b86...6eb48',
+      );
+    });
+
+    it('labels the final step with the swap destination for same-chain quotes', async () => {
+      mockSwapQuoteData();
+
+      const { result } = await renderUseHardwareWalletSignaturesAndFlush();
+
+      expect(result.current.stepList.finalStepLabel).toBe(
+        'Swap 10 USDC for 9.9 USDT',
+      );
+    });
+
+    it('omits the spender description when the approve calldata is undecodable', async () => {
+      mockUseHwSwapQuoteData.mockReturnValue({
+        activeQuote: null,
+        lockedQuote: {
+          quote: {
+            requestId: 'quote-1',
+            src: { normalizedAmount: '10' },
+            dest: { normalizedAmount: '9.9' },
+          },
+          approval: {
+            from: FROM_ADDRESS,
+            to: TOKEN_CONTRACT_ADDRESS,
+            value: '0x0',
+            data: '0xnotdecodable',
+          },
+          trade: { from: FROM_ADDRESS, to: TO_ADDRESS },
+        },
+        fromToken: { symbol: 'USDC', chainId: '0x1' },
+        toToken: { symbol: 'USDT', chainId: '0x1' },
+        hardwareWalletType: 'ledger',
+      } as never);
+
+      const { result } = await renderUseHardwareWalletSignaturesAndFlush();
+
+      expect(result.current.stepList.firstStepDescription).toBeUndefined();
     });
   });
 
