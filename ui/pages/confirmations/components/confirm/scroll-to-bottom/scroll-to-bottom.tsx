@@ -44,6 +44,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     isScrolledToBottom,
     onScroll,
     scrollToBottom,
+    scrollElement,
     setHasScrolledToBottom,
     ref,
   } = useScrollRequired([currentConfirmation?.id, showAdvancedDetails], {
@@ -66,17 +67,22 @@ const ScrollToBottom = ({ children }: ContentProps) => {
       return;
     }
 
-    const currentRef = ref?.current as null | HTMLDivElement;
-    if (!currentRef) {
+    const scrollEl = scrollElement as HTMLDivElement | null;
+    if (!scrollEl) {
       return;
     }
 
-    if (typeof currentRef.scrollTo === 'function') {
-      currentRef.scrollTo(0, 0);
+    if (typeof scrollEl.scrollTo === 'function') {
+      scrollEl.scrollTo(0, 0);
     }
 
     setHasScrolledToBottom(false);
-  }, [currentConfirmation?.id, previousId, ref]);
+  }, [
+    currentConfirmation?.id,
+    previousId,
+    scrollElement,
+    setHasScrolledToBottom,
+  ]);
 
   useEffect(() => {
     if (isTransactionRedesign) {

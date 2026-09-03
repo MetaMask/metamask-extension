@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type RefObject,
+} from 'react';
 
 type State = {
   isIntersecting: boolean;
@@ -98,8 +105,11 @@ export function useIntersectionObserver({
     };
   }, [ref, thresholdKey, root, rootMargin, rootRef]);
 
+  const setRefFn = useCallback((node?: Element | null) => {
+    setRef(node ?? null);
+  }, []);
+
   return useMemo((): IntersectionReturn => {
-    const setRefFn = setRef;
     const isIntersecting = Boolean(state.isIntersecting);
     const { entry } = state;
     const tuple = [
@@ -111,5 +121,5 @@ export function useIntersectionObserver({
     tuple.isIntersecting = isIntersecting;
     tuple.entry = entry;
     return tuple;
-  }, [state]);
+  }, [setRefFn, state]);
 }
