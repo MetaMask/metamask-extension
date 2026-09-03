@@ -9103,7 +9103,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:11.11.0":
+"@metamask/utils@npm:11.11.0, @metamask/utils@npm:^11.0.0, @metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.11.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.8.1, @metamask/utils@npm:^11.9.0":
   version: 11.11.0
   resolution: "@metamask/utils@npm:11.11.0"
   dependencies:
@@ -33456,7 +33456,7 @@ __metadata:
     "@metamask/transaction-pay-controller": "npm:^27.1.0"
     "@metamask/tron-wallet-snap": "npm:^3.2.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
-    "@metamask/utils": "patch:@metamask/utils@npm%3A11.12.0#~/.yarn/patches/@metamask-utils-npm-11.12.0-7df3a5b1f9.patch"
+    "@metamask/utils": "npm:^11.11.0"
     "@metamask/wallet": "npm:^11.0.0"
     "@mui/material": "npm:^5.18.0"
     "@mui/system": "npm:^5.18.0"
