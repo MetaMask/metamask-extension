@@ -287,7 +287,42 @@ describe('TokenList', () => {
     expect(screen.getByText(lowValueAssetsLabel(1))).toBeInTheDocument();
   });
 
-  it('does not collapse non-native tokens with missing fiat balance', () => {
+  it('collapses non-native tokens with missing fiat balance when another token is priced', () => {
+    jest
+      .mocked(getAssetsBySelectedAccountGroup)
+      .mockReturnValue(
+        createAccountGroupAssets([
+          createAsset({ symbol: 'USDC', fiatBalance: 25 }),
+          createAsset({ symbol: 'UNKNOWN' }),
+        ]),
+      );
+
+    render();
+
+    expect(screen.getByTestId('token-cell-USDC')).toBeInTheDocument();
+    expect(screen.queryByTestId('token-cell-UNKNOWN')).not.toBeInTheDocument();
+    expect(screen.getByText(lowValueAssetsLabel(1))).toBeInTheDocument();
+  });
+
+  it('keeps unpriced tokens in the main list when no token has fiat', () => {
+    jest
+      .mocked(getAssetsBySelectedAccountGroup)
+      .mockReturnValue(
+        createAccountGroupAssets([
+          createAsset({ symbol: 'UNKNOWN' }),
+          createAsset({ symbol: 'SCAM' }),
+        ]),
+      );
+
+    render();
+
+    expect(screen.getByTestId('token-cell-UNKNOWN')).toBeInTheDocument();
+    expect(screen.getByTestId('token-cell-SCAM')).toBeInTheDocument();
+    expect(screen.queryByTestId('low-value-assets-toggle')).toBeNull();
+  });
+
+  it('keeps unpriced tokens in the main list when basic functionality is off', () => {
+    jest.mocked(getUseExternalServices).mockReturnValue(false);
     jest
       .mocked(getAssetsBySelectedAccountGroup)
       .mockReturnValue(
@@ -479,26 +514,5 @@ describe('TokenList', () => {
 
     expect(screen.getByTestId('token-cell-DAI')).toBeInTheDocument();
     expect(screen.queryByTestId('token-cell-USDC')).not.toBeInTheDocument();
-  });
-
-  it('persists expansion for the browser session', () => {
-    jest
-      .mocked(getAssetsBySelectedAccountGroup)
-      .mockReturnValue(
-        createAccountGroupAssets([
-          createAsset({ symbol: 'USDC', fiatBalance: 25 }),
-          createAsset({ symbol: 'DUST', fiatBalance: 0.5 }),
-        ]),
-      );
-
-    const { unmount } = render();
-
-    fireEvent.click(screen.getByTestId('low-value-assets-toggle'));
-    expect(screen.getByTestId('token-cell-DUST')).toBeInTheDocument();
-
-    unmount();
-    render();
-
-    expect(screen.getByTestId('token-cell-DUST')).toBeInTheDocument();
   });
 });

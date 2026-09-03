@@ -3,7 +3,6 @@ import React, {
   useDeferredValue,
   useEffect,
   useMemo,
-  useState,
 } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -57,10 +56,11 @@ import {
   isTronSpecialAsset,
 } from '../../../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
+import { partitionLowValueTokens } from '../util/isLowValueAsset';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
-import { isMusdToken } from '../../musd/constants';
 import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useBoolean } from '../../../../hooks/useBoolean';
 
 type TokenListProps = {
   onTokenClick: (
@@ -82,7 +82,6 @@ type TokenListDisplayItem =
     };
 
 const LOW_VALUE_ASSET_FIAT_THRESHOLD = 1;
-let lowValueAssetsExpandedSessionValue = false;
 
 type CurrencyRate = {
   conversionRate?: number | null;
@@ -90,14 +89,6 @@ type CurrencyRate = {
 };
 
 type CurrencyRates = Record<string, CurrencyRate>;
-
-const getInitialLowValueAssetsExpanded = () => {
-  return lowValueAssetsExpandedSessionValue;
-};
-
-const setLowValueAssetsExpandedSessionValue = (isExpanded: boolean) => {
-  lowValueAssetsExpandedSessionValue = isExpanded;
-};
 
 const getLowValueAssetFiatThreshold = (currencyRates?: CurrencyRates) => {
   const currencyRate = Object.values(currencyRates ?? {}).find(
@@ -117,22 +108,6 @@ const getLowValueAssetFiatThreshold = (currencyRates?: CurrencyRates) => {
   return (
     (LOW_VALUE_ASSET_FIAT_THRESHOLD * currencyRate.conversionRate) /
     currencyRate.usdConversionRate
-  );
-};
-
-const isLowValueAsset = (
-  token: TokenWithFiatAmount,
-  lowValueAssetFiatThreshold: number,
-) => {
-  const { tokenFiatAmount } = token;
-
-  return (
-    !token.isNative &&
-    !isMusdToken(token.address) &&
-    tokenFiatAmount !== null &&
-    tokenFiatAmount !== undefined &&
-    Number.isFinite(tokenFiatAmount) &&
-    tokenFiatAmount < lowValueAssetFiatThreshold
   );
 };
 
@@ -209,9 +184,10 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   );
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const [isLowValueAssetsExpanded, setIsLowValueAssetsExpanded] = useState(
-    getInitialLowValueAssetsExpanded,
-  );
+  const {
+    value: isLowValueAssetsExpanded,
+    toggle: toggleLowValueAssetsExpanded,
+  } = useBoolean();
 
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
 
@@ -297,22 +273,16 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       };
     }
 
-    const highValueTokens: TokenWithFiatAmount[] = [];
-    const lowValueAssets: TokenWithFiatAmount[] = [];
-
-    sortedFilteredTokens.forEach((token) => {
-      if (isLowValueAsset(token, lowValueAssetFiatThreshold)) {
-        lowValueAssets.push(token);
-        return;
-      }
-      highValueTokens.push(token);
+    return partitionLowValueTokens(sortedFilteredTokens, {
+      lowValueAssetFiatThreshold,
+      useExternalServices,
     });
-
-    return {
-      visibleTokens: highValueTokens,
-      lowValueTokens: lowValueAssets,
-    };
-  }, [lowValueAssetFiatThreshold, sortedFilteredTokens, tokenSortConfig]);
+  }, [
+    lowValueAssetFiatThreshold,
+    sortedFilteredTokens,
+    tokenSortConfig,
+    useExternalServices,
+  ]);
 
   const lowValueAssetCount = lowValueTokens.length;
 
@@ -392,15 +362,13 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   );
 
   const handleLowValueAssetsToggle = useCallback(() => {
-    const nextIsExpanded = !isLowValueAssetsExpanded;
-    setIsLowValueAssetsExpanded(nextIsExpanded);
-    setLowValueAssetsExpandedSessionValue(nextIsExpanded);
+    toggleLowValueAssetsExpanded();
 
     trackEvent(
       createEventBuilder(MetaMetricsEventName.LowValueAssetsToggled)
         .addCategory(MetaMetricsEventCategory.Home)
         .addProperties({
-          state: nextIsExpanded ? 'expanded' : 'collapsed',
+          state: isLowValueAssetsExpanded ? 'collapsed' : 'expanded',
           count: lowValueAssetCount,
         })
         .build(),
@@ -409,6 +377,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     createEventBuilder,
     isLowValueAssetsExpanded,
     lowValueAssetCount,
+    toggleLowValueAssetsExpanded,
     trackEvent,
   ]);
 
