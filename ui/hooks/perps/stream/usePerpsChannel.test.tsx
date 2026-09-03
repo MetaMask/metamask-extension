@@ -1,11 +1,14 @@
 import { renderHook, act } from '@testing-library/react';
-import type { OrderBookData } from '@metamask/perps-controller';
+import type { AccountState, OrderBookData } from '@metamask/perps-controller';
 import { PerpsStreamManager } from '../../../providers/perps/PerpsStreamManager';
 import { usePerpsChannel } from './usePerpsChannel';
 import { usePerpsStreamManager } from './usePerpsStreamManager';
 
+const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
+
 jest.mock('../../../store/background-connection', () => ({
-  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
 }));
 
 jest.mock('../../../providers/perps/CandleStreamChannel', () => ({
@@ -357,5 +360,105 @@ describe('usePerpsChannel', () => {
     expect(result.current.data).toBeNull();
     expect(result.current.isInitialLoading).toBe(true);
     expect(manager.orderBookAggregated.hasCachedData()).toBe(false);
+  });
+  describe('account fetch failure', () => {
+    const EMPTY_ACCOUNT: AccountState | null = null;
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('keeps the loading state when the account fetch fails, so the balance header cannot render a fabricated $0.00', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetAccountState') {
+            return Promise.reject(
+              new Error(
+                'Failed to fetch account state (failedDexs=[main,xyz], spotError=WebSocket connection permanently terminated)',
+              ),
+            );
+          }
+          return Promise.resolve(undefined);
+        });
+
+        const manager = new PerpsStreamManager();
+        mockUsePerpsStreamManager.mockReturnValue({
+          streamManager: manager,
+          isInitializing: false,
+          error: null,
+          selectedAddress: '0xacc',
+        });
+
+        const { result } = renderHook(() =>
+          usePerpsChannel((sm) => sm.account, EMPTY_ACCOUNT),
+        );
+
+        await act(async () => {
+          await jest.advanceTimersByTimeAsync(3_000);
+        });
+
+        // Still loading: PerpsMarketBalanceActions renders its skeleton here.
+        // If the failure were delivered as data, isInitialLoading would flip to
+        // false and `account?.totalBalance ?? '0'` would render $0.00 with the
+        // Withdraw button hidden on a funded account.
+        expect(result.current.isInitialLoading).toBe(true);
+        expect(result.current.data).toBeNull();
+      } finally {
+        consoleErrorSpy.mockRestore();
+      }
+    });
+
+    it('clears the loading state once account data arrives after a failed fetch', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+
+      try {
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsGetAccountState') {
+            return Promise.reject(new Error('network'));
+          }
+          return Promise.resolve(undefined);
+        });
+
+        const manager = new PerpsStreamManager();
+        mockUsePerpsStreamManager.mockReturnValue({
+          streamManager: manager,
+          isInitializing: false,
+          error: null,
+          selectedAddress: '0xacc',
+        });
+
+        const { result } = renderHook(() =>
+          usePerpsChannel((sm) => sm.account, EMPTY_ACCOUNT),
+        );
+
+        await act(async () => {
+          await jest.advanceTimersByTimeAsync(3_000);
+        });
+        expect(result.current.isInitialLoading).toBe(true);
+
+        const recoveredAccount = { totalBalance: '632.69' } as AccountState;
+        act(() => {
+          manager.handleBackgroundUpdate({
+            channel: 'account',
+            data: recoveredAccount,
+          });
+        });
+
+        expect(result.current.isInitialLoading).toBe(false);
+        expect(result.current.data).toBe(recoveredAccount);
+      } finally {
+        consoleErrorSpy.mockRestore();
+      }
+    });
   });
 });

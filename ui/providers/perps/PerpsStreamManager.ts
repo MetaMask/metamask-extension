@@ -241,9 +241,13 @@ class PerpsStreamManager {
                 '[PerpsStreamManager] Failed to fetch account',
                 err,
               );
-              if (!cancelled && !this.account.hasCachedData()) {
-                push(null);
-              }
+              // Deliberately do NOT push here. `null` is this channel's own
+              // initialValue, so pushing it leaves hasCachedData() false while
+              // still notifying subscribers — usePerpsChannel then clears
+              // isInitialLoading and the balance header renders the failure as
+              // a settled `$0.00`, hiding Withdraw on a funded account. Staying
+              // silent keeps the skeleton up until real data arrives from the
+              // WebSocket or a later fetch.
             });
         }, WS_GRACE_PERIOD_MS);
 
