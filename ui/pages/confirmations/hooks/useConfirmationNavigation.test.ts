@@ -16,6 +16,8 @@ import {
 import {
   ConfirmationLoader,
   PayWithOption,
+  getConfirmationRoute,
+  sanitizeConfirmationSearchParams,
   useConfirmationNavigation,
   useConfirmationNavigationOptions,
 } from './useConfirmationNavigation';
@@ -243,6 +245,20 @@ describe('useConfirmationNavigation', () => {
         { replace: true },
       );
     });
+
+    it('strips payWithOption when navigating between confirmations', () => {
+      mockUseLocation.mockReturnValue({
+        search: '?loader=customAmount&payWithOption=money_account',
+      } as unknown as ReturnType<typeof mockUseLocation>);
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToIndex(1);
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_2_MOCK}?loader=customAmount`,
+        { replace: true },
+      );
+    });
   });
 
   describe('count', () => {
@@ -431,6 +447,44 @@ describe('useConfirmationNavigation', () => {
         search: 'loader=customAmount&payWithOption=money_account',
       });
     });
+  });
+});
+
+describe('sanitizeConfirmationSearchParams', () => {
+  it('removes payWithOption while retaining other params', () => {
+    expect(
+      sanitizeConfirmationSearchParams(
+        '?loader=customAmount&payWithOption=money_account&goBackTo=%2Fhome',
+      ),
+    ).toBe('?loader=customAmount&goBackTo=%2Fhome');
+  });
+
+  it('returns an empty string when only flow-scoped params are present', () => {
+    expect(
+      sanitizeConfirmationSearchParams('?payWithOption=money_account'),
+    ).toBe('');
+  });
+});
+
+describe('getConfirmationRoute', () => {
+  it('strips payWithOption from reused query strings for transaction confirmations', () => {
+    const confirmations = [
+      {
+        id: APPROVAL_ID_MOCK,
+        type: ApprovalType.Transaction,
+      },
+    ] as never[];
+
+    expect(
+      getConfirmationRoute(
+        APPROVAL_ID_MOCK,
+        confirmations,
+        false,
+        '?loader=customAmount&payWithOption=money_account',
+      ),
+    ).toBe(
+      `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_MOCK}?loader=customAmount`,
+    );
   });
 });
 

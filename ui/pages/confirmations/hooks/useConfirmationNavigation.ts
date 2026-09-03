@@ -38,6 +38,34 @@ export enum PayWithOption {
   MoneyAccount = 'money_account',
 }
 
+/**
+ * Query params scoped to a single confirmation entry point. They must not
+ * survive navigation to another pending confirmation via `getConfirmationRoute`.
+ */
+const FLOW_SCOPED_SEARCH_PARAMS = ['payWithOption'] as const;
+
+export function sanitizeConfirmationSearchParams(
+  queryString: string = '',
+): string {
+  if (!queryString.length) {
+    return '';
+  }
+
+  const normalizedQuery = queryString.startsWith('?')
+    ? queryString.slice(1)
+    : queryString;
+
+  if (!normalizedQuery.length) {
+    return '';
+  }
+
+  const params = new URLSearchParams(normalizedQuery);
+  FLOW_SCOPED_SEARCH_PARAMS.forEach((param) => params.delete(param));
+
+  const sanitized = params.toString();
+  return sanitized.length ? `?${sanitized}` : '';
+}
+
 const CONNECT_APPROVAL_TYPES = [
   ApprovalType.WalletRequestPermissions,
   'wallet_installSnap',
@@ -180,8 +208,9 @@ export function getConfirmationRoute(
   }
   if (type === ApprovalType.Transaction) {
     let url = `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`;
-    if (queryString.length) {
-      url = `${url}${queryString}`;
+    const sanitizedQueryString = sanitizeConfirmationSearchParams(queryString);
+    if (sanitizedQueryString.length) {
+      url = `${url}${sanitizedQueryString}`;
     }
     return url;
   }

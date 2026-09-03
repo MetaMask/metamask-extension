@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { TransactionType } from '@metamask/transaction-controller';
+import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { selectPrimaryMoneyAccount } from '../../../../selectors/money-account';
 import { applyMoneyAccountOverride } from '../../utils/transaction-pay';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
@@ -25,7 +27,9 @@ export function useDefaultPaySelectedSection(): void {
   const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
   const appliedRef = useRef<string | undefined>(undefined);
   const transactionId = transactionMeta?.id;
-  const isMoneyAccountNavigation = payWithOption === PayWithOption.MoneyAccount;
+  const isMoneyAccountNavigation =
+    payWithOption === PayWithOption.MoneyAccount &&
+    hasTransactionType(transactionMeta, [TransactionType.perpsDeposit]);
 
   useEffect(() => {
     if (

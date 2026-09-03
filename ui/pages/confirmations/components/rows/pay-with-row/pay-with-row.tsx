@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
 import { Skeleton } from '@metamask/design-system-react';
+import { TransactionType } from '@metamask/transaction-controller';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 
 import {
   Box,
@@ -32,6 +34,7 @@ import {
   PayWithOption,
   useConfirmationNavigationOptions,
 } from '../../../hooks/useConfirmationNavigation';
+import { useTransactionMetadataRequestOptional } from '../../../hooks/transactions/useTransactionMetadataRequest';
 import { TokenIcon } from '../../token-icon';
 
 export { ConfirmInfoRowSize };
@@ -139,6 +142,7 @@ export function PayWithRow({
   variant = ConfirmInfoRowSize.Small,
 }: PayWithRowProps = {}) {
   const t = useI18nContext();
+  const transactionMeta = useTransactionMetadataRequestOptional();
   const { payWithOption } = useConfirmationNavigationOptions();
   const {
     displayToken,
@@ -161,9 +165,13 @@ export function PayWithRow({
     (alert) => alert.key === AlertsName.AccountNoFunds,
   );
 
-  // Money Account → Perps (and similar) locks the source of funds, so the
-  // token picker stays hidden — same as mobile `PayWithRow`.
-  if (payWithOption === PayWithOption.MoneyAccount) {
+  // Money Account → Perps locks the source of funds, so the token picker stays
+  // hidden — same as mobile `PayWithRow`.
+  const isMoneyAccountPerpsDeposit =
+    payWithOption === PayWithOption.MoneyAccount &&
+    hasTransactionType(transactionMeta, [TransactionType.perpsDeposit]);
+
+  if (isMoneyAccountPerpsDeposit) {
     return null;
   }
 

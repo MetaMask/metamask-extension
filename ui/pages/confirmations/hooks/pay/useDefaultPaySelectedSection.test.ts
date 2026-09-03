@@ -145,6 +145,17 @@ describe('useDefaultPaySelectedSection', () => {
     );
   });
 
+  it('does not apply the money account override via payWithOption for non-deposit transactions', () => {
+    useConfirmationNavigationOptionsMock.mockReturnValue({
+      payWithOption: PayWithOption.MoneyAccount,
+    } as ReturnType<typeof useConfirmationNavigationOptions>);
+    mockConfirmation(TransactionType.simpleSend);
+
+    renderHook(() => useDefaultPaySelectedSection());
+
+    expect(applyMoneyAccountOverrideMock).not.toHaveBeenCalled();
+  });
+
   it('omits the money account address when none exists', () => {
     useIsMoneyAccountFlagDefaultMock.mockReturnValue(true);
     useSelectorMock.mockImplementation(() => undefined);
