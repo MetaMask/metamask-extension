@@ -27,14 +27,15 @@ describe('useSimulationMetrics', () => {
 
   const useEffectMock = jest.mocked(useEffect);
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let updateTransactionEventFragmentMock: jest.MockedFunction<any>;
+  let updateTransactionEventFragmentMock: jest.Mock<
+    Promise<void>,
+    [Record<string, unknown>, string]
+  >;
 
   beforeEach(() => {
     jest.resetAllMocks();
 
-    updateTransactionEventFragmentMock = jest.fn();
+    updateTransactionEventFragmentMock = jest.fn().mockResolvedValue(undefined);
 
     useTransactionEventFragmentMock.mockReturnValue({
       updateTransactionEventFragment: updateTransactionEventFragmentMock,

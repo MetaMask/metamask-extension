@@ -23,7 +23,9 @@ export function useDeepMemo<Type>(
   );
 
   if (!isEqual(cache.deps, deps)) {
-    setCache({ deps, value: factory() });
+    const nextValue = factory();
+    setCache({ deps, value: nextValue });
+    return nextValue;
   }
 
   return cache.value;
