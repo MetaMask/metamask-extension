@@ -132,8 +132,7 @@ class ActivityTab extends HomePage {
       const feeValue = await this.driver.waitForSelector(
         this.transactionBaseFeeRowValue,
       );
-      const feeText = (await feeValue.getText()).trim();
-      assert.ok(feeText.length > 0, 'Bridge fee row should be non-empty');
+      await this.driver.waitForNonEmptyElement(feeValue);
 
       const totalValue = await this.driver.waitForSelector(
         this.transactionBreakdownAmountRowValue,
