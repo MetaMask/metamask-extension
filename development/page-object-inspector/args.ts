@@ -59,6 +59,20 @@ export type ParseCliArgsContext = {
   isTTY?: boolean;
 };
 
+const PARSE_ARGS_OPTIONS = {
+  json: { type: 'boolean', default: false },
+  'no-color': { type: 'boolean', default: false },
+  filter: { type: 'string', multiple: true },
+  class: { type: 'string' },
+  file: { type: 'string' },
+  search: { type: 'string' },
+  limit: { type: 'string' },
+  all: { type: 'boolean', default: false },
+  'fail-on-overlap': { type: 'boolean', default: false },
+  'fail-on': { type: 'string', multiple: true },
+  help: { type: 'boolean', short: 'h', default: false },
+} as const;
+
 /**
  * Parses argv for the page-object inspector CLI.
  *
@@ -70,34 +84,18 @@ export function parseCliArgs(
   argv: string[],
   context: ParseCliArgsContext = {},
 ): ParseResult {
-  let values: ReturnType<typeof parseArgs>['values'];
-  let positionals: string[];
+  let parsed: ReturnType<typeof parseRawCliArgs>;
 
   try {
-    ({ values, positionals } = parseArgs({
-      args: argv,
-      allowPositionals: true,
-      strict: true,
-      options: {
-        json: { type: 'boolean', default: false },
-        'no-color': { type: 'boolean', default: false },
-        filter: { type: 'string', multiple: true },
-        class: { type: 'string' },
-        file: { type: 'string' },
-        search: { type: 'string' },
-        limit: { type: 'string' },
-        all: { type: 'boolean', default: false },
-        'fail-on-overlap': { type: 'boolean', default: false },
-        'fail-on': { type: 'string', multiple: true },
-        help: { type: 'boolean', short: 'h', default: false },
-      },
-    }));
+    parsed = parseRawCliArgs(argv);
   } catch (error) {
     return {
       kind: 'error',
       message: error instanceof Error ? error.message : String(error),
     };
   }
+
+  const { values, positionals } = parsed;
 
   if (values.help) {
     return { kind: 'help' };
@@ -149,6 +147,21 @@ export function parseCliArgs(
       failOn,
     },
   };
+}
+
+/**
+ * Parses argv with a typed `parseArgs` config so flag values stay narrow.
+ *
+ * @param argv - Arguments after the script name.
+ * @returns Parsed flags and positionals.
+ */
+function parseRawCliArgs(argv: string[]) {
+  return parseArgs({
+    args: argv,
+    allowPositionals: true,
+    strict: true,
+    options: PARSE_ARGS_OPTIONS,
+  });
 }
 
 /**
