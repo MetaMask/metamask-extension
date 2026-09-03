@@ -118,13 +118,13 @@ const TokenSelectButton: React.FC<{
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
-            gap={2}
+            gap={3}
           >
             <TokenIcon
               chainId={token.chainId as Hex}
               tokenAddress={token.address as Hex}
               symbol={token.symbol}
-              size="sm"
+              size="md"
             />
             <Text data-testid="hyperliquid-deposit-prompt-token-name">
               {token.name ?? token.symbol}
@@ -138,7 +138,11 @@ const TokenSelectButton: React.FC<{
             <Text data-testid="hyperliquid-deposit-prompt-token-balance">
               {formatFiat(token.fiat?.balance ?? 0)}
             </Text>
-            <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
+            <Icon
+              name={IconName.ArrowDown}
+              size={IconSize.Md}
+              color={TextColor.TextAlternative}
+            />
           </Box>
         </>
       ) : (
