@@ -500,7 +500,7 @@
     "@metamask/transaction-pay-controller": "^27.1.0",
     "@metamask/tron-wallet-snap": "^3.2.0",
     "@metamask/user-operation-controller": "^41.2.5",
-    "@metamask/utils": "^11.11.0",
+    "@metamask/utils": "^11.12.1",
     "@metamask/wallet": "^11.0.0",
     "@mui/material": "^5.18.0",
     "@mui/system": "^5.18.0",
