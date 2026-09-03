@@ -81,7 +81,7 @@ export function setupRemoteFeatureFlagToggle({
   messenger: RemoteFeatureFlagToggleParentMessenger;
   preferencesState: Pick<PreferencesControllerState, 'useExternalServices'>;
   onboardingState: Pick<OnboardingControllerState, 'completedOnboarding'>;
-  authenticationState: Pick<AuthenticationControllerState,'srpSessionData'>;
+  authenticationState: Pick<AuthenticationControllerState, 'srpSessionData'>;
 }): void {
   const toggleMessenger = new Messenger<
     'RemoteFeatureFlagToggle',
