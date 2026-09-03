@@ -18,7 +18,9 @@ import { AccountOverviewTabKey } from '../../../../../shared/constants/app-state
 import { getEip7702SupportedChains } from '../../../../../shared/lib/eip7702-support-utils';
 import {
   getInternalEvmAddresses,
+  getIsEnforcedSimulationsEnabled,
   isEnforcedSimulationsEligible,
+  isEnforcedSimulationsForceEnabled,
 } from '../../../../../shared/lib/transaction/enforced-simulations';
 import { TransactionMetricsRequest } from '../../../../../shared/types/metametrics';
 import { accountSupports7702ForRelay } from '../../account-supports-7702';
@@ -95,6 +97,13 @@ function beforeSignHook({ messenger }: TransactionControllerHookRequest) {
       const featureFlagState = messenger.call(
         'RemoteFeatureFlagController:getState',
       );
+
+      if (
+        !getIsEnforcedSimulationsEnabled(featureFlagState) &&
+        !isEnforcedSimulationsForceEnabled()
+      ) {
+        return false;
+      }
 
       const {
         internalAccounts: { accounts },

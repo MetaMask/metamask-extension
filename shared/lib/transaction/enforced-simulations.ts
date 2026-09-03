@@ -137,12 +137,13 @@ export function getEnforcedSimulationsSlippageBasisPoints(
  * Also requires that Blockaid address screening supports the chain. On
  * unsupported chains, `scanAddress` returns Error without hitting the API;
  * that must not turn enforcement on. Then requires that at least one
- * recipient address is loaded and not trusted, based on cached trust signal
- * scan results keyed by chain and address. A recipient with no cache entry,
- * or one still loading, does not disqualify the transaction; only a cached
- * non-Trusted verdict does. Callers that persist a trust-dependent default
- * must separately wait for pending signals via
- * {@link hasPendingEnforcedSimulationsTrustSignals}.
+ * recipient address is not confirmed as trusted, based on cached trust signal
+ * scan results keyed by chain and address. Missing and Loading verdicts fail
+ * closed so confirming during an asynchronous scan cannot remove enforcement.
+ *
+ * Re-simulation drift checks compare snapshots from the same simulation
+ * provider. They are not an independent defense against execution-time
+ * divergence and do not replace this eligibility gate.
  *
  * @param transactionMeta - The transaction metadata.
  * @param state - Trust signal state and EIP-7702 supported chains.
@@ -202,8 +203,10 @@ export function isEnforcedSimulationsEligible(
  * simulations enabled by default.
  *
  * Enforced simulations are enabled by default when at least one relevant
- * recipient has a Warning or Malicious trust signal. Force-enabled
- * transactions keep the existing enabled-by-default behavior.
+ * recipient has a Warning, Malicious, or Error trust signal, or when its
+ * verdict is missing or still Loading. This fail-closed default keeps
+ * enforcement active unless every relevant verdict is Trusted or Benign.
+ * Force-enabled transactions keep the existing enabled-by-default behavior.
  *
  * @param transactionMeta - The transaction metadata.
  * @param state - Trust signal state and EIP-7702 supported chains.
@@ -219,7 +222,10 @@ export function isEnforcedSimulationsDefaultEnabled(
 
   return getRelevantTrustSignalResults(transactionMeta, state).some(
     (resultType) =>
-      resultType === ResultType.Warning || resultType === ResultType.Malicious,
+      resultType === ResultType.Loading ||
+      resultType === ResultType.ErrorResult ||
+      resultType === ResultType.Warning ||
+      resultType === ResultType.Malicious,
   );
 }
 
@@ -228,7 +234,7 @@ export function isEnforcedSimulationsDefaultEnabled(
  *
  * @param transactionMeta - The transaction metadata.
  * @param state - Trust signal state and EIP-7702 supported chains.
- * @returns Whether a relevant recipient trust signal is still loading.
+ * @returns Whether a relevant recipient trust signal is missing or loading.
  */
 export function hasPendingEnforcedSimulationsTrustSignals(
   transactionMeta: TransactionMeta,
@@ -255,9 +261,9 @@ function isTrusted(
   transactionMeta: TransactionMeta,
   state: EnforcedSimulationsState,
 ): boolean {
-  return getRelevantTrustSignalResults(transactionMeta, state)
-    .filter((resultType) => resultType !== ResultType.Loading)
-    .every((resultType) => resultType === ResultType.Trusted);
+  return getRelevantTrustSignalResults(transactionMeta, state).every(
+    (resultType) => resultType === ResultType.Trusted,
+  );
 }
 
 function getRelevantTrustSignalResults(
@@ -267,18 +273,17 @@ function getRelevantTrustSignalResults(
   const { chainId, type, txParams, txParamsOriginal, nestedTransactions } =
     transactionMeta;
 
-  // Trust verdicts are cache-driven. Only a cached non-Trusted verdict
-  // disqualifies a recipient. Unsupported chains are excluded earlier in
-  // isEnforcedSimulationsEligible, so an ErrorResult here is a scan failure
+  // Trust verdicts are cache-driven. Unsupported chains are excluded earlier
+  // in isEnforcedSimulationsEligible, so an ErrorResult here is a scan failure
   // on a supported chain (timeout / API error), not "this chain isn't
   // supported".
   //
-  // Recipients that no scan path covers stay cache misses and are treated as
-  // trusted here. The trust-signals middleware scans dapp `eth_sendTransaction`
-  // and `wallet_sendCalls` requests (including each nested call's `to`), but
-  // nothing is scanned when the user has security alerts disabled, and the
-  // outer batch target (`txParamsOriginal.to`, the upgraded EOA for a 7702
-  // batch) is never scanned, so its cache miss never disqualifies.
+  // The trust-signals middleware scans dapp `eth_sendTransaction` and
+  // `wallet_sendCalls` requests (including each nested call's `to`). A cache
+  // miss can still occur while state propagates, when security alerts are
+  // disabled, or when a scan path does not cover a recipient. Represent these
+  // unresolved verdicts as Loading so eligibility and its fail-closed default
+  // remain consistent in both the UI and the before-sign hook.
   if (!chainId) {
     return [];
   }
@@ -317,14 +322,14 @@ function getRelevantTrustSignalResults(
     const cached =
       state.addressSecurityAlertResponses[createCacheKey(chainId, to)];
 
-    // Unknown or still-loading signals don't make a call untrusted.
     if (!cached) {
-      log(`${label} - Trusted - Unknown Signal`, props);
+      log(`${label} - Not Trusted - Unknown Signal`, props);
+      resultTypes.push(ResultType.Loading);
       continue;
     }
 
     if (cached.result_type === ResultType.Loading) {
-      log(`${label} - Trusted - Loading Signal`, props);
+      log(`${label} - Not Trusted - Loading Signal`, props);
       resultTypes.push(cached.result_type);
       continue;
     }

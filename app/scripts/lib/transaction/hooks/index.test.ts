@@ -8,6 +8,7 @@ import {
 } from '@metamask/transaction-controller';
 import { TransactionPayPublishHook } from '@metamask/transaction-pay-controller';
 import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
+import * as enforcedSimulationsModule from '../../../../../shared/lib/transaction/enforced-simulations';
 import * as smartTransactionsModule from '../../smart-transaction/smart-transactions';
 import * as sentinelApiModule from '../sentinel-api';
 import { Delegation7702PublishHook } from './delegation-7702-publish';
@@ -177,6 +178,75 @@ describe('Transaction Controller Hooks', () => {
         }),
       );
       expect(beforeSign).toBe(expectedHook);
+    });
+
+    it('uses the shared UI eligibility check with current background state', () => {
+      const addressSecurityAlertResponses = {
+        '0x1:0xrecipient': {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: 'Loading',
+          label: '',
+          timestamp: Date.now(),
+        },
+      };
+      const messenger = buildMockMessenger();
+      (messenger.call as jest.Mock).mockImplementation((action: string) => {
+        if (action === 'AppStateController:getState') {
+          return { addressSecurityAlertResponses };
+        }
+        if (action === 'RemoteFeatureFlagController:getState') {
+          return {
+            remoteFeatureFlags: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              confirmations_enforced_simulations: { enabled: true },
+            },
+          };
+        }
+        if (action === 'AccountsController:getState') {
+          return { internalAccounts: { accounts: {} } };
+        }
+        return undefined;
+      });
+      const eligibilitySpy = jest
+        .spyOn(enforcedSimulationsModule, 'isEnforcedSimulationsEligible')
+        .mockReturnValue(true);
+
+      getTransactionControllerHooks(buildMockRequest({ messenger }));
+
+      const { isEligible } = jest.mocked(EnforceSimulationHook).mock
+        .calls[0][0];
+      expect(isEligible(mockTransactionMeta)).toBe(true);
+      expect(eligibilitySpy).toHaveBeenCalledWith(mockTransactionMeta, {
+        addressSecurityAlertResponses,
+        eip7702SupportedChains: [],
+        internalAddresses: [],
+      });
+      eligibilitySpy.mockRestore();
+    });
+
+    it('skips the shared eligibility check when the feature is disabled', () => {
+      const messenger = buildMockMessenger();
+      (messenger.call as jest.Mock).mockImplementation((action: string) => {
+        if (action === 'AppStateController:getState') {
+          return { addressSecurityAlertResponses: {} };
+        }
+        if (action === 'RemoteFeatureFlagController:getState') {
+          return { remoteFeatureFlags: {} };
+        }
+        return undefined;
+      });
+      const eligibilitySpy = jest.spyOn(
+        enforcedSimulationsModule,
+        'isEnforcedSimulationsEligible',
+      );
+
+      getTransactionControllerHooks(buildMockRequest({ messenger }));
+
+      const { isEligible } = jest.mocked(EnforceSimulationHook).mock
+        .calls[0][0];
+      expect(isEligible(mockTransactionMeta)).toBe(false);
+      expect(eligibilitySpy).not.toHaveBeenCalled();
+      eligibilitySpy.mockRestore();
     });
   });
 

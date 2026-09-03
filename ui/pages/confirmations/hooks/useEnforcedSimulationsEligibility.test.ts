@@ -103,7 +103,7 @@ describe('useEnforcedSimulationsEligibility', () => {
     });
   });
 
-  it('defers the default check while a relevant trust signal is pending', () => {
+  it('keeps the fail-closed default enabled while a relevant trust signal is pending', () => {
     expect(
       runHook({
         eligible: true,
@@ -112,10 +112,10 @@ describe('useEnforcedSimulationsEligibility', () => {
       }),
     ).toStrictEqual({
       isEligible: true,
-      isDefaultEnabled: false,
+      isDefaultEnabled: true,
       hasPendingTrustSignals: true,
     });
-    expect(isEnforcedSimulationsDefaultEnabledMock).not.toHaveBeenCalled();
+    expect(isEnforcedSimulationsDefaultEnabledMock).toHaveBeenCalled();
   });
 
   it('returns both values false and skips the default check when not eligible', () => {

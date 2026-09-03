@@ -85,7 +85,6 @@ export function useEnforcedSimulationsEligibility(): {
     isEligible,
     isDefaultEnabled:
       isEligible &&
-      !hasPendingTrustSignals &&
       isEnforcedSimulationsDefaultEnabled(
         currentConfirmation,
         enforcedSimulationsState,

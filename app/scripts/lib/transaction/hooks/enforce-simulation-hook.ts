@@ -4,6 +4,7 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { createProjectLogger } from '@metamask/utils';
+import { accountSupports7702 } from '../../account-supports-7702';
 import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import { applyTransactionContainers } from '../containers/util';
 
@@ -40,12 +41,26 @@ export class EnforceSimulationHook {
       return {};
     }
 
-    if (!containerTypes) {
-      log('Skipping as no container types set');
+    // The confirmation UI normally initializes containerTypes before the user
+    // confirms. If confirmation wins that race, fail closed rather than
+    // silently signing an eligible transaction without enforcement. Preserve
+    // the UI's hardware-wallet exclusion when no explicit selection exists.
+    const canApplyDefault =
+      containerTypes !== undefined ||
+      (await accountSupports7702(
+        transactionMeta.txParams.from,
+        this.#messenger,
+      ));
+    if (!canApplyDefault) {
+      log('Skipping as account does not support EIP-7702');
       return {};
     }
 
-    const hasEnforcedSimulations = containerTypes.includes(
+    const effectiveContainerTypes = containerTypes ?? [
+      TransactionContainerType.EnforcedSimulations,
+    ];
+
+    const hasEnforcedSimulations = effectiveContainerTypes.includes(
       TransactionContainerType.EnforcedSimulations,
     );
 
@@ -63,7 +78,7 @@ export class EnforceSimulationHook {
       isApproved: true,
       messenger: this.#messenger,
       transactionMeta,
-      types: containerTypes,
+      types: effectiveContainerTypes,
     });
 
     return {

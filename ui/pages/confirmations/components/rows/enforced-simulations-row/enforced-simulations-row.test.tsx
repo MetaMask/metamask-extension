@@ -204,36 +204,12 @@ describe('EnforcedSimulationsRow', () => {
     consoleError.mockRestore();
   });
 
-  it('waits for pending trust signals before initializing the default', async () => {
-    function RerenderableRow() {
-      const [, setRenderCount] = React.useState(0);
-
-      return (
-        <>
-          <button
-            data-testid="settle-trust-signals"
-            onClick={() => setRenderCount((count) => count + 1)}
-          />
-          <EnforcedSimulationsRow />
-        </>
-      );
-    }
-
-    const { getByTestId } = render({
-      isDefaultEnabled: false,
+  it('enables enforcement while trust signals are pending', async () => {
+    render({
+      isDefaultEnabled: true,
       hasPendingTrustSignals: true,
       containerTypes: undefined,
-      component: <RerenderableRow />,
     });
-
-    expect(applyTransactionContainersExisting).not.toHaveBeenCalled();
-
-    useEnforcedSimulationsEligibilityMock.mockReturnValue({
-      isEligible: true,
-      isDefaultEnabled: true,
-      hasPendingTrustSignals: false,
-    });
-    fireEvent.click(getByTestId('settle-trust-signals'));
 
     await waitFor(() => {
       expect(applyTransactionContainersExisting).toHaveBeenCalledTimes(1);
@@ -241,6 +217,18 @@ describe('EnforcedSimulationsRow', () => {
         expect.any(String),
         [TransactionContainerType.EnforcedSimulations],
       );
+    });
+  });
+
+  it('disables the enforcement toggle while trust signals are pending', async () => {
+    const { getByTestId } = render({
+      isDefaultEnabled: true,
+      hasPendingTrustSignals: true,
+      containerTypes: [TransactionContainerType.EnforcedSimulations],
+    });
+
+    await waitFor(() => {
+      expect(getByTestId('enforced-simulations-toggle-input')).toBeDisabled();
     });
   });
 

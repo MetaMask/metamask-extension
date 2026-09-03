@@ -9,10 +9,12 @@ import {
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
+import { accountSupports7702 } from '../../account-supports-7702';
 import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import { applyTransactionContainers } from '../containers/util';
 import { EnforceSimulationHook } from './enforce-simulation-hook';
 
+jest.mock('../../account-supports-7702');
 jest.mock('../containers/util');
 
 const BALANCE_CHANGE_MOCK = {
@@ -56,6 +58,7 @@ describe('EnforceSimulationHook', () => {
     jest.resetAllMocks();
 
     isEligibleMock.mockReturnValue(true);
+    jest.mocked(accountSupports7702).mockResolvedValue(true);
 
     applyTransactionContainersMock.mockResolvedValue({
       updateTransaction: jest.fn(),
@@ -106,6 +109,31 @@ describe('EnforceSimulationHook', () => {
     );
   });
 
+  it('fails closed when the UI has not initialized container types', async () => {
+    const updateTransactionMock = jest.fn();
+
+    applyTransactionContainersMock.mockResolvedValue({
+      enforcedSimulationsSlippage: 2.5,
+      updateTransaction: updateTransactionMock,
+    });
+
+    const hook = new EnforceSimulationHook({
+      messenger,
+      isEligible: isEligibleMock,
+    }).getBeforeSignHook();
+
+    const { updateTransaction } =
+      (await hook({ transactionMeta: TRANSACTION_META_MOCK })) ?? {};
+
+    expect(updateTransaction).toBe(updateTransactionMock);
+    expect(applyTransactionContainersMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        isApproved: true,
+        types: [TransactionContainerType.EnforcedSimulations],
+      }),
+    );
+  });
+
   describe('does nothing if', () => {
     it('not eligible', async () => {
       isEligibleMock.mockReturnValue(false);
@@ -123,7 +151,9 @@ describe('EnforceSimulationHook', () => {
       expect(result).toEqual({});
     });
 
-    it('no container types set', async () => {
+    it('container types are unset for an unsupported account', async () => {
+      jest.mocked(accountSupports7702).mockResolvedValue(false);
+
       const hook = new EnforceSimulationHook({
         messenger,
         isEligible: isEligibleMock,

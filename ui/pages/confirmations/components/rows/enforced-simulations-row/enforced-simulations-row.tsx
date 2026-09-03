@@ -66,13 +66,7 @@ export function EnforcedSimulationsRow() {
   }
 
   useEffect(() => {
-    if (
-      isUnavailable ||
-      !isEligible ||
-      hasPendingTrustSignals ||
-      hasInitialized ||
-      !transactionId
-    ) {
+    if (isUnavailable || !isEligible || hasInitialized || !transactionId) {
       return;
     }
 
@@ -124,7 +118,6 @@ export function EnforcedSimulationsRow() {
   }, [
     currentConfirmation,
     isEligible,
-    hasPendingTrustSignals,
     hasInitialized,
     isDefaultEnabled,
     transactionId,
@@ -192,6 +185,7 @@ export function EnforcedSimulationsRow() {
 
         <EnforcedSimulationsCheckbox
           isEnabled={Boolean(hasEnforcedSimulations)}
+          isDisabled={hasPendingTrustSignals}
           containerTypes={containerTypes}
           transactionId={transactionId as string}
           onAppliedSlippage={handleAppliedSlippage}
@@ -205,11 +199,13 @@ export function EnforcedSimulationsRow() {
 
 function EnforcedSimulationsCheckbox({
   isEnabled,
+  isDisabled,
   containerTypes,
   transactionId,
   onAppliedSlippage,
 }: Readonly<{
   isEnabled: boolean;
+  isDisabled: boolean;
   containerTypes?: TransactionContainerType[];
   transactionId: string;
   onAppliedSlippage: (slippage: number | undefined) => void;
@@ -270,6 +266,7 @@ function EnforcedSimulationsCheckbox({
       id="enforced-simulations-toggle"
       data-testid="enforced-simulations-toggle"
       isSelected={isEnabled}
+      isDisabled={isDisabled}
       onChange={() => handleToggle()}
       inputProps={{ 'data-testid': 'enforced-simulations-toggle-input' }}
     />

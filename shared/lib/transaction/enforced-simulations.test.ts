@@ -143,7 +143,12 @@ describe('enforced-simulations', () => {
       delete process.env.FORCE_ENFORCED_SIMULATIONS;
     });
 
-    for (const resultType of [ResultType.Warning, ResultType.Malicious]) {
+    for (const resultType of [
+      ResultType.ErrorResult,
+      ResultType.Loading,
+      ResultType.Warning,
+      ResultType.Malicious,
+    ]) {
       it(`returns true for a ${resultType} trust signal`, () => {
         expect(
           isEnforcedSimulationsDefaultEnabled(
@@ -154,12 +159,7 @@ describe('enforced-simulations', () => {
       });
     }
 
-    for (const resultType of [
-      ResultType.Benign,
-      ResultType.Trusted,
-      ResultType.ErrorResult,
-      ResultType.Loading,
-    ]) {
+    for (const resultType of [ResultType.Benign, ResultType.Trusted]) {
       it(`returns false for a ${resultType} trust signal`, () => {
         expect(
           isEnforcedSimulationsDefaultEnabled(
@@ -208,6 +208,16 @@ describe('enforced-simulations', () => {
       ).toBe(false);
     });
 
+    it('returns true when a relevant recipient has no cached verdict', () => {
+      expect(
+        isEnforcedSimulationsDefaultEnabled(BASE_TRANSACTION_META, {
+          addressSecurityAlertResponses: {},
+          eip7702SupportedChains: [ETHEREUM_CHAIN_ID],
+          internalAddresses: [],
+        }),
+      ).toBe(true);
+    });
+
     it('returns true when enforced simulations are force enabled', () => {
       process.env.FORCE_ENFORCED_SIMULATIONS = 'true';
 
@@ -239,6 +249,16 @@ describe('enforced-simulations', () => {
             [NESTED_ADDRESS_A]: ResultType.Loading,
           }),
         ),
+      ).toBe(true);
+    });
+
+    it('returns true when a relevant recipient has no cached verdict', () => {
+      expect(
+        hasPendingEnforcedSimulationsTrustSignals(BASE_TRANSACTION_META, {
+          addressSecurityAlertResponses: {},
+          eip7702SupportedChains: [ETHEREUM_CHAIN_ID],
+          internalAddresses: [],
+        }),
       ).toBe(true);
     });
 
@@ -685,23 +705,23 @@ describe('enforced-simulations', () => {
         ).toBe(false);
       });
 
-      it('returns false when trust signal is still loading', () => {
+      it('returns true when trust signal is still loading', () => {
         expect(
           isEnforcedSimulationsEligible(
             BASE_TRANSACTION_META,
             buildState(ResultType.Loading),
           ),
-        ).toBe(false);
+        ).toBe(true);
       });
 
-      it('returns false when no cache entry exists', () => {
+      it('returns true when no cache entry exists', () => {
         expect(
           isEnforcedSimulationsEligible(BASE_TRANSACTION_META, {
             addressSecurityAlertResponses: {},
             eip7702SupportedChains: [ETHEREUM_CHAIN_ID],
             internalAddresses: [],
           }),
-        ).toBe(false);
+        ).toBe(true);
       });
 
       it('returns false when the chain is not address-scan supported even with a non-trusted cached result', () => {
@@ -766,7 +786,7 @@ describe('enforced-simulations', () => {
         ).toBe(false);
       });
 
-      it('exempts a chain with no slug mapping when the recipient has never been scanned', () => {
+      it('enforces on a supported chain when the recipient has never been scanned', () => {
         expect(
           isEnforcedSimulationsEligible(
             {
@@ -779,7 +799,7 @@ describe('enforced-simulations', () => {
               internalAddresses: [],
             },
           ),
-        ).toBe(false);
+        ).toBe(true);
       });
 
       it('still enforces when the cached verdict is ErrorResult on an address-scan supported chain', () => {
@@ -990,7 +1010,7 @@ describe('enforced-simulations', () => {
         ).toBe(false);
       });
 
-      it('returns false when nested addresses are all loading', () => {
+      it('returns true when nested addresses are all loading', () => {
         expect(
           isEnforcedSimulationsEligible(
             {
@@ -1006,7 +1026,40 @@ describe('enforced-simulations', () => {
               [NESTED_ADDRESS_B]: ResultType.Loading,
             }),
           ),
-        ).toBe(false);
+        ).toBe(true);
+      });
+
+      it('returns true when a trusted recipient has a loading nested recipient', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              nestedTransactions: [
+                { to: NESTED_ADDRESS_A as `0x${string}`, data: '0xabcd' },
+              ],
+            },
+            buildStateForAddresses({
+              [TO_ADDRESS]: ResultType.Trusted,
+              [NESTED_ADDRESS_A]: ResultType.Loading,
+            }),
+          ),
+        ).toBe(true);
+      });
+
+      it('returns true when a trusted recipient has an uncached nested recipient', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              nestedTransactions: [
+                { to: NESTED_ADDRESS_A as `0x${string}`, data: '0xabcd' },
+              ],
+            },
+            buildStateForAddresses({
+              [TO_ADDRESS]: ResultType.Trusted,
+            }),
+          ),
+        ).toBe(true);
       });
 
       it('returns true with mix of trusted and untrusted nested addresses', () => {
