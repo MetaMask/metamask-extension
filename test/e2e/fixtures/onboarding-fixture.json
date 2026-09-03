@@ -58,6 +58,7 @@
       "previousMigrationVersion": 0
     },
     "AppStateController": {
+      "arcUsageNoticeShown": false,
       "browserEnvironment": {
         "browser": "chrome",
         "os": "mac"
