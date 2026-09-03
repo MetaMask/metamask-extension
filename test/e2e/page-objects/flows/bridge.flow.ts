@@ -1,5 +1,6 @@
 import type { CaipAssetType, Hex } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
 import { Driver } from '../../webdriver/driver';
@@ -217,8 +218,9 @@ const waitForAssetPageNavigation = async (
 };
 
 /**
- * Searches for a token in the asset picker, clicks the info icon to navigate
- * to the token's asset overview page, and waits for it to load.
+ * Searches for a token in the asset picker (filtering to the token's network),
+ * clicks the info icon to navigate to the token's asset overview page, and
+ * waits for it to load.
  *
  * @param params - The parameters for navigating to the asset page.
  * @param params.driver - The driver instance.
@@ -247,10 +249,16 @@ export const goToAssetPage = async ({
     throw new Error('Unable to resolve asset id for bridge flow');
   }
 
+  const network =
+    NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+      chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
+    ];
+
   await bridgePage.searchAndClickAssetInfo({
     token,
     assetId,
     assetPicker: picker,
+    network,
   });
 
   await waitForAssetPageNavigation(driver, { chainId, address, assetId });

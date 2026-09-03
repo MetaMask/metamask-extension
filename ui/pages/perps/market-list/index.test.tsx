@@ -404,6 +404,72 @@ describe('MarketListView', () => {
       });
     });
 
+    const priceChangeSortCases: [
+      queryDirection: 'asc' | 'desc',
+      expectedOrder: string[],
+    ][] = [
+      ['asc', ['SOL', 'BTC', 'ETH']],
+      ['desc', ['ETH', 'BTC', 'SOL']],
+    ];
+
+    priceChangeSortCases.forEach(([queryDirection, expectedOrder]) => {
+      it(`ranks the list by ${queryDirection} price change from the query params`, async () => {
+        mockUsePerpsLiveMarketListData.mockReturnValue({
+          markets: [
+            {
+              ...mockCryptoMarkets[0],
+              symbol: 'BTC',
+              change24hPercent: '+1.00%',
+            },
+            {
+              ...mockCryptoMarkets[1],
+              symbol: 'ETH',
+              change24hPercent: '+9.00%',
+            },
+            {
+              ...mockCryptoMarkets[2],
+              symbol: 'SOL',
+              change24hPercent: '-4.00%',
+            },
+          ],
+          isInitialLoading: false,
+          error: null,
+          refresh: jest.fn(),
+        });
+
+        renderWithProvider(
+          <MarketListView />,
+          mockStore,
+          `/perps/market-list?sort=priceChange&direction=${queryDirection}`,
+        );
+
+        await waitFor(() => {
+          expect(screen.getByTestId('sort-dropdown-button')).toHaveTextContent(
+            messages.perpsSortByPriceChange.message,
+          );
+        });
+        expect(
+          screen
+            .getAllByTestId(/^market-row-/u)
+            .map((row) => row.dataset.testid?.replace('market-row-', '')),
+        ).toStrictEqual(expectedOrder);
+      });
+    });
+
+    it('falls back to the volume sort when the query params are unknown', async () => {
+      renderWithProvider(
+        <MarketListView />,
+        mockStore,
+        '/perps/market-list?sort=bogus&direction=sideways',
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('sort-dropdown-button')).toHaveTextContent(
+          messages.perpsSortByVolume.message,
+        );
+      });
+    });
+
     it('shows stock markets on Stocks tab even when perpsHip3AllowlistMarkets flag is absent', async () => {
       // mockStore has no perpsHip3AllowlistMarkets flag → allowedHip3Sources defaults to Set()
       renderWithProvider(<MarketListView />, mockStore);
