@@ -180,10 +180,7 @@ export default class Migrator extends EventEmitter<MigratorEventMap> {
         throw new Error('Migrator - migration returned empty data');
       }
 
-      if (
-        'version' in (migratedData as Record<string, unknown>) &&
-        migratedData.meta.version !== migration.version
-      ) {
+      if (migratedData.meta.version !== migration.version) {
         throw new Error(
           'Migrator - Migration did not update version number correctly',
         );

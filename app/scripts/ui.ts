@@ -82,16 +82,6 @@ type ActiveTab = {
   protocol?: string;
 };
 
-type BackgroundConnection = {
-  onNotification: (
-    handler: (data: {
-      method?: string;
-      params?: unknown[];
-    }) => Promise<void> | void,
-  ) => void;
-  startSendingPatches: () => Promise<void>;
-};
-
 type UiSubstreams = {
   controller: Substream;
   provider: Substream;

@@ -141,6 +141,35 @@ describe('migrations', () => {
       expect(migratedData.state).toBe(initialState);
     });
 
+    it('emits an error when migration does not update meta.version', async () => {
+      const migrator = new Migrator({
+        migrations: [
+          {
+            version: 1,
+            async migrate(state: MigrationState): Promise<MigrationState> {
+              return cloneDeep(state) as MigrationState;
+            },
+          },
+        ],
+      });
+      const onError = jest.fn();
+      migrator.on('error', onError);
+
+      const initialState: MigrationState = {
+        meta: { version: 0 },
+        data: { hello: 'world' },
+      };
+      const migratedData = await migrator.migrateData(initialState);
+
+      expect(onError).toHaveBeenCalledTimes(1);
+      const [error] = onError.mock.calls[0] as [AggregateError];
+      expect(error.message).toBe('MetaMask Migration Error #1');
+      expect((error.errors[0] as Error).message).toBe(
+        'Migrator - Migration did not update version number correctly',
+      );
+      expect(migratedData.state).toBe(initialState);
+    });
+
     it('runs v2 migrations and reports changed controllers', async () => {
       const migrate = jest.fn(
         async (
