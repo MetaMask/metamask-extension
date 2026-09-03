@@ -17,6 +17,7 @@ import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
+import { usePayTokenAccountBalance } from './usePayTokenAccountBalance';
 import { usePayWithToken } from './usePayWithToken';
 
 jest.mock('react-redux', () => ({
@@ -34,6 +35,9 @@ jest.mock('./useTransactionPayData', () => ({
 }));
 jest.mock('./useTransactionPayAvailableTokens', () => ({
   useTransactionPayAvailableTokens: jest.fn(),
+}));
+jest.mock('./usePayTokenAccountBalance', () => ({
+  usePayTokenAccountBalance: jest.fn(),
 }));
 jest.mock('../../../../selectors/accounts', () => ({
   getInternalAccountByAddress: jest.fn(),
@@ -93,6 +97,7 @@ describe('usePayWithToken', () => {
   const useTransactionPayAvailableTokensMock = jest.mocked(
     useTransactionPayAvailableTokens,
   );
+  const usePayTokenAccountBalanceMock = jest.mocked(usePayTokenAccountBalance);
   const getInternalAccountByAddressMock = jest.mocked(
     getInternalAccountByAddress,
   );
@@ -124,6 +129,10 @@ describe('usePayWithToken', () => {
     });
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
     useTransactionPayAvailableTokensMock.mockReturnValue([]);
+    usePayTokenAccountBalanceMock.mockReturnValue({
+      balanceUsd: '25',
+      balanceRaw: '25000000',
+    });
     getInternalAccountByAddressMock.mockReturnValue(ACCOUNT as never);
     selectPaymentOverrideByTransactionIdMock.mockReturnValue(undefined);
     useIsMoneyAccountFlagDefaultMock.mockReturnValue(false);
@@ -148,6 +157,28 @@ describe('usePayWithToken', () => {
     expect(result.current.balanceUsdFormatted).toBe('$25.00');
     expect(result.current.label).toBe('Pay with');
     expect(result.current.isMoneyAccountSelected).toBe(false);
+  });
+
+  it('uses the live account balance when the payment token snapshot is stale', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: {
+        ...PAY_TOKEN,
+        balanceUsd: '0',
+      },
+      setPayToken: jest.fn(),
+      isNative: false,
+    });
+    usePayTokenAccountBalanceMock.mockReturnValue({
+      balanceUsd: '0.10',
+      balanceRaw: '100000',
+    });
+
+    const { result } = renderHook(() => usePayWithToken());
+
+    expect(result.current.balanceUsdFormatted).toBe('$0.10');
+    expect(result.current.displayToken).toMatchObject({
+      balanceUsd: '0.10',
+    });
   });
 
   it('returns Money account display values when paymentOverride is MoneyAccount', () => {

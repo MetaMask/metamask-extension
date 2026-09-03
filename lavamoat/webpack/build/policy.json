@@ -846,7 +846,7 @@
     },
     "browserslist>baseline-browser-mapping": {
       "globals": {
-        "console.log": true,
+        "SuppressedError": true,
         "console.warn": true,
         "process": true
       }
@@ -2435,13 +2435,13 @@
     "stylelint>postcss-selector-parser": {
       "packages": {
         "stylelint>postcss-selector-parser>cssesc": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "tailwindcss>postcss-selector-parser": {
       "packages": {
         "stylelint>postcss-selector-parser>cssesc": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "mockttp>express>proxy-addr": {
@@ -3211,7 +3211,7 @@
         "lavamoat>node-gyp-build": true
       }
     },
-    "@storybook/react>util-deprecate": {
+    "readable-stream-2>util-deprecate": {
       "builtin": {
         "util.deprecate": true
       }
