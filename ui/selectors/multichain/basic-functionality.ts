@@ -14,6 +14,7 @@ export const BFT_CHILD_PREFERENCES = [
   'openSeaEnabled',
   'useNftDetection',
   'useExternalNameSources',
+  'useAddressBarEnsResolution'
 ] as const;
 
 /**
