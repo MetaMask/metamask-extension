@@ -1021,11 +1021,6 @@
       "count": 1
     }
   },
-  "ui/pages/confirmations/hooks/transactions/useTransactionCustomAmount.ts": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/pages/confirmations/hooks/useAddEthereumChain.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
