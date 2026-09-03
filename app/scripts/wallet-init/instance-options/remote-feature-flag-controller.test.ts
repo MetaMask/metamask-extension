@@ -94,16 +94,16 @@ describe('getRemoteFeatureFlagControllerInstanceOptions', () => {
     expect(options.getCanonicalProfileId?.()).toBe('canonical-id');
   });
 
-  it('returns an empty canonical profile id when no session profile is present', () => {
+  it('falls back to the MetaMetrics id when no session profile is present', () => {
     const options = buildOptionsWithAuthState({ srpSessionData: {} });
 
-    expect(options.getCanonicalProfileId?.()).toBe('');
+    expect(options.getCanonicalProfileId?.()).toBe('metrics-id');
   });
 
-  it('returns an empty canonical profile id when srpSessionData is absent', () => {
+  it('falls back to the MetaMetrics id when srpSessionData is absent', () => {
     const options = buildOptionsWithAuthState({});
 
-    expect(options.getCanonicalProfileId?.()).toBe('');
+    expect(options.getCanonicalProfileId?.()).toBe('metrics-id');
   });
 
   it('returns an empty MetaMetrics id when AnalyticsController is not registered', () => {
@@ -124,6 +124,12 @@ describe('getRemoteFeatureFlagControllerInstanceOptions', () => {
     });
 
     expect(options.getCanonicalProfileId?.()).toBe('');
+  });
+
+  it('falls back to the MetaMetrics id when AuthenticationController is not registered', () => {
+    const options = buildOptions({});
+
+    expect(options.getCanonicalProfileId?.()).toBe('metrics-id');
   });
 
   it('includes empty defaultFeatureFlags and metaMetricsFlags stubs', () => {

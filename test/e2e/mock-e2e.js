@@ -453,6 +453,7 @@ async function setupMocking(
       client: 'extension',
       distribution: 'main',
     })
+    .asPriority(RulePriority.FALLBACK)
     .thenCallback(() => {
       // E2E has no canonical profile id, so threshold flags stay unresolved
       // arrays and BackendWebSocketService treats them as off. Pin a boolean

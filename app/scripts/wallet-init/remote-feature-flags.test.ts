@@ -201,13 +201,16 @@ describe('setupRemoteFeatureFlagToggle', () => {
   });
 
   describe('canonical profile id refresh', () => {
-    const authStateWithCanonicalId = (canonicalProfileId?: string) => ({
-      srpSessionData: canonicalProfileId
-        ? {
-            'srp-1': { profile: { canonicalProfileId } },
-          }
-        : {},
-    });
+    const authStateWithCanonicalId = (
+      canonicalProfileId?: string,
+    ): ToggleArgs['authenticationState'] =>
+      ({
+        srpSessionData: canonicalProfileId
+          ? {
+              'srp-1': { profile: { canonicalProfileId } },
+            }
+          : {},
+      }) as ToggleArgs['authenticationState'];
 
     it('force-refreshes flags when a canonical profile id first becomes available', () => {
       const { handlers, call } = setupToggle(
