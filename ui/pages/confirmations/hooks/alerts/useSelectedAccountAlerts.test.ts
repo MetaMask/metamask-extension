@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
@@ -64,6 +67,28 @@ describe('useSelectedAccountAlerts', () => {
       getMockConfirmStateForTransaction(contractInteraction as TransactionMeta),
     );
     expect(result.current).toEqual(expectedAlert);
+  });
+
+  [
+    TransactionType.moneyAccountDeposit,
+    TransactionType.moneyAccountWithdraw,
+  ].forEach((nestedType) => {
+    it(`does not return an alert for a ${nestedType} transaction from a different account`, () => {
+      const contractInteraction = {
+        ...genUnapprovedContractInteractionConfirmation({
+          address: '0x0',
+        }),
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: nestedType }],
+      };
+      const { result } = renderHookWithConfirmContextProvider(
+        () => useSelectedAccountAlerts(),
+        getMockConfirmStateForTransaction(
+          contractInteraction as TransactionMeta,
+        ),
+      );
+      expect(result.current).toEqual([]);
+    });
   });
 
   it('does not returns an alert for transaction if signing account is same as selected account', () => {

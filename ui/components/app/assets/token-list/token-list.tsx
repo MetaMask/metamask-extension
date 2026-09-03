@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   type CaipAssetType,
@@ -20,7 +26,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useDeferredValue } from '../../../../hooks/useDeferredValue';
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {

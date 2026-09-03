@@ -234,8 +234,9 @@ export const selectBlockedPayTokens = createSelector(
 );
 
 /**
- * Minimum fiat balance required when auto-selecting a pay token, from the
- * `confirmations_pay_tokens` remote feature flag.
+ * Minimum `token.fiat.balance` required when auto-selecting preferred or
+ * no-fee pay tokens, from `confirmations_pay_tokens`. Same unit as
+ * `fiat.balance` (user preferred currency), not token units. Matches mobile.
  */
 export const selectMinimumRequiredTokenBalance = createSelector(
   selectPayTokensFlag,
@@ -261,6 +262,7 @@ export const selectIsPayHardwareEnabled = createSelector(
 
 type PayExtendedFlag = {
   enableMoneyAccountTransactions?: Record<string, boolean>;
+  defaultPaySelectedSection?: Record<string, string>;
 };
 
 const selectPayExtendedFlag = createSelector(
@@ -297,6 +299,16 @@ export const selectIsMoneyAccountTransactionEnabled = createSelector(
   ],
   (enableMoneyAccountTransactions, transactionType): boolean =>
     Boolean(transactionType && enableMoneyAccountTransactions[transactionType]),
+);
+
+/**
+ * Map of transaction types whose default pay method is Money Account, from
+ * `confirmations_pay_extended.defaultPaySelectedSection`. Values are section
+ * ids; `"money-account"` selects the Money Account row.
+ */
+export const selectDefaultPaySelectedSection = createSelector(
+  selectPayExtendedFlag,
+  (flag): Record<string, string> => flag?.defaultPaySelectedSection ?? {},
 );
 
 /**

@@ -10,10 +10,13 @@ import {
 } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../context/confirm';
+import { getInternalAccountByAddress } from '../../../../selectors/accounts';
 import { selectPaymentOverrideByTransactionId } from '../../../../selectors/transactionPayController';
+import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
-import { MONEY_ACCOUNT_DUMMY_BALANCE_FIAT } from './sections/usePayWithMoneyAccountSection';
+import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
+import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { usePayWithToken } from './usePayWithToken';
 
 jest.mock('react-redux', () => ({
@@ -29,8 +32,17 @@ jest.mock('./useTransactionPayToken', () => ({
 jest.mock('./useTransactionPayData', () => ({
   useTransactionPayRequiredTokens: jest.fn(),
 }));
+jest.mock('./useTransactionPayAvailableTokens', () => ({
+  useTransactionPayAvailableTokens: jest.fn(),
+}));
+jest.mock('../../../../selectors/accounts', () => ({
+  getInternalAccountByAddress: jest.fn(),
+}));
 jest.mock('../../../../selectors/transactionPayController', () => ({
   selectPaymentOverrideByTransactionId: jest.fn(),
+}));
+jest.mock('./useIsMoneyAccountFlagDefault', () => ({
+  useIsMoneyAccountFlagDefault: jest.fn(),
 }));
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => {
@@ -41,6 +53,9 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
     };
     return messages[key] ?? key;
   },
+}));
+jest.mock('../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
+  useMoneyAccountWithdrawableFiat: jest.fn(),
 }));
 jest.mock('../../../../hooks/useFiatFormatter', () => ({
   useFiatFormatter: () => (value: number) => `$${value.toFixed(2)}`,
@@ -75,8 +90,20 @@ describe('usePayWithToken', () => {
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
   );
+  const useTransactionPayAvailableTokensMock = jest.mocked(
+    useTransactionPayAvailableTokens,
+  );
+  const getInternalAccountByAddressMock = jest.mocked(
+    getInternalAccountByAddress,
+  );
   const selectPaymentOverrideByTransactionIdMock = jest.mocked(
     selectPaymentOverrideByTransactionId,
+  );
+  const useIsMoneyAccountFlagDefaultMock = jest.mocked(
+    useIsMoneyAccountFlagDefault,
+  );
+  const useMoneyAccountWithdrawableFiatMock = jest.mocked(
+    useMoneyAccountWithdrawableFiat,
   );
 
   beforeEach(() => {
@@ -96,7 +123,14 @@ describe('usePayWithToken', () => {
       isNative: false,
     });
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
+    useTransactionPayAvailableTokensMock.mockReturnValue([]);
+    getInternalAccountByAddressMock.mockReturnValue(ACCOUNT as never);
     selectPaymentOverrideByTransactionIdMock.mockReturnValue(undefined);
+    useIsMoneyAccountFlagDefaultMock.mockReturnValue(false);
+    useMoneyAccountWithdrawableFiatMock.mockReturnValue({
+      withdrawableFiatFormatted: '$12.34',
+      withdrawableFiatRaw: '12.34',
+    });
 
     useSelectorMock.mockImplementation(
       (selector: (state: unknown) => unknown) => selector({}),
@@ -127,11 +161,38 @@ describe('usePayWithToken', () => {
     expect(result.current.displayToken).toMatchObject({
       address: '',
       symbol: 'Money account',
-      balanceUsd: MONEY_ACCOUNT_DUMMY_BALANCE_FIAT,
+      balanceUsd: '$12.34',
     });
-    expect(result.current.balanceUsdFormatted).toBe(
-      MONEY_ACCOUNT_DUMMY_BALANCE_FIAT,
-    );
+    expect(result.current.balanceUsdFormatted).toBe('$12.34');
+  });
+
+  it('returns Money account display values when the flag default is set and no crypto token is selected', () => {
+    useIsMoneyAccountFlagDefaultMock.mockReturnValue(true);
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      setPayToken: jest.fn(),
+      isNative: false,
+    });
+    useTransactionPayRequiredTokensMock.mockReturnValue([PAY_TOKEN as never]);
+
+    const { result } = renderHook(() => usePayWithToken());
+
+    expect(result.current.isMoneyAccountSelected).toBe(true);
+    expect(result.current.displayToken).toMatchObject({
+      address: '',
+      symbol: 'Money account',
+    });
+  });
+
+  it('keeps a user-selected crypto token when the flag default is set', () => {
+    useIsMoneyAccountFlagDefaultMock.mockReturnValue(true);
+
+    const { result } = renderHook(() => usePayWithToken());
+
+    expect(result.current.isMoneyAccountSelected).toBe(false);
+    expect(result.current.displayToken).toMatchObject({
+      symbol: 'USDC',
+    });
   });
 
   it('uses the withdraw label for perps withdraw', () => {
@@ -179,5 +240,25 @@ describe('usePayWithToken', () => {
     const { result } = renderHook(() => usePayWithToken());
 
     expect(result.current.displayToken).toBeUndefined();
+  });
+
+  it('reports hasAvailableTokens when a selectable funding token exists', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: PAY_TOKEN.address,
+        chainId: PAY_TOKEN.chainId,
+        disabled: false,
+      },
+    ] as never);
+
+    const { result } = renderHook(() => usePayWithToken());
+
+    expect(result.current.hasAvailableTokens).toBe(true);
+  });
+
+  it('reports no available tokens when the list is empty', () => {
+    const { result } = renderHook(() => usePayWithToken());
+
+    expect(result.current.hasAvailableTokens).toBe(false);
   });
 });

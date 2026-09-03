@@ -109,7 +109,6 @@
     "cacheTimestamp": "number",
     "cachedMarketDataByProvider": "object",
     "cachedUserDataByProvider": "object",
-    "canTrackWalletFundsObtained": false,
     "claims": "object",
     "claimsConfigurations": "object",
     "completedOnboarding": true,

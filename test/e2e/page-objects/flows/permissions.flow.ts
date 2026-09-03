@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import HeaderNavbar from '../pages/header-navbar';
+import HeaderNavbar from '../pages/home/header-navbar';
 import GatorPermissionsPage from '../pages/permission/gator-permissions-page';
 import PermissionListPage from '../pages/permission/permission-list-page';
 import EditConnectedAccountsPage from '../pages/permission/edit-connected-accounts-page';

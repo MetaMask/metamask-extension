@@ -138,6 +138,80 @@ describe('compare-benchmarks', () => {
       expect(result.comparisons[0].hasWarning).toBe(true);
     });
 
+    const DEMOTED_BIMODAL_METRICS: {
+      artifactName: string;
+      benchmarkName: string;
+      metricId: string;
+    }[] = [
+      {
+        artifactName: 'benchmark-chrome-webpack-userJourneyOnboardingNew',
+        benchmarkName: 'onboardingNewWallet',
+        metricId: 'total',
+      },
+      {
+        artifactName: 'benchmark-chrome-webpack-userJourneyOnboardingNew',
+        benchmarkName: 'onboardingNewWallet',
+        metricId: 'doneButtonToAssetList',
+      },
+      {
+        artifactName: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
+        benchmarkName: 'onboardingImportWallet',
+        metricId: 'doneButtonToHomeScreen',
+      },
+    ];
+
+    for (const {
+      artifactName,
+      benchmarkName,
+      metricId,
+    } of DEMOTED_BIMODAL_METRICS) {
+      it(`does not fail on the bimodal metric ${benchmarkName}.${metricId} (demoted, restore condition #45266)`, () => {
+        const benchmarks = [
+          {
+            name: artifactName,
+            data: {
+              [benchmarkName]: makeBenchmarkResults(metricId, {
+                p75: { [metricId]: 99999 },
+                p95: { [metricId]: 99999 },
+                mean: { [metricId]: 99999 },
+              }),
+            },
+          },
+        ];
+
+        const result = runComparison(benchmarks, {});
+        expect(result.anyFailed).toBe(false);
+        expect(result.comparisons[0].absoluteFailed).toBe(false);
+        expect(
+          result.comparisons[0].absoluteViolations.every(
+            (v) => v.severity === THRESHOLD_SEVERITY.Warn,
+          ),
+        ).toBe(true);
+        expect(result.comparisons[0].hasWarning).toBe(true);
+      });
+    }
+
+    it('still fails on onboardingImportWallet.total, which is unimodal and stays gated', () => {
+      // The control for the three cases above: the same flow's total absorbs
+      // the slow step into a following one, so it keeps its gate.
+      const benchmarks = [
+        {
+          name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
+          data: {
+            onboardingImportWallet: makeBenchmarkResults('total', {
+              p75: { total: 99999 },
+              p95: { total: 99999 },
+              mean: { total: 99999 },
+            }),
+          },
+        },
+      ];
+
+      const result = runComparison(benchmarks, {});
+      expect(result.anyFailed).toBe(true);
+      expect(result.comparisons[0].absoluteFailed).toBe(true);
+    });
+
     it('includes relative metrics when baseline is available', () => {
       const benchmarks = [
         {
