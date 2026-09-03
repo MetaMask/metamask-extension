@@ -39,10 +39,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Patch spam asset cleanup on unlock (#45865)
 - Stopped showing added protection on networks that do not support address screening (#45732)
 - Stopped showing an account balance of zero before the balance has been fetched (#45675)
 - Restored DeFi referral images for Hyperliquid and AsterDEX (#45755)
-- Fixed passkey setup guidance when a device does not support the required passkey capability (#45757) (#45802)
+- Fixed passkey setup guidance when a device does not support the required passkey capability (#45757, #45802)
 - Fixed an issue that could make vault recovery repeat after MetaMask restarted (#45762)
 - Fixed provider quote errors and amount-limit handling in the Buy flow (#45786)
 - Fixed the Buy flow for supported tokens opened from the Token Details page (#45778)
@@ -51,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed an issue where the low-confidence "Unconfirmed impersonator" security signal was shown as a warning on the Token Details page (#45661)
 - Restored the DeFi and NFTs tabs with tailored empty states for non-EVM networks (#45717)
 - Fixed a bug that required hardware wallet users to click Cancel twice to dismiss a signature request after it was already rejected or completed on the device (#45740)
-- Fixed a crash and unresponsive back arrow when reopening the extension on a Perps screen (#45734) (#45756)
+- Fixed a crash and unresponsive back arrow when reopening the extension on a Perps screen (#45734, #45756)
 - Fixed "Earn on your crypto" not appearing on funded Money Accounts (#45699)
 
 ## [13.46.1]
