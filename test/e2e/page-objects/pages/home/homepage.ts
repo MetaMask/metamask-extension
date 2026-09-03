@@ -42,6 +42,12 @@ class HomePage {
     testId: 'account-overview__activity-tab',
   };
 
+  private readonly arcUsageNoticeToast =
+    '[data-testid="arc-usage-notice-toast"]';
+
+  private readonly arcUsageNoticeToastCloseButton =
+    '[data-testid="arc-usage-notice-toast"] button[aria-label="Close"]';
+
   private readonly backupRemindMeLaterButton = {
     tag: 'button',
     text: 'Remind me later',
@@ -171,6 +177,13 @@ class HomePage {
     await this.driver.waitForSelector({
       tag: 'h6',
       text: `“${networkName}” was successfully added!`,
+    });
+  }
+
+  async checkArcUsageNoticeToastIsDisplayed(): Promise<void> {
+    console.log('Check Arc usage notice toast is displayed');
+    await this.driver.waitForSelector(this.arcUsageNoticeToast, {
+      timeout: 15000,
     });
   }
 
@@ -353,6 +366,14 @@ class HomePage {
     });
   }
 
+  async checkNoArcUsageNoticeToastIsDisplayed(): Promise<void> {
+    console.log('Check Arc usage notice toast is not displayed');
+    await this.driver.assertElementNotPresent(this.arcUsageNoticeToast, {
+      timeout: 15000,
+      waitAtLeastGuard: 12000,
+    });
+  }
+
   async checkNoErrorToastIsDisplayed(): Promise<void> {
     console.log('Check no blocking error toast is displayed on homepage');
     await this.driver.assertElementNotPresent(this.storageErrorToast, {
@@ -506,6 +527,13 @@ class HomePage {
     );
     await this.driver.clickElement(this.storageErrorToastBackupButton);
     await this.driver.waitForSelector(this.revealSrpPasswordInput);
+  }
+
+  async closeArcUsageNoticeToast(): Promise<void> {
+    console.log('Close Arc usage notice toast');
+    await this.driver.clickElementAndWaitToDisappear(
+      this.arcUsageNoticeToastCloseButton,
+    );
   }
 
   async closeSurveyToast(surveyName: string): Promise<void> {
