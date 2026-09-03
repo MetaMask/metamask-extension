@@ -13,6 +13,7 @@ import {
   ButtonBase,
   ButtonIcon,
   Icon,
+  IconColor,
   IconName,
   IconSize,
   Modal,
@@ -141,7 +142,7 @@ const TokenSelectButton: React.FC<{
             <Icon
               name={IconName.ArrowDown}
               size={IconSize.Md}
-              color={TextColor.TextAlternative}
+              color={IconColor.IconAlternative}
             />
           </Box>
         </>
