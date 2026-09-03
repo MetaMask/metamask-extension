@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryFn } from '@storybook/react';
+import type { Meta, StoryFn } from '@storybook/react-webpack5';
 import { ChainBadge } from '../chain-badge/chain-badge';
 import {
   ActivityListItemAvatar,

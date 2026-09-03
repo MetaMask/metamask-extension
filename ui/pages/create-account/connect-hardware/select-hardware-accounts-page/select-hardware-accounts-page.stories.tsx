@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import type { Meta, StoryFn } from '@storybook/react';
+import type { Meta, StoryFn } from '@storybook/react-webpack5';
 import { createMockHardwareAccounts } from '../../../../../test/data/hardware-wallet-accounts';
 import { SelectHardwareAccountsPage } from './select-hardware-accounts-page';
 import type { SelectHardwareAccountsPageProps } from './select-hardware-accounts-page.types';

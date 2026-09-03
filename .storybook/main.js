@@ -13,11 +13,10 @@ module.exports = {
   },
   stories: ['../ui/**/*.stories.js', '../ui/**/*.stories.tsx'],
   addons: [
-    '@storybook/addon-essentials',
     '@storybook/addon-a11y',
     '@storybook/addon-docs',
     '@storybook/addon-webpack5-compiler-babel',
-    './i18n-party-addon/register.js',
+    './i18n-party-addon/register.js'
   ],
   staticDirs: ['../app', './images'],
   env: (config) => ({
@@ -95,6 +94,7 @@ module.exports = {
       https: false,
       os: false,
       path: false,
+      process: require.resolve('process/browser'),
       stream: require.resolve('stream-browserify'),
       zlib: false,
       _stream_transform: require.resolve(
@@ -165,6 +165,7 @@ module.exports = {
     config.plugins.push(
       new ProvidePlugin({
         Buffer: ['buffer', 'Buffer'],
+        process: 'process/browser',
       }),
     );
     return config;
