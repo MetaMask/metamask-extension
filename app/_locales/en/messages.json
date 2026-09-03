@@ -8736,6 +8736,14 @@
   "removeAccount": {
     "message": "Remove account"
   },
+  "removeAccountConfirmDescription": {
+    "message": "You can restore this account anytime by importing it with the private key.",
+    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
+  },
+  "removeAccountConfirmTitle": {
+    "message": "Remove $1",
+    "description": "Title of the account remove confirmation modal. $1 is the account name."
+  },
   "removeAccountModalBannerDescription": {
     "message": "Make sure you have the Secret Recovery Phrase or private key for this account before removing.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
