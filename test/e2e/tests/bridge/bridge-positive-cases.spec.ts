@@ -130,6 +130,7 @@ describe('Bridge tests', function (this: Suite) {
           expectedTransactionsCount: 6,
           expectedDestAmount: '0.991',
           expectedActivityAmount: '+0.9911',
+          submitDelay: 1000,
           expectedTotalCost: getExpectedQuoteTotalCosts(
             MOCK_BRIDGE_ETH_TO_ETH_ROBINHOOD,
           ),
