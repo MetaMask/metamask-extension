@@ -7,10 +7,11 @@ import type { AuthenticationControllerState } from '@metamask/profile-sync-contr
 
 function decodeJwtIss(accessToken: string): string | null {
   try {
-    const [, payload] = accessToken.split('.');
-    if (!payload) {
+    const parts = accessToken.split('.');
+    if (parts.length !== 3 || !parts[1]) {
       return null;
     }
+    const payload = parts[1];
     const normalized = payload.replaceAll('-', '+').replaceAll('_', '/');
     const json = JSON.parse(atob(normalized)) as { iss?: unknown };
     return typeof json.iss === 'string' ? json.iss : null;

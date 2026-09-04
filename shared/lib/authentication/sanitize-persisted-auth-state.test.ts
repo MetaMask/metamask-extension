@@ -98,6 +98,10 @@ describe('sanitizePersistedAuthenticationState', () => {
       mixedState,
       createState(createJwt(getEnvUrls(Env.DEV).oidcApiUrl)),
       createState('not-a-jwt'),
+      createState(
+        createJwt(getEnvUrls(Env.PRD).oidcApiUrl).replace('.signature', ''),
+      ),
+      createState(`${createJwt(getEnvUrls(Env.PRD).oidcApiUrl)}.extra`),
       createState(createJwt(123)),
       createState(''),
     ];
@@ -108,6 +112,14 @@ describe('sanitizePersistedAuthenticationState', () => {
       ),
     ).toMatchInlineSnapshot(`
       [
+        {
+          "isSignedIn": false,
+          "srpSessionData": undefined,
+        },
+        {
+          "isSignedIn": false,
+          "srpSessionData": undefined,
+        },
         {
           "isSignedIn": false,
           "srpSessionData": undefined,
