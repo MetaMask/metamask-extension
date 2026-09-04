@@ -9,6 +9,7 @@ import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVIEW_SRP_ROUTE,
   MANAGE_WALLET_RECOVERY_ROUTE,
+  MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getSeedPhrase } from '../../../store/actions';
 import * as BrowserRuntimeUtils from '../../../../shared/lib/browser-runtime.utils';
@@ -691,6 +692,74 @@ describe('RevealRecoveryPhrase', () => {
           replace: true,
         },
       );
+    });
+
+    it('navigates to the previous page when one is provided', () => {
+      const accountDetailsPage = `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}?accountGroupId=entropy%3A01JKAF%2F0`;
+      mockUseLocation.mockReturnValue({
+        search: `?isFromReminder=true&previousPage=${encodeURIComponent(
+          accountDetailsPage,
+        )}`,
+      });
+      const mockStore = configureMockStore()(mockState);
+      const { getByTestId } = renderWithProvider(
+        <RevealRecoveryPhrase
+          setSecretRecoveryPhrase={mockSetSecretRecoveryPhrase}
+        />,
+        mockStore,
+      );
+
+      const backButton = getByTestId('reveal-recovery-phrase-back-button');
+      fireEvent.click(backButton);
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(accountDetailsPage, {
+        replace: true,
+      });
+    });
+
+    it('navigates to the default route when closing with a previous page', () => {
+      const accountDetailsPage = `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}?accountGroupId=entropy%3A01JKAF%2F0`;
+      mockUseLocation.mockReturnValue({
+        search: `?isFromReminder=true&previousPage=${encodeURIComponent(
+          accountDetailsPage,
+        )}`,
+      });
+      const mockStore = configureMockStore()(mockState);
+      const { getByTestId } = renderWithProvider(
+        <RevealRecoveryPhrase
+          setSecretRecoveryPhrase={mockSetSecretRecoveryPhrase}
+        />,
+        mockStore,
+      );
+
+      const closeButton = getByTestId('reveal-recovery-phrase-close-button');
+      fireEvent.click(closeButton);
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+      });
+    });
+
+    it('ignores a previous page that is not an in-app path', () => {
+      mockUseLocation.mockReturnValue({
+        search: `?isFromReminder=true&previousPage=${encodeURIComponent(
+          '//evil.test',
+        )}`,
+      });
+      const mockStore = configureMockStore()(mockState);
+      const { getByTestId } = renderWithProvider(
+        <RevealRecoveryPhrase
+          setSecretRecoveryPhrase={mockSetSecretRecoveryPhrase}
+        />,
+        mockStore,
+      );
+
+      const backButton = getByTestId('reveal-recovery-phrase-back-button');
+      fireEvent.click(backButton);
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+      });
     });
   });
 });

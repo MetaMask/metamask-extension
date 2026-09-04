@@ -16,10 +16,11 @@
     }
   }
 
+  /* Padding matches the other rows so the arrow icons line up. */
   &__srp-button {
     cursor: pointer;
     border: none;
     padding-left: 16px;
-    padding-right: 12px;
+    padding-right: 8px;
   }
 }
