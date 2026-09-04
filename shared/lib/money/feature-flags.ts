@@ -81,6 +81,7 @@ export function isMoneyAccountEnabled(
 export function getMoneyAccountGeoBlockedCountries(
   remoteFeatureFlags: Record<string, unknown> | undefined,
 ): string[] {
+  return [];
   const remoteFlag =
     remoteFeatureFlags?.[MONEY_ACCOUNT_GEO_BLOCKED_COUNTRIES_FLAG_NAME];
 

@@ -11,12 +11,16 @@ import type {
   Transaction,
 } from '@metamask/keyring-api';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { TX_DETAILS_ROUTE } from '#ui/helpers/constants/routes';
+import {
+  MONEY_ACTIVITY_ROUTE,
+  TX_DETAILS_ROUTE,
+} from '#ui/helpers/constants/routes';
 import { useMessenger } from '../../../hooks/useMessenger';
 import {
   hasTransactionType,
   isPerpsWithdrawTransaction,
 } from '../../../../shared/lib/transactions.utils';
+import { isMoneyDepositTx } from '../../../helpers/money/money-transaction-guards';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
 import type { MetaMaskReduxState } from '../../../store/store';
@@ -107,6 +111,17 @@ function getDetailsRoute(chainId?: Hex, hash?: string) {
   return `${TX_DETAILS_ROUTE}/${toEvmCaipChainId(chainId)}/${hash}`;
 }
 
+// MetaMask Pay funds a Money deposit with a separate transaction from the
+// user's EOA. Only the parent deposit on the Money account should toast.
+function isMoneyDepositChildTransaction(
+  id: string,
+  transactions: TransactionMeta[],
+) {
+  return transactions.some(
+    (tx) => tx.requiredTransactionIds?.includes(id) && isMoneyDepositTx(tx),
+  );
+}
+
 function isSpeedUpReplacement(
   replacedById: string,
   transactions: TransactionMeta[],
@@ -165,14 +180,21 @@ export function useTransactionEventToasts(): void {
         return;
       }
 
-      if (isExcludedTransactionType(transactionMeta)) {
+      const transactions = store.getState().metamask?.transactions ?? [];
+
+      if (
+        isExcludedTransactionType(transactionMeta) ||
+        isMoneyDepositChildTransaction(id, transactions)
+      ) {
         return;
       }
 
       const toastId = generateToastId(id);
       const props = {
         transactionId: id,
-        to: getDetailsRoute(chainId, hash),
+        to: isMoneyDepositTx(transactionMeta)
+          ? MONEY_ACTIVITY_ROUTE
+          : getDetailsRoute(chainId, hash),
       };
 
       if (isPendingToastStatus(transactionMeta, status)) {
@@ -183,7 +205,6 @@ export function useTransactionEventToasts(): void {
         showSuccessToast(toastId, props);
       } else if (failedStatuses.has(status)) {
         if (transactionMeta.replacedById) {
-          const transactions = store.getState().metamask?.transactions ?? [];
           if (
             isSpeedUpReplacement(transactionMeta.replacedById, transactions)
           ) {

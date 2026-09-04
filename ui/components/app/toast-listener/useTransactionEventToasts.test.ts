@@ -297,6 +297,66 @@ describe('useTransactionEventToasts', () => {
       expect(mockShowPendingToast).not.toHaveBeenCalled();
     });
 
+    it('links Money deposit toasts to the Money activity page', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'money-deposit',
+          status: TransactionStatus.submitted,
+          hash: '0xabc',
+          type: TransactionType.batch,
+          nestedTransactions: [
+            { type: TransactionType.tokenMethodApprove },
+            { type: TransactionType.moneyAccountDeposit },
+          ],
+        }),
+      });
+
+      expect(mockShowPendingToast).toHaveBeenCalledWith('tx-money-deposit', {
+        transactionId: 'money-deposit',
+        to: '/money-home/activity',
+      });
+    });
+
+    it('does not toast the MetaMask Pay child of a Money deposit', () => {
+      mockGetState.mockReturnValue({
+        metamask: {
+          transactions: [
+            createTransactionMeta({
+              id: 'money-deposit-parent',
+              status: TransactionStatus.approved,
+              type: TransactionType.batch,
+              nestedTransactions: [
+                { type: TransactionType.tokenMethodApprove },
+                { type: TransactionType.moneyAccountDeposit },
+              ],
+              requiredTransactionIds: ['money-deposit-child'],
+            }),
+          ],
+        },
+      });
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'money-deposit-child',
+          status: TransactionStatus.submitted,
+          type: TransactionType.batch,
+        }),
+      });
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'money-deposit-child',
+          status: TransactionStatus.confirmed,
+          type: TransactionType.batch,
+        }),
+      });
+
+      expect(mockShowPendingToast).not.toHaveBeenCalled();
+      expect(mockShowSuccessToast).not.toHaveBeenCalled();
+    });
+
     it('shows a pending toast for musdClaim transactions on approved', () => {
       const { handlers } = mountHook();
 

@@ -59,6 +59,20 @@ function addPerpsWithdrawItem(
   } as ActivityListItem);
 }
 
+function addMoneyDepositItem(
+  id: string,
+  overrides: Partial<ActivityListItem> = {},
+) {
+  mockItems.set(id, {
+    type: 'moneyAccountDeposit',
+    chainId: 'eip155:143',
+    status: 'pending',
+    timestamp: 0,
+    data: {},
+    ...overrides,
+  } as ActivityListItem);
+}
+
 describe('useToastLabel', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -175,6 +189,52 @@ describe('useToastLabel', () => {
     expect(result.current).toStrictEqual({
       title: 'perpsWithdrawPostQuoteToastSuccessTitle',
       description: 'perpsWithdrawPostQuoteToastSuccessGenericDescription',
+    });
+  });
+
+  it('returns pending Money deposit toast content', () => {
+    addMoneyDepositItem('tx-1');
+
+    const { result } = renderHook(() => useToastLabel('pending', 'tx-1'));
+
+    expect(result.current).toStrictEqual({
+      title: 'moneyDepositToastPendingTitle',
+      description: 'moneyDepositToastPendingDescription',
+    });
+  });
+
+  it('returns success Money deposit toast content with the fiat amount', () => {
+    addMoneyDepositItem('tx-1', {
+      data: { fiat: { amount: '25.5' } },
+    } as Partial<ActivityListItem>);
+
+    const { result } = renderHook(() => useToastLabel('success', 'tx-1'));
+
+    expect(result.current).toStrictEqual({
+      title: 'moneyDepositToastSuccessTitle',
+      description: 'moneyDepositToastSuccessDescription:$25.50',
+    });
+  });
+
+  it('returns generic success Money deposit description when amount is missing', () => {
+    addMoneyDepositItem('tx-1');
+
+    const { result } = renderHook(() => useToastLabel('success', 'tx-1'));
+
+    expect(result.current).toStrictEqual({
+      title: 'moneyDepositToastSuccessTitle',
+      description: 'moneyDepositToastSuccessGenericDescription',
+    });
+  });
+
+  it('returns failed Money deposit toast content', () => {
+    addMoneyDepositItem('tx-1');
+
+    const { result } = renderHook(() => useToastLabel('failed', 'tx-1'));
+
+    expect(result.current).toStrictEqual({
+      title: 'moneyDepositToastErrorTitle',
+      description: 'moneyDepositToastErrorDescription',
     });
   });
 

@@ -5598,6 +5598,28 @@
   "moneyBenefits": {
     "message": "Benefits"
   },
+  "moneyDepositToastErrorDescription": {
+    "message": "Your funds were not added to Money. Try again."
+  },
+  "moneyDepositToastErrorTitle": {
+    "message": "Money deposit failed"
+  },
+  "moneyDepositToastPendingDescription": {
+    "message": "Your funds will be available shortly."
+  },
+  "moneyDepositToastPendingTitle": {
+    "message": "Adding funds to Money"
+  },
+  "moneyDepositToastSuccessDescription": {
+    "message": "$1 was added to your Money account",
+    "description": "$1 is the deposited amount formatted as fiat, e.g. $10.00"
+  },
+  "moneyDepositToastSuccessGenericDescription": {
+    "message": "Your Money account was funded"
+  },
+  "moneyDepositToastSuccessTitle": {
+    "message": "Funds added to Money"
+  },
   "moneyEarnApyTitle": {
     "message": "Earn up to $1 APY"
   },

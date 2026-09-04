@@ -48,6 +48,36 @@ function getPerpsWithdrawToastContent(
   };
 }
 
+function getMoneyDepositToastContent(
+  status: ToastStatus,
+  item: Extract<ActivityListItem, { type: 'moneyAccountDeposit' }>,
+  t: TranslateFn,
+): ToastLabel {
+  if (status === 'pending') {
+    return {
+      title: t('moneyDepositToastPendingTitle'),
+      description: t('moneyDepositToastPendingDescription'),
+    };
+  }
+
+  if (status === 'success') {
+    const fiatAmount = Number(item.data.fiat?.amount);
+    const description = Number.isFinite(fiatAmount)
+      ? t('moneyDepositToastSuccessDescription', [`$${fiatAmount.toFixed(2)}`])
+      : t('moneyDepositToastSuccessGenericDescription');
+
+    return {
+      title: t('moneyDepositToastSuccessTitle'),
+      description,
+    };
+  }
+
+  return {
+    title: t('moneyDepositToastErrorTitle'),
+    description: t('moneyDepositToastErrorDescription'),
+  };
+}
+
 // Add per-type toast content here
 function useGetToastContent(
   status: ToastStatus,
@@ -89,6 +119,9 @@ function useGetToastContent(
 
     case 'perpsWithdraw':
       return getPerpsWithdrawToastContent(status, item, t);
+
+    case 'moneyAccountDeposit':
+      return getMoneyDepositToastContent(status, item, t);
 
     default:
       return { title: t(genericToastLabels[status]) };
