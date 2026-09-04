@@ -9,7 +9,7 @@ import { login } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
 import ConnectHardwareWalletPage from '../../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import SelectHardwareWalletAccountPage from '../../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 

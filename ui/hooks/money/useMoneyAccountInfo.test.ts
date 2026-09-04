@@ -14,8 +14,9 @@ jest.mock('../useMessenger', () => ({
 
 const MONEY_ADDRESS: Hex = '0x2D49EA58A4C70b62c8B56DE971310d9e999c8117';
 
-const stateWithFlag = (enabled: boolean) => ({
+const stateWithFlag = (enabled: boolean, useExternalServices = true) => ({
   metamask: {
+    useExternalServices,
     remoteFeatureFlags: {
       [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: {
         enabled,
@@ -58,6 +59,80 @@ describe('useMoneyAccountInfo', () => {
     );
   });
 
+  it('widens the account to what MoneyAccountController holds, once it holds it', async () => {
+    mockGetMoneyAccountAvailability.mockResolvedValue({
+      isAvailable: true,
+      address: MONEY_ADDRESS,
+    });
+
+    const primaryKeyringId = 'primary-hd-keyring-id';
+    const controllerAccount = {
+      id: 'money-account-id',
+      address: MONEY_ADDRESS,
+      options: {
+        entropy: { type: 'mnemonic', id: primaryKeyringId, groupIndex: 0 },
+        exportable: false,
+      },
+    };
+
+    const { result } = renderHookWithProvider(() => useMoneyAccountInfo(), {
+      metamask: {
+        ...FLAG_ON.metamask,
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: [],
+            metadata: { id: primaryKeyringId, name: '' },
+          },
+        ],
+        moneyAccounts: { 'money-account-id': controllerAccount },
+      },
+    });
+
+    await waitFor(() => {
+      expect(result.current.hasMoneyAccount).toBe(true);
+    });
+
+    expect(result.current.primaryMoneyAccount).toStrictEqual(controllerAccount);
+  });
+
+  it('widens the account to what MoneyAccountController holds, once it holds it', async () => {
+    mockGetMoneyAccountAvailability.mockResolvedValue({
+      isAvailable: true,
+      address: MONEY_ADDRESS,
+    });
+
+    const primaryKeyringId = 'primary-hd-keyring-id';
+    const controllerAccount = {
+      id: 'money-account-id',
+      address: MONEY_ADDRESS,
+      options: {
+        entropy: { type: 'mnemonic', id: primaryKeyringId, groupIndex: 0 },
+        exportable: false,
+      },
+    };
+
+    const { result } = renderHookWithProvider(() => useMoneyAccountInfo(), {
+      metamask: {
+        ...FLAG_ON.metamask,
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: [],
+            metadata: { id: primaryKeyringId, name: '' },
+          },
+        ],
+        moneyAccounts: { 'money-account-id': controllerAccount },
+      },
+    });
+
+    await waitFor(() => {
+      expect(result.current.hasMoneyAccount).toBe(true);
+    });
+
+    expect(result.current.primaryMoneyAccount).toStrictEqual(controllerAccount);
+  });
+
   it('reports no account when the gate says it is unavailable, e.g. no delegation', async () => {
     mockGetMoneyAccountAvailability.mockResolvedValue({ isAvailable: false });
 
@@ -91,9 +166,23 @@ describe('useMoneyAccountInfo', () => {
     expect(mockGetMoneyAccountAvailability).not.toHaveBeenCalled();
   });
 
+  it('reports no account and skips the gate when basic functionality is off, even with the flag cached on', () => {
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountInfo(),
+      stateWithFlag(true, false),
+    );
+
+    expect(result.current).toStrictEqual({
+      isMoneyAccountFeatureEnabled: false,
+      hasMoneyAccount: false,
+      primaryMoneyAccount: undefined,
+    });
+    expect(mockGetMoneyAccountAvailability).not.toHaveBeenCalled();
+  });
+
   it('reports no account when the flag is unserved', () => {
     const { result } = renderHookWithProvider(() => useMoneyAccountInfo(), {
-      metamask: { remoteFeatureFlags: {} },
+      metamask: { useExternalServices: true, remoteFeatureFlags: {} },
     });
 
     expect(result.current).toStrictEqual({

@@ -196,7 +196,7 @@ export const RAMPS_ROUTE = '/ramps';
 export const RAMPS_BUILD_QUOTE_ROUTE = '/ramps/build-quote';
 export const RAMPS_TOKEN_SELECTION_ROUTE = '/ramps/token-selection';
 export const RAMPS_PAYMENT_METHOD_ROUTE = '/ramps/payment-method';
-export const RAMPS_PROVIDER_SELECTION_ROUTE = '/ramps/provider-selection';
+export const RAMPS_COMPLETE_BUY_ROUTE = '/ramps/complete-buy';
 
 // Perps routes
 export const PERPS_ROUTE = '/perps';
@@ -208,6 +208,19 @@ export const PERPS_WITHDRAW_ROUTE = '/perps/withdraw';
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 export const PERPS_HOME_PAGE_ROUTE = '/perps-home';
 export const MONEY_HOME_ROUTE = '/money-home';
+export const MONEY_ACTIVITY_ROUTE = '/money-home/activity';
+export const MONEY_TRANSACTION_DETAILS_ROUTE =
+  '/money-home/activity/:transactionId';
+
+/**
+ * Builds the Money transaction details path for a given activity item id.
+ *
+ * @param transactionId - The activity item / transaction id.
+ * @returns The concrete details route.
+ */
+export function getMoneyTransactionDetailsRoute(transactionId: string): string {
+  return `${MONEY_ACTIVITY_ROUTE}/${encodeURIComponent(transactionId)}`;
+}
 
 // Window during which reopening the extension resumes the last Perps screen
 // instead of landing on the wallet home. Keeps the cap short so stale sessions
@@ -223,6 +236,11 @@ export const ROUTES = [
   { path: ACTIVITY_ROUTE, label: 'Activity', trackInAnalytics: true },
   { path: PERPS_HOME_PAGE_ROUTE, label: 'Perps', trackInAnalytics: true },
   { path: MONEY_HOME_ROUTE, label: 'Money', trackInAnalytics: true },
+  {
+    path: MONEY_TRANSACTION_DETAILS_ROUTE,
+    label: 'Money Transaction Details',
+    trackInAnalytics: true,
+  },
   { path: '', label: 'Home', trackInAnalytics: true }, // "" is an alias for the Home route
   {
     path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
@@ -482,8 +500,8 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
-    path: RAMPS_PROVIDER_SELECTION_ROUTE,
-    label: 'Ramps Provider Selection Page',
+    path: RAMPS_COMPLETE_BUY_ROUTE,
+    label: 'Ramps Complete Buy Page',
     trackInAnalytics: false,
   },
   {

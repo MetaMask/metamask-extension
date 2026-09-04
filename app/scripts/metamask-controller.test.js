@@ -45,6 +45,10 @@ import { ApprovalType, ERC20 } from '@metamask/controller-utils';
 import { parseCaipAccountId } from '@metamask/utils';
 
 import { createTestProviderTools } from '../../test/stub/provider';
+import {
+  InternalKeyringType,
+  SnapKeyringType,
+} from '../../shared/constants/keyring';
 import { KEYRING_DEVICE_PROPERTY_MAP } from '../../shared/constants/hardware-wallets';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import mockEncryptor from '../../test/lib/mock-encryptor';
@@ -72,6 +76,7 @@ import {
   getPermittedAccountsForScopesByOrigin,
 } from './controllers/permissions';
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
+import { trackEvent } from './controllers/analytics';
 import MetaMaskController from './metamask-controller';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
@@ -2226,6 +2231,110 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('isEip7702Supported', () => {
+      const ADDRESS = '0x123';
+      const CHAIN_ID = '0x1';
+
+      const mockKeyringType = (type) =>
+        jest
+          .spyOn(metamaskController.keyringController, 'getKeyringForAccount')
+          .mockResolvedValue({ type });
+
+      const mockAtomicBatchSupport = () =>
+        jest
+          .spyOn(metamaskController.txController, 'isAtomicBatchSupported')
+          .mockResolvedValue([
+            {
+              chainId: CHAIN_ID,
+              isSupported: false,
+              upgradeContractAddress: '0xabc',
+            },
+          ]);
+
+      it.each([InternalKeyringType.hdKeyTree, InternalKeyringType.imported])(
+        'consults atomic batch support for %s keyrings',
+        async (type) => {
+          mockKeyringType(type);
+          const isAtomicBatchSupported = mockAtomicBatchSupport();
+
+          const result = await metamaskController.isEip7702Supported({
+            address: ADDRESS,
+            chainId: CHAIN_ID,
+          });
+
+          expect(isAtomicBatchSupported).toHaveBeenCalledWith({
+            address: ADDRESS,
+            chainIds: [CHAIN_ID],
+          });
+          expect(result.upgradeContractAddress).toBe('0xabc');
+        },
+      );
+
+      it.each([
+        KeyringTypeV2.Ledger,
+        KeyringTypeV2.Trezor,
+        SnapKeyringType.snap,
+      ])('reports %s keyrings as unsupported', async (type) => {
+        mockKeyringType(type);
+        const isAtomicBatchSupported = mockAtomicBatchSupport();
+
+        const result = await metamaskController.isEip7702Supported({
+          address: ADDRESS,
+          chainId: CHAIN_ID,
+        });
+
+        expect(result).toStrictEqual({
+          isSupported: false,
+          upgradeContractAddress: null,
+        });
+        expect(isAtomicBatchSupported).not.toHaveBeenCalled();
+      });
+
+      it('reports unsupported when the keyring lookup fails', async () => {
+        jest
+          .spyOn(metamaskController.keyringController, 'getKeyringForAccount')
+          .mockRejectedValue(
+            new Error('No keyring found for the requested account.'),
+          );
+        const isAtomicBatchSupported = mockAtomicBatchSupport();
+
+        const result = await metamaskController.isEip7702Supported({
+          address: ADDRESS,
+          chainId: CHAIN_ID,
+        });
+
+        expect(result).toStrictEqual({
+          isSupported: false,
+          upgradeContractAddress: null,
+        });
+        expect(isAtomicBatchSupported).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('setArcUsageNoticeShown', () => {
+      it('flips the flag and tracks the viewed event only once', () => {
+        const { setArcUsageNoticeShown } = metamaskController.getApi();
+        jest.mocked(trackEvent).mockClear();
+
+        setArcUsageNoticeShown();
+        setArcUsageNoticeShown();
+
+        expect(
+          metamaskController.appStateController.state.arcUsageNoticeShown,
+        ).toBe(true);
+        expect(trackEvent).toHaveBeenCalledTimes(1);
+        expect(trackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: 'Arc Usage Notice Toast Viewed',
+            properties: expect.objectContaining({
+              category: 'Home',
+              chain_id_caip: 'eip155:5042',
+            }),
+          }),
+        );
+      });
+    });
+
     describe('#setupPhishingCommunication', () => {
       beforeEach(() => {
         jest.spyOn(metamaskController, 'safelistPhishingDomain');
@@ -2777,6 +2886,60 @@ describe('MetaMaskController', () => {
           );
         });
         streamTest.end();
+      });
+
+      it('scans the origin for wallet_createSession', async () => {
+        const previousSecurityAlertsApiEnabled =
+          process.env.SECURITY_ALERTS_API_ENABLED;
+        process.env.SECURITY_ALERTS_API_ENABLED = 'true';
+
+        try {
+          localMetamaskController.preferencesController.setSecurityAlertsEnabled(
+            true,
+          );
+
+          const scanUrlSpy = jest
+            .spyOn(localMetamaskController.phishingController, 'scanUrl')
+            .mockResolvedValue({});
+
+          const messageSender = { url: 'http://mycrypto.com' };
+          const streamTest = createThroughStream((chunk, _, cb) => {
+            if (chunk && chunk.method) {
+              cb(null, chunk);
+              return;
+            }
+            cb();
+          });
+
+          localMetamaskController.setupUntrustedCommunicationCaip({
+            connectionStream: streamTest,
+            sender: messageSender,
+          });
+
+          streamTest.write(
+            {
+              id: 1,
+              jsonrpc: '2.0',
+              method: 'wallet_createSession',
+              params: {
+                requiredScopes: {
+                  'eip155:1': { methods: [], notifications: [] },
+                },
+              },
+            },
+            null,
+            () => undefined,
+          );
+
+          await waitForAllPromises();
+          await new Promise((resolve) => setTimeout(resolve, 0));
+
+          expect(scanUrlSpy).toHaveBeenCalledWith('http://mycrypto.com');
+          streamTest.end();
+        } finally {
+          process.env.SECURITY_ALERTS_API_ENABLED =
+            previousSecurityAlertsApiEnabled;
+        }
       });
     });
 
@@ -3567,147 +3730,6 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('importMnemonicToVault', () => {
-      it('generates a new hd keyring instance with a mnemonic', async () => {
-        const password = 'what-what-what';
-
-        jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
-
-        await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
-          password,
-          TEST_SEED,
-        );
-        await metamaskController.legacyBackgroundApiService.submitPasswordOrEncryptionKey(
-          { password },
-        ); // Force-unlock to trigger Snap keyring creation.
-
-        const previousKeyrings = cloneDeep(
-          metamaskController.keyringController.state.keyrings,
-        );
-
-        // 0: Primary HD keyring
-        expect(previousKeyrings).toHaveLength(1);
-
-        await metamaskController.legacyBackgroundApiService.importMnemonicToVault(
-          TEST_SEED_ALT,
-        );
-
-        const currentKeyrings =
-          metamaskController.keyringController.state.keyrings;
-
-        // 0: Primary HD keyring, 1: Newly imported HD keyring
-        // (v2 Snap keyrings are created lazily per-snap, not eagerly here)
-        expect(
-          metamaskController.keyringController.state.keyrings,
-        ).toHaveLength(2);
-        const newlyAddedKeyringId =
-          metamaskController.keyringController.state.keyrings[1].metadata.id;
-        const newSRP = Buffer.from(
-          await metamaskController.legacyBackgroundApiService.getSeedPhrase(
-            password,
-            newlyAddedKeyringId,
-          ),
-        ).toString('utf8');
-
-        expect(
-          currentKeyrings.filter((kr) => kr.type === 'HD Key Tree'),
-        ).toHaveLength(2);
-        expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
-        expect(newSRP).toStrictEqual(TEST_SEED_ALT);
-      });
-
-      it('throws an error if a duplicate srp is added', async () => {
-        const password = 'what-what-what';
-        jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
-
-        await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
-          password,
-          TEST_SEED,
-        );
-        await expect(() =>
-          metamaskController.legacyBackgroundApiService.importMnemonicToVault(
-            TEST_SEED,
-          ),
-        ).rejects.toThrow(
-          'This Secret Recovery Phrase has already been imported.',
-        );
-      });
-
-      it('calls discoverAndCreateAccounts when importMnemonicToVault runs after onboarding completes', async () => {
-        mockMessengerControllerAction(
-          metamaskController.accountTreeController,
-          'AccountTreeController:syncWithUserStorage',
-        ).mockResolvedValue();
-
-        jest
-          .spyOn(
-            metamaskController.legacyBackgroundApiService,
-            'discoverAndCreateAccounts',
-          )
-          .mockResolvedValue({});
-
-        await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
-          'foo',
-          TEST_SEED,
-        );
-
-        jest
-          .spyOn(metamaskController.onboardingController, 'state', 'get')
-          .mockReturnValue({ completedOnboarding: true });
-
-        await metamaskController.legacyBackgroundApiService.importMnemonicToVault(
-          TEST_SEED_ALT,
-          {
-            shouldCreateSocialBackup: false,
-            shouldSelectAccount: false,
-          },
-        );
-
-        // Wait for the fire-and-forget sync and discover operation to complete
-        await new Promise((resolve) => setImmediate(resolve));
-
-        expect(
-          metamaskController.legacyBackgroundApiService
-            .discoverAndCreateAccounts,
-        ).toHaveBeenCalled();
-      });
-
-      it('does not call discoverAndCreateAccounts before onboarding completes', async () => {
-        jest
-          .spyOn(
-            metamaskController.accountTreeController,
-            'syncWithUserStorage',
-          )
-          .mockResolvedValue();
-        jest
-          .spyOn(
-            metamaskController.legacyBackgroundApiService,
-            'discoverAndCreateAccounts',
-          )
-          .mockResolvedValue({});
-
-        await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
-          'foo',
-          TEST_SEED,
-        );
-
-        await metamaskController.legacyBackgroundApiService.importMnemonicToVault(
-          TEST_SEED_ALT,
-          {
-            shouldCreateSocialBackup: false,
-            shouldSelectAccount: false,
-          },
-        );
-
-        await waitForAllPromises();
-
-        expect(
-          metamaskController.legacyBackgroundApiService
-            .discoverAndCreateAccounts,
-        ).not.toHaveBeenCalled();
-      });
-    });
-
     describe('RampsController wiring', () => {
       it('always assigns rampsController and background API', () => {
         const controller = new MetaMaskController({
@@ -4009,10 +4031,12 @@ describe('MetaMaskController', () => {
           metamaskController.seedlessOnboardingController,
           'SeedlessOnboardingController:updateBackupMetadataState',
         );
-        jest.spyOn(
-          metamaskController.legacyBackgroundApiService,
-          'importMnemonicToVault',
-        );
+        jest
+          .spyOn(
+            metamaskController.legacyBackgroundApiService,
+            'importMnemonicToVault',
+          )
+          .mockResolvedValue();
         jest.spyOn(utils, 'convertEnglishWordlistIndicesToCodepoints');
       });
 

@@ -2,9 +2,11 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { isAddressScanSupportedChainId } from '@metamask/phishing-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
 import {
   CachedScanAddressResponse,
@@ -132,10 +134,15 @@ export function getEnforcedSimulationsSlippageBasisPoints(
 /**
  * Determines whether a transaction is eligible for enforced simulations.
  *
- * Also requires that at least one recipient address is loaded and not
- * trusted, based on cached trust signal scan results keyed by chain and
- * address. A recipient with no cache entry, or one still loading, does not
- * disqualify the transaction; only a cached non-Trusted verdict does.
+ * Also requires that Blockaid address screening supports the chain. On
+ * unsupported chains, `scanAddress` returns Error without hitting the API;
+ * that must not turn enforcement on. Then requires that at least one
+ * recipient address is loaded and not trusted, based on cached trust signal
+ * scan results keyed by chain and address. A recipient with no cache entry,
+ * or one still loading, does not disqualify the transaction; only a cached
+ * non-Trusted verdict does. Callers that persist a trust-dependent default
+ * must separately wait for pending signals via
+ * {@link hasPendingEnforcedSimulationsTrustSignals}.
  *
  * @param transactionMeta - The transaction metadata.
  * @param state - Trust signal state and EIP-7702 supported chains.
@@ -145,7 +152,11 @@ export function isEnforcedSimulationsEligible(
   transactionMeta: TransactionMeta,
   state: EnforcedSimulationsState,
 ): boolean {
-  const { chainId, simulationData, type } = transactionMeta;
+  const { chainId, origin, simulationData, type } = transactionMeta;
+
+  if (!origin || origin === ORIGIN_METAMASK) {
+    return false;
+  }
 
   if (
     !state.eip7702SupportedChains?.some(
@@ -169,6 +180,14 @@ export function isEnforcedSimulationsEligible(
     return true;
   }
 
+  if (!chainId || !isAddressScanSupportedChainId(chainId)) {
+    log('Not eligible - address screening does not support chain', {
+      chainId,
+      type,
+    });
+    return false;
+  }
+
   if (isTrusted(transactionMeta, state)) {
     log('Not eligible - transaction trusted', { type });
     return false;
@@ -176,6 +195,52 @@ export function isEnforcedSimulationsEligible(
 
   log('Eligible', { chainId, type });
   return true;
+}
+
+/**
+ * Determines whether an eligible transaction should have enforced
+ * simulations enabled by default.
+ *
+ * Enforced simulations are enabled by default when at least one relevant
+ * recipient has a Warning or Malicious trust signal. Force-enabled
+ * transactions keep the existing enabled-by-default behavior.
+ *
+ * @param transactionMeta - The transaction metadata.
+ * @param state - Trust signal state and EIP-7702 supported chains.
+ * @returns Whether enforced simulations should be enabled by default.
+ */
+export function isEnforcedSimulationsDefaultEnabled(
+  transactionMeta: TransactionMeta,
+  state: EnforcedSimulationsState,
+): boolean {
+  if (isEnforcedSimulationsForceEnabled()) {
+    return true;
+  }
+
+  return getRelevantTrustSignalResults(transactionMeta, state).some(
+    (resultType) =>
+      resultType === ResultType.Warning || resultType === ResultType.Malicious,
+  );
+}
+
+/**
+ * Determines whether any relevant recipient still has a pending trust signal.
+ *
+ * @param transactionMeta - The transaction metadata.
+ * @param state - Trust signal state and EIP-7702 supported chains.
+ * @returns Whether a relevant recipient trust signal is still loading.
+ */
+export function hasPendingEnforcedSimulationsTrustSignals(
+  transactionMeta: TransactionMeta,
+  state: EnforcedSimulationsState,
+): boolean {
+  if (isEnforcedSimulationsForceEnabled()) {
+    return false;
+  }
+
+  return getRelevantTrustSignalResults(transactionMeta, state).includes(
+    ResultType.Loading,
+  );
 }
 
 function getEnforcedSimulationsFlag({
@@ -190,20 +255,32 @@ function isTrusted(
   transactionMeta: TransactionMeta,
   state: EnforcedSimulationsState,
 ): boolean {
+  return getRelevantTrustSignalResults(transactionMeta, state)
+    .filter((resultType) => resultType !== ResultType.Loading)
+    .every((resultType) => resultType === ResultType.Trusted);
+}
+
+function getRelevantTrustSignalResults(
+  transactionMeta: TransactionMeta,
+  state: EnforcedSimulationsState,
+): ResultType[] {
   const { chainId, type, txParams, txParamsOriginal, nestedTransactions } =
     transactionMeta;
 
-  // Trust verdicts are cache-driven on every chain: only a cached non-Trusted
-  // verdict disqualifies a recipient, and chains the Security Alerts API
-  // cannot screen resolve to ErrorResult once scanned, which is non-Trusted
-  // and therefore enforces.
+  // Trust verdicts are cache-driven. Only a cached non-Trusted verdict
+  // disqualifies a recipient. Unsupported chains are excluded earlier in
+  // isEnforcedSimulationsEligible, so an ErrorResult here is a scan failure
+  // on a supported chain (timeout / API error), not "this chain isn't
+  // supported".
   //
   // Recipients that no scan path covers stay cache misses and are treated as
-  // trusted here. The trust-signals middleware only scans a transaction's own
-  // `to`, so nested `wallet_sendCalls` recipients are never scanned, and
-  // nothing is scanned at all when the user has security alerts disabled.
+  // trusted here. The trust-signals middleware scans dapp `eth_sendTransaction`
+  // and `wallet_sendCalls` requests (including each nested call's `to`), but
+  // nothing is scanned when the user has security alerts disabled, and the
+  // outer batch target (`txParamsOriginal.to`, the upgraded EOA for a 7702
+  // batch) is never scanned, so its cache miss never disqualifies.
   if (!chainId) {
-    return false;
+    return [];
   }
 
   // Use the original `to` address before any container wrapping,
@@ -215,7 +292,7 @@ function isTrusted(
   // calls, treated uniformly.
   const calls = [{ to: originalTo, data, type }, ...(nestedTransactions ?? [])];
 
-  let trusted = true;
+  const resultTypes: ResultType[] = [];
 
   for (let index = 0; index < calls.length; index++) {
     const { to, data: callData, type: callType } = calls[index];
@@ -241,22 +318,25 @@ function isTrusted(
       state.addressSecurityAlertResponses[createCacheKey(chainId, to)];
 
     // Unknown or still-loading signals don't make a call untrusted.
-    if (!cached || cached.result_type === ResultType.Loading) {
-      log(`${label} - Trusted - Unknown Signal`, {
-        ...props,
-        resultType: cached?.result_type,
-      });
+    if (!cached) {
+      log(`${label} - Trusted - Unknown Signal`, props);
+      continue;
+    }
+
+    if (cached.result_type === ResultType.Loading) {
+      log(`${label} - Trusted - Loading Signal`, props);
+      resultTypes.push(cached.result_type);
       continue;
     }
 
     if (cached.result_type === ResultType.Trusted) {
       log(`${label} - Trusted - Trusted Signal`, props);
-      continue;
+    } else {
+      log(`${label} - Not Trusted - ${cached.result_type}`, props);
     }
 
-    log(`${label} - Not Trusted - ${cached.result_type}`, props);
-    trusted = false;
+    resultTypes.push(cached.result_type);
   }
 
-  return trusted;
+  return resultTypes;
 }

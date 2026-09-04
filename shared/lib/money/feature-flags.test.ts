@@ -2,11 +2,15 @@ import packageJson from '../../../package.json';
 import {
   DEFAULT_MONEY_ACCOUNT_BLOCKED_COUNTRIES,
   MONEY_ACCOUNT_GEO_BLOCKED_COUNTRIES_FLAG_NAME,
+  MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME,
   MONEY_EARNING_SECTION_ENABLED_FLAG_NAME,
+  MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME,
   MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
   getMoneyAccountGeoBlockedCountries,
   isMoneyAccountEnabled,
   isMoneyAccountGeoEligible,
+  isMoneyActivityDetailsEnabled,
+  isMoneyActivityMockDataEnabled,
   isMoneyEarningSectionEnabled,
 } from './feature-flags';
 
@@ -238,5 +242,121 @@ describe('isMoneyEarningSectionEnabled', () => {
         [MONEY_EARNING_SECTION_ENABLED_FLAG_NAME]: true,
       }),
     ).toBe(false);
+  });
+});
+
+describe('isMoneyActivityMockDataEnabled', () => {
+  let originalEnv: string | undefined;
+
+  beforeEach(() => {
+    originalEnv = process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED;
+    delete process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED;
+  });
+
+  afterEach(() => {
+    if (originalEnv === undefined) {
+      delete process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED;
+    } else {
+      process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED = originalEnv;
+    }
+  });
+
+  it('returns the remote boolean when it is true', () => {
+    expect(
+      isMoneyActivityMockDataEnabled({
+        [MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME]: true,
+      }),
+    ).toBe(true);
+  });
+
+  it('returns the remote boolean when it is false, ignoring the env var', () => {
+    process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED = 'true';
+    expect(
+      isMoneyActivityMockDataEnabled({
+        [MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME]: false,
+      }),
+    ).toBe(false);
+  });
+
+  it('falls back to the env var when the remote flag is unserved', () => {
+    process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED = 'true';
+    expect(isMoneyActivityMockDataEnabled(undefined)).toBe(true);
+    expect(isMoneyActivityMockDataEnabled({})).toBe(true);
+  });
+
+  it('falls back to the env var when the remote flag is not a boolean', () => {
+    process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED = 'true';
+    expect(
+      isMoneyActivityMockDataEnabled({
+        [MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME]: 'yes',
+      }),
+    ).toBe(true);
+  });
+
+  it('returns false when the remote flag is unserved and the env var is off', () => {
+    process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED = 'false';
+    expect(isMoneyActivityMockDataEnabled(undefined)).toBe(false);
+  });
+
+  it('returns false when the remote flag is unserved and the env var is missing', () => {
+    expect(isMoneyActivityMockDataEnabled(undefined)).toBe(false);
+  });
+});
+
+describe('isMoneyActivityDetailsEnabled', () => {
+  let originalEnv: string | undefined;
+
+  beforeEach(() => {
+    originalEnv = process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS;
+    delete process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS;
+  });
+
+  afterEach(() => {
+    if (originalEnv === undefined) {
+      delete process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS;
+    } else {
+      process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS = originalEnv;
+    }
+  });
+
+  it('returns the remote boolean when it is true', () => {
+    expect(
+      isMoneyActivityDetailsEnabled({
+        [MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME]: true,
+      }),
+    ).toBe(true);
+  });
+
+  it('returns the remote boolean when it is false, ignoring the env var', () => {
+    process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS = 'true';
+    expect(
+      isMoneyActivityDetailsEnabled({
+        [MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME]: false,
+      }),
+    ).toBe(false);
+  });
+
+  it('falls back to the env var when the remote flag is unserved', () => {
+    process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS = 'true';
+    expect(isMoneyActivityDetailsEnabled(undefined)).toBe(true);
+    expect(isMoneyActivityDetailsEnabled({})).toBe(true);
+  });
+
+  it('falls back to the env var when the remote flag is not a boolean', () => {
+    process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS = 'true';
+    expect(
+      isMoneyActivityDetailsEnabled({
+        [MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME]: 'yes',
+      }),
+    ).toBe(true);
+  });
+
+  it('returns false when the remote flag is unserved and the env var is off', () => {
+    process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS = 'false';
+    expect(isMoneyActivityDetailsEnabled(undefined)).toBe(false);
+  });
+
+  it('returns false when the remote flag is unserved and the env var is missing', () => {
+    expect(isMoneyActivityDetailsEnabled(undefined)).toBe(false);
   });
 });

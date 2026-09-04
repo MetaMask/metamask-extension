@@ -84,6 +84,31 @@ describe('SendAlerts', () => {
     expect(queryByTestId('send-alert-modal-message')).not.toBeInTheDocument();
   });
 
+  it('re-opens the network alert after reliability flaps on the same chain', () => {
+    mockUnreliableNetworkRpc({
+      isUnreliable: true,
+      networkName: 'Ethereum',
+    });
+    const { getByTestId, queryByTestId, rerender } = renderComponent();
+
+    fireEvent.click(getByTestId('send-alert-modal-cancel-button'));
+    expect(queryByTestId('send-alert-modal-message')).not.toBeInTheDocument();
+
+    mockUnreliableNetworkRpc({
+      isUnreliable: false,
+      networkName: 'Ethereum',
+    });
+    rerender(<SendAlerts />);
+    expect(queryByTestId('send-alert-modal-message')).not.toBeInTheDocument();
+
+    mockUnreliableNetworkRpc({
+      isUnreliable: true,
+      networkName: 'Ethereum',
+    });
+    rerender(<SendAlerts />);
+    expect(getByTestId('send-alert-modal-message')).toBeInTheDocument();
+  });
+
   it('navigates to edit network when Update is clicked', () => {
     mockUnreliableNetworkRpc({
       isUnreliable: true,
