@@ -17,14 +17,14 @@ import { useGasSponsorshipWarningAlerts } from './useGasSponsorshipWarningAlerts
 
 const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
+const BASE_CONFIRMATION = genUnapprovedContractInteractionConfirmation({
+  chainId: CHAIN_IDS.MONAD,
+}) as TransactionMeta;
+
 const CONFIRMATION_MOCK = {
-  ...genUnapprovedContractInteractionConfirmation({
-    chainId: CHAIN_IDS.MONAD,
-  }),
+  ...BASE_CONFIRMATION,
   txParams: {
-    ...genUnapprovedContractInteractionConfirmation({
-      chainId: CHAIN_IDS.MONAD,
-    }).txParams,
+    ...BASE_CONFIRMATION.txParams,
     from: ACCOUNT_ADDRESS,
     value: '0x0',
   },
