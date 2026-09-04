@@ -42,6 +42,39 @@ const ARBITRUM_USDC_PRICE_IN_ETH = 1 / 1700;
 const HYPERCORE_CHAIN_ID_DECIMAL = Number(CHAIN_IDS.LOCALHOST);
 const PRICE_API_BASE_URL = 'https://price.api.cx.metamask.io';
 const RELAY_API_BASE_URL = 'https://api.relay.link';
+
+/**
+ * EIP-1559 gas fee estimates for Arbitrum shared by the HTTP mock and the
+ * fixture GasFeeController seed. Keeping a single source of truth avoids
+ * the mock and seed drifting.
+ */
+const ARBITRUM_GAS_FEE_ESTIMATES = {
+  low: {
+    suggestedMaxPriorityFeePerGas: '0.01',
+    suggestedMaxFeePerGas: '0.02',
+    minWaitTimeEstimate: 15000,
+    maxWaitTimeEstimate: 30000,
+  },
+  medium: {
+    suggestedMaxPriorityFeePerGas: '0.025',
+    suggestedMaxFeePerGas: '0.05',
+    minWaitTimeEstimate: 15000,
+    maxWaitTimeEstimate: 45000,
+  },
+  high: {
+    suggestedMaxPriorityFeePerGas: '0.05',
+    suggestedMaxFeePerGas: '0.1',
+    minWaitTimeEstimate: 15000,
+    maxWaitTimeEstimate: 60000,
+  },
+  estimatedBaseFee: '0.01',
+  networkCongestion: 0.1,
+  latestPriorityFeeRange: ['0.01', '0.05'] as [string, string],
+  historicalPriorityFeeRange: ['0.01', '0.1'] as [string, string],
+  historicalBaseFeeRange: ['0.01', '0.02'] as [string, string],
+  priorityFeeTrend: 'level' as const,
+  baseFeeTrend: 'level' as const,
+};
 const RELAY_REQUEST_ID = 'perps-withdraw-e2e-request-id';
 const RELAY_TRANSACTION_HASH =
   '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
@@ -332,33 +365,7 @@ async function mockArbitrumGasData(server: Mockttp): Promise<void> {
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        low: {
-          suggestedMaxPriorityFeePerGas: '0.01',
-          suggestedMaxFeePerGas: '0.02',
-          minWaitTimeEstimate: 15000,
-          maxWaitTimeEstimate: 30000,
-        },
-        medium: {
-          suggestedMaxPriorityFeePerGas: '0.025',
-          suggestedMaxFeePerGas: '0.05',
-          minWaitTimeEstimate: 15000,
-          maxWaitTimeEstimate: 45000,
-        },
-        high: {
-          suggestedMaxPriorityFeePerGas: '0.05',
-          suggestedMaxFeePerGas: '0.1',
-          minWaitTimeEstimate: 15000,
-          maxWaitTimeEstimate: 60000,
-        },
-        estimatedBaseFee: '0.01',
-        networkCongestion: 0.1,
-        latestPriorityFeeRange: ['0.01', '0.05'],
-        historicalPriorityFeeRange: ['0.01', '0.1'],
-        historicalBaseFeeRange: ['0.01', '0.02'],
-        priorityFeeTrend: 'stable',
-        baseFeeTrend: 'stable',
-      },
+      json: ARBITRUM_GAS_FEE_ESTIMATES,
     }));
 }
 
@@ -684,89 +691,114 @@ export function getPerpsConfigEligibleWithEthLongPosition(title?: string) {
  * @returns Partial withFixtures config to spread into withFixtures().
  */
 export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
+  const fixtures = new FixtureBuilderV2()
+    .withPerpsController({
+      isEligible: true,
+      isFirstTimeUser: { mainnet: false, testnet: false },
+    })
+    .withRemoteFeatureFlagController({
+      remoteFeatureFlags: PERPS_WITHDRAW_CONFIRMATION_FLAG.remoteFeatureFlags,
+    })
+    .withTokensController({
+      allTokens: {
+        [CHAIN_IDS.ARBITRUM]: {
+          [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: [
+            {
+              address: ARBITRUM_USDC_ADDRESS,
+              symbol: 'USDC',
+              image: `https://static.cx.metamask.io/api/v1/tokenIcons/42161/${ARBITRUM_USDC_ADDRESS.toLowerCase()}.png`,
+              isERC721: false,
+              decimals: 6,
+              aggregators: ['metamask'],
+              name: 'USD Coin',
+            },
+          ],
+        },
+      },
+    })
+    .withTokenRatesController({
+      marketData: {
+        [CHAIN_IDS.ARBITRUM]: {
+          [ARBITRUM_USDC_ADDRESS]: ARBITRUM_USDC_MARKET_DATA,
+        },
+      },
+    })
+    .withAssetsController({
+      customAssets: {
+        [DEFAULT_FIXTURE_ACCOUNT_ID]: [ARBITRUM_USDC_ASSET_ID],
+      },
+      assetsBalance: {
+        [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+          [ARBITRUM_USDC_ASSET_ID]: { amount: '0' },
+        },
+      },
+      assetsInfo: {
+        [ARBITRUM_USDC_ASSET_ID]: {
+          type: 'erc20',
+          symbol: 'USDC',
+          name: 'USD Coin',
+          decimals: 6,
+        },
+        [ARBITRUM_NATIVE_ASSET_ID]: {
+          type: 'native',
+          symbol: 'ETH',
+          name: 'Ether',
+          decimals: 18,
+        },
+      },
+      assetsPrice: {
+        [ARBITRUM_USDC_ASSET_ID]: {
+          assetPriceType: 'fungible',
+          id: 'usd-coin',
+          lastUpdated: 0,
+          price: 1,
+          usdPrice: 1,
+        },
+        [ARBITRUM_NATIVE_ASSET_ID]: {
+          assetPriceType: 'fungible',
+          id: 'ethereum',
+          lastUpdated: 0,
+          price: 1700,
+          usdPrice: 1700,
+        },
+      },
+    })
+    .withCurrencyController({
+      currencyRates: {
+        ETH: {
+          conversionDate: 0,
+          conversionRate: 1700,
+          usdConversionRate: 1700,
+        },
+      },
+    })
+    // Pre-seed GasFeeController with Arbitrum gas estimates.
+    //
+    // The confirmation reads the global `gasEstimateType` before the per-
+    // transaction estimate is populated by the TransactionController. The
+    // default fixture sets it to `'none'` (localhost has no gas API), which
+    // triggers the blocking "Fee estimate unavailable" alert. The HTTP mock
+    // eventually delivers the data, but the race between the gas API response
+    // and the initial UI render causes flaky failures on slow CI.
+    //
+    // Pre-seeding the GasFeeController state eliminates the race entirely:
+    // the global type starts as `'fee-market'`, so the alert never fires.
+    .withGasFeeController({
+      gasEstimateType: 'fee-market' as const,
+      gasFeeEstimates: ARBITRUM_GAS_FEE_ESTIMATES,
+      estimatedGasFeeTimeBounds: {},
+      gasFeeEstimatesByChainId: {
+        [CHAIN_IDS.ARBITRUM]: {
+          gasEstimateType: 'fee-market' as const,
+          gasFeeEstimates: ARBITRUM_GAS_FEE_ESTIMATES,
+          estimatedGasFeeTimeBounds: {},
+        },
+      },
+    })
+    .build();
+
   return {
-    fixtures: new FixtureBuilderV2()
-      .withPerpsController({
-        isEligible: true,
-        isFirstTimeUser: { mainnet: false, testnet: false },
-      })
-      .withRemoteFeatureFlagController({
-        remoteFeatureFlags: PERPS_WITHDRAW_CONFIRMATION_FLAG.remoteFeatureFlags,
-      })
-      .withTokensController({
-        allTokens: {
-          [CHAIN_IDS.ARBITRUM]: {
-            [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: [
-              {
-                address: ARBITRUM_USDC_ADDRESS,
-                symbol: 'USDC',
-                image: `https://static.cx.metamask.io/api/v1/tokenIcons/42161/${ARBITRUM_USDC_ADDRESS.toLowerCase()}.png`,
-                isERC721: false,
-                decimals: 6,
-                aggregators: ['metamask'],
-                name: 'USD Coin',
-              },
-            ],
-          },
-        },
-      })
-      .withTokenRatesController({
-        marketData: {
-          [CHAIN_IDS.ARBITRUM]: {
-            [ARBITRUM_USDC_ADDRESS]: ARBITRUM_USDC_MARKET_DATA,
-          },
-        },
-      })
-      .withAssetsController({
-        customAssets: {
-          [DEFAULT_FIXTURE_ACCOUNT_ID]: [ARBITRUM_USDC_ASSET_ID],
-        },
-        assetsBalance: {
-          [DEFAULT_FIXTURE_ACCOUNT_ID]: {
-            [ARBITRUM_USDC_ASSET_ID]: { amount: '0' },
-          },
-        },
-        assetsInfo: {
-          [ARBITRUM_USDC_ASSET_ID]: {
-            type: 'erc20',
-            symbol: 'USDC',
-            name: 'USD Coin',
-            decimals: 6,
-          },
-          [ARBITRUM_NATIVE_ASSET_ID]: {
-            type: 'native',
-            symbol: 'ETH',
-            name: 'Ether',
-            decimals: 18,
-          },
-        },
-        assetsPrice: {
-          [ARBITRUM_USDC_ASSET_ID]: {
-            assetPriceType: 'fungible',
-            id: 'usd-coin',
-            lastUpdated: 0,
-            price: 1,
-            usdPrice: 1,
-          },
-          [ARBITRUM_NATIVE_ASSET_ID]: {
-            assetPriceType: 'fungible',
-            id: 'ethereum',
-            lastUpdated: 0,
-            price: 1700,
-            usdPrice: 1700,
-          },
-        },
-      })
-      .withCurrencyController({
-        currencyRates: {
-          ETH: {
-            conversionDate: 0,
-            conversionRate: 1700,
-            usdConversionRate: 1700,
-          },
-        },
-      })
-      .build(),
+    fixtures,
     title,
     manifestFlags: PERPS_WITHDRAW_CONFIRMATION_MANIFEST_FLAG,
     testSpecificMock: async (server: Mockttp) => {
