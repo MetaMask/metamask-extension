@@ -2728,6 +2728,7 @@
         "crypto": true
       },
       "packages": {
+        "@metamask/scure-bip39": true,
         "@metamask/superstruct": true,
         "@noble/hashes": true,
         "@scure/base": true,
