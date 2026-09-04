@@ -1,8 +1,6 @@
 import type * as Verify from './verify';
+import { sigToBytes } from './helpers';
 
-jest.mock('./canonicalize', () => ({
-  canonicalize: jest.fn((_: URL) => 'canonicalized-url'),
-}));
 jest.mock('./helpers', () => ({
   getKeyData: jest.fn(() => new Uint8Array([1, 2, 3])),
   sigToBytes: jest.fn((_: string) => new Uint8Array([4, 5, 6])),
@@ -10,6 +8,7 @@ jest.mock('./helpers', () => ({
 
 const mockVerify = jest.fn();
 const mockImportKey = jest.fn();
+const mockSigToBytes = sigToBytes as jest.MockedFunction<typeof sigToBytes>;
 
 Object.defineProperty(globalThis.crypto, 'subtle', {
   value: {
@@ -20,7 +19,6 @@ Object.defineProperty(globalThis.crypto, 'subtle', {
 
 describe('verify', () => {
   let verify: typeof Verify.verify,
-    MISSING: typeof Verify.MISSING,
     VALID: typeof Verify.VALID,
     INVALID: typeof Verify.INVALID;
 
@@ -31,7 +29,6 @@ describe('verify', () => {
     // eslint-disable-next-line import-x/extensions
     return import('./verify.ts').then((value) => {
       verify = value.verify;
-      MISSING = value.MISSING;
       VALID = value.VALID;
       INVALID = value.INVALID;
     });
@@ -42,33 +39,35 @@ describe('verify', () => {
     jest.resetModules();
   });
 
-  it('returns MISSING if sig param is not present', async () => {
-    const url = new URL('https://example.com/path');
-    expect(await verify(url)).toBe(MISSING);
-  });
-
   it('returns VALID if signature is valid', async () => {
     mockVerify.mockResolvedValueOnce(true);
 
-    const url = new URL('https://example.com/path?sig=abc');
-    const result = await verify(url);
+    const canonicalUrl = new URL('https://example.com/path?foo=bar');
+    const result = await verify('abc', canonicalUrl);
+
     expect(result).toBe(VALID);
     expect(mockImportKey).toHaveBeenCalled();
+    expect(mockSigToBytes).toHaveBeenCalledWith('abc');
     expect(mockVerify).toHaveBeenCalled();
+    expect(mockVerify.mock.calls[0][3]).toStrictEqual(
+      new TextEncoder().encode(canonicalUrl.toString()),
+    );
   });
 
   it('returns INVALID if signature is invalid', async () => {
-    const url = new URL('https://example.com/path?sig=abc');
-    const result = await verify(url);
+    const canonicalUrl = new URL('https://example.com/path?foo=bar');
+    const result = await verify('abc', canonicalUrl);
+
     expect(result).toBe(INVALID);
     expect(mockImportKey).toHaveBeenCalled();
     expect(mockVerify).toHaveBeenCalled();
   });
 
   it('caches tools after first call', async () => {
-    const url = new URL('https://example.com/path?sig=abc');
-    await verify(url);
-    await verify(url);
+    const canonicalUrl = new URL('https://example.com/path');
+    await verify('abc', canonicalUrl);
+    await verify('abc', canonicalUrl);
+
     expect(mockImportKey).toHaveBeenCalledTimes(1);
   });
 });
