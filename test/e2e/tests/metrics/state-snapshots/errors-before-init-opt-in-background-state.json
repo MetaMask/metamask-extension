@@ -39,7 +39,6 @@
     },
     "AppStateController": {
       "browserEnvironment": { "browser": "string" },
-      "canTrackWalletFundsObtained": false,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,

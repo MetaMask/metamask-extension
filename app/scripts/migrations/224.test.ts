@@ -58,7 +58,7 @@ describe(`migration #${version}`, () => {
   it('enables Basic Functionality for legacy users with more than nine children enabled', async () => {
     const versionedData = buildState(false, 10);
 
-    await migrate(versionedData);
+    await migrate(versionedData, new Set<string>());
 
     expect(versionedData.data.PreferencesController.useExternalServices).toBe(
       true,
@@ -77,7 +77,7 @@ describe(`migration #${version}`, () => {
     const versionedData = buildState(false, 0, 'socialCreate');
 
     const migratedData = cloneDeep(versionedData);
-    await migrate(migratedData);
+    await migrate(migratedData, new Set<string>());
     expect(
       migratedData.data.PreferencesController.preferences
         .basicFunctionalityMigrationNotificationPending,
@@ -87,10 +87,100 @@ describe(`migration #${version}`, () => {
   it('aligns every child preference with the landing state', async () => {
     const versionedData = buildState(false, 3);
 
-    await migrate(versionedData);
+    await migrate(versionedData, new Set<string>());
 
     for (const preference of childPreferences) {
       expect(versionedData.data.PreferencesController[preference]).toBe(false);
     }
+  });
+});
+
+const VERSION = version;
+const OLD_VERSION = VERSION - 1;
+
+describe(`migration #${VERSION}`, () => {
+  it('removes canTrackWalletFundsObtained from AppStateController', async () => {
+    const oldStorage = {
+      meta: { version: OLD_VERSION },
+      data: {
+        AppStateController: {
+          canTrackWalletFundsObtained: true,
+          connectedStatusPopoverHasBeenShown: true,
+        },
+      },
+    };
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+
+    await migrate(versionedData, changedControllers);
+
+    expect(versionedData).toStrictEqual({
+      meta: { version: VERSION },
+      data: {
+        AppStateController: {
+          connectedStatusPopoverHasBeenShown: true,
+        },
+      },
+    });
+    expect(changedControllers).toStrictEqual(new Set(['AppStateController']));
+  });
+
+  it('does not mark AppStateController changed when canTrackWalletFundsObtained is absent', async () => {
+    const oldStorage = {
+      meta: { version: OLD_VERSION },
+      data: {
+        AppStateController: {
+          connectedStatusPopoverHasBeenShown: true,
+        },
+      },
+    };
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+
+    await migrate(versionedData, changedControllers);
+
+    expect(versionedData).toStrictEqual({
+      meta: { version: VERSION },
+      data: oldStorage.data,
+    });
+    expect(changedControllers).toStrictEqual(new Set([]));
+  });
+
+  it('does nothing when AppStateController is missing', async () => {
+    const oldStorage = {
+      meta: { version: OLD_VERSION },
+      data: {
+        PreferencesController: {},
+      },
+    };
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+
+    await migrate(versionedData, changedControllers);
+
+    expect(versionedData).toStrictEqual({
+      meta: { version: VERSION },
+      data: oldStorage.data,
+    });
+    expect(changedControllers).toStrictEqual(new Set([]));
+  });
+
+  it('does nothing when AppStateController is not an object', async () => {
+    const oldStorage = {
+      meta: { version: OLD_VERSION },
+      data: {
+        AppStateController: 'not an object',
+      },
+    };
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+
+    await migrate(versionedData, changedControllers);
+
+    expect(versionedData).toStrictEqual({
+      meta: { version: VERSION },
+      data: oldStorage.data,
+    });
+    expect(changedControllers).toStrictEqual(new Set([]));
   });
 });

@@ -2494,14 +2494,6 @@
         "cockatiel": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/ramps-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true
-      }
-    },
     "@metamask/rate-limit-controller": {
       "globals": {
         "setTimeout": true
@@ -2893,7 +2885,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
+        "@metamask/ramps-controller": true,
         "@metamask/sentinel-api-service": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
@@ -3906,6 +3898,7 @@
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
+        "console.warn": true,
         "document.visibilityState": true,
         "removeEventListener": true,
         "setInterval": true,
