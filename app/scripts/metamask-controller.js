@@ -227,6 +227,7 @@ import {
   setParticipateInMetaMetrics,
   trackEvent,
   trackPage,
+  updateEventFragment,
 } from './controllers/analytics';
 import Backup from './lib/backup';
 import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
@@ -3509,15 +3510,7 @@ export default class MetamaskController extends EventEmitter {
       trackAnalyticsEvent: trackEvent,
       trackAnalyticsPage: trackPage,
       trackMetaMetricsPage: trackPage,
-      createEventFragment: metaMetricsController.createEventFragment.bind(
-        metaMetricsController,
-      ),
-      updateEventFragment: metaMetricsController.updateEventFragment.bind(
-        metaMetricsController,
-      ),
-      finalizeEventFragment: metaMetricsController.finalizeEventFragment.bind(
-        metaMetricsController,
-      ),
+      updateEventFragment,
       updateMetaMetricsTraits: metaMetricsController.updateTraits.bind(
         metaMetricsController,
       ),
@@ -5404,7 +5397,6 @@ export default class MetamaskController extends EventEmitter {
         getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
         snapAndHardwareMessenger,
         appStateController: this.appStateController,
-        metaMetricsController: this.metaMetricsController,
         analyticsController: this.analyticsController,
       }),
     );
@@ -5775,7 +5767,6 @@ export default class MetamaskController extends EventEmitter {
         getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
         snapAndHardwareMessenger,
         appStateController: this.appStateController,
-        metaMetricsController: this.metaMetricsController,
         analyticsController: this.analyticsController,
       }),
     );
@@ -6261,22 +6252,14 @@ export default class MetamaskController extends EventEmitter {
     return pendingNonce;
   }
 
-  getTransactionUIMetricsFragmentId(transactionId) {
-    return `transaction-ui-${transactionId}`;
-  }
-
-  getTransactionUIMetricsFragment(transactionId) {
-    return this.controllerMessenger.call(
-      'MetaMetricsController:getEventFragmentById',
-      this.getTransactionUIMetricsFragmentId(transactionId),
-    );
-  }
-
   getTransactionMetricsRequest() {
     const controllerActions = {
       // Transaction metrics state
-      getTransactionUIMetricsFragment:
-        this.getTransactionUIMetricsFragment.bind(this),
+      getTransactionUIMetricsFragment: (transactionId) =>
+        this.controllerMessenger.call(
+          'AnalyticsController:getEventFragmentById',
+          `transaction-ui-${transactionId}`,
+        ),
       upsertTransactionUIMetricsFragment: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',

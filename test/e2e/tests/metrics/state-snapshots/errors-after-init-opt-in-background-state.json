@@ -170,7 +170,6 @@
   "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
     "dataCollectionForMarketing": "boolean",
-    "fragments": "object",
     "marketingCampaignCookieId": null,
     "tracesBeforeMetricsOptIn": "object",
     "traits": "object"

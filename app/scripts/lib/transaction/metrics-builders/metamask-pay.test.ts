@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import type { AnalyticsEventFragment } from '@metamask/analytics-controller';
 import {
   TransactionStatus,
   TransactionType,
@@ -314,12 +315,16 @@ describe('getMetaMaskPayProperties', () => {
           ]),
           getTransactionUIMetricsFragment: jest.fn((transactionId: string) =>
             transactionId === 'parent-1'
-              ? {
+              ? ({
+                  id: 'transaction-ui-parent-1',
                   properties: {
                     mm_pay_amount_input_type: 'prefilled_max',
                     mm_pay_prefilled_amount: 250,
                   },
-                }
+                  sensitiveProperties: {},
+                  createdAt: 0,
+                  lastUpdated: 0,
+                } satisfies AnalyticsEventFragment)
               : undefined,
           ),
         },

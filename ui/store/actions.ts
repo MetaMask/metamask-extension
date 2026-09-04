@@ -144,7 +144,7 @@ import {
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import {
-  MetaMetricsEventFragment,
+  MetaMetricsEventFragmentPayload,
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
   MetaMetricsPageObject,
@@ -6088,15 +6088,9 @@ export function trackAnalyticsEvent(
   return submitRequestToBackground('trackAnalyticsEvent', [payload, options]);
 }
 
-export function createEventFragment(
-  options: MetaMetricsEventFragment,
-): Promise<string> {
-  return submitRequestToBackground('createEventFragment', [options]);
-}
-
 export function upsertTransactionUIMetricsFragment(
   transactionId: string,
-  payload: Partial<MetaMetricsEventFragment>,
+  payload: MetaMetricsEventFragmentPayload,
 ) {
   return submitRequestToBackground('upsertTransactionUIMetricsFragment', [
     transactionId,
@@ -6106,20 +6100,9 @@ export function upsertTransactionUIMetricsFragment(
 
 export function updateEventFragment(
   id: string,
-  payload: Partial<MetaMetricsEventFragment>,
+  payload: MetaMetricsEventFragmentPayload,
 ) {
   return submitRequestToBackground('updateEventFragment', [id, payload]);
-}
-
-export function finalizeEventFragment(
-  id: string,
-  options?: {
-    abandoned?: boolean;
-    page?: MetaMetricsPageObject;
-    referrer?: MetaMetricsReferrerObject;
-  },
-) {
-  return submitRequestToBackground('finalizeEventFragment', [id, options]);
 }
 
 /**
