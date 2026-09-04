@@ -8,11 +8,13 @@ import { decodeTransactionDataWithSourcify } from './sourcify';
 
 const CONTRACT_ADDRESS_MOCK = '0x456';
 const CHAIN_ID_MOCK = '0x123';
+const IMPLEMENTATION_ADDRESS_MOCK = '0x789';
 
 describe('Sourcify', () => {
   const fetchMock = jest.fn();
 
   beforeEach(() => {
+    fetchMock.mockReset();
     jest.spyOn(global, 'fetch').mockImplementation(fetchMock);
   });
 
@@ -361,6 +363,114 @@ describe('Sourcify', () => {
           ],
         }
       `);
+    });
+
+    it('retries against the implementation when the address is a proxy', async () => {
+      // The proxy's own ABI does not carry the forwarded call, and neither of the
+      // two storage slots getContractProxyAddress reads holds the pointer.
+      fetchMock
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ abi: [] }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            proxyResolution: {
+              isProxy: true,
+              implementations: [{ address: IMPLEMENTATION_ADDRESS_MOCK }],
+            },
+          }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => SOURCIFY_RESPONSE,
+        });
+
+      const result = await decodeTransactionDataWithSourcify(
+        TRANSACTION_DATA_SOURCIFY,
+        CONTRACT_ADDRESS_MOCK,
+        CHAIN_ID_MOCK,
+      );
+
+      expect(result?.name).toBe('transfer');
+      expect(fetchMock).toHaveBeenCalledTimes(3);
+      expect(fetchMock.mock.calls[0][0]).toContain('fields=abi,userdoc,devdoc');
+      expect(fetchMock.mock.calls[1][0]).toContain('fields=proxyResolution');
+      expect(fetchMock.mock.calls[2][0]).toContain(IMPLEMENTATION_ADDRESS_MOCK);
+    });
+
+    it('does not ask about proxies when the ABI already decodes the call', async () => {
+      // The common case. This is what keeps the change free for contracts that
+      // are not proxies, which is nearly all of them.
+      fetchMock.mockResolvedValue({
+        ok: true,
+        json: async () => SOURCIFY_RESPONSE,
+      });
+
+      const result = await decodeTransactionDataWithSourcify(
+        TRANSACTION_DATA_SOURCIFY,
+        CONTRACT_ADDRESS_MOCK,
+        CHAIN_ID_MOCK,
+      );
+
+      expect(result?.name).toBe('transfer');
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('stops after the proxy lookup when the address is not a proxy', async () => {
+      fetchMock
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ abi: [] }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            proxyResolution: { isProxy: false, implementations: [] },
+          }),
+        });
+
+      const result = await decodeTransactionDataWithSourcify(
+        TRANSACTION_DATA_SOURCIFY,
+        CONTRACT_ADDRESS_MOCK,
+        CHAIN_ID_MOCK,
+      );
+
+      expect(result).toBeUndefined();
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    it('gives up after one hop when the implementation does not decode the call', async () => {
+      // A proxy pointing at another proxy. The retry is deliberately one hop, so
+      // this returns undefined rather than looping.
+      fetchMock
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ abi: [] }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({
+            proxyResolution: {
+              isProxy: true,
+              implementations: [{ address: IMPLEMENTATION_ADDRESS_MOCK }],
+            },
+          }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ abi: [] }),
+        });
+
+      const result = await decodeTransactionDataWithSourcify(
+        TRANSACTION_DATA_SOURCIFY,
+        CONTRACT_ADDRESS_MOCK,
+        CHAIN_ID_MOCK,
+      );
+
+      expect(result).toBeUndefined();
+      expect(fetchMock).toHaveBeenCalledTimes(3);
     });
   });
 });

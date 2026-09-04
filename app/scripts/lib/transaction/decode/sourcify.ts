@@ -7,6 +7,9 @@ import {
 
 const log = createProjectLogger('sourcify');
 
+const ABI_FIELDS = 'abi,userdoc,devdoc';
+const PROXY_FIELDS = 'proxyResolution';
+
 export type SourcifyResponse = {
   abi?: {
     inputs: { name: string; type: string }[];
@@ -27,6 +30,10 @@ export type SourcifyResponse = {
       };
     };
   };
+  proxyResolution?: {
+    isProxy: boolean;
+    implementations: { address: string; name?: string }[];
+  };
 };
 
 export async function decodeTransactionDataWithSourcify(
@@ -34,21 +41,58 @@ export async function decodeTransactionDataWithSourcify(
   contractAddress: Hex,
   chainId: Hex,
 ): Promise<DecodedTransactionDataMethod | undefined> {
-  const { abi, userdoc, devdoc } = await fetchSourcifyContract(
+  const contract = await fetchSourcifyContract(
     contractAddress,
     chainId,
+    ABI_FIELDS,
   );
 
   log('Retrieved Sourcify contract', {
     contractAddress,
     chainId,
-    abi,
-    userdoc,
-    devdoc,
+    ...contract,
   });
 
-  if (!abi) {
+  if (!contract.abi) {
     throw new Error('ABI not found');
+  }
+
+  const decoded = decodeWithContract(transactionData, contract);
+
+  if (decoded) {
+    return decoded;
+  }
+
+  // A proxy's own ABI does not describe the calls it forwards, and
+  // getContractProxyAddress only reads the two standard implementation slots.
+  // Sourcify resolves the proxies that keep the pointer somewhere else. Ask it
+  // only once the address's own ABI has failed to explain the call, so
+  // contracts that are not proxies, which is nearly all of them, cost no extra
+  // request.
+  const implementation = await fetchProxyImplementation(
+    contractAddress,
+    chainId,
+  );
+
+  if (!implementation) {
+    return undefined;
+  }
+
+  log('Retrying with Sourcify proxy implementation', implementation);
+
+  return decodeWithContract(
+    transactionData,
+    await fetchSourcifyContract(implementation, chainId, ABI_FIELDS),
+  );
+}
+
+function decodeWithContract(
+  transactionData: Hex,
+  { abi, userdoc, devdoc }: SourcifyResponse,
+): DecodedTransactionDataMethod | undefined {
+  if (!abi) {
+    log('No ABI in Sourcify response');
+    return undefined;
   }
 
   const contractInterface = new Interface(abi);
@@ -144,14 +188,32 @@ function decodeParam(
   };
 }
 
+async function fetchProxyImplementation(
+  address: Hex,
+  chainId: Hex,
+): Promise<Hex | undefined> {
+  const { proxyResolution } = await fetchSourcifyContract(
+    address,
+    chainId,
+    PROXY_FIELDS,
+  );
+
+  if (!proxyResolution?.isProxy) {
+    return undefined;
+  }
+
+  return proxyResolution.implementations[0]?.address as Hex | undefined;
+}
+
 async function fetchSourcifyContract(
   address: Hex,
   chainId: Hex,
+  fields: string,
 ): Promise<SourcifyResponse> {
   const chainIdDecimal = parseInt(chainId, 16);
 
   const response = await fetch(
-    `https://sourcify.dev/server/v2/contract/${chainIdDecimal}/${address}?fields=abi,userdoc,devdoc`,
+    `https://sourcify.dev/server/v2/contract/${chainIdDecimal}/${address}?fields=${fields}`,
   );
 
   if (!response.ok) {
