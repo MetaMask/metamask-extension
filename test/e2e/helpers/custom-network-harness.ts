@@ -1,5 +1,5 @@
 import { Mockttp } from 'mockttp';
-import type { CaipAssetType, Hex } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import type { NativeAssetIdentifiersMap } from '@metamask/network-enablement-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../constants';
@@ -23,8 +23,7 @@ export type CustomNetworkScenario =
   | 'nativeAndErc20'
   | 'dualNetworkWithErc20'
   | 'conversionRate'
-  | 'unsupportedPrice'
-  | 'wrongDecimals';
+  | 'unsupportedPrice';
 
 export type CustomNetworkConfig = {
   id: CustomNetworkId;
@@ -46,29 +45,6 @@ const SEEDED_ERC20_ADDRESS = '0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947';
 const SEEDED_ERC20_ASSET_ID = `eip155:50/erc20:${SEEDED_ERC20_ADDRESS}`;
 const MAINNET_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
 const MAINNET_CHAIN_ID_HEX = '0x1';
-
-/** 6-decimal HyperEVM frxUSD fixture used by the `wrongDecimals` scenario. */
-export const FRXUSD_SYMBOL = 'frxUSD';
-export const FRXUSD_DECIMALS = 6;
-/** Human amount stored on AssetsController / Accounts API v5 (not raw 6-decimal units). */
-export const FRXUSD_HUMAN_BALANCE = '11.811649';
-export const FRXUSD_ADDRESS = '0xcacd6fd266af91b8aed52accc382b4e165586e29';
-export const FRXUSD_CHECKSUM_ADDRESS =
-  '0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29';
-export const FRXUSD_ASSET_ID =
-  `eip155:999/erc20:${FRXUSD_ADDRESS}` as CaipAssetType;
-/**
- * Tokens-tab primary amount. `formatTokenQuantity` uses Intl decimal style
- * (max 3 fraction digits), so 11.811649 renders as 11.812. Treating the raw
- * 6-decimal amount `11811649` as a whole number instead compact-formats to
- * `11.81M`.
- */
-export const FRXUSD_DISPLAY_AMOUNT = `11.812 ${FRXUSD_SYMBOL}`;
-
-export type CustomNetworkAccountsApiBalance = {
-  assetId: string;
-  balance: string;
-};
 
 const CUSTOM_NETWORKS: Record<CustomNetworkId, CustomNetworkConfig> = {
   xdc: {
@@ -185,16 +161,6 @@ function erc20CatalogAsset(): CatalogAsset {
   };
 }
 
-function frxUsdCatalogAsset(): CatalogAsset {
-  return {
-    name: FRXUSD_SYMBOL,
-    symbol: FRXUSD_SYMBOL,
-    decimals: FRXUSD_DECIMALS,
-    priceInUsd: 1,
-    assetIds: [FRXUSD_ASSET_ID],
-  };
-}
-
 function mainnetNativeCatalogAsset(): CatalogAsset {
   return {
     name: 'Ethereum',
@@ -221,8 +187,6 @@ function catalogAssetsFor(
         nativeCatalogAsset(network),
         erc20CatalogAsset(),
       ];
-    case 'wrongDecimals':
-      return [nativeCatalogAsset(network), frxUsdCatalogAsset()];
     default: {
       const exhaustive: never = scenario;
       throw new Error(`Unknown scenario: ${String(exhaustive)}`);
@@ -238,7 +202,6 @@ function priceModeFor(scenario: CustomNetworkScenario): PriceMode {
     case 'nativeAndErc20':
     case 'dualNetworkWithErc20':
     case 'conversionRate':
-    case 'wrongDecimals':
       return 'quoted';
     default: {
       const exhaustive: never = scenario;
@@ -256,9 +219,6 @@ function assertScenarioSupportsNetwork(
     id !== 'xdc'
   ) {
     throw new Error(`${scenario} is only defined for xdc, not ${id}`);
-  }
-  if (scenario === 'wrongDecimals' && id !== 'hyperevm') {
-    throw new Error(`${scenario} is only defined for hyperevm, not ${id}`);
   }
 }
 
@@ -323,107 +283,11 @@ function applyScenarioState(
             },
           },
         });
-    case 'wrongDecimals':
-      return builder.withAssetsController({
-        customAssets: { [DEFAULT_FIXTURE_ACCOUNT_ID]: [FRXUSD_ASSET_ID] },
-        assetsBalance: {
-          [DEFAULT_FIXTURE_ACCOUNT_ID]: {
-            [network.uiNativeAssetId]: { amount: '25' },
-            [FRXUSD_ASSET_ID]: { amount: FRXUSD_HUMAN_BALANCE },
-          },
-        },
-        assetsInfo: {
-          [FRXUSD_ASSET_ID]: {
-            aggregators: ['Metamask'],
-            decimals: FRXUSD_DECIMALS,
-            image: `https://static.cx.metamask.io/api/v1/tokenIcons/${network.chainIdDecimal}/${FRXUSD_ADDRESS}.png`,
-            name: FRXUSD_SYMBOL,
-            symbol: FRXUSD_SYMBOL,
-            type: 'erc20',
-          },
-        },
-      });
     default: {
       const exhaustive: never = scenario;
       throw new Error(`Unknown scenario: ${String(exhaustive)}`);
     }
   }
-}
-
-function accountsApiBalancesFor(
-  network: CustomNetworkConfig,
-  scenario: CustomNetworkScenario,
-): { additionalBalances: CustomNetworkAccountsApiBalance[] } | undefined {
-  switch (scenario) {
-    case 'wrongDecimals':
-      return {
-        additionalBalances: [
-          { assetId: network.uiNativeAssetId, balance: '25' },
-          { assetId: FRXUSD_ASSET_ID, balance: FRXUSD_HUMAN_BALANCE },
-        ],
-      };
-    case 'nativeSend':
-    case 'nativeAndErc20':
-    case 'dualNetworkWithErc20':
-    case 'conversionRate':
-    case 'unsupportedPrice':
-      return undefined;
-    default: {
-      const exhaustive: never = scenario;
-      throw new Error(`Unknown scenario: ${String(exhaustive)}`);
-    }
-  }
-}
-
-/**
- * First-`always()` Accounts API v5 handler so it wins over the default
- * mock in `mock-e2e.js`. `balance` strings are human amounts.
- * @param mockServer
- * @param rows
- */
-async function mockAccountsApiBalances(
-  mockServer: Mockttp,
-  rows: CustomNetworkAccountsApiBalance[],
-) {
-  return mockServer
-    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
-    .always()
-    .thenCallback((req) => {
-      const url = new URL(req.url);
-      const accountIdsParam = url.searchParams.get('accountIds') ?? '';
-      const accountIds = accountIdsParam ? accountIdsParam.split(',') : [];
-      const balances: {
-        accountId: string;
-        assetId: string;
-        balance: string;
-      }[] = [];
-
-      for (const accountId of accountIds) {
-        const parts = accountId.split(':');
-        if (parts[0] !== 'eip155' || parts.length < 3) {
-          continue;
-        }
-        const chainPrefix = `eip155:${parts[1]}/`;
-        for (const row of rows) {
-          if (row.assetId.startsWith(chainPrefix)) {
-            balances.push({
-              accountId,
-              assetId: row.assetId,
-              balance: row.balance,
-            });
-          }
-        }
-      }
-
-      return {
-        statusCode: 200,
-        json: {
-          count: balances.length,
-          balances,
-          unprocessedNetworks: [],
-        },
-      };
-    });
 }
 
 export type CustomNetworkSetup = {
@@ -431,9 +295,6 @@ export type CustomNetworkSetup = {
   localNodeOptions: { type: 'anvil'; options: { chainId: number } }[];
   testSpecificMock: (mockServer: Mockttp) => Promise<unknown[]>;
   network: CustomNetworkConfig;
-  unifiedEvmAccountsApiBalances?: {
-    additionalBalances: CustomNetworkAccountsApiBalance[];
-  };
 };
 
 /**
@@ -462,10 +323,6 @@ export function prepareCustomNetwork(
 
   const assets = catalogAssetsFor(network, scenario);
   const priceMode = priceModeFor(scenario);
-  const unifiedEvmAccountsApiBalances = accountsApiBalancesFor(
-    network,
-    scenario,
-  );
 
   return {
     fixtures: builder.build(),
@@ -473,22 +330,11 @@ export function prepareCustomNetwork(
       { type: 'anvil', options: { chainId: network.chainIdDecimal } },
     ],
     testSpecificMock: async (mockServer: Mockttp) => {
-      const tokenAndPriceMocks = await mockTokenAndPriceApis(mockServer, {
+      return mockTokenAndPriceApis(mockServer, {
         assets,
         priceMode,
       });
-      const additionalBalances =
-        unifiedEvmAccountsApiBalances?.additionalBalances;
-      if (!additionalBalances) {
-        return tokenAndPriceMocks;
-      }
-      const accountsApiMock = await mockAccountsApiBalances(
-        mockServer,
-        additionalBalances,
-      );
-      return [...tokenAndPriceMocks, accountsApiMock];
     },
     network,
-    unifiedEvmAccountsApiBalances,
   };
 }

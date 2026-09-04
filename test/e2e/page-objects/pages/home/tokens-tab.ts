@@ -135,9 +135,6 @@ class TokensTab extends HomePage {
   private readonly tokenConfirmListItem =
     '.import-tokens-modal__confirm-token-list-item-wrapper';
 
-  private readonly tokenDecimalsInDetails =
-    '[data-testid="asset-token-decimals"]';
-
   private readonly tokenDecimalsInput =
     '[data-testid="import-tokens-modal-custom-decimals"]';
 
@@ -383,19 +380,6 @@ class TokensTab extends HomePage {
       text: tokenAmount,
     });
     console.log(`Token amount ${tokenAmount} was found`);
-  }
-
-  /**
-   * Verifies the Token decimal row on the asset details page.
-   *
-   * @param decimals - Expected decimal count shown next to "Token decimal".
-   */
-  async checkTokenDecimalsInDetails(decimals: number): Promise<void> {
-    console.log(`Verifying token decimal ${decimals} on asset details`);
-    await this.driver.waitForSelector({
-      css: this.tokenDecimalsInDetails,
-      text: String(decimals),
-    });
   }
 
   /**
