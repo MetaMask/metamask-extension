@@ -33,10 +33,7 @@ const AddRpcUrlModal = ({
   const [url, setUrl] = useState<string>();
   const nameRef = useRef<HTMLInputElement>(null);
   const error = (() => {
-    if (!url) {
-      return undefined;
-    }
-    if (isWebUrl(url)) {
+    if (!url || isWebUrl(url)) {
       return undefined;
     }
     if (isWebUrl(`https://${url}`)) {

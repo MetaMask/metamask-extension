@@ -43,6 +43,7 @@
   "AppStateController": {
     "activeQrCodeScanRequest": null,
     "addressSecurityAlertResponses": "object",
+    "arcUsageNoticeShown": "boolean",
     "browserEnvironment": { "browser": "string", "os": "string" },
     "connectedStatusPopoverHasBeenShown": true,
     "currentExtensionPopupId": "number",

@@ -15,6 +15,7 @@ const mockUseMoneyAccountBalance = jest.fn();
 const mockUseMoneyAccountInterest = jest.fn();
 const mockUseMoneyDepositTokens = jest.fn();
 const mockUseMoneyActivityItems = jest.fn();
+const mockUseMoneyActivityItemClick = jest.fn();
 const mockUseMoneyAccountDeposit = jest.fn();
 const mockInitiateDeposit = jest.fn();
 const mockUseMoneyAccountWithdrawal = jest.fn();
@@ -82,11 +83,16 @@ jest.mock('../../hooks/money/useMoneyAccountWithdrawal', () => ({
   useMoneyAccountWithdrawal: () => mockUseMoneyAccountWithdrawal(),
 }));
 
+jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
+  useMoneyActivityItemClick: () => mockUseMoneyActivityItemClick(),
+}));
+
 describe('MoneyHomePage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSelectMoneyEarningSectionEnabled.mockReturnValue(true);
     mockGetPrivacyMode.mockReturnValue(false);
+    mockUseMoneyActivityItemClick.mockReturnValue(undefined);
     mockUseMoneyAccountAvailability.mockReturnValue({
       availability: {
         isAvailable: true,
@@ -364,6 +370,28 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByText(messages.moneyActivityDeposited.message),
     ).toBeInTheDocument();
+  });
+
+  it('invokes the item click handler when details navigation is enabled', () => {
+    const onItemClick = jest.fn();
+    const items = MOCK_MONEY_TRANSACTIONS.map(onchainItem);
+    mockUseMoneyActivityItemClick.mockReturnValue(onItemClick);
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('3475.45'),
+      totalFiatFormatted: '$3,475.45',
+      totalFiatRaw: '3475.45',
+      vaultApyQuery: { isLoading: false },
+    });
+    mockUseMoneyActivityItems.mockReturnValue({ items });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId(`money-activity-row-${items[0].id}`));
+    expect(onItemClick).toHaveBeenCalledWith(items[0]);
   });
 
   it('shows earnings skeletons during the initial interest load', () => {

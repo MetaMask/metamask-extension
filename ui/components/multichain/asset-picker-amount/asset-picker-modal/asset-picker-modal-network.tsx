@@ -141,13 +141,10 @@ export const AssetPickerModalNetwork = ({
     return initialState;
   });
 
-  // Reset checkedChainIds if selectedChainIds change in parent component
-  const networksListKey = networksList?.map(({ chainId }) => chainId).join('|');
-  const selectedChainIdsKey = selectedChainIds?.join('|');
-  const [prevNetworksSyncKey, setPrevNetworksSyncKey] = useState(
-    `${networksListKey ?? ''}:${selectedChainIdsKey ?? ''}`,
-  );
-  const networksSyncKey = `${networksListKey ?? ''}:${selectedChainIdsKey ?? ''}`;
+  // Sync checkedChainIds when parent network selection changes (string key avoids unstable array refs).
+  const networksSyncKey = `${networksList?.map(({ chainId }) => chainId).join('|') ?? ''}:${selectedChainIds?.join('|') ?? ''}`;
+  const [prevNetworksSyncKey, setPrevNetworksSyncKey] =
+    useState(networksSyncKey);
 
   if (networksSyncKey !== prevNetworksSyncKey) {
     setPrevNetworksSyncKey(networksSyncKey);
