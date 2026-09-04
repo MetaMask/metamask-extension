@@ -25,6 +25,19 @@ export type ConfirmContextType = {
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
   /** Route to use for cancel / reject / auto-exit; captured once from URL on mount. */
   goBackTo: string | undefined;
+  /**
+   * True when the money-account deposit amount is the user's full pay-token
+   * balance (Max / uncapped 100% prefill). Money-account deposits never set
+   * the TransactionPayController `isMaxAmount` (the vault calldata needs a
+   * concrete pre-quote amount), so this UI-only flag lets the insufficient-
+   * balance alert apply the same Max false-positive tolerance for the bridge
+   * spread / quote rounding without touching Pay config.
+   *
+   * Optional so the many test helpers that build a partial context value do not
+   * all need updating; the provider below always supplies both.
+   */
+  isMaxMoneyDeposit?: boolean;
+  setIsMaxMoneyDeposit?: (isMaxMoneyDeposit: boolean) => void;
 };
 
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
@@ -45,10 +58,25 @@ export const ConfirmContextProvider = ({
   const [goBackTo] = useState(goBackFromUrl);
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
+  const [isMaxMoneyDeposit, setIsMaxMoneyDeposit] = useState(false);
   const { currentConfirmation: currentConfirmationFromHook } =
     useCurrentConfirmation(confirmationId);
   const currentConfirmation =
     currentConfirmationOverride ?? currentConfirmationFromHook;
+  const currentConfirmationId = currentConfirmation?.id;
+
+  // Reset the Max-deposit flag whenever the rendered confirmation changes so a
+  // following confirmation in the same mounted UI does not inherit it. Skip the
+  // initial mount (the flag already defaults to false there) so a consumer that
+  // sets it during the same commit is not immediately clobbered.
+  const hasMountedRef = useRef(false);
+  useEffect(() => {
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      return;
+    }
+    setIsMaxMoneyDeposit(false);
+  }, [currentConfirmationId]);
 
   useSyncConfirmPath(
     currentConfirmationOverride === undefined ? currentConfirmation : undefined,
@@ -92,12 +120,16 @@ export const ConfirmContextProvider = ({
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
       goBackTo,
+      isMaxMoneyDeposit,
+      setIsMaxMoneyDeposit,
     }),
     [
       currentConfirmation,
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
       goBackTo,
+      isMaxMoneyDeposit,
+      setIsMaxMoneyDeposit,
     ],
   );
 
@@ -121,5 +153,7 @@ export const useConfirmContext = <CurrentConfirmation = Confirmation>() => {
     isScrollToBottomCompleted: boolean;
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
     goBackTo: string | undefined;
+    isMaxMoneyDeposit?: boolean;
+    setIsMaxMoneyDeposit?: (isMaxMoneyDeposit: boolean) => void;
   };
 };

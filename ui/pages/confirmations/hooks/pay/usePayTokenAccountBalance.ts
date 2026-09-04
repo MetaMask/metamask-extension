@@ -140,10 +140,22 @@ export function usePayTokenAccountBalance(): {
     const computedUsd = usdRate
       ? humanBalance.times(String(usdRate))
       : new BigNumber(0);
-    // `useTokenFiatRate` can return a non-USD unit (e.g. 1 × native rate).
-    // Never report less USD than the Pay-with snapshot — that made every
-    // non-Max deposit look insufficient while Max skipped the USD check.
-    const balanceUsd = BigNumber.max(snapshotUsd, computedUsd).toString(10);
+
+    // Spendable USD must not exceed the Pay-with snapshot or the live
+    // raw×rate figure. Taking max() inflated Max/prefill above the displayed
+    // balance (e.g. $55.7 vs Pay with $54.71) so quotes failed while tapping
+    // Max later (after balances aligned) worked.
+    //
+    // When the live rate is missing or clearly broken (computed ≪ snapshot),
+    // keep the snapshot so insufficient-funds checks do not false-positive.
+    let balanceUsd: string;
+    if (!usdRate || computedUsd.lte(0)) {
+      balanceUsd = snapshotUsd.toString(10);
+    } else if (snapshotUsd.gt(0)) {
+      balanceUsd = BigNumber.min(snapshotUsd, computedUsd).toString(10);
+    } else {
+      balanceUsd = computedUsd.toString(10);
+    }
 
     return { balanceUsd, balanceRaw };
   }, [accountTokens, payToken, usdRate]);

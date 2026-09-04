@@ -26,13 +26,13 @@ import {
   getAssetsBySelectedAccountGroup,
   getAssetsBySelectedAccountGroupIncludingHidden,
 } from '../../../../selectors/assets';
-import { getAccountGroupsByAddress } from '../../../../selectors/multichain-accounts/account-tree';
-import type { MultichainAccountsState } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { getIsTokenManagementFilterEnabled } from '../../../../selectors/multichain/feature-flags';
 import type { MetaMaskReduxState } from '../../../../store/store';
 import { AssetStandard, type Asset } from '../../types/send';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useChainNetworkNameAndImageMap } from '../useChainNetworkNameAndImage';
+import { useAccountOverrideGroupId } from './useAccountOverrideGroupId';
+import { useEnsureAccountGroupAssets } from './useEnsureAccountGroupAssets';
 
 export type EnrichTokenRequest = {
   chainId: Hex;
@@ -57,15 +57,23 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
   const chainNetworkNAmeAndImageMap = useChainNetworkNameAndImageMap();
   const includeHiddenTokens = useSelector(getIsTokenManagementFilterEnabled);
   const accountOverride = useTransactionAccountOverride();
+  const overrideGroupId = useAccountOverrideGroupId();
   const globalAssets = useSelector(
     includeHiddenTokens
       ? getAssetsBySelectedAccountGroupIncludingHidden
       : getAssetsBySelectedAccountGroup,
   );
   const accountAssets = useAccountGroupAssets(
-    accountOverride,
+    overrideGroupId,
     includeHiddenTokens,
   );
+
+  // Assets are only fetched automatically for the selected account group, so an
+  // override account the user has never activated has no entry in assets state.
+  // Request it on demand, otherwise the token list stays permanently empty and
+  // money-account deposit shows a false "no funds" alert.
+  useEnsureAccountGroupAssets(overrideGroupId);
+
   // When an account override is active, always use its assets (even if empty)
   // to avoid showing stale tokens from the globally selected account.
   const assets = useMemo(
@@ -254,19 +262,9 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
 };
 
 function useAccountGroupAssets(
-  accountAddress: string | undefined,
+  accountGroupId: ReturnType<typeof useAccountOverrideGroupId>,
   includeHiddenTokens: boolean,
 ): AccountGroupAssets | undefined {
-  const accountGroupId = useSelector((state) => {
-    if (!accountAddress) {
-      return undefined;
-    }
-
-    return getAccountGroupsByAddress(state as MultichainAccountsState, [
-      accountAddress,
-    ])[0]?.id;
-  });
-
   const overrideAssets = useSelector((state: MetaMaskReduxState) =>
     getAssetsByAccountGroupId(state, accountGroupId, {
       includeHidden: includeHiddenTokens,

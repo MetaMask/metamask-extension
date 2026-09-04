@@ -35,6 +35,7 @@ import {
   MUSD_TOKEN_ADDRESS,
 } from '../../constants/musd';
 import { useDepositPrefillAmount } from './useDepositPrefillAmount';
+import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
 
 export const MAX_LENGTH = 28;
@@ -65,7 +66,7 @@ export function useTransactionCustomAmount({
   const [isInputChanged, setInputChanged] = useState(false);
   const [amountHumanDebounced, setAmountHumanDebounced] = useState('0');
 
-  const { currentConfirmation: transactionMeta } =
+  const { currentConfirmation: transactionMeta, setIsMaxMoneyDeposit } =
     useConfirmContext<TransactionMeta>();
   const { chainId, id: transactionId } = transactionMeta ?? {};
 
@@ -97,8 +98,14 @@ export function useTransactionCustomAmount({
       : (payTokenFiatRate ?? 1);
   const hasBalanceUsdOverride = balanceUsdOverride !== undefined;
   const balanceUsd = usePayTokenBalanceUsd(balanceUsdOverride);
+  // Live funding-account raw balance — payToken.balanceRaw is a controller
+  // snapshot that can be 0/stale on money-account deposits (tx `from` is the
+  // vault). Prefill often runs before that snapshot updates; Max later works
+  // once it does. Prefer live raw so prefill matches Max.
+  const { balanceRaw: livePayTokenBalanceRaw } = usePayTokenAccountBalance();
 
   const { payToken } = useTransactionPayToken();
+  const accountOverride = useTransactionAccountOverride();
   const { isNoFeeToken } = usePayWithNoFeeToken();
   const isNoFeePayToken = Boolean(
     payToken && isNoFeeToken(payToken.address, String(payToken.chainId)),
@@ -114,9 +121,10 @@ export function useTransactionCustomAmount({
   const hasPrefilledMaxRef = useRef(false);
   const userEditedRef = useRef(false);
   // Full-precision human amount from payToken.balanceRaw for money-account
-  // deposit Max. Bypasses the lossy fiat roundtrip (ROUND_DOWN → ÷ rate →
-  // ROUND_UP) that can request more than the wallet holds. The controller's
-  // isMaxAmount path uses the same raw payment-token balance.
+  // deposit Max and no-fee percentage chips. Bypasses the lossy fiat
+  // roundtrip (ROUND_DOWN → ÷ rate → ROUND_UP) that can request more than the
+  // wallet holds. The controller's isMaxAmount path uses the same raw
+  // payment-token balance for 100%.
   const depositMaxHumanRef = useRef<string | null>(null);
   // Mirrors `userEditedRef` for render-time use: the ref is needed to block
   // prefill synchronously, before the next render, while the state is what the
@@ -188,11 +196,10 @@ export function useTransactionCustomAmount({
     // use it for Max display so the field matches the submitted total.
     // Withdrawals: target USD is destination-received value after bridge
     // fees, not the mUSD being withdrawn — keep the typed amount.
+    // For input-based quotes, the quote target is the amount received after
+    // fees, not the total source amount selected by Max.
     const targetAmountUsd = totals?.targetAmount?.usd;
 
-    // For input-based quotes, the quote target is the amount received after
-    // fees, not the total source amount selected by Max. Keep the input amount
-    // in state so it does not jump down when the quote resolves.
     if (
       !isInputBased &&
       !isMoneyAccountWithdraw &&
@@ -229,13 +236,22 @@ export function useTransactionCustomAmount({
     return value.isFinite() && value.gt(0);
   }, [amountFiat]);
 
-  // The raw-balance Max amount is token-specific and must not be reused after
-  // a Pay with switch. A user-typed USD amount is not: deposit prefill already
-  // recomputes on token change and only skips overwrite when userEditedRef is
-  // set, so clearing that ref would replace the typed value with 50%/100%.
+  // Pay-with / funding-account switches are token-specific: drop the raw Max
+  // human amount and clear the edit guard so deposit prefill can re-apply the
+  // new token's 50%/100%. Typed amounts only stick for the current token.
   useEffect(() => {
     depositMaxHumanRef.current = null;
-  }, [payToken?.address, payToken?.chainId]);
+    userEditedRef.current = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- clear edit guard so the new token can prefill
+    setEditedTransactionId(undefined);
+    // The new token re-prefills and re-asserts Max mode if applicable.
+    setIsMaxMoneyDeposit?.(false);
+  }, [
+    payToken?.address,
+    payToken?.chainId,
+    accountOverride,
+    setIsMaxMoneyDeposit,
+  ]);
 
   useEffect(() => {
     // Record immediately so Send is enabled and confirm can encode without
@@ -306,6 +322,9 @@ export function useTransactionCustomAmount({
         setIsMax(false);
       }
 
+      // A manual edit is no longer the full-balance Max deposit.
+      setIsMaxMoneyDeposit?.(false);
+
       depositMaxHumanRef.current = null;
 
       if (transactionId) {
@@ -319,7 +338,7 @@ export function useTransactionCustomAmount({
 
       setAmountFiat(newAmount);
     },
-    [isMaxAmount, setIsMax, transactionId],
+    [isMaxAmount, setIsMax, setIsMaxMoneyDeposit, transactionId],
   );
 
   const updatePendingAmountPercentage = useCallback(
@@ -340,16 +359,27 @@ export function useTransactionCustomAmount({
         setEditedTransactionId(transactionId);
       }
 
+      // Track full-balance (100%) money-account deposits so the insufficient-
+      // balance alert can tolerate the bridge spread / quote rounding the same
+      // way it does for `isMaxAmount` Pay flows. Any smaller percentage is an
+      // explicit sub-max amount and must still surface a real shortfall.
+      if (isMoneyAccountDeposit) {
+        setIsMaxMoneyDeposit?.(percentage === 100);
+      }
+
       const newAmountFiatValue = new BigNumber(percentage)
         .dividedBy(100)
         .times(balanceUsdValue);
-      // Max deposits set isMaxAmount so TPC uses the exact payment-token raw
-      // balance; isMoneyAccountDeposit also makes the Relay flow non-atomic.
-      // Do not set isMaxAmount for money-account withdraw. The background
-      // controller cannot synchronously read the UI's vault-withdrawable
+      // Money-account deposits never set isMaxAmount — Max / uncapped prefill
+      // submit exact pay-token balanceRaw as requiredAssets instead.
+      // Do not set isMaxAmount for money-account withdraw either: the
+      // background cannot synchronously read the UI's vault-withdrawable
       // balance override, so the already-typed amount remains authoritative.
       const shouldSetMaxAmountMode =
-        percentage === 100 && !hasBalanceUsdOverride && !isMoneyAccountWithdraw;
+        percentage === 100 &&
+        !hasBalanceUsdOverride &&
+        !isMoneyAccountDeposit &&
+        !isMoneyAccountWithdraw;
       // Keep the displayed fiat rounded except for balanceUsdOverride Max
       // (Perps withdraw), which must preserve the full typed balance.
       const newAmountFiat = (
@@ -365,14 +395,34 @@ export function useTransactionCustomAmount({
       }
 
       // `updateTokenAmount` treats the human amount as the destination token
-      // (mUSD), so the raw pay-token balance is only a valid Max amount for
-      // no-fee (subsidised) sources, which convert 1:1. Max is only rendered
-      // for those tokens; anything else uses the fiat conversion below.
-      const isMaxMoneyAccountDeposit =
-        percentage === 100 && isMoneyAccountDeposit && isNoFeePayToken;
-      depositMaxHumanRef.current = isMaxMoneyAccountDeposit
-        ? getHumanAmountFromBalanceRaw(payToken?.balanceRaw, payToken?.decimals)
-        : null;
+      // (mUSD), so the raw pay-token balance is only a valid amount for
+      // no-fee (subsidised) sources, which convert 1:1. Uncapped 100% deposit
+      // prefill uses the same raw path even if the no-fee flag is briefly
+      // false on first paint — otherwise fiat conversion overshoots and Max
+      // later works only because isNoFee is then true.
+      // Prefer the lesser of live vs snapshot raw so the submitted amount
+      // never exceeds either balance.
+      const isRawMoneyAccountDeposit =
+        isMoneyAccountDeposit &&
+        (isNoFeePayToken || (isPrefill && percentage === 100));
+      const depositMaxBalanceRaw = getPreferredPayTokenBalanceRaw(
+        livePayTokenBalanceRaw,
+        payToken?.balanceRaw,
+      );
+      if (!isRawMoneyAccountDeposit) {
+        depositMaxHumanRef.current = null;
+      } else if (percentage === 100) {
+        depositMaxHumanRef.current = getHumanAmountFromBalanceRaw(
+          depositMaxBalanceRaw,
+          payToken?.decimals,
+        );
+      } else {
+        depositMaxHumanRef.current = getHumanAmountFromBalanceRawPercentage(
+          depositMaxBalanceRaw,
+          payToken?.decimals,
+          percentage,
+        );
+      }
 
       if (transactionId) {
         upsertTransactionUIMetricsFragment(transactionId, {
@@ -421,9 +471,11 @@ export function useTransactionCustomAmount({
       isMoneyAccountDeposit,
       isMoneyAccountWithdraw,
       isNoFeePayToken,
+      livePayTokenBalanceRaw,
       payToken?.balanceRaw,
       payToken?.decimals,
       setIsMax,
+      setIsMaxMoneyDeposit,
       tokenFiatRate,
       transactionId,
       updateTokenAmountCallback,
@@ -445,6 +497,9 @@ export function useTransactionCustomAmount({
       if (!balanceUsdValue.isFinite() || !prefillFiat.isFinite()) {
         return;
       }
+
+      // Capped / 50% / literal prefills are not a full-balance Max deposit.
+      setIsMaxMoneyDeposit?.(false);
 
       // $0 pay token: show 0.0 so the field is usable. Do not request a quote.
       if (balanceUsdValue.lte(0)) {
@@ -501,6 +556,7 @@ export function useTransactionCustomAmount({
       hasBalanceUsdOverride,
       isMaxAmount,
       setIsMax,
+      setIsMaxMoneyDeposit,
       tokenFiatRate,
       transactionId,
       updateTokenAmountCallback,
@@ -508,9 +564,9 @@ export function useTransactionCustomAmount({
   );
 
   // Money-account deposit prefill (feature-flagged). Re-applies when the pay
-  // token or funding account changes, unless the user has edited the amount.
-  // Only `hasPrefilled` is a dependency (matches mobile): balance updates on
-  // the same token must not overwrite a committed prefill.
+  // token or funding account changes (edit guard cleared above). Only
+  // `hasPrefilled` is a dependency (matches mobile): balance updates on the
+  // same token must not overwrite a committed prefill.
   useEffect(() => {
     if (!shouldUseDepositPrefill) {
       prevDepositHasPrefilledRef.current = depositPrefill.hasPrefilled;
@@ -525,7 +581,15 @@ export function useTransactionCustomAmount({
     }
 
     if (depositPrefill.hasPrefilled) {
-      applyDepositPrefillAmount(depositPrefill.prefillAmount ?? '0');
+      // Uncapped 100% (stablecoin) submits exact balanceRaw as requiredAssets
+      // (never isMaxAmount). The fiat literal path can ROUND_UP past available
+      // balance and yield "No quotes".
+      if (depositPrefill.isUncappedMaxPrefill) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- apply deposit prefill when hasPrefilled commits
+        updatePendingAmountPercentage(100, { isPrefill: true });
+      } else {
+        applyDepositPrefillAmount(depositPrefill.prefillAmount ?? '0');
+      }
     } else if (prevDepositHasPrefilledRef.current) {
       setAmountFiat('0.0');
     }
@@ -565,9 +629,9 @@ export function useTransactionCustomAmount({
     hasAmount,
     hasInput,
     isDepositPrefillEnabled: shouldUseDepositPrefill,
-    // A pay token or funding account change restarts the prefill computation,
-    // but the result is discarded once the user has typed, so reporting it as
-    // loading would swap their amount for a skeleton and back again.
+    // Hide the skeleton after a manual edit on the *current* token. A pay
+    // token / funding account change clears the edit guard so loading (and
+    // the new prefill) can show again.
     isDepositPrefillLoading:
       shouldUseDepositPrefill &&
       depositPrefill.isLoading &&
@@ -613,11 +677,39 @@ function usePayTokenBalanceUsd(balanceUsdOverride?: number) {
   return new BigNumber(balanceUsd ?? 0).toNumber();
 }
 
+function getPreferredPayTokenBalanceRaw(
+  liveBalanceRaw?: string,
+  snapshotBalanceRaw?: string,
+): string | undefined {
+  const live =
+    liveBalanceRaw && !new BigNumber(liveBalanceRaw).isZero()
+      ? new BigNumber(liveBalanceRaw)
+      : null;
+  const snapshot =
+    snapshotBalanceRaw && !new BigNumber(snapshotBalanceRaw).isZero()
+      ? new BigNumber(snapshotBalanceRaw)
+      : null;
+
+  // When both are known, use the smaller so the submitted Max/prefill amount
+  // never exceeds the TPC payment-token snapshot (isMax source) or the live
+  // wallet balance — mismatch here is a common first-open "No quotes".
+  if (live && snapshot) {
+    return BigNumber.min(live, snapshot).toFixed(0);
+  }
+  if (live) {
+    return live.toFixed(0);
+  }
+  if (snapshot) {
+    return snapshot.toFixed(0);
+  }
+  return undefined;
+}
+
 function getHumanAmountFromBalanceRaw(
   balanceRaw?: string,
   decimals?: number,
 ): string | null {
-  if (!balanceRaw) {
+  if (!balanceRaw || new BigNumber(balanceRaw).isZero()) {
     return null;
   }
 
@@ -630,6 +722,39 @@ function getHumanAmountFromBalanceRaw(
   }
 
   return humanAmount.toString(10);
+}
+
+/**
+ * Exact human amount for a percentage of a raw token balance.
+ * Rounds the raw portion down so the request never exceeds `balanceRaw`.
+ *
+ * @param balanceRaw - Token balance in base units.
+ * @param decimals - Token decimals (defaults to 6 for mUSD).
+ * @param percentage - Percent of balance to take (0-100).
+ * @returns Human amount string, or null when the balance is unusable.
+ */
+function getHumanAmountFromBalanceRawPercentage(
+  balanceRaw: string | undefined,
+  decimals: number | undefined,
+  percentage: number,
+): string | null {
+  if (!balanceRaw || new BigNumber(balanceRaw).isZero() || percentage <= 0) {
+    return null;
+  }
+
+  const tokenDecimals = decimals ?? 6;
+  const rawPortion = new BigNumber(balanceRaw)
+    .times(percentage)
+    .dividedBy(100)
+    .round(0, BigNumber.ROUND_DOWN);
+
+  if (rawPortion.lte(0)) {
+    return null;
+  }
+
+  return rawPortion
+    .dividedBy(new BigNumber(10).pow(tokenDecimals))
+    .toString(10);
 }
 
 function isZeroHumanAmount(value: string): boolean {

@@ -204,7 +204,7 @@ describe('TransactionPayControllerInit', () => {
       expect(config).toEqual({ isMaxAmount: true });
     });
 
-    it('sets atomic false for a max money-account deposit', () => {
+    it('keeps isMaxAmount false for money-account deposits', () => {
       const { api, setTransactionConfigMock } = initApi();
 
       api.setTransactionPayIsMaxAmount('tx-1', true, {
@@ -215,10 +215,10 @@ describe('TransactionPayControllerInit', () => {
       const config: { isMaxAmount?: boolean; atomic?: boolean } = {};
       updater(config as never);
 
-      expect(config).toEqual({ isMaxAmount: true, atomic: false });
+      expect(config).toEqual({ isMaxAmount: false, atomic: false });
     });
 
-    it('clears atomic when max is unset on a money-account deposit', () => {
+    it('keeps isMaxAmount false when clearing max on a money-account deposit', () => {
       const { api, setTransactionConfigMock } = initApi();
 
       api.setTransactionPayIsMaxAmount('tx-1', false, {
@@ -231,7 +231,7 @@ describe('TransactionPayControllerInit', () => {
       };
       updater(config as never);
 
-      expect(config).toEqual({ isMaxAmount: false, atomic: undefined });
+      expect(config).toEqual({ isMaxAmount: false, atomic: false });
     });
   });
 
@@ -393,8 +393,11 @@ describe('TransactionPayControllerInit', () => {
       );
 
       const updater = setTransactionConfigMock.mock.calls[0][1];
-      const config: { accountOverride?: string; isQuoteRequired?: boolean } =
-        {};
+      const config: {
+        accountOverride?: string;
+        isQuoteRequired?: boolean;
+        atomic?: boolean;
+      } = {};
       updater(config as never);
 
       expect(setTransactionConfigMock).toHaveBeenCalledWith(
@@ -404,6 +407,7 @@ describe('TransactionPayControllerInit', () => {
       expect(config).toEqual({
         accountOverride: ACCOUNT_OVERRIDE,
         isQuoteRequired: true,
+        atomic: false,
       });
     });
   });
@@ -456,16 +460,36 @@ describe('TransactionPayControllerInit', () => {
   });
 
   describe('api.updateMoneyAccountDepositAmount', () => {
-    it('forwards the transaction id and human amount', async () => {
-      const { api } = TransactionPayControllerInit(getInitRequestMock());
+    it('forces non-atomic quote-required config then forwards the amount', async () => {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
       if (!api) {
         throw new Error('Expected init result to expose an api');
       }
       updateDepositAmountMock.mockResolvedValue(true);
+      const setTransactionConfigMock = jest.mocked(
+        messengerClient.setTransactionConfig,
+      );
 
       const result = await api.updateMoneyAccountDepositAmount('tx-1', '10');
 
       expect(result).toBe(true);
+      expect(setTransactionConfigMock).toHaveBeenCalledWith(
+        'tx-1',
+        expect.any(Function),
+      );
+      const updater = setTransactionConfigMock.mock.calls[0][1];
+      const config: {
+        atomic?: boolean;
+        isQuoteRequired?: boolean;
+        isMaxAmount?: boolean;
+      } = {};
+      updater(config as never);
+      expect(config).toEqual({
+        atomic: false,
+        isQuoteRequired: true,
+        isMaxAmount: false,
+      });
       expect(updateDepositAmountMock).toHaveBeenCalledWith(
         expect.anything(),
         'tx-1',
