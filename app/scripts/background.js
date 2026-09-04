@@ -108,6 +108,7 @@ import {
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 import {
+  BACKGROUND_LIVENESS_STREAM,
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
@@ -428,7 +429,7 @@ const handleOnConnect = async (port) => {
       data: {
         method: BACKGROUND_LIVENESS_METHOD,
       },
-      name: 'background-liveness',
+      name: BACKGROUND_LIVENESS_STREAM,
     });
   } catch (e) {
     log.error(
