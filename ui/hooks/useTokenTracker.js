@@ -94,17 +94,29 @@ export function useTokenTracker({
     return teardownTracker;
   }, [teardownTracker]);
 
-  // Effect to set loading state and initialize tracker when values change
+  const trackerKey = `${userAddress ?? ''}|${chainId ?? ''}|${rpcUrl ?? ''}`;
+  const [prevTrackerKey, setPrevTrackerKey] = useState(trackerKey);
+  const [prevMemoizedTokens, setPrevMemoizedTokens] = useState(memoizedTokens);
+
+  if (trackerKey !== prevTrackerKey || memoizedTokens !== prevMemoizedTokens) {
+    setPrevTrackerKey(trackerKey);
+    setPrevMemoizedTokens(memoizedTokens);
+    // Indicate to the user that their token values are updating
+    setLoading(true);
+    if (memoizedTokens.length === 0) {
+      setTokensWithBalances([]);
+      setLoading(false);
+      setError(null);
+    }
+  }
+
+  // Effect to initialize tracker when values change
   useEffect(() => {
     // This effect will only run initially and when:
     // 1. chainId is updated,
     // 2. rpc url is changd,
     // 3. userAddress is changed,
     // 4. token list is updated and not equal to previous list
-    // in any of these scenarios, we should indicate to the user that their token
-    // values are in the process of updating by setting loading state.
-    setLoading(true);
-
     if (!userAddress || chainId === undefined || !global.ethereumProvider) {
       // If we do not have enough information to build a TokenTracker, we exit early
       // When the values above change, the effect will be restarted. We also teardown
@@ -114,8 +126,8 @@ export function useTokenTracker({
     }
 
     if (memoizedTokens.length === 0) {
-      // sets loading state to false and token list to empty
-      updateBalances([]);
+      teardownTracker();
+      return;
     }
 
     buildTracker(userAddress, memoizedTokens);
