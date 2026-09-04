@@ -35,6 +35,9 @@ let currentConsensysRequestId: string | undefined;
 const requestIdByTraceId = new Map<string, string | null>();
 const MAX_TRACE_REQUEST_ID_ENTRIES = 100;
 
+const TRACE_ID = /^[0-9a-f]{32}$/u;
+const SPAN_ID = /^[0-9a-f]{16}$/u;
+
 /**
  * Override the `consensys-request-id` source (e.g. a per-operation provider
  * that returns one id for all HTTP calls within a transaction lifecycle).
@@ -164,6 +167,46 @@ function toHeaders(existing: unknown): Headers {
  * @param fields.requestId - The `consensys-request-id`.
  * @returns A new `Headers` instance to assign to the request init.
  */
+/**
+ * Rewrite the SDK's `traceparent` so the sampled bit is set and the parent span
+ * id matches the one `sentry-trace` advertises.
+ *
+ * ADR-0060's propagation contract requires the W3C `trace-flags` sampled bit to
+ * travel unconditionally, "so that backend can continue every trace into Tempo".
+ * The SDK does the opposite: a deferred or negatively sampled decision yields
+ * `-00`, a parent-respecting backend sampler then records nothing, and the trace
+ * is absent from Tempo as well as Sentry — measured as 0 backend spans from 5
+ * requests, against 3 of 3 with `-01`, same host and same baggage.
+ *
+ * Sending `-01` for a trace the client did not keep produces a backend span whose
+ * parent is not in Sentry. That is intended: Tempo is the comprehensive store and
+ * orphan roots are normal there at low client sample rates. Keeping those spans
+ * out of Sentry is the collector's `sentry.sampled` filter, not the client's job
+ * — the two conditions are independent, and suppressing the header to fix Sentry
+ * costs Tempo the trace.
+ *
+ * `sentry-trace` is deliberately left alone, so Sentry's own view of the sampling
+ * decision stays honest.
+ *
+ * @param headers - Outbound headers, after the SDK has populated them.
+ */
+function forceSampledTraceparent(headers: Headers): void {
+  const sentryTrace = headers.get('sentry-trace');
+  const traceparent = headers.get('traceparent');
+  if (!sentryTrace || !traceparent) {
+    return;
+  }
+
+  const [traceId, spanId] = sentryTrace.split('-');
+  if (!TRACE_ID.test(traceId ?? '') || !SPAN_ID.test(spanId ?? '')) {
+    return;
+  }
+
+  // The SDK mints an independent span id for each header when no span is active,
+  // so the two can name different parents; align them on `sentry-trace`'s.
+  headers.set('traceparent', `00-${traceId}-${spanId}-01`);
+}
+
 export function buildAugmentedHeaders(
   args: unknown[],
   { requestId }: { requestId: string },
@@ -182,6 +225,7 @@ export function buildAugmentedHeaders(
   // `baggage` is appended (not set): repeated baggage headers are merged by the
   // browser, so this preserves the SDK's Sentry-prefixed entries.
   headers.append('baggage', buildConsensysBaggage(requestId));
+  forceSampledTraceparent(headers);
   return headers;
 }
 

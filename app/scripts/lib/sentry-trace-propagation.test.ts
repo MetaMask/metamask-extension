@@ -173,6 +173,71 @@ describe('buildAugmentedHeaders', () => {
     expect(headers.get('baggage')).toContain(CONSENSYS_BAGGAGE);
   });
 
+  it('forces the sampled bit on traceparent for an unsampled trace', () => {
+    const headers = buildAugmentedHeaders(
+      [
+        BACKEND_URL,
+        {
+          headers: {
+            // What the SDK emits with no active span: deferred sentry-trace,
+            // traceparent unsampled, and an independently minted span id.
+            'sentry-trace': `${TRACE_ID}-${SPAN_ID}`,
+            traceparent: `00-${TRACE_ID}-0123456789abcdef-00`,
+          },
+        },
+      ],
+      { requestId: 'req-1' },
+    );
+
+    expect(headers.get('traceparent')).toBe(`00-${TRACE_ID}-${SPAN_ID}-01`);
+  });
+
+  it('leaves sentry-trace untouched, so Sentry still sees the real decision', () => {
+    const headers = buildAugmentedHeaders(
+      [
+        BACKEND_URL,
+        {
+          headers: {
+            'sentry-trace': `${TRACE_ID}-${SPAN_ID}`,
+            traceparent: `00-${TRACE_ID}-0123456789abcdef-00`,
+          },
+        },
+      ],
+      { requestId: 'req-1' },
+    );
+
+    expect(headers.get('sentry-trace')).toBe(`${TRACE_ID}-${SPAN_ID}`);
+  });
+
+  it('aligns the traceparent parent span id with sentry-trace', () => {
+    const headers = buildAugmentedHeaders(
+      [
+        BACKEND_URL,
+        {
+          headers: {
+            'sentry-trace': `${TRACE_ID}-${SPAN_ID}-1`,
+            traceparent: `00-${TRACE_ID}-fedcba9876543210-01`,
+          },
+        },
+      ],
+      { requestId: 'req-1' },
+    );
+
+    expect(headers.get('traceparent')).toBe(`00-${TRACE_ID}-${SPAN_ID}-01`);
+  });
+
+  it('leaves headers alone when the SDK attached no traceparent', () => {
+    const headers = buildAugmentedHeaders(
+      [
+        'https://example.invalid/thing',
+        { headers: { 'sentry-trace': `${TRACE_ID}-${SPAN_ID}` } },
+      ],
+      { requestId: 'req-1' },
+    );
+
+    expect(headers.get('traceparent')).toBeNull();
+  });
+
   it('does not inject a traceparent of its own', () => {
     const headers = buildAugmentedHeaders([BACKEND_URL], {
       requestId: 'uuid-fixed',
