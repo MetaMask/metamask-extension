@@ -3,10 +3,10 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   useTransition,
 } from 'react';
-import { flushSync } from 'react-dom';
 
 import {
   AccountGroupId,
@@ -76,6 +76,7 @@ import { useFormatters } from '../../../hooks/useFormatters';
 import { getAccountGroupDisplayBalance } from '../../../helpers/utils/account-group-balance';
 import { VirtualizedList } from '../../ui/virtualized-list/virtualized-list';
 import { useDispatch } from '../../../store/hooks';
+import { animateAccountListReorder } from './animate-account-list-reorder';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -112,73 +113,6 @@ function isPrivateKeyWallet(wallet: AccountWalletObject): boolean {
   );
 }
 
-const ACCOUNT_LIST_FLIP_DURATION_MS = 280;
-const ACCOUNT_LIST_FLIP_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)';
-
-/**
- * FLIP-animates account rows after a synchronous list reorder.
- *
- * Uses the CSS `translate` property so it composes with VirtualizedList's
- * `transform: translateY(...)` positioning instead of overwriting it.
- *
- * @param update - Synchronous state update that reorders the list.
- */
-function animateAccountListReorder(update: () => void): void {
-  const prefersReducedMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-
-  if (process.env.IN_TEST || prefersReducedMotion) {
-    update();
-    return;
-  }
-
-  const firstTops = new Map<string, number>();
-  document
-    .querySelectorAll<HTMLElement>('[data-account-list-flip-id]')
-    .forEach((node) => {
-      const id = node.dataset.accountListFlipId;
-      if (id) {
-        firstTops.set(id, node.getBoundingClientRect().top);
-      }
-    });
-
-  flushSync(update);
-
-  document
-    .querySelectorAll<HTMLElement>('[data-account-list-flip-id]')
-    .forEach((node) => {
-      const id = node.dataset.accountListFlipId;
-      const firstTop = id === undefined ? undefined : firstTops.get(id);
-      if (firstTop === undefined) {
-        return;
-      }
-
-      const deltaY = firstTop - node.getBoundingClientRect().top;
-      if (Math.abs(deltaY) < 1) {
-        return;
-      }
-
-      node.style.transition = 'none';
-      node.style.translate = `0 ${deltaY}px`;
-      // Force layout so the inverted position is committed before playing.
-      // eslint-disable-next-line no-void
-      void node.offsetHeight;
-      node.style.transition = `translate ${ACCOUNT_LIST_FLIP_DURATION_MS}ms ${ACCOUNT_LIST_FLIP_EASING}`;
-      node.style.translate = '0 0';
-
-      const cleanup = (event: TransitionEvent) => {
-        if (event.propertyName !== 'translate') {
-          return;
-        }
-        node.style.transition = '';
-        node.style.translate = '';
-        node.removeEventListener('transitionend', cleanup);
-      };
-      node.addEventListener('transitionend', cleanup);
-    });
-}
-
 /**
  * Finds an account group across every wallet in the tree.
  *
@@ -197,28 +131,6 @@ function findAccountGroup(
     }
   }
   return undefined;
-}
-
-/**
- * Drops optimistic overrides that account tree metadata has caught up with, so
- * only in-flight hide/reveal toggles keep overriding the store.
- *
- * @param overrides - Pending optimistic visibility map.
- * @param wallets - Account tree wallets.
- * @returns The same map when nothing settled, otherwise a pruned copy.
- */
-function pruneSettledOverrides(
-  overrides: Record<string, boolean>,
-  wallets: AccountTreeWallets,
-): Record<string, boolean> {
-  const pending = Object.entries(overrides).filter(([groupId, hidden]) => {
-    const group = findAccountGroup(wallets, groupId);
-    return group ? (group.metadata.hidden ?? false) !== hidden : true;
-  });
-
-  return pending.length === Object.keys(overrides).length
-    ? overrides
-    : Object.fromEntries(pending);
 }
 
 /**
@@ -336,6 +248,9 @@ export const MultichainAccountList = ({
     Record<string, boolean>
   >({});
 
+  // Identifies the latest hide/reveal write per account group.
+  const visibilityWriteIds = useRef<Record<string, number>>({});
+
   const [openMenuAccountId, setOpenMenuAccountId] =
     useState<AccountGroupId | null>(null);
 
@@ -418,34 +333,37 @@ export const MultichainAccountList = ({
   const handleVisibilityToggle = useCallback(
     async (accountGroupId: AccountGroupId, currentlyHidden: boolean) => {
       const nextHidden = !currentlyHidden;
+      const writeId = (visibilityWriteIds.current[accountGroupId] ?? 0) + 1;
+      visibilityWriteIds.current[accountGroupId] = writeId;
 
       animateAccountListReorder(() => {
         setVisibilityOverrides((previous) => ({
-          // Settled overrides are dropped here so the map only ever holds
-          // toggles the store has not confirmed yet.
-          ...pruneSettledOverrides(previous, wallets),
+          ...previous,
           [accountGroupId]: nextHidden,
         }));
       });
 
-      // The pinned section takes precedence over hidden accounts, so a pinned
-      // account has to be unpinned as it is hidden or it would stay put looking
-      // untouched. This mirrors the account menu's hide action.
-      const group = findAccountGroup(wallets, accountGroupId);
-      if (nextHidden && group?.metadata.pinned) {
-        await dispatch(setAccountGroupPinned(accountGroupId, false));
-      }
+      try {
+        // The pinned section takes precedence over hidden accounts, so a pinned
+        // account has to be unpinned as it is hidden or it would stay put
+        // looking untouched. This mirrors the account menu's hide action.
+        const group = findAccountGroup(wallets, accountGroupId);
+        if (nextHidden && group?.metadata.pinned) {
+          await dispatch(setAccountGroupPinned(accountGroupId, false));
+        }
 
-      await dispatch(setAccountGroupHidden(accountGroupId, nextHidden));
+        await dispatch(setAccountGroupHidden(accountGroupId, nextHidden));
+      } finally {
+        // A later toggle owns the override until its own write settles, so only
+        // the most recent write hands the account back to the tree.
+        if (visibilityWriteIds.current[accountGroupId] === writeId) {
+          setVisibilityOverrides(
+            ({ [accountGroupId]: _settled, ...remaining }) => remaining,
+          );
+        }
+      }
     },
     [dispatch, wallets],
-  );
-
-  // An override only applies while the store disagrees with it, so this is
-  // derived from the tree on every render rather than pruned in an effect.
-  const pendingVisibilityOverrides = useMemo(
-    () => pruneSettledOverrides(visibilityOverrides, wallets),
-    [visibilityOverrides, wallets],
   );
 
   const handleMenuToggle = useCallback((accountGroupId: AccountGroupId) => {
@@ -471,7 +389,7 @@ export const MultichainAccountList = ({
     Object.entries(wallets).forEach(([walletId, walletData]) => {
       Object.entries(walletData.groups || {}).forEach(
         ([groupId, groupData]) => {
-          if (isPinnedInList(groupId, groupData, pendingVisibilityOverrides)) {
+          if (isPinnedInList(groupId, groupData, visibilityOverrides)) {
             pinned.push({ groupId, groupData, walletId });
           }
         },
@@ -479,7 +397,7 @@ export const MultichainAccountList = ({
     });
 
     return pinned;
-  }, [wallets, pendingVisibilityOverrides]);
+  }, [wallets, visibilityOverrides]);
 
   const defaultHandleAccountClick = useCallback(
     (accountGroupId: AccountGroupId) => {
@@ -572,7 +490,7 @@ export const MultichainAccountList = ({
         getEffectiveIsHidden(
           groupId,
           groupData.metadata.hidden,
-          pendingVisibilityOverrides,
+          visibilityOverrides,
         );
 
       const isConnectedAccount = connectedAccountGroups.find(
@@ -687,7 +605,7 @@ export const MultichainAccountList = ({
       showDefaultAddress,
       isEditMode,
       internalAccountsById,
-      pendingVisibilityOverrides,
+      visibilityOverrides,
       handleVisibilityToggle,
     ],
   );
@@ -732,7 +650,7 @@ export const MultichainAccountList = ({
 
       Object.entries(walletData.groups || {}).forEach(
         ([groupId, groupData]) => {
-          if (isPinnedInList(groupId, groupData, pendingVisibilityOverrides)) {
+          if (isPinnedInList(groupId, groupData, visibilityOverrides)) {
             return;
           }
 
@@ -749,7 +667,7 @@ export const MultichainAccountList = ({
             getEffectiveIsHidden(
               groupId,
               groupData.metadata?.hidden,
-              pendingVisibilityOverrides,
+              visibilityOverrides,
             )
           ) {
             hiddenAccounts.push(accountItem);
@@ -808,7 +726,7 @@ export const MultichainAccountList = ({
     collapsedSectionKeys,
     showDefaultAddress,
     isEditMode,
-    pendingVisibilityOverrides,
+    visibilityOverrides,
     t,
   ]);
 
