@@ -664,6 +664,75 @@ describe('PerpsOrderEntryPage', () => {
       ).toHaveValue('2500');
     });
 
+    it('does not reset the live form when the restored draft expires', () => {
+      const initialTime = 1_000_000;
+      const dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(initialTime);
+      const state = createMockState();
+      (state.metamask as Record<string, unknown>).tradeConfigurations = {
+        mainnet: {
+          ETH: {
+            pendingConfig: {
+              amount: '25',
+              leverage: 5,
+              orderType: 'limit',
+              limitPrice: '3000',
+              direction: 'long',
+              timestamp: initialTime,
+            },
+          },
+        },
+        testnet: {},
+      };
+      const store = mockStore(state);
+
+      try {
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+        enterAmount('30');
+
+        dateNowSpy.mockReturnValue(initialTime + 30_000);
+        act(() => {
+          store.dispatch({ type: 'test/draft-expired' });
+        });
+
+        expect(
+          screen.getByTestId('amount-input-field').querySelector('input'),
+        ).toHaveValue('30');
+        expect(
+          screen.getByTestId('limit-price-input').querySelector('input'),
+        ).toHaveValue('3000');
+      } finally {
+        dateNowSpy.mockRestore();
+      }
+    });
+
+    it('prefers an explicit route order type over the restored draft', () => {
+      mockSearchParams.set('orderType', 'market');
+      const state = createMockState();
+      (state.metamask as Record<string, unknown>).tradeConfigurations = {
+        mainnet: {
+          ETH: {
+            pendingConfig: {
+              amount: '25',
+              leverage: 5,
+              orderType: 'limit',
+              limitPrice: '3000',
+              direction: 'long',
+              timestamp: Date.now(),
+            },
+          },
+        },
+        testnet: {},
+      };
+
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(state));
+
+      expect(screen.getByTestId('order-type-market')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+    });
+
     it('saves the latest draft only when leaving the route', () => {
       const { unmount } = renderWithProvider(
         <PerpsOrderEntryPage />,

@@ -22,6 +22,7 @@ let mockVisibleRangeCallback:
   | ((range: { from: number; to: number } | null) => void)
   | undefined;
 const mockSetVisibleLogicalRange = jest.fn();
+const mockScrollToRealTime = jest.fn();
 let mockCreatedSeries: { ref: object }[] = [];
 let mockCreatedCharts: { panes: jest.Mock; remove: jest.Mock }[] = [];
 
@@ -31,7 +32,7 @@ jest.mock('lightweight-charts', () => ({
     const timeScale = {
       fitContent: jest.fn(),
       scrollToPosition: jest.fn(),
-      scrollToRealTime: jest.fn(),
+      scrollToRealTime: mockScrollToRealTime,
       getVisibleLogicalRange: jest.fn(),
       setVisibleLogicalRange: mockSetVisibleLogicalRange,
       subscribeVisibleLogicalRangeChange: jest.fn((callback) => {
@@ -295,6 +296,7 @@ describe('PerpsCandlestickChart visible candle persistence', () => {
   beforeEach(() => {
     mockVisibleRangeCallback = undefined;
     mockSetVisibleLogicalRange.mockReset();
+    mockScrollToRealTime.mockReset();
     mockUseTheme.mockReturnValue('light');
   });
 
@@ -328,8 +330,13 @@ describe('PerpsCandlestickChart visible candle persistence', () => {
 
   it('does not persist a smaller count caused by limited initial history', () => {
     const onVisibleCandleCountChange = jest.fn();
+    let currentRange: { from: number; to: number } | null = null;
     mockSetVisibleLogicalRange.mockImplementation((range) => {
+      currentRange = range;
       mockVisibleRangeCallback?.(range);
+    });
+    mockScrollToRealTime.mockImplementation(() => {
+      mockVisibleRangeCallback?.(currentRange);
     });
     const candleData = {
       symbol: 'ETH',

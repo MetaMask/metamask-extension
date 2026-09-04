@@ -285,7 +285,7 @@ export function usePerpsOrderForm({
       ...mockOrderFormDefaults,
       asset,
       direction: initialDirection,
-      type: initialDraft?.type ?? orderType,
+      type: orderType,
       leverage,
       ...buildDefaultNewOrderAmountFields(amount, leverage, availableBalance),
       limitPrice: initialDraft?.limitPrice ?? '',
@@ -301,7 +301,6 @@ export function usePerpsOrderForm({
     initialDraft?.limitPrice,
     initialDraft?.stopLossPrice,
     initialDraft?.takeProfitPrice,
-    initialDraft?.type,
     initialAmountValue,
     defaultLeverage,
     orderType,
@@ -373,15 +372,27 @@ export function usePerpsOrderForm({
     initialDraftDigest: string | undefined;
   } | null>(null);
 
-  if (
+  const resetDependenciesChanged =
     prevResetDeps === null ||
     prevResetDeps.mode !== mode ||
     prevResetDeps.asset !== asset ||
     prevResetDeps.initialDirection !== initialDirection ||
     prevResetDeps.existingPositionDigest !== existingPositionDigest ||
     prevResetDeps.initialLeverage !== initialLeverage ||
-    prevResetDeps.initialDraftDigest !== initialDraftDigest
-  ) {
+    prevResetDeps.initialDraftDigest !== initialDraftDigest;
+  const shouldResetForLeverageChange =
+    prevResetDeps?.initialLeverage !== initialLeverage &&
+    formState.leverage !== initialLeverage;
+  const shouldResetForm =
+    prevResetDeps === null ||
+    prevResetDeps.mode !== mode ||
+    prevResetDeps.asset !== asset ||
+    prevResetDeps.initialDirection !== initialDirection ||
+    prevResetDeps.existingPositionDigest !== existingPositionDigest ||
+    prevResetDeps.initialDraftDigest !== initialDraftDigest ||
+    shouldResetForLeverageChange;
+
+  if (resetDependenciesChanged) {
     setPrevResetDeps({
       mode,
       asset,
@@ -391,41 +402,43 @@ export function usePerpsOrderForm({
       initialDraftDigest,
     });
 
-    const resetLeverage =
-      initialDraft?.leverage ?? initialLeverage ?? TRADING_DEFAULTS.leverage;
-    const defaultAmountFields =
-      mode === 'new'
-        ? buildDefaultNewOrderAmountFields(
-            initialAmountValue,
-            resetLeverage,
-            availableBalance,
-          )
-        : {};
+    if (shouldResetForm) {
+      const resetLeverage =
+        initialDraft?.leverage ?? initialLeverage ?? TRADING_DEFAULTS.leverage;
+      const defaultAmountFields =
+        mode === 'new'
+          ? buildDefaultNewOrderAmountFields(
+              initialAmountValue,
+              resetLeverage,
+              availableBalance,
+            )
+          : {};
 
-    hasUserEditedAmount.current = Boolean(initialDraft?.amount);
-    if (mode === 'modify' && existingPosition) {
-      setFormState({
-        ...mockOrderFormDefaults,
-        asset,
-        direction: initialDirection,
-        type: orderType,
-        ...deriveModifyFields(existingPosition),
-      });
-    } else {
-      setFormState(
-        initialDraft
-          ? buildNewOrderState()
-          : {
-              ...mockOrderFormDefaults,
-              asset,
-              direction: initialDirection,
-              type: orderType,
-              ...(initialLeverage !== undefined && {
-                leverage: initialLeverage,
-              }),
-              ...defaultAmountFields,
-            },
-      );
+      hasUserEditedAmount.current = Boolean(initialDraft?.amount);
+      if (mode === 'modify' && existingPosition) {
+        setFormState({
+          ...mockOrderFormDefaults,
+          asset,
+          direction: initialDirection,
+          type: orderType,
+          ...deriveModifyFields(existingPosition),
+        });
+      } else {
+        setFormState(
+          initialDraft
+            ? buildNewOrderState()
+            : {
+                ...mockOrderFormDefaults,
+                asset,
+                direction: initialDirection,
+                type: orderType,
+                ...(initialLeverage !== undefined && {
+                  leverage: initialLeverage,
+                }),
+                ...defaultAmountFields,
+              },
+        );
+      }
     }
   }
 

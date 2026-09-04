@@ -506,6 +506,10 @@ const PerpsOrderEntryPage = () => {
   const directionParam = searchParams.get('direction');
   const modeParam = searchParams.get('mode');
   const orderTypeParam = searchParams.get('orderType');
+  const explicitOrderType =
+    orderTypeParam === 'market' || orderTypeParam === 'limit'
+      ? orderTypeParam
+      : undefined;
   const routeDirection: OrderDirection =
     directionParam === 'short' ? 'short' : 'long';
   const [orderMode] = useState<OrderMode>(
@@ -514,34 +518,49 @@ const PerpsOrderEntryPage = () => {
   const [ignoredDraftSymbol, setIgnoredDraftSymbol] = useState<string | null>(
     null,
   );
+  const [pendingDraftSnapshot, setPendingDraftSnapshot] = useState({
+    symbol: decodedSymbol,
+    configuration: pendingTradeConfiguration,
+  });
+  if (pendingDraftSnapshot.symbol !== decodedSymbol) {
+    setPendingDraftSnapshot({
+      symbol: decodedSymbol,
+      configuration: pendingTradeConfiguration,
+    });
+  }
+  const initialPendingTradeConfiguration =
+    pendingDraftSnapshot.symbol === decodedSymbol
+      ? pendingDraftSnapshot.configuration
+      : pendingTradeConfiguration;
   const isPendingDraftCompatible =
     orderMode === 'new' &&
     ignoredDraftSymbol !== decodedSymbol &&
-    (!pendingTradeConfiguration?.direction ||
-      pendingTradeConfiguration.direction === routeDirection);
+    (!initialPendingTradeConfiguration?.direction ||
+      initialPendingTradeConfiguration.direction === routeDirection);
   const restoredOrderDraft = useMemo<OrderFormDraft | undefined>(() => {
-    if (!isPendingDraftCompatible || !pendingTradeConfiguration) {
+    if (!isPendingDraftCompatible || !initialPendingTradeConfiguration) {
       return undefined;
     }
     let restoredOrderType = persistedSelectedOrderType;
     if (
-      pendingTradeConfiguration.orderType === 'market' ||
-      pendingTradeConfiguration.orderType === 'limit'
+      initialPendingTradeConfiguration.orderType === 'market' ||
+      initialPendingTradeConfiguration.orderType === 'limit'
     ) {
-      restoredOrderType = pendingTradeConfiguration.orderType;
+      restoredOrderType = initialPendingTradeConfiguration.orderType;
     }
     return {
-      amount: pendingTradeConfiguration.amount,
-      leverage: pendingTradeConfiguration.leverage,
-      takeProfitPrice: pendingTradeConfiguration.takeProfitPrice,
-      stopLossPrice: pendingTradeConfiguration.stopLossPrice,
-      limitPrice: pendingTradeConfiguration.limitPrice,
-      type: restoredOrderType,
+      amount: initialPendingTradeConfiguration.amount,
+      leverage: initialPendingTradeConfiguration.leverage,
+      takeProfitPrice: initialPendingTradeConfiguration.takeProfitPrice,
+      stopLossPrice: initialPendingTradeConfiguration.stopLossPrice,
+      limitPrice: initialPendingTradeConfiguration.limitPrice,
+      type: explicitOrderType ?? restoredOrderType,
       direction: routeDirection,
     };
   }, [
+    explicitOrderType,
     isPendingDraftCompatible,
-    pendingTradeConfiguration,
+    initialPendingTradeConfiguration,
     persistedSelectedOrderType,
     routeDirection,
   ]);
@@ -549,9 +568,7 @@ const PerpsOrderEntryPage = () => {
   const [orderDirection, setOrderDirection] =
     useState<OrderDirection>(routeDirection);
   const [orderType, setOrderType] = useState<OrderType>(
-    orderTypeParam === 'market' || orderTypeParam === 'limit'
-      ? orderTypeParam
-      : (restoredOrderDraft?.type ?? persistedSelectedOrderType),
+    explicitOrderType ?? restoredOrderDraft?.type ?? persistedSelectedOrderType,
   );
   // One-shot limit-price prefill from tapping an order-book price row. A fresh
   // object per tap lets the form re-apply the same price after a manual edit.
@@ -570,8 +587,8 @@ const PerpsOrderEntryPage = () => {
   useEffect(() => {
     if (
       !decodedSymbol ||
-      !pendingTradeConfiguration?.direction ||
-      pendingTradeConfiguration.direction === routeDirection
+      !initialPendingTradeConfiguration?.direction ||
+      initialPendingTradeConfiguration.direction === routeDirection
     ) {
       return;
     }
@@ -580,7 +597,11 @@ const PerpsOrderEntryPage = () => {
     ]).catch(() => {
       // A mismatched draft is ignored locally even if best-effort cleanup fails.
     });
-  }, [decodedSymbol, pendingTradeConfiguration?.direction, routeDirection]);
+  }, [
+    decodedSymbol,
+    initialPendingTradeConfiguration?.direction,
+    routeDirection,
+  ]);
 
   useEffect(
     () => () => {

@@ -417,7 +417,6 @@ const PerpsCandlestickChart = forwardRef<
           return;
         }
         if (suppressNextVisibleCountRef.current) {
-          suppressNextVisibleCountRef.current = false;
           return;
         }
 
