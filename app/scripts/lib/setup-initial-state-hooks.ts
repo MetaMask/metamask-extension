@@ -37,7 +37,7 @@ function createLocalStore() {
 
 const localStore = createLocalStore();
 
-function getStateForEarlySegmentEvent(manager) {
+function getStateForEarlySegmentEvent(manager: PersistenceManager) {
   if (globalThis.stateHooks.getSentryAppState) {
     return globalThis.stateHooks.getSentryAppState();
   }
@@ -78,13 +78,21 @@ export const persistenceManager = new PersistenceManager({ localStore })
       event: MetaMetricsEventName.DataPersistenceWriteRetryRecovered,
       category: MetaMetricsEventCategory.Error,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment property
         persistence_event: payload.event,
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment property
         first_error_message: payload.firstErrorMessage,
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment property
         first_error_name: payload.firstErrorName,
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Segment property
         retry_delay_ms: payload.retryDelayMs,
       },
     });
   });
+
+type PersistedStateOptions = Parameters<
+  typeof globalThis.stateHooks.getPersistedState
+>[0];
 
 /**
  * Get the persisted wallet state.
@@ -93,7 +101,9 @@ export const persistenceManager = new PersistenceManager({ localStore })
  * @param options.reportErrors - Whether read errors should be reported to Sentry.
  * @returns The persisted wallet state.
  */
-globalThis.stateHooks.getPersistedState = async function (options = {}) {
+globalThis.stateHooks.getPersistedState = async function (
+  options: PersistedStateOptions = {},
+) {
   const { reportErrors = true } = options;
   return await persistenceManager.get({ validateVault: false, reportErrors });
 };
@@ -151,7 +161,7 @@ globalThis.stateHooks.getSentryState = function () {
   ) {
     const persistedState =
       persistenceManager.mostRecentRetrievedState ||
-      globalThis.stateHooks.getMostRecentPersistedState();
+      globalThis.stateHooks.getMostRecentPersistedState?.();
     // This can be unset when this method is called in the background for an
     // opt-in check, but the state hasn't been loaded yet.
     if (persistedState) {

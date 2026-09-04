@@ -365,10 +365,9 @@ export class ShieldSubscriptionService {
       let succeeded = false;
       let cancelled = false;
       // Set up a listener to watch for navigation on that specific tab
-      const onTabUpdatedListener = (
-        tabId: number,
-        changeInfo: { url: string },
-      ) => {
+      const onTabUpdatedListener: Parameters<
+        ExtensionPlatform['addTabUpdatedListener']
+      >[0] = (tabId, changeInfo) => {
         // We only care about updates to our specific checkout tab
         if (tabId === openedTab.id) {
           if (changeInfo.url?.startsWith(params.cancelUrl)) {

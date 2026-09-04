@@ -32,11 +32,16 @@ const onError = (error: unknown) => {
 export const createEip1193MethodMiddleware = (
   hooks: HandlerHooks & Eip1193OnlyHooks,
 ) =>
+  // Handlers require `origin` on the request; createMethodMiddleware's
+  // AnyMethodHandler map uses bare JsonRpcRequest, so the richer local
+  // handler types are not directly assignable without a widening cast.
   createMethodMiddleware({
+    // @ts-expect-error See above.
     handlers: {
       ...localHandlers,
       ...eip1193OnlyHandlers,
     },
+    // @ts-expect-error See above.
     hooks,
     onError,
   });
@@ -90,7 +95,11 @@ export const createMultichainApiMethodMiddleware = (
  */
 export const createMultichainInvokedMethodMiddleware = (hooks: HandlerHooks) =>
   createMethodMiddleware({
+    // @ts-expect-error See createEip1193MethodMiddleware — same
+    // AnyMethodHandler assignability gap.
     handlers: localHandlers,
+    // @ts-expect-error See createEip1193MethodMiddleware — same
+    // AnyMethodHandler assignability gap.
     hooks,
     onError,
   });
