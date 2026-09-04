@@ -29,7 +29,15 @@ export const useTransactionFocusEffect = () => {
 
   const setTransactionFocus = useCallback(
     async (transactionId: string, isFocused: boolean) => {
-      await dispatch(setTransactionActive(transactionId, isFocused));
+      try {
+        await dispatch(setTransactionActive(transactionId, isFocused));
+      } catch (error) {
+        // The transaction may have already been rejected, confirmed, or
+        // otherwise removed from state (e.g. via the confirm page's back
+        // button) by the time this focus update runs. Unfocusing a
+        // transaction that no longer exists is a no-op, so swallow the
+        // resulting "not found" error instead of surfacing it. See CONF-1865.
+      }
     },
     [dispatch],
   );
