@@ -263,23 +263,6 @@ export function getSelectedCurrency(state: {
 }
 
 /**
- * TEMPORARY (until scaleToHumanIfRaw is fixed in core): strip `assetsInfo` so
- * aggregation cannot re-divide large human-readable balances by 10^decimals
- * and drop them from the fiat total (#44786).
- *
- * @param state - AssetsController state slice.
- * @returns State with empty assetsInfo.
- */
-function stripAssetsInfoForAggregation(
-  state: AssetsControllerState,
-): AssetsControllerState {
-  return {
-    ...state,
-    assetsInfo: {},
-  };
-}
-
-/**
  * Account ids that belong to a group, read from the account tree.
  *
  * @param accountTreeState - AccountTreeController state.
@@ -333,7 +316,7 @@ export function getUnifiedBalanceForAccountGroup(
   // selected-account argument is only a placeholder.
   const placeholderAccount = { id: accountIds[0] } as InternalAccount;
   const { totalBalanceInFiat = 0 } = getAggregatedBalanceForAccount(
-    stripAssetsInfoForAggregation(assetsControllerState),
+    assetsControllerState,
     placeholderAccount,
     enabledNetworkMap,
     undefined,
@@ -1001,9 +984,7 @@ export const selectBalanceForAllWallets = createDeepEqualSelector(
   ) => {
     if (isAssetsUnifyStateEnabled) {
       return calculateBalanceForAllWalletsFromUnified(
-        stripAssetsInfoForAggregation(
-          augmentAssetControllersState(assetsControllerState),
-        ),
+        augmentAssetControllersState(assetsControllerState),
         accountTreeState,
         enabledNetworkMap,
       );
@@ -1068,9 +1049,7 @@ export const selectBalanceChangeBySelectedAccountGroup = (
       }
       if (isAssetsUnifyStateEnabled) {
         return calculateBalanceChangeForAccountGroupFromUnified(
-          stripAssetsInfoForAggregation(
-            augmentAssetControllersState(assetsControllerState),
-          ),
+          augmentAssetControllersState(assetsControllerState),
           accountTreeState,
           groupId,
           period,
