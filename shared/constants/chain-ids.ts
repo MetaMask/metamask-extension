@@ -126,4 +126,5 @@ export const CHAIN_IDS = {
   STABLE: '0x3dc',
   SOMNIA: '0x13a7',
   ZERO_G: '0x4115',
+  XGR: '0x66b',
 } as const;
