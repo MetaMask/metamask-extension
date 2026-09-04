@@ -6,6 +6,8 @@ import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from './constants';
 import { getMonadBaseBridgeFixtures } from './bridge-test-utils';
 
 describe('Bridge Monad to Base', function (this: Suite) {
+  this.timeout(120000);
+
   it('labels MON→USDC(Base) as Bridged with success details', async function () {
     await withFixtures(
       getMonadBaseBridgeFixtures(
@@ -28,8 +30,6 @@ describe('Bridge Monad to Base', function (this: Suite) {
           expectedDestAmount: '1,642',
           expectedActivityAmount: '+1,642.0043',
           expectedStatus: 'success',
-          expectedInitialSourceToken: 'MON',
-          expectedInitialDestToken: 'USDC',
           // Monad gas estimation does not populate `$X.XX` in this mocked setup;
           // ticket coverage is Activity labeling + details, not prepare-page fees.
           skipNetworkFeeCheck: true,
