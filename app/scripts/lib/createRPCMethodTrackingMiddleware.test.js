@@ -120,8 +120,8 @@ function mergeFragmentContext(base, override) {
 }
 
 function emitFragmentEvent(fragment, name, context) {
-  const properties = { ...fragment.properties };
-  const sensitiveProperties = { ...fragment.sensitiveProperties };
+  const properties = { ...(fragment.properties ?? {}) };
+  const sensitiveProperties = { ...(fragment.sensitiveProperties ?? {}) };
 
   messenger.call(
     'AnalyticsController:trackEvent',
@@ -143,8 +143,8 @@ messenger.registerActionHandler(
   (options = {}) => {
     const fragment = {
       ...options,
-      properties: { ...options.properties },
-      sensitiveProperties: { ...options.sensitiveProperties },
+      properties: { ...(options.properties ?? {}) },
+      sensitiveProperties: { ...(options.sensitiveProperties ?? {}) },
     };
 
     eventFragments.set(fragment.id, fragment);
@@ -168,10 +168,13 @@ messenger.registerActionHandler(
 
     eventFragments.set(id, {
       ...fragment,
-      properties: { ...fragment.properties, ...payload.properties },
+      properties: {
+        ...(fragment.properties ?? {}),
+        ...(payload.properties ?? {}),
+      },
       sensitiveProperties: {
-        ...fragment.sensitiveProperties,
-        ...payload.sensitiveProperties,
+        ...(fragment.sensitiveProperties ?? {}),
+        ...(payload.sensitiveProperties ?? {}),
       },
       context: mergeFragmentContext(fragment.context, payload.context),
     });

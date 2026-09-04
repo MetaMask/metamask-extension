@@ -467,7 +467,7 @@ export function createEventFragment(
     const {
       category,
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
-      properties,
+      properties = {},
     } = options;
 
     getMessenger().call('AnalyticsController:createEventFragment', {
