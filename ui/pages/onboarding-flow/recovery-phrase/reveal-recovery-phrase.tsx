@@ -93,7 +93,7 @@ export default function RevealRecoveryPhrase({
   const isFirefox = useIsFirefox();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const { isFromSettingsSecurity, nextRouteQueryString } =
+  const { isFromSettingsSecurity, previousPage, nextRouteQueryString } =
     useOnboardingSearchParams();
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
 
@@ -239,12 +239,14 @@ export default function RevealRecoveryPhrase({
 
   const returnToPreviousPage = useCallback(() => {
     cancelPasskeyCeremony();
-    if (isFromSettingsSecurity) {
+    if (previousPage) {
+      navigate(previousPage, { replace: true });
+    } else if (isFromSettingsSecurity) {
       navigate(MANAGE_WALLET_RECOVERY_ROUTE, { replace: true });
     } else {
       navigate(DEFAULT_ROUTE, { replace: true });
     }
-  }, [navigate, isFromSettingsSecurity]);
+  }, [navigate, isFromSettingsSecurity, previousPage]);
 
   return (
     <Box

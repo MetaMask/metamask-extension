@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
 import {
   Box,
@@ -7,11 +7,11 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
+  ButtonIcon,
+  ButtonIconSize,
   FontWeight,
-  Icon,
   IconColor,
   IconName,
-  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -35,17 +35,23 @@ export const MultichainSrpBackup = ({
 }: MultichainSrpBackupProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const { pathname, search } = useLocation();
 
   const handleSrpBackupClick = useCallback(() => {
     if (shouldShowBackupReminder) {
-      const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
-      navigate(backUpSRPRoute);
+      const backUpSRPParams = new URLSearchParams({
+        isFromReminder: 'true',
+        // Lets the backup flow send the user back to the page they opened it
+        // from instead of dropping them on the home page.
+        previousPage: `${pathname}${search}`,
+      });
+      navigate(`${ONBOARDING_REVIEW_SRP_ROUTE}/?${backUpSRPParams.toString()}`);
     } else {
       navigate(
         keyringId ? `${REVEAL_SEED_ROUTE}/${keyringId}` : REVEAL_SEED_ROUTE,
       );
     }
-  }, [shouldShowBackupReminder, navigate, keyringId]);
+  }, [shouldShowBackupReminder, navigate, keyringId, pathname, search]);
 
   const finalClassName = classnames('multichain-srp-backup', className);
 
@@ -73,7 +79,6 @@ export const MultichainSrpBackup = ({
         <Box
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
-          gap={2}
         >
           <Text
             variant={TextVariant.BodyMd}
@@ -84,11 +89,14 @@ export const MultichainSrpBackup = ({
               ? t('accountDetailsSrpBackUpMessage')
               : t('srpListStateBackedUp')}
           </Text>
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Sm}
-            color={IconColor.IconAlternative}
-          />
+          <Box className="ml-2">
+            <ButtonIcon
+              iconName={IconName.ArrowRight}
+              iconProps={{ color: IconColor.IconAlternative }}
+              size={ButtonIconSize.Sm}
+              ariaLabel={t('secretRecoveryPhrase')}
+            />
+          </Box>
         </Box>
       </Box>
     </>
