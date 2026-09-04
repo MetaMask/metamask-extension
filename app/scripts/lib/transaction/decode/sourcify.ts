@@ -7,34 +7,32 @@ import {
 
 const log = createProjectLogger('sourcify');
 
-export type SourcifyResponse = {
-  files: {
-    name: string;
-    content: string;
-  }[];
-};
+const ABI_FIELDS = 'abi,userdoc,devdoc';
+const PROXY_FIELDS = 'proxyResolution';
 
-export type SourcifyMetadata = {
-  output: {
-    abi: {
-      inputs: { name: string; type: string }[];
-    }[];
-    devdoc?: {
-      methods: {
-        [signature: string]: {
-          details?: string;
-          params?: { [name: string]: string };
-        };
+export type SourcifyResponse = {
+  abi?: {
+    inputs: { name: string; type: string }[];
+  }[];
+  devdoc?: {
+    methods?: {
+      [signature: string]: {
+        details?: string;
+        params?: { [name: string]: string };
       };
     };
-    userdoc?: {
-      methods: {
-        [signature: string]: {
-          notice?: string;
-          params?: { [name: string]: string };
-        };
+  };
+  userdoc?: {
+    methods?: {
+      [signature: string]: {
+        notice?: string;
+        params?: { [name: string]: string };
       };
     };
+  };
+  proxyResolution?: {
+    isProxy: boolean;
+    implementations: { address: string; name?: string }[];
   };
 };
 
@@ -43,15 +41,60 @@ export async function decodeTransactionDataWithSourcify(
   contractAddress: Hex,
   chainId: Hex,
 ): Promise<DecodedTransactionDataMethod | undefined> {
-  const metadata = await fetchSourcifyMetadata(contractAddress, chainId);
-
-  log('Retrieved Sourcify metadata', {
+  const contract = await fetchSourcifyContract(
     contractAddress,
     chainId,
-    metadata,
+    ABI_FIELDS,
+  );
+
+  log('Retrieved Sourcify contract', {
+    contractAddress,
+    chainId,
+    ...contract,
   });
 
-  const { abi } = metadata.output;
+  if (!contract.abi) {
+    throw new Error('ABI not found');
+  }
+
+  const decoded = decodeWithContract(transactionData, contract);
+
+  if (decoded) {
+    return decoded;
+  }
+
+  // A proxy's own ABI does not describe the calls it forwards, and
+  // getContractProxyAddress only reads the two standard implementation slots.
+  // Sourcify resolves the proxies that keep the pointer somewhere else. Ask it
+  // only once the address's own ABI has failed to explain the call, so
+  // contracts that are not proxies, which is nearly all of them, cost no extra
+  // request.
+  const implementation = await fetchProxyImplementation(
+    contractAddress,
+    chainId,
+  );
+
+  if (!implementation) {
+    return undefined;
+  }
+
+  log('Retrying with Sourcify proxy implementation', implementation);
+
+  return decodeWithContract(
+    transactionData,
+    await fetchSourcifyContract(implementation, chainId, ABI_FIELDS),
+  );
+}
+
+function decodeWithContract(
+  transactionData: Hex,
+  { abi, userdoc, devdoc }: SourcifyResponse,
+): DecodedTransactionDataMethod | undefined {
+  if (!abi) {
+    log('No ABI in Sourcify response');
+    return undefined;
+  }
+
   const contractInterface = new Interface(abi);
   const functionSignature = transactionData.slice(0, 10);
 
@@ -70,8 +113,8 @@ export async function decodeTransactionDataWithSourcify(
 
   const { name, inputs } = functionData;
   const signature = buildSignature(name, inputs);
-  const userDoc = metadata.output.userdoc?.methods[signature];
-  const devDoc = metadata.output.devdoc?.methods[signature];
+  const userDoc = userdoc?.methods?.[signature];
+  const devDoc = devdoc?.methods?.[signature];
   const description = userDoc?.notice ?? devDoc?.details;
 
   log('Extracted NatSpec', { signature, userDoc, devDoc });
@@ -145,35 +188,39 @@ function decodeParam(
   };
 }
 
-async function fetchSourcifyMetadata(address: Hex, chainId: Hex) {
-  const response = await fetchSourcifyFiles(address, chainId);
-
-  const metadata = response.files?.find((file) =>
-    file.name.includes('metadata.json'),
-  );
-
-  if (!metadata) {
-    throw new Error('Metadata not found');
-  }
-
-  return JSON.parse(metadata.content) as SourcifyMetadata;
-}
-
-async function fetchSourcifyFiles(
+async function fetchProxyImplementation(
   address: Hex,
   chainId: Hex,
+): Promise<Hex | undefined> {
+  const { proxyResolution } = await fetchSourcifyContract(
+    address,
+    chainId,
+    PROXY_FIELDS,
+  );
+
+  if (!proxyResolution?.isProxy) {
+    return undefined;
+  }
+
+  return proxyResolution.implementations[0]?.address as Hex | undefined;
+}
+
+async function fetchSourcifyContract(
+  address: Hex,
+  chainId: Hex,
+  fields: string,
 ): Promise<SourcifyResponse> {
   const chainIdDecimal = parseInt(chainId, 16);
 
-  const respose = await fetch(
-    `https://sourcify.dev/server/files/any/${chainIdDecimal}/${address}`,
+  const response = await fetch(
+    `https://sourcify.dev/server/v2/contract/${chainIdDecimal}/${address}?fields=${fields}`,
   );
 
-  if (!respose.ok) {
-    throw new Error('Failed to fetch Sourcify files');
+  if (!response.ok) {
+    throw new Error('Failed to fetch Sourcify contract');
   }
 
-  return respose.json();
+  return response.json();
 }
 
 function buildSignature(name: string | undefined, inputs: ParamType[]): string {
