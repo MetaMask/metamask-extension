@@ -1265,6 +1265,7 @@
     "unapprovedTypedMessagesCount": "number",
     "unconnectedAccountAlertShownOrigins": {},
     "updateModalLastDismissedAt": "null",
+    "upgradedAccounts": {},
     "urlScanCache": {},
     "use4ByteResolution": "boolean",
     "useAddressBarEnsResolution": "boolean",
