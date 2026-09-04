@@ -96,7 +96,10 @@ export const MoneyAccountUpgradeControllerInit: MessengerClientInitFunction<
   });
 
   const onClientGateChange = () => messengerClient.sync();
-  initMessenger.subscribe('OnboardingController:stateChange', onClientGateChange);
+  initMessenger.subscribe(
+    'OnboardingController:stateChange',
+    onClientGateChange,
+  );
   initMessenger.subscribe(
     'PreferencesController:stateChange',
     onClientGateChange,
