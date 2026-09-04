@@ -497,6 +497,32 @@ function getWellKnownTokenAssetMetadata(assetIds) {
     });
   }
 
+  if (
+    assetIds.includes('eip155:11155111/slip44:60') ||
+    assetIds.includes('eip155:11155111')
+  ) {
+    results.push({
+      assetId: 'eip155:11155111/slip44:60',
+      name: 'Sepolia Ether',
+      symbol: 'SepoliaETH',
+      decimals: 18,
+    });
+  }
+
+  if (
+    assetIds.includes(
+      'eip155:11155111/erc20:0x0000000000000000000000000000000000000000',
+    )
+  ) {
+    results.push({
+      assetId:
+        'eip155:11155111/erc20:0x0000000000000000000000000000000000000000',
+      name: 'Sepolia Ether',
+      symbol: 'SepoliaETH',
+      decimals: 18,
+    });
+  }
+
   // Chain 1337 uses slip44:1 per nativeAssetIdentifiers in the fixture.
   // Support both slip44:1 and slip44:60 requests for backward compat.
   if (
@@ -1478,6 +1504,44 @@ async function setupMocking(
         },
       };
     });
+
+  // Sepolia native — TokenDataSource / Price API request either slip44:60 or
+  // the zero-address ERC-20 alias. Both must return the ETH fixture rate.
+  const sepoliaSpotPrice = {
+    id: 'ethereum',
+    price: ethConversionInUsd,
+    marketCap: 382623505141,
+    pricePercentChange1d: 0,
+  };
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'eip155:11155111/slip44:60',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:11155111/slip44:60': sepoliaSpotPrice,
+      },
+    }));
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds:
+        'eip155:11155111/erc20:0x0000000000000000000000000000000000000000',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:11155111/erc20:0x0000000000000000000000000000000000000000':
+          sepoliaSpotPrice,
+        'eip155:11155111/slip44:60': sepoliaSpotPrice,
+      },
+    }));
 
   // Localhost (chain 1337) native ETH — slip44:1 per nativeAssetIdentifiers in fixtures.
   // assets-unify requests this with cacheOnly=false; extra query params are allowed by mockttp.
