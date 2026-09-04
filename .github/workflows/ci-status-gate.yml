@@ -57,12 +57,13 @@ jobs:
             let allPassed = true;
             let onlyCancelled = true;
             const errors = [];
+            const hasFailedE2eJob = Object.entries(needs).some(
+              ([job, { result }]) =>
+                job.startsWith('e2e-') && result === 'failure',
+            );
             const directMainE2eFailure =
               context.payload.pull_request?.base?.ref === 'main'
-              && Object.entries(needs).some(
-                ([job, { result }]) =>
-                  job.startsWith('e2e-') && result === 'failure',
-              );
+              && hasFailedE2eJob;
 
             for (const [job, { result }] of Object.entries(needs)) {
               if (!result) {
@@ -85,39 +86,45 @@ jobs:
               onlyCancelled = false;
             }
 
-            // This mirrors the producer constant. The reusable workflow has
-            // no checkout, so it cannot import the TypeScript helper itself.
-            const annotationTitle = 'E2E quality gate failed';
-            const jobs = await github.paginate(
-              github.rest.actions.listJobsForWorkflowRun,
-              {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                run_id: process.env.RUN_ID,
-                per_page: 100,
-              },
-            );
             const qualityGateFailures = [];
 
-            // Inspect every failed job and every annotation page: any shard's
-            // terminal marker is enough to withhold automatic retry.
-            for (const job of jobs) {
-              if (job.conclusion !== 'failure') {
-                continue;
-              }
-
-              const annotations = await github.paginate(
-                github.rest.checks.listAnnotations,
+            // Quality-gate annotations are only emitted by failed E2E jobs.
+            // Skipping this API work for other runs prevents a transient API
+            // error from changing an otherwise-green status gate to failure.
+            if (hasFailedE2eJob) {
+              // This mirrors the producer constant. The reusable workflow has
+              // no checkout, so it cannot import the TypeScript helper itself.
+              const annotationTitle = 'E2E quality gate failed';
+              const jobs = await github.paginate(
+                github.rest.actions.listJobsForWorkflowRun,
                 {
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  check_run_id: job.id,
+                  run_id: process.env.RUN_ID,
                   per_page: 100,
                 },
               );
-              for (const annotation of annotations) {
-                if (annotation.title === annotationTitle) {
-                  qualityGateFailures.push(annotation);
+
+              // Inspect every failed job and every annotation page: any
+              // shard's terminal marker is enough to withhold automatic retry.
+              for (const job of jobs) {
+                if (job.conclusion !== 'failure') {
+                  continue;
+                }
+
+                const annotations = await github.paginate(
+                  github.rest.checks.listAnnotations,
+                  {
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    check_run_id: job.id,
+                    per_page: 100,
+                  },
+                );
+                for (const annotation of annotations) {
+                  if (annotation.title === annotationTitle) {
+                    qualityGateFailures.push(annotation);
+                  }
                 }
               }
             }
@@ -159,29 +166,27 @@ jobs:
             for (const msg of errors) core.error(msg);
             core.setOutput('errors', errors.join('\n'));
 
-      - name: Post E2E retry-withheld status
+      - name: Update E2E retry-withheld status
         # This commit-level status is visible in the PR list even when the
         # regular All jobs pass status is deferred for merge-queue triage. It
         # uses one context for both automatic-retry withholding policies.
-        if: >-
-          ${{
-            steps.check.outputs.e2eRetryWithheldDescription != '' &&
-            (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
-          }}
+        if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
         uses: actions/github-script@v8
         env:
           E2E_RETRY_WITHHELD_DESCRIPTION: ${{ steps.check.outputs.e2eRetryWithheldDescription }}
         with:
           script: |
-            // One visible status covers both reasons automatic E2E retry can
-            // be withheld; the description tells reviewers which one applied.
+            // Reusing the same context changes a previous failure to success
+            // when retry-ci recovers this SHA on a later workflow attempt.
+            const retryWithheldDescription =
+              process.env.E2E_RETRY_WITHHELD_DESCRIPTION;
             await github.rest.repos.createCommitStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
               sha: process.env.HEAD_COMMIT_HASH,
-              state: 'failure',
+              state: retryWithheldDescription ? 'failure' : 'success',
               context: 'E2E retry withheld',
-              description: process.env.E2E_RETRY_WITHHELD_DESCRIPTION,
+              description: retryWithheldDescription || 'Automatic retry is available',
             });
 
       # ── Retry gate (merge queue only) ──────────────────────────────
