@@ -507,6 +507,42 @@
   "activity_marketShort_success_title": {
     "message": "Closed short - market"
   },
+  "activity_moneyAccountDeposit_failed_description": {
+    "message": "Money account"
+  },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "Deposit failed"
+  },
+  "activity_moneyAccountDeposit_pending_description": {
+    "message": "Money account"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "Depositing"
+  },
+  "activity_moneyAccountDeposit_success_description": {
+    "message": "Money account"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "Deposited"
+  },
+  "activity_moneyAccountWithdraw_failed_description": {
+    "message": "Money account"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "Send failed"
+  },
+  "activity_moneyAccountWithdraw_pending_description": {
+    "message": "Money account"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "Sending"
+  },
+  "activity_moneyAccountWithdraw_success_description": {
+    "message": "Money account"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "Sent"
+  },
   "activity_nftBuy_failed_title": {
     "message": "Buy failed"
   },
@@ -1744,6 +1780,12 @@
   "approvedOnForAccounts": {
     "message": "Approved on $1 for $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
+  },
+  "arcUsageNoticeDescription": {
+    "message": "Welcome to Arc! To facilitate and verify your usage of Arc chain, we may share information with Arc team."
+  },
+  "arcUsageNoticeTitle": {
+    "message": "Notice"
   },
   "areYouSure": {
     "message": "Are you sure?"
@@ -4714,6 +4756,10 @@
   "honeypotTitle": {
     "message": "Honey pot"
   },
+  "hyperliquidDepositPromptTitle": {
+    "message": "Fund Hyperliquid with MetaMask",
+    "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Apply a MetaMask referral code to all future trades per Hyperliquid's $1. MetaMask earns a fee.",
     "description": "The checkbox label in the redesigned Hyperliquid referral confirmation screen. $1 is the terms link"
@@ -5470,6 +5516,9 @@
   },
   "moneyActivityDepositing": {
     "message": "Depositing"
+  },
+  "moneyActivityDetailsTransactionId": {
+    "message": "Transaction ID"
   },
   "moneyActivityEmpty": {
     "message": "No activity yet"
@@ -7279,6 +7328,12 @@
   "perpsCandlePeriodMinutes": {
     "message": "Minutes"
   },
+  "perpsChart": {
+    "message": "Price chart"
+  },
+  "perpsChartLoadError": {
+    "message": "Failed to load chart data"
+  },
   "perpsCloseAll": {
     "message": "Close all"
   },
@@ -7332,6 +7387,9 @@
   },
   "perpsCloseShort": {
     "message": "Close short"
+  },
+  "perpsCollapseChart": {
+    "message": "Collapse chart"
   },
   "perpsConfirmCloseLong": {
     "message": "Close long"
@@ -7430,6 +7488,9 @@
   "perpsExchangeAccountNotFound": {
     "message": "Add funds to start trading.",
     "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
+  },
+  "perpsExpandChart": {
+    "message": "Expand chart"
   },
   "perpsExploreMarkets": {
     "message": "Explore markets"
@@ -8474,6 +8535,10 @@
   "quotedTotalCost": {
     "message": "Total cost: $1"
   },
+  "rampsBackToWallet": {
+    "message": "Back to wallet",
+    "description": "Secondary button on the ramps complete-buy interstitial that returns to the wallet home"
+  },
   "rampsBestRate": {
     "message": "Best rate"
   },
@@ -8491,6 +8556,21 @@
   "rampsChangeProvider": {
     "message": "Change provider."
   },
+  "rampsChooseProvider": {
+    "message": "Choose provider"
+  },
+  "rampsCompleteBuyTitle": {
+    "message": "Complete buy",
+    "description": "Title of the interstitial shown after opening a ramps provider checkout tab"
+  },
+  "rampsCompletePurchaseInProviderTab": {
+    "message": "Complete your purchase in $1 tab",
+    "description": "$1 is the on-ramp provider name (e.g. Transak)"
+  },
+  "rampsContinueInBrowser": {
+    "message": "Continue in browser",
+    "description": "Banner title on the ramps complete-buy interstitial"
+  },
   "rampsEligibilityFailedDescription": {
     "message": "Please try again, or contact support if this keeps happening."
   },
@@ -8502,6 +8582,10 @@
   },
   "rampsErrorLoadingTokens": {
     "message": "Error loading tokens"
+  },
+  "rampsEstimatedToReceive": {
+    "message": "Estimated to receive",
+    "description": "Label for the estimated crypto amount on the ramps complete-buy interstitial"
   },
   "rampsMaxPurchaseLimit": {
     "message": "Maximum purchase is $1",
@@ -8628,12 +8712,12 @@
   "rampsPaymentDelayMinutes": {
     "message": "mins"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  "rampsPaymentMethod": {
+    "message": "Payment method",
+    "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
   },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "Max $1",
+  "rampsPaymentMethodLimits": {
+    "message": "Up to $1",
     "description": "$1 is the maximum fiat buy amount"
   },
   "rampsPaymentMethodMinLimit": {
@@ -8641,20 +8725,13 @@
     "description": "$1 is the minimum fiat buy amount"
   },
   "rampsPreviouslyUsed": {
-    "message": "Previously used"
-  },
-  "rampsProviders": {
-    "message": "Providers"
+    "message": "Last used"
   },
   "rampsQuoteFetchError": {
     "message": "Failed to fetch quote."
   },
   "rampsQuoteUnavailable": {
     "message": "Quote unavailable."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Quotes displayed for $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Select payment method"
@@ -9647,6 +9724,9 @@
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."
   },
+  "selectPerpsAccount": {
+    "message": "Select perps account"
+  },
   "selectRecipient": {
     "message": "Select recipient"
   },
@@ -9687,6 +9767,9 @@
   },
   "sendSelectSendAsset": {
     "message": "Select asset to send"
+  },
+  "sendToPerps": {
+    "message": "Send to Perps"
   },
   "sendingAsset": {
     "message": "Sending $1"

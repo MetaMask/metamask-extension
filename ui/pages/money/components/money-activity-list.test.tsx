@@ -114,4 +114,15 @@ describe('MoneyActivityList', () => {
     ).toBeInTheDocument();
     expect(document.querySelector('.animate-spin')).toBeInTheDocument();
   });
+
+  it('invokes onItemClick when a preview row is clicked', () => {
+    const onItemClick = jest.fn();
+    const items = MOCK_MONEY_TRANSACTIONS.map(onchainItem);
+    renderWithLocalization(
+      <MoneyActivityList items={items} onItemClick={onItemClick} />,
+    );
+
+    fireEvent.click(screen.getByTestId(`money-activity-row-${items[0].id}`));
+    expect(onItemClick).toHaveBeenCalledWith(items[0]);
+  });
 });
