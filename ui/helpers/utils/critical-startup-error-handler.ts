@@ -1,11 +1,13 @@
 import type browser from 'webextension-polyfill';
 import { isObject, hasProperty, createDeferredPromise } from '@metamask/utils';
 import log from 'loglevel';
+import { type ErrorLike } from '../../../shared/constants/errors';
 import {
+  CriticalErrorRepairAction,
   CriticalErrorType,
+  isStateCorruptionErrorType,
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-} from '../../../shared/constants/state-corruption';
-import type { ErrorLike } from '../../../shared/constants/errors';
+} from '../../../shared/constants/critical-error';
 import {
   APP_INIT_LIVENESS_METHOD,
   BACKGROUND_LIVENESS_METHOD,
@@ -15,7 +17,6 @@ import {
   DISPLAY_GENERAL_STARTUP_ERROR,
   RELOAD_WINDOW,
 } from '../../../shared/constants/start-up-errors';
-import { displayStateCorruptionError } from './state-corruption-html';
 import {
   displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
@@ -165,9 +166,10 @@ export class CriticalStartupErrorHandler {
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
         livenessError as ErrorLike,
-        undefined,
-        this.#port,
-        CriticalErrorType.BackgroundConnectionTimeout,
+        {
+          port: this.#port,
+          criticalErrorType: CriticalErrorType.BackgroundConnectionTimeout,
+        },
       );
     } else if (!this.#uninstalled) {
       if (!this.#initializationCompleted) {
@@ -216,9 +218,10 @@ export class CriticalStartupErrorHandler {
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
         initError as ErrorLike,
-        undefined,
-        this.#port,
-        CriticalErrorType.BackgroundInitTimeout,
+        {
+          port: this.#port,
+          criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        },
       );
     } else if (!this.#uninstalled && !this.#startUiSyncCompleted) {
       await this.#startStateSyncCheck();
@@ -258,9 +261,10 @@ export class CriticalStartupErrorHandler {
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
         stateSyncError as ErrorLike,
-        undefined,
-        this.#port,
-        CriticalErrorType.BackgroundStateSyncTimeout,
+        {
+          port: this.#port,
+          criticalErrorType: CriticalErrorType.BackgroundStateSyncTimeout,
+        },
       );
     }
   }
@@ -284,8 +288,8 @@ export class CriticalStartupErrorHandler {
     }
     const { method } = data;
     // Currently, we handle APP_INIT_LIVENESS_METHOD, BACKGROUND_LIVENESS_METHOD,
-    // BACKGROUND_INITIALIZED_METHOD, RELOAD_WINDOW, the state corruption error message,
-    // and the general startup error message.
+    // BACKGROUND_INITIALIZED_METHOD, RELOAD_WINDOW, the state corruption error
+    // message, and the general startup error message.
     if (method === APP_INIT_LIVENESS_METHOD) {
       this.#receivedAppInitPing = true;
     } else if (method === BACKGROUND_LIVENESS_METHOD) {
@@ -298,9 +302,10 @@ export class CriticalStartupErrorHandler {
           this.#container,
           CriticalErrorTranslationKey.TroubleStarting,
           new Error('Unreachable error, liveness check not initialized'),
-          undefined,
-          this.#port,
-          CriticalErrorType.UnreachableLivenessCheck,
+          {
+            port: this.#port,
+            criticalErrorType: CriticalErrorType.UnreachableLivenessCheck,
+          },
         );
       }
     } else if (method === BACKGROUND_INITIALIZED_METHOD) {
@@ -314,9 +319,10 @@ export class CriticalStartupErrorHandler {
           this.#container,
           CriticalErrorTranslationKey.TroubleStarting,
           new Error('Unreachable error, initialization check not initialized'),
-          undefined,
-          this.#port,
-          CriticalErrorType.UnreachableInitializationCheck,
+          {
+            port: this.#port,
+            criticalErrorType: CriticalErrorType.UnreachableInitializationCheck,
+          },
         );
       }
     } else if (method === RELOAD_WINDOW) {
@@ -331,19 +337,45 @@ export class CriticalStartupErrorHandler {
         return;
       }
 
-      const { error, hasBackup, currentLocale } = data.params as {
+      const {
+        analyticsConsent,
+        error,
+        repairAction,
+        criticalErrorType,
+        currentLocale,
+      } = data.params as {
+        analyticsConsent?: boolean;
         error: ErrorLike;
-        hasBackup: boolean;
+        repairAction?: CriticalErrorRepairAction;
+        criticalErrorType?: CriticalErrorType;
         currentLocale?: string;
       };
+      if (
+        !isStateCorruptionErrorType(criticalErrorType) ||
+        (repairAction !== CriticalErrorRepairAction.Recover &&
+          repairAction !== CriticalErrorRepairAction.Reset) ||
+        typeof analyticsConsent !== 'boolean'
+      ) {
+        log.error(
+          'Received state corruption error message without valid derived fields:',
+          message,
+        );
+        return;
+      }
       if (!this.#criticalErrorAlreadyDisplayed) {
         this.#criticalErrorAlreadyDisplayed = true;
-        displayStateCorruptionError(
+        await displayCriticalErrorMessage(
           this.#container,
-          this.#port,
+          CriticalErrorTranslationKey.TroubleStarting,
           error,
-          hasBackup,
-          currentLocale,
+          {
+            currentLocale,
+            port: this.#port,
+            criticalErrorType,
+            repairActionFromBackground: repairAction,
+            analyticsConsentFromBackground: analyticsConsent,
+            backgroundCaptureAttempted: true,
+          },
         );
       }
     } else if (method === DISPLAY_GENERAL_STARTUP_ERROR) {
@@ -365,9 +397,12 @@ export class CriticalStartupErrorHandler {
           this.#container,
           CriticalErrorTranslationKey.TroubleStarting,
           error as ErrorLike,
-          currentLocale,
-          this.#port,
-          CriticalErrorType.GeneralStartupError,
+          {
+            currentLocale,
+            port: this.#port,
+            criticalErrorType: CriticalErrorType.GeneralStartupError,
+            backgroundCaptureAttempted: true,
+          },
         );
       }
     }
