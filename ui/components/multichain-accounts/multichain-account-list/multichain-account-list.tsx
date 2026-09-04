@@ -40,6 +40,7 @@ import {
 import {
   removeAccount,
   setAccountGroupHidden,
+  setAccountGroupPinned,
   setSelectedMultichainAccount,
 } from '../../../store/actions';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
@@ -89,8 +90,8 @@ export type MultichainAccountListProps = {
   /**
    * When true, account cells render in edit mode. Private-key wallet accounts
    * show delete controls; all other wallets show visibility controls. Menus are
-   * suppressed and hidden accounts move inline under their own wallet instead
-   * of the separate hidden section.
+   * suppressed and hidden accounts, which are omitted otherwise, are listed
+   * inline under their own wallet.
    * @default false
    */
   isEditMode?: boolean;
@@ -113,6 +114,26 @@ function isPrivateKeyWallet(wallet: AccountWalletObject): boolean {
 }
 
 /**
+ * Finds an account group across every wallet in the tree.
+ *
+ * @param wallets - Account tree wallets.
+ * @param groupId - Account group id to look up.
+ * @returns The matching group, or undefined when it is no longer in the tree.
+ */
+function findAccountGroup(
+  wallets: AccountTreeWallets,
+  groupId: string,
+): GroupData | undefined {
+  for (const wallet of Object.values(wallets)) {
+    const group = wallet.groups?.[groupId as AccountGroupId];
+    if (group) {
+      return group;
+    }
+  }
+  return undefined;
+}
+
+/**
  * Resolves whether a group is currently treated as hidden, preferring any
  * optimistic override applied while a hide/reveal is still in flight.
  *
@@ -130,6 +151,31 @@ function getEffectiveIsHidden(
     return visibilityOverrides[groupId];
   }
   return metadataHidden ?? false;
+}
+
+/**
+ * Resolves whether a group belongs to the pinned section. Hidden wins over
+ * pinned, so an account that is on its way out of the section leaves it as soon
+ * as the hide is optimistically applied rather than once the store settles.
+ *
+ * @param groupId - Account group id.
+ * @param groupData - Account group from the tree.
+ * @param visibilityOverrides - Pending optimistic visibility map.
+ * @returns True when the group renders in the pinned section.
+ */
+function isPinnedInList(
+  groupId: string,
+  groupData: GroupData,
+  visibilityOverrides: Record<string, boolean>,
+): boolean {
+  return (
+    Boolean(groupData.metadata?.pinned) &&
+    !getEffectiveIsHidden(
+      groupId,
+      groupData.metadata?.hidden,
+      visibilityOverrides,
+    )
+  );
 }
 
 type ListItem =
@@ -150,7 +196,6 @@ type ListItem =
       walletId: string;
       showWalletName: boolean;
     }
-  | { type: 'hidden-header'; key: string; count: number }
   | { type: 'add-account'; key: string; walletId: string };
 
 export const MultichainAccountList = ({
@@ -232,8 +277,6 @@ export const MultichainAccountList = ({
   );
 
   const connectedAccountGroups = useSelector(selectConnectedAccountGroups);
-  const [isHiddenAccountsExpanded, setIsHiddenAccountsExpanded] =
-    useState(false);
 
   const [collapsedSectionKeys, setCollapsedSectionKeys] = useState<Set<string>>(
     () => new Set(),
@@ -301,6 +344,14 @@ export const MultichainAccountList = ({
       });
 
       try {
+        // The pinned section takes precedence over hidden accounts, so a pinned
+        // account has to be unpinned as it is hidden or it would stay put
+        // looking untouched. This mirrors the account menu's hide action.
+        const group = findAccountGroup(wallets, accountGroupId);
+        if (nextHidden && group?.metadata.pinned) {
+          await dispatch(setAccountGroupPinned(accountGroupId, false));
+        }
+
         await dispatch(setAccountGroupHidden(accountGroupId, nextHidden));
       } finally {
         // A later toggle owns the override until its own write settles, so only
@@ -312,7 +363,7 @@ export const MultichainAccountList = ({
         }
       }
     },
-    [dispatch],
+    [dispatch, wallets],
   );
 
   const handleMenuToggle = useCallback((accountGroupId: AccountGroupId) => {
@@ -328,38 +379,24 @@ export const MultichainAccountList = ({
     [selectedAccountGroups],
   );
 
-  const { pinnedGroups, hiddenGroups } = useMemo(() => {
+  const pinnedGroups = useMemo(() => {
     const pinned: {
       groupId: string;
       groupData: (typeof wallets)[AccountWalletId]['groups'][AccountGroupId];
       walletId: string;
     }[] = [];
-    const hidden: {
-      groupId: string;
-      groupData: (typeof wallets)[AccountWalletId]['groups'][AccountGroupId];
-      walletId: string;
-    }[] = [];
 
-    // Collect all groups to categorize them
     Object.entries(wallets).forEach(([walletId, walletData]) => {
       Object.entries(walletData.groups || {}).forEach(
         ([groupId, groupData]) => {
-          if (groupData.metadata.pinned) {
+          if (isPinnedInList(groupId, groupData, visibilityOverrides)) {
             pinned.push({ groupId, groupData, walletId });
-          } else if (
-            getEffectiveIsHidden(
-              groupId,
-              groupData.metadata.hidden,
-              visibilityOverrides,
-            )
-          ) {
-            hidden.push({ groupId, groupData, walletId });
           }
         },
       );
     });
 
-    return { pinnedGroups: pinned, hiddenGroups: hidden };
+    return pinned;
   }, [wallets, visibilityOverrides]);
 
   const defaultHandleAccountClick = useCallback(
@@ -613,7 +650,7 @@ export const MultichainAccountList = ({
 
       Object.entries(walletData.groups || {}).forEach(
         ([groupId, groupData]) => {
-          if (groupData.metadata?.pinned) {
+          if (isPinnedInList(groupId, groupData, visibilityOverrides)) {
             return;
           }
 
@@ -642,9 +679,8 @@ export const MultichainAccountList = ({
 
       const accounts: ListItem[] = [...visibleAccounts];
 
-      // While editing, hidden accounts sit at the end of their own wallet so a
-      // hide/reveal is a short move. Outside edit mode they stay in the
-      // separate hidden section rendered below.
+      // Hidden accounts are only reachable while editing, where they sit at the
+      // end of their own wallet so a hide/reveal is a short move.
       if (isEditMode) {
         accounts.push(...hiddenAccounts);
       }
@@ -657,7 +693,9 @@ export const MultichainAccountList = ({
         });
       }
 
-      if (accounts.length > 0) {
+      // Keep the wallet listed even when all of its accounts are hidden (and so
+      // omitted outside edit mode), otherwise it disappears with no way back.
+      if (accounts.length > 0 || hiddenAccounts.length > 0) {
         if (shouldShowWalletHeaders) {
           const walletSectionKey = `wallet-${walletId}`;
           const isWalletExpanded = !collapsedSectionKeys.has(walletSectionKey);
@@ -679,37 +717,12 @@ export const MultichainAccountList = ({
       }
     });
 
-    // Render hidden section (if there are any hidden accounts). Edit mode lists
-    // hidden accounts inline under their wallet instead.
-    if (!isEditMode && hiddenGroups.length > 0) {
-      result.push({
-        type: 'hidden-header',
-        key: 'hidden-header',
-        count: hiddenGroups.length,
-      });
-      // Only render hidden accounts when expanded
-      if (isHiddenAccountsExpanded) {
-        hiddenGroups.forEach(({ groupId, groupData, walletId }) => {
-          result.push({
-            type: 'account',
-            key: `account-hidden-${groupId}`,
-            groupId,
-            groupData,
-            walletId,
-            showWalletName: !showDefaultAddress,
-          });
-        });
-      }
-    }
-
     return result;
   }, [
     wallets,
     pinnedGroups,
-    hiddenGroups,
     isInSearchMode,
     displayWalletHeader,
-    isHiddenAccountsExpanded,
     collapsedSectionKeys,
     showDefaultAddress,
     isEditMode,
@@ -784,42 +797,6 @@ export const MultichainAccountList = ({
                 >
                   {item.text}
                 </Text>
-              </Box>
-            );
-          }
-
-          if (item.type === 'hidden-header') {
-            return (
-              <Box
-                asChild
-                backgroundColor={BoxBackgroundColor.BackgroundDefault}
-                className="w-full"
-              >
-                <button
-                  type="button"
-                  onClick={() =>
-                    setIsHiddenAccountsExpanded(!isHiddenAccountsExpanded)
-                  }
-                  className="hidden-accounts-list flex w-full px-4 py-2 justify-between items-center"
-                  data-testid="multichain-account-tree-hidden-header"
-                >
-                  <Text
-                    variant={TextVariant.BodyMd}
-                    fontWeight={FontWeight.Medium}
-                    color={TextColor.TextAlternative}
-                  >
-                    {t('hidden')} ({item.count})
-                  </Text>
-                  <Icon
-                    name={
-                      isHiddenAccountsExpanded
-                        ? IconName.ArrowUp
-                        : IconName.ArrowDown
-                    }
-                    size={IconSize.Md}
-                    color={IconColor.IconAlternative}
-                  />
-                </button>
               </Box>
             );
           }

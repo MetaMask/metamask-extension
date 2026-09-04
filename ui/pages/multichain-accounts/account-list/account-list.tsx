@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -120,6 +120,12 @@ export const AccountList = () => {
     }
   }, [isFreshTab, navigate]);
 
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const handleToggleEditMode = useCallback(() => {
+    setIsEditMode((current) => !current);
+  }, []);
+
   return (
     <Page
       className="account-list-page"
@@ -138,8 +144,18 @@ export const AccountList = () => {
             data-testid="account-list-page-back-button"
           />
         }
+        endAccessory={
+          <ButtonIcon
+            size={ButtonIconSize.Md}
+            ariaLabel={t('manageAccounts')}
+            iconName={IconName.Setting}
+            onClick={handleToggleEditMode}
+            aria-pressed={isEditMode}
+            data-testid="account-list-page-manage-button"
+          />
+        }
       >
-        {t('accounts')}
+        {isEditMode ? t('manageAccounts') : t('accounts')}
       </Header>
       <div className="account-list-page__content flex flex-col min-h-0 overflow-auto">
         <Box
@@ -167,6 +183,7 @@ export const AccountList = () => {
               displayWalletHeader={hasMultipleWallets}
               showConnectionStatus={permittedAccounts.length > 0}
               showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
+              isEditMode={isEditMode}
             />
           ) : (
             <Box
