@@ -752,11 +752,6 @@
       "count": 1
     }
   },
-  "ui/pages/batch-sell/pages/review/hooks/useBatchSellTradesFetching.ts": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
   "ui/pages/bridge/asset-picker/lazy-asset-list.tsx": {
     "react-hooks/incompatible-library": {
       "count": 1
@@ -1127,16 +1122,6 @@
   },
   "ui/pages/swaps/awaiting-signatures/awaiting-signatures.js": {
     "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
-  "ui/pages/swaps/awaiting-swap/awaiting-swap.js": {
-    "react-hooks/refs": {
-      "count": 1
-    }
-  },
-  "ui/pages/swaps/countdown-timer/countdown-timer.js": {
-    "react-hooks/refs": {
       "count": 1
     }
   },
