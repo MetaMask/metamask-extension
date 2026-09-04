@@ -5,7 +5,7 @@ import { getManifestFlags } from '../manifestFlags';
 import { PLATFORM_FIREFOX } from '../../constants/app';
 import { getBrowserName } from '../browser-runtime.utils';
 import ExtensionStore from './extension-store';
-import type { MetaMaskStorageStructure } from './base-store';
+import type { MetaMaskStorageStructure, StoreResetOptions } from './base-store';
 import {
   STORAGE_SERVICE_INDEXED_DB_NAME,
   STORAGE_SERVICE_INDEXED_DB_VERSION,
@@ -165,10 +165,17 @@ export class FixtureExtensionStore extends ExtensionStore {
     return super.set(data);
   }
 
-  async reset(): Promise<void> {
+  async reset({ initialize = true }: StoreResetOptions = {}): Promise<void> {
     this.#initialized = false;
     await super.reset();
-    this.#initializing = this.#init();
-    await this.#initializing;
+
+    if (initialize) {
+      this.#initializing = this.#init();
+      await this.#initializing;
+      return;
+    }
+
+    this.#initializing = Promise.resolve();
+    this.#initialized = true;
   }
 }
