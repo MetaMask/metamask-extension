@@ -11,6 +11,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   Icon,
+  IconSize,
   TextColor,
   TextVariant,
   IconColor,
@@ -19,6 +20,7 @@ import {
   BoxAlignItems,
   FontWeight,
   TextButton,
+  TextAlign,
 } from '@metamask/design-system-react';
 import { addUrlProtocolPrefix } from '../../../../shared/lib/url-utils';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
@@ -251,7 +253,7 @@ export default function PrivacySettings() {
           <Box className="list-view">
             <Box
               className="privacy-settings__header"
-              marginTop={6}
+              marginTop={2}
               marginBottom={6}
               flexDirection={BoxFlexDirection.Column}
               justifyContent={BoxJustifyContent.Start}
@@ -264,7 +266,7 @@ export default function PrivacySettings() {
                 <ButtonIcon
                   iconName={IconName.ArrowLeft}
                   ariaLabel="Back"
-                  size={ButtonIconSize.Lg}
+                  size={ButtonIconSize.Md}
                   data-testid="privacy-settings-back-button"
                   onClick={handleSubmit}
                 />
@@ -274,74 +276,78 @@ export default function PrivacySettings() {
                   justifyContent={BoxJustifyContent.Center}
                   className="w-full"
                 >
-                  <Text variant={TextVariant.HeadingMd}>
+                  <Text
+                    variant={TextVariant.HeadingSm}
+                    textAlign={TextAlign.Center}
+                  >
                     {t('defaultSettingsTitle')}
                   </Text>
                 </Box>
                 <Box className="privacy-settings__empty-space" />
               </Box>
               <Text
-                variant={TextVariant.BodyLg}
-                fontWeight={FontWeight.Medium}
-                className="mt-5"
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+                className="mt-4"
               >
                 {t('defaultSettingsSubTitle')}
               </Text>
-              <a
-                href={ZENDESK_URLS.PRIVACY_BEST_PRACTICES}
-                target="_blank"
-                rel="noreferrer"
-                key="learnMoreAboutPrivacy"
-                style={{
-                  fontSize: 'var(--font-size-5)',
-                }}
-              >
-                {t('learnMoreAboutPrivacy')}
-              </a>
+              <TextButton asChild className="mt-1 self-start">
+                <a
+                  href={ZENDESK_URLS.PRIVACY_BEST_PRACTICES}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {t('learnMoreAboutPrivacy')}
+                </a>
+              </TextButton>
             </Box>
             <Box>
               <Box
-                marginTop={4}
-                marginBottom={4}
                 className="privacy-settings__categories-list list-none"
+                gap={6}
+                flexDirection={BoxFlexDirection.Column}
                 asChild
               >
                 <ul>
                   {items.map((item) => (
                     <Box
-                      marginTop={5}
-                      marginBottom={5}
+                      asChild
                       key={item.id}
-                      className="categories-item"
-                      onClick={() => handleItemSelected(item)}
+                      className="categories-item w-full border-0 bg-transparent p-0 text-left"
                     >
-                      <Box
-                        flexDirection={BoxFlexDirection.Row}
-                        alignItems={BoxAlignItems.Start}
-                        justifyContent={BoxJustifyContent.Between}
+                      <button
+                        type="button"
+                        aria-label={item.title}
                         data-testid={`category-item-${item.title}`}
+                        onClick={() => handleItemSelected(item)}
                       >
-                        <Text
-                          variant={TextVariant.BodyLg}
-                          fontWeight={FontWeight.Medium}
+                        <Box
+                          flexDirection={BoxFlexDirection.Row}
+                          alignItems={BoxAlignItems.Start}
+                          justifyContent={BoxJustifyContent.Between}
                         >
-                          {item.title}
+                          <Text
+                            variant={TextVariant.BodyMd}
+                            fontWeight={FontWeight.Medium}
+                          >
+                            {item.title}
+                          </Text>
+                          <Icon
+                            name={IconName.ArrowRight}
+                            size={IconSize.Md}
+                            color={IconColor.IconDefault}
+                            aria-hidden
+                          />
+                        </Box>
+                        <Text
+                          className="description"
+                          variant={TextVariant.BodyMd}
+                          color={TextColor.TextAlternative}
+                        >
+                          {item.subtitle}
                         </Text>
-                        <ButtonIcon
-                          iconName={IconName.ArrowRight}
-                          ariaLabel="Next"
-                          size={ButtonIconSize.Lg}
-                          color={IconColor.IconDefault}
-                          onClick={() => handleItemSelected(item)}
-                        />
-                      </Box>
-                      <Text
-                        className="description"
-                        variant={TextVariant.BodyMd}
-                        color={TextColor.TextAlternative}
-                      >
-                        {item.subtitle}
-                      </Text>
+                      </button>
                     </Box>
                   ))}
                 </ul>
@@ -356,16 +362,17 @@ export default function PrivacySettings() {
           >
             <Box
               className="privacy-settings__header"
-              marginTop={6}
-              marginBottom={5}
+              marginTop={2}
+              marginBottom={6}
               flexDirection={BoxFlexDirection.Row}
               justifyContent={BoxJustifyContent.Between}
+              alignItems={BoxAlignItems.Center}
             >
               <ButtonIcon
                 data-testid="category-back-button"
                 iconName={IconName.ArrowLeft}
                 ariaLabel="Back"
-                size={ButtonIconSize.Lg}
+                size={ButtonIconSize.Md}
                 onClick={handleBack}
               />
               <Box
@@ -374,7 +381,10 @@ export default function PrivacySettings() {
                 justifyContent={BoxJustifyContent.Center}
                 className="w-full"
               >
-                <Text variant={TextVariant.HeadingLg}>
+                <Text
+                  variant={TextVariant.HeadingSm}
+                  textAlign={TextAlign.Center}
+                >
                   {selectedItem?.title}
                 </Text>
               </Box>
