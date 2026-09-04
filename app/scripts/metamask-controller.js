@@ -6252,22 +6252,14 @@ export default class MetamaskController extends EventEmitter {
     return pendingNonce;
   }
 
-  getTransactionUIMetricsFragmentId(transactionId) {
-    return `transaction-ui-${transactionId}`;
-  }
-
-  getTransactionUIMetricsFragment(transactionId) {
-    return this.controllerMessenger.call(
-      'AnalyticsController:getEventFragmentById',
-      this.getTransactionUIMetricsFragmentId(transactionId),
-    );
-  }
-
   getTransactionMetricsRequest() {
     const controllerActions = {
       // Transaction metrics state
-      getTransactionUIMetricsFragment:
-        this.getTransactionUIMetricsFragment.bind(this),
+      getTransactionUIMetricsFragment: (transactionId) =>
+        this.controllerMessenger.call(
+          'AnalyticsController:getEventFragmentById',
+          `transaction-ui-${transactionId}`,
+        ),
       upsertTransactionUIMetricsFragment: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
