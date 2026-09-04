@@ -147,12 +147,12 @@ export const bridgeTransaction = async ({
   await bridgePage.enterBridgeQuote(quote, { openPickersWithDebounce });
   await bridgePage.waitForQuote();
   await bridgePage.checkExpectedNetworkFeeIsDisplayed();
-  if (expectedTotalCost) {
-    await bridgePage.checkQuoteTotalCost(expectedTotalCost);
-  }
   submitDelay && (await driver.delay(submitDelay));
   if (expectedDestAmount) {
     await bridgePage.checkDestAmount(expectedDestAmount);
+  }
+  if (expectedTotalCost) {
+    await bridgePage.checkQuoteTotalCost(expectedTotalCost);
   }
 
   if (skipStatusPage) {
