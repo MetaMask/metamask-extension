@@ -198,26 +198,19 @@ describe('useRampsNavigation goToBuy', () => {
     expect(getModalName()).toBeNull();
   });
 
-  it('skips Portfolio migration when ramps syncing is disabled', async () => {
-    const { result } = run(
-      buildState({
-        permissionHistory: { [PORTFOLIO_ORIGINS[0]]: {} },
-        isRampsSyncingEnabled: false,
-      }),
-    );
-
-    await goToBuy(result);
-    expect(mockRunPortfolioBuyOrdersMigration).not.toHaveBeenCalled();
-  });
-
-  it('skips Portfolio migration when Backup & Sync is disabled', async () => {
-    const { result } = run(
-      buildState({
-        permissionHistory: { [PORTFOLIO_ORIGINS[0]]: {} },
-        isBackupAndSyncEnabled: false,
-      }),
-    );
-    await goToBuy(result);
+  it('skips Portfolio migration when syncing is disabled', async () => {
+    for (const syncState of [
+      { isRampsSyncingEnabled: false },
+      { isBackupAndSyncEnabled: false },
+    ]) {
+      const { result } = run(
+        buildState({
+          permissionHistory: { [PORTFOLIO_ORIGINS[0]]: {} },
+          ...syncState,
+        }),
+      );
+      await goToBuy(result);
+    }
     expect(mockRunPortfolioBuyOrdersMigration).not.toHaveBeenCalled();
   });
 

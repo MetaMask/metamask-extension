@@ -130,15 +130,20 @@ async function runPortfolioBuyOrdersMigrationInner(
       );
     }
     await submitRequestToBackground('performSignIn');
-    await Promise.race([
-      syncOrders(),
-      new Promise((_, reject) =>
-        setTimeout(
-          () => reject(new Error('Ramps order sync timed out')),
-          SYNC_TIMEOUT_MS,
-        ),
-      ),
-    ]);
+    let syncTimeoutId: ReturnType<typeof setTimeout> | undefined;
+    try {
+      await Promise.race([
+        syncOrders(),
+        new Promise((_, reject) => {
+          syncTimeoutId = setTimeout(
+            () => reject(new Error('Ramps order sync timed out')),
+            SYNC_TIMEOUT_MS,
+          );
+        }),
+      ]);
+    } finally {
+      clearTimeout(syncTimeoutId);
+    }
     await setRampsSelectedProvider(null).catch((error) =>
       console.error(
         'Failed to clear selected provider after migrate sync',
