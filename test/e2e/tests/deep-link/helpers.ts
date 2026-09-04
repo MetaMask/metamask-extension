@@ -7,6 +7,7 @@ import {
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { BaseUrl } from '../../../../shared/constants/urls';
+import { REWARDS_API_URL } from '../../../../shared/constants/rewards';
 
 /**
  * Generates an ECDSA key pair for signing deep links for testing purposes.
@@ -279,14 +280,14 @@ export const shouldRenderCheckbox = (
  */
 export const mockRewardsApi = async (server: Mockttp): Promise<void> => {
   await server
-    .forPost('https://rewards.uat-api.cx.metamask.io/public/rewards/ois')
+    .forPost(`${REWARDS_API_URL.PRD}/public/rewards/ois`)
     .thenJson(200, {
       ois: [false],
       sids: [null],
     });
 
   await server
-    .forPost('https://rewards.uat-api.cx.metamask.io/auth/mobile-login')
+    .forPost(`${REWARDS_API_URL.PRD}/auth/mobile-login`)
     .thenJson(200, {
       sessionId: 'yErC0OBAAh9BlS7frZYkjGz6RVyoo4p3R6nz3THmQlc=',
       accessToken: 'yErC0OBAAh9BlS7frZYkjGz6RVyoo4p3R6nz3THmQlc=',

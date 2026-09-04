@@ -1,7 +1,6 @@
 // TODO: find similar functionality in extession
 // import { getSubscriptionToken } from '../utils/multi-subscription-token-vault';
 import log from 'loglevel';
-import { ENVIRONMENT } from '../../../../shared/constants/build';
 import ExtensionPlatform from '../../platforms/extension';
 import {
   REWARDS_API_URL,
@@ -136,14 +135,22 @@ export class RewardsDataService {
     );
   }
 
+  /**
+   * Resolve the Rewards API host from build configuration.
+   *
+   * The host is configured by the `REWARDS_USE_UAT_APIS` variable declared in
+   * `builds.yml`, not by inspecting the build environment string. Production is
+   * the default for anything that ships, local development builds default to
+   * UAT, either default can be overridden through configuration, and test
+   * builds always resolve to production so that e2e requests are matched by the
+   * mocks registered in `test/e2e/mock-e2e.js`.
+   *
+   * @returns The Rewards API base URL for this build.
+   */
   getRewardsApiBaseUrl() {
-    if (
-      process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.PRODUCTION ||
-      process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.RELEASE_CANDIDATE
-    ) {
-      return REWARDS_API_URL.PRD;
-    }
-    return REWARDS_API_URL.UAT;
+    return process.env.REWARDS_USE_UAT_APIS
+      ? REWARDS_API_URL.UAT
+      : REWARDS_API_URL.PRD;
   }
 
   /**
