@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ERC20 } from '@metamask/controller-utils';
+import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { I18nContext } from '../../../contexts/i18n';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { Menu, MenuItem } from '../../../components/ui/menu';
 import { getBlockExplorerLinkText } from '../../../selectors';
+import { selectIsAssetInAssetsBalance } from '../../../selectors/assets';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import {
   ButtonIcon,
@@ -34,6 +36,16 @@ const AssetOptions = ({
   const navigate = useNavigate();
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
   const ref = useRef(false);
+
+  const assetId =
+    token?.address && token?.chainId
+      ? toAssetId(token.address, token.chainId)
+      : undefined;
+
+  const hasBalanceEntry = useSelector((state) =>
+    selectIsAssetInAssetsBalance(state, assetId),
+  );
+  const canHideToken = !isNativeAsset && hasBalanceEntry;
 
   const routeToAddBlockExplorerUrl = () => {
     navigate(`${NETWORKS_ROUTE}#blockExplorerUrl`);
@@ -97,7 +109,7 @@ const AssetOptions = ({
                 : [t('blockExplorerAssetAction')],
             )}
           </MenuItem>
-          {!isNativeAsset && (
+          {canHideToken && (
             <MenuItem
               iconNameLegacy={IconName.Trash}
               data-testid="asset-options__hide"
