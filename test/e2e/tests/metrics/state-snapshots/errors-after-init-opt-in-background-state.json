@@ -66,6 +66,7 @@
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
     "passkeyAutoUnlockSuppressed": "boolean",
+    "pendingDeepLinkRequestIds": "object",
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
     "pendingShieldCohortTxType": null,

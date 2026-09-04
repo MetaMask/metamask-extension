@@ -1,5 +1,7 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
+import { createDeferredPromise } from '@metamask/utils';
+import { flushPromises } from '../../../../test/lib/timer-helpers';
 import MetaMaskController from '../../metamask-controller';
 import {
   DEEP_LINK_HOST,
@@ -66,6 +68,23 @@ const routesProtectedByInterstitial = [
   '/shield',
 ] as const;
 
+const TEST_REQUEST_ID = '00000000-0000-4000-8000-000000000000';
+const setId = jest.fn();
+const removeId = jest.fn();
+
+function getInterstitialUrl(
+  urlPathAndQuery: string,
+  requestId: string | null = TEST_REQUEST_ID,
+): string {
+  const params = new URLSearchParams({
+    u: urlPathAndQuery,
+  });
+  if (requestId) {
+    params.set('id', requestId);
+  }
+  return `chrome-extension://extension-id/home.html#/link?${params}`;
+}
+
 const protectedRouteTestCases = routesProtectedByInterstitial.flatMap((route) =>
   (['missing', 'invalid'] as const).map((signature) => ({
     route,
@@ -73,19 +92,48 @@ const protectedRouteTestCases = routesProtectedByInterstitial.flatMap((route) =>
   })),
 );
 
+function handleRequest(
+  details: browser.WebRequest.OnBeforeRequestDetailsType,
+): browser.WebRequest.BlockingResponse | undefined {
+  return onBeforeRequest?.(details) as
+    | browser.WebRequest.BlockingResponse
+    | undefined;
+}
+
+async function handleRequestAndWaitForNavigation(
+  details: browser.WebRequest.OnBeforeRequestDetailsType,
+): Promise<browser.WebRequest.BlockingResponse | undefined> {
+  const response = handleRequest(details);
+
+  await flushPromises();
+
+  return response;
+}
+
 describe('DeepLinkRouter', () => {
   let router: DeepLinkRouter;
+  let randomUuidSpy: jest.SpyInstance<string, []>;
 
   beforeEach(() => {
+    mockIsManifestV3.mockReturnValue(true);
+    randomUuidSpy = jest
+      .spyOn(globalThis.crypto, 'randomUUID')
+      .mockReturnValue(TEST_REQUEST_ID);
+    getState.mockReturnValue({
+      preferences: { skipDeepLinkInterstitial: false },
+    } as unknown as ReturnType<MetaMaskController['getState']>);
     router = new DeepLinkRouter({
       getExtensionURL: new ExtensionPlatform().getExtensionURL,
       getState,
+      setId,
+      removeId,
     });
   });
   afterEach(() => {
     router.uninstall();
     onBeforeRequest = null;
     jest.clearAllMocks();
+    randomUuidSpy.mockRestore();
     (
       browser.tabs.update as jest.MockedFunction<typeof browser.tabs.update>
     ).mockReset();
@@ -122,6 +170,148 @@ describe('DeepLinkRouter', () => {
       router.install();
     });
 
+    it('redirects MV3 requests to an extension page before verification finishes', async () => {
+      const verification = createDeferredPromise<ParsedDeepLink | false>();
+      parseMock.mockReturnValue(verification.promise);
+
+      const response = handleRequest({
+        tabId: 1,
+        url: 'https://link.metamask.io/buy',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(response).toEqual({});
+      expect(browser.tabs.update).toHaveBeenCalledTimes(1);
+      expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+        url: getInterstitialUrl('/buy'),
+      });
+
+      verification.resolve({
+        destination: {},
+        signature: 'invalid',
+      } as ParsedDeepLink);
+      await flushPromises();
+
+      expect(parseMock).toHaveBeenCalledTimes(1);
+      expect(browser.tabs.update).toHaveBeenCalledTimes(2);
+      expect(browser.tabs.update).toHaveBeenLastCalledWith(1, {
+        url: getInterstitialUrl('/buy', null),
+      });
+      expect(setId).toHaveBeenCalledWith(TEST_REQUEST_ID);
+      expect(removeId).toHaveBeenCalledWith(TEST_REQUEST_ID);
+    });
+
+    it('emits navigation details after parsing succeeds', async () => {
+      const parsed = {
+        destination: {},
+        signature: 'invalid',
+      } as ParsedDeepLink;
+      const navigateListener = jest.fn();
+      parseMock.mockResolvedValue(parsed);
+      router.on('navigate', navigateListener);
+
+      await handleRequestAndWaitForNavigation({
+        tabId: 1,
+        url: 'https://link.metamask.io/buy',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(navigateListener).toHaveBeenCalledWith({
+        url: new URL('https://link.metamask.io/buy'),
+        parsed,
+      });
+    });
+
+    it('finishes the MV3 loading redirect before navigating to an approved destination', async () => {
+      const loadingPageRedirect =
+        createDeferredPromise<
+          Awaited<ReturnType<typeof browser.tabs.update>>
+        >();
+      (
+        browser.tabs.update as jest.MockedFunction<typeof browser.tabs.update>
+      ).mockReturnValueOnce(loadingPageRedirect.promise);
+      getState.mockReturnValue({
+        preferences: { skipDeepLinkInterstitial: true },
+      } as unknown as ReturnType<MetaMaskController['getState']>);
+      parseMock.mockResolvedValue({
+        destination: {
+          path: 'internal-route',
+          query: new URLSearchParams([['one', 'two']]),
+        },
+        signature: 'valid',
+      } as ParsedDeepLink);
+
+      const response = handleRequest({
+        tabId: 1,
+        url: 'https://link.metamask.io/buy',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      await Promise.resolve();
+      expect(browser.tabs.update).toHaveBeenCalledTimes(1);
+      expect(browser.tabs.update).toHaveBeenNthCalledWith(1, 1, {
+        url: getInterstitialUrl('/buy'),
+      });
+
+      loadingPageRedirect.resolve({} as browser.Tabs.Tab);
+
+      await flushPromises();
+
+      expect(response).toEqual({});
+      expect(browser.tabs.update).toHaveBeenCalledTimes(2);
+      expect(browser.tabs.update).toHaveBeenNthCalledWith(2, 1, {
+        url: 'chrome-extension://extension-id/home.html#internal-route?one=two',
+      });
+    });
+
+    it('cancels MV2 requests before verification finishes', async () => {
+      mockIsManifestV3.mockReturnValue(false);
+      const verification = createDeferredPromise<ParsedDeepLink | false>();
+      parseMock.mockReturnValue(verification.promise);
+
+      const response = handleRequest({
+        tabId: 1,
+        url: 'https://link.metamask.io/buy',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(response).toEqual({ cancel: true });
+
+      verification.resolve({
+        destination: {},
+        signature: 'invalid',
+      } as ParsedDeepLink);
+
+      await flushPromises();
+    });
+
+    it('redirects MV2 requests to the loading page before verification finishes', async () => {
+      mockIsManifestV3.mockReturnValue(false);
+      const verification = createDeferredPromise<ParsedDeepLink | false>();
+      parseMock.mockReturnValue(verification.promise);
+
+      handleRequest({
+        tabId: 1,
+        url: 'https://link.metamask.io/buy',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(browser.tabs.update).toHaveBeenCalledTimes(1);
+      expect(browser.tabs.update).toHaveBeenCalledWith(1, {
+        url: getInterstitialUrl('/buy'),
+      });
+      expect(setId).toHaveBeenCalledWith(TEST_REQUEST_ID);
+      expect(removeId).not.toHaveBeenCalled();
+
+      verification.resolve({
+        destination: {},
+        signature: 'invalid',
+      } as ParsedDeepLink);
+
+      await flushPromises();
+
+      expect(browser.tabs.update).toHaveBeenCalledTimes(2);
+      expect(browser.tabs.update).toHaveBeenLastCalledWith(1, {
+        url: getInterstitialUrl('/buy', null),
+      });
+      expect(removeId).toHaveBeenCalledWith(TEST_REQUEST_ID);
+    });
+
     // test return values for MV2 and MV3 behavior
     it.each(['mv2', 'mv3'])(
       'should return blocking or non-blocking response based on manifest version',
@@ -132,11 +322,11 @@ describe('DeepLinkRouter', () => {
         parseMock.mockResolvedValue({
           destination: {},
         } as ParsedDeepLink);
-        const response = await onBeforeRequest?.({
+        const response = await handleRequestAndWaitForNavigation({
           tabId,
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
-        expect(browser.tabs.update).toHaveBeenCalledTimes(1);
+        expect(browser.tabs.update).toHaveBeenCalledTimes(2);
         // Manifest v2 should return a blocking response (cancel the request),
         expect(response).toEqual(mockIsManifestV3() ? {} : { cancel: true });
       },
@@ -152,12 +342,12 @@ describe('DeepLinkRouter', () => {
           signature: signed ? 'valid' : 'invalid',
           destination: {},
         } as ParsedDeepLink);
-        await onBeforeRequest?.({
+        await handleRequestAndWaitForNavigation({
           tabId,
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: 'chrome-extension://extension-id/home.html#link?u=%2Fexternal-route%3Fquery%3Dparam',
+          url: getInterstitialUrl('/external-route?query=param'),
         });
       },
     );
@@ -178,15 +368,13 @@ describe('DeepLinkRouter', () => {
           },
         } as ParsedDeepLink);
 
-        await onBeforeRequest?.({
+        await handleRequestAndWaitForNavigation({
           tabId,
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
 
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: `chrome-extension://extension-id/home.html#link?${new URLSearchParams(
-            { u: route },
-          ).toString()}`,
+          url: getInterstitialUrl(route),
         });
       },
     );
@@ -265,7 +453,7 @@ describe('DeepLinkRouter', () => {
           requestDetails: arrangeRequestDetails({
             initiator: 'https://evil.com',
           }),
-          expectedUrl: `${EXTENSION_HOME}#link?u=%2Ftest-route`, // we are redirecting to #link interstitial page
+          expectedUrl: getInterstitialUrl('/test-route'),
         },
       ];
 
@@ -273,7 +461,7 @@ describe('DeepLinkRouter', () => {
         'handles interstitial for $name',
         async ({ parsed, requestDetails, expectedUrl }) => {
           parseMock.mockResolvedValue(parsed);
-          await onBeforeRequest?.(requestDetails);
+          await handleRequestAndWaitForNavigation(requestDetails);
           expect(browser.tabs.update).toHaveBeenCalledWith(
             requestDetails.tabId,
             { url: expectedUrl },
@@ -296,7 +484,7 @@ describe('DeepLinkRouter', () => {
           },
           signature: 'valid',
         } as ParsedDeepLink);
-        await onBeforeRequest?.({
+        await handleRequestAndWaitForNavigation({
           tabId,
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -316,19 +504,18 @@ describe('DeepLinkRouter', () => {
           signature: 'invalid',
           destination: {},
         } as ParsedDeepLink);
-        await onBeforeRequest?.({
+        await handleRequestAndWaitForNavigation({
           tabId,
           url,
         } as browser.WebRequest.OnBeforeRequestDetailsType);
         // it should NOT go directly to the internal route, but still be shown the interstitial
         expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-          url: 'chrome-extension://extension-id/home.html#link?u=%2Fexternal-route%3Fquery%3Dparam',
+          url: getInterstitialUrl('/external-route?query=param'),
         });
       });
     });
 
     describe('unsigned asset routes', () => {
-      const EXTENSION_HOME = 'chrome-extension://extension-id/home.html';
       const WARB_ASSET_ID =
         'eip155:1/erc20:0xb047c8032b99841713b8e3872f06cf32beb27b82';
       const DAI_ASSET_ID =
@@ -348,7 +535,7 @@ describe('DeepLinkRouter', () => {
             },
             route: { pathname: '/asset' },
           } as ParsedDeepLink,
-          expectedUrl: `${EXTENSION_HOME}#link?u=%2Fasset%3FassetId%3D${encodeURIComponent(encodedAssetId)}`,
+          expectedUrl: getInterstitialUrl(`/asset?assetId=${encodedAssetId}`),
         };
       };
 
@@ -375,7 +562,7 @@ describe('DeepLinkRouter', () => {
         '$description',
         async (testCase: AssetRouteTestCase) => {
           parseMock.mockResolvedValue(testCase.parsed);
-          await onBeforeRequest?.({
+          await handleRequestAndWaitForNavigation({
             tabId: 1,
             url: testCase.url,
           } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -386,10 +573,10 @@ describe('DeepLinkRouter', () => {
       );
     });
 
-    it('should handle TAB_ID_NONE and not attempt to parse or navigate', async () => {
+    it('should handle TAB_ID_NONE and not attempt to parse or navigate', () => {
       const url = `about:blank`;
       const tabId = browser.tabs.TAB_ID_NONE;
-      const response = await onBeforeRequest?.({
+      const response = handleRequest({
         tabId,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -399,7 +586,7 @@ describe('DeepLinkRouter', () => {
 
     it('should reject parsing very long URLs', async () => {
       const url = `https://example.com/${'a'.repeat(5000)}`;
-      const response = await onBeforeRequest?.({
+      const response = await handleRequestAndWaitForNavigation({
         tabId: 1,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -408,20 +595,19 @@ describe('DeepLinkRouter', () => {
       expect(browser.tabs.update).not.toHaveBeenCalled();
     });
 
-    it('should handle unparsable URLs and redirect to error page without u param', async () => {
+    it('should handle unparsable URLs and redirect to error page without u param', () => {
       const url = `something unparseable`;
       const tabId = 1;
-      parseMock.mockResolvedValue(false);
       const mockError = jest.fn();
       router.on('error', mockError);
-      const response = await onBeforeRequest?.({
+      const response = handleRequest({
         tabId,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
       expect(parseMock).not.toHaveBeenCalled();
       expect(response).toEqual({});
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-        url: 'chrome-extension://extension-id/home.html#link?errorCode=404',
+        url: 'chrome-extension://extension-id/home.html#/link?errorCode=404',
       });
       expect(mockError).toHaveBeenCalledTimes(1);
       expect(mockError.mock.calls[0][0].message).toBe('Invalid URL');
@@ -429,6 +615,7 @@ describe('DeepLinkRouter', () => {
 
     it('should capture browser.tabs.update exceptions and emit an error event', async function () {
       const logErrorSpy = jest.spyOn(log, 'error');
+      mockIsManifestV3.mockReturnValue(false);
       const tabId = 1;
       const url = `https://example.com/test-route`;
       parseMock.mockResolvedValue({
@@ -440,8 +627,8 @@ describe('DeepLinkRouter', () => {
       router.on('error', mockErrorCallback);
 
       const error = new Error('Test error');
-      (browser.tabs.update as jest.Mock).mockRejectedValue(error);
-      await onBeforeRequest?.({
+      (browser.tabs.update as jest.Mock).mockRejectedValueOnce(error);
+      await handleRequestAndWaitForNavigation({
         tabId,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
@@ -462,7 +649,7 @@ describe('DeepLinkRouter', () => {
           redirectTo: new URL('https://example.com/internal-route'),
         },
       } as ParsedDeepLink);
-      await onBeforeRequest?.({
+      await handleRequestAndWaitForNavigation({
         tabId,
         url,
         initiator: 'https://metamask.io',
@@ -485,13 +672,13 @@ describe('DeepLinkRouter', () => {
         },
       } as ParsedDeepLink);
 
-      await onBeforeRequest?.({
+      await handleRequestAndWaitForNavigation({
         tabId,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
 
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-        url: 'chrome-extension://extension-id/home.html#link?u=%2Fbuy',
+        url: getInterstitialUrl('/buy'),
       });
     });
 
@@ -531,12 +718,12 @@ describe('DeepLinkRouter', () => {
       const tabId = 1;
       const url = `https://example.com/nonexistent-route`;
       parseMock.mockResolvedValue(false);
-      await onBeforeRequest?.({
+      await handleRequestAndWaitForNavigation({
         tabId,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
-        url: 'chrome-extension://extension-id/home.html#link?errorCode=404&u=%2Fnonexistent-route',
+        url: 'chrome-extension://extension-id/home.html#/link?errorCode=404&u=%2Fnonexistent-route',
       });
     });
   });

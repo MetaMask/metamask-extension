@@ -168,6 +168,7 @@ export type AppStateControllerState = {
   dappSwapComparisonData?: {
     [uniqueId: string]: DappSwapComparisonData;
   };
+  pendingDeepLinkRequestIds: string[];
   deferredDeepLink?: DeferredDeepLink;
 
   /**
@@ -325,6 +326,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
   dappSwapComparisonData: {},
+  pendingDeepLinkRequestIds: [],
   storageWriteErrorType: null,
   passkeyAutoUnlockSuppressed: false,
   ...getInitialStateOverrides(),
@@ -679,6 +681,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
+  pendingDeepLinkRequestIds: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   storageWriteErrorType: {
     includeInStateLogs: true,
     persist: false,
@@ -775,7 +783,7 @@ export class AppStateController extends BaseController<
 > {
   readonly #extension: AppStateControllerOptions['extension'];
 
-  #timer: NodeJS.Timeout | null;
+  #timer: ReturnType<typeof setTimeout> | null;
 
   readonly waitingForUnlock: { resolve: () => void }[];
 
@@ -1767,6 +1775,35 @@ export class AppStateController extends BaseController<
     uniqueId: string,
   ): DappSwapComparisonData | undefined {
     return this.state.dappSwapComparisonData?.[uniqueId] ?? undefined;
+  }
+
+  /**
+   * Marks a deep-link request as pending background verification.
+   *
+   * @param id - The request identifier shared with the interstitial route.
+   */
+  addPendingDeepLinkRequestId(id: string): void {
+    this.update((state) => {
+      if (!state.pendingDeepLinkRequestIds.includes(id)) {
+        state.pendingDeepLinkRequestIds = [
+          ...state.pendingDeepLinkRequestIds,
+          id,
+        ];
+      }
+    });
+  }
+
+  /**
+   * Marks a deep-link request as no longer pending background verification.
+   *
+   * @param id - The request identifier shared with the interstitial route.
+   */
+  removePendingDeepLinkRequestId(id: string): void {
+    this.update((state) => {
+      state.pendingDeepLinkRequestIds = state.pendingDeepLinkRequestIds.filter(
+        (pendingId) => pendingId !== id,
+      );
+    });
   }
 
   /**
