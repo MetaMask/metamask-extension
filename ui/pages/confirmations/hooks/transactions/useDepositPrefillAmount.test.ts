@@ -14,6 +14,7 @@ import {
 import { isRouteToken } from '../../utils/relay-fixed-spread';
 import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
+import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
 import { useDepositPrefillAmount } from './useDepositPrefillAmount';
@@ -30,6 +31,7 @@ jest.mock('../../utils/relay-fixed-spread', () => ({
 
 jest.mock('../pay/usePayTokenAccountBalance');
 jest.mock('../pay/useTransactionPayToken');
+jest.mock('../tokens/useTokenFiatRates');
 jest.mock('./useTransactionMetadataRequest');
 jest.mock('./useTransactionAccountOverride');
 
@@ -47,6 +49,7 @@ const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
 const useTransactionAccountOverrideMock = jest.mocked(
   useTransactionAccountOverride,
 );
+const useTokenFiatRateMock = jest.mocked(useTokenFiatRate);
 const useSelectorMock = jest.mocked(useSelector);
 const isRouteTokenMock = jest.mocked(isRouteToken);
 
@@ -68,6 +71,9 @@ function makePayToken(
   return {
     address: TOKEN_ADDRESS_MOCK,
     balanceUsd: '1000',
+    // Non-zero raw so uncapped 100% prefill can commit (waits on live raw).
+    balanceRaw: '1000000000',
+    decimals: 6,
     chainId: CHAIN_ID_MOCK,
     ...overrides,
   } as TransactionPaymentToken;
@@ -108,6 +114,7 @@ function setupMocks(
     balanceRaw: resolvedPayToken?.balanceRaw ?? '0',
   });
   useTransactionAccountOverrideMock.mockReturnValue(overrides.accountOverride);
+  useTokenFiatRateMock.mockReturnValue(1);
 
   useSelectorMock.mockImplementation((selector) => {
     if (selector === getRemoteFeatureFlags) {
@@ -154,6 +161,7 @@ describe('useDepositPrefillAmount', () => {
 
       expect(result.current).toEqual({
         prefillAmount: undefined,
+        isUncappedMaxPrefill: false,
         enabled: false,
         isLoading: false,
         hasPrefilled: false,
@@ -181,6 +189,7 @@ describe('useDepositPrefillAmount', () => {
       const { result } = runHook();
 
       expect(result.current.prefillAmount).toBe('500');
+      expect(result.current.isUncappedMaxPrefill).toBe(true);
     });
 
     it('computes 50% for non-stablecoin tokens', () => {
@@ -192,6 +201,7 @@ describe('useDepositPrefillAmount', () => {
       const { result } = runHook();
 
       expect(result.current.prefillAmount).toBe('500');
+      expect(result.current.isUncappedMaxPrefill).toBe(false);
     });
 
     it('caps at deposit limit when balance exceeds it', () => {
@@ -204,6 +214,65 @@ describe('useDepositPrefillAmount', () => {
       const { result } = runHook();
 
       expect(result.current.prefillAmount).toBe('100000');
+      expect(result.current.isUncappedMaxPrefill).toBe(false);
+    });
+
+    it('keeps uncapped max when balance is under the deposit limit', () => {
+      setupMocks({
+        stablecoin: true,
+        payToken: makePayToken({ balanceUsd: '500' }),
+        depositLimits: { moneyAccountDeposit: 100000 },
+      });
+
+      const { result } = runHook();
+
+      expect(result.current.prefillAmount).toBe('500');
+      expect(result.current.isUncappedMaxPrefill).toBe(true);
+    });
+
+    it('does not commit uncapped max until live balanceRaw is available', () => {
+      setupMocks({
+        stablecoin: true,
+        payToken: makePayToken({ balanceUsd: '500', balanceRaw: '0' }),
+      });
+
+      const { result, rerender } = runHook();
+
+      expect(result.current.isUncappedMaxPrefill).toBe(true);
+      expect(result.current.hasPrefilled).toBe(false);
+      expect(result.current.isLoading).toBe(true);
+
+      usePayTokenAccountBalanceMock.mockReturnValue({
+        balanceUsd: '500',
+        balanceRaw: '500000000',
+      });
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.hasPrefilled).toBe(true);
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    it('does not commit a positive prefill until the pay-token fiat rate is available', () => {
+      setupMocks({
+        stablecoin: true,
+        payToken: makePayToken({ balanceUsd: '500' }),
+      });
+      useTokenFiatRateMock.mockReturnValue(undefined);
+
+      const { result, rerender } = runHook();
+
+      expect(result.current.hasPrefilled).toBe(false);
+      expect(result.current.isLoading).toBe(true);
+
+      useTokenFiatRateMock.mockReturnValue(1);
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.hasPrefilled).toBe(true);
+      expect(result.current.isLoading).toBe(false);
     });
 
     it('returns undefined when no payToken', () => {
@@ -212,6 +281,7 @@ describe('useDepositPrefillAmount', () => {
       const { result } = runHook();
 
       expect(result.current.prefillAmount).toBeUndefined();
+      expect(result.current.isUncappedMaxPrefill).toBe(false);
     });
 
     it('returns 0.0 when balanceUsd is 0', () => {
@@ -222,6 +292,7 @@ describe('useDepositPrefillAmount', () => {
       const { result } = runHook();
 
       expect(result.current.prefillAmount).toBe('0.0');
+      expect(result.current.isUncappedMaxPrefill).toBe(false);
     });
 
     it('formats integer amounts without decimals', () => {
@@ -366,13 +437,14 @@ describe('useDepositPrefillAmount', () => {
         payToken: makePayToken({
           address: TOKEN_ADDRESS_B_MOCK,
           balanceUsd: '800',
+          balanceRaw: '800000000',
         }),
         setPayToken: jest.fn(),
         isNative: false,
       } as ReturnType<typeof useTransactionPayToken>);
       usePayTokenAccountBalanceMock.mockReturnValue({
         balanceUsd: '800',
-        balanceRaw: '0',
+        balanceRaw: '800000000',
       });
 
       await act(async () => {
