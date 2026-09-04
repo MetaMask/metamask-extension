@@ -53,13 +53,8 @@ export function getAccountTreeControllerMessenger(
       'KeyringController:withController',
       'KeyringController:withKeyringV2',
       'KeyringController:withKeyringV2Unsafe',
-      'MultichainAccountService:createMultichainAccountWallet',
       'SnapController:getSnap',
       'KeyringController:getState',
-      'KeyringController:verifyPassword',
-      'KeyringController:withController',
-      'KeyringController:withKeyringV2',
-      'KeyringController:withKeyringV2Unsafe',
     ],
   });
   return accountTreeControllerMessenger;
