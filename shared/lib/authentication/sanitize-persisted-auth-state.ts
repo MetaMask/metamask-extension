@@ -11,7 +11,7 @@ function decodeJwtIss(accessToken: string): string | null {
     if (!payload) {
       return null;
     }
-    const normalized = payload.replace(/-/gu, '+').replace(/_/gu, '/');
+    const normalized = payload.replaceAll('-', '+').replaceAll('_', '/');
     const json = JSON.parse(atob(normalized)) as { iss?: unknown };
     return typeof json.iss === 'string' ? json.iss : null;
   } catch {
