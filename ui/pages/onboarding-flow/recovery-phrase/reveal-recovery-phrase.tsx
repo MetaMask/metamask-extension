@@ -248,6 +248,14 @@ export default function RevealRecoveryPhrase({
     }
   }, [navigate, isFromSettingsSecurity, previousPage]);
 
+  const closeBackupFlow = useCallback(() => {
+    cancelPasskeyCeremony();
+    navigate(
+      isFromSettingsSecurity ? MANAGE_WALLET_RECOVERY_ROUTE : DEFAULT_ROUTE,
+      { replace: true },
+    );
+  }, [navigate, isFromSettingsSecurity]);
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
@@ -280,7 +288,7 @@ export default function RevealRecoveryPhrase({
             color={IconColor.IconDefault}
             size={ButtonIconSize.Md}
             data-testid="reveal-recovery-phrase-close-button"
-            onClick={returnToPreviousPage}
+            onClick={closeBackupFlow}
             ariaLabel={t('close')}
           />
         </Box>

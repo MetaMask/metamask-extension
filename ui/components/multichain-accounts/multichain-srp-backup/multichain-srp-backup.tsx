@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
 import {
   Box,
@@ -26,32 +26,31 @@ export type MultichainSrpBackupProps = {
   shouldShowBackupReminder?: boolean;
   className?: string | Record<string, boolean>;
   keyringId?: string;
+  backupFlowReturnRoute?: string;
 };
 
 export const MultichainSrpBackup = ({
   shouldShowBackupReminder = false,
   className = '',
   keyringId,
+  backupFlowReturnRoute,
 }: MultichainSrpBackupProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const { pathname, search } = useLocation();
 
   const handleSrpBackupClick = useCallback(() => {
     if (shouldShowBackupReminder) {
-      const backUpSRPParams = new URLSearchParams({
-        isFromReminder: 'true',
-        // Lets the backup flow send the user back to the page they opened it
-        // from instead of dropping them on the home page.
-        previousPage: `${pathname}${search}`,
-      });
+      const backUpSRPParams = new URLSearchParams({ isFromReminder: 'true' });
+      if (backupFlowReturnRoute) {
+        backUpSRPParams.set('previousPage', backupFlowReturnRoute);
+      }
       navigate(`${ONBOARDING_REVIEW_SRP_ROUTE}/?${backUpSRPParams.toString()}`);
     } else {
       navigate(
         keyringId ? `${REVEAL_SEED_ROUTE}/${keyringId}` : REVEAL_SEED_ROUTE,
       );
     }
-  }, [shouldShowBackupReminder, navigate, keyringId, pathname, search]);
+  }, [shouldShowBackupReminder, backupFlowReturnRoute, navigate, keyringId]);
 
   const finalClassName = classnames('multichain-srp-backup', className);
 

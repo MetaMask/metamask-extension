@@ -717,6 +717,29 @@ describe('RevealRecoveryPhrase', () => {
       });
     });
 
+    it('navigates to the default route when closing with a previous page', () => {
+      const accountDetailsPage = `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}?accountGroupId=entropy%3A01JKAF%2F0`;
+      mockUseLocation.mockReturnValue({
+        search: `?isFromReminder=true&previousPage=${encodeURIComponent(
+          accountDetailsPage,
+        )}`,
+      });
+      const mockStore = configureMockStore()(mockState);
+      const { getByTestId } = renderWithProvider(
+        <RevealRecoveryPhrase
+          setSecretRecoveryPhrase={mockSetSecretRecoveryPhrase}
+        />,
+        mockStore,
+      );
+
+      const closeButton = getByTestId('reveal-recovery-phrase-close-button');
+      fireEvent.click(closeButton);
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: true,
+      });
+    });
+
     it('ignores a previous page that is not an in-app path', () => {
       mockUseLocation.mockReturnValue({
         search: `?isFromReminder=true&previousPage=${encodeURIComponent(

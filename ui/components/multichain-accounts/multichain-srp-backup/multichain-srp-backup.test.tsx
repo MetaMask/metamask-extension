@@ -84,13 +84,16 @@ describe('MultichainSrpBackup', () => {
     fireEvent.click(screen.getByTestId(srpBackupRowTestId));
 
     expect(mockUseNavigate).toHaveBeenCalledWith(
-      `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true&previousPage=%2F`,
+      `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`,
     );
   });
 
-  it('forwards the current page to the SRP review route so the backup flow can return to it', () => {
+  it('forwards the configured return route to the SRP review route', () => {
     const accountDetailsPage = `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}?accountGroupId=entropy%3A01JKAF%2F0`;
-    renderComponent({ shouldShowBackupReminder: true }, accountDetailsPage);
+    renderComponent({
+      shouldShowBackupReminder: true,
+      backupFlowReturnRoute: accountDetailsPage,
+    });
 
     fireEvent.click(screen.getByTestId(srpBackupRowTestId));
 
