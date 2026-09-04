@@ -53,7 +53,7 @@
         "^Prepare dependencies$",
         "^Publish",
         "^Repository health checks",
-    "^repository-health-checks",
+        "^repository-health-checks",
         "^Run tests",
         "^Unit and integration tests",
         "^sonarcloud",
@@ -169,7 +169,7 @@
     "Lint errors encountered for transformed file", // Browserify build: ESLint errors in post-transform output
     "Module not found", // Webpack: import of nonexistent module
     "NEW FILES \\(not in baseline\\)", // lint-baseline.mts: new files with violations not yet baselined
-    "No build-name entries found in main.yml or builds-\\*\\.yml", // filter-files-changed: Main workflow graph missing expected build-name fields
+    "No build artifact names found in ci-run-build-group\\.sh", // get-requirements: build artifact list missing from ci-run-build-group.sh
     "no platform directories.*found in dist", // build verification: platform folders missing from output
     "Not a valid commit name", // git can't resolve a commit SHA (shallow clone, force-pushed, or pruned ref)
     "packageManager.*current global version", // Corepack not enabled: workflow uses wrong Yarn version (needs corepack enable)
