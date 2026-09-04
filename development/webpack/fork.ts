@@ -16,13 +16,26 @@ if (isNaN(PPID) || PPID !== process.ppid) {
   );
 }
 
-require('./build').build(() => {
+require('./build').build(detachFromParent);
+
+function detachFromParent() {
   // stop writing now because the parent process is still listening to these
   // streams and we don't want any more output to be shown to the user.
   process.stdout.write = process.stderr.write = () => true;
 
   // use IPC if we have it, otherwise send a POSIX signal
-  process.send?.('SIGUSR2') || process.kill(PPID, 'SIGUSR2');
-});
+  try {
+    process.send?.('SIGUSR2') || process.kill(PPID, 'SIGUSR2');
+  } catch (error) {
+    if (!isMissingParentError(error)) {
+      throw error;
+    }
+  }
+}
+
+function isMissingParentError(error: unknown): boolean {
+  const { code } = error as NodeJS.ErrnoException;
+  return code === 'ESRCH' || code === 'ERR_IPC_CHANNEL_CLOSED';
+}
 
 export {};
