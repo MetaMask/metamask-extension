@@ -179,16 +179,16 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 223,
+      "currentMigrationVersion": 224,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
     "AppStateController": {
+      "arcUsageNoticeShown": false,
       "browserEnvironment": {
         "browser": "chrome"
       },
-      "canTrackWalletFundsObtained": false,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -1262,6 +1262,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 223
+    "version": 224
   }
 }

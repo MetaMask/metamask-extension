@@ -1,6 +1,6 @@
 import { getErrorMessage } from '@metamask/utils';
 import type {
-  AnalyticsControllerActions,
+  AnalyticsControllerGetStateAction,
   AnalyticsControllerState,
 } from '@metamask/analytics-controller';
 import type {
@@ -28,12 +28,10 @@ import {
   type EndTraceRequest,
   type TraceCallback,
 } from '../../../shared/lib/trace';
-import { ENVIRONMENT } from '../../../shared/constants/build';
 import type { captureException } from '../../../shared/lib/sentry';
 import { registerABTestAnalyticsMapping } from '../../../shared/lib/ab-testing/ab-test-analytics';
 import { CHAIN_VALUE_ORDER_AB_TEST_ANALYTICS_MAPPING } from '../../../shared/lib/ab-testing/configs/chain-value-order';
 import { PERPS_TAB_BADGE_AB_TEST_ANALYTICS_MAPPING } from '../../../shared/lib/ab-testing/configs/perps-tab-badge';
-import { isMain } from '../../../shared/lib/build-types';
 import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -149,7 +147,7 @@ export type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
   | MultichainNetworkControllerGetStateAction
-  | AnalyticsControllerActions;
+  | AnalyticsControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -196,7 +194,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'clearTracesAfterMetricsOptIn',
   'setDataCollectionForMarketing',
   'setMarketingCampaignCookieId',
-  'setParticipateInMetaMetrics',
   'trackTracesAfterMetricsOptIn',
   'updateExtensionUninstallUrl',
   'updateTraits',
@@ -338,52 +335,6 @@ export class MetaMetricsController extends BaseController<
         `${EXTENSION_UNINSTALL_URL}?${queryString}`,
       );
     }
-  }
-
-  /**
-   * Setter for the `participateInMetaMetrics` property
-   *
-   * @param participateInMetaMetrics - Whether or not the user wants to participate in MetaMetrics if not set
-   * @returns The string of the new metametrics id, or null
-   */
-  async setParticipateInMetaMetrics(
-    participateInMetaMetrics: boolean | null,
-  ): Promise<string | null> {
-    const { analyticsId } = this.#analyticsGetState();
-
-    // Opt-in/out and the undecided reset are owned by AnalyticsController, which
-    // also replays/clears its pre-consent event queue. Traces remain buffered
-    // here (out of scope) and are flushed/cleared alongside.
-    if (participateInMetaMetrics === true) {
-      this.messenger.call('AnalyticsController:optIn');
-      this.trackTracesAfterMetricsOptIn();
-      this.clearTracesAfterMetricsOptIn();
-    } else {
-      if (participateInMetaMetrics === false) {
-        this.messenger.call('AnalyticsController:optOut');
-        // Drop any UI-buffered pre-submit traces; they must not be sent after opt-out.
-        this.clearTracesAfterMetricsOptIn();
-      } else {
-        // `null` returns the user to the undecided state.
-        this.messenger.call('AnalyticsController:resetConsentDecision');
-      }
-      if (this.state.marketingCampaignCookieId) {
-        this.setMarketingCampaignCookieId(null);
-      }
-    }
-
-    if (
-      isMain() &&
-      this.#environment !== ENVIRONMENT.DEVELOPMENT &&
-      participateInMetaMetrics !== null
-    ) {
-      this.updateExtensionUninstallUrl(
-        participateInMetaMetrics === true,
-        analyticsId,
-      );
-    }
-
-    return analyticsId;
   }
 
   setDataCollectionForMarketing(dataCollectionForMarketing: boolean): string {

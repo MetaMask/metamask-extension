@@ -49,11 +49,11 @@
       "previousMigrationVersion": 0
     },
     "AppStateController": {
+      "arcUsageNoticeShown": "boolean",
       "browserEnvironment": {
         "browser": "string",
         "os": "string"
       },
-      "canTrackWalletFundsObtained": false,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -366,6 +366,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 223
+    "version": 224
   }
 }

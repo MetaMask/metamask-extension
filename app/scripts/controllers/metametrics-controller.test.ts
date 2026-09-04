@@ -4,7 +4,13 @@ import type {
 } from '@metamask/network-controller';
 import type {
   AnalyticsContext,
+  AnalyticsControllerIdentifyAction,
+  AnalyticsControllerOptInAction,
+  AnalyticsControllerOptOutAction,
+  AnalyticsControllerResetConsentDecisionAction,
   AnalyticsControllerState,
+  AnalyticsControllerTrackEventAction,
+  AnalyticsControllerTrackViewAction,
   AnalyticsEventProperties,
   AnalyticsUserTraits,
 } from '@metamask/analytics-controller';
@@ -45,7 +51,6 @@ import {
   enrichEventProperties,
   enrichWithABTestAnalytics,
 } from './analytics/platform-adapter';
-import * as analyticsHelpers from './analytics/analytics';
 import {
   configureAnalytics,
   getProfileIdentityProperties,
@@ -357,87 +362,6 @@ describe('MetaMetricsController', function () {
           'analytics#identify: "test_array_multi_types" value is not a valid trait type',
         );
       });
-    });
-  });
-
-  describe('setParticipateInMetaMetrics', function () {
-    it('opts in/out via AnalyticsController and records the consent decision', async function () {
-      await withController(
-        {
-          analyticsControllerState: {
-            optedIn: false,
-            consentDecisionMade: false,
-          },
-        },
-        async ({ controller, controllerMessenger }) => {
-          expect(
-            controllerMessenger.call('AnalyticsController:getState')
-              .consentDecisionMade,
-          ).toBe(false);
-
-          await controller.setParticipateInMetaMetrics(true);
-          const afterOptIn = controllerMessenger.call(
-            'AnalyticsController:getState',
-          );
-          expect(afterOptIn.optedIn).toBe(true);
-          expect(afterOptIn.consentDecisionMade).toBe(true);
-
-          await controller.setParticipateInMetaMetrics(false);
-          const afterOptOut = controllerMessenger.call(
-            'AnalyticsController:getState',
-          );
-          expect(afterOptOut.optedIn).toBe(false);
-          expect(afterOptOut.consentDecisionMade).toBe(true);
-        },
-      );
-    });
-
-    it('resets the consent decision when set to null', async function () {
-      await withController(
-        {
-          analyticsControllerState: {
-            optedIn: true,
-            consentDecisionMade: true,
-          },
-        },
-        async ({ controller, controllerMessenger }) => {
-          await controller.setParticipateInMetaMetrics(null);
-          const afterReset = controllerMessenger.call(
-            'AnalyticsController:getState',
-          );
-          expect(afterReset.optedIn).toBe(false);
-          expect(afterReset.consentDecisionMade).toBe(false);
-        },
-      );
-    });
-    it('should not nullify the analyticsId when set to false', async function () {
-      await withController(async ({ controller, controllerMessenger }) => {
-        await controller.setParticipateInMetaMetrics(false);
-        expect(
-          controllerMessenger.call('AnalyticsController:getState').analyticsId,
-        ).toStrictEqual(TEST_ANALYTICS_ID);
-      });
-    });
-    it('should nullify the marketingCampaignCookieId when participateInMetaMetrics is toggled off', async function () {
-      await withController(
-        {
-          options: {
-            state: {
-              dataCollectionForMarketing: true,
-              marketingCampaignCookieId: TEST_GA_COOKIE_ID,
-            },
-          },
-        },
-        async ({ controller }) => {
-          expect(controller.state.marketingCampaignCookieId).toStrictEqual(
-            TEST_GA_COOKIE_ID,
-          );
-          await controller.setParticipateInMetaMetrics(false);
-          expect(controller.state.marketingCampaignCookieId).toStrictEqual(
-            null,
-          );
-        },
-      );
     });
   });
 
@@ -1306,31 +1230,28 @@ describe('MetaMetricsController', function () {
 
   describe('Sensitive transaction and signature events', function () {
     it('keeps the original event name and marks anonymous-only tracks', async function () {
-      await withController(
-        {},
-        ({ controller }) => {
-          const spy = jest.spyOn(segmentMock, 'track');
-          trackLegacyMetaMetricsPayload(
-            {
-              event: 'Signature Requested',
-              category: 'Unit Test',
-              properties: DEFAULT_EVENT_PROPERTIES,
-            },
-            { excludeMetaMetricsId: true },
-          );
+      await withController({}, ({ controller }) => {
+        const spy = jest.spyOn(segmentMock, 'track');
+        trackLegacyMetaMetricsPayload(
+          {
+            event: 'Signature Requested',
+            category: 'Unit Test',
+            properties: DEFAULT_EVENT_PROPERTIES,
+          },
+          { excludeMetaMetricsId: true },
+        );
 
-          expect(spy).toHaveBeenCalledTimes(1);
-          expect(spy).toHaveBeenCalledWith(
-            expect.objectContaining({
-              event: 'Signature Requested',
-              properties: expect.objectContaining({
-                ...DEFAULT_EVENT_PROPERTIES,
-              }),
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            event: 'Signature Requested',
+            properties: expect.objectContaining({
+              ...DEFAULT_EVENT_PROPERTIES,
             }),
-            undefined,
-          );
-        },
-      );
+          }),
+          undefined,
+        );
+      });
     });
 
     // @ts-expect-error This function is missing from the Mocha type definitions
@@ -1733,7 +1654,20 @@ describe('MetaMetricsController', function () {
   });
 });
 
-type RootMessenger = Messenger<MockAnyNamespace, AllowedActions, AllowedEvents>;
+// The root messenger also hosts the AnalyticsController handlers that the
+// analytics module calls directly, which are no longer part of the
+// MetaMetricsController allowlist.
+type RootMessenger = Messenger<
+  MockAnyNamespace,
+  | AllowedActions
+  | AnalyticsControllerOptInAction
+  | AnalyticsControllerOptOutAction
+  | AnalyticsControllerResetConsentDecisionAction
+  | AnalyticsControllerIdentifyAction
+  | AnalyticsControllerTrackEventAction
+  | AnalyticsControllerTrackViewAction,
+  AllowedEvents
+>;
 
 type MetaMetricsControllerTestState = Partial<MetaMetricsControllerState>;
 
@@ -2021,12 +1955,6 @@ async function withController<ReturnValue>(
       messenger: metaMetricsControllerMessenger,
       actions: [
         'AnalyticsController:getState',
-        'AnalyticsController:identify',
-        'AnalyticsController:optIn',
-        'AnalyticsController:optOut',
-        'AnalyticsController:resetConsentDecision',
-        'AnalyticsController:trackEvent',
-        'AnalyticsController:trackView',
         'PreferencesController:getState',
         'NetworkController:getState',
         'NetworkController:getNetworkClientById',

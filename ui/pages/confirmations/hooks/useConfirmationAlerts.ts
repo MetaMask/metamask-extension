@@ -1,5 +1,9 @@
 import { useMemo } from 'react';
+import type { TransactionMeta } from '@metamask/transaction-controller';
+import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
+import { PAY_TRANSACTION_TYPES } from '../constants/pay';
+import { useConfirmContext } from '../context/confirm';
 import useAccountMismatchAlerts from './alerts/signatures/useAccountMismatchAlerts';
 import useDomainMismatchAlerts from './alerts/signatures/useDomainMismatchAlerts';
 import { useAccountTypeUpgrade } from './alerts/transactions/useAccountTypeUpgrade';
@@ -134,7 +138,17 @@ function useTransactionAlerts(): Alert[] {
   );
 }
 
+/**
+ * MM Pay confirmations surface blocking issues as inline text (via
+ * `useTransactionCustomAmountAlerts`), so key-value row icons are redundant.
+ * @param alerts
+ */
+function withoutRowFields(alerts: Alert[]): Alert[] {
+  return alerts.map(({ field: _field, ...alert }) => alert);
+}
+
 export default function useConfirmationAlerts(): Alert[] {
+  const { currentConfirmation } = useConfirmContext();
   const blockaidAlerts = useBlockaidAlerts();
   const confirmationOriginAlerts = useConfirmationOriginAlerts();
   const signatureAlerts = useSignatureAlerts();
@@ -146,8 +160,13 @@ export default function useConfirmationAlerts(): Alert[] {
   const spenderAlerts = useSpenderAlerts();
   const addEthereumChainAlerts = useAddEthereumChainAlerts();
 
-  return useMemo(
-    () => [
+  const isPayTransaction = hasTransactionType(
+    currentConfirmation as TransactionMeta | undefined,
+    PAY_TRANSACTION_TYPES,
+  );
+
+  return useMemo(() => {
+    const alerts = [
       ...blockaidAlerts,
       ...confirmationOriginAlerts,
       ...signatureAlerts,
@@ -158,18 +177,20 @@ export default function useConfirmationAlerts(): Alert[] {
       ...originTrustSignalAlerts,
       ...spenderAlerts,
       ...addEthereumChainAlerts,
-    ],
-    [
-      blockaidAlerts,
-      confirmationOriginAlerts,
-      signatureAlerts,
-      transactionAlerts,
-      selectedAccountAlerts,
-      networkAndOriginSwitchingAlerts,
-      addressTrustSignalAlerts,
-      originTrustSignalAlerts,
-      spenderAlerts,
-      addEthereumChainAlerts,
-    ],
-  );
+    ];
+
+    return isPayTransaction ? withoutRowFields(alerts) : alerts;
+  }, [
+    addEthereumChainAlerts,
+    addressTrustSignalAlerts,
+    blockaidAlerts,
+    confirmationOriginAlerts,
+    isPayTransaction,
+    networkAndOriginSwitchingAlerts,
+    originTrustSignalAlerts,
+    selectedAccountAlerts,
+    signatureAlerts,
+    spenderAlerts,
+    transactionAlerts,
+  ]);
 }

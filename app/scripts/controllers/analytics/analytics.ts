@@ -13,6 +13,8 @@ import type {
   AnalyticsEventBuildOptions,
 } from '../../../../shared/lib/analytics/create-event-builder';
 import { captureException as sentryCaptureException } from '../../../../shared/lib/sentry';
+import { isMain } from '../../../../shared/lib/build-types';
+import { ENVIRONMENT } from '../../../../shared/constants/build';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   PLATFORM_FIREFOX,
@@ -375,6 +377,67 @@ export function identify(
   }
 }
 
+/**
+ * Set whether the user participates in MetaMetrics.
+ *
+ * Consent is owned by AnalyticsController. Buffered traces, the marketing
+ * campaign cookie, and the extension uninstall URL remain on MetaMetricsController.
+ *
+ * @param participateInMetaMetrics - Whether the user wants to participate, or `null` to reset to undecided.
+ * @returns The current analytics id.
+ */
+export async function setParticipateInMetaMetrics(
+  participateInMetaMetrics: boolean | null,
+): Promise<string | null> {
+  const analyticsMessenger = getMessenger();
+  const { analyticsId } = analyticsMessenger.call(
+    'AnalyticsController:getState',
+  );
+
+  if (participateInMetaMetrics === true) {
+    await analyticsMessenger.call('AnalyticsController:optIn');
+    analyticsMessenger.call(
+      'MetaMetricsController:trackTracesAfterMetricsOptIn',
+    );
+    analyticsMessenger.call(
+      'MetaMetricsController:clearTracesAfterMetricsOptIn',
+    );
+  } else {
+    if (participateInMetaMetrics === false) {
+      analyticsMessenger.call('AnalyticsController:optOut');
+      analyticsMessenger.call(
+        'MetaMetricsController:clearTracesAfterMetricsOptIn',
+      );
+    } else {
+      analyticsMessenger.call('AnalyticsController:resetConsentDecision');
+    }
+
+    const { marketingCampaignCookieId } = analyticsMessenger.call(
+      'MetaMetricsController:getState',
+    );
+    if (marketingCampaignCookieId) {
+      analyticsMessenger.call(
+        'MetaMetricsController:setMarketingCampaignCookieId',
+        null,
+      );
+    }
+  }
+
+  if (
+    isMain() &&
+    process.env.METAMASK_ENVIRONMENT !== ENVIRONMENT.DEVELOPMENT &&
+    participateInMetaMetrics !== null
+  ) {
+    analyticsMessenger.call(
+      'MetaMetricsController:updateExtensionUninstallUrl',
+      participateInMetaMetrics === true,
+      analyticsId,
+    );
+  }
+
+  return analyticsId;
+}
+
 export function trackPage(payload: MetaMetricsPagePayload): void {
   try {
     if (!canSubmitAnalytics()) {
@@ -498,10 +561,7 @@ export function getEventFragmentById(
   id: string,
 ): ReadonlyAnalyticsEventFragment | undefined {
   try {
-    return getMessenger().call(
-      'AnalyticsController:getEventFragmentById',
-      id,
-    );
+    return getMessenger().call('AnalyticsController:getEventFragmentById', id);
   } catch (error) {
     sentryCaptureException(error);
     return undefined;

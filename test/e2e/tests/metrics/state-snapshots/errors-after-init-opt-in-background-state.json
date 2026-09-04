@@ -43,8 +43,8 @@
   "AppStateController": {
     "activeQrCodeScanRequest": null,
     "addressSecurityAlertResponses": "object",
+    "arcUsageNoticeShown": "boolean",
     "browserEnvironment": { "browser": "string", "os": "string" },
-    "canTrackWalletFundsObtained": false,
     "connectedStatusPopoverHasBeenShown": true,
     "currentExtensionPopupId": "number",
     "dappSwapComparisonData": "object",
