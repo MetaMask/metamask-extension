@@ -51,6 +51,18 @@ describe('custom-network-harness', () => {
       });
     });
 
+    it('seeds native balances for XDC and Mainnet in the dual-network scenario', () => {
+      const { fixtures } = prepareCustomNetwork('xdc', 'dualNetworkWithErc20');
+      const assetsController = fixtures.data.AssetsController as {
+        assetsBalance: Record<string, Record<string, { amount: string }>>;
+      };
+      const seededBalances =
+        assetsController.assetsBalance[DEFAULT_FIXTURE_ACCOUNT_ID];
+
+      expect(seededBalances?.['eip155:1/slip44:60']?.amount).toBe('25');
+      expect(seededBalances?.['eip155:50/slip44:60']?.amount).toBe('25');
+    });
+
     it('seeds the UI native asset id for conversion-rate networks', () => {
       const { fixtures, network } = prepareCustomNetwork(
         'injective',
