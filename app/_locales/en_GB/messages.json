@@ -105,6 +105,10 @@
   "accountIdenticon": {
     "message": "Account icon"
   },
+  "accountImported": {
+    "message": "Account imported",
+    "description": "Success toast shown after a private key or JSON account is imported"
+  },
   "accountName": {
     "message": "Account name"
   },
