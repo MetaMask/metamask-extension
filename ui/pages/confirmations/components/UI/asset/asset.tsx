@@ -185,7 +185,7 @@ const TokenAsset = ({
       paddingRight={4}
       style={disabled ? { opacity: 0.5, pointerEvents: 'none' } : undefined}
     >
-      <Box marginRight={4}>
+      <Box marginRight={4} style={{ flexShrink: 0 }}>
         <BadgeWrapper
           badge={
             chainId ? (
@@ -208,23 +208,21 @@ const TokenAsset = ({
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
-        style={{ flex: 1, overflow: 'hidden' }}
+        style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}
       >
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
-        >
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textDefault}
-            marginRight={1}
-          >
-            {name}
-          </Text>
-          {tag}
+        <div className="flex min-w-0 flex-row items-center overflow-hidden">
+          <div className="mr-1 min-w-0 overflow-hidden">
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textDefault}
+              ellipsis
+            >
+              {name}
+            </Text>
+          </div>
+          {tag ? <div className="shrink-0">{tag}</div> : null}
           <AccountTypeLabel label={typeLabel} />
-        </Box>
+        </div>
         <Text
           variant={TextVariant.bodySmMedium}
           color={TextColor.textAlternative}
@@ -239,6 +237,7 @@ const TokenAsset = ({
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.flexEnd}
           marginLeft={2}
+          style={{ flexShrink: 0 }}
         >
           <Text variant={TextVariant.bodyMdMedium}>
             {formatCurrencyWithMinThreshold(

@@ -8,6 +8,7 @@ exports[`TokenAsset hides balances when hideBalances is true 1`] = `
   >
     <div
       class="mm-box mm-box--margin-right-4"
+      style="flex-shrink: 0;"
     >
       <div
         class="mm-box mm-badge-wrapper mm-box--display-inline-block"
@@ -38,16 +39,20 @@ exports[`TokenAsset hides balances when hideBalances is true 1`] = `
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--flex-direction-column"
-      style="flex: 1; overflow: hidden;"
+      style="flex: 1; min-width: 0; overflow: hidden;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        class="flex min-w-0 flex-row items-center overflow-hidden"
       >
-        <p
-          class="mm-box mm-text mm-text--body-md-medium mm-box--margin-right-1 mm-box--color-text-default"
+        <div
+          class="mr-1 min-w-0 overflow-hidden"
         >
-          Test Token
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-default"
+          >
+            Test Token
+          </p>
+        </div>
       </div>
       <p
         class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-alternative"
