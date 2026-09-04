@@ -55,6 +55,20 @@ function buildState(
 /* eslint-enable @typescript-eslint/naming-convention */
 
 describe(`migration #${version}`, () => {
+  it('does not notify users whose settings were already consistent', async () => {
+    for (const versionedData of [
+      buildState(true, childPreferences.length),
+      buildState(false, 0),
+    ]) {
+      await migrate(versionedData, new Set<string>());
+
+      expect(
+        versionedData.data.PreferencesController.preferences
+          .basicFunctionalityMigrationNotificationPending,
+      ).toBe(false);
+    }
+  });
+
   it('enables Basic Functionality for legacy users with more than nine children enabled', async () => {
     const versionedData = buildState(false, 10);
 
@@ -92,6 +106,10 @@ describe(`migration #${version}`, () => {
     for (const preference of childPreferences) {
       expect(versionedData.data.PreferencesController[preference]).toBe(false);
     }
+    expect(
+      versionedData.data.PreferencesController.preferences
+        .basicFunctionalityMigrationNotificationPending,
+    ).toBe(true);
   });
 });
 

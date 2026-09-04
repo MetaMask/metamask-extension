@@ -43,6 +43,10 @@ export const migrate = ((versionedData, changedControllers) => {
     versionedData.meta.version = version;
     return;
   }
+  if (!hasProperty(preferencesController, 'useExternalServices')) {
+    versionedData.meta.version = version;
+    return;
+  }
 
   const preferences =
     (preferencesController.preferences as Record<string, unknown>) ?? {};
@@ -54,26 +58,28 @@ export const migrate = ((versionedData, changedControllers) => {
 
   const basicFunctionalityEnabled =
     preferencesController.useExternalServices === true;
+  const areAllChildrenEnabled = BASIC_FUNCTIONALITY_CHILDREN.every(
+    (preference) => preferencesController[preference] === true,
+  );
+  const areAllChildrenDisabled = BASIC_FUNCTIONALITY_CHILDREN.every(
+    (preference) => preferencesController[preference] === false,
+  );
   const enabledChildren = BASIC_FUNCTIONALITY_CHILDREN.filter(
     (preference) => preferencesController[preference] === true,
   ).length;
   const isSocialLogin =
-    !basicFunctionalityEnabled &&
-    (SOCIAL_LOGIN_FLOWS.includes(
+    SOCIAL_LOGIN_FLOWS.includes(
       (data.OnboardingController as Record<string, unknown> | undefined)
         ?.firstTimeFlowType as string,
     ) ||
-      Boolean(
-        (
-          data.SeedlessOnboardingController as
-            | Record<string, unknown>
-            | undefined
-        )?.socialBackupsMetadata,
-      ) ||
-      Boolean(
-        (data.AuthenticationController as Record<string, unknown> | undefined)
-          ?.authConnection,
-      ));
+    Boolean(
+      (data.SeedlessOnboardingController as Record<string, unknown> | undefined)
+        ?.socialBackupsMetadata,
+    ) ||
+    Boolean(
+      (data.AuthenticationController as Record<string, unknown> | undefined)
+        ?.authConnection,
+    );
   const landingState =
     basicFunctionalityEnabled || isSocialLogin || enabledChildren > 9;
 
@@ -82,7 +88,11 @@ export const migrate = ((versionedData, changedControllers) => {
   }
   preferencesController.useExternalServices = landingState;
   preferences.isBasicFunctionalityConsolidatedEnabled = true;
-  preferences.basicFunctionalityMigrationNotificationPending = true;
+  const isConsistent =
+    (basicFunctionalityEnabled && areAllChildrenEnabled) ||
+    (!basicFunctionalityEnabled && areAllChildrenDisabled);
+  preferences.basicFunctionalityMigrationNotificationPending =
+    isSocialLogin || !isConsistent;
 
   versionedData.meta.version = version;
 }) satisfies Migrate;
