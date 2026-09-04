@@ -44,9 +44,14 @@ export class MockttpNotificationTriggerServer {
     };
   };
 
-  // Per-address upsert the controller performs when accounts are
-  // enabled/disabled (and on first-time setup). Mirrors the real endpoint,
-  // which upserts rather than replacing the whole subscription list.
+  /**
+   * Handles the per-address upsert performed when accounts are
+   * enabled or disabled, including during first-time setup.
+   *
+   * @param request - Trigger API request containing account configurations.
+   * @param statusCode - HTTP status returned by the mock.
+   * @returns The mock HTTP response.
+   */
   readonly updateConfig = async (
     request: Pick<CompletedRequest, 'body'>,
     statusCode: number = 204,
