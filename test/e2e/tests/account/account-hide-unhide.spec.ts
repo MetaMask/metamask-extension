@@ -22,11 +22,14 @@ describe('Account list - hide/unhide functionality', function (this: Suite) {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
         await accountListPage.hideAccount();
-        await accountListPage.checkHiddenAccountsListExists();
+        await accountListPage.checkAccountIsNotDisplayedInAccountList(
+          'Account 1',
+        );
 
-        // unhide account
-        await accountListPage.openHiddenAccountsList();
-        await accountListPage.unhideAccount();
+        // unhide account from the manage accounts mode
+        await accountListPage.toggleManageAccountsMode();
+        await accountListPage.revealHiddenAccount();
+        await accountListPage.toggleManageAccountsMode();
         await accountListPage.checkAccountDisplayedInAccountList();
       },
     );

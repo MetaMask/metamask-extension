@@ -1144,152 +1144,45 @@ describe('MultichainAccountList', () => {
     });
   });
 
-  describe('Hidden accounts section', () => {
-    it('renders collapsible hidden section when there are hidden accounts', () => {
-      const walletsWithHiddenAccounts = {
-        [walletOneId]: mockWallets[walletOneId],
-        [walletTwoId]: {
-          ...mockWallets[walletTwoId],
-          groups: {
-            [walletTwoGroupId]: {
-              ...mockWallets[walletTwoId].groups[walletTwoGroupId],
-              metadata: {
-                ...mockWallets[walletTwoId].groups[walletTwoGroupId].metadata,
-                hidden: true,
-              },
+  describe('Hidden accounts', () => {
+    const walletsWithHiddenAccount = {
+      [walletOneId]: mockWallets[walletOneId],
+      [walletTwoId]: {
+        ...mockWallets[walletTwoId],
+        groups: {
+          [walletTwoGroupId]: {
+            ...mockWallets[walletTwoId].groups[walletTwoGroupId],
+            metadata: {
+              ...mockWallets[walletTwoId].groups[walletTwoGroupId].metadata,
+              hidden: true,
             },
           },
         },
-      };
+      },
+    } as AccountTreeWallets;
 
-      renderComponent({ wallets: walletsWithHiddenAccounts });
-
-      // Hidden section header should be present
-      const hiddenHeader = screen.getByTestId(
-        'multichain-account-tree-hidden-header',
-      );
-      expect(hiddenHeader).toBeInTheDocument();
-      expect(screen.getByText('Hidden (1)')).toBeInTheDocument();
-
-      // Hidden account should NOT be visible initially (collapsed)
-      expect(
-        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
-      ).not.toBeInTheDocument();
-    });
-
-    it('expands hidden section when clicked', async () => {
-      const walletsWithHiddenAccounts = {
-        [walletOneId]: mockWallets[walletOneId],
-        [walletTwoId]: {
-          ...mockWallets[walletTwoId],
-          groups: {
-            [walletTwoGroupId]: {
-              ...mockWallets[walletTwoId].groups[walletTwoGroupId],
-              metadata: {
-                ...mockWallets[walletTwoId].groups[walletTwoGroupId].metadata,
-                hidden: true,
-              },
-            },
-          },
-        },
-      };
-
-      renderComponent({ wallets: walletsWithHiddenAccounts });
-
-      const hiddenHeader = screen.getByTestId(
-        'multichain-account-tree-hidden-header',
-      );
-
-      // Initially hidden account should not be visible
-      expect(
-        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
-      ).not.toBeInTheDocument();
-
-      // Click to expand
-      await act(async () => {
-        fireEvent.click(hiddenHeader);
-      });
-
-      // Now hidden account should be visible
-      expect(
-        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
-      ).toBeInTheDocument();
-      expect(screen.getByText('Account 1 from wallet 2')).toBeInTheDocument();
-    });
-
-    it('collapses hidden section when clicked twice', async () => {
-      const walletsWithHiddenAccounts = {
-        [walletOneId]: mockWallets[walletOneId],
-        [walletTwoId]: {
-          ...mockWallets[walletTwoId],
-          groups: {
-            [walletTwoGroupId]: {
-              ...mockWallets[walletTwoId].groups[walletTwoGroupId],
-              metadata: {
-                ...mockWallets[walletTwoId].groups[walletTwoGroupId].metadata,
-                hidden: true,
-              },
-            },
-          },
-        },
-      };
-
-      renderComponent({ wallets: walletsWithHiddenAccounts });
-
-      const hiddenHeader = screen.getByTestId(
-        'multichain-account-tree-hidden-header',
-      );
-
-      // Click to expand
-      await act(async () => {
-        fireEvent.click(hiddenHeader);
-      });
-
-      expect(
-        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
-      ).toBeInTheDocument();
-
-      // Click again to collapse
-      await act(async () => {
-        fireEvent.click(hiddenHeader);
-      });
-
-      // Hidden account should not be visible again
-      expect(
-        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
-      ).not.toBeInTheDocument();
-    });
-
-    it('excludes hidden accounts from their wallet sections', () => {
-      const walletsWithHiddenAccount = {
-        [walletOneId]: mockWallets[walletOneId],
-        [walletTwoId]: {
-          ...mockWallets[walletTwoId],
-          groups: {
-            [walletTwoGroupId]: {
-              ...mockWallets[walletTwoId].groups[walletTwoGroupId],
-              metadata: {
-                ...mockWallets[walletTwoId].groups[walletTwoGroupId].metadata,
-                hidden: true,
-              },
-            },
-          },
-        },
-      };
-
+    it('does not render hidden accounts outside edit mode', () => {
       renderComponent({ wallets: walletsWithHiddenAccount });
 
-      // Wallet headers should still be present
-      expect(screen.getByText('Wallet 1')).toBeInTheDocument();
-      expect(screen.getByText('Wallet 2')).toBeInTheDocument();
-
-      // Only one account should be visible in wallet section (not hidden one)
       expect(screen.getByText('Account 1 from wallet 1')).toBeInTheDocument();
-
-      // Hidden account should not be in wallet section (collapsed by default)
       expect(
         screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
       ).not.toBeInTheDocument();
+    });
+
+    it('does not render a separate hidden accounts section', () => {
+      renderComponent({ wallets: walletsWithHiddenAccount });
+
+      expect(
+        screen.queryByTestId('multichain-account-tree-hidden-header'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('keeps a wallet listed when every one of its accounts is hidden', () => {
+      renderComponent({ wallets: walletsWithHiddenAccount });
+
+      expect(screen.getByText('Wallet 1')).toBeInTheDocument();
+      expect(screen.getByText('Wallet 2')).toBeInTheDocument();
     });
   });
 
@@ -1488,7 +1381,7 @@ describe('MultichainAccountList', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('lists hidden accounts inline under their wallet instead of the hidden section', () => {
+    it('lists hidden accounts inline under their wallet', () => {
       renderComponent({
         wallets: walletsWithHiddenAccount,
         isEditMode: true,
