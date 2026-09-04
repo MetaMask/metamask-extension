@@ -10,11 +10,19 @@
     flex-shrink: 0;
   }
 
+  &__edit-mode-action-icon {
+    margin-left: 8px;
+  }
+
   &:hover:not(.multichain-account-cell--no-hover):not(.is-selected) {
     background: var(--color-background-default-hover);
 
     .multichain-account-cell__account-name {
       color: var(--color-primary-default);
     }
+  }
+
+  &--hidden {
+    opacity: 0.6;
   }
 }

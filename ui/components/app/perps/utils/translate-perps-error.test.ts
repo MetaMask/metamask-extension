@@ -13,6 +13,8 @@ jest.mock('@metamask/perps-controller', () => ({
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
     CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
     PROVIDER_NOT_AVAILABLE: 'PROVIDER_NOT_AVAILABLE',
+    PROVIDER_NOT_FOUND: 'PROVIDER_NOT_FOUND',
+    PROVIDER_LIFECYCLE_STALE: 'PROVIDER_LIFECYCLE_STALE',
     TOKEN_NOT_SUPPORTED: 'TOKEN_NOT_SUPPORTED',
     BRIDGE_CONTRACT_NOT_FOUND: 'BRIDGE_CONTRACT_NOT_FOUND',
     WITHDRAW_FAILED: 'WITHDRAW_FAILED',
@@ -58,6 +60,7 @@ jest.mock('@metamask/perps-controller', () => ({
     ORDER_STRATEGY_PARAMS_NOT_SUPPORTED: 'ORDER_STRATEGY_PARAMS_NOT_SUPPORTED',
     ORDER_STRATEGY_FIELD_UNSUPPORTED: 'ORDER_STRATEGY_FIELD_UNSUPPORTED',
     ORDER_STRATEGY_MARKET_UNSUPPORTED: 'ORDER_STRATEGY_MARKET_UNSUPPORTED',
+    ORDER_STRATEGY_ROUTE_UNAVAILABLE: 'ORDER_STRATEGY_ROUTE_UNAVAILABLE',
     ORDER_STRATEGY_HANDLE_UNKNOWN: 'ORDER_STRATEGY_HANDLE_UNKNOWN',
     ORDER_STRATEGY_CANCEL_INCOMPLETE: 'ORDER_STRATEGY_CANCEL_INCOMPLETE',
     ORDER_EDIT_STRATEGY_UNSUPPORTED: 'ORDER_EDIT_STRATEGY_UNSUPPORTED',
@@ -71,6 +74,7 @@ jest.mock('@metamask/perps-controller', () => ({
     ORDER_SCALE_NOTIONAL_TOO_SMALL: 'ORDER_SCALE_NOTIONAL_TOO_SMALL',
     ORDER_CHASE_INTERVAL_INVALID: 'ORDER_CHASE_INTERVAL_INVALID',
     ORDER_CHASE_DURATION_INVALID: 'ORDER_CHASE_DURATION_INVALID',
+    ORDER_CHASE_MAX_DISTANCE_INVALID: 'ORDER_CHASE_MAX_DISTANCE_INVALID',
     ORDER_CHASE_LIMIT_REACHED: 'ORDER_CHASE_LIMIT_REACHED',
     ORDER_CHASE_ABANDONED: 'ORDER_CHASE_ABANDONED',
     ORDER_CHASE_TOUCH_UNAVAILABLE: 'ORDER_CHASE_TOUCH_UNAVAILABLE',
@@ -96,6 +100,7 @@ jest.mock('@metamask/perps-controller', () => ({
     POSITION_WOULD_FLIP: 'POSITION_WOULD_FLIP',
     MARGIN_ADJUSTMENT_FAILED: 'MARGIN_ADJUSTMENT_FAILED',
     TPSL_UPDATE_FAILED: 'TPSL_UPDATE_FAILED',
+    TPSL_PROTECTION_LOST: 'TPSL_PROTECTION_LOST',
     ORDER_REJECTED: 'ORDER_REJECTED',
     SLIPPAGE_EXCEEDED: 'SLIPPAGE_EXCEEDED',
     RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
@@ -158,6 +163,30 @@ describe('ERROR_CODE_TO_I18N_KEY', () => {
 
     expect(translated).toStrictEqual(
       strategyCodes.map(() => '[perpsOrderFailed]'),
+    );
+  });
+
+  it('translates every error code introduced after v12', () => {
+    // Controller 13.0.0-15.1.0 widened `PerpsErrorCode`. Named literally rather
+    // than derived from the enum so a code dropped from a later release fails
+    // here instead of silently shrinking the assertion to nothing.
+    const codesAddedAfterV12 = [
+      ['PROVIDER_NOT_FOUND', '[somethingWentWrong]'],
+      ['PROVIDER_LIFECYCLE_STALE', '[somethingWentWrong]'],
+      ['ORDER_STRATEGY_ROUTE_UNAVAILABLE', '[perpsOrderFailed]'],
+      ['ORDER_CHASE_MAX_DISTANCE_INVALID', '[perpsOrderFailed]'],
+      ['TPSL_PROTECTION_LOST', '[somethingWentWrong]'],
+    ] as const;
+
+    const translated = codesAddedAfterV12.map(([code]) =>
+      translatePerpsError(
+        Object.assign(new Error('rejected'), { code }),
+        mockT,
+      ),
+    );
+
+    expect(translated).toStrictEqual(
+      codesAddedAfterV12.map(([, expected]) => expected),
     );
   });
 

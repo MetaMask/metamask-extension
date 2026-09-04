@@ -158,7 +158,7 @@ exports[`PermitSimulation renders correctly for NFT permit 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-3"
+              aria-describedby="tippy-tooltip-5"
               class=""
               data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
               data-tooltipped=""
@@ -217,14 +217,25 @@ exports[`PermitSimulation renders correctly for NFT permit 1`] = `
             <div
               class="mm-box mm-box--margin-inline-end-1 mm-box--display-inline mm-box--min-width-0"
             >
-              <div>
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
-                  data-testid="simulation-token-value"
-                  style="padding-top: 1px; padding-bottom: 1px;"
+              <div
+                style="min-width: 0;"
+              >
+                <div
+                  aria-describedby="tippy-tooltip-6"
+                  class=""
+                  data-original-title="#3606393"
+                  data-tooltipped=""
+                  style="display: inline;"
+                  tabindex="0"
                 >
-                  #3606393
-                </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+                    data-testid="simulation-token-value"
+                    style="padding-top: 1px; padding-bottom: 1px;"
+                  >
+                    #3606393
+                  </p>
+                </div>
               </div>
             </div>
             <div

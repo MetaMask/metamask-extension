@@ -241,6 +241,9 @@ import {
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { createDefiReferralMiddleware } from './lib/defi-referrals/createDefiReferralMiddleware';
+import { isHyperliquidDepositPromptEligible } from './lib/hyperliquid-deposit/eligibility';
+import { showHyperliquidDepositPromptApproval } from './lib/hyperliquid-deposit/prompt';
+import { createHyperliquidDepositMiddleware } from './lib/hyperliquid-deposit/createHyperliquidDepositMiddleware';
 
 import {
   diffMap,
@@ -378,10 +381,7 @@ import { SignatureControllerInit } from './messenger-client-init/confirmations/s
 import { UserOperationControllerInit } from './messenger-client-init/confirmations/user-operation-controller-init';
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
-import {
-  QrSyncControllerInit,
-  QrSyncDataServiceInit,
-} from './messenger-client-init/qr-sync';
+import { QrSyncControllerInit } from './messenger-client-init/qr-sync';
 import { getRootMessenger } from './lib/messenger';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './messenger-client-init/profile-metrics-controller-init';
@@ -661,7 +661,6 @@ export default class MetamaskController extends EventEmitter {
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
       ProofOfOwnershipService: ProofOfOwnershipServiceInit,
-      QrSyncDataService: QrSyncDataServiceInit,
       QrSyncController: QrSyncControllerInit,
       // ClientController must be initialized before AssetsController (AssetsController subscribes to ClientController:stateChange).
       ClientController: ClientControllerInit,
@@ -3050,6 +3049,18 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setNewPrivacyPolicyToastShownDate.bind(
           appStateController,
         ),
+      setArcUsageNoticeShown: () => {
+        if (appStateController.state.arcUsageNoticeShown) {
+          return;
+        }
+        appStateController.setArcUsageNoticeShown();
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.ArcUsageNoticeToastViewed)
+            .addCategory(MetaMetricsEventCategory.Home)
+            .addProperties({ chain_id_caip: 'eip155:5042' })
+            .build(),
+        );
+      },
       setSnapsInstallPrivacyWarningShownStatus:
         appStateController.setSnapsInstallPrivacyWarningShownStatus.bind(
           appStateController,
@@ -5436,6 +5447,27 @@ export default class MetamaskController extends EventEmitter {
             triggerType,
           ),
         ),
+      );
+
+      // Prompt the user to fund Hyperliquid through MetaMask after a
+      // successful ApproveAgent ("Enable trading") signature.
+      engine.push(
+        createHyperliquidDepositMiddleware({
+          isEligible: ({ signerAddress }) =>
+            isHyperliquidDepositPromptEligible({
+              accountsController: this.accountsController,
+              assetsController: this.assetsController,
+              perpsController: this.messengerClientsByName.PerpsController,
+              remoteFeatureFlagController: this.remoteFeatureFlagController,
+              signerAddress,
+            }),
+          showDepositPrompt: ({ origin: promptOrigin, signerAddress }) =>
+            showHyperliquidDepositPromptApproval({
+              approvalController: this.approvalController,
+              origin: promptOrigin,
+              selectedAddress: signerAddress,
+            }),
+        }),
       );
     }
 
