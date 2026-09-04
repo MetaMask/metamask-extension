@@ -103,21 +103,23 @@ export const Dropdown = <OptionId extends string>({
     };
   }, [isOpen]);
 
-  // Focus the selected option when dropdown opens
+  // Focus a menu option when the list opens. With no selection (the category
+  // More menu), land on the first option so Arrow/Enter work immediately.
+  const focusIndexOnOpen = selectedIndex >= 0 ? selectedIndex : 0;
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
   const [prevSelectedIndex, setPrevSelectedIndex] = useState(selectedIndex);
   if (isOpen !== prevIsOpen || selectedIndex !== prevSelectedIndex) {
     setPrevIsOpen(isOpen);
     setPrevSelectedIndex(selectedIndex);
-    if (isOpen && selectedIndex >= 0) {
-      setFocusedIndex(selectedIndex);
+    if (isOpen && options.length > 0) {
+      setFocusedIndex(focusIndexOnOpen);
     }
   }
   useEffect(() => {
-    if (isOpen && selectedIndex >= 0) {
-      optionRefs.current[selectedIndex]?.focus();
+    if (isOpen && options.length > 0) {
+      optionRefs.current[focusIndexOnOpen]?.focus();
     }
-  }, [isOpen, selectedIndex]);
+  }, [focusIndexOnOpen, isOpen, options.length]);
 
   const handleToggle = useCallback(() => {
     setIsOpen((prev) => !prev);
