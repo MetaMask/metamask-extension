@@ -449,6 +449,24 @@ function startTrace(request: TraceRequest): TraceContext {
 
     const pendingTrace = { end, request, startTime, span };
     const key = getTraceKey(request);
+
+    // `getTraceKey` is name + id, and `getTraceId` substitutes the literal
+    // 'default' when the caller supplies no `id`. Two overlapping traces of the
+    // same name without ids therefore share one key, and this `set` makes the
+    // earlier one unreachable: nothing can resolve its `end` afterwards, so its
+    // span is never ended and never sent.
+    //
+    // The overwrite is left in place rather than changed here — the surviving
+    // behaviour is at least self-consistent, and picking a different loser is a
+    // semantic change. What is added is a signal, so the loss stops being
+    // silent. It is recorded as a span attribute rather than a captured message
+    // because an attribute on a span that is already being sent costs no extra
+    // Sentry volume, and is queryable as `has:trace.key_collision`.
+    if (tracesByKey.has(key)) {
+      log('WARNING: trace key collision, dropping pending trace', key);
+      span?.setAttribute('trace.key_collision', true);
+    }
+
     tracesByKey.set(key, pendingTrace);
 
     log('Started trace', name, id, request);
