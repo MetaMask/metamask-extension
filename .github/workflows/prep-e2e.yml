@@ -22,7 +22,7 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      # Shared producer lives in main.yml (`changed-files` job). Reuse that artifact
+      # Shared producer lives in get-requirements (dorny/paths-filter all_changes_files).
       - name: Download changed-files artifact
         uses: actions/download-artifact@v7
         with:
@@ -32,7 +32,7 @@ jobs:
       - name: Verify changed-files artifact
         run: |
           if [[ ! -f changed-files/changed-files.json ]]; then
-            echo "::error::changed-files/changed-files.json is missing from the shared artifact"
+            echo "::error::changed-files/changed-files.json is missing from get-requirements"
             exit 1
           fi
 

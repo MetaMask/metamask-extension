@@ -1,6 +1,7 @@
 name: AI PR risk analysis
 
-# Reusable workflow — called from main.yml after the shared changed-files artifact exists.
+# Reusable workflow — called from main.yml after get-requirements uploads the
+# shared changed-files artifact (from dorny/paths-filter).
 # Do not add a standalone pull_request trigger; that would double-run analysis.
 #
 # The action owns labels / check runs / summaries.
@@ -50,7 +51,7 @@ jobs:
       - name: Verify changed-files artifact
         run: |
           if [[ ! -f changed-files/changed-files.json ]]; then
-            echo "::error::changed-files/changed-files.json is missing; refusing to fall back to gh rediscovery"
+            echo "::error::changed-files/changed-files.json is missing from get-requirements; refusing to fall back to gh rediscovery"
             exit 1
           fi
 
