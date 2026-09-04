@@ -141,13 +141,17 @@ describe('migrations', () => {
       expect(migratedData.state).toBe(initialState);
     });
 
-    it('emits an error when migration does not update meta.version', async () => {
+    it('emits an error when migration returns a top-level version mismatch', async () => {
       const migrator = new Migrator({
         migrations: [
           {
             version: 1,
             async migrate(state: MigrationState): Promise<MigrationState> {
-              return cloneDeep(state) as MigrationState;
+              const cloned = cloneDeep(state) as MigrationState & {
+                version: number;
+              };
+              cloned.version = 0;
+              return cloned;
             },
           },
         ],

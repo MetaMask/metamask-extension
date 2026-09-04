@@ -59,7 +59,7 @@ export default class Migrator extends EventEmitter<MigratorEventMap> {
     super();
     const migrations = opts.migrations ?? [];
     // sort migrations by version
-    this.migrations = [...migrations].sort((a, b) => a.version - b.version);
+    this.migrations = migrations.sort((a, b) => a.version - b.version);
     // grab migration with highest version
     const lastMigration = this.migrations.slice(-1)[0];
     // use specified defaultVersion or highest migration version
@@ -180,7 +180,13 @@ export default class Migrator extends EventEmitter<MigratorEventMap> {
         throw new Error('Migrator - migration returned empty data');
       }
 
-      if (migratedData.meta.version !== migration.version) {
+      const migratedDataWithOptionalVersion = migratedData as MigrationState & {
+        version?: unknown;
+      };
+      if (
+        migratedDataWithOptionalVersion.version !== undefined &&
+        migratedData.meta.version !== migration.version
+      ) {
         throw new Error(
           'Migrator - Migration did not update version number correctly',
         );
