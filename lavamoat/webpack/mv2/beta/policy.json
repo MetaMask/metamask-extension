@@ -1923,11 +1923,25 @@
         "async-mutex": true
       }
     },
+    "@metamask/money-account-upgrade-controller": {
+      "globals": {
+        "crypto.getRandomValues": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/delegation-core": true,
+        "@metamask/delegation-deployments": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/money-account-utils": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/money-account-utils": {
       "packages": {
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
-        "@metamask/transaction-controller": true
+        "@metamask/transaction-controller": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/multichain-account-service": {
@@ -2732,6 +2746,7 @@
         "crypto": true
       },
       "packages": {
+        "@metamask/scure-bip39": true,
         "@metamask/superstruct": true,
         "@noble/hashes": true,
         "@scure/base": true,

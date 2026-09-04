@@ -117,6 +117,7 @@
       "metaMetricsDataDeletionTimestamp": 0
     },
     "MoneyAccountController": { "moneyAccounts": "object" },
+    "MoneyAccountUpgradeController": { "upgradedAccounts": "object" },
     "MultichainAssetsController": {
       "accountsAssets": "object",
       "allIgnoredAssets": "object",
