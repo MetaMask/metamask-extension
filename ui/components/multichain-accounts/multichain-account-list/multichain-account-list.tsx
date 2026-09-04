@@ -160,9 +160,9 @@ function animateAccountListReorder(update: () => void): void {
 
       node.style.transition = 'none';
       node.style.translate = `0 ${deltaY}px`;
-      // Force layout so the inverted position is committed before playing.
-      // eslint-disable-next-line no-void
-      void node.offsetHeight;
+      // Reading layout forces the inverted position to be committed before the
+      // transition is switched back on, so the browser plays it.
+      node.getBoundingClientRect();
       node.style.transition = `translate ${ACCOUNT_LIST_FLIP_DURATION_MS}ms ${ACCOUNT_LIST_FLIP_EASING}`;
       node.style.translate = '0 0';
 
