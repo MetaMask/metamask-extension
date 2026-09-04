@@ -25,9 +25,7 @@ import {
   type MetaMetricsContext,
   type MetaMetricsEventFragmentOptions,
   type MetaMetricsEventFragmentPayload,
-  type MetaMetricsPageObject,
   type MetaMetricsPagePayload,
-  type MetaMetricsReferrerObject,
   type MetaMetricsUserTraits,
   type SegmentEventPayload,
 } from '../../../../shared/constants/metametrics';
@@ -457,40 +455,6 @@ export function trackPage(payload: MetaMetricsPagePayload): void {
 }
 
 /**
- * Flatten the extension-specific fragment fields into the generic properties
- * the AnalyticsController stores, matching what `trackEvent` sends.
- *
- * @param options - The fragment options supplied by the caller.
- * @param options.category
- * @param options.environmentType
- * @param options.properties
- * @returns Properties carried by every event the fragment emits.
- */
-function buildFragmentProperties({
-  category,
-  environmentType = ENVIRONMENT_TYPE_BACKGROUND,
-  properties,
-}: MetaMetricsEventFragmentOptions): AnalyticsEventProperties {
-  return omitBy(
-    {
-      ...properties,
-      category,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      environment_type: environmentType,
-    },
-    (propertyValue) => propertyValue === undefined,
-  ) as AnalyticsEventProperties;
-}
-
-function buildFragmentContext(
-  referrer?: MetaMetricsReferrerObject,
-  page?: MetaMetricsPageObject,
-): AnalyticsContext {
-  return buildContext(referrer, page) as AnalyticsContext;
-}
-
-/**
  * Open an event fragment, a bag of properties that later events in the same
  * user journey are emitted with.
  *
@@ -500,15 +464,32 @@ export function createEventFragment(
   options: MetaMetricsEventFragmentOptions,
 ): void {
   try {
+    const {
+      category,
+      environmentType = ENVIRONMENT_TYPE_BACKGROUND,
+      properties,
+    } = options;
+
     getMessenger().call('AnalyticsController:createEventFragment', {
       id: options.id,
       initialEvent: options.initialEvent,
       successEvent: options.successEvent,
       failureEvent: options.failureEvent,
       persist: options.persist,
-      properties: buildFragmentProperties(options),
+      // Flatten extension-only fields into the generic properties bag the
+      // AnalyticsController stores, matching what `trackEvent` sends.
+      properties: omitBy(
+        {
+          ...properties,
+          category,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: environmentType,
+        },
+        (propertyValue) => propertyValue === undefined,
+      ) as AnalyticsEventProperties,
       sensitiveProperties: options.sensitiveProperties,
-      context: buildFragmentContext(options.referrer, options.page),
+      context: buildContext(options.referrer, options.page) as AnalyticsContext,
     });
   } catch (error) {
     sentryCaptureException(error);
