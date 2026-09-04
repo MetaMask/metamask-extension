@@ -1778,8 +1778,10 @@ async function setupMocking(
     });
 
   // Tokens API: v2 supported networks — mocked globally so all tests work.
+  // Matches both hosts: `tokens.` (assets controllers) and `token.` (the
+  // supported-networks check that guards Token API `/assets` requests).
   await server
-    .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
+    .forGet(/^https:\/\/tokens?\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
     .always()
     .thenJson(200, {
       fullSupport: [
