@@ -6,7 +6,11 @@ import {
 } from '@metamask/transaction-controller';
 import {
   type PerpsControllerState,
+  DEFAULT_ORDER_BOOK_PREFERENCES,
   DEFAULT_PRO_LAYOUT_PREFERENCES,
+  DEFAULT_SELECTED_ORDER_TYPE,
+  getDefaultPerpsControllerState,
+  type OrderBookPreferences,
   type ProLayoutPreferences,
 } from '@metamask/perps-controller';
 
@@ -42,6 +46,9 @@ const PERPS_DEPOSIT_TRANSACTION_TYPES: ReadonlySet<TransactionType> = new Set([
 const EMPTY_ARRAY: never[] = [];
 const EMPTY_TRADE_CONFIGURATIONS: PerpsControllerState['tradeConfigurations'] =
   { testnet: {}, mainnet: {} };
+const DEFAULT_VISIBLE_CANDLE_COUNT =
+  getDefaultPerpsControllerState().visibleCandleCount;
+const PENDING_TRADE_CONFIGURATION_TTL_MS = 30_000;
 
 const DEFAULT_HAS_PLACED_FIRST_ORDER: PerpsControllerState['hasPlacedFirstOrder'] =
   { testnet: false, mainnet: false };
@@ -265,3 +272,67 @@ export const selectChartExpanded = (state: PerpsState) =>
 
 export const selectPerpsTradeConfigurations = (state: PerpsState) =>
   state.metamask.tradeConfigurations ?? EMPTY_TRADE_CONFIGURATIONS;
+
+/**
+ * Return an unexpired pending trade draft for a market.
+ *
+ * The controller selector performs the 30-second TTL check on every call. It is
+ * only invoked when trade configurations are present because Extension tests
+ * and older persisted state can provide a partial controller slice.
+ *
+ * @param state - Flattened controller state.
+ * @param symbol - Market symbol.
+ * @returns The pending draft, or undefined when missing or expired.
+ */
+export const selectPerpsPendingTradeConfiguration = (
+  state: PerpsState,
+  symbol: string,
+) => {
+  const environment = selectPerpsIsTestnet(state) ? 'testnet' : 'mainnet';
+  const pendingConfig =
+    state.metamask.tradeConfigurations?.[environment]?.[symbol]?.pendingConfig;
+  if (
+    !pendingConfig ||
+    Date.now() - pendingConfig.timestamp >= PENDING_TRADE_CONFIGURATION_TTL_MS
+  ) {
+    return undefined;
+  }
+  return pendingConfig;
+};
+
+/**
+ * Return the selected market/limit order type shared across markets.
+ *
+ * The controller's OrderType union also includes trigger order variants that
+ * the Extension order-entry toggle does not expose, so unsupported values fall
+ * back to market.
+ *
+ * @param state - Flattened controller state.
+ * @returns The supported selected order type.
+ */
+export const selectPerpsSelectedOrderType = (
+  state: PerpsState,
+): 'market' | 'limit' =>
+  state.metamask.selectedOrderType === 'limit'
+    ? 'limit'
+    : DEFAULT_SELECTED_ORDER_TYPE;
+
+export const selectPerpsOrderBookPreferences = createSelector(
+  (state: PerpsState) => state.metamask.orderBookPreferences,
+  (preferences): OrderBookPreferences => ({
+    ...DEFAULT_ORDER_BOOK_PREFERENCES,
+    ...preferences,
+  }),
+);
+
+export const selectPerpsOrderBookGrouping = (
+  state: PerpsState,
+  symbol: string,
+) => {
+  const environment = selectPerpsIsTestnet(state) ? 'testnet' : 'mainnet';
+  return state.metamask.tradeConfigurations?.[environment]?.[symbol]
+    ?.orderBookGrouping;
+};
+
+export const selectPerpsVisibleCandleCount = (state: PerpsState) =>
+  state.metamask.visibleCandleCount ?? DEFAULT_VISIBLE_CANDLE_COUNT;

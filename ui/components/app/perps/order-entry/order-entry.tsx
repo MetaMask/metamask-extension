@@ -56,6 +56,8 @@ import { OrderTypeToggle } from './components/order-type-toggle';
  * @param props.onCalculationsChange
  * @param props.onAddFunds
  * @param props.initialLeverage
+ * @param props.initialDraft
+ * @param props.onLeverageChange
  * @param props.sizeDecimals
  * @param props.markPrice
  * @param props.autoFocusUsd
@@ -83,6 +85,8 @@ export const OrderEntry = ({
   onOrderTypeChange,
   onAddFunds,
   initialLeverage,
+  initialDraft,
+  onLeverageChange,
   sizeDecimals,
   markPrice,
   autoFocusUsd = false,
@@ -135,6 +139,7 @@ export const OrderEntry = ({
     onSubmit,
     orderType,
     initialLeverage,
+    initialDraft,
     sizeDecimals,
     maxLeverage,
     szDecimals: marketInfo?.szDecimals,
@@ -142,6 +147,14 @@ export const OrderEntry = ({
     feeRate,
     limitPricePrefill,
   });
+
+  const handlePersistedLeverageChange = useCallback(
+    (leverage: number) => {
+      handleLeverageChange(leverage);
+      onLeverageChange?.(leverage);
+    },
+    [handleLeverageChange, onLeverageChange],
+  );
 
   const isLong = formState.direction === 'long';
 
@@ -339,7 +352,7 @@ export const OrderEntry = ({
         {mode !== 'close' && (
           <LeverageSlider
             leverage={formState.leverage}
-            onLeverageChange={handleLeverageChange}
+            onLeverageChange={handlePersistedLeverageChange}
             maxLeverage={maxLeverage}
             minLeverage={
               mode === 'modify' && existingPosition

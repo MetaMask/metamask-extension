@@ -20,7 +20,12 @@ import {
 } from '@metamask/design-system-react';
 import type { OrderBookLevel } from '@metamask/perps-controller';
 import { submitRequestToBackground } from '../../../../store/background-connection';
-import { selectOrderBookPosition } from '../../../../selectors/perps-controller';
+import {
+  type PerpsState,
+  selectOrderBookPosition,
+  selectPerpsOrderBookGrouping,
+  selectPerpsOrderBookPreferences,
+} from '../../../../selectors/perps-controller';
 import {
   formatPerpsFiat,
   PRICE_RANGES_UNIVERSAL,
@@ -271,9 +276,19 @@ export const PerpsOrderBook = ({
 }: PerpsOrderBookProps) => {
   const t = useI18nContext();
   const configModalId = `${dataTestId}-config-modal`;
-  const [currency, setCurrency] = useState<OrderBookListCurrency>('usd');
-  const [metric, setMetric] = useState<OrderBookListMetric>('total');
-  const [selectedGrouping, setSelectedGrouping] = useState<number | null>(null);
+  const persistedPreferences = useSelector(selectPerpsOrderBookPreferences);
+  const persistedGrouping = useSelector((state: PerpsState) =>
+    selectPerpsOrderBookGrouping(state, symbol),
+  );
+  const [currency, setCurrency] = useState<OrderBookListCurrency>(
+    persistedPreferences.currency,
+  );
+  const [metric, setMetric] = useState<OrderBookListMetric>(
+    persistedPreferences.metric,
+  );
+  const [selectedGrouping, setSelectedGrouping] = useState<number | null>(
+    persistedGrouping ?? null,
+  );
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [viewMode, setViewMode] = useState<OrderBookViewMode>('default');
 
@@ -452,13 +467,24 @@ export const PerpsOrderBook = ({
       setCurrency(next.currency);
       setMetric(next.metric);
       setSelectedGrouping(next.grouping);
+      submitRequestToBackground('perpsSetOrderBookPreferences', [
+        { currency: next.currency, metric: next.metric },
+      ]).catch((error) =>
+        console.error('Failed to persist order book preferences', error),
+      );
+      submitRequestToBackground('perpsSaveOrderBookGrouping', [
+        symbol,
+        next.grouping,
+      ]).catch((error) =>
+        console.error('Failed to persist order book grouping', error),
+      );
       submitRequestToBackground('perpsSetProLayoutPreferences', [
         { orderBookPosition: next.layout },
       ]).catch((error) =>
         console.error('Failed to persist order book layout', error),
       );
     },
-    [],
+    [symbol],
   );
 
   const hasLadder = Boolean(

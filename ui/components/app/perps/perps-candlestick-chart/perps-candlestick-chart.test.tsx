@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -18,12 +18,29 @@ type CrosshairParam = {
 };
 
 let mockCrosshairCallback: ((param: CrosshairParam) => void) | undefined;
+let mockVisibleRangeCallback:
+  | ((range: { from: number; to: number } | null) => void)
+  | undefined;
+const mockSetVisibleLogicalRange = jest.fn();
+const mockScrollToRealTime = jest.fn();
 let mockCreatedSeries: { ref: object }[] = [];
 let mockCreatedCharts: { panes: jest.Mock; remove: jest.Mock }[] = [];
 
 jest.mock('lightweight-charts', () => ({
   createChart: () => {
     mockCreatedSeries = [];
+    const timeScale = {
+      fitContent: jest.fn(),
+      scrollToPosition: jest.fn(),
+      scrollToRealTime: mockScrollToRealTime,
+      getVisibleLogicalRange: jest.fn(),
+      setVisibleLogicalRange: mockSetVisibleLogicalRange,
+      subscribeVisibleLogicalRangeChange: jest.fn((callback) => {
+        mockVisibleRangeCallback = callback;
+      }),
+      unsubscribeVisibleLogicalRangeChange: jest.fn(),
+      applyOptions: jest.fn(),
+    };
     const chart = {
       addSeries: () => {
         const series = {
@@ -39,16 +56,7 @@ jest.mock('lightweight-charts', () => ({
         return series;
       },
       applyOptions: jest.fn(),
-      timeScale: jest.fn().mockReturnValue({
-        fitContent: jest.fn(),
-        scrollToPosition: jest.fn(),
-        scrollToRealTime: jest.fn(),
-        getVisibleLogicalRange: jest.fn(),
-        setVisibleLogicalRange: jest.fn(),
-        subscribeVisibleLogicalRangeChange: jest.fn(),
-        unsubscribeVisibleLogicalRangeChange: jest.fn(),
-        applyOptions: jest.fn(),
-      }),
+      timeScale: jest.fn().mockReturnValue(timeScale),
       panes: jest.fn().mockReturnValue([
         { getHeight: () => 200, setHeight: jest.fn() },
         { getHeight: () => 60, setHeight: jest.fn() },
@@ -107,6 +115,8 @@ const buildSeriesDataMap = (volumeValue?: number, candle?: object) => {
 describe('PerpsCandlestickChart — volume axis label on hover (TAT-2970)', () => {
   beforeEach(() => {
     mockCrosshairCallback = undefined;
+    mockVisibleRangeCallback = undefined;
+    mockSetVisibleLogicalRange.mockReset();
     mockCreatedSeries = [];
     mockUseTheme.mockReturnValue('light');
   });
@@ -279,6 +289,98 @@ describe('PerpsCandlestickChart — volume axis label on hover (TAT-2970)', () =
     });
 
     expect(onCrosshairMove).toHaveBeenCalledWith(null);
+  });
+});
+
+describe('PerpsCandlestickChart visible candle persistence', () => {
+  beforeEach(() => {
+    mockVisibleRangeCallback = undefined;
+    mockSetVisibleLogicalRange.mockReset();
+    mockScrollToRealTime.mockReset();
+    mockUseTheme.mockReturnValue('light');
+  });
+
+  it('applies the persisted visible candle count on initial data', () => {
+    const candleData = {
+      symbol: 'ETH',
+      interval: '1h',
+      candles: Array.from({ length: 100 }, (_, index) => ({
+        time: 1_700_000_000_000 + index * 3_600_000,
+        open: '100',
+        high: '110',
+        low: '90',
+        close: '105',
+        volume: '50',
+      })),
+    };
+
+    renderWithProvider(
+      <PerpsCandlestickChart
+        candleData={candleData as never}
+        initialVisibleCandleCount={75}
+      />,
+      mockStore,
+    );
+
+    expect(mockSetVisibleLogicalRange).toHaveBeenCalledWith({
+      from: 25,
+      to: 101,
+    });
+  });
+
+  it('does not persist a smaller count caused by limited initial history', () => {
+    const onVisibleCandleCountChange = jest.fn();
+    let currentRange: { from: number; to: number } | null = null;
+    mockSetVisibleLogicalRange.mockImplementation((range) => {
+      currentRange = range;
+      mockVisibleRangeCallback?.(range);
+    });
+    mockScrollToRealTime.mockImplementation(() => {
+      mockVisibleRangeCallback?.(currentRange);
+    });
+    const candleData = {
+      symbol: 'ETH',
+      interval: '1h',
+      candles: Array.from({ length: 10 }, (_, index) => ({
+        time: 1_700_000_000_000 + index * 3_600_000,
+        open: '100',
+        high: '110',
+        low: '90',
+        close: '105',
+        volume: '50',
+      })),
+    };
+
+    renderWithProvider(
+      <PerpsCandlestickChart
+        candleData={candleData as never}
+        initialVisibleCandleCount={75}
+        onVisibleCandleCountChange={onVisibleCandleCountChange}
+      />,
+      mockStore,
+    );
+
+    expect(onVisibleCandleCountChange).not.toHaveBeenCalled();
+  });
+
+  it('normalizes padding, clamps, and deduplicates visible-range updates', () => {
+    const onVisibleCandleCountChange = jest.fn();
+    renderWithProvider(
+      <PerpsCandlestickChart
+        initialVisibleCandleCount={30}
+        onVisibleCandleCountChange={onVisibleCandleCountChange}
+      />,
+      mockStore,
+    );
+
+    act(() => {
+      mockVisibleRangeCallback?.({ from: 10, to: 51 });
+      mockVisibleRangeCallback?.({ from: 10, to: 51 });
+      mockVisibleRangeCallback?.({ from: 0, to: 1_000 });
+      mockVisibleRangeCallback?.({ from: 0, to: 5 });
+    });
+
+    expect(onVisibleCandleCountChange.mock.calls).toEqual([[40], [250], [10]]);
   });
 });
 
