@@ -16,7 +16,11 @@ export type CustomNetworkId =
   | 'chiliz'
   | 'plasma'
   | 'rootstock'
-  | 'hyperevm';
+  | 'hyperevm'
+  | 'gnosis'
+  | 'stable'
+  | 'mantle'
+  | 'metis';
 
 export type CustomNetworkScenario =
   | 'nativeSend'
@@ -45,6 +49,9 @@ const SEEDED_ERC20_ADDRESS = '0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947';
 const SEEDED_ERC20_ASSET_ID = `eip155:50/erc20:${SEEDED_ERC20_ADDRESS}`;
 const MAINNET_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
 const MAINNET_CHAIN_ID_HEX = '0x1';
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+const DEAD_NATIVE_ADDRESS = '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000';
+const METIS_CHAIN_ID_HEX = '0x440' as Hex;
 
 const CUSTOM_NETWORKS: Record<CustomNetworkId, CustomNetworkConfig> = {
   xdc: {
@@ -127,6 +134,58 @@ const CUSTOM_NETWORKS: Record<CustomNetworkId, CustomNetworkConfig> = {
     clientId: 'hyperevm-local',
     inDefaultFixture: false,
   },
+  gnosis: {
+    id: 'gnosis',
+    name: 'Gnosis',
+    chainIdHex: CHAIN_IDS.GNOSIS,
+    chainIdDecimal: 100,
+    nativeSymbol: 'XDAI',
+    nativeAssetId: `eip155:100/erc20:${ZERO_ADDRESS}`,
+    uiNativeAssetId: `eip155:100/erc20:${ZERO_ADDRESS}`,
+    caipChainId: 'eip155:100',
+    blockExplorerUrl: 'https://gnosisscan.io',
+    clientId: 'gnosis-local',
+    inDefaultFixture: false,
+  },
+  stable: {
+    id: 'stable',
+    name: 'Stable',
+    chainIdHex: CHAIN_IDS.STABLE_MAINNET,
+    chainIdDecimal: 988,
+    nativeSymbol: 'USDT0',
+    nativeAssetId: `eip155:988/erc20:${ZERO_ADDRESS}`,
+    uiNativeAssetId: `eip155:988/erc20:${ZERO_ADDRESS}`,
+    caipChainId: 'eip155:988',
+    blockExplorerUrl: 'https://stablescan.io',
+    clientId: 'stable-local',
+    inDefaultFixture: false,
+  },
+  mantle: {
+    id: 'mantle',
+    name: 'Mantle',
+    chainIdHex: CHAIN_IDS.MANTLE,
+    chainIdDecimal: 5000,
+    nativeSymbol: 'MNT',
+    nativeAssetId: `eip155:5000/erc20:${DEAD_NATIVE_ADDRESS}`,
+    uiNativeAssetId: `eip155:5000/erc20:${DEAD_NATIVE_ADDRESS}`,
+    caipChainId: 'eip155:5000',
+    blockExplorerUrl: 'https://mantlescan.xyz',
+    clientId: 'mantle-local',
+    inDefaultFixture: false,
+  },
+  metis: {
+    id: 'metis',
+    name: 'Metis Andromeda',
+    chainIdHex: METIS_CHAIN_ID_HEX,
+    chainIdDecimal: 1088,
+    nativeSymbol: 'METIS',
+    nativeAssetId: `eip155:1088/erc20:${DEAD_NATIVE_ADDRESS}`,
+    uiNativeAssetId: `eip155:1088/erc20:${DEAD_NATIVE_ADDRESS}`,
+    caipChainId: 'eip155:1088',
+    blockExplorerUrl: 'https://explorer.metis.io',
+    clientId: 'metis-local',
+    inDefaultFixture: false,
+  },
 };
 
 export const CONVERSION_RATE_NETWORKS: CustomNetworkId[] = [
@@ -135,6 +194,14 @@ export const CONVERSION_RATE_NETWORKS: CustomNetworkId[] = [
   'plasma',
   'rootstock',
   'hyperevm',
+];
+
+export const NON_ZERO_NATIVE_NETWORKS: CustomNetworkId[] = [
+  'rootstock',
+  'stable',
+  'mantle',
+  'metis',
+  'gnosis',
 ];
 
 export function getCustomNetwork(id: CustomNetworkId): CustomNetworkConfig {
