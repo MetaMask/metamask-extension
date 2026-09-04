@@ -14,11 +14,9 @@ export const CarouselWithEmptyState = (props: CarouselProps) => {
   }, [props.slides]);
 
   // Track if user has ever seen slides
-  React.useEffect(() => {
-    if (visibleSlidesCount > 0 && !hasEverHadSlides) {
-      setHasEverHadSlides(true);
-    }
-  }, [visibleSlidesCount, hasEverHadSlides]);
+  if (visibleSlidesCount > 0 && !hasEverHadSlides) {
+    setHasEverHadSlides(true);
+  }
 
   const handleEmptyState = () => {
     if (!hasCompletedEmptyState && !showFoldAnimation) {
@@ -32,11 +30,9 @@ export const CarouselWithEmptyState = (props: CarouselProps) => {
   };
 
   // Reset when new visible slides become available (not just any slides)
-  React.useEffect(() => {
-    if (visibleSlidesCount > 0 && hasCompletedEmptyState) {
-      setHasCompletedEmptyState(false);
-    }
-  }, [visibleSlidesCount, hasCompletedEmptyState]);
+  if (visibleSlidesCount > 0 && hasCompletedEmptyState) {
+    setHasCompletedEmptyState(false);
+  }
 
   // Show the fold-up animation when triggered by carousel
   if (showFoldAnimation) {

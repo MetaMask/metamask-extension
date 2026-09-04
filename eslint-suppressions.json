@@ -199,16 +199,6 @@
       "count": 1
     }
   },
-  "ui/components/component-library/avatar-favicon/avatar-favicon.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/components/component-library/header-search/header-search.stories.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/components/component-library/modal-content/deprecated/modal-content.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -232,27 +222,14 @@
       "count": 1
     }
   },
-  "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-network.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx": {
     "react-hooks/preserve-manual-memoization": {
-      "count": 1
-    },
-    "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
   "ui/components/multichain/asset-picker-amount/asset-picker-modal/hooks/useAssetMetadata.ts": {
     "react-hooks/exhaustive-deps": {
       "count": 1
-    }
-  },
-  "ui/components/multichain/carousel/carousel-wrapper.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 2
     }
   },
   "ui/components/multichain/domain-input-resolution-cell/domain-input-resolution-cell.tsx": {
@@ -273,32 +250,6 @@
       "count": 1
     }
   },
-  "ui/components/multichain/network-list-item/network-list-item.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/components/multichain/network-list-menu/add-block-explorer-modal/add-block-explorer-modal.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/components/multichain/network-list-menu/add-rpc-url-modal/add-rpc-url-modal.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/components/multichain/network-list-menu/network-list-menu.tsx": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/components/multichain/network-list-menu/popular-network-list/popular-network-list.tsx": {
     "react-hooks/exhaustive-deps": {
       "count": 1
@@ -306,27 +257,6 @@
   },
   "ui/components/multichain/network-manager/network-manager.tsx": {
     "react-hooks/refs": {
-      "count": 1
-    }
-  },
-  "ui/components/multichain/networks-form/networks-form-state.ts": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
-  "ui/components/multichain/networks-form/networks-form.tsx": {
-    "react-hooks/exhaustive-deps": {
-      "count": 4
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 3
-    }
-  },
-  "ui/components/multichain/networks-form/use-safe-chains.ts": {
-    "react-hooks/set-state-in-effect": {
       "count": 1
     }
   },
@@ -1061,11 +991,6 @@
       "count": 8
     }
   },
-  "ui/pages/permissions-connect/redirect/permissions-redirect.component.js": {
-    "react-hooks/set-state-in-effect": {
-      "count": 1
-    }
-  },
   "ui/pages/perps/market-list/index.tsx": {
     "react-hooks/refs": {
       "count": 5
@@ -1110,9 +1035,6 @@
   "ui/pages/settings/settings.tsx": {
     "react-hooks/preserve-manual-memoization": {
       "count": 3
-    },
-    "react-hooks/set-state-in-effect": {
-      "count": 2
     }
   },
   "ui/pages/settings/sync-accounts/components/qr-code-scan.tsx": {
