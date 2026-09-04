@@ -1712,6 +1712,54 @@ describe('MultichainAccountList', () => {
       ).not.toHaveClass('multichain-account-cell--hidden');
     });
 
+    it('keeps the latest toggle when an earlier write settles after it', async () => {
+      const settleWrites: (() => void)[] = [];
+      const pendingWrite = () => async () =>
+        new Promise<void>((resolve) => {
+          settleWrites.push(resolve);
+        });
+
+      mockSetAccountGroupHidden
+        .mockImplementationOnce(pendingWrite)
+        .mockImplementationOnce(pendingWrite)
+        .mockImplementationOnce(pendingWrite);
+
+      renderComponent({ isEditMode: true });
+
+      const clickVisibilityIcon = (testId: string) =>
+        fireEvent.click(
+          within(
+            screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+          ).getByTestId(testId),
+        );
+
+      clickVisibilityIcon('multichain-account-cell-edit-mode-visible-icon');
+      clickVisibilityIcon('multichain-account-cell-edit-mode-hidden-icon');
+      clickVisibilityIcon('multichain-account-cell-edit-mode-visible-icon');
+
+      expect(settleWrites).toHaveLength(3);
+
+      // The first two writes settle late, and neither of them owns the
+      // override anymore, so the account stays hidden as the last click asked.
+      await act(async () => {
+        settleWrites[0]();
+        settleWrites[1]();
+      });
+
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toHaveClass('multichain-account-cell--hidden');
+
+      // The last write settles and the tree, which never changed here, wins.
+      await act(async () => {
+        settleWrites[2]();
+      });
+
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toHaveClass('multichain-account-cell--hidden');
+    });
+
     it('removes the private-key account when delete is confirmed', () => {
       renderComponent(
         {
