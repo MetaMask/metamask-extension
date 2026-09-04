@@ -5,16 +5,22 @@ import thunk from 'redux-thunk';
 import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useConfirmContext } from '../../../context/confirm';
-import { useDisplayName } from '../../../../../hooks/useDisplayName';
 import {
   PayWithOption,
   useConfirmationNavigationOptions,
 } from '../../../hooks/useConfirmationNavigation';
 import { updateEditableParams } from '../../../../../store/actions';
-import { PerpsAccountPickerRow } from './perps-account-picker-row';
+import {
+  usePerpsSubAccounts,
+  type SubAccountInfo,
+} from '../../../hooks/transactions/usePerpsSubAccounts';
+import {
+  PERPS_ACCOUNT_BALANCE_SKELETON_TEST_ID,
+  PERPS_ACCOUNT_PICKER_TEST_IDS,
+  PerpsAccountPickerRow,
+} from './perps-account-picker-row';
 
 jest.mock('../../../context/confirm');
-jest.mock('../../../../../hooks/useDisplayName');
 jest.mock('../../../hooks/useConfirmationNavigation', () => ({
   PayWithOption: { MoneyAccount: 'money_account' },
   useConfirmationNavigationOptions: jest.fn(),
@@ -22,34 +28,15 @@ jest.mock('../../../hooks/useConfirmationNavigation', () => ({
 jest.mock('../../../../../store/actions', () => ({
   updateEditableParams: jest.fn(() => () => Promise.resolve()),
 }));
-
-jest.mock('../../account-select-modal', () => ({
-  AccountSelectModal: ({
-    selectedAddress,
-    onSelect,
-    onClose,
-  }: {
-    selectedAddress: string;
-    onSelect: (address: string) => void;
-    onClose: () => void;
-  }) => (
-    <div data-testid="account-select-modal">
-      <span data-testid="selected-address">{selectedAddress}</span>
-      <button
-        data-testid="select-other"
-        onClick={() => onSelect('0x1234567890abcdef1234567890abcdef12345678')}
-      >
-        other
-      </button>
-      <button data-testid="modal-close" onClick={onClose}>
-        close
-      </button>
-    </div>
-  ),
+jest.mock('../../../hooks/transactions/usePerpsSubAccounts', () => ({
+  ...jest.requireActual('../../../hooks/transactions/usePerpsSubAccounts'),
+  usePerpsSubAccounts: jest.fn(),
 }));
-
 jest.mock('../../../../../components/app/preferred-avatar', () => ({
   PreferredAvatar: () => <div data-testid="preferred-avatar" />,
+}));
+jest.mock('../../../../../../shared/lib/perps-formatters', () => ({
+  formatPerpsFiat: (value: string | number) => `$${value}`,
 }));
 
 const FROM_ADDRESS_MOCK = '0xabcdef1234567890abcdef1234567890abcdef12';
@@ -57,15 +44,32 @@ const OTHER_ADDRESS_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
 const CHAIN_ID_MOCK = '0x1';
 const TX_ID_MOCK = 'test-id';
 
+const MOCK_ACCOUNTS: SubAccountInfo[] = [
+  {
+    id: FROM_ADDRESS_MOCK,
+    name: 'Account 1 (Perps)',
+    spendableBalance: '100',
+    withdrawableBalance: '50',
+    totalBalance: '150',
+  },
+  {
+    id: OTHER_ADDRESS_MOCK,
+    name: 'Account 2 (Perps)',
+    spendableBalance: '200',
+    withdrawableBalance: '100',
+    totalBalance: '300',
+  },
+];
+
 const mockStore = configureStore([thunk]);
 
 describe('PerpsAccountPickerRow', () => {
   const useConfirmContextMock = jest.mocked(useConfirmContext);
-  const useDisplayNameMock = jest.mocked(useDisplayName);
   const useConfirmationNavigationOptionsMock = jest.mocked(
     useConfirmationNavigationOptions,
   );
   const updateEditableParamsMock = jest.mocked(updateEditableParams);
+  const usePerpsSubAccountsMock = jest.mocked(usePerpsSubAccounts);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -83,22 +87,21 @@ describe('PerpsAccountPickerRow', () => {
       },
     } as never);
 
-    useDisplayNameMock.mockReturnValue({
-      name: 'Account 1',
-      subtitle: 'Wallet 1',
-    } as never);
+    usePerpsSubAccountsMock.mockReturnValue({
+      subAccounts: MOCK_ACCOUNTS,
+      selectedSubAccount: MOCK_ACCOUNTS[0],
+    });
 
     updateEditableParamsMock.mockReturnValue((() =>
       Promise.resolve()) as never);
   });
 
-  it('renders the perps destination account when paying with the money account', () => {
+  it('renders when perps deposit with MoneyAccount option', () => {
     renderWithProvider(<PerpsAccountPickerRow />, mockStore({}));
 
-    expect(screen.getByTestId('perps-account-picker-row')).toBeInTheDocument();
-    expect(screen.getByTestId('perps-account-picker-name')).toHaveTextContent(
-      'Account 1 (Perps)',
-    );
+    expect(
+      screen.getByTestId(PERPS_ACCOUNT_PICKER_TEST_IDS.row),
+    ).toBeInTheDocument();
   });
 
   it('renders nothing when payWithOption is not MoneyAccount', () => {
@@ -109,7 +112,7 @@ describe('PerpsAccountPickerRow', () => {
     renderWithProvider(<PerpsAccountPickerRow />, mockStore({}));
 
     expect(
-      screen.queryByTestId('perps-account-picker-row'),
+      screen.queryByTestId(PERPS_ACCOUNT_PICKER_TEST_IDS.row),
     ).not.toBeInTheDocument();
   });
 
@@ -125,30 +128,135 @@ describe('PerpsAccountPickerRow', () => {
     renderWithProvider(<PerpsAccountPickerRow />, mockStore({}));
 
     expect(
-      screen.queryByTestId('perps-account-picker-row'),
+      screen.queryByTestId(PERPS_ACCOUNT_PICKER_TEST_IDS.row),
     ).not.toBeInTheDocument();
   });
 
-  it('opens the account picker on row press', () => {
+  it('renders nothing when no sub-accounts are available', () => {
+    usePerpsSubAccountsMock.mockReturnValue({
+      subAccounts: [],
+      selectedSubAccount: null,
+    });
+
     renderWithProvider(<PerpsAccountPickerRow />, mockStore({}));
 
     expect(
-      screen.queryByTestId('account-select-modal'),
+      screen.queryByTestId(PERPS_ACCOUNT_PICKER_TEST_IDS.row),
+    ).not.toBeInTheDocument();
+  });
+
+  it('displays the selected account name', () => {
+    renderWithProvider(<PerpsAccountPickerRow />, mockStore({}));
+
+    expect(
+      screen.getByTestId(PERPS_ACCOUNT_PICKER_TEST_IDS.name),
+    ).toHaveTextContent('Account 1 (Perps)');
+  });
+
+  it('displays perps balances in the picker', () => {
+    renderWithProvider(<PerpsAccountPickerRow />, mockStore({}));
+
+    fireEvent.click(screen.getByTestId(PERPS_ACCOUNT_PICKER_TEST_IDS.pill));
+
+    expect(screen.getByText('$150')).toBeInTheDocument();
+    expect(screen.getByText('$300')).toBeInTheDocument();
+  });
+
+  it('displays a skeleton while a perps balance is still loading', () => {
+    usePerpsSubAccountsMock.mockReturnValue({
+      subAccounts: [
+        {
+          ...MOCK_ACCOUNTS[0],
+          spendableBalance: '',
+          withdrawableBalance: '',
+          totalBalance: '',
+        },
+        MOCK_ACCOUNTS[1],
+      ],
+      selectedSubAccount: MOCK_ACCOUNTS[0],
+    });
+
+    renderWithProvider(<PerpsAccountPickerRow />, mockStore({}));
+
+    fireEvent.click(screen.getByTestId(PERPS_ACCOUNT_PICKER_TEST_IDS.pill));
+
+    expect(
+      screen.getByTestId(PERPS_ACCOUNT_BALANCE_SKELETON_TEST_ID),
+    ).toBeInTheDocument();
+    expect(screen.getByText('$300')).toBeInTheDocument();
+  });
+
+  it('displays a skeleton for HyperLiquid sentinel totals instead of $0', () => {
+    usePerpsSubAccountsMock.mockReturnValue({
+      subAccounts: [
+        {
+          ...MOCK_ACCOUNTS[0],
+          spendableBalance: '--',
+          withdrawableBalance: '--',
+          totalBalance: '--',
+        },
+        MOCK_ACCOUNTS[1],
+      ],
+      selectedSubAccount: MOCK_ACCOUNTS[0],
+    });
+
+    renderWithProvider(<PerpsAccountPickerRow />, mockStore({}));
+
+    fireEvent.click(screen.getByTestId(PERPS_ACCOUNT_PICKER_TEST_IDS.pill));
+
+    expect(
+      screen.getByTestId(PERPS_ACCOUNT_BALANCE_SKELETON_TEST_ID),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('$0')).not.toBeInTheDocument();
+    expect(screen.getByText('$300')).toBeInTheDocument();
+  });
+
+  it('opens the picker on row press', () => {
+    renderWithProvider(<PerpsAccountPickerRow />, mockStore({}));
+
+    expect(
+      screen.queryByTestId(PERPS_ACCOUNT_PICKER_TEST_IDS.sheet),
     ).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByTestId('perps-account-picker-pill'));
+    fireEvent.click(screen.getByTestId(PERPS_ACCOUNT_PICKER_TEST_IDS.pill));
 
-    expect(screen.getByTestId('account-select-modal')).toBeInTheDocument();
+    expect(
+      screen.getByTestId(PERPS_ACCOUNT_PICKER_TEST_IDS.sheet),
+    ).toBeInTheDocument();
   });
 
   it('updates the transaction from address on account selection', () => {
     renderWithProvider(<PerpsAccountPickerRow />, mockStore({}));
 
-    fireEvent.click(screen.getByTestId('perps-account-picker-pill'));
-    fireEvent.click(screen.getByTestId('select-other'));
+    fireEvent.click(screen.getByTestId(PERPS_ACCOUNT_PICKER_TEST_IDS.pill));
+    fireEvent.click(
+      screen.getByTestId(
+        `${PERPS_ACCOUNT_PICKER_TEST_IDS.accountItem}-${OTHER_ADDRESS_MOCK}`,
+      ),
+    );
 
     expect(updateEditableParamsMock).toHaveBeenCalledWith(TX_ID_MOCK, {
       from: OTHER_ADDRESS_MOCK,
     });
+  });
+
+  it('does not update the transaction when it has no id', () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        type: TransactionType.perpsDeposit,
+        txParams: { from: FROM_ADDRESS_MOCK },
+      },
+    } as never);
+
+    renderWithProvider(<PerpsAccountPickerRow />, mockStore({}));
+
+    fireEvent.click(screen.getByTestId(PERPS_ACCOUNT_PICKER_TEST_IDS.pill));
+    fireEvent.click(
+      screen.getByTestId(
+        `${PERPS_ACCOUNT_PICKER_TEST_IDS.accountItem}-${OTHER_ADDRESS_MOCK}`,
+      ),
+    );
+
+    expect(updateEditableParamsMock).not.toHaveBeenCalled();
   });
 });
