@@ -3,7 +3,7 @@ import { Messenger } from '@metamask/messenger';
 import type {
   AnalyticsControllerGetEventFragmentByIdAction,
   AnalyticsControllerUpsertEventFragmentAction,
-  AnalyticsEventFragment,
+  ReadonlyAnalyticsEventFragment,
 } from '@metamask/analytics-controller';
 import {
   AddNetworkFields,
@@ -2773,7 +2773,7 @@ export class LegacyBackgroundApiService {
    */
   #getTransactionUIMetricsFragment(
     transactionId: string,
-  ): AnalyticsEventFragment | undefined {
+  ): ReadonlyAnalyticsEventFragment | undefined {
     return this.#messenger.call(
       'AnalyticsController:getEventFragmentById',
       this.#getTransactionUIMetricsFragmentId(transactionId),

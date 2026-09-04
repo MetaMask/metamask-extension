@@ -1,9 +1,9 @@
 import type {
   AnalyticsContext,
-  AnalyticsEventFragment,
   AnalyticsEventProperties,
   AnalyticsTrackingEvent,
   AnalyticsUserTraits,
+  ReadonlyAnalyticsEventFragment,
 } from '@metamask/analytics-controller';
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
 import type { Json } from '@metamask/utils';
@@ -491,11 +491,12 @@ export function upsertEventFragment(
  * Read an open event fragment.
  *
  * @param id - The id of the fragment to read.
- * @returns The fragment, or `undefined` when no fragment has that id.
+ * @returns A read-only copy of the fragment, or `undefined` when no fragment
+ * has that id. Mutating the returned object does not change controller state.
  */
 export function getEventFragmentById(
   id: string,
-): AnalyticsEventFragment | undefined {
+): ReadonlyAnalyticsEventFragment | undefined {
   try {
     return getMessenger().call(
       'AnalyticsController:getEventFragmentById',

@@ -1,4 +1,4 @@
-import type { AnalyticsEventFragment } from '@metamask/analytics-controller';
+import type { ReadonlyAnalyticsEventFragment } from '@metamask/analytics-controller';
 import type { Provider } from '@metamask/network-controller';
 import type { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller';
@@ -37,7 +37,7 @@ export const UTM_PARAMETERS = new Set([
 export type TransactionMetricsRequest = {
   getTransactionUIMetricsFragment: (
     transactionId: string,
-  ) => AnalyticsEventFragment | undefined;
+  ) => ReadonlyAnalyticsEventFragment | undefined;
   upsertTransactionUIMetricsFragment: (
     transactionId: string,
     payload: MetaMetricsEventFragmentPayload,
