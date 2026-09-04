@@ -206,6 +206,7 @@ import {
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
+import { isOpaqueWebSender } from './lib/opaque-origin';
 import {
   createEthAccountsMethodMiddleware,
   createEip1193MethodMiddleware,
@@ -4590,6 +4591,16 @@ export default class MetamaskController extends EventEmitter {
       inputSubjectType = SubjectType.Website;
     }
 
+    // A frame the browser gave an opaque security origin (sandboxed without
+    // `allow-same-origin`, or served with `Content-Security-Policy: sandbox`)
+    // still reports the http(s) URL that served it. Deriving the principal
+    // from that URL below would hand the frame the URL origin's wallet
+    // session, which is exactly the isolation the sandbox was asked for.
+    // Refuse the connection rather than authorize it as the URL origin.
+    if (inputSubjectType === SubjectType.Website && isOpaqueWebSender(sender)) {
+      return;
+    }
+
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
     mux.ignoreStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
@@ -4624,6 +4635,16 @@ export default class MetamaskController extends EventEmitter {
       inputSubjectType = SubjectType.Extension;
     } else {
       inputSubjectType = SubjectType.Website;
+    }
+
+    // A frame the browser gave an opaque security origin (sandboxed without
+    // `allow-same-origin`, or served with `Content-Security-Policy: sandbox`)
+    // still reports the http(s) URL that served it. Deriving the principal
+    // from that URL below would hand the frame the URL origin's wallet
+    // session, which is exactly the isolation the sandbox was asked for.
+    // Refuse the connection rather than authorize it as the URL origin.
+    if (inputSubjectType === SubjectType.Website && isOpaqueWebSender(sender)) {
+      return;
     }
 
     // messages between subject and background

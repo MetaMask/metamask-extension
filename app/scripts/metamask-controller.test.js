@@ -2739,6 +2739,91 @@ describe('MetaMaskController', () => {
         });
         streamTest.end();
       });
+
+      it('refuses a sandboxed (opaque-origin) frame instead of authorizing it as the URL origin', async () => {
+        // Chrome/Firefox report `origin: "null"` for a frame sandboxed without
+        // `allow-same-origin`, while `url` stays the http(s) document that was
+        // served. Deriving the principal from `url` would give this frame
+        // `http://mycrypto.com`'s session.
+        const opaqueSender = {
+          origin: 'null',
+          url: 'http://mycrypto.com/embedded-untrusted.html',
+          tab: { id: 456 },
+          frameId: 3,
+        };
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.data && chunk.data.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
+
+        metamaskController.setupUntrustedCommunicationEip1193({
+          connectionStream: streamTest,
+          sender: opaqueSender,
+        });
+
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              name: 'metamask-provider',
+              data: { jsonrpc: '2.0', method: 'eth_chainId' },
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests).toHaveLength(0);
+                resolve();
+              });
+            },
+          );
+        });
+        streamTest.end();
+      });
+
+      it('still serves a non-sandboxed frame at the same url (control)', async () => {
+        // Same url as the opaque case; only `origin` differs. Guards against a
+        // fix that rejects the whole frame class rather than the opaque one.
+        const ordinarySender = {
+          origin: 'http://mycrypto.com',
+          url: 'http://mycrypto.com/embedded-untrusted.html',
+          tab: { id: 456 },
+          frameId: 4,
+        };
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk.data && chunk.data.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
+
+        metamaskController.setupUntrustedCommunicationEip1193({
+          connectionStream: streamTest,
+          sender: ordinarySender,
+        });
+
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              name: 'metamask-provider',
+              data: { jsonrpc: '2.0', method: 'eth_chainId' },
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'origin',
+                  'http://mycrypto.com',
+                );
+                resolve();
+              });
+            },
+          );
+        });
+        streamTest.end();
+      });
     });
 
     describe('#setupUntrustedCommunicationCaip', () => {
@@ -2780,6 +2865,47 @@ describe('MetaMaskController', () => {
 
       afterAll(() => {
         tearDownMockMiddlewareLog();
+      });
+
+      it('refuses a sandboxed (opaque-origin) frame instead of authorizing it as the URL origin', async () => {
+        const opaqueSender = {
+          origin: 'null',
+          url: 'http://mycrypto.com/embedded-untrusted.html',
+          tab: { id: 456 },
+          frameId: 3,
+        };
+        const streamTest = createThroughStream((chunk, _, cb) => {
+          if (chunk && chunk.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
+
+        localMetamaskController.setupUntrustedCommunicationCaip({
+          connectionStream: streamTest,
+          sender: opaqueSender,
+        });
+
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              method: 'wallet_invokeMethod',
+              params: {
+                scope: 'eip155:1',
+                request: { jsonrpc: '2.0', method: 'eth_chainId' },
+              },
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests).toHaveLength(0);
+                resolve();
+              });
+            },
+          );
+        });
+        streamTest.end();
       });
 
       it('adds a tabId, frameId and origin to requests', async () => {
