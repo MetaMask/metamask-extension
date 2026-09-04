@@ -2,10 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NetworkConfiguration } from '@metamask/network-controller';
-import {
-  formatChainIdToCaip,
-  isNonEvmChainId,
-} from '@metamask/bridge-controller';
+import { isNonEvmChainId } from '@metamask/bridge-controller';
 import type { CaipChainId, Hex } from '@metamask/utils';
 import {
   AvatarToken,
@@ -29,11 +26,6 @@ import {
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../../shared/lib/environment';
-import {
-  getAssetsControllerCustomAssets,
-  isAssetInAccountCustomAssets,
-  type CustomAssetsState,
-} from '../../../../selectors/assets-unify-state/asset-preferences';
 
 type HideToken = {
   symbol?: string;
@@ -52,7 +44,6 @@ type HideTokenConfirmationModalProps = {
     getAccountForChain: (
       caipChainId: CaipChainId,
     ) => InternalAccount | null | undefined,
-    customAssets?: CustomAssetsState,
   ) => void;
   hideModal: () => void;
   navigate: (path: string) => void;
@@ -60,7 +51,6 @@ type HideTokenConfirmationModalProps = {
   getAccountForChain: (
     caipChainId: CaipChainId,
   ) => InternalAccount | null | undefined;
-  customAssets?: CustomAssetsState;
 };
 
 function mapStateToProps(state: MetaMaskReduxState) {
@@ -76,9 +66,6 @@ function mapStateToProps(state: MetaMaskReduxState) {
     networkConfigurationsByChainId: getNetworkConfigurationsByChainId(state),
     getAccountForChain: (caipChainId: CaipChainId) =>
       getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
-    customAssets: getAssetsControllerCustomAssets(
-      state as Parameters<typeof getAssetsControllerCustomAssets>[0],
-    ),
   };
 }
 
@@ -92,39 +79,26 @@ function mapDispatchToProps(dispatch: MetaMaskReduxDispatch) {
       getAccountForChain: (
         caipChainId: CaipChainId,
       ) => InternalAccount | null | undefined,
-      customAssets?: CustomAssetsState,
     ) => {
       const isNonEvm = isNonEvmChainId(chainId);
 
-      // Write path: keep AssetsController preferences/customAssets in sync
-      // whenever unified assets state is included in the build. The runtime
-      // rollout flag is treated as always-on for writes.
+      // Write path: keep AssetsController preferences in sync whenever unified
+      // assets state is included in the build. The runtime rollout flag is
+      // treated as always-on for writes.
+      //
+      // `hideAsset` is the only write the unified read path honours. Dropping
+      // the asset from `customAssets` is not enough, because `allTokens` is
+      // also derived from `assetsBalance`, so an asset with a balance stays
+      // visible until `assetPreferences[assetId].hidden` is set.
       if (getIsAssetsUnifiedStateIncludedInBuild()) {
         const assetId = toAssetId(address, chainId as Hex);
-        const caipChainId = isNonEvmChainId(chainId)
-          ? (chainId as CaipChainId)
-          : formatChainIdToCaip(chainId as Hex);
-        const accountForChain = getAccountForChain(caipChainId);
-        const isInCustomAssets =
-          accountForChain &&
-          assetId &&
-          isAssetInAccountCustomAssets(
-            customAssets,
-            accountForChain.id,
-            assetId,
-          );
 
-        try {
-          if (isInCustomAssets) {
-            await dispatch(
-              actions.removeCustomAsset(accountForChain.id, assetId),
-            );
-          } else if (assetId) {
+        if (assetId) {
+          try {
             await dispatch(actions.hideAsset(assetId));
+          } catch (error) {
+            console.error('Error hiding asset:', error);
           }
-        } catch (error) {
-          console.error('Error hiding/removing asset:', error);
-          return;
         }
       }
 
@@ -162,7 +136,6 @@ export function HideTokenConfirmationModal({
   navigate,
   networkConfigurationsByChainId,
   getAccountForChain,
-  customAssets,
 }: HideTokenConfirmationModalProps) {
   const t = useI18nContext();
   const { symbol, address, image, chainId: tokenChainId } = token;
@@ -202,13 +175,7 @@ export function HideTokenConfirmationModal({
           data-testid="hide-token-confirmation__hide"
           onClick={() => {
             if (isNonEvmChainId(chainIdToUse)) {
-              hideToken(
-                address,
-                undefined,
-                chainIdToUse,
-                getAccountForChain,
-                customAssets,
-              );
+              hideToken(address, undefined, chainIdToUse, getAccountForChain);
             } else {
               const chainConfig = networkConfigurationsByChainId[chainIdToUse];
               const { defaultRpcEndpointIndex } = chainConfig;
@@ -219,7 +186,6 @@ export function HideTokenConfirmationModal({
                 networkInstanceId,
                 chainIdToUse,
                 getAccountForChain,
-                customAssets,
               );
             }
             navigate(DEFAULT_ROUTE);
