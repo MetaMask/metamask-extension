@@ -235,8 +235,12 @@ export const MultichainAccountCell = ({
   const showDeleteIcon = isEditMode && isDeleteMode;
   const effectiveIsHidden = isHidden && !isDeleteMode;
 
+  // Edit mode replaces row selection with the hide/delete affordances, so the
+  // row itself must not switch accounts while those icons are showing.
+  const isRowClickable = Boolean(onClick) && !isEditMode;
+
   const handleClick = () => {
-    if (pending) {
+    if (pending || !isRowClickable) {
       return;
     }
     onClick?.(accountId);
@@ -245,7 +249,7 @@ export const MultichainAccountCell = ({
   let cursor: React.CSSProperties['cursor'] = 'default';
   if (pending) {
     cursor = 'wait';
-  } else if (onClick) {
+  } else if (isRowClickable) {
     cursor = 'pointer';
   }
 

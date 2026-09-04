@@ -563,6 +563,40 @@ describe('MultichainAccountCell', () => {
       ).toBeInTheDocument();
     });
 
+    it('does not call onClick when the row is clicked in edit mode', () => {
+      const handleCellClick = jest.fn();
+
+      renderWithProvider(
+        <MultichainAccountCell
+          {...defaultProps}
+          isEditMode={true}
+          onClick={handleCellClick}
+        />,
+        store,
+      );
+
+      fireEvent.click(
+        screen.getByTestId(`multichain-account-cell-${defaultProps.accountId}`),
+      );
+
+      expect(handleCellClick).not.toHaveBeenCalled();
+    });
+
+    it('renders a default cursor in edit mode even when onClick is provided', () => {
+      renderWithProvider(
+        <MultichainAccountCell
+          {...defaultProps}
+          isEditMode={true}
+          onClick={jest.fn()}
+        />,
+        store,
+      );
+
+      expect(
+        screen.getByTestId(`multichain-account-cell-${defaultProps.accountId}`),
+      ).toHaveStyle({ cursor: 'default' });
+    });
+
     it('does not show connection status badge in edit mode', () => {
       renderWithProvider(
         <MultichainAccountCell
