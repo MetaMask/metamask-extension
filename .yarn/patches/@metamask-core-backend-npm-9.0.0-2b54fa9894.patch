@@ -1,0 +1,300 @@
+diff --git a/dist/api/base-client.cjs b/dist/api/base-client.cjs
+index 63ca46d7726b71135db11286ffd22fae17a8e791..1f8b40985c31ff4dd8b0b1b283f7f3add7b225fc 100644
+--- a/dist/api/base-client.cjs
++++ b/dist/api/base-client.cjs
+@@ -102,32 +102,6 @@ class BaseApiClient {
+         if (this.clientVersion) {
+             headers['x-metamask-clientversion'] = this.clientVersion;
+         }
+-        // Get bearer token using fetchQuery for automatic deduplication
+-        if (this.getBearerToken) {
+-            const queryKey = exports.authQueryKeys.bearerToken();
+-            const { getBearerToken } = this;
+-            try {
+-                // fetchQuery handles caching and deduplicates concurrent requests
+-                const token = await __classPrivateFieldGet(this, _BaseApiClient_queryClientInstance, "f").fetchQuery({
+-                    queryKey,
+-                    queryFn: async () => {
+-                        const result = await getBearerToken();
+-                        // Throw if no token - prevents caching null/undefined
+-                        // so subsequent requests can retry (e.g., after user logs in)
+-                        if (!result) {
+-                            throw new Error('No bearer token available');
+-                        }
+-                        return result;
+-                    },
+-                    staleTime: shared_types_js_1.STALE_TIMES.AUTH_TOKEN,
+-                    retry: false, // Don't retry auth failures
+-                });
+-                headers.Authorization = `Bearer ${token}`;
+-            }
+-            catch {
+-                // No token available - continue without auth header
+-            }
+-        }
+         const response = await fetch(url.toString(), {
+             method: 'GET',
+             headers,
+diff --git a/dist/api/base-client.mjs b/dist/api/base-client.mjs
+index feb6fb24f3f1221cbe1949cd2d4f28c9f65b67f6..26237c3f882c74d03442108d76d9fe251a71e369 100644
+--- a/dist/api/base-client.mjs
++++ b/dist/api/base-client.mjs
+@@ -95,32 +95,6 @@ export class BaseApiClient {
+         if (this.clientVersion) {
+             headers['x-metamask-clientversion'] = this.clientVersion;
+         }
+-        // Get bearer token using fetchQuery for automatic deduplication
+-        if (this.getBearerToken) {
+-            const queryKey = authQueryKeys.bearerToken();
+-            const { getBearerToken } = this;
+-            try {
+-                // fetchQuery handles caching and deduplicates concurrent requests
+-                const token = await __classPrivateFieldGet(this, _BaseApiClient_queryClientInstance, "f").fetchQuery({
+-                    queryKey,
+-                    queryFn: async () => {
+-                        const result = await getBearerToken();
+-                        // Throw if no token - prevents caching null/undefined
+-                        // so subsequent requests can retry (e.g., after user logs in)
+-                        if (!result) {
+-                            throw new Error('No bearer token available');
+-                        }
+-                        return result;
+-                    },
+-                    staleTime: STALE_TIMES.AUTH_TOKEN,
+-                    retry: false, // Don't retry auth failures
+-                });
+-                headers.Authorization = `Bearer ${token}`;
+-            }
+-            catch {
+-                // No token available - continue without auth header
+-            }
+-        }
+         const response = await fetch(url.toString(), {
+             method: 'GET',
+             headers,
+diff --git a/dist/api/shared-types.cjs b/dist/api/shared-types.cjs
+index 731306ca396e84be961ab27dab63e5c00a979c6e..acac1d6ec2775b322e74a8a7787443a63bc4d6af 100644
+--- a/dist/api/shared-types.cjs
++++ b/dist/api/shared-types.cjs
+@@ -26,7 +26,7 @@ exports.getQueryOptionsOverrides = getQueryOptionsOverrides;
+ // ============================================================================
+ /** API Base URLs */
+ exports.API_URLS = {
+-    ACCOUNTS: 'https://accounts.api.cx.metamask.io',
++    ACCOUNTS: 'https://accounts.dev-api.cx.metamask.io',
+     PRICES: 'https://price.api.cx.metamask.io',
+     TOKEN: 'https://token.api.cx.metamask.io',
+     TOKENS: 'https://tokens.api.cx.metamask.io',
+diff --git a/dist/api/shared-types.mjs b/dist/api/shared-types.mjs
+index 5642144cc63a14c597271eccf7007ac0b92aad2b..6e8fd3710c52fc460b76bd2ee9ce0fd0f5ccef56 100644
+--- a/dist/api/shared-types.mjs
++++ b/dist/api/shared-types.mjs
+@@ -22,7 +22,7 @@ export function getQueryOptionsOverrides(options) {
+ // ============================================================================
+ /** API Base URLs */
+ export const API_URLS = {
+-    ACCOUNTS: 'https://accounts.api.cx.metamask.io',
++    ACCOUNTS: 'https://accounts.dev-api.cx.metamask.io',
+     PRICES: 'https://price.api.cx.metamask.io',
+     TOKEN: 'https://token.api.cx.metamask.io',
+     TOKENS: 'https://tokens.api.cx.metamask.io',
+diff --git a/dist/ws/AccountActivityService.cjs b/dist/ws/AccountActivityService.cjs
+index 7ef741232595450cf6194a252345f745604c3801..9e8f8f1b4e0c2a840259f0bb1e798994e9bbb13b 100644
+--- a/dist/ws/AccountActivityService.cjs
++++ b/dist/ws/AccountActivityService.cjs
+@@ -139,20 +139,20 @@ class AccountActivityService {
+             // eslint-disable-next-line @typescript-eslint/no-explicit-any
+             ((_request, fn) => fn?.()), "f");
+         __classPrivateFieldGet(this, _AccountActivityService_messenger, "f").registerMethodActionHandlers(this, MESSENGER_EXPOSED_METHODS);
+-        __classPrivateFieldGet(this, _AccountActivityService_messenger, "f").subscribe('AccountTreeController:selectedAccountGroupChange', 
++        __classPrivateFieldGet(this, _AccountActivityService_messenger, "f").subscribe('AccountTreeController:selectedAccountGroupChange',
+         // Promise result intentionally not awaited
+         // eslint-disable-next-line @typescript-eslint/no-misused-promises
+         async () => await __classPrivateFieldGet(this, _AccountActivityService_instances, "m", _AccountActivityService_handleSelectedAccountChange).call(this));
+-        __classPrivateFieldGet(this, _AccountActivityService_messenger, "f").subscribe('BackendWebSocketService:connectionStateChanged', 
++        __classPrivateFieldGet(this, _AccountActivityService_messenger, "f").subscribe('BackendWebSocketService:connectionStateChanged',
+         // Promise result intentionally not awaited
+         // eslint-disable-next-line @typescript-eslint/no-misused-promises
+         (connectionInfo) => __classPrivateFieldGet(this, _AccountActivityService_instances, "m", _AccountActivityService_handleWebSocketStateChange).call(this, connectionInfo));
+         __classPrivateFieldGet(this, _AccountActivityService_messenger, "f").subscribe(
+         // eslint-disable-next-line no-restricted-syntax
+-        'RemoteFeatureFlagController:stateChange', 
++        'RemoteFeatureFlagController:stateChange',
+         // Promise result intentionally not awaited
+         // eslint-disable-next-line @typescript-eslint/no-misused-promises
+-        async () => await __classPrivateFieldGet(this, _AccountActivityService_instances, "m", _AccountActivityService_handleFeatureFlagsStateChange).call(this), 
++        async () => await __classPrivateFieldGet(this, _AccountActivityService_instances, "m", _AccountActivityService_handleFeatureFlagsStateChange).call(this),
+         // Only react to changes in the set of enabled chain prefixes. The
+         // messenger compares selector results with strict equality, so the
+         // selector must return a primitive rather than a fresh object.
+@@ -180,7 +180,7 @@ class AccountActivityService {
+     }
+ }
+ exports.AccountActivityService = AccountActivityService;
+-_AccountActivityService_messenger = new WeakMap(), _AccountActivityService_options = new WeakMap(), _AccountActivityService_trace = new WeakMap(), _AccountActivityService_chainsUp = new WeakMap(), _AccountActivityService_statusChangeDebouncer = new WeakMap(), _AccountActivityService_instances = new WeakSet(), _AccountActivityService_subscribe = 
++_AccountActivityService_messenger = new WeakMap(), _AccountActivityService_options = new WeakMap(), _AccountActivityService_trace = new WeakMap(), _AccountActivityService_chainsUp = new WeakMap(), _AccountActivityService_statusChangeDebouncer = new WeakMap(), _AccountActivityService_instances = new WeakSet(), _AccountActivityService_subscribe =
+ /**
+  * Subscribe to account activity (transactions and balance updates)
+  * Addresses should be in CAIP-10 format (e.g., "eip155:0:0x1234..." or "solana:0:ABC123...")
+@@ -247,7 +247,7 @@ async function _AccountActivityService_subscribe({ addresses }) {
+             updates,
+         });
+     });
+-}, _AccountActivityService_handleSelectedAccountChange = 
++}, _AccountActivityService_handleSelectedAccountChange =
+ /**
+  * Handle selected account change event
+  */
+@@ -322,7 +322,7 @@ async function _AccountActivityService_handleSelectedAccountChange() {
+             status,
+         });
+     }
+-}, _AccountActivityService_handleWebSocketStateChange = 
++}, _AccountActivityService_handleWebSocketStateChange =
+ /**
+  * Handle WebSocket connection state changes for fallback polling and resubscription
+  *
+@@ -360,7 +360,7 @@ async function _AccountActivityService_handleWebSocketStateChange(connectionInfo
+             __classPrivateFieldGet(this, _AccountActivityService_chainsUp, "f").clear();
+         }
+     }
+-}, _AccountActivityService_subscribeToSelectedAccount = 
++}, _AccountActivityService_subscribeToSelectedAccount =
+ // =============================================================================
+ // Private Methods - Subscription Management
+ // =============================================================================
+@@ -372,7 +372,7 @@ async function _AccountActivityService_subscribeToSelectedAccount() {
+     await __classPrivateFieldGet(this, _AccountActivityService_instances, "m", _AccountActivityService_subscribe).call(this, {
+         addresses: __classPrivateFieldGet(this, _AccountActivityService_instances, "m", _AccountActivityService_convertToCaip10Addresses).call(this, selectedAccounts),
+     });
+-}, _AccountActivityService_unsubscribeFromAllAccountActivity = 
++}, _AccountActivityService_unsubscribeFromAllAccountActivity =
+ /**
+  * Unsubscribe from all account activity subscriptions for this service
+  * Finds all channels matching the service's namespace and unsubscribes from them
+@@ -396,6 +396,7 @@ async function _AccountActivityService_unsubscribeFromAllAccountActivity() {
+     }, []);
+ }, _AccountActivityService_getSupportedChainPrefixes = function _AccountActivityService_getSupportedChainPrefixes(remoteFeatureFlags = __classPrivateFieldGet(this, _AccountActivityService_messenger, "f").call('RemoteFeatureFlagController:getState').remoteFeatureFlags) {
+     const prefixes = [...ALWAYS_SUPPORTED_CHAIN_PREFIXES];
++    prefixes.push("tron")
+     for (const [prefix, flagName] of Object.entries(CHAIN_PREFIX_FEATURE_FLAGS)) {
+         const flagValue = remoteFeatureFlags[flagName];
+         if ((0, utils_1.isObject)(flagValue) &&
+@@ -405,7 +406,7 @@ async function _AccountActivityService_unsubscribeFromAllAccountActivity() {
+         }
+     }
+     return prefixes;
+-}, _AccountActivityService_handleFeatureFlagsStateChange = 
++}, _AccountActivityService_handleFeatureFlagsStateChange =
+ /**
+  * Handle remote feature flag changes: if the set of enabled chain prefixes
+  * changed while connected, resubscribe the selected account so new chains
+@@ -424,7 +425,7 @@ async function _AccountActivityService_handleFeatureFlagsStateChange() {
+     catch (error) {
+         log('Feature flag change handling failed', { error });
+     }
+-}, _AccountActivityService_forceReconnection = 
++}, _AccountActivityService_forceReconnection =
+ /**
+  * Force WebSocket reconnection to clean up subscription state
+  */
+diff --git a/dist/ws/AccountActivityService.mjs b/dist/ws/AccountActivityService.mjs
+index 244f7fd3ae12e6a70b53a7d65a7b7e331648ee80..e1c9b1627edac054ce31c151f1a60fcd70dcd29b 100644
+--- a/dist/ws/AccountActivityService.mjs
++++ b/dist/ws/AccountActivityService.mjs
+@@ -136,20 +136,20 @@ export class AccountActivityService {
+             // eslint-disable-next-line @typescript-eslint/no-explicit-any
+             ((_request, fn) => fn?.()), "f");
+         __classPrivateFieldGet(this, _AccountActivityService_messenger, "f").registerMethodActionHandlers(this, MESSENGER_EXPOSED_METHODS);
+-        __classPrivateFieldGet(this, _AccountActivityService_messenger, "f").subscribe('AccountTreeController:selectedAccountGroupChange', 
++        __classPrivateFieldGet(this, _AccountActivityService_messenger, "f").subscribe('AccountTreeController:selectedAccountGroupChange',
+         // Promise result intentionally not awaited
+         // eslint-disable-next-line @typescript-eslint/no-misused-promises
+         async () => await __classPrivateFieldGet(this, _AccountActivityService_instances, "m", _AccountActivityService_handleSelectedAccountChange).call(this));
+-        __classPrivateFieldGet(this, _AccountActivityService_messenger, "f").subscribe('BackendWebSocketService:connectionStateChanged', 
++        __classPrivateFieldGet(this, _AccountActivityService_messenger, "f").subscribe('BackendWebSocketService:connectionStateChanged',
+         // Promise result intentionally not awaited
+         // eslint-disable-next-line @typescript-eslint/no-misused-promises
+         (connectionInfo) => __classPrivateFieldGet(this, _AccountActivityService_instances, "m", _AccountActivityService_handleWebSocketStateChange).call(this, connectionInfo));
+         __classPrivateFieldGet(this, _AccountActivityService_messenger, "f").subscribe(
+         // eslint-disable-next-line no-restricted-syntax
+-        'RemoteFeatureFlagController:stateChange', 
++        'RemoteFeatureFlagController:stateChange',
+         // Promise result intentionally not awaited
+         // eslint-disable-next-line @typescript-eslint/no-misused-promises
+-        async () => await __classPrivateFieldGet(this, _AccountActivityService_instances, "m", _AccountActivityService_handleFeatureFlagsStateChange).call(this), 
++        async () => await __classPrivateFieldGet(this, _AccountActivityService_instances, "m", _AccountActivityService_handleFeatureFlagsStateChange).call(this),
+         // Only react to changes in the set of enabled chain prefixes. The
+         // messenger compares selector results with strict equality, so the
+         // selector must return a primitive rather than a fresh object.
+@@ -176,7 +176,7 @@ export class AccountActivityService {
+         __classPrivateFieldGet(this, _AccountActivityService_messenger, "f").call('BackendWebSocketService:removeChannelCallback', `system-notifications.v1.${__classPrivateFieldGet(this, _AccountActivityService_options, "f").subscriptionNamespace}`);
+     }
+ }
+-_AccountActivityService_messenger = new WeakMap(), _AccountActivityService_options = new WeakMap(), _AccountActivityService_trace = new WeakMap(), _AccountActivityService_chainsUp = new WeakMap(), _AccountActivityService_statusChangeDebouncer = new WeakMap(), _AccountActivityService_instances = new WeakSet(), _AccountActivityService_subscribe = 
++_AccountActivityService_messenger = new WeakMap(), _AccountActivityService_options = new WeakMap(), _AccountActivityService_trace = new WeakMap(), _AccountActivityService_chainsUp = new WeakMap(), _AccountActivityService_statusChangeDebouncer = new WeakMap(), _AccountActivityService_instances = new WeakSet(), _AccountActivityService_subscribe =
+ /**
+  * Subscribe to account activity (transactions and balance updates)
+  * Addresses should be in CAIP-10 format (e.g., "eip155:0:0x1234..." or "solana:0:ABC123...")
+@@ -243,7 +243,7 @@ async function _AccountActivityService_subscribe({ addresses }) {
+             updates,
+         });
+     });
+-}, _AccountActivityService_handleSelectedAccountChange = 
++}, _AccountActivityService_handleSelectedAccountChange =
+ /**
+  * Handle selected account change event
+  */
+@@ -318,7 +318,7 @@ async function _AccountActivityService_handleSelectedAccountChange() {
+             status,
+         });
+     }
+-}, _AccountActivityService_handleWebSocketStateChange = 
++}, _AccountActivityService_handleWebSocketStateChange =
+ /**
+  * Handle WebSocket connection state changes for fallback polling and resubscription
+  *
+@@ -356,7 +356,7 @@ async function _AccountActivityService_handleWebSocketStateChange(connectionInfo
+             __classPrivateFieldGet(this, _AccountActivityService_chainsUp, "f").clear();
+         }
+     }
+-}, _AccountActivityService_subscribeToSelectedAccount = 
++}, _AccountActivityService_subscribeToSelectedAccount =
+ // =============================================================================
+ // Private Methods - Subscription Management
+ // =============================================================================
+@@ -368,7 +368,7 @@ async function _AccountActivityService_subscribeToSelectedAccount() {
+     await __classPrivateFieldGet(this, _AccountActivityService_instances, "m", _AccountActivityService_subscribe).call(this, {
+         addresses: __classPrivateFieldGet(this, _AccountActivityService_instances, "m", _AccountActivityService_convertToCaip10Addresses).call(this, selectedAccounts),
+     });
+-}, _AccountActivityService_unsubscribeFromAllAccountActivity = 
++}, _AccountActivityService_unsubscribeFromAllAccountActivity =
+ /**
+  * Unsubscribe from all account activity subscriptions for this service
+  * Finds all channels matching the service's namespace and unsubscribes from them
+@@ -392,6 +392,7 @@ async function _AccountActivityService_unsubscribeFromAllAccountActivity() {
+     }, []);
+ }, _AccountActivityService_getSupportedChainPrefixes = function _AccountActivityService_getSupportedChainPrefixes(remoteFeatureFlags = __classPrivateFieldGet(this, _AccountActivityService_messenger, "f").call('RemoteFeatureFlagController:getState').remoteFeatureFlags) {
+     const prefixes = [...ALWAYS_SUPPORTED_CHAIN_PREFIXES];
++    prefixes.push("tron")
+     for (const [prefix, flagName] of Object.entries(CHAIN_PREFIX_FEATURE_FLAGS)) {
+         const flagValue = remoteFeatureFlags[flagName];
+         if (isObject(flagValue) &&
+@@ -401,7 +402,7 @@ async function _AccountActivityService_unsubscribeFromAllAccountActivity() {
+         }
+     }
+     return prefixes;
+-}, _AccountActivityService_handleFeatureFlagsStateChange = 
++}, _AccountActivityService_handleFeatureFlagsStateChange =
+ /**
+  * Handle remote feature flag changes: if the set of enabled chain prefixes
+  * changed while connected, resubscribe the selected account so new chains
+@@ -420,7 +421,7 @@ async function _AccountActivityService_handleFeatureFlagsStateChange() {
+     catch (error) {
+         log('Feature flag change handling failed', { error });
+     }
+-}, _AccountActivityService_forceReconnection = 
++}, _AccountActivityService_forceReconnection =
+ /**
+  * Force WebSocket reconnection to clean up subscription state
+  */

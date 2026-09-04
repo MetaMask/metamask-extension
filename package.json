@@ -339,7 +339,12 @@
     "@ledgerhq/context-module/ethers": "^6.15.0",
     "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
     "@metamask/assets-controller@npm:^13.1.0": "patch:@metamask/assets-controller@npm%3A13.1.4#~/.yarn/patches/@metamask-assets-controller-npm-13.1.4-ee83e2c2d8.patch",
-    "@metamask/assets-controller@npm:^13.1.2": "patch:@metamask/assets-controller@npm%3A13.1.4#~/.yarn/patches/@metamask-assets-controller-npm-13.1.4-ee83e2c2d8.patch"
+    "@metamask/assets-controller@npm:^13.1.2": "patch:@metamask/assets-controller@npm%3A13.1.4#~/.yarn/patches/@metamask-assets-controller-npm-13.1.4-ee83e2c2d8.patch",
+    "@metamask/core-backend@npm:^8.1.1": "patch:@metamask/core-backend@npm%3A9.0.0#~/.yarn/patches/@metamask-core-backend-npm-9.0.0-2b54fa9894.patch",
+    "@metamask/core-backend@npm:^9.0.0": "patch:@metamask/core-backend@npm%3A9.0.0#~/.yarn/patches/@metamask-core-backend-npm-9.0.0-2b54fa9894.patch",
+    "@metamask/core-backend@npm:^8.1.2": "patch:@metamask/core-backend@npm%3A9.0.0#~/.yarn/patches/@metamask-core-backend-npm-9.0.0-2b54fa9894.patch",
+    "@metamask/core-backend@npm:^6.2.1": "patch:@metamask/core-backend@npm%3A9.0.0#~/.yarn/patches/@metamask-core-backend-npm-9.0.0-2b54fa9894.patch",
+    "@metamask/core-backend@npm:^6.5.0": "patch:@metamask/core-backend@npm%3A9.0.0#~/.yarn/patches/@metamask-core-backend-npm-9.0.0-2b54fa9894.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -397,7 +402,7 @@
     "@metamask/connectivity-controller": "^0.3.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^12.3.0",
-    "@metamask/core-backend": "^9.0.0",
+    "@metamask/core-backend": "patch:@metamask/core-backend@npm%3A9.0.0#~/.yarn/patches/@metamask-core-backend-npm-9.0.0-2b54fa9894.patch",
     "@metamask/delegation-controller": "^3.0.2",
     "@metamask/delegation-core": "^2.0.0",
     "@metamask/delegation-deployments": "^1.3.0",
