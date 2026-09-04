@@ -161,12 +161,12 @@ export const bridgeTransaction = async ({
   if (!skipNetworkFeeCheck) {
     await bridgePage.checkExpectedNetworkFeeIsDisplayed();
   }
-  if (expectedTotalCost) {
-    await bridgePage.checkQuoteTotalCost(expectedTotalCost);
-  }
   submitDelay && (await driver.delay(submitDelay));
   if (expectedDestAmount) {
     await bridgePage.checkDestAmount(expectedDestAmount);
+  }
+  if (expectedTotalCost) {
+    await bridgePage.checkQuoteTotalCost(expectedTotalCost);
   }
 
   if (skipStatusPage) {
