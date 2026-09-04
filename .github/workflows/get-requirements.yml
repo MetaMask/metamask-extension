@@ -487,7 +487,6 @@ jobs:
         uses: dorny/paths-filter@9d7afb8d214ad99e78fbd4247752c4caed2b6e4c
         with:
           filters: .github/rules/filter-rules.yml
-          # JSON so all_changes_files can be passed to AI PR risk analysis
           list-files: json
 
       # This puts the workflow in locales-only mode, with skip-everything=true and needs-locales=true
