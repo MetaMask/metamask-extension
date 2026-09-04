@@ -22,11 +22,20 @@ import {
 } from '../../../selectors/ramps-feature-flags';
 import { getIsRampRegionUnsupported } from '../../../selectors/ramps';
 import {
+  selectRampsOrders,
   selectProviders,
   selectTokens,
 } from '../../../selectors/rampsController';
+import {
+  selectIsBackupAndSyncEnabled,
+  selectIsRampsSyncingEnabled,
+} from '../../../selectors/identity/backup-and-sync';
 import useRamps from '../useRamps/useRamps';
-import { hasEverConnectedToPortfolio } from '../utils/portfolioConnection';
+import {
+  hasAttemptedPortfolioBuyMigration,
+  hasEverConnectedToPortfolio,
+  markPortfolioBuyMigrationAttempted,
+} from '../utils/portfolioConnection';
 import { normalizeAssetIdForApi } from '../utils/normalizeAssetIdForApi';
 
 /**
@@ -35,7 +44,7 @@ import { normalizeAssetIdForApi } from '../utils/normalizeAssetIdForApi';
 export type RampIntent = {
   /** CAIP-19 asset to pre-select, e.g. `eip155:1/erc20:0x...`. */
   assetId?: CaipAssetType;
-  /** Chain for the flag-off Portfolio fallback deeplink only. */
+  /** Chain for Portfolio fallback deeplinks. */
   chainId?: Hex | CaipChainId;
 };
 
@@ -110,12 +119,6 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
 /**
  * Provides the `goToBuy` navigation gate for the Ramps buy entry point.
  *
- * When `rampsEnabled` is on:
- * - Wallets that have never connected to Portfolio use in-app Buy (geo gates).
- * - Wallets that have connected to Portfolio open Portfolio (hedge while
- * order-history Profile Sync is still rolling out; returning buyers keep
- * Portfolio until migration lands).
- *
  * When the flag is off, everyone is redirected to Portfolio.
  *
  * @returns An object with `goToBuy`, an async callback taking an optional
@@ -134,7 +137,10 @@ export default function useRampsNavigation() {
   const isRegionUnsupported = useSelector(getIsRampRegionUnsupported);
   const providers = useSelector(selectProviders);
   const tokens = useSelector(selectTokens);
+  const rampsOrders = useSelector(selectRampsOrders);
   const everConnectedToPortfolio = useSelector(hasEverConnectedToPortfolio);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
+  const isRampsSyncingEnabled = useSelector(selectIsRampsSyncingEnabled);
 
   const goToBuy = useCallback(
     async (intent?: RampIntent): Promise<boolean> => {
@@ -142,13 +148,6 @@ export default function useRampsNavigation() {
       if (!isEnabled) {
         // `getBuyURI` accepts any hex chain id; the narrower `ChainId` param is
         // just an over-tight annotation.
-        openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
-        return true;
-      }
-
-      // Returning Portfolio users → Portfolio (not in-app) until Profile Sync
-      // migration can flip them onto native Buy.
-      if (everConnectedToPortfolio) {
         openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
         return true;
       }
@@ -186,6 +185,21 @@ export default function useRampsNavigation() {
       if (catalogData && isCatalogEmpty(providers, catalogData)) {
         dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
         return false;
+      }
+
+      if (
+        everConnectedToPortfolio &&
+        isBackupAndSyncEnabled &&
+        isRampsSyncingEnabled &&
+        rampsOrders.length === 0 &&
+        !(await hasAttemptedPortfolioBuyMigration())
+      ) {
+        // Portfolio uploads local Buy history to Profile Sync from its app
+        // shell. Record the attempt before opening it so users with no local
+        // Portfolio orders are not redirected again on their next Buy.
+        await markPortfolioBuyMigrationAttempted();
+        openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
+        return true;
       }
 
       // 5. Route into the native buy flow.
@@ -229,17 +243,18 @@ export default function useRampsNavigation() {
       isRegionUnsupported,
       providers,
       tokens,
+      rampsOrders,
       everConnectedToPortfolio,
+      isBackupAndSyncEnabled,
+      isRampsSyncingEnabled,
       dispatch,
       navigate,
       openBuyCryptoInPdapp,
     ],
   );
 
-  // Expose whether Buy leaves the extension so callers can gate follow-up UI
-  // (e.g. the "tab opened" toast) without re-deriving the destination.
   return {
     goToBuy,
-    opensBuyInPortfolioTab: !isEnabled || everConnectedToPortfolio,
+    opensBuyInPortfolioTab: !isEnabled,
   };
 }
