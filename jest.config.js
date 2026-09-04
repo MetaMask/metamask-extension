@@ -78,7 +78,7 @@ module.exports = {
   testMatch: [
     '<rootDir>/app/scripts/**/*.test.(js|ts|tsx)',
     '<rootDir>/app/offscreen/**/*.test.(js|ts|tsx)',
-    '<rootDir>/.github/scripts/**/*.test.(js|ts|mts)',
+    '<rootDir>/[.]github/scripts/**/*.test.(js|ts|mts)',
     '<rootDir>/shared/**/*.test.(js|ts|tsx)',
     '<rootDir>/ui/**/*.test.(js|ts|tsx)',
     '<rootDir>/development/**/*.test.(js|ts|tsx|mts)',
