@@ -149,6 +149,7 @@ describe('Add existing token using search', function () {
               name: 'Basic Attention Token',
               symbol: 'BAT',
               decimals: 18,
+              occurrences: 100,
             },
           ],
         })),

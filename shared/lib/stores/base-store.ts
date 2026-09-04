@@ -20,6 +20,10 @@ export type MetaData = {
    * The kind of storage being used.
    */
   storageKind?: 'data' | 'split';
+  /**
+   * Transient flag used during split-state gradual rollout migration.
+   */
+  platformSplitStateGradualRolloutAttempted?: boolean;
 };
 
 /**

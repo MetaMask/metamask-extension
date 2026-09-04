@@ -106,6 +106,7 @@
     "balances": "object",
     "batchSellTrades": null,
     "batchSellTradesLoadingStatus": null,
+    "batchTransactionCounts": "object",
     "browserEnvironment": { "browser": "string", "os": "string" },
     "cacheTimestamp": "number",
     "cachedMarketDataByProvider": "object",
