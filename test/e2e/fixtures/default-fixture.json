@@ -179,7 +179,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 223,
+      "currentMigrationVersion": 224,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -188,7 +188,6 @@
       "browserEnvironment": {
         "browser": "chrome"
       },
-      "canTrackWalletFundsObtained": false,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -412,6 +411,9 @@
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
+    },
+    "MoneyAccountController": {
+      "moneyAccounts": {}
     },
     "MultichainAssetsController": {
       "accountsAssets": {
@@ -1100,13 +1102,6 @@
       }
     },
     "RampsController": {
-      "countries": {
-        "data": [],
-        "error": null,
-        "errorKey": null,
-        "isLoading": false,
-        "selected": null
-      },
       "orders": [],
       "providerAutoSelected": false,
       "userRegion": null
@@ -1214,6 +1209,7 @@
         "npm:@metamask/message-signing-snap": "mainnet",
         "npm:@metamask/permissions-kernel-snap": "mainnet",
         "npm:@metamask/solana-wallet-snap": "mainnet",
+        "npm:@metamask/stellar-wallet-snap": "mainnet",
         "npm:@metamask/tron-wallet-snap": "mainnet"
       }
     },
@@ -1266,6 +1262,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 223
+    "version": 224
   }
 }

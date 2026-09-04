@@ -1,5 +1,15 @@
 import { ENVIRONMENT } from '../constants/build';
 
+/**
+ * Get a boolean value for a string or boolean value.
+ *
+ * @param value - The value to convert to a boolean.
+ * @returns `true` if the value is `'true'` or `true`, otherwise `false`.
+ */
+export function getBooleanFlag(value: string | boolean | undefined): boolean {
+  return value === true || value === 'true';
+}
+
 export const isProduction = (): boolean => {
   return (
     process.env.METAMASK_ENVIRONMENT !== ENVIRONMENT.DEVELOPMENT &&
@@ -103,17 +113,4 @@ export const getIsSidePanelFeatureEnabled = (): boolean => {
 
 export const getIsPasskeyFeatureEnabled = (): boolean => {
   return process.env.PASSKEY_ENABLED?.toString() === 'true';
-};
-
-/**
- * Compile-time gate (`MM_PURE_BLACK_PREVIEW`): when true, OLED pure-black
- * dark mode is enabled locally without requiring the `extensionUxPureBlack`
- * remote feature flag. Intended for development and QA only.
- *
- * NOTE: This is temporary. Once pure-black and dark theme tokens are
- * consolidated, this env var and all callers should be removed. Tracked in
- * TMCU-1083.
- */
-export const getIsPureBlackPreviewEnabled = (): boolean => {
-  return process.env.MM_PURE_BLACK_PREVIEW?.toString() === 'true';
 };

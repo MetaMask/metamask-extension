@@ -25,6 +25,16 @@ const getPerpsDepositState = () => {
   } as TransactionMeta);
 };
 
+/** Build a confirm state for a moneyAccountWithdraw transaction. */
+const getMoneyAccountWithdrawState = () => {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  return getMockConfirmStateForTransaction({
+    ...base,
+    type: TransactionType.moneyAccountWithdraw,
+    origin: 'metamask',
+  } as TransactionMeta);
+};
+
 /** Build a confirm state for a perpsWithdraw transaction. */
 const getPerpsWithdrawState = () => {
   const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
@@ -112,6 +122,17 @@ describe('<WalletInitiatedHeader />', () => {
     expect(getByText(tEn('perpsDepositFundsTitle'))).toBeInTheDocument();
   });
 
+  it('shows sendToPerps as the header title for perpsDeposit from money account', () => {
+    const store = configureStore(getPerpsDepositState());
+    const { getByText } = renderWithConfirmContextProvider(
+      <WalletInitiatedHeader />,
+      store,
+      '/?payWithOption=money_account',
+    );
+
+    expect(getByText(tEn('sendToPerps'))).toBeInTheDocument();
+  });
+
   it('hides AdvancedDetailsButton visually for perpsDeposit', () => {
     const { getByTestId } = render(getPerpsDepositState());
 
@@ -147,6 +168,12 @@ describe('<WalletInitiatedHeader />', () => {
     const { getByText } = render(getPerpsWithdrawState());
 
     expect(getByText(tEn('perpsWithdrawFundsTitle'))).toBeInTheDocument();
+  });
+
+  it('shows send as the header title for moneyAccountWithdraw', () => {
+    const { getByText } = render(getMoneyAccountWithdrawState());
+
+    expect(getByText(tEn('send'))).toBeInTheDocument();
   });
 
   it('hides AdvancedDetailsButton visually for perpsWithdraw', () => {

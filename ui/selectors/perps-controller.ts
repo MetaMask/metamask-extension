@@ -251,5 +251,17 @@ export const selectOrderBookExpanded = (state: PerpsState) =>
   state.metamask.proLayoutPreferences?.orderBookExpanded ??
   DEFAULT_PRO_LAYOUT_PREFERENCES.orderBookExpanded;
 
+/**
+ * Whether the order-entry chart panel was left open. Global across markets
+ * (the preference object is flat, not per-market), so the panel opens in the
+ * same state on every symbol.
+ *
+ * @param state - Perps controller state.
+ * @returns True when the panel should start open.
+ */
+export const selectChartExpanded = (state: PerpsState) =>
+  state.metamask.proLayoutPreferences?.chartExpanded ??
+  DEFAULT_PRO_LAYOUT_PREFERENCES.chartExpanded;
+
 export const selectPerpsTradeConfigurations = (state: PerpsState) =>
   state.metamask.tradeConfigurations ?? EMPTY_TRADE_CONFIGURATIONS;

@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useDeferredValue,
   useEffect,
   useMemo,
   useRef,
@@ -34,8 +35,6 @@ import {
   type Hex,
 } from '@metamask/utils';
 import { ERC20 } from '@metamask/controller-utils';
-import { useDeferredValue } from '../../hooks/useDeferredValue';
-
 import { TokenManagementCell } from '../../components/multichain/token-management-cell';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -1688,7 +1687,7 @@ export const TokenManagementPage = () => {
       flexDirection={BoxFlexDirection.Column}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
       className="w-full h-full min-h-0"
-      data-testid="token-management-page"
+      data-testid="parent-selector-token-management-page"
     >
       <Header startAccessory={startAccessory}>{t('manageTokens')}</Header>
 

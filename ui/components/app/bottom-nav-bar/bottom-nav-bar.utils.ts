@@ -1,6 +1,7 @@
 import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
+  MONEY_ACTIVITY_ROUTE,
   MONEY_HOME_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
   SWAP_PATH,
@@ -25,7 +26,10 @@ export const getActiveBottomNavTabs = (
   return {
     isHome: pathname === DEFAULT_ROUTE,
     isPerps: pathname === PERPS_HOME_PAGE_ROUTE,
-    isMoney: pathname === MONEY_HOME_ROUTE,
+    isMoney:
+      pathname === MONEY_HOME_ROUTE ||
+      pathname === MONEY_ACTIVITY_ROUTE ||
+      pathname.startsWith(`${MONEY_ACTIVITY_ROUTE}/`),
     isSwaps: pathname === SWAP_PATH,
     isActivity: pathname === ACTIVITY_ROUTE,
   };
