@@ -2,13 +2,17 @@ import { ReadableStream as ReadableStreamWeb } from 'stream/web';
 import { strict as assert } from 'assert';
 import { Readable } from 'stream';
 import { MockedEndpoint, Mockttp } from 'mockttp';
+import { BigNumber } from 'bignumber.js';
 import {
+  calcQuoteMetadata,
+  getNativeAssetForChainId,
   QuoteStreamCompleteReason,
   TokenFeature,
   type FeatureFlagResponse,
 } from '@metamask/bridge-controller';
 
-import { emptyHtmlPage } from '../../mock-e2e';
+import { formatAmount } from '../../../../shared/lib/format-amount';
+import { emptyHtmlPage, MOCK_SUGGESTED_GAS_FEES } from '../../mock-e2e';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
@@ -27,16 +31,19 @@ import {
   BRIDGE_L2_MOCK_CURRENCY_RATES,
   BRIDGE_L2_WITH_FIXTURES_OPTIONS,
   BRIDGE_MOCK_CURRENCY_RATES,
+  BRIDGE_MOCK_TOKEN_SPOT_PRICES,
+  BRIDGE_SOLANA_USD_SPOT_PRICE,
   BRIDGE_WITH_FIXTURES_OPTIONS,
   getBridgeAssetsControllerConfig,
   getBridgeL2AssetsControllerConfig,
+  getBridgeMockUsdSpotPrice,
 } from './bridge-unified-assets-config';
 import {
   MOCK_TOKENS_ARBITRUM,
   MOCK_TOKENS_ETHEREUM,
   MOCK_TOKENS_LINEA,
+  MOCK_TOKENS_ROBINHOOD,
   MOCK_GET_TOKEN_ARBITRUM,
-  MOCK_BRIDGE_ETH_TO_ETH_LINEA,
   MOCK_BRIDGE_ETH_TO_USDC_ARBITRUM,
   MOCK_BRIDGE_DAI_TO_ETH_LINEA,
   MOCK_BRIDGE_USDC_TO_DAI_LINEA,
@@ -53,6 +60,7 @@ import {
   BRIDGE_REFRESH_RATE,
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
 } from './constants';
+import MOCK_BRIDGE_ETH_TO_ETH_ROBINHOOD from './mocks/bridge-quotes-eth-robinhood.json';
 import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_INCLUDED from './mocks/swap-quotes-eth-usdc-gas-included.json';
 import MOCK_SWAP_QUOTES_USDC_DAI_GAS_INCLUDED from './mocks/swap-quotes-usdc-dai-gas-included.json';
@@ -304,6 +312,7 @@ export async function mockGetPopularTokens(mockServer: Mockttp) {
       MOCK_GET_TOKEN_ARBITRUM.map((token) =>
         toBridgeTokenResponse(42161, token),
       ),
+      MOCK_TOKENS_ROBINHOOD.map((token) => toBridgeTokenResponse(4663, token)),
     ].flat(),
   }));
 }
@@ -389,6 +398,28 @@ async function mockSearchTokens(mockServer: Mockttp) {
           },
         };
       }),
+    await mockServer
+      .forPost(/getTokens\/search/u)
+      .withJsonBodyIncluding({
+        chainIds: ['eip155:4663'],
+      })
+      .thenCallback(async (request) => {
+        const body = (await request.body.getJson()) as { query?: string };
+        const tokens = filterTokensByQuery(
+          MOCK_TOKENS_ROBINHOOD,
+          body.query ?? '',
+        );
+        return {
+          statusCode: 200,
+          json: {
+            data: tokens.map((token) => toBridgeTokenResponse(4663, token)),
+            pageInfo: {
+              hasNextPage: false,
+              endCursor: null,
+            },
+          },
+        };
+      }),
   ];
 }
 
@@ -402,7 +433,7 @@ async function mockETHtoETH(mockServer: Mockttp, sseEnabled?: boolean) {
       })
       .thenStream(
         200,
-        mockSseEventSource(MOCK_BRIDGE_ETH_TO_ETH_LINEA),
+        mockSseEventSource(MOCK_BRIDGE_ETH_TO_ETH_ROBINHOOD, 0),
         SSE_RESPONSE_HEADER,
       );
   }
@@ -415,7 +446,7 @@ async function mockETHtoETH(mockServer: Mockttp, sseEnabled?: boolean) {
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: MOCK_BRIDGE_ETH_TO_ETH_LINEA,
+        json: MOCK_BRIDGE_ETH_TO_ETH_ROBINHOOD,
       };
     });
 }
@@ -932,7 +963,7 @@ async function mockPriceSpotPricesV3(
   ethUsdSpotPrice: number = BRIDGE_ETH_USD_SPOT_PRICE,
 ) {
   const resolvedEthPrice = ethUsdSpotPrice;
-  const SOLANA_SPOT_PRICE = 112.87;
+  const SOLANA_SPOT_PRICE = BRIDGE_SOLANA_USD_SPOT_PRICE;
 
   const tokenEntry = (
     id: string,
@@ -951,20 +982,14 @@ async function mockPriceSpotPricesV3(
     'eip155:42161/slip44:60',
   ] as const;
 
-  const stablecoins: Record<string, ReturnType<typeof tokenEntry>> = {
-    'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': tokenEntry(
-      'dai',
-      1.0,
+  const stablecoins: Record<
+    string,
+    ReturnType<typeof tokenEntry>
+  > = Object.fromEntries(
+    Object.entries(BRIDGE_MOCK_TOKEN_SPOT_PRICES).map(
+      ([assetId, { id, price }]) => [assetId, tokenEntry(id, price)],
     ),
-    'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': tokenEntry(
-      'dai',
-      1.0,
-    ),
-    'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da': tokenEntry(
-      'musd',
-      0.9999,
-    ),
-  };
+  );
 
   return await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
@@ -2184,4 +2209,104 @@ export async function enterBridgeQuote(
   });
 
   return bridgePage;
+}
+
+/**
+ * The bridge controller prices gas with the `medium` estimate, which the gas
+ * API mock serves for every chain.
+ */
+const MOCK_BRIDGE_FEES_PER_GAS = {
+  estimatedBaseFeeInDecGwei: MOCK_SUGGESTED_GAS_FEES.estimatedBaseFee,
+  feePerGasInDecGwei: MOCK_SUGGESTED_GAS_FEES.medium.suggestedMaxFeePerGas,
+};
+
+/** Locale and display currency the extension runs under in E2E. */
+const LOCALE = 'en-US';
+
+// The quote card renders fiat costs with a 2 decimal currency format. The UI
+// formatters live behind imports that only load inside the extension, so mirror
+// the format here instead.
+const currencyFormatter = new Intl.NumberFormat(LOCALE, {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+/** The quote shape the bridge API mocks serve, narrowed to the fields read here. */
+type MockedQuote = {
+  quote: {
+    srcChainId: number;
+    srcAsset: { assetId: string };
+    destAsset: { assetId: string };
+  };
+};
+
+type CalcQuoteMetadataQuote = Parameters<typeof calcQuoteMetadata>[0];
+
+const toExchangeRate = (
+  assetId: string | undefined,
+  ethUsdSpotPrice: number,
+) => {
+  const price = assetId
+    ? getBridgeMockUsdSpotPrice(assetId, ethUsdSpotPrice)
+    : undefined;
+  if (!price) {
+    return {};
+  }
+  return { exchangeRate: String(price), usdExchangeRate: String(price) };
+};
+
+/**
+ * Derives the Total cost each quote renders in the Select quote dialog,
+ * cheapest first, from the mocked quotes and mocked prices/gas estimates.
+ * Unpriced tokens have no fiat cost, so the dialog falls back to the native
+ * network fee.
+ *
+ * @param quotes - Mocked quote responses served for the route under test.
+ * @param options - Overrides for fixtures that use a different native price.
+ * @param options.ethUsdSpotPrice - Native ETH price used by the fixtures.
+ * @returns Total cost strings as rendered, e.g. `$38.95` or `0.0143 ETH`.
+ */
+export function getExpectedQuoteTotalCosts(
+  quotes: unknown[],
+  {
+    ethUsdSpotPrice = BRIDGE_ETH_USD_SPOT_PRICE,
+  }: { ethUsdSpotPrice?: number } = {},
+): string[] {
+  const costs = quotes.map((quote) => {
+    const { quote: quoteData } = quote as MockedQuote;
+    const nativeAsset = getNativeAssetForChainId(quoteData.srcChainId);
+
+    const metadata = calcQuoteMetadata(quote as CalcQuoteMetadataQuote, {
+      bridgeFeesPerGas: MOCK_BRIDGE_FEES_PER_GAS,
+      srcTokenExchangeRate: toExchangeRate(
+        quoteData.srcAsset.assetId,
+        ethUsdSpotPrice,
+      ),
+      destTokenExchangeRate: toExchangeRate(
+        quoteData.destAsset.assetId,
+        ethUsdSpotPrice,
+      ),
+      nativeExchangeRate: toExchangeRate(nativeAsset.assetId, ethUsdSpotPrice),
+    });
+
+    const costInCurrency = metadata.cost?.valueInCurrency;
+    if (costInCurrency) {
+      return {
+        amount: new BigNumber(costInCurrency),
+        text: currencyFormatter.format(Number(costInCurrency)),
+      };
+    }
+
+    const networkFee = new BigNumber(metadata.totalNetworkFee?.amount ?? '0');
+    return {
+      amount: networkFee,
+      text: [formatAmount(LOCALE, networkFee), nativeAsset.symbol].join(' '),
+    };
+  });
+
+  return costs
+    .sort((a, b) => a.amount.comparedTo(b.amount) ?? 0)
+    .map(({ text }) => text);
 }

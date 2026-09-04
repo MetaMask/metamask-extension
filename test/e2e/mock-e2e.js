@@ -223,6 +223,37 @@ const TRON_JSONRPC_URL_RE = new RegExp(
   'u',
 );
 
+// EIP-1559 gas estimates served for every chain. Tests that predict on-chain
+// costs (e.g. bridge quote fees) derive them from these values, so keep them in
+// sync rather than duplicating the numbers.
+const MOCK_SUGGESTED_GAS_FEES = {
+  low: {
+    suggestedMaxPriorityFeePerGas: '1',
+    suggestedMaxFeePerGas: '20.44436136',
+    minWaitTimeEstimate: 15000,
+    maxWaitTimeEstimate: 30000,
+  },
+  medium: {
+    suggestedMaxPriorityFeePerGas: '1.5',
+    suggestedMaxFeePerGas: '25.80554517',
+    minWaitTimeEstimate: 15000,
+    maxWaitTimeEstimate: 45000,
+  },
+  high: {
+    suggestedMaxPriorityFeePerGas: '2',
+    suggestedMaxFeePerGas: '27.277766977',
+    minWaitTimeEstimate: 15000,
+    maxWaitTimeEstimate: 60000,
+  },
+  estimatedBaseFee: '19.444436136',
+  networkCongestion: 0.14685,
+  latestPriorityFeeRange: ['0.378818859', '6.555563864'],
+  historicalPriorityFeeRange: ['0.1', '248.262969261'],
+  historicalBaseFeeRange: ['14.146999781', '28.825256275'],
+  priorityFeeTrend: 'down',
+  baseFeeTrend: 'up',
+};
+
 // Zero-balance TronGrid account, mirroring the shape produced by
 // `createTronGridAccountResponse` in `test/e2e/seeder/tron/assets.ts`, which
 // the snap's response validation is known to accept.
@@ -774,33 +805,7 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: {
-          low: {
-            suggestedMaxPriorityFeePerGas: '1',
-            suggestedMaxFeePerGas: '20.44436136',
-            minWaitTimeEstimate: 15000,
-            maxWaitTimeEstimate: 30000,
-          },
-          medium: {
-            suggestedMaxPriorityFeePerGas: '1.5',
-            suggestedMaxFeePerGas: '25.80554517',
-            minWaitTimeEstimate: 15000,
-            maxWaitTimeEstimate: 45000,
-          },
-          high: {
-            suggestedMaxPriorityFeePerGas: '2',
-            suggestedMaxFeePerGas: '27.277766977',
-            minWaitTimeEstimate: 15000,
-            maxWaitTimeEstimate: 60000,
-          },
-          estimatedBaseFee: '19.444436136',
-          networkCongestion: 0.14685,
-          latestPriorityFeeRange: ['0.378818859', '6.555563864'],
-          historicalPriorityFeeRange: ['0.1', '248.262969261'],
-          historicalBaseFeeRange: ['14.146999781', '28.825256275'],
-          priorityFeeTrend: 'down',
-          baseFeeTrend: 'up',
-        },
+        json: MOCK_SUGGESTED_GAS_FEES,
       };
     });
 
@@ -2676,4 +2681,4 @@ async function mockTokenNameProvider(server) {
   }
 }
 
-module.exports = { setupMocking, emptyHtmlPage };
+module.exports = { setupMocking, emptyHtmlPage, MOCK_SUGGESTED_GAS_FEES };
