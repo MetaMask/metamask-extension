@@ -604,6 +604,18 @@ class HomePage {
     await this.driver.clickElement(this.tokensTab);
   }
 
+  private async isSelectedNetworkAvailable(): Promise<boolean> {
+    const uiState = await getCleanAppState(this.driver);
+    if (!uiState?.metamask) {
+      return false;
+    }
+    const { networksMetadata, selectedNetworkClientId } = uiState.metamask;
+    if (!networksMetadata || !selectedNetworkClientId) {
+      return false;
+    }
+    return networksMetadata[selectedNetworkClientId]?.status === 'available';
+  }
+
   async openPortfolioPage(): Promise<void> {
     console.log(`Open portfolio page on homepage`);
     await this.driver.clickElement(this.portfolioLink);
@@ -706,18 +718,9 @@ class HomePage {
     console.log('Waiting for selected network status to be available in Redux');
     await this.driver.waitUntil(
       async () => {
-        const uiState = await getCleanAppState(this.driver);
-        if (!uiState?.metamask) {
-          return false;
-        }
-        const { networksMetadata, selectedNetworkClientId } = uiState.metamask;
-        if (!networksMetadata || !selectedNetworkClientId) {
-          return false;
-        }
-        const metadata = networksMetadata[selectedNetworkClientId];
-        return metadata?.status === 'available';
+        return await this.isSelectedNetworkAvailable();
       },
-      { timeout: 15000, interval: 500, stableFor: 5000 },
+      { timeout: 30000, interval: 2000, stableFor: 2000 },
     );
   }
 

@@ -26,6 +26,67 @@ const {
 const { PERPS_WS_PORT } = require('./websocket/perps-mocks');
 
 const { ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
+
+const LOCAL_ANVIL_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
+const LOCAL_ANVIL_PORTS = new Set(['8545', '8546', '7777']);
+
+/**
+ * Whether this request is JSON-RPC to a local Anvil node.
+ *
+ * @param {string|undefined} host - Request Host header.
+ * @param {string|undefined} url - Absolute request URL.
+ * @returns {boolean}
+ */
+function isLocalAnvilRpc(host, url) {
+  const endpoints = [];
+
+  if (host) {
+    endpoints.push(parseHostHeader(host));
+  }
+  if (url) {
+    try {
+      const parsed = new URL(url);
+      endpoints.push({ hostname: parsed.hostname, port: parsed.port });
+    } catch {
+      // ignore invalid URLs
+    }
+  }
+
+  return endpoints.some(
+    (endpoint) =>
+      endpoint &&
+      LOCAL_ANVIL_HOSTNAMES.has(stripIpv6Brackets(endpoint.hostname)) &&
+      LOCAL_ANVIL_PORTS.has(endpoint.port),
+  );
+}
+
+/**
+ * @param {string} hostname
+ * @returns {string}
+ */
+function stripIpv6Brackets(hostname) {
+  return hostname.replace(/^\[|\]$/gu, '');
+}
+
+/**
+ * @param {string} host
+ * @returns {{ hostname: string, port: string|undefined }}
+ */
+function parseHostHeader(host) {
+  const ipv6WithPort = host.match(/^\[([^\]]+)\]:(\d+)$/u);
+  if (ipv6WithPort) {
+    return { hostname: ipv6WithPort[1], port: ipv6WithPort[2] };
+  }
+  const lastColon = host.lastIndexOf(':');
+  if (lastColon > 0 && host.indexOf(':') === lastColon) {
+    return {
+      hostname: host.slice(0, lastColon),
+      port: host.slice(lastColon + 1),
+    };
+  }
+  return { hostname: host, port: undefined };
+}
+
 const {
   getProductionRemoteFlagApiResponse,
 } = require('./feature-flags/feature-flag-registry');
@@ -486,6 +547,9 @@ async function setupMocking(
     .asPriority(RulePriority.FALLBACK)
     .thenPassThrough({
       beforeRequest: ({ headers: { host }, url }) => {
+        if (isLocalAnvilRpc(host, url)) {
+          return {};
+        }
         if (!host || !url) {
           return {
             response: {
@@ -2676,4 +2740,4 @@ async function mockTokenNameProvider(server) {
   }
 }
 
-module.exports = { setupMocking, emptyHtmlPage };
+module.exports = { setupMocking, emptyHtmlPage, isLocalAnvilRpc };

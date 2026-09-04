@@ -1,6 +1,6 @@
 /* global describe, expect, it -- Globals defined by Jest */
 
-import { setupMocking } from '../mock-e2e';
+import { setupMocking, isLocalAnvilRpc } from '../mock-e2e';
 
 const MOCK_INFURA_PROJECT_ID = '0123456789abcdef0123456789abcdef';
 const BITCOIN_SCRIPTHASH = 'a'.repeat(64);
@@ -111,7 +111,48 @@ function findRule(server, kind, predicate) {
   );
 }
 
+describe('isLocalAnvilRpc', () => {
+  it('matches Anvil host headers and URLs', () => {
+    expect(isLocalAnvilRpc('localhost:8545', undefined)).toBe(true);
+    expect(isLocalAnvilRpc('127.0.0.1:8546', undefined)).toBe(true);
+    expect(isLocalAnvilRpc('[::1]:8545', undefined)).toBe(true);
+    expect(isLocalAnvilRpc('localhost', 'http://localhost:8545/')).toBe(true);
+    expect(isLocalAnvilRpc(undefined, 'http://localhost:7777/')).toBe(true);
+    expect(isLocalAnvilRpc('localhost', undefined)).toBe(false);
+    expect(
+      isLocalAnvilRpc('mainnet.infura.io', 'https://mainnet.infura.io/v3/x'),
+    ).toBe(false);
+    expect(isLocalAnvilRpc('localhost:8080', 'http://localhost:8080/')).toBe(
+      false,
+    );
+  });
+});
+
 describe('setupMocking', () => {
+  it('passes Anvil RPC through the catch-all instead of an empty 200', async () => {
+    const server = createMockServerStub();
+    await setupMocking(server, async () => [], { chainId: '0x1' });
+
+    const catchAll = server.rules.find(
+      (rule) =>
+        rule.kind === 'forAnyRequest' && rule.passThrough?.beforeRequest,
+    );
+    expect(catchAll).toBeDefined();
+
+    expect(
+      catchAll.passThrough.beforeRequest({
+        headers: { host: 'localhost:8545' },
+        url: 'http://localhost:8545/',
+      }),
+    ).toEqual({});
+    expect(
+      catchAll.passThrough.beforeRequest({
+        headers: { host: 'example.com' },
+        url: 'https://example.com/',
+      }),
+    ).toEqual({ response: { statusCode: 200 } });
+  });
+
   it('registers Bitcoin discovery mocks that return valid empty-scan responses', async () => {
     const server = createMockServerStub();
 
