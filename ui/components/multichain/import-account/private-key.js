@@ -4,7 +4,7 @@ import {
   FormTextField,
   TextFieldSize,
   TextFieldType,
-} from '../../component-library';
+} from '@metamask/design-system-react';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ShowHideToggle from '../../ui/show-hide-toggle';
@@ -37,27 +37,25 @@ export default function PrivateKeyImportView({
         size={TextFieldSize.Lg}
         autoFocus
         helpText={importErrorMessage}
-        error={Boolean(importErrorMessage)}
+        isError={Boolean(importErrorMessage)}
         label={t('pastePrivateKey')}
         value={privateKey}
         onChange={(event) => setPrivateKey(event.target.value)}
         inputProps={{
           onKeyPress: handleKeyPress,
         }}
-        marginBottom={4}
+        className="mb-4"
         type={showPrivateKey ? TextFieldType.Text : TextFieldType.Password}
-        textFieldProps={{
-          endAccessory: (
-            <ShowHideToggle
-              shown={showPrivateKey}
-              id="show-hide-private-key"
-              title={t('privateKeyShow')}
-              ariaLabelShown={t('privateKeyShown')}
-              ariaLabelHidden={t('privateKeyHidden')}
-              onChange={() => setShowPrivateKey(!showPrivateKey)}
-            />
-          ),
-        }}
+        endAccessory={
+          <ShowHideToggle
+            shown={showPrivateKey}
+            id="show-hide-private-key"
+            title={t('privateKeyShow')}
+            ariaLabelShown={t('privateKeyShown')}
+            ariaLabelHidden={t('privateKeyHidden')}
+            onChange={() => setShowPrivateKey(!showPrivateKey)}
+          />
+        }
       />
 
       <BottomButtons

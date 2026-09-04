@@ -414,6 +414,7 @@
       "error: Unexpected key \"internalAccounts\" found in": 1
     },
     "ui/components/multichain/networks-form/networks-form.test.js": {
+      "React: DOM nesting violations": 1,
       "Reselect: Input stability warnings": 1
     },
     "ui/components/multichain/notifications-settings-box/notifications-settings-box.test.tsx": {
@@ -826,7 +827,8 @@
       "React: Act warnings (component updates not wrapped)": 3
     },
     "ui/pages/networks/networks-page.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 112
+      "React: Act warnings (component updates not wrapped)": 112,
+      "React: DOM nesting violations": 1
     },
     "ui/pages/notifications-settings/notifications-settings-allow-notifications.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
