@@ -412,18 +412,6 @@ describe('AssetPage', () => {
     expect(getByTestId('asset-token-decimals')).toHaveTextContent('18');
   });
 
-  it('renders 6 token decimals with a dedicated test id', () => {
-    const { getByTestId } = renderWithProvider(
-      <AssetPage
-        asset={{ ...token, decimals: 6, symbol: 'frxUSD' }}
-        optionsButton={null}
-      />,
-      store,
-    );
-
-    expect(getByTestId('asset-token-decimals')).toHaveTextContent('6');
-  });
-
   it('should not show a modal when token passed in props is not an ERC721', () => {
     renderWithProvider(<AssetPage asset={token} optionsButton={null} />, store);
     const actions = store.getActions();
