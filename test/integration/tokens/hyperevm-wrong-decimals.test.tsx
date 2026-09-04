@@ -85,6 +85,9 @@ function getHyperEvmFrxUsdState() {
     ...mockMetaMaskState,
     consentDecisionMade: true,
     optedIn: true,
+    // Prevent the BIP-44 intro modal from mounting; its Lottie XHR to a
+    // localhost asset is what logged AggregateError in jsdom.
+    hasShownMultichainAccountsIntroModal: true,
     defaultHomeActiveTabName: AccountOverviewTabKey.Tokens,
     selectedNetworkClientId: HYPEREVM_CLIENT_ID,
     selectedMultichainNetworkChainId: HYPEREVM_CAIP_CHAIN_ID,
@@ -178,6 +181,19 @@ function mockTokenDisplayHttp() {
     .query(true)
     .reply(200, {});
   nock('https://static.cx.metamask.io').persist().get(/.*/u).reply(200, '');
+  // Custom HyperEVM is not in CHAIN_ID_TO_CURRENCY_SYMBOL_MAP, so
+  // useIsOriginalNativeTokenSymbol / useCurrencyRatePolling fetch this list.
+  nock('https://chainid.network')
+    .persist()
+    .get('/chains.json')
+    .reply(200, [
+      {
+        chainId: HYPEREVM_CHAIN_DECIMAL,
+        name: HYPEREVM_DISPLAY_NAME,
+        nativeCurrency: { symbol: 'HYPE' },
+        rpc: ['http://localhost:8545'],
+      },
+    ]);
 }
 
 describe('HyperEVM frxUSD decimal formatting', () => {
