@@ -210,7 +210,7 @@ jobs:
             const raw = process.env.STATUS_STATE;
             const state = raw === 'cancelled' ? 'failure' : raw;
             const description = raw === 'cancelled'
-              ? 'CI run was cancelled (queue reshuffle or manual cancellation)'
+              ? 'One or more CI jobs were cancelled (job timeout, queue reshuffle, or manual cancellation) — open the run to see which'
               : state === 'success'
                 ? 'All CI jobs completed successfully'
                 : 'One or more CI jobs failed';
