@@ -39,6 +39,9 @@ on:
       needs-e2e:
         description: Whether E2E tests are needed
         value: ${{ jobs.detect-changes.outputs.needs-e2e }}
+      needs-beta-flask-builds:
+        description: Whether beta/flask production builds should run (skipped on feature pull_request)
+        value: ${{ jobs.detect-changes.outputs.needs-beta-flask-builds }}
 
 env:
   # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
@@ -76,6 +79,7 @@ jobs:
       needs-releases: ${{ steps.set-needs-releases.outputs.needs-releases || 'false' }}
       needs-benchmarks: ${{ steps.set-needs-benchmarks.outputs.needs-benchmarks || 'false' }}
       needs-e2e: ${{ steps.set-needs-e2e.outputs.needs-e2e || 'false' }}
+      needs-beta-flask-builds: ${{ steps.set-needs-beta-flask-builds.outputs.needs-beta-flask-builds || 'false' }}
     steps:
       - name: Check pull request merge queue status
         id: check-skip-merge-queue
@@ -190,9 +194,12 @@ jobs:
               'development/webpack/test/',
             ];
             // Files inside excluded dirs that DO affect builds.
-            // run-build.yml is kept because it injects env vars and secrets.
+            // run-build.yml is kept for publish/nightly; grouped main CI builds
+            // are defined in ci-run-build-group.sh and run-build-group.yml.
             const keptFiles = new Set([
               '.github/workflows/run-build.yml',
+              '.github/workflows/run-build-group.yml',
+              '.github/scripts/ci-run-build-group.sh',
             ]);
             // Directories inside excluded dirs that DO affect builds.
             // .yarn/patches/ contains source patches applied to dependencies.
@@ -234,20 +241,17 @@ jobs:
               return;
             }
 
-            // main.yml is in the denylist (most changes are CI plumbing), but
-            // the build-command values it passes to run-build.yml DO affect
-            // output. Extract and sort them so only command changes bust the hash.
-            const { stdout: mainYml } = await exec.getExecOutput(
-              'git', ['show', `HEAD:.github/workflows/main.yml`],
+            // Build commands for main CI live in ci-run-build-group.sh (included
+            // via keptFiles blob hashes). Include the script body so command edits
+            // bust the hash even if the path is unchanged.
+            const { stdout: buildGroupScript } = await exec.getExecOutput(
+              'git', ['show', `HEAD:.github/scripts/ci-run-build-group.sh`],
               { silent: true },
             );
-            const buildCommands = (mainYml.match(/build-command: .+/g) ?? [])
-              .sort()
-              .join('\n') + '\n';
 
             const { stdout: hash } = await exec.getExecOutput(
               'git', ['hash-object', '--stdin'],
-              { silent: true, input: Buffer.from(kept + buildCommands) },
+              { silent: true, input: Buffer.from(kept + buildGroupScript) },
             );
             const buildHash = hash.trim();
             core.setOutput('build-hash', buildHash);
@@ -286,18 +290,44 @@ jobs:
             }
             core.info('-> no build overrides');
 
-      # Extract the list of expected build artifact names from main.yml.
-      # This avoids a hardcoded list that could drift out of sync.
+      - name: Compute needs-beta-flask-builds flag
+        id: set-needs-beta-flask-builds
+        run: |
+          # Prod beta/flask builds are for QA download links (publish-prerelease) and
+          # release validation — not for E2E (which uses build-test-flask-* only).
+          # Skip on feature pull_requests; keep for release/* RC PRs and non-PR events.
+          if [[ "$EVENT_NAME" == "pull_request" && "$BRANCH" != release/* ]]; then
+            echo "needs-beta-flask-builds=false" >> "$GITHUB_OUTPUT"
+            echo "-> needs-beta-flask-builds=false (feature pull_request — MV3/MV2 only)"
+          else
+            echo "needs-beta-flask-builds=true" >> "$GITHUB_OUTPUT"
+            echo "-> needs-beta-flask-builds=true (release/* PR, main/stable push, merge queue, or schedule)"
+          fi
+
+      # Artifact names are defined in ci-run-build-group.sh. On feature pull_request,
+      # beta/flask production builds are skipped, so reuse only needs MV3/MV2 artifacts.
       - name: Extract required build artifact names
         id: extract-build-names
         if: ${{ steps.compute-build-hash.outputs.build-hash }}
+        env:
+          NEEDS_BETA_FLASK: ${{ steps.set-needs-beta-flask-builds.outputs.needs-beta-flask-builds }}
         run: |
-          NAMES=$(grep -oP '(?<=build-name: )\S+' .github/workflows/main.yml | jq -Rsc 'split("\n") | map(select(length > 0))')
+          NAMES=$(grep -oP 'run_build \K\S+' .github/scripts/ci-run-build-group.sh \
+            | jq -Rsc 'split("\n") | map(select(length > 0)) | unique')
+          if [[ "$NEEDS_BETA_FLASK" != "true" ]]; then
+            NAMES=$(echo "$NAMES" | jq -c 'map(select(. as $n |
+              ["build-beta-webpack","build-beta-mv2-webpack","build-flask-webpack","build-flask-mv2-webpack"] |
+              index($n) | not))')
+          fi
           if [[ "$NAMES" == "[]" || -z "$NAMES" ]]; then
-            echo "::error::No build-name entries found in main.yml — cannot verify artifact completeness"
+            echo "::error::No build artifact names found in ci-run-build-group.sh"
             exit 1
           fi
-          echo "names=$NAMES" >> "$GITHUB_OUTPUT"
+          {
+            echo 'names<<EOF'
+            echo "$NAMES"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
           echo "-> Required build artifacts: $NAMES"
 
       # Find a prior run whose builds match the current source hash.

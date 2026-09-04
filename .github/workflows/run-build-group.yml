@@ -1,0 +1,253 @@
+# Runs multiple webpack builds sequentially on one runner to reduce checkout/tsc overhead.
+# Artifact names are unchanged so E2E, publish, and bundle-size jobs keep working.
+
+name: Run build group
+
+on:
+  workflow_call:
+    inputs:
+      group:
+        required: true
+        type: string
+        description: Build group to run (mv3, mv2, or beta-flask)
+      group-name:
+        required: true
+        type: string
+        description: Display name for the job
+      builds-from-run:
+        required: true
+        type: string
+        description: The run ID to get builds from
+
+jobs:
+  run-build-group:
+    name: ${{ inputs.group-name }}
+    if: ${{ inputs.builds-from-run == github.run_id }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      SEGMENT_WRITE_KEY: ${{ secrets.SEGMENT_WRITE_KEY }}
+      # Environment variables used in production builds.
+      # Keep synchronized with .github/scripts/ci-run-build-group.sh and bundle.sh.
+      CONTENTFUL_ACCESS_SPACE_ID: ${{ secrets.CONTENTFUL_ACCESS_SPACE_ID }}
+      CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+      ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+      FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+      FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+      FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+      FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
+      FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+      INFURA_BETA_PROJECT_ID: ${{ secrets.INFURA_BETA_PROJECT_ID }}
+      INFURA_EXPERIMENTAL_PROJECT_ID: ${{ secrets.INFURA_EXPERIMENTAL_PROJECT_ID }}
+      INFURA_FLASK_PROJECT_ID: ${{ secrets.INFURA_FLASK_PROJECT_ID }}
+      INFURA_PROD_PROJECT_ID: ${{ secrets.INFURA_PROD_PROJECT_ID }}
+      QUICKNODE_ARBITRUM_URL: ${{ secrets.QUICKNODE_ARBITRUM_URL }}
+      QUICKNODE_AVALANCHE_URL: ${{ secrets.QUICKNODE_AVALANCHE_URL }}
+      QUICKNODE_BASE_URL: ${{ secrets.QUICKNODE_BASE_URL }}
+      QUICKNODE_LINEA_MAINNET_URL: ${{ secrets.QUICKNODE_LINEA_MAINNET_URL }}
+      QUICKNODE_MAINNET_URL: ${{ secrets.QUICKNODE_MAINNET_URL }}
+      QUICKNODE_OPTIMISM_URL: ${{ secrets.QUICKNODE_OPTIMISM_URL }}
+      QUICKNODE_POLYGON_URL: ${{ secrets.QUICKNODE_POLYGON_URL }}
+      QUICKNODE_SEI_URL: ${{ secrets.QUICKNODE_SEI_URL }}
+      QUICKNODE_MONAD_URL: ${{ secrets.QUICKNODE_MONAD_URL }}
+      QUICKNODE_HYPEREVM_URL: ${{ secrets.QUICKNODE_HYPEREVM_URL }}
+      QUICKNODE_ARC_URL: ${{ secrets.QUICKNODE_ARC_URL }}
+      QUICKNODE_ROBINHOOD_URL: ${{ secrets.QUICKNODE_ROBINHOOD_URL }}
+      QUICKNODE_BSC_URL: ${{ secrets.QUICKNODE_BSC_URL }}
+      QUICKNODE_ZKSYNC_URL: ${{ secrets.QUICKNODE_ZKSYNC_URL }}
+      QUICKNODE_MEGAETH_URL: ${{ secrets.QUICKNODE_MEGAETH_URL }}
+      SEGMENT_BETA_WRITE_KEY: ${{ secrets.SEGMENT_BETA_WRITE_KEY }}
+      SEGMENT_EXPERIMENTAL_WRITE_KEY: ${{ secrets.SEGMENT_EXPERIMENTAL_WRITE_KEY }}
+      SEGMENT_FLASK_WRITE_KEY: ${{ secrets.SEGMENT_FLASK_WRITE_KEY }}
+      SEGMENT_PROD_WRITE_KEY: ${{ secrets.SEGMENT_PROD_WRITE_KEY }}
+      ANALYTICS_DATA_DELETION_SOURCE_ID: ${{ secrets.ANALYTICS_DATA_DELETION_SOURCE_ID }}
+      ANALYTICS_DATA_DELETION_ENDPOINT: ${{ secrets.ANALYTICS_DATA_DELETION_ENDPOINT }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      SENTRY_DSN_DEV: ${{ secrets.SENTRY_DSN_DEV }}
+      SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
+      TZ: 'UTC'
+      VAPID_KEY: ${{ secrets.VAPID_KEY }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
+        with:
+          is-high-risk-environment: ${{ github.ref_name == 'main' || github.ref_name == 'stable' || startsWith(github.ref_name, 'release/') }}
+          skip-allow-scripts: true
+
+      - name: Run tsc
+        run: yarn webpack:tsc
+
+      - name: Run build group (${{ inputs.group }})
+        run: bash .github/scripts/ci-run-build-group.sh '${{ inputs.group }}'
+
+      - name: Upload bundle analyzer report to S3
+        if: ${{ inputs.group == 'mv3' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/build-dist-webpack/bundle-analyzer/report.html
+          path: ci-build-artifacts/build-dist-webpack/bundle-analyzer/report.html
+
+      - name: Upload artifact 'build-dist-webpack'
+        if: inputs.group == 'mv3'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: build-dist-webpack
+          path: ci-build-artifacts/build-dist-webpack
+
+      - name: Upload artifact 'build-test-webpack'
+        if: inputs.group == 'mv3'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: build-test-webpack
+          path: ci-build-artifacts/build-test-webpack
+
+      - name: Upload artifact 'build-test-flask-webpack'
+        if: inputs.group == 'mv3'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: build-test-flask-webpack
+          path: ci-build-artifacts/build-test-flask-webpack
+
+      - name: Upload artifact 'build-dist-mv2-webpack'
+        if: inputs.group == 'mv2'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: build-dist-mv2-webpack
+          path: ci-build-artifacts/build-dist-mv2-webpack
+
+      - name: Upload artifact 'build-test-mv2-webpack'
+        if: inputs.group == 'mv2'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: build-test-mv2-webpack
+          path: ci-build-artifacts/build-test-mv2-webpack
+
+      - name: Upload artifact 'build-test-flask-mv2-webpack'
+        if: inputs.group == 'mv2'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: build-test-flask-mv2-webpack
+          path: ci-build-artifacts/build-test-flask-mv2-webpack
+
+      - name: Upload artifact 'build-beta-webpack'
+        if: inputs.group == 'beta-flask'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: build-beta-webpack
+          path: ci-build-artifacts/build-beta-webpack
+
+      - name: Upload artifact 'build-beta-mv2-webpack'
+        if: inputs.group == 'beta-flask'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: build-beta-mv2-webpack
+          path: ci-build-artifacts/build-beta-mv2-webpack
+
+      - name: Upload artifact 'build-flask-webpack'
+        if: inputs.group == 'beta-flask'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: build-flask-webpack
+          path: ci-build-artifacts/build-flask-webpack
+
+      - name: Upload artifact 'build-flask-mv2-webpack'
+        if: inputs.group == 'beta-flask'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: build-flask-mv2-webpack
+          path: ci-build-artifacts/build-flask-mv2-webpack
+
+      - name: Upload 'build-dist-webpack' builds to S3
+        if: ${{ inputs.group == 'mv3' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/build-dist-webpack/builds
+          path: ci-build-artifacts/build-dist-webpack/builds
+
+      - name: Upload 'build-test-webpack' builds to S3
+        if: ${{ inputs.group == 'mv3' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/build-test-webpack/builds
+          path: ci-build-artifacts/build-test-webpack/builds
+
+      - name: Upload 'build-test-flask-webpack' builds to S3
+        if: ${{ inputs.group == 'mv3' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/build-test-flask-webpack/builds
+          path: ci-build-artifacts/build-test-flask-webpack/builds
+
+      - name: Upload 'build-dist-mv2-webpack' builds to S3
+        if: ${{ inputs.group == 'mv2' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/build-dist-mv2-webpack/builds
+          path: ci-build-artifacts/build-dist-mv2-webpack/builds
+
+      - name: Upload 'build-test-mv2-webpack' builds to S3
+        if: ${{ inputs.group == 'mv2' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/build-test-mv2-webpack/builds
+          path: ci-build-artifacts/build-test-mv2-webpack/builds
+
+      - name: Upload 'build-test-flask-mv2-webpack' builds to S3
+        if: ${{ inputs.group == 'mv2' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/build-test-flask-mv2-webpack/builds
+          path: ci-build-artifacts/build-test-flask-mv2-webpack/builds
+
+      - name: Upload 'build-beta-webpack' builds to S3
+        if: ${{ inputs.group == 'beta-flask' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/build-beta-webpack/builds
+          path: ci-build-artifacts/build-beta-webpack/builds
+
+      - name: Upload 'build-beta-mv2-webpack' builds to S3
+        if: ${{ inputs.group == 'beta-flask' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/build-beta-mv2-webpack/builds
+          path: ci-build-artifacts/build-beta-mv2-webpack/builds
+
+      - name: Upload 'build-flask-webpack' builds to S3
+        if: ${{ inputs.group == 'beta-flask' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/build-flask-webpack/builds
+          path: ci-build-artifacts/build-flask-webpack/builds
+
+      - name: Upload 'build-flask-mv2-webpack' builds to S3
+        if: ${{ inputs.group == 'beta-flask' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/build-flask-mv2-webpack/builds
+          path: ci-build-artifacts/build-flask-mv2-webpack/builds

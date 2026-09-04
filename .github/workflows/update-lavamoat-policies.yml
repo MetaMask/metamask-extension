@@ -87,7 +87,7 @@ jobs:
           echo "Found run ${RUN_ID}, checking validation job status..."
 
           JOBS_JSON=$(gh api "/repos/${REPO}/actions/runs/${RUN_ID}/jobs" --paginate \
-            --jq '[.jobs[] | select(.name | startswith("validate-lavamoat-policies"))]')
+            --jq '[.jobs[] | select(.name | test("validate-lavamoat-policies|lavamoat-validate-policies|Validate LavaMoat policies"))]')
 
           JOB_COUNT=$(echo "$JOBS_JSON" | jq 'length')
 
