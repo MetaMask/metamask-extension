@@ -267,6 +267,7 @@ import {
 
 // Notification controllers
 import {
+  getSenderOriginPath,
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
 } from './lib/ppom/ppom-util';
@@ -1084,7 +1085,7 @@ export default class MetamaskController extends EventEmitter {
                 validateRequestWithPPOM({
                   chainId,
                   messenger: this.controllerMessenger,
-                  request,
+                  request: { ...request, originPath: req.originPath },
                   securityAlertId,
                   updateSecurityAlertResponse:
                     this.updateSecurityAlertResponse.bind(this),
@@ -5275,7 +5276,12 @@ export default class MetamaskController extends EventEmitter {
     const engine = new JsonRpcEngine();
 
     // Append origin to each request
-    engine.push(createOriginMiddleware({ origin }));
+    engine.push(
+      createOriginMiddleware({
+        origin,
+        originPath: getSenderOriginPath(sender?.url),
+      }),
+    );
 
     // Append mainFrameOrigin to each request if present
     if (mainFrameOrigin) {
@@ -5340,7 +5346,9 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController,
         this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
-        this.getSecurityAlertsConfig.bind(this),
+        {
+          getSecurityAlertsConfig: this.getSecurityAlertsConfig.bind(this),
+        },
       ),
     );
 
@@ -5711,7 +5719,12 @@ export default class MetamaskController extends EventEmitter {
     const engine = new JsonRpcEngine();
 
     // Append origin to each request
-    engine.push(createOriginMiddleware({ origin }));
+    engine.push(
+      createOriginMiddleware({
+        origin,
+        originPath: getSenderOriginPath(sender?.url),
+      }),
+    );
 
     // Append mainFrameOrigin to each request if present
     if (mainFrameOrigin) {
@@ -5907,7 +5920,9 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController,
         this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
-        this.getSecurityAlertsConfig.bind(this),
+        {
+          getSecurityAlertsConfig: this.getSecurityAlertsConfig.bind(this),
+        },
       ),
     );
 
