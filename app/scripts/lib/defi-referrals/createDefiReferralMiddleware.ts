@@ -14,11 +14,7 @@ import {
   ConnectionFlow,
   type DefiReferralPartnerConfig,
 } from '../../../../shared/constants/defi-referrals';
-
-export type ExtendedJSONRPCRequest = JsonRpcRequest & {
-  origin: string;
-  tabId: number;
-};
+import { isTabAwareJsonRpcRequest } from '../rpc-request-utils';
 
 /** How long to wait for the second request to succeed */
 const WAIT_AFTER_FIRST_REQUEST_MS = SECOND * 10;
@@ -36,15 +32,6 @@ export enum ReferralTriggerType {
 type HandleDefiReferralOptions = {
   activePermittedAddressOverride?: string;
 };
-
-function isExtendedJSONRPCRequest(
-  req: JsonRpcRequest,
-): req is ExtendedJSONRPCRequest {
-  return (
-    Boolean((req as ExtendedJSONRPCRequest).origin) &&
-    Boolean((req as ExtendedJSONRPCRequest).tabId)
-  );
-}
 
 const isWalletRequestPermissions = (method: string): boolean =>
   method === 'wallet_requestPermissions';
@@ -122,7 +109,7 @@ export function createDefiReferralMiddleware(
       // First, call next to process the request
       await next();
 
-      if (!isExtendedJSONRPCRequest(req)) {
+      if (!isTabAwareJsonRpcRequest(req)) {
         return;
       }
 

@@ -32,6 +32,7 @@ import {
   selectProLayoutPreferences,
   selectOrderBookPosition,
   selectOrderBookExpanded,
+  selectChartExpanded,
 } from './perps-controller';
 
 function buildState(overrides: Record<string, unknown> = {}) {
@@ -799,7 +800,7 @@ describe('perps-controller selectors', () => {
         ),
       ).toStrictEqual({
         orderBookExpanded: false,
-        chartExpanded: false,
+        chartExpanded: true,
         orderBookPosition: 'right',
         orderFormPosition: 'right',
         positionsSideFilter: 'all',
@@ -814,7 +815,7 @@ describe('perps-controller selectors', () => {
     it('returns the defaults when nothing is persisted', () => {
       expect(selectProLayoutPreferences(buildState())).toStrictEqual({
         orderBookExpanded: false,
-        chartExpanded: false,
+        chartExpanded: true,
         orderBookPosition: 'left',
         orderFormPosition: 'right',
         positionsSideFilter: 'all',
@@ -871,6 +872,22 @@ describe('perps-controller selectors', () => {
       expect(
         selectOrderBookExpanded(buildState({ proLayoutPreferences: {} })),
       ).toBe(false);
+    });
+  });
+
+  describe('selectChartExpanded', () => {
+    it('returns the persisted open state', () => {
+      expect(
+        selectChartExpanded(
+          buildState({ proLayoutPreferences: { chartExpanded: true } }),
+        ),
+      ).toBe(true);
+    });
+
+    it('uses the controller default when nothing is persisted', () => {
+      expect(selectChartExpanded(buildState())).toBe(
+        selectProLayoutPreferences(buildState()).chartExpanded,
+      );
     });
   });
 });
