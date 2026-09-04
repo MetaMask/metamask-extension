@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { StoryFn, Meta } from '@storybook/react';
+import type { StoryFn, Meta } from '@storybook/react-webpack5';
 import { HeaderSearch } from './header-search';
 import { HeaderSearchVariant } from './header-search.types';
 

@@ -4575,7 +4575,7 @@
         "pageYOffset": true
       },
       "packages": {
-        "@hello-pangea/dnd>css-box-model>tiny-invariant": true
+        "storybook>recast>tiny-invariant": true
       }
     },
     "currency-formatter": {

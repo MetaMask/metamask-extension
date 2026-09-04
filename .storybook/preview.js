@@ -26,11 +26,10 @@ window.metamaskFeatureFlags = {};
 
 export const parameters = {
   backgrounds: {
-    default: 'default',
-    values: [
-      { name: 'default', value: 'var(--color-background-default)' },
-      { name: 'alternative', value: 'var(--color-background-alternative)' },
-    ],
+    options: {
+      default: { name: 'default', value: 'var(--color-background-default)' },
+      alternative: { name: 'alternative', value: 'var(--color-background-alternative)' }
+    }
   },
   options: {
     storySort: {
@@ -203,3 +202,9 @@ const withColorScheme = (Story, context) => {
 };
 
 export const decorators = [metamaskDecorator, withColorScheme];
+
+export const initialGlobals = {
+  backgrounds: {
+    value: 'default'
+  }
+};
