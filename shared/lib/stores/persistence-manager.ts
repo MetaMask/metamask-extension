@@ -82,7 +82,7 @@ type WriteRetryOptions = {
   supersedable: boolean;
 };
 
-export const PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS = 1000;
+export const PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS = 5_000;
 
 const PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS =
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS / 2;
@@ -608,10 +608,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     // write can take its place. This is to prevent piling up multiple writes
     // in the lock queue, which is pointless because we only care about the most
     // recent write. This should rarely happen, as elsewhere we make use of
-    // `debounce` for all `set` requests in order to slow them to once per
-    // 1000ms; however, if the state is very large it *can* take more than the
-    // `debounce`'s `wait` time to write, resulting in a pile up right here.
-    // This prevents that pile up from happening.
+    // `debounce` for all `set` requests in order to slow write frequency;
+    // however, if the state is very large it *can* take more than the
+    // debounce wait time to write, resulting in a pile up right here. This
+    // prevents that pile up from happening.
     this.#currentLockAbortController?.abort();
     this.#currentLockAbortController = abortController;
 
@@ -754,10 +754,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     // write can take its place. This is to prevent piling up multiple writes
     // in the lock queue, which is pointless because we only care about the most
     // recent write. This should rarely happen, as elsewhere we make use of
-    // `debounce` for all `persist` requests in order to slow them to once per
-    // 1000ms; however, if the state is very large it *can* take more than the
-    // `debounce`'s `wait` time to write, resulting in a pile up right here.
-    // This prevents that pile up from happening.
+    // `debounce` for all `persist` requests in order to slow write frequency;
+    // however, if the state is very large it *can* take more than the
+    // debounce wait time to write, resulting in a pile up right here. This
+    // prevents that pile up from happening.
     this.#currentLockAbortController?.abort();
     this.#currentLockAbortController = abortController;
 
