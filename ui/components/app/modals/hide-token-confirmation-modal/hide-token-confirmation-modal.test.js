@@ -205,7 +205,7 @@ describe('Hide Token Confirmation Modal', () => {
       mockRemoveCustomAsset.mockClear();
     });
 
-    it('dispatches removeCustomAsset when the asset is in customAssets', async () => {
+    it('dispatches hideAsset when the asset is in customAssets', async () => {
       const stateWithCustomAsset = {
         ...baseUnifyState,
         metamask: {
@@ -224,12 +224,9 @@ describe('Hide Token Confirmation Modal', () => {
       fireEvent.click(queryByTestId('hide-token-confirmation__hide'));
 
       await waitFor(() => {
-        expect(mockRemoveCustomAsset).toHaveBeenCalledWith(
-          SELECTED_ACCOUNT_ID,
-          ASSET_ID_GOERLI,
-        );
-        expect(mockHideAsset).not.toHaveBeenCalled();
+        expect(mockHideAsset).toHaveBeenCalledWith(ASSET_ID_GOERLI);
       });
+      expect(mockRemoveCustomAsset).not.toHaveBeenCalled();
     });
 
     it('dispatches hideAsset when the asset is not in customAssets', async () => {
@@ -250,8 +247,31 @@ describe('Hide Token Confirmation Modal', () => {
 
       await waitFor(() => {
         expect(mockHideAsset).toHaveBeenCalledWith(ASSET_ID_GOERLI);
-        expect(mockRemoveCustomAsset).not.toHaveBeenCalled();
       });
+      expect(mockRemoveCustomAsset).not.toHaveBeenCalled();
+    });
+
+    it('still ignores the token when hiding the asset fails', async () => {
+      jest.spyOn(console, 'error').mockImplementation(() => undefined);
+      mockHideAsset.mockReturnValueOnce(
+        jest.fn().mockRejectedValue(new Error('boom')),
+      );
+      const store = configureMockStore([thunk])(baseUnifyState);
+      const { queryByTestId } = renderWithProvider(
+        <HideTokenConfirmationModal />,
+        store,
+      );
+
+      fireEvent.click(queryByTestId('hide-token-confirmation__hide'));
+
+      await waitFor(() => {
+        expect(actions.ignoreTokens).toHaveBeenCalledWith({
+          tokensToIgnore: [TOKEN_ADDRESS],
+          dontShowLoadingIndicator: false,
+          networkClientId: 'goerli',
+        });
+      });
+      expect(mockHideModal).toHaveBeenCalled();
     });
   });
 });
