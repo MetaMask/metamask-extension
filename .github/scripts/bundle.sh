@@ -59,16 +59,20 @@ nvm install
 # 4. Enable corepack to install yarn
 corepack enable
 
-# 5. Install dependencies
-yarn
+# 5. Install dependencies (match CI: immutable install, skip allow-scripts)
+export CI=true
+yarn install --immutable
 
 # 6. Compile the webpack launcher (generates development/.webpack/launch.js,
 # which the webpack:lavamoat build script loads)
 yarn webpack:tsc
 
-# 7. Set the epoch to the package.json mtime; this is used to set the mtime of the files in the generated zip.
-SOURCE_DATE_EPOCH="$(node -p "Math.floor(require('node:fs').statSync('package.json').mtimeMs / 1000)")"
-export SOURCE_DATE_EPOCH
+# 7. Set zip mtime epoch when not already provided (e.g. by compare_builds.sh).
+# package.json mtime matches the GitHub source archive used for reviewer rebuilds.
+if [ -z "${SOURCE_DATE_EPOCH:-}" ]; then
+  SOURCE_DATE_EPOCH="$(node -p "Math.floor(require('node:fs').statSync('package.json').mtimeMs / 1000)")"
+  export SOURCE_DATE_EPOCH
+fi
 
 # 8. Run the production build command
 if [ "${1:-}" = "--flask" ]; then
