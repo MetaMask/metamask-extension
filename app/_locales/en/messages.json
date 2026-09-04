@@ -4247,7 +4247,7 @@
     "message": "MetaMask covers the network fee for this transaction. This includes a one-time smart account activation."
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "This specific network requires maintaining a reserve of $1 $2 in your account.",
+    "message": "This network requires keeping at least $1 $2 in your account after the transaction. Smart accounts cannot go below this reserve.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
