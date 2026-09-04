@@ -76,3 +76,19 @@ WithCheckboxes.parameters = {
     },
   },
 };
+
+export const EditMode: Story = {
+  args: {
+    ...defaultArgs,
+    isEditMode: true,
+  },
+};
+
+EditMode.parameters = {
+  docs: {
+    description: {
+      story:
+        'MultichainAccountList in edit mode. Entropy and other non-private-key wallets show visibility icons; imported private-key wallets show delete icons.',
+    },
+  },
+};
