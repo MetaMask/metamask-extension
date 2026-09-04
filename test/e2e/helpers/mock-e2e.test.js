@@ -112,6 +112,46 @@ function findRule(server, kind, predicate) {
 }
 
 describe('setupMocking', () => {
+  it('registers stateful notification Trigger API mocks', async () => {
+    const server = createMockServerStub();
+
+    await setupMocking(server, async () => [], { chainId: '0x1' });
+
+    const queryRule = findRule(
+      server,
+      'forPost',
+      (matcher) =>
+        matcher ===
+        'https://trigger.api.cx.metamask.io/api/v2/notifications/query',
+    );
+    const updateRule = findRule(
+      server,
+      'forPost',
+      (matcher) =>
+        matcher === 'https://trigger.api.cx.metamask.io/api/v2/notifications',
+    );
+    const request = (body) => ({
+      body: {
+        getJson: async () => body,
+      },
+    });
+
+    expect(queryRule).toBeDefined();
+    expect(updateRule).toBeDefined();
+    expect(await queryRule.callback(request([{ address: '0xAbC' }]))).toEqual({
+      statusCode: 200,
+      json: [{ address: '0xabc', enabled: false }],
+    });
+
+    expect(
+      await updateRule.callback(request([{ address: '0xAbC', enabled: true }])),
+    ).toEqual({ statusCode: 204 });
+    expect(await queryRule.callback(request([{ address: '0xAbC' }]))).toEqual({
+      statusCode: 200,
+      json: [{ address: '0xabc', enabled: true }],
+    });
+  });
+
   it('registers Bitcoin discovery mocks that return valid empty-scan responses', async () => {
     const server = createMockServerStub();
 
