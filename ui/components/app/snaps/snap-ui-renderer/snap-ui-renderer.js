@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { memo, useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Container } from '@metamask/snaps-sdk/jsx';
@@ -28,59 +28,17 @@ import {
   muiPickerTheme,
 } from './utils';
 import { COMPONENT_MAPPING } from './components';
-import { PerformanceTracker } from './performance-tracker';
 
-// Renders snap UI with scroll refs passed as props so mapToTemplate receives a
-// real RefObject without crossing a parent useMemo closure (React Compiler safe).
-const SnapUIContent = ({
-  content,
-  onCancel,
-  useFooter,
-  promptLegacyProps,
-  t,
-  backgroundColor,
-  scrollableContainerRef,
-  setScroll,
-}) => {
-  const sections = useMemo(
-    () =>
-      mapToTemplate({
-        map: {},
-        element: content,
-        onCancel,
-        useFooter,
-        promptLegacyProps,
-        t,
-        contentBackgroundColor: backgroundColor,
-        componentMap: COMPONENT_MAPPING,
-        setScroll,
-        scrollableContainerRef,
-      }),
-    [
-      content,
-      onCancel,
-      useFooter,
-      promptLegacyProps,
-      t,
-      backgroundColor,
-      setScroll,
-      scrollableContainerRef,
-    ],
-  );
+// Component for tracking the number of re-renders
+// DO NOT USE IN PRODUCTION
+/* eslint-disable react-hooks/refs -- PERF_DEBUG render counter */
+const PerformanceTracker = () => {
+  const rendersRef = useRef(0);
+  rendersRef.current += 1;
 
-  return <MetaMaskTemplateRenderer sections={sections} />;
+  return <span data-testid="performance" data-renders={rendersRef.current} />;
 };
-
-SnapUIContent.propTypes = {
-  content: PropTypes.object.isRequired,
-  onCancel: PropTypes.func,
-  useFooter: PropTypes.bool,
-  promptLegacyProps: PropTypes.object,
-  t: PropTypes.func.isRequired,
-  backgroundColor: PropTypes.string,
-  scrollableContainerRef: PropTypes.object.isRequired,
-  setScroll: PropTypes.func.isRequired,
-};
+/* eslint-enable react-hooks/refs */
 
 // Component that maps Snaps UI JSON format to MetaMask Template Renderer format
 const SnapUIRendererComponent = ({
@@ -97,16 +55,10 @@ const SnapUIRendererComponent = ({
   contentBackgroundColor,
   PERF_DEBUG,
 }) => {
-  const scrollableContainerRef = useRef(null);
-  const scrollRef = useRef(0);
+  'use no memo';
 
-  const setScroll = useCallback(() => {
-    if (scrollableContainerRef.current) {
-      scrollRef.current = scrollableContainerRef.current.scrollTop;
-    }
-    // ref objects are stable across renders and we read
-    // `.current` when scroll fires, so the callback does not need to be recreated.
-  }, []);
+  const scrollableContainerRef = useRef(null);
+  const scrollRef = useRef(null);
 
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
@@ -119,8 +71,20 @@ const SnapUIRendererComponent = ({
   );
 
   useEffect(() => {
-    scrollableContainerRef.current?.scrollTo?.(0, scrollRef.current);
+    if (scrollableContainerRef.current) {
+      scrollableContainerRef.current.scrollTo?.(0, scrollRef.current);
+    }
   }, [interfaceState?.content]);
+
+  /**
+   * Sets the scroll position to the current scroll position of the scrollable container.
+   * This is used to restore the scroll position when the content changes.
+   */
+  const setScroll = () => {
+    if (scrollableContainerRef.current) {
+      scrollRef.current = scrollableContainerRef.current.scrollTop;
+    }
+  };
 
   const rawContent = interfaceState?.content;
   const content =
@@ -130,13 +94,11 @@ const SnapUIRendererComponent = ({
 
   const promptLegacyProps = useMemo(
     () =>
-      isPrompt
-        ? {
-            inputValue,
-            onInputChange,
-            placeholder,
-          }
-        : undefined,
+      isPrompt && {
+        inputValue,
+        onInputChange,
+        placeholder,
+      },
     [inputValue, onInputChange, placeholder, isPrompt],
   );
 
@@ -144,6 +106,21 @@ const SnapUIRendererComponent = ({
     contentBackgroundColor ??
     mapToExtensionCompatibleColor(content?.props?.backgroundColor) ??
     BackgroundColor.backgroundAlternative;
+
+  const sections =
+    content &&
+    mapToTemplate({
+      map: {},
+      element: content,
+      onCancel,
+      useFooter,
+      promptLegacyProps,
+      t,
+      contentBackgroundColor: backgroundColor,
+      componentMap: COMPONENT_MAPPING,
+      setScroll,
+      scrollableContainerRef,
+    });
 
   const pickerLocaleText = useMemo(
     () => ({
@@ -190,17 +167,8 @@ const SnapUIRendererComponent = ({
               overflowY: 'auto',
             }}
           >
-            <SnapUIContent
-              content={content}
-              onCancel={onCancel}
-              useFooter={useFooter}
-              promptLegacyProps={promptLegacyProps}
-              t={t}
-              backgroundColor={backgroundColor}
-              scrollableContainerRef={scrollableContainerRef}
-              setScroll={setScroll}
-            />
-            {PERF_DEBUG && <PerformanceTracker content={rawContent} />}
+            <MetaMaskTemplateRenderer sections={sections} />
+            {PERF_DEBUG && <PerformanceTracker />}
           </Box>
         </LocalizationProvider>
       </ThemeProvider>

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import classnames from 'clsx';
 import {
   CaipAccountId,
@@ -21,7 +21,6 @@ import {
   Text,
 } from '../../../component-library';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
-import { useSnapUiFieldState } from '../../../../hooks/snaps/useSnapUiFieldState';
 import {
   AlignItems,
   BackgroundColor,
@@ -146,8 +145,12 @@ export const SnapUIAddressInput = ({
   disabled,
   ...props
 }: SnapUIAddressInputProps & FormTextFieldProps<'div'>) => {
-  const { handleInputChange, getValue, focusedInput, setCurrentFocusedInput } =
-    useSnapInterfaceContext();
+  const {
+    handleInputChange,
+    getValue,
+    getFocusedInput,
+    setCurrentFocusedInput,
+  } = useSnapInterfaceContext();
 
   const inputRef = useRef<HTMLDivElement>(null);
   const initialValue = getValue(name, form) as string;
@@ -178,13 +181,7 @@ export const SnapUIAddressInput = ({
     return value;
   };
 
-  const parsedInitialValue = getParsedValue(initialValue);
-  const [value, setValue] = useSnapUiFieldState(
-    initialValue === undefined || initialValue === null
-      ? initialValue
-      : parsedInitialValue,
-    parsedInitialValue,
-  );
+  const [value, setValue] = useState(getParsedValue(initialValue));
 
   const displayName = useDisplayName({
     address: value,
@@ -195,15 +192,21 @@ export const SnapUIAddressInput = ({
     chainId,
   });
 
+  useEffect(() => {
+    if (initialValue !== undefined && initialValue !== null) {
+      setValue(getParsedValue(initialValue));
+    }
+  }, [initialValue]);
+
   /*
    * Focus input if the last focused input was this input
    * This avoids losing the focus when the UI is re-rendered
    */
   useEffect(() => {
-    if (inputRef.current && name === focusedInput) {
+    if (inputRef.current && name === getFocusedInput()) {
       (inputRef.current.querySelector('input') as HTMLInputElement).focus();
     }
-  }, [inputRef]);
+  }, [getFocusedInput, inputRef, name]);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
