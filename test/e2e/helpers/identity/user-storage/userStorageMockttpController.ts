@@ -4,6 +4,7 @@ import {
   USER_STORAGE_GROUPS_FEATURE_KEY,
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
+import { USER_STORAGE_RAMPS_ORDERS_FEATURE } from '@metamask/ramps-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { MOCK_SRP_E2E_IDENTIFIER_BASE_KEY } from '../../../tests/identity/mocks';
@@ -32,6 +33,10 @@ export const pathRegexps = {
   ),
   [USER_STORAGE_GROUPS_FEATURE_KEY]: new RegExp(
     `${baseUrl}/${USER_STORAGE_GROUPS_FEATURE_KEY}`,
+    'u',
+  ),
+  [USER_STORAGE_RAMPS_ORDERS_FEATURE]: new RegExp(
+    `${baseUrl}/${USER_STORAGE_RAMPS_ORDERS_FEATURE}`,
     'u',
   ),
 };
