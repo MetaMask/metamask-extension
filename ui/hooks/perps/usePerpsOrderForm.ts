@@ -17,6 +17,7 @@ import {
 import { mockOrderFormDefaults } from '../../components/app/perps/order-entry/order-entry.mocks';
 import { getDisplaySymbol } from '../../components/app/perps/utils';
 import type {
+  OrderFormDraft,
   OrderFormState,
   OrderMode,
   ExistingPositionData,
@@ -108,6 +109,8 @@ export type UsePerpsOrderFormOptions = {
   orderType?: OrderType;
   /** Initial leverage for new orders (e.g. last used leverage for this market) */
   initialLeverage?: number;
+  /** Unexpired same-market draft used to restore a new order. */
+  initialDraft?: OrderFormDraft;
   /** Market size decimals for controller-backed size formatting */
   sizeDecimals?: number;
   /** Maximum leverage for the asset, used by the local liquidation fallback */
@@ -208,6 +211,7 @@ export type UsePerpsOrderFormReturn = {
  * @param options.markPrice - Oracle mark price for margin calculation (falls back to currentPrice)
  * @param options.feeRate - Dynamic fee rate from usePerpsOrderFees (falls back to static constant)
  * @param options.limitPricePrefill - One-shot limit-price prefill (fresh object per selection)
+ * @param options.initialDraft
  * @returns Form state, handlers, and calculated values
  */
 export function usePerpsOrderForm({
@@ -221,6 +225,7 @@ export function usePerpsOrderForm({
   onSubmit,
   orderType = 'market',
   initialLeverage,
+  initialDraft,
   sizeDecimals,
   szDecimals,
   maxLeverage = 50,
@@ -230,8 +235,9 @@ export function usePerpsOrderForm({
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
   const displayAssetSymbol = getDisplaySymbol(asset);
   const isTestnet = useSelector(selectPerpsIsTestnet);
-  const defaultLeverage = initialLeverage ?? TRADING_DEFAULTS.leverage;
-  const hasUserEditedAmount = useRef(false);
+  const defaultLeverage =
+    initialDraft?.leverage ?? initialLeverage ?? TRADING_DEFAULTS.leverage;
+  const hasUserEditedAmount = useRef(Boolean(initialDraft?.amount));
 
   const computeInitialAmountValue = useCallback(
     (leverage: number): string => {
@@ -266,6 +272,42 @@ export function usePerpsOrderForm({
     [computeInitialAmountValue, defaultLeverage],
   );
 
+  const initialDraftDigest =
+    initialDraft === undefined ? undefined : JSON.stringify(initialDraft);
+
+  const buildNewOrderState = useCallback((): OrderFormState => {
+    const amount = initialDraft?.amount ?? initialAmountValue;
+    const leverage = initialDraft?.leverage ?? defaultLeverage;
+    const takeProfitPrice = initialDraft?.takeProfitPrice ?? '';
+    const stopLossPrice = initialDraft?.stopLossPrice ?? '';
+
+    return {
+      ...mockOrderFormDefaults,
+      asset,
+      direction: initialDirection,
+      type: initialDraft?.type ?? orderType,
+      leverage,
+      ...buildDefaultNewOrderAmountFields(amount, leverage, availableBalance),
+      limitPrice: initialDraft?.limitPrice ?? '',
+      takeProfitPrice,
+      stopLossPrice,
+      autoCloseEnabled: Boolean(takeProfitPrice || stopLossPrice),
+    };
+  }, [
+    asset,
+    initialDirection,
+    initialDraft?.amount,
+    initialDraft?.leverage,
+    initialDraft?.limitPrice,
+    initialDraft?.stopLossPrice,
+    initialDraft?.takeProfitPrice,
+    initialDraft?.type,
+    initialAmountValue,
+    defaultLeverage,
+    orderType,
+    availableBalance,
+  ]);
+
   /**
    * Compute TP/SL and leverage from an existing position for modify mode.
    * Amount is left empty so the user enters the size INCREASE (additional margin
@@ -297,18 +339,7 @@ export function usePerpsOrderForm({
         ...deriveModifyFields(existingPosition),
       };
     }
-    return {
-      ...mockOrderFormDefaults,
-      asset,
-      direction: initialDirection,
-      type: orderType,
-      ...(initialLeverage !== undefined && { leverage: initialLeverage }),
-      ...buildDefaultNewOrderAmountFields(
-        initialAmountValue,
-        defaultLeverage,
-        availableBalance,
-      ),
-    };
+    return buildNewOrderState();
   });
 
   // Update order type when prop changes (from dropdown)
@@ -339,6 +370,7 @@ export function usePerpsOrderForm({
     initialDirection: 'long' | 'short';
     existingPositionDigest: string | undefined;
     initialLeverage: number | undefined;
+    initialDraftDigest: string | undefined;
   } | null>(null);
 
   if (
@@ -347,7 +379,8 @@ export function usePerpsOrderForm({
     prevResetDeps.asset !== asset ||
     prevResetDeps.initialDirection !== initialDirection ||
     prevResetDeps.existingPositionDigest !== existingPositionDigest ||
-    prevResetDeps.initialLeverage !== initialLeverage
+    prevResetDeps.initialLeverage !== initialLeverage ||
+    prevResetDeps.initialDraftDigest !== initialDraftDigest
   ) {
     setPrevResetDeps({
       mode,
@@ -355,9 +388,11 @@ export function usePerpsOrderForm({
       initialDirection,
       existingPositionDigest,
       initialLeverage,
+      initialDraftDigest,
     });
 
-    const resetLeverage = initialLeverage ?? TRADING_DEFAULTS.leverage;
+    const resetLeverage =
+      initialDraft?.leverage ?? initialLeverage ?? TRADING_DEFAULTS.leverage;
     const defaultAmountFields =
       mode === 'new'
         ? buildDefaultNewOrderAmountFields(
@@ -367,7 +402,7 @@ export function usePerpsOrderForm({
           )
         : {};
 
-    hasUserEditedAmount.current = false;
+    hasUserEditedAmount.current = Boolean(initialDraft?.amount);
     if (mode === 'modify' && existingPosition) {
       setFormState({
         ...mockOrderFormDefaults,
@@ -377,14 +412,20 @@ export function usePerpsOrderForm({
         ...deriveModifyFields(existingPosition),
       });
     } else {
-      setFormState({
-        ...mockOrderFormDefaults,
-        asset,
-        direction: initialDirection,
-        type: orderType,
-        ...(initialLeverage !== undefined && { leverage: initialLeverage }),
-        ...defaultAmountFields,
-      });
+      setFormState(
+        initialDraft
+          ? buildNewOrderState()
+          : {
+              ...mockOrderFormDefaults,
+              asset,
+              direction: initialDirection,
+              type: orderType,
+              ...(initialLeverage !== undefined && {
+                leverage: initialLeverage,
+              }),
+              ...defaultAmountFields,
+            },
+      );
     }
   }
 

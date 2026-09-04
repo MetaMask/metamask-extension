@@ -89,7 +89,6 @@ import { buildPerpsChartPriceLines } from '../../components/app/perps/perps-char
 import {
   CandlePeriod,
   TimeDuration,
-  ZOOM_CONFIG,
 } from '../../components/app/perps/constants/chartConfig';
 import {
   getDisplaySymbol,
@@ -132,6 +131,7 @@ import { captureException } from '../../../shared/lib/sentry';
 import {
   type PerpsState,
   selectPerpsIsWatchlistMarket,
+  selectPerpsVisibleCandleCount,
 } from '../../selectors/perps-controller';
 import { setTutorialModalOpen } from '../../ducks/perps';
 import { PerpsTutorialModal } from '../../components/app/perps/perps-tutorial-modal';
@@ -601,6 +601,9 @@ const PerpsMarketDetailPage = () => {
   const [localPeriodOverride, setLocalPeriodOverride] =
     useState<CandlePeriod | null>(null);
   const selectedPeriod = localPeriodOverride ?? resolvedPersistedPeriod;
+  const persistedVisibleCandleCount = useSelector(
+    selectPerpsVisibleCandleCount,
+  );
   const chartRef = useRef<PerpsCandlestickChartRef>(null);
 
   // Live candle data from CandleStreamChannel
@@ -750,17 +753,28 @@ const PerpsMarketDetailPage = () => {
   //
   // 5. MOBILE REFERENCE: See usePerpsLiveCandles hook, CandleStreamChannel,
   // and HyperLiquidClientService.subscribeToCandles() in the mobile app.
-  const handlePeriodChange = useCallback((period: CandlePeriod) => {
-    setLocalPeriodOverride(period);
-    submitRequestToBackground('setPreference', [
-      'perpsSelectedCandlePeriod',
-      period,
-    ]).catch(() => {
-      // Preference save is best-effort; chart still updates via local state.
-    });
-    if (chartRef.current) {
-      chartRef.current.applyZoom(ZOOM_CONFIG.DEFAULT_CANDLES, true);
-    }
+  const handlePeriodChange = useCallback(
+    (period: CandlePeriod) => {
+      setLocalPeriodOverride(period);
+      submitRequestToBackground('setPreference', [
+        'perpsSelectedCandlePeriod',
+        period,
+      ]).catch(() => {
+        // Preference save is best-effort; chart still updates via local state.
+      });
+      if (chartRef.current) {
+        chartRef.current.applyZoom(persistedVisibleCandleCount, true);
+      }
+    },
+    [persistedVisibleCandleCount],
+  );
+
+  const handleVisibleCandleCountChange = useCallback((count: number) => {
+    submitRequestToBackground('perpsSetVisibleCandleCount', [count]).catch(
+      () => {
+        // The chart remains interactive if preference persistence fails.
+      },
+    );
   }, []);
 
   const handleBackClick = useCallback(() => {
@@ -1103,6 +1117,8 @@ const PerpsMarketDetailPage = () => {
         currentPrice={currentPrice}
         priceLines={chartPriceLines}
         onNeedMoreHistory={fetchMoreHistory}
+        initialVisibleCandleCount={persistedVisibleCandleCount}
+        onVisibleCandleCountChange={handleVisibleCandleCountChange}
         // onCrosshairMove={setHoveredCandle}
       />
     );

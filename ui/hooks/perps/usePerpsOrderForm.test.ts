@@ -255,6 +255,60 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.formState.leverage).toBe(7);
     });
 
+    it('restores transient fields from an unexpired order draft', () => {
+      const { result } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            availableBalance: 100,
+            initialDraft: {
+              amount: '25',
+              leverage: 5,
+              type: 'limit',
+              direction: 'long',
+              limitPrice: '44000',
+              takeProfitPrice: '50000',
+              stopLossPrice: '40000',
+            },
+          }),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState).toMatchObject({
+        amount: '25',
+        leverage: 5,
+        type: 'limit',
+        limitPrice: '44000',
+        takeProfitPrice: '50000',
+        stopLossPrice: '40000',
+        autoCloseEnabled: true,
+      });
+    });
+
+    it('preserves a restored amount when the available balance changes', () => {
+      const props = {
+        ...defaultOptions,
+        availableBalance: 10,
+        initialDraft: {
+          amount: '25',
+          leverage: 5,
+          type: 'market' as const,
+          direction: 'long' as const,
+        },
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      props.availableBalance = 100;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.amount).toBe('25');
+    });
+
     it('applies initialLeverage when it changes after initial render (async hydration)', () => {
       const props = {
         ...defaultOptions,

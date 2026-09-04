@@ -128,6 +128,10 @@ type PerpsCandlestickChartProps = {
   onNeedMoreHistory?: () => void;
   /** Callback when crosshair moves over a candle (for OHLCV bar). null = crosshair left chart. */
   onCrosshairMove?: (candle: CandleStick | null) => void;
+  /** Persisted number of candles to show when data is first loaded. */
+  initialVisibleCandleCount?: number;
+  /** Called when user zoom changes the number of visible candles. */
+  onVisibleCandleCountChange?: (candleCount: number) => void;
 };
 
 export type PerpsCandlestickChartRef = {
@@ -166,6 +170,8 @@ const PerpsCandlestickChart = forwardRef<
       onPeriodDataRequest,
       onNeedMoreHistory,
       onCrosshairMove,
+      initialVisibleCandleCount = ZOOM_CONFIG.DEFAULT_CANDLES,
+      onVisibleCandleCountChange,
     },
     ref,
   ) => {
@@ -225,6 +231,10 @@ const PerpsCandlestickChart = forwardRef<
     onNeedMoreHistoryRef.current = onNeedMoreHistory;
     const onCrosshairMoveRef = useRef(onCrosshairMove);
     onCrosshairMoveRef.current = onCrosshairMove;
+    const onVisibleCandleCountChangeRef = useRef(onVisibleCandleCountChange);
+    onVisibleCandleCountChangeRef.current = onVisibleCandleCountChange;
+    const lastVisibleCandleCountRef = useRef(initialVisibleCandleCount);
+    const suppressNextVisibleCountRef = useRef(false);
 
     // Handle window resize
     const handleResize = useCallback(() => {
@@ -403,16 +413,37 @@ const PerpsCandlestickChart = forwardRef<
 
       // Edge detection: request more history when user scrolls near left edge
       chart.timeScale().subscribeVisibleLogicalRangeChange((logicalRange) => {
-        if (!logicalRange || !onNeedMoreHistoryRef.current) {
+        if (!logicalRange) {
+          return;
+        }
+        if (suppressNextVisibleCountRef.current) {
+          suppressNextVisibleCountRef.current = false;
           return;
         }
 
-        if (logicalRange.from <= EDGE_DETECTION_THRESHOLD) {
+        if (
+          onNeedMoreHistoryRef.current &&
+          logicalRange.from <= EDGE_DETECTION_THRESHOLD
+        ) {
           const now = Date.now();
           if (now - lastLoadMoreTimeRef.current >= LOAD_MORE_COOLDOWN_MS) {
             lastLoadMoreTimeRef.current = now;
             onNeedMoreHistoryRef.current();
           }
+        }
+
+        // `applyZoom` leaves two logical bars of right padding, which makes the
+        // logical range one unit wider than the requested candle count.
+        const visibleCandleCount = Math.max(
+          ZOOM_CONFIG.MIN_CANDLES,
+          Math.min(
+            ZOOM_CONFIG.MAX_CANDLES,
+            Math.round(logicalRange.to - logicalRange.from - 1),
+          ),
+        );
+        if (visibleCandleCount !== lastVisibleCandleCountRef.current) {
+          lastVisibleCandleCountRef.current = visibleCandleCount;
+          onVisibleCandleCountChangeRef.current?.(visibleCandleCount);
         }
       });
 
@@ -604,14 +635,18 @@ const PerpsCandlestickChart = forwardRef<
 
           // Apply default zoom
           const visibleCandles = Math.min(
-            ZOOM_CONFIG.DEFAULT_CANDLES,
+            initialVisibleCandleCount,
             formattedData.length,
           );
           const dataLength = formattedData.length;
           const from = Math.max(0, dataLength - visibleCandles);
           const to = dataLength - 1 + 2; // +2 for right padding
 
+          suppressNextVisibleCountRef.current = true;
           chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
+          setTimeout(() => {
+            suppressNextVisibleCountRef.current = false;
+          }, 0);
 
           // Handle period change: scroll to real time and notify parent.
           // Also scroll on symbol/interval switch so the new market renders
@@ -641,6 +676,7 @@ const PerpsCandlestickChart = forwardRef<
       candleData,
       selectedPeriod,
       onPeriodDataRequest,
+      initialVisibleCandleCount,
       volumeUpColor,
       volumeDownColor,
     ]);

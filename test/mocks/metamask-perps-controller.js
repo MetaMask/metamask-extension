@@ -385,9 +385,18 @@ const mockDefaultProLayoutPreferences = {
   ordersSortField: 'time',
   ordersSortDirection: 'desc',
 };
+const mockDefaultOrderBookPreferences = {
+  currency: 'usd',
+  metric: 'total',
+};
 
 module.exports = {
+  DEFAULT_ORDER_BOOK_PREFERENCES: mockDefaultOrderBookPreferences,
   DEFAULT_PRO_LAYOUT_PREFERENCES: mockDefaultProLayoutPreferences,
+  DEFAULT_SELECTED_ORDER_TYPE: 'market',
+  getDefaultPerpsControllerState: () => ({
+    visibleCandleCount: 30,
+  }),
   PERPS_EVENT_PROPERTY: mockPerpsEventPropertyKeys,
   PERPS_EVENT_VALUE: mockPerpsEventValueLiterals,
   PerpsAnalyticsEvent: mockPerpsAnalyticsEventNames,

@@ -381,6 +381,8 @@ jest.mock('../../components/app/perps/perps-candlestick-chart', () => {
         mockReact.createElement('div', {
           'data-testid': 'perps-candlestick-chart',
           'data-price-lines': JSON.stringify(props.priceLines ?? []),
+          'data-visible-candle-count': props.initialVisibleCandleCount,
+          onClick: () => props.onVisibleCandleCountChange?.(75),
         }),
     ),
   };
@@ -1044,6 +1046,21 @@ describe('PerpsMarketDetailPage', () => {
 
       expect(getByTestId('perps-market-detail-chart')).toBeInTheDocument();
       expect(getByTestId('perps-candlestick-chart')).toBeInTheDocument();
+    });
+
+    it('restores and updates the visible candle count', async () => {
+      const state = createMockState(true);
+      (state.metamask as Record<string, unknown>).visibleCandleCount = 60;
+      const { getByTestId } = await renderPage(mockStore(state));
+
+      const chart = getByTestId('perps-candlestick-chart');
+      expect(chart).toHaveAttribute('data-visible-candle-count', '60');
+      fireEvent.click(chart);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSetVisibleCandleCount',
+        [75],
+      );
     });
 
     it('passes a Liq price line to the chart when position has a liquidationPrice', async () => {
