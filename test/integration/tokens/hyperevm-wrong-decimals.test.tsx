@@ -1,4 +1,4 @@
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, within } from '@testing-library/react';
 import nock from 'nock';
 import type { CaipAssetType } from '@metamask/utils';
 import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
@@ -235,18 +235,10 @@ describe('HyperEVM frxUSD decimal formatting', () => {
       fireEvent.click(frxUsdRow as HTMLElement);
     });
 
-    await waitFor(() => {
-      expect(
-        screen.getByTestId('parent-selector-asset-details'),
-      ).toBeInTheDocument();
-    });
-
-    const detailsAmounts = screen.getAllByTestId(
-      'multichain-token-list-item-value',
-    );
-    expect(detailsAmounts.map((element) => element.textContent)).toContain(
-      FRXUSD_DISPLAY_AMOUNT,
-    );
+    const details = await screen.findByTestId('parent-selector-asset-details');
+    expect(
+      within(details).getByTestId('multichain-token-list-item-value'),
+    ).toHaveTextContent(FRXUSD_DISPLAY_AMOUNT);
     expect(screen.getByTestId('asset-token-decimals')).toHaveTextContent(
       String(FRXUSD_DECIMALS),
     );
