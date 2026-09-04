@@ -18,7 +18,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import nock from 'nock';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
-import { tEn } from '../../../lib/i18n-helpers';
+import { enLocale as messages, tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
@@ -580,9 +580,15 @@ describe('DappSwapComparisonBanner', () => {
     expect(screen.queryByTestId('swaps-banner-title')).not.toBeInTheDocument();
     expect(screen.queryByTestId('bridge-no-quotes')).not.toBeInTheDocument();
     expect(screen.queryByTestId('bridge-cta-button')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.swapFetchingQuotesErrorTitle.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.swapQuotesNotAvailableErrorTitle.message),
+    ).not.toBeInTheDocument();
 
     expect(
-      await screen.findByText(tEn('confirmTitleSending')),
+      await screen.findByText(messages.confirmTitleSending.message),
     ).toBeInTheDocument();
   });
 
