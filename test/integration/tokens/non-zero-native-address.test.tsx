@@ -174,9 +174,7 @@ describe.each(NON_ZERO_NATIVE_NETWORKS)(
       await screen.findByText(accountName);
       await clickElementById('account-overview__asset-tab');
 
-      const rows = await screen.findAllByTestId(
-        'multichain-token-list-button',
-      );
+      const rows = await screen.findAllByTestId('multichain-token-list-button');
       expect(rows).toHaveLength(1);
 
       expect(

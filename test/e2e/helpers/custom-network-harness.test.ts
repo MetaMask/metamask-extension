@@ -158,9 +158,8 @@ describe('custom-network-harness', () => {
           clientId,
         );
         expect(
-          networkController(fixtures).networkConfigurationsByChainId[
-            chainIdHex
-          ]?.nativeCurrency,
+          networkController(fixtures).networkConfigurationsByChainId[chainIdHex]
+            ?.nativeCurrency,
         ).toBe(nativeCurrency);
         expect(enabledEip155(fixtures)).toStrictEqual({
           [chainIdHex]: true,
