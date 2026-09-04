@@ -22,10 +22,9 @@ function getConfiguredPortfolioOrigin(): string | null {
 
 /**
  * Whether this wallet has ever connected accounts to Portfolio (live accounts
- * permission or eth_accounts history). Used to send returning Portfolio buyers
- * back to Portfolio while in-app Buy rolls out — never-connected wallets use
- * in-app. Includes `PORTFOLIO_URL` origin so local Portfolio (e.g.
- * localhost:3000) works.
+ * permission or eth_accounts history). Used as a proxy for "may have local Buy
+ * orders" (silent Portfolio migrate) and related Buy entry gating. Includes
+ * `PORTFOLIO_URL` origin so local Portfolio (e.g. localhost:3000) works.
  *
  * Portfolio origins are present in `subjects` on a fresh install because
  * preinstalled snaps pre-approve them via `initialConnections`, so a subject
