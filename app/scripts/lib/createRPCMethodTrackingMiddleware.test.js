@@ -2,10 +2,6 @@ import { errorCodes } from '@metamask/rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 
-import {
-  MetaMetricsController,
-  getDefaultMetaMetricsControllerState,
-} from '../controllers/metametrics-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -205,45 +201,31 @@ messenger.registerActionHandler(
   },
 );
 
-const controllerMessenger = new Messenger({
-  namespace: 'MetaMetricsController',
-  parent: messenger,
-});
-
-messenger.delegate({
-  messenger: controllerMessenger,
-  actions: [
-    'AnalyticsController:getState',
-    'PreferencesController:getState',
-    'NetworkController:getState',
-    'NetworkController:getNetworkClientById',
-  ],
-  events: [
-    'PreferencesController:stateChange',
-    'NetworkController:networkDidChange',
-  ],
-});
-
 const analyticsController = {
   get state() {
     return analyticsControllerState;
   },
 };
 
-const metaMetricsController = new MetaMetricsController({
-  state: {
-    ...getDefaultMetaMetricsControllerState(),
-  },
-  messenger: controllerMessenger,
-  version: '0.0.1',
-  environment: 'test',
-  extension: {
-    runtime: {
-      id: 'testid',
-      setUninstallURL: () => undefined,
-    },
-  },
-});
+messenger.registerActionHandler('MetaMetricsController:getState', () => ({
+  marketingCampaignCookieId: null,
+}));
+messenger.registerActionHandler(
+  'MetaMetricsController:trackTracesAfterMetricsOptIn',
+  () => undefined,
+);
+messenger.registerActionHandler(
+  'MetaMetricsController:clearTracesAfterMetricsOptIn',
+  () => undefined,
+);
+messenger.registerActionHandler(
+  'MetaMetricsController:setMarketingCampaignCookieId',
+  () => undefined,
+);
+messenger.registerActionHandler(
+  'MetaMetricsController:updateExtensionUninstallUrl',
+  () => undefined,
+);
 
 messenger.registerActionHandler('MultichainNetworkController:getState', () => ({
   isEvmSelected: true,
