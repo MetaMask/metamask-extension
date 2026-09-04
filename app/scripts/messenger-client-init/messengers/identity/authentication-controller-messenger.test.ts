@@ -8,10 +8,18 @@ import {
 describe('getAuthenticationControllerMessenger', () => {
   it('returns a restricted messenger', () => {
     const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
     const authenticationControllerMessenger =
       getAuthenticationControllerMessenger(messenger);
 
     expect(authenticationControllerMessenger).toBeInstanceOf(Messenger);
+    expect(delegateSpy.mock.calls[0][0].actions).toMatchInlineSnapshot(`
+      [
+        "KeyringController:getState",
+        "KeyringController:withKeyringV2Unsafe",
+        "SeedlessOnboardingController:getState",
+      ]
+    `);
   });
 
   it('delegates SeedlessOnboardingController:getState for social identifier_type', () => {

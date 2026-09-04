@@ -6,6 +6,10 @@
     "@metamask/ramps-controller": {
       "type": "breaking",
       "previewVersion": "20.2.0-preview-2d576f0c9"
+    },
+    "@metamask/profile-sync-controller": {
+      "type": "breaking",
+      "previewVersion": "29.0.0-preview-2d576f0c9"
     }
   },
   "imports": {
@@ -347,6 +351,7 @@
     "@metamask/assets-controller@npm:^13.1.0": "patch:@metamask/assets-controller@npm%3A13.1.4#~/.yarn/patches/@metamask-assets-controller-npm-13.1.4-ee83e2c2d8.patch",
     "@metamask/assets-controller@npm:^13.1.2": "patch:@metamask/assets-controller@npm%3A13.1.4#~/.yarn/patches/@metamask-assets-controller-npm-13.1.4-ee83e2c2d8.patch",
     "metamask-crx@workspace:./@metamask/ramps-controller": "npm:@metamask-previews/ramps-controller@20.2.0-preview-2d576f0c9",
+    "metamask-crx@workspace:./@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@29.0.0-preview-2d576f0c9",
     "@metamask/ramps-controller@^18.0.1": "npm:@metamask-previews/ramps-controller@20.2.0-preview-2d576f0c9",
     "@metamask/ramps-controller@^20.0.0": "npm:@metamask-previews/ramps-controller@20.2.0-preview-2d576f0c9",
     "@metamask/ramps-controller@^20.2.0": "npm:@metamask-previews/ramps-controller@20.2.0-preview-2d576f0c9"
