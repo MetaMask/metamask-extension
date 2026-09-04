@@ -382,7 +382,8 @@ jobs:
           path: test-artifacts/chrome
 
   # changed-files artifact is produced by get-requirements (dorny/paths-filter
-  # all_changes_files) and consumed by prep-e2e / run-e2e / ai-pr-risk-analysis.
+  # all_changes_files) for E2E. AI PR risk analysis receives the same list as a
+  # space-separated workflow input (no artifact download).
 
   prep-e2e:
     needs:
@@ -399,6 +400,7 @@ jobs:
       ${{
         !cancelled()
         && needs.get-requirements.result == 'success'
+        && needs.get-requirements.outputs.changed-files != ''
         && github.event_name == 'pull_request'
         && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
         && github.event.pull_request.draft == false
@@ -409,6 +411,8 @@ jobs:
       pull-requests: write
       checks: write
     uses: ./.github/workflows/ai-pr-risk-analysis.yml
+    with:
+      changed-files: ${{ join(fromJSON(needs.get-requirements.outputs.changed-files), ' ') }}
     secrets:
       AI_ANALYZER_TOKEN: ${{ secrets.AI_ANALYZER_TOKEN }}
       AI_ANALYZER_LITELLM_KEY: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}

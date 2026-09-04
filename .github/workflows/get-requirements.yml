@@ -490,8 +490,8 @@ jobs:
           # JSON so all_changes_files can be shared with E2E / AI analyzer consumers
           list-files: json
 
-      # Shared changed-files artifact for E2E (run-e2e) and AI PR risk analysis.
-      # Source of truth is dorny/paths-filter — no separate git-diff rediscovery job.
+      # Shared changed-files artifact for E2E (run-e2e / prep-e2e).
+      # AI PR risk analysis uses the same dorny list as a space-separated input.
       - name: Materialize changed-files artifact
         if: ${{ steps.filter.outcome == 'success' }}
         env:
