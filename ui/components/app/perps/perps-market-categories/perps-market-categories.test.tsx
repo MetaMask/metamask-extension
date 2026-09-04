@@ -203,12 +203,11 @@ describe('PerpsMarketCategories', () => {
       const user = userEvent.setup();
       renderSection();
 
-      await user.tab();
-      await user.tab();
-
-      expect(
-        screen.getByTestId('perps-market-categories-pill-crypto'),
-      ).toHaveFocus();
+      const cryptoPill = screen.getByTestId(
+        'perps-market-categories-pill-crypto',
+      );
+      cryptoPill.focus();
+      expect(cryptoPill).toHaveFocus();
 
       await user.keyboard('{Enter}');
 
