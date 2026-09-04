@@ -1,9 +1,24 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { ToastContent } from './toast';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
+import { toast, ToastContent, Toaster, ERROR_TOAST_TEST_ID } from './toast';
 
 jest.mock('../status-icon/status-icon', () => ({
   StatusIcon: () => null,
+}));
+
+jest.mock('../../../hooks/useI18nContext', () => ({
+  useI18nContext: () => (key: string) => key,
+}));
+
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  isInteractiveUI: () => true,
 }));
 
 describe('ToastContent', () => {
@@ -43,5 +58,41 @@ describe('ToastContent', () => {
       <ToastContent title="Transaction confirmed" actionText="test-action" />,
     );
     expect(screen.queryByText('test-action')).not.toBeInTheDocument();
+  });
+});
+
+describe('Toaster', () => {
+  afterEach(() => {
+    act(() => {
+      toast.remove();
+    });
+    cleanup();
+  });
+
+  it('sets error-toast test id on error toasts', async () => {
+    render(<Toaster />);
+    act(() => {
+      toast.error('None of the cryptocurrencies are supported by price api');
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId(ERROR_TOAST_TEST_ID)).toHaveTextContent(
+        'None of the cryptocurrencies are supported by price api',
+      );
+    });
+  });
+
+  it('does not set error-toast test id on success toasts', async () => {
+    render(<Toaster />);
+    act(() => {
+      toast.success('Network added successfully');
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Network added successfully'),
+      ).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId(ERROR_TOAST_TEST_ID)).not.toBeInTheDocument();
   });
 });

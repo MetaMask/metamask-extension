@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { ACTIVITY_ROUTE } from '../../../../../ui/helpers/constants/routes';
 import { Driver } from '../../../webdriver/driver';
 import { Anvil } from '../../../seeder/anvil';
@@ -8,6 +9,7 @@ import {
   BASE_ACCOUNT_SYNC_TIMEOUT,
   POST_UNLOCK_DELAY,
 } from '../../../tests/identity/account-syncing/helpers';
+import { installBlockingErrorToastMonitor } from './blocking-error-toast-monitor';
 import HeaderNavbar from './header-navbar';
 
 export type CheckExpectedBalanceOptions = {
@@ -89,6 +91,8 @@ class HomePage {
 
   private readonly emptyBalance =
     '[data-testid="coin-overview-balance-empty-state"]';
+
+  private readonly errorToast = '[data-testid="error-toast"]';
 
   private readonly fundYourWalletBanner = {
     text: 'Fund your wallet',
@@ -353,6 +357,21 @@ class HomePage {
     });
   }
 
+  /**
+   * Fails if {@link startMonitoringBlockingErrorToast} recorded a matching
+   * toast, then re-checks that none is currently displayed.
+   */
+  async checkNoBlockingErrorToastWasObserved(): Promise<void> {
+    console.log(
+      'Check no blocking error toast was observed during homepage load',
+    );
+    const seen = (await this.driver.executeScript(
+      'return window.__mmE2eBlockingErrorToasts || [];',
+    )) as string[];
+    assert.deepEqual(seen, []);
+    await this.checkNoErrorToastIsDisplayed();
+  }
+
   async checkNoErrorToastIsDisplayed(): Promise<void> {
     console.log('Check no blocking error toast is displayed on homepage');
     await this.driver.assertElementNotPresent(this.storageErrorToast, {
@@ -363,26 +382,10 @@ class HomePage {
       waitAtLeastGuard: regularDelayMs,
       timeout: 5000,
     });
-    await this.driver.assertElementNotPresent(
-      {
-        css: '.toast-container',
-        text: 'cryptocurrencies',
-      },
-      {
-        waitAtLeastGuard: regularDelayMs,
-        timeout: 5000,
-      },
-    );
-    await this.driver.assertElementNotPresent(
-      {
-        css: '.toast-container',
-        text: 'unsupported',
-      },
-      {
-        waitAtLeastGuard: regularDelayMs,
-        timeout: 5000,
-      },
-    );
+    await this.driver.assertElementNotPresent(this.errorToast, {
+      waitAtLeastGuard: regularDelayMs,
+      timeout: 5000,
+    });
   }
 
   async checkNoShieldEntryModalIsDisplayed(): Promise<void> {
@@ -611,6 +614,18 @@ class HomePage {
 
   async startBridgeFlow(): Promise<void> {
     await this.driver.clickElement(this.bridgeButton);
+  }
+
+  /**
+   * Installs a page-side poller that records blocking error toasts as they
+   * appear, including ones that auto-dismiss before a later assertion.
+   * Polls instead of using MutationObserver, which LavaMoat scuttling blocks.
+   * Idempotent on the current document; call again after unlock in case the
+   * document reloaded.
+   */
+  async startMonitoringBlockingErrorToast(): Promise<void> {
+    console.log('Start monitoring homepage for blocking error toasts');
+    await this.driver.executeScript(installBlockingErrorToastMonitor);
   }
 
   async startSendFlow(): Promise<void> {
