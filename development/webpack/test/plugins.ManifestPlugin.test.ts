@@ -647,8 +647,8 @@ describe('ManifestPlugin', () => {
       );
       assert.deepStrictEqual(summary, {
         background: 650,
-        ui: 550,
-        common: 150,
+        ui: 450,
+        common: 250,
         other: 140,
         contentScripts: 400,
         zip: compilation.assets['chrome/extension.zip'].size(),
