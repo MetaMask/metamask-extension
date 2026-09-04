@@ -8177,16 +8177,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ramps-controller@npm:^20.2.0":
-  version: 20.2.0
-  resolution: "@metamask/ramps-controller@npm:20.2.0"
+"@metamask/ramps-controller@npm:@metamask-previews/ramps-controller@20.2.0-preview-2d576f0c9":
+  version: 20.2.0-preview-2d576f0c9
+  resolution: "@metamask-previews/ramps-controller@npm:20.2.0-preview-2d576f0c9"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/profile-sync-controller": "npm:^29.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^6.1.0"
-  checksum: 10/2ad551a54458cb01221d1b13794f222fd8e5672fa11bfa7cd348838c59b16623bb243ecff9015459f8c7b07e453b3daffb9242d431744e80d89dc3b29eb33989
+    fast-deep-equal: "npm:^3.1.3"
+  checksum: 10/2615f9366c4fc8cddc6c64675c18c2e546204252baafe269d67555aa030500019cc6ef33c857e224051dbc71be459a5aea5a52c116ed45f3053d0606d3bce407
   languageName: node
   linkType: hard
 

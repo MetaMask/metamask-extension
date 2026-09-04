@@ -2481,6 +2481,8 @@
         "AbortController": true,
         "URL": true,
         "clearInterval": true,
+        "console.error": true,
+        "crypto": true,
         "setInterval": true
       },
       "meta": {
@@ -2491,7 +2493,8 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "cockatiel": true
+        "cockatiel": true,
+        "eslint>fast-deep-equal": true
       }
     },
     "@metamask/rate-limit-controller": {

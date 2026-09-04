@@ -37,7 +37,16 @@ export function getRampsControllerMessenger(
 
   messenger.delegate({
     messenger: controllerMessenger,
-    actions: [...RAMPS_CONTROLLER_REQUIRED_SERVICE_ACTIONS],
+    actions: [
+      ...RAMPS_CONTROLLER_REQUIRED_SERVICE_ACTIONS,
+      // The controller reads the `moneyHeadlessAllProviders` feature flag
+      // itself for quote widening.
+      'RemoteFeatureFlagController:getState',
+      'UserStorageController:getState',
+      'UserStorageController:performGetStorageAllFeatureEntries',
+      'UserStorageController:performBatchSetStorage',
+      'AuthenticationController:isSignedIn',
+    ],
     events: [],
   });
 

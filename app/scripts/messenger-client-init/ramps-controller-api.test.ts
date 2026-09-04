@@ -18,6 +18,7 @@ describe('getRampsControllerApi', () => {
       removeOrder: jest.fn(),
       getOrder: jest.fn(),
       getOrderFromCallback: jest.fn(),
+      syncOrdersWithUserStorage: jest.fn(),
     };
 
     const api = getRampsControllerApi(
@@ -28,6 +29,7 @@ describe('getRampsControllerApi', () => {
     expect(Object.keys(api).sort()).toMatchSnapshot();
     expect(typeof api.setRampsUserRegion).toBe('function');
     expect(typeof api.getRampsQuotes).toBe('function');
+    expect(typeof api.syncRampsOrdersWithUserStorage).toBe('function');
     expect(typeof api.watchRampsCheckoutTab).toBe('function');
   });
 });
