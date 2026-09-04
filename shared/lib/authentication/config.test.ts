@@ -34,9 +34,11 @@ describe('loadAuthenticationConfig', () => {
     process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
     const developmentEnvironment = loadAuthenticationConfig();
 
-    delete process.env.METAMASK_ENVIRONMENT;
     process.env.FORCE_AUTH_MATCH_BUILD = 'true';
     process.env.METAMASK_BUILD_TYPE = 'beta';
+    const forcedDevelopmentEnvironment = loadAuthenticationConfig();
+
+    delete process.env.METAMASK_ENVIRONMENT;
     const betaEnvironment = loadAuthenticationConfig();
 
     process.env.METAMASK_BUILD_TYPE = 'uat';
@@ -48,6 +50,7 @@ describe('loadAuthenticationConfig', () => {
     expect({
       defaultEnvironment,
       developmentEnvironment,
+      forcedDevelopmentEnvironment,
       betaEnvironment,
       uatEnvironment,
       productionEnvironment,
@@ -56,6 +59,7 @@ describe('loadAuthenticationConfig', () => {
         "betaEnvironment": "uat",
         "defaultEnvironment": "prd",
         "developmentEnvironment": "dev",
+        "forcedDevelopmentEnvironment": "uat",
         "productionEnvironment": "prd",
         "uatEnvironment": "uat",
       }

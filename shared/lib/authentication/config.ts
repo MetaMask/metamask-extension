@@ -13,7 +13,10 @@ export function isForceAuthMatchBuild() {
 export function loadAuthenticationConfig(): Env {
   // Local webpack (`yarn start`) uses DEV Profile Sync for staging on-ramp.
   // Keep `testing`/E2E on PRD so mocks at authentication.api.cx.metamask.io match.
-  if (process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT) {
+  if (
+    !isForceAuthMatchBuild() &&
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT
+  ) {
     return Env.DEV;
   }
 

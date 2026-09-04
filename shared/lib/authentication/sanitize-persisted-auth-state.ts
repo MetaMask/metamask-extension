@@ -40,7 +40,7 @@ export function sanitizePersistedAuthenticationState(
   env: Env,
 ): AuthenticationControllerState | undefined {
   if (!state?.srpSessionData) {
-    return state;
+    return state?.isSignedIn ? { ...state, isSignedIn: false } : state;
   }
 
   const expectedOidcIss = getEnvUrls(env).oidcApiUrl;
