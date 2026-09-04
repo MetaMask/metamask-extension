@@ -2,22 +2,66 @@ import {
   fetchTokenAssets,
   type TokenAsset,
 } from '@metamask/assets-controllers';
-import { isCaipAssetType, type CaipAssetType } from '@metamask/utils';
+import {
+  isCaipAssetType,
+  parseCaipAssetType,
+  type CaipAssetType,
+} from '@metamask/utils';
 import { create } from '#shared/lib/create-batcher';
 import { normalizeTokenAssetId } from '#shared/lib/asset-utils';
+import { apiClient } from '../../helpers/api-client';
 
 const tokenAssetBatchSize = 25;
 
+let supportedNetworksCache: {
+  fullSupport: string[];
+  partialSupport: string[];
+} | null = null;
+const getSupportedNetworksCached = async () => {
+  if (supportedNetworksCache) {
+    return supportedNetworksCache;
+  }
+
+  const { fullSupport, partialSupport } =
+    await apiClient.tokens.fetchTokenV2SupportedNetworks();
+  supportedNetworksCache = { fullSupport, partialSupport };
+  return supportedNetworksCache;
+};
+
+async function filterSupportedAssetIds(assetIds: CaipAssetType[]) {
+  try {
+    const { fullSupport, partialSupport } = await getSupportedNetworksCached();
+    const supportedChainIds = new Set([...fullSupport, ...partialSupport]);
+
+    return assetIds.filter(
+      (assetId) =>
+        isCaipAssetType(assetId) &&
+        supportedChainIds.has(parseCaipAssetType(assetId).chainId),
+    );
+  } catch {
+    return assetIds;
+  }
+}
+
 async function fetchTokenAssetBatch(assetIds: CaipAssetType[]) {
+  const supportedAssetIds = await filterSupportedAssetIds(assetIds);
+
+  if (supportedAssetIds.length === 0) {
+    return [];
+  }
+
   const tokens: TokenAsset[] = [];
   let chunkError: unknown;
 
   for (
     let offset = 0;
-    offset < assetIds.length;
+    offset < supportedAssetIds.length;
     offset += tokenAssetBatchSize
   ) {
-    const chunkAssetIds = assetIds.slice(offset, offset + tokenAssetBatchSize);
+    const chunkAssetIds = supportedAssetIds.slice(
+      offset,
+      offset + tokenAssetBatchSize,
+    );
 
     try {
       const chunkTokens = await fetchTokenAssets(chunkAssetIds, {
