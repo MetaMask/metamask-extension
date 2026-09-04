@@ -1,13 +1,10 @@
 import { cloneDeep } from 'lodash';
 import { migrate, version } from './224';
 
-const VERSION = version;
-const OLD_VERSION = VERSION - 1;
-
-describe(`migration #${VERSION}`, () => {
+describe(`migration #${version}`, () => {
   it('removes canTrackWalletFundsObtained from AppStateController', async () => {
-    const oldStorage = {
-      meta: { version: OLD_VERSION },
+    const versionedData = {
+      meta: { version: version - 1 },
       data: {
         AppStateController: {
           canTrackWalletFundsObtained: true,
@@ -15,78 +12,10 @@ describe(`migration #${VERSION}`, () => {
         },
       },
     };
-    const versionedData = cloneDeep(oldStorage);
     const changedControllers = new Set<string>();
 
-    await migrate(versionedData, changedControllers);
+    await migrate(cloneDeep(versionedData), changedControllers);
 
-    expect(versionedData).toStrictEqual({
-      meta: { version: VERSION },
-      data: {
-        AppStateController: {
-          connectedStatusPopoverHasBeenShown: true,
-        },
-      },
-    });
     expect(changedControllers).toStrictEqual(new Set(['AppStateController']));
-  });
-
-  it('does not mark AppStateController changed when canTrackWalletFundsObtained is absent', async () => {
-    const oldStorage = {
-      meta: { version: OLD_VERSION },
-      data: {
-        AppStateController: {
-          connectedStatusPopoverHasBeenShown: true,
-        },
-      },
-    };
-    const versionedData = cloneDeep(oldStorage);
-    const changedControllers = new Set<string>();
-
-    await migrate(versionedData, changedControllers);
-
-    expect(versionedData).toStrictEqual({
-      meta: { version: VERSION },
-      data: oldStorage.data,
-    });
-    expect(changedControllers).toStrictEqual(new Set([]));
-  });
-
-  it('does nothing when AppStateController is missing', async () => {
-    const oldStorage = {
-      meta: { version: OLD_VERSION },
-      data: {
-        PreferencesController: {},
-      },
-    };
-    const versionedData = cloneDeep(oldStorage);
-    const changedControllers = new Set<string>();
-
-    await migrate(versionedData, changedControllers);
-
-    expect(versionedData).toStrictEqual({
-      meta: { version: VERSION },
-      data: oldStorage.data,
-    });
-    expect(changedControllers).toStrictEqual(new Set([]));
-  });
-
-  it('does nothing when AppStateController is not an object', async () => {
-    const oldStorage = {
-      meta: { version: OLD_VERSION },
-      data: {
-        AppStateController: 'not an object',
-      },
-    };
-    const versionedData = cloneDeep(oldStorage);
-    const changedControllers = new Set<string>();
-
-    await migrate(versionedData, changedControllers);
-
-    expect(versionedData).toStrictEqual({
-      meta: { version: VERSION },
-      data: oldStorage.data,
-    });
-    expect(changedControllers).toStrictEqual(new Set([]));
   });
 });

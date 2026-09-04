@@ -15,12 +15,14 @@ import {
 import {
   DEFAULT_ROUTE,
   PERPS_ROUTE,
+  PRIVACY_ROUTE,
   REVEAL_SEED_ROUTE,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { toggleDefaultView } from '../../../store/actions';
+import { getSocialLoginType } from '../../../selectors';
+import { setPreference, toggleDefaultView } from '../../../store/actions';
 import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast/survey-toast';
@@ -80,6 +82,9 @@ const MemoizedPerpsWithdrawToast = memo(PerpsWithdrawToast);
 const MemoizedShieldPausedToast = memo(ShieldPausedToast);
 const MemoizedShieldEndingToast = memo(ShieldEndingToast);
 const MemoizedSidePanelMigrationToast = memo(SidePanelMigrationToast);
+const MemoizedBasicFunctionalityMigrationToast = memo(
+  BasicFunctionalityMigrationToast,
+);
 const MemoizedStorageErrorToast = memo(StorageErrorToast);
 const MemoizedArcUsageNoticeToast = memo(ArcUsageNoticeToast);
 
@@ -108,6 +113,7 @@ export function ToastMaster() {
         <MemoizedShieldPausedToast />
         <MemoizedShieldEndingToast />
         <MemoizedSidePanelMigrationToast />
+        <MemoizedBasicFunctionalityMigrationToast />
       </ToastContainer>
     );
   }
@@ -171,6 +177,47 @@ function PrivacyPolicyToast() {
           setNewPrivacyPolicyToastClickedOrClosed();
         }}
         onClose={setNewPrivacyPolicyToastClickedOrClosed}
+      />
+    )
+  );
+}
+
+function BasicFunctionalityMigrationToast() {
+  const t = useI18nContext();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const shouldShow = useSelector(
+    (state) =>
+      Boolean(
+        state.metamask.preferences
+          ?.basicFunctionalityMigrationNotificationPending,
+      ) && !getSocialLoginType(state),
+  );
+
+  const dismiss = () => {
+    dispatch(
+      setPreference(
+        'basicFunctionalityMigrationNotificationPending',
+        false,
+        false,
+      ),
+    );
+  };
+
+  return (
+    shouldShow && (
+      <Toast
+        key="basic-functionality-migration-toast"
+        startAdornment={
+          <Icon name={IconName.Info} color={IconColor.iconDefault} />
+        }
+        text={t('basicFunctionalityMigrationToastDescription')}
+        actionText={t('openSettings')}
+        onActionClick={() => {
+          dismiss();
+          navigate(PRIVACY_ROUTE);
+        }}
+        onClose={dismiss}
       />
     )
   );

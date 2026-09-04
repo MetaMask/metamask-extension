@@ -22,8 +22,7 @@ export const BFT_CHILD_PREFERENCES = [
  */
 export const getIsBasicFunctionalityToggleEnabled = createSelector(
   getRemoteFeatureFlags,
-  ({ extensionBasicFunctionalityToggle }) =>
-    getBooleanFeatureFlag(extensionBasicFunctionalityToggle, false),
+  ({ extensionBasicFunctionalityToggle }) => true,
 );
 
 /**
