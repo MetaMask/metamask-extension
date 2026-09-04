@@ -4,6 +4,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  NETWORK_CLIENT_ID,
 } from '../../constants';
 import {
   getProductionRemoteFlagApiResponse,
@@ -69,11 +70,11 @@ const ARBITRUM_GAS_FEE_ESTIMATES = {
   },
   estimatedBaseFee: '0.01',
   networkCongestion: 0.1,
-  latestPriorityFeeRange: ['0.01', '0.05'] as [string, string],
-  historicalPriorityFeeRange: ['0.01', '0.1'] as [string, string],
-  historicalBaseFeeRange: ['0.01', '0.02'] as [string, string],
-  priorityFeeTrend: 'level' as const,
-  baseFeeTrend: 'level' as const,
+  latestPriorityFeeRange: ['0.01', '0.05'],
+  historicalPriorityFeeRange: ['0.01', '0.1'],
+  historicalBaseFeeRange: ['0.01', '0.02'],
+  priorityFeeTrend: 'stable',
+  baseFeeTrend: 'stable',
 };
 const RELAY_REQUEST_ID = 'perps-withdraw-e2e-request-id';
 const RELAY_TRANSACTION_HASH =
@@ -772,29 +773,13 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
         },
       },
     })
-    // Pre-seed GasFeeController with Arbitrum gas estimates.
-    //
-    // The confirmation reads the global `gasEstimateType` before the per-
-    // transaction estimate is populated by the TransactionController. The
-    // default fixture sets it to `'none'` (localhost has no gas API), which
-    // triggers the blocking "Fee estimate unavailable" alert. The HTTP mock
-    // eventually delivers the data, but the race between the gas API response
-    // and the initial UI render causes flaky failures on slow CI.
-    //
-    // Pre-seeding the GasFeeController state eliminates the race entirely:
-    // the global type starts as `'fee-market'`, so the alert never fires.
-    .withGasFeeController({
-      gasEstimateType: 'fee-market' as const,
-      gasFeeEstimates: ARBITRUM_GAS_FEE_ESTIMATES,
-      estimatedGasFeeTimeBounds: {},
-      gasFeeEstimatesByChainId: {
-        [CHAIN_IDS.ARBITRUM]: {
-          gasEstimateType: 'fee-market' as const,
-          gasFeeEstimates: ARBITRUM_GAS_FEE_ESTIMATES,
-          estimatedGasFeeTimeBounds: {},
-        },
-      },
-    })
+    // Select Arbitrum so the GasFeeController polls gas estimates for the
+    // right chain. The "no gas price" blocking alert checks the *global*
+    // `gasEstimateType` (which only updates for the selected network), so
+    // starting on localhost or a testnet causes the confirmation to stay
+    // permanently stuck. Related bug ticket #46056
+    .withSelectedNetwork(NETWORK_CLIENT_ID.ARBITRUM_MAINNET)
+    .withEnabledNetworks({ eip155: { [CHAIN_IDS.ARBITRUM]: true } })
     .build();
 
   return {

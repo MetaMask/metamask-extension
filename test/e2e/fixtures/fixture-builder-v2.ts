@@ -43,7 +43,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { AssetsControllerState } from '@metamask/assets-controller';
-import type { GasFeeState } from '@metamask/gas-fee-controller';
 import type { PerpsControllerState } from '@metamask/perps-controller';
 import type { PasskeyControllerState } from '@metamask/passkey-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
@@ -292,11 +291,6 @@ class FixtureBuilderV2 {
 
   withCurrencyController(data: Partial<CurrencyRateState>): this {
     merge(this.fixture.data.CurrencyController, data);
-    return this;
-  }
-
-  withGasFeeController(data: Partial<GasFeeState>): this {
-    merge(this.fixture.data.GasFeeController, data);
     return this;
   }
 
