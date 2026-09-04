@@ -896,12 +896,24 @@
     "message": "$1 vendido",
     "description": "$1 is the token symbol"
   },
+  "activity_receive_failed_description": {
+    "message": "De $1",
+    "description": "$1 is the shortened sender address"
+  },
   "activity_receive_failed_title": {
     "message": "Error al recibir"
+  },
+  "activity_receive_pending_description": {
+    "message": "De $1",
+    "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
     "message": "Recibiendo $1",
     "description": "$1 is the token symbol"
+  },
+  "activity_receive_success_description": {
+    "message": "De $1",
+    "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
     "message": "$1 recibido",
@@ -950,12 +962,24 @@
     "message": "$1 vendido",
     "description": "$1 is the token symbol"
   },
+  "activity_send_failed_description": {
+    "message": "Para $1",
+    "description": "$1 is the shortened recipient address"
+  },
   "activity_send_failed_title": {
     "message": "Error al enviar"
+  },
+  "activity_send_pending_description": {
+    "message": "Para $1",
+    "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
     "message": "Enviando $1",
     "description": "$1 is the token symbol"
+  },
+  "activity_send_success_description": {
+    "message": "Para $1",
+    "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
     "message": "$1 enviado",
@@ -1428,10 +1452,10 @@
     "message": "A veces, los atacantes imitan sitios web haciendo pequeños cambios en la dirección del sitio. Asegúrese de estar interactuando con el sitio deseado antes de continuar."
   },
   "alertMessageAddressTrustSignal": {
-    "message": "No podemos verificar esta dirección. Puede ser nueva o no estar verificada. Continúa solo si confías en la fuente."
+    "message": "Nuestros socios de seguridad no tienen suficiente historial confiable para verificar esta dirección."
   },
   "alertMessageAddressTrustSignalMalicious": {
-    "message": "Si confirmas esta solicitud, probablemente perderás tus activos en manos de un estafador."
+    "message": "Nuestros socios de seguridad marcaron esta dirección por actividad maliciosa."
   },
   "alertMessageBurnAddress": {
     "message": "Estás enviando tus activos a una dirección de quema. Si continúas, perderás tus activos."
@@ -1501,6 +1525,12 @@
   },
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "No se pudo consultar el saldo de tu cuenta de Perps. Inténtalo de nuevo."
+  },
+  "alertReasonAddressTrustSignalMalicious": {
+    "message": "Dirección marcada como de alto riesgo"
+  },
+  "alertReasonAddressTrustSignalWarning": {
+    "message": "Señales limitadas sobre la dirección"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1.ª interacción"
@@ -2146,6 +2176,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "No hay información de precios"
   },
+  "bridgeOffHoursDescription": {
+    "message": "Mercado cerrado: el precio lo calcula el emisor y no refleja datos del mercado en tiempo real. Podría variar cuando los mercados reabran en la próxima sesión de trading disponible."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Trading fuera del horario"
+  },
   "bridgePoints": {
     "message": "Puntos estimados",
     "description": "Label for estimated points that can be earned from a bridge or swap"
@@ -2376,6 +2412,22 @@
   },
   "bridgeSendLoading": {
     "message": "Enviando desde la cadena de origen"
+  },
+  "bridgeStellarTrustlineWarningCta": {
+    "message": "Activar $1",
+    "description": "CTA on the Stellar trustline warning banner. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessage": {
+    "message": "Este canje podría fallar. En Stellar, tu cuenta no puede recibir $1 hasta que se active el token en tu billetera con una línea de confianza válida.",
+    "description": "Body of the Stellar trustline warning on cross-chain swaps when destination is the active account. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessageDifferentAccount": {
+    "message": "Este canje podría fallar. En Stellar, $1 no puede recibir $2 hasta que cambies a esa cuenta y actives el token con una línea de confianza válida.",
+    "description": "Body of the Stellar trustline warning when the destination account is not the active account. $1 is the destination account name; $2 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningTitle": {
+    "message": "Activa primero $1 en Stellar",
+    "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
   },
   "bridgeSuspicious": {
     "message": "Sospechoso"
@@ -3358,6 +3410,9 @@
   "defiTabErrorTitle": {
     "message": "No pudimos cargar esta página."
   },
+  "defiUnsupportedEmptyDescription": {
+    "message": "DeFi no es compatible con esta red."
+  },
   "delete": {
     "message": "Eliminar"
   },
@@ -3480,6 +3535,10 @@
   },
   "disconnectSiteDescriptionText": {
     "message": "Esto desconectará todas tus cuentas de $1. Tendrás que volver a conectarlas para usar esta dapp nuevamente.",
+    "description": "$1 is the site hostname"
+  },
+  "disconnectSiteSuccess": {
+    "message": "Desconexión de $1 realizada correctamente.",
     "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
@@ -4315,9 +4374,25 @@
     "message": "Gastador: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
+  "hardwareSwapAmount": {
+    "message": "Canjear $1 $2 por $3 $4",
+    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappedAmount": {
+    "message": "Canjeaste $1 $2 por $3 $4",
+    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappingAmount": {
+    "message": "Canjeando $1 $2 por $3 $4",
+    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
   "hardwareToAddress": {
     "message": "Para: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareToken": {
+    "message": "Token: $1",
+    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "Rechazaste esta transacción en tu dispositivo",
@@ -4375,6 +4450,9 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 bloqueada",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleUnsupportedSignature": {
+    "message": "Firma no compatible"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "Asegúrate de que tu dispositivo de $1 esté configurado con la frase secreta de recuperación o la frase de contraseña para la cuenta seleccionada",
@@ -5271,17 +5349,107 @@
   "money": {
     "message": "Money"
   },
+  "moneyAccountApyPitch": {
+    "message": "Gana $1 % de APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchInfo": {
+    "message": "Información de APY"
+  },
+  "moneyAccountApyTooltip": {
+    "message": "La tasa mostrada es un rendimiento porcentual anual (APY) estimado basado en las condiciones actuales del mercado. El APY es variable y no está garantizado."
+  },
+  "moneyAccountAvailableBalance": {
+    "message": "Saldo disponible: $1",
+    "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountProjectedBalance": {
+    "message": "Saldo proyectado a 1 años:"
+  },
+  "moneyAccountProjectedBalanceInfo": {
+    "message": "Saldo proyectado a 1 años"
+  },
+  "moneyAccountProjectedBalanceTooltip": {
+    "message": "La proyección supone que el rendimiento porcentual anual (APY) de $1 % se mantiene sin cambios durante un año. El APY es variable y no está garantizado.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyActivity": {
     "message": "Actividad"
   },
+  "moneyActivityConversionFailed": {
+    "message": "Conversión fallida"
+  },
+  "moneyActivityConverted": {
+    "message": "Convertido"
+  },
+  "moneyActivityConverting": {
+    "message": "Convirtiendo"
+  },
+  "moneyActivityDepositFailed": {
+    "message": "Depósito fallido"
+  },
+  "moneyActivityDeposited": {
+    "message": "Depositado"
+  },
+  "moneyActivityDepositing": {
+    "message": "Depositando"
+  },
+  "moneyActivityEmpty": {
+    "message": "Aún no hay actividad"
+  },
+  "moneyActivityFilterAll": {
+    "message": "Todas"
+  },
+  "moneyActivityFilterDeposits": {
+    "message": "Depósitos"
+  },
+  "moneyActivityFilterSends": {
+    "message": "Envía"
+  },
+  "moneyActivityPending": {
+    "message": "Pendiente"
+  },
   "moneyActivityPlaceholderDescription": {
     "message": "Tu actividad en Money aparecerá aquí."
+  },
+  "moneyActivityReceived": {
+    "message": "Recibido"
+  },
+  "moneyActivityReceivedFrom": {
+    "message": "De: $1"
+  },
+  "moneyActivityReceiving": {
+    "message": "Recibiendo"
+  },
+  "moneyActivitySendFailed": {
+    "message": "Error al enviar"
+  },
+  "moneyActivitySending": {
+    "message": "Enviando"
+  },
+  "moneyActivitySent": {
+    "message": "Enviado"
+  },
+  "moneyActivityViewAll": {
+    "message": "Ver todo"
   },
   "moneyAdd": {
     "message": "Añadir"
   },
   "moneyApy": {
     "message": "$1 de APY"
+  },
+  "moneyBalanceInfoBody": {
+    "message": "Tu saldo en mUSD respaldado por dólares, que siempre está disponible para gastar, enviar u operar en cualquier momento. No lo incluimos en el saldo total de tu cuenta."
+  },
+  "moneyBalanceInfoWithdrawals": {
+    "message": "Los retiros se procesan de inmediato, sujetos a los tiempos de confirmación estándar de la red en la cadena de bloques correspondiente. Si la liquidez es limitada, puede haber retrasos temporales."
+  },
+  "moneyBalanceLastKnown": {
+    "message": "Último saldo conocido"
+  },
+  "moneyBalanceTitle": {
+    "message": "Saldo de Money"
   },
   "moneyBalanceUnavailable": {
     "message": "Saldo no disponible"
@@ -5873,6 +6041,9 @@
   "nftTokenIdPlaceholder": {
     "message": "Ingrese el id del token"
   },
+  "nftUnsupportedEmptyDescription": {
+    "message": "Los NFT no son compatibles con esta red."
+  },
   "nftWarningContent": {
     "message": "Está otorgando acceso a $1, incluidos los que pueda poseer en el futuro. La contraparte puede transferir estos NFT desde su billetera en cualquier momento sin preguntarle hasta que revoque esta aprobación. $2",
     "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
@@ -6463,7 +6634,7 @@
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNotSupported": {
-    "message": "Clave de acceso no admitida",
+    "message": "MetaMask no puede usar las llaves de acceso guardadas aquí. Inténtalo de nuevo y guárdala en un gestor de contraseñas.",
     "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
@@ -7043,6 +7214,21 @@
   "perpsCloseAmount": {
     "message": "Monto de cierre"
   },
+  "perpsCloseAmountCappedAtPosition": {
+    "message": "El monto de cierre está limitado al valor de tu posición."
+  },
+  "perpsCloseAmountInPercent": {
+    "message": "%"
+  },
+  "perpsCloseAmountInPercentLabel": {
+    "message": "Ingresa el monto de cierre como porcentaje de tu posición"
+  },
+  "perpsCloseAmountInUsd": {
+    "message": "$"
+  },
+  "perpsCloseAmountInUsdLabel": {
+    "message": "Ingresa el monto de cierre en dólares estadounidenses"
+  },
   "perpsCloseLimitPriceOutsideOracleBand": {
     "message": "El precio no puede distar más del 95 % del precio de mercado"
   },
@@ -7054,6 +7240,9 @@
   },
   "perpsClosePartialMinNotional": {
     "message": "Los cierres parciales deben tener un valor mínimo de $1 USD. Aumenta el monto del cierre o cierra la posición completa."
+  },
+  "perpsClosePercentCappedAtMax": {
+    "message": "El porcentaje de cierre está limitado al 100 %."
   },
   "perpsClosePosition": {
     "message": "Cerrar posición"
@@ -8350,33 +8539,15 @@
   "rampsPaymentDelayMinutes": {
     "message": "min"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "Máx. $1",
-    "description": "$1 is the maximum fiat buy amount"
-  },
   "rampsPaymentMethodMinLimit": {
     "message": "Mín. $1",
     "description": "$1 is the minimum fiat buy amount"
-  },
-  "rampsPreviouslyUsed": {
-    "message": "Usado anteriormente"
-  },
-  "rampsProviders": {
-    "message": "Proveedores"
   },
   "rampsQuoteFetchError": {
     "message": "No se pudo obtener la cotización."
   },
   "rampsQuoteUnavailable": {
     "message": "Cotización no disponible."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Cotizaciones mostradas para $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Seleccionar método de pago"
@@ -9209,16 +9380,16 @@
     "message": "Malicioso"
   },
   "securityTrustMaliciousTokenBannerDescription": {
-    "message": "$1 está marcado como malicioso. Es probable que robe fondos a cualquiera que interactúe con él."
+    "message": "Nuestros socios de seguridad marcaron $1 como de alto riesgo."
   },
   "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
-    "message": "Este token está marcado como malicioso. Es probable que robe fondos a cualquiera que interactúe con él."
+    "message": "Nuestros socios de seguridad marcaron este token como de alto riesgo."
   },
   "securityTrustMaliciousTokenSheetDescription": {
-    "message": "Se detectaron señales de riesgo grave para $1. Te recomendamos no operar con este token."
+    "message": "Nuestros socios de seguridad marcaron $1 como de alto riesgo."
   },
   "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
-    "message": "Se detectaron señales de riesgo grave para este token. Te recomendamos no operar con este token."
+    "message": "Nuestros socios de seguridad marcaron este token como de alto riesgo."
   },
   "securityTrustMaliciousTokenTitle": {
     "message": "Token malicioso"
@@ -9248,10 +9419,10 @@
     "message": "Riesgoso"
   },
   "securityTrustRiskyTokenDescription": {
-    "message": "$1 está marcado como sospechoso. Revisa los riesgos antes de continuar."
+    "message": "Nuestros socios de seguridad detectaron señales de riesgo en el contrato o en la actividad de trading de $1."
   },
   "securityTrustRiskyTokenDescriptionNoSymbol": {
-    "message": "Este token está marcado como sospechoso. Revise los riesgos antes de continuar."
+    "message": "Nuestros socios de seguridad detectaron señales de riesgo en el contrato o en la actividad de trading de este token."
   },
   "securityTrustRiskyTokenTitle": {
     "message": "Token sospechoso"
@@ -9263,13 +9434,13 @@
     "message": "No se detectaron señales de riesgo. Siempre investiga cualquier activo antes de operar."
   },
   "securityTrustSubtitleMalicious": {
-    "message": "Se detectaron señales de riesgo grave. Te recomendamos evitar este activo."
+    "message": "Nuestros socios de seguridad marcaron este token como de alto riesgo."
   },
   "securityTrustSubtitleNoIssues": {
     "message": "No se detectaron señales de riesgo. Siempre investiga cualquier activo antes de operar."
   },
   "securityTrustSubtitleSuspicious": {
-    "message": "Se detectaron señales de precaución. Revisa cuidadosamente los problemas señalados antes de operar con este activo."
+    "message": "Nuestros socios de seguridad detectaron señales de riesgo en el contrato o en la actividad de trading de este token."
   },
   "securityTrustSubtitleUnavailable": {
     "message": "No se pudo cargar el análisis de seguridad de este token."
@@ -9278,10 +9449,10 @@
     "message": "Sospechoso"
   },
   "securityTrustSuspiciousTokenDescription": {
-    "message": "$1 es un token sospechoso."
+    "message": "Nuestros socios de seguridad detectaron señales de riesgo en el contrato o en la actividad de trading de $1."
   },
   "securityTrustSuspiciousTokenDescriptionNoSymbol": {
-    "message": "Este es un token sospechoso."
+    "message": "Nuestros socios de seguridad detectaron señales de riesgo en el contrato o en la actividad de trading de este token."
   },
   "securityTrustTelegram": {
     "message": "Telegram"

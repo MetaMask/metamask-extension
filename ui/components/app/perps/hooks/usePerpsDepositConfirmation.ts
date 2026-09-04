@@ -4,7 +4,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
-import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
+import {
+  ConfirmationLoader,
+  PayWithOption,
+} from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
 import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
 import { usePerpsNetworkManagement } from './usePerpsNetworkManagement';
 
@@ -15,6 +18,7 @@ export type PerpsDepositConfirmationResponse = {
 export type PerpsDepositConfirmationOptions = {
   onCreated?: (transactionId: string) => void;
   navigateOnCreate?: boolean;
+  payWithOption?: PayWithOption;
 };
 
 export type PerpsDepositConfirmationResult = {
@@ -34,7 +38,7 @@ export type PerpsDepositConfirmationResult = {
 export function usePerpsDepositConfirmation(
   options: PerpsDepositConfirmationOptions = {},
 ): PerpsDepositConfirmationResult {
-  const { onCreated, navigateOnCreate = true } = options;
+  const { onCreated, navigateOnCreate = true, payWithOption } = options;
   const navigate = useNavigate();
   const location = useLocation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -70,6 +74,10 @@ export function usePerpsDepositConfirmation(
           loader: ConfirmationLoader.CustomAmount,
         });
 
+        if (payWithOption) {
+          params.set('payWithOption', payWithOption);
+        }
+
         const goBackTo = location.pathname + location.search;
         if (goBackTo && goBackTo !== '/') {
           params.set('goBackTo', goBackTo);
@@ -102,6 +110,7 @@ export function usePerpsDepositConfirmation(
     navigate,
     navigateOnCreate,
     onCreated,
+    payWithOption,
     selectedAccount?.address,
   ]);
 

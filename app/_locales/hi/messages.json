@@ -896,12 +896,24 @@
     "message": "$1 बेचा गया",
     "description": "$1 is the token symbol"
   },
+  "activity_receive_failed_description": {
+    "message": "$1 से",
+    "description": "$1 is the shortened sender address"
+  },
   "activity_receive_failed_title": {
     "message": "प्राप्त नहीं हो पाया"
+  },
+  "activity_receive_pending_description": {
+    "message": "$1 से",
+    "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
     "message": "$1 प्राप्त कर रहे हैं",
     "description": "$1 is the token symbol"
+  },
+  "activity_receive_success_description": {
+    "message": "$1 से",
+    "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
     "message": "$1 प्राप्त किया गया",
@@ -950,12 +962,24 @@
     "message": "$1 बेचा गया",
     "description": "$1 is the token symbol"
   },
+  "activity_send_failed_description": {
+    "message": "$1 को",
+    "description": "$1 is the shortened recipient address"
+  },
   "activity_send_failed_title": {
     "message": "भेजना नहीं हो पाया"
+  },
+  "activity_send_pending_description": {
+    "message": "$1 को",
+    "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
     "message": "$1 भेजा जा रहा है",
     "description": "$1 is the token symbol"
+  },
+  "activity_send_success_description": {
+    "message": "$1 को",
+    "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
     "message": "$1 भेजा गया",
@@ -1428,10 +1452,10 @@
     "message": "हमला करने वाले कभी-कभी साइट के एड्रेस में छोटे-छोटे बदलाव करके साइटों की नकल करते हैं। जारी रखने से पहले सुनिश्चित करें कि आप इच्छित साइट के साथ इंटरैक्ट कर रहे हैं।"
   },
   "alertMessageAddressTrustSignal": {
-    "message": "हम इस एड्रेस की पुष्टि नहीं कर सकते। यह नया या अप्रमाणित हो सकता है। केवल तभी आगे बढ़ें जब आप स्रोत पर भरोसा करते हों।"
+    "message": "सिक्योरिटी पार्टनर के पास इस एड्रेस को वेरिफ़ाई करने के लिए काफ़ी भरोसेमंद हिस्ट्री नहीं है।"
   },
   "alertMessageAddressTrustSignalMalicious": {
-    "message": "यदि आप इस अनुरोध को कन्फर्म करते हैं, तो संभव है कि आप अपनी एसेट्स किसी स्कैमर को खो बैठें।"
+    "message": "सिक्योरिटी पार्टनर्स ने इस एड्रेस को गलत एक्टिविटी के लिए फ़्लैग कर दिया है।"
   },
   "alertMessageBurnAddress": {
     "message": "आप अपनी एसेट्स एक बर्न एड्रेस पर भेज रहे हैं। यदि आप जारी रखते हैं, तो आप अपनी एसेट्स खो देंगे।"
@@ -1501,6 +1525,12 @@
   },
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "आपका पर्प्स बैलेंस चेक नहीं किया जा सका। फिर से कोशिश करें।"
+  },
+  "alertReasonAddressTrustSignalMalicious": {
+    "message": "एड्रेस को हाई रिस्क के तौर पर फ़्लैग किया गया है"
+  },
+  "alertReasonAddressTrustSignalWarning": {
+    "message": "कम एड्रेस सिग्नल"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "पहला इंटरैक्शन"
@@ -2146,6 +2176,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "कीमत की कोई जानकारी नहीं"
   },
+  "bridgeOffHoursDescription": {
+    "message": "मार्केट बंद: कीमत इश्यूअर द्वारा कैलकुलेट की जाती है, लाइव मार्केट डेटा नहीं। अगले उपलब्ध ट्रेडिंग सेशन में मार्केट के फिर से खुलने पर यह अलग हो सकती है।"
+  },
+  "bridgeOffHoursTitle": {
+    "message": "ऑफ-आवर्स ट्रेडिंग"
+  },
   "bridgePoints": {
     "message": "अनुमानित पॉइंट्स",
     "description": "Label for estimated points that can be earned from a bridge or swap"
@@ -2376,6 +2412,22 @@
   },
   "bridgeSendLoading": {
     "message": "सोर्स चेन से भेज रहे हैं"
+  },
+  "bridgeStellarTrustlineWarningCta": {
+    "message": "$1 एक्टिवेट करें",
+    "description": "CTA on the Stellar trustline warning banner. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessage": {
+    "message": "यह स्वैप फेल हो सकता है। स्टेलर पर, आपके अकाउंट में तब तक $1 नहीं आ सकता\n जब तक टोकन आपके वॉलेट में वैलिड ट्रस्टलाइन के साथ एक्टिवेट न हो जाए।",
+    "description": "Body of the Stellar trustline warning on cross-chain swaps when destination is the active account. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessageDifferentAccount": {
+    "message": "यह स्वैप फेल हो सकता है। स्टेलर पर $1 पर $2 तब तक नहीं मिल सकते जब तक आप उस अकाउंट पर स्विच न करें और वैलिड ट्रस्टलाइन के साथ टोकन एक्टिवेट न करें।",
+    "description": "Body of the Stellar trustline warning when the destination account is not the active account. $1 is the destination account name; $2 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningTitle": {
+    "message": "पहले स्टेलर पर $1 एक्टिवेट करें",
+    "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
   },
   "bridgeSuspicious": {
     "message": "संदिग्ध"
@@ -3358,6 +3410,9 @@
   "defiTabErrorTitle": {
     "message": "हम यह पेज लोड नहीं कर सके।"
   },
+  "defiUnsupportedEmptyDescription": {
+    "message": "इस नेटवर्क पर DeFi सपोर्टेड नहीं है।"
+  },
   "delete": {
     "message": "मिटाएं"
   },
@@ -3480,6 +3535,10 @@
   },
   "disconnectSiteDescriptionText": {
     "message": "इससे आपके सभी अकाउंट्स $1 से डिस्कनेक्ट हो जाएंगे। इस dapp को दोबारा उपयोग करने के लिए आपको फिर से कनेक्ट करना होगा।",
+    "description": "$1 is the site hostname"
+  },
+  "disconnectSiteSuccess": {
+    "message": "$1 से सफलतापूर्वक डिस्कनेक्ट हो गया।",
     "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
@@ -4311,9 +4370,25 @@
     "message": "खर्च करने वाला: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
+  "hardwareSwapAmount": {
+    "message": "$3 $4 के लिए $1 $2 को स्वैप करें",
+    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappedAmount": {
+    "message": "$3 $4 के लिए $1 $2 को स्वैप किया गया",
+    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappingAmount": {
+    "message": "$3 $4 के लिए $1 $2 को स्वैप क्र रहे हिन्",
+    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
   "hardwareToAddress": {
     "message": "प्रति: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareToken": {
+    "message": "टोकन: $1",
+    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "आपने अपने डिवाइस पर इस ट्रांज़ैक्शन को रिजेक्ट कर दिया है",
@@ -4371,6 +4446,9 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 लॉक किया गया",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleUnsupportedSignature": {
+    "message": "सिग्नेचर सपोर्टेड नहीं है"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "पक्का करें कि चुने गए अकाउंट के लिए आपका $1 डिवाइस सीक्रेट रिकवरी फ्रेज़ या पासफ्रेज़ के साथ सेट अप है",
@@ -5267,17 +5345,107 @@
   "money": {
     "message": "वित्त"
   },
+  "moneyAccountApyPitch": {
+    "message": "$1 APY कमाएं",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchInfo": {
+    "message": "एपीवाय की जानकारी"
+  },
+  "moneyAccountApyTooltip": {
+    "message": "दिखाया गया रेट मौजूदा मार्केट कंडीशन के आधार पर एक अनुमानित एनुअल परसेंटेज यील्ड (APY) है। APY वेरिएबल है और इसकी गारंटी नहीं है।"
+  },
+  "moneyAccountAvailableBalance": {
+    "message": "उपलब्ध बैलेंस: $1",
+    "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountProjectedBalance": {
+    "message": "अनुमानित 1-वर्षीय बैलेंस:"
+  },
+  "moneyAccountProjectedBalanceInfo": {
+    "message": "अनुमानित 1-वर्षीय बैलेंस"
+  },
+  "moneyAccountProjectedBalanceTooltip": {
+    "message": "प्रोजेक्शन में माना गया है कि $1% एनुअल परसेंटेज यील्ड (APY) एक वर्ष तक अपरिवर्तित रहती है। APY परिवर्तनशील है और इसकी गारंटी नहीं है।",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyActivity": {
     "message": "गतिविधि"
   },
+  "moneyActivityConversionFailed": {
+    "message": "कन्वर्शन नहीं हो पाया"
+  },
+  "moneyActivityConverted": {
+    "message": "कन्वर्ट किया गया"
+  },
+  "moneyActivityConverting": {
+    "message": "कन्वर्ट कर रहे हैं"
+  },
+  "moneyActivityDepositFailed": {
+    "message": "डिपॉज़िट नहीं हो पाया"
+  },
+  "moneyActivityDeposited": {
+    "message": "डिपॉज़िट किया गया"
+  },
+  "moneyActivityDepositing": {
+    "message": "डिपॉज़िट कर रहे हैं"
+  },
+  "moneyActivityEmpty": {
+    "message": "अभी तक कोई गतिविधि नहीं हुई"
+  },
+  "moneyActivityFilterAll": {
+    "message": "सभी"
+  },
+  "moneyActivityFilterDeposits": {
+    "message": "डिपॉज़िट"
+  },
+  "moneyActivityFilterSends": {
+    "message": "भेजता है"
+  },
+  "moneyActivityPending": {
+    "message": "अभी पूरा नहीं हुआ"
+  },
   "moneyActivityPlaceholderDescription": {
     "message": "आपकी मनी एक्टिविटी यहाँ दिखेंगी।"
+  },
+  "moneyActivityReceived": {
+    "message": "प्राप्त किया गया"
+  },
+  "moneyActivityReceivedFrom": {
+    "message": "भेजने वाले: $1"
+  },
+  "moneyActivityReceiving": {
+    "message": "प्राप्त कर रहे हैं"
+  },
+  "moneyActivitySendFailed": {
+    "message": "भेजना नहीं हो पाया"
+  },
+  "moneyActivitySending": {
+    "message": "भेजा जा रहा है"
+  },
+  "moneyActivitySent": {
+    "message": "भेजा गया"
+  },
+  "moneyActivityViewAll": {
+    "message": "सभी देखें"
   },
   "moneyAdd": {
     "message": "जोड़ें"
   },
   "moneyApy": {
     "message": "$1 APY"
+  },
+  "moneyBalanceInfoBody": {
+    "message": "आपका डॉलर-बैक्ड mUSD बैलेंस जो हमेशा खर्च करने, भेजने या कभी भी ट्रेड करने\n के लिए उपलब्ध है। हम इसे आपके कुल अकाउंट बैलेंस में कैलकुलेट नहीं करते हैं।"
+  },
+  "moneyBalanceInfoWithdrawals": {
+    "message": "विदड्रॉल तुरंत प्रोसेस होते हैं, जो रिलेवेंट ब्लॉकचेन पर स्टैंडर्ड नेटवर्क कन्फर्मेशन टाइम के अधीन होते हैं। अगर लिक्विडिटी टाइट है, तो टेम्पररी डिले हो सकता है।"
+  },
+  "moneyBalanceLastKnown": {
+    "message": "आखिरी ज्ञात बैलेंस"
+  },
+  "moneyBalanceTitle": {
+    "message": "Money बैलेंस"
   },
   "moneyBalanceUnavailable": {
     "message": "बैलेंस अनुपलब्ध है"
@@ -5869,6 +6037,9 @@
   "nftTokenIdPlaceholder": {
     "message": "टोकन ID डालें"
   },
+  "nftUnsupportedEmptyDescription": {
+    "message": "इस नेटवर्क पर NFT सपोर्टेड नहीं है।"
+  },
   "nftWarningContent": {
     "message": "आप भविष्य में जिस पर भी आपकी ओनरशिप होगी उसके सहित, $1 को ऐक्सेस प्रदान कर रहे हैं। दूसरे छोर पर मौजूद पक्ष इन NFTs को आपके वॉलेट से किसी भी समय बिना आपसे पूछे तब तक ट्रांसफ़र कर सकता है जब तक कि आप इस एप्रूवल को कैंसिल नहीं कर देते। $2",
     "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
@@ -6459,7 +6630,7 @@
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNotSupported": {
-    "message": "पासकी सपोर्टेड नहीं है",
+    "message": "MetaMask यहां सेव की गई पासकी का इस्तेमाल नहीं कर सकता। फिर से कोशिश करें और इसे पासवर्ड मैनेजर में सेव करें।",
     "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
@@ -7039,6 +7210,15 @@
   "perpsCloseAmount": {
     "message": "अमाउंट क्लोज़ करें"
   },
+  "perpsCloseAmountCappedAtPosition": {
+    "message": "क्लोज़ अमाउंट आपकी पोज़ीशन वैल्यू पर कैप्ड है।"
+  },
+  "perpsCloseAmountInPercentLabel": {
+    "message": "क्लोज़ अमाउंट अपनी पोज़ीशन के परसेंटेज के तौर पर डालें"
+  },
+  "perpsCloseAmountInUsdLabel": {
+    "message": "क्लोज़ अमाउंट US डॉलर में डालें"
+  },
   "perpsCloseLimitPriceOutsideOracleBand": {
     "message": "प्राइस मार्केट प्राइस से 95% से अधिक अंतर पर नहीं हो सकती"
   },
@@ -7050,6 +7230,9 @@
   },
   "perpsClosePartialMinNotional": {
     "message": "पार्शियल क्लोज़ कम से कम $1 USD वैल्यू का होना चाहिए। क्लोज़ अमाउंट बढ़ाएं या पूरी पोज़िशन क्लोज करें।"
+  },
+  "perpsClosePercentCappedAtMax": {
+    "message": "क्लोज़ परसेंटेज 100% पर कैप्ड है।"
   },
   "perpsClosePosition": {
     "message": "पोज़िशन बंद करें"
@@ -8342,33 +8525,15 @@
   "rampsPaymentDelayMinutes": {
     "message": "मिनट"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "अधिकतम $1",
-    "description": "$1 is the maximum fiat buy amount"
-  },
   "rampsPaymentMethodMinLimit": {
     "message": "न्यूनतम $1",
     "description": "$1 is the minimum fiat buy amount"
-  },
-  "rampsPreviouslyUsed": {
-    "message": "पहले इस्तेमाल किया गया"
-  },
-  "rampsProviders": {
-    "message": "प्रोवाइडर्स"
   },
   "rampsQuoteFetchError": {
     "message": "कोटेशन प्राप्त नहीं हो पाया।"
   },
   "rampsQuoteUnavailable": {
     "message": "कोटेशन उपलब्ध नहीं है।"
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "$1 के लिए कोटेशन दिखाए गए हैं।",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "भुगतान विधि चुनें"
@@ -9201,16 +9366,16 @@
     "message": "बुरी नीयत वाला"
   },
   "securityTrustMaliciousTokenBannerDescription": {
-    "message": "$1 को गलत इरादे वाला बताया गया है। इससे इंटरैक्ट करने वाले किसी भी व्यक्ति के पैसे चोरी होने की संभावना है।"
+    "message": "सिक्योरिटी पार्टनर्स $1 को हाई रिस्क बताते हैं।"
   },
   "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
-    "message": "यह टोकन गलत इरादे वाला बताया गया है। इससे इंटरैक्ट करने वाले किसी भी व्यक्ति के पैसे चोरी होने की संभावना है।"
+    "message": "सिक्योरिटी पार्टनर इस टोकन को हाई रिस्क के तौर पर फ़्लैग करते हैं।"
   },
   "securityTrustMaliciousTokenSheetDescription": {
-    "message": "$1 पर गंभीर जोखिम के संकेत मिले हैं। हम इस टोकन को ट्रेड न करने की सलाह देते हैं।"
+    "message": "सिक्योरिटी पार्टनर्स $1 को हाई रिस्क बताते हैं।"
   },
   "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
-    "message": "इस टोकन पर गंभीर जोखिम के संकेत मिले हैं। हम इस टोकन में ट्रेड न करने की सलाह देते हैं।"
+    "message": "सिक्योरिटी पार्टनर इस टोकन को हाई रिस्क के तौर पर फ़्लैग करते हैं।"
   },
   "securityTrustMaliciousTokenTitle": {
     "message": "बुरी नीयत वाला टोकन"
@@ -9240,10 +9405,10 @@
     "message": "जोखिम से भरा"
   },
   "securityTrustRiskyTokenDescription": {
-    "message": "$1 को गलत इरादे वाला बताया गया है। आगे बढ़ने से पहले जोखिमों पर एक नज़र डालें।"
+    "message": "सिक्योरिटी पार्टनर्स को $1 के कॉन्ट्रैक्ट या ट्रेडिंग एक्टिविटी में रिस्क सिग्नल मिले।"
   },
   "securityTrustRiskyTokenDescriptionNoSymbol": {
-    "message": "यह टोकन गलत इरादे वाला बताया गया है। आगे बढ़ने से पहले जोखिमों पर एक नज़र डालें।"
+    "message": "सिक्योरिटी पार्टनर्स को इस टोकन के कॉन्ट्रैक्ट या ट्रेडिंग एक्टिविटी में रिस्क सिग्नल मिले।"
   },
   "securityTrustRiskyTokenTitle": {
     "message": "संदिग्ध टोकन"
@@ -9255,13 +9420,13 @@
     "message": "जोखिम का कोई संकेत नहीं मिला। ट्रेड करने से पहले किसी भी एसेट में रिसर्च ज़रूर करें।"
   },
   "securityTrustSubtitleMalicious": {
-    "message": "गंभीर जोखिम के संकेत मिले हैं। हम इस एसेट से बचने की सलाह देते हैं।"
+    "message": "सिक्योरिटी पार्टनर इस टोकन को हाई रिस्क के तौर पर फ़्लैग करते हैं।"
   },
   "securityTrustSubtitleNoIssues": {
     "message": "जोखिम का कोई संकेत नहीं मिला। ट्रेड करने से पहले किसी भी एसेट में रिसर्च ज़रूर करें।"
   },
   "securityTrustSubtitleSuspicious": {
-    "message": "चेतावनी के संकेत मिले हैं। इस एसेट में ट्रेड करने से पहले फ़्लैग किए गए मुद्दों को ध्यान से देखें।"
+    "message": "सिक्योरिटी पार्टनर्स को इस टोकन के कॉन्ट्रैक्ट या ट्रेडिंग एक्टिविटी में रिस्क सिग्नल मिले।"
   },
   "securityTrustSubtitleUnavailable": {
     "message": "इस टोकन के लिए सिक्योरिटी एनालिसिस लोड नहीं किया जा सका।"
@@ -9270,10 +9435,10 @@
     "message": "संदिग्ध"
   },
   "securityTrustSuspiciousTokenDescription": {
-    "message": "$1 एक संदिग्ध टोकन है।"
+    "message": "सिक्योरिटी पार्टनर्स को $1 के कॉन्ट्रैक्ट या ट्रेडिंग एक्टिविटी में रिस्क सिग्नल मिले।"
   },
   "securityTrustSuspiciousTokenDescriptionNoSymbol": {
-    "message": "यह एक संदिग्ध टोकन है।"
+    "message": "सिक्योरिटी पार्टनर्स को इस टोकन के कॉन्ट्रैक्ट या ट्रेडिंग एक्टिविटी में रिस्क सिग्नल मिले।"
   },
   "securityTrustTelegram": {
     "message": "टेलीग्राम"

@@ -375,7 +375,7 @@ function mockGetMaxAllowedAmount({
 // Mirrors DEFAULT_PRO_LAYOUT_PREFERENCES in @metamask/perps-controller.
 const mockDefaultProLayoutPreferences = {
   orderBookExpanded: false,
-  chartExpanded: false,
+  chartExpanded: true,
   orderBookPosition: 'left',
   orderFormPosition: 'right',
   positionsSideFilter: 'all',
