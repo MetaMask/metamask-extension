@@ -112,6 +112,11 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
+const mockDisconnectAccountGroup = jest.fn().mockResolvedValue(undefined);
+jest.mock('../../../hooks/useDisconnectAccountGroup', () => ({
+  useDisconnectAccountGroup: () => mockDisconnectAccountGroup,
+}));
+
 jest.mock('../../../hooks/useAnalytics', () => {
   const mockTrackEvent = jest.fn();
 
@@ -1557,11 +1562,6 @@ describe('MultichainAccountList', () => {
         ),
       );
 
-      expect(mockSetAccountGroupHidden).toHaveBeenCalledWith(
-        walletOneGroupId,
-        true,
-      );
-
       const updatedCell = screen.getByTestId(
         `multichain-account-cell-${walletOneGroupId}`,
       );
@@ -1572,8 +1572,12 @@ describe('MultichainAccountList', () => {
         ),
       ).toBeInTheDocument();
 
-      // Let the in-flight write settle so its state update lands inside act().
-      await act(async () => undefined);
+      await waitFor(() =>
+        expect(mockSetAccountGroupHidden).toHaveBeenCalledWith(
+          walletOneGroupId,
+          true,
+        ),
+      );
     });
 
     it('reveals a hidden account when its icon is clicked', async () => {
@@ -1596,8 +1600,33 @@ describe('MultichainAccountList', () => {
         screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
       ).not.toHaveClass('multichain-account-cell--hidden');
       expect(mockSetAccountGroupPinned).not.toHaveBeenCalled();
+      expect(mockDisconnectAccountGroup).not.toHaveBeenCalled();
 
       await act(async () => undefined);
+    });
+
+    it('disconnects an account from its dapps when it is hidden', async () => {
+      renderComponent({ isEditMode: true });
+
+      fireEvent.click(
+        within(
+          screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+        ).getByTestId('multichain-account-cell-edit-mode-visible-icon'),
+      );
+
+      await waitFor(() =>
+        expect(mockDisconnectAccountGroup).toHaveBeenCalledWith(
+          walletOneGroupId,
+        ),
+      );
+      // Hiding waits for the disconnect so a failure leaves the account
+      // visible and connected instead of hidden and connected.
+      await waitFor(() =>
+        expect(mockSetAccountGroupHidden).toHaveBeenCalledWith(
+          walletOneGroupId,
+          true,
+        ),
+      );
     });
 
     it('unpins a pinned account when it is hidden', async () => {
@@ -1738,7 +1767,9 @@ describe('MultichainAccountList', () => {
       clickVisibilityIcon('multichain-account-cell-edit-mode-hidden-icon');
       clickVisibilityIcon('multichain-account-cell-edit-mode-visible-icon');
 
-      expect(settleWrites).toHaveLength(3);
+      // Hiding waits on the disconnect, so the writes start in a different
+      // order than the clicks, with the last click's write starting last.
+      await waitFor(() => expect(settleWrites).toHaveLength(3));
 
       // The first two writes settle late, and neither of them owns the
       // override anymore, so the account stays hidden as the last click asked.

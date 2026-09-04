@@ -29,6 +29,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useDisconnectAccountGroup } from '../../../hooks/useDisconnectAccountGroup';
 import { useDispatch } from '../../../store/hooks';
 import { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
@@ -45,6 +46,7 @@ export const MultichainAccountMenu = ({
   const popoverRef = useRef<HTMLDivElement>(null);
   const accountTree = useSelector(getAccountTree);
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const disconnectAccountGroup = useDisconnectAccountGroup();
 
   // Get the account group metadata to check pinned/hidden state
   const accountGroupMetadata = useMemo(() => {
@@ -168,6 +170,12 @@ export const MultichainAccountMenu = ({
         await dispatch(setAccountGroupPinned(accountGroupId, false));
       }
 
+      if (newHiddenState) {
+        // A hidden account cannot be managed from the list, so leaving it
+        // connected would strand dapp permissions out of the user's reach.
+        await disconnectAccountGroup(accountGroupId);
+      }
+
       await dispatch(setAccountGroupHidden(accountGroupId, newHiddenState));
 
       // Track the Account Hidden event
@@ -239,6 +247,7 @@ export const MultichainAccountMenu = ({
     isPinned,
     isHidden,
     dispatch,
+    disconnectAccountGroup,
     onToggle,
     trackEvent,
     countAccountsByStatus,

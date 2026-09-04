@@ -76,6 +76,7 @@ import { useFormatters } from '../../../hooks/useFormatters';
 import { getAccountGroupDisplayBalance } from '../../../helpers/utils/account-group-balance';
 import { VirtualizedList } from '../../ui/virtualized-list/virtualized-list';
 import { useDispatch } from '../../../store/hooks';
+import { useDisconnectAccountGroup } from '../../../hooks/useDisconnectAccountGroup';
 import { animateAccountListReorder } from './animate-account-list-reorder';
 
 export type MultichainAccountListProps = {
@@ -215,6 +216,7 @@ export const MultichainAccountList = ({
   const navigate = useNavigate();
   const [isPending, startTransition] = useTransition();
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const disconnectAccountGroup = useDisconnectAccountGroup();
   const t = useI18nContext();
   const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
     getDefaultHomeActiveTabName,
@@ -348,8 +350,13 @@ export const MultichainAccountList = ({
         // account has to be unpinned as it is hidden or it would stay put
         // looking untouched. This mirrors the account menu's hide action.
         const group = findAccountGroup(wallets, accountGroupId);
-        if (nextHidden && group?.metadata.pinned) {
-          await dispatch(setAccountGroupPinned(accountGroupId, false));
+        if (nextHidden) {
+          if (group?.metadata.pinned) {
+            await dispatch(setAccountGroupPinned(accountGroupId, false));
+          }
+          // A hidden account cannot be managed from the list, so leaving it
+          // connected would strand dapp permissions out of the user's reach.
+          await disconnectAccountGroup(accountGroupId);
         }
 
         await dispatch(setAccountGroupHidden(accountGroupId, nextHidden));
@@ -363,7 +370,7 @@ export const MultichainAccountList = ({
         }
       }
     },
-    [dispatch, wallets],
+    [disconnectAccountGroup, dispatch, wallets],
   );
 
   const handleMenuToggle = useCallback((accountGroupId: AccountGroupId) => {
