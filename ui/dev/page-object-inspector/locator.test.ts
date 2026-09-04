@@ -32,6 +32,19 @@ describe('isGoodLocator', () => {
     ).toBe(true);
   });
 
+  it('treats css chunks that mention data-testid as good', () => {
+    expect(
+      isGoodLocator(
+        selector({
+          id: 'Home.btn',
+          kind: 'css',
+          chunks: ['[data-testid="', '"]'],
+          params: ['name'],
+        }),
+      ),
+    ).toBe(true);
+  });
+
   it('treats generic css as not good', () => {
     expect(
       isGoodLocator(

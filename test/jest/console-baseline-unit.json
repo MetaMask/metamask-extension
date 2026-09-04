@@ -450,6 +450,9 @@
     "ui/contexts/metametrics.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 1
     },
+    "ui/dev/page-object-inspector/inspector.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 8
+    },
     "ui/ducks/bridge/asset-selectors.test.ts": {
       "Reselect: Input stability warnings": 1
     },
@@ -881,6 +884,9 @@
     },
     "ui/pages/settings/debug-tab/debug-content/debug-content.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 12,
+      "React: componentWill* lifecycle deprecations": 1
+    },
+    "ui/pages/settings/debug-tab/debug-content/page-object-inspector.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings/debug-tab/debug-content/toggle-row-component.test.tsx": {

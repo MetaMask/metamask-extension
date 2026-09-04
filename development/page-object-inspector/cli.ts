@@ -142,7 +142,11 @@ function runCommand(options: CliOptions): number {
   return shouldFail(overlaps, options) ? 1 : 0;
 }
 
-const exitCode = run(process.argv.slice(2));
-if (exitCode !== 0) {
-  process.exit(exitCode);
+// Jest sets JEST_WORKER_ID; skip the process.exit side effect when this
+// module is imported by unit tests.
+if (!process.env.JEST_WORKER_ID) {
+  const exitCode = run(process.argv.slice(2));
+  if (exitCode !== 0) {
+    process.exit(exitCode);
+  }
 }

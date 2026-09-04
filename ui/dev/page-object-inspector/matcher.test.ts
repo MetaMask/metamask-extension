@@ -307,4 +307,163 @@ describe('stampOwnership', () => {
 
     expect(result.stamped).toBe(2);
   });
+
+  it('matches tagText, text, cssText, and xpath selectors', () => {
+    document.body.innerHTML =
+      '<button>Buy</button><span>Only this</span><a class="btn">Continue</a>';
+
+    const result = stampOwnership(
+      document,
+      indexOf(
+        {
+          className: 'BuyPage',
+          selectors: [
+            selector({
+              id: 'BuyPage.buy',
+              kind: 'tagText',
+              value: 'button',
+              text: 'Buy',
+            }),
+          ],
+        },
+        {
+          className: 'TextPage',
+          selectors: [
+            selector({
+              id: 'TextPage.only',
+              kind: 'text',
+              text: 'Only this',
+            }),
+          ],
+        },
+        {
+          className: 'LinkPage',
+          selectors: [
+            selector({
+              id: 'LinkPage.continue',
+              kind: 'cssText',
+              value: 'a.btn',
+              text: 'Continue',
+            }),
+          ],
+        },
+      ),
+    );
+
+    expect(result.stamped).toBe(3);
+    expect(
+      document.querySelector('button')?.getAttribute('data-po-owner'),
+    ).toBe('BuyPage');
+  });
+
+  it('matches an xpath selector', () => {
+    document.body.innerHTML = '<h1 id="title">Hello</h1>';
+
+    stampOwnership(
+      document,
+      indexOf({
+        className: 'HeaderPage',
+        selectors: [
+          selector({
+            id: 'HeaderPage.title',
+            kind: 'xpath',
+            value: '//h1[@id="title"]',
+          }),
+        ],
+      }),
+    );
+
+    expect(document.querySelector('h1')?.getAttribute('data-po-owner')).toBe(
+      'HeaderPage',
+    );
+  });
+
+  it('reports unsupported selectors it cannot run', () => {
+    const result = stampOwnership(
+      document,
+      indexOf({
+        className: 'HomePage',
+        selectors: [
+          selector({
+            id: 'HomePage.dynamic',
+            chunks: ['foo', 'bar', 'baz'],
+            isDynamic: true,
+          }),
+          selector({ id: 'HomePage.xpath', kind: 'xpath' }),
+          selector({ id: 'HomePage.tag', kind: 'tagText', value: 'button' }),
+          selector({ id: 'HomePage.text', kind: 'text' }),
+          selector({ id: 'HomePage.cssText', kind: 'cssText', value: '.x' }),
+        ],
+      }),
+    );
+
+    expect(result.unsupported).toBe(5);
+  });
+
+  it('rewrites a dynamic testId and a prefix-only attribute selector', () => {
+    document.body.innerHTML =
+      '<div data-testid="item-mainnet"></div><input name="amount" />';
+
+    stampOwnership(
+      document,
+      indexOf(
+        {
+          className: 'ListPage',
+          selectors: [
+            selector({
+              id: 'ListPage.item',
+              kind: 'testId',
+              chunks: ['item-', ''],
+              params: ['name'],
+              isDynamic: true,
+            }),
+          ],
+        },
+        {
+          className: 'FormPage',
+          selectors: [
+            selector({
+              id: 'FormPage.amount',
+              chunks: ['[name="', '"]'],
+              params: ['field'],
+              isDynamic: true,
+            }),
+          ],
+        },
+      ),
+    );
+
+    expect(
+      document
+        .querySelector('[data-testid="item-mainnet"]')
+        ?.getAttribute('data-po-owner'),
+    ).toBe('ListPage');
+    expect(document.querySelector('input')?.getAttribute('data-po-owner')).toBe(
+      'FormPage',
+    );
+  });
+
+  it('marks selectors that match many elements as viewport wrappers', () => {
+    document.body.innerHTML = Array.from(
+      { length: 6 },
+      (_, index) => `<span data-testid="row-${index}"></span>`,
+    ).join('');
+
+    stampOwnership(
+      document,
+      indexOf({
+        className: 'ListPage',
+        selectors: [
+          selector({
+            id: 'ListPage.row',
+            value: 'span',
+          }),
+        ],
+      }),
+    );
+
+    expect(
+      document.querySelector('span')?.hasAttribute('data-po-viewport'),
+    ).toBe(true);
+  });
 });

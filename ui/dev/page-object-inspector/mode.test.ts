@@ -72,6 +72,19 @@ describe('inspector settings', () => {
     expect(listener).not.toHaveBeenCalled();
   });
 
+  it('still notifies subscribers when storage writes fail', () => {
+    const listener = jest.fn();
+    subscribeToInspectorSettings(listener);
+    jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('denied');
+    });
+
+    writeInspectorSettings({ hover: true, outline: false });
+
+    expect(listener).toHaveBeenCalledWith({ hover: true, outline: false });
+    jest.restoreAllMocks();
+  });
+
   it('reports off when storage is unavailable', () => {
     jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
       throw new Error('denied');
