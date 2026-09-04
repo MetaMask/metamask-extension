@@ -384,8 +384,8 @@ describe('Trace', () => {
     });
   });
 
-  describe('getActiveSpan fallback', () => {
-    it('inherits from active span when no parentContext provided', () => {
+  describe('active-span fallback (opt-in via allowActiveSpanFallback)', () => {
+    it('does not inherit from the active span when the flag is absent', () => {
       const activeSpanMock = {
         spanContext: jest.fn().mockReturnValue({
           traceId: 'abc123',
@@ -397,34 +397,171 @@ describe('Trace', () => {
 
       trace({ name: NAME_MOCK }, () => true);
 
-      expect(getActiveSpanMock).toHaveBeenCalledTimes(1);
+      // The span must start as a root, not grafted onto the ambient span, and
+      // the ambient span must not even be looked up.
       expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentSpan: null,
+        }),
+        expect.any(Function),
+      );
+      expect(startSpanMock).not.toHaveBeenCalledWith(
         expect.objectContaining({
           parentSpan: activeSpanMock,
         }),
         expect.any(Function),
       );
+      expect(getActiveSpanMock).not.toHaveBeenCalled();
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
     });
 
-    it('does not call getActiveSpan when parentContext is provided', () => {
+    it('inherits the active span and forces a transaction only when the flag is set', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK, allowActiveSpanFallback: true }, () => true);
+      trace({ name: NAME_MOCK, id: ID_MOCK }, () => true);
+
+      // Asserted as a pair: the flag, and nothing else, is what separates the
+      // inheriting call from the rooting one.
+      const [optedIn] = startSpanMock.mock.calls[0];
+      const [optedOut] = startSpanMock.mock.calls[1];
+
+      expect(optedIn).toStrictEqual(
+        expect.objectContaining({
+          parentSpan: activeSpanMock,
+          forceTransaction: true,
+        }),
+      );
+      expect(optedOut).toStrictEqual(
+        expect.objectContaining({
+          parentSpan: null,
+        }),
+      );
+      expect(optedOut).not.toHaveProperty('forceTransaction');
+    });
+
+    it('lets an explicit parentContext win over the flag, without consulting getActiveSpan', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
       trace(
-        { name: NAME_MOCK, parentContext: PARENT_CONTEXT_MOCK },
+        {
+          name: NAME_MOCK,
+          parentContext: PARENT_CONTEXT_MOCK,
+          allowActiveSpanFallback: true,
+        },
         () => true,
       );
 
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentSpan: PARENT_CONTEXT_MOCK,
+        }),
+        expect.any(Function),
+      );
       expect(getActiveSpanMock).not.toHaveBeenCalled();
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
     });
 
-    it('uses null parentSpan when no active span and no parentContext', () => {
+    it('roots the span when the flag is set but no active span exists', () => {
       getActiveSpanMock.mockReturnValue(undefined);
 
-      trace({ name: NAME_MOCK }, () => true);
+      expect(() => {
+        trace({ name: NAME_MOCK, allowActiveSpanFallback: true }, () => true);
+      }).not.toThrow();
 
       expect(startSpanMock).toHaveBeenCalledWith(
         expect.objectContaining({
           parentSpan: null,
         }),
         expect.any(Function),
+      );
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
+    });
+
+    it('still honours an explicitly provided parentContext', () => {
+      trace(
+        { name: NAME_MOCK, parentContext: PARENT_CONTEXT_MOCK },
+        () => true,
+      );
+
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentSpan: PARENT_CONTEXT_MOCK,
+        }),
+        expect.any(Function),
+      );
+    });
+  });
+
+  describe('forceTransaction', () => {
+    it('is absent when an active span exists but the flag is not set', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK }, () => true);
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
+    });
+
+    it('is absent when a parentContext is provided', () => {
+      trace(
+        { name: NAME_MOCK, parentContext: PARENT_CONTEXT_MOCK },
+        () => true,
+      );
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
+    });
+
+    it('is absent on the manually-ended (startSpanManual) path when the flag is not set', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK, id: ID_MOCK });
+
+      const [spanOptions] = startSpanManualMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
+      expect(spanOptions).toStrictEqual(
+        expect.objectContaining({ parentSpan: null }),
+      );
+    });
+
+    it('is true on the manually-ended (startSpanManual) path when the flag is set', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK, id: ID_MOCK, allowActiveSpanFallback: true });
+
+      const [spanOptions] = startSpanManualMock.mock.calls[0];
+      expect(spanOptions).toStrictEqual(
+        expect.objectContaining({
+          parentSpan: activeSpanMock,
+          forceTransaction: true,
+        }),
       );
     });
   });
