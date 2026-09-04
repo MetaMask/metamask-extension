@@ -601,6 +601,34 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
     ]);
   });
 
+  it('returns alert when pending amount exceeds money-account balance without a pay token', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      isNative: false,
+      setPayToken: jest.fn(),
+    });
+    useMoneyAccountWithdrawableFiatMock.mockReturnValue({
+      withdrawableFiatRaw: '10',
+      withdrawableFiatFormatted: '$10.00',
+    });
+
+    const { result } = runHook(
+      { pendingAmountUsd: '25.00' },
+      { paymentOverride: PaymentOverride.MoneyAccount },
+    );
+
+    expect(result.current).toStrictEqual([
+      {
+        key: AlertsName.InsufficientPayTokenBalance,
+        field: RowAlertKey.EstimatedFee,
+        isBlocking: true,
+        reason: expect.stringContaining('Insufficient funds'),
+        message: expect.stringContaining('Insufficient funds'),
+        severity: Severity.Danger,
+      },
+    ]);
+  });
+
   // For Perps Withdraw (and other post-quote flows), `payToken` is the
   // *destination* token — its balance has nothing to do with whether the
   // user can fund the withdraw. Only the source-network gas check on the

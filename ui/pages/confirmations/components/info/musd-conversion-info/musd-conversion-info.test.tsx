@@ -156,6 +156,7 @@ function setupDefaultMocks({
       useTransactionCustomAmountAlertsModule.useTransactionCustomAmountAlerts,
     )
     .mockReturnValue({
+      hasAlert: false,
       hideResults,
       disableUpdate: false,
     });

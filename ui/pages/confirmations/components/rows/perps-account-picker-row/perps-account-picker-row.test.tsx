@@ -4,7 +4,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequestOptional } from '../../../hooks/transactions/useTransactionMetadataRequest';
 import {
   PayWithOption,
   useConfirmationNavigationOptions,
@@ -20,7 +20,7 @@ import {
   PerpsAccountPickerRow,
 } from './perps-account-picker-row';
 
-jest.mock('../../../context/confirm');
+jest.mock('../../../hooks/transactions/useTransactionMetadataRequest');
 jest.mock('../../../hooks/useConfirmationNavigation', () => ({
   PayWithOption: { MoneyAccount: 'money_account' },
   useConfirmationNavigationOptions: jest.fn(),
@@ -64,7 +64,9 @@ const MOCK_ACCOUNTS: SubAccountInfo[] = [
 const mockStore = configureStore([thunk]);
 
 describe('PerpsAccountPickerRow', () => {
-  const useConfirmContextMock = jest.mocked(useConfirmContext);
+  const useTransactionMetadataRequestOptionalMock = jest.mocked(
+    useTransactionMetadataRequestOptional,
+  );
   const useConfirmationNavigationOptionsMock = jest.mocked(
     useConfirmationNavigationOptions,
   );
@@ -78,13 +80,11 @@ describe('PerpsAccountPickerRow', () => {
       payWithOption: PayWithOption.MoneyAccount,
     } as ReturnType<typeof useConfirmationNavigationOptions>);
 
-    useConfirmContextMock.mockReturnValue({
-      currentConfirmation: {
-        id: TX_ID_MOCK,
-        chainId: CHAIN_ID_MOCK,
-        type: TransactionType.perpsDeposit,
-        txParams: { from: FROM_ADDRESS_MOCK },
-      },
+    useTransactionMetadataRequestOptionalMock.mockReturnValue({
+      id: TX_ID_MOCK,
+      chainId: CHAIN_ID_MOCK,
+      type: TransactionType.perpsDeposit,
+      txParams: { from: FROM_ADDRESS_MOCK },
     } as never);
 
     usePerpsSubAccountsMock.mockReturnValue({
@@ -117,12 +117,10 @@ describe('PerpsAccountPickerRow', () => {
   });
 
   it('renders nothing when the confirmation is not a perps deposit', () => {
-    useConfirmContextMock.mockReturnValue({
-      currentConfirmation: {
-        id: TX_ID_MOCK,
-        type: TransactionType.simpleSend,
-        txParams: { from: FROM_ADDRESS_MOCK },
-      },
+    useTransactionMetadataRequestOptionalMock.mockReturnValue({
+      id: TX_ID_MOCK,
+      type: TransactionType.simpleSend,
+      txParams: { from: FROM_ADDRESS_MOCK },
     } as never);
 
     renderWithProvider(<PerpsAccountPickerRow />, mockStore({}));
@@ -241,11 +239,9 @@ describe('PerpsAccountPickerRow', () => {
   });
 
   it('does not update the transaction when it has no id', () => {
-    useConfirmContextMock.mockReturnValue({
-      currentConfirmation: {
-        type: TransactionType.perpsDeposit,
-        txParams: { from: FROM_ADDRESS_MOCK },
-      },
+    useTransactionMetadataRequestOptionalMock.mockReturnValue({
+      type: TransactionType.perpsDeposit,
+      txParams: { from: FROM_ADDRESS_MOCK },
     } as never);
 
     renderWithProvider(<PerpsAccountPickerRow />, mockStore({}));

@@ -161,6 +161,8 @@ export const CustomAmountInfo = React.memo(
     const isAwaitingRequiredToken =
       !disablePay && !primaryRequiredToken && !isWithdraw;
 
+    // disableUpdate only depends on account/hardware/signing alerts, not the
+    // typed amount — evaluate without pending fiat so amount state can load.
     const { disableUpdate } = useTransactionCustomAmountAlerts();
 
     const {
@@ -177,6 +179,11 @@ export const CustomAmountInfo = React.memo(
       disableUpdate,
       prefillMaxOnLoad,
     });
+
+    const { alertMessage, hasAlert, hideResults } =
+      useTransactionCustomAmountAlerts({
+        pendingFiatAmount: amountFiat,
+      });
 
     const { isNative: isNativePayToken, payToken } = useTransactionPayToken();
     const { isNoFeeToken } = usePayWithNoFeeToken();
@@ -221,6 +228,7 @@ export const CustomAmountInfo = React.memo(
           amountHuman={amountHuman}
           currency={currency}
           disablePay={disablePay}
+          hasAlert={hasAlert}
           hasInput={hasInput}
           hasTokens={hasTokens}
           hidePayTokenAmount={hidePayTokenAmount}
@@ -230,7 +238,7 @@ export const CustomAmountInfo = React.memo(
         >
           {children}
         </CenterContainer>
-        <AlertMessage />
+        <AlertMessage alertMessage={alertMessage} />
         {displayPercentageButtons && (
           <PercentageButtons
             disabled={!hasTokens || Boolean(disablePercentageButtons)}
@@ -244,6 +252,7 @@ export const CustomAmountInfo = React.memo(
             disablePay={disablePay}
             displayAccountRow={displayAccountRow}
             hasAmount={hasAmount}
+            hideResults={hideResults}
           />
         )}
       </Box>
@@ -278,6 +287,7 @@ type CenterContainerProps = {
   children?: ReactNode;
   currency?: string;
   disablePay?: boolean;
+  hasAlert?: boolean;
   hasInput: boolean;
   hasTokens: boolean;
   hidePayTokenAmount?: boolean;
@@ -294,6 +304,7 @@ function CenterContainer({
   children,
   currency,
   disablePay,
+  hasAlert = false,
   hasInput,
   hasTokens,
   hidePayTokenAmount,
@@ -315,6 +326,7 @@ function CenterContainer({
         autoFocus={autoFocusAmount}
         currency={currency}
         disabled={!hasTokens}
+        hasAlert={hasAlert}
         isLoading={isAmountLoading}
         onChange={onAmountChange}
       />
@@ -366,15 +378,16 @@ function BottomContainer({
   disablePay,
   displayAccountRow,
   hasAmount,
+  hideResults,
 }: {
   amountFiat: string;
   disablePay?: boolean;
   displayAccountRow?: boolean;
   hasAmount: boolean;
+  hideResults: boolean;
 }) {
   const t = useI18nContext();
   const isResultReady = useIsResultReady(hasAmount, disablePay);
-  const { hideResults } = useTransactionCustomAmountAlerts();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
@@ -460,9 +473,7 @@ function useIsResultReady(hasAmount: boolean, disablePay?: boolean) {
   return Boolean(disablePay) || isQuotePending || Boolean(quotes?.length);
 }
 
-function AlertMessage() {
-  const { alertMessage } = useTransactionCustomAmountAlerts();
-
+function AlertMessage({ alertMessage }: { alertMessage?: string }) {
   if (!alertMessage) {
     return null;
   }
