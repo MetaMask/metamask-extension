@@ -5309,6 +5309,10 @@
   "manage": {
     "message": "Manage"
   },
+  "manageAccounts": {
+    "message": "Manage accounts",
+    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
+  },
   "manageConnectedAccounts": {
     "message": "Manage connected accounts"
   },

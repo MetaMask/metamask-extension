@@ -44,6 +44,7 @@ const searchContainerTestId = 'multichain-account-list-search';
 const searchClearButtonTestId = 'text-field-search-clear-button';
 const walletHeaderTestId = 'multichain-account-tree-wallet-header';
 const addWalletButtonTestId = 'account-list-add-wallet-button';
+const manageButtonTestId = 'account-list-page-manage-button';
 
 describe('AccountList', () => {
   beforeEach(() => {
@@ -321,6 +322,60 @@ describe('AccountList', () => {
       expect(
         within(addWalletButton).getByText(messages.addWallet.message),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('Manage accounts mode', () => {
+    it('starts outside manage mode', () => {
+      renderComponent();
+
+      expect(screen.getByText(messages.accounts.message)).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.manageAccounts.message),
+      ).not.toBeInTheDocument();
+      expect(screen.getByTestId(manageButtonTestId)).toHaveAttribute(
+        'aria-pressed',
+        'false',
+      );
+      expect(
+        screen.queryByTestId('multichain-account-cell-edit-mode-visible-icon'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('swaps the title and puts the list in edit mode when toggled on', () => {
+      renderComponent();
+
+      fireEvent.click(screen.getByTestId(manageButtonTestId));
+
+      expect(
+        screen.getByText(messages.manageAccounts.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.accounts.message),
+      ).not.toBeInTheDocument();
+      expect(screen.getByTestId(manageButtonTestId)).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      expect(
+        screen.getAllByTestId('multichain-account-cell-edit-mode-visible-icon'),
+      ).not.toHaveLength(0);
+    });
+
+    it('returns to the default title and list when toggled off again', () => {
+      renderComponent();
+
+      const manageButton = screen.getByTestId(manageButtonTestId);
+      fireEvent.click(manageButton);
+      fireEvent.click(manageButton);
+
+      expect(screen.getByText(messages.accounts.message)).toBeInTheDocument();
+      expect(
+        screen.queryByText(messages.manageAccounts.message),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('multichain-account-cell-edit-mode-visible-icon'),
+      ).not.toBeInTheDocument();
     });
   });
 });
