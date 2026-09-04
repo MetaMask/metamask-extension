@@ -1,7 +1,6 @@
 import log from 'loglevel';
 import { PLATFORM_FIREFOX } from '#shared/constants/app';
 import { getPlatform } from './lib/util';
-import type MetaMaskController from './metamask-controller';
 import type ExtensionPlatform from './platforms/extension';
 import type { AppStateController } from './controllers/app-state-controller';
 
@@ -15,7 +14,6 @@ type OnUpdateAppStateController = Pick<
 };
 
 type OnUpdateController = {
-  store: MetaMaskController['store'];
   appStateController: OnUpdateAppStateController;
 };
 
@@ -26,19 +24,21 @@ type OnUpdatePlatform = Pick<ExtensionPlatform, 'getVersion'>;
  * this might result in the extension restarting on Chromium-based browsers.
  *
  * @param controller - The MetaMask controller instance.
- * @param controller.store - The MetaMask store.
  * @param controller.appStateController - The app state controller.
  * @param platform - The ExtensionPlatform API.
  * @param previousVersion - The previous version string.
  * @param requestSafeReload - A function to request a safe reload of the
  * extension background process.
+ * @param shouldReload - Whether this worker should perform the recovery reload.
+ * @returns Whether a recovery reload was scheduled.
  */
-export function onUpdate(
+export async function onUpdate(
   controller: OnUpdateController,
   platform: OnUpdatePlatform,
   previousVersion: string,
-  requestSafeReload: () => void,
-): void {
+  requestSafeReload: () => Promise<void>,
+  shouldReload: boolean,
+): Promise<boolean> {
   const { appStateController } = controller;
   const { lastUpdatedFromVersion } = appStateController.state;
   const isFirefox = getPlatform() === PLATFORM_FIREFOX;
@@ -54,38 +54,27 @@ export function onUpdate(
   // Browser might trigger an update event even when the version hasn't changed,
   // like when reloading the extension manually.
   if (previousVersion === lastUpdatedFromVersion) {
-    return;
+    return false;
   }
 
-  const lastUpdatedAt = Date.now();
-
-  appStateController.setLastUpdatedAt(lastUpdatedAt);
+  appStateController.setLastUpdatedAt(Date.now());
   appStateController.setLastUpdatedFromVersion(previousVersion);
   appStateController.setPendingExtensionVersion(null);
 
-  if (!isFirefox) {
-    // Work around Chromium bug https://issues.chromium.org/issues/40805401
-    // by doing a safe reload after an update.
-    //
-    // This was initially only used for Chromium versions `<143`, because it
-    // was supposed to be fixed in v143. But we continued to see reports of
-    // this crash in later versions.
-    //
-    // We only want to do the safe reload when the version actually changed,
-    // just as a safe guard, as Chrome fires this event each time we call
-    // `runtime.reload` -- as we really don't want to send Chrome into a restart
-    // loop! This is overkill, as `onUpdate` is already only called when
-    // `previousVersion !== platform.getVersion()`, but better safe than better
-    // safe than better safe than better safe than... rebooting forever. :-)
-    log.info(
-      `[onUpdate]: Requesting "safe reload" after update to ${platform.getVersion()}`,
-    );
-    // use `setImmediate` to be absolutely sure the reload happens after
-    // other "update" events triggered by the `setLastUpdatedFromVersion`
-    // and `setLastUpdatedAt` calls above have been processed by storage.
-    // I think there _is_ still a risk of a race condition here, mostly
-    // due to the complexity of state storage's locks, debounce, and async
-    // nature.
-    setImmediate(requestSafeReload);
+  if (isFirefox || !shouldReload) {
+    return false;
   }
+
+  // Preserve the existing event-loop turn before beginning the reload path so
+  // update metadata can reach persistence first.
+  await new Promise<void>((resolve) => setImmediate(resolve));
+
+  // Work around Chromium bug https://issues.chromium.org/issues/40805401 by
+  // doing a safe reload after an update. Extension UI entry points remain
+  // unavailable until the recovery worker takes over, so no UI can race it.
+  log.info(
+    `[onUpdate]: Requesting "safe reload" after update to ${platform.getVersion()}`,
+  );
+  await requestSafeReload();
+  return true;
 }

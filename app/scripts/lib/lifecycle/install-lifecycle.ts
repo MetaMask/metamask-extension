@@ -15,6 +15,7 @@ import { createEventBuilder, trackEvent } from '../../controllers/analytics';
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { onUpdate } from '../../on-update';
 import type ExtensionPlatform from '../../platforms/extension';
+import type { PostUpdateReloadCoordinator } from '../post-update-reload-coordinator';
 
 type OnUpdateController = Parameters<typeof onUpdate>[0];
 type OnUpdatePlatform = Parameters<typeof onUpdate>[1];
@@ -39,7 +40,11 @@ export type InstallLifecycleDependencies = {
   controller: InstallLifecycleController;
   platform: InstallLifecyclePlatform;
   isInitialized: Promise<void>;
-  requestSafeReload: () => void;
+  requestSafeReload: () => Promise<void>;
+  postUpdateReloadCoordinator: Pick<
+    PostUpdateReloadCoordinator,
+    'tryBeginReload' | 'complete'
+  >;
 };
 
 /**
@@ -119,19 +124,25 @@ export async function handleOnInstalled(
 ): Promise<void> {
   if (details.reason === 'install') {
     await onInstall(deps);
-  } else if (details.reason === 'update') {
-    const { previousVersion } = details;
-    if (!previousVersion || previousVersion === deps.platform.getVersion()) {
-      return;
-    }
+  } else if (
+    details.reason === 'update' &&
+    details.previousVersion &&
+    details.previousVersion !== deps.platform.getVersion()
+  ) {
     await deps.isInitialized;
-    onUpdate(
+    const reloadScheduled = await onUpdate(
       deps.controller,
       deps.platform,
-      previousVersion,
+      details.previousVersion,
       deps.requestSafeReload,
+      deps.postUpdateReloadCoordinator.tryBeginReload(),
     );
+    if (reloadScheduled) {
+      return;
+    }
   }
+
+  deps.postUpdateReloadCoordinator.complete();
 }
 
 /**

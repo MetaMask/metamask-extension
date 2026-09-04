@@ -143,6 +143,14 @@ import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
 const lazyListener =
   globalThis.stateHooks.lazyListener ?? new ExtensionLazyListener(browser);
 
+// MV2 (Firefox) has no gated entry points and skips Chromium's recovery reload.
+const postUpdateReloadCoordinator = globalThis.stateHooks
+  .postUpdateReloadCoordinator ?? {
+  completion: Promise.resolve(),
+  tryBeginReload: () => true,
+  complete: () => undefined,
+};
+
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_COLOR_FAILED = lightTheme.colors.error.default;
@@ -296,12 +304,17 @@ function getInstallLifecycleDeps() {
     platform,
     isInitialized,
     requestSafeReload,
+    postUpdateReloadCoordinator,
   };
 }
 
-lazyListener.once('runtime', 'onInstalled').then((details) => {
-  handleOnInstalled(details, getInstallLifecycleDeps());
-});
+lazyListener
+  .once('runtime', 'onInstalled')
+  .then((details) => handleOnInstalled(details, getInstallLifecycleDeps()))
+  .catch((error) => {
+    log.error('MetaMask - Failed to coordinate post-update reload', error);
+    postUpdateReloadCoordinator.complete();
+  });
 
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
@@ -452,7 +465,7 @@ const handleOnConnect = async (port) => {
 
   // Queue up connection attempts here, waiting until after initialization
   try {
-    await isInitialized;
+    await Promise.all([isInitialized, postUpdateReloadCoordinator.completion]);
 
     // Notify UI that background initialization is complete, before sending state.
     // This is sent on the raw port (like ALIVE) so the UI can distinguish between
@@ -558,7 +571,7 @@ if (
 
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
-  await isInitialized;
+  await Promise.all([isInitialized, postUpdateReloadCoordinator.completion]);
   // This is set in `setupController`, which is called as part of initialization
   connectExternallyConnectable(...args);
 });
@@ -1620,6 +1633,10 @@ async function getCurrentTab() {
  * Opens the browser popup for user confirmation
  */
 async function triggerUi() {
+  // Internal callers can bypass disabled browser entry points, so block
+  // programmatic UI until post-update reload coordination completes.
+  await postUpdateReloadCoordinator.completion;
+
   const tabs = await platform.getActiveTabs();
   const currentlyActiveMetamaskTab = Boolean(
     tabs.find((tab) => openMetamaskTabsIDs[tab.id]),
