@@ -8235,16 +8235,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/remote-feature-flag-controller@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/remote-feature-flag-controller@npm:6.0.0"
+"@metamask/remote-feature-flag-controller@npm:^6.0.0, @metamask/remote-feature-flag-controller@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@metamask/remote-feature-flag-controller@npm:6.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/utils": "npm:^11.11.0"
     uuid: "npm:^8.3.2"
-  checksum: 10/4ae9fa72f2ba8b7d71b1c0cf7be60bbf0c143e5372a1ef9f58f0ee761cf782087de8e801b71b6b319581044bb41197ffdfee069def2983d12adb0b296e5fff7a
+  checksum: 10/d32c187c638416bd1535b464187b1184ecbfd80b8100597b86cf17704cb04887f283df900fdc538b483f2d5684f34b2442bae84f468fb150e0e053230222ca45
   languageName: node
   linkType: hard
 
@@ -33338,7 +33338,7 @@ __metadata:
     "@metamask/ramps-controller": "npm:^15.0.0"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
     "@metamask/react-data-query": "npm:^0.2.2"
-    "@metamask/remote-feature-flag-controller": "npm:^6.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^6.1.0"
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"

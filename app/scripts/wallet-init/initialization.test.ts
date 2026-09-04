@@ -285,6 +285,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
       // `useExternalServices` is absent, so it defaults to on, matching the
       // live `PreferencesController` default.
       preferencesState: { useExternalServices: true },
+      authenticationState: { srpSessionData: undefined },
     });
   });
 
@@ -304,6 +305,29 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
       expect.objectContaining({
         onboardingState: { completedOnboarding: false },
         preferencesState: { useExternalServices: false },
+      }),
+    );
+  });
+
+  it('seeds the canonical-id comparison from persisted AuthenticationController state', () => {
+    const srpSessionData = {
+      'srp-1': { profile: { canonicalProfileId: 'canonical-id' } },
+    };
+
+    initializeWallet({
+      connectivityAdapter,
+      getFlatState,
+      getPermittedAccounts,
+      getTransactionMetricsRequest,
+      infuraProjectId: 'fake-infura-project-id',
+      messenger: createMockMessenger(),
+      platform,
+      state: { AuthenticationController: { srpSessionData } },
+    });
+
+    expect(mockSetupToggle).toHaveBeenCalledWith(
+      expect.objectContaining({
+        authenticationState: { srpSessionData },
       }),
     );
   });

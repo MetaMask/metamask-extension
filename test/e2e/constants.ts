@@ -339,15 +339,11 @@ export const MOCK_DOWNSTREAM_EVENT_ENRICHMENT_PROPERTIES = {
   ...MOCK_PROFILE_IDENTITY_EVENT_PROPERTIES,
 } as const;
 
-/* Mock remote feature flags response */
+/* Processed remote feature flags for `MOCK_ANALYTICS_ID` (RFFC threshold group C). */
 export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
   feature1: true,
   feature2: false,
-  feature3: [
-    { value: 'valueA', name: 'groupA', scope: { type: 'threshold', value: 0.3 } },
-    { value: 'valueB', name: 'groupB', scope: { type: 'threshold', value: 0.5 } },
-    { value: 'valueC', name: 'groupC', scope: { type: 'threshold', value: 1 } },
-  ],
+  feature3: 'valueC',
 };
 
 /* Mock customized remote feature flags response*/
