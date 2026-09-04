@@ -6094,7 +6094,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/chomp-api-service@npm:^4.0.0, @metamask/chomp-api-service@npm:^4.0.1":
+"@metamask/chomp-api-service@npm:^4.0.2":
   version: 4.0.2
   resolution: "@metamask/chomp-api-service@npm:4.0.2"
   dependencies:
@@ -7549,36 +7549,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/money-account-upgrade-controller@npm:@metamask-previews/money-account-upgrade-controller@3.0.2-preview-cfd35b8dd":
-  version: 3.0.2-preview-cfd35b8dd
-  resolution: "@metamask-previews/money-account-upgrade-controller@npm:3.0.2-preview-cfd35b8dd"
+"@metamask/money-account-upgrade-controller@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/money-account-upgrade-controller@npm:4.0.0"
   dependencies:
     "@metamask/authenticated-user-storage": "npm:^3.0.2"
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/chomp-api-service": "npm:^4.0.1"
+    "@metamask/chomp-api-service": "npm:^4.0.2"
     "@metamask/delegation-controller": "npm:^3.0.2"
     "@metamask/delegation-core": "npm:^2.2.1"
     "@metamask/delegation-deployments": "npm:^1.4.0"
     "@metamask/keyring-controller": "npm:^27.1.1"
     "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/money-account-utils": "npm:^1.1.0"
+    "@metamask/money-account-utils": "npm:^1.2.0"
     "@metamask/network-controller": "npm:^36.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^6.1.0"
-    "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/9453b3dcbb9536af73b8c5cce4e54f015ddfc18484bade75171ff8ae2ba96e77e09a1d31a203da4b8511760944dd3e596fed405514b3a50fb937304b53ba2a50
+    "@metamask/utils": "npm:^11.12.0"
+  checksum: 10/529bc05a486bc63bf5d133f30a935f949ebe7fb78f672f3e7fbb94327d18f92d749fb3cab8a6ca4ad6d28770b1f4438368125c93fd0917b73c2a1dc824581a3b
   languageName: node
   linkType: hard
 
-"@metamask/money-account-utils@npm:@metamask-previews/money-account-utils@1.1.0-preview-cfd35b8dd":
-  version: 1.1.0-preview-cfd35b8dd
-  resolution: "@metamask-previews/money-account-utils@npm:1.1.0-preview-cfd35b8dd"
+"@metamask/money-account-utils@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@metamask/money-account-utils@npm:1.2.0"
   dependencies:
     "@ethersproject/abi": "npm:^5.7.0"
     "@ethersproject/abstract-provider": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
-    "@metamask/transaction-controller": "npm:^69.7.0"
-    "@metamask/utils": "npm:^11.11.0"
-  checksum: 10/8c1d754b4aa10d3234039b8d67a220316cbeface046eb816e31872ed6fbeed4fd00e3653d24a612c32df56d7d38b4637717d0eda0d9a01e79ef2a2a6790d48ee
+    "@metamask/transaction-controller": "npm:^69.8.0"
+    "@metamask/utils": "npm:^11.12.0"
+  checksum: 10/8169a81a86e09be763d0ac00d3b599425380803e30dbd4770b0676995677ca9a553fc80102a4784f0a2532ab02bc03c103cd3f43ce8a156e71704162af0c5070
   languageName: node
   linkType: hard
 
@@ -8924,7 +8924,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^69.4.0, @metamask/transaction-controller@npm:^69.5.1, @metamask/transaction-controller@npm:^69.5.2, @metamask/transaction-controller@npm:^69.6.1, @metamask/transaction-controller@npm:^69.7.0":
+"@metamask/transaction-controller@npm:^69.4.0, @metamask/transaction-controller@npm:^69.5.1, @metamask/transaction-controller@npm:^69.5.2, @metamask/transaction-controller@npm:^69.6.1, @metamask/transaction-controller@npm:^69.8.0":
   version: 69.8.0
   resolution: "@metamask/transaction-controller@npm:69.8.0"
   dependencies:
@@ -32006,7 +32006,7 @@ __metadata:
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/browser-playground": "npm:0.8.1"
     "@metamask/chain-agnostic-permission": "npm:^1.6.2"
-    "@metamask/chomp-api-service": "npm:^4.0.0"
+    "@metamask/chomp-api-service": "npm:^4.0.2"
     "@metamask/claims-controller": "npm:^0.6.1"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/client-mcp-core": "npm:0.5.0"
@@ -32076,8 +32076,8 @@ __metadata:
     "@metamask/money-account-api-data-service": "npm:^0.4.1"
     "@metamask/money-account-balance-service": "npm:^2.4.3"
     "@metamask/money-account-controller": "npm:^0.3.3"
-    "@metamask/money-account-upgrade-controller": "npm:^3.0.2"
-    "@metamask/money-account-utils": "npm:^1.1.0"
+    "@metamask/money-account-upgrade-controller": "npm:^4.0.0"
+    "@metamask/money-account-utils": "npm:^1.2.0"
     "@metamask/multichain-account-service": "npm:^13.0.2"
     "@metamask/multichain-api-client": "npm:^0.10.1"
     "@metamask/multichain-api-middleware": "npm:^3.1.4"

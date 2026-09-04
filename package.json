@@ -171,8 +171,6 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/money-account-upgrade-controller": "npm:@metamask-previews/money-account-upgrade-controller@3.0.2-preview-cfd35b8dd",
-    "@metamask/money-account-utils": "npm:@metamask-previews/money-account-utils@1.1.0-preview-cfd35b8dd",
     "@metamask/eth-sig-util": "^9.0.0",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "35.0.0",
@@ -390,7 +388,7 @@
     "@metamask/bridge-status-controller": "^75.4.0",
     "@metamask/browser-passworder": "^6.0.0",
     "@metamask/chain-agnostic-permission": "^1.6.2",
-    "@metamask/chomp-api-service": "^4.0.0",
+    "@metamask/chomp-api-service": "^4.0.2",
     "@metamask/claims-controller": "^0.6.1",
     "@metamask/client-controller": "^1.0.0",
     "@metamask/client-utils": "^2.0.2",
@@ -447,8 +445,8 @@
     "@metamask/money-account-api-data-service": "^0.4.1",
     "@metamask/money-account-balance-service": "^2.4.3",
     "@metamask/money-account-controller": "^0.3.3",
-    "@metamask/money-account-upgrade-controller": "^3.0.2",
-    "@metamask/money-account-utils": "^1.1.0",
+    "@metamask/money-account-upgrade-controller": "^4.0.0",
+    "@metamask/money-account-utils": "^1.2.0",
     "@metamask/multichain-account-service": "^13.0.2",
     "@metamask/multichain-api-client": "^0.10.1",
     "@metamask/multichain-api-middleware": "^3.1.4",

@@ -408,6 +408,7 @@
   },
   "TransactionPayController": { "transactionData": "object" },
   "TxController": {
+    "batchTransactionCounts": "object",
     "lastFetchedBlockNumbers": "object",
     "methodData": "object",
     "submitHistory": "object",
