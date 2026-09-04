@@ -5259,7 +5259,7 @@
     "message": "Log in"
   },
   "loginErrorSessionExpiredDescription": {
-    "message": "Your session has expired. Please log in again to continue."
+    "message": "Log in again to continue."
   },
   "loginErrorSessionExpiredTitle": {
     "message": "Session has expired"
@@ -6868,7 +6868,7 @@
     "message": "Show password"
   },
   "passwordsDontMatch": {
-    "message": "Passwords don't match"
+    "message": "Passwords don't match."
   },
   "paste": {
     "message": "Paste"
@@ -11980,7 +11980,7 @@
     "message": "Unlock"
   },
   "unlockPageIncorrectPassword": {
-    "message": "Password is incorrect. Please try again."
+    "message": "Incorrect password. Try again."
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Too many attempts. Try again in "
@@ -12253,7 +12253,7 @@
     "message": "According to our records, the network name may not correctly match this chain ID."
   },
   "wrongPassword": {
-    "message": "Wrong password",
+    "message": "Incorrect password. Try again.",
     "description": "Displayed when the user enters an incorrect password"
   },
   "year": {
