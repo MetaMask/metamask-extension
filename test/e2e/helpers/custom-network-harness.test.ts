@@ -2,8 +2,57 @@ import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../constants';
 import {
   CONVERSION_RATE_NETWORKS,
   NON_ZERO_NATIVE_NETWORKS,
+  type CustomNetworkId,
   prepareCustomNetwork,
 } from './custom-network-harness';
+
+const NON_ZERO_NATIVE_NETWORK_CASES: {
+  id: CustomNetworkId;
+  chainIdHex: string;
+  clientId: string;
+  nativeAssetId: string;
+  nativeCurrency: string;
+}[] = [
+  {
+    id: 'rootstock',
+    chainIdHex: '0x1e',
+    clientId: 'rootstock-local',
+    nativeAssetId: 'eip155:30/slip44:60',
+    nativeCurrency: 'RBTC',
+  },
+  {
+    id: 'stable',
+    chainIdHex: '0x3dc',
+    clientId: 'stable-local',
+    nativeAssetId:
+      'eip155:988/erc20:0x0000000000000000000000000000000000000000',
+    nativeCurrency: 'USDT0',
+  },
+  {
+    id: 'mantle',
+    chainIdHex: '0x1388',
+    clientId: 'mantle-local',
+    nativeAssetId:
+      'eip155:5000/erc20:0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000',
+    nativeCurrency: 'MNT',
+  },
+  {
+    id: 'metis',
+    chainIdHex: '0x440',
+    clientId: 'metis-local',
+    nativeAssetId:
+      'eip155:1088/erc20:0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000',
+    nativeCurrency: 'METIS',
+  },
+  {
+    id: 'gnosis',
+    chainIdHex: '0x64',
+    clientId: 'gnosis-local',
+    nativeAssetId:
+      'eip155:100/erc20:0x0000000000000000000000000000000000000000',
+    nativeCurrency: 'XDAI',
+  },
+];
 
 function networkController(
   fixtures: ReturnType<typeof prepareCustomNetwork>['fixtures'],
@@ -93,49 +142,42 @@ describe('custom-network-harness', () => {
       );
     });
 
-    it('injects Mantle with the non-zero native asset id for native send', () => {
-      const { fixtures, network } = prepareCustomNetwork(
-        'mantle',
-        'nativeSend',
-      );
-      const assetsController = fixtures.data.AssetsController as {
-        assetsBalance: Record<string, Record<string, { amount: string }>>;
-      };
+    it.each(NON_ZERO_NATIVE_NETWORK_CASES)(
+      'injects $id with its native asset for native send',
+      ({ id, chainIdHex, clientId, nativeAssetId, nativeCurrency }) => {
+        const { fixtures, network } = prepareCustomNetwork(id, 'nativeSend');
+        const assetsController = fixtures.data.AssetsController as {
+          assetsBalance: Record<string, Record<string, { amount: string }>>;
+        };
+        const networkEnablementController = fixtures.data
+          .NetworkEnablementController as {
+          nativeAssetIdentifiers: Record<string, string>;
+        };
 
-      expect(networkController(fixtures).selectedNetworkClientId).toBe(
-        'mantle-local',
-      );
-      expect(
-        networkController(fixtures).networkConfigurationsByChainId['0x1388']
-          ?.nativeCurrency,
-      ).toBe('MNT');
-      expect(enabledEip155(fixtures)).toStrictEqual({ '0x1388': true });
-      expect(network.nativeSymbol).toBe('MNT');
-      expect(network.nativeAssetId).toBe(
-        'eip155:5000/erc20:0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000',
-      );
-      expect(
-        assetsController.assetsBalance[DEFAULT_FIXTURE_ACCOUNT_ID]?.[
-          network.uiNativeAssetId
-        ]?.amount,
-      ).toBe('25');
-    });
-
-    it('injects Metis with the non-zero native asset id for native send', () => {
-      const { fixtures, network } = prepareCustomNetwork('metis', 'nativeSend');
-
-      expect(networkController(fixtures).selectedNetworkClientId).toBe(
-        'metis-local',
-      );
-      expect(
-        networkController(fixtures).networkConfigurationsByChainId['0x440']
-          ?.nativeCurrency,
-      ).toBe('METIS');
-      expect(enabledEip155(fixtures)).toStrictEqual({ '0x440': true });
-      expect(network.uiNativeAssetId).toBe(
-        'eip155:1088/erc20:0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000',
-      );
-    });
+        expect(networkController(fixtures).selectedNetworkClientId).toBe(
+          clientId,
+        );
+        expect(
+          networkController(fixtures).networkConfigurationsByChainId[
+            chainIdHex
+          ]?.nativeCurrency,
+        ).toBe(nativeCurrency);
+        expect(enabledEip155(fixtures)).toStrictEqual({
+          [chainIdHex]: true,
+        });
+        expect(network.nativeAssetId).toBe(nativeAssetId);
+        expect(
+          networkEnablementController.nativeAssetIdentifiers[
+            network.caipChainId
+          ],
+        ).toBe(nativeAssetId);
+        expect(
+          assetsController.assetsBalance[DEFAULT_FIXTURE_ACCOUNT_ID]?.[
+            network.uiNativeAssetId
+          ]?.amount,
+        ).toBe('25');
+      },
+    );
   });
 
   describe('CONVERSION_RATE_NETWORKS', () => {

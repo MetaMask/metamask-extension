@@ -219,6 +219,20 @@ describe('asset-utils', () => {
       ]);
     });
 
+    it('returns the Rootstock native asset ID for its zero-address token', () => {
+      const zeroAddress = '0x0000000000000000000000000000000000000000';
+      const chainId = 'eip155:30' as CaipChainId;
+
+      const result = toAssetId(zeroAddress, chainId);
+      expect(result).toBe(
+        'eip155:30/erc20:0x0000000000000000000000000000000000000000',
+      );
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
+    });
+
     it('should handle checksummed addresses', () => {
       const address = '0x1F9840a85d5aF5bf1D1762F925BDADdC4201F984';
       const chainId = 'eip155:1' as CaipChainId;
