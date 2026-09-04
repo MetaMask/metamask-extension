@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback } from 'react';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import { type TransactionMeta } from '@metamask/transaction-controller';
 import { Box, Text } from '../../../../../components/component-library';
 import {
   Display,
@@ -25,6 +25,7 @@ import { BridgeTimeRow } from '../../rows/bridge-time-row/bridge-time-row';
 import { TotalRow } from '../../rows/total-row/total-row';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
+import { PerpsAccountPickerRow } from '../../rows/perps-account-picker-row';
 import {
   PercentageButtons,
   PercentageButtonsSkeleton,
@@ -33,6 +34,8 @@ import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transac
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomaticTransactionPayToken';
+import { useDefaultPaySelectedSection } from '../../../hooks/pay/useDefaultPaySelectedSection';
+import { useIsMoneyAccountFlagDefault } from '../../../hooks/pay/useIsMoneyAccountFlagDefault';
 import { useTransactionPayPostQuote } from '../../../hooks/pay/useTransactionPayPostQuote';
 import { useTransactionPayWithdraw } from '../../../hooks/pay/useTransactionPayWithdraw';
 import type { SetPayTokenRequest } from '../../../hooks/pay/types';
@@ -42,6 +45,7 @@ import {
   useTransactionPayHasPositiveRequiredAmount,
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
+  useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayMetrics } from '../../../hooks/pay/useTransactionPayMetrics';
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
@@ -126,8 +130,13 @@ export const CustomAmountInfo = React.memo(
     prefillMaxOnLoad,
     preferredToken,
   }: CustomAmountInfoProps) => {
+    const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
+    useDefaultPaySelectedSection();
     useAutomaticTransactionPayToken({
-      disable: Boolean(disablePay) || Boolean(disableAutomaticToken),
+      disable:
+        Boolean(disablePay) ||
+        Boolean(disableAutomaticToken) ||
+        isDefaultMoneyAccount,
       preferredToken,
     });
     // Configures post-quote mode for withdraw flows; no-op for other flows.
@@ -364,16 +373,16 @@ function BottomContainer({
   hasAmount: boolean;
 }) {
   const t = useI18nContext();
-  const isResultReady = useIsResultReady(hasAmount);
+  const isResultReady = useIsResultReady(hasAmount, disablePay);
   const { hideResults } = useTransactionCustomAmountAlerts();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
-  // Gate the Receive row on the flag, not the transaction type: with post-quote
-  // disabled the withdraw falls back to a direct transfer, which has a regular
-  // total rather than a bridged "you'll receive" amount. Mirrors mobile
-  // `CustomAmountTotals`.
+  // Withdrawals show Receive only when post-quote token selection is enabled;
+  // otherwise the direct transfer keeps its regular Total. Input-based quotes
+  // show Receive according to the controller-owned totals semantics.
   const { canSelectWithdrawToken } = useTransactionPayWithdraw();
+  const isInputBased = useTransactionPayTotals()?.isInputBased === true;
 
   return (
     <Box
@@ -383,19 +392,24 @@ function BottomContainer({
       paddingBottom={4}
     >
       {displayAccountRow && <FromAccountRow showDivider />}
+      <PerpsAccountPickerRow />
       {/* Keep mounted while funding tokens load after account override so the
           selector does not unmount for the reselect wait, then remount. */}
       {disablePay !== true && <PayWithRow />}
       {isResultReady && !hideResults && (
         <>
-          <BridgeFeeRow
-            variant={ConfirmInfoRowSize.Small}
-            tooltipDescription={
-              isPerpsWithdraw ? t('perpsWithdrawTooltip') : undefined
-            }
-          />
-          <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
-          {canSelectWithdrawToken ? (
+          {disablePay !== true && (
+            <>
+              <BridgeFeeRow
+                variant={ConfirmInfoRowSize.Small}
+                tooltipDescription={
+                  isPerpsWithdraw ? t('perpsWithdrawTooltip') : undefined
+                }
+              />
+              <BridgeTimeRow rowVariant={ConfirmInfoRowSize.Small} />
+            </>
+          )}
+          {(canSelectWithdrawToken || isInputBased) && disablePay !== true ? (
             <ReceiveRow
               inputAmountUsd={amountFiat}
               variant={ConfirmInfoRowSize.Small}
@@ -420,8 +434,10 @@ function BottomContainer({
  * numbers on screen until a new quote resolves.
  *
  * @param hasAmount - Whether the amount field holds a value greater than zero.
+ * @param disablePay - Whether the confirmation skips the pay/quote pipeline
+ * (direct withdraws), in which case no quote will ever arrive.
  */
-function useIsResultReady(hasAmount: boolean) {
+function useIsResultReady(hasAmount: boolean, disablePay?: boolean) {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const quotes = useTransactionPayQuotes();
   const isQuotePending = useIsTransactionPayQuotePending();
@@ -429,6 +445,8 @@ function useIsResultReady(hasAmount: boolean) {
   const hasPositiveRequiredAmount =
     useTransactionPayHasPositiveRequiredAmount();
 
+  // Selecting a destination token still stores a no-op quote and gas totals.
+  // A $0 withdraw must not show those as a real quote.
   if (!hasAmount) {
     return false;
   }
@@ -437,7 +455,9 @@ function useIsResultReady(hasAmount: boolean) {
     return hasPositiveRequiredAmount && (isQuotePending || hasExecutableQuote);
   }
 
-  return isQuotePending || Boolean(quotes?.length);
+  // Direct withdraws never fetch quotes. Show the total once an amount is
+  // typed; do not wait on a quote that will never arrive.
+  return Boolean(disablePay) || isQuotePending || Boolean(quotes?.length);
 }
 
 function AlertMessage() {

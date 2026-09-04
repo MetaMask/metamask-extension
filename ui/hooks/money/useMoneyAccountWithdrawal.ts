@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import type { Hex } from '@metamask/utils';
 import { getMaybeSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   ConfirmationLoader,
@@ -24,15 +26,16 @@ export type InitiateWithdrawalOptions = {
  * as `useMoneyAccountDeposit`. There is no deposit-intent equivalent for
  * withdrawals — mobile records none either.
  *
- * Fails fast (as mobile does) when no EVM account is selected: the recipient
- * is only committed later by `updateMoneyAccountWithdrawAmount`, so without
- * this guard the user would reach the confirmation and have every amount
- * commit fail instead.
+ * Fails fast when no eligible EVM account is selected. The selected account's
+ * address is passed as Pay's `accountOverride` so the confirmation defaults
+ * the From row — and the withdraw recipient — to that account instead of the
+ * money account that executes the batch.
  *
  * @returns The initiator and its loading state.
  */
 export function useMoneyAccountWithdrawal() {
   const { navigateToTransaction } = useConfirmationNavigation();
+  const location = useLocation();
   const selectedAccount = useSelector(getMaybeSelectedInternalAccount);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,10 +47,13 @@ export function useMoneyAccountWithdrawal() {
           throw new Error('[Money Account] Missing recipient EVM address');
         }
 
-        const { transactionId } = await createMoneyAccountWithdrawTransaction();
+        const { transactionId } = await createMoneyAccountWithdrawTransaction(
+          selectedAccount.address as Hex,
+        );
 
         navigateToTransaction(transactionId, {
           loader: ConfirmationLoader.CustomAmount,
+          goBackTo: location.pathname + location.search,
         });
       } catch (error) {
         const errorObj =
@@ -61,7 +67,12 @@ export function useMoneyAccountWithdrawal() {
         setIsLoading(false);
       }
     },
-    [navigateToTransaction, selectedAccount],
+    [
+      location.pathname,
+      location.search,
+      navigateToTransaction,
+      selectedAccount,
+    ],
   );
 
   return { initiateWithdrawal, isLoading };

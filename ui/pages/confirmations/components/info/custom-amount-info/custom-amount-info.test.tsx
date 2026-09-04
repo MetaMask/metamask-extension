@@ -3,7 +3,10 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
+import {
+  TransactionPayStrategy,
+  type TransactionPayTotals,
+} from '@metamask/transaction-pay-controller';
 import configureMockStore from 'redux-mock-store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
@@ -12,6 +15,7 @@ import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import * as useTransactionCustomAmountModule from '../../../hooks/transactions/useTransactionCustomAmount';
 import * as useTransactionCustomAmountAlertsModule from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import * as useAutomaticTransactionPayTokenModule from '../../../hooks/pay/useAutomaticTransactionPayToken';
+import * as useIsMoneyAccountFlagDefaultModule from '../../../hooks/pay/useIsMoneyAccountFlagDefault';
 import * as useTransactionPayMetricsModule from '../../../hooks/pay/useTransactionPayMetrics';
 import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
@@ -27,6 +31,8 @@ import {
 jest.mock('../../../hooks/transactions/useTransactionCustomAmount');
 jest.mock('../../../hooks/transactions/useTransactionCustomAmountAlerts');
 jest.mock('../../../hooks/pay/useAutomaticTransactionPayToken');
+jest.mock('../../../hooks/pay/useDefaultPaySelectedSection');
+jest.mock('../../../hooks/pay/useIsMoneyAccountFlagDefault');
 jest.mock('../../../hooks/pay/useTransactionPayPostQuote');
 jest.mock('../../../hooks/pay/useTransactionPayWithdraw');
 jest.mock('../../../hooks/pay/useTransactionPayMetrics');
@@ -67,6 +73,9 @@ jest.mock('../../rows/pay-with-row/pay-with-row', () => ({
   PayWithRow: () => <div data-testid="pay-with-row" />,
   PayWithRowSkeleton: () => <div data-testid="pay-with-row-skeleton" />,
 }));
+jest.mock('../../rows/perps-account-picker-row', () => ({
+  PerpsAccountPickerRow: () => <div data-testid="perps-account-picker-row" />,
+}));
 jest.mock('../../rows/bridge-fee-row/bridge-fee-row', () => ({
   BridgeFeeRow: () => <div data-testid="bridge-fee-row" />,
 }));
@@ -82,6 +91,16 @@ jest.mock('../../rows/total-row/total-row', () => ({
 
 const MOCK_TRANSACTION_META =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
+
+// Withdraws are batches, so the money-account type sits on a nested transaction.
+const MOCK_MONEY_ACCOUNT_WITHDRAW_TRANSACTION_META = {
+  ...MOCK_TRANSACTION_META,
+  type: TransactionType.batch,
+  nestedTransactions: [
+    { type: TransactionType.moneyAccountWithdraw },
+    { type: TransactionType.tokenMethodTransfer },
+  ],
+} as TransactionMeta;
 
 const mockStore = configureMockStore([]);
 
@@ -145,10 +164,12 @@ function render(
     hasPositiveRequiredAmount?: boolean;
     isNativePayToken?: boolean;
     isNoFeePayToken?: boolean;
+    totals?: TransactionPayTotals;
     sourceAmounts?: { targetTokenAddress: string }[];
     requiredTokens?: { address: string; skipIfBalance: boolean }[];
     primaryRequiredToken?: typeof MOCK_PRIMARY_REQUIRED_TOKEN | undefined;
     withdraw?: { isWithdraw: boolean; canSelectWithdrawToken: boolean };
+    isDefaultMoneyAccount?: boolean;
   } = {},
 ) {
   const {
@@ -169,9 +190,11 @@ function render(
     hasPositiveRequiredAmount = true,
     isNativePayToken = false,
     isNoFeePayToken = false,
+    totals,
     sourceAmounts = [],
     requiredTokens = [],
     withdraw = { isWithdraw: false, canSelectWithdrawToken: false },
+    isDefaultMoneyAccount = false,
   } = options;
   const primaryRequiredToken = Object.prototype.hasOwnProperty.call(
     options,
@@ -192,6 +215,9 @@ function render(
       useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
     )
     .mockReturnValue(undefined);
+  jest
+    .mocked(useIsMoneyAccountFlagDefaultModule.useIsMoneyAccountFlagDefault)
+    .mockReturnValue(isDefaultMoneyAccount);
   jest
     .mocked(useTransactionPayMetricsModule.useTransactionPayMetrics)
     .mockReturnValue(undefined);
@@ -214,6 +240,9 @@ function render(
         ? [{ strategy: TransactionPayStrategy.Relay } as never]
         : undefined,
     );
+  jest
+    .mocked(useTransactionPayDataModule.useTransactionPayTotals)
+    .mockReturnValue(totals);
   jest
     .mocked(useTransactionPayDataModule.useIsTransactionPayQuotePending)
     .mockReturnValue(
@@ -379,6 +408,18 @@ describe('CustomAmountInfo', () => {
     );
   });
 
+  it('calls useAutomaticTransactionPayToken with disable true when Money Account is the flag default', () => {
+    render({ isDefaultMoneyAccount: true });
+
+    expect(
+      useAutomaticTransactionPayTokenModule.useAutomaticTransactionPayToken,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        disable: true,
+      }),
+    );
+  });
+
   it('renders pay token amount when disablePay is false', () => {
     const { getByTestId } = render({ disablePay: false });
     expect(getByTestId('pay-token-amount')).toBeInTheDocument();
@@ -427,6 +468,12 @@ describe('CustomAmountInfo', () => {
       const { queryByTestId } = render({ disablePay: true });
 
       expect(queryByTestId('pay-with-row')).not.toBeInTheDocument();
+    });
+
+    it('renders the perps account picker row', () => {
+      const { getByTestId } = render();
+
+      expect(getByTestId('perps-account-picker-row')).toBeInTheDocument();
     });
   });
 
@@ -480,6 +527,20 @@ describe('CustomAmountInfo', () => {
     it('renders the full UI once a primary required token is resolved', () => {
       const { getByTestId, queryByTestId } = render({
         disablePay: false,
+      });
+
+      expect(getByTestId('custom-amount-info')).toBeInTheDocument();
+      expect(
+        queryByTestId('custom-amount-info-skeleton'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not render the skeleton for a money-account withdraw without a required token', () => {
+      const { getByTestId, queryByTestId } = render({
+        disablePay: false,
+        primaryRequiredToken: undefined,
+        transactionMeta: MOCK_MONEY_ACCOUNT_WITHDRAW_TRANSACTION_META,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: false },
       });
 
       expect(getByTestId('custom-amount-info')).toBeInTheDocument();
@@ -636,12 +697,55 @@ describe('CustomAmountInfo', () => {
       expect(getByTestId('total-row')).toBeInTheDocument();
     });
 
+    it('renders the receive row for input-based totals', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        totals: {
+          isInputBased: true,
+          targetAmount: { fiat: '95', usd: '95' },
+        } as TransactionPayTotals,
+      });
+
+      expect(getByTestId('receive-row')).toBeInTheDocument();
+      expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('keeps the total row for output-based totals', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        totals: {
+          isInputBased: false,
+        } as TransactionPayTotals,
+      });
+
+      expect(getByTestId('total-row')).toBeInTheDocument();
+      expect(queryByTestId('receive-row')).not.toBeInTheDocument();
+    });
+
+    it('keeps the total row when totals are missing', () => {
+      const { getByTestId, queryByTestId } = render({ hasQuotes: true });
+
+      expect(getByTestId('total-row')).toBeInTheDocument();
+      expect(queryByTestId('receive-row')).not.toBeInTheDocument();
+    });
+
     it('does not render result rows when no quotes and not loading', () => {
       const { queryByTestId } = render({
         hasQuotes: false,
         isQuotesLoading: false,
       });
 
+      expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
+    });
+
+    it('renders the total without a fee row for disablePay withdraws', () => {
+      const { getByTestId, queryByTestId } = render({
+        disablePay: true,
+        hasQuotes: false,
+        isQuotesLoading: false,
+      });
+
+      expect(getByTestId('total-row')).toBeInTheDocument();
       expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
     });
 

@@ -1,31 +1,54 @@
+import { Web3Provider, type ExternalProvider } from '@ethersproject/providers';
+import type { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import type { MoneyAccountControllerGetMoneyAccountAction } from '@metamask/money-account-controller';
 import type { Messenger } from '@metamask/messenger';
-import type { NetworkControllerFindNetworkClientIdByChainIdAction } from '@metamask/network-controller';
+import type {
+  NetworkControllerFindNetworkClientIdByChainIdAction,
+  NetworkControllerGetNetworkClientByIdAction,
+} from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type {
   TransactionControllerAddTransactionBatchAction,
+  TransactionControllerGetStateAction,
   TransactionControllerUnapprovedTransactionAddedEvent,
+  TransactionControllerUpdateTransactionAction,
 } from '@metamask/transaction-controller';
 import { isStrictHexString, type Hex } from '@metamask/utils';
 import {
   getMoneyAccountVaultConfig,
   type MoneyAccountVaultConfig,
 } from '../../../../../shared/lib/money/vault-config';
+import type { DelegationMessengerActions } from '../../transaction/delegation';
 
-type MoneyPayActions =
+export type MoneyPayActions =
+  | AccountsControllerGetSelectedAccountAction
   | RemoteFeatureFlagControllerGetStateAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
+  | NetworkControllerGetNetworkClientByIdAction
   | MoneyAccountControllerGetMoneyAccountAction
-  | TransactionControllerAddTransactionBatchAction;
+  | TransactionControllerAddTransactionBatchAction
+  | TransactionControllerGetStateAction
+  | TransactionControllerUpdateTransactionAction;
 
 type MoneyPayEvents = TransactionControllerUnapprovedTransactionAddedEvent;
 
 /**
- * The messenger surface Money Account batch initiation needs.
+ * The messenger surface Money Account batch initiation and amount commits need.
  */
 export type MoneyPayMessenger = Messenger<
   string,
   MoneyPayActions,
+  MoneyPayEvents
+>;
+
+/**
+ * Messenger required by `getPaymentOverrideData`: Money Pay context actions
+ * plus the delegation / EIP-7702 signing capabilities used when wrapping
+ * vault calls for Relay.
+ */
+export type PaymentOverrideMessenger = Messenger<
+  string,
+  MoneyPayActions | DelegationMessengerActions,
   MoneyPayEvents
 >;
 
@@ -36,6 +59,7 @@ export type MoneyPayContext = {
   moneyAccountAddress: Hex;
   vaultConfig: MoneyAccountVaultConfig;
   networkClientId: string;
+  provider: Web3Provider;
 };
 
 /**
@@ -93,9 +117,15 @@ export function getMoneyPayContext(
     return undefined;
   }
 
+  const { provider } = messenger.call(
+    'NetworkController:getNetworkClientById',
+    networkClientId,
+  );
+
   return {
     moneyAccountAddress,
     vaultConfig,
     networkClientId,
+    provider: new Web3Provider(provider as unknown as ExternalProvider),
   };
 }
