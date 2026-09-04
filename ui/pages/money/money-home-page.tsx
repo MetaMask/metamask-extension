@@ -28,6 +28,7 @@ import { useMoneyAccountDeposit } from '../../hooks/money/useMoneyAccountDeposit
 import { useMoneyAccountInterest } from '../../hooks/money/useMoneyAccountInterest';
 import { useMoneyAccountWithdrawal } from '../../hooks/money/useMoneyAccountWithdrawal';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
+import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
 import { moneyFormatUsd } from '../../helpers/money/format';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
@@ -152,6 +153,7 @@ export function MoneyHomePage() {
   const { tokens: depositTokens, isNoFeeToken } = useMoneyDepositTokens();
   const privacyMode = useSelector(getPrivacyMode);
   const { items: activityItems } = useMoneyActivityItems();
+  const handleActivityItemClick = useMoneyActivityItemClick();
   const { initiateDeposit, isLoading: isDepositLoading } =
     useMoneyAccountDeposit();
   const handleViewAllActivity = useCallback(() => {
@@ -326,6 +328,7 @@ export function MoneyHomePage() {
               items={activityItems}
               privacyMode={privacyMode}
               onViewAll={handleViewAllActivity}
+              onItemClick={handleActivityItemClick}
             />
             <MoneySectionDivider />
             {earnOnYourCryptoSection}
@@ -369,6 +372,7 @@ export function MoneyHomePage() {
               items={activityItems}
               privacyMode={privacyMode}
               onViewAll={handleViewAllActivity}
+              onItemClick={handleActivityItemClick}
             />
 
             <MoneySectionDivider />
