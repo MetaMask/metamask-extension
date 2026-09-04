@@ -17,11 +17,19 @@ import {
 } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { PORTFOLIO_ORIGINS } from '../utils/portfolioConnection';
+import { runPortfolioBuyOrdersMigration } from '../utils/portfolioBuyOrdersMigration';
 import useRampsNavigation, { type RampIntent } from './useRampsNavigation';
 
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
+
+jest.mock('../utils/portfolioBuyOrdersMigration', () => ({
+  runPortfolioBuyOrdersMigration: jest.fn().mockResolvedValue(undefined),
+}));
+
+const mockRunPortfolioBuyOrdersMigration =
+  runPortfolioBuyOrdersMigration as jest.Mock;
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -58,6 +66,8 @@ type MetamaskOverrides = Partial<{
   tokens: ResourceState<TokensResponse | null, RampsToken | null>;
   subjects: Record<string, unknown>;
   permissionHistory: Record<string, unknown>;
+  isBackupAndSyncEnabled: boolean;
+  isRampsSyncingEnabled: boolean;
 }>;
 
 const buildState = (over: MetamaskOverrides = {}) => ({
@@ -80,6 +90,8 @@ const buildState = (over: MetamaskOverrides = {}) => ({
     },
     subjects: {},
     permissionHistory: {},
+    isBackupAndSyncEnabled: true,
+    isRampsSyncingEnabled: true,
     ...over,
   },
 });
@@ -137,7 +149,7 @@ describe('useRampsNavigation goToBuy', () => {
     expect(getModalName()).toBeNull();
   });
 
-  it('flag on + ever connected to Portfolio → opens Portfolio (skips in-app)', async () => {
+  it('flag on + ever connected to Portfolio → migrates orders before native buy', async () => {
     const { result, getModalName } = run(
       buildState({
         subjects: {
@@ -169,10 +181,10 @@ describe('useRampsNavigation goToBuy', () => {
     );
     const opened = await goToBuy(result);
     expect(opened).toBe(true);
-    expect(result.current.opensBuyInPortfolioTab).toBe(true);
-    expect(openTab).toHaveBeenCalled();
-    expect(mockNavigate).not.toHaveBeenCalled();
-    expect(mockGetGeolocation).not.toHaveBeenCalled();
+    expect(result.current.opensBuyInPortfolioTab).toBe(false);
+    expect(mockRunPortfolioBuyOrdersMigration).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
+    expect(openTab).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
   });
 
@@ -184,6 +196,22 @@ describe('useRampsNavigation goToBuy', () => {
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
     expect(openTab).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
+  });
+
+  it('skips Portfolio migration when syncing is disabled', async () => {
+    for (const syncState of [
+      { isRampsSyncingEnabled: false },
+      { isBackupAndSyncEnabled: false },
+    ]) {
+      const { result } = run(
+        buildState({
+          permissionHistory: { [PORTFOLIO_ORIGINS[0]]: {} },
+          ...syncState,
+        }),
+      );
+      await goToBuy(result);
+    }
+    expect(mockRunPortfolioBuyOrdersMigration).not.toHaveBeenCalled();
   });
 
   it('service disruption → shows RAMPS_SERVICE_DISRUPTION (before geolocation)', async () => {
@@ -253,6 +281,7 @@ describe('useRampsNavigation goToBuy', () => {
     expect(opened).toBe(true);
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_TOKEN_SELECTION_ROUTE);
     expect(openTab).not.toHaveBeenCalled();
+    expect(mockRunPortfolioBuyOrdersMigration).not.toHaveBeenCalled();
     expect(getModalName()).toBeNull();
   });
 
