@@ -2266,7 +2266,7 @@
         "@metamask/authenticated-user-storage": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/notification-services-controller>@metamask/utils": true,
+        "@metamask/utils": true,
         "@metamask/notification-services-controller>bignumber.js": true,
         "@metamask/notification-services-controller>firebase": true,
         "lodash": true,
@@ -2921,6 +2921,7 @@
         "crypto": true
       },
       "packages": {
+        "@metamask/scure-bip39": true,
         "@metamask/superstruct": true,
         "@noble/hashes": true,
         "@scure/base": true,
@@ -2989,11 +2990,6 @@
         "@metamask/superstruct": true,
         "@scure/base": true,
         "buffer": true
-      }
-    },
-    "@metamask/notification-services-controller>@metamask/utils": {
-      "packages": {
-        "@metamask/superstruct": true
       }
     },
     "@metamask/wallet": {
