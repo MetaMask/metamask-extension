@@ -27,6 +27,7 @@ import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/lib/selectors/networks';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../shared/constants/messages';
 import { getSelectedInternalAccount } from '../shared/lib/selectors/accounts';
+import { getIsSettingsPageDevOptionsEnabled } from '../shared/lib/environment';
 import {
   setupLongTaskObserver,
   setupLongTaskSentryReporting,
@@ -262,6 +263,17 @@ async function startApp(metamaskState, opts) {
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
     renderUi(<Root store={store} uiMessenger={uiMessenger} />, opts.container),
   );
+
+  // Gated on the same condition as the Developer Options page that switches it
+  // on. Loaded dynamically so the generated page-object index, which is large,
+  // is only fetched by builds that can actually use it.
+  if (getIsSettingsPageDevOptionsEnabled()) {
+    import('./dev/page-object-inspector/mount')
+      .then(({ mountPageObjectInspector }) => mountPageObjectInspector())
+      .catch((error) =>
+        log.error('Page object inspector failed to load.', error),
+      );
+  }
 
   return store;
 }
