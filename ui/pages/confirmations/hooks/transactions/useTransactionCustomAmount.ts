@@ -66,7 +66,7 @@ export function useTransactionCustomAmount({
   const [isInputChanged, setInputChanged] = useState(false);
   const [amountHumanDebounced, setAmountHumanDebounced] = useState('0');
 
-  const { currentConfirmation: transactionMeta } =
+  const { currentConfirmation: transactionMeta, setIsMaxMoneyDeposit } =
     useConfirmContext<TransactionMeta>();
   const { chainId, id: transactionId } = transactionMeta ?? {};
 
@@ -347,6 +347,9 @@ export function useTransactionCustomAmount({
         setIsMax(false);
       }
 
+      // A manual edit is no longer the full-balance Max deposit.
+      setIsMaxMoneyDeposit?.(false);
+
       depositMaxHumanRef.current = null;
 
       if (transactionId) {
@@ -360,7 +363,7 @@ export function useTransactionCustomAmount({
 
       setAmountFiat(newAmount);
     },
-    [isMaxAmount, setIsMax, transactionId],
+    [isMaxAmount, setIsMax, setIsMaxMoneyDeposit, transactionId],
   );
 
   const updatePendingAmountPercentage = useCallback(
@@ -379,6 +382,14 @@ export function useTransactionCustomAmount({
       if (!isPrefill) {
         userEditedRef.current = true;
         setEditedTransactionId(transactionId);
+      }
+
+      // Track full-balance (100%) money-account deposits so the insufficient-
+      // balance alert can tolerate the bridge spread / quote rounding the same
+      // way it does for `isMaxAmount` Pay flows. Any smaller percentage is an
+      // explicit sub-max amount and must still surface a real shortfall.
+      if (isMoneyAccountDeposit) {
+        setIsMaxMoneyDeposit?.(percentage === 100);
       }
 
       const newAmountFiatValue = new BigNumber(percentage)
@@ -492,6 +503,7 @@ export function useTransactionCustomAmount({
       payToken?.balanceRaw,
       payToken?.decimals,
       setIsMax,
+      setIsMaxMoneyDeposit,
       tokenFiatRate,
       transactionId,
       updateTokenAmountCallback,
@@ -513,6 +525,9 @@ export function useTransactionCustomAmount({
       if (!balanceUsdValue.isFinite() || !prefillFiat.isFinite()) {
         return;
       }
+
+      // Capped / 50% / literal prefills are not a full-balance Max deposit.
+      setIsMaxMoneyDeposit?.(false);
 
       // $0 pay token: show 0.0 so the field is usable. Do not request a quote.
       if (balanceUsdValue.lte(0)) {
@@ -569,6 +584,7 @@ export function useTransactionCustomAmount({
       hasBalanceUsdOverride,
       isMaxAmount,
       setIsMax,
+      setIsMaxMoneyDeposit,
       tokenFiatRate,
       transactionId,
       updateTokenAmountCallback,
@@ -693,11 +709,26 @@ function getPreferredPayTokenBalanceRaw(
   liveBalanceRaw?: string,
   snapshotBalanceRaw?: string,
 ): string | undefined {
-  if (liveBalanceRaw && !new BigNumber(liveBalanceRaw).isZero()) {
-    return new BigNumber(liveBalanceRaw).toFixed(0);
+  const live =
+    liveBalanceRaw && !new BigNumber(liveBalanceRaw).isZero()
+      ? new BigNumber(liveBalanceRaw)
+      : null;
+  const snapshot =
+    snapshotBalanceRaw && !new BigNumber(snapshotBalanceRaw).isZero()
+      ? new BigNumber(snapshotBalanceRaw)
+      : null;
+
+  // When both are known, use the smaller so the submitted Max/prefill amount
+  // never exceeds the TPC payment-token snapshot (isMax source) or the live
+  // wallet balance — mismatch here is a common first-open "No quotes".
+  if (live && snapshot) {
+    return BigNumber.min(live, snapshot).toFixed(0);
   }
-  if (snapshotBalanceRaw && !new BigNumber(snapshotBalanceRaw).isZero()) {
-    return new BigNumber(snapshotBalanceRaw).toFixed(0);
+  if (live) {
+    return live.toFixed(0);
+  }
+  if (snapshot) {
+    return snapshot.toFixed(0);
   }
   return undefined;
 }

@@ -37,14 +37,18 @@ export function useInsufficientPayTokenBalanceAlert({
   pendingAmountUsd?: string;
 } = {}): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { currentConfirmation, isMaxMoneyDeposit } =
+    useConfirmContext<TransactionMeta>();
   const { payToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
   const totals = useTransactionPayTotals();
   const isLoading = useIsTransactionPayLoading();
   const isSourceGasFeeToken = totals?.fees.isSourceGasFeeToken ?? false;
   const isPendingAlert = Boolean(pendingAmountUsd !== undefined);
-  const isMax = useTransactionPayIsMaxAmount();
+  // Full-balance money-account deposits never set the controller `isMaxAmount`
+  // (see confirm context), so treat this UI flag as Max for the input / fees
+  // false-positive tolerance below.
+  const isMax = useTransactionPayIsMaxAmount() || Boolean(isMaxMoneyDeposit);
   const transactionId = currentConfirmation?.id ?? '';
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId),
