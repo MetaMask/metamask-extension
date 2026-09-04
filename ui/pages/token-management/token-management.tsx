@@ -474,7 +474,9 @@ export const TokenManagementPage = () => {
   >(() => new Set<string>());
   const stagedHidesRef = useRef<Map<string, StagedHidePayload>>(new Map());
   const hasTrackedScreenOpenedRef = useRef(false);
-  const tokenListOrderRef = useRef<Map<string, number>>(new Map());
+  const [tokenListOrder, setTokenListOrder] = useState<Map<string, number>>(
+    () => new Map(),
+  );
 
   const stageHide = useCallback((key: string, payload: StagedHidePayload) => {
     stagedHidesRef.current.set(key, payload);
@@ -1477,47 +1479,57 @@ export const TokenManagementPage = () => {
     visibleTokenAssetIds,
   ]);
 
-  const tokenListItems = useMemo<TokenManagementListItem[]>(() => {
-    const nextTokenListItems = (() => {
-      if (hasQuery) {
-        return searchResults.map((result) => ({
-          type: 'api-result' as const,
-          result,
-        }));
-      }
+  const unsortedTokenListItems = useMemo<TokenManagementListItem[]>(() => {
+    if (hasQuery) {
+      return searchResults.map((result) => ({
+        type: 'api-result' as const,
+        result,
+      }));
+    }
 
-      return [
-        ...visibleTokens.map((token) => ({
-          type: 'managed' as const,
-          token,
-        })),
-        ...browseApiResults.map((result) => ({
-          type: 'api-result' as const,
-          result,
-        })),
-      ];
-    })();
+    return [
+      ...visibleTokens.map((token) => ({
+        type: 'managed' as const,
+        token,
+      })),
+      ...browseApiResults.map((result) => ({
+        type: 'api-result' as const,
+        result,
+      })),
+    ];
+  }, [browseApiResults, hasQuery, searchResults, visibleTokens]);
 
-    nextTokenListItems.forEach((item) => {
+  const nextTokenListOrder = useMemo(() => {
+    const nextOrder = new Map(tokenListOrder);
+    let orderChanged = false;
+
+    for (const item of unsortedTokenListItems) {
       const itemKey = getTokenManagementListItemOrderKey(item);
-      if (!tokenListOrderRef.current.has(itemKey)) {
-        tokenListOrderRef.current.set(itemKey, tokenListOrderRef.current.size);
+      if (!nextOrder.has(itemKey)) {
+        nextOrder.set(itemKey, nextOrder.size);
+        orderChanged = true;
       }
-    });
+    }
 
-    return [...nextTokenListItems].sort((itemA, itemB) => {
+    return orderChanged ? nextOrder : tokenListOrder;
+  }, [unsortedTokenListItems, tokenListOrder]);
+
+  if (nextTokenListOrder !== tokenListOrder) {
+    setTokenListOrder(nextTokenListOrder);
+  }
+
+  const tokenListItems = useMemo<TokenManagementListItem[]>(() => {
+    return [...unsortedTokenListItems].sort((itemA, itemB) => {
       const itemAOrder =
-        tokenListOrderRef.current.get(
-          getTokenManagementListItemOrderKey(itemA),
-        ) ?? Number.MAX_SAFE_INTEGER;
+        tokenListOrder.get(getTokenManagementListItemOrderKey(itemA)) ??
+        Number.MAX_SAFE_INTEGER;
       const itemBOrder =
-        tokenListOrderRef.current.get(
-          getTokenManagementListItemOrderKey(itemB),
-        ) ?? Number.MAX_SAFE_INTEGER;
+        tokenListOrder.get(getTokenManagementListItemOrderKey(itemB)) ??
+        Number.MAX_SAFE_INTEGER;
 
       return itemAOrder - itemBOrder;
     });
-  }, [browseApiResults, hasQuery, searchResults, visibleTokens]);
+  }, [tokenListOrder, unsortedTokenListItems]);
   const tokenManagementViewState =
     tokenListItems.length === 0
       ? TOKEN_MANAGEMENT_NO_RESULTS_VIEW_STATE
