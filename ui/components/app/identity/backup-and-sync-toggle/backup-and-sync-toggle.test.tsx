@@ -139,6 +139,10 @@ describe('BackupAndSyncToggle', () => {
       BACKUPANDSYNC_FEATURES.contactSyncing,
       true,
     );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.rampsSyncing,
+      true,
+    );
   });
 
   it('opens the confirm modal when the toggle is turned on and basic functionality is off', async () => {
@@ -188,6 +192,10 @@ describe('BackupAndSyncToggle', () => {
       BACKUPANDSYNC_FEATURES.contactSyncing,
       true,
     );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.rampsSyncing,
+      true,
+    );
   });
 
   it('disables all backup and sync features when basic functionality is disabled in settings', async () => {
@@ -216,6 +224,10 @@ describe('BackupAndSyncToggle', () => {
     );
     expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
       BACKUPANDSYNC_FEATURES.contactSyncing,
+      false,
+    );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.rampsSyncing,
       false,
     );
   });
@@ -266,6 +278,10 @@ describe('BackupAndSyncToggle', () => {
     );
     expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
       BACKUPANDSYNC_FEATURES.contactSyncing,
+      false,
+    );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.rampsSyncing,
       false,
     );
   });

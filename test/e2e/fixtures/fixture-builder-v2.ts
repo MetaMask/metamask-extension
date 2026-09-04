@@ -1441,6 +1441,7 @@ class FixtureBuilderV2 {
       isAccountSyncingEnabled: false,
       isBackupAndSyncEnabled: false,
       isContactSyncingEnabled: false,
+      isRampsSyncingEnabled: false,
     });
   }
 
