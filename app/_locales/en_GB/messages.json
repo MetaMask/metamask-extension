@@ -168,6 +168,9 @@
   "activity": {
     "message": "Activity"
   },
+  "activityAndNonceDataDeleted": {
+    "message": "Activity and nonce data deleted"
+  },
   "activityEmptyDescription": {
     "message": "Swap your first token today."
   },
