@@ -42,17 +42,16 @@ export default function CountdownTimer({
 }) {
   const t = useContext(I18nContext);
   const intervalRef = useRef();
-  const [initialTimeStarted, setInitialTimeStarted] = useState(
-    () => timeStarted || Date.now(),
-  );
+  const [initialTimeStarted, setInitialTimeStarted] = useState(null);
 
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
   const swapsQuotePrefetchingRefreshTime = useSelector(
     getSwapsQuotePrefetchingRefreshTime,
   );
-  const refreshTime = initialTimeStarted
-    ? swapsQuoteRefreshTime
-    : swapsQuotePrefetchingRefreshTime;
+  const refreshTime =
+    initialTimeStarted === null
+      ? swapsQuotePrefetchingRefreshTime
+      : swapsQuoteRefreshTime;
   const timerStart = Number(timerBase) || refreshTime;
 
   const [currentTime, setCurrentTime] = useState(() => Date.now());
@@ -72,7 +71,22 @@ export default function CountdownTimer({
     };
   }, []);
 
-  const shouldResetTimer = timer === 0 && timeStarted !== initialTimeStarted;
+  const shouldResetTimer =
+    initialTimeStarted !== null &&
+    timer === 0 &&
+    timeStarted !== initialTimeStarted;
+
+  useEffect(() => {
+    if (initialTimeStarted !== null) {
+      return undefined;
+    }
+
+    queueMicrotask(() => {
+      setInitialTimeStarted(timeStarted || Date.now());
+    });
+
+    return undefined;
+  }, [initialTimeStarted, timeStarted]);
 
   useEffect(() => {
     if (!shouldResetTimer) {
