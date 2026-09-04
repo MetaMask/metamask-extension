@@ -1,9 +1,13 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
-const BASE_PATH = path.resolve(__dirname, "..", "..");
-const CHANGED_FILES_PATH = path.join(BASE_PATH, "changed-files", "changed-files.json");
-const PR_INFO_PATH = path.join(BASE_PATH, "changed-files", "pr-body.txt");
+const BASE_PATH = path.resolve(__dirname, '..', '..');
+const CHANGED_FILES_PATH = path.join(
+  BASE_PATH,
+  'changed-files',
+  'changed-files.json',
+);
+const PR_INFO_PATH = path.join(BASE_PATH, 'changed-files', 'pr-body.txt');
 
 /**
  * Reads the list of changed files from the git diff file with status (A, M, D).
@@ -12,11 +16,11 @@ const PR_INFO_PATH = path.join(BASE_PATH, "changed-files", "pr-body.txt");
  */
 function readChangedAndNewFilesWithStatus() {
   try {
-    const file = fs.readFileSync(CHANGED_FILES_PATH, "utf8");
+    const file = fs.readFileSync(CHANGED_FILES_PATH, 'utf8');
     return JSON.parse(file);
   } catch (error) {
-    if (error.code !== "ENOENT") {
-      console.error("Error reading from file:", error);
+    if (error.code !== 'ENOENT') {
+      console.error('Error reading from file:', error);
     }
     return [];
   }
@@ -32,16 +36,20 @@ function readChangedAndNewFilesWithStatus() {
  * (`*.spec.js` / `*.spec.ts`), excluding Playwright specs.
  * @returns {string[]} An array of filtered E2E test file paths.
  */
-function filterE2eChangedFiles(changedFilesPaths, { playwrightOnly = false } = {}) {
+function filterE2eChangedFiles(
+  changedFilesPaths,
+  { playwrightOnly = false } = {},
+) {
   return changedFilesPaths.filter((file) => {
-    if (!file.startsWith("test/e2e/")) {
+    if (!file.startsWith('test/e2e/')) {
       return false;
     }
     if (playwrightOnly) {
-      return file.endsWith(".pw.spec.ts");
+      return file.endsWith('.pw.spec.ts');
     }
     return (
-      (file.endsWith(".spec.js") || file.endsWith(".spec.ts")) && !file.endsWith(".pw.spec.ts")
+      (file.endsWith('.spec.js') || file.endsWith('.spec.ts')) &&
+      !file.endsWith('.pw.spec.ts')
     );
   });
 }
@@ -53,7 +61,9 @@ function filterE2eChangedFiles(changedFilesPaths, { playwrightOnly = false } = {
  */
 function readChangedAndFilterE2eChangedFiles({ playwrightOnly = false } = {}) {
   const changedAndNewFilesPathsWithStatus = readChangedAndNewFilesWithStatus();
-  const changedAndNewFilesPaths = getChangedAndNewFiles(changedAndNewFilesPathsWithStatus);
+  const changedAndNewFilesPaths = getChangedAndNewFiles(
+    changedAndNewFilesPathsWithStatus,
+  );
   return filterE2eChangedFiles(changedAndNewFilesPaths, { playwrightOnly });
 }
 
@@ -65,30 +75,30 @@ function readChangedAndFilterE2eChangedFiles({ playwrightOnly = false } = {}) {
  */
 function getNewFilesOnly(changedFiles) {
   return changedFiles
-    .filter((file) => typeof file !== "string" && file.changeType === "ADDED")
+    .filter((file) => file.changeType === 'ADDED')
     .map((file) => file.path);
 }
 
 /**
  * Filters the list of changed files to include only modified files.
  *
- * @param {Array<{status: string, filePath: string}|string>} changedFiles - An array of changed file objects or paths.
+ * @param {Array<{status: string, filePath: string}>} changedFiles - An array of changed file objects.
  * @returns {string[]} An array of modified file paths.
  */
 function getChangedFilesOnly(changedFiles) {
   return changedFiles
-    .filter((file) => typeof file !== "string" && file.changeType === "MODIFIED")
+    .filter((file) => file.changeType === 'MODIFIED')
     .map((file) => file.path);
 }
 
 /**
  * Filters the list of changed files to include both new and modified files.
  *
- * @param {Array<{status: string, filePath: string}|string>} changedFiles - An array of changed file objects or paths.
+ * @param {Array<{status: string, filePath: string}>} changedFiles - An array of changed file objects.
  * @returns {string[]} An array of new and modified file paths.
  */
 function getChangedAndNewFiles(changedFiles) {
-  return changedFiles.map((file) => (typeof file === "string" ? file : file.path));
+  return changedFiles.map((file) => file.path);
 }
 
 /**
@@ -98,32 +108,33 @@ function getChangedAndNewFiles(changedFiles) {
  */
 function shouldE2eQualityGateBeSkipped() {
   try {
-    const data = fs.readFileSync(PR_INFO_PATH, "utf8");
-    const lines = data.split("\n");
-    const labelsLine = lines.find((line) => line.startsWith("PR labels:"));
-    const baseLine = lines.find((line) => line.startsWith("PR base:"));
+    const data = fs.readFileSync(PR_INFO_PATH, 'utf8');
+    const lines = data.split('\n');
+    const labelsLine = lines.find((line) => line.startsWith('PR labels:'));
+    const baseLine = lines.find((line) => line.startsWith('PR base:'));
 
     const labels = labelsLine
       ? labelsLine
-          .replace(/PR labels: \{/gu, "")
-          .replace(/\}/gu, "")
-          .split(",")
+          .replace(/PR labels: \{/gu, '')
+          .replace(/\}/gu, '')
+          .split(',')
           .map((label) => label.trim())
       : [];
     const base = baseLine
       ? baseLine
-          .replace(/PR base: \{/gu, "")
-          .replace(/\}/gu, "")
+          .replace(/PR base: \{/gu, '')
+          .replace(/\}/gu, '')
           .trim()
-      : "";
-    console.log("PR labels", labels);
-    console.log("PR base", base);
+      : '';
+    console.log('PR labels', labels);
+    console.log('PR base', base);
 
-    const skipGate = labels.includes("skip-e2e-quality-gate") || base !== "main";
-    console.log("Should we skip the e2e quality gate:", skipGate);
+    const skipGate =
+      labels.includes('skip-e2e-quality-gate') || base !== 'main';
+    console.log('Should we skip the e2e quality gate:', skipGate);
     return skipGate;
   } catch (error) {
-    console.error("Error reading PR body file:", error);
+    console.error('Error reading PR body file:', error);
     return false;
   }
 }

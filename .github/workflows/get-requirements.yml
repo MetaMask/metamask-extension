@@ -487,35 +487,8 @@ jobs:
         uses: dorny/paths-filter@9d7afb8d214ad99e78fbd4247752c4caed2b6e4c
         with:
           filters: .github/rules/filter-rules.yml
-          # JSON so all_changes_files can be shared with E2E / AI analyzer consumers
+          # JSON so all_changes_files can be passed to AI PR risk analysis
           list-files: json
-
-      # Shared changed-files artifact for E2E (run-e2e / prep-e2e).
-      # AI PR risk analysis uses the same dorny list as a space-separated input.
-      - name: Materialize changed-files artifact
-        if: ${{ steps.filter.outcome == 'success' }}
-        env:
-          CHANGED_FILES_JSON: ${{ steps.filter.outputs.all_changes_files }}
-          PR_BODY: ${{ github.event.pull_request.body }}
-          PR_BASE: ${{ github.event.pull_request.base.ref }}
-          PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ', ') }}
-        run: |
-          mkdir -p changed-files
-          # Dorny emits a JSON string array; E2E utils expect [{ path, changeType }, ...].
-          # changeType is not available from paths-filter — MODIFIED is enough for quality-gate path filtering.
-          printf '%s' "${CHANGED_FILES_JSON:-[]}" | jq '[.[] | {path: ., changeType: "MODIFIED"}]' > changed-files/changed-files.json
-          {
-            echo "PR labels: {${PR_LABELS}}"
-            echo "PR base: {${PR_BASE}}"
-            printf '%s' "$PR_BODY"
-          } > changed-files/pr-body.txt
-
-      - name: Upload changed-files artifact
-        if: ${{ steps.filter.outcome == 'success' }}
-        uses: actions/upload-artifact@v6
-        with:
-          name: changed-files
-          path: ./changed-files/
 
       # This puts the workflow in locales-only mode, with skip-everything=true and needs-locales=true
       - name: Compute needs-locales flag

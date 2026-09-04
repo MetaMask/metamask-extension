@@ -381,15 +381,14 @@ jobs:
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ env.RUN_ID }}/bundle-size
           path: test-artifacts/chrome
 
-  # changed-files artifact is produced by get-requirements (dorny/paths-filter
-  # all_changes_files) for E2E. AI PR risk analysis receives the same list as a
-  # space-separated workflow input (no artifact download).
+  # AI PR risk analysis uses dorny all_changes_files from get-requirements as a
+  # space-separated input. E2E changed-files artifact is still produced by prep-e2e.
 
   prep-e2e:
     needs:
       - get-requirements
       - prep-deps
-    if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' && !cancelled() }}
+    if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/prep-e2e.yml
 
   ai-pr-risk-analysis:
