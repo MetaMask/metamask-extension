@@ -40,6 +40,7 @@ import {
 import {
   removeAccount,
   setAccountGroupHidden,
+  setAccountGroupPinned,
   setSelectedMultichainAccount,
 } from '../../../store/actions';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
@@ -240,6 +241,31 @@ function getEffectiveIsHidden(
   return metadataHidden ?? false;
 }
 
+/**
+ * Resolves whether a group belongs to the pinned section. Hidden wins over
+ * pinned, so an account that is on its way out of the section leaves it as soon
+ * as the hide is optimistically applied rather than once the store settles.
+ *
+ * @param groupId - Account group id.
+ * @param groupData - Account group from the tree.
+ * @param visibilityOverrides - Pending optimistic visibility map.
+ * @returns True when the group renders in the pinned section.
+ */
+function isPinnedInList(
+  groupId: string,
+  groupData: GroupData,
+  visibilityOverrides: Record<string, boolean>,
+): boolean {
+  return (
+    Boolean(groupData.metadata?.pinned) &&
+    !getEffectiveIsHidden(
+      groupId,
+      groupData.metadata?.hidden,
+      visibilityOverrides,
+    )
+  );
+}
+
 type ListItem =
   | {
       type: 'header';
@@ -390,7 +416,7 @@ export const MultichainAccountList = ({
   }, [accountToDelete, createEventBuilder, dispatch, trackEvent]);
 
   const handleVisibilityToggle = useCallback(
-    (accountGroupId: AccountGroupId, currentlyHidden: boolean) => {
+    async (accountGroupId: AccountGroupId, currentlyHidden: boolean) => {
       const nextHidden = !currentlyHidden;
 
       animateAccountListReorder(() => {
@@ -402,7 +428,15 @@ export const MultichainAccountList = ({
         }));
       });
 
-      dispatch(setAccountGroupHidden(accountGroupId, nextHidden));
+      // The pinned section takes precedence over hidden accounts, so a pinned
+      // account has to be unpinned as it is hidden or it would stay put looking
+      // untouched. This mirrors the account menu's hide action.
+      const group = findAccountGroup(wallets, accountGroupId);
+      if (nextHidden && group?.metadata.pinned) {
+        await dispatch(setAccountGroupPinned(accountGroupId, false));
+      }
+
+      await dispatch(setAccountGroupHidden(accountGroupId, nextHidden));
     },
     [dispatch, wallets],
   );
@@ -437,7 +471,7 @@ export const MultichainAccountList = ({
     Object.entries(wallets).forEach(([walletId, walletData]) => {
       Object.entries(walletData.groups || {}).forEach(
         ([groupId, groupData]) => {
-          if (groupData.metadata.pinned) {
+          if (isPinnedInList(groupId, groupData, pendingVisibilityOverrides)) {
             pinned.push({ groupId, groupData, walletId });
           }
         },
@@ -445,7 +479,7 @@ export const MultichainAccountList = ({
     });
 
     return pinned;
-  }, [wallets]);
+  }, [wallets, pendingVisibilityOverrides]);
 
   const defaultHandleAccountClick = useCallback(
     (accountGroupId: AccountGroupId) => {
@@ -698,7 +732,7 @@ export const MultichainAccountList = ({
 
       Object.entries(walletData.groups || {}).forEach(
         ([groupId, groupData]) => {
-          if (groupData.metadata?.pinned) {
+          if (isPinnedInList(groupId, groupData, pendingVisibilityOverrides)) {
             return;
           }
 

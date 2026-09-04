@@ -1,5 +1,11 @@
 import React from 'react';
-import { screen, fireEvent, act, within } from '@testing-library/react';
+import {
+  screen,
+  fireEvent,
+  act,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import {
   AccountGroupId,
   AccountGroupType,
@@ -113,6 +119,10 @@ const mockSetSelectedMultichainAccount = jest.requireMock(
 const mockSetAccountGroupHidden = jest.requireMock(
   '../../../store/actions',
 ).setAccountGroupHidden;
+
+const mockSetAccountGroupPinned = jest.requireMock(
+  '../../../store/actions',
+).setAccountGroupPinned;
 
 const mockRemoveAccount = jest.requireMock(
   '../../../store/actions',
@@ -1178,6 +1188,34 @@ describe('MultichainAccountList', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('does not render an account that is both pinned and hidden', () => {
+      const walletsWithPinnedHiddenAccount = {
+        ...mockWallets,
+        [walletOneId]: {
+          ...mockWallets[walletOneId],
+          groups: {
+            [walletOneGroupId]: {
+              ...mockWallets[walletOneId].groups[walletOneGroupId],
+              metadata: {
+                ...mockWallets[walletOneId].groups[walletOneGroupId].metadata,
+                pinned: true,
+                hidden: true,
+              },
+            },
+          },
+        },
+      } as AccountTreeWallets;
+
+      renderComponent({ wallets: walletsWithPinnedHiddenAccount });
+
+      expect(
+        screen.queryByText(messages.pinned.message),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).not.toBeInTheDocument();
+    });
+
     it('keeps a wallet listed when every one of its accounts is hidden', () => {
       renderComponent({ wallets: walletsWithHiddenAccount });
 
@@ -1329,6 +1367,22 @@ describe('MultichainAccountList', () => {
       },
     } as AccountTreeWallets;
 
+    const walletsWithPinnedAccount = {
+      ...mockWallets,
+      [walletOneId]: {
+        ...mockWallets[walletOneId],
+        groups: {
+          [walletOneGroupId]: {
+            ...mockWallets[walletOneId].groups[walletOneGroupId],
+            metadata: {
+              ...mockWallets[walletOneId].groups[walletOneGroupId].metadata,
+              pinned: true,
+            },
+          },
+        },
+      },
+    } as AccountTreeWallets;
+
     it('renders cells in edit mode and suppresses account menus', () => {
       renderComponent({ isEditMode: true });
 
@@ -1451,6 +1505,56 @@ describe('MultichainAccountList', () => {
       expect(
         screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
       ).not.toHaveClass('multichain-account-cell--hidden');
+      expect(mockSetAccountGroupPinned).not.toHaveBeenCalled();
+    });
+
+    it('unpins a pinned account when it is hidden', async () => {
+      renderComponent({ wallets: walletsWithPinnedAccount, isEditMode: true });
+
+      expect(screen.getByText(messages.pinned.message)).toBeInTheDocument();
+
+      fireEvent.click(
+        within(
+          screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+        ).getByTestId('multichain-account-cell-edit-mode-visible-icon'),
+      );
+
+      expect(mockSetAccountGroupPinned).toHaveBeenCalledWith(
+        walletOneGroupId,
+        false,
+      );
+      // Hiding waits for the unpin so the two never race in the background.
+      await waitFor(() =>
+        expect(mockSetAccountGroupHidden).toHaveBeenCalledWith(
+          walletOneGroupId,
+          true,
+        ),
+      );
+    });
+
+    it('moves a hidden account out of the pinned section before the store updates', () => {
+      renderComponent({ wallets: walletsWithPinnedAccount, isEditMode: true });
+
+      fireEvent.click(
+        within(
+          screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+        ).getByTestId('multichain-account-cell-edit-mode-visible-icon'),
+      );
+
+      // The only pinned account left the section, so the section is gone.
+      expect(
+        screen.queryByText(messages.pinned.message),
+      ).not.toBeInTheDocument();
+
+      const hiddenCell = screen.getByTestId(
+        `multichain-account-cell-${walletOneGroupId}`,
+      );
+      expect(hiddenCell).toHaveClass('multichain-account-cell--hidden');
+      expect(
+        within(hiddenCell).getByTestId(
+          'multichain-account-cell-edit-mode-hidden-icon',
+        ),
+      ).toBeInTheDocument();
     });
 
     it('removes the private-key account when delete is confirmed', () => {
