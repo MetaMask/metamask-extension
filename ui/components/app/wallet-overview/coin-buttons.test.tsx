@@ -22,7 +22,7 @@ jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   __esModule: true,
   default: jest.fn(() => ({
     goToBuy: jest.fn(),
-    isRampsEnabled: false,
+    opensBuyInPortfolioTab: false,
   })),
 }));
 
