@@ -1781,6 +1781,12 @@
     "message": "Approved on $1 for $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
+  "arcUsageNoticeDescription": {
+    "message": "Welcome to Arc! To facilitate and verify your usage of Arc chain, we may share information with Arc team."
+  },
+  "arcUsageNoticeTitle": {
+    "message": "Notice"
+  },
   "areYouSure": {
     "message": "Are you sure?"
   },
@@ -5511,6 +5517,9 @@
   "moneyActivityDepositing": {
     "message": "Depositing"
   },
+  "moneyActivityDetailsTransactionId": {
+    "message": "Transaction ID"
+  },
   "moneyActivityEmpty": {
     "message": "No activity yet"
   },
@@ -8526,6 +8535,10 @@
   "quotedTotalCost": {
     "message": "Total cost: $1"
   },
+  "rampsBackToWallet": {
+    "message": "Back to wallet",
+    "description": "Secondary button on the ramps complete-buy interstitial that returns to the wallet home"
+  },
   "rampsBestRate": {
     "message": "Best rate"
   },
@@ -8546,6 +8559,18 @@
   "rampsChooseProvider": {
     "message": "Choose provider"
   },
+  "rampsCompleteBuyTitle": {
+    "message": "Complete buy",
+    "description": "Title of the interstitial shown after opening a ramps provider checkout tab"
+  },
+  "rampsCompletePurchaseInProviderTab": {
+    "message": "Complete your purchase in $1 tab",
+    "description": "$1 is the on-ramp provider name (e.g. Transak)"
+  },
+  "rampsContinueInBrowser": {
+    "message": "Continue in browser",
+    "description": "Banner title on the ramps complete-buy interstitial"
+  },
   "rampsEligibilityFailedDescription": {
     "message": "Please try again, or contact support if this keeps happening."
   },
@@ -8557,6 +8582,10 @@
   },
   "rampsErrorLoadingTokens": {
     "message": "Error loading tokens"
+  },
+  "rampsEstimatedToReceive": {
+    "message": "Estimated to receive",
+    "description": "Label for the estimated crypto amount on the ramps complete-buy interstitial"
   },
   "rampsMaxPurchaseLimit": {
     "message": "Maximum purchase is $1",
@@ -8682,6 +8711,10 @@
   },
   "rampsPaymentDelayMinutes": {
     "message": "mins"
+  },
+  "rampsPaymentMethod": {
+    "message": "Payment method",
+    "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
   },
   "rampsPaymentMethodLimits": {
     "message": "Up to $1",
@@ -9691,6 +9724,9 @@
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."
   },
+  "selectPerpsAccount": {
+    "message": "Select perps account"
+  },
   "selectRecipient": {
     "message": "Select recipient"
   },
@@ -9731,6 +9767,9 @@
   },
   "sendSelectSendAsset": {
     "message": "Select asset to send"
+  },
+  "sendToPerps": {
+    "message": "Send to Perps"
   },
   "sendingAsset": {
     "message": "Sending $1"
