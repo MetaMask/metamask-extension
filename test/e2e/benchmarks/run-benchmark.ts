@@ -350,6 +350,7 @@ async function main(): Promise<void> {
 
   // Run benchmarks and collect results
   const allResults: Record<string, unknown> = {};
+  const failedBenchmarks: string[] = [];
 
   for (const filePath of filesToRun) {
     const fileName = path.basename(filePath, path.extname(filePath));
@@ -370,6 +371,7 @@ async function main(): Promise<void> {
     } catch (error) {
       console.error(`❌ Error running ${fileName}:`, error);
       allResults[resultKey] = { error: String(error) };
+      failedBenchmarks.push(resultKey);
     }
   }
 
@@ -393,6 +395,17 @@ async function main(): Promise<void> {
 
   console.log('\n📊 Benchmark Results:');
   console.log(outputStr);
+
+  // Throw only after the results file and the log are both out. A caller that
+  // reads the artifact -- the quality gate, and the `{ error: ... }` handling in
+  // particular -- still gets its input; what changes is that the process no
+  // longer exits 0 having produced a failure. `main().catch()` below routes this
+  // through `exitWithError`, which sets a non-zero exit code.
+  if (failedBenchmarks.length > 0) {
+    throw new Error(
+      `${failedBenchmarks.length} of ${filesToRun.length} benchmark(s) failed: ${failedBenchmarks.join(', ')}. Individual errors are logged above.`,
+    );
+  }
 }
 
 main().catch((error) => {
