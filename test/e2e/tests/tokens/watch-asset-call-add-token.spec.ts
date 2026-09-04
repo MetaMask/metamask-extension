@@ -89,7 +89,7 @@ describe('Add token using wallet_watchAsset', function () {
     );
   });
 
-  it.only('shows the balance from the network the dapp requested the token on', async function () {
+  it('shows the balance from the network the dapp requested the token on', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
