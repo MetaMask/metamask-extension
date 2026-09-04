@@ -222,7 +222,6 @@
     "lastError": null,
     "lastFetched": null,
     "lastFetchedAt": "number",
-    "batchTransactionCounts": "object",
     "lastFetchedBlockNumbers": "object",
     "lastQrScanCompletedSuccessfully": null,
     "lastSyncedTimestamp": "number",
