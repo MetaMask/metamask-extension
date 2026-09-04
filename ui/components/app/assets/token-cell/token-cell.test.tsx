@@ -289,6 +289,10 @@ describe('Token Cell', () => {
     expect(amountElement.textContent).toBe('5.00M TEST');
   });
 
+  // TokenCell formats Number(token.balance). TokenList copies
+  // assetsBalance.amount, which is already the human decimal
+  // ('11.811649'), so a raw-units string like '11811649' cannot
+  // reach this path.
   it('formats a 6-decimal human balance without grouping or compact millions', () => {
     const propsFrxUsd = {
       token: {
