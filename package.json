@@ -48,7 +48,6 @@
     "start:flask": "yarn start --type flask",
     "start:beta": "yarn start --type beta",
     "start:flask:mv2": "yarn start:mv2 --type flask",
-    "start:lavamoat": "yarn start --lavamoat",
     "dist": "yarn webpack:lavamoat:build --zip",
     "dist:mv2": "yarn webpack:lavamoat:build:mv2 --zip",
     "build": "yarn webpack:lavamoat:build",
