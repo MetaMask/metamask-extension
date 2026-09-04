@@ -1,5 +1,9 @@
 import { TextColor } from '@metamask/design-system-react';
-import { getPerpsDisplaySymbol } from '@metamask/perps-controller';
+import {
+  getMarketTypeFilter,
+  getPerpsDisplaySymbol,
+  type MarketType,
+} from '@metamask/perps-controller';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import type {
   Order,
@@ -485,6 +489,37 @@ export const isHip3Market = (
 export const isCryptoMarket = (market: PerpsMarketData): boolean => {
   return !market.marketSource;
 };
+
+/**
+ * Check whether a market belongs to a market category.
+ *
+ * One classifier for the whole Extension UI, so the Perps tab category pills
+ * only offer a category whose destination — the market list, which filters
+ * through this same function — actually has markets in it.
+ *
+ * Deliberately NOT the controller's `matchesCategory`, which is the equivalent
+ * classifier at the core level. The two agree on every category except
+ * `crypto`: the controller counts a HIP-3 market explicitly typed
+ * `marketType: 'crypto'` as crypto (`!isHip3Market(m) || m.marketType ===
+ * 'crypto'`), while this keeps the Extension's long-standing `marketSource`
+ * rule and does not. That rule is what the market list's `crypto` filter has
+ * always applied, so swapping in `matchesCategory` here would silently change
+ * which markets the Crypto filter shows — a user-visible behaviour change that
+ * belongs in its own ticket, not in the one that added the pills. Revisit
+ * together with `isCryptoMarket`, which the mobile-extension map lists as a
+ * duplicated-with-mobile utility.
+ *
+ * @param market - The market data to test.
+ * @param category - The market category to test against.
+ * @returns True if the market belongs to the category.
+ */
+export const marketMatchesCategory = (
+  market: PerpsMarketData,
+  category: MarketType,
+): boolean =>
+  category === 'crypto'
+    ? isCryptoMarket(market)
+    : getMarketTypeFilter(market) === category;
 
 export function getPnlDisplayColor(pnl: number): TextColor {
   if (pnl > 0) {

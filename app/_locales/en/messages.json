@@ -7513,6 +7513,10 @@
   "perpsFilterAll": {
     "message": "All"
   },
+  "perpsFilterClear": {
+    "message": "$1, clear filter",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "Commodities"
   },
@@ -7527,6 +7531,10 @@
   },
   "perpsFilterIndex": {
     "message": "Index"
+  },
+  "perpsFilterMore": {
+    "message": "More",
+    "description": "Trigger of the menu holding the market categories that do not fit on one line"
   },
   "perpsFilterNew": {
     "message": "New"
@@ -7624,12 +7632,20 @@
   "perpsMarket": {
     "message": "Market"
   },
+  "perpsMarketCategories": {
+    "message": "Market categories",
+    "description": "Accessible name of the Perps tab row of market category pills"
+  },
   "perpsMarketNotFound": {
     "message": "Market not found"
   },
   "perpsMarketNotFoundDescription": {
     "message": "The market \"$1\" could not be found.",
     "description": "$1 is the market symbol that was not found"
+  },
+  "perpsMarketCount": {
+    "message": "$1 markets",
+    "description": "Count of markets currently listed. $1 is the number of markets"
   },
   "perpsMarkets": {
     "message": "Markets"
