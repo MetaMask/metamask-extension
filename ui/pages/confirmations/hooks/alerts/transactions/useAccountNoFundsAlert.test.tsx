@@ -12,6 +12,7 @@ import { ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS } from '../../pay/useAutomaticTransac
 import { useTransactionPayAvailableTokens } from '../../pay/useTransactionPayAvailableTokens';
 import { useIsTransactionPayLoading } from '../../pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
+import { useAccountTokensLoading } from '../../send/useAccountTokensLoading';
 import { useTransactionAccountOverride } from '../../transactions/useTransactionAccountOverride';
 import { AlertsName } from '../constants';
 import { useAccountNoFundsAlert } from './useAccountNoFundsAlert';
@@ -22,6 +23,7 @@ jest.mock('../../pay/useTransactionPayData', () => ({
   ...jest.requireActual('../../pay/useTransactionPayData'),
   useIsTransactionPayLoading: jest.fn(),
 }));
+jest.mock('../../send/useAccountTokensLoading');
 jest.mock('../../transactions/useTransactionAccountOverride');
 jest.mock('../../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
@@ -54,6 +56,7 @@ describe('useAccountNoFundsAlert', () => {
   const useIsTransactionPayLoadingMock = jest.mocked(
     useIsTransactionPayLoading,
   );
+  const useAccountTokensLoadingMock = jest.mocked(useAccountTokensLoading);
   const useTransactionAccountOverrideMock = jest.mocked(
     useTransactionAccountOverride,
   );
@@ -67,6 +70,7 @@ describe('useAccountNoFundsAlert', () => {
       { disabled: false },
     ] as ReturnType<typeof useTransactionPayAvailableTokens>);
     useIsTransactionPayLoadingMock.mockReturnValue(false);
+    useAccountTokensLoadingMock.mockReturnValue(false);
     useTransactionAccountOverrideMock.mockReturnValue(undefined);
     useTransactionPayTokenMock.mockReturnValue({
       payToken: undefined,
@@ -161,6 +165,55 @@ describe('useAccountNoFundsAlert', () => {
     } as TransactionMeta);
 
     expect(result.current).toStrictEqual([]);
+  });
+
+  it('returns no alert while override account assets are still loading', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([]);
+    useAccountTokensLoadingMock.mockReturnValue(true);
+
+    const { result } = renderHookWithConfirmation({
+      type: TransactionType.moneyAccountDeposit,
+      txParams: { from: '0xabc' },
+    } as TransactionMeta);
+
+    expect(result.current).toStrictEqual([]);
+  });
+
+  it('does not settle empty-account wait while override assets are loading', () => {
+    jest.useFakeTimers();
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      { disabled: false },
+    ] as ReturnType<typeof useTransactionPayAvailableTokens>);
+
+    const { result, rerender } = renderHookWithConfirmation({
+      type: TransactionType.moneyAccountDeposit,
+      txParams: { from: '0xabc' },
+    } as TransactionMeta);
+
+    useTransactionAccountOverrideMock.mockReturnValue(
+      '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd' as Hex,
+    );
+    useTransactionPayAvailableTokensMock.mockReturnValue([]);
+    useAccountTokensLoadingMock.mockReturnValue(true);
+    rerender();
+
+    act(() => {
+      jest.advanceTimersByTime(ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS);
+    });
+
+    expect(result.current).toStrictEqual([]);
+
+    useAccountTokensLoadingMock.mockReturnValue(false);
+    rerender();
+
+    expect(result.current).toStrictEqual([]);
+
+    act(() => {
+      jest.advanceTimersByTime(ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS);
+    });
+
+    expect(result.current).toHaveLength(1);
+    expect(result.current[0].key).toBe(AlertsName.AccountNoFunds);
   });
 
   it('does not flash alert while funding tokens load after account override', () => {

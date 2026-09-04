@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { waitFor } from '@testing-library/react';
 import { Hex } from '@metamask/utils';
 import {
   TransactionMeta,
@@ -26,6 +28,7 @@ import { AlertsName } from '../constants';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
+import { useConfirmContext } from '../../../context/confirm';
 import { useInsufficientPayTokenBalanceAlert } from './useInsufficientPayTokenBalanceAlert';
 
 jest.mock('../../pay/useTransactionPayToken');
@@ -74,9 +77,11 @@ function runHook(
   {
     paymentOverride,
     confirmationOverrides,
+    isMaxMoneyDeposit,
   }: {
     paymentOverride?: PaymentOverride;
     confirmationOverrides?: Partial<TransactionMeta>;
+    isMaxMoneyDeposit?: boolean;
   } = {},
 ) {
   const contractInteraction = {
@@ -96,10 +101,17 @@ function runHook(
       : {},
   });
 
-  return renderHookWithConfirmContextProvider(
-    () => useInsufficientPayTokenBalanceAlert(props),
-    state,
-  );
+  return renderHookWithConfirmContextProvider(() => {
+    // Flip the confirm-context Max-deposit flag on (via effect, after mount)
+    // so the alert sees a full-balance deposit without the amount hook.
+    const { setIsMaxMoneyDeposit } = useConfirmContext();
+    useEffect(() => {
+      if (isMaxMoneyDeposit) {
+        setIsMaxMoneyDeposit?.(true);
+      }
+    }, [setIsMaxMoneyDeposit]);
+    return useInsufficientPayTokenBalanceAlert(props);
+  }, state);
 }
 
 function runHookForPerpsWithdraw(
@@ -324,6 +336,103 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       const { result } = runHook({ pendingAmountUsd: '1.00' });
 
       expect(result.current).toStrictEqual([]);
+    });
+
+    it('returns no alert when isMax is true even if source amount exceeds balance', () => {
+      useTransactionPayIsMaxAmountMock.mockReturnValue(true);
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          balanceRaw: '4000000000000000000',
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      const { result } = runHook();
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('returns no alert when isMax is true even if source amount plus gas-fee-token exceeds balance', () => {
+      useTransactionPayIsMaxAmountMock.mockReturnValue(true);
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          balanceRaw: '4000000000000000000',
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+      useTransactionPayTotalsMock.mockReturnValue({
+        ...TOTALS_MOCK,
+        fees: {
+          ...TOTALS_MOCK.fees,
+          isSourceGasFeeToken: true,
+        },
+      });
+
+      const { result } = runHook();
+
+      expect(result.current).toStrictEqual([]);
+    });
+  });
+
+  describe('for a full-balance money-account deposit (isMaxMoneyDeposit)', () => {
+    const MONEY_DEPOSIT_OVERRIDES: Partial<TransactionMeta> = {
+      isGasFeeSponsored: true,
+      nestedTransactions: [
+        { type: TransactionType.tokenMethodApprove },
+        { type: TransactionType.moneyAccountDeposit },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ] as any,
+    };
+
+    beforeEach(() => {
+      // Amount and source both exceed the balance by the bridge spread — the
+      // shape that false-positives on a full-balance deposit.
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          balanceUsd: '10.00',
+          balanceRaw: '4000000000000000000',
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+      useTransactionPayRequiredTokensMock.mockReturnValue([
+        { ...REQUIRED_TOKEN_MOCK, amountUsd: '100.00' },
+      ]);
+      useTransactionPayTotalsMock.mockReturnValue({
+        ...TOTALS_MOCK,
+        sourceAmount: { raw: '5000000000000000000', usd: '100.00' },
+      } as TransactionPayTotals);
+    });
+
+    it('surfaces the shortfall when the deposit is not the full-balance Max', () => {
+      const { result } = runHook(
+        {},
+        { confirmationOverrides: MONEY_DEPOSIT_OVERRIDES },
+      );
+
+      expect(result.current).toStrictEqual([
+        expect.objectContaining({
+          key: AlertsName.InsufficientPayTokenBalance,
+        }),
+      ]);
+    });
+
+    it('tolerates the bridge spread when the deposit is the full-balance Max', async () => {
+      const { result } = runHook(
+        {},
+        {
+          confirmationOverrides: MONEY_DEPOSIT_OVERRIDES,
+          isMaxMoneyDeposit: true,
+        },
+      );
+
+      // The flag is applied via an effect after the initial commit.
+      await waitFor(() => expect(result.current).toStrictEqual([]));
     });
   });
 
