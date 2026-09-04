@@ -123,6 +123,7 @@ export type AppStateControllerState = {
   lastViewedUserSurvey: number | null;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
+  arcUsageNoticeShown: boolean;
   pna25Acknowledged: boolean;
   nftsDropdownState: Json;
   notificationGasPollTokens: string[];
@@ -294,6 +295,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   lastViewedUserSurvey: null,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
+  arcUsageNoticeShown: false,
   pna25Acknowledged: false,
   notificationGasPollTokens: [],
   onboardingDate: null,
@@ -450,6 +452,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   newPrivacyPolicyToastShownDate: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  arcUsageNoticeShown: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -714,6 +722,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'removeSlide',
   'requestQrCodeScan',
   'setAppActiveTab',
+  'setArcUsageNoticeShown',
   'setBrowserEnvironment',
   'setConnectedStatusPopoverHasBeenShown',
   'setCurrentExtensionPopupId',
@@ -949,6 +958,12 @@ export class AppStateController extends BaseController<
   setNewPrivacyPolicyToastShownDate(time: number): void {
     this.update((state) => {
       state.newPrivacyPolicyToastShownDate = time;
+    });
+  }
+
+  setArcUsageNoticeShown(): void {
+    this.update((state) => {
+      state.arcUsageNoticeShown = true;
     });
   }
 

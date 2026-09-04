@@ -29,6 +29,43 @@ export enum ConfirmationLoader {
   Send = 'send',
 }
 
+/**
+ * Pre-selected payment method for a confirmation, passed as a query param.
+ * Mirrors mobile `PayWithOption` so Money Account → Perps (and similar)
+ * entry points can lock the source of funds without showing the token picker.
+ */
+export enum PayWithOption {
+  MoneyAccount = 'money_account',
+}
+
+/**
+ * Query params scoped to a single confirmation entry point. They must not
+ * survive navigation to another pending confirmation via `getConfirmationRoute`.
+ */
+const FLOW_SCOPED_SEARCH_PARAMS = ['payWithOption'] as const;
+
+export function sanitizeConfirmationSearchParams(
+  queryString: string = '',
+): string {
+  if (!queryString.length) {
+    return '';
+  }
+
+  const normalizedQuery = queryString.startsWith('?')
+    ? queryString.slice(1)
+    : queryString;
+
+  if (!normalizedQuery.length) {
+    return '';
+  }
+
+  const params = new URLSearchParams(normalizedQuery);
+  FLOW_SCOPED_SEARCH_PARAMS.forEach((param) => params.delete(param));
+
+  const sanitized = params.toString();
+  return sanitized.length ? `?${sanitized}` : '';
+}
+
 const CONNECT_APPROVAL_TYPES = [
   ApprovalType.WalletRequestPermissions,
   'wallet_installSnap',
@@ -39,6 +76,7 @@ const CONNECT_APPROVAL_TYPES = [
 export type ConfirmationNavigationOptions = {
   loader?: ConfirmationLoader;
   goBackTo?: string;
+  payWithOption?: PayWithOption;
 };
 
 export function useConfirmationNavigation() {
@@ -108,6 +146,10 @@ export function useConfirmationNavigation() {
         params.set('goBackTo', options.goBackTo);
       }
 
+      if (options.payWithOption) {
+        params.set('payWithOption', options.payWithOption);
+      }
+
       navigate({
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
         search: params.toString(),
@@ -166,8 +208,9 @@ export function getConfirmationRoute(
   }
   if (type === ApprovalType.Transaction) {
     let url = `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`;
-    if (queryString.length) {
-      url = `${url}${queryString}`;
+    const sanitizedQueryString = sanitizeConfirmationSearchParams(queryString);
+    if (sanitizedQueryString.length) {
+      url = `${url}${sanitizedQueryString}`;
     }
     return url;
   }
@@ -212,8 +255,15 @@ export function useConfirmationNavigationOptions(): ConfirmationNavigationOption
 
   const goBackTo = sanitizeRedirectUrl(searchParams.get('goBackTo'));
 
+  const payWithOptionParam = searchParams.get('payWithOption');
+  const payWithOption =
+    payWithOptionParam === PayWithOption.MoneyAccount
+      ? PayWithOption.MoneyAccount
+      : undefined;
+
   return {
     loader,
     goBackTo,
+    payWithOption,
   };
 }

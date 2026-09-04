@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { Hex } from '@metamask/utils';
 import { getMaybeSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
@@ -34,6 +35,7 @@ export type InitiateWithdrawalOptions = {
  */
 export function useMoneyAccountWithdrawal() {
   const { navigateToTransaction } = useConfirmationNavigation();
+  const location = useLocation();
   const selectedAccount = useSelector(getMaybeSelectedInternalAccount);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -51,6 +53,7 @@ export function useMoneyAccountWithdrawal() {
 
         navigateToTransaction(transactionId, {
           loader: ConfirmationLoader.CustomAmount,
+          goBackTo: location.pathname + location.search,
         });
       } catch (error) {
         const errorObj =
@@ -64,7 +67,12 @@ export function useMoneyAccountWithdrawal() {
         setIsLoading(false);
       }
     },
-    [navigateToTransaction, selectedAccount],
+    [
+      location.pathname,
+      location.search,
+      navigateToTransaction,
+      selectedAccount,
+    ],
   );
 
   return { initiateWithdrawal, isLoading };
