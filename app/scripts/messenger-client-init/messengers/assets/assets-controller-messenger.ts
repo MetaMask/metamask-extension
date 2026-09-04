@@ -89,6 +89,9 @@ export function getAssetsControllerMessenger(
       // Real-time post-tx balances + per-chain connectivity (AccountActivityService WS path)
       'AccountActivityService:balanceUpdated',
       'AccountActivityService:statusChanged',
+      // Correlates a confirmed tx with its WS push to skip a redundant Accounts
+      // API call (see AssetsController post-tx WS dedup in @metamask/assets-controller v15)
+      'AccountActivityService:transactionUpdated',
       'RemoteFeatureFlagController:stateChange',
     ],
   });
