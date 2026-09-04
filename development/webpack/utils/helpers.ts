@@ -103,13 +103,27 @@ export const extensionToJs = (filename: string) =>
 
 /**
  * It gets minimizers for the webpack build.
+ *
+ * SWC's native minifier is built with Rayon concurrency (`concurrent-renamer`).
+ * Under parallel asset minification that can make mangled short-names in the
+ * webpack runtime chunk scheduling-dependent, which breaks reproducible
+ * Firefox/AMO rebuilds (same symptom as https://github.com/web-infra-dev/rspack/issues/14089:
+ * identical structure, swapped single-letter identifiers like `c`/`l`). Force a single
+ * Rayon thread and disable TerserPlugin multi-process parallel so Linux CI and
+ * local reviewer rebuilds mangle the runtime the same way.
  */
 export function getMinimizers() {
   const TerserPlugin: typeof TerserPluginType = require('terser-webpack-plugin');
+  // Prefer an explicit caller override, otherwise pin to 1 for hermetic builds.
+  if (!process.env.RAYON_NUM_THREADS) {
+    process.env.RAYON_NUM_THREADS = '1';
+  }
   return [
     new TerserPlugin({
       // use SWC to minify (about 7x faster than Terser)
       minify: TerserPlugin.swcMinify,
+      // Avoid nested parallelism with SWC's concurrent renamer (see above).
+      parallel: false,
       // do not minify snow.
       exclude: /snow\.prod/u,
     }),
