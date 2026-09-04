@@ -136,7 +136,6 @@
       "warn: ⚠️ React Router Future Flag": 1
     },
     "test/integration/tokens/hyperevm-wrong-decimals.test.tsx": {
-      "React: DOM nesting violations": 2,
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "warn: ⚠️ React Router Future Flag": 1
