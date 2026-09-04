@@ -339,27 +339,42 @@ jobs:
             async function findMatchingRun(searchBranch) {
               core.info(`Searching branch '${searchBranch}' for matching build hash...`);
 
-              let runs;
-              try {
-                const resp = await github.rest.actions.listWorkflowRuns({
-                  owner,
-                  repo,
-                  workflow_id: 'main.yml',
-                  branch: searchBranch,
-                  per_page: 10,
-                });
-                runs = resp.data.workflow_runs ?? [];
-              } catch (err) {
-                core.warning(`API error listing runs for '${searchBranch}': ${err.message}`);
-                return false;
+              // Stops CI rebuilding work that already exists. This listing
+              // intermittently serves a stale page — observed returning ten
+              // contiguous runs four weeks old, and once four months old, while
+              // hundreds of newer ones existed — so the scan below finds no
+              // reusable build and everything gets built again.
+              //
+              // The retry hangs off the miss rather than off a guess about
+              // freshness, so it only costs a call on the path that had already
+              // decided to rebuild. Its own try/catch keeps a failed retry from
+              // discarding a first listing that succeeded.
+              async function listRuns() {
+                try {
+                  const resp = await github.rest.actions.listWorkflowRuns({
+                    owner,
+                    repo,
+                    workflow_id: 'main.yml',
+                    branch: searchBranch,
+                    per_page: 10,
+                  });
+                  return resp.data.workflow_runs ?? [];
+                } catch (err) {
+                  core.warning(`API error listing runs for '${searchBranch}': ${err.message}`);
+                  return null;
+                }
               }
+
+              const runs = await listRuns();
+              if (runs === null) return false;
 
               // 'in_progress' is included intentionally: a concurrent run that
               // already uploaded all build artifacts can be reused even before it
               // finishes its E2E/lint jobs. The artifact completeness check below
               // ensures we never use a run with missing uploads.
               const allowedStatuses = new Set(['completed', 'in_progress']);
-              for (const run of runs) {
+              async function scan(candidates) {
+              for (const run of candidates) {
                 if (!allowedStatuses.has(run.status)) continue;
                 if (run.id === currentRunId) continue;
 
@@ -403,6 +418,17 @@ jobs:
                 }
               }
               return false;
+              }
+
+              if (await scan(runs)) return true;
+
+              // Nothing matched. Re-request once in case the page was stale, and
+              // rescan only if it actually came back different.
+              const retry = await listRuns();
+              if (retry === null) return false;
+              if ((retry[0]?.id ?? null) === (runs[0]?.id ?? null)) return false;
+              core.info(`-> re-requested '${searchBranch}': listing changed, rescanning`);
+              return await scan(retry);
             }
 
             try {
