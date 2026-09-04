@@ -941,13 +941,17 @@
     },
     "@metamask/account-tree-controller": {
       "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
         "console.warn": true,
-        "setTimeout": true
+        "setTimeout": true,
+        "structuredClone": true
       },
       "packages": {
         "@metamask/account-api": true,
         "@metamask/accounts-controller": true,
         "@metamask/base-controller": true,
+        "@metamask/eth-hd-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/profile-sync-controller": true,
@@ -1023,7 +1027,7 @@
         "@metamask/base-controller": true,
         "@metamask/client-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/assets-controller>@metamask/core-backend": true,
+        "@metamask/core-backend": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/phishing-controller": true,
         "@metamask/polling-controller": true,
@@ -2921,6 +2925,7 @@
         "crypto": true
       },
       "packages": {
+        "@metamask/scure-bip39": true,
         "@metamask/superstruct": true,
         "@noble/hashes": true,
         "@scure/base": true,
@@ -5851,7 +5856,7 @@
         "mockttp>express>safe-buffer": true
       }
     },
-    "@storybook/addon-docs>remark-external-links>mdast-util-definitions": {
+    "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": {
       "packages": {
         "react-markdown>unist-util-visit": true
       }
@@ -5869,7 +5874,7 @@
         "console.warn": true
       },
       "packages": {
-        "@storybook/addon-docs>remark-external-links>mdast-util-definitions": true,
+        "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>mdurl": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>unist-builder": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>unist-util-generated": true,
@@ -6494,7 +6499,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "@metamask/object-multiplex>readable-stream": {
@@ -6509,7 +6514,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "@metamask/obs-store>readable-stream": {
@@ -6524,7 +6529,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "@metamask/post-message-stream>readable-stream": {
@@ -6539,7 +6544,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "@metamask/providers>readable-stream": {
@@ -6554,7 +6559,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "@metamask/snaps-controllers>readable-stream": {
@@ -6569,7 +6574,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "crypto-browserify>browserify-sign>readable-stream": {
@@ -6590,7 +6595,7 @@
         "readable-stream-2>process-nextick-args": true,
         "crypto-browserify>browserify-sign>readable-stream>safe-buffer": true,
         "crypto-browserify>browserify-sign>readable-stream>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream": {
@@ -6605,7 +6610,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream": {
@@ -6620,7 +6625,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": {
@@ -6635,7 +6640,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": {
@@ -6650,7 +6655,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "stream-browserify>readable-stream": {
@@ -6665,7 +6670,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "stream-http>readable-stream": {
@@ -6680,7 +6685,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "@metamask/snaps-controllers>readable-web-to-node-stream": {
@@ -7238,7 +7243,7 @@
         "react": true
       }
     },
-    "@storybook/react>util-deprecate": {
+    "readable-stream-2>util-deprecate": {
       "globals": {
         "console.trace": true,
         "console.warn": true,

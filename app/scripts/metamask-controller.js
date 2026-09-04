@@ -381,10 +381,7 @@ import { SignatureControllerInit } from './messenger-client-init/confirmations/s
 import { UserOperationControllerInit } from './messenger-client-init/confirmations/user-operation-controller-init';
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
-import {
-  QrSyncControllerInit,
-  QrSyncDataServiceInit,
-} from './messenger-client-init/qr-sync';
+import { QrSyncControllerInit } from './messenger-client-init/qr-sync';
 import { getRootMessenger } from './lib/messenger';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './messenger-client-init/profile-metrics-controller-init';
@@ -664,7 +661,6 @@ export default class MetamaskController extends EventEmitter {
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
       ProofOfOwnershipService: ProofOfOwnershipServiceInit,
-      QrSyncDataService: QrSyncDataServiceInit,
       QrSyncController: QrSyncControllerInit,
       // ClientController must be initialized before AssetsController (AssetsController subscribes to ClientController:stateChange).
       ClientController: ClientControllerInit,
@@ -3053,6 +3049,18 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setNewPrivacyPolicyToastShownDate.bind(
           appStateController,
         ),
+      setArcUsageNoticeShown: () => {
+        if (appStateController.state.arcUsageNoticeShown) {
+          return;
+        }
+        appStateController.setArcUsageNoticeShown();
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.ArcUsageNoticeToastViewed)
+            .addCategory(MetaMetricsEventCategory.Home)
+            .addProperties({ chain_id_caip: 'eip155:5042' })
+            .build(),
+        );
+      },
       setSnapsInstallPrivacyWarningShownStatus:
         appStateController.setSnapsInstallPrivacyWarningShownStatus.bind(
           appStateController,
@@ -4360,14 +4368,24 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {object} asset - The asset descriptor from the dapp request.
    * @param {string} origin - The origin that initiated the request.
+   * @param {string} networkClientId - The network client the request targets.
    */
-  #requestUnifiedWatchAssetApproval = async (asset, origin) => {
+  #requestUnifiedWatchAssetApproval = async (
+    asset,
+    origin,
+    networkClientId,
+  ) => {
     const { address } = this.accountsController.getSelectedAccount();
     const id = crypto.randomUUID();
     const image =
       typeof asset.image === 'string' && asset.image.trim() !== ''
         ? asset.image
         : null;
+
+    const { chainId } =
+      this.networkController.getNetworkConfigurationByNetworkClientId(
+        networkClientId,
+      );
 
     await this.controllerMessenger.call(
       'ApprovalController:addRequest',
@@ -4383,6 +4401,7 @@ export default class MetamaskController extends EventEmitter {
             decimals: asset.decimals,
             symbol: asset.symbol,
             image,
+            chainId,
           },
         },
       },
@@ -4454,7 +4473,11 @@ export default class MetamaskController extends EventEmitter {
           this.#validateUnifiedWatchAssetRequest(asset, networkClientId);
           // Show the EIP-747 confirmation and wait for the user. A rejection
           // throws here, so we never reach the persist step below.
-          await this.#requestUnifiedWatchAssetApproval(asset, origin);
+          await this.#requestUnifiedWatchAssetApproval(
+            asset,
+            origin,
+            networkClientId,
+          );
           await this.#persistUnifiedWatchAsset(asset, networkClientId);
         } else {
           await this.tokensController.watchAsset({
