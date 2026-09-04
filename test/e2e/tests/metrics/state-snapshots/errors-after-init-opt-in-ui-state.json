@@ -411,6 +411,7 @@
     "tracesBeforeMetricsOptIn": "object",
     "tradeConfigurations": "object",
     "traits": "object",
+    "batchTransactionCounts": "object",
     "transactionBatches": "object",
     "transactionData": "object",
     "transactions": "object",

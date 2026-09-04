@@ -1,57 +1,12 @@
 import { Messenger } from '@metamask/messenger';
 import { getRootMessenger } from '../../../lib/messenger';
 import {
+  ASSETS_CONTROLLER_DELEGATED_ACTIONS,
+  ASSETS_CONTROLLER_DELEGATED_EVENTS,
+  ASSETS_CONTROLLER_INIT_DELEGATED_ACTIONS,
   getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
 } from './assets-controller-messenger';
-
-const ASSETS_CONTROLLER_DELEGATED_ACTIONS = [
-  'AccountTreeController:getAccountsFromSelectedAccountGroup',
-  'AccountTreeController:isInitialized',
-  'ClientController:getState',
-  'KeyringController:isUnlocked',
-  'ConfigRegistryController:getNetworkConfigByCaip2ChainId',
-  'NetworkEnablementController:getState',
-  'NetworkController:getState',
-  'NetworkController:getNetworkClientById',
-  'SnapController:handleRequest',
-  'SnapController:getRunnableSnaps',
-  'PermissionController:getPermissions',
-  'PhishingController:bulkScanTokens',
-  'AccountsController:getSelectedAccount',
-  'RemoteFeatureFlagController:getState',
-] as const;
-
-const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
-  'AccountTreeController:selectedAccountGroupChange',
-  'AccountTreeController:initialized',
-  'AccountTreeController:uninitialized',
-  'ClientController:stateChange',
-  'NetworkEnablementController:stateChange',
-  'KeyringController:lock',
-  'KeyringController:unlock',
-  'NetworkController:stateChange',
-  'NetworkController:networkDidChange',
-  'NetworkController:networkRemoved',
-  'NetworkController:networkAdded',
-  'AccountsController:accountBalancesUpdated',
-  'PermissionController:stateChange',
-  'SnapController:snapInstalled',
-  'PreferencesController:stateChange',
-  'TransactionController:transactionConfirmed',
-  'TransactionController:unapprovedTransactionAdded',
-  'AccountActivityService:balanceUpdated',
-  'AccountActivityService:statusChanged',
-  'RemoteFeatureFlagController:stateChange',
-] as const;
-
-const ASSETS_CONTROLLER_INIT_DELEGATED_ACTIONS = [
-  'AuthenticationController:getBearerToken',
-  'SnapController:handleRequest',
-  'PreferencesController:getState',
-  'OnboardingController:getState',
-  'RemoteFeatureFlagController:getState',
-] as const;
 
 describe('getAssetsControllerMessenger', () => {
   it('returns a messenger instance', () => {

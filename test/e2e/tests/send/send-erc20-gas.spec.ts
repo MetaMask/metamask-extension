@@ -341,10 +341,11 @@ describe('Send ERC20 - Gas Customization', function () {
               name: 'Test Standard Token',
               symbol: 'TST',
               decimals: 18,
+              occurrences: 100,
             });
           }
 
-          return { statusCode: 200, json: { data: results } };
+          return { statusCode: 200, json: results };
         }),
     ];
   }

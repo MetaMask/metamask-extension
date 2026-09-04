@@ -348,6 +348,7 @@
       "allTokens": {}
     },
     "TransactionController": {
+      "batchTransactionCounts": "object",
       "lastFetchedBlockNumbers": "object",
       "methodData": "object",
       "submitHistory": "object",

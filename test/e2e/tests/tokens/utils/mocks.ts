@@ -102,6 +102,9 @@ export async function mockTokenMetadataApis(
                   name: token.name,
                   symbol: token.symbol,
                   decimals: token.decimals,
+                  // TokenDataSource treats missing occurrences as 0 and drops
+                  // ERC-20s below the chain floor (mainnet default 3).
+                  occurrences: 100,
                 })),
             ];
 

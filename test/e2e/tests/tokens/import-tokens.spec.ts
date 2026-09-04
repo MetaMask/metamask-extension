@@ -432,7 +432,11 @@ async function mockAssetsV3(mockServer: Mockttp) {
 
       const results = Object.entries(assetMap)
         .filter(([key]) => assetIds.includes(key))
-        .map(([, value]) => value);
+        .map(([, value]) =>
+          value.assetId.includes('/erc20:')
+            ? { ...value, occurrences: 100 }
+            : value,
+        );
 
       return { statusCode: 200, json: results };
     });

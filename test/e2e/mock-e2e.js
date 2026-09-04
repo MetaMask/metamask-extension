@@ -444,6 +444,170 @@ const privateHostMatchers = [
   },
 ];
 
+/** Well above TokenDataSource's default ERC-20 occurrence floor of 3. */
+const TOKEN_METADATA_OCCURRENCES = 100;
+
+const WELL_KNOWN_MAINNET_ERC20_ASSETS = [
+  {
+    assetId: 'eip155:1/erc20:0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+    name: 'Wrapped Ether',
+    symbol: 'WETH',
+    decimals: 18,
+  },
+  {
+    assetId: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    name: 'USD Coin',
+    symbol: 'USDC',
+    decimals: 6,
+  },
+  {
+    assetId: 'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
+    name: 'Tether USD',
+    symbol: 'USDT',
+    decimals: 6,
+  },
+  {
+    assetId: 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    name: 'Dai Stablecoin',
+    symbol: 'DAI',
+    decimals: 18,
+  },
+];
+
+/**
+ * Default Tokens / Token API metadata for natives and well-known ERC-20s.
+ *
+ * ERC-20s include `occurrences` so TokenDataSource's spam filter (core 15)
+ * does not drop them when `includeOccurrences=true`.
+ *
+ * @param {string} assetIds - Concatenated `assetIds` query values.
+ * @returns {object[]}
+ */
+function getWellKnownTokenAssetMetadata(assetIds) {
+  const results = [];
+  const includesAssetId = (assetId) =>
+    assetIds.includes(assetId) || assetIds.includes(assetId.toLowerCase());
+
+  if (assetIds.includes('eip155:1/slip44:60')) {
+    results.push({
+      assetId: 'eip155:1/slip44:60',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+    });
+  }
+
+  // Chain 1337 uses slip44:1 per nativeAssetIdentifiers in the fixture.
+  // Support both slip44:1 and slip44:60 requests for backward compat.
+  if (
+    assetIds.includes('eip155:1337/slip44:1') ||
+    assetIds.includes('eip155:1337/slip44:60')
+  ) {
+    results.push({
+      assetId: 'eip155:1337/slip44:1',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+    });
+  }
+
+  for (const token of WELL_KNOWN_MAINNET_ERC20_ASSETS) {
+    if (includesAssetId(token.assetId)) {
+      results.push({
+        ...token,
+        occurrences: TOKEN_METADATA_OCCURRENCES,
+      });
+    }
+  }
+
+  return results;
+}
+
+/**
+ * Builds Accounts API v5/v6 multi-account balance rows for unified assets E2E.
+ *
+ * @param {object} req - Mockttp request.
+ * @param {object} unifiedEvmAccountsApiBalances - withFixtures overrides.
+ * @returns {object[]}
+ */
+function buildUnifiedEvmAccountsApiBalances(
+  req,
+  unifiedEvmAccountsApiBalances,
+) {
+  const url = new URL(req.url);
+  const accountIdsParam = url.searchParams.get('accountIds') ?? '';
+  const accountIds = accountIdsParam ? accountIdsParam.split(',') : [];
+
+  const mainnetNativeOverride =
+    typeof unifiedEvmAccountsApiBalances.mainnetNativeEthHuman === 'string'
+      ? unifiedEvmAccountsApiBalances.mainnetNativeEthHuman
+      : null;
+  const localhostNativeOverride =
+    typeof unifiedEvmAccountsApiBalances.localhostNativeEthHuman === 'string'
+      ? unifiedEvmAccountsApiBalances.localhostNativeEthHuman
+      : null;
+  const defaultNativeOverride =
+    typeof unifiedEvmAccountsApiBalances.nativeBalance === 'string'
+      ? unifiedEvmAccountsApiBalances.nativeBalance
+      : null;
+  const mainnetAdditional = Array.isArray(
+    unifiedEvmAccountsApiBalances.mainnetAdditionalBalances,
+  )
+    ? unifiedEvmAccountsApiBalances.mainnetAdditionalBalances
+    : [];
+
+  const balances = [];
+  for (const id of accountIds) {
+    const parts = id.split(':');
+    if (parts[0] !== 'eip155' || parts.length < 3) {
+      continue;
+    }
+    const chainRef = parts[1];
+    const accountAddress = parts.slice(2).join(':').toLowerCase();
+    const isKnownFundedTestAccount =
+      accountAddress === DEFAULT_FIXTURE_ACCOUNT_LOWERCASE ||
+      accountAddress === LOCAL_NODE_ACCOUNT.toLowerCase();
+    // Seed known E2E accounts with 25 ETH; newly added accounts (e.g. hardware
+    // wallets) start at zero unless overridden via unifiedEvmAccountsApiBalances.
+    let nativeBalance = isKnownFundedTestAccount ? '25' : '0';
+    if (defaultNativeOverride === '0' && !isKnownFundedTestAccount) {
+      nativeBalance = '0';
+    } else if (chainRef === '1' && mainnetNativeOverride !== null) {
+      nativeBalance = mainnetNativeOverride;
+    } else if (
+      chainRef === '1337' &&
+      localhostNativeOverride !== null &&
+      isKnownFundedTestAccount
+    ) {
+      nativeBalance = localhostNativeOverride;
+    } else if (defaultNativeOverride !== null) {
+      nativeBalance = defaultNativeOverride;
+    }
+
+    // Chain 1337 uses slip44:1 per nativeAssetIdentifiers; all others use slip44:60.
+    const slip44 = chainRef === '1337' ? '1' : '60';
+    balances.push({
+      accountId: id,
+      assetId: `eip155:${chainRef}/slip44:${slip44}`,
+      balance: nativeBalance,
+    });
+
+    if (chainRef === '1' && mainnetAdditional.length > 0) {
+      for (const row of mainnetAdditional) {
+        if (row?.assetId && row.balance !== undefined) {
+          balances.push({
+            accountId: id,
+            assetId: row.assetId,
+            balance: String(row.balance),
+          });
+        }
+      }
+    }
+  }
+
+  return balances;
+}
+
 /**
  * @typedef {import('mockttp').Mockttp} Mockttp
  * @typedef {import('mockttp').MockedEndpoint} MockedEndpoint
@@ -1596,92 +1760,13 @@ async function setupMocking(
     .forGet('https://tokens.api.cx.metamask.io/v3/assets')
     .always()
     .thenCallback((request) => {
-      const url = new URL(request.url);
-      const assetIds = url.searchParams.getAll('assetIds').join(',');
-
-      const results = [];
-
-      const pushIf = (predicate, entry) => {
-        if (predicate) {
-          results.push(entry);
-        }
+      const assetIds = new URL(request.url).searchParams
+        .getAll('assetIds')
+        .join(',');
+      return {
+        statusCode: 200,
+        json: getWellKnownTokenAssetMetadata(assetIds),
       };
-
-      pushIf(assetIds.includes('eip155:1/slip44:60'), {
-        assetId: 'eip155:1/slip44:60',
-        name: 'Ethereum',
-        symbol: 'ETH',
-        decimals: 18,
-      });
-
-      // Chain 1337 uses slip44:1 per nativeAssetIdentifiers in the fixture.
-      // Support both slip44:1 and slip44:60 requests for backward compat.
-      pushIf(
-        assetIds.includes('eip155:1337/slip44:1') ||
-          assetIds.includes('eip155:1337/slip44:60'),
-        {
-          assetId: 'eip155:1337/slip44:1',
-          name: 'Ethereum',
-          symbol: 'ETH',
-          decimals: 18,
-        },
-      );
-
-      const wethMainnet =
-        'eip155:1/erc20:0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
-      const usdcMainnet =
-        'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
-      const usdtMainnet =
-        'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7';
-      const daiMainnet =
-        'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F';
-
-      if (
-        assetIds.includes(wethMainnet) ||
-        assetIds.includes(wethMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: wethMainnet,
-          name: 'Wrapped Ether',
-          symbol: 'WETH',
-          decimals: 18,
-        });
-      }
-      if (
-        assetIds.includes(usdcMainnet) ||
-        assetIds.includes(usdcMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: usdcMainnet,
-          name: 'USD Coin',
-          symbol: 'USDC',
-          decimals: 6,
-        });
-      }
-      if (
-        assetIds.includes(usdtMainnet) ||
-        assetIds.includes(usdtMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: usdtMainnet,
-          name: 'Tether USD',
-          symbol: 'USDT',
-          decimals: 6,
-        });
-      }
-      if (
-        assetIds.includes(daiMainnet) ||
-        assetIds.includes(daiMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: daiMainnet,
-          name: 'Dai Stablecoin',
-          symbol: 'DAI',
-          decimals: 18,
-        });
-      }
-
-      return { statusCode: 200, json: results };
     });
 
   // Token API assets: used by fetchTokenAssets (TokenAsset cache / TDP deep links).
@@ -1689,92 +1774,13 @@ async function setupMocking(
     .forGet('https://token.api.cx.metamask.io/assets')
     .always()
     .thenCallback((request) => {
-      const url = new URL(request.url);
-      const assetIds = url.searchParams.getAll('assetIds').join(',');
-
-      const results = [];
-
-      const pushIf = (predicate, entry) => {
-        if (predicate) {
-          results.push(entry);
-        }
+      const assetIds = new URL(request.url).searchParams
+        .getAll('assetIds')
+        .join(',');
+      return {
+        statusCode: 200,
+        json: getWellKnownTokenAssetMetadata(assetIds),
       };
-
-      pushIf(assetIds.includes('eip155:1/slip44:60'), {
-        assetId: 'eip155:1/slip44:60',
-        name: 'Ethereum',
-        symbol: 'ETH',
-        decimals: 18,
-      });
-
-      // Chain 1337 uses slip44:1 per nativeAssetIdentifiers in the fixture.
-      // Support both slip44:1 and slip44:60 requests for backward compat.
-      pushIf(
-        assetIds.includes('eip155:1337/slip44:1') ||
-          assetIds.includes('eip155:1337/slip44:60'),
-        {
-          assetId: 'eip155:1337/slip44:1',
-          name: 'Ethereum',
-          symbol: 'ETH',
-          decimals: 18,
-        },
-      );
-
-      const wethMainnet =
-        'eip155:1/erc20:0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
-      const usdcMainnet =
-        'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
-      const usdtMainnet =
-        'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7';
-      const daiMainnet =
-        'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F';
-
-      if (
-        assetIds.includes(wethMainnet) ||
-        assetIds.includes(wethMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: wethMainnet,
-          name: 'Wrapped Ether',
-          symbol: 'WETH',
-          decimals: 18,
-        });
-      }
-      if (
-        assetIds.includes(usdcMainnet) ||
-        assetIds.includes(usdcMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: usdcMainnet,
-          name: 'USD Coin',
-          symbol: 'USDC',
-          decimals: 6,
-        });
-      }
-      if (
-        assetIds.includes(usdtMainnet) ||
-        assetIds.includes(usdtMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: usdtMainnet,
-          name: 'Tether USD',
-          symbol: 'USDT',
-          decimals: 6,
-        });
-      }
-      if (
-        assetIds.includes(daiMainnet) ||
-        assetIds.includes(daiMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: daiMainnet,
-          name: 'Dai Stablecoin',
-          symbol: 'DAI',
-          decimals: 18,
-        });
-      }
-
-      return { statusCode: 200, json: results };
     });
 
   // Tokens API: v2 supported networks — mocked globally so all tests work.
@@ -1902,84 +1908,17 @@ async function setupMocking(
       };
     });
 
-  // Accounts API: v5 multi-account balances (used by AccountsApiDataSource when assetsUnifyState is enabled).
-  // Default: 25 ETH native per requested chain for the default fixture account. Override via
-  // withFixtures({ unifiedEvmAccountsApiBalances }) when login() asserts a custom fiat total.
-  await server
-    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
-    .always()
-    .thenCallback((req) => {
-      const url = new URL(req.url);
-      const accountIdsParam = url.searchParams.get('accountIds') ?? '';
-      const accountIds = accountIdsParam ? accountIdsParam.split(',') : [];
-
-      const mainnetNativeOverride =
-        typeof unifiedEvmAccountsApiBalances.mainnetNativeEthHuman === 'string'
-          ? unifiedEvmAccountsApiBalances.mainnetNativeEthHuman
-          : null;
-      const localhostNativeOverride =
-        typeof unifiedEvmAccountsApiBalances.localhostNativeEthHuman ===
-        'string'
-          ? unifiedEvmAccountsApiBalances.localhostNativeEthHuman
-          : null;
-      const defaultNativeOverride =
-        typeof unifiedEvmAccountsApiBalances.nativeBalance === 'string'
-          ? unifiedEvmAccountsApiBalances.nativeBalance
-          : null;
-      const mainnetAdditional = Array.isArray(
-        unifiedEvmAccountsApiBalances.mainnetAdditionalBalances,
-      )
-        ? unifiedEvmAccountsApiBalances.mainnetAdditionalBalances
-        : [];
-
-      const balances = [];
-      for (const id of accountIds) {
-        const parts = id.split(':');
-        if (parts[0] !== 'eip155' || parts.length < 3) {
-          continue;
-        }
-        const chainRef = parts[1];
-        const accountAddress = parts.slice(2).join(':').toLowerCase();
-        const isKnownFundedTestAccount =
-          accountAddress === DEFAULT_FIXTURE_ACCOUNT_LOWERCASE ||
-          accountAddress === LOCAL_NODE_ACCOUNT.toLowerCase();
-        // Seed known E2E accounts with 25 ETH; newly added accounts (e.g. hardware
-        // wallets) start at zero unless overridden via unifiedEvmAccountsApiBalances.
-        let nativeBalance = isKnownFundedTestAccount ? '25' : '0';
-        if (defaultNativeOverride === '0' && !isKnownFundedTestAccount) {
-          nativeBalance = '0';
-        } else if (chainRef === '1' && mainnetNativeOverride !== null) {
-          nativeBalance = mainnetNativeOverride;
-        } else if (
-          chainRef === '1337' &&
-          localhostNativeOverride !== null &&
-          isKnownFundedTestAccount
-        ) {
-          nativeBalance = localhostNativeOverride;
-        } else if (defaultNativeOverride !== null) {
-          nativeBalance = defaultNativeOverride;
-        }
-
-        // Chain 1337 uses slip44:1 per nativeAssetIdentifiers; all others use slip44:60.
-        const slip44 = chainRef === '1337' ? '1' : '60';
-        balances.push({
-          accountId: id,
-          assetId: `eip155:${chainRef}/slip44:${slip44}`,
-          balance: nativeBalance,
-        });
-
-        if (chainRef === '1' && mainnetAdditional.length > 0) {
-          for (const row of mainnetAdditional) {
-            if (row?.assetId && row.balance !== undefined) {
-              balances.push({
-                accountId: id,
-                assetId: row.assetId,
-                balance: String(row.balance),
-              });
-            }
-          }
-        }
-      }
+  // Accounts API: v5/v6 multi-account balances (used by AccountsApiDataSource
+  // when assetsUnifyState is enabled). Default: 25 ETH native per requested
+  // chain for the default fixture account. Override via
+  // withFixtures({ unifiedEvmAccountsApiBalances }) when login() asserts a
+  // custom fiat total. v6 rows include `object: 'token'` (core 15).
+  const respondWithUnifiedEvmAccountsApiBalances = (includeObjectField) => {
+    return (req) => {
+      const balances = buildUnifiedEvmAccountsApiBalances(
+        req,
+        unifiedEvmAccountsApiBalances,
+      ).map((row) => (includeObjectField ? { ...row, object: 'token' } : row));
 
       return {
         statusCode: 200,
@@ -1989,7 +1928,18 @@ async function setupMocking(
           unprocessedNetworks: [],
         },
       };
-    });
+    };
+  };
+
+  await server
+    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
+    .always()
+    .thenCallback(respondWithUnifiedEvmAccountsApiBalances(false));
+
+  await server
+    .forGet('https://accounts.api.cx.metamask.io/v6/multiaccount/balances')
+    .always()
+    .thenCallback(respondWithUnifiedEvmAccountsApiBalances(true));
 
   // Accounts API: tokens
   const ACCOUNTS_API_TOKENS = fs.readFileSync(ACCOUNTS_API_TOKENS_PATH);
