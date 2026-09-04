@@ -41,8 +41,8 @@ describe('getMoneyAccountUpgradeControllerMessenger', () => {
           'RemoteFeatureFlagController:getState',
         ],
         events: [
-          'KeyringController:stateChanged',
-          'RemoteFeatureFlagController:stateChanged',
+          'KeyringController:stateChange',
+          'RemoteFeatureFlagController:stateChange',
         ],
       }),
     );

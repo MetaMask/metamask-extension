@@ -24,7 +24,7 @@ import type { RootMessenger } from '../../lib/messenger';
  * Beyond the actions the upgrade steps call, the controller drives its own
  * bootstrap: it subscribes to the feature-flag and keyring state and reads
  * both to decide when to arm itself, hence the two `getState` actions and
- * `stateChanged` events.
+ * `stateChange` events.
  *
  * @param messenger - The root messenger.
  * @returns The MoneyAccountUpgradeController messenger.
@@ -62,8 +62,8 @@ export function getMoneyAccountUpgradeControllerMessenger(
       'RemoteFeatureFlagController:getState',
     ],
     events: [
-      'KeyringController:stateChanged',
-      'RemoteFeatureFlagController:stateChanged',
+      'KeyringController:stateChange',
+      'RemoteFeatureFlagController:stateChange',
     ],
   });
 
