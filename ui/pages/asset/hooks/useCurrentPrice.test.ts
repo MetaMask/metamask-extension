@@ -1,15 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AssetType } from '@metamask/bridge-controller';
 import { EthScope, SolScope } from '@metamask/keyring-api';
+import { waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { Asset } from '../types/asset';
 import { useCurrentPrice } from './useCurrentPrice';
 
+jest.mock('../../../ducks/bridge/utils', () => {
+  const actual = jest.requireActual('../../../ducks/bridge/utils');
+  return {
+    ...actual,
+    getTokenExchangeRate: jest.fn(),
+  };
+});
+
+const { getTokenExchangeRate } = jest.requireMock(
+  '../../../ducks/bridge/utils',
+);
+
 describe('useCurrentPrice', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    getTokenExchangeRate.mockResolvedValue(undefined);
+  });
+
   const mockBaseState = {
     metamask: {
       isUnlocked: true,
       completedOnboarding: true,
+      currentCurrency: 'usd',
       selectedNetworkClientId: 'selectedNetworkClientId',
       networkConfigurationsByChainId: {
         '0x1': {
@@ -128,23 +147,33 @@ describe('useCurrentPrice', () => {
       expect(result.current.currentPrice).toBe(0.9998967852645477);
     });
 
-    it('returns undefined if market data is missing', () => {
+    it('fetches spot price when market data is missing', async () => {
       const tokenAssetMissingMarket: Asset = {
         chainId: '0x1',
         type: AssetType.token,
-        address: '0xMissingTokenAddress', // An address not in marketData
+        address: '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55',
         symbol: 'MISS',
         decimals: 18,
         name: 'Missing Token',
         image: '',
       };
 
+      getTokenExchangeRate.mockResolvedValue(1.23);
+
       const { result } = renderHookWithProvider(
         () => useCurrentPrice(tokenAssetMissingMarket),
         mockStateIsEvm,
       );
 
-      expect(result.current.currentPrice).toBeUndefined();
+      await waitFor(() => {
+        expect(result.current.currentPrice).toBe(1.23);
+      });
+
+      expect(getTokenExchangeRate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          currency: 'usd',
+        }),
+      );
     });
 
     it('returns undefined if currency rate is missing', () => {
@@ -266,23 +295,28 @@ describe('useCurrentPrice', () => {
       expect(result.current.currentPrice).toBe(0.0000029141089909628);
     });
 
-    it('returns undefined if market data is missing', () => {
+    it('fetches spot price when conversion rate is missing', async () => {
       const tokenAssetMissingMarket: Asset = {
         chainId: SolScope.Mainnet as any,
         type: AssetType.token,
-        address: 'solana:MissingTokenAddress/slip44:501',
+        address:
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:MissingTokenAddress',
         symbol: 'MISS',
         decimals: 6,
         name: 'Missing Token',
         image: '',
       };
 
+      getTokenExchangeRate.mockResolvedValue(0.42);
+
       const { result } = renderHookWithProvider(
         () => useCurrentPrice(tokenAssetMissingMarket),
         mockStateIsNonEvm,
       );
 
-      expect(result.current.currentPrice).toBeUndefined();
+      await waitFor(() => {
+        expect(result.current.currentPrice).toBe(0.42);
+      });
     });
   });
 });
