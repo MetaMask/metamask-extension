@@ -66,6 +66,39 @@ describe('AuthenticationControllerInit', () => {
     });
   });
 
+  it('clears persisted sessions minted for a different OIDC env', () => {
+    const devJwt = `aaa.${Buffer.from(
+      JSON.stringify({ iss: 'https://oidc.dev-api.cx.metamask.io' }),
+    ).toString('base64url')}.bbb`;
+    const requestMock = buildInitRequestMock();
+    requestMock.persistedState.AuthenticationController = {
+      isSignedIn: true,
+      srpSessionData: {
+        'entropy-1': {
+          token: { accessToken: devJwt, expiresIn: 3600, obtainedAt: 1 },
+          profile: {
+            identifierId: 'id',
+            profileId: 'profile',
+            canonicalProfileId: 'profile',
+            metaMetricsId: 'mmid',
+          },
+        },
+      },
+    };
+
+    AuthenticationControllerInit(requestMock);
+
+    expect(AuthenticationControllerClassMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        state: expect.objectContaining({
+          isSignedIn: false,
+          srpSessionData: undefined,
+        }),
+        config: { env: Env.PRD },
+      }),
+    );
+  });
+
   it('wires getAppVersion to process.env.METAMASK_VERSION', () => {
     const originalVersion = process.env.METAMASK_VERSION;
     process.env.METAMASK_VERSION = '12.34.5';
