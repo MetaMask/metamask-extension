@@ -128,6 +128,10 @@ export async function getRampsOrderFromCallback(
   ]);
 }
 
+export async function syncRampsOrdersWithUserStorage(): Promise<void> {
+  return submitRequestToBackground('syncRampsOrdersWithUserStorage');
+}
+
 export async function watchRampsCheckoutTab(params: {
   url: string;
   providerCode: string;

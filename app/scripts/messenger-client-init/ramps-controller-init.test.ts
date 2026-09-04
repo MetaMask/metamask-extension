@@ -35,6 +35,7 @@ const mockRampsController = {
   removeOrder: jest.fn(),
   getOrder: jest.fn(),
   getOrderFromCallback: jest.fn(),
+  syncOrdersWithUserStorage: jest.fn(),
 };
 
 let mockInit: jest.Mock;
@@ -153,6 +154,8 @@ describe('RampsControllerInit', () => {
     expect(RampsController).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       state: getDefaultRampsControllerState(),
+      trace: expect.any(Function),
+      onOrderSyncErroneousSituation: expect.any(Function),
     });
   });
 
