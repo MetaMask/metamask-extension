@@ -1,12 +1,12 @@
 import { Hex } from '@metamask/utils';
-import { getUseExternalServices } from '#ui/selectors';
 import { MUSD_TOKEN_ADDRESS } from '#ui/components/app/musd/constants';
 import { type TokenWithFiatAmount } from '#ui/components/app/assets/types';
+import { getUseExternalServices } from '../../../../selectors';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useLowValueTokenPartition } from './useLowValueTokenPartition';
 
-jest.mock('#ui/selectors', () => ({
-  ...jest.requireActual('#ui/selectors'),
+jest.mock('../../../../selectors', () => ({
+  ...jest.requireActual('../../../../selectors'),
   getCurrencyRates: jest.fn(() => ({})),
   getUseExternalServices: jest.fn(() => true),
 }));

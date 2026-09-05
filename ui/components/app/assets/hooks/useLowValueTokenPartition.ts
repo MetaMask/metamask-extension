@@ -1,8 +1,8 @@
 import { type CurrencyRateState } from '@metamask/assets-controllers';
 import { useSelector } from 'react-redux';
-import { getCurrencyRates, getUseExternalServices } from '#ui/selectors';
 import { isMusdToken } from '#ui/components/app/musd/constants';
 import { type TokenWithFiatAmount } from '#ui/components/app/assets/types';
+import { getCurrencyRates, getUseExternalServices } from '../../../../selectors';
 
 const lowValueAssetFiatThresholdUsd = 1;
 
@@ -108,7 +108,7 @@ export function useLowValueTokenPartition({
   tokens: TokenWithFiatAmount[];
   enabled: boolean;
 }) {
-  const currencyRates = useSelector(getCurrencyRates);
+  const currencyRates = useSelector(getCurrencyRates) as CurrencyRates;
   const allowExternalServices = useSelector(getUseExternalServices);
 
   if (!enabled || !allowExternalServices) {
