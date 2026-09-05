@@ -888,7 +888,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/generator
-7.29.7 <https://github.com/babel/babel>
+7.29.8 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -1166,7 +1166,7 @@ THE SOFTWARE.
 ******************************
 
 @babel/parser
-7.29.7 <https://github.com/babel/babel>
+7.29.8 <https://github.com/babel/babel>
 Copyright (C) 2012-2014 by various contributors (see AUTHORS)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1301,7 +1301,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/traverse
-7.29.7 <https://github.com/babel/babel>
+7.29.8 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -1357,7 +1357,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/types
-7.29.7 <https://github.com/babel/babel>
+7.29.8 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -19379,7 +19379,7 @@ jsbi
 ******************************
 
 jsesc
-3.0.2 <https://github.com/mathiasbynens/jsesc>
+3.1.0 <https://github.com/mathiasbynens/jsesc>
 Copyright Mathias Bynens <https://mathiasbynens.be/>
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -24545,33 +24545,6 @@ SOFTWARE.
 ******************************
 
 @metamask/account-tree-controller
-7.6.1 <https://github.com/MetaMask/core>
-MIT License
-
-Copyright (c) 2025 MetaMask
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-******************************
-
-@metamask/account-tree-controller
 8.1.0 <https://github.com/MetaMask/core>
 MIT License
 
@@ -25194,33 +25167,6 @@ SOFTWARE.
 ******************************
 
 @metamask/assets-controllers
-110.1.0 <https://github.com/MetaMask/core>
-MIT License
-
-Copyright (c) 2018 MetaMask
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-******************************
-
-@metamask/assets-controllers
 111.1.3 <https://github.com/MetaMask/core>
 MIT License
 
@@ -25423,7 +25369,7 @@ SOFTWARE.
 ******************************
 
 @metamask/bridge-controller
-79.3.1 <https://github.com/MetaMask/core>
+80.2.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
@@ -25450,7 +25396,7 @@ SOFTWARE.
 ******************************
 
 @metamask/bridge-status-controller
-75.1.0 <https://github.com/MetaMask/core>
+75.5.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
@@ -26290,7 +26236,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/design-system-react
-0.38.0 <https://github.com/MetaMask/metamask-design-system>
+0.38.1 <https://github.com/MetaMask/metamask-design-system>
 MIT License
 
 Copyright (c) 2024 MetaMask
@@ -28567,7 +28513,7 @@ authors: undefined
 ******************************
 
 @metamask/perps-controller
-12.0.0 <https://github.com/MetaMask/core>
+12.2.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2026 MetaMask
@@ -29042,7 +28988,7 @@ SOFTWARE.
 ******************************
 
 @metamask/ramps-controller
-15.0.0 <https://github.com/MetaMask/core>
+15.1.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
@@ -29068,7 +29014,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/ramps-controller
-18.0.1 <https://github.com/MetaMask/core>
+20.2.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
@@ -29674,7 +29620,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snaps-rpc-methods
-17.1.1 <https://github.com/MetaMask/snaps>
+17.1.2 <https://github.com/MetaMask/snaps>
 Copyright ConsenSys Software Inc. 2021. All rights reserved.
  
 You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
@@ -29698,7 +29644,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snaps-sdk
-12.0.0 <https://github.com/MetaMask/snaps>
+12.0.1 <https://github.com/MetaMask/snaps>
 ISC License
 
 Copyright (c) 2023 MetaMask
@@ -29719,7 +29665,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/snaps-utils
-12.5.0 <https://github.com/MetaMask/snaps>
+12.6.0 <https://github.com/MetaMask/snaps>
 ISC License
 
 Copyright (c) 2022 MetaMask
@@ -29949,7 +29895,7 @@ SOFTWARE.
 ******************************
 
 @metamask/transaction-pay-controller
-26.2.0 <https://github.com/MetaMask/core>
+26.4.1 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
@@ -29976,7 +29922,7 @@ SOFTWARE.
 ******************************
 
 @metamask/tron-wallet-snap
-3.1.0 <https://github.com/MetaMask/internal-snaps>
+3.2.0 <https://github.com/MetaMask/internal-snaps>
 This project is licensed under either of
 
  * MIT license ([LICENSE.MIT](LICENSE.MIT))
@@ -30034,7 +29980,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/utils
-11.12.1 <https://github.com/MetaMask/utils>
+11.12.0 <https://github.com/MetaMask/utils>
 ISC License
 
 Copyright (c) 2022 MetaMask
@@ -33040,14 +32986,34 @@ This product bundles QR Code Generator, which is available under a
 ******************************
 
 @radix-ui/react-compose-refs
-1.1.2 <https://github.com/radix-ui/primitives>
-license: MIT
-authors: undefined
+1.1.5 <https://github.com/radix-ui/primitives>
+MIT License
+
+Copyright (c) 2022 WorkOS
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 
 ******************************
 
 @radix-ui/react-slot
-1.2.3 <https://github.com/radix-ui/primitives>
+1.3.3 <https://github.com/radix-ui/primitives>
 MIT License
 
 Copyright (c) 2022 WorkOS
@@ -40335,7 +40301,7 @@ authors: 강동윤 <kdy1997.dev@gmail.com>
 ******************************
 
 @swc/types
-0.1.23 <https://github.com/swc-project/swc>
+0.1.28 <https://github.com/swc-project/swc>
                               Apache License
                         Version 2.0, January 2004
                      http://www.apache.org/licenses/
@@ -42437,7 +42403,7 @@ authors: Mohamed Hegazy <https://github.com/mhegazy>
 ******************************
 
 @types/lodash
-4.17.20 <https://github.com/DefinitelyTyped/DefinitelyTyped>
+4.17.25 <https://github.com/DefinitelyTyped/DefinitelyTyped>
     MIT License
 
     Copyright (c) Microsoft Corporation.
