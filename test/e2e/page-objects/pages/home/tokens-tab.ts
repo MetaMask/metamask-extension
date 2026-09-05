@@ -375,6 +375,7 @@ class TokensTab extends HomePage {
    */
   async checkTokenAmountIsDisplayed(tokenAmount: string): Promise<void> {
     console.log(`Waiting for token amount ${tokenAmount} to be displayed`);
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.waitForSelector({
       css: this.tokenAmountValue,
       text: tokenAmount,
