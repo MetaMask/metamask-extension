@@ -243,7 +243,7 @@ async function mockTokens(mockServer: Mockttp) {
               address: '0x7051faed0775f664a0286af4f75ef5ed74e02754',
               symbol: 'CHANGE',
               decimals: 18,
-              name: 'Changex',
+              name: 'ChangeX',
               iconUrl: '',
               type: 'erc20',
               aggregators: [],
@@ -397,7 +397,7 @@ async function mockAssetsV3(mockServer: Mockttp) {
         },
         '0x7051faed0775f664a0286af4f75ef5ed74e02754': {
           assetId: 'eip155:1/erc20:0x7051faed0775f664a0286af4f75ef5ed74e02754',
-          name: 'Changex',
+          name: 'ChangeX',
           symbol: 'CHANGE',
           decimals: 18,
         },
@@ -432,7 +432,11 @@ async function mockAssetsV3(mockServer: Mockttp) {
 
       const results = Object.entries(assetMap)
         .filter(([key]) => assetIds.includes(key))
-        .map(([, value]) => value);
+        .map(([, value]) =>
+          value.assetId.includes('/erc20:')
+            ? { ...value, occurrences: 100 }
+            : value,
+        );
 
       return { statusCode: 200, json: results };
     });

@@ -87,6 +87,8 @@ module.exports = {
     ] = hwSwapHooksMock;
     config.resolve.alias['../../../../hooks/bridge/useBridgeNavigation$'] =
       hwSwapHooksMock;
+    config.resolve.alias['@metamask/scure-bip39/dist/wordlists/english.js'] =
+      require.resolve('./shims/scure-bip39-english.js');
 
     config.resolve.fallback = {
       child_process: false,
@@ -178,7 +180,7 @@ module.exports = {
     name: '@storybook/react-webpack5',
     options: {
       builder: {
-        useSWC: true,
+        useSWC: false,
       },
     },
   },

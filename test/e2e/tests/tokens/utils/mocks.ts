@@ -102,6 +102,9 @@ export async function mockTokenMetadataApis(
                   name: token.name,
                   symbol: token.symbol,
                   decimals: token.decimals,
+                  // TokenDataSource treats missing occurrences as 0 and drops
+                  // ERC-20s below the chain floor (mainnet default 3).
+                  occurrences: 100,
                 })),
             ];
 
@@ -382,6 +385,10 @@ export const getMockAssetsPrice = (
   'eip155:59144/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
   'eip155:8453/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
   'eip155:42161/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
+  'eip155:11155111/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
+  // AC 15 stores some testnet natives under the zero-address ERC-20 alias.
+  'eip155:11155111/erc20:0x0000000000000000000000000000000000000000':
+    ETH_ASSET_PRICE_ENTRY(ethConversionRate),
 });
 
 export const MAINNET_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
