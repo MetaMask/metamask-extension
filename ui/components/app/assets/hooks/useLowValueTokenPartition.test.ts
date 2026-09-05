@@ -88,17 +88,25 @@ describe('useLowValueTokenPartition', () => {
     expect(result.current.lowValueTokens).toEqual([]);
   });
 
-  it('does not bucket unpriced tokens when basic functionality is off', () => {
+  it('does not partition when basic functionality is off', () => {
     jest.mocked(getUseExternalServices).mockReturnValue(false);
 
     const pricedToken = createToken({ symbol: 'USDC', tokenFiatAmount: 25 });
     const unpricedToken = createToken({ symbol: 'SPAM' });
+    const lowValueToken = createToken({ symbol: 'DUST', tokenFiatAmount: 0.5 });
 
     const { result } = renderHookWithProvider(() =>
-      useLowValueTokenPartition({ tokens: [pricedToken, unpricedToken], enabled: true }),
+      useLowValueTokenPartition({
+        tokens: [pricedToken, unpricedToken, lowValueToken],
+        enabled: true,
+      }),
     );
 
-    expect(result.current.visibleTokens).toEqual([pricedToken, unpricedToken]);
+    expect(result.current.visibleTokens).toEqual([
+      pricedToken,
+      unpricedToken,
+      lowValueToken,
+    ]);
     expect(result.current.lowValueTokens).toEqual([]);
   });
 

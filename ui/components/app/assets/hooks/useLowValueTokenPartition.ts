@@ -45,7 +45,6 @@ function hasFiniteTokenFiatAmount(
 function shouldBucketAsLowValue(
   token: TokenWithFiatAmount,
   threshold: number,
-  allowExternalServices: boolean,
   hasAnyPricedToken: boolean,
 ) {
   // Native and mUSD are never bucketed into low value.
@@ -63,9 +62,8 @@ function shouldBucketAsLowValue(
     return true;
   }
 
-  // Unpriced tokens — only when basic functionality is on and prices look healthy.
+  // Unpriced tokens when another token in the list has a fiat price.
   if (
-    allowExternalServices &&
     hasAnyPricedToken &&
     (tokenFiatAmount === null || tokenFiatAmount === undefined)
   ) {
@@ -78,7 +76,6 @@ function shouldBucketAsLowValue(
 function partitionLowValueTokens(
   tokens: TokenWithFiatAmount[],
   currencyRates: CurrencyRates | undefined,
-  allowExternalServices: boolean,
 ) {
   const threshold = getLowValueAssetFiatThreshold(currencyRates);
   const hasAnyPricedToken = tokens.some((token) =>
@@ -88,14 +85,7 @@ function partitionLowValueTokens(
   const lowValueTokens: TokenWithFiatAmount[] = [];
 
   tokens.forEach((token) => {
-    if (
-      shouldBucketAsLowValue(
-        token,
-        threshold,
-        allowExternalServices,
-        hasAnyPricedToken,
-      )
-    ) {
+    if (shouldBucketAsLowValue(token, threshold, hasAnyPricedToken)) {
       lowValueTokens.push(token);
       return;
     }
@@ -109,6 +99,15 @@ function partitionLowValueTokens(
   };
 }
 
+/**
+ * Splits home token list into visible and low-value buckets. Skips partitioning
+ * when sort is inapplicable (`enabled` is false) or basic functionality is off.
+ *
+ * @param options - Partition inputs.
+ * @param options.tokens - Tokens to partition.
+ * @param options.enabled - Whether declining-balance sort allows low-value bucketing.
+ * @returns Visible tokens and tokens bucketed as low value.
+ */
 export function useLowValueTokenPartition({
   tokens,
   enabled,
@@ -117,15 +116,14 @@ export function useLowValueTokenPartition({
   enabled: boolean;
 }) {
   const currencyRates = useSelector(getCurrencyRates);
-  // Basic functionality toggle — when off, unpriced tokens stay in the main list.
   const allowExternalServices = useSelector(getUseExternalServices);
 
-  if (!enabled) {
+  if (!enabled || !allowExternalServices) {
     return {
       visibleTokens: tokens,
       lowValueTokens: [],
     };
   }
 
-  return partitionLowValueTokens(tokens, currencyRates, allowExternalServices);
+  return partitionLowValueTokens(tokens, currencyRates);
 }

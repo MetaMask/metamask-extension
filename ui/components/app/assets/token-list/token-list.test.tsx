@@ -321,7 +321,7 @@ describe('TokenList', () => {
     expect(screen.queryByTestId('low-value-assets-toggle')).toBeNull();
   });
 
-  it('keeps unpriced tokens in the main list when basic functionality is off', () => {
+  it('keeps all tokens in the main list when basic functionality is off', () => {
     jest.mocked(getUseExternalServices).mockReturnValue(false);
     jest
       .mocked(getAssetsBySelectedAccountGroup)
@@ -329,6 +329,7 @@ describe('TokenList', () => {
         createAccountGroupAssets([
           createAsset({ symbol: 'USDC', fiatBalance: 25 }),
           createAsset({ symbol: 'UNKNOWN' }),
+          createAsset({ symbol: 'DUST', fiatBalance: 0.5 }),
         ]),
       );
 
@@ -336,6 +337,7 @@ describe('TokenList', () => {
 
     expect(screen.getByTestId('token-cell-USDC')).toBeInTheDocument();
     expect(screen.getByTestId('token-cell-UNKNOWN')).toBeInTheDocument();
+    expect(screen.getByTestId('token-cell-DUST')).toBeInTheDocument();
     expect(screen.queryByTestId('low-value-assets-toggle')).toBeNull();
   });
 
