@@ -142,11 +142,6 @@
         "depcheck>@babel/traverse": true
       }
     },
-    "@babel/preset-env>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": {
-      "packages": {
-        "@babel/core>@babel/types": true
-      }
-    },
     "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": {
       "packages": {
         "@babel/core>@babel/types": true
@@ -172,8 +167,7 @@
       "packages": {
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms": true,
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": true
+        "@babel/preset-env>@babel/helper-plugin-utils": true
       }
     },
     "@babel/preset-typescript>@babel/plugin-transform-typescript": {
@@ -1381,6 +1375,7 @@
         "fs.readFileSync": true,
         "os.homedir": true,
         "path.join": true,
+        "path.relative": true,
         "path.resolve": true
       },
       "globals": {
@@ -2435,13 +2430,13 @@
     "stylelint>postcss-selector-parser": {
       "packages": {
         "stylelint>postcss-selector-parser>cssesc": true,
-        "readable-stream-2>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "tailwindcss>postcss-selector-parser": {
       "packages": {
         "stylelint>postcss-selector-parser>cssesc": true,
-        "readable-stream-2>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "mockttp>express>proxy-addr": {
@@ -3012,7 +3007,8 @@
         "terser-webpack-plugin>jest-worker": true,
         "schema-utils": true,
         "mocha>serialize-javascript": true,
-        "terser-webpack-plugin>terser": true
+        "terser-webpack-plugin>terser": true,
+        "html-bundler-webpack-plugin>handlebars>uglify-js": true
       }
     },
     "terser-webpack-plugin>terser": {
@@ -3186,6 +3182,16 @@
         "addons-linter>source-map-support": true
       }
     },
+    "html-bundler-webpack-plugin>handlebars>uglify-js": {
+      "builtin": {
+        "fs.readFileSync": true
+      },
+      "globals": {
+        "AST_Node": true,
+        "OutputStream": true,
+        "process.env": true
+      }
+    },
     "uri-js": {
       "globals": {
         "define": true
@@ -3200,7 +3206,7 @@
         "lavamoat>node-gyp-build": true
       }
     },
-    "readable-stream-2>util-deprecate": {
+    "@storybook/react>util-deprecate": {
       "builtin": {
         "util.deprecate": true
       }
@@ -3223,6 +3229,7 @@
         "path.dirname": true,
         "path.isAbsolute": true,
         "path.join": true,
+        "path.relative": true,
         "path.resolve": true
       },
       "globals": {
@@ -3230,6 +3237,7 @@
         "console.error": true,
         "process.env.WATCHPACK_POLLING": true,
         "process.env.WATCHPACK_RECURSIVE_WATCHER_LOGGING": true,
+        "process.env.WATCHPACK_RETRIES": true,
         "process.env.WATCHPACK_WATCHER_LIMIT": true,
         "process.nextTick": true,
         "process.platform": true,
@@ -3237,7 +3245,6 @@
         "setTimeout": true
       },
       "packages": {
-        "webpack>glob-to-regexp": true,
         "webpack>graceful-fs": true
       }
     },
