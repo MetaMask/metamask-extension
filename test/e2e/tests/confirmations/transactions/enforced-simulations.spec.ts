@@ -254,7 +254,7 @@ describe('Enforced Simulations', function (this: Suite) {
     await withFixtures(
       enforcedSimulationsFixtureOptions(
         this.test?.fullTitle(),
-        setupMocks(ResultType.Benign),
+        setupMocks(ResultType.Malicious),
       ),
       async ({ driver, localNodes }) => {
         await login(driver, { expectedBalance: '10' });
@@ -278,6 +278,7 @@ describe('Enforced Simulations', function (this: Suite) {
           confirmation,
           localNodes[0],
           'confirmed',
+          true,
         );
 
         assert.strictEqual(

@@ -555,24 +555,6 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   chain_id_list?: string[];
   /**
-   * Whether the user has opted into Rewards.
-   */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  has_rewards_opted_in?: string;
-  /**
-   * Whether the user was referred when opting into Rewards.
-   */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  rewards_referred?: boolean;
-  /**
-   * The referral code used when opting into Rewards.
-   */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  rewards_referral_code_used?: string;
-  /**
    * The platform (browser) where the extension is running.
    */
   platform?: Platform;
@@ -761,12 +743,6 @@ export enum MetaMetricsUserTrait {
    */
   ChainIdList = 'chain_id_list',
   /**
-   * Rewards-specific traits
-   */
-  HasRewardsOptedIn = 'has_rewards_opted_in',
-  RewardsReferred = 'rewards_referred',
-  RewardsReferralCodeUsed = 'rewards_referral_code_used',
-  /**
    * The platform (browser) where the extension is running.
    */
   Platform = 'platform',
@@ -936,6 +912,8 @@ export enum MetaMetricsEventName {
   StorageErrorToastViewed = 'Storage Error Toast Viewed',
   StorageErrorToastDismissed = 'Storage Error Toast Dismissed',
   StorageErrorToastBackupSrpButtonPressed = 'Storage Error Toast Backup SRP Button Pressed',
+  ArcUsageNoticeToastViewed = 'Arc Usage Notice Toast Viewed',
+  ArcUsageNoticeToastDismissed = 'Arc Usage Notice Toast Dismissed',
   DataPersistenceWriteRetryRecovered = 'Data Persistence Write Retry Recovered',
   StateMigrationSucceeded = 'State Migration Succeeded',
   StateMigrationFailed = 'State Migration Failed',

@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 import {
   getCurrencyRates,
   getUseExternalServices,
-} from '../../../../selectors';
-import { isMusdToken } from '../../musd/constants';
-import { type TokenWithFiatAmount } from '../types';
+} from '#ui/selectors';
+import { isMusdToken } from '#ui/components/app/musd/constants';
+import { type TokenWithFiatAmount } from '#ui/components/app/assets/types';
 
 const lowValueAssetFiatThresholdUsd = 1;
 

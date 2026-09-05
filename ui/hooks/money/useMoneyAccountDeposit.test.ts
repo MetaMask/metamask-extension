@@ -1,6 +1,7 @@
 import { act } from '@testing-library/react';
 import { EthAccountType, BtcAccountType } from '@metamask/keyring-api';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { MONEY_HOME_ROUTE } from '../../helpers/constants/routes';
 import { getMoneyAccountDepositIntent } from '../../helpers/money/deposit-intent';
 import {
   ConfirmationLoader,
@@ -77,6 +78,24 @@ describe('useMoneyAccountDeposit', () => {
     );
     expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
       loader: ConfirmationLoader.CustomAmount,
+      goBackTo: '/',
+    });
+  });
+
+  it('passes the originating route as goBackTo so the confirmation returns there', async () => {
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+      MONEY_HOME_ROUTE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit();
+    });
+
+    expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
+      loader: ConfirmationLoader.CustomAmount,
+      goBackTo: MONEY_HOME_ROUTE,
     });
   });
 

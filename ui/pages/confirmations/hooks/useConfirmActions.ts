@@ -18,7 +18,7 @@ import { useConfirmSendNavigation } from './useConfirmSendNavigation';
 export const useConfirmActions = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { currentConfirmation, goBackTo } =
+  const { currentConfirmation, goBackTo, suppressAutoExit } =
     useConfirmContext<TransactionMeta>();
   const { navigateBackIfSend } = useConfirmSendNavigation();
   const { id: currentConfirmationId } = currentConfirmation || {};
@@ -60,6 +60,7 @@ export const useConfirmActions = () => {
         return;
       }
       if (navigateBackForSend) {
+        suppressAutoExit();
         navigateBackIfSend();
       }
       await rejectApproval({ location });
@@ -82,6 +83,7 @@ export const useConfirmActions = () => {
       rejectApproval,
       resetTransactionState,
       goBackTo,
+      suppressAutoExit,
     ],
   );
 

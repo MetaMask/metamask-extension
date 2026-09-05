@@ -205,6 +205,7 @@
     "accountWalletsMetadata": {},
     "activeProvider": "string",
     "activeQrCodeScanRequest": "null",
+    "arcUsageNoticeShown": "boolean",
     "lastQrScanCompletedSuccessfully": "null",
     "addressBook": {},
     "addressScanCache": {},
@@ -297,6 +298,7 @@
     },
     "batchSellTrades": "null",
     "batchSellTradesLoadingStatus": "null",
+    "batchTransactionCounts": {},
     "browserEnvironment": {
       "browser": "string",
       "os": "string"
@@ -871,6 +873,10 @@
     "onboardingTabs": {},
     "openSeaEnabled": "boolean",
     "optedIn": "boolean",
+    "orderBookPreferences": {
+      "currency": "string",
+      "metric": "string"
+    },
     "orderedNetworkList": [
       {
         "networkId": "string"
@@ -1058,6 +1064,7 @@
     "selectedAccountGroup": "string",
     "selectedCurrency": "string",
     "selectedMultichainNetworkChainId": "string",
+    "selectedOrderType": "string",
     "selectedPaymentToken": "null",
     "selectedNetworkClientId": "string",
     "shieldSubscriptionError": "null",
@@ -1242,6 +1249,7 @@
       "install_date_ext": "string",
       "storage_kind": "string"
     },
+    "batchTransactionCounts": {},
     "transactionBatches": [],
     "transactionData": {},
     "transactions": [],
@@ -1275,6 +1283,7 @@
     "useTransactionSimulations": "boolean",
     "version": "null",
     "versionInfo": [],
+    "visibleCandleCount": "number",
     "watchEthereumAccountEnabled": "boolean",
     "watchlistMarkets": {
       "testnet": [],

@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Box, Text, TextVariant } from '@metamask/design-system-react';
+import { getSendRecipients } from '@metamask/transaction-controller';
 import {
   BackgroundColor,
   Severity,
@@ -8,7 +9,6 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AddressPoisoningAlertContent } from '../../../components/send/address-poisoning-alert-content/address-poisoning-alert-content';
-import { getSendRecipients } from '../../../utils/getSendRecipients';
 import { useTransactionMetadataRequestOptional } from '../../transactions/useTransactionMetadataRequest';
 import { useAddressPoisoningDetection } from '../../send/useAddressPoisoningDetection';
 import { AlertsName } from '../constants';

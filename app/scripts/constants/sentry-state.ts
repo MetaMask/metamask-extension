@@ -391,12 +391,14 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     transactions: false,
     lastFetchedBlockNumbers: false,
     methodData: false,
+    batchTransactionCounts: false,
   },
   TransactionPayController: {
     transactionData: false,
   },
   TxController: {
     transactions: false,
+    batchTransactionCounts: false,
   },
   UserOperationController: {
     userOperations: false,

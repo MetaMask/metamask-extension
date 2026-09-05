@@ -267,6 +267,7 @@ describe('Token List via StorageService', function () {
                   name: tokenName,
                   symbol: tokenSymbol,
                   decimals: 18,
+                  occurrences: 100,
                 });
               }
 
