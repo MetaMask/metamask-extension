@@ -519,7 +519,6 @@ const ChangePassword = ({
               }
             }}
           >
-            {/* px-2/-mx-2 keeps the scroll container from clipping the focus outline on the password fields. */}
             <Box className="-mx-2 flex-1 overflow-y-auto px-2">
               <Text
                 variant={TextVariant.BodyMd}
