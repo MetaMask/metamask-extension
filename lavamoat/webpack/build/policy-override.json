@@ -5,6 +5,16 @@
     }
   },
   "resources": {
+    "@storybook/react>util-deprecate": {
+      "builtin": {
+        "util.deprecate": true
+      }
+    },
+    "tailwindcss>postcss-selector-parser": {
+      "packages": {
+        "@storybook/react>util-deprecate": true
+      }
+    },
     "chokidar": {
       "packages": {
         "tsx>fsevents": true
