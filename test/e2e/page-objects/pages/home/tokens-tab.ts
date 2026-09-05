@@ -745,7 +745,14 @@ class TokensTab extends HomePage {
       // Not expanded yet (or low value section not present), attempt to expand it below.
     }
 
-    await this.driver.clickElementSafe(this.lowValueAssetsToggle);
+    const hasLowValueToggle = await this.driver.isElementPresent(
+      this.lowValueAssetsToggle,
+    );
+    if (!hasLowValueToggle) {
+      return;
+    }
+
+    await this.driver.clickElement(this.lowValueAssetsToggle);
   }
 
   private async findTokenRowByName(tokenName: string): Promise<WebElement> {

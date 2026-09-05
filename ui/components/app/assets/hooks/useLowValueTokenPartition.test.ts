@@ -1,8 +1,8 @@
 import { Hex } from '@metamask/utils';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { getUseExternalServices } from '#ui/selectors';
 import { MUSD_TOKEN_ADDRESS } from '#ui/components/app/musd/constants';
 import { type TokenWithFiatAmount } from '#ui/components/app/assets/types';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useLowValueTokenPartition } from './useLowValueTokenPartition';
 
 jest.mock('#ui/selectors', () => ({
@@ -70,7 +70,10 @@ describe('useLowValueTokenPartition', () => {
     const unpricedToken = createToken({ symbol: 'SPAM' });
 
     const { result } = renderHookWithProvider(() =>
-      useLowValueTokenPartition({ tokens: [pricedToken, unpricedToken], enabled: true }),
+      useLowValueTokenPartition({
+        tokens: [pricedToken, unpricedToken],
+        enabled: true,
+      }),
     );
 
     expect(result.current.visibleTokens).toEqual([pricedToken]);

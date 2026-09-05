@@ -87,6 +87,7 @@ type TokenListDisplayItem =
       count: number;
     };
 
+let lowValueAssetsExpandedSessionValue = false;
 
 const toCaipAssetId = (asset: Asset): CaipAssetType | undefined => {
   const { assetId, chainId, isNative } = asset;
@@ -174,7 +175,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { value: isLowValueAssetsExpanded, toggle: toggleLowValueAssets } =
-    useBoolean();
+    useBoolean(lowValueAssetsExpandedSessionValue);
   const { isStockToken } = useRWAToken();
 
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
@@ -367,6 +368,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
   const handleLowValueAssetsToggle = useCallback(() => {
     toggleLowValueAssets();
+    lowValueAssetsExpandedSessionValue = !isLowValueAssetsExpanded;
 
     trackEvent(
       createEventBuilder(MetaMetricsEventName.LowValueAssetsToggled)

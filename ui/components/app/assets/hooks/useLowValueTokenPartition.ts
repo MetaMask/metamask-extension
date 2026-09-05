@@ -1,9 +1,6 @@
 import { type CurrencyRateState } from '@metamask/assets-controllers';
 import { useSelector } from 'react-redux';
-import {
-  getCurrencyRates,
-  getUseExternalServices,
-} from '#ui/selectors';
+import { getCurrencyRates, getUseExternalServices } from '#ui/selectors';
 import { isMusdToken } from '#ui/components/app/musd/constants';
 import { type TokenWithFiatAmount } from '#ui/components/app/assets/types';
 
@@ -11,7 +8,7 @@ const lowValueAssetFiatThresholdUsd = 1;
 
 type CurrencyRates = CurrencyRateState['currencyRates'];
 
-function getLowValueAssetFiatThreshold(currencyRates?: CurrencyRates) {
+function getLowValueThreshold(currencyRates?: CurrencyRates) {
   const currencyRate = Object.values(currencyRates ?? {}).find(
     ({ conversionRate, usdConversionRate }) =>
       typeof conversionRate === 'number' &&
@@ -33,13 +30,9 @@ function getLowValueAssetFiatThreshold(currencyRates?: CurrencyRates) {
 }
 
 function hasFiniteTokenFiatAmount(
-  tokenFiatAmount: TokenWithFiatAmount['tokenFiatAmount'],
-): tokenFiatAmount is number {
-  return (
-    tokenFiatAmount !== null &&
-    tokenFiatAmount !== undefined &&
-    Number.isFinite(tokenFiatAmount)
-  );
+  token: TokenWithFiatAmount['tokenFiatAmount'],
+): token is number {
+  return token !== null && token !== undefined && Number.isFinite(token);
 }
 
 function shouldBucketAsLowValue(
@@ -77,7 +70,7 @@ function partitionLowValueTokens(
   tokens: TokenWithFiatAmount[],
   currencyRates: CurrencyRates | undefined,
 ) {
-  const threshold = getLowValueAssetFiatThreshold(currencyRates);
+  const threshold = getLowValueThreshold(currencyRates);
   const hasAnyPricedToken = tokens.some((token) =>
     hasFiniteTokenFiatAmount(token.tokenFiatAmount),
   );
