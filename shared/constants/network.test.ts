@@ -2,6 +2,7 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import {
   CHAIN_IDS,
+  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
   NETWORK_TO_NAME_MAP,
@@ -25,6 +26,15 @@ describe('NetworkConstants', () => {
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.TEMPO_MAINNET]).toBe('Tempo');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.ARC]).toBe('Arc');
   });
+
+  it('returns XGR Mainnet identity metadata', () => {
+    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.XGR]).toBe('XGR Mainnet');
+    expect(CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[CHAIN_IDS.XGR]).toBe('XGR');
+    expect(CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[CHAIN_IDS.XGR]).toBe(
+      './images/xgr.png',
+    );
+  });
+
   describe('popularNetwork', () => {
     it('should have correct chainIds for all popular network', () => {
       const expectedChainIds: { [key: string]: string } = {
