@@ -98,12 +98,12 @@ export const BridgeTransactionSettingsModal = ({
     setIsDirty(true);
   };
 
-  const getNotificationConfig = () => {
-    if (slippageValue === undefined) {
-      return null;
-    }
-
-    if (slippageValue < 0.5) {
+  const getNotificationConfig = (): {
+    severity: BannerAlertSeverity;
+    text: string;
+    title: string;
+  } | null => {
+    if (slippageValue !== undefined && slippageValue < 0.5) {
       return {
         severity: BannerAlertSeverity.Warning,
         text: t('swapSlippageLowDescription', [slippageValue]),
@@ -143,7 +143,7 @@ export const BridgeTransactionSettingsModal = ({
   const notificationConfig = getNotificationConfig();
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="bridge-settings-modal">
+    <Modal isOpen={true} onClose={onClose} className="bridge-settings-modal">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
