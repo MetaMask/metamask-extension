@@ -2371,6 +2371,16 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  splitStatePersistenceDiagnostics: {
+    inProd: true,
+    name: 'splitStatePersistenceDiagnostics',
+    productionDefault: {
+      enabled: false,
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   corePlatformRpcFailoverMode: {
     inProd: true,
     name: 'corePlatformRpcFailoverMode',

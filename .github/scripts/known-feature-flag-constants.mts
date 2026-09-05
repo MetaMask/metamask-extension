@@ -56,6 +56,11 @@ const FILE_SOURCES: Array<{
     exportName: 'ACTIVE_TAB_DOMAIN_METRICS_FLAG',
   },
   {
+    key: 'SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG',
+    file: 'shared/lib/stores/persistence-diagnostics.ts',
+    exportName: 'SPLIT_STATE_PERSISTENCE_DIAGNOSTICS_FEATURE_FLAG',
+  },
+  {
     key: 'ENABLE_DMK_FEATURE_FLAG',
     file: 'shared/lib/hardware-wallets/feature-flags.ts',
     exportName: 'ENABLE_DMK_FEATURE_FLAG',
