@@ -336,7 +336,8 @@
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
     "@metamask/messenger": "^2.0.0",
     "@ledgerhq/context-module/ethers": "^6.15.0",
-    "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0"
+    "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
+    "@metamask/bridge-controller@npm:^79.2.0": "patch:@metamask/bridge-controller@npm%3A79.2.0#~/.yarn/patches/@metamask-bridge-controller-npm-79.2.0-e03269beaf.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -878,10 +879,7 @@
       "sharp#0.35.3": true,
       "tsx>esbuild#0.28.1": true,
       "ethereumjs-util>ethereum-cryptography>secp256k1#4.0.4": false,
-      "sass-loader>sass>@parcel/watcher#2.5.6": false,
-      "eslint-plugin-import-x>unrs-resolver#1.12.2": false,
-      "@storybook/react-webpack5>@storybook/builder-webpack5>@swc/core#1.16.1": false,
-      "@storybook/test-runner>@swc/core#1.16.1": false
+      "sass-loader>sass>@parcel/watcher#2.5.6": false
     }
   },
   "packageManager": "yarn@4.14.1+sha256.5c7a0c5ea1c5b690df603c8e16b3742f87169b814d56bb5e63881145e8a84033",
