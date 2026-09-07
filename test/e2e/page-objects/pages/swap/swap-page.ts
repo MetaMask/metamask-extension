@@ -245,6 +245,34 @@ class SwapPage {
     });
   }
 
+  /**
+   * Waits for the from/to amount fields to be populated, then asserts them
+   * with named-field messages.
+   */
+  async checkSwapAmountsArePopulated(): Promise<void> {
+    await this.driver.wait(
+      async () => {
+        const fromAmount = await this.getFromAmountValue();
+        const toAmount = await this.getToAmountValue();
+        return fromAmount !== '' && toAmount !== '';
+      },
+      this.driver.timeout,
+      true,
+    );
+    const fromAmount = await this.getFromAmountValue();
+    const toAmount = await this.getToAmountValue();
+    assert.notEqual(
+      fromAmount,
+      '',
+      'Swap from-amount should be populated once a quote is displayed',
+    );
+    assert.notEqual(
+      toAmount,
+      '',
+      'Swap to-amount should be populated once a quote is displayed',
+    );
+  }
+
   async checkSwapButtonIsEnabled(): Promise<void> {
     await this.driver.waitForSelector(this.swapButton, {
       state: 'enabled',

@@ -1452,22 +1452,28 @@ const MOCK_TRON_TOKENS = [
 
 export async function mockBridgeGetTronTokens(
   mockServer: Mockttp,
-): Promise<MockedEndpoint> {
-  mockServer.forPost(/getTokens\/search/u).thenCallback(() => ({
-    statusCode: 200,
-    json: {
-      pageInfo: {
-        hasNextPage: false,
-        endCursor: null,
+): Promise<MockedEndpoint[]> {
+  const searchEndpoint = await mockServer
+    .forPost(/getTokens\/search/u)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        pageInfo: {
+          hasNextPage: false,
+          endCursor: null,
+        },
+        data: MOCK_TRON_TOKENS,
       },
-      data: MOCK_TRON_TOKENS,
-    },
-  }));
+    }));
 
-  return mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
-    statusCode: 200,
-    json: MOCK_TRON_TOKENS,
-  }));
+  const popularEndpoint = await mockServer
+    .forPost(/getTokens\/popular/u)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: MOCK_TRON_TOKENS,
+    }));
+
+  return [searchEndpoint, popularEndpoint];
 }
 
 // Backwards-compatible default for existing tests (1 TRX → ~0.295 USDT)
@@ -1878,7 +1884,7 @@ export async function mockTronSwapApis(
 ): Promise<MockedEndpoint[]> {
   return [
     ...(await mockTronApis(mockServer, mockZeroBalance)),
-    await mockBridgeGetTronTokens(mockServer),
+    ...(await mockBridgeGetTronTokens(mockServer)),
     await mockBridgeGetTronQuote(mockServer),
     await mockTronGetChainParameters(mockServer),
     await mockTronGetNextMaintenanceTime(mockServer),
@@ -1893,7 +1899,7 @@ export async function mockTronSwapApisNoQuotes(
 ): Promise<MockedEndpoint[]> {
   return [
     ...(await mockTronApis(mockServer, mockZeroBalance)),
-    await mockBridgeGetTronTokens(mockServer),
+    ...(await mockBridgeGetTronTokens(mockServer)),
     await mockBridgeGetTronQuoteEmpty(mockServer),
   ];
 }
@@ -1904,7 +1910,23 @@ export async function mockTronSwapApisWithoutFeeEstimation(
 ): Promise<MockedEndpoint[]> {
   return [
     ...(await mockTronApis(mockServer, mockZeroBalance)),
-    await mockBridgeGetTronTokens(mockServer),
+    ...(await mockBridgeGetTronTokens(mockServer)),
     await mockBridgeGetTronQuote(mockServer),
+    await mockServer
+      .forGet(tronInfuraUrl('/wallet/getchainparameters'))
+      .always()
+      .thenCallback(() => ({ statusCode: 200 })),
+    await mockServer
+      .forPost(tronInfuraUrl('/wallet/getnextmaintenancetime'))
+      .always()
+      .thenCallback(() => ({ statusCode: 200 })),
+    await mockServer
+      .forPost(tronInfuraUrl('/wallet/triggerconstantcontract'))
+      .always()
+      .thenCallback(() => ({ statusCode: 200 })),
+    await mockServer
+      .forPost(tronInfuraUrl('/wallet/getcontract'))
+      .always()
+      .thenCallback(() => ({ statusCode: 200 })),
   ];
 }

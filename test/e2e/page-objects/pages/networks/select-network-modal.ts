@@ -169,6 +169,15 @@ class SelectNetworkModal {
     await this.driver.clickElementAndWaitToDisappear(this.modalCloseButton);
   }
 
+  /**
+   * Closes the modal only if it is still open. Safe to call when the modal may
+   * already have been dismissed (e.g. by selecting a network).
+   */
+  async closeIfOpen(): Promise<void> {
+    await this.driver.clickElementSafe(this.modalCloseButton, 500);
+    await this.waitForModalToClose();
+  }
+
   async selectAllNetworks(): Promise<void> {
     console.log('Selecting all networks');
     await this.driver.clickElementAndWaitToDisappear(this.allNetworksItem);
@@ -190,6 +199,12 @@ class SelectNetworkModal {
     await this.driver.clickElementAndWaitToDisappear(
       this.networkListItemByName(networkName),
     );
+  }
+
+  async waitForModalToClose(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.allNetworksItem, {
+      timeout: 15_000,
+    });
   }
 }
 
