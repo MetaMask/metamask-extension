@@ -7,5 +7,4 @@ export type HyperliquidDepositPromptProps = {
   selectedAddress?: string;
 };
 
-export type HyperliquidDepositPromptSurface = 'sidepanel' | 'notification';
 export type HyperliquidDepositPromptAction = 'dismiss' | 'continue';

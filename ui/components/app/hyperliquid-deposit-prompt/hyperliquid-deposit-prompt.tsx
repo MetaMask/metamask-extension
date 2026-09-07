@@ -31,12 +31,10 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -54,15 +52,8 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import { usePerpsDepositConfirmation } from '../perps/hooks/usePerpsDepositConfirmation';
 import type {
   HyperliquidDepositPromptProps,
-  HyperliquidDepositPromptSurface,
   HyperliquidDepositPromptAction,
 } from './hyperliquid-deposit-prompt.types';
-
-function getHyperliquidDepositPromptSurface(): HyperliquidDepositPromptSurface {
-  return getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
-    ? 'sidepanel'
-    : 'notification';
-}
 
 /**
  * Tokens the user can fund a Hyperliquid deposit with through MetaMask Pay.
@@ -225,9 +216,6 @@ export const HyperliquidDepositPrompt: React.FC<
     trackEvent(
       createEventBuilder(MetaMetricsEventName.HyperliquidDepositPromptViewed)
         .addCategory(MetaMetricsEventCategory.Confirmations)
-        .addProperties({
-          surface: getHyperliquidDepositPromptSurface(),
-        })
         .build(),
     );
   }, [createEventBuilder, isSignerMismatch, trackEvent]);

@@ -190,29 +190,13 @@ describe('HyperliquidDepositPrompt', () => {
     ).toBeEnabled();
   });
 
-  it('tracks Hyperliquid Deposit Prompt Viewed with the notification surface on render', () => {
+  it('tracks Hyperliquid Deposit Prompt Viewed on render', () => {
     renderComponent();
 
     expect(mockTrackEvent).toHaveBeenCalledWith({
       name: MetaMetricsEventName.HyperliquidDepositPromptViewed,
       properties: {
         category: MetaMetricsEventCategory.Confirmations,
-        surface: 'notification',
-      },
-      sensitiveProperties: {},
-    });
-  });
-
-  it('tracks Hyperliquid Deposit Prompt Viewed with the sidepanel surface', () => {
-    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
-
-    renderComponent();
-
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      name: MetaMetricsEventName.HyperliquidDepositPromptViewed,
-      properties: {
-        category: MetaMetricsEventCategory.Confirmations,
-        surface: 'sidepanel',
       },
       sensitiveProperties: {},
     });
