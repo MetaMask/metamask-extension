@@ -41,6 +41,18 @@ import { usePerpsHomeRoute } from '../../../hooks/perps/usePerpsHomeRoute';
 import { usePerpsDepositConfirmation } from '../perps/hooks/usePerpsDepositConfirmation';
 import type { HyperliquidDepositPromptProps } from './hyperliquid-deposit-prompt.types';
 
+const HYPERLIQUID_DEPOSIT_SOURCE = 'hyperliquid_deposit_prompt';
+
+/**
+ * Appends `source=hyperliquid_deposit_prompt` to the perps home route so the
+ * landing PERPS_SCREEN_VIEWED event carries this attribution.
+ * @param perpsHomeRoute
+ */
+function buildGoBackToWithSource(perpsHomeRoute: string): string {
+  const separator = perpsHomeRoute.includes('?') ? '&' : '?';
+  return `${perpsHomeRoute}${separator}source=${HYPERLIQUID_DEPOSIT_SOURCE}`;
+}
+
 /**
  * Tokens the user can fund a Hyperliquid deposit with through MetaMask Pay.
  *
@@ -240,7 +252,7 @@ export const HyperliquidDepositPrompt: React.FC<
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
         search: new URLSearchParams({
           loader: ConfirmationLoader.CustomAmount,
-          goBackTo: perpsHomeRoute,
+          goBackTo: buildGoBackToWithSource(perpsHomeRoute),
         }).toString(),
       },
       { replace: true },
