@@ -1,19 +1,80 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import TokenTracker from '@metamask/eth-token-tracker';
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { shallowEqual, useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
-import { getProviderConfig } from '../../shared/lib/selectors/networks';
+import {
+  getNetworkConfigurationsByChainId,
+  getProviderConfig,
+} from '../../shared/lib/selectors/networks';
+import { CHAIN_ID_TO_RPC_URL_MAP } from '../../shared/constants/network';
 import { SECOND } from '../../shared/constants/time';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 import { useEqualityCheck } from './useEqualityCheck';
+
+/**
+ * Adapts an ethers `JsonRpcProvider` to the minimal EIP-1193 surface that
+ * `eth-token-tracker` requires.
+ *
+ * @param {string} rpcUrl - The RPC endpoint URL.
+ * @returns {{ request: (args: { method: string, params?: unknown[] }) => Promise<unknown> }}
+ */
+function createTokenTrackerProvider(rpcUrl) {
+  const provider = new JsonRpcProvider(rpcUrl);
+  return {
+    request: ({ method, params = [] }) => provider.send(method, params),
+  };
+}
+
+function useProvider(chainId = null) {
+  const { chainId: selectedChainId, rpcUrl } = useSelector(getProviderConfig);
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
+
+  const chainIdToUse = chainId ?? selectedChainId;
+
+  const rpcToUse = useMemo(() => {
+    if (!chainId || chainId === selectedChainId) {
+      return rpcUrl;
+    }
+
+    const networkConfig = networkConfigurationsByChainId?.[chainId];
+    const url =
+      networkConfig?.rpcEndpoints?.[networkConfig.defaultRpcEndpointIndex ?? 0]
+        ?.url;
+
+    if (url && !url.includes('{infuraProjectId}')) {
+      return url;
+    }
+    return CHAIN_ID_TO_RPC_URL_MAP[chainId];
+  }, [chainId, selectedChainId, networkConfigurationsByChainId, rpcUrl]);
+
+  const provider = useMemo(() => {
+    // Default behavior: no explicit chain (or the selected one) uses the global
+    // provider, so existing callers see no change.
+    if (!chainId || chainId === selectedChainId) {
+      return global.ethereumProvider;
+    }
+
+    // A token on a different chain (e.g. a dapp-suggested token) must be
+    // queried on that chain's RPC endpoint, not the wallets selected network.
+    return rpcToUse
+      ? createTokenTrackerProvider(rpcToUse)
+      : global.ethereumProvider;
+  }, [chainId, selectedChainId, rpcToUse]);
+
+  return { provider, chainId: chainIdToUse, rpcUrl: rpcToUse };
+}
 
 export function useTokenTracker({
   tokens,
   address,
   includeFailedTokens = false,
   hideZeroBalanceTokens = false,
+  chainId: inputChainId = null,
 }) {
-  const { chainId, rpcUrl } = useSelector(getProviderConfig);
+  const { provider, chainId, rpcUrl } = useProvider(inputChainId);
   const { address: selectedAddress } = useSelector(
     getSelectedInternalAccount,
     shallowEqual,
@@ -71,7 +132,7 @@ export function useTokenTracker({
       teardownTracker();
       tokenTracker.current = new TokenTracker({
         userAddress: usersAddress,
-        provider: global.ethereumProvider,
+        provider,
         tokens: tokenList,
         includeFailedTokens,
         pollingInterval: SECOND * 8,
@@ -82,7 +143,7 @@ export function useTokenTracker({
       tokenTracker.current.on('error', showError);
       tokenTracker.current.updateBalances();
     },
-    [updateBalances, includeFailedTokens, showError, teardownTracker],
+    [updateBalances, includeFailedTokens, showError, teardownTracker, provider],
   );
 
   // Effect to remove the tracker when the component is removed from DOM
@@ -96,36 +157,15 @@ export function useTokenTracker({
 
   const trackerKey = `${userAddress ?? ''}|${chainId ?? ''}|${rpcUrl ?? ''}`;
   const [prevTrackerKey, setPrevTrackerKey] = useState(trackerKey);
-  const [prevMemoizedTokens, setPrevMemoizedTokens] = useState(memoizedTokens);
 
-  if (trackerKey !== prevTrackerKey || memoizedTokens !== prevMemoizedTokens) {
+  if (trackerKey !== prevTrackerKey) {
     setPrevTrackerKey(trackerKey);
-    setPrevMemoizedTokens(memoizedTokens);
-    // Indicate to the user that their token values are updating
     setLoading(true);
-    if (memoizedTokens.length === 0) {
-      setTokensWithBalances([]);
-      setLoading(false);
-      setError(null);
-    }
   }
 
   // Effect to initialize tracker when values change
   useEffect(() => {
-    // This effect will only run initially and when:
-    // 1. chainId is updated,
-    // 2. rpc url is changd,
-    // 3. userAddress is changed,
-    // 4. token list is updated and not equal to previous list
-    if (!userAddress || chainId === undefined || !global.ethereumProvider) {
-      // If we do not have enough information to build a TokenTracker, we exit early
-      // When the values above change, the effect will be restarted. We also teardown
-      // tracker because inevitably this effect will run again momentarily.
-      teardownTracker();
-      return;
-    }
-
-    if (memoizedTokens.length === 0) {
+    if (!userAddress || chainId === undefined || !provider) {
       teardownTracker();
       return;
     }
@@ -137,8 +177,8 @@ export function useTokenTracker({
     chainId,
     rpcUrl,
     memoizedTokens,
-    updateBalances,
     buildTracker,
+    provider,
   ]);
 
   return { loading, tokensWithBalances, error };
