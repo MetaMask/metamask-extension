@@ -10,6 +10,11 @@ import {
   type DelegationMessenger,
   getDelegationTransaction,
 } from '../lib/transaction/delegation';
+import { getBalance } from '../lib/money/pay/get-balance-callback';
+import {
+  clearMaxSourceBalance,
+  setMaxSourceBalance,
+} from '../lib/money/pay/max-source-balance';
 import { createMoneyAccountDepositTransaction } from '../lib/money/pay/create-deposit-transaction';
 import { createMoneyAccountWithdrawTransaction } from '../lib/money/pay/create-withdraw-transaction';
 import { getPaymentOverrideData } from '../lib/money/pay/payment-override-callback';
@@ -56,6 +61,7 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
         initMessenger as MoneyPayMessenger,
         amountDataRequest,
       ),
+    getBalance,
     getDelegationTransaction: getDelegationTransactionCallback,
     getPaymentOverrideData: (paymentOverrideRequest) =>
       getPaymentOverrideData(
@@ -105,18 +111,29 @@ function getApi(
     setTransactionPayIsMaxAmount: (
       transactionId: string,
       isMaxAmount: boolean,
-      options: { isMoneyAccountDeposit?: boolean } = {},
+      options: {
+        isMoneyAccountDeposit?: boolean;
+        sourceBalanceRaw?: string;
+      } = {},
     ) => {
-      messengerClient.setTransactionConfig(transactionId, (config) => {
-        // Money-account deposits never use isMaxAmount. Max / uncapped prefill
-        // submit the exact pay-token balanceRaw as requiredAssets instead;
-        // EXACT_INPUT Max mode is for other Pay flows.
-        if (options.isMoneyAccountDeposit) {
-          config.isMaxAmount = false;
-          config.atomic = isMaxAmount ? false : undefined;
-          return;
+      // Deposit Max quotes the funding-account balance, which the controller's
+      // own pay-token snapshot does not hold reliably. Record what the UI
+      // resolved so the getBalance callback can supply it (see
+      // max-source-balance).
+      if (options.isMoneyAccountDeposit) {
+        if (isMaxAmount && options.sourceBalanceRaw) {
+          setMaxSourceBalance(transactionId, options.sourceBalanceRaw);
+        } else {
+          clearMaxSourceBalance(transactionId);
         }
+      }
+
+      messengerClient.setTransactionConfig(transactionId, (config) => {
         config.isMaxAmount = isMaxAmount;
+
+        if (options.isMoneyAccountDeposit) {
+          config.atomic = isMaxAmount ? false : undefined;
+        }
       });
     },
     setTransactionPayPostQuote: (
@@ -138,7 +155,7 @@ function getApi(
         config.accountOverride = accountOverride;
       });
     },
-    updateMoneyAccountDepositAmount: (
+    updateMoneyAccountDepositAmount: async (
       transactionId: string,
       amountHuman: string,
     ) => {
@@ -164,12 +181,11 @@ function getApi(
 
       // Re-assert non-atomic + quote-required on every amount update so
       // confirmations created before seedDepositPayConfig gained `atomic:
-      // false` still quote without waiting on vault calldata.
-      // Never enable isMaxAmount for deposits — Max/prefill submit exact raw.
+      // false` still quote without waiting on vault calldata. Leave
+      // isMaxAmount alone — Max / uncapped 100% prefill set it separately.
       messengerClient.setTransactionConfig(transactionId, (config) => {
         config.atomic = false;
         config.isQuoteRequired = true;
-        config.isMaxAmount = false;
       });
       return updateMoneyAccountDepositAmount(
         moneyPayMessenger,
@@ -208,7 +224,7 @@ function getApi(
       messengerClient.setTransactionConfig(transactionId, (config) => {
         config.paymentOverride = paymentOverride;
         if (paymentOverride === undefined) {
-          config.atomic = undefined;
+          config.atomic = atomic;
           config.refundTo = undefined;
           return;
         }

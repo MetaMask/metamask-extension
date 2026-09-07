@@ -506,7 +506,7 @@ describe('useTransactionCustomAmount', () => {
       expect(result.current.amountFiat).toBe('33');
     });
 
-    it('does not set isMaxAmount for money account withdraw Max', () => {
+    it('sets isMaxAmount for money account withdraw Max', () => {
       const { result } = runHook({
         transactionMeta: {
           ...MOCK_TRANSACTION_META,
@@ -519,7 +519,11 @@ describe('useTransactionCustomAmount', () => {
         result.current.updatePendingAmountPercentage(100);
       });
 
-      expect(setIsMaxAmountMock).not.toHaveBeenCalled();
+      expect(setIsMaxAmountMock).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        true,
+        { isMoneyAccountDeposit: false },
+      );
     });
 
     it('does not set isMaxAmount when Max uses an external balance', () => {
@@ -534,7 +538,7 @@ describe('useTransactionCustomAmount', () => {
       expect(setIsMaxAmountMock).not.toHaveBeenCalled();
     });
 
-    it('clears isMaxAmount for money account withdraw when Max was previously set', () => {
+    it('keeps isMaxAmount true for money account withdraw Max', () => {
       const { result } = runHook({
         transactionMeta: {
           ...MOCK_TRANSACTION_META,
@@ -550,7 +554,7 @@ describe('useTransactionCustomAmount', () => {
 
       expect(setIsMaxAmountMock).toHaveBeenCalledWith(
         MOCK_TRANSACTION_META.id,
-        false,
+        true,
         { isMoneyAccountDeposit: false },
       );
     });
@@ -1053,7 +1057,7 @@ describe('useTransactionCustomAmount', () => {
       );
     });
 
-    it('uses exact balanceRaw for uncapped 100% deposit prefill without isMaxAmount', () => {
+    it('uses exact balanceRaw for uncapped 100% deposit prefill and sets isMaxAmount', () => {
       const updateTokenAmountMock = jest.fn();
       const { result } = runHook({
         transactionMeta: moneyAccountDepositMeta,
@@ -1079,10 +1083,10 @@ describe('useTransactionCustomAmount', () => {
       // Same amount as Max button: exact balanceRaw human, not fiat roundtrip.
       expect(updateTokenAmountMock).toHaveBeenCalledWith('55.709');
       expect(result.current.amountFiat).toBe('55.7');
-      expect(setIsMaxAmountMock).not.toHaveBeenCalledWith(
+      expect(setIsMaxAmountMock).toHaveBeenCalledWith(
         moneyAccountDepositMeta.id,
         true,
-        expect.anything(),
+        { isMoneyAccountDeposit: true, sourceBalanceRaw: '55709000' },
       );
     });
 
@@ -1321,7 +1325,7 @@ describe('useTransactionCustomAmount', () => {
       transactionMeta: moneyAccountDepositMeta,
     };
 
-    it('submits exact balanceRaw for Max deposits without setting isMaxAmount', () => {
+    it('submits exact balanceRaw for Max deposits and sets isMaxAmount', () => {
       const updateTokenAmountMock = jest.fn();
       const { result } = runHook({
         ...depositMaxPayToken,
@@ -1335,10 +1339,10 @@ describe('useTransactionCustomAmount', () => {
       // 1123456 × 10^-6 = 1.123456, not the fiat roundtrip 2.24 ÷ 2 = 1.12
       expect(updateTokenAmountMock).toHaveBeenCalledWith('1.123456');
       expect(result.current.amountFiat).toBe('2.24');
-      expect(setIsMaxAmountMock).not.toHaveBeenCalledWith(
+      expect(setIsMaxAmountMock).toHaveBeenCalledWith(
         moneyAccountDepositMeta.id,
         true,
-        expect.anything(),
+        { isMoneyAccountDeposit: true, sourceBalanceRaw: '1123456' },
       );
     });
 
@@ -1497,7 +1501,7 @@ describe('useTransactionCustomAmount', () => {
       expect(setIsMaxAmountMock).toHaveBeenCalledWith(
         MOCK_TRANSACTION_META.id,
         true,
-        { isMoneyAccountDeposit: false },
+        { isMoneyAccountDeposit: false, sourceBalanceRaw: '1123456' },
       );
     });
 
@@ -1549,10 +1553,10 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(updateTokenAmountMock).toHaveBeenCalledWith('1.12');
-      expect(setIsMaxAmountMock).not.toHaveBeenCalledWith(
+      expect(setIsMaxAmountMock).toHaveBeenCalledWith(
         moneyAccountDepositMeta.id,
         true,
-        expect.anything(),
+        { isMoneyAccountDeposit: true },
       );
     });
   });
