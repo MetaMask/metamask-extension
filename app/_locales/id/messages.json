@@ -896,12 +896,24 @@
     "message": "$1 dijual",
     "description": "$1 is the token symbol"
   },
+  "activity_receive_failed_description": {
+    "message": "Dari $1",
+    "description": "$1 is the shortened sender address"
+  },
   "activity_receive_failed_title": {
     "message": "Penerimaan gagal"
+  },
+  "activity_receive_pending_description": {
+    "message": "Dari $1",
+    "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
     "message": "Menerima $1",
     "description": "$1 is the token symbol"
+  },
+  "activity_receive_success_description": {
+    "message": "Dari $1",
+    "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
     "message": "Menerima $1",
@@ -950,12 +962,24 @@
     "message": "$1 dijual",
     "description": "$1 is the token symbol"
   },
+  "activity_send_failed_description": {
+    "message": "Ke $1",
+    "description": "$1 is the shortened recipient address"
+  },
   "activity_send_failed_title": {
     "message": "Pengiriman gagal"
+  },
+  "activity_send_pending_description": {
+    "message": "Ke $1",
+    "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
     "message": "Mengirim $1",
     "description": "$1 is the token symbol"
+  },
+  "activity_send_success_description": {
+    "message": "Ke $1",
+    "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
     "message": "Kirim $1",
@@ -1428,10 +1452,10 @@
     "message": "Penyerang terkadang meniru situs dengan membuat perubahan kecil pada alamat situs. Pastikan Anda berinteraksi dengan situs yang dituju sebelum melanjutkan."
   },
   "alertMessageAddressTrustSignal": {
-    "message": "Kami tidak dapat memverifikasi alamat ini. Alamat ini mungkin baru atau belum diverifikasi. Lanjutkan hanya jika Anda memercayai sumbernya."
+    "message": "Mitra keamanan tidak memiliki riwayat yang cukup andal untuk memverifikasi alamat ini."
   },
   "alertMessageAddressTrustSignalMalicious": {
-    "message": "Jika Anda mengonfirmasikan permintaan ini, kemungkinan besar aset Anda akan hilang karena penipuan."
+    "message": "Mitra keamanan telah menandai alamat ini karena adanya aktivitas berbahaya."
   },
   "alertMessageBurnAddress": {
     "message": "Anda mengirimkan aset ke alamat burn. Jika dilanjutkan, aset Anda akan hilang."
@@ -1501,6 +1525,12 @@
   },
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Tidak dapat memeriksa saldo Perp Anda. Coba lagi."
+  },
+  "alertReasonAddressTrustSignalMalicious": {
+    "message": "Alamat ditandai sebagai berisiko tinggi"
+  },
+  "alertReasonAddressTrustSignalWarning": {
+    "message": "Sinyal alamat terbatas"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "Interaksi pertama"
@@ -2146,6 +2176,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "Tidak ada informasi harga"
   },
+  "bridgeOffHoursDescription": {
+    "message": "Pasar ditutup: Harga dihitung oleh penerbit, bukan merupakan data pasar secara langsung. Situasinya mungkin berbeda saat pasar dibuka kembali pada sesi perdagangan berikutnya yang tersedia."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Perdagangan di luar jam kerja"
+  },
   "bridgePoints": {
     "message": "Estimasi poin",
     "description": "Label for estimated points that can be earned from a bridge or swap"
@@ -2376,6 +2412,22 @@
   },
   "bridgeSendLoading": {
     "message": "Mengirim dari chain sumber"
+  },
+  "bridgeStellarTrustlineWarningCta": {
+    "message": "Aktifkan $1",
+    "description": "CTA on the Stellar trustline warning banner. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessage": {
+    "message": "Swap ini berpotensi gagal. Di Stellar, akun Anda tidak dapat menerima $1 sampai token tersebut diaktifkan di dompet Anda dengan trustline yang valid.",
+    "description": "Body of the Stellar trustline warning on cross-chain swaps when destination is the active account. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessageDifferentAccount": {
+    "message": "Swap ini berpotensi gagal. Di Stellar, $1 tidak dapat menerima $2 sampai Anda beralih ke akun tersebut dan mengaktifkan token dengan trustline yang valid.",
+    "description": "Body of the Stellar trustline warning when the destination account is not the active account. $1 is the destination account name; $2 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningTitle": {
+    "message": "Aktifkan $1 di Stellar terlebih dahulu",
+    "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
   },
   "bridgeSuspicious": {
     "message": "Mencurigakan"
@@ -3355,6 +3407,9 @@
   "defiTabErrorTitle": {
     "message": "Kami tidak dapat memuat halaman ini."
   },
+  "defiUnsupportedEmptyDescription": {
+    "message": "DeFi tidak didukung di jaringan ini."
+  },
   "delete": {
     "message": "Hapus"
   },
@@ -3477,6 +3532,10 @@
   },
   "disconnectSiteDescriptionText": {
     "message": "Tindakan ini akan memutus koneksi semua akun Anda dari $1. Anda perlu menghubungkannya kembali untuk menggunakan dapp ini lagi.",
+    "description": "$1 is the site hostname"
+  },
+  "disconnectSiteSuccess": {
+    "message": "Koneksi berhasil diputus dari $1.",
     "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
@@ -4312,9 +4371,25 @@
     "message": "Spender: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
+  "hardwareSwapAmount": {
+    "message": "Swap $1 $2 dengan $3 $4",
+    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappedAmount": {
+    "message": "Menukar $1 $2 dengan $3 $4",
+    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappingAmount": {
+    "message": "Menukar $1 $2 dengan $3 $4",
+    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
   "hardwareToAddress": {
     "message": "Ke: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareToken": {
+    "message": "Token: $1",
+    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "Anda menolak transaksi ini di perangkat Anda",
@@ -4372,6 +4447,9 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 terkunci",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleUnsupportedSignature": {
+    "message": "Tanda tangan tidak didukung"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "Pastikan perangkat $1 Anda telah diatur dengan Frasa Pemulihan Rahasia atau passphrase untuk akun yang dipilih",
@@ -5268,17 +5346,107 @@
   "money": {
     "message": "Dana"
   },
+  "moneyAccountApyPitch": {
+    "message": "Dapatkan APY $1%",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchInfo": {
+    "message": "Informasi APY"
+  },
+  "moneyAccountApyTooltip": {
+    "message": "Nilai yang ditampilkan merupakan estimasi Persentase Hasil Tahunan (APY) berdasarkan kondisi pasar saat ini. APY bersifat variabel dan tidak dijamin."
+  },
+  "moneyAccountAvailableBalance": {
+    "message": "Saldo tersedia: $1",
+    "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountProjectedBalance": {
+    "message": "Proyeksi saldo 1 tahun:"
+  },
+  "moneyAccountProjectedBalanceInfo": {
+    "message": "Proyeksi saldo 1 tahun"
+  },
+  "moneyAccountProjectedBalanceTooltip": {
+    "message": "Proyeksi ini mengasumsikan bahwa Persentase Hasil Tahunan (APY) sebesar $1% tetap tidak berubah selama satu tahun. APY bersifat variabel dan tidak dijamin.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyActivity": {
     "message": "Aktivitas"
   },
+  "moneyActivityConversionFailed": {
+    "message": "Konversi gagal"
+  },
+  "moneyActivityConverted": {
+    "message": "Dikonversi"
+  },
+  "moneyActivityConverting": {
+    "message": "Mengonversi"
+  },
+  "moneyActivityDepositFailed": {
+    "message": "Deposit gagal"
+  },
+  "moneyActivityDeposited": {
+    "message": "Didepositkan"
+  },
+  "moneyActivityDepositing": {
+    "message": "Mendeposit"
+  },
+  "moneyActivityEmpty": {
+    "message": "Belum ada aktivitas"
+  },
+  "moneyActivityFilterAll": {
+    "message": "Semua"
+  },
+  "moneyActivityFilterDeposits": {
+    "message": "Deposit"
+  },
+  "moneyActivityFilterSends": {
+    "message": "Mengirim"
+  },
+  "moneyActivityPending": {
+    "message": "Menunggu"
+  },
   "moneyActivityPlaceholderDescription": {
     "message": "Aktivitas Money akan ditampilkan di sini."
+  },
+  "moneyActivityReceived": {
+    "message": "Diterima"
+  },
+  "moneyActivityReceivedFrom": {
+    "message": "Dari: $1"
+  },
+  "moneyActivityReceiving": {
+    "message": "Menerima"
+  },
+  "moneyActivitySendFailed": {
+    "message": "Pengiriman gagal"
+  },
+  "moneyActivitySending": {
+    "message": "Mengirim"
+  },
+  "moneyActivitySent": {
+    "message": "Terkirim"
+  },
+  "moneyActivityViewAll": {
+    "message": "Lihat semua"
   },
   "moneyAdd": {
     "message": "Tambah"
   },
   "moneyApy": {
     "message": "$1 APY"
+  },
+  "moneyBalanceInfoBody": {
+    "message": "Saldo mUSD yang didukung dolar selalu tersedia untuk digunakan, dikirim, atau diperdagangkan setiap saat. Kami tidak menghitung saldo ini ke dalam total saldo akun Anda."
+  },
+  "moneyBalanceInfoWithdrawals": {
+    "message": "Penarikan diproses segera, bergantung pada waktu konfirmasi jaringan standar di blockchain terkait. Jika likuiditas terbatas, mungkin terjadi penundaan sementara."
+  },
+  "moneyBalanceLastKnown": {
+    "message": "Saldo terakhir yang diketahui"
+  },
+  "moneyBalanceTitle": {
+    "message": "Saldo dana"
   },
   "moneyBalanceUnavailable": {
     "message": "Saldo tidak tersedia"
@@ -5870,6 +6038,9 @@
   "nftTokenIdPlaceholder": {
     "message": "Masukkan id token"
   },
+  "nftUnsupportedEmptyDescription": {
+    "message": "NFT tidak didukung di jaringan ini."
+  },
   "nftWarningContent": {
     "message": "Anda memberikan akses ke $1, termasuk setiap akses yang Anda miliki di masa mendatang. Pihak lain dapat mentransfer NFT ini dari dompet Anda kapan saja tanpa meminta izin Anda sampai Anda membatalkan persetujuan ini. $2",
     "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
@@ -6460,7 +6631,7 @@
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNotSupported": {
-    "message": "Kode sandi tidak didukung",
+    "message": "MetaMask tidak dapat menggunakan kode sandi yang disimpan di sini. Coba lagi dan simpan di pengelola kata sandi.",
     "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
@@ -7040,6 +7211,15 @@
   "perpsCloseAmount": {
     "message": "Jumlah penutupan"
   },
+  "perpsCloseAmountCappedAtPosition": {
+    "message": "Jumlah penutupan dibatasi sebesar nilai posisi Anda."
+  },
+  "perpsCloseAmountInPercentLabel": {
+    "message": "Masukkan jumlah penutupan sebagai persentase dari posisi Anda"
+  },
+  "perpsCloseAmountInUsdLabel": {
+    "message": "Masukkan jumlah penutupan dalam dolar AS"
+  },
   "perpsCloseLimitPriceOutsideOracleBand": {
     "message": "Harga tidak bisa lebih dari 95% dari harga pasar"
   },
@@ -7051,6 +7231,9 @@
   },
   "perpsClosePartialMinNotional": {
     "message": "Penutupan sebagian harus bernilai minimal $1 dalam USD. Tingkatkan jumlah penutupan atau tutup seluruh posisi."
+  },
+  "perpsClosePercentCappedAtMax": {
+    "message": "Persentase penutupan dibatasi hingga 100%."
   },
   "perpsClosePosition": {
     "message": "Tutup posisi"
@@ -8347,33 +8530,15 @@
   "rampsPaymentDelayMinutes": {
     "message": "menit"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "Maks $1",
-    "description": "$1 is the maximum fiat buy amount"
-  },
   "rampsPaymentMethodMinLimit": {
     "message": "Min $1",
     "description": "$1 is the minimum fiat buy amount"
-  },
-  "rampsPreviouslyUsed": {
-    "message": "Digunakan sebelumnya"
-  },
-  "rampsProviders": {
-    "message": "Penyedia"
   },
   "rampsQuoteFetchError": {
     "message": "Gagal mengambil kuotasi."
   },
   "rampsQuoteUnavailable": {
     "message": "Kuotasi tidak tersedia."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Kuotasi yang ditampilkan untuk $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Pilih metode pembayaran"
@@ -9206,16 +9371,16 @@
     "message": "Berbahaya"
   },
   "securityTrustMaliciousTokenBannerDescription": {
-    "message": "$1 ditandai sebagai berbahaya. Kemungkinan besar akan mencuri dana dari siapa pun yang berinteraksi dengannya."
+    "message": "Mitra keamanan menandai $1 sebagai berisiko tinggi."
   },
   "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
-    "message": "Token ini ditandai sebagai berbahaya. Kemungkinan besar akan mencuri dana dari siapa pun yang berinteraksi dengannya."
+    "message": "Mitra keamanan menandai token ini sebagai berisiko tinggi."
   },
   "securityTrustMaliciousTokenSheetDescription": {
-    "message": "Sinyal risiko serius terdeteksi pada $1. Sebaiknya jangan memperdagangkan token ini."
+    "message": "Mitra keamanan menandai $1 sebagai berisiko tinggi."
   },
   "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
-    "message": "Sinyal risiko serius terdeteksi pada token ini. Sebaiknya jangan memperdagangkan token ini."
+    "message": "Mitra keamanan menandai token ini sebagai berisiko tinggi."
   },
   "securityTrustMaliciousTokenTitle": {
     "message": "Token berbahaya"
@@ -9245,10 +9410,10 @@
     "message": "Berisiko"
   },
   "securityTrustRiskyTokenDescription": {
-    "message": "$1 ditandai sebagai mencurigakan. Perhatikan risikonya sebelum melanjutkan."
+    "message": "Mitra keamanan menemukan sinyal risiko pada kontrak atau aktivitas perdagangan $1."
   },
   "securityTrustRiskyTokenDescriptionNoSymbol": {
-    "message": "Token ini ditandai sebagai mencurigakan. Perhatikan risikonya sebelum melanjutkan."
+    "message": "Mitra keamanan menemukan sinyal risiko pada kontrak atau aktivitas perdagangan token ini."
   },
   "securityTrustRiskyTokenTitle": {
     "message": "Token mencurigakan"
@@ -9260,13 +9425,13 @@
     "message": "Sinyal risiko tidak terdeteksi. Selalu lakukan riset terhadap aset apa pun sebelum melakukan perdagangan."
   },
   "securityTrustSubtitleMalicious": {
-    "message": "Sinyal risiko serius terdeteksi. Sebaiknya hindari aset ini."
+    "message": "Mitra keamanan menandai token ini sebagai berisiko tinggi."
   },
   "securityTrustSubtitleNoIssues": {
     "message": "Sinyal risiko tidak terdeteksi. Selalu lakukan riset terhadap aset apa pun sebelum melakukan perdagangan."
   },
   "securityTrustSubtitleSuspicious": {
-    "message": "Sinyal peringatan terdeteksi. Tinjau masalah yang ditandai dengan cermat sebelum memperdagangkan aset ini."
+    "message": "Mitra keamanan menemukan sinyal risiko pada kontrak atau aktivitas perdagangan token ini."
   },
   "securityTrustSubtitleUnavailable": {
     "message": "Analisis keamanan tidak dapat dimuat untuk token ini."
@@ -9275,10 +9440,10 @@
     "message": "Mencurigakan"
   },
   "securityTrustSuspiciousTokenDescription": {
-    "message": "$1 adalah token yang mencurigakan."
+    "message": "Mitra keamanan menemukan sinyal risiko pada kontrak atau aktivitas perdagangan $1."
   },
   "securityTrustSuspiciousTokenDescriptionNoSymbol": {
-    "message": "Ini adalah token yang mencurigakan."
+    "message": "Mitra keamanan menemukan sinyal risiko pada kontrak atau aktivitas perdagangan token ini."
   },
   "securityTrustTelegram": {
     "message": "Telegram"

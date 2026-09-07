@@ -25,12 +25,18 @@ import { useTokenWithBalance } from '../../tokens/useTokenWithBalance';
 import { AlertsName } from '../constants';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
+import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { useInsufficientPayTokenBalanceAlert } from './useInsufficientPayTokenBalanceAlert';
 
 jest.mock('../../pay/useTransactionPayToken');
 jest.mock('../../pay/useTransactionPayData');
 jest.mock('../../send/useSendTokens');
 jest.mock('../../tokens/useTokenWithBalance');
+jest.mock('../../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
+  useMoneyAccountWithdrawableFiat: jest.fn(() => ({
+    withdrawableFiatRaw: '10',
+  })),
+}));
 
 const PAY_TOKEN_MOCK = {
   address: '0x123' as Hex,
@@ -142,12 +148,19 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
     useIsTransactionPayLoading,
   );
   const useSendTokensMock = jest.mocked(useSendTokens);
+  const useMoneyAccountWithdrawableFiatMock = jest.mocked(
+    useMoneyAccountWithdrawableFiat,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
 
     // Empty list so the alert falls back to the pay-token snapshot under test.
     useSendTokensMock.mockReturnValue([]);
+    useMoneyAccountWithdrawableFiatMock.mockReturnValue({
+      withdrawableFiatFormatted: '$10.00',
+      withdrawableFiatRaw: '10',
+    });
     useTransactionPayRequiredTokensMock.mockReturnValue([REQUIRED_TOKEN_MOCK]);
     useTransactionPayTotalsMock.mockReturnValue(TOTALS_MOCK);
     useTransactionPayIsMaxAmountMock.mockReturnValue(false);
@@ -309,6 +322,74 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       });
 
       const { result } = runHook({ pendingAmountUsd: '1.00' });
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('returns no alert when isMax is true even if source amount exceeds balance', () => {
+      useTransactionPayIsMaxAmountMock.mockReturnValue(true);
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          balanceRaw: '4000000000000000000',
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      const { result } = runHook();
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('returns no alert when isMax is true even if source amount plus gas-fee-token exceeds balance', () => {
+      useTransactionPayIsMaxAmountMock.mockReturnValue(true);
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          balanceRaw: '4000000000000000000',
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+      useTransactionPayTotalsMock.mockReturnValue({
+        ...TOTALS_MOCK,
+        fees: {
+          ...TOTALS_MOCK.fees,
+          isSourceGasFeeToken: true,
+        },
+      });
+
+      const { result } = runHook();
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('returns no alert when an exact-raw deposit plus fees exceeds the balance', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          balanceRaw: TOTALS_MOCK.sourceAmount.raw,
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+      useTransactionPayTotalsMock.mockReturnValue({
+        ...TOTALS_MOCK,
+        fees: {
+          ...TOTALS_MOCK.fees,
+          isSourceGasFeeToken: true,
+        },
+      });
+
+      const { result } = runHook(
+        {},
+        {
+          confirmationOverrides: {
+            type: TransactionType.moneyAccountDeposit,
+          },
+        },
+      );
 
       expect(result.current).toStrictEqual([]);
     });

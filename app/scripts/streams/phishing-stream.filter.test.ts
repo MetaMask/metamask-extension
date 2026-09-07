@@ -99,7 +99,6 @@ describe('phishing-stream logging filter', () => {
   it('initPhishingStreams (page mux): logs unconditionally on both completion and error', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const callsBefore = (global as any).mockPipeline.mock.calls.length;
-    // @ts-expect-error - TypeScript requires .js extension for ESM but Jest cannot resolve it
     const { initPhishingStreams } = await import('./phishing-stream');
     initPhishingStreams();
     // The first pipeline call is the page mux pipeline (setupPhishingPageStreams)
@@ -121,7 +120,6 @@ describe('phishing-stream logging filter', () => {
   it('extension mux pipeline: logs unconditionally on both completion and error', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const before = (global as any).mockPipeline.mock.calls.length;
-    // @ts-expect-error - TypeScript requires .js extension for ESM but Jest cannot resolve it
     const { setupPhishingExtStreams } = await import('./phishing-stream');
     setupPhishingExtStreams();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -149,7 +147,6 @@ describe('phishing-stream runtime message listener', () => {
       message: unknown,
     ) => unknown)[];
     const listenerCountBefore = listeners.length;
-    // @ts-expect-error - TypeScript requires .js extension for ESM but Jest cannot resolve it
     const { initPhishingStreams } = await import('./phishing-stream');
     initPhishingStreams();
     const listener = listeners[listenerCountBefore];

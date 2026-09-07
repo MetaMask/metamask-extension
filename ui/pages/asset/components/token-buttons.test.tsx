@@ -18,6 +18,8 @@ import { Asset } from '../types/asset';
 import TokenButtons from './token-buttons';
 
 const mockGoToBuy = jest.fn().mockResolvedValue(true);
+const mockOpenBridgeExperience = jest.fn();
+
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
@@ -27,7 +29,12 @@ jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
 jest.mock('../../../hooks/bridge/useBridging', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: () => ({ openBridgeExperience: jest.fn() }),
+  default: () => ({ openBridgeExperience: mockOpenBridgeExperience }),
+}));
+
+jest.mock('../../../selectors/assets', () => ({
+  ...jest.requireActual('../../../selectors/assets'),
+  getAssetsBySelectedAccountGroup: jest.fn(() => ({})),
 }));
 
 // The Long / Short buttons have their own tests; here we only verify that
@@ -189,6 +196,29 @@ describe('TokenButtons perps action row', () => {
     expect(
       screen.queryByTestId('perps-trade-buttons'),
     ).not.toBeInTheDocument();
+  });
+});
+
+describe('TokenButtons swap balance-aware defaults', () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it('opens swap with the current token as from when it has balance', () => {
+    const tokenWithBalance = {
+      ...token,
+      balance: { value: '1', display: '1', fiat: '1' },
+    } as Asset & { type: AssetType.token };
+
+    const { getByTestId } = renderWithProvider(
+      <TokenButtons token={tokenWithBalance} />,
+      store,
+    );
+
+    fireEvent.click(getByTestId('token-overview-swap'));
+    expect(mockOpenBridgeExperience).toHaveBeenCalledWith(
+      'Token View',
+      tokenWithBalance,
+      undefined,
+    );
   });
 });
 

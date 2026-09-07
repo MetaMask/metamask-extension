@@ -896,12 +896,24 @@
     "message": "$1 satıldı",
     "description": "$1 is the token symbol"
   },
+  "activity_receive_failed_description": {
+    "message": "Gönderen $1",
+    "description": "$1 is the shortened sender address"
+  },
   "activity_receive_failed_title": {
     "message": "Alınamadı"
+  },
+  "activity_receive_pending_description": {
+    "message": "Gönderen $1",
+    "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
     "message": "$1 alınıyor",
     "description": "$1 is the token symbol"
+  },
+  "activity_receive_success_description": {
+    "message": "Gönderen $1",
+    "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
     "message": "$1 alındı",
@@ -950,12 +962,24 @@
     "message": "$1 satıldı",
     "description": "$1 is the token symbol"
   },
+  "activity_send_failed_description": {
+    "message": "Alıcı $1",
+    "description": "$1 is the shortened recipient address"
+  },
   "activity_send_failed_title": {
     "message": "Gönderilemedi"
+  },
+  "activity_send_pending_description": {
+    "message": "Alıcı $1",
+    "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
     "message": "$1 gönderiliyor",
     "description": "$1 is the token symbol"
+  },
+  "activity_send_success_description": {
+    "message": "Alıcı $1",
+    "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
     "message": "$1 gönderildi",
@@ -1428,10 +1452,10 @@
     "message": "Saldırganlar bazen site adresinde küçük değişiklikler yaparak siteleri taklit edebilir. Devam etmeden önce planladığınız site ile etkileşim kurduğunuzdan emin olun."
   },
   "alertMessageAddressTrustSignal": {
-    "message": "Bu adresi doğrulayamıyoruz. Yeni veya doğrulanmamış olabilir. Sadece kaynağa güveniyorsanız devam edin."
+    "message": "Güvenlik ortaklarının bu adresi doğrulamak için yeterli geçmişi yok."
   },
   "alertMessageAddressTrustSignalMalicious": {
-    "message": "Bu talebi onaylarsanız muhtemelen varlıklarınızı bir dolandırıcıya kaptıracaksınız."
+    "message": "Güvenlik ortakları bu adresi kötü amaçlı faaliyet olarak işaretledi."
   },
   "alertMessageBurnAddress": {
     "message": "Varlıklarınızı bir yakım adresine gönderiyorsunuz. Devam ederseniz varlıklarınızı kaybedeceksiniz."
@@ -1501,6 +1525,12 @@
   },
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Perps bakiyeniz kontrol edilemedi. Tekrar deneyin."
+  },
+  "alertReasonAddressTrustSignalMalicious": {
+    "message": "Adres yüksek riskli olarak işaretlendi"
+  },
+  "alertReasonAddressTrustSignalWarning": {
+    "message": "Sınırlı adres sinyali"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1. etkileşim"
@@ -2146,6 +2176,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "Fiyat bilgisi yok"
   },
+  "bridgeOffHoursDescription": {
+    "message": "Piyasa kapalı: Fiyat ihraççı tarafından hesaplanmıştır, canlı piyasa verisi değildir. Piyasalar bir sonraki işlem oturumunda yeniden açıldığında değişiklik gösterebilir."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Mesai saatleri dışında işlem"
+  },
   "bridgePoints": {
     "message": "Tah. puanlar",
     "description": "Label for estimated points that can be earned from a bridge or swap"
@@ -2376,6 +2412,22 @@
   },
   "bridgeSendLoading": {
     "message": "Kaynak zincirden gönderiliyor"
+  },
+  "bridgeStellarTrustlineWarningCta": {
+    "message": "$1 varlığını etkinleştir",
+    "description": "CTA on the Stellar trustline warning banner. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessage": {
+    "message": "Bu takas işlemi başarısız olabilir. Stellar ağında, cüzdanınızda geçerli bir güven hattı ile bu token etkinleştirilene kadar hesabınız $1 alamaz.",
+    "description": "Body of the Stellar trustline warning on cross-chain swaps when destination is the active account. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessageDifferentAccount": {
+    "message": "Bu takas işlemi başarısız olabilir. Stellar ağında, siz o hesaba geçip tokenı geçerli bir güven hattı ile etkinleştirene kadar $1 $2 alamaz.",
+    "description": "Body of the Stellar trustline warning when the destination account is not the active account. $1 is the destination account name; $2 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningTitle": {
+    "message": "Önce Stellar ağında $1 varlığını etkinleştirin",
+    "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
   },
   "bridgeSuspicious": {
     "message": "Şüpheli"
@@ -3355,6 +3407,9 @@
   "defiTabErrorTitle": {
     "message": "Bu sayfayı yükleyemedik."
   },
+  "defiUnsupportedEmptyDescription": {
+    "message": "DeFi bu ağda desteklenmiyor."
+  },
   "delete": {
     "message": "Sil"
   },
@@ -3477,6 +3532,10 @@
   },
   "disconnectSiteDescriptionText": {
     "message": "Bu işlem tüm hesaplarınızın $1 ile bağlantısını keser. Bu dapp'i tekrar kullanmak için yeniden bağlamanız gerekir.",
+    "description": "$1 is the site hostname"
+  },
+  "disconnectSiteSuccess": {
+    "message": "$1 ile bağlantısı başarıyla kesildi.",
     "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
@@ -4312,9 +4371,25 @@
     "message": "Harcama Yapan Taraf: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
+  "hardwareSwapAmount": {
+    "message": "$1 $2 varlığı $3 $4 ile takas edin",
+    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappedAmount": {
+    "message": "$1 $2, $3 $4 ile takas edildi",
+    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappingAmount": {
+    "message": "$1 $2, $3 $4 ile takas ediliyor",
+    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
   "hardwareToAddress": {
     "message": "Alıcı: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareToken": {
+    "message": "Token: $1",
+    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "Bu işlemi cihazınızda reddettiniz",
@@ -4372,6 +4447,9 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 kilitli",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleUnsupportedSignature": {
+    "message": "İmza desteklenmiyor"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "$1 cihazınızın seçili hesap için Gizli Kurtarma İfadesi veya parola ile kurulumunun yapıldığından emin olun",
@@ -5268,17 +5346,107 @@
   "money": {
     "message": "Bakiye"
   },
+  "moneyAccountApyPitch": {
+    "message": "%$1 APY kazanın",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchInfo": {
+    "message": "Yıllık Yüzde Getiri (APY) bilgisi"
+  },
+  "moneyAccountApyTooltip": {
+    "message": "Gösterilen oran, mevcut piyasa koşullarına dayalı tahmini Yıllık Yüzde Getiridir (APY). APY değişken olup garanti edilmemektedir."
+  },
+  "moneyAccountAvailableBalance": {
+    "message": "Kullanılabilir bakiye: $1",
+    "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountProjectedBalance": {
+    "message": "Öngörülen 1 yıllık bakiye:"
+  },
+  "moneyAccountProjectedBalanceInfo": {
+    "message": "Öngörülen 1 yıllık bakiye"
+  },
+  "moneyAccountProjectedBalanceTooltip": {
+    "message": "Projeksiyon, %$1 Yıllık Yüzde Getirinin (APY) bir yıl boyunca değişmeden kaldığı varsayımına dayanmaktadır. APY değişkendir ve garanti edilmez.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyActivity": {
     "message": "İşlemler"
   },
+  "moneyActivityConversionFailed": {
+    "message": "Dönüştürme işlemi başarısız oldu"
+  },
+  "moneyActivityConverted": {
+    "message": "Dönüştürüldü"
+  },
+  "moneyActivityConverting": {
+    "message": "Dönüştürülüyor"
+  },
+  "moneyActivityDepositFailed": {
+    "message": "Para yatırma işlemi başarısız oldu"
+  },
+  "moneyActivityDeposited": {
+    "message": "Yatırıldı"
+  },
+  "moneyActivityDepositing": {
+    "message": "Yatırılıyor"
+  },
+  "moneyActivityEmpty": {
+    "message": "Henüz aktivite yok"
+  },
+  "moneyActivityFilterAll": {
+    "message": "Tümü"
+  },
+  "moneyActivityFilterDeposits": {
+    "message": "Yatırma İşlemleri"
+  },
+  "moneyActivityFilterSends": {
+    "message": "Gönderilen"
+  },
+  "moneyActivityPending": {
+    "message": "Bekliyor"
+  },
   "moneyActivityPlaceholderDescription": {
     "message": "Para hareketleriniz burada gösterilecek."
+  },
+  "moneyActivityReceived": {
+    "message": "Alınan"
+  },
+  "moneyActivityReceivedFrom": {
+    "message": "Kimden: $1"
+  },
+  "moneyActivityReceiving": {
+    "message": "Alınıyor"
+  },
+  "moneyActivitySendFailed": {
+    "message": "Gönderilemedi"
+  },
+  "moneyActivitySending": {
+    "message": "Gönderiliyor"
+  },
+  "moneyActivitySent": {
+    "message": "Gönderildi"
+  },
+  "moneyActivityViewAll": {
+    "message": "Tümünü görüntüle"
   },
   "moneyAdd": {
     "message": "Ekle"
   },
   "moneyApy": {
     "message": "$1 APY"
+  },
+  "moneyBalanceInfoBody": {
+    "message": "Her zaman harcamaya, gönderime veya işlem yapmaya hazır olan dolara endeksli bakiyeniz. Bunu toplam hesap bakiyenize yansıtmayız."
+  },
+  "moneyBalanceInfoWithdrawals": {
+    "message": "Para çekme işlemleri, ilgili blokzinciri üzerindeki standart ağ onay sürelerine tabi olmak kaydıyla anında gerçekleşir. Likiditenin sıkışık olduğu durumlarda geçici gecikmeler yaşanabilir."
+  },
+  "moneyBalanceLastKnown": {
+    "message": "Bilinen son bakiye"
+  },
+  "moneyBalanceTitle": {
+    "message": "Para bakiyesi"
   },
   "moneyBalanceUnavailable": {
     "message": "Bakiye kullanılamıyor"
@@ -5870,6 +6038,9 @@
   "nftTokenIdPlaceholder": {
     "message": "Token kimliğini gir"
   },
+  "nftUnsupportedEmptyDescription": {
+    "message": "NFT'ler bu ağda desteklenmiyor."
+  },
   "nftWarningContent": {
     "message": "Gelecekte sahip olabilecekleriniz de dahil olmak üzere $1 erişimi veriyorsunuz, Diğer taraf, siz bu onayı iptal edene kadar size sormadan bu NFT'leri dilediği zaman cüzdanınızdan transfer edebilir. $2",
     "description": "$1 is nftWarningContentBold bold part, $2 is Learn more link"
@@ -6460,7 +6631,7 @@
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNotSupported": {
-    "message": "Geçiş anahtarı desteklenmiyor",
+    "message": "MetaMask buraya kaydedilen geçiş anahtarlarını kullanamaz. Tekrar deneyin ve bir şifre yöneticisine kaydedin.",
     "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
@@ -7040,6 +7211,21 @@
   "perpsCloseAmount": {
     "message": "Kapanış tutarı"
   },
+  "perpsCloseAmountCappedAtPosition": {
+    "message": "\"Kapatma tutarı, pozisyon değeriniz ile sınırlandırılmıştır."
+  },
+  "perpsCloseAmountInPercent": {
+    "message": "%"
+  },
+  "perpsCloseAmountInPercentLabel": {
+    "message": "Kapatma tutarını pozisyonunuzun yüzdesi olarak girin"
+  },
+  "perpsCloseAmountInUsd": {
+    "message": "$"
+  },
+  "perpsCloseAmountInUsdLabel": {
+    "message": "Kapatma tutarını Amerikan doları olarak girin"
+  },
   "perpsCloseLimitPriceOutsideOracleBand": {
     "message": "Fiyat, piyasa fiyatından %95'ten fazla sapamaz"
   },
@@ -7051,6 +7237,9 @@
   },
   "perpsClosePartialMinNotional": {
     "message": "Kısmi kapatma işlemleri en az $1 USD değerinde olmalıdır. Kapatma tutarını artırın veya pozisyonun tamamını kapatın."
+  },
+  "perpsClosePercentCappedAtMax": {
+    "message": "Kapatma yüzdesi %100 ile sınırlandırılmıştır."
   },
   "perpsClosePosition": {
     "message": "Pozisyonu kapat"
@@ -8347,33 +8536,15 @@
   "rampsPaymentDelayMinutes": {
     "message": "dk."
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "Maks $1",
-    "description": "$1 is the maximum fiat buy amount"
-  },
   "rampsPaymentMethodMinLimit": {
     "message": "Min $1",
     "description": "$1 is the minimum fiat buy amount"
-  },
-  "rampsPreviouslyUsed": {
-    "message": "Daha önce kullanılan"
-  },
-  "rampsProviders": {
-    "message": "Sağlayıcılar"
   },
   "rampsQuoteFetchError": {
     "message": "Teklif alınamadı."
   },
   "rampsQuoteUnavailable": {
     "message": "Teklif kullanılamıyor."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "$1 için teklifler görüntüleniyor.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Ödeme yöntemi seç"
@@ -9206,16 +9377,16 @@
     "message": "Kötü amaçlı"
   },
   "securityTrustMaliciousTokenBannerDescription": {
-    "message": "$1 kötü amaçlı olarak işaretlenmiş. Onunla etkileşime giren herkesin fonlarını çalması muhtemeldir."
+    "message": "Güvenlik ortakları $1 varlığını yüksek riskli olarak işaretledi."
   },
   "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
-    "message": "Bu token kötü amaçlı olarak işaretlenmiş. Bununla etkileşimde bulunan herkesten fon çalması muhtemeldir."
+    "message": "Güvenlik ortakları bu tokenı yüksek riskli olarak işaretledi."
   },
   "securityTrustMaliciousTokenSheetDescription": {
-    "message": "$1 üzerinde ciddi risk sinyalleri tespit edildi. Bu token ile işlem yapmamanızı tavsiye ederiz."
+    "message": "Güvenlik ortakları $1 varlığını yüksek riskli olarak işaretledi."
   },
   "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
-    "message": "Bu tokenda ciddi risk sinyalleri algılandı. Bu token ile işlem yapılmamasını öneririz."
+    "message": "Güvenlik ortakları bu tokenı yüksek riskli olarak işaretledi."
   },
   "securityTrustMaliciousTokenTitle": {
     "message": "Kötü amaçlı tokenlar"
@@ -9245,10 +9416,10 @@
     "message": "Riskli"
   },
   "securityTrustRiskyTokenDescription": {
-    "message": "$1 şüpheli olarak işaretlendi. Devam etmeden önce risklere bakın."
+    "message": "Güvenlik ortakları $1 varlığının sözleşmesinde veya işlem hareketlerinde risk sinyalleri tespit etti."
   },
   "securityTrustRiskyTokenDescriptionNoSymbol": {
-    "message": "Bu token şüpheli olarak işaretlenmiş. Devam etmeden önce risklere göz atın."
+    "message": "Güvenlik ortakları bu tokenın sözleşmesinde veya işlem hareketlerinde risk sinyalleri tespit etti."
   },
   "securityTrustRiskyTokenTitle": {
     "message": "Şüpheli tokenlar"
@@ -9260,13 +9431,13 @@
     "message": "Risk sinyali algılanmadı. Varlıklarla işlem yapmadan önce her zaman araştırma yapın."
   },
   "securityTrustSubtitleMalicious": {
-    "message": "Ciddi risk sinyalleri algılandı. Bu varlıktan kaçınmanızı tavsiye ederiz."
+    "message": "Güvenlik ortakları bu tokenı yüksek riskli olarak işaretledi."
   },
   "securityTrustSubtitleNoIssues": {
     "message": "Risk sinyali algılanmadı. Varlıklarla işlem yapmadan önce her zaman araştırma yapın."
   },
   "securityTrustSubtitleSuspicious": {
-    "message": "Uyarı sinyalleri tespit edildi. Bu varlıkla işlem yapmadan önce işaretli sorunları dikkatli bir şekilde inceleyin."
+    "message": "Güvenlik ortakları bu tokenın sözleşmesinde veya işlem hareketlerinde risk sinyalleri tespit etti."
   },
   "securityTrustSubtitleUnavailable": {
     "message": "Bu token için güvenlik analizi yüklenemedi."
@@ -9275,10 +9446,10 @@
     "message": "Şüpheli"
   },
   "securityTrustSuspiciousTokenDescription": {
-    "message": "$1 şüpheli bir token."
+    "message": "Güvenlik ortakları $1 varlığının sözleşmesinde veya işlem hareketlerinde risk sinyalleri tespit etti."
   },
   "securityTrustSuspiciousTokenDescriptionNoSymbol": {
-    "message": "Bu şüpheli bir tokendır."
+    "message": "Güvenlik ortakları bu tokenın sözleşmesinde veya işlem hareketlerinde risk sinyalleri tespit etti."
   },
   "securityTrustTelegram": {
     "message": "Telegram"
