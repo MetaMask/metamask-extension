@@ -112,6 +112,7 @@ export function catalogResponses(request: CatalogRequest): CatalogResponses {
     name: asset.name,
     symbol: asset.symbol,
     decimals: asset.decimals,
+    ...(requestedId.includes('/erc20:') ? { occurrences: 100 } : {}),
   }));
 
   switch (request.priceMode) {

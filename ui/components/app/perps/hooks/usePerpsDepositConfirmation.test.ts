@@ -2,7 +2,10 @@ import { act } from '@testing-library/react';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
-import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
+import {
+  ConfirmationLoader,
+  PayWithOption,
+} from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
 import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
 import { usePerpsDepositConfirmation } from './usePerpsDepositConfirmation';
 
@@ -149,6 +152,32 @@ describe('usePerpsDepositConfirmation', () => {
     });
 
     expect(onCreated).toHaveBeenCalledWith('tx-789');
+  });
+
+  it('includes payWithOption in the confirmation URL when provided', async () => {
+    mockCreatePerpsDepositTransaction.mockResolvedValue({
+      transactionId: 'tx-money',
+    });
+
+    const { result } = renderHookWithProvider(
+      () =>
+        usePerpsDepositConfirmation({
+          payWithOption: PayWithOption.MoneyAccount,
+        }),
+      mockState,
+    );
+
+    await act(async () => {
+      await result.current.trigger();
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      {
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-money`,
+        search: `loader=${ConfirmationLoader.CustomAmount}&payWithOption=${PayWithOption.MoneyAccount}`,
+      },
+      { replace: true },
+    );
   });
 
   it('returns null when there is no selected account', async () => {

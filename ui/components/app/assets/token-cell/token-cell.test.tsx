@@ -289,6 +289,37 @@ describe('Token Cell', () => {
     expect(amountElement.textContent).toBe('5.00M TEST');
   });
 
+  // TokenCell formats Number(token.balance). TokenList copies
+  // assetsBalance.amount, which is already the human decimal
+  // ('11.811649'), so a raw-units string like '11811649' cannot
+  // reach this path.
+  it('formats a 6-decimal human balance without grouping or compact millions', () => {
+    const propsFrxUsd = {
+      token: {
+        ...propToken,
+        address: '0xcacd6fd266af91b8aed52accc382b4e165586e29' as Hex,
+        symbol: 'frxUSD',
+        string: '11.811649',
+        balance: '11.811649',
+        tokenFiatAmount: 11.811649,
+        decimals: 6,
+      },
+      onClick: jest.fn(),
+    };
+
+    const { getByTestId } = renderWithProvider(
+      <TokenCell {...(propsFrxUsd as TokenCellProps)} />,
+      mockStore,
+    );
+
+    const amountElement = getByTestId('multichain-token-list-item-value');
+
+    expect(amountElement).toBeInTheDocument();
+    expect(amountElement.textContent).toBe('11.812 frxUSD');
+    expect(amountElement.textContent).not.toContain('11.81M');
+    expect(amountElement.textContent).not.toContain('11,811,649');
+  });
+
   it('shows a skeleton for native token percentage while fiat is loading', () => {
     mockAnyEnabledNetworksAreAvailable = false;
 

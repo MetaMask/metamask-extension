@@ -4,6 +4,7 @@ import {
   DEFAULT_ROUTE,
   MONEY_ACTIVITY_ROUTE,
   MONEY_HOME_ROUTE,
+  getMoneyTransactionDetailsRoute,
   PERPS_HOME_PAGE_ROUTE,
   SWAP_PATH,
 } from '../../../helpers/constants/routes';
@@ -73,6 +74,20 @@ describe('getActiveBottomNavTabs', () => {
     });
   });
 
+  it('marks isMoney active on the Money transaction details route', () => {
+    expect(
+      getActiveBottomNavTabs(
+        getMoneyTransactionDetailsRoute('money-tx-deposited'),
+      ),
+    ).toStrictEqual({
+      isHome: false,
+      isPerps: false,
+      isMoney: true,
+      isSwaps: false,
+      isActivity: false,
+    });
+  });
+
   it('returns all false for an unrelated route', () => {
     expect(getActiveBottomNavTabs('/settings')).toStrictEqual({
       isHome: false,
@@ -90,6 +105,10 @@ describe('isBottomNavRoute', () => {
     ['perps home route', PERPS_HOME_PAGE_ROUTE],
     ['Money home route', MONEY_HOME_ROUTE],
     ['Money activity route', MONEY_ACTIVITY_ROUTE],
+    [
+      'Money transaction details route',
+      getMoneyTransactionDetailsRoute('money-tx-deposited'),
+    ],
     ['swap path', SWAP_PATH],
     ['activity route', ACTIVITY_ROUTE],
   ])('returns true for the %s', (_label, route) => {

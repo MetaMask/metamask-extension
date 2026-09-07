@@ -179,12 +179,13 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 224,
+      "currentMigrationVersion": 225,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
     "AppStateController": {
+      "arcUsageNoticeShown": false,
       "browserEnvironment": {
         "browser": "chrome"
       },
@@ -403,7 +404,6 @@
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": false,
-      "fragments": {},
       "marketingCampaignCookieId": null,
       "tracesBeforeMetricsOptIn": [],
       "traits": {}
@@ -1262,6 +1262,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 224
+    "version": 225
   }
 }

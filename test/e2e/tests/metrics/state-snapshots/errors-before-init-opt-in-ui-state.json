@@ -49,6 +49,7 @@
       "previousMigrationVersion": 0
     },
     "AppStateController": {
+      "arcUsageNoticeShown": "boolean",
       "browserEnvironment": {
         "browser": "string",
         "os": "string"
@@ -125,7 +126,6 @@
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": "boolean",
-      "fragments": "object",
       "marketingCampaignCookieId": null,
       "tracesBeforeMetricsOptIn": "object",
       "traits": "object"
@@ -366,6 +366,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 224
+    "version": 225
   }
 }
