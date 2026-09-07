@@ -5,8 +5,8 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
+import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import {
   PAY_EXTENDED_FEATURE_FLAG,
   type PayPrefilledAmountConfig,
@@ -18,16 +18,13 @@ import {
 } from '../../selectors/feature-flags';
 import { getDepositLimitForTransaction } from '../../utils/pay-deposit-limit';
 import { isRouteToken } from '../../utils/relay-fixed-spread';
+import { getMarketData } from '../../../../selectors';
 import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
-import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
 
 const ZERO_PREFILL_AMOUNT = '0.0';
-const ABSENT_TOKEN_ADDRESS =
-  '0x0000000000000000000000000000000000000000' as Hex;
-const ABSENT_CHAIN_ID = '0x0' as Hex;
 
 function formatFiatAmount(value: BigNumber): string {
   return value.isInteger() ? value.toString(10) : value.toFixed(2);
@@ -90,6 +87,7 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
   const { payToken } = useTransactionPayToken();
   const accountOverride = useTransactionAccountOverride();
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
+  const marketData = useSelector(getMarketData);
   const depositLimits = useSelector(selectDepositLimits);
   const relayFixedSpread = useSelector(selectRelayFixedSpread);
 
@@ -112,19 +110,17 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
   // uncommitted and the amount skeleton up forever.
   // `usePayTokenAccountBalance` already takes min(snapshot, live×rate).
   const balanceUsd = String(liveBalanceUsd || payToken?.balanceUsd || 0);
-  // Pay-token USD rate used by TransactionPayController to build
-  // `sourceAmounts`. Committing the amount before this rate exists leaves
-  // `sourceAmounts` empty; asset subscriptions will not retry once `tokens`
-  // is non-empty — first-open prefill then shows an amount with no quotes.
-  const payTokenFiatRate = useTokenFiatRate(
-    payToken?.address ?? ABSENT_TOKEN_ADDRESS,
-    payToken?.chainId ?? ABSENT_CHAIN_ID,
-    'usd',
-  );
-  const hasPayTokenFiatRate =
-    payTokenFiatRate !== undefined &&
-    Number.isFinite(payTokenFiatRate) &&
-    payTokenFiatRate > 0;
+  // TransactionPayController needs real market data to build source amounts.
+  // `useTokenFiatRate` cannot be used as this readiness gate because it falls
+  // back to a synthetic $1 token price when market data is absent.
+  const payTokenMarketPrice = payToken
+    ? marketData?.[payToken.chainId]?.[toChecksumHexAddress(payToken.address)]
+        ?.price
+    : undefined;
+  const hasPayTokenMarketPrice =
+    payTokenMarketPrice !== undefined &&
+    Number.isFinite(payTokenMarketPrice) &&
+    payTokenMarketPrice > 0;
   // The confirmation id is part of the key so a following deposit rendered by
   // the same mounted UI releases the commit and prefills again, instead of
   // inheriting the previous confirmation's amount.
@@ -177,7 +173,7 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
   const readyToCommit =
     prefillAmount !== undefined &&
     (!isUncappedMaxPrefill || hasLiveBalanceRaw) &&
-    (!needsQuote || hasPayTokenFiatRate);
+    (!needsQuote || hasPayTokenMarketPrice);
 
   useEffect(() => {
     if (!enabled) {

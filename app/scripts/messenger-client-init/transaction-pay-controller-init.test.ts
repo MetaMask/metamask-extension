@@ -218,7 +218,7 @@ describe('TransactionPayControllerInit', () => {
       expect(config).toEqual({ isMaxAmount: false, atomic: false });
     });
 
-    it('keeps isMaxAmount false when clearing max on a money-account deposit', () => {
+    it('restores atomic when clearing max on a money-account deposit', () => {
       const { api, setTransactionConfigMock } = initApi();
 
       api.setTransactionPayIsMaxAmount('tx-1', false, {
@@ -231,7 +231,7 @@ describe('TransactionPayControllerInit', () => {
       };
       updater(config as never);
 
-      expect(config).toEqual({ isMaxAmount: false, atomic: false });
+      expect(config).toEqual({ isMaxAmount: false, atomic: undefined });
     });
   });
 
@@ -490,6 +490,104 @@ describe('TransactionPayControllerInit', () => {
         isQuoteRequired: true,
         isMaxAmount: false,
       });
+      expect(updateDepositAmountMock).toHaveBeenCalledWith(
+        expect.anything(),
+        'tx-1',
+        '10',
+      );
+    });
+
+    it('waits for the payment token refresh before forwarding the amount', async () => {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      (
+        messengerClient as {
+          state: {
+            transactionData: Record<
+              string,
+              {
+                paymentToken: {
+                  address: string;
+                  chainId: string;
+                };
+              }
+            >;
+          };
+        }
+      ).state = {
+        transactionData: {
+          'tx-1': {
+            paymentToken: {
+              address: '0x123',
+              chainId: '0x1',
+            },
+          },
+        },
+      };
+      let resolveRefresh: (() => void) | undefined;
+      const refreshPromise = new Promise<void>((resolve) => {
+        resolveRefresh = resolve;
+      });
+      jest
+        .mocked(messengerClient.updatePaymentToken)
+        .mockReturnValue(refreshPromise);
+      updateDepositAmountMock.mockClear();
+      updateDepositAmountMock.mockResolvedValue(true);
+
+      const resultPromise = api.updateMoneyAccountDepositAmount('tx-1', '10');
+
+      expect(updateDepositAmountMock).not.toHaveBeenCalled();
+      resolveRefresh?.();
+      await expect(resultPromise).resolves.toBe(true);
+      expect(updateDepositAmountMock).toHaveBeenCalledWith(
+        expect.anything(),
+        'tx-1',
+        '10',
+      );
+    });
+
+    it('forwards the amount when the payment token refresh rejects', async () => {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      (
+        messengerClient as {
+          state: {
+            transactionData: Record<
+              string,
+              {
+                paymentToken: {
+                  address: string;
+                  chainId: string;
+                };
+              }
+            >;
+          };
+        }
+      ).state = {
+        transactionData: {
+          'tx-1': {
+            paymentToken: {
+              address: '0x123',
+              chainId: '0x1',
+            },
+          },
+        },
+      };
+      jest
+        .mocked(messengerClient.updatePaymentToken)
+        .mockRejectedValue(new Error('Refresh failed'));
+      updateDepositAmountMock.mockClear();
+      updateDepositAmountMock.mockResolvedValue(true);
+
+      await expect(
+        api.updateMoneyAccountDepositAmount('tx-1', '10'),
+      ).resolves.toBe(true);
       expect(updateDepositAmountMock).toHaveBeenCalledWith(
         expect.anything(),
         'tx-1',

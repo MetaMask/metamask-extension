@@ -6,6 +6,7 @@ import {
 import type { Hex } from '@metamask/utils';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import { useSelector } from 'react-redux';
+import { getMarketData } from '../../../../selectors';
 import { getRemoteFeatureFlags } from '../../../../../shared/lib/selectors/remote-feature-flags';
 import {
   selectDepositLimits,
@@ -14,7 +15,6 @@ import {
 import { isRouteToken } from '../../utils/relay-fixed-spread';
 import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
-import { useTokenFiatRate } from '../tokens/useTokenFiatRates';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
 import { useDepositPrefillAmount } from './useDepositPrefillAmount';
@@ -31,7 +31,6 @@ jest.mock('../../utils/relay-fixed-spread', () => ({
 
 jest.mock('../pay/usePayTokenAccountBalance');
 jest.mock('../pay/useTransactionPayToken');
-jest.mock('../tokens/useTokenFiatRates');
 jest.mock('./useTransactionMetadataRequest');
 jest.mock('./useTransactionAccountOverride');
 
@@ -49,9 +48,11 @@ const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
 const useTransactionAccountOverrideMock = jest.mocked(
   useTransactionAccountOverride,
 );
-const useTokenFiatRateMock = jest.mocked(useTokenFiatRate);
 const useSelectorMock = jest.mocked(useSelector);
 const isRouteTokenMock = jest.mocked(isRouteToken);
+let marketDataMock:
+  | Record<string, Record<string, { price: number }>>
+  | undefined;
 
 function makeTransactionMeta(
   overrides?: Partial<TransactionMeta>,
@@ -114,9 +115,17 @@ function setupMocks(
     balanceRaw: resolvedPayToken?.balanceRaw ?? '0',
   });
   useTransactionAccountOverrideMock.mockReturnValue(overrides.accountOverride);
-  useTokenFiatRateMock.mockReturnValue(1);
+  marketDataMock = {
+    [CHAIN_ID_MOCK]: {
+      [TOKEN_ADDRESS_MOCK]: { price: 1 },
+      [TOKEN_ADDRESS_B_MOCK]: { price: 1 },
+    },
+  };
 
   useSelectorMock.mockImplementation((selector) => {
+    if (selector === getMarketData) {
+      return marketDataMock;
+    }
     if (selector === getRemoteFeatureFlags) {
       return {
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -254,19 +263,23 @@ describe('useDepositPrefillAmount', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    it('does not commit a positive prefill until the pay-token fiat rate is available', () => {
+    it('does not commit a positive prefill until pay-token market data is available', () => {
       setupMocks({
         stablecoin: true,
         payToken: makePayToken({ balanceUsd: '500' }),
       });
-      useTokenFiatRateMock.mockReturnValue(undefined);
+      marketDataMock = undefined;
 
       const { result, rerender } = runHook();
 
       expect(result.current.hasPrefilled).toBe(false);
       expect(result.current.isLoading).toBe(true);
 
-      useTokenFiatRateMock.mockReturnValue(1);
+      marketDataMock = {
+        [CHAIN_ID_MOCK]: {
+          [TOKEN_ADDRESS_MOCK]: { price: 1 },
+        },
+      };
       act(() => {
         rerender();
       });

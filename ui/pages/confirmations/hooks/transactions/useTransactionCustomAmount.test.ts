@@ -1363,11 +1363,11 @@ describe('useTransactionCustomAmount', () => {
       expect(updateTokenAmountMock).not.toHaveBeenCalledWith('1.12');
     });
 
-    it('uses the lesser of live and snapshot raw so Max never exceeds either', () => {
+    it('prefers live raw when the snapshot is stale-low', () => {
       const updateTokenAmountMock = jest.fn();
       const { result } = runHook({
         payTokenBalanceUsd: 2.246912,
-        // Snapshot lower than live — never submit more than either balance.
+        // The controller snapshot can lag behind the funding account balance.
         payTokenBalanceRaw: '1000000',
         livePayTokenBalanceRaw: '1123456',
         payTokenDecimals: 6,
@@ -1380,8 +1380,8 @@ describe('useTransactionCustomAmount', () => {
         result.current.updatePendingAmountPercentage(100);
       });
 
-      expect(updateTokenAmountMock).toHaveBeenCalledWith('1');
-      expect(updateTokenAmountMock).not.toHaveBeenCalledWith('1.123456');
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('1.123456');
+      expect(updateTokenAmountMock).not.toHaveBeenCalledWith('1');
     });
 
     it('does not overwrite the raw Max amount with the fiat-derived value after debounce', () => {

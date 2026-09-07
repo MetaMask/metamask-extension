@@ -113,7 +113,7 @@ function getApi(
         // EXACT_INPUT Max mode is for other Pay flows.
         if (options.isMoneyAccountDeposit) {
           config.isMaxAmount = false;
-          config.atomic = false;
+          config.atomic = isMaxAmount ? false : undefined;
           return;
         }
         config.isMaxAmount = isMaxAmount;
@@ -149,7 +149,7 @@ function getApi(
         messengerClient.state?.transactionData?.[transactionId]?.paymentToken;
       if (paymentToken) {
         try {
-          messengerClient.updatePaymentToken({
+          await messengerClient.updatePaymentToken({
             transactionId,
             tokenAddress: paymentToken.address,
             chainId: paymentToken.chainId,

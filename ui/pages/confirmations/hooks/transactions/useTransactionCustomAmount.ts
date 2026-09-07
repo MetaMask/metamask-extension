@@ -382,8 +382,8 @@ export function useTransactionCustomAmount({
       // prefill uses the same raw path even if the no-fee flag is briefly
       // false on first paint — otherwise fiat conversion overshoots and Max
       // later works only because isNoFee is then true.
-      // Prefer the lesser of live vs snapshot raw so the submitted amount
-      // never exceeds either balance.
+      // Prefer the live funding-account balance; the controller snapshot can
+      // be stale because the deposit transaction originates from the vault.
       const isRawMoneyAccountDeposit =
         isMoneyAccountDeposit &&
         (isNoFeePayToken || (isPrefill && percentage === 100));
@@ -658,26 +658,11 @@ function getPreferredPayTokenBalanceRaw(
   liveBalanceRaw?: string,
   snapshotBalanceRaw?: string,
 ): string | undefined {
-  const live =
-    liveBalanceRaw && !new BigNumber(liveBalanceRaw).isZero()
-      ? new BigNumber(liveBalanceRaw)
-      : null;
-  const snapshot =
-    snapshotBalanceRaw && !new BigNumber(snapshotBalanceRaw).isZero()
-      ? new BigNumber(snapshotBalanceRaw)
-      : null;
-
-  // When both are known, use the smaller so the submitted Max/prefill amount
-  // never exceeds the TPC payment-token snapshot (isMax source) or the live
-  // wallet balance — mismatch here is a common first-open "No quotes".
-  if (live && snapshot) {
-    return BigNumber.min(live, snapshot).toFixed(0);
+  if (liveBalanceRaw && !new BigNumber(liveBalanceRaw).isZero()) {
+    return new BigNumber(liveBalanceRaw).toFixed(0);
   }
-  if (live) {
-    return live.toFixed(0);
-  }
-  if (snapshot) {
-    return snapshot.toFixed(0);
+  if (snapshotBalanceRaw && !new BigNumber(snapshotBalanceRaw).isZero()) {
+    return new BigNumber(snapshotBalanceRaw).toFixed(0);
   }
   return undefined;
 }

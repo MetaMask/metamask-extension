@@ -364,6 +364,35 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
 
       expect(result.current).toStrictEqual([]);
     });
+
+    it('returns no alert when an exact-raw deposit plus fees exceeds the balance', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          balanceRaw: TOTALS_MOCK.sourceAmount.raw,
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+      useTransactionPayTotalsMock.mockReturnValue({
+        ...TOTALS_MOCK,
+        fees: {
+          ...TOTALS_MOCK.fees,
+          isSourceGasFeeToken: true,
+        },
+      });
+
+      const { result } = runHook(
+        {},
+        {
+          confirmationOverrides: {
+            type: TransactionType.moneyAccountDeposit,
+          },
+        },
+      );
+
+      expect(result.current).toStrictEqual([]);
+    });
   });
 
   describe('for source network fee', () => {
