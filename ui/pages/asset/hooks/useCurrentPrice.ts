@@ -107,7 +107,11 @@ const useSpotPrice = (
   const { data: currentPrice } = useQuery({
     ...queryOptions,
     enabled: enabled && Boolean(assetId),
-    select: (response) => (assetId ? response?.[assetId]?.price : undefined),
+    select: (response) =>
+      assetId
+        ? (response?.[assetId]?.price ??
+          response?.[assetId.toLowerCase()]?.price)
+        : undefined,
   });
 
   return { currentPrice };
