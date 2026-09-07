@@ -636,8 +636,12 @@ export type LegacyBackgroundApiServiceApplyTransactionContainersExistingAction =
 /**
  * Creates or updates the UI metrics fragment for a given transaction.
  *
+ * This fragment declares no events: the UI writes properties into it as the
+ * user interacts with a confirmation, and the transaction metrics builders
+ * read them back when they emit their own events.
+ *
  * @param transactionId - The id of the transaction.
- * @param payload - The fragment settings and properties to store.
+ * @param payload - The fragment properties to store.
  */
 export type LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction =
   {
