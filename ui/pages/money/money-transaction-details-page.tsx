@@ -58,6 +58,7 @@ import {
 } from './utils/money-transaction-details-display';
 import { getMoneyActivityStatus } from './utils/classify-money-activity';
 import { isVisibleMoneyActivityTransaction } from './utils/money-account-transactions';
+import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scroll';
 import { MoneyTransactionDetailsRow } from './components/money-transaction-details-row';
 import { MoneyTransactionDetailsError } from './components/money-transaction-details-error';
 
@@ -75,20 +76,6 @@ const STATUS_COLOR = {
   pending: TextColor.WarningDefault,
   failed: TextColor.ErrorDefault,
 } as const;
-
-/**
- * Money Home, Activity, and details share RootLayout's overflow container,
- * so list scroll would otherwise carry over when opening a row.
- *
- * @param element - A node on the details page.
- */
-function resetOverflowAncestorScroll(element: HTMLElement | null): void {
-  let node = element;
-  while (node) {
-    node.scrollTop = 0;
-    node = node.parentElement;
-  }
-}
 
 export function MoneyTransactionDetailsPage() {
   const t = useI18nContext() as MoneyActivityTranslate;

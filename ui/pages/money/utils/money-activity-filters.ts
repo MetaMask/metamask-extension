@@ -4,6 +4,10 @@ import {
 } from '@metamask/transaction-controller';
 import { isMusdOnMoneyAccountChain } from '@metamask/money-account-utils';
 import {
+  isMoneyDepositTx,
+  isMoneyWithdrawTx,
+} from '../../../helpers/money/money-transaction-guards';
+import {
   isOnchainMoneyActivityItem,
   type MoneyActivityItem,
 } from '../types/money-activity';
@@ -23,7 +27,7 @@ export type MoneyActivityBuckets = Record<
   MoneyActivityItem[]
 >;
 
-const ERC20_TRANSFER_TYPES: TransactionType[] = [
+export const ERC20_TRANSFER_TYPES: TransactionType[] = [
   TransactionType.tokenMethodTransfer,
   TransactionType.tokenMethodTransferFrom,
 ];
@@ -50,37 +54,17 @@ export function isMusdErc20Transfer(tx: TransactionMeta): boolean {
 }
 
 export function isMoneyActivityDeposit(tx: TransactionMeta): boolean {
-  if (
+  return (
+    isMoneyDepositTx(tx) ||
     tx.type === TransactionType.incoming ||
-    tx.type === TransactionType.moneyAccountDeposit ||
     // Same received types as classifyMoneyActivity, so ERC-20 receives
     // stay in All / Deposits instead of vanishing off the Activity page.
-    tx.type === TransactionType.tokenMethodTransfer ||
-    tx.type === TransactionType.tokenMethodTransferFrom
-  ) {
-    return true;
-  }
-
-  return (
-    tx.nestedTransactions?.some(
-      (nested) => nested.type === TransactionType.moneyAccountDeposit,
-    ) ?? false
+    (tx.type !== undefined && ERC20_TRANSFER_TYPES.includes(tx.type))
   );
 }
 
 export function isMoneyActivityTransfer(tx: TransactionMeta): boolean {
-  if (
-    tx.type === TransactionType.moneyAccountWithdraw ||
-    tx.type === TransactionType.simpleSend
-  ) {
-    return true;
-  }
-
-  return (
-    tx.nestedTransactions?.some(
-      (nested) => nested.type === TransactionType.moneyAccountWithdraw,
-    ) ?? false
-  );
+  return isMoneyWithdrawTx(tx) || tx.type === TransactionType.simpleSend;
 }
 
 export function isMoneyActivityTransaction(tx: TransactionMeta): boolean {

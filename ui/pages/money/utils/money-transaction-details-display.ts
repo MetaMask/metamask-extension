@@ -1,6 +1,7 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import BigNumber from 'bignumber.js';
 import { moneyFormatUsd } from '../../../helpers/money/format';
+import { shortenString } from '../../../helpers/utils/util';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import { isValidTransactionHash } from '../../../../shared/lib/transactions.utils';
 import type { MoneyActivityTransactionMeta } from '../constants/mock-activity-data';
@@ -72,10 +73,11 @@ export function formatMoneyActivityDetailsDate(timeMs: number): string {
  * @returns A truncated representation.
  */
 export function shortenMoneyActivityHex(value: string): string {
-  if (value.length <= 11) {
-    return value;
-  }
-  return `${value.slice(0, 6)}...${value.slice(-4)}`;
+  return shortenString(value, {
+    truncatedCharLimit: 12,
+    truncatedStartChars: 6,
+    truncatedEndChars: 4,
+  });
 }
 
 /**

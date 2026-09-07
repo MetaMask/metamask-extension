@@ -19,12 +19,15 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useMoneyActivityDisplayInfo } from '../../../hooks/money/use-money-activity-display';
-import type { MoneyActivityItem } from '../types/money-activity';
+import {
+  isOnchainMoneyActivityItem,
+  type MoneyActivityItem,
+} from '../types/money-activity';
 
 export type MoneyActivityRowProps = {
   item: MoneyActivityItem;
   privacyMode?: boolean;
-  onClick?: () => void;
+  onItemClick?: (item: MoneyActivityItem) => void;
 };
 
 function getAmountColor({
@@ -46,7 +49,7 @@ function getAmountColor({
 export function MoneyActivityRow({
   item,
   privacyMode = false,
-  onClick,
+  onItemClick,
 }: MoneyActivityRowProps) {
   const display = useMoneyActivityDisplayInfo(item);
   const isFailed = display.status === 'failed';
@@ -55,6 +58,7 @@ export function MoneyActivityRow({
     isFailed,
     isIncoming: display.isIncoming,
   });
+  const isClickable = Boolean(onItemClick) && isOnchainMoneyActivityItem(item);
 
   const content = (
     <>
@@ -133,11 +137,11 @@ export function MoneyActivityRow({
 
   const rowClassName = 'flex w-full items-center gap-4 p-4';
 
-  if (onClick) {
+  if (isClickable && onItemClick) {
     return (
       <button
         type="button"
-        onClick={onClick}
+        onClick={() => onItemClick(item)}
         className={`${rowClassName} bg-transparent text-left hover:bg-hover`}
         data-testid={`money-activity-row-${item.id}`}
       >

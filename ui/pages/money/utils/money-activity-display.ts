@@ -1,7 +1,4 @@
-import {
-  type TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { type TransactionMeta } from '@metamask/transaction-controller';
 import {
   isMusdOnMoneyAccountChain,
   isMusdToken,
@@ -13,9 +10,11 @@ import { IconName } from '@metamask/design-system-react';
 import BigNumber from 'bignumber.js';
 import { moneyFormatUsd } from '../../../helpers/money/format';
 import { getMoneyAccountDepositAmount } from '../../../helpers/money/money-account-amounts';
+import { shortenAddress } from '../../../helpers/utils/util';
 import type { MoneyActivityTransactionMeta } from '../constants/mock-activity-data';
 import type { AccountsApiActivity } from '../types/money-activity';
 import { decodeErc20Transfer } from './erc20-transfer';
+import { ERC20_TRANSFER_TYPES } from './money-activity-filters';
 import {
   classifyMoneyActivity,
   getMoneyActivityStatus,
@@ -58,13 +57,6 @@ function formatFiatAmount(amount: BigNumber, isIncoming: boolean): string {
 
 function getMoneySubtitle(tx: TransactionMeta): string | undefined {
   return (tx as MoneyActivityTransactionMeta).moneySubtitle;
-}
-
-function shortenAddress(address: string): string {
-  if (address.length <= 11) {
-    return address;
-  }
-  return `${address.slice(0, 7)}...${address.slice(-5)}`;
 }
 
 function prettifyFiatProvider(
@@ -135,8 +127,7 @@ export function resolveMusdTransferMeta(
   let contractAddress = transferInformation?.contractAddress;
 
   const isErc20TransferType =
-    tx.type === TransactionType.tokenMethodTransfer ||
-    tx.type === TransactionType.tokenMethodTransferFrom;
+    tx.type !== undefined && ERC20_TRANSFER_TYPES.includes(tx.type);
 
   if (
     (!amount || decimals === undefined || !contractAddress) &&
@@ -151,8 +142,8 @@ export function resolveMusdTransferMeta(
   if (!amount || decimals === undefined || !contractAddress) {
     const nestedMusdTransfer = tx.nestedTransactions?.find(
       (nested) =>
-        (nested.type === TransactionType.tokenMethodTransfer ||
-          nested.type === TransactionType.tokenMethodTransferFrom) &&
+        nested.type !== undefined &&
+        ERC20_TRANSFER_TYPES.includes(nested.type) &&
         isMusdOnMoneyAccountChain(nested.to, tx.chainId),
     );
     if (nestedMusdTransfer) {

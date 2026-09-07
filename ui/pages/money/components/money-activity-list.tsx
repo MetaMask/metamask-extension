@@ -5,7 +5,6 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
-  Skeleton,
   Text,
   TextColor,
   TextVariant,
@@ -13,6 +12,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MoneyActivityItem } from '../types/money-activity';
 import { MoneyActivityRow } from './money-activity-row';
+import { MoneyActivitySettlingSkeletons } from './money-activity-settling-skeletons';
 
 export const MAX_PREVIEW_ITEMS = 5;
 
@@ -62,25 +62,14 @@ export function MoneyActivityList({
         ) : null}
       </Box>
       {isSettling && items.length === 0 ? (
-        <div
-          className="flex flex-col gap-3 px-4 py-3"
-          data-testid="money-activity-settling"
-        >
-          <Skeleton className="h-12 w-full" />
-          <Skeleton className="h-12 w-full" />
-          <Skeleton className="h-12 w-full" />
-        </div>
+        <MoneyActivitySettlingSkeletons />
       ) : (
         previewItems.map((item) => (
           <MoneyActivityRow
             key={item.id}
             item={item}
             privacyMode={privacyMode}
-            onClick={
-              item.kind === 'onchain' && onItemClick
-                ? () => onItemClick(item)
-                : undefined
-            }
+            onItemClick={onItemClick}
           />
         ))
       )}

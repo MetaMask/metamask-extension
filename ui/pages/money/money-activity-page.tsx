@@ -30,8 +30,11 @@ import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-item
 import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
 import { getPrivacyMode } from '../../selectors/selectors';
 import { MoneyActivityRow } from './components/money-activity-row';
+import { MoneyActivityRetryButton } from './components/money-activity-retry-button';
+import { MoneyActivitySettlingSkeletons } from './components/money-activity-settling-skeletons';
 import { MoneyActivityFilter } from './utils/money-activity-filters';
 import { groupMoneyActivityItems } from './utils/group-money-activity';
+import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scroll';
 
 const ACTIVITY_FILL_COUNT = 15;
 
@@ -56,20 +59,6 @@ const FILTERS: {
     testId: 'money-activity-filter-sends',
   },
 ];
-
-/**
- * Money Home and Activity share RootLayout's overflow container, so home
- * scroll would otherwise carry over when opening View all.
- *
- * @param element - A node on the Activity page.
- */
-function resetOverflowAncestorScroll(element: HTMLElement | null): void {
-  let node = element;
-  while (node) {
-    node.scrollTop = 0;
-    node = node.parentElement;
-  }
-}
 
 export function MoneyActivityPage() {
   const t = useI18nContext();
@@ -135,15 +124,9 @@ export function MoneyActivityPage() {
     let listBody: React.ReactNode;
     if (isSettling) {
       listBody = (
-        <div
-          className="flex flex-col gap-3 px-4 py-4"
-          data-testid="money-activity-settling"
-        >
-          <Skeleton className="h-12 w-full" />
-          <Skeleton className="h-12 w-full" />
-          <Skeleton className="h-12 w-full" />
+        <MoneyActivitySettlingSkeletons className="flex flex-col gap-3 px-4 py-4">
           {scrollSentinel}
-        </div>
+        </MoneyActivitySettlingSkeletons>
       );
     } else if (filteredItems.length === 0) {
       listBody = (
@@ -156,17 +139,12 @@ export function MoneyActivityPage() {
             {t(error ? 'moneyActivityLoadError' : 'moneyActivityEmpty')}
           </Text>
           {error ? (
-            <Button
-              variant={ButtonVariant.Secondary}
-              size={ButtonSize.Md}
+            <MoneyActivityRetryButton
               className="mt-4"
               onClick={() => {
                 refetch();
               }}
-              data-testid="money-activity-retry"
-            >
-              {t('moneyActivityRetry')}
-            </Button>
+            />
           ) : null}
           {scrollSentinel}
         </Box>
@@ -200,11 +178,7 @@ export function MoneyActivityPage() {
                   key={item.id}
                   item={item}
                   privacyMode={privacyMode}
-                  onClick={
-                    item.kind === 'onchain' && handleItemClick
-                      ? () => handleItemClick(item)
-                      : undefined
-                  }
+                  onItemClick={handleItemClick}
                 />
               ))}
             </section>
@@ -234,17 +208,12 @@ export function MoneyActivityPage() {
               >
                 {t('moneyActivityLoadError')}
               </Text>
-              <Button
-                variant={ButtonVariant.Secondary}
-                size={ButtonSize.Md}
+              <MoneyActivityRetryButton
                 className="mt-3"
                 onClick={() => {
                   refetch();
                 }}
-                data-testid="money-activity-retry"
-              >
-                {t('moneyActivityRetry')}
-              </Button>
+              />
             </Box>
           ) : null}
           {scrollSentinel}
