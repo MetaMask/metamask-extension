@@ -2076,6 +2076,13 @@
       "syncQueue": {}
     },
     "RampsController": {
+      "countries": {
+        "data": [],
+        "error": null,
+        "errorKey": null,
+        "isLoading": false,
+        "selected": null
+      },
       "orders": [],
       "providerAutoSelected": false,
       "userRegion": null

@@ -1,13 +1,6 @@
 import React from 'react';
 import KeyringSnapRemovalWarning from './keyring-snap-removal-warning';
 
-const mockSnap = {
-  id: 'mock-snap-id',
-  manifest: {
-    proposedName: 'ABC Snap',
-  },
-};
-
 export default {
   title: 'Components/App/Snaps/KeyringSnapRemovalWarning',
   component: KeyringSnapRemovalWarning,
@@ -15,14 +8,14 @@ export default {
     onCancel: {
       action: 'onCancel',
     },
-    onClose: {
-      action: 'onClose',
-    },
     onSubmit: {
       action: 'onSubmit',
     },
-    onBack: {
-      action: 'onBack',
+    snapName: {
+      control: 'text',
+    },
+    snapUrl: {
+      control: 'text',
     },
     isOpen: {
       control: 'boolean',
@@ -32,13 +25,13 @@ export default {
     },
   },
   args: {
-    snap: mockSnap,
     snapName: 'ABC Snap',
     snapUrl: 'mock-url',
     isOpen: true,
     keyringAccounts: [
       {
         address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+
         name: 'Test Account 2',
       },
     ],
