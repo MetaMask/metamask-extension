@@ -910,7 +910,7 @@ describe('perps-controller selectors', () => {
                   pendingConfig: {
                     amount: '25',
                     direction: 'long',
-                    timestamp: 10_001,
+                    timestamp: 10_000,
                   },
                 },
               },
@@ -922,13 +922,37 @@ describe('perps-controller selectors', () => {
       ).toEqual({
         amount: '25',
         direction: 'long',
-        timestamp: 10_001,
       });
       dateNowSpy.mockRestore();
     });
 
-    it('returns undefined when the draft has expired', () => {
+    it('keeps a draft at the controller TTL boundary', () => {
       const dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(40_000);
+
+      expect(
+        selectPerpsPendingTradeConfiguration(
+          buildState({
+            isTestnet: false,
+            tradeConfigurations: {
+              mainnet: {
+                ETH: {
+                  pendingConfig: {
+                    amount: '25',
+                    timestamp: 10_000,
+                  },
+                },
+              },
+              testnet: {},
+            },
+          }),
+          'ETH',
+        ),
+      ).toEqual({ amount: '25' });
+      dateNowSpy.mockRestore();
+    });
+
+    it('returns undefined when the draft has expired', () => {
+      const dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(40_001);
 
       expect(
         selectPerpsPendingTradeConfiguration(

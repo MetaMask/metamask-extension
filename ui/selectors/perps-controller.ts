@@ -6,12 +6,14 @@ import {
 } from '@metamask/transaction-controller';
 import {
   type PerpsControllerState,
-  DEFAULT_ORDER_BOOK_PREFERENCES,
   DEFAULT_PRO_LAYOUT_PREFERENCES,
   DEFAULT_SELECTED_ORDER_TYPE,
-  getDefaultPerpsControllerState,
   type OrderBookPreferences,
   type ProLayoutPreferences,
+  selectOrderBookGrouping,
+  selectOrderBookPreferences,
+  selectPendingTradeConfiguration,
+  selectVisibleCandleCount,
 } from '@metamask/perps-controller';
 
 /**
@@ -46,9 +48,17 @@ const PERPS_DEPOSIT_TRANSACTION_TYPES: ReadonlySet<TransactionType> = new Set([
 const EMPTY_ARRAY: never[] = [];
 const EMPTY_TRADE_CONFIGURATIONS: PerpsControllerState['tradeConfigurations'] =
   { testnet: {}, mainnet: {} };
-const DEFAULT_VISIBLE_CANDLE_COUNT =
-  getDefaultPerpsControllerState().visibleCandleCount;
-const PENDING_TRADE_CONFIGURATION_TTL_MS = 30_000;
+
+/**
+ * Controller selectors expect `PerpsControllerState`. Extension flattens that
+ * slice onto `state.metamask`, which tests and older persisted state may only
+ * populate partially.
+ *
+ * @param state - Flattened Redux state.
+ * @returns The controller state slice.
+ */
+const getPerpsControllerState = (state: PerpsState): PerpsControllerState =>
+  state.metamask as PerpsControllerState;
 
 const DEFAULT_HAS_PLACED_FIRST_ORDER: PerpsControllerState['hasPlacedFirstOrder'] =
   { testnet: false, mainnet: false };
@@ -276,9 +286,9 @@ export const selectPerpsTradeConfigurations = (state: PerpsState) =>
 /**
  * Return an unexpired pending trade draft for a market.
  *
- * The controller selector performs the 30-second TTL check on every call. It is
- * only invoked when trade configurations are present because Extension tests
- * and older persisted state can provide a partial controller slice.
+ * Delegates TTL (`PERPS_CONSTANTS.PendingTradeConfigurationTtlMs`, 30s) and
+ * timestamp stripping to the controller selector so Extension cannot drift
+ * from `PerpsController.getPendingTradeConfiguration`.
  *
  * @param state - Flattened controller state.
  * @param symbol - Market symbol.
@@ -287,18 +297,7 @@ export const selectPerpsTradeConfigurations = (state: PerpsState) =>
 export const selectPerpsPendingTradeConfiguration = (
   state: PerpsState,
   symbol: string,
-) => {
-  const environment = selectPerpsIsTestnet(state) ? 'testnet' : 'mainnet';
-  const pendingConfig =
-    state.metamask.tradeConfigurations?.[environment]?.[symbol]?.pendingConfig;
-  if (
-    !pendingConfig ||
-    Date.now() - pendingConfig.timestamp >= PENDING_TRADE_CONFIGURATION_TTL_MS
-  ) {
-    return undefined;
-  }
-  return pendingConfig;
-};
+) => selectPendingTradeConfiguration(getPerpsControllerState(state), symbol);
 
 /**
  * Return the selected market/limit order type shared across markets.
@@ -319,20 +318,16 @@ export const selectPerpsSelectedOrderType = (
 
 export const selectPerpsOrderBookPreferences = createSelector(
   (state: PerpsState) => state.metamask.orderBookPreferences,
-  (preferences): OrderBookPreferences => ({
-    ...DEFAULT_ORDER_BOOK_PREFERENCES,
-    ...preferences,
-  }),
+  (preferences): OrderBookPreferences =>
+    selectOrderBookPreferences({
+      orderBookPreferences: preferences,
+    } as PerpsControllerState),
 );
 
 export const selectPerpsOrderBookGrouping = (
   state: PerpsState,
   symbol: string,
-) => {
-  const environment = selectPerpsIsTestnet(state) ? 'testnet' : 'mainnet';
-  return state.metamask.tradeConfigurations?.[environment]?.[symbol]
-    ?.orderBookGrouping;
-};
+) => selectOrderBookGrouping(getPerpsControllerState(state), symbol);
 
 export const selectPerpsVisibleCandleCount = (state: PerpsState) =>
-  state.metamask.visibleCandleCount ?? DEFAULT_VISIBLE_CANDLE_COUNT;
+  selectVisibleCandleCount(getPerpsControllerState(state));

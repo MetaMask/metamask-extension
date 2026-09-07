@@ -664,6 +664,37 @@ describe('PerpsOrderEntryPage', () => {
       ).toHaveValue('2500');
     });
 
+    it('does not restore an expired same-market draft', () => {
+      const state = createMockState();
+      (state.metamask as Record<string, unknown>).tradeConfigurations = {
+        mainnet: {
+          ETH: {
+            leverage: 3,
+            pendingConfig: {
+              amount: '25',
+              leverage: 5,
+              orderType: 'limit',
+              limitPrice: '3000',
+              direction: 'long',
+              timestamp: Date.now() - 30_001,
+            },
+          },
+        },
+        testnet: {},
+      };
+
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(state));
+
+      expect(screen.getByTestId('order-type-market')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('amount-input-field').querySelector('input'),
+      ).not.toHaveValue('25');
+    });
+
     it('does not reset the live form when the restored draft expires', () => {
       const initialTime = 1_000_000;
       const dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(initialTime);
@@ -689,7 +720,7 @@ describe('PerpsOrderEntryPage', () => {
         renderWithProvider(<PerpsOrderEntryPage />, store);
         enterAmount('30');
 
-        dateNowSpy.mockReturnValue(initialTime + 30_000);
+        dateNowSpy.mockReturnValue(initialTime + 30_001);
         act(() => {
           store.dispatch({ type: 'test/draft-expired' });
         });

@@ -33,7 +33,9 @@ import {
 } from '@metamask/design-system-react';
 import {
   ORDER_SLIPPAGE_CONFIG,
+  PERPS_CONSTANTS,
   PERFORMANCE_CONFIG,
+  TRADING_DEFAULTS,
   type ClosePositionParams,
   type OrderType,
   type OrderParams,
@@ -262,10 +264,7 @@ function formStateToOrderParams(
 const FULL_CLOSE_PERCENT = 100;
 
 /** Leverage ceiling assumed when the market is unknown or not yet loaded. */
-const DEFAULT_MAX_LEVERAGE = 50;
-
-/** Leverage the form seeds when the user has no saved configuration. */
-const DEFAULT_LEVERAGE = 3;
+const DEFAULT_MAX_LEVERAGE = PERPS_CONSTANTS.DefaultMaxLeverage;
 const ORDER_ENTRY_CHART_HEIGHT = 250;
 const ORDER_ENTRY_CHART_STYLE = { height: ORDER_ENTRY_CHART_HEIGHT };
 // Clears the fixed CTA's padded height plus breathing room from scroll content.
@@ -437,7 +436,7 @@ const PerpsOrderEntryPage = () => {
     const marketMaxLeverage = market
       ? parseInt(market.maxLeverage.replace('x', ''), 10)
       : DEFAULT_MAX_LEVERAGE;
-    const savedLeverage = config?.leverage ?? DEFAULT_LEVERAGE;
+    const savedLeverage = config?.leverage ?? TRADING_DEFAULTS.leverage;
     return {
       [PERPS_EVENT_PROPERTY.SAVED_ORDER]: Boolean(pending),
       [PERPS_EVENT_PROPERTY.DEFAULT_LEVERAGE]: Math.min(
@@ -523,6 +522,14 @@ const PerpsOrderEntryPage = () => {
     configuration: pendingTradeConfiguration,
   });
   if (pendingDraftSnapshot.symbol !== decodedSymbol) {
+    setPendingDraftSnapshot({
+      symbol: decodedSymbol,
+      configuration: pendingTradeConfiguration,
+    });
+  } else if (!pendingDraftSnapshot.configuration && pendingTradeConfiguration) {
+    // Capture a late-hydrated draft once. Do not follow later TTL expiry while
+    // this screen is still mounted — the 30s window starts on leave, not while
+    // the trader is still editing.
     setPendingDraftSnapshot({
       symbol: decodedSymbol,
       configuration: pendingTradeConfiguration,
@@ -1330,7 +1337,7 @@ const PerpsOrderEntryPage = () => {
     }
     const env = isTestnet ? 'testnet' : 'mainnet';
     const config = tradeConfigurations[env]?.[decodedSymbol];
-    const saved = config?.leverage ?? DEFAULT_LEVERAGE;
+    const saved = config?.leverage ?? TRADING_DEFAULTS.leverage;
     return Math.min(saved, maxLeverage);
   }, [decodedSymbol, orderMode, maxLeverage, tradeConfigurations, isTestnet]);
 
