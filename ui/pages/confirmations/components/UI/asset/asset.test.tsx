@@ -155,6 +155,23 @@ describe('TokenAsset', () => {
 
     expect(getByText('Coinbase Wrapped BTC')).toHaveClass('mm-text--ellipsis');
   });
+
+  it('keeps a pay-with tag next to a long token name that ellipsizes', () => {
+    const { getByText, getByTestId } = render(
+      <Asset
+        asset={{
+          ...mockTokenAsset,
+          name: 'Coinbase Wrapped BTC',
+        }}
+        tagRenderers={[
+          () => <span data-testid="custom-token-tag">No fee</span>,
+        ]}
+      />,
+    );
+
+    expect(getByText('Coinbase Wrapped BTC')).toHaveClass('mm-text--ellipsis');
+    expect(getByTestId('custom-token-tag')).toBeInTheDocument();
+  });
 });
 
 describe('NFTAsset', () => {
