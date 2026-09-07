@@ -19,25 +19,6 @@ const log = createProjectLogger('money-account-upgrade-controller');
 /**
  * Initialize the MoneyAccountUpgradeController.
  *
- * Construction restores the persisted upgrade records and wires the
- * extension-specific parts of the controller's bootstrap as hooks; the
- * controller owns the bootstrap itself (feature flag, unlock, vault config,
- * serialized re-runs). `init()` — which subscribes and runs the first sync —
- * is deliberately not called here: it makes messenger calls, so
- * `MetamaskController` calls it once every controller and service is
- * constructed, keeping this init function free of ordering constraints.
- *
- * The extension-specific gates are:
- * - onboarding complete with basic functionality enabled, folded into
- * `isEnabled` and re-triggered through `sync()` on the two state changes the
- * controller cannot see itself, and
- * - the same fail-closed geolocation check `MoneyAccountAvailabilityService`
- * makes, as `isEligible`.
- *
- * The Money chain is configured through the shared configurator so this
- * bootstrap and the availability service serialize their `addNetwork` calls
- * against each other.
- *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.initMessenger - The messenger for the bootstrap hooks and
@@ -86,8 +67,7 @@ export const MoneyAccountUpgradeControllerInit: MessengerClientInitFunction<
 
         // A missing vault config is a flag misconfiguration that silently
         // disables upgrades; the controller reports it once per background
-        // lifetime. Ordinary bootstrap failures (network, CHOMP outages)
-        // retry on the next trigger and are only logged.
+        // lifetime.
         if (error instanceof MissingMoneyAccountVaultConfigError) {
           captureException(error);
         }
