@@ -38,6 +38,7 @@ const loadSafeChains = () => {
     Date.now() - safeChainsCacheTime < DAY &&
     safeChainsState.safeChains
   ) {
+    notifySafeChainsSubscribers();
     return Promise.resolve(safeChainsState);
   }
 
