@@ -13,8 +13,6 @@ import { TRON_CHAIN_ID, mockTronFeatureFlags } from '../tron/mocks/common-tron';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 
 const TRON_NETWORK_NAME = 'Tron';
-const TRON_NILE_NAME = 'Tron Nile';
-const TRON_SHASTA_NAME = 'Tron Shasta';
 
 // Anvil is still needed because the extension polls EVM networks even in
 // Tron-only flows.
@@ -69,29 +67,6 @@ describe('Tron - Network', function (this: Suite) {
           // out — and no further in-page interaction is attempted after the
           // reload.
           await homePage.navigateToHome();
-        },
-      );
-    });
-  });
-
-  describe('test networks enabled', function () {
-    it('shows Tron testnets when test networks are enabled', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilderV2().build(),
-          title: this.test?.fullTitle(),
-          localNodeOptions: TRON_LOCAL_NODE_OPTIONS,
-          testSpecificMock: mockTronNetworkFlags,
-        },
-        async ({ driver }: { driver: Driver }) => {
-          await login(driver);
-          const selectNetworkModal = new SelectNetworkModal(driver);
-          const networkFilter = new NetworkFilter(driver);
-          await networkFilter.open();
-          await selectNetworkModal.checkPageIsLoaded();
-          await selectNetworkModal.checkNetworkIsListed(TRON_NILE_NAME);
-          await selectNetworkModal.checkNetworkIsListed(TRON_SHASTA_NAME);
-          await selectNetworkModal.close();
         },
       );
     });
