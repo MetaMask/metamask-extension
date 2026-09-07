@@ -195,14 +195,19 @@ export function MoneyHomePage() {
       ? t('moneyBalanceUnavailable')
       : totalFiatFormatted;
   const apyDisplay = apyPercentFormatted;
-  const earnOnYourCryptoSection = (
-    <MoneyPotentialEarnings
-      tokens={depositTokens}
-      apyDecimal={apyDecimal}
-      isNoFeeToken={isNoFeeToken}
-      privacyMode={privacyMode}
-    />
-  );
+
+  const earnOnYourCryptoSection =
+    depositTokens.length > 0 ? (
+      <>
+        <MoneyPotentialEarnings
+          tokens={depositTokens}
+          apyDecimal={apyDecimal}
+          isNoFeeToken={isNoFeeToken}
+          privacyMode={privacyMode}
+        />
+        <MoneySectionDivider />
+      </>
+    ) : null;
 
   return (
     <main
@@ -332,7 +337,6 @@ export function MoneyHomePage() {
             />
             <MoneySectionDivider />
             {earnOnYourCryptoSection}
-            <MoneySectionDivider />
             <MoneyCondensedInfoCards />
           </>
         ) : (
@@ -378,7 +382,6 @@ export function MoneyHomePage() {
             <MoneySectionDivider />
             {earnOnYourCryptoSection}
 
-            <MoneySectionDivider />
             <section className="px-4 py-3">
               <Text
                 variant={TextVariant.HeadingMd}
