@@ -105,32 +105,48 @@ export const SnapUIDateTimePicker: FunctionComponent<
   const [value, setValue] = React.useState<DateTime | null>(() =>
     parseInitialIsoValue(initialValue, type),
   );
+  const prevInitialValueRef = React.useRef(initialValue);
+  const prevTypeRef = React.useRef(type);
 
   useEffect(() => {
+    if (
+      initialValue === prevInitialValueRef.current &&
+      type === prevTypeRef.current
+    ) {
+      return;
+    }
+    prevInitialValueRef.current = initialValue;
+    prevTypeRef.current = type;
     const parsed = parseInitialIsoValue(initialValue, type);
     if (parsed !== null) {
-      setValue(parsed);
+      queueMicrotask(() => setValue(parsed));
     }
   }, [initialValue, type]);
 
   const draftRef = useRef<DateTime | null>(null);
 
-  const commitValue = useCallback(() => {
-    const toCommit = normalizeDate(
-      draftRef.current ?? value ?? DateTime.now(),
-      type,
-    ) as DateTime;
-    setValue(toCommit);
-    handleInputChange(name, toCommit.toISO(), form);
-  }, [form, handleInputChange, name, type, value]);
-
-  const clearValue = useCallback(() => {
-    if (value === null) {
-      return;
-    }
-    setValue(null);
-    handleInputChange(name, null, form);
-  }, [form, handleInputChange, name, value]);
+  // Re-assigned each render so the stable CustomActionBar reads current state.
+  const actionsRef = useRef({
+    commit: () => undefined as void,
+    clear: () => undefined as void,
+  });
+  actionsRef.current = {
+    commit: () => {
+      const toCommit = normalizeDate(
+        draftRef.current ?? value ?? DateTime.now(),
+        type,
+      ) as DateTime;
+      setValue(toCommit);
+      handleInputChange(name, toCommit.toISO(), form);
+    },
+    clear: () => {
+      if (value === null) {
+        return;
+      }
+      setValue(null);
+      handleInputChange(name, null, form);
+    },
+  };
 
   // Created once so MUI never remounts the action bar. MUI v7 does not fire
   // onAccept when OK is pressed without changing the value, so we intercept it.
@@ -141,17 +157,17 @@ export const SnapUIDateTimePicker: FunctionComponent<
           <PickersActionBar
             {...props}
             onAccept={() => {
-              commitValue();
+              actionsRef.current.commit();
               props.onAccept();
             }}
             onClear={() => {
-              clearValue();
+              actionsRef.current.clear();
               props.onClear();
             }}
           />
         );
       },
-    [clearValue, commitValue],
+    [],
   );
 
   const handleChange = useCallback((date: DateTime | null) => {
