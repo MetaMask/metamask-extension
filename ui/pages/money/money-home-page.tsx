@@ -32,6 +32,7 @@ import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-
 import { moneyFormatUsd } from '../../helpers/money/format';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
+import { MONEY_LANDING_URL } from './constants/urls';
 import { MoneyActivityList } from './components/money-activity-list';
 import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards';
 import { MoneyPotentialEarnings } from './components/money-potential-earnings';
@@ -166,6 +167,9 @@ export function MoneyHomePage() {
   }, [initiateDeposit]);
   const { initiateWithdrawal, isLoading: isWithdrawalLoading } =
     useMoneyAccountWithdrawal();
+  const handleLearnMore = useCallback(() => {
+    global.platform.openTab({ url: MONEY_LANDING_URL });
+  }, []);
   const handleSend = useCallback(() => {
     initiateWithdrawal().catch((error) =>
       console.error('Failed to initiate money account withdrawal', error),
@@ -411,8 +415,9 @@ export function MoneyHomePage() {
               </ul>
               <Button
                 variant={ButtonVariant.Secondary}
-                disabled
                 className="mt-4 w-full"
+                onClick={handleLearnMore}
+                data-testid="money-learn-more"
               >
                 {t('moneyLearnMore')}
               </Button>

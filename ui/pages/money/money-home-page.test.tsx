@@ -211,17 +211,30 @@ describe('MoneyHomePage', () => {
   it('keeps groundwork actions other than the transfer entry points inert', () => {
     renderWithLocalization(<MoneyHomePage />);
 
-    const transferLabels = [
+    const activeLabels = [
       messages.moneyAdd.message,
       messages.addFunds.message,
       messages.moneySend.message,
+      messages.moneyLearnMore.message,
     ];
     screen.getAllByRole('button').forEach((button) => {
-      if (transferLabels.includes(button.textContent ?? '')) {
+      if (activeLabels.includes(button.textContent ?? '')) {
         expect(button).toBeEnabled();
       } else {
         expect(button).toBeDisabled();
       }
+    });
+  });
+
+  it('opens the Money landing page from Learn more', () => {
+    global.platform.openTab = jest.fn();
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId('money-learn-more'));
+
+    expect(global.platform.openTab).toHaveBeenCalledWith({
+      url: 'https://metamask.io/money?utm_source=extension',
     });
   });
 
