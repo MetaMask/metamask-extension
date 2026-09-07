@@ -5565,11 +5565,23 @@
   "moneyActivityFilterSends": {
     "message": "Sends"
   },
+  "moneyActivityLoadError": {
+    "message": "Couldn't load your activity"
+  },
+  "moneyActivityMusdBack": {
+    "message": "mUSD back"
+  },
   "moneyActivityPending": {
     "message": "Pending"
   },
   "moneyActivityPlaceholderDescription": {
     "message": "Your Money activity will appear here."
+  },
+  "moneyActivityPurchase": {
+    "message": "Purchase"
+  },
+  "moneyActivityCard": {
+    "message": "Card"
   },
   "moneyActivityReceived": {
     "message": "Received"
@@ -5579,6 +5591,12 @@
   },
   "moneyActivityReceiving": {
     "message": "Receiving"
+  },
+  "moneyActivityRefund": {
+    "message": "Refund"
+  },
+  "moneyActivityRetry": {
+    "message": "Retry"
   },
   "moneyActivitySendFailed": {
     "message": "Send failed"

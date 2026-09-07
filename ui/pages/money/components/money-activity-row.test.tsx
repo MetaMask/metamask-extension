@@ -6,6 +6,10 @@ import MOCK_MONEY_TRANSACTIONS from '../constants/mock-activity-data';
 import { onchainItem } from '../types/money-activity';
 import { MoneyActivityRow } from './money-activity-row';
 
+jest.mock('react-redux', () => ({
+  useSelector: (selector: (state?: unknown) => unknown) => selector({}),
+}));
+
 const deposited = onchainItem(
   MOCK_MONEY_TRANSACTIONS.find((tx) => tx.id === 'money-tx-deposited') ??
     MOCK_MONEY_TRANSACTIONS[0],

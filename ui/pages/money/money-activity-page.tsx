@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -23,6 +24,7 @@ import {
 } from '@metamask/design-system-react';
 import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
@@ -30,6 +32,8 @@ import { getPrivacyMode } from '../../selectors/selectors';
 import { MoneyActivityRow } from './components/money-activity-row';
 import { MoneyActivityFilter } from './utils/money-activity-filters';
 import { groupMoneyActivityItems } from './utils/group-money-activity';
+
+const ACTIVITY_FILL_COUNT = 15;
 
 const FILTERS: {
   id: MoneyActivityFilter;
@@ -73,14 +77,33 @@ export function MoneyActivityPage() {
   const privacyMode = useSelector(getPrivacyMode);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
-  const { buckets } = useMoneyActivityItems();
-  const handleItemClick = useMoneyActivityItemClick();
   const [filter, setFilter] = useState(MoneyActivityFilter.All);
+  const {
+    buckets,
+    hasMore,
+    loadMore,
+    isLoadingMore,
+    isSettling,
+    error,
+    refetch,
+  } = useMoneyActivityItems({
+    fill: { bucket: filter, count: ACTIVITY_FILL_COUNT },
+  });
+  const handleItemClick = useMoneyActivityItemClick();
   const pageRef = useRef<HTMLDivElement>(null);
+  const [sentinelRef, isSentinelIntersecting] = useIntersectionObserver({
+    rootMargin: '400px 0px',
+  });
 
   useLayoutEffect(() => {
     resetOverflowAncestorScroll(pageRef.current);
   }, []);
+
+  useEffect(() => {
+    if (isSentinelIntersecting && hasMore) {
+      loadMore();
+    }
+  }, [isSentinelIntersecting, hasMore, loadMore]);
 
   const filteredItems = buckets[filter];
   const sections = useMemo(
@@ -91,6 +114,10 @@ export function MoneyActivityPage() {
   const handleBack = useCallback(() => {
     navigate(PREVIOUS_ROUTE);
   }, [navigate]);
+
+  const scrollSentinel = hasMore ? (
+    <div ref={sentinelRef} data-testid="money-activity-scroll-sentinel" />
+  ) : null;
 
   let body: React.ReactNode;
   if (isAvailabilityLoading) {
@@ -105,6 +132,126 @@ export function MoneyActivityPage() {
       </div>
     );
   } else if (availability.isAvailable) {
+    let listBody: React.ReactNode;
+    if (isSettling) {
+      listBody = (
+        <div
+          className="flex flex-col gap-3 px-4 py-4"
+          data-testid="money-activity-settling"
+        >
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-12 w-full" />
+          {scrollSentinel}
+        </div>
+      );
+    } else if (filteredItems.length === 0) {
+      listBody = (
+        <Box paddingLeft={4} paddingRight={4} paddingTop={8}>
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            data-testid="money-activity-empty"
+          >
+            {t(error ? 'moneyActivityLoadError' : 'moneyActivityEmpty')}
+          </Text>
+          {error ? (
+            <Button
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Md}
+              className="mt-4"
+              onClick={() => {
+                refetch();
+              }}
+              data-testid="money-activity-retry"
+            >
+              {t('moneyActivityRetry')}
+            </Button>
+          ) : null}
+          {scrollSentinel}
+        </Box>
+      );
+    } else {
+      listBody = (
+        <>
+          {sections.map((section) => (
+            <section key={section.isPending ? 'pending' : section.title}>
+              <Box
+                paddingLeft={4}
+                paddingRight={4}
+                paddingTop={2}
+                paddingBottom={1}
+              >
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.TextAlternative}
+                  data-testid={
+                    section.isPending
+                      ? 'money-activity-pending-header'
+                      : 'money-activity-date-header'
+                  }
+                >
+                  {section.title}
+                </Text>
+              </Box>
+              {section.data.map((item) => (
+                <MoneyActivityRow
+                  key={item.id}
+                  item={item}
+                  privacyMode={privacyMode}
+                  onClick={
+                    item.kind === 'onchain' && handleItemClick
+                      ? () => handleItemClick(item)
+                      : undefined
+                  }
+                />
+              ))}
+            </section>
+          ))}
+          {isLoadingMore ? (
+            <Box
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={3}
+              paddingBottom={3}
+              data-testid="money-activity-loading-more"
+            >
+              <Skeleton className="h-12 w-full" />
+            </Box>
+          ) : null}
+          {error ? (
+            <Box
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={3}
+              paddingBottom={3}
+              data-testid="money-activity-load-error"
+            >
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
+                {t('moneyActivityLoadError')}
+              </Text>
+              <Button
+                variant={ButtonVariant.Secondary}
+                size={ButtonSize.Md}
+                className="mt-3"
+                onClick={() => {
+                  refetch();
+                }}
+                data-testid="money-activity-retry"
+              >
+                {t('moneyActivityRetry')}
+              </Button>
+            </Box>
+          ) : null}
+          {scrollSentinel}
+        </>
+      );
+    }
+
     body = (
       <main
         className="min-h-full bg-background-default pb-5"
@@ -156,51 +303,7 @@ export function MoneyActivityPage() {
           })}
         </Box>
 
-        {filteredItems.length === 0 ? (
-          <Box paddingLeft={4} paddingRight={4} paddingTop={8}>
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              data-testid="money-activity-empty"
-            >
-              {t('moneyActivityEmpty')}
-            </Text>
-          </Box>
-        ) : (
-          sections.map((section) => (
-            <section key={section.isPending ? 'pending' : section.title}>
-              <Box
-                paddingLeft={4}
-                paddingRight={4}
-                paddingTop={2}
-                paddingBottom={1}
-              >
-                <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
-                  color={TextColor.TextAlternative}
-                  data-testid={
-                    section.isPending
-                      ? 'money-activity-pending-header'
-                      : 'money-activity-date-header'
-                  }
-                >
-                  {section.title}
-                </Text>
-              </Box>
-              {section.data.map((item) => (
-                <MoneyActivityRow
-                  key={item.id}
-                  item={item}
-                  privacyMode={privacyMode}
-                  onClick={
-                    handleItemClick ? () => handleItemClick(item) : undefined
-                  }
-                />
-              ))}
-            </section>
-          ))
-        )}
+        {listBody}
       </main>
     );
   } else {

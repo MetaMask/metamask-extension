@@ -18,11 +18,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getMoneyActivityDisplayInfo,
-  type MoneyActivityTranslate,
-} from '../utils/money-activity-display';
+import { useMoneyActivityDisplayInfo } from '../../../hooks/money/use-money-activity-display';
 import type { MoneyActivityItem } from '../types/money-activity';
 
 export type MoneyActivityRowProps = {
@@ -52,8 +48,7 @@ export function MoneyActivityRow({
   privacyMode = false,
   onClick,
 }: MoneyActivityRowProps) {
-  const t = useI18nContext() as MoneyActivityTranslate;
-  const display = getMoneyActivityDisplayInfo(item.tx, t);
+  const display = useMoneyActivityDisplayInfo(item);
   const isFailed = display.status === 'failed';
   const isPending = display.status === 'pending';
   const amountColor = getAmountColor({
