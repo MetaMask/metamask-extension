@@ -259,6 +259,92 @@ describe('PerpsDepositToast', () => {
     );
   });
 
+  it('renders custom Hyperliquid toast when entry point is hyperliquid_deposit_prompt', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'hl-deposit-tx',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'hl-deposit-tx',
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+        eventFragments: {
+          'transaction-ui-hl-deposit-tx': {
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              mm_pay_entry_point: 'hyperliquid_deposit_prompt',
+            },
+          },
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          description:
+            messages.hyperliquidDepositToastSuccessDescription.message,
+        }),
+      }),
+      {
+        id: 'perps-deposit-toast',
+        duration: 5000,
+      },
+    );
+  });
+
+  it('renders standard Perps toast when entry point is not hyperliquid_deposit_prompt', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'other-deposit-tx',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'other-deposit-tx',
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+        eventFragments: {
+          'transaction-ui-other-deposit-tx': {
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              mm_pay_entry_point: 'some_other_entry_point',
+            },
+          },
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          title: messages.perpsDepositToastSuccessTitle.message,
+          description: messages.perpsDepositToastSuccessDescription.message,
+        }),
+      }),
+      {
+        id: 'perps-deposit-toast',
+        duration: 5000,
+      },
+    );
+  });
+
   it('clears deposit result when completion toast duration elapses', () => {
     jest.useFakeTimers();
     const store = configureStore({

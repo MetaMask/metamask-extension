@@ -5,6 +5,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
   selectPerpsDepositPending,
+  selectPerpsLastDepositEntryPoint,
   selectPerpsLastDepositResult,
   selectPerpsShouldShowDepositToast,
 } from '../../../selectors/perps-controller';
@@ -23,10 +24,12 @@ export function PerpsDepositToast() {
   const depositInProgress = useSelector(selectPerpsDepositPending);
   const lastDepositResult = useSelector(selectPerpsLastDepositResult);
   const shouldShowDepositToast = useSelector(selectPerpsShouldShowDepositToast);
+  const entryPoint = useSelector(selectPerpsLastDepositEntryPoint);
   const hasDepositResult = Boolean(lastDepositResult);
   const lastDepositResultError = lastDepositResult?.error;
   const lastDepositResultSuccess = lastDepositResult?.success;
   const lastDepositResultTimestamp = lastDepositResult?.timestamp;
+  const isHyperliquidDeposit = entryPoint === 'hyperliquid_deposit_prompt';
 
   useEffect(() => {
     if (!hasDepositResult) {
@@ -34,12 +37,18 @@ export function PerpsDepositToast() {
     }
 
     const isSuccess = lastDepositResultSuccess === true;
-    const title = isSuccess
-      ? t('perpsDepositToastSuccessTitle')
-      : t('perpsDepositToastErrorTitle');
-    const description = isSuccess
-      ? t('perpsDepositToastSuccessDescription')
-      : lastDepositResultError || t('perpsDepositToastErrorDescription');
+    let title = t('perpsDepositToastSuccessTitle');
+    let description: string;
+
+    if (isSuccess && isHyperliquidDeposit) {
+      description = t('hyperliquidDepositToastSuccessDescription');
+    } else if (isSuccess) {
+      description = t('perpsDepositToastSuccessDescription');
+    } else {
+      title = t('perpsDepositToastErrorTitle');
+      description =
+        lastDepositResultError || t('perpsDepositToastErrorDescription');
+    }
     const content = (
       <ToastContent title={title} description={description} dataTestId={id} />
     );
@@ -61,6 +70,7 @@ export function PerpsDepositToast() {
     };
   }, [
     hasDepositResult,
+    isHyperliquidDeposit,
     lastDepositResultError,
     lastDepositResultSuccess,
     lastDepositResultTimestamp,
