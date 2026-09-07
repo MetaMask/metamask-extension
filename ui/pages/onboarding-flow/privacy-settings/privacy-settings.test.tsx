@@ -259,6 +259,20 @@ describe('Privacy Settings Onboarding View', () => {
     });
   });
 
+  it('renders category rows as keyboard-operable buttons', () => {
+    const { getByRole } = renderWithProvider(<PrivacySettings />, store);
+
+    expect(
+      getByRole('button', { name: messages.general.message }),
+    ).toBeInTheDocument();
+    expect(
+      getByRole('button', { name: messages.assets.message }),
+    ).toBeInTheDocument();
+    expect(
+      getByRole('button', { name: messages.security.message }),
+    ).toBeInTheDocument();
+  });
+
   describe('Social Login Flow', () => {
     it('should update the default settings for social login', async () => {
       const updatedMockStore = configureMockStore([thunk])({

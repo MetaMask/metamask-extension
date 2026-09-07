@@ -28,6 +28,7 @@ import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast/survey-toast';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
+import { ArcUsageNoticeToast } from '../arc-usage-notice-toast';
 import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
@@ -85,6 +86,7 @@ const MemoizedBasicFunctionalityMigrationToast = memo(
   BasicFunctionalityMigrationToast,
 );
 const MemoizedStorageErrorToast = memo(StorageErrorToast);
+const MemoizedArcUsageNoticeToast = memo(ArcUsageNoticeToast);
 
 export function ToastMaster() {
   const location = useLocation();
@@ -105,6 +107,7 @@ export function ToastMaster() {
         <MemoizedStorageErrorToast />
         <MemoizedSurveyToast />
         <MemoizedPrivacyPolicyToast />
+        <MemoizedArcUsageNoticeToast />
         <MemoizedInfuraSwitchToast />
         <MemoizedPerpsWithdrawToast />
         <MemoizedShieldPausedToast />

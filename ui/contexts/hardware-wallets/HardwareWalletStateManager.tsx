@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import {
@@ -131,10 +131,10 @@ export const useHardwareWalletStateManager = () => {
   const isSigningInProgressRef = useRef(false);
 
   // Track previous wallet type for detecting wallet type changes (e.g., Trezor -> Ledger)
-  if (walletTypeRef.current !== walletType) {
+  useEffect(() => {
     previousWalletTypeRef.current = walletTypeRef.current;
     walletTypeRef.current = walletType;
-  }
+  }, [walletType]);
 
   const state: HardwareWalletState = {
     hardwareConnectionPermissionState,

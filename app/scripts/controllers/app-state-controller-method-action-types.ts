@@ -75,6 +75,11 @@ export type AppStateControllerSetNewPrivacyPolicyToastShownDateAction = {
   handler: AppStateController['setNewPrivacyPolicyToastShownDate'];
 };
 
+export type AppStateControllerSetArcUsageNoticeShownAction = {
+  type: `AppStateController:setArcUsageNoticeShown`;
+  handler: AppStateController['setArcUsageNoticeShown'];
+};
+
 export type AppStateControllerSetPna25AcknowledgedAction = {
   type: `AppStateController:setPna25Acknowledged`;
   handler: AppStateController['setPna25Acknowledged'];
@@ -575,6 +580,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
   | AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction
   | AppStateControllerSetNewPrivacyPolicyToastShownDateAction
+  | AppStateControllerSetArcUsageNoticeShownAction
   | AppStateControllerSetPna25AcknowledgedAction
   | AppStateControllerSetShieldPausedToastLastClickedOrClosedAction
   | AppStateControllerSetShieldEndingToastLastClickedOrClosedAction

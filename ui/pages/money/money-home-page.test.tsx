@@ -15,8 +15,11 @@ const mockUseMoneyAccountBalance = jest.fn();
 const mockUseMoneyAccountInterest = jest.fn();
 const mockUseMoneyDepositTokens = jest.fn();
 const mockUseMoneyActivityItems = jest.fn();
+const mockUseMoneyActivityItemClick = jest.fn();
 const mockUseMoneyAccountDeposit = jest.fn();
 const mockInitiateDeposit = jest.fn();
+const mockUseMoneyAccountWithdrawal = jest.fn();
+const mockInitiateWithdrawal = jest.fn();
 const mockNavigate = jest.fn();
 const mockSelectMoneyEarningSectionEnabled = jest.mocked(
   selectMoneyEarningSectionEnabled,
@@ -76,12 +79,20 @@ jest.mock('../../hooks/money/use-money-activity-items', () => ({
 jest.mock('../../hooks/money/useMoneyAccountDeposit', () => ({
   useMoneyAccountDeposit: () => mockUseMoneyAccountDeposit(),
 }));
+jest.mock('../../hooks/money/useMoneyAccountWithdrawal', () => ({
+  useMoneyAccountWithdrawal: () => mockUseMoneyAccountWithdrawal(),
+}));
+
+jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
+  useMoneyActivityItemClick: () => mockUseMoneyActivityItemClick(),
+}));
 
 describe('MoneyHomePage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSelectMoneyEarningSectionEnabled.mockReturnValue(true);
     mockGetPrivacyMode.mockReturnValue(false);
+    mockUseMoneyActivityItemClick.mockReturnValue(undefined);
     mockUseMoneyAccountAvailability.mockReturnValue({
       availability: {
         isAvailable: true,
@@ -117,6 +128,11 @@ describe('MoneyHomePage', () => {
     mockInitiateDeposit.mockResolvedValue(undefined);
     mockUseMoneyAccountDeposit.mockReturnValue({
       initiateDeposit: mockInitiateDeposit,
+      isLoading: false,
+    });
+    mockInitiateWithdrawal.mockResolvedValue(undefined);
+    mockUseMoneyAccountWithdrawal.mockReturnValue({
+      initiateWithdrawal: mockInitiateWithdrawal,
       isLoading: false,
     });
   });
@@ -175,15 +191,16 @@ describe('MoneyHomePage', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('keeps groundwork actions other than the deposit entry points inert', () => {
+  it('keeps groundwork actions other than the transfer entry points inert', () => {
     renderWithLocalization(<MoneyHomePage />);
 
-    const depositLabels = [
+    const transferLabels = [
       messages.moneyAdd.message,
       messages.addFunds.message,
+      messages.moneySend.message,
     ];
     screen.getAllByRole('button').forEach((button) => {
-      if (depositLabels.includes(button.textContent ?? '')) {
+      if (transferLabels.includes(button.textContent ?? '')) {
         expect(button).toBeEnabled();
       } else {
         expect(button).toBeDisabled();
@@ -224,6 +241,34 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByRole('button', { name: messages.moneyAdd.message }),
     ).toBeDisabled();
+  });
+
+  it('initiates a withdrawal from the Send action card', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.moneySend.message }),
+    );
+
+    expect(mockInitiateWithdrawal).toHaveBeenCalledTimes(1);
+    expect(mockInitiateWithdrawal).toHaveBeenCalledWith();
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
+  });
+
+  it('disables the Send action card while a withdrawal is initiating', () => {
+    mockUseMoneyAccountWithdrawal.mockReturnValue({
+      initiateWithdrawal: mockInitiateWithdrawal,
+      isLoading: true,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.getByRole('button', { name: messages.moneySend.message }),
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: messages.moneyAdd.message }),
+    ).toBeEnabled();
   });
 
   it('renders the filled-state composition for a funded Money account', () => {
@@ -283,7 +328,11 @@ describe('MoneyHomePage', () => {
       screen.queryByText(messages.moneyBenefits.message),
     ).not.toBeInTheDocument();
     screen.getAllByRole('button').forEach((button) => {
-      if (button.textContent === messages.moneyAdd.message) {
+      if (
+        [messages.moneyAdd.message, messages.moneySend.message].includes(
+          button.textContent ?? '',
+        )
+      ) {
         expect(button).toBeEnabled();
       } else {
         expect(button).toBeDisabled();
@@ -321,6 +370,28 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByText(messages.moneyActivityDeposited.message),
     ).toBeInTheDocument();
+  });
+
+  it('invokes the item click handler when details navigation is enabled', () => {
+    const onItemClick = jest.fn();
+    const items = MOCK_MONEY_TRANSACTIONS.map(onchainItem);
+    mockUseMoneyActivityItemClick.mockReturnValue(onItemClick);
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('3475.45'),
+      totalFiatFormatted: '$3,475.45',
+      totalFiatRaw: '3475.45',
+      vaultApyQuery: { isLoading: false },
+    });
+    mockUseMoneyActivityItems.mockReturnValue({ items });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId(`money-activity-row-${items[0].id}`));
+    expect(onItemClick).toHaveBeenCalledWith(items[0]);
   });
 
   it('shows earnings skeletons during the initial interest load', () => {
