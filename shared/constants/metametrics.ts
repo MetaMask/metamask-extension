@@ -870,6 +870,8 @@ export enum MetaMetricsEventName {
   ForceUpgradeUpdateNeededPromptViewed = 'Force Upgrade Update Needed Prompt Viewed',
   ForceUpgradeSkipped = 'Force Upgrade Skipped',
   ForceUpgradeClickedUpdateToLatestVersion = 'Force Upgrade Clicked Update to Latest Version',
+  HyperliquidDepositPromptViewed = 'Hyperliquid Deposit Prompt Viewed',
+  HyperliquidDepositPromptInteracted = 'Hyperliquid Deposit Prompt Interacted',
   ImportSecretRecoveryPhrase = 'Import Secret Recovery Phrase',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
