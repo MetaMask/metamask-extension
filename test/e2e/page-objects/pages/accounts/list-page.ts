@@ -351,6 +351,8 @@ class AccountListPage {
   /**
    * Import a new account with a private key.
    *
+   * On success, the wallet navigates home with the imported account selected.
+   *
    * @param privateKey - Private key of the account
    * @param expectedErrorMessage - Expected error message if the import should fail
    */
@@ -373,12 +375,11 @@ class AccountListPage {
     } else {
       // Import + forceUpdateMetamaskState can outlive the default 3s staleness
       // wait under multi-SRP / Solana load on CI before the Add Wallet page
-      // navigates away.
+      // navigates home.
       await this.driver.clickElementAndWaitToDisappear(
         this.importAccountConfirmButton,
         10000,
       );
-      await this.closeChooseWalletTypePage();
     }
   }
 
@@ -933,6 +934,8 @@ class AccountListPage {
   /**
    * Import an account with a JSON file.
    *
+   * On success, the wallet navigates home with the imported account selected.
+   *
    * @param jsonFilePath - Path to the JSON file to import
    * @param password - Password for the imported account
    */
@@ -959,7 +962,6 @@ class AccountListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.importAccountConfirmButton,
     );
-    await this.closeChooseWalletTypePage();
   }
 
   /**

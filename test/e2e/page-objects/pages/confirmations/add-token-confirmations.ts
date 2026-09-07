@@ -32,6 +32,9 @@ class AddTokenConfirmation {
   private readonly rejectAddTokenButton =
     '[data-testid="page-container-footer-cancel"]';
 
+  private readonly suggestedTokenBalance =
+    '[data-testid="confirm-add-suggested-token-balance"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -50,6 +53,21 @@ class AddTokenConfirmation {
       throw e;
     }
     console.log('Add token confirmation page is loaded');
+  }
+
+  /**
+   * Waits for the suggested token row to show the given balance. The balance is
+   * read from the chain the dapp requested the token on, not the chain selected
+   * in the wallet UI.
+   *
+   * @param balance - Expected balance including the symbol, e.g. `10 TST`.
+   */
+  async checkSuggestedTokenBalanceIsDisplayed(balance: string): Promise<void> {
+    console.log(`Check suggested token balance is ${balance}`);
+    await this.driver.waitForSelector({
+      css: this.suggestedTokenBalance,
+      text: balance,
+    });
   }
 
   async confirmAddToken(): Promise<void> {
