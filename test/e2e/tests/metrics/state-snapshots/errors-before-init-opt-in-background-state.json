@@ -38,8 +38,8 @@
       "previousMigrationVersion": 0
     },
     "AppStateController": {
+      "arcUsageNoticeShown": "boolean",
       "browserEnvironment": { "browser": "string" },
-      "canTrackWalletFundsObtained": false,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,

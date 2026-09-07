@@ -27,9 +27,10 @@ export type ReceiveRowProps = {
 };
 
 /**
- * Row that displays "You'll receive" for withdrawal-style confirmations
- * (e.g. Perps Withdraw). Calculates: input - (provider + sourceNetwork +
- * targetNetwork + metamask) fees.
+ * Row that displays "You'll receive" for withdrawals and input-based deposits.
+ * Withdrawals calculate input minus provider, source-network, target-network,
+ * and MetaMask fees. Input-based deposits display the controller's target
+ * amount.
  *
  * Mirrors the mobile `ReceiveRow`.
  *
@@ -66,6 +67,10 @@ export function ReceiveRow({
       return '';
     }
 
+    if (totals.isInputBased === true) {
+      return formatFiat(new BigNumber(totals.targetAmount.usd).toNumber());
+    }
+
     const inputUsd = new BigNumber(inputAmountUsd || '0');
     // Same-token Money Account withdraws quote estimated network gas that
     // Monad sponsors. Subtracting it would show $0 received on a tiny send.
@@ -93,7 +98,7 @@ export function ReceiveRow({
     return formatFiat(
       (youReceive.gte(0) ? youReceive : new BigNumber(0)).toNumber(),
     );
-  }, [hasQuotes, inputAmountUsd, isPaidByMetaMask, totals, formatFiat]);
+  }, [formatFiat, hasQuotes, inputAmountUsd, isPaidByMetaMask, totals]);
 
   const isSmall = variant === ConfirmInfoRowSize.Small;
   const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;
