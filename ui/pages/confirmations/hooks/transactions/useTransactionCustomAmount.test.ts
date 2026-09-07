@@ -20,7 +20,6 @@ import * as useTransactionPayTokenModule from '../pay/useTransactionPayToken';
 import * as usePayTokenAccountBalanceModule from '../pay/usePayTokenAccountBalance';
 import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { MUSD_TOKEN_ADDRESS } from '../../constants/musd';
-import { useConfirmContext } from '../../context/confirm';
 import {
   useTransactionCustomAmount,
   MAX_LENGTH,
@@ -176,17 +175,13 @@ function runHook({
   });
 
   return renderHookWithConfirmContextProvider(
-    () => ({
-      ...useTransactionCustomAmount({
+    () =>
+      useTransactionCustomAmount({
         balanceUsdOverride,
         currency,
         disableUpdate,
         prefillMaxOnLoad,
       }),
-      // Exposed so tests can assert the confirm-context Max-deposit flag the
-      // hook drives.
-      isMaxMoneyDeposit: useConfirmContext().isMaxMoneyDeposit,
-    }),
     getMockConfirmStateForTransaction(transactionMeta, {
       metamask: paymentOverride
         ? {
@@ -1166,68 +1161,6 @@ describe('useTransactionCustomAmount', () => {
           sourceTokenAddress: '0xpaytoken',
         },
       );
-    });
-
-    it('sets the confirm-context Max-deposit flag for uncapped 100% prefill', () => {
-      const { result } = runHook({
-        transactionMeta: moneyAccountDepositMeta,
-        payTokenBalanceUsd: 55.709,
-        payTokenBalanceRaw: '55709000',
-        payTokenDecimals: 6,
-        depositPrefill: {
-          enabled: true,
-          isUncappedMaxPrefill: true,
-          hasPrefilled: true,
-          isLoading: false,
-          prefillAmount: '55.70',
-        },
-        totals: {
-          isInputBased: false,
-          targetAmount: { usd: '54.12' },
-        } as TransactionPayTotals,
-      });
-
-      expect(result.current.isMaxMoneyDeposit).toBe(true);
-    });
-
-    it('does not set the Max-deposit flag for capped or partial prefill', () => {
-      const { result } = runHook({
-        transactionMeta: moneyAccountDepositMeta,
-        payTokenBalanceUsd: 1000,
-        depositPrefill: {
-          enabled: true,
-          isUncappedMaxPrefill: false,
-          hasPrefilled: true,
-          isLoading: false,
-          prefillAmount: '500',
-        },
-      });
-
-      expect(result.current.isMaxMoneyDeposit).toBe(false);
-    });
-
-    it('clears the Max-deposit flag on a manual edit and sub-max percentage', () => {
-      const { result } = runHook({
-        transactionMeta: moneyAccountDepositMeta,
-        payTokenBalanceUsd: 100,
-        payTokenBalanceRaw: '100000000',
-        payTokenDecimals: 6,
-      });
-
-      act(() => {
-        result.current.updatePendingAmountPercentage(100);
-      });
-      expect(result.current.isMaxMoneyDeposit).toBe(true);
-
-      act(() => {
-        result.current.updatePendingAmount('5');
-      });
-      expect(result.current.isMaxMoneyDeposit).toBe(false);
-
-      act(() => {
-        result.current.updatePendingAmountPercentage(50);
-      });
-      expect(result.current.isMaxMoneyDeposit).toBe(false);
     });
 
     it('records prefilled amount metrics for deposit prefill', () => {
