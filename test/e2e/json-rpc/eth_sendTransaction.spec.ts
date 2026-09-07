@@ -5,7 +5,7 @@ import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { login } from '../page-objects/flows/login.flow';
-import LoginPage from '../page-objects/pages/login-page';
+import LoginPage from '../page-objects/pages/onboarding/login-page';
 import TransactionConfirmation from '../page-objects/pages/confirmations/transaction-confirmation';
 
 describe('eth_sendTransaction', function () {

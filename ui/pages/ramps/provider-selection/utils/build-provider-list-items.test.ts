@@ -122,6 +122,42 @@ describe('findProviderQuote', () => {
         ?.amountOut,
     ).toBe('0.05');
   });
+
+  it('gets provider tags from all of the provider quotes', () => {
+    const quotes: QuotesResponse = {
+      success: [
+        {
+          provider: transak.id,
+          quote: {
+            amountIn: 100,
+            amountOut: '0.04',
+            paymentMethod: 'bank-transfer',
+          },
+          metadata: { tags: { isMostReliable: true } },
+        },
+        {
+          provider: transak.id,
+          quote: {
+            amountIn: 100,
+            amountOut: '0.05',
+            paymentMethod: 'debit-credit-card',
+          },
+        },
+      ],
+      sorted: [],
+      error: [],
+      customActions: [],
+    };
+
+    expect(
+      findProviderQuote(quotes, transak.id, 'debit-credit-card')?.quote
+        ?.amountOut,
+    ).toBe('0.05');
+    expect(getProviderTag(transak.id, quotes, [], t)).toStrictEqual({
+      label: 'rampsMostReliable',
+      severity: 'neutral',
+    });
+  });
 });
 
 describe('getProviderTag', () => {
@@ -130,9 +166,22 @@ describe('getProviderTag', () => {
       getProviderTag(
         transak.id,
         {
-          provider: transak.id,
-          quote: { amountIn: 1, amountOut: '1', paymentMethod: 'card' },
-          metadata: { tags: { isBestRate: true, isMostReliable: true } },
+          success: [
+            {
+              provider: transak.id,
+              quote: {
+                amountIn: 1,
+                amountOut: '1',
+                paymentMethod: 'card',
+              },
+              metadata: {
+                tags: { isBestRate: true, isMostReliable: true },
+              },
+            },
+          ],
+          sorted: [],
+          error: [],
+          customActions: [],
         },
         [transak.id],
         t,
@@ -145,9 +194,16 @@ describe('getProviderTag', () => {
       getProviderTag(
         transak.id,
         {
-          provider: transak.id,
-          quote: { amountIn: 1, amountOut: '1', paymentMethod: 'card' },
-          metadata: { tags: { isMostReliable: true } },
+          success: [
+            {
+              provider: transak.id,
+              quote: { amountIn: 1, amountOut: '1', paymentMethod: 'card' },
+              metadata: { tags: { isMostReliable: true } },
+            },
+          ],
+          sorted: [],
+          error: [],
+          customActions: [],
         },
         [],
         t,
@@ -158,9 +214,16 @@ describe('getProviderTag', () => {
       getProviderTag(
         transak.id,
         {
-          provider: transak.id,
-          quote: { amountIn: 1, amountOut: '1', paymentMethod: 'card' },
-          metadata: { tags: { isBestRate: true } },
+          success: [
+            {
+              provider: transak.id,
+              quote: { amountIn: 1, amountOut: '1', paymentMethod: 'card' },
+              metadata: { tags: { isBestRate: true } },
+            },
+          ],
+          sorted: [],
+          error: [],
+          customActions: [],
         },
         [],
         t,

@@ -7,6 +7,119 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.47.0]
+
+### Added
+
+- Added address trust-signal scanning for dapp requests made through the Multichain API (#45640)
+- Added Stellar account support behind a feature flag (#45692)
+- Added a warning banner for missing Stellar trustlines during cross-chain swaps (#45693)
+- Added support for Money Accounts (#45744)
+- Added an Activity list on Money Home for deposits, conversions, receives, and sends (#45761)
+- Added an accounts search bar to dapp connection and connected-account management pages (#45776)
+- Added dollar and percentage amount entry when partially closing a Perps position (#45700)
+- Added a warning banner for off-hours trading of RWA stock tokens, including the next regular market open time (#45231)
+- Added a full Activity page for Money Account with All, Deposits, and Sends filters (#45829)
+
+### Changed
+
+- Updated design system libraries, including checkbox colors (#45733)
+- Stopped enforced simulations from running for wallet-initiated transactions (#45698)
+- Centered legacy approval screens on wider viewports (#45779)
+- Updated subscription checkout and crypto approval support (#45715)
+- Updated the Permissions page to show an empty state after disconnecting all sites and a confirmation after disconnecting a site (#45697)
+- Automatically configured Monad for eligible Money Account users without changing their selected network (#45695)
+- Updated Money Account deposit and withdrawal support (#45748)
+- Added performance tracing for Swap and Bridge quote requests (#45667)
+- Updated DeFi protocol list token avatars to use the design system component (#45768)
+- Improved storage resilience by moving Storage Service data to IndexedDB on Chromium, with a fallback where unavailable (#44010)
+- Updated hardware wallet Swap and Bridge signing data handling (#45760)
+- Removed the colon from send activity subtitles (#45725)
+- Updated account data parsing (#45666)
+
+### Fixed
+
+- Stopped showing added protection on networks that do not support address screening (#45732)
+- Stopped showing an account balance of zero before the balance has been fetched (#45675)
+- Restored DeFi referral images for Hyperliquid and AsterDEX (#45755)
+- Fixed passkey setup guidance when a device does not support the required passkey capability (#45757) (#45802)
+- Fixed an issue that could make vault recovery repeat after MetaMask restarted (#45762)
+- Fixed provider quote errors and amount-limit handling in the Buy flow (#45786)
+- Fixed the Buy flow for supported tokens opened from the Token Details page (#45778)
+- Fixed small USDC-to-SOL swaps being incorrectly displayed as sends in Solana activity (#44928)
+- Fixed an issue that allowed transactions to be submitted when the native balance could not cover the maximum network fee (#45701)
+- Fixed an issue where the low-confidence "Unconfirmed impersonator" security signal was shown as a warning on the Token Details page (#45661)
+- Restored the DeFi and NFTs tabs with tailored empty states for non-EVM networks (#45717)
+- Fixed a bug that required hardware wallet users to click Cancel twice to dismiss a signature request after it was already rejected or completed on the device (#45740)
+- Fixed a crash and unresponsive back arrow when reopening the extension on a Perps screen (#45734) (#45756)
+- Fixed "Earn on your crypto" not appearing on funded Money Accounts (#45699)
+
+## [13.46.1]
+
+### Fixed
+
+- Fixed spam tokens persisting in the wallet by cleaning up low-occurrence ERC-20 tokens on unlock (#45844)
+- Fixed bridge quotes to sort by total cost and display cost, so the lowest-cost quote is ranked first (#45875)
+
+## [13.46.0]
+
+### Added
+
+- Added live monthly and lifetime earnings to funded Money Accounts (#45632)
+- Added referral prompt to Variational (#45582)
+- Added new field, `authenticator_id` to AppUnlocked and PasskeySetup metrics (#45623)
+- Added an “Earn on your crypto” section showing eligible assets and projected earnings (#45603)
+- Added a funded Money Home view with earnings and educational content (#45600)
+- Added new field, `authenticator_id` to AppUnlocked and PasskeySetup metrics (#45594)
+- Added a sticky Buy and Swap action bar to the token detail page (#45593)
+- Added persistence for the perps order book panel, so it stays open or closed between visits (#45587)
+- Added money balance hook (#45534)
+- Added the initial Money Home screen with live balance and APY information (#45466)
+- Added the option to withdraw Perps funds to Money account (#45453)
+- Hid Money Account from users in geo-blocked regions (#45653)
+- Simplify mUSD conversion (#45629)
+- Support for adding featured networks when enabling tokens found by address search (#45636)
+- Prevented Perps withdrawals from submitting before a payment quote was ready (#45604)
+
+### Changed
+
+- Improved extension storage efficiency when enumerating StorageService keys (#45510)
+- Improved storage resilience and stability by using IndexedDB for StorageService data (#45685)
+- Updated the withdrawal token picker to say "Receive" and "Search tokens" instead of "Pay with" and "Search for an asset to send" (#45613)
+- Updated security alert titles and messages to describe the flagged risk per attack type and to show the simulated value at risk where available (#45509)
+- Changed address security screening to use the shared PhishingController chain support instead of a hardcoded network list (#45107)
+- Renamed the Agentic CLI notifications category to Agent wallet in Settings (#45540)
+- Rename Dapp Connections global menu item to Permissions and update child page UX (#45461)
+- Patch @metamask/assets-controller to default-track Arc native USDC (#45500)
+- Switch Arc bridge asset id to slip44:5042 (#45270)
+
+### Removed
+
+- Removed Edit Networks screen and preceding summary screen from Permissions menu (#45607)
+- Removed old network manager old (#45602)
+
+### Fixed
+
+- Fixed conflicting transaction fee information on mUSD convert, Perps deposit and money account confirmations, where a fee or "Paid by MetaMask" was shown before an amount was entered (#45659)
+- Fixed the buy provider list showing providers that could not provide a quote (#45657)
+- Fixed a bug that prevented hardware wallet accounts from selecting a token in the MMPay confirmation flow (#45660)
+- Fixed a memory leak that would get worse the longer MetaMask ran (#45650)
+- Fixed ledger gen 5 712 permit signing (#45637)
+- Fixed a bug that prevented hardware wallet accounts from selecting a token in the MMPay confirmation flow (#45648)
+- Fixed a bug that caused all quotes to be unavailable when buying non-EVM assets (#45293)
+- Fixed a bug where the back button on the token detail page navigated to a stale mUSD conversion confirmation screen instead of the home page (#45649)
+- Fixed the Perps available-to-trade percentage showing a truncated decimal on initial load (#45561)
+- Fixed a crash when reopening the extension on a Perps page (#45756)
+- Fixed a bug where the Perps withdrawal confirmation could allow or block a withdrawal based on an out-of-date balance (#45191)
+- Fixed backend-driven extension push notifications failing to register an FCM token on LavaMoat production builds (#45610)
+- Fixed an issue where networks wouldn't properly display fallback URLs (#45601)
+- Fixed the hamburger menu back icon color to match other menu icons (#45429)
+- Stopped enforced simulations from running for wallet-initiated transactions (#45801)
+- Fixed confusing passkey biometrics setup errors by adding informative messages when PRF is not supported (#45802)
+- Fixed deep links to exclude unsigned parameters from the QR code destinations generated for `batch-sell`, `predict`, and `trending` (#45103)
+- Fixed redundant token selection logic when re-selecting the already active payment token in the Pay With modal (#45402)
+- Swap dest asset selection sets src asset (dev) (#45388)
+
 ## [13.45.1]
 
 ### Fixed
@@ -3013,7 +3126,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.45.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.47.0...HEAD
+[13.47.0]: https://github.com/MetaMask/metamask-extension/compare/v13.46.1...v13.47.0
+[13.46.1]: https://github.com/MetaMask/metamask-extension/compare/v13.46.0...v13.46.1
+[13.46.0]: https://github.com/MetaMask/metamask-extension/compare/v13.45.1...v13.46.0
 [13.45.1]: https://github.com/MetaMask/metamask-extension/compare/v13.45.0...v13.45.1
 [13.45.0]: https://github.com/MetaMask/metamask-extension/compare/v13.44.0...v13.45.0
 [13.44.0]: https://github.com/MetaMask/metamask-extension/compare/v13.43.0...v13.44.0

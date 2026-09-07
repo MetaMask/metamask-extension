@@ -126,10 +126,7 @@ import {
   getAccountTrackerControllerMessenger,
 } from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
-import {
-  getQrSyncControllerMessenger,
-  getQrSyncDataServiceMessenger,
-} from './qr-sync';
+import { getQrSyncControllerMessenger } from './qr-sync';
 import {
   getRampsControllerInitMessenger,
   getRampsControllerMessenger,
@@ -180,6 +177,10 @@ import {
 } from './user-operation-controller-messenger';
 import { getRewardsDataServiceMessenger } from './reward-data-service-messenger';
 import { getAuthenticatedUserStorageServiceMessenger } from './authenticated-user-storage-service-messenger';
+import {
+  getChompApiServiceInitMessenger,
+  getChompApiServiceMessenger,
+} from './chomp-api-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getProofOfOwnershipServiceMessenger } from './proof-of-ownership-service-messenger';
@@ -189,6 +190,7 @@ import { getComplianceControllerMessenger } from './compliance-controller-messen
 import { getComplianceServiceMessenger } from './compliance-service-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
+import { getUserTraitsServiceMessenger } from './user-traits-service-messenger';
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
 import { getConfigRegistryApiServiceMessenger } from './config-registry-api-service-messenger';
 import { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
@@ -245,10 +247,7 @@ export {
 } from './name-controller-messenger';
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
-export {
-  getQrSyncControllerMessenger,
-  getQrSyncDataServiceMessenger,
-} from './qr-sync';
+export { getQrSyncControllerMessenger } from './qr-sync';
 export {
   getRampsControllerInitMessenger,
   getRampsControllerMessenger,
@@ -267,6 +266,11 @@ export { getPermissionLogControllerMessenger } from './permission-log-controller
 export { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
 export { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
 export { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
+export type { ChompApiServiceInitMessenger } from './chomp-api-service-messenger';
+export {
+  getChompApiServiceMessenger,
+  getChompApiServiceInitMessenger,
+} from './chomp-api-service-messenger';
 export { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
 export { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
 export { getMoneyAccountAvailabilityServiceMessenger } from './money-account-availability-service-messenger';
@@ -380,6 +384,10 @@ export const MESSENGER_FACTORIES = {
   NetworkConnectionBannerController: {
     getMessenger: getNetworkConnectionBannerControllerMessenger,
     getInitMessenger: noop,
+  },
+  ChompApiService: {
+    getMessenger: getChompApiServiceMessenger,
+    getInitMessenger: getChompApiServiceInitMessenger,
   },
   ClientController: {
     getMessenger: getClientControllerMessenger,
@@ -625,10 +633,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getPreferencesControllerMessenger,
     getInitMessenger: noop,
   },
-  QrSyncDataService: {
-    getMessenger: getQrSyncDataServiceMessenger,
-    getInitMessenger: noop,
-  },
   QrSyncController: {
     getMessenger: getQrSyncControllerMessenger,
     getInitMessenger: noop,
@@ -727,6 +731,10 @@ export const MESSENGER_FACTORIES = {
   },
   ProofOfOwnershipService: {
     getMessenger: getProofOfOwnershipServiceMessenger,
+    getInitMessenger: noop,
+  },
+  UserTraitsService: {
+    getMessenger: getUserTraitsServiceMessenger,
     getInitMessenger: noop,
   },
 } as const;

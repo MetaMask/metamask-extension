@@ -5,7 +5,9 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
+import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import {
   PAY_EXTENDED_FEATURE_FLAG,
   type PayPrefilledAmountConfig,
@@ -17,9 +19,13 @@ import {
 } from '../../selectors/feature-flags';
 import { getDepositLimitForTransaction } from '../../utils/pay-deposit-limit';
 import { isRouteToken } from '../../utils/relay-fixed-spread';
+import { getMarketData } from '../../../../selectors';
+import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
+
+const ZERO_PREFILL_AMOUNT = '0.0';
 
 function formatFiatAmount(value: BigNumber): string {
   return value.isInteger() ? value.toString(10) : value.toFixed(2);
@@ -56,6 +62,14 @@ function getPrefilledAmountConfig(
 
 export type DepositPrefillResult = {
   prefillAmount: string | undefined;
+  /**
+   * True when prefill is uncapped 100% of balance (stablecoin route token,
+   * not limited by depositLimit). Consumers should apply this via
+   * `updatePendingAmountPercentage(100, { isPrefill: true })` so the
+   * submitted amount uses the exact pay-token balanceRaw instead of a lossy
+   * fiat roundtrip (never `isMaxAmount`).
+   */
+  isUncappedMaxPrefill: boolean;
   enabled: boolean;
   isLoading: boolean;
   hasPrefilled: boolean;
@@ -74,6 +88,7 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
   const { payToken } = useTransactionPayToken();
   const accountOverride = useTransactionAccountOverride();
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
+  const marketData = useSelector(getMarketData);
   const depositLimits = useSelector(selectDepositLimits);
   const relayFixedSpread = useSelector(selectRelayFixedSpread);
 
@@ -88,26 +103,44 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
   );
 
   const enabled = Boolean(prefilledAmountConfig.enabled);
+  const { balanceUsd: liveBalanceUsd, balanceRaw: liveBalanceRaw } =
+    usePayTokenAccountBalance();
 
-  // Keep balance as a string so BigNumber.times never receives a JS number with
-  // >15 significant digits (throws in this bignumber.js version).
-  const balanceUsd = String(payToken?.balanceUsd ?? 0);
+  // Live funding-account USD, not the pay-controller snapshot. A $0 snapshot
+  // (common on deposits: tx `from` is the money account) left prefill
+  // uncommitted and the amount skeleton up forever.
+  // `usePayTokenAccountBalance` already takes min(snapshot, live×rate).
+  const balanceUsd = String(liveBalanceUsd || payToken?.balanceUsd || 0);
+  // TransactionPayController needs real market data to build source amounts.
+  // `useTokenFiatRate` cannot be used as this readiness gate because it falls
+  // back to a synthetic $1 token price when market data is absent.
+  const payTokenMarketPrice = payToken
+    ? marketData?.[payToken.chainId]?.[
+        toChecksumHexAddress(payToken.address) as Hex
+      ]?.price
+    : undefined;
+  const hasPayTokenMarketPrice =
+    payTokenMarketPrice !== undefined &&
+    Number.isFinite(payTokenMarketPrice) &&
+    payTokenMarketPrice > 0;
   // The confirmation id is part of the key so a following deposit rendered by
   // the same mounted UI releases the commit and prefills again, instead of
   // inheriting the previous confirmation's amount.
   const tokenKey = `${transactionMeta?.id ?? ''}:${payToken?.address}:${payToken?.chainId}:${accountOverride ?? ''}`;
   const [committedKey, setCommittedKey] = useState<string | null>(null);
 
-  const prefillAmount = useMemo(() => {
+  const { prefillAmount, isUncappedMaxPrefill } = useMemo(() => {
     const balanceUsdValue = new BigNumber(balanceUsd);
 
-    if (
-      !enabled ||
-      !payToken ||
-      !balanceUsdValue.isFinite() ||
-      balanceUsdValue.lte(0)
-    ) {
-      return undefined;
+    if (!enabled || !payToken) {
+      return { prefillAmount: undefined, isUncappedMaxPrefill: false };
+    }
+
+    if (!balanceUsdValue.isFinite() || balanceUsdValue.lte(0)) {
+      return {
+        prefillAmount: ZERO_PREFILL_AMOUNT,
+        isUncappedMaxPrefill: false,
+      };
     }
 
     const stable = isRouteToken(relayFixedSpread, {
@@ -121,12 +154,28 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
       .times(balanceUsdValue)
       .round(2, BigNumber.ROUND_DOWN);
 
-    return formatFiatAmount(
-      depositLimit === undefined
-        ? raw
-        : BigNumber.min(raw, String(depositLimit)),
-    );
+    const isCapped = depositLimit !== undefined && raw.gt(String(depositLimit));
+
+    return {
+      prefillAmount: formatFiatAmount(
+        isCapped ? new BigNumber(String(depositLimit)) : raw,
+      ),
+      // Uncapped 100% submits exact balanceRaw (not fiat→mUSD ROUND_UP).
+      isUncappedMaxPrefill: percentage === 100 && !isCapped,
+    };
   }, [balanceUsd, depositLimit, enabled, payToken, relayFixedSpread]);
+
+  // Uncapped 100% prefill must wait for live balanceRaw — otherwise consumers
+  // fall back to the fiat path and can request slightly more than available.
+  // Non-zero prefills also wait for the pay-token fiat rate so the amount
+  // commit can produce source amounts / quotes on the first pass.
+  const hasLiveBalanceRaw = new BigNumber(liveBalanceRaw || '0').gt(0);
+  const needsQuote =
+    prefillAmount !== undefined && new BigNumber(prefillAmount).gt(0);
+  const readyToCommit =
+    prefillAmount !== undefined &&
+    (!isUncappedMaxPrefill || hasLiveBalanceRaw) &&
+    (!needsQuote || hasPayTokenMarketPrice);
 
   useEffect(() => {
     if (!enabled) {
@@ -138,13 +187,21 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
       return;
     }
 
-    if (committedKey === null && prefillAmount !== undefined) {
+    if (committedKey === null && readyToCommit) {
       setCommittedKey(tokenKey);
     }
-  }, [committedKey, enabled, prefillAmount, tokenKey]);
+  }, [committedKey, enabled, readyToCommit, tokenKey]);
 
   const hasPrefilled = committedKey === tokenKey;
-  const isLoading = enabled && !hasPrefilled;
+  // No pay token means auto-select found nothing to prefill — do not keep
+  // the amount skeleton up forever waiting for a token that will not come.
+  const isLoading = enabled && Boolean(payToken) && !hasPrefilled;
 
-  return { prefillAmount, isLoading, hasPrefilled, enabled };
+  return {
+    prefillAmount,
+    isUncappedMaxPrefill,
+    isLoading,
+    hasPrefilled,
+    enabled,
+  };
 }

@@ -51,15 +51,24 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
           >
             GBP
           </span>
-          <input
-            aria-label="Amount"
-            class="min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
-            data-testid="ramps-build-quote-amount-input"
-            inputmode="decimal"
-            size="2"
-            type="text"
-            value="25"
-          />
+          <span
+            class="relative w-max min-w-[1ch]"
+          >
+            <span
+              aria-hidden="true"
+              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-default"
+            >
+              25
+            </span>
+            <input
+              aria-label="Amount"
+              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
+              data-testid="ramps-build-quote-amount-input"
+              inputmode="decimal"
+              type="text"
+              value="25"
+            />
+          </span>
         </div>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
@@ -740,15 +749,24 @@ exports[`RampsBuildQuoteScreen matches snapshot when falling back without region
           >
             $
           </span>
-          <input
-            aria-label="Amount"
-            class="min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
-            data-testid="ramps-build-quote-amount-input"
-            inputmode="decimal"
-            size="3"
-            type="text"
-            value="100"
-          />
+          <span
+            class="relative w-max min-w-[1ch]"
+          >
+            <span
+              aria-hidden="true"
+              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-default"
+            >
+              100
+            </span>
+            <input
+              aria-label="Amount"
+              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
+              data-testid="ramps-build-quote-amount-input"
+              inputmode="decimal"
+              type="text"
+              value="100"
+            />
+          </span>
         </div>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
@@ -863,15 +881,24 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
           >
             $
           </span>
-          <input
-            aria-label="Amount"
-            class="min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-error-default"
-            data-testid="ramps-build-quote-amount-input"
-            inputmode="decimal"
-            size="3"
-            type="text"
-            value="100"
-          />
+          <span
+            class="relative w-max min-w-[1ch]"
+          >
+            <span
+              aria-hidden="true"
+              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-error-default"
+            >
+              100
+            </span>
+            <input
+              aria-label="Amount"
+              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-error-default"
+              data-testid="ramps-build-quote-amount-input"
+              inputmode="decimal"
+              type="text"
+              value="100"
+            />
+          </span>
         </div>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
@@ -995,15 +1022,24 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
           >
             $
           </span>
-          <input
-            aria-label="Amount"
-            class="min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
-            data-testid="ramps-build-quote-amount-input"
-            inputmode="decimal"
-            size="3"
-            type="text"
-            value="100"
-          />
+          <span
+            class="relative w-max min-w-[1ch]"
+          >
+            <span
+              aria-hidden="true"
+              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-default"
+            >
+              100
+            </span>
+            <input
+              aria-label="Amount"
+              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
+              data-testid="ramps-build-quote-amount-input"
+              inputmode="decimal"
+              type="text"
+              value="100"
+            />
+          </span>
         </div>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
@@ -1118,15 +1154,24 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
           >
             $
           </span>
-          <input
-            aria-label="Amount"
-            class="min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
-            data-testid="ramps-build-quote-amount-input"
-            inputmode="decimal"
-            size="3"
-            type="text"
-            value="100"
-          />
+          <span
+            class="relative w-max min-w-[1ch]"
+          >
+            <span
+              aria-hidden="true"
+              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-default"
+            >
+              100
+            </span>
+            <input
+              aria-label="Amount"
+              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
+              data-testid="ramps-build-quote-amount-input"
+              inputmode="decimal"
+              type="text"
+              value="100"
+            />
+          </span>
         </div>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
@@ -1558,15 +1603,24 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
           >
             $
           </span>
-          <input
-            aria-label="Amount"
-            class="min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-error-default"
-            data-testid="ramps-build-quote-amount-input"
-            inputmode="decimal"
-            size="3"
-            type="text"
-            value="100"
-          />
+          <span
+            class="relative w-max min-w-[1ch]"
+          >
+            <span
+              aria-hidden="true"
+              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-error-default"
+            >
+              100
+            </span>
+            <input
+              aria-label="Amount"
+              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-error-default"
+              data-testid="ramps-build-quote-amount-input"
+              inputmode="decimal"
+              type="text"
+              value="100"
+            />
+          </span>
         </div>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
@@ -1690,15 +1744,24 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
           >
             GBP
           </span>
-          <input
-            aria-label="Amount"
-            class="min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
-            data-testid="ramps-build-quote-amount-input"
-            inputmode="decimal"
-            size="2"
-            type="text"
-            value="50"
-          />
+          <span
+            class="relative w-max min-w-[1ch]"
+          >
+            <span
+              aria-hidden="true"
+              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-default"
+            >
+              50
+            </span>
+            <input
+              aria-label="Amount"
+              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-default"
+              data-testid="ramps-build-quote-amount-input"
+              inputmode="decimal"
+              type="text"
+              value="50"
+            />
+          </span>
         </div>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
