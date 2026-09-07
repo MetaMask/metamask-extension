@@ -14,13 +14,3 @@ import type { MetaMaskReduxState } from '../../store/store';
  */
 export const getPerpsTabBadgeSeen = (state: MetaMaskReduxState): boolean =>
   state.metamask.perpsTabBadgeSeen ?? false;
-
-/**
- * Select the transaction ID of a perps deposit initiated from the Hyperliquid
- * deposit prompt. Used to show a custom success toast message.
- *
- * @param state
- */
-export const selectHyperliquidDepositPromptTxId = (
-  state: MetaMaskReduxState,
-): string | null => state.metamask.hyperliquidDepositPromptTxId ?? null;

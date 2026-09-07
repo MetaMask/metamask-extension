@@ -6,10 +6,8 @@ import { submitRequestToBackground } from '../../../store/background-connection'
 import {
   selectPerpsDepositPending,
   selectPerpsLastDepositResult,
-  selectPerpsLastDepositTransactionId,
   selectPerpsShouldShowDepositToast,
 } from '../../../selectors/perps-controller';
-import { selectHyperliquidDepositPromptTxId } from '../../../selectors/perps/persisted-state';
 import { toast, ToastContent } from '../../ui/toast/toast';
 
 const id = 'perps-deposit-toast';
@@ -20,31 +18,15 @@ const clearDepositResult = () =>
     () => undefined,
   );
 
-const clearHyperliquidDepositPromptTxId = () =>
-  submitRequestToBackground('setHyperliquidDepositPromptTxId', [null]).catch(
-    () => undefined,
-  );
-
 export function PerpsDepositToast() {
   const t = useI18nContext();
   const depositInProgress = useSelector(selectPerpsDepositPending);
   const lastDepositResult = useSelector(selectPerpsLastDepositResult);
-  const lastDepositTransactionId = useSelector(
-    selectPerpsLastDepositTransactionId,
-  );
-  const hyperliquidDepositPromptTxId = useSelector(
-    selectHyperliquidDepositPromptTxId,
-  );
   const shouldShowDepositToast = useSelector(selectPerpsShouldShowDepositToast);
   const hasDepositResult = Boolean(lastDepositResult);
   const lastDepositResultError = lastDepositResult?.error;
   const lastDepositResultSuccess = lastDepositResult?.success;
   const lastDepositResultTimestamp = lastDepositResult?.timestamp;
-
-  // Check if this deposit was initiated from the Hyperliquid deposit prompt
-  const isHyperliquidDeposit =
-    hyperliquidDepositPromptTxId !== null &&
-    hyperliquidDepositPromptTxId === lastDepositTransactionId;
 
   useEffect(() => {
     if (!hasDepositResult) {
@@ -52,20 +34,12 @@ export function PerpsDepositToast() {
     }
 
     const isSuccess = lastDepositResultSuccess === true;
-
-    let title = t('perpsDepositToastSuccessTitle');
-    let description: string;
-
-    if (isSuccess && isHyperliquidDeposit) {
-      description = t('hyperliquidDepositToastSuccessDescription');
-    } else if (isSuccess) {
-      description = t('perpsDepositToastSuccessDescription');
-    } else {
-      title = t('perpsDepositToastErrorTitle');
-      description =
-        lastDepositResultError || t('perpsDepositToastErrorDescription');
-    }
-
+    const title = isSuccess
+      ? t('perpsDepositToastSuccessTitle')
+      : t('perpsDepositToastErrorTitle');
+    const description = isSuccess
+      ? t('perpsDepositToastSuccessDescription')
+      : lastDepositResultError || t('perpsDepositToastErrorDescription');
     const content = (
       <ToastContent title={title} description={description} dataTestId={id} />
     );
@@ -75,11 +49,6 @@ export function PerpsDepositToast() {
       toast.success(content, options);
     } else {
       toast.error(content, options);
-    }
-
-    // Clear the Hyperliquid deposit transaction ID after showing the toast
-    if (isHyperliquidDeposit) {
-      clearHyperliquidDepositPromptTxId();
     }
 
     const timeoutId = setTimeout(() => {
@@ -92,7 +61,6 @@ export function PerpsDepositToast() {
     };
   }, [
     hasDepositResult,
-    isHyperliquidDeposit,
     lastDepositResultError,
     lastDepositResultSuccess,
     lastDepositResultTimestamp,

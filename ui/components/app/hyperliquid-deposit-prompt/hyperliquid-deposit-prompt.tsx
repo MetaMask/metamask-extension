@@ -29,7 +29,6 @@ import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/acc
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
-import { submitRequestToBackground } from '../../../store/background-connection';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
 import { TokenIcon } from '../../../pages/confirmations/components/token-icon/token-icon';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
@@ -248,17 +247,6 @@ export const HyperliquidDepositPrompt: React.FC<
     );
 
     onActionComplete({ action: 'continue', transactionId });
-
-    // Store the transaction ID so the deposit toast can show a custom message.
-    // Called after navigation/approval to avoid interfering with the render cycle.
-    submitRequestToBackground('setHyperliquidDepositPromptTxId', [
-      transactionId,
-    ]).catch((error: unknown) => {
-      log.error(
-        'HyperliquidDepositPrompt: Failed to store transaction ID for toast',
-        error,
-      );
-    });
   }, [displayToken, navigate, onActionComplete, perpsHomeRoute, startPerpsDeposit]);
 
   return (

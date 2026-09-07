@@ -840,7 +840,6 @@ describe('AppStateController', () => {
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
-              "hyperliquidDepositPromptTxId": null,
               "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
@@ -1092,7 +1091,6 @@ describe('AppStateController', () => {
               "defaultHomeActiveTabName": null,
               "fullScreenGasPollTokens": [],
               "hasShownMultichainAccountsIntroModal": false,
-              "hyperliquidDepositPromptTxId": null,
               "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
