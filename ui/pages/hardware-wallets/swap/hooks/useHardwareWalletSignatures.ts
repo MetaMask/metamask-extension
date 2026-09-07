@@ -22,10 +22,7 @@ import { useHwSwapConfirmationMonitoring } from '../../../../hooks/hardware-wall
 import { useHwSwapQrState } from '../../../../hooks/hardware-wallets/useHwSwapQrState';
 import { useHwSwapNavigation } from '../../../../hooks/hardware-wallets/useHwSwapNavigation';
 import { useHwSwapActions } from '../../../../hooks/hardware-wallets/useHwSwapActions';
-import {
-  isUserRejectedHardwareWalletError,
-  useHardwareWalletActions,
-} from '../../../../contexts/hardware-wallets';
+import { useHardwareWalletActions } from '../../../../contexts/hardware-wallets';
 import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import {
   getTransactionDataRecipient,
@@ -38,6 +35,7 @@ import { internalSelectPendingApproval } from '../../../../selectors';
 import type { SignatureStepListProps } from '../components/signature-step-list.types';
 import type { SignatureFooterProps } from '../components/signature-footer.types';
 import {
+  getHardwareWalletSignatureErrorEvent,
   getTransactionField,
   getHardwareWalletSignatureViewModel,
   isAwaitingSignature,
@@ -233,11 +231,11 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
     useSubmitBridgeTransaction();
 
   /**
-   * Wraps bridge submission so hardware-wallet reject/fail outcomes update the
-   * signature state machine. `useSubmitBridgeTransaction` throws on those
-   * outcomes; we translate them here unless the attempt is stale (cancel-
-   * during-retry in flight, or retry advanced `retryGenerationRef` after this
-   * submission started).
+   * Wraps bridge submission so hardware-wallet reject/fail/disconnect outcomes
+   * update the signature state machine. `useSubmitBridgeTransaction` throws on
+   * those outcomes; we map them to a shared signature event unless the attempt
+   * is stale (cancel-during-retry in flight, or retry advanced
+   * `retryGenerationRef` after this submission started).
    */
   const submitBridgeTransaction = useCallback(
     async (quoteResponse: QuoteResponse) => {
@@ -247,15 +245,7 @@ export function useHardwareWalletSignatures(): UseHardwareWalletSignaturesReturn
         await submitBridgeTransactionBase(quoteResponse);
       } catch (error) {
         if (!isStaleAttempt(submissionGeneration)) {
-          if (isUserRejectedHardwareWalletError(error)) {
-            dispatchSignatureEvent({
-              type: HardwareWalletSignatureEvent.TransactionRejected,
-            });
-          } else {
-            dispatchSignatureEvent({
-              type: HardwareWalletSignatureEvent.TransactionFailed,
-            });
-          }
+          dispatchSignatureEvent(getHardwareWalletSignatureErrorEvent(error));
         }
         throw error;
       }

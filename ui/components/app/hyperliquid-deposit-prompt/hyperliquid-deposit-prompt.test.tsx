@@ -4,7 +4,11 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  PERPS_HOME_PAGE_ROUTE,
+} from '../../../helpers/constants/routes';
+import { PERPS_HOME_TAB_ROUTE } from '../../../hooks/perps/usePerpsHomeRoute';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import {
@@ -28,6 +32,12 @@ jest.mock('../perps/hooks/usePerpsDepositConfirmation', () => ({
 }));
 
 jest.mock('../../../store/controller-actions/transaction-pay-controller');
+
+const mockUsePerpsHomeRoute = jest.fn(() => PERPS_HOME_PAGE_ROUTE);
+jest.mock('../../../hooks/perps/usePerpsHomeRoute', () => ({
+  ...jest.requireActual('../../../hooks/perps/usePerpsHomeRoute'),
+  usePerpsHomeRoute: () => mockUsePerpsHomeRoute(),
+}));
 
 jest.mock('../../../pages/confirmations/selectors/feature-flags', () => ({
   selectBlockedPayTokens: jest.fn(() => ({
@@ -125,6 +135,7 @@ describe('HyperliquidDepositPrompt', () => {
       chainIds: [],
       tokens: [],
     });
+    mockUsePerpsHomeRoute.mockReturnValue(PERPS_HOME_PAGE_ROUTE);
     mockUseSendTokens.mockReturnValue([ETH_TOKEN, USDC_TOKEN]);
     mockStartPerpsDeposit.mockResolvedValue({
       transactionId: 'transaction-id-mock',
@@ -196,7 +207,7 @@ describe('HyperliquidDepositPrompt', () => {
     expect(mockNavigate).toHaveBeenCalledWith(
       {
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/transaction-id-mock`,
-        search: '?loader=customAmount',
+        search: `loader=customAmount&goBackTo=${encodeURIComponent(PERPS_HOME_PAGE_ROUTE)}`,
       },
       { replace: true },
     );
@@ -235,6 +246,24 @@ describe('HyperliquidDepositPrompt', () => {
     expect(
       screen.getByTestId('hyperliquid-deposit-prompt-continue'),
     ).toBeDisabled();
+  });
+
+  it('uses the wallet home perps tab as goBackTo when bottom nav is disabled', async () => {
+    mockUsePerpsHomeRoute.mockReturnValue(PERPS_HOME_TAB_ROUTE);
+
+    renderComponent();
+
+    fireEvent.click(screen.getByTestId('hyperliquid-deposit-prompt-continue'));
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith(
+        {
+          pathname: `${CONFIRM_TRANSACTION_ROUTE}/transaction-id-mock`,
+          search: `loader=customAmount&goBackTo=${encodeURIComponent(PERPS_HOME_TAB_ROUTE)}`,
+        },
+        { replace: true },
+      );
+    });
   });
 
   it('shows an error and keeps the prompt open when the deposit fails to start', async () => {

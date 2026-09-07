@@ -25,6 +25,7 @@ import { BridgeTimeRow } from '../../rows/bridge-time-row/bridge-time-row';
 import { TotalRow } from '../../rows/total-row/total-row';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
+import { PerpsAccountPickerRow } from '../../rows/perps-account-picker-row';
 import {
   PercentageButtons,
   PercentageButtonsSkeleton,
@@ -391,6 +392,7 @@ function BottomContainer({
       paddingBottom={4}
     >
       {displayAccountRow && <FromAccountRow showDivider />}
+      <PerpsAccountPickerRow />
       {/* Keep mounted while funding tokens load after account override so the
           selector does not unmount for the reselect wait, then remount. */}
       {disablePay !== true && <PayWithRow />}

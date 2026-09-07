@@ -25,6 +25,7 @@ import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
+import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
 import { getPrivacyMode } from '../../selectors/selectors';
 import { MoneyActivityRow } from './components/money-activity-row';
 import { MoneyActivityFilter } from './utils/money-activity-filters';
@@ -73,6 +74,7 @@ export function MoneyActivityPage() {
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
   const { buckets } = useMoneyActivityItems();
+  const handleItemClick = useMoneyActivityItemClick();
   const [filter, setFilter] = useState(MoneyActivityFilter.All);
   const pageRef = useRef<HTMLDivElement>(null);
 
@@ -191,6 +193,9 @@ export function MoneyActivityPage() {
                   key={item.id}
                   item={item}
                   privacyMode={privacyMode}
+                  onClick={
+                    handleItemClick ? () => handleItemClick(item) : undefined
+                  }
                 />
               ))}
             </section>
