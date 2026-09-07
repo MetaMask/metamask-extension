@@ -1,4 +1,5 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
+import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
 import {
   getMockFeatureAnnouncementResponse,
   getMockListNotificationsResponse,
@@ -63,6 +64,37 @@ export const notificationsMockAccounts: UserStorageAccount[] = [
     nlu: 1738590287,
   },
 ];
+
+export function getMockNotificationPreferences(): NotificationPreferences {
+  return {
+    walletActivity: {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: true,
+      accounts: [],
+    },
+    marketing: {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: true,
+    },
+    perps: {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: true,
+    },
+    socialAI: {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: true,
+      mutedTraderProfileIds: [],
+    },
+    agenticCli: {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: true,
+    },
+    priceAlerts: {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: true,
+    },
+  };
+}
 
 const mockNotifications: NormalisedAPINotification[] = [
   createMockNotificationEthSent(),

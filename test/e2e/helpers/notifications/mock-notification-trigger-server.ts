@@ -124,6 +124,10 @@ export class MockttpNotificationTriggerServer {
     return this.notificationPreferences;
   }
 
+  setNotificationPreferences(preferences: NotificationPreferences) {
+    this.notificationPreferences = preferences;
+  }
+
   clearConfigs() {
     this.notificationConfigs.clear();
     this.notificationPreferences = null;
