@@ -6648,7 +6648,11 @@
     "message": "Third-party APIs are now part of Basic Functionality. Basic Functionality has been enabled to keep your wallet working as expected. You can review these settings in Privacy."
   },
   "basicFunctionalityMigrationToastDescription": {
-    "message": "Your settings have changed. Third-party APIs are now part of Basic Functionality."
+    "message": "Third-party APIs are now part of Basic Functionality. Based on your previous preferences, this setting is enabled. Change it any time in $1",
+    "description": "$1 is the Settings > Privacy link"
+  },
+  "basicFunctionalityMigrationToastSettingsLink": {
+    "message": "Settings > Privacy"
   },
   "openWallet": {
     "message": "Open wallet"

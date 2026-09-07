@@ -212,15 +212,22 @@ function BasicFunctionalityMigrationToast() {
     shouldShow && (
       <Toast
         key="basic-functionality-migration-toast"
-        startAdornment={
-          <Icon name={IconName.Info} color={IconColor.iconDefault} />
-        }
-        text={t('basicFunctionalityMigrationToastDescription')}
-        actionText={t('openSettings')}
-        onActionClick={() => {
-          dismiss();
-          navigate(PRIVACY_ROUTE);
-        }}
+        dataTestId="basic-functionality-migration-toast"
+        startAdornment={null}
+        text={t('basicFunctionalityMigrationModalTitle')}
+        description={t('basicFunctionalityMigrationToastDescription', [
+          <button
+            key="basic-functionality-migration-settings-link"
+            type="button"
+            onClick={() => {
+              dismiss();
+              navigate(PRIVACY_ROUTE);
+            }}
+            className="inline h-auto min-h-0 cursor-pointer border-0 bg-transparent p-0 align-baseline text-primary-default"
+          >
+            {t('basicFunctionalityMigrationToastSettingsLink')}
+          </button>,
+        ])}
         onClose={dismiss}
       />
     )
