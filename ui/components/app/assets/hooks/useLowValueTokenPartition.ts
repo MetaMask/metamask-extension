@@ -43,14 +43,14 @@ function shouldBucketAsLowValue(
   threshold: number,
   hasAnyPricedToken: boolean,
 ) {
-  // Native and mUSD are never bucketed into low value.
+  // Native and mUSD are never bucketed into low value
   if (token.isNative || isMusdToken(token.address)) {
     return false;
   }
 
   const { tokenFiatAmount } = token;
 
-  // Priced below $1 in the user's display currency.
+  // Priced below threshold in the user's display currency.
   if (
     hasFiniteTokenFiatAmount(tokenFiatAmount) &&
     tokenFiatAmount < threshold
@@ -96,8 +96,8 @@ function partitionLowValueTokens(
 }
 
 /**
- * Splits home token list into visible and low-value buckets. Skips partitioning
- * when sort is inapplicable (`enabled` is false) or basic functionality is off.
+ * Splits tokens into visible and low-value buckets.
+ * Skips partitioning when basic functionality is off.
  *
  * @param options - Partition inputs.
  * @param options.tokens - Tokens to partition.
