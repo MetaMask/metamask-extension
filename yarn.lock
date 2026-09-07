@@ -31803,7 +31803,6 @@ __metadata:
     "@storybook/addon-a11y": "npm:9.1.20"
     "@storybook/addon-docs": "npm:9.1.20"
     "@storybook/addon-webpack5-compiler-babel": "npm:^4.0.0"
-    "@storybook/icons": "npm:^1.4.0"
     "@storybook/react-webpack5": "npm:9.1.20"
     "@storybook/storybook-deployer": "npm:^2.8.16"
     "@storybook/test-runner": "npm:^0.23.0"
