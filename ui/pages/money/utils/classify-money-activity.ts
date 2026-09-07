@@ -4,7 +4,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { IconName } from '@metamask/design-system-react';
-import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
+import { isMusdToken } from '../../../components/app/musd/constants';
 import type {
   MoneyActivityTitleKey,
   MoneyActivityTransactionMeta,
@@ -120,11 +120,7 @@ function isFiatDeposit(tx: TransactionMeta): boolean {
 }
 
 function isMusdPayToken(tx: TransactionMeta): boolean {
-  const tokenAddress = tx.metamaskPay?.tokenAddress;
-  return (
-    typeof tokenAddress === 'string' &&
-    tokenAddress.toLowerCase() === MUSD_TOKEN_ADDRESS.toLowerCase()
-  );
+  return isMusdToken(tx.metamaskPay?.tokenAddress);
 }
 
 export function classifyMoneyActivity(tx: TransactionMeta): MoneyActivityKind {

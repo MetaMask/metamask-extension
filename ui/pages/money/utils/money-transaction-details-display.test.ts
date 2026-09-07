@@ -109,6 +109,7 @@ describe('formatMoneyActivityDetailsDate', () => {
 describe('shortenMoneyActivityHex', () => {
   it('returns short values unchanged', () => {
     expect(shortenMoneyActivityHex('0xabc')).toBe('0xabc');
+    expect(shortenMoneyActivityHex('0x123456789')).toBe('0x123456789');
   });
 
   it('truncates long hashes', () => {
