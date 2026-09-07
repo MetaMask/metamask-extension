@@ -1,5 +1,6 @@
 import React from 'react';
-import { AccountGroupId } from '@metamask/account-api';
+import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { fireEvent, act, within, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
@@ -189,6 +190,50 @@ describe('MultichainAccountMenu', () => {
 
     const menuItems = document.querySelectorAll(menuItemSelector);
     expect(menuItems.length).toBe(5);
+  });
+
+  it('omits the hide option for an imported private key account', () => {
+    const accountGroupId = 'keyring:simple/0';
+    const stateWithPrivateKeyAccount = {
+      metamask: {
+        accountTree: {
+          wallets: {
+            'keyring:simple': {
+              type: AccountWalletType.Keyring,
+              metadata: {
+                name: 'Imported',
+                keyring: { type: KeyringTypes.simple },
+              },
+              groups: {
+                [accountGroupId]: {
+                  metadata: {
+                    name: 'Imported Account',
+                    pinned: false,
+                    hidden: false,
+                    lastSelected: 0,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    } as unknown as typeof mockState;
+
+    renderComponent(
+      {
+        accountGroupId: accountGroupId as AccountGroupId,
+        isRemovable: false,
+        isOpen: true,
+        onToggle: jest.fn(),
+      },
+      stateWithPrivateKeyAccount,
+    );
+
+    expect(document.querySelectorAll(menuItemSelector).length).toBe(4);
+    expect(
+      screen.queryByTestId('multichain-account-menu-item-hideAccount'),
+    ).not.toBeInTheDocument();
   });
 
   it('adds the remove option to menu when isRemovable is true', () => {

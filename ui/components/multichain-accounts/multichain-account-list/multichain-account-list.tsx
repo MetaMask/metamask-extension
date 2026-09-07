@@ -13,8 +13,6 @@ import {
   AccountWalletId,
   AccountWalletType,
 } from '@metamask/account-api';
-import type { AccountWalletObject } from '@metamask/account-tree-controller';
-import { KeyringTypes } from '@metamask/keyring-controller';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { parseCaipAccountId } from '@metamask/utils';
@@ -74,6 +72,7 @@ import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { EMPTY_ARRAY } from '../../../selectors/shared';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { getAccountGroupDisplayBalance } from '../../../helpers/utils/account-group-balance';
+import { isPrivateKeyWallet } from '../../../helpers/utils/account-wallet';
 import { VirtualizedList } from '../../ui/virtualized-list/virtualized-list';
 import { useDispatch } from '../../../store/hooks';
 import { useDisconnectAccountGroup } from '../../../hooks/useDisconnectAccountGroup';
@@ -99,20 +98,6 @@ export type MultichainAccountListProps = {
 };
 
 type GroupData = AccountTreeWallets[AccountWalletId]['groups'][AccountGroupId];
-
-/**
- * Imported private-key wallets are the only wallets whose accounts can be
- * deleted from the account list edit mode.
- *
- * @param wallet - Wallet object from the account tree.
- * @returns True when the wallet is a simple (imported private key) keyring.
- */
-function isPrivateKeyWallet(wallet: AccountWalletObject): boolean {
-  return (
-    wallet.type === AccountWalletType.Keyring &&
-    wallet.metadata.keyring.type === KeyringTypes.simple
-  );
-}
 
 /**
  * Finds an account group across every wallet in the tree.
