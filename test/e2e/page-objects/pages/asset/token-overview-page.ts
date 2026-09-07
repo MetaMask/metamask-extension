@@ -95,29 +95,56 @@ class TokenOverviewPage {
   }
 
   async clickSwap(): Promise<void> {
-    // Default asset row: Buy / Swap / Send / Receive.
-    const swapOnRow = await this.driver.isElementPresentAndVisible(
-      this.swapButton,
-      2000,
+    // Perps market matching is async: the row may briefly show Buy/Swap before
+    // switching to Long/Short/Send/More. Wait until either layout settles.
+    // Prefer a settled Perps row when Long appears, so we do not click Swap
+    // during the brief Buy/Swap flash before markets resolve.
+    await this.driver.waitUntil(
+      async () => {
+        const hasPerpsLong = await this.driver.isElementPresentAndVisible(
+          {
+            css: '[data-testid="coin-overview-long"], [data-testid="token-overview-long"]',
+          },
+          500,
+        );
+        if (hasPerpsLong) {
+          return true;
+        }
+        return await this.driver.isElementPresentAndVisible(
+          this.swapButton,
+          500,
+        );
+      },
+      { timeout: 15000, interval: 500, stableFor: 1000 },
     );
-    if (swapOnRow) {
-      await this.driver.clickElement(this.swapButton);
+
+    const hasPerpsLong = await this.driver.isElementPresentAndVisible(
+      {
+        css: '[data-testid="coin-overview-long"], [data-testid="token-overview-long"]',
+      },
+      1000,
+    );
+    if (hasPerpsLong) {
+      const coinMorePresent = await this.driver.isElementPresentAndVisible(
+        this.moreButton,
+        2000,
+      );
+      if (coinMorePresent) {
+        await this.driver.clickElement(this.moreButton);
+        await this.driver.clickElement(
+          '[data-testid="coin-overview-more-swap"]',
+        );
+        return;
+      }
+
+      await this.driver.clickElement('[data-testid="token-overview-more"]');
+      await this.driver.clickElement(
+        '[data-testid="token-overview-more-swap"]',
+      );
       return;
     }
 
-    // Perps market assets use Long / Short / Send / More, with Swap under More.
-    const coinMorePresent = await this.driver.isElementPresentAndVisible(
-      this.moreButton,
-      2000,
-    );
-    if (coinMorePresent) {
-      await this.driver.clickElement(this.moreButton);
-      await this.driver.clickElement('[data-testid="coin-overview-more-swap"]');
-      return;
-    }
-
-    await this.driver.clickElement('[data-testid="token-overview-more"]');
-    await this.driver.clickElement('[data-testid="token-overview-more-swap"]');
+    await this.driver.clickElement(this.swapButton);
   }
 
   /**

@@ -42,9 +42,8 @@ type PerpsActionIconButtonProps = {
 };
 
 /**
- * Asset-row action button matching the existing overview IconButton look,
- * implemented with design-system primitives so new files stay off the
- * deprecated `ui/icon-button` import path.
+ * Asset-row action button matching the existing overview icon+label layout,
+ * built with design-system primitives.
  *
  * @param props - Button props
  * @param props.className - Extra class names (e.g. overview button class)
@@ -72,7 +71,6 @@ const PerpsActionIconButton = ({
       size={IconSize.Md}
     />
     <Text
-      as="span"
       variant={TextVariant.BodySm}
       className="icon-button__label"
       style={{ marginTop: '-4px' }}
