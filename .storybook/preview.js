@@ -206,5 +206,8 @@ export const decorators = [metamaskDecorator, withColorScheme];
 export const initialGlobals = {
   backgrounds: {
     value: 'default'
-  }
+  },
+  // Toggled by the i18n-party addon toolbar button. Storybook 9 ignores updates
+  // to globals that are not declared in `globalTypes` or `initialGlobals`.
+  localeParty: false,
 };

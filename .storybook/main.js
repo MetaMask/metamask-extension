@@ -8,9 +8,6 @@ module.exports = {
   core: {
     disableTelemetry: true,
   },
-  features: {
-    buildStoriesJson: true,
-  },
   stories: ['../ui/**/*.stories.js', '../ui/**/*.stories.tsx'],
   addons: [
     '@storybook/addon-a11y',
