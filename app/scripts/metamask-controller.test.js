@@ -76,6 +76,7 @@ import {
   getPermittedAccountsForScopesByOrigin,
 } from './controllers/permissions';
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
+import { trackEvent } from './controllers/analytics';
 import MetaMaskController from './metamask-controller';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
@@ -796,6 +797,7 @@ describe('MetaMaskController', () => {
                   decimals: '4',
                   symbol: 'TST',
                   image: 'https://example.com/icon.svg',
+                  chainId: MAINNET_CHAIN_ID,
                 },
               }),
             }),
@@ -2307,6 +2309,30 @@ describe('MetaMaskController', () => {
           upgradeContractAddress: null,
         });
         expect(isAtomicBatchSupported).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('setArcUsageNoticeShown', () => {
+      it('flips the flag and tracks the viewed event only once', () => {
+        const { setArcUsageNoticeShown } = metamaskController.getApi();
+        jest.mocked(trackEvent).mockClear();
+
+        setArcUsageNoticeShown();
+        setArcUsageNoticeShown();
+
+        expect(
+          metamaskController.appStateController.state.arcUsageNoticeShown,
+        ).toBe(true);
+        expect(trackEvent).toHaveBeenCalledTimes(1);
+        expect(trackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: 'Arc Usage Notice Toast Viewed',
+            properties: expect.objectContaining({
+              category: 'Home',
+              chain_id_caip: 'eip155:5042',
+            }),
+          }),
+        );
       });
     });
 

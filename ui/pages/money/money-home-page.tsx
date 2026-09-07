@@ -26,7 +26,9 @@ import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-token
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountDeposit } from '../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInterest } from '../../hooks/money/useMoneyAccountInterest';
+import { useMoneyAccountWithdrawal } from '../../hooks/money/useMoneyAccountWithdrawal';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
+import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
 import { moneyFormatUsd } from '../../helpers/money/format';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
@@ -151,6 +153,7 @@ export function MoneyHomePage() {
   const { tokens: depositTokens, isNoFeeToken } = useMoneyDepositTokens();
   const privacyMode = useSelector(getPrivacyMode);
   const { items: activityItems } = useMoneyActivityItems();
+  const handleActivityItemClick = useMoneyActivityItemClick();
   const { initiateDeposit, isLoading: isDepositLoading } =
     useMoneyAccountDeposit();
   const handleViewAllActivity = useCallback(() => {
@@ -161,6 +164,13 @@ export function MoneyHomePage() {
       console.error('Failed to initiate money account deposit', error),
     );
   }, [initiateDeposit]);
+  const { initiateWithdrawal, isLoading: isWithdrawalLoading } =
+    useMoneyAccountWithdrawal();
+  const handleSend = useCallback(() => {
+    initiateWithdrawal().catch((error) =>
+      console.error('Failed to initiate money account withdrawal', error),
+    );
+  }, [initiateWithdrawal]);
 
   if (isAvailabilityLoading || (availability.isAvailable && isBalanceLoading)) {
     return (
@@ -258,7 +268,8 @@ export function MoneyHomePage() {
           <MoneyActionCard
             icon={IconName.Arrow2UpRight}
             label={t('moneySend')}
-            disabled
+            onClick={handleSend}
+            disabled={isWithdrawalLoading}
           />
         </div>
 
@@ -317,6 +328,7 @@ export function MoneyHomePage() {
               items={activityItems}
               privacyMode={privacyMode}
               onViewAll={handleViewAllActivity}
+              onItemClick={handleActivityItemClick}
             />
             <MoneySectionDivider />
             {earnOnYourCryptoSection}
@@ -360,6 +372,7 @@ export function MoneyHomePage() {
               items={activityItems}
               privacyMode={privacyMode}
               onViewAll={handleViewAllActivity}
+              onItemClick={handleActivityItemClick}
             />
 
             <MoneySectionDivider />
