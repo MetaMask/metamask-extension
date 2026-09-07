@@ -33,10 +33,14 @@ import { moneyFormatUsd } from '../../helpers/money/format';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
 import { MONEY_LANDING_URL } from './constants/urls';
-import { MoneyActivityList } from './components/money-activity-list';
+import {
+  MoneyActivityList,
+  MAX_PREVIEW_ITEMS,
+} from './components/money-activity-list';
 import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards';
 import { MoneyPotentialEarnings } from './components/money-potential-earnings';
 import { MoneyPositionPlaceholder } from './components/money-position-placeholder';
+import { MoneyActivityFilter } from './utils/money-activity-filters';
 
 const MONEY_FUNDED_BALANCE_THRESHOLD = 0.01;
 const MONEY_ONBOARDING_ARTWORK = './images/money-onboarding-stepper-step-1.png';
@@ -153,7 +157,13 @@ export function MoneyHomePage() {
   const isLifetimeEarningsLoading = sinceInceptionQuery.isLoading;
   const { tokens: depositTokens, isNoFeeToken } = useMoneyDepositTokens();
   const privacyMode = useSelector(getPrivacyMode);
-  const { items: activityItems } = useMoneyActivityItems();
+  const {
+    items: activityItems,
+    hasMore: hasMoreActivity,
+    isSettling: isActivitySettling,
+  } = useMoneyActivityItems({
+    fill: { bucket: MoneyActivityFilter.All, count: MAX_PREVIEW_ITEMS },
+  });
   const handleActivityItemClick = useMoneyActivityItemClick();
   const { initiateDeposit, isLoading: isDepositLoading } =
     useMoneyAccountDeposit();
@@ -338,6 +348,8 @@ export function MoneyHomePage() {
               privacyMode={privacyMode}
               onViewAll={handleViewAllActivity}
               onItemClick={handleActivityItemClick}
+              hasMore={hasMoreActivity}
+              isSettling={isActivitySettling}
             />
             <MoneySectionDivider />
             {earnOnYourCryptoSection}
@@ -381,6 +393,8 @@ export function MoneyHomePage() {
               privacyMode={privacyMode}
               onViewAll={handleViewAllActivity}
               onItemClick={handleActivityItemClick}
+              hasMore={hasMoreActivity}
+              isSettling={isActivitySettling}
             />
 
             <MoneySectionDivider />

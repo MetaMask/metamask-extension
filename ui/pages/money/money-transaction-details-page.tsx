@@ -40,6 +40,11 @@ import { selectMoneyActivityDetailsEnabled } from '../../selectors/money/money-a
 import { getPrivacyMode } from '../../selectors/selectors';
 import { getInternalAccountByAddress } from '../../selectors/accounts';
 import {
+  selectTransactionById,
+  type TransactionState,
+} from '../../selectors/transactionController';
+import { onchainItem } from './types/money-activity';
+import {
   getMoneyActivityDisplayInfo,
   type MoneyActivityTranslate,
 } from './utils/money-activity-display';
@@ -52,6 +57,7 @@ import {
   shortenMoneyActivityHex,
 } from './utils/money-transaction-details-display';
 import { getMoneyActivityStatus } from './utils/classify-money-activity';
+import { isVisibleMoneyActivityTransaction } from './utils/money-account-transactions';
 import { MoneyTransactionDetailsRow } from './components/money-transaction-details-row';
 import { MoneyTransactionDetailsError } from './components/money-transaction-details-error';
 
@@ -93,6 +99,9 @@ export function MoneyTransactionDetailsPage() {
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
   const { items } = useMoneyActivityItems();
+  const controllerTx = useSelector((state: TransactionState) =>
+    selectTransactionById(state, transactionId),
+  );
   const pageRef = useRef<HTMLDivElement>(null);
   // useCopyToClipboard analysis: Copies a public transaction hash
   const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
@@ -101,18 +110,31 @@ export function MoneyTransactionDetailsPage() {
     resetOverflowAncestorScroll(pageRef.current);
   }, [transactionId]);
 
-  const item = useMemo(
-    () => items.find((candidate) => candidate.id === transactionId),
-    [items, transactionId],
-  );
-  const fromAddress = item?.tx.txParams.from;
+  const item = useMemo(() => {
+    if (controllerTx) {
+      const moneyAddress = availability.isAvailable
+        ? availability.address
+        : undefined;
+      if (!isVisibleMoneyActivityTransaction(controllerTx, moneyAddress)) {
+        return undefined;
+      }
+      return onchainItem(controllerTx);
+    }
+    return items.find(
+      (candidate) =>
+        candidate.kind === 'onchain' && candidate.id === transactionId,
+    );
+  }, [availability, controllerTx, items, transactionId]);
+  const fromAddress =
+    item?.kind === 'onchain' ? item.tx.txParams.from : undefined;
   const fromAccount = useSelector((state) =>
     fromAddress ? getInternalAccountByAddress(state, fromAddress) : undefined,
   );
 
-  const explorerUrl = item
-    ? getMoneyActivityExplorerUrl(item.tx.chainId, item.tx.hash)
-    : undefined;
+  const explorerUrl =
+    item?.kind === 'onchain'
+      ? getMoneyActivityExplorerUrl(item.tx.chainId, item.tx.hash)
+      : undefined;
 
   const handleBack = useCallback(() => {
     navigate(PREVIOUS_ROUTE);
@@ -132,7 +154,7 @@ export function MoneyTransactionDetailsPage() {
     );
   } else if (!availability.isAvailable) {
     body = <Navigate to={DEFAULT_ROUTE} replace />;
-  } else if (!detailsEnabled || !item) {
+  } else if (!detailsEnabled || !item || item.kind !== 'onchain') {
     body = <Navigate to={MONEY_ACTIVITY_ROUTE} replace />;
   } else {
     const { tx } = item;

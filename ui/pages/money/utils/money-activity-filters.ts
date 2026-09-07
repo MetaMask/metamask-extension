@@ -2,7 +2,11 @@ import {
   type TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import type { MoneyActivityItem } from '../types/money-activity';
+import { isMusdOnMoneyAccountChain } from '@metamask/money-account-utils';
+import {
+  isOnchainMoneyActivityItem,
+  type MoneyActivityItem,
+} from '../types/money-activity';
 
 /**
  * Filter chips on the Money Activity page. Values match mobile; the
@@ -18,6 +22,32 @@ export type MoneyActivityBuckets = Record<
   MoneyActivityFilter,
   MoneyActivityItem[]
 >;
+
+const ERC20_TRANSFER_TYPES: TransactionType[] = [
+  TransactionType.tokenMethodTransfer,
+  TransactionType.tokenMethodTransferFrom,
+];
+
+/**
+ * True when the transaction is an ERC-20 transfer of mUSD on a chain where
+ * the Money Account is active. `transferInformation` is only populated by
+ * incoming-transaction polling; for locally-signed sends we fall back to
+ * `txParams.to`, which for ERC-20 transfer types is the token contract.
+ *
+ * @param tx - Transaction to inspect.
+ * @returns Whether the row is an mUSD ERC-20 transfer on a Money Account chain.
+ */
+export function isMusdErc20Transfer(tx: TransactionMeta): boolean {
+  if (!tx.type || !ERC20_TRANSFER_TYPES.includes(tx.type)) {
+    return false;
+  }
+  return (
+    isMusdOnMoneyAccountChain(
+      tx.transferInformation?.contractAddress,
+      tx.chainId,
+    ) || isMusdOnMoneyAccountChain(tx.txParams?.to, tx.chainId)
+  );
+}
 
 export function isMoneyActivityDeposit(tx: TransactionMeta): boolean {
   if (
@@ -66,12 +96,20 @@ export function isMoneyActivityTransaction(tx: TransactionMeta): boolean {
 export function buildMoneyActivityBuckets(
   items: MoneyActivityItem[],
 ): MoneyActivityBuckets {
-  const deposits = items.filter((item) => isMoneyActivityDeposit(item.tx));
-  const transfers = items.filter((item) => isMoneyActivityTransfer(item.tx));
+  const deposits = items.filter(
+    (item) =>
+      isOnchainMoneyActivityItem(item) && isMoneyActivityDeposit(item.tx),
+  );
+  const transfers = items.filter(
+    (item) =>
+      isOnchainMoneyActivityItem(item) && isMoneyActivityTransfer(item.tx),
+  );
 
   return {
-    [MoneyActivityFilter.All]: items.filter((item) =>
-      isMoneyActivityTransaction(item.tx),
+    [MoneyActivityFilter.All]: items.filter(
+      (item) =>
+        !isOnchainMoneyActivityItem(item) ||
+        isMoneyActivityTransaction(item.tx),
     ),
     [MoneyActivityFilter.Deposits]: deposits,
     [MoneyActivityFilter.Transfers]: transfers,

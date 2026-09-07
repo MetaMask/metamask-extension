@@ -5,6 +5,7 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
+  Skeleton,
   Text,
   TextColor,
   TextVariant,
@@ -20,6 +21,10 @@ export type MoneyActivityListProps = {
   privacyMode?: boolean;
   onViewAll?: () => void;
   onItemClick?: (item: MoneyActivityItem) => void;
+  /** True when more Accounts API pages exist beyond the current preview. */
+  hasMore?: boolean;
+  /** True while the preview is still filling and should not show empty copy. */
+  isSettling?: boolean;
 };
 
 export function MoneyActivityList({
@@ -27,10 +32,13 @@ export function MoneyActivityList({
   privacyMode = false,
   onViewAll,
   onItemClick,
+  hasMore = false,
+  isSettling = false,
 }: MoneyActivityListProps) {
   const t = useI18nContext();
   const previewItems = items.slice(0, MAX_PREVIEW_ITEMS);
-  const hasMoreItems = items.length > MAX_PREVIEW_ITEMS;
+  const hasMoreItems = items.length > MAX_PREVIEW_ITEMS || hasMore;
+  const showEmptyCopy = items.length === 0 && !isSettling;
 
   return (
     <section
@@ -43,7 +51,7 @@ export function MoneyActivityList({
             {t('moneyActivity')}
           </Text>
         </div>
-        {items.length === 0 ? (
+        {showEmptyCopy ? (
           <Text
             variant={TextVariant.BodySm}
             color={TextColor.TextAlternative}
@@ -53,14 +61,29 @@ export function MoneyActivityList({
           </Text>
         ) : null}
       </Box>
-      {previewItems.map((item) => (
-        <MoneyActivityRow
-          key={item.id}
-          item={item}
-          privacyMode={privacyMode}
-          onClick={onItemClick ? () => onItemClick(item) : undefined}
-        />
-      ))}
+      {isSettling && items.length === 0 ? (
+        <div
+          className="flex flex-col gap-3 px-4 py-3"
+          data-testid="money-activity-settling"
+        >
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-12 w-full" />
+        </div>
+      ) : (
+        previewItems.map((item) => (
+          <MoneyActivityRow
+            key={item.id}
+            item={item}
+            privacyMode={privacyMode}
+            onClick={
+              item.kind === 'onchain' && onItemClick
+                ? () => onItemClick(item)
+                : undefined
+            }
+          />
+        ))
+      )}
       {hasMoreItems ? (
         <Box paddingLeft={4} paddingRight={4} paddingTop={3} paddingBottom={3}>
           <Button
