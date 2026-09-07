@@ -1,6 +1,33 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
+ * Which action row the asset overview currently renders. `prefix` mirrors the
+ * `classPrefix` the UI passes to the buttons: `coin` for the native overview,
+ * `token` for the token overview.
+ */
+type ActionsLayout =
+  | { type: 'perps'; prefix: 'coin' | 'token' }
+  | { type: 'standard' };
+
+/** How long the action row must keep the same layout to count as settled. */
+const ACTIONS_LAYOUT_SETTLE_MS = 2000;
+
+const ACTIONS_LAYOUT_TIMEOUT_MS = 15000;
+
+function isSameActionsLayout(
+  a: ActionsLayout,
+  b: ActionsLayout | null,
+): boolean {
+  if (!b || a.type !== b.type) {
+    return false;
+  }
+  if (a.type === 'perps' && b.type === 'perps') {
+    return a.prefix === b.prefix;
+  }
+  return true;
+}
+
+/**
  * Token / coin asset overview: send, swap, receive, and explorer actions.
  *
  * Screen: `#/asset/:chainId/:asset?...` asset details page.
@@ -95,56 +122,42 @@ class TokenOverviewPage {
   }
 
   async clickSwap(): Promise<void> {
-    // Perps market matching is async: the row may briefly show Buy/Swap before
-    // switching to Long/Short/Send/More. Wait until either layout settles.
-    // Prefer a settled Perps row when Long appears, so we do not click Swap
-    // during the brief Buy/Swap flash before markets resolve.
-    await this.driver.waitUntil(
-      async () => {
-        const hasPerpsLong = await this.driver.isElementPresentAndVisible(
-          {
-            css: '[data-testid="coin-overview-long"], [data-testid="token-overview-long"]',
-          },
-          500,
-        );
-        if (hasPerpsLong) {
-          return true;
-        }
-        return await this.driver.isElementPresentAndVisible(
-          this.swapButton,
-          500,
-        );
-      },
-      { timeout: 15000, interval: 500, stableFor: 1000 },
-    );
+    const layout = await this.waitForSettledActionsLayout();
 
-    const hasPerpsLong = await this.driver.isElementPresentAndVisible(
-      {
-        css: '[data-testid="coin-overview-long"], [data-testid="token-overview-long"]',
-      },
-      1000,
-    );
-    if (hasPerpsLong) {
-      const coinMorePresent = await this.driver.isElementPresentAndVisible(
-        this.moreButton,
-        2000,
-      );
-      if (coinMorePresent) {
-        await this.driver.clickElement(this.moreButton);
-        await this.driver.clickElement(
-          '[data-testid="coin-overview-more-swap"]',
-        );
-        return;
-      }
-
-      await this.driver.clickElement('[data-testid="token-overview-more"]');
-      await this.driver.clickElement(
-        '[data-testid="token-overview-more-swap"]',
-      );
+    if (layout.type === 'standard') {
+      await this.driver.clickElement(this.swapButton);
       return;
     }
 
-    await this.driver.clickElement(this.swapButton);
+    // Buy and Swap move into the More menu when the Perps row takes over.
+    await this.driver.clickElement(
+      `[data-testid="${layout.prefix}-overview-more"]`,
+    );
+    await this.driver.clickElement(
+      `[data-testid="${layout.prefix}-overview-more-swap"]`,
+    );
+  }
+
+  /**
+   * Reads the action row currently rendered, or `null` while neither layout is
+   * visible.
+   */
+  private async readActionsLayout(): Promise<ActionsLayout | null> {
+    for (const prefix of ['coin', 'token'] as const) {
+      const hasLong = await this.driver.isElementPresentAndVisible(
+        `[data-testid="${prefix}-overview-long"]`,
+        250,
+      );
+      if (hasLong) {
+        return { type: 'perps', prefix };
+      }
+    }
+
+    const hasSwap = await this.driver.isElementPresentAndVisible(
+      this.swapButton,
+      250,
+    );
+    return hasSwap ? { type: 'standard' } : null;
   }
 
   /**
@@ -156,6 +169,45 @@ class TokenOverviewPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.viewAssetInExplorerButton,
     );
+  }
+
+  /**
+   * Waits until the action row reports the same layout continuously for
+   * `ACTIONS_LAYOUT_SETTLE_MS`, then returns it.
+   *
+   * Perps market matching is async, so the row first renders Buy/Swap and
+   * switches to Long/Short/Send/More once a matching market resolves. Waiting
+   * for "Long or Swap is visible" is not enough: that condition holds in both
+   * layouts, so it stays satisfied straight through the switch and lets a
+   * caller act on controls that are about to unmount. Requiring the same
+   * layout across consecutive polls is what actually proves the row settled.
+   */
+  private async waitForSettledActionsLayout(): Promise<ActionsLayout> {
+    const observed: { layout: ActionsLayout | null; since: number } = {
+      layout: null,
+      since: 0,
+    };
+
+    await this.driver.waitUntil(
+      async () => {
+        const layout = await this.readActionsLayout();
+
+        if (!layout || !isSameActionsLayout(layout, observed.layout)) {
+          observed.layout = layout;
+          observed.since = Date.now();
+          return false;
+        }
+
+        return Date.now() - observed.since >= ACTIONS_LAYOUT_SETTLE_MS;
+      },
+      { timeout: ACTIONS_LAYOUT_TIMEOUT_MS, interval: 250 },
+    );
+
+    if (!observed.layout) {
+      throw new Error('Asset action buttons did not settle into a layout.');
+    }
+
+    return observed.layout;
   }
 }
 
