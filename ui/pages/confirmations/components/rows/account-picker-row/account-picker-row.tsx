@@ -54,7 +54,7 @@ export type AccountPickerRowContentProps<AccountType extends SubAccountBase> = {
 };
 
 /**
- * Confirmation row plus searchable account sheet. Mirrors mobile
+ * Confirmation row plus searchable account modal. Mirrors mobile
  * `AccountPickerRowContent` for Perps (and similar) destination pickers.
  *
  * @param props - Component props.
@@ -64,7 +64,7 @@ export type AccountPickerRowContentProps<AccountType extends SubAccountBase> = {
  * @param props.formatBalance - Renders the trailing balance for a list item.
  * @param props.title - Modal title.
  * @param props.searchPlaceholder - Search field placeholder.
- * @param props.testIds - Test ids for the row, sheet, search, and items.
+ * @param props.testIds - Test ids for the row, modal, search, and items.
  */
 export function AccountPickerRowContent<AccountType extends SubAccountBase>({
   subAccounts,

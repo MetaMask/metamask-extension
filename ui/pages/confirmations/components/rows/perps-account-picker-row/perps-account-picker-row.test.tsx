@@ -162,6 +162,24 @@ describe('PerpsAccountPickerRow', () => {
     expect(screen.getByText('$300')).toBeInTheDocument();
   });
 
+  it('formats a balance containing display separators', () => {
+    usePerpsSubAccountsMock.mockReturnValue({
+      subAccounts: [
+        {
+          ...MOCK_ACCOUNTS[0],
+          totalBalance: '$1,234.56',
+        },
+      ],
+      selectedSubAccount: MOCK_ACCOUNTS[0],
+    });
+
+    renderWithProvider(<PerpsAccountPickerRow />, mockStore({}));
+
+    fireEvent.click(screen.getByTestId(PERPS_ACCOUNT_PICKER_TEST_IDS.pill));
+
+    expect(screen.getByText('$1234.56')).toBeInTheDocument();
+  });
+
   it('displays a skeleton while a perps balance is still loading', () => {
     usePerpsSubAccountsMock.mockReturnValue({
       subAccounts: [

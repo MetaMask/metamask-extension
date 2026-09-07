@@ -335,6 +335,35 @@ describe('usePerpsSubAccounts', () => {
     );
   });
 
+  it('fetches connected state again after the selected account changes', async () => {
+    setupSelectorMock([EVM_ACCOUNT_1, EVM_ACCOUNT_2], GROUP_MAP, {
+      selectedEvmAccount: EVM_ACCOUNT_1,
+    });
+
+    const { rerender } = renderHook(() => usePerpsSubAccounts());
+
+    await waitFor(() => {
+      expect(
+        mockSubmitRequestToBackground.mock.calls.filter(
+          ([, params]) => params?.length === 0,
+        ),
+      ).toHaveLength(1);
+    });
+
+    setupSelectorMock([EVM_ACCOUNT_1, EVM_ACCOUNT_2], GROUP_MAP, {
+      selectedEvmAccount: EVM_ACCOUNT_2,
+    });
+    rerender();
+
+    await waitFor(() => {
+      expect(
+        mockSubmitRequestToBackground.mock.calls.filter(
+          ([, params]) => params?.length === 0,
+        ),
+      ).toHaveLength(2);
+    });
+  });
+
   it('overlays cached perps account state on the selected EVM account', async () => {
     setupSelectorMock([EVM_ACCOUNT_1, EVM_ACCOUNT_2], GROUP_MAP, {
       selectedEvmAccount: EVM_ACCOUNT_1,

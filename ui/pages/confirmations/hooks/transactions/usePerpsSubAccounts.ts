@@ -7,6 +7,11 @@ import {
   coalesceBackgroundRequest,
   invalidateCoalescedRequest,
 } from '../../../../hooks/perps/coalesceBackgroundRequest';
+import {
+  isFinitePerpsTotal,
+  parsePerpsTotalBalance,
+  UNKNOWN_BALANCE,
+} from '../../../../hooks/perps/perpsBalance';
 import { getSelectedEvmInternalAccount } from '../../../../selectors';
 import { getInternalAccounts } from '../../../../selectors/accounts';
 import { getAllAccountGroups } from '../../../../selectors/multichain-accounts/account-tree';
@@ -20,17 +25,10 @@ const ZERO_BALANCE = {
   totalBalance: '0',
 } as const;
 
-/** Placeholder until a balance fetch completes — picker shows a skeleton. */
-const UNKNOWN_BALANCE = {
-  spendableBalance: '',
-  withdrawableBalance: '',
-  totalBalance: '',
-} as const;
-
 /** Cap parallel HL standalone reads so a large account list does not 429. */
 const STANDALONE_FETCH_CONCURRENCY = 2;
 
-/** One retry after a rate-limit / empty-DEX sentinel before giving up. */
+/** Retry once when the first standalone read is unresolved. */
 const STANDALONE_FETCH_MAX_ATTEMPTS = 2;
 
 export type SubAccountInfo = {
@@ -52,26 +50,6 @@ type PerpsBalance = {
   totalBalance: string;
 };
 
-/**
- * Whether `totalBalance` is a usable number (including real `$0`).
- * HL may return `"--"` / `"NaN"` when DEX queries fail under load.
- *
- * @param totalBalance - Raw totalBalance string from AccountState.
- * @returns True when the value parses to a finite number.
- */
-export function isFinitePerpsTotal(totalBalance: string): boolean {
-  const cleaned = String(totalBalance).replace(/[^0-9.-]/gu, '');
-  if (
-    cleaned === '' ||
-    cleaned === '-' ||
-    cleaned === '.' ||
-    cleaned === '-.'
-  ) {
-    return false;
-  }
-  return Number.isFinite(Number.parseFloat(cleaned));
-}
-
 function toPerpsBalance(state: AccountState): PerpsBalance {
   return {
     spendableBalance: state.spendableBalance ?? '0',
@@ -81,11 +59,10 @@ function toPerpsBalance(state: AccountState): PerpsBalance {
 }
 
 function numericTotal(balance: PerpsBalance): number {
-  const parsed = Number.parseFloat(balance.totalBalance);
-  return Number.isFinite(parsed) ? parsed : 0;
+  return parsePerpsTotalBalance(balance.totalBalance) ?? 0;
 }
 
-function preferRicherBalance(
+function preferHigherTotalBalance(
   first: PerpsBalance,
   second: PerpsBalance,
 ): PerpsBalance {
@@ -103,7 +80,7 @@ function mergeFetchedBalance(
     : null;
 
   if (previousResolved && incomingResolved) {
-    return preferRicherBalance(previousResolved, incomingResolved);
+    return preferHigherTotalBalance(previousResolved, incomingResolved);
   }
   if (incomingResolved) {
     return incomingResolved;
@@ -202,11 +179,16 @@ async function fetchStandaloneBalance(address: string): Promise<PerpsBalance> {
  * Connected (non-standalone) read for the selected EVM account. This is the
  * same path the Perps tab uses, including Unified spot-fold and HIP-3 DEXs.
  * Standalone REST for that address can report `$0` while this path does not.
+ *
+ * @param address - Selected EVM account address used to scope the request cache.
+ * @returns The connected balance when resolved, otherwise null.
  */
-async function fetchConnectedBalance(): Promise<PerpsBalance | null> {
+async function fetchConnectedBalance(
+  address: string,
+): Promise<PerpsBalance | null> {
   try {
     const state = await coalesceBackgroundRequest<AccountState | null>(
-      'perpsGetAccountState|connected',
+      `perpsGetAccountState|connected|${address.toLowerCase()}`,
       () =>
         submitRequestToBackground<AccountState | null>(
           'perpsGetAccountState',
@@ -226,7 +208,8 @@ async function fetchConnectedBalance(): Promise<PerpsBalance | null> {
  * Lists EVM accounts as Perps destination accounts, with balances from
  * `PerpsController.getAccountState`. Mirrors mobile `usePerpsSubAccounts`.
  *
- * @returns Perps sub-accounts and the one matching `txParams.from`.
+ * @returns Perps sub-accounts and the one matching `txParams.from`, falling
+ * back to the first sub-account when there is no match.
  */
 export function usePerpsSubAccounts(): UsePerpsSubAccountsReturn {
   const transactionMeta = useTransactionMetadataRequest();
@@ -279,7 +262,7 @@ export function usePerpsSubAccounts(): UsePerpsSubAccountsReturn {
     });
 
     if (connectedAddress) {
-      fetchConnectedBalance()
+      fetchConnectedBalance(connectedAddress)
         .then((connectedBalance) => {
           if (cancelled || !connectedBalance) {
             return;
@@ -322,7 +305,7 @@ export function usePerpsSubAccounts(): UsePerpsSubAccountsReturn {
           cachedAccountState &&
           isFinitePerpsTotal(cachedAccountState.totalBalance ?? '')
         ) {
-          balance = preferRicherBalance(
+          balance = preferHigherTotalBalance(
             isFinitePerpsTotal(balance.totalBalance) ? balance : ZERO_BALANCE,
             toPerpsBalance(cachedAccountState),
           );

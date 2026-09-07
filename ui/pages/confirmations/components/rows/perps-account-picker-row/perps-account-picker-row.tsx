@@ -16,13 +16,13 @@ import { formatPerpsFiat } from '../../../../../../shared/lib/perps-formatters';
 import { updateEditableParams } from '../../../../../store/actions';
 import { useDispatch } from '../../../../../store/hooks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { parsePerpsTotalBalance } from '../../../../../hooks/perps/perpsBalance';
 import { useConfirmContext } from '../../../context/confirm';
 import {
   PayWithOption,
   useConfirmationNavigationOptions,
 } from '../../../hooks/useConfirmationNavigation';
 import {
-  isFinitePerpsTotal,
   usePerpsSubAccounts,
   type SubAccountInfo,
 } from '../../../hooks/transactions/usePerpsSubAccounts';
@@ -53,8 +53,8 @@ export const PERPS_ACCOUNT_BALANCE_SKELETON_TEST_ID =
  * @returns Skeleton while loading, otherwise formatted fiat text.
  */
 const formatBalance = (account: SubAccountInfo): React.ReactNode => {
-  const raw = account.totalBalance ?? '';
-  if (!isFinitePerpsTotal(raw)) {
+  const totalBalance = parsePerpsTotalBalance(account.totalBalance ?? '');
+  if (totalBalance === null) {
     return (
       <Skeleton
         data-testid={PERPS_ACCOUNT_BALANCE_SKELETON_TEST_ID}
@@ -68,7 +68,7 @@ const formatBalance = (account: SubAccountInfo): React.ReactNode => {
 
   return (
     <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-      {formatPerpsFiat(Number.parseFloat(raw))}
+      {formatPerpsFiat(totalBalance)}
     </Text>
   );
 };

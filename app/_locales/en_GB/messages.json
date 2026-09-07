@@ -9286,7 +9286,8 @@
     "message": "Search an account or contact"
   },
   "searchAnAccount": {
-    "message": "Search an account"
+    "message": "Search an account",
+    "description": "Search input placeholder for the Perps destination account picker"
   },
   "searchForAnAssetToSend": {
     "message": "Search for an asset to send"
