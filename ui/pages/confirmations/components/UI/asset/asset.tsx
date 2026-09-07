@@ -1,4 +1,9 @@
 import React, { type ReactNode } from 'react';
+import {
+  Box as DSBox,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { KeyringAccountType } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 import {
@@ -210,8 +215,12 @@ const TokenAsset = ({
         flexDirection={FlexDirection.Column}
         style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}
       >
-        <Box className="flex min-w-0 flex-row items-center overflow-hidden">
-          <Box className="mr-1 min-w-0 overflow-hidden">
+        <DSBox
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          className="min-w-0 overflow-hidden"
+        >
+          <DSBox className="mr-1 min-w-0 overflow-hidden">
             <Text
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
@@ -219,14 +228,14 @@ const TokenAsset = ({
             >
               {name}
             </Text>
-          </Box>
-          {tag ? <Box className="shrink-0">{tag}</Box> : null}
+          </DSBox>
+          {tag ? <DSBox className="shrink-0">{tag}</DSBox> : null}
           {typeLabel ? (
-            <Box className="shrink-0">
+            <DSBox className="shrink-0">
               <AccountTypeLabel label={typeLabel} />
-            </Box>
+            </DSBox>
           ) : null}
-        </Box>
+        </DSBox>
         <Text
           variant={TextVariant.bodySmMedium}
           color={TextColor.textAlternative}
