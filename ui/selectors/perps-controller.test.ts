@@ -26,6 +26,8 @@ import {
   selectPerpsCachedPositions,
   selectPerpsCachedOrders,
   selectPerpsCachedAccountState,
+  selectPerpsMarketForAsset,
+  selectPerpsPositionForMarket,
   selectPerpsPerpsBalances,
   selectPerpsMarketFilterPreferences,
   selectPerpsShouldShowDepositToast,
@@ -604,7 +606,7 @@ describe('perps-controller selectors', () => {
           buildState({
             activeProvider: 'hyperliquid',
             cachedMarketDataByProvider: {
-              hyperliquid: { data, timestamp: 0 },
+              'hyperliquid:mainnet': { data, timestamp: 0 },
             },
           }),
         ),
@@ -637,7 +639,7 @@ describe('perps-controller selectors', () => {
           buildState({
             activeProvider: 'hyperliquid',
             cachedUserDataByProvider: {
-              hyperliquid: {
+              'hyperliquid:mainnet': {
                 positions,
                 orders: [],
                 accountState: null,
@@ -682,7 +684,7 @@ describe('perps-controller selectors', () => {
           buildState({
             activeProvider: 'hyperliquid',
             cachedUserDataByProvider: {
-              hyperliquid: {
+              'hyperliquid:mainnet': {
                 positions: [],
                 orders,
                 accountState: null,
@@ -727,7 +729,7 @@ describe('perps-controller selectors', () => {
           buildState({
             activeProvider: 'hyperliquid',
             cachedUserDataByProvider: {
-              hyperliquid: {
+              'hyperliquid:mainnet': {
                 positions: [],
                 orders: [],
                 accountState: account,
@@ -761,6 +763,73 @@ describe('perps-controller selectors', () => {
 
     it('defaults to null', () => {
       expect(selectPerpsCachedAccountState(buildState())).toBeNull();
+    });
+  });
+
+  describe('selectPerpsMarketForAsset', () => {
+    it('returns the market matching the asset symbol', () => {
+      const market = {
+        symbol: 'ETH',
+        name: 'Ethereum',
+        maxLeverage: '40x',
+        price: '$4,000',
+        change24h: '$100',
+        change24hPercent: '2.5%',
+        volume: '$1B',
+      };
+      const state = buildState({
+        cachedMarketDataByProvider: {
+          'hyperliquid:mainnet': { data: [market], timestamp: 0 },
+        },
+      });
+
+      expect(selectPerpsMarketForAsset(state, 'eth')).toBe(market);
+    });
+
+    it('matches a HIP-3 market by its display symbol', () => {
+      const market = {
+        symbol: 'xyz:TSLA',
+        name: 'Tesla',
+        maxLeverage: '10x',
+        price: '$300',
+        change24h: '$5',
+        change24hPercent: '1.7%',
+        volume: '$10M',
+      };
+      const state = buildState({
+        cachedMarketDataByProvider: {
+          'hyperliquid:mainnet': { data: [market], timestamp: 0 },
+        },
+      });
+
+      expect(selectPerpsMarketForAsset(state, 'TSLA')).toBe(market);
+    });
+
+    it('returns null when no market matches the asset symbol', () => {
+      expect(selectPerpsMarketForAsset(buildState(), 'ETH')).toBeNull();
+    });
+  });
+
+  describe('selectPerpsPositionForMarket', () => {
+    it('returns the position matching the raw market symbol', () => {
+      const position = { symbol: 'xyz:TSLA' };
+      const state = buildState({
+        cachedUserDataByProvider: {
+          'hyperliquid:mainnet': {
+            positions: [position],
+            orders: [],
+            accountState: null,
+            timestamp: 0,
+            address: '0x123',
+          },
+        },
+      });
+
+      expect(selectPerpsPositionForMarket(state, 'XYZ:tsla')).toBe(position);
+    });
+
+    it('returns null when no position matches the market', () => {
+      expect(selectPerpsPositionForMarket(buildState(), 'ETH')).toBeNull();
     });
   });
 

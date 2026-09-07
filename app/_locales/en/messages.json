@@ -7472,6 +7472,14 @@
   "perpsDisclaimer": {
     "message": "Perpetual contracts are very risky, and you could suddenly and without notice lose your entire investment. You trade entirely at your own risk. Powered by Hyperliquid. Price chart powered by TradingView."
   },
+  "perpsDiscoveryBannerSubtitle": {
+    "message": "Multiply your P&L up to $1",
+    "description": "$1 is the maximum leverage available for the matching Perps market, for example '40x'."
+  },
+  "perpsDiscoveryBannerTitle": {
+    "message": "Trade $1 perps",
+    "description": "$1 is the spot asset symbol, for example 'ETH'."
+  },
   "perpsEmptyDescription": {
     "message": "Trade perpetuals with leverage. Open your first position to get started."
   },

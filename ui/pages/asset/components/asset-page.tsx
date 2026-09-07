@@ -107,6 +107,7 @@ import { AssetActivateCard } from './asset-activation-card';
 import { SpendableBalanceSection } from './spendable-balance-section';
 import { TronDailyResources } from './tron-daily-resources';
 import { MusdPositionSection } from './musd-position-section';
+import { PerpsDiscoveryBanner } from './perps-discovery-banner';
 import {
   AssetPageSecurityTrustBanner,
   AssetPageSecurityTrustHeaderBadge,
@@ -481,6 +482,7 @@ const AssetPage = ({
               isMarketClosed={isMarketClosed}
             />
           ) : null}
+          <PerpsDiscoveryBanner asset={updatedAsset} />
           {isMarketClosed && tokenAsset ? (
             <Box marginTop={4}>
               <MarketClosedActionButton onClick={handleOpenMarketClosedModal} />

@@ -568,6 +568,59 @@ describe('AssetPage', () => {
     expect(swapButton).not.toBeDisabled();
   });
 
+  it('renders the Perps discovery banner below the token action buttons', () => {
+    const { getByTestId } = renderWithProvider(
+      <AssetPage
+        asset={{
+          ...token,
+          symbol: 'ETH',
+          aggregators: ['metamask', 'coinGecko'],
+        }}
+        optionsButton={null}
+      />,
+      configureMockStore([thunk])({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          activeProvider: 'hyperliquid',
+          isTestnet: false,
+          cachedMarketDataByProvider: {
+            'hyperliquid:mainnet': {
+              data: [
+                {
+                  symbol: 'ETH',
+                  name: 'Ethereum',
+                  maxLeverage: '40x',
+                  price: '$4,000',
+                  change24h: '$100',
+                  change24hPercent: '2.5%',
+                  volume: '$1B',
+                },
+              ],
+              timestamp: 0,
+            },
+          },
+          cachedUserDataByProvider: {
+            'hyperliquid:mainnet': {
+              positions: [],
+              orders: [],
+              accountState: null,
+              timestamp: 0,
+              address: selectedAccountAddress,
+            },
+          },
+        },
+      }),
+    );
+
+    const swapButton = getByTestId('token-overview-swap');
+    const banner = getByTestId('perps-discovery-banner');
+
+    expect(swapButton.compareDocumentPosition(banner)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+  });
+
   it('should render the network name', async () => {
     const mockedStore = configureMockStore([thunk])(mockStore);
 

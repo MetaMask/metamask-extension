@@ -7,7 +7,10 @@ import {
 import {
   type PerpsControllerState,
   DEFAULT_PRO_LAYOUT_PREFERENCES,
+  getPerpsDisplaySymbol,
+  type PerpsMarketData,
   type ProLayoutPreferences,
+  type Position,
 } from '@metamask/perps-controller';
 
 /**
@@ -185,25 +188,89 @@ export const selectPerpsLastError = (state: PerpsState) =>
 export const selectPerpsSelectedPaymentToken = (state: PerpsState) =>
   state.metamask.selectedPaymentToken ?? null;
 
-export const selectPerpsCachedMarketData = (state: PerpsState) => {
+const selectPerpsCacheKey = (state: PerpsState) => {
   const provider = selectPerpsActiveProvider(state);
-  return state.metamask.cachedMarketDataByProvider?.[provider]?.data ?? null;
+  const network = selectPerpsIsTestnet(state) ? 'testnet' : 'mainnet';
+  return `${provider}:${network}`;
+};
+
+export const selectPerpsCachedMarketData = (state: PerpsState) => {
+  const cacheKey = selectPerpsCacheKey(state);
+  const provider = selectPerpsActiveProvider(state);
+  return (
+    state.metamask.cachedMarketDataByProvider?.[cacheKey]?.data ??
+    state.metamask.cachedMarketDataByProvider?.[provider]?.data ??
+    null
+  );
 };
 
 export const selectPerpsCachedPositions = (state: PerpsState) => {
+  const cacheKey = selectPerpsCacheKey(state);
   const provider = selectPerpsActiveProvider(state);
-  return state.metamask.cachedUserDataByProvider?.[provider]?.positions ?? null;
+  return (
+    state.metamask.cachedUserDataByProvider?.[cacheKey]?.positions ??
+    state.metamask.cachedUserDataByProvider?.[provider]?.positions ??
+    null
+  );
 };
 
 export const selectPerpsCachedOrders = (state: PerpsState) => {
+  const cacheKey = selectPerpsCacheKey(state);
   const provider = selectPerpsActiveProvider(state);
-  return state.metamask.cachedUserDataByProvider?.[provider]?.orders ?? null;
+  return (
+    state.metamask.cachedUserDataByProvider?.[cacheKey]?.orders ??
+    state.metamask.cachedUserDataByProvider?.[provider]?.orders ??
+    null
+  );
 };
 
 export const selectPerpsCachedAccountState = (state: PerpsState) => {
+  const cacheKey = selectPerpsCacheKey(state);
   const provider = selectPerpsActiveProvider(state);
   return (
-    state.metamask.cachedUserDataByProvider?.[provider]?.accountState ?? null
+    state.metamask.cachedUserDataByProvider?.[cacheKey]?.accountState ??
+    state.metamask.cachedUserDataByProvider?.[provider]?.accountState ??
+    null
+  );
+};
+
+/**
+ * Finds a Perps market matching a spot asset symbol.
+ *
+ * @param state - Perps controller state.
+ * @param assetSymbol - Spot asset symbol.
+ * @returns The matching market, or null when none is cached.
+ */
+export const selectPerpsMarketForAsset = (
+  state: PerpsState,
+  assetSymbol: string,
+): PerpsMarketData | null => {
+  const normalizedAssetSymbol = assetSymbol.toUpperCase();
+  return (
+    selectPerpsCachedMarketData(state)?.find(
+      (market) =>
+        getPerpsDisplaySymbol(market.symbol).toUpperCase() ===
+        normalizedAssetSymbol,
+    ) ?? null
+  );
+};
+
+/**
+ * Finds an open position for a Perps market.
+ *
+ * @param state - Perps controller state.
+ * @param marketSymbol - Raw Perps market symbol.
+ * @returns The matching position, or null when none is cached.
+ */
+export const selectPerpsPositionForMarket = (
+  state: PerpsState,
+  marketSymbol: string,
+): Position | null => {
+  const normalizedMarketSymbol = marketSymbol.toUpperCase();
+  return (
+    selectPerpsCachedPositions(state)?.find(
+      (position) => position.symbol.toUpperCase() === normalizedMarketSymbol,
+    ) ?? null
   );
 };
 
