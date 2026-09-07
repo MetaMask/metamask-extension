@@ -140,21 +140,46 @@ describe('isVisibleMoneyActivityTransaction', () => {
     ).toBe(true);
   });
 
-  it('excludes a local mUSD transfer whose recipient is not the Money Account', () => {
+  it('excludes a Money Pay transaction that failed locally without an on-chain revert', () => {
     expect(
       isVisibleMoneyActivityTransaction(
         makeTx({
-          type: TransactionType.tokenMethodTransfer,
+          type: TransactionType.moneyAccountDeposit,
+          status: TransactionStatus.failed,
+        }),
+        MONEY_ADDRESS,
+      ),
+    ).toBe(false);
+  });
+
+  it('includes a Money Pay transaction that reverted on-chain', () => {
+    expect(
+      isVisibleMoneyActivityTransaction(
+        makeTx({
+          type: TransactionType.moneyAccountDeposit,
+          status: TransactionStatus.failed,
+          txReceipt: { status: '0x0' },
+        }),
+        MONEY_ADDRESS,
+      ),
+    ).toBe(true);
+  });
+
+  it('includes a confirmed Pay transaction signed from the Money Account', () => {
+    expect(
+      isVisibleMoneyActivityTransaction(
+        makeTx({
+          type: TransactionType.contractInteraction,
+          metamaskPay: { tokenAddress: MUSD_TOKEN_ADDRESS, chainId: '0x8f' },
           txParams: {
-            from: OTHER_ADDRESS,
-            to: MUSD_TOKEN_ADDRESS,
-            data: transferCalldata(OTHER_ADDRESS, 1_000_000n),
+            from: MONEY_ADDRESS,
+            to: OTHER_ADDRESS,
             value: '0x0',
           },
         }),
         MONEY_ADDRESS,
       ),
-    ).toBe(false);
+    ).toBe(true);
   });
 });
 
@@ -176,5 +201,33 @@ describe('filterMoneyAccountTransactions', () => {
         (tx) => tx.id,
       ),
     ).toStrictEqual(['newer', 'older']);
+  });
+
+  it('promotes a confirmed Pay source tx when the Money deposit failed locally', () => {
+    const deposit = makeTx({
+      id: 'deposit',
+      time: 1,
+      type: TransactionType.moneyAccountDeposit,
+      status: TransactionStatus.failed,
+      requiredTransactionIds: ['pay-source'],
+    });
+    const paySource = makeTx({
+      id: 'pay-source',
+      time: 2,
+      type: TransactionType.contractInteraction,
+      status: TransactionStatus.confirmed,
+      metamaskPay: { targetFiat: '0.1' },
+      txParams: {
+        from: OTHER_ADDRESS,
+        to: MUSD_TOKEN_ADDRESS,
+        value: '0x0',
+      },
+    });
+
+    expect(
+      filterMoneyAccountTransactions([deposit, paySource], MONEY_ADDRESS),
+    ).toStrictEqual([
+      { ...paySource, type: TransactionType.moneyAccountDeposit },
+    ]);
   });
 });

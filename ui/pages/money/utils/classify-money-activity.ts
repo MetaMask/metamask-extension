@@ -14,9 +14,61 @@ export type MoneyActivityStatus = 'pending' | 'confirmed' | 'failed';
 
 export type MoneyActivityKind = 'deposited' | 'received' | 'converted' | 'sent';
 
+const ON_CHAIN_REVERT_RECEIPT_STATUS = '0x0';
+const ON_CHAIN_SUCCESS_RECEIPT_STATUSES = new Set(['0x1', '0x01']);
+
+function receiptStatus(tx: TransactionMeta): string | undefined {
+  const status = tx.txReceipt?.status;
+  return typeof status === 'string' || typeof status === 'number'
+    ? String(status)
+    : undefined;
+}
+
+/**
+ * True when the transaction reverted on-chain. Wallet activity uses the same
+ * `txReceipt.status === '0x0'` check; TransactionController `failed` alone
+ * can also mean a local RPC/relayer error that never consumed a nonce.
+ *
+ * @param tx - Transaction metadata.
+ * @returns Whether the receipt reports an on-chain revert.
+ */
+export function isOnChainRevertedTransaction(tx: TransactionMeta): boolean {
+  return receiptStatus(tx) === ON_CHAIN_REVERT_RECEIPT_STATUS;
+}
+
+/**
+ * True when TransactionController marked the tx `failed` without an on-chain
+ * revert or successful receipt. These are local-only failures; a later
+ * confirmed Pay/7702 tx often reuses the nonce and is the row to show.
+ *
+ * @param tx - Transaction metadata.
+ * @returns Whether this is an off-chain failure that should not surface.
+ */
+export function isEphemeralFailedTransaction(tx: TransactionMeta): boolean {
+  if (tx.status !== TransactionStatus.failed) {
+    return false;
+  }
+  const status = receiptStatus(tx);
+  if (status === ON_CHAIN_REVERT_RECEIPT_STATUS) {
+    return false;
+  }
+  if (status && ON_CHAIN_SUCCESS_RECEIPT_STATUSES.has(status)) {
+    return false;
+  }
+  return true;
+}
+
 export function getMoneyActivityStatus(
   tx: TransactionMeta,
 ): MoneyActivityStatus {
+  if (isOnChainRevertedTransaction(tx)) {
+    return 'failed';
+  }
+  const status = receiptStatus(tx);
+  if (status && ON_CHAIN_SUCCESS_RECEIPT_STATUSES.has(status)) {
+    return 'confirmed';
+  }
+
   switch (tx.status) {
     case TransactionStatus.unapproved:
     case TransactionStatus.approved:
@@ -42,18 +94,23 @@ const TITLE_KEY_TO_KIND: Record<MoneyActivityTitleKey, MoneyActivityKind> = {
   sent: 'sent',
 };
 
-function resolveMoneyTransactionType(
+/**
+ * Effective Money Pay type, unwrapping EIP-7702 / contract-interaction
+ * parents whose deposit or withdraw lives on a nested call.
+ *
+ * @param tx - Transaction metadata.
+ * @returns Nested money type when present, otherwise the top-level type.
+ */
+export function resolveMoneyTransactionType(
   tx: TransactionMeta,
 ): TransactionType | undefined {
-  if (tx.type === TransactionType.batch) {
-    const nestedMoneyType = tx.nestedTransactions?.find(
-      (nested) =>
-        nested.type === TransactionType.moneyAccountDeposit ||
-        nested.type === TransactionType.moneyAccountWithdraw,
-    )?.type;
-    if (nestedMoneyType) {
-      return nestedMoneyType;
-    }
+  const nestedMoneyType = tx.nestedTransactions?.find(
+    (nested) =>
+      nested.type === TransactionType.moneyAccountDeposit ||
+      nested.type === TransactionType.moneyAccountWithdraw,
+  )?.type;
+  if (nestedMoneyType) {
+    return nestedMoneyType;
   }
   return tx.type;
 }

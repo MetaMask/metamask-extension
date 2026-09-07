@@ -4,7 +4,12 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { isMoneyAccountTx } from '../../../helpers/money/money-transaction-guards';
 import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
+import {
+  isEphemeralFailedTransaction,
+  resolveMoneyTransactionType,
+} from './classify-money-activity';
 import {
   isMoneyActivityDeposit,
   isMoneyActivityTransfer,
@@ -31,21 +36,13 @@ function isMoneyAccountTxVisible(tx: TransactionMeta): boolean {
   return hasVisibleStatus(tx) || PAY_HELD_STATUSES.includes(tx.status);
 }
 
-function isMoneyAccountTxType(tx: TransactionMeta): boolean {
-  if (
-    tx.type === TransactionType.moneyAccountDeposit ||
-    tx.type === TransactionType.moneyAccountWithdraw
-  ) {
-    return true;
-  }
-
-  return (
-    tx.nestedTransactions?.some(
-      (nested) =>
-        nested.type === TransactionType.moneyAccountDeposit ||
-        nested.type === TransactionType.moneyAccountWithdraw,
-    ) ?? false
-  );
+function moneyPayTypeFromParent(
+  parent: TransactionMeta,
+): TransactionType.moneyAccountDeposit | TransactionType.moneyAccountWithdraw {
+  return resolveMoneyTransactionType(parent) ===
+    TransactionType.moneyAccountWithdraw
+    ? TransactionType.moneyAccountWithdraw
+    : TransactionType.moneyAccountDeposit;
 }
 
 /**
@@ -66,6 +63,8 @@ function getErc20TransferRecipient(tx: TransactionMeta): string | undefined {
  * user-confirmed (`approved`/`signed` plus submitted/confirmed/failed).
  * Incoming mUSD and locally-signed ERC-20 transfers require a settled
  * visible status so mid-compose and aborted rows do not render as received.
+ * Local RPC/relayer `failed` rows with no on-chain revert are hidden; a
+ * later confirmed Pay tx is the one that should render.
  *
  * @param tx - Transaction to evaluate.
  * @param moneyAddress - Checksummed Money Account address, when known.
@@ -75,7 +74,10 @@ export function isVisibleMoneyActivityTransaction(
   tx: TransactionMeta,
   moneyAddress: string | undefined,
 ): boolean {
-  if (isMoneyAccountTxType(tx)) {
+  if (isMoneyAccountTx(tx)) {
+    if (isEphemeralFailedTransaction(tx)) {
+      return false;
+    }
     return isMoneyAccountTxVisible(tx);
   }
 
@@ -85,6 +87,14 @@ export function isVisibleMoneyActivityTransaction(
 
   if (!hasVisibleStatus(tx)) {
     return false;
+  }
+
+  if (
+    tx.metamaskPay &&
+    isEqualCaseInsensitive(tx.txParams?.from ?? '', moneyAddress) &&
+    !isEphemeralFailedTransaction(tx)
+  ) {
+    return true;
   }
 
   if (
@@ -114,6 +124,10 @@ export function isVisibleMoneyActivityTransaction(
 /**
  * Filters and newest-first sorts Money activity transactions.
  *
+ * When a Money Pay row failed locally (no on-chain revert) and Pay confirmed
+ * a required source tx instead, that confirmed tx is shown with the parent's
+ * deposit/withdraw type so Home does not render a $0 "failed" placeholder.
+ *
  * @param transactions - Non-replaced TransactionController rows.
  * @param moneyAddress - Checksummed Money Account address, when known.
  * @returns Visible Money transactions, newest first.
@@ -122,8 +136,42 @@ export function filterMoneyAccountTransactions(
   transactions: TransactionMeta[],
   moneyAddress: string | undefined,
 ): TransactionMeta[] {
+  const parentByRequiredId = new Map<string, TransactionMeta>();
+  const parentByBatchId = new Map<string, TransactionMeta>();
+  for (const parent of transactions) {
+    if (!isMoneyAccountTx(parent) || !isEphemeralFailedTransaction(parent)) {
+      continue;
+    }
+    for (const requiredId of parent.requiredTransactionIds ?? []) {
+      parentByRequiredId.set(requiredId, parent);
+    }
+    if (parent.batchId) {
+      parentByBatchId.set(parent.batchId.toLowerCase(), parent);
+    }
+  }
+
   return transactions
-    .filter((tx) => isVisibleMoneyActivityTransaction(tx, moneyAddress))
+    .flatMap((tx) => {
+      if (isVisibleMoneyActivityTransaction(tx, moneyAddress)) {
+        return [tx];
+      }
+
+      const parent =
+        parentByRequiredId.get(tx.id) ??
+        (tx.batchId
+          ? parentByBatchId.get(tx.batchId.toLowerCase())
+          : undefined);
+      if (
+        parent &&
+        parent.id !== tx.id &&
+        hasVisibleStatus(tx) &&
+        !isEphemeralFailedTransaction(tx)
+      ) {
+        return [{ ...tx, type: moneyPayTypeFromParent(parent) }];
+      }
+
+      return [];
+    })
     .sort((left, right) => (right.time ?? 0) - (left.time ?? 0));
 }
 
