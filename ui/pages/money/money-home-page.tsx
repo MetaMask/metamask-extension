@@ -220,7 +220,7 @@ export function MoneyHomePage() {
         />
       </header>
 
-      <div className="flex flex-col gap-2 px-4 pt-2 sm:items-center">
+      <div className="flex flex-col items-center gap-2 px-4 pt-2">
         <div className="flex w-full max-w-[784px] flex-col gap-1 sm:items-center">
           <Text
             variant={TextVariant.DisplayLg}
