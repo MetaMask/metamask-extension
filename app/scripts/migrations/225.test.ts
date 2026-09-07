@@ -18,7 +18,19 @@ const children = [
 function buildState(
   useExternalServices: boolean,
   enabledChildren: number,
-  firstTimeFlowType?: string,
+  {
+    firstTimeFlowType,
+    authConnection,
+    socialBackupsMetadata,
+    isBasicFunctionalityConsolidatedEnabled = false,
+    basicFunctionalityMigrationNotification,
+  }: {
+    firstTimeFlowType?: string;
+    authConnection?: string;
+    socialBackupsMetadata?: unknown[];
+    isBasicFunctionalityConsolidatedEnabled?: boolean;
+    basicFunctionalityMigrationNotification?: 'toast' | 'modal';
+  } = {},
 ) {
   return {
     meta: { version: version - 1 },
@@ -32,10 +44,17 @@ function buildState(
           ]),
         ),
         preferences: {
-          isBasicFunctionalityConsolidatedEnabled: false,
+          isBasicFunctionalityConsolidatedEnabled,
+          ...(basicFunctionalityMigrationNotification
+            ? { basicFunctionalityMigrationNotification }
+            : {}),
         },
       },
       OnboardingController: { firstTimeFlowType },
+      SeedlessOnboardingController: {
+        authConnection,
+        socialBackupsMetadata,
+      },
     },
   };
 }
@@ -66,8 +85,10 @@ describe(`migration #${version}`, () => {
     ).toBe(false);
   });
 
-  it('schedules a modal for social-login users', async () => {
-    const versionedData = buildState(false, 0, 'socialCreate');
+  it('schedules a modal for social-login users via firstTimeFlowType', async () => {
+    const versionedData = buildState(false, 0, {
+      firstTimeFlowType: 'socialCreate',
+    });
 
     await migrate(versionedData);
 
@@ -75,5 +96,52 @@ describe(`migration #${version}`, () => {
       versionedData.data.PreferencesController.preferences
         .basicFunctionalityMigrationNotificationPending,
     ).toBe(true);
+  });
+
+  it('schedules a modal for social-login users via SeedlessOnboardingController.authConnection', async () => {
+    const versionedData = buildState(false, 0, {
+      authConnection: 'google',
+    });
+
+    await migrate(versionedData);
+
+    expect(
+      versionedData.data.PreferencesController.preferences
+        .basicFunctionalityMigrationNotificationPending,
+    ).toBe(true);
+    expect(versionedData.data.PreferencesController.useExternalServices).toBe(
+      true,
+    );
+  });
+
+  it('ignores empty socialBackupsMetadata when detecting social login', async () => {
+    const versionedData = buildState(false, 0, {
+      socialBackupsMetadata: [],
+    });
+
+    await migrate(versionedData);
+
+    expect(
+      versionedData.data.PreferencesController.preferences
+        .basicFunctionalityMigrationNotificationPending,
+    ).toBe(false);
+  });
+
+  it('backfills pending notification from the legacy preference key', async () => {
+    const versionedData = buildState(true, 12, {
+      isBasicFunctionalityConsolidatedEnabled: true,
+      basicFunctionalityMigrationNotification: 'toast',
+    });
+
+    await migrate(versionedData);
+
+    expect(
+      versionedData.data.PreferencesController.preferences
+        .basicFunctionalityMigrationNotificationPending,
+    ).toBe(true);
+    expect(
+      versionedData.data.PreferencesController.preferences
+        .basicFunctionalityMigrationNotification,
+    ).toBeUndefined();
   });
 });

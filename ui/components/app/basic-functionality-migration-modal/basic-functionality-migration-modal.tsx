@@ -19,19 +19,33 @@ import {
 import { PRIVACY_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSocialLoginType } from '../../../selectors';
+import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import { setPreference } from '../../../store/actions';
 import { useAppSelector, useDispatch } from '../../../store/hooks';
+
+function selectShouldShowBasicFunctionalityMigrationModal(state: {
+  metamask: {
+    preferences?: { basicFunctionalityMigrationNotificationPending?: boolean };
+    authConnection?: string;
+    firstTimeFlowType?: string;
+  };
+}): boolean {
+  const isPending = Boolean(
+    state.metamask.preferences?.basicFunctionalityMigrationNotificationPending,
+  );
+  if (!isPending) {
+    return false;
+  }
+
+  return Boolean(getSocialLoginType(state)) || getIsSocialLoginFlow(state);
+}
 
 export function BasicFunctionalityMigrationModal() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isOpen = useAppSelector(
-    (state) =>
-      Boolean(
-        state.metamask.preferences
-          ?.basicFunctionalityMigrationNotificationPending,
-      ) && Boolean(getSocialLoginType(state)),
+    selectShouldShowBasicFunctionalityMigrationModal,
   );
 
   const close = () => {

@@ -20,6 +20,42 @@ const BASIC_FUNCTIONALITY_CHILDREN = [
 const SOCIAL_LOGIN_FLOWS = ['socialCreate', 'socialImport'];
 
 /**
+ * Whether persisted state belongs to a social-login user.
+ *
+ * `authConnection` lives on SeedlessOnboardingController (not
+ * AuthenticationController). Empty `socialBackupsMetadata` arrays are ignored.
+ *
+ * @param data - Persisted MetaMask controller state.
+ */
+function isSocialLoginUser(data: Record<string, unknown>): boolean {
+  const onboardingController = data.OnboardingController as
+    | Record<string, unknown>
+    | undefined;
+  const seedlessOnboardingController = data.SeedlessOnboardingController as
+    | Record<string, unknown>
+    | undefined;
+
+  if (
+    SOCIAL_LOGIN_FLOWS.includes(
+      onboardingController?.firstTimeFlowType as string,
+    )
+  ) {
+    return true;
+  }
+
+  const socialBackupsMetadata =
+    seedlessOnboardingController?.socialBackupsMetadata;
+  if (
+    Array.isArray(socialBackupsMetadata) &&
+    socialBackupsMetadata.length > 0
+  ) {
+    return true;
+  }
+
+  return Boolean(seedlessOnboardingController?.authConnection);
+}
+
+/**
  * Consolidates legacy Basic Functionality preferences and schedules the
  * appropriate one-time notification.
  *
@@ -47,6 +83,14 @@ export const migrate = ((versionedData) => {
   preferencesController.preferences = preferences;
 
   if (preferences.isBasicFunctionalityConsolidatedEnabled === true) {
+    // Backfill users who ran an earlier POC that stored the toast/modal
+    // presentation choice under the old preference key.
+    const legacyNotification =
+      preferences.basicFunctionalityMigrationNotification;
+    if (legacyNotification === 'toast' || legacyNotification === 'modal') {
+      preferences.basicFunctionalityMigrationNotificationPending = true;
+      delete preferences.basicFunctionalityMigrationNotification;
+    }
     versionedData.meta.version = version;
     return;
   }
@@ -62,19 +106,7 @@ export const migrate = ((versionedData) => {
   const enabledChildren = BASIC_FUNCTIONALITY_CHILDREN.filter(
     (preference) => preferencesController[preference] === true,
   ).length;
-  const isSocialLogin =
-    SOCIAL_LOGIN_FLOWS.includes(
-      (data.OnboardingController as Record<string, unknown> | undefined)
-        ?.firstTimeFlowType as string,
-    ) ||
-    Boolean(
-      (data.SeedlessOnboardingController as Record<string, unknown> | undefined)
-        ?.socialBackupsMetadata,
-    ) ||
-    Boolean(
-      (data.AuthenticationController as Record<string, unknown> | undefined)
-        ?.authConnection,
-    );
+  const isSocialLogin = isSocialLoginUser(data);
   const landingState =
     basicFunctionalityEnabled || isSocialLogin || enabledChildren > 9;
 

@@ -22,6 +22,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSocialLoginType } from '../../../selectors';
+import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import { setPreference, toggleDefaultView } from '../../../store/actions';
 import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
@@ -183,13 +184,19 @@ function BasicFunctionalityMigrationToast() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const shouldShow = useSelector(
-    (state) =>
-      Boolean(
-        state.metamask.preferences
-          ?.basicFunctionalityMigrationNotificationPending,
-      ) && !getSocialLoginType(state),
-  );
+  const shouldShow = useSelector((state) => {
+    const isPending = Boolean(
+      state.metamask.preferences
+        ?.basicFunctionalityMigrationNotificationPending,
+    );
+    if (!isPending) {
+      return false;
+    }
+
+    const isSocialLogin =
+      Boolean(getSocialLoginType(state)) || getIsSocialLoginFlow(state);
+    return !isSocialLogin;
+  });
 
   const dismiss = () => {
     dispatch(
