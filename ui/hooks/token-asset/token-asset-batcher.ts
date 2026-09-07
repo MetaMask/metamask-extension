@@ -13,19 +13,8 @@ import { apiClient } from '../../helpers/api-client';
 
 const tokenAssetBatchSize = 25;
 
-let supportedNetworksCache: {
-  fullSupport: string[];
-  partialSupport: string[];
-} | null = null;
 const getSupportedNetworksCached = async () => {
-  if (supportedNetworksCache) {
-    return supportedNetworksCache;
-  }
-
-  const { fullSupport, partialSupport } =
-    await apiClient.tokens.fetchTokenV2SupportedNetworks();
-  supportedNetworksCache = { fullSupport, partialSupport };
-  return supportedNetworksCache;
+  return await apiClient.tokens.fetchTokenV2SupportedNetworks();
 };
 
 async function filterSupportedAssetIds(assetIds: CaipAssetType[]) {
