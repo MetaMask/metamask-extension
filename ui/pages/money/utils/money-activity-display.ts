@@ -208,7 +208,17 @@ function getTransferInformationAmount(
   return toHumanMusdAmount(amount, decimals);
 }
 
-function resolveOnchainAmount(tx: TransactionMeta): BigNumber | undefined {
+/**
+ * Resolves the human mUSD amount for an on-chain Money activity row.
+ * Prefers transfer metadata, then decoded ERC-20 calldata, then deposit
+ * `requiredAssets` / nested approve amount, then Pay fiat.
+ *
+ * @param tx - Transaction to inspect.
+ * @returns Human-unit amount, or undefined when none can be resolved.
+ */
+export function resolveOnchainAmount(
+  tx: TransactionMeta,
+): BigNumber | undefined {
   const transferAmount = getTransferInformationAmount(tx);
   if (transferAmount) {
     return transferAmount;
