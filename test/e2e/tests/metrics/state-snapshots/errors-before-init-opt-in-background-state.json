@@ -38,6 +38,7 @@
       "previousMigrationVersion": 0
     },
     "AppStateController": {
+      "arcUsageNoticeShown": "boolean",
       "browserEnvironment": { "browser": "string" },
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,

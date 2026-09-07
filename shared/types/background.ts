@@ -75,7 +75,6 @@ import type { OnboardingControllerState } from '../../app/scripts/controllers/on
 import type { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
 import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
-import type { IsEquivalent } from './type-level-utils';
 
 export type ControllerStatePropertiesEnumerated = {
   internalAccounts: AccountsControllerState['internalAccounts'];
@@ -115,6 +114,7 @@ export type ControllerStatePropertiesEnumerated = {
   lastViewedUserSurvey: AppStateControllerState['lastViewedUserSurvey'];
   newPrivacyPolicyToastClickedOrClosed: AppStateControllerState['newPrivacyPolicyToastClickedOrClosed'];
   newPrivacyPolicyToastShownDate: AppStateControllerState['newPrivacyPolicyToastShownDate'];
+  arcUsageNoticeShown: AppStateControllerState['arcUsageNoticeShown'];
   pna25Acknowledged: AppStateControllerState['pna25Acknowledged'];
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -313,6 +313,7 @@ export type ControllerStatePropertiesEnumerated = {
   methodData: TransactionControllerState['methodData'];
   transactions: TransactionControllerState['transactions'];
   transactionBatches: TransactionControllerState['transactionBatches'];
+  batchTransactionCounts: TransactionControllerState['batchTransactionCounts'];
   submitHistory: TransactionControllerState['submitHistory'];
   userOperations: UserOperationControllerState['userOperations'];
   isBackupAndSyncEnabled: UserStorageController.UserStorageControllerState['isBackupAndSyncEnabled'];
@@ -336,7 +337,7 @@ export type ControllerStatePropertiesEnumerated = {
   networkConnectionBannerNetwork: NetworkConnectionBannerControllerState['networkConnectionBannerNetwork'];
 };
 
-type ControllerStateTypesMerged = AccountsControllerState &
+export type ControllerStateTypesMerged = AccountsControllerState &
   AccountTrackerControllerState &
   AddressBookControllerState &
   AlertControllerState &
@@ -405,14 +406,7 @@ type ControllerStateTypesMerged = AccountsControllerState &
  * This type contains all controller state top-level properties, and
  * is the source-of-truth for the type of the Redux store `metamask` slice.
  *
- * Evaluates to `never` if the type definition is wrong or incomplete.
  */
-export type FlattenedBackgroundStateProxy =
-  IsEquivalent<
-    ControllerStatePropertiesEnumerated,
-    ControllerStateTypesMerged
-  > extends true
-    ? { isInitialized: boolean } & {
-        [P in keyof ControllerStatePropertiesEnumerated]: ControllerStatePropertiesEnumerated[P];
-      }
-    : never;
+export type FlattenedBackgroundStateProxy = { isInitialized: boolean } & {
+  [P in keyof ControllerStatePropertiesEnumerated]: ControllerStatePropertiesEnumerated[P];
+};

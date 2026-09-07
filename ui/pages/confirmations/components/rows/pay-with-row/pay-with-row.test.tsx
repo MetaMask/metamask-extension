@@ -10,6 +10,7 @@ import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransacti
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import { useSendTokens } from '../../../hooks/send/useSendTokens';
 import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequestOptional } from '../../../hooks/transactions/useTransactionMetadataRequest';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { AlertsName } from '../../../hooks/alerts/constants';
 import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
@@ -26,6 +27,7 @@ jest.mock('../../../selectors/feature-flags', () => ({
 }));
 jest.mock('../../../hooks/send/useSendTokens');
 jest.mock('../../../context/confirm');
+jest.mock('../../../hooks/transactions/useTransactionMetadataRequest');
 jest.mock('../../../../multichain-accounts/account-details/account-type-utils');
 jest.mock('../../../../../hooks/useAlerts');
 jest.mock('../../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
@@ -156,6 +158,9 @@ describe('PayWithRow', () => {
   );
   const useSendTokensMock = jest.mocked(useSendTokens);
   const useConfirmContextMock = jest.mocked(useConfirmContext);
+  const useTransactionMetadataRequestOptionalMock = jest.mocked(
+    useTransactionMetadataRequestOptional,
+  );
   const useAlertsMock = jest.mocked(useAlerts);
   const isHardwareAccountMock = jest.mocked(isHardwareAccount);
   const useMoneyAccountWithdrawableFiatMock = jest.mocked(
@@ -196,6 +201,7 @@ describe('PayWithRow', () => {
         },
       },
     } as never);
+    useTransactionMetadataRequestOptionalMock.mockReturnValue(undefined);
 
     isHardwareAccountMock.mockReturnValue(false);
   });
@@ -439,6 +445,40 @@ describe('PayWithRow', () => {
     expect(screen.getByTestId('pay-with-balance')).toHaveTextContent(
       '($12.34)',
     );
+  });
+
+  it('hides the token select for money account perps deposits', () => {
+    const store = mockStore(getMockState());
+    useTransactionMetadataRequestOptionalMock.mockReturnValue({
+      id: 'test-id',
+      type: TransactionType.perpsDeposit,
+      chainId: CHAIN_ID_MOCK,
+      txParams: {
+        from: FROM_ADDRESS_MOCK,
+      },
+    } as never);
+
+    renderWithProvider(<PayWithRow />, store, '/?payWithOption=money_account');
+
+    expect(screen.queryByTestId('pay-with-row')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('pay-with-pill')).not.toBeInTheDocument();
+  });
+
+  it('shows the token select when payWithOption is MoneyAccount on non-deposit transactions', () => {
+    const store = mockStore(getMockState());
+    useTransactionMetadataRequestOptionalMock.mockReturnValue({
+      id: 'test-id',
+      type: TransactionType.simpleSend,
+      chainId: CHAIN_ID_MOCK,
+      txParams: {
+        from: FROM_ADDRESS_MOCK,
+      },
+    } as never);
+
+    renderWithProvider(<PayWithRow />, store, '/?payWithOption=money_account');
+
+    expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
+    expect(screen.getByTestId('pay-with-pill')).toBeInTheDocument();
   });
 });
 
