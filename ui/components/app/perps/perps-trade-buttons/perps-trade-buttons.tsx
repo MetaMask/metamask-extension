@@ -5,9 +5,9 @@ import {
   IconColor,
   IconName,
   IconSize,
+  Text,
+  TextVariant,
 } from '@metamask/design-system-react';
-import { BlockSize } from '../../../../helpers/constants/design-system';
-import IconButton from '../../../ui/icon-button';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsEligibility } from '../../../../hooks/perps/usePerpsEligibility';
 // Imported from the module, not the `hooks/perps` barrel: hosts that render
@@ -33,31 +33,53 @@ export type PerpsTradeButtonsProps = {
   classPrefix?: string;
 };
 
+type PerpsActionIconButtonProps = {
+  className: string;
+  label: string;
+  iconName: IconName;
+  onClick: () => void;
+  'data-testid': string;
+};
+
 /**
- * Long / Short action buttons shown on the asset page for tokens with a
- * matching Perps market. Clicks run through the compliance gate and the Perps
- * geo-eligibility check (showing the geo-block modal when restricted) before
- * navigating to the Perps order entry screen with the side preselected,
- * matching the mobile Token Details actions.
+ * Asset-row action button matching the existing overview IconButton look,
+ * implemented with design-system primitives so new files stay off the
+ * deprecated `ui/icon-button` import path.
  *
- * Wraps itself in {@link AccessRestrictedProvider} so it can be rendered on
- * non-Perps hosts (token detail / coin overview) that do not already provide
- * that context.
- *
- * @param props - The component props
- * @param props.marketSymbol - The Perps market name to trade
- * @param props.classPrefix - Prefix for button class names and test ids
+ * @param props - Button props
+ * @param props.className - Extra class names (e.g. overview button class)
+ * @param props.label - Visible button label
+ * @param props.iconName - Design-system icon
+ * @param props.onClick - Click handler
+ * @param props.data-testid - Test id for e2e / unit tests
  */
-export const PerpsTradeButtons = ({
-  marketSymbol,
-  classPrefix = 'token',
-}: PerpsTradeButtonsProps) => (
-  <AccessRestrictedProvider>
-    <PerpsTradeButtonsContent
-      marketSymbol={marketSymbol}
-      classPrefix={classPrefix}
+const PerpsActionIconButton = ({
+  className,
+  label,
+  iconName,
+  onClick,
+  'data-testid': dataTestId,
+}: PerpsActionIconButtonProps) => (
+  <button
+    type="button"
+    className={`icon-button ${className} flex w-full flex-col items-center justify-center rounded-lg bg-background-muted px-2 py-3`}
+    data-testid={dataTestId}
+    onClick={onClick}
+  >
+    <Icon
+      name={iconName}
+      color={IconColor.IconAlternative}
+      size={IconSize.Md}
     />
-  </AccessRestrictedProvider>
+    <Text
+      as="span"
+      variant={TextVariant.BodySm}
+      className="icon-button__label"
+      style={{ marginTop: '-4px' }}
+    >
+      {label}
+    </Text>
+  </button>
 );
 
 const PerpsTradeButtonsContent = ({
@@ -110,33 +132,19 @@ const PerpsTradeButtonsContent = ({
 
   return (
     <>
-      <IconButton
+      <PerpsActionIconButton
         className={`${classPrefix}-overview__button`}
-        Icon={
-          <Icon
-            name={IconName.TrendUp}
-            color={IconColor.IconAlternative}
-            size={IconSize.Md}
-          />
-        }
+        iconName={IconName.TrendUp}
         label={t('perpsLong')}
         data-testid={`${classPrefix}-overview-long`}
         onClick={handleLongClick}
-        width={BlockSize.Full}
       />
-      <IconButton
+      <PerpsActionIconButton
         className={`${classPrefix}-overview__button`}
-        Icon={
-          <Icon
-            name={IconName.TrendDown}
-            color={IconColor.IconAlternative}
-            size={IconSize.Md}
-          />
-        }
+        iconName={IconName.TrendDown}
         label={t('perpsShort')}
         data-testid={`${classPrefix}-overview-short`}
         onClick={handleShortClick}
-        width={BlockSize.Full}
       />
       <PerpsGeoBlockModal
         isOpen={isGeoBlockModalOpen}
@@ -145,5 +153,32 @@ const PerpsTradeButtonsContent = ({
     </>
   );
 };
+
+/**
+ * Long / Short action buttons shown on the asset page for tokens with a
+ * matching Perps market. Clicks run through the compliance gate and the Perps
+ * geo-eligibility check (showing the geo-block modal when restricted) before
+ * navigating to the Perps order entry screen with the side preselected,
+ * matching the mobile Token Details actions.
+ *
+ * Wraps itself in {@link AccessRestrictedProvider} so it can be rendered on
+ * non-Perps hosts (token detail / coin overview) that do not already provide
+ * that context.
+ *
+ * @param props - The component props
+ * @param props.marketSymbol - The Perps market name to trade
+ * @param props.classPrefix - Prefix for button class names and test ids
+ */
+export const PerpsTradeButtons = ({
+  marketSymbol,
+  classPrefix = 'token',
+}: PerpsTradeButtonsProps) => (
+  <AccessRestrictedProvider>
+    <PerpsTradeButtonsContent
+      marketSymbol={marketSymbol}
+      classPrefix={classPrefix}
+    />
+  </AccessRestrictedProvider>
+);
 
 export default PerpsTradeButtons;

@@ -116,12 +116,8 @@ describe('TokenButtons perps action row', () => {
 
     expect(screen.getByTestId('token-overview-buy')).toBeInTheDocument();
     expect(screen.getByTestId('token-overview-swap')).toBeInTheDocument();
-    expect(
-      screen.queryByTestId('perps-trade-buttons'),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByTestId('token-overview-more'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('perps-trade-buttons')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('token-overview-more')).not.toBeInTheDocument();
   });
 
   it('renders Long / Short / Send / More when a perps market matches', () => {
@@ -135,9 +131,7 @@ describe('TokenButtons perps action row', () => {
       'ETH',
     );
     expect(screen.getByTestId('eth-overview-send')).toBeInTheDocument();
-    expect(
-      screen.getByTestId('token-overview-more'),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('token-overview-more')).toBeInTheDocument();
     // Buy and Swap leave the row: they move into the More menu.
     expect(screen.queryByTestId('token-overview-buy')).not.toBeInTheDocument();
     expect(screen.queryByTestId('token-overview-swap')).not.toBeInTheDocument();
@@ -193,9 +187,7 @@ describe('TokenButtons perps action row', () => {
       store,
     );
 
-    expect(
-      screen.queryByTestId('perps-trade-buttons'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('perps-trade-buttons')).not.toBeInTheDocument();
   });
 });
 

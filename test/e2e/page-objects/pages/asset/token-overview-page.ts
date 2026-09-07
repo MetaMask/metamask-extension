@@ -95,7 +95,29 @@ class TokenOverviewPage {
   }
 
   async clickSwap(): Promise<void> {
-    await this.driver.clickElement(this.swapButton);
+    // Default asset row: Buy / Swap / Send / Receive.
+    const swapOnRow = await this.driver.isElementPresentAndVisible(
+      this.swapButton,
+      2000,
+    );
+    if (swapOnRow) {
+      await this.driver.clickElement(this.swapButton);
+      return;
+    }
+
+    // Perps market assets use Long / Short / Send / More, with Swap under More.
+    const coinMorePresent = await this.driver.isElementPresentAndVisible(
+      this.moreButton,
+      2000,
+    );
+    if (coinMorePresent) {
+      await this.driver.clickElement(this.moreButton);
+      await this.driver.clickElement('[data-testid="coin-overview-more-swap"]');
+      return;
+    }
+
+    await this.driver.clickElement('[data-testid="token-overview-more"]');
+    await this.driver.clickElement('[data-testid="token-overview-more-swap"]');
   }
 
   /**

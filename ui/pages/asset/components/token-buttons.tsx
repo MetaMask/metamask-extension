@@ -338,7 +338,9 @@ const TokenButtons = ({
                 testId: 'token-overview-more-swap',
                 iconName: IconNameDs.SwapVertical,
                 enabled:
-                  isExternalServicesEnabled && !isMarketClosed && isCtaGateReady,
+                  isExternalServicesEnabled &&
+                  !isMarketClosed &&
+                  isCtaGateReady,
               },
               {
                 // Receive is in the row when there is no balance to send.
