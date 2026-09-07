@@ -1526,6 +1526,12 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "无法检查您的永续合约余额。请重试。"
   },
+  "alertReasonAddressTrustSignalMalicious": {
+    "message": "地址已标记为高风险"
+  },
+  "alertReasonAddressTrustSignalWarning": {
+    "message": "地址信号有限"
+  },
   "alertReasonFirstTimeInteraction": {
     "message": "首次交互"
   },
@@ -4361,9 +4367,25 @@
     "message": "支出方：$1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
+  "hardwareSwapAmount": {
+    "message": "将 $1 $2 兑换为 $3 $4",
+    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappedAmount": {
+    "message": "已将 $1 $2 兑换为 $3 $4",
+    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappingAmount": {
+    "message": "正在将 $1 $2 兑换为 $3 $4",
+    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
   "hardwareToAddress": {
     "message": "至：$1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareToken": {
+    "message": "代币：$1",
+    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "您已在设备上拒绝此交易",
@@ -4421,6 +4443,9 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 已锁定",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleUnsupportedSignature": {
+    "message": "签名不受支持"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "确保您的 $1 设备已使用所选账户对应的私钥助记词或密语进行设置",
@@ -5221,10 +5246,6 @@
   "memo": {
     "message": "备忘录"
   },
-  "merklRewardsClaimBonus": {
-    "message": "领取奖励",
-    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
-  },
   "merklRewardsToastFailed": {
     "message": "您的 mUSD 奖励领取失败",
     "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
@@ -5236,10 +5257,6 @@
   "merklRewardsToastSuccess": {
     "message": "您的 mUSD 奖励已到账！",
     "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
-  },
-  "merklRewardsUnexpectedError": {
-    "message": "发生意外错误。请重试。",
-    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "消息"
@@ -5325,6 +5342,30 @@
   "money": {
     "message": "Money"
   },
+  "moneyAccountApyPitch": {
+    "message": "赚取 $1% 年化收益率",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchInfo": {
+    "message": "年收益率信息"
+  },
+  "moneyAccountApyTooltip": {
+    "message": "显示的利率是根据当前市场行情估算的年化收益率 (APY) 。 APY 会随市场波动，并非固定保证。"
+  },
+  "moneyAccountAvailableBalance": {
+    "message": "可用余额：$1",
+    "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountProjectedBalance": {
+    "message": "预计 1 年后余额:"
+  },
+  "moneyAccountProjectedBalanceInfo": {
+    "message": "预计 1 年后余额"
+  },
+  "moneyAccountProjectedBalanceTooltip": {
+    "message": "预测基于 $1% 的年化收益率（APY）在一年内保持不变。APY 会随市场波动，并非固定保证。",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyActivity": {
     "message": "活动"
   },
@@ -5390,6 +5431,18 @@
   },
   "moneyApy": {
     "message": "$1 年化收益率"
+  },
+  "moneyBalanceInfoBody": {
+    "message": "您的美元挂钩 mUSD 余额可随时用于消费、转账或交易。我们不会将其计入您的账户总余额。"
+  },
+  "moneyBalanceInfoWithdrawals": {
+    "message": "提现立即处理，但需遵守相关区块链的标准网络确认时间。如果流动性紧张，可能会有临时延迟。"
+  },
+  "moneyBalanceLastKnown": {
+    "message": "最后已知余额"
+  },
+  "moneyBalanceTitle": {
+    "message": "Money 余额"
   },
   "moneyBalanceUnavailable": {
     "message": "余额不可用"
@@ -5561,54 +5614,6 @@
     "message": "$1 想连接 $2 个 snap。",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdAssetBonusAccruing": {
-    "message": "下一笔奖励累积中",
-    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
-  },
-  "musdAssetBonusClaimAmount": {
-    "message": "领取 $1 奖励",
-    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
-  },
-  "musdAssetBonusEstimatedAnnual": {
-    "message": "预估年度奖励",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusInfoAria": {
-    "message": "您的奖励信息",
-    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
-  },
-  "musdAssetBonusInfoEstimatedAnnual": {
-    "message": "根据您当前余额及利率估算的一年预期收益。利率为浮动值，可能发生变动。",
-    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLearnMore": {
-    "message": "了解更多。",
-    "description": "Link label at the bottom of the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLifetimeClaimed": {
-    "message": "自您参与以来已领取的奖励总额。",
-    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoYourBonus": {
-    "message": "仅需持有 mUSD 即可获得 $1% 年化奖励。您可每日在 Linea 上领取该奖励。$2",
-    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
-  },
-  "musdAssetBonusLifetimeClaimed": {
-    "message": "累计已领奖励",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusNoAccruing": {
-    "message": "无累积中的奖励",
-    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
-  },
-  "musdAssetBonusRate": {
-    "message": "$1% 奖励",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
-  "musdAssetBonusTitle": {
-    "message": "您的奖励",
-    "description": "Section title on the mUSD asset details page"
-  },
   "musdAssetConvertBenefitDailyBonus": {
     "message": "每日奖励",
     "description": "Benefit tag on the mUSD asset details convert section"
@@ -5672,14 +5677,6 @@
   "musdBuyMusd": {
     "message": "购买 mUSD"
   },
-  "musdClaimSendingTo": {
-    "message": "正在发送至",
-    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
-  },
-  "musdClaimSendingToWallet": {
-    "message": "正在发送至 $1",
-    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
-  },
   "musdClaimTitle": {
     "message": "领取奖励",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5742,10 +5739,6 @@
     "message": "仅保存您信任的地址。",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "已确定其为恶意。我们建议不要与此地址交互。",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "如果您知道此地址，则为其添加昵称，以便将来识别。",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5757,10 +5750,6 @@
   "nameInstructionsSaved": {
     "message": "您以前为此地址添加过昵称。您可以编辑或查看其他建议的昵称。",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "我们无法验证此地址。它可能是新地址或未经验证的地址。请设置个人显示名称以便后续识别。",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "昵称",
@@ -5789,10 +5778,6 @@
   "nameModalTitleVerified": {
     "message": "已验证地址",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "地址需要审核",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "由 $1 提议",
@@ -7140,9 +7125,6 @@
   "perpsAddFunds": {
     "message": "充值"
   },
-  "perpsAddFundsDescription": {
-    "message": "添加资金以开始使用杠杆交易永续合约"
-  },
   "perpsAddMargin": {
     "message": "追加保证金"
   },
@@ -8001,12 +7983,6 @@
     "message": "止盈/止损更新成功",
     "description": "Success toast text shown when TP/SL settings are updated"
   },
-  "perpsTotalBalance": {
-    "message": "总余额"
-  },
-  "perpsTradePerps": {
-    "message": "交易永续合约"
-  },
   "perpsTrades": {
     "message": "交易"
   },
@@ -8552,14 +8528,6 @@
   "rampsPaymentDelayMinutes": {
     "message": "分钟"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "最高 $1",
-    "description": "$1 is the maximum fiat buy amount"
-  },
   "rampsPaymentMethodMinLimit": {
     "message": "最低 $1",
     "description": "$1 is the minimum fiat buy amount"
@@ -8569,10 +8537,6 @@
   },
   "rampsQuoteUnavailable": {
     "message": "报价不可用。"
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "显示 $1 的报价。",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "选择付款方式"

@@ -41,6 +41,7 @@ describe('ramps-controller actions', () => {
       orderId: 'order-1',
       providerCode: 'transak',
       walletAddress: '0xabc',
+      chainId: 'eip155:1',
     };
 
     await setRampsUserRegion('us-ca', { forceRefresh: true });

@@ -49,5 +49,4 @@ export const DEFAULT_MUSD_REMOTE_FEATURE_FLAGS: MusdFeatureFlags = {
   earnMusdConvertibleTokensBlocklist: DEFAULT_MUSD_WILDCARD_TOKEN_LIST,
   earnMusdConversionGeoBlockedCountries: DEFAULT_MUSD_GEO_BLOCKING_CONFIG,
   earnMusdConversionMinAssetBalanceRequired: DEFAULT_MUSD_MIN_ASSET_BALANCE,
-  earnMerklCampaignClaiming: DEFAULT_MUSD_BOOLEAN_FLAG,
 };

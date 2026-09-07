@@ -87,13 +87,23 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
       .filter((assetId): assetId is CaipAssetType => Boolean(assetId));
   }, [enrichTokenRequests]);
 
-  useEffect(() => {
-    let cancelled = false;
+  const enrichAssetIdsKey = enrichAssetIds.join('|');
+  const [prevEnrichAssetIdsKey, setPrevEnrichAssetIdsKey] =
+    useState(enrichAssetIdsKey);
 
+  if (enrichAssetIdsKey !== prevEnrichAssetIdsKey) {
+    setPrevEnrichAssetIdsKey(enrichAssetIdsKey);
     if (enrichAssetIds.length === 0) {
       setEnrichedTokensMetadata((current) =>
         Object.keys(current).length === 0 ? current : {},
       );
+    }
+  }
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (enrichAssetIds.length === 0) {
       return undefined;
     }
 

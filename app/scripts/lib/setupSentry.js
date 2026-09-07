@@ -1,8 +1,9 @@
 import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/core';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, escapeRegExp } from 'lodash';
 import browser from 'webextension-polyfill';
+import { BROWSER_SHUTTING_DOWN_ERROR } from '../../../shared/constants/errors';
 import { sentryLogger as log } from '../../../shared/lib/sentry';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
@@ -51,6 +52,23 @@ export const ERROR_URL_ALLOWLIST = {
   CODEFI: 'codefi.network',
   SEGMENT: 'segment.io',
 };
+
+/**
+ * Errors that are expected and not actionable, so should never reach Sentry.
+ *
+ * Passed to Sentry's `ignoreErrors`, which drops the event when an entry
+ * matches `event.message` or the *last* exception value (a plain string entry
+ * matches as a substring; a RegExp is applied with `pattern.test`). We anchor
+ * each entry so only an exact message match drops the event, mirroring
+ * `isBrowserShuttingDownError` - a substring entry could silence an unrelated
+ * error that merely embeds the phrase. Because only the last exception value is
+ * compared, a shutdown error wrapped as the `cause` of another error is not
+ * dropped here regardless; that is why `PersistenceManager` also avoids
+ * wrapping it.
+ */
+export const IGNORED_ERROR_MESSAGES = [
+  new RegExp(`^${escapeRegExp(BROWSER_SHUTTING_DOWN_ERROR)}$`, 'u'),
+];
 
 export default function setupSentry() {
   if (!RELEASE) {
@@ -159,7 +177,10 @@ function getClientOptions() {
       defaultSampleRate: tracesSampleRate,
     }),
     // If we are reporting to SENTRY_DSN_PERFORMANCE, we want to ignore all errors.
-    ignoreErrors: sentryTarget === SENTRY_DSN_PERFORMANCE ? [/.*/u] : undefined,
+    ignoreErrors:
+      sentryTarget === SENTRY_DSN_PERFORMANCE
+        ? [/.*/u]
+        : IGNORED_ERROR_MESSAGES,
     transport: makeTransport,
   };
 }

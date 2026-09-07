@@ -116,7 +116,6 @@ export type AppStateControllerState = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
-  canTrackWalletFundsObtained: boolean;
   pendingExtensionVersion: string | null;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   lastUpdatedAt: number | null;
@@ -289,7 +288,6 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
-  canTrackWalletFundsObtained: true,
   pendingExtensionVersion: null,
   lastUpdatedAt: null,
   lastUpdatedFromVersion: null,
@@ -410,12 +408,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: false,
-  },
-  canTrackWalletFundsObtained: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -723,7 +715,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'requestQrCodeScan',
   'setAppActiveTab',
   'setBrowserEnvironment',
-  'setCanTrackWalletFundsObtained',
   'setConnectedStatusPopoverHasBeenShown',
   'setCurrentExtensionPopupId',
   'setCurrentPopupId',
@@ -1698,12 +1689,6 @@ export class AppStateController extends BaseController<
       if (txType !== undefined) {
         state.pendingShieldCohortTxType = txType;
       }
-    });
-  }
-
-  setCanTrackWalletFundsObtained(enabled: boolean): void {
-    this.update((state) => {
-      state.canTrackWalletFundsObtained = enabled;
     });
   }
 

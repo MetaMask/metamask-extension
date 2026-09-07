@@ -4,7 +4,7 @@ import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import { completeOnboardingWithPasskey } from '../../page-objects/flows/onboarding.flow';
 import {

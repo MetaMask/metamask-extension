@@ -44,7 +44,6 @@
     "activeQrCodeScanRequest": null,
     "addressSecurityAlertResponses": "object",
     "browserEnvironment": { "browser": "string", "os": "string" },
-    "canTrackWalletFundsObtained": false,
     "connectedStatusPopoverHasBeenShown": true,
     "currentExtensionPopupId": "number",
     "dappSwapComparisonData": "object",

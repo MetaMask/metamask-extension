@@ -247,6 +247,29 @@ describe('initializeWallet', () => {
       messenger: 'transaction-controller-init-messenger',
     });
   });
+
+  it('sets up TransactionController listeners before constructing the Wallet, so the TransactionController can emit events to the wallet messenger during initialization', () => {
+    const messenger = createMockMessenger();
+    const state = { KeyringController: { vault: 'encrypted-vault-blob' } };
+
+    initializeWallet({
+      connectivityAdapter,
+      getFlatState,
+      getPermittedAccounts,
+      getTransactionMetricsRequest,
+      infuraProjectId: 'fake-infura-project-id',
+      messenger,
+      platform,
+      state,
+    });
+
+    const setupListenersCallOrder = jest.mocked(
+      setupTransactionControllerListeners,
+    ).mock.invocationCallOrder[0];
+    const walletConstructorCallOrder = MockWallet.mock.invocationCallOrder[0];
+
+    expect(setupListenersCallOrder).toBeLessThan(walletConstructorCallOrder);
+  });
 });
 
 describe('initializeWallet — RemoteFeatureFlagController toggle', () => {

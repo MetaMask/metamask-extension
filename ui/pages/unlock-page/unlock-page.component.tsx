@@ -44,6 +44,7 @@ import {
   ONBOARDING_WELCOME_ROUTE,
   UNLOCK_ROUTE,
 } from '../../helpers/constants/routes';
+import { getRedirectAfterUnlock } from '../../helpers/utils/redirect-after-unlock';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -122,7 +123,6 @@ type LoginError = {
 
 const FoxAppearAnimation = lazy(
   () =>
-    // @ts-expect-error - Build system resolves without extension, but TS wants .js
     // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
     import('../onboarding-flow/welcome/fox-appear-animation') as Promise<{
       default: ComponentType<
@@ -267,14 +267,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     });
 
     if (isUnlocked) {
-      // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
-      let redirectTo = DEFAULT_ROUTE;
-      const fromLocation = location.state?.from;
-      if (fromLocation?.pathname) {
-        const search = fromLocation.search || '';
-        redirectTo = fromLocation.pathname + search;
-      }
-      navigate(redirectTo, { replace: true });
+      navigate(getRedirectAfterUnlock(location.state), { replace: true });
     }
   }
 
@@ -671,6 +664,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
         backgroundColor={BoxBackgroundColor.BackgroundDefault}
         className="w-full"
         paddingBottom={12} // offset header to center content
+        data-testid="parent-selector-login-page"
       >
         {showResetPasswordModal && (
           <ResetPasswordModal

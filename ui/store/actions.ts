@@ -6077,18 +6077,6 @@ export async function attemptCloseNotificationPopup() {
   }
 }
 
-/**
- * @param payload - details of the event to track
- * @param options - options for routing/handling of event
- * @returns
- */
-export function trackMetaMetricsEvent(
-  payload: MetaMetricsEventPayload,
-  options?: MetaMetricsEventOptions,
-) {
-  return submitRequestToBackground('trackMetaMetricsEvent', [payload, options]);
-}
-
 export function trackAnalyticsEvent(
   payload: AnalyticsEvent,
   options: AnalyticsEventBuildOptions & {

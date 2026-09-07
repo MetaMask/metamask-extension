@@ -1526,6 +1526,12 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Hindi masuri ang balanse ng Perps mo. Subukan muli."
   },
+  "alertReasonAddressTrustSignalMalicious": {
+    "message": "Na-flag ang address bilang may mataas na panganib"
+  },
+  "alertReasonAddressTrustSignalWarning": {
+    "message": "Limitadong mga signal ng adres"
+  },
   "alertReasonFirstTimeInteraction": {
     "message": "Unang interaksyon"
   },
@@ -4361,9 +4367,25 @@
     "message": "Gumastos: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
+  "hardwareSwapAmount": {
+    "message": "I-swap ang $1 $2 para sa $3 $4",
+    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappedAmount": {
+    "message": "Na-swap ang $1 $2 para sa $3 $4",
+    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappingAmount": {
+    "message": "Nagsa-swap ang $1 $2 para sa $3 $4",
+    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
   "hardwareToAddress": {
     "message": "Para kay/sa: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareToken": {
+    "message": "Token: $1",
+    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "Tinanggihan mo ang transaksyong ito sa iyong device",
@@ -4421,6 +4443,9 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "Naka-lock ang $1",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleUnsupportedSignature": {
+    "message": "Hindi sinusuportahang lagda"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "Tiyaking ang device mo na $1 ay naka-set up gamit ang Secret Recovery Phrase o passphrase para sa piniling account",
@@ -5221,10 +5246,6 @@
   "memo": {
     "message": "memo"
   },
-  "merklRewardsClaimBonus": {
-    "message": "I-claim ang bonus",
-    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
-  },
   "merklRewardsToastFailed": {
     "message": "Nabigo ang pag-claim ng iyong mUSD bonus",
     "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
@@ -5236,10 +5257,6 @@
   "merklRewardsToastSuccess": {
     "message": "Ang mUSD na bonus mo ay narito na!",
     "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
-  },
-  "merklRewardsUnexpectedError": {
-    "message": "Hindi inaasahang error. Pakisubukan muli.",
-    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "Mensahe"
@@ -5325,6 +5342,30 @@
   "money": {
     "message": "Pera"
   },
+  "moneyAccountApyPitch": {
+    "message": "Kumita ng $1% APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchInfo": {
+    "message": "Impormasyon ng APY"
+  },
+  "moneyAccountApyTooltip": {
+    "message": "Ang rate na ipinapakita ay ang tinatayang Annual Percentage Yield (APY) batay sa mga kasalukuyang kondisyon ng market. Nagbabago ang APY at hindi ito garantisado."
+  },
+  "moneyAccountAvailableBalance": {
+    "message": "Available na balanse: $1",
+    "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountProjectedBalance": {
+    "message": "Tinatayang balanse sa 1 taon:"
+  },
+  "moneyAccountProjectedBalanceInfo": {
+    "message": "Tinatayang balanse sa 1 taon"
+  },
+  "moneyAccountProjectedBalanceTooltip": {
+    "message": "Ipinagpapalagay sa pagtatantiya na ang $1% Annual Percentage Yield (APY) ay hindi nagbabago sa loob ng isang taon. Nagbabago ang APY at hindi ito garantisado.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyActivity": {
     "message": "Aktibidad"
   },
@@ -5390,6 +5431,18 @@
   },
   "moneyApy": {
     "message": "$1 APY"
+  },
+  "moneyBalanceInfoBody": {
+    "message": "Laging available ang balanse mong sinusuportahan ng mUSD, gastusin, ipadala, o i-trade ito anumang oras. Hindi namin ito isinasama sa pagkalkula ng kabuuang balanse ng account mo."
+  },
+  "moneyBalanceInfoWithdrawals": {
+    "message": "Kaagad pinoproseso ang mga withdrawal, napapailalim mga oras ng kumpirmasyon ng standard network sa nauugnay na blockchain. Kung mahigpit ang liquidity, posibleng magkaroon ng mga pagkaantala. "
+  },
+  "moneyBalanceLastKnown": {
+    "message": "Huling kilalang balanse"
+  },
+  "moneyBalanceTitle": {
+    "message": "Balanse sa Money"
   },
   "moneyBalanceUnavailable": {
     "message": "Hindi available ang balanse"
@@ -5561,54 +5614,6 @@
     "message": "Gustong gumamit ng $1 ng $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdAssetBonusAccruing": {
-    "message": "Naipon na susunod na bonus",
-    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
-  },
-  "musdAssetBonusClaimAmount": {
-    "message": "I-claim ang $1 na bonus",
-    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
-  },
-  "musdAssetBonusEstimatedAnnual": {
-    "message": "Tinatayang taunang bonus",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusInfoAria": {
-    "message": "Ang impormasyon ng iyong bonus",
-    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
-  },
-  "musdAssetBonusInfoEstimatedAnnual": {
-    "message": "Ang pagtataya sa kikitain mo sa isang taon batay sa kasalukuyan mong balanse at rate. Nag-iiba-iba ang rate at posibleng magbago.",
-    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLearnMore": {
-    "message": "Matuto pa.",
-    "description": "Link label at the bottom of the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLifetimeClaimed": {
-    "message": "Ang kabuuang bonus na na-claim mo mula ng magsimula ka.",
-    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoYourBonus": {
-    "message": "$1% taunang bonus na kinita mo sa pagho-hold ng mUSD. Pwedeng mo itong i-claim sa Linea araw-araw. $2",
-    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
-  },
-  "musdAssetBonusLifetimeClaimed": {
-    "message": "Na-claim ang taunang bonus",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusNoAccruing": {
-    "message": "Walang naipon na bonus",
-    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
-  },
-  "musdAssetBonusRate": {
-    "message": "$1% bonus",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
-  "musdAssetBonusTitle": {
-    "message": "Iyong bonus",
-    "description": "Section title on the mUSD asset details page"
-  },
   "musdAssetConvertBenefitDailyBonus": {
     "message": "Araw-araw na bonus",
     "description": "Benefit tag on the mUSD asset details convert section"
@@ -5672,14 +5677,6 @@
   "musdBuyMusd": {
     "message": "Bumili ng mUSD"
   },
-  "musdClaimSendingTo": {
-    "message": "Ipinapadala sa",
-    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
-  },
-  "musdClaimSendingToWallet": {
-    "message": "Ipinapadala sa $1",
-    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
-  },
   "musdClaimTitle": {
     "message": "I-claim ang bonus",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5742,10 +5739,6 @@
     "message": "I-save lamang ang mga address na pinagkakatiwalaan mo.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "Natukoy ito bilang mapaminsala. Inirerekomenda namin na huwag makipag-ugnayan sa address na ito.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "Kung alam mo ang address na ito, bigyan ito ng palayaw para makilala ito sa hinaharap.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5757,10 +5750,6 @@
   "nameInstructionsSaved": {
     "message": "Nagdagdag ka ng palayaw para sa address na ito noon. Maaari mong i-edit o tingnan ang iba pang mungkahing palayaw.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "Hindi namin maberipika ang address na ito. Maaring ito ay bago o hindi pa nabeberipika. Magtakda ng personal na display name para makilala ito sa susunod.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "Palayaw",
@@ -5789,10 +5778,6 @@
   "nameModalTitleVerified": {
     "message": "Na-verify na address",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "Kailangang suriin ang address",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Minungkahi ng $1",
@@ -7140,9 +7125,6 @@
   "perpsAddFunds": {
     "message": "Magdagdag ng pondo"
   },
-  "perpsAddFundsDescription": {
-    "message": "Magdagdag ng mga pondo para simulan ang pagti-trade ng perpetual na mga kontrata na may leverage"
-  },
   "perpsAddMargin": {
     "message": "Magdagdag ng margin"
   },
@@ -7995,12 +7977,6 @@
     "message": "Matagumpay na na-update ang TP/SL",
     "description": "Success toast text shown when TP/SL settings are updated"
   },
-  "perpsTotalBalance": {
-    "message": "Kabuuang balanse"
-  },
-  "perpsTradePerps": {
-    "message": "Mag-trade ng perps"
-  },
   "perpsTrades": {
     "message": "Mga Trade"
   },
@@ -8546,14 +8522,6 @@
   "rampsPaymentDelayMinutes": {
     "message": "na min"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "Pinakamataas $1",
-    "description": "$1 is the maximum fiat buy amount"
-  },
   "rampsPaymentMethodMinLimit": {
     "message": "Pinakamababa $1",
     "description": "$1 is the minimum fiat buy amount"
@@ -8563,10 +8531,6 @@
   },
   "rampsQuoteUnavailable": {
     "message": "Hindi available ang quote."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Mga quote na ipinapakita para sa $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Pumili ng paraan ng pagbabayad"

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useSendContext } from '../../../context/send';
 import { useTokenContractSendAlert } from './useTokenContractSendAlert';
 import { useFirstTimeInteractionSendAlert } from './useFirstTimeInteractionSendAlert';
@@ -13,6 +13,12 @@ export function useSendAlerts(): {
   const tokenContractAlert = useTokenContractSendAlert();
   const firstTimeAlert = useFirstTimeInteractionSendAlert();
   const [acknowledgedKeys, setAcknowledgedKeys] = useState<string[]>([]);
+  const [prevTo, setPrevTo] = useState(to);
+
+  if (to !== prevTo) {
+    setPrevTo(to);
+    setAcknowledgedKeys([]);
+  }
 
   const alerts = useMemo(() => {
     const result: SendAlert[] = [];
@@ -24,10 +30,6 @@ export function useSendAlerts(): {
     }
     return result;
   }, [tokenContractAlert, firstTimeAlert]);
-
-  useEffect(() => {
-    setAcknowledgedKeys([]);
-  }, [to]);
 
   const acknowledgeAlerts = useCallback(
     (keys?: string[]) => {

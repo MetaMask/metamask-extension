@@ -39,7 +39,6 @@
     },
     "AppStateController": {
       "browserEnvironment": { "browser": "string" },
-      "canTrackWalletFundsObtained": false,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -244,7 +243,6 @@
     },
     "ProfileMetricsController": "object",
     "RampsController": {
-      "countries": "object",
       "orders": "object",
       "providerAutoSelected": "boolean",
       "userRegion": null

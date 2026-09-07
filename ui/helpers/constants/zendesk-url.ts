@@ -36,7 +36,7 @@ const ZENDESK_URLS = {
   PASSWORD_AND_SRP_ARTICLE:
     'https://support.metamask.io/getting-started/user-guide-secret-recovery-phrase-password-and-private-keys/?utm_source=extension',
   PRIVATE_KEY_GUIDE:
-    'https://support.metamask.io/start/user-guide-secret-recovery-phrase-password-and-private-keys/?utm_source=extension#private-keys',
+    'https://support.metamask.io/configure/accounts/how-to-export-an-accounts-private-key/',
   PASSWORD_RESET:
     'https://support.metamask.io/configure/wallet/how-can-i-reset-my-password/?utm_source=extension',
   SECRET_RECOVERY_PHRASE:

@@ -78,8 +78,11 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
     confirmationType === TransactionType.moneyAccountDeposit;
   const { renderNoFeeTag } = usePayWithNoFeeToken();
   const tagRenderers = useMemo(
-    () => (isMoneyAccountDeposit ? [renderNoFeeTag] : undefined),
-    [isMoneyAccountDeposit, renderNoFeeTag],
+    () =>
+      isMoneyAccountDeposit || isPostQuoteWithdraw
+        ? [renderNoFeeTag]
+        : undefined,
+    [isMoneyAccountDeposit, isPostQuoteWithdraw, renderNoFeeTag],
   );
 
   const handleClose = useCallback(() => {
