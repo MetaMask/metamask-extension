@@ -190,7 +190,10 @@ const ConfirmAddSuggestedToken = () => {
   }, [suggestedTokens.length, navigate, mostRecentOverviewPage]);
 
   return (
-    <div className={classNames}>
+    <div
+      className={classNames}
+      data-testid="parent-selector-add-token-confirmation"
+    >
       <Nav confirmationId={approvalId} />
       <div className="page-container__header">
         <div className="page-container__title">{t('addSuggestedTokens')}</div>

@@ -38,6 +38,37 @@ function genPerpsWithdraw() {
   return { ...base, type: TransactionType.perpsWithdraw, origin: 'metamask' };
 }
 
+function genMoneyAccountDeposit() {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  return {
+    ...base,
+    type: TransactionType.moneyAccountDeposit,
+    origin: 'metamask',
+  };
+}
+
+function genMoneyAccountDepositBatch() {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  return {
+    ...base,
+    type: TransactionType.batch,
+    origin: 'metamask',
+    nestedTransactions: [
+      { type: TransactionType.tokenMethodApprove },
+      { type: TransactionType.moneyAccountDeposit },
+    ],
+  };
+}
+
+function genMoneyAccountWithdraw() {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  return {
+    ...base,
+    type: TransactionType.moneyAccountWithdraw,
+    origin: 'metamask',
+  };
+}
+
 function render({
   isGaslessLoading = false,
   confirmation = genMusdConversion(),
@@ -53,7 +84,10 @@ function render({
   confirmation?:
     | ReturnType<typeof genMusdConversion>
     | ReturnType<typeof genPerpsDeposit>
-    | ReturnType<typeof genPerpsWithdraw>;
+    | ReturnType<typeof genPerpsWithdraw>
+    | ReturnType<typeof genMoneyAccountDeposit>
+    | ReturnType<typeof genMoneyAccountDepositBatch>
+    | ReturnType<typeof genMoneyAccountWithdraw>;
   alerts?: {
     key: string;
     severity: string;
@@ -246,12 +280,52 @@ describe('<SingleActionFooter />', () => {
     );
   });
 
+  it('shows Add funds label for moneyAccountDeposit transaction type', () => {
+    const { getByTestId } = render({ confirmation: genMoneyAccountDeposit() });
+
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.addFunds.message,
+    );
+  });
+
+  it('shows Add funds label for moneyAccountDeposit nested in a batch', () => {
+    const { getByTestId } = render({
+      confirmation: genMoneyAccountDepositBatch(),
+    });
+
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.addFunds.message,
+    );
+  });
+
   it('shows Withdraw label for perpsWithdraw transaction type', () => {
     const { getByTestId } = render({ confirmation: genPerpsWithdraw() });
 
     expect(getByTestId('confirm-footer-button')).toHaveTextContent(
       messages.perpsWithdraw.message,
     );
+  });
+
+  it('shows Send label for moneyAccountWithdraw transaction type', () => {
+    const { getByTestId } = render({ confirmation: genMoneyAccountWithdraw() });
+
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.send.message,
+    );
+  });
+
+  it('does not show a loader for moneyAccountWithdraw when no required token is resolved', () => {
+    jest
+      .mocked(useTransactionPayPrimaryRequiredToken)
+      .mockReturnValue(undefined);
+
+    const { getByTestId } = render({
+      confirmation: genMoneyAccountWithdraw(),
+    });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).not.toHaveAttribute('aria-busy', 'true');
   });
 
   it('does not show a loader before a Perps Withdraw amount is entered', () => {

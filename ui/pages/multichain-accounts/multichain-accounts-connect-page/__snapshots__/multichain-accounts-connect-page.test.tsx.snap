@@ -8,7 +8,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
   >
     <div
       class="mm-box main-container multichain-connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
-      data-testid="connect-page"
+      data-testid="parent-selector-connect-page"
     >
       <div
         class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-12 mm-box--padding-bottom-6 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
@@ -146,12 +146,6 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                     data-testid="multichain-account-cell-name-Test Account Group 1"
                   >
                     Test Account Group 1
-                  </p>
-                  <p
-                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
-                    data-testid="balance-display-subtitle"
-                  >
-                    0.00
                   </p>
                 </div>
               </div>
@@ -289,7 +283,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
   >
     <div
       class="mm-box main-container multichain-connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
-      data-testid="connect-page"
+      data-testid="parent-selector-connect-page"
     >
       <div
         class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-12 mm-box--padding-bottom-6 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
@@ -427,12 +421,6 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                     data-testid="multichain-account-cell-name-Test Account Group 1"
                   >
                     Test Account Group 1
-                  </p>
-                  <p
-                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
-                    data-testid="balance-display-subtitle"
-                  >
-                    0.00
                   </p>
                 </div>
               </div>
@@ -570,7 +558,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
   >
     <div
       class="mm-box main-container multichain-connect-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
-      data-testid="connect-page"
+      data-testid="parent-selector-connect-page"
     >
       <div
         class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-12 mm-box--padding-bottom-6 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
@@ -708,12 +696,6 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                     data-testid="multichain-account-cell-name-Test Account Group 1"
                   >
                     Test Account Group 1
-                  </p>
-                  <p
-                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate multichain-account-cell__account-balance"
-                    data-testid="balance-display-subtitle"
-                  >
-                    0.00
                   </p>
                 </div>
               </div>

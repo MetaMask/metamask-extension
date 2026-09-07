@@ -30,7 +30,6 @@ import {
   getPasskeyAuthMethodKey,
   translatePasskeyError,
   isPasskeyCeremonySilentError,
-  PasskeyPRFRequiredError,
 } from '../../../../shared/lib/passkey';
 import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import { captureException } from '../../../../shared/lib/sentry';
@@ -114,14 +113,6 @@ export default function PasskeyRegisterSubPage() {
       DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS,
     );
   const [enrollmentError, setEnrollmentError] = useState<string | null>(null);
-
-  usePasskeyPRFSupport({
-    enabled: !isPasskeyRegistered,
-    onUnsupported: useCallback(
-      () => navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true }),
-      [navigate],
-    ),
-  });
 
   usePasskeyPRFSupport({
     enabled: !isPasskeyRegistered,

@@ -8,9 +8,14 @@ import React, {
 import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
   ButtonIcon as DsButtonIcon,
   ButtonIconSize as DsButtonIconSize,
-  IconName as DsIconName,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import {
   AlignItems,
@@ -20,25 +25,14 @@ import {
   FlexDirection,
   JustifyContent,
   TextColor,
-  IconColor,
   TextVariant,
-  BorderColor,
 } from '../../../helpers/constants/design-system';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  SuccessPill,
-  Text,
-} from '../../component-library';
+import { Box, SuccessPill, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
 import { useIsNetworkGasSponsored } from '../../../hooks/useIsNetworkGasSponsored';
+import { getAvatarNetworkStyle } from '../../../helpers/utils/accounts';
 
 const isIconSrc = (iconSrc?: string | IconName): iconSrc is IconName =>
   Object.values(IconName).includes(iconSrc as IconName);
@@ -139,7 +133,7 @@ export const NetworkListItem = ({
   const renderButton = useCallback(() => {
     return onDeleteClick || onEditClick || onDiscoverClick ? (
       <DsButtonIcon
-        iconName={DsIconName.MoreVertical}
+        iconName={IconName.MoreVertical}
         ref={setNetworkListItemMenuRef}
         data-testid={`network-list-item-options-button-${chainId}`}
         ariaLabel={t('networkOptions')}
@@ -223,11 +217,11 @@ export const NetworkListItem = ({
         <Icon name={iconSrc} size={iconSize as IconSize} />
       ) : (
         <AvatarNetwork
-          borderColor={BorderColor.backgroundDefault}
-          backgroundColor={getAvatarNetworkColor(name)}
           name={name}
           src={iconSrc}
           size={iconSize as AvatarNetworkSize}
+          className="rounded-md"
+          style={getAvatarNetworkStyle(name)}
         />
       )}
       <Box
@@ -293,8 +287,8 @@ export const NetworkListItem = ({
               {rpcEndpoint.name ?? new URL(rpcEndpoint.url).host}
             </Text>
             <Icon
-              marginLeft={1}
-              color={IconColor.iconAlternative}
+              className="ml-1"
+              color={IconColor.IconAlternative}
               name={IconName.ArrowDown}
               size={IconSize.Xs}
             />

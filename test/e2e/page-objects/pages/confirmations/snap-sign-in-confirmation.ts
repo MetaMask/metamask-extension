@@ -34,6 +34,10 @@ class SnapSignInConfirmation {
     tag: 'h2',
   };
 
+  private parentSelector = {
+    testId: 'parent-selector-snap-confirmation-page',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -48,6 +52,7 @@ class SnapSignInConfirmation {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.header,
         this.cancelButton,
         this.confirmButton,

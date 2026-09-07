@@ -75,6 +75,7 @@ export default class ShieldPlanPage {
       this.shieldPlanPageMonthlyPlan,
     ]);
     await this.driver.waitForMultipleSelectors([
+      this.page,
       this.shieldPlanPageTitle,
       this.shieldPlanPageAnnualPlan,
       this.shieldPlanPageMonthlyPlan,

@@ -1,6 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
-import AccountListPage from '../pages/account-list-page';
+import AccountListPage from '../pages/accounts/list-page';
 
 /**
  * Opens the account menu, adds a new multichain account, verifies it is

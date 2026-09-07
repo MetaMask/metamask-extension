@@ -71,6 +71,10 @@ export default class ShieldClaimPage {
   private readonly saveDraftButton =
     '[data-testid="shield-claim-save-draft-button"]';
 
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   private readonly submitButton = '[data-testid="shield-claim-submit-button"]';
 
   constructor(driver: Driver) {
@@ -89,6 +93,7 @@ export default class ShieldClaimPage {
     await this.driver.waitForMultipleSelectors([
       this.pageContainer,
       this.emailInput,
+      this.settingsPage,
       this.submitButton,
     ]);
     console.log('Shield Claim page is loaded');
@@ -98,6 +103,7 @@ export default class ShieldClaimPage {
     await this.driver.waitForMultipleSelectors([
       this.pageContainer,
       this.emailInput,
+      this.settingsPage,
     ]);
     console.log('Shield Claim page is loaded in view mode');
   }

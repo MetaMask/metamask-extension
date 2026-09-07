@@ -260,7 +260,7 @@ export const getNegativeFeatureLabels = (
   },
   IMPERSONATOR_LOW_CONFIDENCE: {
     label: t('securityTrustFeatureImpersonatorLowConfidence'),
-    type: 'Warning',
+    type: 'Info',
   },
   IS_MINTABLE: {
     label: t('securityTrustFeatureIsMintable'),

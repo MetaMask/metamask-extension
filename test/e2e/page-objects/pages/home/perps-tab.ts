@@ -48,6 +48,10 @@ export class PerpsTab extends PerpsPositionsBase {
 
   private readonly perpsLearnBasics = { testId: 'perps-learn-basics' };
 
+  private readonly perpsPage = {
+    testId: 'parent-selector-perps-tab',
+  };
+
   private readonly perpsRecentActivity = { testId: 'perps-recent-activity' };
 
   private readonly perpsRecentActivityEmpty = {
@@ -68,10 +72,6 @@ export class PerpsTab extends PerpsPositionsBase {
 
   private readonly perpsTutorialModal = { testId: 'perps-tutorial-modal' };
 
-  private readonly perpsView = {
-    testId: 'perps-view',
-  };
-
   private readonly perpsWatchlist = { testId: 'perps-watchlist' };
 
   private readonly perpsWatchlistMarket = (symbol: string) => {
@@ -83,24 +83,12 @@ export class PerpsTab extends PerpsPositionsBase {
   private readonly positionCardsSelector = '[data-testid^="position-card-"]';
 
   /**
-   * Asserts that a market is NOT present in the watchlist section.
-   *
-   * @param symbol - Market symbol, e.g. 'ETH'.
-   */
-  async checkMarketNotInWatchlist(symbol: string): Promise<void> {
-    await this.driver.assertElementNotPresent(
-      this.perpsWatchlistMarket(symbol),
-      { waitAtLeastGuard: 1000 },
-    );
-  }
-
-  /**
    * Waits for the Perps Home view to be loaded and visible.
    * The main Perps tab shows PerpsView (balance dropdown, positions, explore).
    */
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors(
-      [this.perpsView, this.perpsBalanceDropdown],
+      [this.perpsPage, this.perpsBalanceDropdown],
       { timeout: 20000 },
     );
   }
@@ -256,7 +244,7 @@ export class PerpsTab extends PerpsPositionsBase {
     await this.driver.waitUntil(
       async () => {
         return await this.driver.isElementPresentAndVisible(
-          this.perpsView,
+          this.perpsPage,
           1000,
         );
       },

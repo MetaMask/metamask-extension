@@ -25,6 +25,7 @@ import {
 } from '@metamask/design-system-react';
 import type {
   ClosePositionParams,
+  InputMethod,
   OrderType,
 } from '@metamask/perps-controller';
 import {
@@ -107,6 +108,7 @@ const buildCloseRequestParams = ({
   currentPrice,
   isPartialClose,
   closeSize,
+  positionSize,
   sizeDecimals,
   orderType,
   limitPrice,
@@ -116,22 +118,42 @@ const buildCloseRequestParams = ({
   currentPrice: number;
   isPartialClose: boolean;
   closeSize: number;
+  positionSize: number;
   sizeDecimals?: number;
   orderType: OrderType;
   limitPrice?: string;
   position: Position;
 }): ClosePositionParams => {
-  const size =
+  // Round-half-up can lift a partial size onto the whole position — closing
+  // 99.999% of 2.5 at 4 decimals formats as "2.5000". A partial close must stay
+  // strictly under the position, so step the last decimal back when it does.
+  const roundedSize =
     sizeDecimals === undefined
       ? closeSize.toString()
       : closeSize.toFixed(sizeDecimals);
+  const roundsOntoWholePosition =
+    isPartialClose &&
+    sizeDecimals !== undefined &&
+    Number.parseFloat(roundedSize) >= positionSize;
+  const flooredSize =
+    sizeDecimals === undefined
+      ? roundedSize
+      : (positionSize - 10 ** -sizeDecimals).toFixed(sizeDecimals);
+  // On a market whose smallest step is the position itself — a 1-unit position
+  // on an integer-size market — stepping back lands on zero, which the venue
+  // rejects or treats as a no-op. The trader asked for all but a rounding
+  // sliver, so send it as the full close it effectively is.
+  const closesWholePosition =
+    roundsOntoWholePosition && Number.parseFloat(flooredSize) <= 0;
+  const size = roundsOntoWholePosition ? flooredSize : roundedSize;
+  const includeSize = isPartialClose && !closesWholePosition;
 
   if (orderType === 'limit') {
     return {
       symbol,
       orderType: 'limit',
       price: limitPrice,
-      ...(isPartialClose ? { size } : {}),
+      ...(includeSize ? { size } : {}),
       position,
     };
   }
@@ -140,7 +162,7 @@ const buildCloseRequestParams = ({
     symbol,
     orderType: 'market',
     currentPrice,
-    ...(isPartialClose ? { size } : {}),
+    ...(includeSize ? { size } : {}),
     position,
   };
 };
@@ -365,6 +387,11 @@ export const ClosePositionModal = ({
   const getAbandonProperties = useRef(() => latestAbandonPropsRef.current);
   const hasConfirmedCloseRef = useRef(false);
 
+  // Which control the trader last used to set the close amount. Mirrors mobile:
+  // a ref (not state) so recording it never re-renders the form, last-touched
+  // wins, and it rides `trackingData` to the controller's close event.
+  const inputMethodRef = useRef<InputMethod>('default');
+
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
   if (isOpen !== prevIsOpen) {
     setPrevIsOpen(isOpen);
@@ -383,6 +410,7 @@ export const ClosePositionModal = ({
   useEffect(() => {
     if (isOpen) {
       hasConfirmedCloseRef.current = false;
+      inputMethodRef.current = 'default';
     }
   }, [isOpen]);
 
@@ -667,6 +695,7 @@ export const ClosePositionModal = ({
           currentPrice,
           isPartialClose,
           closeSize,
+          positionSize,
           sizeDecimals,
           orderType: effectiveOrderType,
           limitPrice:
@@ -681,6 +710,7 @@ export const ClosePositionModal = ({
           vipTier,
           vipDiscount: metamaskFeeRateDiscountPercentage,
           hlFeeRate: protocolFeeRate,
+          inputMethod: inputMethodRef.current,
         });
         const result = await submitRequestToBackground<{
           success: boolean;
@@ -757,6 +787,7 @@ export const ClosePositionModal = ({
     isPartialClose,
     position,
     closeSize,
+    positionSize,
     displayName,
     t,
     formatNumber,
@@ -777,6 +808,10 @@ export const ClosePositionModal = ({
   const handlePercentChange = useCallback((percent: number) => {
     setClosePercent(percent);
     setError(null);
+  }, []);
+
+  const handleInputMethodChange = useCallback((inputMethod: InputMethod) => {
+    inputMethodRef.current = inputMethod;
   }, []);
 
   const handleOrderTypeChange = useCallback(
@@ -850,6 +885,7 @@ export const ClosePositionModal = ({
                 asset={displayName}
                 currentPrice={effectivePrice}
                 sizeDecimals={sizeDecimals}
+                onInputMethodChange={handleInputMethodChange}
               />
 
               {isPartialCloseBelowMinNotional ? (

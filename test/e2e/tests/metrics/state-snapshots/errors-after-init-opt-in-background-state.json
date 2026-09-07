@@ -179,6 +179,9 @@
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionTimestamp": 0
   },
+  "MoneyAccountController": {
+    "moneyAccounts": "object"
+  },
   "MultichainAssetsController": {
     "accountsAssets": "object",
     "allIgnoredAssets": "object",

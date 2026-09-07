@@ -42,7 +42,7 @@ describe('RampsServiceInit', () => {
     expect(serviceMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       environment: 'staging',
-      context: 'extension',
+      context: 'browser',
       fetch: expect.any(Function),
     });
   });

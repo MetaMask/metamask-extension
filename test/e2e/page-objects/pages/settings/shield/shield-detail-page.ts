@@ -107,6 +107,10 @@ export default class ShieldDetailPage {
   private readonly resubscribeButton =
     '[data-testid="shield-detail-resubscribe-button"]';
 
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   private readonly shieldPaymentModal = '[data-testid="shield-payment-modal"]';
 
   private readonly submitCaseButton =
@@ -222,6 +226,7 @@ export default class ShieldDetailPage {
     await this.driver.waitForMultipleSelectors([
       this.pageContainer,
       this.membershipStatus,
+      this.settingsPage,
     ]);
     console.log('Shield Detail page is loaded');
   }

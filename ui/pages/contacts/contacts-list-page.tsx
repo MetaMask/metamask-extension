@@ -127,7 +127,7 @@ export function ContactsListPage() {
   };
 
   return (
-    <Page data-testid="contacts-page">
+    <Page data-testid="parent-selector-contacts-page">
       <Header
         startAccessory={
           <ButtonIcon

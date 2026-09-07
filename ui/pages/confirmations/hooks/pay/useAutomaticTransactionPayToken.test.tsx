@@ -824,7 +824,12 @@ describe('useAutomaticTransactionPayToken', () => {
         currentConfirmation: {
           id: TRANSACTION_ID_MOCK,
           type: TransactionType.batch,
-          nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+          // Real money-account deposits are `[approve, deposit]` — the
+          // meaningful type is not the first nested entry.
+          nestedTransactions: [
+            { type: TransactionType.tokenMethodApprove },
+            { type: TransactionType.moneyAccountDeposit },
+          ],
           txParams: { from: '0x123' },
         } as never,
         isScrollToBottomCompleted: true,

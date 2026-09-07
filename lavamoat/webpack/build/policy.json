@@ -846,7 +846,7 @@
     },
     "browserslist>baseline-browser-mapping": {
       "globals": {
-        "console.log": true,
+        "SuppressedError": true,
         "console.warn": true,
         "process": true
       }

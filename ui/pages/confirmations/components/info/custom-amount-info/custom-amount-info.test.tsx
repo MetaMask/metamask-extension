@@ -448,6 +448,19 @@ describe('CustomAmountInfo', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('does not render the skeleton for a withdraw when no primary required token is resolved', () => {
+      const { getByTestId, queryByTestId } = render({
+        disablePay: false,
+        primaryRequiredToken: undefined,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: true },
+      });
+
+      expect(getByTestId('custom-amount-info')).toBeInTheDocument();
+      expect(
+        queryByTestId('custom-amount-info-skeleton'),
+      ).not.toBeInTheDocument();
+    });
+
     it('renders the full UI once a primary required token is resolved', () => {
       const { getByTestId, queryByTestId } = render({
         disablePay: false,

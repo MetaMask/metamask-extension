@@ -228,7 +228,10 @@ export function useMoneyAccountBalance({
   const apyPercent =
     apyDecimal === undefined
       ? undefined
-      : new BigNumber(apyDecimal.toString())
+      : // `.toString()` because `bignumber.js@4` throws on a *number* argument
+        // with more than 15 significant digits, and live service APYs carry
+        // full float precision (e.g. 0.06632893279913232). Strings are exempt.
+        new BigNumber(apyDecimal.toString())
           .times(PERCENT)
           // `round(dp, rm)`, not mobile's `dp(dp, rm)`: in `bignumber.js@4`
           // `decimalPlaces`/`dp` is a getter that ignores both arguments and

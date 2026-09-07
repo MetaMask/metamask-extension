@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { Driver } from '../../webdriver/driver';
-import DeepLink from '../pages/deep-link-page';
+import DeepLink from '../pages/security/deep-link-page';
 import LoginPage from '../pages/login-page';
 
 async function continueFromDeepLinkInterstitial(

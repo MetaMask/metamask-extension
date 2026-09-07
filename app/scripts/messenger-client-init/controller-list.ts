@@ -113,6 +113,7 @@ import { AnalyticsController } from '@metamask/analytics-controller';
 import { SentinelApiService } from '@metamask/sentinel-api-service';
 import { MoneyAccountApiDataService } from '@metamask/money-account-api-data-service';
 import { MoneyAccountBalanceService } from '@metamask/money-account-balance-service';
+import { MoneyAccountController } from '@metamask/money-account-controller';
 import { MoneyAccountAvailabilityService } from '../lib/money/money-account-availability';
 import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
@@ -181,6 +182,7 @@ export type MessengerClient =
   | MoneyAccountApiDataService
   | MoneyAccountAvailabilityService
   | MoneyAccountBalanceService
+  | MoneyAccountController
   | MultichainAssetsController
   | MultichainAssetsRatesController
   | MultichainBalancesController

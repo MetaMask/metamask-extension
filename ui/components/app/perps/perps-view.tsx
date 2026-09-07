@@ -446,7 +446,7 @@ export const PerpsView = () => {
     <Box
       flexDirection={BoxFlexDirection.Column}
       gap={4}
-      data-testid="perps-view"
+      data-testid="parent-selector-perps-tab"
     >
       {/* Balance header with Add funds / Withdraw dropdown */}
       <PerpsBalanceDropdown

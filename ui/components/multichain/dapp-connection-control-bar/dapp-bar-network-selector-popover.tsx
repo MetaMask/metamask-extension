@@ -8,6 +8,7 @@ import {
   BoxBorderColor,
   BoxFlexDirection,
   BoxJustifyContent,
+  AvatarNetworkSize,
   FontWeight,
   Icon,
   IconColor,
@@ -18,12 +19,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import {
-  AvatarNetworkSize,
-  Popover,
-  PopoverPosition,
-  PopoverRole,
-} from '../../component-library';
+import { Popover, PopoverPosition, PopoverRole } from '../../component-library';
 import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';

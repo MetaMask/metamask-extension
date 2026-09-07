@@ -3,7 +3,7 @@ import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { importPrivateKeyAccount } from '../../page-objects/flows/add-account.flow';
 import { navigateDeepLinkToDestination } from '../../page-objects/flows/deep-link.flow';
 import {

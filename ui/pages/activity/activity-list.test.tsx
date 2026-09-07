@@ -59,6 +59,11 @@ jest.mock('../../hooks/useAnalytics', () => ({
   }),
 }));
 
+jest.mock('../../hooks/useRelativeMediumDate', () => ({
+  useRelativeMediumDate: () => (timestamp: number) =>
+    new Date(timestamp).toISOString(),
+}));
+
 jest.mock('../../hooks/useFormatters', () => ({
   useFormatters: () => ({
     formatMediumDate: (timestamp: string | number) =>
@@ -103,7 +108,7 @@ describe('ActivityList', () => {
   it('shows the activity list skeleton while loading', () => {
     mockUseTransactionsQuery.mockReturnValue({
       data: undefined,
-      isInitialLoading: true,
+      isLoading: true,
       fetchNextVisiblePage: jest.fn(),
     });
 
@@ -114,7 +119,7 @@ describe('ActivityList', () => {
   it('does not show the activity list skeleton when not loading', () => {
     mockUseTransactionsQuery.mockReturnValue({
       data: { pages: [] },
-      isInitialLoading: false,
+      isLoading: false,
       fetchNextVisiblePage: jest.fn(),
     });
 
@@ -127,7 +132,7 @@ describe('ActivityList', () => {
   it('passes entry point to useActivityScreenViewed', () => {
     mockUseTransactionsQuery.mockReturnValue({
       data: { pages: [] },
-      isInitialLoading: false,
+      isLoading: false,
       fetchNextVisiblePage: jest.fn(),
     });
 
@@ -144,7 +149,7 @@ describe('ActivityList', () => {
     const pushStateSpy = jest.spyOn(window.history, 'pushState');
     mockUseTransactionsQuery.mockReturnValue({
       data: { pages: [] },
-      isInitialLoading: false,
+      isLoading: false,
       fetchNextVisiblePage: jest.fn(),
     });
     mockUseRampsOrderActivity.mockReturnValue([
@@ -173,7 +178,7 @@ describe('ActivityList', () => {
     const replaceStateSpy = jest.spyOn(window.history, 'replaceState');
     mockUseTransactionsQuery.mockReturnValue({
       data: { pages: [] },
-      isInitialLoading: false,
+      isLoading: false,
       fetchNextVisiblePage: jest.fn(),
     });
     mockUseRampsOrderActivity.mockReturnValue([
@@ -215,7 +220,7 @@ describe('ActivityList', () => {
   it('renders a pending header when a ramp order is pending', () => {
     mockUseTransactionsQuery.mockReturnValue({
       data: { pages: [] },
-      isInitialLoading: false,
+      isLoading: false,
       fetchNextVisiblePage: jest.fn(),
     });
     mockUseRampsOrderActivity.mockReturnValue([

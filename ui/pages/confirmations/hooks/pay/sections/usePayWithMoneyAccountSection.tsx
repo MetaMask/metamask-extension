@@ -6,6 +6,7 @@ import {
   selectPaymentOverrideByTransactionId,
   type TransactionPayState,
 } from '../../../../../selectors/transactionPayController';
+import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
@@ -29,7 +30,7 @@ export function usePayWithMoneyAccountSection({
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
-  const transactionType = currentConfirmation?.type;
+  const transactionType = getConfirmationTransactionType(currentConfirmation);
 
   const isEnabled = useSelector((state) =>
     selectIsMoneyAccountTransactionEnabled(state, transactionType),

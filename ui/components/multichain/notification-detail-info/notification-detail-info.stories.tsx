@@ -1,9 +1,7 @@
 import React from 'react';
 import { Meta } from '@storybook/react';
-import {
-  BackgroundColor,
-  TextColor,
-} from '../../../helpers/constants/design-system';
+import { AvatarIconSeverity, IconName } from '@metamask/design-system-react';
+import { TextColor } from '../../../helpers/constants/design-system';
 import { NotificationDetailCopyButton } from '../notification-detail-copy-button';
 import {
   NotificationDetailInfo,
@@ -23,9 +21,8 @@ const Template = (args: NotificationDetailInfoProps) => (
 export const DefaultStory = Template.bind({});
 DefaultStory.args = {
   icon: {
-    iconName: 'check',
-    color: TextColor.successDefault,
-    backgroundColor: BackgroundColor.successMuted,
+    iconName: IconName.Check,
+    severity: AvatarIconSeverity.Success,
   },
   label: 'This is the label',
   detail: 'This is a line detail',
@@ -34,9 +31,8 @@ DefaultStory.args = {
 export const WithAnActionStory = Template.bind({});
 WithAnActionStory.args = {
   icon: {
-    iconName: 'check',
-    color: TextColor.successDefault,
-    backgroundColor: BackgroundColor.successMuted,
+    iconName: IconName.Check,
+    severity: AvatarIconSeverity.Success,
   },
   label: 'This is the label',
   detail: 'This is a line detail',

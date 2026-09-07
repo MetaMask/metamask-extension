@@ -4,6 +4,7 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
 <div>
   <div
     class="request-decrypt-message__container"
+    data-testid="parent-selector-decrypt-message-confirmation"
   >
     <div
       class="request-decrypt-message__header"
@@ -194,6 +195,7 @@ exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`]
 <div>
   <div
     class="request-decrypt-message__container"
+    data-testid="parent-selector-decrypt-message-confirmation"
   >
     <div
       class="request-decrypt-message__header"
@@ -382,6 +384,7 @@ exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
 <div>
   <div
     class="request-decrypt-message__container"
+    data-testid="parent-selector-decrypt-message-confirmation"
   >
     <div
       class="request-decrypt-message__header"

@@ -9,7 +9,7 @@ import {
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
 } from '../../../selectors/metametrics';
 import { setDataCollectionForMarketing } from '../../../store/actions';
@@ -44,7 +44,7 @@ export function MetaMetricsConsentContainer() {
   );
   const isMetaMetricsEnabled = useSelector(
     (state: MetaMaskReduxState) =>
-      getCompletedMetaMetricsOnboarding(state) && getOptedIn(state),
+      getConsentDecisionMade(state) && getOptedIn(state),
   );
 
   const handleClose = useCallback(() => {

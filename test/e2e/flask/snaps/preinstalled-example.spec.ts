@@ -11,7 +11,7 @@ import PreinstalledExampleSettings from '../../page-objects/pages/settings/prein
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import { mockTestSnapsSite } from '../../mock-response-data/snaps/snap-local-sites/test-snaps-site-mocks';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 
 async function mockSentryTestError(mockServer: Mockttp) {
   return await mockServer

@@ -195,6 +195,10 @@ class PrivacySettings {
     text: `Secret Recovery Phrase ${srpIndex.toString()}`,
   });
 
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   /** Security alerts (Blockaid) live under Transactions in Settings, not Privacy. */
   private readonly settingsTransactionsTab =
     '[data-testid="settings-tab-item-transactions"]';
@@ -268,7 +272,10 @@ class PrivacySettings {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.privacySettingsLoadedMarker);
+      await this.driver.waitForMultipleSelectors([
+        this.privacySettingsLoadedMarker,
+        this.settingsPage,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for Privacy & Security Settings page to be loaded',

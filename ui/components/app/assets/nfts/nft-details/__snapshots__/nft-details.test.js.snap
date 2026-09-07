@@ -73,10 +73,14 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
                     style="bottom: 4px; right: 4px;"
                   >
                     <div
-                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network nft-item__network-badge mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+                      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-4 w-4 nft-item__network-badge rounded-md border-2 border-background-default"
                       data-testid="nft-network-badge"
                     >
-                      G
+                      <span
+                        class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+                      >
+                        G
+                      </span>
                     </div>
                   </div>
                 </div>

@@ -474,6 +474,15 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.warningModalCancelButton);
   };
 
+  /**
+   * Opens an asset picker if needed, searches for a token, and clicks its info
+   * icon. Matches the icon for either lowercase or checksummed `assetId` casing.
+   *
+   * @param params - Search and click parameters.
+   * @param params.token - Token symbol to type into the picker search field.
+   * @param params.assetId - CAIP-19 asset id.
+   * @param params.assetPicker - Picker button to open when the picker is closed.
+   */
   async searchAndClickAssetInfo({
     token,
     assetId,
@@ -484,12 +493,33 @@ class BridgeQuotePage {
     assetPicker?: string;
   }) {
     console.log(`Opening asset info icon for asset ${token}`);
-    await this.driver.clickElement(assetPicker);
+    const pickerAlreadyOpen = await this.driver.isElementPresentAndVisible(
+      this.assetPrickerSearchInput,
+      1000,
+    );
+    if (!pickerAlreadyOpen) {
+      await this.driver.clickElement(assetPicker);
+    }
     await this.driver.pasteIntoField(this.assetPrickerSearchInput, token);
-    await this.driver.waitForSelector({
-      testId: `bridge-asset-info-icon-${assetId}`,
-    });
-    await this.driver.clickElement(this.assetInfoIcon(assetId));
+
+    const lowercaseIcon = this.assetInfoIcon(assetId.toLowerCase());
+    const checksummedIcon = this.assetInfoIcon(assetId);
+    await this.driver.waitUntil(
+      async () => {
+        return (
+          (await this.driver.isElementPresentAndVisible(lowercaseIcon, 1000)) ||
+          (await this.driver.isElementPresentAndVisible(checksummedIcon, 1000))
+        );
+      },
+      { timeout: this.driver.timeout, interval: 200 },
+    );
+    const useLowercase = await this.driver.isElementPresentAndVisible(
+      lowercaseIcon,
+      1000,
+    );
+    await this.driver.clickElement(
+      useLowercase ? lowercaseIcon : checksummedIcon,
+    );
   }
 
   async searchAssetAndVerifyCount(

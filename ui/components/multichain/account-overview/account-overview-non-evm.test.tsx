@@ -71,6 +71,19 @@ const render = (
   );
 };
 
+const expectStandardTabs = (
+  queryByTestId: (id: string) => HTMLElement | null,
+) => {
+  expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
+  expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
+  expect(queryByTestId('account-overview__activity-tab')).toBeInTheDocument();
+};
+
+const expectAllTabs = (queryByTestId: (id: string) => HTMLElement | null) => {
+  expectStandardTabs(queryByTestId);
+  expect(queryByTestId('account-overview__defi-tab')).toBeInTheDocument();
+};
+
 describe('AccountOverviewBtc', () => {
   beforeEach(() => {
     setBackgroundConnection({
@@ -79,23 +92,14 @@ describe('AccountOverviewBtc', () => {
   });
 
   describe('when no EVM networks are enabled', () => {
-    it('shows only Tokens and Activity tabs', () => {
+    it('shows all tabs', () => {
       const { queryByTestId } = render(defaultProps, {
         enabledNetworkMap: {
           eip155: {},
         },
       });
 
-      expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
-      expect(
-        queryByTestId('account-overview__nfts-tab'),
-      ).not.toBeInTheDocument();
-      expect(
-        queryByTestId('account-overview__activity-tab'),
-      ).toBeInTheDocument();
-      expect(
-        queryByTestId('account-overview__defi-tab'),
-      ).not.toBeInTheDocument();
+      expectAllTabs(queryByTestId);
     });
 
     it('shows tokens links', () => {
@@ -115,7 +119,7 @@ describe('AccountOverviewBtc', () => {
   });
 
   describe('when EVM networks are enabled', () => {
-    it('shows Tokens, NFTs, and Activity tabs when DeFi is disabled', () => {
+    it('hides the DeFi tab when DeFi positions are disabled', () => {
       const { queryByTestId } = render(defaultProps, {
         enabledNetworkMap: {
           eip155: {
@@ -127,77 +131,7 @@ describe('AccountOverviewBtc', () => {
           assetsDefiPositionsEnabled: false,
         },
       });
-
-      expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
-      expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
-      expect(
-        queryByTestId('account-overview__activity-tab'),
-      ).toBeInTheDocument();
-      expect(
-        queryByTestId('account-overview__defi-tab'),
-      ).not.toBeInTheDocument();
-    });
-
-    it('shows all tabs including DeFi when DeFi positions are enabled', () => {
-      const { queryByTestId } = render(defaultProps, {
-        enabledNetworkMap: {
-          eip155: {
-            [CHAIN_IDS.MAINNET]: true,
-            [CHAIN_IDS.LINEA_MAINNET]: true,
-          },
-        },
-        remoteFeatureFlags: {
-          assetsDefiPositionsEnabled: true,
-        },
-      });
-
-      expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
-      expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
-      expect(
-        queryByTestId('account-overview__activity-tab'),
-      ).toBeInTheDocument();
-      expect(queryByTestId('account-overview__defi-tab')).toBeInTheDocument();
-    });
-
-    it('shows NFTs and Activity tabs even when only one EVM network is enabled', () => {
-      const { queryByTestId } = render(defaultProps, {
-        enabledNetworkMap: {
-          eip155: {
-            [CHAIN_IDS.MAINNET]: true,
-            [CHAIN_IDS.LINEA_MAINNET]: false,
-          },
-        },
-      });
-
-      expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
-      expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
-      expect(
-        queryByTestId('account-overview__activity-tab'),
-      ).toBeInTheDocument();
-    });
-  });
-
-  describe('when switching between network types', () => {
-    it('hides NFTs and DeFi tabs when all EVM networks are disabled', () => {
-      const { queryByTestId } = render(defaultProps, {
-        enabledNetworkMap: {
-          eip155: {
-            [CHAIN_IDS.MAINNET]: false,
-            [CHAIN_IDS.LINEA_MAINNET]: false,
-          },
-          solana: {
-            'solana:mainnet': true,
-          },
-        },
-      });
-
-      expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
-      expect(
-        queryByTestId('account-overview__nfts-tab'),
-      ).not.toBeInTheDocument();
-      expect(
-        queryByTestId('account-overview__activity-tab'),
-      ).toBeInTheDocument();
+      expectStandardTabs(queryByTestId);
       expect(
         queryByTestId('account-overview__defi-tab'),
       ).not.toBeInTheDocument();

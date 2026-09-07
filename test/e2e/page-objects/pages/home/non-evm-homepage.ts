@@ -15,6 +15,10 @@ import TokensTab from './tokens-tab';
  * @see ui/components/multichain/account-overview/account-overview-non-evm.tsx
  */
 class NonEvmHomepage extends HomePage {
+  private readonly nonEvmPage = {
+    testId: 'parent-selector-non-evm-home',
+  };
+
   async checkExpectedTokenBalanceIsDisplayed(
     expectedTokenBalance: string,
     symbol: string,
@@ -26,11 +30,10 @@ class NonEvmHomepage extends HomePage {
     );
   }
 
-  // Receive is clicked via the inherited HomePage.clickOnReceiveButton
-  // (matches the visible "Receive" button label). A previous override matched
-  // `[data-testid="coin-overview-receive"]`, which no longer exists on current
-  // main: when Receive is the only enabled overflow action (typical for
-  // non-EVM accounts) CoinButtons renders it as `coin-overview-default`.
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForSelector(this.nonEvmPage);
+    console.log('Non-EVM home page is loaded');
+  }
 }
 
 export default NonEvmHomepage;

@@ -173,7 +173,7 @@ const ShieldPlan = () => {
     subscriptionPricing,
   );
   const cryptoPaymentMethod = useSubscriptionPaymentMethods(
-    'crypto' as PaymentType,
+    PAYMENT_TYPES.byCrypto,
     subscriptionPricing,
   );
 
@@ -446,7 +446,10 @@ const ShieldPlan = () => {
   const boxRowClassName = 'flex justify-between items-center p-4 bg-section';
 
   return (
-    <Page className="shield-plan-page" data-testid="shield-plan-page">
+    <Page
+      className="shield-plan-page"
+      data-testid="parent-selector-shield-plan-page"
+    >
       <Header
         textProps={{
           variant: OldTextVariant.headingSm,

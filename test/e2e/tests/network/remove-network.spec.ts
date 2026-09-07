@@ -9,7 +9,7 @@ import AddEditNetworkPage from '../../page-objects/pages/networks/add-edit-netwo
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { getPermittedChains } from './common';
 

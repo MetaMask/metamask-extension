@@ -17,6 +17,9 @@ describe('SyncAccountsTab', () => {
   it('renders the sync accounts settings', () => {
     renderTab();
 
+    expect(
+      screen.getByTestId('parent-selector-sync-accounts-page'),
+    ).toBeInTheDocument();
     expect(screen.getByTestId('sync-accounts-settings')).toBeInTheDocument();
   });
 

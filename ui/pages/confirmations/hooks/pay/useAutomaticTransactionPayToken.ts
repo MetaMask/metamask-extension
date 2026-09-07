@@ -7,6 +7,7 @@ import {
   getTransactionType,
   isPostQuoteWithdrawTransaction,
 } from '../../../../../shared/lib/transactions.utils';
+import { getMoneyAccountTransactionType } from '../../utils/confirm';
 import { Asset } from '../../types/send';
 import { useConfirmContext } from '../../context/confirm';
 import {
@@ -44,8 +45,12 @@ export function useAutomaticTransactionPayToken({
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id;
-  // Batch txs use top-level type `batch`; resolve nested type for flag lookups.
-  const transactionType = getTransactionType(currentConfirmation);
+  // Batch txs use top-level type `batch`. Prefer the money-account nested type
+  // when present — deposits are `[approve, deposit]`, so plain
+  // `getTransactionType` would resolve them to `tokenMethodApprove`.
+  const transactionType =
+    getMoneyAccountTransactionType(currentConfirmation) ??
+    getTransactionType(currentConfirmation);
   const from = currentConfirmation?.txParams?.from;
   const isPostQuoteWithdraw =
     isPostQuoteWithdrawTransaction(currentConfirmation);

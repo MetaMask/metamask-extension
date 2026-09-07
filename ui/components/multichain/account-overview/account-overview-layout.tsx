@@ -8,10 +8,12 @@ import { Carousel } from './carousel';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
+  'data-testid'?: string;
 };
 
 export const AccountOverviewLayout = ({
   children,
+  'data-testid': dataTestId,
   ...tabsProps
 }: AccountOverviewLayoutProps) => {
   const heroRef = useCallback((node: HTMLDivElement | null) => {
@@ -28,6 +30,7 @@ export const AccountOverviewLayout = ({
       <div
         ref={heroRef}
         className="account-overview__balance-wrapper flex flex-col p-4 gap-4"
+        data-testid={dataTestId}
       >
         <NetworkConnectionBanner />
 

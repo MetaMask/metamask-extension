@@ -189,7 +189,7 @@ export const useMerklRewards = ({
     },
     enabled: isEligible && Boolean(selectedAddress) && Boolean(tokenAddress),
     staleTime: MERKL_REWARDS_STALE_TIME,
-    cacheTime: MERKL_REWARDS_CACHE_TIME,
+    gcTime: MERKL_REWARDS_CACHE_TIME,
   });
 
   const fiatRate = useTokenFiatRate((tokenAddress ?? '0x0') as Hex, chainId);

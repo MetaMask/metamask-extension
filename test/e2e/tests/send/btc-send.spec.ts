@@ -5,6 +5,7 @@ import { DEFAULT_BTC_BALANCE } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -147,11 +148,11 @@ describe('BTC Account - Send', function (this: Suite) {
         await bitcoinReviewTxPage.checkTotalAmountIsDisplayed(expectedTotal);
         await bitcoinReviewTxPage.clickConfirmButton();
 
-        // Wait for the transaction to appear in the activity list
-        await activityTab.checkTransactionActivityByText('Sending');
+        const txToast = new TxToastNotification(driver);
+        await txToast.checkTxSubmittedToast();
 
-        // Note: Transaction shows as "Pending" immediately after broadcast.
-        // The BTC snap stores it with "Unconfirmed" status when broadcast.
+        await homePage.goToActivityList();
+        await activityTab.checkTransactionActivityByText('Sending');
         await activityTab.checkWaitForTransactionStatus('pending');
       },
     );

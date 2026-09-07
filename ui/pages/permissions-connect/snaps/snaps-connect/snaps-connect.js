@@ -2,8 +2,9 @@ import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isSnapId } from '@metamask/snaps-utils';
+import { IconSize } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Box, IconSize, Text } from '../../../../components/component-library';
+import { Box, Text } from '../../../../components/component-library';
 import {
   FlexDirection,
   TextVariant,

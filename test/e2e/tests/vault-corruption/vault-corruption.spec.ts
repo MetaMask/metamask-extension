@@ -14,6 +14,7 @@ import {
   onboardThenTriggerCorruptionFlow,
 } from '../../page-objects/flows/vault-corruption.flow';
 import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
+import { pausePersistence, readStorage } from '../state-persistence/helpers';
 import { getConfig, mockFeatureFlagsWithoutNonEvmAccounts } from './helpers';
 
 describe('Vault Corruption', function () {
@@ -73,12 +74,12 @@ describe('Vault Corruption', function () {
   }
 
   /**
-   * Script to break both the primary and backup databases.
+   * Script to break the primary database and delete one backup key.
    *
    * @param backupKeyToDelete - The key to delete from the backup database.
    */
-  const breakAllDatabasesScript = (
-    backupKeyToDelete: 'meta' | 'KeyringController',
+  const breakPrimaryDatabaseAndDeleteBackupKeyScript = (
+    backupKeyToDelete: 'AnalyticsController' | 'KeyringController' | 'meta',
   ) => {
     return createCorruptionScript(`
       // indexedDB is not scuttled in test builds, so we can use it to access the
@@ -100,7 +101,7 @@ describe('Vault Corruption', function () {
       };`);
   };
 
-  it('recovers metamask vault when primary database is broken but backup is intact', async function () {
+  it('preserves primary controller state omitted from the recovery backup', async function () {
     await withFixtures(
       {
         ...getConfig(this.test?.title),
@@ -109,8 +110,21 @@ describe('Vault Corruption', function () {
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
-          breakPrimaryDatabaseOnlyScript,
+          breakPrimaryDatabaseAndDeleteBackupKeyScript('AnalyticsController'),
         );
+        const backupVault = await getBackupVault(driver);
+        assert.ok(backupVault, 'Expected backup vault to exist');
+
+        // Disable debounced writes so this test verifies that recovery itself
+        // persists the restored vault before initialization completes.
+        await pausePersistence(driver);
+        const storageBeforeRecovery = await readStorage(driver);
+        assert.ok(
+          'AnalyticsController' in storageBeforeRecovery,
+          'AnalyticsController should exist in primary storage before recovery',
+        );
+        const analyticsStateBeforeRecovery =
+          storageBeforeRecovery.AnalyticsController;
 
         // start recovery
         const vaultRecoveryPage = new VaultRecoveryPage(driver);
@@ -130,6 +144,25 @@ describe('Vault Corruption', function () {
           restoredFirstAddress,
           initialFirstAddress,
           'Addresses should match',
+        );
+        const storageAfterRecovery = await readStorage(driver);
+        assert.ok(
+          'AnalyticsController' in storageAfterRecovery,
+          'AnalyticsController should remain in primary storage after recovery',
+        );
+        assert.deepStrictEqual(
+          storageAfterRecovery.AnalyticsController,
+          analyticsStateBeforeRecovery,
+          'AnalyticsController should remain unchanged after recovery',
+        );
+        assert.equal(
+          (
+            storageAfterRecovery.KeyringController as
+              | { vault?: unknown }
+              | undefined
+          )?.vault,
+          backupVault,
+          'Recovered vault should be persisted to primary storage',
         );
       },
     );
@@ -215,7 +248,7 @@ describe('Vault Corruption', function () {
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
-          breakAllDatabasesScript('KeyringController'),
+          breakPrimaryDatabaseAndDeleteBackupKeyScript('KeyringController'),
         );
 
         // start reset
@@ -303,7 +336,7 @@ describe('Vault Corruption', function () {
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
-          breakAllDatabasesScript('meta'),
+          breakPrimaryDatabaseAndDeleteBackupKeyScript('meta'),
         );
 
         // start recovery

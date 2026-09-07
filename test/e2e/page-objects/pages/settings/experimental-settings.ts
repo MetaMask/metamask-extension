@@ -26,6 +26,10 @@ class ExperimentalSettings {
     tag: 'p',
   };
 
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   private readonly watchAccountToggle =
     '[data-testid="watch-account-toggle-div"]';
 
@@ -38,7 +42,10 @@ class ExperimentalSettings {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.experimentalPageTitle);
+      await this.driver.waitForMultipleSelectors([
+        this.experimentalPageTitle,
+        this.settingsPage,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for Experimental Settings page to be loaded',

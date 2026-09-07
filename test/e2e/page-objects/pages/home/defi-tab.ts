@@ -64,6 +64,10 @@ class DeFiToken {
  * @see ui/pages/defi/pages/defi-tab.tsx
  */
 class DeFiTab extends HomePage {
+  private readonly defiPage = {
+    testId: 'parent-selector-defi-tab',
+  };
+
   readonly defiTabCells: DeFiToken;
 
   private readonly errorMessage = '[data-testid="defi-tab-error-message"]';
@@ -90,6 +94,11 @@ class DeFiTab extends HomePage {
   async checkNoPositionsMessageIsDisplayed(): Promise<void> {
     console.log('Check that no positions message is displayed');
     await this.driver.waitForSelector(this.noPositionsMessage);
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForSelector(this.defiPage);
+    console.log('DeFi tab is loaded');
   }
 
   async clickIntoAaveV3DetailsPage() {
