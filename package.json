@@ -172,6 +172,7 @@
   },
   "resolutions": {
     "@metamask/eth-sig-util": "^9.0.0",
+    "@metamask/utils": "npm:@metamask-previews/utils@11.12.1-preview-c44fd50",
     "@grpc/grpc-js": "^1.9.16",
     "@metamask/network-controller": "36.0.0",
     "@humanfs/node@npm:^0.16.6": "^0.16.8",
