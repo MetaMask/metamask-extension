@@ -23,6 +23,20 @@ describe('usePerpsTabExploreData', () => {
     });
   });
 
+  it('returns every live market unsliced so other sections can rank the same data', () => {
+    const { result } = renderHookWithProvider(() => usePerpsTabExploreData(), {
+      metamask: { ...mockState.metamask },
+    });
+
+    expect(result.current.allMarkets).toStrictEqual([
+      ...mockCryptoMarkets,
+      ...mockHip3Markets,
+    ]);
+    expect(result.current.allMarkets.length).toBeGreaterThan(
+      PERPS_CONSTANTS.EXPLORE_MARKETS_LIMIT,
+    );
+  });
+
   it('returns explore preview markets and watchlist markets from the same live source', () => {
     const { result } = renderHookWithProvider(() => usePerpsTabExploreData(), {
       metamask: {

@@ -206,11 +206,22 @@ describe('Feature Flag Registry', () => {
       }
     });
 
-    it('returns empty array when no entries match', () => {
+    it('returns deprecated entries', () => {
       const deprecated = getRegistryEntriesByStatus(
         FeatureFlagStatus.Deprecated,
       );
-      expect(deprecated).toHaveLength(0);
+      for (const entry of deprecated) {
+        expect(entry.status).toBe(FeatureFlagStatus.Deprecated);
+      }
+    });
+
+    it('returns empty array when no entries match', () => {
+      // Not a real status, so it can never match — asserting on a real status
+      // would couple this case to whichever flags happen to be deprecated.
+      const unmatched = getRegistryEntriesByStatus(
+        'not-a-status' as FeatureFlagStatus,
+      );
+      expect(unmatched).toHaveLength(0);
     });
   });
 

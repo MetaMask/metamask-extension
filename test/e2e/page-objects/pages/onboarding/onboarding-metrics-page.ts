@@ -102,10 +102,6 @@ class OnboardingMetricsPage {
   async validateParticipateInMetaMetricsIsChecked(): Promise<void> {
     await this.driver.waitForSelector(this.participateChecked);
   }
-
-  async validateParticipateInMetaMetricsIsUnchecked(): Promise<void> {
-    await this.driver.waitForSelector(this.participateUnchecked);
-  }
 }
 
 export default OnboardingMetricsPage;

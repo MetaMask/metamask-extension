@@ -92,7 +92,7 @@ export default function RampsPaymentMethodListItem({
     quote.quote.amountOut !== null &&
     tokenSymbol
       ? formatToken(Number(quote.quote.amountOut), tokenSymbol, {
-          maximumFractionDigits: 6,
+          maximumFractionDigits: 4,
           minimumFractionDigits: 0,
         })
       : '';

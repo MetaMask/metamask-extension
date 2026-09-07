@@ -1526,6 +1526,12 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "무기한 선물 잔액을 확인할 수 없습니다. 다시 시도하세요."
   },
+  "alertReasonAddressTrustSignalMalicious": {
+    "message": "고위험으로 표시된 주소"
+  },
+  "alertReasonAddressTrustSignalWarning": {
+    "message": "제한적 주소 신호"
+  },
   "alertReasonFirstTimeInteraction": {
     "message": "첫 상호작용"
   },
@@ -4365,9 +4371,25 @@
     "message": "지출자: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
+  "hardwareSwapAmount": {
+    "message": "$1 $2을(를) $3 $4(으)로 스왑",
+    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappedAmount": {
+    "message": "$1 $2을(를) $3 $4(으)로 스왑 완료",
+    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappingAmount": {
+    "message": "$1 $2을(를) $3 $4(으)로 스왑 중",
+    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
   "hardwareToAddress": {
     "message": "수신: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareToken": {
+    "message": "토큰: $1",
+    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "기기에서 이 트랜잭션이 거부되었습니다",
@@ -4425,6 +4447,9 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 잠김",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleUnsupportedSignature": {
+    "message": "지원되지 않는 서명"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "선택한 계정의 비밀복구구문 또는 패스프레이즈로 $1 장치가 설정되어 있는지 확인하세요",
@@ -5225,10 +5250,6 @@
   "memo": {
     "message": "메모"
   },
-  "merklRewardsClaimBonus": {
-    "message": "보너스 수령",
-    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
-  },
   "merklRewardsToastFailed": {
     "message": "mUSD 보너스 수령에 실패했습니다",
     "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
@@ -5240,10 +5261,6 @@
   "merklRewardsToastSuccess": {
     "message": "mUSD 보너스가 지급되었습니다!",
     "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
-  },
-  "merklRewardsUnexpectedError": {
-    "message": "예기치 못한 오류가 발생했습니다. 다시 시도하세요.",
-    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "메시지"
@@ -5329,6 +5346,30 @@
   "money": {
     "message": "머니"
   },
+  "moneyAccountApyPitch": {
+    "message": "$1% APY 수익 적립",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchInfo": {
+    "message": "APY 정보"
+  },
+  "moneyAccountApyTooltip": {
+    "message": "표시된 수익률은 현재 시장 상황에 기반한 예상 연간수익률(APY)입니다. APY는 변동되며 보장되지 않습니다."
+  },
+  "moneyAccountAvailableBalance": {
+    "message": "사용 가능한 잔액: $1",
+    "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountProjectedBalance": {
+    "message": "1년 후 예상 잔액:"
+  },
+  "moneyAccountProjectedBalanceInfo": {
+    "message": "1년 후 예상 잔액"
+  },
+  "moneyAccountProjectedBalanceTooltip": {
+    "message": "이 예상치는 연간수익률(APY) $1%가 1년 동안 변함 없이 유지된다는 가정하에 계산되었습니다. APY는 변동되며 보장되지 않습니다.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyActivity": {
     "message": "활동"
   },
@@ -5394,6 +5435,18 @@
   },
   "moneyApy": {
     "message": "$1 APY"
+  },
+  "moneyBalanceInfoBody": {
+    "message": "항상 사용 가능한 달러 기반 mUSD 잔액으로, 언제든지 결제하거나 송금하거나 거래할 수 있습니다. 해당 금액은 총 계정 잔액 계산에 포함되지 않습니다."
+  },
+  "moneyBalanceInfoWithdrawals": {
+    "message": "출금은 즉시 처리되며, 관련 블록체인의 일반적인 네트워크 확인 시간이 적용됩니다. 유동성이 부족한 경우 일시적으로 지연될 수 있습니다."
+  },
+  "moneyBalanceLastKnown": {
+    "message": "마지막으로 확인된 잔액"
+  },
+  "moneyBalanceTitle": {
+    "message": "머니 잔액"
   },
   "moneyBalanceUnavailable": {
     "message": "잔액을 확인할 수 없음"
@@ -5565,54 +5618,6 @@
     "message": "$1에서 $2 Snap 사용을 원합니다.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdAssetBonusAccruing": {
-    "message": "다음 보너스 적립 중",
-    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
-  },
-  "musdAssetBonusClaimAmount": {
-    "message": "$1 보너스 청구",
-    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
-  },
-  "musdAssetBonusEstimatedAnnual": {
-    "message": "연간 예상 보너스",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusInfoAria": {
-    "message": "보너스 정보",
-    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
-  },
-  "musdAssetBonusInfoEstimatedAnnual": {
-    "message": "현재 잔액과 금리를 기준으로 1년 동안 벌 수 있는 예상 금액입니다. 금리는 변동되므로 달라질 수 있습니다.",
-    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLearnMore": {
-    "message": "자세히 알아보세요.",
-    "description": "Link label at the bottom of the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLifetimeClaimed": {
-    "message": "시작한 이후 지금까지 수령한 총 보너스입니다.",
-    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoYourBonus": {
-    "message": ": mUSD를 보유하는 것만으로 $1%의 연환산 보너스를 받을 수 있습니다. 이는 Linea에서 매일 수령할 수 있습니다. $2",
-    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
-  },
-  "musdAssetBonusLifetimeClaimed": {
-    "message": "누적 수령 보너스",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusNoAccruing": {
-    "message": "적립 중인 보너스 없음",
-    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
-  },
-  "musdAssetBonusRate": {
-    "message": "$1% 보너스",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
-  "musdAssetBonusTitle": {
-    "message": "보너스",
-    "description": "Section title on the mUSD asset details page"
-  },
   "musdAssetConvertBenefitDailyBonus": {
     "message": "일일 보너스",
     "description": "Benefit tag on the mUSD asset details convert section"
@@ -5676,14 +5681,6 @@
   "musdBuyMusd": {
     "message": "mUSD 구매"
   },
-  "musdClaimSendingTo": {
-    "message": "다음으로 전송 중:",
-    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
-  },
-  "musdClaimSendingToWallet": {
-    "message": "$1(으)로 전송 중",
-    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
-  },
   "musdClaimTitle": {
     "message": "보너스 수령",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5746,10 +5743,6 @@
     "message": "신뢰하는 주소만 저장하세요.",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "이 주소는 악성으로 식별되었습니다. 이 주소와의 상호작용은 권장하지 않습니다.",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "이 주소를 알고 있다면 나중에 알아볼 수 있도록 닉네임을 지정하세요.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5761,10 +5754,6 @@
   "nameInstructionsSaved": {
     "message": "이 전에 이 주소에 닉네임을 추가한 적이 있습니다. 편집하거나 다른 추천 닉네임을 볼 수 있습니다.",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "이 주소를 검증할 수 없습니다. 새 주소이거나 검증되지 않은 주소일 수 있습니다. 앞으로 식별할 수 있도록 개인 표시 이름을 설정하세요.",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "닉네임",
@@ -5793,10 +5782,6 @@
   "nameModalTitleVerified": {
     "message": "검증된 주소",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "검토가 필요한 주소입니다",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "추천인: $1",
@@ -7144,9 +7129,6 @@
   "perpsAddFunds": {
     "message": "자금 추가"
   },
-  "perpsAddFundsDescription": {
-    "message": "레버리지를 이용해 무기한 선물 거래를 시작하려면 자금을 추가하세요"
-  },
   "perpsAddMargin": {
     "message": "마진 추가"
   },
@@ -8003,12 +7985,6 @@
     "message": "익절/손절이 업데이트되었습니다",
     "description": "Success toast text shown when TP/SL settings are updated"
   },
-  "perpsTotalBalance": {
-    "message": "총 잔액"
-  },
-  "perpsTradePerps": {
-    "message": "무기한 선물 거래하기"
-  },
   "perpsTrades": {
     "message": "거래하기"
   },
@@ -8554,14 +8530,6 @@
   "rampsPaymentDelayMinutes": {
     "message": "분"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
-  },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "최대 $1",
-    "description": "$1 is the maximum fiat buy amount"
-  },
   "rampsPaymentMethodMinLimit": {
     "message": "최소 $1",
     "description": "$1 is the minimum fiat buy amount"
@@ -8571,10 +8539,6 @@
   },
   "rampsQuoteUnavailable": {
     "message": "견적을 확인할 수 없습니다."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "$1에 대한 견적을 표시합니다.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "결제 방법 선택"

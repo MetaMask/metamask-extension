@@ -24,14 +24,12 @@ describe('isSupportedBridgeChain', () => {
 
     it('returns true for a supported EVM chain (BSC)', () => {
       expect(
-        isSupportedBridgeChain(
-          `eip155:${parseInt(CHAIN_IDS.BSC, 16)}` as never,
-        ),
+        isSupportedBridgeChain(`eip155:${parseInt(CHAIN_IDS.BSC, 16)}`),
       ).toBe(true);
     });
 
     it('returns false for an unknown EVM chain', () => {
-      expect(isSupportedBridgeChain(`eip155:99999` as never)).toBe(false);
+      expect(isSupportedBridgeChain(`eip155:99999`)).toBe(false);
     });
   });
 
@@ -45,13 +43,11 @@ describe('isSupportedBridgeChain', () => {
     });
 
     it('returns false for an unknown Solana network', () => {
-      expect(isSupportedBridgeChain(`solana:unknown-testnet` as never)).toBe(
-        false,
-      );
+      expect(isSupportedBridgeChain(`solana:unknown-testnet`)).toBe(false);
     });
 
     it('returns false for an entirely unknown non-EVM namespace', () => {
-      expect(isSupportedBridgeChain(`cosmos:cosmoshub-4` as never)).toBe(false);
+      expect(isSupportedBridgeChain(`cosmos:cosmoshub-4`)).toBe(false);
     });
   });
 });

@@ -58,6 +58,12 @@ export const BlindSignNotSupported: Story = {
   },
 };
 
+export const OnlyV4TypedDataSupported: Story = {
+  args: {
+    error: createTestError(ErrorCode.DeviceStateOnlyV4Supported),
+  },
+};
+
 export const DeviceDisconnected: Story = {
   args: {
     error: createTestError(ErrorCode.DeviceDisconnected),

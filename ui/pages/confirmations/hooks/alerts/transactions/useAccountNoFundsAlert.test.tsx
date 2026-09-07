@@ -11,11 +11,13 @@ import { ConfirmContext } from '../../../context/confirm';
 import { ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS } from '../../pay/useAutomaticTransactionPayToken';
 import { useTransactionPayAvailableTokens } from '../../pay/useTransactionPayAvailableTokens';
 import { useIsTransactionPayLoading } from '../../pay/useTransactionPayData';
+import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { useTransactionAccountOverride } from '../../transactions/useTransactionAccountOverride';
 import { AlertsName } from '../constants';
 import { useAccountNoFundsAlert } from './useAccountNoFundsAlert';
 
 jest.mock('../../pay/useTransactionPayAvailableTokens');
+jest.mock('../../pay/useTransactionPayToken');
 jest.mock('../../pay/useTransactionPayData', () => ({
   ...jest.requireActual('../../pay/useTransactionPayData'),
   useIsTransactionPayLoading: jest.fn(),
@@ -55,6 +57,7 @@ describe('useAccountNoFundsAlert', () => {
   const useTransactionAccountOverrideMock = jest.mocked(
     useTransactionAccountOverride,
   );
+  const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -65,6 +68,10 @@ describe('useAccountNoFundsAlert', () => {
     ] as ReturnType<typeof useTransactionPayAvailableTokens>);
     useIsTransactionPayLoadingMock.mockReturnValue(false);
     useTransactionAccountOverrideMock.mockReturnValue(undefined);
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      setPayToken: jest.fn(),
+    });
   });
 
   it('returns alert for moneyAccountDeposit with no available tokens', () => {
@@ -99,6 +106,21 @@ describe('useAccountNoFundsAlert', () => {
 
     expect(result.current).toHaveLength(1);
     expect(result.current[0].key).toBe(AlertsName.AccountNoFunds);
+  });
+
+  it('returns no alert when a pay token with a USD balance is selected', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([]);
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: { balanceUsd: '0.38' } as never,
+      setPayToken: jest.fn(),
+    });
+
+    const { result } = renderHookWithConfirmation({
+      type: TransactionType.moneyAccountDeposit,
+      txParams: { from: '0xabc' },
+    } as TransactionMeta);
+
+    expect(result.current).toStrictEqual([]);
   });
 
   it('returns no alert for moneyAccountDeposit with available tokens', () => {
