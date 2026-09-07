@@ -489,24 +489,16 @@ jobs:
           filters: .github/rules/filter-rules.yml
           list-files: json
 
-      # Only pull_request events expose the file list, because AI PR risk
-      # analysis (its only consumer) runs on pull requests only. On other
-      # events dorny/paths-filter has no base SHA to diff against, so with
-      # fetch-depth: 1 it reports the entire tree as changed. A list that long
-      # exceeds GitHub's 1,048,576-byte job-output limit, which fails this job
-      # after every step has passed and takes the whole run down with it.
+      # Schedule + shallow checkout lists the whole tree; job outputs cap at 1MB.
       - name: Expose changed files for AI PR risk analysis
         id: set-changed-files
         if: ${{ env.EVENT_NAME == 'pull_request' }}
         env:
           ALL_CHANGES_FILES: ${{ steps.filter.outputs.all_changes_files }}
         run: |
-          # Filenames come from the PR, so keep them out of the script body.
           SIZE="$(printf '%s' "$ALL_CHANGES_FILES" | wc -c | tr -d ' ')"
-          # Leave headroom under the job-output limit: GitHub counts this value
-          # once as a job output and again as a workflow_call output.
           if (( SIZE > 400000 )); then
-            echo "::warning::Changed-file list is $SIZE bytes, too large to pass as a job output — skipping AI PR risk analysis"
+            echo "::warning::Changed-file list is $SIZE bytes; skipping AI PR risk analysis"
             exit 0
           fi
           echo "changed-files=$ALL_CHANGES_FILES" >> "$GITHUB_OUTPUT"
