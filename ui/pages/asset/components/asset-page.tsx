@@ -637,6 +637,7 @@ const AssetPage = ({
                             <Text
                               variant={TextVariant.BodyMd}
                               fontWeight={FontWeight.Medium}
+                              data-testid="asset-token-decimals"
                             >
                               {asset.decimals}
                             </Text>,
@@ -731,9 +732,7 @@ function renderRow(leftColumn: string, rightColumn: ReactNode) {
       >
         {leftColumn}
       </Text>
-      <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-        {rightColumn}
-      </Text>
+      <Box>{rightColumn}</Box>
     </Box>
   );
 }
