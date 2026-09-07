@@ -43,6 +43,7 @@
   "AppStateController": {
     "activeQrCodeScanRequest": null,
     "addressSecurityAlertResponses": "object",
+    "arcUsageNoticeShown": "boolean",
     "browserEnvironment": { "browser": "string", "os": "string" },
     "connectedStatusPopoverHasBeenShown": true,
     "currentExtensionPopupId": "number",
@@ -404,6 +405,7 @@
   },
   "TransactionPayController": { "transactionData": "object" },
   "TxController": {
+    "batchTransactionCounts": "object",
     "lastFetchedBlockNumbers": "object",
     "methodData": "object",
     "submitHistory": "object",

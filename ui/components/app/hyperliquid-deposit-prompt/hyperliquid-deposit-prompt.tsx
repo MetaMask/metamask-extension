@@ -13,6 +13,7 @@ import {
   ButtonBase,
   ButtonIcon,
   Icon,
+  IconColor,
   IconName,
   IconSize,
   Modal,
@@ -37,6 +38,7 @@ import { selectBlockedPayTokens } from '../../../pages/confirmations/selectors/f
 import { getAvailableTokens } from '../../../pages/confirmations/utils/transaction-pay';
 import { Asset } from '../../../pages/confirmations/components/send/asset/asset';
 import type { Asset as AssetType } from '../../../pages/confirmations/types/send';
+import { usePerpsHomeRoute } from '../../../hooks/perps/usePerpsHomeRoute';
 import { usePerpsDepositConfirmation } from '../perps/hooks/usePerpsDepositConfirmation';
 import type { HyperliquidDepositPromptProps } from './hyperliquid-deposit-prompt.types';
 
@@ -119,13 +121,13 @@ const TokenSelectButton: React.FC<{
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
-            gap={2}
+            gap={3}
           >
             <TokenIcon
               chainId={token.chainId as Hex}
               tokenAddress={token.address as Hex}
               symbol={token.symbol}
-              size="sm"
+              size="md"
             />
             <Text data-testid="hyperliquid-deposit-prompt-token-name">
               {token.name ?? token.symbol}
@@ -139,7 +141,11 @@ const TokenSelectButton: React.FC<{
             <Text data-testid="hyperliquid-deposit-prompt-token-balance">
               {formatFiat(token.fiat?.balance ?? 0)}
             </Text>
-            <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
+            <Icon
+              name={IconName.ArrowDown}
+              size={IconSize.Md}
+              color={IconColor.IconAlternative}
+            />
           </Box>
         </>
       ) : (
@@ -154,6 +160,7 @@ export const HyperliquidDepositPrompt: React.FC<
 > = ({ onActionComplete, selectedAddress }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const perpsHomeRoute = usePerpsHomeRoute();
   const tokens = useHyperliquidDepositTokens();
   const currentAccount = useSelector(getSelectedInternalAccount);
 
@@ -212,25 +219,30 @@ export const HyperliquidDepositPrompt: React.FC<
 
     const { transactionId } = result;
 
-    // Pre-select the payment token. Fire-and-forget: the confirmation falls
-    // back to its automatic pay token selection if this fails or hangs.
     if (displayToken?.address && displayToken.chainId) {
-      updateTransactionPaymentToken({
-        transactionId,
-        tokenAddress: displayToken.address as Hex,
-        chainId: displayToken.chainId as Hex,
-      }).catch((error: unknown) => {
+      try {
+        await updateTransactionPaymentToken({
+          transactionId,
+          tokenAddress: displayToken.address as Hex,
+          chainId: displayToken.chainId as Hex,
+        });
+      } catch (error) {
+        // The confirmation falls back to its automatic pay token selection,
+        // so a failed pre-selection should not block the deposit.
         log.error(
           'HyperliquidDepositPrompt: Failed to pre-select payment token',
           error,
         );
-      });
+      }
     }
 
     navigate(
       {
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
-        search: `?loader=${ConfirmationLoader.CustomAmount}`,
+        search: new URLSearchParams({
+          loader: ConfirmationLoader.CustomAmount,
+          goBackTo: perpsHomeRoute,
+        }).toString(),
       },
       { replace: true },
     );
@@ -247,7 +259,7 @@ export const HyperliquidDepositPrompt: React.FC<
         error,
       );
     });
-  }, [displayToken, navigate, onActionComplete, startPerpsDeposit]);
+  }, [displayToken, navigate, onActionComplete, perpsHomeRoute, startPerpsDeposit]);
 
   return (
     <Box
