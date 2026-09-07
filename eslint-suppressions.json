@@ -570,11 +570,6 @@
       "count": 1
     }
   },
-  "ui/hooks/useScrollRequired.js": {
-    "react-hooks/exhaustive-deps": {
-      "count": 1
-    }
-  },
   "ui/hooks/useShouldShowSpeedUp.js": {
     "react-hooks/set-state-in-effect": {
       "count": 1

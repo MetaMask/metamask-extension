@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -16,7 +16,6 @@ import {
   FlexDirection,
   IconColor,
 } from '../../../../../helpers/constants/design-system';
-import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
 import { useConfirmContext } from '../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
@@ -33,7 +32,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
   const t = useContext(I18nContext);
   const { currentConfirmation, setIsScrollToBottomCompleted } =
     useConfirmContext();
-  const previousId = usePrevious(currentConfirmation?.id);
+  const previousConfirmationIdRef = useRef<string | undefined>(undefined);
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
@@ -63,9 +62,12 @@ const ScrollToBottom = ({ children }: ContentProps) => {
    * when we navigate through different confirmations. Also, resets hasScrolledToBottom
    */
   useEffect(() => {
-    if (previousId === currentConfirmation?.id) {
+    const confirmationId = currentConfirmation?.id;
+    if (previousConfirmationIdRef.current === confirmationId) {
       return;
     }
+
+    previousConfirmationIdRef.current = confirmationId;
 
     const scrollEl = scrollElement as HTMLDivElement | null;
     if (!scrollEl) {
@@ -77,12 +79,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     }
 
     setHasScrolledToBottom(false);
-  }, [
-    currentConfirmation?.id,
-    previousId,
-    scrollElement,
-    setHasScrolledToBottom,
-  ]);
+  }, [currentConfirmation?.id, scrollElement, setHasScrolledToBottom]);
 
   useEffect(() => {
     if (isTransactionRedesign) {

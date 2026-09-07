@@ -1,13 +1,16 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
-import { unapprovedTypedSignMsgV4 } from '../../../../../../test/data/confirmations/typed_sign';
 import {
   getMockContractInteractionConfirmState,
   getMockPersonalSignConfirmState,
 } from '../../../../../../test/data/confirmations/helper';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { ConfirmContextProvider } from '../../../context/confirm';
+import { DappSwapContextProvider } from '../../../context/dapp-swap';
+import { GasFeeModalContextProvider } from '../../../context/gas-fee-modal';
+import { HardwareWalletErrorProvider } from '../../../../../contexts/hardware-wallets';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import * as usePreviousHooks from '../../../../../hooks/usePrevious';
 import ScrollToBottom from './scroll-to-bottom';
 
 const buttonSelector = '.confirm-scroll-to-bottom__button';
@@ -33,6 +36,29 @@ const mockedUseScrollRequiredResult = jest.mocked(mockUseScrollRequiredResult);
 jest.mock('../../../../../hooks/useScrollRequired', () => ({
   useScrollRequired: () => mockedUseScrollRequiredResult,
 }));
+
+const renderScrollToBottomWithProviders = (
+  children: React.ReactNode = 'foobar',
+) => {
+  const store = configureMockStore([])(mockState);
+
+  const ui = (
+    <HardwareWalletErrorProvider>
+      <ConfirmContextProvider>
+        <DappSwapContextProvider>
+          <GasFeeModalContextProvider>
+            <ScrollToBottom>{children}</ScrollToBottom>
+          </GasFeeModalContextProvider>
+        </DappSwapContextProvider>
+      </ConfirmContextProvider>
+    </HardwareWalletErrorProvider>
+  );
+
+  return {
+    store,
+    ...renderWithProvider(ui, store),
+  };
+};
 
 describe('ScrollToBottom', () => {
   beforeEach(() => {
@@ -79,13 +105,20 @@ describe('ScrollToBottom', () => {
     it('does not scroll to the top while the confirmation id does not change', () => {
       mockScrollTo.mockClear();
 
-      jest
-        .spyOn(usePreviousHooks, 'usePrevious')
-        .mockImplementation(() => unapprovedTypedSignMsgV4.id);
+      const { rerender } = renderScrollToBottomWithProviders('foobar');
 
-      renderWithConfirmContextProvider(
-        <ScrollToBottom>foobar</ScrollToBottom>,
-        configureMockStore([])(mockState),
+      mockScrollTo.mockClear();
+
+      rerender(
+        <HardwareWalletErrorProvider>
+          <ConfirmContextProvider>
+            <DappSwapContextProvider>
+              <GasFeeModalContextProvider>
+                <ScrollToBottom>foobar</ScrollToBottom>
+              </GasFeeModalContextProvider>
+            </DappSwapContextProvider>
+          </ConfirmContextProvider>
+        </HardwareWalletErrorProvider>,
       );
 
       expect(mockScrollTo).not.toHaveBeenCalled();

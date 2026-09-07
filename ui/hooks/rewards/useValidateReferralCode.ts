@@ -87,7 +87,11 @@ export const useValidateReferralCode = (
   }, []);
 
   const invalidatePendingValidation = useCallback(() => {
-    setRequestId((current) => current + 1);
+    setRequestId((current) => {
+      const nextRequestId = current + 1;
+      requestIdRef.current = nextRequestId;
+      return nextRequestId;
+    });
     clearDebounceTimer();
   }, [clearDebounceTimer]);
 
@@ -97,7 +101,11 @@ export const useValidateReferralCode = (
   // response can still apply and flip isUnknownError after the prop was cleared.
   if (initialValue !== trackedInitialValue) {
     setTrackedInitialValue(initialValue);
-    setRequestId((current) => current + 1);
+    setRequestId((current) => {
+      const nextRequestId = current + 1;
+      requestIdRef.current = nextRequestId;
+      return nextRequestId;
+    });
     const normalized = normalizeReferralCode(initialValue);
     setReferralCodeState(normalized);
     if (normalized.length < REFERRAL_CODE_MIN_LENGTH) {
@@ -247,7 +255,7 @@ export const useValidateReferralCode = (
 
   useEffect(
     () => () => {
-      setRequestId((current) => current + 1);
+      requestIdRef.current += 1;
       clearDebounceTimer();
     },
     [clearDebounceTimer],

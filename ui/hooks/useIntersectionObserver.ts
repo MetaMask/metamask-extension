@@ -74,10 +74,6 @@ export function useIntersectionObserver({
     thresholdRef.current = threshold;
   }, [threshold]);
 
-  if (!ref && state.entry?.target) {
-    setState({ isIntersecting: initialIsIntersecting, entry: undefined });
-  }
-
   useEffect(() => {
     if (!ref || !('IntersectionObserver' in globalThis)) {
       return undefined;
@@ -105,9 +101,15 @@ export function useIntersectionObserver({
     };
   }, [ref, thresholdKey, root, rootMargin, rootRef]);
 
-  const setRefFn = useCallback((node?: Element | null) => {
-    setRef(node ?? null);
-  }, []);
+  const setRefFn = useCallback(
+    (node?: Element | null) => {
+      setRef(node ?? null);
+      if (!node) {
+        setState({ isIntersecting: initialIsIntersecting, entry: undefined });
+      }
+    },
+    [initialIsIntersecting],
+  );
 
   return useMemo((): IntersectionReturn => {
     const isIntersecting = Boolean(state.isIntersecting);

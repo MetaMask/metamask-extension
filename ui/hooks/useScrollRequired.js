@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { debounce } from 'lodash';
+import { usePrevious } from './usePrevious';
+import { useSyncEqualityCheck } from './useSyncEqualityCheck';
 
 /**
  * Utility hook for requiring users to scroll through content.
@@ -18,6 +20,9 @@ export const useScrollRequired = (
 ) => {
   const [scrollElement, setScrollElement] = useState(null);
   const offsetHeight = scrollElement?.offsetHeight;
+  const previousOffsetHeight = usePrevious(offsetHeight);
+  const dependencySnapshot = useSyncEqualityCheck(dependencies);
+  const previousDependencySnapshot = usePrevious(dependencySnapshot);
 
   const [hasScrolledToBottomState, setHasScrolledToBottom] = useState(false);
   const [isScrollableState, setIsScrollable] = useState(false);
@@ -64,9 +69,13 @@ export const useScrollRequired = (
     [update],
   );
 
-  useEffect(() => {
-    queueMicrotask(() => update());
-  }, [update, scrollElement, offsetHeight, ...dependencies]);
+  if (
+    scrollElement &&
+    (!Object.is(previousOffsetHeight, offsetHeight) ||
+      !Object.is(previousDependencySnapshot, dependencySnapshot))
+  ) {
+    update(scrollElement);
+  }
 
   const scrollToBottom = useCallback(() => {
     setIsScrolledToBottom(true);
@@ -81,6 +90,13 @@ export const useScrollRequired = (
   }, [scrollElement]);
 
   const onScroll = useMemo(() => debounce(() => update(), 25), [update]);
+
+  useEffect(
+    () => () => {
+      onScroll.cancel();
+    },
+    [onScroll],
+  );
 
   return {
     isScrollable: isScrollableState,
