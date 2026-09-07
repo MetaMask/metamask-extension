@@ -162,7 +162,7 @@ export const MoneyAccountBalance = () => {
         </Box>
         <Box
           flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
+          alignItems={BoxAlignItems.Baseline}
           gap={2}
         >
           {isLoading ? (
@@ -171,6 +171,9 @@ export const MoneyAccountBalance = () => {
             <Skeleton
               height={32}
               width={100}
+              // A skeleton has no baseline of its own, so it is centred rather
+              // than left to baseline-align against the APY beside it.
+              className="self-center"
               data-testid={MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID}
             />
           ) : (
