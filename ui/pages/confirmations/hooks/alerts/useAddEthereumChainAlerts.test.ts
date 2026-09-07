@@ -18,6 +18,12 @@ const mockSafeChains = [
     nativeCurrency: { symbol: 'ETH' },
     rpc: ['https://goerli.infura.io/v3/abc'],
   },
+  {
+    chainId: '30',
+    name: 'Rootstock Mainnet',
+    nativeCurrency: { symbol: 'RBTC' },
+    rpc: ['https://public-node.rsk.co', 'https://mycrypto.rsk.co'],
+  },
 ];
 
 const mockUseConfirmContext = jest.fn();
@@ -141,6 +147,100 @@ describe('useAddEthereumChainAlerts', () => {
           chainId: '0x1',
           chainName: 'Ethereum',
           rpcUrl: 'https://example.com/rpc',
+        },
+      },
+    });
+
+    const { result } = await renderHookWithWait();
+
+    expect(result.current).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          key: 'mismatchedRpcUrl',
+          severity: Severity.Warning,
+        }),
+      ]),
+    );
+  });
+
+  it('does not warn for a RouteMesh RPC URL matching the requested chain', async () => {
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: {
+        requestData: {
+          chainId: '0x1e',
+          chainName: 'Rootstock Mainnet',
+          rpcUrl: 'https://lb.routeme.sh/rpc/evm/30',
+          ticker: 'RBTC',
+        },
+      },
+    });
+
+    const { result } = await renderHookWithWait();
+
+    expect(result.current).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          key: 'mismatchedRpcUrl',
+        }),
+      ]),
+    );
+  });
+
+  it('does not warn for a matching RouteMesh RPC URL with a trailing slash', async () => {
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: {
+        requestData: {
+          chainId: '0x1e',
+          chainName: 'Rootstock Mainnet',
+          rpcUrl: 'https://lb.routeme.sh/rpc/evm/30/',
+          ticker: 'RBTC',
+        },
+      },
+    });
+
+    const { result } = await renderHookWithWait();
+
+    expect(result.current).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          key: 'mismatchedRpcUrl',
+        }),
+      ]),
+    );
+  });
+
+  it('warns for a RouteMesh RPC URL with a different chain ID', async () => {
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: {
+        requestData: {
+          chainId: '0x1e',
+          chainName: 'Rootstock Mainnet',
+          rpcUrl: 'https://lb.routeme.sh/rpc/evm/31',
+          ticker: 'RBTC',
+        },
+      },
+    });
+
+    const { result } = await renderHookWithWait();
+
+    expect(result.current).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          key: 'mismatchedRpcUrl',
+          severity: Severity.Warning,
+        }),
+      ]),
+    );
+  });
+
+  it('warns for a RouteMesh RPC URL with a spoofed hostname', async () => {
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: {
+        requestData: {
+          chainId: '0x1e',
+          chainName: 'Rootstock Mainnet',
+          rpcUrl: 'https://lb.routeme.sh.example.com/rpc/evm/30',
+          ticker: 'RBTC',
         },
       },
     });
