@@ -5,6 +5,7 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import {
@@ -114,8 +115,9 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
   // `useTokenFiatRate` cannot be used as this readiness gate because it falls
   // back to a synthetic $1 token price when market data is absent.
   const payTokenMarketPrice = payToken
-    ? marketData?.[payToken.chainId]?.[toChecksumHexAddress(payToken.address)]
-        ?.price
+    ? marketData?.[payToken.chainId]?.[
+        toChecksumHexAddress(payToken.address) as Hex
+      ]?.price
     : undefined;
   const hasPayTokenMarketPrice =
     payTokenMarketPrice !== undefined &&

@@ -497,7 +497,7 @@ describe('TransactionPayControllerInit', () => {
       );
     });
 
-    it('waits for the payment token refresh before forwarding the amount', async () => {
+    it('refreshes the payment token before forwarding the amount', async () => {
       const { api, messengerClient } =
         TransactionPayControllerInit(getInitRequestMock());
       if (!api) {
@@ -527,29 +527,29 @@ describe('TransactionPayControllerInit', () => {
           },
         },
       };
-      let resolveRefresh: (() => void) | undefined;
-      const refreshPromise = new Promise<void>((resolve) => {
-        resolveRefresh = resolve;
+      const callOrder: string[] = [];
+      jest.mocked(messengerClient.updatePaymentToken).mockImplementation(() => {
+        callOrder.push('refresh');
       });
-      jest
-        .mocked(messengerClient.updatePaymentToken)
-        .mockReturnValue(refreshPromise);
       updateDepositAmountMock.mockClear();
-      updateDepositAmountMock.mockResolvedValue(true);
+      updateDepositAmountMock.mockImplementation(async () => {
+        callOrder.push('updateAmount');
+        return true;
+      });
 
-      const resultPromise = api.updateMoneyAccountDepositAmount('tx-1', '10');
+      await expect(
+        api.updateMoneyAccountDepositAmount('tx-1', '10'),
+      ).resolves.toBe(true);
 
-      expect(updateDepositAmountMock).not.toHaveBeenCalled();
-      resolveRefresh?.();
-      await expect(resultPromise).resolves.toBe(true);
-      expect(updateDepositAmountMock).toHaveBeenCalledWith(
-        expect.anything(),
-        'tx-1',
-        '10',
-      );
+      expect(messengerClient.updatePaymentToken).toHaveBeenCalledWith({
+        transactionId: 'tx-1',
+        tokenAddress: '0x123',
+        chainId: '0x1',
+      });
+      expect(callOrder).toEqual(['refresh', 'updateAmount']);
     });
 
-    it('forwards the amount when the payment token refresh rejects', async () => {
+    it('forwards the amount when the payment token refresh throws', async () => {
       const { api, messengerClient } =
         TransactionPayControllerInit(getInitRequestMock());
       if (!api) {
@@ -579,9 +579,9 @@ describe('TransactionPayControllerInit', () => {
           },
         },
       };
-      jest
-        .mocked(messengerClient.updatePaymentToken)
-        .mockRejectedValue(new Error('Refresh failed'));
+      jest.mocked(messengerClient.updatePaymentToken).mockImplementation(() => {
+        throw new Error('Payment token not found');
+      });
       updateDepositAmountMock.mockClear();
       updateDepositAmountMock.mockResolvedValue(true);
 

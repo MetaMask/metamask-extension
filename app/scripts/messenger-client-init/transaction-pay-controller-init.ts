@@ -138,18 +138,21 @@ function getApi(
         config.accountOverride = accountOverride;
       });
     },
-    updateMoneyAccountDepositAmount: async (
+    updateMoneyAccountDepositAmount: (
       transactionId: string,
       amountHuman: string,
     ) => {
       // Refresh the payment-token snapshot before committing so source amounts
       // can use a current balanceRaw. Prefill often runs while the snapshot is
       // still 0/stale (tx `from` is the vault).
+      // `updatePaymentToken` is synchronous: it resolves the token and writes
+      // state before returning, so the refresh cannot land after the amount
+      // commit below and only throws synchronously.
       const paymentToken =
         messengerClient.state?.transactionData?.[transactionId]?.paymentToken;
       if (paymentToken) {
         try {
-          await messengerClient.updatePaymentToken({
+          messengerClient.updatePaymentToken({
             transactionId,
             tokenAddress: paymentToken.address,
             chainId: paymentToken.chainId,
