@@ -14,7 +14,10 @@ import { usePerpsEligibility } from '../../../../hooks/perps/usePerpsEligibility
 // these buttons partially mock that barrel, which would leave the hook
 // undefined.
 import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
-import { useSelectedAccountComplianceGate } from '../../compliance';
+import {
+  AccessRestrictedProvider,
+  useSelectedAccountComplianceGate,
+} from '../../compliance';
 import { PERPS_ORDER_ENTRY_ROUTE } from '../../../../helpers/constants/routes';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import {
@@ -37,11 +40,27 @@ export type PerpsTradeButtonsProps = {
  * navigating to the Perps order entry screen with the side preselected,
  * matching the mobile Token Details actions.
  *
+ * Wraps itself in {@link AccessRestrictedProvider} so it can be rendered on
+ * non-Perps hosts (token detail / coin overview) that do not already provide
+ * that context.
+ *
  * @param props - The component props
  * @param props.marketSymbol - The Perps market name to trade
  * @param props.classPrefix - Prefix for button class names and test ids
  */
 export const PerpsTradeButtons = ({
+  marketSymbol,
+  classPrefix = 'token',
+}: PerpsTradeButtonsProps) => (
+  <AccessRestrictedProvider>
+    <PerpsTradeButtonsContent
+      marketSymbol={marketSymbol}
+      classPrefix={classPrefix}
+    />
+  </AccessRestrictedProvider>
+);
+
+const PerpsTradeButtonsContent = ({
   marketSymbol,
   classPrefix = 'token',
 }: PerpsTradeButtonsProps) => {

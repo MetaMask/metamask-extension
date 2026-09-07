@@ -32,6 +32,11 @@ jest.mock('../../../../hooks/perps/usePerpsEventTracking', () => ({
 // block.
 const mockComplianceGate = jest.fn(async (action: () => unknown) => action());
 jest.mock('../../compliance', () => ({
+  // Passthrough so the real AccessRestrictedProvider wrap in PerpsTradeButtons
+  // still mounts children under the mocked compliance gate.
+  AccessRestrictedProvider: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
   useSelectedAccountComplianceGate: () => ({ gate: mockComplianceGate }),
 }));
 
@@ -108,9 +113,7 @@ describe('PerpsTradeButtons', () => {
     fireEvent.click(screen.getByTestId('token-overview-long'));
 
     await waitFor(() =>
-      expect(
-        screen.getByTestId('perps-geo-block-modal'),
-      ).toBeInTheDocument(),
+      expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument(),
     );
     expect(mockNavigate).not.toHaveBeenCalled();
     expect(mockTrack).not.toHaveBeenCalled();
