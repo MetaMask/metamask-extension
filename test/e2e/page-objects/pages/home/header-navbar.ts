@@ -227,6 +227,17 @@ class HeaderNavbar {
     await this.driver.clickElement(this.notificationsButton);
   }
 
+  /**
+   * Dismisses the network addresses quick-copy popover by moving the pointer
+   * to the top-left corner of the page (clickPoint on `body` at 1,1). The
+   * popover is in hover trigger mode, so the click itself is a no-op — the
+   * move fires mouseleave on the trigger/popover, closing it after the
+   * hoverCloseDelay (~50ms).
+   */
+  async dismissNetworkAddressesPopover(): Promise<void> {
+    await this.driver.clickPoint('body', 1, 1);
+  }
+
   async goToNotifications(): Promise<void> {
     await this.navigateToNotificationsPage();
   }
