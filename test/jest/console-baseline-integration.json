@@ -134,6 +134,12 @@
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "warn: ⚠️ React Router Future Flag": 1
+    },
+    "test/integration/tokens/non-zero-native-address.test.tsx": {
+      "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 5,
+      "error: Error: AggregateError": 5,
+      "warn: ⚠️ React Router Future Flag": 1
     }
   }
 }
