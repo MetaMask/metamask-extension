@@ -44,10 +44,26 @@ describe('getMoneyActivityStatus', () => {
     expect(getMoneyActivityStatus(makeTx({ status }))).toBe('failed');
   });
 
-  it('maps confirmed to confirmed', () => {
+  it('maps failed with a successful receipt to confirmed', () => {
     expect(
-      getMoneyActivityStatus(makeTx({ status: TransactionStatus.confirmed })),
+      getMoneyActivityStatus(
+        makeTx({
+          status: TransactionStatus.failed,
+          txReceipt: { status: '0x1' },
+        }),
+      ),
     ).toBe('confirmed');
+  });
+
+  it('maps confirmed with a reverted receipt to failed', () => {
+    expect(
+      getMoneyActivityStatus(
+        makeTx({
+          status: TransactionStatus.confirmed,
+          txReceipt: { status: '0x0' },
+        }),
+      ),
+    ).toBe('failed');
   });
 });
 
@@ -111,15 +127,16 @@ describe('classifyMoneyActivity', () => {
     },
   );
 
-  it('classifies a nested moneyAccountWithdraw batch as sent', () => {
+  it('classifies a nested moneyAccountDeposit on a contract-interaction parent as a deposit', () => {
     expect(
       classifyMoneyActivity(
         makeTx({
-          type: TransactionType.batch,
-          nestedTransactions: [{ type: TransactionType.moneyAccountWithdraw }],
+          type: TransactionType.contractInteraction,
+          nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+          metamaskPay: { tokenAddress: MUSD_TOKEN_ADDRESS, chainId: '0x8f' },
         }),
       ),
-    ).toBe('sent');
+    ).toBe('deposited');
   });
 });
 
