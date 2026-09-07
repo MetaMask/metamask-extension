@@ -9,31 +9,18 @@ import {
   getMoneyActivityStatus,
   isIncomingMoneyActivityKind,
 } from './classify-money-activity';
+import { resolveOnchainAmount } from './money-activity-display';
 
 export type MoneyTransactionDetailsHeroAmount = {
   amount: string;
   isSuccessColor: boolean;
 };
 
-function getTransferAmount(tx: TransactionMeta): BigNumber | undefined {
-  const amount = tx.transferInformation?.amount;
-  const decimals = tx.transferInformation?.decimals;
-  if (amount === undefined || decimals === undefined) {
-    return undefined;
-  }
-
-  const parsed = new BigNumber(amount).dividedBy(
-    new BigNumber(10).pow(decimals),
-  );
-  if (parsed.isNaN() || !parsed.isFinite()) {
-    return undefined;
-  }
-  return parsed;
-}
-
 /**
  * Formats the details-page hero amount. Failed rows keep the attempted
  * amount (unsigned); confirmed/pending rows keep the signed fiat prefix.
+ * Amounts use the same resolution as the activity list so live Money Pay
+ * deposits without `transferInformation` do not render as $0.
  *
  * @param tx - The transaction to present.
  * @returns Formatted fiat amount and whether to use the success color.
@@ -44,7 +31,7 @@ export function getMoneyTransactionDetailsHeroAmount(
   const kind = classifyMoneyActivity(tx);
   const status = getMoneyActivityStatus(tx);
   const isIncoming = isIncomingMoneyActivityKind(kind);
-  const transferAmount = getTransferAmount(tx) ?? new BigNumber(0);
+  const transferAmount = resolveOnchainAmount(tx) ?? new BigNumber(0);
   const formatted = moneyFormatUsd(transferAmount);
 
   if (status === 'failed') {
