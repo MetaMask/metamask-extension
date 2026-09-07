@@ -11,6 +11,10 @@ import {
 import {
   AvatarNetwork,
   AvatarNetworkSize,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 import {
@@ -29,7 +33,6 @@ import {
   BlockSize,
   Display,
   FlexDirection,
-  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -39,15 +42,7 @@ import {
   hideModal,
   setActiveNetwork,
 } from '../../../../../store/actions';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  IconSize,
-  SuccessPill,
-  Text,
-} from '../../../../component-library';
+import { Box, SuccessPill, Text } from '../../../../component-library';
 import { NetworkListItem } from '../../../network-list-item';
 import { useAdditionalNetworkHandlers } from '../../hooks/useAdditionalNetworkHandlers';
 import { useNetworkChangeHandlers } from '../../hooks/useNetworkChangeHandlers';
@@ -118,10 +113,8 @@ const AdditionalNetwork = ({ network }: { network: FeaturedNetwork }) => {
       </Box>
       <ButtonIcon
         size={ButtonIconSize.Sm}
-        color={IconColor.iconDefault}
         iconName={IconName.Add}
-        padding={0}
-        marginLeft={'auto'}
+        className="ml-auto"
         ariaLabel={t('addNetwork')}
         onClick={() => handleAdditionalNetworkClick(network)}
       />

@@ -1,4 +1,8 @@
 import { RampsEnvironment } from '@metamask/ramps-controller';
+import {
+  ENVIRONMENT,
+  type MetaMaskBuildEnvironment,
+} from '../../constants/build';
 
 /**
  * Determines the ramps API environment for the extension build.
@@ -9,17 +13,24 @@ import { RampsEnvironment } from '@metamask/ramps-controller';
  * @returns The ramps environment for API requests.
  */
 export function getRampsEnvironment(): RampsEnvironment {
-  const metamaskEnvironment = process.env.METAMASK_ENVIRONMENT;
+  const metamaskEnvironment = process.env
+    .METAMASK_ENVIRONMENT as MetaMaskBuildEnvironment;
   switch (metamaskEnvironment) {
-    case 'production':
-    case 'beta':
-    case 'rc':
+    case ENVIRONMENT.PRODUCTION:
+    case ENVIRONMENT.RELEASE_CANDIDATE:
       return RampsEnvironment.Production;
-    case 'development':
-    case 'dev':
+    case ENVIRONMENT.STAGING:
+      // MetaMask's staging environment is used for nightly builds from main,
+      // which should use production Ramps. Experimental nightlies also use
+      // MetaMask's staging environment, but must use Ramps staging/UAT.
+      return process.env.METAMASK_BUILD_TYPE === 'experimental'
+        ? RampsEnvironment.Staging
+        : RampsEnvironment.Production;
+    case ENVIRONMENT.DEVELOPMENT:
       return RampsEnvironment.Development;
-    case 'test':
-    case 'testing':
+    case ENVIRONMENT.OTHER:
+    case ENVIRONMENT.PULL_REQUEST:
+    case ENVIRONMENT.TESTING:
     default:
       return RampsEnvironment.Staging;
   }

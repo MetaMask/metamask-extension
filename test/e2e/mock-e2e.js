@@ -6,6 +6,7 @@ const { RulePriority } = require('mockttp');
 const {
   ACCOUNTS_PROD_API_BASE_URL,
 } = require('../../shared/constants/accounts');
+const { REWARDS_API_URL } = require('../../shared/constants/rewards');
 const {
   GAS_API_BASE_URL,
   SWAPS_API_V2_BASE_URL,
@@ -202,12 +203,57 @@ const SOLANA_DISCOVERY_RPC_RESULTS = {
   },
 };
 
+// Every host the Tron snap sends provider requests to: mainnet via Infura or
+// TronGrid, plus the Shasta/Nile testnets (current `*.api.trongrid.io` and
+// legacy `*.trongrid.io` hostnames).
+const TRON_PROVIDER_HOSTS =
+  'https:\\/\\/(?:tron-mainnet\\.infura\\.io\\/v3\\/[^/]+|(?:api|shasta\\.api|nile\\.api|shasta|nile)\\.trongrid\\.io)';
+
+// TronGrid account endpoints polled during discovery and the snap's account
+// sync cronjob. Group 1 is the base58 address, group 2 the list-endpoint
+// suffix (`/transactions`, `/transactions/trc20`, or `/trc20/balance`).
+const TRON_ACCOUNT_URL_RE = new RegExp(
+  `^${TRON_PROVIDER_HOSTS}\\/v1\\/accounts\\/([A-Za-z0-9]{20,})(\\/transactions(?:\\/trc20)?|\\/trc20\\/balance)?(\\?.*)?$`,
+  'u',
+);
+
+// The JSON-RPC endpoint TronWeb hits when initialising a network provider.
+const TRON_JSONRPC_URL_RE = new RegExp(
+  `^${TRON_PROVIDER_HOSTS}\\/jsonrpc$`,
+  'u',
+);
+
+// Zero-balance TronGrid account, mirroring the shape produced by
+// `createTronGridAccountResponse` in `test/e2e/seeder/tron/assets.ts`, which
+// the snap's response validation is known to accept.
+const tronEmptyAccountResponse = (address) => ({
+  data: [
+    {
+      address,
+      assetV2: [],
+      balance: 0,
+      free_asset_net_usageV2: [],
+      frozenV2: [],
+      trc20: [],
+    },
+  ],
+  success: true,
+  meta: { at: Date.now(), page_size: 1 },
+});
+
+const tronEmptyListResponse = () => ({
+  data: [],
+  success: true,
+  meta: { at: Date.now(), page_size: 0 },
+});
+
 /**
  * Registers default non-EVM discovery mocks for the shared E2E environment.
  *
- * These handlers keep Bitcoin esplora discovery and Solana signature lookups
- * from falling through to the generic empty-200 catch-all, which otherwise
- * causes provider retries and slow non-EVM icon rendering in multichain flows.
+ * These handlers keep Bitcoin esplora discovery, Solana signature lookups, and
+ * Tron account polling from falling through to the generic empty-200
+ * catch-all, which otherwise causes provider retries and slow non-EVM icon
+ * rendering in multichain flows.
  *
  * @param {Mockttp} server - The mock server used for E2E network mocks.
  * @returns {Promise<void>}
@@ -334,6 +380,41 @@ async function setupDefaultNonEvmDiscoveryMocks(server) {
         };
       });
   }
+
+  // The Tron snap (preinstalled, v3+) polls TronGrid account state during
+  // BIP44 discovery and its 60-second sync cronjob, and TronWeb POSTs to
+  // `/jsonrpc` when initialising the Shasta/Nile testnet providers. None of
+  // these had shared mocks, so in flows without Tron-specific mocks (e.g. the
+  // benchmarks) every call fell to the empty-200 catch-all and retry-stormed
+  // the snap's service policy. Registered at FALLBACK priority like the
+  // Solana defaults above so Tron-specific spec mocks take precedence.
+  await server
+    .forGet(TRON_ACCOUNT_URL_RE)
+    .asPriority(RulePriority.FALLBACK)
+    .always()
+    .thenCallback((request) => {
+      const match = request.url.match(TRON_ACCOUNT_URL_RE);
+      const address = match?.[1] ?? '';
+      const isListEndpoint = Boolean(match?.[2]);
+      return {
+        statusCode: 200,
+        json: isListEndpoint
+          ? tronEmptyListResponse()
+          : tronEmptyAccountResponse(address),
+      };
+    });
+
+  await server
+    .forPost(TRON_JSONRPC_URL_RE)
+    .asPriority(RulePriority.FALLBACK)
+    .always()
+    .thenCallback(async (request) => {
+      const body = await request.body.getJson();
+      return {
+        statusCode: 200,
+        json: { jsonrpc: '2.0', id: body?.id ?? 1, result: null },
+      };
+    });
 }
 
 /**
@@ -362,6 +443,196 @@ const privateHostMatchers = [
     host: '*solana*.mainnet.rpcpool.com',
   },
 ];
+
+/** Well above TokenDataSource's default ERC-20 occurrence floor of 3. */
+const TOKEN_METADATA_OCCURRENCES = 100;
+
+const WELL_KNOWN_MAINNET_ERC20_ASSETS = [
+  {
+    assetId: 'eip155:1/erc20:0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+    name: 'Wrapped Ether',
+    symbol: 'WETH',
+    decimals: 18,
+  },
+  {
+    assetId: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    name: 'USD Coin',
+    symbol: 'USDC',
+    decimals: 6,
+  },
+  {
+    assetId: 'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
+    name: 'Tether USD',
+    symbol: 'USDT',
+    decimals: 6,
+  },
+  {
+    assetId: 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    name: 'Dai Stablecoin',
+    symbol: 'DAI',
+    decimals: 18,
+  },
+];
+
+/**
+ * Default Tokens / Token API metadata for natives and well-known ERC-20s.
+ *
+ * ERC-20s include `occurrences` so TokenDataSource's spam filter (core 15)
+ * does not drop them when `includeOccurrences=true`.
+ *
+ * @param {string} assetIds - Concatenated `assetIds` query values.
+ * @returns {object[]}
+ */
+function getWellKnownTokenAssetMetadata(assetIds) {
+  const results = [];
+  const includesAssetId = (assetId) =>
+    assetIds.includes(assetId) || assetIds.includes(assetId.toLowerCase());
+
+  if (assetIds.includes('eip155:1/slip44:60')) {
+    results.push({
+      assetId: 'eip155:1/slip44:60',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+    });
+  }
+
+  if (
+    assetIds.includes('eip155:11155111/slip44:60') ||
+    assetIds.includes('eip155:11155111')
+  ) {
+    results.push({
+      assetId: 'eip155:11155111/slip44:60',
+      name: 'Sepolia Ether',
+      symbol: 'SepoliaETH',
+      decimals: 18,
+    });
+  }
+
+  if (
+    assetIds.includes(
+      'eip155:11155111/erc20:0x0000000000000000000000000000000000000000',
+    )
+  ) {
+    results.push({
+      assetId:
+        'eip155:11155111/erc20:0x0000000000000000000000000000000000000000',
+      name: 'Sepolia Ether',
+      symbol: 'SepoliaETH',
+      decimals: 18,
+    });
+  }
+
+  // Chain 1337 uses slip44:1 per nativeAssetIdentifiers in the fixture.
+  // Support both slip44:1 and slip44:60 requests for backward compat.
+  if (
+    assetIds.includes('eip155:1337/slip44:1') ||
+    assetIds.includes('eip155:1337/slip44:60')
+  ) {
+    results.push({
+      assetId: 'eip155:1337/slip44:1',
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18,
+    });
+  }
+
+  for (const token of WELL_KNOWN_MAINNET_ERC20_ASSETS) {
+    if (includesAssetId(token.assetId)) {
+      results.push({
+        ...token,
+        occurrences: TOKEN_METADATA_OCCURRENCES,
+      });
+    }
+  }
+
+  return results;
+}
+
+/**
+ * Builds Accounts API v5/v6 multi-account balance rows for unified assets E2E.
+ *
+ * @param {object} req - Mockttp request.
+ * @param {object} unifiedEvmAccountsApiBalances - withFixtures overrides.
+ * @returns {object[]}
+ */
+function buildUnifiedEvmAccountsApiBalances(
+  req,
+  unifiedEvmAccountsApiBalances,
+) {
+  const url = new URL(req.url);
+  const accountIdsParam = url.searchParams.get('accountIds') ?? '';
+  const accountIds = accountIdsParam ? accountIdsParam.split(',') : [];
+
+  const mainnetNativeOverride =
+    typeof unifiedEvmAccountsApiBalances.mainnetNativeEthHuman === 'string'
+      ? unifiedEvmAccountsApiBalances.mainnetNativeEthHuman
+      : null;
+  const localhostNativeOverride =
+    typeof unifiedEvmAccountsApiBalances.localhostNativeEthHuman === 'string'
+      ? unifiedEvmAccountsApiBalances.localhostNativeEthHuman
+      : null;
+  const defaultNativeOverride =
+    typeof unifiedEvmAccountsApiBalances.nativeBalance === 'string'
+      ? unifiedEvmAccountsApiBalances.nativeBalance
+      : null;
+  const mainnetAdditional = Array.isArray(
+    unifiedEvmAccountsApiBalances.mainnetAdditionalBalances,
+  )
+    ? unifiedEvmAccountsApiBalances.mainnetAdditionalBalances
+    : [];
+
+  const balances = [];
+  for (const id of accountIds) {
+    const parts = id.split(':');
+    if (parts[0] !== 'eip155' || parts.length < 3) {
+      continue;
+    }
+    const chainRef = parts[1];
+    const accountAddress = parts.slice(2).join(':').toLowerCase();
+    const isKnownFundedTestAccount =
+      accountAddress === DEFAULT_FIXTURE_ACCOUNT_LOWERCASE ||
+      accountAddress === LOCAL_NODE_ACCOUNT.toLowerCase();
+    // Seed known E2E accounts with 25 ETH; newly added accounts (e.g. hardware
+    // wallets) start at zero unless overridden via unifiedEvmAccountsApiBalances.
+    let nativeBalance = isKnownFundedTestAccount ? '25' : '0';
+    if (defaultNativeOverride === '0' && !isKnownFundedTestAccount) {
+      nativeBalance = '0';
+    } else if (chainRef === '1' && mainnetNativeOverride !== null) {
+      nativeBalance = mainnetNativeOverride;
+    } else if (
+      chainRef === '1337' &&
+      localhostNativeOverride !== null &&
+      isKnownFundedTestAccount
+    ) {
+      nativeBalance = localhostNativeOverride;
+    } else if (defaultNativeOverride !== null) {
+      nativeBalance = defaultNativeOverride;
+    }
+
+    // Chain 1337 uses slip44:1 per nativeAssetIdentifiers; all others use slip44:60.
+    const slip44 = chainRef === '1337' ? '1' : '60';
+    balances.push({
+      accountId: id,
+      assetId: `eip155:${chainRef}/slip44:${slip44}`,
+      balance: nativeBalance,
+    });
+
+    if (chainRef === '1' && mainnetAdditional.length > 0) {
+      for (const row of mainnetAdditional) {
+        if (row?.assetId && row.balance !== undefined) {
+          balances.push({
+            accountId: id,
+            assetId: row.assetId,
+            balance: String(row.balance),
+          });
+        }
+      }
+    }
+  }
+
+  return balances;
+}
 
 /**
  * @typedef {import('mockttp').Mockttp} Mockttp
@@ -512,11 +783,13 @@ async function setupMocking(
     });
 
   // Rewards API
-  await server
-    .forPost('https://rewards.uat-api.cx.metamask.io/public/rewards/ois')
-    .thenCallback(() => {
-      return { statusCode: 200, json: { ois: [], sids: [] } };
-    });
+  for (const rewardsApiUrl of [REWARDS_API_URL.UAT, REWARDS_API_URL.PRD]) {
+    await server
+      .forPost(`${rewardsApiUrl}/public/rewards/ois`)
+      .thenCallback(() => {
+        return { statusCode: 200, json: { ois: [], sids: [] } };
+      });
+  }
 
   // User Profile Lineage
   await server
@@ -1246,6 +1519,44 @@ async function setupMocking(
       };
     });
 
+  // Sepolia native — TokenDataSource / Price API request either slip44:60 or
+  // the zero-address ERC-20 alias. Both must return the ETH fixture rate.
+  const sepoliaSpotPrice = {
+    id: 'ethereum',
+    price: ethConversionInUsd,
+    marketCap: 382623505141,
+    pricePercentChange1d: 0,
+  };
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'eip155:11155111/slip44:60',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:11155111/slip44:60': sepoliaSpotPrice,
+      },
+    }));
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds:
+        'eip155:11155111/erc20:0x0000000000000000000000000000000000000000',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:11155111/erc20:0x0000000000000000000000000000000000000000':
+          sepoliaSpotPrice,
+        'eip155:11155111/slip44:60': sepoliaSpotPrice,
+      },
+    }));
+
   // Localhost (chain 1337) native ETH — slip44:1 per nativeAssetIdentifiers in fixtures.
   // assets-unify requests this with cacheOnly=false; extra query params are allowed by mockttp.
   await server
@@ -1527,92 +1838,27 @@ async function setupMocking(
     .forGet('https://tokens.api.cx.metamask.io/v3/assets')
     .always()
     .thenCallback((request) => {
-      const url = new URL(request.url);
-      const assetIds = url.searchParams.getAll('assetIds').join(',');
-
-      const results = [];
-
-      const pushIf = (predicate, entry) => {
-        if (predicate) {
-          results.push(entry);
-        }
+      const assetIds = new URL(request.url).searchParams
+        .getAll('assetIds')
+        .join(',');
+      return {
+        statusCode: 200,
+        json: getWellKnownTokenAssetMetadata(assetIds),
       };
+    });
 
-      pushIf(assetIds.includes('eip155:1/slip44:60'), {
-        assetId: 'eip155:1/slip44:60',
-        name: 'Ethereum',
-        symbol: 'ETH',
-        decimals: 18,
-      });
-
-      // Chain 1337 uses slip44:1 per nativeAssetIdentifiers in the fixture.
-      // Support both slip44:1 and slip44:60 requests for backward compat.
-      pushIf(
-        assetIds.includes('eip155:1337/slip44:1') ||
-          assetIds.includes('eip155:1337/slip44:60'),
-        {
-          assetId: 'eip155:1337/slip44:1',
-          name: 'Ethereum',
-          symbol: 'ETH',
-          decimals: 18,
-        },
-      );
-
-      const wethMainnet =
-        'eip155:1/erc20:0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
-      const usdcMainnet =
-        'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
-      const usdtMainnet =
-        'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7';
-      const daiMainnet =
-        'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F';
-
-      if (
-        assetIds.includes(wethMainnet) ||
-        assetIds.includes(wethMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: wethMainnet,
-          name: 'Wrapped Ether',
-          symbol: 'WETH',
-          decimals: 18,
-        });
-      }
-      if (
-        assetIds.includes(usdcMainnet) ||
-        assetIds.includes(usdcMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: usdcMainnet,
-          name: 'USD Coin',
-          symbol: 'USDC',
-          decimals: 6,
-        });
-      }
-      if (
-        assetIds.includes(usdtMainnet) ||
-        assetIds.includes(usdtMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: usdtMainnet,
-          name: 'Tether USD',
-          symbol: 'USDT',
-          decimals: 6,
-        });
-      }
-      if (
-        assetIds.includes(daiMainnet) ||
-        assetIds.includes(daiMainnet.toLowerCase())
-      ) {
-        results.push({
-          assetId: daiMainnet,
-          name: 'Dai Stablecoin',
-          symbol: 'DAI',
-          decimals: 18,
-        });
-      }
-
-      return { statusCode: 200, json: results };
+  // Token API assets: used by fetchTokenAssets (TokenAsset cache / TDP deep links).
+  await server
+    .forGet('https://token.api.cx.metamask.io/assets')
+    .always()
+    .thenCallback((request) => {
+      const assetIds = new URL(request.url).searchParams
+        .getAll('assetIds')
+        .join(',');
+      return {
+        statusCode: 200,
+        json: getWellKnownTokenAssetMetadata(assetIds),
+      };
     });
 
   // Tokens API: v2 supported networks — mocked globally so all tests work.
@@ -1697,91 +1943,60 @@ async function setupMocking(
       };
     });
 
-  // Merkl rewards API: return empty rewards so mUSD reward polling doesn't crash
-  // tests with SyntaxError when the catch-all returns an empty body.
+  // Veda performance API: vault APY, fetched by MoneyAccountBalanceService
+  // whenever a Money Account surface renders. A minimal valid response stops
+  // TanStack Query from retrying against the catch-all.
   await server
-    .forGet(/^https:\/\/api\.merkl\.xyz\/v4\/users\/[^/]+\/rewards/u)
+    .forGet(/^https:\/\/api\.sevenseas\.capital\/performance\/[^/]+\/[^/]+$/u)
     .always()
-    .thenCallback(() => ({ statusCode: 200, json: [] }));
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        Response: {
+          apy: 0.045,
+          timestamp: '2026-01-01T00:00:00Z',
+        },
+      },
+    }));
 
-  // Accounts API: v5 multi-account balances (used by AccountsApiDataSource when assetsUnifyState is enabled).
-  // Default: 25 ETH native per requested chain for the default fixture account. Override via
-  // withFixtures({ unifiedEvmAccountsApiBalances }) when login() asserts a custom fiat total.
+  // Money API: positions for a Money account, fetched as the API leg of
+  // MoneyAccountBalanceService:fetchBalanceWithFallback. A zero balance
+  // satisfies the service's balance invariant (musd + vmusd === total).
   await server
-    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
+    .forGet(/^https:\/\/money\.api\.cx\.metamask\.io\/v1\/positions\/[^/]+$/u)
     .always()
     .thenCallback((req) => {
       const url = new URL(req.url);
-      const accountIdsParam = url.searchParams.get('accountIds') ?? '';
-      const accountIds = accountIdsParam ? accountIdsParam.split(',') : [];
+      const address = url.pathname.split('/').pop();
+      return {
+        statusCode: 200,
+        json: {
+          address,
+          as_of_block: 1,
+          as_of_timestamp: '2026-01-01T00:00:00Z',
+          data_freshness: 'live',
+          indexer_lag_seconds: 0,
+          balance: {
+            musd_balance: '0',
+            vmusd_value_in_musd: '0',
+            total_balance: '0',
+          },
+          positions: [],
+        },
+      };
+    });
 
-      const mainnetNativeOverride =
-        typeof unifiedEvmAccountsApiBalances.mainnetNativeEthHuman === 'string'
-          ? unifiedEvmAccountsApiBalances.mainnetNativeEthHuman
-          : null;
-      const localhostNativeOverride =
-        typeof unifiedEvmAccountsApiBalances.localhostNativeEthHuman ===
-        'string'
-          ? unifiedEvmAccountsApiBalances.localhostNativeEthHuman
-          : null;
-      const defaultNativeOverride =
-        typeof unifiedEvmAccountsApiBalances.nativeBalance === 'string'
-          ? unifiedEvmAccountsApiBalances.nativeBalance
-          : null;
-      const mainnetAdditional = Array.isArray(
-        unifiedEvmAccountsApiBalances.mainnetAdditionalBalances,
-      )
-        ? unifiedEvmAccountsApiBalances.mainnetAdditionalBalances
-        : [];
-
-      const balances = [];
-      for (const id of accountIds) {
-        const parts = id.split(':');
-        if (parts[0] !== 'eip155' || parts.length < 3) {
-          continue;
-        }
-        const chainRef = parts[1];
-        const accountAddress = parts.slice(2).join(':').toLowerCase();
-        const isKnownFundedTestAccount =
-          accountAddress === DEFAULT_FIXTURE_ACCOUNT_LOWERCASE ||
-          accountAddress === LOCAL_NODE_ACCOUNT.toLowerCase();
-        // Seed known E2E accounts with 25 ETH; newly added accounts (e.g. hardware
-        // wallets) start at zero unless overridden via unifiedEvmAccountsApiBalances.
-        let nativeBalance = isKnownFundedTestAccount ? '25' : '0';
-        if (defaultNativeOverride === '0' && !isKnownFundedTestAccount) {
-          nativeBalance = '0';
-        } else if (chainRef === '1' && mainnetNativeOverride !== null) {
-          nativeBalance = mainnetNativeOverride;
-        } else if (
-          chainRef === '1337' &&
-          localhostNativeOverride !== null &&
-          isKnownFundedTestAccount
-        ) {
-          nativeBalance = localhostNativeOverride;
-        } else if (defaultNativeOverride !== null) {
-          nativeBalance = defaultNativeOverride;
-        }
-
-        // Chain 1337 uses slip44:1 per nativeAssetIdentifiers; all others use slip44:60.
-        const slip44 = chainRef === '1337' ? '1' : '60';
-        balances.push({
-          accountId: id,
-          assetId: `eip155:${chainRef}/slip44:${slip44}`,
-          balance: nativeBalance,
-        });
-
-        if (chainRef === '1' && mainnetAdditional.length > 0) {
-          for (const row of mainnetAdditional) {
-            if (row?.assetId && row.balance !== undefined) {
-              balances.push({
-                accountId: id,
-                assetId: row.assetId,
-                balance: String(row.balance),
-              });
-            }
-          }
-        }
-      }
+  // Accounts API: v5/v6 multi-account balances (used by AccountsApiDataSource
+  // when assetsUnifyState is enabled). Default: 25 ETH native per requested
+  // chain for the default fixture account. Override via
+  // withFixtures({ unifiedEvmAccountsApiBalances }) when login() asserts a
+  // custom fiat total. v6 rows include `object: 'token'` (core 15).
+  const respondWithUnifiedEvmAccountsApiBalances = (includeObjectField) => {
+    return (req) => {
+      const balances = buildUnifiedEvmAccountsApiBalances(
+        req,
+        unifiedEvmAccountsApiBalances,
+      ).map((row) => (includeObjectField ? { ...row, object: 'token' } : row));
 
       return {
         statusCode: 200,
@@ -1791,7 +2006,18 @@ async function setupMocking(
           unprocessedNetworks: [],
         },
       };
-    });
+    };
+  };
+
+  await server
+    .forGet('https://accounts.api.cx.metamask.io/v5/multiaccount/balances')
+    .always()
+    .thenCallback(respondWithUnifiedEvmAccountsApiBalances(false));
+
+  await server
+    .forGet('https://accounts.api.cx.metamask.io/v6/multiaccount/balances')
+    .always()
+    .thenCallback(respondWithUnifiedEvmAccountsApiBalances(true));
 
   // Accounts API: tokens
   const ACCOUNTS_API_TOKENS = fs.readFileSync(ACCOUNTS_API_TOKENS_PATH);
@@ -2144,8 +2370,67 @@ async function setupMocking(
         }
         return { statusCode: 200, json: candles };
       }
+      if (type === 'maxBuilderFee') {
+        // Mirrors the WS INFO POST mock in perps/mocks/websocketDefaultMocks.ts:
+        // 0.001 is the configured MaxFeeDecimal, so the controller treats the
+        // builder fee as already approved and skips the approveBuilderFee
+        // /exchange call. perps-controller queries this over HTTP (not the WS
+        // info client) from the TP/SL and order paths, so the WS mock alone is
+        // not enough.
+        return { statusCode: 200, json: 0.001 };
+      }
+      if (type === 'perpDexs') {
+        // Mirrors the WS INFO POST mock: [null] where null = the main DEX. The
+        // controller derives perpDexIndex from this, and omitting null skips the
+        // main-DEX mapping entirely.
+        return { statusCode: 200, json: [null] };
+      }
       if (type === 'openOrders') {
         return { statusCode: 200, json: [] };
+      }
+      if (type === 'frontendOpenOrders') {
+        // perps-controller reads TP/SL triggers with `frontendOpenOrders`, not
+        // `openOrders`, and immediately calls `.forEach` on the result. The
+        // catch-all below returns `{}`, which is not iterable.
+        return { statusCode: 200, json: [] };
+      }
+      if (type === 'userNonFundingLedgerUpdates') {
+        // `#isWalletOnHyperliquid` treats a non-array or empty ledger as "this
+        // wallet has no Hyperliquid account", which silently defers the
+        // unified-account migration and the referral write.
+        return {
+          statusCode: 200,
+          json: [
+            {
+              time: 1735689600000,
+              hash: '0x0000000000000000000000000000000000000000000000000000000000000001',
+              delta: {
+                type: 'deposit',
+                amount: '10000.0',
+                nonce: 1,
+                usdc: '10000.0',
+              },
+            },
+          ],
+        };
+      }
+      if (type === 'userAbstraction') {
+        // A compatible mode, so the controller skips the EIP-712 migration that
+        // 15.1.0 drives at action time.
+        return { statusCode: 200, json: 'unifiedAccount' };
+      }
+      if (type === 'userToMultiSigSigners') {
+        // Hyperliquid returns null for single-signer accounts;
+        // `#isHyperliquidMultiSigAccount` reads any non-null answer as multi-sig.
+        return { statusCode: 200, json: null };
+      }
+      if (type === 'referral') {
+        // Mirrors the WS INFO POST mock: already referred by the MetaMask
+        // builder, so the controller skips the setReferrer /exchange call.
+        return {
+          statusCode: 200,
+          json: { referredBy: '0xea2c82b5aba243ab631c0ce151763d5e38df75b3' },
+        };
       }
       if (type === 'userFills') {
         return { statusCode: 200, json: [] };
@@ -2155,11 +2440,38 @@ async function setupMocking(
 
   await server
     .forPost(/^https:\/\/api\.hyperliquid\.xyz\/exchange$/u)
-    .thenCallback((request) => {
-      const body = request.body?.json ?? {};
-      const actionType = body.action?.type;
+    .thenCallback(async (request) => {
+      // Mockttp's CompletedBody exposes `getJson()`, not a `.json` property —
+      // reading `request.body.json` always yielded undefined, so every action
+      // fell through to the generic `{ type: 'default' }` response below. Parse
+      // it the same defensive way the /info handler above does.
+      const body = (await request.body?.getJson().catch(() => undefined)) ?? {};
+      const action = body.action ?? {};
+      const actionType = action.type;
 
       if (actionType === 'order') {
+        const orders = Array.isArray(action.orders) ? action.orders : [];
+        // perps-controller requires exactly one status per submitted order, so
+        // a TP/SL batch (take profit + stop loss) must answer with two. Trigger
+        // orders rest until their price is crossed; plain orders fill.
+        const statuses = orders.map((order, index) => {
+          const orderType = order?.t;
+          const isTrigger =
+            typeof orderType === 'object' &&
+            orderType !== null &&
+            'trigger' in orderType;
+          if (isTrigger) {
+            return { resting: { oid: 100001 + index } };
+          }
+          return {
+            filled: {
+              totalSz: '4.0',
+              avgPx: '25.05',
+              oid: 100001 + index,
+            },
+          };
+        });
+
         return {
           statusCode: 200,
           json: {
@@ -2167,16 +2479,29 @@ async function setupMocking(
             response: {
               type: 'order',
               data: {
-                statuses: [
-                  {
-                    filled: {
-                      totalSz: '4.0',
-                      avgPx: '25.05',
-                      oid: 100001,
-                    },
-                  },
-                ],
+                statuses: statuses.length
+                  ? statuses
+                  : [
+                      {
+                        filled: { totalSz: '4.0', avgPx: '25.05', oid: 100001 },
+                      },
+                    ],
               },
+            },
+          },
+        };
+      }
+
+      if (actionType === 'cancel') {
+        const cancels = Array.isArray(action.cancels) ? action.cancels : [];
+        // Same one-status-per-request contract as `order`.
+        return {
+          statusCode: 200,
+          json: {
+            status: 'ok',
+            response: {
+              type: 'cancel',
+              data: { statuses: cancels.map(() => 'success') },
             },
           },
         };

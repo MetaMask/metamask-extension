@@ -1,5 +1,8 @@
-export { PerpsBalanceDropdown } from './perps-balance-dropdown';
-export type { PerpsBalanceDropdownProps } from './perps-balance-dropdown';
+export {
+  PerpsMarketBalanceActions,
+  invokePerpsBalanceAction,
+  type PerpsBalanceActionHandler,
+} from './perps-market-balance-actions';
 export { PerpsRecentActivity } from './perps-recent-activity';
 export type { PerpsRecentActivityProps } from './perps-recent-activity';
 export { PerpsTab } from './perps-tab';
@@ -71,7 +74,6 @@ export type {
 // Skeleton components
 export {
   PerpsCardSkeleton,
-  PerpsControlBarSkeleton,
   PerpsSectionSkeleton,
   PerpsBalanceActionsSkeleton,
   PerpsHomeCardSkeleton,

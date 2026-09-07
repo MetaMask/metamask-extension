@@ -16,7 +16,7 @@ import { getIconSeedAddressByAccountGroupId } from '../../../../selectors/multic
 type SrpListItemProps = {
   accountId: AccountGroupId;
   accountName: string;
-  balance: string;
+  balance?: string;
 };
 
 export const SrpListItem = ({

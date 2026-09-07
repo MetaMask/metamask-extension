@@ -258,25 +258,6 @@ describe('NetworkListMenu', () => {
     jest.clearAllMocks();
   });
 
-  it('renders properly', () => {
-    const { baseElement } = render();
-    expect(baseElement).toMatchSnapshot();
-  });
-
-  it('should match snapshot when adding a network', async () => {
-    const { baseElement } = render({
-      isAddingNewNetwork: true,
-    });
-    expect(baseElement).toMatchSnapshot();
-  });
-
-  it('should match snapshot when editing a network', async () => {
-    const { baseElement } = render({
-      editedNetwork: { chainId: 'eip155:1' },
-    });
-    expect(baseElement).toMatchSnapshot();
-  });
-
   it('displays important controls', () => {
     const { getByText, getByPlaceholderText } = render();
 

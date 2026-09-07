@@ -1,9 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import {
+  AvatarGroup,
+  AvatarGroupSize,
+  AvatarGroupVariant,
+} from '@metamask/design-system-react';
 import GenericAssetCellLayout from '../../asset-list/cells/generic-asset-cell-layout';
 import { getPreferences } from '../../../../../../shared/lib/selectors/preferences';
 import { SensitiveText } from '../../../../component-library';
-import { AvatarType } from '../../../../multichain/avatar-group/avatar-group.types';
 import { AssetCellBadge } from '../../asset-list/cells/asset-cell-badge';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
 import {
@@ -12,7 +16,6 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import { DeFiProtocolPosition } from '../../types';
-import { AvatarGroup } from '../../../../multichain/avatar-group/avatar-group';
 import { DeFiSymbolGroup } from './defi-grouped-symbol-cell';
 
 type DeFiProtocolCellProps = {
@@ -76,9 +79,14 @@ export default function DefiProtocolCell({
       }
       footerRightDisplay={
         <AvatarGroup
-          avatarType={AvatarType.TOKEN}
-          limit={4}
-          members={position.iconGroup}
+          variant={AvatarGroupVariant.Token}
+          size={AvatarGroupSize.Xs}
+          max={4}
+          data-testid="avatar-group"
+          avatarPropsArr={position.iconGroup.map((icon) => ({
+            src: icon.avatarValue,
+            name: icon.symbol,
+          }))}
         />
       }
     />

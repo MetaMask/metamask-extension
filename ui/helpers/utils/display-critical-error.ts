@@ -76,6 +76,13 @@ function getSentryTarget() {
   return process.env.SENTRY_DSN;
 }
 
+function getBuildSentryTags(): Record<string, string> {
+  return {
+    'metamask.environment': process.env.METAMASK_ENVIRONMENT ?? 'unknown',
+    'metamask.build_type': process.env.METAMASK_BUILD_TYPE ?? 'unknown',
+  };
+}
+
 export enum CriticalErrorTranslationKey {
   TroubleStarting = 'troubleStarting',
   SomethingIsWrong = 'somethingIsWrong',
@@ -101,10 +108,14 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
     // Extract sentryTags from error object (if present)
     // Any error can define error.sentryTags to add searchable tags to Sentry
     const errorObj = error as Record<string, unknown>;
-    const sentryTags =
+    const errorSentryTags =
       errorObj?.sentryTags && typeof errorObj.sentryTags === 'object'
         ? (errorObj.sentryTags as Record<string, string>)
         : {};
+    const sentryTags = {
+      ...getBuildSentryTags(),
+      ...errorSentryTags,
+    };
 
     // Create error_details without sentryTags to avoid duplication
     // (sentryTags are sent as top-level tags)
@@ -301,6 +312,7 @@ export function displayCriticalErrorPage(
 
   const criticalErrorContainer = document.createElement('div');
   criticalErrorContainer.setAttribute('id', 'critical-error-content');
+  criticalErrorContainer.dataset.testid = 'critical-error-content';
   criticalErrorContainer.innerHTML = html;
 
   // Prevent app contents from writing over critical error by removing application root.

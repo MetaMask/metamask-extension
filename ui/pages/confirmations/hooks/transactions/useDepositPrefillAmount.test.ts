@@ -12,6 +12,7 @@ import {
   selectRelayFixedSpread,
 } from '../../selectors/feature-flags';
 import { isRouteToken } from '../../utils/relay-fixed-spread';
+import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
@@ -27,6 +28,7 @@ jest.mock('../../utils/relay-fixed-spread', () => ({
   isRouteToken: jest.fn(),
 }));
 
+jest.mock('../pay/usePayTokenAccountBalance');
 jest.mock('../pay/useTransactionPayToken');
 jest.mock('./useTransactionMetadataRequest');
 jest.mock('./useTransactionAccountOverride');
@@ -40,6 +42,7 @@ const TRANSACTION_ID_MOCK = 'test-tx-id';
 const useTransactionMetadataRequestMock = jest.mocked(
   useTransactionMetadataRequest,
 );
+const usePayTokenAccountBalanceMock = jest.mocked(usePayTokenAccountBalance);
 const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
 const useTransactionAccountOverrideMock = jest.mocked(
   useTransactionAccountOverride,
@@ -100,6 +103,10 @@ function setupMocks(
     setPayToken: jest.fn(),
     isNative: false,
   } as ReturnType<typeof useTransactionPayToken>);
+  usePayTokenAccountBalanceMock.mockReturnValue({
+    balanceUsd: resolvedPayToken?.balanceUsd ?? '0',
+    balanceRaw: resolvedPayToken?.balanceRaw ?? '0',
+  });
   useTransactionAccountOverrideMock.mockReturnValue(overrides.accountOverride);
 
   useSelectorMock.mockImplementation((selector) => {
@@ -207,14 +214,14 @@ describe('useDepositPrefillAmount', () => {
       expect(result.current.prefillAmount).toBeUndefined();
     });
 
-    it('returns undefined when balanceUsd is 0', () => {
+    it('returns 0.0 when balanceUsd is 0', () => {
       setupMocks({
         payToken: makePayToken({ balanceUsd: '0' }),
       });
 
       const { result } = runHook();
 
-      expect(result.current.prefillAmount).toBeUndefined();
+      expect(result.current.prefillAmount).toBe('0.0');
     });
 
     it('formats integer amounts without decimals', () => {
@@ -303,13 +310,18 @@ describe('useDepositPrefillAmount', () => {
         setPayToken: jest.fn(),
         isNative: false,
       } as ReturnType<typeof useTransactionPayToken>);
+      usePayTokenAccountBalanceMock.mockReturnValue({
+        balanceUsd: '0',
+        balanceRaw: '0',
+      });
 
       await act(async () => {
         rerender();
       });
 
-      expect(result.current.hasPrefilled).toBe(false);
-      expect(result.current.isLoading).toBe(true);
+      expect(result.current.hasPrefilled).toBe(true);
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.prefillAmount).toBe('0.0');
     });
 
     it('recommits for a new confirmation rendered by the same mounted UI', async () => {
@@ -358,6 +370,10 @@ describe('useDepositPrefillAmount', () => {
         setPayToken: jest.fn(),
         isNative: false,
       } as ReturnType<typeof useTransactionPayToken>);
+      usePayTokenAccountBalanceMock.mockReturnValue({
+        balanceUsd: '800',
+        balanceRaw: '0',
+      });
 
       await act(async () => {
         rerender();
@@ -369,12 +385,24 @@ describe('useDepositPrefillAmount', () => {
   });
 
   describe('isLoading', () => {
-    it('true when enabled but not yet committed', () => {
+    it('false when enabled but no pay token is selected', () => {
       setupMocks({ payToken: null });
 
       const { result } = runHook();
 
-      expect(result.current.isLoading).toBe(true);
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    it('false when the selected pay token has a zero balance', () => {
+      setupMocks({
+        payToken: makePayToken({ balanceUsd: '0' }),
+      });
+
+      const { result } = runHook();
+
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.hasPrefilled).toBe(true);
+      expect(result.current.prefillAmount).toBe('0.0');
     });
 
     it('false when not enabled', () => {

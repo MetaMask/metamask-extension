@@ -1,6 +1,7 @@
 import React, {
   useState,
   useCallback,
+  useDeferredValue,
   useMemo,
   useEffect,
   useRef,
@@ -9,16 +10,15 @@ import { useSelector } from 'react-redux';
 import type { Token } from '@metamask/assets-controllers';
 import { isCaipChainId, isStrictHexString, type Hex } from '@metamask/utils';
 import { zeroAddress } from 'ethereumjs-util';
-import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
 import {
+  AvatarToken,
+  AvatarTokenSize,
   Modal,
-  ModalContent,
   ModalOverlay,
   ModalHeader,
-  Box,
-  Text,
-  PickerNetwork,
-} from '../../../component-library';
+  ModalContent,
+} from '@metamask/design-system-react';
+import { Box, Text, PickerNetwork } from '../../../component-library';
 import {
   TextVariant,
   TextAlign,
@@ -27,8 +27,6 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useDeferredValue } from '../../../../hooks/useDeferredValue';
-
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
   getAllTokens,
@@ -452,11 +450,19 @@ export function AssetPickerModal({
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
         <ModalHeader
-          onClose={() => {
-            setSearchQuery('');
-            onClose();
-          }}
-          onBack={asset ? undefined : onBack}
+          {...({
+            closeButtonProps: { ariaLabel: t('close') },
+            onClose: () => {
+              setSearchQuery('');
+              onClose();
+            },
+            ...(asset
+              ? {}
+              : {
+                  onBack: onBack as () => void,
+                  backButtonProps: { ariaLabel: t('back') },
+                }),
+          } as React.ComponentProps<typeof ModalHeader>)}
         >
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
             {header}

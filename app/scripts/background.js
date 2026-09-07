@@ -16,7 +16,7 @@ import { lightTheme } from '@metamask/design-tokens';
 import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
-import { isObject, hasProperty } from '@metamask/utils';
+import { isObject } from '@metamask/utils';
 import { deriveStateFromMetadata } from '@metamask/base-controller';
 import { ExtensionPortStream } from 'extension-port-stream';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
@@ -62,7 +62,6 @@ import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
-import { getInstallAttribution } from '../../shared/lib/install-attribution';
 import {
   createEvent,
   shouldTrackDeepLinkNavigation,
@@ -71,9 +70,6 @@ import {
   backedUpStateKeys,
   hasVault,
 } from '../../shared/lib/stores/persistence-manager';
-import Migrator from './lib/migrator';
-import migrations from './migrations';
-import { useSplitStateStorage } from './lib/use-split-state-storage';
 import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
 import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
 import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
@@ -94,7 +90,6 @@ import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
 import { createEventBuilder, trackEvent } from './controllers/analytics';
-import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
   getPlatform,
@@ -105,7 +100,11 @@ import {
 import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
-import { onUpdate } from './on-update';
+import { loadStateFromPersistence } from './lib/startup/load-state-from-persistence';
+import {
+  handleOnInstalled,
+  onUpdateAvailable,
+} from './lib/lifecycle/install-lifecycle';
 
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
 import {
@@ -125,6 +124,7 @@ import {
 import { requestRepair } from './lib/repair';
 import {
   createSidepanelOpener,
+  setupSidePanelToolbarBehavior,
   shouldUseSidepanel,
 } from './sidepanel/background';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
@@ -192,7 +192,6 @@ global.logEncryptedVault = () => {
 };
 
 const { sentry } = global;
-let firstTimeState = { ...rawFirstTimeState };
 
 const metamaskInternalProcessHash = {
   [ENVIRONMENT_TYPE_POPUP]: true,
@@ -251,10 +250,6 @@ if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
   );
 }
 
-lazyListener.once('runtime', 'onInstalled').then((details) => {
-  handleOnInstalled(details);
-});
-
 /**
  * This deferred Promise is used to track whether initialization has finished.
  *
@@ -288,21 +283,25 @@ function setGlobalInitializers() {
 setGlobalInitializers();
 
 /**
- * Prefer opening the side panel on toolbar click as soon as the service worker starts.
- * Without this, the first click after a cold start can use manifest `default_popup` until
- * {@link setupSidePanelToolbarBehavior} runs after {@link isInitialized}.
+ * Install/update lifecycle dependencies. `controller` is accessed via a getter
+ * because `onInstalled` can fire (and be buffered) before `controller` is assigned.
+ *
+ * @returns {import('./lib/lifecycle/install-lifecycle').InstallLifecycleDependencies}
  */
-function applyEarlySidePanelToolbarBehavior() {
-  if (!browser?.sidePanel?.setPanelBehavior) {
-    return;
-  }
-  browser.sidePanel
-    .setPanelBehavior({ openPanelOnActionClick: true })
-    .catch(() => {
-      // Non-fatal: `applyToolbarSidePanelBehavior` applies persisted preference once ready.
-    });
+function getInstallLifecycleDeps() {
+  return {
+    get controller() {
+      return controller;
+    },
+    platform,
+    isInitialized,
+    requestSafeReload,
+  };
 }
-applyEarlySidePanelToolbarBehavior();
+
+lazyListener.once('runtime', 'onInstalled').then((details) => {
+  handleOnInstalled(details, getInstallLifecycleDeps());
+});
 
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
@@ -638,7 +637,9 @@ async function initialize(backup) {
     });
   }
 
-  const initData = await loadStateFromPersistence(backup);
+  const { versionedData: initData } = await loadStateFromPersistence(backup, {
+    ...rawFirstTimeState,
+  });
 
   const initState = initData.data;
   const initLangCode = await getFirstPreferredLangCode();
@@ -749,263 +750,6 @@ async function loadPreinstalledSnaps() {
   });
 
   return Promise.all(promises);
-}
-
-//
-// State and Persistence
-//
-
-/**
- * Loads any stored data, prioritizing the latest storage strategy.
- * Migrates that data schema in case it was last loaded on an older version.
- *
- * @param {Backup | null} backup
- * @returns {Promise<{data: MetaMaskState meta: {version: number}}>} Last data emitted from previous instance of MetaMask.
- */
-export async function loadStateFromPersistence(backup) {
-  if (process.env.WITH_STATE) {
-    const withState = JSON.parse(process.env.WITH_STATE);
-
-    // Load conditionally so this test-only code can be dead-code-eliminated from production builds.
-    // eslint-disable-next-line n/global-require
-    const { generateWalletState } = require('./fixtures/generate-wallet-state');
-    const fixtureBuilder = await generateWalletState(withState, false);
-
-    const stateOverrides = fixtureBuilder.fixture.data;
-    firstTimeState = { ...firstTimeState, ...stateOverrides };
-  }
-
-  // read from disk
-  // first from preferred, async API:
-  /**
-   * @type {import("../../shared/lib/stores/base-store").MetaMaskStorageStructure | undefined}
-   */
-  let preMigrationVersionedData;
-  if (backup) {
-    preMigrationVersionedData = { data: {}, meta: {} };
-    for (const key of backedUpStateKeys) {
-      if (hasProperty(backup, key)) {
-        preMigrationVersionedData.data[key] = backup[key];
-      }
-    }
-    // use the meta property from the backup if it exists, that way the
-    // migrations will behave correctly.
-    if (hasProperty(backup, 'meta') && isObject(backup.meta)) {
-      preMigrationVersionedData.meta = backup.meta;
-      // old versions of meta used "data" as the storage kind, without
-      // explicitly setting the "storageKind" to data. If it is missing, we just
-      // always default to "data" ("data" was the default before "split"
-      // existed).
-      // We need to set it properly here so that the persistence manager uses
-      // the correct storage kind when restoring from the `backup`.
-      if (
-        backup.meta.storageKind === 'split' ||
-        backup.meta.storageKind === 'data'
-      ) {
-        persistenceManager.storageKind = backup.meta.storageKind;
-      } else {
-        persistenceManager.storageKind = 'data';
-      }
-    }
-    // sanity check on the meta property
-    if (typeof preMigrationVersionedData.meta.version !== 'number') {
-      log.error(
-        "The `backup`'s `meta.version` property was missing during backup restore.",
-      );
-      // the last migration version before we started storing backups was `155`
-      // so we can use that version as a fallback.
-      preMigrationVersionedData.meta.version = 155;
-    }
-  } else {
-    const validateVault = true;
-    preMigrationVersionedData = await persistenceManager.get({ validateVault });
-  }
-
-  const migrator = new Migrator({
-    migrations,
-    defaultVersion: process.env.WITH_STATE
-      ? // eslint-disable-next-line n/global-require
-        require('../../test/e2e/fixtures/default-fixture.json').meta.version
-      : null,
-  });
-
-  // report migration errors to sentry
-  migrator.on('error', (err) => {
-    console.warn(err);
-    // get vault structure without secrets
-    const vaultStructure = getObjStructure(preMigrationVersionedData);
-    sentry?.captureException(err, {
-      // "extra" key is required by Sentry
-      extra: { vaultStructure },
-    });
-  });
-
-  let writeAllKeysToState = false;
-  if (!preMigrationVersionedData?.data && !preMigrationVersionedData?.meta) {
-    // brand new state; write all keys!
-    writeAllKeysToState = true;
-    preMigrationVersionedData = migrator.generateInitialState(firstTimeState);
-  }
-
-  // migrate data
-  const { state: versionedData, changedKeys } = await migrator.migrateData(
-    preMigrationVersionedData,
-  );
-
-  /**
-   * Creates an Error with sentryTags for migration failures.
-   * Tags help identify if user should have had a backup (v12.20.0+, migration 157+),
-   * and include installation info for diagnostics.
-   * These are captured via the critical error page's "Send error report" checkbox
-   * flow (see ui/helpers/utils/display-critical-error.ts).
-   *
-   * @param {string} message - The error message
-   * @returns {Promise<Error>} Error object with sentryTags property
-   */
-  const createMigrationError = async (message) => {
-    const preMigrationVersion = preMigrationVersionedData?.meta?.version;
-    const backupShouldExist =
-      typeof preMigrationVersion === 'number' && preMigrationVersion >= 157;
-
-    // Try to get firstTimeInfo for Sentry tags (installation version and date)
-    // Check in-memory sources first (fast, synchronous checks)
-    // Check both new location (AppMetadataController) and old location (top-level)
-    // for compatibility with pre-migration-190 state
-    let firstTimeInfo =
-      backup?.AppMetadataController?.firstTimeInfo ??
-      versionedData?.data?.AppMetadataController?.firstTimeInfo ??
-      versionedData?.data?.firstTimeInfo ??
-      preMigrationVersionedData?.data?.AppMetadataController?.firstTimeInfo ??
-      preMigrationVersionedData?.data?.firstTimeInfo;
-
-    // Fallback to IndexedDB backup if in-memory sources don't have it
-    // (handles corruption scenarios where storage.local is damaged)
-    if (!firstTimeInfo) {
-      try {
-        const indexedDbBackup = await persistenceManager.getBackup();
-        firstTimeInfo = indexedDbBackup?.AppMetadataController?.firstTimeInfo;
-      } catch {
-        // Ignore backup fetch errors - we still want to report the migration error
-      }
-    }
-
-    const error = new Error(message);
-
-    // Add sentryTags for searchable/filterable fields in Sentry UI
-    // These are extracted by sendErrorToSentry in display-critical-error.ts
-    error.sentryTags = {
-      'corruption.preMigrationVersion': String(
-        preMigrationVersion ?? 'unknown',
-      ),
-      'corruption.backupShouldExist': String(backupShouldExist),
-      'corruption.installVersion': String(firstTimeInfo?.version ?? 'unknown'),
-      'corruption.installDate': String(firstTimeInfo?.date ?? 'unknown'),
-    };
-
-    return error;
-  };
-
-  if (!versionedData) {
-    throw await createMigrationError('MetaMask - migrator returned undefined');
-  } else if (!isObject(versionedData.meta)) {
-    throw await createMigrationError(
-      `MetaMask - migrator metadata has invalid type '${typeof versionedData.meta}'`,
-    );
-  } else if (typeof versionedData.meta.version !== 'number') {
-    throw await createMigrationError(
-      `MetaMask - migrator metadata version has invalid type '${typeof versionedData.meta.version}'`,
-    );
-  } else if (
-    !['data', 'split', undefined].includes(versionedData.meta.storageKind)
-  ) {
-    throw await createMigrationError(
-      `MetaMask - migrator metadata storageKind has invalid value '${versionedData.meta.storageKind}'`,
-    );
-  } else if (!isObject(versionedData.data)) {
-    throw await createMigrationError(
-      `MetaMask - migrator data has invalid type '${typeof versionedData.data}'`,
-    );
-  }
-
-  // `yarn start:with-state` builds a local fixture wallet via WITH_STATE.
-  // Account/contact sync can otherwise pull remote user-storage for the same
-  // SRP and replace the generated local state. Applying this after migration
-  // covers both fresh fixture state and existing persisted state before
-  // controllers initialize; marking the key changed ensures split-state
-  // persistence writes the override.
-  if (
-    process.env.WITH_STATE &&
-    isObject(versionedData.data.UserStorageController)
-  ) {
-    versionedData.data.UserStorageController.isBackupAndSyncEnabled = false;
-    versionedData.data.UserStorageController.isAccountSyncingEnabled = false;
-    versionedData.data.UserStorageController.isContactSyncingEnabled = false;
-    if (!changedKeys.has('UserStorageController')) {
-      changedKeys.add('UserStorageController');
-    }
-  }
-
-  // this initializes the meta/version data as a class variable to be used for future writes
-  persistenceManager.setMetadata(versionedData.meta);
-
-  log.debug(
-    "[Split State]: Loaded data from persistence with storageKind '%s'",
-    persistenceManager.storageKind,
-  );
-  if (persistenceManager.storageKind === 'data') {
-    const alreadyTried =
-      versionedData.meta.platformSplitStateGradualRolloutAttempted === true;
-    const shouldUseSplitStateStorage =
-      !alreadyTried && (await useSplitStateStorage(versionedData.data));
-    log.debug(
-      '[Split State]: shouldUseSplitStateStorage: %s (alreadyTried: %s)',
-      shouldUseSplitStateStorage,
-      alreadyTried,
-    );
-    if (shouldUseSplitStateStorage) {
-      // a sigil to mark that we *tried* to migrate to split state storage
-      versionedData.meta.platformSplitStateGradualRolloutAttempted = true;
-      persistenceManager.setMetadata(versionedData.meta);
-    }
-
-    log.debug(
-      "[Split State]: Writing data to persistence with storageKind 'data'",
-    );
-    // write to disk
-    await persistenceManager.set(versionedData.data);
-
-    if (shouldUseSplitStateStorage) {
-      await persistenceManager.migrateToSplitState(versionedData.data);
-      versionedData.meta = persistenceManager.getMetaData();
-      if (versionedData.meta !== undefined) {
-        delete versionedData.meta.platformSplitStateGradualRolloutAttempted;
-        // persist the new metadata one more time
-        persistenceManager.setMetadata(versionedData.meta);
-      }
-      await persistenceManager.persist();
-    }
-  } else if (persistenceManager.storageKind === 'split') {
-    if (writeAllKeysToState) {
-      for (const [key, value] of Object.entries(versionedData.data)) {
-        persistenceManager.update(key, value);
-      }
-    } else {
-      // write changes only
-      for (const key of changedKeys) {
-        persistenceManager.update(key, versionedData.data[key]);
-      }
-    }
-    // write to disk
-    await persistenceManager.persist();
-  } else {
-    throw new Error(
-      `MetaMask - persistenceManager has invalid storageKind '${persistenceManager.storageKind}'`,
-    );
-  }
-  log.debug('[Split State]: Load complete.');
-
-  // return just the data
-  return versionedData;
 }
 
 /**
@@ -1923,89 +1667,9 @@ async function triggerUi() {
   }
 }
 
-// It queues the "App Installed" event before consent, or tracks it immediately if consent already exists.
-const addAppInstalledEvent = async (installAttributionPromise) => {
-  const { deferredDeepLink, traits: installAttributionTraits } =
-    await installAttributionPromise;
-
-  controller.metaMetricsController.updateTraits({
-    [MetaMetricsUserTrait.InstallDateExt]: new Date()
-      .toISOString()
-      .split('T')[0], // yyyy-mm-dd
-    ...installAttributionTraits,
-  });
-  const eventProperties = {};
-
-  if (deferredDeepLink) {
-    controller.appStateController.setDeferredDeepLink(deferredDeepLink);
-    eventProperties.install_source = 'deeplink';
-    eventProperties.deeplink_path = deferredDeepLink.referringLink;
-  }
-
-  const { consentDecisionMade, optedIn } = controller.getState();
-
-  if (consentDecisionMade === true && optedIn === false) {
-    // We can skip tracking completely if they've already explicitly opted out
-    return;
-  }
-
-  trackEvent(
-    createEventBuilder(MetaMetricsEventName.AppInstalled)
-      .addCategory(MetaMetricsEventCategory.App)
-      .addProperties(eventProperties)
-      .build(),
-  );
-};
-
-/**
- * Handles the onInstalled event.
- *
- * @param {[chrome.runtime.InstalledDetails]} params - Array containing a single installation details object.
- */
-async function handleOnInstalled([details]) {
-  if (details.reason === 'install') {
-    await onInstall();
-  } else if (details.reason === 'update') {
-    const { previousVersion } = details;
-    if (!previousVersion || previousVersion === platform.getVersion()) {
-      return;
-    }
-    await isInitialized;
-    onUpdate(controller, platform, previousVersion, requestSafeReload);
-  }
-}
-
-/**
- * Trigger actions that should happen only upon initial install (e.g. open tab for onboarding).
- */
-async function onInstall() {
-  log.debug('First install detected');
-  const installAttributionPromise = getInstallAttribution();
-
-  if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
-    platform.openExtensionInBrowser();
-  }
-
-  // The controller must exist before we can persist install attribution.
-  await isInitialized;
-
-  await addAppInstalledEvent(installAttributionPromise);
-}
-
-/**
- * Trigger actions that should happen only when an update is available
- *
- * @param {object} details - Event details from runtime.onUpdateAvailable (e.g. details.version)
- */
-async function onUpdateAvailable(details) {
-  await isInitialized;
-  log.info('An update is available', details?.version);
-  controller.appStateController.setPendingExtensionVersion(
-    details?.version ?? null,
-  );
-}
-
-browser.runtime.onUpdateAvailable.addListener(onUpdateAvailable);
+browser.runtime.onUpdateAvailable.addListener((details) => {
+  onUpdateAvailable(details, getInstallLifecycleDeps());
+});
 
 function onNavigateToTab() {
   browser.tabs.onActivated.addListener((onActivatedTab) => {
@@ -2056,54 +1720,10 @@ function onNavigateToTab() {
   });
 }
 
-// Sidepanel-specific functionality
-async function applyToolbarSidePanelBehavior() {
-  if (!browser?.sidePanel?.setPanelBehavior) {
-    return;
-  }
-  const useSidePanelAsDefault =
-    controller?.preferencesController?.state?.preferences
-      ?.useSidePanelAsDefault ?? true;
-  await browser.sidePanel.setPanelBehavior({
-    openPanelOnActionClick: useSidePanelAsDefault,
-  });
-}
-
-/**
- * Sets initial side panel toolbar behavior after startup, then subscribes only to
- * `useSidePanelAsDefault` changes (not every PreferencesController update).
- */
-const setupSidePanelToolbarBehavior = async () => {
-  if (!browser?.sidePanel) {
-    return;
-  }
-
-  try {
-    await isInitialized;
-    await applyToolbarSidePanelBehavior();
-
-    controller?.controllerMessenger?.subscribe(
-      'PreferencesController:stateChange',
-      (useSidePanelAsDefault) => {
-        if (browser?.sidePanel?.setPanelBehavior) {
-          browser.sidePanel
-            .setPanelBehavior({
-              openPanelOnActionClick: useSidePanelAsDefault,
-            })
-            .catch((error) =>
-              console.error('Error updating panel behavior:', error),
-            );
-        }
-      },
-      (preferencesControllerState) =>
-        preferencesControllerState?.preferences?.useSidePanelAsDefault ?? true,
-    );
-  } catch (error) {
-    console.error('Error setting side panel toolbar behavior:', error);
-  }
-};
-
-setupSidePanelToolbarBehavior();
+setupSidePanelToolbarBehavior({
+  getController: () => controller,
+  waitUntilInitialized: async () => await isInitialized,
+});
 
 // Initialize appActiveTab by querying the current active tab on startup
 const initializeAppActiveTab = async () => {

@@ -21,12 +21,12 @@ class ActivityTab extends HomePage {
   private readonly activityListAction =
     '[data-testid="activity-list-item-action"]';
 
+  private readonly activityPage = {
+    testId: 'parent-selector-activity-tab',
+  };
+
   private readonly backButton =
     '[data-testid="transaction-details-back-button"]';
-
-  private readonly baseFeeLabel = {
-    xpath: "//div[contains(text(), 'Base fee')]",
-  };
 
   private readonly bridgeTransactionCompleted = '[data-tx-status="confirmed"]';
 
@@ -44,19 +44,12 @@ class ActivityTab extends HomePage {
 
   private readonly failedTransactions = '[data-tx-status="failed"]';
 
-  private readonly feeValues = '.currency-display-component__text';
-
-  private readonly gasPrice =
-    '[data-testid="transaction-breakdown__gas-price"]';
-
   private readonly pendingTransactionItems =
     '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"]';
 
   private readonly popoverClose = '[data-testid="popover-close"]';
 
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
-
-  private readonly tooltip = '.tippy-tooltip-content';
 
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
@@ -73,10 +66,6 @@ class ActivityTab extends HomePage {
   private readonly transactionStatusLabel = (status: string) => ({
     testId: `transaction-details-status-${status}`,
   });
-
-  private readonly viewTransactionOnExplorerButton = {
-    testId: 'transaction-details-block-explorer',
-  };
 
   /**
    * This function checks a swap or bridge transaction's details
@@ -157,24 +146,10 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 60000);
+    }, 10000);
     console.log(
       `${expectedNumber} Bridge transactions found in activity list on homepage`,
     );
-  }
-
-  async checkCompletedTransactionItems(
-    expectedNumber: number = 1,
-  ): Promise<void> {
-    console.log(
-      `Check ${expectedNumber} completed transaction items are displayed in activity list`,
-    );
-    await this.driver.wait(async () => {
-      const confirmedTxes = await this.driver.findElements(
-        this.completedTransactions,
-      );
-      return confirmedTxes.length === expectedNumber;
-    }, 10000);
   }
 
   /**
@@ -238,7 +213,7 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 60000);
+    }, 10000);
     console.log(
       `${expectedNumber} confirmed transactions found in activity list on homepage`,
     );
@@ -266,67 +241,25 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 60000);
+    }, 10000);
     console.log(
       `${expectedNumber} failed transactions found in activity list on homepage`,
     );
   }
 
-  /**
-   * Checks that fee values are displayed in the tx details.
-   */
-  async checkFeeValuesAreDisplayed(): Promise<void> {
-    console.log('Checking that fee values are displayed');
-    await this.driver.waitForSelector(this.baseFeeLabel);
-    await this.driver.waitForSelector(this.feeValues);
-    console.log('Fee values are displayed');
-  }
-
-  /**
-   * Checks that the gas price displayed in transaction details matches the expected value.
-   *
-   * @param expectedGasPrice - The expected gas price value.
-   */
-  async checkGasPrice(expectedGasPrice: string): Promise<void> {
-    console.log(`Checking gas price is ${expectedGasPrice}`);
-    await this.driver.waitForSelector({
-      css: this.gasPrice,
-      text: expectedGasPrice,
-    });
-    console.log(`Gas price ${expectedGasPrice} verified`);
-  }
-
   async checkNoFailedTransactions(): Promise<void> {
-    try {
-      await this.driver.findElement(this.failedTransactions, 1);
-    } catch (error) {
-      return;
-    }
-
-    const failedTxs = await this.driver.findElements(this.failedTransactions);
-
-    if (!failedTxs.length) {
-      return;
-    }
-
-    const errorMessages = [];
-
-    for (const failedTx of failedTxs) {
-      await this.driver.hoverElement(failedTx);
-
-      const tooltip = await this.driver.findElement(this.tooltip);
-      const errorMessage = await tooltip.getText();
-
-      errorMessages.push(errorMessage);
-    }
-
-    throw new Error(
-      `Failed transactions found in activity list: ${errorMessages.join('\n')}`,
-    );
+    await this.driver.assertElementNotPresent(this.failedTransactions, {
+      waitAtLeastGuard: 1000,
+    });
   }
 
   async checkNoTxInActivity(): Promise<void> {
     await this.driver.assertElementNotPresent(this.completedTransactions);
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForSelector(this.activityPage);
+    console.log('Activity tab is loaded');
   }
 
   /**
@@ -351,7 +284,7 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 60000);
+    }, 10000);
     console.log(
       `${expectedNumber} Bridge pending transactions found in activity list on homepage`,
     );
@@ -429,29 +362,11 @@ class ActivityTab extends HomePage {
     });
   }
 
-  async checkTransactionActivityNotPresentByText(
-    txnText: string,
-  ): Promise<void> {
-    console.log(`Check transaction activity with text is absent: ${txnText}`);
-    await this.driver.assertElementNotPresent({
-      text: txnText,
-      css: this.activityListAction,
-    });
-  }
-
   async checkTransactionAmount(transactionAmount: string): Promise<void> {
     console.log('Validate transaction amount');
     await this.driver.waitForSelector({
       css: this.transactionAmountsInActivity,
       text: transactionAmount,
-    });
-  }
-
-  async checkTransactionAmountNotPresent(amount: string): Promise<void> {
-    console.log(`Check transaction amount is absent: ${amount}`);
-    await this.driver.assertElementNotPresent({
-      css: this.transactionAmountsInActivity,
-      text: amount,
     });
   }
 
@@ -514,7 +429,7 @@ class ActivityTab extends HomePage {
       } catch {
         return false;
       }
-    }, 60000);
+    }, 10000);
     console.log(`Action for transaction ${txIndex} is displayed as ${action}`);
   }
 
@@ -565,23 +480,6 @@ class ActivityTab extends HomePage {
     });
   }
 
-  /**
-   * Verifies that a specific warning message is displayed on the activity list.
-   *
-   * @param warningText - The expected warning text to validate against.
-   * @returns A promise that resolves if the warning message matches the expected text.
-   * @throws Assertion error if the warning message does not match the expected text.
-   */
-  async checkWarningMessage(warningText: string): Promise<void> {
-    console.log(
-      `Check warning message "${warningText}" is displayed on activity list`,
-    );
-    await this.driver.waitForSelector({
-      tag: 'div',
-      text: warningText,
-    });
-  }
-
   async clickCancelTransaction() {
     // Ensure the Speed Up button is present before canceling
     // to avoid component re-render, resulting in auto-closing the modal
@@ -616,36 +514,6 @@ class ActivityTab extends HomePage {
 
   async clickSpeedUpTransaction() {
     await this.driver.clickElement(this.speedupInlineButton);
-  }
-
-  async clickTransactionListItem() {
-    await this.driver.clickElement(this.completedTransactions);
-  }
-
-  async getAllTransactionAmounts(): Promise<string[]> {
-    console.log('Getting all transaction amounts');
-    const transactionAmounts = await this.driver.findElements(
-      this.transactionAmountsInActivity,
-    );
-    const amounts = await Promise.all(
-      transactionAmounts.map(async (amount) => await amount.getText()),
-    );
-
-    console.log('Transaction amounts found', amounts);
-    return amounts;
-  }
-
-  /**
-   * This function clicks on the "View on block explorer" button for the specified transaction.
-   *
-   * @param expectedNumber - The 1-based index of the transaction to be clicked.
-   */
-  async viewTransactionOnExplorer(expectedNumber: number): Promise<void> {
-    console.log(
-      `Viewing transaction on explorer for transaction ${expectedNumber}`,
-    );
-    await this.clickOnActivity(expectedNumber);
-    await this.driver.clickElement(this.viewTransactionOnExplorerButton);
   }
 
   /**

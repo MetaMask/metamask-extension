@@ -12,7 +12,10 @@ import {
   AvatarNetworkSize,
   ButtonIcon as DsButtonIcon,
   ButtonIconSize as DsButtonIconSize,
-  IconName as DsIconName,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import {
   AlignItems,
@@ -22,17 +25,9 @@ import {
   FlexDirection,
   JustifyContent,
   TextColor,
-  IconColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  SuccessPill,
-  Text,
-} from '../../component-library';
+import { Box, SuccessPill, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
@@ -138,7 +133,7 @@ export const NetworkListItem = ({
   const renderButton = useCallback(() => {
     return onDeleteClick || onEditClick || onDiscoverClick ? (
       <DsButtonIcon
-        iconName={DsIconName.MoreVertical}
+        iconName={IconName.MoreVertical}
         ref={setNetworkListItemMenuRef}
         data-testid={`network-list-item-options-button-${chainId}`}
         ariaLabel={t('networkOptions')}
@@ -292,8 +287,8 @@ export const NetworkListItem = ({
               {rpcEndpoint.name ?? new URL(rpcEndpoint.url).host}
             </Text>
             <Icon
-              marginLeft={1}
-              color={IconColor.iconAlternative}
+              className="ml-1"
+              color={IconColor.IconAlternative}
               name={IconName.ArrowDown}
               size={IconSize.Xs}
             />

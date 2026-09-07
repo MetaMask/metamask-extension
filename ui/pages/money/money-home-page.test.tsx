@@ -1,16 +1,26 @@
 import React from 'react';
-import { screen, within } from '@testing-library/react';
+import { fireEvent, screen, within } from '@testing-library/react';
 import { BigNumber } from 'bignumber.js';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { MONEY_ACTIVITY_ROUTE } from '../../helpers/constants/routes';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
 import { MoneyHomePage } from './money-home-page';
+import MOCK_MONEY_TRANSACTIONS from './constants/mock-activity-data';
+import { onchainItem } from './types/money-activity';
 
 const mockUseMoneyAccountAvailability = jest.fn();
 const mockUseMoneyAccountBalance = jest.fn();
 const mockUseMoneyAccountInterest = jest.fn();
 const mockUseMoneyDepositTokens = jest.fn();
+const mockUseMoneyActivityItems = jest.fn();
+const mockUseMoneyActivityItemClick = jest.fn();
+const mockUseMoneyAccountDeposit = jest.fn();
+const mockInitiateDeposit = jest.fn();
+const mockUseMoneyAccountWithdrawal = jest.fn();
+const mockInitiateWithdrawal = jest.fn();
+const mockNavigate = jest.fn();
 const mockSelectMoneyEarningSectionEnabled = jest.mocked(
   selectMoneyEarningSectionEnabled,
 );
@@ -48,6 +58,7 @@ jest.mock('react-router-dom', () => ({
   Navigate: ({ to }: { to: string }) => (
     <div data-testid="navigate" data-to={to} />
   ),
+  useNavigate: () => mockNavigate,
 }));
 jest.mock('../../hooks/money/use-money-account-availability', () => ({
   useMoneyAccountAvailability: () => mockUseMoneyAccountAvailability(),
@@ -62,12 +73,26 @@ jest.mock('../../hooks/money/useMoneyAccountInterest', () => ({
 jest.mock('../../hooks/money/use-money-deposit-tokens', () => ({
   useMoneyDepositTokens: () => mockUseMoneyDepositTokens(),
 }));
+jest.mock('../../hooks/money/use-money-activity-items', () => ({
+  useMoneyActivityItems: () => mockUseMoneyActivityItems(),
+}));
+jest.mock('../../hooks/money/useMoneyAccountDeposit', () => ({
+  useMoneyAccountDeposit: () => mockUseMoneyAccountDeposit(),
+}));
+jest.mock('../../hooks/money/useMoneyAccountWithdrawal', () => ({
+  useMoneyAccountWithdrawal: () => mockUseMoneyAccountWithdrawal(),
+}));
+
+jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
+  useMoneyActivityItemClick: () => mockUseMoneyActivityItemClick(),
+}));
 
 describe('MoneyHomePage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSelectMoneyEarningSectionEnabled.mockReturnValue(true);
     mockGetPrivacyMode.mockReturnValue(false);
+    mockUseMoneyActivityItemClick.mockReturnValue(undefined);
     mockUseMoneyAccountAvailability.mockReturnValue({
       availability: {
         isAvailable: true,
@@ -88,16 +113,27 @@ describe('MoneyHomePage', () => {
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
         data: interestResponse('12.34'),
-        isInitialLoading: false,
+        isLoading: false,
       },
       sinceInceptionQuery: {
         data: interestResponse('56.78'),
-        isInitialLoading: false,
+        isLoading: false,
       },
     });
     mockUseMoneyDepositTokens.mockReturnValue({
       tokens: [],
       isNoFeeToken: () => false,
+    });
+    mockUseMoneyActivityItems.mockReturnValue({ items: [] });
+    mockInitiateDeposit.mockResolvedValue(undefined);
+    mockUseMoneyAccountDeposit.mockReturnValue({
+      initiateDeposit: mockInitiateDeposit,
+      isLoading: false,
+    });
+    mockInitiateWithdrawal.mockResolvedValue(undefined);
+    mockUseMoneyAccountWithdrawal.mockReturnValue({
+      initiateWithdrawal: mockInitiateWithdrawal,
+      isLoading: false,
     });
   });
 
@@ -146,20 +182,93 @@ describe('MoneyHomePage', () => {
         .closest('li')
         ?.querySelector('svg'),
     ).toHaveClass('shrink-0');
+    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
     expect(
-      screen.getByTestId('money-activity-placeholder'),
+      screen.getByText(messages.moneyActivityPlaceholderDescription.message),
     ).toBeInTheDocument();
     expect(
-      screen.getAllByTestId('money-activity-placeholder-row'),
-    ).toHaveLength(3);
+      screen.queryByTestId(/money-activity-row-/u),
+    ).not.toBeInTheDocument();
   });
 
-  it('keeps all groundwork actions inert', () => {
+  it('keeps groundwork actions other than the transfer entry points inert', () => {
     renderWithLocalization(<MoneyHomePage />);
 
+    const transferLabels = [
+      messages.moneyAdd.message,
+      messages.addFunds.message,
+      messages.moneySend.message,
+    ];
     screen.getAllByRole('button').forEach((button) => {
-      expect(button).toBeDisabled();
+      if (transferLabels.includes(button.textContent ?? '')) {
+        expect(button).toBeEnabled();
+      } else {
+        expect(button).toBeDisabled();
+      }
     });
+  });
+
+  it('initiates a deposit from the Add action card', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.moneyAdd.message }),
+    );
+
+    expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
+    expect(mockInitiateDeposit).toHaveBeenCalledWith();
+  });
+
+  it('initiates a deposit from the unfunded Add funds CTA', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.addFunds.message }),
+    );
+
+    expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
+    expect(mockInitiateDeposit).toHaveBeenCalledWith();
+  });
+
+  it('disables the deposit entry points while a deposit is initiating', () => {
+    mockUseMoneyAccountDeposit.mockReturnValue({
+      initiateDeposit: mockInitiateDeposit,
+      isLoading: true,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.getByRole('button', { name: messages.moneyAdd.message }),
+    ).toBeDisabled();
+  });
+
+  it('initiates a withdrawal from the Send action card', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.moneySend.message }),
+    );
+
+    expect(mockInitiateWithdrawal).toHaveBeenCalledTimes(1);
+    expect(mockInitiateWithdrawal).toHaveBeenCalledWith();
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
+  });
+
+  it('disables the Send action card while a withdrawal is initiating', () => {
+    mockUseMoneyAccountWithdrawal.mockReturnValue({
+      initiateWithdrawal: mockInitiateWithdrawal,
+      isLoading: true,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.getByRole('button', { name: messages.moneySend.message }),
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: messages.moneyAdd.message }),
+    ).toBeEnabled();
   });
 
   it('renders the filled-state composition for a funded Money account', () => {
@@ -189,9 +298,7 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByTestId('money-position-lifetime-value'),
     ).toHaveTextContent('+$56.78');
-    expect(
-      screen.getByTestId('money-activity-placeholder'),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
     expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
     expect(
       screen.getByText(messages.moneyEarnOnCrypto.message),
@@ -221,8 +328,70 @@ describe('MoneyHomePage', () => {
       screen.queryByText(messages.moneyBenefits.message),
     ).not.toBeInTheDocument();
     screen.getAllByRole('button').forEach((button) => {
-      expect(button).toBeDisabled();
+      if (
+        [messages.moneyAdd.message, messages.moneySend.message].includes(
+          button.textContent ?? '',
+        )
+      ) {
+        expect(button).toBeEnabled();
+      } else {
+        expect(button).toBeDisabled();
+      }
     });
+  });
+
+  it('renders mock activity rows instead of the empty copy', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('3475.45'),
+      totalFiatFormatted: '$3,475.45',
+      totalFiatRaw: '3475.45',
+      vaultApyQuery: { isLoading: false },
+    });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: MOCK_MONEY_TRANSACTIONS.map(onchainItem),
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.moneyActivityPlaceholderDescription.message),
+    ).not.toBeInTheDocument();
+    expect(screen.getAllByTestId(/money-activity-row-money-tx-/u)).toHaveLength(
+      5,
+    );
+    expect(screen.getByTestId('money-activity-view-all')).toBeEnabled();
+    fireEvent.click(screen.getByTestId('money-activity-view-all'));
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_ACTIVITY_ROUTE);
+    expect(
+      screen.getByText(messages.moneyActivityDeposited.message),
+    ).toBeInTheDocument();
+  });
+
+  it('invokes the item click handler when details navigation is enabled', () => {
+    const onItemClick = jest.fn();
+    const items = MOCK_MONEY_TRANSACTIONS.map(onchainItem);
+    mockUseMoneyActivityItemClick.mockReturnValue(onItemClick);
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('3475.45'),
+      totalFiatFormatted: '$3,475.45',
+      totalFiatRaw: '3475.45',
+      vaultApyQuery: { isLoading: false },
+    });
+    mockUseMoneyActivityItems.mockReturnValue({ items });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId(`money-activity-row-${items[0].id}`));
+    expect(onItemClick).toHaveBeenCalledWith(items[0]);
   });
 
   it('shows earnings skeletons during the initial interest load', () => {
@@ -237,8 +406,8 @@ describe('MoneyHomePage', () => {
       vaultApyQuery: { isLoading: false },
     });
     mockUseMoneyAccountInterest.mockReturnValue({
-      last30DaysQuery: { data: undefined, isInitialLoading: true },
-      sinceInceptionQuery: { data: undefined, isInitialLoading: true },
+      last30DaysQuery: { data: undefined, isLoading: true },
+      sinceInceptionQuery: { data: undefined, isLoading: true },
     });
 
     renderWithLocalization(<MoneyHomePage />);
@@ -265,11 +434,11 @@ describe('MoneyHomePage', () => {
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
         data: interestResponse('invalid'),
-        isInitialLoading: false,
+        isLoading: false,
       },
       sinceInceptionQuery: {
         data: interestResponse('Infinity'),
-        isInitialLoading: false,
+        isLoading: false,
       },
     });
 
@@ -297,11 +466,11 @@ describe('MoneyHomePage', () => {
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
         data: interestResponse('0'),
-        isInitialLoading: false,
+        isLoading: false,
       },
       sinceInceptionQuery: {
         data: interestResponse('0.001'),
-        isInitialLoading: false,
+        isLoading: false,
       },
     });
 
@@ -329,11 +498,11 @@ describe('MoneyHomePage', () => {
     mockUseMoneyAccountInterest.mockReturnValue({
       last30DaysQuery: {
         data: interestResponse('-12.34'),
-        isInitialLoading: false,
+        isLoading: false,
       },
       sinceInceptionQuery: {
         data: interestResponse('-0.001'),
-        isInitialLoading: false,
+        isLoading: false,
       },
     });
 
@@ -368,9 +537,7 @@ describe('MoneyHomePage', () => {
     expect(mockUseMoneyAccountInterest).toHaveBeenCalledWith({
       enabled: false,
     });
-    expect(
-      screen.getByTestId('money-activity-placeholder'),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
     expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
   });
 

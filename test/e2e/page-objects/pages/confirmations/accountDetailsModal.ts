@@ -25,6 +25,10 @@ class AccountDetailsModal extends Confirmation {
 
   private addressCopyButton: RawLocator;
 
+  private modalParentSelector: RawLocator = {
+    testId: 'parent-selector-account-details-modal',
+  };
+
   constructor(driver: Driver) {
     super(driver);
 
@@ -54,6 +58,7 @@ class AccountDetailsModal extends Confirmation {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.modalParentSelector,
         this.accountBalanceInfo,
         this.addressCopyButton,
         this.accountDetailsModalCloseButton,

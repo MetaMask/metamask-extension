@@ -53,6 +53,13 @@ export function initializeWallet(request: InitializeWalletRequest) {
   const seedlessOnboardingControllerInitMessenger =
     getSeedlessOnboardingControllerInitMessenger(messenger);
 
+  // TC event listeners must be set up before the wallet is initialized.
+  // So that the TC can emit events to the wallet's messenger during initialization.
+  setupTransactionControllerListeners({
+    getTransactionMetricsRequest,
+    messenger: transactionControllerInitMessenger,
+  });
+
   const wallet = new Wallet({
     instanceOptions: {
       approvalController: getApprovalControllerInstanceOptions({
@@ -115,11 +122,6 @@ export function initializeWallet(request: InitializeWalletRequest) {
         | AuthenticationControllerState['srpSessionData']
         | undefined,
     },
-  });
-
-  setupTransactionControllerListeners({
-    getTransactionMetricsRequest,
-    messenger: transactionControllerInitMessenger,
   });
 
   wallet.init().catch((error) => console.error(error));

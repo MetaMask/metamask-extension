@@ -7,6 +7,8 @@ import React, {
 } from 'react';
 import log from 'loglevel';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   Text,
   BoxFlexDirection,
@@ -19,7 +21,6 @@ import {
   TextVariant,
   FontWeight,
   TextColor,
-  TextAlign,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -394,14 +395,11 @@ export default function SetupPasskeyContent({
           </Text>
 
           {enrollmentError ? (
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.ErrorDefault}
-              textAlign={TextAlign.Center}
+            <BannerAlert
+              severity={BannerAlertSeverity.Danger}
+              description={enrollmentError}
               data-testid="passkey-enrollment-error"
-            >
-              {enrollmentError}
-            </Text>
+            />
           ) : null}
 
           <Box

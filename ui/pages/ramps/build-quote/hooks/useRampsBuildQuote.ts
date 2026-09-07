@@ -3,21 +3,19 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { CaipChainId } from '@metamask/utils';
 import { v4 as uuidV4 } from 'uuid';
-import {
-  getInternalOrderCode,
-  normalizeProviderCode,
-} from '@metamask/ramps-controller';
+import { getInternalOrderCode } from '@metamask/ramps-controller';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import {
-  DEFAULT_ROUTE,
+  RAMPS_COMPLETE_BUY_ROUTE,
   PREVIOUS_ROUTE,
   RAMPS_PAYMENT_METHOD_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
-import { showBuyTabOpenedToast } from '../../../../helpers/utils/show-buy-tab-opened-toast';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useFormatters } from '../../../../hooks/useFormatters';
+import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
 import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
 import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCallbackBaseUrl';
@@ -32,6 +30,7 @@ import {
   resolveDisplayedQuoteError,
   resolvePaymentMethodLabel,
 } from '../utils/build-quote';
+import { getProviderLimitMessage } from '../../utils/getProviderLimitMessage';
 import { useBuildQuoteAmount } from './useBuildQuoteAmount';
 
 type BuildQuoteLocationState = {
@@ -64,6 +63,7 @@ export type RampsBuildQuoteViewModel =
 
 export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   const t = useI18nContext();
+  const { formatCurrency } = useFormatters();
   const navigate = useNavigate();
   const location = useLocation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -106,6 +106,18 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
   const walletAddress = (chainAccount ?? selectedAccount)?.address ?? '';
   const hasAmount = amountAsNumber > 0;
   const hasSettledQuoteAmount = amountAsNumber === debouncedAmount;
+  const amountLimitError = getProviderLimitMessage({
+    provider: selectedProvider,
+    fiatCurrency: userRegion?.country?.currency,
+    paymentMethodId: selectedPaymentMethod?.id,
+    amount: amountAsNumber,
+    currency,
+    formatCurrency,
+    t,
+  });
+  const debouncedAmountLimitError = useDebouncedValue(amountLimitError);
+  const displayedAmountLimitError =
+    amountLimitError === debouncedAmountLimitError ? amountLimitError : null;
 
   const quoteFetchEnabled = Boolean(
     walletAddress &&
@@ -113,7 +125,9 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     selectedProvider &&
     selectedToken?.assetId &&
     tokenStateIsSettled &&
-    debouncedAmount > 0,
+    debouncedAmount > 0 &&
+    hasSettledQuoteAmount &&
+    !amountLimitError,
   );
 
   const quoteFetchParams = useMemo(
@@ -168,6 +182,23 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     quotesResponse,
     selectedQuote,
   });
+  const providerQuoteError = quotesResponse?.error?.find(
+    (error) => error.provider === selectedProvider?.id && error.error,
+  )?.error;
+  const displayedError =
+    displayedAmountLimitError ??
+    (displayedQuoteError && providerQuoteError === displayedQuoteError
+      ? (getProviderLimitMessage({
+          provider: selectedProvider,
+          fiatCurrency: userRegion?.country?.currency,
+          paymentMethodId: selectedPaymentMethod?.id,
+          amount: amountAsNumber,
+          currency,
+          formatCurrency,
+          t,
+          backendError: providerQuoteError,
+        }) ?? t('rampsQuoteUnavailable'))
+      : displayedQuoteError);
 
   const paymentMethodLabel = useMemo(
     () =>
@@ -214,7 +245,9 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         return;
       }
 
-      const providerCode = normalizeProviderCode(selectedProvider?.id ?? '');
+      // Since ramps-controller v16, provider IDs are canonical as-is (no
+      // /providers/ prefix to strip).
+      const providerCode = selectedProvider?.id ?? '';
       const orderCode = widget.orderId
         ? getInternalOrderCode(widget.orderId)
         : undefined;
@@ -233,11 +266,18 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         providerName: selectedProvider?.name,
       });
 
-      navigate(DEFAULT_ROUTE);
-      showBuyTabOpenedToast(
-        t('buyTabOpenedToastText'),
-        t('buyTabOpenedToastDescription'),
-      );
+      navigate(RAMPS_COMPLETE_BUY_ROUTE, {
+        state: {
+          checkoutUrl: widget.url,
+          providerName: selectedProvider?.name ?? '',
+          amountOut: selectedQuote.quote?.amountOut,
+          tokenSymbol: selectedToken?.symbol ?? '',
+          tokenIconUrl: selectedToken?.iconUrl,
+          tokenChainId: selectedToken?.chainId,
+          walletAddress,
+          createdAt: Date.now(),
+        },
+      });
     } catch (error) {
       setContinueError(parseUserFacingError(error, t('rampsBuyWidgetError')));
     } finally {
@@ -251,6 +291,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     selectedProvider?.id,
     selectedProvider?.name,
     selectedQuote,
+    selectedToken,
     t,
     userRegion?.regionCode,
     walletAddress,
@@ -288,14 +329,14 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     currencySymbol,
     amount,
     amountTextClassName: `text-[56px] font-normal leading-none ${
-      displayedQuoteError ? 'text-error-default' : 'text-default'
+      (continueError ?? displayedError) ? 'text-error-default' : 'text-default'
     }`,
     paymentMethodLabel,
     showPaymentMethodSpinner:
       paymentMethodsStatus === 'loading' &&
       paymentMethods.length === 0 &&
       !selectedPaymentMethod,
-    displayedQuoteError: continueError ?? displayedQuoteError,
+    displayedQuoteError: continueError ?? displayedError,
     providerStatusLabel: providerLabel,
     isQuoteLoading: isQuoteLoading || isContinuing,
     canContinue,

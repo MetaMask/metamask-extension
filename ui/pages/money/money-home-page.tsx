@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useCallback, useMemo } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import {
@@ -16,16 +16,23 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  MONEY_ACTIVITY_ROUTE,
+} from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
+import { useMoneyAccountDeposit } from '../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInterest } from '../../hooks/money/useMoneyAccountInterest';
+import { useMoneyAccountWithdrawal } from '../../hooks/money/useMoneyAccountWithdrawal';
+import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
+import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
 import { moneyFormatUsd } from '../../helpers/money/format';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
-import { MoneyActivityPlaceholder } from './components/money-activity-placeholder';
+import { MoneyActivityList } from './components/money-activity-list';
 import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards';
 import { MoneyPotentialEarnings } from './components/money-potential-earnings';
 import { MoneyPositionPlaceholder } from './components/money-position-placeholder';
@@ -63,13 +70,21 @@ const formatInterestEarned = (value: string | undefined) => {
 type ActionCardProps = {
   icon: IconName;
   label: string;
+  onClick?: () => void;
+  disabled?: boolean;
 };
 
-const MoneyActionCard = ({ icon, label }: ActionCardProps) => {
+const MoneyActionCard = ({
+  icon,
+  label,
+  onClick,
+  disabled,
+}: ActionCardProps) => {
   return (
     <button
       type="button"
-      disabled
+      disabled={disabled}
+      onClick={onClick}
       className="flex h-[76px] flex-1 flex-col items-center justify-center gap-0.5 rounded-xl bg-background-muted disabled:cursor-default disabled:opacity-100"
     >
       <Icon name={icon} size={IconSize.Lg} color={IconColor.IconDefault} />
@@ -86,6 +101,7 @@ const MoneySectionDivider = () => {
 
 export function MoneyHomePage() {
   const t = useI18nContext();
+  const navigate = useNavigate();
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
   const {
@@ -129,13 +145,32 @@ export function MoneyHomePage() {
     formatInterestEarned(sinceInceptionQuery.data?.interest_earned_usd) ??
     FORMATTED_ZERO;
   const isMonthlyEarningsLoading =
-    last30DaysQuery.isInitialLoading ||
+    last30DaysQuery.isLoading ||
     (formatInterestEarned(last30DaysQuery.data?.interest_earned_usd) ===
       undefined &&
       (vaultApyQuery.isLoading || isBalanceLoading));
-  const isLifetimeEarningsLoading = sinceInceptionQuery.isInitialLoading;
+  const isLifetimeEarningsLoading = sinceInceptionQuery.isLoading;
   const { tokens: depositTokens, isNoFeeToken } = useMoneyDepositTokens();
   const privacyMode = useSelector(getPrivacyMode);
+  const { items: activityItems } = useMoneyActivityItems();
+  const handleActivityItemClick = useMoneyActivityItemClick();
+  const { initiateDeposit, isLoading: isDepositLoading } =
+    useMoneyAccountDeposit();
+  const handleViewAllActivity = useCallback(() => {
+    navigate(MONEY_ACTIVITY_ROUTE);
+  }, [navigate]);
+  const handleAddFunds = useCallback(() => {
+    initiateDeposit().catch((error) =>
+      console.error('Failed to initiate money account deposit', error),
+    );
+  }, [initiateDeposit]);
+  const { initiateWithdrawal, isLoading: isWithdrawalLoading } =
+    useMoneyAccountWithdrawal();
+  const handleSend = useCallback(() => {
+    initiateWithdrawal().catch((error) =>
+      console.error('Failed to initiate money account withdrawal', error),
+    );
+  }, [initiateWithdrawal]);
 
   if (isAvailabilityLoading || (availability.isAvailable && isBalanceLoading)) {
     return (
@@ -224,10 +259,17 @@ export function MoneyHomePage() {
         </div>
 
         <div className="mt-2 flex w-full max-w-[389px] gap-2 py-2">
-          <MoneyActionCard icon={IconName.Add} label={t('moneyAdd')} />
+          <MoneyActionCard
+            icon={IconName.Add}
+            label={t('moneyAdd')}
+            onClick={handleAddFunds}
+            disabled={isDepositLoading}
+          />
           <MoneyActionCard
             icon={IconName.Arrow2UpRight}
             label={t('moneySend')}
+            onClick={handleSend}
+            disabled={isWithdrawalLoading}
           />
         </div>
 
@@ -257,7 +299,11 @@ export function MoneyHomePage() {
                   : t('moneyFundDescription')}
               </Text>
             </div>
-            <Button disabled className="w-full">
+            <Button
+              className="w-full"
+              isLoading={isDepositLoading}
+              onClick={handleAddFunds}
+            >
               {t('addFunds')}
             </Button>
           </section>
@@ -278,7 +324,12 @@ export function MoneyHomePage() {
                 <MoneySectionDivider />
               </>
             ) : null}
-            <MoneyActivityPlaceholder />
+            <MoneyActivityList
+              items={activityItems}
+              privacyMode={privacyMode}
+              onViewAll={handleViewAllActivity}
+              onItemClick={handleActivityItemClick}
+            />
             <MoneySectionDivider />
             {earnOnYourCryptoSection}
             <MoneySectionDivider />
@@ -317,7 +368,12 @@ export function MoneyHomePage() {
             </section>
 
             <MoneySectionDivider />
-            <MoneyActivityPlaceholder />
+            <MoneyActivityList
+              items={activityItems}
+              privacyMode={privacyMode}
+              onViewAll={handleViewAllActivity}
+              onItemClick={handleActivityItemClick}
+            />
 
             <MoneySectionDivider />
             {earnOnYourCryptoSection}

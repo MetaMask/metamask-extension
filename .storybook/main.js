@@ -16,6 +16,7 @@ module.exports = {
     '@storybook/addon-essentials',
     '@storybook/addon-a11y',
     '@storybook/addon-docs',
+    '@storybook/addon-webpack5-compiler-babel',
     './i18n-party-addon/register.js',
   ],
   staticDirs: ['../app', './images'],
@@ -24,15 +25,12 @@ module.exports = {
     INFURA_PROJECT_ID: process.env.INFURA_STORYBOOK_PROJECT_ID || '',
     ENABLE_ENFORCED_SIMULATIONS: process.env.ENABLE_ENFORCED_SIMULATIONS || '',
   }),
-  // Uses babel.config.js settings and prevents "Missing class properties transform" error
-  babel: async (options) => ({
-    overrides: options.overrides,
-  }),
   webpackFinal: async (config) => {
     config.context = process.cwd();
     config.node = {
       __filename: true,
     };
+
     config.resolve.alias['webextension-polyfill'] = require.resolve(
       '../ui/__mocks__/webextension-polyfill.js',
     );
@@ -87,6 +85,8 @@ module.exports = {
     ] = hwSwapHooksMock;
     config.resolve.alias['../../../../hooks/bridge/useBridgeNavigation$'] =
       hwSwapHooksMock;
+    config.resolve.alias['@metamask/scure-bip39/dist/wordlists/english.js'] =
+      require.resolve('./shims/scure-bip39-english.js');
 
     config.resolve.fallback = {
       child_process: false,
@@ -171,15 +171,12 @@ module.exports = {
     );
     return config;
   },
-  docs: {
-    autodocs: 'tag',
-  },
   framework: {
     name: '@storybook/react-webpack5',
-    options: {
-      builder: {
-        useSWC: true,
-      },
-    },
+    options: {},
+  },
+  typescript: {
+    reactDocgen: false,
+    check: false,
   },
 };

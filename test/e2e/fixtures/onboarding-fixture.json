@@ -58,11 +58,11 @@
       "previousMigrationVersion": 0
     },
     "AppStateController": {
+      "arcUsageNoticeShown": false,
       "browserEnvironment": {
         "browser": "chrome",
         "os": "mac"
       },
-      "canTrackWalletFundsObtained": true,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -181,6 +181,9 @@
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
+    },
+    "MoneyAccountController": {
+      "moneyAccounts": {}
     },
     "MultichainAssetsController": {
       "accountsAssets": {},
@@ -2073,12 +2076,6 @@
       "syncQueue": {}
     },
     "RampsController": {
-      "countries": {
-        "data": [],
-        "error": null,
-        "isLoading": false,
-        "selected": null
-      },
       "orders": [],
       "providerAutoSelected": false,
       "userRegion": null

@@ -10,7 +10,10 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';
-import { getStepLabelColor } from '../hardware-wallet-signatures.utils';
+import {
+  getSignatureStepDescriptionLines,
+  getStepLabelColor,
+} from '../hardware-wallet-signatures.utils';
 import type { QrHardwareSignRequest } from '../types';
 import SignatureStatusIcon from '../signature-status-icon';
 import QrSignatureCode from '../qr-signature-code';
@@ -94,13 +97,16 @@ const SignatureStepList = ({
             >
               {firstStepLabel}
             </Text>
-            {firstStepDescription && (
-              <Text
-                color={TextColor.TextAlternative}
-                variant={TextVariant.BodyMd}
-              >
-                {firstStepDescription}
-              </Text>
+            {getSignatureStepDescriptionLines(firstStepDescription).map(
+              (line) => (
+                <Text
+                  key={line}
+                  color={TextColor.TextAlternative}
+                  variant={TextVariant.BodyMd}
+                >
+                  {line}
+                </Text>
+              ),
             )}
             {showInlineQrCode &&
               activeQrStep ===
@@ -128,13 +134,16 @@ const SignatureStepList = ({
           >
             {finalStepLabel}
           </Text>
-          {finalStepDescription && (
-            <Text
-              color={TextColor.TextAlternative}
-              variant={TextVariant.BodyMd}
-            >
-              {finalStepDescription}
-            </Text>
+          {getSignatureStepDescriptionLines(finalStepDescription).map(
+            (line) => (
+              <Text
+                key={line}
+                color={TextColor.TextAlternative}
+                variant={TextVariant.BodyMd}
+              >
+                {line}
+              </Text>
+            ),
           )}
           {showInlineQrCode &&
             activeQrStep ===

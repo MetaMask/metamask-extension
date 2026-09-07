@@ -250,23 +250,23 @@ describe('useLastVisitedPerpsRoute', () => {
   const TTL_MS = 5 * 60_000;
 
   it('does nothing when lastVisitedPerpsRoute is null', () => {
-    const setRedirectAfterDefaultPage = jest.fn();
+    const navigate = jest.fn();
     const clearLastVisitedPerpsRoute = jest.fn();
 
     renderHook(() =>
       useLastVisitedPerpsRoute({
         lastVisitedPerpsRoute: null,
-        setRedirectAfterDefaultPage,
+        navigate,
         clearLastVisitedPerpsRoute,
       }),
     );
 
-    expect(setRedirectAfterDefaultPage).not.toHaveBeenCalled();
+    expect(navigate).not.toHaveBeenCalled();
     expect(clearLastVisitedPerpsRoute).not.toHaveBeenCalled();
   });
 
   it('redirects to the persisted perps path when within the TTL', () => {
-    const setRedirectAfterDefaultPage = jest.fn();
+    const navigate = jest.fn();
     const clearLastVisitedPerpsRoute = jest.fn();
 
     renderHook(() =>
@@ -275,19 +275,17 @@ describe('useLastVisitedPerpsRoute', () => {
           path: '/perps/market/BTC',
           timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
         },
-        setRedirectAfterDefaultPage,
+        navigate,
         clearLastVisitedPerpsRoute,
       }),
     );
 
-    expect(setRedirectAfterDefaultPage).toHaveBeenCalledWith({
-      path: '/perps/market/BTC',
-    });
+    expect(navigate).toHaveBeenCalledWith('/perps/market/BTC');
     expect(clearLastVisitedPerpsRoute).toHaveBeenCalled();
   });
 
   it('does not redirect but still clears when TTL has expired', () => {
-    const setRedirectAfterDefaultPage = jest.fn();
+    const navigate = jest.fn();
     const clearLastVisitedPerpsRoute = jest.fn();
 
     renderHook(() =>
@@ -296,17 +294,17 @@ describe('useLastVisitedPerpsRoute', () => {
           path: '/perps/market/BTC',
           timestamp: Date.now() - (TTL_MS + 1_000),
         },
-        setRedirectAfterDefaultPage,
+        navigate,
         clearLastVisitedPerpsRoute,
       }),
     );
 
-    expect(setRedirectAfterDefaultPage).not.toHaveBeenCalled();
+    expect(navigate).not.toHaveBeenCalled();
     expect(clearLastVisitedPerpsRoute).toHaveBeenCalled();
   });
 
   it('ignores persisted path that does not start with /perps', () => {
-    const setRedirectAfterDefaultPage = jest.fn();
+    const navigate = jest.fn();
     const clearLastVisitedPerpsRoute = jest.fn();
 
     renderHook(() =>
@@ -315,17 +313,17 @@ describe('useLastVisitedPerpsRoute', () => {
           path: '/settings',
           timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
         },
-        setRedirectAfterDefaultPage,
+        navigate,
         clearLastVisitedPerpsRoute,
       }),
     );
 
-    expect(setRedirectAfterDefaultPage).not.toHaveBeenCalled();
+    expect(navigate).not.toHaveBeenCalled();
     expect(clearLastVisitedPerpsRoute).toHaveBeenCalled();
   });
 
   it('rejects a path with the /perps prefix that is not actually a /perps subroute', () => {
-    const setRedirectAfterDefaultPage = jest.fn();
+    const navigate = jest.fn();
     const clearLastVisitedPerpsRoute = jest.fn();
 
     renderHook(() =>
@@ -334,17 +332,17 @@ describe('useLastVisitedPerpsRoute', () => {
           path: '/perpsNew/market/BTC',
           timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
         },
-        setRedirectAfterDefaultPage,
+        navigate,
         clearLastVisitedPerpsRoute,
       }),
     );
 
-    expect(setRedirectAfterDefaultPage).not.toHaveBeenCalled();
+    expect(navigate).not.toHaveBeenCalled();
     expect(clearLastVisitedPerpsRoute).toHaveBeenCalled();
   });
 
   it('defers to pendingRedirectRoute when both are set but still clears the persisted perps entry', () => {
-    const setRedirectAfterDefaultPage = jest.fn();
+    const navigate = jest.fn();
     const clearLastVisitedPerpsRoute = jest.fn();
 
     renderHook(() =>
@@ -354,13 +352,13 @@ describe('useLastVisitedPerpsRoute', () => {
           path: '/perps/market/BTC',
           timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
         },
-        setRedirectAfterDefaultPage,
+        navigate,
         clearLastVisitedPerpsRoute,
       }),
     );
 
     // The pending redirect wins — perps resume must not fire.
-    expect(setRedirectAfterDefaultPage).not.toHaveBeenCalled();
+    expect(navigate).not.toHaveBeenCalled();
     // Even when pendingRedirectRoute wins, the perps entry must be cleared
     // so a later home mount cannot replay it after the higher-priority
     // redirect has already fired.
@@ -374,7 +372,7 @@ describe('useLastVisitedPerpsRoute', () => {
       __resetPerpsInAppLeaveMarkerForTests: resetPerpsInAppLeaveMarkerForTests,
     } = await import(markerModulePath);
 
-    const setRedirectAfterDefaultPage = jest.fn();
+    const navigate = jest.fn();
     const clearLastVisitedPerpsRoute = jest.fn();
 
     try {
@@ -386,12 +384,12 @@ describe('useLastVisitedPerpsRoute', () => {
             path: '/perps/market/BTC',
             timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
           },
-          setRedirectAfterDefaultPage,
+          navigate,
           clearLastVisitedPerpsRoute,
         }),
       );
 
-      expect(setRedirectAfterDefaultPage).not.toHaveBeenCalled();
+      expect(navigate).not.toHaveBeenCalled();
       expect(clearLastVisitedPerpsRoute).toHaveBeenCalled();
     } finally {
       resetPerpsInAppLeaveMarkerForTests();
@@ -399,14 +397,14 @@ describe('useLastVisitedPerpsRoute', () => {
   });
 
   it('fires when lastVisitedPerpsRoute transitions from null to a value', () => {
-    const setRedirectAfterDefaultPage = jest.fn();
+    const navigate = jest.fn();
     const clearLastVisitedPerpsRoute = jest.fn();
 
     const { rerender } = renderHook(
       ({ route }: { route: { path: string; timestamp: number } | null }) =>
         useLastVisitedPerpsRoute({
           lastVisitedPerpsRoute: route,
-          setRedirectAfterDefaultPage,
+          navigate,
           clearLastVisitedPerpsRoute,
         }),
       {
@@ -416,7 +414,7 @@ describe('useLastVisitedPerpsRoute', () => {
       },
     );
 
-    expect(setRedirectAfterDefaultPage).not.toHaveBeenCalled();
+    expect(navigate).not.toHaveBeenCalled();
     expect(clearLastVisitedPerpsRoute).not.toHaveBeenCalled();
 
     act(() => {
@@ -428,14 +426,42 @@ describe('useLastVisitedPerpsRoute', () => {
       });
     });
 
-    expect(setRedirectAfterDefaultPage).toHaveBeenCalledWith({
-      path: '/perps/market/BTC',
-    });
+    expect(navigate).toHaveBeenCalledWith('/perps/market/BTC');
     expect(clearLastVisitedPerpsRoute).toHaveBeenCalled();
   });
 
+  it('redirects once when the selector hands back a new object identity every render', () => {
+    // A repeated resume spins Home into "Maximum update depth exceeded".
+    const navigate = jest.fn();
+    const clearLastVisitedPerpsRoute = jest.fn();
+    const timestamp = Date.now() - FRESH_ENOUGH_OFFSET_MS;
+
+    const { rerender } = renderHook(
+      ({ lastVisited }: { lastVisited: LastVisitedPerpsRoute }) =>
+        useLastVisitedPerpsRoute({
+          lastVisitedPerpsRoute: lastVisited,
+          navigate,
+          clearLastVisitedPerpsRoute,
+        }),
+      {
+        initialProps: {
+          lastVisited: { path: '/perps/trade/BTC', timestamp },
+        },
+      },
+    );
+
+    for (let i = 0; i < 5; i++) {
+      act(() => {
+        rerender({ lastVisited: { path: '/perps/trade/BTC', timestamp } });
+      });
+    }
+
+    expect(navigate).toHaveBeenCalledTimes(1);
+    expect(clearLastVisitedPerpsRoute).toHaveBeenCalledTimes(1);
+  });
+
   it('does not redirect again after perps route is cleared on remount', () => {
-    const setRedirectAfterDefaultPage = jest.fn();
+    const navigate = jest.fn();
     const clearLastVisitedPerpsRoute = jest.fn();
     const route = {
       path: '/perps/market/BTC',
@@ -450,20 +476,20 @@ describe('useLastVisitedPerpsRoute', () => {
       }) =>
         useLastVisitedPerpsRoute({
           lastVisitedPerpsRoute: lastVisited,
-          setRedirectAfterDefaultPage,
+          navigate,
           clearLastVisitedPerpsRoute,
         }),
       { initialProps: { lastVisited: route as LastVisitedPerpsRoute | null } },
     );
 
-    expect(setRedirectAfterDefaultPage).toHaveBeenCalledTimes(1);
+    expect(navigate).toHaveBeenCalledTimes(1);
     expect(clearLastVisitedPerpsRoute).toHaveBeenCalledTimes(1);
 
     act(() => {
       rerender({ lastVisited: null });
     });
 
-    expect(setRedirectAfterDefaultPage).toHaveBeenCalledTimes(1);
+    expect(navigate).toHaveBeenCalledTimes(1);
     expect(clearLastVisitedPerpsRoute).toHaveBeenCalledTimes(1);
   });
 });

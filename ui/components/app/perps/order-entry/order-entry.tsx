@@ -292,6 +292,7 @@ export const OrderEntry = ({
             positionSize={positionSize}
             closePercent={closePercent}
             onClosePercentChange={handleClosePercentChange}
+            onInputMethodChange={onInputMethodChange}
             asset={asset}
             currentPrice={currentPrice}
             sizeDecimals={sizeDecimals}

@@ -4,11 +4,9 @@ import type { Migrate } from './types';
 export const version = 224;
 
 /**
- * Deletes persisted `rawRemoteFeatureFlags` from RemoteFeatureFlagController.
- *
- * `@metamask/remote-feature-flag-controller` 6.0.0 stops redacting IDs from
- * `rawRemoteFeatureFlags`. Existing persisted (redacted) values must not be
- * used to recompute flags.
+ * Removes the obsolete canTrackWalletFundsObtained property from
+ * AppStateController. Wallet funds obtained tracking was removed from the
+ * extension.
  *
  * @param versionedData - The versioned data object to migrate.
  * @param changedControllers - A set used to record controllers that were modified.
@@ -16,25 +14,25 @@ export const version = 224;
 export const migrate = (async (versionedData, changedControllers) => {
   versionedData.meta.version = version;
 
-  if (removeRawRemoteFeatureFlags(versionedData.data)) {
-    changedControllers.add('RemoteFeatureFlagController');
+  if (removeCanTrackWalletFundsObtained(versionedData.data)) {
+    changedControllers.add('AppStateController');
   }
 }) satisfies Migrate;
 
-function removeRawRemoteFeatureFlags(state: Record<string, unknown>): boolean {
+function removeCanTrackWalletFundsObtained(
+  state: Record<string, unknown>,
+): boolean {
   if (
-    !hasProperty(state, 'RemoteFeatureFlagController') ||
-    !isObject(state.RemoteFeatureFlagController)
+    !hasProperty(state, 'AppStateController') ||
+    !isObject(state.AppStateController)
   ) {
     return false;
   }
 
-  if (
-    !hasProperty(state.RemoteFeatureFlagController, 'rawRemoteFeatureFlags')
-  ) {
+  if (!hasProperty(state.AppStateController, 'canTrackWalletFundsObtained')) {
     return false;
   }
 
-  delete state.RemoteFeatureFlagController.rawRemoteFeatureFlags;
+  delete state.AppStateController.canTrackWalletFundsObtained;
   return true;
 }

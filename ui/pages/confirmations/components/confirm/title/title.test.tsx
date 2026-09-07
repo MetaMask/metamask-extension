@@ -17,7 +17,9 @@ import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmat
 import {
   permitNFTSignatureMsg,
   permitSignatureMsg,
+  permitSignatureMsgWithUnsignedFields,
 } from '../../../../../../test/data/confirmations/typed_sign';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { tEn } from '../../../../../../test/lib/i18n-helpers';
 import { upgradeAccountConfirmationOnly } from '../../../../../../test/data/confirmations/batch-transaction';
@@ -125,6 +127,29 @@ describe('ConfirmTitle', () => {
     ).toBeInTheDocument();
   });
 
+  it('ignores unsigned permit fields when rendering the title', () => {
+    const mockStore = configureMockStore([])(
+      getMockTypedSignConfirmStateForRequest(
+        permitSignatureMsgWithUnsignedFields,
+      ),
+    );
+    const { getByText, queryByText } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+    );
+
+    expect(getByText(tEn('confirmTitlePermitTokens'))).toBeInTheDocument();
+    expect(
+      getByText(tEn('confirmTitleDescPermitSignature')),
+    ).toBeInTheDocument();
+    expect(
+      queryByText(tEn('confirmTitleRevokeApproveTransaction')),
+    ).not.toBeInTheDocument();
+    expect(
+      queryByText(tEn('confirmTitleApproveTransactionNFT')),
+    ).not.toBeInTheDocument();
+  });
+
   it('should render the title and description for a NFT permit signature', () => {
     const mockStore = configureMockStore([])(
       getMockTypedSignConfirmStateForRequest(permitNFTSignatureMsg),
@@ -180,6 +205,30 @@ describe('ConfirmTitle', () => {
     );
 
     expect(getByText(tEn('confirmTitleTransaction'))).toBeInTheDocument();
+  });
+
+  it('does not render the generic batch title or nested transaction count for a money account deposit', () => {
+    const transaction = {
+      ...genUnapprovedContractInteractionConfirmation(),
+      type: TransactionType.batch,
+      nestedTransactions: [
+        { type: TransactionType.tokenMethodApprove },
+        { type: TransactionType.moneyAccountDeposit },
+      ],
+    } as Confirmation;
+    const mockStore = configureMockStore([])(
+      getMockConfirmStateForTransaction(transaction),
+    );
+
+    const { queryByText } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+    );
+
+    expect(queryByText(tEn('confirmTitleTransaction'))).not.toBeInTheDocument();
+    expect(
+      queryByText(tEn('includesXTransactions', ['2'])),
+    ).not.toBeInTheDocument();
   });
 
   it('keeps the contract interaction title while spending-cap data is pending', () => {

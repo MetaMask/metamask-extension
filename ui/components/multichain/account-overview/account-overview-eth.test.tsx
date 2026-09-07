@@ -27,6 +27,18 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
+jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
+  useMusdGeoBlocking: () => ({
+    isBlocked: false,
+    userCountry: 'US',
+    isLoading: false,
+    error: null,
+    blockedRegions: [],
+    blockedMessage: null,
+    refreshGeolocation: jest.fn(),
+  }),
+}));
+
 // Mock the dispatch function
 const mockDispatch = jest.fn();
 
@@ -38,7 +50,10 @@ jest.mock('react-redux', () => {
   };
 });
 
-const render = (props: AccountOverviewEthProps) => {
+const render = (
+  props: AccountOverviewEthProps,
+  stateOverrides: Record<string, unknown> = {},
+) => {
   const store = configureStore({
     activeTab: mockState.activeTab,
     metamask: {
@@ -51,6 +66,7 @@ const render = (props: AccountOverviewEthProps) => {
           [CHAIN_IDS.LINEA_MAINNET]: true,
         },
       },
+      ...stateOverrides,
     },
   });
 
@@ -83,6 +99,25 @@ describe('AccountOverviewEth', () => {
     expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
     expect(queryByTestId('account-overview__activity-tab')).toBeInTheDocument();
     expect(queryByTestId('account-overview__defi-tab')).toBeInTheDocument();
+  });
+
+  it('hides the DeFi tab when DeFi positions are disabled', () => {
+    const { queryByTestId } = render(
+      {
+        setBasicFunctionalityModalOpen: jest.fn(),
+        onSupportLinkClick: jest.fn(),
+      },
+      {
+        remoteFeatureFlags: {
+          assetsDefiPositionsEnabled: false,
+        },
+      },
+    );
+
+    expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
+    expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
+    expect(queryByTestId('account-overview__activity-tab')).toBeInTheDocument();
+    expect(queryByTestId('account-overview__defi-tab')).not.toBeInTheDocument();
   });
 
   describe('when the bottom nav bar is shown', () => {

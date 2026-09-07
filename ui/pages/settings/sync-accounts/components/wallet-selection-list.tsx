@@ -23,6 +23,7 @@ import {
   getShowDefaultAddressPreference,
 } from '../../../../selectors';
 import { useFormatters } from '../../../../hooks/useFormatters';
+import { getAccountGroupDisplayBalance } from '../../../../helpers/utils/account-group-balance';
 import { VirtualizedList } from '../../../../components/ui/virtualized-list/virtualized-list';
 
 type WalletGroupData =
@@ -182,17 +183,24 @@ export const WalletSelectionList = ({
         );
       }
 
-      const account =
-        allBalances?.wallets?.[item.walletId]?.groups?.[item.groupId];
-      const balance = account?.totalBalanceInUserCurrency ?? 0;
-      const currency = account?.userCurrency ?? '';
+      // Undefined when this group has no known balance yet, so the cell renders
+      // nothing instead of a misleading "$0.00".
+      const groupBalance = getAccountGroupDisplayBalance(
+        allBalances?.wallets?.[item.walletId]?.groups?.[item.groupId],
+      );
+      const balance =
+        groupBalance &&
+        formatCurrencyWithMinThreshold(
+          groupBalance.amount,
+          groupBalance.currency,
+        );
 
       return (
         <MultichainAccountCell
           accountId={item.groupId}
           accountName={item.groupData.metadata.name}
           accountNameString={item.groupData.metadata.name}
-          balance={formatCurrencyWithMinThreshold(balance, currency)}
+          balance={balance}
           selected={false}
           showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
         />

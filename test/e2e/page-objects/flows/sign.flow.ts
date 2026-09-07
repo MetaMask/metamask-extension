@@ -1,7 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../constants';
 import { SIGN_TYPED_DATA_EXPECTED } from '../../tests/confirmations/signatures/sign-typed-data-expected';
-import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
+import SnapSimpleKeyringPage from '../pages/snaps/simple-keyring-page';
 import TestDapp from '../pages/test-dapp';
 import PersonalSignConfirmation from '../pages/confirmations/personal-sign-confirmation';
 import SignTypedDataConfirmation from '../pages/confirmations/sign-typed-data-confirmation';

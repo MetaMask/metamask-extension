@@ -371,6 +371,8 @@ const PrepareBridgePage = ({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       usd_amount_source: fromAmountInCurrency.usd.toNumber(),
       // eslint-disable-next-line @typescript-eslint/naming-convention
+      custom_slippage: isSlippageUserOverride,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
     };
     debouncedUpdateQuoteRequestInController.current(

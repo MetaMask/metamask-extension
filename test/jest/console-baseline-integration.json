@@ -73,6 +73,12 @@
       "error: Error: AggregateError": 1,
       "warn: ⚠️ React Router Future Flag": 1
     },
+    "test/integration/confirmations/transactions/gas-sponsorship-alerts.test.tsx": {
+      "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 5,
+      "error: Error: AggregateError": 1,
+      "warn: ⚠️ React Router Future Flag": 1
+    },
     "test/integration/confirmations/transactions/increase-allowance.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,

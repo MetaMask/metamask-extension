@@ -21,7 +21,7 @@ import {
   importSRPOnboardingFlow,
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 
 describe('MultiRpc:', function (this: Suite) {

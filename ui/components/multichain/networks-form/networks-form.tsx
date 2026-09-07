@@ -6,6 +6,8 @@ import {
   ButtonSize,
   ButtonVariant,
   IconName,
+  TextButton,
+  TextButtonSize,
 } from '@metamask/design-system-react';
 import {
   type UpdateNetworkFields,
@@ -49,7 +51,6 @@ import {
 } from '../../../store/actions';
 import {
   Box,
-  ButtonLink,
   FormTextField,
   FormTextFieldSize,
   HelpText,
@@ -524,19 +525,15 @@ export const NetworksForm = ({
                     data-testid="network-form-name-suggestion"
                   >
                     {t('suggestedTokenName')}
-                    <ButtonLink
-                      as="button"
-                      variant={TextVariant.bodySm}
-                      color={TextColor.primaryDefault}
+                    <TextButton
+                      size={TextButtonSize.BodySm}
                       onClick={() => {
                         setName(suggestedName);
                       }}
-                      paddingLeft={1}
-                      paddingRight={1}
-                      style={{ verticalAlign: 'baseline' }}
+                      className="px-1 align-baseline"
                     >
                       {suggestedName}
-                    </ButtonLink>
+                    </TextButton>
                   </Text>
                 )}
               </>
@@ -695,10 +692,8 @@ export const NetworksForm = ({
               data-testid="network-form-chain-id-error"
             >
               {t('updateOrEditNetworkInformations')}{' '}
-              <ButtonLink
-                as="button"
-                variant={TextVariant.bodySm}
-                color={TextColor.primaryDefault}
+              <TextButton
+                size={TextButtonSize.BodySm}
                 onClick={() => {
                   const chainIdHex = toHex(chainId);
                   if (chainIdHex) {
@@ -712,7 +707,7 @@ export const NetworksForm = ({
                 }}
               >
                 {t('editNetworkLink')}
-              </ButtonLink>
+              </TextButton>
             </HelpText>
           </Box>
         ) : null}
@@ -731,19 +726,15 @@ export const NetworksForm = ({
                 data-testid="network-form-ticker-suggestion"
               >
                 {t('suggestedCurrencySymbol')}
-                <ButtonLink
-                  as="button"
-                  variant={TextVariant.bodySm}
-                  color={TextColor.primaryDefault}
+                <TextButton
+                  size={TextButtonSize.BodySm}
                   onClick={() => {
                     setTicker(suggestedTicker);
                   }}
-                  paddingLeft={1}
-                  paddingRight={1}
-                  style={{ verticalAlign: 'baseline' }}
+                  className="px-1 align-baseline"
                 >
                   {suggestedTicker}
-                </ButtonLink>
+                </TextButton>
               </Text>
             ) : null
           }
