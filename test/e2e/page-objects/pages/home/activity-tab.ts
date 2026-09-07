@@ -362,6 +362,23 @@ class ActivityTab extends HomePage {
     });
   }
 
+  /**
+   * Checks that no transaction activity item matching the provided text is
+   * displayed in the activity list.
+   *
+   * @param txnText - The text to search for within the transaction activity list.
+   * @returns A promise that resolves when no activity item with the text is present.
+   */
+  async checkTransactionActivityNotPresentByText(
+    txnText: string,
+  ): Promise<void> {
+    console.log(`Check transaction activity with text is absent: ${txnText}`);
+    await this.driver.assertElementNotPresent({
+      text: txnText,
+      css: this.activityListAction,
+    });
+  }
+
   async checkTransactionAmount(transactionAmount: string): Promise<void> {
     console.log('Validate transaction amount');
     await this.driver.waitForSelector({
@@ -478,6 +495,15 @@ class ActivityTab extends HomePage {
     await this.driver.waitForSelector(`[data-tx-status="${status}"]`, {
       timeout: 5000,
     });
+  }
+
+  /**
+   * Clicks the activity row whose visible text contains the provided text.
+   *
+   * @param text - The text shown on the activity row (e.g. 'Sent TRX').
+   */
+  async clickActivityByText(text: string): Promise<void> {
+    await this.driver.clickElement({ css: this.activityListAction, text });
   }
 
   async clickCancelTransaction() {
