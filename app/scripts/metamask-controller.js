@@ -4368,14 +4368,24 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {object} asset - The asset descriptor from the dapp request.
    * @param {string} origin - The origin that initiated the request.
+   * @param {string} networkClientId - The network client the request targets.
    */
-  #requestUnifiedWatchAssetApproval = async (asset, origin) => {
+  #requestUnifiedWatchAssetApproval = async (
+    asset,
+    origin,
+    networkClientId,
+  ) => {
     const { address } = this.accountsController.getSelectedAccount();
     const id = crypto.randomUUID();
     const image =
       typeof asset.image === 'string' && asset.image.trim() !== ''
         ? asset.image
         : null;
+
+    const { chainId } =
+      this.networkController.getNetworkConfigurationByNetworkClientId(
+        networkClientId,
+      );
 
     await this.controllerMessenger.call(
       'ApprovalController:addRequest',
@@ -4391,6 +4401,7 @@ export default class MetamaskController extends EventEmitter {
             decimals: asset.decimals,
             symbol: asset.symbol,
             image,
+            chainId,
           },
         },
       },
@@ -4462,7 +4473,11 @@ export default class MetamaskController extends EventEmitter {
           this.#validateUnifiedWatchAssetRequest(asset, networkClientId);
           // Show the EIP-747 confirmation and wait for the user. A rejection
           // throws here, so we never reach the persist step below.
-          await this.#requestUnifiedWatchAssetApproval(asset, origin);
+          await this.#requestUnifiedWatchAssetApproval(
+            asset,
+            origin,
+            networkClientId,
+          );
           await this.#persistUnifiedWatchAsset(asset, networkClientId);
         } else {
           await this.tokensController.watchAsset({
