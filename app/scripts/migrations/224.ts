@@ -5,22 +5,19 @@ export const version = 224;
 
 /**
  * Removes the obsolete canTrackWalletFundsObtained property from
- * AppStateController.
+ * AppStateController. Wallet funds obtained tracking was removed from the
+ * extension.
  *
- * @param versionedData - Persisted MetaMask state.
- * @param changedControllers
+ * @param versionedData - The versioned data object to migrate.
+ * @param changedControllers - A set used to record controllers that were modified.
  */
-export const migrate = ((versionedData, changedControllers) => {
+export const migrate = (async (versionedData, changedControllers) => {
+  versionedData.meta.version = version;
+
   if (removeCanTrackWalletFundsObtained(versionedData.data)) {
     changedControllers.add('AppStateController');
   }
-
-  versionedData.meta.version = version;
 }) satisfies Migrate;
-
-const migration = { version, migrate };
-
-export default migration;
 
 function removeCanTrackWalletFundsObtained(
   state: Record<string, unknown>,
