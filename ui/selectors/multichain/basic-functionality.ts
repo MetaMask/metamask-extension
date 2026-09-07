@@ -1,28 +1,17 @@
 import { createSelector } from 'reselect';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
+import { BFT_CHILD_PREFERENCES } from '../../../shared/lib/basic-functionality-consolidation';
 
-export const BFT_CHILD_PREFERENCES = [
-  'useCurrencyRateCheck',
-  'securityAlertsEnabled',
-  'usePhishDetect',
-  'useMultiAccountBalanceChecker',
-  'useSafeChainsListValidation',
-  'useTokenDetection',
-  'useTransactionSimulations',
-  'use4ByteResolution',
-  'openSeaEnabled',
-  'useNftDetection',
-  'useExternalNameSources',
-  'useAddressBarEnsResolution',
-] as const;
+export { BFT_CHILD_PREFERENCES };
 
 /**
  * Gets whether the Basic Functionality consolidation rollout is enabled.
  */
 export const getIsBasicFunctionalityToggleEnabled = createSelector(
   getRemoteFeatureFlags,
-  ({ extensionBasicFunctionalityToggle }) => true,
+  ({ extensionBasicFunctionalityToggle }) =>
+    getBooleanFeatureFlag(extensionBasicFunctionalityToggle, false),
 );
 
 /**

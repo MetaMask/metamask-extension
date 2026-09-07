@@ -25,6 +25,11 @@ import { type DefaultAddressScope } from '../../../shared/constants/default-addr
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
 import type { Preferences } from '../../../shared/types/preferences';
+import {
+  BFT_CHILD_PREFERENCES,
+  getBasicFunctionalityConsolidationPlan,
+  type BasicFunctionalityPreferenceState,
+} from '../../../shared/lib/basic-functionality-consolidation';
 import { PreferencesControllerMethodActions } from './preferences-controller-method-action-types';
 
 /**
@@ -158,7 +163,7 @@ export const getDefaultPreferencesControllerState =
       featureNotificationsEnabled: false,
       hideZeroBalanceTokens: false,
       isBasicFunctionalityConsolidatedEnabled: false,
-      basicFunctionalityMigrationNotificationPending: false,
+      basicFunctionalityMigrationNotification: null,
       privacyMode: false,
       showConfirmationAdvancedDetails: false,
       showDefaultAddress: true,
@@ -578,6 +583,45 @@ export class PreferencesController extends BaseController<
     this.setOpenSeaEnabled(useExternalServices);
     this.setUseNftDetection(useExternalServices);
     this.setUseSafeChainsListValidation(useExternalServices);
+  }
+
+  /**
+   * One-time Basic Functionality consolidation when the remote FF turns on.
+   * Aligns child preferences, marks the user as consolidated, and schedules
+   * the modal/toast notice when needed.
+   *
+   * @param options - Consolidation options.
+   * @param options.isSocialLogin - Whether this wallet is a social-login user.
+   */
+  consolidateBasicFunctionality({
+    isSocialLogin,
+  }: {
+    isSocialLogin: boolean;
+  }): void {
+    if (this.state.preferences.isBasicFunctionalityConsolidatedEnabled) {
+      return;
+    }
+
+    const preferenceState = {
+      useExternalServices: this.state.useExternalServices,
+    } as BasicFunctionalityPreferenceState;
+    for (const preference of BFT_CHILD_PREFERENCES) {
+      preferenceState[preference] = this.state[preference];
+    }
+
+    const { landingState, notification } =
+      getBasicFunctionalityConsolidationPlan(preferenceState, isSocialLogin);
+
+    this.update((state) => {
+      state.useExternalServices = landingState;
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        state[preference] = landingState;
+      }
+      // useMultiAccountBalanceChecker is mirrored onto isMultiAccountBalancesEnabled
+      state.isMultiAccountBalancesEnabled = landingState;
+      state.preferences.isBasicFunctionalityConsolidatedEnabled = true;
+      state.preferences.basicFunctionalityMigrationNotification = notification;
+    });
   }
 
   /**

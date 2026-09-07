@@ -135,6 +135,7 @@ import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccoun
 import { useCloseSidePanelOnWalletReset } from '../../hooks/useCloseSidePanelOnWalletReset';
 import { useNavigateRouteListener } from '../../hooks/useNavigateRouteListener';
 import { useSpinDelay } from '../../hooks/useSpinDelay';
+import { useBasicFunctionalityConsolidation } from '../../hooks/useBasicFunctionalityConsolidation';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { ChooseNewWalletTypePage } from '../multichain-accounts/choose-new-wallet-type';
@@ -742,6 +743,7 @@ export default function Routes() {
   useCloseSidePanelOnWalletReset();
 
   useNavigateRouteListener();
+  useBasicFunctionalityConsolidation();
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 

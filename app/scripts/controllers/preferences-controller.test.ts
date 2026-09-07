@@ -487,6 +487,7 @@ describe('preferences controller', () => {
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
         isBasicFunctionalityConsolidatedEnabled: false,
+        basicFunctionalityMigrationNotification: null,
         skipDeepLinkInterstitial: false,
         dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
@@ -521,6 +522,7 @@ describe('preferences controller', () => {
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
         isBasicFunctionalityConsolidatedEnabled: false,
+        basicFunctionalityMigrationNotification: null,
         skipDeepLinkInterstitial: false,
         privacyMode: false,
         dismissSmartAccountSuggestionEnabled: false,
@@ -713,6 +715,7 @@ describe('preferences controller', () => {
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "basicFunctionalityMigrationNotification": null,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
@@ -784,6 +787,7 @@ describe('preferences controller', () => {
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "basicFunctionalityMigrationNotification": null,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
@@ -869,6 +873,7 @@ describe('preferences controller', () => {
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "basicFunctionalityMigrationNotification": null,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
@@ -955,6 +960,7 @@ describe('preferences controller', () => {
           "preferences": {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
+            "basicFunctionalityMigrationNotification": null,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
@@ -1303,6 +1309,7 @@ describe('preferences controller', () => {
             defaultAddressScope: 'eip155',
             hideZeroBalanceTokens: true,
             isBasicFunctionalityConsolidatedEnabled: true,
+            basicFunctionalityMigrationNotification: null,
             skipDeepLinkInterstitial: false,
             dismissSmartAccountSuggestionEnabled: false,
             featureNotificationsEnabled: true,

@@ -2890,6 +2890,17 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
 
+      consolidateBasicFunctionality: () => {
+        const { firstTimeFlowType } = this.onboardingController.state;
+        const { authConnection } = this.seedlessOnboardingController.state;
+        return this.preferencesController.consolidateBasicFunctionality({
+          isSocialLogin:
+            firstTimeFlowType === FirstTimeFlowType.socialCreate ||
+            firstTimeFlowType === FirstTimeFlowType.socialImport ||
+            Boolean(authConnection),
+        });
+      },
+
       addKnownMethodData: preferencesController.addKnownMethodData.bind(
         preferencesController,
       ),
