@@ -574,9 +574,24 @@ const PerpsOrderEntryPage = () => {
 
   const [orderDirection, setOrderDirection] =
     useState<OrderDirection>(routeDirection);
+  const resolvedInitialOrderType =
+    explicitOrderType ?? restoredOrderDraft?.type ?? persistedSelectedOrderType;
   const [orderType, setOrderType] = useState<OrderType>(
-    explicitOrderType ?? restoredOrderDraft?.type ?? persistedSelectedOrderType,
+    resolvedInitialOrderType,
   );
+  const [appliedInitialOrderType, setAppliedInitialOrderType] =
+    useState<OrderType>(resolvedInitialOrderType);
+  const [hasUserPickedOrderType, setHasUserPickedOrderType] = useState(false);
+  if (
+    !hasUserPickedOrderType &&
+    resolvedInitialOrderType !== appliedInitialOrderType
+  ) {
+    // Controller state hydrates after the first render, so a saved Limit
+    // preference or a late draft arrives with the toggle already initialized.
+    // Adopt it; once the trader picks a type that choice is pinned.
+    setAppliedInitialOrderType(resolvedInitialOrderType);
+    setOrderType(resolvedInitialOrderType);
+  }
   // One-shot limit-price prefill from tapping an order-book price row. A fresh
   // object per tap lets the form re-apply the same price after a manual edit.
   const [limitPricePrefill, setLimitPricePrefill] = useState<{
@@ -1570,6 +1585,7 @@ const PerpsOrderEntryPage = () => {
   );
 
   const handleOrderTypeChange = useCallback((type: OrderType) => {
+    setHasUserPickedOrderType(true);
     setOrderType(type);
     submitRequestToBackground('perpsSetSelectedOrderType', [type]).catch(() => {
       // The local order type still updates if persistence fails.

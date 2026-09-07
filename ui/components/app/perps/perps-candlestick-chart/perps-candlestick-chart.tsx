@@ -416,10 +416,6 @@ const PerpsCandlestickChart = forwardRef<
         if (!logicalRange) {
           return;
         }
-        if (suppressNextVisibleCountRef.current) {
-          return;
-        }
-
         if (
           onNeedMoreHistoryRef.current &&
           logicalRange.from <= EDGE_DETECTION_THRESHOLD
@@ -429,6 +425,14 @@ const PerpsCandlestickChart = forwardRef<
             lastLoadMoreTimeRef.current = now;
             onNeedMoreHistoryRef.current();
           }
+        }
+
+        // Restoring a saved zoom must not write the on-screen count back over
+        // the saved one, but the edge detection above still has to run: a saved
+        // count wider than the loaded history pins the left edge at zero and is
+        // only fillable by fetching more candles.
+        if (suppressNextVisibleCountRef.current) {
+          return;
         }
 
         // `applyZoom` leaves two logical bars of right padding, which makes the

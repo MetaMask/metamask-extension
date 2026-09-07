@@ -272,8 +272,21 @@ export function usePerpsOrderForm({
     [computeInitialAmountValue, defaultLeverage],
   );
 
+  // Only the fields this hook restores belong in the digest. `type` is excluded
+  // because order type is applied through the `orderType` prop sync below, so
+  // including it would turn a Market/Limit toggle into a full form reset once
+  // the preference round-trips through the controller.
   const initialDraftDigest =
-    initialDraft === undefined ? undefined : JSON.stringify(initialDraft);
+    initialDraft === undefined
+      ? undefined
+      : JSON.stringify({
+          direction: initialDraft.direction,
+          amount: initialDraft.amount ?? null,
+          leverage: initialDraft.leverage ?? null,
+          takeProfitPrice: initialDraft.takeProfitPrice ?? null,
+          stopLossPrice: initialDraft.stopLossPrice ?? null,
+          limitPrice: initialDraft.limitPrice ?? null,
+        });
 
   const buildNewOrderState = useCallback((): OrderFormState => {
     const amount = initialDraft?.amount ?? initialAmountValue;

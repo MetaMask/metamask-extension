@@ -736,6 +736,74 @@ describe('PerpsOrderEntryPage', () => {
       }
     });
 
+    // Controller state reaches the UI after the first render, so the order type
+    // toggle has to pick up a draft that arrives late.
+    const createLateHydratingStore = () => {
+      const base = createMockState();
+      // Built once per mutation, not per getState, so selectors reading the
+      // slice by reference stay stable between dispatches.
+      const buildState = (pendingConfig?: Record<string, unknown>) => ({
+        ...base,
+        metamask: {
+          ...base.metamask,
+          selectedOrderType: 'market',
+          tradeConfigurations: {
+            mainnet: { ETH: pendingConfig ? { pendingConfig } : {} },
+            testnet: {},
+          },
+        },
+      });
+      let state = buildState();
+      const store = mockStore(() => state);
+      const hydrate = (orderType: 'market' | 'limit') => {
+        state = buildState({
+          amount: '25',
+          leverage: 5,
+          orderType,
+          limitPrice: '3000',
+          direction: 'long',
+          timestamp: Date.now(),
+        });
+        act(() => {
+          store.dispatch({ type: 'test/perps-state-hydrated' });
+        });
+      };
+      return { store, hydrate };
+    };
+
+    it('adopts a limit draft that hydrates after the first render', () => {
+      const { store, hydrate } = createLateHydratingStore();
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(screen.getByTestId('order-type-market')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+
+      hydrate('limit');
+
+      expect(screen.getByTestId('order-type-limit')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      expect(
+        screen.getByTestId('limit-price-input').querySelector('input'),
+      ).toHaveValue('3000');
+    });
+
+    it('keeps the order type the trader picked when a draft hydrates later', () => {
+      const { store, hydrate } = createLateHydratingStore();
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      fireEvent.click(screen.getByTestId('order-type-limit'));
+      hydrate('market');
+
+      expect(screen.getByTestId('order-type-limit')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+    });
+
     it('prefers an explicit route order type over the restored draft', () => {
       mockSearchParams.set('orderType', 'market');
       const state = createMockState();

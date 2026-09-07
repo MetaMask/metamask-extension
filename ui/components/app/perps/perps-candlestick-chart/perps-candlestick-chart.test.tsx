@@ -363,6 +363,46 @@ describe('PerpsCandlestickChart visible candle persistence', () => {
     expect(onVisibleCandleCountChange).not.toHaveBeenCalled();
   });
 
+  it('requests more history when the restored zoom pins the left edge at zero', () => {
+    const onVisibleCandleCountChange = jest.fn();
+    const onNeedMoreHistory = jest.fn();
+    let currentRange: { from: number; to: number } | null = null;
+    mockSetVisibleLogicalRange.mockImplementation((range) => {
+      currentRange = range;
+      mockVisibleRangeCallback?.(range);
+    });
+    mockScrollToRealTime.mockImplementation(() => {
+      mockVisibleRangeCallback?.(currentRange);
+    });
+    const candleData = {
+      symbol: 'ETH',
+      interval: '1h',
+      candles: Array.from({ length: 10 }, (_, index) => ({
+        time: 1_700_000_000_000 + index * 3_600_000,
+        open: '100',
+        high: '110',
+        low: '90',
+        close: '105',
+        volume: '50',
+      })),
+    };
+
+    renderWithProvider(
+      <PerpsCandlestickChart
+        candleData={candleData as never}
+        initialVisibleCandleCount={75}
+        onVisibleCandleCountChange={onVisibleCandleCountChange}
+        onNeedMoreHistory={onNeedMoreHistory}
+      />,
+      mockStore,
+    );
+
+    // Suppressing the count write-back must not also suppress the edge
+    // detection, otherwise the missing 65 candles are never fetched.
+    expect(onNeedMoreHistory).toHaveBeenCalled();
+    expect(onVisibleCandleCountChange).not.toHaveBeenCalled();
+  });
+
   it('normalizes padding, clamps, and deduplicates visible-range updates', () => {
     const onVisibleCandleCountChange = jest.fn();
     renderWithProvider(
