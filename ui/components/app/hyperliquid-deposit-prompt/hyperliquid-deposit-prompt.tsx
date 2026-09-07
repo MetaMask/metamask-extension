@@ -37,6 +37,7 @@ import { selectBlockedPayTokens } from '../../../pages/confirmations/selectors/f
 import { getAvailableTokens } from '../../../pages/confirmations/utils/transaction-pay';
 import { Asset } from '../../../pages/confirmations/components/send/asset/asset';
 import type { Asset as AssetType } from '../../../pages/confirmations/types/send';
+import { usePerpsHomeRoute } from '../../../hooks/perps/usePerpsHomeRoute';
 import { usePerpsDepositConfirmation } from '../perps/hooks/usePerpsDepositConfirmation';
 import type { HyperliquidDepositPromptProps } from './hyperliquid-deposit-prompt.types';
 
@@ -158,6 +159,7 @@ export const HyperliquidDepositPrompt: React.FC<
 > = ({ onActionComplete, selectedAddress }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const perpsHomeRoute = usePerpsHomeRoute();
   const tokens = useHyperliquidDepositTokens();
   const currentAccount = useSelector(getSelectedInternalAccount);
 
@@ -236,13 +238,22 @@ export const HyperliquidDepositPrompt: React.FC<
     navigate(
       {
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
-        search: `?loader=${ConfirmationLoader.CustomAmount}`,
+        search: new URLSearchParams({
+          loader: ConfirmationLoader.CustomAmount,
+          goBackTo: perpsHomeRoute,
+        }).toString(),
       },
       { replace: true },
     );
 
     onActionComplete({ action: 'continue', transactionId });
-  }, [displayToken, navigate, onActionComplete, startPerpsDeposit]);
+  }, [
+    displayToken,
+    navigate,
+    onActionComplete,
+    perpsHomeRoute,
+    startPerpsDeposit,
+  ]);
 
   return (
     <Box
