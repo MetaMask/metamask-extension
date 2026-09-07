@@ -242,6 +242,7 @@
       "openSeaEnabled": true,
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
+        "basicFunctionalityMigrationNotification": null,
         "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
