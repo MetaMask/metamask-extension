@@ -83,7 +83,8 @@ jobs:
       needs-benchmarks: ${{ steps.set-needs-benchmarks.outputs.needs-benchmarks || 'false' }}
       needs-e2e: ${{ steps.set-needs-e2e.outputs.needs-e2e || 'false' }}
       needs-beta-flask-builds: ${{ steps.set-needs-beta-flask-builds.outputs.needs-beta-flask-builds || 'false' }}
-      changed-files: ${{ steps.filter.outputs.all_changes_files }}
+      # Schedule + shallow checkout lists the whole tree; job outputs cap at 1MB.
+      changed-files: ${{ env.EVENT_NAME == 'pull_request' && steps.filter.outputs.all_changes_files || '[]' }}
     steps:
       - name: Check pull request merge queue status
         id: check-skip-merge-queue
