@@ -10,20 +10,12 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsEligibility } from '../../../../hooks/perps/usePerpsEligibility';
-// Imported from the module, not the `hooks/perps` barrel: hosts that render
-// these buttons partially mock that barrel, which would leave the hook
-// undefined.
-import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
 import {
   AccessRestrictedProvider,
   useSelectedAccountComplianceGate,
 } from '../../compliance';
 import { PERPS_ORDER_ENTRY_ROUTE } from '../../../../helpers/constants/routes';
-import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
-import {
-  PERPS_EVENT_PROPERTY,
-  PERPS_EVENT_VALUE,
-} from '../../../../../shared/constants/perps-events';
+import { PERPS_EVENT_VALUE } from '../../../../../shared/constants/perps-events';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 
 export type PerpsTradeButtonsProps = {
@@ -88,26 +80,18 @@ const PerpsTradeButtonsContent = ({
   const navigate = useNavigate();
   const { isEligible } = usePerpsEligibility();
   const { gate } = useSelectedAccountComplianceGate();
-  const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   const handleTradeClick = useCallback(
     (direction: 'long' | 'short') => {
+      // Match mobile Token Details: no PerpsUiInteraction on Long/Short tap;
+      // navigate when eligible, otherwise show the geo-block notice (which
+      // emits PERPS_SCREEN_VIEWED with SOURCE=asset_detail_screen).
       gate(() => {
         if (!isEligible) {
           setIsGeoBlockModalOpen(true);
           return;
         }
-        track(MetaMetricsEventName.PerpsUiInteraction, {
-          [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-            PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-          [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
-            PERPS_EVENT_VALUE.BUTTON_CLICKED.TRADE,
-          [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
-            PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
-          [PERPS_EVENT_PROPERTY.ASSET]: marketSymbol,
-          [PERPS_EVENT_PROPERTY.DIRECTION]: direction,
-        });
         const params = new URLSearchParams({ direction, mode: 'new' });
         navigate(
           `${PERPS_ORDER_ENTRY_ROUTE}/${encodeURIComponent(marketSymbol)}?${params.toString()}`,
@@ -116,7 +100,7 @@ const PerpsTradeButtonsContent = ({
         console.error(error);
       });
     },
-    [gate, isEligible, marketSymbol, navigate, track],
+    [gate, isEligible, marketSymbol, navigate],
   );
 
   const handleLongClick = useCallback(
@@ -147,6 +131,7 @@ const PerpsTradeButtonsContent = ({
       <PerpsGeoBlockModal
         isOpen={isGeoBlockModalOpen}
         onClose={() => setIsGeoBlockModalOpen(false)}
+        source={PERPS_EVENT_VALUE.SOURCE.ASSET_DETAIL_SCREEN}
       />
     </>
   );

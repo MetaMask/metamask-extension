@@ -4,11 +4,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { PERPS_ORDER_ENTRY_ROUTE } from '../../../../helpers/constants/routes';
-import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
-import {
-  PERPS_EVENT_PROPERTY,
-  PERPS_EVENT_VALUE,
-} from '../../../../../shared/constants/perps-events';
+import { PERPS_EVENT_VALUE } from '../../../../../shared/constants/perps-events';
 import { PerpsTradeButtons } from './perps-trade-buttons';
 
 const mockNavigate = jest.fn();
@@ -20,11 +16,6 @@ jest.mock('react-router-dom', () => ({
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
-}));
-
-const mockTrack = jest.fn();
-jest.mock('../../../../hooks/perps/usePerpsEventTracking', () => ({
-  usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
 
 // By default the compliance gate is a passthrough (wallet not blocked): it
@@ -40,9 +31,13 @@ jest.mock('../../compliance', () => ({
   useSelectedAccountComplianceGate: () => ({ gate: mockComplianceGate }),
 }));
 
-jest.mock('../perps-geo-block-modal', () => ({
-  PerpsGeoBlockModal: ({ isOpen }: { isOpen: boolean }) =>
+const mockGeoBlockModal = jest.fn(
+  ({ isOpen }: { isOpen: boolean; source?: string }) =>
     isOpen ? <div data-testid="perps-geo-block-modal" /> : null,
+);
+jest.mock('../perps-geo-block-modal', () => ({
+  PerpsGeoBlockModal: (props: { isOpen: boolean; source?: string }) =>
+    mockGeoBlockModal(props),
 }));
 
 const store = configureStore({ metamask: { ...mockState.metamask } });
@@ -73,7 +68,7 @@ describe('PerpsTradeButtons', () => {
     expect(screen.getByTestId('coin-overview-short')).toBeInTheDocument();
   });
 
-  it('navigates to order entry with direction=long and tracks the click', async () => {
+  it('navigates to order entry with direction=long without a click event', async () => {
     renderButtons();
 
     fireEvent.click(screen.getByTestId('token-overview-long'));
@@ -82,15 +77,6 @@ describe('PerpsTradeButtons', () => {
       expect(mockNavigate).toHaveBeenCalledWith(
         `${PERPS_ORDER_ENTRY_ROUTE}/ETH?direction=long&mode=new`,
       ),
-    );
-    expect(mockTrack).toHaveBeenCalledWith(
-      MetaMetricsEventName.PerpsUiInteraction,
-      expect.objectContaining({
-        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
-          PERPS_EVENT_VALUE.BUTTON_CLICKED.TRADE,
-        [PERPS_EVENT_PROPERTY.ASSET]: 'ETH',
-        [PERPS_EVENT_PROPERTY.DIRECTION]: 'long',
-      }),
     );
   });
 
@@ -106,7 +92,7 @@ describe('PerpsTradeButtons', () => {
     );
   });
 
-  it('shows the geo-block modal instead of navigating when not eligible', async () => {
+  it('shows the geo-block modal with asset-detail source when not eligible', async () => {
     mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
     renderButtons();
 
@@ -116,7 +102,12 @@ describe('PerpsTradeButtons', () => {
       expect(screen.getByTestId('perps-geo-block-modal')).toBeInTheDocument(),
     );
     expect(mockNavigate).not.toHaveBeenCalled();
-    expect(mockTrack).not.toHaveBeenCalled();
+    expect(mockGeoBlockModal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        isOpen: true,
+        source: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAIL_SCREEN,
+      }),
+    );
   });
 
   it('does not navigate when the compliance gate blocks the action', async () => {
