@@ -1,10 +1,6 @@
 import { AssetType, formatChainIdToCaip } from '@metamask/bridge-controller';
 import { useQuery } from '@tanstack/react-query';
-import {
-  GC_TIMES,
-  STALE_TIMES,
-  type SupportedCurrency,
-} from '@metamask/core-backend';
+import { type SupportedCurrency } from '@metamask/core-backend';
 import { CaipAssetType, Hex, isCaipChainId } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -18,9 +14,7 @@ import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { getNativeAssetForChainIdSafe } from '../../../ducks/bridge/utils';
 
 /**
- * Get the price of an asset from the rates already held in state. Only assets
- * the user holds are tracked there, so tokens that aren't in the wallet have no
- * price here.
+ * Get cached spot prices from redux state
  *
  * @param asset - The asset to get the cached price of
  * @returns The cached price of the asset, or undefined if it is not in state.
@@ -78,8 +72,7 @@ const useCachedPrice = (asset: Asset): { currentPrice?: number } => {
 };
 
 /**
- * Get the price of an asset from the price API spot-prices endpoint. Used for
- * assets the user doesn't hold, which have no price in state.
+ * Get spot prices from our APIs
  *
  * @param asset - The asset to get the spot price of
  * @param enabled - Whether to fetch. Pass false when a cached price is available.
@@ -114,9 +107,6 @@ const useSpotPrice = (
   const { data: currentPrice } = useQuery({
     ...queryOptions,
     enabled: enabled && Boolean(assetId),
-    retry: false,
-    staleTime: STALE_TIMES.PRICES,
-    gcTime: GC_TIMES.DEFAULT,
     select: (response) => (assetId ? response?.[assetId]?.price : undefined),
   });
 
