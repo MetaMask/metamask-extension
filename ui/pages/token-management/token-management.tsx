@@ -2,6 +2,7 @@ import React, {
   useCallback,
   useDeferredValue,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -1499,37 +1500,47 @@ export const TokenManagementPage = () => {
     ];
   }, [browseApiResults, hasQuery, searchResults, visibleTokens]);
 
-  const nextTokenListOrder = useMemo(() => {
-    const nextOrder = new Map(tokenListOrder);
+  const tokenListResult = useMemo(() => {
+    const order = new Map(tokenListOrder);
     let orderChanged = false;
 
     for (const item of unsortedTokenListItems) {
       const itemKey = getTokenManagementListItemOrderKey(item);
-      if (!nextOrder.has(itemKey)) {
-        nextOrder.set(itemKey, nextOrder.size);
+      if (!order.has(itemKey)) {
+        order.set(itemKey, order.size);
         orderChanged = true;
       }
     }
 
-    return orderChanged ? nextOrder : tokenListOrder;
-  }, [unsortedTokenListItems, tokenListOrder]);
-
-  if (nextTokenListOrder !== tokenListOrder) {
-    setTokenListOrder(nextTokenListOrder);
-  }
-
-  const tokenListItems = useMemo<TokenManagementListItem[]>(() => {
-    return [...unsortedTokenListItems].sort((itemA, itemB) => {
+    const items = [...unsortedTokenListItems].sort((itemA, itemB) => {
       const itemAOrder =
-        tokenListOrder.get(getTokenManagementListItemOrderKey(itemA)) ??
+        order.get(getTokenManagementListItemOrderKey(itemA)) ??
         Number.MAX_SAFE_INTEGER;
       const itemBOrder =
-        tokenListOrder.get(getTokenManagementListItemOrderKey(itemB)) ??
+        order.get(getTokenManagementListItemOrderKey(itemB)) ??
         Number.MAX_SAFE_INTEGER;
 
       return itemAOrder - itemBOrder;
     });
-  }, [tokenListOrder, unsortedTokenListItems]);
+
+    return {
+      items,
+      pendingOrder: orderChanged ? order : null,
+    };
+  }, [unsortedTokenListItems, tokenListOrder]);
+
+  const tokenListItems = tokenListResult.items;
+  const pendingTokenListOrder = tokenListResult.pendingOrder;
+
+  useLayoutEffect(() => {
+    if (!pendingTokenListOrder) {
+      return;
+    }
+    // Persist newly discovered list item order keys after derive+sort in useMemo.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- order map must follow list growth without render-time setState
+    setTokenListOrder(pendingTokenListOrder);
+  }, [pendingTokenListOrder]);
+
   const tokenManagementViewState =
     tokenListItems.length === 0
       ? TOKEN_MANAGEMENT_NO_RESULTS_VIEW_STATE
