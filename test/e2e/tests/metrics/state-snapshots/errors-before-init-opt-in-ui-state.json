@@ -46,7 +46,8 @@
       "currentMigrationVersion": "number",
       "firstTimeInfo": "object",
       "previousAppVersion": "",
-      "previousMigrationVersion": 0
+      "previousMigrationVersion": 0,
+      "installAttribution": "object"
     },
     "AppStateController": {
       "arcUsageNoticeShown": "boolean",
@@ -127,8 +128,7 @@
     "MetaMetricsController": {
       "dataCollectionForMarketing": "boolean",
       "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": "object",
-      "traits": "object"
+      "tracesBeforeMetricsOptIn": "object"
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,

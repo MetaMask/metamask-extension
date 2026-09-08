@@ -42,8 +42,8 @@ function createController(
   }> = {},
 ): InstallLifecycleDependencies['controller'] {
   return {
-    metaMetricsController: {
-      updateTraits: jest.fn(),
+    appMetadataController: {
+      setInstallAttribution: jest.fn(),
     },
     appStateController: {
       setDeferredDeepLink: jest.fn(),
@@ -106,7 +106,7 @@ describe('install-lifecycle', () => {
 
   describe('handleOnInstalled', () => {
     describe('install', () => {
-      it('updates install traits and tracks AppInstalled', async () => {
+      it('records install attribution and tracks AppInstalled', async () => {
         const deps = createDeps();
         getInstallAttributionMock.mockResolvedValue({
           deferredDeepLink: null,
@@ -120,10 +120,10 @@ describe('install-lifecycle', () => {
         await handlePromise;
 
         expect(
-          deps.controller.metaMetricsController.updateTraits,
+          deps.controller.appMetadataController.setInstallAttribution,
         ).toHaveBeenCalledWith({
-          [MetaMetricsUserTrait.InstallDateExt]: '2026-08-20',
-          [MetaMetricsUserTrait.CookieId]: 'cookie-id',
+          cookieId: 'cookie-id',
+          gaClientId: undefined,
         });
         expect(trackEventMock).toHaveBeenCalledWith(
           createEventBuilder(MetaMetricsEventName.AppInstalled)

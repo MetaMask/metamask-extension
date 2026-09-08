@@ -72,6 +72,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     currentMigrationVersion: true,
     previousAppVersion: true,
     previousMigrationVersion: true,
+    installAttribution: false,
   },
   ApprovalController: {
     approvalFlows: false,
@@ -208,7 +209,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   MetaMetricsController: {
     tracesBeforeMetricsOptIn: false,
-    traits: false,
     dataCollectionForMarketing: false,
     marketingCampaignCookieId: true,
   },

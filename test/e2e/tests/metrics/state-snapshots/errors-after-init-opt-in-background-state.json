@@ -38,7 +38,8 @@
     "currentMigrationVersion": "number",
     "firstTimeInfo": "object",
     "previousAppVersion": "",
-    "previousMigrationVersion": 0
+    "previousMigrationVersion": 0,
+    "installAttribution": "object"
   },
   "AppStateController": {
     "activeQrCodeScanRequest": null,
@@ -171,8 +172,7 @@
   "MetaMetricsController": {
     "dataCollectionForMarketing": "boolean",
     "marketingCampaignCookieId": null,
-    "tracesBeforeMetricsOptIn": "object",
-    "traits": "object"
+    "tracesBeforeMetricsOptIn": "object"
   },
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,

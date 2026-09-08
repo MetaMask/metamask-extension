@@ -179,10 +179,11 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 225,
+      "currentMigrationVersion": 226,
       "firstTimeInfo": {},
       "previousAppVersion": "",
-      "previousMigrationVersion": 0
+      "previousMigrationVersion": 0,
+      "installAttribution": null
     },
     "AppStateController": {
       "arcUsageNoticeShown": false,
@@ -406,7 +407,6 @@
       "dataCollectionForMarketing": false,
       "marketingCampaignCookieId": null,
       "tracesBeforeMetricsOptIn": [],
-      "traits": {}
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
