@@ -513,7 +513,6 @@
     "firstTimeFlowType": "string",
     "firstTimeInfo": {},
     "forgottenPassword": "boolean",
-    "fragments": {},
     "fullScreenGasPollTokens": ["string"],
     "gasEstimateType": "string",
     "gasFeeEstimates": {},

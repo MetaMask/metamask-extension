@@ -5,79 +5,6 @@
 
 import type { MetaMetricsController } from './metametrics-controller';
 
-export type MetaMetricsControllerFinalizeAbandonedFragmentsAction = {
-  type: `MetaMetricsController:finalizeAbandonedFragments`;
-  handler: MetaMetricsController['finalizeAbandonedFragments'];
-};
-
-/**
- * Create an event fragment in state and returns the event fragment object.
- *
- * @param options - Fragment settings and properties to initiate the fragment with.
- */
-export type MetaMetricsControllerCreateEventFragmentAction = {
-  type: `MetaMetricsController:createEventFragment`;
-  handler: MetaMetricsController['createEventFragment'];
-};
-
-/**
- * Returns the fragment stored in memory with provided id or undefined if it
- * does not exist.
- *
- * @param id - id of fragment to retrieve
- */
-export type MetaMetricsControllerGetEventFragmentByIdAction = {
-  type: `MetaMetricsController:getEventFragmentById`;
-  handler: MetaMetricsController['getEventFragmentById'];
-};
-
-/**
- * Deletes to finalizes event fragment based on the canDeleteIfAbandoned property.
- *
- * @param fragment
- */
-export type MetaMetricsControllerProcessAbandonedFragmentAction = {
-  type: `MetaMetricsController:processAbandonedFragment`;
-  handler: MetaMetricsController['processAbandonedFragment'];
-};
-
-/**
- * Updates an event fragment in state
- *
- * @param id - The fragment id to update
- * @param payload - Fragment settings and properties to initiate the fragment with.
- */
-export type MetaMetricsControllerUpdateEventFragmentAction = {
-  type: `MetaMetricsController:updateEventFragment`;
-  handler: MetaMetricsController['updateEventFragment'];
-};
-
-/**
- * Deletes an event fragment from state
- *
- * @param id - The fragment id to delete
- */
-export type MetaMetricsControllerDeleteEventFragmentAction = {
-  type: `MetaMetricsController:deleteEventFragment`;
-  handler: MetaMetricsController['deleteEventFragment'];
-};
-
-/**
- * Finalizes a fragment, tracking either a success event or failure Event
- * and then removes the fragment from state.
- *
- * @param id - UUID of the event fragment to be closed
- * @param options
- * @param options.abandoned - if true track the failure event instead of the success event
- * @param options.page - page the final event occurred on. This will override whatever is set on the fragment
- * @param options.referrer - Dapp that originated the fragment. This is for fallback only, the fragment referrer
- * property will take precedence.
- */
-export type MetaMetricsControllerFinalizeEventFragmentAction = {
-  type: `MetaMetricsController:finalizeEventFragment`;
-  handler: MetaMetricsController['finalizeEventFragment'];
-};
-
 export type MetaMetricsControllerUpdateExtensionUninstallUrlAction = {
   type: `MetaMetricsController:updateExtensionUninstallUrl`;
   handler: MetaMetricsController['updateExtensionUninstallUrl'];
@@ -139,13 +66,6 @@ export type MetaMetricsControllerUpdateTraitsAction = {
  * Union of all MetaMetricsController action types.
  */
 export type MetaMetricsControllerMethodActions =
-  | MetaMetricsControllerFinalizeAbandonedFragmentsAction
-  | MetaMetricsControllerCreateEventFragmentAction
-  | MetaMetricsControllerGetEventFragmentByIdAction
-  | MetaMetricsControllerProcessAbandonedFragmentAction
-  | MetaMetricsControllerUpdateEventFragmentAction
-  | MetaMetricsControllerDeleteEventFragmentAction
-  | MetaMetricsControllerFinalizeEventFragmentAction
   | MetaMetricsControllerUpdateExtensionUninstallUrlAction
   | MetaMetricsControllerSetDataCollectionForMarketingAction
   | MetaMetricsControllerSetMarketingCampaignCookieIdAction
