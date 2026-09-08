@@ -28,9 +28,11 @@ export const BasicFunctionalityToggleItem = () => {
   const isBasicFunctionalityConsolidationEnabled = useSelector(
     getIsBasicFunctionalityConsolidationEnabled,
   );
+  const isSocialLoginBasicFunctionalityLocked =
+    isSocialLoginUser && isBasicFunctionalityConsolidationEnabled;
 
   const handleToggle = (value: boolean) => {
-    if (isSocialLoginUser) {
+    if (isSocialLoginBasicFunctionalityLocked) {
       return;
     }
 
@@ -70,7 +72,7 @@ export const BasicFunctionalityToggleItem = () => {
       description={description}
       value={useExternalServices}
       onToggle={handleToggle}
-      disabled={isSocialLoginUser}
+      disabled={isSocialLoginBasicFunctionalityLocked}
       dataTestId="basic-functionality-toggle"
     />
   );

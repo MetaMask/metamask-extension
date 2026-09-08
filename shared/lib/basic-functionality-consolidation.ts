@@ -15,6 +15,12 @@ export const BFT_CHILD_PREFERENCES = [
   'useAddressBarEnsResolution',
 ] as const;
 
+/**
+ * If more than this many BFT child prefs are enabled, consolidation lands
+ * Basic Functionality on (majority of {@link BFT_CHILD_PREFERENCES}).
+ */
+export const BFT_ENABLED_CHILDREN_LANDING_THRESHOLD = 9;
+
 export type BasicFunctionalityMigrationNotification = 'modal' | 'toast' | null;
 
 export type BasicFunctionalityPreferenceState = {
@@ -72,7 +78,9 @@ export function getBasicFunctionalityConsolidationPlan(
   ).length;
 
   const landingState =
-    basicFunctionalityEnabled || isSocialLogin || enabledChildren > 9;
+    basicFunctionalityEnabled ||
+    isSocialLogin ||
+    enabledChildren > BFT_ENABLED_CHILDREN_LANDING_THRESHOLD;
 
   const isConsistent =
     (basicFunctionalityEnabled && areAllChildrenEnabled) ||

@@ -592,14 +592,17 @@ export class PreferencesController extends BaseController<
    *
    * @param options - Consolidation options.
    * @param options.isSocialLogin - Whether this wallet is a social-login user.
+   * @returns The landing Basic Functionality state, or `null` if already
+   * consolidated (no-op). Callers should sync external-service controllers
+   * via `toggleExternalServices` when a boolean is returned.
    */
   consolidateBasicFunctionality({
     isSocialLogin,
   }: {
     isSocialLogin: boolean;
-  }): void {
+  }): boolean | null {
     if (this.state.preferences.isBasicFunctionalityConsolidatedEnabled) {
-      return;
+      return null;
     }
 
     const preferenceState = {
@@ -622,6 +625,8 @@ export class PreferencesController extends BaseController<
       state.preferences.isBasicFunctionalityConsolidatedEnabled = true;
       state.preferences.basicFunctionalityMigrationNotification = notification;
     });
+
+    return landingState;
   }
 
   /**

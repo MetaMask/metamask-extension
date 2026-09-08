@@ -110,6 +110,8 @@ export default function PrivacySettings() {
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isBasicFunctionalityConsolidationEnabled =
     getIsBasicFunctionalityConsolidationEnabledInBuild();
+  const isSocialLoginBasicFunctionalityLocked =
+    isSocialLoginFlow && isBasicFunctionalityConsolidationEnabled;
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
 
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
@@ -414,7 +416,11 @@ export default function PrivacySettings() {
                   <Setting
                     dataTestId="basic-functionality-toggle"
                     value={externalServicesOnboardingToggleState}
+                    disabled={isSocialLoginBasicFunctionalityLocked}
                     setValue={(toggledValue) => {
+                      if (isSocialLoginBasicFunctionalityLocked) {
+                        return;
+                      }
                       if (toggledValue) {
                         dispatch(onboardingToggleBasicFunctionalityOn());
                         trackEvent(
