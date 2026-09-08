@@ -256,6 +256,7 @@
     "nativeAssetIdentifiers": "object",
     "nativeProviders": "object",
     "needsProfilePairing": "boolean",
+    "needsSocialPairing": "boolean",
     "networkConfigurations": "object",
     "networkConfigurationsByChainId": "object",
     "networkConnectionBannerNetwork": null,
