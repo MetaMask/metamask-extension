@@ -4,6 +4,8 @@ import {
 } from '@metamask/transaction-controller';
 import { isMusdOnMoneyAccountChain } from '@metamask/money-account-utils';
 import type { Hex } from '@metamask/utils';
+import { isMusdToken } from '../../components/app/musd/constants';
+import type { MoneyAccountDepositIntent } from './deposit-intent';
 
 /**
  * The first nested transaction matching a given TransactionType, or undefined
@@ -25,6 +27,24 @@ export const isMoneyDepositTx = (transactionMeta: TransactionMeta) =>
   Boolean(
     nestedTxWithType(transactionMeta, TransactionType.moneyAccountDeposit),
   );
+
+/**
+ * Derives the deposit intent from the transaction's own payment data, for
+ * deposits initiated without an explicit intent or after a UI reload.
+ *
+ * @param transactionMeta - The deposit batch transaction.
+ */
+export const resolveMoneyDepositIntent = (
+  transactionMeta: TransactionMeta,
+): MoneyAccountDepositIntent => {
+  if (transactionMeta.metamaskPay?.fiat) {
+    return 'card';
+  }
+  if (isMusdToken(transactionMeta.metamaskPay?.tokenAddress)) {
+    return 'addMusd';
+  }
+  return 'convert';
+};
 
 export const isMoneyWithdrawTx = (transactionMeta: TransactionMeta) =>
   transactionMeta.type === TransactionType.moneyAccountWithdraw ||
