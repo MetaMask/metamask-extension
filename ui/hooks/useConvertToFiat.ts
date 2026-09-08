@@ -17,6 +17,7 @@ import {
   type MultichainNetworks,
 } from '../../shared/constants/multichain/networks';
 import { decimalToPrefixedHex } from '../../shared/lib/conversion.utils';
+import { isNativeCaipAssetId } from '../../shared/lib/asset-utils';
 import { getCurrencyRates } from '../ducks/metamask/metamask';
 import { selectMarketRates } from '../selectors/activity';
 import { getAssetsPrice, getAssetsRates } from '../selectors/assets';
@@ -123,7 +124,7 @@ function fiatFromCurrencyOrMarketRates(
   }
 
   try {
-    const { chain, assetNamespace } = parseCaipAssetType(
+    const { chain } = parseCaipAssetType(
       token.assetId as `${string}:${string}/${string}:${string}`,
     );
 
@@ -131,7 +132,9 @@ function fiatFromCurrencyOrMarketRates(
     // tokens that reuse native tickers.
     if (
       chain.namespace !== 'eip155' &&
-      assetNamespace === 'slip44' &&
+      isNativeCaipAssetId(
+        token.assetId as `${string}:${string}/${string}:${string}`,
+      ) &&
       token.symbol
     ) {
       const rate = getPositiveRate(
