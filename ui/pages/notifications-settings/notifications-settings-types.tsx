@@ -110,7 +110,7 @@ export function NotificationsSettingsTypes({
           label={section.title}
           value={
             section.type === 'walletActivity'
-              ? undefined
+              ? ''
               : getStatusText(t, preferences?.[section.type])
           }
           to={getNotificationsSettingsSectionRoute(section.type)}
