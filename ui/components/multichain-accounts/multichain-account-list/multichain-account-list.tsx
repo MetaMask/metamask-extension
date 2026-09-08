@@ -505,10 +505,9 @@ export const MultichainAccountList = ({
             onDeleteIconClick={
               isDeleteMode
                 ? () => {
-                    const firstAccountId = groupData.accounts[0];
-                    const address = firstAccountId
-                      ? internalAccountsById[firstAccountId]?.address
-                      : undefined;
+                    // Private key groups have exactly 1 account.
+                    const [accountId] = groupData.accounts;
+                    const address = internalAccountsById[accountId]?.address;
                     setAccountToDelete({
                       groupId: groupId as AccountGroupId,
                       accountName: groupData.metadata.name,
