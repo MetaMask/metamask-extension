@@ -101,6 +101,14 @@ import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactiv
 import { AssetMarketDetails } from './asset-market-details';
 import { AssetStickyActions } from './asset-sticky-actions';
 import AssetChart from './chart/asset-chart';
+// [POC — THROWAWAY] Advanced Chart via cross-origin iframe from localhost:8001
+import AdvancedChartIframe from './chart/advanced-chart-iframe';
+import type { AdvancedChartIframeRef } from './chart/advanced-chart-iframe';
+import IntervalBar, {
+  CHART_TYPE_LINE,
+  CHART_TYPE_CANDLE,
+} from './chart/advanced-chart-interval-bar';
+import IndicatorBar from './chart/advanced-chart-indicator-bar';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
 import { AssetActivateCard } from './asset-activation-card';
@@ -148,6 +156,63 @@ const AssetPage = ({
     [caipChainId],
   );
   const selectedAccount = useSelector(selectSelectedAccount) as InternalAccount;
+
+  // [POC — THROWAWAY] Advanced chart state
+  const [advancedChartError, setAdvancedChartError] = useState<string | null>(
+    null,
+  );
+  const showAdvancedChart = !advancedChartError;
+  const [acInterval, setAcInterval] = useState('15m');
+  const [acChartType, setAcChartType] = useState(CHART_TYPE_LINE);
+  const [acIndicators, setAcIndicators] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const acRef = React.useRef<AdvancedChartIframeRef>(null);
+
+  const handleIndicatorToggle = useCallback(
+    (name: string) => {
+      setAcIndicators((prev) => {
+        const next = new Set(prev);
+        if (next.has(name)) {
+          next.delete(name);
+          acRef.current?.postMessage(
+            name === 'Volume'
+              ? { type: 'TOGGLE_VOLUME', payload: { visible: false } }
+              : { type: 'REMOVE_INDICATOR', payload: { name } },
+          );
+        } else {
+          next.add(name);
+          acRef.current?.postMessage(
+            name === 'Volume'
+              ? {
+                  type: 'TOGGLE_VOLUME',
+                  payload: { visible: true, volumeOverlay: true },
+                }
+              : { type: 'ADD_INDICATOR', payload: { name } },
+          );
+        }
+        return next;
+      });
+    },
+    [],
+  );
+
+  const handleMAToggle = useCallback((ma: string) => {
+    setAcIndicators((prev) => {
+      const next = new Set(prev);
+      if (next.has(ma)) {
+        next.delete(ma);
+      } else {
+        next.add(ma);
+      }
+      const selectedMAs = [...next].filter((n) => /^MA\d+$/.test(n));
+      acRef.current?.postMessage({
+        type: 'SET_MA_VISIBILITY',
+        payload: { visible: selectedMAs },
+      });
+      return next;
+    });
+  }, []);
 
   useEffect(() => {
     endTrace({ name: TraceName.AssetDetails });
@@ -452,13 +517,41 @@ const AssetPage = ({
           )}
         </Box>
         <AssetPageSecurityTrustBanner />
-        <AssetChart
-          chainId={chainId}
-          address={address}
-          currentPrice={currentPrice}
-          currency={currency}
-          asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
-        />
+        {/* [POC — THROWAWAY] Advanced Chart replaces legacy chart; falls back on error.
+            Layout mirrors mobile: IntervalBar → AdvancedChart → IndicatorBar */}
+        {showAdvancedChart ? (
+          <>
+            <IntervalBar
+              selectedInterval={acInterval}
+              onIntervalSelect={setAcInterval}
+              chartType={acChartType}
+              onChartTypeSelect={setAcChartType}
+            />
+            <AdvancedChartIframe
+              ref={acRef}
+              assetId={caipAssetId as string}
+              height={300}
+              chartType={acChartType}
+              selectedInterval={acInterval}
+              onError={setAdvancedChartError}
+            />
+            {acChartType === CHART_TYPE_CANDLE && (
+              <IndicatorBar
+                activeIndicators={acIndicators}
+                onIndicatorToggle={handleIndicatorToggle}
+                onMAToggle={handleMAToggle}
+              />
+            )}
+          </>
+        ) : (
+          <AssetChart
+            chainId={chainId}
+            address={address}
+            currentPrice={currentPrice}
+            currency={currency}
+            asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
+          />
+        )}
         <Box marginTop={4} paddingLeft={4} paddingRight={4}>
           {isUpdatedAssetNative ? (
             <CoinButtons
@@ -719,9 +812,7 @@ function renderRow(leftColumn: string, rightColumn: ReactNode) {
       >
         {leftColumn}
       </Text>
-      <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-        {rightColumn}
-      </Text>
+      {rightColumn}
     </Box>
   );
 }
