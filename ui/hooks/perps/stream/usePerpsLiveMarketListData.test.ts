@@ -4,8 +4,15 @@ import { usePerpsLiveMarketData } from './usePerpsLiveMarketData';
 import { usePerpsLiveMarketListData } from './usePerpsLiveMarketListData';
 import { usePerpsLivePrices } from './usePerpsLivePrices';
 
-jest.mock('./usePerpsLiveMarketData');
-jest.mock('./usePerpsLivePrices');
+const mockHasLiveMarketData = jest.fn();
+jest.mock('../../../providers/perps/PerpsStreamManager', () => ({
+  getPerpsStreamManager: () => ({ hasLiveMarketData: mockHasLiveMarketData }),
+}));
+
+jest.mock('./usePerpsLiveMarketData', () => ({
+  usePerpsLiveMarketData: jest.fn(),
+}));
+jest.mock('./usePerpsLivePrices', () => ({ usePerpsLivePrices: jest.fn() }));
 
 const mockUsePerpsLiveMarketData =
   usePerpsLiveMarketData as jest.MockedFunction<typeof usePerpsLiveMarketData>;
@@ -41,6 +48,44 @@ describe('usePerpsLiveMarketListData', () => {
     jest.useRealTimers();
   });
 
+  it.each([false, true])(
+    'requires live metadata and live prices together when pricesLive=%s',
+    (pricesLive) => {
+      const markets = [createMockMarket()];
+      mockHasLiveMarketData.mockReturnValue(false);
+      mockUsePerpsLiveMarketData.mockReturnValue({
+        markets,
+        cryptoMarkets: markets,
+        hip3Markets: [],
+        isInitialLoading: false,
+        error: null,
+        refresh: jest.fn(),
+      });
+      mockUsePerpsLivePrices.mockReturnValue({
+        isLive: pricesLive,
+        prices: { BTC: { symbol: 'BTC', price: '51000', timestamp: 1 } },
+        isInitialLoading: false,
+      });
+      const { result, rerender } = renderHook(() =>
+        usePerpsLiveMarketListData(),
+      );
+      expect(result.current.isLive).toBe(false);
+
+      mockHasLiveMarketData.mockReturnValue(true);
+      // A live notification supplies a new immutable market snapshot.
+      mockUsePerpsLiveMarketData.mockReturnValue({
+        ...mockUsePerpsLiveMarketData.mock.results[0].value,
+        markets: [...markets],
+      });
+      rerender();
+
+      expect(result.current.isLive).toBe(pricesLive);
+      if (pricesLive) {
+        expect(mockHasLiveMarketData).toHaveBeenCalledWith(markets);
+      }
+    },
+  );
+
   it('activates live prices for all current market symbols', () => {
     const markets = [
       createMockMarket({ symbol: 'BTC' }),
@@ -56,6 +101,7 @@ describe('usePerpsLiveMarketListData', () => {
       refresh: jest.fn(),
     });
     mockUsePerpsLivePrices.mockReturnValue({
+      isLive: false,
       prices: {},
       isInitialLoading: false,
     });
@@ -82,6 +128,7 @@ describe('usePerpsLiveMarketListData', () => {
       refresh,
     });
     mockUsePerpsLivePrices.mockReturnValue({
+      isLive: false,
       prices: {},
       isInitialLoading: false,
     });
@@ -114,6 +161,7 @@ describe('usePerpsLiveMarketListData', () => {
       refresh: jest.fn(),
     });
     mockUsePerpsLivePrices.mockReturnValue({
+      isLive: false,
       prices: {
         BTC: {
           symbol: 'BTC',
@@ -150,6 +198,7 @@ describe('usePerpsLiveMarketListData', () => {
       refresh,
     });
     mockUsePerpsLivePrices.mockReturnValue({
+      isLive: false,
       prices: {},
       isInitialLoading: false,
     });
@@ -178,6 +227,7 @@ describe('usePerpsLiveMarketListData', () => {
       refresh,
     });
     mockUsePerpsLivePrices.mockReturnValue({
+      isLive: false,
       prices: {},
       isInitialLoading: false,
     });

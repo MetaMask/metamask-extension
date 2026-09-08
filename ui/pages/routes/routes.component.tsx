@@ -7,6 +7,7 @@ import { useIdleTimer } from 'react-idle-timer';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
+import { usePerpsPreload } from '../../hooks/perps/usePerpsPreload';
 
 import { MainLayout } from '#ui/layouts/main-layout';
 import { useAppSelector, useDispatch } from '../../store/hooks';
@@ -741,6 +742,7 @@ export default function Routes() {
 
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
+  usePerpsPreload(isUnlocked && completedOnboarding);
   const currentCurrency = useAppSelector(
     getCurrencyRateControllerCurrentCurrency,
   );

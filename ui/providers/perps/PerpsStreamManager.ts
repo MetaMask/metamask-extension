@@ -136,6 +136,14 @@ class PerpsStreamManager {
   // Timestamp of the most recent background stream update (any channel).
   private _lastStreamUpdateAt = 0;
 
+  private liveMarkets = new WeakSet<PerpsMarketData>();
+
+  private livePrices: readonly PriceUpdate[] | null = null;
+
+  private initializationQueue: Promise<void> = Promise.resolve();
+
+  private initializationGeneration = 0;
+
   /**
    * UI-owned identity for the active aggregated order-book subscription.
    * Background emissions whose `subscriptionId` does not match are discarded so
@@ -277,7 +285,7 @@ class PerpsStreamManager {
           )
             .then((data) => {
               if (!cancelled && !this.markets.hasCachedData()) {
-                push(data ?? EMPTY_MARKETS);
+                this.pushLiveMarkets(data ?? EMPTY_MARKETS);
               }
             })
             .catch((err) => {
@@ -377,6 +385,7 @@ class PerpsStreamManager {
     // stale-mode data — otherwise a false→true flip could leave un-enriched
     // direct markets cached and suppress the Terminal REST fallback.
     this.markets.clearCache();
+    this.liveMarkets = new WeakSet<PerpsMarketData>();
   }
 
   /**
@@ -566,39 +575,40 @@ class PerpsStreamManager {
       return;
     }
 
-    // New address requested — discard any stale pending init and start fresh.
-    // Also treat an in-flight pendingInit as needing disconnect: during first
-    // init, initializedAddress is still null but perpsInit was already sent.
     const needsDisconnect =
       this.initializedAddress !== null || this.pendingInit !== null;
-    this.pendingInit = null;
+    this.initializationGeneration += 1;
+    const generation = this.initializationGeneration;
     this.clearAllCaches();
+    this.initializedAddress = null;
 
-    const promise = (async () => {
-      try {
-        // PerpsController.init() is a no-op when already initialized.
-        // Disconnect first so the controller tears down the old provider/WebSocket
-        // and re-initializes with the new account from AccountTreeController.
-        if (needsDisconnect) {
-          await submitRequestToBackground('perpsDisconnect');
+    // Serialize account transitions so A → B → A cannot finish an older init
+    // after the newest one and disconnect its provider.
+    const promise = this.initializationQueue
+      .catch(() => undefined)
+      .then(async () => {
+        if (generation !== this.initializationGeneration) {
+          return;
         }
-        await submitRequestToBackground('perpsInit');
-        // Only apply if this is still the latest requested address.
-        if (this.pendingInit?.address === address) {
-          this.init(address);
-          this.pendingInit = null;
+        try {
+          if (needsDisconnect) {
+            await submitRequestToBackground('perpsDisconnect');
+          }
+          if (generation !== this.initializationGeneration) {
+            return;
+          }
+          await submitRequestToBackground('perpsInit');
+          if (generation === this.initializationGeneration) {
+            this.init(address);
+          }
+        } finally {
+          if (generation === this.initializationGeneration) {
+            this.pendingInit = null;
+          }
         }
-      } catch (err) {
-        // Clear pendingInit on failure so subsequent retries start fresh
-        // instead of piggybacking on this rejected promise.
-        if (this.pendingInit?.address === address) {
-          this.pendingInit = null;
-        }
-        throw err;
-      }
-    })();
-
+      });
     this.pendingInit = { address, promise };
+    this.initializationQueue = promise;
     await promise;
   }
 
@@ -612,6 +622,7 @@ class PerpsStreamManager {
    * @param payload.symbol - For candles: the asset symbol
    * @param payload.interval - For candles: the candle period
    * @param payload.subscriptionId - For aggregated order book: UI identity
+   * @param payload.live - Whether market metadata was fetched in this session.
    */
   handleBackgroundUpdate(payload: {
     channel: string;
@@ -619,7 +630,11 @@ class PerpsStreamManager {
     symbol?: string;
     interval?: CandlePeriod;
     subscriptionId?: string;
+    live?: boolean;
   }): void {
+    if (this.pendingInit) {
+      return;
+    }
     this._lastStreamUpdateAt = Date.now();
     const { channel, data } = payload;
     switch (channel) {
@@ -646,9 +661,20 @@ class PerpsStreamManager {
       case 'fills':
         this.fills.pushData(data as OrderFill[]);
         break;
-      case 'prices':
-        this.prices.pushData(data as PriceUpdate[]);
+      case 'prices': {
+        // Wallet preload and the foreground symbol stream share this cache.
+        // A detail update must not discard the other preloaded market prices.
+        const prices = new Map(
+          this.prices.getCachedData().map((price) => [price.symbol, price]),
+        );
+        (data as PriceUpdate[]).forEach((price) =>
+          prices.set(price.symbol, price),
+        );
+        const snapshot = Array.from(prices.values());
+        this.livePrices = snapshot;
+        this.prices.pushData(snapshot);
         break;
+      }
       case 'orderBook':
         this.orderBook.pushData(data as OrderBookData);
         break;
@@ -682,7 +708,11 @@ class PerpsStreamManager {
         break;
       }
       case 'markets':
-        this.markets.pushData(data as PerpsMarketData[]);
+        if (payload.live) {
+          this.pushLiveMarkets(data as PerpsMarketData[]);
+        } else {
+          this.markets.pushData(data as PerpsMarketData[]);
+        }
         break;
       case 'connectionState':
         break;
@@ -709,6 +739,39 @@ class PerpsStreamManager {
       return false;
     }
     return subscriptionId === activeId;
+  }
+
+  /**
+   * Record fresh market metadata separately from persisted cache hydration.
+   *
+   * @param markets - Markets fetched for the current connection and backend.
+   */
+  pushLiveMarkets(markets: PerpsMarketData[]): void {
+    this.liveMarkets = new WeakSet(markets);
+    this.markets.pushData(markets);
+  }
+
+  /**
+   * Distinguish the market snapshot read during render from a persisted seed.
+   *
+   * @param markets - Snapshot consumed by the market hook.
+   * @returns Whether this is the current-session live snapshot.
+   */
+  hasLiveMarketData(markets: readonly PerpsMarketData[]): boolean {
+    return markets.some((market) => this.liveMarkets.has(market));
+  }
+
+  /**
+   * Check the actual price snapshot consumed during render.
+   *
+   * @param prices - Snapshot consumed by the price hook.
+   * @returns Whether it contains a live positive price.
+   */
+  hasLivePrices(prices: readonly PriceUpdate[]): boolean {
+    return (
+      prices === this.livePrices &&
+      prices.some((price) => Number(price.price) > 0)
+    );
   }
 
   /**
@@ -776,6 +839,8 @@ class PerpsStreamManager {
    * Called on account/network change.
    */
   clearAllCaches(): void {
+    this.liveMarkets = new WeakSet<PerpsMarketData>();
+    this.livePrices = null;
     this.positions.clearCache();
     this.orders.clearCache();
     this.account.clearCache();
@@ -799,6 +864,10 @@ class PerpsStreamManager {
    * Note: Does not reset address tracking (handled by this.initializedAddress).
    */
   reset(): void {
+    this.initializationGeneration += 1;
+    this.pendingInit = null;
+    this.liveMarkets = new WeakSet<PerpsMarketData>();
+    this.livePrices = null;
     this.cleanupPrewarm();
     this.positions.reset();
     this.orders.reset();

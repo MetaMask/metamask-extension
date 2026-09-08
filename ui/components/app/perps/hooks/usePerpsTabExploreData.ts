@@ -30,15 +30,18 @@ export type UsePerpsTabExploreDataReturn = {
    */
   watchlistCount: number;
   isInitialLoading: boolean;
+  isLive: boolean;
 };
 
 export function usePerpsTabExploreData(
   options: UsePerpsTabExploreDataOptions = {},
 ): UsePerpsTabExploreDataReturn {
   const { refreshIntervalMs } = options;
-  const { markets: liveMarkets, isInitialLoading } = usePerpsLiveMarketListData(
-    { refreshIntervalMs },
-  );
+  const {
+    markets: liveMarkets,
+    isInitialLoading,
+    isLive,
+  } = usePerpsLiveMarketListData({ refreshIntervalMs });
   const watchlistMarketsState = useSelector(selectPerpsWatchlistMarkets);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const watchlistSymbols = isTestnet
@@ -72,5 +75,6 @@ export function usePerpsTabExploreData(
     watchlistMarkets: filteredWatchlistMarkets,
     watchlistCount: watchlistSymbols.length,
     isInitialLoading,
+    isLive,
   };
 }
