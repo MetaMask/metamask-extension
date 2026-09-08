@@ -1,5 +1,3 @@
-import { merge, omitBy } from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
 import { getErrorMessage } from '@metamask/utils';
 import type {
   AnalyticsControllerGetStateAction,
@@ -22,19 +20,7 @@ import {
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import type { Json, Hex } from '@metamask/utils';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import type {
-  MetaMetricsEventFragment,
-  MetaMetricsUserTraits,
-  MetaMetricsEventPayload,
-  MetaMetricsPageObject,
-  MetaMetricsReferrerObject,
-} from '../../../shared/constants/metametrics';
-import { SECOND } from '../../../shared/constants/time';
-import { isManifestV3 } from '../../../shared/lib/mv3.utils';
-import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
-import { checkAlarmExists } from '../lib/util';
-import { TransactionMetaMetricsEvent } from '../../../shared/constants/transaction';
+import type { MetaMetricsUserTraits } from '../../../shared/constants/metametrics';
 import {
   trace,
   endTrace,
@@ -51,7 +37,6 @@ import type {
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
 import { MetaMetricsControllerMethodActions } from './metametrics-controller-method-action-types';
-import * as analytics from './analytics';
 
 // Unique name for the controller
 const controllerName = 'MetaMetricsController';
@@ -68,46 +53,6 @@ const defaultCaptureException = (err: unknown) => {
 const exceptionsToFilter: Record<string, boolean> = {
   [`You must pass either an "anonymousId" or a "userId".`]: true,
 };
-
-function trackLegacyMetaMetricsPayload(payload: MetaMetricsEventPayload): void {
-  if (!payload.event) {
-    throw new Error(
-      `Must specify event. Event was: ${
-        payload.event
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      }. Payload keys were: ${Object.keys(payload)}. ${
-        typeof payload.properties === 'object'
-          ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            `Payload property keys were: ${Object.keys(payload.properties)}`
-          : ''
-      }`,
-    );
-  }
-
-  analytics.trackEvent(
-    analytics
-      .createEventBuilder(payload.event)
-      .addProperties({
-        ...(payload.properties ?? {}),
-        ...(payload.category === undefined
-          ? {}
-          : { category: payload.category }),
-        ...(payload.revenue === undefined ? {} : { revenue: payload.revenue }),
-        ...(payload.value === undefined ? {} : { value: payload.value }),
-        ...(payload.currency === undefined
-          ? {}
-          : { currency: payload.currency }),
-      })
-      .addSensitiveProperties(payload.sensitiveProperties)
-      .build({
-        environmentType: payload.environmentType,
-        page: payload.page,
-        referrer: payload.referrer,
-      }),
-  );
-}
 
 /**
  * Represents a buffered trace that is stored before user consent.
@@ -127,12 +72,6 @@ type BufferedTrace = {
  * the `anonymous` flag.
  */
 const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
-  fragments: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: false,
-    usedInUi: true,
-  },
   tracesBeforeMetricsOptIn: {
     includeInStateLogs: true,
     persist: true,
@@ -162,14 +101,12 @@ const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
 /**
  * The state that MetaMetricsController stores.
  *
- * @property fragments - Object keyed by UUID with stored fragments as values.
  * @property tracesBeforeMetricsOptIn - Array of queued traces added before a user opts into metrics.
  * @property traits - Traits that are not derived from other state keys.
  * @property dataCollectionForMarketing - Flag to determine if data collection for marketing is enabled.
  * @property marketingCampaignCookieId - The marketing campaign cookie id.
  */
 export type MetaMetricsControllerState = {
-  fragments: Record<string, MetaMetricsEventFragment>;
   tracesBeforeMetricsOptIn: BufferedTrace[];
   traits: MetaMetricsUserTraits;
   dataCollectionForMarketing: boolean | null;
@@ -248,7 +185,6 @@ export const getDefaultMetaMetricsControllerState =
     marketingCampaignCookieId: null,
     tracesBeforeMetricsOptIn: [],
     traits: {},
-    fragments: {},
   });
 
 const MESSENGER_EXPOSED_METHODS = [
@@ -256,16 +192,9 @@ const MESSENGER_EXPOSED_METHODS = [
   'bufferedEndTrace',
   'bufferedTrace',
   'clearTracesAfterMetricsOptIn',
-  'createEventFragment',
-  'deleteEventFragment',
-  'finalizeAbandonedFragments',
-  'finalizeEventFragment',
-  'getEventFragmentById',
-  'processAbandonedFragment',
   'setDataCollectionForMarketing',
   'setMarketingCampaignCookieId',
   'trackTracesAfterMetricsOptIn',
-  'updateEventFragment',
   'updateExtensionUninstallUrl',
   'updateTraits',
 ] as const;
@@ -346,8 +275,6 @@ export class MetaMetricsController extends BaseController<
       MESSENGER_EXPOSED_METHODS,
     );
 
-    const abandonedFragments = omitBy(state.fragments, 'persist');
-
     this.messenger.subscribe(
       'PreferencesController:stateChange',
       ({ currentLocale }) => {
@@ -361,49 +288,6 @@ export class MetaMetricsController extends BaseController<
         this.chainId = this.#getCurrentChainId(selectedNetworkClientId);
       },
     );
-
-    // Track abandoned fragments that weren't properly cleaned up.
-    // Abandoned fragments are those that were stored in persistent memory
-    // and are available at controller instance creation, but do not have the
-    // 'persist' flag set. This means anytime the extension is unlocked, any
-    // fragments that are not marked as persistent will be purged and the
-    // failure event will be emitted.
-    Object.values(abandonedFragments).forEach((fragment) => {
-      this.processAbandonedFragment(fragment);
-    });
-
-    // Close out event fragments that were created but not progressed. An
-    // interval is used to routinely check if a fragment has not been updated
-    // within the fragment's timeout window. When creating a new event fragment
-    // a timeout can be specified that will cause an abandoned event to be
-    // tracked if the event isn't progressed within that amount of time.
-    if (isManifestV3) {
-      this.#extension.alarms.getAll().then((alarms) => {
-        const hasAlarm = checkAlarmExists(
-          alarms,
-          METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
-        );
-
-        if (!hasAlarm) {
-          this.#extension.alarms.create(
-            METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
-            {
-              delayInMinutes: 1,
-              periodInMinutes: 1,
-            },
-          );
-        }
-      });
-      this.#extension.alarms.onAlarm.addListener((alarmInfo) => {
-        if (alarmInfo.name === METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM) {
-          this.finalizeAbandonedFragments();
-        }
-      });
-    } else {
-      setInterval(() => {
-        this.finalizeAbandonedFragments();
-      }, SECOND * 30);
-    }
   }
 
   /**
@@ -422,239 +306,6 @@ export class MetaMetricsController extends BaseController<
       selectedNetworkClientId,
     );
     return chainId;
-  }
-
-  finalizeAbandonedFragments(): void {
-    Object.values(this.state.fragments).forEach((fragment) => {
-      if (
-        fragment.timeout &&
-        fragment.lastUpdated &&
-        Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
-      ) {
-        this.processAbandonedFragment(fragment);
-      }
-    });
-  }
-
-  /**
-   * Create an event fragment in state and returns the event fragment object.
-   *
-   * @param options - Fragment settings and properties to initiate the fragment with.
-   */
-  createEventFragment(
-    options: Omit<MetaMetricsEventFragment, 'id'>,
-  ): MetaMetricsEventFragment {
-    if (!options.successEvent) {
-      throw new Error(
-        `Must specify success event. Success event was: ${
-          options.event
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        }. Payload keys were: ${Object.keys(options)}. ${
-          typeof options.properties === 'object'
-            ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              `Payload property keys were: ${Object.keys(options.properties)}`
-            : ''
-        }`,
-      );
-    }
-
-    const { fragments } = this.state;
-
-    const id = options.uniqueIdentifier ?? uuidv4();
-    const fragment = {
-      id,
-      ...options,
-      lastUpdated: Date.now(),
-    };
-
-    /**
-     * HACK: "transaction-submitted-<id>" fragment hack
-     * A "transaction-submitted-<id>" fragment may exist following the "Transaction Added"
-     * event to persist accumulated event fragment props to the "Transaction Submitted" event
-     * which fires after a user confirms a transaction. Rejecting a confirmation does not fire the
-     * "Transaction Submitted" event. In this case, these abandoned fragments will be deleted
-     * instead of finalized with canDeleteIfAbandoned set to true.
-     */
-    const hasExistingSubmittedFragment =
-      options.initialEvent === TransactionMetaMetricsEvent.submitted &&
-      fragments[id];
-
-    const additionalFragmentProps: Partial<MetaMetricsEventFragment> =
-      hasExistingSubmittedFragment
-        ? {
-            ...fragments[id],
-            canDeleteIfAbandoned: false,
-          }
-        : {};
-
-    const mergeEventFragment = merge as (
-      ...sources: unknown[]
-    ) => MetaMetricsEventFragment;
-
-    this.update((state) => {
-      const metaMetricsState = state as unknown as MetaMetricsControllerState;
-      metaMetricsState.fragments[id] = mergeEventFragment(
-        {},
-        additionalFragmentProps,
-        fragment,
-      );
-    });
-
-    if (fragment.initialEvent) {
-      trackLegacyMetaMetricsPayload({
-        event: fragment.initialEvent,
-        category: fragment.category,
-        properties: fragment.properties,
-        sensitiveProperties: fragment.sensitiveProperties,
-        page: fragment.page,
-        referrer: fragment.referrer,
-        revenue: fragment.revenue,
-        value: fragment.value,
-        currency: fragment.currency,
-        environmentType: fragment.environmentType,
-      });
-    }
-
-    return fragment;
-  }
-
-  /**
-   * Returns the fragment stored in memory with provided id or undefined if it
-   * does not exist.
-   *
-   * @param id - id of fragment to retrieve
-   */
-  getEventFragmentById(id: string): MetaMetricsEventFragment {
-    return this.state.fragments[id];
-  }
-
-  /**
-   * Deletes to finalizes event fragment based on the canDeleteIfAbandoned property.
-   *
-   * @param fragment
-   */
-  processAbandonedFragment(fragment: MetaMetricsEventFragment): void {
-    if (fragment.canDeleteIfAbandoned) {
-      this.deleteEventFragment(fragment.id);
-    } else {
-      this.finalizeEventFragment(fragment.id, { abandoned: true });
-    }
-  }
-
-  /**
-   * Updates an event fragment in state
-   *
-   * @param id - The fragment id to update
-   * @param payload - Fragment settings and properties to initiate the fragment with.
-   */
-  updateEventFragment(
-    id: string,
-    payload: Partial<MetaMetricsEventFragment>,
-  ): void {
-    const { fragments } = this.state;
-
-    const fragment = fragments[id];
-
-    /**
-     * HACK: "transaction-submitted-<id>" fragment hack
-     * Creates a "transaction-submitted-<id>" fragment if it does not exist to persist
-     * accumulated event metrics. In the case it is unused, the abandoned fragment will
-     * eventually be deleted with canDeleteIfAbandoned set to true.
-     */
-    const createIfNotFound = !fragment && id.includes('transaction-submitted-');
-
-    if (createIfNotFound) {
-      this.update((state) => {
-        const metaMetricsState = state as unknown as MetaMetricsControllerState;
-        metaMetricsState.fragments[id] = {
-          canDeleteIfAbandoned: true,
-          category: MetaMetricsEventCategory.Transactions,
-          successEvent: TransactionMetaMetricsEvent.finalized,
-          id,
-          ...payload,
-          lastUpdated: Date.now(),
-        } as MetaMetricsEventFragment;
-      });
-      return;
-    } else if (!fragment) {
-      throw new Error(`Event fragment with id ${id} does not exist.`);
-    }
-
-    const mergeEventFragment = merge as (
-      ...sources: unknown[]
-    ) => MetaMetricsEventFragment;
-    this.update((state) => {
-      const metaMetricsState = state as unknown as MetaMetricsControllerState;
-      metaMetricsState.fragments[id] = mergeEventFragment(
-        metaMetricsState.fragments[id],
-        {
-          ...payload,
-          lastUpdated: Date.now(),
-        },
-      );
-    });
-  }
-
-  /**
-   * Deletes an event fragment from state
-   *
-   * @param id - The fragment id to delete
-   */
-  deleteEventFragment(id: string): void {
-    if (this.state.fragments[id]) {
-      this.update((state) => {
-        delete state.fragments[id];
-      });
-    }
-  }
-
-  /**
-   * Finalizes a fragment, tracking either a success event or failure Event
-   * and then removes the fragment from state.
-   *
-   * @param id - UUID of the event fragment to be closed
-   * @param options
-   * @param options.abandoned - if true track the failure event instead of the success event
-   * @param options.page - page the final event occurred on. This will override whatever is set on the fragment
-   * @param options.referrer - Dapp that originated the fragment. This is for fallback only, the fragment referrer
-   * property will take precedence.
-   */
-  finalizeEventFragment(
-    id: string,
-    {
-      abandoned = false,
-      page,
-      referrer,
-    }: {
-      abandoned?: boolean;
-      page?: MetaMetricsPageObject;
-      referrer?: MetaMetricsReferrerObject;
-    } = {},
-  ): void {
-    const fragment = this.state.fragments[id];
-    if (!fragment) {
-      throw new Error(`Funnel with id ${id} does not exist.`);
-    }
-
-    const eventName = abandoned ? fragment.failureEvent : fragment.successEvent;
-
-    trackLegacyMetaMetricsPayload({
-      event: eventName ?? '',
-      category: fragment.category,
-      properties: fragment.properties,
-      sensitiveProperties: fragment.sensitiveProperties,
-      page: page ?? fragment.page,
-      referrer: fragment.referrer ?? referrer,
-      revenue: fragment.revenue,
-      value: fragment.value,
-      currency: fragment.currency,
-      environmentType: fragment.environmentType,
-    });
-    this.update((state) => {
-      delete state.fragments[id];
-    });
   }
 
   // It sets an uninstall URL ("Sorry to see you go!" page),
