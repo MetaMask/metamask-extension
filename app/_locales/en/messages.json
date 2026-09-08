@@ -5677,6 +5677,9 @@
   "moneyBenefits": {
     "message": "Benefits"
   },
+  "moneyContactSupport": {
+    "message": "Contact support"
+  },
   "moneyEarnApyTitle": {
     "message": "Earn up to $1 APY"
   },
