@@ -17,9 +17,11 @@ import {
   hasTransactionType,
   isPerpsWithdrawTransaction,
 } from '../../../../shared/lib/transactions.utils';
+import { isMoneyAccountTx } from '../../../helpers/money/money-transaction-guards';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
 import type { MetaMaskReduxState } from '../../../store/store';
+import { selectRequiredTransactionIds } from '../../../selectors/transactionController';
 import {
   dismissToast,
   showPendingToast,
@@ -50,6 +52,8 @@ const excludedTransactionTypes: TransactionType[] = [
   TransactionType.perpsDeposit,
   TransactionType.perpsDepositAndOrder,
   TransactionType.perpsRelayDeposit,
+  TransactionType.predictRelayDeposit,
+  TransactionType.relayDeposit,
   TransactionType.shieldSubscriptionApprove,
 ];
 
@@ -83,7 +87,8 @@ function isPendingToastStatus(
   const isEarlyPending =
     (transactionMeta.type &&
       earlyPendingToastTypes.has(transactionMeta.type)) ||
-    isPerpsWithdrawTransaction(transactionMeta);
+    isPerpsWithdrawTransaction(transactionMeta) ||
+    isMoneyAccountTx(transactionMeta);
 
   if (isEarlyPending) {
     return (
@@ -166,6 +171,12 @@ export function useTransactionEventToasts(): void {
       }
 
       if (isExcludedTransactionType(transactionMeta)) {
+        return;
+      }
+
+      // Helper transactions MetaMask Pay creates to fund another transaction
+      // (relay deposits, vault deposits) toast through their parent instead.
+      if (selectRequiredTransactionIds(store.getState()).has(id)) {
         return;
       }
 

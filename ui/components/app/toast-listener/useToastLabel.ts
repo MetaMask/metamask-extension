@@ -56,11 +56,11 @@ function useGetToastContent(
   transactionId: string | undefined,
 ): ToastLabel {
   const t = useI18nContext();
-  const moneyAccountLabel = useMoneyAccountToastLabel(
-    status,
-    item,
-    transactionId,
-  );
+  const moneyAccountLabel = useMoneyAccountToastLabel(status, transactionId);
+
+  if (moneyAccountLabel) {
+    return moneyAccountLabel;
+  }
 
   switch (item?.type) {
     case 'convert': {
@@ -96,10 +96,6 @@ function useGetToastContent(
 
     case 'perpsWithdraw':
       return getPerpsWithdrawToastContent(status, item, t);
-
-    case 'moneyAccountDeposit':
-    case 'moneyAccountWithdraw':
-      return moneyAccountLabel ?? { title: t(genericToastLabels[status]) };
 
     default:
       return { title: t(genericToastLabels[status]) };

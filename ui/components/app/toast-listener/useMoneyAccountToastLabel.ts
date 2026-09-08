@@ -7,17 +7,18 @@ import { selectTransactionById } from '../../../selectors/transactionController'
 import { getInternalAccountByAddress } from '../../../selectors/accounts';
 import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
 import type { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
+import { getMoneyAccountFiatAmount } from '../../../selectors/activity/enrich-local-activity';
 import type { MetaMaskReduxState } from '../../../store/store';
-import type {
-  ActivityListItem,
-  MoneyAccountActivityItem,
-} from '../../../../shared/lib/activity/types';
 import {
   clearMoneyAccountDepositIntent,
   getMoneyAccountDepositIntent,
   type MoneyAccountDepositIntent,
 } from '../../../helpers/money/deposit-intent';
-import { resolveMoneyDepositIntent } from '../../../helpers/money/money-transaction-guards';
+import {
+  isMoneyDepositTx,
+  isMoneyWithdrawTx,
+  resolveMoneyDepositIntent,
+} from '../../../helpers/money/money-transaction-guards';
 import { moneyFormatUsd } from '../../../helpers/money/format';
 import { getMoneyAccountWithdrawTransferDetails } from '../../../pages/confirmations/utils/money-account-withdraw';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -60,17 +61,11 @@ const depositToastKeys: Record<MoneyAccountDepositIntent, DepositToastKeys> = {
   },
 };
 
-function isMoneyAccountItem(
-  item: ActivityListItem | undefined,
-): item is MoneyAccountActivityItem {
-  return (
-    item?.type === 'moneyAccountDeposit' ||
-    item?.type === 'moneyAccountWithdraw'
-  );
-}
-
-function formatFiat(item: MoneyAccountActivityItem): string | undefined {
-  const amount = item.data.fiat?.amount;
+function formatFiat(
+  transactionMeta: TransactionMeta,
+  isDeposit: boolean,
+): string | undefined {
+  const amount = getMoneyAccountFiatAmount(transactionMeta, isDeposit);
   return amount === undefined
     ? undefined
     : moneyFormatUsd(new BigNumber(amount)) || undefined;
@@ -78,7 +73,7 @@ function formatFiat(item: MoneyAccountActivityItem): string | undefined {
 
 function getDepositLabel(
   status: ToastStatus,
-  item: MoneyAccountActivityItem,
+  transactionMeta: TransactionMeta,
   intent: MoneyAccountDepositIntent,
   t: TranslateFn,
 ): ToastLabel {
@@ -98,7 +93,7 @@ function getDepositLabel(
     };
   }
 
-  const amountFiat = formatFiat(item);
+  const amountFiat = formatFiat(transactionMeta, true);
   return {
     title: t(keys.successTitle),
     description: amountFiat
@@ -109,7 +104,7 @@ function getDepositLabel(
 
 function getWithdrawLabel(
   status: ToastStatus,
-  item: MoneyAccountActivityItem,
+  transactionMeta: TransactionMeta,
   destination: string | undefined,
   t: TranslateFn,
 ): ToastLabel {
@@ -127,7 +122,7 @@ function getWithdrawLabel(
     };
   }
 
-  const amountFiat = formatFiat(item);
+  const amountFiat = formatFiat(transactionMeta, false);
   const resolvedDestination =
     destination ?? t('moneyToastWithdrawFallbackDestination');
   return {
@@ -198,35 +193,43 @@ function useDepositIntent(
 
 /**
  * Toast copy for money account deposits and withdrawals, mirroring mobile's
- * money toasts. Returns undefined for every other activity item.
+ * money toasts. Classified from the transaction itself rather than the
+ * activity list, which filters by selected account. Returns undefined for
+ * every other transaction.
  *
  * @param status - Toast status.
- * @param item - Activity item resolved for the toast's transaction.
  * @param transactionId - Transaction id the toast was raised for.
  */
 export function useMoneyAccountToastLabel(
   status: ToastStatus,
-  item: ActivityListItem | undefined,
   transactionId: string | undefined,
 ): ToastLabel | undefined {
   const t = useI18nContext();
-  const moneyItem = isMoneyAccountItem(item) ? item : undefined;
   const transactionMeta = useSelector((state: MetaMaskReduxState) =>
-    moneyItem ? selectTransactionById(state, transactionId) : undefined,
+    selectTransactionById(state, transactionId),
   );
 
-  const isDeposit = moneyItem?.type === 'moneyAccountDeposit';
+  const isDeposit = Boolean(
+    transactionMeta && isMoneyDepositTx(transactionMeta),
+  );
+  const isWithdraw =
+    !isDeposit &&
+    Boolean(transactionMeta && isMoneyWithdrawTx(transactionMeta));
   const intent = useDepositIntent(isDeposit, status, transactionMeta);
   const destination = useWithdrawDestination(
-    moneyItem && !isDeposit
+    isWithdraw
       ? getMoneyAccountWithdrawTransferDetails(transactionMeta).recipient
       : undefined,
   );
 
-  if (!moneyItem) {
+  if (!transactionMeta) {
     return undefined;
   }
-  return isDeposit
-    ? getDepositLabel(status, moneyItem, intent, t)
-    : getWithdrawLabel(status, moneyItem, destination, t);
+  if (isDeposit) {
+    return getDepositLabel(status, transactionMeta, intent, t);
+  }
+  if (isWithdraw) {
+    return getWithdrawLabel(status, transactionMeta, destination, t);
+  }
+  return undefined;
 }
