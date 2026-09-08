@@ -12,6 +12,8 @@ import type { UseMoneyAccountInfoResult } from '../../../../hooks/money/useMoney
 import {
   MoneyAccountBalance,
   MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID,
+  MONEY_ACCOUNT_BALANCE_APY_SKELETON_TEST_ID,
+  MONEY_ACCOUNT_BALANCE_APY_TEST_ID,
   MONEY_ACCOUNT_BALANCE_INFO_TEST_ID,
   MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID,
   MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID,
@@ -44,6 +46,8 @@ type ArrangeOptions = {
   lastKnownTotalFiatFormatted?: string;
   isBalanceLoading?: boolean;
   isDepositLoading?: boolean;
+  apyPercentFormatted?: string;
+  isVaultApyLoading?: boolean;
 };
 
 /**
@@ -59,6 +63,8 @@ type ArrangeOptions = {
  * @param options.lastKnownTotalFiatFormatted - The last-known balance, if any.
  * @param options.isBalanceLoading - Whether the balance fetch is in flight.
  * @param options.isDepositLoading - Whether a deposit initiation is in flight.
+ * @param options.apyPercentFormatted - The formatted vault APY, if any.
+ * @param options.isVaultApyLoading - Whether the vault APY fetch is in flight.
  */
 const arrange = ({
   hasMoneyAccount = true,
@@ -66,6 +72,8 @@ const arrange = ({
   lastKnownTotalFiatFormatted,
   isBalanceLoading = false,
   isDepositLoading = false,
+  apyPercentFormatted,
+  isVaultApyLoading = false,
 }: ArrangeOptions = {}) => {
   mockInitiateDeposit.mockResolvedValue(undefined);
   mockUseMoneyAccountDeposit.mockReturnValue({
@@ -85,6 +93,8 @@ const arrange = ({
     totalFiatFormatted,
     lastKnownTotalFiatFormatted,
     isBalanceLoading,
+    apyPercentFormatted,
+    vaultApyQuery: { isLoading: isVaultApyLoading },
   } as UseMoneyAccountBalanceResult);
 };
 
@@ -248,5 +258,60 @@ describe('MoneyAccountBalance', () => {
       getByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID),
     ).toHaveTextContent(tEn('moneyBalanceLastKnown'));
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID)).toBeNull();
+  });
+
+  it('renders the vault APY from the balance hook', () => {
+    arrange({
+      totalFiatFormatted: '$2,384.34',
+      apyPercentFormatted: '4.2%',
+    });
+
+    const { getByTestId } = render();
+
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_APY_TEST_ID)).toHaveTextContent(
+      tEn('moneyApy', ['4.2%']),
+    );
+  });
+
+  it('shows a skeleton while the vault APY is loading with nothing to show', () => {
+    arrange({
+      totalFiatFormatted: '$2,384.34',
+      isVaultApyLoading: true,
+    });
+
+    const { getByTestId, queryByTestId } = render();
+
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_APY_SKELETON_TEST_ID),
+    ).toBeInTheDocument();
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_APY_TEST_ID)).toBeNull();
+  });
+
+  it('shows a configured APY while the vault APY query is loading', () => {
+    arrange({
+      totalFiatFormatted: '$2,384.34',
+      apyPercentFormatted: '5%',
+      isVaultApyLoading: true,
+    });
+
+    const { getByTestId, queryByTestId } = render();
+
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_APY_TEST_ID)).toHaveTextContent(
+      tEn('moneyApy', ['5%']),
+    );
+    expect(
+      queryByTestId(MONEY_ACCOUNT_BALANCE_APY_SKELETON_TEST_ID),
+    ).toBeNull();
+  });
+
+  it('omits the APY when none is available', () => {
+    arrange({ totalFiatFormatted: '$2,384.34' });
+
+    const { queryByTestId } = render();
+
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_APY_TEST_ID)).toBeNull();
+    expect(
+      queryByTestId(MONEY_ACCOUNT_BALANCE_APY_SKELETON_TEST_ID),
+    ).toBeNull();
   });
 });
