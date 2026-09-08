@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -29,14 +29,36 @@ export function PerpsDepositToast() {
   const lastDepositResultError = lastDepositResult?.error;
   const lastDepositResultSuccess = lastDepositResult?.success;
   const lastDepositResultTimestamp = lastDepositResult?.timestamp;
-  const isHyperliquidDeposit = entryPoint === 'hyperliquid_deposit_prompt';
+
+  // Track the entry point when the toast was first shown for a deposit result
+  const entryPointRef = useRef<{
+    timestamp: number | undefined;
+    entryPoint: string | undefined;
+  }>({ timestamp: undefined, entryPoint: undefined });
 
   useEffect(() => {
     if (!hasDepositResult) {
       return;
     }
 
+    // Capture the entry point when we first show the toast for a deposit result.
+    // This is to show entry point-specific toast content that will persist
+    // through subsequent renders (even if the event fragment is cleaned up).
+    let capturedEntryPoint = entryPoint;
+    if (
+      entryPointRef.current.timestamp === lastDepositResultTimestamp
+    ) {
+      capturedEntryPoint = entryPointRef.current.entryPoint;
+    } else {
+      entryPointRef.current = {
+        timestamp: lastDepositResultTimestamp,
+        entryPoint,
+      };
+    }
+
     const isSuccess = lastDepositResultSuccess === true;
+    const isHyperliquidDeposit =
+      capturedEntryPoint === 'hyperliquid_deposit_prompt';
     let title = t('perpsDepositToastSuccessTitle');
     let description: string;
 
@@ -69,8 +91,8 @@ export function PerpsDepositToast() {
       toast.dismiss(id);
     };
   }, [
+    entryPoint,
     hasDepositResult,
-    isHyperliquidDeposit,
     lastDepositResultError,
     lastDepositResultSuccess,
     lastDepositResultTimestamp,
