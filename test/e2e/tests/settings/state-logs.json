@@ -923,7 +923,7 @@
       "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": "boolean",
       "isBasicFunctionalityConsolidatedEnabled": "boolean",
-      "basicFunctionalityMigrationNotification": null,
+      "basicFunctionalityMigrationNotification": "null",
       "privacyMode": "boolean",
       "showDefaultAddress": "boolean",
       "showConfirmationAdvancedDetails": "boolean",
