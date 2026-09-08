@@ -64,28 +64,28 @@ export function isMoneyActivityTransfer(tx: TransactionMeta): boolean {
   return isMoneyWithdrawTx(tx) || tx.type === TransactionType.simpleSend;
 }
 
-export function isMoneyActivityTransaction(tx: TransactionMeta): boolean {
-  return isMoneyActivityDeposit(tx) || isMoneyActivityTransfer(tx);
-}
-
 /**
  * Splits on-chain activity into All / Deposits / Sends buckets.
  *
+ * `items` is already visibility-filtered (Money Pay deposits, sends, and
+ * incoming mUSD). All keeps that full list. Deposits and Sends are narrower
+ * chips; a confirmed Pay tx from the Money Account can be visible without
+ * matching either chip type, and must still appear on Home / All.
+ *
  * @param items - Newest-first on-chain activity items.
- * @returns Filter buckets. All is the union of Deposits and Sends.
+ * @returns Filter buckets.
  */
 export function buildMoneyActivityBuckets(
   items: MoneyActivityItem[],
 ): MoneyActivityBuckets {
-  const deposits = items.filter((item) => isMoneyActivityDeposit(item.tx));
-  const transfers = items.filter((item) => isMoneyActivityTransfer(item.tx));
-
   return {
-    [MoneyActivityFilter.All]: items.filter((item) =>
-      isMoneyActivityTransaction(item.tx),
+    [MoneyActivityFilter.All]: items,
+    [MoneyActivityFilter.Deposits]: items.filter((item) =>
+      isMoneyActivityDeposit(item.tx),
     ),
-    [MoneyActivityFilter.Deposits]: deposits,
-    [MoneyActivityFilter.Transfers]: transfers,
+    [MoneyActivityFilter.Transfers]: items.filter((item) =>
+      isMoneyActivityTransfer(item.tx),
+    ),
   };
 }
 
