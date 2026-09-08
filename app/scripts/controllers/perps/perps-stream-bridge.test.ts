@@ -73,6 +73,7 @@ type BridgeOverrides = {
   onConnectivityChange?: jest.Mock;
   isConnectionAlive?: () => boolean;
   isTerminalBackendEnabled?: () => boolean;
+  isPreloadAllowed?: () => boolean;
   subscribeAggregatedOrderBook?: jest.Mock;
   emit?: jest.Mock;
 };
@@ -103,6 +104,7 @@ function createBridge(overrides: BridgeOverrides = {}) {
     perpsToggleTestnet: controllerApi.perpsToggleTestnet,
     isConnectionAlive,
     isTerminalBackendEnabled,
+    isPreloadAllowed: overrides.isPreloadAllowed ?? (() => true),
     subscribeAggregatedOrderBook,
     emit,
   });
@@ -226,10 +228,22 @@ describe('PerpsStreamBridge', () => {
       accountCallback({ stub: 'account' });
       fillsCallback({ stub: 'fills' });
 
-      expect(emit).toHaveBeenCalledWith('positions', { stub: 'positions' });
-      expect(emit).toHaveBeenCalledWith('orders', { stub: 'orders' });
-      expect(emit).toHaveBeenCalledWith('account', { stub: 'account' });
-      expect(emit).toHaveBeenCalledWith('fills', { stub: 'fills' });
+      expect(emit).toHaveBeenCalledWith(
+        'positions',
+        { stub: 'positions' },
+        undefined,
+      );
+      expect(emit).toHaveBeenCalledWith(
+        'orders',
+        { stub: 'orders' },
+        undefined,
+      );
+      expect(emit).toHaveBeenCalledWith(
+        'account',
+        { stub: 'account' },
+        undefined,
+      );
+      expect(emit).toHaveBeenCalledWith('fills', { stub: 'fills' }, undefined);
     });
 
     it('skips activation when already activated', async () => {
@@ -253,7 +267,9 @@ describe('PerpsStreamBridge', () => {
       });
       const api = bridge.bridgeApi();
 
-      await api.perpsInit();
+      await expect(api.perpsInit()).rejects.toThrow(
+        'Perps connection was released',
+      );
 
       expect(controller.subscribeToPositions).not.toHaveBeenCalled();
       expect(bridge.isActive).toBe(false);
@@ -1541,7 +1557,9 @@ describe('PerpsStreamBridge', () => {
         [],
       );
 
-      expect(emit).toHaveBeenCalledWith('markets', mockMarkets);
+      expect(emit).toHaveBeenCalledWith('markets', mockMarkets, {
+        live: expect.any(Boolean),
+      });
     });
 
     it('does not emit the un-enriched preload snapshot when terminal backend is enabled', async () => {
@@ -1576,7 +1594,9 @@ describe('PerpsStreamBridge', () => {
         [],
       );
 
-      expect(emit).not.toHaveBeenCalledWith('markets', rawSnapshot);
+      expect(emit).not.toHaveBeenCalledWith('markets', rawSnapshot, {
+        live: expect.any(Boolean),
+      });
     });
 
     it('refetches enriched terminal market data and emits it when the preload cache updates', async () => {
@@ -1622,7 +1642,9 @@ describe('PerpsStreamBridge', () => {
       expect(controller.getMarketDataWithPrices).toHaveBeenCalledWith({
         useTerminalApi: true,
       });
-      expect(emit).toHaveBeenCalledWith('markets', enrichedMarkets);
+      expect(emit).toHaveBeenCalledWith('markets', enrichedMarkets, {
+        live: expect.any(Boolean),
+      });
     });
 
     it('does not refetch terminal market data when the timestamp is unchanged', async () => {
@@ -1710,7 +1732,9 @@ describe('PerpsStreamBridge', () => {
       await new Promise((resolve) => setImmediate(resolve));
 
       expect(controller.getMarketDataWithPrices).toHaveBeenCalledTimes(2);
-      expect(emit).toHaveBeenCalledWith('markets', [{ symbol: 'FINAL' }]);
+      expect(emit).toHaveBeenCalledWith('markets', [{ symbol: 'FINAL' }], {
+        live: true,
+      });
     });
 
     it('does not emit a terminal refetch result after destroy', async () => {
@@ -2003,7 +2027,9 @@ describe('PerpsStreamBridge', () => {
       stateChangeCallback(state, []);
       stateChangeCallback(state, []);
 
-      expect(emit).toHaveBeenCalledWith('markets', [{ symbol: 'ETH' }]);
+      expect(emit).toHaveBeenCalledWith('markets', [{ symbol: 'ETH' }], {
+        live: false,
+      });
       expect(emit).toHaveBeenCalledTimes(1);
     });
 
@@ -2050,11 +2076,15 @@ describe('PerpsStreamBridge', () => {
       );
 
       expect(emit).toHaveBeenCalledTimes(2);
-      expect(emit).toHaveBeenNthCalledWith(1, 'markets', [{ symbol: 'ETH' }]);
-      expect(emit).toHaveBeenNthCalledWith(2, 'markets', [
-        { symbol: 'ETH' },
-        { symbol: 'BTC' },
-      ]);
+      expect(emit).toHaveBeenNthCalledWith(1, 'markets', [{ symbol: 'ETH' }], {
+        live: false,
+      });
+      expect(emit).toHaveBeenNthCalledWith(
+        2,
+        'markets',
+        [{ symbol: 'ETH' }, { symbol: 'BTC' }],
+        { live: false },
+      );
     });
 
     it('uses correct key for testnet', async () => {
@@ -2084,7 +2114,9 @@ describe('PerpsStreamBridge', () => {
         [],
       );
 
-      expect(emit).toHaveBeenCalledWith('markets', mockMarkets);
+      expect(emit).toHaveBeenCalledWith('markets', mockMarkets, {
+        live: expect.any(Boolean),
+      });
     });
 
     it('resets deduplication key on destroy', async () => {
@@ -2275,7 +2307,9 @@ describe('PerpsStreamBridge', () => {
       expect(controller.getOpenOrders).toHaveBeenCalledTimes(1);
       expect(controller.getAccountState).toHaveBeenCalledTimes(1);
 
-      expect(emit).toHaveBeenCalledWith('markets', mockMarkets);
+      expect(emit).toHaveBeenCalledWith('markets', mockMarkets, {
+        live: expect.any(Boolean),
+      });
       expect(emit).toHaveBeenCalledWith('positions', mockPositions);
       expect(emit).toHaveBeenCalledWith('orders', mockOrders);
       expect(emit).toHaveBeenCalledWith('account', mockAccount);
@@ -2431,5 +2465,233 @@ describe('PerpsStreamBridge', () => {
 
       jest.useRealTimers();
     });
+  });
+});
+
+describe('wallet-root Perps preload', () => {
+  function setup(overrides: BridgeOverrides = {}) {
+    const controller = {
+      ...createMockController(),
+      state: { activeProvider: 'hyperliquid', isTestnet: false },
+      getActiveProvider: jest.fn(),
+      stopMarketDataPreload: jest.fn(),
+    };
+    const ping = jest.fn().mockResolvedValue(undefined);
+    controller.getActiveProvider.mockReturnValue({ ping });
+    controller.getMarketDataWithPrices.mockResolvedValue([
+      { symbol: 'BTC' },
+      { symbol: 'ETH' },
+    ] as never);
+    const result = createBridge({
+      ...overrides,
+      controller: controller as unknown as PerpsController,
+    });
+    const api = result.bridge.bridgeApi() as unknown as {
+      perpsInit: () => Promise<void>;
+      perpsStartPreload: (id: string) => Promise<void>;
+      perpsStopPreload: (id: string) => void;
+      perpsViewActive: (active: boolean) => void;
+      perpsActivatePriceStream: (params: {
+        symbols: string[];
+      }) => Promise<void>;
+    };
+    return { ...result, controller, ping, api };
+  }
+
+  it('starts the controller preload before foreground initialization like Mobile', async () => {
+    const { api, controller, controllerApi } = setup();
+
+    await api.perpsInit();
+
+    expect(
+      controller.startMarketDataPreload.mock.invocationCallOrder[0],
+    ).toBeLessThan(controllerApi.perpsInit.mock.invocationCallOrder[0]);
+  });
+
+  it('prewarms broad prices after provider health succeeds without a visible Perps view', async () => {
+    const { api, bridge, controller, ping, emit } = setup();
+
+    await api.perpsStartPreload('home');
+
+    expect(bridge.isActive).toBe(false);
+    expect(bridge.canEmit('prices')).toBe(true);
+    expect(bridge.canEmit('account')).toBe(true);
+    expect(bridge.canEmit('candles')).toBe(false);
+    expect(ping.mock.invocationCallOrder[0]).toBeLessThan(
+      controller.subscribeToPrices.mock.invocationCallOrder[0],
+    );
+    expect(controller.subscribeToPrices).toHaveBeenCalledWith(
+      expect.objectContaining({
+        symbols: ['BTC', 'ETH'],
+        includeMarketData: false,
+      }),
+    );
+    expect(emit).toHaveBeenCalledWith(
+      'markets',
+      [{ symbol: 'BTC' }, { symbol: 'ETH' }],
+      { live: true },
+    );
+    bridge.destroy();
+  });
+
+  it('keeps broad prices independent of the foreground symbol subscription', async () => {
+    const { api, bridge, controller } = setup();
+    const broadCleanup = jest.fn();
+    controller.subscribeToPrices.mockReturnValueOnce(broadCleanup);
+    await api.perpsStartPreload('home');
+    api.perpsViewActive(true);
+
+    await api.perpsActivatePriceStream({ symbols: ['BTC'] });
+    api.perpsViewActive(false);
+
+    expect(broadCleanup).not.toHaveBeenCalled();
+    expect(bridge.canEmit('markets')).toBe(true);
+    api.perpsStopPreload('home');
+    expect(broadCleanup).toHaveBeenCalledTimes(1);
+    expect(bridge.canEmit('markets')).toBe(false);
+  });
+
+  it('ignores a stale release after a newer owner replaces it', async () => {
+    const { api, bridge, controller } = setup();
+    await api.perpsStartPreload('first');
+    await api.perpsStartPreload('second');
+    const subscriptions = controller.subscribeToPrices.mock.calls.length;
+
+    api.perpsStopPreload('first');
+    await api.perpsStartPreload('second');
+
+    expect(bridge.canEmit('prices')).toBe(true);
+    expect(controller.subscribeToPrices).toHaveBeenCalledTimes(subscriptions);
+    bridge.destroy();
+  });
+
+  it('rejects preload when global eligibility is disabled', async () => {
+    const { api, controllerApi } = setup({ isPreloadAllowed: () => false });
+
+    await expect(api.perpsStartPreload('home')).rejects.toThrow('unavailable');
+    await expect(api.perpsInit()).rejects.toThrow('unavailable');
+
+    expect(controllerApi.perpsInit).not.toHaveBeenCalled();
+  });
+
+  it('stops the controller preload when eligibility is revoked', async () => {
+    let allowed = true;
+    const { api, controller, bridge } = setup({
+      isPreloadAllowed: () => allowed,
+    });
+    await api.perpsStartPreload('home');
+
+    allowed = false;
+    api.perpsStopPreload('home');
+
+    expect(controller.stopMarketDataPreload).toHaveBeenCalled();
+    expect(bridge.canEmit('prices')).toBe(false);
+  });
+
+  it('releases subscriptions after a failed provider ping', async () => {
+    const { api, controller, ping, bridge } = setup();
+    const cleanup = jest.fn();
+    controller.subscribeToPositions.mockReturnValue(cleanup);
+    ping.mockRejectedValue(new Error('offline'));
+
+    await expect(api.perpsStartPreload('home')).rejects.toThrow('offline');
+
+    expect(controller.subscribeToPrices).not.toHaveBeenCalled();
+    expect(bridge.canEmit('markets')).toBe(false);
+    expect(cleanup).toHaveBeenCalled();
+  });
+
+  it('preserves foreground subscriptions when wallet preload fails', async () => {
+    const { api, controller, ping, bridge } = setup();
+    const cleanup = jest.fn();
+    controller.subscribeToPositions.mockReturnValue(cleanup);
+    await api.perpsInit();
+    api.perpsViewActive(true);
+    ping.mockRejectedValue(new Error('offline'));
+
+    await expect(api.perpsStartPreload('home')).rejects.toThrow('offline');
+
+    expect(cleanup).not.toHaveBeenCalled();
+    expect(bridge.isActive).toBe(true);
+    bridge.destroy();
+  });
+
+  it('continues initialization after best-effort cache preload rejects', async () => {
+    const { api, controller, controllerApi, bridge } = setup();
+    controller.startMarketDataPreload.mockRejectedValue(
+      new Error('cache unavailable'),
+    );
+
+    await api.perpsInit();
+
+    expect(controllerApi.perpsInit).toHaveBeenCalledTimes(1);
+    bridge.destroy();
+  });
+
+  it('does not resurrect preload after release during initialization', async () => {
+    let resolveInit!: () => void;
+    const { api, controllerApi, ping, controller } = setup();
+    controllerApi.perpsInit.mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveInit = resolve;
+      }),
+    );
+    const preload = api.perpsStartPreload('home');
+
+    api.perpsStopPreload('home');
+    resolveInit();
+
+    await expect(preload).rejects.toThrow('released');
+    expect(ping).not.toHaveBeenCalled();
+    expect(controller.subscribeToPrices).not.toHaveBeenCalled();
+  });
+
+  it.each(['provider', 'network', 'terminal'] as const)(
+    'rejects stale markets after a %s change',
+    async (change) => {
+      let terminal = false;
+      let resolveMarkets!: (markets: never) => void;
+      const { api, controller, emit } = setup({
+        isTerminalBackendEnabled: () => terminal,
+      });
+      controller.getMarketDataWithPrices.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveMarkets = resolve;
+          }),
+      );
+      const preload = api.perpsStartPreload('home');
+      // Advance the init and ping continuations to the controlled market response.
+      await Promise.resolve();
+      await Promise.resolve();
+      await Promise.resolve();
+      if (change === 'provider') {
+        controller.state.activeProvider = 'aggregated';
+      }
+      if (change === 'network') {
+        controller.state.isTestnet = true;
+      }
+      if (change === 'terminal') {
+        terminal = true;
+      }
+      resolveMarkets([{ symbol: 'BTC' }] as never);
+
+      await expect(preload).rejects.toThrow();
+
+      expect(emit).not.toHaveBeenCalledWith('markets', expect.anything(), {
+        live: true,
+      });
+      expect(controller.subscribeToPrices).not.toHaveBeenCalled();
+    },
+  );
+
+  it('rejects an empty market response without reporting a ready preload', async () => {
+    const { api, controller, bridge } = setup();
+    controller.getMarketDataWithPrices.mockResolvedValue([]);
+
+    await expect(api.perpsStartPreload('home')).rejects.toThrow('no markets');
+
+    expect(bridge.canEmit('markets')).toBe(false);
+    expect(controller.subscribeToPrices).not.toHaveBeenCalled();
   });
 });

@@ -3,6 +3,7 @@ import type {
   PerpsControllerState,
   CandlePeriod,
   TimeDuration,
+  PerpsMarketData,
 } from '@metamask/perps-controller';
 import type { Patch } from 'immer';
 
@@ -62,6 +63,7 @@ type PerpsStreamBridgeOptions = {
   perpsToggleTestnet: (...args: unknown[]) => Promise<unknown>;
   isConnectionAlive: () => boolean;
   isTerminalBackendEnabled: () => boolean;
+  isPreloadAllowed: () => boolean;
   subscribeAggregatedOrderBook: SubscribeAggregatedOrderBook;
   emit: EmitFn;
 };
@@ -88,16 +90,24 @@ const CANDLE_TEARDOWN_DEFER_MS = 150;
  * Candles: multiplexed by symbol+interval so multiple chart keys can stream
  * concurrently; each deactivate tears down only that key.
  *
- * Emission is gated by isActive, which requires both #activate() to have been
- * called and perpsViewActive(true) to be set. The UI calls perpsViewActive(true)
- * when PerpsLayout mounts and perpsViewActive(false) when it unmounts, ensuring
- * the background only pushes data while a Perps view is open.
- *
- * The only public members are the constructor, bridgeApi(), isActive, and
- * destroy(). All subscription management is internal.
+ * Foreground emission is gated by isActive. An independent wallet-root
+ * preload owner keeps market/account/price channels warm without opening a
+ * Perps view or replacing the foreground price subscription.
  */
 export class PerpsStreamBridge {
   #viewActive = false;
+
+  #preloadId: string | null = null;
+
+  #preloadPriceUnsubscribe: (() => void) | null = null;
+
+  #preloadSymbols = '';
+
+  #preloadReady = false;
+
+  #activatedAt = 0;
+
+  readonly #isPreloadAllowed: () => boolean;
 
   readonly #controller: PerpsController;
 
@@ -198,6 +208,7 @@ export class PerpsStreamBridge {
     this.#perpsToggleTestnet = options.perpsToggleTestnet;
     this.#isConnectionAlive = options.isConnectionAlive;
     this.#isTerminalBackendEnabled = options.isTerminalBackendEnabled;
+    this.#isPreloadAllowed = options.isPreloadAllowed;
     this.#subscribeAggregatedOrderBook = options.subscribeAggregatedOrderBook;
     this.#emit = options.emit;
   }
@@ -213,27 +224,46 @@ export class PerpsStreamBridge {
   bridgeApi(): Record<string, (...args: never[]) => unknown> {
     return {
       perpsInit: async (...args: unknown[]) => {
-        const result = await this.#perpsInit(...args);
-        if (!this.#activated && this.#isConnectionAlive()) {
-          this.#activate();
+        if (!this.#isPreloadAllowed()) {
+          throw new Error('Perps connection is unavailable');
         }
-        // Prime the controller's per-provider market/user caches so a
-        // subsequent popup cold-mount can hydrate the UI synchronously from
-        // `state.metamask.cachedMarketDataByProvider`/`cachedUserDataByProvider`
-        // and skip the loading skeleton. The controller throttles repeat
-        // calls (preloadGuardMs), so this is cheap to invoke on every init.
-        // Wrap in `Promise.resolve` so a sync throw, an async rejection,
-        // or a sync return all funnel into the same `.catch` — the
-        // controller method may be sync or async, and either failure mode
-        // would otherwise escape as an unhandled rejection in MV3.
-        Promise.resolve()
-          .then(() => this.#controller.startMarketDataPreload())
+        const generation = this.#destroyGeneration;
+        // Mobile starts controller cache preload before connecting the
+        // foreground provider, allowing independent user/market REST warming.
+        await Promise.resolve()
+          .then(() => {
+            if (
+              generation === this.#destroyGeneration &&
+              this.#isConnectionAlive() &&
+              this.#isPreloadAllowed()
+            ) {
+              return this.#controller.startMarketDataPreload();
+            }
+          })
           .catch((error) => {
             console.debug(
               '[PerpsStreamBridge] startMarketDataPreload failed',
               error,
             );
           });
+        if (
+          generation !== this.#destroyGeneration ||
+          !this.#isConnectionAlive() ||
+          !this.#isPreloadAllowed()
+        ) {
+          throw new Error('Perps connection was released');
+        }
+        const result = await this.#perpsInit(...args);
+        if (
+          generation !== this.#destroyGeneration ||
+          !this.#isConnectionAlive() ||
+          !this.#isPreloadAllowed()
+        ) {
+          throw new Error('Perps connection was released');
+        }
+        if (!this.#activated) {
+          this.#activate();
+        }
         return result;
       },
       perpsDisconnect: async (...args: unknown[]) => {
@@ -246,6 +276,18 @@ export class PerpsStreamBridge {
       },
       perpsViewActive: (active: boolean) => {
         this.#viewActive = active;
+        if (!active && !this.#preloadId) {
+          this.destroy();
+        }
+      },
+      perpsStartPreload: (id: string) => this.#startPreload(id),
+      perpsStopPreload: (id: string) => {
+        if (this.#preloadId === id) {
+          this.#releasePreload();
+          if (!this.#viewActive) {
+            this.destroy();
+          }
+        }
       },
       perpsActivateStreaming: async (params: ActivateStreamingParams) => {
         await this.#initAndActivate();
@@ -415,8 +457,34 @@ export class PerpsStreamBridge {
     return this.#activated && this.#viewActive;
   }
 
+  /**
+   * Keep wallet-level data flowing independently of foreground detail streams.
+   *
+   * @param channel - Notification channel.
+   * @returns Whether this UI connection owns the channel.
+   */
+  canEmit(channel: string): boolean {
+    return (
+      this.isActive ||
+      Boolean(
+        this.#activated &&
+        this.#preloadId &&
+        this.#isPreloadAllowed() &&
+        [
+          'positions',
+          'orders',
+          'account',
+          'markets',
+          'prices',
+          'connectionState',
+        ].includes(channel),
+      )
+    );
+  }
+
   destroy(): void {
     this.#destroyGeneration += 1;
+    this.#releasePreload();
 
     for (const unsub of this.#staticUnsubs) {
       this.#callAndClearUnsub(unsub);
@@ -437,10 +505,115 @@ export class PerpsStreamBridge {
   }
 
   async #initAndActivate(): Promise<void> {
+    if (!this.#isPreloadAllowed()) {
+      throw new Error('Perps connection is unavailable');
+    }
+    const generation = this.#destroyGeneration;
     await this.#perpsInit();
-    if (!this.#activated && this.#isConnectionAlive()) {
+    if (
+      generation === this.#destroyGeneration &&
+      !this.#activated &&
+      this.#isConnectionAlive() &&
+      this.#isPreloadAllowed()
+    ) {
       this.#activate();
     }
+  }
+
+  async #startPreload(id: string): Promise<void> {
+    if (!this.#isPreloadAllowed() || !this.#isConnectionAlive()) {
+      throw new Error('Perps preload is unavailable');
+    }
+    if (this.#preloadId === id) {
+      return;
+    }
+    this.#releasePreload();
+    this.#preloadId = id;
+    const generation = this.#destroyGeneration;
+    const { activeProvider, isTestnet } = this.#controller.state;
+    const isCurrent = () =>
+      this.#preloadId === id &&
+      generation === this.#destroyGeneration &&
+      this.#isConnectionAlive() &&
+      this.#isPreloadAllowed() &&
+      this.#controller.state.activeProvider === activeProvider &&
+      this.#controller.state.isTestnet === isTestnet;
+    try {
+      await this.#initAndActivate();
+      if (!isCurrent()) {
+        throw new Error('Perps preload was released');
+      }
+      // Match Mobile's connection readiness check before prewarming prices.
+      await this.#controller.getActiveProvider().ping();
+      if (!isCurrent()) {
+        throw new Error('Perps preload was released');
+      }
+      this.#preloadReady = true;
+      this.#controller.startMarketDataPreload();
+      const useTerminalApi = this.#isTerminalBackendEnabled();
+      const markets = await this.#controller.getMarketDataWithPrices({
+        useTerminalApi,
+      });
+      if (!isCurrent() || useTerminalApi !== this.#isTerminalBackendEnabled()) {
+        throw new Error('Perps preload configuration changed');
+      }
+      if (markets.length === 0) {
+        throw new Error('Perps preload returned no markets');
+      }
+      this.#emit('markets', markets, { live: true });
+      this.#prewarmPrices(markets);
+    } catch (error) {
+      if (this.#preloadId === id) {
+        this.#releasePreload();
+        if (!this.#viewActive) {
+          this.destroy();
+        }
+      }
+      throw error;
+    }
+  }
+
+  #releasePreload(): void {
+    this.#preloadId = null;
+    if (this.#preloadPriceUnsubscribe) {
+      this.#callAndClearUnsub(this.#preloadPriceUnsubscribe);
+      this.#preloadPriceUnsubscribe = null;
+    }
+    this.#preloadSymbols = '';
+    this.#preloadReady = false;
+    // A global eligibility change applies to every UI. Otherwise the shared
+    // controller retains its existing last-UI disconnect grace period.
+    if (!this.#isPreloadAllowed()) {
+      this.#controller.stopMarketDataPreload();
+    }
+  }
+
+  #prewarmPrices(markets: PerpsMarketData[]): void {
+    if (!this.#preloadId || !this.#preloadReady || !this.#isPreloadAllowed()) {
+      return;
+    }
+    const symbols = Array.from(
+      new Set(markets.map((market) => market.symbol)),
+    ).sort();
+    const key = symbols.join('|');
+    if (!key || key === this.#preloadSymbols) {
+      return;
+    }
+    if (this.#preloadPriceUnsubscribe) {
+      this.#callAndClearUnsub(this.#preloadPriceUnsubscribe);
+      this.#preloadPriceUnsubscribe = null;
+    }
+    const id = this.#preloadId;
+    this.#preloadPriceUnsubscribe = this.#controller.subscribeToPrices({
+      symbols,
+      includeMarketData: false,
+      callback: (data) => {
+        if (id === this.#preloadId) {
+          this.#emit('prices', data);
+        }
+      },
+    });
+    this.#preloadSymbols = key;
   }
 
   /**
@@ -499,26 +672,33 @@ export class PerpsStreamBridge {
     this.#staticUnsubs.length = 0;
 
     this.#activated = true;
+    this.#activatedAt = Date.now();
+    const generation = this.#destroyGeneration;
+    const emit: EmitFn = (channel, data, extra) => {
+      if (generation === this.#destroyGeneration && this.#activated) {
+        this.#emit(channel, data, extra);
+      }
+    };
 
     try {
       this.#staticUnsubs.push(
         this.#controller.subscribeToPositions({
-          callback: (data: unknown) => this.#emit('positions', data),
+          callback: (data: unknown) => emit('positions', data),
         }),
       );
       this.#staticUnsubs.push(
         this.#controller.subscribeToOrders({
-          callback: (data: unknown) => this.#emit('orders', data),
+          callback: (data: unknown) => emit('orders', data),
         }),
       );
       this.#staticUnsubs.push(
         this.#controller.subscribeToAccount({
-          callback: (data: unknown) => this.#emit('account', data),
+          callback: (data: unknown) => emit('account', data),
         }),
       );
       this.#staticUnsubs.push(
         this.#controller.subscribeToOrderFills({
-          callback: (data: unknown) => this.#emit('fills', data),
+          callback: (data: unknown) => emit('fills', data),
         }),
       );
 
@@ -629,7 +809,10 @@ export class PerpsStreamBridge {
       return;
     }
 
-    this.#emit('markets', entry.data);
+    this.#emit('markets', entry.data, {
+      live: entry.timestamp >= this.#activatedAt,
+    });
+    this.#prewarmPrices(entry.data);
   }
 
   /**
@@ -674,7 +857,8 @@ export class PerpsStreamBridge {
           Array.isArray(markets) &&
           markets.length > 0
         ) {
-          this.#emit('markets', markets);
+          this.#emit('markets', markets, { live: true });
+          this.#prewarmPrices(markets);
         }
       })
       .catch((error) => {
@@ -724,13 +908,22 @@ export class PerpsStreamBridge {
         })
         .catch(() => null);
 
+      if (hydrationToken !== this.#hydrationSeq || !this.#isConnectionAlive()) {
+        return;
+      }
+
       if (marketsResult) {
-        this.#emit('markets', marketsResult);
+        this.#emit('markets', marketsResult, { live: true });
+        this.#prewarmPrices(marketsResult);
       }
 
       await new Promise((resolve) =>
         setTimeout(resolve, REST_HYDRATION_STAGGER_MS),
       );
+
+      if (hydrationToken !== this.#hydrationSeq || !this.#isConnectionAlive()) {
+        return;
+      }
 
       const [positionsResult, ordersResult, accountResult] =
         await Promise.allSettled([
@@ -738,6 +931,10 @@ export class PerpsStreamBridge {
           this.#controller.getOpenOrders(),
           this.#controller.getAccountState(),
         ]);
+
+      if (hydrationToken !== this.#hydrationSeq || !this.#isConnectionAlive()) {
+        return;
+      }
 
       if (positionsResult.status === 'fulfilled' && positionsResult.value) {
         this.#emit('positions', positionsResult.value);
@@ -804,11 +1001,16 @@ export class PerpsStreamBridge {
     symbols: string[],
     includeMarketData?: boolean,
   ): void {
+    const generation = this.#destroyGeneration;
     this.#addDynamicSubscription('prices', () =>
       this.#controller.subscribeToPrices({
         symbols,
         includeMarketData,
-        callback: (data: unknown) => this.#emit('prices', data),
+        callback: (data: unknown) => {
+          if (generation === this.#destroyGeneration) {
+            this.#emit('prices', data);
+          }
+        },
       }),
     );
   }

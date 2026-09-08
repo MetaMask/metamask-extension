@@ -18,6 +18,7 @@ describe('usePerpsTabExploreData', () => {
       cryptoMarkets: mockCryptoMarkets,
       hip3Markets: mockHip3Markets,
       isInitialLoading: false,
+      isLive: true,
       error: null,
       refresh: jest.fn(),
     });
@@ -74,6 +75,7 @@ describe('usePerpsTabExploreData', () => {
       cryptoMarkets: mockCryptoMarkets,
       hip3Markets: mockHip3Markets,
       isInitialLoading: false,
+      isLive: true,
       error: null,
       refresh: jest.fn(),
     });

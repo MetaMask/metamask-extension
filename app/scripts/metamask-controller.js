@@ -1842,6 +1842,9 @@ export default class MetamaskController extends EventEmitter {
       previousValueComparator((prevState, currState) => {
         const { useExternalServices: prev } = prevState;
         const { useExternalServices: curr } = currState;
+        if (prev !== curr && !curr) {
+          this.#disconnectPerpsIfActive();
+        }
         if (
           getIsPerpsIncludedInBuild() &&
           prev !== curr &&
@@ -4849,6 +4852,21 @@ export default class MetamaskController extends EventEmitter {
           perpsDisconnect: this.messengerClientApi.perpsDisconnect,
           perpsToggleTestnet: this.messengerClientApi.perpsToggleTestnet,
           isConnectionAlive: () => !outStream.mmFinished,
+          isPreloadAllowed: () => {
+            const { remoteFeatureFlags } = this.controllerMessenger.call(
+              'RemoteFeatureFlagController:getState',
+            );
+            const flags = getRemoteFeatureFlags({
+              metamask: { remoteFeatureFlags },
+            });
+            return (
+              this.keyringController.state.isUnlocked &&
+              this.onboardingController.state.completedOnboarding &&
+              this.preferencesController.state.useExternalServices &&
+              getIsPerpsIncludedInBuild() &&
+              isPerpsRemoteConfigSatisfied(flags.perpsEnabledVersion)
+            );
+          },
           subscribeAggregatedOrderBook: (params) =>
             aggregatedOrderBookConnection.subscribe(params),
           isTerminalBackendEnabled: () => {
@@ -4868,7 +4886,7 @@ export default class MetamaskController extends EventEmitter {
             );
           },
           emit: (channel, data, extra) => {
-            if (!perpsStream.isActive || !isStreamWritable(outStream)) {
+            if (!perpsStream.canEmit(channel) || !isStreamWritable(outStream)) {
               return;
             }
             outStream.write({

@@ -1,3 +1,4 @@
+import { trace, endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -9,6 +10,12 @@ import {
   createPerpsInfrastructure,
   type InfrastructureDeps,
 } from './infrastructure';
+
+jest.mock('../../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../../shared/lib/trace'),
+  trace: jest.fn(),
+  endTrace: jest.fn(),
+}));
 
 const mockTrackEvent = jest.fn();
 
@@ -42,6 +49,7 @@ jest.mock('@metamask/perps-controller', () => {
 const mockCaptureException = jest.fn();
 jest.mock('../../../../shared/lib/sentry', () => ({
   captureException: (...args: unknown[]) => mockCaptureException(...args),
+  sentryLogger: { extend: () => jest.fn() },
 }));
 
 function setupSentryScope() {
@@ -564,245 +572,125 @@ describe('createPerpsInfrastructure', () => {
   });
 
   describe('tracer', () => {
-    describe('when sentry is not available', () => {
-      it('does not throw on trace', () => {
-        const { tracer } = createPerpsInfrastructure(getDeps());
+    it.each([
+      TraceName.PerpsConnectionEstablishment,
+      TraceName.PerpsMarketDataPreload,
+      TraceName.PerpsUserDataPreload,
+      TraceName.PerpsPlaceOrder,
+    ])('routes %s through shared tracing', (name) => {
+      const { tracer } = createPerpsInfrastructure(getDeps());
+      const request = {
+        name,
+        id: 'operation',
+        op: 'perps.operation',
+        tags: { source: 'test' },
+      };
 
-        expect(() =>
-          tracer.trace({
-            name: 'Perps Place Order' as never,
-            id: '1',
-            op: 'perps.order',
-          }),
-        ).not.toThrow();
-      });
+      tracer.trace(request);
+      tracer.endTrace({ name, id: 'operation', data: { success: true } });
 
-      it('does not throw on endTrace', () => {
-        const { tracer } = createPerpsInfrastructure(getDeps());
-
-        expect(() =>
-          tracer.endTrace({ name: 'Perps Place Order' as never, id: '1' }),
-        ).not.toThrow();
-      });
-
-      it('does not throw on setMeasurement', () => {
-        const { tracer } = createPerpsInfrastructure(getDeps());
-
-        expect(() =>
-          tracer.setMeasurement('test', 100, 'millisecond'),
-        ).not.toThrow();
+      expect(trace).toHaveBeenCalledWith(request);
+      expect(endTrace).toHaveBeenCalledWith({
+        name,
+        id: 'operation',
+        data: { success: true },
       });
     });
 
-    describe('when sentry is available', () => {
-      it('calls startSpanManual on trace', () => {
-        const mockSpan = { setAttribute: jest.fn(), end: jest.fn() };
-        const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
-        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
+    it('does not end an unknown or already completed operation', () => {
+      const { tracer } = createPerpsInfrastructure(getDeps());
+      const request = {
+        name: TraceName.PerpsMarketDataPreload,
+        id: 'operation',
+      };
+      tracer.endTrace(request);
+      expect(endTrace).not.toHaveBeenCalled();
 
-        const { tracer } = createPerpsInfrastructure(getDeps());
+      tracer.trace({ ...request, op: 'perps.operation' });
+      tracer.endTrace(request);
+      tracer.endTrace(request);
+
+      expect(endTrace).toHaveBeenCalledTimes(1);
+    });
+
+    it('ends a duplicate operation before replacing it', () => {
+      const { tracer } = createPerpsInfrastructure(getDeps());
+      const request = {
+        name: TraceName.PerpsMarketDataPreload,
+        id: 'operation',
+        op: 'perps.operation',
+      };
+      tracer.trace(request);
+
+      tracer.trace(request);
+
+      expect(endTrace).toHaveBeenCalledWith({
+        name: request.name,
+        id: request.id,
+        data: { success: false, reason: 'superseded' },
+      });
+      expect(trace).toHaveBeenCalledTimes(2);
+    });
+
+    it('ends the oldest operation when the pending buffer is full', () => {
+      const { tracer } = createPerpsInfrastructure(getDeps());
+      for (let i = 0; i < 50; i += 1) {
         tracer.trace({
-          name: 'Perps Place Order' as never,
-          id: 'abc',
-          op: 'perps.order',
-          data: { coin: 'ETH' },
+          name: TraceName.PerpsMarketDataPreload,
+          id: String(i),
+          op: 'perps.operation',
         });
+      }
+      expect(endTrace).not.toHaveBeenCalled();
 
-        expect(startSpanManual).toHaveBeenCalledWith(
-          {
-            name: 'Perps Place Order',
-            op: 'perps.order',
-            attributes: { coin: 'ETH' },
-          },
-          expect.any(Function),
-        );
+      tracer.trace({
+        name: TraceName.PerpsMarketDataPreload,
+        id: '50',
+        op: 'perps.operation',
       });
 
-      it('merges tags and data into span attributes', () => {
-        const mockSpan = { setAttribute: jest.fn(), end: jest.fn() };
-        const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
-        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
-
-        const { tracer } = createPerpsInfrastructure(getDeps());
-        tracer.trace({
-          name: 'Perps Place Order' as never,
-          id: 'abc',
-          op: 'perps.order',
-          tags: { network: 'arbitrum' },
-          data: { coin: 'ETH' },
-        });
-
-        expect(startSpanManual).toHaveBeenCalledWith(
-          {
-            name: 'Perps Place Order',
-            op: 'perps.order',
-            attributes: { network: 'arbitrum', coin: 'ETH' },
-          },
-          expect.any(Function),
-        );
+      expect(endTrace).toHaveBeenCalledWith({
+        name: TraceName.PerpsMarketDataPreload,
+        id: '0',
+        data: { success: false, reason: 'capacity' },
       });
+    });
 
-      it('ends the span on endTrace', () => {
-        const mockSpan = { setAttribute: jest.fn(), end: jest.fn() };
-        const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
-        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
+    it('keeps measurement and breadcrumb forwarding', () => {
+      const setMeasurement = jest.fn();
+      const addBreadcrumb = jest.fn();
+      globalThis.sentry = { setMeasurement, addBreadcrumb };
+      const { tracer } = createPerpsInfrastructure(getDeps());
+      const breadcrumb = {
+        category: 'perps',
+        message: 'connected',
+        level: 'info' as const,
+      };
 
-        const { tracer } = createPerpsInfrastructure(getDeps());
-        tracer.trace({
-          name: 'Perps Place Order' as never,
-          id: 'abc',
-          op: 'perps.order',
-        });
+      tracer.setMeasurement('perps.latency', 42, 'millisecond');
+      tracer.addBreadcrumb(breadcrumb);
 
-        tracer.endTrace({ name: 'Perps Place Order' as never, id: 'abc' });
+      expect(setMeasurement).toHaveBeenCalledWith(
+        'perps.latency',
+        42,
+        'millisecond',
+      );
+      expect(addBreadcrumb).toHaveBeenCalledWith(breadcrumb);
+    });
 
-        expect(mockSpan.end).toHaveBeenCalled();
-      });
+    it('tolerates missing optional Sentry measurement APIs', () => {
+      const { tracer } = createPerpsInfrastructure(getDeps());
 
-      it('does nothing on endTrace for unknown span', () => {
-        (globalThis as Record<string, unknown>).sentry = {
-          startSpanManual: jest.fn(),
-        };
-        const { tracer } = createPerpsInfrastructure(getDeps());
-
-        expect(() =>
-          tracer.endTrace({ name: 'Perps Place Order' as never, id: 'nope' }),
-        ).not.toThrow();
-      });
-
-      it('sets attributes from data before ending the span', () => {
-        const mockSpan = { setAttribute: jest.fn(), end: jest.fn() };
-        const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
-        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
-
-        const { tracer } = createPerpsInfrastructure(getDeps());
-        tracer.trace({
-          name: 'Perps Place Order' as never,
-          id: 'abc',
-          op: 'perps.order',
-        });
-
-        tracer.endTrace({
-          name: 'Perps Place Order' as never,
-          id: 'abc',
-          data: { result: 'success', latency: 42 },
-        });
-
-        expect(mockSpan.setAttribute).toHaveBeenCalledWith('result', 'success');
-        expect(mockSpan.setAttribute).toHaveBeenCalledWith('latency', 42);
-        expect(mockSpan.end).toHaveBeenCalled();
-      });
-
-      it('removes the span after endTrace', () => {
-        const mockSpan = { setAttribute: jest.fn(), end: jest.fn() };
-        const startSpanManual = jest.fn((_opts, cb) => cb(mockSpan));
-        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
-
-        const { tracer } = createPerpsInfrastructure(getDeps());
-        tracer.trace({
-          name: 'Perps Place Order' as never,
-          id: 'abc',
-          op: 'perps.order',
-        });
-        tracer.endTrace({ name: 'Perps Place Order' as never, id: 'abc' });
-
-        // Second endTrace is a no-op — span.end not called again
-        tracer.endTrace({ name: 'Perps Place Order' as never, id: 'abc' });
-
-        expect(mockSpan.end).toHaveBeenCalledTimes(1);
-      });
-
-      it('ends the previous span when trace is called with a duplicate key', () => {
-        const firstSpan = { setAttribute: jest.fn(), end: jest.fn() };
-        const secondSpan = { setAttribute: jest.fn(), end: jest.fn() };
-        let callCount = 0;
-        const startSpanManual = jest.fn((_opts, cb) => {
-          cb(callCount === 0 ? firstSpan : secondSpan);
-          callCount += 1;
-        });
-        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
-
-        const { tracer } = createPerpsInfrastructure(getDeps());
-        tracer.trace({
-          name: 'Perps Place Order' as never,
-          id: 'dup',
-          op: 'perps.order',
-        });
-        tracer.trace({
-          name: 'Perps Place Order' as never,
-          id: 'dup',
-          op: 'perps.order',
-        });
-
-        expect(firstSpan.end).toHaveBeenCalledTimes(1);
-      });
-
-      it('evicts the oldest span when the pending map reaches capacity', () => {
-        const spans: { setAttribute: jest.Mock; end: jest.Mock }[] = [];
-        const startSpanManual = jest.fn((_opts, cb) => {
-          const span = { setAttribute: jest.fn(), end: jest.fn() };
-          spans.push(span);
-          cb(span);
-        });
-        (globalThis as Record<string, unknown>).sentry = { startSpanManual };
-
-        const { tracer } = createPerpsInfrastructure(getDeps());
-
-        // Fill the map to capacity (MAX_PENDING_SPANS = 50)
-        for (let i = 0; i < 50; i++) {
-          tracer.trace({
-            name: 'Perps Place Order' as never,
-            id: String(i),
-            op: 'perps.order',
-          });
-        }
-
-        // The first span should still be pending — map is exactly at capacity
-        expect(spans[0].end).not.toHaveBeenCalled();
-
-        // One more trace pushes the map over capacity, evicting span[0]
-        tracer.trace({
-          name: 'Perps Place Order' as never,
-          id: '50',
-          op: 'perps.order',
-        });
-
-        expect(spans[0].end).toHaveBeenCalledTimes(1);
-      });
-
-      it('calls setMeasurement on sentry', () => {
-        const setMeasurement = jest.fn();
-        (globalThis as Record<string, unknown>).sentry = { setMeasurement };
-
-        const { tracer } = createPerpsInfrastructure(getDeps());
-        tracer.setMeasurement('perps.latency', 42, 'millisecond');
-
-        expect(setMeasurement).toHaveBeenCalledWith(
-          'perps.latency',
-          42,
-          'millisecond',
-        );
-      });
-
-      it('forwards breadcrumbs to sentry', () => {
-        const addBreadcrumb = jest.fn();
-        (globalThis as Record<string, unknown>).sentry = { addBreadcrumb };
-
-        const { tracer } = createPerpsInfrastructure(getDeps());
+      expect(() =>
+        tracer.setMeasurement('perps.latency', 42, 'millisecond'),
+      ).not.toThrow();
+      expect(() =>
         tracer.addBreadcrumb({
-          category: 'perps.order',
-          message: 'place order started',
+          category: 'perps',
+          message: 'connected',
           level: 'info',
-          data: { symbol: 'ETH' },
-        });
-
-        expect(addBreadcrumb).toHaveBeenCalledWith({
-          category: 'perps.order',
-          message: 'place order started',
-          level: 'info',
-          data: { symbol: 'ETH' },
-        });
-      });
+        }),
+      ).not.toThrow();
     });
   });
 

@@ -1,4 +1,8 @@
-import type { Position } from '@metamask/perps-controller';
+import type {
+  Position,
+  PerpsMarketData,
+  PriceUpdate,
+} from '@metamask/perps-controller';
 import { PerpsStreamManager } from './PerpsStreamManager';
 
 // Polyfill crypto.randomUUID for jsdom
@@ -546,6 +550,62 @@ describe('PerpsStreamManager', () => {
       expect(initCalls).toHaveLength(1);
     });
 
+    it('serializes A to B to A and drops stream updates during the transition', async () => {
+      let release!: () => void;
+      let entered!: () => void;
+      const started = new Promise<void>((resolve) => {
+        entered = resolve;
+      });
+      const barrier = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      mockSubmitRequestToBackground.mockImplementationOnce(() => {
+        entered();
+        return barrier;
+      });
+      const first = manager.initForAddress('0xaaa');
+      await started;
+      const middle = manager.initForAddress('0xbbb');
+      const latest = manager.initForAddress('0xaaa');
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('STALE')],
+      });
+      expect(manager.positions.getCachedData()).toEqual([]);
+      release();
+      await Promise.all([first, middle, latest]);
+
+      expect(manager.getCurrentAddress()).toBe('0xaaa');
+      expect(
+        mockSubmitRequestToBackground.mock.calls.map(([method]) => method),
+      ).toEqual(['perpsInit', 'perpsDisconnect', 'perpsInit']);
+    });
+
+    it('cannot restore initialization after reset while the RPC is pending', async () => {
+      let release!: () => void;
+      let entered!: () => void;
+      const started = new Promise<void>((resolve) => {
+        entered = resolve;
+      });
+      const barrier = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      mockSubmitRequestToBackground.mockImplementationOnce(() => {
+        entered();
+        return barrier;
+      });
+      const pending = manager.initForAddress('0xaaa');
+      await started;
+
+      manager.reset();
+      release();
+      await pending;
+
+      expect(manager.isInitialized()).toBe(false);
+      expect(manager.getCurrentAddress()).toBeNull();
+    });
+
     it('throws when address is empty', async () => {
       await expect(manager.initForAddress('')).rejects.toThrow(
         'No account selected',
@@ -580,7 +640,9 @@ describe('PerpsStreamManager', () => {
       await Promise.resolve();
 
       const pSecond = manager.initForAddress('0xsecond');
-      await pSecond;
+      expect(manager.isInitialized()).toBe(false);
+      releaseFirstInit?.();
+      await Promise.all([pFirst, pSecond]);
 
       const callOrder = mockSubmitRequestToBackground.mock.calls.map(
         ([m]: [string]) => m,
@@ -680,7 +742,10 @@ describe('PerpsStreamManager', () => {
       await Promise.resolve();
       await Promise.resolve();
 
-      await manager.initForAddress('0xwins');
+      const pWinner = manager.initForAddress('0xwins');
+      expect(manager.isInitialized()).toBe(false);
+      releaseFirstInit?.();
+      await Promise.all([pSlow, pWinner]);
 
       expect(manager.getCurrentAddress()).toBe('0xwins');
 
@@ -692,6 +757,82 @@ describe('PerpsStreamManager', () => {
       await pSlow;
 
       expect(manager.getCurrentAddress()).toBe('0xwins');
+    });
+  });
+
+  describe('live snapshot provenance', () => {
+    const markets = [{ symbol: 'BTC' }] as PerpsMarketData[];
+    const prices = [{ symbol: 'BTC', price: '50000' }] as PriceUpdate[];
+
+    it('distinguishes persisted market seeds from current-session responses', () => {
+      manager.handleBackgroundUpdate({
+        channel: 'markets',
+        data: markets,
+        live: false,
+      });
+      expect(manager.hasLiveMarketData(markets)).toBe(false);
+
+      manager.handleBackgroundUpdate({
+        channel: 'markets',
+        data: markets,
+        live: true,
+      });
+      expect(manager.hasLiveMarketData(markets)).toBe(true);
+      expect(manager.hasLiveMarketData([{ ...markets[0] }])).toBe(false);
+    });
+
+    it('merges detail prices without discarding the other preloaded symbols', () => {
+      manager.handleBackgroundUpdate({
+        channel: 'prices',
+        data: [...prices, { symbol: 'ETH', price: '2000' }],
+      });
+      const previous = manager.prices.getCachedData();
+      manager.handleBackgroundUpdate({
+        channel: 'prices',
+        data: [{ symbol: 'BTC', price: '51000' }],
+      });
+      const current = manager.prices.getCachedData();
+
+      expect(current).toEqual([
+        { symbol: 'BTC', price: '51000' },
+        { symbol: 'ETH', price: '2000' },
+      ]);
+      expect(manager.hasLivePrices(current)).toBe(true);
+      expect(manager.hasLivePrices(previous)).toBe(false);
+      expect(manager.hasLivePrices(prices)).toBe(false);
+    });
+
+    it.each(['0', '-1', 'invalid'])(
+      'does not accept a %s price as live readiness',
+      (price) => {
+        manager.handleBackgroundUpdate({
+          channel: 'prices',
+          data: [{ symbol: 'BTC', price }],
+        });
+        expect(manager.hasLivePrices(manager.prices.getCachedData())).toBe(
+          false,
+        );
+      },
+    );
+
+    it.each(['reset', 'clearAllCaches'] as const)(
+      'invalidates consumed snapshots after %s',
+      (method) => {
+        manager.pushLiveMarkets(markets);
+        manager.handleBackgroundUpdate({ channel: 'prices', data: prices });
+        const snapshot = manager.prices.getCachedData();
+
+        manager[method]();
+
+        expect(manager.hasLiveMarketData(markets)).toBe(false);
+        expect(manager.hasLivePrices(snapshot)).toBe(false);
+      },
+    );
+
+    it('invalidates live market metadata after a backend change', () => {
+      manager.pushLiveMarkets(markets);
+      manager.setUseTerminalApi(true);
+      expect(manager.hasLiveMarketData(markets)).toBe(false);
     });
   });
 
