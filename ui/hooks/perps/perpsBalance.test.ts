@@ -6,16 +6,18 @@ import {
 
 describe('perpsBalance', () => {
   describe('parsePerpsTotalBalance', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['1,234.56', 1234.56],
       ['$1,234.56', 1234.56],
       ['0', 0],
       ['-12.5', -12.5],
-    ])('parses %s as %s', (value, expected) => {
+    ])('parses %s as %s', (value: string, expected: number) => {
       expect(parsePerpsTotalBalance(value)).toBe(expected);
     });
 
-    it.each(['', '--', 'NaN', '.'])('returns null for %s', (value) => {
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(['', '--', 'NaN', '.'])('returns null for %s', (value: string) => {
       expect(parsePerpsTotalBalance(value)).toBeNull();
     });
   });
