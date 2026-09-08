@@ -168,6 +168,7 @@ describe('useOHLCVChart – fetchOHLCV', () => {
 });
 
 describe('useOHLCVChart – INTERVAL_TO_TIME_PERIOD mapping', () => {
+  // @ts-expect-error This is missing from the Mocha type definitions
   test.each<[string, string]>([
     ['1m', '1d'],
     ['5m', '1d'],
