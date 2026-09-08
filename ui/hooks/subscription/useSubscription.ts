@@ -949,7 +949,10 @@ export const useSubscriptionError = (): {
 
   // Keep a ref so the unmount-only cleanup can read the latest value
   const shieldSubscriptionErrorRef = useRef(shieldSubscriptionError);
-  shieldSubscriptionErrorRef.current = shieldSubscriptionError;
+
+  useEffect(() => {
+    shieldSubscriptionErrorRef.current = shieldSubscriptionError;
+  }, [shieldSubscriptionError]);
 
   // Clear shield subscription error when unmounting
   useEffect(() => {

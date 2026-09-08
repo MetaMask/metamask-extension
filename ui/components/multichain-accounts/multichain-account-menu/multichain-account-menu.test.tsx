@@ -106,7 +106,9 @@ describe('MultichainAccountMenu', () => {
     state = mockState,
   ) => {
     const store = configureStore(state);
-    return renderWithProvider(<MultichainAccountMenu {...props} />, store);
+    return act(() =>
+      renderWithProvider(<MultichainAccountMenu {...props} />, store),
+    );
   };
 
   beforeEach(() => {
@@ -526,15 +528,17 @@ describe('MultichainAccountMenu', () => {
 
     it('calls trace ShowAccountAddressList when clicking Addresses', async () => {
       const store = configureStore(mockDefaultState);
-      renderWithProvider(
-        <MultichainAccountMenu
-          accountGroupId={groupId}
-          isRemovable={false}
-          isOpen
-          onToggle={() => undefined}
-        />,
-        store,
-      );
+      await act(async () => {
+        renderWithProvider(
+          <MultichainAccountMenu
+            accountGroupId={groupId}
+            isRemovable={false}
+            isOpen
+            onToggle={() => undefined}
+          />,
+          store,
+        );
+      });
 
       const popover = document.querySelector(
         '.multichain-account-cell-popover-menu',

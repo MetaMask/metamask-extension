@@ -331,6 +331,9 @@
     "ui/components/multichain-accounts/add-multichain-account/add-multichain-account.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 3
     },
+    "ui/components/multichain-accounts/multichain-account-menu/multichain-account-menu.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 3
+    },
     "ui/components/multichain-accounts/multichain-address-rows-triggered-list/default-address.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
