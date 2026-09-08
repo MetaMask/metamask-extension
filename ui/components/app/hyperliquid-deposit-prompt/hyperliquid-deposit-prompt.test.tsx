@@ -70,23 +70,34 @@ jest.mock('../../../pages/confirmations/selectors/feature-flags', () => ({
   })),
 }));
 
-jest.mock('../../../pages/confirmations/components/send/asset/asset', () => ({
-  Asset: ({ onAssetSelect }: { onAssetSelect: (asset: Asset) => void }) => (
-    <button
-      data-testid="mock-asset-picker"
-      onClick={() =>
-        onAssetSelect({
-          address: '0x2222222222222222222222222222222222222222',
-          chainId: '0x1',
-          name: 'USD Coin',
-          symbol: 'USDC',
-        })
-      }
-    >
-      Mock asset picker
-    </button>
-  ),
-}));
+jest.mock('../../../pages/confirmations/components/send/asset/asset', () => {
+  const { useScrollContainer } = jest.requireActual<
+    typeof import('../../../contexts/scroll-container')
+  >('../../../contexts/scroll-container');
+
+  return {
+    Asset: ({ onAssetSelect }: { onAssetSelect: (asset: Asset) => void }) => {
+      const scrollContainerRef = useScrollContainer();
+
+      return (
+        <button
+          data-testid="mock-asset-picker"
+          data-scroll-container={scrollContainerRef ? 'present' : 'missing'}
+          onClick={() =>
+            onAssetSelect({
+              address: '0x2222222222222222222222222222222222222222',
+              chainId: '0x1',
+              name: 'USD Coin',
+              symbol: 'USDC',
+            })
+          }
+        >
+          Mock asset picker
+        </button>
+      );
+    },
+  };
+});
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -217,6 +228,19 @@ describe('HyperliquidDepositPrompt', () => {
       },
       sensitiveProperties: {},
     });
+  });
+
+  it('renders the picker inside a scroll container so the asset list virtualizes against the modal', () => {
+    renderComponent();
+
+    fireEvent.click(
+      screen.getByTestId('hyperliquid-deposit-prompt-token-select'),
+    );
+
+    expect(screen.getByTestId('mock-asset-picker')).toHaveAttribute(
+      'data-scroll-container',
+      'present',
+    );
   });
 
   it('updates the selected token when one is picked from the modal', () => {
