@@ -35,6 +35,43 @@ const getIsBasicFunctionalityConsistent = createSelector(
   },
 );
 
+const getBasicFunctionalityMigrationNotification = (state: {
+  metamask: {
+    preferences?: {
+      basicFunctionalityMigrationNotification?: 'modal' | 'toast' | null;
+      basicFunctionalityMigrationNotificationDismissed?: boolean;
+    };
+  };
+}) => state.metamask.preferences?.basicFunctionalityMigrationNotification;
+
+const getIsBasicFunctionalityMigrationNotificationDismissed = (state: {
+  metamask: {
+    preferences?: {
+      basicFunctionalityMigrationNotificationDismissed?: boolean;
+    };
+  };
+}) =>
+  Boolean(
+    state.metamask.preferences
+      ?.basicFunctionalityMigrationNotificationDismissed,
+  );
+
+export const getShouldShowBasicFunctionalityMigrationModal = createSelector(
+  getIsBasicFunctionalityToggleEnabled,
+  getBasicFunctionalityMigrationNotification,
+  getIsBasicFunctionalityMigrationNotificationDismissed,
+  (isToggleEnabled, notification, isDismissed) =>
+    isToggleEnabled && notification === 'modal' && !isDismissed,
+);
+
+export const getShouldShowBasicFunctionalityMigrationToast = createSelector(
+  getIsBasicFunctionalityToggleEnabled,
+  getBasicFunctionalityMigrationNotification,
+  getIsBasicFunctionalityMigrationNotificationDismissed,
+  (isToggleEnabled, notification, isDismissed) =>
+    isToggleEnabled && notification === 'toast' && !isDismissed,
+);
+
 /**
  * Gets whether the consolidated Basic Functionality experience should be shown.
  * The LD flag controls rollout eligibility. Persisted cohort users and legacy

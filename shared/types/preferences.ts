@@ -9,6 +9,7 @@ export type Preferences = {
   hideZeroBalanceTokens: boolean;
   isBasicFunctionalityConsolidatedEnabled: boolean;
   basicFunctionalityMigrationNotification: 'modal' | 'toast' | null;
+  basicFunctionalityMigrationNotificationDismissed: boolean;
   privacyMode: boolean;
   showConfirmationAdvancedDetails: boolean;
   showDefaultAddress: boolean;

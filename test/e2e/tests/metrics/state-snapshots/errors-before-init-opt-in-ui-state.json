@@ -243,6 +243,7 @@
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
         "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": false,
         "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",

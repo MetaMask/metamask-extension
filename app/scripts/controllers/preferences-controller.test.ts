@@ -488,6 +488,7 @@ describe('preferences controller', () => {
         hideZeroBalanceTokens: false,
         isBasicFunctionalityConsolidatedEnabled: false,
         basicFunctionalityMigrationNotification: null,
+        basicFunctionalityMigrationNotificationDismissed: false,
         skipDeepLinkInterstitial: false,
         dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
@@ -523,6 +524,7 @@ describe('preferences controller', () => {
         hideZeroBalanceTokens: false,
         isBasicFunctionalityConsolidatedEnabled: false,
         basicFunctionalityMigrationNotification: null,
+        basicFunctionalityMigrationNotificationDismissed: false,
         skipDeepLinkInterstitial: false,
         privacyMode: false,
         dismissSmartAccountSuggestionEnabled: false,
@@ -626,6 +628,48 @@ describe('preferences controller', () => {
     });
   });
 
+  describe('dismissBasicFunctionalityMigrationNotification', () => {
+    it('clears a scheduled migration notification', () => {
+      const { controller } = setupController({});
+      controller.setPreference(
+        'basicFunctionalityMigrationNotification',
+        'modal',
+      );
+
+      controller.dismissBasicFunctionalityMigrationNotification();
+
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBeNull();
+      expect(
+        controller.getPreferences()
+          .basicFunctionalityMigrationNotificationDismissed,
+      ).toBe(true);
+    });
+
+    it('does not reschedule a notice after dismiss', () => {
+      const { controller } = setupController({});
+      controller.setPreference(
+        'basicFunctionalityMigrationNotification',
+        'modal',
+      );
+      controller.dismissBasicFunctionalityMigrationNotification();
+
+      const landingState = controller.consolidateBasicFunctionality({
+        isSocialLogin: true,
+      });
+
+      expect(landingState).toBe(true);
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBeNull();
+      expect(
+        controller.getPreferences()
+          .basicFunctionalityMigrationNotificationDismissed,
+      ).toBe(true);
+    });
+  });
+
   describe('dismissSeedBackUpReminder', () => {
     it('defaults dismissSeedBackUpReminder to false', () => {
       const { controller } = setupController({});
@@ -716,6 +760,7 @@ describe('preferences controller', () => {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
             "basicFunctionalityMigrationNotification": null,
+            "basicFunctionalityMigrationNotificationDismissed": false,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
@@ -788,6 +833,7 @@ describe('preferences controller', () => {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
             "basicFunctionalityMigrationNotification": null,
+            "basicFunctionalityMigrationNotificationDismissed": false,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
@@ -874,6 +920,7 @@ describe('preferences controller', () => {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
             "basicFunctionalityMigrationNotification": null,
+            "basicFunctionalityMigrationNotificationDismissed": false,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
@@ -961,6 +1008,7 @@ describe('preferences controller', () => {
             "autoLockTimeLimit": undefined,
             "avatarType": "maskicon",
             "basicFunctionalityMigrationNotification": null,
+            "basicFunctionalityMigrationNotificationDismissed": false,
             "defaultAddressScope": "eip155",
             "dismissSmartAccountSuggestionEnabled": false,
             "featureNotificationsEnabled": false,
@@ -1310,6 +1358,7 @@ describe('preferences controller', () => {
             hideZeroBalanceTokens: true,
             isBasicFunctionalityConsolidatedEnabled: true,
             basicFunctionalityMigrationNotification: null,
+            basicFunctionalityMigrationNotificationDismissed: false,
             skipDeepLinkInterstitial: false,
             dismissSmartAccountSuggestionEnabled: false,
             featureNotificationsEnabled: true,

@@ -21,8 +21,8 @@ import {
   TRANSACTION_SHIELD_ROUTE,
 } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getIsBasicFunctionalityToggleEnabled } from '../../../selectors/multichain/feature-flags';
-import { setPreference, toggleDefaultView } from '../../../store/actions';
+import { getShouldShowBasicFunctionalityMigrationToast } from '../../../selectors/multichain/feature-flags';
+import { hideMigrationToast, toggleDefaultView } from '../../../store/actions';
 import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast/survey-toast';
@@ -186,18 +186,7 @@ function BasicFunctionalityMigrationToast() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const shouldShow = useSelector(
-    (state) =>
-      getIsBasicFunctionalityToggleEnabled(state) &&
-      state.metamask.preferences?.basicFunctionalityMigrationNotification ===
-        'toast',
-  );
-
-  const dismiss = () => {
-    dispatch(
-      setPreference('basicFunctionalityMigrationNotification', null, false),
-    );
-  };
+  const shouldShow = useSelector(getShouldShowBasicFunctionalityMigrationToast);
 
   return (
     shouldShow && (
@@ -211,7 +200,7 @@ function BasicFunctionalityMigrationToast() {
             key="basic-functionality-migration-settings-link"
             type="button"
             onClick={() => {
-              dismiss();
+              dispatch(hideMigrationToast());
               navigate(PRIVACY_ROUTE);
             }}
             className="inline h-auto min-h-0 cursor-pointer border-0 bg-transparent p-0 align-baseline text-primary-default"
@@ -219,7 +208,7 @@ function BasicFunctionalityMigrationToast() {
             {t('basicFunctionalityMigrationToastSettingsLink')}
           </button>,
         ])}
-        onClose={dismiss}
+        onClose={() => dispatch(hideMigrationToast())}
       />
     )
   );

@@ -2934,6 +2934,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.dismissSidePanelMigrationToast.bind(
           preferencesController,
         ),
+      dismissBasicFunctionalityMigrationNotification:
+        preferencesController.dismissBasicFunctionalityMigrationNotification.bind(
+          preferencesController,
+        ),
 
       setManageInstitutionalWallets:
         preferencesController.setManageInstitutionalWallets.bind(

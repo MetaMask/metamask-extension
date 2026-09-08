@@ -164,6 +164,7 @@ export const getDefaultPreferencesControllerState =
       hideZeroBalanceTokens: false,
       isBasicFunctionalityConsolidatedEnabled: false,
       basicFunctionalityMigrationNotification: null,
+      basicFunctionalityMigrationNotificationDismissed: false,
       privacyMode: false,
       showConfirmationAdvancedDetails: false,
       showDefaultAddress: true,
@@ -614,6 +615,9 @@ export class PreferencesController extends BaseController<
 
     const { landingState, notification } =
       getBasicFunctionalityConsolidationPlan(preferenceState, isSocialLogin);
+    const hasDismissedNotice =
+      this.state.preferences
+        .basicFunctionalityMigrationNotificationDismissed === true;
 
     this.update((state) => {
       state.useExternalServices = landingState;
@@ -623,7 +627,8 @@ export class PreferencesController extends BaseController<
       // useMultiAccountBalanceChecker is mirrored onto isMultiAccountBalancesEnabled
       state.isMultiAccountBalancesEnabled = landingState;
       state.preferences.isBasicFunctionalityConsolidatedEnabled = true;
-      state.preferences.basicFunctionalityMigrationNotification = notification;
+      state.preferences.basicFunctionalityMigrationNotification =
+        hasDismissedNotice ? null : notification;
     });
 
     return landingState;
@@ -1058,6 +1063,16 @@ export class PreferencesController extends BaseController<
   dismissSidePanelMigrationToast(): void {
     this.update((state) => {
       state.showSidePanelMigrationToast = false;
+    });
+  }
+
+  /**
+   * Dismisses the one-time Basic Functionality migration modal or toast.
+   */
+  dismissBasicFunctionalityMigrationNotification(): void {
+    this.update((state) => {
+      state.preferences.basicFunctionalityMigrationNotification = null;
+      state.preferences.basicFunctionalityMigrationNotificationDismissed = true;
     });
   }
 
