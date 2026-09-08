@@ -105,8 +105,8 @@ const IntervalBar = ({
             size={IconSize.Sm}
             color={
               chartType === CHART_TYPE_LINE
-                ? IconColor.iconDefault
-                : IconColor.iconAlternative
+                ? IconColor.IconDefault
+                : IconColor.IconAlternative
             }
           />
         </button>
@@ -130,8 +130,8 @@ const IntervalBar = ({
             size={IconSize.Sm}
             color={
               chartType === CHART_TYPE_CANDLE
-                ? IconColor.iconDefault
-                : IconColor.iconAlternative
+                ? IconColor.IconDefault
+                : IconColor.IconAlternative
             }
           />
         </button>

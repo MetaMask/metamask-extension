@@ -168,7 +168,7 @@ describe('useOHLCVChart – fetchOHLCV', () => {
 });
 
 describe('useOHLCVChart – INTERVAL_TO_TIME_PERIOD mapping', () => {
-  it.each([
+  it.each<[string, string]>([
     ['1m', '1d'],
     ['5m', '1d'],
     ['15m', '1d'],
@@ -176,7 +176,7 @@ describe('useOHLCVChart – INTERVAL_TO_TIME_PERIOD mapping', () => {
     ['4h', '1m'],
     ['1d', '1m'],
     ['1w', '1y'],
-  ])('maps interval "%s" → timePeriod "%s"', (interval, expected) => {
+  ])('maps interval "%s" → timePeriod "%s"', (interval: string, expected: string) => {
     expect(INTERVAL_TO_TIME_PERIOD[interval]).toBe(expected);
   });
 
