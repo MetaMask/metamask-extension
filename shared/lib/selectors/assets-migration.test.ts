@@ -67,6 +67,14 @@ const erc20AssetId = `eip155:1/erc20:${erc20AssetAddressLowercase}`;
 const solanaTokenAssetId =
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
+const tempoChainId = '0x1079';
+const tempoPathUsdAddressLowercase: Hex =
+  '0x20c0000000000000000000000000000000000000';
+const tempoPathUsdAssetId = `eip155:4217/erc20:${tempoPathUsdAddressLowercase}`;
+const tempoNetworkConfigurationsByChainId = {
+  [tempoChainId]: { nativeCurrency: 'USD' },
+};
+
 const nativePolygonAssetId = 'eip155:137/slip44:966';
 const bitcoinNativeAssetId = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
 const mockAccountId3 = 'mock-account-id-3';
@@ -1616,8 +1624,6 @@ describe('getCurrencyRateControllerCurrencyRates', () => {
               featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
             },
           },
-          currentCurrency: 'eur',
-          selectedCurrency: 'eur',
           currencyRates: {},
           assetsInfo: {
             [nativeEthAssetId]: { type: 'native', symbol: 'ETH', decimals: 18 },
@@ -1806,6 +1812,41 @@ describe('getTokenRatesControllerMarketData', () => {
       expect(marketData.price).toBe(usdcPriceInUsd / ethPriceInUsd);
       expect(marketData.currency).toBe('ETH');
       expect(marketData.tokenAddress).toBe(erc20AssetAddressChecksummed);
+    });
+
+    it('prices tokens on a USD-native chain with no native asset in USD', () => {
+      const state = {
+        metamask: {
+          ...enabledFlags,
+          marketData: {},
+          currentCurrency: 'eur',
+          selectedCurrency: 'eur',
+          currencyRates: {},
+          assetsInfo: {
+            [tempoPathUsdAssetId]: {
+              type: 'erc20',
+              symbol: 'pathUSD',
+              decimals: 6,
+            },
+          },
+          assetsPrice: {
+            [tempoPathUsdAssetId]: makeMockPrice({
+              id: 'pathusd',
+              price: 0.92,
+              usdPrice: 1,
+            }),
+          },
+          networkConfigurationsByChainId: tempoNetworkConfigurationsByChainId,
+        },
+      };
+      const result = getTokenRatesControllerMarketData(state);
+
+      const marketData =
+        result[tempoChainId][
+          toChecksumHexAddress(tempoPathUsdAddressLowercase) as Hex
+        ];
+      expect(marketData.price).toBeCloseTo(1);
+      expect(marketData.currency).toBe('USD');
     });
   });
 
