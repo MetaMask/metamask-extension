@@ -173,33 +173,30 @@ const AssetPage = ({
   );
   const acRef = React.useRef<AdvancedChartIframeRef>(null);
 
-  const handleIndicatorToggle = useCallback(
-    (name: string) => {
-      setAcIndicators((prev) => {
-        const next = new Set(prev);
-        if (next.has(name)) {
-          next.delete(name);
-          acRef.current?.postMessage(
-            name === 'Volume'
-              ? { type: 'TOGGLE_VOLUME', payload: { visible: false } }
-              : { type: 'REMOVE_INDICATOR', payload: { name } },
-          );
-        } else {
-          next.add(name);
-          acRef.current?.postMessage(
-            name === 'Volume'
-              ? {
-                  type: 'TOGGLE_VOLUME',
-                  payload: { visible: true, volumeOverlay: true },
-                }
-              : { type: 'ADD_INDICATOR', payload: { name } },
-          );
-        }
-        return next;
-      });
-    },
-    [],
-  );
+  const handleIndicatorToggle = useCallback((name: string) => {
+    setAcIndicators((prev) => {
+      const next = new Set(prev);
+      if (next.has(name)) {
+        next.delete(name);
+        acRef.current?.postMessage(
+          name === 'Volume'
+            ? { type: 'TOGGLE_VOLUME', payload: { visible: false } }
+            : { type: 'REMOVE_INDICATOR', payload: { name } },
+        );
+      } else {
+        next.add(name);
+        acRef.current?.postMessage(
+          name === 'Volume'
+            ? {
+                type: 'TOGGLE_VOLUME',
+                payload: { visible: true, volumeOverlay: true },
+              }
+            : { type: 'ADD_INDICATOR', payload: { name } },
+        );
+      }
+      return next;
+    });
+  }, []);
 
   const handleMAToggle = useCallback((ma: string) => {
     setAcIndicators((prev) => {

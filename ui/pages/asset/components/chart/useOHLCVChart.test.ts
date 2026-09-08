@@ -7,8 +7,22 @@ import {
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 const MOCK_API_CANDLES = [
-  { timestamp: 1700000000, open: 1, high: 2, low: 0.5, close: 1.5, volume: 100 },
-  { timestamp: 1700003600, open: 1.5, high: 3, low: 1, close: 2.5, volume: 200 },
+  {
+    timestamp: 1700000000,
+    open: 1,
+    high: 2,
+    low: 0.5,
+    close: 1.5,
+    volume: 100,
+  },
+  {
+    timestamp: 1700003600,
+    open: 1.5,
+    high: 3,
+    low: 1,
+    close: 2.5,
+    volume: 200,
+  },
 ];
 
 const mockFetchSuccess = (data = MOCK_API_CANDLES, status = 200) => {
@@ -110,9 +124,7 @@ describe('useOHLCVChart – fetchOHLCV', () => {
     const calledUrl = (global.fetch as jest.Mock).mock.calls[0][0] as string;
     const url = new URL(calledUrl);
 
-    expect(url.origin + url.pathname).toBe(
-      `${OHLCV_BASE_URL}/ethereum`,
-    );
+    expect(url.origin + url.pathname).toBe(`${OHLCV_BASE_URL}/ethereum`);
     expect(url.searchParams.get('timePeriod')).toBe('1m');
     expect(url.searchParams.get('interval')).toBe('4h');
     expect(url.searchParams.get('vsCurrency')).toBe('eur');

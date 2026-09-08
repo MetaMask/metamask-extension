@@ -25,8 +25,7 @@ export interface UseOHLCVChartResult {
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
-export const OHLCV_BASE_URL =
-  'https://price.api.cx.metamask.io/v3/ohlcv-chart';
+export const OHLCV_BASE_URL = 'https://price.api.cx.metamask.io/v3/ohlcv-chart';
 
 /** Maps a candle interval to the timePeriod query param the OHLCV API expects. */
 export const INTERVAL_TO_TIME_PERIOD: Record<string, string> = {
