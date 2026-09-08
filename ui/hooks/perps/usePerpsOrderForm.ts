@@ -3,7 +3,7 @@ import {
   getMaxAllowedAmount,
   type OrderType,
 } from '@metamask/perps-controller';
-import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   calculateMarginRequired,
@@ -231,7 +231,7 @@ export function usePerpsOrderForm({
   const displayAssetSymbol = getDisplaySymbol(asset);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const defaultLeverage = initialLeverage ?? TRADING_DEFAULTS.leverage;
-  const hasUserEditedAmount = useRef(false);
+  const [hasUserEditedAmount, setHasUserEditedAmount] = useState(false);
 
   const computeInitialAmountValue = useCallback(
     (leverage: number): string => {
@@ -367,7 +367,7 @@ export function usePerpsOrderForm({
           )
         : {};
 
-    hasUserEditedAmount.current = false;
+    setHasUserEditedAmount(false);
     if (mode === 'modify' && existingPosition) {
       setFormState({
         ...mockOrderFormDefaults,
@@ -419,7 +419,7 @@ export function usePerpsOrderForm({
   if (
     defaultAmountKey !== prevDefaultAmountKey &&
     mode === 'new' &&
-    !hasUserEditedAmount.current &&
+    !hasUserEditedAmount &&
     defaultAmountFieldsForBalance.amount &&
     (formState.amount !== defaultAmountFieldsForBalance.amount ||
       formState.balancePercent !== defaultAmountFieldsForBalance.balancePercent)
@@ -596,7 +596,7 @@ export function usePerpsOrderForm({
 
   // Form state update handlers
   const handleAmountChange = useCallback((amount: string) => {
-    hasUserEditedAmount.current = true;
+    setHasUserEditedAmount(true);
     setFormState((prev) => ({ ...prev, amount }));
   }, []);
 

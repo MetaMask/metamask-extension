@@ -33,6 +33,7 @@ import {
   ButtonSize,
   Skeleton,
 } from '@metamask/design-system-react';
+import { brandColor } from '@metamask/design-tokens';
 import type { PriceUpdate } from '@metamask/perps-controller';
 import {
   formatFundingRate,
@@ -84,8 +85,8 @@ import {
   PerpsCandlestickChart,
   PerpsCandlestickChartRef,
 } from '../../components/app/perps/perps-candlestick-chart';
+import type { ChartPriceLine } from '../../components/app/perps/perps-candlestick-chart';
 import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
-import { buildPerpsChartPriceLines } from '../../components/app/perps/perps-chart-content/build-perps-chart-price-lines';
 import {
   CandlePeriod,
   TimeDuration,
@@ -640,8 +641,16 @@ const PerpsMarketDetailPage = () => {
   const [cancelOrderTarget, setCancelOrderTarget] = useState<Order | null>(
     null,
   );
-  const modifyMenuRef = useRef<HTMLDivElement>(null);
-  const marginMenuRef = useRef<HTMLDivElement>(null);
+  const [marginMenuElement, setMarginMenuElement] =
+    useState<HTMLDivElement | null>(null);
+  const [modifyMenuElement, setModifyMenuElement] =
+    useState<HTMLDivElement | null>(null);
+  const setMarginMenuRef = useCallback((node: HTMLDivElement | null) => {
+    setMarginMenuElement(node);
+  }, []);
+  const setModifyMenuRef = useCallback((node: HTMLDivElement | null) => {
+    setModifyMenuElement(node);
+  }, []);
 
   // Parse fallback price from market data (used before candle stream is ready)
   const marketPrice = useMemo(() => {
@@ -680,35 +689,95 @@ const PerpsMarketDetailPage = () => {
       return formatPerpsFiatUniversal(market.price);
     }
     return '$0.00';
-  }, [market?.price, livePrice?.price, chartCurrentPrice]);
+  }, [market, livePrice?.price, chartCurrentPrice]);
 
   // 24h change prefers live stream updates when available, with market-data fallback.
   const displayChange = formatSignedChangePercent(
     livePrice?.percentChange24h ?? market?.change24hPercent ?? '',
   );
 
-  const chartPriceLines = useMemo(
-    () =>
-      buildPerpsChartPriceLines({
-        chartCurrentPrice,
-        isDark,
-        position: position
-          ? {
-              entryPrice: position.entryPrice,
-              takeProfitPrice: effectiveTakeProfitPrice,
-              stopLossPrice: effectiveStopLossPrice,
-              liquidationPrice: position.liquidationPrice,
-            }
-          : null,
-      }),
-    [
-      chartCurrentPrice,
-      effectiveStopLossPrice,
-      effectiveTakeProfitPrice,
-      isDark,
-      position,
-    ],
-  );
+  // Build price lines for chart overlay (current price + TP, Entry, SL)
+  // Current price line is always shown; TP/Entry/SL only when position exists.
+  const chartPriceLines = useMemo((): ChartPriceLine[] => {
+    const lines: ChartPriceLine[] = [];
+
+    // Current price line — always shown, derived from last candle close
+    if (chartCurrentPrice > 0) {
+      lines.push({
+        price: chartCurrentPrice,
+        label: '',
+        // Matches mobile `background.muted`: dark=#ffffff0a (~4%), light=#b4b4b528 (~16%)
+        color: isDark ? '#ffffff0a' : '#b4b4b528',
+        lineStyle: 2,
+        lineWidth: 2,
+      });
+    }
+
+    // Position-specific lines (only when user has an open position)
+    if (position) {
+      // Take Profit line — matches mobile `success.default`
+      if (effectiveTakeProfitPrice) {
+        const tpPrice = parsePerpsDisplayPrice(effectiveTakeProfitPrice);
+        if (!isNaN(tpPrice) && tpPrice > 0) {
+          lines.push({
+            price: tpPrice,
+            label: 'TP',
+            color: isDark ? brandColor.lime100 : brandColor.lime500,
+            lineStyle: 2,
+          });
+        }
+      }
+
+      // Entry price line — matches mobile `text.muted`
+      if (position.entryPrice) {
+        const entryPrice = parsePerpsDisplayPrice(position.entryPrice);
+        if (!isNaN(entryPrice) && entryPrice > 0) {
+          lines.push({
+            price: entryPrice,
+            label: 'Entry',
+            color: isDark ? brandColor.grey600 : brandColor.grey200,
+            lineStyle: 2,
+          });
+        }
+      }
+
+      // Stop Loss line — matches mobile `background.alternative`
+      // Intentionally subtle: SL is a reference marker, not a danger indicator like Liq.
+      if (effectiveStopLossPrice) {
+        const slPrice = parsePerpsDisplayPrice(effectiveStopLossPrice);
+        if (!isNaN(slPrice) && slPrice > 0) {
+          lines.push({
+            price: slPrice,
+            label: 'SL',
+            color: isDark ? brandColor.grey1000 : brandColor.grey050,
+            lineStyle: 2,
+          });
+        }
+      }
+
+      // Liquidation price line — matches mobile `error.default`
+      // Same as down candles so traders immediately recognise the danger level.
+      if (position.liquidationPrice) {
+        const liqPrice = parsePerpsDisplayPrice(position.liquidationPrice);
+        if (!isNaN(liqPrice) && liqPrice > 0) {
+          lines.push({
+            price: liqPrice,
+            label: 'Liq',
+            color: isDark ? brandColor.red300 : brandColor.red500,
+            lineStyle: 2,
+          });
+        }
+      }
+    }
+
+    return lines;
+  }, [
+    position,
+    chartCurrentPrice,
+    isDark,
+    effectiveTakeProfitPrice,
+    effectiveStopLossPrice,
+  ]);
 
   // Handle candle period change
   //
@@ -1416,7 +1485,7 @@ const PerpsMarketDetailPage = () => {
 
                 {/* Margin Card - click to open Add/Remove margin popover */}
                 <Box
-                  ref={marginMenuRef}
+                  ref={setMarginMenuRef}
                   className="relative flex-1 rounded-xl bg-muted px-4 py-3 cursor-pointer hover:bg-muted-hover active:bg-muted-pressed transition-colors"
                   flexDirection={BoxFlexDirection.Column}
                   onClick={handleOpenMarginMenu}
@@ -1439,7 +1508,7 @@ const PerpsMarketDetailPage = () => {
                     {formatPerpsFiatMinimal(position.marginUsed)}
                   </SensitiveText>
                   <Popover
-                    referenceElement={marginMenuRef.current}
+                    referenceElement={marginMenuElement}
                     isOpen={isMarginMenuOpen}
                     isPortal
                     onClickOutside={() => setIsMarginMenuOpen(false)}
@@ -1936,7 +2005,7 @@ const PerpsMarketDetailPage = () => {
             data-testid="perps-position-cta-buttons"
           >
             {/* Modify dropdown */}
-            <Box ref={modifyMenuRef} className="flex-1 min-w-0">
+            <Box ref={setModifyMenuRef} className="flex-1 min-w-0">
               <Button
                 variant={ButtonVariant.Secondary}
                 size={ButtonSize.Lg}
@@ -1964,7 +2033,7 @@ const PerpsMarketDetailPage = () => {
                 />
               </Button>
               <Popover
-                referenceElement={modifyMenuRef.current}
+                referenceElement={modifyMenuElement}
                 isOpen={isModifyMenuOpen}
                 isPortal
                 onClickOutside={() => setIsModifyMenuOpen(false)}

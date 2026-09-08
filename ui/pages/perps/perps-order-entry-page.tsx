@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useState,
   useEffect,
+  useLayoutEffect,
   useRef,
 } from 'react';
 import type { Json } from '@metamask/utils';
@@ -343,7 +344,6 @@ const PerpsOrderEntryPage = () => {
   const ctaRef = useRef<HTMLDivElement>(null);
   const orderTypeInteractionSkippedRef = useRef(false);
   const trackRef = useRef(track);
-  trackRef.current = track;
   // Last size input method the user used (keypad/percentage/max), attributed on
   // PERPS_TRANSACTION_CONSIDERED. Defaults to 'default' until the
   // user interacts with a size control.
@@ -355,7 +355,10 @@ const PerpsOrderEntryPage = () => {
   // Abandon-order tracking: latest form snapshot, a stable reader for it, and
   // the commit flag that suppresses the event once an order is submitted.
   const latestAbandonPropsRef = useRef<Record<string, Json>>({});
-  const getAbandonProperties = useRef(() => latestAbandonPropsRef.current);
+  const getAbandonProperties = useCallback(
+    () => latestAbandonPropsRef.current,
+    [],
+  );
   const hasSubmittedOrderRef = useRef(false);
   // Read by the considered-event effect, which is declared above `currentPrice`
   // and must not re-arm its debounce when the price ticks.
@@ -364,6 +367,11 @@ const PerpsOrderEntryPage = () => {
   // re-arming its debounce whenever the estimate recomputes.
   const slippageTradePropertiesRef = useRef<Record<string, Json>>({});
   const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
+
+  useLayoutEffect(() => {
+    trackRef.current = track;
+  }, [track]);
+
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const activeProvider = useSelector(selectPerpsActiveProvider);
   const hasPendingPerpsDeposit = useSelector(selectPerpsDepositPending);
@@ -769,7 +777,7 @@ const PerpsOrderEntryPage = () => {
     orderDirection,
   ]);
   usePerpsAbandonOrderTracking({
-    getAbandonProperties: getAbandonProperties.current,
+    getAbandonProperties,
     hasCommittedRef: hasSubmittedOrderRef,
     // Only once the order form actually renders. The component returns early
     // for the feature-disabled, still-loading and market-not-found paths, and
@@ -904,7 +912,10 @@ const PerpsOrderEntryPage = () => {
   if (Number.isFinite(liveStreamPrice) && liveStreamPrice > 0) {
     currentPrice = liveStreamPrice;
   }
-  currentPriceRef.current = currentPrice;
+
+  useLayoutEffect(() => {
+    currentPriceRef.current = currentPrice;
+  }, [currentPrice]);
 
   const marketOrders = useMemo(
     () => allOrders.filter((order) => order.symbol === decodedSymbol),
@@ -1164,7 +1175,10 @@ const PerpsOrderEntryPage = () => {
     }),
     [estimatedSlippagePct, maxSlippageBps, maxSlippageSource],
   );
-  slippageTradePropertiesRef.current = slippageTradeProperties;
+
+  useLayoutEffect(() => {
+    slippageTradePropertiesRef.current = slippageTradeProperties;
+  }, [slippageTradeProperties]);
 
   const isSubmitDisabled =
     !selectedAddress ||
@@ -1231,7 +1245,7 @@ const PerpsOrderEntryPage = () => {
       }
     }
     return '$0.00';
-  }, [currentPrice, market?.price]);
+  }, [currentPrice, market]);
 
   // 24h change prefers live stream updates when available, with market-data fallback.
   const displayChange = formatSignedChangePercent(

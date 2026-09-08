@@ -162,9 +162,6 @@ export const OrderEntry = ({
       ? t('perpsFeesTooltipHyperliquidFee')
       : t('perpsFeesTooltipProviderFee');
 
-  const onCalculationsChangeRef = useRef(onCalculationsChange);
-  onCalculationsChangeRef.current = onCalculationsChange;
-
   const prevCalculationsRef = useRef<OrderCalculations | null>(null);
 
   const hasCalculationsChanged = useCallback(
@@ -187,9 +184,9 @@ export const OrderEntry = ({
   useEffect(() => {
     if (hasCalculationsChanged(prevCalculationsRef.current, calculations)) {
       prevCalculationsRef.current = calculations;
-      onCalculationsChangeRef.current?.(calculations);
+      onCalculationsChange?.(calculations);
     }
-  }, [calculations, hasCalculationsChanged]);
+  }, [calculations, hasCalculationsChanged, onCalculationsChange]);
 
   const handleOrderTypeClick = (type: OrderType) => {
     handleOrderTypeChange(type);
