@@ -748,6 +748,44 @@ class TokensTab extends HomePage {
     await this.driver.clickElementSafe(this.lowValueAssetsToggle);
   }
 
+  /**
+   * Waits until a token name cell is in the DOM, expanding the low-value
+   * section as it appears. Unpriced ERC-20s are collapsed whenever another
+   * token (typically native ETH from fixture `assetsPrice`) has a fiat value,
+   * and that bucket can land after first paint.
+   *
+   * @param tokenSymbol - Token name text to wait for
+   */
+  private async waitForTokenNameInList(tokenSymbol: string): Promise<void> {
+    await this.driver.waitUntil(
+      async () => {
+        const tokenVisible = await this.driver.isElementPresentAndVisible(
+          {
+            text: tokenSymbol,
+            css: this.tokenName,
+          },
+          250,
+        );
+
+        if (tokenVisible) {
+          return true;
+        }
+
+        const toggleVisible = await this.driver.isElementPresentAndVisible(
+          this.lowValueAssetsToggle,
+          250,
+        );
+
+        if (toggleVisible) {
+          await this.driver.clickElementSafe(this.lowValueAssetsToggle, 1000);
+        }
+
+        return false;
+      },
+      { timeout: this.driver.timeout, interval: 200 },
+    );
+  }
+
   private async findTokenRowByName(tokenName: string): Promise<WebElement> {
     await this.expandLowValueAssetsIfPresent();
 
@@ -1066,7 +1104,7 @@ class TokensTab extends HomePage {
    */
   async openTokenDetails(tokenSymbol: string): Promise<void> {
     console.log(`Opening token details for ${tokenSymbol}`);
-    await this.expandLowValueAssetsIfPresent();
+    await this.waitForTokenNameInList(tokenSymbol);
     await this.driver.clickElement({
       text: tokenSymbol,
       css: this.tokenName,
