@@ -13,8 +13,6 @@ import type {
   RatesControllerState,
   TokenRatesControllerState,
   TokenBalancesControllerState,
-  TokenListMap,
-  TokenListState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
@@ -80,7 +78,6 @@ import onboardingFixtureJson from './onboarding-fixture.json';
 
 const STORAGE_SERVICE_NAMESPACE = Object.freeze({
   SNAP_CONTROLLER: 'SnapController',
-  TOKEN_LIST_CONTROLLER: 'TokenListController',
 } as const);
 
 const LIFECYCLE_HOOKS_EXAMPLE_SNAP_ID =
@@ -142,10 +139,6 @@ type StorageServiceNamespaceMap = {
   [STORAGE_SERVICE_NAMESPACE.SNAP_CONTROLLER]: {
     key: string;
     value: { sourceCode: string };
-  };
-  [STORAGE_SERVICE_NAMESPACE.TOKEN_LIST_CONTROLLER]: {
-    key: `tokensChainsCache:${Hex}`;
-    value: { timestamp: number; data: TokenListMap };
   };
 };
 
@@ -450,15 +443,6 @@ class FixtureBuilderV2 {
     data: Partial<TokenBalancesControllerState>,
   ): this {
     merge(this.fixture.data.TokenBalancesController, data);
-    return this;
-  }
-
-  withTokenListController(data: Partial<TokenListState>): this {
-    (this.fixture.data as Record<string, unknown>).TokenListController ??= {};
-    merge(
-      (this.fixture.data as Record<string, unknown>).TokenListController,
-      data,
-    );
     return this;
   }
 
@@ -1648,19 +1632,6 @@ class FixtureBuilderV2 {
       key: snapId,
       value: { sourceCode },
     });
-  }
-
-  withTokenListControllerStorageServiceData(
-    entries: { chainId: Hex; data: TokenListMap }[],
-  ): this {
-    for (const { chainId, data } of entries) {
-      this.withStorageServiceData({
-        namespace: STORAGE_SERVICE_NAMESPACE.TOKEN_LIST_CONTROLLER,
-        key: `tokensChainsCache:${chainId}`,
-        value: { timestamp: Date.now(), data },
-      });
-    }
-    return this;
   }
 
   build(): FixtureBuildResult {

@@ -408,7 +408,6 @@
     "tokenSecurityTypeDestination": null,
     "tokenWarnings": "object",
     "tokens": "object",
-    "tokensChainsCache": {},
     "tracesBeforeMetricsOptIn": "object",
     "tradeConfigurations": "object",
     "traits": "object",

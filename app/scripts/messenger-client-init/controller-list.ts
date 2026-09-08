@@ -28,7 +28,6 @@ import {
   RatesController,
   TokenBalancesController,
   TokenDetectionController,
-  TokenListController,
   TokenRatesController,
   TokensController,
 } from '@metamask/assets-controllers';
@@ -233,7 +232,6 @@ export type MessengerClient =
   | ShieldSubscriptionService
   | TokenBalancesController
   | TokenDetectionController
-  | TokenListController
   | TokensController
   | TransactionController
   | TransactionPayController
@@ -334,7 +332,6 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   SubscriptionController['state'] &
   TokenBalancesController['state'] &
   TokenDetectionController['state'] &
-  TokenListController['state'] &
   TokensController['state'] &
   StaticAssetsController['state'] &
   TransactionController['state'] &

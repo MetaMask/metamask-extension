@@ -25,10 +25,7 @@ import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { MultichainAccountService } from '@metamask/multichain-account-service';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import {
-  RatesController,
-  TokenListController,
-} from '@metamask/assets-controllers';
+import { RatesController } from '@metamask/assets-controllers';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import {
   Caip25CaveatType,
@@ -620,8 +617,6 @@ describe('MetaMaskController', () => {
         .mockReturnValue(false);
 
       jest.spyOn(Messenger.prototype, 'subscribe');
-      jest.spyOn(TokenListController.prototype, 'start');
-      jest.spyOn(TokenListController.prototype, 'stop');
 
       metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
