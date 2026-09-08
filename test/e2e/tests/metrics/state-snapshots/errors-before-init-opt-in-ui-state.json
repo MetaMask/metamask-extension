@@ -126,7 +126,6 @@
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": "boolean",
-      "fragments": "object",
       "marketingCampaignCookieId": null,
       "tracesBeforeMetricsOptIn": "object",
       "traits": "object"
@@ -369,6 +368,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 224
+    "version": 225
   }
 }
