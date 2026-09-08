@@ -6,7 +6,7 @@ import {
   DefiReferralPartner,
 } from '../../../../shared/constants/defi-referrals';
 import { SECOND } from '../../../../shared/constants/time';
-import type { ExtendedJSONRPCRequest } from './createDefiReferralMiddleware';
+import type { TabAwareJsonRpcRequest } from '../rpc-request-utils';
 
 const mockLogError = jest.fn();
 jest.mock('loglevel', () => ({ error: mockLogError }));
@@ -25,7 +25,7 @@ const createMockRequest = (
   origin: string,
   method = 'wallet_requestPermissions',
   tabId: number | undefined = 123,
-): ExtendedJSONRPCRequest => ({
+): TabAwareJsonRpcRequest => ({
   id: 1,
   jsonrpc: '2.0',
   method,
@@ -84,7 +84,7 @@ describe('createDefiReferralMiddleware', () => {
   });
 
   const runMiddleware = (
-    request: ExtendedJSONRPCRequest,
+    request: TabAwareJsonRpcRequest,
     response: PendingJsonRpcResponse<Json>,
   ) => {
     const middleware = createDefiReferralMiddleware(mockHandleReferral);
@@ -193,7 +193,7 @@ describe('createDefiReferralMiddleware', () => {
       };
 
       await runMiddleware(
-        requestMissingOrigin as ExtendedJSONRPCRequest,
+        requestMissingOrigin as TabAwareJsonRpcRequest,
         createWalletRequestPermissionsResponse(TEST_PARTNER_ORIGIN),
       );
 
@@ -209,7 +209,7 @@ describe('createDefiReferralMiddleware', () => {
       };
 
       await runMiddleware(
-        requestMissingTabId as ExtendedJSONRPCRequest,
+        requestMissingTabId as TabAwareJsonRpcRequest,
         createWalletRequestPermissionsResponse(TEST_PARTNER_ORIGIN),
       );
 

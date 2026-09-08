@@ -11,7 +11,9 @@ import {
   type CaipChainId,
   type Hex,
   isCaipAssetType,
+  isStrictHexString,
 } from '@metamask/utils';
+import type { Asset } from '@metamask/assets-controllers';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import {
   Box,
@@ -26,6 +28,14 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useTokenAssetSecurityResults } from '#ui/hooks/token-asset/useTokenAssetSecurityResults';
+import {
+  getNativeAssetId,
+  isEvmChainId,
+  isTronSpecialAsset,
+  normalizeTokenAssetId,
+} from '#shared/lib/asset-utils';
+import { buildEvmCaip19AssetId } from '#shared/lib/multichain/buildEvmCaip19AssetId';
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {
@@ -52,15 +62,12 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
-import {
-  isEvmChainId,
-  isTronSpecialAsset,
-} from '../../../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
 import { isMusdToken } from '../../musd/constants';
 import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
 
 type TokenListProps = {
   onTokenClick: (
@@ -97,6 +104,26 @@ const getInitialLowValueAssetsExpanded = () => {
 
 const setLowValueAssetsExpandedSessionValue = (isExpanded: boolean) => {
   lowValueAssetsExpandedSessionValue = isExpanded;
+};
+
+const toCaipAssetId = (asset: Asset): CaipAssetType | undefined => {
+  const { assetId, chainId, isNative } = asset;
+
+  if (assetId && isCaipAssetType(assetId)) {
+    return normalizeTokenAssetId(assetId);
+  }
+
+  if (isNative) {
+    const nativeAssetId = getNativeAssetId(chainId as Hex | undefined);
+    return nativeAssetId ? normalizeTokenAssetId(nativeAssetId) : undefined;
+  }
+
+  const evmAddress = 'address' in asset ? asset.address : assetId;
+  if (evmAddress && isStrictHexString(chainId)) {
+    return buildEvmCaip19AssetId(evmAddress, chainId) as CaipAssetType;
+  }
+
+  return undefined;
 };
 
 const getLowValueAssetFiatThreshold = (currencyRates?: CurrencyRates) => {
@@ -209,6 +236,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   );
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const { isStockToken } = useRWAToken();
   const [isLowValueAssetsExpanded, setIsLowValueAssetsExpanded] = useState(
     getInitialLowValueAssetsExpanded,
   );
@@ -275,6 +303,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
         title: asset.name,
         address: 'address' in asset ? asset.address : (asset.assetId as Hex),
         chainId: asset.chainId as Hex,
+        caipAssetId: toCaipAssetId(asset),
       };
 
       return token;
@@ -316,11 +345,33 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
   const lowValueAssetCount = lowValueTokens.length;
 
+  const displayedAssetIds = useMemo(
+    () =>
+      [
+        ...visibleTokens,
+        ...(isLowValueAssetsExpanded ? lowValueTokens : []),
+      ].flatMap((token) =>
+        token.caipAssetId && !isStockToken(token) ? [token.caipAssetId] : [],
+      ),
+    [isLowValueAssetsExpanded, isStockToken, lowValueTokens, visibleTokens],
+  );
+
+  const deferredDisplayedAssetIds = useDeferredValue(displayedAssetIds);
+
+  const securityResultByAssetId = useTokenAssetSecurityResults({
+    assetIds: deferredDisplayedAssetIds,
+  });
+
   const tokenListItems = useMemo<TokenListDisplayItem[]>(() => {
     const visibleTokenItems: TokenListDisplayItem[] = visibleTokens.map(
       (token) => ({
         type: 'token',
-        token,
+        token: {
+          ...token,
+          safetyResult: token.caipAssetId
+            ? securityResultByAssetId[token.caipAssetId]
+            : undefined,
+        },
       }),
     );
 
@@ -337,7 +388,12 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       ...(isLowValueAssetsExpanded
         ? lowValueTokens.map((token) => ({
             type: 'token' as const,
-            token,
+            token: {
+              ...token,
+              safetyResult: token.caipAssetId
+                ? securityResultByAssetId[token.caipAssetId]
+                : undefined,
+            },
           }))
         : []),
     ];
@@ -345,6 +401,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     isLowValueAssetsExpanded,
     lowValueAssetCount,
     lowValueTokens,
+    securityResultByAssetId,
     visibleTokens,
   ]);
 
