@@ -253,7 +253,8 @@ const PerpsCandlestickChart = forwardRef<
     // Candle count we last applied ourselves (zoom restore, period change).
     // lightweight-charts applies range changes on a later frame and may emit
     // one callback or several for the same change, so echoes are recognised by
-    // the count they report rather than by counting callbacks.
+    // the count they report rather than by counting callbacks. Cleared by the
+    // first range that reports a different count, i.e. a real zoom.
     const programmaticVisibleCountRef = useRef<number | null>(null);
 
     const applyProgrammaticVisibleRange = useCallback(
@@ -472,10 +473,13 @@ const PerpsCandlestickChart = forwardRef<
         // Restoring a saved zoom must not write the on-screen count back over
         // the saved one, but the edge detection above still has to run: a saved
         // count wider than the loaded history pins the left edge at zero and is
-        // only fillable by fetching more candles.
+        // only fillable by fetching more candles. Panning and clicking keep the
+        // count, so they stay suppressed too; only a zoom reports a different
+        // count, and that ends the window for everything that follows.
         if (visibleCandleCount === programmaticVisibleCountRef.current) {
           return;
         }
+        programmaticVisibleCountRef.current = null;
 
         if (visibleCandleCount !== lastVisibleCandleCountRef.current) {
           lastVisibleCandleCountRef.current = visibleCandleCount;
@@ -549,23 +553,12 @@ const PerpsCandlestickChart = forwardRef<
         }
       });
 
-      // A gesture ends the programmatic-echo window: the next range the chart
-      // reports is the trader's own zoom and has to be persisted even when it
-      // lands on the count we applied.
-      const handleUserGesture = () => {
-        programmaticVisibleCountRef.current = null;
-      };
-      container.addEventListener('wheel', handleUserGesture, { passive: true });
-      container.addEventListener('pointerdown', handleUserGesture);
-
       // Add resize listener
       window.addEventListener('resize', handleResize);
 
       // Cleanup on unmount / before effect re-runs (e.g. theme change)
       return () => {
         clearTimeout(paneHeightTimeoutId);
-        container.removeEventListener('wheel', handleUserGesture);
-        container.removeEventListener('pointerdown', handleUserGesture);
         window.removeEventListener('resize', handleResize);
         if (chartRef.current) {
           chartRef.current.remove();

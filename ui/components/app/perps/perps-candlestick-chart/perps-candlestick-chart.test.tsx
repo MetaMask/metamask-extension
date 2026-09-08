@@ -295,6 +295,19 @@ describe('PerpsCandlestickChart — volume axis label on hover (TAT-2970)', () =
 });
 
 describe('PerpsCandlestickChart visible candle persistence', () => {
+  const buildCandleData = (candleCount: number) => ({
+    symbol: 'ETH',
+    interval: '1h',
+    candles: Array.from({ length: candleCount }, (_, index) => ({
+      time: 1_700_000_000_000 + index * 3_600_000,
+      open: '100',
+      high: '110',
+      low: '90',
+      close: '105',
+      volume: '50',
+    })),
+  });
+
   beforeEach(() => {
     mockVisibleRangeCallback = undefined;
     mockSetVisibleLogicalRange.mockReset();
@@ -425,26 +438,14 @@ describe('PerpsCandlestickChart visible candle persistence', () => {
     }
   });
 
-  it('persists the next user zoom when a forced reset emits a single range callback', () => {
+  it('persists a user zoom after a forced reset emits a single range callback', () => {
     const onVisibleCandleCountChange = jest.fn();
     const chartRef = React.createRef<PerpsCandlestickChartRef>();
-    const candleData = {
-      symbol: 'ETH',
-      interval: '1h',
-      candles: Array.from({ length: 10 }, (_, index) => ({
-        time: 1_700_000_000_000 + index * 3_600_000,
-        open: '100',
-        high: '110',
-        low: '90',
-        close: '105',
-        volume: '50',
-      })),
-    };
 
-    const { container } = renderWithProvider(
+    renderWithProvider(
       <PerpsCandlestickChart
         ref={chartRef}
-        candleData={candleData as never}
+        candleData={buildCandleData(10) as never}
         initialVisibleCandleCount={75}
         onVisibleCandleCountChange={onVisibleCandleCountChange}
       />,
@@ -460,13 +461,45 @@ describe('PerpsCandlestickChart visible candle persistence', () => {
     expect(onVisibleCandleCountChange).not.toHaveBeenCalled();
 
     act(() => {
-      fireEvent.wheel(
-        container.querySelector('.perps-candlestick-chart') as HTMLElement,
-      );
+      mockVisibleRangeCallback?.({ from: 0, to: 41 });
+    });
+    expect(onVisibleCandleCountChange).toHaveBeenCalledWith(40);
+
+    // Zooming back to the restored count is the trader's own choice now that
+    // the programmatic window is over.
+    act(() => {
+      mockVisibleRangeCallback?.({ from: 0, to: 11 });
+    });
+    expect(onVisibleCandleCountChange).toHaveBeenLastCalledWith(10);
+  });
+
+  it('does not persist the history-limited count while panning the restored zoom', () => {
+    const onVisibleCandleCountChange = jest.fn();
+
+    const { container } = renderWithProvider(
+      <PerpsCandlestickChart
+        candleData={buildCandleData(10) as never}
+        initialVisibleCandleCount={75}
+        onVisibleCandleCountChange={onVisibleCandleCountChange}
+      />,
+      mockStore,
+    );
+
+    act(() => {
       mockVisibleRangeCallback?.({ from: 0, to: 11 });
     });
 
-    expect(onVisibleCandleCountChange).toHaveBeenCalledWith(10);
+    // A pan keeps the zoom level, so its ranges still report the 10 candles the
+    // restore was limited to and must not overwrite the saved 75.
+    act(() => {
+      fireEvent.pointerDown(
+        container.querySelector('.perps-candlestick-chart') as HTMLElement,
+      );
+      mockVisibleRangeCallback?.({ from: 2, to: 13 });
+      mockVisibleRangeCallback?.({ from: 4, to: 15 });
+    });
+
+    expect(onVisibleCandleCountChange).not.toHaveBeenCalled();
   });
 
   it('requests more history when the restored zoom pins the left edge at zero', () => {
