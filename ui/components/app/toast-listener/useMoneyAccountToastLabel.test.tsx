@@ -1,7 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import {
   clearMoneyAccountDepositIntent,
   getMoneyAccountDepositIntent,
@@ -41,6 +40,8 @@ jest.mock('react-redux', () => ({
 const MUSD_ADDRESS = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
 const RECIPIENT = '0x1111111111111111111111111111111111111111';
 const BATCH_ID = '0xbatch';
+const DEPOSIT_TX = { type: 'moneyAccountDeposit' };
+const WITHDRAW_TX = { type: 'moneyAccountWithdraw' };
 
 function encodeTransfer(recipient: string, amount: bigint) {
   return `0xa9059cbb${recipient.slice(2).padStart(64, '0')}${amount
@@ -48,38 +49,36 @@ function encodeTransfer(recipient: string, amount: bigint) {
     .padStart(64, '0')}`;
 }
 
-function buildItem(
-  type: 'moneyAccountDeposit' | 'moneyAccountWithdraw',
-  fiatAmount?: string,
-): ActivityListItem {
-  return {
-    type,
-    chainId: 'eip155:59144',
-    status: 'pending',
-    timestamp: 0,
-    data: fiatAmount ? { fiat: { amount: fiatAmount } } : {},
-  } as ActivityListItem;
-}
-
-function setTransaction(overrides: Partial<TransactionMeta>) {
+function setTransaction(
+  nested: Record<string, unknown>[],
+  overrides: Partial<TransactionMeta> = {},
+) {
   mockTransaction = {
     id: 'tx-1',
     batchId: BATCH_ID,
     chainId: '0xe708',
+    nestedTransactions: nested,
     ...overrides,
   } as TransactionMeta;
 }
 
-function setWithdrawTransfer() {
-  setTransaction({
-    nestedTransactions: [
-      {
-        type: 'transfer',
-        to: MUSD_ADDRESS,
-        data: encodeTransfer(RECIPIENT, 100000000n),
-      },
-    ],
-  } as Partial<TransactionMeta>);
+function setDeposit(overrides: Partial<TransactionMeta> = {}) {
+  setTransaction([DEPOSIT_TX], overrides);
+}
+
+function setWithdraw(recipient?: string) {
+  setTransaction(
+    recipient
+      ? [
+          WITHDRAW_TX,
+          {
+            type: 'transfer',
+            to: MUSD_ADDRESS,
+            data: encodeTransfer(recipient, 100000000n),
+          },
+        ]
+      : [WITHDRAW_TX],
+  );
 }
 
 describe('useMoneyAccountToastLabel', () => {
@@ -91,13 +90,11 @@ describe('useMoneyAccountToastLabel', () => {
     clearMoneyAccountDepositIntent(BATCH_ID);
   });
 
-  it('returns undefined for non money account items', () => {
+  it('returns undefined for transactions that are not money account batches', () => {
+    setTransaction([{ type: 'transfer' }]);
+
     const { result } = renderHook(() =>
-      useMoneyAccountToastLabel(
-        'pending',
-        { type: 'convert' } as ActivityListItem,
-        'tx-1',
-      ),
+      useMoneyAccountToastLabel('pending', 'tx-1'),
     );
 
     expect(result.current).toBeUndefined();
@@ -105,11 +102,10 @@ describe('useMoneyAccountToastLabel', () => {
 
   describe('deposit', () => {
     it('prefers the recorded intent, then derives it from the payment token', () => {
-      const item = buildItem('moneyAccountDeposit');
-      setTransaction({ metamaskPay: { tokenAddress: MUSD_ADDRESS } });
+      setDeposit({ metamaskPay: { tokenAddress: MUSD_ADDRESS } });
 
       const derived = renderHook(() =>
-        useMoneyAccountToastLabel('pending', item, 'tx-1'),
+        useMoneyAccountToastLabel('pending', 'tx-1'),
       );
       expect(derived.result.current).toStrictEqual({
         title: 'moneyToastDepositInProgressTitleAddMusd',
@@ -118,7 +114,7 @@ describe('useMoneyAccountToastLabel', () => {
 
       setMoneyAccountDepositIntent(BATCH_ID, 'card');
       const recorded = renderHook(() =>
-        useMoneyAccountToastLabel('pending', item, 'tx-1'),
+        useMoneyAccountToastLabel('pending', 'tx-1'),
       );
       expect(recorded.result.current).toStrictEqual({
         title: 'moneyToastDepositInProgressTitleCard',
@@ -128,15 +124,11 @@ describe('useMoneyAccountToastLabel', () => {
     });
 
     it('formats the amount on success and clears the recorded intent', () => {
-      setTransaction({});
+      setDeposit({ metamaskPay: { targetFiat: '20.5' } });
       setMoneyAccountDepositIntent(BATCH_ID, 'addMusd');
 
       const { result } = renderHook(() =>
-        useMoneyAccountToastLabel(
-          'success',
-          buildItem('moneyAccountDeposit', '20.5'),
-          'tx-1',
-        ),
+        useMoneyAccountToastLabel('success', 'tx-1'),
       );
 
       expect(result.current).toStrictEqual({
@@ -147,12 +139,10 @@ describe('useMoneyAccountToastLabel', () => {
     });
 
     it('falls back to convert copy without an amount when nothing is known', () => {
+      setDeposit();
+
       const { result } = renderHook(() =>
-        useMoneyAccountToastLabel(
-          'success',
-          buildItem('moneyAccountDeposit'),
-          'tx-1',
-        ),
+        useMoneyAccountToastLabel('success', 'tx-1'),
       );
 
       expect(result.current).toStrictEqual({
@@ -162,14 +152,10 @@ describe('useMoneyAccountToastLabel', () => {
     });
 
     it('returns failed copy for the intent', () => {
-      setTransaction({});
+      setDeposit();
 
       const { result } = renderHook(() =>
-        useMoneyAccountToastLabel(
-          'failed',
-          buildItem('moneyAccountDeposit'),
-          'tx-1',
-        ),
+        useMoneyAccountToastLabel('failed', 'tx-1'),
       );
 
       expect(result.current).toStrictEqual({
@@ -181,10 +167,10 @@ describe('useMoneyAccountToastLabel', () => {
 
   describe('withdraw', () => {
     it('returns pending and failed copy', () => {
-      const item = buildItem('moneyAccountWithdraw');
+      setWithdraw();
 
       const pending = renderHook(() =>
-        useMoneyAccountToastLabel('pending', item, 'tx-1'),
+        useMoneyAccountToastLabel('pending', 'tx-1'),
       );
       expect(pending.result.current).toStrictEqual({
         title: 'moneyToastWithdrawInProgressTitle',
@@ -192,7 +178,7 @@ describe('useMoneyAccountToastLabel', () => {
       });
 
       const failed = renderHook(() =>
-        useMoneyAccountToastLabel('failed', item, 'tx-1'),
+        useMoneyAccountToastLabel('failed', 'tx-1'),
       );
       expect(failed.result.current).toStrictEqual({
         title: 'moneyToastWithdrawFailedTitle',
@@ -201,14 +187,13 @@ describe('useMoneyAccountToastLabel', () => {
     });
 
     it('names the destination by group name, then account name', () => {
-      setWithdrawTransfer();
+      setWithdraw(RECIPIENT);
       mockInternalAccounts[RECIPIENT] = {
         metadata: { name: 'Account 2' },
       } as InternalAccount;
-      const item = buildItem('moneyAccountWithdraw', '100');
 
       const byAccount = renderHook(() =>
-        useMoneyAccountToastLabel('success', item, 'tx-1'),
+        useMoneyAccountToastLabel('success', 'tx-1'),
       );
       expect(byAccount.result.current).toStrictEqual({
         title: 'moneyToastWithdrawSuccessTitle',
@@ -217,7 +202,7 @@ describe('useMoneyAccountToastLabel', () => {
 
       mockAccountGroups = [{ metadata: { name: 'Savings' } }];
       const byGroup = renderHook(() =>
-        useMoneyAccountToastLabel('success', item, 'tx-1'),
+        useMoneyAccountToastLabel('success', 'tx-1'),
       );
       expect(byGroup.result.current?.description).toBe(
         'moneyToastWithdrawSuccessDescription:$100.00,Savings',
@@ -225,19 +210,18 @@ describe('useMoneyAccountToastLabel', () => {
     });
 
     it('shortens an external recipient and falls back when there is none', () => {
-      setWithdrawTransfer();
-      const item = buildItem('moneyAccountWithdraw');
+      setWithdraw(RECIPIENT);
 
       const external = renderHook(() =>
-        useMoneyAccountToastLabel('success', item, 'tx-1'),
+        useMoneyAccountToastLabel('success', 'tx-1'),
       );
       expect(external.result.current?.description).toBe(
-        'moneyToastWithdrawSuccessDescriptionNoAmount:0x11111...11111',
+        'moneyToastWithdrawSuccessDescription:$100.00,0x11111...11111',
       );
 
-      mockTransaction = undefined;
+      setWithdraw();
       const unknown = renderHook(() =>
-        useMoneyAccountToastLabel('success', item, 'tx-1'),
+        useMoneyAccountToastLabel('success', 'tx-1'),
       );
       expect(unknown.result.current?.description).toBe(
         'moneyToastWithdrawSuccessDescriptionNoAmount:moneyToastWithdrawFallbackDestination',

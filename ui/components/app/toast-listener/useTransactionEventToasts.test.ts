@@ -350,6 +350,62 @@ describe('useTransactionEventToasts', () => {
         }),
       );
     });
+
+    it('shows a pending toast for money account batches on approved', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'money-deposit-approved',
+          status: TransactionStatus.approved,
+          type: TransactionType.batch,
+          nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+        }),
+      });
+
+      expect(mockShowPendingToast).toHaveBeenCalledWith(
+        'tx-money-deposit-approved',
+        expect.objectContaining({ transactionId: 'money-deposit-approved' }),
+      );
+    });
+
+    it('does not toast transactions required by another transaction', () => {
+      mockGetState.mockReturnValue({
+        metamask: {
+          transactions: [
+            createTransactionMeta({
+              id: 'parent',
+              status: TransactionStatus.approved,
+              requiredTransactionIds: ['helper'],
+            }),
+          ],
+        },
+      } as never);
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'helper',
+          status: TransactionStatus.submitted,
+        }),
+      });
+
+      expect(mockShowPendingToast).not.toHaveBeenCalled();
+    });
+
+    it('does not toast relay deposits that fund another transaction', () => {
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'relay-submitted',
+          status: TransactionStatus.submitted,
+          type: TransactionType.relayDeposit,
+        }),
+      });
+
+      expect(mockShowPendingToast).not.toHaveBeenCalled();
+    });
   });
 
   describe('non-EVM via AccountsController', () => {

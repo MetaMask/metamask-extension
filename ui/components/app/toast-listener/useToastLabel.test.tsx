@@ -69,6 +69,7 @@ function addPerpsWithdrawItem(
 describe('useToastLabel', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseMoneyAccountToastLabel.mockReturnValue(undefined);
     mockItems.clear();
   });
 
@@ -196,14 +197,7 @@ describe('useToastLabel', () => {
     });
   });
 
-  it('delegates money account items to useMoneyAccountToastLabel', () => {
-    mockItems.set('tx-1', {
-      type: 'moneyAccountDeposit',
-      chainId: 'eip155:59144',
-      status: 'success',
-      timestamp: 0,
-      data: {},
-    } as ActivityListItem);
+  it('prefers the money account label when one is available', () => {
     mockUseMoneyAccountToastLabel.mockReturnValue({
       title: 'money-title',
       description: 'money-description',
@@ -213,7 +207,6 @@ describe('useToastLabel', () => {
 
     expect(mockUseMoneyAccountToastLabel).toHaveBeenCalledWith(
       'success',
-      mockItems.get('tx-1'),
       'tx-1',
     );
     expect(result.current).toStrictEqual({
