@@ -41,10 +41,12 @@ const EMPTY_ACCOUNTS: ReturnType<typeof getInternalAccountsFromGroupById> = [];
  * and the token list would stay empty; scoping to all networks mirrors what the
  * selected-account path accumulates over time.
  *
- * Loading is deliberately limited to the single overridden account rather than
- * every account on screen: fanning asset fetches out across a large wallet is a
- * known performance cost, so only the account actually being paid from is
- * fetched.
+ * When assets-unify-state is enabled, loading is limited to the override
+ * group's accounts: fanning asset fetches out across a large wallet is a known
+ * performance cost, so only the account actually being paid from is fetched.
+ * The legacy TokenBalancesController path cannot take an account list — it
+ * only includes non-selected accounts when `queryAllAccounts` is true, which
+ * refreshes every account.
  *
  * @param accountGroupId - Account group to load, or undefined to no-op.
  * @returns Whether an asset load for that group is currently in flight.
@@ -115,8 +117,9 @@ export function useEnsureAccountGroupAssets(
         return;
       }
 
-      // Legacy path: TokenBalancesController only includes non-selected
-      // accounts when queryAllAccounts is true.
+      // Legacy TokenBalancesController.updateBalances has no account-list
+      // option. Non-selected (override) accounts are only included when
+      // queryAllAccounts is true, which refreshes every account.
       await dispatch(updateBalancesFoAccounts(evmChainIds, true));
     });
   }, [
