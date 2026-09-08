@@ -168,7 +168,7 @@ describe('useOHLCVChart – fetchOHLCV', () => {
 });
 
 describe('useOHLCVChart – INTERVAL_TO_TIME_PERIOD mapping', () => {
-  it.each<[string, string]>([
+  test.each<[string, string]>([
     ['1m', '1d'],
     ['5m', '1d'],
     ['15m', '1d'],
