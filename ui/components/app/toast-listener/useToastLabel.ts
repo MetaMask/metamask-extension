@@ -3,6 +3,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { selectLocalActivityItemsByIdentifier } from '../../../selectors/activity';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import type { ToastStatus } from './shared';
+import { useMoneyAccountToastLabel } from './useMoneyAccountToastLabel';
 
 const genericToastLabels: Record<ToastStatus, string> = {
   pending: 'transactionSubmitted',
@@ -51,9 +52,15 @@ function getPerpsWithdrawToastContent(
 // Add per-type toast content here
 function useGetToastContent(
   status: ToastStatus,
-  item?: ActivityListItem,
+  item: ActivityListItem | undefined,
+  transactionId: string | undefined,
 ): ToastLabel {
   const t = useI18nContext();
+  const moneyAccountLabel = useMoneyAccountToastLabel(
+    status,
+    item,
+    transactionId,
+  );
 
   switch (item?.type) {
     case 'convert': {
@@ -90,6 +97,10 @@ function useGetToastContent(
     case 'perpsWithdraw':
       return getPerpsWithdrawToastContent(status, item, t);
 
+    case 'moneyAccountDeposit':
+    case 'moneyAccountWithdraw':
+      return moneyAccountLabel ?? { title: t(genericToastLabels[status]) };
+
     default:
       return { title: t(genericToastLabels[status]) };
   }
@@ -104,7 +115,11 @@ export function useToastLabel(
     ? itemsByIdentifier.get(transactionId.toLowerCase())
     : undefined;
 
-  const { title, description } = useGetToastContent(status, item);
+  const { title, description } = useGetToastContent(
+    status,
+    item,
+    transactionId,
+  );
 
   return { title, description };
 }
