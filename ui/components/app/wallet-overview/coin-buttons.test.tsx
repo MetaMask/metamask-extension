@@ -221,7 +221,9 @@ describe('CoinButtons – asset page swap token', () => {
 
     fireEvent.click(screen.getByTestId('coin-overview-more'));
 
-    expect(screen.getByTestId('coin-overview-more-receive')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('coin-overview-more-receive'),
+    ).toBeInTheDocument();
     expect(
       screen.queryByTestId('coin-overview-receive'),
     ).not.toBeInTheDocument();

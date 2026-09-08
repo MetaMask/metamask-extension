@@ -1,15 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
-
-/**
- * Which action row the asset overview currently renders. `prefix` mirrors the
- * `classPrefix` the UI passes to the buttons: `coin` for the native overview,
- * `token` for the token overview.
- */
-type ActionsLayout =
-  | { type: 'perps'; prefix: 'coin' | 'token' }
-  | { type: 'standard' };
-
-const ACTIONS_LAYOUT_TIMEOUT_MS = 15000;
+import { readResolvedAssetActionsLayout } from './asset-actions-layout';
 
 /**
  * Token / coin asset overview: send, swap, receive, and explorer actions.
@@ -34,9 +24,6 @@ class TokenOverviewPage {
 
   private readonly parentSelector =
     '[data-testid="parent-selector-asset-details"]';
-
-  private readonly perpsActionsSkeleton =
-    '[data-testid="asset-perps-actions-skeleton"]';
 
   private readonly receiveButton = '[data-testid="coin-overview-receive"]';
 
@@ -103,7 +90,7 @@ class TokenOverviewPage {
    * Receive is a primary button; otherwise it lives in More.
    */
   async clickReceive(): Promise<void> {
-    const layout = await this.readResolvedActionsLayout();
+    const layout = await readResolvedAssetActionsLayout(this.driver);
 
     if (layout.type === 'perps') {
       const rowReceive = `[data-testid="${layout.prefix}-overview-receive"]`;
@@ -136,7 +123,7 @@ class TokenOverviewPage {
   }
 
   async clickSwap(): Promise<void> {
-    const layout = await this.readResolvedActionsLayout();
+    const layout = await readResolvedAssetActionsLayout(this.driver);
 
     if (layout.type === 'standard') {
       await this.driver.clickElement(this.swapButton);
@@ -150,59 +137,6 @@ class TokenOverviewPage {
     await this.driver.clickElement(
       `[data-testid="${layout.prefix}-overview-more-swap"]`,
     );
-  }
-
-  /**
-   * Reads the action row currently rendered, or `null` while neither layout is
-   * visible.
-   */
-  private async readActionsLayout(): Promise<ActionsLayout | null> {
-    for (const prefix of ['coin', 'token'] as const) {
-      const hasLong = await this.driver.isElementPresentAndVisible(
-        `[data-testid="${prefix}-overview-long"]`,
-        250,
-      );
-      if (hasLong) {
-        return { type: 'perps', prefix };
-      }
-    }
-
-    const hasSwap = await this.driver.isElementPresentAndVisible(
-      this.swapButton,
-      250,
-    );
-    return hasSwap ? { type: 'standard' } : null;
-  }
-
-  /**
-   * Waits for the async Perps market and position lookups to resolve, then
-   * reads the action row once.
-   *
-   * The asset page renders `asset-perps-actions-skeleton` while those lookups
-   * are pending and only then commits to Perps or standard actions, so the row
-   * cannot flip under a caller and no layout-stability polling is needed.
-   */
-  private async readResolvedActionsLayout(): Promise<ActionsLayout> {
-    await this.driver.assertElementNotPresent(this.perpsActionsSkeleton, {
-      findElementGuard: this.parentSelector,
-      timeout: ACTIONS_LAYOUT_TIMEOUT_MS,
-    });
-
-    let layout: ActionsLayout | null = null;
-
-    await this.driver.waitUntil(
-      async () => {
-        layout = await this.readActionsLayout();
-        return layout !== null;
-      },
-      { timeout: ACTIONS_LAYOUT_TIMEOUT_MS, interval: 250 },
-    );
-
-    if (!layout) {
-      throw new Error('Asset action buttons did not render a known layout.');
-    }
-
-    return layout;
   }
 
   /**
