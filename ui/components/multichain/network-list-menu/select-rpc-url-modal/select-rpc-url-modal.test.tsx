@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
@@ -15,7 +15,7 @@ import { stripProtocol } from '../rpc-list-item';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { SelectRpcUrlModal } from './select-rpc-url-modal';
 
-const mockDispatch = jest.fn();
+const mockDispatch = jest.fn().mockReturnValue({});
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => mockDispatch,
@@ -116,7 +116,7 @@ describe('SelectRpcUrlModal Component', () => {
     expect(selectedItem).toHaveClass('select-rpc-url__item--selected');
   });
 
-  it('should dispatch the correct actions when an RPC endpoint is clicked', () => {
+  it('should dispatch the correct actions when an RPC endpoint is clicked', async () => {
     const { getByText } = renderWithProvider(
       <SelectRpcUrlModal
         networkConfiguration={networkConfiguration}
@@ -134,10 +134,12 @@ describe('SelectRpcUrlModal Component', () => {
       defaultRpcEndpointIndex: 1,
     };
 
-    expect(mockDispatch).toHaveBeenCalledWith(updateNetwork(network));
-    expect(mockDispatch).toHaveBeenCalledWith(setActiveNetwork('flashbots'));
-    expect(mockDispatch).toHaveBeenCalledWith(setEditedNetwork());
-    expect(mockDispatch).toHaveBeenCalledWith(toggleNetworkMenu());
+    await waitFor(() => {
+      expect(mockDispatch).toHaveBeenCalledWith(updateNetwork(network));
+      expect(mockDispatch).toHaveBeenCalledWith(setActiveNetwork('flashbots'));
+      expect(mockDispatch).toHaveBeenCalledWith(setEditedNetwork());
+      expect(mockDispatch).toHaveBeenCalledWith(toggleNetworkMenu());
+    });
   });
 
   it('should render the selected indicator correctly for the default RPC', () => {
@@ -174,7 +176,7 @@ describe('SelectRpcUrlModal Component', () => {
     );
   });
 
-  it('should handle click on RPC URL and call onNetworkChange', () => {
+  it('should handle click on RPC URL and call onNetworkChange', async () => {
     const updatedNetwork = {
       ...networkConfiguration,
       defaultRpcEndpointIndex: 1,
@@ -192,11 +194,13 @@ describe('SelectRpcUrlModal Component', () => {
       screen.getByText(stripProtocol(networkConfiguration.rpcEndpoints[1].url)),
     );
 
-    expect(mockDispatch).toHaveBeenCalledWith(updateNetwork(updatedNetwork));
-    expect(mockDispatch).toHaveBeenCalledWith(setEditedNetwork());
-    expect(mockOnNetworkChange).toHaveBeenCalledWith(
-      toEvmCaipChainId(updatedNetwork.chainId),
-      'flashbots',
-    );
+    await waitFor(() => {
+      expect(mockDispatch).toHaveBeenCalledWith(updateNetwork(updatedNetwork));
+      expect(mockDispatch).toHaveBeenCalledWith(setEditedNetwork());
+      expect(mockOnNetworkChange).toHaveBeenCalledWith(
+        toEvmCaipChainId(updatedNetwork.chainId),
+        'flashbots',
+      );
+    });
   });
 });
