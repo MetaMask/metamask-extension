@@ -6,13 +6,11 @@ import {
   MUSD_TOKEN,
 } from '@metamask/money-account-utils';
 import type { IconName as IconNameType } from '@metamask/design-system-react';
-import { IconName } from '@metamask/design-system-react';
 import BigNumber from 'bignumber.js';
 import { moneyFormatUsd } from '../../../helpers/money/format';
 import { getMoneyAccountDepositAmount } from '../../../helpers/money/money-account-amounts';
 import { shortenAddress } from '../../../helpers/utils/util';
 import type { MoneyActivityTransactionMeta } from '../constants/mock-activity-data';
-import type { AccountsApiActivity } from '../types/money-activity';
 import { decodeErc20Transfer } from './erc20-transfer';
 import { ERC20_TRANSFER_TYPES } from './money-activity-filters';
 import {
@@ -292,39 +290,6 @@ export function getMoneyActivityDisplayInfo(
     isIncoming,
     icon: moneyActivityKindToIcon(kind),
     status,
-  };
-}
-
-const ACCOUNTS_API_LABEL_KEY: Record<AccountsApiActivity['kind'], string> = {
-  card: 'moneyActivityPurchase',
-  cashback: 'moneyActivityMusdBack',
-  refund: 'moneyActivityRefund',
-};
-
-/**
- * Display strings for an Accounts API card/cashback/refund row.
- *
- * @param activity - Parsed Accounts API settlement.
- * @param t - i18n translate function.
- * @returns Label, Card subtitle, signed amounts, and confirmed status.
- */
-export function getAccountsApiActivityDisplayInfo(
-  activity: AccountsApiActivity,
-  t: MoneyActivityTranslate,
-): MoneyTransactionDisplayInfo {
-  const isIncoming = activity.kind === 'cashback' || activity.kind === 'refund';
-  const usdValue = new BigNumber(activity.amount).dividedBy(
-    new BigNumber(10).pow(activity.token.decimals),
-  );
-
-  return {
-    label: t(ACCOUNTS_API_LABEL_KEY[activity.kind]),
-    description: t('moneyActivityCard'),
-    primaryAmount: formatMusdAmount(usdValue, isIncoming),
-    fiatAmount: formatFiatAmount(usdValue, isIncoming),
-    isIncoming,
-    icon: IconName.Card,
-    status: 'confirmed',
   };
 }
 
