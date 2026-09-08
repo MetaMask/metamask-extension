@@ -376,7 +376,7 @@
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^9.0.0",
     "@metamask/assets-controller": "^15.0.0",
-    "@metamask/assets-controllers": "^111.1.2",
+    "@metamask/assets-controllers": "^111.2.0",
     "@metamask/authenticated-user-storage": "^3.0.2",
     "@metamask/base-controller": "^9.0.1",
     "@metamask/base-data-service": "^1.0.0",
