@@ -9,7 +9,7 @@ import {
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../../page-objects/pages/accounts/list-page';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../../page-objects/pages/home/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { skipOnFirefox } from '../helpers';
 import { mockInfuraAndAccountSync } from '../mocks';

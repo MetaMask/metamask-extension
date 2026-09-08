@@ -13,7 +13,7 @@ import ContractAddressRegistry from '../../seeder/contract-address-registry';
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snaps/simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';

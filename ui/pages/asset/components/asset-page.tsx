@@ -39,16 +39,18 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import TokenCell from '../../../components/app/assets/token-cell';
 import { isArcUsdcForBridge } from '../../../components/app/assets/enablement/arc';
-import { ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS } from '../../../components/app/musd/musd-events';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import {
   TokenFiatDisplayInfo,
@@ -86,10 +88,7 @@ import {
   getMultichainIsTron,
 } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
-import {
-  selectIsMerklClaimingEnabled,
-  selectIsMusdConversionFlowEnabled,
-} from '../../../selectors/musd';
+import { selectIsMusdConversionFlowEnabled } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { useSpendableBalance } from '../hooks/useSpendableBalance';
@@ -97,10 +96,7 @@ import { getIsAssetRequireActivate } from '../../../selectors/stellar-assets';
 import { isNativeAsset, type Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
-import {
-  useMusdCtaVisibility,
-  useMusdMerklPosition,
-} from '../../../hooks/musd';
+import { useMusdCtaVisibility } from '../../../hooks/musd';
 import { MusdAssetCta } from '../../../components/app/musd';
 import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
@@ -113,7 +109,6 @@ import TokenButtons from './token-buttons';
 import { AssetActivateCard } from './asset-activation-card';
 import { SpendableBalanceSection } from './spendable-balance-section';
 import { TronDailyResources } from './tron-daily-resources';
-import { MusdBonusSection } from './musd-bonus-section';
 import { MusdPositionSection } from './musd-position-section';
 import {
   AssetPageSecurityTrustBanner,
@@ -132,6 +127,7 @@ const AssetPage = ({
 }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const { decodedAsset } = processAssetParams(useParams());
   const currency = useSelector(getCurrentCurrency);
   const isEvm = isEvmChainId(asset.chainId);
@@ -201,7 +197,6 @@ const AssetPage = ({
     useMusdCtaVisibility();
 
   const isMusdFlowEnabled = useSelector(selectIsMusdConversionFlowEnabled);
-  const isMerklClaimingEnabled = useSelector(selectIsMerklClaimingEnabled);
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
 
@@ -403,15 +398,18 @@ const AssetPage = ({
     [type, isEvm, asset, isMusdFlowEnabled],
   );
 
-  const {
-    aggregatedFiat: aggregatedMusdFiat,
-    hasAnyBalance: hasAnyMusdBalance,
-  } = useMusdMerklPosition(isMusdAssetPage);
-
   const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
   const handleOpenMarketClosedModal = useCallback(() => {
     setIsMarketClosedModalOpen(true);
   }, []);
+
+  const handleBack = useCallback(() => {
+    if (location.key === 'default') {
+      navigate(DEFAULT_ROUTE, { replace: true });
+    } else {
+      transitionBack(() => navigate(PREVIOUS_ROUTE));
+    }
+  }, [location.key, navigate]);
 
   return (
     <AssetPageSecurityTrustProvider
@@ -436,7 +434,7 @@ const AssetPage = ({
               size={ButtonIconSize.Md}
               ariaLabel={t('back') as string}
               iconName={IconName.ArrowLeft}
-              onClick={() => transitionBack(() => navigate(PREVIOUS_ROUTE))}
+              onClick={handleBack}
               className="asset-page__back-button"
             />
           </Box>
@@ -523,33 +521,11 @@ const AssetPage = ({
                 fiatValue={tokenFiatAmount}
                 showFiat={showFiat}
               />
-              {isMerklClaimingEnabled ? (
-                <>
-                  <Box
-                    marginTop={5}
-                    marginBottom={5}
-                    className="asset-page__divider"
-                  />
-                  <MusdBonusSection
-                    chainId={chainId as Hex}
-                    tokenAddress={(asset as { address: Hex }).address}
-                    positionFiatValue={showFiat ? aggregatedMusdFiat : null}
-                    showFiat={showFiat}
-                    hasPositiveBalance={hasAnyMusdBalance}
-                  />
-                  <Box
-                    marginTop={5}
-                    marginBottom={5}
-                    className="asset-page__divider"
-                  />
-                </>
-              ) : (
-                <Box
-                  marginTop={5}
-                  marginBottom={5}
-                  className="asset-page__divider"
-                />
-              )}
+              <Box
+                marginTop={5}
+                marginBottom={5}
+                className="asset-page__divider"
+              />
             </>
           ) : null}
           {!isMusdAssetPage && spendableBalanceData.hasSpendableBalance ? (
@@ -574,7 +550,6 @@ const AssetPage = ({
                   key={`${symbol}-${address}`}
                   token={tokenWithFiatAmount as TokenWithFiatAmount}
                   safeChains={safeChains}
-                  musd={ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS}
                 />
               )}
             </>
@@ -662,6 +637,7 @@ const AssetPage = ({
                             <Text
                               variant={TextVariant.BodyMd}
                               fontWeight={FontWeight.Medium}
+                              data-testid="asset-token-decimals"
                             >
                               {asset.decimals}
                             </Text>,
@@ -756,9 +732,7 @@ function renderRow(leftColumn: string, rightColumn: ReactNode) {
       >
         {leftColumn}
       </Text>
-      <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-        {rightColumn}
-      </Text>
+      <Box>{rightColumn}</Box>
     </Box>
   );
 }

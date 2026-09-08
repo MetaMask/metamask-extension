@@ -1,5 +1,6 @@
 import type { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';
 import type { QrHardwareSignRequest, SignatureStepStatus } from '../types';
+import type { SignatureStepDescription } from '../hardware-wallet-signatures.utils';
 
 /**
  * Props for the {@link SignatureStepList} presentational component.
@@ -18,16 +19,16 @@ export type SignatureStepListProps = {
   firstStepStatus: SignatureStepStatus;
   /** Localized label for the first step. */
   firstStepLabel: string;
-  /** Optional localized description beneath the first step label. */
-  firstStepDescription?: string;
+  /** Optional structured description rendered beneath the first step label. */
+  firstStepDescription?: SignatureStepDescription;
 
   // Final step (trade for bridge / transaction for sendBundle)
   /** Computed display status for the final step. */
   finalStepStatus: SignatureStepStatus;
   /** Localized label for the final step. */
   finalStepLabel: string;
-  /** Optional localized description beneath the final step label. */
-  finalStepDescription?: string;
+  /** Optional structured description rendered beneath the final step label. */
+  finalStepDescription?: SignatureStepDescription;
 
   // Inline QR rendering
   /**

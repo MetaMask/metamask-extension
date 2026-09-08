@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { type TransactionMeta } from '@metamask/transaction-controller';
@@ -33,10 +33,7 @@ import {
   selectPendingApprovalsForNavigation,
 } from '../../selectors';
 import { useModalState } from '../../hooks/useModalState';
-import {
-  isMerklClaimTransaction,
-  isMusdConversionTransaction,
-} from '../../components/app/musd/utils';
+import { isMusdConversionTransaction } from '../../components/app/musd/utils';
 import { resetBridgeController } from '../../ducks/bridge/actions';
 import { useDispatch } from '../../store/hooks';
 
@@ -81,11 +78,6 @@ export const ConfirmationRouter = () => {
 
   const canRedirect = !isNotification && !stayOnHomePage;
   const transactions = useSelector(getTransactions) as TransactionMeta[];
-
-  const merklClaims = useMemo(
-    () => transactions.filter(isMerklClaimTransaction),
-    [transactions],
-  );
 
   // Ported from home.component - checkStatusAndNavigate()
   const checkStatusAndNavigate = useCallback(() => {
@@ -133,10 +125,6 @@ export const ConfirmationRouter = () => {
 
   const hasSwapRelatedNavigation = hasBridgeQuotes;
 
-  const isMerklTransaction = pendingApprovals.some((approval) =>
-    merklClaims.some((mc) => mc.id === approval?.requestData?.txId),
-  );
-
   const isMUSDConversionTransaction = pendingApprovals.some(
     (approval) =>
       transactions.find(
@@ -151,7 +139,6 @@ export const ConfirmationRouter = () => {
     isFullscreen &&
     !hasAllowedPopupRedirectApprovals &&
     !hasSwapRelatedNavigation &&
-    !isMerklTransaction &&
     !isMUSDConversionTransaction;
 
   // Ported from home.component - componentDidUpdate()

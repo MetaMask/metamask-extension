@@ -69,7 +69,7 @@ export default function NftsTab({
   return (
     <>
       <Box>
-        <AssetListControlBar />
+        <AssetListControlBar data-testid="parent-selector-nfts-tab" />
       </Box>
 
       <Box className="nfts-tab">

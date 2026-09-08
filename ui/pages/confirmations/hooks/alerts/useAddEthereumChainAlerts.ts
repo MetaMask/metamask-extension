@@ -9,6 +9,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useSafeChains } from '../../../../components/multichain/networks-form/use-safe-chains';
 import { jsonRpcRequest } from '../../../../../shared/lib/rpc.utils';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
+import { EMPTY_ARRAY } from '../../../../selectors/shared';
 
 // Ported from templates/add-ethereum-chain.js
 export function useAddEthereumChainAlerts() {
@@ -29,7 +30,6 @@ export function useAddEthereumChainAlerts() {
 
   useEffect(() => {
     if (!pendingApproval) {
-      setAlerts([]);
       return;
     }
 
@@ -165,5 +165,5 @@ export function useAddEthereumChainAlerts() {
     validate();
   }, [chainId, matchedChain, pendingApproval, t]);
 
-  return alerts;
+  return pendingApproval ? alerts : EMPTY_ARRAY;
 }

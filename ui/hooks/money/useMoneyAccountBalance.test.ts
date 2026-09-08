@@ -351,6 +351,21 @@ describe('useMoneyAccountBalance', () => {
       expect(result.current.apyPercentFormatted).toBe('5%');
     });
 
+    it('survives a live APY with full float precision', () => {
+      // Real service values carry >15 significant digits, which
+      // `bignumber.js@4` rejects when passed as a number. Regression test for
+      // the crash that took down the whole balance surface.
+      stubQueries(BALANCE_LOADED, {
+        ...APY_LOADED,
+        data: apyResponse(0.06632893279913232),
+      });
+
+      const { result } = renderBalanceHook();
+
+      expect(result.current.apyPercent).toBe(6.6);
+      expect(result.current.apyPercentFormatted).toBe('6.6%');
+    });
+
     it('prefers the override over the live APY', () => {
       stubQueries(BALANCE_LOADED, APY_LOADED);
 

@@ -220,6 +220,11 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.waitForSelector(this.enforcedSimulationsToggle);
   }
 
+  async checkEnforcedSimulationsRowIsNotDisplayed(): Promise<void> {
+    console.log(`Checking enforced simulations row is not displayed.`);
+    await this.driver.assertElementNotPresent(this.enforcedSimulationsRow);
+  }
+
   async checkEnforcedSimulationsToggleUnchecked(): Promise<void> {
     console.log(`Checking enforced simulations toggle is unchecked.`);
     await this.driver.waitForSelector(this.enforcedSimulationsToggleUnchecked);

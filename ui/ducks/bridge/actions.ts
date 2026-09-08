@@ -6,6 +6,7 @@ import {
   isCrossChain,
   isNonEvmChainId,
   assetIdsMatch,
+  MetaMetricsSwapsEventSource,
 } from '@metamask/bridge-controller';
 import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/lib/selectors/networks';
@@ -27,7 +28,6 @@ import {
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { captureException } from '../../../shared/lib/sentry';
 import { clearAllBridgeCacheItems } from '../../pages/bridge/utils/cache';
-import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import {
   bridgeSlice,
   setSrcTokenExchangeRates,

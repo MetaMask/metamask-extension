@@ -1,6 +1,7 @@
 import {
   Box,
   BoxFlexDirection,
+  FontWeight,
   Text,
   TextVariant,
   TextColor,
@@ -48,18 +49,19 @@ import { trackPerpsErrorScreenViewed } from './utils/track-perps-error-screen';
 import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
-import { PerpsBalanceDropdown } from './perps-balance-dropdown';
+import { PerpsMarketBalanceActions } from './perps-market-balance-actions';
 import { CloseAllPositionsModal } from './close-position/close-all-positions-modal';
 import { PerpsExploreMarkets } from './perps-explore-markets';
 import { PerpsPositionsOrders } from './perps-positions-orders';
 import { PerpsRecentActivity } from './perps-recent-activity';
 import { PERPS_TOAST_KEYS, usePerpsToast } from './perps-toast';
 import {
-  PerpsControlBarSkeleton,
+  PerpsBalanceActionsSkeleton,
   PerpsSectionSkeleton,
 } from './perps-skeletons';
 import { PerpsSupportLearn } from './perps-support-learn';
 import { PerpsTutorialModal } from './perps-tutorial-modal';
+import { PerpsTopMovers } from './perps-top-movers';
 import { PerpsWatchlist } from './perps-watchlist';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
@@ -106,6 +108,7 @@ export const PerpsView = () => {
     usePerpsLiveOrders();
   const { account, isInitialLoading: accountLoading } = usePerpsLiveAccount();
   const {
+    allMarkets,
     exploreMarkets,
     watchlistMarkets,
     isInitialLoading: marketsLoading,
@@ -380,10 +383,6 @@ export const PerpsView = () => {
     }
   }, [isEligible, applyOrdersSnapshot, orders.length, t, track]);
 
-  const hasPositions = positions.length > 0;
-  // Only the single-position view can mirror a card-level RoE; for zero or
-  // multiple positions, summary RoE remains the account aggregate.
-  const singlePosition = positions.length === 1 ? positions[0] : undefined;
   const isLoading =
     positionsLoading || ordersLoading || marketsLoading || accountLoading;
   const hasPerpBalance = Boolean(
@@ -422,6 +421,20 @@ export const PerpsView = () => {
     }
   }, [dispatch, isFirstTimeUser, isLoading, isTestnet, tutorialCompleted]);
 
+  // The "Perps" heading is owned by PerpsView (single source of truth) so it
+  // renders identically from both wrappers (bottom-nav home page and the
+  // account-overview tab), including during the loading skeleton state.
+  const perpsHeading = (
+    <Text
+      variant={TextVariant.HeadingLg}
+      fontWeight={FontWeight.Bold}
+      className="px-4 pt-4"
+      data-testid="perps-view-title"
+    >
+      {t('perps')}
+    </Text>
+  );
+
   // Show loading state while initial stream data is being fetched.
   // Transaction history loads in parallel; Recent Activity skeleton is included here
   // so the section is represented before the main view mounts.
@@ -432,7 +445,10 @@ export const PerpsView = () => {
         gap={4}
         data-testid="perps-view-loading"
       >
-        <PerpsControlBarSkeleton />
+        {perpsHeading}
+        <Box paddingLeft={4} paddingRight={4}>
+          <PerpsBalanceActionsSkeleton />
+        </Box>
         <PerpsSectionSkeleton cardCount={5} showStartTradeCta />
         <PerpsSectionSkeleton cardCount={5} />
         <Box data-testid="perps-recent-activity-skeleton">
@@ -446,15 +462,17 @@ export const PerpsView = () => {
     <Box
       flexDirection={BoxFlexDirection.Column}
       gap={4}
-      data-testid="perps-view"
+      data-testid="parent-selector-perps-tab"
     >
-      {/* Balance header with Add funds / Withdraw dropdown */}
-      <PerpsBalanceDropdown
-        hasPositions={hasPositions}
-        singlePosition={singlePosition}
-        onAddFunds={triggerDeposit}
-        onWithdraw={triggerWithdraw}
-      />
+      {perpsHeading}
+      {/* Balance header with total balance, available balance, and persistent Withdraw / Add funds buttons */}
+      <Box paddingLeft={4} paddingRight={4}>
+        <PerpsMarketBalanceActions
+          onAddFunds={triggerDeposit}
+          onWithdraw={triggerWithdraw}
+          onLearnMore={() => dispatch(setTutorialModalOpen(true))}
+        />
+      </Box>
 
       {/* Positions + Orders sections */}
       {batchActionError ? (
@@ -466,6 +484,7 @@ export const PerpsView = () => {
       <PerpsPositionsOrders
         positions={positions}
         orders={orders}
+        account={account}
         onCloseAllPositions={handleCloseAllPositions}
         onCancelAllOrders={handleCancelAllOrders}
         isCloseAllPending={isCloseAllPending}
@@ -474,6 +493,9 @@ export const PerpsView = () => {
 
       {/* Watchlist */}
       <PerpsWatchlist markets={watchlistMarkets} />
+
+      {/* Top movers */}
+      <PerpsTopMovers markets={allMarkets} isLoading={marketsLoading} />
 
       {/* Explore markets */}
       <PerpsExploreMarkets markets={exploreMarkets} />

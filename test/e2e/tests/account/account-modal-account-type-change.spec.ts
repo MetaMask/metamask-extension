@@ -6,7 +6,7 @@ import AccountDetailsModal from '../../page-objects/pages/dialog/account-details
 import Eip7702AndSendCalls from '../../page-objects/pages/confirmations/batch-confirmation';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';

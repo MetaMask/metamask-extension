@@ -29,11 +29,22 @@ export const PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS = 5;
 // Market categories are owned by the controller (v8 `MARKET_CATEGORIES`); the UI
 // only adds the `all` and `new` pseudo-filters, so a new core category does not
 // require a change here.
-export const VALID_MARKET_FILTERS = [
+export const MARKET_CATEGORY_FILTERS = [
   'all',
   ...MARKET_CATEGORIES,
   'new',
 ] as const satisfies readonly MarketTypeFilter[];
+
+// User state, not a market category, so it stays out of the controller's
+// `MarketTypeFilter` union.
+export const WATCHLIST_MARKET_FILTER = 'watchlist';
+
+export const VALID_MARKET_FILTERS = [
+  ...MARKET_CATEGORY_FILTERS,
+  WATCHLIST_MARKET_FILTER,
+] as const;
+
+export type MarketCategoryFilter = (typeof MARKET_CATEGORY_FILTERS)[number];
 
 export type MarketFilter = (typeof VALID_MARKET_FILTERS)[number];
 

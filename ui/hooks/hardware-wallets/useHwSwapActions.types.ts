@@ -53,4 +53,6 @@ export type UseHwSwapActionsOptions = {
    * those same catch handlers.
    */
   isRetryingRef: MutableRefObject<boolean>;
+  /** Notifies the caller when `retryGenerationRef` is bumped during retry. */
+  onRetryGenerationBump?: () => void;
 };

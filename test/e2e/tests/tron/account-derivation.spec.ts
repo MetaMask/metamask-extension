@@ -12,7 +12,6 @@ import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import HomePage from '../../page-objects/pages/home/homepage';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import AccountAddressListPage from '../../page-objects/pages/accounts/address-list-page';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { selectTronNetwork } from '../../page-objects/flows/tron-network.flow';
 import { base58AddressToHex } from '../../seeder/tron/assets';
 import {
@@ -305,7 +304,7 @@ describe('Tron account derivation', function (this: Suite) {
         await selectTronNetwork(driver);
         await addNHdAccountsForTronDerivation(driver, 8);
 
-        const homepage = new NonEvmHomepage(driver);
+        const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
         const addressList = new AccountAddressListPage(driver);
 

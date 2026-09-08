@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -44,14 +44,20 @@ describe('MoneyActivityList', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('shows a disabled View all button when there are more than five items', () => {
+  it('shows an enabled View all button when there are more than five items', () => {
+    const onViewAll = jest.fn();
     renderWithLocalization(
-      <MoneyActivityList items={MOCK_MONEY_TRANSACTIONS.map(onchainItem)} />,
+      <MoneyActivityList
+        items={MOCK_MONEY_TRANSACTIONS.map(onchainItem)}
+        onViewAll={onViewAll}
+      />,
     );
 
     const viewAll = screen.getByTestId('money-activity-view-all');
     expect(viewAll).toHaveTextContent(messages.moneyActivityViewAll.message);
-    expect(viewAll).toBeDisabled();
+    expect(viewAll).toBeEnabled();
+    fireEvent.click(viewAll);
+    expect(onViewAll).toHaveBeenCalledTimes(1);
   });
 
   it('hides View all when there are five or fewer items', () => {
@@ -107,5 +113,16 @@ describe('MoneyActivityList', () => {
       screen.getByText(messages.moneyActivityDepositFailed.message),
     ).toBeInTheDocument();
     expect(document.querySelector('.animate-spin')).toBeInTheDocument();
+  });
+
+  it('invokes onItemClick when a preview row is clicked', () => {
+    const onItemClick = jest.fn();
+    const items = MOCK_MONEY_TRANSACTIONS.map(onchainItem);
+    renderWithLocalization(
+      <MoneyActivityList items={items} onItemClick={onItemClick} />,
+    );
+
+    fireEvent.click(screen.getByTestId(`money-activity-row-${items[0].id}`));
+    expect(onItemClick).toHaveBeenCalledWith(items[0]);
   });
 });

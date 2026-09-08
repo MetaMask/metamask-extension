@@ -104,6 +104,7 @@ type AssetListControlBarProps = {
    * menu containing only a "Refresh list" action that invokes this callback.
    */
   onRefresh?: () => void;
+  'data-testid'?: string;
 };
 
 const AssetListControlBar = ({
@@ -112,6 +113,7 @@ const AssetListControlBar = ({
   showSortControl = true,
   onNetworkSelect,
   onRefresh,
+  'data-testid': dataTestId,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -344,18 +346,24 @@ const AssetListControlBar = ({
   };
 
   const handleRefresh = () => {
-    if (isAssetsUnifyStateEnabled && selectedInternalAccount) {
+    if (isAssetsUnifyStateEnabled) {
+      if (selectedInternalAccount) {
+        dispatch(
+          refreshAssetsForSelectedAccount([selectedInternalAccount], {
+            chainIds: selectedCaipChainIds,
+            assetTypes: ['token', 'price', 'metadata'],
+          }),
+        );
+      }
+    } else {
       dispatch(
-        refreshAssetsForSelectedAccount([selectedInternalAccount], {
-          chainIds: allEnabledNetworksForAllNamespaces,
-          assetTypes: ['token', 'price', 'metadata'],
-        }),
+        updateBalancesFoAccounts(
+          Object.keys(enabledNetworksByNamespace),
+          false,
+        ),
       );
+      dispatch(detectTokens(Object.keys(enabledNetworksByNamespace)));
     }
-    dispatch(
-      updateBalancesFoAccounts(Object.keys(enabledNetworksByNamespace), false),
-    );
-    dispatch(detectTokens(Object.keys(enabledNetworksByNamespace)));
     closePopover();
   };
 
@@ -387,7 +395,12 @@ const AssetListControlBar = ({
   }
 
   return (
-    <Box className="asset-list-control-bar" marginLeft={4} marginRight={4}>
+    <Box
+      className="asset-list-control-bar"
+      marginLeft={4}
+      marginRight={4}
+      data-testid={dataTestId}
+    >
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         <ButtonBase
           data-testid="sort-by-networks"
@@ -461,7 +474,8 @@ const AssetListControlBar = ({
           )}
 
           {showImportTokenButton &&
-            (isEvm ? (
+            (isEvm || showTokensLinks ? (
+              // Tokens (EVM and non-EVM) and EVM NFT: overflow menu with Refresh list
               <ImportControl
                 ref={importButtonRef}
                 showTokensLinks={showTokensLinks}
@@ -472,6 +486,7 @@ const AssetListControlBar = ({
                 }
               />
             ) : (
+              // Non-EVM NFT: no Refresh list
               <Tooltip
                 title={t('manageTokens')}
                 position="bottom"

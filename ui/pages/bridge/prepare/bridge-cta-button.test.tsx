@@ -643,6 +643,7 @@ describe('BridgeCTAButton', () => {
         isPriceImpactWarning: false,
         isPriceImpactError: false,
         isQuoteExpired: false,
+        isDestAssetRequireActivate: false,
         ...validationErrors,
       });
       const { findByRole, getByText } = renderWithProvider(
@@ -713,6 +714,7 @@ describe('BridgeCTAButton', () => {
         isStockMarketClosed: true,
         isInOffHoursTrading: false,
         isQuoteExpired: false,
+        isDestAssetRequireActivate: false,
       });
       const { container } = renderWithProvider(
         <HardwareWalletProvider>
@@ -840,6 +842,7 @@ describe('BridgeCTAButton', () => {
       isStockMarketClosed: true,
       isInOffHoursTrading: false,
       isQuoteExpired: true,
+      isDestAssetRequireActivate: false,
     });
     const { getByText } = renderWithProvider(
       <HardwareWalletProvider>

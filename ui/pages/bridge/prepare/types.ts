@@ -75,7 +75,8 @@ export type MinimalBridgeAlert = {
     | 'insufficient-gas'
     | 'price-data-unavailable'
     | 'token-security'
-    | 'insufficient-native-reserve';
+    | 'insufficient-native-reserve'
+    | 'stellar-trustline';
   title?: string;
   description: string;
   severity: 'warning' | 'danger';

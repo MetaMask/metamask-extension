@@ -1,5 +1,4 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { Interface } from '@ethersproject/abi';
 import { parseStandardTokenTransactionData } from '../../../shared/lib/transaction.utils';
@@ -8,7 +7,6 @@ import {
   MERKL_DISTRIBUTOR_ADDRESS,
   MUSD_TOKEN_ADDRESS,
 } from '../../components/app/musd/constants';
-import { getClaimedAmountFromContract } from '../../components/app/musd/merkl-client';
 
 // ERC-20 Transfer(address,address,uint256) event topic
 const ERC20_TRANSFER_TOPIC =
@@ -58,6 +56,9 @@ export function extractTransactionAmount(
 
 // ---------------------------------------------------------------------------
 // Merkl claim-specific amount utilities
+//
+// Claiming has been removed from the extension; what remains decodes already
+// recorded claim transactions so the activity list can display their payout.
 // ---------------------------------------------------------------------------
 
 /**
@@ -102,61 +103,6 @@ export function decodeMerklClaimParams(
     };
   } catch {
     return null;
-  }
-}
-
-/**
- * Result of resolving the unclaimed amount for a Merkl claim transaction.
- */
-export type GetUnclaimedAmountResult = {
-  /** Total cumulative reward (raw base units) from tx calldata */
-  totalAmountRaw: string;
-  /** Unclaimed amount (total - claimed from contract) in raw base units */
-  unclaimedRaw: string;
-  /** True if the contract call succeeded */
-  contractCallSucceeded: boolean;
-};
-
-/**
- * Resolve the unclaimed amount for a Merkl mUSD claim transaction.
- * Decodes tx calldata, reads already-claimed from the Merkl distributor contract,
- * and returns total and unclaimed raw amounts.
- *
- * @param txData - Transaction data hex string (txParams.data)
- * @returns Result with totalAmountRaw, unclaimedRaw, and contractCallSucceeded, or null if decoding fails
- */
-export async function getUnclaimedAmountForMerklClaimTx(
-  txData: string | undefined,
-): Promise<GetUnclaimedAmountResult | null> {
-  const claimParams = decodeMerklClaimParams(txData);
-  if (!claimParams) {
-    return null;
-  }
-
-  const totalAmountRaw = claimParams.totalAmount;
-  const totalBigInt = BigInt(totalAmountRaw);
-
-  try {
-    const claimedAmount = await getClaimedAmountFromContract(
-      claimParams.userAddress,
-      claimParams.tokenAddress as Hex,
-    );
-    const claimedBigInt = BigInt(claimedAmount ?? '0');
-    const unclaimedRaw =
-      totalBigInt > claimedBigInt
-        ? (totalBigInt - claimedBigInt).toString()
-        : '0';
-    return {
-      totalAmountRaw,
-      unclaimedRaw,
-      contractCallSucceeded: true,
-    };
-  } catch {
-    return {
-      totalAmountRaw,
-      unclaimedRaw: totalAmountRaw,
-      contractCallSucceeded: false,
-    };
   }
 }
 
@@ -233,40 +179,4 @@ export function getClaimPayoutFromReceipt(
   }
 
   return null;
-}
-
-/**
- * Resolve the claim payout amount for a Merkl claim transaction.
- *
- * For confirmed txs, tries receipt logs first (exact per-tx payout) then falls back to
- * contract call (total minus claimed). For non-confirmed txs, uses the contract call directly.
- *
- * @param tx - The transaction metadata
- * @returns The claim amount as a raw base-unit decimal string, or undefined
- */
-export async function resolveClaimAmount(
-  tx: TransactionMeta,
-): Promise<string | undefined> {
-  const claimParams = decodeMerklClaimParams(tx.txParams?.data);
-  if (!claimParams) {
-    return undefined;
-  }
-
-  // For confirmed transactions, try receipt logs first (most accurate)
-  const receipt = (tx as Record<string, unknown>).txReceipt as
-    | { logs?: ReceiptLog[] }
-    | undefined;
-  if (receipt?.logs) {
-    const receiptAmount = getClaimPayoutFromReceipt(
-      receipt.logs,
-      claimParams.userAddress,
-    );
-    if (receiptAmount) {
-      return receiptAmount;
-    }
-  }
-
-  // Fall back to contract call: total from calldata minus already-claimed
-  const result = await getUnclaimedAmountForMerklClaimTx(tx.txParams?.data);
-  return result?.unclaimedRaw;
 }

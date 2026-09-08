@@ -77,7 +77,10 @@ const AssetList = ({
 
   return (
     <>
-      <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
+      <AssetListControlBar
+        showTokensLinks={shouldShowTokensLinks}
+        data-testid="parent-selector-tokens-tab"
+      />
       <TokenListContainer onClickAsset={onClickAsset} safeChains={safeChains} />
     </>
   );

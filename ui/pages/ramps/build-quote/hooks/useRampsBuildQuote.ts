@@ -3,20 +3,16 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { CaipChainId } from '@metamask/utils';
 import { v4 as uuidV4 } from 'uuid';
-import {
-  getInternalOrderCode,
-  normalizeProviderCode,
-} from '@metamask/ramps-controller';
+import { getInternalOrderCode } from '@metamask/ramps-controller';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import {
-  DEFAULT_ROUTE,
+  RAMPS_COMPLETE_BUY_ROUTE,
   PREVIOUS_ROUTE,
   RAMPS_PAYMENT_METHOD_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
-import { showBuyTabOpenedToast } from '../../../../helpers/utils/show-buy-tab-opened-toast';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
@@ -249,7 +245,9 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         return;
       }
 
-      const providerCode = normalizeProviderCode(selectedProvider?.id ?? '');
+      // Since ramps-controller v16, provider IDs are canonical as-is (no
+      // /providers/ prefix to strip).
+      const providerCode = selectedProvider?.id ?? '';
       const orderCode = widget.orderId
         ? getInternalOrderCode(widget.orderId)
         : undefined;
@@ -268,11 +266,18 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
         providerName: selectedProvider?.name,
       });
 
-      navigate(DEFAULT_ROUTE);
-      showBuyTabOpenedToast(
-        t('buyTabOpenedToastText'),
-        t('buyTabOpenedToastDescription'),
-      );
+      navigate(RAMPS_COMPLETE_BUY_ROUTE, {
+        state: {
+          checkoutUrl: widget.url,
+          providerName: selectedProvider?.name ?? '',
+          amountOut: selectedQuote.quote?.amountOut,
+          tokenSymbol: selectedToken?.symbol ?? '',
+          tokenIconUrl: selectedToken?.iconUrl,
+          tokenChainId: selectedToken?.chainId,
+          walletAddress,
+          createdAt: Date.now(),
+        },
+      });
     } catch (error) {
       setContinueError(parseUserFacingError(error, t('rampsBuyWidgetError')));
     } finally {
@@ -286,6 +291,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     selectedProvider?.id,
     selectedProvider?.name,
     selectedQuote,
+    selectedToken,
     t,
     userRegion?.regionCode,
     walletAddress,

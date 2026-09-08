@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import { type TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import {
   selectIsTransactionPayLoadingByTransactionId,
@@ -12,7 +12,10 @@ import {
   selectTransactionPayTotalsByTransactionId,
   TransactionPayState,
 } from '../../../../selectors/transactionPayController';
-import { isPerpsWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
+import {
+  isPerpsWithdrawTransaction,
+  isPostQuoteWithdrawTransaction,
+} from '../../../../../shared/lib/transactions.utils';
 import { useConfirmContext } from '../../context/confirm';
 
 export function useTransactionPayQuotes() {
@@ -72,8 +75,12 @@ export function useIsTransactionPayQuotePending() {
   const hasPositiveRequiredAmount =
     useTransactionPayHasPositiveRequiredAmount();
 
-  if (isPerpsWithdrawTransaction(currentConfirmation)) {
-    return hasPositiveRequiredAmount && (isLoading || !isPostQuote);
+  if (isPostQuoteWithdrawTransaction(currentConfirmation)) {
+    const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
+    return (
+      hasPositiveRequiredAmount &&
+      (isLoading || (isPerpsWithdraw && !isPostQuote))
+    );
   }
 
   return isLoading;

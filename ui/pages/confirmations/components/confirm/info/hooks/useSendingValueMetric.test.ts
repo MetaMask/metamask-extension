@@ -1,6 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { renderHook } from '@testing-library/react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { useSendingValueMetric } from './useSendingValueMetric';
@@ -13,7 +13,6 @@ jest.mock('react-redux', () => ({
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
   useEffect: jest.fn(),
-  useState: jest.fn(),
 }));
 
 jest.mock('../../../../hooks/useTransactionEventFragment');
@@ -23,30 +22,21 @@ describe('useSimulationMetrics', () => {
     useTransactionEventFragment,
   );
 
-  const useStateMock = jest.mocked(useState);
   const useEffectMock = jest.mocked(useEffect);
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let updateTransactionEventFragmentMock: jest.MockedFunction<any>;
+  let updateTransactionEventFragmentMock: jest.Mock<
+    Promise<void>,
+    [Record<string, unknown>, string]
+  >;
 
   beforeEach(() => {
     jest.resetAllMocks();
 
-    updateTransactionEventFragmentMock = jest.fn();
+    updateTransactionEventFragmentMock = jest.fn().mockResolvedValue(undefined);
 
     useTransactionEventFragmentMock.mockReturnValue({
       updateTransactionEventFragment: updateTransactionEventFragmentMock,
     });
-
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    useStateMock.mockImplementation(((initialValue: any) => [
-      initialValue,
-      jest.fn(),
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ]) as any);
 
     useEffectMock.mockImplementation((fn) => fn());
   });

@@ -185,13 +185,20 @@ import {
 } from '../../shared/lib/selectors/assets-migration';
 import { isPerpsRemoteConfigSatisfied } from '../../shared/lib/perps-feature-flags';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
+import { accountSupports7702 } from './lib/account-supports-7702';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
-import { WalletFundsObtainedMonitor } from './lib/WalletFundsObtainedMonitor';
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
 import { createDappSwapMiddleware } from './lib/dapp-swap/dapp-swap-middleware';
-import { createTrustSignalsMiddleware } from './lib/trust-signals/trust-signals-middleware';
+import {
+  createAddressScanMiddleware,
+  createOriginScanMiddleware,
+} from './lib/trust-signals/trust-signals-middleware';
+import {
+  createCaipOriginScanGate,
+  createEip1193OriginScanGate,
+} from './lib/trust-signals/trust-signals-util';
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -217,8 +224,10 @@ import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import {
   createEventBuilder,
+  setParticipateInMetaMetrics,
   trackEvent,
   trackPage,
+  updateEventFragment,
 } from './controllers/analytics';
 import Backup from './lib/backup';
 import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
@@ -233,10 +242,12 @@ import {
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { createDefiReferralMiddleware } from './lib/defi-referrals/createDefiReferralMiddleware';
+import { isHyperliquidDepositPromptEligible } from './lib/hyperliquid-deposit/eligibility';
+import { showHyperliquidDepositPromptApproval } from './lib/hyperliquid-deposit/prompt';
+import { createHyperliquidDepositMiddleware } from './lib/hyperliquid-deposit/createHyperliquidDepositMiddleware';
 
 import {
   diffMap,
-  getPermissionBackgroundApiMethods,
   getPermittedAccountsByOrigin,
   getPermittedChainsByOrigin,
   NOTIFICATION_NAMES,
@@ -371,10 +382,7 @@ import { SignatureControllerInit } from './messenger-client-init/confirmations/s
 import { UserOperationControllerInit } from './messenger-client-init/confirmations/user-operation-controller-init';
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
-import {
-  QrSyncControllerInit,
-  QrSyncDataServiceInit,
-} from './messenger-client-init/qr-sync';
+import { QrSyncControllerInit } from './messenger-client-init/qr-sync';
 import { getRootMessenger } from './lib/messenger';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './messenger-client-init/profile-metrics-controller-init';
@@ -382,9 +390,11 @@ import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metri
 import { ProofOfOwnershipServiceInit } from './messenger-client-init/proof-of-ownership-service-init';
 import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
+import { UserTraitsServiceInit } from './messenger-client-init/user-traits-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
 import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
+import { ChompApiServiceInit } from './messenger-client-init/chomp-api-service-init';
 import { MoneyAccountApiDataServiceInit } from './messenger-client-init/money-account-api-data-service-init';
 import { MoneyAccountAvailabilityServiceInit } from './messenger-client-init/money-account-availability-service-init';
 import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-account-balance-service-init';
@@ -549,18 +559,6 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    // Monitor for first wallet funding event based on activeControllerConnections
-    this.on('controllerConnectionChanged', (activeControllerConnections) => {
-      const { completedOnboarding } = this.onboardingController.state;
-      if (
-        activeControllerConnections > 0 &&
-        completedOnboarding &&
-        this.appStateController.state.canTrackWalletFundsObtained
-      ) {
-        this.walletFundsObtainedMonitor.setupMonitoring();
-      }
-    });
-
     /** @type {import('./messenger-client-init/utils').InitFunctions} */
     const messengerClientInitFunctions = {
       LoggingController: LoggingControllerInit,
@@ -584,6 +582,7 @@ export default class MetamaskController extends EventEmitter {
       GeolocationController: GeolocationControllerInit,
       AnalyticsController: AnalyticsControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
+      UserTraitsService: UserTraitsServiceInit,
       DataDeletionService: DataDeletionServiceInit,
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
       UserOperationController: UserOperationControllerInit,
@@ -663,12 +662,12 @@ export default class MetamaskController extends EventEmitter {
       ProfileMetricsController: ProfileMetricsControllerInit,
       ProfileMetricsService: ProfileMetricsServiceInit,
       ProofOfOwnershipService: ProofOfOwnershipServiceInit,
-      QrSyncDataService: QrSyncDataServiceInit,
       QrSyncController: QrSyncControllerInit,
       // ClientController must be initialized before AssetsController (AssetsController subscribes to ClientController:stateChange).
       ClientController: ClientControllerInit,
       ConfigRegistryController: ConfigRegistryControllerInit,
       ConfigRegistryApiService: ConfigRegistryApiServiceInit,
+      ChompApiService: ChompApiServiceInit,
       MoneyAccountApiDataService: MoneyAccountApiDataServiceInit,
       MoneyAccountAvailabilityService: MoneyAccountAvailabilityServiceInit,
       MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
@@ -725,6 +724,7 @@ export default class MetamaskController extends EventEmitter {
     this.networkController = this.wallet.getInstance('NetworkController');
     this.analyticsController = messengerClientsByName.AnalyticsController;
     this.metaMetricsController = messengerClientsByName.MetaMetricsController;
+    this.userTraitsService = messengerClientsByName.UserTraitsService;
     this.dataDeletionService = messengerClientsByName.DataDeletionService;
     this.metaMetricsDataDeletionController =
       messengerClientsByName.MetaMetricsDataDeletionController;
@@ -843,8 +843,12 @@ export default class MetamaskController extends EventEmitter {
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
 
+    // Derives MetaMetrics user traits from the full state and forwards changes
+    // to the analytics pipeline. This lives in a service (not MetaMetricsController)
+    // as part of the MetaMetricsController deprecation; the `update` firehose
+    // subscription stays here because it is the only source of the flattened state.
     this.on('update', (update) => {
-      this.metaMetricsController.handleMetaMaskStateUpdate(update);
+      this.userTraitsService.handleMetaMaskStateUpdate(update);
     });
 
     this.controllerMessenger.subscribe('KeyringController:unlock', () =>
@@ -887,7 +891,6 @@ export default class MetamaskController extends EventEmitter {
 
           // update preferences and metrics optin status after shield subscription is active
           updatePreferencesAndMetricsForShieldSubscription(
-            this.metaMetricsController,
             this.preferencesController,
           );
           this.shieldController.start();
@@ -914,28 +917,6 @@ export default class MetamaskController extends EventEmitter {
       nameController: this.nameController,
       messenger: petnamesBridgeMessenger,
     }).init();
-
-    const walletFundsObtainedMonitorMessenger = new Messenger({
-      namespace: 'WalletFundsObtainedMonitor',
-      parent: this.controllerMessenger,
-    });
-    this.controllerMessenger.delegate({
-      messenger: walletFundsObtainedMonitorMessenger,
-      events: ['NotificationServicesController:notificationsListUpdated'],
-      actions: [
-        'AppStateController:setCanTrackWalletFundsObtained',
-        'OnboardingController:getState',
-        'NotificationServicesController:getState',
-        'TokenBalancesController:getState',
-        'MultichainBalancesController:getState',
-        'RemoteFeatureFlagController:getState',
-        'AssetsController:getState',
-      ],
-    });
-
-    this.walletFundsObtainedMonitor = new WalletFundsObtainedMonitor({
-      messenger: walletFundsObtainedMonitorMessenger,
-    });
 
     this.getSecurityAlertsConfig = async (url) => {
       const getShieldSubscription = () =>
@@ -2492,10 +2473,8 @@ export default class MetamaskController extends EventEmitter {
       gatorPermissionsController,
       metaMetricsController,
       networkController,
-      multichainNetworkController,
       announcementController,
       onboardingController,
-      permissionController,
       preferencesController,
       tokensController,
       smartTransactionsController,
@@ -2590,10 +2569,7 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setUseAddressBarEnsResolution.bind(
           preferencesController,
         ),
-      setParticipateInMetaMetrics:
-        metaMetricsController.setParticipateInMetaMetrics.bind(
-          metaMetricsController,
-        ),
+      setParticipateInMetaMetrics,
       setDataCollectionForMarketing:
         metaMetricsController.setDataCollectionForMarketing.bind(
           metaMetricsController,
@@ -2902,46 +2878,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:toggleExternalServices',
       ),
-      addToken: async ({
-        address,
-        symbol,
-        decimals,
-        image,
-        networkClientId,
-      }) => {
-        if (getIsAssetsUnifiedStateIncludedInBuild()) {
-          const selectedAccount = this.accountsController.getSelectedAccount();
-          const chainId =
-            this.networkController.getNetworkClientById(networkClientId)
-              ?.configuration?.chainId;
-          const assetId = toAssetId(address, chainId);
-          if (!assetId) {
-            throw new Error(
-              `MetaMask - Cannot build assetId for token ${address} on ${chainId}`,
-            );
-          }
-          await this.assetsController.addCustomAsset(
-            selectedAccount.id,
-            assetId,
-            {
-              address,
-              symbol,
-              name: symbol,
-              decimals,
-              chainId,
-              ...(image ? { iconUrl: image } : {}),
-            },
-          );
-        } else {
-          await tokensController.addToken({
-            address,
-            symbol,
-            decimals,
-            image,
-            networkClientId,
-          });
-        }
-      },
+      addToken: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addToken',
+      ),
       updateTokenType: tokensController.updateTokenType.bind(tokensController),
       setFeatureFlag: preferencesController.setFeatureFlag.bind(
         preferencesController,
@@ -3110,6 +3050,18 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setNewPrivacyPolicyToastShownDate.bind(
           appStateController,
         ),
+      setArcUsageNoticeShown: () => {
+        if (appStateController.state.arcUsageNoticeShown) {
+          return;
+        }
+        appStateController.setArcUsageNoticeShown();
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.ArcUsageNoticeToastViewed)
+            .addCategory(MetaMetricsEventCategory.Home)
+            .addProperties({ chain_id_caip: 'eip155:5042' })
+            .build(),
+        );
+      },
       setSnapsInstallPrivacyWarningShownStatus:
         appStateController.setSnapsInstallPrivacyWarningShownStatus.bind(
           appStateController,
@@ -3376,18 +3328,43 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:rejectPermissionsRequest',
       ),
-      ...getPermissionBackgroundApiMethods({
-        permissionController,
-        approvalController,
-        accountsController,
-        networkController,
-        multichainNetworkController,
-        snapController: this.snapController,
-        onPermittedAccountsAdded: this.controllerMessenger.call.bind(
+      addPermittedAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addPermittedAccount',
+      ),
+      addPermittedAccounts: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addPermittedAccounts',
+      ),
+      removePermittedAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:removePermittedAccount',
+      ),
+      setPermittedAccounts: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setPermittedAccounts',
+      ),
+      addPermittedChain: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addPermittedChain',
+      ),
+      addPermittedChains: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addPermittedChains',
+      ),
+      removePermittedChain: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:removePermittedChain',
+      ),
+      setPermittedChains: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:setPermittedChains',
+      ),
+      requestAccountsAndChainPermissionsWithId:
+        this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'LegacyBackgroundApiService:handleDefiReferralOnPermittedAccountsAdded',
+          'LegacyBackgroundApiService:requestAccountsAndChainPermissionsWithId',
         ),
-      }),
 
       // Snaps
       disableSnap: this.controllerMessenger.call.bind(
@@ -3530,44 +3507,10 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // MetaMetrics
-      trackMetaMetricsEvent: (payload, options) => {
-        trackEvent(
-          createEventBuilder(payload.event)
-            .addProperties({
-              ...(payload.properties ?? {}),
-              ...(payload.category === undefined
-                ? {}
-                : { category: payload.category }),
-              ...(payload.revenue === undefined
-                ? {}
-                : { revenue: payload.revenue }),
-              ...(payload.value === undefined ? {} : { value: payload.value }),
-              ...(payload.currency === undefined
-                ? {}
-                : { currency: payload.currency }),
-            })
-            .addSensitiveProperties(payload.sensitiveProperties)
-            .build({
-              environmentType: payload.environmentType,
-              page: payload.page,
-              referrer: payload.referrer,
-              excludeMetaMetricsId: options?.excludeMetaMetricsId,
-              matomoEvent: options?.matomoEvent,
-            }),
-        );
-      },
       trackAnalyticsEvent: trackEvent,
       trackAnalyticsPage: trackPage,
       trackMetaMetricsPage: trackPage,
-      createEventFragment: metaMetricsController.createEventFragment.bind(
-        metaMetricsController,
-      ),
-      updateEventFragment: metaMetricsController.updateEventFragment.bind(
-        metaMetricsController,
-      ),
-      finalizeEventFragment: metaMetricsController.finalizeEventFragment.bind(
-        metaMetricsController,
-      ),
+      updateEventFragment,
       updateMetaMetricsTraits: metaMetricsController.updateTraits.bind(
         metaMetricsController,
       ),
@@ -4418,14 +4361,24 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {object} asset - The asset descriptor from the dapp request.
    * @param {string} origin - The origin that initiated the request.
+   * @param {string} networkClientId - The network client the request targets.
    */
-  #requestUnifiedWatchAssetApproval = async (asset, origin) => {
+  #requestUnifiedWatchAssetApproval = async (
+    asset,
+    origin,
+    networkClientId,
+  ) => {
     const { address } = this.accountsController.getSelectedAccount();
     const id = crypto.randomUUID();
     const image =
       typeof asset.image === 'string' && asset.image.trim() !== ''
         ? asset.image
         : null;
+
+    const { chainId } =
+      this.networkController.getNetworkConfigurationByNetworkClientId(
+        networkClientId,
+      );
 
     await this.controllerMessenger.call(
       'ApprovalController:addRequest',
@@ -4441,6 +4394,7 @@ export default class MetamaskController extends EventEmitter {
             decimals: asset.decimals,
             symbol: asset.symbol,
             image,
+            chainId,
           },
         },
       },
@@ -4512,7 +4466,11 @@ export default class MetamaskController extends EventEmitter {
           this.#validateUnifiedWatchAssetRequest(asset, networkClientId);
           // Show the EIP-747 confirmation and wait for the user. A rejection
           // throws here, so we never reach the persist step below.
-          await this.#requestUnifiedWatchAssetApproval(asset, origin);
+          await this.#requestUnifiedWatchAssetApproval(
+            asset,
+            origin,
+            networkClientId,
+          );
           await this.#persistUnifiedWatchAsset(asset, networkClientId);
         } else {
           await this.tokensController.watchAsset({
@@ -5400,13 +5358,20 @@ export default class MetamaskController extends EventEmitter {
     );
 
     engine.push(
-      createTrustSignalsMiddleware(
+      createOriginScanMiddleware(
+        this.phishingController,
+        this.preferencesController,
+        createEip1193OriginScanGate(this.getPermittedAccounts.bind(this)),
+        sender?.url,
+      ),
+    );
+
+    engine.push(
+      createAddressScanMiddleware(
         this.networkController,
         this.appStateController,
         this.phishingController,
         this.preferencesController,
-        this.getPermittedAccounts.bind(this),
-        sender?.url,
       ),
     );
 
@@ -5432,7 +5397,6 @@ export default class MetamaskController extends EventEmitter {
         getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
         snapAndHardwareMessenger,
         appStateController: this.appStateController,
-        metaMetricsController: this.metaMetricsController,
         analyticsController: this.analyticsController,
       }),
     );
@@ -5490,6 +5454,27 @@ export default class MetamaskController extends EventEmitter {
             triggerType,
           ),
         ),
+      );
+
+      // Prompt the user to fund Hyperliquid through MetaMask after a
+      // successful ApproveAgent ("Enable trading") signature.
+      engine.push(
+        createHyperliquidDepositMiddleware({
+          isEligible: ({ signerAddress }) =>
+            isHyperliquidDepositPromptEligible({
+              accountsController: this.accountsController,
+              assetsController: this.assetsController,
+              perpsController: this.messengerClientsByName.PerpsController,
+              remoteFeatureFlagController: this.remoteFeatureFlagController,
+              signerAddress,
+            }),
+          showDepositPrompt: ({ origin: promptOrigin, signerAddress }) =>
+            showHyperliquidDepositPromptApproval({
+              approvalController: this.approvalController,
+              origin: promptOrigin,
+              selectedAddress: signerAddress,
+            }),
+        }),
       );
     }
 
@@ -5782,12 +5767,30 @@ export default class MetamaskController extends EventEmitter {
         getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
         snapAndHardwareMessenger,
         appStateController: this.appStateController,
-        metaMetricsController: this.metaMetricsController,
         analyticsController: this.analyticsController,
       }),
     );
 
     engine.push(multichainMethodCallValidatorMiddleware);
+
+    // Above the Multichain API handlers on purpose. `wallet_createSession` and
+    // `wallet_getSession` are answered there and never reach the rest of the
+    // stack, so this is the only position from which the connect-time scan can
+    // see them. It also leaves room to cover non-EVM scopes, which terminate
+    // during the `wallet_invokeMethod` unwrap.
+    engine.push(
+      createOriginScanMiddleware(
+        this.phishingController,
+        this.preferencesController,
+        createCaipOriginScanGate((requestOrigin) =>
+          this.permissionController.hasPermission(
+            requestOrigin,
+            Caip25EndowmentPermissionName,
+          ),
+        ),
+        sender?.url,
+      ),
+    );
 
     // Handles MultiChain API methods (e.g., `wallet_invokeMethod`,
     // `wallet_createSession`). The `wallet_invokeMethod` handler unwraps inner
@@ -5896,6 +5899,19 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController,
         this.updateSecurityAlertResponse.bind(this),
         this.getSecurityAlertsConfig.bind(this),
+      ),
+    );
+
+    // Placed after the `wallet_invokeMethod` unwrap so it sees the inner method
+    // under its EIP-1193 name, with `networkClientId` already resolved from the
+    // request's own CAIP scope. Only EVM requests get this far; the origin scan
+    // that has to cover the rest runs above the Multichain API handlers.
+    engine.push(
+      createAddressScanMiddleware(
+        this.networkController,
+        this.appStateController,
+        this.phishingController,
+        this.preferencesController,
       ),
     );
 
@@ -6236,22 +6252,14 @@ export default class MetamaskController extends EventEmitter {
     return pendingNonce;
   }
 
-  getTransactionUIMetricsFragmentId(transactionId) {
-    return `transaction-ui-${transactionId}`;
-  }
-
-  getTransactionUIMetricsFragment(transactionId) {
-    return this.controllerMessenger.call(
-      'MetaMetricsController:getEventFragmentById',
-      this.getTransactionUIMetricsFragmentId(transactionId),
-    );
-  }
-
   getTransactionMetricsRequest() {
     const controllerActions = {
       // Transaction metrics state
-      getTransactionUIMetricsFragment:
-        this.getTransactionUIMetricsFragment.bind(this),
+      getTransactionUIMetricsFragment: (transactionId) =>
+        this.controllerMessenger.call(
+          'AnalyticsController:getEventFragmentById',
+          `transaction-ui-${transactionId}`,
+        ),
       upsertTransactionUIMetricsFragment: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
@@ -7075,12 +7083,27 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} request - The request object
    * @param {string} request.address - The account address
    * @param {string} request.chainId - The chain ID to check
-   * @returns {Promise<{isSupported: boolean, upgradeContractAddress: string | null}>}
+   * @returns {Promise<{isSupported: boolean, upgradeContractAddress: string | null}>} Whether the account can be upgraded and, if so, the contract address it should delegate to.
    */
   async isEip7702Supported(request) {
     const { address, chainId } = request;
     const normalizedAccount = address;
 
+    // Accounts whose keyring cannot sign EIP-7702 authorizations (e.g.
+    // hardware and snap keyrings) can never be upgraded. Fail closed on
+    // lookup errors so callers do not attempt an upgrade that must fail.
+    if (
+      !(await accountSupports7702(
+        normalizedAccount,
+        this.keyringController,
+        false,
+      ))
+    ) {
+      return { isSupported: false, upgradeContractAddress: null };
+    }
+
+    // Although this method is named for atomic batch support, it also checks
+    // the LaunchDarkly flag used to enable the EIP-7702/7715 flow.
     const atomicBatchSupport = await this.txController.isAtomicBatchSupported({
       address: normalizedAccount,
       chainIds: [chainId],
