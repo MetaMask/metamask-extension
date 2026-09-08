@@ -379,8 +379,6 @@ export const HyperliquidDepositPrompt: React.FC<
           >
             {t('payWithModalTitle')}
           </ModalHeader>
-          {/* The asset list virtualizes against the nearest `ScrollContainer`,
-              so this has to be the scrolling element rather than a `ModalBody`. */}
           <ScrollContainer className="flex-1 overflow-auto">
             <Asset
               tokens={tokens}
