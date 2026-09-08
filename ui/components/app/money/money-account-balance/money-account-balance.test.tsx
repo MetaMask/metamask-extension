@@ -6,10 +6,14 @@ import { tEn } from '../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
 import type { UseMoneyAccountBalanceResult } from '../../../../hooks/money/useMoneyAccountBalance';
+import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../../hooks/money/useMoneyAccountInfo';
 import type { UseMoneyAccountInfoResult } from '../../../../hooks/money/useMoneyAccountInfo';
 import {
   MoneyAccountBalance,
+  MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID,
+  MONEY_ACCOUNT_BALANCE_APY_SKELETON_TEST_ID,
+  MONEY_ACCOUNT_BALANCE_APY_TEST_ID,
   MONEY_ACCOUNT_BALANCE_INFO_TEST_ID,
   MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID,
   MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID,
@@ -25,8 +29,14 @@ jest.mock('../../../../hooks/money/useMoneyAccountInfo', () => ({
   useMoneyAccountInfo: jest.fn(),
 }));
 
+jest.mock('../../../../hooks/money/useMoneyAccountDeposit', () => ({
+  useMoneyAccountDeposit: jest.fn(),
+}));
+
 const mockUseMoneyAccountBalance = jest.mocked(useMoneyAccountBalance);
 const mockUseMoneyAccountInfo = jest.mocked(useMoneyAccountInfo);
+const mockUseMoneyAccountDeposit = jest.mocked(useMoneyAccountDeposit);
+const mockInitiateDeposit = jest.fn();
 
 const MONEY_ADDRESS = '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B' as const;
 
@@ -35,10 +45,13 @@ type ArrangeOptions = {
   totalFiatFormatted?: string;
   lastKnownTotalFiatFormatted?: string;
   isBalanceLoading?: boolean;
+  isDepositLoading?: boolean;
+  apyPercentFormatted?: string;
+  isVaultApyLoading?: boolean;
 };
 
 /**
- * Stubs the two hooks the component reads.
+ * Stubs the three hooks the component reads.
  *
  * Only the fields the component consumes are stated; the rest of the
  * 19-field balance result is irrelevant here and a partial cast keeps the test
@@ -49,13 +62,25 @@ type ArrangeOptions = {
  * @param options.totalFiatFormatted - The live formatted balance, if any.
  * @param options.lastKnownTotalFiatFormatted - The last-known balance, if any.
  * @param options.isBalanceLoading - Whether the balance fetch is in flight.
+ * @param options.isDepositLoading - Whether a deposit initiation is in flight.
+ * @param options.apyPercentFormatted - The formatted vault APY, if any.
+ * @param options.isVaultApyLoading - Whether the vault APY fetch is in flight.
  */
 const arrange = ({
   hasMoneyAccount = true,
   totalFiatFormatted,
   lastKnownTotalFiatFormatted,
   isBalanceLoading = false,
+  isDepositLoading = false,
+  apyPercentFormatted,
+  isVaultApyLoading = false,
 }: ArrangeOptions = {}) => {
+  mockInitiateDeposit.mockResolvedValue(undefined);
+  mockUseMoneyAccountDeposit.mockReturnValue({
+    initiateDeposit: mockInitiateDeposit,
+    isLoading: isDepositLoading,
+  });
+
   mockUseMoneyAccountInfo.mockReturnValue({
     isMoneyAccountFeatureEnabled: hasMoneyAccount,
     hasMoneyAccount,
@@ -68,6 +93,8 @@ const arrange = ({
     totalFiatFormatted,
     lastKnownTotalFiatFormatted,
     isBalanceLoading,
+    apyPercentFormatted,
+    vaultApyQuery: { isLoading: isVaultApyLoading },
   } as UseMoneyAccountBalanceResult);
 };
 
@@ -193,6 +220,29 @@ describe('MoneyAccountBalance', () => {
     expect(getByText(tEn('moneyBalanceInfoWithdrawals'))).toBeInTheDocument();
   });
 
+  it('initiates a generic deposit when Add is clicked', () => {
+    // No intent: consumers derive it from the transaction's actual payment
+    // method, exactly as mobile's MoneyBalanceCard does.
+    arrange({ totalFiatFormatted: '$2,384.34' });
+
+    const { getByTestId } = render();
+
+    fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID));
+
+    expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
+    expect(mockInitiateDeposit).toHaveBeenCalledWith();
+  });
+
+  it('disables the Add button while a deposit is being initiated', () => {
+    arrange({ totalFiatFormatted: '$2,384.34', isDepositLoading: true });
+
+    const { getByTestId } = render();
+
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID),
+    ).toBeDisabled();
+  });
+
   it('prefers the last-known balance over the skeleton while loading', () => {
     arrange({
       isBalanceLoading: true,
@@ -208,5 +258,60 @@ describe('MoneyAccountBalance', () => {
       getByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID),
     ).toHaveTextContent(tEn('moneyBalanceLastKnown'));
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID)).toBeNull();
+  });
+
+  it('renders the vault APY from the balance hook', () => {
+    arrange({
+      totalFiatFormatted: '$2,384.34',
+      apyPercentFormatted: '4.2%',
+    });
+
+    const { getByTestId } = render();
+
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_APY_TEST_ID)).toHaveTextContent(
+      tEn('moneyApy', ['4.2%']),
+    );
+  });
+
+  it('shows a skeleton while the vault APY is loading with nothing to show', () => {
+    arrange({
+      totalFiatFormatted: '$2,384.34',
+      isVaultApyLoading: true,
+    });
+
+    const { getByTestId, queryByTestId } = render();
+
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_APY_SKELETON_TEST_ID),
+    ).toBeInTheDocument();
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_APY_TEST_ID)).toBeNull();
+  });
+
+  it('shows a configured APY while the vault APY query is loading', () => {
+    arrange({
+      totalFiatFormatted: '$2,384.34',
+      apyPercentFormatted: '5%',
+      isVaultApyLoading: true,
+    });
+
+    const { getByTestId, queryByTestId } = render();
+
+    expect(getByTestId(MONEY_ACCOUNT_BALANCE_APY_TEST_ID)).toHaveTextContent(
+      tEn('moneyApy', ['5%']),
+    );
+    expect(
+      queryByTestId(MONEY_ACCOUNT_BALANCE_APY_SKELETON_TEST_ID),
+    ).toBeNull();
+  });
+
+  it('omits the APY when none is available', () => {
+    arrange({ totalFiatFormatted: '$2,384.34' });
+
+    const { queryByTestId } = render();
+
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_APY_TEST_ID)).toBeNull();
+    expect(
+      queryByTestId(MONEY_ACCOUNT_BALANCE_APY_SKELETON_TEST_ID),
+    ).toBeNull();
   });
 });

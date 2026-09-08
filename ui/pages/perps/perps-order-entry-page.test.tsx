@@ -1,6 +1,10 @@
 import type {
   AccountState,
+  CandleData,
+  CandlePeriod,
+  Order,
   OrderBookData,
+  PriceUpdate,
   Position,
   PerpsMarketData,
 } from '@metamask/perps-controller';
@@ -194,6 +198,9 @@ jest.mock('../../hooks/perps/usePerpsMaxSlippage', () => ({
   usePerpsMaxSlippage: () => mockUsePerpsMaxSlippage(),
 }));
 
+const mockSubscribeToPrices = jest.fn(
+  (_callback: (updates: PriceUpdate[]) => void) => jest.fn(),
+);
 const mockStreamManagerBase = {
   positions: {
     getCachedData: () => [],
@@ -203,7 +210,7 @@ const mockStreamManagerBase = {
   orders: { getCachedData: () => [], pushData: jest.fn() },
   account: { getCachedData: () => null, pushData: jest.fn() },
   markets: { getCachedData: () => [], pushData: jest.fn() },
-  prices: { subscribe: jest.fn(() => jest.fn()), getCachedData: () => [] },
+  prices: { subscribe: mockSubscribeToPrices, getCachedData: () => [] },
   orderBook: {
     subscribe: jest.fn(() => jest.fn()),
     getCachedData: () => null,
@@ -300,28 +307,46 @@ const mockUsePerpsLiveOrderBook = jest.fn(() => ({
   reconnect: jest.fn(),
 }));
 
+const mockLiveCandles = jest.fn(() => ({
+  candleData: {
+    symbol: 'ETH',
+    interval: '5m',
+    candles: [],
+  } as CandleData | null,
+  isInitialLoading: false,
+  isLoadingMore: false,
+  hasHistoricalData: false,
+  error: null as Error | null,
+  fetchMoreHistory: jest.fn(),
+}));
+const mockLiveOrders = jest.fn(() => ({
+  orders: [] as Order[],
+  isInitialLoading: false,
+}));
+
 jest.mock('../../hooks/perps/stream', () => ({
   usePerpsLivePositions: () => mockLivePositions(),
-  usePerpsLiveOrders: () => ({
-    orders: [],
-    isInitialLoading: false,
-  }),
+  usePerpsLiveOrders: () => mockLiveOrders(),
   usePerpsLiveAccount: () => mockLiveAccount(),
   usePerpsLiveMarketData: () => mockLiveMarketData(),
-  usePerpsLiveCandles: () => ({
-    candleData: {
-      symbol: 'ETH',
-      interval: '5m',
-      candles: [],
-    },
-    isInitialLoading: false,
-    isLoadingMore: false,
-    hasHistoricalData: false,
-    error: null,
-    fetchMoreHistory: jest.fn(),
-  }),
+  usePerpsLiveCandles: () => mockLiveCandles(),
   usePerpsLiveOrderBook: () => mockUsePerpsLiveOrderBook(),
 }));
+
+jest.mock('../../components/app/perps/perps-candlestick-chart', () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const mockReact = require('react');
+  return {
+    PerpsCandlestickChart: mockReact.forwardRef(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (props: any, _ref: any) =>
+        mockReact.createElement('div', {
+          'data-testid': 'perps-candlestick-chart',
+          'data-price-lines': JSON.stringify(props.priceLines ?? []),
+        }),
+    ),
+  };
+});
 
 jest.mock('../../hooks/perps/useUserHistory', () => ({
   useUserHistory: () => ({
@@ -375,6 +400,7 @@ describe('PerpsOrderEntryPage', () => {
     ...mockState,
     metamask: {
       ...mockState.metamask,
+      proLayoutPreferences: { chartExpanded: false },
       remoteFeatureFlags: {
         ...mockState.metamask.remoteFeatureFlags,
         perpsEnabledVersion: perpsEnabled
@@ -385,6 +411,17 @@ describe('PerpsOrderEntryPage', () => {
       },
     },
   });
+
+  const createExpandedChartState = () => {
+    const state = createMockState();
+    return {
+      ...state,
+      metamask: {
+        ...state.metamask,
+        proLayoutPreferences: { chartExpanded: true },
+      },
+    };
+  };
 
   const createMockStateWithOrderBookPosition = (
     orderBookPosition: 'left' | 'right',
@@ -439,6 +476,10 @@ describe('PerpsOrderEntryPage', () => {
       positions: [],
       isInitialLoading: false,
     });
+    mockLiveOrders.mockReturnValue({
+      orders: [],
+      isInitialLoading: false,
+    });
     mockUsePerpsMarketInfo.mockReturnValue(undefined);
     mockLiveAccount.mockReturnValue({
       account: mockAccountState,
@@ -453,6 +494,18 @@ describe('PerpsOrderEntryPage', () => {
       isInitialLoading: false,
       connectionStatus: 'connected',
       reconnect: jest.fn(),
+    });
+    mockLiveCandles.mockReturnValue({
+      candleData: {
+        symbol: 'ETH',
+        interval: '5m' as CandlePeriod,
+        candles: [],
+      },
+      isInitialLoading: false,
+      isLoadingMore: false,
+      hasHistoricalData: false,
+      error: null,
+      fetchMoreHistory: jest.fn(),
     });
     mockUsePerpsEstimatedSlippage.mockReturnValue({
       estimatedSlippageBps: 50,
@@ -573,7 +626,14 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(
         screen.getByTestId('parent-selector-perps-order-entry'),
-      ).toBeInTheDocument();
+      ).toHaveClass('overflow-hidden');
+      expect(screen.getByTestId('perps-order-body')).toHaveClass(
+        'flex-1',
+        'min-h-0',
+      );
+      expect(screen.getByTestId('perps-order-form-content')).toHaveClass(
+        'overflow-y-auto',
+      );
       expect(screen.getByTestId('order-entry')).toBeInTheDocument();
     });
 
@@ -1180,6 +1240,217 @@ describe('PerpsOrderEntryPage', () => {
         .getByTestId('limit-price-input')
         .querySelector('input');
       expect(limitInput).toHaveValue('3501');
+    });
+  });
+
+  describe('chart toggle', () => {
+    it('mounts the chart already open when the persisted preference is expanded', () => {
+      const store = mockStore(createExpandedChartState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(
+        screen.getByTestId('perps-order-entry-chart-toggle'),
+      ).toHaveAttribute('aria-expanded', 'true');
+      expect(
+        screen.getByTestId('parent-selector-perps-order-entry'),
+      ).toHaveClass('overflow-y-auto');
+      expect(screen.getByTestId('perps-order-body')).toHaveClass('min-h-full');
+    });
+
+    for (const [isInitialLoading, error, testId] of [
+      [true, null, 'perps-order-entry-chart-loading'],
+      [
+        false,
+        new Error('Candle request failed'),
+        'perps-order-entry-chart-error',
+      ],
+    ] as const) {
+      it(`renders ${testId}`, () => {
+        mockLiveCandles.mockReturnValue({
+          ...mockLiveCandles(),
+          candleData: null,
+          isInitialLoading,
+          error,
+        });
+        renderWithProvider(
+          <PerpsOrderEntryPage />,
+          mockStore(createExpandedChartState()),
+        );
+        expect(screen.getByTestId(testId)).toBeInTheDocument();
+      });
+    }
+
+    it('persists the open state when the chart is toggled', () => {
+      const OriginalResizeObserver = window.ResizeObserver;
+      window.ResizeObserver = class {
+        observe = jest.fn();
+
+        unobserve = jest.fn();
+
+        disconnect = jest.fn();
+      } as unknown as typeof ResizeObserver;
+      const rectSpy = jest
+        .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+        .mockReturnValue({ left: 24, width: 320 } as DOMRect);
+      try {
+        const store = mockStore(createMockState());
+        renderWithProvider(<PerpsOrderEntryPage />, store);
+        const toggle = screen.getByTestId('perps-order-entry-chart-toggle');
+
+        fireEvent.click(toggle);
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsSetProLayoutPreferences',
+          [{ chartExpanded: true }],
+        );
+        const cta = screen.getByTestId('submit-order-button').parentElement;
+        expect(cta?.style.left).toBe('24px');
+        expect(cta?.style.width).toBe('320px');
+
+        fireEvent.click(toggle);
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsSetProLayoutPreferences',
+          [{ chartExpanded: false }],
+        );
+        expect(cta?.style.left).toBe('');
+        expect(cta?.style.width).toBe('');
+      } finally {
+        window.ResizeObserver = OriginalResizeObserver;
+        rectSpy.mockRestore();
+      }
+    });
+
+    it('persists a shared candle period from the selector', async () => {
+      const store = mockStore(createExpandedChartState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('1000');
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('perps-candle-period-15m'));
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'setPreference',
+        ['perpsSelectedCandlePeriod', '15m'],
+      );
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        expect.anything(),
+      );
+    });
+
+    it('falls back to market data before candle or stream prices arrive', () => {
+      renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(createExpandedChartState()),
+      );
+      expect(screen.getByTestId('perps-order-entry-price')).toHaveTextContent(
+        '3,025.5',
+      );
+    });
+
+    it('uses price precedence for display, submission, and TP/SL overlays', async () => {
+      mockLivePositions.mockReturnValue({
+        positions: [
+          {
+            ...mockPositions[0],
+            takeProfitPrice: undefined,
+            stopLossPrice: undefined,
+          },
+        ],
+        isInitialLoading: false,
+      });
+      mockLiveOrders.mockReturnValue({
+        orders: [
+          {
+            symbol: 'ETH',
+            side: 'sell',
+            size: '2.5',
+            originalSize: '2.5',
+            reduceOnly: true,
+            isTrigger: true,
+            triggerPrice: '3300',
+            detailedOrderType: 'Take Profit Market',
+          },
+          {
+            symbol: 'ETH',
+            side: 'sell',
+            size: '2.5',
+            originalSize: '2.5',
+            reduceOnly: true,
+            isTrigger: true,
+            triggerPrice: '2500',
+            detailedOrderType: 'Stop Market',
+          },
+        ] as Order[],
+        isInitialLoading: false,
+      });
+      mockLiveCandles.mockReturnValue({
+        candleData: {
+          symbol: 'ETH',
+          interval: '5m' as CandlePeriod,
+          candles: [
+            {
+              time: 1768188300000,
+              open: '2880',
+              high: '2920',
+              low: '2870',
+              close: '2900',
+              volume: '100',
+            },
+          ],
+        },
+        isInitialLoading: false,
+        isLoadingMore: false,
+        hasHistoricalData: true,
+        error: null,
+        fetchMoreHistory: jest.fn(),
+      });
+      const store = mockStore(createExpandedChartState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+      expect(screen.getByTestId('perps-order-entry-price')).toHaveTextContent(
+        '2,900',
+      );
+
+      act(() => {
+        mockSubscribeToPrices.mock.calls[0][0]([
+          {
+            symbol: 'ETH',
+            price: '3100',
+            timestamp: Date.now(),
+            isTradable: true,
+          },
+        ]);
+      });
+
+      expect(screen.getByTestId('perps-order-entry-price')).toHaveTextContent(
+        '3,100',
+      );
+      const priceLines = JSON.parse(
+        screen
+          .getByTestId('perps-candlestick-chart')
+          .getAttribute('data-price-lines') ?? '[]',
+      ) as { label: string; price: number }[];
+      expect(priceLines).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ label: '', price: 3100 }),
+          expect.objectContaining({ label: 'TP', price: 3300 }),
+          expect.objectContaining({ label: 'SL', price: 2500 }),
+        ]),
+      );
+      enterAmount('1000');
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('submit-order-button'));
+      });
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsPlaceOrder',
+        [
+          expect.objectContaining({
+            priceAtCalculation: 3100,
+            size: ((1000 * 3) / 3100).toString(),
+          }),
+        ],
+      );
     });
   });
 

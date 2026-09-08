@@ -4,7 +4,13 @@ import type {
 } from '@metamask/network-controller';
 import type {
   AnalyticsContext,
+  AnalyticsControllerIdentifyAction,
+  AnalyticsControllerOptInAction,
+  AnalyticsControllerOptOutAction,
+  AnalyticsControllerResetConsentDecisionAction,
   AnalyticsControllerState,
+  AnalyticsControllerTrackEventAction,
+  AnalyticsControllerTrackViewAction,
   AnalyticsEventProperties,
   AnalyticsUserTraits,
 } from '@metamask/analytics-controller';
@@ -45,7 +51,6 @@ import {
   enrichEventProperties,
   enrichWithABTestAnalytics,
 } from './analytics/platform-adapter';
-import * as analyticsHelpers from './analytics/analytics';
 import {
   configureAnalytics,
   getProfileIdentityProperties,
@@ -210,49 +215,6 @@ const PROFILE_IDENTITY_EVENT_PROPERTIES = {
   canonical_profile_id: 'canonicalProfileId',
 };
 
-const SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT = {
-  id: 'transaction-submitted-0000',
-  canDeleteIfAbandoned: true,
-  category: 'Unit Test',
-  successEvent: 'Transaction Finalized',
-  persist: true,
-  properties: {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    simulation_response: 'no_balance_change',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    test_stored_prop: 1,
-  },
-};
-
-const SAMPLE_PERSISTED_EVENT_NO_ID = {
-  persist: true,
-  category: 'Unit Test',
-  successEvent: 'sample persisted event success',
-  failureEvent: 'sample persisted event failure',
-  properties: {
-    test: true,
-  },
-};
-
-const SAMPLE_PERSISTED_EVENT = {
-  id: 'testid',
-  ...SAMPLE_PERSISTED_EVENT_NO_ID,
-};
-
-const SAMPLE_NON_PERSISTED_EVENT = {
-  id: 'testid2',
-  persist: false,
-  category: 'Unit Test',
-  successEvent: 'sample non-persisted event success',
-  failureEvent: 'sample non-persisted event failure',
-  uniqueIdentifier: 'sample-non-persisted-event',
-  properties: {
-    test: true,
-  },
-};
-
 describe('MetaMetricsController', function () {
   beforeEach(() => {
     clearABTestAnalyticsMappings();
@@ -272,22 +234,7 @@ describe('MetaMetricsController', function () {
         expect(consentDecisionMade).toBe(true);
         expect(analyticsId).toStrictEqual(TEST_ANALYTICS_ID);
         expect(controller.locale).toStrictEqual(LOCALE.replace('_', '-'));
-        expect(controller.state.fragments).toStrictEqual({
-          testid: SAMPLE_PERSISTED_EVENT,
-        });
-        expect(spy).toHaveBeenCalledTimes(1);
-        expect(spy).toHaveBeenCalledWith(
-          {
-            event: 'sample non-persisted event failure',
-            userId: TEST_ANALYTICS_ID,
-            context: DEFAULT_TEST_CONTEXT,
-            properties: {
-              ...DEFAULT_EVENT_PROPERTIES,
-              test: true,
-            },
-          },
-          spy.mock.calls[0][1],
-        );
+        expect(spy).not.toHaveBeenCalled();
       });
     });
 
@@ -327,178 +274,6 @@ describe('MetaMetricsController', function () {
           expect(controller.locale).toStrictEqual('en-UK');
         },
       );
-    });
-  });
-
-  describe('createEventFragment', function () {
-    it('should throw an error if the param is missing successEvent', async function () {
-      await withController(async ({ controller }) => {
-        await expect(() => {
-          // @ts-expect-error because we are testing the error case
-          controller.createEventFragment({ category: 'test' });
-        }).toThrow(/Must specify success event\./u);
-      });
-    });
-
-    it('should update fragments state with new fragment', async function () {
-      await withController(({ controller }) => {
-        jest.useFakeTimers().setSystemTime(1730798301422);
-        const mockNewId = 'testid3';
-
-        controller.createEventFragment({
-          ...SAMPLE_PERSISTED_EVENT_NO_ID,
-          uniqueIdentifier: mockNewId,
-        });
-
-        const resultFragment = controller.state.fragments[mockNewId];
-
-        expect(resultFragment).toStrictEqual({
-          ...SAMPLE_PERSISTED_EVENT_NO_ID,
-          id: mockNewId,
-          uniqueIdentifier: mockNewId,
-          lastUpdated: 1730798301422,
-        });
-      });
-    });
-
-    it('should track the initial event if provided', async function () {
-      await withController(({ controller }) => {
-        const spy = jest.spyOn(segmentMock, 'track');
-        const mockInitialEventName = 'Test Initial Event';
-
-        controller.createEventFragment({
-          ...SAMPLE_PERSISTED_EVENT_NO_ID,
-          initialEvent: mockInitialEventName,
-        });
-
-        expect(spy).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    it('should not call track if no initialEvent was provided', async function () {
-      await withController(({ controller }) => {
-        const spy = jest.spyOn(segmentMock, 'track');
-
-        controller.createEventFragment({
-          ...SAMPLE_PERSISTED_EVENT_NO_ID,
-        });
-
-        expect(spy).toHaveBeenCalledTimes(0);
-      });
-    });
-
-    describe('when intialEvent is "Transaction Submitted" and a fragment exists before createEventFragment is called', function () {
-      it('should update existing fragment state with new fragment props', async function () {
-        await withController(({ controller }) => {
-          jest.useFakeTimers().setSystemTime(1730798302222);
-          const { id } = SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT;
-
-          controller.updateEventFragment(
-            SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT.id,
-            {
-              ...SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT,
-            },
-          );
-          controller.createEventFragment({
-            ...SAMPLE_PERSISTED_EVENT_NO_ID,
-            initialEvent: 'Transaction Submitted',
-            uniqueIdentifier: id,
-          });
-
-          const expectedFragment = merge(
-            {},
-            SAMPLE_TX_SUBMITTED_PARTIAL_FRAGMENT,
-            SAMPLE_PERSISTED_EVENT_NO_ID,
-            {
-              canDeleteIfAbandoned: false,
-              id,
-              initialEvent: 'Transaction Submitted',
-              uniqueIdentifier: id,
-              lastUpdated: 1730798302222,
-            },
-          );
-
-          expect(controller.state.fragments[id]).toStrictEqual(
-            expectedFragment,
-          );
-        });
-      });
-    });
-  });
-
-  describe('updateEventFragment', function () {
-    it('updates fragment with additional provided props', async function () {
-      await withController(({ controller }) => {
-        jest.useFakeTimers().setSystemTime(1730798303333);
-
-        const MOCK_PROPS_TO_UPDATE = {
-          properties: {
-            test: 1,
-          },
-        };
-
-        controller.updateEventFragment(
-          SAMPLE_PERSISTED_EVENT.id,
-          MOCK_PROPS_TO_UPDATE,
-        );
-
-        const expectedPartialFragment = {
-          ...SAMPLE_PERSISTED_EVENT,
-          ...MOCK_PROPS_TO_UPDATE,
-          lastUpdated: 1730798303333,
-        };
-
-        expect(
-          controller.state.fragments[SAMPLE_PERSISTED_EVENT.id],
-        ).toStrictEqual(expectedPartialFragment);
-      });
-    });
-
-    it('throws error when no existing fragment exists', async function () {
-      await withController(async ({ controller }) => {
-        jest.useFakeTimers().setSystemTime(1730798303333);
-
-        const MOCK_NONEXISTING_ID = 'test-nonexistingid';
-
-        await expect(() => {
-          controller.updateEventFragment(MOCK_NONEXISTING_ID, {
-            properties: { test: 1 },
-          });
-        }).toThrow(
-          /Event fragment with id test-nonexistingid does not exist\./u,
-        );
-
-        jest.useRealTimers();
-      });
-    });
-
-    describe('when id includes "transaction-submitted"', function () {
-      it('creates and stores new fragment props with canDeleteIfAbandoned set to true', async function () {
-        await withController(({ controller }) => {
-          jest.useFakeTimers().setSystemTime(1730798303333);
-          const MOCK_ID = 'transaction-submitted-1111';
-          const MOCK_PROPS_TO_UPDATE = {
-            properties: {
-              test: 1,
-            },
-          };
-
-          controller.updateEventFragment(MOCK_ID, MOCK_PROPS_TO_UPDATE);
-
-          const resultFragment = controller.state.fragments[MOCK_ID];
-          const expectedPartialFragment = {
-            ...MOCK_PROPS_TO_UPDATE,
-            category: 'Transactions',
-            canDeleteIfAbandoned: true,
-            id: MOCK_ID,
-            lastUpdated: 1730798303333,
-            successEvent: 'Transaction Finalized',
-          };
-          expect(resultFragment).toStrictEqual(expectedPartialFragment);
-
-          jest.useRealTimers();
-        });
-      });
     });
   });
 
@@ -587,87 +362,6 @@ describe('MetaMetricsController', function () {
           'analytics#identify: "test_array_multi_types" value is not a valid trait type',
         );
       });
-    });
-  });
-
-  describe('setParticipateInMetaMetrics', function () {
-    it('opts in/out via AnalyticsController and records the consent decision', async function () {
-      await withController(
-        {
-          analyticsControllerState: {
-            optedIn: false,
-            consentDecisionMade: false,
-          },
-        },
-        async ({ controller, controllerMessenger }) => {
-          expect(
-            controllerMessenger.call('AnalyticsController:getState')
-              .consentDecisionMade,
-          ).toBe(false);
-
-          await controller.setParticipateInMetaMetrics(true);
-          const afterOptIn = controllerMessenger.call(
-            'AnalyticsController:getState',
-          );
-          expect(afterOptIn.optedIn).toBe(true);
-          expect(afterOptIn.consentDecisionMade).toBe(true);
-
-          await controller.setParticipateInMetaMetrics(false);
-          const afterOptOut = controllerMessenger.call(
-            'AnalyticsController:getState',
-          );
-          expect(afterOptOut.optedIn).toBe(false);
-          expect(afterOptOut.consentDecisionMade).toBe(true);
-        },
-      );
-    });
-
-    it('resets the consent decision when set to null', async function () {
-      await withController(
-        {
-          analyticsControllerState: {
-            optedIn: true,
-            consentDecisionMade: true,
-          },
-        },
-        async ({ controller, controllerMessenger }) => {
-          await controller.setParticipateInMetaMetrics(null);
-          const afterReset = controllerMessenger.call(
-            'AnalyticsController:getState',
-          );
-          expect(afterReset.optedIn).toBe(false);
-          expect(afterReset.consentDecisionMade).toBe(false);
-        },
-      );
-    });
-    it('should not nullify the analyticsId when set to false', async function () {
-      await withController(async ({ controller, controllerMessenger }) => {
-        await controller.setParticipateInMetaMetrics(false);
-        expect(
-          controllerMessenger.call('AnalyticsController:getState').analyticsId,
-        ).toStrictEqual(TEST_ANALYTICS_ID);
-      });
-    });
-    it('should nullify the marketingCampaignCookieId when participateInMetaMetrics is toggled off', async function () {
-      await withController(
-        {
-          options: {
-            state: {
-              dataCollectionForMarketing: true,
-              marketingCampaignCookieId: TEST_GA_COOKIE_ID,
-            },
-          },
-        },
-        async ({ controller }) => {
-          expect(controller.state.marketingCampaignCookieId).toStrictEqual(
-            TEST_GA_COOKIE_ID,
-          );
-          await controller.setParticipateInMetaMetrics(false);
-          expect(controller.state.marketingCampaignCookieId).toStrictEqual(
-            null,
-          );
-        },
-      );
     });
   });
 
@@ -1536,37 +1230,28 @@ describe('MetaMetricsController', function () {
 
   describe('Sensitive transaction and signature events', function () {
     it('keeps the original event name and marks anonymous-only tracks', async function () {
-      await withController(
-        {
-          options: {
-            state: {
-              fragments: {},
-            },
+      await withController({}, ({ controller }) => {
+        const spy = jest.spyOn(segmentMock, 'track');
+        trackLegacyMetaMetricsPayload(
+          {
+            event: 'Signature Requested',
+            category: 'Unit Test',
+            properties: DEFAULT_EVENT_PROPERTIES,
           },
-        },
-        ({ controller }) => {
-          const spy = jest.spyOn(segmentMock, 'track');
-          trackLegacyMetaMetricsPayload(
-            {
-              event: 'Signature Requested',
-              category: 'Unit Test',
-              properties: DEFAULT_EVENT_PROPERTIES,
-            },
-            { excludeMetaMetricsId: true },
-          );
+          { excludeMetaMetricsId: true },
+        );
 
-          expect(spy).toHaveBeenCalledTimes(1);
-          expect(spy).toHaveBeenCalledWith(
-            expect.objectContaining({
-              event: 'Signature Requested',
-              properties: expect.objectContaining({
-                ...DEFAULT_EVENT_PROPERTIES,
-              }),
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            event: 'Signature Requested',
+            properties: expect.objectContaining({
+              ...DEFAULT_EVENT_PROPERTIES,
             }),
-            undefined,
-          );
-        },
-      );
+          }),
+          undefined,
+        );
+      });
     });
 
     // @ts-expect-error This function is missing from the Mocha type definitions
@@ -1898,105 +1583,91 @@ describe('MetaMetricsController', function () {
 
   describe('metadata', () => {
     it('includes expected state in debug snapshots', async () => {
-      await withController(
-        // Set `fragments` to an empty object to override complex default `fragments` mock state.
-        {
-          options: { state: { fragments: {} } },
-        },
-        ({ controller }) => {
-          expect(
-            deriveStateFromMetadata(
-              controller.state,
-              controller.metadata,
-              'includeInDebugSnapshot',
-            ),
-          ).toMatchInlineSnapshot(`
-            {
-              "marketingCampaignCookieId": null,
-            }
-          `);
-        },
-      );
+      await withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'includeInDebugSnapshot',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "marketingCampaignCookieId": null,
+          }
+        `);
+      });
     });
 
     it('includes expected state in state logs', async () => {
-      await withController(
-        // Set `fragments` to an empty object to override complex default `fragments` mock state.
-        {
-          options: { state: { fragments: {} } },
-        },
-        ({ controller }) => {
-          expect(
-            deriveStateFromMetadata(
-              controller.state,
-              controller.metadata,
-              'includeInStateLogs',
-            ),
-          ).toMatchInlineSnapshot(`
-            {
-              "dataCollectionForMarketing": null,
-              "fragments": {},
-              "marketingCampaignCookieId": null,
-              "tracesBeforeMetricsOptIn": [],
-              "traits": {},
-            }
-          `);
-        },
-      );
+      await withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'includeInStateLogs',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "dataCollectionForMarketing": null,
+            "marketingCampaignCookieId": null,
+            "tracesBeforeMetricsOptIn": [],
+            "traits": {},
+          }
+        `);
+      });
     });
 
     it('persists expected state', async () => {
-      await withController(
-        // Set `fragments` to an empty object to override complex default `fragments` mock state.
-        {
-          options: { state: { fragments: {} } },
-        },
-        ({ controller }) => {
-          expect(
-            deriveStateFromMetadata(
-              controller.state,
-              controller.metadata,
-              'persist',
-            ),
-          ).toMatchInlineSnapshot(`
-            {
-              "dataCollectionForMarketing": null,
-              "fragments": {},
-              "marketingCampaignCookieId": null,
-              "tracesBeforeMetricsOptIn": [],
-              "traits": {},
-            }
-          `);
-        },
-      );
+      await withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'persist',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "dataCollectionForMarketing": null,
+            "marketingCampaignCookieId": null,
+            "tracesBeforeMetricsOptIn": [],
+            "traits": {},
+          }
+        `);
+      });
     });
 
     it('exposes expected state to UI', async () => {
-      await withController(
-        // Set `fragments` to an empty object to override complex default `fragments` mock state.
-        {
-          options: { state: { fragments: {} } },
-        },
-        ({ controller }) => {
-          expect(
-            deriveStateFromMetadata(
-              controller.state,
-              controller.metadata,
-              'usedInUi',
-            ),
-          ).toMatchInlineSnapshot(`
-            {
-              "dataCollectionForMarketing": null,
-              "fragments": {},
-            }
-          `);
-        },
-      );
+      await withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'usedInUi',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "dataCollectionForMarketing": null,
+          }
+        `);
+      });
     });
   });
 });
 
-type RootMessenger = Messenger<MockAnyNamespace, AllowedActions, AllowedEvents>;
+// The root messenger also hosts the AnalyticsController handlers that the
+// analytics module calls directly, which are no longer part of the
+// MetaMetricsController allowlist.
+type RootMessenger = Messenger<
+  MockAnyNamespace,
+  | AllowedActions
+  | AnalyticsControllerOptInAction
+  | AnalyticsControllerOptOutAction
+  | AnalyticsControllerResetConsentDecisionAction
+  | AnalyticsControllerIdentifyAction
+  | AnalyticsControllerTrackEventAction
+  | AnalyticsControllerTrackViewAction,
+  AllowedEvents
+>;
 
 type MetaMetricsControllerTestState = Partial<MetaMetricsControllerState>;
 
@@ -2078,17 +1749,9 @@ async function withController<ReturnValue>(
       {},
       {
         marketingCampaignCookieId: null,
-        fragments: {
-          testid: SAMPLE_PERSISTED_EVENT,
-          testid2: SAMPLE_NON_PERSISTED_EVENT,
-        },
       },
       options.state ?? {},
     ) as MetaMetricsControllerState;
-
-    if (options.state && Object.hasOwn(options.state, 'fragments')) {
-      mmcState.fragments = options.state.fragments ?? {};
-    }
 
     const messenger: RootMessenger = new Messenger({
       namespace: MOCK_ANY_NAMESPACE,
@@ -2292,12 +1955,6 @@ async function withController<ReturnValue>(
       messenger: metaMetricsControllerMessenger,
       actions: [
         'AnalyticsController:getState',
-        'AnalyticsController:identify',
-        'AnalyticsController:optIn',
-        'AnalyticsController:optOut',
-        'AnalyticsController:resetConsentDecision',
-        'AnalyticsController:trackEvent',
-        'AnalyticsController:trackView',
         'PreferencesController:getState',
         'NetworkController:getState',
         'NetworkController:getNetworkClientById',

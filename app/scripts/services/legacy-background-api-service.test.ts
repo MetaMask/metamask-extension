@@ -35,6 +35,7 @@ import {
 } from '@metamask/seedless-onboarding-controller';
 import {
   BtcAccountType,
+  EthAccountType,
   SolAccountType,
   TrxAccountType,
 } from '@metamask/keyring-api';
@@ -3548,6 +3549,244 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('importMnemonicToVault', () => {
+    const mnemonic =
+      'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+    const duplicateMnemonicError =
+      'This Secret Recovery Phrase has already been imported.';
+    const keyringId = 'keyring-id';
+
+    function createMockMnemonicWallet() {
+      const newAccount = createMockInternalAccount({
+        address: '0x123',
+        type: EthAccountType.Eoa,
+      });
+      const getAccount = jest.fn().mockReturnValue(newAccount);
+      const getMultichainAccountGroup = jest.fn().mockReturnValue({
+        get: getAccount,
+      });
+
+      return {
+        getAccount,
+        getMultichainAccountGroup,
+        newAccount,
+        wallet: {
+          entropySource: keyringId,
+          getMultichainAccountGroup,
+        },
+      };
+    }
+
+    function registerNonSocialLoginMnemonicImport({
+      completedOnboarding = false,
+      rootMessenger,
+      wallet,
+    }: {
+      completedOnboarding?: boolean;
+      rootMessenger: RootMessenger;
+      wallet: ReturnType<typeof createMockMnemonicWallet>['wallet'];
+    }) {
+      const createMultichainAccountWallet = jest.fn().mockResolvedValue(wallet);
+
+      rootMessenger.registerActionHandler(
+        'MultichainAccountService:createMultichainAccountWallet',
+        createMultichainAccountWallet,
+      );
+      rootMessenger.registerActionHandler(
+        'OnboardingController:getIsSocialLoginFlow',
+        jest.fn().mockReturnValue(false),
+      );
+      rootMessenger.registerActionHandler(
+        'OnboardingController:getState',
+        jest.fn().mockReturnValue({ completedOnboarding }),
+      );
+
+      return createMultichainAccountWallet;
+    }
+
+    async function waitForImportMnemonicFireAndForgetTasks() {
+      await new Promise((resolve) => setImmediate(resolve));
+    }
+
+    it('selects the imported EVM account from the created multichain wallet', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const { getAccount, getMultichainAccountGroup, newAccount, wallet } =
+          createMockMnemonicWallet();
+        const createMultichainAccountWallet =
+          registerNonSocialLoginMnemonicImport({
+            rootMessenger,
+            wallet,
+          });
+        const getAccountByAddress = jest.fn().mockReturnValue({ id: 'foo' });
+        const setSelectedAccount = jest.fn();
+
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          getAccountByAddress,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:setSelectedAccount',
+          setSelectedAccount,
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:importMnemonicToVault',
+            mnemonic,
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(createMultichainAccountWallet).toHaveBeenCalledWith({
+          type: 'import',
+          mnemonic: expect.any(Uint8Array),
+        });
+        expect(getMultichainAccountGroup).toHaveBeenCalledWith(0);
+        expect(getAccount).toHaveBeenCalledWith({ type: EthAccountType.Eoa });
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'KeyringController:withKeyringV2',
+          { id: keyringId },
+          expect.any(Function),
+        );
+        expect(getAccountByAddress).toHaveBeenCalledWith(newAccount.address);
+        expect(setSelectedAccount).toHaveBeenCalledWith('foo');
+      });
+    });
+
+    it('rethrows when the multichain wallet import rejects a duplicate mnemonic', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        rootMessenger.registerActionHandler(
+          'MultichainAccountService:createMultichainAccountWallet',
+          jest.fn().mockRejectedValue(new Error(duplicateMnemonicError)),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:importMnemonicToVault',
+            mnemonic,
+          ),
+        ).rejects.toThrow(duplicateMnemonicError);
+      });
+    });
+
+    it('syncs and discovers accounts after onboarding completes', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const { newAccount, wallet } = createMockMnemonicWallet();
+        const syncWithUserStorage = jest.fn().mockResolvedValue(undefined);
+        const discoverAndCreateAccounts = jest
+          .spyOn(service, 'discoverAndCreateAccounts')
+          .mockResolvedValue({ Bitcoin: 0, Solana: 0, Tron: 0 });
+
+        registerNonSocialLoginMnemonicImport({
+          completedOnboarding: true,
+          rootMessenger,
+          wallet,
+        });
+        rootMessenger.registerActionHandler(
+          'AccountTreeController:syncWithUserStorage',
+          syncWithUserStorage,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getSelectedAccount',
+          jest.fn().mockReturnValue(newAccount),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:getState',
+          jest.fn().mockReturnValue({
+            keyrings: [
+              {
+                type: 'HD Key Tree',
+                accounts: [newAccount.address],
+              },
+            ],
+          }),
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:importMnemonicToVault',
+          mnemonic,
+          {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+          },
+        );
+
+        await waitForImportMnemonicFireAndForgetTasks();
+
+        expect(syncWithUserStorage).toHaveBeenCalledTimes(1);
+        expect(discoverAndCreateAccounts).toHaveBeenCalledWith(keyringId);
+      });
+    });
+
+    it('does not sync and discover accounts before onboarding completes', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const { wallet } = createMockMnemonicWallet();
+        const syncWithUserStorage = jest.fn();
+        const discoverAndCreateAccounts = jest
+          .spyOn(service, 'discoverAndCreateAccounts')
+          .mockResolvedValue({ Bitcoin: 0, Solana: 0, Tron: 0 });
+
+        registerNonSocialLoginMnemonicImport({
+          rootMessenger,
+          wallet,
+        });
+        rootMessenger.registerActionHandler(
+          'AccountTreeController:syncWithUserStorage',
+          syncWithUserStorage,
+        );
+
+        await rootMessenger.call(
+          'LegacyBackgroundApiService:importMnemonicToVault',
+          mnemonic,
+          {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+          },
+        );
+
+        await waitForImportMnemonicFireAndForgetTasks();
+
+        expect(syncWithUserStorage).not.toHaveBeenCalled();
+        expect(discoverAndCreateAccounts).not.toHaveBeenCalled();
+      });
+    });
+
+    it('throws if the created multichain wallet does not contain an EVM account', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const getAccount = jest.fn().mockReturnValue(undefined);
+        const getMultichainAccountGroup = jest.fn().mockReturnValue({
+          get: getAccount,
+        });
+        const getAccountByAddress = jest.fn();
+        const wallet = {
+          entropySource: keyringId,
+          getMultichainAccountGroup,
+        };
+
+        registerNonSocialLoginMnemonicImport({
+          rootMessenger,
+          wallet,
+        });
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          getAccountByAddress,
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:importMnemonicToVault',
+            mnemonic,
+          ),
+        ).rejects.toThrow('No new account found');
+
+        expect(getMultichainAccountGroup).toHaveBeenCalledWith(0);
+        expect(getAccount).toHaveBeenCalledWith({ type: EthAccountType.Eoa });
+        expect(getAccountByAddress).not.toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('getAccountsBySnapId', () => {
     it('returns the address from the snap keyring', async () => {
       await withService(async ({ rootMessenger }) => {
@@ -3734,50 +3973,7 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
-    it('updates the fragment if it already exists', async () => {
-      const transactionId = 'transaction-id';
-      const fragmentId = `transaction-ui-${transactionId}`;
-      const payload = { properties: { foo: 'bar' } };
-
-      await withService(async ({ rootMessenger, serviceMessenger }) => {
-        const getEventFragmentByIdHandler = jest
-          .fn()
-          .mockReturnValue({ id: fragmentId });
-        const updateEventFragmentHandler = jest.fn();
-        const createEventFragmentHandler = jest.fn();
-
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:getEventFragmentById',
-          getEventFragmentByIdHandler,
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:updateEventFragment',
-          updateEventFragmentHandler,
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:createEventFragment',
-          createEventFragmentHandler,
-        );
-
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        rootMessenger.call(
-          'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
-          transactionId,
-          payload,
-        );
-
-        expect(getEventFragmentByIdHandler).toHaveBeenCalledWith(fragmentId);
-        expect(callSpy).toHaveBeenCalledWith(
-          'MetaMetricsController:updateEventFragment',
-          fragmentId,
-          payload,
-        );
-        expect(createEventFragmentHandler).not.toHaveBeenCalled();
-      });
-    });
-
-    it('creates the fragment if it does not exist', async () => {
+    it('upserts the fragment keyed by transaction id', async () => {
       const transactionId = 'transaction-id';
       const fragmentId = `transaction-ui-${transactionId}`;
       const payload = {
@@ -3786,23 +3982,11 @@ describe('LegacyBackgroundApiService', () => {
       };
 
       await withService(async ({ rootMessenger, serviceMessenger }) => {
-        const getEventFragmentByIdHandler = jest
-          .fn()
-          .mockReturnValue(undefined);
-        const updateEventFragmentHandler = jest.fn();
-        const createEventFragmentHandler = jest.fn();
+        const upsertEventFragmentHandler = jest.fn();
 
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:getEventFragmentById',
-          getEventFragmentByIdHandler,
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:updateEventFragment',
-          updateEventFragmentHandler,
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:createEventFragment',
-          createEventFragmentHandler,
+          'AnalyticsController:upsertEventFragment',
+          upsertEventFragmentHandler,
         );
 
         const callSpy = jest.spyOn(serviceMessenger, 'call');
@@ -3814,49 +3998,13 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(callSpy).toHaveBeenCalledWith(
-          'MetaMetricsController:createEventFragment',
-          {
-            uniqueIdentifier: fragmentId,
-            successEvent: 'Transaction Fragment Created',
-            category: MetaMetricsEventCategory.Transactions,
-            canDeleteIfAbandoned: true,
-            properties: payload.properties,
-            sensitiveProperties: payload.sensitiveProperties,
-          },
+          'AnalyticsController:upsertEventFragment',
+          fragmentId,
+          payload,
         );
-        expect(updateEventFragmentHandler).not.toHaveBeenCalled();
-      });
-    });
-
-    it('defaults properties and sensitiveProperties to empty objects when creating', async () => {
-      const transactionId = 'transaction-id';
-      const fragmentId = `transaction-ui-${transactionId}`;
-
-      await withService(async ({ rootMessenger, serviceMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:getEventFragmentById',
-          jest.fn().mockReturnValue(undefined),
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:createEventFragment',
-          jest.fn(),
-        );
-
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        rootMessenger.call(
-          'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
-          transactionId,
-          { category: MetaMetricsEventCategory.Transactions },
-        );
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'MetaMetricsController:createEventFragment',
-          expect.objectContaining({
-            uniqueIdentifier: fragmentId,
-            properties: {},
-            sensitiveProperties: {},
-          }),
+        expect(upsertEventFragmentHandler).toHaveBeenCalledWith(
+          fragmentId,
+          payload,
         );
       });
     });
@@ -5199,7 +5347,7 @@ describe('LegacyBackgroundApiService', () => {
         });
 
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:getEventFragmentById',
+          'AnalyticsController:getEventFragmentById',
           jest.fn().mockReturnValue({
             properties: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -5207,10 +5355,10 @@ describe('LegacyBackgroundApiService', () => {
             },
           }),
         );
-        const updateEventFragmentMock = jest.fn();
+        const upsertEventFragmentMock = jest.fn();
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:updateEventFragment',
-          updateEventFragmentMock,
+          'AnalyticsController:upsertEventFragment',
+          upsertEventFragmentMock,
         );
         rootMessenger.registerActionHandler(
           'TransactionController:getState',
@@ -5243,7 +5391,7 @@ describe('LegacyBackgroundApiService', () => {
             gas: ESTIMATE_GAS_MOCK,
           }),
         );
-        expect(updateEventFragmentMock).toHaveBeenCalledWith(
+        expect(upsertEventFragmentMock).toHaveBeenCalledWith(
           expect.any(String),
           {
             properties: {
@@ -5305,7 +5453,7 @@ describe('LegacyBackgroundApiService', () => {
         } as TransactionMeta;
 
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:getEventFragmentById',
+          'AnalyticsController:getEventFragmentById',
           jest.fn().mockReturnValue({
             properties: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -5313,10 +5461,10 @@ describe('LegacyBackgroundApiService', () => {
             },
           }),
         );
-        const updateEventFragmentMock = jest.fn();
+        const upsertEventFragmentMock = jest.fn();
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:updateEventFragment',
-          updateEventFragmentMock,
+          'AnalyticsController:upsertEventFragment',
+          upsertEventFragmentMock,
         );
         rootMessenger.registerActionHandler(
           'TransactionController:getState',
@@ -5351,7 +5499,7 @@ describe('LegacyBackgroundApiService', () => {
           'Failed to estimate gas for transaction containers: Failed to simulate wrapped transaction',
         );
 
-        expect(updateEventFragmentMock).toHaveBeenCalledWith(
+        expect(upsertEventFragmentMock).toHaveBeenCalledWith(
           expect.any(String),
           {
             properties: {
@@ -6232,6 +6380,7 @@ describe('LegacyBackgroundApiService', () => {
         const clearPermissionState = jest.fn();
         const clearSnapState = jest.fn().mockResolvedValue(undefined);
         const clearAccountTreeState = jest.fn();
+        const clearAccountsState = jest.fn();
         const updateHiddenAccountsList = jest.fn();
         const clearUnapprovedTransactions = jest.fn();
         const createWallet = jest.fn().mockResolvedValue(undefined);
@@ -6259,6 +6408,10 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'AccountTreeController:clearState',
           clearAccountTreeState,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:clearState',
+          clearAccountsState,
         );
         rootMessenger.registerActionHandler(
           'AccountOrderController:updateHiddenAccountsList',
@@ -6294,6 +6447,7 @@ describe('LegacyBackgroundApiService', () => {
         expect(clearPermissionState).toHaveBeenCalled();
         expect(clearSnapState).toHaveBeenCalled();
         expect(clearAccountTreeState).toHaveBeenCalled();
+        expect(clearAccountsState).toHaveBeenCalled();
         expect(updateHiddenAccountsList).toHaveBeenCalledWith([]);
         expect(clearUnapprovedTransactions).toHaveBeenCalled();
         expect(createWallet).toHaveBeenCalledWith({
@@ -8494,6 +8648,7 @@ function getMessenger(
       'SeedlessOnboardingController:submitPassword',
       'SeedlessOnboardingController:syncLatestGlobalPassword',
       'AccountsController:updateAccounts',
+      'AccountsController:clearState',
       'AccountOrderController:updateHiddenAccountsList',
       'AccountTreeController:clearState',
       'AccountTreeController:init',
@@ -8515,9 +8670,8 @@ function getMessenger(
       'AppStateController:setPasskeyAutoUnlockSuppressed',
       'AppStateController:setTrezorModel',
       'KeyringController:withKeyringV2Unsafe',
-      'MetaMetricsController:getEventFragmentById',
-      'MetaMetricsController:updateEventFragment',
-      'MetaMetricsController:createEventFragment',
+      'AnalyticsController:getEventFragmentById',
+      'AnalyticsController:upsertEventFragment',
       'MetaMetricsController:bufferedTrace',
       'MetaMetricsController:bufferedEndTrace',
       'TransactionController:updateEditableParams',

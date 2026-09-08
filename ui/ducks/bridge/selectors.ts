@@ -21,7 +21,7 @@ import {
   RequestStatus,
   isNonEvmChainId,
   isStellarChainId,
-  QuoteMetadataMigrationPhase,
+  type QuoteMetadata,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
@@ -55,7 +55,10 @@ import {
   type AccountGroupObject,
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
-import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import {
+  ALLOWED_BRIDGE_CHAIN_IDS,
+  BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
+} from '../../../shared/constants/bridge';
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
 import {
   createDeepEqualSelector,
@@ -818,10 +821,17 @@ export const getBridgeQuotes = createSelector(
     const quotes = selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,
-      migrationPhase: QuoteMetadataMigrationPhase.V1Data,
+      // Determines how quote metadata is resolved
+      migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
     });
 
-    return quotes;
+    return quotes as Omit<
+      ReturnType<typeof selectBridgeQuotes>,
+      'activeQuote' | 'sortedQuotes'
+    > & {
+      activeQuote: (QuoteResponse & QuoteMetadata) | null;
+      sortedQuotes: (QuoteResponse & QuoteMetadata)[];
+    };
   },
 );
 
