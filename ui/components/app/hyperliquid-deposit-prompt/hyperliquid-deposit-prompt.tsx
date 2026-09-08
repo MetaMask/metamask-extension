@@ -40,6 +40,7 @@ import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
+import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
 import { TokenIcon } from '../../../pages/confirmations/components/token-icon/token-icon';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import { ConfirmationLoader } from '../../../pages/confirmations/hooks/useConfirmationNavigation';
@@ -263,6 +264,13 @@ export const HyperliquidDepositPrompt: React.FC<
     }
 
     const { transactionId } = result;
+
+    upsertTransactionUIMetricsFragment(transactionId, {
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        mm_pay_entry_point: 'hyperliquid_deposit_prompt',
+      },
+    });
 
     if (displayToken?.address && displayToken.chainId) {
       try {

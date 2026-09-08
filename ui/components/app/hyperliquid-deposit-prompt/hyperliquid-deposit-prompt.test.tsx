@@ -57,6 +57,11 @@ jest.mock('../../../../shared/lib/environment-type', () => ({
 
 jest.mock('../../../store/controller-actions/transaction-pay-controller');
 
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  upsertTransactionUIMetricsFragment: jest.fn(),
+}));
+
 const mockUsePerpsHomeRoute = jest.fn(() => PERPS_HOME_PAGE_ROUTE);
 jest.mock('../../../hooks/perps/usePerpsHomeRoute', () => ({
   ...jest.requireActual('../../../hooks/perps/usePerpsHomeRoute'),
