@@ -6,6 +6,7 @@ const environmentKeys = [
   'FORCE_AUTH_MATCH_BUILD',
   'METAMASK_BUILD_TYPE',
   'METAMASK_ENVIRONMENT',
+  'MM_DEV_API_ENV',
 ] as const;
 
 describe('loadAuthenticationConfig', () => {
@@ -34,33 +35,45 @@ describe('loadAuthenticationConfig', () => {
     process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
     const developmentEnvironment = loadAuthenticationConfig();
 
+    process.env.MM_DEV_API_ENV = 'dev';
+    const optedInDevelopmentEnvironment = loadAuthenticationConfig();
+
+    process.env.MM_DEV_API_ENV = 'prod';
+    const optedOutDevelopmentEnvironment = loadAuthenticationConfig();
+
+    delete process.env.MM_DEV_API_ENV;
     process.env.FORCE_AUTH_MATCH_BUILD = 'true';
     process.env.METAMASK_BUILD_TYPE = 'beta';
-    const forcedDevelopmentEnvironment = loadAuthenticationConfig();
-
-    delete process.env.METAMASK_ENVIRONMENT;
     const betaEnvironment = loadAuthenticationConfig();
 
     process.env.METAMASK_BUILD_TYPE = 'uat';
     const uatEnvironment = loadAuthenticationConfig();
 
     process.env.METAMASK_BUILD_TYPE = 'main';
-    const productionEnvironment = loadAuthenticationConfig();
+    process.env.MM_DEV_API_ENV = 'dev';
+    const forcedMainEnvironment = loadAuthenticationConfig();
+
+    process.env.METAMASK_BUILD_TYPE = 'beta';
+    const forcedBetaWithDevFlag = loadAuthenticationConfig();
 
     expect({
       defaultEnvironment,
       developmentEnvironment,
-      forcedDevelopmentEnvironment,
+      optedInDevelopmentEnvironment,
+      optedOutDevelopmentEnvironment,
       betaEnvironment,
       uatEnvironment,
-      productionEnvironment,
+      forcedMainEnvironment,
+      forcedBetaWithDevFlag,
     }).toMatchInlineSnapshot(`
       {
         "betaEnvironment": "uat",
         "defaultEnvironment": "prd",
-        "developmentEnvironment": "dev",
-        "forcedDevelopmentEnvironment": "uat",
-        "productionEnvironment": "prd",
+        "developmentEnvironment": "prd",
+        "forcedBetaWithDevFlag": "uat",
+        "forcedMainEnvironment": "prd",
+        "optedInDevelopmentEnvironment": "dev",
+        "optedOutDevelopmentEnvironment": "prd",
         "uatEnvironment": "uat",
       }
     `);

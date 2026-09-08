@@ -446,6 +446,8 @@ env:
 
   # Authentication (Backup & Sync, Profile metrics...)
   - FORCE_AUTH_MATCH_BUILD: false
+  # Opt in to DEV identity backends (`dev` | `prod`). Default prod.
+  - MM_DEV_API_ENV: prod
 
   # Passkey / Biometrics unlock
   - PASSKEY_ENABLED: true

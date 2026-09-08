@@ -1,5 +1,5 @@
 import { Env } from '@metamask/profile-sync-controller/sdk';
-import { ENVIRONMENT } from '../../constants/build';
+import { devApiEnv } from './dev-api-env';
 
 /**
  * Check if the FORCE_AUTH_MATCH_BUILD environment variable is set to `true`.
@@ -10,23 +10,21 @@ export function isForceAuthMatchBuild() {
   return process.env.FORCE_AUTH_MATCH_BUILD?.toString() === 'true';
 }
 
+/**
+ * Profile Sync / identity `Env` for AuthenticationController and services
+ * that share its JWT. Opt in to DEV with `MM_DEV_API_ENV=dev`; default is PRD.
+ * `FORCE_AUTH_MATCH_BUILD` still maps beta/uat builds to UAT.
+ *
+ * @returns the authentication environment
+ */
 export function loadAuthenticationConfig(): Env {
-  // Local webpack (`yarn start`) uses DEV Profile Sync for staging on-ramp.
-  // Keep `testing`/E2E on PRD so mocks at authentication.api.cx.metamask.io match.
-  if (
-    !isForceAuthMatchBuild() &&
-    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT
-  ) {
-    return Env.DEV;
-  }
-
-  if (!isForceAuthMatchBuild()) {
+  if (isForceAuthMatchBuild()) {
+    const buildType = process.env.METAMASK_BUILD_TYPE;
+    if (buildType === 'beta' || buildType === 'uat') {
+      return Env.UAT;
+    }
     return Env.PRD;
   }
 
-  const buildType = process.env.METAMASK_BUILD_TYPE;
-  if (buildType === 'beta' || buildType === 'uat') {
-    return Env.UAT;
-  }
-  return Env.PRD;
+  return devApiEnv() === 'dev' ? Env.DEV : Env.PRD;
 }
