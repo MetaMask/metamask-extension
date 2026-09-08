@@ -9,7 +9,10 @@ import { SolScope, BtcScope, TrxScope } from '@metamask/keyring-api';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { BigNumber } from 'bignumber.js';
 import { AssetType } from '../../shared/constants/transaction';
-import { isNativeCaipAssetId, isTronSpecialAsset  } from '../../shared/lib/asset-utils';
+import {
+  isNativeCaipAssetId,
+  isTronSpecialAsset,
+} from '../../shared/lib/asset-utils';
 import {
   getAccountAssets,
   getAssetsMetadata,
