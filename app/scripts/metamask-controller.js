@@ -3056,9 +3056,12 @@ export default class MetamaskController extends EventEmitter {
         }
         appStateController.setArcUsageNoticeShown();
         trackEvent(
-          createEventBuilder(MetaMetricsEventName.ArcUsageNoticeToastViewed)
+          createEventBuilder(MetaMetricsEventName.NetworkUsageNoticeToastViewed)
             .addCategory(MetaMetricsEventCategory.Home)
-            .addProperties({ chain_id_caip: 'eip155:5042' })
+            .addProperties({
+              network_name: 'arc',
+              chain_id_caip: 'eip155:5042',
+            })
             .build(),
         );
       },

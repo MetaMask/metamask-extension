@@ -51,12 +51,17 @@ export function ArcUsageNoticeToast() {
       description={t('arcUsageNoticeDescription')}
       onClose={() => {
         trackEvent(
-          createEventBuilder(MetaMetricsEventName.ArcUsageNoticeToastDismissed)
+          createEventBuilder(
+            MetaMetricsEventName.NetworkUsageNoticeToastInteracted,
+          )
             .addCategory(MetaMetricsEventCategory.Home)
+            /* eslint-disable @typescript-eslint/naming-convention */
             .addProperties({
-              // eslint-disable-next-line @typescript-eslint/naming-convention
+              network_name: 'arc',
+              interaction_type: 'dismissed',
               chain_id_caip: ARC_CAIP_CHAIN_ID,
             })
+            /* eslint-enable @typescript-eslint/naming-convention */
             .build(),
         );
         setVisible(false);
