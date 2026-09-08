@@ -146,7 +146,11 @@ function generateERC1155TransferData({
             addHexPrefix(fromAddress),
             addHexPrefix(toAddress),
             BigInt(tokenId),
-            addHexPrefix(amount),
+            // `amount` is the user-entered token count. `BigInt` accepts both
+            // plain decimal strings (e.g. `"10"`) and `0x`-prefixed hex
+            // strings, so the previous `addHexPrefix(amount)` — which turned
+            // decimal `"10"` into `"0x10"` (= 16) — over-counted the transfer.
+            BigInt(amount),
             addHexPrefix(data),
           ],
         ),
