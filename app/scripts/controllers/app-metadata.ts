@@ -160,7 +160,7 @@ const controllerMetadata: StateMetadata<AppMetadataControllerState> = {
 };
 
 /**
- * Methods exposed by the {@link AlertController} messenger.
+ * Methods exposed by the {@link AppMetadataController} messenger.
  */
 const MESSENGER_EXPOSED_METHODS = [
   'maybeRecordFirstTimeInfo',
