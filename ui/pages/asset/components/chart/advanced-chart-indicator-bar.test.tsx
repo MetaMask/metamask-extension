@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, fireEvent, waitFor, screen } from '@testing-library/react';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import IndicatorBar from './advanced-chart-indicator-bar';
 
 // Mock useTheme hook
@@ -40,7 +41,7 @@ describe('IndicatorBar', () => {
       // Check all toggle indicators
       expect(getByText('BOL')).toBeInTheDocument();
       expect(getByText('RSI')).toBeInTheDocument();
-      expect(getByText('Volume')).toBeInTheDocument();
+      expect(getByText(messages.perpsSortByVolume.message)).toBeInTheDocument();
       expect(getByText('MACD')).toBeInTheDocument();
     });
 
@@ -76,7 +77,7 @@ describe('IndicatorBar', () => {
 
       const bolButton = getByText('BOL');
       const rsiButton = getByText('RSI');
-      const volumeButton = getByText('Volume');
+      const volumeButton = getByText(messages.perpsSortByVolume.message);
 
       // Active buttons should have higher font weight
       expect(bolButton).toHaveStyle({ fontWeight: 600 });
@@ -148,7 +149,7 @@ describe('IndicatorBar', () => {
     it('calls onIndicatorToggle when Volume is clicked', () => {
       const { getByText } = render(<IndicatorBar {...defaultProps} />);
 
-      fireEvent.click(getByText('Volume'));
+      fireEvent.click(getByText(messages.perpsSortByVolume.message));
 
       expect(mockOnIndicatorToggle).toHaveBeenCalledTimes(1);
       expect(mockOnIndicatorToggle).toHaveBeenCalledWith('Volume');
@@ -373,7 +374,7 @@ describe('IndicatorBar', () => {
       // All toggle indicators should have higher font weight
       const bolButton = getByText('BOL');
       const rsiButton = getByText('RSI');
-      const volumeButton = getByText('Volume');
+      const volumeButton = getByText(messages.perpsSortByVolume.message);
       const macdButton = getByText('MACD');
 
       expect(bolButton).toHaveStyle({ fontWeight: 600 });
