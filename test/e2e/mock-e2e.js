@@ -106,8 +106,8 @@ const {
 } = require('./tests/phishing-controller/mocks');
 const { mockIdentityServices } = require('./tests/identity/mocks');
 const {
-  mockAuthenticatedUserStorageNotificationPreferences,
-} = require('./helpers/authenticated-user-storage/mocks');
+  MockttpNotificationTriggerServer,
+} = require('./helpers/notifications/mock-notification-trigger-server');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
@@ -1771,8 +1771,8 @@ async function setupMocking(
   // Identity APIs
   await mockIdentityServices(server);
 
-  // Authenticated User Storage APIs
-  mockAuthenticatedUserStorageNotificationPreferences(server);
+  // Trigger API and Authenticated User Storage notification preferences
+  new MockttpNotificationTriggerServer().setupServer(server);
 
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {
