@@ -7,6 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { useTheme } from '../../../../hooks/useTheme';
+import { useOHLCVChart } from './useOHLCVChart';
 
 /**
  * [POC — THROWAWAY] AdvancedChartIframe
@@ -24,63 +25,6 @@ const CHART_ORIGIN = 'http://localhost:8001';
 // If the chart hasn't emitted CHART_READY within this window, fall back to legacy.
 const LOAD_TIMEOUT_MS = 10_000;
 
-// Interval → API timePeriod mapping (from mobile's tokenOverviewChart.constants.ts)
-const INTERVAL_TO_TIME_PERIOD: Record<string, string> = {
-  '1m': '1d',
-  '5m': '1d',
-  '15m': '1d',
-  '1h': '1w',
-  '4h': '1m',
-  '1d': '1m',
-  '1w': '1y',
-};
-
-// OHLCV REST API — mirrors mobile's useOHLCVChart.ts
-const OHLCV_BASE_URL = 'https://price.api.cx.metamask.io/v3/ohlcv-chart';
-
-interface OHLCVBar {
-  time: number;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
-}
-
-async function fetchOHLCV(
-  assetId: string,
-  interval: string,
-  vsCurrency = 'usd',
-): Promise<OHLCVBar[]> {
-  const timePeriod = INTERVAL_TO_TIME_PERIOD[interval] ?? '1d';
-  const url = new URL(`${OHLCV_BASE_URL}/${assetId}`);
-  url.searchParams.set('timePeriod', timePeriod);
-  url.searchParams.set('interval', interval);
-  url.searchParams.set('vsCurrency', vsCurrency);
-
-  const response = await fetch(url.toString());
-  if (!response.ok) {
-    throw new Error(`OHLCV API error: ${response.status}`);
-  }
-  const json = await response.json();
-  return (json.data ?? []).map(
-    (c: {
-      timestamp: number;
-      open: number;
-      high: number;
-      low: number;
-      close: number;
-      volume: number;
-    }) => ({
-      time: c.timestamp,
-      open: c.open,
-      high: c.high,
-      low: c.low,
-      close: c.close,
-      volume: c.volume,
-    }),
-  );
-}
 
 /** Imperative handle so the parent can send messages to the chart engine. */
 export interface AdvancedChartIframeRef {
@@ -107,6 +51,12 @@ const AdvancedChartIframe = forwardRef<
   const isDark = theme === 'dark';
   const chartUrl = `${CHART_ORIGIN}/index.html?theme=${isDark ? 'dark' : 'light'}`;
 
+  // Reactive OHLCV data fetching via dedicated hook
+  const {
+    ohlcvData,
+    error: ohlcvError,
+  } = useOHLCVChart({ assetId, interval: selectedInterval });
+
   const postToChart = useCallback(
     (message: Record<string, unknown>) => {
       iframeRef.current?.contentWindow?.postMessage(
@@ -120,19 +70,13 @@ const AdvancedChartIframe = forwardRef<
   // Expose postMessage to parent via ref
   useImperativeHandle(ref, () => ({ postMessage: postToChart }), [postToChart]);
 
-  const sendOhlcvData = useCallback(
-    async (interval: string) => {
-      try {
-        const data = await fetchOHLCV(assetId, interval);
-        postToChart({ type: 'SET_OHLCV_DATA', payload: { data } });
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : 'OHLCV fetch failed';
-        console.error('[POC] OHLCV fetch failed:', msg);
-        onError?.(msg);
-      }
-    },
-    [assetId, postToChart, onError],
-  );
+  // Forward OHLCV errors to the parent
+  useEffect(() => {
+    if (ohlcvError) {
+      console.error('[POC] OHLCV fetch failed:', ohlcvError);
+      onError?.(ohlcvError);
+    }
+  }, [ohlcvError, onError]);
 
   // Listen for messages from the chart engine
   useEffect(() => {
@@ -168,7 +112,7 @@ const AdvancedChartIframe = forwardRef<
   }, [chartReady, onError]);
 
   // Send initial data on iframe load — just mark loaded; data flows via
-  // the chartReady-gated useEffect below.
+  // the ohlcvData-gated useEffect below.
   const handleIframeLoad = useCallback(() => {
     setIframeLoaded(true);
   }, []);
@@ -180,15 +124,15 @@ const AdvancedChartIframe = forwardRef<
     }
   }, [chartType, chartReady, postToChart]);
 
-  // Main data-sending path: fetch and send OHLCV when iframe is loaded,
-  // interval changes, or asset changes.
-  // Gated on iframeLoaded (NOT chartReady) to match mobile's pattern —
-  // the chart engine needs data BEFORE it can build the widget and emit CHART_READY.
+  // Main data-sending path: post OHLCV data to iframe when it arrives and
+  // the iframe is loaded. Gated on iframeLoaded (NOT chartReady) to match
+  // mobile's pattern — the chart engine needs data BEFORE it can build the
+  // widget and emit CHART_READY.
   useEffect(() => {
-    if (iframeLoaded) {
-      sendOhlcvData(selectedInterval);
+    if (iframeLoaded && ohlcvData.length > 0) {
+      postToChart({ type: 'SET_OHLCV_DATA', payload: { data: ohlcvData } });
     }
-  }, [iframeLoaded, selectedInterval, assetId, sendOhlcvData]);
+  }, [iframeLoaded, ohlcvData, postToChart]);
 
   return (
     <div
