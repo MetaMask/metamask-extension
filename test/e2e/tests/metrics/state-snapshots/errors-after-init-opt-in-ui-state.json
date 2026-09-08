@@ -180,7 +180,7 @@
     "initializationState": "string",
     "inputPrimaryDenomination": "string",
     "insights": "object",
-    "installAttribution": "object",
+    "installAttribution": null,
     "interfaces": "object",
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "ipfsGateway": "string",

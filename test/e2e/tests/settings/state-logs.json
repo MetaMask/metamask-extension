@@ -512,7 +512,7 @@
     "fiatCurrency": "string",
     "firstTimeFlowType": "string",
     "firstTimeInfo": {},
-    "installAttribution": {},
+    "installAttribution": "null",
     "forgottenPassword": "boolean",
     "fullScreenGasPollTokens": ["string"],
     "gasEstimateType": "string",

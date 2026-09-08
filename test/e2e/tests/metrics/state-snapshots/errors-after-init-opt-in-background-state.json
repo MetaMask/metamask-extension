@@ -37,7 +37,7 @@
     "currentAppVersion": "string",
     "currentMigrationVersion": "number",
     "firstTimeInfo": "object",
-    "installAttribution": "object",
+    "installAttribution": null,
     "previousAppVersion": "",
     "previousMigrationVersion": 0
   },
