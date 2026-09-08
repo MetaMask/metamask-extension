@@ -1647,7 +1647,13 @@ describe('useTransactionCustomAmount', () => {
       expect(setIsMaxAmountMock).toHaveBeenCalledWith(
         moneyAccountDepositMeta.id,
         true,
-        { isMoneyAccountDeposit: true },
+        {
+          isMoneyAccountDeposit: true,
+          sourceAccountAddress: undefined,
+          sourceBalanceRaw: '1123456',
+          sourceChainId: '0x1',
+          sourceTokenAddress: '0xpaytoken',
+        },
       );
     });
 
@@ -1674,11 +1680,7 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(updateTokenAmountMock).not.toHaveBeenCalledWith('1.123456');
-      expect(setIsMaxAmountMock).not.toHaveBeenCalledWith(
-        moneyAccountDepositMeta.id,
-        true,
-        { isMoneyAccountDeposit: true },
-      );
+      expect(setIsMaxAmountMock).not.toHaveBeenCalled();
     });
 
     it('falls back to the fiat-derived amount when balanceRaw is missing', () => {
