@@ -215,6 +215,11 @@ type CoinButtonsProps = {
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
   classPrefix?: string;
+  /**
+   * Whether the displayed native asset has a spendable balance. When false,
+   * a Perps action row shows Receive instead of Send.
+   */
+  hasBalance?: boolean;
   /** When true, disables the send button for non-EVM chains (used on asset page) */
   disableSendForNonEvm?: boolean;
   /**
@@ -226,6 +231,10 @@ type CoinButtonsProps = {
    * When set (asset page, asset with a matching Perps market), the row shows
    * Long / Short / Send / More and Buy / Swap move into the More menu,
    * matching the mobile Token Details actions.
+   *
+   * Callers must resolve the Perps market lookup before mounting this row:
+   * an unset symbol renders the standard Buy / Swap actions, so passing it
+   * while the lookup is still pending would flash the wrong row.
    */
   perpsMarketSymbol?: string;
 };
@@ -237,6 +246,7 @@ const CoinButtons = ({
   isSwapsChain,
   isSigningEnabled,
   classPrefix = 'coin',
+  hasBalance = true,
   disableSendForNonEvm = false,
   buyAssetId,
   perpsMarketSymbol,
@@ -612,27 +622,44 @@ const CoinButtons = ({
           />
         </>
       )}
-      <IconButton
-        className={`${classPrefix}-overview__button`}
-        data-testid={`${classPrefix}-overview-send`}
-        Icon={
-          <Icon
-            name={IconName.Arrow2UpRight}
-            color={IconColor.IconAlternative}
-            size={IconSize.Md}
-          />
-        }
-        disabled={
-          !isSigningEnabled ||
-          (disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled)
-        }
-        label={t('send')}
-        onClick={handleSendOnClick}
-        width={BlockSize.Full}
-        tooltipRender={(contents: React.ReactElement) =>
-          generateTooltip('sendButton', contents)
-        }
-      />
+      {perpsMarketSymbol && !hasBalance ? (
+        <IconButton
+          className={`${classPrefix}-overview__button`}
+          data-testid={`${classPrefix}-overview-receive`}
+          Icon={
+            <Icon
+              name={IconName.Received}
+              color={IconColor.IconAlternative}
+              size={IconSize.Md}
+            />
+          }
+          label={t('receive')}
+          onClick={handleReceiveOnClick}
+          width={BlockSize.Full}
+        />
+      ) : (
+        <IconButton
+          className={`${classPrefix}-overview__button`}
+          data-testid={`${classPrefix}-overview-send`}
+          Icon={
+            <Icon
+              name={IconName.Arrow2UpRight}
+              color={IconColor.IconAlternative}
+              size={IconSize.Md}
+            />
+          }
+          disabled={
+            !isSigningEnabled ||
+            (disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled)
+          }
+          label={t('send')}
+          onClick={handleSendOnClick}
+          width={BlockSize.Full}
+          tooltipRender={(contents: React.ReactElement) =>
+            generateTooltip('sendButton', contents)
+          }
+        />
+      )}
       {showReceiveModal && (
         <ReceiveModal
           address={selectedAddress}

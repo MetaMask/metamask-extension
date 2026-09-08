@@ -57,6 +57,20 @@ import {
 } from './security-trust';
 import { AssetActivationErrorToast } from './asset-activation-error-toast';
 
+/**
+ * Whether the token overview should render Long / Short instead of Buy / Swap.
+ * Narrows `marketSymbol` so the Perps row can pass it without a cast.
+ *
+ * @param marketSymbol - Matched Perps market name, when the lookup found one
+ * @param isNft - ERC-721 tokens keep the standard action row
+ */
+function hasPerpsActionMarket(
+  marketSymbol: string | undefined,
+  isNft: boolean | undefined,
+): marketSymbol is string {
+  return Boolean(marketSymbol) && !isNft;
+}
+
 const TokenButtons = ({
   token,
   disableSendForNonEvm = false,
@@ -72,6 +86,10 @@ const TokenButtons = ({
    * When set (token with a matching Perps market), the row shows
    * Long / Short / Send / More and Buy / Swap move into the More menu,
    * matching the mobile Token Details actions.
+   *
+   * Callers must resolve the Perps market lookup before mounting this row:
+   * an unset symbol renders the standard Buy / Swap actions, so passing it
+   * while the lookup is still pending would flash the wrong row.
    */
   perpsMarketSymbol?: string;
 }) => {
@@ -263,8 +281,6 @@ const TokenButtons = ({
     assetSymbol: token.symbol,
   });
 
-  const showPerpsActions = Boolean(perpsMarketSymbol) && !token.isERC721;
-
   const sendButton = (
     <IconButton
       className="token-overview__button"
@@ -278,7 +294,11 @@ const TokenButtons = ({
       }
       label={t('send')}
       data-testid="eth-overview-send"
-      width={showPerpsActions ? BlockSize.Full : undefined}
+      width={
+        hasPerpsActionMarket(perpsMarketSymbol, token.isERC721)
+          ? BlockSize.Full
+          : undefined
+      }
       disabled={
         token.isERC721 ||
         (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
@@ -288,7 +308,7 @@ const TokenButtons = ({
 
   return (
     <>
-      {showPerpsActions ? (
+      {hasPerpsActionMarket(perpsMarketSymbol, token.isERC721) ? (
         // Mobile Token Details parity: Long / Short / Send (or Receive when
         // the balance is zero) / More, with the displaced actions in More.
         <Box
@@ -299,7 +319,7 @@ const TokenButtons = ({
           gap={3}
         >
           <PerpsTradeButtons
-            marketSymbol={perpsMarketSymbol as string}
+            marketSymbol={perpsMarketSymbol}
             classPrefix="token"
           />
           {shouldShowSendButton ? (

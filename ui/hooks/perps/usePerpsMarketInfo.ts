@@ -11,6 +11,13 @@ import { usePerpsCacheKey } from './usePerpsCacheKey';
 
 export { clearPerpsMarketInfoModuleCache };
 
+export type UsePerpsMarketInfoReturn = {
+  /** Matching market metadata, when the list has resolved and the symbol exists */
+  market: MarketInfo | undefined;
+  /** True until the market list fetch has settled for the current scope */
+  isLoading: boolean;
+};
+
 /**
  * Fetches the full MarketInfo for a specific asset symbol.
  *
@@ -23,33 +30,58 @@ export { clearPerpsMarketInfoModuleCache };
  * navigating between detail pages does not trigger additional REST calls for
  * the same scope. `PerpsStreamManager` clears this cache alongside its own
  * channels on account / stream reset.
- * Until the fetch resolves the hook returns `undefined`, and callers should
- * fall back to safe defaults (e.g. szDecimals = 0).
+ *
+ * `isLoading` is distinct from "no match": while the list is in flight the
+ * hook returns `{ market: undefined, isLoading: true }`; after it settles with
+ * no matching symbol it returns `{ market: undefined, isLoading: false }`.
+ * Callers that choose UI from a match (for example the asset page Long / Short
+ * vs Buy / Swap row) should wait on `isLoading` rather than treating
+ * `undefined` as "no Perps market".
  *
  * @param symbol - Asset symbol to look up (e.g. 'HYPE', 'BTC', 'xyz:TSLA')
  * @param options - Hook options
- * @param options.enabled - When false, skips fetching and returns undefined.
- * Used by callers outside the Perps experience (e.g. the asset page) that must
- * not trigger market fetches when Perps is unavailable.
- * @returns The matching MarketInfo, or undefined while loading / on error
+ * @param options.enabled - When false, skips fetching and returns no market
+ * with `isLoading: false`. Used by callers outside the Perps experience that
+ * must not trigger market fetches when Perps is unavailable.
+ * @returns The matching market and whether the list lookup is still in flight
  */
 export function usePerpsMarketInfo(
   symbol: string,
   { enabled = true }: { enabled?: boolean } = {},
-): MarketInfo | undefined {
+): UsePerpsMarketInfoReturn {
   const marketInfoCacheKey = usePerpsCacheKey();
   const useTerminalApi = useSelector(getIsPerpsTerminalBackendEnabled);
 
-  const [marketInfos, setMarketInfos] = useState<MarketInfo[]>(
-    () => peekCachedMarketInfos(marketInfoCacheKey, useTerminalApi) ?? [],
-  );
-  const marketInfoKey = `${marketInfoCacheKey}|${useTerminalApi}`;
-  const [prevMarketInfoKey, setPrevMarketInfoKey] = useState(marketInfoKey);
+  const lookupKey = `${enabled}|${marketInfoCacheKey}|${useTerminalApi}`;
+  const [prevLookupKey, setPrevLookupKey] = useState(lookupKey);
 
-  if (marketInfoKey !== prevMarketInfoKey) {
-    setPrevMarketInfoKey(marketInfoKey);
-    const cached = peekCachedMarketInfos(marketInfoCacheKey, useTerminalApi);
-    setMarketInfos(cached ?? []);
+  const [marketInfos, setMarketInfos] = useState<MarketInfo[] | undefined>(
+    () => {
+      if (enabled) {
+        return peekCachedMarketInfos(marketInfoCacheKey, useTerminalApi);
+      }
+      return undefined;
+    },
+  );
+  const [isLoading, setIsLoading] = useState(() => {
+    if (enabled) {
+      return (
+        peekCachedMarketInfos(marketInfoCacheKey, useTerminalApi) === undefined
+      );
+    }
+    return false;
+  });
+
+  if (lookupKey !== prevLookupKey) {
+    setPrevLookupKey(lookupKey);
+    if (enabled) {
+      const cached = peekCachedMarketInfos(marketInfoCacheKey, useTerminalApi);
+      setMarketInfos(cached);
+      setIsLoading(cached === undefined);
+    } else {
+      setMarketInfos(undefined);
+      setIsLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -67,6 +99,7 @@ export function usePerpsMarketInfo(
     fetchMarketInfos(marketInfoCacheKey, useTerminalApi).then((infos) => {
       if (!cancelled) {
         setMarketInfos(infos);
+        setIsLoading(false);
       }
     });
 
@@ -76,8 +109,12 @@ export function usePerpsMarketInfo(
   }, [marketInfoCacheKey, useTerminalApi, enabled]);
 
   if (!enabled) {
-    return undefined;
+    return { market: undefined, isLoading: false };
   }
 
-  return marketInfos.find((m) => m.name.toLowerCase() === symbol.toLowerCase());
+  const market = marketInfos?.find(
+    (candidate) => candidate.name.toLowerCase() === symbol.toLowerCase(),
+  );
+
+  return { market, isLoading };
 }

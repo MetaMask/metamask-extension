@@ -8120,6 +8120,10 @@
     "message": "Submitting your trade",
     "description": "In-progress toast text shown while a perps trade is being submitted"
   },
+  "perpsToastTradeEntryFailed": {
+    "message": "Couldn't open trade",
+    "description": "Error toast text shown when opening the perps order form from an asset page fails"
+  },
   "perpsToastTradeSuccess": {
     "message": "Position closed",
     "description": "Success toast text shown when a perps position is closed"

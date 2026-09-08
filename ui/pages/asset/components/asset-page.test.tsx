@@ -58,6 +58,23 @@ jest.mock('../../../store/actions', () => ({
 
 jest.mock('../../../store/controller-actions/transaction-controller');
 
+jest.mock('../hooks/useAssetPerpsMarket', () => ({
+  useAssetPerpsMarket: () => ({ market: undefined, isLoading: false }),
+}));
+
+jest.mock('../../../hooks/perps/usePerpsPositionForAsset', () => ({
+  usePerpsPositionForAsset: () => ({
+    position: undefined,
+    isLoading: false,
+  }),
+}));
+
+jest.mock('../../../components/app/perps/perps-view-stream-boundary', () => ({
+  PerpsViewStreamBoundary: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
+}));
+
 // Mock the price chart
 jest.mock('react-chartjs-2', () => ({
   // eslint-disable-next-line @typescript-eslint/no-require-imports
