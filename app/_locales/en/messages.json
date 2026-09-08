@@ -5673,6 +5673,9 @@
   "moneyFaqAnswer1": {
     "message": "An account that earns a variable APY. You deposit funds, which are held in the account as mUSD. mUSD is MetaMask's dollar-backed stablecoin. You can use or withdraw your funds anytime with no penalties. You can spend your funds via MetaMask Card at 150+ million Mastercard merchants worldwide."
   },
+  "moneyFaqAnswer10": {
+    "message": "Most places! We currently aren't available in the UK and countries on the USA sanctions list."
+  },
   "moneyFaqAnswer1WithApy": {
     "message": "An account that earns up to $1 variable APY. You deposit funds, which are held in the account as mUSD, and earn up to $1 APY. mUSD is MetaMask's dollar-backed stablecoin. You can use or withdraw your funds anytime with no penalties. You can spend your funds via MetaMask Card at 150+ million Mastercard merchants worldwide.",
     "description": "$1 is the current Money APY, including the percent sign."
@@ -5711,11 +5714,11 @@
   "moneyFaqAnswer9": {
     "message": "No, opening a Money account doesn't require identity verification. However, certain features, including Card and Ramps, do require verification. Checks are carried out by third-party providers that operate regulated services, not by MetaMask. If needed, you will be guided through the process inside the app during sign-up."
   },
-  "moneyFaqAnswer10": {
-    "message": "Most places! We currently aren't available in the UK and countries on the USA sanctions list."
-  },
   "moneyFaqQuestion1": {
     "message": "What is a MetaMask Money account?"
+  },
+  "moneyFaqQuestion10": {
+    "message": "Which countries is MetaMask Money account available in?"
   },
   "moneyFaqQuestion2": {
     "message": "Is MetaMask Money account safe?"
@@ -5740,9 +5743,6 @@
   },
   "moneyFaqQuestion9": {
     "message": "Do I need to complete identity verification to use MetaMask Money account?"
-  },
-  "moneyFaqQuestion10": {
-    "message": "Which countries is MetaMask Money account available in?"
   },
   "moneyFundDescription": {
     "message": "Fund your Money account and watch your balance grow."
