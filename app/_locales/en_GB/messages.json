@@ -1990,6 +1990,32 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Turn on basic functionality"
   },
+  "basicFunctionalityMigrationModalTitle": {
+    "message": "Your settings have changed"
+  },
+  "basicFunctionalityMigrationSocialModalBlogPostLink": {
+    "message": "blog post"
+  },
+  "basicFunctionalityMigrationSocialModalBody1": {
+    "message": "We’re updating how MetaMask works for social login. To enable a seamless experience across MetaMask, your social login identifier (email or handle) will now be securely linked to your user profile and associated account addresses. As part of this update, Basic Functionality and other default settings will always be enabled."
+  },
+  "basicFunctionalityMigrationSocialModalBody2": {
+    "message": "We never sell your data to third parties. Read more about what we collect and why in our $1 and updated $2.",
+    "description": "$1 is the blog post link, $2 is the Privacy Notice link"
+  },
+  "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
+    "message": "Privacy Notice"
+  },
+  "basicFunctionalityMigrationSocialModalTitle": {
+    "message": "Privacy and product updates"
+  },
+  "basicFunctionalityMigrationToastDescription": {
+    "message": "Third-party APIs are now part of Basic Functionality. Based on your previous preferences, this setting is enabled. Change it any time in $1",
+    "description": "$1 is the Settings > Privacy link"
+  },
+  "basicFunctionalityMigrationToastSettingsLink": {
+    "message": "Settings > Privacy"
+  },
   "basicFunctionalityRequired_description": {
     "message": "This feature isn't available while basic functionality is turned off. Use the toggle below to turn it on."
   },

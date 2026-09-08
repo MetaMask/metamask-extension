@@ -297,7 +297,7 @@
     "popupGasPollTokens": "object",
     "preferences": {
       "basicFunctionalityMigrationNotification": null,
-      "basicFunctionalityMigrationNotificationDismissed": false,
+      "basicFunctionalityMigrationNotificationDismissed": "boolean",
       "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
