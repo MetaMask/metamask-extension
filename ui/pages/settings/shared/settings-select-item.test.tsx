@@ -58,9 +58,9 @@ describe('SettingsSelectItem', () => {
     expect(screen.queryByTestId('leading-icon')).not.toBeInTheDocument();
   });
 
-  it('does not render a value when it is omitted', () => {
+  it('does not render a value when it is an empty string', () => {
     renderWithProvider(
-      <SettingsSelectItem label="My label" to="/test-route" />,
+      <SettingsSelectItem label="My label" value="" to="/test-route" />,
       mockStore,
     );
 
