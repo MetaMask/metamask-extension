@@ -153,6 +153,13 @@ const AdvancedChartIframe = forwardRef<
           ref={iframeRef}
           src={chartUrl}
           title="Advanced Chart"
+          // Threat-model §Gap-1: sandbox the chart iframe so a compromised
+          // remote page cannot navigate the top window or open popups.
+          // allow-scripts: TradingView needs JS execution.
+          // allow-same-origin: chart-origin scripts need same-origin access
+          //   to their own localStorage / fetch. Deliberately omit
+          //   allow-top-navigation and allow-popups.
+          sandbox="allow-scripts allow-same-origin"
           onLoad={handleIframeLoad}
           style={{ width: '100%', height: '100%', border: 'none' }}
         />

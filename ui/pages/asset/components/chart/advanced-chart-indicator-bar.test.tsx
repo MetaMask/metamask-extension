@@ -312,16 +312,19 @@ describe('IndicatorBar', () => {
       // Find the dropdown and verify MA50 button exists
       const dropdown = container.querySelector('[style*="position: absolute"]');
       expect(dropdown).toBeInTheDocument();
-      
+
       // Verify MA50 option is rendered in dropdown
-      const ma50Text = Array.from(dropdown?.querySelectorAll('button') || [])
-        .find(btn => btn.textContent?.includes('MA50'));
-      
+      const ma50Text = Array.from(
+        dropdown?.querySelectorAll('button') || [],
+      ).find((btn) => btn.textContent?.includes('MA50'));
+
       expect(ma50Text).toBeDefined();
     });
 
     it('applies correct styling to inactive MA options', () => {
-      const { getByText, container } = render(<IndicatorBar {...defaultProps} />);
+      const { getByText, container } = render(
+        <IndicatorBar {...defaultProps} />,
+      );
 
       // Open dropdown
       fireEvent.click(getByText('MA ▾'));
@@ -329,7 +332,8 @@ describe('IndicatorBar', () => {
       // Find the MA5 button inside the dropdown
       const dropdownButtons = container.querySelectorAll('button');
       const ma5Button = Array.from(dropdownButtons).find(
-        (btn) => btn.textContent?.trim() === 'MA5' && btn.style.width === '100%',
+        (btn) =>
+          btn.textContent?.trim() === 'MA5' && btn.style.width === '100%',
       );
 
       expect(ma5Button).toBeDefined();
@@ -516,7 +520,9 @@ describe('IndicatorBar', () => {
     });
 
     it('renders MA dropdown options with correct layout', () => {
-      const { getByText, container } = render(<IndicatorBar {...defaultProps} />);
+      const { getByText, container } = render(
+        <IndicatorBar {...defaultProps} />,
+      );
 
       // Open dropdown
       fireEvent.click(getByText('MA ▾'));

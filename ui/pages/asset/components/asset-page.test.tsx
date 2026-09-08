@@ -941,7 +941,7 @@ describe('AssetPage', () => {
         // IndicatorBar should only show for candle charts
         // For line charts, it should not be visible
         const indicatorBar = queryByText('BOL');
-        
+
         // Test passes if component renders without errors
         // The visibility depends on chart type state
         expect(container).toBeInTheDocument();

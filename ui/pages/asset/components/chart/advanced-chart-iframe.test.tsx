@@ -54,6 +54,7 @@ describe('AdvancedChartIframe', () => {
     mockUseOHLCVChart.mockReturnValue({
       ohlcvData: mockOHLCVData,
       error: null,
+      isLoading: false,
     });
 
     // Mock iframe contentWindow.postMessage
@@ -127,9 +128,9 @@ describe('AdvancedChartIframe', () => {
       const { container } = render(<AdvancedChartIframe {...defaultProps} />);
 
       const iframe = container.querySelector('iframe');
-      expect(iframe).toHaveStyle({ 
-        width: '100%', 
-        height: '100%' 
+      expect(iframe).toHaveStyle({
+        width: '100%',
+        height: '100%',
       });
     });
   });
@@ -158,9 +159,7 @@ describe('AdvancedChartIframe', () => {
     it('updates OHLCV hook call when interval changes', () => {
       const { rerender } = render(<AdvancedChartIframe {...defaultProps} />);
 
-      rerender(
-        <AdvancedChartIframe {...defaultProps} selectedInterval="1h" />,
-      );
+      rerender(<AdvancedChartIframe {...defaultProps} selectedInterval="1h" />);
 
       expect(mockUseOHLCVChart).toHaveBeenLastCalledWith({
         assetId: 'ethereum',
@@ -173,11 +172,10 @@ describe('AdvancedChartIframe', () => {
       mockUseOHLCVChart.mockReturnValue({
         ohlcvData: [],
         error: 'Failed to fetch OHLCV data',
+        isLoading: false,
       });
 
-      render(
-        <AdvancedChartIframe {...defaultProps} onError={mockOnError} />,
-      );
+      render(<AdvancedChartIframe {...defaultProps} onError={mockOnError} />);
 
       expect(mockOnError).toHaveBeenCalledWith('Failed to fetch OHLCV data');
     });
@@ -186,6 +184,7 @@ describe('AdvancedChartIframe', () => {
       mockUseOHLCVChart.mockReturnValue({
         ohlcvData: [],
         error: null,
+        isLoading: false,
       });
 
       const { getByTestId } = render(<AdvancedChartIframe {...defaultProps} />);
@@ -199,7 +198,7 @@ describe('AdvancedChartIframe', () => {
       const { container } = render(<AdvancedChartIframe {...defaultProps} />);
 
       const iframe = container.querySelector('iframe');
-      
+
       // Simulate iframe load
       act(() => {
         iframe?.dispatchEvent(new Event('load'));
@@ -222,7 +221,7 @@ describe('AdvancedChartIframe', () => {
       );
 
       const iframe = container.querySelector('iframe');
-      
+
       // Simulate iframe load
       act(() => {
         iframe?.dispatchEvent(new Event('load'));
@@ -255,7 +254,7 @@ describe('AdvancedChartIframe', () => {
       );
 
       const iframe = container.querySelector('iframe');
-      
+
       // Simulate iframe load and ready
       act(() => {
         iframe?.dispatchEvent(new Event('load'));
@@ -296,7 +295,9 @@ describe('AdvancedChartIframe', () => {
     });
 
     it('exposes postMessage via ref', () => {
-      const ref = React.createRef<{ postMessage: (msg: Record<string, unknown>) => void }>();
+      const ref = React.createRef<{
+        postMessage: (msg: Record<string, unknown>) => void;
+      }>();
 
       render(<AdvancedChartIframe {...defaultProps} ref={ref} />);
 
@@ -305,7 +306,9 @@ describe('AdvancedChartIframe', () => {
     });
 
     it('allows parent to send messages via ref', async () => {
-      const ref = React.createRef<{ postMessage: (msg: Record<string, unknown>) => void }>();
+      const ref = React.createRef<{
+        postMessage: (msg: Record<string, unknown>) => void;
+      }>();
       const { container } = render(
         <AdvancedChartIframe {...defaultProps} ref={ref} />,
       );
@@ -334,9 +337,7 @@ describe('AdvancedChartIframe', () => {
     it('handles CHART_READY message from iframe', async () => {
       const mockOnReady = jest.fn();
 
-      render(
-        <AdvancedChartIframe {...defaultProps} onReady={mockOnReady} />,
-      );
+      render(<AdvancedChartIframe {...defaultProps} onReady={mockOnReady} />);
 
       act(() => {
         window.dispatchEvent(
@@ -355,9 +356,7 @@ describe('AdvancedChartIframe', () => {
     it('handles ERROR message from iframe', async () => {
       const mockOnError = jest.fn();
 
-      render(
-        <AdvancedChartIframe {...defaultProps} onError={mockOnError} />,
-      );
+      render(<AdvancedChartIframe {...defaultProps} onError={mockOnError} />);
 
       act(() => {
         window.dispatchEvent(
@@ -404,9 +403,7 @@ describe('AdvancedChartIframe', () => {
     it('ignores non-JSON messages', () => {
       const mockOnError = jest.fn();
 
-      render(
-        <AdvancedChartIframe {...defaultProps} onError={mockOnError} />,
-      );
+      render(<AdvancedChartIframe {...defaultProps} onError={mockOnError} />);
 
       act(() => {
         window.dispatchEvent(
@@ -424,9 +421,7 @@ describe('AdvancedChartIframe', () => {
     it('handles messages with non-string data (already parsed)', () => {
       const mockOnReady = jest.fn();
 
-      render(
-        <AdvancedChartIframe {...defaultProps} onReady={mockOnReady} />,
-      );
+      render(<AdvancedChartIframe {...defaultProps} onReady={mockOnReady} />);
 
       act(() => {
         window.dispatchEvent(
@@ -458,9 +453,7 @@ describe('AdvancedChartIframe', () => {
     it('calls onError if CHART_READY not received within timeout', async () => {
       const mockOnError = jest.fn();
 
-      render(
-        <AdvancedChartIframe {...defaultProps} onError={mockOnError} />,
-      );
+      render(<AdvancedChartIframe {...defaultProps} onError={mockOnError} />);
 
       // Advance time past the timeout (10 seconds)
       act(() => {
@@ -475,9 +468,7 @@ describe('AdvancedChartIframe', () => {
     it('does not call onError if CHART_READY received before timeout', async () => {
       const mockOnError = jest.fn();
 
-      render(
-        <AdvancedChartIframe {...defaultProps} onError={mockOnError} />,
-      );
+      render(<AdvancedChartIframe {...defaultProps} onError={mockOnError} />);
 
       // Send CHART_READY before timeout
       act(() => {
@@ -564,6 +555,7 @@ describe('AdvancedChartIframe', () => {
       mockUseOHLCVChart.mockReturnValue({
         ohlcvData: newData,
         error: null,
+        isLoading: false,
       });
 
       rerender(<AdvancedChartIframe {...defaultProps} />);
@@ -583,6 +575,7 @@ describe('AdvancedChartIframe', () => {
       mockUseOHLCVChart.mockReturnValue({
         ohlcvData: [],
         error: null,
+        isLoading: false,
       });
 
       const { container } = render(<AdvancedChartIframe {...defaultProps} />);
@@ -613,7 +606,9 @@ describe('AdvancedChartIframe', () => {
         value: null,
       });
 
-      const ref = React.createRef<{ postMessage: (msg: Record<string, unknown>) => void }>();
+      const ref = React.createRef<{
+        postMessage: (msg: Record<string, unknown>) => void;
+      }>();
 
       render(<AdvancedChartIframe {...defaultProps} ref={ref} />);
 
