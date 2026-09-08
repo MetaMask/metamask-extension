@@ -723,6 +723,11 @@
         "TextEncoder": true
       }
     },
+    "@metamask/design-system-react>@metamask-previews/design-system-shared": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
     "@metamask/7715-permission-types": {
       "packages": {
         "@metamask/delegation-core": true,
@@ -1223,7 +1228,7 @@
         "document.removeEventListener": true
       },
       "packages": {
-        "@metamask/design-system-shared": true,
+        "@metamask/design-system-react>@metamask-previews/design-system-shared": true,
         "@metamask/jazzicon": true,
         "@metamask/design-system-react>@radix-ui/react-slot": true,
         "@metamask/design-system-react>blo": true,
@@ -1231,11 +1236,6 @@
         "react-dom": true,
         "react-focus-lock": true,
         "@metamask/design-system-react>tailwind-merge": true
-      }
-    },
-    "@metamask/design-system-shared": {
-      "packages": {
-        "@metamask/utils": true
       }
     },
     "@metamask/eip-5792-middleware": {
