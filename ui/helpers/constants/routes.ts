@@ -208,6 +208,7 @@ export const PERPS_WITHDRAW_ROUTE = '/perps/withdraw';
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 export const PERPS_HOME_PAGE_ROUTE = '/perps-home';
 export const MONEY_HOME_ROUTE = '/money-home';
+export const MONEY_HOW_IT_WORKS_ROUTE = '/money-home/how-it-works';
 export const MONEY_ACTIVITY_ROUTE = '/money-home/activity';
 export const MONEY_TRANSACTION_DETAILS_ROUTE =
   '/money-home/activity/:transactionId';
@@ -236,6 +237,11 @@ export const ROUTES = [
   { path: ACTIVITY_ROUTE, label: 'Activity', trackInAnalytics: true },
   { path: PERPS_HOME_PAGE_ROUTE, label: 'Perps', trackInAnalytics: true },
   { path: MONEY_HOME_ROUTE, label: 'Money', trackInAnalytics: true },
+  {
+    path: MONEY_HOW_IT_WORKS_ROUTE,
+    label: 'Money How It Works',
+    trackInAnalytics: true,
+  },
   {
     path: MONEY_TRANSACTION_DETAILS_ROUTE,
     label: 'Money Transaction Details',

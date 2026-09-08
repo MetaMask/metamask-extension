@@ -4,6 +4,7 @@ import {
   DEFAULT_ROUTE,
   MONEY_ACTIVITY_ROUTE,
   MONEY_HOME_ROUTE,
+  MONEY_HOW_IT_WORKS_ROUTE,
   getMoneyTransactionDetailsRoute,
   PERPS_HOME_PAGE_ROUTE,
   SWAP_PATH,
@@ -64,8 +65,8 @@ describe('getActiveBottomNavTabs', () => {
     });
   });
 
-  it('marks isMoney active on the Money activity route', () => {
-    expect(getActiveBottomNavTabs(MONEY_ACTIVITY_ROUTE)).toStrictEqual({
+  it('marks isMoney active on the Money how it works route', () => {
+    expect(getActiveBottomNavTabs(MONEY_HOW_IT_WORKS_ROUTE)).toStrictEqual({
       isHome: false,
       isPerps: false,
       isMoney: true,
@@ -104,6 +105,7 @@ describe('isBottomNavRoute', () => {
     ['default route', DEFAULT_ROUTE],
     ['perps home route', PERPS_HOME_PAGE_ROUTE],
     ['Money home route', MONEY_HOME_ROUTE],
+    ['Money how it works route', MONEY_HOW_IT_WORKS_ROUTE],
     ['Money activity route', MONEY_ACTIVITY_ROUTE],
     [
       'Money transaction details route',

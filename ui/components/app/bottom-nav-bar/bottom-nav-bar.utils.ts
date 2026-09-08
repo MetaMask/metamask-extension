@@ -3,6 +3,7 @@ import {
   DEFAULT_ROUTE,
   MONEY_ACTIVITY_ROUTE,
   MONEY_HOME_ROUTE,
+  MONEY_HOW_IT_WORKS_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
   SWAP_PATH,
 } from '../../../helpers/constants/routes';
@@ -28,6 +29,7 @@ export const getActiveBottomNavTabs = (
     isPerps: pathname === PERPS_HOME_PAGE_ROUTE,
     isMoney:
       pathname === MONEY_HOME_ROUTE ||
+      pathname === MONEY_HOW_IT_WORKS_ROUTE ||
       pathname === MONEY_ACTIVITY_ROUTE ||
       pathname.startsWith(`${MONEY_ACTIVITY_ROUTE}/`),
     isSwaps: pathname === SWAP_PATH,

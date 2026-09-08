@@ -79,6 +79,7 @@ import {
   ACTIVITY_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
   MONEY_HOME_ROUTE,
+  MONEY_HOW_IT_WORKS_ROUTE,
   MONEY_ACTIVITY_ROUTE,
   MONEY_TRANSACTION_DETAILS_ROUTE,
   CONTACTS_ROUTE,
@@ -279,6 +280,9 @@ const PerpsTransactionDetailsPage = mmLazy(
 const ActivityPage = mmLazy(() => import('../activity/activity-page.tsx'));
 const PerpsPage = mmLazy(() => import('../perps/perps-home-page.tsx'));
 const MoneyHomePage = mmLazy(() => import('../money/index.ts'));
+const MoneyHowItWorksPage = mmLazy(
+  () => import('../money/money-how-it-works-page.tsx'),
+);
 const MoneyActivityPage = mmLazy(
   () => import('../money/money-activity-page.tsx'),
 );
@@ -674,6 +678,11 @@ export const routeConfig = [
             path: MONEY_HOME_ROUTE,
             capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
             element: <MoneyHomePage />,
+          }),
+          createRouteWithMessenger({
+            path: MONEY_HOW_IT_WORKS_ROUTE,
+            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+            element: <MoneyHowItWorksPage />,
           }),
           createRouteWithMessenger({
             path: MONEY_ACTIVITY_ROUTE,

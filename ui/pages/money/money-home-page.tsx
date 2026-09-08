@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
@@ -35,6 +35,7 @@ import { getPrivacyMode } from '../../selectors/selectors';
 import { MONEY_LANDING_URL } from './constants/urls';
 import { MoneyActivityList } from './components/money-activity-list';
 import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards';
+import { MoneyMoreMenu } from './components/money-more-menu';
 import { MoneyPotentialEarnings } from './components/money-potential-earnings';
 import { MoneyPositionPlaceholder } from './components/money-position-placeholder';
 
@@ -103,6 +104,7 @@ const MoneySectionDivider = () => {
 export function MoneyHomePage() {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
   const {
@@ -225,9 +227,15 @@ export function MoneyHomePage() {
         <ButtonIcon
           iconName={IconName.MoreVertical}
           ariaLabel={t('moneyMoreOptions')}
-          disabled
+          onClick={() => setIsMoreMenuOpen(true)}
+          data-testid="money-more-options"
         />
       </header>
+
+      <MoneyMoreMenu
+        isOpen={isMoreMenuOpen}
+        onClose={() => setIsMoreMenuOpen(false)}
+      />
 
       <div className="flex flex-col items-center gap-2 px-4 pt-2">
         <div className="flex w-full max-w-[784px] flex-col gap-1 sm:items-center">

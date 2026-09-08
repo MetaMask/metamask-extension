@@ -48,7 +48,6 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../../selectors/money/money-account-feature-flags', () => ({
-  ...jest.requireActual('../../selectors/money/money-account-feature-flags'),
   selectMoneyEarningSectionEnabled: jest.fn(),
 }));
 jest.mock('../../selectors/selectors', () => ({
@@ -97,6 +96,11 @@ jest.mock('../../hooks/money/useMoneyAccountWithdrawal', () => ({
 
 jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
   useMoneyActivityItemClick: () => mockUseMoneyActivityItemClick(),
+}));
+
+jest.mock('./components/money-more-menu', () => ({
+  MoneyMoreMenu: ({ isOpen }: { isOpen: boolean }) =>
+    isOpen ? <div data-testid="money-more-menu" /> : null,
 }));
 
 describe('MoneyHomePage', () => {
@@ -218,12 +222,24 @@ describe('MoneyHomePage', () => {
       messages.moneyLearnMore.message,
     ];
     screen.getAllByRole('button').forEach((button) => {
-      if (activeLabels.includes(button.textContent ?? '')) {
+      const isKebab =
+        button.getAttribute('data-testid') === 'money-more-options';
+      if (isKebab || activeLabels.includes(button.textContent ?? '')) {
         expect(button).toBeEnabled();
       } else {
         expect(button).toBeDisabled();
       }
     });
+  });
+
+  it('opens the More menu from the kebab button', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(screen.queryByTestId('money-more-menu')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('money-more-options'));
+
+    expect(screen.getByTestId('money-more-menu')).toBeInTheDocument();
   });
 
   it('opens the Money landing page from Learn more', () => {
@@ -353,7 +369,10 @@ describe('MoneyHomePage', () => {
       screen.queryByText(messages.moneyBenefits.message),
     ).not.toBeInTheDocument();
     screen.getAllByRole('button').forEach((button) => {
+      const isKebab =
+        button.getAttribute('data-testid') === 'money-more-options';
       if (
+        isKebab ||
         [messages.moneyAdd.message, messages.moneySend.message].includes(
           button.textContent ?? '',
         )
