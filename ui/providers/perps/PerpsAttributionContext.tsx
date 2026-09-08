@@ -95,12 +95,6 @@ function mapSourceParamToDiscovery(source: string | null): string | undefined {
   }
 }
 
-/**
- * Extract the `source` param from a search string if present. Used to pass
- * sources (e.g. `deeplink`, `hyperliquid_deposit_prompt`) through to
- * PERPS_SCREEN_VIEWED attribution.
- * @param search
- */
 function getSourceFromSearch(search?: string): string | null {
   return new URLSearchParams(search ?? '').get('source');
 }
