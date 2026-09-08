@@ -360,7 +360,7 @@ const reactRefreshJsxLoader = getSwcLoader(
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
 
-const isCashtagWidgetEntry = (chunk: Chunk) =>
+const isCashtagWidgetEntry = (chunk: { name?: string | null }) =>
   chunk.name === 'cashtag-widget-frame';
 const isChunkableInitial = (chunk: Chunk) =>
   !isCashtagWidgetEntry(chunk) &&

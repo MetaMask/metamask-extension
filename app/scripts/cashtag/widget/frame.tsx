@@ -34,8 +34,11 @@ async function loadTicker(symbol: string): Promise<ResolvedTicker | null> {
       type: EXTENSION_MESSAGES.GET_DATA,
       body: { symbol },
     });
-    const primary = response?.body?.asset;
-    const similar = response?.body?.similar;
+    const result = response as
+      | { body?: { asset?: AssetData; similar?: AssetData[] } }
+      | undefined;
+    const primary = result?.body?.asset;
+    const similar = result?.body?.similar;
     if (!primary || typeof primary !== 'object') {
       return null;
     }

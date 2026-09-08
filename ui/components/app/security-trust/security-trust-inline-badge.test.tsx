@@ -1,16 +1,14 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
+import type { TokenTrustConfig } from '#shared/lib/token-search/types';
 import {
   getSecurityTrustBadgeConfig,
   SecurityTrustInlineBadge,
-  type SecurityTrustInlineBadgeConfig,
 } from './security-trust-inline-badge';
 
 const t = (key: string) => key;
 
-const getTestBadgeConfig = (
-  resultType: string,
-): SecurityTrustInlineBadgeConfig => {
+const getTestBadgeConfig = (resultType: string): TokenTrustConfig => {
   const badge = getSecurityTrustBadgeConfig(resultType, t);
   expect(badge).toBeDefined();
   if (!badge) {

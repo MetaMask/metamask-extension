@@ -134,6 +134,27 @@ function onDomReady() {
   });
 }
 
+async function initializeCashtag() {
+  await onDomReady();
+  if (initialized) {
+    return;
+  }
+  initialized = true;
+
+  chrome.runtime.onMessage.addListener((message) => {
+    if (message?.type !== EXTENSION_MESSAGES.X_WIDGET_ENABLED_CHANGED) {
+      return undefined;
+    }
+    setEnabled(message.body?.enabled === true).catch(() => undefined);
+    return undefined;
+  });
+
+  window.addEventListener('pagehide', stop);
+
+  const enabled = await isWidgetEnabled();
+  await setEnabled(enabled);
+}
+
 export function initCashtag() {
   // Runs inside contentscript.js, which is injected into every frame at
   // document_start. The background bridge enables only frame 0.
@@ -141,24 +162,5 @@ export function initCashtag() {
     return;
   }
 
-  onDomReady()
-    .then(() => {
-      if (initialized) {
-        return undefined;
-      }
-      initialized = true;
-
-      chrome.runtime.onMessage.addListener((message) => {
-        if (message?.type !== EXTENSION_MESSAGES.X_WIDGET_ENABLED_CHANGED) {
-          return undefined;
-        }
-        setEnabled(message.body?.enabled === true).catch(() => undefined);
-        return undefined;
-      });
-
-      window.addEventListener('pagehide', stop);
-
-      return isWidgetEnabled().then((enabled) => setEnabled(enabled));
-    })
-    .catch(() => undefined);
+  initializeCashtag().catch(() => undefined);
 }

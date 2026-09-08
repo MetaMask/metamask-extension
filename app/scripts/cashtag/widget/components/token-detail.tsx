@@ -29,13 +29,13 @@ function onWidgetClick(handler: () => void) {
   };
 }
 
-type Props = {
+type Props = Readonly<{
   data: AssetData;
   onSwap: () => void;
   onDisable: () => void;
   onViewDetails: () => void;
   onViewSimilar: (() => void) | null;
-};
+}>;
 
 const foxSrc = browser.runtime.getURL('images/logo/metamask-fox.svg');
 
@@ -119,7 +119,7 @@ export function TokenDetail({
               {data.marketCap === null ? '—' : formatUsdCompact(data.marketCap)}
             </dd>
           </div>
-          {data.liquidity !== null ? (
+          {data.liquidity === null ? null : (
             <div className="flex flex-col items-end">
               <dt className="text-s-body-sm font-medium text-alternative">
                 Liquidity
@@ -128,7 +128,7 @@ export function TokenDetail({
                 {formatUsdCompact(data.liquidity)}
               </dd>
             </div>
-          ) : null}
+          )}
           <div className="flex flex-col items-end">
             <dt className="text-s-body-sm font-medium text-alternative">
               24h volume

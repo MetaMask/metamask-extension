@@ -9,10 +9,10 @@ import {
 import { getChainImageUrl } from '../../lib/helpers';
 import type { AssetData } from '../../lib/types';
 
-type Props = {
+type Props = Readonly<{
   asset: AssetData;
   size?: 'sm' | 'lg';
-};
+}>;
 
 const tokenSize = {
   sm: AvatarTokenSize.Md,

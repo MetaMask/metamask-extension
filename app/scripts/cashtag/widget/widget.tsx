@@ -12,7 +12,7 @@ export function Widget({
   onSwap,
   onViewDetails,
   onDisable,
-}: WidgetModel) {
+}: Readonly<WidgetModel>) {
   const [view, setView] = useState<WidgetView>('detail');
   const [active, setActive] = useState<AssetData>(data);
   const [confirmDisable, setConfirmDisable] = useState(false);

@@ -11,14 +11,15 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 
-type Props = {
+type Props = Readonly<{
   open: boolean;
   onCancel: () => void;
   onConfirm: () => void;
-};
+}>;
 
 const titleId = 'mm-cashtag-disable-title';
 const descriptionId = 'mm-cashtag-disable-description';
+const lightDismissProps = { closedby: 'any' } as const;
 
 export function DisableConfirmDialog({ open, onCancel, onConfirm }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -49,8 +50,7 @@ export function DisableConfirmDialog({ open, onCancel, onConfirm }: Props) {
       aria-labelledby={titleId}
       aria-describedby={descriptionId}
       className="mm-cashtag-disable-dialog w-[360px] max-w-[calc(100vw-32px)] rounded-xl border border-muted bg-default p-4 font-sans text-default shadow-lg"
-      // @ts-expect-error closedby missing in React types
-      closedby="any"
+      {...lightDismissProps}
       onClose={() => {
         if (confirmedRef.current) {
           return;
@@ -80,9 +80,8 @@ export function DisableConfirmDialog({ open, onCancel, onConfirm }: Props) {
           You won&apos;t see the MetaMask widget on X anymore. Turn it back on
           anytime in{' '}
           <span className="font-medium text-default whitespace-nowrap">
-            Settings &gt; Preferences
+            Settings &gt; Preferences.
           </span>
-          .
         </p>
         <div className="mt-6 grid w-full grid-cols-2 gap-4">
           <Button

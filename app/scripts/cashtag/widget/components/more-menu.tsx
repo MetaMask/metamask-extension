@@ -7,9 +7,9 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 
-type Props = {
+type Props = Readonly<{
   onDisable: () => void;
-};
+}>;
 
 const menuId = 'mm-cashtag-more-menu';
 const menuAnchor = '--cashtag-menu-anchor';

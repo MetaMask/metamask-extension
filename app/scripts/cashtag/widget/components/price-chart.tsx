@@ -5,18 +5,17 @@ import {
   LineStyle,
   type IChartApi,
   type UTCTimestamp,
-  // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'lightweight-charts';
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '#shared/constants/messages';
 import { formatChartTime, formatUsd } from '../../lib/helpers';
 import type { PricePoint } from '../../lib/types';
 
-type Props = {
+type Props = Readonly<{
   caipAssetId: string | null;
   currentPrice: number | null;
   positive: boolean;
-};
+}>;
 
 function readCssColor(element: Element, name: string) {
   return getComputedStyle(element).getPropertyValue(name).trim();
@@ -52,7 +51,10 @@ function loadPriceHistory(caipAssetId: string) {
       },
     })
     .then((response) => {
-      const points = response?.body?.priceHistory;
+      const result = response as
+        | { body?: { priceHistory?: unknown } }
+        | undefined;
+      const points = result?.body?.priceHistory;
       return Array.isArray(points) &&
         points.length >= 2 &&
         points.every(isPricePoint)

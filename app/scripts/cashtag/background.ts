@@ -147,8 +147,7 @@ function isCashtagInjectionFlagEnabled(controller: Controller | undefined) {
     ...controller?.remoteFeatureFlagController?.state?.remoteFeatureFlags,
     ...manifestRemoteFeatureFlags(),
   };
-  // return getBooleanFeatureFlag(flags.cashtagInjection, false);
-  return true; // TODO: enable cashtag injection flag when ready
+  return getBooleanFeatureFlag(flags.cashtagInjection, false);
 }
 
 function isTickerWidgetEnabled(controller: Controller | undefined) {
@@ -285,6 +284,191 @@ async function openExtensionPage({
   };
 }
 
+type CashtagMessage = {
+  type?: unknown;
+  body?: Record<string, unknown>;
+};
+
+type GetController = () => Controller | undefined;
+
+function handleGetWidgetEnabled(
+  getController: GetController,
+  sender: chrome.runtime.MessageSender,
+) {
+  return Promise.resolve({
+    type: EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED,
+    body: {
+      enabled: sender.frameId === 0 && isTickerWidgetEnabled(getController()),
+    },
+  });
+}
+
+function handleSetWidgetEnabled(
+  message: CashtagMessage,
+  getController: GetController,
+) {
+  const controller = getController();
+  const enabled = message.body?.enabled === true;
+  const previous =
+    controller?.preferencesController?.state?.preferences?.showTickerWidget ??
+    true;
+  controller?.preferencesController?.setPreference?.(
+    'showTickerWidget',
+    enabled,
+  );
+  if (previous !== enabled) {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.SettingsUpdated)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
+          /* eslint-disable @typescript-eslint/naming-convention */
+          settings_group: 'preferences_and_display',
+          settings_type: 'show_metamask_widget_on_x',
+          old_value: previous,
+          new_value: enabled,
+          show_metamask_widget_on_x: enabled,
+          /* eslint-enable @typescript-eslint/naming-convention */
+          location: 'x_widget',
+        })
+        .build(),
+    );
+  }
+  return Promise.resolve({
+    type: EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED,
+    body: { enabled },
+  });
+}
+
+function handleGetData(message: CashtagMessage, getController: GetController) {
+  if (!isTickerWidgetEnabled(getController())) {
+    return Promise.resolve({
+      type: EXTENSION_MESSAGES.GET_DATA,
+      body: { asset: null, similar: [], priceHistory: null },
+    });
+  }
+
+  const fields = Array.isArray(message.body?.fields)
+    ? message.body.fields.filter(
+        (field: unknown): field is string => typeof field === 'string',
+      )
+    : [];
+  const wantsPriceHistory = fields.includes('priceHistory');
+  const caipAssetId = bodyString(message, 'caipAssetId');
+
+  if (wantsPriceHistory) {
+    if (!caipAssetId) {
+      return Promise.resolve({
+        type: EXTENSION_MESSAGES.GET_DATA,
+        body: { priceHistory: null },
+      });
+    }
+    return fetchPriceHistory(caipAssetId)
+      .then((priceHistory) => ({
+        type: EXTENSION_MESSAGES.GET_DATA,
+        body: { priceHistory },
+      }))
+      .catch(() => ({
+        type: EXTENSION_MESSAGES.GET_DATA,
+        body: { priceHistory: null },
+      }));
+  }
+
+  const symbol = bodyString(message, 'symbol');
+  if (!symbol) {
+    return Promise.resolve({
+      type: EXTENSION_MESSAGES.GET_DATA,
+      body: { asset: null, similar: [] },
+    });
+  }
+  return resolveTicker(symbol)
+    .then((resolved) => ({
+      type: EXTENSION_MESSAGES.GET_DATA,
+      body: resolved
+        ? { asset: resolved.primary, similar: resolved.similar }
+        : { asset: null, similar: [] },
+    }))
+    .catch(() => ({
+      type: EXTENSION_MESSAGES.GET_DATA,
+      body: { asset: null, similar: [] },
+    }));
+}
+
+function openExtensionFailure(reason: string, error?: unknown) {
+  return {
+    type: EXTENSION_MESSAGES.OPEN_EXTENSION,
+    body: {
+      ok: false,
+      reason,
+      ...(error === undefined
+        ? {}
+        : { error: error instanceof Error ? error.message : 'unknown' }),
+    },
+  };
+}
+
+function handleOpenExtension(
+  message: CashtagMessage,
+  sender: chrome.runtime.MessageSender,
+  getController: GetController,
+) {
+  if (!isTickerWidgetEnabled(getController())) {
+    return Promise.resolve(openExtensionFailure('disabled'));
+  }
+
+  const page = bodyString(message, 'page');
+  const caipAssetId = bodyString(message, 'caipAssetId');
+  if (!caipAssetId) {
+    return Promise.resolve(openExtensionFailure('missing-caip-asset-id'));
+  }
+  if (!isCaipAssetType(caipAssetId)) {
+    return Promise.resolve(openExtensionFailure('invalid-caip-asset-id'));
+  }
+
+  if (page === 'swap') {
+    return openExtensionPage({
+      controller: getController(),
+      sender,
+      path: swapRoute,
+      search: swapRouteSearchForDest(caipAssetId),
+      caipAssetId,
+    }).catch((error: unknown) => openExtensionFailure('open-failed', error));
+  }
+
+  if (page === 'asset') {
+    try {
+      return openExtensionPage({
+        controller: getController(),
+        sender,
+        path: assetRoutePath(caipAssetId),
+        caipAssetId,
+      }).catch((error: unknown) => openExtensionFailure('open-failed', error));
+    } catch {
+      return Promise.resolve(openExtensionFailure('invalid-caip-asset-id'));
+    }
+  }
+
+  return Promise.resolve(openExtensionFailure('invalid-page'));
+}
+
+function createCashtagResponse(
+  message: CashtagMessage,
+  sender: chrome.runtime.MessageSender,
+  getController: GetController,
+) {
+  switch (message.type) {
+    case EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED:
+      return handleGetWidgetEnabled(getController, sender);
+    case EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED:
+      return handleSetWidgetEnabled(message, getController);
+    case EXTENSION_MESSAGES.GET_DATA:
+      return handleGetData(message, getController);
+    case EXTENSION_MESSAGES.OPEN_EXTENSION:
+      return handleOpenExtension(message, sender, getController);
+    default:
+      return undefined;
+  }
+}
+
 export function registerCashtagBackgroundBridge({
   getController,
 }: {
@@ -310,176 +494,7 @@ export function registerCashtagBackgroundBridge({
       return false;
     }
 
-    const response = (() => {
-      if (message?.type === EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED) {
-        return Promise.resolve({
-          type: EXTENSION_MESSAGES.GET_X_WIDGET_ENABLED,
-          body: {
-            enabled:
-              sender.frameId === 0 && isTickerWidgetEnabled(getController()),
-          },
-        });
-      }
-
-      if (message?.type === EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED) {
-        const controller = getController();
-        const enabled = message.body?.enabled === true;
-        const previous =
-          controller?.preferencesController?.state?.preferences
-            ?.showTickerWidget ?? true;
-        controller?.preferencesController?.setPreference?.(
-          'showTickerWidget',
-          enabled,
-        );
-        if (previous !== enabled) {
-          trackEvent(
-            createEventBuilder(MetaMetricsEventName.SettingsUpdated)
-              .addCategory(MetaMetricsEventCategory.Settings)
-              .addProperties({
-                /* eslint-disable @typescript-eslint/naming-convention */
-                settings_group: 'preferences_and_display',
-                settings_type: 'show_metamask_widget_on_x',
-                old_value: previous,
-                new_value: enabled,
-                show_metamask_widget_on_x: enabled,
-                /* eslint-enable @typescript-eslint/naming-convention */
-                location: 'x_widget',
-              })
-              .build(),
-          );
-        }
-        return Promise.resolve({
-          type: EXTENSION_MESSAGES.SET_X_WIDGET_ENABLED,
-          body: { enabled },
-        });
-      }
-
-      if (message?.type === EXTENSION_MESSAGES.GET_DATA) {
-        if (!isTickerWidgetEnabled(getController())) {
-          return Promise.resolve({
-            type: EXTENSION_MESSAGES.GET_DATA,
-            body: { asset: null, similar: [], priceHistory: null },
-          });
-        }
-
-        const fields = Array.isArray(message.body?.fields)
-          ? message.body.fields.filter(
-              (field: unknown): field is string => typeof field === 'string',
-            )
-          : [];
-        const wantsPriceHistory = fields.includes('priceHistory');
-        const caipAssetId = bodyString(message, 'caipAssetId');
-
-        if (wantsPriceHistory) {
-          if (!caipAssetId) {
-            return Promise.resolve({
-              type: EXTENSION_MESSAGES.GET_DATA,
-              body: { priceHistory: null },
-            });
-          }
-          return fetchPriceHistory(caipAssetId)
-            .then((priceHistory) => ({
-              type: EXTENSION_MESSAGES.GET_DATA,
-              body: { priceHistory },
-            }))
-            .catch(() => ({
-              type: EXTENSION_MESSAGES.GET_DATA,
-              body: { priceHistory: null },
-            }));
-        }
-
-        const symbol = bodyString(message, 'symbol');
-        if (!symbol) {
-          return Promise.resolve({
-            type: EXTENSION_MESSAGES.GET_DATA,
-            body: { asset: null, similar: [] },
-          });
-        }
-        return resolveTicker(symbol)
-          .then((resolved) => ({
-            type: EXTENSION_MESSAGES.GET_DATA,
-            body: resolved
-              ? { asset: resolved.primary, similar: resolved.similar }
-              : { asset: null, similar: [] },
-          }))
-          .catch(() => ({
-            type: EXTENSION_MESSAGES.GET_DATA,
-            body: { asset: null, similar: [] },
-          }));
-      }
-
-      if (message?.type === EXTENSION_MESSAGES.OPEN_EXTENSION) {
-        if (!isTickerWidgetEnabled(getController())) {
-          return Promise.resolve({
-            type: EXTENSION_MESSAGES.OPEN_EXTENSION,
-            body: { ok: false, reason: 'disabled' },
-          });
-        }
-
-        const page = bodyString(message, 'page');
-        const caipAssetId = bodyString(message, 'caipAssetId');
-
-        if (!caipAssetId) {
-          return Promise.resolve({
-            type: EXTENSION_MESSAGES.OPEN_EXTENSION,
-            body: { ok: false, reason: 'missing-caip-asset-id' },
-          });
-        }
-        if (!isCaipAssetType(caipAssetId)) {
-          return Promise.resolve({
-            type: EXTENSION_MESSAGES.OPEN_EXTENSION,
-            body: { ok: false, reason: 'invalid-caip-asset-id' },
-          });
-        }
-
-        if (page === 'swap') {
-          return openExtensionPage({
-            controller: getController(),
-            sender,
-            path: swapRoute,
-            search: swapRouteSearchForDest(caipAssetId),
-            caipAssetId,
-          }).catch((error: unknown) => ({
-            type: EXTENSION_MESSAGES.OPEN_EXTENSION,
-            body: {
-              ok: false,
-              reason: 'open-failed',
-              error: error instanceof Error ? error.message : 'unknown',
-            },
-          }));
-        }
-
-        if (page === 'asset') {
-          try {
-            return openExtensionPage({
-              controller: getController(),
-              sender,
-              path: assetRoutePath(caipAssetId),
-              caipAssetId,
-            }).catch((error: unknown) => ({
-              type: EXTENSION_MESSAGES.OPEN_EXTENSION,
-              body: {
-                ok: false,
-                reason: 'open-failed',
-                error: error instanceof Error ? error.message : 'unknown',
-              },
-            }));
-          } catch {
-            return Promise.resolve({
-              type: EXTENSION_MESSAGES.OPEN_EXTENSION,
-              body: { ok: false, reason: 'invalid-caip-asset-id' },
-            });
-          }
-        }
-
-        return Promise.resolve({
-          type: EXTENSION_MESSAGES.OPEN_EXTENSION,
-          body: { ok: false, reason: 'invalid-page' },
-        });
-      }
-
-      return undefined;
-    })();
+    const response = createCashtagResponse(message, sender, getController);
 
     if (response === undefined) {
       return false;

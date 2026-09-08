@@ -2,20 +2,21 @@ import React from 'react';
 import {
   ButtonIcon,
   ButtonIconSize,
+  Icon,
   IconName,
+  IconSize,
 } from '@metamask/design-system-react';
-import { SecurityTrustInlineBadge } from '#ui/components/app/security-trust';
 import { formatUsd, formatUsdCompact } from '../../lib/helpers';
 import { getSecurityInlineBadge } from '../../lib/security-badge';
 import type { AssetData } from '../../lib/types';
 import { TokenAvatar } from './token-avatar';
 
-type Props = {
+type Props = Readonly<{
   ticker: string;
   results: AssetData[];
   onBack: () => void;
   onSelect: (asset: AssetData) => void;
-};
+}>;
 
 function formatCell(value: number | null) {
   return value === null ? '—' : formatUsdCompact(value);
@@ -81,7 +82,12 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
                           {asset.ticker}
                         </span>
                         {securityBadge ? (
-                          <SecurityTrustInlineBadge badge={securityBadge} />
+                          <Icon
+                            aria-label={securityBadge.accessibleLabel}
+                            name={securityBadge.icon}
+                            size={IconSize.Sm}
+                            color={securityBadge.iconColor}
+                          />
                         ) : null}
                       </div>
                     </div>
