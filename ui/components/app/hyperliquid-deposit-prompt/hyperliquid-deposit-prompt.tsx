@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -17,7 +23,6 @@ import {
   IconName,
   IconSize,
   Modal,
-  ModalBody,
   ModalContent,
   ModalHeader,
   ModalOverlay,
@@ -25,8 +30,13 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
+import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
@@ -39,8 +49,12 @@ import { getAvailableTokens } from '../../../pages/confirmations/utils/transacti
 import { Asset } from '../../../pages/confirmations/components/send/asset/asset';
 import type { Asset as AssetType } from '../../../pages/confirmations/types/send';
 import { usePerpsHomeRoute } from '../../../hooks/perps/usePerpsHomeRoute';
+import { useAnalytics } from '../../../hooks/useAnalytics';
 import { usePerpsDepositConfirmation } from '../perps/hooks/usePerpsDepositConfirmation';
-import type { HyperliquidDepositPromptProps } from './hyperliquid-deposit-prompt.types';
+import type {
+  HyperliquidDepositPromptProps,
+  HyperliquidDepositPromptAction,
+} from './hyperliquid-deposit-prompt.types';
 
 /**
  * Tokens the user can fund a Hyperliquid deposit with through MetaMask Pay.
@@ -163,18 +177,49 @@ export const HyperliquidDepositPrompt: React.FC<
   const perpsHomeRoute = usePerpsHomeRoute();
   const tokens = useHyperliquidDepositTokens();
   const currentAccount = useSelector(getSelectedInternalAccount);
+  const { trackEvent, createEventBuilder } = useAnalytics();
+  const hasTrackedView = useRef(false);
+
+  const isSignerMismatch = Boolean(
+    selectedAddress &&
+    currentAccount?.address &&
+    selectedAddress.toLowerCase() !== currentAccount.address.toLowerCase(),
+  );
+
+  const trackPromptInteracted = useCallback(
+    (action: HyperliquidDepositPromptAction) => {
+      trackEvent(
+        createEventBuilder(
+          MetaMetricsEventName.HyperliquidDepositPromptInteracted,
+        )
+          .addCategory(MetaMetricsEventCategory.Confirmations)
+          .addProperties({ action })
+          .build(),
+      );
+    },
+    [createEventBuilder, trackEvent],
+  );
 
   // Dismiss if the signer account isn't the currently selected account as
   // useSendTokens and usePerpsDepositConfirmation use the selected account.
   useEffect(() => {
-    if (
-      selectedAddress &&
-      currentAccount?.address &&
-      selectedAddress.toLowerCase() !== currentAccount.address.toLowerCase()
-    ) {
+    if (isSignerMismatch) {
       onActionComplete({ action: 'dismiss' });
     }
-  }, [selectedAddress, currentAccount?.address, onActionComplete]);
+  }, [isSignerMismatch, onActionComplete]);
+
+  useEffect(() => {
+    if (isSignerMismatch || hasTrackedView.current) {
+      return;
+    }
+
+    hasTrackedView.current = true;
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.HyperliquidDepositPromptViewed)
+        .addCategory(MetaMetricsEventCategory.Confirmations)
+        .build(),
+    );
+  }, [createEventBuilder, isSignerMismatch, trackEvent]);
 
   // The same entry point the Perps "Add funds" button uses. It creates the
   // unapproved draft transaction that backs the Perps deposit confirmation;
@@ -195,8 +240,9 @@ export const HyperliquidDepositPrompt: React.FC<
   const displayToken = selectedToken ?? selectableTokens[0];
 
   const handleClose = useCallback(() => {
+    trackPromptInteracted('dismiss');
     onActionComplete({ action: 'dismiss' });
-  }, [onActionComplete]);
+  }, [onActionComplete, trackPromptInteracted]);
 
   const handleTokenSelect = useCallback((token: AssetType) => {
     if (token.disabled) {
@@ -254,6 +300,7 @@ export const HyperliquidDepositPrompt: React.FC<
       { replace: true },
     );
 
+    trackPromptInteracted('continue');
     onActionComplete({ action: 'continue', transactionId });
   }, [
     displayToken,
@@ -261,6 +308,7 @@ export const HyperliquidDepositPrompt: React.FC<
     onActionComplete,
     perpsHomeRoute,
     startPerpsDeposit,
+    trackPromptInteracted,
   ]);
 
   return (
@@ -339,7 +387,7 @@ export const HyperliquidDepositPrompt: React.FC<
           >
             {t('payWithModalTitle')}
           </ModalHeader>
-          <ModalBody className="overflow-auto px-0">
+          <ScrollContainer className="flex-1 overflow-auto">
             <Asset
               tokens={tokens}
               nfts={[]}
@@ -347,7 +395,7 @@ export const HyperliquidDepositPrompt: React.FC<
               disableMetrics
               onAssetSelect={handleTokenSelect}
             />
-          </ModalBody>
+          </ScrollContainer>
         </ModalContent>
       </Modal>
     </Box>
