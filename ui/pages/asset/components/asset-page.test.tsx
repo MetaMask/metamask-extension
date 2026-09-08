@@ -333,6 +333,13 @@ describe('AssetPage', () => {
       .reply(200, {})
       .persist();
 
+    // Mock OHLCV chart data API (for AdvancedChart)
+    nock('https://price.api.cx.metamask.io')
+      .get(/\/v3\/ohlcv-chart\//u)
+      .query(true)
+      .reply(200, { data: [] })
+      .persist();
+
     // Mocking Date.now would not be sufficient, since it would render differently
     // depending on the machine's timezone. Mock the formatter instead.
     jest.spyOn(Intl, 'DateTimeFormat').mockImplementation(() => {
@@ -627,6 +634,12 @@ describe('AssetPage', () => {
       )
       .query(true)
       .reply(200, { prices: [[1, 1]] });
+
+    // Mock OHLCV chart data API (for AdvancedChart)
+    nock('https://price.api.cx.metamask.io')
+      .get(/\/v3\/ohlcv-chart\//u)
+      .query(true)
+      .reply(200, { data: [] });
 
     const { queryByTestId, container } = renderWithProvider(
       <AssetPage asset={{ ...token, address }} optionsButton={null} />,

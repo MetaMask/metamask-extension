@@ -75,7 +75,6 @@ const AdvancedChartIframe = forwardRef<
     // Forward OHLCV errors to the parent
     useEffect(() => {
       if (ohlcvError) {
-        console.error('[POC] OHLCV fetch failed:', ohlcvError);
         onError?.(ohlcvError);
       }
     }, [ohlcvError, onError]);
