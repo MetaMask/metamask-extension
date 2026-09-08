@@ -6,8 +6,8 @@ import {
 } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
+import { isNativeCaipAssetId } from '#shared/lib/asset-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
-import { isNativeCaipAssetId } from '../../../../shared/lib/asset-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenSecurityData } from '../../../hooks/useTokenSecurityData';
 import { getUseExternalServices } from '../../../selectors';

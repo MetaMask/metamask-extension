@@ -7,6 +7,7 @@ import {
   isCaipAssetType,
   parseCaipAssetType,
 } from '@metamask/utils';
+import { isNativeCaipAssetId } from '#shared/lib/asset-utils';
 import {
   calculateFiatFromMarketRates,
   getHumanReadableTokenAmount,
@@ -18,7 +19,6 @@ import {
   type MultichainNetworks,
 } from '../../shared/constants/multichain/networks';
 import { decimalToPrefixedHex } from '../../shared/lib/conversion.utils';
-import { isNativeCaipAssetId } from '../../shared/lib/asset-utils';
 import { getCurrencyRates } from '../ducks/metamask/metamask';
 import { selectMarketRates } from '../selectors/activity';
 import { getAssetsPrice, getAssetsRates } from '../selectors/assets';
@@ -120,11 +120,11 @@ function fiatFromCurrencyOrMarketRates(
   humanAmount: string,
   quantity: number,
 ): number | undefined {
-  if (!token.assetId || !isCaipAssetType(token.assetId)) {
+  const { assetId } = token;
+
+  if (!assetId || !isCaipAssetType(assetId)) {
     return undefined;
   }
-
-  const assetId = token.assetId;
 
   try {
     const { chain } = parseCaipAssetType(assetId);
