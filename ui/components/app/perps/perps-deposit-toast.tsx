@@ -45,9 +45,7 @@ export function PerpsDepositToast() {
     // This is to show entry point-specific toast content that will persist
     // through subsequent renders (even if the event fragment is cleaned up).
     let capturedEntryPoint = entryPoint;
-    if (
-      entryPointRef.current.timestamp === lastDepositResultTimestamp
-    ) {
+    if (entryPointRef.current.timestamp === lastDepositResultTimestamp) {
       capturedEntryPoint = entryPointRef.current.entryPoint;
     } else {
       entryPointRef.current = {

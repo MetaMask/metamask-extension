@@ -255,7 +255,13 @@ export const HyperliquidDepositPrompt: React.FC<
     );
 
     onActionComplete({ action: 'continue', transactionId });
-  }, [displayToken, navigate, onActionComplete, perpsHomeRoute, startPerpsDeposit]);
+  }, [
+    displayToken,
+    navigate,
+    onActionComplete,
+    perpsHomeRoute,
+    startPerpsDeposit,
+  ]);
 
   return (
     <Box
