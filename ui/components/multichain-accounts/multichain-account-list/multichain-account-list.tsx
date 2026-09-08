@@ -75,7 +75,6 @@ import { useFormatters } from '../../../hooks/useFormatters';
 import { getAccountGroupDisplayBalance } from '../../../helpers/utils/account-group-balance';
 import { VirtualizedList } from '../../ui/virtualized-list/virtualized-list';
 import { useDispatch } from '../../../store/hooks';
-import { animateAccountListReorder } from './animate-account-list-reorder';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -89,8 +88,8 @@ export type MultichainAccountListProps = {
   /**
    * When true, account cells render in edit mode. Private-key wallet accounts
    * show delete controls; all other wallets show visibility controls. Menus are
-   * suppressed and hidden accounts move inline under their own wallet instead
-   * of the separate hidden section.
+   * suppressed and hidden accounts are listed in place under their own wallet
+   * instead of the separate hidden section.
    * @default false
    */
   isEditMode?: boolean;
@@ -198,7 +197,8 @@ export const MultichainAccountList = ({
     walletType?: AccountWalletType;
   } | null>(null);
 
-  // Optimistic visibility so a hide/reveal can animate before Redux catches up.
+  // Optimistic visibility so a hide/reveal shows on the cell before Redux
+  // catches up.
   const [visibilityOverrides, setVisibilityOverrides] = useState<
     Record<string, boolean>
   >({});
@@ -293,12 +293,10 @@ export const MultichainAccountList = ({
       const writeId = (visibilityWriteIds.current[accountGroupId] ?? 0) + 1;
       visibilityWriteIds.current[accountGroupId] = writeId;
 
-      animateAccountListReorder(() => {
-        setVisibilityOverrides((previous) => ({
-          ...previous,
-          [accountGroupId]: nextHidden,
-        }));
-      });
+      setVisibilityOverrides((previous) => ({
+        ...previous,
+        [accountGroupId]: nextHidden,
+      }));
 
       try {
         await dispatch(setAccountGroupHidden(accountGroupId, nextHidden));
@@ -607,8 +605,7 @@ export const MultichainAccountList = ({
       displayWalletHeader || pinnedGroups.length > 0;
 
     Object.entries(wallets).forEach(([walletId, walletData]) => {
-      const visibleAccounts: ListItem[] = [];
-      const hiddenAccounts: ListItem[] = [];
+      const accounts: ListItem[] = [];
 
       Object.entries(walletData.groups || {}).forEach(
         ([groupId, groupData]) => {
@@ -616,37 +613,30 @@ export const MultichainAccountList = ({
             return;
           }
 
-          const accountItem: ListItem = {
-            type: 'account',
-            key: `account-${groupId}`,
-            groupId,
-            groupData,
-            walletId,
-            showWalletName: false,
-          };
-
+          // While editing, hidden accounts keep their place among the visible
+          // ones so hiding an account never reorders the list. Outside edit
+          // mode they belong to the separate hidden section rendered below.
           if (
+            !isEditMode &&
             getEffectiveIsHidden(
               groupId,
               groupData.metadata?.hidden,
               visibilityOverrides,
             )
           ) {
-            hiddenAccounts.push(accountItem);
-          } else {
-            visibleAccounts.push(accountItem);
+            return;
           }
+
+          accounts.push({
+            type: 'account',
+            key: `account-${groupId}`,
+            groupId,
+            groupData,
+            walletId,
+            showWalletName: false,
+          });
         },
       );
-
-      const accounts: ListItem[] = [...visibleAccounts];
-
-      // While editing, hidden accounts sit at the end of their own wallet so a
-      // hide/reveal is a short move. Outside edit mode they stay in the
-      // separate hidden section rendered below.
-      if (isEditMode) {
-        accounts.push(...hiddenAccounts);
-      }
 
       if (!isInSearchMode && walletData.type === AccountWalletType.Entropy) {
         accounts.push({
@@ -726,18 +716,6 @@ export const MultichainAccountList = ({
         data={walletTreeData}
         estimatedItemSize={64}
         keyExtractor={(item) => item.key}
-        itemRef={(node, { item }) => {
-          if (!node) {
-            return;
-          }
-          if (item.type === 'account') {
-            node.dataset.accountListFlipId = item.groupId;
-            return;
-          }
-          delete node.dataset.accountListFlipId;
-          node.style.translate = '';
-          node.style.transition = '';
-        }}
         renderItem={({ item }) => {
           if (item.type === 'header') {
             if (item.isCollapsible && item.sectionKey) {

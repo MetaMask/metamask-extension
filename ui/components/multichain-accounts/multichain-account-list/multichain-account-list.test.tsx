@@ -1566,16 +1566,6 @@ describe('MultichainAccountList', () => {
       ).toHaveLength(0);
     });
 
-    it('tags account rows with a flip id so reorders can be animated', () => {
-      renderComponent({ isEditMode: true });
-
-      const flipIds = Array.from(
-        document.querySelectorAll<HTMLElement>('[data-account-list-flip-id]'),
-      ).map((node) => node.dataset.accountListFlipId);
-
-      expect(flipIds).toStrictEqual([walletOneGroupId, walletTwoGroupId]);
-    });
-
     it('lists hidden accounts inline under their wallet instead of the hidden section', () => {
       renderComponent({
         wallets: walletsWithHiddenAccount,
@@ -1595,6 +1585,48 @@ describe('MultichainAccountList', () => {
           'multichain-account-cell-edit-mode-hidden-icon',
         ),
       ).toBeInTheDocument();
+    });
+
+    it('keeps a hidden account in the position it holds in its wallet', () => {
+      const [secondGroupId, thirdGroupId] = [
+        `${walletOneId}/1`,
+        `${walletOneId}/2`,
+      ] as AccountGroupId[];
+      const walletOne = mockWallets[walletOneId];
+      const firstGroup = walletOne.groups[walletOneGroupId];
+      const buildGroup = (
+        id: AccountGroupId,
+        name: string,
+        hidden: boolean,
+      ) => ({
+        ...firstGroup,
+        id,
+        metadata: { ...firstGroup.metadata, name, hidden },
+      });
+
+      renderComponent({
+        wallets: {
+          [walletOneId]: {
+            ...walletOne,
+            groups: {
+              [walletOneGroupId]: firstGroup,
+              [secondGroupId]: buildGroup(secondGroupId, 'Account 2', true),
+              [thirdGroupId]: buildGroup(thirdGroupId, 'Account 3', false),
+            },
+          },
+        } as AccountTreeWallets,
+        isEditMode: true,
+      });
+
+      const renderedCells = Array.from(
+        document.querySelectorAll<HTMLElement>('.multichain-account-cell'),
+      ).map((cell) => cell.dataset.testid);
+
+      expect(renderedCells).toStrictEqual([
+        `multichain-account-cell-${walletOneGroupId}`,
+        `multichain-account-cell-${secondGroupId}`,
+        `multichain-account-cell-${thirdGroupId}`,
+      ]);
     });
 
     it('optimistically marks an account hidden before the store updates', async () => {
