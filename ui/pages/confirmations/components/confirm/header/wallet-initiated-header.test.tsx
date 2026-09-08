@@ -122,6 +122,17 @@ describe('<WalletInitiatedHeader />', () => {
     expect(getByText(tEn('perpsDepositFundsTitle'))).toBeInTheDocument();
   });
 
+  it('shows sendToPerps as the header title for perpsDeposit from money account', () => {
+    const store = configureStore(getPerpsDepositState());
+    const { getByText } = renderWithConfirmContextProvider(
+      <WalletInitiatedHeader />,
+      store,
+      '/?payWithOption=money_account',
+    );
+
+    expect(getByText(tEn('sendToPerps'))).toBeInTheDocument();
+  });
+
   it('hides AdvancedDetailsButton visually for perpsDeposit', () => {
     const { getByTestId } = render(getPerpsDepositState());
 
