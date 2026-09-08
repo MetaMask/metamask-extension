@@ -445,11 +445,11 @@ export const MultichainAccountList = ({
       // are mutually exclusive.
       const isDeleteMode =
         isEditMode && Boolean(wallet) && isPrivateKeyWallet(wallet);
+      const isVisibilityMode = isEditMode && !isDeleteMode;
       // Hidden styling is an edit-mode affordance; outside edit mode the hidden
       // section renders these cells with their normal appearance.
       const isHidden =
-        isEditMode &&
-        !isDeleteMode &&
+        isVisibilityMode &&
         getEffectiveIsHidden(
           groupId,
           groupData.metadata.hidden,
@@ -496,7 +496,7 @@ export const MultichainAccountList = ({
             isEditMode={isEditMode}
             isDeleteMode={isDeleteMode}
             onVisibilityIconClick={
-              isEditMode && !isDeleteMode
+              isVisibilityMode
                 ? (accountGroupId) => {
                     handleVisibilityToggle(accountGroupId, isHidden);
                   }
