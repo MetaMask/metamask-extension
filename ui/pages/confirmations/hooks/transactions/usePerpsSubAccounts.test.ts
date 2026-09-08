@@ -5,7 +5,7 @@ import { resetCoalesceCacheForTests } from '../../../../hooks/perps/coalesceBack
 import { getSelectedEvmInternalAccount } from '../../../../selectors';
 import { getInternalAccounts } from '../../../../selectors/accounts';
 import { getAllAccountGroups } from '../../../../selectors/multichain-accounts/account-tree';
-import { selectPerpsCachedAccountState } from '../../../../selectors/perps-controller';
+import { selectPerpsCachedUserData } from '../../../../selectors/perps-controller';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
 import { usePerpsSubAccounts } from './usePerpsSubAccounts';
@@ -67,10 +67,10 @@ function setupSelectorMock(
   groups: unknown[] = GROUP_MAP,
   {
     selectedEvmAccount,
-    cachedAccountState,
+    cachedUserData,
   }: {
     selectedEvmAccount?: unknown;
-    cachedAccountState?: unknown;
+    cachedUserData?: unknown;
   } = {},
 ) {
   mockUseSelector.mockImplementation((selector) => {
@@ -83,8 +83,8 @@ function setupSelectorMock(
     if (selector === getSelectedEvmInternalAccount) {
       return selectedEvmAccount;
     }
-    if (selector === selectPerpsCachedAccountState) {
-      return cachedAccountState ?? null;
+    if (selector === selectPerpsCachedUserData) {
+      return cachedUserData ?? null;
     }
     return undefined;
   });
@@ -148,14 +148,28 @@ describe('usePerpsSubAccounts', () => {
     );
   });
 
-  it('auto-selects first account when fromAddress is not set', async () => {
+  it('does not select an account when fromAddress is not set', async () => {
     const { result } = renderHook(() => usePerpsSubAccounts());
 
     await waitFor(() => {
-      expect(result.current.selectedSubAccount).not.toBeNull();
+      expect(result.current.subAccounts).toHaveLength(2);
     });
 
-    expect(result.current.selectedSubAccount?.id).toBe('0xabc');
+    expect(result.current.selectedSubAccount).toBeNull();
+  });
+
+  it('does not select an account when fromAddress is unmatched', async () => {
+    jest.mocked(useTransactionMetadataRequest).mockReturnValue({
+      txParams: { from: '0xdead' },
+    } as never);
+
+    const { result } = renderHook(() => usePerpsSubAccounts());
+
+    await waitFor(() => {
+      expect(result.current.subAccounts).toHaveLength(2);
+    });
+
+    expect(result.current.selectedSubAccount).toBeNull();
   });
 
   it('returns empty array when no EVM accounts exist', async () => {
@@ -367,16 +381,25 @@ describe('usePerpsSubAccounts', () => {
   it('overlays cached perps account state on the selected EVM account', async () => {
     setupSelectorMock([EVM_ACCOUNT_1, EVM_ACCOUNT_2], GROUP_MAP, {
       selectedEvmAccount: EVM_ACCOUNT_1,
-      cachedAccountState: {
-        spendableBalance: '42',
-        withdrawableBalance: '42',
-        totalBalance: '42',
+      cachedUserData: {
+        address: EVM_ACCOUNT_1.address,
+        accountState: {
+          spendableBalance: '42',
+          withdrawableBalance: '42',
+          totalBalance: '42',
+        },
       },
     });
-    mockSubmitRequestToBackground.mockResolvedValue({
-      spendableBalance: '0',
-      withdrawableBalance: '0',
-      totalBalance: '0',
+    mockSubmitRequestToBackground.mockImplementation((_method, params) => {
+      if (!params?.[0]) {
+        return Promise.resolve(null);
+      }
+
+      return Promise.resolve({
+        spendableBalance: '0',
+        withdrawableBalance: '0',
+        totalBalance: '0',
+      });
     });
 
     const { result } = renderHook(() => usePerpsSubAccounts());
@@ -385,5 +408,111 @@ describe('usePerpsSubAccounts', () => {
       expect(result.current.subAccounts[0].totalBalance).toBe('42');
       expect(result.current.subAccounts[1].totalBalance).toBe('0');
     });
+  });
+
+  it('does not overlay cached state belonging to a different account', async () => {
+    setupSelectorMock([EVM_ACCOUNT_1, EVM_ACCOUNT_2], GROUP_MAP, {
+      selectedEvmAccount: EVM_ACCOUNT_1,
+      cachedUserData: {
+        address: EVM_ACCOUNT_2.address,
+        accountState: {
+          spendableBalance: '42',
+          withdrawableBalance: '42',
+          totalBalance: '42',
+        },
+      },
+    });
+    mockSubmitRequestToBackground.mockImplementation((_method, params) => {
+      if (!params?.[0]) {
+        return Promise.resolve({
+          spendableBalance: '999',
+          withdrawableBalance: '999',
+          totalBalance: '999',
+        });
+      }
+
+      return Promise.resolve({
+        spendableBalance: '7',
+        withdrawableBalance: '7',
+        totalBalance: '7',
+      });
+    });
+
+    const { result } = renderHook(() => usePerpsSubAccounts());
+
+    await waitFor(() => {
+      expect(result.current.subAccounts[0].totalBalance).toBe('7');
+      expect(result.current.subAccounts[1].totalBalance).toBe('7');
+    });
+  });
+
+  it('lets a later standalone read replace an earlier higher total', async () => {
+    setupSelectorMock([EVM_ACCOUNT_1], GROUP_MAP);
+    mockSubmitRequestToBackground.mockResolvedValue({
+      spendableBalance: '150',
+      withdrawableBalance: '150',
+      totalBalance: '150',
+    });
+
+    const { result, rerender } = renderHook(() => usePerpsSubAccounts());
+
+    await waitFor(() => {
+      expect(result.current.subAccounts[0].totalBalance).toBe('150');
+    });
+
+    resetCoalesceCacheForTests();
+    mockSubmitRequestToBackground.mockResolvedValue({
+      spendableBalance: '10',
+      withdrawableBalance: '10',
+      totalBalance: '10',
+    });
+    setupSelectorMock([{ ...EVM_ACCOUNT_1 }], GROUP_MAP);
+    rerender();
+
+    await waitFor(() => {
+      expect(result.current.subAccounts[0].totalBalance).toBe('10');
+    });
+  });
+
+  it('prefers a lower connected total over a higher standalone total', async () => {
+    setupSelectorMock([EVM_ACCOUNT_1], GROUP_MAP, {
+      selectedEvmAccount: EVM_ACCOUNT_1,
+    });
+    mockSubmitRequestToBackground.mockImplementation((_method, params) => {
+      if (!params?.[0]) {
+        return Promise.resolve({
+          spendableBalance: '40',
+          withdrawableBalance: '40',
+          totalBalance: '40',
+        });
+      }
+
+      return Promise.resolve({
+        spendableBalance: '90',
+        withdrawableBalance: '90',
+        totalBalance: '90',
+      });
+    });
+
+    const { result } = renderHook(() => usePerpsSubAccounts());
+
+    await waitFor(() => {
+      expect(result.current.subAccounts[0].totalBalance).toBe('40');
+    });
+  });
+
+  it('preserves empty spendable and withdrawable when those fields are missing', async () => {
+    mockSubmitRequestToBackground.mockResolvedValue({
+      totalBalance: '150',
+    });
+
+    const { result } = renderHook(() => usePerpsSubAccounts());
+
+    await waitFor(() => {
+      expect(result.current.subAccounts[0].totalBalance).toBe('150');
+    });
+
+    expect(result.current.subAccounts[0].spendableBalance).toBe('');
+    expect(result.current.subAccounts[0].withdrawableBalance).toBe('');
   });
 });

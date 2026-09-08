@@ -9,21 +9,14 @@ import {
 } from '../../../../hooks/perps/coalesceBackgroundRequest';
 import {
   isFinitePerpsTotal,
-  parsePerpsTotalBalance,
   UNKNOWN_BALANCE,
 } from '../../../../hooks/perps/perpsBalance';
 import { getSelectedEvmInternalAccount } from '../../../../selectors';
 import { getInternalAccounts } from '../../../../selectors/accounts';
 import { getAllAccountGroups } from '../../../../selectors/multichain-accounts/account-tree';
-import { selectPerpsCachedAccountState } from '../../../../selectors/perps-controller';
+import { selectPerpsCachedUserData } from '../../../../selectors/perps-controller';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
-
-const ZERO_BALANCE = {
-  spendableBalance: '0',
-  withdrawableBalance: '0',
-  totalBalance: '0',
-} as const;
 
 /** Cap parallel HL standalone reads so a large account list does not 429. */
 const STANDALONE_FETCH_CONCURRENCY = 2;
@@ -44,35 +37,36 @@ type UsePerpsSubAccountsReturn = {
   selectedSubAccount: SubAccountInfo | null;
 };
 
+type BalanceSource = 'standalone' | 'connected';
+
 type PerpsBalance = {
   spendableBalance: string;
   withdrawableBalance: string;
   totalBalance: string;
 };
 
+type StoredBalance = PerpsBalance & { source: BalanceSource };
+
 function toPerpsBalance(state: AccountState): PerpsBalance {
   return {
-    spendableBalance: state.spendableBalance ?? '0',
-    withdrawableBalance: state.withdrawableBalance ?? '0',
-    totalBalance: state.totalBalance ?? '0',
+    spendableBalance:
+      state.spendableBalance ?? UNKNOWN_BALANCE.spendableBalance,
+    withdrawableBalance:
+      state.withdrawableBalance ?? UNKNOWN_BALANCE.withdrawableBalance,
+    totalBalance: state.totalBalance ?? UNKNOWN_BALANCE.totalBalance,
   };
 }
 
-function numericTotal(balance: PerpsBalance): number {
-  return parsePerpsTotalBalance(balance.totalBalance) ?? 0;
-}
-
-function preferHigherTotalBalance(
-  first: PerpsBalance,
-  second: PerpsBalance,
-): PerpsBalance {
-  return numericTotal(second) > numericTotal(first) ? second : first;
+function sourceRank(source: BalanceSource): number {
+  // Connected/cached snapshots include Unified spot-fold and HIP-3; standalone
+  // REST can report a fake $0 for the same account.
+  return source === 'connected' ? 1 : 0;
 }
 
 function mergeFetchedBalance(
-  previous: PerpsBalance | undefined,
-  incoming: PerpsBalance,
-): PerpsBalance {
+  previous: StoredBalance | undefined,
+  incoming: StoredBalance,
+): StoredBalance {
   const previousResolved =
     previous && isFinitePerpsTotal(previous.totalBalance) ? previous : null;
   const incomingResolved = isFinitePerpsTotal(incoming.totalBalance)
@@ -80,7 +74,17 @@ function mergeFetchedBalance(
     : null;
 
   if (previousResolved && incomingResolved) {
-    return preferHigherTotalBalance(previousResolved, incomingResolved);
+    if (
+      sourceRank(incomingResolved.source) !==
+      sourceRank(previousResolved.source)
+    ) {
+      return sourceRank(incomingResolved.source) >
+        sourceRank(previousResolved.source)
+        ? incomingResolved
+        : previousResolved;
+    }
+    // Same source: the newer read wins, including genuine decreases.
+    return incomingResolved;
   }
   if (incomingResolved) {
     return incomingResolved;
@@ -88,7 +92,7 @@ function mergeFetchedBalance(
   if (previousResolved) {
     return previousResolved;
   }
-  return { ...UNKNOWN_BALANCE };
+  return { ...UNKNOWN_BALANCE, source: incoming.source };
 }
 
 /**
@@ -127,9 +131,14 @@ function standaloneCacheKey(address: string): string {
   return `perpsGetAccountState|standalone|${address.toLowerCase()}`;
 }
 
+const UNRESOLVED_STANDALONE: StoredBalance = {
+  ...UNKNOWN_BALANCE,
+  source: 'standalone',
+};
+
 async function fetchStandaloneBalanceOnce(
   address: string,
-): Promise<PerpsBalance> {
+): Promise<StoredBalance> {
   const userAddress = address.toLowerCase();
 
   const state = await coalesceBackgroundRequest<AccountState | null>(
@@ -147,14 +156,14 @@ async function fetchStandaloneBalanceOnce(
     // Null or HL sentinel ("--") — treat as unresolved so the UI keeps a
     // skeleton instead of a fake $0, and the caller can retry.
     invalidateCoalescedRequest(standaloneCacheKey(userAddress));
-    return { ...UNKNOWN_BALANCE };
+    return UNRESOLVED_STANDALONE;
   }
 
-  return toPerpsBalance(state);
+  return { ...toPerpsBalance(state), source: 'standalone' };
 }
 
-async function fetchStandaloneBalance(address: string): Promise<PerpsBalance> {
-  let last: PerpsBalance = { ...UNKNOWN_BALANCE };
+async function fetchStandaloneBalance(address: string): Promise<StoredBalance> {
+  let last: StoredBalance = UNRESOLVED_STANDALONE;
 
   for (let attempt = 0; attempt < STANDALONE_FETCH_MAX_ATTEMPTS; attempt++) {
     try {
@@ -168,7 +177,7 @@ async function fetchStandaloneBalance(address: string): Promise<PerpsBalance> {
       }
     } catch {
       invalidateCoalescedRequest(standaloneCacheKey(address));
-      last = { ...UNKNOWN_BALANCE };
+      last = UNRESOLVED_STANDALONE;
     }
   }
 
@@ -180,15 +189,22 @@ async function fetchStandaloneBalance(address: string): Promise<PerpsBalance> {
  * same path the Perps tab uses, including Unified spot-fold and HIP-3 DEXs.
  * Standalone REST for that address can report `$0` while this path does not.
  *
- * @param address - Selected EVM account address used to scope the request cache.
- * @returns The connected balance when resolved, otherwise null.
+ * `perpsGetAccountState([])` returns the controller's currently connected
+ * account, not necessarily `address`. Callers must pass the cache-entry
+ * address after the read so a mismatched identity is discarded.
+ *
+ * @param address - Selected EVM account the result must belong to.
+ * @param getCachedAddress - Address on the active provider cache entry.
+ * @returns The connected balance when resolved and verified, otherwise null.
  */
 async function fetchConnectedBalance(
   address: string,
-): Promise<PerpsBalance | null> {
+  getCachedAddress: () => string | undefined,
+): Promise<StoredBalance | null> {
   try {
+    const expectedAddress = address.toLowerCase();
     const state = await coalesceBackgroundRequest<AccountState | null>(
-      `perpsGetAccountState|connected|${address.toLowerCase()}`,
+      `perpsGetAccountState|connected|${expectedAddress}`,
       () =>
         submitRequestToBackground<AccountState | null>(
           'perpsGetAccountState',
@@ -198,7 +214,13 @@ async function fetchConnectedBalance(
     if (!state || !isFinitePerpsTotal(state.totalBalance ?? '')) {
       return null;
     }
-    return toPerpsBalance(state);
+
+    const cachedAddress = getCachedAddress()?.toLowerCase();
+    if (cachedAddress && cachedAddress !== expectedAddress) {
+      return null;
+    }
+
+    return { ...toPerpsBalance(state), source: 'connected' };
   } catch {
     return null;
   }
@@ -208,8 +230,8 @@ async function fetchConnectedBalance(
  * Lists EVM accounts as Perps destination accounts, with balances from
  * `PerpsController.getAccountState`. Mirrors mobile `usePerpsSubAccounts`.
  *
- * @returns Perps sub-accounts and the one matching `txParams.from`, falling
- * back to the first sub-account when there is no match.
+ * @returns Perps sub-accounts and the one matching `txParams.from`, or null
+ * when `from` is missing or unmatched.
  */
 export function usePerpsSubAccounts(): UsePerpsSubAccountsReturn {
   const transactionMeta = useTransactionMetadataRequest();
@@ -217,10 +239,12 @@ export function usePerpsSubAccounts(): UsePerpsSubAccountsReturn {
   const allAccounts = useSelector(getInternalAccounts);
   const accountGroups = useSelector(getAllAccountGroups);
   const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
-  const cachedAccountState = useSelector(selectPerpsCachedAccountState);
-  const [balances, setBalances] = useState<Record<string, PerpsBalance>>({});
+  const cachedUserData = useSelector(selectPerpsCachedUserData);
+  const [balances, setBalances] = useState<Record<string, StoredBalance>>({});
 
   const selectedEvmAddress = selectedEvmAccount?.address?.toLowerCase();
+  const cachedUserAddress = cachedUserData?.address;
+  const cachedAccountState = cachedUserData?.accountState;
 
   const evmAccounts = useMemo(
     () => allAccounts.filter((account) => isEvmAccountType(account.type)),
@@ -233,7 +257,6 @@ export function usePerpsSubAccounts(): UsePerpsSubAccountsReturn {
     }
 
     let cancelled = false;
-    const connectedAddress = selectedEvmAddress;
 
     // Progressive updates with limited concurrency so accounts that resolve
     // first show equity, without flooding HyperLiquid's per-IP weight budget.
@@ -254,90 +277,110 @@ export function usePerpsSubAccounts(): UsePerpsSubAccountsReturn {
         }
         setBalances((prev) => ({
           ...prev,
-          [addressKey]: mergeFetchedBalance(prev[addressKey], UNKNOWN_BALANCE),
+          [addressKey]: mergeFetchedBalance(
+            prev[addressKey],
+            UNRESOLVED_STANDALONE,
+          ),
         }));
       }
     }).catch(() => {
       // Individual account handlers already update state; ignore pool errors.
     });
 
-    if (connectedAddress) {
-      fetchConnectedBalance(connectedAddress)
-        .then((connectedBalance) => {
-          if (cancelled || !connectedBalance) {
-            return;
-          }
-          setBalances((prev) => ({
-            ...prev,
-            [connectedAddress]: mergeFetchedBalance(
-              prev[connectedAddress],
-              connectedBalance,
-            ),
-          }));
-        })
-        .catch(() => {
-          // Standalone results (if any) remain; ignore connected failure.
-        });
+    return () => {
+      cancelled = true;
+    };
+  }, [evmAccounts]);
+
+  useEffect(() => {
+    if (!selectedEvmAddress) {
+      return undefined;
     }
+
+    let cancelled = false;
+    const connectedAddress = selectedEvmAddress;
+    const cachedAddressAtRequest = cachedUserAddress;
+
+    fetchConnectedBalance(connectedAddress, () => cachedAddressAtRequest)
+      .then((connectedBalance) => {
+        if (cancelled || !connectedBalance) {
+          return;
+        }
+        setBalances((prev) => ({
+          ...prev,
+          [connectedAddress]: mergeFetchedBalance(
+            prev[connectedAddress],
+            connectedBalance,
+          ),
+        }));
+      })
+      .catch(() => {
+        // Standalone results (if any) remain; ignore connected failure.
+      });
 
     return () => {
       cancelled = true;
     };
-  }, [evmAccounts, selectedEvmAddress]);
+  }, [cachedUserAddress, selectedEvmAddress]);
 
-  const subAccounts: SubAccountInfo[] = useMemo(
-    () =>
-      evmAccounts.map((account) => {
-        const group = accountGroups.find(({ accounts }) =>
-          accounts.includes(account.id),
-        );
-        const displayName = group?.metadata?.name || account.address;
-        const addressKey = account.address.toLowerCase();
-        // Prefer fetched balance; otherwise unknown (not $0) until load completes.
-        let balance: PerpsBalance =
-          addressKey in balances
-            ? balances[addressKey]
-            : { ...UNKNOWN_BALANCE };
+  const subAccounts: SubAccountInfo[] = useMemo(() => {
+    const verifiedCacheState =
+      selectedEvmAddress &&
+      cachedUserAddress?.toLowerCase() === selectedEvmAddress &&
+      cachedAccountState &&
+      isFinitePerpsTotal(cachedAccountState.totalBalance ?? '')
+        ? cachedAccountState
+        : null;
 
-        if (
-          selectedEvmAddress &&
-          addressKey === selectedEvmAddress &&
-          cachedAccountState &&
-          isFinitePerpsTotal(cachedAccountState.totalBalance ?? '')
-        ) {
-          balance = preferHigherTotalBalance(
-            isFinitePerpsTotal(balance.totalBalance) ? balance : ZERO_BALANCE,
-            toPerpsBalance(cachedAccountState),
-          );
-        }
+    return evmAccounts.map((account) => {
+      const group = accountGroups.find(({ accounts }) =>
+        accounts.includes(account.id),
+      );
+      const displayName = group?.metadata?.name || account.address;
+      const addressKey = account.address.toLowerCase();
+      const fetched = balances[addressKey];
+      let balance: PerpsBalance = fetched ?? { ...UNKNOWN_BALANCE };
 
-        return {
-          id: account.address,
-          name: `${displayName} (Perps)`,
-          ...balance,
-        };
-      }),
-    [
-      accountGroups,
-      balances,
-      cachedAccountState,
-      evmAccounts,
-      selectedEvmAddress,
-    ],
-  );
+      // Overlay a verified connected-cache snapshot only when the fetched
+      // value is standalone or still unresolved. A connected REST read of
+      // the same account is kept so a fresher (possibly lower) total wins.
+      if (
+        verifiedCacheState &&
+        addressKey === selectedEvmAddress &&
+        (!fetched ||
+          !isFinitePerpsTotal(fetched.totalBalance) ||
+          fetched.source === 'standalone')
+      ) {
+        balance = toPerpsBalance(verifiedCacheState);
+      }
+
+      return {
+        id: account.address,
+        name: `${displayName} (Perps)`,
+        spendableBalance: balance.spendableBalance,
+        withdrawableBalance: balance.withdrawableBalance,
+        totalBalance: balance.totalBalance,
+      };
+    });
+  }, [
+    accountGroups,
+    balances,
+    cachedAccountState,
+    cachedUserAddress,
+    evmAccounts,
+    selectedEvmAddress,
+  ]);
 
   const selectedSubAccount = useMemo(() => {
     if (!fromAddress) {
-      return subAccounts[0] ?? null;
+      return null;
     }
 
     const fromAddressLower = fromAddress.toLowerCase();
     return (
       subAccounts.find(
         (account) => account.id.toLowerCase() === fromAddressLower,
-      ) ??
-      subAccounts[0] ??
-      null
+      ) ?? null
     );
   }, [fromAddress, subAccounts]);
 

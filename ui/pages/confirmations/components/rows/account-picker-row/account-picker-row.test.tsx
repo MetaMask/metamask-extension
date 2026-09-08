@@ -82,6 +82,37 @@ describe('AccountPickerRowContent', () => {
     ).toBeInTheDocument();
   });
 
+  it('filters accounts by address as well as name', () => {
+    renderContent();
+
+    fireEvent.click(screen.getByTestId(TEST_IDS.pill));
+    fireEvent.change(screen.getByTestId(TEST_IDS.searchInput), {
+      target: { value: ACCOUNTS[1].id },
+    });
+
+    expect(
+      screen.queryByTestId(`${TEST_IDS.accountItem}-${ACCOUNTS[0].id}`),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId(`${TEST_IDS.accountItem}-${ACCOUNTS[1].id}`),
+    ).toBeInTheDocument();
+  });
+
+  it('renders a shortened address under each account name', () => {
+    renderContent();
+
+    fireEvent.click(screen.getByTestId(TEST_IDS.pill));
+
+    expect(screen.getByText('0xabcde...def12')).toBeInTheDocument();
+    expect(screen.getByText('0x12345...45678')).toBeInTheDocument();
+  });
+
+  it('exposes the destination pill as a button', () => {
+    renderContent();
+
+    expect(screen.getByTestId(TEST_IDS.pill).tagName).toBe('BUTTON');
+  });
+
   it('calls onSelect when an account is pressed', () => {
     const onSelect = jest.fn();
     renderContent({ onSelect });

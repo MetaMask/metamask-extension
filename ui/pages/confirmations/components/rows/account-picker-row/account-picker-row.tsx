@@ -26,6 +26,7 @@ import {
 } from '../../../../../components/app/confirm/info/row/row';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
+import { shortenAddress } from '../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export type SubAccountBase = {
@@ -85,9 +86,14 @@ export function AccountPickerRowContent<AccountType extends SubAccountBase>({
     }
 
     const query = searchQuery.toLowerCase();
-    return subAccounts.filter((account) =>
-      account.name.toLowerCase().includes(query),
-    );
+    return subAccounts.filter((account) => {
+      const shortened = shortenAddress(account.id).toLowerCase();
+      return (
+        account.name.toLowerCase().includes(query) ||
+        account.id.toLowerCase().includes(query) ||
+        shortened.includes(query)
+      );
+    });
   }, [searchQuery, subAccounts]);
 
   const closePicker = useCallback(() => {
@@ -115,30 +121,42 @@ export function AccountPickerRowContent<AccountType extends SubAccountBase>({
         rowVariant={ConfirmInfoRowSize.Small}
       >
         <Box
-          data-testid={testIds.pill}
-          onClick={() => setIsPickerVisible(true)}
+          asChild
           alignItems={BoxAlignItems.Center}
           gap={1}
-          className="inline-flex min-w-0 cursor-pointer"
+          className="inline-flex min-w-0"
         >
-          {selectedSubAccount ? (
-            <>
-              <PreferredAvatar
-                address={toChecksumHexAddress(selectedSubAccount.id)}
-                size={AvatarAccountSize.Xs}
-              />
-              <Text data-testid={testIds.name} className="truncate">
-                {selectedSubAccount.name}
-              </Text>
-            </>
-          ) : (
-            <Text color={TextColor.TextAlternative}>{t('to')}</Text>
-          )}
-          <Icon
-            data-testid={testIds.arrow}
-            name={IconName.ArrowDown}
-            size={IconSize.Sm}
-          />
+          <button
+            type="button"
+            data-testid={testIds.pill}
+            onClick={() => setIsPickerVisible(true)}
+            aria-label={
+              selectedSubAccount
+                ? `${t('to')} ${selectedSubAccount.name}`
+                : t('to')
+            }
+            className="inline-flex min-w-0 cursor-pointer items-center border-0 bg-transparent p-0 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+          >
+            {selectedSubAccount ? (
+              <>
+                <PreferredAvatar
+                  address={toChecksumHexAddress(selectedSubAccount.id)}
+                  size={AvatarAccountSize.Xs}
+                />
+                <Text data-testid={testIds.name} className="truncate">
+                  {selectedSubAccount.name}
+                </Text>
+              </>
+            ) : (
+              <Text color={TextColor.TextAlternative}>{t('to')}</Text>
+            )}
+            <Icon
+              data-testid={testIds.arrow}
+              name={IconName.ArrowDown}
+              size={IconSize.Sm}
+              aria-hidden
+            />
+          </button>
         </Box>
       </ConfirmInfoRow>
 
@@ -199,15 +217,26 @@ export function AccountPickerRowContent<AccountType extends SubAccountBase>({
                           address={toChecksumHexAddress(account.id)}
                           size={AvatarAccountSize.Md}
                         />
-                        <Text
-                          variant={TextVariant.BodyMd}
-                          fontWeight={
-                            isSelected ? FontWeight.Bold : FontWeight.Medium
-                          }
-                          className="truncate"
+                        <Box
+                          flexDirection={BoxFlexDirection.Column}
+                          className="min-w-0"
                         >
-                          {account.name}
-                        </Text>
+                          <Text
+                            variant={TextVariant.BodyMd}
+                            fontWeight={
+                              isSelected ? FontWeight.Bold : FontWeight.Medium
+                            }
+                            className="truncate"
+                          >
+                            {account.name}
+                          </Text>
+                          <Text
+                            variant={TextVariant.BodySm}
+                            color={TextColor.TextAlternative}
+                          >
+                            {shortenAddress(account.id)}
+                          </Text>
+                        </Box>
                       </Box>
                       <Box className="shrink-0">
                         {typeof balanceContent === 'string' ? (
