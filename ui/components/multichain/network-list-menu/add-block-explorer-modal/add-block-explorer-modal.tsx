@@ -3,14 +3,11 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
-} from '@metamask/design-system-react';
-import {
-  Box,
   FormTextField,
-  FormTextFieldSize,
-  HelpText,
-  HelpTextSeverity,
-} from '../../../component-library';
+  TextFieldSize,
+  TextVariant as DsTextVariant,
+} from '@metamask/design-system-react';
+import { Box, HelpText, HelpTextSeverity } from '../../../component-library';
 import {
   BackgroundColor,
   BlockSize,
@@ -50,17 +47,19 @@ const AddBlockExplorerModal = ({
     >
       <Box paddingLeft={4} paddingRight={4}>
         <FormTextField
-          size={FormTextFieldSize.Lg}
-          textFieldProps={{ borderRadius: BorderRadius.LG }}
-          error={Boolean(error)}
+          size={TextFieldSize.Lg}
+          textFieldProps={{ className: 'rounded-lg' }}
+          isError={Boolean(error)}
           id="additional-rpc-url"
           label={t('blockExplorerUrl')}
-          inputProps={{
-            'data-testid': 'explorer-url-input',
-          }}
+          value={url ?? ''}
+          inputProps={
+            {
+              'data-testid': 'explorer-url-input',
+            } as React.InputHTMLAttributes<HTMLInputElement>
+          }
           labelProps={{
-            children: undefined,
-            variant: TextVariant.bodyMdMedium,
+            variant: DsTextVariant.BodyMd,
           }}
           onChange={(e) => setUrl(e.target.value)}
           autoFocus

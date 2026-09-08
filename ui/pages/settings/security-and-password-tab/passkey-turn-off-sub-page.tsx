@@ -9,12 +9,10 @@ import {
   ButtonSize,
   ButtonVariant,
   Button,
-} from '@metamask/design-system-react';
-import {
   FormTextField,
-  FormTextFieldSize,
+  TextFieldSize,
   TextFieldType,
-} from '../../../components/component-library';
+} from '@metamask/design-system-react';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { transitionBack } from '../../../components/ui/transition';
@@ -198,17 +196,19 @@ export default function PasskeyTurnOffSubPage() {
           <FormTextField
             id="turn-off-passkey-current-password"
             label={t('enterPasswordCurrent')}
-            textFieldProps={{ type: TextFieldType.Password }}
-            size={FormTextFieldSize.Lg}
+            type={TextFieldType.Password}
+            size={TextFieldSize.Lg}
             labelProps={{
-              marginBottom: 1,
+              className: 'mb-1',
             }}
-            inputProps={{
-              autoFocus: true,
-              'data-testid': 'turn-off-passkey-password-input',
-            }}
+            autoFocus
+            inputProps={
+              {
+                'data-testid': 'turn-off-passkey-password-input',
+              } as React.InputHTMLAttributes<HTMLInputElement>
+            }
             value={walletPassword}
-            error={isIncorrectPasswordError}
+            isError={isIncorrectPasswordError}
             helpText={
               isIncorrectPasswordError ? t('unlockPageIncorrectPassword') : null
             }

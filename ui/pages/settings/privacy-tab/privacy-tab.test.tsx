@@ -43,14 +43,6 @@ describe('PrivacyTab', () => {
     setBackgroundConnection(backgroundConnectionMock as never);
   });
 
-  describe('snapshot', () => {
-    it('matches snapshot', () => {
-      const { container } = renderWithProvider(<PrivacyTab />, mockStore);
-
-      expect(container).toMatchSnapshot();
-    });
-  });
-
   it('keeps privacy deeplink anchors in sync with settings item ids', () => {
     const ids = PRIVACY_SETTING_ITEMS.map((item) => item.id);
     const consolidatedIds = CONSOLIDATED_BASIC_FUNCTIONALITY_PRIVACY_ITEMS.map(

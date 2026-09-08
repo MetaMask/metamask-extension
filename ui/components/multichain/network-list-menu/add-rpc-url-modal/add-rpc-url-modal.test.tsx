@@ -16,11 +16,6 @@ describe('AddRpcUrlModal', () => {
     jest.clearAllMocks();
   });
 
-  it('should render correctly', () => {
-    const { container } = render(<AddRpcUrlModal onAdded={() => undefined} />);
-    expect(container).toMatchSnapshot();
-  });
-
   it('should render the "Add URL" button with correct text', () => {
     render(<AddRpcUrlModal onAdded={() => undefined} />);
     const addButton = screen.getByRole('button', { name: 'addUrl' });

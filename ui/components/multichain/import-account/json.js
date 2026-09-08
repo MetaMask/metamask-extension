@@ -1,13 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import FileInput from 'react-simple-file-input';
-import { TextButton } from '@metamask/design-system-react';
-import { TextFieldSize, TextFieldType, Text } from '../../component-library';
+import {
+  FormTextField,
+  TextButton,
+  TextFieldSize,
+  TextFieldType,
+} from '@metamask/design-system-react';
+import { Text } from '../../component-library';
 import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import BottomButtons from './bottom-buttons';
@@ -77,7 +81,7 @@ export default function JsonImportSubview({
         autoFocus
         type={TextFieldType.Password}
         helpText={errorMessage ?? importErrorMessage}
-        error
+        isError
         placeholder={t('enterOptionalPassword')}
         value={password}
         onChange={(event) => {
@@ -86,7 +90,7 @@ export default function JsonImportSubview({
         inputProps={{
           onKeyPress: handleKeyPress,
         }}
-        marginBottom={4}
+        className="mb-4"
       />
 
       <BottomButtons

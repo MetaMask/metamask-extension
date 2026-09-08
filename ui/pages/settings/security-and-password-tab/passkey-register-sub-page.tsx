@@ -15,12 +15,10 @@ import {
   Button,
   TextVariant,
   TextColor,
-} from '@metamask/design-system-react';
-import {
   FormTextField,
-  FormTextFieldSize,
+  TextFieldSize,
   TextFieldType,
-} from '../../../components/component-library';
+} from '@metamask/design-system-react';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { transitionBack } from '../../../components/ui/transition';
@@ -365,17 +363,19 @@ export default function PasskeyRegisterSubPage() {
             <FormTextField
               id="register-passkey-current-password"
               label={t('enterPasswordCurrent')}
-              textFieldProps={{ type: TextFieldType.Password }}
-              size={FormTextFieldSize.Lg}
+              type={TextFieldType.Password}
+              size={TextFieldSize.Lg}
               labelProps={{
-                marginBottom: 1,
+                className: 'mb-1',
               }}
-              inputProps={{
-                autoFocus: true,
-                'data-testid': 'register-passkey-password-input',
-              }}
+              autoFocus
+              inputProps={
+                {
+                  'data-testid': 'register-passkey-password-input',
+                } as React.InputHTMLAttributes<HTMLInputElement>
+              }
               value={walletPassword}
-              error={isIncorrectPasswordError}
+              isError={isIncorrectPasswordError}
               helpText={
                 isIncorrectPasswordError
                   ? t('unlockPageIncorrectPassword')

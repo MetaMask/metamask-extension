@@ -11,6 +11,8 @@ import {
   Modal,
   ModalOverlay,
   ModalHeader,
+  FormTextField,
+  TextFieldSize,
 } from '@metamask/design-system-react';
 import {
   MetaMetricsEventName,
@@ -22,14 +24,10 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
 import {
   AlignItems,
-  BackgroundColor,
-  BorderColor,
-  BorderRadius,
   Display,
   FlexDirection,
   IconColor,
   JustifyContent,
-  Size,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -53,7 +51,6 @@ import {
 import { useDispatch } from '../../../store/hooks';
 import NftsDetectionNoticeImportNFTs from '../../app/assets/nfts/nfts-detection-notice-import-nfts/nfts-detection-notice-import-nfts';
 import { Box, Icon, IconName, IconSize, Label } from '../../component-library';
-import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import Tooltip from '../../ui/tooltip';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { checkTokenIdExists } from '../../../helpers/utils/util';
@@ -321,20 +318,19 @@ export const ImportNftsModal = ({ onClose }) => {
               </Box>
               <FormTextField
                 autoFocus
-                dataTestId="address"
                 id="address"
                 placeholder="0x..."
-                size={Size.LG}
+                size={TextFieldSize.Lg}
                 value={nftAddress}
                 onChange={(e) => {
                   validateAndSetAddress(e.target.value);
                 }}
                 helpText={nftAddressValidationError}
-                error={Boolean(nftAddressValidationError)}
+                isError={Boolean(nftAddressValidationError)}
+                inputProps={{ 'data-testid': 'address' }}
                 textFieldProps={{
-                  backgroundColor: BackgroundColor.backgroundMuted,
-                  borderColor: BorderColor.borderDefault,
-                  borderRadius: BorderRadius.XL,
+                  className:
+                    'rounded-xl border-border-default bg-background-muted',
                 }}
               />
             </Box>
@@ -361,20 +357,19 @@ export const ImportNftsModal = ({ onClose }) => {
                 </Box>
               </Box>
               <FormTextField
-                dataTestId="token-id"
                 id="token-id"
                 placeholder={t('nftTokenIdPlaceholder')}
-                size={Size.LG}
+                size={TextFieldSize.Lg}
                 value={tokenId}
                 onChange={(e) => {
                   validateAndSetTokenId(e.target.value);
                 }}
                 helpText={duplicateTokenIdError}
-                error={duplicateTokenIdError}
+                isError={Boolean(duplicateTokenIdError)}
+                inputProps={{ 'data-testid': 'token-id' }}
                 textFieldProps={{
-                  backgroundColor: BackgroundColor.backgroundMuted,
-                  borderColor: BorderColor.borderDefault,
-                  borderRadius: BorderRadius.XL,
+                  className:
+                    'rounded-xl border-border-default bg-background-muted',
                 }}
               />
             </Box>
