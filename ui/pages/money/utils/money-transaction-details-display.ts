@@ -77,6 +77,7 @@ export function shortenMoneyActivityHex(value: string): string {
     truncatedCharLimit: 12,
     truncatedStartChars: 6,
     truncatedEndChars: 4,
+    skipCharacterInEnd: false,
   });
 }
 
