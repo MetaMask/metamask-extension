@@ -7,10 +7,7 @@ import {
   isMoneyDepositTx,
   isMoneyWithdrawTx,
 } from '../../../helpers/money/money-transaction-guards';
-import {
-  isOnchainMoneyActivityItem,
-  type MoneyActivityItem,
-} from '../types/money-activity';
+import { type MoneyActivityItem } from '../types/money-activity';
 
 /**
  * Filter chips on the Money Activity page. Values match mobile; the
@@ -80,20 +77,12 @@ export function isMoneyActivityTransaction(tx: TransactionMeta): boolean {
 export function buildMoneyActivityBuckets(
   items: MoneyActivityItem[],
 ): MoneyActivityBuckets {
-  const deposits = items.filter(
-    (item) =>
-      isOnchainMoneyActivityItem(item) && isMoneyActivityDeposit(item.tx),
-  );
-  const transfers = items.filter(
-    (item) =>
-      isOnchainMoneyActivityItem(item) && isMoneyActivityTransfer(item.tx),
-  );
+  const deposits = items.filter((item) => isMoneyActivityDeposit(item.tx));
+  const transfers = items.filter((item) => isMoneyActivityTransfer(item.tx));
 
   return {
-    [MoneyActivityFilter.All]: items.filter(
-      (item) =>
-        !isOnchainMoneyActivityItem(item) ||
-        isMoneyActivityTransaction(item.tx),
+    [MoneyActivityFilter.All]: items.filter((item) =>
+      isMoneyActivityTransaction(item.tx),
     ),
     [MoneyActivityFilter.Deposits]: deposits,
     [MoneyActivityFilter.Transfers]: transfers,

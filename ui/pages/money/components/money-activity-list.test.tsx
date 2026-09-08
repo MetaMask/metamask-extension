@@ -3,7 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { onchainItem, accountsApiItem } from '../types/money-activity';
+import { onchainItem } from '../types/money-activity';
 import type { MoneyActivityTransactionMeta } from '../constants/mock-activity-data';
 import MOCK_MONEY_TRANSACTIONS from '../constants/mock-activity-data';
 import { MoneyActivityList, MAX_PREVIEW_ITEMS } from './money-activity-list';
@@ -70,45 +70,6 @@ describe('MoneyActivityList', () => {
     expect(
       screen.queryByTestId('money-activity-view-all'),
     ).not.toBeInTheDocument();
-  });
-
-  it('shows View all when more API pages exist even with five preview rows', () => {
-    renderWithLocalization(<MoneyActivityList items={previewItems} hasMore />);
-
-    expect(screen.getByTestId('money-activity-view-all')).toBeInTheDocument();
-  });
-
-  it('shows a settling skeleton instead of empty copy', () => {
-    renderWithLocalization(<MoneyActivityList items={[]} isSettling />);
-
-    expect(screen.getByTestId('money-activity-settling')).toBeInTheDocument();
-    expect(
-      screen.queryByText(messages.moneyActivityPlaceholderDescription.message),
-    ).not.toBeInTheDocument();
-  });
-
-  it('does not make Accounts API rows clickable', () => {
-    const onItemClick = jest.fn();
-    const apiItem = accountsApiItem({
-      kind: 'card',
-      hash: '0xabc',
-      time: 1,
-      chainId: '0x8f',
-      token: {
-        address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
-        symbol: 'mUSD',
-        decimals: 6,
-      },
-      amount: '1000000',
-      paidTo: '0xdef',
-    });
-
-    renderWithLocalization(
-      <MoneyActivityList items={[apiItem]} onItemClick={onItemClick} />,
-    );
-
-    const row = screen.getByTestId(`money-activity-row-${apiItem.id}`);
-    expect(row.tagName).toBe('DIV');
   });
 
   it('masks amounts in privacy mode', () => {

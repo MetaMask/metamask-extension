@@ -35,9 +35,7 @@ export function formatMoneyActivityDateHeader(dateKey: string): string {
 }
 
 function isPendingItem(item: MoneyActivityItem): boolean {
-  return (
-    item.kind === 'onchain' && getMoneyActivityStatus(item.tx) === 'pending'
-  );
+  return getMoneyActivityStatus(item.tx) === 'pending';
 }
 
 function groupByDate(items: MoneyActivityItem[]): MoneyActivitySection[] {
