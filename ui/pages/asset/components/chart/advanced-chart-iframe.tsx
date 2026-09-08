@@ -26,18 +26,18 @@ const CHART_ORIGIN = 'http://localhost:8001';
 const LOAD_TIMEOUT_MS = 10_000;
 
 /** Imperative handle so the parent can send messages to the chart engine. */
-export interface AdvancedChartIframeRef {
+export type AdvancedChartIframeRef = {
   postMessage: (message: Record<string, unknown>) => void;
-}
+};
 
-interface AdvancedChartIframeProps {
+type AdvancedChartIframeProps = {
   assetId: string;
   height?: number;
   chartType: number;
   selectedInterval: string;
   onError?: (error: string) => void;
   onReady?: () => void;
-}
+};
 
 const AdvancedChartIframe = forwardRef<
   AdvancedChartIframeRef,
@@ -82,7 +82,9 @@ const AdvancedChartIframe = forwardRef<
     // Listen for messages from the chart engine
     useEffect(() => {
       const handleMessage = (event: MessageEvent) => {
-        if (event.origin !== CHART_ORIGIN) return;
+        if (event.origin !== CHART_ORIGIN) {
+          return;
+        }
         try {
           const msg =
             typeof event.data === 'string'
@@ -143,7 +145,7 @@ const AdvancedChartIframe = forwardRef<
           width: '100%',
           height: `${height}px`,
           overflow: 'hidden',
-          background: isDark ? '#000' : '#fff',
+          background: 'var(--color-background-default)',
         }}
       >
         <iframe

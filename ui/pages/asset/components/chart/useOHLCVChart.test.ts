@@ -106,7 +106,10 @@ describe('useOHLCVChart – fetchOHLCV', () => {
 
   it('times out after 3 seconds', async () => {
     global.fetch = jest.fn().mockImplementation(
-      () => new Promise(() => {}), // never resolves
+      () => new Promise(() => {
+        // Intentionally never resolves — simulates a hanging fetch
+        return undefined;
+      }),
     );
 
     const promise = fetchOHLCV('ethereum', '1h');

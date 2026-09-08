@@ -21,12 +21,12 @@ export const CHART_TYPE_LINE = 2;
 
 const INTERVAL_KEYS = ['1m', '5m', '15m', '1h', '4h', '1d', '1w'];
 
-interface IntervalBarProps {
+type IntervalBarProps = {
   selectedInterval: string;
   onIntervalSelect: (interval: string) => void;
   chartType: number;
   onChartTypeSelect: (type: number) => void;
-}
+};
 
 const IntervalBar = ({
   selectedInterval,
@@ -37,9 +37,11 @@ const IntervalBar = ({
   const theme = useTheme();
   const isDark = theme === 'dark';
 
-  const toolbarText = isDark ? '#ffffff' : '#24272a';
-  const toolbarMuted = isDark ? '#66676a' : '#9fa6ae';
-  const activeBg = isDark ? '#2a2a2e' : '#e2e4e8';
+  const toolbarText = 'var(--color-text-default)';
+  const toolbarMuted = 'var(--color-text-muted)';
+  const activeBg = isDark
+    ? 'var(--color-background-default-pressed)'
+    : 'var(--color-background-default-hover)';
 
   const pillStyle = (isSelected: boolean) => ({
     padding: '4px 10px',
@@ -80,7 +82,7 @@ const IntervalBar = ({
           gap: '2px',
           padding: '2px',
           borderRadius: '8px',
-          border: `1px solid ${isDark ? '#333' : '#d6d9dc'}`,
+          border: '1px solid var(--color-border-muted)',
         }}
       >
         <button

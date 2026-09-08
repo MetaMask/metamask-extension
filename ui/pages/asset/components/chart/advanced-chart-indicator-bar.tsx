@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { brandColor } from '@metamask/design-tokens';
 import { useTheme } from '../../../../hooks/useTheme';
 
 /**
@@ -12,11 +13,11 @@ import { useTheme } from '../../../../hooks/useTheme';
 const TOGGLE_INDICATORS = ['BOL', 'RSI', 'Volume', 'MACD'] as const;
 const MA_OPTIONS = ['MA5', 'MA10', 'MA20', 'MA50', 'MA200'] as const;
 
-interface IndicatorBarProps {
+type IndicatorBarProps = {
   activeIndicators: Set<string>;
   onIndicatorToggle: (name: string) => void;
   onMAToggle: (ma: string) => void;
-}
+};
 
 const IndicatorBar = ({
   activeIndicators,
@@ -27,8 +28,9 @@ const IndicatorBar = ({
   const isDark = theme === 'dark';
   const [showMADropdown, setShowMADropdown] = useState(false);
 
-  const toolbarText = isDark ? '#ffffff' : '#24272a';
-  const toolbarMuted = isDark ? '#66676a' : '#9fa6ae';
+  const toolbarText = 'var(--color-text-default)';
+  const toolbarMuted = 'var(--color-text-muted)';
+  const activeCheckColor = isDark ? brandColor.lime100 : brandColor.green500;
   const pillStyle = (isSelected: boolean) => ({
     padding: '4px 10px',
     borderRadius: '12px',
@@ -40,17 +42,21 @@ const IndicatorBar = ({
     color: isSelected ? toolbarText : toolbarMuted,
   });
 
-  const selectedMAs = [...activeIndicators].filter((n) => /^MA\d+$/.test(n));
-  const maLabel =
-    selectedMAs.length === 0
-      ? 'MA'
-      : selectedMAs.length === 1
-        ? selectedMAs[0]
-        : `MA ×${selectedMAs.length}`;
+  const selectedMAs = [...activeIndicators].filter((n) => /^MA\d+$/u.test(n));
+  let maLabel: string;
+  if (selectedMAs.length === 0) {
+    maLabel = 'MA';
+  } else if (selectedMAs.length === 1) {
+    maLabel = selectedMAs[0];
+  } else {
+    maLabel = `MA ×${selectedMAs.length}`;
+  }
 
   // Close MA dropdown when clicking outside
   useEffect(() => {
-    if (!showMADropdown) return;
+    if (!showMADropdown) {
+      return;
+    }
     const handleClickOutside = () => setShowMADropdown(false);
     const timer = setTimeout(
       () => document.addEventListener('click', handleClickOutside),
@@ -69,8 +75,8 @@ const IndicatorBar = ({
         alignItems: 'center',
         gap: '0px',
         padding: '6px 16px',
-        borderTop: `1px solid ${isDark ? '#333' : '#d6d9dc'}`,
-        borderBottom: `1px solid ${isDark ? '#333' : '#d6d9dc'}`,
+        borderTop: '1px solid var(--color-border-muted)',
+        borderBottom: '1px solid var(--color-border-muted)',
         position: 'relative',
       }}
     >
@@ -97,8 +103,8 @@ const IndicatorBar = ({
             top: '100%',
             left: '12px',
             zIndex: 100,
-            background: isDark ? '#24242a' : '#fff',
-            border: `1px solid ${isDark ? '#444' : '#d6d9dc'}`,
+            background: 'var(--color-background-default)',
+            border: '1px solid var(--color-border-muted)',
             borderRadius: '8px',
             padding: '4px 0',
             boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
@@ -131,17 +137,13 @@ const IndicatorBar = ({
                     width: '14px',
                     height: '14px',
                     borderRadius: '3px',
-                    border: `1.5px solid ${isActive ? (isDark ? '#baf24a' : '#1c8234') : toolbarMuted}`,
-                    background: isActive
-                      ? isDark
-                        ? '#baf24a'
-                        : '#1c8234'
-                      : 'transparent',
+                    border: `1.5px solid ${isActive ? activeCheckColor : toolbarMuted}`,
+                    background: isActive ? activeCheckColor : 'transparent',
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontSize: '10px',
-                    color: isDark ? '#000' : '#fff',
+                    color: isDark ? brandColor.black : brandColor.white,
                   }}
                 >
                   {isActive ? '✓' : ''}
@@ -158,7 +160,7 @@ const IndicatorBar = ({
         style={{
           width: '1px',
           height: '16px',
-          background: isDark ? '#444' : '#d6d9dc',
+          background: 'var(--color-border-muted)',
           marginRight: '4px',
         }}
       />
@@ -179,7 +181,7 @@ const IndicatorBar = ({
                 style={{
                   width: '1px',
                   height: '16px',
-                  background: isDark ? '#444' : '#d6d9dc',
+                  background: 'var(--color-border-muted)',
                   margin: '0 2px',
                 }}
               />

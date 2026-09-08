@@ -1,27 +1,27 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
-export interface OHLCVBar {
+export type OHLCVBar = {
   time: number;
   open: number;
   high: number;
   low: number;
   close: number;
   volume: number;
-}
+};
 
-export interface UseOHLCVChartOptions {
+export type UseOHLCVChartOptions = {
   assetId: string;
   interval: string;
   vsCurrency?: string;
-}
+};
 
-export interface UseOHLCVChartResult {
+export type UseOHLCVChartResult = {
   ohlcvData: OHLCVBar[];
   isLoading: boolean;
   error: string | null;
-}
+};
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
@@ -42,14 +42,14 @@ const FETCH_TIMEOUT_MS = 3_000;
 
 // ─── Pure fetch function (exported for testing & direct use) ────────────────
 
-interface OHLCVApiCandle {
+type OHLCVApiCandle = {
   timestamp: number;
   open: number;
   high: number;
   low: number;
   close: number;
   volume: number;
-}
+};
 
 /**
  * Fetches OHLCV candle data from the MetaMask Price API.
@@ -105,6 +105,11 @@ export async function fetchOHLCV(
  * Fetches OHLCV chart data reactively.
  * Re-fetches whenever assetId, interval, or vsCurrency changes.
  * Aborts in-flight requests on unmount or when inputs change.
+ *
+ * @param options - Hook options
+ * @param options.assetId - CAIP or CoinGecko asset identifier
+ * @param options.interval - Candle interval (e.g. '1h', '1d')
+ * @param options.vsCurrency - Optional fiat quote currency
  */
 export const useOHLCVChart = ({
   assetId,
@@ -112,49 +117,46 @@ export const useOHLCVChart = ({
   vsCurrency,
 }: UseOHLCVChartOptions): UseOHLCVChartResult => {
   const [ohlcvData, setOhlcvData] = useState<OHLCVBar[]>([]);
-  const [isLoading, setIsLoading] = useState(!!assetId);
+  const [isLoading, setIsLoading] = useState(assetId !== '');
   const [error, setError] = useState<string | null>(null);
-  const abortRef = useRef<AbortController | null>(null);
-
-  const loadData = useCallback(async () => {
-    if (!assetId) {
-      return;
-    }
-
-    abortRef.current?.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const data = await fetchOHLCV(
-        assetId,
-        interval,
-        vsCurrency,
-        controller.signal,
-      );
-
-      if (!controller.signal.aborted) {
-        setOhlcvData(data);
-      }
-    } catch (e) {
-      if (!controller.signal.aborted) {
-        setOhlcvData([]);
-        setError(e instanceof Error ? e.message : 'Unknown error');
-      }
-    } finally {
-      if (!controller.signal.aborted) {
-        setIsLoading(false);
-      }
-    }
-  }, [assetId, interval, vsCurrency]);
 
   useEffect(() => {
-    loadData();
-    return () => abortRef.current?.abort();
-  }, [loadData]);
+    if (assetId === '') {
+      return undefined;
+    }
+
+    const controller = new AbortController();
+
+    // eslint-disable-next-line no-void -- fire-and-forget async data fetch inside effect
+    void (async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const data = await fetchOHLCV(
+          assetId,
+          interval,
+          vsCurrency,
+          controller.signal,
+        );
+
+        if (!controller.signal.aborted) {
+          setOhlcvData(data);
+        }
+      } catch (e) {
+        if (!controller.signal.aborted) {
+          setOhlcvData([]);
+          setError(e instanceof Error ? e.message : 'Unknown error');
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
+    })();
+
+    return () => controller.abort();
+  }, [assetId, interval, vsCurrency]);
 
   return { ohlcvData, isLoading, error };
 };

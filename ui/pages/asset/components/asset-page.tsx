@@ -206,7 +206,7 @@ const AssetPage = ({
       } else {
         next.add(ma);
       }
-      const selectedMAs = [...next].filter((n) => /^MA\d+$/.test(n));
+      const selectedMAs = [...next].filter((n) => /^MA\d+$/u.test(n));
       acRef.current?.postMessage({
         type: 'SET_MA_VISIBILITY',
         payload: { visible: selectedMAs },
