@@ -126,7 +126,6 @@
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": "boolean",
-      "fragments": "object",
       "marketingCampaignCookieId": null,
       "tracesBeforeMetricsOptIn": "object",
       "traits": "object"
@@ -136,6 +135,7 @@
       "metaMetricsDataDeletionTimestamp": 0
     },
     "MoneyAccountController": { "moneyAccounts": "object" },
+    "MoneyAccountUpgradeController": { "upgradedAccounts": "object" },
     "MultichainAssetsController": {
       "accountsAssets": "object",
       "allIgnoredAssets": "object",
@@ -242,6 +242,8 @@
       "openSeaEnabled": true,
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
+        "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": "boolean",
         "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
@@ -367,6 +369,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 224
+    "version": 225
   }
 }
