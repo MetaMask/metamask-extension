@@ -21,6 +21,7 @@ describe('AppMetadataController', () => {
         previousMigrationVersion: 1,
         currentMigrationVersion: 1,
         firstTimeInfo: undefined,
+        installAttribution: null,
       };
       withController(
         {
@@ -181,7 +182,6 @@ describe('AppMetadataController', () => {
             "currentAppVersion": "",
             "currentMigrationVersion": 0,
             "firstTimeInfo": undefined,
-            "installAttribution": null,
             "previousAppVersion": "",
             "previousMigrationVersion": 0,
           }
