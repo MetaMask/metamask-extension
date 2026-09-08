@@ -506,7 +506,7 @@ describe('useTransactionCustomAmount', () => {
       expect(result.current.amountFiat).toBe('33');
     });
 
-    it('does not set isMaxAmount for money account withdraw Max', () => {
+    it('sets isMaxAmount for money account withdraw Max', () => {
       const { result } = runHook({
         transactionMeta: {
           ...MOCK_TRANSACTION_META,
@@ -519,7 +519,11 @@ describe('useTransactionCustomAmount', () => {
         result.current.updatePendingAmountPercentage(100);
       });
 
-      expect(setIsMaxAmountMock).not.toHaveBeenCalled();
+      expect(setIsMaxAmountMock).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        true,
+        { isMoneyAccountDeposit: false },
+      );
     });
 
     it('does not set isMaxAmount when Max uses an external balance', () => {
@@ -534,7 +538,7 @@ describe('useTransactionCustomAmount', () => {
       expect(setIsMaxAmountMock).not.toHaveBeenCalled();
     });
 
-    it('clears isMaxAmount for money account withdraw when Max was previously set', () => {
+    it('re-arms isMaxAmount when money account withdraw Max is already active', () => {
       const { result } = runHook({
         transactionMeta: {
           ...MOCK_TRANSACTION_META,
@@ -550,7 +554,7 @@ describe('useTransactionCustomAmount', () => {
 
       expect(setIsMaxAmountMock).toHaveBeenCalledWith(
         MOCK_TRANSACTION_META.id,
-        false,
+        true,
         { isMoneyAccountDeposit: false },
       );
     });
@@ -597,6 +601,72 @@ describe('useTransactionCustomAmount', () => {
       expect(result.current.amountFiat).toBe('7.863083');
       expect(result.current.amountHuman).toBe('7.863083');
       expect(updateTokenAmountMock).toHaveBeenCalledWith('7.863083');
+    });
+  });
+
+  describe('pay token changes', () => {
+    const moneyAccountDepositMeta = {
+      ...MOCK_TRANSACTION_META,
+      type: TransactionType.moneyAccountDeposit,
+    } as TransactionMeta;
+
+    function selectPayToken(address: string) {
+      jest
+        .mocked(useTransactionPayTokenModule.useTransactionPayToken)
+        .mockReturnValue({
+          payToken: {
+            address,
+            balanceUsd: '100',
+            balanceRaw: '100000000',
+            decimals: 6,
+            chainId: '0x1',
+          } as unknown as ReturnType<
+            typeof useTransactionPayTokenModule.useTransactionPayToken
+          >['payToken'],
+          setPayToken: jest.fn(),
+          isNative: false,
+        });
+    }
+
+    it('clears isMaxAmount when the pay token changes', () => {
+      const { rerender } = runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        payTokenAddress: '0xtokena',
+        isMaxAmount: true,
+      });
+
+      selectPayToken('0xtokenb');
+
+      act(() => {
+        rerender();
+      });
+
+      // Left armed, the controller would quote the whole balance of token B
+      // while the input still shows the amount resolved for token A.
+      expect(setIsMaxAmountMock).toHaveBeenCalledWith(
+        moneyAccountDepositMeta.id,
+        false,
+        {
+          isMoneyAccountDeposit: true,
+          sourceAccountAddress: undefined,
+          sourceChainId: '0x1',
+          sourceTokenAddress: '0xtokenb',
+        },
+      );
+    });
+
+    it('keeps isMaxAmount armed while the pay token is unchanged', () => {
+      const { rerender } = runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        payTokenAddress: '0xtokena',
+        isMaxAmount: true,
+      });
+
+      act(() => {
+        rerender();
+      });
+
+      expect(setIsMaxAmountMock).not.toHaveBeenCalled();
     });
   });
 
@@ -1053,7 +1123,7 @@ describe('useTransactionCustomAmount', () => {
       );
     });
 
-    it('uses exact balanceRaw for uncapped 100% deposit prefill without isMaxAmount', () => {
+    it('uses exact balanceRaw for uncapped 100% deposit prefill and sets isMaxAmount', () => {
       const updateTokenAmountMock = jest.fn();
       const { result } = runHook({
         transactionMeta: moneyAccountDepositMeta,
@@ -1079,10 +1149,16 @@ describe('useTransactionCustomAmount', () => {
       // Same amount as Max button: exact balanceRaw human, not fiat roundtrip.
       expect(updateTokenAmountMock).toHaveBeenCalledWith('55.709');
       expect(result.current.amountFiat).toBe('55.7');
-      expect(setIsMaxAmountMock).not.toHaveBeenCalledWith(
+      expect(setIsMaxAmountMock).toHaveBeenCalledWith(
         moneyAccountDepositMeta.id,
         true,
-        expect.anything(),
+        {
+          isMoneyAccountDeposit: true,
+          sourceAccountAddress: undefined,
+          sourceBalanceRaw: '55709000',
+          sourceChainId: '0x1',
+          sourceTokenAddress: '0xpaytoken',
+        },
       );
     });
 
@@ -1321,7 +1397,7 @@ describe('useTransactionCustomAmount', () => {
       transactionMeta: moneyAccountDepositMeta,
     };
 
-    it('submits exact balanceRaw for Max deposits without setting isMaxAmount', () => {
+    it('submits exact balanceRaw for Max deposits and sets isMaxAmount', () => {
       const updateTokenAmountMock = jest.fn();
       const { result } = runHook({
         ...depositMaxPayToken,
@@ -1335,10 +1411,16 @@ describe('useTransactionCustomAmount', () => {
       // 1123456 × 10^-6 = 1.123456, not the fiat roundtrip 2.24 ÷ 2 = 1.12
       expect(updateTokenAmountMock).toHaveBeenCalledWith('1.123456');
       expect(result.current.amountFiat).toBe('2.24');
-      expect(setIsMaxAmountMock).not.toHaveBeenCalledWith(
+      expect(setIsMaxAmountMock).toHaveBeenCalledWith(
         moneyAccountDepositMeta.id,
         true,
-        expect.anything(),
+        {
+          isMoneyAccountDeposit: true,
+          sourceAccountAddress: undefined,
+          sourceBalanceRaw: '1123456',
+          sourceChainId: '0x1',
+          sourceTokenAddress: '0xpaytoken',
+        },
       );
     });
 
@@ -1497,7 +1579,7 @@ describe('useTransactionCustomAmount', () => {
       expect(setIsMaxAmountMock).toHaveBeenCalledWith(
         MOCK_TRANSACTION_META.id,
         true,
-        { isMoneyAccountDeposit: false },
+        { isMoneyAccountDeposit: false, sourceBalanceRaw: '1123456' },
       );
     });
 
@@ -1549,10 +1631,15 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(updateTokenAmountMock).toHaveBeenCalledWith('1.12');
-      expect(setIsMaxAmountMock).not.toHaveBeenCalledWith(
+      expect(setIsMaxAmountMock).toHaveBeenCalledWith(
         moneyAccountDepositMeta.id,
         true,
-        expect.anything(),
+        {
+          isMoneyAccountDeposit: true,
+          sourceAccountAddress: undefined,
+          sourceChainId: '0x1',
+          sourceTokenAddress: '0xpaytoken',
+        },
       );
     });
   });
