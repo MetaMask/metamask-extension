@@ -258,7 +258,7 @@ describe('HyperliquidDepositPrompt', () => {
     expect(mockNavigate).toHaveBeenCalledWith(
       {
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/transaction-id-mock`,
-        search: `loader=customAmount&goBackTo=${encodeURIComponent(PERPS_HOME_PAGE_ROUTE)}`,
+        search: `loader=customAmount&goBackTo=${encodeURIComponent(`${PERPS_HOME_PAGE_ROUTE}?source=hyperliquid_deposit_prompt`)}`,
       },
       { replace: true },
     );
@@ -318,7 +318,7 @@ describe('HyperliquidDepositPrompt', () => {
       expect(mockNavigate).toHaveBeenCalledWith(
         {
           pathname: `${CONFIRM_TRANSACTION_ROUTE}/transaction-id-mock`,
-          search: `loader=customAmount&goBackTo=${encodeURIComponent(PERPS_HOME_TAB_ROUTE)}`,
+          search: `loader=customAmount&goBackTo=${encodeURIComponent(`${PERPS_HOME_TAB_ROUTE}&source=hyperliquid_deposit_prompt`)}`,
         },
         { replace: true },
       );
