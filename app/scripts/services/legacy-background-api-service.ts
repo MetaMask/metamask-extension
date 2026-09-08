@@ -1,5 +1,10 @@
 import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
+import type {
+  AnalyticsControllerGetEventFragmentByIdAction,
+  AnalyticsControllerUpsertEventFragmentAction,
+  ReadonlyAnalyticsEventFragment,
+} from '@metamask/analytics-controller';
 import {
   AddNetworkFields,
   NetworkConfiguration,
@@ -69,6 +74,7 @@ import {
   KeyringControllerWithKeyringAction,
 } from '@metamask/keyring-controller';
 import {
+  AccountsControllerClearStateAction,
   AccountsControllerGetAccountAction,
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedAccountAction,
@@ -315,7 +321,7 @@ import { MINUTE } from '../../../shared/constants/time';
 import { KeyringType as KeyringTypes } from '../../../shared/constants/keyring';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventFragment,
+  MetaMetricsEventFragmentPayload,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { restrictKeyringForDeviceRead } from '../lib/hardware-device-read-keyring';
@@ -344,6 +350,8 @@ import {
   PreferencesControllerAddReferralApprovedAccountAction,
   PreferencesControllerAddReferralDeclinedAccountAction,
   PreferencesControllerAddReferralPassedAccountAction,
+  PreferencesControllerConsolidateBasicFunctionalityAction,
+  PreferencesControllerDismissBasicFunctionalityMigrationNotificationAction,
   PreferencesControllerRemoveReferralDeclinedAccountAction,
   PreferencesControllerResetStateAction,
   PreferencesControllerSetAccountsReferralApprovedAction,
@@ -356,9 +364,6 @@ import {
 } from '../controllers/preferences-controller';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
-  MetaMetricsControllerCreateEventFragmentAction,
-  MetaMetricsControllerGetEventFragmentByIdAction,
-  MetaMetricsControllerUpdateEventFragmentAction,
   MetaMetricsControllerBufferedEndTraceAction,
   MetaMetricsControllerBufferedTraceAction,
 } from '../controllers/metametrics-controller-method-action-types';
@@ -409,6 +414,7 @@ import {
 import { isDmkFeatureEnabled } from '../../../shared/lib/hardware-wallets/feature-flags';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
+import { isBasicFunctionalitySocialLoginUser } from '../../../shared/lib/basic-functionality-consolidation';
 import {
   LatticeKeyringV2,
   LatticeCreateAccountOptions,
@@ -499,11 +505,13 @@ const MESSENGER_EXPOSED_METHODS = [
   'checkHardwareStatus',
   'checkIsSeedlessPasswordOutdated',
   'connectHardware',
+  'consolidateBasicFunctionality',
   'createNewVaultAndGetSeedPhrase',
   'createNewVaultAndKeychain',
   'createNewVaultAndRestore',
   'createSeedPhraseBackup',
   'decodeTransactionData',
+  'dismissBasicFunctionalityMigrationNotification',
   'discoverAndCreateAccounts',
   'estimateGas',
   'exportAccount',
@@ -599,6 +607,7 @@ type AllowedActions =
   | AccountTreeControllerReinitAction
   | AccountTreeControllerSyncWithUserStorageAction
   | AccountTreeControllerSyncWithUserStorageAtLeastOnceAction
+  | AccountsControllerClearStateAction
   | AccountsControllerGetAccountAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerGetSelectedAccountAction
@@ -649,9 +658,8 @@ type AllowedActions =
   | KeyringControllerWithControllerAction
   | KeyringControllerWithKeyringV2Action
   | KeyringControllerWithKeyringV2UnsafeAction
-  | MetaMetricsControllerCreateEventFragmentAction
-  | MetaMetricsControllerGetEventFragmentByIdAction
-  | MetaMetricsControllerUpdateEventFragmentAction
+  | AnalyticsControllerGetEventFragmentByIdAction
+  | AnalyticsControllerUpsertEventFragmentAction
   | KeyringControllerSetLockedAction
   | KeyringControllerSignEip7702AuthorizationAction
   | KeyringControllerSubmitEncryptionKeyAction
@@ -703,6 +711,8 @@ type AllowedActions =
   | PreferencesControllerAddReferralApprovedAccountAction
   | PreferencesControllerAddReferralDeclinedAccountAction
   | PreferencesControllerAddReferralPassedAccountAction
+  | PreferencesControllerConsolidateBasicFunctionalityAction
+  | PreferencesControllerDismissBasicFunctionalityMigrationNotificationAction
   | PreferencesControllerGetStateAction
   | PreferencesControllerRemoveReferralDeclinedAccountAction
   | PreferencesControllerResetStateAction
@@ -2813,9 +2823,9 @@ export class LegacyBackgroundApiService {
    */
   #getTransactionUIMetricsFragment(
     transactionId: string,
-  ): MetaMetricsEventFragment | undefined {
+  ): ReadonlyAnalyticsEventFragment | undefined {
     return this.#messenger.call(
-      'MetaMetricsController:getEventFragmentById',
+      'AnalyticsController:getEventFragmentById',
       this.#getTransactionUIMetricsFragmentId(transactionId),
     );
   }
@@ -2823,41 +2833,26 @@ export class LegacyBackgroundApiService {
   /**
    * Creates or updates the UI metrics fragment for a given transaction.
    *
+   * This fragment declares no events: the UI writes properties into it as the
+   * user interacts with a confirmation, and the transaction metrics builders
+   * read them back when they emit their own events.
+   *
    * @param transactionId - The id of the transaction.
-   * @param payload - The fragment settings and properties to store.
+   * @param payload - The fragment properties to store.
    */
   upsertTransactionUIMetricsFragment(
     transactionId: string,
-    payload: Partial<MetaMetricsEventFragment>,
+    payload: MetaMetricsEventFragmentPayload,
   ): void {
     if (!transactionId || !payload) {
       return;
     }
 
-    const fragmentId = this.#getTransactionUIMetricsFragmentId(transactionId);
-    const existingFragment =
-      this.#getTransactionUIMetricsFragment(transactionId);
-
-    if (existingFragment) {
-      this.#messenger.call(
-        'MetaMetricsController:updateEventFragment',
-        fragmentId,
-        payload,
-      );
-      return;
-    }
-
-    this.#messenger.call('MetaMetricsController:createEventFragment', {
-      // `createEventFragment` derives the fragment `id` from `uniqueIdentifier`.
-      uniqueIdentifier: fragmentId,
-      // Required by createEventFragment, but this fragment is storage-only.
-      // We never finalize this fragment and we do not set initialEvent.
-      successEvent: 'Transaction Fragment Created',
-      category: MetaMetricsEventCategory.Transactions,
-      canDeleteIfAbandoned: true,
-      properties: payload.properties ?? {},
-      sensitiveProperties: payload.sensitiveProperties ?? {},
-    });
+    this.#messenger.call(
+      'AnalyticsController:upsertEventFragment',
+      this.#getTransactionUIMetricsFragmentId(transactionId),
+      payload,
+    );
   }
 
   /**
@@ -3085,6 +3080,43 @@ export class LegacyBackgroundApiService {
           break;
       }
     }
+  }
+
+  /**
+   * One-time Basic Functionality consolidation when the remote FF turns on.
+   * Aligns child preferences, schedules the modal/toast notice, and syncs
+   * TokenDetection / GasFee / Shield / subscription controllers when
+   * consolidation actually ran.
+   */
+  consolidateBasicFunctionality(): void {
+    const { firstTimeFlowType } = this.#messenger.call(
+      'OnboardingController:getState',
+    );
+    const { authConnection } = this.#messenger.call(
+      'SeedlessOnboardingController:getState',
+    );
+    const landingState = this.#messenger.call(
+      'PreferencesController:consolidateBasicFunctionality',
+      {
+        isSocialLogin: isBasicFunctionalitySocialLoginUser({
+          firstTimeFlowType: firstTimeFlowType ?? undefined,
+          authConnection,
+        }),
+      },
+    );
+
+    if (landingState !== null) {
+      this.toggleExternalServices(landingState);
+    }
+  }
+
+  /**
+   * Dismisses the one-time Basic Functionality migration modal or toast.
+   */
+  dismissBasicFunctionalityMigrationNotification(): void {
+    this.#messenger.call(
+      'PreferencesController:dismissBasicFunctionalityMigrationNotification',
+    );
   }
 
   /**
@@ -4079,6 +4111,9 @@ export class LegacyBackgroundApiService {
       // Clear account tree state
       this.#messenger.call('AccountTreeController:clearState');
 
+      // Clear accounts state
+      this.#messenger.call('AccountsController:clearState');
+
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state
       // of accounts, we should add a new flag to the account struct
@@ -4497,6 +4532,9 @@ export class LegacyBackgroundApiService {
 
       // Clear account tree state
       this.#messenger.call('AccountTreeController:clearState');
+
+      // Clear accounts state
+      this.#messenger.call('AccountsController:clearState');
 
       // Currently, the account-order-controller is not in sync with
       // the accounts-controller. To properly persist the hidden state

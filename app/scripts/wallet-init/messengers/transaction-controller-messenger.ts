@@ -198,6 +198,7 @@ export function getTransactionControllerInitMessenger(
       'TransactionPayController:getPaymentOverrideData',
       'TransactionPayController:getState',
       'TransactionPayController:getStrategy',
+      'TransactionPayController:getAmountData',
     ],
   });
 
