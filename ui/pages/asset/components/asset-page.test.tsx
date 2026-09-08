@@ -616,9 +616,9 @@ describe('AssetPage', () => {
       }),
     );
 
-    // Verify loading finishes and we show the empty state (API returned no prices)
+    // Verify the advanced chart iframe is rendered
     await waitFor(() => {
-      const chart = queryByTestId('asset-chart-empty-state');
+      const chart = queryByTestId('advanced-chart-iframe');
       expect(chart).toBeInTheDocument();
     });
   });
@@ -661,9 +661,9 @@ describe('AssetPage', () => {
       '/0x1/0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55',
     );
 
-    // Verify chart is rendered
+    // Verify the advanced chart iframe is rendered
     await waitFor(() => {
-      const chart = queryByTestId('asset-price-chart');
+      const chart = queryByTestId('advanced-chart-iframe');
       expect(chart).toBeInTheDocument();
     });
 

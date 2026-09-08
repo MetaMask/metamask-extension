@@ -141,6 +141,7 @@ const AdvancedChartIframe = forwardRef<
 
     return (
       <div
+        data-testid="advanced-chart-iframe"
         style={{
           width: '100%',
           height: `${height}px`,
