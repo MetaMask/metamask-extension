@@ -6,7 +6,6 @@ import {
 } from '@metamask/money-account-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { getTokenMetadataFromKnownToken } from '../../../shared/lib/activity/adapters/helpers';
-import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import type {
   ActivityListItem,
   FiatAmount,
