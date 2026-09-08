@@ -2889,6 +2889,10 @@ export default class MetamaskController extends EventEmitter {
       setPreference: preferencesController.setPreference.bind(
         preferencesController,
       ),
+      consolidateBasicFunctionality: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:consolidateBasicFunctionality',
+      ),
 
       addKnownMethodData: preferencesController.addKnownMethodData.bind(
         preferencesController,
@@ -2912,6 +2916,11 @@ export default class MetamaskController extends EventEmitter {
       dismissSidePanelMigrationToast:
         preferencesController.dismissSidePanelMigrationToast.bind(
           preferencesController,
+        ),
+      dismissBasicFunctionalityMigrationNotification:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'LegacyBackgroundApiService:dismissBasicFunctionalityMigrationNotification',
         ),
 
       setManageInstitutionalWallets:

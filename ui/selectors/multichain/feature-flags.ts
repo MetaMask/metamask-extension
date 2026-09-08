@@ -10,6 +10,8 @@ export {
   BFT_CHILD_PREFERENCES,
   getIsBasicFunctionalityConsolidationEnabled,
   getIsBasicFunctionalityToggleEnabled,
+  getShouldShowBasicFunctionalityMigrationModal,
+  getShouldShowBasicFunctionalityMigrationToast,
 } from './basic-functionality';
 
 /**
