@@ -1496,9 +1496,10 @@ describe('MultichainAccountList', () => {
       expect(
         screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
       ).toHaveClass('multichain-account-cell--edit-mode');
+      // One icon per account, and both mock wallets hold a single account.
       expect(
         screen.getAllByTestId('multichain-account-cell-edit-mode-visible-icon'),
-      ).not.toHaveLength(0);
+      ).toHaveLength(2);
       expect(
         document.querySelector(menuButtonSelector),
       ).not.toBeInTheDocument();
@@ -1519,27 +1520,27 @@ describe('MultichainAccountList', () => {
 
       expect(privateKeyCell).toHaveAttribute('data-delete-mode', 'true');
       expect(
-        within(privateKeyCell).getByTestId(
+        within(privateKeyCell).getAllByTestId(
           'multichain-account-cell-edit-mode-delete-icon',
         ),
-      ).toBeInTheDocument();
+      ).toHaveLength(1);
       expect(
-        within(privateKeyCell).queryByTestId(
+        within(privateKeyCell).queryAllByTestId(
           'multichain-account-cell-edit-mode-visible-icon',
         ),
-      ).not.toBeInTheDocument();
+      ).toHaveLength(0);
 
       expect(entropyCell).not.toHaveAttribute('data-delete-mode');
       expect(
-        within(entropyCell).getByTestId(
+        within(entropyCell).getAllByTestId(
           'multichain-account-cell-edit-mode-visible-icon',
         ),
-      ).toBeInTheDocument();
+      ).toHaveLength(1);
       expect(
-        within(entropyCell).queryByTestId(
+        within(entropyCell).queryAllByTestId(
           'multichain-account-cell-edit-mode-delete-icon',
         ),
-      ).not.toBeInTheDocument();
+      ).toHaveLength(0);
     });
 
     it('shows visibility mode for keyring wallets that are not imported private keys', () => {
@@ -1554,15 +1555,15 @@ describe('MultichainAccountList', () => {
 
       expect(hardwareCell).not.toHaveAttribute('data-delete-mode');
       expect(
-        within(hardwareCell).getByTestId(
+        within(hardwareCell).getAllByTestId(
           'multichain-account-cell-edit-mode-visible-icon',
         ),
-      ).toBeInTheDocument();
+      ).toHaveLength(1);
       expect(
-        within(hardwareCell).queryByTestId(
+        within(hardwareCell).queryAllByTestId(
           'multichain-account-cell-edit-mode-delete-icon',
         ),
-      ).not.toBeInTheDocument();
+      ).toHaveLength(0);
     });
 
     it('tags account rows with a flip id so reorders can be animated', () => {
