@@ -1,5 +1,8 @@
 import { renderHook } from '@testing-library/react';
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  type TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { MoneyActivityFilter } from '../../pages/money/utils/money-activity-filters';
 import MOCK_MONEY_TRANSACTIONS from '../../pages/money/constants/mock-activity-data';
 import { useMoneyAccountTransactions } from './use-money-account-transactions';
@@ -49,5 +52,34 @@ describe('useMoneyActivityItems', () => {
 
     expect(result.current.items[0].id).toBe('money-tx-deposited');
     expect(result.current.mockDataEnabled).toBe(true);
+  });
+
+  it('surfaces every visibility-filtered transaction on All, including Pay txs', () => {
+    const payFromMoney = {
+      id: 'pay-from-money',
+      type: TransactionType.contractInteraction,
+      time: 10,
+      chainId: '0x8f',
+      status: 'confirmed',
+      metamaskPay: { tokenAddress: '0xmusd', chainId: '0x8f' },
+      txParams: { from: '0x1', to: '0x2', value: '0x0' },
+    } as unknown as TransactionMeta;
+
+    mockUseMoneyAccountTransactions.mockReturnValue({
+      allTransactions: [payFromMoney],
+      deposits: [],
+      transfers: [],
+      moneyAddress: '0x1',
+      mockDataEnabled: false,
+    });
+
+    const { result } = renderHook(() => useMoneyActivityItems());
+
+    expect(result.current.items.map((item) => item.id)).toStrictEqual([
+      'pay-from-money',
+    ]);
+    expect(result.current.buckets[MoneyActivityFilter.Deposits]).toStrictEqual(
+      [],
+    );
   });
 });
