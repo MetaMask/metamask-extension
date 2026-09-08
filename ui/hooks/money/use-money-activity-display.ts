@@ -8,6 +8,7 @@ import { useI18nContext } from '../useI18nContext';
 import { selectSingleTokenByAddressAndChainId } from '../../selectors/assets';
 import type { MoneyActivityItem } from '../../pages/money/types/money-activity';
 import {
+  getAccountsApiActivityDisplayInfo,
   getMoneyActivityDisplayInfo,
   resolvePayTokenSymbol,
   type MoneyActivityTranslate,
@@ -25,8 +26,14 @@ export function useMoneyActivityDisplayInfo(
   item: MoneyActivityItem,
 ): MoneyTransactionDisplayInfo {
   const t = useI18nContext() as MoneyActivityTranslate;
-  const payTokenAddress = item.tx.metamaskPay?.tokenAddress as Hex | undefined;
-  const payTokenChainId = item.tx.metamaskPay?.chainId as Hex | undefined;
+  const payTokenAddress =
+    item.kind === 'onchain'
+      ? (item.tx.metamaskPay?.tokenAddress as Hex | undefined)
+      : undefined;
+  const payTokenChainId =
+    item.kind === 'onchain'
+      ? (item.tx.metamaskPay?.chainId as Hex | undefined)
+      : undefined;
 
   const payToken = useSelector((state) =>
     payTokenAddress && payTokenChainId && !isMusdToken(payTokenAddress)
@@ -58,6 +65,10 @@ export function useMoneyActivityDisplayInfo(
   });
 
   return useMemo(() => {
+    if (item.kind === 'accountsApi') {
+      return getAccountsApiActivityDisplayInfo(item.tx, t);
+    }
+
     const sourceTokenSymbol = resolvePayTokenSymbol(
       payTokenAddress,
       payToken?.symbol,
