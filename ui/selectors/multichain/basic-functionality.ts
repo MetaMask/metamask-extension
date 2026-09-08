@@ -74,8 +74,12 @@ export const getShouldShowBasicFunctionalityMigrationToast = createSelector(
 
 /**
  * Gets whether the consolidated Basic Functionality experience should be shown.
- * The LD flag controls rollout eligibility. Persisted cohort users and legacy
- * users with a consistent all-on or all-off configuration are eligible.
+ *
+ * A wallet is marked as consolidated either at onboarding (build flag) or by the
+ * one-time migration (remote flag). That marker is one-way: once it is set the
+ * wallet keeps the consolidated experience even if the remote flag is later
+ * turned off, so the child preferences cannot diverge behind the consolidated
+ * toggle.
  */
 export const getIsBasicFunctionalityConsolidationEnabled = createSelector(
   getIsBasicFunctionalityToggleEnabled,
@@ -89,6 +93,6 @@ export const getIsBasicFunctionalityConsolidationEnabled = createSelector(
     isPersistedConsolidatedUser,
     isConsistentLegacyUser,
   ) =>
-    isBasicFunctionalityToggleEnabled &&
-    (isPersistedConsolidatedUser || isConsistentLegacyUser),
+    isPersistedConsolidatedUser ||
+    (isBasicFunctionalityToggleEnabled && isConsistentLegacyUser),
 );
