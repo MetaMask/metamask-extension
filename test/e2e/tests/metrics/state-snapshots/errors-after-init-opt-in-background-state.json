@@ -97,7 +97,8 @@
   "AssetsController": "object",
   "AuthenticationController": {
     "isSignedIn": "boolean",
-    "needsProfilePairing": "boolean"
+    "needsProfilePairing": "boolean",
+    "needsSocialPairing": "boolean"
   },
   "BridgeController": {
     "assetExchangeRates": "object",
