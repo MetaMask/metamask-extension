@@ -23,7 +23,6 @@ import {
   IconName,
   IconSize,
   Modal,
-  ModalBody,
   ModalContent,
   ModalHeader,
   ModalOverlay,
@@ -37,9 +36,11 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
+import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
+import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
 import { TokenIcon } from '../../../pages/confirmations/components/token-icon/token-icon';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import { ConfirmationLoader } from '../../../pages/confirmations/hooks/useConfirmationNavigation';
@@ -264,6 +265,13 @@ export const HyperliquidDepositPrompt: React.FC<
 
     const { transactionId } = result;
 
+    upsertTransactionUIMetricsFragment(transactionId, {
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        mm_pay_entry_point: 'hyperliquid_deposit_prompt',
+      },
+    });
+
     if (displayToken?.address && displayToken.chainId) {
       try {
         await updateTransactionPaymentToken({
@@ -379,7 +387,7 @@ export const HyperliquidDepositPrompt: React.FC<
           >
             {t('payWithModalTitle')}
           </ModalHeader>
-          <ModalBody className="overflow-auto px-0">
+          <ScrollContainer className="flex-1 overflow-auto">
             <Asset
               tokens={tokens}
               nfts={[]}
@@ -387,7 +395,7 @@ export const HyperliquidDepositPrompt: React.FC<
               disableMetrics
               onAssetSelect={handleTokenSelect}
             />
-          </ModalBody>
+          </ScrollContainer>
         </ModalContent>
       </Modal>
     </Box>

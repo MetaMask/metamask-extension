@@ -162,6 +162,8 @@ export function getLegacyBackgroundApiServiceMessenger(
       'PhishingController:maybeUpdateState',
       'PhishingController:testOrigin',
       'PreferencesController:toggleExternalServices',
+      'PreferencesController:consolidateBasicFunctionality',
+      'PreferencesController:dismissBasicFunctionalityMigrationNotification',
       'SubscriptionController:getState',
       'TokenDetectionController:enable',
       'TokenDetectionController:disable',
