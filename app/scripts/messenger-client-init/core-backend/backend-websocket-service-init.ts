@@ -1,10 +1,29 @@
 import { BackendWebSocketService } from '@metamask/core-backend';
+import { Json } from '@metamask/utils';
 import { MessengerClientInitFunction } from '../types';
 import {
   BackendWebSocketServiceMessenger,
   BackendWebSocketServiceInitMessenger,
 } from '../messengers/core-backend';
 import { trace } from '../../../../shared/lib/trace';
+import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
+
+/**
+ * Resolve a raw feature flag value to a boolean. The value is a boolean when
+ * resolved from the remote config, or a `{ value }` object when provided by a
+ * flag override or test mock. Handle both so `{ value: false }` is not misread
+ * as truthy.
+ *
+ * @param flag - The raw feature flag value.
+ * @returns Whether the flag is enabled.
+ */
+function resolveFlag(flag: Json | undefined): boolean {
+  if (typeof flag === 'object' && flag !== null && 'value' in flag) {
+    return Boolean(flag.value);
+  }
+
+  return typeof flag === 'boolean' ? flag : false;
+}
 
 /**
  * Initialize the Backend Platform WebSocket service with authentication support.
@@ -39,26 +58,16 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
     // Service will check this callback before connecting/reconnecting
     isEnabled: () => {
       try {
-        const remoteFeatureFlagState = initMessenger?.call(
+        // Client manifest flag
+        const manifestFlag =
+          getManifestFlags().remoteFeatureFlags?.backendWebSocketConnection;
+
+        // Remote feature flag
+        const remoteFlag = initMessenger?.call(
           'RemoteFeatureFlagController:getState',
-        );
-        const { backendWebSocketConnection } =
-          remoteFeatureFlagState?.remoteFeatureFlags || {};
+        )?.remoteFeatureFlags?.backendWebSocketConnection;
 
-        // The value is a boolean when resolved from the remote config, or a
-        // `{ value }` object when provided by a flag override or test mock.
-        // Handle both so `{ value: false }` is not misread as truthy.
-        if (
-          typeof backendWebSocketConnection === 'object' &&
-          backendWebSocketConnection !== null &&
-          'value' in backendWebSocketConnection
-        ) {
-          return Boolean(backendWebSocketConnection.value);
-        }
-
-        return typeof backendWebSocketConnection === 'boolean'
-          ? backendWebSocketConnection
-          : false;
+        return resolveFlag(manifestFlag ?? remoteFlag);
       } catch (error) {
         // If feature flag check fails, default to NOT connecting for safer startup
         console.warn(
