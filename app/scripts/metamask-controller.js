@@ -837,6 +837,8 @@ export default class MetamaskController extends EventEmitter {
       networkController: this.networkController,
     });
     this.geolocationController = messengerClientsByName.GeolocationController;
+    this.moneyAccountUpgradeController =
+      messengerClientsByName.MoneyAccountUpgradeController;
 
     // Record installation info if this is the first time the extension is running.
     // This captures the version and date when MetaMask was first installed.
@@ -939,7 +941,7 @@ export default class MetamaskController extends EventEmitter {
     this.notificationServicesController.init();
     this.snapController.init();
     this.cronjobController.init();
-    this.messengerClientsByName.MoneyAccountUpgradeController.init();
+    this.moneyAccountUpgradeController.init();
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
