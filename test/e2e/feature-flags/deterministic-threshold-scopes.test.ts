@@ -166,6 +166,18 @@ describe('toDeterministicThresholdScopes', () => {
     });
   });
 
+  describe('when the array has one variant', () => {
+    it('pins a one-arm threshold array to 1', () => {
+      const input: Json = [
+        thresholdEntry('feature is ON', 0.4, { value: true }),
+      ];
+
+      expect(toDeterministicThresholdScopes(input)).toStrictEqual([
+        thresholdEntry('feature is ON', 1, { value: true }),
+      ]);
+    });
+  });
+
   describe('when the value is version-scoped', () => {
     it('rewrites nested threshold arrays under versions', () => {
       const input: Json = {

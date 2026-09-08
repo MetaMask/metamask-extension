@@ -633,6 +633,53 @@ describe('applySyncResultToRegistry', () => {
     expect(merged.newAbTest.productionDefault).toStrictEqual(expected);
     expect(merged.changedAbTest.productionDefault).toStrictEqual(expected);
   });
+
+  it('writes deterministic scopes for inProd mismatches', () => {
+    const merged = applySyncResultToRegistry(
+      {
+        newInProduction: [],
+        removedFromProduction: [],
+        valueMismatches: [],
+        inProdMismatches: [
+          {
+            name: 'staleAbTest',
+            productionValue: [
+              {
+                name: 'control',
+                scope: { type: 'threshold', value: 0.95 },
+              },
+              {
+                name: 'treatment',
+                scope: { type: 'threshold', value: 1 },
+              },
+            ],
+          },
+        ],
+        hasDrift: true,
+      },
+      {
+        staleAbTest: {
+          name: 'staleAbTest',
+          type: FeatureFlagType.Remote,
+          inProd: false,
+          productionDefault: false,
+          status: FeatureFlagStatus.Active,
+        },
+      },
+    );
+
+    expect(merged.staleAbTest.inProd).toBe(true);
+    expect(merged.staleAbTest.productionDefault).toStrictEqual([
+      {
+        name: 'control',
+        scope: { type: 'threshold', value: 1 },
+      },
+      {
+        name: 'treatment',
+        scope: { type: 'threshold', value: 0 },
+      },
+    ]);
+  });
 });
 
 describe('updateRegistryFile integration', () => {
