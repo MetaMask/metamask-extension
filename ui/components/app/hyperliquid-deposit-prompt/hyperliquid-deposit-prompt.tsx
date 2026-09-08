@@ -39,9 +39,8 @@ import { Asset } from '../../../pages/confirmations/components/send/asset/asset'
 import type { Asset as AssetType } from '../../../pages/confirmations/types/send';
 import { usePerpsHomeRoute } from '../../../hooks/perps/usePerpsHomeRoute';
 import { usePerpsDepositConfirmation } from '../perps/hooks/usePerpsDepositConfirmation';
+import { PERPS_EVENT_VALUE } from '../../../../shared/constants/perps-events';
 import type { HyperliquidDepositPromptProps } from './hyperliquid-deposit-prompt.types';
-
-const HYPERLIQUID_DEPOSIT_SOURCE = 'hyperliquid_deposit_prompt';
 
 /**
  * Appends `source=hyperliquid_deposit_prompt` to the perps home route so the
@@ -50,7 +49,7 @@ const HYPERLIQUID_DEPOSIT_SOURCE = 'hyperliquid_deposit_prompt';
  */
 function buildGoBackToWithSource(perpsHomeRoute: string): string {
   const separator = perpsHomeRoute.includes('?') ? '&' : '?';
-  return `${perpsHomeRoute}${separator}source=${HYPERLIQUID_DEPOSIT_SOURCE}`;
+  return `${perpsHomeRoute}${separator}source=${PERPS_EVENT_VALUE.SOURCE.HYPERLIQUID_DEPOSIT_PROMPT}`;
 }
 
 /**

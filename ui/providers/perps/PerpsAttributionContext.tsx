@@ -95,18 +95,18 @@ function mapSourceParamToDiscovery(source: string | null): string | undefined {
   }
 }
 
-function isDeeplinkSearch(search?: string): boolean {
-  return new URLSearchParams(search ?? '').get('source') === 'deeplink';
-}
-
 /**
  * Extract the `source` param from a search string if present. Used to pass
- * non-standard sources (e.g. `hyperliquid_deposit_prompt`) through to
+ * sources (e.g. `deeplink`, `hyperliquid_deposit_prompt`) through to
  * PERPS_SCREEN_VIEWED attribution.
  * @param search
  */
 function getSourceFromSearch(search?: string): string | null {
   return new URLSearchParams(search ?? '').get('source');
+}
+
+function isDeeplinkSearch(search?: string): boolean {
+  return getSourceFromSearch(search) === 'deeplink';
 }
 
 /**
@@ -242,14 +242,14 @@ function computeFlowAttributionFromSearch(
   if (!search) {
     return {};
   }
-  const source = new URLSearchParams(search).get('source');
+  const source = getSourceFromSearch(search);
   const discoverySource = mapSourceParamToDiscovery(source);
   if (!discoverySource) {
     return {};
   }
   return {
     discoverySource,
-    ...(source === 'deeplink'
+    ...(isDeeplinkSearch(search)
       ? { entryPoint: PERPS_EVENT_VALUE.SOURCE.DEEPLINK }
       : {}),
   };
@@ -319,11 +319,11 @@ export function PerpsAttributionProvider({
       ]).catch(captureException);
     }
 
-    const source = new URLSearchParams(search).get('source');
+    const source = getSourceFromSearch(search);
     // Sticky within THIS instance: a deeplink entry stays flagged for the life
     // of this provider even after in-app navigation stops carrying
     // source=deeplink. Not persisted to the session store — source is per-entry.
-    if (source === 'deeplink') {
+    if (isDeeplinkSearch(search)) {
       setIsDeeplinkEntry(true);
     }
     const discoverySource = mapSourceParamToDiscovery(source);
@@ -331,7 +331,7 @@ export function PerpsAttributionProvider({
       setFlowAttributionState((prev) => ({
         ...prev,
         discoverySource,
-        ...(source === 'deeplink'
+        ...(isDeeplinkSearch(search)
           ? { entryPoint: PERPS_EVENT_VALUE.SOURCE.DEEPLINK }
           : {}),
       }));
@@ -350,8 +350,7 @@ export function PerpsAttributionProvider({
         setUtmAttribution((prev) => ({ ...prev, ...utmContext }));
       }
 
-      const source = new URLSearchParams(locationSearch).get('source');
-      if (source === 'deeplink') {
+      if (isDeeplinkSearch(locationSearch)) {
         setIsDeeplinkEntry(true);
       }
       const nextFlowAttribution =
