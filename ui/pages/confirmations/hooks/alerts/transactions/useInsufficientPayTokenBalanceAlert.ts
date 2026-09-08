@@ -51,6 +51,9 @@ export function useInsufficientPayTokenBalanceAlert({
   );
   const isMoneyPaymentOverride =
     paymentOverride === PaymentOverride.MoneyAccount;
+  const isMoneyAccountDeposit = hasTransactionType(currentConfirmation, [
+    TransactionType.moneyAccountDeposit,
+  ]);
   const { withdrawableFiatRaw } = useMoneyAccountWithdrawableFiat(
     isMoneyPaymentOverride,
   );
@@ -149,6 +152,11 @@ export function useInsufficientPayTokenBalanceAlert({
     return new BigNumber(totals?.fees.sourceNetwork.max.raw ?? '0');
   }, [isLoading, totals]);
 
+  const isExactRawMoneyAccountDeposit =
+    isMoneyAccountDeposit &&
+    new BigNumber(balanceRaw ?? '0').gt(0) &&
+    new BigNumber(totals?.sourceAmount.raw ?? '0').eq(balanceRaw ?? '0');
+
   const isInsufficientForInput = useMemo(
     () =>
       !isPostQuote &&
@@ -159,7 +167,17 @@ export function useInsufficientPayTokenBalanceAlert({
   );
 
   const isInsufficientForFees = useMemo(() => {
-    if (isMoneyPaymentOverride || isPostQuote || isPendingAlert || !payToken) {
+    // Max and exact-raw deposits already submit the full balance (or an amount
+    // reduced to leave room for gas). Adding source-network fees on top can
+    // otherwise produce a false insufficient-funds alert.
+    if (
+      isMax ||
+      isExactRawMoneyAccountDeposit ||
+      isMoneyPaymentOverride ||
+      isPostQuote ||
+      isPendingAlert ||
+      !payToken
+    ) {
       return false;
     }
 
@@ -181,6 +199,8 @@ export function useInsufficientPayTokenBalanceAlert({
   }, [
     balanceRaw,
     balanceUsd,
+    isExactRawMoneyAccountDeposit,
+    isMax,
     isMoneyPaymentOverride,
     isPayTokenNative,
     isPendingAlert,
@@ -219,10 +239,7 @@ export function useInsufficientPayTokenBalanceAlert({
   // Only sponsored Money Account deposits skip the native-gas alert — not
   // every Pay flow funded on Monad.
   const isSponsoredMoneyAccountDeposit =
-    Boolean(currentConfirmation?.isGasFeeSponsored) &&
-    hasTransactionType(currentConfirmation, [
-      TransactionType.moneyAccountDeposit,
-    ]);
+    Boolean(currentConfirmation?.isGasFeeSponsored) && isMoneyAccountDeposit;
   const isInsufficientForSourceNetwork = useMemo(
     () =>
       !isSponsoredMoneyAccountDeposit &&
