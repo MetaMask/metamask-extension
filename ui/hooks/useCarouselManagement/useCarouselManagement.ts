@@ -112,21 +112,31 @@ export const useCarouselManagement = ({
   const contentfulEnabled =
     remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
 
+  const eligibilityNeeded =
+    contentfulEnabled && useExternalServices && showDownloadMobileAppSlide;
+
   const [downloadEligible, setDownloadEligible] = useState<boolean>(false);
   const [downloadEligibilityReady, setDownloadEligibilityReady] =
-    useState<boolean>(false);
+    useState<boolean>(() => !eligibilityNeeded);
+  const [prevEligibilityKey, setPrevEligibilityKey] = useState(
+    `${selectedAccount.address}:${eligibilityNeeded}`,
+  );
+  const eligibilityKey = `${selectedAccount.address}:${eligibilityNeeded}`;
 
-  useEffect(() => {
-    const eligibilityNeeded =
-      contentfulEnabled && useExternalServices && showDownloadMobileAppSlide;
-
-    if (!eligibilityNeeded) {
+  if (eligibilityKey !== prevEligibilityKey) {
+    setPrevEligibilityKey(eligibilityKey);
+    if (eligibilityNeeded) {
+      setDownloadEligibilityReady(false);
+    } else {
       setDownloadEligible(false);
       setDownloadEligibilityReady(true);
-      return () => undefined;
     }
+  }
 
-    setDownloadEligibilityReady(false);
+  useEffect(() => {
+    if (!eligibilityNeeded) {
+      return undefined;
+    }
 
     let cancelled = false;
 
@@ -157,6 +167,7 @@ export const useCarouselManagement = ({
     useExternalServices,
     showDownloadMobileAppSlide,
     contentfulEnabled,
+    eligibilityNeeded,
   ]);
 
   useEffect(() => {

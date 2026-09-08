@@ -368,15 +368,29 @@ export const NetworksPage = () => {
     return () => clearTimeout(timeoutId);
   }, [dismissPageToast, pageToast]);
 
-  useEffect(() => {
-    if (view !== '' || !rawEditedNetwork?.editCompleted) {
-      return;
-    }
+  const editCompletedToastKey =
+    view === '' && rawEditedNetwork?.editCompleted
+      ? `${rawEditedNetwork.chainId}:${rawEditedNetwork.nickname ?? ''}:${Boolean(rawEditedNetwork.newNetwork)}`
+      : null;
+  const [consumedEditCompletedToastKey, setConsumedEditCompletedToastKey] =
+    useState<string | null>(null);
+  if (
+    editCompletedToastKey &&
+    editCompletedToastKey !== consumedEditCompletedToastKey &&
+    rawEditedNetwork
+  ) {
+    setConsumedEditCompletedToastKey(editCompletedToastKey);
     setPageToast({
       chainId: rawEditedNetwork.chainId,
       nickname: rawEditedNetwork.nickname ?? '',
       newNetwork: Boolean(rawEditedNetwork.newNetwork),
     });
+  }
+
+  useEffect(() => {
+    if (view !== '' || !rawEditedNetwork?.editCompleted) {
+      return;
+    }
     dispatch(setEditedNetwork());
   }, [dispatch, rawEditedNetwork, view]);
 

@@ -21,12 +21,15 @@ export const useDebouncedValue = <Value>(
 
   useEffect(() => {
     if (delayMs <= 0) {
-      setDebounced(value);
       return undefined;
     }
     const timer = setTimeout(() => setDebounced(value), delayMs);
     return () => clearTimeout(timer);
   }, [value, delayMs]);
+
+  if (delayMs <= 0) {
+    return value;
+  }
 
   return debounced;
 };

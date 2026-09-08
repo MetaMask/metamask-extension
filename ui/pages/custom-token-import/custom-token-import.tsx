@@ -418,7 +418,7 @@ export const CustomTokenImportPage = () => {
   );
 
   useEffect(() => {
-    setSelectedNetwork(currentChainId);
+    queueMicrotask(() => setSelectedNetwork(currentChainId));
   }, [currentChainId]);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
@@ -120,9 +120,12 @@ export const BatchSellReviewPage = () => {
     setReviewAndConfirmModalIsOpen(true);
   }, [sendAssetsConfig, openHighAlertModal, selectedReceiveAsset.assetId]);
 
-  useEffect(() => {
+  const [prevAreQuotesRefreshExpired, setPrevAreQuotesRefreshExpired] =
+    useState(areQuotesRefreshExpired);
+  if (areQuotesRefreshExpired !== prevAreQuotesRefreshExpired) {
+    setPrevAreQuotesRefreshExpired(areQuotesRefreshExpired);
     setReviewAndConfirmModalIsOpen(false);
-  }, [areQuotesRefreshExpired]);
+  }
 
   if (!hasInitialSelection) {
     return <Navigate to={BATCH_SELL_SELECT_ROUTE} replace />;

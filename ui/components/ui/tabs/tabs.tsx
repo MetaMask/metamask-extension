@@ -1,7 +1,6 @@
 import React, {
   useState,
   useMemo,
-  useEffect,
   useLayoutEffect,
   useCallback,
   useRef,
@@ -105,13 +104,15 @@ export const Tabs = <TKey extends string = string>({
   const [activeTabIndex, setActiveTabIndex] = useState<number>(() =>
     Math.max(findChildByKey(activeTab), 0),
   );
+  const [prevActiveTab, setPrevActiveTab] = useState(activeTab);
 
-  useEffect(() => {
+  if (activeTab !== prevActiveTab) {
+    setPrevActiveTab(activeTab);
     const childIndex = findChildByKey(activeTab);
     if (childIndex >= 0) {
       setActiveTabIndex(childIndex);
     }
-  }, [activeTab, findChildByKey]);
+  }
 
   const clampedIndex =
     getValidChildren.length > 0

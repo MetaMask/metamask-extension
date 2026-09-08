@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { isValidMnemonic } from '@ethersproject/hdnode';
@@ -53,7 +59,6 @@ export default function SrpInputImport({
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
   const [firstWord, setFirstWord] = useState('');
   const [misSpelledWords, setMisSpelledWords] = useState<DraftSrp[]>([]);
-  const [hasInvalidChecksum, setHasInvalidChecksum] = useState(false);
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -309,6 +314,25 @@ export default function SrpInputImport({
     }
   };
 
+  const hasInvalidChecksum = useMemo(() => {
+    if (
+      !SRP_LENGTHS.includes(draftSrp.length) ||
+      draftSrp.some((word) => word.word.length === 0)
+    ) {
+      return false;
+    }
+
+    const hasInvalidWords = draftSrp.some(
+      (word) => word.word !== '' && !wordlist.includes(word.word),
+    );
+    if (hasInvalidWords) {
+      return false;
+    }
+
+    const stringSrp = draftSrp.map((word) => word.word).join(' ');
+    return !isValidMnemonic(stringSrp);
+  }, [draftSrp]);
+
   useEffect(() => {
     const activeWord = draftSrp.find((word) => word.active);
     if (activeWord) {
@@ -326,21 +350,17 @@ export default function SrpInputImport({
 
       if (hasInvalidWords) {
         onChangeRef.current('');
-        setHasInvalidChecksum(false);
       } else {
         const stringSrp = draftSrp.map((word) => word.word).join(' ');
         // Only pass valid mnemonic (with correct checksum) to parent
         if (isValidMnemonic(stringSrp)) {
           onChangeRef.current(stringSrp);
-          setHasInvalidChecksum(false);
         } else {
           onChangeRef.current('');
-          setHasInvalidChecksum(true);
         }
       }
     } else {
       onChangeRef.current('');
-      setHasInvalidChecksum(false);
     }
   }, [draftSrp]);
 
@@ -456,7 +476,6 @@ export default function SrpInputImport({
               onClick={async () => {
                 setDraftSrp([]);
                 setMisSpelledWords([]);
-                setHasInvalidChecksum(false);
                 onClearCallback?.();
               }}
               size={ButtonSize.Md}
