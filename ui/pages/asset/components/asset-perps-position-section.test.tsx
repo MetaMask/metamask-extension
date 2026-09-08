@@ -4,6 +4,7 @@ import type { Position } from '@metamask/perps-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import { usePerpsPositionForAsset } from '../../../hooks/perps/usePerpsPositionForAsset';
 import { AssetPerpsPositionSection } from './asset-perps-position-section';
 
@@ -11,10 +12,9 @@ jest.mock('../../../hooks/perps/usePerpsPositionForAsset', () => ({
   usePerpsPositionForAsset: jest.fn(),
 }));
 
-jest.mock('../../../components/app/perps/perps-view-stream-boundary', () => ({
-  PerpsViewStreamBoundary: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
-  ),
+jest.mock('../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../store/background-connection'),
+  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
 jest.mock('../../../components/app/perps/position-card', () => ({
@@ -83,5 +83,24 @@ describe('AssetPerpsPositionSection', () => {
     expect(
       screen.queryByTestId('asset-perps-position-section'),
     ).not.toBeInTheDocument();
+  });
+
+  // `perpsViewActive` is a single boolean in the background stream bridge, not a
+  // reference count, so a second boundary around this section would switch
+  // emission off for the whole connection the moment it unmounts — leaving the
+  // owning surface subscribed to a stream that no longer pushes positions.
+  it('leaves Perps stream activation to the surface that renders it', () => {
+    mockUsePerpsPositionForAsset.mockReturnValue({
+      position: ETH_POSITION,
+      isLoading: false,
+    });
+
+    const { unmount } = renderSection();
+    unmount();
+
+    expect(jest.mocked(submitRequestToBackground)).not.toHaveBeenCalledWith(
+      'perpsViewActive',
+      expect.anything(),
+    );
   });
 });

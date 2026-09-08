@@ -8,7 +8,6 @@ import React from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PositionCard } from '../../../components/app/perps/position-card';
 import { PerpsCardSkeleton } from '../../../components/app/perps/perps-skeletons';
-import { PerpsViewStreamBoundary } from '../../../components/app/perps/perps-view-stream-boundary';
 import { usePerpsPositionForAsset } from '../../../hooks/perps/usePerpsPositionForAsset';
 
 export type AssetPerpsPositionSectionProps = {
@@ -18,7 +17,26 @@ export type AssetPerpsPositionSectionProps = {
   assetName?: string;
 };
 
-const AssetPerpsPositionSectionContent = ({
+/**
+ * Shows the account's open Perps position for this asset (mobile Token Details
+ * parity), so Long / Short on the action row cannot be mistaken for the user's
+ * only Perps state. The card opens the market detail page, which reports
+ * `asset_detail_screen` as its entry point.
+ *
+ * Render only when the asset has a matching Perps market, and only inside the
+ * surface's `PerpsViewStreamBoundary`: the position lookup subscribes to the
+ * live positions stream, which the background only pushes while a Perps view is
+ * active. This component must not open its own boundary — background
+ * `perpsViewActive` is a single boolean rather than a reference count, so a
+ * nested boundary would stop emission for the whole connection as soon as it
+ * unmounts, and the surrounding surface would keep a subscription to a stream
+ * that no longer delivers positions.
+ *
+ * @param props - Component props
+ * @param props.marketSymbol - Perps market name matched to this asset
+ * @param props.assetName - Full asset name for the card title
+ */
+export const AssetPerpsPositionSection = ({
   marketSymbol,
   assetName,
 }: AssetPerpsPositionSectionProps) => {
@@ -47,30 +65,3 @@ const AssetPerpsPositionSectionContent = ({
     </Box>
   );
 };
-
-/**
- * Shows the account's open Perps position for this asset (mobile Token Details
- * parity), so Long / Short on the action row cannot be mistaken for the user's
- * only Perps state. The card opens the market detail page, which reports
- * `asset_detail_screen` as its entry point.
- *
- * Render only when the asset has a matching Perps market: the position lookup
- * subscribes to the live positions stream.
- *
- * @param props - Component props
- * @param props.marketSymbol - Perps market name matched to this asset
- * @param props.assetName - Full asset name for the card title
- */
-export function AssetPerpsPositionSection({
-  marketSymbol,
-  assetName,
-}: AssetPerpsPositionSectionProps) {
-  return (
-    <PerpsViewStreamBoundary>
-      <AssetPerpsPositionSectionContent
-        marketSymbol={marketSymbol}
-        assetName={assetName}
-      />
-    </PerpsViewStreamBoundary>
-  );
-}
