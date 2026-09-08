@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import type { PerpsMarketData } from '@metamask/perps-controller';
+import { getPerpsStreamManager } from '../../../providers/perps/PerpsStreamManager';
 import { formatPerpsFiatUniversal } from '../../../components/app/perps/utils/formatPerpsDisplayPrice';
 import {
   usePerpsLiveMarketData,
@@ -19,6 +20,8 @@ export type UsePerpsLiveMarketListDataReturn = Pick<
   'cryptoMarkets' | 'hip3Markets' | 'isInitialLoading' | 'error' | 'refresh'
 > & {
   markets: PerpsMarketData[];
+  /** Both snapshots used during this render came from the live session. */
+  isLive: boolean;
 };
 
 export function usePerpsLiveMarketListData(
@@ -50,7 +53,7 @@ export function usePerpsLiveMarketListData(
     [marketSymbols],
   );
 
-  const { prices } = usePerpsLivePrices({
+  const { prices, isLive: pricesLive } = usePerpsLivePrices({
     symbols: marketSymbols,
     activateStream,
     includeMarketData: false,
@@ -107,6 +110,7 @@ export function usePerpsLiveMarketListData(
 
   return {
     markets: liveMarkets,
+    isLive: pricesLive && getPerpsStreamManager().hasLiveMarketData(markets),
     cryptoMarkets: liveCryptoMarkets,
     hip3Markets: liveHip3Markets,
     isInitialLoading,

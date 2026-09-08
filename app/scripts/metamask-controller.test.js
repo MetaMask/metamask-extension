@@ -105,6 +105,7 @@ jest.mock('./messenger-client-init/perps-controller-init', () => ({
     messengerClient: {
       state: {},
       name: 'PerpsController',
+      stopMarketDataPreload: jest.fn(),
     },
     api: {
       perpsDisconnect: jest.fn().mockResolvedValue(undefined),
@@ -299,6 +300,7 @@ jest.mock('./lib/rpc-method-middleware', () => ({
 
 jest.mock('../../shared/lib/trace', () => ({
   ...jest.requireActual('../../shared/lib/trace'),
+  getPerformanceTimestamp: jest.fn(() => 1_000),
   trace: jest.fn(),
   endTrace: jest.fn(),
 }));
@@ -1041,6 +1043,35 @@ describe('MetaMaskController', () => {
       });
     });
 
+    it('disconnects active Perps when Basic Functionality is disabled', async () => {
+      jest
+        .spyOn(environment, 'getIsPerpsIncludedInBuild')
+        .mockReturnValue(true);
+      jest
+        .spyOn(metamaskController.messengerClientApi, 'perpsGetConnectionState')
+        .mockReturnValue('connected');
+      const disconnect = jest.spyOn(
+        metamaskController.messengerClientApi,
+        'perpsDisconnect',
+      );
+      const publishPreferences = (useExternalServices) =>
+        metamaskController.controllerMessenger.publish(
+          'PreferencesController:stateChange',
+          {
+            ...metamaskController.preferencesController.state,
+            useExternalServices,
+          },
+          getMockPatches(),
+        );
+      publishPreferences(true);
+      expect(disconnect).not.toHaveBeenCalled();
+
+      publishPreferences(false);
+      await waitForAllPromises();
+
+      expect(disconnect).toHaveBeenCalledTimes(1);
+    });
+
     describe('_onLock', () => {
       it('disconnects an active perps websocket', async () => {
         jest
@@ -1048,7 +1079,9 @@ describe('MetaMaskController', () => {
           .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
-        metamaskController.messengerClientsByName.PerpsController = {};
+        metamaskController.messengerClientsByName.PerpsController = {
+          stopMarketDataPreload: jest.fn(),
+        };
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
@@ -1094,7 +1127,9 @@ describe('MetaMaskController', () => {
           .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
-        metamaskController.messengerClientsByName.PerpsController = {};
+        metamaskController.messengerClientsByName.PerpsController = {
+          stopMarketDataPreload: jest.fn(),
+        };
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
@@ -3152,7 +3187,9 @@ describe('MetaMaskController', () => {
           .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
-        metamaskController.messengerClientsByName.PerpsController = {};
+        metamaskController.messengerClientsByName.PerpsController = {
+          stopMarketDataPreload: jest.fn(),
+        };
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
@@ -3209,7 +3246,9 @@ describe('MetaMaskController', () => {
           .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
-        metamaskController.messengerClientsByName.PerpsController = {};
+        metamaskController.messengerClientsByName.PerpsController = {
+          stopMarketDataPreload: jest.fn(),
+        };
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
@@ -3266,7 +3305,9 @@ describe('MetaMaskController', () => {
           .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
-        metamaskController.messengerClientsByName.PerpsController = {};
+        metamaskController.messengerClientsByName.PerpsController = {
+          stopMarketDataPreload: jest.fn(),
+        };
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);

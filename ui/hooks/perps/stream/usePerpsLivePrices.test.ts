@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react';
+import { getPerpsStreamManager } from '../../../providers/perps/PerpsStreamManager';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { usePerpsChannel } from './usePerpsChannel';
 import { usePerpsLivePrices } from './usePerpsLivePrices';
@@ -28,6 +29,36 @@ describe('usePerpsLivePrices', () => {
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
   });
 
+  it('reports readiness only for a live price belonging to the requested symbols', () => {
+    const manager = getPerpsStreamManager();
+    manager.clearAllCaches();
+    manager.handleBackgroundUpdate({
+      channel: 'prices',
+      data: [{ symbol: 'ETH', price: '2000' }],
+    });
+    mockUsePerpsChannel.mockReturnValue({
+      data: manager.prices.getCachedData(),
+      isInitialLoading: false,
+    });
+    const { result, rerender } = renderHook(() =>
+      usePerpsLivePrices({ symbols: ['BTC'] }),
+    );
+    expect(result.current.isLive).toBe(false);
+
+    manager.handleBackgroundUpdate({
+      channel: 'prices',
+      data: [{ symbol: 'BTC', price: '50000' }],
+    });
+    mockUsePerpsChannel.mockReturnValue({
+      data: manager.prices.getCachedData(),
+      isInitialLoading: false,
+    });
+    rerender();
+
+    expect(result.current.isLive).toBe(true);
+    manager.clearAllCaches();
+  });
+
   it('returns empty prices while initial loading is true', () => {
     const priceUpdates: StreamPriceUpdate[] = [{ symbol: 'BTC', price: '100' }];
     mockUsePerpsChannel.mockReturnValue({
@@ -40,6 +71,7 @@ describe('usePerpsLivePrices', () => {
     );
 
     expect(result.current).toEqual({
+      isLive: false,
       prices: {},
       isInitialLoading: true,
     });
@@ -56,6 +88,7 @@ describe('usePerpsLivePrices', () => {
     );
 
     expect(result.current).toEqual({
+      isLive: false,
       prices: {},
       isInitialLoading: false,
     });
