@@ -304,4 +304,67 @@ describe('useAddEthereumChainAlerts', () => {
       ]),
     );
   });
+
+  it('warns that the provider is rate limiting when the chain ID request is throttled', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    mockJsonRpcRequest.mockRejectedValue(
+      new rpcUtils.JsonRpcRequestError('public rate limit exceeded', {
+        code: -32029,
+        httpStatus: 429,
+      }),
+    );
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: {
+        requestData: {
+          chainId: '0x1e',
+          chainName: 'Rootstock Mainnet',
+          rpcUrl: 'https://lb.routeme.sh/rpc/evm/30',
+          ticker: 'RBTC',
+        },
+      },
+    });
+
+    const { result } = await renderHookWithWait();
+
+    expect(result.current).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          key: 'rpcUrlRateLimited',
+          severity: Severity.Warning,
+          field: 'rpcUrl',
+        }),
+      ]),
+    );
+    expect(result.current).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ key: 'errorWhileConnectingToRPC' }),
+      ]),
+    );
+  });
+
+  it('warns about a connection failure when the chain ID request fails for another reason', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    mockJsonRpcRequest.mockRejectedValue(new Error('network error'));
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: {
+        requestData: {
+          chainId: '0x1',
+          chainName: 'Ethereum',
+          rpcUrl: 'https://mainnet.infura.io/v3/abc',
+        },
+      },
+    });
+
+    const { result } = await renderHookWithWait();
+
+    expect(result.current).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          key: 'errorWhileConnectingToRPC',
+          severity: Severity.Warning,
+          field: 'rpcUrl',
+        }),
+      ]),
+    );
+  });
 });

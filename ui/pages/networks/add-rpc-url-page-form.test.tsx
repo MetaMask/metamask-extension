@@ -7,11 +7,13 @@ import {
   waitFor,
 } from '@testing-library/react';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { JsonRpcRequestError } from '../../../shared/lib/rpc.utils';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 
 const mockJsonRpcRequest = jest.fn();
 
 jest.mock('../../../shared/lib/rpc.utils', () => ({
+  ...jest.requireActual('../../../shared/lib/rpc.utils'),
   jsonRpcRequest: (...args: unknown[]) => mockJsonRpcRequest(...args),
 }));
 
@@ -65,6 +67,33 @@ describe('AddRpcUrlPageForm', () => {
     });
 
     expect(await screen.findByText('failedToFetchChainId')).toBeInTheDocument();
+    expect(screen.getByTestId('page-container-footer-next')).toBeDisabled();
+
+    fireEvent.click(screen.getByTestId('page-container-footer-next'));
+
+    expect(onAdded).not.toHaveBeenCalled();
+  });
+
+  it('reports a rate limit instead of an incorrect URL when the provider throttles validation', async () => {
+    const onAdded = jest.fn();
+    mockJsonRpcRequest.mockRejectedValue(
+      new JsonRpcRequestError('public rate limit exceeded', {
+        code: -32029,
+        httpStatus: 429,
+      }),
+    );
+    render(<AddRpcUrlPageForm onCancel={() => undefined} onAdded={onAdded} />);
+
+    fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
+      target: { value: 'https://lb.routeme.sh/rpc/evm/30' },
+    });
+
+    await act(async () => {
+      jest.advanceTimersByTime(500);
+    });
+
+    expect(await screen.findByText('rpcUrlRateLimited')).toBeInTheDocument();
+    expect(screen.queryByText('failedToFetchChainId')).not.toBeInTheDocument();
     expect(screen.getByTestId('page-container-footer-next')).toBeDisabled();
 
     fireEvent.click(screen.getByTestId('page-container-footer-next'));

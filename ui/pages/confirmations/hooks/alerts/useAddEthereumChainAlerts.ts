@@ -7,7 +7,10 @@ import { DEPRECATED_NETWORKS } from '../../../../../shared/constants/network';
 import { AddEthereumChainContext } from '../../external/add-ethereum-chain/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useSafeChains } from '../../../../components/multichain/networks-form/use-safe-chains';
-import { jsonRpcRequest } from '../../../../../shared/lib/rpc.utils';
+import {
+  isRpcRateLimitError,
+  jsonRpcRequest,
+} from '../../../../../shared/lib/rpc.utils';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { EMPTY_ARRAY } from '../../../../selectors/shared';
 
@@ -164,9 +167,13 @@ export function useAddEthereumChainAlerts() {
           err,
         );
 
+        const alertKey = isRpcRateLimitError(err)
+          ? 'rpcUrlRateLimited'
+          : 'errorWhileConnectingToRPC';
+
         nextAlerts.push({
-          key: 'errorWhileConnectingToRPC',
-          message: t('errorWhileConnectingToRPC'),
+          key: alertKey,
+          message: t(alertKey),
           severity: Severity.Warning,
           field: RowAlertKey.RpcUrl,
           inlineAlertText: '',

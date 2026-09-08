@@ -15,7 +15,10 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { BorderRadius } from '../../helpers/constants/design-system';
 import { isWebUrl } from '../../../shared/lib/url-utils';
 import { infuraProjectId } from '../../../shared/constants/network';
-import { jsonRpcRequest } from '../../../shared/lib/rpc.utils';
+import {
+  isRpcRateLimitError,
+  jsonRpcRequest,
+} from '../../../shared/lib/rpc.utils';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 
 const templateInfuraRpc = (endpoint: string) => {
@@ -90,9 +93,13 @@ export const AddRpcUrlPageForm = ({
           setValidatedUrl(trimmedUrl);
         }
       })
-      .catch(() => {
+      .catch((error) => {
         if (isCurrentValidation()) {
-          setRpcValidationError(t('failedToFetchChainId'));
+          setRpcValidationError(
+            isRpcRateLimitError(error)
+              ? t('rpcUrlRateLimited')
+              : t('failedToFetchChainId'),
+          );
           setValidatedUrl(undefined);
         }
       });
