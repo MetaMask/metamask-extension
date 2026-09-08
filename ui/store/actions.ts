@@ -3955,7 +3955,7 @@ export function setFeatureFlag(
 
 export function setPreference(
   preference: string,
-  value: boolean | string | object | null,
+  value: boolean | string | object,
   showLoading: boolan = true,
 ): ThunkAction<
   Promise<TemporaryPreferenceFlagDef>,

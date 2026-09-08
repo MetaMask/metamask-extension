@@ -1990,9 +1990,6 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Turn on basic functionality"
   },
-  "basicFunctionalityMigrationModalDescription": {
-    "message": "Third-party APIs are now part of Basic Functionality. Basic Functionality has been enabled to keep your wallet working as expected. You can review these settings in Privacy."
-  },
   "basicFunctionalityMigrationModalTitle": {
     "message": "Your settings have changed"
   },
