@@ -58,6 +58,16 @@ function findMatchingMarket(
   return infos.find((candidate) => candidate.name.toLowerCase() === needle);
 }
 
+/**
+ * Looks up the Perps market for a symbol, caching successful hits and misses.
+ *
+ * A rejected `perpsGetMarkets` call is not cached as resolved, so a later
+ * visit retries instead of permanently hiding Long / Short.
+ *
+ * @param symbol - The wallet asset's symbol (e.g. 'ETH', 'DAI')
+ * @param useTerminalApi - Whether to fetch markets from the terminal backend
+ * @returns The matching market, or undefined when none exists or the lookup fails
+ */
 function fetchAssetPerpsMarket(
   symbol: string,
   useTerminalApi: boolean,
@@ -88,8 +98,6 @@ function fetchAssetPerpsMarket(
         return market;
       })
       .catch(() => {
-        entry.market = undefined;
-        entry.resolved = true;
         entry.inflight = null;
         return undefined;
       });

@@ -1,6 +1,6 @@
 import React from 'react';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -196,6 +196,35 @@ describe('CoinButtons – asset page swap token', () => {
 
     expect(screen.getByTestId('coin-overview-receive')).toBeInTheDocument();
     expect(screen.queryByTestId('coin-overview-send')).not.toBeInTheDocument();
+  });
+
+  it('keeps Receive out of More when it already occupies the Perps action row', () => {
+    renderAssetPageCoinButtons('0x1', {
+      perpsMarketSymbol: 'ETH',
+      hasBalance: false,
+    });
+
+    fireEvent.click(screen.getByTestId('coin-overview-more'));
+
+    expect(screen.getAllByTestId('coin-overview-receive')).toHaveLength(1);
+    expect(
+      screen.queryByTestId('coin-overview-more-receive'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('coin-overview-more-buy')).toBeInTheDocument();
+  });
+
+  it('keeps Receive in More when Send occupies the Perps action row', () => {
+    renderAssetPageCoinButtons('0x1', {
+      perpsMarketSymbol: 'ETH',
+      hasBalance: true,
+    });
+
+    fireEvent.click(screen.getByTestId('coin-overview-more'));
+
+    expect(screen.getByTestId('coin-overview-more-receive')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('coin-overview-receive'),
+    ).not.toBeInTheDocument();
   });
 
   it('keeps Send for zero balance when the standard row is rendered', () => {

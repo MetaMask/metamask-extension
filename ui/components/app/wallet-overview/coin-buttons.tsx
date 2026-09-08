@@ -573,6 +573,13 @@ const CoinButtons = ({
     active: isMoreOptionsDropdownOpen,
   });
 
+  /**
+   * Whether Receive replaces Send on the Perps action row. When true, Receive
+   * is omitted from More so it is not duplicated and `*-overview-receive`
+   * matches a single control.
+   */
+  const showReceiveOnActionRow = Boolean(perpsMarketSymbol) && !hasBalance;
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
@@ -622,7 +629,7 @@ const CoinButtons = ({
           />
         </>
       )}
-      {perpsMarketSymbol && !hasBalance ? (
+      {showReceiveOnActionRow ? (
         <IconButton
           className={`${classPrefix}-overview__button`}
           data-testid={`${classPrefix}-overview-receive`}
@@ -709,9 +716,11 @@ const CoinButtons = ({
           {
             label: t('receive'),
             onClick: handleReceiveOnClick,
-            testId: `${classPrefix}-overview-receive`,
+            testId: perpsMarketSymbol
+              ? `${classPrefix}-overview-more-receive`
+              : `${classPrefix}-overview-receive`,
             iconName: IconName.Received,
-            enabled: true,
+            enabled: !showReceiveOnActionRow,
           },
         ]}
       />

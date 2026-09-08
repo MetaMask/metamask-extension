@@ -98,7 +98,34 @@ class TokenOverviewPage {
     await this.driver.clickElement(this.backButton);
   }
 
+  /**
+   * Opens Receive from the current action layout. On a zero-balance Perps row
+   * Receive is a primary button; otherwise it lives in More.
+   */
   async clickReceive(): Promise<void> {
+    const layout = await this.readResolvedActionsLayout();
+
+    if (layout.type === 'perps') {
+      const rowReceive = `[data-testid="${layout.prefix}-overview-receive"]`;
+      const receiveOnRow = await this.driver.isElementPresentAndVisible(
+        rowReceive,
+        250,
+      );
+
+      if (receiveOnRow) {
+        await this.driver.clickElement(rowReceive);
+        return;
+      }
+
+      await this.driver.clickElement(
+        `[data-testid="${layout.prefix}-overview-more"]`,
+      );
+      await this.driver.clickElement(
+        `[data-testid="${layout.prefix}-overview-more-receive"]`,
+      );
+      return;
+    }
+
     await this.driver.clickElement(this.moreButton);
     await this.driver.waitForSelector(this.receiveButton);
     await this.driver.clickElement(this.receiveButton);

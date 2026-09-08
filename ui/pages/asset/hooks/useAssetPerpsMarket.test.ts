@@ -106,6 +106,55 @@ describe('useAssetPerpsMarket', () => {
     });
   });
 
+  it('does not cache a rejected lookup so a later visit retries', async () => {
+    mockPerpsAvailability({ isAvailable: true });
+    mockSubmitRequestToBackground
+      .mockRejectedValueOnce(new Error('transient'))
+      .mockResolvedValueOnce([ETH_MARKET]);
+
+    const firstVisit = renderHook(() => useAssetPerpsMarket('ETH'));
+
+    await waitFor(() => {
+      expect(firstVisit.result.current).toStrictEqual({
+        market: undefined,
+        isLoading: false,
+      });
+    });
+
+    firstVisit.unmount();
+
+    const secondVisit = renderHook(() => useAssetPerpsMarket('ETH'));
+
+    await waitFor(() => {
+      expect(secondVisit.result.current).toStrictEqual({
+        market: ETH_MARKET,
+        isLoading: false,
+      });
+    });
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+  });
+
+  it('reuses a successful miss on a later visit', async () => {
+    mockPerpsAvailability({ isAvailable: true });
+    mockSubmitRequestToBackground.mockResolvedValue([{ name: 'BTC' }]);
+
+    const firstVisit = renderHook(() => useAssetPerpsMarket('ETH'));
+
+    await waitFor(() => {
+      expect(firstVisit.result.current.isLoading).toBe(false);
+    });
+
+    firstVisit.unmount();
+
+    const secondVisit = renderHook(() => useAssetPerpsMarket('ETH'));
+
+    expect(secondVisit.result.current).toStrictEqual({
+      market: undefined,
+      isLoading: false,
+    });
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+  });
+
   it('skips the lookup when the Perps experience is unavailable', () => {
     mockPerpsAvailability({ isAvailable: false });
 
