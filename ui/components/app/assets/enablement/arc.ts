@@ -1,10 +1,10 @@
 import { BridgeAsset, formatChainIdToCaip } from '@metamask/bridge-controller';
 import { hexToNumber, CaipAssetType } from '@metamask/utils';
+import type { BalanceAwareSwapSourceToken } from '../../../../pages/asset/utils/get-balance-aware-swap-defaults';
 import {
   ARC_USDC_TOKEN_ADDRESS,
   CHAIN_IDS,
 } from '../../../../../shared/constants/network';
-import { BalanceAwareSwapSourceToken } from '#ui/pages/asset/utils/get-balance-aware-swap-defaults';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
 
 /**
