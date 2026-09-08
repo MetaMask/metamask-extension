@@ -239,15 +239,53 @@ export function useTransactionCustomAmount({
     return value.isFinite() && value.gt(0);
   }, [amountFiat]);
 
+  const setIsMax = useCallback(
+    (value: boolean, sourceBalanceRaw?: string) => {
+      if (transactionId) {
+        setIsMaxAmount(transactionId, value, {
+          isMoneyAccountDeposit,
+          sourceBalanceRaw,
+          ...(isMoneyAccountDeposit
+            ? {
+                sourceAccountAddress: accountOverride,
+                sourceChainId: payToken?.chainId
+                  ? String(payToken.chainId)
+                  : undefined,
+                sourceTokenAddress: payToken?.address,
+              }
+            : {}),
+        });
+      }
+    },
+    [accountOverride, isMoneyAccountDeposit, payToken, transactionId],
+  );
+
+  const payTokenKey = `${payToken?.address ?? ''}:${payToken?.chainId ?? ''}:${accountOverride ?? ''}`;
+  const prevPayTokenKeyRef = useRef(payTokenKey);
+
   // Pay-with / funding-account switches are token-specific: drop the raw Max
   // human amount and clear the edit guard so deposit prefill can re-apply the
   // new token's 50%/100%. Typed amounts only stick for the current token.
   useEffect(() => {
+    // Guarded on an actual switch so a remount does not discard an armed Max,
+    // and so the `isMaxAmount` dependency below cannot clear the guards.
+    if (prevPayTokenKeyRef.current === payTokenKey) {
+      return;
+    }
+    prevPayTokenKeyRef.current = payTokenKey;
+
     depositMaxHumanRef.current = null;
     userEditedRef.current = false;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- clear edit guard so the new token can prefill
     setEditedTransactionId(undefined);
-  }, [payToken?.address, payToken?.chainId, accountOverride]);
+
+    // Max belongs to the token it was armed on. Left on, the controller quotes
+    // the whole balance of the newly selected token while the field still
+    // shows the previous token's amount. Deposit prefill re-arms it when the
+    // new token is an uncapped 100% prefill.
+    if (isMaxAmount) {
+      setIsMax(false);
+    }
+  }, [isMaxAmount, payTokenKey, setIsMax]);
 
   useEffect(() => {
     // Record immediately so Send is enabled and confirm can encode without
@@ -285,27 +323,6 @@ export function useTransactionCustomAmount({
 
   const hasInput =
     Boolean(amountHumanDebounced?.length) && amountHumanDebounced !== '0';
-
-  const setIsMax = useCallback(
-    (value: boolean, sourceBalanceRaw?: string) => {
-      if (transactionId) {
-        setIsMaxAmount(transactionId, value, {
-          isMoneyAccountDeposit,
-          sourceBalanceRaw,
-          ...(isMoneyAccountDeposit
-            ? {
-                sourceAccountAddress: accountOverride,
-                sourceChainId: payToken?.chainId
-                  ? String(payToken.chainId)
-                  : undefined,
-                sourceTokenAddress: payToken?.address,
-              }
-            : {}),
-        });
-      }
-    },
-    [accountOverride, isMoneyAccountDeposit, payToken, transactionId],
-  );
 
   const updatePendingAmount = useCallback(
     (value: string) => {

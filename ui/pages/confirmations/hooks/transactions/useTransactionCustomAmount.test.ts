@@ -604,6 +604,72 @@ describe('useTransactionCustomAmount', () => {
     });
   });
 
+  describe('pay token changes', () => {
+    const moneyAccountDepositMeta = {
+      ...MOCK_TRANSACTION_META,
+      type: TransactionType.moneyAccountDeposit,
+    } as TransactionMeta;
+
+    function selectPayToken(address: string) {
+      jest
+        .mocked(useTransactionPayTokenModule.useTransactionPayToken)
+        .mockReturnValue({
+          payToken: {
+            address,
+            balanceUsd: '100',
+            balanceRaw: '100000000',
+            decimals: 6,
+            chainId: '0x1',
+          } as unknown as ReturnType<
+            typeof useTransactionPayTokenModule.useTransactionPayToken
+          >['payToken'],
+          setPayToken: jest.fn(),
+          isNative: false,
+        });
+    }
+
+    it('clears isMaxAmount when the pay token changes', () => {
+      const { rerender } = runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        payTokenAddress: '0xtokena',
+        isMaxAmount: true,
+      });
+
+      selectPayToken('0xtokenb');
+
+      act(() => {
+        rerender();
+      });
+
+      // Left armed, the controller would quote the whole balance of token B
+      // while the input still shows the amount resolved for token A.
+      expect(setIsMaxAmountMock).toHaveBeenCalledWith(
+        moneyAccountDepositMeta.id,
+        false,
+        {
+          isMoneyAccountDeposit: true,
+          sourceAccountAddress: undefined,
+          sourceChainId: '0x1',
+          sourceTokenAddress: '0xtokenb',
+        },
+      );
+    });
+
+    it('keeps isMaxAmount armed while the pay token is unchanged', () => {
+      const { rerender } = runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        payTokenAddress: '0xtokena',
+        isMaxAmount: true,
+      });
+
+      act(() => {
+        rerender();
+      });
+
+      expect(setIsMaxAmountMock).not.toHaveBeenCalled();
+    });
+  });
+
   describe('hasInput and isInputChanged', () => {
     it('has hasInput as false initially', () => {
       const { result } = runHook();
