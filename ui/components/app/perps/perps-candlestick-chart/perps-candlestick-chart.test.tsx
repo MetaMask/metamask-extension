@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -423,6 +423,50 @@ describe('PerpsCandlestickChart visible candle persistence', () => {
     } finally {
       jest.useRealTimers();
     }
+  });
+
+  it('persists the next user zoom when a forced reset emits a single range callback', () => {
+    const onVisibleCandleCountChange = jest.fn();
+    const chartRef = React.createRef<PerpsCandlestickChartRef>();
+    const candleData = {
+      symbol: 'ETH',
+      interval: '1h',
+      candles: Array.from({ length: 10 }, (_, index) => ({
+        time: 1_700_000_000_000 + index * 3_600_000,
+        open: '100',
+        high: '110',
+        low: '90',
+        close: '105',
+        volume: '50',
+      })),
+    };
+
+    const { container } = renderWithProvider(
+      <PerpsCandlestickChart
+        ref={chartRef}
+        candleData={candleData as never}
+        initialVisibleCandleCount={75}
+        onVisibleCandleCountChange={onVisibleCandleCountChange}
+      />,
+      mockStore,
+    );
+
+    // The library coalesces the range change and the scroll of a forced reset
+    // into one callback, so suppression must not outlive it.
+    act(() => {
+      chartRef.current?.applyZoom(75, true);
+      mockVisibleRangeCallback?.({ from: 0, to: 11 });
+    });
+    expect(onVisibleCandleCountChange).not.toHaveBeenCalled();
+
+    act(() => {
+      fireEvent.wheel(
+        container.querySelector('.perps-candlestick-chart') as HTMLElement,
+      );
+      mockVisibleRangeCallback?.({ from: 0, to: 11 });
+    });
+
+    expect(onVisibleCandleCountChange).toHaveBeenCalledWith(10);
   });
 
   it('requests more history when the restored zoom pins the left edge at zero', () => {

@@ -330,6 +330,26 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.formState.leverage).toBe(8);
     });
 
+    it('applies a persisted leverage that replaces the seeded default', () => {
+      const props = {
+        ...defaultOptions,
+        initialLeverage: 3,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.formState.leverage).toBe(3);
+
+      props.initialLeverage = 10;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.leverage).toBe(10);
+    });
+
     it('does not reset edited fields when a delayed leverage acknowledgment is stale', () => {
       const props = {
         ...defaultOptions,

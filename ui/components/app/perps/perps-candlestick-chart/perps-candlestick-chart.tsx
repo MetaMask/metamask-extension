@@ -76,6 +76,22 @@ export function getPriceFormatForPrice(price: number): {
   return { precision: 6, minMove: 0.000001 };
 }
 
+/**
+ * Convert a logical range into the candle count the zoom preference stores.
+ * The applied ranges leave two logical bars of right padding, which makes the
+ * range one unit wider than the requested candle count.
+ *
+ * @param from - Left edge of the logical range.
+ * @param to - Right edge of the logical range.
+ * @returns Visible candle count, clamped to the supported zoom range.
+ */
+function toVisibleCandleCount(from: number, to: number): number {
+  return Math.max(
+    ZOOM_CONFIG.MIN_CANDLES,
+    Math.min(ZOOM_CONFIG.MAX_CANDLES, Math.round(to - from - 1)),
+  );
+}
+
 /** Cooldown in ms between load-more requests to avoid spamming */
 const LOAD_MORE_COOLDOWN_MS = 2000;
 
@@ -234,29 +250,22 @@ const PerpsCandlestickChart = forwardRef<
     const onVisibleCandleCountChangeRef = useRef(onVisibleCandleCountChange);
     onVisibleCandleCountChangeRef.current = onVisibleCandleCountChange;
     const lastVisibleCandleCountRef = useRef(initialVisibleCandleCount);
-    // Count of programmatic range mutations whose callbacks have not run yet.
-    // lightweight-charts applies `setVisibleLogicalRange` on a later frame, so
-    // a zero-delay timer can clear suppression before the range is applied.
-    const pendingProgrammaticRangeCallbacksRef = useRef(0);
+    // Candle count we last applied ourselves (zoom restore, period change).
+    // lightweight-charts applies range changes on a later frame and may emit
+    // one callback or several for the same change, so echoes are recognised by
+    // the count they report rather than by counting callbacks.
+    const programmaticVisibleCountRef = useRef<number | null>(null);
 
     const applyProgrammaticVisibleRange = useCallback(
       (from: number, to: number) => {
         if (!chartRef.current) {
           return;
         }
-        pendingProgrammaticRangeCallbacksRef.current += 1;
+        programmaticVisibleCountRef.current = toVisibleCandleCount(from, to);
         chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
       },
       [],
     );
-
-    const scrollProgrammaticallyToRealTime = useCallback(() => {
-      if (!chartRef.current) {
-        return;
-      }
-      pendingProgrammaticRangeCallbacksRef.current += 1;
-      chartRef.current.timeScale().scrollToRealTime();
-    }, []);
 
     // Handle window resize
     const handleResize = useCallback(() => {
@@ -285,11 +294,13 @@ const PerpsCandlestickChart = forwardRef<
 
         applyProgrammaticVisibleRange(from, to);
 
+        // Scrolling keeps the range width, so its echo reports the count
+        // already marked as programmatic above.
         if (forceReset) {
-          scrollProgrammaticallyToRealTime();
+          chartRef.current.timeScale().scrollToRealTime();
         }
       },
-      [applyProgrammaticVisibleRange, scrollProgrammaticallyToRealTime],
+      [applyProgrammaticVisibleRange],
     );
 
     // Scroll to most recent candles
@@ -312,13 +323,14 @@ const PerpsCandlestickChart = forwardRef<
 
     // Initialize chart
     useEffect(() => {
-      if (!containerRef.current) {
+      const container = containerRef.current;
+      if (!container) {
         return;
       }
 
       // Create chart instance
-      const chart = createChart(containerRef.current, {
-        width: containerRef.current.clientWidth,
+      const chart = createChart(container, {
+        width: container.clientWidth,
         height,
         layout: {
           background: { color: 'transparent' },
@@ -452,24 +464,19 @@ const PerpsCandlestickChart = forwardRef<
           }
         }
 
+        const visibleCandleCount = toVisibleCandleCount(
+          logicalRange.from,
+          logicalRange.to,
+        );
+
         // Restoring a saved zoom must not write the on-screen count back over
         // the saved one, but the edge detection above still has to run: a saved
         // count wider than the loaded history pins the left edge at zero and is
         // only fillable by fetching more candles.
-        if (pendingProgrammaticRangeCallbacksRef.current > 0) {
-          pendingProgrammaticRangeCallbacksRef.current -= 1;
+        if (visibleCandleCount === programmaticVisibleCountRef.current) {
           return;
         }
 
-        // `applyZoom` leaves two logical bars of right padding, which makes the
-        // logical range one unit wider than the requested candle count.
-        const visibleCandleCount = Math.max(
-          ZOOM_CONFIG.MIN_CANDLES,
-          Math.min(
-            ZOOM_CONFIG.MAX_CANDLES,
-            Math.round(logicalRange.to - logicalRange.from - 1),
-          ),
-        );
         if (visibleCandleCount !== lastVisibleCandleCountRef.current) {
           lastVisibleCandleCountRef.current = visibleCandleCount;
           onVisibleCandleCountChangeRef.current?.(visibleCandleCount);
@@ -542,12 +549,23 @@ const PerpsCandlestickChart = forwardRef<
         }
       });
 
+      // A gesture ends the programmatic-echo window: the next range the chart
+      // reports is the trader's own zoom and has to be persisted even when it
+      // lands on the count we applied.
+      const handleUserGesture = () => {
+        programmaticVisibleCountRef.current = null;
+      };
+      container.addEventListener('wheel', handleUserGesture, { passive: true });
+      container.addEventListener('pointerdown', handleUserGesture);
+
       // Add resize listener
       window.addEventListener('resize', handleResize);
 
       // Cleanup on unmount / before effect re-runs (e.g. theme change)
       return () => {
         clearTimeout(paneHeightTimeoutId);
+        container.removeEventListener('wheel', handleUserGesture);
+        container.removeEventListener('pointerdown', handleUserGesture);
         window.removeEventListener('resize', handleResize);
         if (chartRef.current) {
           chartRef.current.remove();
@@ -677,10 +695,10 @@ const PerpsCandlestickChart = forwardRef<
           // Also scroll on symbol/interval switch so the new market renders
           // at the live edge instead of whatever offset the prior series had.
           if (periodChanged) {
-            scrollProgrammaticallyToRealTime();
+            chartRef.current.timeScale().scrollToRealTime();
             onPeriodDataRequest?.(selectedPeriod);
           } else if (seriesIdentityChanged) {
-            scrollProgrammaticallyToRealTime();
+            chartRef.current.timeScale().scrollToRealTime();
           }
         }
       }
@@ -702,7 +720,6 @@ const PerpsCandlestickChart = forwardRef<
       candleData,
       initialVisibleCandleCount,
       onPeriodDataRequest,
-      scrollProgrammaticallyToRealTime,
       selectedPeriod,
       volumeDownColor,
       volumeUpColor,

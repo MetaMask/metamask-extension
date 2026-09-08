@@ -394,13 +394,12 @@ export function usePerpsOrderForm({
     prevResetDeps.existingPositionDigest !== existingPositionDigest ||
     prevResetDeps.initialLeverage !== initialLeverage ||
     prevResetDeps.initialDraftDigest !== initialDraftDigest;
-  // Hydrate persisted leverage once it arrives. Ignore later controller
-  // acknowledgments of local edits: an in-flight save of 5 must not reset a
-  // form that has already moved on to 6.
+  // Hydrate persisted leverage whenever it arrives or is re-clamped, but only
+  // until the trader picks their own. Past that point every `initialLeverage`
+  // change is the controller echoing a local edit, and an in-flight save of 5
+  // must not reset a form that has already moved on to 6.
   const shouldResetForLeverageChange =
-    prevResetDeps !== null &&
-    prevResetDeps.initialLeverage === undefined &&
-    initialLeverage !== undefined &&
+    prevResetDeps?.initialLeverage !== initialLeverage &&
     !hasLocalLeverageEdit &&
     formState.leverage !== initialLeverage;
   const shouldResetForm =
