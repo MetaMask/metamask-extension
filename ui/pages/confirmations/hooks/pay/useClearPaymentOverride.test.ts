@@ -2,10 +2,7 @@ import { renderHook, act } from '@testing-library/react';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
-import {
-  selectPaymentOverrideByTransactionId,
-  selectTransactionPayIsMaxAmountByTransactionId,
-} from '../../../../selectors/transactionPayController';
+import { selectPaymentOverrideByTransactionId } from '../../../../selectors/transactionPayController';
 import { useConfirmContext } from '../../context/confirm';
 import { clearPaymentOverride } from '../../utils/transaction-pay';
 import { useClearPaymentOverride } from './useClearPaymentOverride';
@@ -16,7 +13,6 @@ jest.mock('react-redux', () => ({
 }));
 jest.mock('../../../../selectors/transactionPayController', () => ({
   selectPaymentOverrideByTransactionId: jest.fn(),
-  selectTransactionPayIsMaxAmountByTransactionId: jest.fn(),
 }));
 jest.mock('../../context/confirm', () => ({
   useConfirmContext: jest.fn(),
@@ -32,17 +28,12 @@ describe('useClearPaymentOverride', () => {
 
   function mockSelectors({
     paymentOverride,
-    isMaxAmount = false,
   }: {
     paymentOverride?: PaymentOverride;
-    isMaxAmount?: boolean;
   }) {
     jest
       .mocked(selectPaymentOverrideByTransactionId)
       .mockReturnValue(paymentOverride);
-    jest
-      .mocked(selectTransactionPayIsMaxAmountByTransactionId)
-      .mockReturnValue(isMaxAmount);
   }
 
   beforeEach(() => {
@@ -62,20 +53,17 @@ describe('useClearPaymentOverride', () => {
       result.current();
     });
 
-    expect(clearPaymentOverrideMock).toHaveBeenCalledWith('tx-1', undefined);
+    expect(clearPaymentOverrideMock).toHaveBeenCalledWith('tx-1');
   });
 
-  it('keeps a max-amount money-account deposit non-atomic', () => {
+  it('delegates money-account deposit policy to the background', () => {
     useConfirmContextMock.mockReturnValue({
       currentConfirmation: {
         id: 'tx-1',
         type: TransactionType.moneyAccountDeposit,
       },
     } as ReturnType<typeof useConfirmContext>);
-    mockSelectors({
-      paymentOverride: PaymentOverride.MoneyAccount,
-      isMaxAmount: true,
-    });
+    mockSelectors({ paymentOverride: PaymentOverride.MoneyAccount });
 
     const { result } = renderHook(() => useClearPaymentOverride());
 
@@ -83,7 +71,7 @@ describe('useClearPaymentOverride', () => {
       result.current();
     });
 
-    expect(clearPaymentOverrideMock).toHaveBeenCalledWith('tx-1', false);
+    expect(clearPaymentOverrideMock).toHaveBeenCalledWith('tx-1');
   });
 
   it('does not clear when no payment override is set', () => {

@@ -292,10 +292,19 @@ export function useTransactionCustomAmount({
         setIsMaxAmount(transactionId, value, {
           isMoneyAccountDeposit,
           sourceBalanceRaw,
+          ...(isMoneyAccountDeposit
+            ? {
+                sourceAccountAddress: accountOverride,
+                sourceChainId: payToken?.chainId
+                  ? String(payToken.chainId)
+                  : undefined,
+                sourceTokenAddress: payToken?.address,
+              }
+            : {}),
         });
       }
     },
-    [isMoneyAccountDeposit, transactionId],
+    [accountOverride, isMoneyAccountDeposit, payToken, transactionId],
   );
 
   const updatePendingAmount = useCallback(
@@ -373,9 +382,11 @@ export function useTransactionCustomAmount({
           : newAmountFiatValue.round(2, BigNumber.ROUND_DOWN)
       ).toString(10);
 
-      // Prefer the live funding-account balance; the controller snapshot can
-      // be stale because the deposit transaction originates from the vault.
-      const depositMaxBalanceRaw = getPreferredPayTokenBalanceRaw(
+      // Pass the live funding-account balance whenever Max is armed. The
+      // background uses it only for money-account deposits, whose controller
+      // snapshot can be stale because the transaction originates from the
+      // vault.
+      const maxSourceBalanceRaw = getPreferredPayTokenBalanceRaw(
         livePayTokenBalanceRaw,
         payToken?.balanceRaw,
       );
@@ -385,7 +396,7 @@ export function useTransactionCustomAmount({
         // background snapshot is `0` on a money-account deposit whose funding
         // balance has not landed yet, and a late arrival never rebuilds the
         // source amount.
-        setIsMax(true, depositMaxBalanceRaw);
+        setIsMax(true, maxSourceBalanceRaw);
       } else if (isMaxAmount) {
         setIsMax(false);
       }
@@ -396,8 +407,6 @@ export function useTransactionCustomAmount({
       // prefill uses the same raw path even if the no-fee flag is briefly
       // false on first paint — otherwise fiat conversion overshoots and Max
       // later works only because isNoFee is then true.
-      // Prefer the live funding-account balance; the controller snapshot can
-      // be stale because the deposit transaction originates from the vault.
       const isRawMoneyAccountDeposit =
         isMoneyAccountDeposit &&
         (isNoFeePayToken || (isPrefill && percentage === 100));
@@ -405,12 +414,12 @@ export function useTransactionCustomAmount({
         depositMaxHumanRef.current = null;
       } else if (percentage === 100) {
         depositMaxHumanRef.current = getHumanAmountFromBalanceRaw(
-          depositMaxBalanceRaw,
+          maxSourceBalanceRaw,
           payToken?.decimals,
         );
       } else {
         depositMaxHumanRef.current = getHumanAmountFromBalanceRawPercentage(
-          depositMaxBalanceRaw,
+          maxSourceBalanceRaw,
           payToken?.decimals,
           percentage,
         );

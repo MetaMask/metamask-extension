@@ -284,14 +284,9 @@ export function applyMoneyAccountOverride(
  * Clears a Money Account (or other) payment override on the confirmation.
  *
  * @param transactionId - Confirmation transaction id.
- * @param atomic - Value to restore `atomic` to, when the flow needs one.
  */
-export function clearPaymentOverride(
-  transactionId: string,
-  atomic?: boolean,
-): void {
+export function clearPaymentOverride(transactionId: string): void {
   setPaymentOverride(transactionId, {
-    atomic,
     paymentOverride: undefined,
   }).catch((error) => {
     console.error('Failed to clear payment override', error);

@@ -7,6 +7,10 @@ import {
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import {
+  getMoneyAccountFlow,
+  MoneyAccountFlow,
+} from '../../../shared/lib/money/money-account-flow';
+import {
   type DelegationMessenger,
   getDelegationTransaction,
 } from '../lib/transaction/delegation';
@@ -113,7 +117,10 @@ function getApi(
       isMaxAmount: boolean,
       options: {
         isMoneyAccountDeposit?: boolean;
+        sourceAccountAddress?: string;
         sourceBalanceRaw?: string;
+        sourceChainId?: string;
+        sourceTokenAddress?: string;
       } = {},
     ) => {
       // Deposit Max quotes the funding-account balance, which the controller's
@@ -122,7 +129,15 @@ function getApi(
       // max-source-balance).
       if (options.isMoneyAccountDeposit) {
         if (isMaxAmount && options.sourceBalanceRaw) {
-          setMaxSourceBalance(transactionId, options.sourceBalanceRaw);
+          setMaxSourceBalance(
+            {
+              transactionId,
+              accountAddress: options.sourceAccountAddress,
+              chainId: options.sourceChainId,
+              tokenAddress: options.sourceTokenAddress,
+            },
+            options.sourceBalanceRaw,
+          );
         } else {
           clearMaxSourceBalance(transactionId);
         }
@@ -224,7 +239,13 @@ function getApi(
       messengerClient.setTransactionConfig(transactionId, (config) => {
         config.paymentOverride = paymentOverride;
         if (paymentOverride === undefined) {
-          config.atomic = atomic;
+          const transaction = moneyPayMessenger
+            .call('TransactionController:getState')
+            .transactions.find(({ id }) => id === transactionId);
+          const keepNonAtomic =
+            config.isMaxAmount &&
+            getMoneyAccountFlow(transaction) === MoneyAccountFlow.Deposit;
+          config.atomic = keepNonAtomic ? false : undefined;
           config.refundTo = undefined;
           return;
         }

@@ -2,10 +2,14 @@ import {
   TransactionPayController,
   TransactionPayControllerMessenger,
 } from '@metamask/transaction-pay-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { getRootMessenger } from '../lib/messenger';
 import {
-  clearMaxSourceBalance,
   getMaxSourceBalance,
+  resetMaxSourceBalancesForTests,
 } from '../lib/money/pay/max-source-balance';
 import { createMoneyAccountDepositTransaction } from '../lib/money/pay/create-deposit-transaction';
 import { createMoneyAccountWithdrawTransaction } from '../lib/money/pay/create-withdraw-transaction';
@@ -56,18 +60,22 @@ const updateWithdrawAmountMock = jest.mocked(updateMoneyAccountWithdrawAmount);
 const getMoneyAccountAmountDataMock = jest.mocked(getMoneyAccountAmountData);
 const getPaymentOverrideDataMock = jest.mocked(getPaymentOverrideData);
 
-function getInitRequestMock(): jest.Mocked<
+function getInitRequestMock(
+  transactions: TransactionMeta[] = [],
+): jest.Mocked<
   MessengerClientInitRequest<
     TransactionPayControllerMessenger,
     TransactionPayControllerInitMessenger
   >
 > {
   const baseMessenger = getRootMessenger<never, never>();
+  const initMessenger = getTransactionPayControllerInitMessenger(baseMessenger);
+  jest.spyOn(initMessenger, 'call').mockReturnValue({ transactions } as never);
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getTransactionPayControllerMessenger(baseMessenger),
-    initMessenger: getTransactionPayControllerInitMessenger(baseMessenger),
+    initMessenger,
   };
 
   return requestMock;
@@ -184,9 +192,14 @@ describe('TransactionPayControllerInit', () => {
   });
 
   describe('api.setTransactionPayIsMaxAmount', () => {
-    afterEach(() => {
-      clearMaxSourceBalance('tx-max');
-    });
+    const maxSourceBalanceKey = {
+      transactionId: 'tx-max',
+      accountAddress: '0xaccount1',
+      chainId: '0x1',
+      tokenAddress: '0xtoken1',
+    };
+
+    afterEach(resetMaxSourceBalancesForTests);
 
     function initApi() {
       const { api, messengerClient } =
@@ -247,10 +260,13 @@ describe('TransactionPayControllerInit', () => {
 
       api.setTransactionPayIsMaxAmount('tx-max', true, {
         isMoneyAccountDeposit: true,
+        sourceAccountAddress: maxSourceBalanceKey.accountAddress,
         sourceBalanceRaw: '5879662',
+        sourceChainId: maxSourceBalanceKey.chainId,
+        sourceTokenAddress: maxSourceBalanceKey.tokenAddress,
       });
 
-      expect(getMaxSourceBalance('tx-max')).toBe('5879662');
+      expect(getMaxSourceBalance(maxSourceBalanceKey)).toBe('5879662');
     });
 
     it('drops the recorded source balance when max is cleared', () => {
@@ -258,23 +274,29 @@ describe('TransactionPayControllerInit', () => {
 
       api.setTransactionPayIsMaxAmount('tx-max', true, {
         isMoneyAccountDeposit: true,
+        sourceAccountAddress: maxSourceBalanceKey.accountAddress,
         sourceBalanceRaw: '5879662',
+        sourceChainId: maxSourceBalanceKey.chainId,
+        sourceTokenAddress: maxSourceBalanceKey.tokenAddress,
       });
       api.setTransactionPayIsMaxAmount('tx-max', false, {
         isMoneyAccountDeposit: true,
       });
 
-      expect(getMaxSourceBalance('tx-max')).toBeUndefined();
+      expect(getMaxSourceBalance(maxSourceBalanceKey)).toBeUndefined();
     });
 
     it('does not record a source balance for other flows', () => {
       const { api } = initApi();
 
       api.setTransactionPayIsMaxAmount('tx-max', true, {
+        sourceAccountAddress: maxSourceBalanceKey.accountAddress,
         sourceBalanceRaw: '5879662',
+        sourceChainId: maxSourceBalanceKey.chainId,
+        sourceTokenAddress: maxSourceBalanceKey.tokenAddress,
       });
 
-      expect(getMaxSourceBalance('tx-max')).toBeUndefined();
+      expect(getMaxSourceBalance(maxSourceBalanceKey)).toBeUndefined();
     });
   });
 
@@ -312,9 +334,10 @@ describe('TransactionPayControllerInit', () => {
   });
 
   describe('api.setTransactionPayPaymentOverride', () => {
-    function initApi() {
-      const { api, messengerClient } =
-        TransactionPayControllerInit(getInitRequestMock());
+    function initApi(transactions: TransactionMeta[] = []) {
+      const { api, messengerClient } = TransactionPayControllerInit(
+        getInitRequestMock(transactions),
+      );
       if (!api) {
         throw new Error('Expected init result to expose an api');
       }
@@ -372,11 +395,15 @@ describe('TransactionPayControllerInit', () => {
       });
     });
 
-    it('restores the supplied atomic mode when clearing the override', () => {
-      const { api, setTransactionConfigMock } = initApi();
+    it('keeps max-amount money-account deposits non-atomic when clearing the override', () => {
+      const { api, setTransactionConfigMock } = initApi([
+        {
+          id: 'tx-deposit',
+          type: TransactionType.moneyAccountDeposit,
+        } as TransactionMeta,
+      ]);
 
       api.setTransactionPayPaymentOverride('tx-deposit', {
-        atomic: false,
         paymentOverride: undefined,
       });
 
@@ -385,9 +412,11 @@ describe('TransactionPayControllerInit', () => {
         paymentOverride?: string;
         refundTo?: string;
         atomic?: boolean;
+        isMaxAmount?: boolean;
       } = {
         paymentOverride: 'moneyAccount',
         atomic: false,
+        isMaxAmount: true,
       };
       updater(config as never);
 
@@ -395,6 +424,7 @@ describe('TransactionPayControllerInit', () => {
         paymentOverride: undefined,
         refundTo: undefined,
         atomic: false,
+        isMaxAmount: true,
       });
     });
 

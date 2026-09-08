@@ -538,7 +538,7 @@ describe('useTransactionCustomAmount', () => {
       expect(setIsMaxAmountMock).not.toHaveBeenCalled();
     });
 
-    it('keeps isMaxAmount true for money account withdraw Max', () => {
+    it('re-arms isMaxAmount when money account withdraw Max is already active', () => {
       const { result } = runHook({
         transactionMeta: {
           ...MOCK_TRANSACTION_META,
@@ -1086,7 +1086,13 @@ describe('useTransactionCustomAmount', () => {
       expect(setIsMaxAmountMock).toHaveBeenCalledWith(
         moneyAccountDepositMeta.id,
         true,
-        { isMoneyAccountDeposit: true, sourceBalanceRaw: '55709000' },
+        {
+          isMoneyAccountDeposit: true,
+          sourceAccountAddress: undefined,
+          sourceBalanceRaw: '55709000',
+          sourceChainId: '0x1',
+          sourceTokenAddress: '0xpaytoken',
+        },
       );
     });
 
@@ -1342,7 +1348,13 @@ describe('useTransactionCustomAmount', () => {
       expect(setIsMaxAmountMock).toHaveBeenCalledWith(
         moneyAccountDepositMeta.id,
         true,
-        { isMoneyAccountDeposit: true, sourceBalanceRaw: '1123456' },
+        {
+          isMoneyAccountDeposit: true,
+          sourceAccountAddress: undefined,
+          sourceBalanceRaw: '1123456',
+          sourceChainId: '0x1',
+          sourceTokenAddress: '0xpaytoken',
+        },
       );
     });
 
@@ -1556,7 +1568,12 @@ describe('useTransactionCustomAmount', () => {
       expect(setIsMaxAmountMock).toHaveBeenCalledWith(
         moneyAccountDepositMeta.id,
         true,
-        { isMoneyAccountDeposit: true },
+        {
+          isMoneyAccountDeposit: true,
+          sourceAccountAddress: undefined,
+          sourceChainId: '0x1',
+          sourceTokenAddress: '0xpaytoken',
+        },
       );
     });
   });

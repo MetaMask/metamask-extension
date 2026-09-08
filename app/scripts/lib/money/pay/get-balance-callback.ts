@@ -24,16 +24,23 @@ import { getMaxSourceBalance } from './max-source-balance';
  *
  * @param request - The balance request.
  * @param request.transaction - Metadata of the transaction being resolved.
+ * @param request.transactionData
  * @returns The balance override, or `undefined` to use the built-in balance.
  */
 export function getBalance({
   transaction,
+  transactionData,
 }: GetBalanceRequest): GetBalanceResponse | undefined {
   if (getMoneyAccountFlow(transaction) !== MoneyAccountFlow.Deposit) {
     return undefined;
   }
 
-  const balanceRaw = getMaxSourceBalance(transaction.id);
+  const balanceRaw = getMaxSourceBalance({
+    transactionId: transaction.id,
+    accountAddress: transactionData.accountOverride,
+    chainId: transactionData.paymentToken?.chainId,
+    tokenAddress: transactionData.paymentToken?.address,
+  });
 
   return balanceRaw === undefined ? undefined : { balanceRaw };
 }

@@ -5,24 +5,36 @@ import {
 import type { GetBalanceRequest } from '@metamask/transaction-pay-controller';
 import { getBalance } from './get-balance-callback';
 import {
-  clearMaxSourceBalance,
+  resetMaxSourceBalancesForTests,
   setMaxSourceBalance,
 } from './max-source-balance';
+
+const maxSourceBalanceKey = {
+  transactionId: 'tx-1',
+  accountAddress: '0xaccount1',
+  chainId: '0x1',
+  tokenAddress: '0xtoken1',
+};
 
 function buildRequest(type: TransactionType): GetBalanceRequest {
   return {
     transaction: { id: 'tx-1', type } as TransactionMeta,
-    transactionData: { tokens: [] },
+    transactionData: {
+      accountOverride: maxSourceBalanceKey.accountAddress,
+      paymentToken: {
+        address: maxSourceBalanceKey.tokenAddress,
+        chainId: maxSourceBalanceKey.chainId,
+      },
+      tokens: [],
+    },
   } as unknown as GetBalanceRequest;
 }
 
 describe('getBalance', () => {
-  afterEach(() => {
-    clearMaxSourceBalance('tx-1');
-  });
+  afterEach(resetMaxSourceBalancesForTests);
 
   it('returns the recorded balance for a money-account deposit', () => {
-    setMaxSourceBalance('tx-1', '5879662');
+    setMaxSourceBalance(maxSourceBalanceKey, '5879662');
 
     expect(
       getBalance(buildRequest(TransactionType.moneyAccountDeposit)),
@@ -30,7 +42,7 @@ describe('getBalance', () => {
   });
 
   it('resolves the deposit type from nested transactions', () => {
-    setMaxSourceBalance('tx-1', '5879662');
+    setMaxSourceBalance(maxSourceBalanceKey, '5879662');
     const request = {
       transaction: {
         id: 'tx-1',
@@ -40,14 +52,15 @@ describe('getBalance', () => {
           { type: TransactionType.moneyAccountDeposit },
         ],
       } as TransactionMeta,
-      transactionData: { tokens: [] },
+      transactionData: buildRequest(TransactionType.moneyAccountDeposit)
+        .transactionData,
     } as unknown as GetBalanceRequest;
 
     expect(getBalance(request)).toStrictEqual({ balanceRaw: '5879662' });
   });
 
   it('returns undefined for a money-account withdraw', () => {
-    setMaxSourceBalance('tx-1', '5879662');
+    setMaxSourceBalance(maxSourceBalanceKey, '5879662');
 
     expect(
       getBalance(buildRequest(TransactionType.moneyAccountWithdraw)),
@@ -55,7 +68,7 @@ describe('getBalance', () => {
   });
 
   it('returns undefined for an unrelated transaction type', () => {
-    setMaxSourceBalance('tx-1', '5879662');
+    setMaxSourceBalance(maxSourceBalanceKey, '5879662');
 
     expect(
       getBalance(buildRequest(TransactionType.simpleSend)),
@@ -66,5 +79,25 @@ describe('getBalance', () => {
     expect(
       getBalance(buildRequest(TransactionType.moneyAccountDeposit)),
     ).toBeUndefined();
+  });
+
+  it('returns undefined after the funding account changes', () => {
+    setMaxSourceBalance(maxSourceBalanceKey, '5879662');
+    const request = buildRequest(TransactionType.moneyAccountDeposit);
+    request.transactionData.accountOverride = '0xaccount2';
+
+    expect(getBalance(request)).toBeUndefined();
+  });
+
+  it('returns undefined after the pay token changes', () => {
+    setMaxSourceBalance(maxSourceBalanceKey, '5879662');
+    const request = buildRequest(TransactionType.moneyAccountDeposit);
+    const { paymentToken } = request.transactionData;
+    if (!paymentToken) {
+      throw new Error('Expected request to include a payment token');
+    }
+    paymentToken.address = '0xtoken2';
+
+    expect(getBalance(request)).toBeUndefined();
   });
 });

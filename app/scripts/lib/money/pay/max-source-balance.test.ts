@@ -1,70 +1,95 @@
 import {
   clearMaxSourceBalance,
   getMaxSourceBalance,
+  resetMaxSourceBalancesForTests,
   setMaxSourceBalance,
 } from './max-source-balance';
 
 describe('max-source-balance', () => {
-  afterEach(() => {
-    clearMaxSourceBalance('tx-1');
-    clearMaxSourceBalance('tx-2');
-  });
+  const key = {
+    transactionId: 'tx-1',
+    accountAddress: '0xaccount1',
+    chainId: '0x1',
+    tokenAddress: '0xtoken1',
+  };
+
+  afterEach(resetMaxSourceBalancesForTests);
 
   describe('setMaxSourceBalance', () => {
     it('records the balance for the transaction', () => {
-      setMaxSourceBalance('tx-1', '5879662');
+      setMaxSourceBalance(key, '5879662');
 
-      expect(getMaxSourceBalance('tx-1')).toBe('5879662');
+      expect(getMaxSourceBalance(key)).toBe('5879662');
     });
 
     it('ignores a zero balance', () => {
-      setMaxSourceBalance('tx-1', '0');
+      setMaxSourceBalance(key, '0');
 
-      expect(getMaxSourceBalance('tx-1')).toBeUndefined();
+      expect(getMaxSourceBalance(key)).toBeUndefined();
     });
 
     it('ignores a non-numeric balance', () => {
-      setMaxSourceBalance('tx-1', 'not-a-number');
+      setMaxSourceBalance(key, 'not-a-number');
 
-      expect(getMaxSourceBalance('tx-1')).toBeUndefined();
+      expect(getMaxSourceBalance(key)).toBeUndefined();
     });
 
     it('drops a previously recorded balance when the new one is zero', () => {
-      setMaxSourceBalance('tx-1', '5879662');
-      setMaxSourceBalance('tx-1', '0');
+      setMaxSourceBalance(key, '5879662');
+      setMaxSourceBalance(key, '0');
 
-      expect(getMaxSourceBalance('tx-1')).toBeUndefined();
+      expect(getMaxSourceBalance(key)).toBeUndefined();
     });
 
-    it('evicts the oldest entry beyond the retention cap', () => {
-      setMaxSourceBalance('tx-1', '1');
+    it('returns undefined for a different funding account', () => {
+      setMaxSourceBalance(key, '5879662');
 
-      for (let index = 0; index < 10; index++) {
-        setMaxSourceBalance(`filler-${index}`, '2');
-      }
+      expect(
+        getMaxSourceBalance({
+          ...key,
+          accountAddress: '0xaccount2',
+        }),
+      ).toBeUndefined();
+    });
 
-      expect(getMaxSourceBalance('tx-1')).toBeUndefined();
+    it('returns undefined for a different pay token', () => {
+      setMaxSourceBalance(key, '5879662');
 
-      for (let index = 0; index < 10; index++) {
-        clearMaxSourceBalance(`filler-${index}`);
-      }
+      expect(
+        getMaxSourceBalance({
+          ...key,
+          tokenAddress: '0xtoken2',
+        }),
+      ).toBeUndefined();
+    });
+
+    it('returns undefined for a different pay-token chain', () => {
+      setMaxSourceBalance(key, '5879662');
+
+      expect(
+        getMaxSourceBalance({
+          ...key,
+          chainId: '0x2',
+        }),
+      ).toBeUndefined();
     });
   });
 
   describe('clearMaxSourceBalance', () => {
     it('removes the recorded balance', () => {
-      setMaxSourceBalance('tx-1', '5879662');
+      setMaxSourceBalance(key, '5879662');
       clearMaxSourceBalance('tx-1');
 
-      expect(getMaxSourceBalance('tx-1')).toBeUndefined();
+      expect(getMaxSourceBalance(key)).toBeUndefined();
     });
 
     it('leaves other transactions untouched', () => {
-      setMaxSourceBalance('tx-1', '1');
-      setMaxSourceBalance('tx-2', '2');
+      const otherKey = { ...key, transactionId: 'tx-2' };
+      setMaxSourceBalance(key, '1');
+      setMaxSourceBalance(otherKey, '2');
       clearMaxSourceBalance('tx-1');
 
-      expect(getMaxSourceBalance('tx-2')).toBe('2');
+      expect(getMaxSourceBalance(otherKey)).toBe('2');
     });
   });
 });
