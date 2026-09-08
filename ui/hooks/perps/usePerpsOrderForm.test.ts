@@ -330,6 +330,42 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.formState.leverage).toBe(8);
     });
 
+    it('does not reset edited fields when a delayed leverage acknowledgment is stale', () => {
+      const props = {
+        ...defaultOptions,
+        availableBalance: 100,
+        initialLeverage: 3,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('25');
+        result.current.handleOrderTypeChange('limit');
+        result.current.handleLimitPriceChange('44000');
+        result.current.handleTakeProfitPriceChange('50000');
+        result.current.handleStopLossPriceChange('40000');
+        result.current.handleLeverageChange(5);
+        result.current.handleLeverageChange(6);
+      });
+
+      props.initialLeverage = 5;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState).toMatchObject({
+        amount: '25',
+        leverage: 6,
+        type: 'limit',
+        limitPrice: '44000',
+        takeProfitPrice: '50000',
+        stopLossPrice: '40000',
+      });
+    });
+
     it('does not reset edited fields when persisted leverage catches up', () => {
       const props = {
         ...defaultOptions,

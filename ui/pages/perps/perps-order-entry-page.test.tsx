@@ -859,6 +859,67 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
+    it('omits disabled Auto-close prices from the saved draft', () => {
+      const { unmount } = renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(createMockState()),
+      );
+
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+      fireEvent.change(
+        screen
+          .getByTestId('tp-price-input')
+          .querySelector('input') as HTMLInputElement,
+        { target: { value: '3500' } },
+      );
+      fireEvent.change(
+        screen
+          .getByTestId('sl-price-input')
+          .querySelector('input') as HTMLInputElement,
+        { target: { value: '2500' } },
+      );
+      fireEvent.click(screen.getByTestId('auto-close-toggle'));
+      expect(screen.queryByTestId('tp-price-input')).not.toBeInTheDocument();
+
+      unmount();
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSavePendingTradeConfiguration',
+        [
+          'ETH',
+          expect.objectContaining({
+            takeProfitPrice: undefined,
+            stopLossPrice: undefined,
+          }),
+        ],
+      );
+    });
+
+    it('does not re-enable Auto-close from a draft without exit prices', () => {
+      const state = createMockState();
+      (state.metamask as Record<string, unknown>).tradeConfigurations = {
+        mainnet: {
+          ETH: {
+            pendingConfig: {
+              amount: '25',
+              leverage: 5,
+              orderType: 'market',
+              takeProfitPrice: undefined,
+              stopLossPrice: undefined,
+              direction: 'long',
+              timestamp: Date.now(),
+            },
+          },
+        },
+        testnet: {},
+      };
+
+      renderWithProvider(<PerpsOrderEntryPage />, mockStore(state));
+
+      expect(screen.queryByTestId('tp-price-input')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('sl-price-input')).not.toBeInTheDocument();
+    });
+
     it('clears the draft on direction change and persists durable choices', () => {
       renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
 

@@ -3,7 +3,9 @@ import { act, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import PerpsCandlestickChart from './perps-candlestick-chart';
+import PerpsCandlestickChart, {
+  type PerpsCandlestickChartRef,
+} from './perps-candlestick-chart';
 
 const mockUseTheme = jest.fn();
 jest.mock('../../../../hooks/useTheme', () => ({
@@ -361,6 +363,66 @@ describe('PerpsCandlestickChart visible candle persistence', () => {
     );
 
     expect(onVisibleCandleCountChange).not.toHaveBeenCalled();
+  });
+
+  it('does not persist a history-limited range after an async programmatic callback', () => {
+    jest.useFakeTimers();
+    const onVisibleCandleCountChange = jest.fn();
+    const chartRef = React.createRef<PerpsCandlestickChartRef>();
+    mockSetVisibleLogicalRange.mockImplementation((range) => {
+      setTimeout(() => {
+        mockVisibleRangeCallback?.(range);
+      }, 16);
+    });
+    mockScrollToRealTime.mockImplementation(() => {
+      setTimeout(() => {
+        mockVisibleRangeCallback?.({ from: 0, to: 11 });
+      }, 16);
+    });
+    const candleData = {
+      symbol: 'ETH',
+      interval: '1h',
+      candles: Array.from({ length: 10 }, (_, index) => ({
+        time: 1_700_000_000_000 + index * 3_600_000,
+        open: '100',
+        high: '110',
+        low: '90',
+        close: '105',
+        volume: '50',
+      })),
+    };
+
+    try {
+      renderWithProvider(
+        <PerpsCandlestickChart
+          ref={chartRef}
+          candleData={candleData as never}
+          initialVisibleCandleCount={75}
+          onVisibleCandleCountChange={onVisibleCandleCountChange}
+        />,
+        mockStore,
+      );
+
+      act(() => {
+        jest.advanceTimersByTime(16);
+      });
+      expect(onVisibleCandleCountChange).not.toHaveBeenCalled();
+
+      act(() => {
+        chartRef.current?.applyZoom(75, true);
+      });
+      act(() => {
+        jest.advanceTimersByTime(16);
+      });
+      expect(onVisibleCandleCountChange).not.toHaveBeenCalled();
+
+      act(() => {
+        mockVisibleRangeCallback?.({ from: 0, to: 41 });
+      });
+      expect(onVisibleCandleCountChange).toHaveBeenCalledWith(40);
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   it('requests more history when the restored zoom pins the left edge at zero', () => {

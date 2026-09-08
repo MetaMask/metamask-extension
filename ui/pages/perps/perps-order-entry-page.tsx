@@ -637,13 +637,21 @@ const PerpsOrderEntryPage = () => {
         return;
       }
       const { formState: latestFormState } = latestFormSnapshot;
+      const { autoCloseEnabled } = latestFormState;
       submitRequestToBackground('perpsSavePendingTradeConfiguration', [
         decodedSymbol,
         {
           amount: latestFormState.amount,
           leverage: latestFormState.leverage,
-          takeProfitPrice: latestFormState.takeProfitPrice || undefined,
-          stopLossPrice: latestFormState.stopLossPrice || undefined,
+          // Restoration derives Auto-close from these prices, so omit them
+          // when the trader disabled Auto-close or the next visit would
+          // re-enable exits they turned off.
+          takeProfitPrice: autoCloseEnabled
+            ? latestFormState.takeProfitPrice || undefined
+            : undefined,
+          stopLossPrice: autoCloseEnabled
+            ? latestFormState.stopLossPrice || undefined
+            : undefined,
           limitPrice:
             latestFormState.type === 'limit'
               ? latestFormState.limitPrice || undefined

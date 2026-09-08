@@ -384,6 +384,7 @@ export function usePerpsOrderForm({
     initialLeverage: number | undefined;
     initialDraftDigest: string | undefined;
   } | null>(null);
+  const [hasLocalLeverageEdit, setHasLocalLeverageEdit] = useState(false);
 
   const resetDependenciesChanged =
     prevResetDeps === null ||
@@ -393,8 +394,14 @@ export function usePerpsOrderForm({
     prevResetDeps.existingPositionDigest !== existingPositionDigest ||
     prevResetDeps.initialLeverage !== initialLeverage ||
     prevResetDeps.initialDraftDigest !== initialDraftDigest;
+  // Hydrate persisted leverage once it arrives. Ignore later controller
+  // acknowledgments of local edits: an in-flight save of 5 must not reset a
+  // form that has already moved on to 6.
   const shouldResetForLeverageChange =
-    prevResetDeps?.initialLeverage !== initialLeverage &&
+    prevResetDeps !== null &&
+    prevResetDeps.initialLeverage === undefined &&
+    initialLeverage !== undefined &&
+    !hasLocalLeverageEdit &&
     formState.leverage !== initialLeverage;
   const shouldResetForm =
     prevResetDeps === null ||
@@ -428,6 +435,7 @@ export function usePerpsOrderForm({
           : {};
 
       hasUserEditedAmount.current = Boolean(initialDraft?.amount);
+      setHasLocalLeverageEdit(false);
       if (mode === 'modify' && existingPosition) {
         setFormState({
           ...mockOrderFormDefaults,
@@ -673,6 +681,7 @@ export function usePerpsOrderForm({
 
   const handleLeverageChange = useCallback(
     (leverage: number) => {
+      setHasLocalLeverageEdit(true);
       setFormState((prev) => {
         const amount = parseFloat(prev.amount.replace(/,/gu, '')) || 0;
         const maxSize = availableBalance * leverage;
