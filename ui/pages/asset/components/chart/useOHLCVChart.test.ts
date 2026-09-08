@@ -176,9 +176,12 @@ describe('useOHLCVChart – INTERVAL_TO_TIME_PERIOD mapping', () => {
     ['4h', '1m'],
     ['1d', '1m'],
     ['1w', '1y'],
-  ])('maps interval "%s" → timePeriod "%s"', (interval: string, expected: string) => {
-    expect(INTERVAL_TO_TIME_PERIOD[interval]).toBe(expected);
-  });
+  ])(
+    'maps interval "%s" → timePeriod "%s"',
+    (interval: string, expected: string) => {
+      expect(INTERVAL_TO_TIME_PERIOD[interval]).toBe(expected);
+    },
+  );
 
   it('has exactly 7 entries', () => {
     expect(Object.keys(INTERVAL_TO_TIME_PERIOD)).toHaveLength(7);
