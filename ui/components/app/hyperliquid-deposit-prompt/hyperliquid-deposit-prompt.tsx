@@ -23,7 +23,6 @@ import {
   IconName,
   IconSize,
   Modal,
-  ModalBody,
   ModalContent,
   ModalHeader,
   ModalOverlay,
@@ -37,6 +36,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
+import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
@@ -379,7 +379,7 @@ export const HyperliquidDepositPrompt: React.FC<
           >
             {t('payWithModalTitle')}
           </ModalHeader>
-          <ModalBody className="overflow-auto px-0">
+          <ScrollContainer className="flex-1 overflow-auto">
             <Asset
               tokens={tokens}
               nfts={[]}
@@ -387,7 +387,7 @@ export const HyperliquidDepositPrompt: React.FC<
               disableMetrics
               onAssetSelect={handleTokenSelect}
             />
-          </ModalBody>
+          </ScrollContainer>
         </ModalContent>
       </Modal>
     </Box>
