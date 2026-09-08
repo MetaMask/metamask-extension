@@ -61,6 +61,19 @@ describe('selectDefaultThresholdEntry', () => {
 
       expect(selected).toBe(control);
     });
+
+    it('picks named control among three or more arms', () => {
+      const control = thresholdEntry('control', 0.2);
+      const treatment = thresholdEntry('treatment', 0.7);
+      const treatmentB = thresholdEntry('treatment-b', 1);
+      const selected = selectDefaultThresholdEntry([
+        treatment,
+        control,
+        treatmentB,
+      ]);
+
+      expect(selected).toBe(control);
+    });
   });
 
   describe('when the array has one variant', () => {
@@ -85,6 +98,15 @@ describe('selectDefaultThresholdEntry', () => {
       const selected = selectDefaultThresholdEntry([on, off]);
 
       expect(selected).toBe(off);
+    });
+
+    it('picks the widest of three arms', () => {
+      const small = thresholdEntry('small', 0.1);
+      const wide = thresholdEntry('wide', 0.7);
+      const remainder = thresholdEntry('remainder', 1);
+      const selected = selectDefaultThresholdEntry([small, wide, remainder]);
+
+      expect(selected).toBe(wide);
     });
   });
 
@@ -128,6 +150,20 @@ describe('toDeterministicThresholdScopes', () => {
         }),
       ]);
     });
+
+    it('sets control to 1 and every other arm to 0 when there are three arms', () => {
+      const input: Json = [
+        thresholdEntry('control', 0.2),
+        thresholdEntry('treatment', 0.7),
+        thresholdEntry('treatment-b', 1),
+      ];
+
+      expect(toDeterministicThresholdScopes(input)).toStrictEqual([
+        thresholdEntry('control', 1),
+        thresholdEntry('treatment', 0),
+        thresholdEntry('treatment-b', 0),
+      ]);
+    });
   });
 
   describe('when the value is version-scoped', () => {
@@ -162,6 +198,20 @@ describe('toDeterministicThresholdScopes', () => {
       expect(toDeterministicThresholdScopes(input)).toStrictEqual([
         thresholdEntry('feature is ON', 1, { value: true }),
         thresholdEntry('feature is OFF', 0, { value: false }),
+      ]);
+    });
+
+    it('forces the widest of three arms to 1 and the others to 0', () => {
+      const input: Json = [
+        thresholdEntry('small', 0.1),
+        thresholdEntry('wide', 0.7),
+        thresholdEntry('remainder', 1),
+      ];
+
+      expect(toDeterministicThresholdScopes(input)).toStrictEqual([
+        thresholdEntry('small', 0),
+        thresholdEntry('wide', 1),
+        thresholdEntry('remainder', 0),
       ]);
     });
   });
