@@ -166,7 +166,6 @@ import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
-import { isBasicFunctionalitySocialLoginUser } from '../../shared/lib/basic-functionality-consolidation';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
   getIsPerpsIncludedInBuild,
@@ -2890,27 +2889,10 @@ export default class MetamaskController extends EventEmitter {
       setPreference: preferencesController.setPreference.bind(
         preferencesController,
       ),
-
-      consolidateBasicFunctionality: () => {
-        const { firstTimeFlowType } = this.onboardingController.state;
-        const { authConnection } = this.seedlessOnboardingController.state;
-        const landingState =
-          this.preferencesController.consolidateBasicFunctionality({
-            isSocialLogin: isBasicFunctionalitySocialLoginUser({
-              firstTimeFlowType,
-              authConnection,
-            }),
-          });
-
-        // Sync TokenDetection / GasFee / Shield / subscription controllers when
-        // preference consolidation actually ran.
-        if (landingState !== null) {
-          this.controllerMessenger.call(
-            'LegacyBackgroundApiService:toggleExternalServices',
-            landingState,
-          );
-        }
-      },
+      consolidateBasicFunctionality: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:consolidateBasicFunctionality',
+      ),
 
       addKnownMethodData: preferencesController.addKnownMethodData.bind(
         preferencesController,
@@ -2936,8 +2918,9 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       dismissBasicFunctionalityMigrationNotification:
-        preferencesController.dismissBasicFunctionalityMigrationNotification.bind(
-          preferencesController,
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'LegacyBackgroundApiService:dismissBasicFunctionalityMigrationNotification',
         ),
 
       setManageInstitutionalWallets:

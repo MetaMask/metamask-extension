@@ -470,6 +470,8 @@ const MESSENGER_EXPOSED_METHODS = [
   'setShowDefaultAddress',
   'setDefaultAddressScope',
   'setSnapsAddSnapAccountModalDismissed',
+  'consolidateBasicFunctionality',
+  'dismissBasicFunctionalityMigrationNotification',
   'resetState',
   'addReferralApprovedAccount',
   'addReferralPassedAccount',
