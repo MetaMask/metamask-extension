@@ -117,7 +117,12 @@ export const PerpsPositionsOrders = ({
               justifyContent={BoxJustifyContent.Between}
               alignItems={BoxAlignItems.Center}
             >
-              <Text fontWeight={FontWeight.Medium}>{t('perpsPositions')}</Text>
+              <Text
+                variant={TextVariant.HeadingMd}
+                fontWeight={FontWeight.Bold}
+              >
+                {t('perpsPositions')}
+              </Text>
               <ButtonBase
                 size={ButtonBaseSize.Sm}
                 disabled={isCloseAllPending || !onCloseAllPositions}

@@ -700,7 +700,7 @@ export const UpdateTPSLModalContent = ({
               className={
                 isSaving
                   ? 'flex-1 py-1.5 rounded-lg bg-muted text-center opacity-50 cursor-not-allowed pointer-events-none'
-                  : 'flex-1 py-1.5 rounded-lg bg-background-default cursor-pointer text-center hover:bg-muted-hover active:bg-muted-pressed border border-muted transition-colors duration-150'
+                  : 'flex-1 py-1.5 rounded-lg cursor-pointer text-center hover:bg-muted-hover active:bg-muted-pressed border border-muted transition-colors duration-150'
               }
             >
               <Text
@@ -842,7 +842,7 @@ export const UpdateTPSLModalContent = ({
               className={
                 isSaving
                   ? 'flex-1 py-1.5 rounded-lg bg-muted text-center opacity-50 cursor-not-allowed pointer-events-none'
-                  : 'flex-1 py-1.5 rounded-lg bg-background-default cursor-pointer text-center hover:bg-muted-hover active:bg-muted-pressed border border-muted transition-colors duration-150'
+                  : 'flex-1 py-1.5 rounded-lg cursor-pointer text-center hover:bg-muted-hover active:bg-muted-pressed border border-muted transition-colors duration-150'
               }
             >
               <Text

@@ -195,58 +195,52 @@ const PerpsMarketBalanceActions = ({
       {/* Action Buttons */}
       {showActionButtons && (
         <Box
-          flexDirection={BoxFlexDirection.Column}
+          flexDirection={BoxFlexDirection.Row}
           gap={3}
           marginTop={4}
           style={{ width: '100%' }}
         >
           {/*
-            Withdraw is hidden when there's nothing to withdraw: at $0 balance
-            it's a dead-end action, so Add funds becomes the single full-width
-            primary CTA. Once funded, both buttons share the row 50/50.
+            The secondary slot next to Add funds depends on funding state:
+            Withdraw is a dead-end at $0 balance, so unfunded accounts get the
+            educational Learn more entry point there instead. Either way both
+            buttons share the row 50/50.
           */}
-          <Box flexDirection={BoxFlexDirection.Row} gap={3}>
-            {accountValue > 0 && (
-              <Button
-                variant={ButtonVariant.Secondary}
-                size={ButtonSize.Lg}
-                onClick={handleWithdraw}
-                style={{ flex: 1 }}
-                data-testid="perps-balance-actions-withdraw"
-              >
-                {t('perpsWithdraw')}
-              </Button>
-            )}
-
-            <Button
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
-              isLoading={isAddFundsLoading}
-              onClick={handleAddFunds}
-              disabled={isAddFundsLoading}
-              style={{ flex: 1 }}
-              data-testid="perps-balance-actions-add-funds"
-            >
-              {t('perpsAddFunds')}
-            </Button>
-          </Box>
-
-          {/*
-            Learn more is only shown to accounts that haven't been funded yet;
-            it's an educational entry point into the tutorial modal and would
-            be redundant clutter once the user has a balance.
-          */}
-          {accountValue === 0 && onLearnMore && (
+          {accountValue > 0 ? (
             <Button
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Lg}
-              onClick={handleLearnMore}
-              style={{ width: '100%' }}
-              data-testid="perps-balance-actions-learn-more"
+              onClick={handleWithdraw}
+              style={{ flex: 1 }}
+              data-testid="perps-balance-actions-withdraw"
             >
-              {t('perpsLearnMore')}
+              {t('perpsWithdraw')}
             </Button>
+          ) : (
+            onLearnMore && (
+              <Button
+                variant={ButtonVariant.Secondary}
+                size={ButtonSize.Lg}
+                onClick={handleLearnMore}
+                style={{ flex: 1 }}
+                data-testid="perps-balance-actions-learn-more"
+              >
+                {t('perpsLearnMore')}
+              </Button>
+            )
           )}
+
+          <Button
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            isLoading={isAddFundsLoading}
+            onClick={handleAddFunds}
+            disabled={isAddFundsLoading}
+            style={{ flex: 1 }}
+            data-testid="perps-balance-actions-add-funds"
+          >
+            {t('perpsAddFunds')}
+          </Button>
         </Box>
       )}
       {geoBlockModal}

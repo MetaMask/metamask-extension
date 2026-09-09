@@ -168,7 +168,7 @@ export const TransactionCard = ({
     <>
       <PerpsTokenLogo
         symbol={transaction.symbol}
-        size={AvatarTokenSize.Md}
+        size={AvatarTokenSize.Lg}
         className="shrink-0"
       />
 

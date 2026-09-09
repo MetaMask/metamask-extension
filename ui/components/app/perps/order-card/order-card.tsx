@@ -116,7 +116,7 @@ export const OrderCard = ({
       {/* Token Logo */}
       <PerpsTokenLogo
         symbol={order.symbol}
-        size={AvatarTokenSize.Md}
+        size={AvatarTokenSize.Lg}
         className="shrink-0"
       />
       {/* Left side: Symbol info and size */}
