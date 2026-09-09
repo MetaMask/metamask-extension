@@ -154,24 +154,37 @@ Update `LegacyBackgroundApiService` so the Seedless path follows this order:
 6. Perform and verify the Keyring-key synchronization.
 7. Call `clearPasswordChangePhase`.
 
+The coordinator refactor currently implements the server-first ordering and
+failure locking. The remaining key-synchronization and recovery-routing work
+must be completed before this section is fully complete.
+
 Specific work:
 
-- [ ] Remove the compensating Keyring rollback. A rejected Promise is not
+- [x] Remove the compensating Keyring rollback. A rejected Promise is not
   proof that the remote operation did not commit.
-- [ ] Preserve the existing non-Seedless password-change behavior.
-- [ ] Reuse or extend `syncKeyringEncryptionKey`, but make the remote
-  synchronization and verification step explicit.
-- [ ] Lock the wallet before rethrowing any error from the remote operation,
+- [x] Preserve the existing non-Seedless password-change behavior.
+- [x] Reuse `syncKeyringEncryptionKey` for Keyring encryption-key
+  export/storage before lifecycle advancement.
+- [ ] Make the remote synchronization and verification step explicit. The
+  current helper exports the key and calls
+  `SeedlessOnboardingController:storeKeyringEncryptionKey`, but no separate
+  remote verification action has been identified yet.
+- [x] Lock the wallet before rethrowing any error from the remote operation,
   local Keyring operation, key export/storage, synchronization, lifecycle
   advance, or persistence-related step.
-- [ ] When already inside `#seedlessOperationMutex`, call the lock path with
+- [x] When already inside `#seedlessOperationMutex`, call the lock path with
   the equivalent of `skipSeedlessOperationLock: true` to avoid deadlock.
-- [ ] Do not clear the phase in a catch block. Preserve the last known phase so
+- [x] Do not clear the phase in a catch block. Preserve the last known phase so
   the next unlock can recover it.
 - [ ] Map `PasswordChangeInProgress` to a recovery-blocked state rather than
   starting another transaction.
-- [ ] Keep passkey password changes serialized with this coordinator where they
+- [x] Keep passkey password changes serialized with this coordinator where they
   can touch the same Keyring or Seedless state.
+
+Next implementation step: continue with Section 3, “Add the Option A recovery
+orchestration.” Before clearing `passwordChangePhase` in the final recovery
+path, resolve and verify the remote Keyring-key synchronization boundary noted
+above.
 
 ### 3. Add the Option A recovery orchestration
 
@@ -298,8 +311,9 @@ After Seedless reconciliation and a new-password submission:
 
 #### Unit and integration tests
 
-- [ ] Update `legacy-background-api-service.test.ts` for the server-first
-  happy path and remove rollback expectations.
+- [x] Update `legacy-background-api-service.test.ts` for the server-first
+  happy path, remove rollback expectations, and cover locking after remote or
+  local change failures.
 - [ ] Test every controller status and phase transition.
 - [ ] Test no phase with no remote change (`in-sync`).
 - [ ] Test another-device password change, including the final

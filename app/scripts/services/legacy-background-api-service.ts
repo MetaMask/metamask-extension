@@ -2247,61 +2247,76 @@ export class LegacyBackgroundApiService {
     oldPassword: string,
   ): Promise<void> {
     const releaseLock = await this.#seedlessOperationMutex.acquire();
-    const isSocialLoginFlow = this.#messenger.call(
-      'OnboardingController:getIsSocialLoginFlow',
-    );
+    let isSocialLoginFlow = false;
     try {
-      await this.#messenger.call(
-        'KeyringController:changePassword',
-        newPassword,
+      isSocialLoginFlow = this.#messenger.call(
+        'OnboardingController:getIsSocialLoginFlow',
       );
 
       if (isSocialLoginFlow) {
-        try {
-          await this.#messenger.call(
-            'SeedlessOnboardingController:changePassword',
-            newPassword,
-            oldPassword,
-          );
-          // store the new keyring encryption key in the seedless onboarding controller
-          const keyringEncKey = await this.#messenger.call(
-            'KeyringController:exportEncryptionKey',
-          );
-          await this.#messenger.call(
-            'SeedlessOnboardingController:storeKeyringEncryptionKey',
-            keyringEncKey,
-          );
-        } catch (err) {
-          log.error('error while changing seedless-onboarding password', err);
-          log.error('reverting keyring password change');
-          // revert the keyring password change by changing the password back to the old password
-          await this.#messenger.call(
-            'KeyringController:changePassword',
-            oldPassword,
-          );
-          // store the old keyring encryption key in the seedless onboarding controller
-          const revertedKeyringEncKey = await this.#messenger.call(
-            'KeyringController:exportEncryptionKey',
-          );
-          await this.#messenger.call(
-            'SeedlessOnboardingController:storeKeyringEncryptionKey',
-            revertedKeyringEncKey,
-          );
-
-          this.#messenger.captureException?.(
-            createSentryError(
-              'error while changing password for social login flow',
-              err,
-            ),
-          );
-          throw err;
-        }
+        await this.#socialLoginUserChangePassword(newPassword, oldPassword);
+      } else {
+        await this.#messenger.call(
+          'KeyringController:changePassword',
+          newPassword,
+        );
       }
     } catch (error) {
       log.error('error while changing password', error);
       throw error;
     } finally {
       releaseLock();
+    }
+  }
+
+  /**
+   * Changes the password for a Social Login wallet.
+   *
+   * The remote Seedless password is changed first. The local Keyring is then
+   * updated, followed by Keyring encryption-key synchronization and lifecycle
+   * completion. Failures preserve the lifecycle for recovery; there is no
+   * compensating local password change because a rejected remote Promise does
+   * not prove that the remote operation was not committed.
+   *
+   * @param newPassword - The new password.
+   * @param oldPassword - The old password.
+   */
+  async #socialLoginUserChangePassword(
+    newPassword: string,
+    oldPassword: string,
+  ): Promise<void> {
+    try {
+      await this.#messenger.call(
+        'SeedlessOnboardingController:changePassword',
+        newPassword,
+        oldPassword,
+      );
+
+      await this.#messenger.call(
+        'KeyringController:changePassword',
+        newPassword,
+      );
+
+      // Persist the current local Keyring encryption key under the new
+      // Seedless password before advancing the recovery lifecycle.
+      await this.syncKeyringEncryptionKey();
+      await this.#messenger.call(
+        'SeedlessOnboardingController:markPasswordChangeKeySyncPending',
+      );
+      await this.#messenger.call(
+        'SeedlessOnboardingController:clearPasswordChangePhase',
+      );
+    } catch (error) {
+      this.#messenger.captureException?.(
+        createSentryError(
+          'error while changing password for social login flow',
+          error,
+        ),
+      );
+      // The Seedless operation mutex is already held. Lock before exposing
+      // the error without trying to acquire the same mutex again.
+      await this.setLocked({ skipSeedlessOperationLock: true });
+      throw error;
     }
   }
 
