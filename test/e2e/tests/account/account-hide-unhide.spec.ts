@@ -27,9 +27,9 @@ describe('Account list - hide/unhide functionality', function (this: Suite) {
         );
 
         // unhide account from the manage accounts mode
-        await accountListPage.toggleManageAccountsMode();
+        await accountListPage.enterManageAccountsMode();
         await accountListPage.revealHiddenAccount();
-        await accountListPage.toggleManageAccountsMode();
+        await accountListPage.exitManageAccountsMode();
         await accountListPage.checkAccountDisplayedInAccountList();
       },
     );

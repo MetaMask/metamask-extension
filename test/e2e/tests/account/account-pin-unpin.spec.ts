@@ -52,9 +52,9 @@ describe('Account list - pin/unpin functionality', function (this: Suite) {
         await accountListPage.checkAccountIsUnpinned();
 
         // unhide the same account and check the account is still unpinned
-        await accountListPage.toggleManageAccountsMode();
+        await accountListPage.enterManageAccountsMode();
         await accountListPage.revealHiddenAccount();
-        await accountListPage.toggleManageAccountsMode();
+        await accountListPage.exitManageAccountsMode();
         await accountListPage.checkAccountDisplayedInAccountList();
         await accountListPage.checkAccountIsUnpinned();
       },

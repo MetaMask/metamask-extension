@@ -920,6 +920,25 @@ class AccountListPage {
     );
   }
 
+  /**
+   * Enter the manage accounts mode of the account list, where hidden accounts
+   * are listed under their wallet and can be revealed again.
+   */
+  async enterManageAccountsMode(): Promise<void> {
+    console.log(`Enter manage accounts mode in account list`);
+    await this.driver.clickElement(this.manageAccountsButton);
+  }
+
+  /**
+   * Leave the manage accounts mode of the account list. The manage button is
+   * hidden while managing, so the back button is what closes the mode.
+   */
+  async exitManageAccountsMode(): Promise<void> {
+    console.log(`Exit manage accounts mode in account list`);
+    await this.driver.clickElement(this.closeMultichainAccountsPageButton);
+    await this.driver.waitForSelector(this.manageAccountsButton);
+  }
+
   async hideAccount(): Promise<void> {
     console.log(`Hide account in account list`);
     await this.openAccountOptionsMenu();
@@ -1107,15 +1126,6 @@ class AccountListPage {
       css: this.accountListItem,
       text: expectedLabel,
     });
-  }
-
-  /**
-   * Enter or leave the manage accounts mode of the account list, where hidden
-   * accounts are listed under their wallet and can be revealed again.
-   */
-  async toggleManageAccountsMode(): Promise<void> {
-    console.log(`Toggle manage accounts mode in account list`);
-    await this.driver.clickElement(this.manageAccountsButton);
   }
 
   /**

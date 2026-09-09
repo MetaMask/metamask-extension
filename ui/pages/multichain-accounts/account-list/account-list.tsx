@@ -112,18 +112,24 @@ export const AccountList = () => {
     (location.state as { fromFreshTab?: boolean } | null)?.fromFreshTab ===
       true;
 
+  const [isEditMode, setIsEditMode] = useState(false);
+
   const handleBack = useCallback(() => {
+    // Edit mode hides the gear icon, so back is the way out of it.
+    if (isEditMode) {
+      setIsEditMode(false);
+      return;
+    }
+
     if (isFreshTab) {
       navigate(DEFAULT_ROUTE, { replace: true });
     } else {
       transitionBack(() => navigate(PREVIOUS_ROUTE));
     }
-  }, [isFreshTab, navigate]);
+  }, [isEditMode, isFreshTab, navigate]);
 
-  const [isEditMode, setIsEditMode] = useState(false);
-
-  const handleToggleEditMode = useCallback(() => {
-    setIsEditMode((current) => !current);
+  const handleEnterEditMode = useCallback(() => {
+    setIsEditMode(true);
   }, []);
 
   return (
@@ -145,14 +151,15 @@ export const AccountList = () => {
           />
         }
         endAccessory={
-          <ButtonIcon
-            size={ButtonIconSize.Md}
-            ariaLabel={t('manageAccounts')}
-            iconName={IconName.Setting}
-            onClick={handleToggleEditMode}
-            aria-pressed={isEditMode}
-            data-testid="account-list-page-manage-button"
-          />
+          isEditMode ? null : (
+            <ButtonIcon
+              size={ButtonIconSize.Md}
+              ariaLabel={t('manageAccounts')}
+              iconName={IconName.Setting}
+              onClick={handleEnterEditMode}
+              data-testid="account-list-page-manage-button"
+            />
+          )
         }
       >
         {isEditMode ? t('manageAccounts') : t('accounts')}
