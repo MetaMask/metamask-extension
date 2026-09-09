@@ -9996,16 +9996,16 @@
     "message": "This field is required"
   },
   "shieldClaimInvalidTxHash": {
-    "message": "Please enter a valid transaction hash"
+    "message": "Enter a valid transaction hash"
   },
   "shieldClaimInvalidWalletAddress": {
-    "message": "Please enter a valid wallet address"
+    "message": "Enter a valid wallet address"
   },
   "shieldClaimMaxClaimsLimitExceeded": {
-    "message": "You have reached the maximum limit of open claims. Please contact support if you need to submit additional claims."
+    "message": "You have reached the maximum limit of open claims. Contact support to submit additional claims."
   },
   "shieldClaimMaxDraftsReached": {
-    "message": "You have reached the maximum number of drafts. Please delete a draft to save a new one."
+    "message": "You have reached the maximum number of drafts. Delete a draft to save a new one."
   },
   "shieldClaimNetwork": {
     "message": "Select network"
@@ -10017,7 +10017,7 @@
     "message": "Wallet address for reimbursement"
   },
   "shieldClaimReimbursementWalletAddressHelpText": {
-    "message": "Please ensure this is not a compromised wallet."
+    "message": "Ensure this is not a compromised wallet."
   },
   "shieldClaimSameWalletAddressesError": {
     "message": "Impacted wallet address and reimbursement wallet address must be different."
@@ -10098,7 +10098,7 @@
     "message": "See what's covered"
   },
   "shieldCoverageAlertMessagePaused": {
-    "message": "There was an issue with your MetaMask Transaction Shield plan payment. Please update your payment method to resume coverage."
+    "message": "There was an issue with your MetaMask Transaction Shield plan payment. Update your payment method to resume coverage."
   },
   "shieldCoverageAlertMessagePausedAcknowledgeButton": {
     "message": "Update payment method"
@@ -10412,7 +10412,7 @@
     "message": "Update card details"
   },
   "shieldTxMembershipErrorPausedCardTooltip": {
-    "message": "Your payment was declined. Please update your payment method to continue your coverage."
+    "message": "Your payment was declined. Update your payment method to continue your coverage."
   },
   "shieldTxMembershipErrorPausedCryptoInsufficientFunds": {
     "message": "Plan paused due to insufficient funds. Payment updates may take up to $1 hours.",
@@ -10866,7 +10866,7 @@
     "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
   },
   "snapsPrivacyWarningSecondMessage": {
-    "message": "Any information you share with third-party services will be collected directly by those third-party services in accordance with their privacy policies. Please refer to their privacy policies for more information.",
+    "message": "Any information you share with third-party services will be collected directly by those third-party services in accordance with their privacy policies. Refer to their privacy policies for more information.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsPrivacyWarningThirdMessage": {
@@ -11172,7 +11172,7 @@
     "message": "How to recover your Secret Recovery Phrase"
   },
   "stateLogError": {
-    "message": "Error in retrieving state logs, please try again later."
+    "message": "Error in retrieving state logs. Try again later."
   },
   "stateLogFileName": {
     "message": "MetaMask state logs"
@@ -11221,7 +11221,7 @@
     "message": "Swap failed"
   },
   "stxFailureDescription": {
-    "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
+    "message": "Sudden market changes can cause failures. If the problem persists, reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescriptionV2": {
@@ -11446,7 +11446,7 @@
     "message": "Quote source"
   },
   "swapQuotesExpiredErrorDescription": {
-    "message": "Please request new quotes to get the latest rates."
+    "message": "Request new quotes to get the latest rates."
   },
   "swapQuotesExpiredErrorTitle": {
     "message": "Quotes timeout"
@@ -11640,7 +11640,7 @@
     "message": "I agree to the Terms of Use, which apply to my use of MetaMask and all of its features."
   },
   "termsOfUseFooterText": {
-    "message": "Please scroll to read all sections"
+    "message": "Scroll to read all sections"
   },
   "termsOfUseTitle": {
     "message": "Review our Terms of Use"
@@ -11722,7 +11722,7 @@
     "description": "$1 is the count of token permissions (plural form)"
   },
   "tokenSearchError": {
-    "message": "Couldn't load search results. Please try again."
+    "message": "Couldn't load search results. Try again."
   },
   "tokenStandard": {
     "message": "Token standard"
@@ -11857,7 +11857,7 @@
     "description": "Hardware device name"
   },
   "trezorDesktopAppRequiredError": {
-    "message": "Trezor Suite Desktop is required to use Trezor. Please install and open Trezor Suite (suite.trezor.io) and try again.",
+    "message": "Trezor Suite Desktop is required to use Trezor. Install and open Trezor Suite (suite.trezor.io) and try again.",
     "description": "An error message shown to the user during the hardware connect flow."
   },
   "tronBandwidth": {
@@ -11923,7 +11923,7 @@
     "message": "Turn off"
   },
   "turnOffMetamaskNotificationsError": {
-    "message": "There was an error in disabling the notifications. Please try again later."
+    "message": "There was an error in disabling the notifications. Try again later."
   },
   "turnOffPasskey": {
     "message": "Turn off $1",
@@ -11937,7 +11937,7 @@
     "message": "Turn on"
   },
   "turnOnMetamaskNotificationsError": {
-    "message": "There was an error in creating the notifications. Please try again later."
+    "message": "There was an error in creating the notifications. Try again later."
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
@@ -12016,7 +12016,7 @@
     "message": "Unlock"
   },
   "unlockPageIncorrectPassword": {
-    "message": "Password is incorrect. Please try again."
+    "message": "Password is incorrect. Try again."
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Too many attempts. Try again in "
@@ -12244,7 +12244,7 @@
     "description": "$1 represents the name of the snap"
   },
   "watchEthereumAccountsDescription": {
-    "message": "Turning this option on will give you the ability to watch Ethereum accounts via a public address or ENS name. For feedback on this Beta feature please complete this $1.",
+    "message": "Turning this option on will give you the ability to watch Ethereum accounts via a public address or ENS name. For feedback on this Beta feature, complete this $1.",
     "description": "$1 is the link to a product feedback form"
   },
   "watchEthereumAccountsToggle": {
@@ -12258,7 +12258,7 @@
     "message": "Web3"
   },
   "web3ShimUsageNotification": {
-    "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",
+    "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, click $1 for more information.",
     "description": "$1 is a clickable link."
   },
   "webhid": {
