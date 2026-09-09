@@ -2013,8 +2013,14 @@
     "message": "Privacy and product updates"
   },
   "basicFunctionalityMigrationToastDescription": {
-    "message": "Third-party APIs are now part of Basic Functionality. Based on your previous preferences, this setting is enabled. Change it any time in $1",
-    "description": "$1 is the Settings > Privacy link"
+    "message": "Third-party APIs are now part of Basic Functionality. Based on your previous preferences, this setting is $1. Change it any time in $2",
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+  },
+  "basicFunctionalityMigrationToastDisabled": {
+    "message": "disabled"
+  },
+  "basicFunctionalityMigrationToastEnabled": {
+    "message": "enabled"
   },
   "basicFunctionalityMigrationToastSettingsLink": {
     "message": "Settings > Privacy"
