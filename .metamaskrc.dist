@@ -100,7 +100,8 @@ BLOCKAID_PUBLIC_KEY=
 
 ; Set to `dev` to point AuthenticationController and identity services
 ; (User Storage, Profile Metrics, Config Registry, Authenticated User Storage)
-; at DEV backends. Defaults to prod. Restart `yarn start` after changing.
+; at DEV backends. Defaults to prod, and is ignored outside local development
+; (`yarn start`) builds. Restart `yarn start` after changing.
 ; Enabling DEV will break authenticated services that still talk to PRD
 ; (notifications, shield, money-account, bridge, perps). After flipping,
 ; clear the auth session from Settings → Debug → Backup and sync.

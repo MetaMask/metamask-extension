@@ -2,6 +2,7 @@ import {
   AuthenticatedUserStorageService,
   type AuthenticatedUserStorageMessenger,
 } from '@metamask/authenticated-user-storage';
+import { ENVIRONMENT } from '../../../shared/constants/build';
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
@@ -46,6 +47,7 @@ describe('AuthenticatedUserStorageServiceInit', () => {
 describe('getAuthenticatedUserStorageEnvironment', () => {
   const originalKeys = [
     'MM_DEV_API_ENV',
+    'METAMASK_ENVIRONMENT',
     'FORCE_AUTH_MATCH_BUILD',
     'METAMASK_BUILD_TYPE',
   ] as const;
@@ -69,9 +71,11 @@ describe('getAuthenticatedUserStorageEnvironment', () => {
     delete process.env.FORCE_AUTH_MATCH_BUILD;
     const unset = getAuthenticatedUserStorageEnvironment();
 
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
     process.env.MM_DEV_API_ENV = 'dev';
     const dev = getAuthenticatedUserStorageEnvironment();
 
+    delete process.env.METAMASK_ENVIRONMENT;
     delete process.env.MM_DEV_API_ENV;
     process.env.FORCE_AUTH_MATCH_BUILD = 'true';
     process.env.METAMASK_BUILD_TYPE = 'uat';

@@ -1,32 +1,68 @@
+import { ENVIRONMENT } from '../../constants/build';
 import { devApiEnv } from './dev-api-env';
 
+const environmentKeys = ['METAMASK_ENVIRONMENT', 'MM_DEV_API_ENV'] as const;
+
 describe('devApiEnv', () => {
-  const original = process.env.MM_DEV_API_ENV;
+  const originalEnvironment = Object.fromEntries(
+    environmentKeys.map((key) => [key, process.env[key]]),
+  );
 
-  afterEach(() => {
-    if (original === undefined) {
-      delete process.env.MM_DEV_API_ENV;
-    } else {
-      process.env.MM_DEV_API_ENV = original;
-    }
+  beforeEach(() => {
+    environmentKeys.forEach((key) => delete process.env[key]);
   });
 
-  it('defaults to prod', () => {
-    delete process.env.MM_DEV_API_ENV;
-    expect(devApiEnv()).toBe('prod');
+  afterAll(() => {
+    environmentKeys.forEach((key) => {
+      const value = originalEnvironment[key];
+      if (value === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = value;
+      }
+    });
   });
 
-  it('returns dev only when MM_DEV_API_ENV is dev', () => {
+  it('resolves dev only for development builds that opt in', () => {
+    const unset = devApiEnv();
+
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
+    const developmentWithoutFlag = devApiEnv();
+
     process.env.MM_DEV_API_ENV = 'dev';
-    expect(devApiEnv()).toBe('dev');
+    const developmentOptedIn = devApiEnv();
 
     process.env.MM_DEV_API_ENV = 'DEV';
-    expect(devApiEnv()).toBe('dev');
-
-    process.env.MM_DEV_API_ENV = 'prod';
-    expect(devApiEnv()).toBe('prod');
+    const developmentOptedInUppercase = devApiEnv();
 
     process.env.MM_DEV_API_ENV = 'nonsense';
-    expect(devApiEnv()).toBe('prod');
+    const developmentUnrecognized = devApiEnv();
+
+    process.env.MM_DEV_API_ENV = 'dev';
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
+    const testingOptedIn = devApiEnv();
+
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
+    const productionOptedIn = devApiEnv();
+
+    expect({
+      unset,
+      developmentWithoutFlag,
+      developmentOptedIn,
+      developmentOptedInUppercase,
+      developmentUnrecognized,
+      testingOptedIn,
+      productionOptedIn,
+    }).toMatchInlineSnapshot(`
+      {
+        "developmentOptedIn": "dev",
+        "developmentOptedInUppercase": "dev",
+        "developmentUnrecognized": "prod",
+        "developmentWithoutFlag": "prod",
+        "productionOptedIn": "prod",
+        "testingOptedIn": "prod",
+        "unset": "prod",
+      }
+    `);
   });
 });
