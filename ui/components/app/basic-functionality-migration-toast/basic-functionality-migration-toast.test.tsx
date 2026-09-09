@@ -3,7 +3,10 @@ import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import {
+  en as messages,
+  renderWithProvider,
+} from '../../../../test/lib/render-helpers-navigate';
 import { PRIVACY_ROUTE } from '../../../helpers/constants/routes';
 import { hideMigrationToast } from '../../../store/actions';
 import { BasicFunctionalityMigrationToast } from './basic-functionality-migration-toast';
@@ -94,7 +97,11 @@ describe('BasicFunctionalityMigrationToast', () => {
   it('dismisses from the close button', () => {
     const { getByRole } = renderComponent();
 
-    fireEvent.click(getByRole('button', { name: 'Close' }));
+    fireEvent.click(
+      getByRole('button', {
+        name: messages.close.message,
+      }),
+    );
 
     expect(hideMigrationToast).toHaveBeenCalled();
   });
