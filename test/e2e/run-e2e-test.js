@@ -150,11 +150,8 @@ async function main() {
       );
     }
 
-    // Expose the Mocha timeout so withFixtures can set an internal deadline
-    // that fires slightly before Mocha's, giving it time to capture
-    // screenshots and clean up servers (Anvil, etc.) before Mocha moves on.
-    // The global beforeEach hook in manifest-flag-mocha-hooks.ts updates
-    // this per-test to honour suite-level this.timeout() overrides.
+    // Used by withFixtures to set an internal deadline before Mocha's timeout.
+    // The beforeEach hook in manifest-flag-mocha-hooks.ts updates this per-test.
     process.env.MOCHA_TIMEOUT = String(testTimeoutInMilliseconds);
 
     try {
