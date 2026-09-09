@@ -76,6 +76,9 @@ export const SelectableListItem = ({
         {...optionProps}
         className={twMerge(
           'h-auto min-h-12 w-full justify-start gap-2 rounded-none p-4 text-left',
+          // The row is full-bleed inside the popover, so the press animation
+          // ButtonBase applies would pull it away from the popover edges.
+          'active:scale-100',
           isSelected
             ? 'bg-muted hover:bg-muted-hover active:bg-muted-pressed'
             : 'bg-transparent hover:bg-hover active:bg-pressed',
