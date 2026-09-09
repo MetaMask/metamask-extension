@@ -24,11 +24,6 @@ type ShowHyperliquidDepositPromptApprovalOptions = {
  * Adds and shows the Hyperliquid deposit prompt approval unless one is
  * already pending for this origin.
  *
- * If `openInPopup` is provided and succeeds, the approval is added without
- * calling triggerUi — the popup will display it when it opens. This allows
- * popup-preferred users to see the deposit prompt directly in the popup,
- * avoiding window-switching issues when they later confirm the transaction.
- *
  * @param options - The prompt options.
  * @param options.approvalController - The approval controller instance.
  * @param options.origin - The origin of the signature request.
@@ -65,7 +60,6 @@ export async function showHyperliquidDepositPromptApproval({
     try {
       const popupOpened = await openInPopup();
       if (popupOpened) {
-        // NOW add approval - popup is open and will see it
         approvalController.add(approvalRequest).catch(() => {
           // User dismissed or approval failed - both are expected flows
         });

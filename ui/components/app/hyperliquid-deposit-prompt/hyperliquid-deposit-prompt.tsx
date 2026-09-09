@@ -27,9 +27,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { TransactionType } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
-import log from 'loglevel';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -316,7 +313,6 @@ export const HyperliquidDepositPrompt: React.FC<
     );
 
     trackPromptInteracted('continue');
-
     onActionComplete({ action: 'continue', transactionId });
   }, [
     displayToken,
