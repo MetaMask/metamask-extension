@@ -2437,9 +2437,15 @@ export class LegacyBackgroundApiService {
           );
         }
 
-        // The Seedless operation mutex is already held. Lock before exposing
-        // the error without trying to acquire the same mutex again.
-        await this.setLocked({ skipSeedlessOperationLock: true });
+        // The Seedless operation mutex is already held. If the Keyring was
+        // already locked (for example, after an incorrect unlock password),
+        // preserve the original error instead of locking it again.
+        const { isUnlocked } = this.#messenger.call(
+          'KeyringController:getState',
+        );
+        if (isUnlocked) {
+          await this.setLocked({ skipSeedlessOperationLock: true });
+        }
         throw error;
       }
     });
@@ -2559,6 +2565,15 @@ export class LegacyBackgroundApiService {
             SeedlessOnboardingControllerErrorMessage.CouldNotRecoverPassword,
           );
       }
+
+      // ReconcilePassword updates the Seedless vault but does not invalidate
+      // the controller's cached outdated-password result. Refresh it after
+      // recovery so the first post-recovery home-page check sees in-sync state
+      // instead of showing the stale PasswordOutdatedModal.
+      await this.#messenger.call(
+        'SeedlessOnboardingController:resolvePasswordSyncState',
+        { skipCache: true },
+      );
 
       changePasswordSuccess = true;
     } finally {

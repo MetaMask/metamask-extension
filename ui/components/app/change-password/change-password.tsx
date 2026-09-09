@@ -160,6 +160,7 @@ const ChangePassword = ({
       setIsIncorrectPasswordError(false);
       setStep(ChangePasswordSteps.ChangePassword);
     } catch (error) {
+      console.error('handleSubmitCurrentPassword', error);
       setIsIncorrectPasswordError(true);
     }
   };

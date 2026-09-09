@@ -158,7 +158,7 @@ describe('UnlockPage component (passkey UI)', () => {
     });
   });
 
-  it('resolves the cached recovery status on mount and asks for the new password', async () => {
+  it('resolves the cached recovery status on mount', async () => {
     const resolveSeedlessPasswordSyncState = jest
       .fn()
       .mockResolvedValue(PasswordChangeRecoveryStatus.PasswordOutdated);
@@ -168,19 +168,12 @@ describe('UnlockPage component (passkey UI)', () => {
       resolveSeedlessPasswordSyncState,
     });
 
-    const { getByTestId } = renderWithProvider(
-      <UnlockPage {...props} />,
-      mockStore,
-      '/unlock',
-    );
+    renderWithProvider(<UnlockPage {...props} />, mockStore, '/unlock');
 
     await waitFor(() => {
       expect(resolveSeedlessPasswordSyncState).toHaveBeenCalledWith({
         skipCache: false,
       });
-      expect(
-        getByTestId('unlock-password-recovery-prompt'),
-      ).toBeInTheDocument();
     });
   });
 

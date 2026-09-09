@@ -556,46 +556,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     });
   }
 
-  isPasswordRecoveryRequired = () => {
-    const { passwordSyncState } = this.state;
-    return (
-      this.props.isSocialLoginFlow &&
-      passwordSyncState !== PasswordChangeRecoveryStatus.InSync &&
-      passwordSyncState !== PasswordChangeRecoveryStatus.Unknown
-    );
-  };
-
-  renderPasswordRecoveryPrompt = () => {
-    if (!this.isPasswordRecoveryRequired()) {
-      return null;
-    }
-
-    const { t } = this.ctx;
-    return (
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Center}
-        marginBottom={4}
-        data-testid="unlock-password-recovery-prompt"
-      >
-        <Text
-          variant={TextVariant.HeadingMd}
-          color={TextColor.TextDefault}
-          textAlign={TextAlign.Center}
-        >
-          {t('passwordChangedRecently')}
-        </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.TextDefault}
-          textAlign={TextAlign.Center}
-        >
-          {t('passwordChangedRecentlyDescription')}
-        </Text>
-      </Box>
-    );
-  };
-
   renderMascot = () => {
     if (isFlask()) {
       return (
@@ -819,7 +779,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
                     {t('loading')}
                   </Text>
                 )}
-                {this.renderPasswordRecoveryPrompt()}
                 <Box
                   flexDirection={BoxFlexDirection.Row}
                   alignItems={BoxAlignItems.Start}

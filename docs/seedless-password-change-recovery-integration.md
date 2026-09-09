@@ -328,15 +328,17 @@ After Seedless reconciliation and a new-password submission:
 - [x] Update `legacy-background-api-service.test.ts` for the server-first
   happy path, remove rollback expectations, and cover locking after remote or
   local change failures.
-- [ ] Test every controller status and phase transition.
-- [ ] Test no phase with no remote change (`in-sync`).
-- [ ] Test another-device password change, including the final
+- [x] Test every controller status and phase transition at the background
+  service boundary, including status routing and phase-dependent cache
+  behavior.
+- [x] Test no phase with no remote change (`in-sync`).
+- [x] Test another-device password change, including the final
   `reconcile-keyring` behavior.
-- [ ] Test `SEEDLESS_CHANGE_PENDING` with definitive remote old, remote new,
+- [x] Test `SEEDLESS_CHANGE_PENDING` with definitive remote old, remote new,
   and unknown results.
-- [ ] Test `SEEDLESS_COMMITTED` and `LOCAL_KEYRING_PENDING`.
-- [ ] Test old-Keyring and new-Keyring branches.
-- [ ] Test resuming `KEY_SYNC_PENDING` after a restart/reload.
+- [x] Test `SEEDLESS_COMMITTED` and `LOCAL_KEYRING_PENDING` status resolution.
+- [x] Test old-Keyring and new-Keyring branches.
+- [x] Test resuming `KEY_SYNC_PENDING` after a restart/reload.
 - [ ] Inject failures before and after remote commitment, local Keyring
   password change, key export, key storage, remote key synchronization,
   and phase clearing.
