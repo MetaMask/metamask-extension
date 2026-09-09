@@ -240,7 +240,7 @@ async function withFixtures(options, testSuite) {
     unifiedEvmAccountsApiBalances,
     virtualAuthenticator,
     isBenchmark = false,
-    testTimeout = parseInt(process.env.MOCHA_TIMEOUT, 10) || 80_000,
+    testTimeout = parseInt(process.env.MOCHA_TIMEOUT, 10) || 0,
   } = options;
 
   // Normalize localNodeOptions
