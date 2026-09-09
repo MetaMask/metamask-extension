@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention -- Sentry and MetaMetrics fields use snake_case */
 import React from 'react';
 import { render } from '@testing-library/react';
 import { useSelector } from 'react-redux';
@@ -8,6 +9,12 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getAppIsLoading } from '../../../selectors';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
+import {
+  endTrace,
+  trace,
+  TraceName,
+  TraceOperation,
+} from '../../../../shared/lib/trace';
 import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
 import { CarouselWithEmptyState } from '../carousel';
 import { useDispatch } from '../../../store/hooks';
@@ -28,6 +35,11 @@ jest.mock('../carousel', () => ({
 
 jest.mock('../../../hooks/useCarouselManagement', () => ({
   useCarouselManagement: jest.fn(),
+}));
+jest.mock('../../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../../shared/lib/trace'),
+  endTrace: jest.fn(),
+  trace: jest.fn(),
 }));
 
 jest.mock(
@@ -81,17 +93,26 @@ const renderCarousel = () => render(<Carousel />);
 describe('AccountOverview Carousel', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest
+      .spyOn(globalThis.crypto, 'randomUUID')
+      .mockReturnValue('00000000-0000-4000-8000-000000000002');
     jest.mocked(useDispatch).mockReturnValue(jest.fn());
     jest.mocked(useSelector).mockImplementation((selector) => {
       if (selector === getAppIsLoading) {
         return false;
       }
       if (selector === getRemoteFeatureFlags) {
-        return { carouselBanners: true };
+        return {
+          carouselBanners: true,
+          contentfulCarouselEnabled: true,
+        };
       }
       return undefined;
     });
-    jest.mocked(useCarouselManagement).mockReturnValue({ slides: mockSlides });
+    jest.mocked(useCarouselManagement).mockReturnValue({
+      slides: mockSlides,
+      fetchStatus: 'settled',
+    });
   });
 
   it('tracks a Banner Dismissed event when a slide is dismissed', () => {
@@ -103,7 +124,7 @@ describe('AccountOverview Carousel', () => {
       name: MetaMetricsEventName.BannerDismissed,
       properties: {
         category: MetaMetricsEventCategory.Banner,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+
         banner_name: 'slide-1',
       },
       sensitiveProperties: {},
@@ -122,7 +143,7 @@ describe('AccountOverview Carousel', () => {
       name: MetaMetricsEventName.BannerDismissed,
       properties: {
         category: MetaMetricsEventCategory.Banner,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+
         banner_name: 'slide-2',
       },
       sensitiveProperties: {},
@@ -145,10 +166,75 @@ describe('AccountOverview Carousel', () => {
       name: MetaMetricsEventName.BannerDisplay,
       properties: {
         category: MetaMetricsEventCategory.Banner,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+
         banner_name: 'slide-1',
       },
       sensitiveProperties: {},
+    });
+    expect(trace).toHaveBeenCalledWith({
+      name: TraceName.HomeBannerTimeToContent,
+      id: '00000000-0000-4000-8000-000000000002',
+      op: TraceOperation.BannerPerformance,
+      tags: {
+        placement_id: 'home_carousel',
+      },
+    });
+    expect(endTrace).toHaveBeenCalledWith({
+      name: TraceName.HomeBannerTimeToContent,
+      id: '00000000-0000-4000-8000-000000000002',
+      data: {
+        success: true,
+        source: 'warm-cache',
+        placement_id: 'home_carousel',
+        banner_name: 'slide-1',
+      },
+    });
+  });
+
+  it('ends with empty only after the fetch settles', () => {
+    jest.mocked(useCarouselManagement).mockReturnValue({
+      slides: [],
+      fetchStatus: 'loading',
+    });
+    const { rerender } = renderCarousel();
+
+    expect(endTrace).not.toHaveBeenCalled();
+
+    jest.mocked(useCarouselManagement).mockReturnValue({
+      slides: [],
+      fetchStatus: 'settled',
+    });
+    rerender(<Carousel />);
+
+    expect(endTrace).toHaveBeenCalledWith({
+      name: TraceName.HomeBannerTimeToContent,
+      id: '00000000-0000-4000-8000-000000000002',
+      data: {
+        success: false,
+        source: 'event',
+        reason: 'empty',
+        placement_id: 'home_carousel',
+      },
+    });
+  });
+
+  it('ends with an error when the Contentful fetch fails', () => {
+    jest.mocked(useCarouselManagement).mockReturnValue({
+      slides: [],
+      fetchStatus: 'error',
+    });
+
+    renderCarousel();
+
+    expect(endTrace).toHaveBeenCalledWith({
+      name: TraceName.HomeBannerTimeToContent,
+      id: '00000000-0000-4000-8000-000000000002',
+      data: {
+        success: false,
+        source: 'event',
+        reason: 'error',
+        placement_id: 'home_carousel',
+      },
     });
   });
 });

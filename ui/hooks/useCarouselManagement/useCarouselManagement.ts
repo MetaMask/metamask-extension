@@ -23,6 +23,7 @@ import { useDispatch } from '../../store/hooks';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
 type UseSlideManagementProps = { testDate?: string; enabled?: boolean };
+export type CarouselFetchStatus = 'idle' | 'loading' | 'settled' | 'error';
 const ZERO_BALANCE = '0x0';
 
 export function isActive(
@@ -115,7 +116,23 @@ export const useCarouselManagement = ({
   const [downloadEligible, setDownloadEligible] = useState<boolean>(false);
   const [downloadEligibilityReady, setDownloadEligibilityReady] =
     useState<boolean>(false);
+  const fetchKey = [
+    enabled,
+    contentfulEnabled,
+    currentLocale,
+    selectedAccount.address,
+    hasZeroBalance,
+    downloadEligibilityReady,
+    downloadEligible,
+    testDate,
+  ].join(':');
+  const [fetchState, setFetchState] = useState<{
+    key: string;
+    status: CarouselFetchStatus;
+  }>({ key: '', status: 'idle' });
 
+  /* eslint-disable react-hooks/set-state-in-effect -- This effect resets
+   * account-specific eligibility before resolving its asynchronous source. */
   useEffect(() => {
     const eligibilityNeeded =
       contentfulEnabled && useExternalServices && showDownloadMobileAppSlide;
@@ -158,6 +175,7 @@ export const useCarouselManagement = ({
     showDownloadMobileAppSlide,
     contentfulEnabled,
   ]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   useEffect(() => {
     // Wait until eligibility is resolved (or not required) to avoid double fetch
@@ -187,6 +205,7 @@ export const useCarouselManagement = ({
         return;
       }
 
+      setFetchState({ key: fetchKey, status: 'loading' });
       try {
         const { prioritySlides, regularSlides } =
           await fetchCarouselSlidesFromContentful(
@@ -243,11 +262,15 @@ export const useCarouselManagement = ({
           dispatch(updateSlides(mergedSlides));
           prevSlidesRef.current = mergedSlides;
         }
+        setFetchState({ key: fetchKey, status: 'settled' });
       } catch (err) {
         log.warn('Failed to fetch Contentful slides:', err);
         if (!cancelled && !isEqual(prevSlidesRef.current, [])) {
           dispatch(updateSlides([]));
           prevSlidesRef.current = [];
+        }
+        if (!cancelled) {
+          setFetchState({ key: fetchKey, status: 'error' });
         }
       }
     };
@@ -268,7 +291,13 @@ export const useCarouselManagement = ({
     testDate,
     inTest,
     downloadEligibilityReady,
+    fetchKey,
   ]);
 
-  return { slides };
+  const fetchStatus =
+    enabled && contentfulEnabled && fetchState.key === fetchKey
+      ? fetchState.status
+      : 'idle';
+
+  return { slides, fetchStatus };
 };
