@@ -307,12 +307,19 @@ After Seedless reconciliation and a new-password submission:
 - [x] If polling detects a remote password change while the wallet is unlocked,
   lock first and then route to recovery. Preserve the existing modal as a
   compatibility UX path rather than replacing it as part of this integration.
-- [ ] Ensure the existing `setLocked` mutex ordering is safe when invoked from
-  a recovery operation.
-- [ ] Force a state refresh after relevant phase/status changes without
-  treating the refresh as durable lifecycle persistence.
-- [ ] Confirm state sanitization and diagnostics expose only the phase/status,
-  never passwords, raw encryption keys, SRPs, or decrypted backup data.
+- [x] Ensure the existing `setLocked` mutex ordering is safe when invoked from
+  a recovery operation. Recovery callers pass `skipSeedlessOperationLock` while
+  holding the Seedless operation mutex, and regression coverage verifies the
+  lock path does not reacquire it.
+- [x] Force a state refresh after relevant phase/status changes without
+  treating the refresh as durable lifecycle persistence. The UI status resolver
+  flushes controller patches after resolution and treats a failed refresh as
+  `unknown`.
+- [x] Confirm state sanitization and diagnostics expose only the phase/status,
+  never passwords, raw encryption keys, SRPs, or decrypted backup data. The
+  Seedless diagnostic mask exposes only `passwordChangePhase` and the
+  non-sensitive outdated-status flag; UI state sanitization continues to remove
+  encryption keys, vault data, and token material.
 
 ### 6. Tests
 

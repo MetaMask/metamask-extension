@@ -1082,12 +1082,20 @@ export function resolveSeedlessPasswordSyncState({
   unknown,
   AnyAction
 > {
-  return async () => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      return await submitRequestToBackground<PasswordChangeRecoveryStatus>(
-        'resolveSeedlessPasswordSyncState',
-        [{ skipCache }],
-      );
+      const passwordSyncState =
+        await submitRequestToBackground<PasswordChangeRecoveryStatus>(
+          'resolveSeedlessPasswordSyncState',
+          [{ skipCache }],
+        );
+
+      // The resolver may advance or clear the persisted lifecycle phase. Pull
+      // those controller patches into Redux without treating this refresh as
+      // lifecycle persistence.
+      await forceUpdateMetamaskState(dispatch);
+
+      return passwordSyncState;
     } catch (error) {
       log.warn('resolveSeedlessPasswordSyncState error', error);
       return PasswordChangeRecoveryStatus.Unknown;

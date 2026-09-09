@@ -24,5 +24,35 @@ describe('sentry-state', () => {
 
       expect(() => maskObject(state, SENTRY_UI_STATE)).not.toThrow();
     });
+
+    it('exposes recovery signals without exposing Seedless secrets', () => {
+      const state = {
+        metamask: {
+          passwordChangePhase: 'KEY_SYNC_PENDING',
+          passwordOutdatedCache: {
+            isExpiredPwd: true,
+            timestamp: 123,
+          },
+          encryptedKeyringEncryptionKey: 'encrypted-key',
+          vault: 'vault',
+          decryptedBackupData: {
+            secret: 'secret',
+          },
+        },
+      };
+
+      expect(maskObject(state, SENTRY_UI_STATE)).toStrictEqual({
+        metamask: {
+          passwordChangePhase: 'KEY_SYNC_PENDING',
+          passwordOutdatedCache: {
+            isExpiredPwd: true,
+            timestamp: 'number',
+          },
+          encryptedKeyringEncryptionKey: 'string',
+          vault: 'string',
+          decryptedBackupData: 'object',
+        },
+      });
+    });
   });
 });

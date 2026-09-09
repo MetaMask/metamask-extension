@@ -353,9 +353,11 @@ describe('Actions', () => {
       const resolveSeedlessPasswordSyncStateStub = sinon
         .stub()
         .resolves(PasswordChangeRecoveryStatus.EnterNewPassword);
+      const getStatePatchesStub = sinon.stub().resolves([]);
 
       background.getApi.returns({
         resolveSeedlessPasswordSyncState: resolveSeedlessPasswordSyncStateStub,
+        getStatePatches: getStatePatchesStub,
       });
 
       setBackgroundConnection(background.getApi());
@@ -372,6 +374,7 @@ describe('Actions', () => {
           skipCache: false,
         }),
       ).toStrictEqual(true);
+      expect(getStatePatchesStub.calledOnceWith()).toStrictEqual(true);
     });
 
     it('returns unknown when the background resolver fails', async () => {
