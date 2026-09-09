@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import { renderHook } from '@testing-library/react';
 import type { PerpsMarketData } from '@metamask/perps-controller';
 import { usePerpsLiveMarketData } from './usePerpsLiveMarketData';
@@ -63,7 +64,14 @@ describe('usePerpsLiveMarketListData', () => {
       });
       mockUsePerpsLivePrices.mockReturnValue({
         isLive: pricesLive,
-        prices: { BTC: { symbol: 'BTC', price: '51000', timestamp: 1 } },
+        prices: {
+          BTC: {
+            symbol: 'BTC',
+            price: '51000',
+            timestamp: 1,
+            isTradable: true,
+          },
+        },
         isInitialLoading: false,
       });
       const { result, rerender } = renderHook(() =>

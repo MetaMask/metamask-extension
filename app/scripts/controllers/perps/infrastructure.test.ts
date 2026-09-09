@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import { trace, endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   PERPS_EVENT_PROPERTY,
@@ -577,7 +578,7 @@ describe('createPerpsInfrastructure', () => {
       TraceName.PerpsMarketDataPreload,
       TraceName.PerpsUserDataPreload,
       TraceName.PerpsPlaceOrder,
-    ])('routes %s through shared tracing', (name) => {
+    ] as const)('routes %s through shared tracing', (name) => {
       const { tracer } = createPerpsInfrastructure(getDeps());
       const request = {
         name,
@@ -600,7 +601,7 @@ describe('createPerpsInfrastructure', () => {
     it('does not end an unknown or already completed operation', () => {
       const { tracer } = createPerpsInfrastructure(getDeps());
       const request = {
-        name: TraceName.PerpsMarketDataPreload,
+        name: TraceName.PerpsMarketDataPreload as const,
         id: 'operation',
       };
       tracer.endTrace(request);
@@ -616,7 +617,7 @@ describe('createPerpsInfrastructure', () => {
     it('ends a duplicate operation before replacing it', () => {
       const { tracer } = createPerpsInfrastructure(getDeps());
       const request = {
-        name: TraceName.PerpsMarketDataPreload,
+        name: TraceName.PerpsMarketDataPreload as const,
         id: 'operation',
         op: 'perps.operation',
       };
@@ -644,13 +645,13 @@ describe('createPerpsInfrastructure', () => {
       expect(endTrace).not.toHaveBeenCalled();
 
       tracer.trace({
-        name: TraceName.PerpsMarketDataPreload,
+        name: TraceName.PerpsMarketDataPreload as const,
         id: '50',
         op: 'perps.operation',
       });
 
       expect(endTrace).toHaveBeenCalledWith({
-        name: TraceName.PerpsMarketDataPreload,
+        name: TraceName.PerpsMarketDataPreload as const,
         id: '0',
         data: { success: false, reason: 'capacity' },
       });

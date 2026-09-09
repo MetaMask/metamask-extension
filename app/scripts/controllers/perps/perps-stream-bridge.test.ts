@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import type { PerpsController } from '@metamask/perps-controller';
 
 // Provide the runtime enum that the source file imports. Jest cannot parse
@@ -2616,11 +2617,11 @@ describe('wallet-root Perps preload', () => {
     bridge.destroy();
   });
 
-  it('continues initialization after best-effort cache preload rejects', async () => {
+  it('continues initialization after best-effort cache preload throws', async () => {
     const { api, controller, controllerApi, bridge } = setup();
-    controller.startMarketDataPreload.mockRejectedValue(
-      new Error('cache unavailable'),
-    );
+    controller.startMarketDataPreload.mockImplementation(() => {
+      throw new Error('cache unavailable');
+    });
 
     await api.perpsInit();
 
