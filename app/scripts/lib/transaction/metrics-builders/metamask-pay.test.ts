@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import type { AnalyticsEventFragment } from '@metamask/analytics-controller';
 import {
   TransactionStatus,
   TransactionType,
@@ -176,6 +177,59 @@ describe('getMetaMaskPayProperties', () => {
     });
   });
 
+  describe('mm_pay_entry_point', () => {
+    it('includes entry point from UI metrics fragment', async () => {
+      const base = createPayRequest();
+      const request = createBuilderRequest({
+        transactionMeta: base.transactionMeta,
+        transactionMetricsRequest: {
+          ...base.transactionMetricsRequest,
+          getTransactionUIMetricsFragment: jest.fn().mockReturnValue({
+            properties: { mm_pay_entry_point: 'hyperliquid_deposit_prompt' },
+          }),
+        },
+      });
+
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_entry_point).toBe(
+        'hyperliquid_deposit_prompt',
+      );
+    });
+
+    it('does not include entry point when fragment has no entry point', async () => {
+      const base = createPayRequest();
+      const request = createBuilderRequest({
+        transactionMeta: base.transactionMeta,
+        transactionMetricsRequest: {
+          ...base.transactionMetricsRequest,
+          getTransactionUIMetricsFragment: jest.fn().mockReturnValue({
+            properties: {},
+          }),
+        },
+      });
+
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_entry_point).toBeUndefined();
+    });
+
+    it('does not include entry point when no fragment exists', async () => {
+      const base = createPayRequest();
+      const request = createBuilderRequest({
+        transactionMeta: base.transactionMeta,
+        transactionMetricsRequest: {
+          ...base.transactionMetricsRequest,
+          getTransactionUIMetricsFragment: jest.fn().mockReturnValue(undefined),
+        },
+      });
+
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_entry_point).toBeUndefined();
+    });
+  });
+
   describe('mm_pay_amount_input_type', () => {
     function createMusdRequest({
       flags = {},
@@ -314,12 +368,16 @@ describe('getMetaMaskPayProperties', () => {
           ]),
           getTransactionUIMetricsFragment: jest.fn((transactionId: string) =>
             transactionId === 'parent-1'
-              ? {
+              ? ({
+                  id: 'transaction-ui-parent-1',
                   properties: {
                     mm_pay_amount_input_type: 'prefilled_max',
                     mm_pay_prefilled_amount: 250,
                   },
-                }
+                  sensitiveProperties: {},
+                  createdAt: 0,
+                  lastUpdated: 0,
+                } satisfies AnalyticsEventFragment)
               : undefined,
           ),
         },
