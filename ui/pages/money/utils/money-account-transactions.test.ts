@@ -13,6 +13,7 @@ import {
 
 const MONEY_ADDRESS = '0x00000000000000000000000000000000000000aa';
 const OTHER_ADDRESS = '0x00000000000000000000000000000000000000bb';
+const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 
 function padAddress(address: string): string {
   return address.slice(2).toLowerCase().padStart(64, '0');
@@ -158,11 +159,33 @@ describe('isVisibleMoneyActivityTransaction', () => {
         makeTx({
           type: TransactionType.moneyAccountDeposit,
           status: TransactionStatus.failed,
-          txReceipt: { status: '0x0' },
+          error: {
+            name: 'OnChainFailureError',
+            message: 'Transaction failed on-chain',
+          },
         }),
         MONEY_ADDRESS,
       ),
     ).toBe(true);
+  });
+
+  it('excludes a local mUSD transfer to the Money Account that failed before broadcast', () => {
+    expect(
+      isVisibleMoneyActivityTransaction(
+        makeTx({
+          type: TransactionType.tokenMethodTransfer,
+          status: TransactionStatus.failed,
+          error: { name: 'Error', message: 'nonce too low' },
+          txParams: {
+            from: OTHER_ADDRESS,
+            to: MUSD_TOKEN_ADDRESS,
+            data: transferCalldata(MONEY_ADDRESS, 1_000_000n),
+            value: '0x0',
+          },
+        }),
+        MONEY_ADDRESS,
+      ),
+    ).toBe(false);
   });
 
   it('includes a confirmed Pay transaction signed from the Money Account', () => {
@@ -229,5 +252,65 @@ describe('filterMoneyAccountTransactions', () => {
     ).toStrictEqual([
       { ...paySource, type: TransactionType.moneyAccountDeposit },
     ]);
+  });
+
+  it('promotes only the newest child and carries the parent pay metadata', () => {
+    const metamaskPay = { tokenAddress: USDC_ADDRESS, chainId: '0x1' };
+    const requiredAssets = [{ address: MUSD_TOKEN_ADDRESS, amount: '0xf4240' }];
+    const deposit = makeTx({
+      id: 'deposit',
+      time: 1,
+      type: TransactionType.moneyAccountDeposit,
+      status: TransactionStatus.failed,
+      metamaskPay,
+      requiredAssets,
+      requiredTransactionIds: ['swap', 'vault'],
+    });
+    const swap = makeTx({
+      id: 'swap',
+      time: 2,
+      type: TransactionType.swap,
+      txParams: { from: OTHER_ADDRESS, to: OTHER_ADDRESS, value: '0x0' },
+    });
+    const vault = makeTx({
+      id: 'vault',
+      time: 3,
+      type: TransactionType.batch,
+      txParams: { from: OTHER_ADDRESS, to: OTHER_ADDRESS, value: '0x0' },
+    });
+
+    expect(
+      filterMoneyAccountTransactions([deposit, swap, vault], MONEY_ADDRESS),
+    ).toStrictEqual([
+      {
+        ...vault,
+        type: TransactionType.moneyAccountDeposit,
+        metamaskPay,
+        requiredAssets,
+      },
+    ]);
+  });
+
+  it('does not promote children of a parent that reverted on-chain', () => {
+    const deposit = makeTx({
+      id: 'deposit',
+      time: 1,
+      type: TransactionType.moneyAccountDeposit,
+      status: TransactionStatus.failed,
+      error: { name: 'OnChainFailureError', message: 'reverted' },
+      requiredTransactionIds: ['swap'],
+    });
+    const swap = makeTx({
+      id: 'swap',
+      time: 2,
+      type: TransactionType.swap,
+      txParams: { from: OTHER_ADDRESS, to: OTHER_ADDRESS, value: '0x0' },
+    });
+
+    expect(
+      filterMoneyAccountTransactions([deposit, swap], MONEY_ADDRESS).map(
+        (tx) => tx.id,
+      ),
+    ).toStrictEqual(['deposit']);
   });
 });
