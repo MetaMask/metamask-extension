@@ -29,24 +29,18 @@ import {
 } from '@metamask/design-system-react';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { EXTENSION_MESSAGES } from '../../../../shared/constants/messages';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
-import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
-import {
-  attemptCloseNotificationPopup,
-  upsertTransactionUIMetricsFragment,
-} from '../../../store/actions';
+import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
 import { TokenIcon } from '../../../pages/confirmations/components/token-icon/token-icon';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import { ConfirmationLoader } from '../../../pages/confirmations/hooks/useConfirmationNavigation';
@@ -195,7 +189,6 @@ export const HyperliquidDepositPrompt: React.FC<
   const perpsHomeRoute = usePerpsHomeRoute();
   const tokens = useHyperliquidDepositTokens();
   const currentAccount = useSelector(getSelectedInternalAccount);
-  const { useSidePanelAsDefault } = useSelector(getPreferences);
   const { trackEvent, createEventBuilder } = useAnalytics();
   const hasTrackedView = useRef(false);
 
@@ -275,26 +268,6 @@ export const HyperliquidDepositPrompt: React.FC<
     setIsPickerOpen(false);
   }, []);
 
-  // Attempt to open the browser popup for the perps deposit confirmation.
-  // Falls back gracefully if unsupported or gesture lost (notification window stays open).
-  const requestOpenPopup = useCallback(() => {
-    browser.runtime
-      .sendMessage({
-        type: EXTENSION_MESSAGES.REQUEST_OPEN_POPUP_FOR_HYPERLIQUID_DEPOSIT,
-      })
-      .then((response: { success: boolean } | undefined) => {
-        if (response?.success) {
-          attemptCloseNotificationPopup();
-        }
-      })
-      .catch((err) => {
-        log.debug(
-          'HyperliquidDepositPrompt: REQUEST_OPEN_POPUP_FOR_HYPERLIQUID_DEPOSIT failed',
-          err,
-        );
-      });
-  }, [useSidePanelAsDefault]);
-
   const handleContinue = useCallback(async () => {
     setHasError(false);
 
@@ -343,11 +316,7 @@ export const HyperliquidDepositPrompt: React.FC<
     );
 
     trackPromptInteracted('continue');
-    // If user has popup default, request popup so they can complete the
-    // confirmation there and be taken to the perps experience afterward.
-    if (!useSidePanelAsDefault) {
-      requestOpenPopup();
-    }
+
     onActionComplete({ action: 'continue', transactionId });
   }, [
     displayToken,
@@ -356,7 +325,6 @@ export const HyperliquidDepositPrompt: React.FC<
     perpsHomeRoute,
     startPerpsDeposit,
     trackPromptInteracted,
-    requestOpenPopup,
   ]);
 
   return (

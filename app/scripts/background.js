@@ -243,43 +243,6 @@ const frameIdMapping = {};
 
 const requestOpenSidepanel = createSidepanelOpener();
 
-// Listen for REQUEST_OPEN_POPUP_FOR_HYPERLIQUID_DEPOSIT from the notification window.
-// Specific to the Hyperliquid deposit prompt flow: when a user with popup preference
-// initiates a deposit from the notification window (triggered by Hyperliquid approval), we
-// open the popup so they can complete the confirmation there and be taken to the perps
-// experience afterward. Requires a user gesture to be active (Chrome 127+).
-browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-  if (
-    message?.type ===
-    EXTENSION_MESSAGES.REQUEST_OPEN_POPUP_FOR_HYPERLIQUID_DEPOSIT
-  ) {
-    if (!globalThis.chrome?.action?.openPopup) {
-      sendResponse({ success: false });
-      return false;
-    }
-
-    // Find Hyperliquid tab's window to open popup there (needs focus first)
-    browser.tabs
-      .query({ url: '*://app.hyperliquid.xyz/*' })
-      .then(async (tabs) => {
-        const windowId = tabs[0]?.windowId;
-        if (windowId) {
-          await browser.windows.update(windowId, { focused: true });
-        }
-        await globalThis.chrome.action.openPopup(
-          windowId ? { windowId } : undefined,
-        );
-        sendResponse({ success: true });
-      })
-      .catch(() => {
-        sendResponse({ success: false });
-      });
-
-    return true;
-  }
-  return false;
-});
-
 if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
   global.stateHooks.metamaskGetState = persistenceManager.get.bind(
     persistenceManager,
