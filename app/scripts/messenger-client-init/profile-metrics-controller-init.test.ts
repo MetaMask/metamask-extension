@@ -4,6 +4,7 @@ import {
 } from '@metamask/profile-metrics-controller';
 import type { FeatureFlags } from '@metamask/remote-feature-flag-controller';
 import { BFT_CHILD_PREFERENCES } from '../../../shared/lib/basic-functionality-consolidation';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
@@ -14,6 +15,9 @@ import {
 import { ProfileMetricsControllerInit } from './profile-metrics-controller-init';
 
 jest.mock('@metamask/profile-metrics-controller');
+jest.mock('../../../shared/lib/manifestFlags');
+
+const mockGetManifestFlags = jest.mocked(getManifestFlags);
 
 function buildChildPreferences(alignedWithBasicFunctionality: boolean) {
   return Object.fromEntries(
@@ -63,7 +67,7 @@ function getInitRequestMock({
     initMessenger: {
       call: jest.fn((action: string) => {
         if (action === 'RemoteFeatureFlagController:getState') {
-          return { remoteFeatureFlags };
+          return { remoteFeatureFlags: { ...remoteFeatureFlags } };
         }
         throw new Error(`Unexpected init messenger action: ${action}`);
       }),
@@ -102,6 +106,9 @@ function getAssertUserOptedIn(
 describe('ProfileMetricsControllerInit', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetManifestFlags.mockReturnValue({
+      remoteFeatureFlags: {},
+    });
   });
 
   it('initializes the controller', () => {
@@ -246,5 +253,42 @@ describe('ProfileMetricsControllerInit', () => {
     flags.extensionBasicFunctionalityToggle = true;
 
     expect(assertUserOptedIn()).toBe(true);
+  });
+
+  it('enables the consolidation gate when a manifest override turns the remote flag on', () => {
+    mockGetManifestFlags.mockReturnValue({
+      remoteFeatureFlags: { extensionBasicFunctionalityToggle: true },
+    });
+
+    expect(
+      getAssertUserOptedIn(
+        getInitRequestMock({
+          optedIn: false,
+          isBasicFunctionalityConsolidatedEnabled: true,
+          remoteFeatureFlags: {
+            extensionBasicFunctionalityToggle: {
+              enabled: false,
+              minimumVersion: '13.38.0',
+            },
+          },
+        }),
+      )(),
+    ).toBe(true);
+  });
+
+  it('disables the consolidation gate when a manifest override turns the remote flag off', () => {
+    mockGetManifestFlags.mockReturnValue({
+      remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
+    });
+
+    expect(
+      getAssertUserOptedIn(
+        getInitRequestMock({
+          optedIn: false,
+          isBasicFunctionalityConsolidatedEnabled: true,
+          remoteFeatureFlags: { extensionBasicFunctionalityToggle: true },
+        }),
+      )(),
+    ).toBe(false);
   });
 });

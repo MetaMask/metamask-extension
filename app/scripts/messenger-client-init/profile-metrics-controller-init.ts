@@ -3,6 +3,7 @@ import {
   ProfileMetricsControllerMessenger,
 } from '@metamask/profile-metrics-controller';
 import { getIsBasicFunctionalityConsolidationGateEnabled } from '../../../shared/lib/basic-functionality-consolidation-gate';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import type { ProfileMetricsControllerInitMessenger } from './messengers';
 import type { MessengerClientInitFunction } from './types';
 
@@ -36,13 +37,21 @@ export const ProfileMetricsControllerInit: MessengerClientInitFunction<
   const appStateController = getMessengerClient('AppStateController');
   const preferencesController = getMessengerClient('PreferencesController');
 
-  const isBftcGateOn = () =>
-    getIsBasicFunctionalityConsolidationGateEnabled({
-      remoteFeatureFlags: initMessenger.call(
-        'RemoteFeatureFlagController:getState',
-      ).remoteFeatureFlags,
+  const isBftcGateOn = () => {
+    const { remoteFeatureFlags } = initMessenger.call(
+      'RemoteFeatureFlagController:getState',
+    );
+    // Resolve through the same manifest-merged path as the UI selector so
+    // `.manifest-overrides.json` / e2e manifestFlags cannot enable consolidation
+    // in the UI while the background gate ignores them.
+    const mergedFlags = getRemoteFeatureFlags({
+      metamask: { remoteFeatureFlags },
+    });
+    return getIsBasicFunctionalityConsolidationGateEnabled({
+      remoteFeatureFlags: mergedFlags,
       preferencesState: preferencesController.state,
     });
+  };
 
   const assertUserOptedIn = () =>
     appStateController.state.pna25Acknowledged === true &&
