@@ -22,6 +22,7 @@ import {
   TextColor,
   TextAlign,
   FontFamily,
+  FontWeight,
   TextTransform,
   BoxFlexDirection,
   BoxJustifyContent,
@@ -69,7 +70,7 @@ const MUSD_EDUCATION_COIN_IMAGE_LIGHT =
  *
  * Displays a splash screen with:
  * - Close (X) icon button in the top-right corner
- * - Large hero headline using MMPoly font
+ * - Large hero headline using Oswald font
  * - Body copy explaining the mUSD conversion bonus
  * - Central illustration (coin + MetaMask fox + bonus)
  * - "Get started" primary button and "Not now" link button
@@ -339,6 +340,7 @@ const MusdEducationScreen = () => {
             <Text
               variant={TextVariant.DisplayMd}
               fontFamily={FontFamily.Hero}
+              fontWeight={FontWeight.Bold}
               textAlign={TextAlign.Center}
               color={TextColor.TextDefault}
               textTransform={TextTransform.Uppercase}
