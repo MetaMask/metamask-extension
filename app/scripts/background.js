@@ -243,43 +243,41 @@ const frameIdMapping = {};
 
 const requestOpenSidepanel = createSidepanelOpener();
 
-// Listen for REQUEST_OPEN_POPUP from extension UI (e.g., notification window)
-// and attempt to open the popup. This requires a user gesture to be active.
-browser.runtime.onMessage.addListener((message) => {
-  if (message?.type === EXTENSION_MESSAGES.REQUEST_OPEN_POPUP) {
-    log.debug('REQUEST_OPEN_POPUP received', {
-      hasOpenPopup: Boolean(globalThis.chrome?.action?.openPopup),
-    });
-
-    if (globalThis.chrome?.action?.openPopup) {
-      // Find a browser window with a toolbar (e.g., the Hyperliquid tab's window),
-      // focus it, then open the popup there instead of in the notification window
-      browser.tabs
-        .query({ url: '*://app.hyperliquid.xyz/*' })
-        .then(async (tabs) => {
-          const windowId = tabs[0]?.windowId;
-          log.debug('Opening popup in window', { windowId, tabsFound: tabs.length });
-
-          if (windowId) {
-            // Focus the window first - required by Chrome
-            await browser.windows.update(windowId, { focused: true });
-            log.debug('Window focused, now opening popup');
-          }
-
-          const options = windowId ? { windowId } : undefined;
-          return globalThis.chrome.action.openPopup(options);
-        })
-        .then(() => {
-          log.debug('openPopup() succeeded');
-        })
-        .catch((err) => {
-          log.debug('openPopup() failed', err);
-        });
-    } else {
-      log.debug('chrome.action.openPopup not available');
+// Listen for REQUEST_OPEN_POPUP_FOR_HYPERLIQUID_DEPOSIT from the notification window.
+// Specific to the Hyperliquid deposit prompt flow: when a user with popup preference
+// initiates a deposit from the notification window (triggered by Hyperliquid approval), we
+// open the popup so they can complete the confirmation there and be taken to the perps
+// experience afterward. Requires a user gesture to be active (Chrome 127+).
+browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (
+    message?.type ===
+    EXTENSION_MESSAGES.REQUEST_OPEN_POPUP_FOR_HYPERLIQUID_DEPOSIT
+  ) {
+    if (!globalThis.chrome?.action?.openPopup) {
+      sendResponse({ success: false });
+      return false;
     }
+
+    // Find Hyperliquid tab's window to open popup there (needs focus first)
+    browser.tabs
+      .query({ url: '*://app.hyperliquid.xyz/*' })
+      .then(async (tabs) => {
+        const windowId = tabs[0]?.windowId;
+        if (windowId) {
+          await browser.windows.update(windowId, { focused: true });
+        }
+        await globalThis.chrome.action.openPopup(
+          windowId ? { windowId } : undefined,
+        );
+        sendResponse({ success: true });
+      })
+      .catch(() => {
+        sendResponse({ success: false });
+      });
+
+    return true;
   }
-  return undefined;
+  return false;
 });
 
 if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {

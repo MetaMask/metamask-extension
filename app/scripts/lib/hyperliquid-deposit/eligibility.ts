@@ -78,6 +78,7 @@ export async function isHyperliquidDepositPromptEligible({
   remoteFeatureFlagController,
   signerAddress,
 }: IsHyperliquidDepositPromptEligibleOptions): Promise<boolean> {
+  return true;
   if (!isPerpsExperienceAvailable(remoteFeatureFlagController)) {
     return false;
   }

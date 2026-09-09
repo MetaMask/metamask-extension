@@ -37,12 +37,16 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { EXTENSION_MESSAGES } from '../../../../shared/constants/messages';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
-import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
+import {
+  attemptCloseNotificationPopup,
+  upsertTransactionUIMetricsFragment,
+} from '../../../store/actions';
 import { TokenIcon } from '../../../pages/confirmations/components/token-icon/token-icon';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import { ConfirmationLoader } from '../../../pages/confirmations/hooks/useConfirmationNavigation';
@@ -190,6 +194,7 @@ export const HyperliquidDepositPrompt: React.FC<
   const perpsHomeRoute = usePerpsHomeRoute();
   const tokens = useHyperliquidDepositTokens();
   const currentAccount = useSelector(getSelectedInternalAccount);
+  const { useSidePanelAsDefault } = useSelector(getPreferences);
   const { trackEvent, createEventBuilder } = useAnalytics();
   const hasTrackedView = useRef(false);
 
@@ -267,23 +272,26 @@ export const HyperliquidDepositPrompt: React.FC<
   }, []);
 
   // Attempt to open the browser popup for the perps deposit confirmation.
-  // This uses chrome.action.openPopup() (Chrome 127+) which requires a user gesture.
-  // The call happens synchronously in the background's message handler to consume
-  // the gesture before it expires. Falls back gracefully if unsupported or gesture lost.
+  // Falls back gracefully if unsupported or gesture lost (notification window stays open).
   const requestOpenPopup = useCallback(() => {
-    log.debug('HyperliquidDepositPrompt: Sending REQUEST_OPEN_POPUP');
     browser.runtime
-      .sendMessage({ type: EXTENSION_MESSAGES.REQUEST_OPEN_POPUP })
-      .then(() => {
-        log.debug('HyperliquidDepositPrompt: REQUEST_OPEN_POPUP sent successfully');
+      .sendMessage({
+        type: EXTENSION_MESSAGES.REQUEST_OPEN_POPUP_FOR_HYPERLIQUID_DEPOSIT,
+      })
+      .then((response: { success: boolean } | undefined) => {
+        if (response?.success) {
+          attemptCloseNotificationPopup();
+        }
       })
       .catch((err) => {
-        log.debug('HyperliquidDepositPrompt: REQUEST_OPEN_POPUP failed', err);
+        log.debug(
+          'HyperliquidDepositPrompt: REQUEST_OPEN_POPUP_FOR_HYPERLIQUID_DEPOSIT failed',
+          err,
+        );
       });
-  }, []);
+  }, [useSidePanelAsDefault]);
 
   const handleContinue = useCallback(async () => {
-    log.debug('HyperliquidDepositPrompt: handleContinue called');
     setHasError(false);
 
     const result = await startPerpsDeposit();
@@ -319,8 +327,6 @@ export const HyperliquidDepositPrompt: React.FC<
       }
     }
 
-    // Navigate to confirmation as fallback (for notification window if popup doesn't open)
-    log.debug('HyperliquidDepositPrompt: Navigating to confirmation', { transactionId });
     navigate(
       {
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
@@ -333,13 +339,11 @@ export const HyperliquidDepositPrompt: React.FC<
     );
 
     trackPromptInteracted('continue');
-    // Request popup before resolving the approval so the popup can pick up
-    // the new pending transaction. The gesture may expire before the background
-    // receives this message, in which case the notification window stays open.
-    log.debug('HyperliquidDepositPrompt: About to request popup');
-    requestOpenPopup();
-
-    log.debug('HyperliquidDepositPrompt: Calling onActionComplete');
+    // If user has popup default, request popup so they can complete the
+    // confirmation there and be taken to the perps experience afterward.
+    if (!useSidePanelAsDefault) {
+      requestOpenPopup();
+    }
     onActionComplete({ action: 'continue', transactionId });
   }, [
     displayToken,
@@ -349,7 +353,6 @@ export const HyperliquidDepositPrompt: React.FC<
     startPerpsDeposit,
     trackPromptInteracted,
     requestOpenPopup,
-    startPerpsDeposit,
   ]);
 
   return (
