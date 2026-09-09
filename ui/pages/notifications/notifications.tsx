@@ -30,6 +30,8 @@ import {
   selectIsMetamaskNotificationsEnabled,
   selectIsFeatureAnnouncementsEnabled,
   getMetamaskNotifications,
+  getIsUpdatingMetamaskNotifications,
+  isFetchingMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import {
   AlignItems,
@@ -42,6 +44,7 @@ import {
 } from '../../store/actions';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { useDispatch } from '../../store/hooks';
+import { useNotificationListPerformance } from '../../hooks/metamask-notifications/useNotificationListPerformance';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
 
@@ -52,6 +55,10 @@ const useFeatureAnnouncementsEnabled = () => {
   );
   const [areFeatureAnnouncementsEnabled, setAreFeatureAnnouncementsEnabled] =
     useSafeState(featureAnnouncementsEnabledInState);
+  const [
+    isFeatureAnnouncementPreferencePending,
+    setIsFeatureAnnouncementPreferencePending,
+  ] = useSafeState(true);
 
   useEffect(() => {
     const loadPreferences = async () => {
@@ -67,6 +74,8 @@ const useFeatureAnnouncementsEnabled = () => {
         setAreFeatureAnnouncementsEnabled(
           Boolean(featureAnnouncementsEnabledInState),
         );
+      } finally {
+        setIsFeatureAnnouncementPreferencePending(false);
       }
     };
 
@@ -75,15 +84,22 @@ const useFeatureAnnouncementsEnabled = () => {
     dispatch,
     featureAnnouncementsEnabledInState,
     setAreFeatureAnnouncementsEnabled,
+    setIsFeatureAnnouncementPreferencePending,
   ]);
 
-  return areFeatureAnnouncementsEnabled;
+  return {
+    areFeatureAnnouncementsEnabled,
+    isFeatureAnnouncementPreferencePending,
+  };
 };
 
 // NOTE - these 2 data sources are combined in our controller.
 // FUTURE - we could separate these data sources into separate methods.
 const useMetaMaskNotifications = () => {
-  const areFeatureAnnouncementsEnabled = useFeatureAnnouncementsEnabled();
+  const {
+    areFeatureAnnouncementsEnabled,
+    isFeatureAnnouncementPreferencePending,
+  } = useFeatureAnnouncementsEnabled();
 
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
@@ -119,6 +135,7 @@ const useMetaMaskNotifications = () => {
     featureAnnouncementNotifications,
     walletNotifications,
     snapNotifications,
+    isFeatureAnnouncementPreferencePending,
   };
 };
 
@@ -127,6 +144,7 @@ const useCombinedNotifications = () => {
     featureAnnouncementNotifications,
     walletNotifications,
     snapNotifications,
+    isFeatureAnnouncementPreferencePending,
   } = useMetaMaskNotifications();
 
   const combinedNotifications = useMemo(() => {
@@ -146,7 +164,10 @@ const useCombinedNotifications = () => {
     walletNotifications,
   ]);
 
-  return combinedNotifications;
+  return {
+    combinedNotifications,
+    isFeatureAnnouncementPreferencePending,
+  };
 };
 
 export const filterNotifications = (
@@ -191,11 +212,18 @@ export default function Notifications() {
     }
   };
 
-  const { isLoading, error } = useMetamaskNotificationsContext();
+  const {
+    isLoading,
+    error,
+    traceLifecycle = { isPending: false, error: undefined },
+  } = useMetamaskNotificationsContext();
 
   const [activeTab, setActiveTab] = useState<TAB_KEYS>(TAB_KEYS.ALL);
-  const combinedNotifications = useCombinedNotifications();
+  const { combinedNotifications, isFeatureAnnouncementPreferencePending } =
+    useCombinedNotifications();
   const deferredCombinedNotifications = useDeferredValue(combinedNotifications);
+  const isDeferredListPending =
+    deferredCombinedNotifications !== combinedNotifications;
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const filteredNotifications = useMemo(
     () => filterNotifications(activeTab, deferredCombinedNotifications),
@@ -204,10 +232,45 @@ export default function Notifications() {
 
   let hasNotifySnaps = false;
   hasNotifySnaps = useSelector(getNotifySnaps).length > 0;
+  const isMetamaskNotificationsEnabled = useSelector(
+    selectIsMetamaskNotificationsEnabled,
+  );
+  const isFetchingNotifications = useSelector(isFetchingMetamaskNotifications);
+  const isUpdatingNotifications = useSelector(
+    getIsUpdatingMetamaskNotifications,
+  );
+  const [isExpirationCleanupPending, setIsExpirationCleanupPending] =
+    useSafeState(true);
 
   useEffect(() => {
-    dispatch(deleteExpiredNotifications());
-  }, [dispatch]);
+    const deleteExpired = async () => {
+      try {
+        await dispatch(deleteExpiredNotifications());
+      } finally {
+        setIsExpirationCleanupPending(false);
+      }
+    };
+
+    deleteExpired();
+  }, [dispatch, setIsExpirationCleanupPending]);
+
+  const isListLoading =
+    traceLifecycle.isPending ||
+    isLoading ||
+    isFetchingNotifications ||
+    isUpdatingNotifications;
+
+  useNotificationListPerformance({
+    enabled: isMetamaskNotificationsEnabled,
+    isLoading: isListLoading,
+    isPending:
+      isListLoading ||
+      isFeatureAnnouncementPreferencePending ||
+      isExpirationCleanupPending ||
+      isDeferredListPending,
+    error: traceLifecycle.error ?? error,
+    notificationCount: filteredNotifications.length,
+  });
 
   return (
     <Page data-testid="notifications-page">
