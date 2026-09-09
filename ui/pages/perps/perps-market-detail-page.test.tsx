@@ -409,6 +409,134 @@ jest.mock('react-router-dom', () => ({
 // eslint-disable-next-line import-x/first
 import PerpsMarketDetailPage from './perps-market-detail-page';
 
+type FakeIntersectionObserver = {
+  callback: IntersectionObserverCallback;
+  root: Element | Document | null;
+  rootMargin: string;
+  observed: Element[];
+};
+
+type FakeResizeObserver = {
+  callback: ResizeObserverCallback;
+  observed: Element[];
+};
+
+/**
+ * Replaces the jsdom `IntersectionObserver`/`ResizeObserver` stubs with fakes
+ * that expose their callbacks, so tests can drive the market header's
+ * scroll-linked price crossfade and its sticky-header measurement.
+ *
+ * @returns Handles for inspecting observers and simulating scroll/resize.
+ */
+function installHeaderObserverHarness() {
+  const intersectionObservers: FakeIntersectionObserver[] = [];
+  const resizeObservers: FakeResizeObserver[] = [];
+  const originalIntersectionObserver = window.IntersectionObserver;
+  const originalResizeObserver = window.ResizeObserver;
+
+  window.IntersectionObserver = class {
+    // Read back by `useIntersectionObserver` when evaluating entries.
+    thresholds: readonly number[];
+
+    constructor(
+      callback: IntersectionObserverCallback,
+      options?: IntersectionObserverInit,
+    ) {
+      const threshold = options?.threshold ?? 0;
+      this.thresholds = Array.isArray(threshold) ? threshold : [threshold];
+      intersectionObservers.push({
+        callback,
+        root: options?.root ?? null,
+        rootMargin: options?.rootMargin ?? '0px',
+        observed: [],
+      });
+    }
+
+    observe(element: Element) {
+      intersectionObservers[intersectionObservers.length - 1].observed.push(
+        element,
+      );
+    }
+
+    unobserve() {
+      return undefined;
+    }
+
+    disconnect() {
+      return undefined;
+    }
+  } as unknown as typeof IntersectionObserver;
+
+  window.ResizeObserver = class {
+    constructor(callback: ResizeObserverCallback) {
+      resizeObservers.push({ callback, observed: [] });
+    }
+
+    observe(element: Element) {
+      resizeObservers[resizeObservers.length - 1].observed.push(element);
+    }
+
+    unobserve() {
+      return undefined;
+    }
+
+    disconnect() {
+      return undefined;
+    }
+  } as unknown as typeof ResizeObserver;
+
+  const latestIntersectionObserver = () =>
+    intersectionObservers[intersectionObservers.length - 1];
+
+  return {
+    latestIntersectionObserver,
+    /**
+     * Reports the observed price row as (in)visible below the sticky header.
+     * @param isIntersecting
+     */
+    setPriceRowVisible(isIntersecting: boolean) {
+      const observer = latestIntersectionObserver();
+      act(() => {
+        observer.callback(
+          [
+            {
+              isIntersecting,
+              intersectionRatio: isIntersecting ? 1 : 0,
+              target: observer.observed[0],
+            } as IntersectionObserverEntry,
+          ],
+          observer as unknown as IntersectionObserver,
+        );
+      });
+    },
+    /**
+     * Emits a resize for the sticky header, optionally with a border box.
+     * @param options0
+     * @param options0.borderBoxBlockSize
+     */
+    resizeHeader({ borderBoxBlockSize }: { borderBoxBlockSize?: number }) {
+      const observer = resizeObservers[resizeObservers.length - 1];
+      act(() => {
+        observer.callback(
+          [
+            {
+              target: observer.observed[0],
+              ...(borderBoxBlockSize === undefined
+                ? {}
+                : { borderBoxSize: [{ blockSize: borderBoxBlockSize }] }),
+            } as ResizeObserverEntry,
+          ],
+          observer as unknown as ResizeObserver,
+        );
+      });
+    },
+    restore() {
+      window.IntersectionObserver = originalIntersectionObserver;
+      window.ResizeObserver = originalResizeObserver;
+    },
+  };
+}
+
 async function renderPage(
   store: ReturnType<ReturnType<typeof configureMockStore>>,
 ) {
@@ -851,43 +979,20 @@ describe('PerpsMarketDetailPage', () => {
       );
     });
 
-    it('crossfades the header subtitle to compact price when the large price row scrolls away', async () => {
-      const observers: {
-        callback: IntersectionObserverCallback;
-        thresholds: readonly number[];
-      }[] = [];
-      const OriginalIntersectionObserver = window.IntersectionObserver;
+    describe('sticky header price crossfade', () => {
+      let harness: ReturnType<typeof installHeaderObserverHarness>;
 
-      window.IntersectionObserver = class MockIntersectionObserver {
-        callback: IntersectionObserverCallback;
+      beforeEach(() => {
+        harness = installHeaderObserverHarness();
+      });
 
-        thresholds: readonly number[];
+      afterEach(() => {
+        harness.restore();
+      });
 
-        constructor(
-          callback: IntersectionObserverCallback,
-          options?: IntersectionObserverInit,
-        ) {
-          this.callback = callback;
-          const threshold = options?.threshold ?? 0;
-          this.thresholds = Array.isArray(threshold) ? threshold : [threshold];
-          observers.push(this);
-        }
-
-        observe() {
-          return undefined;
-        }
-
-        unobserve() {
-          return undefined;
-        }
-
-        disconnect() {
-          return undefined;
-        }
-      } as typeof IntersectionObserver;
-
-      try {
+      it('shows the market pair subtitle while the large price row is visible', async () => {
         const store = mockStore(createMockState(true));
+
         const { getByTestId } = await renderPage(store);
 
         expect(getByTestId('perps-market-detail-pair-layer')).toHaveAttribute(
@@ -897,24 +1002,13 @@ describe('PerpsMarketDetailPage', () => {
         expect(
           getByTestId('perps-market-detail-header-price-layer'),
         ).toHaveAttribute('aria-hidden', 'true');
+      });
 
-        expect(observers.length).toBeGreaterThan(0);
+      it('crossfades the subtitle to compact price when the large price row scrolls away', async () => {
+        const store = mockStore(createMockState(true));
+        const { getByTestId } = await renderPage(store);
 
-        const observer = observers[observers.length - 1];
-        const summary = getByTestId('perps-market-detail-summary');
-
-        act(() => {
-          observer.callback(
-            [
-              {
-                isIntersecting: false,
-                intersectionRatio: 0,
-                target: summary,
-              } as IntersectionObserverEntry,
-            ],
-            observer as unknown as IntersectionObserver,
-          );
-        });
+        harness.setPriceRowVisible(false);
 
         expect(getByTestId('perps-market-detail-pair-layer')).toHaveAttribute(
           'aria-hidden',
@@ -923,21 +1017,25 @@ describe('PerpsMarketDetailPage', () => {
         expect(
           getByTestId('perps-market-detail-header-price-layer'),
         ).toHaveAttribute('aria-hidden', 'false');
-        expect(getByTestId('perps-market-detail-header-price')).toBeVisible();
-        expect(getByTestId('perps-market-detail-header-change')).toBeVisible();
+        // The compact header mirrors the large row it replaces.
+        expect(
+          getByTestId('perps-market-detail-header-price'),
+        ).toHaveTextContent(
+          getByTestId('perps-market-detail-price').textContent as string,
+        );
+        expect(
+          getByTestId('perps-market-detail-header-change'),
+        ).toHaveTextContent(
+          getByTestId('perps-market-detail-change').textContent as string,
+        );
+      });
 
-        act(() => {
-          observer.callback(
-            [
-              {
-                isIntersecting: true,
-                intersectionRatio: 1,
-                target: summary,
-              } as IntersectionObserverEntry,
-            ],
-            observer as unknown as IntersectionObserver,
-          );
-        });
+      it('restores the subtitle when the large price row scrolls back into view', async () => {
+        const store = mockStore(createMockState(true));
+        const { getByTestId } = await renderPage(store);
+
+        harness.setPriceRowVisible(false);
+        harness.setPriceRowVisible(true);
 
         expect(getByTestId('perps-market-detail-pair-layer')).toHaveAttribute(
           'aria-hidden',
@@ -946,13 +1044,53 @@ describe('PerpsMarketDetailPage', () => {
         expect(
           getByTestId('perps-market-detail-header-price-layer'),
         ).toHaveAttribute('aria-hidden', 'true');
-      } finally {
-        if (typeof OriginalIntersectionObserver === 'function') {
-          window.IntersectionObserver = OriginalIntersectionObserver;
-        } else {
-          Reflect.deleteProperty(window, 'IntersectionObserver');
-        }
-      }
+      });
+
+      it('observes the large price row inside the page scroll container', async () => {
+        const store = mockStore(createMockState(true));
+        const { getByTestId } = await renderPage(store);
+
+        const observer = harness.latestIntersectionObserver();
+
+        expect(observer.root).toBe(
+          getByTestId('parent-selector-perps-market-detail'),
+        );
+        expect(observer.observed).toContain(
+          getByTestId('perps-market-detail-summary'),
+        );
+      });
+
+      it('offsets the crossfade threshold by the sticky header border box height', async () => {
+        const store = mockStore(createMockState(true));
+        await renderPage(store);
+
+        expect(harness.latestIntersectionObserver().rootMargin).toBe('0px');
+
+        harness.resizeHeader({ borderBoxBlockSize: 72 });
+
+        expect(harness.latestIntersectionObserver().rootMargin).toBe(
+          '-72px 0px 0px 0px',
+        );
+      });
+
+      it('falls back to the measured bounding rect when borderBoxSize is unavailable', async () => {
+        const store = mockStore(createMockState(true));
+        const { getByTestId } = await renderPage(store);
+
+        jest
+          .spyOn(
+            getByTestId('perps-market-detail-back-button')
+              .parentElement as HTMLElement,
+            'getBoundingClientRect',
+          )
+          .mockReturnValue({ height: 56 } as DOMRect);
+
+        harness.resizeHeader({});
+
+        expect(harness.latestIntersectionObserver().rootMargin).toBe(
+          '-56px 0px 0px 0px',
+        );
+      });
     });
 
     it('displays the market max leverage pill in the header', async () => {
