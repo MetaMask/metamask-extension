@@ -6256,22 +6256,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/core-backend@npm:9.0.0"
+"@metamask/core-backend@npm:^9.0.0, @metamask/core-backend@npm:^9.1.1":
+  version: 9.1.1
+  resolution: "@metamask/core-backend@npm:9.1.1"
   dependencies:
-    "@metamask/account-tree-controller": "npm:^8.0.0"
+    "@metamask/account-tree-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/keyring-controller": "npm:^27.1.1"
     "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/profile-sync-controller": "npm:^29.0.0"
-    "@metamask/remote-feature-flag-controller": "npm:^6.0.0"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/profile-sync-controller": "npm:^30.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^6.1.1"
+    "@metamask/utils": "npm:^11.12.0"
     "@tanstack/query-core": "npm:^5.62.16"
     async-mutex: "npm:^0.5.0"
     cockatiel: "npm:^3.1.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/3715995cc7cc8e1d6c2e7543a948ccea135cb6a3bb2e2afe4b55793b2d97523dc4884f487a0cc11d9aeac11eca97dae980c6e527d52132dce09d983304f41520
+  checksum: 10/5070ec5d8cc2b5eca2809df83d927f23e062bc660118972c0bec90197ac275c82de0f5ce1ab6559366a924b2df418a5831b66d3cf496c83b27e90534ddee5edb
   languageName: node
   linkType: hard
 
@@ -31911,7 +31911,7 @@ __metadata:
     "@metamask/connectivity-controller": "npm:^0.3.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/core-backend": "npm:^9.0.0"
+    "@metamask/core-backend": "npm:^9.1.1"
     "@metamask/delegation-controller": "npm:^3.0.2"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^1.3.0"
