@@ -5607,11 +5607,17 @@
   "moneyBalanceLastKnown": {
     "message": "Last known balance"
   },
+  "moneyBalanceRetry": {
+    "message": "Retry"
+  },
   "moneyBalanceTitle": {
     "message": "Money balance"
   },
   "moneyBalanceUnavailable": {
     "message": "Balance unavailable"
+  },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "We're temporarily unable to display your balance. Your funds are safe—please try again shortly."
   },
   "moneyBenefitAutoEarn": {
     "message": "Auto-earn yield on your Money balance"
@@ -5700,6 +5706,27 @@
   },
   "moneySend": {
     "message": "Send"
+  },
+  "moneyToastDepositFailedBody": {
+    "message": "Unable to add funds. Try again."
+  },
+  "moneyToastDepositFailedBodyConvert": {
+    "message": "Unable to convert. Try again."
+  },
+  "moneyToastDepositFailedTitle": {
+    "message": "Deposit failed"
+  },
+  "moneyToastDepositFailedTitleAddMusd": {
+    "message": "Failed to add funds"
+  },
+  "moneyToastDepositFailedTitleConvert": {
+    "message": "Conversion failed"
+  },
+  "moneyToastWithdrawFailedBody": {
+    "message": "Unable to transfer funds. Try again."
+  },
+  "moneyToastWithdrawFailedTitle": {
+    "message": "Transfer failed"
   },
   "month": {
     "message": "month"
