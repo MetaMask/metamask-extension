@@ -318,6 +318,44 @@ describe('MoneyTransactionDetailsPage', () => {
     });
   });
 
+  it('prefers the activity list item over the raw controller transaction', () => {
+    const promoted = onchainItem({
+      ...deposited.tx,
+      id: 'promoted-child',
+      type: TransactionType.moneyAccountDeposit,
+    } as TransactionMeta);
+    const rawChild = {
+      ...promoted.tx,
+      type: TransactionType.swap,
+      metamaskPay: undefined,
+    } as TransactionMeta;
+    mockUseParams.mockReturnValue({ transactionId: promoted.id });
+    mockUseMoneyActivityItems.mockReturnValue({ items: [promoted] });
+    mockSelectTransactionById.mockReturnValue(rawChild);
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-title'),
+    ).toHaveTextContent(messages.moneyActivityDeposited.message);
+  });
+
+  it('redirects when the controller transaction is not Money activity and is absent from the list', () => {
+    mockUseMoneyActivityItems.mockReturnValue({ items: [] });
+    mockSelectTransactionById.mockReturnValue({
+      ...deposited.tx,
+      type: TransactionType.swap,
+      metamaskPay: undefined,
+    } as TransactionMeta);
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(screen.getByTestId('navigate')).toHaveAttribute(
+      'data-to',
+      MONEY_ACTIVITY_ROUTE,
+    );
+  });
+
   it('resolves a live transaction from TransactionController instead of the paged feed', () => {
     mockUseMoneyActivityItems.mockReturnValue({ items: [] });
     mockSelectTransactionById.mockReturnValue(deposited.tx);

@@ -85,14 +85,13 @@ export function isVisibleMoneyActivityTransaction(
     return false;
   }
 
-  if (!hasVisibleStatus(tx)) {
+  if (!hasVisibleStatus(tx) || isEphemeralFailedTransaction(tx)) {
     return false;
   }
 
   if (
     tx.metamaskPay &&
-    isEqualCaseInsensitive(tx.txParams?.from ?? '', moneyAddress) &&
-    !isEphemeralFailedTransaction(tx)
+    isEqualCaseInsensitive(tx.txParams?.from ?? '', moneyAddress)
   ) {
     return true;
   }
@@ -122,11 +121,41 @@ export function isVisibleMoneyActivityTransaction(
 }
 
 /**
+ * Presents a confirmed Pay child as its failed Money parent's row: the
+ * parent's type, pay metadata and committed mUSD amount, the child's id,
+ * hash, status and time.
+ *
+ * @param child - Confirmed required/batch child of the parent.
+ * @param parent - Ephemerally failed Money Pay parent.
+ * @returns The child re-typed as a Money deposit/withdraw row.
+ */
+function promoteChildToParentRow(
+  child: TransactionMeta,
+  parent: TransactionMeta,
+): TransactionMeta {
+  const promoted: TransactionMeta = {
+    ...child,
+    type: moneyPayTypeFromParent(parent),
+  };
+  const metamaskPay = parent.metamaskPay ?? child.metamaskPay;
+  if (metamaskPay) {
+    promoted.metamaskPay = metamaskPay;
+  }
+  const requiredAssets = parent.requiredAssets ?? child.requiredAssets;
+  if (requiredAssets) {
+    promoted.requiredAssets = requiredAssets;
+  }
+  return promoted;
+}
+
+/**
  * Filters and newest-first sorts Money activity transactions.
  *
  * When a Money Pay row failed locally (no on-chain revert) and Pay confirmed
- * a required source tx instead, that confirmed tx is shown with the parent's
- * deposit/withdraw type so Home does not render a $0 "failed" placeholder.
+ * its required source txs instead, the newest confirmed child is shown as a
+ * single row with the parent's deposit/withdraw type and pay metadata so Home
+ * renders one real deposit rather than a $0 "failed" placeholder or one row
+ * per source leg.
  *
  * @param transactions - Non-replaced TransactionController rows.
  * @param moneyAddress - Checksummed Money Account address, when known.
@@ -150,29 +179,43 @@ export function filterMoneyAccountTransactions(
     }
   }
 
-  return transactions
-    .flatMap((tx) => {
-      if (isVisibleMoneyActivityTransaction(tx, moneyAddress)) {
-        return [tx];
-      }
+  const visible: TransactionMeta[] = [];
+  const promotedChildByParentId = new Map<
+    string,
+    { child: TransactionMeta; parent: TransactionMeta }
+  >();
 
-      const parent =
-        parentByRequiredId.get(tx.id) ??
-        (tx.batchId
-          ? parentByBatchId.get(tx.batchId.toLowerCase())
-          : undefined);
-      if (
-        parent &&
-        parent.id !== tx.id &&
-        hasVisibleStatus(tx) &&
-        !isEphemeralFailedTransaction(tx)
-      ) {
-        return [{ ...tx, type: moneyPayTypeFromParent(parent) }];
-      }
+  for (const tx of transactions) {
+    if (isVisibleMoneyActivityTransaction(tx, moneyAddress)) {
+      visible.push(tx);
+      continue;
+    }
 
-      return [];
-    })
-    .sort((left, right) => (right.time ?? 0) - (left.time ?? 0));
+    const parent =
+      parentByRequiredId.get(tx.id) ??
+      (tx.batchId ? parentByBatchId.get(tx.batchId.toLowerCase()) : undefined);
+    if (
+      !parent ||
+      parent.id === tx.id ||
+      !hasVisibleStatus(tx) ||
+      isEphemeralFailedTransaction(tx)
+    ) {
+      continue;
+    }
+
+    const current = promotedChildByParentId.get(parent.id);
+    if (!current || (tx.time ?? 0) > (current.child.time ?? 0)) {
+      promotedChildByParentId.set(parent.id, { child: tx, parent });
+    }
+  }
+
+  const promoted = [...promotedChildByParentId.values()].map(
+    ({ child, parent }) => promoteChildToParentRow(child, parent),
+  );
+
+  return [...visible, ...promoted].sort(
+    (left, right) => (right.time ?? 0) - (left.time ?? 0),
+  );
 }
 
 export function splitMoneyAccountTransactions(

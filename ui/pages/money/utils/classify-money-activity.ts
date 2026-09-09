@@ -5,6 +5,10 @@ import {
 } from '@metamask/transaction-controller';
 import { IconName } from '@metamask/design-system-react';
 import { isMusdToken } from '../../../components/app/musd/constants';
+import {
+  isPerpsPredictMoneyDeposit,
+  isPerpsPredictMoneyWithdraw,
+} from '../../../helpers/money/money-transaction-guards';
 import type {
   MoneyActivityTitleKey,
   MoneyActivityTransactionMeta,
@@ -16,24 +20,28 @@ export type MoneyActivityKind = 'deposited' | 'received' | 'converted' | 'sent';
 
 const ON_CHAIN_REVERT_RECEIPT_STATUS = '0x0';
 const ON_CHAIN_SUCCESS_RECEIPT_STATUSES = new Set(['0x1', '0x01']);
+const ON_CHAIN_FAILURE_ERROR_NAME = 'OnChainFailureError';
 
 function receiptStatus(tx: TransactionMeta): string | undefined {
-  const status = tx.txReceipt?.status;
-  return typeof status === 'string' || typeof status === 'number'
-    ? String(status)
-    : undefined;
+  return tx.txReceipt?.status?.toLowerCase();
 }
 
 /**
- * True when the transaction reverted on-chain. Wallet activity uses the same
- * `txReceipt.status === '0x0'` check; TransactionController `failed` alone
- * can also mean a local RPC/relayer error that never consumed a nonce.
+ * True when the transaction reverted on-chain. TransactionController only
+ * stores `txReceipt` on confirmation; a reverted receipt is reported by
+ * marking the tx `failed` with an `OnChainFailureError` and, when the revert
+ * could be decoded, `revert.receipt`. `failed` alone can also mean a local
+ * RPC/relayer error that never consumed a nonce.
  *
  * @param tx - Transaction metadata.
- * @returns Whether the receipt reports an on-chain revert.
+ * @returns Whether the transaction reverted on-chain.
  */
 export function isOnChainRevertedTransaction(tx: TransactionMeta): boolean {
-  return receiptStatus(tx) === ON_CHAIN_REVERT_RECEIPT_STATUS;
+  return (
+    receiptStatus(tx) === ON_CHAIN_REVERT_RECEIPT_STATUS ||
+    tx.error?.name === ON_CHAIN_FAILURE_ERROR_NAME ||
+    tx.revert?.receipt !== undefined
+  );
 }
 
 /**
@@ -48,10 +56,10 @@ export function isEphemeralFailedTransaction(tx: TransactionMeta): boolean {
   if (tx.status !== TransactionStatus.failed) {
     return false;
   }
-  const status = receiptStatus(tx);
-  if (status === ON_CHAIN_REVERT_RECEIPT_STATUS) {
+  if (isOnChainRevertedTransaction(tx)) {
     return false;
   }
+  const status = receiptStatus(tx);
   if (status && ON_CHAIN_SUCCESS_RECEIPT_STATUSES.has(status)) {
     return false;
   }
@@ -134,6 +142,13 @@ export function classifyMoneyActivity(tx: TransactionMeta): MoneyActivityKind {
     return 'deposited';
   }
 
+  if (isPerpsPredictMoneyWithdraw(tx)) {
+    return 'deposited';
+  }
+  if (isPerpsPredictMoneyDeposit(tx)) {
+    return 'sent';
+  }
+
   switch (type) {
     case TransactionType.moneyAccountDeposit:
       if (isFiatDeposit(tx) || isMusdPayToken(tx)) {
@@ -148,7 +163,8 @@ export function classifyMoneyActivity(tx: TransactionMeta): MoneyActivityKind {
     case TransactionType.simpleSend:
       return 'sent';
     default:
-      return 'received';
+      // Any other Pay-funded tx is the Money Account paying mUSD out.
+      return tx.metamaskPay ? 'sent' : 'received';
   }
 }
 

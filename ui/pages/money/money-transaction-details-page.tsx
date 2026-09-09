@@ -98,19 +98,22 @@ export function MoneyTransactionDetailsPage() {
   }, [transactionId]);
 
   const item = useMemo(() => {
-    if (controllerTx) {
-      const moneyAddress = availability.isAvailable
-        ? availability.address
-        : undefined;
-      if (!isVisibleMoneyActivityTransaction(controllerTx, moneyAddress)) {
-        return undefined;
-      }
-      return onchainItem(controllerTx);
-    }
-    return items.find(
+    const listItem = items.find(
       (candidate) =>
         candidate.kind === 'onchain' && candidate.id === transactionId,
     );
+    if (listItem) {
+      return listItem;
+    }
+    if (!controllerTx) {
+      return undefined;
+    }
+    const moneyAddress = availability.isAvailable
+      ? availability.address
+      : undefined;
+    return isVisibleMoneyActivityTransaction(controllerTx, moneyAddress)
+      ? onchainItem(controllerTx)
+      : undefined;
   }, [availability, controllerTx, items, transactionId]);
   const fromAddress =
     item?.kind === 'onchain' ? item.tx.txParams.from : undefined;
