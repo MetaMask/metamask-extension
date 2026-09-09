@@ -708,17 +708,6 @@ export type LegacyBackgroundApiServiceRejectAllPendingApprovalsAction = {
 };
 
 /**
- * One-time Basic Functionality consolidation when the remote FF turns on.
- * Aligns child preferences, schedules the modal/toast notice, and syncs
- * TokenDetection / GasFee / Shield / subscription controllers when
- * consolidation actually ran.
- */
-export type LegacyBackgroundApiServiceConsolidateBasicFunctionalityAction = {
-  type: `LegacyBackgroundApiService:consolidateBasicFunctionality`;
-  handler: LegacyBackgroundApiService['consolidateBasicFunctionality'];
-};
-
-/**
  * Toggles external services on or off.
  *
  * When enabled, token detection and non-RPC gas fee APIs are started, and the
@@ -1217,7 +1206,6 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceResolvePendingApprovalAction
   | LegacyBackgroundApiServiceApproveHardwareWalletTransactionAction
   | LegacyBackgroundApiServiceRejectAllPendingApprovalsAction
-  | LegacyBackgroundApiServiceConsolidateBasicFunctionalityAction
   | LegacyBackgroundApiServiceToggleExternalServicesAction
   | LegacyBackgroundApiServiceAcceptPermissionsRequestAction
   | LegacyBackgroundApiServiceAttemptLedgerTransportCreationAction

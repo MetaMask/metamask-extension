@@ -2896,7 +2896,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       consolidateBasicFunctionality: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        'LegacyBackgroundApiService:consolidateBasicFunctionality',
+        'PreferencesController:consolidateBasicFunctionality',
       ),
 
       addKnownMethodData: preferencesController.addKnownMethodData.bind(
