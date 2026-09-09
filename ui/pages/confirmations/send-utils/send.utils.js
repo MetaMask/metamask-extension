@@ -146,7 +146,7 @@ function generateERC1155TransferData({
             addHexPrefix(fromAddress),
             addHexPrefix(toAddress),
             BigInt(tokenId),
-            addHexPrefix(amount),
+            BigInt(amount),
             addHexPrefix(data),
           ],
         ),
