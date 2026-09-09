@@ -7,9 +7,6 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { TransactionType } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
-import log from 'loglevel';
 import {
   Box,
   BoxAlignItems,
@@ -30,10 +27,15 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { TransactionType } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
+import browser from 'webextension-polyfill';
+import log from 'loglevel';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { EXTENSION_MESSAGES } from '../../../../shared/constants/messages';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { ScrollContainer } from '../../../contexts/scroll-container';
@@ -264,7 +266,24 @@ export const HyperliquidDepositPrompt: React.FC<
     setIsPickerOpen(false);
   }, []);
 
+  // Attempt to open the browser popup for the perps deposit confirmation.
+  // This uses chrome.action.openPopup() (Chrome 127+) which requires a user gesture.
+  // The call happens synchronously in the background's message handler to consume
+  // the gesture before it expires. Falls back gracefully if unsupported or gesture lost.
+  const requestOpenPopup = useCallback(() => {
+    log.debug('HyperliquidDepositPrompt: Sending REQUEST_OPEN_POPUP');
+    browser.runtime
+      .sendMessage({ type: EXTENSION_MESSAGES.REQUEST_OPEN_POPUP })
+      .then(() => {
+        log.debug('HyperliquidDepositPrompt: REQUEST_OPEN_POPUP sent successfully');
+      })
+      .catch((err) => {
+        log.debug('HyperliquidDepositPrompt: REQUEST_OPEN_POPUP failed', err);
+      });
+  }, []);
+
   const handleContinue = useCallback(async () => {
+    log.debug('HyperliquidDepositPrompt: handleContinue called');
     setHasError(false);
 
     const result = await startPerpsDeposit();
@@ -300,6 +319,8 @@ export const HyperliquidDepositPrompt: React.FC<
       }
     }
 
+    // Navigate to confirmation as fallback (for notification window if popup doesn't open)
+    log.debug('HyperliquidDepositPrompt: Navigating to confirmation', { transactionId });
     navigate(
       {
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
@@ -312,6 +333,13 @@ export const HyperliquidDepositPrompt: React.FC<
     );
 
     trackPromptInteracted('continue');
+    // Request popup before resolving the approval so the popup can pick up
+    // the new pending transaction. The gesture may expire before the background
+    // receives this message, in which case the notification window stays open.
+    log.debug('HyperliquidDepositPrompt: About to request popup');
+    requestOpenPopup();
+
+    log.debug('HyperliquidDepositPrompt: Calling onActionComplete');
     onActionComplete({ action: 'continue', transactionId });
   }, [
     displayToken,
@@ -320,6 +348,8 @@ export const HyperliquidDepositPrompt: React.FC<
     perpsHomeRoute,
     startPerpsDeposit,
     trackPromptInteracted,
+    requestOpenPopup,
+    startPerpsDeposit,
   ]);
 
   return (
