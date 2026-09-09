@@ -1,4 +1,5 @@
 import log from 'loglevel';
+import { trace, TraceName, TraceOperation } from '../trace';
 import { NavigationOrigin, parse } from './parse';
 import { VALID, INVALID, MISSING, verify } from './verify';
 import { type Route, routes } from './routes';
@@ -17,6 +18,10 @@ jest.mock('./routes', () => ({
   routes: new Map(),
 }));
 jest.mock('loglevel');
+jest.mock('../trace', () => ({
+  ...jest.requireActual('../trace'),
+  trace: jest.fn((_request, callback) => callback()),
+}));
 
 describe('parse', () => {
   const mockHandler = jest.fn() as jest.MockedFunction<Route['handler']>;
@@ -134,6 +139,43 @@ describe('parse', () => {
     await parse(new URL(urlStr));
 
     expect(mockVerify).toHaveBeenCalledWith(new URL(urlStr));
+  });
+
+  it('traces signature verification for signed external deeplinks with a parent', async () => {
+    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
+    mockHandler.mockReturnValue({
+      path: 'destination-value',
+      query: new URLSearchParams(),
+    });
+    mockVerify.mockResolvedValue(VALID);
+    const traceContext = {};
+    const url = new URL('https://link.metamask.io/test?sig=bar');
+
+    await parse(url, { traceContext });
+
+    expect(trace).toHaveBeenCalledWith(
+      {
+        name: TraceName.DeeplinkSignatureVerify,
+        op: TraceOperation.DeeplinkPerformance,
+        parentContext: traceContext,
+      },
+      expect.any(Function),
+    );
+    expect(mockVerify).toHaveBeenCalledWith(url);
+  });
+
+  it('does not trace signature verification for unsigned external deeplinks', async () => {
+    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
+    mockHandler.mockReturnValue({
+      path: 'destination-value',
+      query: new URLSearchParams(),
+    });
+    mockVerify.mockResolvedValue(MISSING);
+
+    await parse(new URL('https://link.metamask.io/test'));
+
+    expect(trace).not.toHaveBeenCalled();
+    expect(mockVerify).toHaveBeenCalledTimes(1);
   });
 
   it('skips signature verification when `navigationOrigin` is `NavigationOrigin.INTERNAL`', async () => {

@@ -114,6 +114,7 @@ import { pageChanged } from '../../ducks/history/history';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useDeepLinkNavigationTrace } from '../../hooks/useDeepLinkNavigationTrace';
 import RewardsPage from '../rewards';
 import Home from '../home/home.tsx';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
@@ -792,6 +793,7 @@ export default function Routes() {
 
   useNavigateRouteListener();
   useBasicFunctionalityConsolidation();
+  useDeepLinkNavigationTrace();
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
 
