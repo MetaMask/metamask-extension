@@ -54,24 +54,25 @@ describe('BasicFunctionalityMigrationToast', () => {
     jest.clearAllMocks();
   });
 
-  it.each([
-    [true, 'enabled'],
-    [false, 'disabled'],
-  ])(
-    'shows the %s Basic Functionality state',
-    (isBasicFunctionalityEnabled, expectedState) => {
-      const { getByTestId, getByText } = renderComponent({
-        isBasicFunctionalityEnabled,
-      });
+  it('shows the enabled Basic Functionality state', () => {
+    const { getByTestId } = renderComponent({
+      isBasicFunctionalityEnabled: true,
+    });
 
-      expect(
-        getByTestId('basic-functionality-migration-toast'),
-      ).toBeInTheDocument();
-      expect(
-        getByText(new RegExp(`this setting is ${expectedState}\\.`, 'u')),
-      ).toBeInTheDocument();
-    },
-  );
+    expect(
+      getByTestId('basic-functionality-migration-toast'),
+    ).toHaveTextContent('this setting is enabled.');
+  });
+
+  it('shows the disabled Basic Functionality state', () => {
+    const { getByTestId } = renderComponent({
+      isBasicFunctionalityEnabled: false,
+    });
+
+    expect(
+      getByTestId('basic-functionality-migration-toast'),
+    ).toHaveTextContent('this setting is disabled.');
+  });
 
   it('does not render when no toast is scheduled', () => {
     const { queryByTestId } = renderComponent({ notification: null });
