@@ -7,15 +7,79 @@ function transactionPromise(tx: IDBTransaction): Promise<void> {
   return new Promise((resolve, reject) => {
     tx.oncomplete = () => resolve();
     tx.onerror = () => reject(tx.error);
+    // `abort` has to be handled separately from `error`. When a transaction
+    // fails while *committing* - a failed flush to disk, or quota exhaustion at
+    // commit time - every request has already completed and been removed from
+    // the transaction's request list, so no `error` event is fired at any
+    // request and none bubbles up to the transaction. Only `abort` fires.
+    // Requesting strict durability is what makes those commit failures
+    // observable, so without this handler the promise would never settle.
+    // `tx.error` is `null` for an explicitly aborted transaction, hence the
+    // fallback error.
+    tx.onabort = () =>
+      reject(
+        tx.error ??
+          new DOMException('IndexedDB transaction aborted', 'AbortError'),
+      );
   });
 }
 
+type IndexedDBStoreOptions = {
+  /**
+   * Request `durability: 'strict'` for `set`, `remove` and `reset`, so those
+   * operations only resolve once the write has been flushed to disk. Defaults
+   * to `false`, which leaves the browser default in place (`relaxed` in
+   * Chromium 121+).
+   */
+  strictDurability?: boolean;
+};
+
 /**
  * Store for managing IndexedDB operations in an objectStore named `store`.
- * Used for storing backups of the critical parts of the extension state.
+ * Backs both the critical-state backup (`metamask-backup`) and the general
+ * StorageService database.
  */
 export class IndexedDBStore {
   #db: IDBDatabase | null = null;
+
+  readonly #strictDurability: boolean;
+
+  /**
+   * @param options - Store options.
+   * @param options.strictDurability - Whether writes should wait for the data
+   * to be flushed to disk before resolving. Off by default.
+   */
+  constructor({ strictDurability = false }: IndexedDBStoreOptions = {}) {
+    this.#strictDurability = strictDurability;
+  }
+
+  /**
+   * Opens a readwrite transaction on the `store` object store.
+   *
+   * When this store was constructed with `strictDurability`, the transaction
+   * requests `durability: 'strict'` so that the commit waits for the write to
+   * reach disk. Every browser version this extension supports implements the
+   * `durability` option (Chrome 83+, Firefox 126+, Safari 15+; see
+   * https://developer.mozilla.org/en-US/docs/Web/API/IDBTransaction/durability#browser_compatibility),
+   * and per WebIDL an engine that did not would ignore the unknown option
+   * rather than throw — the dictionary conversion algorithm only reads
+   * declared members (see
+   * https://webidl.spec.whatwg.org/#es-dictionary), so no fallback branch
+   * is needed.
+   *
+   * @returns A readwrite IndexedDB transaction on the `store` object store.
+   */
+  #readWriteTransaction(): IDBTransaction {
+    if (!this.#db) {
+      throw new Error('Database is not open');
+    }
+    if (!this.#strictDurability) {
+      return this.#db.transaction('store', 'readwrite');
+    }
+    return this.#db.transaction('store', 'readwrite', {
+      durability: 'strict',
+    });
+  }
 
   /**
    * Opens the database, running migrations if necessary.
@@ -43,6 +107,18 @@ export class IndexedDBStore {
       request.onerror = () => {
         reject(request.error);
       };
+      // Fires when this version-change request is blocked by another open
+      // connection to the same database. Without this handler the promise
+      // hangs silently until the other connection closes.
+      // See https://developer.mozilla.org/en-US/docs/Web/API/IDBOpenDBRequest/blocked_event
+      request.onblocked = () => {
+        reject(
+          new DOMException(
+            `IndexedDB open "${name}" blocked by another connection`,
+            'AbortError',
+          ),
+        );
+      };
     });
   }
 
@@ -52,11 +128,8 @@ export class IndexedDBStore {
    * @param values - An object containing key-value pairs to set.
    */
   async set(values: Record<string, unknown>): Promise<void> {
-    if (!this.#db) {
-      throw new Error('Database is not open');
-    }
     const keys = Object.keys(values);
-    const tx = this.#db.transaction('store', 'readwrite');
+    const tx = this.#readWriteTransaction();
     const store = tx.objectStore('store');
     for (const key of keys) {
       store.put(values[key], key);
@@ -113,10 +186,7 @@ export class IndexedDBStore {
   }
 
   async remove(keys: string[]): Promise<void> {
-    if (!this.#db) {
-      throw new Error('Database is not open');
-    }
-    const tx = this.#db.transaction('store', 'readwrite');
+    const tx = this.#readWriteTransaction();
     const store = tx.objectStore('store');
     for (const key of keys) {
       store.delete(key);
@@ -128,10 +198,7 @@ export class IndexedDBStore {
    * Resets the database by clearing all data in the 'store' object store.
    */
   async reset(): Promise<void> {
-    if (!this.#db) {
-      throw new Error('Database is not open');
-    }
-    const tx = this.#db.transaction('store', 'readwrite');
+    const tx = this.#readWriteTransaction();
     const store = tx.objectStore('store');
     store.clear();
     await transactionPromise(tx);

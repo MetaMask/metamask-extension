@@ -71,7 +71,10 @@ export const migrate = (async (versionedData, _changedKeys) => {
     return;
   }
 
-  const database = new IndexedDBStore();
+  // This migration deletes the source data from `storage.local` right after
+  // writing it to IndexedDB, so the write has to be durable before the delete
+  // runs. It is a one-time write, so strict durability costs nothing here.
+  const database = new IndexedDBStore({ strictDurability: true });
   try {
     await database.open(
       STORAGE_SERVICE_INDEXED_DB_NAME,
