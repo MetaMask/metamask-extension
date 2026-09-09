@@ -350,6 +350,104 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.formState.leverage).toBe(10);
     });
 
+    it('applies a lower market maximum that replaces a stale cached one', () => {
+      const props = {
+        ...defaultOptions,
+        availableBalance: 100,
+        initialLeverage: 25,
+        maxLeverage: 40,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleLeverageChange(30);
+      });
+      expect(result.current.formState.leverage).toBe(30);
+
+      // Fresh metadata replaces the cached market with a lower maximum, so the
+      // page re-clamps the leverage it seeds.
+      props.maxLeverage = 10;
+      props.initialLeverage = 10;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.leverage).toBe(10);
+    });
+
+    it('clamps a locally picked leverage when the maximum drops before the save lands', () => {
+      const props = {
+        ...defaultOptions,
+        availableBalance: 100,
+        initialLeverage: 3,
+        maxLeverage: 40,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleLeverageChange(30);
+      });
+
+      // The save is still in flight, so `initialLeverage` stays at the persisted
+      // 3 and only the maximum moves.
+      props.maxLeverage = 10;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.leverage).toBe(10);
+    });
+
+    it('keeps a pending leverage edit and ignores its stale acknowledgment across a direction switch', () => {
+      const props = {
+        ...defaultOptions,
+        availableBalance: 100,
+        initialLeverage: 3,
+        initialDirection: 'long' as 'long' | 'short',
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleLeverageChange(5);
+        result.current.handleLeverageChange(6);
+      });
+
+      // Switching side before either save is acknowledged rebuilds the form,
+      // which must keep the market's leverage rather than the stale persisted 3.
+      props.initialDirection = 'short';
+      act(() => {
+        rerender();
+      });
+      expect(result.current.formState).toMatchObject({
+        direction: 'short',
+        leverage: 6,
+      });
+
+      act(() => {
+        result.current.handleAmountChange('25');
+      });
+
+      props.initialLeverage = 5;
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState).toMatchObject({
+        amount: '25',
+        direction: 'short',
+        leverage: 6,
+      });
+    });
+
     it('does not reset edited fields when a delayed leverage acknowledgment is stale', () => {
       const props = {
         ...defaultOptions,

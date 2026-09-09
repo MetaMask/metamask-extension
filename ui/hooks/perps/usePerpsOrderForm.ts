@@ -56,6 +56,30 @@ function calculateFallbackLiquidationPrice(
   );
 }
 
+/** Stable identity for markets the trader has not set a leverage on. */
+const NO_LOCAL_LEVERAGE: number[] = [];
+
+/**
+ * Apply a leverage to the form, keeping the balance percentage it implies.
+ *
+ * @param state - Current form state.
+ * @param leverage - Leverage to apply.
+ * @param balance - Tradeable balance, used to size the position.
+ * @returns Form state with the leverage and its balance percentage.
+ */
+function withLeverage(
+  state: OrderFormState,
+  leverage: number,
+  balance: number,
+): OrderFormState {
+  const amount = parseFloat(state.amount.replace(/,/gu, '')) || 0;
+  const maxSize = balance * leverage;
+  const balancePercent =
+    maxSize > 0 ? Math.min(Math.round((amount / maxSize) * 100), 100) : 0;
+
+  return { ...state, leverage, balancePercent };
+}
+
 function buildDefaultNewOrderAmountFields(
   amountValue: string,
   leverage: number,
@@ -384,7 +408,23 @@ export function usePerpsOrderForm({
     initialLeverage: number | undefined;
     initialDraftDigest: string | undefined;
   } | null>(null);
-  const [hasLocalLeverageEdit, setHasLocalLeverageEdit] = useState(false);
+  // Leverage values the trader has picked for this market. The controller
+  // echoes every save back through `initialLeverage`, so a change matching one
+  // of these is an acknowledgment of the trader's own edit. They are kept per
+  // asset and mode rather than cleared on reset, because leverage belongs to
+  // the market and an in-flight save outlives a direction switch.
+  const [localLeverage, setLocalLeverage] = useState<{
+    asset: string;
+    mode: OrderMode;
+    values: number[];
+  } | null>(null);
+  const localLeverageValues =
+    localLeverage &&
+    localLeverage.asset === asset &&
+    localLeverage.mode === mode
+      ? localLeverage.values
+      : NO_LOCAL_LEVERAGE;
+  const latestLocalLeverage = localLeverageValues.at(-1);
 
   const resetDependenciesChanged =
     prevResetDeps === null ||
@@ -394,13 +434,16 @@ export function usePerpsOrderForm({
     prevResetDeps.existingPositionDigest !== existingPositionDigest ||
     prevResetDeps.initialLeverage !== initialLeverage ||
     prevResetDeps.initialDraftDigest !== initialDraftDigest;
-  // Hydrate persisted leverage whenever it arrives or is re-clamped, but only
-  // until the trader picks their own. Past that point every `initialLeverage`
-  // change is the controller echoing a local edit, and an in-flight save of 5
-  // must not reset a form that has already moved on to 6.
+  // Hydrate leverage that the form does not already have, unless the incoming
+  // value is one the trader picked: an in-flight save of 5 must not reset a
+  // form that has already moved on to 6. Values the trader never chose stay
+  // authoritative, so a lower market maximum replacing stale metadata applies.
+  const isLeverageAcknowledgment =
+    initialLeverage !== undefined &&
+    localLeverageValues.includes(initialLeverage);
   const shouldResetForLeverageChange =
     prevResetDeps?.initialLeverage !== initialLeverage &&
-    !hasLocalLeverageEdit &&
+    !isLeverageAcknowledgment &&
     formState.leverage !== initialLeverage;
   const shouldResetForm =
     prevResetDeps === null ||
@@ -422,8 +465,16 @@ export function usePerpsOrderForm({
     });
 
     if (shouldResetForm) {
-      const resetLeverage =
-        initialDraft?.leverage ?? initialLeverage ?? TRADING_DEFAULTS.leverage;
+      // A direction switch keeps the leverage the trader picked: it belongs to
+      // the market, not the side, and its save may still be in flight. When the
+      // leverage itself is what changed, the incoming value is the newer one.
+      const resetLeverageSource =
+        initialDraft?.leverage ??
+        (shouldResetForLeverageChange
+          ? initialLeverage
+          : latestLocalLeverage) ??
+        initialLeverage;
+      const resetLeverage = resetLeverageSource ?? TRADING_DEFAULTS.leverage;
       const defaultAmountFields =
         mode === 'new'
           ? buildDefaultNewOrderAmountFields(
@@ -434,7 +485,6 @@ export function usePerpsOrderForm({
           : {};
 
       hasUserEditedAmount.current = Boolean(initialDraft?.amount);
-      setHasLocalLeverageEdit(false);
       if (mode === 'modify' && existingPosition) {
         setFormState({
           ...mockOrderFormDefaults,
@@ -452,14 +502,26 @@ export function usePerpsOrderForm({
                 asset,
                 direction: initialDirection,
                 type: orderType,
-                ...(initialLeverage !== undefined && {
-                  leverage: initialLeverage,
+                ...(resetLeverageSource !== undefined && {
+                  leverage: resetLeverage,
                 }),
                 ...defaultAmountFields,
               },
         );
       }
     }
+  }
+
+  // A stale cached market can advertise a higher maximum than the fresh
+  // metadata that replaces it, leaving the trader on a leverage the provider
+  // will reject. Only new orders are pulled back: in modify mode the leverage
+  // describes an existing position the provider already accepted.
+  if (mode === 'new' && formState.leverage > maxLeverage) {
+    setFormState((prev) =>
+      prev.leverage > maxLeverage
+        ? withLeverage(prev, maxLeverage, availableBalance)
+        : prev,
+    );
   }
 
   // Apply an external one-shot limit-price prefill (e.g. an order-book price
@@ -680,16 +742,17 @@ export function usePerpsOrderForm({
 
   const handleLeverageChange = useCallback(
     (leverage: number) => {
-      setHasLocalLeverageEdit(true);
-      setFormState((prev) => {
-        const amount = parseFloat(prev.amount.replace(/,/gu, '')) || 0;
-        const maxSize = availableBalance * leverage;
-        const balancePercent =
-          maxSize > 0 ? Math.min(Math.round((amount / maxSize) * 100), 100) : 0;
-        return { ...prev, leverage, balancePercent };
+      setLocalLeverage((prev) => {
+        if (prev && prev.asset === asset && prev.mode === mode) {
+          return prev.values.includes(leverage)
+            ? prev
+            : { ...prev, values: [...prev.values, leverage] };
+        }
+        return { asset, mode, values: [leverage] };
       });
+      setFormState((prev) => withLeverage(prev, leverage, availableBalance));
     },
-    [availableBalance],
+    [asset, availableBalance, mode],
   );
 
   const handleAutoCloseEnabledChange = useCallback((enabled: boolean) => {
