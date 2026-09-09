@@ -114,7 +114,7 @@ exports[`SnapUIAddressInput renders with an invalid CAIP Account ID 1`] = `
           class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="mm-box mm-text-field mm-text-field--size-lg has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-primary-default has-[:focus-visible]:-outline-offset-[3px] mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
             <input
               autocomplete="off"
@@ -156,7 +156,7 @@ exports[`SnapUIAddressInput will not render avatar when displayAvatar is false 1
           class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="mm-box mm-text-field mm-text-field--size-lg has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-primary-default has-[:focus-visible]:-outline-offset-[3px] mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
             <input
               autocomplete="off"
@@ -198,7 +198,7 @@ exports[`SnapUIAddressInput will render 1`] = `
           class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="mm-box mm-text-field mm-text-field--size-lg has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-primary-default has-[:focus-visible]:-outline-offset-[3px] mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
             <input
               autocomplete="off"
@@ -334,7 +334,7 @@ exports[`SnapUIAddressInput will render avatar when displayAvatar is true 1`] = 
           class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="mm-box mm-text-field mm-text-field--size-lg has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-primary-default has-[:focus-visible]:-outline-offset-[3px] mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
             <div
               class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-md h-6 w-6"

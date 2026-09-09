@@ -16,6 +16,12 @@
   height: var(--text-field-height);
   border-color: var(--color-border-default);
 
+  &--focused {
+    // Inset, otherwise ancestors that scroll clip the outline
+    outline: 2px solid var(--color-primary-default);
+    outline-offset: -3px;
+  }
+
   &--error {
     border-color: var(--color-error-default);
   }
