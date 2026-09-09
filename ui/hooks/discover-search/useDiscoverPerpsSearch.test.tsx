@@ -33,6 +33,7 @@ describe('useDiscoverPerpsSearch', () => {
       cryptoMarkets: [],
       hip3Markets: [],
       isInitialLoading: false,
+      isLive: false,
       error: null,
       refresh: jest.fn(),
     });
@@ -48,6 +49,7 @@ describe('useDiscoverPerpsSearch', () => {
       cryptoMarkets: [],
       hip3Markets: [],
       isInitialLoading: false,
+      isLive: false,
       error: null,
       refresh: jest.fn(),
     });
@@ -71,6 +73,7 @@ describe('useDiscoverPerpsSearch', () => {
       cryptoMarkets: [],
       hip3Markets: [],
       isInitialLoading: false,
+      isLive: false,
       error: null,
       refresh: jest.fn(),
     });
@@ -96,6 +99,7 @@ describe('useDiscoverPerpsSearch', () => {
       cryptoMarkets: [],
       hip3Markets: [],
       isInitialLoading: false,
+      isLive: false,
       error: null,
       refresh: jest.fn(),
     });
@@ -114,6 +118,7 @@ describe('useDiscoverPerpsSearch', () => {
       cryptoMarkets: [],
       hip3Markets: [],
       isInitialLoading: false,
+      isLive: false,
       error: null,
       refresh: jest.fn(),
     });

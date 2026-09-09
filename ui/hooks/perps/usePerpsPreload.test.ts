@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import { act, renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { trace, endTrace, TraceName } from '../../../shared/lib/trace';
@@ -249,10 +250,14 @@ describe('usePerpsPreload', () => {
 
   it('resets the manager when the unlocked wallet becomes locked', async () => {
     let rerender!: (props: { ready: boolean }) => void;
+    const initialProps: { ready: boolean } = { ready: true };
     await act(async () => {
-      ({ rerender } = renderHook(({ ready }) => usePerpsPreload(ready), {
-        initialProps: { ready: true },
-      }));
+      ({ rerender } = renderHook(
+        ({ ready }: { ready: boolean }) => usePerpsPreload(ready),
+        {
+          initialProps,
+        },
+      ));
     });
 
     rerender({ ready: false });

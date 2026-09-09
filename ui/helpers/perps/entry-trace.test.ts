@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import { trace, endTrace, TraceName } from '../../../shared/lib/trace';
 
 jest.mock('../../../shared/lib/trace', () => ({
