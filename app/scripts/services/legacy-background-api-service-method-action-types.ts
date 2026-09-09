@@ -719,15 +719,6 @@ export type LegacyBackgroundApiServiceConsolidateBasicFunctionalityAction = {
 };
 
 /**
- * Dismisses the one-time Basic Functionality migration modal or toast.
- */
-export type LegacyBackgroundApiServiceDismissBasicFunctionalityMigrationNotificationAction =
-  {
-    type: `LegacyBackgroundApiService:dismissBasicFunctionalityMigrationNotification`;
-    handler: LegacyBackgroundApiService['dismissBasicFunctionalityMigrationNotification'];
-  };
-
-/**
  * Toggles external services on or off.
  *
  * When enabled, token detection and non-RPC gas fee APIs are started, and the
@@ -1227,7 +1218,6 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceApproveHardwareWalletTransactionAction
   | LegacyBackgroundApiServiceRejectAllPendingApprovalsAction
   | LegacyBackgroundApiServiceConsolidateBasicFunctionalityAction
-  | LegacyBackgroundApiServiceDismissBasicFunctionalityMigrationNotificationAction
   | LegacyBackgroundApiServiceToggleExternalServicesAction
   | LegacyBackgroundApiServiceAcceptPermissionsRequestAction
   | LegacyBackgroundApiServiceAttemptLedgerTransportCreationAction

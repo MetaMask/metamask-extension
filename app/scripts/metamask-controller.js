@@ -2925,7 +2925,7 @@ export default class MetamaskController extends EventEmitter {
       dismissBasicFunctionalityMigrationNotification:
         this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'LegacyBackgroundApiService:dismissBasicFunctionalityMigrationNotification',
+          'PreferencesController:dismissBasicFunctionalityMigrationNotification',
         ),
 
       setManageInstitutionalWallets:

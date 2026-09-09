@@ -6353,24 +6353,6 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
-  describe('dismissBasicFunctionalityMigrationNotification', () => {
-    it('dismisses the notice on PreferencesController', async () => {
-      await withService(async ({ rootMessenger }) => {
-        const dismiss = jest.fn();
-        rootMessenger.registerActionHandler(
-          'PreferencesController:dismissBasicFunctionalityMigrationNotification',
-          dismiss,
-        );
-
-        rootMessenger.call(
-          'LegacyBackgroundApiService:dismissBasicFunctionalityMigrationNotification',
-        );
-
-        expect(dismiss).toHaveBeenCalledTimes(1);
-      });
-    });
-  });
-
   describe('throwTestError', () => {
     beforeEach(() => {
       jest.useFakeTimers();
@@ -8774,7 +8756,6 @@ function getMessenger(
       'PhishingController:testOrigin',
       'PreferencesController:toggleExternalServices',
       'PreferencesController:consolidateBasicFunctionality',
-      'PreferencesController:dismissBasicFunctionalityMigrationNotification',
       'SubscriptionController:getState',
       'TokenDetectionController:enable',
       'TokenDetectionController:disable',

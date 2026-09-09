@@ -511,7 +511,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'createNewVaultAndRestore',
   'createSeedPhraseBackup',
   'decodeTransactionData',
-  'dismissBasicFunctionalityMigrationNotification',
   'discoverAndCreateAccounts',
   'estimateGas',
   'exportAccount',
@@ -3108,15 +3107,6 @@ export class LegacyBackgroundApiService {
     if (landingState !== null) {
       this.toggleExternalServices(landingState);
     }
-  }
-
-  /**
-   * Dismisses the one-time Basic Functionality migration modal or toast.
-   */
-  dismissBasicFunctionalityMigrationNotification(): void {
-    this.#messenger.call(
-      'PreferencesController:dismissBasicFunctionalityMigrationNotification',
-    );
   }
 
   /**
