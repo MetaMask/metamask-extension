@@ -1611,7 +1611,6 @@ describe('MetaMetricsController', function () {
             "dataCollectionForMarketing": null,
             "marketingCampaignCookieId": null,
             "tracesBeforeMetricsOptIn": [],
-            "traits": {},
           }
         `);
       });
@@ -1630,7 +1629,6 @@ describe('MetaMetricsController', function () {
             "dataCollectionForMarketing": null,
             "marketingCampaignCookieId": null,
             "tracesBeforeMetricsOptIn": [],
-            "traits": {},
           }
         `);
       });
