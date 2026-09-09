@@ -153,8 +153,11 @@ class PerpsStreamManager {
   private activeOrderBookAggregatedSubscriptionId: string | null = null;
 
   // Deduplicates concurrent initForAddress calls
-  private pendingInit: { address: string; promise: Promise<void> } | null =
-    null;
+  private pendingInit: {
+    address: string;
+    promise: Promise<void>;
+    acceptsUpdates: boolean;
+  } | null = null;
 
   // Optimistic overrides for TP/SL - preserves user-set values until WebSocket catches up
   private readonly optimisticTPSLOverrides: Map<
@@ -569,10 +572,9 @@ class PerpsStreamManager {
 
     const needsDisconnect =
       this.initializedAddress !== null || this.pendingInit !== null;
-    this.initializationGeneration += 1;
+    // Cancel old REST fallbacks before clearing their data or starting an RPC.
+    this.reset();
     const generation = this.initializationGeneration;
-    this.clearAllCaches();
-    this.initializedAddress = null;
 
     // Serialize account transitions so A → B → A cannot finish an older init
     // after the newest one and disconnect its provider.
@@ -589,17 +591,27 @@ class PerpsStreamManager {
           if (generation !== this.initializationGeneration) {
             return;
           }
+          // The old bridge is disconnected. The new bridge emits its initial
+          // snapshots before perpsInit returns, so accept them during this RPC.
+          if (this.pendingInit) {
+            this.pendingInit.acceptsUpdates = true;
+          }
           await submitRequestToBackground('perpsInit');
           if (generation === this.initializationGeneration) {
             this.init(address);
           }
+        } catch (error) {
+          if (generation === this.initializationGeneration) {
+            this.reset();
+          }
+          throw error;
         } finally {
           if (generation === this.initializationGeneration) {
             this.pendingInit = null;
           }
         }
       });
-    this.pendingInit = { address, promise };
+    this.pendingInit = { address, promise, acceptsUpdates: false };
     this.initializationQueue = promise;
     await promise;
   }
@@ -624,7 +636,7 @@ class PerpsStreamManager {
     subscriptionId?: string;
     live?: boolean;
   }): void {
-    if (this.pendingInit) {
+    if (this.pendingInit && !this.pendingInit.acceptsUpdates) {
       return;
     }
     this._lastStreamUpdateAt = Date.now();
