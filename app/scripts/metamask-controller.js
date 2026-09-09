@@ -355,7 +355,6 @@ import { CurrencyRateControllerInit } from './messenger-client-init/currency-rat
 import { NameControllerInit } from './messenger-client-init/confirmations/name-controller-init';
 import { SelectedNetworkControllerInit } from './messenger-client-init/selected-network-controller-init';
 import { ShieldSubscriptionServiceInit } from './messenger-client-init/subscription';
-import { ConfigRegistryControllerInit } from './messenger-client-init/config-registry-controller-init';
 import { NetworkConnectionBannerControllerInit } from './messenger-client-init/network-connection-banner';
 import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
@@ -392,7 +391,6 @@ import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-t
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { UserTraitsServiceInit } from './messenger-client-init/user-traits-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
-import { ConfigRegistryApiServiceInit } from './messenger-client-init/config-registry-api-service-init';
 import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
 import { ChompApiServiceInit } from './messenger-client-init/chomp-api-service-init';
 import { MoneyAccountApiDataServiceInit } from './messenger-client-init/money-account-api-data-service-init';
@@ -666,8 +664,6 @@ export default class MetamaskController extends EventEmitter {
       QrSyncController: QrSyncControllerInit,
       // ClientController must be initialized before AssetsController (AssetsController subscribes to ClientController:stateChange).
       ClientController: ClientControllerInit,
-      ConfigRegistryController: ConfigRegistryControllerInit,
-      ConfigRegistryApiService: ConfigRegistryApiServiceInit,
       ChompApiService: ChompApiServiceInit,
       MoneyAccountApiDataService: MoneyAccountApiDataServiceInit,
       MoneyAccountAvailabilityService: MoneyAccountAvailabilityServiceInit,
@@ -828,8 +824,9 @@ export default class MetamaskController extends EventEmitter {
     this.legacyBackgroundApiService =
       messengerClientsByName.LegacyBackgroundApiService;
     this.passkeyController = this.wallet.getInstance('PasskeyController');
-    this.configRegistryController =
-      messengerClientsByName.ConfigRegistryController;
+    this.configRegistryController = this.wallet.getInstance(
+      'ConfigRegistryController',
+    );
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
