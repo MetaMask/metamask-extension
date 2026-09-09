@@ -95,7 +95,7 @@ class AccountDetailsModal extends Confirmation {
           500,
         );
       },
-      { timeout: 20000, interval: 200 },
+      { timeout: 5000, interval: 200 },
     );
   }
 }
