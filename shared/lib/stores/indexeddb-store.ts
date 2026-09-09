@@ -107,18 +107,6 @@ export class IndexedDBStore {
       request.onerror = () => {
         reject(request.error);
       };
-      // Fires when this version-change request is blocked by another open
-      // connection to the same database. Without this handler the promise
-      // hangs silently until the other connection closes.
-      // See https://developer.mozilla.org/en-US/docs/Web/API/IDBOpenDBRequest/blocked_event
-      request.onblocked = () => {
-        reject(
-          new DOMException(
-            `IndexedDB open "${name}" blocked by another connection`,
-            'AbortError',
-          ),
-        );
-      };
     });
   }
 
