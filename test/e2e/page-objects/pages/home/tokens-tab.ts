@@ -735,17 +735,25 @@ class TokensTab extends HomePage {
   }
 
   private async expandLowValueAssetsIfPresent(): Promise<void> {
-    // If the low value assets section is already expanded, no action is required.
     try {
       await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
         timeout: 1000,
       });
       return;
     } catch {
-      // Not expanded yet (or low value section not present), attempt to expand it below.
+      // Not expanded yet (or section not present)
     }
 
-    await this.driver.clickElementSafe(this.lowValueAssetsToggle);
+    const togglePresent = await this.driver.isElementPresentAndVisible(
+      this.lowValueAssetsToggle,
+      1000,
+    );
+    if (!togglePresent) {
+      return;
+    }
+
+    await this.driver.clickElement(this.lowValueAssetsToggle);
+    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded);
   }
 
   private async findTokenRowByName(tokenName: string): Promise<WebElement> {
@@ -853,6 +861,10 @@ class TokensTab extends HomePage {
       this.tokenManagementCustomTokenSuccessToast,
     );
     await this.returnFromTokenManagementToHome();
+    await this.driver.assertElementNotPresent(
+      this.tokenManagementCustomTokenSuccessToast,
+      { findElementGuard: this.tokenListItem },
+    );
   }
 
   /**
