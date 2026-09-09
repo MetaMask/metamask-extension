@@ -132,6 +132,7 @@ describe('activityMatchesAssetId', () => {
       type: 'receive',
       data: {
         from: '0x1',
+        to: '0x2',
         token: {
           assetId: 'eip155:5042/slip44:5042',
           direction: 'in',

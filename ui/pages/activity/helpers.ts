@@ -3,7 +3,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import type { CaipAssetType } from '@metamask/utils';
+import { isCaipAssetType, type CaipAssetType } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { ARC_USDC_TOKEN_ADDRESS } from '../../../shared/constants/network';
@@ -92,6 +92,7 @@ export function activityMatchesAssetId(
   return tokenAssetIds.some(
     (tokenAssetId) =>
       tokenAssetId &&
+      isCaipAssetType(tokenAssetId) &&
       getEquivalentActivityAssetIds(tokenAssetId).some((equivalentAssetId) =>
         equivalentAssetIds.some((filterAssetId) =>
           isEqualCaseInsensitive(equivalentAssetId, filterAssetId),
