@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import { useTheme } from '../../../../hooks/useTheme';
 import { useOHLCVChart } from './useOHLCVChart';
+import type { OHLCVRealtimeBar } from './useOHLCVRealtime';
 
 /**
  * [POC — THROWAWAY] AdvancedChartIframe
@@ -37,6 +38,8 @@ type AdvancedChartIframeProps = {
   selectedInterval: string;
   onError?: (error: string) => void;
   onReady?: () => void;
+  /** Real-time candle update from useOHLCVRealtime hook */
+  realtimeBar?: OHLCVRealtimeBar;
 };
 
 const AdvancedChartIframe = forwardRef<
@@ -44,7 +47,15 @@ const AdvancedChartIframe = forwardRef<
   AdvancedChartIframeProps
 >(
   (
-    { assetId, height = 300, chartType, selectedInterval, onError, onReady },
+    {
+      assetId,
+      height = 300,
+      chartType,
+      selectedInterval,
+      onError,
+      onReady,
+      realtimeBar,
+    },
     ref,
   ) => {
     const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -128,6 +139,21 @@ const AdvancedChartIframe = forwardRef<
         postToChart({ type: 'SET_CHART_TYPE', payload: { type: chartType } });
       }
     }, [chartType, chartReady, postToChart]);
+
+    // Forward realtime bar updates to the chart engine
+    useEffect(() => {
+      if (!chartReady || !realtimeBar) {
+        return;
+      }
+      console.log('[OHLCV-RT] Forwarding realtime bar to chart engine', {
+        time: realtimeBar.time,
+        close: realtimeBar.close,
+      });
+      postToChart({
+        type: 'REALTIME_UPDATE',
+        payload: { bar: realtimeBar },
+      });
+    }, [realtimeBar, chartReady, postToChart]);
 
     // Main data-sending path: post OHLCV data to iframe when it arrives and
     // the iframe is loaded. Gated on iframeLoaded (NOT chartReady) to match

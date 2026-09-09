@@ -112,6 +112,7 @@ import IntervalBar, {
   CHART_TYPE_CANDLE,
 } from './chart/advanced-chart-interval-bar';
 import IndicatorBar from './chart/advanced-chart-indicator-bar';
+import { useOHLCVRealtime } from './chart/useOHLCVRealtime';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
 import { AssetActivateCard } from './asset-activation-card';
@@ -165,6 +166,7 @@ const AssetPage = ({
   const [advancedChartError, setAdvancedChartError] = useState<string | null>(
     null,
   );
+  const [acChartReady, setAcChartReady] = useState(false);
   const showAdvancedChart = !advancedChartError;
   const [acInterval, setAcInterval] = useState('15m');
   const [acChartType, setAcChartType] = useState(CHART_TYPE_LINE);
@@ -172,6 +174,10 @@ const AssetPage = ({
     () => new Set(),
   );
   const acRef = React.useRef<AdvancedChartIframeRef>(null);
+
+  const handleAdvancedChartReady = useCallback(() => {
+    setAcChartReady(true);
+  }, []);
 
   const handleIndicatorToggle = useCallback((name: string) => {
     setAcIndicators((prev) => {
@@ -332,6 +338,21 @@ const AssetPage = ({
   const caipAssetId = isEvm
     ? toAssetId(address, caipChainId)
     : (decodedAsset as CaipAssetType);
+
+  // [POC — THROWAWAY] Real-time OHLCV updates via polling
+  const { latestBar: realtimeLatestBar } = useOHLCVRealtime({
+    assetId: caipAssetId as string,
+    interval: acInterval,
+    enabled: acChartReady && showAdvancedChart,
+  });
+
+  // Convert latestBar to the format expected by AdvancedChartIframe
+  const realtimeBar = useMemo(() => {
+    if (!realtimeLatestBar) {
+      return undefined;
+    }
+    return realtimeLatestBar;
+  }, [realtimeLatestBar]);
 
   const securityTrustToken = useMemo(
     () => ({
@@ -543,6 +564,8 @@ const AssetPage = ({
               chartType={acChartType}
               selectedInterval={acInterval}
               onError={setAdvancedChartError}
+              onReady={handleAdvancedChartReady}
+              realtimeBar={realtimeBar}
             />
             {acChartType === CHART_TYPE_CANDLE && (
               <IndicatorBar
