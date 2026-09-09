@@ -1,5 +1,5 @@
 import type { StorageAdapter } from '@metamask/storage-service';
-import { isValidJson, type Json } from '@metamask/utils';
+import { isObject, isValidJson, type Json } from '@metamask/utils';
 import browser from 'webextension-polyfill';
 import { StorageAdapter as ExtensionStorageAdapter } from '../wallet-init/instance-options/storage-service';
 
@@ -29,11 +29,15 @@ type JsonRecord = Record<string, Json>;
 /**
  * Check whether a JSON value is a JSON object.
  *
+ * Delegates the predicate to `isObject` and only narrows differently: `isObject`
+ * yields `RuntimeObject`, whose members are `unknown`, and everything here comes
+ * from an `isValidJson` check in `init`.
+ *
  * @param value - The value to check.
  * @returns Whether the value is a non-array JSON object.
  */
 function isJsonRecord(value: Json): value is JsonRecord {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
+  return isObject(value);
 }
 
 /**
