@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   Caip25EndowmentPermissionName,
   getCaip25CaveatFromPermission,
@@ -9,7 +10,7 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { getPermissionSubjects } from '../selectors';
 import { getAccountGroupWithInternalAccounts } from '../selectors/multichain-accounts/account-tree';
-import { setPermittedAccounts } from '../store/actions';
+import { removePermittedAccount } from '../store/actions';
 import { useDispatch } from '../store/hooks';
 
 type Caip25Permission = NonNullable<
@@ -28,7 +29,7 @@ type PermissionSubjects = Record<
  */
 export function useDisconnectAccountGroup() {
   const dispatch = useDispatch();
-  const subjects = useSelector(getPermissionSubjects) as PermissionSubjects;
+  const store = useStore();
   const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
 
   return useCallback(
@@ -40,38 +41,39 @@ export function useDisconnectAccountGroup() {
         return;
       }
 
-      // Origins hold independent permissions, but every account of an origin
-      // goes in a single write since each one rewrites the whole caveat.
-      await Promise.all(
-        Object.entries(subjects).map(async ([origin, subject]) => {
-          const caveat = getCaip25CaveatFromPermission(
-            subject.permissions?.[Caip25EndowmentPermissionName],
-          );
+      // Permissions are read again for every account rather than snapshotted:
+      // another group may be disconnecting at the same time, and each write
+      // rewrites the whole caveat, so a stale list would reconnect its accounts.
+      const findPermittedOrigins = (account: InternalAccount) => {
+        const subjects = getPermissionSubjects(
+          store.getState(),
+        ) as PermissionSubjects;
 
-          if (!caveat) {
-            return;
-          }
+        return Object.entries(subjects)
+          .filter(([, subject]) => {
+            const caveat = getCaip25CaveatFromPermission(
+              subject.permissions?.[Caip25EndowmentPermissionName],
+            );
 
-          const permittedAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
-            caveat.value,
-          );
-          const remainingAccountIds = permittedAccountIds.filter(
-            (permittedAccountId) =>
-              !accounts.some((account) =>
-                isInternalAccountInPermittedAccountIds(account, [
-                  permittedAccountId,
-                ]),
-              ),
-          );
+            return (
+              caveat !== undefined &&
+              isInternalAccountInPermittedAccountIds(
+                account,
+                getCaipAccountIdsFromCaip25CaveatValue(caveat.value),
+              )
+            );
+          })
+          .map(([origin]) => origin);
+      };
 
-          if (remainingAccountIds.length === permittedAccountIds.length) {
-            return;
-          }
-
-          await dispatch(setPermittedAccounts(origin, remainingAccountIds));
-        }),
-      );
+      // Accounts are removed one at a time so the background recomputes the
+      // remaining accounts of the origin from current state on every removal.
+      for (const account of accounts) {
+        for (const origin of findPermittedOrigins(account)) {
+          await dispatch(removePermittedAccount(origin, account.address));
+        }
+      }
     },
-    [accountGroups, dispatch, subjects],
+    [accountGroups, dispatch, store],
   );
 }

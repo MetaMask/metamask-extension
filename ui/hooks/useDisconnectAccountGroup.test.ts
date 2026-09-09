@@ -12,13 +12,14 @@ import { EthAccountType, SolAccountType } from '@metamask/keyring-api';
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 import { createMockInternalAccount } from '../../test/jest/mocks';
+import * as actionConstants from '../store/actionConstants';
 import { useDisconnectAccountGroup } from './useDisconnectAccountGroup';
 
 jest.mock('../store/actions', () => {
   const actualActions = jest.requireActual('../store/actions');
   return {
     ...actualActions,
-    setPermittedAccounts: jest.fn().mockImplementation(() => {
+    removePermittedAccount: jest.fn().mockImplementation(() => {
       return async function () {
         await Promise.resolve();
       };
@@ -26,8 +27,8 @@ jest.mock('../store/actions', () => {
   };
 });
 
-const mockSetPermittedAccounts =
-  jest.requireMock('../store/actions').setPermittedAccounts;
+const mockRemovePermittedAccount =
+  jest.requireMock('../store/actions').removePermittedAccount;
 
 const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
 const groupId = `${walletId}/0` as AccountGroupId;
@@ -140,8 +141,19 @@ const renderDisconnect = (subjects: Record<string, unknown>) => {
   const wrapper = ({ children }: { children: React.ReactNode }) =>
     React.createElement(Provider, { store, children });
 
-  return renderHook(() => useDisconnectAccountGroup(), { wrapper }).result;
+  const { result } = renderHook(() => useDisconnectAccountGroup(), { wrapper });
+
+  return { result, store };
 };
+
+const setSubjects = (
+  store: ReturnType<typeof configureStore>,
+  subjects: Record<string, unknown>,
+) =>
+  store.dispatch({
+    type: actionConstants.UPDATE_METAMASK_STATE,
+    value: { subjects },
+  });
 
 describe('useDisconnectAccountGroup', () => {
   beforeEach(() => {
@@ -149,70 +161,92 @@ describe('useDisconnectAccountGroup', () => {
   });
 
   it('revokes every account of the group on every origin it is connected to', async () => {
-    const disconnect = renderDisconnect({
+    const { result } = renderDisconnect({
       'https://dapp.one': createSubject(
         createCaveatValue([evmAccountId], [solanaAccountId]),
       ),
       'https://dapp.two': createSubject(createCaveatValue([evmAccountId])),
     });
 
-    await disconnect.current(groupId);
+    await result.current(groupId);
 
-    expect(mockSetPermittedAccounts).toHaveBeenCalledTimes(2);
-    expect(mockSetPermittedAccounts).toHaveBeenCalledWith(
+    expect(mockRemovePermittedAccount).toHaveBeenCalledTimes(3);
+    expect(mockRemovePermittedAccount).toHaveBeenCalledWith(
       'https://dapp.one',
-      [],
+      evmAccount.address,
     );
-    expect(mockSetPermittedAccounts).toHaveBeenCalledWith(
+    expect(mockRemovePermittedAccount).toHaveBeenCalledWith(
       'https://dapp.two',
-      [],
+      evmAccount.address,
+    );
+    expect(mockRemovePermittedAccount).toHaveBeenCalledWith(
+      'https://dapp.one',
+      solanaAccount.address,
     );
   });
 
-  it('leaves the accounts of other groups connected', async () => {
-    const disconnect = renderDisconnect({
+  it('removes its own accounts only, leaving the rest of a shared origin connected', async () => {
+    const { result } = renderDisconnect({
       'https://dapp.one': createSubject(
         createCaveatValue([evmAccountId, otherEvmAccountId], [solanaAccountId]),
       ),
     });
 
-    await disconnect.current(groupId);
+    await result.current(groupId);
 
-    expect(mockSetPermittedAccounts).toHaveBeenCalledTimes(1);
-    expect(mockSetPermittedAccounts).toHaveBeenCalledWith('https://dapp.one', [
-      otherEvmAccountId,
-    ]);
+    expect(mockRemovePermittedAccount).toHaveBeenCalledTimes(2);
+    expect(mockRemovePermittedAccount).not.toHaveBeenCalledWith(
+      'https://dapp.one',
+      otherEvmAccount.address,
+    );
+  });
+
+  it('reads the connections when it runs, not when it rendered', async () => {
+    const { result, store } = renderDisconnect({});
+    // A disconnect of another group can land between the render and the click,
+    // and it rewrites the permissions of every origin they share.
+    const disconnect = result.current;
+
+    setSubjects(store, {
+      'https://dapp.one': createSubject(createCaveatValue([evmAccountId])),
+    });
+    await disconnect(groupId);
+
+    expect(mockRemovePermittedAccount).toHaveBeenCalledWith(
+      'https://dapp.one',
+      evmAccount.address,
+    );
   });
 
   it('leaves origins the group is not connected to untouched', async () => {
-    const disconnect = renderDisconnect({
+    const { result } = renderDisconnect({
       'https://dapp.one': createSubject(createCaveatValue([otherEvmAccountId])),
     });
 
-    await disconnect.current(groupId);
+    await result.current(groupId);
 
-    expect(mockSetPermittedAccounts).not.toHaveBeenCalled();
+    expect(mockRemovePermittedAccount).not.toHaveBeenCalled();
   });
 
   it('ignores subjects without account permissions, such as snaps', async () => {
-    const disconnect = renderDisconnect({
+    const { result } = renderDisconnect({
       'npm:@metamask/test-snap': {
         permissions: { [snapPermissionName]: {} },
       },
     });
 
-    await disconnect.current(groupId);
+    await result.current(groupId);
 
-    expect(mockSetPermittedAccounts).not.toHaveBeenCalled();
+    expect(mockRemovePermittedAccount).not.toHaveBeenCalled();
   });
 
   it('does nothing for a group that is no longer in the tree', async () => {
-    const disconnect = renderDisconnect({
+    const { result } = renderDisconnect({
       'https://dapp.one': createSubject(createCaveatValue([evmAccountId])),
     });
 
-    await disconnect.current(`${walletId}/9` as AccountGroupId);
+    await result.current(`${walletId}/9` as AccountGroupId);
 
-    expect(mockSetPermittedAccounts).not.toHaveBeenCalled();
+    expect(mockRemovePermittedAccount).not.toHaveBeenCalled();
   });
 });
