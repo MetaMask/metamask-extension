@@ -207,6 +207,20 @@ export const selectPerpsCachedAccountState = (state: PerpsState) => {
   );
 };
 
+/**
+ * Full cached user-data entry for the active provider, including the
+ * `address` the snapshot was stored for. Prefer this over
+ * `selectPerpsCachedAccountState` when the caller must verify ownership
+ * before overlaying `accountState`.
+ *
+ * @param state - Flattened Perps controller state.
+ * @returns The provider cache entry, or null when absent.
+ */
+export const selectPerpsCachedUserData = (state: PerpsState) => {
+  const provider = selectPerpsActiveProvider(state);
+  return state.metamask.cachedUserDataByProvider?.[provider] ?? null;
+};
+
 export const selectPerpsPerpsBalances = (state: PerpsState) =>
   state.metamask.perpsBalances ?? {};
 
