@@ -58,6 +58,10 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useSegmentContext } from '../../hooks/useSegmentContext';
+import {
+  cancelPendingDeepLinkUnlockTrace,
+  startPendingDeepLinkUnlockTrace,
+} from '../../hooks/useDeepLinkNavigationTrace';
 import { I18nContext } from '../../contexts/i18n';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
@@ -307,6 +311,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     }
 
     this.setState({ error: null, isSubmitting: true });
+    const deepLinkTraceId = startPendingDeepLinkUnlockTrace();
 
     // Capture the rehydration state before async operations that might change it
     const isRehydrationFlow = this.isSocialImportRehydration();
@@ -384,6 +389,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
       this.setState({ isSubmitting: false });
       await this.props.navigateAfterUnlock();
     } catch (error) {
+      cancelPendingDeepLinkUnlockTrace(await deepLinkTraceId, 'unlock_failed');
       this.setState({ isSubmitting: false });
       await this.handleLoginError(error as LoginError, isRehydrationFlow);
     }

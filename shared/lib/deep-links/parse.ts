@@ -8,11 +8,12 @@
  */
 
 import log from 'loglevel';
+import { trace, type TraceContext, TraceName, TraceOperation } from '../trace';
 import { routes } from './routes';
 import type { Destination, Route } from './routes/route';
 import { verify, type SignatureStatus } from './verify';
 import { canonicalize } from './canonicalize';
-import { SIG_PARAMS_PARAM } from './constants';
+import { SIG_PARAM, SIG_PARAMS_PARAM } from './constants';
 
 /**
  * Represents the origin of the deep link, either external or internal.
@@ -55,6 +56,11 @@ type ParseOptions = {
    * INTERNAL is used for links originating from within the application itself.
    */
   navigationOrigin?: NavigationOrigin;
+  /**
+   * The active Deeplink Processed context, when parsing an intercepted public
+   * deeplink in the background.
+   */
+  traceContext?: TraceContext;
 };
 
 export type ParsedDeepLink<
@@ -95,6 +101,17 @@ export async function parse<
     return { destination, route } as ParsedDeepLink<Options>;
   }
 
-  const signature = await verify(url);
+  const shouldTraceSignature =
+    options?.traceContext && url.searchParams.has(SIG_PARAM);
+  const signature = shouldTraceSignature
+    ? await trace(
+        {
+          name: TraceName.DeeplinkSignatureVerify,
+          op: TraceOperation.DeeplinkPerformance,
+          parentContext: options.traceContext,
+        },
+        () => verify(url),
+      )
+    : await verify(url);
   return { destination, signature, route } as ParsedDeepLink<Options>;
 }
