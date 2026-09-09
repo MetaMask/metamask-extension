@@ -16,8 +16,8 @@ import {
   SIGNING_PSUEDO_STATUS,
 } from '../../components/app/transaction-status-label';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
+import { ARC_NATIVE_CAIP_CHAIN_ID } from '../../components/app/assets/enablement/arc';
 import type { LocalActivityListItem } from './types';
-import { ARC_NATIVE_CAIP_CHAIN_ID } from '../../../ui/components/app/assets/enablement/arc';
 
 export type ActivityListFilter =
   | { assetId: CaipAssetType }
