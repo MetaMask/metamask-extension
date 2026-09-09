@@ -1,9 +1,11 @@
-import { isOpaqueWebSender, OPAQUE_ORIGIN } from './opaque-origin';
+import { SubjectType } from '@metamask/permission-controller';
 
-describe('isOpaqueWebSender', () => {
+import { isOpaqueWebsiteSender, OPAQUE_ORIGIN } from './opaque-origin';
+
+describe('isOpaqueWebsiteSender', () => {
   it('returns true for a sandboxed http frame', () => {
     expect(
-      isOpaqueWebSender({
+      isOpaqueWebsiteSender(SubjectType.Website, {
         origin: OPAQUE_ORIGIN,
         url: 'http://127.0.0.1:8798/child.html',
       }),
@@ -12,7 +14,10 @@ describe('isOpaqueWebSender', () => {
 
   it('returns true for a sandboxed https frame', () => {
     expect(
-      isOpaqueWebSender({ origin: OPAQUE_ORIGIN, url: 'https://dapp.test/x' }),
+      isOpaqueWebsiteSender(SubjectType.Website, {
+        origin: OPAQUE_ORIGIN,
+        url: 'https://dapp.test/x',
+      }),
     ).toBe(true);
   });
 
@@ -20,7 +25,7 @@ describe('isOpaqueWebSender', () => {
     // Same shape as the iframe case: the browser reports an opaque origin
     // while the URL is the https document that was served.
     expect(
-      isOpaqueWebSender({
+      isOpaqueWebsiteSender(SubjectType.Website, {
         origin: OPAQUE_ORIGIN,
         url: 'https://dapp.test/user-content',
       }),
@@ -29,7 +34,7 @@ describe('isOpaqueWebSender', () => {
 
   it('returns false for an ordinary same-origin frame', () => {
     expect(
-      isOpaqueWebSender({
+      isOpaqueWebsiteSender(SubjectType.Website, {
         origin: 'https://dapp.test',
         url: 'https://dapp.test/child.html',
       }),
@@ -38,7 +43,7 @@ describe('isOpaqueWebSender', () => {
 
   it('returns false for an ordinary cross-origin frame', () => {
     expect(
-      isOpaqueWebSender({
+      isOpaqueWebsiteSender(SubjectType.Website, {
         origin: 'https://widget.test',
         url: 'https://widget.test/embed.html',
       }),
@@ -47,21 +52,54 @@ describe('isOpaqueWebSender', () => {
 
   it('returns false when the browser does not report an origin', () => {
     // Older browsers, and senders that are not `MessageSender` (Snaps).
-    expect(isOpaqueWebSender({ url: 'https://dapp.test/x' })).toBe(false);
-    expect(isOpaqueWebSender(undefined)).toBe(false);
+    expect(
+      isOpaqueWebsiteSender(SubjectType.Website, {
+        url: 'https://dapp.test/x',
+      }),
+    ).toBe(false);
+    expect(isOpaqueWebsiteSender(SubjectType.Website, undefined)).toBe(false);
   });
 
   it('leaves file:// senders alone even though their URL origin is "null"', () => {
     expect(new URL('file:///x/y.html').origin).toBe(OPAQUE_ORIGIN);
     expect(
-      isOpaqueWebSender({ origin: OPAQUE_ORIGIN, url: 'file:///x/y.html' }),
+      isOpaqueWebsiteSender(SubjectType.Website, {
+        origin: OPAQUE_ORIGIN,
+        url: 'file:///x/y.html',
+      }),
     ).toBe(false);
   });
 
   it('returns false for an unparseable or missing url', () => {
-    expect(isOpaqueWebSender({ origin: OPAQUE_ORIGIN, url: 'not a url' })).toBe(
-      false,
-    );
-    expect(isOpaqueWebSender({ origin: OPAQUE_ORIGIN })).toBe(false);
+    expect(
+      isOpaqueWebsiteSender(SubjectType.Website, {
+        origin: OPAQUE_ORIGIN,
+        url: 'not a url',
+      }),
+    ).toBe(false);
+    expect(
+      isOpaqueWebsiteSender(SubjectType.Website, { origin: OPAQUE_ORIGIN }),
+    ).toBe(false);
+  });
+});
+
+describe('isOpaqueWebsiteSender — subject type', () => {
+  const opaque = { origin: OPAQUE_ORIGIN, url: 'https://dapp.test/child.html' };
+
+  it('refuses an opaque website sender', () => {
+    expect(isOpaqueWebsiteSender(SubjectType.Website, opaque)).toBe(true);
+  });
+
+  it('leaves extension senders on the existing derivation', () => {
+    expect(isOpaqueWebsiteSender(SubjectType.Extension, opaque)).toBe(false);
+  });
+
+  it('leaves snap and internal senders alone', () => {
+    expect(isOpaqueWebsiteSender(SubjectType.Snap, opaque)).toBe(false);
+    expect(isOpaqueWebsiteSender(SubjectType.Internal, opaque)).toBe(false);
+  });
+
+  it('returns false when the subject type is unresolved', () => {
+    expect(isOpaqueWebsiteSender(undefined, opaque)).toBe(false);
   });
 });
