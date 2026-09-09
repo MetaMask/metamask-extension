@@ -15,7 +15,6 @@ import {
 import { Hex } from '@metamask/utils';
 
 import { AccountOverviewTabKey } from '../../../../../shared/constants/app-state';
-import { EIP_7702_REVOKE_ADDRESS } from '../../../../../shared/lib/eip7702-utils';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { getEip7702SupportedChains } from '../../../../../shared/lib/eip7702-support-utils';
 import {
@@ -109,10 +108,6 @@ async function getTransactionApprovalDecision(
       (await isRelaySupported(transactionMeta.chainId)) &&
       transactionMeta.txParams?.to !== undefined,
   );
-
-  const isDowngradeTransaction =
-    transactionMeta.txParams?.authorizationList?.[0]?.address ===
-    EIP_7702_REVOKE_ADDRESS;
 
   const isMoneyAccountWithdraw =
     transactionMeta.type === TransactionType.moneyAccountWithdraw;
