@@ -33,9 +33,11 @@ export function isBasicFunctionalityConsistent(
 }
 
 /**
- * Strict background gate: remote flag AND (persisted cohort OR consistent
- * all-on/all-off legacy prefs). Unlike the UI selector, a persisted cohort
- * alone is not enough — the remote flag must also be on.
+ * Background counterpart of the UI's `getIsBasicFunctionalityConsolidationEnabled`
+ * selector; keep the two in lockstep. A persisted cohort (set at onboarding
+ * by the `BFT_CONSOLIDATION_ENABLED` build flag, or by the remote-flag
+ * migration) is sufficient on its own; otherwise the remote flag must be on
+ * and prefs must be consistent all-on or all-off.
  *
  * @param params - Inputs from RemoteFeatureFlagController and
  * PreferencesController.
@@ -60,8 +62,7 @@ export function getIsBasicFunctionalityConsolidationGateEnabled({
   );
 
   return (
-    isRemoteFlagEnabled &&
-    (isPersistedConsolidatedUser ||
-      isBasicFunctionalityConsistent(preferencesState))
+    isPersistedConsolidatedUser ||
+    (isRemoteFlagEnabled && isBasicFunctionalityConsistent(preferencesState))
   );
 }

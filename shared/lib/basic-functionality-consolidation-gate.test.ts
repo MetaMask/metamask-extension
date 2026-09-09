@@ -75,20 +75,29 @@ describe('getIsBasicFunctionalityConsolidationGateEnabled', () => {
     false,
   );
 
-  it('returns false when the remote flag is off, even with a persisted cohort', () => {
+  it('returns true when the remote flag is off but the wallet was consolidated at onboarding (build flag)', () => {
     expect(
       getIsBasicFunctionalityConsolidationGateEnabled({
         remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
         preferencesState: gatePreferences(allEnabled, true),
       }),
+    ).toBe(true);
+  });
+
+  it('returns false when the remote flag is off and there is no persisted cohort', () => {
+    expect(
+      getIsBasicFunctionalityConsolidationGateEnabled({
+        remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
+        preferencesState: gatePreferences(allEnabled, false),
+      }),
     ).toBe(false);
   });
 
-  it('returns false when the remote flag is missing', () => {
+  it('returns false when the remote flag is missing and there is no persisted cohort', () => {
     expect(
       getIsBasicFunctionalityConsolidationGateEnabled({
         remoteFeatureFlags: {},
-        preferencesState: gatePreferences(allEnabled, true),
+        preferencesState: gatePreferences(allEnabled, false),
       }),
     ).toBe(false);
   });

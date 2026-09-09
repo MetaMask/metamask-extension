@@ -200,7 +200,7 @@ describe('ProfileMetricsControllerInit', () => {
     ).toBe(false);
   });
 
-  it('does not treat a persisted cohort as the gate when the remote flag is off', () => {
+  it('allows profile metrics when the cohort marker is set even if the remote flag and MetaMetrics are off', () => {
     expect(
       getAssertUserOptedIn(
         getInitRequestMock({
@@ -209,7 +209,7 @@ describe('ProfileMetricsControllerInit', () => {
           remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
         }),
       )(),
-    ).toBe(false);
+    ).toBe(true);
   });
 
   it('treats consistent all-on prefs as the gate when the remote flag is on', () => {
@@ -243,7 +243,7 @@ describe('ProfileMetricsControllerInit', () => {
     };
     const request = getInitRequestMock({
       optedIn: false,
-      isBasicFunctionalityConsolidatedEnabled: true,
+      isBasicFunctionalityConsolidatedEnabled: false,
       remoteFeatureFlags: flags,
     });
     const assertUserOptedIn = getAssertUserOptedIn(request);
@@ -264,7 +264,7 @@ describe('ProfileMetricsControllerInit', () => {
       getAssertUserOptedIn(
         getInitRequestMock({
           optedIn: false,
-          isBasicFunctionalityConsolidatedEnabled: true,
+          isBasicFunctionalityConsolidatedEnabled: false,
           remoteFeatureFlags: {
             extensionBasicFunctionalityToggle: {
               enabled: false,
@@ -285,7 +285,7 @@ describe('ProfileMetricsControllerInit', () => {
       getAssertUserOptedIn(
         getInitRequestMock({
           optedIn: false,
-          isBasicFunctionalityConsolidatedEnabled: true,
+          isBasicFunctionalityConsolidatedEnabled: false,
           remoteFeatureFlags: { extensionBasicFunctionalityToggle: true },
         }),
       )(),
