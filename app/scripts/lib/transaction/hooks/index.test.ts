@@ -10,6 +10,7 @@ import { TransactionPayPublishHook } from '@metamask/transaction-pay-controller'
 import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import * as smartTransactionsModule from '../../smart-transaction/smart-transactions';
 import * as sentinelApiModule from '../sentinel-api';
+import { isRelaySupported } from '../transaction-relay';
 import { Delegation7702PublishHook } from './delegation-7702-publish';
 import { EnforceSimulationHook } from './enforce-simulation-hook';
 import {
@@ -21,6 +22,7 @@ jest.mock('@metamask/transaction-controller');
 jest.mock('@metamask/transaction-pay-controller');
 jest.mock('../../smart-transaction/smart-transactions');
 jest.mock('../sentinel-api');
+jest.mock('../transaction-relay');
 jest.mock('./delegation-7702-publish');
 jest.mock('./enforce-simulation-hook');
 
@@ -36,7 +38,11 @@ function buildMockRequest(
   overrides: Partial<TransactionControllerHookRequest> = {},
 ): TransactionControllerHookRequest {
   return {
-    getFlatState: jest.fn().mockReturnValue({}),
+    getFlatState: jest.fn().mockReturnValue({
+      metamask: {
+        preferences: {},
+      },
+    }),
     getTransactionMetricsRequest: jest.fn().mockReturnValue({
       upsertTransactionUIMetricsFragment: jest.fn(),
     }),
@@ -112,6 +118,8 @@ describe('Transaction Controller Hooks', () => {
       expect(hooks).toStrictEqual(
         expect.objectContaining({
           afterAdd: expect.any(Function),
+          isSponsored: expect.any(Function),
+          shouldSign: expect.any(Function),
           beforePublish: expect.any(Function),
           beforeSign: expect.any(Function),
           publish: expect.any(Function),
@@ -144,6 +152,26 @@ describe('Transaction Controller Hooks', () => {
       });
 
       expect(result).toStrictEqual({});
+    });
+  });
+
+  describe('approval callbacks', () => {
+    it('returns sponsorship and signing decisions', async () => {
+      jest.mocked(sentinelApiModule.isSendBundleSupported).mockResolvedValue(false);
+      jest.mocked(isRelaySupported).mockResolvedValue(false);
+
+      const request = buildMockRequest();
+      const hooks = getTransactionControllerHooks(request);
+
+      await expect(
+        hooks.isSponsored?.({ transactionMeta: mockTransactionMeta }),
+      ).resolves.toBe(false);
+      await expect(
+        hooks.shouldSign?.({
+          transactionMeta: mockTransactionMeta,
+          isSponsored: false,
+        }),
+      ).resolves.toBe(true);
     });
   });
 
