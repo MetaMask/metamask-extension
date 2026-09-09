@@ -1,15 +1,20 @@
 import React, { ReactNode, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import classnames from 'clsx';
-import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
-import { Text } from '../../../../component-library';
-import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
-  AlignItems,
-  BlockSize,
-  Display,
+  Box,
+  BoxFlexDirection,
+  ButtonBase,
+  FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  Text,
+  TextColor,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
+  twMerge,
+} from '@metamask/design-system-react';
+import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import { setTokenSortConfig } from '../../../../../store/actions';
 import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import {
@@ -23,17 +28,32 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
 import { useDispatch } from '../../../../../store/hooks';
 
-// intentionally used generic naming convention for styled selectable list item
-// inspired from ui/components/multichain/network-list-item
-// should probably be broken out into component library
 type SelectableListItemProps = {
+  /**
+   * Marks the item as one of a set of mutually exclusive options. Omit it for
+   * items that trigger an action rather than select a value.
+   */
   isSelected?: boolean;
-  onClick?: React.MouseEventHandler<HTMLSpanElement>;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   testId?: string;
   className?: string;
   children: ReactNode;
 };
 
+/**
+ * A single row of a popover menu, built on the design system `ButtonBase` so
+ * that hover, active and focus states match the other menus in the extension.
+ * Selected options are marked with a muted background and a trailing check,
+ * the same way network, currency and language options are marked elsewhere.
+ *
+ * @param props - The props of the component.
+ * @param props.isSelected - Whether the item is the selected option.
+ * @param props.onClick - Handler called when the item is clicked.
+ * @param props.testId - Test id applied to the item, the button itself gets
+ * `${testId}__button`.
+ * @param props.className - Additional classes for the button.
+ * @param props.children - The content of the item.
+ */
 export const SelectableListItem = ({
   isSelected,
   onClick,
@@ -41,32 +61,47 @@ export const SelectableListItem = ({
   className,
   children,
 }: SelectableListItemProps) => {
+  const optionProps: Pick<
+    React.ComponentProps<'button'>,
+    'role' | 'aria-checked'
+  > = isSelected === undefined
+    ? {}
+    : { role: 'menuitemradio', 'aria-checked': isSelected };
+
   return (
-    <Box className="selectable-list-item-wrapper" data-testid={testId}>
-      <Text
-        data-testid={`${testId}__button`}
-        className={classnames(
-          'selectable-list-item',
-          {
-            'selectable-list-item--selected': Boolean(isSelected),
-          },
+    <Box data-testid={testId} className="w-full">
+      <ButtonBase
+        data-testid={testId ? `${testId}__button` : undefined}
+        onClick={onClick}
+        {...optionProps}
+        className={twMerge(
+          'h-auto min-h-12 w-full justify-start gap-2 rounded-none p-4 text-left',
+          isSelected
+            ? 'bg-muted hover:bg-muted-hover active:bg-muted-pressed'
+            : 'bg-transparent hover:bg-hover active:bg-pressed',
+          'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-default',
           className,
         )}
-        onClick={onClick}
-        variant={TextVariant.bodySmMedium}
-        as="button"
-        width={BlockSize.Full}
-        display={Display.Flex}
-        alignItems={AlignItems.center}
       >
-        {children}
-      </Text>
-      {isSelected && (
-        <Box
-          className="selectable-list-item__selected-indicator rounded-full"
-          backgroundColor={BoxBackgroundColor.PrimaryDefault}
-        />
-      )}
+        <Text
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextDefault}
+          asChild
+        >
+          <span className="flex min-w-0 grow items-center text-left">
+            {children}
+          </span>
+        </Text>
+        {isSelected && (
+          <Icon
+            name={IconName.Check}
+            size={IconSize.Md}
+            color={IconColor.IconDefault}
+            className="shrink-0"
+          />
+        )}
+      </ButtonBase>
     </Box>
   );
 };
@@ -111,7 +146,12 @@ const SortControl = ({ handleClose }: SortControlProps) => {
   );
 
   return (
-    <>
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      className="flex w-full"
+      role="menu"
+      aria-label={t('sortBy')}
+    >
       <SelectableListItem
         isSelected={
           // TODO: consolidate name and title fields in token to avoid this switch
@@ -132,7 +172,7 @@ const SortControl = ({ handleClose }: SortControlProps) => {
       >
         {t('sortByDecliningBalance', [getCurrencySymbol(currentCurrency)])}
       </SelectableListItem>
-    </>
+    </Box>
   );
 };
 

@@ -100,9 +100,25 @@ describe('SortControl', () => {
 
     expect(screen.getByTestId('sortByAlphabetically')).toBeInTheDocument();
     expect(screen.getByTestId('sortByDecliningBalance')).toBeInTheDocument();
-    expect(screen.getByTestId('sortByDecliningBalance__button')).toHaveClass(
-      'selectable-list-item--selected',
+  });
+
+  it('marks the active sort option as checked', () => {
+    renderComponent();
+
+    expect(
+      screen.getByTestId('sortByDecliningBalance__button'),
+    ).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByTestId('sortByAlphabetically__button')).toHaveAttribute(
+      'aria-checked',
+      'false',
     );
+  });
+
+  it('exposes the options as a menu of mutually exclusive items', () => {
+    renderComponent();
+
+    expect(screen.getByRole('menu')).toBeInTheDocument();
+    expect(screen.getAllByRole('menuitemradio')).toHaveLength(2);
   });
 
   it('dispatches setTokenSortConfig with expected config, and tracks event when Alphabetically is clicked', () => {

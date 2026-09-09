@@ -43,7 +43,9 @@ const NftOptions = ({
         ariaLabel={t('nftOptions')}
       />
       <Popover
+        className="overflow-hidden"
         onClickOutside={closePopover}
+        onPressEscKey={closePopover}
         isOpen={nftOptionsOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={ref.current}

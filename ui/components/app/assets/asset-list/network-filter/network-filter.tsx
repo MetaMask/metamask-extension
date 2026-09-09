@@ -124,7 +124,11 @@ const NetworkFilter = ({
   );
 
   return (
-    <>
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      className="flex w-full"
+      role="menu"
+    >
       <SelectableListItem
         isSelected={
           networkFilter
@@ -239,7 +243,7 @@ const NetworkFilter = ({
           />
         </Box>
       </SelectableListItem>
-    </>
+    </Box>
   );
 };
 

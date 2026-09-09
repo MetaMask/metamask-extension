@@ -521,7 +521,9 @@ const AssetListControlBar = ({
       />
 
       <Popover
+        className="overflow-hidden"
         onClickOutside={closePopover}
+        onPressEscKey={closePopover}
         isOpen={isTokenSortPopoverOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={sortButtonRef.current}
@@ -539,7 +541,9 @@ const AssetListControlBar = ({
 
       {/* Tokens Popover */}
       <Popover
+        className="overflow-hidden"
         onClickOutside={closePopover}
+        onPressEscKey={closePopover}
         isOpen={isImportTokensPopoverOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={importButtonRef.current}
@@ -555,7 +559,6 @@ const AssetListControlBar = ({
         <SelectableListItem
           onClick={handleOpenTokenManagement}
           testId="manageTokens"
-          className="min-h-12"
         >
           <Icon name={IconName.Setting} size={IconSize.Sm} className="mr-2" />
           {t('manageTokens')}
@@ -568,7 +571,9 @@ const AssetListControlBar = ({
 
       {/* NFT Popover */}
       <Popover
+        className="overflow-hidden"
         onClickOutside={closePopover}
+        onPressEscKey={closePopover}
         isOpen={isImportNftPopoverOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={importButtonRef.current}
@@ -621,7 +626,9 @@ const AssetListControlBar = ({
 
       {/* Refresh-only Popover (e.g. DeFi) */}
       <Popover
+        className="overflow-hidden"
         onClickOutside={closePopover}
+        onPressEscKey={closePopover}
         isOpen={isRefreshListPopoverOpen}
         position={PopoverPosition.BottomEnd}
         referenceElement={importButtonRef.current}
