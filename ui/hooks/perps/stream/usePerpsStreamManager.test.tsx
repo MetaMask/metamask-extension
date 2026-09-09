@@ -185,11 +185,10 @@ describe('usePerpsStreamManager', () => {
       rerender();
     });
 
-    await waitFor(() => {
-      expect(result.current.streamManager).not.toBeNull();
-    });
-
-    expect(getPerpsStreamManager().getCurrentAddress()).toBe('0xB');
+    // B waits for A's RPC to settle before starting its own initialization.
+    expect(perpsInitCount).toBe(1);
+    expect(result.current.streamManager).toBeNull();
+    expect(result.current.selectedAddress).toBe('0xB');
 
     expect(releaseFirstInit).toBeDefined();
     if (releaseFirstInit === undefined) {
@@ -202,7 +201,9 @@ describe('usePerpsStreamManager', () => {
     });
 
     await waitFor(() => {
-      expect(getPerpsStreamManager().getCurrentAddress()).toBe('0xB');
+      expect(result.current.streamManager).not.toBeNull();
     });
+    expect(perpsInitCount).toBe(2);
+    expect(getPerpsStreamManager().getCurrentAddress()).toBe('0xB');
   });
 });

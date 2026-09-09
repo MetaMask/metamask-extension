@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import type {
   Position,
   PerpsMarketData,
