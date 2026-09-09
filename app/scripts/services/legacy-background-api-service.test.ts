@@ -29,6 +29,7 @@ import {
 import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import {
   EncAccountDataType,
+  PasswordChangeRecoveryStatus,
   SecretType,
   RecoveryError,
   SeedlessOnboardingControllerErrorMessage,
@@ -4124,8 +4125,10 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:checkIsPasswordOutdated',
-          jest.fn().mockResolvedValue(true),
+          'SeedlessOnboardingController:resolvePasswordSyncState',
+          jest
+            .fn()
+            .mockResolvedValue(PasswordChangeRecoveryStatus.PasswordOutdated),
         );
 
         const result = await rootMessenger.call(
@@ -4149,8 +4152,8 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:checkIsPasswordOutdated',
-          jest.fn().mockResolvedValue(false),
+          'SeedlessOnboardingController:resolvePasswordSyncState',
+          jest.fn().mockResolvedValue(PasswordChangeRecoveryStatus.InSync),
         );
 
         const result = await rootMessenger.call(
@@ -4176,8 +4179,8 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:checkIsPasswordOutdated',
-          jest.fn().mockResolvedValue(false),
+          'SeedlessOnboardingController:resolvePasswordSyncState',
+          jest.fn().mockResolvedValue(PasswordChangeRecoveryStatus.InSync),
         );
 
         const result = await rootMessenger.call(
@@ -4188,7 +4191,7 @@ describe('LegacyBackgroundApiService', () => {
         expect(result).toStrictEqual(false);
 
         expect(callSpy).toHaveBeenCalledWith(
-          'SeedlessOnboardingController:checkIsPasswordOutdated',
+          'SeedlessOnboardingController:resolvePasswordSyncState',
           { skipCache: true },
         );
       });
@@ -4214,7 +4217,7 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:checkIsPasswordOutdated',
+          'SeedlessOnboardingController:resolvePasswordSyncState',
           jest.fn().mockRejectedValue(error),
         );
 
@@ -4993,8 +4996,8 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn().mockReturnValue({ completedOnboarding: true }),
         );
         rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:checkIsPasswordOutdated',
-          jest.fn().mockResolvedValue(false),
+          'SeedlessOnboardingController:resolvePasswordSyncState',
+          jest.fn().mockResolvedValue(PasswordChangeRecoveryStatus.InSync),
         );
         rootMessenger.registerActionHandler(
           'KeyringController:submitPassword',
@@ -5048,16 +5051,20 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn().mockReturnValue({ completedOnboarding: true }),
         );
         rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:checkIsPasswordOutdated',
-          jest.fn().mockResolvedValue(true),
+          'SeedlessOnboardingController:resolvePasswordSyncState',
+          jest
+            .fn()
+            .mockResolvedValue(PasswordChangeRecoveryStatus.PasswordOutdated),
         );
         rootMessenger.registerActionHandler(
           'KeyringController:verifyPassword',
           jest.fn().mockResolvedValue(undefined),
         );
         rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:submitGlobalPassword',
-          jest.fn().mockResolvedValue(undefined),
+          'SeedlessOnboardingController:reconcilePassword',
+          jest
+            .fn()
+            .mockResolvedValue(PasswordChangeRecoveryStatus.ReconcileKeyring),
         );
         rootMessenger.registerActionHandler(
           'SeedlessOnboardingController:loadKeyringEncryptionKey',
@@ -5065,10 +5072,6 @@ describe('LegacyBackgroundApiService', () => {
         );
         rootMessenger.registerActionHandler(
           'KeyringController:submitEncryptionKey',
-          jest.fn().mockResolvedValue(undefined),
-        );
-        rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:syncLatestGlobalPassword',
           jest.fn().mockResolvedValue(undefined),
         );
         rootMessenger.registerActionHandler(
@@ -5111,10 +5114,9 @@ describe('LegacyBackgroundApiService', () => {
           'global-password',
         );
         expect(callSpy).toHaveBeenCalledWith(
-          'SeedlessOnboardingController:submitGlobalPassword',
+          'SeedlessOnboardingController:reconcilePassword',
           {
             globalPassword: 'global-password',
-            maxKeyChainLength: 20,
           },
         );
         expect(callSpy).toHaveBeenCalledWith(
@@ -5123,10 +5125,6 @@ describe('LegacyBackgroundApiService', () => {
         expect(callSpy).toHaveBeenCalledWith(
           'KeyringController:submitEncryptionKey',
           'keyring-encryption-key',
-        );
-        expect(callSpy).toHaveBeenCalledWith(
-          'SeedlessOnboardingController:syncLatestGlobalPassword',
-          { globalPassword: 'global-password' },
         );
         expect(callSpy).toHaveBeenCalledWith(
           'MetaMetricsController:bufferedTrace',
@@ -5172,16 +5170,20 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn().mockReturnValue({ completedOnboarding: true }),
         );
         rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:checkIsPasswordOutdated',
-          jest.fn().mockResolvedValue(true),
+          'SeedlessOnboardingController:resolvePasswordSyncState',
+          jest
+            .fn()
+            .mockResolvedValue(PasswordChangeRecoveryStatus.PasswordOutdated),
         );
         rootMessenger.registerActionHandler(
           'KeyringController:verifyPassword',
           jest.fn().mockResolvedValue(undefined),
         );
         rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:submitGlobalPassword',
-          jest.fn().mockResolvedValue(undefined),
+          'SeedlessOnboardingController:reconcilePassword',
+          jest
+            .fn()
+            .mockResolvedValue(PasswordChangeRecoveryStatus.ReconcileKeyring),
         );
         rootMessenger.registerActionHandler(
           'SeedlessOnboardingController:loadKeyringEncryptionKey',
@@ -5189,10 +5191,6 @@ describe('LegacyBackgroundApiService', () => {
         );
         rootMessenger.registerActionHandler(
           'KeyringController:submitEncryptionKey',
-          jest.fn().mockResolvedValue(undefined),
-        );
-        rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:syncLatestGlobalPassword',
           jest.fn().mockResolvedValue(undefined),
         );
         rootMessenger.registerActionHandler(
@@ -5272,22 +5270,18 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn().mockReturnValue({ completedOnboarding: true }),
         );
         rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:checkIsPasswordOutdated',
-          jest.fn().mockResolvedValue(true),
+          'SeedlessOnboardingController:resolvePasswordSyncState',
+          jest
+            .fn()
+            .mockResolvedValue(PasswordChangeRecoveryStatus.PasswordOutdated),
         );
         rootMessenger.registerActionHandler(
           'KeyringController:verifyPassword',
           jest.fn().mockResolvedValue(undefined),
         );
         rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:submitGlobalPassword',
-          jest
-            .fn()
-            .mockRejectedValue(
-              new RecoveryError(
-                SeedlessOnboardingControllerErrorMessage.IncorrectPassword,
-              ),
-            ),
+          'SeedlessOnboardingController:reconcilePassword',
+          jest.fn().mockResolvedValue(PasswordChangeRecoveryStatus.Unknown),
         );
 
         const callSpy = jest.spyOn(serviceMessenger, 'call');
@@ -8629,9 +8623,12 @@ function getMessenger(
       'PasskeyController:changePasswordWithPasskeyVerification',
       'PasskeyController:exportSeedPhraseWithPasskey',
       'OnboardingController:getState',
-      'SeedlessOnboardingController:checkIsPasswordOutdated',
+      'SeedlessOnboardingController:clearPasswordChangePhase',
       'SeedlessOnboardingController:getState',
+      'SeedlessOnboardingController:markPasswordChangeKeySyncPending',
+      'SeedlessOnboardingController:reconcilePassword',
       'SeedlessOnboardingController:runMigrations',
+      'SeedlessOnboardingController:resolvePasswordSyncState',
       'KeyringController:verifyPassword',
       'KeyringController:exportAccount',
       'KeyringController:changePassword',
@@ -8644,9 +8641,7 @@ function getMessenger(
       'SeedlessOnboardingController:revokePendingRefreshTokens',
       'SeedlessOnboardingController:setLocked',
       'SeedlessOnboardingController:storeKeyringEncryptionKey',
-      'SeedlessOnboardingController:submitGlobalPassword',
       'SeedlessOnboardingController:submitPassword',
-      'SeedlessOnboardingController:syncLatestGlobalPassword',
       'AccountsController:updateAccounts',
       'AccountsController:clearState',
       'AccountOrderController:updateHiddenAccountsList',
