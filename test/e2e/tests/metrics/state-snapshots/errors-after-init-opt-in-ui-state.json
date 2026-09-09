@@ -350,7 +350,7 @@
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": "valueA"
+      "feature3": "valueC"
     },
     "requests": "object",
     "rewardsAccounts": "object",

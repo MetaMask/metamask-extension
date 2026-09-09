@@ -218,7 +218,8 @@ describe('HyperliquidDepositPrompt', () => {
       name: MetaMetricsEventName.HyperliquidDepositPromptInteracted,
       properties: {
         category: MetaMetricsEventCategory.Confirmations,
-        action: 'dismiss',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        interaction_type: 'dismiss',
       },
       sensitiveProperties: {},
     });
@@ -266,7 +267,8 @@ describe('HyperliquidDepositPrompt', () => {
       name: MetaMetricsEventName.HyperliquidDepositPromptInteracted,
       properties: {
         category: MetaMetricsEventCategory.Confirmations,
-        action: 'continue',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        interaction_type: 'continue',
       },
       sensitiveProperties: {},
     });
