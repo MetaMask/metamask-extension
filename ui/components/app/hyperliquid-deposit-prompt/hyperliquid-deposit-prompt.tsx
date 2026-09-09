@@ -204,7 +204,10 @@ export const HyperliquidDepositPrompt: React.FC<
           MetaMetricsEventName.HyperliquidDepositPromptInteracted,
         )
           .addCategory(MetaMetricsEventCategory.Confirmations)
-          .addProperties({ action })
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            interaction_type: action,
+          })
           .build(),
       );
     },

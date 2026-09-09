@@ -15,18 +15,17 @@ import {
 import {
   DEFAULT_ROUTE,
   PERPS_ROUTE,
-  PRIVACY_ROUTE,
   REVEAL_SEED_ROUTE,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getShouldShowBasicFunctionalityMigrationToast } from '../../../selectors/multichain/feature-flags';
-import { hideMigrationToast, toggleDefaultView } from '../../../store/actions';
+import { toggleDefaultView } from '../../../store/actions';
 import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast/survey-toast';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
+import { BasicFunctionalityMigrationToast } from '../basic-functionality-migration-toast';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
 import { ArcUsageNoticeToast } from '../arc-usage-notice-toast';
 import {
@@ -177,38 +176,6 @@ function PrivacyPolicyToast() {
           setNewPrivacyPolicyToastClickedOrClosed();
         }}
         onClose={setNewPrivacyPolicyToastClickedOrClosed}
-      />
-    )
-  );
-}
-
-function BasicFunctionalityMigrationToast() {
-  const t = useI18nContext();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const shouldShow = useSelector(getShouldShowBasicFunctionalityMigrationToast);
-
-  return (
-    shouldShow && (
-      <Toast
-        key="basic-functionality-migration-toast"
-        dataTestId="basic-functionality-migration-toast"
-        startAdornment={null}
-        text={t('basicFunctionalityMigrationModalTitle')}
-        description={t('basicFunctionalityMigrationToastDescription', [
-          <button
-            key="basic-functionality-migration-settings-link"
-            type="button"
-            onClick={() => {
-              dispatch(hideMigrationToast());
-              navigate(PRIVACY_ROUTE);
-            }}
-            className="inline h-auto min-h-0 cursor-pointer border-0 bg-transparent p-0 align-baseline text-primary-default"
-          >
-            {t('basicFunctionalityMigrationToastSettingsLink')}
-          </button>,
-        ])}
-        onClose={() => dispatch(hideMigrationToast())}
       />
     )
   );
