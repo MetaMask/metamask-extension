@@ -867,7 +867,16 @@ export class PlaywrightDriver {
 
   // -- Navigation -----------------------------------------------------------
 
-  async navigate(page: string = PAGES.HOME): Promise<void> {
+  async navigate(
+    page: string = PAGES.HOME,
+    {
+      waitForControllers = true,
+      waitForControllersTimeout = this.timeout,
+    }: {
+      waitForControllers?: boolean;
+      waitForControllersTimeout?: number;
+    } = {},
+  ): Promise<void> {
     const target =
       this.browser === 'firefox' && page === PAGES.SIDEPANEL
         ? PAGES.HOME
@@ -875,6 +884,11 @@ export class PlaywrightDriver {
     await this.page.goto(`${this.extensionUrl}/${target}.html`, {
       waitUntil: 'domcontentloaded',
     });
+    if (waitForControllers) {
+      await this.page
+        .locator('.controller-loaded')
+        .waitFor({ state: 'attached', timeout: waitForControllersTimeout });
+    }
   }
 
   async openNewPage(url: string): Promise<string> {
@@ -903,6 +917,18 @@ export class PlaywrightDriver {
   async delayFirefox(ms: number): Promise<void> {
     if (this.browser === 'firefox') {
       await this.delay(ms);
+    }
+  }
+
+  async getClipboardContent(): Promise<string> {
+    try {
+      return await this.page.evaluate(() => navigator.clipboard.readText());
+    } catch (error) {
+      console.log(
+        'Could not read clipboard - permission denied or not supported',
+        error,
+      );
+      return '';
     }
   }
 
@@ -936,13 +962,23 @@ export class PlaywrightDriver {
   }
 
   async switchToWindowWithTitle(
-    _title: string,
+    title: string,
     _initialHandles?: string[],
-    _delayStep = 1000,
-    _timeout = this.timeout,
+    delayStep = 1000,
+    timeout = this.timeout,
   ): Promise<void> {
-    throw new Error(
-      'PlaywrightDriver.switchToWindowWithTitle is not yet implemented.',
+    await this.waitUntil(
+      async () => {
+        for (const page of this.context.pages()) {
+          if ((await page.title()) === title) {
+            this.currentPage = page;
+            this.registerPage(page);
+            return true;
+          }
+        }
+        return false;
+      },
+      { interval: delayStep, timeout },
     );
   }
 

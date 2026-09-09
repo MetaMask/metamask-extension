@@ -1,6 +1,10 @@
 import { act, waitFor } from '@testing-library/react';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import {
   DEFAULT_ROUTE,
   DEEP_LINK_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -289,6 +293,87 @@ describe('useOnboardingCompletion', () => {
     });
     expect(mockSetPreference).not.toHaveBeenCalled();
     expect(mockSetUseMultiAccountBalanceChecker).not.toHaveBeenCalled();
+  });
+
+  describe('Metrics Opt In/Out events', () => {
+    it('tracks Metrics Opt Out when the user has not opted in', async () => {
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        mockState,
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding();
+      });
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.MetricsOptOut,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: 'metamask',
+          }),
+        }),
+      );
+    });
+
+    it('tracks Metrics Opt In when the user has opted in', async () => {
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            optedIn: true,
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding();
+      });
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.MetricsOptIn,
+          properties: expect.objectContaining({
+            category: MetaMetricsEventCategory.Onboarding,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: 'metamask',
+          }),
+        }),
+      );
+    });
+
+    it('does not track Metrics Opt In/Out when onboarding is already completed', async () => {
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            completedOnboarding: true,
+            optedIn: true,
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding();
+      });
+
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.MetricsOptIn,
+        }),
+      );
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.MetricsOptOut,
+        }),
+      );
+    });
   });
 
   it('allows retrying completion after a failed attempt', async () => {
