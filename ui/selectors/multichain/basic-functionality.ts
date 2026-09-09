@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import { BFT_CHILD_PREFERENCES } from '../../../shared/lib/basic-functionality-consolidation';
+import { isBasicFunctionalityConsistent } from '../../../shared/lib/basic-functionality-consolidation-gate';
 
 export { BFT_CHILD_PREFERENCES };
 
@@ -19,20 +20,7 @@ export const getIsBasicFunctionalityToggleEnabled = createSelector(
  */
 const getIsBasicFunctionalityConsistent = createSelector(
   (state) => state.metamask,
-  (metamaskState) => {
-    const bftValue = metamaskState.useExternalServices;
-    const areAllChildrenEnabled = BFT_CHILD_PREFERENCES.every(
-      (preference) => metamaskState[preference] === true,
-    );
-    const areAllChildrenDisabled = BFT_CHILD_PREFERENCES.every(
-      (preference) => metamaskState[preference] === false,
-    );
-
-    return (
-      (bftValue === true && areAllChildrenEnabled) ||
-      (bftValue === false && areAllChildrenDisabled)
-    );
-  },
+  (metamaskState) => isBasicFunctionalityConsistent(metamaskState),
 );
 
 const getBasicFunctionalityMigrationNotification = (state: {
