@@ -163,18 +163,27 @@ export class CronjobControllerStorageManager {
    * @param liveIds - The IDs of events present in the reconciled state.
    */
   async #sweepOrphanedDates(liveIds: string[]) {
-    const live = new Set(liveIds);
-    const stored = await this.#dateStore.getAllKeys(
-      CronjobControllerEventDateNamespace,
-    );
+    // Best-effort. `getAllKeys` and `removeItem` reject on adapter failure —
+    // unlike `getItem`, which reports one as a miss — and this runs from `init`
+    // on the boot path. A leftover key wastes space in a store whose contents
+    // are reconstructible; letting it reject would stop the wallet starting
+    // while the durable event map is still perfectly usable.
+    try {
+      const live = new Set(liveIds);
+      const stored = await this.#dateStore.getAllKeys(
+        CronjobControllerEventDateNamespace,
+      );
 
-    await Promise.all(
-      stored
-        .filter((id) => !live.has(id))
-        .map(async (id) =>
-          this.#dateStore.removeItem(CronjobControllerEventDateNamespace, id),
-        ),
-    );
+      await Promise.all(
+        stored
+          .filter((id) => !live.has(id))
+          .map(async (id) =>
+            this.#dateStore.removeItem(CronjobControllerEventDateNamespace, id),
+          ),
+      );
+    } catch (error) {
+      console.error('Failed to sweep orphaned cronjob event dates', error);
+    }
   }
 
   /**

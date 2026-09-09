@@ -247,4 +247,59 @@ describe('CronjobControllerStorageManager', () => {
       expect(dates.has('foo')).toBe(false);
     });
   });
+
+  describe('date-store failures must not stop boot', () => {
+    const event = {
+      id: 'foo',
+      snapId: 'npm:@metamask/example-snap',
+      schedule: 'PT30S',
+      scheduledAt: '2026-01-01T00:00:00.000Z',
+      recurring: true,
+      request: { method: 'exampleMethod' },
+      date: '2026-06-01T12:00:00.000Z',
+    };
+
+    it('survives a date store whose getAllKeys rejects', async () => {
+      seedEvents({ foo: event });
+      const { store } = getMockDateStore({ foo: '2026-06-01T12:00:00.000Z' });
+      const failing: CronjobControllerEventDateStore = {
+        ...store,
+        getAllKeys: async () => {
+          throw new Error('IndexedDB unavailable');
+        },
+      };
+      jest.spyOn(console, 'error').mockImplementation();
+      const manager = new CronjobControllerStorageManager(failing);
+
+      // `init` runs on the boot path. The date store is reconstructible, so a
+      // failure there must not prevent the wallet from starting.
+      await expect(manager.init()).resolves.toBeUndefined();
+
+      expect(manager.getInitialState()).toStrictEqual({
+        events: { foo: event },
+      });
+    });
+
+    it('survives a date store whose removeItem rejects', async () => {
+      seedEvents({ foo: event });
+      const { store } = getMockDateStore({
+        foo: '2026-06-01T12:00:00.000Z',
+        orphan: '2026-06-01T12:00:00.000Z',
+      });
+      const failing: CronjobControllerEventDateStore = {
+        ...store,
+        removeItem: async () => {
+          throw new Error('quota exceeded');
+        },
+      };
+      jest.spyOn(console, 'error').mockImplementation();
+      const manager = new CronjobControllerStorageManager(failing);
+
+      await expect(manager.init()).resolves.toBeUndefined();
+
+      expect(manager.getInitialState()).toStrictEqual({
+        events: { foo: event },
+      });
+    });
+  });
 });
