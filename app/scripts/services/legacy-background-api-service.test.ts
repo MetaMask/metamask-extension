@@ -3973,50 +3973,7 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
-    it('updates the fragment if it already exists', async () => {
-      const transactionId = 'transaction-id';
-      const fragmentId = `transaction-ui-${transactionId}`;
-      const payload = { properties: { foo: 'bar' } };
-
-      await withService(async ({ rootMessenger, serviceMessenger }) => {
-        const getEventFragmentByIdHandler = jest
-          .fn()
-          .mockReturnValue({ id: fragmentId });
-        const updateEventFragmentHandler = jest.fn();
-        const createEventFragmentHandler = jest.fn();
-
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:getEventFragmentById',
-          getEventFragmentByIdHandler,
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:updateEventFragment',
-          updateEventFragmentHandler,
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:createEventFragment',
-          createEventFragmentHandler,
-        );
-
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        rootMessenger.call(
-          'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
-          transactionId,
-          payload,
-        );
-
-        expect(getEventFragmentByIdHandler).toHaveBeenCalledWith(fragmentId);
-        expect(callSpy).toHaveBeenCalledWith(
-          'MetaMetricsController:updateEventFragment',
-          fragmentId,
-          payload,
-        );
-        expect(createEventFragmentHandler).not.toHaveBeenCalled();
-      });
-    });
-
-    it('creates the fragment if it does not exist', async () => {
+    it('upserts the fragment keyed by transaction id', async () => {
       const transactionId = 'transaction-id';
       const fragmentId = `transaction-ui-${transactionId}`;
       const payload = {
@@ -4025,23 +3982,11 @@ describe('LegacyBackgroundApiService', () => {
       };
 
       await withService(async ({ rootMessenger, serviceMessenger }) => {
-        const getEventFragmentByIdHandler = jest
-          .fn()
-          .mockReturnValue(undefined);
-        const updateEventFragmentHandler = jest.fn();
-        const createEventFragmentHandler = jest.fn();
+        const upsertEventFragmentHandler = jest.fn();
 
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:getEventFragmentById',
-          getEventFragmentByIdHandler,
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:updateEventFragment',
-          updateEventFragmentHandler,
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:createEventFragment',
-          createEventFragmentHandler,
+          'AnalyticsController:upsertEventFragment',
+          upsertEventFragmentHandler,
         );
 
         const callSpy = jest.spyOn(serviceMessenger, 'call');
@@ -4053,49 +3998,13 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(callSpy).toHaveBeenCalledWith(
-          'MetaMetricsController:createEventFragment',
-          {
-            uniqueIdentifier: fragmentId,
-            successEvent: 'Transaction Fragment Created',
-            category: MetaMetricsEventCategory.Transactions,
-            canDeleteIfAbandoned: true,
-            properties: payload.properties,
-            sensitiveProperties: payload.sensitiveProperties,
-          },
+          'AnalyticsController:upsertEventFragment',
+          fragmentId,
+          payload,
         );
-        expect(updateEventFragmentHandler).not.toHaveBeenCalled();
-      });
-    });
-
-    it('defaults properties and sensitiveProperties to empty objects when creating', async () => {
-      const transactionId = 'transaction-id';
-      const fragmentId = `transaction-ui-${transactionId}`;
-
-      await withService(async ({ rootMessenger, serviceMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:getEventFragmentById',
-          jest.fn().mockReturnValue(undefined),
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:createEventFragment',
-          jest.fn(),
-        );
-
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        rootMessenger.call(
-          'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
-          transactionId,
-          { category: MetaMetricsEventCategory.Transactions },
-        );
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'MetaMetricsController:createEventFragment',
-          expect.objectContaining({
-            uniqueIdentifier: fragmentId,
-            properties: {},
-            sensitiveProperties: {},
-          }),
+        expect(upsertEventFragmentHandler).toHaveBeenCalledWith(
+          fragmentId,
+          payload,
         );
       });
     });
@@ -5438,7 +5347,7 @@ describe('LegacyBackgroundApiService', () => {
         });
 
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:getEventFragmentById',
+          'AnalyticsController:getEventFragmentById',
           jest.fn().mockReturnValue({
             properties: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -5446,10 +5355,10 @@ describe('LegacyBackgroundApiService', () => {
             },
           }),
         );
-        const updateEventFragmentMock = jest.fn();
+        const upsertEventFragmentMock = jest.fn();
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:updateEventFragment',
-          updateEventFragmentMock,
+          'AnalyticsController:upsertEventFragment',
+          upsertEventFragmentMock,
         );
         rootMessenger.registerActionHandler(
           'TransactionController:getState',
@@ -5482,7 +5391,7 @@ describe('LegacyBackgroundApiService', () => {
             gas: ESTIMATE_GAS_MOCK,
           }),
         );
-        expect(updateEventFragmentMock).toHaveBeenCalledWith(
+        expect(upsertEventFragmentMock).toHaveBeenCalledWith(
           expect.any(String),
           {
             properties: {
@@ -5544,7 +5453,7 @@ describe('LegacyBackgroundApiService', () => {
         } as TransactionMeta;
 
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:getEventFragmentById',
+          'AnalyticsController:getEventFragmentById',
           jest.fn().mockReturnValue({
             properties: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -5552,10 +5461,10 @@ describe('LegacyBackgroundApiService', () => {
             },
           }),
         );
-        const updateEventFragmentMock = jest.fn();
+        const upsertEventFragmentMock = jest.fn();
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:updateEventFragment',
-          updateEventFragmentMock,
+          'AnalyticsController:upsertEventFragment',
+          upsertEventFragmentMock,
         );
         rootMessenger.registerActionHandler(
           'TransactionController:getState',
@@ -5590,7 +5499,7 @@ describe('LegacyBackgroundApiService', () => {
           'Failed to estimate gas for transaction containers: Failed to simulate wrapped transaction',
         );
 
-        expect(updateEventFragmentMock).toHaveBeenCalledWith(
+        expect(upsertEventFragmentMock).toHaveBeenCalledWith(
           expect.any(String),
           {
             properties: {
@@ -6372,6 +6281,96 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('consolidateBasicFunctionality', () => {
+    it('consolidates preferences for a social-login user and syncs external services', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const consolidate = jest.fn().mockReturnValue(true);
+        const toggleExternalServices = jest.fn();
+        const toggleSpy = jest.spyOn(service, 'toggleExternalServices');
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ firstTimeFlowType: 'socialCreate' }),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getState',
+          jest.fn().mockReturnValue({ authConnection: 'google' }),
+        );
+        rootMessenger.registerActionHandler(
+          'PreferencesController:consolidateBasicFunctionality',
+          consolidate,
+        );
+        rootMessenger.registerActionHandler(
+          'PreferencesController:toggleExternalServices',
+          toggleExternalServices,
+        );
+        rootMessenger.registerActionHandler(
+          'SubscriptionController:getState',
+          jest.fn().mockReturnValue({ subscriptions: [] }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokenDetectionController:enable',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'GasFeeController:enableNonRPCGasFeeApis',
+          jest.fn(),
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:consolidateBasicFunctionality',
+        );
+
+        expect(consolidate).toHaveBeenCalledWith({ isSocialLogin: true });
+        expect(toggleSpy).toHaveBeenCalledWith(true);
+        expect(toggleExternalServices).toHaveBeenCalledWith(true);
+      });
+    });
+
+    it('does not sync external services when consolidation is a no-op', async () => {
+      await withService(async ({ rootMessenger, service }) => {
+        const toggleSpy = jest.spyOn(service, 'toggleExternalServices');
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ firstTimeFlowType: 'create' }),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getState',
+          jest.fn().mockReturnValue({}),
+        );
+        rootMessenger.registerActionHandler(
+          'PreferencesController:consolidateBasicFunctionality',
+          jest.fn().mockReturnValue(null),
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:consolidateBasicFunctionality',
+        );
+
+        expect(toggleSpy).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('dismissBasicFunctionalityMigrationNotification', () => {
+    it('dismisses the notice on PreferencesController', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const dismiss = jest.fn();
+        rootMessenger.registerActionHandler(
+          'PreferencesController:dismissBasicFunctionalityMigrationNotification',
+          dismiss,
+        );
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:dismissBasicFunctionalityMigrationNotification',
+        );
+
+        expect(dismiss).toHaveBeenCalledTimes(1);
+      });
+    });
+  });
+
   describe('throwTestError', () => {
     beforeEach(() => {
       jest.useFakeTimers();
@@ -6471,6 +6470,7 @@ describe('LegacyBackgroundApiService', () => {
         const clearPermissionState = jest.fn();
         const clearSnapState = jest.fn().mockResolvedValue(undefined);
         const clearAccountTreeState = jest.fn();
+        const clearAccountsState = jest.fn();
         const updateHiddenAccountsList = jest.fn();
         const clearUnapprovedTransactions = jest.fn();
         const createWallet = jest.fn().mockResolvedValue(undefined);
@@ -6498,6 +6498,10 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'AccountTreeController:clearState',
           clearAccountTreeState,
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:clearState',
+          clearAccountsState,
         );
         rootMessenger.registerActionHandler(
           'AccountOrderController:updateHiddenAccountsList',
@@ -6533,6 +6537,7 @@ describe('LegacyBackgroundApiService', () => {
         expect(clearPermissionState).toHaveBeenCalled();
         expect(clearSnapState).toHaveBeenCalled();
         expect(clearAccountTreeState).toHaveBeenCalled();
+        expect(clearAccountsState).toHaveBeenCalled();
         expect(updateHiddenAccountsList).toHaveBeenCalledWith([]);
         expect(clearUnapprovedTransactions).toHaveBeenCalled();
         expect(createWallet).toHaveBeenCalledWith({
@@ -8733,6 +8738,7 @@ function getMessenger(
       'SeedlessOnboardingController:submitPassword',
       'SeedlessOnboardingController:syncLatestGlobalPassword',
       'AccountsController:updateAccounts',
+      'AccountsController:clearState',
       'AccountOrderController:updateHiddenAccountsList',
       'AccountTreeController:clearState',
       'AccountTreeController:init',
@@ -8754,9 +8760,8 @@ function getMessenger(
       'AppStateController:setPasskeyAutoUnlockSuppressed',
       'AppStateController:setTrezorModel',
       'KeyringController:withKeyringV2Unsafe',
-      'MetaMetricsController:getEventFragmentById',
-      'MetaMetricsController:updateEventFragment',
-      'MetaMetricsController:createEventFragment',
+      'AnalyticsController:getEventFragmentById',
+      'AnalyticsController:upsertEventFragment',
       'MetaMetricsController:bufferedTrace',
       'MetaMetricsController:bufferedEndTrace',
       'TransactionController:updateEditableParams',
@@ -8768,6 +8773,8 @@ function getMessenger(
       'PhishingController:maybeUpdateState',
       'PhishingController:testOrigin',
       'PreferencesController:toggleExternalServices',
+      'PreferencesController:consolidateBasicFunctionality',
+      'PreferencesController:dismissBasicFunctionalityMigrationNotification',
       'SubscriptionController:getState',
       'TokenDetectionController:enable',
       'TokenDetectionController:disable',
