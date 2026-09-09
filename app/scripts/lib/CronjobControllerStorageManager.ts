@@ -22,25 +22,6 @@ export type CronjobControllerEventDateStore = Pick<
 >;
 
 /**
- * A JSON object.
- */
-type JsonRecord = Record<string, Json>;
-
-/**
- * Check whether a JSON value is a JSON object.
- *
- * Delegates the predicate to `isObject` and only narrows differently: `isObject`
- * yields `RuntimeObject`, whose members are `unknown`, and everything here comes
- * from an `isValidJson` check in `init`.
- *
- * @param value - The value to check.
- * @returns Whether the value is a non-array JSON object.
- */
-function isJsonRecord(value: Json): value is JsonRecord {
-  return isObject(value);
-}
-
-/**
  * Check whether a value is a parseable date string.
  *
  * @param value - The value to check.
@@ -146,14 +127,14 @@ export class CronjobControllerStorageManager {
    * @returns The reconciled state.
    */
   async #reconcile(state: Json): Promise<Json> {
-    if (!isJsonRecord(state) || !isJsonRecord(state.events)) {
+    if (!isObject(state) || !isObject(state.events)) {
       return state;
     }
 
-    const events: JsonRecord = {};
+    const events: Record<string, Json> = {};
 
     for (const [id, event] of Object.entries(state.events)) {
-      if (!isJsonRecord(event)) {
+      if (!isObject(event)) {
         continue;
       }
 
