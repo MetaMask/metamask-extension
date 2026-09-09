@@ -46,6 +46,13 @@ export function usePerpsPreload(walletReady: boolean): void {
 
   useEffect(observePerpsLifecycle, []);
 
+  // A market backend flag change must preserve mounted detail subscriptions.
+  // Account/provider/network changes and root unmount still clear every cache.
+  useEffect(
+    () => () => getPerpsStreamManager().clearAllCaches(),
+    [enabled, address, provider, isTestnet],
+  );
+
   useEffect(() => {
     const manager = getPerpsStreamManager();
     if (!enabled || !address) {
@@ -118,7 +125,6 @@ export function usePerpsPreload(walletReady: boolean): void {
       // Release this UI's owner, never globally disconnect another open surface.
       release();
       manager.cleanupPrewarm();
-      manager.clearAllCaches();
     };
   }, [enabled, address, provider, isTestnet, useTerminalApi]);
 }

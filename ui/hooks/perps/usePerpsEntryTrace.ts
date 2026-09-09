@@ -25,6 +25,7 @@ export function usePerpsEntryTrace(
   variant?: PerpsEntryVariant,
 ): void {
   const entryId = useRef<string>();
+  const marketCount = markets.length;
   useEffect(() => {
     const id = startPerpsEntry(surface);
     entryId.current = id;
@@ -42,7 +43,7 @@ export function usePerpsEntryTrace(
         document.visibilityState === 'visible' &&
         !isLoading &&
         isLive &&
-        markets.length > 0
+        marketCount > 0
       ) {
         endPerpsEntry(entryId.current, true, 'live_rows_committed', variant);
       }
@@ -57,5 +58,5 @@ export function usePerpsEntryTrace(
     document.addEventListener('visibilitychange', onVisibilityChange);
     return () =>
       document.removeEventListener('visibilitychange', onVisibilityChange);
-  }, [surface, markets, isLoading, isLive, variant]);
+  }, [surface, marketCount, isLoading, isLive, variant]);
 }
