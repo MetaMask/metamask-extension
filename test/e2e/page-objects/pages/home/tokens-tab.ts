@@ -514,32 +514,11 @@ class TokensTab extends HomePage {
    */
   async checkTokenItemNumber(expectedNumber: number = 1): Promise<void> {
     console.log(`Waiting for ${expectedNumber} token items to be displayed`);
-    await this.driver.waitUntil(
-      async () => {
-        const tokenItemsNumber = await this.getNumberOfAssets();
-        if (tokenItemsNumber === expectedNumber) {
-          return true;
-        }
-        if (tokenItemsNumber > expectedNumber) {
-          return false;
-        }
-        const lowValueTogglePresent =
-          await this.driver.isElementPresentAndVisible(
-            this.lowValueAssetsToggle,
-            1000,
-          );
-        return lowValueTogglePresent;
-      },
-      { timeout: 10000, interval: 500 },
-    );
     await this.expandLowValueAssetsIfPresent();
-    await this.driver.waitUntil(
-      async () => {
-        const tokenItemsNumber = await this.getNumberOfAssets();
-        return tokenItemsNumber === expectedNumber;
-      },
-      { timeout: 10000, interval: 500 },
-    );
+    await this.driver.wait(async () => {
+      const tokenItemsNumber = await this.getNumberOfAssets();
+      return tokenItemsNumber === expectedNumber;
+    }, 10000);
     console.log(
       `Expected number of token items ${expectedNumber} is displayed.`,
     );
