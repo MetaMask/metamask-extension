@@ -4799,6 +4799,10 @@
     "message": "Fund Hyperliquid with MetaMask",
     "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
   },
+  "hyperliquidDepositToastSuccessDescription": {
+    "message": "Funds are ready to trade on Hyperliquid and MetaMask Perps.",
+    "description": "Description shown in the success toast after a perps deposit initiated from the Hyperliquid deposit prompt"
+  },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Apply a MetaMask referral code to all future trades per Hyperliquid's $1. MetaMask earns a fee.",
     "description": "The checkbox label in the redesigned Hyperliquid referral confirmation screen. $1 is the terms link"
@@ -9334,6 +9338,10 @@
   },
   "searchAnAcccountOrContact": {
     "message": "Search an account or contact"
+  },
+  "searchAnAccount": {
+    "message": "Search an account",
+    "description": "Search input placeholder for the Perps destination account picker"
   },
   "searchForAnAssetToSend": {
     "message": "Search for an asset to send"
