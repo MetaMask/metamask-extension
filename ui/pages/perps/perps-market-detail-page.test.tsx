@@ -524,7 +524,7 @@ function installHeaderObserverHarness() {
               ...(borderBoxBlockSize === undefined
                 ? {}
                 : { borderBoxSize: [{ blockSize: borderBoxBlockSize }] }),
-            } as ResizeObserverEntry,
+            } as unknown as ResizeObserverEntry,
           ],
           observer as unknown as ResizeObserver,
         );
