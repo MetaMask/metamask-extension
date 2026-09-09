@@ -12,6 +12,7 @@ import configureStore from '../../../store/store';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
 import mockState from '../../../../test/data/mock-state.json';
 import { decGWEIToHexWEI } from '../../../../shared/lib/conversion.utils';
+import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import {
   createCancelTransaction,
@@ -62,6 +63,13 @@ jest.mock('../context/gas-fee-modal', () => ({
 const mockSelectedInternalAccount = getSelectedInternalAccountFromMockState(
   mockState as unknown as MetaMaskReduxState,
 );
+const checksummedSelectedAddress = toChecksumHexAddress(
+  mockSelectedInternalAccount.address,
+);
+const mockAccountsByChainId = mockState.metamask.accountsByChainId as Record<
+  string,
+  Record<string, { balance: string }>
+>;
 
 const MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_DEC_GWEI =
   mockEstimates[GasEstimateTypes.feeMarket].gasFeeEstimates.medium
@@ -128,6 +136,9 @@ describe('CancelSpeedup Component', () => {
     gasLimitNoBuffer?: string;
     gasFeeEstimates?: (typeof mockEstimates)[GasEstimateTypes.feeMarket]['gasFeeEstimates'];
     balance?: string;
+    selectedAccountBalance?: string;
+    selectedChainId?: string;
+    selectedNetworkClientId?: string;
   };
 
   const BALANCE_ONE_ETH = '0xDE0B6B3A7640000';
@@ -148,42 +159,10 @@ describe('CancelSpeedup Component', () => {
       gasFeeEstimates = mockEstimates[GasEstimateTypes.feeMarket]
         .gasFeeEstimates,
       balance = BALANCE_ONE_ETH,
+      selectedAccountBalance = balance,
+      selectedChainId = '0x5',
+      selectedNetworkClientId = 'goerli',
     } = opts;
-
-    const store = configureStore({
-      appState: {
-        isLoading: false,
-      },
-      metamask: {
-        ...mockState.metamask,
-        isInitialized: true,
-        accounts: {
-          [mockSelectedInternalAccount.address]: {
-            address: mockSelectedInternalAccount.address,
-            balance,
-          },
-        },
-        accountsByChainId: {
-          ...mockState.metamask.accountsByChainId,
-          '0x5': {
-            ...mockState.metamask.accountsByChainId['0x5'],
-            [mockSelectedInternalAccount.address]: { balance },
-          },
-        },
-        preferences: {
-          showFiatInTestnets: true,
-        },
-        featureFlags: { advancedInlineGas: true },
-        gasFeeEstimates,
-        gasFeeEstimatesByChainId: {
-          ...mockState.metamask.gasFeeEstimatesByChainId,
-          '0x5': {
-            ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
-            gasFeeEstimates,
-          },
-        },
-      },
-    });
 
     const effectiveGas = gas ?? mockTransaction.txParams.gas;
     const txParams = {
@@ -200,6 +179,49 @@ describe('CancelSpeedup Component', () => {
       txParams,
       gasLimitNoBuffer: gasLimitNoBuffer ?? effectiveGas,
     } as TransactionMeta;
+
+    const store = configureStore({
+      appState: {
+        isLoading: false,
+      },
+      metamask: {
+        ...mockState.metamask,
+        isInitialized: true,
+        selectedNetworkClientId,
+        transactions: [...mockState.metamask.transactions, transaction],
+        accounts: {
+          [mockSelectedInternalAccount.address]: {
+            address: mockSelectedInternalAccount.address,
+            balance: selectedAccountBalance,
+          },
+        },
+        accountsByChainId: {
+          ...mockAccountsByChainId,
+          '0x5': {
+            ...mockAccountsByChainId['0x5'],
+            [checksummedSelectedAddress]: { balance },
+          },
+          [selectedChainId]: {
+            ...mockAccountsByChainId[selectedChainId],
+            [checksummedSelectedAddress]: {
+              balance: selectedAccountBalance,
+            },
+          },
+        },
+        preferences: {
+          showFiatInTestnets: true,
+        },
+        featureFlags: { advancedInlineGas: true },
+        gasFeeEstimates,
+        gasFeeEstimatesByChainId: {
+          ...mockState.metamask.gasFeeEstimatesByChainId,
+          '0x5': {
+            ...mockState.metamask.gasFeeEstimatesByChainId['0x5'],
+            gasFeeEstimates,
+          },
+        },
+      },
+    });
 
     return renderWithProvider(
       <CancelSpeedup
@@ -478,6 +500,24 @@ describe('CancelSpeedup Component', () => {
 
     it('keeps the confirm button enabled and labelled "Confirm" when the balance covers the gas fee', async () => {
       render({ editGasMode: EditGasModes.cancel });
+
+      const confirmButton = await screen.findByTestId(
+        'cancel-speedup-confirm-button',
+      );
+      expect(confirmButton).not.toBeDisabled();
+      expect(confirmButton).toHaveTextContent(tEn('confirm') as string);
+    });
+
+    it('uses the transaction chain balance when a different network is selected', async () => {
+      render(
+        { editGasMode: EditGasModes.cancel },
+        {
+          balance: BALANCE_ONE_ETH,
+          selectedAccountBalance: '0x1F4',
+          selectedChainId: '0x1',
+          selectedNetworkClientId: 'testNetworkConfigurationId',
+        },
+      );
 
       const confirmButton = await screen.findByTestId(
         'cancel-speedup-confirm-button',

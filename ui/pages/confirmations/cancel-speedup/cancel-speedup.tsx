@@ -30,8 +30,8 @@ import { EditGasModes } from '../../../../shared/constants/gas';
 import { getMaximumGasTotalInHexWei } from '../../../../shared/lib/gas.utils';
 import {
   getAppIsLoading,
-  getSelectedAccount,
   getShouldShowFiat,
+  selectTransactionAvailableBalance,
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
@@ -294,7 +294,15 @@ const CancelSpeedupModal = ({
   const t = useI18nContext();
   const isCancel = mode === EditGasModes.cancel;
 
-  const selectedAccount = useSelector(getSelectedAccount);
+  // The transaction can belong to a chain other than the selected one, so the
+  // balance must be read for the transaction's own chain and sender.
+  const transactionBalance = useSelector((state) =>
+    selectTransactionAvailableBalance(
+      state,
+      effectiveTransaction.id,
+      effectiveTransaction.chainId,
+    ),
+  );
 
   const hasEnoughBalance = isInitialGasReady
     ? isBalanceSufficient({
@@ -306,7 +314,7 @@ const CancelSpeedupModal = ({
           gasPrice: effectiveTransaction.txParams?.gasPrice,
           maxFeePerGas: effectiveTransaction.txParams?.maxFeePerGas,
         }),
-        balance: selectedAccount?.balance,
+        balance: transactionBalance,
       })
     : true;
 
