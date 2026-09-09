@@ -9,6 +9,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { submitRequestToBackground } from '../../../store/background-connection';
+import { HYPERLIQUID_DEPOSIT_PROMPT } from '../../../../shared/constants/hyperliquid-deposit-prompt';
 import { PerpsDepositToast } from './perps-deposit-toast';
 
 const mockToastDismiss = jest.fn();
@@ -279,7 +280,7 @@ describe('PerpsDepositToast', () => {
           'transaction-ui-hl-deposit-tx': {
             properties: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              mm_pay_entry_point: 'hyperliquid_deposit_prompt',
+              mm_pay_entry_point: HYPERLIQUID_DEPOSIT_PROMPT,
             },
           },
         },

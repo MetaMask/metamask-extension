@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { SECOND } from '../../../../shared/constants/time';
+import { HYPERLIQUID_DEPOSIT_PROMPT } from '../../../../shared/constants/hyperliquid-deposit-prompt';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
@@ -56,7 +57,7 @@ export function PerpsDepositToast() {
 
     const isSuccess = lastDepositResultSuccess === true;
     const isHyperliquidDeposit =
-      capturedEntryPoint === 'hyperliquid_deposit_prompt';
+      capturedEntryPoint === HYPERLIQUID_DEPOSIT_PROMPT;
     let title = t('perpsDepositToastSuccessTitle');
     let description: string;
 
