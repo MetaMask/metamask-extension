@@ -104,6 +104,8 @@ export class PerpsStreamBridge {
 
   #preloadPriceUnsubscribe: (() => void) | null = null;
 
+  #foregroundPriceSymbols = new Set<string>();
+
   #preloadSymbols = '';
 
   #preloadReady = false;
@@ -617,7 +619,14 @@ export class PerpsStreamBridge {
       includeMarketData: false,
       callback: (data) => {
         if (id === this.#preloadId) {
-          this.#emit('prices', data);
+          // Focused activeAssetCtx prices take precedence over broad allMids,
+          // regardless of callback order or a preload resubscription.
+          const broadPrices = data.filter(
+            (price) => !this.#foregroundPriceSymbols.has(price.symbol),
+          );
+          if (broadPrices.length > 0) {
+            this.#emit('prices', broadPrices);
+          }
         }
       },
     });
@@ -1010,17 +1019,32 @@ export class PerpsStreamBridge {
     includeMarketData?: boolean,
   ): void {
     const generation = this.#destroyGeneration;
-    this.#addDynamicSubscription('prices', () =>
-      this.#controller.subscribeToPrices({
-        symbols,
-        includeMarketData,
-        callback: (data: unknown) => {
-          if (generation === this.#destroyGeneration) {
-            this.#emit('prices', data);
-          }
-        },
-      }),
-    );
+    this.#addDynamicSubscription('prices', () => {
+      const activeSymbols = new Set(symbols);
+      this.#foregroundPriceSymbols = activeSymbols;
+      let unsubscribe: () => void;
+      try {
+        unsubscribe = this.#controller.subscribeToPrices({
+          symbols,
+          includeMarketData,
+          callback: (data: unknown) => {
+            if (
+              generation === this.#destroyGeneration &&
+              this.#foregroundPriceSymbols === activeSymbols
+            ) {
+              this.#emit('prices', data);
+            }
+          },
+        });
+      } catch (error) {
+        this.#foregroundPriceSymbols = new Set();
+        throw error;
+      }
+      return () => {
+        this.#foregroundPriceSymbols = new Set();
+        unsubscribe();
+      };
+    });
   }
 
   #activateOrderBookStream(params: {
