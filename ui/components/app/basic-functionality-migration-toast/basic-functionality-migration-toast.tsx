@@ -39,7 +39,7 @@ export function BasicFunctionalityMigrationToast() {
   return (
     <Toast
       data-testid="basic-functionality-migration-toast"
-      className="relative p-3 [&>button:last-child]:absolute [&>button:last-child]:right-3 [&>button:last-child]:top-3"
+      className="relative w-full max-w-[432px] self-center p-3 [&>button:last-child]:absolute [&>button:last-child]:right-3 [&>button:last-child]:top-3"
       title={t('basicFunctionalityMigrationModalTitle')}
       titleProps={{ variant: TextVariant.BodyMd, className: 'pr-10' }}
       description={
