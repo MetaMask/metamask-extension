@@ -3,6 +3,8 @@ import { act, renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { trace, endTrace, TraceName } from '../../../shared/lib/trace';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { CandlePeriod } from '../../components/app/perps/constants/chartConfig';
+import type { PerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
 import { usePerpsPreload } from './usePerpsPreload';
 
 jest.mock('react-redux', () => ({ useSelector: jest.fn() }));
@@ -36,8 +38,9 @@ const mockManager = {
   cleanupPrewarm: jest.fn(),
   clearAllCaches: jest.fn(),
 };
+let mockCurrentManager: typeof mockManager | PerpsStreamManager = mockManager;
 jest.mock('../../providers/perps/PerpsStreamManager', () => ({
-  getPerpsStreamManager: () => mockManager,
+  getPerpsStreamManager: () => mockCurrentManager,
 }));
 
 function deferred() {
@@ -73,6 +76,7 @@ describe('usePerpsPreload', () => {
     jest.useFakeTimers();
     jest.clearAllMocks();
     state = createState();
+    mockCurrentManager = mockManager;
     jest
       .mocked(useSelector)
       .mockImplementation((selector) => selector(state as never));
@@ -244,7 +248,11 @@ describe('usePerpsPreload', () => {
       );
       expect(trace).toHaveBeenCalledTimes(2);
       expect(jest.mocked(trace).mock.calls[1][0].id).not.toBe(firstId);
-      expect(mockManager.clearAllCaches).toHaveBeenCalled();
+      if (change === 'terminal') {
+        expect(mockManager.clearAllCaches).not.toHaveBeenCalled();
+      } else {
+        expect(mockManager.clearAllCaches).toHaveBeenCalled();
+      }
     },
   );
 
@@ -265,4 +273,49 @@ describe('usePerpsPreload', () => {
     expect(mockManager.reset).toHaveBeenCalled();
     expect(mockManager.cleanupPrewarm).toHaveBeenCalled();
   });
+
+  it.each([true, false])(
+    'keeps mounted candle subscriptions receiving updates when Terminal becomes %s',
+    async (terminal) => {
+      const { PerpsStreamManager: Manager } = jest.requireActual<
+        typeof import('../../providers/perps/PerpsStreamManager')
+      >('../../providers/perps/PerpsStreamManager');
+      const manager = new Manager();
+      mockCurrentManager = manager;
+      state.terminal = !terminal;
+      const { rerender, unmount } = renderHook(() => usePerpsPreload(true));
+      await act(async () => undefined);
+      const callback = jest.fn();
+      const unsubscribe = manager.candles.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback,
+      });
+      const update = (time: number) => ({
+        channel: 'candles',
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: {
+          candles: [
+            { time, open: '1', high: '2', low: '1', close: '2', volume: '3' },
+          ],
+        },
+      });
+      manager.handleBackgroundUpdate(update(1));
+      expect(callback).toHaveBeenCalledWith(update(1).data);
+
+      state.terminal = terminal;
+      await act(async () => rerender());
+      callback.mockClear();
+      manager.handleBackgroundUpdate(update(2));
+      expect(callback).toHaveBeenCalledWith(update(2).data);
+      expect(submitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsDeactivateCandleStream',
+        expect.anything(),
+      );
+      unsubscribe();
+      unmount();
+      manager.reset();
+    },
+  );
 });

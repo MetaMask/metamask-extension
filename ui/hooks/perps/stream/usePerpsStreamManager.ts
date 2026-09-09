@@ -17,6 +17,7 @@ import {
   type PerpsStreamManager,
 } from '../../../providers/perps/PerpsStreamManager';
 import { getIsPerpsTerminalBackendEnabled } from '../../../selectors/perps';
+import { getUseExternalServices } from '../../../selectors';
 
 export type UsePerpsStreamManagerReturn = {
   /** The stream manager instance (null while initializing) */
@@ -56,6 +57,7 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address ?? null;
   const useTerminalApi = useSelector(getIsPerpsTerminalBackendEnabled);
+  const useExternalServices = useSelector(getUseExternalServices);
 
   const streamManager = getPerpsStreamManager();
   // Configure the singleton before any dependent hook reads its market cache.
@@ -76,12 +78,21 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
   const [prevSelectedAddress, setPrevSelectedAddress] = useState<
     string | null | undefined
   >(undefined);
+  const [prevUseExternalServices, setPrevUseExternalServices] =
+    useState(useExternalServices);
 
-  if (selectedAddress !== prevSelectedAddress) {
+  if (
+    selectedAddress !== prevSelectedAddress ||
+    useExternalServices !== prevUseExternalServices
+  ) {
     setPrevSelectedAddress(selectedAddress);
+    setPrevUseExternalServices(useExternalServices);
     if (!selectedAddress) {
       setIsReady(false);
       setError(new Error('No account selected'));
+    } else if (!useExternalServices) {
+      setIsReady(false);
+      setError(new Error('Perps requires Basic Functionality'));
     } else if (streamManager.isInitialized(selectedAddress)) {
       setIsReady(true);
       setError(null);
@@ -92,12 +103,7 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
   }
 
   useEffect(() => {
-    if (!selectedAddress) {
-      return undefined;
-    }
-
-    // Already initialized by a previous call
-    if (streamManager.isInitialized(selectedAddress)) {
+    if (!selectedAddress || !useExternalServices) {
       return undefined;
     }
 
@@ -124,7 +130,7 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
     return () => {
       cancelled = true;
     };
-  }, [selectedAddress, streamManager]);
+  }, [selectedAddress, streamManager, useExternalServices]);
 
   return {
     streamManager: isReady ? streamManager : null,

@@ -1,5 +1,5 @@
 import { it } from '@jest/globals';
-import type { PerpsController } from '@metamask/perps-controller';
+import type { PerpsController, PriceUpdate } from '@metamask/perps-controller';
 
 // Provide the runtime enum that the source file imports. Jest cannot parse
 // the full @metamask/perps-controller bundle (Hyperliquid SDK uses ESM), so
@@ -2495,6 +2495,7 @@ describe('wallet-root Perps preload', () => {
       perpsActivatePriceStream: (params: {
         symbols: string[];
       }) => Promise<void>;
+      perpsDeactivatePriceStream: () => void;
     };
     return { ...result, controller, ping, api };
   }
@@ -2719,6 +2720,58 @@ describe('wallet-root Perps preload', () => {
     expect(broadCleanup).toHaveBeenCalledTimes(1);
     expect(bridge.canEmit('markets')).toBe(false);
   });
+
+  it.each([true, false])(
+    'preserves focused prices across broad updates and resubscription, preload first: %s',
+    async (preloadFirst) => {
+      const { api, bridge, controller, emit } = setup();
+      api.perpsViewActive(true);
+      if (preloadFirst) {
+        await api.perpsStartPreload('home');
+      }
+      await api.perpsActivatePriceStream({ symbols: ['BTC'] });
+      if (!preloadFirst) {
+        await api.perpsStartPreload('home');
+      }
+      const focused = controller.subscribeToPrices.mock.calls.find(
+        ([params]) => params.symbols?.length === 1,
+      )?.[0];
+      if (!focused) {
+        throw new Error('Focused price subscription was not registered');
+      }
+      const focusedPrices = [
+        { symbol: 'BTC', price: '51000' },
+      ] as PriceUpdate[];
+      const broadPrices = [
+        { symbol: 'BTC', price: '50000' },
+        { symbol: 'ETH', price: '2000' },
+      ] as PriceUpdate[];
+      focused.callback(focusedPrices);
+      expect(emit).toHaveBeenLastCalledWith('prices', focusedPrices);
+
+      for (const owner of ['home', 'replacement']) {
+        await api.perpsStartPreload(owner);
+        const broad = controller.subscribeToPrices.mock.calls
+          .filter(([params]) => params.symbols?.length === 2)
+          .at(-1)?.[0];
+        if (!broad) {
+          throw new Error('Broad price subscription was not registered');
+        }
+        broad.callback(broadPrices);
+        expect(emit).toHaveBeenLastCalledWith('prices', [broadPrices[1]]);
+      }
+
+      api.perpsViewActive(false);
+      api.perpsDeactivatePriceStream();
+      const broad = controller.subscribeToPrices.mock.calls.at(-1)?.[0];
+      if (!broad) {
+        throw new Error('Broad price subscription was not registered');
+      }
+      broad.callback(broadPrices);
+      expect(emit).toHaveBeenLastCalledWith('prices', broadPrices);
+      bridge.destroy();
+    },
+  );
 
   it('ignores a stale release after a newer owner replaces it', async () => {
     const { api, bridge, controller } = setup();

@@ -6,6 +6,7 @@ import {
   resetPerpsStreamManager,
 } from '../../../providers/perps/PerpsStreamManager';
 import { getIsPerpsTerminalBackendEnabled } from '../../../selectors/perps';
+import { getUseExternalServices } from '../../../selectors';
 import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
@@ -43,19 +44,44 @@ const getSelectedMock = getSelectedInternalAccount as jest.MockedFunction<
 const useSelectorMock = useSelector as jest.MockedFunction<typeof useSelector>;
 
 describe('usePerpsStreamManager', () => {
+  let useExternalServices = true;
   beforeEach(() => {
     jest.clearAllMocks();
     mockSubmitRequestToBackground.mockReset();
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
     resetPerpsStreamManager();
     uuidCounter = 0;
+    useExternalServices = true;
 
     useSelectorMock.mockImplementation((selector) => {
+      if (selector === getUseExternalServices) {
+        return useExternalServices;
+      }
       if (selector === getIsPerpsTerminalBackendEnabled) {
         return false;
       }
       return (selector as (s: unknown) => unknown)({});
     });
+  });
+
+  it('recovers without remount when Basic Functionality is enabled after initialization fails', async () => {
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    getSelectedMock.mockReturnValue({ address: '0xready' } as never);
+    mockSubmitRequestToBackground.mockRejectedValueOnce(
+      new Error('Perps connection is unavailable'),
+    );
+    const { result, rerender } = renderHook(() => usePerpsStreamManager());
+    await waitFor(() => expect(result.current.error).not.toBeNull());
+    useExternalServices = false;
+    rerender();
+    expect(result.current.streamManager).toBeNull();
+    useExternalServices = true;
+    rerender();
+    await waitFor(() => expect(result.current.streamManager).not.toBeNull());
+    expect(result.current.error).toBeNull();
+    consoleSpy.mockRestore();
   });
 
   afterEach(() => {
@@ -80,6 +106,9 @@ describe('usePerpsStreamManager', () => {
     manager.markets.pushData([{ symbol: 'ENS', name: 'ENS' }] as never[]);
     getSelectedMock.mockReturnValue(undefined as never);
     useSelectorMock.mockImplementation((selector) => {
+      if (selector === getUseExternalServices) {
+        return true;
+      }
       if (selector === getIsPerpsTerminalBackendEnabled) {
         return true;
       }
