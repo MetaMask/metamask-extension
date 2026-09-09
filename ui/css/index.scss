@@ -34,3 +34,8 @@
 @import 'react-tippy/dist/tippy';
 @import '@metamask/design-tokens/dist/styles';
 
+:root {
+  --font-family-accent: 'Oswald', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-family-hero: 'Oswald', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
