@@ -1110,7 +1110,6 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/polling-controller": true,
-        "@metamask/profile-sync-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true
       }
@@ -2041,7 +2040,7 @@
         "@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
-        "@metamask/remote-feature-flag-controller": true,
+        "@metamask/network-controller>@metamask/remote-feature-flag-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
         "@metamask/utils": true,
@@ -2339,6 +2338,15 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/utils": true,
+        "uuid": true
+      }
+    },
+    "@metamask/network-controller>@metamask/remote-feature-flag-controller": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
         "@metamask/utils": true,
         "uuid": true
       }
@@ -2810,6 +2818,7 @@
         "@metamask/approval-controller": true,
         "@metamask/browser-passworder": true,
         "@metamask/claims-controller": true,
+        "@metamask/config-registry-controller": true,
         "@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/gas-fee-controller": true,
