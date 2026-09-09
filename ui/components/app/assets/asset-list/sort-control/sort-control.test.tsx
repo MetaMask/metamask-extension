@@ -102,23 +102,18 @@ describe('SortControl', () => {
     expect(screen.getByTestId('sortByDecliningBalance')).toBeInTheDocument();
   });
 
-  it('marks the active sort option as checked', () => {
+  it('marks the active sort option with a muted background', () => {
     renderComponent();
 
+    expect(screen.getByTestId('sortByDecliningBalance__button')).toHaveClass(
+      'bg-muted',
+    );
     expect(
       screen.getByTestId('sortByDecliningBalance__button'),
-    ).toHaveAttribute('aria-checked', 'true');
-    expect(screen.getByTestId('sortByAlphabetically__button')).toHaveAttribute(
-      'aria-checked',
-      'false',
+    ).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByTestId('sortByAlphabetically__button')).toHaveClass(
+      'bg-transparent',
     );
-  });
-
-  it('exposes the options as a menu of mutually exclusive items', () => {
-    renderComponent();
-
-    expect(screen.getByRole('menu')).toBeInTheDocument();
-    expect(screen.getAllByRole('menuitemradio')).toHaveLength(2);
   });
 
   it('dispatches setTokenSortConfig with expected config, and tracks event when Alphabetically is clicked', () => {

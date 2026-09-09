@@ -2,7 +2,6 @@ import React, { ReactNode, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
-  BoxFlexDirection,
   ButtonBase,
   FontWeight,
   Text,
@@ -25,10 +24,6 @@ import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
 import { useDispatch } from '../../../../../store/hooks';
 
 type SelectableListItemProps = {
-  /**
-   * Marks the item as one of a set of mutually exclusive options. Omit it for
-   * items that trigger an action rather than select a value.
-   */
   isSelected?: boolean;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   testId?: string;
@@ -36,65 +31,40 @@ type SelectableListItemProps = {
   children: ReactNode;
 };
 
-/**
- * A single row of a popover menu, built on the design system `ButtonBase` so
- * that hover, active and focus states match the other menus in the extension.
- * Selected options are marked with a muted background.
- *
- * @param props - The props of the component.
- * @param props.isSelected - Whether the item is the selected option.
- * @param props.onClick - Handler called when the item is clicked.
- * @param props.testId - Test id applied to the item, the button itself gets
- * `${testId}__button`.
- * @param props.className - Additional classes for the button.
- * @param props.children - The content of the item.
- */
 export const SelectableListItem = ({
   isSelected,
   onClick,
   testId,
   className,
   children,
-}: SelectableListItemProps) => {
-  const optionProps: Pick<
-    React.ComponentProps<'button'>,
-    'role' | 'aria-checked'
-  > = isSelected === undefined
-    ? {}
-    : { role: 'menuitemradio', 'aria-checked': isSelected };
-
-  return (
-    <Box data-testid={testId} className="w-full">
-      <ButtonBase
-        data-testid={testId ? `${testId}__button` : undefined}
-        onClick={onClick}
-        {...optionProps}
-        className={twMerge(
-          'h-auto min-h-12 w-full justify-start gap-2 rounded-none p-4 text-left',
-          // The row is full-bleed inside the popover, so the press animation
-          // ButtonBase applies would pull it away from the popover edges.
-          'active:scale-100',
-          isSelected
-            ? 'bg-muted hover:bg-muted-hover active:bg-muted-pressed'
-            : 'bg-transparent hover:bg-hover active:bg-pressed',
-          'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-default',
-          className,
-        )}
+}: SelectableListItemProps) => (
+  <Box data-testid={testId} className="w-full">
+    <ButtonBase
+      data-testid={testId ? `${testId}__button` : undefined}
+      onClick={onClick}
+      aria-pressed={isSelected}
+      className={twMerge(
+        'h-auto min-h-12 w-full justify-start rounded-none p-4 text-left active:scale-100',
+        isSelected
+          ? 'bg-muted hover:bg-muted-hover active:bg-muted-pressed'
+          : 'bg-transparent hover:bg-hover active:bg-pressed',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-default',
+        className,
+      )}
+    >
+      <Text
+        variant={TextVariant.BodySm}
+        fontWeight={FontWeight.Medium}
+        color={TextColor.TextDefault}
+        asChild
       >
-        <Text
-          variant={TextVariant.BodySm}
-          fontWeight={FontWeight.Medium}
-          color={TextColor.TextDefault}
-          asChild
-        >
-          <span className="flex min-w-0 grow items-center text-left">
-            {children}
-          </span>
-        </Text>
-      </ButtonBase>
-    </Box>
-  );
-};
+        <span className="flex min-w-0 grow items-center text-left">
+          {children}
+        </span>
+      </Text>
+    </ButtonBase>
+  </Box>
+);
 
 type SortControlProps = {
   handleClose: () => void;
@@ -136,12 +106,7 @@ const SortControl = ({ handleClose }: SortControlProps) => {
   );
 
   return (
-    <Box
-      flexDirection={BoxFlexDirection.Column}
-      className="flex w-full"
-      role="menu"
-      aria-label={t('sortBy')}
-    >
+    <>
       <SelectableListItem
         isSelected={
           // TODO: consolidate name and title fields in token to avoid this switch
@@ -162,7 +127,7 @@ const SortControl = ({ handleClose }: SortControlProps) => {
       >
         {t('sortByDecliningBalance', [getCurrencySymbol(currentCurrency)])}
       </SelectableListItem>
-    </Box>
+    </>
   );
 };
 
