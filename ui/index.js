@@ -3,6 +3,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
+import { PasswordChangeRecoveryStatus } from '@metamask/seedless-onboarding-controller';
 
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
@@ -39,7 +40,6 @@ import {
   getNetworkToAutomaticallySwitchTo,
   getAllPermittedAccountsForCurrentTab,
   getIsSocialLoginFlow,
-  getFirstTimeFlowType,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -306,29 +306,41 @@ export async function runInitialActions(store) {
   }
 
   try {
-    const validateSeedlessPasswordOutdated = async (state) => {
+    let recoveryLockInProgress = false;
+    const validateSeedlessPasswordSyncState = async (state) => {
       const isUnlocked = getIsUnlocked(state);
-      if (isUnlocked) {
-        await store.dispatch(
-          actions.checkIsSeedlessPasswordOutdated(false, false), // don't skip cache, don't capture sentry error, we don't want to report to sentry if the check fails
-        );
+      const isSocialLoginFlow = getIsSocialLoginFlow(state);
+      if (!isUnlocked || !isSocialLoginFlow || recoveryLockInProgress) {
+        return;
+      }
+
+      const passwordSyncState = await store.dispatch(
+        actions.resolveSeedlessPasswordSyncState({ skipCache: false }),
+      );
+      if (passwordSyncState === PasswordChangeRecoveryStatus.InSync) {
+        return;
+      }
+
+      recoveryLockInProgress = true;
+      try {
+        await store.dispatch(actions.lockMetamask());
+      } finally {
+        recoveryLockInProgress = false;
       }
     };
-    await validateSeedlessPasswordOutdated(initialState);
-    // periodically check seedless password outdated when app UI is open
+    await validateSeedlessPasswordSyncState(initialState);
+    // Periodically check Seedless password state while the app UI is open.
     const pwdCheckIntervalId = setInterval(() => {
       const state = store.getState();
-      const firstTimeFlowType = getFirstTimeFlowType(state);
       const isSocialLoginFlow = getIsSocialLoginFlow(state);
-      if (firstTimeFlowType !== null && !isSocialLoginFlow) {
-        // if the onboarding type is not social login, after wallet reset, we should stop checking for password outdated
+      if (!isSocialLoginFlow) {
         clearInterval(pwdCheckIntervalId);
         return;
       }
-      validateSeedlessPasswordOutdated(state);
+      validateSeedlessPasswordSyncState(state);
     }, SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS);
   } catch (e) {
-    log.error('[Metamask] checkIsSeedlessPasswordOutdated error', e);
+    log.error('[Metamask] Seedless password state check error', e);
   }
 }
 

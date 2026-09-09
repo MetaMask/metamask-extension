@@ -184,9 +184,9 @@ Specific work:
 - [x] Keep passkey password changes serialized with this coordinator where they
   can touch the same Keyring or Seedless state.
 
-The background-coordinator portion of Section 3, “Add the Option A recovery
-orchestration,” is complete. Unlock-page routing and recovery-blocked UI
-handling remain in Section 4.
+The background coordinator and unlock-page boundary for Section 3, “Add the
+Option A recovery orchestration,” are complete. Home-page polling and the
+existing modal compatibility wiring are covered in Sections 4 and 5.
 
 ### 3. Add the Option A recovery orchestration
 
@@ -201,13 +201,13 @@ renders the status.
   `SeedlessOnboardingController:resolvePasswordSyncState`.
 - [x] Return `in-sync` for non-Seedless wallets and incomplete onboarding
   without calling the Seedless resolver.
-- [ ] Use `skipCache: false` when checking on unlock-page render.
+- [x] Use `skipCache: false` when checking on unlock-page render.
 - [x] Use `skipCache: true` when the user submits a password through
   `syncPasswordAndUnlockWallet`.
 - [x] Force an authoritative remote check for
   `SEEDLESS_CHANGE_PENDING`, regardless of the cache option.
 - [x] Treat `in-sync` as the normal unlock path in the background coordinator.
-- [ ] Route `password-outdated` and `enter-new-password` to the new-password
+- [x] Route `password-outdated` and `enter-new-password` to the new-password
   recovery step.
 - [x] Call `SeedlessOnboardingController:reconcilePassword` with the submitted
   new password. For a no-phase / another-device change, handle
@@ -216,7 +216,7 @@ renders the status.
 - [x] Route `sync-key` through key synchronization and then
   `clearPasswordChangePhase` before normal unlock.
 - [x] Return or preserve `unknown` without attempting a normal unlock in the
-  background coordinator; UI recovery-blocked handling remains pending.
+  background coordinator; keep the wallet blocked in the recovery UI.
 
 #### Reconcile an old local Keyring
 
@@ -275,38 +275,38 @@ After Seedless reconciliation and a new-password submission:
 
 ### 4. Replace the old unlock and outdated-password flow
 
-- [ ] Update `ui/store/actions.ts` so the Seedless unlock action consumes a
+- [x] Update `ui/store/actions.ts` so the Seedless unlock boundary consumes a
   recovery status rather than a boolean outdated flag.
-- [ ] Keep passwords out of Redux state and action payloads that are persisted
-  or logged.
-- [ ] Update `ui/pages/unlock-page/unlock-page.container.ts` to expose the
-  status resolve/recovery operations needed by the component.
-- [ ] Update `ui/pages/unlock-page/unlock-page.component.tsx` so it:
+- [x] Keep passwords out of Redux state and status action payloads that are
+  persisted or logged.
+- [x] Update `ui/pages/unlock-page/unlock-page.container.ts` to expose the
+  status resolver needed by the component.
+- [x] Update `ui/pages/unlock-page/unlock-page.component.tsx` so it:
   - resolves status on render/mount;
-  - resolves again with cache bypass on password submit;
+  - leaves authoritative cache-bypass resolution to the background unlock
+    coordinator on password submit;
   - asks for the new password when recovery requires it;
   - does not classify the password as invalid before recovery routing;
   - keeps the wallet blocked for `unknown`;
   - only navigates after Keyring and Seedless recovery completes.
-- [ ] Add recovery-specific loading, error, and recovery-blocked copy.
-- [ ] Prevent passkey or other automatic unlock paths from bypassing an
-  unfinished Seedless recovery state.
-- [ ] Replace or remove `PasswordOutdatedModal` so it cannot leave the wallet
-  usable while recovery is pending.
-- [ ] Replace `passwordOutdatedCache`-based selectors and low-priority-modal
-  gating with the recovery status, or document why the cache remains only as a
-  non-authoritative display hint.
-- [ ] Update the SRP import and other sensitive flows that currently render
-  `PasswordOutdatedModal` so they are blocked by the same recovery decision.
+- [x] Add recovery-specific loading, error, and recovery-blocked copy.
+- [x] Prevent passkey or other automatic unlock paths from bypassing an
+  unfinished Seedless recovery state at the unlock boundary.
+- [x] Keep the existing `PasswordOutdatedModal` and its existing modal-priority
+  behavior; the controller API migration does not make a UX decision.
+- [x] Keep `passwordOutdatedCache` as the non-authoritative compatibility and
+  display value for the existing modal flow.
+- [x] Replace deprecated boolean outdated checks at existing sensitive entry
+  points with `resolveSeedlessPasswordSyncState`, mapping `in-sync` versus
+  non-`in-sync` without adding new local recovery UI state.
 
 ### 5. Update background polling and lock behavior
 
-- [ ] Replace the `checkIsSeedlessPasswordOutdated` call in `ui/index.js`
-  with the new status resolver, or remove polling if recovery is intentionally
-  checked only at unlock.
-- [ ] If polling detects a remote password change while the wallet is
-  unlocked, lock first and then route to recovery. Do not show an unlocked
-  home-page modal as the recovery boundary.
+- [x] Replace the `checkIsSeedlessPasswordOutdated` call in `ui/index.js` with
+  the new status resolver.
+- [x] If polling detects a remote password change while the wallet is unlocked,
+  lock first and then route to recovery. Preserve the existing modal as a
+  compatibility UX path rather than replacing it as part of this integration.
 - [ ] Ensure the existing `setLocked` mutex ordering is safe when invoked from
   a recovery operation.
 - [ ] Force a state refresh after relevant phase/status changes without

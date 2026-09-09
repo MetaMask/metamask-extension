@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { PasswordChangeRecoveryStatus } from '@metamask/seedless-onboarding-controller';
 import {
   ButtonIcon,
   ButtonSize,
@@ -12,8 +13,8 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  checkIsSeedlessPasswordOutdated,
   importMnemonicToVault,
+  resolveSeedlessPasswordSyncState,
 } from '../../../store/actions';
 import { SECOND } from '../../../../shared/constants/time';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
@@ -25,7 +26,6 @@ import {
 } from '../../../selectors';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
-import type { MetaMaskReduxDispatch } from '../../../store/types';
 import { useDispatch } from '../../../store/hooks';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import SrpInputForm from '../../srp-input-form';
@@ -53,10 +53,10 @@ export const ImportSrp = () => {
       }
 
       if (isSocialLoginEnabled) {
-        const isPasswordOutdated = await dispatch(
-          checkIsSeedlessPasswordOutdated(true),
+        const passwordSyncState = await dispatch(
+          resolveSeedlessPasswordSyncState({ skipCache: true }),
         );
-        if (isPasswordOutdated) {
+        if (passwordSyncState !== PasswordChangeRecoveryStatus.InSync) {
           return;
         }
       }
