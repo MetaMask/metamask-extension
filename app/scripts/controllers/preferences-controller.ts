@@ -2,6 +2,7 @@ import {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerSetAccountNameAction,
 } from '@metamask/accounts-controller';
+import type { SeedlessOnboardingControllerGetStateAction } from '@metamask/seedless-onboarding-controller';
 import { Json, Hex } from '@metamask/utils';
 import {
   BaseController,
@@ -28,8 +29,11 @@ import type { Preferences } from '../../../shared/types/preferences';
 import {
   BFT_CHILD_PREFERENCES,
   getBasicFunctionalityConsolidationPlan,
+  isBasicFunctionalitySocialLoginUser,
   type BasicFunctionalityPreferenceState,
 } from '../../../shared/lib/basic-functionality-consolidation';
+import type { LegacyBackgroundApiServiceToggleExternalServicesAction } from '../services/legacy-background-api-service-method-action-types';
+import type { OnboardingControllerGetStateAction } from './onboarding';
 import { PreferencesControllerMethodActions } from './preferences-controller-method-action-types';
 
 /**
@@ -76,7 +80,10 @@ export type PreferencesControllerEvents = PreferencesControllerStateChangeEvent;
  */
 export type AllowedActions =
   | AccountsControllerGetAccountByAddressAction
-  | AccountsControllerSetAccountNameAction;
+  | AccountsControllerSetAccountNameAction
+  | LegacyBackgroundApiServiceToggleExternalServicesAction
+  | OnboardingControllerGetStateAction
+  | SeedlessOnboardingControllerGetStateAction;
 
 export type PreferencesControllerMessenger = Messenger<
   typeof controllerName,
@@ -591,22 +598,24 @@ export class PreferencesController extends BaseController<
   /**
    * One-time Basic Functionality consolidation when the remote FF turns on.
    * Aligns child preferences, marks the user as consolidated, and schedules
-   * the modal/toast notice when needed.
-   *
-   * @param options - Consolidation options.
-   * @param options.isSocialLogin - Whether this wallet is a social-login user.
-   * @returns The landing Basic Functionality state, or `null` if already
-   * consolidated (no-op). Callers should sync external-service controllers
-   * via `toggleExternalServices` when a boolean is returned.
+   * the modal/toast notice when needed, then syncs external-service
+   * controllers.
    */
-  consolidateBasicFunctionality({
-    isSocialLogin,
-  }: {
-    isSocialLogin: boolean;
-  }): boolean | null {
+  consolidateBasicFunctionality(): void {
     if (this.state.preferences.isBasicFunctionalityConsolidatedEnabled) {
-      return null;
+      return;
     }
+
+    const { firstTimeFlowType } = this.messenger.call(
+      'OnboardingController:getState',
+    );
+    const { authConnection } = this.messenger.call(
+      'SeedlessOnboardingController:getState',
+    );
+    const isSocialLogin = isBasicFunctionalitySocialLoginUser({
+      firstTimeFlowType: firstTimeFlowType ?? undefined,
+      authConnection,
+    });
 
     const preferenceState = {
       useExternalServices: this.state.useExternalServices,
@@ -633,7 +642,10 @@ export class PreferencesController extends BaseController<
         hasDismissedNotice ? null : notification;
     });
 
-    return landingState;
+    this.messenger.call(
+      'LegacyBackgroundApiService:toggleExternalServices',
+      landingState,
+    );
   }
 
   /**

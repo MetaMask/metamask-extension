@@ -1,8 +1,7 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 
 /**
- * One row in the Money activity list. Card / Accounts API kinds are omitted
- * until extension grows those sources.
+ * One row in the Money activity list, sourced from TransactionController.
  */
 export type MoneyActivityItem = {
   kind: 'onchain';

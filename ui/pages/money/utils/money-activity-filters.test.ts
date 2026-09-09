@@ -122,4 +122,22 @@ describe('buildMoneyActivityBuckets', () => {
       buckets[MoneyActivityFilter.Transfers].map((item) => item.id),
     ).toStrictEqual(['sent']);
   });
+
+  it('keeps visible Pay txs in All even when they are not Deposits or Sends', () => {
+    const payFromMoney = onchainItem(
+      makeTx({
+        id: 'pay-from-money',
+        type: TransactionType.contractInteraction,
+        metamaskPay: { tokenAddress: '0xmusd', chainId: '0x8f' },
+      }),
+    );
+
+    const buckets = buildMoneyActivityBuckets([payFromMoney]);
+
+    expect(
+      buckets[MoneyActivityFilter.All].map((item) => item.id),
+    ).toStrictEqual(['pay-from-money']);
+    expect(buckets[MoneyActivityFilter.Deposits]).toStrictEqual([]);
+    expect(buckets[MoneyActivityFilter.Transfers]).toStrictEqual([]);
+  });
 });
