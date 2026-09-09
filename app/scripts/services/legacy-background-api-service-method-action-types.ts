@@ -636,8 +636,12 @@ export type LegacyBackgroundApiServiceApplyTransactionContainersExistingAction =
 /**
  * Creates or updates the UI metrics fragment for a given transaction.
  *
+ * This fragment declares no events: the UI writes properties into it as the
+ * user interacts with a confirmation, and the transaction metrics builders
+ * read them back when they emit their own events.
+ *
  * @param transactionId - The id of the transaction.
- * @param payload - The fragment settings and properties to store.
+ * @param payload - The fragment properties to store.
  */
 export type LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction =
   {
@@ -702,6 +706,26 @@ export type LegacyBackgroundApiServiceRejectAllPendingApprovalsAction = {
   type: `LegacyBackgroundApiService:rejectAllPendingApprovals`;
   handler: LegacyBackgroundApiService['rejectAllPendingApprovals'];
 };
+
+/**
+ * One-time Basic Functionality consolidation when the remote FF turns on.
+ * Aligns child preferences, schedules the modal/toast notice, and syncs
+ * TokenDetection / GasFee / Shield / subscription controllers when
+ * consolidation actually ran.
+ */
+export type LegacyBackgroundApiServiceConsolidateBasicFunctionalityAction = {
+  type: `LegacyBackgroundApiService:consolidateBasicFunctionality`;
+  handler: LegacyBackgroundApiService['consolidateBasicFunctionality'];
+};
+
+/**
+ * Dismisses the one-time Basic Functionality migration modal or toast.
+ */
+export type LegacyBackgroundApiServiceDismissBasicFunctionalityMigrationNotificationAction =
+  {
+    type: `LegacyBackgroundApiService:dismissBasicFunctionalityMigrationNotification`;
+    handler: LegacyBackgroundApiService['dismissBasicFunctionalityMigrationNotification'];
+  };
 
 /**
  * Toggles external services on or off.
@@ -1202,6 +1226,8 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceResolvePendingApprovalAction
   | LegacyBackgroundApiServiceApproveHardwareWalletTransactionAction
   | LegacyBackgroundApiServiceRejectAllPendingApprovalsAction
+  | LegacyBackgroundApiServiceConsolidateBasicFunctionalityAction
+  | LegacyBackgroundApiServiceDismissBasicFunctionalityMigrationNotificationAction
   | LegacyBackgroundApiServiceToggleExternalServicesAction
   | LegacyBackgroundApiServiceAcceptPermissionsRequestAction
   | LegacyBackgroundApiServiceAttemptLedgerTransportCreationAction

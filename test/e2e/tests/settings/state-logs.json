@@ -298,6 +298,7 @@
     },
     "batchSellTrades": "null",
     "batchSellTradesLoadingStatus": "null",
+    "batchTransactionCounts": {},
     "browserEnvironment": {
       "browser": "string",
       "os": "string"
@@ -512,7 +513,6 @@
     "firstTimeFlowType": "string",
     "firstTimeInfo": {},
     "forgottenPassword": "boolean",
-    "fragments": {},
     "fullScreenGasPollTokens": ["string"],
     "gasEstimateType": "string",
     "gasFeeEstimates": {},
@@ -845,6 +845,7 @@
       }
     },
     "needsProfilePairing": "boolean",
+    "needsSocialPairing": "boolean",
     "networkConfigurations": {},
     "networkConfigurationsByChainId": {},
     "networkConnectionBannerNetwork": "null",
@@ -922,6 +923,8 @@
       "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": "boolean",
       "isBasicFunctionalityConsolidatedEnabled": "boolean",
+      "basicFunctionalityMigrationNotification": "null",
+      "basicFunctionalityMigrationNotificationDismissed": "boolean",
       "privacyMode": "boolean",
       "showDefaultAddress": "boolean",
       "showConfirmationAdvancedDetails": "boolean",
@@ -1265,6 +1268,7 @@
     "unapprovedTypedMessagesCount": "number",
     "unconnectedAccountAlertShownOrigins": {},
     "updateModalLastDismissedAt": "null",
+    "upgradedAccounts": {},
     "urlScanCache": {},
     "use4ByteResolution": "boolean",
     "useAddressBarEnsResolution": "boolean",
