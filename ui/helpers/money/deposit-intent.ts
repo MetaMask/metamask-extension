@@ -59,7 +59,7 @@ export function getMoneyAccountDepositIntent(
  * Called when deposit setup fails before submission
  * (`useMoneyAccountDeposit`'s catch path) and once the toast for a terminal
  * state (confirmed, failed, dropped, rejected) has resolved its copy
- * (`useToastLabel`).
+ * (`useMoneyAccountToastLabel`).
  *
  * @param batchId - The batch id of the deposit.
  */

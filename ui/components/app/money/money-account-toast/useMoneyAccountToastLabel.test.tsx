@@ -5,14 +5,14 @@ import {
   clearMoneyAccountDepositIntent,
   getMoneyAccountDepositIntent,
   setMoneyAccountDepositIntent,
-} from '../../../helpers/money/deposit-intent';
+} from '../../../../helpers/money/deposit-intent';
 import { useMoneyAccountToastLabel } from './useMoneyAccountToastLabel';
 
 const mockT = jest.fn((key: string, args?: string[]) =>
   args ? `${key}:${args.join(',')}` : key,
 );
 
-jest.mock('../../../hooks/useI18nContext', () => ({
+jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => mockT,
 }));
 
@@ -20,16 +20,16 @@ let mockTransaction: TransactionMeta | undefined;
 let mockInternalAccounts: Record<string, InternalAccount> = {};
 let mockAccountGroups: { metadata: { name: string } }[] = [];
 
-jest.mock('../../../selectors/transactionController', () => ({
+jest.mock('../../../../selectors/transactionController', () => ({
   selectTransactionById: () => mockTransaction,
 }));
 
-jest.mock('../../../selectors/accounts', () => ({
+jest.mock('../../../../selectors/accounts', () => ({
   getInternalAccountByAddress: (_state: unknown, address: string) =>
     mockInternalAccounts[address.toLowerCase()],
 }));
 
-jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
+jest.mock('../../../../selectors/multichain-accounts/account-tree', () => ({
   getAccountGroupsByAddress: () => mockAccountGroups,
 }));
 

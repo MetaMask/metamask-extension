@@ -17,11 +17,13 @@ import {
   hasTransactionType,
   isPerpsWithdrawTransaction,
 } from '../../../../shared/lib/transactions.utils';
-import { isMoneyAccountTx } from '../../../helpers/money/money-transaction-guards';
+import {
+  isMoneyAccountChildTx,
+  isMoneyAccountTx,
+} from '../../../helpers/money/money-transaction-guards';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
 import type { MetaMaskReduxState } from '../../../store/store';
-import { selectRequiredTransactionIds } from '../../../selectors/transactionController';
 import {
   dismissToast,
   showPendingToast,
@@ -52,8 +54,6 @@ const excludedTransactionTypes: TransactionType[] = [
   TransactionType.perpsDeposit,
   TransactionType.perpsDepositAndOrder,
   TransactionType.perpsRelayDeposit,
-  TransactionType.predictRelayDeposit,
-  TransactionType.relayDeposit,
   TransactionType.shieldSubscriptionApprove,
 ];
 
@@ -63,7 +63,10 @@ const earlyPendingToastTypes = new Set([
   TransactionType.musdClaim,
 ]);
 
-function isExcludedTransactionType(transactionMeta: TransactionMeta): boolean {
+function isExcludedTransactionType(
+  transactionMeta: TransactionMeta,
+  transactions: TransactionMeta[],
+): boolean {
   // Top-level only — nested swapApproval inside batch txs must still toast.
   if (
     transactionMeta.type === TransactionType.bridgeApproval ||
@@ -71,7 +74,11 @@ function isExcludedTransactionType(transactionMeta: TransactionMeta): boolean {
   ) {
     return true;
   }
-  return hasTransactionType(transactionMeta, excludedTransactionTypes);
+  return (
+    hasTransactionType(transactionMeta, excludedTransactionTypes) ||
+    isMoneyAccountTx(transactionMeta) ||
+    isMoneyAccountChildTx(transactionMeta, transactions)
+  );
 }
 
 const failedStatuses = new Set(['failed', 'dropped', 'rejected', 'cancelled']);
@@ -87,8 +94,7 @@ function isPendingToastStatus(
   const isEarlyPending =
     (transactionMeta.type &&
       earlyPendingToastTypes.has(transactionMeta.type)) ||
-    isPerpsWithdrawTransaction(transactionMeta) ||
-    isMoneyAccountTx(transactionMeta);
+    isPerpsWithdrawTransaction(transactionMeta);
 
   if (isEarlyPending) {
     return (
@@ -170,13 +176,8 @@ export function useTransactionEventToasts(): void {
         return;
       }
 
-      if (isExcludedTransactionType(transactionMeta)) {
-        return;
-      }
-
-      // Helper transactions MetaMask Pay creates to fund another transaction
-      // (relay deposits, vault deposits) toast through their parent instead.
-      if (selectRequiredTransactionIds(store.getState()).has(id)) {
+      const transactions = store.getState().metamask?.transactions ?? [];
+      if (isExcludedTransactionType(transactionMeta, transactions)) {
         return;
       }
 
@@ -194,7 +195,6 @@ export function useTransactionEventToasts(): void {
         showSuccessToast(toastId, props);
       } else if (failedStatuses.has(status)) {
         if (transactionMeta.replacedById) {
-          const transactions = store.getState().metamask?.transactions ?? [];
           if (
             isSpeedUpReplacement(transactionMeta.replacedById, transactions)
           ) {

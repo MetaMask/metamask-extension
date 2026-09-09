@@ -29,8 +29,7 @@ export const isMoneyDepositTx = (transactionMeta: TransactionMeta) =>
   );
 
 /**
- * Derives the deposit intent from the transaction's own payment data, for
- * deposits initiated without an explicit intent or after a UI reload.
+ * Derives the deposit intent from the transaction's payment data.
  *
  * @param transactionMeta - The deposit batch transaction.
  */
@@ -54,6 +53,25 @@ export const isMoneyWithdrawTx = (transactionMeta: TransactionMeta) =>
 
 export const isMoneyAccountTx = (transactionMeta: TransactionMeta) =>
   isMoneyDepositTx(transactionMeta) || isMoneyWithdrawTx(transactionMeta);
+
+/**
+ * True for a transaction submitted on behalf of a money account batch, such as
+ * the relay deposit that funds it or the vault deposit that follows it. These
+ * children do not reference their parent, so the link is found from the
+ * parent's `requiredTransactionIds`.
+ *
+ * @param transactionMeta - The candidate child transaction.
+ * @param transactions - All known transactions.
+ */
+export const isMoneyAccountChildTx = (
+  transactionMeta: TransactionMeta,
+  transactions: TransactionMeta[],
+): boolean =>
+  transactions.some(
+    (tx) =>
+      tx.requiredTransactionIds?.includes(transactionMeta.id) &&
+      isMoneyAccountTx(tx),
+  );
 
 /**
  * Perps/Predict deposit parent types (money → service). When funded from the
