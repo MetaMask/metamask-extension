@@ -19,7 +19,10 @@ import type {
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
-import { toAssetId } from '../../../shared/lib/asset-utils';
+import {
+  toAssetId,
+  isNativeCaipAssetId,
+} from '../../../shared/lib/asset-utils';
 
 const CONTROLLER = 'StaticAssetsController' as const;
 
@@ -436,7 +439,7 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
           const asset = parseCaipAssetType(topAsset.assetId);
           if (
             // skip slip44 tokens.
-            asset.assetNamespace === 'slip44' ||
+            isNativeCaipAssetId(topAsset.assetId as CaipAssetType) ||
             // skip zero address tokens.
             asset.assetReference ===
               '0x0000000000000000000000000000000000000000' ||
