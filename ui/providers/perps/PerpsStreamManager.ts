@@ -636,7 +636,7 @@ class PerpsStreamManager {
     subscriptionId?: string;
     live?: boolean;
   }): void {
-    if (this.pendingInit && !this.pendingInit.acceptsUpdates) {
+    if (this.pendingInit?.acceptsUpdates === false) {
       return;
     }
     this._lastStreamUpdateAt = Date.now();

@@ -97,6 +97,9 @@ const CANDLE_TEARDOWN_DEFER_MS = 150;
 export class PerpsStreamBridge {
   #viewActive = false;
 
+  // perpsInit owns wallet streams until disconnect, independently of preload.
+  #walletInitialized = false;
+
   #preloadId: string | null = null;
 
   #preloadPriceUnsubscribe: (() => void) | null = null;
@@ -261,6 +264,7 @@ export class PerpsStreamBridge {
         ) {
           throw new Error('Perps connection was released');
         }
+        this.#walletInitialized = true;
         if (!this.#activated) {
           this.#activate();
         }
@@ -276,7 +280,7 @@ export class PerpsStreamBridge {
       },
       perpsViewActive: (active: boolean) => {
         this.#viewActive = active;
-        if (!active && !this.#preloadId) {
+        if (!active && !this.#preloadId && !this.#walletInitialized) {
           this.destroy();
         }
       },
@@ -284,7 +288,10 @@ export class PerpsStreamBridge {
       perpsStopPreload: (id: string) => {
         if (this.#preloadId === id) {
           this.#releasePreload();
-          if (!this.#viewActive) {
+          if (
+            !this.#viewActive &&
+            (!this.#walletInitialized || !this.#isPreloadAllowed())
+          ) {
             this.destroy();
           }
         }
@@ -468,7 +475,7 @@ export class PerpsStreamBridge {
       this.isActive ||
       Boolean(
         this.#activated &&
-        this.#preloadId &&
+        (this.#walletInitialized || this.#preloadId) &&
         this.#isPreloadAllowed() &&
         [
           'positions',
@@ -494,6 +501,7 @@ export class PerpsStreamBridge {
     this.#tearDownAllDynamic();
 
     this.#activated = false;
+    this.#walletInitialized = false;
     this.#viewActive = false;
     this.#wasDisconnected = false;
     this.#hydrationSeq += 1;
@@ -565,7 +573,10 @@ export class PerpsStreamBridge {
     } catch (error) {
       if (this.#preloadId === id) {
         this.#releasePreload();
-        if (!this.#viewActive) {
+        if (
+          !this.#viewActive &&
+          (!this.#walletInitialized || !this.#isPreloadAllowed())
+        ) {
           this.destroy();
         }
       }
@@ -594,7 +605,7 @@ export class PerpsStreamBridge {
     }
     const symbols = Array.from(
       new Set(markets.map((market) => market.symbol)),
-    ).sort();
+    ).sort((left, right) => left.localeCompare(right));
     const key = symbols.join('|');
     if (!key || key === this.#preloadSymbols) {
       return;
