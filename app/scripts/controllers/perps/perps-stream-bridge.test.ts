@@ -2509,6 +2509,111 @@ describe('wallet-root Perps preload', () => {
     ).toBeLessThan(controllerApi.perpsInit.mock.invocationCallOrder[0]);
   });
 
+  it('delivers wallet snapshots when initialization finishes after preload cancellation', async () => {
+    const { api, bridge, controller, controllerApi, emit } = setup();
+    let resolveInit!: () => void;
+    controllerApi.perpsInit.mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveInit = resolve;
+      }),
+    );
+    const delivered = jest.fn();
+    emit.mockImplementation((channel, data) => {
+      if (bridge.canEmit(channel)) {
+        delivered(channel, data);
+      }
+    });
+    controller.subscribeToPositions.mockImplementation(({ callback }) => {
+      callback([]);
+      return jest.fn();
+    });
+    const pending = api.perpsInit();
+
+    // The wallet-root deadline expires before it can call perpsStartPreload.
+    api.perpsStopPreload('timed-out');
+    resolveInit();
+    await pending;
+
+    expect(delivered).toHaveBeenCalledWith('positions', []);
+    expect(bridge.canEmit('markets')).toBe(true);
+    expect(bridge.canEmit('candles')).toBe(false);
+    bridge.destroy();
+    expect(bridge.canEmit('markets')).toBe(false);
+  });
+
+  it.each(['stop', 'pending', 'failure'] as const)(
+    'preserves initialized wallet streams after preload %s',
+    async (reason) => {
+      const { api, bridge, controller, ping, emit } = setup();
+      const positionsCleanup = jest.fn();
+      const priceCleanup = jest.fn();
+      const preloadCleanup = jest.fn();
+      controller.subscribeToPositions.mockReturnValue(positionsCleanup);
+      controller.subscribeToPrices
+        .mockReturnValueOnce(priceCleanup)
+        .mockReturnValueOnce(preloadCleanup);
+      await api.perpsInit();
+      await api.perpsActivatePriceStream({ symbols: ['BTC'] });
+      const delivered = jest.fn();
+      emit.mockImplementation((channel, data) => {
+        if (bridge.canEmit(channel)) {
+          delivered(channel, data);
+        }
+      });
+
+      if (reason === 'failure') {
+        ping.mockRejectedValue(new Error('offline'));
+        await expect(api.perpsStartPreload('home')).rejects.toThrow('offline');
+      } else if (reason === 'pending') {
+        let finishPing!: () => void;
+        const pingResult = new Promise<void>((resolve) => {
+          finishPing = resolve;
+        });
+        ping.mockReturnValue(pingResult);
+        const pending = api.perpsStartPreload('home');
+        await Promise.resolve();
+        await Promise.resolve();
+        api.perpsStopPreload('home');
+        finishPing();
+        await expect(pending).rejects.toThrow('released');
+      } else {
+        await api.perpsStartPreload('home');
+        api.perpsStopPreload('home');
+        expect(preloadCleanup).toHaveBeenCalledTimes(1);
+      }
+      api.perpsViewActive(true);
+      api.perpsViewActive(false);
+      controller.subscribeToPositions.mock.calls[0][0].callback([]);
+      controller.subscribeToPrices.mock.calls[0][0].callback([]);
+
+      expect(delivered).toHaveBeenCalledWith('positions', []);
+      expect(delivered).toHaveBeenCalledWith('prices', []);
+      expect(positionsCleanup).not.toHaveBeenCalled();
+      expect(priceCleanup).not.toHaveBeenCalled();
+      bridge.destroy();
+      expect(positionsCleanup).toHaveBeenCalledTimes(1);
+      expect(priceCleanup).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it('releases initialized wallet streams when eligibility is revoked', async () => {
+    let allowed = true;
+    const { api, bridge, controller } = setup({
+      isPreloadAllowed: () => allowed,
+    });
+    const cleanup = jest.fn();
+    controller.subscribeToPositions.mockReturnValue(cleanup);
+    await api.perpsInit();
+    await api.perpsStartPreload('home');
+
+    allowed = false;
+    api.perpsStopPreload('home');
+
+    expect(cleanup).toHaveBeenCalledTimes(1);
+    expect(controller.stopMarketDataPreload).toHaveBeenCalled();
+    expect(bridge.canEmit('positions')).toBe(false);
+  });
+
   it('prewarms broad prices after provider health succeeds without a visible Perps view', async () => {
     const { api, bridge, controller, ping, emit } = setup();
 
