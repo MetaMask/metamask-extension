@@ -415,6 +415,9 @@
     "MoneyAccountController": {
       "moneyAccounts": {}
     },
+    "MoneyAccountUpgradeController": {
+      "upgradedAccounts": {}
+    },
     "MultichainAssetsController": {
       "accountsAssets": {
         "688e01b8-3134-4ef4-80e6-8772bab38ef7": [
@@ -1033,6 +1036,8 @@
         "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": false,
+        "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
