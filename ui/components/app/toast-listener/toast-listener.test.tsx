@@ -40,6 +40,10 @@ jest.mock('../ramps/ramps-order-toast-listener', () => ({
   RampsOrderToastListener: () => null,
 }));
 
+jest.mock('../money/money-account-toast/money-account-toast-listener', () => ({
+  MoneyAccountToastListener: () => null,
+}));
+
 describe('ToastListener', () => {
   beforeEach(() => {
     jest.clearAllMocks();
