@@ -102,6 +102,6 @@ describe('TokenListControllerInit', () => {
       chainId: '0x1',
       isDeprecated: expect.any(Function),
     });
-    expect(controllerMock.mock.calls[0][0].isDeprecated()).toBe(true);
+    expect(controllerMock.mock.calls[0][0].isDeprecated?.()).toBe(true);
   });
 });

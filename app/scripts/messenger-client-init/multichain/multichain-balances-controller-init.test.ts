@@ -59,7 +59,7 @@ describe('MultichainBalancesControllerInit', () => {
       isDeprecated: expect.any(Function),
     });
     expect(
-      multichainBalancesControllerClassMock.mock.calls[0][0].isDeprecated(),
+      multichainBalancesControllerClassMock.mock.calls[0][0].isDeprecated?.(),
     ).toBe(true);
   });
 });
