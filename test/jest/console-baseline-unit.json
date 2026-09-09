@@ -55,7 +55,6 @@
       "MetaMask: MetaMetrics invalid trait types": 1,
       "ObjectMultiplex: Malformed chunk warnings": 1,
       "error: AssertionError: The Snaps platform requires": 1,
-      "error: Error: invalid address (argument=\"address\", value=\"0x\",": 2,
       "error: {": 1,
       "warn: Error during SnapController initialization. AssertionError:": 3
     },
@@ -159,8 +158,8 @@
     },
     "shared/lib/metametrics.test.ts": {
       "Third-party: Bindings failed, using pure JS": 1,
-      "µWebSockets: Compatibility warnings": 1,
-      "µWebSockets: Fallback to Node implementation": 1
+      "\u00b5WebSockets: Compatibility warnings": 1,
+      "\u00b5WebSockets: Fallback to Node implementation": 1
     },
     "shared/lib/selectors/index.test.ts": {
       "Reselect: Identity function warnings": 2
@@ -448,7 +447,7 @@
       "Test errors: Uncaught Errors": 4
     },
     "ui/contexts/metametrics.test.tsx": {
-      "warn: ⚠️ React Router Future Flag": 1
+      "warn: \u26a0\ufe0f React Router Future Flag": 1
     },
     "ui/ducks/bridge/asset-selectors.test.ts": {
       "Reselect: Input stability warnings": 1

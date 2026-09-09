@@ -44,6 +44,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   AnalyticsController: {
     analyticsId: true,
     consentDecisionMade: true,
+    eventFragments: false,
     eventQueue: false,
     optedIn: true,
     preConsentEventQueue: false,
@@ -54,6 +55,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   AuthenticationController: {
     isSignedIn: false,
     needsProfilePairing: false,
+    needsSocialPairing: false,
     srpSessionData: false,
   },
   NetworkOrderController: {
@@ -193,6 +195,9 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   MoneyAccountController: {
     moneyAccounts: false,
   },
+  MoneyAccountUpgradeController: {
+    upgradedAccounts: false,
+  },
   NotificationServicesController: {
     subscriptionAccountsSeen: false,
     isMetamaskNotificationsFeatureSeen: false,
@@ -207,7 +212,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   MetaMetricsController: {
     tracesBeforeMetricsOptIn: false,
-    fragments: false,
     traits: false,
     dataCollectionForMarketing: false,
     marketingCampaignCookieId: true,

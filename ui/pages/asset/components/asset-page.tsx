@@ -40,9 +40,12 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
-import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
@@ -151,6 +154,7 @@ const AssetPage = ({
 }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const { decodedAsset } = processAssetParams(useParams());
   const currency = useSelector(getCurrentCurrency);
   const isEvm = isEvmChainId(asset.chainId);
@@ -435,6 +439,14 @@ const AssetPage = ({
     setIsMarketClosedModalOpen(true);
   }, []);
 
+  const handleBack = useCallback(() => {
+    if (location.key === 'default') {
+      navigate(DEFAULT_ROUTE, { replace: true });
+    } else {
+      transitionBack(() => navigate(PREVIOUS_ROUTE));
+    }
+  }, [location.key, navigate]);
+
   return (
     <AssetPageSecurityTrustProvider
       assetId={caipAssetId as CaipAssetType}
@@ -458,7 +470,7 @@ const AssetPage = ({
               size={ButtonIconSize.Md}
               ariaLabel={t('back') as string}
               iconName={IconName.ArrowLeft}
-              onClick={() => transitionBack(() => navigate(PREVIOUS_ROUTE))}
+              onClick={handleBack}
               className="asset-page__back-button"
             />
           </Box>

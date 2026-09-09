@@ -107,7 +107,6 @@
     "LoggingController": { "logs": "object" },
     "MetaMetricsController": {
       "dataCollectionForMarketing": "boolean",
-      "fragments": "object",
       "marketingCampaignCookieId": null,
       "tracesBeforeMetricsOptIn": "object",
       "traits": "object"
@@ -117,6 +116,7 @@
       "metaMetricsDataDeletionTimestamp": 0
     },
     "MoneyAccountController": { "moneyAccounts": "object" },
+    "MoneyAccountUpgradeController": { "upgradedAccounts": "object" },
     "MultichainAssetsController": {
       "accountsAssets": "object",
       "allIgnoredAssets": "object",
@@ -200,6 +200,8 @@
       "openSeaEnabled": true,
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
+        "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": "boolean",
         "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
@@ -255,7 +257,23 @@
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
-        "feature3": { "name": "groupC", "value": "valueC" }
+        "feature3": [
+          {
+            "name": "groupA",
+            "scope": { "type": "threshold", "value": 0.3 },
+            "value": "valueA"
+          },
+          {
+            "name": "groupB",
+            "scope": { "type": "threshold", "value": 0.5 },
+            "value": "valueB"
+          },
+          {
+            "name": "groupC",
+            "scope": { "type": "threshold", "value": 1 },
+            "value": "valueC"
+          }
+        ]
       }
     },
     "RewardsController": {

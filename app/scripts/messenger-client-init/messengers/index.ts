@@ -86,7 +86,6 @@ import {
   getSmartTransactionsControllerInitMessenger,
   getSmartTransactionsControllerMessenger,
 } from './smart-transactions-controller-messenger';
-import { getConfigRegistryControllerMessenger } from './config-registry-controller-messenger';
 import { getNetworkConnectionBannerControllerMessenger } from './network-connection-banner';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
@@ -192,7 +191,6 @@ import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
 import { getUserTraitsServiceMessenger } from './user-traits-service-messenger';
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
-import { getConfigRegistryApiServiceMessenger } from './config-registry-api-service-messenger';
 import { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
 import { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data-service-messenger';
 import { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
@@ -201,6 +199,10 @@ import {
   getMoneyAccountControllerInitMessenger,
   getMoneyAccountControllerMessenger,
 } from './money-account-controller-messenger';
+import {
+  getMoneyAccountUpgradeControllerMessenger,
+  getMoneyAccountUpgradeControllerInitMessenger,
+} from './money-account-upgrade-controller-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
@@ -218,7 +220,6 @@ export {
   getBridgeControllerInitMessenger,
 } from './bridge-controller-messenger';
 export { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
-export { getConfigRegistryControllerMessenger } from './config-registry-controller-messenger';
 export type { CurrencyRateControllerInitMessenger } from './currency-rate-controller-messenger';
 export {
   getCurrencyRateControllerMessenger,
@@ -278,6 +279,10 @@ export {
   getMoneyAccountControllerInitMessenger,
   getMoneyAccountControllerMessenger,
 } from './money-account-controller-messenger';
+export {
+  getMoneyAccountUpgradeControllerMessenger,
+  getMoneyAccountUpgradeControllerInitMessenger,
+} from './money-account-upgrade-controller-messenger';
 export type { ComplianceControllerMessenger } from './compliance-controller-messenger';
 export { getComplianceControllerMessenger } from './compliance-controller-messenger';
 export type { ComplianceServiceMessenger } from './compliance-service-messenger';
@@ -401,14 +406,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getComplianceControllerMessenger,
     getInitMessenger: noop,
   },
-  ConfigRegistryController: {
-    getMessenger: getConfigRegistryControllerMessenger,
-    getInitMessenger: noop,
-  },
-  ConfigRegistryApiService: {
-    getMessenger: getConfigRegistryApiServiceMessenger,
-    getInitMessenger: noop,
-  },
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
     getInitMessenger: noop,
@@ -500,6 +497,10 @@ export const MESSENGER_FACTORIES = {
   MoneyAccountController: {
     getMessenger: getMoneyAccountControllerMessenger,
     getInitMessenger: getMoneyAccountControllerInitMessenger,
+  },
+  MoneyAccountUpgradeController: {
+    getMessenger: getMoneyAccountUpgradeControllerMessenger,
+    getInitMessenger: getMoneyAccountUpgradeControllerInitMessenger,
   },
   MultichainAssetsController: {
     getMessenger: getMultichainAssetsControllerMessenger,
