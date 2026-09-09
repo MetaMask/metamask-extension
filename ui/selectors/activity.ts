@@ -12,7 +12,14 @@ import {
   isEvmAccountType,
   type Transaction as KeyringTransaction,
 } from '@metamask/keyring-api';
-import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
+import {
+  KnownCaipNamespace,
+  isCaipAssetType,
+  parseCaipAssetType,
+  toCaipChainId,
+  type CaipAssetType,
+  type CaipChainId,
+} from '@metamask/utils';
 import {
   mapKeyringTransaction,
   mapLocalTransaction,
@@ -30,7 +37,7 @@ import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
 import type { MetaMaskReduxState } from '../store/store';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
-import { toAssetId } from '../../shared/lib/asset-utils';
+import { isEvmChainId, toAssetId } from '../../shared/lib/asset-utils';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
 import {
   getMoneyAccountTransactionType,
@@ -426,6 +433,40 @@ function patchUnit(
   };
 }
 
+/**
+ * Resolves a bridge quote asset to the canonical activity asset ID.
+ *
+ * EVM quote assets are rebuilt from their address and chain ID so persisted
+ * `token:` asset IDs match the wallet's `erc20:` asset IDs. Non-EVM asset IDs
+ * are preserved as provided by bridge history.
+ *
+ * @param asset - The source or destination asset from bridge history.
+ * @returns The canonical asset ID, or the persisted bridge asset ID as a fallback.
+ */
+function getBridgeAssetId(asset: BridgeHistoryItem['quote']['srcAsset']) {
+  if (isCaipAssetType(asset.assetId)) {
+    const { chainId } = parseCaipAssetType(asset.assetId);
+
+    if (!isEvmChainId(chainId)) {
+      return asset.assetId;
+    }
+  }
+
+  if (!asset.address || asset.chainId === undefined) {
+    return asset.assetId as CaipAssetType | undefined;
+  }
+
+  const caipChainId = toCaipChainId(
+    KnownCaipNamespace.Eip155,
+    asset.chainId.toString(),
+  ) as CaipChainId;
+
+  return (
+    toAssetId(asset.address, caipChainId) ??
+    (asset.assetId as CaipAssetType | undefined)
+  );
+}
+
 function getSwapTokens(bridgeHistoryItem?: BridgeHistoryItem) {
   if (bridgeHistoryItem === undefined) {
     return undefined;
@@ -436,14 +477,14 @@ function getSwapTokens(bridgeHistoryItem?: BridgeHistoryItem) {
   return {
     sourceToken: {
       amount: quote.srcTokenAmount,
-      assetId: quote.srcAsset.assetId,
+      assetId: getBridgeAssetId(quote.srcAsset),
       decimals: quote.srcAsset.decimals,
       direction: 'out' as const,
       symbol: quote.srcAsset.symbol,
     },
     destinationToken: {
       amount: status.destChain?.amount ?? quote.destTokenAmount,
-      assetId: quote.destAsset.assetId,
+      assetId: getBridgeAssetId(quote.destAsset),
       decimals: quote.destAsset.decimals,
       direction: 'in' as const,
       symbol: quote.destAsset.symbol,
