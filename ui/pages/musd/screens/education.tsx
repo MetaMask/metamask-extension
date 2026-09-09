@@ -22,6 +22,7 @@ import {
   TextColor,
   TextAlign,
   FontFamily,
+  FontWeight,
   TextTransform,
   BoxFlexDirection,
   BoxJustifyContent,
@@ -339,6 +340,7 @@ const MusdEducationScreen = () => {
             <Text
               variant={TextVariant.DisplayMd}
               fontFamily={FontFamily.Hero}
+              fontWeight={FontWeight.Bold}
               textAlign={TextAlign.Center}
               color={TextColor.TextDefault}
               textTransform={TextTransform.Uppercase}

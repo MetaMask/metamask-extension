@@ -269,7 +269,7 @@ const ShieldEntryModal = ({
         >
           <Text
             fontFamily={FontFamily.Hero}
-            fontWeight={FontWeight.Regular}
+            fontWeight={FontWeight.Bold}
             className="shield-entry-modal__title text-center text-accent04-light mb-3"
           >
             {modalType === MODAL_TYPE.A
