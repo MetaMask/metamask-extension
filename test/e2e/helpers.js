@@ -617,16 +617,9 @@ async function withFixtures(options, testSuite) {
 
     console.log(`\nExecuting testcase: '${title}'\n`);
 
-    // --- Internal deadline ---
-    // Mocha cannot cancel a running async function when its timeout fires.
-    // It simply marks the test as failed and starts the next one, which means
-    // our `catch` (screenshots) and `finally` (server cleanup) blocks never
-    // run in time.  By racing the test callback against an internal deadline
-    // that fires a few seconds BEFORE Mocha's timeout, we regain control:
-    //   1. The deadline error flows into `catch` → screenshots are captured.
-    //   2. Then `finally` runs → Anvil and other servers are cleaned up.
-    //   3. `withFixtures` settles before Mocha's timeout, so the next test
-    //      starts with a clean slate.
+    // Race the test callback against a deadline that fires just before
+    // Mocha's timeout.  This lets our catch (screenshots) and finally
+    // (server cleanup) run before Mocha moves on to the next test.
     const ARTIFACT_DEADLINE_BUFFER_MS = 5_000;
     const testPromise = testSuite({
       bundlerServer,
@@ -648,6 +641,7 @@ async function withFixtures(options, testSuite) {
 
     // Silence the orphaned test promise if the deadline wins the race and the
     // test callback rejects afterwards (prevents unhandled-rejection noise).
+    // eslint-disable-next-line no-empty-function
     testPromise.catch(() => {});
 
     const deadlineMs = testTimeout - ARTIFACT_DEADLINE_BUFFER_MS;

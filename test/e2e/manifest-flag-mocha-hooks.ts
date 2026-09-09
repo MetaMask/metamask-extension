@@ -63,10 +63,8 @@ if (typeof beforeEach === 'function' && process.env.SELENIUM_BROWSER) {
   beforeEach(function () {
     console.debug('manifest-flag-mocha-hooks.ts -- beforeEach hook');
 
-    // Expose the effective Mocha timeout for the current test so that
-    // withFixtures can set an internal deadline that fires slightly
-    // before Mocha's.  this.currentTest.timeout() respects suite-level
-    // overrides (e.g. this.timeout(180_000) on a describe block).
+    // Expose the per-test Mocha timeout (including suite-level overrides)
+    // so withFixtures can set an internal deadline just before it.
     const testTimeout = this.currentTest?.timeout?.() ?? 0;
     if (testTimeout > 0) {
       process.env.MOCHA_TIMEOUT = String(testTimeout);
