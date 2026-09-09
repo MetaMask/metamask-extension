@@ -618,9 +618,16 @@ const PerpsMarketDetailPage = () => {
       return undefined;
     }
 
+    // Border-box height: the sticky header's padding is part of what covers
+    // the scrolled content, so `contentRect` would under-report the offset.
     const resizeObserver = new ResizeObserver((entries) => {
-      const height = entries[0]?.contentRect.height ?? 0;
-      setHeaderHeight(height);
+      const entry = entries[0];
+      const borderBoxHeight = Array.isArray(entry?.borderBoxSize)
+        ? entry.borderBoxSize[0]?.blockSize
+        : undefined;
+      setHeaderHeight(
+        borderBoxHeight ?? stickyHeaderEl.getBoundingClientRect().height,
+      );
     });
     resizeObserver.observe(stickyHeaderEl);
 
