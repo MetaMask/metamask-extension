@@ -243,6 +243,8 @@ async function withFixtures(options, testSuite) {
     testTimeout = parseInt(process.env.MOCHA_TIMEOUT, 10) || 0,
   } = options;
 
+  const fixtureStartTime = Date.now();
+
   // Normalize localNodeOptions
   const localNodeOptsNormalized = normalizeLocalNodeOptions(localNodeOptions);
 
@@ -642,7 +644,8 @@ async function withFixtures(options, testSuite) {
     // eslint-disable-next-line no-empty-function
     testPromise.catch(() => {});
 
-    const deadlineMs = testTimeout - ARTIFACT_DEADLINE_BUFFER_MS;
+    const elapsed = Date.now() - fixtureStartTime;
+    const deadlineMs = testTimeout - ARTIFACT_DEADLINE_BUFFER_MS - elapsed;
     if (deadlineMs > 0 && testTimeout > 0) {
       let deadlineTimer;
       const deadlinePromise = new Promise((_, reject) => {
