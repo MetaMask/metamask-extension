@@ -25,6 +25,7 @@ import {
   selectBlockedPayTokens,
   type BlockedPayTokenEntry,
 } from '../../../pages/confirmations/selectors/feature-flags';
+import { HYPERLIQUID_DEPOSIT_PROMPT } from '../../../../shared/constants/hyperliquid-deposit-prompt';
 import { HyperliquidDepositPrompt } from './hyperliquid-deposit-prompt';
 
 jest.mock('../../../pages/confirmations/hooks/send/useSendTokens');
@@ -218,7 +219,8 @@ describe('HyperliquidDepositPrompt', () => {
       name: MetaMetricsEventName.HyperliquidDepositPromptInteracted,
       properties: {
         category: MetaMetricsEventCategory.Confirmations,
-        action: 'dismiss',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        interaction_type: 'dismiss',
       },
       sensitiveProperties: {},
     });
@@ -258,7 +260,7 @@ describe('HyperliquidDepositPrompt', () => {
     expect(mockNavigate).toHaveBeenCalledWith(
       {
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/transaction-id-mock`,
-        search: `loader=customAmount&goBackTo=${encodeURIComponent(PERPS_HOME_PAGE_ROUTE)}`,
+        search: `loader=customAmount&goBackTo=${encodeURIComponent(`${PERPS_HOME_PAGE_ROUTE}?source=${HYPERLIQUID_DEPOSIT_PROMPT}`)}`,
       },
       { replace: true },
     );
@@ -266,7 +268,8 @@ describe('HyperliquidDepositPrompt', () => {
       name: MetaMetricsEventName.HyperliquidDepositPromptInteracted,
       properties: {
         category: MetaMetricsEventCategory.Confirmations,
-        action: 'continue',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        interaction_type: 'continue',
       },
       sensitiveProperties: {},
     });
@@ -318,7 +321,7 @@ describe('HyperliquidDepositPrompt', () => {
       expect(mockNavigate).toHaveBeenCalledWith(
         {
           pathname: `${CONFIRM_TRANSACTION_ROUTE}/transaction-id-mock`,
-          search: `loader=customAmount&goBackTo=${encodeURIComponent(PERPS_HOME_TAB_ROUTE)}`,
+          search: `loader=customAmount&goBackTo=${encodeURIComponent(`${PERPS_HOME_TAB_ROUTE}&source=${HYPERLIQUID_DEPOSIT_PROMPT}`)}`,
         },
         { replace: true },
       );
