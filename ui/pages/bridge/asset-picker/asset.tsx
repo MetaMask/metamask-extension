@@ -105,7 +105,8 @@ export const BridgeAsset = React.forwardRef(
                   formatChainIdToCaip(asset.chainId)
                 ]
               }
-              style={{ width: 20, height: 20, borderWidth: 2, borderRadius: 4 }}
+              className="rounded-md"
+              style={{ width: 15, height: 15, borderWidth: 1 }}
               hasBorder
             />
           }

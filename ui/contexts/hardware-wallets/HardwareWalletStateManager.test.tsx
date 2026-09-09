@@ -260,8 +260,8 @@ describe('HardwareWalletStateManager', () => {
       });
     });
 
-    describe('ref synchronization during render', () => {
-      it('syncs walletTypeRef with current wallet type on initial render', () => {
+    describe('wallet type ref synchronization', () => {
+      it('syncs walletTypeRef with current wallet type after mount', () => {
         const store = mockStore(createMockState(KeyringTypes.ledger));
 
         const { result } = renderHook(() => useHardwareWalletStateManager(), {

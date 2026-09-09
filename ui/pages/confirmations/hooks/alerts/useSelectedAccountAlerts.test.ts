@@ -72,6 +72,9 @@ describe('useSelectedAccountAlerts', () => {
   [
     TransactionType.moneyAccountDeposit,
     TransactionType.moneyAccountWithdraw,
+    TransactionType.perpsDeposit,
+    TransactionType.perpsWithdraw,
+    TransactionType.musdConversion,
   ].forEach((nestedType) => {
     it(`does not return an alert for a ${nestedType} transaction from a different account`, () => {
       const contractInteraction = {

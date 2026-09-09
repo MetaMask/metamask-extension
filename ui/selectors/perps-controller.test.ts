@@ -26,12 +26,14 @@ import {
   selectPerpsCachedPositions,
   selectPerpsCachedOrders,
   selectPerpsCachedAccountState,
+  selectPerpsCachedUserData,
   selectPerpsPerpsBalances,
   selectPerpsMarketFilterPreferences,
   selectPerpsShouldShowDepositToast,
   selectProLayoutPreferences,
   selectOrderBookPosition,
   selectOrderBookExpanded,
+  selectChartExpanded,
 } from './perps-controller';
 
 function buildState(overrides: Record<string, unknown> = {}) {
@@ -763,6 +765,31 @@ describe('perps-controller selectors', () => {
     });
   });
 
+  describe('selectPerpsCachedUserData', () => {
+    it('returns the full cache entry for the active provider', () => {
+      const entry = {
+        positions: [],
+        orders: [],
+        accountState: { totalBalance: '100' },
+        timestamp: 1,
+        address: '0xabc',
+      };
+
+      expect(
+        selectPerpsCachedUserData(
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedUserDataByProvider: { hyperliquid: entry },
+          }),
+        ),
+      ).toBe(entry);
+    });
+
+    it('defaults to null', () => {
+      expect(selectPerpsCachedUserData(buildState())).toBeNull();
+    });
+  });
+
   describe('selectPerpsPerpsBalances', () => {
     it('returns value from state', () => {
       const balances = { ETH: '100' };
@@ -799,7 +826,7 @@ describe('perps-controller selectors', () => {
         ),
       ).toStrictEqual({
         orderBookExpanded: false,
-        chartExpanded: false,
+        chartExpanded: true,
         orderBookPosition: 'right',
         orderFormPosition: 'right',
         positionsSideFilter: 'all',
@@ -814,7 +841,7 @@ describe('perps-controller selectors', () => {
     it('returns the defaults when nothing is persisted', () => {
       expect(selectProLayoutPreferences(buildState())).toStrictEqual({
         orderBookExpanded: false,
-        chartExpanded: false,
+        chartExpanded: true,
         orderBookPosition: 'left',
         orderFormPosition: 'right',
         positionsSideFilter: 'all',
@@ -871,6 +898,22 @@ describe('perps-controller selectors', () => {
       expect(
         selectOrderBookExpanded(buildState({ proLayoutPreferences: {} })),
       ).toBe(false);
+    });
+  });
+
+  describe('selectChartExpanded', () => {
+    it('returns the persisted open state', () => {
+      expect(
+        selectChartExpanded(
+          buildState({ proLayoutPreferences: { chartExpanded: true } }),
+        ),
+      ).toBe(true);
+    });
+
+    it('uses the controller default when nothing is persisted', () => {
+      expect(selectChartExpanded(buildState())).toBe(
+        selectProLayoutPreferences(buildState()).chartExpanded,
+      );
     });
   });
 });

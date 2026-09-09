@@ -15,11 +15,28 @@ const mockUseMoneyAccountBalance = jest.fn();
 const mockUseMoneyAccountInterest = jest.fn();
 const mockUseMoneyDepositTokens = jest.fn();
 const mockUseMoneyActivityItems = jest.fn();
+const mockUseMoneyActivityItemClick = jest.fn();
+const mockUseMoneyAccountDeposit = jest.fn();
+const mockInitiateDeposit = jest.fn();
+const mockUseMoneyAccountWithdrawal = jest.fn();
+const mockInitiateWithdrawal = jest.fn();
 const mockNavigate = jest.fn();
 const mockSelectMoneyEarningSectionEnabled = jest.mocked(
   selectMoneyEarningSectionEnabled,
 );
 const mockGetPrivacyMode = jest.mocked(getPrivacyMode);
+
+const DEPOSIT_TOKEN = {
+  address: '0x0000000000000000000000000000000000000001',
+  chainId: '0x1',
+  decimals: 6,
+  image: 'usdc.png',
+  moneyFiatAmountUsd: 12,
+  secondary: '$12.00',
+  symbol: 'USDC',
+  title: 'USD Coin',
+  tokenFiatAmount: 12,
+};
 
 const interestResponse = (value: string) => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -71,12 +88,23 @@ jest.mock('../../hooks/money/use-money-deposit-tokens', () => ({
 jest.mock('../../hooks/money/use-money-activity-items', () => ({
   useMoneyActivityItems: () => mockUseMoneyActivityItems(),
 }));
+jest.mock('../../hooks/money/useMoneyAccountDeposit', () => ({
+  useMoneyAccountDeposit: () => mockUseMoneyAccountDeposit(),
+}));
+jest.mock('../../hooks/money/useMoneyAccountWithdrawal', () => ({
+  useMoneyAccountWithdrawal: () => mockUseMoneyAccountWithdrawal(),
+}));
+
+jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
+  useMoneyActivityItemClick: () => mockUseMoneyActivityItemClick(),
+}));
 
 describe('MoneyHomePage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSelectMoneyEarningSectionEnabled.mockReturnValue(true);
     mockGetPrivacyMode.mockReturnValue(false);
+    mockUseMoneyActivityItemClick.mockReturnValue(undefined);
     mockUseMoneyAccountAvailability.mockReturnValue({
       availability: {
         isAvailable: true,
@@ -109,9 +137,24 @@ describe('MoneyHomePage', () => {
       isNoFeeToken: () => false,
     });
     mockUseMoneyActivityItems.mockReturnValue({ items: [] });
+    mockInitiateDeposit.mockResolvedValue(undefined);
+    mockUseMoneyAccountDeposit.mockReturnValue({
+      initiateDeposit: mockInitiateDeposit,
+      isLoading: false,
+    });
+    mockInitiateWithdrawal.mockResolvedValue(undefined);
+    mockUseMoneyAccountWithdrawal.mockReturnValue({
+      initiateWithdrawal: mockInitiateWithdrawal,
+      isLoading: false,
+    });
   });
 
   it('renders the full empty-state composition with a live zero balance', () => {
+    mockUseMoneyDepositTokens.mockReturnValue({
+      tokens: [DEPOSIT_TOKEN],
+      isNoFeeToken: () => false,
+    });
+
     renderWithLocalization(<MoneyHomePage />);
 
     expect(screen.getByTestId('money-home-page')).toBeInTheDocument();
@@ -165,12 +208,97 @@ describe('MoneyHomePage', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('keeps all groundwork actions inert', () => {
+  it('keeps groundwork actions other than the transfer entry points inert', () => {
     renderWithLocalization(<MoneyHomePage />);
 
+    const activeLabels = [
+      messages.moneyAdd.message,
+      messages.addFunds.message,
+      messages.moneySend.message,
+      messages.moneyLearnMore.message,
+    ];
     screen.getAllByRole('button').forEach((button) => {
-      expect(button).toBeDisabled();
+      if (activeLabels.includes(button.textContent ?? '')) {
+        expect(button).toBeEnabled();
+      } else {
+        expect(button).toBeDisabled();
+      }
     });
+  });
+
+  it('opens the Money landing page from Learn more', () => {
+    global.platform.openTab = jest.fn();
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId('money-learn-more'));
+
+    expect(global.platform.openTab).toHaveBeenCalledWith({
+      url: 'https://metamask.io/money?utm_source=extension',
+    });
+  });
+
+  it('initiates a deposit from the Add action card', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.moneyAdd.message }),
+    );
+
+    expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
+    expect(mockInitiateDeposit).toHaveBeenCalledWith();
+  });
+
+  it('initiates a deposit from the unfunded Add funds CTA', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.addFunds.message }),
+    );
+
+    expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
+    expect(mockInitiateDeposit).toHaveBeenCalledWith();
+  });
+
+  it('disables the deposit entry points while a deposit is initiating', () => {
+    mockUseMoneyAccountDeposit.mockReturnValue({
+      initiateDeposit: mockInitiateDeposit,
+      isLoading: true,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.getByRole('button', { name: messages.moneyAdd.message }),
+    ).toBeDisabled();
+  });
+
+  it('initiates a withdrawal from the Send action card', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.moneySend.message }),
+    );
+
+    expect(mockInitiateWithdrawal).toHaveBeenCalledTimes(1);
+    expect(mockInitiateWithdrawal).toHaveBeenCalledWith();
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
+  });
+
+  it('disables the Send action card while a withdrawal is initiating', () => {
+    mockUseMoneyAccountWithdrawal.mockReturnValue({
+      initiateWithdrawal: mockInitiateWithdrawal,
+      isLoading: true,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.getByRole('button', { name: messages.moneySend.message }),
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: messages.moneyAdd.message }),
+    ).toBeEnabled();
   });
 
   it('renders the filled-state composition for a funded Money account', () => {
@@ -184,7 +312,6 @@ describe('MoneyHomePage', () => {
       totalFiatRaw: '3475.45',
       vaultApyQuery: { isLoading: false },
     });
-
     renderWithLocalization(<MoneyHomePage />);
 
     expect(screen.getByTestId('money-balance')).toHaveTextContent('$3,475.45');
@@ -201,10 +328,6 @@ describe('MoneyHomePage', () => {
       screen.getByTestId('money-position-lifetime-value'),
     ).toHaveTextContent('+$56.78');
     expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
-    expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.moneyEarnOnCrypto.message),
-    ).toBeInTheDocument();
     expect(
       screen.getByTestId('money-condensed-info-cards'),
     ).toBeInTheDocument();
@@ -230,7 +353,15 @@ describe('MoneyHomePage', () => {
       screen.queryByText(messages.moneyBenefits.message),
     ).not.toBeInTheDocument();
     screen.getAllByRole('button').forEach((button) => {
-      expect(button).toBeDisabled();
+      if (
+        [messages.moneyAdd.message, messages.moneySend.message].includes(
+          button.textContent ?? '',
+        )
+      ) {
+        expect(button).toBeEnabled();
+      } else {
+        expect(button).toBeDisabled();
+      }
     });
   });
 
@@ -264,6 +395,28 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByText(messages.moneyActivityDeposited.message),
     ).toBeInTheDocument();
+  });
+
+  it('invokes the item click handler when details navigation is enabled', () => {
+    const onItemClick = jest.fn();
+    const items = MOCK_MONEY_TRANSACTIONS.map(onchainItem);
+    mockUseMoneyActivityItemClick.mockReturnValue(onItemClick);
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('3475.45'),
+      totalFiatFormatted: '$3,475.45',
+      totalFiatRaw: '3475.45',
+      vaultApyQuery: { isLoading: false },
+    });
+    mockUseMoneyActivityItems.mockReturnValue({ items });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId(`money-activity-row-${items[0].id}`));
+    expect(onItemClick).toHaveBeenCalledWith(items[0]);
   });
 
   it('shows earnings skeletons during the initial interest load', () => {
@@ -400,6 +553,10 @@ describe('MoneyHomePage', () => {
       totalFiatRaw: '10',
       vaultApyQuery: { isLoading: false },
     });
+    mockUseMoneyDepositTokens.mockReturnValue({
+      tokens: [DEPOSIT_TOKEN],
+      isNoFeeToken: () => false,
+    });
 
     renderWithLocalization(<MoneyHomePage />);
 
@@ -517,21 +674,26 @@ describe('MoneyHomePage', () => {
     ).toBeInTheDocument();
   });
 
+  it('hides the earn-on-your-crypto section when no assets are eligible', () => {
+    mockUseMoneyDepositTokens.mockReturnValue({
+      tokens: [],
+      isNoFeeToken: () => false,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(screen.queryByTestId('money-potential-earnings')).toBeNull();
+    expect(
+      screen.queryByText(messages.moneyEarnOnCrypto.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(messages.moneyBenefits.message),
+    ).toBeInTheDocument();
+  });
+
   it('previews eligible wallet assets using their existing balances', () => {
     mockUseMoneyDepositTokens.mockReturnValue({
-      tokens: [
-        {
-          address: '0x0000000000000000000000000000000000000001',
-          chainId: '0x1',
-          decimals: 6,
-          image: 'usdc.png',
-          moneyFiatAmountUsd: 12,
-          secondary: '$12.00',
-          symbol: 'USDC',
-          title: 'USD Coin',
-          tokenFiatAmount: 12,
-        },
-      ],
+      tokens: [DEPOSIT_TOKEN],
       isNoFeeToken: () => true,
     });
 
@@ -559,19 +721,7 @@ describe('MoneyHomePage', () => {
       vaultApyQuery: { isLoading: false },
     });
     mockUseMoneyDepositTokens.mockReturnValue({
-      tokens: [
-        {
-          address: '0x0000000000000000000000000000000000000001',
-          chainId: '0x1',
-          decimals: 6,
-          image: 'usdc.png',
-          moneyFiatAmountUsd: 12,
-          secondary: '$12.00',
-          symbol: 'USDC',
-          title: 'USD Coin',
-          tokenFiatAmount: 12,
-        },
-      ],
+      tokens: [DEPOSIT_TOKEN],
       isNoFeeToken: () => true,
     });
 

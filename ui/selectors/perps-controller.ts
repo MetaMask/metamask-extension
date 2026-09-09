@@ -207,6 +207,20 @@ export const selectPerpsCachedAccountState = (state: PerpsState) => {
   );
 };
 
+/**
+ * Full cached user-data entry for the active provider, including the
+ * `address` the snapshot was stored for. Prefer this over
+ * `selectPerpsCachedAccountState` when the caller must verify ownership
+ * before overlaying `accountState`.
+ *
+ * @param state - Flattened Perps controller state.
+ * @returns The provider cache entry, or null when absent.
+ */
+export const selectPerpsCachedUserData = (state: PerpsState) => {
+  const provider = selectPerpsActiveProvider(state);
+  return state.metamask.cachedUserDataByProvider?.[provider] ?? null;
+};
+
 export const selectPerpsPerpsBalances = (state: PerpsState) =>
   state.metamask.perpsBalances ?? {};
 
@@ -250,6 +264,18 @@ export const selectOrderBookPosition = (state: PerpsState) =>
 export const selectOrderBookExpanded = (state: PerpsState) =>
   state.metamask.proLayoutPreferences?.orderBookExpanded ??
   DEFAULT_PRO_LAYOUT_PREFERENCES.orderBookExpanded;
+
+/**
+ * Whether the order-entry chart panel was left open. Global across markets
+ * (the preference object is flat, not per-market), so the panel opens in the
+ * same state on every symbol.
+ *
+ * @param state - Perps controller state.
+ * @returns True when the panel should start open.
+ */
+export const selectChartExpanded = (state: PerpsState) =>
+  state.metamask.proLayoutPreferences?.chartExpanded ??
+  DEFAULT_PRO_LAYOUT_PREFERENCES.chartExpanded;
 
 export const selectPerpsTradeConfigurations = (state: PerpsState) =>
   state.metamask.tradeConfigurations ?? EMPTY_TRADE_CONFIGURATIONS;

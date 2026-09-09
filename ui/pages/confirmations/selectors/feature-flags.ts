@@ -262,6 +262,7 @@ export const selectIsPayHardwareEnabled = createSelector(
 
 type PayExtendedFlag = {
   enableMoneyAccountTransactions?: Record<string, boolean>;
+  defaultPaySelectedSection?: Record<string, string>;
 };
 
 const selectPayExtendedFlag = createSelector(
@@ -298,6 +299,16 @@ export const selectIsMoneyAccountTransactionEnabled = createSelector(
   ],
   (enableMoneyAccountTransactions, transactionType): boolean =>
     Boolean(transactionType && enableMoneyAccountTransactions[transactionType]),
+);
+
+/**
+ * Map of transaction types whose default pay method is Money Account, from
+ * `confirmations_pay_extended.defaultPaySelectedSection`. Values are section
+ * ids; `"money-account"` selects the Money Account row.
+ */
+export const selectDefaultPaySelectedSection = createSelector(
+  selectPayExtendedFlag,
+  (flag): Record<string, string> => flag?.defaultPaySelectedSection ?? {},
 );
 
 /**

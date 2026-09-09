@@ -4,15 +4,19 @@ import {
   MUSD_TOKEN_ASSET_ID_BY_CHAIN,
 } from '@metamask/money-account-utils';
 import { TransactionType } from '@metamask/transaction-controller';
-import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
-import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import { toAssetId } from '../../../shared/lib/asset-utils';
+import type {
+  ActivityListItem,
+  FiatAmount,
+  MoneyAccountActivityKind,
+  TokenAmount,
+} from '../../../shared/lib/activity/types';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 import {
   parseApprovalTransactionData,
   parseStandardTokenTransactionData,
 } from '../../../shared/lib/transaction.utils';
 import { hasTransactionType } from '../../../shared/lib/transactions.utils';
+import { getMoneyAccountDepositAmount } from '../../helpers/money/money-account-amounts';
 import { getMoneyAccountWithdrawTransferDetails } from '../../pages/confirmations/utils/money-account-withdraw';
 import { enrichLocalMusdClaimActivity } from './enrich-local-musd-claim';
 
@@ -122,53 +126,80 @@ function enrichApprovalActivity(
   };
 }
 
-function enrichMoneyAccountWithdrawActivity(
+/**
+ * Converts a raw mUSD amount to the fiat amount activity rows display,
+ * falling back to MM Pay's quoted target fiat. mUSD is pegged 1:1 to USD.
+ *
+ * @param amountRaw - Raw mUSD amount in base units.
+ * @param transaction - The money-account transaction, for the Pay fallback.
+ * @returns The fiat amount, or undefined when no amount is known yet.
+ */
+function toMusdFiat(
+  amountRaw: string | undefined,
+  transaction: TransactionGroup['initialTransaction'],
+): FiatAmount | undefined {
+  if (amountRaw) {
+    return { amount: (Number(amountRaw) / 10 ** MUSD_DECIMALS).toString() };
+  }
+
+  const targetFiat = transaction.metamaskPay?.targetFiat;
+  return targetFiat ? { amount: targetFiat } : undefined;
+}
+
+/**
+ * Maps money-account deposit and withdraw batches to their dedicated
+ * activity kinds. `mapLocalTransaction` only reads the top-level type, so
+ * these EIP-7702 batches arrive as `contractInteraction`; the meaningful
+ * type sits on a nested transaction. Rendered like the other MM Pay rows
+ * (perps): a signed fiat amount and token avatar without a counterparty
+ * address, mirroring mobile's money activity rows.
+ *
+ * @param activity - Activity item from `mapLocalTransaction`.
+ * @param transactionGroup - Source local transaction group.
+ * @returns Activity item mapped to a money-account kind when applicable.
+ */
+function enrichMoneyAccountActivity(
   activity: ActivityListItem,
   transactionGroup: LocalActivitySource,
 ): ActivityListItem {
   const transaction = transactionGroup.initialTransaction;
-  if (
-    !hasTransactionType(transaction, [TransactionType.moneyAccountWithdraw])
-  ) {
+  const isDeposit = hasTransactionType(transaction, [
+    TransactionType.moneyAccountDeposit,
+  ]);
+  const isWithdraw =
+    !isDeposit &&
+    hasTransactionType(transaction, [TransactionType.moneyAccountWithdraw]);
+
+  if (!isDeposit && !isWithdraw) {
     return activity;
   }
 
-  const transfer = transaction.nestedTransactions?.find(
-    (nested) => nested.type === TransactionType.tokenMethodTransfer,
-  );
-  const { recipient, amountRaw: amount } =
-    getMoneyAccountWithdrawTransferDetails(transaction);
-  if (typeof recipient !== 'string') {
-    return activity;
-  }
-
-  const tokenAddress = transfer?.to;
+  const type: MoneyAccountActivityKind = isDeposit
+    ? 'moneyAccountDeposit'
+    : 'moneyAccountWithdraw';
+  // Withdrawal amount comes from nested transfer calldata; undefined while
+  // the batch is still a placeholder (calldata is populated when committed).
+  const amount = isDeposit
+    ? getMoneyAccountDepositAmount(transaction)
+    : getMoneyAccountWithdrawTransferDetails(transaction).amountRaw;
   const { chainId } = transaction;
-  const assetId =
-    (chainId ? MUSD_TOKEN_ASSET_ID_BY_CHAIN[chainId] : undefined) ??
-    (tokenAddress && chainId
-      ? toAssetId(
-          tokenAddress,
-          toCaipChainId(
-            KnownCaipNamespace.Eip155,
-            Number.parseInt(chainId, 16).toString(),
-          ),
-        )
-      : undefined);
+  const assetId = chainId ? MUSD_TOKEN_ASSET_ID_BY_CHAIN[chainId] : undefined;
+  const token: TokenAmount = {
+    ...(amount ? { amount } : {}),
+    ...(assetId ? { assetId } : {}),
+    decimals: MUSD_DECIMALS,
+    direction: isDeposit ? 'in' : 'out',
+    symbol: MUSD_TOKEN.symbol,
+  };
+  const fiat = toMusdFiat(amount, transaction);
 
   return {
     ...activity,
-    type: 'send',
+    type,
     data: {
       from: transaction.txParams?.from ?? '',
-      to: recipient,
-      token: {
-        direction: 'out',
-        symbol: MUSD_TOKEN.symbol,
-        decimals: MUSD_DECIMALS,
-        ...(amount ? { amount } : {}),
-        ...(assetId ? { assetId } : {}),
-      },
+      ...(fiat ? { fiat } : {}),
+      token,
     },
   };
 }
@@ -178,7 +209,7 @@ export function enrichLocalActivity(
   transactionGroup: LocalActivitySource,
 ): ActivityListItem {
   let next = activity;
-  next = enrichMoneyAccountWithdrawActivity(next, transactionGroup);
+  next = enrichMoneyAccountActivity(next, transactionGroup);
   next = enrichTokenTransferActivity(next, transactionGroup);
   next = enrichApprovalActivity(next, transactionGroup);
   next = enrichLocalMusdClaimActivity(next, transactionGroup);

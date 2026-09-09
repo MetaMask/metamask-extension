@@ -8,6 +8,10 @@ import type { MoneyActivityTransactionMeta } from '../constants/mock-activity-da
 import MOCK_MONEY_TRANSACTIONS from '../constants/mock-activity-data';
 import { MoneyActivityList, MAX_PREVIEW_ITEMS } from './money-activity-list';
 
+jest.mock('react-redux', () => ({
+  useSelector: (selector: (state?: unknown) => unknown) => selector({}),
+}));
+
 const previewItems = MOCK_MONEY_TRANSACTIONS.slice(0, MAX_PREVIEW_ITEMS).map(
   onchainItem,
 );
@@ -113,5 +117,16 @@ describe('MoneyActivityList', () => {
       screen.getByText(messages.moneyActivityDepositFailed.message),
     ).toBeInTheDocument();
     expect(document.querySelector('.animate-spin')).toBeInTheDocument();
+  });
+
+  it('invokes onItemClick when a preview row is clicked', () => {
+    const onItemClick = jest.fn();
+    const items = MOCK_MONEY_TRANSACTIONS.map(onchainItem);
+    renderWithLocalization(
+      <MoneyActivityList items={items} onItemClick={onItemClick} />,
+    );
+
+    fireEvent.click(screen.getByTestId(`money-activity-row-${items[0].id}`));
+    expect(onItemClick).toHaveBeenCalledWith(items[0]);
   });
 });

@@ -82,6 +82,7 @@ function render({
     message: string;
     isBlocking?: boolean;
   }[],
+  pathname,
 }: {
   isGaslessLoading?: boolean;
   confirmation?:
@@ -98,6 +99,7 @@ function render({
     message: string;
     isBlocking?: boolean;
   }[];
+  pathname?: string;
 } = {}) {
   const baseState = getMockConfirmStateForTransaction(confirmation);
 
@@ -115,6 +117,7 @@ function render({
       isGaslessLoading={isGaslessLoading}
     />,
     configureStore(state),
+    pathname,
   );
 }
 
@@ -343,6 +346,17 @@ describe('<SingleActionFooter />', () => {
 
     expect(getByTestId('confirm-footer-button')).toHaveTextContent(
       messages.addFunds.message,
+    );
+  });
+
+  it('shows Send label for perpsDeposit from money account', () => {
+    const { getByTestId } = render({
+      confirmation: genPerpsDeposit(),
+      pathname: '/?payWithOption=money_account',
+    });
+
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.send.message,
     );
   });
 
