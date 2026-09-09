@@ -12,7 +12,6 @@ const {
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
-const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_BTC_CONVERSION_RATE,
@@ -1038,8 +1037,9 @@ async function setupMocking(
       };
     });
 
-  // This endpoint returns metadata for "transaction simulation" supported networks.
-  await server.forGet(`${TX_SENTINEL_URL}/networks`).thenJson(200, {
+  // STX v26 always routes to per-network tx-sentinel hosts. Default mocks cover
+  // all sentinel subdomains so startup/liveness/polling does not hang in E2E.
+  const txSentinelNetworksRegistry = {
     1: {
       name: 'Mainnet',
       group: 'ethereum',
@@ -1051,18 +1051,58 @@ async function setupMocking(
       smartTransactions: true,
       hidden: false,
     },
-  });
-  await server.forGet(`${TX_SENTINEL_URL}/network`).thenJson(200, {
-    name: 'Mainnet',
-    group: 'ethereum',
-    chainID: 1,
-    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-    network: 'ethereum-mainnet',
-    explorer: 'https://etherscan.io',
-    confirmations: true,
-    smartTransactions: true,
-    hidden: false,
-  });
+  };
+  const txSentinelGetFeesResponse = {
+    blockNumber: 20728974,
+    id: '19d4eea3-8a49-463e-9e9c-099f9d9571ca',
+    txs: [
+      {
+        cancelFees: [],
+        return: '0x',
+        status: 1,
+        gasUsed: 190780,
+        gasLimit: 239420,
+        fees: [
+          {
+            maxFeePerGas: 4667609171,
+            maxPriorityFeePerGas: 1000000004,
+            gas: 239420,
+            balanceNeeded: 1217518987960240,
+            currentBalance: 751982303082919400,
+            error: '',
+          },
+        ],
+        feeEstimate: 627603309182220,
+        baseFeePerGas: 2289670348,
+        maxFeeEstimate: 1117518987720820,
+      },
+    ],
+  };
+
+  await server
+    .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/networks$/u)
+    .thenJson(200, txSentinelNetworksRegistry);
+  await server
+    .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/network$/u)
+    .thenJson(200, { smartTransactions: true });
+  await server
+    .forPost(
+      /https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/v1\/networks\/\d+\/getFees/u,
+    )
+    .thenJson(200, txSentinelGetFeesResponse);
+  await server
+    .forPost(
+      /https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/v1\/networks\/\d+\/submitTransactions/u,
+    )
+    .thenJson(200, {
+      uuid: '00000000-0000-0000-0000-000000000001',
+      txHashes: [],
+    });
+  await server
+    .forGet(
+      /https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/v1\/networks\/\d+\/batchStatus/u,
+    )
+    .thenJson(200, {});
 
   await server
     .forGet(`${SWAPS_API_V2_BASE_URL}/featureFlags`)
