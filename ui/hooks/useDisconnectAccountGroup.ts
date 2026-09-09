@@ -12,6 +12,7 @@ import { getPermissionSubjects } from '../selectors';
 import { getAccountGroupWithInternalAccounts } from '../selectors/multichain-accounts/account-tree';
 import { removePermittedAccount } from '../store/actions';
 import { useDispatch } from '../store/hooks';
+import type { MetaMaskReduxState } from '../store/types';
 
 type Caip25Permission = NonNullable<
   Parameters<typeof getCaip25CaveatFromPermission>[0]
@@ -29,7 +30,7 @@ type PermissionSubjects = Record<
  */
 export function useDisconnectAccountGroup() {
   const dispatch = useDispatch();
-  const store = useStore();
+  const store = useStore<MetaMaskReduxState>();
   const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
 
   return useCallback(
