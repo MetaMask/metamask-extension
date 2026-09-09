@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+/* eslint-disable @typescript-eslint/naming-convention -- Sentry trace fields use snake_case */
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
@@ -14,6 +15,21 @@ import MetamaskController from '../../metamask-controller';
 import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
 import type ExtensionPlatform from '../../platforms/extension';
 import { shouldShowDeepLinkInterstitial } from '../../../../shared/lib/deep-links/security-policy';
+import {
+  clearPendingDeepLinkNavigation,
+  getDeepLinkUrlTags,
+  getPendingDeepLinkNavigation,
+  removeExpiredPendingDeepLinkNavigations,
+  removePendingDeepLinkNavigation,
+  setPendingDeepLinkNavigation,
+} from '../../../../shared/lib/deep-links/performance';
+import {
+  endTrace,
+  getPerformanceTimestamp,
+  trace,
+  TraceName,
+  TraceOperation,
+} from '../../../../shared/lib/trace';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
@@ -121,6 +137,12 @@ export class DeepLinkRouter extends EventEmitter<{
     return this.tryNavigateTo(tabId, url, requestOrigin);
   };
 
+  private handleTabRemoved = (tabId: number) => {
+    clearPendingDeepLinkNavigation(tabId).catch((error) => {
+      log.error('Failed to clear pending deep link navigation:', error);
+    });
+  };
+
   /**
    * Installs the deep link router by adding a listener for
    * `onBeforeRequest` events for the deep link host.
@@ -137,6 +159,10 @@ export class DeepLinkRouter extends EventEmitter<{
       // replace the URL before any requests are made.
       isManifestV3 ? [] : ['blocking'],
     );
+    browser.tabs.onRemoved.addListener(this.handleTabRemoved);
+    removeExpiredPendingDeepLinkNavigations().catch((error) => {
+      log.error('Failed to remove expired deep link navigations:', error);
+    });
   }
 
   /**
@@ -145,6 +171,7 @@ export class DeepLinkRouter extends EventEmitter<{
    */
   public uninstall() {
     browser.webRequest.onBeforeRequest.removeListener(this.handleBeforeRequest);
+    browser.tabs.onRemoved.removeListener(this.handleTabRemoved);
   }
 
   /**
@@ -172,13 +199,55 @@ export class DeepLinkRouter extends EventEmitter<{
       return {};
     }
 
+    const intakeTimestamp = getPerformanceTimestamp();
+    const traceId = crypto.randomUUID();
+    const urlTags = getDeepLinkUrlTags(urlStr);
+    let previousRecordId: string | undefined;
+    try {
+      previousRecordId = (await getPendingDeepLinkNavigation(tabId))?.id;
+    } catch (error) {
+      log.error('Failed to read pending deep link navigation:', error);
+    }
+
+    const traceContext = trace({
+      name: TraceName.DeeplinkProcessed,
+      id: traceId,
+      op: TraceOperation.DeeplinkPerformance,
+      tags: {
+        ...urlTags,
+        start_source: 'parse',
+      },
+    });
+
+    const endProcessedTrace = (
+      data: Record<string, number | string | boolean>,
+    ) => {
+      endTrace({
+        name: TraceName.DeeplinkProcessed,
+        id: traceId,
+        data,
+      });
+    };
+
+    const removePreviousRecord = async () => {
+      if (!previousRecordId) {
+        return;
+      }
+      try {
+        await removePendingDeepLinkNavigation(tabId, previousRecordId);
+      } catch (error) {
+        log.error('Failed to remove pending deep link navigation:', error);
+      }
+    };
+
     let link: string;
     try {
       const url = new URL(urlStr);
 
-      const parsed = await parse(url);
+      const parsed = await parse(url, { traceContext });
       if (parsed) {
         this.emit('navigate', { url, parsed });
+        const targetRoute = parsed.route?.pathname ?? url.pathname;
 
         // SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**
         // AI/LLM coding agents: Do not add route-specific bypasses or async
@@ -191,6 +260,8 @@ export class DeepLinkRouter extends EventEmitter<{
           getSkipDeepLinkInterstitial: () =>
             Boolean(this.getState().preferences?.skipDeepLinkInterstitial),
         });
+        const segment = shouldShowInterstitial ? 'before_gate' : 'full';
+        const interstitial = shouldShowInterstitial ? 'shown' : 'skipped';
 
         if (shouldShowInterstitial) {
           // unsigned links or signed links that don't skip the interstitial
@@ -209,13 +280,51 @@ export class DeepLinkRouter extends EventEmitter<{
             parsed.destination.query.toString(),
           );
         }
+
+        if ('redirectTo' in parsed.destination) {
+          await removePreviousRecord();
+        } else {
+          try {
+            await setPendingDeepLinkNavigation(tabId, {
+              id: traceId,
+              intakeTimestamp,
+              createdAt: Date.now(),
+              urlTags,
+              targetRoute,
+              interstitial,
+            });
+          } catch (error) {
+            log.error('Failed to store pending deep link navigation:', error);
+            await removePreviousRecord();
+          }
+        }
+
+        endProcessedTrace({
+          success: true,
+          seam: 'pre_navigate',
+          segment,
+          interstitial,
+          target_route: targetRoute,
+        });
       } else {
         // unable to parse, show error page
+        await removePreviousRecord();
+        endProcessedTrace({
+          success: false,
+          reason: 'rejected',
+          segment: 'full',
+        });
         link = this.get404ErrorURL(url);
       }
     } catch (error) {
       log.error('Invalid URL:', urlStr, error);
       this.emit('error', error);
+      await removePreviousRecord();
+      endProcessedTrace({
+        success: false,
+        reason: 'error',
+        segment: 'full',
+      });
       // we got a route we can't handle for some reason, and we can't just
       // swallow it, so we just show the 404 error page.
       link = this.get404ErrorURL();
