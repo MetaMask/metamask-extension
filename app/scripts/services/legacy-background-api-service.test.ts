@@ -4071,6 +4071,110 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
+  describe('resolveSeedlessPasswordSyncState', () => {
+    it('returns in-sync without resolving Seedless state for a non-social wallet', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(false),
+        );
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolveSeedlessPasswordSyncState',
+          ),
+        ).resolves.toBe(PasswordChangeRecoveryStatus.InSync);
+
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'SeedlessOnboardingController:getState',
+        );
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'SeedlessOnboardingController:resolvePasswordSyncState',
+          expect.anything(),
+        );
+      });
+    });
+
+    it('passes the cache option to the Seedless controller', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getState',
+          jest.fn().mockReturnValue({}),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:resolvePasswordSyncState',
+          jest
+            .fn()
+            .mockResolvedValue(PasswordChangeRecoveryStatus.PasswordOutdated),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolveSeedlessPasswordSyncState',
+            { skipCache: false },
+          ),
+        ).resolves.toBe(PasswordChangeRecoveryStatus.PasswordOutdated);
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:resolvePasswordSyncState',
+          { skipCache: false },
+        );
+      });
+    });
+
+    it('forces a remote check when a Seedless password change is pending', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getState',
+          jest.fn().mockReturnValue({
+            passwordChangePhase: 'SEEDLESS_CHANGE_PENDING',
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:resolvePasswordSyncState',
+          jest.fn().mockResolvedValue(PasswordChangeRecoveryStatus.Unknown),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:resolveSeedlessPasswordSyncState',
+          ),
+        ).resolves.toBe(PasswordChangeRecoveryStatus.Unknown);
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:resolvePasswordSyncState',
+          { skipCache: true },
+        );
+      });
+    });
+  });
+
   describe('checkIsSeedlessPasswordOutdated', () => {
     it("returns false if it's a social login flow", async () => {
       await withService(async ({ rootMessenger }) => {
@@ -4614,6 +4718,10 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn().mockResolvedValue(undefined),
         );
         rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:loadKeyringEncryptionKey',
+          jest.fn().mockResolvedValue('new-encryption-key'),
+        );
+        rootMessenger.registerActionHandler(
           'SeedlessOnboardingController:markPasswordChangeKeySyncPending',
           jest.fn().mockResolvedValue(undefined),
         );
@@ -4864,6 +4972,14 @@ describe('LegacyBackgroundApiService', () => {
           'AppStateController:setPasskeyAutoUnlockSuppressed',
           jest.fn(),
         );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedTrace',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedEndTrace',
+          jest.fn(),
+        );
 
         const callSpy = jest.spyOn(serviceMessenger, 'call');
 
@@ -5084,6 +5200,10 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn().mockReturnValue({ completedOnboarding: true }),
         );
         rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getState',
+          jest.fn().mockReturnValue({}),
+        );
+        rootMessenger.registerActionHandler(
           'SeedlessOnboardingController:resolvePasswordSyncState',
           jest.fn().mockResolvedValue(PasswordChangeRecoveryStatus.InSync),
         );
@@ -5121,6 +5241,10 @@ describe('LegacyBackgroundApiService', () => {
         expect(callSpy).toHaveBeenCalledWith(
           'SeedlessOnboardingController:revokePendingRefreshTokens',
         );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:resolvePasswordSyncState',
+          { skipCache: true },
+        );
         expect(callSpy).not.toHaveBeenCalledWith(
           'KeyringController:changePassword',
           expect.anything(),
@@ -5139,6 +5263,10 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn().mockReturnValue({ completedOnboarding: true }),
         );
         rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getState',
+          jest.fn().mockReturnValue({}),
+        );
+        rootMessenger.registerActionHandler(
           'SeedlessOnboardingController:resolvePasswordSyncState',
           jest
             .fn()
@@ -5146,7 +5274,7 @@ describe('LegacyBackgroundApiService', () => {
         );
         rootMessenger.registerActionHandler(
           'KeyringController:verifyPassword',
-          jest.fn().mockResolvedValue(undefined),
+          jest.fn().mockRejectedValue(new Error('Incorrect password')),
         );
         rootMessenger.registerActionHandler(
           'SeedlessOnboardingController:reconcilePassword',
@@ -5156,7 +5284,10 @@ describe('LegacyBackgroundApiService', () => {
         );
         rootMessenger.registerActionHandler(
           'SeedlessOnboardingController:loadKeyringEncryptionKey',
-          jest.fn().mockResolvedValue('keyring-encryption-key'),
+          jest
+            .fn()
+            .mockResolvedValueOnce('keyring-encryption-key')
+            .mockResolvedValueOnce('new-encryption-key'),
         );
         rootMessenger.registerActionHandler(
           'KeyringController:submitEncryptionKey',
@@ -5176,6 +5307,14 @@ describe('LegacyBackgroundApiService', () => {
         );
         rootMessenger.registerActionHandler(
           'SeedlessOnboardingController:storeKeyringEncryptionKey',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:markPasswordChangeKeySyncPending',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:clearPasswordChangePhase',
           jest.fn().mockResolvedValue(undefined),
         );
         rootMessenger.registerActionHandler(
@@ -5233,6 +5372,12 @@ describe('LegacyBackgroundApiService', () => {
           'new-encryption-key',
         );
         expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:markPasswordChangeKeySyncPending',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:clearPasswordChangePhase',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
           'SeedlessOnboardingController:revokePendingRefreshTokens',
         );
         expect(callSpy).toHaveBeenCalledWith(
@@ -5241,6 +5386,363 @@ describe('LegacyBackgroundApiService', () => {
             name: TraceName.OnboardingResetPassword,
             data: { success: true },
           },
+        );
+      });
+    });
+
+    it('does not attempt a normal unlock when password state resolution fails', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const error = new Error('password state resolution failed');
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getState',
+          jest.fn().mockReturnValue({}),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:resolvePasswordSyncState',
+          jest.fn().mockRejectedValue(error),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:submitPassword',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:setLocked',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:setLocked',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SubscriptionController:stopAllPolling',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'AuthenticationController:getState',
+          jest.fn().mockReturnValue({ isSignedIn: false }),
+        );
+        rootMessenger.registerActionHandler(
+          'AppStateController:setPasskeyAutoUnlockSuppressed',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:syncPasswordAndUnlockWallet',
+            'global-password',
+          ),
+        ).rejects.toThrow(error);
+
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'KeyringController:submitPassword',
+          'global-password',
+        );
+      });
+    });
+
+    it('synchronizes a local Keyring that already uses the new password', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getState',
+          jest.fn().mockReturnValue({}),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:resolvePasswordSyncState',
+          jest
+            .fn()
+            .mockResolvedValue(PasswordChangeRecoveryStatus.PasswordOutdated),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:verifyPassword',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:reconcilePassword',
+          jest
+            .fn()
+            .mockResolvedValue(PasswordChangeRecoveryStatus.ReconcileKeyring),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:submitPassword',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:submitPassword',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:exportEncryptionKey',
+          jest.fn().mockResolvedValue('new-encryption-key'),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:storeKeyringEncryptionKey',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:markPasswordChangeKeySyncPending',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:loadKeyringEncryptionKey',
+          jest.fn().mockResolvedValue('new-encryption-key'),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:clearPasswordChangePhase',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:revokePendingRefreshTokens',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedTrace',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedEndTrace',
+          jest.fn(),
+        );
+        registerUnlockSideEffectHandlers(rootMessenger);
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:syncPasswordAndUnlockWallet',
+            'global-password',
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:submitPassword',
+          'global-password',
+        );
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'KeyringController:submitEncryptionKey',
+          expect.anything(),
+        );
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'KeyringController:changePassword',
+          expect.anything(),
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:clearPasswordChangePhase',
+        );
+      });
+    });
+
+    it('keeps the wallet locked when stored Keyring-key verification fails', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getState',
+          jest.fn().mockReturnValue({}),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:resolvePasswordSyncState',
+          jest
+            .fn()
+            .mockResolvedValue(PasswordChangeRecoveryStatus.PasswordOutdated),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:reconcilePassword',
+          jest
+            .fn()
+            .mockResolvedValue(PasswordChangeRecoveryStatus.ReconcileKeyring),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:verifyPassword',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:submitPassword',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:submitPassword',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:exportEncryptionKey',
+          jest.fn().mockResolvedValue('new-encryption-key'),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:storeKeyringEncryptionKey',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:markPasswordChangeKeySyncPending',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:loadKeyringEncryptionKey',
+          jest.fn().mockResolvedValue('different-encryption-key'),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:clearPasswordChangePhase',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:revokePendingRefreshTokens',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedTrace',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedEndTrace',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:setLocked',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:setLocked',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SubscriptionController:stopAllPolling',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'AuthenticationController:getState',
+          jest.fn().mockReturnValue({ isSignedIn: false }),
+        );
+        rootMessenger.registerActionHandler(
+          'AppStateController:setPasskeyAutoUnlockSuppressed',
+          jest.fn(),
+        );
+        registerUnlockSideEffectHandlers(rootMessenger);
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:syncPasswordAndUnlockWallet',
+            'global-password',
+          ),
+        ).rejects.toThrow('Keyring encryption key synchronization failed');
+
+        expect(callSpy).toHaveBeenCalledWith('KeyringController:setLocked');
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'SeedlessOnboardingController:clearPasswordChangePhase',
+        );
+      });
+    });
+
+    it('resumes a pending Keyring-key synchronization', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getState',
+          jest.fn().mockReturnValue({
+            passwordChangePhase: 'KEY_SYNC_PENDING',
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:resolvePasswordSyncState',
+          jest.fn().mockResolvedValue(PasswordChangeRecoveryStatus.SyncKey),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:reconcilePassword',
+          jest.fn().mockResolvedValue(PasswordChangeRecoveryStatus.SyncKey),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:submitPassword',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:submitPassword',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:exportEncryptionKey',
+          jest.fn().mockResolvedValue('new-encryption-key'),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:storeKeyringEncryptionKey',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:markPasswordChangeKeySyncPending',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:loadKeyringEncryptionKey',
+          jest.fn().mockResolvedValue('new-encryption-key'),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:clearPasswordChangePhase',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:revokePendingRefreshTokens',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedTrace',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedEndTrace',
+          jest.fn(),
+        );
+        registerUnlockSideEffectHandlers(rootMessenger);
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:syncPasswordAndUnlockWallet',
+            'global-password',
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:reconcilePassword',
+          { globalPassword: 'global-password' },
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:clearPasswordChangePhase',
+        );
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'KeyringController:changePassword',
+          expect.anything(),
         );
       });
     });
@@ -5258,6 +5760,10 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn().mockReturnValue({ completedOnboarding: true }),
         );
         rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getState',
+          jest.fn().mockReturnValue({}),
+        );
+        rootMessenger.registerActionHandler(
           'SeedlessOnboardingController:resolvePasswordSyncState',
           jest
             .fn()
@@ -5265,7 +5771,7 @@ describe('LegacyBackgroundApiService', () => {
         );
         rootMessenger.registerActionHandler(
           'KeyringController:verifyPassword',
-          jest.fn().mockResolvedValue(undefined),
+          jest.fn().mockRejectedValue(new Error('Incorrect password')),
         );
         rootMessenger.registerActionHandler(
           'SeedlessOnboardingController:reconcilePassword',
@@ -5358,6 +5864,10 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn().mockReturnValue({ completedOnboarding: true }),
         );
         rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:getState',
+          jest.fn().mockReturnValue({}),
+        );
+        rootMessenger.registerActionHandler(
           'SeedlessOnboardingController:resolvePasswordSyncState',
           jest
             .fn()
@@ -5370,6 +5880,34 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'SeedlessOnboardingController:reconcilePassword',
           jest.fn().mockResolvedValue(PasswordChangeRecoveryStatus.Unknown),
+        );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:setLocked',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'KeyringController:setLocked',
+          jest.fn().mockResolvedValue(undefined),
+        );
+        rootMessenger.registerActionHandler(
+          'SubscriptionController:stopAllPolling',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'AuthenticationController:getState',
+          jest.fn().mockReturnValue({ isSignedIn: false }),
+        );
+        rootMessenger.registerActionHandler(
+          'AppStateController:setPasskeyAutoUnlockSuppressed',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedTrace',
+          jest.fn(),
+        );
+        rootMessenger.registerActionHandler(
+          'MetaMetricsController:bufferedEndTrace',
+          jest.fn(),
         );
 
         const callSpy = jest.spyOn(serviceMessenger, 'call');
@@ -5386,7 +5924,7 @@ describe('LegacyBackgroundApiService', () => {
         expect(callSpy).not.toHaveBeenCalledWith(
           'SeedlessOnboardingController:loadKeyringEncryptionKey',
         );
-        expect(callSpy).not.toHaveBeenCalledWith('KeyringController:setLocked');
+        expect(callSpy).toHaveBeenCalledWith('KeyringController:setLocked');
       });
     });
   });

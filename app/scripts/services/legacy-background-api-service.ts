@@ -186,6 +186,7 @@ import {
   SeedlessOnboardingControllerStoreKeyringEncryptionKeyAction,
   SeedlessOnboardingControllerSubmitPasswordAction,
   SeedlessOnboardingControllerUpdateBackupMetadataStateAction,
+  SeedlessPasswordChangePhase,
 } from '@metamask/seedless-onboarding-controller';
 import {
   CaveatSpecificationConstraint,
@@ -562,6 +563,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'resetAccount',
   'resetWallet',
   'restoreSocialBackupAndGetSeedPhrase',
+  'resolveSeedlessPasswordSyncState',
   'setAccountLabel',
   'setCurrentCurrency',
   'setEnabledAllPopularNetworks',
@@ -2297,15 +2299,7 @@ export class LegacyBackgroundApiService {
         newPassword,
       );
 
-      // Persist the current local Keyring encryption key under the new
-      // Seedless password before advancing the recovery lifecycle.
-      await this.syncKeyringEncryptionKey();
-      await this.#messenger.call(
-        'SeedlessOnboardingController:markPasswordChangeKeySyncPending',
-      );
-      await this.#messenger.call(
-        'SeedlessOnboardingController:clearPasswordChangePhase',
-      );
+      await this.#syncAndCompleteKeyringEncryptionKey();
     } catch (error) {
       this.#messenger.captureException?.(
         createSentryError(
@@ -2318,6 +2312,45 @@ export class LegacyBackgroundApiService {
       await this.setLocked({ skipSeedlessOperationLock: true });
       throw error;
     }
+  }
+
+  /**
+   * Resolves the current Seedless password synchronization state.
+   *
+   * Non-Seedless wallets and wallets that have not completed onboarding are
+   * already in sync from the perspective of Seedless password recovery.
+   *
+   * @param options - Options for resolving the password synchronization state.
+   * @param options.skipCache - Whether to bypass the controller's cached remote
+   * state. A pending Seedless password change always forces an authoritative
+   * remote check.
+   * @returns The current password synchronization and recovery status.
+   */
+  async resolveSeedlessPasswordSyncState({
+    skipCache = false,
+  }: { skipCache?: boolean } = {}): Promise<PasswordChangeRecoveryStatus> {
+    const isSocialLoginFlow = this.#messenger.call(
+      'OnboardingController:getIsSocialLoginFlow',
+    );
+    const { completedOnboarding } = this.#messenger.call(
+      'OnboardingController:getState',
+    );
+
+    if (!isSocialLoginFlow || !completedOnboarding) {
+      return PasswordChangeRecoveryStatus.InSync;
+    }
+
+    const { passwordChangePhase } = this.#messenger.call(
+      'SeedlessOnboardingController:getState',
+    );
+    const shouldSkipCache =
+      skipCache ||
+      passwordChangePhase === SeedlessPasswordChangePhase.SeedlessChangePending;
+
+    return this.#messenger.call(
+      'SeedlessOnboardingController:resolvePasswordSyncState',
+      { skipCache: shouldSkipCache },
+    );
   }
 
   /**
@@ -2376,57 +2409,82 @@ export class LegacyBackgroundApiService {
     const isSocialLoginFlow = this.#messenger.call(
       'OnboardingController:getIsSocialLoginFlow',
     );
-    // Resolve the Seedless password state before deciding whether this is a
-    // normal unlock or a password-recovery attempt.
-    let passwordSyncState = PasswordChangeRecoveryStatus.InSync;
 
-    if (isSocialLoginFlow) {
-      try {
-        passwordSyncState = await this.#messenger.call(
-          'SeedlessOnboardingController:resolvePasswordSyncState',
-          { skipCache: false },
-        );
-      } catch (error) {
-        // we don't want to block the unlock flow if the password outdated check fails
-        log.error('error while checking if password is outdated', error);
-      }
-    }
-
-    // if the flow is not social login or the password is in sync,
-    // we will proceed with the normal flow and use the password to unlock the vault
-    if (
-      !isSocialLoginFlow ||
-      passwordSyncState === PasswordChangeRecoveryStatus.InSync
-    ) {
+    if (!isSocialLoginFlow) {
       await this.submitPasswordOrEncryptionKey({ password });
-      if (isSocialLoginFlow) {
-        // try to revoke pending refresh tokens asynchronously
-        this.#messenger
-          .call('SeedlessOnboardingController:revokePendingRefreshTokens')
-          .catch((error: Error) => {
-            log.error('error while revoking pending refresh tokens', error);
-          });
-      }
       return;
     }
 
     await this.#seedlessOperationMutex.runExclusive(async () => {
-      const isKeyringPasswordValid = await this.#messenger
-        .call('KeyringController:verifyPassword', password)
-        .then(() => true)
-        .catch((error: Error) => {
-          if (error.message.includes('Incorrect password')) {
-            return false;
-          }
-          log.error('error while verifying keyring password', error.message);
-          throw error;
+      let isRecovery = false;
+      try {
+        const passwordSyncState = await this.resolveSeedlessPasswordSyncState({
+          skipCache: true,
         });
 
-      // Recover an interrupted password change by reconciling the Seedless
-      // controller with the supplied global password before changing local
-      // Keyring state. This recovers and rewrites the local Seedless vault,
-      // re-wraps the stored Keyring encryption key, and returns whether
-      // Keyring-side reconciliation can proceed.
+        if (passwordSyncState === PasswordChangeRecoveryStatus.InSync) {
+          await this.#unlockSeedlessWallet(password);
+          return;
+        }
+
+        isRecovery = true;
+        await this.#recoverSeedlessPassword(password, passwordSyncState);
+      } catch (error) {
+        log.error('error while syncing password and unlocking wallet', error);
+        if (isRecovery) {
+          this.#messenger.captureException?.(
+            createSentryError(TraceName.OnboardingResetPasswordError, error),
+          );
+        }
+
+        // The Seedless operation mutex is already held. Lock before exposing
+        // the error without trying to acquire the same mutex again.
+        await this.setLocked({ skipSeedlessOperationLock: true });
+        throw error;
+      }
+    });
+  }
+
+  /**
+   * Unlocks a Social Login wallet with the current password.
+   *
+   * @param password - The current global password.
+   */
+  async #unlockSeedlessWallet(password: string): Promise<void> {
+    await this.submitPasswordOrEncryptionKey({ password });
+
+    // Try to revoke pending refresh tokens asynchronously.
+    this.#messenger
+      .call('SeedlessOnboardingController:revokePendingRefreshTokens')
+      .catch((error: Error) => {
+        log.error('error while revoking pending refresh tokens', error);
+      });
+  }
+
+  /**
+   * Reconciles the Seedless and local Keyring password state after the
+   * controller reports that recovery is required.
+   *
+   * @param password - The submitted global password.
+   * @param passwordSyncState - The status resolved before password submission.
+   */
+  async #recoverSeedlessPassword(
+    password: string,
+    passwordSyncState: PasswordChangeRecoveryStatus,
+  ): Promise<void> {
+    let changePasswordSuccess = false;
+    this.#messenger.call('MetaMetricsController:bufferedTrace', {
+      name: TraceName.OnboardingResetPassword,
+      op: TraceOperation.OnboardingSecurityOp,
+    });
+
+    try {
+      if (passwordSyncState === PasswordChangeRecoveryStatus.Unknown) {
+        throw new Error(
+          SeedlessOnboardingControllerErrorMessage.CouldNotRecoverPassword,
+        );
+      }
+
       const recoveryStatus = await this.#messenger.call(
         'SeedlessOnboardingController:reconcilePassword',
         {
@@ -2434,83 +2492,127 @@ export class LegacyBackgroundApiService {
         },
       );
 
-      // `unknown` means the controller could not establish the remote or
-      // local state. Do not retry the non-idempotent password change. The
-      // legacy flow keeps its existing hint only when the earlier resolver
-      // already established a remote password change and this password still
-      // unlocks the local Keyring.
-      if (recoveryStatus === PasswordChangeRecoveryStatus.Unknown) {
-        if (
-          isKeyringPasswordValid &&
-          (passwordSyncState ===
-            PasswordChangeRecoveryStatus.PasswordOutdated ||
-            passwordSyncState === PasswordChangeRecoveryStatus.EnterNewPassword)
-        ) {
+      switch (recoveryStatus) {
+        case PasswordChangeRecoveryStatus.InSync:
+          await this.#unlockSeedlessWallet(password);
+          break;
+        case PasswordChangeRecoveryStatus.ReconcileKeyring: {
+          const isKeyringPasswordValid =
+            await this.#isKeyringPasswordValid(password);
+
+          if (isKeyringPasswordValid) {
+            await this.#unlockSeedlessWallet(password);
+          } else {
+            // `reconcilePassword` has already rewritten the Seedless vault and
+            // re-wrapped this stored key under the latest global password.
+            const keyringEncryptionKey = await this.#messenger.call(
+              'SeedlessOnboardingController:loadKeyringEncryptionKey',
+            );
+            await this.submitPasswordOrEncryptionKey({
+              encryptionKey: keyringEncryptionKey,
+            });
+            await this.#messenger.call(
+              'KeyringController:changePassword',
+              password,
+            );
+          }
+
+          await this.#syncAndCompleteKeyringEncryptionKey();
+          if (!isKeyringPasswordValid) {
+            // The old-Keyring branch does not go through
+            // `#unlockSeedlessWallet`, so revoke refresh tokens here after
+            // recovery has completed successfully.
+            this.#messenger
+              .call('SeedlessOnboardingController:revokePendingRefreshTokens')
+              .catch((error: Error) => {
+                log.error('error while revoking pending refresh tokens', error);
+              });
+          }
+          break;
+        }
+        case PasswordChangeRecoveryStatus.SyncKey:
+          await this.#unlockSeedlessWallet(password);
+          await this.#syncAndCompleteKeyringEncryptionKey();
+          break;
+        case PasswordChangeRecoveryStatus.Unknown: {
+          const isKeyringPasswordValid =
+            await this.#isKeyringPasswordValid(password);
+
+          if (
+            isKeyringPasswordValid &&
+            (passwordSyncState ===
+              PasswordChangeRecoveryStatus.PasswordOutdated ||
+              passwordSyncState ===
+                PasswordChangeRecoveryStatus.EnterNewPassword)
+          ) {
+            throw new Error(
+              SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
+            );
+          }
+
           throw new Error(
-            SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
+            SeedlessOnboardingControllerErrorMessage.CouldNotRecoverPassword,
           );
         }
-        throw new Error(
-          SeedlessOnboardingControllerErrorMessage.CouldNotRecoverPassword,
-        );
+        default:
+          throw new Error(
+            SeedlessOnboardingControllerErrorMessage.CouldNotRecoverPassword,
+          );
       }
 
-      // `reconcilePassword` has already rewritten the Seedless vault and
-      // re-wrapped this stored key under the latest global password.
-      // Recover it so the local Keyring can be reconciled.
-      const keyringEncryptionKey = await this.#messenger.call(
-        'SeedlessOnboardingController:loadKeyringEncryptionKey',
-      );
-      // use encryption key to unlock the keyring vault
-      await this.submitPasswordOrEncryptionKey({
-        encryptionKey: keyringEncryptionKey,
+      changePasswordSuccess = true;
+    } finally {
+      this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
+        name: TraceName.OnboardingResetPassword,
+        data: { success: changePasswordSuccess },
       });
+    }
+  }
 
-      let changePasswordSuccess = false;
-      try {
-        this.#messenger.call('MetaMetricsController:bufferedTrace', {
-          name: TraceName.OnboardingResetPassword,
-          op: TraceOperation.OnboardingSecurityOp,
-        });
-        // update vault password to global password
-        await this.#messenger.call(
-          'KeyringController:changePassword',
-          password,
-        );
-        changePasswordSuccess = true;
-        // Store the current Keyring encryption key under the reconciled
-        // Seedless password. Lifecycle advancement and remote verification are
-        // completed by the recovery coordinator.
-        await this.syncKeyringEncryptionKey();
+  /**
+   * Checks whether the submitted password matches the local Keyring password.
+   *
+   * @param password - The password to verify.
+   * @returns Whether the password unlocks the local Keyring.
+   */
+  async #isKeyringPasswordValid(password: string): Promise<boolean> {
+    return await this.#messenger
+      .call('KeyringController:verifyPassword', password)
+      .then(() => true)
+      .catch((error: Error) => {
+        if (error.message.includes('Incorrect password')) {
+          return false;
+        }
+        log.error('error while verifying keyring password', error.message);
+        throw error;
+      });
+  }
 
-        // check password outdated again skip cache to reset the cache after successful syncing
-        await this.checkIsSeedlessPasswordOutdated({
-          skipCache: true,
-          captureSentryError: true,
-        });
+  /**
+   * Synchronizes and verifies the current Keyring encryption key before
+   * clearing the password-change lifecycle.
+   */
+  async #syncAndCompleteKeyringEncryptionKey(): Promise<void> {
+    await this.syncKeyringEncryptionKey();
+    await this.#messenger.call(
+      'SeedlessOnboardingController:markPasswordChangeKeySyncPending',
+    );
 
-        // revoke pending refresh tokens asynchronously
-        this.#messenger
-          .call('SeedlessOnboardingController:revokePendingRefreshTokens')
-          .catch((err) => {
-            log.error('error while revoking pending refresh tokens', err);
-          });
-      } catch (err) {
-        this.#messenger?.captureException?.(
-          createSentryError(TraceName.OnboardingResetPasswordError, err),
-        );
+    // Verify that the stored key can be decrypted with the current Seedless
+    // password before clearing the recovery lifecycle.
+    const storedKeyringEncryptionKey = await this.#messenger.call(
+      'SeedlessOnboardingController:loadKeyringEncryptionKey',
+    );
+    const currentKeyringEncryptionKey = await this.#messenger.call(
+      'KeyringController:exportEncryptionKey',
+    );
+    if (storedKeyringEncryptionKey !== currentKeyringEncryptionKey) {
+      throw new Error('Keyring encryption key synchronization failed');
+    }
 
-        // lock app again on error after submitPassword succeeded
-        // here we skip the seedless operation lock as we are already in the seedless operation lock
-        await this.setLocked({ skipSeedlessOperationLock: true });
-        throw err;
-      } finally {
-        this.#messenger.call('MetaMetricsController:bufferedEndTrace', {
-          name: TraceName.OnboardingResetPassword,
-          data: { success: changePasswordSuccess },
-        });
-      }
-    });
+    await this.#messenger.call(
+      'SeedlessOnboardingController:clearPasswordChangePhase',
+    );
   }
 
   /**

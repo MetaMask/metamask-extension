@@ -154,9 +154,11 @@ Update `LegacyBackgroundApiService` so the Seedless path follows this order:
 6. Perform and verify the Keyring-key synchronization.
 7. Call `clearPasswordChangePhase`.
 
-The coordinator refactor currently implements the server-first ordering and
-failure locking. The remaining key-synchronization and recovery-routing work
-must be completed before this section is fully complete.
+The coordinator refactor implements the server-first ordering, lifecycle
+advancement, key synchronization persistence/verification, and failure
+locking. The controller currently exposes no separate remote verification
+action for the stored Keyring key, so the coordinator verifies the key by
+loading it after persistence before clearing the lifecycle.
 
 Specific work:
 
@@ -165,10 +167,11 @@ Specific work:
 - [x] Preserve the existing non-Seedless password-change behavior.
 - [x] Reuse `syncKeyringEncryptionKey` for Keyring encryption-key
   export/storage before lifecycle advancement.
-- [ ] Make the remote synchronization and verification step explicit. The
-  current helper exports the key and calls
-  `SeedlessOnboardingController:storeKeyringEncryptionKey`, but no separate
-  remote verification action has been identified yet.
+- [x] Make the Keyring-key synchronization and verification step explicit. The
+  coordinator exports and stores the key, marks `KEY_SYNC_PENDING`, loads the
+  stored key to verify it can be decrypted with the current Seedless password,
+  and only then clears the lifecycle. No separate remote verification action
+  is exposed by the controller.
 - [x] Lock the wallet before rethrowing any error from the remote operation,
   local Keyring operation, key export/storage, synchronization, lifecycle
   advance, or persistence-related step.
@@ -181,10 +184,9 @@ Specific work:
 - [x] Keep passkey password changes serialized with this coordinator where they
   can touch the same Keyring or Seedless state.
 
-Next implementation step: continue with Section 3, “Add the Option A recovery
-orchestration.” Before clearing `passwordChangePhase` in the final recovery
-path, resolve and verify the remote Keyring-key synchronization boundary noted
-above.
+The background-coordinator portion of Section 3, “Add the Option A recovery
+orchestration,” is complete. Unlock-page routing and recovery-blocked UI
+handling remain in Section 4.
 
 ### 3. Add the Option A recovery orchestration
 
@@ -194,22 +196,27 @@ renders the status.
 
 #### Resolve before normal unlock
 
-- [ ] Add a status-returning background-service method that calls
+- [x] Add `resolveSeedlessPasswordSyncState` as a status-returning
+  background-service method that calls
   `SeedlessOnboardingController:resolvePasswordSyncState`.
+- [x] Return `in-sync` for non-Seedless wallets and incomplete onboarding
+  without calling the Seedless resolver.
 - [ ] Use `skipCache: false` when checking on unlock-page render.
-- [ ] Use `skipCache: true` when the user submits a password.
-- [ ] Force an authoritative remote check for
+- [x] Use `skipCache: true` when the user submits a password through
+  `syncPasswordAndUnlockWallet`.
+- [x] Force an authoritative remote check for
   `SEEDLESS_CHANGE_PENDING`, regardless of the cache option.
-- [ ] Treat `in-sync` as the normal unlock path.
+- [x] Treat `in-sync` as the normal unlock path in the background coordinator.
 - [ ] Route `password-outdated` and `enter-new-password` to the new-password
   recovery step.
-- [ ] Call `SeedlessOnboardingController:reconcilePassword` with the submitted
-  new password. For a no-phase / another-device change, expect
+- [x] Call `SeedlessOnboardingController:reconcilePassword` with the submitted
+  new password. For a no-phase / another-device change, handle
   `reconcile-keyring` after the internal Seedless reconciliation.
-- [ ] Route `reconcile-keyring` and `sync-key` to Keyring reconciliation.
-- [ ] Route `sync-key` through key synchronization and then
+- [x] Route `reconcile-keyring` and `sync-key` to Keyring reconciliation.
+- [x] Route `sync-key` through key synchronization and then
   `clearPasswordChangePhase` before normal unlock.
-- [ ] Return or preserve `unknown` without attempting a normal unlock.
+- [x] Return or preserve `unknown` without attempting a normal unlock in the
+  background coordinator; UI recovery-blocked handling remains pending.
 
 #### Reconcile an old local Keyring
 
@@ -221,15 +228,15 @@ After Seedless reconciliation and a new-password submission:
 4. `KeyringController:exportEncryptionKey`.
 5. `storeKeyringEncryptionKey()`.
 6. `markPasswordChangeKeySyncPending()`.
-7. Synchronize and verify the current Keyring encryption key remotely.
+7. Load and verify the stored Keyring encryption key.
 8. `clearPasswordChangePhase()`.
 
-- [ ] Detect the old-Keyring branch with
+- [x] Detect the old-Keyring branch with
   `KeyringController:verifyPassword(newPassword)`; do not infer it from the
   lifecycle phase.
-- [ ] Regression-test that `loadKeyringEncryptionKey` succeeds after
+- [x] Regression-test that `loadKeyringEncryptionKey` succeeds after
   `reconcilePassword` re-wraps the stored key.
-- [ ] Do not ask the user for the old Keyring password when the stored
+- [x] Do not ask the user for the old Keyring password when the stored
   encryption key can unlock it.
 
 #### Reconcile a local Keyring already using the new password
@@ -238,31 +245,31 @@ After Seedless reconciliation and a new-password submission:
 2. `KeyringController:exportEncryptionKey`.
 3. `storeKeyringEncryptionKey()`.
 4. `markPasswordChangeKeySyncPending()`.
-5. Synchronize and verify the current Keyring encryption key remotely.
+5. Load and verify the stored Keyring encryption key.
 6. `clearPasswordChangePhase()`.
 
-- [ ] Treat a successful password verification as evidence for the new-Keyring
+- [x] Treat a successful password verification as evidence for the new-Keyring
   branch only; still complete key export, storage, synchronization, and phase
   transitions.
-- [ ] Make re-storing an already-current key safe to retry.
+- [x] Make re-storing an already-current key safe to retry.
 
 #### Resume `KEY_SYNC_PENDING`
 
-- [ ] Unlock with the new password.
-- [ ] Export and store the current Keyring encryption key again.
-- [ ] Synchronize and verify it remotely.
-- [ ] Clear the phase only after all required local state is persisted and
-  synchronization is verified.
+- [x] Unlock with the new password.
+- [x] Export and store the current Keyring encryption key again.
+- [x] Verify the stored key and clear the phase only after all required local
+  state is persisted and the synchronization boundary is verified.
 
 #### Failure behavior
 
-- [ ] Lock before exposing an error, retry screen, or intermediary screen.
+- [x] Lock before exposing a recovery error or allowing the recovery flow to
+  continue.
 - [ ] If locking fails, keep the user in a recovery-blocked UI and do not
   expose the wallet.
-- [ ] Preserve the phase on failure.
-- [ ] Never retry `changePassword` / `changeEncKey` as a fresh transaction when
+- [x] Preserve the phase on failure.
+- [x] Never retry `changePassword` / `changeEncKey` as a fresh transaction when
   the result is unresolved.
-- [ ] Keep `unknown` distinct from an ordinary incorrect-password error.
+- [x] Keep `unknown` distinct from an ordinary incorrect-password error.
 - [ ] Offer wallet reset only as an explicit last resort for a confirmed,
   unrecoverable state.
 
