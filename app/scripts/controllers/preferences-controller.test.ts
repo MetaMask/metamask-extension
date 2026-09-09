@@ -52,8 +52,29 @@ const setupController = ({
     actions: [
       'AccountsController:getAccountByAddress',
       'AccountsController:setAccountName',
+      'LegacyBackgroundApiService:toggleExternalServices',
+      'OnboardingController:getState',
+      'SeedlessOnboardingController:getState',
     ],
   });
+
+  const getOnboardingState = jest.fn().mockReturnValue({
+    firstTimeFlowType: 'create',
+  });
+  const getSeedlessOnboardingState = jest.fn().mockReturnValue({});
+  const toggleExternalServices = jest.fn();
+  messenger.registerActionHandler(
+    'OnboardingController:getState',
+    getOnboardingState,
+  );
+  messenger.registerActionHandler(
+    'SeedlessOnboardingController:getState',
+    getSeedlessOnboardingState,
+  );
+  messenger.registerActionHandler(
+    'LegacyBackgroundApiService:toggleExternalServices',
+    toggleExternalServices,
+  );
 
   const controller = new PreferencesController({
     messenger: preferencesControllerMessenger,
@@ -95,6 +116,9 @@ const setupController = ({
     controller,
     messenger,
     accountsController,
+    getOnboardingState,
+    getSeedlessOnboardingState,
+    toggleExternalServices,
   };
 };
 
@@ -628,6 +652,38 @@ describe('preferences controller', () => {
     });
   });
 
+  describe('consolidateBasicFunctionality', () => {
+    it('consolidates a social-login wallet and syncs external services', () => {
+      const { controller, getSeedlessOnboardingState, toggleExternalServices } =
+        setupController({});
+      getSeedlessOnboardingState.mockReturnValue({
+        authConnection: 'google',
+      });
+
+      controller.consolidateBasicFunctionality();
+
+      expect(controller.state.useExternalServices).toBe(true);
+      expect(
+        controller.getPreferences().isBasicFunctionalityConsolidatedEnabled,
+      ).toBe(true);
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBe('modal');
+      expect(toggleExternalServices).toHaveBeenCalledWith(true);
+    });
+
+    it('does not sync external services when already consolidated', () => {
+      const { controller, getOnboardingState, toggleExternalServices } =
+        setupController({});
+      controller.setPreference('isBasicFunctionalityConsolidatedEnabled', true);
+
+      controller.consolidateBasicFunctionality();
+
+      expect(getOnboardingState).not.toHaveBeenCalled();
+      expect(toggleExternalServices).not.toHaveBeenCalled();
+    });
+  });
+
   describe('dismissBasicFunctionalityMigrationNotification', () => {
     it('clears a scheduled migration notification', () => {
       const { controller } = setupController({});
@@ -648,18 +704,20 @@ describe('preferences controller', () => {
     });
 
     it('does not reschedule a notice after dismiss', () => {
-      const { controller } = setupController({});
+      const { controller, getOnboardingState, toggleExternalServices } =
+        setupController({});
       controller.setPreference(
         'basicFunctionalityMigrationNotification',
         'modal',
       );
       controller.dismissBasicFunctionalityMigrationNotification();
-
-      const landingState = controller.consolidateBasicFunctionality({
-        isSocialLogin: true,
+      getOnboardingState.mockReturnValue({
+        firstTimeFlowType: 'socialCreate',
       });
 
-      expect(landingState).toBe(true);
+      controller.consolidateBasicFunctionality();
+
+      expect(toggleExternalServices).toHaveBeenCalledWith(true);
       expect(
         controller.getPreferences().basicFunctionalityMigrationNotification,
       ).toBeNull();

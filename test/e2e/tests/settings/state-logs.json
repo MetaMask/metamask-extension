@@ -845,6 +845,7 @@
       }
     },
     "needsProfilePairing": "boolean",
+    "needsSocialPairing": "boolean",
     "networkConfigurations": {},
     "networkConfigurationsByChainId": {},
     "networkConnectionBannerNetwork": "null",
