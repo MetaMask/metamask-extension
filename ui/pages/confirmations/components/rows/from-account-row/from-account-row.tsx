@@ -118,6 +118,7 @@ export function FromAccountRow({
   }
 
   const label = fromWalletName ? `${t('from')} ${fromWalletName}` : t('from');
+  const accountName = fromName ?? shortenAddress(from);
 
   return (
     <>
@@ -129,24 +130,30 @@ export function FromAccountRow({
         rowVariant={variant}
       >
         <Box
-          data-testid="from-account-pill"
-          onClick={openModal}
+          asChild
           alignItems={BoxAlignItems.Center}
           gap={1}
-          className="inline-flex cursor-pointer"
+          className="inline-flex min-w-0"
         >
-          <PreferredAvatar
-            address={toChecksumHexAddress(from)}
-            size={AvatarAccountSize.Xs}
-          />
-          <Text data-testid="from-account-name">
-            {fromName ?? shortenAddress(from)}
-          </Text>
-          <Icon
-            data-testid="from-account-arrow"
-            name={IconName.ArrowDown}
-            size={IconSize.Sm}
-          />
+          <button
+            type="button"
+            data-testid="from-account-pill"
+            onClick={openModal}
+            aria-label={`${label} ${accountName}`}
+            className="inline-flex min-w-0 cursor-pointer items-center border-0 bg-transparent p-0 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+          >
+            <PreferredAvatar
+              address={toChecksumHexAddress(from)}
+              size={AvatarAccountSize.Xs}
+            />
+            <Text data-testid="from-account-name">{accountName}</Text>
+            <Icon
+              data-testid="from-account-arrow"
+              name={IconName.ArrowDown}
+              size={IconSize.Sm}
+              aria-hidden
+            />
+          </button>
         </Box>
       </ConfirmInfoAlertRow>
 
