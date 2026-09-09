@@ -179,7 +179,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 224,
+      "currentMigrationVersion": 225,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -404,7 +404,6 @@
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": false,
-      "fragments": {},
       "marketingCampaignCookieId": null,
       "tracesBeforeMetricsOptIn": [],
       "traits": {}
@@ -415,6 +414,9 @@
     },
     "MoneyAccountController": {
       "moneyAccounts": {}
+    },
+    "MoneyAccountUpgradeController": {
+      "upgradedAccounts": {}
     },
     "MultichainAssetsController": {
       "accountsAssets": {
@@ -1034,6 +1036,8 @@
         "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": false,
+        "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -1263,6 +1267,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 224
+    "version": 225
   }
 }
