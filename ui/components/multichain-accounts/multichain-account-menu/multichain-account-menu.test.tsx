@@ -230,7 +230,7 @@ describe('MultichainAccountMenu', () => {
       stateWithPrivateKeyAccount,
     );
 
-    expect(document.querySelectorAll(menuItemSelector).length).toBe(4);
+    expect(document.querySelectorAll(menuItemSelector)).toHaveLength(4);
     expect(
       screen.queryByTestId('multichain-account-menu-item-hideAccount'),
     ).not.toBeInTheDocument();
@@ -377,10 +377,7 @@ describe('MultichainAccountMenu', () => {
     });
 
     const hideOption = document.querySelectorAll(menuItemSelector)[4];
-
-    await act(async () => {
-      fireEvent.click(hideOption);
-    });
+    fireEvent.click(hideOption);
 
     expect(mockDisconnectAccountGroup).toHaveBeenCalledWith(accountGroupId);
   });
@@ -421,10 +418,7 @@ describe('MultichainAccountMenu', () => {
     );
 
     const revealOption = document.querySelectorAll(menuItemSelector)[4];
-
-    await act(async () => {
-      fireEvent.click(revealOption);
-    });
+    fireEvent.click(revealOption);
 
     expect(mockSetAccountGroupHidden).toHaveBeenCalledWith(
       accountGroupId,
