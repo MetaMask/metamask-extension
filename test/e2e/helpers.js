@@ -240,6 +240,7 @@ async function withFixtures(options, testSuite) {
     unifiedEvmAccountsApiBalances,
     virtualAuthenticator,
     isBenchmark = false,
+    testTimeout = parseInt(process.env.MOCHA_TIMEOUT, 10) || 80_000,
   } = options;
 
   // Normalize localNodeOptions
@@ -616,7 +617,18 @@ async function withFixtures(options, testSuite) {
 
     console.log(`\nExecuting testcase: '${title}'\n`);
 
-    await testSuite({
+    // --- Internal deadline ---
+    // Mocha cannot cancel a running async function when its timeout fires.
+    // It simply marks the test as failed and starts the next one, which means
+    // our `catch` (screenshots) and `finally` (server cleanup) blocks never
+    // run in time.  By racing the test callback against an internal deadline
+    // that fires a few seconds BEFORE Mocha's timeout, we regain control:
+    //   1. The deadline error flows into `catch` → screenshots are captured.
+    //   2. Then `finally` runs → Anvil and other servers are cleaned up.
+    //   3. `withFixtures` settles before Mocha's timeout, so the next test
+    //      starts with a clean slate.
+    const ARTIFACT_DEADLINE_BUFFER_MS = 5_000;
+    const testPromise = testSuite({
       bundlerServer,
       contractRegistry,
       driver: effectiveDriver,
@@ -633,6 +645,34 @@ async function withFixtures(options, testSuite) {
         },
       }),
     });
+
+    // Silence the orphaned test promise if the deadline wins the race and the
+    // test callback rejects afterwards (prevents unhandled-rejection noise).
+    testPromise.catch(() => {});
+
+    const deadlineMs = testTimeout - ARTIFACT_DEADLINE_BUFFER_MS;
+    if (deadlineMs > 0 && testTimeout > 0) {
+      let deadlineTimer;
+      const deadlinePromise = new Promise((_, reject) => {
+        deadlineTimer = setTimeout(() => {
+          reject(
+            new Error(
+              `withFixtures internal deadline exceeded after ${deadlineMs}ms ` +
+                `(Mocha timeout: ${testTimeout}ms). Capturing artifacts before Mocha moves on.`,
+            ),
+          );
+        }, deadlineMs);
+      });
+
+      try {
+        await Promise.race([testPromise, deadlinePromise]);
+      } finally {
+        clearTimeout(deadlineTimer);
+      }
+    } else {
+      // --leave-running or very short timeout: no deadline, wait indefinitely
+      await testPromise;
+    }
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
     if (errorsAndExceptions) {
