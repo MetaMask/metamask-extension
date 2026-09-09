@@ -88,7 +88,7 @@ const MoneyActionCard = ({
       onClick={onClick}
       className="flex h-[76px] flex-1 flex-col items-center justify-center gap-0.5 rounded-xl bg-background-muted disabled:cursor-default disabled:opacity-100"
     >
-      <Icon name={icon} size={IconSize.Lg} color={IconColor.IconDefault} />
+      <Icon name={icon} size={IconSize.Lg} color={IconColor.IconAlternative} />
       <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
         {label}
       </Text>
@@ -267,7 +267,7 @@ export function MoneyHomePage() {
           </div>
         </div>
 
-        <div className="mt-2 flex w-full max-w-[389px] gap-2 py-2">
+        <div className="mt-2 flex w-full max-w-[458px] gap-3 py-2">
           <MoneyActionCard
             icon={IconName.Add}
             label={t('moneyAdd')}
@@ -283,7 +283,7 @@ export function MoneyHomePage() {
         </div>
 
         {isFunded ? null : (
-          <section className="mt-1 flex w-full max-w-[389px] flex-col gap-4 overflow-hidden rounded-2xl bg-background-muted p-4">
+          <section className="flex w-full max-w-[458px] flex-col gap-4 overflow-hidden rounded-2xl bg-background-muted p-4">
             <img
               src={MONEY_ONBOARDING_ARTWORK}
               alt=""
