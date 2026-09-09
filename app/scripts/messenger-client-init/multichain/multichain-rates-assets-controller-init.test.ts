@@ -59,5 +59,8 @@ describe('MultichainAssetsRatesControllerInit', () => {
       interval: 180000,
       isDeprecated: expect.any(Function),
     });
+    expect(
+      multichainAssetsRatesControllerClassMock.mock.calls[0][0].isDeprecated(),
+    ).toBe(true);
   });
 });

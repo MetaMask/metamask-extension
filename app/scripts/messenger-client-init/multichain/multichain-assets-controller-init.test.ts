@@ -58,5 +58,8 @@ describe('MultichainAssetsControllerInit', () => {
       state: requestMock.persistedState.MultichainAssetsController,
       isDeprecated: expect.any(Function),
     });
+    expect(
+      MultichainAssetsControllerClassMock.mock.calls[0][0].isDeprecated(),
+    ).toBe(true);
   });
 });

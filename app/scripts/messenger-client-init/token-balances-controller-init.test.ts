@@ -87,5 +87,6 @@ describe('TokenBalancesControllerInit', () => {
       isOnboarded: expect.any(Function),
       isDeprecated: expect.any(Function),
     });
+    expect(controllerMock.mock.calls[0][0].isDeprecated()).toBe(true);
   });
 });

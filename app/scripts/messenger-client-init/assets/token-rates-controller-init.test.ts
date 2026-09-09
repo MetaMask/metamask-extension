@@ -103,5 +103,8 @@ describe('TokenRatesControllerInit', () => {
     TokenRatesControllerInit(requestMock);
 
     expect(tokenRatesControllerClassMock).toHaveBeenCalled();
+    expect(tokenRatesControllerClassMock.mock.calls[0][0].isDeprecated()).toBe(
+      true,
+    );
   });
 });

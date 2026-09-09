@@ -15,6 +15,12 @@ import { CurrencyRateControllerInit } from './currency-rate-controller-init';
 
 jest.mock('@metamask/assets-controllers', () => ({
   CurrencyRateController: class {
+    isDeprecated?: () => boolean;
+
+    constructor(options: { isDeprecated?: () => boolean }) {
+      this.isDeprecated = options.isDeprecated;
+    }
+
     // This is needed since the controller init tries to override this function.
     fetchMultiExchangeRate = jest.fn();
   },
@@ -52,5 +58,17 @@ describe('CurrencyRateControllerInit', () => {
     const { messengerClient } =
       CurrencyRateControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(CurrencyRateController);
+  });
+
+  it('marks the controller as deprecated', () => {
+    const { messengerClient } =
+      CurrencyRateControllerInit(getInitRequestMock());
+    expect(
+      (
+        messengerClient as CurrencyRateController & {
+          isDeprecated?: () => boolean;
+        }
+      ).isDeprecated?.(),
+    ).toBe(true);
   });
 });

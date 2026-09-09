@@ -111,6 +111,7 @@ describe('AccountTrackerControllerInit', () => {
       isOnboarded: expect.any(Function),
       isDeprecated: expect.any(Function),
     });
+    expect(controllerMock.mock.calls[0][0].isDeprecated?.()).toBe(true);
   });
 
   it('initializes with Account API feature flag configuration', () => {

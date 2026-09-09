@@ -98,5 +98,6 @@ describe('TokensControllerInit', () => {
       tokenListService: expect.any(Object),
       isDeprecated: expect.any(Function),
     });
+    expect(controllerMock.mock.calls[0][0].isDeprecated()).toBe(true);
   });
 });
