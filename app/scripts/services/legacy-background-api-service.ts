@@ -350,6 +350,8 @@ import {
   PreferencesControllerAddReferralApprovedAccountAction,
   PreferencesControllerAddReferralDeclinedAccountAction,
   PreferencesControllerAddReferralPassedAccountAction,
+  PreferencesControllerConsolidateBasicFunctionalityAction,
+  PreferencesControllerDismissBasicFunctionalityMigrationNotificationAction,
   PreferencesControllerRemoveReferralDeclinedAccountAction,
   PreferencesControllerResetStateAction,
   PreferencesControllerSetAccountsReferralApprovedAction,
@@ -706,6 +708,8 @@ type AllowedActions =
   | PreferencesControllerAddReferralApprovedAccountAction
   | PreferencesControllerAddReferralDeclinedAccountAction
   | PreferencesControllerAddReferralPassedAccountAction
+  | PreferencesControllerConsolidateBasicFunctionalityAction
+  | PreferencesControllerDismissBasicFunctionalityMigrationNotificationAction
   | PreferencesControllerGetStateAction
   | PreferencesControllerRemoveReferralDeclinedAccountAction
   | PreferencesControllerResetStateAction

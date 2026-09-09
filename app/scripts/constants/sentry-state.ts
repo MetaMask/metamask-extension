@@ -55,6 +55,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   AuthenticationController: {
     isSignedIn: false,
     needsProfilePairing: false,
+    needsSocialPairing: false,
     srpSessionData: false,
   },
   NetworkOrderController: {
@@ -193,6 +194,9 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   MoneyAccountController: {
     moneyAccounts: false,
+  },
+  MoneyAccountUpgradeController: {
+    upgradedAccounts: false,
   },
   NotificationServicesController: {
     subscriptionAccountsSeen: false,
