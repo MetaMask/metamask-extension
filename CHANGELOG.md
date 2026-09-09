@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.47.1]
 
+### Fixed
+
+- Fixed non-deterministic production builds so the Firefox add-on review rebuild matches the published build (#46069)
+
 ## [13.47.0]
 
 ### Added
