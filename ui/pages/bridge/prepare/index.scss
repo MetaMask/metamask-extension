@@ -7,7 +7,7 @@
   .mm-text-field {
     background-color: inherit;
 
-    &--focused {
+    &.mm-text-field--focused {
       outline: none;
     }
   }
@@ -140,7 +140,7 @@
   .mm-text-field {
     width: 94px;
 
-    &--focused,
+    &.mm-text-field--focused,
     &:focus-visible {
       outline: none;
     }

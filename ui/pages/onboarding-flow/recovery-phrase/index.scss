@@ -43,7 +43,7 @@
 
     .mm-text-field.mm-text-field--target-index,
     .mm-text-field.mm-text-field--focused {
-      box-shadow: none;
+      outline: none;
       border-color: var(--color-icon-default);
     }
 

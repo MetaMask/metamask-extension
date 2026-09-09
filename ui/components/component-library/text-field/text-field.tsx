@@ -116,7 +116,7 @@ export const TextField: TextFieldComponent = React.forwardRef(
         className={classnames(
           'mm-text-field',
           `mm-text-field--size-${size}`,
-          'has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-inset has-[:focus-visible]:ring-primary-default',
+          'has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-primary-default has-[:focus-visible]:-outline-offset-[3px]',
           {
             'mm-text-field--focused': focused && !disabled,
             'mm-text-field--error': Boolean(error),
