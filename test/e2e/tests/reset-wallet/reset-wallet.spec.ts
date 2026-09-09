@@ -37,15 +37,8 @@ describe('Reset Wallet - ', function () {
         await loginPage.resetWalletFromForgotPassword();
 
         // Complete onboarding again with SRP create.
-        // needNavigateToNewPage must be false: the wallet reset is async —
-        // `resetWalletFromForgotPassword` resolves as soon as the modal
-        // closes, but the background `resetWallet` RPC is still in flight.
-        // A full-page `driver.navigate()` at this point would reload
-        // home.html before the reset finishes, so the app shows the home
-        // page instead of redirecting to onboarding.
-        // With `false`, the flow waits for the onboarding welcome page to
-        // appear naturally once the background reset completes and the React
-        // Router navigates to DEFAULT_ROUTE.
+        // `resetWalletFromForgotPassword` resolves as soon as the modal closes, but the background `resetWallet` RPC is still in flight.
+        // So we just wait for the onboarding welcome page to appear naturally once the background reset completes, instead of navigating.
         await completeCreateNewWalletOnboardingFlow({
           driver,
           skipSRPBackup: true,
@@ -85,7 +78,6 @@ describe('Reset Wallet - ', function () {
         await loginPage.resetWalletFromForgotPassword();
 
         // Complete onboarding again by importing SRP.
-        // See the first test for why needNavigateToNewPage must be false.
         await completeImportSRPOnboardingFlow({
           driver,
           needNavigateToNewPage: false,
