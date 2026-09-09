@@ -105,10 +105,6 @@
   "accountIdenticon": {
     "message": "Biểu tượng tài khoản"
   },
-  "accountImported": {
-    "message": "Đã nhập tài khoản",
-    "description": "Success toast shown after a private key or JSON account is imported"
-  },
   "accountName": {
     "message": "Tên tài khoản"
   },
@@ -1932,15 +1928,6 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Bật chức năng cơ bản"
-  },
-  "basicFunctionalityMigrationSocialModalBlogPostLink": {
-    "message": "bài đăng blog"
-  },
-  "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "Cập nhật về quyền riêng tư và sản phẩm"
-  },
-  "basicFunctionalityMigrationToastEnabled": {
-    "message": "đã bật"
   },
   "basicFunctionalityRequired_description": {
     "message": "Tính năng này không khả dụng khi chức năng cơ bản bị tắt. Hãy dùng nút gạt bên dưới để bật."
@@ -5236,10 +5223,6 @@
   "manage": {
     "message": "Quản lý"
   },
-  "manageAccounts": {
-    "message": "Quản lý tài khoản",
-    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
-  },
   "manageConnectedAccounts": {
     "message": "Quản lý tài khoản đã kết nối"
   },
@@ -6358,9 +6341,6 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "Bạn chưa nhận được bất kỳ thông báo nào."
-  },
-  "notificationsSettingsAccountsLoadError": {
-    "message": "Chúng tôi không thể tải cài đặt thông báo tài khoản của bạn. Hãy thử lại sau."
   },
   "notificationsSettingsAgenticCliDescription": {
     "message": "Yêu cầu kết nối CLI, phê duyệt và cập nhật phiên cho Agent Wallet"
@@ -8762,14 +8742,6 @@
   "removeAccount": {
     "message": "Xóa tài khoản"
   },
-  "removeAccountConfirmDescription": {
-    "message": "Bạn có thể khôi phục tài khoản này bất cứ lúc nào bằng cách nhập tài khoản bằng khóa riêng tư.",
-    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
-  },
-  "removeAccountConfirmTitle": {
-    "message": "Gỡ bỏ $1",
-    "description": "Title of the account remove confirmation modal. $1 is the account name."
-  },
   "removeAccountModalBannerDescription": {
     "message": "Đảm bảo bạn có Cụm từ khôi phục bí mật hoặc khóa riêng tư cho tài khoản này trước khi xóa.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -9222,10 +9194,6 @@
   },
   "searchAnAcccountOrContact": {
     "message": "Tìm kiếm tài khoản hoặc liên hệ"
-  },
-  "searchAnAccount": {
-    "message": "Tìm kiếm tài khoản",
-    "description": "Search input placeholder for the Perps destination account picker"
   },
   "searchForAnAssetToSend": {
     "message": "Tìm kiếm tài sản để gửi"

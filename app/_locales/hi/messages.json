@@ -105,10 +105,6 @@
   "accountIdenticon": {
     "message": "अकाउंट आइकॉन"
   },
-  "accountImported": {
-    "message": "अकाउंट इंपोर्ट किया गया",
-    "description": "Success toast shown after a private key or JSON account is imported"
-  },
   "accountName": {
     "message": "अकाउंट का नाम"
   },
@@ -1932,15 +1928,6 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "बेसिक फंक्शनलिटी को चालू करें"
-  },
-  "basicFunctionalityMigrationSocialModalBlogPostLink": {
-    "message": "ब्लॉग पोस्ट"
-  },
-  "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "गोपनीयता और प्रोडक्ट अपडेट्स"
-  },
-  "basicFunctionalityMigrationToastEnabled": {
-    "message": "चालू किया गया"
   },
   "basicFunctionalityRequired_description": {
     "message": "बेसिक फंक्शनैलिटी बंद होने पर यह फ़ीचर उपलब्ध नहीं है। इसे चालू करने के लिए नीचे दिए गए टॉगल का इस्तेमाल करें।"
@@ -5232,10 +5219,6 @@
   "manage": {
     "message": "मैनेज करें"
   },
-  "manageAccounts": {
-    "message": "एकाउंट्स मैनेज करें",
-    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
-  },
   "manageConnectedAccounts": {
     "message": "कनेक्टेड अकाउंट्स मैनेज करें"
   },
@@ -6354,9 +6337,6 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "आपको अभी तक कोई नोटिफिकेशंस नहीं मिली है।"
-  },
-  "notificationsSettingsAccountsLoadError": {
-    "message": "हम आपकी अकाउंट नोटिफिकेशन सेटिंग्स लोड नहीं कर सके। बाद में फिर से प्रयास करें।"
   },
   "notificationsSettingsAgenticCliDescription": {
     "message": "एजेंट वॉलेट के लिए CLI कनेक्शन रिक्वेस्ट, एप्रूवल और सेशन अपडेट"
@@ -8745,14 +8725,6 @@
   "removeAccount": {
     "message": "अकाउंट हटाएं"
   },
-  "removeAccountConfirmDescription": {
-    "message": "आप इस अकाउंट को प्राइवेट की (key) से इंपोर्ट करके कभी भी रिस्टोर कर सकते हैं।",
-    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
-  },
-  "removeAccountConfirmTitle": {
-    "message": "$1 हटाएं",
-    "description": "Title of the account remove confirmation modal. $1 is the account name."
-  },
   "removeAccountModalBannerDescription": {
     "message": "इस अकाउंट को हटाने से पहले सुनिश्चित करें कि आपके पास इसके लिए सीक्रेट रिकवरी फ्रेज़ या प्राइवेट की (key) है।",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -9205,10 +9177,6 @@
   },
   "searchAnAcccountOrContact": {
     "message": "किसी अकाउंट या कॉन्टेक्ट को ढूंढें"
-  },
-  "searchAnAccount": {
-    "message": "किसी अकाउंट को ढूंढें",
-    "description": "Search input placeholder for the Perps destination account picker"
   },
   "searchForAnAssetToSend": {
     "message": "भेजने के लिए किसी एसेट को ढूंढें"

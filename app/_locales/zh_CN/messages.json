@@ -105,10 +105,6 @@
   "accountIdenticon": {
     "message": "账户 Identicon"
   },
-  "accountImported": {
-    "message": "已导入账户",
-    "description": "Success toast shown after a private key or JSON account is imported"
-  },
   "accountName": {
     "message": "账户名称"
   },
@@ -1932,15 +1928,6 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "开启基本功能"
-  },
-  "basicFunctionalityMigrationSocialModalBlogPostLink": {
-    "message": "博客文章"
-  },
-  "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "隐私与产品更新"
-  },
-  "basicFunctionalityMigrationToastEnabled": {
-    "message": "已启用"
   },
   "basicFunctionalityRequired_description": {
     "message": "此功能在基本功能关闭时无法使用。请使用下方的开关将其开启。"
@@ -5232,10 +5219,6 @@
   "manage": {
     "message": "管理"
   },
-  "manageAccounts": {
-    "message": "管理账户",
-    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
-  },
   "manageConnectedAccounts": {
     "message": "管理已连接的账户"
   },
@@ -6354,9 +6337,6 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "您尚未收到任何通知。"
-  },
-  "notificationsSettingsAccountsLoadError": {
-    "message": "我们无法加载您的账户通知设置。请稍后再试。"
   },
   "notificationsSettingsAgenticCliDescription": {
     "message": "代理钱包的 CLI 连接请求、审批和会话更新"
@@ -8754,14 +8734,6 @@
   "removeAccount": {
     "message": "删除账户"
   },
-  "removeAccountConfirmDescription": {
-    "message": "您可以随时通过导入私钥来恢复此账户。",
-    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
-  },
-  "removeAccountConfirmTitle": {
-    "message": "移除 $1",
-    "description": "Title of the account remove confirmation modal. $1 is the account name."
-  },
   "removeAccountModalBannerDescription": {
     "message": "删除之前，请确保您拥有此账户的私钥助记词或私钥。",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -9214,10 +9186,6 @@
   },
   "searchAnAcccountOrContact": {
     "message": "搜索账户或联系人"
-  },
-  "searchAnAccount": {
-    "message": "搜索账户",
-    "description": "Search input placeholder for the Perps destination account picker"
   },
   "searchForAnAssetToSend": {
     "message": "搜索要发送的资产"

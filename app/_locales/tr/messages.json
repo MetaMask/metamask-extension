@@ -105,10 +105,6 @@
   "accountIdenticon": {
     "message": "Hesap simgesi"
   },
-  "accountImported": {
-    "message": "Hesap içe aktarıldı",
-    "description": "Success toast shown after a private key or JSON account is imported"
-  },
   "accountName": {
     "message": "Hesap adı"
   },
@@ -1932,15 +1928,6 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Temel işlevselliği aç"
-  },
-  "basicFunctionalityMigrationSocialModalBlogPostLink": {
-    "message": "blog yayınımızda okuyabilirsiniz"
-  },
-  "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "Gizlilik ve ürün güncellemeleri"
-  },
-  "basicFunctionalityMigrationToastEnabled": {
-    "message": "etkinleştirildi"
   },
   "basicFunctionalityRequired_description": {
     "message": "Bu özellik temel işlevsellik kapalıyken kullanılamaz. Açmak için aşağıdaki aç-kapa düğmesini kullanın."
@@ -5235,10 +5222,6 @@
   },
   "manage": {
     "message": "Yönet"
-  },
-  "manageAccounts": {
-    "message": "Hesapları yönet",
-    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
   },
   "manageConnectedAccounts": {
     "message": "Bağlı hesapları yönet"
@@ -8759,14 +8742,6 @@
   "removeAccount": {
     "message": "Hesabı kaldır"
   },
-  "removeAccountConfirmDescription": {
-    "message": "Bu hesabı dilediğiniz zaman özel anahtarla içe aktararak geri yükleyebilirsiniz.",
-    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
-  },
-  "removeAccountConfirmTitle": {
-    "message": "Kaldır: $1",
-    "description": "Title of the account remove confirmation modal. $1 is the account name."
-  },
   "removeAccountModalBannerDescription": {
     "message": "Kaldırmadan önce bu hesap için Gizli Kurtarma İfadenizin veya özel anahtarınızın olduğundan emin olun.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -9219,10 +9194,6 @@
   },
   "searchAnAcccountOrContact": {
     "message": "Bir hesap veya kişi ara"
-  },
-  "searchAnAccount": {
-    "message": "Bir hesabı ara",
-    "description": "Search input placeholder for the Perps destination account picker"
   },
   "searchForAnAssetToSend": {
     "message": "Göndermek için varlık ara"

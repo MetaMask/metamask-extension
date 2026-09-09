@@ -105,10 +105,6 @@
   "accountIdenticon": {
     "message": "Ikon akun"
   },
-  "accountImported": {
-    "message": "Akun berhasil diimpor",
-    "description": "Success toast shown after a private key or JSON account is imported"
-  },
   "accountName": {
     "message": "Nama akun"
   },
@@ -1932,15 +1928,6 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Aktifkan fungsionalitas dasar"
-  },
-  "basicFunctionalityMigrationSocialModalBlogPostLink": {
-    "message": "postingan blog"
-  },
-  "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "Pembaruan privasi dan produk"
-  },
-  "basicFunctionalityMigrationToastEnabled": {
-    "message": "diaktifkan"
   },
   "basicFunctionalityRequired_description": {
     "message": "Fitur ini tidak tersedia saat fungsi dasar dinonaktifkan. Gunakan tombol di bawah ini untuk mengaktifkannya."
@@ -5236,10 +5223,6 @@
   "manage": {
     "message": "Kelola"
   },
-  "manageAccounts": {
-    "message": "Kelola akun",
-    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
-  },
   "manageConnectedAccounts": {
     "message": "Kelola akun yang terhubung"
   },
@@ -6358,9 +6341,6 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "Anda belum menerima notifikasi."
-  },
-  "notificationsSettingsAccountsLoadError": {
-    "message": "Kami tidak dapat memuat pengaturan notifikasi akun Anda. Coba lagi nanti."
   },
   "notificationsSettingsAgenticCliDescription": {
     "message": "Permintaan koneksi CLI, persetujuan, dan pembaruan sesi untuk dompet Agen"
@@ -8756,14 +8736,6 @@
   "removeAccount": {
     "message": "Hapus akun"
   },
-  "removeAccountConfirmDescription": {
-    "message": "Anda dapat memulihkan akun ini kapan saja dengan mengimpornya menggunakan kunci privat.",
-    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
-  },
-  "removeAccountConfirmTitle": {
-    "message": "Hapus $1",
-    "description": "Title of the account remove confirmation modal. $1 is the account name."
-  },
   "removeAccountModalBannerDescription": {
     "message": "Pastikan Anda memiliki Frasa Pemulihan Rahasia atau kunci pribadi untuk akun ini sebelum menghapusnya.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -9216,10 +9188,6 @@
   },
   "searchAnAcccountOrContact": {
     "message": "Cari akun atau kontak"
-  },
-  "searchAnAccount": {
-    "message": "Cari akun",
-    "description": "Search input placeholder for the Perps destination account picker"
   },
   "searchForAnAssetToSend": {
     "message": "Cari aset untuk dikirim"

@@ -105,10 +105,6 @@
   "accountIdenticon": {
     "message": "Identicon ng Account"
   },
-  "accountImported": {
-    "message": "Na-import na account",
-    "description": "Success toast shown after a private key or JSON account is imported"
-  },
   "accountName": {
     "message": "Pangalan ng account"
   },
@@ -1932,15 +1928,6 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "I-on ang batayang kapakinabangan"
-  },
-  "basicFunctionalityMigrationSocialModalBlogPostLink": {
-    "message": "blog post"
-  },
-  "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "Mga update sa pagkapribado at produkto"
-  },
-  "basicFunctionalityMigrationToastEnabled": {
-    "message": "pinagana"
   },
   "basicFunctionalityRequired_description": {
     "message": "Hindi available ang feature na ito kapag naka-off ang basic functionality. Gamitin ang toggle sa ibaba para i-on ito."
@@ -5231,10 +5218,6 @@
   },
   "manage": {
     "message": "Pamahalaan"
-  },
-  "manageAccounts": {
-    "message": "Pamahalaan ang mga account",
-    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
   },
   "manageConnectedAccounts": {
     "message": "Pamahalaan ang mga konektadong account"
@@ -8745,14 +8728,6 @@
   "removeAccount": {
     "message": "Alisin ang account"
   },
-  "removeAccountConfirmDescription": {
-    "message": "Maaari mong i-restore ang account na ito kahit anong oras sa pamamagitan ng pag-import nito gamit ang pribagong key.",
-    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
-  },
-  "removeAccountConfirmTitle": {
-    "message": "Alisin ang $1",
-    "description": "Title of the account remove confirmation modal. $1 is the account name."
-  },
   "removeAccountModalBannerDescription": {
     "message": "Tiyaking mayroon kang Lihim na Parirala sa Pagbawi o pribadong key para sa account na ito bago alisin.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -9205,10 +9180,6 @@
   },
   "searchAnAcccountOrContact": {
     "message": "Maghanap ng account o contact"
-  },
-  "searchAnAccount": {
-    "message": "Pumili ng isang account",
-    "description": "Search input placeholder for the Perps destination account picker"
   },
   "searchForAnAssetToSend": {
     "message": "Maghanap ng ipapadalang asset"

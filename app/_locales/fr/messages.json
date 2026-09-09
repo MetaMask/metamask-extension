@@ -105,10 +105,6 @@
   "accountIdenticon": {
     "message": "Identicon de compte"
   },
-  "accountImported": {
-    "message": "Compte importé",
-    "description": "Success toast shown after a private key or JSON account is imported"
-  },
   "accountName": {
     "message": "Nom du compte"
   },
@@ -1932,15 +1928,6 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Activer la fonctionnalité de base"
-  },
-  "basicFunctionalityMigrationSocialModalBlogPostLink": {
-    "message": "article de blog"
-  },
-  "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "Confidentialité et mises à jour des produits"
-  },
-  "basicFunctionalityMigrationToastEnabled": {
-    "message": "activé"
   },
   "basicFunctionalityRequired_description": {
     "message": "Cette fonctionnalité n’est pas disponible lorsque les fonctionnalités de base sont désactivées. Utilisez le bouton ci-dessous pour l’activer."
@@ -5232,10 +5219,6 @@
   "manage": {
     "message": "Gérer"
   },
-  "manageAccounts": {
-    "message": "Gérer les comptes",
-    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
-  },
   "manageConnectedAccounts": {
     "message": "Gérer les comptes connectés"
   },
@@ -6354,9 +6337,6 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "Vous n’avez pas encore reçu de notifications."
-  },
-  "notificationsSettingsAccountsLoadError": {
-    "message": "Nous n’avons pas pu charger les paramètres de notification de votre compte. Veuillez réessayer plus tard."
   },
   "notificationsSettingsAgenticCliDescription": {
     "message": "Demandes de connexion CLI, validations et mises à jour de session pour Agent Wallet"
@@ -8748,14 +8728,6 @@
   "removeAccount": {
     "message": "Suprimer le compte"
   },
-  "removeAccountConfirmDescription": {
-    "message": "Vous pouvez restaurer ce compte à tout moment en l'important à l'aide de la clé privée.",
-    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
-  },
-  "removeAccountConfirmTitle": {
-    "message": "Supprimer $1",
-    "description": "Title of the account remove confirmation modal. $1 is the account name."
-  },
   "removeAccountModalBannerDescription": {
     "message": "Veuillez vous assurer que vous disposez de la phrase secrète de récupération ou de la clé privée de ce compte avant de le supprimer.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -9208,10 +9180,6 @@
   },
   "searchAnAcccountOrContact": {
     "message": "Rechercher un compte ou un contact"
-  },
-  "searchAnAccount": {
-    "message": "Rechercher un compte",
-    "description": "Search input placeholder for the Perps destination account picker"
   },
   "searchForAnAssetToSend": {
     "message": "Rechercher un actif à envoyer"

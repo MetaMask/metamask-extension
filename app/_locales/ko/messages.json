@@ -105,10 +105,6 @@
   "accountIdenticon": {
     "message": "계정 식별 아이콘"
   },
-  "accountImported": {
-    "message": "계정 가져오기 완료",
-    "description": "Success toast shown after a private key or JSON account is imported"
-  },
   "accountName": {
     "message": "계정 이름"
   },
@@ -1932,15 +1928,6 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "기본 기능 켜기"
-  },
-  "basicFunctionalityMigrationSocialModalBlogPostLink": {
-    "message": "블로그 포스트"
-  },
-  "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "개인정보 보호 및 제품 업데이트"
-  },
-  "basicFunctionalityMigrationToastEnabled": {
-    "message": "활성화됨"
   },
   "basicFunctionalityRequired_description": {
     "message": "기본 기능이 꺼져 있는 경우 이 기능을 사용할 수 없습니다. 아래 토글을 사용해 기능을 켤 수 있습니다."
@@ -5236,10 +5223,6 @@
   "manage": {
     "message": "관리"
   },
-  "manageAccounts": {
-    "message": "계정 관리",
-    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
-  },
   "manageConnectedAccounts": {
     "message": "연결된 계정 관리"
   },
@@ -6358,9 +6341,6 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "아직 알림을 받지 못했습니다."
-  },
-  "notificationsSettingsAccountsLoadError": {
-    "message": "계정 알림 설정을 불러올 수 없습니다. 나중에 다시 시도하세요."
   },
   "notificationsSettingsAgenticCliDescription": {
     "message": "에이전트 지갑을 위한 CLI 연결 요청, 승인, 세션 업데이트"
@@ -8756,14 +8736,6 @@
   "removeAccount": {
     "message": "계정 제거"
   },
-  "removeAccountConfirmDescription": {
-    "message": "언제든지 개인 키로 이 계정을 가져와서 복구할 수 있습니다.",
-    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
-  },
-  "removeAccountConfirmTitle": {
-    "message": "$1 제거하기",
-    "description": "Title of the account remove confirmation modal. $1 is the account name."
-  },
   "removeAccountModalBannerDescription": {
     "message": "이 계정을 제거하기 전에 비밀복구구문 또는 개인 키를 반드시 확보하세요.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -9216,10 +9188,6 @@
   },
   "searchAnAcccountOrContact": {
     "message": "계정 또는 연락처 검색"
-  },
-  "searchAnAccount": {
-    "message": "계정 검색",
-    "description": "Search input placeholder for the Perps destination account picker"
   },
   "searchForAnAssetToSend": {
     "message": "전송할 자산 검색"

@@ -105,10 +105,6 @@
   "accountIdenticon": {
     "message": "Εικονίδιο λογαριασμού"
   },
-  "accountImported": {
-    "message": "Ο λογαριασμός εισήχθη",
-    "description": "Success toast shown after a private key or JSON account is imported"
-  },
   "accountName": {
     "message": "Όνομα λογαριασμού"
   },
@@ -1932,15 +1928,6 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Ενεργοποίηση βασικών λειτουργιών"
-  },
-  "basicFunctionalityMigrationSocialModalBlogPostLink": {
-    "message": "ανάρτηση στο blog"
-  },
-  "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "Ενημερώσεις απορρήτου και προϊόντος"
-  },
-  "basicFunctionalityMigrationToastEnabled": {
-    "message": "ενεργοποιημένο"
   },
   "basicFunctionalityRequired_description": {
     "message": "Αυτή η λειτουργία δεν είναι διαθέσιμη όταν η βασική λειτουργικότητα είναι απενεργοποιημένη. Χρησιμοποιήστε τον παρακάτω διακόπτη για να την ενεργοποιήσετε."
@@ -5232,10 +5219,6 @@
   "manage": {
     "message": "Διαχείριση"
   },
-  "manageAccounts": {
-    "message": "Διαχείριση λογαριασμών",
-    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
-  },
   "manageConnectedAccounts": {
     "message": "Διαχείριση συνδεδεμένων λογαριασμών"
   },
@@ -6354,9 +6337,6 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "Δεν έχετε λάβει καμία ειδοποίηση ακόμα."
-  },
-  "notificationsSettingsAccountsLoadError": {
-    "message": "Δεν ήταν δυνατή η φόρτωση των ρυθμίσεων ειδοποιήσεων του λογαριασμού σας. Προσπαθήστε ξανά αργότερα."
   },
   "notificationsSettingsAgenticCliDescription": {
     "message": "Αιτήματα σύνδεσης CLI, εγκρίσεις και ενημερώσεις συνεδριών για το Agent wallet"
@@ -8748,14 +8728,6 @@
   "removeAccount": {
     "message": "Διαγραφή λογαριασμού"
   },
-  "removeAccountConfirmDescription": {
-    "message": "Μπορείτε να επαναφέρετε αυτόν τον λογαριασμό ανά πάσα στιγμή, εισάγοντάς τον ξανά με το ιδιωτικό κλειδί.",
-    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
-  },
-  "removeAccountConfirmTitle": {
-    "message": "Αφαίρεση του $1",
-    "description": "Title of the account remove confirmation modal. $1 is the account name."
-  },
   "removeAccountModalBannerDescription": {
     "message": "Βεβαιωθείτε ότι έχετε τη Μυστική Φράση Ανάκτησης ή το ιδιωτικό κλειδί για αυτόν τον λογαριασμό πριν τον αφαιρέσετε.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -9208,10 +9180,6 @@
   },
   "searchAnAcccountOrContact": {
     "message": "Αναζήτηση λογαριασμού ή επαφής"
-  },
-  "searchAnAccount": {
-    "message": "Αναζήτηση λογαριασμού",
-    "description": "Search input placeholder for the Perps destination account picker"
   },
   "searchForAnAssetToSend": {
     "message": "Αναζήτηση περιουσιακού στοιχείου για αποστολή"

@@ -105,10 +105,6 @@
   "accountIdenticon": {
     "message": "Identicon da conta"
   },
-  "accountImported": {
-    "message": "Conta importada",
-    "description": "Success toast shown after a private key or JSON account is imported"
-  },
   "accountName": {
     "message": "Nome da conta"
   },
@@ -1932,15 +1928,6 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Ativar funcionalidade básica"
-  },
-  "basicFunctionalityMigrationSocialModalBlogPostLink": {
-    "message": "postagem no blog"
-  },
-  "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "atualizações de Privacidade e produtos"
-  },
-  "basicFunctionalityMigrationToastEnabled": {
-    "message": "ativada"
   },
   "basicFunctionalityRequired_description": {
     "message": "Este recurso não está disponível enquanto as funcionalidades básicas estiverem desativadas. Use o botão abaixo para ativá-lo."
@@ -5231,10 +5218,6 @@
   },
   "manage": {
     "message": "Gerenciar"
-  },
-  "manageAccounts": {
-    "message": "Gerenciar contas",
-    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
   },
   "manageConnectedAccounts": {
     "message": "Gerenciar contas conectadas"
@@ -8745,14 +8728,6 @@
   "removeAccount": {
     "message": "Remover conta"
   },
-  "removeAccountConfirmDescription": {
-    "message": "Você pode restaurar esta conta a qualquer momento importando-a com a chave privada.",
-    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
-  },
-  "removeAccountConfirmTitle": {
-    "message": "Remover $1",
-    "description": "Title of the account remove confirmation modal. $1 is the account name."
-  },
   "removeAccountModalBannerDescription": {
     "message": "Certifique-se de ter a Frase de Recuperação Secreta ou a chave privada desta conta antes de removê-la.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
@@ -9205,10 +9180,6 @@
   },
   "searchAnAcccountOrContact": {
     "message": "Pesquise uma conta ou contato"
-  },
-  "searchAnAccount": {
-    "message": "Pesquisar uma conta",
-    "description": "Search input placeholder for the Perps destination account picker"
   },
   "searchForAnAssetToSend": {
     "message": "Pesquise um ativo para enviar"
