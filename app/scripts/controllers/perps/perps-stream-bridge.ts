@@ -280,9 +280,6 @@ export class PerpsStreamBridge {
       },
       perpsViewActive: (active: boolean) => {
         this.#viewActive = active;
-        if (!active && !this.#preloadId && !this.#walletInitialized) {
-          this.destroy();
-        }
       },
       perpsStartPreload: (id: string) => this.#startPreload(id),
       perpsStopPreload: (id: string) => {
