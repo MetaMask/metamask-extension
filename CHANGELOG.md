@@ -7,6 +7,121 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.48.0]
+
+### Added
+
+- Added Money Account withdrawals (#45999)
+- Added Money Account deposits from the Money home page and wallet home balance row, with balance refresh after confirmation (#45930)
+- Added a one-time notice on the home page when an account holds USDC on Arc (#45990)
+- Added a deeplink that opens Explore Search with a pre-filled query (#45991)
+- Added a transaction details page for Money Account activity (#46004)
+- Added a Complete buy screen after starting a purchase so users can finish checkout in the provider tab with their order details in view (#45981)
+- Added an expandable price chart and live price calculations to the Perps order page (#45985)
+- Added a prompt to fund Hyperliquid with MetaMask Pay when enabling trading on Hyperliquid (#45925)
+- Added security and trust indicators to the token list (#45955)
+- Added the option to fund Perps deposits with the Money Account (#45831)
+- Added a Top movers section to the Perps tab, with a Gainers/Losers toggle and a header link to the market list sorted by 24-hour price change (#45940)
+- Added a Watchlist filter to the Perps market list, and made the Perps tab Watchlist header open it (#45911)
+- Added a deeplink to the Privacy & Security settings for MetaMetrics and marketing data collection settings, including after wallet unlock (#45504)
+- Added the Money Account balance to the wallet home page (#45828)
+- Added Money Account APY and projected balance to Add funds, and available balance to Send. Withdraw percentage and Max now use the vault withdrawable balance. (#45543)
+
+### Changed
+
+- Redesigned the Perps tab header on wallet home to match the mobile layout, including a large total balance, available balance, persistent Withdraw and Add funds buttons, and unrealized P&L under Your positions (#45860)
+- Updated Money Account service support (#45803)
+- Updated wallet asset and account management dependencies (#46007)
+- Changed Added protection to start disabled for benign transactions while remaining enabled for warning and malicious transactions (#45962)
+- Migrated users with all toggles on or off to a consolidated toggle state (#45958)
+- Changed buy provider selection from a full page to a modal on the payment method screen (#45937)
+- Updated ramps payment method limits to show an “Up to” maximum instead of a min-max range (#45976)
+- Updated input-based confirmations to keep the entered source amount and show the amount received (#45753)
+- Updated the default Robinhood Bridge destination token to USDG (#45888)
+- Updated the support link for private keys (#45893)
+- Updated security alert copy for flagged addresses and approval spenders, and token security risk descriptions (#45513)
+- Updated swaps quote response handling (#44967)
+
+### Fixed
+
+- Fixed Swap opened from a token detail page to select a token with an available balance (#45606)
+- Fixed swap quote costs to match the displayed sorting order (#45984)
+- Fixed hardware wallet swap and send signing so a disconnected, locked, or timed-out device shows a reconnect prompt instead of a generic transaction failure (#45825)
+- Fixed Ramps provider selection and improved amount input alignment in the buy flow (#46009)
+- Fixed MM Pay confirmations showing irrelevant alerts and an incorrect Pay with balance (#45971)
+- Fixed token permit confirmations that could display misleading permission and amount details (#45941)
+- Fixed buying crypto from token pages for tokens whose catalog asset IDs differ in address casing, such as mUSD (#45980)
+- Fixed a bug that could cause high CPU usage when rendering badge overlays on avatars and icons (#45949)
+- Fixed the Money tab to display a filled icon when selected (#45952)
+- Fixed a false address poisoning warning on token approvals and other non-send confirmations (#45724)
+- Fixed inconsistent network badge sizing and borders in the Swaps asset picker (#45922)
+- Fixed an uninformative "Something went wrong" error when signing version 3 typed data with a Ledger device by explaining that Ledger supports only version 4 typed data signatures (#45824)
+- Fixed a bug that prevented placing a Perps limit order when the limit price would fill immediately at market (#45874)
+- Fixed SUN to USDT swaps routed through Rango and SunSwap displaying a zero SUN amount in transaction activity (#45294)
+- Fixed Money Account withdrawals not submitting on Monad (#45563)
+- Fixed Money Account deposits failing to submit or showing insufficient funds for amounts other than Max (#45555)
+- Fixed Refresh list for token lists, including non-EVM accounts (#45810)
+- Fixed a bug where a crypto purchase could stay stuck on Pending in Activity after the funds had already arrived (#45866)
+- Fixed hardware wallet confirmations showing incorrect recipients, spenders, and swap details (#45769)
+
+### Security
+
+- Added connection trust signals to the connect screen for dapps that connect through MetaMask Connect (#45817)
+- Added address security screening for the targets of batched transactions (#45210)
+
+## [13.47.1]
+
+### Fixed
+
+- Fixed non-deterministic production builds so the Firefox add-on review rebuild matches the published build (#46069)
+
+## [13.47.0]
+
+### Added
+
+- Added address trust-signal scanning for dapp requests made through the Multichain API (#45640)
+- Added Stellar account support behind a feature flag (#45692)
+- Added a warning banner for missing Stellar trustlines during cross-chain swaps (#45693)
+- Added support for Money Accounts (#45744)
+- Added an Activity list on Money Home for deposits, conversions, receives, and sends (#45761)
+- Added an accounts search bar to dapp connection and connected-account management pages (#45776)
+- Added dollar and percentage amount entry when partially closing a Perps position (#45700)
+- Added a warning banner for off-hours trading of RWA stock tokens, including the next regular market open time (#45231)
+- Added a full Activity page for Money Account with All, Deposits, and Sends filters (#45829)
+
+### Changed
+
+- Updated design system libraries, including checkbox colors (#45733)
+- Stopped enforced simulations from running for wallet-initiated transactions (#45698)
+- Centered legacy approval screens on wider viewports (#45779)
+- Updated subscription checkout and crypto approval support (#45715)
+- Updated the Permissions page to show an empty state after disconnecting all sites and a confirmation after disconnecting a site (#45697)
+- Automatically configured Monad for eligible Money Account users without changing their selected network (#45695)
+- Updated Money Account deposit and withdrawal support (#45748)
+- Added performance tracing for Swap and Bridge quote requests (#45667)
+- Updated DeFi protocol list token avatars to use the design system component (#45768)
+- Improved storage resilience by moving Storage Service data to IndexedDB on Chromium, with a fallback where unavailable (#44010)
+- Updated hardware wallet Swap and Bridge signing data handling (#45760)
+- Removed the colon from send activity subtitles (#45725)
+- Updated account data parsing (#45666)
+
+### Fixed
+
+- Stopped showing added protection on networks that do not support address screening (#45732)
+- Stopped showing an account balance of zero before the balance has been fetched (#45675)
+- Restored DeFi referral images for Hyperliquid and AsterDEX (#45755)
+- Fixed passkey setup guidance when a device does not support the required passkey capability (#45757, #45802)
+- Fixed an issue that could make vault recovery repeat after MetaMask restarted (#45762)
+- Fixed provider quote errors and amount-limit handling in the Buy flow (#45786)
+- Fixed the Buy flow for supported tokens opened from the Token Details page (#45778)
+- Fixed small USDC-to-SOL swaps being incorrectly displayed as sends in Solana activity (#44928)
+- Fixed an issue that allowed transactions to be submitted when the native balance could not cover the maximum network fee (#45701)
+- Fixed an issue where the low-confidence "Unconfirmed impersonator" security signal was shown as a warning on the Token Details page (#45661)
+- Restored the DeFi and NFTs tabs with tailored empty states for non-EVM networks (#45717)
+- Fixed a bug that required hardware wallet users to click Cancel twice to dismiss a signature request after it was already rejected or completed on the device (#45740)
+- Fixed a crash and unresponsive back arrow when reopening the extension on a Perps screen (#45734, #45756)
+- Fixed "Earn on your crypto" not appearing on funded Money Accounts (#45699)
+
 ## [13.46.1]
 
 ### Fixed
@@ -3079,7 +3194,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.46.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.48.0...HEAD
+[13.48.0]: https://github.com/MetaMask/metamask-extension/compare/v13.47.1...v13.48.0
+[13.47.1]: https://github.com/MetaMask/metamask-extension/compare/v13.47.0...v13.47.1
+[13.47.0]: https://github.com/MetaMask/metamask-extension/compare/v13.46.1...v13.47.0
 [13.46.1]: https://github.com/MetaMask/metamask-extension/compare/v13.46.0...v13.46.1
 [13.46.0]: https://github.com/MetaMask/metamask-extension/compare/v13.45.1...v13.46.0
 [13.45.1]: https://github.com/MetaMask/metamask-extension/compare/v13.45.0...v13.45.1
