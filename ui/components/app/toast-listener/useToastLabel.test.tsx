@@ -2,13 +2,6 @@ import { renderHook } from '@testing-library/react';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { useToastLabel } from './useToastLabel';
 
-const mockUseMoneyAccountToastLabel = jest.fn();
-
-jest.mock('./useMoneyAccountToastLabel', () => ({
-  useMoneyAccountToastLabel: (...args: unknown[]) =>
-    mockUseMoneyAccountToastLabel(...args),
-}));
-
 const mockT = jest.fn((key: string, args?: string[]) =>
   args ? `${key}:${args.join(',')}` : key,
 );
@@ -69,7 +62,6 @@ function addPerpsWithdrawItem(
 describe('useToastLabel', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseMoneyAccountToastLabel.mockReturnValue(undefined);
     mockItems.clear();
   });
 
@@ -194,24 +186,6 @@ describe('useToastLabel', () => {
     expect(result.current).toStrictEqual({
       title: 'perpsWithdrawPostQuoteToastErrorTitle',
       description: 'perpsWithdrawPostQuoteToastErrorDescription',
-    });
-  });
-
-  it('prefers the money account label when one is available', () => {
-    mockUseMoneyAccountToastLabel.mockReturnValue({
-      title: 'money-title',
-      description: 'money-description',
-    });
-
-    const { result } = renderHook(() => useToastLabel('success', 'tx-1'));
-
-    expect(mockUseMoneyAccountToastLabel).toHaveBeenCalledWith(
-      'success',
-      'tx-1',
-    );
-    expect(result.current).toStrictEqual({
-      title: 'money-title',
-      description: 'money-description',
     });
   });
 });

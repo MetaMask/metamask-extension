@@ -2,29 +2,29 @@ import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { selectTransactionById } from '../../../selectors/transactionController';
-import { getInternalAccountByAddress } from '../../../selectors/accounts';
-import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
-import type { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
-import { getMoneyAccountFiatAmount } from '../../../selectors/activity/enrich-local-activity';
-import type { MetaMaskReduxState } from '../../../store/store';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { selectTransactionById } from '../../../../selectors/transactionController';
+import { getInternalAccountByAddress } from '../../../../selectors/accounts';
+import { getAccountGroupsByAddress } from '../../../../selectors/multichain-accounts/account-tree';
+import type { MultichainAccountsState } from '../../../../selectors/multichain-accounts/account-tree.types';
+import { getMoneyAccountFiatAmount } from '../../../../selectors/activity/enrich-local-activity';
+import type { MetaMaskReduxState } from '../../../../store/store';
 import {
   clearMoneyAccountDepositIntent,
   getMoneyAccountDepositIntent,
   type MoneyAccountDepositIntent,
-} from '../../../helpers/money/deposit-intent';
+} from '../../../../helpers/money/deposit-intent';
 import {
   isMoneyDepositTx,
   isMoneyWithdrawTx,
   resolveMoneyDepositIntent,
-} from '../../../helpers/money/money-transaction-guards';
-import { moneyFormatUsd } from '../../../helpers/money/format';
-import { getMoneyAccountWithdrawTransferDetails } from '../../../pages/confirmations/utils/money-account-withdraw';
-import { shortenAddress } from '../../../helpers/utils/util';
-import type { ToastStatus } from './shared';
+} from '../../../../helpers/money/money-transaction-guards';
+import { moneyFormatUsd } from '../../../../helpers/money/format';
+import { getMoneyAccountWithdrawTransferDetails } from '../../../../pages/confirmations/utils/money-account-withdraw';
+import { shortenAddress } from '../../../../helpers/utils/util';
+import type { ToastStatus } from '../../toast-listener/shared';
 
-type ToastLabel = { title: string; description?: string };
+export type ToastLabel = { title: string; description?: string };
 type TranslateFn = ReturnType<typeof useI18nContext>;
 
 const NO_ACCOUNT_GROUPS: ReturnType<typeof getAccountGroupsByAddress> = [];

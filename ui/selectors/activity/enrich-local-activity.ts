@@ -147,9 +147,7 @@ function toMusdFiat(
 }
 
 /**
- * Resolves the raw mUSD amount of a money-account batch. Withdrawal amounts
- * come from nested transfer calldata; undefined while the batch is still a
- * placeholder (calldata is populated when committed).
+ * Get the raw mUSD amount of a money-account batch txn.
  *
  * @param transaction - The money-account batch transaction.
  * @param isDeposit - Whether the batch is a deposit rather than a withdrawal.
@@ -165,8 +163,7 @@ function getMoneyAccountAmountRaw(
 }
 
 /**
- * Resolves the fiat amount of a money-account batch for display, e.g. in
- * toasts that cannot rely on the transaction appearing in the activity list.
+ * Get the fiat amount of a money-account batch for display
  *
  * @param transaction - The money-account batch transaction.
  * @param isDeposit - Whether the batch is a deposit rather than a withdrawal.

@@ -351,49 +351,37 @@ describe('useTransactionEventToasts', () => {
       );
     });
 
-    it('shows a pending toast for money account batches on approved', () => {
+    it('does not toast money account batches, which have their own listener', () => {
       const { handlers } = mountHook();
 
       handlers[transactionControllerEvent]({
         transactionMeta: createTransactionMeta({
-          id: 'money-deposit-approved',
-          status: TransactionStatus.approved,
+          id: 'money-deposit',
+          status: TransactionStatus.submitted,
           type: TransactionType.batch,
           nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
-        }),
-      });
-
-      expect(mockShowPendingToast).toHaveBeenCalledWith(
-        'tx-money-deposit-approved',
-        expect.objectContaining({ transactionId: 'money-deposit-approved' }),
-      );
-    });
-
-    it('does not toast transactions required by another transaction', () => {
-      mockGetState.mockReturnValue({
-        metamask: {
-          transactions: [
-            createTransactionMeta({
-              id: 'parent',
-              status: TransactionStatus.approved,
-              requiredTransactionIds: ['helper'],
-            }),
-          ],
-        },
-      } as never);
-      const { handlers } = mountHook();
-
-      handlers[transactionControllerEvent]({
-        transactionMeta: createTransactionMeta({
-          id: 'helper',
-          status: TransactionStatus.submitted,
         }),
       });
 
       expect(mockShowPendingToast).not.toHaveBeenCalled();
     });
 
-    it('does not toast relay deposits that fund another transaction', () => {
+    it('does not toast child transactions of a money account batch', () => {
+      mockGetState.mockReturnValue({
+        metamask: {
+          transactions: [
+            createTransactionMeta({
+              id: 'money-deposit',
+              status: TransactionStatus.unapproved,
+              type: TransactionType.batch,
+              nestedTransactions: [
+                { type: TransactionType.moneyAccountDeposit },
+              ],
+              requiredTransactionIds: ['relay-submitted'],
+            }),
+          ],
+        },
+      });
       const { handlers } = mountHook();
 
       handlers[transactionControllerEvent]({
@@ -405,6 +393,34 @@ describe('useTransactionEventToasts', () => {
       });
 
       expect(mockShowPendingToast).not.toHaveBeenCalled();
+    });
+
+    it('still toasts relay deposits that fund other transactions', () => {
+      mockGetState.mockReturnValue({
+        metamask: {
+          transactions: [
+            createTransactionMeta({
+              id: 'other-parent',
+              status: TransactionStatus.unapproved,
+              requiredTransactionIds: ['relay-submitted'],
+            }),
+          ],
+        },
+      });
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'relay-submitted',
+          status: TransactionStatus.submitted,
+          type: TransactionType.relayDeposit,
+        }),
+      });
+
+      expect(mockShowPendingToast).toHaveBeenCalledWith(
+        'tx-relay-submitted',
+        expect.any(Object),
+      );
     });
   });
 
