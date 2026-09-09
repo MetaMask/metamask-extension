@@ -8,6 +8,10 @@ import type { MoneyActivityTransactionMeta } from '../constants/mock-activity-da
 import MOCK_MONEY_TRANSACTIONS from '../constants/mock-activity-data';
 import { MoneyActivityList, MAX_PREVIEW_ITEMS } from './money-activity-list';
 
+jest.mock('react-redux', () => ({
+  useSelector: (selector: (state?: unknown) => unknown) => selector({}),
+}));
+
 const previewItems = MOCK_MONEY_TRANSACTIONS.slice(0, MAX_PREVIEW_ITEMS).map(
   onchainItem,
 );

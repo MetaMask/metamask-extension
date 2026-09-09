@@ -3,6 +3,7 @@ import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { ARC_ERC20_USDC_BRIDGE_ASSET } from '../assets/enablement/arc';
 import CoinButtons from './coin-buttons';
 
 jest.mock('../../../hooks/useAnalytics', () => {
@@ -140,6 +141,20 @@ describe('CoinButtons – asset page swap token', () => {
         symbol: 'ETH',
         chainId: 'eip155:1',
       }),
+    });
+  });
+
+  it('uses the Arc ERC20 USDC wrapper for the asset page native swap button', () => {
+    renderAssetPageCoinButtons('0x13b2');
+
+    expect(useBalanceAwareSwapDefaults).toHaveBeenCalledWith({
+      currentToken: {
+        symbol: ARC_ERC20_USDC_BRIDGE_ASSET.symbol,
+        address: ARC_ERC20_USDC_BRIDGE_ASSET.address,
+        chainId: 'eip155:5042',
+        decimals: ARC_ERC20_USDC_BRIDGE_ASSET.decimals,
+        name: ARC_ERC20_USDC_BRIDGE_ASSET.name,
+      },
     });
   });
 

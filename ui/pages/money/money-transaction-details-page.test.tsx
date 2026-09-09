@@ -15,6 +15,7 @@ import {
 import { getPrivacyMode } from '../../selectors/selectors';
 import { selectMoneyActivityDetailsEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getInternalAccountByAddress } from '../../selectors/accounts';
+import { selectTransactionById } from '../../selectors/transactionController';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import MOCK_MONEY_TRANSACTIONS from './constants/mock-activity-data';
 import { onchainItem } from './types/money-activity';
@@ -33,6 +34,7 @@ const mockSelectMoneyActivityDetailsEnabled = jest.mocked(
 const mockGetInternalAccountByAddress = jest.mocked(
   getInternalAccountByAddress,
 );
+const mockSelectTransactionById = jest.mocked(selectTransactionById);
 const mockUseCopyToClipboard = jest.mocked(useCopyToClipboard);
 
 jest.mock('react-redux', () => ({
@@ -52,6 +54,11 @@ jest.mock('../../selectors/money/money-account-feature-flags', () => ({
 jest.mock('../../selectors/accounts', () => ({
   ...jest.requireActual('../../selectors/accounts'),
   getInternalAccountByAddress: jest.fn(),
+}));
+
+jest.mock('../../selectors/transactionController', () => ({
+  ...jest.requireActual('../../selectors/transactionController'),
+  selectTransactionById: jest.fn(),
 }));
 
 jest.mock('../../hooks/useCopyToClipboard', () => ({
@@ -98,6 +105,7 @@ describe('MoneyTransactionDetailsPage', () => {
       address: deposited.tx.txParams.from,
       metadata: { name: 'Defi account' },
     } as ReturnType<typeof getInternalAccountByAddress>);
+    mockSelectTransactionById.mockReturnValue(undefined);
     mockUseCopyToClipboard.mockReturnValue([
       false,
       mockCopyToClipboard,
@@ -308,5 +316,57 @@ describe('MoneyTransactionDetailsPage', () => {
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: EXPLORER_TX_URL,
     });
+  });
+
+  it('prefers the activity list item over the raw controller transaction', () => {
+    const promoted = onchainItem({
+      ...deposited.tx,
+      id: 'promoted-child',
+      type: TransactionType.moneyAccountDeposit,
+    } as TransactionMeta);
+    const rawChild = {
+      ...promoted.tx,
+      type: TransactionType.swap,
+      metamaskPay: undefined,
+    } as TransactionMeta;
+    mockUseParams.mockReturnValue({ transactionId: promoted.id });
+    mockUseMoneyActivityItems.mockReturnValue({ items: [promoted] });
+    mockSelectTransactionById.mockReturnValue(rawChild);
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-title'),
+    ).toHaveTextContent(messages.moneyActivityDeposited.message);
+  });
+
+  it('redirects when the controller transaction is not Money activity and is absent from the list', () => {
+    mockUseMoneyActivityItems.mockReturnValue({ items: [] });
+    mockSelectTransactionById.mockReturnValue({
+      ...deposited.tx,
+      type: TransactionType.swap,
+      metamaskPay: undefined,
+    } as TransactionMeta);
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(screen.getByTestId('navigate')).toHaveAttribute(
+      'data-to',
+      MONEY_ACTIVITY_ROUTE,
+    );
+  });
+
+  it('resolves a live transaction from TransactionController instead of the paged feed', () => {
+    mockUseMoneyActivityItems.mockReturnValue({ items: [] });
+    mockSelectTransactionById.mockReturnValue(deposited.tx);
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-page'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-transaction-details-title'),
+    ).toHaveTextContent(messages.moneyActivityDeposited.message);
   });
 });
