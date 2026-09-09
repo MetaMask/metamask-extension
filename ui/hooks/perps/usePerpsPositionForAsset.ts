@@ -1,12 +1,18 @@
 import { useMemo } from 'react';
 import type { Position } from '@metamask/perps-controller';
 import { getDisplaySymbol } from '../../components/app/perps/utils';
-import { usePerpsLivePositions } from './stream';
+import { usePerpsLivePositions, usePerpsStreamManager } from './stream';
 
 export type UsePerpsPositionForAssetReturn = {
   /** The account's open position on this market, when one exists */
   position: Position | undefined;
-  /** True until the positions stream has delivered its first payload */
+  /**
+   * True until the positions stream has delivered its first payload. False
+   * when stream init has already failed: `usePerpsChannel` otherwise keeps
+   * `isInitialLoading` true for the rest of the visit (`streamManager` stays
+   * null). Healthy lookups stay loading until that first payload so callers
+   * can hold the action row instead of flashing Long / Short without the card.
+   */
   isLoading: boolean;
 };
 
@@ -26,6 +32,7 @@ export function usePerpsPositionForAsset(
   marketSymbol: string,
 ): UsePerpsPositionForAssetReturn {
   const { positions, isInitialLoading } = usePerpsLivePositions();
+  const { error: streamError } = usePerpsStreamManager();
 
   const position = useMemo(() => {
     if (!marketSymbol) {
@@ -49,6 +56,6 @@ export function usePerpsPositionForAsset(
 
   return {
     position,
-    isLoading: Boolean(marketSymbol) && isInitialLoading,
+    isLoading: Boolean(marketSymbol) && isInitialLoading && !streamError,
   };
 }

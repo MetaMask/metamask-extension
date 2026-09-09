@@ -677,6 +677,27 @@ describe('AssetPage', () => {
       expect(queryByTestId('perps-trade-buttons')).not.toBeInTheDocument();
     });
 
+    it('renders the Perps row when position loading settled with none', () => {
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: { name: 'ETH' },
+        isLoading: false,
+      });
+      mockUsePerpsPositionForAsset.mockReturnValue({
+        position: undefined,
+        isLoading: false,
+      });
+
+      const { queryByTestId } = renderNative();
+
+      expect(
+        queryByTestId('asset-perps-actions-skeleton'),
+      ).not.toBeInTheDocument();
+      expect(queryByTestId('perps-trade-buttons')).toHaveAttribute(
+        'data-market',
+        'ETH',
+      );
+    });
+
     it('renders the Perps row and the open position section once the lookups resolve', () => {
       mockUseAssetPerpsMarket.mockReturnValue({
         market: { name: 'ETH' },

@@ -1,13 +1,15 @@
 import { renderHook } from '@testing-library/react';
 import type { Position } from '@metamask/perps-controller';
-import { usePerpsLivePositions } from './stream';
+import { usePerpsLivePositions, usePerpsStreamManager } from './stream';
 import { usePerpsPositionForAsset } from './usePerpsPositionForAsset';
 
 jest.mock('./stream', () => ({
   usePerpsLivePositions: jest.fn(),
+  usePerpsStreamManager: jest.fn(),
 }));
 
 const mockUsePerpsLivePositions = jest.mocked(usePerpsLivePositions);
+const mockUsePerpsStreamManager = jest.mocked(usePerpsStreamManager);
 
 const ETH_POSITION = { symbol: 'ETH' } as Position;
 const BTC_POSITION = { symbol: 'BTC' } as Position;
@@ -16,8 +18,20 @@ function mockPositions(positions: Position[], isInitialLoading = false) {
   mockUsePerpsLivePositions.mockReturnValue({ positions, isInitialLoading });
 }
 
+function mockStreamError(error: Error | null) {
+  mockUsePerpsStreamManager.mockReturnValue({
+    streamManager: null,
+    isInitializing: false,
+    error,
+    selectedAddress: '0x1',
+  });
+}
+
 describe('usePerpsPositionForAsset', () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockStreamError(null);
+  });
 
   it('returns the open position matching the market symbol', () => {
     mockPositions([BTC_POSITION, ETH_POSITION]);
@@ -86,6 +100,16 @@ describe('usePerpsPositionForAsset', () => {
     mockPositions([], true);
 
     const { result } = renderHook(() => usePerpsPositionForAsset(''));
+
+    expect(result.current.position).toBeUndefined();
+    expect(result.current.isLoading).toBe(false);
+  });
+
+  it('stops reporting loading when stream init has already failed', () => {
+    mockPositions([], true);
+    mockStreamError(new Error('rpc failed'));
+
+    const { result } = renderHook(() => usePerpsPositionForAsset('ETH'));
 
     expect(result.current.position).toBeUndefined();
     expect(result.current.isLoading).toBe(false);

@@ -423,6 +423,9 @@ const AssetPage = ({
   const { isLoading: isPerpsPositionLoading } = usePerpsPositionForAsset(
     perpsMarket?.name ?? '',
   );
+  // Hold the row until market *and* position lookups settle (no Buy/Swap →
+  // Long/Short flash). Stream-init failure is a settled "no position" state,
+  // so Send / Buy / Swap are not gated on an unbounded wait.
   const isPerpsActionsLoading =
     isPerpsMarketLoading || Boolean(perpsMarket && isPerpsPositionLoading);
   const isMusdAssetPage = useMemo(
