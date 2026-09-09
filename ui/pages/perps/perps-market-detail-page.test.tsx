@@ -851,6 +851,110 @@ describe('PerpsMarketDetailPage', () => {
       );
     });
 
+    it('crossfades the header subtitle to compact price when the large price row scrolls away', async () => {
+      const observers: {
+        callback: IntersectionObserverCallback;
+        thresholds: readonly number[];
+      }[] = [];
+      const OriginalIntersectionObserver = window.IntersectionObserver;
+
+      window.IntersectionObserver = class MockIntersectionObserver {
+        callback: IntersectionObserverCallback;
+
+        thresholds: readonly number[];
+
+        constructor(
+          callback: IntersectionObserverCallback,
+          options?: IntersectionObserverInit,
+        ) {
+          this.callback = callback;
+          const threshold = options?.threshold ?? 0;
+          this.thresholds = Array.isArray(threshold) ? threshold : [threshold];
+          observers.push(this);
+        }
+
+        observe() {
+          return undefined;
+        }
+
+        unobserve() {
+          return undefined;
+        }
+
+        disconnect() {
+          return undefined;
+        }
+      } as typeof IntersectionObserver;
+
+      try {
+        const store = mockStore(createMockState(true));
+        const { getByTestId } = await renderPage(store);
+
+        expect(getByTestId('perps-market-detail-pair-layer')).toHaveAttribute(
+          'aria-hidden',
+          'false',
+        );
+        expect(
+          getByTestId('perps-market-detail-header-price-layer'),
+        ).toHaveAttribute('aria-hidden', 'true');
+
+        expect(observers.length).toBeGreaterThan(0);
+
+        const observer = observers[observers.length - 1];
+        const summary = getByTestId('perps-market-detail-summary');
+
+        act(() => {
+          observer.callback(
+            [
+              {
+                isIntersecting: false,
+                intersectionRatio: 0,
+                target: summary,
+              } as IntersectionObserverEntry,
+            ],
+            observer as unknown as IntersectionObserver,
+          );
+        });
+
+        expect(getByTestId('perps-market-detail-pair-layer')).toHaveAttribute(
+          'aria-hidden',
+          'true',
+        );
+        expect(
+          getByTestId('perps-market-detail-header-price-layer'),
+        ).toHaveAttribute('aria-hidden', 'false');
+        expect(getByTestId('perps-market-detail-header-price')).toBeVisible();
+        expect(getByTestId('perps-market-detail-header-change')).toBeVisible();
+
+        act(() => {
+          observer.callback(
+            [
+              {
+                isIntersecting: true,
+                intersectionRatio: 1,
+                target: summary,
+              } as IntersectionObserverEntry,
+            ],
+            observer as unknown as IntersectionObserver,
+          );
+        });
+
+        expect(getByTestId('perps-market-detail-pair-layer')).toHaveAttribute(
+          'aria-hidden',
+          'false',
+        );
+        expect(
+          getByTestId('perps-market-detail-header-price-layer'),
+        ).toHaveAttribute('aria-hidden', 'true');
+      } finally {
+        if (typeof OriginalIntersectionObserver === 'function') {
+          window.IntersectionObserver = OriginalIntersectionObserver;
+        } else {
+          Reflect.deleteProperty(window, 'IntersectionObserver');
+        }
+      }
+    });
+
     it('displays the market max leverage pill in the header', async () => {
       const store = mockStore(createMockState(true));
 

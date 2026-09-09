@@ -2514,13 +2514,13 @@ const PerpsOrderEntryPage = () => {
         id="perps-order-entry-chart"
         label={t('perpsChart')}
       >
-        <Box paddingLeft={4} paddingRight={4} paddingTop={2}>
-          {chartContent}
-        </Box>
         <PerpsCandlePeriodSelector
           selectedPeriod={selectedPeriod}
           onPeriodChange={handlePeriodChange}
         />
+        <Box paddingLeft={4} paddingRight={4} paddingBottom={2}>
+          {chartContent}
+        </Box>
       </PerpsExpandableChartPanel>
 
       {/* Body: form content + sliding order book, ordered by

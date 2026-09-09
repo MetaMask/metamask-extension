@@ -61,7 +61,7 @@ export function useIntersectionObserver({
   thresholdRef.current = threshold;
 
   useEffect(() => {
-    if (!ref || !('IntersectionObserver' in globalThis)) {
+    if (!ref || typeof IntersectionObserver !== 'function') {
       return undefined;
     }
 
