@@ -514,11 +514,32 @@ class TokensTab extends HomePage {
    */
   async checkTokenItemNumber(expectedNumber: number = 1): Promise<void> {
     console.log(`Waiting for ${expectedNumber} token items to be displayed`);
+    await this.driver.waitUntil(
+      async () => {
+        const tokenItemsNumber = await this.getNumberOfAssets();
+        if (tokenItemsNumber === expectedNumber) {
+          return true;
+        }
+        if (tokenItemsNumber > expectedNumber) {
+          return false;
+        }
+        const lowValueTogglePresent =
+          await this.driver.isElementPresentAndVisible(
+            this.lowValueAssetsToggle,
+            1000,
+          );
+        return lowValueTogglePresent;
+      },
+      { timeout: 10000, interval: 500 },
+    );
     await this.expandLowValueAssetsIfPresent();
-    await this.driver.wait(async () => {
-      const tokenItemsNumber = await this.getNumberOfAssets();
-      return tokenItemsNumber === expectedNumber;
-    }, 10000);
+    await this.driver.waitUntil(
+      async () => {
+        const tokenItemsNumber = await this.getNumberOfAssets();
+        return tokenItemsNumber === expectedNumber;
+      },
+      { timeout: 10000, interval: 500 },
+    );
     console.log(
       `Expected number of token items ${expectedNumber} is displayed.`,
     );
@@ -735,17 +756,25 @@ class TokensTab extends HomePage {
   }
 
   private async expandLowValueAssetsIfPresent(): Promise<void> {
-    // If the low value assets section is already expanded, no action is required.
     try {
       await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
         timeout: 1000,
       });
       return;
     } catch {
-      // Not expanded yet (or low value section not present), attempt to expand it below.
+      // Not expanded yet (or section not present)
     }
 
-    await this.driver.clickElementSafe(this.lowValueAssetsToggle);
+    const togglePresent = await this.driver.isElementPresentAndVisible(
+      this.lowValueAssetsToggle,
+      1000,
+    );
+    if (!togglePresent) {
+      return;
+    }
+
+    await this.driver.clickElement(this.lowValueAssetsToggle);
+    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded);
   }
 
   private async findTokenRowByName(tokenName: string): Promise<WebElement> {
@@ -853,6 +882,10 @@ class TokensTab extends HomePage {
       this.tokenManagementCustomTokenSuccessToast,
     );
     await this.returnFromTokenManagementToHome();
+    await this.driver.assertElementNotPresent(
+      this.tokenManagementCustomTokenSuccessToast,
+      { findElementGuard: this.tokenListItem },
+    );
   }
 
   /**
