@@ -25,6 +25,7 @@ import {
   selectBlockedPayTokens,
   type BlockedPayTokenEntry,
 } from '../../../pages/confirmations/selectors/feature-flags';
+import { HYPERLIQUID_DEPOSIT_PROMPT } from '../../../../shared/constants/hyperliquid-deposit-prompt';
 import { HyperliquidDepositPrompt } from './hyperliquid-deposit-prompt';
 
 jest.mock('../../../pages/confirmations/hooks/send/useSendTokens');
@@ -259,7 +260,7 @@ describe('HyperliquidDepositPrompt', () => {
     expect(mockNavigate).toHaveBeenCalledWith(
       {
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/transaction-id-mock`,
-        search: `loader=customAmount&goBackTo=${encodeURIComponent(`${PERPS_HOME_PAGE_ROUTE}?source=hyperliquid_deposit_prompt`)}`,
+        search: `loader=customAmount&goBackTo=${encodeURIComponent(`${PERPS_HOME_PAGE_ROUTE}?source=${HYPERLIQUID_DEPOSIT_PROMPT}`)}`,
       },
       { replace: true },
     );
@@ -320,7 +321,7 @@ describe('HyperliquidDepositPrompt', () => {
       expect(mockNavigate).toHaveBeenCalledWith(
         {
           pathname: `${CONFIRM_TRANSACTION_ROUTE}/transaction-id-mock`,
-          search: `loader=customAmount&goBackTo=${encodeURIComponent(`${PERPS_HOME_TAB_ROUTE}&source=hyperliquid_deposit_prompt`)}`,
+          search: `loader=customAmount&goBackTo=${encodeURIComponent(`${PERPS_HOME_TAB_ROUTE}&source=${HYPERLIQUID_DEPOSIT_PROMPT}`)}`,
         },
         { replace: true },
       );

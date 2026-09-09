@@ -52,6 +52,7 @@ import { usePerpsHomeRoute } from '../../../hooks/perps/usePerpsHomeRoute';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { usePerpsDepositConfirmation } from '../perps/hooks/usePerpsDepositConfirmation';
 import { PERPS_EVENT_VALUE } from '../../../../shared/constants/perps-events';
+import { HYPERLIQUID_DEPOSIT_PROMPT } from '../../../../shared/constants/hyperliquid-deposit-prompt';
 import type {
   HyperliquidDepositPromptProps,
   HyperliquidDepositPromptAction,
@@ -282,7 +283,7 @@ export const HyperliquidDepositPrompt: React.FC<
     upsertTransactionUIMetricsFragment(transactionId, {
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        mm_pay_entry_point: 'hyperliquid_deposit_prompt',
+        mm_pay_entry_point: HYPERLIQUID_DEPOSIT_PROMPT,
       },
     });
 
