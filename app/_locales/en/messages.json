@@ -8,7 +8,7 @@
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
   "QRHardwarePubkeyAccountOutOfRange": {
-    "message": "No more accounts. If you would like to access another account unlisted below, please reconnect your hardware wallet and select it."
+    "message": "No more accounts. To access another account unlisted below, reconnect your hardware wallet and select it."
   },
   "QRHardwareScanInstructions": {
     "message": "Place the QR code in front of your camera. The screen is blurred, but it will not affect the reading."
@@ -1317,7 +1317,7 @@
     "message": "This sync session expired. Start again to generate a new QR code."
   },
   "add_device_error_generic": {
-    "message": "Something went wrong while syncing with your phone. Please try again."
+    "message": "Something went wrong while syncing with your phone. Try again."
   },
   "add_device_error_invalid_code": {
     "message": "The verification code was incorrect. Start again to try syncing your phone."
@@ -1326,7 +1326,7 @@
     "message": "The sync was cancelled on your phone. Start again to try syncing."
   },
   "add_device_error_sync_failed": {
-    "message": "We couldn't finish syncing your accounts to your phone. Please try again."
+    "message": "We couldn't finish syncing your accounts to your phone. Try again."
   },
   "add_device_error_title": {
     "message": "Sync couldn't be completed"
@@ -2524,7 +2524,7 @@
     "message": "Select a destination account"
   },
   "bridgeSelectDifferentQuote": {
-    "message": "Please select a different quote."
+    "message": "Select a different quote."
   },
   "bridgeSelectNetwork": {
     "message": "Select network"
@@ -3563,7 +3563,7 @@
     "description": "$1 will have text saying Privacy Policy "
   },
   "deleteMetaMetricsDataErrorDesc": {
-    "message": "This request can't be completed right now due to an analytics system server issue, please try again later."
+    "message": "This request can't be completed right now due to an analytics system server issue. Try again later."
   },
   "deleteMetaMetricsDataErrorTitle": {
     "message": "We are unable to delete this data right now"
@@ -3651,7 +3651,7 @@
     "message": "This will disconnect all your accounts from all dapps. You'll need to reconnect to use them again."
   },
   "disconnectAllSitesError": {
-    "message": "Some dapps couldn't be disconnected. Please try again."
+    "message": "Some dapps couldn't be disconnected. Try again."
   },
   "disconnectAllSitesQuestion": {
     "message": "Disconnect all?"
@@ -3961,7 +3961,7 @@
     "message": "For security, enter the code shown in the MetaMask app on your device."
   },
   "enter_verification_code_error": {
-    "message": "Incorrect code. Please try again."
+    "message": "Incorrect code. Try again."
   },
   "enter_verification_code_expired": {
     "message": "Verification code expired"
@@ -3987,7 +3987,7 @@
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
   "errorGettingSafeChainList": {
-    "message": "Error while getting safe chain list, please continue with caution."
+    "message": "Error while getting safe chain list. Continue with caution."
   },
   "errorLegalTextFirstInfo": {
     "message": "Technical diagnostic information."
@@ -4159,10 +4159,10 @@
     "message": "Click to upload or drag and drop"
   },
   "fileUploaderInvalidFileTypeError": {
-    "message": "Invalid file type. Please upload a supported file format."
+    "message": "Invalid file type. Upload a supported file format."
   },
   "fileUploaderMaxFileSizeError": {
-    "message": "File size exceeds $1MB. Please upload a smaller file.",
+    "message": "File size exceeds $1MB. Upload a smaller file.",
     "description": "$1 is the maximum file size in MB"
   },
   "flaskWelcomeUninstall": {
@@ -4193,7 +4193,7 @@
     "message": "Token amount must be an integer"
   },
   "forbiddenIpfsGateway": {
-    "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
+    "message": "Forbidden IPFS Gateway: Specify a CID gateway"
   },
   "forgetDevice": {
     "message": "Forget this device"
@@ -4431,7 +4431,7 @@
     "message": "General"
   },
   "generalCameraError": {
-    "message": "We couldn't access your camera. Please give it another try."
+    "message": "We couldn't access your camera. Give it another try."
   },
   "generalCameraErrorTitle": {
     "message": "Something went wrong...."
@@ -4628,7 +4628,7 @@
     "message": "Detecting device..."
   },
   "hardwareWalletRepairDeviceNotDetected": {
-    "message": "Device not detected. Please check the previous steps and try again."
+    "message": "Device not detected. Check the previous steps and try again."
   },
   "hardwareWalletRepairLink": {
     "message": "Reconnect from the beginning"
@@ -4878,7 +4878,7 @@
     "message": "Import Secret Recovery Phrase"
   },
   "importTokensError": {
-    "message": "We could not import the tokens. Please try again later."
+    "message": "We could not import the tokens. Try again later."
   },
   "importWalletSuccess": {
     "message": "Wallet $1 imported",
@@ -5133,7 +5133,7 @@
     "message": "Be sure your Ledger is plugged in and to select the Ethereum app."
   },
   "ledgerConnectionStatusAppClosedDescription": {
-    "message": "Please open it on your Ledger device to continue"
+    "message": "Open it on your Ledger device to continue"
   },
   "ledgerConnectionStatusAppClosedTitle": {
     "message": "Ethereum app is closed"
@@ -5142,7 +5142,7 @@
     "message": "Ledger device found"
   },
   "ledgerConnectionStatusDeviceLockedDescription": {
-    "message": "Please unlock your Ledger device to continue"
+    "message": "Unlock your Ledger device to continue"
   },
   "ledgerConnectionStatusDeviceLockedTitle": {
     "message": "Ledger is locked"
@@ -5163,7 +5163,7 @@
     "message": "Device not found"
   },
   "ledgerConnectionStatusDeviceUnresponsiveDescription": {
-    "message": "Please disconnect and reconnect your device"
+    "message": "Disconnect and reconnect your device"
   },
   "ledgerConnectionStatusDeviceUnresponsiveTitle": {
     "message": "Ledger is unresponsive"
@@ -5181,7 +5181,7 @@
     "message": "Looking for your device"
   },
   "ledgerDeviceOpenFailureMessage": {
-    "message": "The Ledger device failed to open. Your Ledger might be connected to other software. Please close Ledger Live or other applications connected to your Ledger device, and try to connect again."
+    "message": "The Ledger device failed to open. Your Ledger might be connected to other software. Close Ledger Live or other applications connected to your Ledger device, and try to connect again."
   },
   "ledgerErrorConnectionIssue": {
     "message": "Reconnect your ledger, open the ETH app and try again."
@@ -5214,13 +5214,13 @@
     "message": "Firefox Not Supported"
   },
   "ledgerLocked": {
-    "message": "Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened."
+    "message": "Cannot connect to Ledger device. Make sure your device is unlocked and Ethereum app is opened."
   },
   "ledgerTimeout": {
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
-    "message": "The ledger device was not connected. If you wish to connect your Ledger, please click 'Continue' again and approve HID connection",
+    "message": "The ledger device was not connected. If you wish to connect your Ledger, click 'Continue' again and approve HID connection",
     "description": "An error message shown to the user during the hardware connect flow."
   },
   "lightTheme": {
@@ -5245,7 +5245,7 @@
     "message": "Loading..."
   },
   "loadingScreenSnapMessage": {
-    "message": "Please complete the transaction on the Snap."
+    "message": "Complete the transaction on the Snap."
   },
   "loadingTokenList": {
     "message": "Loading token list"
@@ -5292,7 +5292,7 @@
     "message": "Log in"
   },
   "loginErrorSessionExpiredDescription": {
-    "message": "Your session has expired. Please log in again to continue."
+    "message": "Your session has expired. Log in again to continue."
   },
   "loginErrorSessionExpiredTitle": {
     "message": "Session has expired"
@@ -5301,7 +5301,7 @@
     "message": "Update Telegram"
   },
   "loginErrorTelegramOutdatedDescription": {
-    "message": "We couldn't connect to Telegram. This usually happens when your Telegram app is out of date. Please update Telegram and try again."
+    "message": "We couldn't connect to Telegram. This usually happens when your Telegram app is out of date. Update Telegram and try again."
   },
   "loginErrorTelegramOutdatedTitle": {
     "message": "Couldn't sign in with Telegram"
@@ -5450,7 +5450,7 @@
     "message": "MetaMask Swap"
   },
   "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swaps is undergoing maintenance. Please check back later."
+    "message": "MetaMask Swaps is undergoing maintenance. Check back later."
   },
   "metamaskVersion": {
     "message": "MetaMask Version"
@@ -5983,7 +5983,7 @@
     "message": "Edit network details"
   },
   "nativeTokenScamWarningDescription": {
-    "message": "The native token symbol does not match the expected symbol of the native token for the network with the associated chain ID. You have entered $1 while the expected token symbol is $2. Please verify you are connected to the correct chain.",
+    "message": "The native token symbol does not match the expected symbol of the native token for the network with the associated chain ID. You have entered $1 while the expected token symbol is $2. Verify you are connected to the correct chain.",
     "description": "$1 represents the currency name, $2 represents the expected currency symbol"
   },
   "nativeTokenScamWarningDescriptionExpectedTokenFallback": {
