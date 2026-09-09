@@ -537,6 +537,85 @@ describe('PerpsStreamManager', () => {
       expect(manager.isInitialized('0xsecond')).toBe(true);
     });
 
+    it.each<['positions' | 'orders' | 'account', string]>([
+      ['positions', 'perpsGetPositions'],
+      ['orders', 'perpsGetOpenOrders'],
+      ['account', 'perpsGetAccountState'],
+    ])(
+      'cancels the previous account %s fallback on switch',
+      async (channel, method) => {
+        jest.useFakeTimers();
+        await manager.initForAddress('0xfirst');
+        let resolveFallback!: (value: unknown) => void;
+        const fallback = new Promise((resolve) => {
+          resolveFallback = resolve;
+        });
+        mockSubmitRequestToBackground.mockImplementation((request: string) =>
+          request === method ? fallback : Promise.resolve(undefined),
+        );
+        const onData = jest.fn();
+        manager[channel].subscribe(onData);
+        await jest.advanceTimersByTimeAsync(3_000);
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(method, []);
+
+        await manager.initForAddress('0xsecond');
+        const stale =
+          channel === 'account' ? { totalBalance: '99' } : [{ symbol: 'OLD' }];
+        resolveFallback(stale);
+        await fallback;
+        await Promise.resolve();
+
+        expect(manager[channel].hasCachedData()).toBe(false);
+        expect(onData).not.toHaveBeenCalled();
+      },
+    );
+
+    it('retains new-session snapshots emitted before initialization returns', async () => {
+      await manager.initForAddress('0xfirst');
+      const positions = [makePosition('NEW')];
+      mockSubmitRequestToBackground.mockImplementation(
+        async (method: string) => {
+          if (method === 'perpsDisconnect') {
+            manager.handleBackgroundUpdate({
+              channel: 'positions',
+              data: [makePosition('OLD')],
+            });
+            expect(manager.positions.hasCachedData()).toBe(false);
+          }
+          if (method === 'perpsInit') {
+            manager.handleBackgroundUpdate({
+              channel: 'positions',
+              data: positions,
+            });
+          }
+        },
+      );
+
+      await manager.initForAddress('0xsecond');
+
+      expect(manager.positions.getCachedData()).toEqual(positions);
+      const onData = jest.fn();
+      manager.positions.subscribe(onData);
+      expect(onData).toHaveBeenCalledWith(positions);
+    });
+
+    it('discards early snapshots when initialization fails', async () => {
+      mockSubmitRequestToBackground.mockImplementation(async () => {
+        manager.handleBackgroundUpdate({
+          channel: 'positions',
+          data: [makePosition('FAILED')],
+        });
+        throw new Error('init failed');
+      });
+
+      await expect(manager.initForAddress('0xfailed')).rejects.toThrow(
+        'init failed',
+      );
+
+      expect(manager.positions.hasCachedData()).toBe(false);
+      expect(manager.isInitialized()).toBe(false);
+    });
+
     it('deduplicates concurrent calls for the same address', async () => {
       mockSubmitRequestToBackground.mockResolvedValue(undefined);
 
