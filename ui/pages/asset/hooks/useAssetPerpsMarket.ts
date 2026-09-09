@@ -5,6 +5,7 @@ import {
   getIsPerpsExperienceAvailable,
   getIsPerpsTerminalBackendEnabled,
 } from '../../../selectors/perps';
+import { getDisplaySymbol } from '../../../components/app/perps/utils';
 import { submitRequestToBackground } from '../../../store/background-connection';
 
 export type UseAssetPerpsMarketReturn = {
@@ -16,9 +17,17 @@ export type UseAssetPerpsMarketReturn = {
 
 type AssetPerpsMarketCacheEntry = {
   resolved: boolean;
+  resolvedAt: number;
   market: MarketInfo | undefined;
   inflight: Promise<MarketInfo | undefined> | null;
 };
+
+/**
+ * How long a resolved "no market" answer stays cached. A hit is stable for the
+ * session, but a miss can just mean the lookup ran before the market list was
+ * ready, so it expires instead of hiding Long / Short until the next reload.
+ */
+const MARKET_MISS_TTL_MS = 60_000;
 
 const marketCacheByKey = new Map<string, AssetPerpsMarketCacheEntry>();
 
@@ -36,8 +45,19 @@ function getAssetPerpsMarketCacheEntry(
   const key = buildAssetPerpsMarketCacheKey(symbol, useTerminalApi);
   let entry = marketCacheByKey.get(key);
   if (!entry) {
-    entry = { resolved: false, market: undefined, inflight: null };
+    entry = {
+      resolved: false,
+      resolvedAt: 0,
+      market: undefined,
+      inflight: null,
+    };
     marketCacheByKey.set(key, entry);
+  } else if (
+    entry.resolved &&
+    !entry.market &&
+    Date.now() - entry.resolvedAt > MARKET_MISS_TTL_MS
+  ) {
+    entry.resolved = false;
   }
   return entry;
 }
@@ -50,23 +70,46 @@ export function clearAssetPerpsMarketCache(): void {
   marketCacheByKey.clear();
 }
 
+/**
+ * Matches a wallet ticker against a market name, tolerating the HIP-3 DEX
+ * prefix: the wallet asset is `TSLA` while the provider names the market
+ * `xyz:TSLA`. The provider name is what the rest of the app keys off, so only
+ * the comparison strips the prefix.
+ *
+ * @param marketName - Provider market name (e.g. 'ETH', 'xyz:TSLA')
+ * @param needle - Lower-cased wallet asset symbol
+ * @returns Whether the market belongs to the wallet asset
+ */
+function marketNameMatchesSymbol(marketName: string, needle: string): boolean {
+  return (
+    marketName.toLowerCase() === needle ||
+    getDisplaySymbol(marketName).toLowerCase() === needle
+  );
+}
+
 function findMatchingMarket(
   infos: MarketInfo[],
   symbol: string,
 ): MarketInfo | undefined {
   const needle = symbol.toLowerCase();
-  return infos.find((candidate) => candidate.name.toLowerCase() === needle);
+  // An exact provider-name match wins so a plain `TSLA` market is never
+  // shadowed by a HIP-3 `xyz:TSLA` listed earlier in the response.
+  return (
+    infos.find((candidate) => candidate.name.toLowerCase() === needle) ??
+    infos.find((candidate) => marketNameMatchesSymbol(candidate.name, needle))
+  );
 }
 
 /**
- * Looks up the Perps market for a symbol, caching successful hits and misses.
+ * Looks up the Perps market for a symbol, caching hits for the session and
+ * misses for `MARKET_MISS_TTL_MS`.
  *
- * A rejected `perpsGetMarkets` call is not cached as resolved, so a later
- * visit retries instead of permanently hiding Long / Short.
+ * A rejected `perpsGetMarkets` call is not cached and the rejection is
+ * propagated, so the caller can retry instead of committing to Buy / Swap.
  *
  * @param symbol - The wallet asset's symbol (e.g. 'ETH', 'DAI')
  * @param useTerminalApi - Whether to fetch markets from the terminal backend
- * @returns The matching market, or undefined when none exists or the lookup fails
+ * @returns The matching market, or undefined when none exists
  */
 function fetchAssetPerpsMarket(
   symbol: string,
@@ -94,15 +137,46 @@ function fetchAssetPerpsMarket(
         );
         entry.market = market;
         entry.resolved = true;
+        entry.resolvedAt = Date.now();
         entry.inflight = null;
         return market;
       })
-      .catch(() => {
+      .catch((error) => {
         entry.inflight = null;
-        return undefined;
+        throw error;
       });
   }
   return entry.inflight;
+}
+
+/**
+ * Runs the market lookup, retrying once when it fails. Without the retry a
+ * transient `perpsGetMarkets` failure leaves the visit on Buy / Swap until the
+ * user navigates away and comes back.
+ *
+ * @param symbol - The wallet asset's symbol (e.g. 'ETH', 'DAI')
+ * @param useTerminalApi - Whether to fetch markets from the terminal backend
+ * @param shouldRetry - Guard so an unmounted caller does not refetch
+ * @returns The matching market, or undefined when none exists or both attempts fail
+ */
+async function fetchAssetPerpsMarketWithRetry(
+  symbol: string,
+  useTerminalApi: boolean,
+  shouldRetry: () => boolean,
+): Promise<MarketInfo | undefined> {
+  try {
+    return await fetchAssetPerpsMarket(symbol, useTerminalApi);
+  } catch {
+    if (!shouldRetry()) {
+      return undefined;
+    }
+  }
+
+  try {
+    return await fetchAssetPerpsMarket(symbol, useTerminalApi);
+  } catch {
+    return undefined;
+  }
 }
 
 /**
@@ -162,12 +236,18 @@ export function useAssetPerpsMarket(symbol: string): UseAssetPerpsMarketReturn {
 
     let cancelled = false;
 
-    fetchAssetPerpsMarket(symbol, useTerminalApi).then((nextMarket) => {
+    const settle = (nextMarket: MarketInfo | undefined) => {
       if (!cancelled) {
         setMarket(nextMarket);
         setIsLoading(false);
       }
-    });
+    };
+
+    fetchAssetPerpsMarketWithRetry(
+      symbol,
+      useTerminalApi,
+      () => !cancelled,
+    ).then(settle);
 
     return () => {
       cancelled = true;

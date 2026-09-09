@@ -685,7 +685,7 @@ const CoinButtons = ({
             label: t('buy'),
             onClick: handleBuyAndSellOnClick,
             testId: `${classPrefix}-overview-more-buy`,
-            iconName: IconName.Money,
+            iconName: IconName.AttachMoney,
             enabled: Boolean(perpsMarketSymbol),
           },
           {

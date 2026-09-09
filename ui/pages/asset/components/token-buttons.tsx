@@ -349,7 +349,7 @@ const TokenButtons = ({
                 label: t('buy'),
                 onClick: handleBuyAndSellOnClick,
                 testId: 'token-overview-more-buy',
-                iconName: IconNameDs.Money,
+                iconName: IconNameDs.AttachMoney,
                 enabled: isCtaGateReady,
               },
               {

@@ -145,6 +145,13 @@ describe('TokenButtons perps action row', () => {
 
     expect(screen.getByTestId('token-overview-receive')).toBeInTheDocument();
     expect(screen.queryByTestId('eth-overview-send')).not.toBeInTheDocument();
+
+    // Receive holds the row slot, so it must not be duplicated inside More.
+    fireEvent.click(screen.getByTestId('token-overview-more'));
+
+    expect(
+      screen.queryByTestId('token-overview-more-receive'),
+    ).not.toBeInTheDocument();
   });
 
   it('moves Buy and Swap into the More menu', () => {

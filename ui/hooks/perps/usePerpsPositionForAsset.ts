@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { Position } from '@metamask/perps-controller';
+import { getDisplaySymbol } from '../../components/app/perps/utils';
 import { usePerpsLivePositions } from './stream';
 
 export type UsePerpsPositionForAssetReturn = {
@@ -30,9 +31,19 @@ export function usePerpsPositionForAsset(
     if (!marketSymbol) {
       return undefined;
     }
-    return positions.find(
-      (candidate) =>
-        candidate.symbol.toLowerCase() === marketSymbol.toLowerCase(),
+    const needle = marketSymbol.toLowerCase();
+    // An exact provider-symbol match wins; the display-symbol comparison is a
+    // fallback so a HIP-3 position ('xyz:TSLA') still matches when the caller
+    // only has the wallet ticker ('TSLA'), and vice versa.
+    return (
+      positions.find(
+        (candidate) => candidate.symbol.toLowerCase() === needle,
+      ) ??
+      positions.find(
+        (candidate) =>
+          getDisplaySymbol(candidate.symbol).toLowerCase() ===
+          getDisplaySymbol(marketSymbol).toLowerCase(),
+      )
     );
   }, [positions, marketSymbol]);
 

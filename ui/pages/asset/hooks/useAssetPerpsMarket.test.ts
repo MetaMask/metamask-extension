@@ -92,6 +92,34 @@ describe('useAssetPerpsMarket', () => {
     });
   });
 
+  it('matches a HIP-3 market whose provider name carries a DEX prefix', async () => {
+    mockPerpsAvailability({ isAvailable: true });
+    mockSubmitRequestToBackground.mockResolvedValue([{ name: 'xyz:TSLA' }]);
+
+    const { result } = renderHook(() => useAssetPerpsMarket('TSLA'));
+
+    await waitFor(() => {
+      // The provider name is kept intact: it is what order entry, the position
+      // lookup and the market details route key off.
+      expect(result.current.market).toStrictEqual({ name: 'xyz:TSLA' });
+      expect(result.current.isLoading).toBe(false);
+    });
+  });
+
+  it('prefers an exact provider-name match over a prefixed one', async () => {
+    mockPerpsAvailability({ isAvailable: true });
+    mockSubmitRequestToBackground.mockResolvedValue([
+      { name: 'xyz:TSLA' },
+      { name: 'TSLA' },
+    ]);
+
+    const { result } = renderHook(() => useAssetPerpsMarket('TSLA'));
+
+    await waitFor(() => {
+      expect(result.current.market).toStrictEqual({ name: 'TSLA' });
+    });
+  });
+
   it('returns no market once the lookup finds none', async () => {
     mockPerpsAvailability({ isAvailable: true });
     mockSubmitRequestToBackground.mockResolvedValue([{ name: 'BTC' }]);
@@ -106,9 +134,27 @@ describe('useAssetPerpsMarket', () => {
     });
   });
 
+  it('retries within the same visit when the lookup fails', async () => {
+    mockPerpsAvailability({ isAvailable: true });
+    mockSubmitRequestToBackground
+      .mockRejectedValueOnce(new Error('transient'))
+      .mockResolvedValueOnce([ETH_MARKET]);
+
+    const { result } = renderHook(() => useAssetPerpsMarket('ETH'));
+
+    await waitFor(() => {
+      expect(result.current).toStrictEqual({
+        market: ETH_MARKET,
+        isLoading: false,
+      });
+    });
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+  });
+
   it('does not cache a rejected lookup so a later visit retries', async () => {
     mockPerpsAvailability({ isAvailable: true });
     mockSubmitRequestToBackground
+      .mockRejectedValueOnce(new Error('transient'))
       .mockRejectedValueOnce(new Error('transient'))
       .mockResolvedValueOnce([ETH_MARKET]);
 
@@ -131,7 +177,7 @@ describe('useAssetPerpsMarket', () => {
         isLoading: false,
       });
     });
-    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(3);
   });
 
   it('reuses a successful miss on a later visit', async () => {
@@ -153,6 +199,37 @@ describe('useAssetPerpsMarket', () => {
       isLoading: false,
     });
     expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+  });
+
+  it('refetches a cached miss once it goes stale', async () => {
+    mockPerpsAvailability({ isAvailable: true });
+    const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(0);
+    mockSubmitRequestToBackground.mockResolvedValueOnce([{ name: 'BTC' }]);
+
+    const firstVisit = renderHook(() => useAssetPerpsMarket('ETH'));
+
+    await waitFor(() => {
+      expect(firstVisit.result.current.isLoading).toBe(false);
+    });
+
+    firstVisit.unmount();
+
+    // A miss can just mean the market list was not ready yet, so it must not
+    // hide Long / Short for the rest of the session.
+    nowSpy.mockReturnValue(120_000);
+    mockSubmitRequestToBackground.mockResolvedValueOnce([ETH_MARKET]);
+
+    const secondVisit = renderHook(() => useAssetPerpsMarket('ETH'));
+
+    await waitFor(() => {
+      expect(secondVisit.result.current).toStrictEqual({
+        market: ETH_MARKET,
+        isLoading: false,
+      });
+    });
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+
+    nowSpy.mockRestore();
   });
 
   it('skips the lookup when the Perps experience is unavailable', () => {

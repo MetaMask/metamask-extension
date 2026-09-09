@@ -36,6 +36,34 @@ describe('usePerpsPositionForAsset', () => {
     expect(result.current.position).toStrictEqual({ symbol: 'eth' });
   });
 
+  it('matches a HIP-3 position when only the wallet ticker is known', () => {
+    const tslaPosition = { symbol: 'xyz:TSLA' } as Position;
+    mockPositions([BTC_POSITION, tslaPosition]);
+
+    const { result } = renderHook(() => usePerpsPositionForAsset('TSLA'));
+
+    expect(result.current.position).toBe(tslaPosition);
+  });
+
+  it('matches a plain position when the market symbol carries a DEX prefix', () => {
+    const tslaPosition = { symbol: 'TSLA' } as Position;
+    mockPositions([tslaPosition]);
+
+    const { result } = renderHook(() => usePerpsPositionForAsset('xyz:TSLA'));
+
+    expect(result.current.position).toBe(tslaPosition);
+  });
+
+  it('prefers an exact symbol match over a prefixed one', () => {
+    const prefixedPosition = { symbol: 'xyz:TSLA' } as Position;
+    const plainPosition = { symbol: 'TSLA' } as Position;
+    mockPositions([prefixedPosition, plainPosition]);
+
+    const { result } = renderHook(() => usePerpsPositionForAsset('TSLA'));
+
+    expect(result.current.position).toBe(plainPosition);
+  });
+
   it('returns no position when the market has none open', () => {
     mockPositions([BTC_POSITION]);
 
