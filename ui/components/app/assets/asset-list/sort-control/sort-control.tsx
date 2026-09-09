@@ -39,7 +39,7 @@ type SelectableListItemProps = {
 /**
  * A single row of a popover menu, built on the design system `ButtonBase` so
  * that hover, active and focus states match the other menus in the extension.
- * Selected options are marked with a tinted background.
+ * Selected options are marked with a muted background.
  *
  * @param props - The props of the component.
  * @param props.isSelected - Whether the item is the selected option.
@@ -74,11 +74,8 @@ export const SelectableListItem = ({
           // The row is full-bleed inside the popover, so the press animation
           // ButtonBase applies would pull it away from the popover edges.
           'active:scale-100',
-          // The selected row keeps a tinted background rather than a neutral
-          // one, because `bg-muted` and `bg-hover` resolve to the same colour
-          // and the selection would be unreadable while another row is hovered.
           isSelected
-            ? 'bg-primary-muted hover:bg-primary-muted-hover active:bg-primary-muted-pressed'
+            ? 'bg-muted hover:bg-muted-hover active:bg-muted-pressed'
             : 'bg-transparent hover:bg-hover active:bg-pressed',
           'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary-default',
           className,
