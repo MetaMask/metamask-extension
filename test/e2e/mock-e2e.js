@@ -167,8 +167,8 @@ const {
 } = require('./tests/phishing-controller/mocks');
 const { mockIdentityServices } = require('./tests/identity/mocks');
 const {
-  mockAuthenticatedUserStorageNotificationPreferences,
-} = require('./helpers/authenticated-user-storage/mocks');
+  MockttpNotificationTriggerServer,
+} = require('./helpers/notifications/mock-notification-trigger-server');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
@@ -859,6 +859,36 @@ async function setupMocking(
           ],
           created_at: '2025-07-16T10:03:57Z',
           profile_id: '0deaba86-4b9d-4137-87d7-18bc5bf7708d',
+        },
+      };
+    });
+
+  // Chomp API service
+  await server
+    .forGet('https://chomp.api.cx.metamask.io/v1/chomp')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          auth: { message: '' },
+          chains: {
+            '0x8f': {
+              autoDepositDelegate: '0x0000000000000000000000000000000000000001',
+              protocol: {
+                vedaProtocol: {
+                  supportedTokens: [
+                    {
+                      tokenAddress:
+                        '0x00000000000000000000000000000000000000aa',
+                      tokenDecimals: 6,
+                    },
+                  ],
+                  adapterAddress: '0x0000000000000000000000000000000000000002',
+                  intentTypes: ['cash-deposit', 'cash-withdrawal'],
+                },
+              },
+            },
+          },
         },
       };
     });
@@ -1835,8 +1865,8 @@ async function setupMocking(
   // Identity APIs
   await mockIdentityServices(server);
 
-  // Authenticated User Storage APIs
-  mockAuthenticatedUserStorageNotificationPreferences(server);
+  // Trigger API and Authenticated User Storage notification preferences
+  new MockttpNotificationTriggerServer().setupServer(server);
 
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {
