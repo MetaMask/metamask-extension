@@ -1,9 +1,17 @@
-import React, { useRef, useState, useCallback, useMemo } from 'react';
+/* eslint-disable @typescript-eslint/naming-convention -- Sentry and MetaMetrics fields use snake_case */
+import React, {
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useLayoutEffect,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { removeSlide } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
 import { CarouselWithEmptyState } from '../carousel';
-import { getAppIsLoading } from '../../../selectors';
+import { getAppIsLoading, getSelectedAccount } from '../../../selectors';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
@@ -13,6 +21,13 @@ import {
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
 import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
 import DownloadMobileAppModal from '../../app/download-mobile-modal/download-mobile-modal';
+import {
+  endTrace,
+  trace,
+  TraceName,
+  TraceOperation,
+} from '../../../../shared/lib/trace';
+import { getVisibleCarouselSlides } from '../carousel/utils';
 
 export const Carousel = () => {
   const dispatch = useDispatch();
@@ -21,15 +36,103 @@ export const Carousel = () => {
   const isCarouselEnabled = Boolean(
     remoteFeatureFlags && remoteFeatureFlags.carouselBanners,
   );
+  const isContentfulEnabled = Boolean(
+    remoteFeatureFlags?.contentfulCarouselEnabled,
+  );
+  const selectedAccount = useSelector(getSelectedAccount);
   const { trackEvent, createEventBuilder } = useAnalytics();
   const displayedSlideIds = useRef<Set<string>>(new Set());
 
   const [showDownloadMobileAppModal, setShowDownloadMobileAppModal] =
     useState(false);
 
-  const { slides } = useCarouselManagement({
+  const { slides, fetchStatus } = useCarouselManagement({
     enabled: isCarouselEnabled,
   });
+  const visibleSlides = useMemo(
+    () => getVisibleCarouselSlides(slides, selectedAccount?.type),
+    [selectedAccount?.type, slides],
+  );
+  const traceIdRef = useRef<string | null>(null);
+  const initialSlideIdsRef = useRef<Set<string>>(new Set());
+  const traceActivationStartedRef = useRef(false);
+
+  const endBannerTrace = useCallback(
+    (data: Record<string, number | string | boolean>) => {
+      const id = traceIdRef.current;
+      if (!id) {
+        return;
+      }
+
+      traceIdRef.current = null;
+      endTrace({
+        name: TraceName.HomeBannerTimeToContent,
+        id,
+        data,
+      });
+    },
+    [],
+  );
+
+  useLayoutEffect(() => {
+    const isEnabled = isCarouselEnabled && isContentfulEnabled;
+    if (!isEnabled) {
+      endBannerTrace({
+        success: false,
+        reason: 'unmounted',
+        placement_id: 'home_carousel',
+      });
+      traceActivationStartedRef.current = false;
+      return;
+    }
+
+    if (traceActivationStartedRef.current) {
+      return;
+    }
+
+    traceActivationStartedRef.current = true;
+    initialSlideIdsRef.current = new Set(
+      slides.map(({ id }: CarouselSlide) => id),
+    );
+    const id = crypto.randomUUID();
+    traceIdRef.current = id;
+    trace({
+      name: TraceName.HomeBannerTimeToContent,
+      id,
+      op: TraceOperation.BannerPerformance,
+      tags: {
+        placement_id: 'home_carousel',
+      },
+    });
+  }, [endBannerTrace, isCarouselEnabled, isContentfulEnabled, slides]);
+
+  useEffect(
+    () => () =>
+      endBannerTrace({
+        success: false,
+        reason: 'unmounted',
+        placement_id: 'home_carousel',
+      }),
+    [endBannerTrace],
+  );
+
+  useEffect(() => {
+    if (fetchStatus === 'error') {
+      endBannerTrace({
+        success: false,
+        source: 'event',
+        reason: 'error',
+        placement_id: 'home_carousel',
+      });
+    } else if (fetchStatus === 'settled' && visibleSlides.length === 0) {
+      endBannerTrace({
+        success: false,
+        source: 'event',
+        reason: 'empty',
+        placement_id: 'home_carousel',
+      });
+    }
+  }, [endBannerTrace, fetchStatus, visibleSlides.length]);
 
   const slideById = useMemo(() => {
     const m = new Map<string, CarouselSlide>();
@@ -54,7 +157,7 @@ export const Carousel = () => {
         .addCategory(MetaMetricsEventCategory.Banner)
         .addProperties({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+
           banner_name: key,
         })
         .build(),
@@ -69,7 +172,7 @@ export const Carousel = () => {
         .addCategory(MetaMetricsEventCategory.Banner)
         .addProperties({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+
           banner_name: slideId,
         })
         .build(),
@@ -88,6 +191,15 @@ export const Carousel = () => {
 
   const handleActiveSlideChange = useCallback(
     (slide: CarouselSlide) => {
+      endBannerTrace({
+        success: true,
+        source: initialSlideIdsRef.current.has(slide.id)
+          ? 'warm-cache'
+          : 'event',
+        placement_id: 'home_carousel',
+        banner_name: slide.id,
+      });
+
       if (!displayedSlideIds.current.has(slide.id)) {
         displayedSlideIds.current.add(slide.id);
         trackEvent(
@@ -95,14 +207,14 @@ export const Carousel = () => {
             .addCategory(MetaMetricsEventCategory.Banner)
             .addProperties({
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
+
               banner_name: slide.id,
             })
             .build(),
         );
       }
     },
-    [createEventBuilder, trackEvent],
+    [createEventBuilder, endBannerTrace, trackEvent],
   );
 
   if (!isCarouselEnabled) {
