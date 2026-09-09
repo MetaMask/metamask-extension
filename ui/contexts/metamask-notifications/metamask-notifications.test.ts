@@ -253,11 +253,17 @@ describe('useFetchInitialNotificationsEffect', () => {
     mocks.selectors.mockGetIsUnlocked.mockReturnValue(true);
     mocks.selectors.mockSelectIsSignedIn.mockReturnValue(true);
 
-    renderHookWithProvider(() => useFetchInitialNotificationsEffect(), {});
+    const { result } = renderHookWithProvider(
+      () => useFetchInitialNotificationsEffect(),
+      {},
+    );
+
+    expect(result.current.isPending).toBe(true);
 
     await waitFor(() => {
       expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
       expect(mocks.hooks.listNotifications).toHaveBeenCalled();
+      expect(result.current.isPending).toBe(false);
     });
   });
 
@@ -370,10 +376,14 @@ describe('useFetchInitialNotificationsEffect', () => {
       new Error('Enable failed'),
     );
 
-    renderHookWithProvider(() => useFetchInitialNotificationsEffect(), {});
+    const { result } = renderHookWithProvider(
+      () => useFetchInitialNotificationsEffect(),
+      {},
+    );
 
     await waitFor(() => {
       expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
+      expect(result.current.error).toEqual(new Error('Enable failed'));
     });
     // Should not throw error
   });
@@ -406,10 +416,11 @@ describe('useFetchInitialNotificationsEffect', () => {
     mocks.selectors.mockGetIsUnlocked.mockReturnValue(true);
     mocks.selectors.mockSelectIsSignedIn.mockReturnValue(true);
 
-    const { store } = renderHookWithProvider(
+    const { result, store } = renderHookWithProvider(
       () => useFetchInitialNotificationsEffect(),
       {},
     );
+    expect(result.current.isPending).toBe(false);
 
     // Second render - conditions met
     mocks.selectors.mockIsNotifsEnabled.mockReturnValue(true);
@@ -420,10 +431,12 @@ describe('useFetchInitialNotificationsEffect', () => {
     act(() => {
       store.dispatch({ type: 'FORCE_UPDATE' });
     });
+    expect(result.current.isPending).toBe(true);
 
     await waitFor(() => {
       expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
       expect(mocks.hooks.listNotifications).toHaveBeenCalled();
+      expect(result.current.isPending).toBe(false);
     });
   });
 });
