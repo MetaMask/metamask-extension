@@ -98,6 +98,13 @@ function tokenAddressForMatch(token: Asset, chainId: Hex): string | undefined {
 export function usePayTokenAccountBalance(): {
   balanceUsd: string;
   balanceRaw: string;
+  /**
+   * True when the balances above come from the funding account's own token
+   * list. False means they are the controller snapshot fallback, which can
+   * still describe a previously selected funding account — callers that treat
+   * the balance as on-chain truth (Max / uncapped prefill) must check this.
+   */
+  isLiveBalance: boolean;
 } {
   const { payToken } = useTransactionPayToken();
   const accountTokens = useSendTokens({ includeNoBalance: true });
@@ -109,7 +116,7 @@ export function usePayTokenAccountBalance(): {
 
   return useMemo(() => {
     if (!payToken) {
-      return { balanceUsd: '0', balanceRaw: '0' };
+      return { balanceUsd: '0', balanceRaw: '0', isLiveBalance: false };
     }
 
     const payTokenChainId = toHexChainId(payToken.chainId);
@@ -126,12 +133,13 @@ export function usePayTokenAccountBalance(): {
       return {
         balanceUsd: payToken.balanceUsd ?? '0',
         balanceRaw: payToken.balanceRaw ?? '0',
+        isLiveBalance: false,
       };
     }
 
     const balanceRaw = hexToDecimalString(matchingToken.rawBalance);
     if (new BigNumber(balanceRaw).isZero()) {
-      return { balanceUsd: '0', balanceRaw: '0' };
+      return { balanceUsd: '0', balanceRaw: '0', isLiveBalance: true };
     }
 
     const decimals = matchingToken.decimals ?? payToken.decimals ?? 18;
@@ -157,6 +165,6 @@ export function usePayTokenAccountBalance(): {
       balanceUsd = computedUsd.toString(10);
     }
 
-    return { balanceUsd, balanceRaw };
+    return { balanceUsd, balanceRaw, isLiveBalance: true };
   }, [accountTokens, payToken, usdRate]);
 }

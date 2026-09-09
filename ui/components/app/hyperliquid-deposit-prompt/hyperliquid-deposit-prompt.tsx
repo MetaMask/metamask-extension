@@ -23,7 +23,6 @@ import {
   IconName,
   IconSize,
   Modal,
-  ModalBody,
   ModalContent,
   ModalHeader,
   ModalOverlay,
@@ -37,9 +36,11 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
+import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
+import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
 import { TokenIcon } from '../../../pages/confirmations/components/token-icon/token-icon';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import { ConfirmationLoader } from '../../../pages/confirmations/hooks/useConfirmationNavigation';
@@ -50,10 +51,21 @@ import type { Asset as AssetType } from '../../../pages/confirmations/types/send
 import { usePerpsHomeRoute } from '../../../hooks/perps/usePerpsHomeRoute';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { usePerpsDepositConfirmation } from '../perps/hooks/usePerpsDepositConfirmation';
+import { PERPS_EVENT_VALUE } from '../../../../shared/constants/perps-events';
 import type {
   HyperliquidDepositPromptProps,
   HyperliquidDepositPromptAction,
 } from './hyperliquid-deposit-prompt.types';
+
+/**
+ * Appends `source=hyperliquid_deposit_prompt` to the perps home route so the
+ * landing PERPS_SCREEN_VIEWED event carries this attribution.
+ * @param perpsHomeRoute
+ */
+function buildGoBackToWithSource(perpsHomeRoute: string): string {
+  const separator = perpsHomeRoute.includes('?') ? '&' : '?';
+  return `${perpsHomeRoute}${separator}source=${PERPS_EVENT_VALUE.SOURCE.HYPERLIQUID_DEPOSIT_PROMPT}`;
+}
 
 /**
  * Tokens the user can fund a Hyperliquid deposit with through MetaMask Pay.
@@ -192,7 +204,10 @@ export const HyperliquidDepositPrompt: React.FC<
           MetaMetricsEventName.HyperliquidDepositPromptInteracted,
         )
           .addCategory(MetaMetricsEventCategory.Confirmations)
-          .addProperties({ action })
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            interaction_type: action,
+          })
           .build(),
       );
     },
@@ -264,6 +279,13 @@ export const HyperliquidDepositPrompt: React.FC<
 
     const { transactionId } = result;
 
+    upsertTransactionUIMetricsFragment(transactionId, {
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        mm_pay_entry_point: 'hyperliquid_deposit_prompt',
+      },
+    });
+
     if (displayToken?.address && displayToken.chainId) {
       try {
         await updateTransactionPaymentToken({
@@ -286,7 +308,7 @@ export const HyperliquidDepositPrompt: React.FC<
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
         search: new URLSearchParams({
           loader: ConfirmationLoader.CustomAmount,
-          goBackTo: perpsHomeRoute,
+          goBackTo: buildGoBackToWithSource(perpsHomeRoute),
         }).toString(),
       },
       { replace: true },
@@ -379,7 +401,7 @@ export const HyperliquidDepositPrompt: React.FC<
           >
             {t('payWithModalTitle')}
           </ModalHeader>
-          <ModalBody className="overflow-auto px-0">
+          <ScrollContainer className="flex-1 overflow-auto">
             <Asset
               tokens={tokens}
               nfts={[]}
@@ -387,7 +409,7 @@ export const HyperliquidDepositPrompt: React.FC<
               disableMetrics
               onAssetSelect={handleTokenSelect}
             />
-          </ModalBody>
+          </ScrollContainer>
         </ModalContent>
       </Modal>
     </Box>

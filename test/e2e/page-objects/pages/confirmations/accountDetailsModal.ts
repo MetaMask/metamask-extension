@@ -79,11 +79,24 @@ class AccountDetailsModal extends Confirmation {
   }
 
   async clickAddressCopyButton() {
+    await this.driver.waitForElementToStopMoving(this.addressCopyButton);
     await this.driver.clickElement(this.addressCopyButton);
   }
 
   async waitForAddressCopied() {
-    await this.driver.waitForSelector(this.addressCopiedButton);
+    await this.driver.waitUntil(
+      async () => {
+        const copyButton = await this.driver.findElement(
+          this.addressCopyButton,
+        );
+        await this.driver.hoverElement(copyButton);
+        return await this.driver.isElementPresentAndVisible(
+          this.addressCopiedButton,
+          500,
+        );
+      },
+      { timeout: 5000, interval: 200 },
+    );
   }
 }
 

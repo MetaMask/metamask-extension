@@ -1,81 +1,85 @@
 import { renderHook } from '@testing-library/react';
-import { TransactionType } from '@metamask/transaction-controller';
-import { selectMoneyActivityMockDataEnabled } from '../../selectors/money/money-account-feature-flags';
-import MOCK_MONEY_TRANSACTIONS from '../../pages/money/constants/mock-activity-data';
+import {
+  type TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { MoneyActivityFilter } from '../../pages/money/utils/money-activity-filters';
+import MOCK_MONEY_TRANSACTIONS from '../../pages/money/constants/mock-activity-data';
+import { useMoneyAccountTransactions } from './use-money-account-transactions';
 import { useMoneyActivityItems } from './use-money-activity-items';
 
-jest.mock('react-redux', () => ({
-  useSelector: (selector: () => unknown) => selector(),
-}));
+jest.mock('./use-money-account-transactions');
 
-jest.mock('../../selectors/money/money-account-feature-flags', () => ({
-  ...jest.requireActual('../../selectors/money/money-account-feature-flags'),
-  selectMoneyActivityMockDataEnabled: jest.fn(),
-}));
-
-const mockSelectMoneyActivityMockDataEnabled = jest.mocked(
-  selectMoneyActivityMockDataEnabled,
+const mockUseMoneyAccountTransactions = jest.mocked(
+  useMoneyAccountTransactions,
 );
 
 describe('useMoneyActivityItems', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockSelectMoneyActivityMockDataEnabled.mockReturnValue(false);
+    mockUseMoneyAccountTransactions.mockReturnValue({
+      allTransactions: [],
+      deposits: [],
+      transfers: [],
+      moneyAddress: '0x1',
+      mockDataEnabled: false,
+    });
   });
 
-  it('returns empty buckets when mock data is disabled', () => {
+  it('returns empty buckets when there are no transactions', () => {
     const { result } = renderHook(() => useMoneyActivityItems());
+
     expect(result.current.items).toStrictEqual([]);
     expect(result.current.buckets[MoneyActivityFilter.All]).toStrictEqual([]);
-    expect(result.current.buckets[MoneyActivityFilter.Deposits]).toStrictEqual(
-      [],
-    );
-    expect(result.current.buckets[MoneyActivityFilter.Transfers]).toStrictEqual(
-      [],
-    );
   });
 
   it('returns mock transactions newest-first when mock data is enabled', () => {
-    mockSelectMoneyActivityMockDataEnabled.mockReturnValue(true);
+    mockUseMoneyAccountTransactions.mockReturnValue({
+      allTransactions: [...MOCK_MONEY_TRANSACTIONS],
+      deposits: MOCK_MONEY_TRANSACTIONS.filter(
+        (tx) =>
+          tx.type === TransactionType.moneyAccountDeposit ||
+          tx.type === TransactionType.incoming,
+      ),
+      transfers: MOCK_MONEY_TRANSACTIONS.filter(
+        (tx) => tx.type === TransactionType.moneyAccountWithdraw,
+      ),
+      moneyAddress: '0x1',
+      mockDataEnabled: true,
+    });
 
     const { result } = renderHook(() => useMoneyActivityItems());
 
-    expect(result.current.items).toBe(
-      result.current.buckets[MoneyActivityFilter.All],
-    );
     expect(result.current.items[0].id).toBe('money-tx-deposited');
-    expect(result.current.items.every((item) => item.kind === 'onchain')).toBe(
-      true,
-    );
-    const times = result.current.items.map((item) => item.time);
-    expect(times).toStrictEqual([...times].sort((left, right) => right - left));
+    expect(result.current.mockDataEnabled).toBe(true);
   });
 
-  it('splits mock transactions into Deposits and Sends buckets', () => {
-    mockSelectMoneyActivityMockDataEnabled.mockReturnValue(true);
+  it('surfaces every visibility-filtered transaction on All, including Pay txs', () => {
+    const payFromMoney = {
+      id: 'pay-from-money',
+      type: TransactionType.contractInteraction,
+      time: 10,
+      chainId: '0x8f',
+      status: 'confirmed',
+      metamaskPay: { tokenAddress: '0xmusd', chainId: '0x8f' },
+      txParams: { from: '0x1', to: '0x2', value: '0x0' },
+    } as unknown as TransactionMeta;
+
+    mockUseMoneyAccountTransactions.mockReturnValue({
+      allTransactions: [payFromMoney],
+      deposits: [],
+      transfers: [],
+      moneyAddress: '0x1',
+      mockDataEnabled: false,
+    });
 
     const { result } = renderHook(() => useMoneyActivityItems());
-    const { buckets } = result.current;
 
-    expect(buckets[MoneyActivityFilter.All]).toHaveLength(
-      MOCK_MONEY_TRANSACTIONS.length,
+    expect(result.current.items.map((item) => item.id)).toStrictEqual([
+      'pay-from-money',
+    ]);
+    expect(result.current.buckets[MoneyActivityFilter.Deposits]).toStrictEqual(
+      [],
     );
-    expect(
-      buckets[MoneyActivityFilter.Deposits].every(
-        (item) =>
-          item.tx.type === TransactionType.moneyAccountDeposit ||
-          item.tx.type === TransactionType.incoming,
-      ),
-    ).toBe(true);
-    expect(
-      buckets[MoneyActivityFilter.Transfers].every(
-        (item) => item.tx.type === TransactionType.moneyAccountWithdraw,
-      ),
-    ).toBe(true);
-    expect(
-      buckets[MoneyActivityFilter.Deposits].length +
-        buckets[MoneyActivityFilter.Transfers].length,
-    ).toBe(buckets[MoneyActivityFilter.All].length);
   });
 });

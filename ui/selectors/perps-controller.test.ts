@@ -26,6 +26,7 @@ import {
   selectPerpsCachedPositions,
   selectPerpsCachedOrders,
   selectPerpsCachedAccountState,
+  selectPerpsCachedUserData,
   selectPerpsPerpsBalances,
   selectPerpsMarketFilterPreferences,
   selectPerpsShouldShowDepositToast,
@@ -761,6 +762,31 @@ describe('perps-controller selectors', () => {
 
     it('defaults to null', () => {
       expect(selectPerpsCachedAccountState(buildState())).toBeNull();
+    });
+  });
+
+  describe('selectPerpsCachedUserData', () => {
+    it('returns the full cache entry for the active provider', () => {
+      const entry = {
+        positions: [],
+        orders: [],
+        accountState: { totalBalance: '100' },
+        timestamp: 1,
+        address: '0xabc',
+      };
+
+      expect(
+        selectPerpsCachedUserData(
+          buildState({
+            activeProvider: 'hyperliquid',
+            cachedUserDataByProvider: { hyperliquid: entry },
+          }),
+        ),
+      ).toBe(entry);
+    });
+
+    it('defaults to null', () => {
+      expect(selectPerpsCachedUserData(buildState())).toBeNull();
     });
   });
 

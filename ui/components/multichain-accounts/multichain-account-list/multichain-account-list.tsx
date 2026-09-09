@@ -3,6 +3,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   useTransition,
 } from 'react';
@@ -12,6 +13,8 @@ import {
   AccountWalletId,
   AccountWalletType,
 } from '@metamask/account-api';
+import type { AccountWalletObject } from '@metamask/account-tree-controller';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { parseCaipAccountId } from '@metamask/utils';
@@ -34,7 +37,11 @@ import {
   AccountTreeWallets,
   MultichainAccountsState,
 } from '../../../selectors/multichain-accounts/account-tree.types';
-import { setSelectedMultichainAccount } from '../../../store/actions';
+import {
+  removeAccount,
+  setAccountGroupHidden,
+  setSelectedMultichainAccount,
+} from '../../../store/actions';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   MetaMetricsEventCategory,
@@ -51,10 +58,12 @@ import {
   getDefaultHomeActiveTabName,
   getHDEntropyIndex,
 } from '../../../selectors';
+import { getInternalAccountsObject } from '../../../selectors/accounts';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';
 import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
+import { AccountDeleteConfirmModal } from '../account-delete-confirm-modal';
 import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
 import {
   STATUS_CONNECTED,
@@ -76,9 +85,51 @@ export type MultichainAccountListProps = {
   showAccountCheckbox?: boolean;
   showConnectionStatus?: boolean;
   showDefaultAddress?: boolean;
+  /**
+   * When true, account cells render in edit mode. Private-key wallet accounts
+   * show delete controls; all other wallets show visibility controls. Menus are
+   * suppressed and hidden accounts are listed in place under their own wallet
+   * instead of the separate hidden section.
+   * @default false
+   */
+  isEditMode?: boolean;
 };
 
 type GroupData = AccountTreeWallets[AccountWalletId]['groups'][AccountGroupId];
+
+/**
+ * Imported private-key wallets are the only wallets whose accounts can be
+ * deleted from the account list edit mode.
+ *
+ * @param wallet - Wallet object from the account tree.
+ * @returns True when the wallet is a simple (imported private key) keyring.
+ */
+function isPrivateKeyWallet(wallet: AccountWalletObject): boolean {
+  return (
+    wallet.type === AccountWalletType.Keyring &&
+    wallet.metadata.keyring.type === KeyringTypes.simple
+  );
+}
+
+/**
+ * Resolves whether a group is currently treated as hidden, preferring any
+ * optimistic override applied while a hide/reveal is still in flight.
+ *
+ * @param groupId - Account group id.
+ * @param metadataHidden - Hidden flag from account tree metadata.
+ * @param visibilityOverrides - Pending optimistic visibility map.
+ * @returns Effective hidden state for list ordering and cell styling.
+ */
+function getEffectiveIsHidden(
+  groupId: string,
+  metadataHidden: boolean | undefined,
+  visibilityOverrides: Record<string, boolean>,
+): boolean {
+  if (Object.prototype.hasOwnProperty.call(visibilityOverrides, groupId)) {
+    return visibilityOverrides[groupId];
+  }
+  return metadataHidden ?? false;
+}
 
 type ListItem =
   | {
@@ -110,8 +161,9 @@ export const MultichainAccountList = ({
   showAccountCheckbox = false,
   showConnectionStatus = false,
   showDefaultAddress = false,
+  isEditMode = false,
 }: MultichainAccountListProps) => {
-  const showAccountMenu = !showAccountCheckbox;
+  const showAccountMenu = !showAccountCheckbox && !isEditMode;
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -125,6 +177,7 @@ export const MultichainAccountList = ({
   const allBalances = useSelector(selectBalanceForAllWallets);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const { privacyMode } = useSelector(getPreferences);
+  const internalAccountsById = useSelector(getInternalAccountsObject);
 
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
@@ -136,6 +189,22 @@ export const MultichainAccountList = ({
   const [renameAccountGroupId, setRenameAccountGroupId] = useState<
     string | undefined
   >(undefined);
+
+  const [accountToDelete, setAccountToDelete] = useState<{
+    groupId: AccountGroupId;
+    accountName: string;
+    address?: string;
+    walletType?: AccountWalletType;
+  } | null>(null);
+
+  // Optimistic visibility so a hide/reveal shows on the cell before Redux
+  // catches up.
+  const [visibilityOverrides, setVisibilityOverrides] = useState<
+    Record<string, boolean>
+  >({});
+
+  // Identifies the latest hide/reveal write per account group.
+  const visibilityWriteIds = useRef<Record<string, number>>({});
 
   const [openMenuAccountId, setOpenMenuAccountId] =
     useState<AccountGroupId | null>(null);
@@ -196,6 +265,54 @@ export const MultichainAccountList = ({
     [setIsAccountRenameModalOpen, setRenameAccountGroupId],
   );
 
+  const handleAccountDeleteConfirmModalClose = useCallback(() => {
+    setAccountToDelete(null);
+  }, []);
+
+  const handleAccountDeleteConfirm = useCallback(() => {
+    const address = accountToDelete?.address;
+    if (address) {
+      dispatch(removeAccount(address));
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.AccountRemoved)
+          .addCategory(MetaMetricsEventCategory.Accounts)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: accountToDelete?.walletType,
+          })
+          .build(),
+      );
+    }
+    setAccountToDelete(null);
+  }, [accountToDelete, createEventBuilder, dispatch, trackEvent]);
+
+  const handleVisibilityToggle = useCallback(
+    async (accountGroupId: AccountGroupId, currentlyHidden: boolean) => {
+      const nextHidden = !currentlyHidden;
+      const writeId = (visibilityWriteIds.current[accountGroupId] ?? 0) + 1;
+      visibilityWriteIds.current[accountGroupId] = writeId;
+
+      setVisibilityOverrides((previous) => ({
+        ...previous,
+        [accountGroupId]: nextHidden,
+      }));
+
+      try {
+        await dispatch(setAccountGroupHidden(accountGroupId, nextHidden));
+      } finally {
+        // A later toggle owns the override until its own write settles, so only
+        // the most recent write hands the account back to the tree.
+        if (visibilityWriteIds.current[accountGroupId] === writeId) {
+          setVisibilityOverrides(
+            ({ [accountGroupId]: _settled, ...remaining }) => remaining,
+          );
+        }
+      }
+    },
+    [dispatch],
+  );
+
   const handleMenuToggle = useCallback((accountGroupId: AccountGroupId) => {
     // If the same menu is clicked, close it, otherwise open the new one
     setOpenMenuAccountId((current) =>
@@ -227,7 +344,13 @@ export const MultichainAccountList = ({
         ([groupId, groupData]) => {
           if (groupData.metadata.pinned) {
             pinned.push({ groupId, groupData, walletId });
-          } else if (groupData.metadata.hidden) {
+          } else if (
+            getEffectiveIsHidden(
+              groupId,
+              groupData.metadata.hidden,
+              visibilityOverrides,
+            )
+          ) {
             hidden.push({ groupId, groupData, walletId });
           }
         },
@@ -235,7 +358,7 @@ export const MultichainAccountList = ({
     });
 
     return { pinnedGroups: pinned, hiddenGroups: hidden };
-  }, [wallets]);
+  }, [wallets, visibilityOverrides]);
 
   const defaultHandleAccountClick = useCallback(
     (accountGroupId: AccountGroupId) => {
@@ -314,6 +437,23 @@ export const MultichainAccountList = ({
       // TODO: Implement logic for removable accounts
       const isRemovable = false;
 
+      const wallet = wallets[walletId as AccountWalletId];
+      // Only imported private-key accounts can be deleted, so they get delete
+      // mode while every other wallet gets visible/hidden mode. The two modes
+      // are mutually exclusive.
+      const isDeleteMode =
+        isEditMode && Boolean(wallet) && isPrivateKeyWallet(wallet);
+      const isVisibilityMode = isEditMode && !isDeleteMode;
+      // Hidden styling is an edit-mode affordance; outside edit mode the hidden
+      // section renders these cells with their normal appearance.
+      const isHidden =
+        isVisibilityMode &&
+        getEffectiveIsHidden(
+          groupId,
+          groupData.metadata.hidden,
+          visibilityOverrides,
+        );
+
       const isConnectedAccount = connectedAccountGroups.find(
         (accountGroup) => accountGroup.id === groupId,
       );
@@ -350,11 +490,32 @@ export const MultichainAccountList = ({
             }
             privacyMode={privacyMode}
             showDefaultAddress={showDefaultAddress}
-            walletName={
-              showWalletName
-                ? wallets[walletId as AccountWalletId]?.metadata?.name
+            isHidden={isHidden}
+            isEditMode={isEditMode}
+            isDeleteMode={isDeleteMode}
+            onVisibilityIconClick={
+              isVisibilityMode
+                ? (accountGroupId) => {
+                    handleVisibilityToggle(accountGroupId, isHidden);
+                  }
                 : undefined
             }
+            onDeleteIconClick={
+              isDeleteMode
+                ? () => {
+                    // Private key groups have exactly 1 account.
+                    const [accountId] = groupData.accounts;
+                    const address = internalAccountsById[accountId]?.address;
+                    setAccountToDelete({
+                      groupId: groupId as AccountGroupId,
+                      accountName: groupData.metadata.name,
+                      address,
+                      walletType: wallet?.type,
+                    });
+                  }
+                : undefined
+            }
+            walletName={showWalletName ? wallet?.metadata?.name : undefined}
             startAccessory={
               showAccountCheckbox ? (
                 <Box onClick={(event) => event.stopPropagation()}>
@@ -402,6 +563,10 @@ export const MultichainAccountList = ({
       openMenuAccountId,
       handleMenuToggle,
       showDefaultAddress,
+      isEditMode,
+      internalAccountsById,
+      visibilityOverrides,
+      handleVisibilityToggle,
     ],
   );
 
@@ -444,16 +609,32 @@ export const MultichainAccountList = ({
 
       Object.entries(walletData.groups || {}).forEach(
         ([groupId, groupData]) => {
-          if (!groupData.metadata?.pinned && !groupData.metadata?.hidden) {
-            accounts.push({
-              type: 'account',
-              key: `account-${groupId}`,
-              groupId,
-              groupData,
-              walletId,
-              showWalletName: false,
-            });
+          if (groupData.metadata?.pinned) {
+            return;
           }
+
+          // While editing, hidden accounts keep their place among the visible
+          // ones so hiding an account never reorders the list. Outside edit
+          // mode they belong to the separate hidden section rendered below.
+          if (
+            !isEditMode &&
+            getEffectiveIsHidden(
+              groupId,
+              groupData.metadata?.hidden,
+              visibilityOverrides,
+            )
+          ) {
+            return;
+          }
+
+          accounts.push({
+            type: 'account',
+            key: `account-${groupId}`,
+            groupId,
+            groupData,
+            walletId,
+            showWalletName: false,
+          });
         },
       );
 
@@ -487,8 +668,9 @@ export const MultichainAccountList = ({
       }
     });
 
-    // Render hidden section (if there are any hidden accounts)
-    if (hiddenGroups.length > 0) {
+    // Render hidden section (if there are any hidden accounts). Edit mode lists
+    // hidden accounts inline under their wallet instead.
+    if (!isEditMode && hiddenGroups.length > 0) {
       result.push({
         type: 'hidden-header',
         key: 'hidden-header',
@@ -519,6 +701,8 @@ export const MultichainAccountList = ({
     isHiddenAccountsExpanded,
     collapsedSectionKeys,
     showDefaultAddress,
+    isEditMode,
+    visibilityOverrides,
     t,
   ]);
 
@@ -640,6 +824,14 @@ export const MultichainAccountList = ({
           isOpen={isAccountRenameModalOpen}
           onClose={handleAccountRenameActionModalClose}
           accountGroupId={renameAccountGroupId as unknown as AccountGroupId}
+        />
+      )}
+      {accountToDelete && (
+        <AccountDeleteConfirmModal
+          isOpen
+          accountName={accountToDelete.accountName}
+          onClose={handleAccountDeleteConfirmModalClose}
+          onConfirm={handleAccountDeleteConfirm}
         />
       )}
     </>
