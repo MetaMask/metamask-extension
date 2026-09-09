@@ -74,6 +74,21 @@ describe('Sourcify', () => {
       );
     });
 
+    it('throws when the response has no ABI', async () => {
+      fetchMock.mockResolvedValue({
+        ok: true,
+        json: async () => ({ userdoc: { methods: {} } }),
+      });
+
+      await expect(
+        decodeTransactionDataWithSourcify(
+          TRANSACTION_DATA_SOURCIFY,
+          CONTRACT_ADDRESS_MOCK,
+          CHAIN_ID_MOCK,
+        ),
+      ).rejects.toThrow('Sourcify response contained no ABI');
+    });
+
     it('decodes when devdoc is present but has no methods', async () => {
       // Curve tricrypto2 0xD51a44d3 answers with devdoc: {} on mainnet
       fetchMock.mockResolvedValue({

@@ -48,7 +48,7 @@ export async function decodeTransactionDataWithSourcify(
   });
 
   if (!abi) {
-    throw new Error('ABI not found');
+    throw new Error('Sourcify response contained no ABI');
   }
 
   const contractInterface = new Interface(abi);
