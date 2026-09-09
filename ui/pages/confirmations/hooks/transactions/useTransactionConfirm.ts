@@ -1,8 +1,4 @@
-import {
-  prepareTransactionForApproval,
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta, TransactionType } from '@metamask/transaction-controller';
 import { cloneDeep } from 'lodash';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
@@ -12,9 +8,7 @@ import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import { updateAndApproveTx } from '../../../../store/actions';
-import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
-import { useGasSponsorshipPreference } from '../gas/useGasSponsorshipPreference';
 import {
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
@@ -40,10 +34,6 @@ export function useTransactionConfirm() {
 
   const { isSupported: isGaslessSupportedSTX } =
     useGaslessSupportedSmartTransactions();
-  const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const { isSponsorshipOptedOut } = useGasSponsorshipPreference(
-    transactionMeta?.chainId,
-  );
   const { onDappSwapCompleted, updateSwapWithQuoteDetailsIfRequired } =
     useDappSwapActions();
   const { shouldRedirectToHwSigningPage, redirectToHwSigningPage } =
@@ -71,10 +61,6 @@ export function useTransactionConfirm() {
     [selectedGasFeeToken],
   );
 
-  const handleGasless7702 = useCallback((tx: TransactionMeta) => {
-    tx.isExternalSign = true;
-  }, []);
-
   const {
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
@@ -95,29 +81,8 @@ export function useTransactionConfirm() {
 
     updateSwapWithQuoteDetailsIfRequired(txToApprove);
 
-    const preparedTransaction = prepareTransactionForApproval({
-      transactionMeta: txToApprove,
-      sponsorship: {
-        available: Boolean(transactionMeta.isGasFeeSponsored),
-        supported: isGaslessSupported,
-        optedOut: isSponsorshipOptedOut,
-        required: isMoneyAccountWithdraw,
-      },
-      signing: {
-        // Money Account withdrawals require their relay even when the generic
-        // gasless eligibility hook disagrees; hardware sendBundle signs locally.
-        externalSigningSupported:
-          isMoneyAccountWithdraw ||
-          (Boolean(transactionMeta.isExternalSign) &&
-            !shouldRedirectToHwSigningPage),
-      },
-    });
-    txToApprove = preparedTransaction.transactionMeta;
-
     if (isGaslessSupportedSTX) {
       handleSmartTransaction(txToApprove);
-    } else if (selectedGasFeeToken) {
-      handleGasless7702(txToApprove);
     }
 
     if (shouldRedirectToHwSigningPage) {
@@ -147,16 +112,13 @@ export function useTransactionConfirm() {
       return false;
     }
   }, [
-    handleGasless7702,
     handleSmartTransaction,
     customNonceValue,
     dispatch,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
-    isGaslessSupported,
     isGaslessSupportedSTX,
     isMoneyAccountWithdraw,
-    isSponsorshipOptedOut,
     onDappSwapCompleted,
     prepareWithdrawTransaction,
     redirectToHwSigningPage,
