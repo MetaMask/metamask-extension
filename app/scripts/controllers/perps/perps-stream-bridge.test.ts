@@ -2541,6 +2541,69 @@ describe('wallet-root Perps preload', () => {
     expect(bridge.canEmit('markets')).toBe(false);
   });
 
+  it.each([false, true])(
+    'finishes wallet initialization after leaving Perps with remount=%s',
+    async (remount) => {
+      const { api, bridge, controller, controllerApi } = setup();
+      let finishInit!: () => void;
+      let initStarted!: () => void;
+      const started = new Promise<void>((resolve) => {
+        initStarted = resolve;
+      });
+      controllerApi.perpsInit.mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            finishInit = resolve;
+            initStarted();
+          }),
+      );
+      const pending = api.perpsInit();
+      await started;
+
+      api.perpsViewActive(true);
+      api.perpsViewActive(false);
+      if (remount) {
+        api.perpsViewActive(true);
+      }
+      finishInit();
+
+      await expect(pending).resolves.toBeUndefined();
+      await api.perpsStartPreload('home');
+      expect(bridge.isActive).toBe(remount);
+      expect(bridge.canEmit('markets')).toBe(true);
+      expect(controller.subscribeToPositions).toHaveBeenCalledTimes(1);
+      expect(controller.subscribeToPrices).toHaveBeenCalledWith(
+        expect.objectContaining({ symbols: ['BTC', 'ETH'] }),
+      );
+      bridge.destroy();
+    },
+  );
+
+  it('still cancels pending wallet initialization on disconnect', async () => {
+    const { api, bridge, controller, controllerApi } = setup();
+    let finishInit!: () => void;
+    let initStarted!: () => void;
+    const started = new Promise<void>((resolve) => {
+      initStarted = resolve;
+    });
+    controllerApi.perpsInit.mockImplementationOnce(
+      () =>
+        new Promise<void>((resolve) => {
+          finishInit = resolve;
+          initStarted();
+        }),
+    );
+    const pending = api.perpsInit();
+    await started;
+
+    await bridge.bridgeApi().perpsDisconnect();
+    finishInit();
+
+    await expect(pending).rejects.toThrow('Perps connection was released');
+    expect(bridge.canEmit('markets')).toBe(false);
+    expect(controller.subscribeToPositions).not.toHaveBeenCalled();
+  });
+
   it.each(['stop', 'pending', 'failure'] as const)(
     'preserves initialized wallet streams after preload %s',
     async (reason) => {
