@@ -97,7 +97,8 @@
   "AssetsController": "object",
   "AuthenticationController": {
     "isSignedIn": "boolean",
-    "needsProfilePairing": "boolean"
+    "needsProfilePairing": "boolean",
+    "needsSocialPairing": "boolean"
   },
   "BridgeController": {
     "assetExchangeRates": "object",
@@ -346,7 +347,7 @@
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": "valueA"
+      "feature3": "valueC"
     },
     "thresholdCache": "object"
   },
