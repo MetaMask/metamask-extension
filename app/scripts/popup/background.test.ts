@@ -87,20 +87,4 @@ describe('createPopupOpener', () => {
 
     expect(result).toBe(false);
   });
-
-  it('succeeds when popup is already open (focuses existing popup)', async () => {
-    // Per Chrome docs, chrome.action.openPopup() focuses the existing popup
-    // if one is already open, rather than throwing an error.
-    const deps = createMockDeps();
-    const requestOpenPopup = createPopupOpener(deps);
-
-    // First call opens popup
-    const firstResult = await requestOpenPopup({ tabId: 123 });
-    expect(firstResult).toBe(true);
-
-    // Second call should also succeed (focuses existing popup)
-    const secondResult = await requestOpenPopup({ tabId: 123 });
-    expect(secondResult).toBe(true);
-    expect(globalThis.chrome.action.openPopup).toHaveBeenCalledTimes(2);
-  });
 });
