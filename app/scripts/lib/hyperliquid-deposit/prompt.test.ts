@@ -60,19 +60,19 @@ describe('showHyperliquidDepositPromptApproval', () => {
     ).resolves.toBeUndefined();
   });
 
-  describe('openInPopup', () => {
+  describe('requestOpenPopup', () => {
     it('uses add() instead of addAndShowApprovalRequest() when popup opens successfully', async () => {
       const approvalController = createApprovalController();
-      const openInPopup = jest.fn().mockResolvedValue(true);
+      const requestOpenPopup = jest.fn().mockResolvedValue(true);
 
       await showHyperliquidDepositPromptApproval({
         approvalController,
         origin,
         selectedAddress,
-        openInPopup,
+        requestOpenPopup,
       });
 
-      expect(openInPopup).toHaveBeenCalled();
+      expect(requestOpenPopup).toHaveBeenCalledWith({ tabId: undefined });
       expect(approvalController.add).toHaveBeenCalledWith({
         origin,
         requestData: { selectedAddress },
@@ -83,18 +83,33 @@ describe('showHyperliquidDepositPromptApproval', () => {
       ).not.toHaveBeenCalled();
     });
 
-    it('falls back to addAndShowApprovalRequest() when popup fails to open', async () => {
+    it('passes tabId to requestOpenPopup when provided', async () => {
       const approvalController = createApprovalController();
-      const openInPopup = jest.fn().mockResolvedValue(false);
+      const requestOpenPopup = jest.fn().mockResolvedValue(true);
 
       await showHyperliquidDepositPromptApproval({
         approvalController,
         origin,
         selectedAddress,
-        openInPopup,
+        tabId: 123,
+        requestOpenPopup,
       });
 
-      expect(openInPopup).toHaveBeenCalled();
+      expect(requestOpenPopup).toHaveBeenCalledWith({ tabId: 123 });
+    });
+
+    it('falls back to addAndShowApprovalRequest() when popup fails to open', async () => {
+      const approvalController = createApprovalController();
+      const requestOpenPopup = jest.fn().mockResolvedValue(false);
+
+      await showHyperliquidDepositPromptApproval({
+        approvalController,
+        origin,
+        selectedAddress,
+        requestOpenPopup,
+      });
+
+      expect(requestOpenPopup).toHaveBeenCalled();
       expect(approvalController.add).not.toHaveBeenCalled();
       expect(approvalController.addAndShowApprovalRequest).toHaveBeenCalledWith(
         {
@@ -105,18 +120,20 @@ describe('showHyperliquidDepositPromptApproval', () => {
       );
     });
 
-    it('falls back to addAndShowApprovalRequest() when openInPopup throws', async () => {
+    it('falls back to addAndShowApprovalRequest() when requestOpenPopup throws', async () => {
       const approvalController = createApprovalController();
-      const openInPopup = jest.fn().mockRejectedValue(new Error('Popup error'));
+      const requestOpenPopup = jest
+        .fn()
+        .mockRejectedValue(new Error('Popup error'));
 
       await showHyperliquidDepositPromptApproval({
         approvalController,
         origin,
         selectedAddress,
-        openInPopup,
+        requestOpenPopup,
       });
 
-      expect(openInPopup).toHaveBeenCalled();
+      expect(requestOpenPopup).toHaveBeenCalled();
       expect(approvalController.add).not.toHaveBeenCalled();
       expect(approvalController.addAndShowApprovalRequest).toHaveBeenCalledWith(
         {
@@ -130,14 +147,14 @@ describe('showHyperliquidDepositPromptApproval', () => {
     it('silently handles rejection when add() fails after popup opens', async () => {
       const approvalController = createApprovalController();
       approvalController.add.mockRejectedValue(new Error('Add failed'));
-      const openInPopup = jest.fn().mockResolvedValue(true);
+      const requestOpenPopup = jest.fn().mockResolvedValue(true);
 
       await expect(
         showHyperliquidDepositPromptApproval({
           approvalController,
           origin,
           selectedAddress,
-          openInPopup,
+          requestOpenPopup,
         }),
       ).resolves.toBeUndefined();
     });

@@ -10,7 +10,10 @@ import {
 } from '@metamask/utils';
 import log from 'loglevel';
 import { HYPERLIQUID_ORIGIN } from '../../../../shared/constants/defi-referrals';
-import { isOriginAwareJsonRpcRequest } from '../rpc-request-utils';
+import {
+  isOriginAwareJsonRpcRequest,
+  isTabAwareJsonRpcRequest,
+} from '../rpc-request-utils';
 import {
   HYPERLIQUID_APPROVE_AGENT_PRIMARY_TYPE,
   HYPERLIQUID_SIGN_TRANSACTION_DOMAIN_NAME,
@@ -22,6 +25,7 @@ const TYPED_DATA_PARAM_INDEX = 1;
 export type HyperliquidDepositContext = {
   origin: string;
   signerAddress?: string;
+  tabId?: number;
   typedData: Record<string, unknown>;
 };
 
@@ -119,6 +123,7 @@ function getHyperliquidApproveAgentContext(
   return {
     origin: req.origin,
     signerAddress: getSignerAddressFromRequest(req),
+    tabId: isTabAwareJsonRpcRequest(req) ? req.tabId : undefined,
     typedData,
   };
 }

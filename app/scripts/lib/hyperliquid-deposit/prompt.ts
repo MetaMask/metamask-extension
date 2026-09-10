@@ -11,13 +11,10 @@ type ShowHyperliquidDepositPromptApprovalOptions = {
   approvalController: HyperliquidDepositPromptApprovalController;
   origin: string;
   selectedAddress?: string;
-  /**
-   * Optional callback to open the popup instead of letting triggerUi decide.
-   * If provided and returns true, the approval is added without triggering UI
-   * (since the popup will show it). If it returns false or throws, falls back
-   * to the standard addAndShowApprovalRequest flow.
-   */
-  openInPopup?: () => Promise<boolean>;
+  tabId?: number;
+  // Optional function to open the popup. If provided and returns true, the
+  // approval is added without triggering UI (the popup will show it).
+  requestOpenPopup?: (options?: { tabId?: number }) => Promise<boolean>;
 };
 
 /**
@@ -28,13 +25,15 @@ type ShowHyperliquidDepositPromptApprovalOptions = {
  * @param options.approvalController - The approval controller instance.
  * @param options.origin - The origin of the signature request.
  * @param options.selectedAddress - The address that signed the request.
- * @param options.openInPopup - Optional callback to open popup first.
+ * @param options.tabId - The tab ID of the dapp that triggered the approval.
+ * @param options.requestOpenPopup - Optional function to open popup.
  */
 export async function showHyperliquidDepositPromptApproval({
   approvalController,
   origin,
   selectedAddress,
-  openInPopup,
+  tabId,
+  requestOpenPopup,
 }: ShowHyperliquidDepositPromptApprovalOptions): Promise<void> {
   if (
     approvalController.hasRequest({
@@ -53,12 +52,12 @@ export async function showHyperliquidDepositPromptApproval({
     type: HYPERLIQUID_DEPOSIT_PROMPT_APPROVAL_TYPE,
   };
 
-  // If openInPopup is provided, open popup first then add approval.
-  // This ensures the notification is closed BEFORE the approval is added,
+  // If requestOpenPopup is true, open popup first then add approval.
+  // This is so the notification is closed before the approval is added,
   // preventing the notification from showing the deposit prompt.
-  if (openInPopup) {
+  if (requestOpenPopup) {
     try {
-      const popupOpened = await openInPopup();
+      const popupOpened = await requestOpenPopup({ tabId });
       if (popupOpened) {
         approvalController.add(approvalRequest).catch(() => {
           // User dismissed or approval failed - both are expected flows

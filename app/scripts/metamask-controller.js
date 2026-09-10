@@ -245,6 +245,7 @@ import { createDefiReferralMiddleware } from './lib/defi-referrals/createDefiRef
 import { isHyperliquidDepositPromptEligible } from './lib/hyperliquid-deposit/eligibility';
 import { showHyperliquidDepositPromptApproval } from './lib/hyperliquid-deposit/prompt';
 import { createHyperliquidDepositMiddleware } from './lib/hyperliquid-deposit/createHyperliquidDepositMiddleware';
+import { createPopupOpener } from './popup/background';
 
 import {
   diffMap,
@@ -5482,8 +5483,11 @@ export default class MetamaskController extends EventEmitter {
               remoteFeatureFlagController: this.remoteFeatureFlagController,
               signerAddress,
             }),
-          showDepositPrompt: ({ origin: promptOrigin, signerAddress }) => {
-            // Check if user prefers popup over sidepanel
+          showDepositPrompt: ({
+            origin: promptOrigin,
+            signerAddress,
+            tabId: sourceTabId,
+          }) => {
             const useSidePanelAsDefault =
               this.preferencesController.state.preferences
                 ?.useSidePanelAsDefault ?? true;
@@ -5492,47 +5496,14 @@ export default class MetamaskController extends EventEmitter {
               approvalController: this.approvalController,
               origin: promptOrigin,
               selectedAddress: signerAddress,
-              // For popup users: open popup directly so the deposit prompt
-              // appears there, avoiding window-switching issues later.
-              openInPopup: useSidePanelAsDefault
+              tabId: sourceTabId,
+              requestOpenPopup: useSidePanelAsDefault
                 ? undefined
-                : async () => {
-                    if (!globalThis.chrome?.action?.openPopup) {
-                      return false;
-                    }
-                    try {
-                      // Close the notification window FIRST (before approval is added).
-                      // This ensures triggerUi won't be called since there are no
-                      // pending approvals yet when the notification closes.
-                      const notificationWindowId =
-                        this.appStateController.getCurrentPopupId();
-                      if (notificationWindowId) {
-                        this.notificationManager.markAsAutomaticallyClosed();
-                        await this.extension.windows
-                          .remove(notificationWindowId)
-                          .catch(() => {
-                            // Window may already be closed
-                          });
-                      }
-
-                      // Open popup in the Hyperliquid tab's window
-                      const tabs = await this.extension.tabs.query({
-                        url: '*://app.hyperliquid.xyz/*',
-                      });
-                      const windowId = tabs[0]?.windowId;
-                      if (windowId) {
-                        await this.extension.windows.update(windowId, {
-                          focused: true,
-                        });
-                      }
-                      await globalThis.chrome.action.openPopup(
-                        windowId ? { windowId } : undefined,
-                      );
-                      return true;
-                    } catch {
-                      return false;
-                    }
-                  },
+                : createPopupOpener({
+                    appStateController: this.appStateController,
+                    extension: this.extension,
+                    notificationManager: this.notificationManager,
+                  }),
             });
           },
         }),
