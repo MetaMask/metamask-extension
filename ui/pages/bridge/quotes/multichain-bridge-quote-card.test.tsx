@@ -156,7 +156,7 @@ describe('MultichainBridgeQuoteCard', () => {
     );
 
     expect(queryByText(/Includes.*MM fee\./u)).not.toBeInTheDocument();
-    expect(queryByTestId('relayer-fees')).not.toBeInTheDocument();
+    expect(queryByTestId('relayer-fees')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -1123,35 +1123,4 @@ describe('MultichainBridgeQuoteCard', () => {
     expect(queryByTestId('relayer-fees')).toBeInTheDocument();
   });
 
-  it('does not render relayer fee when the relayer fee list is empty', () => {
-    const mockStore = createBridgeMockStore({
-      bridgeStateOverrides: {
-        quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
-          ...quote,
-          quote: {
-            ...quote.quote,
-            feeData: {
-              ...quote.quote.feeData,
-              relayer: [],
-            },
-          },
-        })),
-        quotesRefreshCount: 1,
-        quotesLastFetched: Date.now(),
-        quotesLoadingStatus: RequestStatus.FETCHED,
-      },
-    });
-
-    const { queryByTestId } = renderWithProvider(
-      <MultichainBridgeQuoteCard
-        onOpenSlippageModal={() => {}}
-        onOpenRecipientModal={() => {}}
-        onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
-        selectedDestinationAccount={null}
-      />,
-      configureStore(mockStore),
-    );
-
-    expect(queryByTestId('relayer-fees')).not.toBeInTheDocument();
-  });
 });

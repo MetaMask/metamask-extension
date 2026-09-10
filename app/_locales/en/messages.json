@@ -6130,9 +6130,6 @@
   "networkMenuHeading": {
     "message": "Select a network"
   },
-  "relayerFee": {
-    "message": "Relayer fee"
-  },
   "networkName": {
     "message": "Network name"
   },
@@ -6191,6 +6188,9 @@
   },
   "networkURL": {
     "message": "Network URL"
+  },
+  "relayerFee": {
+    "message": "Relayer fee"
   },
   "networkURLDefinition": {
     "message": "The URL used to access this network."
