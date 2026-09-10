@@ -1,6 +1,6 @@
 import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
-import { logger } from '@sentry/core';
+import { debug } from '@sentry/core';
 import { cloneDeep, escapeRegExp } from 'lodash';
 import browser from 'webextension-polyfill';
 import { BROWSER_SHUTTING_DOWN_ERROR } from '../../../shared/constants/errors';
@@ -744,10 +744,12 @@ function integrateLogging() {
     return;
   }
 
-  // Sentry exposes a mutable logger singleton. In debug mode we intentionally
-  // override its methods so SDK-internal logs flow through our module logger.
-  const sentrySdkLogger = logger;
+  // The internal debug logger is mutable; the public `logger` ESM namespace
+  // is read-only. Route SDK-internal logs through our module logger.
+  const sentrySdkLogger = debug;
 
+  // Keep SDK warnings on console.warn, preserving their native severity;
+  // only log/error use the existing internal debug channel.
   for (const loggerType of ['log', 'error']) {
     sentrySdkLogger[loggerType] = (...args) => {
       const message = args[0].replace(`Sentry Logger [${loggerType}]: `, '');
