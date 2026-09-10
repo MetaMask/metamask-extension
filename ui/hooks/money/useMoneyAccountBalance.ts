@@ -12,6 +12,10 @@ import { MUSD_UNIT } from '../../../shared/lib/money/withdrawable-balance';
 import { moneyFormatUsd } from '../../helpers/money/format';
 import { projectVmusdValueInMusdToHuman } from '../../helpers/money/withdrawable-balance';
 import { invalidateMoneyAccountBalanceCaches } from '../../helpers/money/invalidate-balance-caches';
+import {
+  clearReportedMoneyQueryError,
+  reportMoneyQueryErrorOnce,
+} from '../../helpers/money/report-money-error';
 import { setLastKnownMoneyBalance } from '../../ducks/money-balance';
 import {
   isPersistedMoneyBalanceUsable,
@@ -112,6 +116,32 @@ export function useMoneyAccountBalance({
   const balanceSource = moneyBalanceQuery.data?.source;
   const usedFallback = moneyBalanceQuery.data?.usedFallback === true;
   const isBalanceDegraded = usedFallback;
+
+  useEffect(() => {
+    if (!moneyBalanceQuery.isError) {
+      clearReportedMoneyQueryError('fetchBalanceWithFallback');
+      return;
+    }
+    reportMoneyQueryErrorOnce(
+      'fetchBalanceWithFallback',
+      '[Money Account] Balance fetch failed',
+      moneyBalanceQuery.error,
+      { query: 'fetchBalanceWithFallback' },
+    );
+  }, [moneyBalanceQuery.error, moneyBalanceQuery.isError]);
+
+  useEffect(() => {
+    if (!vaultApyQuery.isError) {
+      clearReportedMoneyQueryError('getVaultApy');
+      return;
+    }
+    reportMoneyQueryErrorOnce(
+      'getVaultApy',
+      '[Money Account] Vault APY fetch failed',
+      vaultApyQuery.error,
+      { query: 'getVaultApy' },
+    );
+  }, [vaultApyQuery.error, vaultApyQuery.isError]);
 
   const refetchBalance = useCallback(
     () =>
