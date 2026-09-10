@@ -8732,9 +8732,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:@metamask-previews/utils@11.12.1-preview-c44fd50":
-  version: 11.12.1-preview-c44fd50
-  resolution: "@metamask-previews/utils@npm:11.12.1-preview-c44fd50"
+"@metamask/utils@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "@metamask/utils@npm:12.0.0"
   dependencies:
     "@ethereumjs/tx": "npm:^5.4.0"
     "@metamask/scure-bip39": "npm:^2.1.1"
@@ -8748,7 +8748,7 @@ __metadata:
     pony-cause: "npm:^2.1.10"
     semver: "npm:^7.6.3"
     uuid: "npm:^9.0.1"
-  checksum: 10/a45282793b29d8cfecba27834796a606673b2ba403b893d22593211a2afcf05ae7ddcb871dee228175fdf1b00ab89721a2d2aac1ba5141b78f9b069338507337
+  checksum: 10/3a2c592283b081ac627262d903bbac84d7ce81896c86e5839ffee4c5cbc48b161cc1599c4b57f74bcc576d8b27bb517ced4c9e4e7b31e69e3113873acfde5f03
   languageName: node
   linkType: hard
 
@@ -31426,7 +31426,7 @@ __metadata:
     "@metamask/transaction-pay-controller": "npm:^27.1.0"
     "@metamask/tron-wallet-snap": "npm:^3.2.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
-    "@metamask/utils": "npm:^11.12.1"
+    "@metamask/utils": "npm:^12.0.0"
     "@metamask/wallet": "npm:^12.0.3"
     "@mui/material": "npm:^5.18.0"
     "@mui/system": "npm:^5.18.0"
