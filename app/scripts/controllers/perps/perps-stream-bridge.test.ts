@@ -129,6 +129,123 @@ function createBridge(overrides: BridgeOverrides = {}) {
 
 describe('PerpsStreamBridge', () => {
   describe('shared account transitions', () => {
+    it.each(['prices', 'candles'] as const)(
+      'waits for another UI account disconnect before initializing %s',
+      async (channel) => {
+        let address = '0xaaa';
+        const first = createBridge({ getSelectedAddress: () => address });
+        const second = createBridge({
+          controller: first.controller,
+          controllerApi: first.controllerApi,
+          getSelectedAddress: () => address,
+        });
+        const init = first.bridge.bridgeApi().perpsInitForAccount as (
+          selectedAddress: string,
+        ) => Promise<unknown>;
+        await init(address);
+        const events: string[] = [];
+        let finishDisconnect!: () => void;
+        let startDisconnect!: () => void;
+        const disconnectStarted = new Promise<void>((resolve) => {
+          startDisconnect = resolve;
+        });
+        first.controllerApi.perpsDisconnect.mockImplementationOnce(
+          () =>
+            new Promise<void>((resolve) => {
+              events.push('disconnect-start');
+              startDisconnect();
+              finishDisconnect = () => {
+                events.push('disconnect-end');
+                resolve();
+              };
+            }),
+        );
+        first.controllerApi.perpsInit.mockImplementation(async () => {
+          events.push('init');
+        });
+        address = '0xbbb';
+        const transition = init(address);
+        await disconnectStarted;
+        const api = second.bridge.bridgeApi();
+        const activate = (
+          channel === 'prices'
+            ? api.perpsActivatePriceStream
+            : api.perpsActivateCandleStream
+        ) as (params: Record<string, unknown>) => Promise<void>;
+        const activation = activate(
+          channel === 'prices'
+            ? { symbols: ['BTC'] }
+            : { symbol: 'BTC', interval: '1h' },
+        );
+        try {
+          await Promise.resolve();
+          expect(events).toStrictEqual(['disconnect-start']);
+          finishDisconnect();
+          await Promise.all([transition, activation]);
+          expect(events).toStrictEqual([
+            'disconnect-start',
+            'disconnect-end',
+            'init',
+            'init',
+          ]);
+          const controller = first.controller as unknown as ReturnType<
+            typeof createMockController
+          >;
+          if (channel === 'prices') {
+            expect(controller.subscribeToPrices).toHaveBeenCalledTimes(1);
+          } else {
+            expect(controller.subscribeToCandles).toHaveBeenCalledTimes(1);
+          }
+        } finally {
+          finishDisconnect();
+          await Promise.all([transition, activation]);
+          first.bridge.dispose();
+          second.bridge.dispose();
+        }
+      },
+    );
+
+    it('waits for stream initialization before starting account disconnect', async () => {
+      let address = '0xaaa';
+      const { bridge, controllerApi } = createBridge({
+        getSelectedAddress: () => address,
+      });
+      const api = bridge.bridgeApi() as unknown as {
+        perpsInitForAccount: (selectedAddress: string) => Promise<unknown>;
+        perpsActivatePriceStream: (params: {
+          symbols: string[];
+        }) => Promise<void>;
+      };
+      await api.perpsInitForAccount(address);
+      let finishInit!: () => void;
+      let startInit!: () => void;
+      const initStarted = new Promise<void>((resolve) => {
+        startInit = resolve;
+      });
+      controllerApi.perpsInit.mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            finishInit = resolve;
+            startInit();
+          }),
+      );
+      const activation = api.perpsActivatePriceStream({ symbols: ['BTC'] });
+      await initStarted;
+      address = '0xbbb';
+      const transition = api.perpsInitForAccount(address);
+      try {
+        await new Promise<void>((resolve) => setImmediate(resolve));
+        expect(controllerApi.perpsDisconnect).not.toHaveBeenCalled();
+        finishInit();
+        await Promise.all([activation, transition]);
+        expect(controllerApi.perpsDisconnect).toHaveBeenCalledTimes(1);
+      } finally {
+        finishInit();
+        await Promise.all([activation, transition]);
+        bridge.dispose();
+      }
+    });
+
     it('keeps the first window streams alive when a second window handles the same account change later', async () => {
       let selectedAddress = '0xaaa';
       const controller = createMockController();
@@ -1501,11 +1618,16 @@ describe('PerpsStreamBridge', () => {
     it('does not subscribe when destroy() runs while init is pending', async () => {
       const controller = createMockController();
       let resolveInit: (() => void) | undefined;
+      let startInit!: () => void;
+      const initStarted = new Promise<void>((resolve) => {
+        startInit = resolve;
+      });
       const controllerApi = createMockControllerApi();
       controllerApi.perpsInit.mockImplementation(
         () =>
           new Promise<void>((resolve) => {
             resolveInit = resolve;
+            startInit();
           }),
       );
       const { bridge } = createBridge({
@@ -1518,8 +1640,7 @@ describe('PerpsStreamBridge', () => {
       ) => Promise<void>;
 
       const pending = activate({ symbol: 'BTC', interval: '5m' });
-      // Let the activation queue behind init, then tear the bridge down.
-      await Promise.resolve();
+      await initStarted;
       bridge.destroy();
 
       resolveInit?.();
@@ -1532,11 +1653,10 @@ describe('PerpsStreamBridge', () => {
       const controller = createMockController();
       let resolveInit: (() => void) | undefined;
       const controllerApi = createMockControllerApi();
-      controllerApi.perpsInit.mockImplementation(
-        () =>
-          new Promise<void>((resolve) => {
-            resolveInit = resolve;
-          }),
+      controllerApi.perpsInit.mockReturnValue(
+        new Promise<void>((resolve) => {
+          resolveInit = resolve;
+        }),
       );
       const { bridge } = createBridge({
         controller: controller as unknown as PerpsController,
@@ -3211,6 +3331,10 @@ describe('wallet-root Perps preload', () => {
     async (change) => {
       let terminal = false;
       let resolveMarkets!: (markets: never) => void;
+      let startMarkets!: () => void;
+      const marketsStarted = new Promise<void>((resolve) => {
+        startMarkets = resolve;
+      });
       const { api, controller, emit } = setup({
         isTerminalBackendEnabled: () => terminal,
       });
@@ -3218,13 +3342,11 @@ describe('wallet-root Perps preload', () => {
         () =>
           new Promise((resolve) => {
             resolveMarkets = resolve;
+            startMarkets();
           }),
       );
       const preload = api.perpsStartPreload('home');
-      // Advance the init and ping continuations to the controlled market response.
-      await Promise.resolve();
-      await Promise.resolve();
-      await Promise.resolve();
+      await marketsStarted;
       if (change === 'provider') {
         controller.state.activeProvider = 'aggregated';
       }
