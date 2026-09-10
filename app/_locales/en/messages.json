@@ -7536,10 +7536,6 @@
   "perpsFilterIndex": {
     "message": "Index"
   },
-  "perpsFilterMore": {
-    "message": "More",
-    "description": "Trigger of the menu holding the market categories that do not fit on one line"
-  },
   "perpsFilterNew": {
     "message": "New"
   },
@@ -7638,7 +7634,7 @@
   },
   "perpsMarketCategories": {
     "message": "Market categories",
-    "description": "Accessible name of the Perps tab row of market category pills"
+    "description": "Accessible name of the market list group of category pills"
   },
   "perpsMarketNotFound": {
     "message": "Market not found"

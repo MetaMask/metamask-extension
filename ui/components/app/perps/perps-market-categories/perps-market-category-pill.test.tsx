@@ -13,7 +13,11 @@ const renderPill = (
   onPress = jest.fn(),
 ) => {
   renderWithProvider(
-    <PerpsMarketCategoryPill category={category} onPress={onPress} />,
+    <PerpsMarketCategoryPill
+      category={category}
+      onPress={onPress}
+      onClear={jest.fn()}
+    />,
     mockStore,
   );
   return onPress;
@@ -54,11 +58,30 @@ describe('PerpsMarketCategoryPill', () => {
     expect(pill).not.toHaveAttribute('tabindex', '-1');
   });
 
-  it('does not claim a pressed state, because the pill navigates rather than toggles', () => {
+  it('reports an unpressed state while another category is active', () => {
     renderPill();
 
     expect(
       screen.getByTestId('perps-market-categories-pill-crypto'),
-    ).not.toHaveAttribute('aria-pressed');
+    ).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('clears the filter instead of reselecting when it is already active', () => {
+    const onPress = jest.fn();
+    const onClear = jest.fn();
+    renderWithProvider(
+      <PerpsMarketCategoryPill
+        category="crypto"
+        onPress={onPress}
+        onClear={onClear}
+        isActive
+      />,
+      mockStore,
+    );
+
+    fireEvent.click(screen.getByTestId('perps-market-categories-pill-crypto'));
+
+    expect(onClear).toHaveBeenCalledTimes(1);
+    expect(onPress).not.toHaveBeenCalled();
   });
 });
