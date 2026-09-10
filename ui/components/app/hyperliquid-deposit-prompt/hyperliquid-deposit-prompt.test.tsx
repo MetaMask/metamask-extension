@@ -31,15 +31,13 @@ import { HyperliquidDepositPrompt } from './hyperliquid-deposit-prompt';
 jest.mock('../../../pages/confirmations/hooks/send/useSendTokens');
 
 const mockStartPerpsDeposit = jest.fn();
-let mockIsStartingDeposit = false;
-const mockUsePerpsDepositConfirmation = jest.fn(() => ({
-  isLoading: mockIsStartingDeposit,
+const mockUsePerpsDepositConfirmation = jest.fn().mockReturnValue({
+  isLoading: false,
   trigger: mockStartPerpsDeposit,
-}));
+});
 jest.mock('../perps/hooks/usePerpsDepositConfirmation', () => ({
-  usePerpsDepositConfirmation: (
-    ...args: Parameters<typeof mockUsePerpsDepositConfirmation>
-  ) => mockUsePerpsDepositConfirmation(...args),
+  usePerpsDepositConfirmation: (...args: unknown[]) =>
+    mockUsePerpsDepositConfirmation(...args),
 }));
 
 const mockTrackEvent = jest.fn();
@@ -166,7 +164,10 @@ const renderComponent = (
 describe('HyperliquidDepositPrompt', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockIsStartingDeposit = false;
+    mockUsePerpsDepositConfirmation.mockReturnValue({
+      isLoading: false,
+      trigger: mockStartPerpsDeposit,
+    });
     mockSelectBlockedPayTokens.mockReturnValue({
       chainIds: [],
       tokens: [],
@@ -265,7 +266,10 @@ describe('HyperliquidDepositPrompt', () => {
   });
 
   it('disables No thanks while a deposit is being started', () => {
-    mockIsStartingDeposit = true;
+    mockUsePerpsDepositConfirmation.mockReturnValue({
+      isLoading: true,
+      trigger: mockStartPerpsDeposit,
+    });
 
     renderComponent();
 
