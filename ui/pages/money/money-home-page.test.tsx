@@ -18,6 +18,9 @@ const mockUseMoneyActivityItems = jest.fn();
 const mockUseMoneyActivityItemClick = jest.fn();
 const mockUseMoneyAccountDeposit = jest.fn();
 const mockInitiateDeposit = jest.fn();
+const mockUseMoneyAccountWithdrawal = jest.fn();
+const mockInitiateWithdrawal = jest.fn();
+const mockUseTriggerMoneyUpgrade = jest.fn();
 const mockNavigate = jest.fn();
 const mockSelectMoneyEarningSectionEnabled = jest.mocked(
   selectMoneyEarningSectionEnabled,
@@ -88,6 +91,13 @@ jest.mock('../../hooks/money/use-money-activity-items', () => ({
 }));
 jest.mock('../../hooks/money/useMoneyAccountDeposit', () => ({
   useMoneyAccountDeposit: () => mockUseMoneyAccountDeposit(),
+}));
+jest.mock('../../hooks/money/useMoneyAccountWithdrawal', () => ({
+  useMoneyAccountWithdrawal: () => mockUseMoneyAccountWithdrawal(),
+}));
+jest.mock('../../hooks/money/use-trigger-money-upgrade', () => ({
+  useTriggerMoneyUpgrade: (options: unknown) =>
+    mockUseTriggerMoneyUpgrade(options),
 }));
 
 jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
@@ -218,6 +228,12 @@ describe('MoneyHomePage', () => {
     expect(
       screen.queryByTestId(/money-activity-row-/u),
     ).not.toBeInTheDocument();
+  });
+
+  it('triggers the Money account upgrade once the account is available', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(mockUseTriggerMoneyUpgrade).toHaveBeenCalledWith({ enabled: true });
   });
 
   it('keeps groundwork actions other than the transfer entry points inert', () => {
