@@ -2,20 +2,13 @@ import { createPopupOpener } from './background';
 
 describe('createPopupOpener', () => {
   const createMockDeps = () => ({
-    appStateController: {
-      getCurrentPopupId: jest.fn().mockReturnValue(undefined),
-    },
     extension: {
       tabs: {
         get: jest.fn().mockResolvedValue({ windowId: 789 }),
       },
       windows: {
-        remove: jest.fn().mockResolvedValue(undefined),
         update: jest.fn().mockResolvedValue(undefined),
       },
-    },
-    notificationManager: {
-      markAsAutomaticallyClosed: jest.fn(),
     },
   });
 
@@ -69,20 +62,6 @@ describe('createPopupOpener', () => {
     });
   });
 
-  it('closes existing notification before opening popup', async () => {
-    const deps = createMockDeps();
-    deps.appStateController.getCurrentPopupId.mockReturnValue(456);
-
-    const requestOpenPopup = createPopupOpener(deps);
-    const result = await requestOpenPopup();
-
-    expect(result).toBe(true);
-    expect(
-      deps.notificationManager.markAsAutomaticallyClosed,
-    ).toHaveBeenCalled();
-    expect(deps.extension.windows.remove).toHaveBeenCalledWith(456);
-  });
-
   it('continues even if tab.get fails', async () => {
     const deps = createMockDeps();
     deps.extension.tabs.get.mockRejectedValue(new Error('Tab not found'));
@@ -107,16 +86,16 @@ describe('createPopupOpener', () => {
     expect(result).toBe(false);
   });
 
-  it('continues even if notification window removal fails', async () => {
+  it('succeeds when popup is already open (focuses existing popup)', async () => {
     const deps = createMockDeps();
-    deps.appStateController.getCurrentPopupId.mockReturnValue(456);
-    deps.extension.windows.remove.mockRejectedValue(
-      new Error('Window not found'),
-    );
-
     const requestOpenPopup = createPopupOpener(deps);
-    const result = await requestOpenPopup();
 
-    expect(result).toBe(true);
+    const firstResult = await requestOpenPopup({ tabId: 123 });
+    expect(firstResult).toBe(true);
+
+    // Second call should also succeed (focuses existing popup)
+    const secondResult = await requestOpenPopup({ tabId: 123 });
+    expect(secondResult).toBe(true);
+    expect(globalThis.chrome.action.openPopup).toHaveBeenCalledTimes(2);
   });
 });

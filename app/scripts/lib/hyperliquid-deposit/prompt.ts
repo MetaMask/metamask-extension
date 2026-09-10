@@ -52,9 +52,8 @@ export async function showHyperliquidDepositPromptApproval({
     type: HYPERLIQUID_DEPOSIT_PROMPT_APPROVAL_TYPE,
   };
 
-  // If requestOpenPopup is true, open popup first then add approval.
-  // This is so the notification is closed before the approval is added,
-  // preventing the notification from showing the deposit prompt.
+  // If requestOpenPopup is provided, try to open popup first.
+  // The callback handles any cleanup (e.g., closing notification) on success.
   if (requestOpenPopup) {
     try {
       const popupOpened = await requestOpenPopup({ tabId });
