@@ -193,6 +193,13 @@ export type AppStateControllerState = {
    * Used to avoid immediately re-prompting biometrics after the user manually locks the wallet.
    */
   passkeyAutoUnlockSuppressed: boolean;
+
+  /**
+   * The entry point that initiated the last Perps deposit flow (e.g.
+   * 'hyperliquid_deposit_prompt'). Persisted so the deposit-completion toast
+   * can show entry-point-specific copy.
+   */
+  lastPerpsDepositEntryPoint?: string;
 };
 
 const controllerName = 'AppStateController';
@@ -327,6 +334,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   dappSwapComparisonData: {},
   storageWriteErrorType: null,
   passkeyAutoUnlockSuppressed: false,
+  lastPerpsDepositEntryPoint: undefined,
   ...getInitialStateOverrides(),
 });
 
@@ -697,6 +705,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
+  lastPerpsDepositEntryPoint: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
 };
 
 const MESSENGER_EXPOSED_METHODS = [
@@ -735,6 +749,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setIsWalletResetInProgress',
   'setLastActiveTime',
   'setLastInteractedConfirmationInfo',
+  'setLastPerpsDepositEntryPoint',
   'setLastUpdatedAt',
   'setLastUpdatedFromVersion',
   'setLastViewedUserSurvey',
@@ -1493,6 +1508,19 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.lastInteractedConfirmationInfo = lastInteractedConfirmationInfo;
+    });
+  }
+
+  /**
+   * Sets the entry point that initiated the last Perps deposit flow.
+   * Used to show entry-point-specific toast copy (e.g. Hyperliquid deposit
+   * prompt) even when the popup closes and reopens during the transaction.
+   *
+   * @param entryPoint - The entry point identifier, or undefined to clear.
+   */
+  setLastPerpsDepositEntryPoint(entryPoint: string | undefined): void {
+    this.update((state) => {
+      state.lastPerpsDepositEntryPoint = entryPoint;
     });
   }
 

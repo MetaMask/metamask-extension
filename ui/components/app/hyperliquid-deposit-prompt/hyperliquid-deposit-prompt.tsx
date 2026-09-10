@@ -40,7 +40,10 @@ import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
-import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
+import {
+  setLastPerpsDepositEntryPoint,
+  upsertTransactionUIMetricsFragment,
+} from '../../../store/actions';
 import { TokenIcon } from '../../../pages/confirmations/components/token-icon/token-icon';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import { ConfirmationLoader } from '../../../pages/confirmations/hooks/useConfirmationNavigation';
@@ -286,6 +289,9 @@ export const HyperliquidDepositPrompt: React.FC<
         mm_pay_entry_point: HYPERLIQUID_DEPOSIT_PROMPT,
       },
     });
+
+    // Persist the entry point so the deposit toast can show custom copy
+    setLastPerpsDepositEntryPoint(HYPERLIQUID_DEPOSIT_PROMPT);
 
     if (displayToken?.address && displayToken.chainId) {
       try {

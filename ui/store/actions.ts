@@ -7495,6 +7495,18 @@ export function setPerpsTabBadgeSeen(value: boolean) {
 }
 
 /**
+ * Persist the entry point that initiated the last Perps deposit flow.
+ * Used to show entry-point-specific toast copy.
+ *
+ * @param entryPoint - The entry point identifier, or undefined to clear.
+ */
+export function setLastPerpsDepositEntryPoint(entryPoint: string | undefined) {
+  return submitRequestToBackground('setLastPerpsDepositEntryPoint', [
+    entryPoint,
+  ]);
+}
+
+/**
  * Persist a dismissed mUSD asset-detail CTA key (chainId-tokenAddress).
  * Stored in AppStateController until uninstall.
  *
