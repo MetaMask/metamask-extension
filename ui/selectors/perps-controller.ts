@@ -138,9 +138,9 @@ export const selectPerpsLastDepositResult = (state: PerpsState) =>
   state.metamask.lastDepositResult ?? null;
 
 export const selectPerpsLastDepositEntryPoint = (state: {
-  metamask: { lastPerpsDepositEntryPoint: string | null };
+  metamask: { lastPerpsDepositEntryPoint?: string | null };
 }): string | null => {
-  return state.metamask.lastPerpsDepositEntryPoint;
+  return state.metamask.lastPerpsDepositEntryPoint ?? null;
 };
 
 export const selectPerpsWithdrawInProgress = (state: PerpsState): boolean =>

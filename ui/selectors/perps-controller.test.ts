@@ -411,14 +411,14 @@ describe('perps-controller selectors', () => {
       ).toBe('hyperliquid_deposit_prompt');
     });
 
-    it('returns undefined when no entry point is set', () => {
+    it('returns null when no entry point is set', () => {
       expect(
         selectPerpsLastDepositEntryPoint(
           buildState({
-            lastPerpsDepositEntryPoint: undefined,
+            lastPerpsDepositEntryPoint: null,
           }),
         ),
-      ).toBeUndefined();
+      ).toBeNull();
     });
   });
 
