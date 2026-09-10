@@ -1,7 +1,6 @@
 import { strict as assert } from 'assert';
 import { test as pwTest } from '@playwright/test';
 import { Mockttp } from 'mockttp';
-import { Suite } from 'mocha';
 import {
   assertInAnyOrder,
   getEventPayloads,

@@ -1,7 +1,6 @@
 import { strict as assert } from 'assert';
 import { test as pwTest } from '@playwright/test';
 import { Mockttp } from 'mockttp';
-import { Suite } from 'mocha';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { E2E_DRIVER, MOCK_ANALYTICS_ID } from '../../constants';

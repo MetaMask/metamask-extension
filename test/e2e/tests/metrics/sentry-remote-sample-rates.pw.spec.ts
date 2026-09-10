@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { test as pwTest } from '@playwright/test';
-import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { getCleanAppState, withFixtures } from '../../helpers';

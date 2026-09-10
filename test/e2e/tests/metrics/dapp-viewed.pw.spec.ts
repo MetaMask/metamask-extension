@@ -9,7 +9,6 @@ import { E2E_DRIVER, DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
-import HomePage from '../../page-objects/pages/home/homepage';
 
 // E2E Fixtures setup has 4 identities (1 EVM, 1 Solana, 1 Bitcoin, 1 Tron)
 const METAMASK_IDENTITIES = 4;

@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { test as pwTest } from '@playwright/test';
-import { Suite } from 'mocha';
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import {
   getCleanAppState,

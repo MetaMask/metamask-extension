@@ -250,6 +250,13 @@ function getMissingProperties(complete: object, object: object): object {
   return missing;
 }
 
+function skipFirefoxLavaMoat(): void {
+  pwTest.skip(
+    pwTest.info().project.name === 'firefox-e2e',
+    'Playwright page.evaluate is incompatible with LavaMoat scuttling in Firefox',
+  );
+}
+
 pwTest.describe('Sentry errors', () => {
   const migrationError =
     process.env.SELENIUM_BROWSER === Browser.CHROME
@@ -357,6 +364,7 @@ pwTest.describe('Sentry errors', () => {
     });
 
     pwTest('should NOT send error events in the UI', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
           driverType: E2E_DRIVER.PLAYWRIGHT,
@@ -621,6 +629,7 @@ pwTest.describe('Sentry errors', () => {
     });
 
     pwTest('should send error events in UI', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
           driverType: E2E_DRIVER.PLAYWRIGHT,
@@ -706,6 +715,7 @@ pwTest.describe('Sentry errors', () => {
     });
 
     pwTest('should capture UI application state', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
           driverType: E2E_DRIVER.PLAYWRIGHT,
@@ -814,6 +824,7 @@ pwTest.describe('Sentry errors', () => {
 
   pwTest.describe('after initialization, after opting out of metrics', () => {
     pwTest('should NOT send error events in the background', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
           driverType: E2E_DRIVER.PLAYWRIGHT,
@@ -889,6 +900,7 @@ pwTest.describe('Sentry errors', () => {
     });
 
     pwTest('should NOT send error events in the UI', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
           driverType: E2E_DRIVER.PLAYWRIGHT,
@@ -964,6 +976,7 @@ pwTest.describe('Sentry errors', () => {
 
   pwTest.describe('after initialization, after opting into metrics', () => {
     pwTest('should send error events in background', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
           driverType: E2E_DRIVER.PLAYWRIGHT,
@@ -1054,6 +1067,7 @@ pwTest.describe('Sentry errors', () => {
     });
 
     pwTest('should capture background application state', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
           driverType: E2E_DRIVER.PLAYWRIGHT,
@@ -1157,6 +1171,7 @@ pwTest.describe('Sentry errors', () => {
     });
 
     pwTest('should send error events in UI', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
           driverType: E2E_DRIVER.PLAYWRIGHT,
@@ -1242,6 +1257,7 @@ pwTest.describe('Sentry errors', () => {
     });
 
     pwTest('should capture UI application state', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
           driverType: E2E_DRIVER.PLAYWRIGHT,
@@ -1346,6 +1362,7 @@ pwTest.describe('Sentry errors', () => {
   });
 
   pwTest('should not have extra properties in UI state mask', async () => {
+    skipFirefoxLavaMoat();
     const expectedMissingState = {
       // This can get wiped out during initialization due to a bug in
       // the "resetState" method

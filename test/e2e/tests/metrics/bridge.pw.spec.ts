@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { test as pwTest } from '@playwright/test';
-import { Suite } from 'mocha';
 import { E2E_DRIVER } from '../../constants';
 import {
   assertInAnyOrder,

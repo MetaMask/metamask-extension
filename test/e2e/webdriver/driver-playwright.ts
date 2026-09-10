@@ -409,6 +409,36 @@ export class PlaywrightDriver {
     if (typeof script === 'function' && source.includes('__name')) {
       source = `function() { var __name = (fn) => fn; return (${source}).apply(null, arguments); }`;
     }
+
+    if (this.browser === 'chrome') {
+      const cdp = await this.context.newCDPSession(this.page);
+      try {
+        const expression = `
+          ((source, passedArgs) => {
+            const fn = new Function(
+              'args',
+              \`return (\${source}).apply(null, args);\`,
+            );
+            return fn(passedArgs);
+          })(${JSON.stringify(source)}, ${JSON.stringify(args)})
+        `;
+        const result = await cdp.send('Runtime.evaluate', {
+          expression,
+          awaitPromise: true,
+          returnByValue: true,
+        });
+        if (result.exceptionDetails) {
+          throw new Error(
+            result.exceptionDetails.exception?.description ??
+              result.exceptionDetails.text,
+          );
+        }
+        return result.result.value as TResult;
+      } finally {
+        await cdp.detach();
+      }
+    }
+
     return (await this.page.evaluate<
       TResult,
       { source: string; passedArgs: unknown[] }
@@ -791,6 +821,25 @@ export class PlaywrightDriver {
     await element.waitForElementState('hidden', timeout);
   }
 
+  async clickElementAndWaitForWindowToClose(
+    rawLocator: RawLocator,
+    retries = 3,
+  ): Promise<void> {
+    const closingPage = this.page;
+    await Promise.all([
+      closingPage.waitForEvent('close', { timeout: this.timeout }),
+      this.clickElement(rawLocator, retries),
+    ]);
+
+    const remainingPage = this.context
+      .pages()
+      .find((candidate) => candidate !== closingPage && !candidate.isClosed());
+    if (remainingPage) {
+      this.currentPage = remainingPage;
+      this.registerPage(remainingPage);
+    }
+  }
+
   async findScrollToAndClickElement(rawLocator: RawLocator): Promise<void> {
     const locator = this.buildLocator(rawLocator).first();
     await locator.scrollIntoViewIfNeeded();
@@ -811,11 +860,10 @@ export class PlaywrightDriver {
     );
   }
 
-  async pasteIntoField(
-    _rawLocator: RawLocator,
-    _content: string,
-  ): Promise<void> {
-    throw new Error('PlaywrightDriver.pasteIntoField is not yet implemented.');
+  async pasteIntoField(rawLocator: RawLocator, content: string): Promise<void> {
+    const locator = this.buildLocator(rawLocator).first();
+    await locator.click();
+    await locator.fill(content);
   }
 
   async holdMouseDownOnElement(
@@ -918,6 +966,10 @@ export class PlaywrightDriver {
     if (this.browser === 'firefox') {
       await this.delay(ms);
     }
+  }
+
+  async getCurrentWindowHandle(): Promise<string> {
+    return this.handleFor(this.page);
   }
 
   async getClipboardContent(): Promise<string> {
