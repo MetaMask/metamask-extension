@@ -99,6 +99,10 @@ jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
   useMoneyActivityItemClick: () => mockUseMoneyActivityItemClick(),
 }));
 
+jest.mock('../../helpers/money/report-money-error', () => ({
+  reportMoneyError: jest.fn(),
+}));
+
 describe('MoneyHomePage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -117,6 +121,8 @@ describe('MoneyHomePage', () => {
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: false,
       isBalanceLoading: false,
+      lastKnownTotalFiatFormatted: undefined,
+      refetchBalance: jest.fn().mockResolvedValue(undefined),
       tokenTotal: new BigNumber(0),
       totalFiatFormatted: '$0.00',
       totalFiatRaw: '0',
@@ -688,6 +694,8 @@ describe('MoneyHomePage', () => {
       apyPercentFormatted: '4.2%',
       isBalanceFetchError: true,
       isBalanceLoading: false,
+      lastKnownTotalFiatFormatted: undefined,
+      refetchBalance: jest.fn().mockResolvedValue(undefined),
       tokenTotal: undefined,
       totalFiatFormatted: undefined,
       vaultApyQuery: { isLoading: false },
@@ -696,8 +704,74 @@ describe('MoneyHomePage', () => {
     renderWithLocalization(<MoneyHomePage />);
 
     expect(screen.getByTestId('money-balance')).toHaveTextContent(
-      'Balance unavailable',
+      messages.moneyBalanceUnavailable.message,
     );
+    expect(
+      screen.getByTestId('money-balance-unavailable-banner'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        messages.moneyBalanceUnavailableBannerDescription.message,
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('money-home-last-known'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows the last-known balance and a retry banner when the live fetch fails', () => {
+    const refetchBalance = jest.fn().mockResolvedValue(undefined);
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: true,
+      isBalanceLoading: false,
+      lastKnownTotalFiatFormatted: '$1,234.56',
+      refetchBalance,
+      tokenTotal: undefined,
+      totalFiatFormatted: undefined,
+      vaultApyQuery: { isLoading: false },
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(screen.getByTestId('money-balance')).toHaveTextContent('$1,234.56');
+    expect(screen.getByTestId('money-home-last-known')).toHaveTextContent(
+      messages.moneyBalanceLastKnown.message,
+    );
+    expect(
+      screen.queryByText(messages.moneyHowItWorks.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.moneyFundDescription.message),
+    ).not.toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.moneyBalanceRetry.message }),
+    );
+    expect(refetchBalance).toHaveBeenCalledTimes(1);
+  });
+
+  it('reports a failed balance retry without leaving an unhandled rejection', async () => {
+    const refetchBalance = jest
+      .fn()
+      .mockRejectedValue(new Error('retry failed'));
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: true,
+      isBalanceLoading: false,
+      lastKnownTotalFiatFormatted: undefined,
+      refetchBalance,
+      tokenTotal: undefined,
+      totalFiatFormatted: undefined,
+      vaultApyQuery: { isLoading: false },
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.moneyBalanceRetry.message }),
+    );
+
+    expect(refetchBalance).toHaveBeenCalledTimes(1);
+    await Promise.resolve();
   });
 
   it('shows a configured APY override while the service query is loading', () => {

@@ -8,9 +8,14 @@ import {
 } from '../../pages/confirmations/hooks/useConfirmationNavigation';
 import { createMoneyAccountWithdrawTransaction } from '../../store/controller-actions/transaction-pay-controller';
 import { useMoneyAccountWithdrawal } from './useMoneyAccountWithdrawal';
+import { useMoneyErrorReporter } from './useMoneyErrorReporter';
 
 jest.mock('../../store/controller-actions/transaction-pay-controller', () => ({
   createMoneyAccountWithdrawTransaction: jest.fn(),
+}));
+
+jest.mock('./useMoneyErrorReporter', () => ({
+  useMoneyErrorReporter: jest.fn(),
 }));
 
 jest.mock('../../pages/confirmations/hooks/useConfirmationNavigation', () => ({
@@ -24,6 +29,7 @@ const createWithdrawTransactionMock = jest.mocked(
   createMoneyAccountWithdrawTransaction,
 );
 const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
+const useMoneyErrorReporterMock = jest.mocked(useMoneyErrorReporter);
 
 const TRANSACTION_ID = 'transaction-id-mock';
 const ACCOUNT_ID = 'account-id-mock';
@@ -47,10 +53,12 @@ const EVM_ACCOUNT_STATE = stateWithSelectedAccount(EthAccountType.Eoa);
 
 describe('useMoneyAccountWithdrawal', () => {
   const navigateToTransactionMock = jest.fn();
+  const reportErrorMock = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
 
+    useMoneyErrorReporterMock.mockReturnValue(reportErrorMock);
     useConfirmationNavigationMock.mockReturnValue({
       navigateToTransaction: navigateToTransactionMock,
     } as unknown as ReturnType<typeof useConfirmationNavigation>);
@@ -98,10 +106,9 @@ describe('useMoneyAccountWithdrawal', () => {
     });
   });
 
-  it('reports the failure and rethrows when setup fails', async () => {
+  it('reports the failure and resolves when setup fails', async () => {
     const error = new Error('setup failed');
     createWithdrawTransactionMock.mockRejectedValue(error);
-    const onWithdrawalSetupFailure = jest.fn();
 
     const { result } = renderHookWithProvider(
       () => useMoneyAccountWithdrawal(),
@@ -110,18 +117,22 @@ describe('useMoneyAccountWithdrawal', () => {
 
     await act(async () => {
       await expect(
-        result.current.initiateWithdrawal({ onWithdrawalSetupFailure }),
-      ).rejects.toThrow('setup failed');
+        result.current.initiateWithdrawal(),
+      ).resolves.toBeUndefined();
     });
 
-    expect(onWithdrawalSetupFailure).toHaveBeenCalledWith(error);
+    expect(reportErrorMock).toHaveBeenCalledWith({
+      error,
+      message: '[Money Account] Withdrawal setup failed',
+      title: 'moneyToastWithdrawFailedTitle',
+      description: 'moneyToastWithdrawFailedBody',
+      extra: { flow: 'withdraw' },
+    });
     expect(navigateToTransactionMock).not.toHaveBeenCalled();
     expect(result.current.isLoading).toBe(false);
   });
 
   it('fails fast without creating the batch when the selected account is not EVM', async () => {
-    const onWithdrawalSetupFailure = jest.fn();
-
     const { result } = renderHookWithProvider(
       () => useMoneyAccountWithdrawal(),
       stateWithSelectedAccount(BtcAccountType.P2wpkh),
@@ -129,15 +140,18 @@ describe('useMoneyAccountWithdrawal', () => {
 
     await act(async () => {
       await expect(
-        result.current.initiateWithdrawal({ onWithdrawalSetupFailure }),
-      ).rejects.toThrow('[Money Account] Missing recipient EVM address');
+        result.current.initiateWithdrawal(),
+      ).resolves.toBeUndefined();
     });
 
     expect(createWithdrawTransactionMock).not.toHaveBeenCalled();
     expect(navigateToTransactionMock).not.toHaveBeenCalled();
-    expect(onWithdrawalSetupFailure).toHaveBeenCalledWith(
+    expect(reportErrorMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: '[Money Account] Missing recipient EVM address',
+        error: expect.objectContaining({
+          message: '[Money Account] Missing recipient EVM address',
+        }),
+        message: '[Money Account] Withdrawal setup failed',
       }),
     );
     expect(result.current.isLoading).toBe(false);
@@ -150,11 +164,12 @@ describe('useMoneyAccountWithdrawal', () => {
     );
 
     await act(async () => {
-      await expect(result.current.initiateWithdrawal()).rejects.toThrow(
-        '[Money Account] Missing recipient EVM address',
-      );
+      await expect(
+        result.current.initiateWithdrawal(),
+      ).resolves.toBeUndefined();
     });
 
     expect(createWithdrawTransactionMock).not.toHaveBeenCalled();
+    expect(reportErrorMock).toHaveBeenCalledTimes(1);
   });
 });
