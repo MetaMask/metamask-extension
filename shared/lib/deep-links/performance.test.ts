@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention -- Sentry trace fields use snake_case */
 import browser from 'webextension-polyfill';
 import {
   clearPendingDeepLinkNavigation,
@@ -47,7 +46,9 @@ const RECORD: PendingDeepLinkNavigation = {
   intakeTimestamp: 1_000,
   createdAt: 2_000,
   urlTags: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
     deeplink_route: 'swap',
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
     deeplink_variant: 'token',
     signed: true,
   },
@@ -68,7 +69,9 @@ describe('deep-link performance helpers', () => {
           'https://link.metamask.io/swap?tab=activity&screen=token&sig=invalid',
         ),
       ).toStrictEqual({
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         deeplink_route: 'swap',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         deeplink_variant: 'token',
         signed: true,
       });
@@ -76,7 +79,9 @@ describe('deep-link performance helpers', () => {
 
     it('uses the hostname for custom-scheme links', () => {
       expect(getDeepLinkUrlTags('metamask://swap?tab=activity')).toStrictEqual({
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         deeplink_route: 'swap',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         deeplink_variant: 'activity',
         signed: false,
       });
@@ -97,7 +102,9 @@ describe('deep-link performance helpers', () => {
 
     it('returns safe defaults for an invalid URL', () => {
       expect(getDeepLinkUrlTags('not a URL')).toStrictEqual({
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         deeplink_route: 'unknown',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         deeplink_variant: 'default',
         signed: false,
       });

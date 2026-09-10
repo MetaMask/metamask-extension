@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention -- Sentry and MetaMetrics fields use snake_case */
 import React from 'react';
 import { render } from '@testing-library/react';
 import { useSelector } from 'react-redux';
@@ -90,6 +89,13 @@ const getCarouselProps = () => {
 
 const renderCarousel = () => render(<Carousel />);
 
+const bannerTraceTags = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+  placement_id: 'home_carousel',
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+  banner_source: 'contentful',
+};
+
 describe('AccountOverview Carousel', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -124,7 +130,7 @@ describe('AccountOverview Carousel', () => {
       name: MetaMetricsEventName.BannerDismissed,
       properties: {
         category: MetaMetricsEventCategory.Banner,
-
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         banner_name: 'slide-1',
       },
       sensitiveProperties: {},
@@ -143,7 +149,7 @@ describe('AccountOverview Carousel', () => {
       name: MetaMetricsEventName.BannerDismissed,
       properties: {
         category: MetaMetricsEventCategory.Banner,
-
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         banner_name: 'slide-2',
       },
       sensitiveProperties: {},
@@ -166,7 +172,7 @@ describe('AccountOverview Carousel', () => {
       name: MetaMetricsEventName.BannerDisplay,
       properties: {
         category: MetaMetricsEventCategory.Banner,
-
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         banner_name: 'slide-1',
       },
       sensitiveProperties: {},
@@ -175,17 +181,16 @@ describe('AccountOverview Carousel', () => {
       name: TraceName.HomeBannerTimeToContent,
       id: '00000000-0000-4000-8000-000000000002',
       op: TraceOperation.BannerPerformance,
-      tags: {
-        placement_id: 'home_carousel',
-      },
+      tags: bannerTraceTags,
     });
     expect(endTrace).toHaveBeenCalledWith({
       name: TraceName.HomeBannerTimeToContent,
       id: '00000000-0000-4000-8000-000000000002',
       data: {
+        ...bannerTraceTags,
         success: true,
         source: 'warm-cache',
-        placement_id: 'home_carousel',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         banner_name: 'slide-1',
       },
     });
@@ -210,10 +215,10 @@ describe('AccountOverview Carousel', () => {
       name: TraceName.HomeBannerTimeToContent,
       id: '00000000-0000-4000-8000-000000000002',
       data: {
+        ...bannerTraceTags,
         success: false,
         source: 'event',
         reason: 'empty',
-        placement_id: 'home_carousel',
       },
     });
   });
@@ -230,10 +235,10 @@ describe('AccountOverview Carousel', () => {
       name: TraceName.HomeBannerTimeToContent,
       id: '00000000-0000-4000-8000-000000000002',
       data: {
+        ...bannerTraceTags,
         success: false,
         source: 'event',
         reason: 'error',
-        placement_id: 'home_carousel',
       },
     });
   });
