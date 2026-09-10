@@ -7773,12 +7773,6 @@
   "perpsSortByPriceChange": {
     "message": "Preisänderung"
   },
-  "perpsSortByRank": {
-    "message": "Rang"
-  },
-  "perpsSortBySection": {
-    "message": "Sortieren nach"
-  },
   "perpsSortByTitle": {
     "message": "Filter"
   },
