@@ -37,39 +37,55 @@ const GATED_METRIC_VALUES = [
   METRIC.assetDetails.cls,
   METRIC.solanaAssetDetails.cls,
 
-  // Onboarding form-to-form transitions
+  // PAUSED — the nine CUF-derived timing metrics, per #46078.
   //
-  // Demoted per the procedure above, restore condition #45266:
+  // Left the allowlist: `importSrpHome.loginToHomeScreen`,
+  // `importSrpHome.homeAfterImportWithNewWallet`, `importSrpHome.total`,
+  // `onboardingImportWallet.total`,
+  // `onboardingImportWallet.metricsToWalletReadyScreen`,
+  // `onboardingNewWallet.agreeButtonToOnboardingSuccess`, `swap.total`,
+  // `swap.fetchAndDisplaySwapQuotes`, `sendTransactions.openSendPageFromHome`.
+  //
+  // These are not demotions under the procedure above, and no threshold value
+  // would fix them. Each is timed by `TimerHelper` in the Node test process, so
+  // the value is application work plus WebDriver round-trip plus poll interval,
+  // inseparably, and a wait-terminated step cannot resolve finer than 200ms
+  // (#46006). A `.total` is the sum of those step timers rather than a
+  // measurement of its flow (#45452), so it inherits every one of their
+  // defects by construction.
+  //
+  // `onboardingImportWallet.total` is among them and is the only metric that
+  // has ever blocked a pull request — 27 of 116 Chrome runs on `main`,
+  // 2026-08-27 to 09-03. The gate therefore stops blocking on timing entirely.
+  //
+  // The flows themselves keep running. Only the timing entries leave the
+  // allowlist, because seven of the eight CLS canaries above are produced by
+  // these same flows, and CLS is unaffected by the step-timer defects — it is
+  // read in-page by `web-vitals` rather than timed from the driver.
+  //
+  // Restore condition per flow. Every ticket listed for a flow must close, and
+  // restoring is not a revert: a metric returns by qualifying under the
+  // procedure above against data produced after those fixes, never by being
+  // added back.
+  //
+  //   all paused flows  #46006 step clock · #45452 step partition and `.total`
+  //                     · #45205 ceilings derived from the gated population
+  //                     · #7204 percentiles averaged independently
+  //                     · #45431 a failed iteration emits nothing
+  //   onboarding        + #45266 bimodal ~37% slow path · #7280 password
+  //                     transition timers measuring a near-empty window
+  //   swap, send        + #7281 sub-50ms steps below the detection floor
+  //                     · #7202 deterministic render-complete waits
+  //   import-srp        + #7202
+  //
+  // Previously demoted under the procedure above, and unaffected by the pause:
   // `onboardingNewWallet.doneButtonToAssetList` and the import flow's
-  // `doneButtonToHomeScreen` are the same ~37% per-iteration slow path
-  // (24/65 and 30/80 slow draws), so each is a coin flip rather than a
-  // measurement of one thing. No threshold value is correct against a
-  // bimodal null.
-  METRIC.importSrpHome.loginToHomeScreen,
-
-  // Flow totals
-  //
-  // `onboardingNewWallet.total` demoted per the procedure above, restore
-  // condition #45266. Its `doneButtonToAssetList` step is terminal, so the
-  // slow path propagates into the total instead of being absorbed by a
-  // following step: CV 41.8% (demote at >35%) and an FP rate of 11/14 = 79%
-  // (demote at >10%), against a run-level p75 that splits into a 2257–2300ms
-  // cluster and a 6858–10478ms cluster with the 5460ms fail ceiling sitting
-  // inside the gap.
-  //
-  // `onboardingImportWallet.total` stays gated: a step follows its slow one
-  // and absorbs the spill, leaving a unimodal 8.2% CV. It is the calibration
-  // target in #45205.
-  METRIC.onboardingImportWallet.total,
-  METRIC.importSrpHome.total,
-  METRIC.swap.total,
-
-  // Moderate-variance entries (calibrated via `CI_MULTIPLIER.TIER_2`)
-  METRIC.onboardingImportWallet.metricsToWalletReadyScreen,
-  METRIC.onboardingNewWallet.agreeButtonToOnboardingSuccess,
-  METRIC.importSrpHome.homeAfterImportWithNewWallet,
-  METRIC.swap.fetchAndDisplaySwapQuotes,
-  METRIC.sendTransactions.openSendPageFromHome,
+  // `doneButtonToHomeScreen` are the same ~37% per-iteration slow path (24/65
+  // and 30/80 slow draws), so each is a coin flip rather than a measurement of
+  // one thing; `onboardingNewWallet.total` carries that slow path into the sum
+  // because its slow step is terminal, at CV 41.8% against a demote bar of 35%
+  // and an 11/14 false-positive rate against a bar of 10%. Restore condition
+  // for all three: #45266.
 ] as const satisfies readonly MetricKey[];
 
 /**
