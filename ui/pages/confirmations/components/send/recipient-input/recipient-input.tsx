@@ -1,5 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
-import { AvatarAccountSize } from '@metamask/design-system-react';
+import {
+  AvatarAccountSize,
+  TextField,
+  TextFieldSize,
+} from '@metamask/design-system-react';
 
 import {
   Box,
@@ -7,12 +11,9 @@ import {
   ButtonIconSize,
   IconName,
   Text,
-  TextField,
-  TextFieldSize,
 } from '../../../../../components/component-library';
 import {
   AlignItems,
-  BlockSize,
   BorderColor,
   BorderRadius,
   Display,
@@ -152,9 +153,9 @@ export const RecipientInput = ({
         </Box>
       ) : (
         <TextField
-          error={isHardError}
+          isError={isHardError}
           // TODO: @MetaMask/design-system-engineers: This seems to be the only current use case for a TextField warning state; align on whether TextField should support warning styling (or if there’s a preferred DS pattern).
-          className={isWarning ? '!border-warning-default' : undefined}
+          className={isWarning ? 'w-full !border-warning-default' : 'w-full'}
           endAccessory={
             recipients.length > 0 ? (
               <ButtonIcon
@@ -168,12 +169,12 @@ export const RecipientInput = ({
           }
           onChange={onToChange}
           placeholder={t('recipientPlaceholderText')}
-          testId="recipient-address-input"
-          ref={recipientInputRef}
-          value={to}
-          width={BlockSize.Full}
+          inputRef={recipientInputRef}
+          value={to ?? ''}
           size={TextFieldSize.Lg}
-          paddingRight={3}
+          inputProps={{
+            'data-testid': 'recipient-address-input',
+          }}
         />
       )}
     </>
