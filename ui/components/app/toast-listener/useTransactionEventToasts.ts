@@ -24,6 +24,7 @@ import {
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
 import type { MetaMaskReduxState } from '../../../store/store';
+import { selectTransactions } from '../../../selectors/transactionController';
 import {
   dismissToast,
   showPendingToast,
@@ -176,7 +177,7 @@ export function useTransactionEventToasts(): void {
         return;
       }
 
-      const transactions = store.getState().metamask?.transactions ?? [];
+      const transactions = selectTransactions(store.getState());
       if (isExcludedTransactionType(transactionMeta, transactions)) {
         return;
       }
