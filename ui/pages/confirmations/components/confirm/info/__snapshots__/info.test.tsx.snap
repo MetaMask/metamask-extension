@@ -371,7 +371,7 @@ exports[`Info renders info section for approve request 1`] = `
           >
             <button
               aria-label="Edit"
-              class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+              class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-6 w-6 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
               data-testid="edit-gas-fee-icon"
             >
               <svg
@@ -735,7 +735,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
           >
             <button
               aria-label="Edit"
-              class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+              class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-6 w-6 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
               data-testid="edit-gas-fee-icon"
             >
               <svg
@@ -1358,7 +1358,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           >
             <button
               aria-label="Edit"
-              class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+              class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-6 w-6 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
               data-testid="edit-gas-fee-icon"
             >
               <svg

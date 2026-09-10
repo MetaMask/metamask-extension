@@ -18,7 +18,7 @@ exports[`Bridge renders the component with initial props 1`] = `
         >
           <button
             aria-label="Back"
-            class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
           >
             <svg
               class="inline-block w-6 h-6 text-inherit"
@@ -47,7 +47,7 @@ exports[`Bridge renders the component with initial props 1`] = `
         >
           <button
             aria-label="Settings"
-            class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             data-testid="bridge__header-settings-button"
           >
             <svg
