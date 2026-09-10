@@ -50,6 +50,38 @@ describe('CandleStreamChannel', () => {
     jest.useRealTimers();
   });
 
+  describe('clearCache', () => {
+    it('retains mounted subscribers and cancels old throttled deliveries', () => {
+      const callback = jest.fn();
+      channel.subscribe({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        callback,
+        throttleMs: 100,
+      });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([1]),
+      });
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([2]),
+      });
+      callback.mockClear();
+      channel.clearCache();
+      jest.advanceTimersByTime(100);
+      expect(callback).not.toHaveBeenCalled();
+      channel.pushFromBackground({
+        symbol: 'BTC',
+        interval: CandlePeriod.OneHour,
+        data: makeCandleData([3]),
+      });
+      expect(callback).toHaveBeenCalledWith(makeCandleData([3]));
+    });
+  });
+
   describe('subscribe', () => {
     it('calls perpsActivateCandleStream on first subscriber', () => {
       const cb = jest.fn();

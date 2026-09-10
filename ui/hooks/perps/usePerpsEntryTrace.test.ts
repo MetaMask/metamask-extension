@@ -60,7 +60,7 @@ describe('usePerpsEntryTrace', () => {
     expect(endPerpsEntry).toHaveBeenCalledWith('entry', false, 'unmounted');
   });
 
-  it('waits for visibility and starts a new entry on resume', () => {
+  it('waits for visibility without restarting the mounted entry', () => {
     Object.defineProperty(document, 'visibilityState', {
       configurable: true,
       value: 'hidden',
@@ -78,12 +78,31 @@ describe('usePerpsEntryTrace', () => {
       document.dispatchEvent(new Event('visibilitychange'));
     });
 
-    expect(startPerpsEntry).toHaveBeenCalledTimes(2);
+    expect(startPerpsEntry).toHaveBeenCalledTimes(1);
     expect(endPerpsEntry).toHaveBeenCalledWith(
       'entry',
       true,
       'live_rows_committed',
       'position',
     );
+  });
+  it('does not create a near-zero entry when a completed view becomes visible again', () => {
+    renderHook(() => usePerpsEntryTrace('home', markets, false, true, 'empty'));
+    expect(startPerpsEntry).toHaveBeenCalledTimes(1);
+    expect(endPerpsEntry).toHaveBeenCalledTimes(1);
+    act(() => {
+      Object.defineProperty(document, 'visibilityState', {
+        configurable: true,
+        value: 'hidden',
+      });
+      document.dispatchEvent(new Event('visibilitychange'));
+      Object.defineProperty(document, 'visibilityState', {
+        configurable: true,
+        value: 'visible',
+      });
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    expect(startPerpsEntry).toHaveBeenCalledTimes(1);
+    expect(endPerpsEntry).toHaveBeenCalledTimes(1);
   });
 });

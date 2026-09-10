@@ -46,12 +46,12 @@ export function usePerpsEntryTrace(
         marketCount > 0
       ) {
         endPerpsEntry(entryId.current, true, 'live_rows_committed', variant);
+        entryId.current = undefined;
       }
     };
     complete();
     const onVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        entryId.current = startPerpsEntry(surface);
         complete();
       }
     };

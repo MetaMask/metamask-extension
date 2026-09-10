@@ -1,5 +1,9 @@
 import { it } from '@jest/globals';
-import type { PerpsController, PriceUpdate } from '@metamask/perps-controller';
+import type {
+  PerpsController,
+  PriceUpdate,
+  Position,
+} from '@metamask/perps-controller';
 
 // Provide the runtime enum that the source file imports. Jest cannot parse
 // the full @metamask/perps-controller bundle (Hyperliquid SDK uses ESM), so
@@ -68,6 +72,7 @@ function createMockControllerApi() {
 }
 
 type BridgeOverrides = {
+  getSelectedAddress?: () => string;
   controller?: PerpsController;
   controllerApi?: ReturnType<typeof createMockControllerApi>;
   onControllerStateChange?: jest.Mock;
@@ -98,6 +103,7 @@ function createBridge(overrides: BridgeOverrides = {}) {
 
   const bridge = new PerpsStreamBridge({
     controller,
+    getSelectedAddress: overrides.getSelectedAddress ?? (() => '0xfirst'),
     onControllerStateChange,
     onConnectivityChange,
     perpsInit: controllerApi.perpsInit,
@@ -122,6 +128,313 @@ function createBridge(overrides: BridgeOverrides = {}) {
 }
 
 describe('PerpsStreamBridge', () => {
+  describe('shared account transitions', () => {
+    it('keeps the first window streams alive when a second window handles the same account change later', async () => {
+      let selectedAddress = '0xaaa';
+      const controller = createMockController();
+      const subscribers = new Set<(data: Position[]) => void>();
+      controller.subscribeToPositions.mockImplementation(({ callback }) => {
+        subscribers.add(callback);
+        return () => subscribers.delete(callback);
+      });
+      const controllerApi = createMockControllerApi();
+      controllerApi.perpsDisconnect.mockImplementation(async () => {
+        subscribers.clear();
+      });
+      const options = {
+        controller: controller as unknown as PerpsController,
+        controllerApi,
+        getSelectedAddress: () => selectedAddress,
+      };
+      const first = createBridge(options);
+      const second = createBridge(options);
+      const init = (bridge: PerpsStreamBridge, address: string) =>
+        (
+          bridge.bridgeApi().perpsInitForAccount as (
+            address: string,
+          ) => Promise<unknown>
+        )(address);
+      await init(first.bridge, selectedAddress);
+      await init(second.bridge, selectedAddress);
+      for (const { bridge } of [first, second]) {
+        (bridge.bridgeApi().perpsViewActive as (active: boolean) => void)(true);
+        await (
+          bridge.bridgeApi().perpsActivateCandleStream as (params: {
+            symbol: string;
+            interval: string;
+          }) => Promise<void>
+        )({ symbol: 'BTC', interval: '1h' });
+        await (
+          bridge.bridgeApi().perpsActivateOrderBookStream as (params: {
+            symbol: string;
+          }) => Promise<void>
+        )({ symbol: 'BTC' });
+      }
+      selectedAddress = '0xbbb';
+      await init(first.bridge, selectedAddress);
+      first.emit.mockClear();
+      await init(second.bridge, selectedAddress);
+      expect(controllerApi.perpsDisconnect).toHaveBeenCalledTimes(1);
+      for (const callback of subscribers) {
+        callback([{ symbol: 'BTC' }] as Position[]);
+      }
+      expect(first.emit).toHaveBeenCalledWith(
+        'positions',
+        [{ symbol: 'BTC' }],
+        undefined,
+      );
+      expect(second.emit).toHaveBeenCalledWith(
+        'positions',
+        [{ symbol: 'BTC' }],
+        undefined,
+      );
+      expect(first.bridge.canEmit('positions')).toBe(true);
+      expect(first.bridge.canEmit('candles')).toBe(true);
+      expect(second.bridge.canEmit('orderBook')).toBe(true);
+      expect(controller.subscribeToCandles).toHaveBeenCalledTimes(4);
+      expect(controller.subscribeToOrderBook).toHaveBeenCalledTimes(4);
+      controller.subscribeToCandles.mock.calls[2][0].callback({
+        candles: [],
+      } as never);
+      controller.subscribeToOrderBook.mock.calls[3][0].callback({
+        bids: [],
+        asks: [],
+      } as never);
+      expect(first.emit).toHaveBeenCalledWith(
+        'candles',
+        { candles: [] },
+        { symbol: 'BTC', interval: '1h' },
+      );
+      expect(second.emit).toHaveBeenCalledWith('orderBook', {
+        bids: [],
+        asks: [],
+      });
+      first.bridge.dispose();
+      second.bridge.dispose();
+    });
+
+    it.each([true, false])(
+      'restores candles after an account change only when reactivation is %s',
+      async (reactivate) => {
+        jest.useFakeTimers();
+        let address = '0xaaa';
+        const { bridge, controller } = createBridge({
+          getSelectedAddress: () => address,
+        });
+        const api = bridge.bridgeApi() as unknown as {
+          perpsInitForAccount: (address: string) => Promise<unknown>;
+          perpsActivateCandleStream: (params: {
+            symbol: string;
+            interval: string;
+          }) => Promise<void>;
+          perpsDeactivateCandleStream: (params: {
+            symbol: string;
+            interval: string;
+          }) => void;
+        };
+        const request = { symbol: 'BTC', interval: '1h' };
+        await api.perpsInitForAccount(address);
+        await api.perpsActivateCandleStream(request);
+        api.perpsDeactivateCandleStream(request);
+        if (reactivate) {
+          await api.perpsActivateCandleStream(request);
+        }
+        address = '0xbbb';
+        await api.perpsInitForAccount(address);
+        expect(controller.subscribeToCandles).toHaveBeenCalledTimes(
+          reactivate ? 2 : 1,
+        );
+        bridge.dispose();
+        jest.useRealTimers();
+      },
+    );
+
+    it('keeps foreground inactive when the view leaves during account initialization', async () => {
+      let address = '0xaaa';
+      const { bridge, controllerApi } = createBridge({
+        getSelectedAddress: () => address,
+      });
+      const api = bridge.bridgeApi() as unknown as {
+        perpsInitForAccount: (address: string) => Promise<unknown>;
+        perpsViewActive: (active: boolean) => void;
+      };
+      await api.perpsInitForAccount(address);
+      api.perpsViewActive(true);
+      let finish!: () => void;
+      let started!: () => void;
+      const start = new Promise<void>((resolve) => {
+        started = resolve;
+      });
+      controllerApi.perpsInit.mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            finish = resolve;
+            started();
+          }),
+      );
+      address = '0xbbb';
+      const pending = api.perpsInitForAccount(address);
+      await start;
+      api.perpsViewActive(false);
+      finish();
+      await pending;
+      expect(bridge.isActive).toBe(false);
+      expect(bridge.canEmit('candles')).toBe(false);
+      bridge.dispose();
+    });
+
+    it('retries shared teardown when the new account initialization fails', async () => {
+      let address = '0xaaa';
+      const first = createBridge({ getSelectedAddress: () => address });
+      const second = createBridge({
+        controller: first.controller,
+        controllerApi: first.controllerApi,
+        getSelectedAddress: () => address,
+      });
+      const init = (bridge: PerpsStreamBridge) =>
+        (
+          bridge.bridgeApi().perpsInitForAccount as (
+            address: string,
+          ) => Promise<unknown>
+        )(address);
+      await init(first.bridge);
+      address = '0xbbb';
+      first.controllerApi.perpsInit.mockRejectedValueOnce(
+        new Error('init failed'),
+      );
+      await expect(init(first.bridge)).rejects.toThrow('init failed');
+      await init(second.bridge);
+      expect(first.controllerApi.perpsDisconnect).toHaveBeenCalledTimes(2);
+      first.bridge.dispose();
+      second.bridge.dispose();
+    });
+
+    it('preserves a healthy session when a joining UI closes before its init completes', async () => {
+      const controller = createMockController();
+      const first = createBridge({
+        controller: controller as unknown as PerpsController,
+        getSelectedAddress: () => '0xaaa',
+      });
+      let joiningAlive = true;
+      const options = {
+        controller: first.controller,
+        controllerApi: first.controllerApi,
+        getSelectedAddress: () => '0xaaa',
+      };
+      const joining = createBridge({
+        ...options,
+        isConnectionAlive: () => joiningAlive,
+      });
+      const later = createBridge(options);
+      const init = (bridge: PerpsStreamBridge) =>
+        (
+          bridge.bridgeApi().perpsInitForAccount as (
+            address: string,
+          ) => Promise<unknown>
+        )('0xaaa');
+      await init(first.bridge);
+      (first.bridge.bridgeApi().perpsViewActive as (active: boolean) => void)(
+        true,
+      );
+      await (
+        first.bridge.bridgeApi().perpsActivateCandleStream as (params: {
+          symbol: string;
+          interval: string;
+        }) => Promise<void>
+      )({ symbol: 'BTC', interval: '1h' });
+      const positionsCallback =
+        controller.subscribeToPositions.mock.calls[0][0].callback;
+      const candleCallback =
+        controller.subscribeToCandles.mock.calls[0][0].callback;
+      let finish!: () => void;
+      let started!: () => void;
+      const start = new Promise<void>((resolve) => {
+        started = resolve;
+      });
+      first.controllerApi.perpsInit.mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            finish = resolve;
+            started();
+          }),
+      );
+      const pending = init(joining.bridge);
+      await start;
+      joiningAlive = false;
+      joining.bridge.dispose();
+      finish();
+      await expect(pending).rejects.toThrow('Perps connection was released');
+      await init(later.bridge);
+      expect(first.controllerApi.perpsDisconnect).not.toHaveBeenCalled();
+      first.emit.mockClear();
+      positionsCallback([]);
+      candleCallback({ candles: [] } as never);
+      expect(first.emit).toHaveBeenCalledWith('positions', [], undefined);
+      expect(first.emit).toHaveBeenCalledWith(
+        'candles',
+        { candles: [] },
+        { symbol: 'BTC', interval: '1h' },
+      );
+      expect(first.bridge.canEmit('candles')).toBe(true);
+      first.bridge.dispose();
+      later.bridge.dispose();
+    });
+
+    it('rejects a delayed request for an account that is no longer selected', async () => {
+      const { bridge, controllerApi } = createBridge({
+        getSelectedAddress: () => '0xbbb',
+      });
+      const init = bridge.bridgeApi().perpsInitForAccount as (
+        address: string,
+      ) => Promise<unknown>;
+      await expect(init('0xaaa')).rejects.toThrow('Perps account changed');
+      expect(controllerApi.perpsInit).not.toHaveBeenCalled();
+      expect(controllerApi.perpsDisconnect).not.toHaveBeenCalled();
+      bridge.dispose();
+    });
+  });
+
+  describe('foreground lifecycle', () => {
+    it('preserves settlement across UI bridges but not controller replacement', async () => {
+      const first = createBridge();
+      const reloaded = createBridge({ controller: first.controller });
+      expect(await first.bridge.bridgeApi().perpsGetLifecycleContext()).toBe(
+        'cold_process',
+      );
+      await first.bridge.bridgeApi().perpsMarkForegroundSettled();
+      first.bridge.destroy();
+      expect(await reloaded.bridge.bridgeApi().perpsGetLifecycleContext()).toBe(
+        'warm',
+      );
+      expect(
+        await createBridge().bridge.bridgeApi().perpsGetLifecycleContext(),
+      ).toBe('cold_process');
+    });
+
+    it('does not consume cold on connection or background preload', async () => {
+      const controller = Object.assign(createMockController(), {
+        state: { activeProvider: 'hyperliquid', isTestnet: false },
+        getActiveProvider: () => ({
+          ping: jest.fn().mockResolvedValue(undefined),
+        }),
+      });
+      controller.getMarketDataWithPrices.mockResolvedValue([
+        { symbol: 'BTC' },
+      ] as never);
+      const { bridge } = createBridge({
+        controller: controller as unknown as PerpsController,
+      });
+      await bridge.bridgeApi().perpsInit();
+      await (
+        bridge.bridgeApi().perpsStartPreload as (id: string) => Promise<void>
+      )('preload');
+      expect(await bridge.bridgeApi().perpsGetLifecycleContext()).toBe(
+        'cold_process',
+      );
+      bridge.destroy();
+    });
+  });
+
   describe('isActive', () => {
     it('returns false initially', () => {
       const { bridge } = createBridge();
@@ -2499,6 +2812,31 @@ describe('wallet-root Perps preload', () => {
     };
     return { ...result, controller, ping, api };
   }
+
+  it('restores wallet subscriptions after failed preload and global lock teardown', async () => {
+    let allowed = true;
+    const { api, bridge, controller } = setup({
+      isPreloadAllowed: () => allowed,
+    });
+    await api.perpsInit();
+    controller.getMarketDataWithPrices.mockRejectedValueOnce(
+      new Error('market fetch failed'),
+    );
+    await expect(api.perpsStartPreload('failed')).rejects.toThrow(
+      'market fetch failed',
+    );
+    expect(controller.subscribeToPositions).toHaveBeenCalledTimes(1);
+    allowed = false;
+    PerpsStreamBridge.invalidateController(
+      controller as unknown as PerpsController,
+    );
+    api.perpsStopPreload('failed');
+    allowed = true;
+    await api.perpsInit();
+    expect(controller.subscribeToPositions).toHaveBeenCalledTimes(2);
+    expect(bridge.canEmit('positions')).toBe(true);
+    bridge.dispose();
+  });
 
   it('starts the controller preload before foreground initialization like Mobile', async () => {
     const { api, controller, controllerApi } = setup();

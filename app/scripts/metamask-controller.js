@@ -1741,6 +1741,10 @@ export default class MetamaskController extends EventEmitter {
         return;
       }
 
+      PerpsStreamBridge.invalidateController(
+        this.messengerClientsByName.PerpsController,
+      );
+
       if (
         this.messengerClientApi.perpsGetConnectionState?.() === 'disconnected'
       ) {
@@ -4826,6 +4830,8 @@ export default class MetamaskController extends EventEmitter {
     const perpsStream = perpsController
       ? new PerpsStreamBridge({
           controller: perpsController,
+          getSelectedAddress: () =>
+            this.accountsController.getSelectedAccount().address,
           onControllerStateChange: (cb) => {
             this.controllerMessenger.subscribe(
               'PerpsController:stateChange',
@@ -4963,7 +4969,7 @@ export default class MetamaskController extends EventEmitter {
         this.removeListener('update', handleUpdate);
         patchStore.destroy();
         messengerSubscriptions.clear();
-        perpsStream?.destroy();
+        perpsStream?.dispose();
         aggregatedOrderBookConnection?.close();
         if (this.activeControllerConnections === 0) {
           // Defer the controller-owned Perps WS teardown so a brief close/reopen
