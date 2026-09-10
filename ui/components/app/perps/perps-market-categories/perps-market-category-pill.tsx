@@ -131,8 +131,13 @@ export const PerpsMarketCategoryPill = ({
       )}
       {label}
       {isActive && isClearable && (
+        // The design's asset is the `clear` component, whose own keywords list
+        // "circle x"; `CircleX` is the name for that glyph that every
+        // design-system version in use carries. `IconName.Clear` resolves to
+        // undefined on some installs, and `Icon` then renders nothing at all,
+        // which silently drops the only control that clears the filter.
         <Icon
-          name={IconName.Clear}
+          name={IconName.CircleX}
           size={IconSize.Xs}
           color={glyphColor}
           className="ml-2 shrink-0"
