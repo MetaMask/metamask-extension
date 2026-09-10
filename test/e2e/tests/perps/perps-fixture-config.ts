@@ -4,12 +4,14 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  NETWORK_CLIENT_ID,
 } from '../../constants';
 import {
   getProductionRemoteFlagApiResponse,
   getProductionRemoteFlagDefaults,
 } from '../../feature-flags/feature-flag-registry';
 import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatUnits } from '../../../../shared/lib/unit';
 import {
   MOCK_ETH_OPEN_LONG_FILL,
@@ -17,6 +19,7 @@ import {
   MOCK_ETH_FUNDING,
   MOCK_USDC_DEPOSIT,
 } from './mocks/websocketActivityMocks';
+import { ETH_LONG_CLEARING_HOUSE_STATE } from './mocks/websocketPositionMocks';
 
 /**
  * Production remote flag defaults used as the base for Perps remote flag state
@@ -31,17 +34,16 @@ const {
   ...PERPS_PROD_REMOTE_FLAGS
 } = PROD_REMOTE_FLAGS;
 
-const ARBITRUM_CHAIN_ID = '0xa4b1';
-const ARBITRUM_CHAIN_ID_DECIMAL = Number(ARBITRUM_CHAIN_ID);
+const ARBITRUM_CHAIN_ID_DECIMAL = Number(CHAIN_IDS.ARBITRUM);
 const ARBITRUM_USDC_ADDRESS: Hex = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831';
 const ARBITRUM_USDC_ASSET_ID =
   'eip155:42161/erc20:0xaf88d065e77c8cc2239327c5edb3a432268e5831';
 const ARBITRUM_NATIVE_ASSET_ID = 'eip155:42161/slip44:60';
 const ARBITRUM_USDC_PRICE_IN_ETH = 1 / 1700;
-const HYPERCORE_CHAIN_ID = '0x539';
-const HYPERCORE_CHAIN_ID_DECIMAL = Number(HYPERCORE_CHAIN_ID);
+const HYPERCORE_CHAIN_ID_DECIMAL = Number(CHAIN_IDS.LOCALHOST);
 const PRICE_API_BASE_URL = 'https://price.api.cx.metamask.io';
 const RELAY_API_BASE_URL = 'https://api.relay.link';
+
 const RELAY_REQUEST_ID = 'perps-withdraw-e2e-request-id';
 const RELAY_TRANSACTION_HASH =
   '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
@@ -303,6 +305,62 @@ async function mockEligibleFeatureFlags(
       ok: true,
       statusCode: 200,
       json: eligibleFlags,
+    }));
+}
+
+const GAS_API_BASE_URL = 'https://gas.api.cx.metamask.io';
+
+async function mockArbitrumGasData(server: Mockttp): Promise<void> {
+  // Mock the supportedNetworks endpoint to include Arbitrum.
+  // GasFeeController checks this to determine which networks can use gas estimates.
+  await server
+    .forGet(`${GAS_API_BASE_URL}/v1/supportedNetworks`)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.POLYGON,
+        CHAIN_IDS.BSC,
+        CHAIN_IDS.OPTIMISM,
+        CHAIN_IDS.ARBITRUM,
+      ],
+    }));
+
+  await server
+    .forGet(
+      `${GAS_API_BASE_URL}/networks/${ARBITRUM_CHAIN_ID_DECIMAL}/suggestedGasFees`,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        low: {
+          suggestedMaxPriorityFeePerGas: '0.01',
+          suggestedMaxFeePerGas: '0.02',
+          minWaitTimeEstimate: 15000,
+          maxWaitTimeEstimate: 30000,
+        },
+        medium: {
+          suggestedMaxPriorityFeePerGas: '0.025',
+          suggestedMaxFeePerGas: '0.05',
+          minWaitTimeEstimate: 15000,
+          maxWaitTimeEstimate: 45000,
+        },
+        high: {
+          suggestedMaxPriorityFeePerGas: '0.05',
+          suggestedMaxFeePerGas: '0.1',
+          minWaitTimeEstimate: 15000,
+          maxWaitTimeEstimate: 60000,
+        },
+        estimatedBaseFee: '0.01',
+        networkCongestion: 0.1,
+        latestPriorityFeeRange: ['0.01', '0.05'],
+        historicalPriorityFeeRange: ['0.01', '0.1'],
+        historicalBaseFeeRange: ['0.01', '0.02'],
+        priorityFeeTrend: 'stable',
+        baseFeeTrend: 'stable',
+      },
     }));
 }
 
@@ -587,6 +645,37 @@ export function getPerpsConfigEligible(title?: string) {
 }
 
 /**
+ * Eligible Perps fixture for specs that act on an existing ETH long position.
+ *
+ * Serves the same account over REST that `WS_USER_WITH_ETH_LONG_POSITION` serves
+ * over the WebSocket. perps-controller 15.1.0 reads positions for a symbol
+ * operation from the current-connection DEX slice *or* from an HTTP
+ * `clearinghouseState` read, and never merges the two sources. The shared REST
+ * mock reports a funded account with no positions, so whenever the stream slice
+ * is not current the controller concludes the position does not exist and the
+ * operation fails. Overriding REST here keeps both transports telling the same
+ * story.
+ *
+ * @param title - The test title for debugging.
+ * @returns Partial withFixtures config to spread into withFixtures().
+ */
+export function getPerpsConfigEligibleWithEthLongPosition(title?: string) {
+  return {
+    ...getPerpsConfigEligible(title),
+    testSpecificMock: async (server: Mockttp) => {
+      await mockEligibleFeatureFlags(server);
+      await server
+        .forPost('https://api.hyperliquid.xyz/info')
+        .withJsonBodyIncluding({ type: 'clearinghouseState' })
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: ETH_LONG_CLEARING_HOUSE_STATE,
+        }));
+    },
+  };
+}
+
+/**
  * Eligible Perps fixture for the Withdraw confirmation flow.
  *
  * The confirmation selects Arbitrum USDC as its destination token immediately
@@ -608,7 +697,7 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
       })
       .withTokensController({
         allTokens: {
-          [ARBITRUM_CHAIN_ID]: {
+          [CHAIN_IDS.ARBITRUM]: {
             [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: [
               {
                 address: ARBITRUM_USDC_ADDRESS,
@@ -625,7 +714,7 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
       })
       .withTokenRatesController({
         marketData: {
-          [ARBITRUM_CHAIN_ID]: {
+          [CHAIN_IDS.ARBITRUM]: {
             [ARBITRUM_USDC_ADDRESS]: ARBITRUM_USDC_MARKET_DATA,
           },
         },
@@ -679,6 +768,13 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
           },
         },
       })
+      // Select Arbitrum so the GasFeeController polls gas estimates for the
+      // right chain. The "no gas price" blocking alert checks the *global*
+      // `gasEstimateType` (which only updates for the selected network), so
+      // starting on localhost or a testnet causes the confirmation to stay
+      // permanently stuck. Related bug ticket #46056
+      .withSelectedNetwork(NETWORK_CLIENT_ID.ARBITRUM_MAINNET)
+      .withEnabledNetworks({ eip155: { [CHAIN_IDS.ARBITRUM]: true } })
       .build(),
     title,
     manifestFlags: PERPS_WITHDRAW_CONFIRMATION_MANIFEST_FLAG,
@@ -687,6 +783,7 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         confirmations_pay_post_quote: PERPS_WITHDRAW_CONFIRMATION_ENABLED_FLAG,
       });
+      await mockArbitrumGasData(server);
       await mockArbitrumUsdcPriceData(server);
       await mockRelayWithdrawData(server);
     },

@@ -20,6 +20,7 @@ import { useConfirmContext } from '../../context/confirm';
 import { PayWithModal } from '../../components/modals/pay-with-modal';
 import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
+import { usePayTokenAccountBalance } from './usePayTokenAccountBalance';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
@@ -56,6 +57,7 @@ export function usePayWithToken(): PayWithToken {
   const t = useI18nContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { payToken } = useTransactionPayToken();
+  const { balanceUsd: accountBalanceUsd } = usePayTokenAccountBalance();
   const requiredTokens = useTransactionPayRequiredTokens();
   const availableTokens = useTransactionPayAvailableTokens();
   const fiatFormatter = useFiatFormatter({ overrideCurrency: 'usd' });
@@ -104,17 +106,22 @@ export function usePayWithToken(): PayWithToken {
     [availableTokens],
   );
 
+  // Prefer the live funding-account balance over TransactionPayController's
+  // paymentToken snapshot — that snapshot can be 0 / stale (e.g. mUSD on Monad
+  // after auto-select) while the Pay-with modal still shows the real balance.
+  const cryptoBalanceUsd = payToken
+    ? accountBalanceUsd
+    : (resolvedToken?.balanceUsd ?? '0');
+
   const balanceUsdFormatted = useMemo(() => {
     if (isMoneyAccountSelected) {
       return withdrawableFiatFormatted ?? '';
     }
-    return fiatFormatter(
-      new BigNumber(resolvedToken?.balanceUsd ?? '0').toNumber(),
-    );
+    return fiatFormatter(new BigNumber(cryptoBalanceUsd).toNumber());
   }, [
+    cryptoBalanceUsd,
     fiatFormatter,
     isMoneyAccountSelected,
-    resolvedToken?.balanceUsd,
     withdrawableFiatFormatted,
   ]);
 
@@ -131,7 +138,7 @@ export function usePayWithToken(): PayWithToken {
       chainId: resolvedToken.chainId,
       address: resolvedToken.address,
       symbol: resolvedToken.symbol,
-      balanceUsd: resolvedToken.balanceUsd,
+      balanceUsd: cryptoBalanceUsd,
     };
   }
 

@@ -49,15 +49,17 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 224,
+      "currentMigrationVersion": 226,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
       },
       "previousAppVersion": "",
-      "previousMigrationVersion": 0
+      "previousMigrationVersion": 0,
+      "installAttribution": null
     },
     "AppStateController": {
+      "arcUsageNoticeShown": false,
       "browserEnvironment": {
         "browser": "chrome",
         "os": "mac"
@@ -160,7 +162,6 @@
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": null,
-      "fragments": {},
       "marketingCampaignCookieId": null,
       "tracesBeforeMetricsOptIn": [
         {
@@ -171,11 +172,7 @@
           },
           "type": "start"
         }
-      ],
-      "traits": {
-        "install_date_ext": "2026-01-22",
-        "storage_kind": "split"
-      }
+      ]
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -183,6 +180,9 @@
     },
     "MoneyAccountController": {
       "moneyAccounts": {}
+    },
+    "MoneyAccountUpgradeController": {
+      "upgradedAccounts": {}
     },
     "MultichainAssetsController": {
       "accountsAssets": {},
@@ -2024,6 +2024,8 @@
         "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": false,
+        "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -2254,6 +2256,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 224
+    "version": 226
   }
 }

@@ -1,6 +1,7 @@
 import React, {
   useState,
   useCallback,
+  useDeferredValue,
   useMemo,
   useEffect,
   useRef,
@@ -26,8 +27,6 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useDeferredValue } from '../../../../hooks/useDeferredValue';
-
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
   getAllTokens,
@@ -154,9 +153,14 @@ export function AssetPickerModal({
   const allNetworksToUse = networks ?? Object.values(allNetworks ?? {});
   const isEvm = useMultichainSelector(getMultichainIsEvm);
 
-  useEffect(() => {
+  const selectedNetworkChainId = selectedNetwork?.chainId;
+  const [prevSelectedNetworkChainId, setPrevSelectedNetworkChainId] = useState(
+    selectedNetworkChainId,
+  );
+  if (selectedNetworkChainId !== prevSelectedNetworkChainId) {
+    setPrevSelectedNetworkChainId(selectedNetworkChainId);
     setSearchQuery('');
-  }, [selectedNetwork?.chainId]);
+  }
 
   const nativeCurrencyImage = useMultichainSelector(getMultichainCurrencyImage);
   const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);

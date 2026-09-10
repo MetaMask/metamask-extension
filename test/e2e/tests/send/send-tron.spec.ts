@@ -52,8 +52,8 @@ describe('Send Tron', function () {
 
         const activityTab = new ActivityTab(driver);
         await activityTab.goToActivityList();
-        await activityTab.checkTxAmountInActivity('-1 TRX', 1);
         await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityTab.checkTxAmountInActivity('-1 TRX', 1);
       },
     );
   });

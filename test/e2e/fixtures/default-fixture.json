@@ -179,12 +179,14 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 224,
+      "currentMigrationVersion": 226,
       "firstTimeInfo": {},
       "previousAppVersion": "",
-      "previousMigrationVersion": 0
+      "previousMigrationVersion": 0,
+      "installAttribution": null
     },
     "AppStateController": {
+      "arcUsageNoticeShown": false,
       "browserEnvironment": {
         "browser": "chrome"
       },
@@ -403,10 +405,8 @@
     },
     "MetaMetricsController": {
       "dataCollectionForMarketing": false,
-      "fragments": {},
       "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": [],
-      "traits": {}
+      "tracesBeforeMetricsOptIn": []
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -414,6 +414,9 @@
     },
     "MoneyAccountController": {
       "moneyAccounts": {}
+    },
+    "MoneyAccountUpgradeController": {
+      "upgradedAccounts": {}
     },
     "MultichainAssetsController": {
       "accountsAssets": {
@@ -1033,6 +1036,8 @@
         "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": false,
+        "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -1127,10 +1132,23 @@
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
-        "feature3": {
-          "name": "groupC",
-          "value": "valueC"
-        }
+        "feature3": [
+          {
+            "value": "valueA",
+            "name": "groupA",
+            "scope": { "type": "threshold", "value": 0.3 }
+          },
+          {
+            "value": "valueB",
+            "name": "groupB",
+            "scope": { "type": "threshold", "value": 0.5 }
+          },
+          {
+            "scope": { "type": "threshold", "value": 1 },
+            "value": "valueC",
+            "name": "groupC"
+          }
+        ]
       }
     },
     "RewardsController": {
@@ -1262,6 +1280,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 224
+    "version": 226
   }
 }

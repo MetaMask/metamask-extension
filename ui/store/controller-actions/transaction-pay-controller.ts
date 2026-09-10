@@ -44,7 +44,18 @@ export async function setPaymentOverride(
 export async function setIsMaxAmount(
   transactionId: string,
   isMaxAmount: boolean,
-  options: { isMoneyAccountDeposit?: boolean } = {},
+  options: {
+    isMoneyAccountDeposit?: boolean;
+    sourceAccountAddress?: string;
+    /**
+     * Funding-account pay-token balance in base units. Money-account deposits
+     * must supply it: the snapshot the controller would otherwise use as the
+     * Max source amount can be `0` for this flow.
+     */
+    sourceBalanceRaw?: string;
+    sourceChainId?: string;
+    sourceTokenAddress?: string;
+  } = {},
 ): Promise<void> {
   return await submitRequestToBackground('setTransactionPayIsMaxAmount', [
     transactionId,

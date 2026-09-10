@@ -28,6 +28,7 @@ import { execSync } from 'child_process';
 import { cloneDeep, isEqual } from 'lodash';
 import type { Json } from '@metamask/utils';
 import chalk from 'chalk';
+import { toDeterministicThresholdScopes } from './deterministic-threshold-scopes';
 import {
   FEATURE_FLAG_REGISTRY,
   FeatureFlagStatus,
@@ -141,7 +142,12 @@ export function compareProductionFlagsToRegistry(
       } else {
         newInProduction.push({ name, value: prodMap[name] });
       }
-    } else if (!isEqual(prodMap[name], registry[name])) {
+    } else if (
+      !isEqual(
+        toDeterministicThresholdScopes(prodMap[name] as Json),
+        toDeterministicThresholdScopes(registry[name] as Json),
+      )
+    ) {
       valueMismatches.push({
         name,
         productionValue: prodMap[name],
@@ -524,7 +530,9 @@ export function applySyncResultToRegistry(
     if (merged[name]) {
       merged[name] = {
         ...merged[name],
-        productionDefault: productionValue as Json,
+        productionDefault: toDeterministicThresholdScopes(
+          productionValue as Json,
+        ),
       };
     }
   }
@@ -534,7 +542,9 @@ export function applySyncResultToRegistry(
       merged[name] = {
         ...merged[name],
         inProd: true,
-        productionDefault: productionValue as Json,
+        productionDefault: toDeterministicThresholdScopes(
+          productionValue as Json,
+        ),
       };
     }
   }
@@ -548,7 +558,7 @@ export function applySyncResultToRegistry(
       name,
       type: FeatureFlagType.Remote,
       inProd: true,
-      productionDefault: value as Json,
+      productionDefault: toDeterministicThresholdScopes(value as Json),
       status: FeatureFlagStatus.Active,
     };
   }
