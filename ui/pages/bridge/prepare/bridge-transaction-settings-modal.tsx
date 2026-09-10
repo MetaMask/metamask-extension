@@ -4,6 +4,7 @@ import {
   BannerAlert,
   BannerAlertSeverity,
   Box,
+  TextField,
 } from '@metamask/design-system-react';
 import {
   Button,
@@ -16,17 +17,12 @@ import {
   ModalOverlay,
   PopoverPosition,
   Text,
-  TextField,
-  TextFieldType,
-  TextFieldSize,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BlockSize,
-  BorderColor,
   JustifyContent,
   TextVariant,
-  BorderRadius,
 } from '../../../helpers/constants/design-system';
 import {
   getIsSolanaSwap,
@@ -221,11 +217,11 @@ export const BridgeTransactionSettingsModal = ({
             )}
             {showCustomInput && (
               <TextField
-                size={TextFieldSize.Md}
-                borderColor={BorderColor.borderMuted}
-                testId="bridge__tx-settings-modal-custom-input"
-                borderRadius={BorderRadius.XL}
-                type={TextFieldType.Text}
+                className="w-[94px] rounded-xl outline-none"
+                inputProps={{
+                  'data-testid': 'bridge__tx-settings-modal-custom-input',
+                  className: 'w-full',
+                }}
                 value={inputValue}
                 onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
                   handleCustomSlippage(e, e.clipboardData.getData('text'));

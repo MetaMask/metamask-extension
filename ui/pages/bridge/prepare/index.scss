@@ -4,16 +4,8 @@
   flex: 1;
   min-height: 100%;
 
-  .mm-text-field {
-    background-color: inherit;
-
-    &--focused {
-      outline: none;
-    }
-  }
-
   .defined {
-    & > .mm-input--disabled,
+    & > input:disabled,
     p {
       opacity: 1;
     }
@@ -134,19 +126,6 @@
   .mm-button-secondary {
     &:hover {
       background-color: var(--color-background-default-hover);
-    }
-  }
-
-  .mm-text-field {
-    width: 94px;
-
-    &--focused,
-    &:focus-visible {
-      outline: none;
-    }
-
-    input {
-      width: 100%;
     }
   }
 }

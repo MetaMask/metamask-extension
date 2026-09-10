@@ -466,7 +466,7 @@ const PrepareBridgePage = ({
               : undefined
           }
           amountFieldProps={{
-            testId: 'from-amount',
+            'data-testid': 'from-amount',
             autoFocus: true,
             value: sourceInputAmount.amount,
           }}
@@ -606,9 +606,9 @@ const PrepareBridgePage = ({
               isDestinationFiatPrimary ? getCurrencySymbol(currency) : undefined
             }
             amountFieldProps={{
-              testId: 'to-amount',
-              readOnly: true,
-              disabled: true,
+              'data-testid': 'to-amount',
+              isReadOnly: true,
+              isDisabled: true,
               value: destinationAmount,
               autoFocus: false,
               className: destinationTokenAmount
