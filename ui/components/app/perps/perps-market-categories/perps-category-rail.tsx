@@ -4,6 +4,8 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   Skeleton,
+  type ButtonBaseSize,
+  type IconName,
 } from '@metamask/design-system-react';
 import type { MarketFilter } from '../../../../../shared/constants/perps';
 import { PerpsMarketCategoryPill } from './perps-market-category-pill';
@@ -23,11 +25,21 @@ export type PerpsCategoryRailProps = {
   /** Categories to offer, in display order. */
   categories: MarketFilter[];
   /** The active category, or `null` when the rail holds no selection. */
-  selectedCategory: MarketFilter | null;
+  selectedCategory?: MarketFilter | null;
   /** Called with a category when it is chosen. */
   onSelect: (category: MarketFilter) => void;
-  /** Called when the active category is pressed again, clearing the filter. */
-  onClear: () => void;
+  /**
+   * Called when the active category is deselected. Supplying it is what gives
+   * the active pill its clear affordance; a rail that only navigates omits it.
+   */
+  onClear?: () => void;
+  /**
+   * Leading glyph per category. Supplied by the Products section; the market
+   * list's own rail renders bare pills.
+   */
+  icons?: Partial<Record<MarketFilter, IconName>>;
+  /** Pill height. `Sm` is 32px, `Md` the 40px the Products design uses. */
+  pillSize?: ButtonBaseSize;
   /** Whether the market data behind the categories is still loading. */
   isLoading?: boolean;
   /** Accessible name for the rail. */
@@ -50,6 +62,8 @@ export type PerpsCategoryRailProps = {
  * @param options0.selectedCategory - The active category, if any.
  * @param options0.onSelect - Called with a category when it is chosen.
  * @param options0.onClear - Called when the active category is deselected.
+ * @param options0.icons - Leading glyph per category, when the surface uses them.
+ * @param options0.pillSize - Pill height.
  * @param options0.isLoading - Whether the market data is still loading.
  * @param options0.ariaLabel - Accessible name for the rail.
  * @param options0.testId - Test id for the rail container.
@@ -59,6 +73,8 @@ export const PerpsCategoryRail = ({
   selectedCategory,
   onSelect,
   onClear,
+  icons,
+  pillSize,
   isLoading = false,
   ariaLabel,
   testId = 'perps-market-categories',
@@ -105,6 +121,8 @@ export const PerpsCategoryRail = ({
           isActive={category === selectedCategory}
           onPress={onSelect}
           onClear={onClear}
+          iconName={icons?.[category]}
+          size={pillSize}
           testIdPrefix={testId}
         />
       ))}
