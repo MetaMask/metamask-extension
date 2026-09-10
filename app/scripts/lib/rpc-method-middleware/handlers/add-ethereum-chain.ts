@@ -1,3 +1,14 @@
+import type {
+  JsonRpcEngineEndCallback,
+  JsonRpcEngineNextCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type {
+  AddNetworkFields,
+  NetworkConfiguration,
+  UpdateNetworkFields,
+} from '@metamask/network-controller';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 import * as URI from 'uri-js';
 import { ApprovalType } from '@metamask/controller-utils';
 import { RpcEndpointType } from '@metamask/network-controller';
@@ -8,11 +19,74 @@ import { FEATURED_RPCS } from '../../../../../shared/constants/network';
 import {
   validateAddEthereumChainParams,
   switchChain,
+  type SwitchChainHooks,
 } from './ethereum-chain-utils';
 
-/** @typedef {import('@metamask/json-rpc-engine').MethodHandler<Record<string, unknown>>} AddEthereumChainHandler */
+type AddEthereumChainParams = [
+  {
+    blockExplorerUrls?: string[];
+    chainId: string;
+    chainName: string;
+    nativeCurrency: {
+      decimals: number;
+      symbol: string;
+    } | null;
+    rpcUrls: string[];
+  },
+];
 
-/** @type {AddEthereumChainHandler} */
+export type AddEthereumChainRequest = {
+  origin: string;
+  params?: AddEthereumChainParams;
+};
+
+type ReplaceSelectedRpcEndpointOptions = {
+  replacementSelectedRpcEndpointIndex?: number;
+};
+
+export type AddEthereumChainHooks = Pick<
+  SwitchChainHooks,
+  | 'getCaveat'
+  | 'getEnabledNetworks'
+  | 'rejectApprovalRequestsForOrigin'
+  | 'requestPermittedChainsPermissionIncrementalForOrigin'
+  | 'setActiveNetwork'
+  | 'setEnabledNetworks'
+  | 'setTokenNetworkFilter'
+> & {
+  addNetwork: (network: AddNetworkFields) => Promise<NetworkConfiguration>;
+  getCurrentChainIdForDomain: (origin: string) => string;
+  getNetworkConfigurationByChainId: (
+    chainId: string,
+  ) => NetworkConfiguration | undefined;
+  requestUserApproval: (args: {
+    origin: string;
+    requestData: {
+      chainId: string;
+      chainName: string;
+      rpcPrefs: {
+        blockExplorerUrl: string | null;
+      };
+      rpcUrl: string;
+      ticker: string;
+    };
+    type: typeof ApprovalType.AddEthereumChain;
+  }) => Promise<unknown>;
+  updateNetwork: (
+    chainId: string,
+    network: UpdateNetworkFields,
+    options?: ReplaceSelectedRpcEndpointOptions,
+  ) => Promise<NetworkConfiguration>;
+};
+
+type AddEthereumChainConstraint = MethodHandler<
+  AddEthereumChainHooks,
+  never,
+  AddEthereumChainParams,
+  null,
+  { origin: string }
+>;
+
 export const addEthereumChainHandler = {
   implementation: addEthereumChainImplementation,
   hookNames: {
@@ -29,9 +103,8 @@ export const addEthereumChainHandler = {
     setEnabledNetworks: true,
     getEnabledNetworks: true,
   },
-};
+} satisfies AddEthereumChainConstraint;
 
-/** @type {Record<MESSAGE_TYPE['ADD_ETHEREUM_CHAIN'], AddEthereumChainHandler>} */
 const addEthereumChainHandlers = {
   [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: addEthereumChainHandler,
 };
@@ -39,10 +112,10 @@ const addEthereumChainHandlers = {
 export default addEthereumChainHandlers;
 
 async function addEthereumChainImplementation(
-  req,
-  res,
-  _next,
-  end,
+  req: AddEthereumChainRequest,
+  res: PendingJsonRpcResponse<null>,
+  _next: JsonRpcEngineNextCallback,
+  end: JsonRpcEngineEndCallback,
   {
     addNetwork,
     updateNetwork,
@@ -56,11 +129,11 @@ async function addEthereumChainImplementation(
     setTokenNetworkFilter,
     setEnabledNetworks,
     getEnabledNetworks,
-  },
-) {
+  }: AddEthereumChainHooks,
+): Promise<void> {
   let validParams;
   try {
-    validParams = validateAddEthereumChainParams(req.params[0]);
+    validParams = validateAddEthereumChainParams(req.params?.[0]);
   } catch (error) {
     return end(error);
   }
@@ -102,12 +175,13 @@ async function addEthereumChainImplementation(
     : undefined;
 
   // If there's something to add or update
-
   const shouldAddOrUpdateNetwork =
     !existingNetwork ||
     rpcIndex !== existingNetwork.defaultRpcEndpointIndex ||
-    (firstValidBlockExplorerUrl &&
-      blockExplorerIndex !== existingNetwork.defaultBlockExplorerUrlIndex);
+    Boolean(
+      firstValidBlockExplorerUrl &&
+      blockExplorerIndex !== existingNetwork.defaultBlockExplorerUrlIndex,
+    );
 
   if (shouldAddOrUpdateNetwork) {
     try {
@@ -126,8 +200,8 @@ async function addEthereumChainImplementation(
       if (existingNetwork) {
         // A network for this chain id already exists.
         // Update it with any new information.
-
-        const clonedNetwork = cloneDeep(existingNetwork);
+        // Type assertion: This is the final type we want to pass into `updateNetwork`.
+        const clonedNetwork = cloneDeep(existingNetwork) as UpdateNetworkFields;
 
         // If the RPC endpoint doesn't exist, add a new one
         if (rpcIndex === -1) {
@@ -170,7 +244,10 @@ async function addEthereumChainImplementation(
         // A network for this chain id does not exist, so add a new network
 
         // If a featured RPC endpoint exists for this chain, include it and keep it as default
-        const featured = FEATURED_RPCS.find((f) => f.chainId === chainId);
+        const featured = FEATURED_RPCS.find(
+          (network: (typeof FEATURED_RPCS)[number]) =>
+            network.chainId === chainId,
+        );
         const featuredEndpoint = featured
           ? featured.rpcEndpoints[featured.defaultRpcEndpointIndex]
           : undefined;
@@ -220,7 +297,16 @@ async function addEthereumChainImplementation(
   // Determines the specific RPC endpoint to use
   const networkClientId = existingNetworkClientId ?? updatedNetworkClientId;
 
+  if (!networkClientId) {
+    return end(
+      rpcErrors.internal({
+        message: `Unable to determine network client ID for chain "${chainId}".`,
+      }),
+    );
+  }
+
   return switchChain(res, end, chainId, networkClientId, {
+    origin,
     isAddFlow: true,
     autoApprove: shouldAddOrUpdateNetwork,
     setActiveNetwork,

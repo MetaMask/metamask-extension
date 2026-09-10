@@ -1,48 +1,82 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
 import { isObject } from '@metamask/utils';
+import type {
+  MetaData,
+  MetaMaskStateType,
+} from '../../../../shared/lib/stores/base-store';
 import { PersistenceManager } from '../../../../shared/lib/stores/persistence-manager';
-
-/**
- * @typedef {object} Migration
- * @property {number} version - The migration version
- * @property {Function} migrate - Returns a promise of the migrated data
- */
-
-/**
- * @typedef {object} MigratorOptions
- * @property {Array<Migration>} [migrations] - The list of migrations to apply
- * @property {number} [defaultVersion] - The version to use in the initial state
- */
 
 const MIGRATION_V2_START_VERSION = 186;
 
-export default class Migrator extends EventEmitter {
+export type MigrationState = {
+  data: MetaMaskStateType;
+  meta: MetaData;
+};
+
+export type LegacyMigration = {
+  version: number;
+  migrate: (state: MigrationState) => Promise<MigrationState>;
+};
+
+export type V2Migration = {
+  version: number;
+  migrate: (
+    state: MigrationState,
+    changedControllers: Set<string>,
+  ) => Promise<void>;
+};
+
+export type Migration = LegacyMigration | V2Migration;
+
+export type MigratorOptions = {
+  migrations?: Migration[];
+  defaultVersion?: number;
+};
+
+export type MigrateDataResult = {
+  state: MigrationState;
+  changedKeys: Set<string>;
+};
+
+type MigratorEventMap = {
+  error: [AggregateError];
+};
+
+function isV2Migration(migration: Migration): migration is V2Migration {
+  return migration.version >= MIGRATION_V2_START_VERSION;
+}
+
+export default class Migrator extends EventEmitter<MigratorEventMap> {
+  migrations: Migration[];
+
+  defaultVersion: number;
+
   /**
-   * @param {MigratorOptions} opts
+   * @param opts - Migrator options
    */
-  constructor(opts = {}) {
+  constructor(opts: MigratorOptions = {}) {
     super();
-    const migrations = opts.migrations || [];
+    const migrations = opts.migrations ?? [];
     // sort migrations by version
     this.migrations = migrations.sort((a, b) => a.version - b.version);
     // grab migration with highest version
     const lastMigration = this.migrations.slice(-1)[0];
     // use specified defaultVersion or highest migration version
-    this.defaultVersion =
-      opts.defaultVersion || (lastMigration && lastMigration.version) || 0;
+    this.defaultVersion = opts.defaultVersion ?? lastMigration?.version ?? 0;
   }
 
   // run all pending migrations on meta in place
-  async migrateData(initialData = this.generateInitialState()) {
+  async migrateData(
+    initialData: MigrationState = this.generateInitialState(),
+  ): Promise<MigrateDataResult> {
     // legacy migrations (before MIGRATION_V2_START_VERSION) don't track changed controllers,
     // so we assume all controllers changed
-    /** @type {Set<string>} */
     const changedControllers =
       isObject(initialData.data) &&
       initialData.meta.version < MIGRATION_V2_START_VERSION
         ? new Set(Object.keys(initialData.data))
-        : new Set();
+        : new Set<string>();
 
     let state = initialData;
 
@@ -55,18 +89,13 @@ export default class Migrator extends EventEmitter {
         log.info(`Running migration ${migration.version}...`);
 
         // attempt migration and validate
-        /** @type {{data: object, meta: {version: number}}} */
-        let migratedData;
-        if (migration.version < MIGRATION_V2_START_VERSION) {
-          migratedData = await migration.migrate(state);
-          assertValidShape(migratedData, migration);
-        } else {
+        let migratedData: MigrationState;
+        if (isV2Migration(migration)) {
           // when we have split state we require migrations to report which
           // controllers changed, and to directly mutate the `versionedData`
           // object
           migratedData = structuredClone(state);
-          /** @type {Set<string>} */
-          const localChangedControllers = new Set();
+          const localChangedControllers = new Set<string>();
           const returnValue = await migration.migrate(
             migratedData,
             localChangedControllers,
@@ -80,6 +109,7 @@ export default class Migrator extends EventEmitter {
               'Migrator - migration returned value when none expected',
             );
           }
+
           // a migration that doesn't change any controllers is valid, but it'd
           // be nice to know
           if (localChangedControllers.size === 0) {
@@ -91,15 +121,19 @@ export default class Migrator extends EventEmitter {
               changedControllers.add(controllerKey);
             }
           }
+        } else {
+          migratedData = await migration.migrate(state);
+          assertValidShape(migratedData, migration);
         }
+
         // accept the migration as good
         state = migratedData;
 
         log.info(`Migration ${migration.version} complete`);
-      } catch (err) {
+      } catch (error) {
         // use an AggregateError to add context without clobbering stack
         const aggregateError = new AggregateError(
-          [err],
+          [error],
           `MetaMask Migration Error #${migration.version}`,
         );
         // emit error instead of throw so as to not break the run (gracefully fail)
@@ -114,7 +148,7 @@ export default class Migrator extends EventEmitter {
       isObject(state.data)
         ? // we had to run older migrations, so assume all controllers changed
           new Set(Object.keys(state.data))
-        : new Set();
+        : new Set<string>();
 
     for (const controllerKey of changedControllers) {
       changedKeys.add(controllerKey);
@@ -127,26 +161,30 @@ export default class Migrator extends EventEmitter {
      *
      * A migration is considered "pending" if it has a higher
      * version number than the current version.
-     *
-     * @param {Migration} migration
-     * @returns {boolean}
+     * @param migration
      */
-    function migrationIsPending(migration) {
+    function migrationIsPending(migration: Migration): boolean {
       return migration.version > state.meta.version;
     }
 
     /**
      * Throws if the migrated data does not have the correct shape.
-     *
-     * @param {{data: object; meta: { version: number}}} migratedData
-     * @param {Migration} migration
+     * @param migratedData
+     * @param migration
      */
-    function assertValidShape(migratedData, migration) {
+    function assertValidShape(
+      migratedData: MigrationState,
+      migration: Migration,
+    ): void {
       if (!migratedData.data) {
         throw new Error('Migrator - migration returned empty data');
       }
+
+      const migratedDataWithOptionalVersion = migratedData as MigrationState & {
+        version?: unknown;
+      };
       if (
-        migratedData.version !== undefined &&
+        migratedDataWithOptionalVersion.version !== undefined &&
         migratedData.meta.version !== migration.version
       ) {
         throw new Error(
@@ -159,10 +197,9 @@ export default class Migrator extends EventEmitter {
   /**
    * Returns the initial state for the migrator
    *
-   * @param {object} [data] - The data for the initial state
-   * @returns {{data: object, meta: {version: number}}}
+   * @param data - The data for the initial state
    */
-  generateInitialState(data) {
+  generateInitialState(data: MetaMaskStateType = {}): MigrationState {
     return {
       data,
       meta: {

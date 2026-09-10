@@ -307,15 +307,19 @@ describe('ShieldSubscriptionService - startSubscriptionWithCard', () => {
       .spyOn(mockPlatform, 'addTabUpdatedListener')
       .mockImplementation(async (fn) => {
         await new Promise((r) => setTimeout(r, 200));
-        await fn(1, {
-          url: MOCK_REDIRECT_URI,
-        });
+        await fn(
+          1,
+          {
+            url: MOCK_REDIRECT_URI,
+          },
+          { url: MOCK_REDIRECT_URI } as browser.Tabs.Tab,
+        );
       });
     jest
       .spyOn(mockPlatform, 'addTabRemovedListener')
       .mockImplementation(async (fn) => {
         await new Promise((r) => setTimeout(r, 500));
-        await fn(1);
+        await fn(1, { windowId: 0, isWindowClosing: false });
       });
   });
 
@@ -955,7 +959,7 @@ describe('ShieldSubscriptionService - updateSubscriptionCardPaymentMethod', () =
     jest
       .spyOn(mockPlatform, 'addTabRemovedListener')
       .mockImplementation(async (fn) => {
-        await fn(1);
+        await fn(1, { windowId: 0, isWindowClosing: false });
       });
 
     const result =
@@ -970,7 +974,8 @@ describe('ShieldSubscriptionService - updateSubscriptionCardPaymentMethod', () =
 
     let tabUpdatedListener: (
       tabId: number,
-      changeInfo: { url: string },
+      changeInfo: browser.Tabs.OnUpdatedChangeInfoType,
+      tab: browser.Tabs.Tab,
     ) => void = () => undefined;
 
     jest.spyOn(mockPlatform, 'openTab').mockResolvedValue({
@@ -984,10 +989,14 @@ describe('ShieldSubscriptionService - updateSubscriptionCardPaymentMethod', () =
     jest
       .spyOn(mockPlatform, 'addTabRemovedListener')
       .mockImplementation(async (fn) => {
-        tabUpdatedListener(1, {
-          url: `${MOCK_REDIRECT_URI}?cancel=true`,
-        });
-        await fn(1);
+        tabUpdatedListener(
+          1,
+          {
+            url: `${MOCK_REDIRECT_URI}?cancel=true`,
+          },
+          { url: `${MOCK_REDIRECT_URI}?cancel=true` } as browser.Tabs.Tab,
+        );
+        await fn(1, { windowId: 0, isWindowClosing: false });
       });
 
     await expect(
@@ -1002,7 +1011,8 @@ describe('ShieldSubscriptionService - updateSubscriptionCardPaymentMethod', () =
 
     let tabUpdatedListener: (
       tabId: number,
-      changeInfo: { url: string },
+      changeInfo: browser.Tabs.OnUpdatedChangeInfoType,
+      tab: browser.Tabs.Tab,
     ) => void = () => undefined;
 
     jest.spyOn(mockPlatform, 'openTab').mockResolvedValue({
@@ -1016,10 +1026,14 @@ describe('ShieldSubscriptionService - updateSubscriptionCardPaymentMethod', () =
     jest
       .spyOn(mockPlatform, 'addTabRemovedListener')
       .mockImplementation(async (fn) => {
-        tabUpdatedListener(1, {
-          url: MOCK_REDIRECT_URI,
-        });
-        await fn(1);
+        tabUpdatedListener(
+          1,
+          {
+            url: MOCK_REDIRECT_URI,
+          },
+          { url: MOCK_REDIRECT_URI } as browser.Tabs.Tab,
+        );
+        await fn(1, { windowId: 0, isWindowClosing: false });
       });
     const openExtensionSpy = jest
       .spyOn(mockPlatform, 'openExtensionInBrowser')
