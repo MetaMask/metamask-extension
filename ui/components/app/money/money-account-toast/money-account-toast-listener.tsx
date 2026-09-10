@@ -130,9 +130,8 @@ function showMoneyAccountToast(
 }
 
 /**
- * Raises money account deposit and withdrawal toasts from transaction
- * lifecycle events. These batches are excluded from the generic transaction
- * toasts so Money owns its copy end to end.
+ * Trigger money account toasts from transaction lifecycle events.
+ * The batches we watch are excluded from the generic transaction toasts
  */
 export function useMoneyAccountToasts(): void {
   const messenger = useMessenger<MoneyAccountToastMessenger>();
