@@ -12,12 +12,8 @@ type ShowHyperliquidDepositPromptApprovalOptions = {
   origin: string;
   selectedAddress?: string;
   tabId?: number;
-  /**
-   * Optional function to open the popup. If provided and returns true, the
-   * approval is added without triggering UI (the popup will show it).
-   * Note: The popup UI is responsible for closing any notification window
-   * after it connects (see HyperliquidDepositPrompt component).
-   */
+  // Optional function to open the popup. If provided and returns true, the
+  // approval is added without triggering UI (the popup will show it).
   requestOpenPopup?: (tabId: number) => Promise<boolean>;
 };
 
@@ -57,14 +53,13 @@ export async function showHyperliquidDepositPromptApproval({
   };
 
   // If requestOpenPopup is provided and we have a tabId, try to open popup first.
-  // The popup UI will close the notification after it connects.
+  // The callback handles any cleanup (e.g., closing notification) on success.
   if (requestOpenPopup && tabId !== undefined) {
     try {
       const popupOpened = await requestOpenPopup(tabId);
       if (popupOpened) {
-        // Fire-and-forget: don't await approval resolution.
         approvalController.add(approvalRequest).catch(() => {
-          // Intentionally empty
+          // User dismissed or approval failed - both are expected flows
         });
         return;
       }
