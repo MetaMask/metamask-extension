@@ -327,7 +327,7 @@ exports[`BridgeAlertBannerList should render the token-security alert when token
     </div>
     <button
       aria-label="Close banner"
-      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default -mt-1"
+      class="inline-flex shrink-0 items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default -mt-1"
     >
       <svg
         class="inline-block w-6 h-6 text-inherit"
