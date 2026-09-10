@@ -29264,13 +29264,6 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ******************************
 
-@myx-trade/sdk
-0.1.271 <>
-license: ISC
-authors: undefined
-
-******************************
-
 nan
 2.15.0 <https://github.com/nodejs/nan>
 The MIT License (MIT)
