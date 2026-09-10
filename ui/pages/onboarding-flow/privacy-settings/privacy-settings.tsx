@@ -21,10 +21,10 @@ import {
   FontWeight,
   TextButton,
   TextAlign,
+  TextField,
 } from '@metamask/design-system-react';
 import { addUrlProtocolPrefix } from '../../../../shared/lib/url-utils';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
-import { TextField } from '../../../components/component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -615,7 +615,7 @@ export default function PrivacySettings() {
                         <Box paddingTop={2}>
                           <TextField
                             value={ipfsURL}
-                            style={{ width: '100%' }}
+                            className="w-full"
                             inputProps={{ 'data-testid': 'ipfs-input' }}
                             onChange={(e) => {
                               handleIPFSChange(e.target.value);
