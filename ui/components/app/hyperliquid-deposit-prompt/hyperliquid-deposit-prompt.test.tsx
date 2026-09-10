@@ -61,6 +61,7 @@ jest.mock('../../../store/controller-actions/transaction-pay-controller');
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   upsertTransactionUIMetricsFragment: jest.fn(),
+  setLastPerpsDepositEntryPoint: jest.fn(),
 }));
 
 const mockUsePerpsHomeRoute = jest.fn(() => PERPS_HOME_PAGE_ROUTE);
