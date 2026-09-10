@@ -958,6 +958,22 @@ describe('PerpsStreamManager', () => {
       expect(cb).toHaveBeenCalledWith(fills);
     });
 
+    it('delivers wallet-warmed fills immediately after screen navigation', () => {
+      const initial = [{ orderId: '1', symbol: 'BTC' }];
+      manager.handleBackgroundUpdate({ channel: 'fills', data: initial });
+      const firstScreen = jest.fn();
+      const leave = manager.fills.subscribe(firstScreen);
+      expect(firstScreen).toHaveBeenCalledWith(initial);
+      leave();
+      const updated = [{ orderId: '2', symbol: 'ETH' }, ...initial];
+      manager.handleBackgroundUpdate({ channel: 'fills', data: updated });
+      const nextScreen = jest.fn();
+      manager.fills.subscribe(nextScreen);
+      expect(nextScreen).toHaveBeenCalledWith(updated);
+      expect(firstScreen).toHaveBeenCalledTimes(1);
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+
     it('routes prices channel to prices.pushData', () => {
       const cb = jest.fn();
       manager.prices.subscribe(cb);
@@ -1589,7 +1605,7 @@ describe('PerpsStreamManager', () => {
       expect(() => manager.cleanupPrewarm()).not.toThrow();
     });
 
-    it('does not prewarm fills channel (fills are REST-only)', () => {
+    it('leaves fills prewarming to the background provider session', () => {
       manager.prewarm();
 
       expect(manager.fills.isPrewarming()).toBe(false);

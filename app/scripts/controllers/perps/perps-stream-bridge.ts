@@ -4,6 +4,7 @@ import type {
   CandlePeriod,
   TimeDuration,
   PerpsMarketData,
+  OrderFill,
 } from '@metamask/perps-controller';
 import type { Patch } from 'immer';
 
@@ -72,10 +73,16 @@ type PerpsStreamBridgeOptions = {
 // UI bridges are connection-scoped; this owner survives UI reloads, but not
 // replacement of the shared background controller. Never persist telemetry state.
 const settledControllers = new WeakSet<PerpsController>();
+type FillsSubscription = {
+  unsubscribe?: () => void;
+  cache?: OrderFill[];
+};
 type AccountSession = {
   address?: string;
   needsTeardown: boolean;
   queue: Promise<unknown>;
+  cleanup?: Promise<void>;
+  fills?: FillsSubscription;
 };
 const accountSessions = new WeakMap<PerpsController, AccountSession>();
 const controllerBridges = new WeakMap<
@@ -99,8 +106,9 @@ const CANDLE_TEARDOWN_DEFER_MS = 150;
  * subscriptions and a single UI outStream.
  *
  * Manages two categories of subscriptions:
- * Static (positions/orders/account): registered once via #activate() after
- * perpsInit resolves and the provider is ready.
+ * Static (positions/orders/account): registered once per UI via #activate() after
+ * perpsInit resolves and the provider is ready. Fills are shared by the provider
+ * session so UI replacement does not reopen an establishing subscription.
  * Dynamic (prices/orderBook): single slot per channel; replaced on each call.
  * Candles: multiplexed by symbol+interval so multiple chart keys can stream
  * concurrently; each deactivate tears down only that key.
@@ -112,7 +120,7 @@ const CANDLE_TEARDOWN_DEFER_MS = 150;
 export class PerpsStreamBridge {
   #viewActive = false;
 
-  // perpsInit owns wallet streams until disconnect, independently of preload.
+  // Initialization outside preload owns wallet streams until disconnect.
   #walletInitialized = false;
 
   #preloadId: string | null = null;
@@ -124,6 +132,8 @@ export class PerpsStreamBridge {
   #preloadSymbols = '';
 
   #preloadReady = false;
+
+  #preloadOperation: { id: string; promise: Promise<void> } | null = null;
 
   #activatedAt = 0;
 
@@ -233,7 +243,9 @@ export class PerpsStreamBridge {
   static invalidateController(controller: PerpsController): void {
     const session = accountSessions.get(controller);
     if (session) {
+      PerpsStreamBridge.#releaseFills(session);
       session.address = undefined;
+      session.needsTeardown = true;
     }
     for (const bridge of controllerBridges.get(controller) ?? []) {
       bridge.destroy();
@@ -242,8 +254,19 @@ export class PerpsStreamBridge {
 
   /** Remove a closed UI connection from the background's bridge registry. */
   dispose(): void {
+    const abandonedPreload = Boolean(
+      this.#preloadId && !this.#walletInitialized,
+    );
     this.destroy();
     controllerBridges.get(this.#controller)?.delete(this);
+    if (abandonedPreload) {
+      this.#disconnectIfUnowned().catch((error) => {
+        console.debug(
+          '[PerpsStreamBridge] abandoned preload cleanup failed',
+          error,
+        );
+      });
+    }
   }
 
   constructor(options: PerpsStreamBridgeOptions) {
@@ -286,6 +309,7 @@ export class PerpsStreamBridge {
           throw new Error('Perps connection is unavailable');
         }
         const generation = this.#destroyGeneration;
+        const preloadId = this.#preloadId;
         // Mobile starts controller cache preload before connecting the
         // foreground provider, allowing independent user/market REST warming.
         await Promise.resolve()
@@ -306,6 +330,7 @@ export class PerpsStreamBridge {
           });
         if (
           generation !== this.#destroyGeneration ||
+          (preloadId && !this.#hasSessionOwner()) ||
           !this.#isConnectionAlive() ||
           !this.#isPreloadAllowed()
         ) {
@@ -314,23 +339,28 @@ export class PerpsStreamBridge {
         const result = await this.#perpsInit(...args);
         if (
           generation !== this.#destroyGeneration ||
+          (preloadId && !this.#hasSessionOwner()) ||
           !this.#isConnectionAlive() ||
           !this.#isPreloadAllowed()
         ) {
           throw new Error('Perps connection was released');
         }
-        this.#walletInitialized = true;
+        // Core may resolve init after exhausting retries. Assert readiness
+        // before assigning wallet ownership, including when activation is reused.
+        this.#controller.getActiveProvider();
+        // A preload must not manufacture independent wallet ownership.
+        this.#walletInitialized ||= !preloadId;
         if (!this.#activated) {
           this.#activate();
         }
         return result;
       },
       perpsDisconnect: async (...args: unknown[]) => {
-        this.destroy();
+        PerpsStreamBridge.invalidateController(this.#controller);
         return this.#perpsDisconnect(...args);
       },
       perpsToggleTestnet: async (...args: unknown[]) => {
-        this.destroy();
+        PerpsStreamBridge.invalidateController(this.#controller);
         return this.#perpsToggleTestnet(...args);
       },
       perpsViewActive: (active: boolean) => {
@@ -339,18 +369,17 @@ export class PerpsStreamBridge {
           this.#accountViewActive = false;
         }
       },
-      perpsStartPreload: (id: string) => this.#startPreload(id),
-      perpsStopPreload: (id: string) => {
-        if (this.#preloadId === id) {
+      perpsRegisterPreload: (id: string) => {
+        if (!this.#isPreloadAllowed() || !this.#isConnectionAlive()) {
+          throw new Error('Perps preload is unavailable');
+        }
+        if (this.#preloadId !== id) {
           this.#releasePreload();
-          if (
-            !this.#viewActive &&
-            (!this.#walletInitialized || !this.#isPreloadAllowed())
-          ) {
-            this.destroy();
-          }
+          this.#preloadId = id;
         }
       },
+      perpsStartPreload: (id: string) => this.#startPreload(id),
+      perpsStopPreload: (id: string) => this.#stopPreload(id),
       perpsActivateStreaming: async (params: ActivateStreamingParams) => {
         await this.#initAndActivate();
         if (this.#isConnectionAlive()) {
@@ -539,6 +568,7 @@ export class PerpsStreamBridge {
         [
           'positions',
           'orders',
+          'fills',
           'account',
           'markets',
           'prices',
@@ -579,7 +609,9 @@ export class PerpsStreamBridge {
       delete subscriptions[key];
     }
     const viewActive = this.#viewActive || this.#accountViewActive;
+    const preloadId = this.#preloadId;
     this.destroy();
+    this.#preloadId = preloadId;
     this.#dynamicSubscriptions = subscriptions;
     this.#accountViewActive = viewActive;
   }
@@ -593,19 +625,63 @@ export class PerpsStreamBridge {
     return session;
   }
 
+  #hasSessionOwner(): boolean {
+    return Boolean(
+      this.#isConnectionAlive() &&
+      this.#isPreloadAllowed() &&
+      (this.#walletInitialized || this.#viewActive || this.#preloadId),
+    );
+  }
+
+  /** Release an abandoned provider only after all queued initialization settles. */
+  #disconnectIfUnowned(): Promise<void> {
+    const session = this.#getAccountSession();
+    if (session.cleanup) {
+      return session.cleanup;
+    }
+    const cleanup = session.queue
+      .catch(() => undefined)
+      .then(async () => {
+        // New releases after this ownership check need their own queued check.
+        session.cleanup = undefined;
+        for (const bridge of controllerBridges.get(this.#controller) ?? []) {
+          if (!bridge.#hasSessionOwner()) {
+            bridge.destroy();
+          }
+        }
+        const hasOwner = [
+          ...(controllerBridges.get(this.#controller) ?? []),
+        ].some((bridge) => bridge.#hasSessionOwner());
+        if (hasOwner) {
+          return;
+        }
+        PerpsStreamBridge.invalidateController(this.#controller);
+        await this.#perpsDisconnect();
+        session.needsTeardown = false;
+      });
+    session.queue = cleanup;
+    session.cleanup = cleanup;
+    return cleanup;
+  }
+
   /**
    * Serialize account transitions for all UI connections sharing the controller.
    * @param address
    */
   async #initForAccount(address: string): Promise<unknown> {
     const session = this.#getAccountSession();
+    const preloadId = this.#preloadId;
     const isCurrent = () =>
+      (!preloadId || this.#hasSessionOwner()) &&
       this.#isConnectionAlive() &&
       this.#isPreloadAllowed() &&
       address.toLowerCase() === this.#getSelectedAddress().toLowerCase();
     const operation = session.queue
       .catch(() => undefined)
       .then(async () => {
+        if (preloadId && !this.#hasSessionOwner()) {
+          throw new Error('Perps preload was released');
+        }
         if (!isCurrent()) {
           throw new Error('Perps account changed');
         }
@@ -620,6 +696,7 @@ export class PerpsStreamBridge {
               []) {
               bridge.#detachForAccountSwitch();
             }
+            PerpsStreamBridge.#releaseFills(session);
             await this.#perpsDisconnect();
             if (!isCurrent()) {
               throw new Error('Perps account changed');
@@ -663,6 +740,7 @@ export class PerpsStreamBridge {
       throw new Error('Perps connection is unavailable');
     }
     const generation = this.#destroyGeneration;
+    const preloadId = this.#preloadId;
     const session = this.#getAccountSession();
     // Stream remounts must neither interrupt account teardown nor be interrupted
     // by it. Keep the queue occupied until provider initialization settles.
@@ -671,6 +749,7 @@ export class PerpsStreamBridge {
       .then(async () => {
         if (
           generation !== this.#destroyGeneration ||
+          (preloadId && !this.#hasSessionOwner()) ||
           !this.#isConnectionAlive() ||
           !this.#isPreloadAllowed()
         ) {
@@ -679,6 +758,7 @@ export class PerpsStreamBridge {
         await this.#perpsInit();
         if (
           generation === this.#destroyGeneration &&
+          (!preloadId || this.#hasSessionOwner()) &&
           !this.#activated &&
           this.#isConnectionAlive() &&
           this.#isPreloadAllowed()
@@ -690,26 +770,61 @@ export class PerpsStreamBridge {
     await operation;
   }
 
-  async #startPreload(id: string): Promise<void> {
+  #stopPreload(id: string): Promise<void> | undefined {
+    if (!this.#isPreloadAllowed()) {
+      PerpsStreamBridge.invalidateController(this.#controller);
+      return this.#disconnectIfUnowned();
+    }
+    if (this.#preloadId === id) {
+      this.#releasePreload();
+      if (!this.#viewActive && !this.#walletInitialized) {
+        return this.#disconnectIfUnowned();
+      }
+    }
+    return undefined;
+  }
+
+  #startPreload(id: string): Promise<void> {
+    if (this.#preloadOperation?.id === id) {
+      return this.#preloadOperation.promise;
+    }
+    const promise = this.#initializePreload(id);
+    this.#preloadOperation = { id, promise };
+    promise
+      .finally(() => {
+        if (this.#preloadOperation?.promise === promise) {
+          this.#preloadOperation = null;
+        }
+      })
+      .catch(() => undefined);
+    // Callers must await this promise; the sibling catch only handles cleanup.
+    return promise;
+  }
+
+  async #initializePreload(id: string): Promise<void> {
     if (!this.#isPreloadAllowed() || !this.#isConnectionAlive()) {
       throw new Error('Perps preload is unavailable');
     }
-    if (this.#preloadId === id) {
+    if (this.#preloadId === id && this.#preloadReady) {
       return;
     }
     this.#releasePreload();
     this.#preloadId = id;
-    const generation = this.#destroyGeneration;
+    // Capture configuration before init so a network change still cancels this owner.
     const { activeProvider, isTestnet } = this.#controller.state;
-    const isCurrent = () =>
-      this.#preloadId === id &&
-      generation === this.#destroyGeneration &&
-      this.#isConnectionAlive() &&
-      this.#isPreloadAllowed() &&
-      this.#controller.state.activeProvider === activeProvider &&
-      this.#controller.state.isTestnet === isTestnet;
     try {
-      await this.#initAndActivate();
+      await this.#initForAccount(this.#getSelectedAddress());
+      // The serial account transition can legitimately retire old bridge state.
+      // Bind subsequent work to its resulting generation, retaining UUID and
+      // configuration checks for releases or replacements during initialization.
+      const generation = this.#destroyGeneration;
+      const isCurrent = () =>
+        this.#preloadId === id &&
+        generation === this.#destroyGeneration &&
+        this.#isConnectionAlive() &&
+        this.#isPreloadAllowed() &&
+        this.#controller.state.activeProvider === activeProvider &&
+        this.#controller.state.isTestnet === isTestnet;
       if (!isCurrent()) {
         throw new Error('Perps preload was released');
       }
@@ -733,13 +848,12 @@ export class PerpsStreamBridge {
       this.#emit('markets', markets, { live: true });
       this.#prewarmPrices(markets);
     } catch (error) {
-      if (this.#preloadId === id) {
-        this.#releasePreload();
-        if (
-          !this.#viewActive &&
-          (!this.#walletInitialized || !this.#isPreloadAllowed())
-        ) {
-          this.destroy();
+      // Eligibility is shared by every UI. Revocation also retires a newer
+      // preload owner; a stale attempt cannot preserve a globally disabled socket.
+      if (this.#preloadId === id || !this.#isPreloadAllowed()) {
+        const cleanup = this.#stopPreload(id);
+        if (cleanup) {
+          await cleanup;
         }
       }
       throw error;
@@ -847,6 +961,8 @@ export class PerpsStreamBridge {
   }
 
   #activate(): void {
+    // Check before marking active or registering anything that needs cleanup.
+    this.#controller.getActiveProvider();
     for (const unsub of this.#staticUnsubs) {
       this.#callAndClearUnsub(unsub);
     }
@@ -877,11 +993,6 @@ export class PerpsStreamBridge {
           callback: (data: unknown) => emit('account', data),
         }),
       );
-      this.#staticUnsubs.push(
-        this.#controller.subscribeToOrderFills({
-          callback: (data: unknown) => emit('fills', data),
-        }),
-      );
 
       this.#staticUnsubs.push(
         this.#controller.subscribeToConnectionState(
@@ -904,6 +1015,7 @@ export class PerpsStreamBridge {
           this.#handleConnectivityChange(state.connectivityStatus);
         }),
       );
+      this.#prewarmFills();
     } catch (error) {
       this.#activated = false;
       for (const unsub of this.#staticUnsubs) {
@@ -911,6 +1023,62 @@ export class PerpsStreamBridge {
       }
       this.#staticUnsubs.length = 0;
       throw error;
+    }
+  }
+
+  /** Keep one fills cache per provider session, like Mobile's stream singleton. */
+  #prewarmFills(): void {
+    const session = this.#getAccountSession();
+    if (session.fills) {
+      if (session.fills.cache !== undefined && this.canEmit('fills')) {
+        this.#emit('fills', session.fills.cache);
+      }
+      return;
+    }
+    const fills: FillsSubscription = {};
+    session.fills = fills;
+    const controller = this.#controller;
+    try {
+      fills.unsubscribe = controller.subscribeToOrderFills({
+        callback: (data, isSnapshot) => {
+          if (session.fills !== fills) {
+            return;
+          }
+          // Cache snapshots and live updates even between UI connections.
+          // Partial executions share orderId, so it cannot be used to deduplicate fills.
+          fills.cache = (
+            isSnapshot ? [...data] : [...data, ...(fills.cache ?? [])]
+          )
+            .sort((first, second) => second.timestamp - first.timestamp)
+            .slice(0, 100);
+          for (const bridge of controllerBridges.get(controller) ?? []) {
+            if (
+              bridge.#isConnectionAlive() &&
+              bridge.#isPreloadAllowed() &&
+              bridge.canEmit('fills')
+            ) {
+              bridge.#emit('fills', fills.cache);
+            }
+          }
+        },
+      });
+    } catch (error) {
+      session.fills = undefined;
+      throw error;
+    }
+  }
+
+  /**
+   * Retire the cache only with its provider, never when a single UI closes.
+   * @param session - Shared provider session being torn down.
+   */
+  static #releaseFills(session: AccountSession): void {
+    const { fills } = session;
+    session.fills = undefined;
+    try {
+      fills?.unsubscribe?.();
+    } catch (error) {
+      console.debug('[PerpsStreamBridge] fills cleanup failed', error);
     }
   }
 
