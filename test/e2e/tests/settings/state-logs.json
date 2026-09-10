@@ -708,6 +708,7 @@
     "lastFetched": "null",
     "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": {},
+    "lastPerpsDepositEntryPoint": "undefined",
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
     "lastUpdatedAt": "null",
