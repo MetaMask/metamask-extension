@@ -11,6 +11,7 @@ import type {
   SeedlessOnboardingControllerGetStateAction,
 } from '@metamask/seedless-onboarding-controller';
 import type { AnalyticsControllerGetStateAction } from '@metamask/analytics-controller';
+import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 type MessengerActions =
@@ -60,7 +61,9 @@ export function getAuthenticationControllerMessenger(
   return controllerMessenger;
 }
 
-export type AllowedInitializationActions = AnalyticsControllerGetStateAction;
+export type AllowedInitializationActions =
+  | AnalyticsControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 export type AuthenticationControllerInitMessenger = ReturnType<
   typeof getAuthenticationControllerInitMessenger
@@ -88,7 +91,10 @@ export function getAuthenticationControllerInitMessenger(
   });
   messenger.delegate({
     messenger: controllerInitMessenger,
-    actions: ['AnalyticsController:getState'],
+    actions: [
+      'AnalyticsController:getState',
+      'RemoteFeatureFlagController:getState',
+    ],
   });
   return controllerInitMessenger;
 }
