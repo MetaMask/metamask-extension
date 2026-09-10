@@ -743,12 +743,16 @@ export function usePerpsOrderForm({
   const handleLeverageChange = useCallback(
     (leverage: number) => {
       setLocalLeverage((prev) => {
-        if (prev && prev.asset === asset && prev.mode === mode) {
-          return prev.values.includes(leverage)
-            ? prev
-            : { ...prev, values: [...prev.values, leverage] };
-        }
-        return { asset, mode, values: [leverage] };
+        const picked =
+          prev && prev.asset === asset && prev.mode === mode ? prev.values : [];
+        // Newest last: the slider emits every step of a drag, so a value the
+        // trader returns to has to move to the end rather than keep the place
+        // it took on the way up.
+        return {
+          asset,
+          mode,
+          values: [...picked.filter((value) => value !== leverage), leverage],
+        };
       });
       setFormState((prev) => withLeverage(prev, leverage, availableBalance));
     },

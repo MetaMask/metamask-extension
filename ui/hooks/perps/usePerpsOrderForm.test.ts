@@ -404,6 +404,40 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.formState.leverage).toBe(10);
     });
 
+    it('carries the last picked leverage rather than an earlier peak of the drag', () => {
+      const props = {
+        ...defaultOptions,
+        availableBalance: 100,
+        initialLeverage: 3,
+        initialDirection: 'long' as 'long' | 'short',
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      // The slider emits every step, so dragging up to 6 and back down to 4
+      // revisits values already seen.
+      act(() => {
+        result.current.handleLeverageChange(4);
+        result.current.handleLeverageChange(5);
+        result.current.handleLeverageChange(6);
+        result.current.handleLeverageChange(5);
+        result.current.handleLeverageChange(4);
+      });
+      expect(result.current.formState.leverage).toBe(4);
+
+      props.initialDirection = 'short';
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState).toMatchObject({
+        direction: 'short',
+        leverage: 4,
+      });
+    });
+
     it('keeps a pending leverage edit and ignores its stale acknowledgment across a direction switch', () => {
       const props = {
         ...defaultOptions,
