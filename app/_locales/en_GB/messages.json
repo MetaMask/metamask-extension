@@ -8951,6 +8951,9 @@
   "rejected": {
     "message": "Rejected"
   },
+  "relayerFee": {
+    "message": "Relayer fee"
+  },
   "remove": {
     "message": "Remove"
   },
