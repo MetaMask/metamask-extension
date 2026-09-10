@@ -117,9 +117,7 @@ export function MoneyHomePage() {
   const [isTransferSheetOpen, setIsTransferSheetOpen] = useState(false);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
-  useUpgradeMoneyAccount(
-    availability.isAvailable ? availability.address : undefined,
-  );
+  useUpgradeMoneyAccount();
   const {
     apyDecimal,
     apyPercentFormatted,

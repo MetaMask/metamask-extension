@@ -8,6 +8,7 @@ import {
   isMoneyAccountUpgradeAbortedError,
   upgradeAccountWithRetry,
 } from './upgrade-account-with-retry';
+import { useMoneyAccountAvailability } from './use-money-account-availability';
 
 const UPGRADE_ACCOUNT_ACTION = 'MoneyAccountUpgradeController:upgradeAccount';
 
@@ -46,10 +47,13 @@ const upgradesInFlight = new Map<Hex, InFlightUpgrade>();
  * resumable, the next surface open simply picks up where it left off.
  * Accounts already recorded as upgraded make this a no-op in the controller.
  *
- * @param address - The Money Account address, or `undefined` while it is not
- * yet available. Becoming defined after mount starts the run then.
+ * The run starts once the Money Account is available and its address known;
+ * while it is not (flag off, locked, geo-blocked) nothing is called.
  */
-export function useUpgradeMoneyAccount(address: Hex | undefined) {
+export function useUpgradeMoneyAccount() {
+  const { availability } = useMoneyAccountAvailability();
+  const address = availability.isAvailable ? availability.address : undefined;
+
   useEffect(() => {
     if (!address) {
       return undefined;

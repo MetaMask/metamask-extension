@@ -1,6 +1,5 @@
 import React from 'react';
 import { BalanceProjection } from '../../../../../components/app/money/balance-projection';
-import { useMoneyAccountAvailability } from '../../../../../hooks/money/use-money-account-availability';
 import { useUpgradeMoneyAccount } from '../../../../../hooks/money/use-upgrade-money-account';
 import {
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
@@ -38,10 +37,7 @@ export const MoneyAccountDepositInfo = () => {
   // A deposit reached without visiting the Money home page must still ensure
   // the account is upgraded, mirroring mobile's trigger on its confirmation
   // stack.
-  const { availability } = useMoneyAccountAvailability();
-  useUpgradeMoneyAccount(
-    availability.isAvailable ? availability.address : undefined,
-  );
+  useUpgradeMoneyAccount();
 
   return (
     <CustomAmountInfo

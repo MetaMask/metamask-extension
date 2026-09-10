@@ -3,10 +3,15 @@ import type { Hex } from '@metamask/utils';
 import { renderHook } from '@testing-library/react';
 import { captureException } from '../../../shared/lib/sentry';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { useMoneyAccountAvailability } from './use-money-account-availability';
 import { useUpgradeMoneyAccount } from './use-upgrade-money-account';
 
 jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
+}));
+
+jest.mock('./use-money-account-availability', () => ({
+  useMoneyAccountAvailability: jest.fn(),
 }));
 
 jest.mock('../../../shared/lib/sentry', () => ({
@@ -16,6 +21,9 @@ jest.mock('../../../shared/lib/sentry', () => ({
 
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
 const mockCaptureException = jest.mocked(captureException);
+const mockUseMoneyAccountAvailability = jest.mocked(
+  useMoneyAccountAvailability,
+);
 
 const ADDRESS = '0xD5FE9B0579443E7025CF3309BA420977710E7183' as Hex;
 const ADDRESS_KEY = ADDRESS.toLowerCase();
@@ -48,6 +56,14 @@ function backgroundStepError(step: string, terminal = false) {
   });
 }
 
+function mockAvailability(address: Hex | undefined): void {
+  mockUseMoneyAccountAvailability.mockReturnValue({
+    availability: address
+      ? { isAvailable: true, address }
+      : { isAvailable: false },
+  } as unknown as ReturnType<typeof useMoneyAccountAvailability>);
+}
+
 async function flush(): Promise<void> {
   await jest.runAllTimersAsync();
 }
@@ -57,6 +73,7 @@ describe('useUpgradeMoneyAccount', () => {
     jest.clearAllMocks();
     jest.useFakeTimers();
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
+    mockAvailability(ADDRESS);
   });
 
   afterEach(async () => {
@@ -65,9 +82,7 @@ describe('useUpgradeMoneyAccount', () => {
   });
 
   it('upgrades the lowercased address once per mount', async () => {
-    const { rerender, unmount } = renderHook(() =>
-      useUpgradeMoneyAccount(ADDRESS),
-    );
+    const { rerender, unmount } = renderHook(() => useUpgradeMoneyAccount());
 
     rerender();
     await flush();
@@ -77,17 +92,15 @@ describe('useUpgradeMoneyAccount', () => {
     unmount();
   });
 
-  it('does nothing without an address, then starts when one arrives', async () => {
-    const { rerender, unmount } = renderHook(
-      ({ address }: { address: Hex | undefined }) =>
-        useUpgradeMoneyAccount(address),
-      { initialProps: { address: undefined as Hex | undefined } },
-    );
+  it('does nothing while unavailable, then starts once the account is available', async () => {
+    mockAvailability(undefined);
+    const { rerender, unmount } = renderHook(() => useUpgradeMoneyAccount());
 
     await flush();
     expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
 
-    rerender({ address: ADDRESS });
+    mockAvailability(ADDRESS);
+    rerender();
     await flush();
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
@@ -99,7 +112,7 @@ describe('useUpgradeMoneyAccount', () => {
       .mockRejectedValueOnce(backgroundStepError('associate-address'))
       .mockResolvedValue(undefined);
 
-    const { unmount } = renderHook(() => useUpgradeMoneyAccount(ADDRESS));
+    const { unmount } = renderHook(() => useUpgradeMoneyAccount());
     await flush();
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
@@ -123,7 +136,7 @@ describe('useUpgradeMoneyAccount', () => {
       backgroundStepError('eip-7702-authorization', true),
     );
 
-    const { unmount } = renderHook(() => useUpgradeMoneyAccount(ADDRESS));
+    const { unmount } = renderHook(() => useUpgradeMoneyAccount());
     await flush();
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
@@ -151,7 +164,7 @@ describe('useUpgradeMoneyAccount', () => {
       ),
     );
 
-    const { unmount } = renderHook(() => useUpgradeMoneyAccount(ADDRESS));
+    const { unmount } = renderHook(() => useUpgradeMoneyAccount());
     await flush();
 
     expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
@@ -164,7 +177,7 @@ describe('useUpgradeMoneyAccount', () => {
       backgroundStepError('associate-address'),
     );
 
-    const { unmount } = renderHook(() => useUpgradeMoneyAccount(ADDRESS));
+    const { unmount } = renderHook(() => useUpgradeMoneyAccount());
     await jest.advanceTimersByTimeAsync(0);
     expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
 
@@ -180,7 +193,7 @@ describe('useUpgradeMoneyAccount', () => {
       backgroundStepError('associate-address'),
     );
 
-    const { unmount } = renderHook(() => useUpgradeMoneyAccount(ADDRESS));
+    const { unmount } = renderHook(() => useUpgradeMoneyAccount());
     await jest.advanceTimersByTimeAsync(10 * 60_000);
 
     expect(mockSubmitRequestToBackground.mock.calls.length).toBeGreaterThan(4);
@@ -201,8 +214,8 @@ describe('useUpgradeMoneyAccount', () => {
       backgroundStepError('associate-address'),
     );
 
-    const first = renderHook(() => useUpgradeMoneyAccount(ADDRESS));
-    const second = renderHook(() => useUpgradeMoneyAccount(ADDRESS));
+    const first = renderHook(() => useUpgradeMoneyAccount());
+    const second = renderHook(() => useUpgradeMoneyAccount());
     await jest.advanceTimersByTimeAsync(0);
     expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
 

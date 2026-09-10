@@ -96,8 +96,7 @@ jest.mock('../../hooks/money/useMoneyAccountWithdrawal', () => ({
   useMoneyAccountWithdrawal: () => mockUseMoneyAccountWithdrawal(),
 }));
 jest.mock('../../hooks/money/use-upgrade-money-account', () => ({
-  useUpgradeMoneyAccount: (address: unknown) =>
-    mockUseUpgradeMoneyAccount(address),
+  useUpgradeMoneyAccount: () => mockUseUpgradeMoneyAccount(),
 }));
 
 jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
@@ -230,12 +229,10 @@ describe('MoneyHomePage', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('upgrades the Money account once its address is available', () => {
+  it('upgrades the Money account while mounted', () => {
     renderWithLocalization(<MoneyHomePage />);
 
-    expect(mockUseUpgradeMoneyAccount).toHaveBeenCalledWith(
-      '0x0000000000000000000000000000000000000001',
-    );
+    expect(mockUseUpgradeMoneyAccount).toHaveBeenCalled();
   });
 
   it('keeps groundwork actions other than the transfer entry points inert', () => {
