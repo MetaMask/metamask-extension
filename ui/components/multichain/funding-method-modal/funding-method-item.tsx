@@ -32,7 +32,7 @@ const FundingMethodItem = ({
     className="funding-method-item"
     padding={4}
   >
-    <span className="funding-method-item__icon">
+    <span className="flex h-6 w-6 shrink-0 items-center justify-center">
       <Icon name={icon} size={iconSize} />
     </span>
     <Box display={[Display.Flex]} flexDirection={FlexDirection.Column}>
