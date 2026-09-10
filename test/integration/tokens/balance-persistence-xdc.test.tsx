@@ -302,6 +302,7 @@ describe('XDC balance persistence across network selection', () => {
 
     // Remount with the same seeded balances and XDC selected again — models
     // switching back after Mainnet without balances resetting in state.
+    // This is UI↔state wiring, not AssetsController persistence / WPN-1795 #4 E2E.
     cleanup();
     await renderTokensHome('xdc');
 
