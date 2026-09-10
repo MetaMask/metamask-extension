@@ -36,9 +36,10 @@ export type Controller = {
   controllerMessenger?: {
     subscribe: (
       event: string,
-      listener: (value: boolean) => void,
-      selector: (state: {
+      listener: () => void,
+      selector?: (state: {
         preferences?: { showTickerWidget?: boolean };
+        remoteFeatureFlags?: Record<string, unknown>;
       }) => boolean,
     ) => void;
   };

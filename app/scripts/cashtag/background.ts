@@ -17,6 +17,7 @@ const swapRoute = '/cross-chain/swaps/prepare-bridge-page';
 const xTabUrlPatterns = ['*://x.com/*', '*://www.x.com/*'];
 const xHosts = new Set(['x.com', 'www.x.com']);
 const widgetFramePath = 'cashtag-widget.html';
+const fullscreenFile = 'home.html';
 const popupResetDelayMs = 1000;
 // Retry delays for broadcasting OPEN_ROUTE after a cold open,
 // since the panel document may not have mounted
@@ -187,27 +188,26 @@ async function broadcastOpenRouteWithRetries(
   }
 }
 
-async function resetSidePanelPath(tabId?: number) {
+function resetSidePanelPath(tabId?: number) {
   const sidePanel = globalThis.chrome?.sidePanel;
   if (!sidePanel?.setOptions) {
-    return;
+    return Promise.resolve();
   }
 
   // Tab-scoped options override the global default, so reset both to ensure
   // the panel opens at SIDEPANEL_FILE rather than a path set by a prior open.
-  await sidePanel.setOptions({ path: SIDEPANEL_FILE, enabled: true });
+  const updates = [
+    sidePanel.setOptions({ path: SIDEPANEL_FILE, enabled: true }),
+  ];
   if (typeof tabId === 'number') {
-    await sidePanel.setOptions({
-      tabId,
-      path: SIDEPANEL_FILE,
-      enabled: true,
-    });
+    updates.push(
+      sidePanel.setOptions({ tabId, path: SIDEPANEL_FILE, enabled: true }),
+    );
   }
+  return Promise.all(updates);
 }
 
-async function openSidePanel(sender: {
-  tab?: { windowId?: number; id?: number };
-}) {
+function openSidePanel(sender: { tab?: { windowId?: number; id?: number } }) {
   const sidePanel = globalThis.chrome?.sidePanel;
   if (!sidePanel?.open || !sidePanel?.setOptions) {
     throw new Error('sidepanel-unavailable');
@@ -215,8 +215,6 @@ async function openSidePanel(sender: {
 
   const tabId = sender?.tab?.id;
   const windowId = sender?.tab?.windowId;
-
-  await resetSidePanelPath(tabId);
 
   let openOptions: { windowId: number } | { tabId: number } | null = null;
   if (typeof windowId === 'number') {
@@ -228,23 +226,69 @@ async function openSidePanel(sender: {
     throw new Error('sidepanel-no-window');
   }
 
-  await sidePanel.open(openOptions);
+  // Chrome only honours open() while the click that produced this message is
+  // still the current user gesture, so issue it before awaiting the reset.
+  const pathReset = resetSidePanelPath(tabId);
+  const opened = sidePanel.open(openOptions);
+  return Promise.all([pathReset, opened]);
 }
 
-async function openPopupWithRoute(hash: string) {
+function openPopupWithRoute(hash: string) {
   const action = globalThis.chrome?.action;
   if (!action?.setPopup || typeof action.openPopup !== 'function') {
     throw new Error('popup-unavailable');
   }
 
-  await action.setPopup({ popup: `${POPUP_FILE}${hash}` });
+  // Same user-gesture constraint as sidePanel.open().
+  const popupSet = action.setPopup({ popup: `${POPUP_FILE}${hash}` });
+  const opened = action.openPopup();
+
+  // Delay reset so the popup document can start loading the hash URL.
+  globalThis.setTimeout(() => {
+    action.setPopup({ popup: POPUP_FILE }).catch(() => undefined);
+  }, popupResetDelayMs);
+
+  return Promise.all([popupSet, opened]);
+}
+
+function openFullscreenTab(hash: string) {
+  return browser.tabs.create({
+    url: browser.runtime.getURL(`${fullscreenFile}${hash}`),
+  });
+}
+
+async function openExtensionSurface({
+  controller,
+  sender,
+  hash,
+  path,
+  search,
+}: {
+  controller: Controller | undefined;
+  sender: { tab?: { windowId?: number; id?: number } };
+  hash: string;
+  path: string;
+  search?: `?${string}`;
+}) {
+  if (shouldUseSidePanel(controller)) {
+    try {
+      // Sidepanel: default path only + OPEN_ROUTE (retries cover cold mount).
+      await openSidePanel(sender);
+      await broadcastOpenRouteWithRetries(path, search);
+      return;
+    } catch {
+      // Fall through to the popup, then a tab.
+    }
+  }
+
   try {
-    await action.openPopup();
-  } finally {
-    // Delay reset so the popup document can start loading the hash URL.
-    globalThis.setTimeout(() => {
-      action.setPopup({ popup: POPUP_FILE }).catch(() => undefined);
-    }, popupResetDelayMs);
+    // Popup is destroyed on close, so a one-shot hash deep link is safe.
+    await openPopupWithRoute(hash);
+    await broadcastOpenRoute(path, search);
+  } catch {
+    // Firefox has neither sidePanel.open nor action.openPopup, and both reject
+    // once the user gesture is gone, so open a tab, which needs no gesture.
+    await openFullscreenTab(hash);
   }
 }
 
@@ -263,20 +307,7 @@ async function openExtensionPage({
 }) {
   const hash = routeHash(path, search);
 
-  try {
-    if (shouldUseSidePanel(controller)) {
-      // Sidepanel: default path only + OPEN_ROUTE (retries cover cold mount).
-      await openSidePanel(sender);
-      await broadcastOpenRouteWithRetries(path, search);
-    } else {
-      // Popup is destroyed on close, so a one-shot hash deep link is safe.
-      await openPopupWithRoute(hash);
-      await broadcastOpenRoute(path, search);
-    }
-  } catch {
-    await openPopupWithRoute(hash);
-    await broadcastOpenRoute(path, search);
-  }
+  await openExtensionSurface({ controller, sender, hash, path, search });
 
   return {
     type: EXTENSION_MESSAGES.OPEN_EXTENSION,
@@ -450,7 +481,7 @@ function handleOpenExtension(
   return Promise.resolve(openExtensionFailure('invalid-page'));
 }
 
-function createCashtagResponse(
+export function createCashtagResponse(
   message: CashtagMessage,
   sender: chrome.runtime.MessageSender,
   getController: GetController,
@@ -469,6 +500,28 @@ function createCashtagResponse(
   }
 }
 
+export function bindTickerWidgetEnabledBroadcasts(
+  getController: GetController,
+) {
+  const messenger = getController()?.controllerMessenger;
+  const broadcastEnabled = () => {
+    broadcastTickerWidgetEnabled(isTickerWidgetEnabled(getController())).catch(
+      () => undefined,
+    );
+  };
+  messenger?.subscribe(
+    'PreferencesController:stateChange',
+    broadcastEnabled,
+    (state) => state?.preferences?.showTickerWidget ?? true,
+  );
+  messenger?.subscribe(
+    'RemoteFeatureFlagController:stateChange',
+    broadcastEnabled,
+    (state) =>
+      getBooleanFeatureFlag(state?.remoteFeatureFlags?.cashtagInjection, false),
+  );
+}
+
 export function registerCashtagBackgroundBridge({
   getController,
 }: {
@@ -479,15 +532,7 @@ export function registerCashtagBackgroundBridge({
   }
   registered = true;
 
-  getController()?.controllerMessenger?.subscribe(
-    'PreferencesController:stateChange',
-    () => {
-      broadcastTickerWidgetEnabled(
-        isTickerWidgetEnabled(getController()),
-      ).catch(() => undefined);
-    },
-    (state) => state?.preferences?.showTickerWidget ?? true,
-  );
+  bindTickerWidgetEnabledBroadcasts(getController);
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (!isAllowedCashtagSender(message?.type, sender)) {

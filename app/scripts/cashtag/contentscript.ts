@@ -5,8 +5,82 @@ import { bindWidgetTriggers, injectWidget } from './widget/host';
 
 const xHosts = new Set(['x.com', 'www.x.com']);
 
-let cleanup: (() => void) | null = null;
 let initialized = false;
+
+type WidgetDeps = {
+  injectWidget: typeof injectWidget;
+  injectPills: typeof injectPills;
+  bindWidgetTriggers: typeof bindWidgetTriggers;
+  createTickerResolver: typeof createTickerResolver;
+  sendRuntimeMessage: (message: Record<string, unknown>) => Promise<unknown>;
+};
+
+export function createWidgetLifecycle(deps: WidgetDeps) {
+  let cleanup: (() => void) | null = null;
+  let enabled = false;
+  // Enable and disable overlap, because the background broadcast can land
+  // while the initial enabled state is still being fetched. Each request waits
+  // for the previous one, so a mount is never duplicated and a disable is
+  // never dropped while a mount is still injecting.
+  let queue = Promise.resolve();
+
+  async function mount() {
+    const resolveTicker = deps.createTickerResolver(deps.sendRuntimeMessage);
+    const widget = await deps.injectWidget();
+    if (!enabled) {
+      widget.stop();
+      return;
+    }
+
+    const pills = await deps.injectPills(async (symbol) => {
+      const resolved = await resolveTicker(symbol);
+      return resolved?.primary ?? null;
+    });
+    const triggers = deps.bindWidgetTriggers(widget, resolveTicker);
+    const stopAll = () => {
+      triggers.stop();
+      pills.stop();
+      widget.stop();
+    };
+
+    if (!enabled) {
+      stopAll();
+      return;
+    }
+    cleanup = stopAll;
+  }
+
+  function unmount() {
+    cleanup?.();
+    cleanup = null;
+  }
+
+  // Bring the widget in line with the latest requested state.
+  async function sync() {
+    if (enabled && !cleanup) {
+      await mount();
+      return;
+    }
+    if (!enabled && cleanup) {
+      unmount();
+    }
+  }
+
+  function setEnabled(next: boolean) {
+    enabled = next;
+    queue = queue.catch(() => undefined).then(sync);
+    return queue;
+  }
+
+  // pagehide cannot await, so tear down synchronously. An in-flight mount sees
+  // the flag and discards whatever it injected.
+  function stop() {
+    enabled = false;
+    unmount();
+  }
+
+  return { setEnabled, stop };
+}
 
 function sendRuntimeMessage(message: Record<string, unknown>) {
   const response = chrome.runtime.sendMessage(message);
@@ -37,37 +111,22 @@ async function isWidgetEnabled() {
   }
 }
 
-function stop() {
-  cleanup?.();
-  cleanup = null;
-}
-
-async function start() {
-  if (cleanup) {
-    return;
-  }
-
-  const resolveTicker = createTickerResolver(sendRuntimeMessage);
-  const widget = await injectWidget();
-  const pills = await injectPills(async (symbol) => {
-    const resolved = await resolveTicker(symbol);
-    return resolved?.primary ?? null;
+export function attachPageVisibility(
+  lifecycle: {
+    setEnabled: (enabled: boolean) => Promise<void>;
+    stop: () => void;
+  },
+  isEnabled: () => Promise<boolean>,
+) {
+  window.addEventListener('pagehide', lifecycle.stop);
+  window.addEventListener('pageshow', (event) => {
+    if (!event.persisted) {
+      return;
+    }
+    isEnabled()
+      .then((enabled) => lifecycle.setEnabled(enabled))
+      .catch(() => undefined);
   });
-  const triggers = bindWidgetTriggers(widget, resolveTicker);
-
-  cleanup = () => {
-    triggers.stop();
-    pills.stop();
-    widget.stop();
-  };
-}
-
-async function setEnabled(enabled: boolean) {
-  if (enabled) {
-    await start();
-    return;
-  }
-  stop();
 }
 
 function onDomReady() {
@@ -88,18 +147,26 @@ async function initializeCashtag() {
   }
   initialized = true;
 
+  const lifecycle = createWidgetLifecycle({
+    injectWidget,
+    injectPills,
+    bindWidgetTriggers,
+    createTickerResolver,
+    sendRuntimeMessage,
+  });
+
   chrome.runtime.onMessage.addListener((message) => {
     if (message?.type !== EXTENSION_MESSAGES.X_WIDGET_ENABLED_CHANGED) {
       return undefined;
     }
-    setEnabled(message.body?.enabled === true).catch(() => undefined);
+    lifecycle.setEnabled(message.body?.enabled === true).catch(() => undefined);
     return undefined;
   });
 
-  window.addEventListener('pagehide', stop);
+  attachPageVisibility(lifecycle, isWidgetEnabled);
 
   const enabled = await isWidgetEnabled();
-  await setEnabled(enabled);
+  await lifecycle.setEnabled(enabled);
 }
 
 export function initCashtag() {
