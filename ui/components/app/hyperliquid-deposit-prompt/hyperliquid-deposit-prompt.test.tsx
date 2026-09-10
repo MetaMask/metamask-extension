@@ -31,9 +31,10 @@ import { HyperliquidDepositPrompt } from './hyperliquid-deposit-prompt';
 jest.mock('../../../pages/confirmations/hooks/send/useSendTokens');
 
 const mockStartPerpsDeposit = jest.fn();
+let mockIsStartingDeposit = false;
 jest.mock('../perps/hooks/usePerpsDepositConfirmation', () => ({
   usePerpsDepositConfirmation: () => ({
-    isLoading: false,
+    isLoading: mockIsStartingDeposit,
     trigger: mockStartPerpsDeposit,
   }),
 }));
@@ -162,6 +163,7 @@ const renderComponent = (
 describe('HyperliquidDepositPrompt', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsStartingDeposit = false;
     mockSelectBlockedPayTokens.mockReturnValue({
       chainIds: [],
       tokens: [],
@@ -248,6 +250,16 @@ describe('HyperliquidDepositPrompt', () => {
       },
       sensitiveProperties: {},
     });
+  });
+
+  it('disables No thanks while a deposit is being started', () => {
+    mockIsStartingDeposit = true;
+
+    renderComponent();
+
+    expect(
+      screen.getByTestId('hyperliquid-deposit-prompt-no-thanks'),
+    ).toBeDisabled();
   });
 
   it('updates the selected token when one is picked from the modal', () => {

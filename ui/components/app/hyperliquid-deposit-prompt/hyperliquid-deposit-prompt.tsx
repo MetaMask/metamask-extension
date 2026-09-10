@@ -399,6 +399,7 @@ export const HyperliquidDepositPrompt: React.FC<
           data-testid="hyperliquid-deposit-prompt-no-thanks"
           variant={ButtonVariant.Tertiary}
           onClick={handleClose}
+          isDisabled={isStartingDeposit}
           isFullWidth
         >
           {t('hyperliquidDepositPromptNoThanks')}
