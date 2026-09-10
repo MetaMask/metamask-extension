@@ -7,8 +7,6 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
   FontWeight,
-  TextField,
-  TextFieldSize,
 } from '@metamask/design-system-react';
 import React, {
   useCallback,
@@ -23,8 +21,13 @@ import {
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../../../shared/lib/perps-formatters';
 
+import {
+  BorderRadius,
+  BackgroundColor,
+} from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { usePerpsOrderFees } from '../../../../../../hooks/perps/usePerpsOrderFees';
+import { TextField, TextFieldSize } from '../../../../../component-library';
 import ToggleButton from '../../../../../ui/toggle-button';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
 import { isUnsignedDecimalInput } from '../../utils';
@@ -497,7 +500,10 @@ export const AutoCloseSection = ({
                   onChange={handleTpPriceChange}
                   onBlur={handleTpPriceBlur}
                   placeholder="0.00"
-                  className="w-full rounded-lg border-0 bg-muted"
+                  borderRadius={BorderRadius.MD}
+                  borderWidth={0}
+                  backgroundColor={BackgroundColor.backgroundMuted}
+                  className="w-full"
                   data-testid="tp-price-input"
                   inputProps={{
                     inputMode: 'decimal',
@@ -522,7 +528,10 @@ export const AutoCloseSection = ({
                   onFocus={handleTpPercentFocus}
                   onBlur={handleTpPercentBlur}
                   placeholder="0"
-                  className="w-full rounded-lg border-0 bg-muted"
+                  borderRadius={BorderRadius.MD}
+                  borderWidth={0}
+                  backgroundColor={BackgroundColor.backgroundMuted}
+                  className="w-full"
                   data-testid="tp-percent-input"
                   inputProps={{
                     inputMode: 'decimal',
@@ -623,7 +632,10 @@ export const AutoCloseSection = ({
                   onChange={handleSlPriceChange}
                   onBlur={handleSlPriceBlur}
                   placeholder="0.00"
-                  className="w-full rounded-lg border-0 bg-muted"
+                  borderRadius={BorderRadius.MD}
+                  borderWidth={0}
+                  backgroundColor={BackgroundColor.backgroundMuted}
+                  className="w-full"
                   data-testid="sl-price-input"
                   inputProps={{
                     inputMode: 'decimal',
@@ -648,7 +660,10 @@ export const AutoCloseSection = ({
                   onFocus={handleSlPercentFocus}
                   onBlur={handleSlPercentBlur}
                   placeholder="0"
-                  className="w-full rounded-lg border-0 bg-muted"
+                  borderRadius={BorderRadius.MD}
+                  borderWidth={0}
+                  backgroundColor={BackgroundColor.backgroundMuted}
+                  className="w-full"
                   data-testid="sl-percent-input"
                   inputProps={{
                     inputMode: 'decimal',
