@@ -243,6 +243,11 @@ export type MessengerClientInitRequest<
   updateTabUrl: (tabId: number, url: string) => Promise<void>;
 
   /**
+   * Closes the notification popup window if one is open.
+   */
+  closeNotificationPopup: () => Promise<void>;
+
+  /**
    * Marks the notification popup as having been automatically closed.
    */
   markNotificationPopupAsAutomaticallyClosed: () => void;

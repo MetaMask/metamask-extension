@@ -100,49 +100,6 @@ describe('showHyperliquidDepositPromptApproval', () => {
       expect(approvalController.addAndShowApprovalRequest).toHaveBeenCalled();
     });
 
-    it('calls closeNotification after add() when popup opens successfully', async () => {
-      const approvalController = createApprovalController();
-      const requestOpenPopup = jest.fn().mockResolvedValue(true);
-      const callOrder: string[] = [];
-
-      approvalController.add.mockImplementation(() => {
-        callOrder.push('add');
-        return Promise.resolve();
-      });
-      const closeNotification = jest.fn().mockImplementation(() => {
-        callOrder.push('closeNotification');
-        return Promise.resolve();
-      });
-
-      await showHyperliquidDepositPromptApproval({
-        approvalController,
-        origin,
-        selectedAddress,
-        tabId: 123,
-        requestOpenPopup,
-        closeNotification,
-      });
-
-      expect(callOrder).toEqual(['add', 'closeNotification']);
-    });
-
-    it('does not call closeNotification when popup fails to open', async () => {
-      const approvalController = createApprovalController();
-      const requestOpenPopup = jest.fn().mockResolvedValue(false);
-      const closeNotification = jest.fn().mockResolvedValue(undefined);
-
-      await showHyperliquidDepositPromptApproval({
-        approvalController,
-        origin,
-        selectedAddress,
-        tabId: 123,
-        requestOpenPopup,
-        closeNotification,
-      });
-
-      expect(closeNotification).not.toHaveBeenCalled();
-    });
-
     it('falls back to addAndShowApprovalRequest() when popup fails to open', async () => {
       const approvalController = createApprovalController();
       const requestOpenPopup = jest.fn().mockResolvedValue(false);

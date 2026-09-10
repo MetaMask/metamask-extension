@@ -542,6 +542,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'isRelaySupported',
   'isSendBundleSupported',
   'lookupSelectedNetworks',
+  'closeNotificationPopup',
   'markNotificationPopupAsAutomaticallyClosed',
   'markPasswordForgotten',
   'onAccountRemoved',
@@ -797,6 +798,7 @@ type LegacyBackgroundApiServiceOptions = {
   getPermittedAccounts: (origin: string) => Promise<string[]>;
   getTabUrl: (tabId: number) => Promise<string | undefined>;
   updateTabUrl: (tabId: number, url: string) => Promise<void>;
+  closeNotificationPopup: () => Promise<void>;
   markNotificationPopupAsAutomaticallyClosed: () => void;
   requestSafeReload: () => Promise<void>;
   sendUpdate: () => void;
@@ -829,6 +831,8 @@ export class LegacyBackgroundApiService {
 
   readonly #updateTabUrl: (tabId: number, url: string) => Promise<void>;
 
+  readonly #closeNotificationPopup: () => Promise<void>;
+
   readonly #markNotificationPopupAsAutomaticallyClosed: () => void;
 
   readonly #requestSafeReload: () => Promise<void>;
@@ -853,6 +857,7 @@ export class LegacyBackgroundApiService {
    * @param options.getPermittedAccounts - A function that returns the permitted accounts for an origin.
    * @param options.getTabUrl - A function that returns the current URL of a browser tab.
    * @param options.updateTabUrl - A function that navigates a browser tab to a URL.
+   * @param options.closeNotificationPopup - A function that closes the notification popup window.
    * @param options.markNotificationPopupAsAutomaticallyClosed - A function that marks the notification popup as automatically closed.
    * @param options.requestSafeReload - A function that triggers a safe reload of the extension.
    * @param options.sendUpdate - A function that triggers an update to the UI.
@@ -866,6 +871,7 @@ export class LegacyBackgroundApiService {
     getPermittedAccounts,
     getTabUrl,
     updateTabUrl,
+    closeNotificationPopup,
     markNotificationPopupAsAutomaticallyClosed,
     requestSafeReload,
     sendUpdate,
@@ -879,6 +885,7 @@ export class LegacyBackgroundApiService {
     this.#getPermittedAccounts = getPermittedAccounts;
     this.#getTabUrl = getTabUrl;
     this.#updateTabUrl = updateTabUrl;
+    this.#closeNotificationPopup = closeNotificationPopup;
     this.#markNotificationPopupAsAutomaticallyClosed =
       markNotificationPopupAsAutomaticallyClosed;
     this.#requestSafeReload = requestSafeReload;
@@ -1094,6 +1101,14 @@ export class LegacyBackgroundApiService {
     await this.#messenger.call('PhishingController:maybeUpdateState');
 
     return this.#messenger.call('PhishingController:testOrigin', website);
+  }
+
+  /**
+   * Closes the notification popup window if one is open.
+   * Marks it as automatically closed so triggerUi knows not to reopen it.
+   */
+  async closeNotificationPopup(): Promise<void> {
+    await this.#closeNotificationPopup();
   }
 
   /**

@@ -2600,6 +2600,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:getOpenMetamaskTabsIds',
       ),
+      closeNotificationPopup: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:closeNotificationPopup',
+      ),
       markNotificationPopupAsAutomaticallyClosed:
         this.controllerMessenger.call.bind(
           this.controllerMessenger,
@@ -5500,9 +5504,6 @@ export default class MetamaskController extends EventEmitter {
               requestOpenPopup: useSidePanelAsDefault
                 ? undefined
                 : createPopupOpener({ extension: this.extension }),
-              closeNotification: useSidePanelAsDefault
-                ? undefined
-                : () => this.notificationManager.closePopup(),
             });
           },
         }),
@@ -7039,6 +7040,9 @@ export default class MetamaskController extends EventEmitter {
       updateTabUrl: async (tabId, url) => {
         await browser.tabs.update(tabId, { url });
       },
+      closeNotificationPopup: this.notificationManager.closePopup.bind(
+        this.notificationManager,
+      ),
       markNotificationPopupAsAutomaticallyClosed:
         this.notificationManager.markAsAutomaticallyClosed.bind(
           this.notificationManager,
