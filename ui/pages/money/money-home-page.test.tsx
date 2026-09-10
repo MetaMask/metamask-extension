@@ -20,6 +20,7 @@ const mockUseMoneyAccountDeposit = jest.fn();
 const mockInitiateDeposit = jest.fn();
 const mockUseMoneyAccountWithdrawal = jest.fn();
 const mockInitiateWithdrawal = jest.fn();
+const mockUseUpgradeMoneyAccount = jest.fn();
 const mockNavigate = jest.fn();
 const mockSelectMoneyEarningSectionEnabled = jest.mocked(
   selectMoneyEarningSectionEnabled,
@@ -94,9 +95,28 @@ jest.mock('../../hooks/money/useMoneyAccountDeposit', () => ({
 jest.mock('../../hooks/money/useMoneyAccountWithdrawal', () => ({
   useMoneyAccountWithdrawal: () => mockUseMoneyAccountWithdrawal(),
 }));
+jest.mock('../../hooks/money/use-upgrade-money-account', () => ({
+  useUpgradeMoneyAccount: () => mockUseUpgradeMoneyAccount(),
+}));
 
 jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
   useMoneyActivityItemClick: () => mockUseMoneyActivityItemClick(),
+}));
+jest.mock('./components/money-transfer-sheet', () => ({
+  MoneyTransferSheet: ({
+    isOpen,
+    onClose,
+  }: {
+    isOpen: boolean;
+    onClose: () => void;
+  }) =>
+    isOpen ? (
+      <div data-testid="money-transfer-sheet">
+        <button type="button" onClick={onClose}>
+          Close transfer sheet
+        </button>
+      </div>
+    ) : null,
 }));
 
 jest.mock('../../helpers/money/report-money-error', () => ({
@@ -146,11 +166,6 @@ describe('MoneyHomePage', () => {
     mockInitiateDeposit.mockResolvedValue(undefined);
     mockUseMoneyAccountDeposit.mockReturnValue({
       initiateDeposit: mockInitiateDeposit,
-      isLoading: false,
-    });
-    mockInitiateWithdrawal.mockResolvedValue(undefined);
-    mockUseMoneyAccountWithdrawal.mockReturnValue({
-      initiateWithdrawal: mockInitiateWithdrawal,
       isLoading: false,
     });
   });
@@ -214,6 +229,12 @@ describe('MoneyHomePage', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('upgrades the Money account while mounted', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(mockUseUpgradeMoneyAccount).toHaveBeenCalled();
+  });
+
   it('keeps groundwork actions other than the transfer entry points inert', () => {
     renderWithLocalization(<MoneyHomePage />);
 
@@ -242,6 +263,18 @@ describe('MoneyHomePage', () => {
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: 'https://metamask.io/money?utm_source=extension',
     });
+  });
+
+  it('opens the money transfer sheet from Send', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(
+      screen.queryByTestId('money-transfer-sheet'),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('money-send-button'));
+
+    expect(screen.getByTestId('money-transfer-sheet')).toBeInTheDocument();
   });
 
   it('initiates a deposit from the Add action card', () => {
@@ -277,34 +310,6 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByRole('button', { name: messages.moneyAdd.message }),
     ).toBeDisabled();
-  });
-
-  it('initiates a withdrawal from the Send action card', () => {
-    renderWithLocalization(<MoneyHomePage />);
-
-    fireEvent.click(
-      screen.getByRole('button', { name: messages.moneySend.message }),
-    );
-
-    expect(mockInitiateWithdrawal).toHaveBeenCalledTimes(1);
-    expect(mockInitiateWithdrawal).toHaveBeenCalledWith();
-    expect(mockInitiateDeposit).not.toHaveBeenCalled();
-  });
-
-  it('disables the Send action card while a withdrawal is initiating', () => {
-    mockUseMoneyAccountWithdrawal.mockReturnValue({
-      initiateWithdrawal: mockInitiateWithdrawal,
-      isLoading: true,
-    });
-
-    renderWithLocalization(<MoneyHomePage />);
-
-    expect(
-      screen.getByRole('button', { name: messages.moneySend.message }),
-    ).toBeDisabled();
-    expect(
-      screen.getByRole('button', { name: messages.moneyAdd.message }),
-    ).toBeEnabled();
   });
 
   it('renders the filled-state composition for a funded Money account', () => {
@@ -358,6 +363,8 @@ describe('MoneyHomePage', () => {
     expect(
       screen.queryByText(messages.moneyBenefits.message),
     ).not.toBeInTheDocument();
+    expect(screen.getByTestId('money-send-button')).toBeEnabled();
+    expect(screen.getByTestId('money-add-button')).toBeEnabled();
     screen.getAllByRole('button').forEach((button) => {
       if (
         [messages.moneyAdd.message, messages.moneySend.message].includes(
