@@ -9,6 +9,8 @@ import { usePerpsPreload } from './usePerpsPreload';
 
 jest.mock('react-redux', () => ({ useSelector: jest.fn() }));
 jest.mock('../../selectors', () => ({
+  getSelectedEvmInternalAccount:
+    jest.requireActual('../../selectors').getSelectedEvmInternalAccount,
   getUseExternalServices: (state: { external: boolean }) => state.external,
 }));
 jest.mock('../../selectors/perps/feature-flags', () => ({
@@ -67,7 +69,13 @@ describe('usePerpsPreload', () => {
         isTestnet: false,
         internalAccounts: {
           selectedAccount: 'selected',
-          accounts: { selected: { address: '0xfirst' } },
+          accounts: {
+            selected: {
+              address: '0xfirst',
+              type: 'eip155:eoa',
+              metadata: { name: 'EVM', lastSelected: 1 },
+            },
+          },
         },
       },
     };
@@ -113,6 +121,45 @@ describe('usePerpsPreload', () => {
       expect(mockManager.reset).toHaveBeenCalled();
       expect(mockManager.initForAddress).not.toHaveBeenCalled();
       expect(trace).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each([
+    ['BTC', 'bc1qselected', 'bip122:p2wpkh'],
+    ['Tron', 'TSelected', 'tron:eoa'],
+  ])(
+    'preloads the EVM session while %s is selected',
+    async (name, address, type) => {
+      const evm = {
+        id: 'evm',
+        address: '0xready',
+        type: 'eip155:eoa',
+        metadata: { name: 'EVM', lastSelected: 1 },
+      };
+      const nonEvm = {
+        id: 'non-evm',
+        address,
+        type,
+        metadata: { name, lastSelected: 2 },
+      };
+      const nonEvmState = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          internalAccounts: {
+            selectedAccount: nonEvm.id,
+            accounts: { evm, nonEvm },
+          },
+        },
+      };
+      jest
+        .mocked(useSelector)
+        .mockImplementation((selector) => selector(nonEvmState as never));
+
+      await act(async () => {
+        renderHook(() => usePerpsPreload(true));
+      });
+      expect(mockManager.initForAddress).toHaveBeenCalledWith('0xready');
     },
   );
 
