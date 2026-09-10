@@ -40,10 +40,7 @@ import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
-import {
-  setLastPerpsDepositEntryPoint,
-  upsertTransactionUIMetricsFragment,
-} from '../../../store/actions';
+import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
 import { TokenIcon } from '../../../pages/confirmations/components/token-icon/token-icon';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import { ConfirmationLoader } from '../../../pages/confirmations/hooks/useConfirmationNavigation';
@@ -244,7 +241,10 @@ export const HyperliquidDepositPrompt: React.FC<
   // no deposit happens until the user confirms an amount on that screen.
   // Navigation is deferred so the payment token can be pre-selected first.
   const { isLoading: isStartingDeposit, trigger: startPerpsDeposit } =
-    usePerpsDepositConfirmation({ navigateOnCreate: false });
+    usePerpsDepositConfirmation({
+      navigateOnCreate: false,
+      entryPoint: HYPERLIQUID_DEPOSIT_PROMPT,
+    });
 
   const [selectedToken, setSelectedToken] = useState<AssetType>();
   const [isPickerOpen, setIsPickerOpen] = useState(false);
@@ -289,8 +289,6 @@ export const HyperliquidDepositPrompt: React.FC<
         mm_pay_entry_point: HYPERLIQUID_DEPOSIT_PROMPT,
       },
     });
-
-    setLastPerpsDepositEntryPoint(HYPERLIQUID_DEPOSIT_PROMPT);
 
     if (displayToken?.address && displayToken.chainId) {
       try {

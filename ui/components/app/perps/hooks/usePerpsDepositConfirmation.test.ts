@@ -28,6 +28,13 @@ jest.mock('./usePerpsNetworkManagement', () => ({
   }),
 }));
 
+const mockSetLastPerpsDepositEntryPoint = jest.fn();
+jest.mock('../../../../store/actions', () => ({
+  ...jest.requireActual('../../../../store/actions'),
+  setLastPerpsDepositEntryPoint: (...args: unknown[]) =>
+    mockSetLastPerpsDepositEntryPoint(...args),
+}));
+
 const mockCreatePerpsDepositTransaction =
   createPerpsDepositTransaction as jest.MockedFunction<
     typeof createPerpsDepositTransaction
@@ -248,5 +255,44 @@ describe('usePerpsDepositConfirmation', () => {
       resolveCreate?.({ transactionId: 'tx-001' });
       await firstTriggerPromise;
     });
+  });
+
+  it('sets entry point to null when not provided', async () => {
+    mockCreatePerpsDepositTransaction.mockResolvedValue({
+      transactionId: 'tx-no-entry',
+    });
+
+    const { result } = renderHookWithProvider(
+      () => usePerpsDepositConfirmation(),
+      mockState,
+    );
+
+    await act(async () => {
+      await result.current.trigger();
+    });
+
+    expect(mockSetLastPerpsDepositEntryPoint).toHaveBeenCalledWith(null);
+  });
+
+  it('sets entry point when provided', async () => {
+    mockCreatePerpsDepositTransaction.mockResolvedValue({
+      transactionId: 'tx-with-entry',
+    });
+
+    const { result } = renderHookWithProvider(
+      () =>
+        usePerpsDepositConfirmation({
+          entryPoint: 'hyperliquid_deposit_prompt',
+        }),
+      mockState,
+    );
+
+    await act(async () => {
+      await result.current.trigger();
+    });
+
+    expect(mockSetLastPerpsDepositEntryPoint).toHaveBeenCalledWith(
+      'hyperliquid_deposit_prompt',
+    );
   });
 });
