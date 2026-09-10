@@ -1,5 +1,5 @@
-import React from 'react';
-import { screen } from '@testing-library/react';
+import React, { useState } from 'react';
+import { fireEvent, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
@@ -23,6 +23,11 @@ const getMockState = (currentCurrency = 'usd') => ({
     currentCurrency,
   },
 });
+
+const CustomAmountHarness = ({ initialAmount }: { initialAmount: string }) => {
+  const [amountFiat, setAmountFiat] = useState(initialAmount);
+  return <CustomAmount amountFiat={amountFiat} onChange={setAmountFiat} />;
+};
 
 describe('CustomAmount', () => {
   beforeEach(() => {
@@ -141,10 +146,39 @@ describe('CustomAmount', () => {
   it('accounts for the fiat symbol when choosing font size', () => {
     const store = mockStore(getMockState());
 
-    renderWithProvider(<CustomAmount amountFiat="7.863083" />, store);
+    renderWithProvider(<CustomAmount amountFiat="12345.67" />, store);
 
     const amountElement = screen.getByTestId('custom-amount-input');
     expect(amountElement).toHaveStyle({ fontSize: '40px' });
+  });
+
+  it('displays at most 2 decimals for a parent-driven amount', () => {
+    const store = mockStore(getMockState());
+
+    renderWithProvider(<CustomAmount amountFiat="7.863083" />, store);
+
+    expect(screen.getByTestId('custom-amount-input')).toHaveValue('7.86');
+  });
+
+  it('keeps sub-cent parent-driven amounts fully visible', () => {
+    const store = mockStore(getMockState());
+
+    renderWithProvider(<CustomAmount amountFiat="0.004" />, store);
+
+    expect(screen.getByTestId('custom-amount-input')).toHaveValue('0.004');
+  });
+
+  it('restores full precision once the user edits the amount', () => {
+    const store = mockStore(getMockState());
+
+    renderWithProvider(<CustomAmountHarness initialAmount="7.863083" />, store);
+
+    const input = screen.getByTestId('custom-amount-input');
+    expect(input).toHaveValue('7.86');
+
+    fireEvent.change(input, { target: { value: '1.2345' } });
+
+    expect(input).toHaveValue('1.2345');
   });
 
   it('counts decimal separators as half a character when calculating input width', () => {

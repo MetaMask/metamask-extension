@@ -608,65 +608,6 @@ describe('useTransactionCustomAmount', () => {
       expect(result.current.amountHuman).toBe('7.863083');
       expect(updateTokenAmountMock).toHaveBeenCalledWith('7.863083');
     });
-
-    it('displays only 2 decimals for Max while submitting the full balance', () => {
-      const updateTokenAmountMock = jest.fn();
-      const { result } = runHook({
-        balanceUsdOverride: 7.863083,
-        tokenFiatRate: 0.999692,
-        updateTokenAmountMock,
-      });
-
-      act(() => {
-        result.current.updatePendingAmountPercentage(100);
-      });
-
-      expect(result.current.amountFiatDisplay).toBe('7.86');
-      expect(result.current.amountFiat).toBe('7.863083');
-      expect(updateTokenAmountMock).toHaveBeenCalledWith('7.863083');
-    });
-
-    it('keeps sub-cent Max amounts fully visible', () => {
-      const { result } = runHook({
-        balanceUsdOverride: 0.004,
-      });
-
-      act(() => {
-        result.current.updatePendingAmountPercentage(100);
-      });
-
-      expect(result.current.amountFiatDisplay).toBe('0.004');
-    });
-
-    it('displays the amount as-is when a percentage is already within 2 decimals', () => {
-      const { result } = runHook({
-        payTokenBalanceUsd: 100,
-      });
-
-      act(() => {
-        result.current.updatePendingAmountPercentage(33);
-      });
-
-      expect(result.current.amountFiatDisplay).toBe('33');
-    });
-
-    it('restores full precision display once the user edits the amount', () => {
-      const { result } = runHook({
-        balanceUsdOverride: 7.863083,
-      });
-
-      act(() => {
-        result.current.updatePendingAmountPercentage(100);
-      });
-
-      expect(result.current.amountFiatDisplay).toBe('7.86');
-
-      act(() => {
-        result.current.updatePendingAmount('1.2345');
-      });
-
-      expect(result.current.amountFiatDisplay).toBe('1.2345');
-    });
   });
 
   describe('pay token changes', () => {

@@ -106,7 +106,6 @@ const mockStore = configureMockStore([]);
 
 const DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN = {
   amountFiat: '100',
-  amountFiatDisplay: '100',
   amountHuman: '50',
   amountHumanDebounced: '50',
   hasAmount: true,
@@ -356,7 +355,6 @@ describe('CustomAmountInfo', () => {
       customAmountHookReturn: {
         ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
         amountFiat: '123',
-        amountFiatDisplay: '123',
         isDepositPrefillEnabled: true,
         isDepositPrefillLoading: false,
         isDepositPrefilled: false,
@@ -365,18 +363,6 @@ describe('CustomAmountInfo', () => {
 
     expect(getByTestId('custom-amount')).toHaveTextContent('123');
     expect(queryByTestId('custom-amount-skeleton')).not.toBeInTheDocument();
-  });
-
-  it('renders the cents-only display amount in the input', () => {
-    const { getByTestId } = render({
-      customAmountHookReturn: {
-        ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
-        amountFiat: '7.863083',
-        amountFiatDisplay: '7.86',
-      },
-    });
-
-    expect(getByTestId('custom-amount')).toHaveTextContent('7.86');
   });
 
   it('renders amount details under the amount input', () => {
