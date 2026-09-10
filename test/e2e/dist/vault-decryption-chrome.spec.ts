@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import os from 'os';
 import path from 'path';
 import fs from 'fs-extra';
@@ -65,70 +66,74 @@ async function getExtensionStorageFilePath(driver: Driver): Promise<string> {
 }
 
 /**
- * Retrieve the log file from the extension's storage path.
+ * Returns whether file contents include a vault payload vault-decryptor can parse.
+ *
+ * @param fileContents - The log file contents.
+ * @returns True when both KeyringController and "vault" are present.
+ */
+function logFileHasVaultContent(fileContents: string): boolean {
+  return (
+    fileContents.includes('KeyringController') &&
+    fileContents.includes('"vault"')
+  );
+}
+
+/**
+ * Finds a Chrome LevelDB `.log` file that contains a parseable vault.
  *
  * @param extensionStoragePath - The path to the extension's storage.
- * @returns The log file path.
+ * @returns The matching log file path, or undefined if none contain vault data.
  */
-function getExtensionLogFile(extensionStoragePath: string): string {
-  const logFiles = fs
-    .readdirSync(extensionStoragePath)
-    .filter((filename: string) => filename.endsWith('.log'));
+async function findLogFileWithVault(
+  extensionStoragePath: string,
+): Promise<string | undefined> {
+  const logFiles = (await fs.readdir(extensionStoragePath)).filter(
+    (filename: string) => filename.endsWith('.log'),
+  );
 
-  console.log('Log Files =========================:', logFiles.length);
-  // Use the first of the `.log` files found
-  return path.resolve(extensionStoragePath, logFiles[0]);
-}
-
-/**
- * Gets the size of a file in bytes.
- *
- * @param filePath - The path to the file.
- * @returns A promise that resolves to the size of the file in bytes.
- */
-async function getFileSize(filePath: string): Promise<number> {
-  const stats = await fs.promises.stat(filePath);
-  console.log(`File Size =========================: ${stats.size} bytes`);
-  return stats.size;
-}
-
-/**
- * Retry logic to ensure Chrome has finish writing into the file.
- *
- * @param options - The options object.
- * @param options.driver - The WebDriver instance.
- * @param options.maxRetries - The maximum number of retries.
- * @param options.minFileSize - The minimum file size in bytes.
- * @returns Resolves if the file meets the size requirement within the retries.
- * @throws {Error} If the file does not reach the minimum size after the maximum retries.
- */
-async function waitUntilFileIsWritten({
-  driver,
-  maxRetries = 10,
-  minFileSize = 30000,
-}: {
-  driver: Driver;
-  maxRetries?: number;
-  minFileSize?: number;
-}): Promise<void> {
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    const extensionPath = await getExtensionStorageFilePath(driver);
-    const extensionLogFile = getExtensionLogFile(extensionPath);
-    const fileSize = await getFileSize(extensionLogFile);
-    if (fileSize > minFileSize) {
-      console.log(`File is ready with size ${fileSize} bytes.`);
-      return;
-    }
-    console.log(`File size is too small (${fileSize} bytes)`);
-    if (attempt < maxRetries - 1) {
-      console.log(`Waiting for 8 seconds before retrying...`);
-      await driver.delay(8000);
+  for (const filename of logFiles) {
+    const filePath = path.resolve(extensionStoragePath, filename);
+    try {
+      const contents = await fs.readFile(filePath, 'utf8');
+      if (logFileHasVaultContent(contents)) {
+        return filePath;
+      }
+    } catch {
+      // File may still be locked or mid-write.
     }
   }
-  // If the loop completes without success, throw an error
-  throw new Error(
-    `File did not reach the minimum size of ${minFileSize} bytes after ${maxRetries} retries.`,
-  );
+
+  return undefined;
+}
+
+/**
+ * Waits until a Chrome extension `.log` file contains vault data.
+ *
+ * @param driver - The WebDriver instance.
+ * @returns The path of the log file that contains the vault.
+ */
+async function waitUntilVaultLogIsWritten(driver: Driver): Promise<string> {
+  let vaultLogPath: string | undefined;
+  try {
+    await driver.waitUntil(
+      async () => {
+        const extensionPath = await getExtensionStorageFilePath(driver);
+        vaultLogPath = await findLogFileWithVault(extensionPath);
+        return Boolean(vaultLogPath);
+      },
+      { timeout: 80000, interval: 1000 },
+    );
+  } catch {
+    throw new Error(
+      'No Chrome log file contained KeyringController and "vault" within 80000ms',
+    );
+  }
+  if (!vaultLogPath) {
+    throw new Error(
+      'No Chrome log file contained KeyringController and "vault"',
+    );
+  }
+  return vaultLogPath;
 }
 
 describe('Vault Decryptor Page', function () {
@@ -156,21 +161,28 @@ describe('Vault Decryptor Page', function () {
           needNavigateToNewPage: false,
         });
 
-        // Retry-logic to ensure the file is ready before uploading it to mitigate flakiness when Chrome hasn't finished writing
         const extensionPath = await getExtensionStorageFilePath(driver);
-        await waitUntilFileIsWritten({ driver });
+        const vaultLogPath = await waitUntilVaultLogIsWritten(driver);
 
         // copy log file to a temp location, to avoid reading it while the browser is writing it
         let copiedDir;
         try {
           copiedDir = await copyDirectoryToTmp(extensionPath);
-          const extensionLogFileCopy = getExtensionLogFile(copiedDir);
+          const vaultLogFileCopy = path.join(
+            copiedDir,
+            path.basename(vaultLogPath),
+          );
+          const copiedLogContents = await fs.readFile(vaultLogFileCopy, 'utf8');
+          assert.ok(
+            logFileHasVaultContent(copiedLogContents),
+            'copied log file is missing vault content',
+          );
 
           // navigate to the Vault decryptor webapp and fill the input field with storage recovered from filesystem
           await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
           const vaultDecryptorPage = new VaultDecryptorPage(driver);
           await vaultDecryptorPage.checkPageIsLoaded();
-          await vaultDecryptorPage.uploadLogFile(extensionLogFileCopy);
+          await vaultDecryptorPage.uploadLogFile(vaultLogFileCopy);
 
           // fill the password and decrypt
           await vaultDecryptorPage.fillPassword();
@@ -257,9 +269,8 @@ describe('Vault Decryptor Page', function () {
         await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
         const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
 
-        // retry-logic to ensure the file is written before copying it
         const extensionPath = await getExtensionStorageFilePath(driver);
-        await waitUntilFileIsWritten({ driver });
+        await waitUntilVaultLogIsWritten(driver);
 
         // copy log file to a temp location, to avoid reading it while the browser is writting it
         type VaultData = {

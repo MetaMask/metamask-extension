@@ -24,6 +24,16 @@ class VaultDecryptorPage {
 
   private readonly fileInput = '#fileinput';
 
+  private readonly fileParseFailed = {
+    text: '❌ Can not read vault from file',
+    tag: 'span',
+  };
+
+  private readonly fileParseSuccess = {
+    text: '✅',
+    tag: 'span',
+  };
+
   private readonly passwordInput = '#passwordinput';
 
   private readonly radioFileInput = '#radio-fileinput';
@@ -99,7 +109,8 @@ class VaultDecryptorPage {
   }
 
   /**
-   * Uploads a log file to the Vault Decryptor page.
+   * Uploads a log file to the Vault Decryptor page and waits until the file
+   * is parsed. Throws if the file has no parseable vault.
    *
    * @param filePath - The path to the log file to upload.
    */
@@ -108,6 +119,23 @@ class VaultDecryptorPage {
     await this.driver.clickElement(this.radioFileInput);
     const inputField = await this.driver.findElement(this.fileInput);
     await inputField.sendKeys(filePath);
+    await this.driver.waitUntil(
+      async () => {
+        if (
+          await this.driver.isElementPresentAndVisible(
+            this.fileParseFailed,
+            500,
+          )
+        ) {
+          throw new Error('log file has no parseable vault');
+        }
+        return await this.driver.isElementPresentAndVisible(
+          this.fileParseSuccess,
+          500,
+        );
+      },
+      { timeout: 30000, interval: 500 },
+    );
   }
 }
 
