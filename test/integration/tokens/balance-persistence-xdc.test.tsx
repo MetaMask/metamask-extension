@@ -239,10 +239,9 @@ async function renderTokensHome(selected: SelectedNetwork) {
   await clickElementById('account-overview__asset-tab');
 }
 
-function expectTokenAmount(symbol: string, amount: string) {
-  const row = screen
-    .getAllByTestId('multichain-token-list-button')
-    .find((candidate) => candidate.textContent?.includes(symbol));
+async function expectTokenAmount(symbol: string, amount: string) {
+  const rows = await screen.findAllByTestId('multichain-token-list-button');
+  const row = rows.find((candidate) => candidate.textContent?.includes(symbol));
   expect(row).toBeDefined();
   expect(
     within(row as HTMLElement).getByTestId('multichain-token-list-item-value'),
@@ -275,13 +274,6 @@ describe('XDC balance persistence across network selection', () => {
     nock.cleanAll();
   });
 
-  it('shows seeded XDC native and ERC-20 balances on the Tokens tab', async () => {
-    await renderTokensHome('xdc');
-
-    expectTokenAmount(XDC_SYMBOL, NATIVE_BALANCE);
-    expectTokenAmount(SEEDED_ERC20_SYMBOL, ERC20_BALANCE);
-  });
-
   it('hides XDC assets when Mainnet is selected', async () => {
     await renderTokensHome('mainnet');
 
@@ -306,7 +298,7 @@ describe('XDC balance persistence across network selection', () => {
     cleanup();
     await renderTokensHome('xdc');
 
-    expectTokenAmount(XDC_SYMBOL, NATIVE_BALANCE);
-    expectTokenAmount(SEEDED_ERC20_SYMBOL, ERC20_BALANCE);
+    await expectTokenAmount(XDC_SYMBOL, NATIVE_BALANCE);
+    await expectTokenAmount(SEEDED_ERC20_SYMBOL, ERC20_BALANCE);
   });
 });
