@@ -422,6 +422,22 @@ type FakeResizeObserver = {
 };
 
 /**
+ * Restores a window global, deleting it when jsdom never defined it. Assigning
+ * `undefined` back would leave an own property that `in` checks still see.
+ *
+ * @param key - Name of the global to restore.
+ * @param original - Value captured before the global was replaced.
+ */
+function restoreWindowGlobal(key: string, original: unknown) {
+  if (original === undefined) {
+    Reflect.deleteProperty(window, key);
+    return;
+  }
+
+  Reflect.set(window, key, original);
+}
+
+/**
  * Replaces the jsdom `IntersectionObserver`/`ResizeObserver` stubs with fakes
  * that expose their callbacks, so tests can drive the market header's
  * scroll-linked price crossfade and its sticky-header measurement.
@@ -531,8 +547,8 @@ function installHeaderObserverHarness() {
       });
     },
     restore() {
-      window.IntersectionObserver = originalIntersectionObserver;
-      window.ResizeObserver = originalResizeObserver;
+      restoreWindowGlobal('IntersectionObserver', originalIntersectionObserver);
+      restoreWindowGlobal('ResizeObserver', originalResizeObserver);
     },
   };
 }

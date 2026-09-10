@@ -66,7 +66,13 @@ describe('useIntersectionObserver', () => {
   const originalIntersectionObserver = window.IntersectionObserver;
 
   afterEach(() => {
-    window.IntersectionObserver = originalIntersectionObserver;
+    // Assigning `undefined` back would leave an own property that the hook's
+    // `'IntersectionObserver' in globalThis` guard still sees.
+    if (originalIntersectionObserver === undefined) {
+      Reflect.deleteProperty(window, 'IntersectionObserver');
+    } else {
+      window.IntersectionObserver = originalIntersectionObserver;
+    }
     jest.restoreAllMocks();
   });
 
