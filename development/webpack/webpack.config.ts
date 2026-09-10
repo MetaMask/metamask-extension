@@ -16,7 +16,7 @@ import {
 } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
-import postcss from 'postcss';
+import postcss, { type AcceptedPlugin } from 'postcss';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import * as sassEmbedded from 'sass-embedded';
@@ -165,10 +165,15 @@ async function buildCashtagWidgetCss(content: Buffer | string, from: string) {
       /@import\s+['"]@metamask\/design-tokens\/styles\.css['"];?\s*/u,
       '',
     );
-  const result = await postcss([
-    tailwindcss(),
-    autoprefixer({ overrideBrowserslist: browsersListQuery }),
-  ]).process(source, { from });
+  // tailwindcss and autoprefixer can resolve to their own postcss copies, whose
+  // plugin types are structurally distinct from the postcss imported here.
+  const cssPlugins: AcceptedPlugin[] = [
+    tailwindcss() as unknown as AcceptedPlugin,
+    autoprefixer({
+      overrideBrowserslist: browsersListQuery,
+    }) as unknown as AcceptedPlugin,
+  ];
+  const result = await postcss(cssPlugins).process(source, { from });
   return `${tokens}\n${result.css}`;
 }
 

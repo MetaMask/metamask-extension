@@ -14,6 +14,7 @@ import {
   formatSignedUsd,
   formatUsd,
   formatUsdCompact,
+  usdChangeFromPercent,
 } from '../../lib/helpers';
 import { getSecurityStatusBadge } from '../../lib/security-badge';
 import type { AssetData } from '../../lib/types';
@@ -50,7 +51,7 @@ export function TokenDetail({
     data.change24hPercent === null ? true : data.change24hPercent >= 0;
   const priceChangeUsd =
     data.price !== null && data.change24hPercent !== null
-      ? data.price * (data.change24hPercent / 100)
+      ? usdChangeFromPercent(data.price, data.change24hPercent)
       : null;
   const securityBadge = getSecurityStatusBadge(data.resultType);
 

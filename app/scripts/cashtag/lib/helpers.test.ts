@@ -9,6 +9,7 @@ import {
   findCashtagAnchors,
   getChainImageUrl,
   symbolFromCashtagAnchor,
+  usdChangeFromPercent,
 } from './helpers';
 
 function extensionUrl(relativePath: string) {
@@ -77,6 +78,17 @@ describe('findCashtagAnchors', () => {
     `;
 
     expect(findCashtagAnchors(root)).toEqual([]);
+  });
+});
+
+describe('usdChangeFromPercent', () => {
+  it('applies the percent to the prior price, not the current price', () => {
+    expect(usdChangeFromPercent(110, 10)).toBeCloseTo(10);
+    expect(usdChangeFromPercent(90, -10)).toBeCloseTo(-10);
+  });
+
+  it('returns null when a 100% drop cannot recover a prior price', () => {
+    expect(usdChangeFromPercent(0, -100)).toBeNull();
   });
 });
 

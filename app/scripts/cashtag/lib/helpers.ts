@@ -67,6 +67,18 @@ export function formatSignedUsd(amount: number) {
   return formatCurrency(amount, 'USD', { signDisplay: 'always' }) || '—';
 }
 
+export function usdChangeFromPercent(price: number, changePercent: number) {
+  const ratio = 1 + changePercent / 100;
+  if (
+    !Number.isFinite(price) ||
+    !Number.isFinite(changePercent) ||
+    ratio === 0
+  ) {
+    return null;
+  }
+  return price - price / ratio;
+}
+
 export function formatPercent(amount: number) {
   if (!Number.isFinite(amount)) {
     return '—';
