@@ -92,6 +92,21 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
     <div
       class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
     >
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+      >
+        Relayer fee
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        data-testid="relayer-fees"
+      >
+        $2.52
+      </p>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
@@ -270,6 +285,21 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
           </p>
         </div>
       </div>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+      >
+        Relayer fee
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        data-testid="relayer-fees"
+      >
+        $2.52
+      </p>
     </div>
     <div
       class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
@@ -494,6 +524,21 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
     <div
       class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
     >
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+      >
+        Relayer fee
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        data-testid="relayer-fees"
+      >
+        $2.52
+      </p>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
       <div
         class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
@@ -653,6 +698,21 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
         data-testid="network-fees"
       >
         $0.0003
+      </p>
+    </div>
+    <div
+      class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+      >
+        Relayer fee
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        data-testid="relayer-fees"
+      >
+        $2.52
       </p>
     </div>
     <div
