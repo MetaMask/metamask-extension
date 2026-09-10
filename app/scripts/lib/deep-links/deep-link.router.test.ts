@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention -- Sentry trace fields use snake_case */
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import MetaMaskController from '../../metamask-controller';
@@ -58,7 +57,9 @@ jest.mock('../../../../shared/lib/deep-links/parse', () => ({
 jest.mock('../../../../shared/lib/deep-links/performance', () => ({
   clearPendingDeepLinkNavigation: jest.fn(),
   getDeepLinkUrlTags: jest.fn(() => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
     deeplink_route: 'external-route',
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
     deeplink_variant: 'default',
     signed: false,
   })),
@@ -212,9 +213,12 @@ describe('DeepLinkRouter', () => {
         id: expect.any(String),
         op: TraceOperation.DeeplinkPerformance,
         tags: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
           deeplink_route: 'external-route',
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
           deeplink_variant: 'default',
           signed: false,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
           start_source: 'parse',
         },
       });
@@ -227,7 +231,9 @@ describe('DeepLinkRouter', () => {
         intakeTimestamp: 1_000,
         createdAt: expect.any(Number),
         urlTags: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
           deeplink_route: 'external-route',
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
           deeplink_variant: 'default',
           signed: false,
         },
@@ -242,7 +248,10 @@ describe('DeepLinkRouter', () => {
           seam: 'pre_navigate',
           segment: 'full',
           interstitial: 'skipped',
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
           target_route: '/swap',
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+          signature_status: 'valid',
         },
       });
     });
@@ -265,6 +274,38 @@ describe('DeepLinkRouter', () => {
         },
       });
       expect(setPendingDeepLinkNavigation).not.toHaveBeenCalled();
+    });
+
+    it('records signature_status from parse, independent of the signed URL tag', async () => {
+      parseMock.mockResolvedValue({
+        signature: 'invalid',
+        route: { pathname: '/home' },
+        destination: {
+          path: '',
+          query: new URLSearchParams(),
+        },
+      } as ParsedDeepLink);
+
+      await onBeforeRequest?.({
+        tabId: 1,
+        url: 'https://link.metamask.io/home?sig=foo',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.DeeplinkProcessed,
+          tags: expect.objectContaining({ signed: false }),
+        }),
+      );
+      expect(endTrace).toHaveBeenCalledWith({
+        name: TraceName.DeeplinkProcessed,
+        id: expect.any(String),
+        data: expect.objectContaining({
+          success: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+          signature_status: 'invalid',
+        }),
+      });
     });
 
     // by default, the router should not skip the interstitial page for either signed or unsigned links
