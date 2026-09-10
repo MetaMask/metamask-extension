@@ -4,11 +4,6 @@
       "count": 1
     }
   },
-  "app/scripts/lib/metaRPCClientFactory.test.js": {
-    "promise/no-callback-in-promise": {
-      "count": 3
-    }
-  },
   "development/webpack/utils/loaders/swcLoader.ts": {
     "promise/no-callback-in-promise": {
       "count": 1
