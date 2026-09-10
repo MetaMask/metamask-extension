@@ -53,7 +53,14 @@ const arrangeMocks = () => {
   };
 };
 
-const prerequisitesStateKeys = [
+type CombinatorialOverrideKey =
+  | 'isUnlocked'
+  | 'useExternalServices'
+  | 'isSignedIn'
+  | 'completedOnboarding'
+  | 'needsProfilePairing';
+
+const prerequisitesStateKeys: CombinatorialOverrideKey[] = [
   'isUnlocked',
   'useExternalServices',
   'isSignedIn',
@@ -65,15 +72,13 @@ const shouldAutoSignInTestCases: ArrangeMocksMetamaskStateOverrides[] = [];
 const shouldNotAutoSignInTestCases: ArrangeMocksMetamaskStateOverrides[] = [];
 
 // We generate all possible combinations of the prerequisites here
-const generateCombinations = (keys: string[]) => {
+const generateCombinations = (keys: CombinatorialOverrideKey[]) => {
   const result: ArrangeMocksMetamaskStateOverrides[] = [];
   const total = 2 ** keys.length;
   for (let i = 0; i < total; i++) {
     const state = {} as ArrangeMocksMetamaskStateOverrides;
     keys.forEach((key, index) => {
-      state[key as keyof ArrangeMocksMetamaskStateOverrides] = Boolean(
-        Math.floor(i / 2 ** index) % 2,
-      );
+      state[key] = Boolean(Math.floor(i / 2 ** index) % 2);
     });
     result.push(state);
   }
