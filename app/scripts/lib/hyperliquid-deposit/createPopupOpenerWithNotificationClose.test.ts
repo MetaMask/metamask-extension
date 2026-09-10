@@ -33,31 +33,11 @@ describe('createPopupOpenerWithNotificationClose', () => {
     delete globalThis.chrome;
   });
 
-  it('returns false if tabId is not provided', async () => {
-    const deps = createMockDeps();
-    const opener = createPopupOpenerWithNotificationClose(deps);
-
-    const result = await opener();
-
-    expect(result).toBe(false);
-    expect(globalThis.chrome.action.openPopup).not.toHaveBeenCalled();
-  });
-
-  it('returns false if tabId is undefined', async () => {
-    const deps = createMockDeps();
-    const opener = createPopupOpenerWithNotificationClose(deps);
-
-    const result = await opener({ tabId: undefined });
-
-    expect(result).toBe(false);
-    expect(globalThis.chrome.action.openPopup).not.toHaveBeenCalled();
-  });
-
   it('opens popup and returns true when tabId is provided', async () => {
     const deps = createMockDeps();
     const opener = createPopupOpenerWithNotificationClose(deps);
 
-    const result = await opener({ tabId: 456 });
+    const result = await opener(456);
 
     expect(result).toBe(true);
     expect(deps.extension.tabs.get).toHaveBeenCalledWith(456);
@@ -69,7 +49,7 @@ describe('createPopupOpenerWithNotificationClose', () => {
     deps.appStateController.getCurrentPopupId.mockReturnValue(123);
     const opener = createPopupOpenerWithNotificationClose(deps);
 
-    const result = await opener({ tabId: 456 });
+    const result = await opener(456);
 
     expect(result).toBe(true);
     expect(
@@ -86,7 +66,7 @@ describe('createPopupOpenerWithNotificationClose', () => {
     deps.appStateController.getCurrentPopupId.mockReturnValue(123);
     const opener = createPopupOpenerWithNotificationClose(deps);
 
-    const result = await opener({ tabId: 456 });
+    const result = await opener(456);
 
     expect(result).toBe(false);
     expect(
@@ -100,7 +80,7 @@ describe('createPopupOpenerWithNotificationClose', () => {
     deps.appStateController.getCurrentPopupId.mockReturnValue(undefined);
     const opener = createPopupOpenerWithNotificationClose(deps);
 
-    await opener({ tabId: 456 });
+    await opener(456);
 
     expect(
       deps.notificationManager.markAsAutomaticallyClosed,
@@ -116,7 +96,7 @@ describe('createPopupOpenerWithNotificationClose', () => {
     );
     const opener = createPopupOpenerWithNotificationClose(deps);
 
-    const result = await opener({ tabId: 456 });
+    const result = await opener(456);
 
     expect(result).toBe(true);
   });

@@ -14,7 +14,7 @@ type ShowHyperliquidDepositPromptApprovalOptions = {
   tabId?: number;
   // Optional function to open the popup. If provided and returns true, the
   // approval is added without triggering UI (the popup will show it).
-  requestOpenPopup?: (options?: { tabId?: number }) => Promise<boolean>;
+  requestOpenPopup?: (tabId: number) => Promise<boolean>;
 };
 
 /**
@@ -52,11 +52,11 @@ export async function showHyperliquidDepositPromptApproval({
     type: HYPERLIQUID_DEPOSIT_PROMPT_APPROVAL_TYPE,
   };
 
-  // If requestOpenPopup is provided, try to open popup first.
+  // If requestOpenPopup is provided and we have a tabId, try to open popup first.
   // The callback handles any cleanup (e.g., closing notification) on success.
-  if (requestOpenPopup) {
+  if (requestOpenPopup && tabId !== undefined) {
     try {
-      const popupOpened = await requestOpenPopup({ tabId });
+      const popupOpened = await requestOpenPopup(tabId);
       if (popupOpened) {
         approvalController.add(approvalRequest).catch(() => {
           // User dismissed or approval failed - both are expected flows

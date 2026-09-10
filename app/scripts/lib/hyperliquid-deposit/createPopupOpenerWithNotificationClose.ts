@@ -22,13 +22,8 @@ export function createPopupOpenerWithNotificationClose(
 ) {
   const popupOpener = createPopupOpener({ extension: deps.extension });
 
-  // Require `tabId` to ensure the popup opens in the correct window.
-  return async (options?: { tabId?: number }): Promise<boolean> => {
-    if (!options?.tabId) {
-      return false;
-    }
-
-    const opened = await popupOpener(options);
+  return async (tabId: number): Promise<boolean> => {
+    const opened = await popupOpener({ tabId });
 
     if (opened) {
       const notificationWindowId = deps.appStateController.getCurrentPopupId();

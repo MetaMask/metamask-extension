@@ -69,10 +69,11 @@ describe('showHyperliquidDepositPromptApproval', () => {
         approvalController,
         origin,
         selectedAddress,
+        tabId: 123,
         requestOpenPopup,
       });
 
-      expect(requestOpenPopup).toHaveBeenCalledWith({ tabId: undefined });
+      expect(requestOpenPopup).toHaveBeenCalledWith(123);
       expect(approvalController.add).toHaveBeenCalledWith({
         origin,
         requestData: { selectedAddress },
@@ -83,7 +84,7 @@ describe('showHyperliquidDepositPromptApproval', () => {
       ).not.toHaveBeenCalled();
     });
 
-    it('passes tabId to requestOpenPopup when provided', async () => {
+    it('does not call requestOpenPopup if tabId is undefined', async () => {
       const approvalController = createApprovalController();
       const requestOpenPopup = jest.fn().mockResolvedValue(true);
 
@@ -91,11 +92,12 @@ describe('showHyperliquidDepositPromptApproval', () => {
         approvalController,
         origin,
         selectedAddress,
-        tabId: 123,
+        // tabId is undefined
         requestOpenPopup,
       });
 
-      expect(requestOpenPopup).toHaveBeenCalledWith({ tabId: 123 });
+      expect(requestOpenPopup).not.toHaveBeenCalled();
+      expect(approvalController.addAndShowApprovalRequest).toHaveBeenCalled();
     });
 
     it('falls back to addAndShowApprovalRequest() when popup fails to open', async () => {
@@ -106,10 +108,11 @@ describe('showHyperliquidDepositPromptApproval', () => {
         approvalController,
         origin,
         selectedAddress,
+        tabId: 123,
         requestOpenPopup,
       });
 
-      expect(requestOpenPopup).toHaveBeenCalled();
+      expect(requestOpenPopup).toHaveBeenCalledWith(123);
       expect(approvalController.add).not.toHaveBeenCalled();
       expect(approvalController.addAndShowApprovalRequest).toHaveBeenCalledWith(
         {
@@ -130,10 +133,11 @@ describe('showHyperliquidDepositPromptApproval', () => {
         approvalController,
         origin,
         selectedAddress,
+        tabId: 123,
         requestOpenPopup,
       });
 
-      expect(requestOpenPopup).toHaveBeenCalled();
+      expect(requestOpenPopup).toHaveBeenCalledWith(123);
       expect(approvalController.add).not.toHaveBeenCalled();
       expect(approvalController.addAndShowApprovalRequest).toHaveBeenCalledWith(
         {
@@ -154,6 +158,7 @@ describe('showHyperliquidDepositPromptApproval', () => {
           approvalController,
           origin,
           selectedAddress,
+          tabId: 123,
           requestOpenPopup,
         }),
       ).resolves.toBeUndefined();
