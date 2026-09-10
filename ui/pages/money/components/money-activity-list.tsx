@@ -12,6 +12,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { MoneyActivityItem } from '../types/money-activity';
 import { MoneyActivityRow } from './money-activity-row';
+import { MoneyActivitySettlingSkeletons } from './money-activity-settling-skeletons';
 
 export const MAX_PREVIEW_ITEMS = 5;
 
@@ -20,6 +21,10 @@ export type MoneyActivityListProps = {
   privacyMode?: boolean;
   onViewAll?: () => void;
   onItemClick?: (item: MoneyActivityItem) => void;
+  /** True when more Accounts API pages exist beyond the current preview. */
+  hasMore?: boolean;
+  /** True while the preview is still filling and should not show empty copy. */
+  isSettling?: boolean;
 };
 
 export function MoneyActivityList({
@@ -27,10 +32,13 @@ export function MoneyActivityList({
   privacyMode = false,
   onViewAll,
   onItemClick,
+  hasMore = false,
+  isSettling = false,
 }: MoneyActivityListProps) {
   const t = useI18nContext();
   const previewItems = items.slice(0, MAX_PREVIEW_ITEMS);
-  const hasMoreItems = items.length > MAX_PREVIEW_ITEMS;
+  const hasMoreItems = items.length > MAX_PREVIEW_ITEMS || hasMore;
+  const showEmptyCopy = items.length === 0 && !isSettling;
 
   return (
     <section
@@ -43,7 +51,7 @@ export function MoneyActivityList({
             {t('moneyActivity')}
           </Text>
         </div>
-        {items.length === 0 ? (
+        {showEmptyCopy ? (
           <Text
             variant={TextVariant.BodySm}
             color={TextColor.TextAlternative}
@@ -53,14 +61,18 @@ export function MoneyActivityList({
           </Text>
         ) : null}
       </Box>
-      {previewItems.map((item) => (
-        <MoneyActivityRow
-          key={item.id}
-          item={item}
-          privacyMode={privacyMode}
-          onClick={onItemClick ? () => onItemClick(item) : undefined}
-        />
-      ))}
+      {isSettling && items.length === 0 ? (
+        <MoneyActivitySettlingSkeletons />
+      ) : (
+        previewItems.map((item) => (
+          <MoneyActivityRow
+            key={item.id}
+            item={item}
+            privacyMode={privacyMode}
+            onItemClick={onItemClick}
+          />
+        ))
+      )}
       {hasMoreItems ? (
         <Box paddingLeft={4} paddingRight={4} paddingTop={3} paddingBottom={3}>
           <Button

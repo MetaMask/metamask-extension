@@ -131,10 +131,12 @@ const MOCK_AVAILABLE_TOKEN = {
 
 const DEFAULT_ALERTS_HOOK_RETURN: {
   alertMessage?: string;
+  hasAlert: boolean;
   hideResults: boolean;
   disableUpdate: boolean;
 } = {
   alertMessage: undefined,
+  hasAlert: false,
   hideResults: false,
   disableUpdate: false,
 };
@@ -907,6 +909,7 @@ describe('CustomAmountInfo', () => {
     const { queryByText } = render({
       alertsHookReturn: {
         alertMessage: undefined,
+        hasAlert: true,
         hideResults: true,
         disableUpdate: false,
       },
@@ -921,6 +924,7 @@ describe('CustomAmountInfo', () => {
     const { getByText } = render({
       alertsHookReturn: {
         alertMessage: messages.alertNoPayTokenQuotesMessage.message,
+        hasAlert: true,
         hideResults: true,
         disableUpdate: false,
       },

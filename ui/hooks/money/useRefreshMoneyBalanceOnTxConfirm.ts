@@ -13,6 +13,7 @@ import {
   invalidateMoneyAccountBalanceCaches,
   invalidateMoneyAccountBalanceSourceCaches,
 } from '../../helpers/money/invalidate-balance-caches';
+import { reportMoneyError } from '../../helpers/money/report-money-error';
 import {
   isMoneyAccountTx,
   isPerpsPredictMoneyActivity,
@@ -61,8 +62,8 @@ const didBalanceChange = (
  * Capture the pre-invalidation cached snapshot as a baseline, then invalidate +
  * refetch and compare. Retry up to MAX_RETRIES times if subsequent reads are
  * byte-identical to baseline. Guards against RPC nodes / API indexes serving
- * stale reads immediately after a transaction confirms. Fails visibly via
- * log.error if the retry budget exhausts.
+ * stale reads immediately after a transaction confirms. Reports to Sentry if
+ * the retry budget exhausts.
  *
  * On exhaustion the background source caches are busted one final time: the
  * last (stale) refetch re-cached the stale figure with a fresh staleTime, so
@@ -94,8 +95,10 @@ const refreshMoneyBalanceQueries = async (address: string) => {
 
   await invalidateMoneyAccountBalanceSourceCaches(address);
 
-  log.error(
+  reportMoneyError(
     `${LOG_PREFIX} Balance unchanged after ${MAX_RETRIES} retries; awaiting 30s auto-poll`,
+    new Error('Money Account balance unchanged after retries'),
+    { attempts: MAX_RETRIES },
   );
 };
 
@@ -151,7 +154,9 @@ export function useRefreshMoneyBalanceOnTxConfirm(): void {
       refreshedIdsRef.current.add(transactionMeta.id);
 
       refreshMoneyBalanceQueries(address).catch((error) => {
-        log.error(`${LOG_PREFIX} Balance refresh failed`, error);
+        reportMoneyError(`${LOG_PREFIX} Balance refresh failed`, error, {
+          attempts: MAX_RETRIES,
+        });
       });
     };
 

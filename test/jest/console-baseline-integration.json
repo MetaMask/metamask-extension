@@ -134,6 +134,16 @@
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 5,
       "warn: ⚠️ React Router Future Flag": 1
+    },
+    "test/integration/tokens/balance-persistence-xdc.test.tsx": {
+      "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 5,
+      "warn: ⚠️ React Router Future Flag": 1
+    },
+    "test/integration/tokens/hyperevm-wrong-decimals.test.tsx": {
+      "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 5,
+      "warn: ⚠️ React Router Future Flag": 1
     }
   }
 }

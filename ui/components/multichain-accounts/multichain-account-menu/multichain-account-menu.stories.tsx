@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoryObj, Meta } from '@storybook/react';
+import { StoryObj, Meta } from '@storybook/react-webpack5';
 import { MultichainAccountMenu } from './multichain-account-menu';
 
 const meta: Meta<typeof MultichainAccountMenu> = {

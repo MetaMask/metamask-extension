@@ -100,7 +100,7 @@ module.exports = {
     customExportConditions: ['node', 'node-addons'],
   },
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+    '^.+\\.(js|jsx|ts|tsx|mjs|cjs)$': 'babel-jest',
     '^.+\\.mts$': [
       'babel-jest',
       {
@@ -108,6 +108,13 @@ module.exports = {
       },
     ],
   },
+  // Core packages published as ESM-only (no CJS dual build) must be transformed
+  // by babel-jest. Without this, Jest's default node_modules ignore fails with
+  // `Unexpected token 'export'` (e.g. @metamask/ramps-controller@22 and nested
+  // ESM deps from core 1248). Include transitive ESM packages they pull in.
+  transformIgnorePatterns: [
+    '/node_modules/(?!(?:.+/)?(?:@metamask|@signinwithethereum|lodash-es|uuid)/)',
+  ],
   workerIdleMemoryLimit: '500MB',
   // Ensure console output is buffered (not streamed) so reporters can access testResult.console
   // Without this, Jest uses verbose mode for single-file runs which bypasses buffering

@@ -105,6 +105,10 @@
   "accountIdenticon": {
     "message": "Ícono de cuenta"
   },
+  "accountImported": {
+    "message": "Cuenta importada",
+    "description": "Success toast shown after a private key or JSON account is imported"
+  },
   "accountName": {
     "message": "Nombre de la cuenta"
   },
@@ -476,6 +480,42 @@
   },
   "activity_marketShort_success_title": {
     "message": "Posición corta cerrada: mercado"
+  },
+  "activity_moneyAccountDeposit_failed_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "Depósito fallido"
+  },
+  "activity_moneyAccountDeposit_pending_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "Depositando"
+  },
+  "activity_moneyAccountDeposit_success_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "Depositado"
+  },
+  "activity_moneyAccountWithdraw_failed_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "Error al enviar"
+  },
+  "activity_moneyAccountWithdraw_pending_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "Enviando"
+  },
+  "activity_moneyAccountWithdraw_success_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "Enviado"
   },
   "activity_nftBuy_failed_title": {
     "message": "Compra fallida"
@@ -1688,6 +1728,12 @@
     "message": "Aprobado el $1 por $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
+  "arcUsageNoticeDescription": {
+    "message": "¡Te damos la bienvenida a Arc! Para facilitar y verificar tu uso de la cadena Arc, es posible que compartamos información con el equipo de Arc."
+  },
+  "arcUsageNoticeTitle": {
+    "message": "Aviso"
+  },
   "areYouSure": {
     "message": "¿Está seguro?"
   },
@@ -1886,6 +1932,15 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Activar la funcionalidad básica"
+  },
+  "basicFunctionalityMigrationSocialModalBlogPostLink": {
+    "message": "entrada de blog"
+  },
+  "basicFunctionalityMigrationSocialModalTitle": {
+    "message": "Actualizaciones de privacidad y productos"
+  },
+  "basicFunctionalityMigrationToastEnabled": {
+    "message": "activada"
   },
   "basicFunctionalityRequired_description": {
     "message": "Esta función no está disponible mientras la funcionalidad básica está desactivada. Utiliza el selector que aparece a continuación para activarla."
@@ -2452,9 +2507,6 @@
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Usar el máximo permitido"
-  },
-  "bridgeValidationInsufficientGasMessage": {
-    "message": "No dispone de suficiente $1 para pagar la tarifa de gas de este puente. Introduzca un monto menor o compre más $1."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Se necesita más $1 para gas"
@@ -3347,6 +3399,9 @@
   "deepLink_thePredictPage": {
     "message": "la página de mercados de predicción"
   },
+  "deepLink_thePrivacySettingsPage": {
+    "message": "la página de configuración de privacidad"
+  },
   "deepLink_theRewardsPage": {
     "message": "la página de Recompensas de MetaMask"
   },
@@ -3495,10 +3550,6 @@
   },
   "disable": {
     "message": "Desactivar"
-  },
-  "disabledGasOptionToolTipMessage": {
-    "message": "“$1” está desactivado porque no cumple el mínimo de un aumento del 10 % respecto a la tarifa de gas original.",
-    "description": "$1 is gas estimate type which can be market or aggressive"
   },
   "disconnect": {
     "message": "Desconectar"
@@ -3670,7 +3721,7 @@
     "message": "Editar contacto"
   },
   "editGasFeeModalTitle": {
-    "message": "Editar tarifa de gas"
+    "message": "Editar tarifa de red"
   },
   "editGasLimitOutOfBounds": {
     "message": "El límite de gas debe ser al menos $1"
@@ -4132,9 +4183,6 @@
   "gasPrice": {
     "message": "Precio del gas"
   },
-  "gasPriceExcessive": {
-    "message": "Su tarifa de gas es demasiado alta. Considere reducir el importe."
-  },
   "gasPriceFetchFailed": {
     "message": "Se produjo un error al calcular el precio del gas debido a una falla en la red."
   },
@@ -4404,6 +4452,10 @@
   "hardwareWalletErrorContinueButton": {
     "message": "Continuar"
   },
+  "hardwareWalletErrorOnlyV4SupportedDescription": {
+    "message": "Tu $1 solo puede firmar datos tipados de la versión 4 (V4). Este sitio solicitó un tipo de firma anterior que no es compatible",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWalletErrorReconnectButton": {
     "message": "Reconecta el dispositivo e inténtalo de nuevo",
     "description": "Button label shown when a hardware wallet is disconnected during signing."
@@ -4633,6 +4685,10 @@
   },
   "honeypotTitle": {
     "message": "Honeypot"
+  },
+  "hyperliquidDepositPromptTitle": {
+    "message": "Deposita fondos en Hyperliquid con MetaMask",
+    "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Aplica un código de recomendación de MetaMask a todas las operaciones futuras en Hyperliquid por $1. MetaMask cobra una comisión.",
@@ -5132,9 +5188,6 @@
   "loginErrorSessionExpiredButton": {
     "message": "Inicia sesión"
   },
-  "loginErrorSessionExpiredDescription": {
-    "message": "Tu sesión ha expirado. Inicia sesión de nuevo para continuar."
-  },
   "loginErrorSessionExpiredTitle": {
     "message": "La sesión ha expirado"
   },
@@ -5182,6 +5235,10 @@
   },
   "manage": {
     "message": "Gestionar"
+  },
+  "manageAccounts": {
+    "message": "Administrar cuentas",
+    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
   },
   "manageConnectedAccounts": {
     "message": "Administrar cuentas conectadas"
@@ -5390,6 +5447,9 @@
   },
   "moneyActivityDepositing": {
     "message": "Depositando"
+  },
+  "moneyActivityDetailsTransactionId": {
+    "message": "ID de transacción"
   },
   "moneyActivityEmpty": {
     "message": "Aún no hay actividad"
@@ -5926,10 +5986,6 @@
   "networkStatusPriorityFeeTooltip": {
     "message": "Rango de tarifas de prioridad (también llamada “propina del minero”): esto va directamente a los mineros para incentivarlos a priorizar su transacción."
   },
-  "networkStatusStabilityFeeTooltip": {
-    "message": "Las tarifas de gas son de $1 en relación con las últimas 72 horas.",
-    "description": "$1 is networks stability value - stable, low, high"
-  },
   "networkSuggested": {
     "message": "Red sugerida"
   },
@@ -6302,6 +6358,9 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "Aún no ha recibido ninguna notificación."
+  },
+  "notificationsSettingsAccountsLoadError": {
+    "message": "No pudimos cargar la configuración de notificaciones de tu cuenta. Inténtalo de nuevo más tarde."
   },
   "notificationsSettingsAgenticCliDescription": {
     "message": "Solicitudes de conexión, aprobaciones y actualizaciones de sesión de CLI para Agent Wallet"
@@ -6739,7 +6798,7 @@
     "message": "Mostrar contraseña"
   },
   "passwordsDontMatch": {
-    "message": "Las contraseñas no coinciden"
+    "message": "Las contraseñas no coinciden."
   },
   "paste": {
     "message": "Pegar"
@@ -7199,6 +7258,12 @@
   "perpsCandlePeriodMinutes": {
     "message": "Minutos"
   },
+  "perpsChart": {
+    "message": "Gráfico de precios"
+  },
+  "perpsChartLoadError": {
+    "message": "Error al cargar los datos del gráfico"
+  },
   "perpsCloseAll": {
     "message": "Cerrar todo"
   },
@@ -7252,6 +7317,9 @@
   },
   "perpsCloseShort": {
     "message": "Cerrar posición corta"
+  },
+  "perpsCollapseChart": {
+    "message": "Contraer gráfico"
   },
   "perpsConfirmCloseLong": {
     "message": "Cerrar posición larga"
@@ -7350,6 +7418,9 @@
   "perpsExchangeAccountNotFound": {
     "message": "Agrega fondos para comenzar a operar.",
     "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
+  },
+  "perpsExpandChart": {
+    "message": "Expandir gráfico"
   },
   "perpsExploreMarkets": {
     "message": "Explorar mercados"
@@ -7991,6 +8062,18 @@
     "message": "TG/LP actualizados correctamente",
     "description": "Success toast text shown when TP/SL settings are updated"
   },
+  "perpsTopMovers": {
+    "message": "Mayores variaciones",
+    "description": "Heading of the Perps tab section ranking markets by 24h price change"
+  },
+  "perpsTopMoversGainers": {
+    "message": "Ganadores",
+    "description": "Toggle option showing the markets that rose the most over 24h in the Top movers section"
+  },
+  "perpsTopMoversLosers": {
+    "message": "Perdedores",
+    "description": "Toggle option showing the markets that fell the most over 24h in the Top movers section"
+  },
   "perpsTrades": {
     "message": "Operaciones"
   },
@@ -8382,6 +8465,10 @@
   "quotedTotalCost": {
     "message": "Costo total: $1"
   },
+  "rampsBackToWallet": {
+    "message": "Volver a billetera",
+    "description": "Secondary button on the ramps complete-buy interstitial that returns to the wallet home"
+  },
   "rampsBestRate": {
     "message": "Mejor tarifa"
   },
@@ -8399,6 +8486,21 @@
   "rampsChangeProvider": {
     "message": "Cambiar de proveedor."
   },
+  "rampsChooseProvider": {
+    "message": "Elegir proveedor"
+  },
+  "rampsCompleteBuyTitle": {
+    "message": "Completar compra",
+    "description": "Title of the interstitial shown after opening a ramps provider checkout tab"
+  },
+  "rampsCompletePurchaseInProviderTab": {
+    "message": "Completa tu compra en la pestaña $1",
+    "description": "$1 is the on-ramp provider name (e.g. Transak)"
+  },
+  "rampsContinueInBrowser": {
+    "message": "Continuar en el navegador",
+    "description": "Banner title on the ramps complete-buy interstitial"
+  },
   "rampsEligibilityFailedDescription": {
     "message": "Inténtalo de nuevo o ponte en contacto con soporte si esto sigue ocurriendo."
   },
@@ -8410,6 +8512,10 @@
   },
   "rampsErrorLoadingTokens": {
     "message": "Error al cargar tokens"
+  },
+  "rampsEstimatedToReceive": {
+    "message": "Se estima recibir",
+    "description": "Label for the estimated crypto amount on the ramps complete-buy interstitial"
   },
   "rampsMaxPurchaseLimit": {
     "message": "La compra máxima es de $1",
@@ -8536,9 +8642,20 @@
   "rampsPaymentDelayMinutes": {
     "message": "min"
   },
+  "rampsPaymentMethod": {
+    "message": "Método de pago",
+    "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "Hasta $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
   "rampsPaymentMethodMinLimit": {
     "message": "Mín. $1",
     "description": "$1 is the minimum fiat buy amount"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Último uso"
   },
   "rampsQuoteFetchError": {
     "message": "No se pudo obtener la cotización."
@@ -8644,6 +8761,14 @@
   },
   "removeAccount": {
     "message": "Eliminar cuenta"
+  },
+  "removeAccountConfirmDescription": {
+    "message": "Puedes restaurar esta cuenta en cualquier momento importándola con la clave privada.",
+    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
+  },
+  "removeAccountConfirmTitle": {
+    "message": "Eliminar $1",
+    "description": "Title of the account remove confirmation modal. $1 is the account name."
   },
   "removeAccountModalBannerDescription": {
     "message": "Asegúrate de tener la frase secreta de recuperación o la clave privada de esta cuenta antes de eliminarla.",
@@ -9098,6 +9223,10 @@
   "searchAnAcccountOrContact": {
     "message": "Buscar una cuenta o contacto"
   },
+  "searchAnAccount": {
+    "message": "Buscar una cuenta",
+    "description": "Search input placeholder for the Perps destination account picker"
+  },
   "searchForAnAssetToSend": {
     "message": "Buscar un activo para enviar"
   },
@@ -9537,6 +9666,9 @@
   "selectPathHelp": {
     "message": "Si no ve las cuentas previstas, intente cambiar la ruta HD o la red seleccionada actualmente."
   },
+  "selectPerpsAccount": {
+    "message": "Selecciona una cuenta de perps"
+  },
   "selectRecipient": {
     "message": "Seleccionar destinatario"
   },
@@ -9577,6 +9709,9 @@
   },
   "sendSelectSendAsset": {
     "message": "Seleccione el activo a enviar"
+  },
+  "sendToPerps": {
+    "message": "Enviar a Perps"
   },
   "sendingAsset": {
     "message": "Enviando $1"
@@ -10974,9 +11109,6 @@
   "stxCancelled": {
     "message": "El intercambio habría fallado"
   },
-  "stxCancelledDescription": {
-    "message": "Su transacción pudo haber fallado y fue cancelada para protegerlo de pagar comisiones de gas innecesarias."
-  },
   "stxCancelledSubDescription": {
     "message": "Intente su swap nuevamente. Estaremos aquí para protegerlo contra riesgos similares la próxima vez."
   },
@@ -11018,9 +11150,6 @@
   },
   "stxUserCancelled": {
     "message": "Intercambio cancelado"
-  },
-  "stxUserCancelledDescription": {
-    "message": "Su transacción ha sido cancelada y no pagó ninguna comisión de gas innecesaria."
   },
   "submit": {
     "message": "Enviar"
@@ -11151,19 +11280,12 @@
     "message": "El intercambio de $1 por $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesExplanation": {
-    "message": "MetaMask no obtiene dinero de las tarifas de gas. Estas tarifas son estimaciones y pueden cambiar según el nivel de tráfico de la red y la complejidad de la transacción. Más información $1.",
-    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
-  },
   "swapGasFeesExplanationLinkText": {
     "message": "aquí",
     "description": "Text for link in swapGasFeesExplanation"
   },
   "swapGasFeesIncluded": {
     "message": " Incluida"
-  },
-  "swapGasFeesSplit": {
-    "message": "Las tarifas de gas de la pantalla anterior se dividen entre estas dos transacciones."
   },
   "swapGasFeesSponsored": {
     "message": "Pagado por MetaMask"
@@ -11298,9 +11420,6 @@
   "swapSource": {
     "message": "Fuente de liquidez"
   },
-  "swapSuggestedGasSettingToolTipMessage": {
-    "message": "Los intercambios son transacciones complejas y urgentes. Recomendamos esta tarifa de gas para lograr un buen equilibrio entre el costo y la garantía de un intercambio exitoso."
-  },
   "swapToConfirmWithHwWallet": {
     "message": "para confirmar con la cartera de hardware"
   },
@@ -11322,9 +11441,6 @@
   },
   "swapUnknown": {
     "message": "Desconocida"
-  },
-  "swapValidationInsufficientGasMessage": {
-    "message": "No dispones de suficiente $1 para pagar la tarifa de gas de este canje. Ingresa un monto menor o compra más $1."
   },
   "swapZeroSlippage": {
     "message": "0 % de deslizamiento"
@@ -11540,7 +11656,7 @@
     "message": "Función"
   },
   "transactionDetailGasHeading": {
-    "message": "Tarifa estimada de gas"
+    "message": "Tarifa de red estimada"
   },
   "transactionError": {
     "message": "Error de transacción. Excepción generada en el código de contrato."
@@ -11560,9 +11676,6 @@
   "transactionHistoryBaseFee": {
     "message": "Tarifa base (GWEI)"
   },
-  "transactionHistoryL1GasLabel": {
-    "message": "Tarifa total de gas L1"
-  },
   "transactionHistoryL2GasLimitLabel": {
     "message": "Límite de gas L2"
   },
@@ -11576,7 +11689,7 @@
     "message": "Tarifa de prioridad (GWEI)"
   },
   "transactionHistoryTotalGasFee": {
-    "message": "Tarifa de gas total"
+    "message": "Tarifa de red total"
   },
   "transactionIdCopied": {
     "message": "ID de la transacción copiado"
@@ -11777,9 +11890,6 @@
   },
   "unlock": {
     "message": "Desbloquear"
-  },
-  "unlockPageIncorrectPassword": {
-    "message": "La contraseña es incorrecta. Inténtalo de nuevo."
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Demasiados intentos. Inténtalo de nuevo en "
@@ -12050,10 +12160,6 @@
   },
   "wrongNetworkName": {
     "message": "Según nuestros registros, es posible que el nombre de la red no coincida correctamente con este ID de cadena."
-  },
-  "wrongPassword": {
-    "message": "Contraseña incorrecta",
-    "description": "Displayed when the user enters an incorrect password"
   },
   "year": {
     "message": "año"

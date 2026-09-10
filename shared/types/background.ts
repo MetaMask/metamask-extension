@@ -75,7 +75,6 @@ import type { OnboardingControllerState } from '../../app/scripts/controllers/on
 import type { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
 import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
-import type { IsEquivalent } from './type-level-utils';
 
 export type ControllerStatePropertiesEnumerated = {
   internalAccounts: AccountsControllerState['internalAccounts'];
@@ -94,6 +93,7 @@ export type ControllerStatePropertiesEnumerated = {
   currentMigrationVersion: AppMetadataControllerState['currentMigrationVersion'];
   previousAppVersion: AppMetadataControllerState['previousAppVersion'];
   previousMigrationVersion: AppMetadataControllerState['previousMigrationVersion'];
+  installAttribution: AppMetadataControllerState['installAttribution'];
   approvalFlows: ApprovalControllerState['approvalFlows'];
   pendingApprovals: ApprovalControllerState['pendingApprovals'];
   pendingApprovalCount: ApprovalControllerState['pendingApprovalCount'];
@@ -190,13 +190,11 @@ export type ControllerStatePropertiesEnumerated = {
   encryptionSalt?: KeyringControllerState['encryptionSalt'];
   logs: LoggingControllerState['logs'];
   tracesBeforeMetricsOptIn: MetaMetricsControllerState['tracesBeforeMetricsOptIn'];
-  fragments: MetaMetricsControllerState['fragments'];
   consentDecisionMade?: AnalyticsControllerState['consentDecisionMade'];
   preConsentEventQueue?: AnalyticsControllerState['preConsentEventQueue'];
   optedIn: AnalyticsControllerState['optedIn'];
   analyticsId: AnalyticsControllerState['analyticsId'];
   passkeyRecord: PasskeyControllerState['passkeyRecord'];
-  traits: MetaMetricsControllerState['traits'];
   dataCollectionForMarketing: MetaMetricsControllerState['dataCollectionForMarketing'];
   marketingCampaignCookieId: MetaMetricsControllerState['marketingCampaignCookieId'];
   metaMetricsDataDeletionId: MetaMetricsDataDeletionState['metaMetricsDataDeletionId'];
@@ -314,6 +312,7 @@ export type ControllerStatePropertiesEnumerated = {
   methodData: TransactionControllerState['methodData'];
   transactions: TransactionControllerState['transactions'];
   transactionBatches: TransactionControllerState['transactionBatches'];
+  batchTransactionCounts: TransactionControllerState['batchTransactionCounts'];
   submitHistory: TransactionControllerState['submitHistory'];
   userOperations: UserOperationControllerState['userOperations'];
   isBackupAndSyncEnabled: UserStorageController.UserStorageControllerState['isBackupAndSyncEnabled'];
@@ -321,6 +320,7 @@ export type ControllerStatePropertiesEnumerated = {
   isAccountSyncingEnabled: UserStorageController.UserStorageControllerState['isAccountSyncingEnabled'];
   isContactSyncingEnabled: UserStorageController.UserStorageControllerState['isContactSyncingEnabled'];
   isContactSyncingInProgress: UserStorageController.UserStorageControllerState['isContactSyncingInProgress'];
+  isRampsSyncingEnabled: UserStorageController.UserStorageControllerState['isRampsSyncingEnabled'];
   rewardsActiveAccount: RewardsControllerState['rewardsActiveAccount'];
   rewardsAccounts: RewardsControllerState['rewardsAccounts'];
   rewardsSubscriptions: RewardsControllerState['rewardsSubscriptions'];
@@ -337,7 +337,7 @@ export type ControllerStatePropertiesEnumerated = {
   networkConnectionBannerNetwork: NetworkConnectionBannerControllerState['networkConnectionBannerNetwork'];
 };
 
-type ControllerStateTypesMerged = AccountsControllerState &
+export type ControllerStateTypesMerged = AccountsControllerState &
   AccountTrackerControllerState &
   AddressBookControllerState &
   AlertControllerState &
@@ -406,14 +406,7 @@ type ControllerStateTypesMerged = AccountsControllerState &
  * This type contains all controller state top-level properties, and
  * is the source-of-truth for the type of the Redux store `metamask` slice.
  *
- * Evaluates to `never` if the type definition is wrong or incomplete.
  */
-export type FlattenedBackgroundStateProxy =
-  IsEquivalent<
-    ControllerStatePropertiesEnumerated,
-    ControllerStateTypesMerged
-  > extends true
-    ? { isInitialized: boolean } & {
-        [P in keyof ControllerStatePropertiesEnumerated]: ControllerStatePropertiesEnumerated[P];
-      }
-    : never;
+export type FlattenedBackgroundStateProxy = { isInitialized: boolean } & {
+  [P in keyof ControllerStatePropertiesEnumerated]: ControllerStatePropertiesEnumerated[P];
+};

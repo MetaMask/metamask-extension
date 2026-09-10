@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-webpack5';
 import SignatureStepList from './signature-step-list';
 import { SignatureStepStatus } from '../types';
 import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';

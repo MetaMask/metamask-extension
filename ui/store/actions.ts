@@ -144,7 +144,7 @@ import {
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import {
-  MetaMetricsEventFragment,
+  MetaMetricsEventFragmentPayload,
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
   MetaMetricsPageObject,
@@ -153,7 +153,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventAccountType,
-  MetaMetricsUserTraits,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import {
@@ -4657,6 +4656,61 @@ export function toggleBasicFunctionality(
   };
 }
 
+export function consolidateBasicFunctionality(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('consolidateBasicFunctionality');
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error('[consolidateBasicFunctionality] error', error);
+    }
+  };
+}
+
+function dismissBasicFunctionalityMigrationNotification(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground(
+        'dismissBasicFunctionalityMigrationNotification',
+      );
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error(
+        '[dismissBasicFunctionalityMigrationNotification] error',
+        error,
+      );
+    }
+  };
+}
+
+export function hideMigrationModal(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return dismissBasicFunctionalityMigrationNotification();
+}
+
+export function hideMigrationToast(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return dismissBasicFunctionalityMigrationNotification();
+}
+
 export function setIsIpfsGatewayEnabled(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -6088,15 +6142,9 @@ export function trackAnalyticsEvent(
   return submitRequestToBackground('trackAnalyticsEvent', [payload, options]);
 }
 
-export function createEventFragment(
-  options: MetaMetricsEventFragment,
-): Promise<string> {
-  return submitRequestToBackground('createEventFragment', [options]);
-}
-
 export function upsertTransactionUIMetricsFragment(
   transactionId: string,
-  payload: Partial<MetaMetricsEventFragment>,
+  payload: MetaMetricsEventFragmentPayload,
 ) {
   return submitRequestToBackground('upsertTransactionUIMetricsFragment', [
     transactionId,
@@ -6106,20 +6154,9 @@ export function upsertTransactionUIMetricsFragment(
 
 export function updateEventFragment(
   id: string,
-  payload: Partial<MetaMetricsEventFragment>,
+  payload: MetaMetricsEventFragmentPayload,
 ) {
   return submitRequestToBackground('updateEventFragment', [id, payload]);
-}
-
-export function finalizeEventFragment(
-  id: string,
-  options?: {
-    abandoned?: boolean;
-    page?: MetaMetricsPageObject;
-    referrer?: MetaMetricsReferrerObject;
-  },
-) {
-  return submitRequestToBackground('finalizeEventFragment', [id, options]);
 }
 
 /**
@@ -6127,10 +6164,6 @@ export function finalizeEventFragment(
  */
 export function trackMetaMetricsPage(payload: MetaMetricsPagePayload) {
   return submitRequestToBackground('trackMetaMetricsPage', [payload]);
-}
-
-export function updateMetaMetricsTraits(traits: MetaMetricsUserTraits) {
-  return submitRequestToBackground('updateMetaMetricsTraits', [traits]);
 }
 
 export function resetViewedNotifications() {
