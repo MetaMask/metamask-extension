@@ -290,7 +290,6 @@ export const HyperliquidDepositPrompt: React.FC<
       },
     });
 
-    // Persist the entry point so the deposit toast can show custom copy
     setLastPerpsDepositEntryPoint(HYPERLIQUID_DEPOSIT_PROMPT);
 
     if (displayToken?.address && displayToken.chainId) {

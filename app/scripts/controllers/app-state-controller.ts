@@ -196,8 +196,7 @@ export type AppStateControllerState = {
 
   /**
    * The entry point that initiated the last Perps deposit flow (e.g.
-   * 'hyperliquid_deposit_prompt'). Persisted so the deposit-completion toast
-   * can show entry-point-specific copy.
+   * 'hyperliquid_deposit_prompt'). Currently used to show custom toast UI.
    */
   lastPerpsDepositEntryPoint?: string;
 };
@@ -1513,8 +1512,6 @@ export class AppStateController extends BaseController<
 
   /**
    * Sets the entry point that initiated the last Perps deposit flow.
-   * Used to show entry-point-specific toast copy (e.g. Hyperliquid deposit
-   * prompt) even when the popup closes and reopens during the transaction.
    *
    * @param entryPoint - The entry point identifier, or undefined to clear.
    */
