@@ -3,7 +3,6 @@ import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { CandlePeriod } from '../constants/chartConfig';
 import PerpsCandlestickChart from './perps-candlestick-chart';
 
 const mockUseTheme = jest.fn();
@@ -19,11 +18,7 @@ type CrosshairParam = {
 };
 
 let mockCrosshairCallback: ((param: CrosshairParam) => void) | undefined;
-let mockCreatedSeries: {
-  ref: object;
-  setData: jest.Mock;
-  update: jest.Mock;
-}[] = [];
+let mockCreatedSeries: { ref: object }[] = [];
 let mockCreatedCharts: { panes: jest.Mock; remove: jest.Mock }[] = [];
 
 jest.mock('lightweight-charts', () => ({
@@ -359,59 +354,5 @@ describe('PerpsCandlestickChart — chart disposal (TAT-3462)', () => {
     const panes = getPanesOf(secondChart);
     expect(panes[0].setHeight).toHaveBeenCalledWith(DEFAULT_MAIN_PANE_HEIGHT);
     expect(panes[1].setHeight).toHaveBeenCalledWith(DEFAULT_VOLUME_PANE_HEIGHT);
-  });
-});
-
-const makeChartCandle = (timeMs: number) => ({
-  time: timeMs,
-  open: '100',
-  high: '110',
-  low: '90',
-  close: '105',
-  volume: '50',
-});
-
-describe('PerpsCandlestickChart — series replace vs incremental update', () => {
-  beforeEach(() => {
-    mockCrosshairCallback = undefined;
-    mockCreatedSeries = [];
-    mockCreatedCharts = [];
-    mockUseTheme.mockReturnValue('light');
-  });
-
-  it('uses setData instead of update when an appended candle is older than the series', () => {
-    const first = {
-      symbol: 'ETH',
-      interval: CandlePeriod.FiveMinutes,
-      candles: [makeChartCandle(1_700_000_300_000)],
-    };
-    const { rerender } = renderWithProvider(
-      <PerpsCandlestickChart
-        selectedPeriod={CandlePeriod.FiveMinutes}
-        candleData={first}
-      />,
-      mockStore,
-    );
-    const candlestick = getCandlestickSeries();
-    expect(candlestick.setData).toHaveBeenCalled();
-    candlestick.setData.mockClear();
-    candlestick.update.mockClear();
-
-    rerender(
-      <PerpsCandlestickChart
-        selectedPeriod={CandlePeriod.FiveMinutes}
-        candleData={{
-          symbol: 'ETH',
-          interval: CandlePeriod.FiveMinutes,
-          candles: [
-            makeChartCandle(1_700_000_300_000),
-            makeChartCandle(1_700_000_000_000),
-          ],
-        }}
-      />,
-    );
-
-    expect(candlestick.update).not.toHaveBeenCalled();
-    expect(candlestick.setData).toHaveBeenCalled();
   });
 });

@@ -13,7 +13,6 @@ import {
 import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatUnits } from '../../../../shared/lib/unit';
-import { mockAuthenticatedUserStorageNotificationPreferences } from '../../helpers/authenticated-user-storage/mocks';
 import {
   MOCK_ETH_OPEN_LONG_FILL,
   MOCK_ETH_LIMIT_ORDER,
@@ -641,11 +640,7 @@ export function getPerpsConfigEligible(title?: string) {
       .build(),
     title,
     manifestFlags: PERPS_ELIGIBLE_FLAG,
-    testSpecificMock: async (server: Mockttp) => {
-      await mockEligibleFeatureFlags(server);
-      // Keep AUS watchlist GET at 404 so unauthenticated E2E stays local-only.
-      mockAuthenticatedUserStorageNotificationPreferences(server);
-    },
+    testSpecificMock: (server: Mockttp) => mockEligibleFeatureFlags(server),
   };
 }
 

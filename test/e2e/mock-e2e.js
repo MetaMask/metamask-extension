@@ -791,23 +791,6 @@ async function setupMocking(
       });
   }
 
-  // Unsigned E2E has no AUS session. Without this, catch-all passThrough hits
-  // live user-storage and PerpsController.toggleWatchlistMarket persist-and-reverts
-  // the second favorite. GET 404 keeps watchlist local-only, matching unsigned
-  // mobile. Notifications specs that need a prefs blob override this with .always().
-  await server
-    .forGet(
-      /^https:\/\/user-storage\.(?:dev-api|uat-api|api)\.cx\.metamask\.io\/api\/v1\/preferences\/notifications/u,
-    )
-    .always()
-    .thenCallback(() => ({ statusCode: 404 }));
-  await server
-    .forPut(
-      /^https:\/\/user-storage\.(?:dev-api|uat-api|api)\.cx\.metamask\.io\/api\/v1\/preferences\/notifications/u,
-    )
-    .always()
-    .thenCallback(() => ({ statusCode: 200 }));
-
   // User Profile Lineage
   await server
     .forGet('https://authentication.api.cx.metamask.io/api/v2/profile/lineage')

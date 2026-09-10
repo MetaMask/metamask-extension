@@ -40,7 +40,6 @@ describe('Perps Watchlist', function (this: Suite) {
 
         // Add BTC to the watchlist
         await marketDetailPage.clickFavoriteButton();
-        await marketDetailPage.waitForFavoriteButton('favorited');
 
         // Navigate back to Perps home: history.back lands on the market
         // list, so use the market list back control to reach the home route.
@@ -73,7 +72,6 @@ describe('Perps Watchlist', function (this: Suite) {
         await marketListPage.navigateToMarketList();
         await marketDetailPage.navigateToMarket('ETH');
         await marketDetailPage.clickFavoriteButton();
-        await marketDetailPage.waitForFavoriteButton('favorited');
         await marketDetailPage.clickBack();
         await marketListPage.clickBack();
         await perpsTab.waitForWatchlistMarket('ETH');
@@ -115,7 +113,6 @@ describe('Perps Watchlist', function (this: Suite) {
         await marketListPage.navigateToMarketList();
         await marketDetailPage.navigateToMarket('ETH');
         await marketDetailPage.clickFavoriteButton();
-        await marketDetailPage.waitForFavoriteButton('favorited');
         await marketDetailPage.clickBack();
         await marketListPage.clickBack();
         await perpsTab.waitForWatchlistMarket('ETH'); // layout settled
@@ -124,7 +121,6 @@ describe('Perps Watchlist', function (this: Suite) {
         await marketListPage.navigateToMarketList();
         await marketDetailPage.navigateToMarket('AVAX');
         await marketDetailPage.clickFavoriteButton();
-        await marketDetailPage.waitForFavoriteButton('favorited');
         await marketDetailPage.clickBack();
         await marketListPage.clickBack();
 
@@ -153,7 +149,6 @@ describe('Perps Watchlist', function (this: Suite) {
         await marketListPage.navigateToMarketList();
         await marketDetailPage.navigateToMarket('BTC');
         await marketDetailPage.clickFavoriteButton();
-        await marketDetailPage.waitForFavoriteButton('favorited');
         await marketDetailPage.clickBack();
         await marketListPage.clickBack();
         await perpsTab.waitForWatchlistMarket('BTC');

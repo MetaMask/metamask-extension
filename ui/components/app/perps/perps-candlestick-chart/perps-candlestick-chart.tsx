@@ -560,10 +560,7 @@ const PerpsCandlestickChart = forwardRef<
         !periodChanged &&
         !seriesIdentityChanged &&
         prevCount > 0 &&
-        currentCount === prevCount + 1 &&
-        typeof currentLastTime === 'number' &&
-        typeof prevLastTime === 'number' &&
-        currentLastTime >= prevLastTime;
+        currentCount === prevCount + 1;
 
       if (isLiveTick || isAppend) {
         // Incremental update — only update the last candle
