@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
-  ButtonBaseSize,
   FontWeight,
   Text,
   TextVariant,
@@ -18,7 +17,11 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
 import { MARKET_CATEGORY_ICONS, PERPS_PRODUCT_CATEGORIES } from '../constants';
-import { PerpsCategoryRail } from '../perps-market-categories';
+import {
+  PerpsCategoryPillVariant,
+  PerpsCategoryRail,
+  PerpsCategoryRailLayout,
+} from '../perps-market-categories';
 
 export type PerpsProductsProps = {
   /** Whether the tab's market data is still loading its first snapshot. */
@@ -79,7 +82,8 @@ export const PerpsProducts = ({ isLoading }: PerpsProductsProps) => {
         categories={[...PERPS_PRODUCT_CATEGORIES]}
         onSelect={handleCategoryPress}
         icons={MARKET_CATEGORY_ICONS}
-        pillSize={ButtonBaseSize.Md}
+        layout={PerpsCategoryRailLayout.Wrap}
+        pillVariant={PerpsCategoryPillVariant.Chip}
         isLoading={isLoading}
         ariaLabel={t('perpsProducts')}
         testId="perps-products-categories"

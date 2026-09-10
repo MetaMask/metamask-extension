@@ -12,19 +12,34 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MARKET_FILTER_LABEL_KEYS } from '../constants';
 
 /**
- * A content-width lozenge that hugs its label. `w-auto`/`shrink-0` override
- * ButtonBase's full-width default.
+ * The two shapes the design gives a category control, which differ by more than
+ * a token: the Perps tab's Products chip is a 40px lozenge carrying a leading
+ * glyph (Figma `13192:28387`), while the market list's filter is a 32px
+ * 8px-radius button whose only accessory is the clear affordance
+ * (Figma `12602:45702`).
  */
-const PILL_STYLES = 'w-auto shrink-0 whitespace-nowrap rounded-full';
+export const PerpsCategoryPillVariant = {
+  Chip: 'chip',
+  Filter: 'filter',
+} as const;
 
-/** Bare pill, as the market list's own filter rail renders it. */
-const PILL_PADDING = 'px-3';
+export type PerpsCategoryPillVariant =
+  (typeof PerpsCategoryPillVariant)[keyof typeof PerpsCategoryPillVariant];
 
-/**
- * Chip carrying a leading glyph: the Products design insets the content by 8px
- * and adds 2px on the inline end, so the label does not crowd the rounded edge.
- */
-const PILL_PADDING_WITH_ICON = 'pl-2 pr-2.5';
+/** `w-auto`/`shrink-0` override ButtonBase's full-width default. */
+const SHARED_STYLES = 'w-auto shrink-0 whitespace-nowrap';
+
+const VARIANT_STYLES: Record<PerpsCategoryPillVariant, string> = {
+  // 8px content inset with 2px more on the inline end, so the label does not
+  // crowd the rounded edge.
+  [PerpsCategoryPillVariant.Chip]: 'rounded-full pl-2 pr-2.5',
+  [PerpsCategoryPillVariant.Filter]: 'rounded-lg px-3',
+};
+
+const VARIANT_SIZES: Record<PerpsCategoryPillVariant, ButtonBaseSize> = {
+  [PerpsCategoryPillVariant.Chip]: ButtonBaseSize.Md,
+  [PerpsCategoryPillVariant.Filter]: ButtonBaseSize.Sm,
+};
 
 export type PerpsMarketCategoryPillProps = {
   /** Market category this pill selects. */
@@ -41,11 +56,11 @@ export type PerpsMarketCategoryPillProps = {
   onClear?: () => void;
   /**
    * Leading glyph. The Products design gives every chip one; the market list's
-   * own filter pills are bare, so it is optional.
+   * own filter buttons are bare, so it is optional.
    */
   iconName?: IconName;
-  /** Pill height. `Sm` is 32px, `Md` the 40px the Products design uses. */
-  size?: ButtonBaseSize;
+  /** Which of the design's two shapes to render. */
+  variant?: PerpsCategoryPillVariant;
   /** Test id prefix, inherited from the rail so surfaces stay addressable apart. */
   testIdPrefix?: string;
 };
@@ -63,7 +78,7 @@ export type PerpsMarketCategoryPillProps = {
  * @param options0.isActive - Whether this pill is the active filter.
  * @param options0.onClear - Called when the active pill is pressed again.
  * @param options0.iconName - Leading glyph, when the surface uses one.
- * @param options0.size - Pill height.
+ * @param options0.variant - Which of the design's two shapes to render.
  * @param options0.testIdPrefix - Test id prefix inherited from the rail.
  */
 export const PerpsMarketCategoryPill = ({
@@ -72,7 +87,7 @@ export const PerpsMarketCategoryPill = ({
   isActive = false,
   onClear,
   iconName,
-  size = ButtonBaseSize.Sm,
+  variant = PerpsCategoryPillVariant.Filter,
   testIdPrefix = 'perps-market-categories',
 }: PerpsMarketCategoryPillProps) => {
   const t = useI18nContext();
@@ -96,10 +111,8 @@ export const PerpsMarketCategoryPill = ({
 
   return (
     <ButtonFilter
-      className={`${PILL_STYLES} ${
-        iconName ? PILL_PADDING_WITH_ICON : PILL_PADDING
-      }`}
-      size={size}
+      className={`${SHARED_STYLES} ${VARIANT_STYLES[variant]}`}
+      size={VARIANT_SIZES[variant]}
       isActive={isActive}
       onClick={handleClick}
       aria-pressed={isClearable ? isActive : undefined}
@@ -119,10 +132,10 @@ export const PerpsMarketCategoryPill = ({
       {label}
       {isActive && isClearable && (
         <Icon
-          name={IconName.CircleX}
-          size={IconSize.Sm}
+          name={IconName.Clear}
+          size={IconSize.Xs}
           color={glyphColor}
-          className="ml-1 shrink-0"
+          className="ml-2 shrink-0"
         />
       )}
     </ButtonFilter>

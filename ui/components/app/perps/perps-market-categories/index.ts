@@ -1,2 +1,8 @@
-export { PerpsCategoryRail } from './perps-category-rail';
-export { PerpsMarketCategoryPill } from './perps-market-category-pill';
+export {
+  PerpsCategoryRail,
+  PerpsCategoryRailLayout,
+} from './perps-category-rail';
+export {
+  PerpsCategoryPillVariant,
+  PerpsMarketCategoryPill,
+} from './perps-market-category-pill';

@@ -157,6 +157,33 @@ describe('Dropdown', () => {
     });
   });
 
+  describe('keyboard', () => {
+    it('focuses the first option when opened with no selection', () => {
+      renderWithProvider(
+        <Dropdown {...defaultProps} selectedId={null} triggerLabel="More" />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('test-dropdown-button'));
+
+      expect(screen.getByTestId('test-dropdown-option-option1')).toHaveFocus();
+    });
+
+    it('moves to the next option with ArrowDown after opening with no selection', () => {
+      renderWithProvider(
+        <Dropdown {...defaultProps} selectedId={null} triggerLabel="More" />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('test-dropdown-button'));
+      fireEvent.keyDown(screen.getByTestId('test-dropdown-option-option1'), {
+        key: 'ArrowDown',
+      });
+
+      expect(screen.getByTestId('test-dropdown-option-option2')).toHaveFocus();
+    });
+  });
+
   describe('empty state', () => {
     it('handles empty options array', () => {
       renderWithProvider(

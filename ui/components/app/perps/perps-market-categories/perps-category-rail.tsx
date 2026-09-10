@@ -1,25 +1,54 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   Skeleton,
-  type ButtonBaseSize,
   type IconName,
 } from '@metamask/design-system-react';
 import type { MarketFilter } from '../../../../../shared/constants/perps';
-import { PerpsMarketCategoryPill } from './perps-market-category-pill';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { MARKET_FILTER_LABEL_KEYS } from '../constants';
+import { Dropdown, type DropdownOption } from '../dropdown';
+import {
+  PerpsCategoryPillVariant,
+  PerpsMarketCategoryPill,
+} from './perps-market-category-pill';
+import { useCategoryRailOverflow } from './use-category-rail-overflow';
 
 /**
  * Skeleton pill footprint. Height matches the real pill so the rail occupies
  * its final height from first paint and nothing below it shifts when the
  * categories arrive.
  */
-const SKELETON_PILL_STYLES = 'h-8 w-20 shrink-0 rounded-full';
+const SKELETON_PILL_STYLES = 'h-8 w-20 shrink-0 rounded-lg';
 const SKELETON_PILL_KEYS = ['a', 'b', 'c', 'd', 'e'];
 
 /** How many pills the loading rail reserves room for. */
 export const SKELETON_PILL_COUNT = SKELETON_PILL_KEYS.length;
+
+/** Ghost styling for the overflow trigger, so it reads as one more filter. */
+const MORE_TRIGGER_STYLES =
+  'h-8 w-auto shrink-0 whitespace-nowrap rounded-lg bg-background-muted px-3';
+
+/**
+ * How the design lays a rail out, which differs per surface rather than per
+ * breakpoint.
+ *
+ * `Wrap` — the Perps tab's Products section (Figma `13192:28387`): every chip is
+ * on screen, wrapping onto further lines when they do not fit one.
+ *
+ * `Overflow` — the market list's filter rail (Figma `12602:45702`): one row,
+ * with whatever does not fit moved into a `More` menu (Figma `12608:46888`). At
+ * a wider window every category fits and no trigger is rendered at all.
+ */
+export const PerpsCategoryRailLayout = {
+  Wrap: 'wrap',
+  Overflow: 'overflow',
+} as const;
+
+export type PerpsCategoryRailLayout =
+  (typeof PerpsCategoryRailLayout)[keyof typeof PerpsCategoryRailLayout];
 
 export type PerpsCategoryRailProps = {
   /** Categories to offer, in display order. */
@@ -38,8 +67,10 @@ export type PerpsCategoryRailProps = {
    * list's own rail renders bare pills.
    */
   icons?: Partial<Record<MarketFilter, IconName>>;
-  /** Pill height. `Sm` is 32px, `Md` the 40px the Products design uses. */
-  pillSize?: ButtonBaseSize;
+  /** Which of the design's two layouts to use. */
+  layout?: PerpsCategoryRailLayout;
+  /** Which of the design's two pill shapes to render. */
+  pillVariant?: PerpsCategoryPillVariant;
   /** Whether the market data behind the categories is still loading. */
   isLoading?: boolean;
   /** Accessible name for the rail. */
@@ -49,13 +80,20 @@ export type PerpsCategoryRailProps = {
 };
 
 /**
- * PerpsCategoryRail lays market categories out as pills, wrapping onto further
- * lines when they do not all fit on one.
+ * PerpsCategoryRail lays market categories out as pills, in whichever of the
+ * design's two layouts the surface calls for.
  *
- * Every category is always on screen. It never scrolls horizontally and never
- * moves anything into an overflow menu: both hide items behind an interaction
- * mouse users cannot see coming and keyboard users cannot track focus through.
- * Wrapping costs vertical space instead, which the popup can give.
+ * Neither layout scrolls horizontally: a horizontal scroller is a mobile
+ * gesture pattern that on the web hides items behind an interaction mouse users
+ * cannot see coming and keyboard users cannot track focus through. `Wrap`
+ * spends vertical space instead; `Overflow` measures the fit and moves the
+ * remainder into a labelled menu.
+ *
+ * Categories keep their given order in both layouts; `Overflow` splits that
+ * order at the fit boundary rather than promoting the active category, which is
+ * what the design shows. When the active category lands in the menu, the menu
+ * carries the selection so the filter in force stays visible, and choosing it
+ * again clears it.
  *
  * @param options0 - Component props.
  * @param options0.categories - Categories to offer, in display order.
@@ -63,22 +101,65 @@ export type PerpsCategoryRailProps = {
  * @param options0.onSelect - Called with a category when it is chosen.
  * @param options0.onClear - Called when the active category is deselected.
  * @param options0.icons - Leading glyph per category, when the surface uses them.
- * @param options0.pillSize - Pill height.
+ * @param options0.layout - Which of the design's two layouts to use.
+ * @param options0.pillVariant - Which of the design's two pill shapes to render.
  * @param options0.isLoading - Whether the market data is still loading.
  * @param options0.ariaLabel - Accessible name for the rail.
  * @param options0.testId - Test id for the rail container.
  */
 export const PerpsCategoryRail = ({
   categories,
-  selectedCategory,
+  selectedCategory = null,
   onSelect,
   onClear,
   icons,
-  pillSize,
+  layout = PerpsCategoryRailLayout.Overflow,
+  pillVariant = PerpsCategoryPillVariant.Filter,
   isLoading = false,
   ariaLabel,
   testId = 'perps-market-categories',
 }: PerpsCategoryRailProps) => {
+  const t = useI18nContext();
+  const isOverflow = layout === PerpsCategoryRailLayout.Overflow;
+
+  const { rowRef, registerItem, visibleCount } =
+    useCategoryRailOverflow(categories);
+
+  // Before the first measurement every pill is rendered, which is what gives
+  // the hook a width to read.
+  const fittedCount = isOverflow
+    ? (visibleCount ?? categories.length)
+    : categories.length;
+  const visibleCategories = categories.slice(0, fittedCount);
+  const overflowCategories = categories.slice(fittedCount);
+
+  const overflowOptions: DropdownOption<MarketFilter>[] = useMemo(
+    () =>
+      overflowCategories.map((category) => ({
+        id: category,
+        label: t(MARKET_FILTER_LABEL_KEYS[category]),
+      })),
+    [overflowCategories, t],
+  );
+
+  const overflowSelection =
+    selectedCategory && overflowCategories.includes(selectedCategory)
+      ? selectedCategory
+      : null;
+
+  const handleOverflowChange = useCallback(
+    (category: MarketFilter) => {
+      // Choosing the category already in force clears it, so an overflowed
+      // filter has the same escape hatch a visible pill does.
+      if (category === selectedCategory && onClear) {
+        onClear();
+        return;
+      }
+      onSelect(category);
+    },
+    [onClear, onSelect, selectedCategory],
+  );
+
   if (isLoading) {
     return (
       <Box className="px-4">
@@ -104,9 +185,38 @@ export const PerpsCategoryRail = ({
     return null;
   }
 
+  const pills = visibleCategories.map((category) => (
+    <PerpsMarketCategoryPill
+      key={category}
+      category={category}
+      isActive={category === selectedCategory}
+      onPress={onSelect}
+      onClear={onClear}
+      iconName={icons?.[category]}
+      variant={pillVariant}
+      testIdPrefix={testId}
+    />
+  ));
+
+  if (!isOverflow) {
+    return (
+      <Box
+        className="flex-wrap px-4"
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={2}
+        role="group"
+        aria-label={ariaLabel}
+        data-testid={testId}
+      >
+        {pills}
+      </Box>
+    );
+  }
+
   return (
     <Box
-      className="flex-wrap px-4"
+      className="px-4"
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       gap={2}
@@ -114,18 +224,45 @@ export const PerpsCategoryRail = ({
       aria-label={ariaLabel}
       data-testid={testId}
     >
-      {categories.map((category) => (
-        <PerpsMarketCategoryPill
-          key={category}
-          category={category}
-          isActive={category === selectedCategory}
-          onPress={onSelect}
-          onClear={onClear}
-          iconName={icons?.[category]}
-          size={pillSize}
-          testIdPrefix={testId}
-        />
-      ))}
+      {/* Only the pills are clipped. The More trigger is deliberately a sibling
+          of this row rather than a child: its menu drops below the rail, and a
+          clipping ancestor would cut the menu off at the rail's own height.
+          Keeping it outside also means the row measures the space that is
+          actually left for pills, with no width arithmetic of its own. */}
+      <Box
+        ref={rowRef}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={2}
+        className="min-w-0 flex-1 overflow-x-clip"
+        data-testid={`${testId}-row`}
+      >
+        {visibleCategories.map((category, index) => (
+          <Box
+            key={category}
+            ref={registerItem(category)}
+            className="shrink-0"
+            data-testid={`${testId}-item-${category}`}
+          >
+            {pills[index]}
+          </Box>
+        ))}
+      </Box>
+      {overflowCategories.length > 0 && (
+        <Box className="shrink-0">
+          <Dropdown
+            options={overflowOptions}
+            selectedId={overflowSelection}
+            onChange={handleOverflowChange}
+            triggerLabel={t('perpsFilterMore')}
+            triggerClassName={MORE_TRIGGER_STYLES}
+            // The trigger is always the last thing on the rail, so a
+            // left-anchored menu would open past the edge of a narrow window.
+            menuClassName="left-auto right-0"
+            testId={`${testId}-more`}
+          />
+        </Box>
+      )}
     </Box>
   );
 };
