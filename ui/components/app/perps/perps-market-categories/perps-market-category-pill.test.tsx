@@ -121,6 +121,27 @@ describe('PerpsMarketCategoryPill', () => {
     expect(pill).not.toHaveClass('rounded-lg');
   });
 
+  it('renders a clear glyph on the active pill', () => {
+    // `Icon` renders nothing when its name resolves to undefined, which would
+    // silently drop the only control that clears the filter. Asserted on its
+    // own so a missing glyph fails here rather than in a colour assertion.
+    renderWithProvider(
+      <PerpsMarketCategoryPill
+        category="crypto"
+        onPress={jest.fn()}
+        onClear={jest.fn()}
+        isActive
+      />,
+      mockStore,
+    );
+
+    expect(
+      screen
+        .getByTestId('perps-market-categories-pill-crypto')
+        .querySelector('svg'),
+    ).toBeInTheDocument();
+  });
+
   it('contrasts both glyphs against the active pill fill', () => {
     // ButtonFilter fills the active pill with `bg-icon-default`, so a glyph
     // left on the default `icon-default` colour is invisible on it.

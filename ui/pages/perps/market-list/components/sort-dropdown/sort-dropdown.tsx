@@ -177,10 +177,13 @@ export const SortDropdown = ({
                           )}
                         </Text>
                         <Icon
+                          // `Arrow2Down`/`Arrow2Up` are the design's assets but
+                          // resolve to undefined on some design-system
+                          // installs, and `Icon` then renders nothing.
                           name={
                             pendingDirection === 'desc'
-                              ? IconName.Arrow2Down
-                              : IconName.Arrow2Up
+                              ? IconName.ArrowDown
+                              : IconName.ArrowUp
                           }
                           size={IconSize.Md}
                           color={IconColor.IconAlternative}
