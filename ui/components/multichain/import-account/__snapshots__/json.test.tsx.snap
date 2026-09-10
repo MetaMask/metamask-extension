@@ -43,7 +43,7 @@ exports[`Json should match snapshot 1`] = `
     class="mm-box mm-box--display-flex mm-box--gap-4"
   >
     <button
-      class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+      class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
       role="button"
     >
       <span
@@ -54,7 +54,7 @@ exports[`Json should match snapshot 1`] = `
     </button>
     <button
       aria-disabled="true"
-      class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 w-full bg-icon-default text-primary-inverse focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed"
+      class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 w-full bg-icon-default text-primary-inverse focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed"
       data-testid="import-account-confirm-button"
       disabled=""
       role="button"
