@@ -135,6 +135,14 @@ export type LegacyBackgroundApiServiceGetPhishingResultAction = {
 };
 
 /**
+ * Closes the notification popup window if one is open.
+ */
+export type LegacyBackgroundApiServiceCloseNotificationPopupAction = {
+  type: `LegacyBackgroundApiService:closeNotificationPopup`;
+  handler: LegacyBackgroundApiService['closeNotificationPopup'];
+};
+
+/**
  * Marks the notification popup as having been automatically closed.
  *
  * This lets us differentiate between the cases where we close the
@@ -1161,6 +1169,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceRequestSafeReloadAction
   | LegacyBackgroundApiServiceOpenUpdateTabAndReloadAction
   | LegacyBackgroundApiServiceGetPhishingResultAction
+  | LegacyBackgroundApiServiceCloseNotificationPopupAction
   | LegacyBackgroundApiServiceMarkNotificationPopupAsAutomaticallyClosedAction
   | LegacyBackgroundApiServiceMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceUnMarkPasswordForgottenAction
