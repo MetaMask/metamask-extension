@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, IconName } from '@metamask/design-system-react';
+import { Icon, IconName, IconSize } from '@metamask/design-system-react';
 import { Box, Text } from '../../component-library';
 import {
   Display,
@@ -24,13 +24,13 @@ const FundingMethodItem = ({
 }: FundingMethodItemProps) => (
   <Box
     display={[Display.Flex]}
-    gap={2}
+    gap={3}
     alignItems={AlignItems.center}
     onClick={onClick}
     className="funding-method-item"
     padding={4}
   >
-    <Icon name={icon} />
+    <Icon name={icon} size={IconSize.Md} />
     <Box display={[Display.Flex]} flexDirection={FlexDirection.Column}>
       <Text variant={TextVariant.bodyMdMedium}>{title}</Text>
       <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
