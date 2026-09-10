@@ -7,7 +7,9 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { type Hex } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
+import log from 'loglevel';
 import {
   Box,
   BoxAlignItems,
