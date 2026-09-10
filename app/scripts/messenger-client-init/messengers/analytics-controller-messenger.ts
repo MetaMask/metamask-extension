@@ -29,7 +29,6 @@ import type {
   MetaMetricsControllerClearTracesAfterMetricsOptInAction,
   MetaMetricsControllerSetMarketingCampaignCookieIdAction,
   MetaMetricsControllerTrackTracesAfterMetricsOptInAction,
-  MetaMetricsControllerUpdateExtensionUninstallUrlAction,
 } from '../../controllers/metametrics-controller-method-action-types';
 import type { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import type { RootMessenger } from '../../lib/messenger';
@@ -44,7 +43,6 @@ type InitActions =
   | MetaMetricsControllerTrackTracesAfterMetricsOptInAction
   | MetaMetricsControllerClearTracesAfterMetricsOptInAction
   | MetaMetricsControllerSetMarketingCampaignCookieIdAction
-  | MetaMetricsControllerUpdateExtensionUninstallUrlAction
   | AnalyticsControllerGetStateAction
   | AnalyticsControllerTrackEventAction
   | AnalyticsControllerIdentifyAction
@@ -121,7 +119,6 @@ export function getAnalyticsControllerInitMessenger(
       'MetaMetricsController:trackTracesAfterMetricsOptIn',
       'MetaMetricsController:clearTracesAfterMetricsOptIn',
       'MetaMetricsController:setMarketingCampaignCookieId',
-      'MetaMetricsController:updateExtensionUninstallUrl',
       'AnalyticsController:getState',
       'AnalyticsController:trackEvent',
       'AnalyticsController:identify',

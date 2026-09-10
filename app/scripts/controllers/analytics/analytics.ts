@@ -8,6 +8,7 @@ import type {
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
 import type { Json } from '@metamask/utils';
 import { omitBy } from 'lodash';
+import type { Browser } from 'webextension-polyfill';
 import type {
   AnalyticsEvent,
   AnalyticsEventBuildOptions,
@@ -34,6 +35,8 @@ import { trackSegmentEventWhileOptedOut } from '../../lib/segment/custom-segment
 import { getPlatform } from '../../lib/util';
 import { ANONYMOUS_EVENT_PROPERTY } from './platform-adapter';
 
+const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
+
 type SegmentTrackPayload = Omit<
   SegmentEventPayload,
   'properties' | 'timestamp'
@@ -50,9 +53,11 @@ type SegmentPagePayload = {
 
 type ConfigureAnalyticsOptions = {
   messenger: AnalyticsControllerInitMessenger;
+  extension?: Browser;
 };
 
 let messenger: AnalyticsControllerInitMessenger | undefined;
+let extension: Browser | undefined;
 let cachedProfileIdentity:
   | {
       profileId?: string;
@@ -72,11 +77,49 @@ function getMessenger(): AnalyticsControllerInitMessenger {
  *
  * @param options - Configuration options.
  * @param options.messenger - Messenger with analytics state and delivery access.
+ * @param options.extension - webextension-polyfill, used to set the uninstall URL.
  */
 export function configureAnalytics({
   messenger: configuredMessenger,
+  extension: configuredExtension,
 }: ConfigureAnalyticsOptions): void {
   messenger = configuredMessenger;
+  extension = configuredExtension;
+}
+
+/**
+ * Sets an uninstall URL ("Sorry to see you go!" page), which is opened if a
+ * user uninstalls the extension. Call only after a MetaMetrics consent decision.
+ *
+ * @param participateInMetaMetrics - Whether the user opted into metrics.
+ * @param analyticsId - The current analytics id.
+ */
+function updateExtensionUninstallUrl(
+  participateInMetaMetrics: boolean,
+  analyticsId: string,
+): void {
+  const version = process.env.METAMASK_VERSION as string;
+  const environment = process.env.METAMASK_ENVIRONMENT as string;
+  const appVersion =
+    environment === 'production' ? version : `${version}-${environment}`;
+  const query: {
+    mmi?: string;
+    env?: string;
+    av: string;
+  } = {
+    av: appVersion,
+  };
+  if (participateInMetaMetrics) {
+    query.mmi = Buffer.from(analyticsId).toString('base64');
+    query.env = environment;
+  }
+  const queryString = new URLSearchParams(query);
+
+  if (extension?.runtime) {
+    extension.runtime.setUninstallURL(
+      `${EXTENSION_UNINSTALL_URL}?${queryString}`,
+    );
+  }
 }
 
 /**
@@ -378,8 +421,8 @@ export function identify(
 /**
  * Set whether the user participates in MetaMetrics.
  *
- * Consent is owned by AnalyticsController. Buffered traces, the marketing
- * campaign cookie, and the extension uninstall URL remain on MetaMetricsController.
+ * Consent is owned by AnalyticsController. Buffered traces and the marketing
+ * campaign cookie remain on MetaMetricsController.
  *
  * @param participateInMetaMetrics - Whether the user wants to participate, or `null` to reset to undecided.
  * @returns The current analytics id.
@@ -426,11 +469,7 @@ export async function setParticipateInMetaMetrics(
     process.env.METAMASK_ENVIRONMENT !== ENVIRONMENT.DEVELOPMENT &&
     participateInMetaMetrics !== null
   ) {
-    analyticsMessenger.call(
-      'MetaMetricsController:updateExtensionUninstallUrl',
-      participateInMetaMetrics === true,
-      analyticsId,
-    );
+    updateExtensionUninstallUrl(participateInMetaMetrics === true, analyticsId);
   }
 
   return analyticsId;

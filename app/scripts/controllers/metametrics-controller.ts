@@ -11,7 +11,6 @@ import type {
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type { MultichainNetworkControllerGetStateAction } from '@metamask/multichain-network-controller';
-import type { Browser } from 'webextension-polyfill';
 import {
   BaseController,
   type ControllerGetStateAction,
@@ -40,7 +39,6 @@ import { MetaMetricsControllerMethodActions } from './metametrics-controller-met
 // Unique name for the controller
 const controllerName = 'MetaMetricsController';
 
-const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 const defaultCaptureException = (err: unknown) => {
   // throw error on clean stack so its captured by platform integrations (eg sentry)
   // but does not interrupt the call stack
@@ -161,9 +159,6 @@ type CaptureException = typeof captureException | ((err: unknown) => void);
 export type MetaMetricsControllerOptions = {
   state?: Partial<MetaMetricsControllerState>;
   messenger: MetaMetricsControllerMessenger;
-  version: string;
-  environment: string;
-  extension: Browser;
   captureException?: CaptureException;
 };
 
@@ -185,7 +180,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'setDataCollectionForMarketing',
   'setMarketingCampaignCookieId',
   'trackTracesAfterMetricsOptIn',
-  'updateExtensionUninstallUrl',
 ] as const;
 
 export class MetaMetricsController extends BaseController<
@@ -199,12 +193,6 @@ export class MetaMetricsController extends BaseController<
 
   locale: string;
 
-  version: MetaMetricsControllerOptions['version'];
-
-  #extension: MetaMetricsControllerOptions['extension'];
-
-  #environment: MetaMetricsControllerOptions['environment'];
-
   #analyticsGetState(): AnalyticsControllerState {
     return this.messenger.call('AnalyticsController:getState');
   }
@@ -213,17 +201,11 @@ export class MetaMetricsController extends BaseController<
    * @param options
    * @param options.state - Initial controller state.
    * @param options.messenger - Messenger used to communicate with BaseV2 controller.
-   * @param options.version - The version of the extension
-   * @param options.environment - The environment the extension is running in
-   * @param options.extension - webextension-polyfill
    * @param options.captureException
    */
   constructor({
     state = {},
     messenger,
-    version,
-    environment,
-    extension,
     captureException = defaultCaptureException,
   }: MetaMetricsControllerOptions) {
     super({
@@ -249,10 +231,6 @@ export class MetaMetricsController extends BaseController<
       'PreferencesController:getState',
     );
     this.locale = preferencesControllerState.currentLocale.replace('_', '-');
-    this.version =
-      environment === 'production' ? version : `${version}-${environment}`;
-    this.#extension = extension;
-    this.#environment = environment;
 
     // Register A/B test analytics mappings so that matching events are
     // enriched with their `active_ab_tests` assignment.
@@ -295,35 +273,6 @@ export class MetaMetricsController extends BaseController<
       selectedNetworkClientId,
     );
     return chainId;
-  }
-
-  // It sets an uninstall URL ("Sorry to see you go!" page),
-  // which is opened if a user uninstalls the extension.
-  // This method should only be called after the user has made a decision about MetaMetrics participation.
-  updateExtensionUninstallUrl(
-    participateInMetaMetrics: boolean,
-    analyticsId: string,
-  ): void {
-    const query: {
-      mmi?: string;
-      env?: string;
-      av: string;
-    } = {
-      av: this.version,
-    };
-    if (participateInMetaMetrics) {
-      // We only want to track these things if a user opted into metrics.
-      query.mmi = Buffer.from(analyticsId).toString('base64');
-      query.env = this.#environment;
-    }
-    const queryString = new URLSearchParams(query);
-
-    // this.extension not currently defined in tests
-    if (this.#extension && this.#extension.runtime) {
-      this.#extension.runtime.setUninstallURL(
-        `${EXTENSION_UNINSTALL_URL}?${queryString}`,
-      );
-    }
   }
 
   setDataCollectionForMarketing(dataCollectionForMarketing: boolean): string {
