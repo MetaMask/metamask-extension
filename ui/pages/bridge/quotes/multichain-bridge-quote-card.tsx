@@ -381,11 +381,7 @@ export const MultichainBridgeQuoteCard = ({
             </Text>
             <Text
               variant={TextVariant.bodySm}
-              color={
-                isEstimatedReturnLow
-                  ? TextColor.warningDefault
-                  : TextColor.textAlternative
-              }
+              color={TextColor.textAlternative}
               data-testid="relayer-fees"
             >
               {formatNetworkFee(relayerFees?.valueInCurrency, currency)}
