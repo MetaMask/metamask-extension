@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoryObj, Meta } from '@storybook/react';
+import { StoryObj, Meta } from '@storybook/react-webpack5';
 import { IconName, TextColor } from '@metamask/design-system-react';
 import { MultichainAccountMenuItems } from './multichain-account-menu-items';
 import { MenuItemConfig } from './multichain-account-menu-items.types';
