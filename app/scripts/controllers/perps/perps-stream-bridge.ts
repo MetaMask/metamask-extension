@@ -584,16 +584,21 @@ export class PerpsStreamBridge {
     this.#accountViewActive = viewActive;
   }
 
-  /**
-   * Serialize account transitions for all UI connections sharing the controller.
-   * @param address
-   */
-  async #initForAccount(address: string): Promise<unknown> {
+  #getAccountSession(): AccountSession {
     const session = accountSessions.get(this.#controller) ?? {
       queue: Promise.resolve(),
       needsTeardown: false,
     };
     accountSessions.set(this.#controller, session);
+    return session;
+  }
+
+  /**
+   * Serialize account transitions for all UI connections sharing the controller.
+   * @param address
+   */
+  async #initForAccount(address: string): Promise<unknown> {
+    const session = this.#getAccountSession();
     const isCurrent = () =>
       this.#isConnectionAlive() &&
       this.#isPreloadAllowed() &&
@@ -658,15 +663,31 @@ export class PerpsStreamBridge {
       throw new Error('Perps connection is unavailable');
     }
     const generation = this.#destroyGeneration;
-    await this.#perpsInit();
-    if (
-      generation === this.#destroyGeneration &&
-      !this.#activated &&
-      this.#isConnectionAlive() &&
-      this.#isPreloadAllowed()
-    ) {
-      this.#activate();
-    }
+    const session = this.#getAccountSession();
+    // Stream remounts must neither interrupt account teardown nor be interrupted
+    // by it. Keep the queue occupied until provider initialization settles.
+    const operation = session.queue
+      .catch(() => undefined)
+      .then(async () => {
+        if (
+          generation !== this.#destroyGeneration ||
+          !this.#isConnectionAlive() ||
+          !this.#isPreloadAllowed()
+        ) {
+          return;
+        }
+        await this.#perpsInit();
+        if (
+          generation === this.#destroyGeneration &&
+          !this.#activated &&
+          this.#isConnectionAlive() &&
+          this.#isPreloadAllowed()
+        ) {
+          this.#activate();
+        }
+      });
+    session.queue = operation;
+    await operation;
   }
 
   async #startPreload(id: string): Promise<void> {
