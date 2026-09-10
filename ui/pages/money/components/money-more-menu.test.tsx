@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MONEY_LANDING_URL } from '../constants/urls';
@@ -21,8 +21,10 @@ jest.mock(
   }),
 );
 
-const openMenu = () => {
-  fireEvent.click(screen.getByTestId('money-more-menu-button'));
+const openMenu = async () => {
+  await act(async () => {
+    fireEvent.click(screen.getByTestId('money-more-menu-button'));
+  });
 };
 
 describe('MoneyMoreMenu', () => {
@@ -39,10 +41,10 @@ describe('MoneyMoreMenu', () => {
     expect(screen.queryByTestId('money-more-menu')).not.toBeInTheDocument();
   });
 
-  it('shows the options when the button is clicked', () => {
+  it('shows the options when the button is clicked', async () => {
     renderWithLocalization(<MoneyMoreMenu />);
 
-    openMenu();
+    await openMenu();
 
     expect(screen.getByTestId('money-more-menu')).toBeInTheDocument();
     expect(screen.getByTestId('money-more-menu-how-it-works')).toBeDisabled();
@@ -57,10 +59,10 @@ describe('MoneyMoreMenu', () => {
     ).toHaveTextContent(messages.moneyContactSupport.message);
   });
 
-  it('opens the money landing page and closes when benefits is clicked', () => {
+  it('opens the money landing page and closes when benefits is clicked', async () => {
     renderWithLocalization(<MoneyMoreMenu />);
 
-    openMenu();
+    await openMenu();
     fireEvent.click(screen.getByTestId('money-more-menu-benefits'));
 
     expect(global.platform.openTab).toHaveBeenCalledWith({
@@ -69,10 +71,10 @@ describe('MoneyMoreMenu', () => {
     expect(screen.queryByTestId('money-more-menu')).not.toBeInTheDocument();
   });
 
-  it('opens the support consent modal when contact support is clicked', () => {
+  it('opens the support consent modal when contact support is clicked', async () => {
     renderWithLocalization(<MoneyMoreMenu />);
 
-    openMenu();
+    await openMenu();
     fireEvent.click(screen.getByTestId('money-more-menu-contact-support'));
 
     expect(screen.queryByTestId('money-more-menu')).not.toBeInTheDocument();
@@ -85,10 +87,10 @@ describe('MoneyMoreMenu', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('closes the menu on escape', () => {
+  it('closes the menu on escape', async () => {
     renderWithLocalization(<MoneyMoreMenu />);
 
-    openMenu();
+    await openMenu();
     fireEvent.keyDown(document, { key: 'Escape' });
 
     expect(screen.queryByTestId('money-more-menu')).not.toBeInTheDocument();
