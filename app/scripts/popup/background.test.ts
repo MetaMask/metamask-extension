@@ -51,7 +51,7 @@ describe('createPopupOpener', () => {
   it('opens popup in the specified tab window when tabId is provided', async () => {
     const deps = createMockDeps();
     const requestOpenPopup = createPopupOpener(deps);
-    const result = await requestOpenPopup({ tabId: 123 });
+    const result = await requestOpenPopup(123);
 
     expect(result).toBe(true);
     expect(deps.extension.tabs.get).toHaveBeenCalledWith(123);
@@ -70,7 +70,7 @@ describe('createPopupOpener', () => {
     );
 
     const requestOpenPopup = createPopupOpener(deps);
-    const result = await requestOpenPopup({ tabId: 123 });
+    const result = await requestOpenPopup(123);
 
     expect(result).toBe(true);
     expect(globalThis.chrome.action.openPopup).toHaveBeenCalledWith(undefined);

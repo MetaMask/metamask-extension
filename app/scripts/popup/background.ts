@@ -17,13 +17,10 @@ export function createPopupOpener(deps: PopupOpenerDeps) {
   /**
    * Opens the MetaMask popup.
    *
-   * @param options - Optional parameters.
-   * @param options.tabId - If provided, opens popup in this tab's window.
+   * @param tabId - If provided, opens popup in this tab's window.
    * @returns True if popup opened successfully, false otherwise.
    */
-  return async function requestOpenPopup(options?: {
-    tabId?: number;
-  }): Promise<boolean> {
+  return async function requestOpenPopup(tabId?: number): Promise<boolean> {
     if (!globalThis.chrome?.action?.openPopup) {
       return false;
     }
@@ -31,10 +28,8 @@ export function createPopupOpener(deps: PopupOpenerDeps) {
     try {
       // Determine target window from tabId
       let windowId: number | undefined;
-      if (options?.tabId) {
-        const tab = await deps.extension.tabs
-          .get(options.tabId)
-          .catch(() => undefined);
+      if (tabId) {
+        const tab = await deps.extension.tabs.get(tabId).catch(() => undefined);
         windowId = tab?.windowId;
       }
 
