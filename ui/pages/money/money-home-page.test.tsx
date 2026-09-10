@@ -358,16 +358,62 @@ describe('MoneyHomePage', () => {
     expect(
       screen.queryByText(messages.moneyBenefits.message),
     ).not.toBeInTheDocument();
+    const activeLabels = [
+      messages.moneyAdd.message,
+      messages.moneySend.message,
+      messages.moneyMeetMusd.message,
+      messages.moneyExploreBenefits.message,
+    ];
     screen.getAllByRole('button').forEach((button) => {
-      if (
-        [messages.moneyAdd.message, messages.moneySend.message].includes(
-          button.textContent ?? '',
-        )
-      ) {
+      if (activeLabels.includes(button.textContent ?? '')) {
         expect(button).toBeEnabled();
       } else {
         expect(button).toBeDisabled();
       }
+    });
+  });
+
+  it('opens the mUSD price page from Meet mUSD', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('100'),
+      totalFiatFormatted: '$100.00',
+      totalFiatRaw: '100',
+      vaultApyQuery: { isLoading: false },
+    });
+    global.platform.openTab = jest.fn();
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId('money-condensed-info-card-musd'));
+
+    expect(global.platform.openTab).toHaveBeenCalledWith({
+      url: 'https://metamask.io/price/metamask-usd?utm_source=extension',
+    });
+  });
+
+  it('opens the Money landing page from Explore your benefits', () => {
+    mockUseMoneyAccountBalance.mockReturnValue({
+      apyDecimal: 0.042,
+      apyPercentFormatted: '4.2%',
+      isBalanceFetchError: false,
+      isBalanceLoading: false,
+      tokenTotal: new BigNumber('100'),
+      totalFiatFormatted: '$100.00',
+      totalFiatRaw: '100',
+      vaultApyQuery: { isLoading: false },
+    });
+    global.platform.openTab = jest.fn();
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId('money-condensed-info-card-benefits'));
+
+    expect(global.platform.openTab).toHaveBeenCalledWith({
+      url: 'https://metamask.io/money?utm_source=extension',
     });
   });
 
