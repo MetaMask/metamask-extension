@@ -163,7 +163,7 @@ import { BridgeStatusControllerWipeBridgeStatusAction } from '@metamask/bridge-s
 import {
   EncAccountDataType,
   InvalidPrimarySecretDataTypeError,
-  PasswordChangeRecoveryStatus,
+  PasswordSyncStatus,
   RecoveryError,
   SecretMetadata,
   SecretType,
@@ -2328,7 +2328,7 @@ export class LegacyBackgroundApiService {
    */
   async resolveSeedlessPasswordSyncState({
     skipCache = false,
-  }: { skipCache?: boolean } = {}): Promise<PasswordChangeRecoveryStatus> {
+  }: { skipCache?: boolean } = {}): Promise<PasswordSyncStatus> {
     const isSocialLoginFlow = this.#messenger.call(
       'OnboardingController:getIsSocialLoginFlow',
     );
@@ -2337,7 +2337,7 @@ export class LegacyBackgroundApiService {
     );
 
     if (!isSocialLoginFlow || !completedOnboarding) {
-      return PasswordChangeRecoveryStatus.InSync;
+      return PasswordSyncStatus.InSync;
     }
 
     const { passwordChangePhase } = this.#messenger.call(
@@ -2383,7 +2383,7 @@ export class LegacyBackgroundApiService {
         { skipCache },
       );
 
-      return passwordSyncState !== PasswordChangeRecoveryStatus.InSync;
+      return passwordSyncState !== PasswordSyncStatus.InSync;
     } catch (error) {
       if (captureSentryError) {
         this.#messenger.captureException?.(
@@ -2422,7 +2422,7 @@ export class LegacyBackgroundApiService {
           skipCache: true,
         });
 
-        if (passwordSyncState === PasswordChangeRecoveryStatus.InSync) {
+        if (passwordSyncState === PasswordSyncStatus.InSync) {
           await this.#unlockSeedlessWallet(password);
           return;
         }
@@ -2476,7 +2476,7 @@ export class LegacyBackgroundApiService {
    */
   async #recoverSeedlessPassword(
     password: string,
-    passwordSyncState: PasswordChangeRecoveryStatus,
+    passwordSyncState: PasswordSyncStatus,
   ): Promise<void> {
     let changePasswordSuccess = false;
     this.#messenger.call('MetaMetricsController:bufferedTrace', {
@@ -2485,7 +2485,7 @@ export class LegacyBackgroundApiService {
     });
 
     try {
-      if (passwordSyncState === PasswordChangeRecoveryStatus.Unknown) {
+      if (passwordSyncState === PasswordSyncStatus.Unknown) {
         throw new Error(
           SeedlessOnboardingControllerErrorMessage.CouldNotRecoverPassword,
         );
@@ -2499,10 +2499,10 @@ export class LegacyBackgroundApiService {
       );
 
       switch (recoveryStatus) {
-        case PasswordChangeRecoveryStatus.InSync:
+        case PasswordSyncStatus.InSync:
           await this.#unlockSeedlessWallet(password);
           break;
-        case PasswordChangeRecoveryStatus.ReconcileKeyring: {
+        case PasswordSyncStatus.ReconcileKeyring: {
           const isKeyringPasswordValid =
             await this.#isKeyringPasswordValid(password);
 
@@ -2536,20 +2536,18 @@ export class LegacyBackgroundApiService {
           }
           break;
         }
-        case PasswordChangeRecoveryStatus.SyncKey:
+        case PasswordSyncStatus.SyncKey:
           await this.#unlockSeedlessWallet(password);
           await this.#syncAndCompleteKeyringEncryptionKey();
           break;
-        case PasswordChangeRecoveryStatus.Unknown: {
+        case PasswordSyncStatus.Unknown: {
           const isKeyringPasswordValid =
             await this.#isKeyringPasswordValid(password);
 
           if (
             isKeyringPasswordValid &&
-            (passwordSyncState ===
-              PasswordChangeRecoveryStatus.PasswordOutdated ||
-              passwordSyncState ===
-                PasswordChangeRecoveryStatus.EnterNewPassword)
+            (passwordSyncState === PasswordSyncStatus.PasswordOutdated ||
+              passwordSyncState === PasswordSyncStatus.EnterNewPassword)
           ) {
             throw new Error(
               SeedlessOnboardingControllerErrorMessage.OutdatedPassword,

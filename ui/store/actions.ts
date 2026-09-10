@@ -52,7 +52,7 @@ import {
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { PasswordChangeRecoveryStatus } from '@metamask/seedless-onboarding-controller';
+import { PasswordSyncStatus } from '@metamask/seedless-onboarding-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import type { NotificationServicesControllerEnableNotificationsOptions } from '@metamask/notification-services-controller/notification-services';
@@ -1077,7 +1077,7 @@ export function getIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
 export function resolveSeedlessPasswordSyncState({
   skipCache = false,
 }: { skipCache?: boolean } = {}): ThunkAction<
-  Promise<PasswordChangeRecoveryStatus>,
+  Promise<PasswordSyncStatus>,
   MetaMaskReduxState,
   unknown,
   AnyAction
@@ -1085,7 +1085,7 @@ export function resolveSeedlessPasswordSyncState({
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       const passwordSyncState =
-        await submitRequestToBackground<PasswordChangeRecoveryStatus>(
+        await submitRequestToBackground<PasswordSyncStatus>(
           'resolveSeedlessPasswordSyncState',
           [{ skipCache }],
         );
@@ -1101,7 +1101,7 @@ export function resolveSeedlessPasswordSyncState({
       // Match the previous outdated-password check: a failed status refresh
       // must not lock the wallet. A genuine recovery failure is still returned
       // as `Unknown` by the background resolver and remains blocking.
-      return PasswordChangeRecoveryStatus.InSync;
+      return PasswordSyncStatus.InSync;
     }
   };
 }

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TextButton } from '@metamask/design-system-react';
-import { PasswordChangeRecoveryStatus } from '@metamask/seedless-onboarding-controller';
+import { PasswordSyncStatus } from '@metamask/seedless-onboarding-controller';
 import { getErrorMessage } from '../../../../shared/lib/error';
 import {
   MetaMetricsEventAccountImportType,
@@ -50,7 +50,7 @@ export const ImportAccount = ({ onActionComplete }) => {
         const passwordSyncState = await dispatch(
           actions.resolveSeedlessPasswordSyncState({ skipCache: true }),
         );
-        if (passwordSyncState !== PasswordChangeRecoveryStatus.InSync) {
+        if (passwordSyncState !== PasswordSyncStatus.InSync) {
           return false;
         }
       }

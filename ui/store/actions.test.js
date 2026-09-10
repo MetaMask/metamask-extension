@@ -11,7 +11,7 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { SubscriptionUserEvent } from '@metamask/subscription-controller';
-import { PasswordChangeRecoveryStatus } from '@metamask/seedless-onboarding-controller';
+import { PasswordSyncStatus } from '@metamask/seedless-onboarding-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
@@ -352,7 +352,7 @@ describe('Actions', () => {
       const store = mockStore();
       const resolveSeedlessPasswordSyncStateStub = sinon
         .stub()
-        .resolves(PasswordChangeRecoveryStatus.EnterNewPassword);
+        .resolves(PasswordSyncStatus.EnterNewPassword);
       const getStatePatchesStub = sinon.stub().resolves([]);
 
       background.getApi.returns({
@@ -366,9 +366,7 @@ describe('Actions', () => {
         actions.resolveSeedlessPasswordSyncState(),
       );
 
-      expect(result).toStrictEqual(
-        PasswordChangeRecoveryStatus.EnterNewPassword,
-      );
+      expect(result).toStrictEqual(PasswordSyncStatus.EnterNewPassword);
       expect(
         resolveSeedlessPasswordSyncStateStub.calledOnceWith({
           skipCache: false,
@@ -391,7 +389,7 @@ describe('Actions', () => {
         actions.resolveSeedlessPasswordSyncState({ skipCache: true }),
       );
 
-      expect(result).toStrictEqual(PasswordChangeRecoveryStatus.InSync);
+      expect(result).toStrictEqual(PasswordSyncStatus.InSync);
     });
   });
 

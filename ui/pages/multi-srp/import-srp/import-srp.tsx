@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { PasswordChangeRecoveryStatus } from '@metamask/seedless-onboarding-controller';
+import { PasswordSyncStatus } from '@metamask/seedless-onboarding-controller';
 import {
   ButtonIcon,
   ButtonSize,
@@ -56,7 +56,7 @@ export const ImportSrp = () => {
         const passwordSyncState = await dispatch(
           resolveSeedlessPasswordSyncState({ skipCache: true }),
         );
-        if (passwordSyncState !== PasswordChangeRecoveryStatus.InSync) {
+        if (passwordSyncState !== PasswordSyncStatus.InSync) {
           return;
         }
       }

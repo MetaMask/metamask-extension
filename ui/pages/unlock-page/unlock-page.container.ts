@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
-import type { PasswordChangeRecoveryStatus } from '@metamask/seedless-onboarding-controller';
+import type { PasswordSyncStatus } from '@metamask/seedless-onboarding-controller';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -43,7 +43,7 @@ type OwnProps = {
   onSubmit?: (password: string) => Promise<void>;
   resolveSeedlessPasswordSyncState?: (options?: {
     skipCache?: boolean;
-  }) => Promise<PasswordChangeRecoveryStatus>;
+  }) => Promise<PasswordSyncStatus>;
   /**
    * Redirects after a successful unlock (`onSubmit` is called).
    * Previously, navigation was handled immediately after `onSubmit` is called.
@@ -143,7 +143,7 @@ const UnlockPageConnected = compose(
     onSubmit?: (password: string) => Promise<void>;
     resolveSeedlessPasswordSyncState?: (options?: {
       skipCache?: boolean;
-    }) => Promise<PasswordChangeRecoveryStatus>;
+    }) => Promise<PasswordSyncStatus>;
     navigateAfterUnlock?: () => Promise<void>;
   }>
 >;

@@ -3,7 +3,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
-import { PasswordChangeRecoveryStatus } from '@metamask/seedless-onboarding-controller';
+import { PasswordSyncStatus } from '@metamask/seedless-onboarding-controller';
 
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
@@ -317,7 +317,7 @@ export async function runInitialActions(store) {
       const passwordSyncState = await store.dispatch(
         actions.resolveSeedlessPasswordSyncState({ skipCache: false }),
       );
-      if (passwordSyncState === PasswordChangeRecoveryStatus.InSync) {
+      if (passwordSyncState === PasswordSyncStatus.InSync) {
         return;
       }
 

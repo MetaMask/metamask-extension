@@ -1,6 +1,6 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { PasswordChangeRecoveryStatus } from '@metamask/seedless-onboarding-controller';
+import { PasswordSyncStatus } from '@metamask/seedless-onboarding-controller';
 import { setupLocale } from '../shared/lib/error-utils';
 import * as browserRuntimeUtils from '../shared/lib/browser-runtime.utils';
 import * as actions from './store/actions';
@@ -207,9 +207,7 @@ describe('Index Tests', () => {
             isSocialLoginFlow: true,
           },
         }),
-        dispatch: jest
-          .fn()
-          .mockResolvedValue(PasswordChangeRecoveryStatus.InSync),
+        dispatch: jest.fn().mockResolvedValue(PasswordSyncStatus.InSync),
       };
 
       await runInitialActions(store);
@@ -239,9 +237,7 @@ describe('Index Tests', () => {
             isSocialLoginFlow: true,
           },
         }),
-        dispatch: jest
-          .fn()
-          .mockResolvedValue(PasswordChangeRecoveryStatus.InSync),
+        dispatch: jest.fn().mockResolvedValue(PasswordSyncStatus.InSync),
       };
 
       await runInitialActions(store);
@@ -281,7 +277,7 @@ describe('Index Tests', () => {
         }),
         dispatch: jest.fn((action) =>
           action === resolveSeedlessPasswordSyncStateAction
-            ? Promise.resolve(PasswordChangeRecoveryStatus.EnterNewPassword)
+            ? Promise.resolve(PasswordSyncStatus.EnterNewPassword)
             : Promise.resolve(),
         ),
       };
@@ -314,7 +310,7 @@ describe('Index Tests', () => {
         // the unlocked wallet open and retries on the next interval.
         dispatch: jest.fn((action) =>
           action === resolveSeedlessPasswordSyncStateAction
-            ? Promise.resolve(PasswordChangeRecoveryStatus.InSync)
+            ? Promise.resolve(PasswordSyncStatus.InSync)
             : Promise.resolve(),
         ),
       };

@@ -4,7 +4,7 @@ import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
-import { PasswordChangeRecoveryStatus } from '@metamask/seedless-onboarding-controller';
+import { PasswordSyncStatus } from '@metamask/seedless-onboarding-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import * as passkeyCeremony from '../../../shared/lib/passkey/passkey-ceremony';
@@ -97,7 +97,7 @@ describe('UnlockPage component (passkey UI)', () => {
     isPasskeyActive: true,
     resolveSeedlessPasswordSyncState: jest
       .fn()
-      .mockResolvedValue(PasswordChangeRecoveryStatus.InSync),
+      .mockResolvedValue(PasswordSyncStatus.InSync),
     getIsSeedlessOnboardingUserAuthenticated: jest.fn().mockResolvedValue(true),
     forceUpdateMetamaskState: jest.fn().mockResolvedValue(undefined),
     isSocialLoginFlow: false,
@@ -161,7 +161,7 @@ describe('UnlockPage component (passkey UI)', () => {
   it('resolves the cached recovery status on mount', async () => {
     const resolveSeedlessPasswordSyncState = jest
       .fn()
-      .mockResolvedValue(PasswordChangeRecoveryStatus.PasswordOutdated);
+      .mockResolvedValue(PasswordSyncStatus.PasswordOutdated);
     const props = buildProps({
       isSocialLoginFlow: true,
       isPasskeyActive: false,
@@ -180,7 +180,7 @@ describe('UnlockPage component (passkey UI)', () => {
   it('submits a new password after resolving the mount recovery status', async () => {
     const resolveSeedlessPasswordSyncState = jest
       .fn()
-      .mockResolvedValue(PasswordChangeRecoveryStatus.EnterNewPassword);
+      .mockResolvedValue(PasswordSyncStatus.EnterNewPassword);
     const props = buildProps({
       isSocialLoginFlow: true,
       isPasskeyActive: false,
@@ -216,7 +216,7 @@ describe('UnlockPage component (passkey UI)', () => {
       isPasskeyActive: false,
       resolveSeedlessPasswordSyncState: jest
         .fn()
-        .mockResolvedValue(PasswordChangeRecoveryStatus.Unknown),
+        .mockResolvedValue(PasswordSyncStatus.Unknown),
     });
 
     const { getByTestId } = renderWithProvider(
