@@ -9,6 +9,7 @@ import {
 } from '../../../shared/lib/trace';
 import {
   getSelectedEvmInternalAccount,
+  selectEvmAddress,
   getUseExternalServices,
 } from '../../selectors';
 import {
@@ -37,7 +38,9 @@ type PreloadState = {
 export function usePerpsPreload(walletReady: boolean): void {
   const available = useSelector(getIsPerpsExperienceAvailable);
   const useExternalServices = useSelector(getUseExternalServices);
-  const address = useSelector(getSelectedEvmInternalAccount)?.address;
+  const selectedEvmAddress = useSelector(selectEvmAddress);
+  const lastEvmAccount = useSelector(getSelectedEvmInternalAccount);
+  const address = selectedEvmAddress ?? lastEvmAccount?.address;
   const provider = useSelector(
     (state: PreloadState) => state.metamask.activeProvider,
   );
@@ -116,8 +119,12 @@ export function usePerpsPreload(walletReady: boolean): void {
       release();
       manager.cleanupPrewarm();
     }, CONNECTION_TIMEOUT_MS);
-    manager
-      .initForAddress(address)
+    submitRequestToBackground('perpsRegisterPreload', [id])
+      .then(async () => {
+        if (!cancelled) {
+          await manager.initForAddress(address);
+        }
+      })
       .then(async () => {
         if (cancelled) {
           return;
@@ -131,6 +138,7 @@ export function usePerpsPreload(walletReady: boolean): void {
       .catch((error: unknown) => {
         finish(false, 'connection_failed');
         if (!cancelled) {
+          release();
           manager.cleanupPrewarm();
           console.debug('[usePerpsPreload] Preload failed', error);
         }
