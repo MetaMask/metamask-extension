@@ -168,7 +168,7 @@ exports[`Bridge renders the component with initial props 1`] = `
             >
               <button
                 aria-label="switch-tokens"
-                class="mm-box mm-button-icon mm-button-icon--size-lg mm-button-icon--disabled mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-lg mm-button-icon--disabled mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-pill"
                 data-testid="switch-tokens"
                 disabled=""
                 style="align-self: center; border-radius: 100%; width: 100%; height: 100%;"
