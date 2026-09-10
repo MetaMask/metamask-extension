@@ -116,7 +116,13 @@ export function useMoneyAccountApiActivity(): UseMoneyAccountApiActivityResult {
       });
   }, [pages, moneyAddress]);
 
-  const isComplete = !enabled || query.isError || query.hasNextPage === false;
+  // `hasNextPage` is `false` before any page has loaded, so it only means
+  // "paging finished" once data exists.
+  const isComplete =
+    !enabled ||
+    query.isError ||
+    (query.data !== undefined && !query.hasNextPage);
+
   const watermark = useMemo(() => {
     if (isComplete) {
       return Number.NEGATIVE_INFINITY;
