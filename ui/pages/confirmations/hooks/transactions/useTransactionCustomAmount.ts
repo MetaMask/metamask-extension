@@ -41,6 +41,7 @@ import { useUpdateTokenAmount } from './useUpdateTokenAmount';
 
 export const MAX_LENGTH = 28;
 const DEBOUNCE_DELAY = 500;
+const FIAT_DISPLAY_DECIMALS = 2;
 
 export function useTransactionCustomAmount({
   currency,
@@ -66,6 +67,16 @@ export function useTransactionCustomAmount({
 } = {}) {
   const [isInputChanged, setInputChanged] = useState(false);
   const [amountHumanDebounced, setAmountHumanDebounced] = useState('0');
+  // Cents-only rendering of a percentage / Max selection. Kept separate from
+  // `amountFiat` so Max still submits the full-precision balance (Perps and
+  // money-account withdraw spend an external balance that must not lose dust)
+  // while the field shows no more than cents. `value` keys the override to the
+  // amount it was derived from, so anything that replaces the amount —
+  // typing, deposit prefill, the isMaxAmount quote target — drops it.
+  const [fiatDisplayOverride, setFiatDisplayOverride] = useState<{
+    value: string;
+    display: string;
+  } | null>(null);
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -230,6 +241,11 @@ export function useTransactionCustomAmount({
     totals?.targetAmount?.usd,
   ]);
 
+  const amountFiatDisplay =
+    fiatDisplayOverride?.value === amountFiat
+      ? fiatDisplayOverride.display
+      : amountFiat;
+
   const amountHuman = useMemo(
     () =>
       getAmountHumanFromFiat(amountFiat, tokenFiatRate, hasBalanceUsdOverride),
@@ -356,6 +372,7 @@ export function useTransactionCustomAmount({
 
       depositMaxHumanRef.current = null;
       pendingDepositMaxRef.current = false;
+      setFiatDisplayOverride(null);
 
       if (transactionId) {
         upsertTransactionUIMetricsFragment(transactionId, {
@@ -488,6 +505,7 @@ export function useTransactionCustomAmount({
       }
 
       setAmountFiat(newAmountFiat);
+      setFiatDisplayOverride(getFiatDisplayOverride(newAmountFiat));
 
       const newAmountHuman =
         depositMaxHumanRef.current ??
@@ -671,6 +689,7 @@ export function useTransactionCustomAmount({
 
   return {
     amountFiat,
+    amountFiatDisplay,
     amountHuman,
     amountHumanDebounced,
     hasAmount,
@@ -688,6 +707,34 @@ export function useTransactionCustomAmount({
     updatePendingAmount,
     updatePendingAmountPercentage,
   };
+}
+
+/**
+ * Cents-only display value for a percentage / Max selection.
+ *
+ * @param amountFiat - The full-precision fiat amount that will be submitted.
+ * @returns The override to render instead of `amountFiat`, or null when
+ * `amountFiat` should be rendered as-is.
+ */
+function getFiatDisplayOverride(
+  amountFiat: string,
+): { value: string; display: string } | null {
+  const value = new BigNumber(amountFiat);
+
+  if (!value.isFinite()) {
+    return null;
+  }
+
+  const display = value.round(FIAT_DISPLAY_DECIMALS, BigNumber.ROUND_DOWN);
+
+  // Already cents or shorter, so there is nothing to hide. Sub-cent amounts
+  // are left alone too: truncating those would render "0" for a selection the
+  // user can still submit.
+  if (display.eq(value) || (display.lte(0) && value.gt(0))) {
+    return null;
+  }
+
+  return { value: amountFiat, display: display.toString(10) };
 }
 
 function usePayTokenBalanceUsd(balanceUsdOverride?: number) {

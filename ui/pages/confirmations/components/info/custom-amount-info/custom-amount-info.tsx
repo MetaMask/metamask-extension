@@ -165,6 +165,7 @@ export const CustomAmountInfo = React.memo(
 
     const {
       amountFiat,
+      amountFiatDisplay,
       amountHuman,
       hasAmount,
       hasInput,
@@ -218,6 +219,7 @@ export const CustomAmountInfo = React.memo(
           amountDetails={amountDetails}
           autoFocusAmount={autoFocusAmount}
           amountFiat={amountFiat}
+          amountFiatDisplay={amountFiatDisplay}
           amountHuman={amountHuman}
           currency={currency}
           disablePay={disablePay}
@@ -274,6 +276,12 @@ type CenterContainerProps = {
   amountDetails?: (amountFiat: string) => ReactNode;
   autoFocusAmount: boolean;
   amountFiat: string;
+  /**
+   * `amountFiat` trimmed to cents for rendering. Differs from `amountFiat`
+   * only after a percentage / Max selection on a flow that submits a
+   * full-precision external balance.
+   */
+  amountFiatDisplay: string;
   amountHuman: string;
   children?: ReactNode;
   currency?: string;
@@ -290,6 +298,7 @@ function CenterContainer({
   amountDetails,
   autoFocusAmount,
   amountFiat,
+  amountFiatDisplay,
   amountHuman,
   children,
   currency,
@@ -311,7 +320,7 @@ function CenterContainer({
       style={{ flex: 1 }}
     >
       <CustomAmount
-        amountFiat={amountFiat}
+        amountFiat={amountFiatDisplay}
         autoFocus={autoFocusAmount}
         currency={currency}
         disabled={!hasTokens}

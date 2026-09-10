@@ -140,6 +140,7 @@ function setupDefaultMocks({
     .mocked(useTransactionCustomAmountModule.useTransactionCustomAmount)
     .mockReturnValue({
       amountFiat: '100',
+      amountFiatDisplay: '100',
       amountHuman: '50',
       amountHumanDebounced: '50',
       hasAmount,
