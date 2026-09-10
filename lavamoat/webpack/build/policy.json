@@ -270,7 +270,7 @@
         "define": true
       },
       "packages": {
-        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "vitest>magic-string>@jridgewell/sourcemap-codec": true,
         "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },
@@ -288,13 +288,13 @@
         "define": true
       }
     },
-    "terser-webpack-plugin>terser>@jridgewell/source-map": {
+    "vite>terser>@jridgewell/source-map": {
       "packages": {
         "@babel/core>@babel/generator>@jridgewell/gen-mapping": true,
         "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },
-    "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
+    "vitest>magic-string>@jridgewell/sourcemap-codec": {
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
@@ -307,7 +307,7 @@
       },
       "packages": {
         "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
-        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+        "vitest>magic-string>@jridgewell/sourcemap-codec": true
       }
     },
     "@lavamoat/webpack>@lavamoat/aa": {
@@ -785,7 +785,7 @@
     "chokidar>anymatch": {
       "packages": {
         "chokidar>normalize-path": true,
-        "micromatch>picomatch": true
+        "chokidar>anymatch>picomatch": true
       }
     },
     "mockttp>@peculiar/asn1-x509>asn1js": {
@@ -1176,7 +1176,7 @@
         "schema-utils": true,
         "copy-webpack-plugin>serialize-javascript": true,
         "mocha>serialize-javascript": true,
-        "copy-webpack-plugin>tinyglobby": true
+        "vite>tinyglobby": true
       }
     },
     "postcss-loader>cosmiconfig": {
@@ -1451,7 +1451,7 @@
         "depcheck>cosmiconfig>parse-json>error-ex>is-arrayish": true
       }
     },
-    "webpack>es-module-lexer": {
+    "vitest>es-module-lexer": {
       "globals": {
         "Buffer": true,
         "WebAssembly.Instance": true,
@@ -1656,7 +1656,7 @@
         "webpack-dev-server>sockjs>websocket-driver": true
       }
     },
-    "copy-webpack-plugin>tinyglobby>fdir": {
+    "vite>fdir": {
       "builtin": {
         "fs": true,
         "path": true
@@ -1665,7 +1665,7 @@
         "process.platform": true
       },
       "packages": {
-        "copy-webpack-plugin>tinyglobby>picomatch": true
+        "vite>picomatch": true
       }
     },
     "chokidar>braces>fill-range": {
@@ -1842,7 +1842,7 @@
         "html-bundler-webpack-plugin>html-minifier-terser>clean-css": true,
         "html-bundler-webpack-plugin>html-minifier-terser>entities": true,
         "html-bundler-webpack-plugin>html-minifier-terser>relateurl": true,
-        "terser-webpack-plugin>terser": true
+        "vite>terser": true
       }
     },
     "koa>http-errors": {
@@ -1998,7 +1998,7 @@
         "terser-webpack-plugin": true
       }
     },
-    "eslint>jiti": {
+    "vite>jiti": {
       "builtin": {
         "assert": true,
         "crypto": true,
@@ -2328,6 +2328,16 @@
         "process": true
       }
     },
+    "chokidar>anymatch>picomatch": {
+      "builtin": {
+        "path.basename": true,
+        "path.sep": true
+      },
+      "globals": {
+        "process.platform": true,
+        "process.version.slice": true
+      }
+    },
     "micromatch>picomatch": {
       "builtin": {
         "path.basename": true,
@@ -2338,7 +2348,17 @@
         "process.version.slice": true
       }
     },
-    "copy-webpack-plugin>tinyglobby>picomatch": {
+    "chokidar>readdirp>picomatch": {
+      "builtin": {
+        "path.basename": true,
+        "path.sep": true
+      },
+      "globals": {
+        "process.platform": true,
+        "process.version.slice": true
+      }
+    },
+    "vite>picomatch": {
       "globals": {
         "navigator": true,
         "process": true
@@ -2397,8 +2417,7 @@
       },
       "packages": {
         "postcss-loader>cosmiconfig": true,
-        "eslint>jiti": true,
-        "tailwindcss>jiti": true,
+        "vite>jiti": true,
         "postcss": true,
         "semver": true
       }
@@ -2585,7 +2604,7 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "micromatch>picomatch": true
+        "chokidar>readdirp>picomatch": true
       }
     },
     "@ledgerhq/device-management-kit>reflect-metadata": {
@@ -3060,7 +3079,7 @@
         "fast-glob": true,
         "eslint>glob-parent": true,
         "eslint>is-glob": true,
-        "eslint>jiti": true,
+        "vite>jiti": true,
         "micromatch": true,
         "chokidar>normalize-path": true,
         "tailwindcss>object-hash": true,
@@ -3098,10 +3117,10 @@
         "terser-webpack-plugin>jest-worker": true,
         "schema-utils": true,
         "mocha>serialize-javascript": true,
-        "terser-webpack-plugin>terser": true
+        "vite>terser": true
       }
     },
-    "terser-webpack-plugin>terser": {
+    "vite>terser": {
       "globals": {
         "Buffer": true,
         "atob": true,
@@ -3112,7 +3131,7 @@
         "process": true
       },
       "packages": {
-        "terser-webpack-plugin>terser>@jridgewell/source-map": true,
+        "vite>terser>@jridgewell/source-map": true,
         "jsdom>acorn": true
       }
     },
@@ -3148,7 +3167,7 @@
         "process.nextTick": true
       }
     },
-    "copy-webpack-plugin>tinyglobby": {
+    "vite>tinyglobby": {
       "builtin": {
         "fs": true,
         "path": true,
@@ -3162,8 +3181,8 @@
         "process.platform": true
       },
       "packages": {
-        "copy-webpack-plugin>tinyglobby>fdir": true,
-        "copy-webpack-plugin>tinyglobby>picomatch": true
+        "vite>fdir": true,
+        "vite>picomatch": true
       }
     },
     "chokidar>braces>fill-range>to-regex-range": {
@@ -3423,7 +3442,7 @@
         "webpack>chrome-trace-event": true,
         "css-loader": true,
         "webpack>enhanced-resolve": true,
-        "webpack>es-module-lexer": true,
+        "vitest>es-module-lexer": true,
         "webpack>eslint-scope": true,
         "webpack>glob-to-regexp": true,
         "webpack>graceful-fs": true,

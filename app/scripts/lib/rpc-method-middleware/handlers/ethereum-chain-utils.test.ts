@@ -7,6 +7,14 @@ import {
 import { Hex } from '@metamask/utils';
 import * as EthChainUtils from './ethereum-chain-utils';
 
+jest.mock('@metamask/chain-agnostic-permission', () => {
+  const actual = jest.requireActual('@metamask/chain-agnostic-permission');
+  return {
+    ...actual,
+    getPermittedEthChainIds: jest.fn(actual.getPermittedEthChainIds),
+  };
+});
+
 describe('Ethereum Chain Utils', () => {
   const createMockedSwitchChain = (mks = {}) => {
     const end = jest.fn();
@@ -141,8 +149,8 @@ describe('Ethereum Chain Utils', () => {
 
       it('check for user approval is user already has access on the chain', async () => {
         jest
-          .spyOn(Multichain, 'getPermittedEthChainIds')
-          .mockReturnValue(['0x1']);
+          .mocked(Multichain.getPermittedEthChainIds)
+          .mockReturnValueOnce(['0x1']);
         const { mocks, switchChain } = createMockedSwitchChain();
         mocks.hasApprovalRequestsForOrigin.mockReturnValue(true);
         mocks.autoApprove = false;

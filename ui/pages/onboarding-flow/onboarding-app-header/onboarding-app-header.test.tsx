@@ -11,7 +11,9 @@ import OnboardingAppHeader from './onboarding-app-header';
 const mockUpdateCurrentLocale = jest.fn();
 
 jest.mock('../../../../app/_locales/index.json', () => {
-  return [{ code: 'en', name: 'English' }];
+  return {
+    default: [{ code: 'en', name: 'English' }],
+  };
 });
 
 jest.mock('../../../store/actions.ts', () => ({

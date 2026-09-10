@@ -56,7 +56,14 @@ describe('NetworkOrderControllerInit', () => {
       state: mockNetworkConfigState,
     } as MockVar);
 
-    NetworkOrderControllerClassMock.mockReturnValue(mockController as MockVar);
+    NetworkOrderControllerClassMock.mockImplementation(
+      class {
+        constructor() {
+          // eslint-disable-next-line no-constructor-return
+          return mockController;
+        }
+      } as MockVar,
+    );
 
     return {
       NetworkOrderControllerClassMock,
