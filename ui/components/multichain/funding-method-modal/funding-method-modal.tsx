@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { CaipChainId, Hex } from '@metamask/utils';
 import {
   IconName,
+  IconSize,
   Modal,
   ModalOverlay,
   ModalHeader,
@@ -144,18 +145,21 @@ export const FundingMethodModal = ({
         </ModalHeader>
         <FundingMethodItem
           icon={IconName.Card}
+          iconSize={IconSize.Sm}
           title={t('tokenMarketplace')}
           description={t('debitCreditPurchaseOptions')}
           onClick={handleBuyCryptoClick}
         />
         <FundingMethodItem
           icon={IconName.Received}
+          iconSize={IconSize.Lg}
           title={t('receiveCrypto')}
           description={t('depositCrypto')}
           onClick={onClickReceive}
         />
         <FundingMethodItem
           icon={IconName.Link}
+          iconSize={IconSize.Md}
           title={t('transferCrypto')}
           description={t('linkCentralizedExchanges')}
           onClick={handleTransferCryptoClick}

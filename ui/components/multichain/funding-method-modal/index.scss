@@ -1,6 +1,14 @@
 .funding-method-item {
   cursor: pointer;
 
+  &__icon {
+    align-items: center;
+    display: flex;
+    flex: 0 0 24px;
+    height: 24px;
+    justify-content: center;
+  }
+
   &:hover {
     background-color: var(--color-background-hover);
   }
