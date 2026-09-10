@@ -4,6 +4,8 @@ import {
   type RampsControllerMessenger,
 } from '@metamask/ramps-controller';
 import { getRootMessenger } from '../lib/messenger';
+import { captureException } from '../../../shared/lib/sentry';
+import { trackEvent } from '../controllers/analytics';
 import type { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -54,6 +56,15 @@ jest.mock('@metamask/ramps-controller', () => {
     RampsController: jest.fn().mockImplementation(() => mockRampsController),
   };
 });
+
+jest.mock('../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../shared/lib/sentry'),
+  captureException: jest.fn(),
+}));
+
+jest.mock('../controllers/analytics', () => ({
+  trackEvent: jest.fn(),
+}));
 
 type InitRequestMock = jest.Mocked<
   MessengerClientInitRequest<
@@ -157,6 +168,23 @@ describe('RampsControllerInit', () => {
       trace: expect.any(Function),
       onOrderSyncErroneousSituation: expect.any(Function),
     });
+  });
+
+  it('reports order sync erroneous situations to sentry and analytics', () => {
+    RampsControllerInit(getInitRequestMock());
+
+    const { onOrderSyncErroneousSituation } = jest.mocked(RampsController).mock
+      .calls[0][0] as unknown as {
+      onOrderSyncErroneousSituation: (
+        situationMessage: string,
+        sentryContext: Record<string, unknown>,
+      ) => void;
+    };
+
+    onOrderSyncErroneousSituation('missing remote order', { orderId: '1' });
+
+    expect(jest.mocked(captureException).mock.calls).toMatchSnapshot();
+    expect(jest.mocked(trackEvent).mock.calls).toMatchSnapshot();
   });
 
   it('exposes ramps background API methods', () => {
