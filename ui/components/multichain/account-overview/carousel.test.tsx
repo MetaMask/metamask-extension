@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
 import {
@@ -241,5 +241,42 @@ describe('AccountOverview Carousel', () => {
         reason: 'error',
       },
     });
+  });
+
+  it('still measures the banner after a StrictMode setup/cleanup/setup probe', () => {
+    // StrictMode tears the effect down and sets it up again on the same
+    // instance, so the activation latch stays set. A probe that abandons the
+    // span therefore leaves the surface unmeasured for the rest of the session.
+    jest.useFakeTimers();
+
+    try {
+      render(
+        <React.StrictMode>
+          <Carousel />
+        </React.StrictMode>,
+      );
+      act(() => {
+        jest.advanceTimersByTime(0);
+      });
+
+      expect(trace).toHaveBeenCalledTimes(1);
+      expect(endTrace).not.toHaveBeenCalled();
+
+      getCarouselProps().onActiveSlideChange?.(mockSlides[0]);
+
+      expect(endTrace).toHaveBeenCalledWith({
+        name: TraceName.HomeBannerTimeToContent,
+        id: '00000000-0000-4000-8000-000000000002',
+        data: {
+          ...bannerTraceTags,
+          success: true,
+          source: 'warm-cache',
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+          banner_name: 'slide-1',
+        },
+      });
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });

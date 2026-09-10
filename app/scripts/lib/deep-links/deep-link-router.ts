@@ -212,6 +212,16 @@ export class DeepLinkRouter extends EventEmitter<{
       name: TraceName.DeeplinkProcessed,
       id: traceId,
       op: TraceOperation.DeeplinkPerformance,
+      // Joins this span to the UI-side `Deeplink Navigated` span for the same
+      // activation. The interstitial puts user think-time between the two, so
+      // they are deliberately separate traces; this is the only per-activation
+      // key shared across that boundary. Set at start so it survives every end
+      // path, and carried as an attribute rather than a tag because a UUID is
+      // maximum cardinality.
+      data: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+        deeplink_activation_id: traceId,
+      },
       tags: {
         ...urlTags,
         // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case

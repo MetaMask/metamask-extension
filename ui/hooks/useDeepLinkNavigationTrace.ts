@@ -88,6 +88,12 @@ function startNavigationTrace(
     id: record.id,
     op: TraceOperation.DeeplinkPerformance,
     startTime,
+    // Matches `deeplink_activation_id` on the background `Deeplink Processed`
+    // span, which is where this record's id originates. See the comment there.
+    data: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+      deeplink_activation_id: record.id,
+    },
     tags: {
       ...record.urlTags,
       // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
