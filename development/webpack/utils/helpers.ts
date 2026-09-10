@@ -104,11 +104,11 @@ export const extensionToJs = (filename: string) =>
 /**
  * It gets minimizers for the webpack build.
  *
- * SWC minify can still assign different short names across Linux rebuilds for
- * larger Flask bundles (`c`/`l` swaps in `runtime.[contenthash].js`), even with
- * TerserPlugin `parallel: false`. Disabling SWC mangling keeps compress and was
- * deterministic across 10/10 local Ubuntu Docker Flask rebuilds, while staying
- * faster than classic Terser.
+ * Keep SWC compress, but disable mangling. SWC mangling can still produce
+ * different `runtime.[contenthash].js` output across Linux rebuilds for Flask
+ * (short-name swaps such as `c`/`l`), even with TerserPlugin `parallel: false`.
+ * That breaks Firefox AMO reviewer `mtree` comparisons. Skipping mangling keeps
+ * minify output stable while preserving most of SWC's speed.
  */
 export function getMinimizers() {
   const TerserPlugin: typeof TerserPluginType = require('terser-webpack-plugin');
@@ -118,7 +118,7 @@ export function getMinimizers() {
       minify: TerserPlugin.swcMinify,
       parallel: false,
       terserOptions: {
-        // Avoid nondeterministic SWC short-name assignment for AMO rebuilds.
+        // Disable mangling so AMO Linux rebuilds stay content-stable.
         mangle: false,
       },
       // do not minify snow.
