@@ -993,7 +993,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails with a te
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+            d="M15.53 18.97a.75.75 0 0 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 1.06L8.56 12Z"
           />
         </svg>
       </button>
@@ -1022,15 +1022,24 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails with a te
           >
             $
           </span>
-          <input
-            aria-label="Amount"
-            class="min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-error-default"
-            data-testid="ramps-build-quote-amount-input"
-            inputmode="decimal"
-            size="3"
-            type="text"
-            value="100"
-          />
+          <span
+            class="relative w-max min-w-[1ch]"
+          >
+            <span
+              aria-hidden="true"
+              class="block invisible min-w-[1ch] whitespace-pre text-[56px] font-normal leading-none text-error-default"
+            >
+              100
+            </span>
+            <input
+              aria-label="Amount"
+              class="absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none text-[56px] font-normal leading-none text-error-default"
+              data-testid="ramps-build-quote-amount-input"
+              inputmode="decimal"
+              type="text"
+              value="100"
+            />
+          </span>
         </div>
         <button
           class="justify-center font-medium text-default overflow-hidden relative transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] inline-flex items-center gap-2 rounded-full bg-background-alternative px-3 py-2 min-w-0 h-auto hover:bg-hover active:bg-pressed"
@@ -1047,7 +1056,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails with a te
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+                d="M21 4.5H3A1.5 1.5 0 0 0 1.5 6v12A1.5 1.5 0 0 0 3 19.5h18a1.5 1.5 0 0 0 1.5-1.5V6A1.5 1.5 0 0 0 21 4.5M21 6v2.25H3V6Zm0 12H3V9.75h18zm-1.5-2.25a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1 0-1.5h3a.75.75 0 0 1 .75.75m-6 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5a.75.75 0 0 1 .75.75"
               />
             </svg>
             <p
@@ -1062,7 +1071,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails with a te
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
+                d="m20.03 9.53-7.5 7.5a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 15.44l6.97-6.97a.75.75 0 0 1 1.06 1.06"
               />
             </svg>
           </div>
