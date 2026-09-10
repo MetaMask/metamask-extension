@@ -87,6 +87,14 @@ describe('deep-link performance helpers', () => {
       });
     });
 
+    it('replaces unsupported routes with unknown', () => {
+      expect(
+        getDeepLinkUrlTags(
+          'https://link.metamask.io/user-controlled-path-fragment',
+        ).deeplink_route,
+      ).toBe('unknown');
+    });
+
     for (const variant of [
       'UPPERCASE',
       '1invalid',
