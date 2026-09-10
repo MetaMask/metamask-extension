@@ -104,16 +104,17 @@ export const extensionToJs = (filename: string) =>
 /**
  * It gets minimizers for the webpack build.
  *
- * SWC minify can still assign different short names across Linux rebuilds for
- * larger Flask bundles (`c`/`l` swaps in `runtime.[contenthash].js`), even with
- * TerserPlugin `parallel: false`. Classic Terser minify is slower but was
- * deterministic across 10/10 local Ubuntu Docker Flask rebuilds.
+ * Prefer classic Terser over SWC here. SWC mangling can still produce
+ * different `runtime.[contenthash].js` output across Linux rebuilds for Flask
+ * (short-name swaps such as `c`/`l`), even with TerserPlugin `parallel: false`.
+ * That breaks Firefox AMO reviewer `mtree` comparisons. Classic Terser is
+ * slower but keeps minify output stable for those rebuilds.
  */
 export function getMinimizers() {
   const TerserPlugin: typeof TerserPluginType = require('terser-webpack-plugin');
   return [
     new TerserPlugin({
-      // Classic Terser for AMO rebuild determinism (slower than SWC).
+      // Classic Terser for stable AMO rebuilds (slower than SWC).
       minify: TerserPlugin.terserMinify,
       parallel: false,
       // do not minify snow.
