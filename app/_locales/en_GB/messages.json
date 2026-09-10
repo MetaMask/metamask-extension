@@ -7659,6 +7659,10 @@
   "perpsFilterIndex": {
     "message": "Indices"
   },
+  "perpsFilterMore": {
+    "message": "More",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
   "perpsFilterNew": {
     "message": "New"
   },

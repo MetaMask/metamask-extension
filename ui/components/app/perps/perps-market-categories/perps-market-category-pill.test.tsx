@@ -5,7 +5,10 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import { PerpsMarketCategoryPill } from './perps-market-category-pill';
+import {
+  PerpsCategoryPillVariant,
+  PerpsMarketCategoryPill,
+} from './perps-market-category-pill';
 
 const mockStore = configureStore({ metamask: { ...mockState.metamask } });
 
@@ -88,6 +91,34 @@ describe('PerpsMarketCategoryPill', () => {
         .getByTestId('perps-market-categories-pill-crypto')
         .querySelector('svg'),
     ).not.toBeInTheDocument();
+  });
+
+  it('renders the market list filter shape by default', () => {
+    // Figma 12602:45702: a 32px, 8px-radius button, not a full lozenge.
+    renderPill();
+
+    const pill = screen.getByTestId('perps-market-categories-pill-crypto');
+
+    expect(pill).toHaveClass('rounded-lg');
+    expect(pill).not.toHaveClass('rounded-full');
+  });
+
+  it('renders the Products chip shape when asked for it', () => {
+    // Figma 13192:28387: a 40px fully-rounded chip carrying a leading glyph.
+    renderWithProvider(
+      <PerpsMarketCategoryPill
+        category="crypto"
+        onPress={jest.fn()}
+        iconName={IconName.Ethereum}
+        variant={PerpsCategoryPillVariant.Chip}
+      />,
+      mockStore,
+    );
+
+    const pill = screen.getByTestId('perps-market-categories-pill-crypto');
+
+    expect(pill).toHaveClass('rounded-full');
+    expect(pill).not.toHaveClass('rounded-lg');
   });
 
   it('contrasts both glyphs against the active pill fill', () => {
