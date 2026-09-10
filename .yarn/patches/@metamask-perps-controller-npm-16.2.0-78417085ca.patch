@@ -1,0 +1,156 @@
+diff --git a/dist/PerpsController.cjs b/dist/PerpsController.cjs
+index 86c9e7e442f2de6878a8463d9240890a583ecf3c..799784b74e9239b903536d81b80787410c76a7e1 100644
+--- a/dist/PerpsController.cjs
++++ b/dist/PerpsController.cjs
+@@ -5031,35 +5031,44 @@ async function _PerpsController_persistWatchlistToRemote(network) {
+         __classPrivateFieldGet(this, _PerpsController_instances, "m", _PerpsController_debugLog).call(this, 'PerpsController: Skipping AUS watchlist sync — provider not mapped', { activeProvider: this.state.activeProvider });
+         return;
+     }
+-    const prefs = await this.messenger.call('AuthenticatedUserStorageService:getNotificationPreferences');
+-    if (!prefs) {
+-        __classPrivateFieldGet(this, _PerpsController_instances, "m", _PerpsController_debugLog).call(this, 'PerpsController: Skipping AUS watchlist write — preferences blob not yet initialised', { exchangeKey, network });
+-        return;
++    try {
++        const prefs = await this.messenger.call('AuthenticatedUserStorageService:getNotificationPreferences');
++        if (!prefs) {
++            __classPrivateFieldGet(this, _PerpsController_instances, "m", _PerpsController_debugLog).call(this, 'PerpsController: Skipping AUS watchlist write — preferences blob not yet initialised', { exchangeKey, network });
++            return;
++        }
++        const existingWatchlist = prefs.perps?.watchlistMarkets ?? {
++            hyperliquid: { testnet: [], mainnet: [] },
++            myx: { testnet: [], mainnet: [] },
++        };
++        const nextWatchlistMarkets = {
++            ...existingWatchlist,
++            [exchangeKey]: {
++                ...existingWatchlist[exchangeKey],
++                [network]: this.state.watchlistMarkets[network],
++            },
++        };
++        const nextPrefs = {
++            ...prefs,
++            perps: {
++                ...prefs.perps,
++                watchlistMarkets: nextWatchlistMarkets,
++            },
++        };
++        await this.messenger.call('AuthenticatedUserStorageService:putNotificationPreferences', nextPrefs);
++        __classPrivateFieldGet(this, _PerpsController_instances, "m", _PerpsController_debugLog).call(this, 'PerpsController: Watchlist synced to AUS', {
++            exchangeKey,
++            network,
++            count: this.state.watchlistMarkets[network].length,
++        });
++    }
++    catch (error) {
++        __classPrivateFieldGet(this, _PerpsController_instances, "m", _PerpsController_debugLog).call(this, 'PerpsController: Skipping AUS watchlist write — persist failed', {
++            exchangeKey,
++            network,
++            error: (0, errorUtils_js_1.ensureError)(error, 'PerpsController.persistWatchlistToRemote').message,
++        });
+     }
+-    const existingWatchlist = prefs.perps
+-        .watchlistMarkets ?? {
+-        hyperliquid: { testnet: [], mainnet: [] },
+-    };
+-    const nextWatchlistMarkets = {
+-        ...existingWatchlist,
+-        [exchangeKey]: {
+-            ...existingWatchlist[exchangeKey],
+-            [network]: this.state.watchlistMarkets[network],
+-        },
+-    };
+-    const nextPrefs = {
+-        ...prefs,
+-        perps: {
+-            ...prefs.perps,
+-            watchlistMarkets: nextWatchlistMarkets,
+-        },
+-    };
+-    await this.messenger.call('AuthenticatedUserStorageService:putNotificationPreferences', nextPrefs);
+-    __classPrivateFieldGet(this, _PerpsController_instances, "m", _PerpsController_debugLog).call(this, 'PerpsController: Watchlist synced to AUS', {
+-        exchangeKey,
+-        network,
+-        count: this.state.watchlistMarkets[network].length,
+-    });
+ }, _PerpsController_syncWatchlistFromRemote = 
+ /**
+  * Hydrates `state.watchlistMarkets` from AuthenticatedUserStorageService on
+diff --git a/dist/PerpsController.mjs b/dist/PerpsController.mjs
+index 987e300ee7a1414a27da16d0086680038a6472f5..564b673bda6d4a3beefb93e40d877c314c2a593f 100644
+--- a/dist/PerpsController.mjs
++++ b/dist/PerpsController.mjs
+@@ -5019,35 +5019,46 @@ async function _PerpsController_persistWatchlistToRemote(network) {
+         __classPrivateFieldGet(this, _PerpsController_instances, "m", _PerpsController_debugLog).call(this, 'PerpsController: Skipping AUS watchlist sync — provider not mapped', { activeProvider: this.state.activeProvider });
+         return;
+     }
+-    const prefs = await this.messenger.call('AuthenticatedUserStorageService:getNotificationPreferences');
+-    if (!prefs) {
+-        __classPrivateFieldGet(this, _PerpsController_instances, "m", _PerpsController_debugLog).call(this, 'PerpsController: Skipping AUS watchlist write — preferences blob not yet initialised', { exchangeKey, network });
+-        return;
++    try {
++        const prefs = await this.messenger.call('AuthenticatedUserStorageService:getNotificationPreferences');
++        if (!prefs) {
++            __classPrivateFieldGet(this, _PerpsController_instances, "m", _PerpsController_debugLog).call(this, 'PerpsController: Skipping AUS watchlist write — preferences blob not yet initialised', { exchangeKey, network });
++            return;
++        }
++        const existingWatchlist = prefs.perps?.watchlistMarkets ?? {
++            hyperliquid: { testnet: [], mainnet: [] },
++            myx: { testnet: [], mainnet: [] },
++        };
++        const nextWatchlistMarkets = {
++            ...existingWatchlist,
++            [exchangeKey]: {
++                ...existingWatchlist[exchangeKey],
++                [network]: this.state.watchlistMarkets[network],
++            },
++        };
++        const nextPrefs = {
++            ...prefs,
++            perps: {
++                ...prefs.perps,
++                watchlistMarkets: nextWatchlistMarkets,
++            },
++        };
++        await this.messenger.call('AuthenticatedUserStorageService:putNotificationPreferences', nextPrefs);
++        __classPrivateFieldGet(this, _PerpsController_instances, "m", _PerpsController_debugLog).call(this, 'PerpsController: Watchlist synced to AUS', {
++            exchangeKey,
++            network,
++            count: this.state.watchlistMarkets[network].length,
++        });
++    }
++    catch (error) {
++        // Unauthenticated sessions, schema mismatch, and transport errors must
++        // not revert the optimistic local toggle. Local state is the fallback.
++        __classPrivateFieldGet(this, _PerpsController_instances, "m", _PerpsController_debugLog).call(this, 'PerpsController: Skipping AUS watchlist write — persist failed', {
++            exchangeKey,
++            network,
++            error: ensureError(error, 'PerpsController.persistWatchlistToRemote').message,
++        });
+     }
+-    const existingWatchlist = prefs.perps
+-        .watchlistMarkets ?? {
+-        hyperliquid: { testnet: [], mainnet: [] },
+-    };
+-    const nextWatchlistMarkets = {
+-        ...existingWatchlist,
+-        [exchangeKey]: {
+-            ...existingWatchlist[exchangeKey],
+-            [network]: this.state.watchlistMarkets[network],
+-        },
+-    };
+-    const nextPrefs = {
+-        ...prefs,
+-        perps: {
+-            ...prefs.perps,
+-            watchlistMarkets: nextWatchlistMarkets,
+-        },
+-    };
+-    await this.messenger.call('AuthenticatedUserStorageService:putNotificationPreferences', nextPrefs);
+-    __classPrivateFieldGet(this, _PerpsController_instances, "m", _PerpsController_debugLog).call(this, 'PerpsController: Watchlist synced to AUS', {
+-        exchangeKey,
+-        network,
+-        count: this.state.watchlistMarkets[network].length,
+-    });
+ }, _PerpsController_syncWatchlistFromRemote = 
+ /**
+  * Hydrates `state.watchlistMarkets` from AuthenticatedUserStorageService on
