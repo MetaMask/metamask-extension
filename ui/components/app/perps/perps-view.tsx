@@ -52,6 +52,7 @@ import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
 import { PerpsMarketBalanceActions } from './perps-market-balance-actions';
 import { CloseAllPositionsModal } from './close-position/close-all-positions-modal';
 import { PerpsExploreMarkets } from './perps-explore-markets';
+import { PerpsProducts } from './perps-products';
 import { PerpsPositionsOrders } from './perps-positions-orders';
 import { PerpsRecentActivity } from './perps-recent-activity';
 import { PERPS_TOAST_KEYS, usePerpsToast } from './perps-toast';
@@ -449,6 +450,9 @@ export const PerpsView = () => {
         <Box paddingLeft={4} paddingRight={4}>
           <PerpsBalanceActionsSkeleton />
         </Box>
+        {/* Reserves the Products section's height so it does not push the
+            sections below it down when the live categories arrive. */}
+        <PerpsProducts isLoading />
         <PerpsSectionSkeleton cardCount={5} showStartTradeCta />
         <PerpsSectionSkeleton cardCount={5} />
         <Box data-testid="perps-recent-activity-skeleton">
@@ -473,6 +477,11 @@ export const PerpsView = () => {
           onLearnMore={() => dispatch(setTutorialModalOpen(true))}
         />
       </Box>
+
+      {/* Products: the tab's shortcut into the full market list, placed above
+          the user's own positions so the discovery route is reachable without
+          scrolling the whole tab. */}
+      <PerpsProducts isLoading={marketsLoading} />
 
       {/* Positions + Orders sections */}
       {batchActionError ? (

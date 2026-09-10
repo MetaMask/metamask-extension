@@ -7528,13 +7528,13 @@
     "message": "Crypto"
   },
   "perpsFilterEtf": {
-    "message": "ETF"
+    "message": "ETFs"
   },
   "perpsFilterForex": {
     "message": "Forex"
   },
   "perpsFilterIndex": {
-    "message": "Index"
+    "message": "Indices"
   },
   "perpsFilterNew": {
     "message": "New"
@@ -7828,6 +7828,10 @@
   },
   "perpsRateLimitExceeded": {
     "message": "Too many requests. Please wait and try again."
+  },
+  "perpsProducts": {
+    "message": "Products",
+    "description": "Heading of the Perps tab section listing market categories as chips"
   },
   "perpsRecentActivity": {
     "message": "Recent activity"

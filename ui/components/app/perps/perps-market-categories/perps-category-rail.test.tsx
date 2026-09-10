@@ -138,6 +138,18 @@ describe('PerpsCategoryRail', () => {
     });
   });
 
+  describe('navigate-only rail', () => {
+    it('reports no pressed state when the rail cannot hold a selection', () => {
+      // The Perps tab's Products section navigates instead of filtering, so
+      // `aria-pressed` would announce a toggle that does not exist.
+      renderRail({ onClear: undefined });
+
+      expect(
+        screen.getByTestId('perps-market-categories-pill-crypto'),
+      ).not.toHaveAttribute('aria-pressed');
+    });
+  });
+
   describe('accessibility', () => {
     it('announces the rail as a named group', () => {
       renderRail();
