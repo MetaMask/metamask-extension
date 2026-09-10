@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention -- Sentry trace fields use snake_case */
 import { renderHook } from '@testing-library/react';
 import {
   endTrace,
@@ -43,7 +42,9 @@ describe('useNotificationListPerformance', () => {
       data: {
         success: true,
         source: 'warm',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         notification_count: 2,
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         content_state: 'filled',
       },
     });
@@ -79,7 +80,9 @@ describe('useNotificationListPerformance', () => {
       data: {
         success: true,
         source: 'cold',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         notification_count: 3,
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         content_state: 'filled',
       },
     });
@@ -106,7 +109,9 @@ describe('useNotificationListPerformance', () => {
       data: {
         success: true,
         source: 'warm',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         notification_count: 0,
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         content_state: 'empty',
       },
     });
@@ -129,6 +134,7 @@ describe('useNotificationListPerformance', () => {
       data: {
         success: false,
         reason: 'error',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         notification_count: 0,
       },
     });
@@ -154,6 +160,7 @@ describe('useNotificationListPerformance', () => {
       data: {
         success: false,
         reason: 'unmounted',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         notification_count: 4,
       },
     });

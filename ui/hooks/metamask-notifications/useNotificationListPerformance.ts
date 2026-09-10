@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention -- Sentry trace fields use snake_case */
 import { useCallback, useEffect, useRef } from 'react';
 import {
   endTrace,
@@ -65,6 +64,7 @@ export function useNotificationListPerformance({
       endNotificationTrace({
         success: false,
         reason: 'unmounted',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         notification_count: latestCountRef.current,
       });
     };
@@ -83,6 +83,7 @@ export function useNotificationListPerformance({
       endNotificationTrace({
         success: false,
         reason: 'error',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         notification_count: latestCountRef.current,
       });
       return;
@@ -95,7 +96,9 @@ export function useNotificationListPerformance({
     endNotificationTrace({
       success: true,
       source: sawLoadingRef.current ? 'cold' : 'warm',
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
       notification_count: latestCountRef.current,
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
       content_state: latestCountRef.current > 0 ? 'filled' : 'empty',
     });
   }, [

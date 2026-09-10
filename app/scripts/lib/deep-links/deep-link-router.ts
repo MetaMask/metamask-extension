@@ -1,5 +1,4 @@
 import EventEmitter from 'events';
-/* eslint-disable @typescript-eslint/naming-convention -- Sentry trace fields use snake_case */
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
@@ -215,6 +214,7 @@ export class DeepLinkRouter extends EventEmitter<{
       op: TraceOperation.DeeplinkPerformance,
       tags: {
         ...urlTags,
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         start_source: 'parse',
       },
     });
@@ -304,7 +304,10 @@ export class DeepLinkRouter extends EventEmitter<{
           seam: 'pre_navigate',
           segment,
           interstitial,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
           target_route: targetRoute,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+          signature_status: parsed.signature,
         });
       } else {
         // unable to parse, show error page

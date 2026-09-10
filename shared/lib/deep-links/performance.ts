@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention -- Sentry trace fields use snake_case */
 import browser from 'webextension-polyfill';
 import { isManifestV3 } from '../mv3.utils';
 
@@ -7,7 +6,9 @@ export const PENDING_DEEP_LINK_TTL = 5 * 60 * 1000;
 const VARIANT_PATTERN = /^[a-z][a-z-]{0,23}$/u;
 
 export type DeepLinkUrlTags = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
   deeplink_route: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
   deeplink_variant: string;
   signed: boolean;
 };
@@ -76,14 +77,18 @@ export function getDeepLinkUrlTags(urlString: string): DeepLinkUrlTags {
       url.searchParams.get('screen') ?? url.searchParams.get('tab');
 
     return {
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
       deeplink_route: route || 'unknown',
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
       deeplink_variant:
         variant && VARIANT_PATTERN.test(variant) ? variant : 'default',
       signed: url.searchParams.has('sig'),
     };
   } catch {
     return {
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
       deeplink_route: 'unknown',
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
       deeplink_variant: 'default',
       signed: false,
     };

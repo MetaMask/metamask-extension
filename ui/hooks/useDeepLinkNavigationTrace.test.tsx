@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention -- Sentry trace fields and Router flags use snake_case */
 import React from 'react';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
@@ -43,7 +42,9 @@ const RECORD: PendingDeepLinkNavigation = {
   intakeTimestamp: 1_000,
   createdAt: 1_000,
   urlTags: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
     deeplink_route: 'swap',
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
     deeplink_variant: 'default',
     signed: false,
   },
@@ -56,7 +57,9 @@ function getWrapper(pathname: string) {
     <MemoryRouter
       initialEntries={[pathname]}
       future={{
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- React Router future flags
         v7_startTransition: true,
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- React Router future flags
         v7_relativeSplatPath: true,
       }}
     >
@@ -93,6 +96,7 @@ describe('useDeepLinkNavigationTrace', () => {
         startTime: RECORD.intakeTimestamp,
         tags: {
           ...RECORD.urlTags,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
           start_source: 'intake',
         },
       });
@@ -106,8 +110,11 @@ describe('useDeepLinkNavigationTrace', () => {
       id: RECORD.id,
       data: {
         success: true,
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         nav_target: 'inferred',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         target_route: RECORD.targetRoute,
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         focused_route: '/cross-chain/swaps/prepare-bridge-page',
       },
     });
@@ -155,6 +162,7 @@ describe('useDeepLinkNavigationTrace', () => {
       startTime: 2_000,
       tags: {
         ...RECORD.urlTags,
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         start_source: 'unlock',
       },
     });

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention -- Sentry trace fields use snake_case */
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { matchPath, useLocation } from 'react-router-dom';
@@ -91,6 +90,7 @@ function startNavigationTrace(
     startTime,
     tags: {
       ...record.urlTags,
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
       start_source: startSource,
     },
   });
@@ -234,8 +234,11 @@ export function useDeepLinkNavigationTrace(): void {
           if (!disposed) {
             endActiveNavigationTrace(id, {
               success: true,
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
               nav_target: 'inferred',
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
               target_route: record.targetRoute,
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
               focused_route: focusedRoute,
             });
           }
