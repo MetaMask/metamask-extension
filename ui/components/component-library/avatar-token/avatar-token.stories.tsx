@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { BorderColor } from '../../../helpers/constants/design-system';
 import { AvatarToken } from './avatar-token';
 import { AvatarTokenSize } from './avatar-token.types';

@@ -7,7 +7,10 @@ import {
   isMoneyDepositTx,
   isMoneyWithdrawTx,
 } from '../../../helpers/money/money-transaction-guards';
-import { type MoneyActivityItem } from '../types/money-activity';
+import {
+  isOnchainMoneyActivityItem,
+  type MoneyActivityItem,
+} from '../types/money-activity';
 
 /**
  * Filter chips on the Money Activity page. Values match mobile; the
@@ -68,11 +71,12 @@ export function isMoneyActivityTransfer(tx: TransactionMeta): boolean {
  * Splits on-chain activity into All / Deposits / Sends buckets.
  *
  * `items` is already visibility-filtered (Money Pay deposits, sends, and
- * incoming mUSD). All keeps that full list. Deposits and Sends are narrower
- * chips; a confirmed Pay tx from the Money Account can be visible without
- * matching either chip type, and must still appear on Home / All.
+ * incoming mUSD, plus any Accounts API rows). All keeps that full list.
+ * Deposits and Sends are on-chain-only chips; a confirmed Pay tx from the
+ * Money Account can be visible without matching either chip type, and must
+ * still appear on Home / All.
  *
- * @param items - Newest-first on-chain activity items.
+ * @param items - Newest-first activity items.
  * @returns Filter buckets.
  */
 export function buildMoneyActivityBuckets(
@@ -80,11 +84,13 @@ export function buildMoneyActivityBuckets(
 ): MoneyActivityBuckets {
   return {
     [MoneyActivityFilter.All]: items,
-    [MoneyActivityFilter.Deposits]: items.filter((item) =>
-      isMoneyActivityDeposit(item.tx),
+    [MoneyActivityFilter.Deposits]: items.filter(
+      (item) =>
+        isOnchainMoneyActivityItem(item) && isMoneyActivityDeposit(item.tx),
     ),
-    [MoneyActivityFilter.Transfers]: items.filter((item) =>
-      isMoneyActivityTransfer(item.tx),
+    [MoneyActivityFilter.Transfers]: items.filter(
+      (item) =>
+        isOnchainMoneyActivityItem(item) && isMoneyActivityTransfer(item.tx),
     ),
   };
 }

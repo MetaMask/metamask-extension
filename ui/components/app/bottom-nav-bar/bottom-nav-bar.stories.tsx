@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { BottomNavBar } from './bottom-nav-bar';
 
 const meta: Meta<typeof BottomNavBar> = {
