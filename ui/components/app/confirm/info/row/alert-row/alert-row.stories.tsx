@@ -3,7 +3,7 @@ import { ConfirmInfoRowVariant } from '../row';
 import { ConfirmInfoAlertRow } from './alert-row';
 import configureStore from '../../../../../../store/store';
 import { Provider } from 'react-redux';
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-webpack5';
 import { baseAlertsMock } from '../../../../alert-system/alert-modal/alert-modal.stories';
 
 const LABEL_FROM_MOCK = 'From';

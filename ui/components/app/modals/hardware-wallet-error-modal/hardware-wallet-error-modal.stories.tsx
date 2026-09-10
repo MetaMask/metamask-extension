@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import configureStore from '../../../../store/store';
