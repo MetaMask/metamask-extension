@@ -19,7 +19,10 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useMoneyActivityDisplayInfo } from '../../../hooks/money/use-money-activity-display';
-import type { MoneyActivityItem } from '../types/money-activity';
+import {
+  isOnchainMoneyActivityItem,
+  type MoneyActivityItem,
+} from '../types/money-activity';
 
 export type MoneyActivityRowProps = {
   item: MoneyActivityItem;
@@ -55,7 +58,7 @@ export function MoneyActivityRow({
     isFailed,
     isIncoming: display.isIncoming,
   });
-  const isClickable = Boolean(onItemClick);
+  const isClickable = Boolean(onItemClick) && isOnchainMoneyActivityItem(item);
 
   const content = (
     <>
