@@ -29,14 +29,22 @@ const GATED_METRIC_VALUES = [
 
   // CLS canary — extension pages should produce CLS ≈ 0
   METRIC.startupStandardHome.cls,
-  METRIC.onboardingImportWallet.cls,
-  METRIC.onboardingNewWallet.cls,
   METRIC.importSrpHome.cls,
   METRIC.sendTransactions.cls,
   METRIC.swap.cls,
   METRIC.assetDetails.cls,
   METRIC.solanaAssetDetails.cls,
 
+  // Removed with them: `onboardingImportWallet.cls` and `onboardingNewWallet.cls`.
+  // Both emit no `cls` at all — absent from the p95 map in 60 of 60 runs for the
+  // import flow and 3 of 3 sampled for the new-wallet flow, while the other six
+  // canaries emit every run. `compare-benchmarks.ts` skips an entry missing
+  // p75/p95 with a warn and a continue, so each has been scoring as a pass
+  // rather than as a measurement. They are the only two onboarding canaries and
+  // the only two that are dark, which is a collection defect rather than a
+  // gating decision — restoring them means making the flows emit CLS, not
+  // adding the keys back.
+  //
   // PAUSED — the nine CUF-derived timing metrics, per #46078.
   //
   // Left the allowlist: `importSrpHome.loginToHomeScreen`,
