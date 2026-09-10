@@ -239,6 +239,42 @@ describe('UnlockPage component (passkey UI)', () => {
     expect(props.onSubmit).not.toHaveBeenCalled();
   });
 
+  it('allows password submission when the recovery status refresh fails', async () => {
+    const props = buildProps({
+      isSocialLoginFlow: true,
+      isPasskeyActive: false,
+      resolveSeedlessPasswordSyncState: jest
+        .fn()
+        .mockRejectedValue(new Error('temporary resolver failure')),
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <UnlockPage {...props} />,
+      mockStore,
+      '/unlock',
+    );
+
+    await waitFor(() => {
+      expect(props.resolveSeedlessPasswordSyncState).toHaveBeenCalledWith({
+        skipCache: false,
+      });
+    });
+
+    fireEvent.change(getByTestId('unlock-password'), {
+      target: { value: 'password' },
+    });
+
+    await waitFor(() => {
+      expect(getByTestId('unlock-submit')).not.toBeDisabled();
+    });
+
+    fireEvent.click(getByTestId('unlock-submit'));
+
+    await waitFor(() => {
+      expect(props.onSubmit).toHaveBeenCalledWith('password');
+    });
+  });
+
   it('shows a passkey error banner when authentication fails with a non-silent error', async () => {
     mockUnlockWithPasskey.mockRejectedValueOnce({
       code: PasskeyControllerErrorCode.NotEnrolled,

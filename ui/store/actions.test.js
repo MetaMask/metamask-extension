@@ -377,7 +377,7 @@ describe('Actions', () => {
       expect(getStatePatchesStub.calledOnceWith()).toStrictEqual(true);
     });
 
-    it('returns unknown when the background resolver fails', async () => {
+    it('returns in-sync when the background resolver fails', async () => {
       const store = mockStore();
       background.getApi.returns({
         resolveSeedlessPasswordSyncState: sinon
@@ -391,7 +391,7 @@ describe('Actions', () => {
         actions.resolveSeedlessPasswordSyncState({ skipCache: true }),
       );
 
-      expect(result).toStrictEqual(PasswordChangeRecoveryStatus.Unknown);
+      expect(result).toStrictEqual(PasswordChangeRecoveryStatus.InSync);
     });
   });
 

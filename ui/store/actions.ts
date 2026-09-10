@@ -1071,8 +1071,8 @@ export function getIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
  * @param options - Resolver options.
  * @param options.skipCache - Whether to bypass the controller's cached remote
  * state.
- * @returns The current recovery status. Failures resolve to `unknown` so the
- * caller keeps the wallet blocked.
+ * @returns The current recovery status. Failures resolve to `in-sync` so
+ * transient resolver errors do not lock an already unlocked wallet.
  */
 export function resolveSeedlessPasswordSyncState({
   skipCache = false,
@@ -1098,7 +1098,10 @@ export function resolveSeedlessPasswordSyncState({
       return passwordSyncState;
     } catch (error) {
       log.warn('resolveSeedlessPasswordSyncState error', error);
-      return PasswordChangeRecoveryStatus.Unknown;
+      // Match the previous outdated-password check: a failed status refresh
+      // must not lock the wallet. A genuine recovery failure is still returned
+      // as `Unknown` by the background resolver and remains blocking.
+      return PasswordChangeRecoveryStatus.InSync;
     }
   };
 }

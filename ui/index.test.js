@@ -292,6 +292,38 @@ describe('Index Tests', () => {
       expect(store.dispatch).toHaveBeenCalledWith(lockMetamaskAction);
     });
 
+    it('does not lock the wallet when a status refresh fails', async () => {
+      const resolveSeedlessPasswordSyncStateAction = {
+        type: 'RESOLVE_SEEDLESS_PASSWORD_SYNC_STATE',
+      };
+      actions.lockMetamask.mockClear();
+      actions.resolveSeedlessPasswordSyncState.mockReturnValue(
+        resolveSeedlessPasswordSyncStateAction,
+      );
+
+      const store = {
+        getState: jest.fn().mockReturnValue({
+          metamask: {
+            browserEnvironment: {},
+            isUnlocked: true,
+            firstTimeFlowType: 'socialCreate',
+            isSocialLoginFlow: true,
+          },
+        }),
+        // The action maps a failed status refresh to InSync so the poll leaves
+        // the unlocked wallet open and retries on the next interval.
+        dispatch: jest.fn((action) =>
+          action === resolveSeedlessPasswordSyncStateAction
+            ? Promise.resolve(PasswordChangeRecoveryStatus.InSync)
+            : Promise.resolve(),
+        ),
+      };
+
+      await runInitialActions(store);
+
+      expect(actions.lockMetamask).not.toHaveBeenCalled();
+    });
+
     it('stops the password sync interval after reset to a non-social login flow', async () => {
       const clearIntervalSpy = jest.spyOn(global, 'clearInterval');
 

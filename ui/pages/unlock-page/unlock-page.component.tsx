@@ -73,6 +73,7 @@ import { UnlockPasskeyIconButton, UnlockPasskeySection } from './passkey';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
 import { MetamaskWordmarkLogo } from './metamask-wordmark-logo';
+import { log } from 'loglevel';
 
 type UnlockPageProps = UnlockPageContext & {
   navigate: NavigateFunction;
@@ -306,12 +307,11 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
             : null,
       });
       return passwordSyncState;
-    } catch {
-      this.setState({
-        passwordSyncState: PasswordChangeRecoveryStatus.Unknown,
-        error: this.ctx.t('passwordRecoveryBlocked'),
-      });
-      return PasswordChangeRecoveryStatus.Unknown;
+    } catch (error) {
+      console.error('resolvePasswordSyncState error', error);
+      // A failed status refresh is transient. Keep the last known recovery
+      // state so an unavailable remote check does not block password entry.
+      return this.state.passwordSyncState;
     } finally {
       this.setState({ isPasswordSyncStateLoading: false });
     }
