@@ -48,7 +48,7 @@ exports[`<AdvancedDetails /> renders component when the prop override is passed 
       >
         <button
           aria-label="Edit"
-          class="mm-box mm-button-icon mm-button-icon--size-sm edit-nonce-btn mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm edit-nonce-btn mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill"
           data-testid="edit-nonce-icon"
           style="margin-right: -4px;"
         >
@@ -115,7 +115,7 @@ exports[`<AdvancedDetails /> renders component when the state property is true 1
       >
         <button
           aria-label="Edit"
-          class="mm-box mm-button-icon mm-button-icon--size-sm edit-nonce-btn mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm edit-nonce-btn mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill"
           data-testid="edit-nonce-icon"
           style="margin-right: -4px;"
         >
