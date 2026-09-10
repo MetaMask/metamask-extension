@@ -394,7 +394,7 @@ export type AppStateControllerSetLastInteractedConfirmationInfoAction = {
 /**
  * Sets the entry point that initiated the last Perps deposit flow.
  *
- * @param entryPoint - The entry point identifier, or null to clear.
+ * @param entryPoint - The entry point identifier, or undefined to clear.
  */
 export type AppStateControllerSetLastPerpsDepositEntryPointAction = {
   type: `AppStateController:setLastPerpsDepositEntryPoint`;
