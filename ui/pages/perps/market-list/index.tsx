@@ -231,7 +231,7 @@ export const MarketListView = () => {
   const {
     markets: allMarkets,
     isInitialLoading: marketsLoading,
-    isLive: marketsLive,
+    areMarketsLive,
   } = usePerpsLiveMarketListData();
   const { account } = usePerpsLiveAccount();
 
@@ -367,7 +367,12 @@ export const MarketListView = () => {
   const trackRef = useRef(track);
   trackRef.current = track;
   // Latest settled result set, read by the tap handler for rank/count.
-  usePerpsEntryTrace('market_list', displayedMarkets, isLoading, marketsLive);
+  usePerpsEntryTrace(
+    'market_list',
+    displayedMarkets,
+    isLoading,
+    areMarketsLive(displayedMarkets),
+  );
 
   const displayedMarketsRef = useRef(displayedMarkets);
   displayedMarketsRef.current = displayedMarkets;

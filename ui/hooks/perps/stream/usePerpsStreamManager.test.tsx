@@ -27,6 +27,7 @@ jest.mock('react-redux', () => ({
 jest.mock('../../../providers/perps/CandleStreamChannel', () => ({
   CandleStreamChannel: jest.fn().mockImplementation(() => ({
     clearAll: jest.fn(),
+    clearCache: jest.fn(),
   })),
 }));
 
@@ -135,7 +136,10 @@ describe('usePerpsStreamManager', () => {
     expect(result.current.error).toBeNull();
     expect(result.current.isInitializing).toBe(false);
     expect(getPerpsStreamManager().isInitialized('0xready')).toBe(true);
-    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsInitForAccount',
+      ['0xready'],
+    );
   });
 
   it('does not call initForAddress when already initialized for that address', async () => {
@@ -190,7 +194,7 @@ describe('usePerpsStreamManager', () => {
       if (method === 'perpsDisconnect') {
         return undefined;
       }
-      if (method === 'perpsInit') {
+      if (method === 'perpsInitForAccount') {
         perpsInitCount += 1;
         if (perpsInitCount === 1) {
           await firstInitGate;

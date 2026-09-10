@@ -25,6 +25,7 @@ jest.mock('../../store/background-connection', () => ({
 jest.mock('./CandleStreamChannel', () => ({
   CandleStreamChannel: jest.fn().mockImplementation(() => ({
     clearAll: jest.fn(),
+    clearCache: jest.fn(),
   })),
 }));
 
@@ -501,7 +502,10 @@ describe('PerpsStreamManager', () => {
     it('calls perpsInit on first init and sets address', async () => {
       await manager.initForAddress('0xfirst');
 
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsInitForAccount',
+        ['0xfirst'],
+      );
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
         'perpsDisconnect',
       );
@@ -517,7 +521,7 @@ describe('PerpsStreamManager', () => {
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
 
-    it('calls disconnect then init on account switch', async () => {
+    it('delegates account teardown and initialization to the shared background coordinator', async () => {
       await manager.initForAddress('0xfirst');
       mockSubmitRequestToBackground.mockClear();
 
@@ -529,11 +533,9 @@ describe('PerpsStreamManager', () => {
 
       await manager.initForAddress('0xsecond');
 
-      expect(callOrder).toContain('perpsDisconnect');
-      expect(callOrder).toContain('perpsInit');
-      expect(callOrder.indexOf('perpsDisconnect')).toBeLessThan(
-        callOrder.indexOf('perpsInit'),
-      );
+      expect(callOrder).not.toContain('perpsDisconnect');
+      expect(callOrder).toContain('perpsInitForAccount');
+
       expect(manager.isInitialized('0xsecond')).toBe(true);
     });
 
@@ -575,14 +577,18 @@ describe('PerpsStreamManager', () => {
       const positions = [makePosition('NEW')];
       mockSubmitRequestToBackground.mockImplementation(
         async (method: string) => {
-          if (method === 'perpsDisconnect') {
+          if (method === 'perpsInitForAccount') {
             manager.handleBackgroundUpdate({
               channel: 'positions',
               data: [makePosition('OLD')],
             });
             expect(manager.positions.hasCachedData()).toBe(false);
           }
-          if (method === 'perpsInit') {
+          if (method === 'perpsInitForAccount') {
+            manager.handleBackgroundUpdate({
+              channel: 'accountSession',
+              data: { address: '0xsecond' },
+            });
             manager.handleBackgroundUpdate({
               channel: 'positions',
               data: positions,
@@ -625,7 +631,7 @@ describe('PerpsStreamManager', () => {
       await Promise.all([p1, p2]);
 
       const initCalls = mockSubmitRequestToBackground.mock.calls.filter(
-        ([m]: [string]) => m === 'perpsInit',
+        ([m]: [string]) => m === 'perpsInitForAccount',
       );
       expect(initCalls).toHaveLength(1);
     });
@@ -659,7 +665,7 @@ describe('PerpsStreamManager', () => {
       expect(manager.getCurrentAddress()).toBe('0xaaa');
       expect(
         mockSubmitRequestToBackground.mock.calls.map(([method]) => method),
-      ).toEqual(['perpsInit', 'perpsDisconnect', 'perpsInit']);
+      ).toEqual(['perpsInitForAccount', 'perpsInitForAccount']);
     });
 
     it('cannot restore initialization after reset while the RPC is pending', async () => {
@@ -692,7 +698,7 @@ describe('PerpsStreamManager', () => {
       );
     });
 
-    it('calls perpsDisconnect before second perpsInit when first init is still in flight', async () => {
+    it('queues the next shared account request until the previous request settles', async () => {
       let releaseFirstInit: (() => void) | undefined;
       const firstInitBarrier = new Promise<void>((resolve) => {
         releaseFirstInit = resolve;
@@ -704,7 +710,7 @@ describe('PerpsStreamManager', () => {
           if (method === 'perpsDisconnect') {
             return undefined;
           }
-          if (method === 'perpsInit') {
+          if (method === 'perpsInitForAccount') {
             perpsInitCount += 1;
             if (perpsInitCount === 1) {
               await firstInitBarrier;
@@ -727,12 +733,7 @@ describe('PerpsStreamManager', () => {
       const callOrder = mockSubmitRequestToBackground.mock.calls.map(
         ([m]: [string]) => m,
       );
-      const disconnectIdx = callOrder.indexOf('perpsDisconnect');
-      const secondInitIdx = callOrder.findIndex(
-        (m, i) => m === 'perpsInit' && i > disconnectIdx,
-      );
-      expect(disconnectIdx).toBeGreaterThanOrEqual(0);
-      expect(secondInitIdx).toBeGreaterThan(disconnectIdx);
+      expect(callOrder).toEqual(['perpsInitForAccount', 'perpsInitForAccount']);
       expect(manager.getCurrentAddress()).toBe('0xsecond');
 
       expect(releaseFirstInit).toBeDefined();
@@ -750,7 +751,7 @@ describe('PerpsStreamManager', () => {
         if (method === 'perpsDisconnect') {
           return Promise.resolve(undefined);
         }
-        if (method === 'perpsInit') {
+        if (method === 'perpsInitForAccount') {
           initAttempts += 1;
           if (initAttempts === 1) {
             return Promise.reject(new Error('init failed'));
@@ -768,17 +769,17 @@ describe('PerpsStreamManager', () => {
 
       expect(manager.isInitialized('0xretry')).toBe(true);
       const initCalls = mockSubmitRequestToBackground.mock.calls.filter(
-        ([m]: [string]) => m === 'perpsInit',
+        ([m]: [string]) => m === 'perpsInitForAccount',
       );
       expect(initCalls).toHaveLength(2);
     });
 
-    it('clears pending init on perpsDisconnect failure so switch can be retried', async () => {
+    it('clears pending init on shared account transition failure so switch can be retried', async () => {
       await manager.initForAddress('0xfirst');
       mockSubmitRequestToBackground.mockClear();
 
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsDisconnect') {
+        if (method === 'perpsInitForAccount') {
           return Promise.reject(new Error('disconnect failed'));
         }
         return Promise.resolve(undefined);
@@ -807,7 +808,7 @@ describe('PerpsStreamManager', () => {
           if (method === 'perpsDisconnect') {
             return undefined;
           }
-          if (method === 'perpsInit') {
+          if (method === 'perpsInitForAccount') {
             perpsInitCount += 1;
             if (perpsInitCount === 1) {
               await firstInitBarrier;
