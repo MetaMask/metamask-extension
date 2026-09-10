@@ -1027,7 +1027,7 @@
         "@metamask/base-controller": true,
         "@metamask/client-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/assets-controller>@metamask/core-backend": true,
+        "@metamask/core-backend": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/phishing-controller": true,
         "@metamask/polling-controller": true,
@@ -1290,7 +1290,6 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/polling-controller": true,
-        "@metamask/profile-sync-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true
       }
@@ -2106,11 +2105,25 @@
         "async-mutex": true
       }
     },
+    "@metamask/money-account-upgrade-controller": {
+      "globals": {
+        "crypto.getRandomValues": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/delegation-core": true,
+        "@metamask/delegation-deployments": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/money-account-utils": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/money-account-utils": {
       "packages": {
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
-        "@metamask/transaction-controller": true
+        "@metamask/transaction-controller": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/multichain-account-service": {
@@ -2224,7 +2237,7 @@
         "@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
-        "@metamask/remote-feature-flag-controller": true,
+        "@metamask/network-controller>@metamask/remote-feature-flag-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
         "@metamask/utils": true,
@@ -2459,8 +2472,11 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/keyring-controller": true,
+        "@metamask/utils": true,
         "@noble/ciphers": true,
+        "@noble/curves": true,
         "@noble/hashes": true,
         "buffer": true,
         "@metamask/profile-sync-controller>siwe": true
@@ -2522,6 +2538,15 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/utils": true,
+        "uuid": true
+      }
+    },
+    "@metamask/network-controller>@metamask/remote-feature-flag-controller": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
         "@metamask/utils": true,
         "uuid": true
       }
@@ -2925,6 +2950,7 @@
         "crypto": true
       },
       "packages": {
+        "@metamask/scure-bip39": true,
         "@metamask/superstruct": true,
         "@noble/hashes": true,
         "@scure/base": true,
@@ -3002,6 +3028,7 @@
         "@metamask/approval-controller": true,
         "@metamask/browser-passworder": true,
         "@metamask/claims-controller": true,
+        "@metamask/config-registry-controller": true,
         "@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/gas-fee-controller": true,

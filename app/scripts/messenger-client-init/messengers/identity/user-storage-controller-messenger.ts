@@ -34,8 +34,7 @@ export function getUserStorageControllerMessenger(
     actions: [
       // Keyring Controller Requests
       'KeyringController:getState',
-      // Snap Controller Requests
-      'SnapController:handleRequest',
+      'KeyringController:withKeyringV2Unsafe',
       // Auth Controller Requests
       'AuthenticationController:getBearerToken',
       'AuthenticationController:getSessionProfile',

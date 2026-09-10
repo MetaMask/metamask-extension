@@ -4,11 +4,20 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fetchTokenAssets } from '@metamask/assets-controllers';
 import { CaipAssetType, Hex } from '@metamask/utils';
 import { getTokenAssetQueryKey } from '#ui/hooks/token-asset/token-asset-query';
+import { apiClient } from '#ui/helpers/api-client';
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { getRouteAssetChainId, useRouteAssetToken } from './useRouteAssetToken';
 
 jest.mock('@metamask/assets-controllers', () => ({
   fetchTokenAssets: jest.fn(),
+}));
+
+jest.mock('#ui/helpers/api-client', () => ({
+  apiClient: {
+    tokens: {
+      fetchTokenV2SupportedNetworks: jest.fn(),
+    },
+  },
 }));
 
 jest.mock('#ui/selectors/multichain/feature-flags', () => ({
@@ -20,6 +29,9 @@ jest.mock('react-redux', () => ({
 }));
 
 const mockFetchTokenAssets = jest.mocked(fetchTokenAssets);
+const mockFetchSupportedNetworks = jest.mocked(
+  apiClient.tokens.fetchTokenV2SupportedNetworks,
+);
 
 const createWrapper = (queryClient?: QueryClient) => {
   const client =
@@ -66,6 +78,10 @@ describe('useRouteAssetToken', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockFetchSupportedNetworks.mockResolvedValue({
+      fullSupport: ['eip155:1'],
+      partialSupport: [],
+    });
     mockFetchTokenAssets.mockResolvedValue([fetchedTokenAsset]);
   });
 

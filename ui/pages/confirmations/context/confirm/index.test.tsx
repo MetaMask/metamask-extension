@@ -87,6 +87,17 @@ describe('ConfirmContextProvider', () => {
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, { replace: true });
   });
 
+  it('does not navigate when confirmation disappears after suppressAutoExit is called', () => {
+    const store = createStore();
+    const { result, rerender } = renderContextProvider(store);
+
+    result.current.suppressAutoExit();
+    mockCurrentConfirmation = undefined;
+    rerender();
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
   it('navigates to goBackTo when confirmation disappears and goBackTo is present', () => {
     mockWindowSearch = '?goBackTo=/perps/trade/BTC';
     window.history.replaceState({}, '', '/?goBackTo=/perps/trade/BTC');

@@ -31,6 +31,7 @@ export function MoneyActivityList({
   const t = useI18nContext();
   const previewItems = items.slice(0, MAX_PREVIEW_ITEMS);
   const hasMoreItems = items.length > MAX_PREVIEW_ITEMS;
+  const showEmptyCopy = items.length === 0;
 
   return (
     <section
@@ -43,7 +44,7 @@ export function MoneyActivityList({
             {t('moneyActivity')}
           </Text>
         </div>
-        {items.length === 0 ? (
+        {showEmptyCopy ? (
           <Text
             variant={TextVariant.BodySm}
             color={TextColor.TextAlternative}
@@ -58,7 +59,7 @@ export function MoneyActivityList({
           key={item.id}
           item={item}
           privacyMode={privacyMode}
-          onClick={onItemClick ? () => onItemClick(item) : undefined}
+          onItemClick={onItemClick}
         />
       ))}
       {hasMoreItems ? (

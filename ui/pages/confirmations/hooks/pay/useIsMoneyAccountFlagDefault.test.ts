@@ -40,10 +40,12 @@ describe('useIsMoneyAccountFlagDefault', () => {
     moneyAccount = { address: MONEY_ACCOUNT_ADDRESS },
     defaultPaySelectedSection = {} as Record<string, string>,
     enableMoneyAccountTransactions = ENABLED_MONEY_ACCOUNT_TRANSACTIONS,
+    payToken = undefined,
   }: {
     moneyAccount?: { address: string } | null;
     defaultPaySelectedSection?: Record<string, string>;
     enableMoneyAccountTransactions?: Record<string, boolean>;
+    payToken?: { address: string; chainId: string } | undefined;
   } = {}) {
     useSelectorMock.mockImplementation((selector: unknown) => {
       if (selector === selectPrimaryMoneyAccount) {
@@ -55,7 +57,8 @@ describe('useIsMoneyAccountFlagDefault', () => {
       if (selector === selectEnableMoneyAccountTransactions) {
         return enableMoneyAccountTransactions;
       }
-      return undefined;
+      // The pay-token read is the only inline-arrow selector in the hook.
+      return payToken;
     });
   }
 
@@ -116,6 +119,17 @@ describe('useIsMoneyAccountFlagDefault', () => {
         perpsDeposit: 'crypto',
         perpsWithdraw: 'money-account',
       },
+    });
+
+    const { result } = renderHook(() => useIsMoneyAccountFlagDefault());
+    expect(result.current).toBe(false);
+  });
+
+  it('returns false when a pay token is already selected for the transaction', () => {
+    mockConfirmation(TransactionType.perpsDeposit);
+    mockSelectors({
+      defaultPaySelectedSection: MONEY_ACCOUNT_FLAG,
+      payToken: { address: '0xToken', chainId: '0x1' },
     });
 
     const { result } = renderHook(() => useIsMoneyAccountFlagDefault());

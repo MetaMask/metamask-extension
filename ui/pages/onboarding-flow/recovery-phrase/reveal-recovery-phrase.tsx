@@ -93,7 +93,7 @@ export default function RevealRecoveryPhrase({
   const isFirefox = useIsFirefox();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const { isFromSettingsSecurity, nextRouteQueryString } =
+  const { isFromSettingsSecurity, previousPage, nextRouteQueryString } =
     useOnboardingSearchParams();
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
 
@@ -239,11 +239,21 @@ export default function RevealRecoveryPhrase({
 
   const returnToPreviousPage = useCallback(() => {
     cancelPasskeyCeremony();
-    if (isFromSettingsSecurity) {
+    if (previousPage) {
+      navigate(previousPage, { replace: true });
+    } else if (isFromSettingsSecurity) {
       navigate(MANAGE_WALLET_RECOVERY_ROUTE, { replace: true });
     } else {
       navigate(DEFAULT_ROUTE, { replace: true });
     }
+  }, [navigate, isFromSettingsSecurity, previousPage]);
+
+  const closeBackupFlow = useCallback(() => {
+    cancelPasskeyCeremony();
+    navigate(
+      isFromSettingsSecurity ? MANAGE_WALLET_RECOVERY_ROUTE : DEFAULT_ROUTE,
+      { replace: true },
+    );
   }, [navigate, isFromSettingsSecurity]);
 
   return (
@@ -278,7 +288,7 @@ export default function RevealRecoveryPhrase({
             color={IconColor.IconDefault}
             size={ButtonIconSize.Md}
             data-testid="reveal-recovery-phrase-close-button"
-            onClick={returnToPreviousPage}
+            onClick={closeBackupFlow}
             ariaLabel={t('close')}
           />
         </Box>

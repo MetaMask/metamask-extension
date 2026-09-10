@@ -9,6 +9,12 @@ import {
   PERPS_HOME_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import { PERPS_HOME_TAB_ROUTE } from '../../../hooks/perps/usePerpsHomeRoute';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import {
@@ -19,6 +25,7 @@ import {
   selectBlockedPayTokens,
   type BlockedPayTokenEntry,
 } from '../../../pages/confirmations/selectors/feature-flags';
+import { HYPERLIQUID_DEPOSIT_PROMPT } from '../../../../shared/constants/hyperliquid-deposit-prompt';
 import { HyperliquidDepositPrompt } from './hyperliquid-deposit-prompt';
 
 jest.mock('../../../pages/confirmations/hooks/send/useSendTokens');
@@ -31,7 +38,30 @@ jest.mock('../perps/hooks/usePerpsDepositConfirmation', () => ({
   }),
 }));
 
+const mockTrackEvent = jest.fn();
+jest.mock('../../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  getEnvironmentType: jest.fn(() => 'notification'),
+}));
+
 jest.mock('../../../store/controller-actions/transaction-pay-controller');
+
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  upsertTransactionUIMetricsFragment: jest.fn(),
+}));
 
 const mockUsePerpsHomeRoute = jest.fn(() => PERPS_HOME_PAGE_ROUTE);
 jest.mock('../../../hooks/perps/usePerpsHomeRoute', () => ({
@@ -75,6 +105,7 @@ const mockSelectBlockedPayTokens = jest.mocked(selectBlockedPayTokens);
 const mockUpdateTransactionPaymentToken = jest.mocked(
   updateTransactionPaymentToken,
 );
+const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
 
 const ETH_TOKEN: Asset = {
   accountType: 'eip155:eoa',
@@ -141,6 +172,7 @@ describe('HyperliquidDepositPrompt', () => {
       transactionId: 'transaction-id-mock',
     });
     mockUpdateTransactionPaymentToken.mockResolvedValue(undefined);
+    mockGetEnvironmentType.mockReturnValue('notification');
   });
 
   it('renders the title, logos, default token and continue button', () => {
@@ -164,6 +196,18 @@ describe('HyperliquidDepositPrompt', () => {
     ).toBeEnabled();
   });
 
+  it('tracks Hyperliquid Deposit Prompt Viewed on render', () => {
+    renderComponent();
+
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: MetaMetricsEventName.HyperliquidDepositPromptViewed,
+      properties: {
+        category: MetaMetricsEventCategory.Confirmations,
+      },
+      sensitiveProperties: {},
+    });
+  });
+
   it('resolves the approval without starting a deposit when closed', () => {
     const { onActionComplete } = renderComponent();
 
@@ -171,6 +215,15 @@ describe('HyperliquidDepositPrompt', () => {
 
     expect(onActionComplete).toHaveBeenCalledWith({ action: 'dismiss' });
     expect(mockStartPerpsDeposit).not.toHaveBeenCalled();
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: MetaMetricsEventName.HyperliquidDepositPromptInteracted,
+      properties: {
+        category: MetaMetricsEventCategory.Confirmations,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        interaction_type: 'dismiss',
+      },
+      sensitiveProperties: {},
+    });
   });
 
   it('updates the selected token when one is picked from the modal', () => {
@@ -207,10 +260,19 @@ describe('HyperliquidDepositPrompt', () => {
     expect(mockNavigate).toHaveBeenCalledWith(
       {
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/transaction-id-mock`,
-        search: `loader=customAmount&goBackTo=${encodeURIComponent(PERPS_HOME_PAGE_ROUTE)}`,
+        search: `loader=customAmount&goBackTo=${encodeURIComponent(`${PERPS_HOME_PAGE_ROUTE}?source=${HYPERLIQUID_DEPOSIT_PROMPT}`)}`,
       },
       { replace: true },
     );
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: MetaMetricsEventName.HyperliquidDepositPromptInteracted,
+      properties: {
+        category: MetaMetricsEventCategory.Confirmations,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        interaction_type: 'continue',
+      },
+      sensitiveProperties: {},
+    });
   });
 
   it('defaults to the first selectable token when the largest balance is blocked', () => {
@@ -259,7 +321,7 @@ describe('HyperliquidDepositPrompt', () => {
       expect(mockNavigate).toHaveBeenCalledWith(
         {
           pathname: `${CONFIRM_TRANSACTION_ROUTE}/transaction-id-mock`,
-          search: `loader=customAmount&goBackTo=${encodeURIComponent(PERPS_HOME_TAB_ROUTE)}`,
+          search: `loader=customAmount&goBackTo=${encodeURIComponent(`${PERPS_HOME_TAB_ROUTE}&source=${HYPERLIQUID_DEPOSIT_PROMPT}`)}`,
         },
         { replace: true },
       );
@@ -280,6 +342,11 @@ describe('HyperliquidDepositPrompt', () => {
 
     expect(onActionComplete).not.toHaveBeenCalled();
     expect(mockNavigate).not.toHaveBeenCalled();
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.HyperliquidDepositPromptInteracted,
+      }),
+    );
   });
 
   it('dismisses immediately when the signer address does not match the selected account', async () => {
@@ -291,5 +358,6 @@ describe('HyperliquidDepositPrompt', () => {
     });
 
     expect(mockStartPerpsDeposit).not.toHaveBeenCalled();
+    expect(mockTrackEvent).not.toHaveBeenCalled();
   });
 });

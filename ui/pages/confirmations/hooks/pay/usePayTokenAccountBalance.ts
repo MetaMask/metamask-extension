@@ -98,6 +98,13 @@ function tokenAddressForMatch(token: Asset, chainId: Hex): string | undefined {
 export function usePayTokenAccountBalance(): {
   balanceUsd: string;
   balanceRaw: string;
+  /**
+   * True when the balances above come from the funding account's own token
+   * list. False means they are the controller snapshot fallback, which can
+   * still describe a previously selected funding account — callers that treat
+   * the balance as on-chain truth (Max / uncapped prefill) must check this.
+   */
+  isLiveBalance: boolean;
 } {
   const { payToken } = useTransactionPayToken();
   const accountTokens = useSendTokens({ includeNoBalance: true });
@@ -109,7 +116,7 @@ export function usePayTokenAccountBalance(): {
 
   return useMemo(() => {
     if (!payToken) {
-      return { balanceUsd: '0', balanceRaw: '0' };
+      return { balanceUsd: '0', balanceRaw: '0', isLiveBalance: false };
     }
 
     const payTokenChainId = toHexChainId(payToken.chainId);
@@ -126,12 +133,13 @@ export function usePayTokenAccountBalance(): {
       return {
         balanceUsd: payToken.balanceUsd ?? '0',
         balanceRaw: payToken.balanceRaw ?? '0',
+        isLiveBalance: false,
       };
     }
 
     const balanceRaw = hexToDecimalString(matchingToken.rawBalance);
     if (new BigNumber(balanceRaw).isZero()) {
-      return { balanceUsd: '0', balanceRaw: '0' };
+      return { balanceUsd: '0', balanceRaw: '0', isLiveBalance: true };
     }
 
     const decimals = matchingToken.decimals ?? payToken.decimals ?? 18;
@@ -140,11 +148,23 @@ export function usePayTokenAccountBalance(): {
     const computedUsd = usdRate
       ? humanBalance.times(String(usdRate))
       : new BigNumber(0);
-    // `useTokenFiatRate` can return a non-USD unit (e.g. 1 × native rate).
-    // Never report less USD than the Pay-with snapshot — that made every
-    // non-Max deposit look insufficient while Max skipped the USD check.
-    const balanceUsd = BigNumber.max(snapshotUsd, computedUsd).toString(10);
 
-    return { balanceUsd, balanceRaw };
+    // Spendable USD must not exceed the Pay-with snapshot or the live
+    // raw×rate figure. Taking max() inflated Max/prefill above the displayed
+    // balance (e.g. $55.7 vs Pay with $54.71) so quotes failed while tapping
+    // Max later (after balances aligned) worked.
+    //
+    // When the live rate is missing or clearly broken (computed ≪ snapshot),
+    // keep the snapshot so insufficient-funds checks do not false-positive.
+    let balanceUsd: string;
+    if (!usdRate || computedUsd.lte(0)) {
+      balanceUsd = snapshotUsd.toString(10);
+    } else if (snapshotUsd.gt(0)) {
+      balanceUsd = BigNumber.min(snapshotUsd, computedUsd).toString(10);
+    } else {
+      balanceUsd = computedUsd.toString(10);
+    }
+
+    return { balanceUsd, balanceRaw, isLiveBalance: true };
   }, [accountTokens, payToken, usdRate]);
 }

@@ -61,6 +61,8 @@ export const PERPS_EVENT_VALUE = {
     WALLET_HOME_PERPS_TAB: CONTROLLER_PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
     /** Extension-only: controller contract has no bottom-nav source yet. */
     BOTTOM_NAV_BAR: 'bottom_nav_bar',
+    /** Extension-only: source for Hyperliquid deposit prompt. */
+    HYPERLIQUID_DEPOSIT_PROMPT: 'hyperliquid_deposit_prompt',
   },
   SCREEN_TYPE: {
     ...CONTROLLER_PERPS_EVENT_VALUE.SCREEN_TYPE,

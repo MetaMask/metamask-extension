@@ -3,17 +3,21 @@ import {
   KeyringControllerGetStateAction,
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
+  KeyringControllerWithKeyringV2UnsafeAction,
 } from '@metamask/keyring-controller';
 import type { AuthenticationControllerProfileSignInEvent } from '@metamask/profile-sync-controller/auth';
-import type { SeedlessOnboardingControllerGetStateAction } from '@metamask/seedless-onboarding-controller';
-import { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
+import type {
+  SeedlessOnboardingControllerGetAccessTokenAction,
+  SeedlessOnboardingControllerGetStateAction,
+} from '@metamask/seedless-onboarding-controller';
 import type { AnalyticsControllerGetStateAction } from '@metamask/analytics-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 type MessengerActions =
   | KeyringControllerGetStateAction
+  | KeyringControllerWithKeyringV2UnsafeAction
   | SeedlessOnboardingControllerGetStateAction
-  | SnapControllerHandleRequestAction;
+  | SeedlessOnboardingControllerGetAccessTokenAction;
 
 type MessengerEvents =
   | AuthenticationControllerProfileSignInEvent
@@ -47,8 +51,9 @@ export function getAuthenticationControllerMessenger(
     messenger: controllerMessenger,
     actions: [
       'KeyringController:getState',
+      'KeyringController:withKeyringV2Unsafe',
       'SeedlessOnboardingController:getState',
-      'SnapController:handleRequest',
+      'SeedlessOnboardingController:getAccessToken',
     ],
     events: ['KeyringController:lock', 'KeyringController:unlock'],
   });

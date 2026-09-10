@@ -1,4 +1,5 @@
 import type { Json } from '@metamask/utils';
+import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { ClientConfigApiService } from '@metamask/remote-feature-flag-controller';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { getBaseSemVerVersion } from '../../../../shared/lib/feature-flags/version-gating';
@@ -12,6 +13,21 @@ import {
 jest.mock('../../../../shared/lib/feature-flags/version-gating', () => ({
   getBaseSemVerVersion: jest.fn(() => '1.2.3'),
 }));
+
+/**
+ * Build a minimal `AuthenticationController` state object for messenger mocks.
+ *
+ * @param overrides - Fields merged onto the default unsigned-in state.
+ * @returns The mocked authentication state.
+ */
+function mockAuthState(
+  overrides: Record<string, unknown> = {},
+): AuthenticationControllerState {
+  return {
+    isSignedIn: false,
+    ...overrides,
+  } as AuthenticationControllerState;
+}
 
 /**
  * Build the `RemoteFeatureFlagController` instance options with a messenger
@@ -33,6 +49,21 @@ function buildOptions(
   return getRemoteFeatureFlagControllerInstanceOptions({ messenger, state });
 }
 
+function buildOptionsWithAuthState(authState: Record<string, unknown>) {
+  const messenger = createMockMessenger();
+  messenger.registerActionHandler('AnalyticsController:getState', () => ({
+    analyticsId: 'metrics-id',
+    optedIn: false,
+  }));
+  messenger.registerActionHandler('AuthenticationController:getState', () =>
+    mockAuthState(authState),
+  );
+  return getRemoteFeatureFlagControllerInstanceOptions({
+    messenger,
+    state: {},
+  });
+}
+
 describe('getRemoteFeatureFlagControllerInstanceOptions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -50,6 +81,62 @@ describe('getRemoteFeatureFlagControllerInstanceOptions', () => {
     const options = buildOptions({}, 'metrics-id');
 
     expect(options.getMetaMetricsId?.()).toBe('metrics-id');
+  });
+
+  it('resolves the canonical profile id from AuthenticationController via the messenger', () => {
+    const options = buildOptionsWithAuthState({
+      isSignedIn: true,
+      srpSessionData: {
+        'srp-1': { profile: { canonicalProfileId: 'canonical-id' } },
+      },
+    });
+
+    expect(options.getCanonicalProfileId?.()).toBe('canonical-id');
+  });
+
+  it('falls back to the MetaMetrics id when no session profile is present', () => {
+    const options = buildOptionsWithAuthState({ srpSessionData: {} });
+
+    expect(options.getCanonicalProfileId?.()).toBe('metrics-id');
+  });
+
+  it('falls back to the MetaMetrics id when srpSessionData is absent', () => {
+    const options = buildOptionsWithAuthState({});
+
+    expect(options.getCanonicalProfileId?.()).toBe('metrics-id');
+  });
+
+  it('returns an empty MetaMetrics id when AnalyticsController is not registered', () => {
+    const messenger = createMockMessenger();
+    const options = getRemoteFeatureFlagControllerInstanceOptions({
+      messenger,
+      state: {},
+    });
+
+    expect(options.getMetaMetricsId?.()).toBe('');
+  });
+
+  it('returns an empty canonical profile id when AuthenticationController is not registered', () => {
+    const messenger = createMockMessenger();
+    const options = getRemoteFeatureFlagControllerInstanceOptions({
+      messenger,
+      state: {},
+    });
+
+    expect(options.getCanonicalProfileId?.()).toBe('');
+  });
+
+  it('falls back to the MetaMetrics id when AuthenticationController is not registered', () => {
+    const options = buildOptions({});
+
+    expect(options.getCanonicalProfileId?.()).toBe('metrics-id');
+  });
+
+  it('includes empty defaultFeatureFlags and metaMetricsFlags stubs', () => {
+    const options = buildOptions({});
+
+    expect(options.defaultFeatureFlags).toStrictEqual({});
+    expect(options.metaMetricsFlags).toStrictEqual([]);
   });
 
   it('uses the configured client version and 15-minute fetch interval', () => {

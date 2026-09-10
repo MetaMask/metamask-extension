@@ -177,4 +177,34 @@ describe('useSafeChains', () => {
     expect(result.current.safeChains).toBeUndefined();
     expect(mockFetchWithCache).toHaveBeenCalled();
   });
+
+  it('syncs cached safe chains when another instance loaded before effect runs', async () => {
+    const { mockFetchWithCache, mockState, mockSafeChain } = arrange();
+    let resolveFetch!: (value: SafeChain[]) => void;
+    mockFetchWithCache.mockReturnValue(
+      new Promise<SafeChain[]>((resolve) => {
+        resolveFetch = resolve;
+      }),
+    );
+
+    const firstHook = renderHookWithProviderTyped(
+      () => useSafeChains(),
+      mockState,
+    );
+    const secondHook = renderHookWithProviderTyped(
+      () => useSafeChains(),
+      mockState,
+    );
+
+    expect(secondHook.result.current.safeChains).toHaveLength(0);
+
+    resolveFetch([mockSafeChain]);
+    await waitFor(() =>
+      expect(firstHook.result.current.safeChains).toHaveLength(1),
+    );
+    await waitFor(() =>
+      expect(secondHook.result.current.safeChains).toHaveLength(1),
+    );
+    expect(mockFetchWithCache).toHaveBeenCalledTimes(1);
+  });
 });

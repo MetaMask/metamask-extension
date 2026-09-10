@@ -3,6 +3,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
 import MOCK_MONEY_TRANSACTIONS from '../constants/mock-activity-data';
 import {
   formatMoneyActivityDetailsDate,
@@ -48,6 +49,43 @@ describe('getMoneyTransactionDetailsHeroAmount', () => {
       isSuccessColor: false,
     });
   });
+
+  it('uses requiredAssets when transferInformation is missing', () => {
+    expect(
+      getMoneyTransactionDetailsHeroAmount({
+        id: 'live-deposit',
+        chainId: '0x8f',
+        status: TransactionStatus.confirmed,
+        type: TransactionType.moneyAccountDeposit,
+        requiredAssets: [
+          {
+            address: MUSD_TOKEN_ADDRESS,
+            amount: '2500000',
+          },
+        ],
+        txParams: { from: '0x1', to: '0x2', value: '0x0' },
+      } as unknown as TransactionMeta),
+    ).toStrictEqual({
+      amount: '+$2.50',
+      isSuccessColor: true,
+    });
+  });
+
+  it('falls back to Pay fiat when no transfer or requiredAssets amount exists', () => {
+    expect(
+      getMoneyTransactionDetailsHeroAmount({
+        id: 'quoted-deposit',
+        chainId: '0x8f',
+        status: TransactionStatus.confirmed,
+        type: TransactionType.moneyAccountDeposit,
+        metamaskPay: { targetFiat: '10.25' },
+        txParams: { from: '0x1', to: '0x2', value: '0x0' },
+      } as unknown as TransactionMeta),
+    ).toStrictEqual({
+      amount: '+$10.25',
+      isSuccessColor: true,
+    });
+  });
 });
 
 describe('formatMoneyActivityDetailsDate', () => {
@@ -71,6 +109,7 @@ describe('formatMoneyActivityDetailsDate', () => {
 describe('shortenMoneyActivityHex', () => {
   it('returns short values unchanged', () => {
     expect(shortenMoneyActivityHex('0xabc')).toBe('0xabc');
+    expect(shortenMoneyActivityHex('0x123456789')).toBe('0x123456789');
   });
 
   it('truncates long hashes', () => {

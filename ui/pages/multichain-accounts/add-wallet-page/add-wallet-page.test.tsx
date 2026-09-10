@@ -5,6 +5,8 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { toast, ToastContent } from '../../../components/ui/toast/toast';
 
 import { AddWalletPage } from './add-wallet-page';
 
@@ -13,6 +15,15 @@ const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
+}));
+
+jest.mock('../../../components/ui/toast/toast', () => ({
+  toast: {
+    success: jest.fn(),
+  },
+  ToastContent: jest.fn(({ title, dataTestId }) => (
+    <div data-testid={dataTestId}>{title}</div>
+  )),
 }));
 
 // Mock the ImportAccount component to test onActionComplete function is passed
@@ -70,7 +81,7 @@ describe('AddWalletPage', () => {
     expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 
-  it('handles successful import completion', () => {
+  it('shows a success toast and navigates home after a successful import', () => {
     renderComponent();
 
     const successButton = screen.getByRole('button', {
@@ -78,7 +89,17 @@ describe('AddWalletPage', () => {
     });
     fireEvent.click(successButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(toast.success).toHaveBeenCalledWith(
+      <ToastContent
+        title={messages.accountImported.message}
+        dataTestId="account-imported-toast"
+      />,
+      { id: 'account-imported-toast', duration: 5000 },
+    );
+    expect(jest.mocked(toast.success).mock.invocationCallOrder[0]).toBeLessThan(
+      mockNavigate.mock.invocationCallOrder[0],
+    );
+    expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it('does not navigate on failed import', () => {

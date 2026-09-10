@@ -105,6 +105,10 @@
   "accountIdenticon": {
     "message": "账户 Identicon"
   },
+  "accountImported": {
+    "message": "已导入账户",
+    "description": "Success toast shown after a private key or JSON account is imported"
+  },
   "accountName": {
     "message": "账户名称"
   },
@@ -476,6 +480,42 @@
   },
   "activity_marketShort_success_title": {
     "message": "已市价平空"
+  },
+  "activity_moneyAccountDeposit_failed_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "存款失败"
+  },
+  "activity_moneyAccountDeposit_pending_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "正在存入"
+  },
+  "activity_moneyAccountDeposit_success_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "已存款"
+  },
+  "activity_moneyAccountWithdraw_failed_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "发送失败"
+  },
+  "activity_moneyAccountWithdraw_pending_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "发送中"
+  },
+  "activity_moneyAccountWithdraw_success_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "已发送"
   },
   "activity_nftBuy_failed_title": {
     "message": "购买失败"
@@ -1688,6 +1728,12 @@
     "message": "于 $1 批准用于 $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
+  "arcUsageNoticeDescription": {
+    "message": "欢迎使用 Arc！为方便并验证您对 Arc 链的使用，我们可能会与 Arc 团队共享信息。"
+  },
+  "arcUsageNoticeTitle": {
+    "message": "通知"
+  },
   "areYouSure": {
     "message": "您确定吗？"
   },
@@ -1886,6 +1932,15 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "开启基本功能"
+  },
+  "basicFunctionalityMigrationSocialModalBlogPostLink": {
+    "message": "博客文章"
+  },
+  "basicFunctionalityMigrationSocialModalTitle": {
+    "message": "隐私与产品更新"
+  },
+  "basicFunctionalityMigrationToastEnabled": {
+    "message": "已启用"
   },
   "basicFunctionalityRequired_description": {
     "message": "此功能在基本功能关闭时无法使用。请使用下方的开关将其开启。"
@@ -2452,9 +2507,6 @@
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "使用最大允许值"
-  },
-  "bridgeValidationInsufficientGasMessage": {
-    "message": "您没有足够的 $1 用于支付此次桥接的燃料费。请输入更小的金额或者购买更多 $1。"
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "需要更多的 $1 用于燃料"
@@ -3347,6 +3399,9 @@
   "deepLink_thePredictPage": {
     "message": "预测市场页面"
   },
+  "deepLink_thePrivacySettingsPage": {
+    "message": "隐私设置页面"
+  },
   "deepLink_theRewardsPage": {
     "message": "MetaMask 奖励计划页面"
   },
@@ -3495,10 +3550,6 @@
   },
   "disable": {
     "message": "禁用"
-  },
-  "disabledGasOptionToolTipMessage": {
-    "message": "“$1”已被禁用，因为它不满足在原来的燃料费用基础上至少增加10%的要求。",
-    "description": "$1 is gas estimate type which can be market or aggressive"
   },
   "disconnect": {
     "message": "断开连接"
@@ -3670,7 +3721,7 @@
     "message": "编辑联系信息"
   },
   "editGasFeeModalTitle": {
-    "message": "编辑燃料费"
+    "message": "编辑网络费"
   },
   "editGasLimitOutOfBounds": {
     "message": "燃料上限至少为 $1"
@@ -4132,9 +4183,6 @@
   "gasPrice": {
     "message": "Gas 价格（GWEI）"
   },
-  "gasPriceExcessive": {
-    "message": "您的燃料费设置得过高。请考虑降低金额。"
-  },
   "gasPriceFetchFailed": {
     "message": "由于网络错误，燃料价格估算失败。"
   },
@@ -4400,6 +4448,10 @@
   "hardwareWalletErrorContinueButton": {
     "message": "继续"
   },
+  "hardwareWalletErrorOnlyV4SupportedDescription": {
+    "message": "您的 $1 只能签署版本 4（V4）类型的数据。该网站请求的旧签名类型不受支持",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWalletErrorReconnectButton": {
     "message": "请重新连接后重试",
     "description": "Button label shown when a hardware wallet is disconnected during signing."
@@ -4629,6 +4681,10 @@
   },
   "honeypotTitle": {
     "message": "蜜罐"
+  },
+  "hyperliquidDepositPromptTitle": {
+    "message": "通过 MetaMask 为 Hyperliquid 充值",
+    "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "根据 Hyperliquid 的 $1，为今后的所有交易应用 MetaMask 推荐码。MetaMask 将收取费用。",
@@ -5128,9 +5184,6 @@
   "loginErrorSessionExpiredButton": {
     "message": "登录"
   },
-  "loginErrorSessionExpiredDescription": {
-    "message": "您的会话已过期。请重新登录以继续。"
-  },
   "loginErrorSessionExpiredTitle": {
     "message": "会话已过期"
   },
@@ -5178,6 +5231,10 @@
   },
   "manage": {
     "message": "管理"
+  },
+  "manageAccounts": {
+    "message": "管理账户",
+    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
   },
   "manageConnectedAccounts": {
     "message": "管理已连接的账户"
@@ -5386,6 +5443,9 @@
   },
   "moneyActivityDepositing": {
     "message": "正在存入"
+  },
+  "moneyActivityDetailsTransactionId": {
+    "message": "交易 ID"
   },
   "moneyActivityEmpty": {
     "message": "暂无活动"
@@ -5922,10 +5982,6 @@
   "networkStatusPriorityFeeTooltip": {
     "message": "优先费用（又称“矿工费”）。这笔费用直接向矿工支付，激励他们优先处理您的交易。"
   },
-  "networkStatusStabilityFeeTooltip": {
-    "message": "相对过去72小时，燃料费用为 $1。",
-    "description": "$1 is networks stability value - stable, low, high"
-  },
   "networkSuggested": {
     "message": "建议网络"
   },
@@ -6298,6 +6354,9 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "您尚未收到任何通知。"
+  },
+  "notificationsSettingsAccountsLoadError": {
+    "message": "我们无法加载您的账户通知设置。请稍后再试。"
   },
   "notificationsSettingsAgenticCliDescription": {
     "message": "代理钱包的 CLI 连接请求、审批和会话更新"
@@ -6735,7 +6794,7 @@
     "message": "显示密码"
   },
   "passwordsDontMatch": {
-    "message": "密码不匹配"
+    "message": "密码不匹配."
   },
   "paste": {
     "message": "粘贴"
@@ -7195,6 +7254,12 @@
   "perpsCandlePeriodMinutes": {
     "message": "分钟"
   },
+  "perpsChart": {
+    "message": "价格图表"
+  },
+  "perpsChartLoadError": {
+    "message": "图表数据加载失败"
+  },
   "perpsCloseAll": {
     "message": "全部平仓"
   },
@@ -7248,6 +7313,9 @@
   },
   "perpsCloseShort": {
     "message": "平仓空头仓位"
+  },
+  "perpsCollapseChart": {
+    "message": "收起图表"
   },
   "perpsConfirmCloseLong": {
     "message": "平仓多头仓位"
@@ -7346,6 +7414,9 @@
   "perpsExchangeAccountNotFound": {
     "message": "充值后即可开始交易。",
     "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
+  },
+  "perpsExpandChart": {
+    "message": "展开图表"
   },
   "perpsExploreMarkets": {
     "message": "探索市场"
@@ -7983,6 +8054,18 @@
     "message": "止盈/止损更新成功",
     "description": "Success toast text shown when TP/SL settings are updated"
   },
+  "perpsTopMovers": {
+    "message": "热门涨跌榜",
+    "description": "Heading of the Perps tab section ranking markets by 24h price change"
+  },
+  "perpsTopMoversGainers": {
+    "message": "涨幅榜",
+    "description": "Toggle option showing the markets that rose the most over 24h in the Top movers section"
+  },
+  "perpsTopMoversLosers": {
+    "message": "跌幅榜",
+    "description": "Toggle option showing the markets that fell the most over 24h in the Top movers section"
+  },
   "perpsTrades": {
     "message": "交易"
   },
@@ -8374,6 +8457,10 @@
   "quotedTotalCost": {
     "message": "总成本：$1"
   },
+  "rampsBackToWallet": {
+    "message": "返回钱包",
+    "description": "Secondary button on the ramps complete-buy interstitial that returns to the wallet home"
+  },
   "rampsBestRate": {
     "message": "最优价格"
   },
@@ -8391,6 +8478,21 @@
   "rampsChangeProvider": {
     "message": "更换提供商。"
   },
+  "rampsChooseProvider": {
+    "message": "选择提供商"
+  },
+  "rampsCompleteBuyTitle": {
+    "message": "完成买入",
+    "description": "Title of the interstitial shown after opening a ramps provider checkout tab"
+  },
+  "rampsCompletePurchaseInProviderTab": {
+    "message": "请在 $1 标签页中完成您的购买",
+    "description": "$1 is the on-ramp provider name (e.g. Transak)"
+  },
+  "rampsContinueInBrowser": {
+    "message": "在浏览器中继续",
+    "description": "Banner title on the ramps complete-buy interstitial"
+  },
   "rampsEligibilityFailedDescription": {
     "message": "请重试；如果问题持续出现，请联系客服。"
   },
@@ -8402,6 +8504,10 @@
   },
   "rampsErrorLoadingTokens": {
     "message": "加载代币时出错"
+  },
+  "rampsEstimatedToReceive": {
+    "message": "预计收到",
+    "description": "Label for the estimated crypto amount on the ramps complete-buy interstitial"
   },
   "rampsMaxPurchaseLimit": {
     "message": "最高购买金额为 $1",
@@ -8528,9 +8634,20 @@
   "rampsPaymentDelayMinutes": {
     "message": "分钟"
   },
+  "rampsPaymentMethod": {
+    "message": "支付方式",
+    "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "最高 $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
   "rampsPaymentMethodMinLimit": {
     "message": "最低 $1",
     "description": "$1 is the minimum fiat buy amount"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "上次使用"
   },
   "rampsQuoteFetchError": {
     "message": "获取报价失败。"
@@ -8636,6 +8753,14 @@
   },
   "removeAccount": {
     "message": "删除账户"
+  },
+  "removeAccountConfirmDescription": {
+    "message": "您可以随时通过导入私钥来恢复此账户。",
+    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
+  },
+  "removeAccountConfirmTitle": {
+    "message": "移除 $1",
+    "description": "Title of the account remove confirmation modal. $1 is the account name."
   },
   "removeAccountModalBannerDescription": {
     "message": "删除之前，请确保您拥有此账户的私钥助记词或私钥。",
@@ -9090,6 +9215,10 @@
   "searchAnAcccountOrContact": {
     "message": "搜索账户或联系人"
   },
+  "searchAnAccount": {
+    "message": "搜索账户",
+    "description": "Search input placeholder for the Perps destination account picker"
+  },
   "searchForAnAssetToSend": {
     "message": "搜索要发送的资产"
   },
@@ -9529,6 +9658,9 @@
   "selectPathHelp": {
     "message": "如果您没有看到期望的账户，请尝试切换 HD 路径或当前选定的网络。"
   },
+  "selectPerpsAccount": {
+    "message": "选择永续合约账户"
+  },
   "selectRecipient": {
     "message": "选择收款人"
   },
@@ -9569,6 +9701,9 @@
   },
   "sendSelectSendAsset": {
     "message": "选择要发送的资产"
+  },
+  "sendToPerps": {
+    "message": "转入永续合约"
   },
   "sendingAsset": {
     "message": "正在发送 $1"
@@ -10966,9 +11101,6 @@
   "stxCancelled": {
     "message": "交换就会失败"
   },
-  "stxCancelledDescription": {
-    "message": "您的交易可能失败并被取消，以保护您免于支付不必要的燃料费。"
-  },
   "stxCancelledSubDescription": {
     "message": "再次尝试进行交换。下次我们会在这里保护您免受类似风险。 "
   },
@@ -11010,9 +11142,6 @@
   },
   "stxUserCancelled": {
     "message": "交换已取消"
-  },
-  "stxUserCancelledDescription": {
-    "message": "您的交易已被取消，您并未支付任何不必要的燃料费。"
   },
   "submit": {
     "message": "提交"
@@ -11143,19 +11272,12 @@
     "message": "$1 到 $2 的交换",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesExplanation": {
-    "message": "MetaMask 不从燃料费中赚钱。这些费用是估计值，可能会根据网络的繁忙程度和交易的复杂程度而变化。了解更多信息 $1。",
-    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
-  },
   "swapGasFeesExplanationLinkText": {
     "message": "参见此处",
     "description": "Text for link in swapGasFeesExplanation"
   },
   "swapGasFeesIncluded": {
     "message": " 已包含"
-  },
-  "swapGasFeesSplit": {
-    "message": "上一个屏幕上的燃料费用在这两笔交易之间分摊。"
   },
   "swapGasFeesSponsored": {
     "message": "由 MetaMask 支付"
@@ -11290,9 +11412,6 @@
   "swapSource": {
     "message": "流动性来源"
   },
-  "swapSuggestedGasSettingToolTipMessage": {
-    "message": "交换是复杂和时间敏感的交易。我们建议使用此燃料费用，以便在成本和成功交换的信心之间保持良好的平衡。"
-  },
   "swapToConfirmWithHwWallet": {
     "message": "使用您的硬件钱包确认"
   },
@@ -11314,9 +11433,6 @@
   },
   "swapUnknown": {
     "message": "未知"
-  },
-  "swapValidationInsufficientGasMessage": {
-    "message": "您没有足够的 $1 用于支付此次兑换的燃料费。请输入更小金额或者购买更多 $1。"
   },
   "swapZeroSlippage": {
     "message": "0%滑点"
@@ -11532,7 +11648,7 @@
     "message": "功能"
   },
   "transactionDetailGasHeading": {
-    "message": "估算燃料费用"
+    "message": "预估网络费用"
   },
   "transactionError": {
     "message": "交易出错。合约代码中抛出异常。"
@@ -11552,9 +11668,6 @@
   "transactionHistoryBaseFee": {
     "message": "基础费用（GWEI）"
   },
-  "transactionHistoryL1GasLabel": {
-    "message": "1层燃料费总计"
-  },
   "transactionHistoryL2GasLimitLabel": {
     "message": "L2 燃料限制"
   },
@@ -11568,7 +11681,7 @@
     "message": "优先费用（GWEI）"
   },
   "transactionHistoryTotalGasFee": {
-    "message": "燃料费总额"
+    "message": "网络费用总额"
   },
   "transactionIdCopied": {
     "message": "交易 ID 已复制"
@@ -11769,9 +11882,6 @@
   },
   "unlock": {
     "message": "登录"
-  },
-  "unlockPageIncorrectPassword": {
-    "message": "密码不正确。请重试。"
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "尝试次数过多。请在以下时间之后重试： "
@@ -12042,10 +12152,6 @@
   },
   "wrongNetworkName": {
     "message": "根据我们的记录，该网络名称可能与此链 ID 不匹配。"
-  },
-  "wrongPassword": {
-    "message": "密码错误",
-    "description": "Displayed when the user enters an incorrect password"
   },
   "year": {
     "message": "年"

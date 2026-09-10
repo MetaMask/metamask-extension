@@ -2,6 +2,7 @@ import {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerSetAccountNameAction,
 } from '@metamask/accounts-controller';
+import type { SeedlessOnboardingControllerGetStateAction } from '@metamask/seedless-onboarding-controller';
 import { Json, Hex } from '@metamask/utils';
 import {
   BaseController,
@@ -25,6 +26,14 @@ import { type DefaultAddressScope } from '../../../shared/constants/default-addr
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
 import type { Preferences } from '../../../shared/types/preferences';
+import {
+  BFT_CHILD_PREFERENCES,
+  getBasicFunctionalityConsolidationPlan,
+  isBasicFunctionalitySocialLoginUser,
+  type BasicFunctionalityPreferenceState,
+} from '../../../shared/lib/basic-functionality-consolidation';
+import type { LegacyBackgroundApiServiceToggleExternalServicesAction } from '../services/legacy-background-api-service-method-action-types';
+import type { OnboardingControllerGetStateAction } from './onboarding';
 import { PreferencesControllerMethodActions } from './preferences-controller-method-action-types';
 
 /**
@@ -71,7 +80,10 @@ export type PreferencesControllerEvents = PreferencesControllerStateChangeEvent;
  */
 export type AllowedActions =
   | AccountsControllerGetAccountByAddressAction
-  | AccountsControllerSetAccountNameAction;
+  | AccountsControllerSetAccountNameAction
+  | LegacyBackgroundApiServiceToggleExternalServicesAction
+  | OnboardingControllerGetStateAction
+  | SeedlessOnboardingControllerGetStateAction;
 
 export type PreferencesControllerMessenger = Messenger<
   typeof controllerName,
@@ -158,6 +170,8 @@ export const getDefaultPreferencesControllerState =
       featureNotificationsEnabled: false,
       hideZeroBalanceTokens: false,
       isBasicFunctionalityConsolidatedEnabled: false,
+      basicFunctionalityMigrationNotification: null,
+      basicFunctionalityMigrationNotificationDismissed: false,
       privacyMode: false,
       showConfirmationAdvancedDetails: false,
       showDefaultAddress: true,
@@ -463,6 +477,8 @@ const MESSENGER_EXPOSED_METHODS = [
   'setShowDefaultAddress',
   'setDefaultAddressScope',
   'setSnapsAddSnapAccountModalDismissed',
+  'consolidateBasicFunctionality',
+  'dismissBasicFunctionalityMigrationNotification',
   'resetState',
   'addReferralApprovedAccount',
   'addReferralPassedAccount',
@@ -577,6 +593,59 @@ export class PreferencesController extends BaseController<
     this.setOpenSeaEnabled(useExternalServices);
     this.setUseNftDetection(useExternalServices);
     this.setUseSafeChainsListValidation(useExternalServices);
+  }
+
+  /**
+   * One-time Basic Functionality consolidation when the remote FF turns on.
+   * Aligns child preferences, marks the user as consolidated, and schedules
+   * the modal/toast notice when needed, then syncs external-service
+   * controllers.
+   */
+  consolidateBasicFunctionality(): void {
+    if (this.state.preferences.isBasicFunctionalityConsolidatedEnabled) {
+      return;
+    }
+
+    const { firstTimeFlowType } = this.messenger.call(
+      'OnboardingController:getState',
+    );
+    const { authConnection } = this.messenger.call(
+      'SeedlessOnboardingController:getState',
+    );
+    const isSocialLogin = isBasicFunctionalitySocialLoginUser({
+      firstTimeFlowType: firstTimeFlowType ?? undefined,
+      authConnection,
+    });
+
+    const preferenceState = {
+      useExternalServices: this.state.useExternalServices,
+    } as BasicFunctionalityPreferenceState;
+    for (const preference of BFT_CHILD_PREFERENCES) {
+      preferenceState[preference] = this.state[preference];
+    }
+
+    const { landingState, notification } =
+      getBasicFunctionalityConsolidationPlan(preferenceState, isSocialLogin);
+    const hasDismissedNotice =
+      this.state.preferences
+        .basicFunctionalityMigrationNotificationDismissed === true;
+
+    this.update((state) => {
+      state.useExternalServices = landingState;
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        state[preference] = landingState;
+      }
+      // useMultiAccountBalanceChecker is mirrored onto isMultiAccountBalancesEnabled
+      state.isMultiAccountBalancesEnabled = landingState;
+      state.preferences.isBasicFunctionalityConsolidatedEnabled = true;
+      state.preferences.basicFunctionalityMigrationNotification =
+        hasDismissedNotice ? null : notification;
+    });
+
+    this.messenger.call(
+      'LegacyBackgroundApiService:toggleExternalServices',
+      landingState,
+    );
   }
 
   /**
@@ -1008,6 +1077,16 @@ export class PreferencesController extends BaseController<
   dismissSidePanelMigrationToast(): void {
     this.update((state) => {
       state.showSidePanelMigrationToast = false;
+    });
+  }
+
+  /**
+   * Dismisses the one-time Basic Functionality migration modal or toast.
+   */
+  dismissBasicFunctionalityMigrationNotification(): void {
+    this.update((state) => {
+      state.preferences.basicFunctionalityMigrationNotification = null;
+      state.preferences.basicFunctionalityMigrationNotificationDismissed = true;
     });
   }
 

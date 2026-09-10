@@ -367,3 +367,5 @@ app/scripts/wallet-init/instance-options/storage-service*                @MetaMa
 /.github/scripts/known-feature-flag-constants.mts
 # Snapshots – *.snap files
 **/*.snap
+# Storybook stories – low-risk, often bulk-updated (e.g. Storybook upgrades)
+**/*.stories.*

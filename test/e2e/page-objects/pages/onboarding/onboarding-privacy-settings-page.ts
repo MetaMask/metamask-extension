@@ -33,7 +33,7 @@ class OnboardingPrivacySettingsPage {
 
   private readonly assetsSettings = '[data-testid="category-item-Assets"]';
 
-  private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h2' };
+  private readonly assetsSettingsMessage = { text: 'Assets', tag: 'h4' };
 
   // General settings
   private readonly basicFunctionalityCheckbox =
@@ -72,7 +72,7 @@ class OnboardingPrivacySettingsPage {
 
   private readonly generalSettings = '[data-testid="category-item-General"]';
 
-  private readonly generalSettingsMessage = { text: 'General', tag: 'h2' };
+  private readonly generalSettingsMessage = { text: 'General', tag: 'h4' };
 
   private readonly networkNameInput =
     '[data-testid="network-form-network-name"]';

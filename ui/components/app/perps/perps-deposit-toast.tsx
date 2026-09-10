@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { SECOND } from '../../../../shared/constants/time';
+import { HYPERLIQUID_DEPOSIT_PROMPT } from '../../../../shared/constants/hyperliquid-deposit-prompt';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
   selectPerpsDepositPending,
+  selectPerpsLastDepositEntryPoint,
   selectPerpsLastDepositResult,
   selectPerpsShouldShowDepositToast,
 } from '../../../selectors/perps-controller';
@@ -23,23 +25,51 @@ export function PerpsDepositToast() {
   const depositInProgress = useSelector(selectPerpsDepositPending);
   const lastDepositResult = useSelector(selectPerpsLastDepositResult);
   const shouldShowDepositToast = useSelector(selectPerpsShouldShowDepositToast);
+  const entryPoint = useSelector(selectPerpsLastDepositEntryPoint);
   const hasDepositResult = Boolean(lastDepositResult);
   const lastDepositResultError = lastDepositResult?.error;
   const lastDepositResultSuccess = lastDepositResult?.success;
   const lastDepositResultTimestamp = lastDepositResult?.timestamp;
+
+  // Track the entry point when the toast was first shown for a deposit result
+  const entryPointRef = useRef<{
+    timestamp: number | undefined;
+    entryPoint: string | undefined;
+  }>({ timestamp: undefined, entryPoint: undefined });
 
   useEffect(() => {
     if (!hasDepositResult) {
       return;
     }
 
+    // Capture the entry point when we first show the toast for a deposit result.
+    // This is to show entry point-specific toast content that will persist
+    // through subsequent renders (even if the event fragment is cleaned up).
+    let capturedEntryPoint = entryPoint;
+    if (entryPointRef.current.timestamp === lastDepositResultTimestamp) {
+      capturedEntryPoint = entryPointRef.current.entryPoint;
+    } else {
+      entryPointRef.current = {
+        timestamp: lastDepositResultTimestamp,
+        entryPoint,
+      };
+    }
+
     const isSuccess = lastDepositResultSuccess === true;
-    const title = isSuccess
-      ? t('perpsDepositToastSuccessTitle')
-      : t('perpsDepositToastErrorTitle');
-    const description = isSuccess
-      ? t('perpsDepositToastSuccessDescription')
-      : lastDepositResultError || t('perpsDepositToastErrorDescription');
+    const isHyperliquidDeposit =
+      capturedEntryPoint === HYPERLIQUID_DEPOSIT_PROMPT;
+    let title = t('perpsDepositToastSuccessTitle');
+    let description: string;
+
+    if (isSuccess && isHyperliquidDeposit) {
+      description = t('hyperliquidDepositToastSuccessDescription');
+    } else if (isSuccess) {
+      description = t('perpsDepositToastSuccessDescription');
+    } else {
+      title = t('perpsDepositToastErrorTitle');
+      description =
+        lastDepositResultError || t('perpsDepositToastErrorDescription');
+    }
     const content = (
       <ToastContent title={title} description={description} dataTestId={id} />
     );
@@ -60,6 +90,7 @@ export function PerpsDepositToast() {
       toast.dismiss(id);
     };
   }, [
+    entryPoint,
     hasDepositResult,
     lastDepositResultError,
     lastDepositResultSuccess,

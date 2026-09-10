@@ -1,50 +1,43 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { selectMoneyActivityMockDataEnabled } from '../../selectors/money/money-account-feature-flags';
-import MOCK_MONEY_TRANSACTIONS from '../../pages/money/constants/mock-activity-data';
 import {
   onchainItem,
   type MoneyActivityItem,
 } from '../../pages/money/types/money-activity';
 import {
   buildMoneyActivityBuckets,
-  EMPTY_MONEY_ACTIVITY_BUCKETS,
   MoneyActivityFilter,
   type MoneyActivityBuckets,
 } from '../../pages/money/utils/money-activity-filters';
+import { useMoneyAccountTransactions } from './use-money-account-transactions';
 
 export type UseMoneyActivityItemsResult = {
-  /** All-bucket items, newest-first. Used by the Money Home preview. */
   items: MoneyActivityItem[];
   buckets: MoneyActivityBuckets;
+  moneyAddress: string | undefined;
+  mockDataEnabled: boolean;
 };
 
 /**
- * Money activity items. Mock fixtures when
- * `moneyActivityMockDataEnabled` / `MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED` is
- * on; otherwise empty until live TransactionController filtering lands.
+ * Assembles the Money activity list from local on-chain transactions,
+ * bucketed by filter tab.
  *
- * @returns All items plus All / Deposits / Sends filter buckets.
+ * @returns Filter buckets plus the Money Account address.
  */
 export function useMoneyActivityItems(): UseMoneyActivityItemsResult {
-  const mockDataEnabled = useSelector(selectMoneyActivityMockDataEnabled);
+  const { allTransactions, moneyAddress, mockDataEnabled } =
+    useMoneyAccountTransactions();
 
-  return useMemo(() => {
-    if (!mockDataEnabled) {
-      return {
-        items: [],
-        buckets: EMPTY_MONEY_ACTIVITY_BUCKETS,
-      };
-    }
+  const items = useMemo(
+    () => allTransactions.map(onchainItem),
+    [allTransactions],
+  );
 
-    const sourceItems = [...MOCK_MONEY_TRANSACTIONS]
-      .map(onchainItem)
-      .sort((left, right) => right.time - left.time);
-    const buckets = buildMoneyActivityBuckets(sourceItems);
+  const buckets = useMemo(() => buildMoneyActivityBuckets(items), [items]);
 
-    return {
-      items: buckets[MoneyActivityFilter.All],
-      buckets,
-    };
-  }, [mockDataEnabled]);
+  return {
+    items: buckets[MoneyActivityFilter.All],
+    buckets,
+    moneyAddress,
+    mockDataEnabled,
+  };
 }

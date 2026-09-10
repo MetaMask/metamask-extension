@@ -30,6 +30,7 @@ import { getPrivacyMode } from '../../selectors/selectors';
 import { MoneyActivityRow } from './components/money-activity-row';
 import { MoneyActivityFilter } from './utils/money-activity-filters';
 import { groupMoneyActivityItems } from './utils/group-money-activity';
+import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scroll';
 
 const FILTERS: {
   id: MoneyActivityFilter;
@@ -53,29 +54,15 @@ const FILTERS: {
   },
 ];
 
-/**
- * Money Home and Activity share RootLayout's overflow container, so home
- * scroll would otherwise carry over when opening View all.
- *
- * @param element - A node on the Activity page.
- */
-function resetOverflowAncestorScroll(element: HTMLElement | null): void {
-  let node = element;
-  while (node) {
-    node.scrollTop = 0;
-    node = node.parentElement;
-  }
-}
-
 export function MoneyActivityPage() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const privacyMode = useSelector(getPrivacyMode);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
+  const [filter, setFilter] = useState(MoneyActivityFilter.All);
   const { buckets } = useMoneyActivityItems();
   const handleItemClick = useMoneyActivityItemClick();
-  const [filter, setFilter] = useState(MoneyActivityFilter.All);
   const pageRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -105,6 +92,57 @@ export function MoneyActivityPage() {
       </div>
     );
   } else if (availability.isAvailable) {
+    let listBody: React.ReactNode;
+    if (filteredItems.length === 0) {
+      listBody = (
+        <Box paddingLeft={4} paddingRight={4} paddingTop={8}>
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            data-testid="money-activity-empty"
+          >
+            {t('moneyActivityEmpty')}
+          </Text>
+        </Box>
+      );
+    } else {
+      listBody = (
+        <>
+          {sections.map((section) => (
+            <section key={section.isPending ? 'pending' : section.title}>
+              <Box
+                paddingLeft={4}
+                paddingRight={4}
+                paddingTop={2}
+                paddingBottom={1}
+              >
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.TextAlternative}
+                  data-testid={
+                    section.isPending
+                      ? 'money-activity-pending-header'
+                      : 'money-activity-date-header'
+                  }
+                >
+                  {section.title}
+                </Text>
+              </Box>
+              {section.data.map((item) => (
+                <MoneyActivityRow
+                  key={item.id}
+                  item={item}
+                  privacyMode={privacyMode}
+                  onItemClick={handleItemClick}
+                />
+              ))}
+            </section>
+          ))}
+        </>
+      );
+    }
+
     body = (
       <main
         className="min-h-full bg-background-default pb-5"
@@ -156,51 +194,7 @@ export function MoneyActivityPage() {
           })}
         </Box>
 
-        {filteredItems.length === 0 ? (
-          <Box paddingLeft={4} paddingRight={4} paddingTop={8}>
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              data-testid="money-activity-empty"
-            >
-              {t('moneyActivityEmpty')}
-            </Text>
-          </Box>
-        ) : (
-          sections.map((section) => (
-            <section key={section.isPending ? 'pending' : section.title}>
-              <Box
-                paddingLeft={4}
-                paddingRight={4}
-                paddingTop={2}
-                paddingBottom={1}
-              >
-                <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
-                  color={TextColor.TextAlternative}
-                  data-testid={
-                    section.isPending
-                      ? 'money-activity-pending-header'
-                      : 'money-activity-date-header'
-                  }
-                >
-                  {section.title}
-                </Text>
-              </Box>
-              {section.data.map((item) => (
-                <MoneyActivityRow
-                  key={item.id}
-                  item={item}
-                  privacyMode={privacyMode}
-                  onClick={
-                    handleItemClick ? () => handleItemClick(item) : undefined
-                  }
-                />
-              ))}
-            </section>
-          ))
-        )}
+        {listBody}
       </main>
     );
   } else {

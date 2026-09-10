@@ -444,7 +444,12 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   async #openBackupDatabase(): Promise<void> {
     try {
-      const db = new IndexedDBStore();
+      // The backup is the recovery path for a corrupted vault, so its writes
+      // request strict durability: they must reach disk before resolving, even
+      // if the browser or the machine goes down immediately afterwards. The
+      // cost is negligible here because the write is skipped unless the
+      // serialized backup actually changed.
+      const db = new IndexedDBStore({ strictDurability: true });
       await db.open('metamask-backup', 1);
       this.#backupDb = db;
     } catch (error) {

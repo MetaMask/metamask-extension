@@ -4,6 +4,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { IconName } from '@metamask/design-system-react';
+import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import MOCK_MONEY_TRANSACTIONS from '../constants/mock-activity-data';
 import {
@@ -133,5 +134,23 @@ describe('getMoneyActivityDisplayInfo', () => {
     expect(display.description).toBe('From: 0x12345...45678');
     expect(display.primaryAmount).toBe('+1.00 mUSD');
     expect(display.fiatAmount).toBe('+$1.00');
+  });
+
+  it('renders requiredAssets as the mUSD amount for a live deposit', () => {
+    const display = getMoneyActivityDisplayInfo(
+      makeTx({
+        type: TransactionType.moneyAccountDeposit,
+        requiredAssets: [
+          {
+            address: MUSD_TOKEN_ADDRESS,
+            amount: '2500000',
+          },
+        ],
+      }),
+      t,
+    );
+
+    expect(display.primaryAmount).toBe('+2.50 mUSD');
+    expect(display.fiatAmount).toBe('+$2.50');
   });
 });

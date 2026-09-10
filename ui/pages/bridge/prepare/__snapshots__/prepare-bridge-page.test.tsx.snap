@@ -56,7 +56,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
                 style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded h-[18px] w-[18px] border-background-default border"
                   style="border-width: 1px; border-radius: 6px;"
                 >
                   <img
@@ -170,7 +170,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
                   style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
                 >
                   <div
-                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded h-[18px] w-[18px] border-background-default border"
                     style="border-width: 1px; border-radius: 6px;"
                   >
                     <img
@@ -287,7 +287,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
                 style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
               >
                 <div
-                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded h-[18px] w-[18px] border-background-default border"
                   style="border-width: 1px; border-radius: 6px;"
                 >
                   <img
@@ -401,7 +401,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
                   style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
                 >
                   <div
-                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded h-[18px] w-[18px] border-background-default border"
                     style="border-width: 1px; border-radius: 6px;"
                   >
                     <img

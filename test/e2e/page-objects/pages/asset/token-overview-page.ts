@@ -1,4 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
+import { readResolvedAssetActionsLayout } from './asset-actions-layout';
 
 /**
  * Token / coin asset overview: send, swap, receive, and explorer actions.
@@ -84,7 +85,34 @@ class TokenOverviewPage {
     await this.driver.clickElement(this.backButton);
   }
 
+  /**
+   * Opens Receive from the current action layout. On a zero-balance Perps row
+   * Receive is a primary button; otherwise it lives in More.
+   */
   async clickReceive(): Promise<void> {
+    const layout = await readResolvedAssetActionsLayout(this.driver);
+
+    if (layout.type === 'perps') {
+      const rowReceive = `[data-testid="${layout.prefix}-overview-receive"]`;
+      const receiveOnRow = await this.driver.isElementPresentAndVisible(
+        rowReceive,
+        250,
+      );
+
+      if (receiveOnRow) {
+        await this.driver.clickElement(rowReceive);
+        return;
+      }
+
+      await this.driver.clickElement(
+        `[data-testid="${layout.prefix}-overview-more"]`,
+      );
+      await this.driver.clickElement(
+        `[data-testid="${layout.prefix}-overview-more-receive"]`,
+      );
+      return;
+    }
+
     await this.driver.clickElement(this.moreButton);
     await this.driver.waitForSelector(this.receiveButton);
     await this.driver.clickElement(this.receiveButton);
@@ -95,7 +123,20 @@ class TokenOverviewPage {
   }
 
   async clickSwap(): Promise<void> {
-    await this.driver.clickElement(this.swapButton);
+    const layout = await readResolvedAssetActionsLayout(this.driver);
+
+    if (layout.type === 'standard') {
+      await this.driver.clickElement(this.swapButton);
+      return;
+    }
+
+    // Buy and Swap move into the More menu when the Perps row takes over.
+    await this.driver.clickElement(
+      `[data-testid="${layout.prefix}-overview-more"]`,
+    );
+    await this.driver.clickElement(
+      `[data-testid="${layout.prefix}-overview-more-swap"]`,
+    );
   }
 
   /**

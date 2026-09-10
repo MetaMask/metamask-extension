@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import { type TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import {
   selectIsTransactionPayLoadingByTransactionId,

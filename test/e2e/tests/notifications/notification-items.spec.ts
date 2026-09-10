@@ -14,6 +14,7 @@ import NotificationsSettingsPage from '../../page-objects/pages/settings/notific
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import {
   getMockFeatureAnnouncementItemId,
+  getMockNotificationPreferences,
   getMockWalletNotificationItemId,
   mockNotificationServices,
 } from './mocks';
@@ -53,13 +54,16 @@ describe('Notification List - View Items and Details', function () {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withAuthenticationController({ isSignedIn: true })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
-          await mockNotificationServices(
-            server,
-            new MockttpNotificationTriggerServer(),
+          const triggerServer = new MockttpNotificationTriggerServer();
+          triggerServer.setNotificationPreferences(
+            getMockNotificationPreferences(),
           );
+          await mockNotificationServices(server, triggerServer);
           await mockFeatureFlagsWithoutAutoEnableNotifications(server);
         },
       },

@@ -38,6 +38,7 @@ const loadSafeChains = () => {
     Date.now() - safeChainsCacheTime < DAY &&
     safeChainsState.safeChains
   ) {
+    notifySafeChainsSubscribers();
     return Promise.resolve(safeChainsState);
   }
 
@@ -78,15 +79,22 @@ export const useSafeChains = () => {
   const [safeChains, setSafeChains] = useState<SafeChainsState>(() =>
     useSafeChainsListValidation ? safeChainsState : { safeChains: [] },
   );
+  const [prevUseSafeChainsListValidation, setPrevUseSafeChainsListValidation] =
+    useState(useSafeChainsListValidation);
+
+  if (useSafeChainsListValidation !== prevUseSafeChainsListValidation) {
+    setPrevUseSafeChainsListValidation(useSafeChainsListValidation);
+    setSafeChains(
+      useSafeChainsListValidation ? safeChainsState : { safeChains: [] },
+    );
+  }
 
   useEffect(() => {
     if (!useSafeChainsListValidation) {
-      setSafeChains({ safeChains: [] });
       return undefined;
     }
 
     safeChainsSubscribers.add(setSafeChains);
-    setSafeChains(safeChainsState);
     loadSafeChains().catch(() => undefined);
 
     return () => {

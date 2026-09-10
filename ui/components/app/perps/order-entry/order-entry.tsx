@@ -94,7 +94,7 @@ export const OrderEntry = ({
   const activeProvider = useSelector(selectPerpsActiveProvider);
 
   // Fetch full MarketInfo for szDecimals (used to round position size before margin calc)
-  const marketInfo = usePerpsMarketInfo(asset);
+  const { market: marketInfo } = usePerpsMarketInfo(asset);
 
   // Fetch dynamic fee rates from the controller (user-specific, with discounts)
   const {

@@ -9,7 +9,9 @@ import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
 import {
   classifyMoneyActivity,
   getMoneyActivityStatus,
+  isEphemeralFailedTransaction,
   isIncomingMoneyActivityKind,
+  isOnChainRevertedTransaction,
   moneyActivityKindToIcon,
   moneyActivityLabelKey,
   type MoneyActivityKind,
@@ -44,10 +46,96 @@ describe('getMoneyActivityStatus', () => {
     expect(getMoneyActivityStatus(makeTx({ status }))).toBe('failed');
   });
 
-  it('maps confirmed to confirmed', () => {
+  it('maps failed with a successful receipt to confirmed', () => {
     expect(
-      getMoneyActivityStatus(makeTx({ status: TransactionStatus.confirmed })),
+      getMoneyActivityStatus(
+        makeTx({
+          status: TransactionStatus.failed,
+          txReceipt: { status: '0x1' },
+        }),
+      ),
     ).toBe('confirmed');
+  });
+
+  it('maps confirmed with a reverted receipt to failed', () => {
+    expect(
+      getMoneyActivityStatus(
+        makeTx({
+          status: TransactionStatus.confirmed,
+          txReceipt: { status: '0x0' },
+        }),
+      ),
+    ).toBe('failed');
+  });
+});
+
+describe('isOnChainRevertedTransaction', () => {
+  it('detects the OnChainFailureError TransactionController records on revert', () => {
+    expect(
+      isOnChainRevertedTransaction(
+        makeTx({
+          status: TransactionStatus.failed,
+          error: {
+            name: 'OnChainFailureError',
+            message: 'Transaction failed on-chain: slippage',
+          },
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it('detects a decoded revert receipt', () => {
+    expect(
+      isOnChainRevertedTransaction(
+        makeTx({
+          status: TransactionStatus.failed,
+          revert: { receipt: { message: 'slippage', data: '0x' } },
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it('treats a local RPC failure as not reverted', () => {
+    expect(
+      isOnChainRevertedTransaction(
+        makeTx({
+          status: TransactionStatus.failed,
+          error: { name: 'Error', message: 'Relay execute: 500' },
+        }),
+      ),
+    ).toBe(false);
+  });
+});
+
+describe('isEphemeralFailedTransaction', () => {
+  it('is true for a failed tx with no on-chain signal', () => {
+    expect(
+      isEphemeralFailedTransaction(
+        makeTx({
+          status: TransactionStatus.failed,
+          error: { name: 'Error', message: 'Relay execute: 500' },
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it('is false for an on-chain revert reported via error name', () => {
+    expect(
+      isEphemeralFailedTransaction(
+        makeTx({
+          status: TransactionStatus.failed,
+          error: { name: 'OnChainFailureError', message: 'reverted' },
+        }),
+      ),
+    ).toBe(false);
+  });
+
+  it('is false for non-failed statuses', () => {
+    expect(
+      isEphemeralFailedTransaction(
+        makeTx({ status: TransactionStatus.confirmed }),
+      ),
+    ).toBe(false);
   });
 });
 
@@ -111,15 +199,58 @@ describe('classifyMoneyActivity', () => {
     },
   );
 
-  it('classifies a nested moneyAccountWithdraw batch as sent', () => {
+  it('classifies a Pay-funded contract interaction as sent', () => {
+    expect(
+      classifyMoneyActivity(
+        makeTx({
+          type: TransactionType.contractInteraction,
+          metamaskPay: { tokenAddress: MUSD_TOKEN_ADDRESS, chainId: '0x8f' },
+        }),
+      ),
+    ).toBe('sent');
+  });
+
+  it('classifies a Perps deposit funded from the Money Account as sent', () => {
+    expect(
+      classifyMoneyActivity(
+        makeTx({
+          type: TransactionType.perpsDeposit,
+          metamaskPay: { tokenAddress: MUSD_TOKEN_ADDRESS, chainId: '0x8f' },
+        }),
+      ),
+    ).toBe('sent');
+  });
+
+  it('classifies a Perps withdraw landing in the Money Account as deposited', () => {
     expect(
       classifyMoneyActivity(
         makeTx({
           type: TransactionType.batch,
-          nestedTransactions: [{ type: TransactionType.moneyAccountWithdraw }],
+          nestedTransactions: [{ type: TransactionType.perpsWithdraw }],
+          metamaskPay: { tokenAddress: MUSD_TOKEN_ADDRESS, chainId: '0x8f' },
         }),
       ),
-    ).toBe('sent');
+    ).toBe('deposited');
+  });
+
+  it('classifies an unknown type without Pay metadata as received', () => {
+    expect(
+      classifyMoneyActivity(
+        makeTx({ type: TransactionType.contractInteraction }),
+      ),
+    ).toBe('received');
+  });
+
+  it('classifies a nested moneyAccountDeposit on a contract-interaction parent as a deposit', () => {
+    expect(
+      classifyMoneyActivity(
+        makeTx({
+          type: TransactionType.contractInteraction,
+          nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+          metamaskPay: { tokenAddress: MUSD_TOKEN_ADDRESS, chainId: '0x8f' },
+        }),
+      ),
+    ).toBe('deposited');
   });
 });
 

@@ -39,7 +39,6 @@ export const NotificationSectionSubPage = ({
     hasNotificationPreferences,
     isLoading: isLoadingPreferences,
     updatePreference,
-    refetchPreferences,
   } = useNotificationPreferences();
 
   const section = useMemo(
@@ -123,7 +122,6 @@ export const NotificationSectionSubPage = ({
         notificationAccountGroups={notificationAccountGroups}
         accountSettingsProps={accountSettingsProps}
         updatePreference={updatePreference}
-        refetchNotificationPreferences={refetchPreferences}
       />
     </Box>
   );

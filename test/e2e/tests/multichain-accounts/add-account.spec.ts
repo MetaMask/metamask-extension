@@ -146,6 +146,7 @@ describe('Add account', function () {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.addNewImportedAccount(TEST_PRIVATE_KEY);
 
+        await headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.openMultichainAccountMenu({
           accountLabel: importedAccount.name,
@@ -217,6 +218,8 @@ describe('Add account', function () {
         // Create 3rd account with private key
         await accountListPage.addNewImportedAccount(testPrivateKey);
 
+        await headerNavbar.openAccountMenu();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
         );

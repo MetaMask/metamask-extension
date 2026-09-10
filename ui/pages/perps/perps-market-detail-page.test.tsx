@@ -281,7 +281,10 @@ jest.mock('../../hooks/perps', () => ({
   usePerpsTransactionHistory: jest.fn(),
   usePerpsMarginCalculations: jest.fn(),
   usePerpsMarketFills: (...args: unknown[]) => mockUsePerpsMarketFills(...args),
-  usePerpsMarketInfo: jest.fn(),
+  usePerpsMarketInfo: jest.fn(() => ({
+    market: undefined,
+    isLoading: false,
+  })),
 }));
 // Cancel/close/reverse/TP-SL modals call usePerpsAttribution; keep them
 // renderable without mounting PerpsAttributionProvider in this page suite.

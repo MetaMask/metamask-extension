@@ -1,11 +1,13 @@
 import React from 'react';
 import { renderHook } from '@testing-library/react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  getSendRecipients,
+} from '@metamask/transaction-controller';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AddressPoisoningAlertContent } from '../../../components/send/address-poisoning-alert-content/address-poisoning-alert-content';
-import { getSendRecipients } from '../../../utils/getSendRecipients';
 import { useTransactionMetadataRequestOptional } from '../../transactions/useTransactionMetadataRequest';
 import {
   type AddressPoisoningDetectionResult,
@@ -15,7 +17,10 @@ import { AlertsName } from '../constants';
 import { useAddressPoisoningAlert } from './useAddressPoisoningAlert';
 
 jest.mock('../../../../../hooks/useI18nContext');
-jest.mock('../../../utils/getSendRecipients');
+jest.mock('@metamask/transaction-controller', () => ({
+  ...jest.requireActual('@metamask/transaction-controller'),
+  getSendRecipients: jest.fn(),
+}));
 jest.mock('../../transactions/useTransactionMetadataRequest', () => ({
   useTransactionMetadataRequestOptional: jest.fn(),
 }));

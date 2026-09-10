@@ -388,6 +388,33 @@ jobs:
     if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/prep-e2e.yml
 
+  ai-pr-risk-analysis:
+    name: AI PR risk analysis
+    needs:
+      - get-requirements
+    if: >-
+      ${{
+        !cancelled()
+        && needs.get-requirements.result == 'success'
+        && needs.get-requirements.outputs.changed-files != '[]'
+        && github.event_name == 'pull_request'
+        && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
+        && github.event.pull_request.draft == false
+        && (github.event.pull_request.base.ref == 'main' || startsWith(github.event.pull_request.base.ref, 'release/'))
+      }}
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+    uses: ./.github/workflows/ai-pr-risk-analysis.yml
+    with:
+      changed-files: ${{ join(fromJSON(needs.get-requirements.outputs.changed-files), ' ') }}
+    secrets:
+      AI_ANALYZER_TOKEN: ${{ secrets.AI_ANALYZER_TOKEN }}
+      AI_ANALYZER_LITELLM_KEY: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+      AI_ANALYZER_LANGFUSE_PUBLIC_KEY: ${{ secrets.AI_ANALYZER_LANGFUSE_PUBLIC_KEY }}
+      AI_ANALYZER_LANGFUSE_SECRET_KEY: ${{ secrets.AI_ANALYZER_LANGFUSE_SECRET_KEY }}
+
   e2e-chrome:
     needs:
       - get-requirements

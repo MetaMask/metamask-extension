@@ -31,6 +31,11 @@ import { MetaMetricsEventName } from '../../../../../shared/constants/metametric
 export type PerpsGeoBlockModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  /**
+   * Optional attribution for where the geo-block was triggered (e.g. asset
+   * details Long/Short). Matches mobile's `SOURCE` on `PERPS_SCREEN_VIEWED`.
+   */
+  source?: string;
 };
 
 /**
@@ -41,10 +46,12 @@ export type PerpsGeoBlockModalProps = {
  * @param options0 - Component props
  * @param options0.isOpen - Whether the modal is visible
  * @param options0.onClose - Callback to dismiss the modal
+ * @param options0.source - Optional funnel source for the screen-view event
  */
 export const PerpsGeoBlockModal = ({
   isOpen,
   onClose,
+  source,
 }: PerpsGeoBlockModalProps) => {
   const t = useI18nContext();
 
@@ -58,6 +65,7 @@ export const PerpsGeoBlockModal = ({
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
         PERPS_EVENT_VALUE.SCREEN_TYPE.GEO_BLOCK_NOTIF,
+      ...(source ? { [PERPS_EVENT_PROPERTY.SOURCE]: source } : {}),
     },
   });
 

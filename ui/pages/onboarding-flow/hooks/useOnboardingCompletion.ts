@@ -29,6 +29,7 @@ import {
   getOptedIn,
   getDeferredDeepLink,
   getAccountTypeForOnboardingMetrics,
+  getIsSocialLoginFlow,
 } from '../../../selectors';
 import {
   getCompletedOnboarding,
@@ -75,6 +76,7 @@ export function useOnboardingCompletion() {
   const isOptedIn = useSelector(getOptedIn);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const deferredDeepLink = useSelector(getDeferredDeepLink);
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isBasicFunctionalityToggleEnabled =
     getIsBasicFunctionalityConsolidationEnabledInBuild();
 
@@ -264,10 +266,18 @@ export function useOnboardingCompletion() {
           );
         }
 
+        // Social-login wallets must keep Basic Functionality enabled once the
+        // consolidated experience is on. Remote flags are not reliable during
+        // onboarding, so this uses the build-time consolidation gate.
+        const basicFunctionalityEnabled =
+          isBasicFunctionalityToggleEnabled && isSocialLoginFlow
+            ? true
+            : externalServicesOnboardingToggleState;
+
         await dispatch(
           isBasicFunctionalityToggleEnabled
-            ? toggleBasicFunctionality(externalServicesOnboardingToggleState)
-            : toggleExternalServices(externalServicesOnboardingToggleState),
+            ? toggleBasicFunctionality(basicFunctionalityEnabled)
+            : toggleExternalServices(basicFunctionalityEnabled),
         );
 
         if (!backupAndSyncOnboardingToggleState) {
@@ -329,6 +339,7 @@ export function useOnboardingCompletion() {
       isOnboardingCompleted,
       isOptedIn,
       isSidePanelEnabled,
+      isSocialLoginFlow,
       isUnlocked,
       trackEvent,
     ],
