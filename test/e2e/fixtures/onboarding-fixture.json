@@ -54,9 +54,9 @@
         "date": 0,
         "version": "13.17.0"
       },
+      "installAttribution": null,
       "previousAppVersion": "",
-      "previousMigrationVersion": 0,
-      "installAttribution": null
+      "previousMigrationVersion": 0
     },
     "AppStateController": {
       "arcUsageNoticeShown": false,
@@ -2018,14 +2018,14 @@
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
         "avatarType": "maskicon",
+        "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": false,
         "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": false,
-        "basicFunctionalityMigrationNotification": null,
-        "basicFunctionalityMigrationNotificationDismissed": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -2077,6 +2077,7 @@
       "syncQueue": {}
     },
     "RampsController": {
+      "autoramps": [],
       "orders": [],
       "providerAutoSelected": false,
       "userRegion": null
@@ -2250,7 +2251,8 @@
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
-      "isContactSyncingEnabled": true
+      "isContactSyncingEnabled": true,
+      "isRampsSyncingEnabled": true
     },
     "config": {}
   },
