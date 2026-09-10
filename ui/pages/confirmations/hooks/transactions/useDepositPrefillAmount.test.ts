@@ -539,12 +539,20 @@ describe('useDepositPrefillAmount', () => {
   });
 
   describe('isLoading', () => {
-    it('false when enabled but no pay token is selected', () => {
+    it('true while no pay token has been auto-selected yet', () => {
       setupMocks({ payToken: null });
 
       const { result } = runHook();
 
-      expect(result.current.isLoading).toBe(false);
+      expect(result.current.isLoading).toBe(true);
+    });
+
+    it('true while the funding account tokens are still loading', () => {
+      setupMocks({ payToken: null, isAccountTokensLoading: true });
+
+      const { result } = runHook();
+
+      expect(result.current.isLoading).toBe(true);
     });
 
     it('false when the selected pay token has a zero balance', () => {
