@@ -6118,9 +6118,6 @@
   "networkFee": {
     "message": "Network fee"
   },
-  "relayerFee": {
-    "message": "Relayer fee"
-  },
   "networkFeeExplanation": {
     "message": "Network fees depend on how busy the network is and how complex your transaction is."
   },
@@ -6132,6 +6129,9 @@
   },
   "networkMenuHeading": {
     "message": "Select a network"
+  },
+  "relayerFee": {
+    "message": "Relayer fee"
   },
   "networkName": {
     "message": "Network name"
