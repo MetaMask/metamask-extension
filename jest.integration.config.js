@@ -66,7 +66,7 @@ module.exports = {
   transform: {
     // Use babel-jest to transpile tests with the next/babel preset
     // https://jestjs.io/docs/configuration#transform-objectstring-pathtotransformer--pathtotransformer-object
-    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+    '^.+\\.(js|jsx|ts|tsx|mjs|cjs)$': 'babel-jest',
     // Use custom transform for pre-bundled CSS to avoid jest-preview's CSS inlining
     // which truncates large CSS files and loses design-token variables
     'test/integration/config/assets/index\\.css$':
@@ -74,7 +74,13 @@ module.exports = {
     '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)':
       'jest-preview/transforms/file',
   },
-  transformIgnorePatterns: ['/node_modules/'],
+  // Core packages published as ESM-only (no CJS dual build) must be transformed
+  // by babel-jest. Without this, ignoring all of node_modules fails with
+  // `Unexpected token 'export'` (e.g. @metamask/ramps-controller@22 and nested
+  // ESM deps from core 1248). Mirrors the unit jest config.
+  transformIgnorePatterns: [
+    '/node_modules/(?!(?:.+/)?(?:@metamask|@signinwithethereum|lodash-es|uuid)/)',
+  ],
   // Ensure console output is buffered (not streamed) so reporters can access testResult.console
   // Without this, Jest uses verbose mode for single-file runs which bypasses buffering
   verbose: false,
