@@ -173,7 +173,7 @@
   "resolutions": {
     "@metamask/eth-sig-util": "^9.0.0",
     "@grpc/grpc-js": "^1.9.16",
-    "@metamask/network-controller": "35.0.0",
+    "@metamask/network-controller": "36.0.0",
     "@humanfs/node@npm:^0.16.6": "^0.16.8",
     "follow-redirects": "^1.16.0",
     "ip-address": "^10.3.1",
@@ -456,7 +456,7 @@
     "@metamask/multichain-transactions-controller": "^7.1.2",
     "@metamask/name-controller": "^9.1.0",
     "@metamask/network-connection-banner-controller": "^0.2.0",
-    "@metamask/network-controller": "^35.0.0",
+    "@metamask/network-controller": "^36.0.0",
     "@metamask/network-enablement-controller": "^6.0.0",
     "@metamask/notification-services-controller": "^27.0.1",
     "@metamask/object-multiplex": "^2.0.0",
