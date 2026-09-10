@@ -1122,5 +1122,4 @@ describe('MultichainBridgeQuoteCard', () => {
     expect(queryByTestId('network-fees')).not.toBeInTheDocument();
     expect(queryByTestId('relayer-fees')).toBeInTheDocument();
   });
-
 });
