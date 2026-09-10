@@ -18,6 +18,7 @@ import {
   Button,
   ButtonBase,
   ButtonIcon,
+  ButtonVariant,
   Icon,
   IconColor,
   IconName,
@@ -356,8 +357,15 @@ export const HyperliquidDepositPrompt: React.FC<
         >
           {t('hyperliquidDepositPromptTitle')}
         </Text>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="mt-2 text-center"
+        >
+          {t('hyperliquidDepositPromptDescription')}
+        </Text>
       </Box>
-      <Box flexDirection={BoxFlexDirection.Column} gap={2} className="pt-14">
+      <Box flexDirection={BoxFlexDirection.Column} gap={2} className="pt-8">
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {t('payWith')}
         </Text>
@@ -377,15 +385,26 @@ export const HyperliquidDepositPrompt: React.FC<
           {t('somethingWentWrong')}
         </Text>
       )}
-      <Button
-        data-testid="hyperliquid-deposit-prompt-continue"
-        onClick={handleContinue}
-        isLoading={isStartingDeposit}
-        isDisabled={!displayToken || isStartingDeposit}
-        isFullWidth
-      >
-        {t('continue')}
-      </Button>
+      <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+        <Button
+          data-testid="hyperliquid-deposit-prompt-continue"
+          onClick={handleContinue}
+          isLoading={isStartingDeposit}
+          isDisabled={!displayToken || isStartingDeposit}
+          isFullWidth
+        >
+          {t('continue')}
+        </Button>
+        <Button
+          data-testid="hyperliquid-deposit-prompt-no-thanks"
+          variant={ButtonVariant.Tertiary}
+          onClick={handleClose}
+          isDisabled={isStartingDeposit}
+          isFullWidth
+        >
+          {t('hyperliquidDepositPromptNoThanks')}
+        </Button>
+      </Box>
       <Modal
         isOpen={isPickerOpen}
         onClose={() => setIsPickerOpen(false)}
