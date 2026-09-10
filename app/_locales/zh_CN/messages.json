@@ -7850,12 +7850,6 @@
   "perpsSortByPriceChange": {
     "message": "价格变化"
   },
-  "perpsSortByRank": {
-    "message": "排名"
-  },
-  "perpsSortBySection": {
-    "message": "排序方式"
-  },
   "perpsSortByTitle": {
     "message": "筛选"
   },

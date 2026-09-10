@@ -8071,12 +8071,6 @@
   "perpsSortByPriceChange": {
     "message": "Price change"
   },
-  "perpsSortByRank": {
-    "message": "Rank"
-  },
-  "perpsSortBySection": {
-    "message": "Sort by"
-  },
   "perpsSortByTitle": {
     "message": "Filter"
   },

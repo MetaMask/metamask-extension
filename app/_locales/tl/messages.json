@@ -7841,12 +7841,6 @@
   "perpsSortByPriceChange": {
     "message": "Pagbabago ng presyo"
   },
-  "perpsSortByRank": {
-    "message": "Rank"
-  },
-  "perpsSortBySection": {
-    "message": "I-sort ayon sa"
-  },
   "perpsSortByTitle": {
     "message": "Filter"
   },

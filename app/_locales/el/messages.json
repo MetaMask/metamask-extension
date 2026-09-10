@@ -7844,12 +7844,6 @@
   "perpsSortByPriceChange": {
     "message": "Αλλαγή τιμής"
   },
-  "perpsSortByRank": {
-    "message": "Κατάταξη"
-  },
-  "perpsSortBySection": {
-    "message": "Ταξινόμηση κατά"
-  },
   "perpsSortByTitle": {
     "message": "Φιλτράρισμα"
   },

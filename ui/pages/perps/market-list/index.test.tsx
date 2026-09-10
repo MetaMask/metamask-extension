@@ -621,8 +621,10 @@ describe('MarketListView', () => {
       await waitFor(() => {
         expect(screen.getByTestId('sort-field-modal')).toBeInTheDocument();
       });
+      // The direction lives on the selected field: pressing it once selects
+      // the field, pressing it again reverses the direction.
       fireEvent.click(screen.getByTestId('sort-field-option-priceChange'));
-      fireEvent.click(screen.getByTestId('sort-direction-asc'));
+      fireEvent.click(screen.getByTestId('sort-field-option-priceChange'));
       fireEvent.click(screen.getByTestId('sort-modal-apply'));
 
       expect(mockTrack).toHaveBeenCalledWith(

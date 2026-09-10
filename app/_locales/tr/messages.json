@@ -7851,12 +7851,6 @@
   "perpsSortByPriceChange": {
     "message": "Fiyat değişikliği"
   },
-  "perpsSortByRank": {
-    "message": "Sıralama"
-  },
-  "perpsSortBySection": {
-    "message": "Şuna göre sırala"
-  },
   "perpsSortByTitle": {
     "message": "Filtrele"
   },

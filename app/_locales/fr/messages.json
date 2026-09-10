@@ -7844,12 +7844,6 @@
   "perpsSortByPriceChange": {
     "message": "Variation du prix"
   },
-  "perpsSortByRank": {
-    "message": "Rang"
-  },
-  "perpsSortBySection": {
-    "message": "Trier par"
-  },
   "perpsSortByTitle": {
     "message": "Filtrer"
   },
