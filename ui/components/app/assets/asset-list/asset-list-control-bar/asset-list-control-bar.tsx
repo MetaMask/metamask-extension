@@ -16,6 +16,7 @@ import {
   Icon,
   IconName,
   IconSize,
+  twMerge,
 } from '@metamask/design-system-react';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import {
@@ -402,6 +403,7 @@ const AssetListControlBar = ({
           display={Display.Flex}
           justifyContent={JustifyContent.flexEnd}
           alignItems={AlignItems.center}
+          gap={2}
         >
           {showSortControl && (
             <Tooltip
@@ -413,7 +415,13 @@ const AssetListControlBar = ({
               <ButtonIcon
                 ref={sortButtonRef}
                 data-testid="sort-by-popover-toggle"
-                className={isTokenSortPopoverOpen ? 'bg-pressed' : undefined}
+                // Tooltip renders its child inside an inline wrapper, so the
+                // button has to be block-level to avoid the baseline leading
+                // that would shift it above its siblings.
+                className={twMerge(
+                  'flex',
+                  isTokenSortPopoverOpen && 'bg-pressed',
+                )}
                 onClick={toggleTokenSortPopover}
                 size={ButtonIconSize.Sm}
                 iconName={IconName.ListArrow}
@@ -444,6 +452,7 @@ const AssetListControlBar = ({
                 <ButtonIcon
                   ref={importButtonRef}
                   data-testid="importTokens-button"
+                  className="flex"
                   onClick={handleOpenTokenManagement}
                   size={ButtonIconSize.Sm}
                   iconName={IconName.MoreVertical}
