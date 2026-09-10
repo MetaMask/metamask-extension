@@ -371,7 +371,7 @@ export const MultichainBridgeQuoteCard = ({
           </Row>
         )}
 
-        {activeQuote.quote.feeData.relayer && (
+        {activeQuote.quote.feeData.relayer?.length > 0 && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Text
               variant={TextVariant.bodySm}
