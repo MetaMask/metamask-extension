@@ -580,21 +580,10 @@ function mockSseEventSource(
   );
 }
 
-/**
- * Production sends smart transactions to endpoints these fixtures do not mock:
- * the migration flags move them to the per-network sentinel hosts instead of
- * `transaction.api.cx.metamask.io`, and EIP-7702 support on mainnet publishes
- * gasless swaps through the transaction relay. Pinning both off keeps the
- * request URLs the mocks below answer.
- */
 const UNMOCKED_TRANSACTION_ENDPOINTS_OFF = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   confirmations_eip_7702: { contracts: {}, supportedChains: [] },
-  stxMigrationBatchStatus: { value: false },
-  stxMigrationCancel: { value: false },
-  stxMigrationGetFees: { value: false },
-  stxMigrationSubmitTransactions: { value: false },
 };
 
 async function mockFeatureFlags(
@@ -1232,9 +1221,7 @@ async function mockSmartTransactionsForBridge(
 
   // getFees: queried before submitting each STX
   await mockServer
-    .forPost(
-      `https://transaction.api.cx.metamask.io/networks/${chainId}/getFees`,
-    )
+    .forPost(`${sentinelUrl}/v1/networks/${chainId}/getFees`)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
@@ -1271,9 +1258,7 @@ async function mockSmartTransactionsForBridge(
   // When a bridge requires an approval, rawTxs = [approvalTx, bridgeTx]; we
   // forward both sequentially to preserve nonce order (same as mobile).
   await mockServer
-    .forPost(
-      `https://transaction.api.cx.metamask.io/networks/${chainId}/submitTransactions`,
-    )
+    .forPost(`${sentinelUrl}/v1/networks/${chainId}/submitTransactions`)
     .always()
     .thenCallback(async (req) => {
       let rawTxs: string[] = [];
@@ -1322,9 +1307,7 @@ async function mockSmartTransactionsForBridge(
   // batchStatus: return the on-chain hash with the given status so the
   // STX controller resolves accordingly.
   await mockServer
-    .forGet(
-      `https://transaction.api.cx.metamask.io/networks/${chainId}/batchStatus`,
-    )
+    .forGet(`${sentinelUrl}/v1/networks/${chainId}/batchStatus`)
     .always()
     .thenCallback((req) => {
       const uuid = new URL(req.url).searchParams.get('uuids') ?? STX_UUID;
