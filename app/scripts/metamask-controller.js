@@ -2893,7 +2893,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       consolidateBasicFunctionality: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        'LegacyBackgroundApiService:consolidateBasicFunctionality',
+        'PreferencesController:consolidateBasicFunctionality',
       ),
 
       addKnownMethodData: preferencesController.addKnownMethodData.bind(
@@ -2922,7 +2922,7 @@ export default class MetamaskController extends EventEmitter {
       dismissBasicFunctionalityMigrationNotification:
         this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'LegacyBackgroundApiService:dismissBasicFunctionalityMigrationNotification',
+          'PreferencesController:dismissBasicFunctionalityMigrationNotification',
         ),
 
       setManageInstitutionalWallets:
@@ -3067,9 +3067,12 @@ export default class MetamaskController extends EventEmitter {
         }
         appStateController.setArcUsageNoticeShown();
         trackEvent(
-          createEventBuilder(MetaMetricsEventName.ArcUsageNoticeToastViewed)
+          createEventBuilder(MetaMetricsEventName.NetworkUsageNoticeToastViewed)
             .addCategory(MetaMetricsEventCategory.Home)
-            .addProperties({ chain_id_caip: 'eip155:5042' })
+            .addProperties({
+              network_name: 'arc',
+              chain_id_caip: 'eip155:5042',
+            })
             .build(),
         );
       },
@@ -3522,9 +3525,6 @@ export default class MetamaskController extends EventEmitter {
       trackAnalyticsPage: trackPage,
       trackMetaMetricsPage: trackPage,
       updateEventFragment,
-      updateMetaMetricsTraits: metaMetricsController.updateTraits.bind(
-        metaMetricsController,
-      ),
 
       // Buffered Trace API that checks consent and handles buffering/immediate execution
       bufferedTrace: metaMetricsController.bufferedTrace.bind(
