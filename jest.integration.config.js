@@ -1,12 +1,5 @@
 const consoleReporterRules = require('./test/jest/console-reporter-rules-integration');
-
-// TODO: Find a way to share this list with `jest.config.js`.
-const ESM_DEPENDENCIES_TO_TRANSPILE = [
-  '@metamask/base-controller',
-  '@metamask/base-data-service',
-  '@metamask/messenger',
-  'lodash-es',
-];
+const { ESM_DEPENDENCIES_TO_TRANSPILE } = require('./test/jest/constants');
 
 module.exports = {
   collectCoverageFrom: [
