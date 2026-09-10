@@ -5,6 +5,7 @@ import {
   TraceName,
   TraceOperation,
 } from '../../../shared/lib/trace';
+import { useDeferredAbandon } from '../useDeferredAbandon';
 
 export type NotificationListPerformanceOptions = {
   enabled: boolean;
@@ -24,6 +25,8 @@ export function useNotificationListPerformance({
   const traceIdRef = useRef<string | null>(null);
   const sawLoadingRef = useRef(false);
   const latestCountRef = useRef(notificationCount);
+  const traceActivationStartedRef = useRef(false);
+  const { cancelAbandon, scheduleAbandon } = useDeferredAbandon();
 
   useEffect(() => {
     latestCountRef.current = notificationCount;
@@ -51,24 +54,33 @@ export function useNotificationListPerformance({
       return undefined;
     }
 
-    const id = crypto.randomUUID();
-    traceIdRef.current = id;
-    sawLoadingRef.current = false;
-    trace({
-      name: TraceName.NotificationListTimeToContent,
-      id,
-      op: TraceOperation.NotificationPerformance,
-    });
+    // Discards the teardown scheduled by a StrictMode probe, which resumes the
+    // original span instead of restarting its clock.
+    cancelAbandon();
 
-    return () => {
-      endNotificationTrace({
-        success: false,
-        reason: 'unmounted',
-        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
-        notification_count: latestCountRef.current,
+    if (!traceActivationStartedRef.current) {
+      traceActivationStartedRef.current = true;
+      const id = crypto.randomUUID();
+      traceIdRef.current = id;
+      sawLoadingRef.current = false;
+      trace({
+        name: TraceName.NotificationListTimeToContent,
+        id,
+        op: TraceOperation.NotificationPerformance,
       });
-    };
-  }, [enabled, endNotificationTrace]);
+    }
+
+    return () =>
+      scheduleAbandon(() => {
+        endNotificationTrace({
+          success: false,
+          reason: 'unmounted',
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+          notification_count: latestCountRef.current,
+        });
+        traceActivationStartedRef.current = false;
+      });
+  }, [cancelAbandon, enabled, endNotificationTrace, scheduleAbandon]);
 
   useEffect(() => {
     if (!enabled || !traceIdRef.current) {

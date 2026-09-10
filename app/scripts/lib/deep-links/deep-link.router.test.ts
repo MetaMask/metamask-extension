@@ -212,6 +212,10 @@ describe('DeepLinkRouter', () => {
         name: TraceName.DeeplinkProcessed,
         id: expect.any(String),
         op: TraceOperation.DeeplinkPerformance,
+        data: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+          deeplink_activation_id: expect.any(String),
+        },
         tags: {
           // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
           deeplink_route: 'external-route',

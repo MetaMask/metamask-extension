@@ -26,6 +26,7 @@ import {
   TraceName,
   TraceOperation,
 } from '../../../../shared/lib/trace';
+import { useDeferredAbandon } from '../../../hooks/useDeferredAbandon';
 import { getVisibleCarouselSlides } from '../carousel/utils';
 
 /**
@@ -66,6 +67,7 @@ export const Carousel = () => {
   const traceIdRef = useRef<string | null>(null);
   const initialSlideIdsRef = useRef<Set<string>>(new Set());
   const traceActivationStartedRef = useRef(false);
+  const { cancelAbandon, scheduleAbandon } = useDeferredAbandon();
 
   const endBannerTrace = useCallback(
     (data: Record<string, number | string | boolean>) => {
@@ -87,42 +89,53 @@ export const Carousel = () => {
   useLayoutEffect(() => {
     const isEnabled = isCarouselEnabled && isContentfulEnabled;
     if (!isEnabled) {
+      cancelAbandon();
       endBannerTrace({
         ...BANNER_TRACE_TAGS,
         success: false,
         reason: 'unmounted',
       });
       traceActivationStartedRef.current = false;
-      return;
+      return undefined;
     }
 
-    if (traceActivationStartedRef.current) {
-      return;
+    // Discards the teardown scheduled by a StrictMode probe, which resumes the
+    // original span instead of reporting a false abandonment. Without this the
+    // latch below would also see an already-activated instance and never start
+    // a replacement, leaving the surface unmeasured for the rest of the session.
+    cancelAbandon();
+
+    if (!traceActivationStartedRef.current) {
+      traceActivationStartedRef.current = true;
+      initialSlideIdsRef.current = new Set(
+        slides.map(({ id }: CarouselSlide) => id),
+      );
+      const id = crypto.randomUUID();
+      traceIdRef.current = id;
+      trace({
+        name: TraceName.HomeBannerTimeToContent,
+        id,
+        op: TraceOperation.BannerPerformance,
+        tags: { ...BANNER_TRACE_TAGS },
+      });
     }
 
-    traceActivationStartedRef.current = true;
-    initialSlideIdsRef.current = new Set(
-      slides.map(({ id }: CarouselSlide) => id),
-    );
-    const id = crypto.randomUUID();
-    traceIdRef.current = id;
-    trace({
-      name: TraceName.HomeBannerTimeToContent,
-      id,
-      op: TraceOperation.BannerPerformance,
-      tags: { ...BANNER_TRACE_TAGS },
-    });
-  }, [endBannerTrace, isCarouselEnabled, isContentfulEnabled, slides]);
-
-  useEffect(
-    () => () =>
-      endBannerTrace({
-        ...BANNER_TRACE_TAGS,
-        success: false,
-        reason: 'unmounted',
-      }),
-    [endBannerTrace],
-  );
+    return () =>
+      scheduleAbandon(() =>
+        endBannerTrace({
+          ...BANNER_TRACE_TAGS,
+          success: false,
+          reason: 'unmounted',
+        }),
+      );
+  }, [
+    cancelAbandon,
+    endBannerTrace,
+    isCarouselEnabled,
+    isContentfulEnabled,
+    scheduleAbandon,
+    slides,
+  ]);
 
   useEffect(() => {
     if (fetchStatus === 'error') {

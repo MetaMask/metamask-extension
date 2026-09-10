@@ -94,6 +94,10 @@ describe('useDeepLinkNavigationTrace', () => {
         id: RECORD.id,
         op: TraceOperation.DeeplinkPerformance,
         startTime: RECORD.intakeTimestamp,
+        data: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+          deeplink_activation_id: RECORD.id,
+        },
         tags: {
           ...RECORD.urlTags,
           // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
@@ -160,6 +164,10 @@ describe('useDeepLinkNavigationTrace', () => {
       id: RECORD.id,
       op: TraceOperation.DeeplinkPerformance,
       startTime: 2_000,
+      data: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+        deeplink_activation_id: RECORD.id,
+      },
       tags: {
         ...RECORD.urlTags,
         // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case

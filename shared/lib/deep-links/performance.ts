@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill';
 import { isManifestV3 } from '../mv3.utils';
+import { routes } from './routes';
 
 const STORAGE_KEY_PREFIX = 'deepLinkNavigationTrace:';
 export const PENDING_DEEP_LINK_TTL = 5 * 60 * 1000;
@@ -78,7 +79,7 @@ export function getDeepLinkUrlTags(urlString: string): DeepLinkUrlTags {
 
     return {
       // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
-      deeplink_route: route || 'unknown',
+      deeplink_route: routes.has(`/${route}`) ? route : 'unknown',
       // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
       deeplink_variant:
         variant && VARIANT_PATTERN.test(variant) ? variant : 'default',
