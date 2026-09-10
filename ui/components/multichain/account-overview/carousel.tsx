@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention -- Sentry and MetaMetrics fields use snake_case */
 import React, {
   useRef,
   useState,
@@ -28,6 +27,17 @@ import {
   TraceOperation,
 } from '../../../../shared/lib/trace';
 import { getVisibleCarouselSlides } from '../carousel/utils';
+
+/**
+ * Identifies the traced banner surface. Unlike mobile, whose equivalent trace
+ * covers Braze banners, extension slides are served by Contentful.
+ */
+const BANNER_TRACE_TAGS = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+  placement_id: 'home_carousel',
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+  banner_source: 'contentful',
+} as const;
 
 export const Carousel = () => {
   const dispatch = useDispatch();
@@ -78,9 +88,9 @@ export const Carousel = () => {
     const isEnabled = isCarouselEnabled && isContentfulEnabled;
     if (!isEnabled) {
       endBannerTrace({
+        ...BANNER_TRACE_TAGS,
         success: false,
         reason: 'unmounted',
-        placement_id: 'home_carousel',
       });
       traceActivationStartedRef.current = false;
       return;
@@ -100,18 +110,16 @@ export const Carousel = () => {
       name: TraceName.HomeBannerTimeToContent,
       id,
       op: TraceOperation.BannerPerformance,
-      tags: {
-        placement_id: 'home_carousel',
-      },
+      tags: { ...BANNER_TRACE_TAGS },
     });
   }, [endBannerTrace, isCarouselEnabled, isContentfulEnabled, slides]);
 
   useEffect(
     () => () =>
       endBannerTrace({
+        ...BANNER_TRACE_TAGS,
         success: false,
         reason: 'unmounted',
-        placement_id: 'home_carousel',
       }),
     [endBannerTrace],
   );
@@ -119,17 +127,17 @@ export const Carousel = () => {
   useEffect(() => {
     if (fetchStatus === 'error') {
       endBannerTrace({
+        ...BANNER_TRACE_TAGS,
         success: false,
         source: 'event',
         reason: 'error',
-        placement_id: 'home_carousel',
       });
     } else if (fetchStatus === 'settled' && visibleSlides.length === 0) {
       endBannerTrace({
+        ...BANNER_TRACE_TAGS,
         success: false,
         source: 'event',
         reason: 'empty',
-        placement_id: 'home_carousel',
       });
     }
   }, [endBannerTrace, fetchStatus, visibleSlides.length]);
@@ -157,7 +165,7 @@ export const Carousel = () => {
         .addCategory(MetaMetricsEventCategory.Banner)
         .addProperties({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           banner_name: key,
         })
         .build(),
@@ -172,7 +180,7 @@ export const Carousel = () => {
         .addCategory(MetaMetricsEventCategory.Banner)
         .addProperties({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           banner_name: slideId,
         })
         .build(),
@@ -192,11 +200,12 @@ export const Carousel = () => {
   const handleActiveSlideChange = useCallback(
     (slide: CarouselSlide) => {
       endBannerTrace({
+        ...BANNER_TRACE_TAGS,
         success: true,
         source: initialSlideIdsRef.current.has(slide.id)
           ? 'warm-cache'
           : 'event',
-        placement_id: 'home_carousel',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
         banner_name: slide.id,
       });
 
@@ -207,7 +216,7 @@ export const Carousel = () => {
             .addCategory(MetaMetricsEventCategory.Banner)
             .addProperties({
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               banner_name: slide.id,
             })
             .build(),

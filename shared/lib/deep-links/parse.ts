@@ -8,7 +8,13 @@
  */
 
 import log from 'loglevel';
-import { trace, type TraceContext, TraceName, TraceOperation } from '../trace';
+import {
+  endTrace,
+  trace,
+  type TraceContext,
+  TraceName,
+  TraceOperation,
+} from '../trace';
 import { routes } from './routes';
 import type { Destination, Route } from './routes/route';
 import { verify, type SignatureStatus } from './verify';
@@ -101,17 +107,46 @@ export async function parse<
     return { destination, route } as ParsedDeepLink<Options>;
   }
 
-  const shouldTraceSignature =
-    options?.traceContext && url.searchParams.has(SIG_PARAM);
-  const signature = shouldTraceSignature
-    ? await trace(
-        {
-          name: TraceName.DeeplinkSignatureVerify,
-          op: TraceOperation.DeeplinkPerformance,
-          parentContext: options.traceContext,
-        },
-        () => verify(url),
-      )
-    : await verify(url);
+  const parentContext = options?.traceContext;
+  const signature =
+    parentContext && url.searchParams.has(SIG_PARAM)
+      ? await traceSignatureVerification(url, parentContext)
+      : await verify(url);
   return { destination, signature, route } as ParsedDeepLink<Options>;
+}
+
+async function traceSignatureVerification(
+  url: URL,
+  parentContext: TraceContext,
+): Promise<SignatureStatus> {
+  const id = crypto.randomUUID();
+  trace({
+    name: TraceName.DeeplinkSignatureVerify,
+    id,
+    op: TraceOperation.DeeplinkPerformance,
+    parentContext,
+  });
+
+  try {
+    const signature = await verify(url);
+    endTrace({
+      name: TraceName.DeeplinkSignatureVerify,
+      id,
+      data: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+        signature_status: signature,
+      },
+    });
+    return signature;
+  } catch (error) {
+    endTrace({
+      name: TraceName.DeeplinkSignatureVerify,
+      id,
+      data: {
+        success: false,
+        reason: 'error',
+      },
+    });
+    throw error;
+  }
 }
