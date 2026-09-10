@@ -1,5 +1,6 @@
 import React from 'react';
-import { AccountGroupId } from '@metamask/account-api';
+import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { fireEvent, act, within, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
@@ -78,6 +79,11 @@ jest.mock('../../../store/actions', () => {
     }),
   };
 });
+
+const mockDisconnectAccountGroup = jest.fn().mockResolvedValue(undefined);
+jest.mock('../../../hooks/useDisconnectAccountGroup', () => ({
+  useDisconnectAccountGroup: () => mockDisconnectAccountGroup,
+}));
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -184,6 +190,50 @@ describe('MultichainAccountMenu', () => {
 
     const menuItems = document.querySelectorAll(menuItemSelector);
     expect(menuItems.length).toBe(5);
+  });
+
+  it('omits the hide option for an imported private key account', () => {
+    const accountGroupId = 'keyring:simple/0';
+    const stateWithPrivateKeyAccount = {
+      metamask: {
+        accountTree: {
+          wallets: {
+            'keyring:simple': {
+              type: AccountWalletType.Keyring,
+              metadata: {
+                name: 'Imported',
+                keyring: { type: KeyringTypes.simple },
+              },
+              groups: {
+                [accountGroupId]: {
+                  metadata: {
+                    name: 'Imported Account',
+                    pinned: false,
+                    hidden: false,
+                    lastSelected: 0,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    } as unknown as typeof mockState;
+
+    renderComponent(
+      {
+        accountGroupId: accountGroupId as AccountGroupId,
+        isRemovable: false,
+        isOpen: true,
+        onToggle: jest.fn(),
+      },
+      stateWithPrivateKeyAccount,
+    );
+
+    expect(document.querySelectorAll(menuItemSelector)).toHaveLength(4);
+    expect(
+      screen.queryByTestId('multichain-account-menu-item-hideAccount'),
+    ).not.toBeInTheDocument();
   });
 
   it('adds the remove option to menu when isRemovable is true', () => {
@@ -314,6 +364,67 @@ describe('MultichainAccountMenu', () => {
       true,
     );
     expect(mockOnToggle).toHaveBeenCalled();
+  });
+
+  it('disconnects the account from dapps when clicking the hide option', async () => {
+    const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+
+    renderComponent({
+      accountGroupId,
+      isRemovable: false,
+      isOpen: true,
+      onToggle: jest.fn(),
+    });
+
+    const hideOption = document.querySelectorAll(menuItemSelector)[4];
+    fireEvent.click(hideOption);
+
+    expect(mockDisconnectAccountGroup).toHaveBeenCalledWith(accountGroupId);
+  });
+
+  it('leaves dapp connections alone when revealing a hidden account', async () => {
+    const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+    const stateWithHiddenAccount = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        accountTree: {
+          wallets: {
+            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+              groups: {
+                [accountGroupId]: {
+                  metadata: {
+                    name: 'Test Account',
+                    pinned: false,
+                    hidden: true,
+                    lastSelected: 0,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    renderComponent(
+      {
+        accountGroupId,
+        isRemovable: false,
+        isOpen: true,
+        onToggle: jest.fn(),
+      },
+      stateWithHiddenAccount,
+    );
+
+    const revealOption = document.querySelectorAll(menuItemSelector)[4];
+    fireEvent.click(revealOption);
+
+    expect(mockSetAccountGroupHidden).toHaveBeenCalledWith(
+      accountGroupId,
+      false,
+    );
+    expect(mockDisconnectAccountGroup).not.toHaveBeenCalled();
   });
 
   it('unpins account before hiding when clicking hide on a pinned account', async () => {

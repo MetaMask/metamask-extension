@@ -87,6 +87,7 @@ import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
 import { useOnClickOutside } from '../../../hooks/useClickOutside';
 import { useBatchSell } from '../../../hooks/batch-sell/useBatchSell';
 import { getIsBatchSellEnabled } from '../../../selectors/batch-sell/feature-flags';
+import { PerpsTradeButtons } from '../perps/perps-trade-buttons';
 import { useBalanceAwareSwapDefaults } from '../../../pages/asset/hooks/useBalanceAwareSwapDefaults';
 import {
   ARC_ERC20_USDC_BRIDGE_ASSET,
@@ -124,18 +125,21 @@ type MoreButtonsGroupProps<TagElem extends React.ElementType = 'div'> = {
   }[];
 };
 
-const MoreButtonsGroup = ({
+export const MoreButtonsGroup = ({
   actions,
   classPrefix,
   onClick,
   modalIsOpen,
 }: MoreButtonsGroupProps) => {
   const t = useContext(I18nContext);
-  const hasOnlyOneEnabledAction =
-    actions.filter(({ enabled }) => enabled).length === 1;
-  const onlyEnabledAction = actions.filter(({ enabled }) => enabled)[0];
+  const enabledActions = actions.filter(({ enabled }) => enabled);
+  const [onlyEnabledAction] = enabledActions;
 
-  if (hasOnlyOneEnabledAction) {
+  if (enabledActions.length === 0) {
+    return null;
+  }
+
+  if (enabledActions.length === 1) {
     return (
       <IconButton
         className={`${classPrefix}-overview__button`}
@@ -173,7 +177,7 @@ const MoreButtonsGroup = ({
       />
       {modalIsOpen && (
         <Box className="flex flex-col absolute right-0 top-full z-10 mt-4 min-w-[120px] overflow-hidden rounded-lg border border-border-muted shadow-lg bg-elevated2">
-          {actions.map((action) => (
+          {enabledActions.map((action) => (
             <ButtonBase
               key={action.label}
               className="text-left rounded-none px-4 py-3 bg-transparent min-w-0 flex w-full items-center h-auto hover:bg-hover active:bg-pressed"
@@ -211,6 +215,11 @@ type CoinButtonsProps = {
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
   classPrefix?: string;
+  /**
+   * Whether the displayed native asset has a spendable balance. When false,
+   * a Perps action row shows Receive instead of Send.
+   */
+  hasBalance?: boolean;
   /** When true, disables the send button for non-EVM chains (used on asset page) */
   disableSendForNonEvm?: boolean;
   /**
@@ -218,6 +227,16 @@ type CoinButtonsProps = {
    * omitted (e.g. wallet overview), Buy opens the token-selection page instead.
    */
   buyAssetId?: CaipAssetType;
+  /**
+   * When set (asset page, asset with a matching Perps market), the row shows
+   * Long / Short / Send / More and Buy / Swap move into the More menu,
+   * matching the mobile Token Details actions.
+   *
+   * Callers must resolve the Perps market lookup before mounting this row:
+   * an unset symbol renders the standard Buy / Swap actions, so passing it
+   * while the lookup is still pending would flash the wrong row.
+   */
+  perpsMarketSymbol?: string;
 };
 
 const CoinButtons = ({
@@ -227,8 +246,10 @@ const CoinButtons = ({
   isSwapsChain,
   isSigningEnabled,
   classPrefix = 'coin',
+  hasBalance = true,
   disableSendForNonEvm = false,
   buyAssetId,
+  perpsMarketSymbol,
 }: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -552,6 +573,13 @@ const CoinButtons = ({
     active: isMoreOptionsDropdownOpen,
   });
 
+  /**
+   * Whether Receive replaces Send on the Perps action row. When true, Receive
+   * is omitted from More so it is not duplicated and `*-overview-receive`
+   * matches a single control.
+   */
+  const showReceiveOnActionRow = Boolean(perpsMarketSymbol) && !hasBalance;
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
@@ -560,59 +588,85 @@ const CoinButtons = ({
       gap={3}
       ref={containerRef}
     >
-      <IconButton
-        className={`${classPrefix}-overview__button`}
-        Icon={
-          <IconLegacy
-            name={IconNameLegacy.Dollar}
-            color={IconColorLegacy.iconAlternative}
-            size={IconSizeLegacy.Md}
+      {perpsMarketSymbol ? (
+        <PerpsTradeButtons
+          marketSymbol={perpsMarketSymbol}
+          classPrefix={classPrefix}
+        />
+      ) : (
+        <>
+          <IconButton
+            className={`${classPrefix}-overview__button`}
+            Icon={
+              <IconLegacy
+                name={IconNameLegacy.Dollar}
+                color={IconColorLegacy.iconAlternative}
+                size={IconSizeLegacy.Md}
+              />
+            }
+            data-testid={`${classPrefix}-overview-buy`}
+            label={t('buy')}
+            onClick={handleBuyAndSellOnClick}
+            width={BlockSize.Full}
           />
-        }
-        data-testid={`${classPrefix}-overview-buy`}
-        label={t('buy')}
-        onClick={handleBuyAndSellOnClick}
-        width={BlockSize.Full}
-      />
-      <IconButton
-        className={`${classPrefix}-overview__button`}
-        disabled={!isSigningEnabled || !isExternalServicesEnabled}
-        Icon={
-          <Icon
-            name={IconName.SwapVertical}
-            color={IconColor.IconAlternative}
-            size={IconSize.Md}
+          <IconButton
+            className={`${classPrefix}-overview__button`}
+            disabled={!isSigningEnabled || !isExternalServicesEnabled}
+            Icon={
+              <Icon
+                name={IconName.SwapVertical}
+                color={IconColor.IconAlternative}
+                size={IconSize.Md}
+              />
+            }
+            onClick={handleSwapOnClick}
+            label={t('swap')}
+            data-testid={`${classPrefix}-overview-swap`}
+            width={BlockSize.Full}
+            tooltipRender={(contents: React.ReactElement) =>
+              generateTooltip('swapButton', contents)
+            }
           />
-        }
-        onClick={handleSwapOnClick}
-        label={t('swap')}
-        data-testid={`${classPrefix}-overview-swap`}
-        width={BlockSize.Full}
-        tooltipRender={(contents: React.ReactElement) =>
-          generateTooltip('swapButton', contents)
-        }
-      />
-      <IconButton
-        className={`${classPrefix}-overview__button`}
-        data-testid={`${classPrefix}-overview-send`}
-        Icon={
-          <Icon
-            name={IconName.Arrow2UpRight}
-            color={IconColor.IconAlternative}
-            size={IconSize.Md}
-          />
-        }
-        disabled={
-          !isSigningEnabled ||
-          (disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled)
-        }
-        label={t('send')}
-        onClick={handleSendOnClick}
-        width={BlockSize.Full}
-        tooltipRender={(contents: React.ReactElement) =>
-          generateTooltip('sendButton', contents)
-        }
-      />
+        </>
+      )}
+      {showReceiveOnActionRow ? (
+        <IconButton
+          className={`${classPrefix}-overview__button`}
+          data-testid={`${classPrefix}-overview-receive`}
+          Icon={
+            <Icon
+              name={IconName.Received}
+              color={IconColor.IconAlternative}
+              size={IconSize.Md}
+            />
+          }
+          label={t('receive')}
+          onClick={handleReceiveOnClick}
+          width={BlockSize.Full}
+        />
+      ) : (
+        <IconButton
+          className={`${classPrefix}-overview__button`}
+          data-testid={`${classPrefix}-overview-send`}
+          Icon={
+            <Icon
+              name={IconName.Arrow2UpRight}
+              color={IconColor.IconAlternative}
+              size={IconSize.Md}
+            />
+          }
+          disabled={
+            !isSigningEnabled ||
+            (disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled)
+          }
+          label={t('send')}
+          onClick={handleSendOnClick}
+          width={BlockSize.Full}
+          tooltipRender={(contents: React.ReactElement) =>
+            generateTooltip('sendButton', contents)
+          }
+        />
+      )}
       {showReceiveModal && (
         <ReceiveModal
           address={selectedAddress}
@@ -625,6 +679,25 @@ const CoinButtons = ({
         modalIsOpen={isMoreOptionsDropdownOpen}
         classPrefix={classPrefix}
         actions={[
+          // Buy and Swap move into the More menu when the Perps row replaces
+          // them with Long / Short.
+          {
+            label: t('buy'),
+            onClick: handleBuyAndSellOnClick,
+            testId: `${classPrefix}-overview-more-buy`,
+            iconName: IconName.AttachMoney,
+            enabled: Boolean(perpsMarketSymbol),
+          },
+          {
+            label: t('swap'),
+            onClick: handleSwapOnClick,
+            testId: `${classPrefix}-overview-more-swap`,
+            iconName: IconName.SwapVertical,
+            enabled:
+              Boolean(perpsMarketSymbol) &&
+              isSigningEnabled &&
+              isExternalServicesEnabled,
+          },
           {
             label: t('batchSell'),
             onClick: handleBatchSellOnClick,
@@ -643,9 +716,11 @@ const CoinButtons = ({
           {
             label: t('receive'),
             onClick: handleReceiveOnClick,
-            testId: `${classPrefix}-overview-receive`,
+            testId: perpsMarketSymbol
+              ? `${classPrefix}-overview-more-receive`
+              : `${classPrefix}-overview-receive`,
             iconName: IconName.Received,
-            enabled: true,
+            enabled: !showReceiveOnActionRow,
           },
         ]}
       />

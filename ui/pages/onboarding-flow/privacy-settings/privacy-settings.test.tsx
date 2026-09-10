@@ -11,6 +11,16 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import PrivacySettings from './privacy-settings';
 
+const mockGetIsBasicFunctionalityConsolidationEnabledInBuild = jest.fn(
+  () => false,
+);
+
+jest.mock('../../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment'),
+  getIsBasicFunctionalityConsolidationEnabledInBuild: () =>
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild(),
+}));
+
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../../shared/lib/analytics/create-event-builder',
@@ -91,6 +101,13 @@ describe('Privacy Settings Onboarding View', () => {
   const toggleExternalServicesStub = jest.fn();
   const setUseTransactionSimulationsStub = jest.fn();
   const setPreferenceStub = jest.fn();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+      false,
+    );
+  });
 
   setBackgroundConnection({
     setFeatureFlag: setFeatureFlagStub,
@@ -178,6 +195,68 @@ describe('Privacy Settings Onboarding View', () => {
 
     expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(1);
     expect(setUse4ByteResolutionStub.mock.calls[0][0]).toStrictEqual(false);
+  });
+
+  describe('when Basic Functionality consolidation is enabled', () => {
+    beforeEach(() => {
+      mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+        true,
+      );
+    });
+
+    it('hides BFT child toggles and does not persist them on submit', () => {
+      const { container, queryByTestId, queryByText } = renderWithProvider(
+        <PrivacySettings />,
+        store,
+      );
+
+      expect(queryByTestId('category-item-Security')).not.toBeInTheDocument();
+
+      fireEvent.click(queryByTestId('category-item-Assets') as HTMLElement);
+
+      expect(queryByText(messages.turnOnTokenDetection.message)).toBeNull();
+      expect(
+        queryByText(messages.simulationsSettingSubHeader.message),
+      ).toBeNull();
+      expect(queryByText(messages.currencyRateCheckToggle.message)).toBeNull();
+      expect(queryByText(messages.ensDomainsSettingTitle.message)).toBeNull();
+      expect(
+        queryByText(messages.useMultiAccountBalanceChecker.message),
+      ).toBeNull();
+      expect(queryByTestId('ipfs-input')).toBeInTheDocument();
+      expect(container.querySelectorAll('input[type=checkbox]')).toHaveLength(
+        0,
+      );
+
+      fireEvent.click(
+        queryByTestId('privacy-settings-back-button') as HTMLElement,
+      );
+
+      expect(setUseTokenDetectionStub).not.toHaveBeenCalled();
+      expect(setUseTransactionSimulationsStub).not.toHaveBeenCalled();
+      expect(setUseCurrencyRateCheckStub).not.toHaveBeenCalled();
+      expect(setUseAddressBarEnsResolutionStub).not.toHaveBeenCalled();
+      expect(setUseMultiAccountBalanceCheckerStub).not.toHaveBeenCalled();
+      expect(setUse4ByteResolutionStub).not.toHaveBeenCalled();
+    });
+
+    it('keeps the security category for social-login MetaMetrics settings', () => {
+      const updatedMockStore = configureMockStore([thunk])({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+      const { queryByText } = renderWithProvider(
+        <PrivacySettings />,
+        updatedMockStore,
+      );
+
+      expect(
+        queryByText(messages.securityDefaultSettingsSocialLogin.message),
+      ).toBeInTheDocument();
+    });
   });
 
   it('renders category rows as keyboard-operable buttons', () => {
