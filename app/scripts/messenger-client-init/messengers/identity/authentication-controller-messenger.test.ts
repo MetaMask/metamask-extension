@@ -68,4 +68,19 @@ describe('getAuthenticationControllerInitMessenger', () => {
 
     expect(authenticationControllerInitMessenger).toBeInstanceOf(Messenger);
   });
+
+  it('delegates RemoteFeatureFlagController:getState', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAuthenticationControllerInitMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining([
+          'RemoteFeatureFlagController:getState',
+        ]),
+      }),
+    );
+  });
 });
