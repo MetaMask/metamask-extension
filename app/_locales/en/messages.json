@@ -4795,6 +4795,14 @@
   "honeypotTitle": {
     "message": "Honey pot"
   },
+  "hyperliquidDepositPromptDescription": {
+    "message": "Deposit any token. We'll swap it and send it to your Hyperliquid account automatically—no MetaMask fee.",
+    "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositPromptNoThanks": {
+    "message": "No thanks, deposit manually",
+    "description": "The label of the dismiss button in the Hyperliquid deposit prompt screen"
+  },
   "hyperliquidDepositPromptTitle": {
     "message": "Fund Hyperliquid with MetaMask",
     "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
@@ -5546,6 +5554,9 @@
   "moneyActivity": {
     "message": "Activity"
   },
+  "moneyActivityCard": {
+    "message": "Card"
+  },
   "moneyActivityConversionFailed": {
     "message": "Conversion failed"
   },
@@ -5579,11 +5590,20 @@
   "moneyActivityFilterSends": {
     "message": "Sends"
   },
+  "moneyActivityLoadError": {
+    "message": "Couldn't load your activity"
+  },
+  "moneyActivityMusdBack": {
+    "message": "mUSD back"
+  },
   "moneyActivityPending": {
     "message": "Pending"
   },
   "moneyActivityPlaceholderDescription": {
     "message": "Your Money activity will appear here."
+  },
+  "moneyActivityPurchase": {
+    "message": "Purchase"
   },
   "moneyActivityReceived": {
     "message": "Received"
@@ -5593,6 +5613,12 @@
   },
   "moneyActivityReceiving": {
     "message": "Receiving"
+  },
+  "moneyActivityRefund": {
+    "message": "Refund"
+  },
+  "moneyActivityRetry": {
+    "message": "Retry"
   },
   "moneyActivitySendFailed": {
     "message": "Send failed"
@@ -5621,11 +5647,17 @@
   "moneyBalanceLastKnown": {
     "message": "Last known balance"
   },
+  "moneyBalanceRetry": {
+    "message": "Retry"
+  },
   "moneyBalanceTitle": {
     "message": "Money balance"
   },
   "moneyBalanceUnavailable": {
     "message": "Balance unavailable"
+  },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "We're temporarily unable to display your balance. Your funds are safe—please try again shortly."
   },
   "moneyBenefitAutoEarn": {
     "message": "Auto-earn yield on your Money balance"
@@ -5714,6 +5746,45 @@
   },
   "moneySend": {
     "message": "Send"
+  },
+  "moneyToastDepositFailedBody": {
+    "message": "Unable to add funds. Try again."
+  },
+  "moneyToastDepositFailedBodyConvert": {
+    "message": "Unable to convert. Try again."
+  },
+  "moneyToastDepositFailedTitle": {
+    "message": "Deposit failed"
+  },
+  "moneyToastDepositFailedTitleAddMusd": {
+    "message": "Failed to add funds"
+  },
+  "moneyToastDepositFailedTitleConvert": {
+    "message": "Conversion failed"
+  },
+  "moneyToastWithdrawFailedBody": {
+    "message": "Unable to transfer funds. Try again."
+  },
+  "moneyToastWithdrawFailedTitle": {
+    "message": "Transfer failed"
+  },
+  "moneyTransferBetweenAccounts": {
+    "message": "Another account"
+  },
+  "moneyTransferComingSoon": {
+    "message": "Coming soon"
+  },
+  "moneyTransferPerpsAccount": {
+    "message": "Perps account"
+  },
+  "moneyTransferSendExternal": {
+    "message": "External address"
+  },
+  "moneyTransferTitle": {
+    "message": "Send funds to"
+  },
+  "moneyTransferWithdrawToBank": {
+    "message": "Bank account"
   },
   "month": {
     "message": "month"

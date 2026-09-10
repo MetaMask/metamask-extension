@@ -78,6 +78,8 @@ export async function verifyMergeQueueRetry({
   refExists,
   ...entryOptions
 }: VerifyMergeQueueRetryOptions): Promise<MergeQueueEntryVerification> {
+  // First confirm the PR still resolves to the failed synthetic SHA, then
+  // check its temporary ref immediately before authorizing the rerun.
   const entryVerification = await verifyMergeQueueEntry(entryOptions);
   if (entryVerification.state !== 'current') {
     // The ref has no bearing once the entry itself is confirmed stale or the
