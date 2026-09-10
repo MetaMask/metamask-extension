@@ -8,6 +8,7 @@ import {
 import { getIsPerpsTerminalBackendEnabled } from '../../../selectors/perps';
 import {
   getSelectedEvmInternalAccount,
+  selectEvmAddress,
   getUseExternalServices,
 } from '../../../selectors';
 import { usePerpsStreamManager } from './usePerpsStreamManager';
@@ -22,6 +23,7 @@ jest.mock('../../../store/background-connection', () => ({
 jest.mock('../../../selectors', () => ({
   ...jest.requireActual('../../../selectors'),
   getSelectedEvmInternalAccount: jest.fn(),
+  selectEvmAddress: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -52,6 +54,7 @@ describe('usePerpsStreamManager', () => {
   let useExternalServices = true;
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.mocked(selectEvmAddress).mockReset();
     mockSubmitRequestToBackground.mockReset();
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
     resetPerpsStreamManager();
@@ -67,6 +70,21 @@ describe('usePerpsStreamManager', () => {
       }
       return (selector as (s: unknown) => unknown)({});
     });
+  });
+
+  it('prefers the selected EVM account over a newer historical EVM selection', async () => {
+    getSelectedMock.mockReturnValue({
+      address: '0xhistorical',
+      type: 'eip155:eoa',
+    } as never);
+    jest.mocked(selectEvmAddress).mockReturnValue('0xselected');
+    const { result } = renderHook(() => usePerpsStreamManager());
+    await waitFor(() => expect(result.current.streamManager).not.toBeNull());
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsInitForAccount',
+      ['0xselected'],
+    );
+    jest.mocked(selectEvmAddress).mockReset();
   });
 
   it.each([

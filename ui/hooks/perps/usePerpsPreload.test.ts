@@ -9,6 +9,7 @@ import { usePerpsPreload } from './usePerpsPreload';
 
 jest.mock('react-redux', () => ({ useSelector: jest.fn() }));
 jest.mock('../../selectors', () => ({
+  selectEvmAddress: jest.requireActual('../../selectors').selectEvmAddress,
   getSelectedEvmInternalAccount:
     jest.requireActual('../../selectors').getSelectedEvmInternalAccount,
   getUseExternalServices: (state: { external: boolean }) => state.external,
@@ -99,6 +100,46 @@ describe('usePerpsPreload', () => {
 
   afterEach(() => {
     jest.useRealTimers();
+  });
+
+  it('registers ownership before initializing and cancels before delayed registration completes', async () => {
+    const registration = deferred();
+    jest
+      .mocked(submitRequestToBackground)
+      .mockImplementation((method) =>
+        method === 'perpsRegisterPreload'
+          ? registration.promise
+          : Promise.resolve(undefined),
+      );
+    const { unmount } = renderHook(() => usePerpsPreload(true));
+    expect(submitRequestToBackground).toHaveBeenCalledWith(
+      'perpsRegisterPreload',
+      [expect.any(String)],
+    );
+    expect(mockManager.initForAddress).not.toHaveBeenCalled();
+    unmount();
+    await act(async () => {
+      registration.resolve();
+    });
+    expect(mockManager.initForAddress).not.toHaveBeenCalled();
+    expect(submitRequestToBackground).not.toHaveBeenCalledWith(
+      'perpsStartPreload',
+      expect.anything(),
+    );
+  });
+
+  it('uses the explicitly selected EVM account when another EVM account has newer metadata', async () => {
+    Object.assign(state.metamask.internalAccounts.accounts, {
+      other: {
+        address: '0xother',
+        type: 'eip155:eoa',
+        metadata: { lastSelected: 2 },
+      },
+    });
+    await act(async () => {
+      renderHook(() => usePerpsPreload(true));
+    });
+    expect(mockManager.initForAddress).toHaveBeenCalledWith('0xfirst');
   });
 
   it.each(['locked', 'rollout', 'external', 'account'] as const)(
@@ -202,7 +243,11 @@ describe('usePerpsPreload', () => {
   it('does not start subscriptions after unmount during initialization', async () => {
     const init = deferred();
     mockManager.initForAddress.mockReturnValue(init.promise);
-    const { unmount } = renderHook(() => usePerpsPreload(true));
+    let unmount!: () => void;
+    await act(async () => {
+      ({ unmount } = renderHook(() => usePerpsPreload(true)));
+    });
+    expect(mockManager.initForAddress).toHaveBeenCalledTimes(1);
 
     unmount();
     await act(async () => {
@@ -274,6 +319,7 @@ describe('usePerpsPreload', () => {
       });
       const firstId = jest.mocked(trace).mock.calls[0][0].id;
       if (change === 'account') {
+        state = structuredClone(state);
         state.metamask.internalAccounts.accounts.selected.address = '0xsecond';
       }
       if (change === 'provider') {

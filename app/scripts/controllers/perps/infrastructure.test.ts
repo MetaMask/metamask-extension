@@ -598,6 +598,76 @@ describe('createPerpsInfrastructure', () => {
       });
     });
 
+    it.each(['normal', 'superseded', 'capacity'] as const)(
+      'retains initial trade data in shared Sentry span attributes on %s completion',
+      (ending) => {
+        const sharedTracing = jest.requireActual<
+          typeof import('../../../../shared/lib/trace')
+        >('../../../../shared/lib/trace');
+        jest.mocked(trace).mockImplementation(sharedTracing.trace);
+        jest.mocked(endTrace).mockImplementation(sharedTracing.endTrace);
+        const spans: { attributes: Record<string, unknown>; end: jest.Mock }[] =
+          [];
+        globalThis.sentry = {
+          withIsolationScope: (
+            callback: (scope: { setTag: jest.Mock }) => unknown,
+          ) => callback({ setTag: jest.fn() }),
+          startSpanManual: (
+            options: { attributes?: Record<string, unknown> },
+            callback: (span: unknown) => unknown,
+          ) => {
+            const attributes = { ...options.attributes };
+            const span = {
+              attributes,
+              end: jest.fn(),
+              setAttribute: (key: string, value: unknown) => {
+                attributes[key] = value;
+              },
+            };
+            spans.push(span);
+            return callback(span);
+          },
+        };
+        const { tracer } = createPerpsInfrastructure(getDeps());
+        const request = {
+          name: TraceName.PerpsPlaceOrder as const,
+          id: `trade-data-${ending}`,
+          op: 'perps.operation',
+          data: { isBuy: true, orderPrice: '123.45', success: false },
+        };
+        tracer.trace(request);
+        if (ending === 'normal') {
+          tracer.endTrace({
+            name: request.name,
+            id: request.id,
+            data: { success: true },
+          });
+        } else if (ending === 'superseded') {
+          tracer.trace(request);
+          tracer.endTrace(request);
+        } else {
+          for (let index = 0; index < 50; index += 1) {
+            tracer.trace({ ...request, id: `${request.id}-${index}` });
+          }
+          for (let index = 0; index < 50; index += 1) {
+            tracer.endTrace({
+              name: request.name,
+              id: `${request.id}-${index}`,
+            });
+          }
+        }
+        expect(spans[0].attributes).toEqual({
+          isBuy: true,
+          orderPrice: '123.45',
+          success: ending === 'normal',
+          ...(ending === 'normal' ? {} : { reason: ending }),
+        });
+        expect(spans[0].end).toHaveBeenCalledTimes(1);
+        jest.mocked(trace).mockReset();
+        jest.mocked(endTrace).mockReset();
+      },
+    );
+
     it('does not end an unknown or already completed operation', () => {
       const { tracer } = createPerpsInfrastructure(getDeps());
       const request = {

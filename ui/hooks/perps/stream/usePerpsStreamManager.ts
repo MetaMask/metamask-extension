@@ -18,6 +18,7 @@ import {
 import { getIsPerpsTerminalBackendEnabled } from '../../../selectors/perps';
 import {
   getSelectedEvmInternalAccount,
+  selectEvmAddress,
   getUseExternalServices,
 } from '../../../selectors';
 
@@ -56,8 +57,9 @@ export type UsePerpsStreamManagerReturn = {
  */
 export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
   // The background Perps session uses the EVM account, even on BTC assets.
-  const selectedAccount = useSelector(getSelectedEvmInternalAccount);
-  const selectedAddress = selectedAccount?.address ?? null;
+  const selectedEvmAddress = useSelector(selectEvmAddress);
+  const lastEvmAccount = useSelector(getSelectedEvmInternalAccount);
+  const selectedAddress = selectedEvmAddress ?? lastEvmAccount?.address ?? null;
   const useTerminalApi = useSelector(getIsPerpsTerminalBackendEnabled);
   const useExternalServices = useSelector(getUseExternalServices);
 
