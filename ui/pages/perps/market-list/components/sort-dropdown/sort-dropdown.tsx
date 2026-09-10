@@ -179,8 +179,8 @@ export const SortDropdown = ({
                         <Icon
                           name={
                             pendingDirection === 'desc'
-                              ? IconName.ArrowDown
-                              : IconName.ArrowUp
+                              ? IconName.Arrow2Down
+                              : IconName.Arrow2Up
                           }
                           size={IconSize.Md}
                           color={IconColor.IconAlternative}
