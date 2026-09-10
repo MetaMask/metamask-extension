@@ -100,8 +100,15 @@ jest.mock('../../../hooks/perps/usePerpsTransactionHistory', () => ({
 }));
 
 jest.mock('../../../store/background-connection', () => ({
-  submitRequestToBackground: (...args: unknown[]) =>
-    mockSubmitRequestToBackground(...args),
+  submitRequestToBackground: (method: string, ...args: unknown[]) => {
+    if (method === 'perpsGetLifecycleContext') {
+      return Promise.resolve('cold_process');
+    }
+    if (method === 'perpsMarkForegroundSettled') {
+      return Promise.resolve(undefined);
+    }
+    return mockSubmitRequestToBackground(method, ...args);
+  },
 }));
 
 jest.mock('../../../../shared/lib/sentry', () => ({
@@ -290,7 +297,7 @@ describe('PerpsView', () => {
   });
 
   describe('with default mock data (positions and orders)', () => {
-    it('waits for pending orders before completing the Mobile Home trace', () => {
+    it('waits for pending orders before completing the Mobile Home trace', async () => {
       jest
         .mocked(streamHooks.usePerpsLiveOrders)
         .mockReturnValue({ orders: [], isInitialLoading: true });
@@ -308,18 +315,20 @@ describe('PerpsView', () => {
         .mockReturnValue({ orders: mocks.mockOrders, isInitialLoading: false });
       rerender(<PerpsView />);
 
-      expect(trace).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: 'Perps Entry To Live Market List',
-          op: 'perps.operation',
-        }),
-      );
-      expect(endTrace).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: 'Perps Entry To Live Market List',
-          data: { success: true, variant: 'order' },
-        }),
-      );
+      await waitFor(() => {
+        expect(trace).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: 'Perps Entry To Live Market List',
+            op: 'perps.operation',
+          }),
+        );
+        expect(endTrace).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: 'Perps Entry To Live Market List',
+            data: { success: true, variant: 'order' },
+          }),
+        );
+      });
     });
 
     it('renders the perps tab view', () => {

@@ -6,6 +6,7 @@ import {
   endTrace,
   TraceName,
   TraceOperation,
+  getPerformanceTimestamp,
 } from '../../../shared/lib/trace';
 import { getUseExternalServices } from '../../selectors';
 import {
@@ -70,27 +71,43 @@ export function usePerpsPreload(walletReady: boolean): void {
         },
       );
     };
+    const startTime = getPerformanceTimestamp();
+    const traceReady = getPerpsLifecycleContext()
+      .then((context) =>
+        trace({
+          startTime,
+          name: TraceName.PerpsConnectionEstablishment,
+          id,
+          op: TraceOperation.PerpsOperation,
+          tags: {
+            feature: 'perps',
+            [PERPS_LIFECYCLE_TAG]: context,
+            source: 'wallet_root',
+          },
+        }),
+      )
+      .catch((error: unknown) => {
+        console.debug('[usePerpsPreload] Trace start failed', error);
+      });
     const finish = (success: boolean, reason: string) => {
       if (ended) {
         return;
       }
       ended = true;
-      endTrace({
-        name: TraceName.PerpsConnectionEstablishment,
-        id,
-        data: { success, reason },
-      });
+      const timestamp = getPerformanceTimestamp();
+      traceReady
+        .then(() =>
+          endTrace({
+            timestamp,
+            name: TraceName.PerpsConnectionEstablishment,
+            id,
+            data: { success, reason },
+          }),
+        )
+        .catch((error: unknown) => {
+          console.debug('[usePerpsPreload] Trace end failed', error);
+        });
     };
-    trace({
-      name: TraceName.PerpsConnectionEstablishment,
-      id,
-      op: TraceOperation.PerpsOperation,
-      tags: {
-        feature: 'perps',
-        [PERPS_LIFECYCLE_TAG]: getPerpsLifecycleContext(),
-        source: 'wallet_root',
-      },
-    });
     const timeout = setTimeout(() => {
       cancelled = true;
       finish(false, 'timeout');

@@ -570,10 +570,8 @@ class PerpsStreamManager {
       return;
     }
 
-    const needsDisconnect =
-      this.initializedAddress !== null || this.pendingInit !== null;
-    // Cancel old REST fallbacks before clearing their data or starting an RPC.
-    this.reset();
+    // Cancel old REST fallbacks while retaining mounted market subscriptions.
+    this.reset(true);
     const generation = this.initializationGeneration;
 
     // Serialize account transitions so A → B → A cannot finish an older init
@@ -585,18 +583,12 @@ class PerpsStreamManager {
           return;
         }
         try {
-          if (needsDisconnect) {
-            await submitRequestToBackground('perpsDisconnect');
-          }
           if (generation !== this.initializationGeneration) {
             return;
           }
-          // The old bridge is disconnected. The new bridge emits its initial
-          // snapshots before perpsInit returns, so accept them during this RPC.
-          if (this.pendingInit) {
-            this.pendingInit.acceptsUpdates = true;
-          }
-          await submitRequestToBackground('perpsInit');
+          // The shared background coordinator serializes provider teardown and
+          // activation across windows. It emits snapshots before the RPC returns.
+          await submitRequestToBackground('perpsInitForAccount', [address]);
           if (generation === this.initializationGeneration) {
             this.init(address);
           }
@@ -636,6 +628,17 @@ class PerpsStreamManager {
     subscriptionId?: string;
     live?: boolean;
   }): void {
+    if (payload.channel === 'accountSession') {
+      const session = payload.data as { address?: string };
+      if (
+        this.pendingInit &&
+        session.address?.toLowerCase() ===
+          this.pendingInit.address.toLowerCase()
+      ) {
+        this.pendingInit.acceptsUpdates = true;
+      }
+      return;
+    }
     if (this.pendingInit?.acceptsUpdates === false) {
       return;
     }
@@ -854,8 +857,7 @@ class PerpsStreamManager {
     this.orderBook.clearCache();
     this.orderBookAggregated.clearCache();
     this.orderBookAggregatedStatus.clearCache();
-    this.activeOrderBookAggregatedSubscriptionId = null;
-    this.candles.clearAll();
+    this.candles.clearCache();
     this._lastStreamUpdateAt = 0;
     clearPerpsMarketInfoModuleCache();
     clearPerpsMarketFillsModuleCache();
@@ -866,8 +868,9 @@ class PerpsStreamManager {
    * Full reset - clear caches and reset channel state.
    * Called on account switch or when leaving Perps entirely.
    * Note: Does not reset address tracking (handled by this.initializedAddress).
+   * @param preserveMarketSubscriptions
    */
-  reset(): void {
+  reset(preserveMarketSubscriptions = false): void {
     this.initializationGeneration += 1;
     this.pendingInit = null;
     this.liveMarkets = new WeakSet<PerpsMarketData>();
@@ -882,7 +885,11 @@ class PerpsStreamManager {
     this.orderBook.reset();
     this.orderBookAggregated.reset();
     this.orderBookAggregatedStatus.reset();
-    this.candles.clearAll();
+    if (preserveMarketSubscriptions) {
+      this.candles.clearCache();
+    } else {
+      this.candles.clearAll();
+    }
     this.optimisticTPSLOverrides.clear();
     this.initializedAddress = null;
     this._lastStreamUpdateAt = 0;

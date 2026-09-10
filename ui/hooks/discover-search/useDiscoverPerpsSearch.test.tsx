@@ -34,6 +34,7 @@ describe('useDiscoverPerpsSearch', () => {
       hip3Markets: [],
       isInitialLoading: false,
       isLive: false,
+      areMarketsLive: jest.fn().mockReturnValue(false),
       error: null,
       refresh: jest.fn(),
     });
@@ -50,6 +51,7 @@ describe('useDiscoverPerpsSearch', () => {
       hip3Markets: [],
       isInitialLoading: false,
       isLive: false,
+      areMarketsLive: jest.fn().mockReturnValue(false),
       error: null,
       refresh: jest.fn(),
     });
@@ -74,6 +76,7 @@ describe('useDiscoverPerpsSearch', () => {
       hip3Markets: [],
       isInitialLoading: false,
       isLive: false,
+      areMarketsLive: jest.fn().mockReturnValue(false),
       error: null,
       refresh: jest.fn(),
     });
@@ -100,6 +103,7 @@ describe('useDiscoverPerpsSearch', () => {
       hip3Markets: [],
       isInitialLoading: false,
       isLive: false,
+      areMarketsLive: jest.fn().mockReturnValue(false),
       error: null,
       refresh: jest.fn(),
     });
@@ -119,6 +123,7 @@ describe('useDiscoverPerpsSearch', () => {
       hip3Markets: [],
       isInitialLoading: false,
       isLive: false,
+      areMarketsLive: jest.fn().mockReturnValue(false),
       error: null,
       refresh: jest.fn(),
     });

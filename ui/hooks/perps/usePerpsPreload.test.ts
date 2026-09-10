@@ -24,9 +24,10 @@ jest.mock('../../../shared/lib/trace', () => ({
   ...jest.requireActual('../../../shared/lib/trace'),
   trace: jest.fn(),
   endTrace: jest.fn(),
+  getPerformanceTimestamp: () => Date.now(),
 }));
 jest.mock('../../helpers/perps/entry-trace', () => ({
-  getPerpsLifecycleContext: () => 'cold_process',
+  getPerpsLifecycleContext: () => Promise.resolve('cold_process'),
   observePerpsLifecycle: () => jest.fn(),
   PERPS_LIFECYCLE_TAG: 'lifecycle_context',
 }));
@@ -316,6 +317,43 @@ describe('usePerpsPreload', () => {
       unsubscribe();
       unmount();
       manager.reset();
+    },
+  );
+  it.each(['ready', 'unmount', 'timeout'] as const)(
+    'never settles foreground lifecycle after preload %s',
+    async (completion) => {
+      const ready = deferred();
+      jest
+        .mocked(submitRequestToBackground)
+        .mockImplementation((method) =>
+          method === 'perpsStartPreload'
+            ? ready.promise
+            : Promise.resolve(undefined),
+        );
+      const { unmount } = renderHook(() => usePerpsPreload(true));
+      await act(async () => undefined);
+      if (completion === 'unmount') {
+        unmount();
+      }
+      if (completion === 'timeout') {
+        await act(async () => {
+          jest.advanceTimersByTime(30_000);
+        });
+      }
+      await act(async () => {
+        ready.resolve();
+      });
+      expect(submitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsMarkForegroundSettled',
+        [],
+      );
+      expect(endTrace).toHaveBeenCalledTimes(1);
+      expect(endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ success: completion === 'ready' }),
+        }),
+      );
+      unmount();
     },
   );
 });

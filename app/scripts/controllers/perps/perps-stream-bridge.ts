@@ -56,6 +56,7 @@ type SubscribeAggregatedOrderBook = (params: {
 
 type PerpsStreamBridgeOptions = {
   controller: PerpsController;
+  getSelectedAddress: () => string;
   onControllerStateChange: StateChangeListener;
   onConnectivityChange: ConnectivityChangeListener;
   perpsInit: (...args: unknown[]) => Promise<unknown>;
@@ -67,6 +68,20 @@ type PerpsStreamBridgeOptions = {
   subscribeAggregatedOrderBook: SubscribeAggregatedOrderBook;
   emit: EmitFn;
 };
+
+// UI bridges are connection-scoped; this owner survives UI reloads, but not
+// replacement of the shared background controller. Never persist telemetry state.
+const settledControllers = new WeakSet<PerpsController>();
+type AccountSession = {
+  address?: string;
+  needsTeardown: boolean;
+  queue: Promise<unknown>;
+};
+const accountSessions = new WeakMap<PerpsController, AccountSession>();
+const controllerBridges = new WeakMap<
+  PerpsController,
+  Set<PerpsStreamBridge>
+>();
 
 const REST_HYDRATION_STAGGER_MS = 200;
 
@@ -116,6 +131,8 @@ export class PerpsStreamBridge {
 
   readonly #controller: PerpsController;
 
+  readonly #getSelectedAddress: () => string;
+
   readonly #onControllerStateChange: StateChangeListener;
 
   readonly #onConnectivityChange: ConnectivityChangeListener;
@@ -137,6 +154,10 @@ export class PerpsStreamBridge {
   readonly #staticUnsubs: (() => void)[] = [];
 
   readonly #dynamicUnsubs: Record<string, () => void> = {};
+
+  #dynamicSubscriptions: Record<string, () => () => void> = {};
+
+  #accountViewActive = false;
 
   /**
    * Per-channel activation generation for the deferred dynamic subscriptions
@@ -204,8 +225,30 @@ export class PerpsStreamBridge {
 
   #wasDeviceOffline = false;
 
+  /**
+   * Invalidate every UI's subscription ownership before global provider teardown.
+   *
+   * @param controller - Shared background controller whose provider is stopping.
+   */
+  static invalidateController(controller: PerpsController): void {
+    const session = accountSessions.get(controller);
+    if (session) {
+      session.address = undefined;
+    }
+    for (const bridge of controllerBridges.get(controller) ?? []) {
+      bridge.destroy();
+    }
+  }
+
+  /** Remove a closed UI connection from the background's bridge registry. */
+  dispose(): void {
+    this.destroy();
+    controllerBridges.get(this.#controller)?.delete(this);
+  }
+
   constructor(options: PerpsStreamBridgeOptions) {
     this.#controller = options.controller;
+    this.#getSelectedAddress = options.getSelectedAddress;
     this.#onControllerStateChange = options.onControllerStateChange;
     this.#onConnectivityChange = options.onConnectivityChange;
     this.#perpsInit = options.perpsInit;
@@ -216,6 +259,10 @@ export class PerpsStreamBridge {
     this.#isPreloadAllowed = options.isPreloadAllowed;
     this.#subscribeAggregatedOrderBook = options.subscribeAggregatedOrderBook;
     this.#emit = options.emit;
+    const bridges =
+      controllerBridges.get(this.#controller) ?? new Set<PerpsStreamBridge>();
+    bridges.add(this);
+    controllerBridges.set(this.#controller, bridges);
   }
 
   /**
@@ -228,6 +275,12 @@ export class PerpsStreamBridge {
    */
   bridgeApi(): Record<string, (...args: never[]) => unknown> {
     return {
+      perpsInitForAccount: (address: string) => this.#initForAccount(address),
+      perpsGetLifecycleContext: async () =>
+        settledControllers.has(this.#controller) ? 'warm' : 'cold_process',
+      perpsMarkForegroundSettled: async () => {
+        settledControllers.add(this.#controller);
+      },
       perpsInit: async (...args: unknown[]) => {
         if (!this.#isPreloadAllowed()) {
           throw new Error('Perps connection is unavailable');
@@ -282,6 +335,9 @@ export class PerpsStreamBridge {
       },
       perpsViewActive: (active: boolean) => {
         this.#viewActive = active;
+        if (!active) {
+          this.#accountViewActive = false;
+        }
       },
       perpsStartPreload: (id: string) => this.#startPreload(id),
       perpsStopPreload: (id: string) => {
@@ -438,6 +494,7 @@ export class PerpsStreamBridge {
           key,
           setTimeout(() => {
             this.#pendingCandleTeardowns.delete(key);
+            delete this.#dynamicSubscriptions[key];
             this.#tearDownDynamicKey(key);
           }, CANDLE_TEARDOWN_DEFER_MS),
         );
@@ -471,6 +528,9 @@ export class PerpsStreamBridge {
    */
   canEmit(channel: string): boolean {
     return (
+      (channel === 'accountSession' &&
+        this.#isConnectionAlive() &&
+        this.#isPreloadAllowed()) ||
       this.isActive ||
       Boolean(
         this.#activated &&
@@ -498,6 +558,8 @@ export class PerpsStreamBridge {
     this.#staticUnsubs.length = 0;
 
     this.#tearDownAllDynamic();
+    this.#dynamicSubscriptions = {};
+    this.#accountViewActive = false;
 
     this.#activated = false;
     this.#walletInitialized = false;
@@ -509,6 +571,86 @@ export class PerpsStreamBridge {
     this.#terminalMarketRefetchInFlight = false;
     this.#terminalMarketRefetchPending = false;
     this.#wasDeviceOffline = false;
+  }
+
+  #detachForAccountSwitch(): void {
+    const subscriptions = { ...this.#dynamicSubscriptions };
+    for (const key of this.#pendingCandleTeardowns.keys()) {
+      delete subscriptions[key];
+    }
+    const viewActive = this.#viewActive || this.#accountViewActive;
+    this.destroy();
+    this.#dynamicSubscriptions = subscriptions;
+    this.#accountViewActive = viewActive;
+  }
+
+  /**
+   * Serialize account transitions for all UI connections sharing the controller.
+   * @param address
+   */
+  async #initForAccount(address: string): Promise<unknown> {
+    const session = accountSessions.get(this.#controller) ?? {
+      queue: Promise.resolve(),
+      needsTeardown: false,
+    };
+    accountSessions.set(this.#controller, session);
+    const isCurrent = () =>
+      this.#isConnectionAlive() &&
+      this.#isPreloadAllowed() &&
+      address.toLowerCase() === this.#getSelectedAddress().toLowerCase();
+    const operation = session.queue
+      .catch(() => undefined)
+      .then(async () => {
+        if (!isCurrent()) {
+          throw new Error('Perps account changed');
+        }
+        const changesSharedSession =
+          session.needsTeardown || session.address !== address.toLowerCase();
+        try {
+          if (
+            session.needsTeardown ||
+            (session.address && session.address !== address.toLowerCase())
+          ) {
+            for (const bridge of controllerBridges.get(this.#controller) ??
+              []) {
+              bridge.#detachForAccountSwitch();
+            }
+            await this.#perpsDisconnect();
+            if (!isCurrent()) {
+              throw new Error('Perps account changed');
+            }
+          }
+          // Admission must precede activation: init may synchronously emit
+          // snapshots, so this control message cannot depend on #activated.
+          this.#emit('accountSession', { address });
+          const result = await this.bridgeApi().perpsInit();
+          if (!isCurrent()) {
+            throw new Error('Perps account changed');
+          }
+          this.#viewActive = this.#viewActive || this.#accountViewActive;
+          this.#accountViewActive = false;
+          for (const [key, subscribe] of Object.entries(
+            this.#dynamicSubscriptions,
+          )) {
+            if (!this.#dynamicUnsubs[key]) {
+              this.#dynamicUnsubs[key] = subscribe();
+            }
+          }
+          session.address = address.toLowerCase();
+          session.needsTeardown = false;
+          return result;
+        } catch (error) {
+          // A failed transition may have retired the provider. A cancelled UI
+          // joining the same account must leave surviving owners connected.
+          if (changesSharedSession) {
+            session.address = undefined;
+            session.needsTeardown = true;
+          }
+          throw error;
+        }
+      });
+    session.queue = operation;
+    return operation;
   }
 
   async #initAndActivate(): Promise<void> {
@@ -677,6 +819,7 @@ export class PerpsStreamBridge {
   #deactivateDynamicChannel(
     channel: 'prices' | 'orderBook' | 'orderBookAggregated',
   ): void {
+    delete this.#dynamicSubscriptions[channel];
     this.#dynamicActivationGeneration[channel] =
       (this.#dynamicActivationGeneration[channel] ?? 0) + 1;
     this.#tearDownChannel(channel);
@@ -1018,8 +1161,8 @@ export class PerpsStreamBridge {
     symbols: string[],
     includeMarketData?: boolean,
   ): void {
-    const generation = this.#destroyGeneration;
     this.#addDynamicSubscription('prices', () => {
+      const generation = this.#destroyGeneration;
       const activeSymbols = new Set(symbols);
       this.#foregroundPriceSymbols = activeSymbols;
       let unsubscribe: () => void;
@@ -1185,6 +1328,7 @@ export class PerpsStreamBridge {
 
   #addDynamicSubscription(key: string, subscribe: () => () => void): void {
     this.#tearDownDynamicKey(key);
+    this.#dynamicSubscriptions[key] = subscribe;
     this.#dynamicUnsubs[key] = subscribe();
   }
 }
