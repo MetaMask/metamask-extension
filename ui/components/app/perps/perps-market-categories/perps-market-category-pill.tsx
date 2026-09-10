@@ -23,12 +23,8 @@ export type PerpsMarketCategoryPillProps = {
   onPress: (category: MarketFilter) => void;
   /** Whether this pill is the active filter. */
   isActive?: boolean;
-  /**
-   * Called when the active pill is pressed again. Presence of this handler is
-   * what turns the active pill into a clear affordance, so a surface that only
-   * navigates (the Perps tab) never renders one.
-   */
-  onClear?: () => void;
+  /** Called when the active pill is pressed again, clearing the filter. */
+  onClear: () => void;
   /** Test id prefix, inherited from the rail so surfaces stay addressable apart. */
   testIdPrefix?: string;
 };
@@ -36,9 +32,8 @@ export type PerpsMarketCategoryPillProps = {
 /**
  * PerpsMarketCategoryPill renders one market category as a `ButtonFilter`.
  *
- * No `aria-pressed` when the rail cannot hold a selection: on the Perps tab the
- * pill is a navigation trigger, not a toggle, so a pressed state would
- * misreport it. On the market list it filters in place and does report one.
+ * The pill is a toggle rather than a link: pressing the active one clears the
+ * filter, which is what `aria-pressed` and the trailing clear icon announce.
  *
  * @param options0 - Component props.
  * @param options0.category - The category to render.
@@ -55,10 +50,9 @@ export const PerpsMarketCategoryPill = ({
   testIdPrefix = 'perps-market-categories',
 }: PerpsMarketCategoryPillProps) => {
   const t = useI18nContext();
-  const isClearable = Boolean(onClear);
 
   const handleClick = useCallback(() => {
-    if (isActive && onClear) {
+    if (isActive) {
       onClear();
       return;
     }
@@ -72,14 +66,12 @@ export const PerpsMarketCategoryPill = ({
       className={PILL_STYLES}
       isActive={isActive}
       onClick={handleClick}
-      aria-pressed={isClearable ? isActive : undefined}
-      aria-label={
-        isActive && isClearable ? t('perpsFilterClear', [label]) : undefined
-      }
+      aria-pressed={isActive}
+      aria-label={isActive ? t('perpsFilterClear', [label]) : undefined}
       data-testid={`${testIdPrefix}-pill-${category}`}
     >
       {label}
-      {isActive && isClearable && (
+      {isActive && (
         <Icon
           name={IconName.CircleX}
           size={IconSize.Sm}

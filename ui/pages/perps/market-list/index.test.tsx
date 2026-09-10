@@ -328,6 +328,40 @@ describe('MarketListView', () => {
       });
     });
 
+    it('keeps a pill for an active category the data no longer offers', async () => {
+      // No uncategorized HIP-3 markets, so `new` is not one of the rail's own
+      // categories. A `?filter=new` link still narrows the list, and clearing
+      // lives on the active pill — without a pill the list would be stuck
+      // filtered with no control that returns it to every market.
+      mockUsePerpsLiveMarketListData.mockReturnValue({
+        markets: mockCryptoMarkets,
+        cryptoMarkets: mockCryptoMarkets,
+        hip3Markets: [],
+        isInitialLoading: false,
+        error: null,
+        refresh: jest.fn(),
+      });
+
+      renderWithProvider(
+        <MarketListView />,
+        mockStore,
+        '/perps/market-list?filter=new',
+      );
+
+      const newPill = await waitFor(() =>
+        screen.getByTestId('market-list-categories-pill-new'),
+      );
+      expect(newPill).toHaveAttribute('aria-pressed', 'true');
+
+      fireEvent.click(newPill);
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId('market-list-categories-pill-new'),
+        ).not.toBeInTheDocument();
+      });
+    });
+
     describe('watchlist filter', () => {
       // Needs watchlist state, which the shared store does not carry.
       const watchlistStore = configureStore({

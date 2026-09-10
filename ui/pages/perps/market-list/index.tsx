@@ -611,13 +611,25 @@ export const MarketListView = () => {
   // and clearing the active pill is what returns the list to every market.
   // Watchlist is not a market category either — it is user state, and it lives
   // on the header's star toggle rather than taking a slot on the rail.
-  const railCategories = useMemo<MarketFilter[]>(
-    () => [
+  const railCategories = useMemo<MarketFilter[]>(() => {
+    const categories: MarketFilter[] = [
       ...MARKET_CATEGORIES,
       ...(hasUncategorizedMarkets ? (['new'] as const) : []),
-    ],
-    [hasUncategorizedMarkets],
-  );
+    ];
+    // The active category always gets a pill, even when the data no longer
+    // offers it — a `?filter=new` link outliving the last uncategorized market
+    // would otherwise leave the list narrowed with nothing to clear, because
+    // clearing lives on the active pill and there is no `All` pill to fall back
+    // to. Watchlist is excluded: it is the header star's state, not a rail slot.
+    if (
+      selectedFilter !== 'all' &&
+      selectedFilter !== WATCHLIST_MARKET_FILTER &&
+      !categories.includes(selectedFilter)
+    ) {
+      categories.push(selectedFilter);
+    }
+    return categories;
+  }, [hasUncategorizedMarkets, selectedFilter]);
 
   const handleFilterClear = useCallback(() => {
     handleFilterChange('all');
