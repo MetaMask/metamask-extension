@@ -1,24 +1,25 @@
+import type { PopupOpenerDeps } from './background';
 import { createPopupOpener } from './background';
 
 describe('createPopupOpener', () => {
-  const createMockDeps = () => ({
-    extension: {
-      tabs: {
-        get: jest.fn().mockResolvedValue({ windowId: 789 }),
+  const createMockDeps = (): PopupOpenerDeps =>
+    ({
+      extension: {
+        tabs: {
+          get: jest.fn().mockResolvedValue({ windowId: 789 }),
+        },
+        windows: {
+          update: jest.fn().mockResolvedValue(undefined),
+        },
       },
-      windows: {
-        update: jest.fn().mockResolvedValue(undefined),
-      },
-    },
-  });
+    }) as unknown as PopupOpenerDeps;
 
   beforeEach(() => {
-    // @ts-expect-error - mocking chrome.action.openPopup
     globalThis.chrome = {
       action: {
         openPopup: jest.fn().mockResolvedValue(undefined),
       },
-    };
+    } as unknown as typeof chrome;
   });
 
   afterEach(() => {
@@ -64,7 +65,9 @@ describe('createPopupOpener', () => {
 
   it('continues even if tab.get fails', async () => {
     const deps = createMockDeps();
-    deps.extension.tabs.get.mockRejectedValue(new Error('Tab not found'));
+    (deps.extension.tabs.get as jest.Mock).mockRejectedValue(
+      new Error('Tab not found'),
+    );
 
     const requestOpenPopup = createPopupOpener(deps);
     const result = await requestOpenPopup({ tabId: 123 });
@@ -75,8 +78,7 @@ describe('createPopupOpener', () => {
 
   it('returns false if openPopup throws', async () => {
     const deps = createMockDeps();
-    // @ts-expect-error - mocking rejection
-    globalThis.chrome.action.openPopup.mockRejectedValue(
+    (globalThis.chrome.action.openPopup as jest.Mock).mockRejectedValue(
       new Error('Gesture expired'),
     );
 
@@ -87,9 +89,12 @@ describe('createPopupOpener', () => {
   });
 
   it('succeeds when popup is already open (focuses existing popup)', async () => {
+    // Per Chrome docs, chrome.action.openPopup() focuses the existing popup
+    // if one is already open, rather than throwing an error.
     const deps = createMockDeps();
     const requestOpenPopup = createPopupOpener(deps);
 
+    // First call opens popup
     const firstResult = await requestOpenPopup({ tabId: 123 });
     expect(firstResult).toBe(true);
 

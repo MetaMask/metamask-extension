@@ -1,31 +1,32 @@
+import type { CreatePopupOpenerWithNotificationCloseDeps } from './createPopupOpenerWithNotificationClose';
 import { createPopupOpenerWithNotificationClose } from './createPopupOpenerWithNotificationClose';
 
 describe('createPopupOpenerWithNotificationClose', () => {
-  const createMockDeps = () => ({
-    appStateController: {
-      getCurrentPopupId: jest.fn().mockReturnValue(undefined),
-    },
-    extension: {
-      tabs: {
-        get: jest.fn().mockResolvedValue({ windowId: 789 }),
+  const createMockDeps = (): CreatePopupOpenerWithNotificationCloseDeps =>
+    ({
+      appStateController: {
+        getCurrentPopupId: jest.fn().mockReturnValue(undefined),
       },
-      windows: {
-        remove: jest.fn().mockResolvedValue(undefined),
-        update: jest.fn().mockResolvedValue(undefined),
+      extension: {
+        tabs: {
+          get: jest.fn().mockResolvedValue({ windowId: 789 }),
+        },
+        windows: {
+          remove: jest.fn().mockResolvedValue(undefined),
+          update: jest.fn().mockResolvedValue(undefined),
+        },
       },
-    },
-    notificationManager: {
-      markAsAutomaticallyClosed: jest.fn(),
-    },
-  });
+      notificationManager: {
+        markAsAutomaticallyClosed: jest.fn(),
+      },
+    }) as unknown as CreatePopupOpenerWithNotificationCloseDeps;
 
   beforeEach(() => {
-    // @ts-expect-error - mocking chrome.action.openPopup
     globalThis.chrome = {
       action: {
         openPopup: jest.fn().mockResolvedValue(undefined),
       },
-    };
+    } as unknown as typeof chrome;
   });
 
   afterEach(() => {
@@ -46,7 +47,9 @@ describe('createPopupOpenerWithNotificationClose', () => {
 
   it('closes notification only after popup opens successfully', async () => {
     const deps = createMockDeps();
-    deps.appStateController.getCurrentPopupId.mockReturnValue(123);
+    (deps.appStateController.getCurrentPopupId as jest.Mock).mockReturnValue(
+      123,
+    );
     const opener = createPopupOpenerWithNotificationClose(deps);
 
     const result = await opener(456);
@@ -63,7 +66,9 @@ describe('createPopupOpenerWithNotificationClose', () => {
     delete globalThis.chrome;
 
     const deps = createMockDeps();
-    deps.appStateController.getCurrentPopupId.mockReturnValue(123);
+    (deps.appStateController.getCurrentPopupId as jest.Mock).mockReturnValue(
+      123,
+    );
     const opener = createPopupOpenerWithNotificationClose(deps);
 
     const result = await opener(456);
@@ -77,7 +82,9 @@ describe('createPopupOpenerWithNotificationClose', () => {
 
   it('does not try to close notification if none exists', async () => {
     const deps = createMockDeps();
-    deps.appStateController.getCurrentPopupId.mockReturnValue(undefined);
+    (deps.appStateController.getCurrentPopupId as jest.Mock).mockReturnValue(
+      undefined,
+    );
     const opener = createPopupOpenerWithNotificationClose(deps);
 
     await opener(456);
@@ -90,8 +97,10 @@ describe('createPopupOpenerWithNotificationClose', () => {
 
   it('continues even if notification window removal fails', async () => {
     const deps = createMockDeps();
-    deps.appStateController.getCurrentPopupId.mockReturnValue(123);
-    deps.extension.windows.remove.mockRejectedValue(
+    (deps.appStateController.getCurrentPopupId as jest.Mock).mockReturnValue(
+      123,
+    );
+    (deps.extension.windows.remove as jest.Mock).mockRejectedValue(
       new Error('Window not found'),
     );
     const opener = createPopupOpenerWithNotificationClose(deps);

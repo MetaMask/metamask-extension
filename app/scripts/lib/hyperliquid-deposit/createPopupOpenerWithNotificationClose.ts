@@ -1,9 +1,9 @@
 import type { Browser } from 'webextension-polyfill';
-import type NotificationManager from '../../notification-manager';
+import type NotificationManager from "../notification-manager";
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { createPopupOpener } from '../../popup/background';
 
-type CreatePopupOpenerWithNotificationCloseDeps = {
+export type CreatePopupOpenerWithNotificationCloseDeps = {
   appStateController: Pick<AppStateController, 'getCurrentPopupId'>;
   extension: Pick<Browser, 'tabs' | 'windows'>;
   notificationManager: Pick<NotificationManager, 'markAsAutomaticallyClosed'>;
