@@ -12,6 +12,7 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
 import { PERPS_PRODUCT_CATEGORIES } from '../constants';
+import { SKELETON_PILL_COUNT } from '../perps-market-categories/perps-category-rail';
 import { PerpsProducts } from './perps-products';
 
 const mockNavigate = jest.fn();
@@ -29,12 +30,6 @@ jest.mock('../../../../hooks/perps', () => ({
 }));
 
 const mockStore = configureStore({ metamask: { ...mockState.metamask } });
-
-/**
- * The section reserves a fixed footprint while loading: this many skeleton
- * chips, so nothing below it shifts when the categories arrive.
- */
-const SKELETON_PILL_COUNT = 5;
 
 const renderSection = (isLoading = false) =>
   renderWithProvider(<PerpsProducts isLoading={isLoading} />, mockStore);
