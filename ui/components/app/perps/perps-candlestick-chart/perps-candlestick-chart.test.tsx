@@ -19,7 +19,11 @@ type CrosshairParam = {
 };
 
 let mockCrosshairCallback: ((param: CrosshairParam) => void) | undefined;
-let mockCreatedSeries: { ref: object }[] = [];
+let mockCreatedSeries: {
+  ref: object;
+  setData: jest.Mock;
+  update: jest.Mock;
+}[] = [];
 let mockCreatedCharts: { panes: jest.Mock; remove: jest.Mock }[] = [];
 
 jest.mock('lightweight-charts', () => ({
@@ -388,10 +392,7 @@ describe('PerpsCandlestickChart — series replace vs incremental update', () =>
       />,
       mockStore,
     );
-    const candlestick = getCandlestickSeries() as {
-      setData: jest.Mock;
-      update: jest.Mock;
-    };
+    const candlestick = getCandlestickSeries();
     expect(candlestick.setData).toHaveBeenCalled();
     candlestick.setData.mockClear();
     candlestick.update.mockClear();
