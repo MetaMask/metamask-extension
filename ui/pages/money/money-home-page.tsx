@@ -3,6 +3,8 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   Button,
   ButtonIcon,
   ButtonVariant,
@@ -32,6 +34,7 @@ import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-
 import { moneyFormatUsd } from '../../helpers/money/format';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
+import { reportMoneyError } from '../../helpers/money/report-money-error';
 import { MONEY_LANDING_URL } from './constants/urls';
 import { MoneyActivityList } from './components/money-activity-list';
 import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards';
@@ -110,6 +113,8 @@ export function MoneyHomePage() {
     apyPercentFormatted,
     isBalanceFetchError,
     isBalanceLoading,
+    lastKnownTotalFiatFormatted,
+    refetchBalance,
     tokenTotal,
     totalFiatFormatted,
     totalFiatRaw,
@@ -161,9 +166,7 @@ export function MoneyHomePage() {
     navigate(MONEY_ACTIVITY_ROUTE);
   }, [navigate]);
   const handleAddFunds = useCallback(() => {
-    initiateDeposit().catch((error) =>
-      console.error('Failed to initiate money account deposit', error),
-    );
+    initiateDeposit();
   }, [initiateDeposit]);
   const { initiateWithdrawal, isLoading: isWithdrawalLoading } =
     useMoneyAccountWithdrawal();
@@ -171,9 +174,7 @@ export function MoneyHomePage() {
     global.platform.openTab({ url: MONEY_LANDING_URL });
   }, []);
   const handleSend = useCallback(() => {
-    initiateWithdrawal().catch((error) =>
-      console.error('Failed to initiate money account withdrawal', error),
-    );
+    initiateWithdrawal();
   }, [initiateWithdrawal]);
 
   if (isAvailabilityLoading || (availability.isAvailable && isBalanceLoading)) {
@@ -194,10 +195,14 @@ export function MoneyHomePage() {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 
+  const isLastKnownBalance =
+    totalFiatFormatted === undefined &&
+    lastKnownTotalFiatFormatted !== undefined;
+  const showFundedLayout = isFunded || isLastKnownBalance;
   const balanceDisplay =
-    isBalanceFetchError || totalFiatFormatted === undefined
-      ? t('moneyBalanceUnavailable')
-      : totalFiatFormatted;
+    totalFiatFormatted ??
+    lastKnownTotalFiatFormatted ??
+    t('moneyBalanceUnavailable');
   const apyDisplay = apyPercentFormatted;
 
   const earnOnYourCryptoSection =
@@ -229,6 +234,27 @@ export function MoneyHomePage() {
         />
       </header>
 
+      {isBalanceFetchError ? (
+        <div className="px-4 pt-2">
+          <BannerAlert
+            severity={BannerAlertSeverity.Warning}
+            title={t('moneyBalanceUnavailable')}
+            description={t('moneyBalanceUnavailableBannerDescription')}
+            actionButtonLabel={t('moneyBalanceRetry')}
+            actionButtonOnClick={() => {
+              refetchBalance().catch((error) => {
+                reportMoneyError(
+                  '[Money Account] Balance retry failed',
+                  error,
+                  { query: 'fetchBalanceWithFallback' },
+                );
+              });
+            }}
+            data-testid="money-balance-unavailable-banner"
+          />
+        </div>
+      ) : null}
+
       <div className="flex flex-col items-center gap-2 px-4 pt-2">
         <div className="flex w-full max-w-[784px] flex-col gap-1 sm:items-center">
           <Text
@@ -238,6 +264,15 @@ export function MoneyHomePage() {
           >
             {balanceDisplay}
           </Text>
+          {isLastKnownBalance ? (
+            <Text
+              variant={TextVariant.BodyXs}
+              color={TextColor.TextAlternative}
+              data-testid="money-home-last-known"
+            >
+              {t('moneyBalanceLastKnown')}
+            </Text>
+          ) : null}
           <div className="flex h-6 items-center gap-1">
             {vaultApyQuery.isLoading && !apyDisplay ? (
               <Skeleton className="h-4 w-24" />
@@ -282,7 +317,7 @@ export function MoneyHomePage() {
           />
         </div>
 
-        {isFunded ? null : (
+        {showFundedLayout ? null : (
           <section className="mt-1 flex w-full max-w-[389px] flex-col gap-4 overflow-hidden rounded-2xl bg-background-muted p-4">
             <img
               src={MONEY_ONBOARDING_ARTWORK}
@@ -319,8 +354,10 @@ export function MoneyHomePage() {
         )}
       </div>
 
-      <div className={`mx-auto w-full max-w-[816px] ${isFunded ? '' : 'mt-3'}`}>
-        {isFunded ? (
+      <div
+        className={`mx-auto w-full max-w-[816px] ${showFundedLayout ? '' : 'mt-3'}`}
+      >
+        {showFundedLayout ? (
           <>
             {isMoneyEarningSectionEnabled ? (
               <>

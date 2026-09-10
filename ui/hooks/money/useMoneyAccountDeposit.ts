@@ -15,6 +15,7 @@ import {
   useConfirmationNavigation,
 } from '../../pages/confirmations/hooks/useConfirmationNavigation';
 import { createMoneyAccountDepositTransaction } from '../../store/controller-actions/transaction-pay-controller';
+import { useMoneyErrorReporter } from './useMoneyErrorReporter';
 
 export type InitiateDepositOptions = {
   /**
@@ -23,9 +24,36 @@ export type InitiateDepositOptions = {
    * payment method instead of a guess.
    */
   intent?: MoneyAccountDepositIntent;
-  /** Called when deposit setup fails, before the error is rethrown. */
-  onDepositSetupFailure?: (error: Error) => void;
 };
+
+const DEPOSIT_FAILED_TOAST_COPY = {
+  convert: {
+    title: 'moneyToastDepositFailedTitleConvert',
+    description: 'moneyToastDepositFailedBodyConvert',
+  },
+  addMusd: {
+    title: 'moneyToastDepositFailedTitleAddMusd',
+    description: 'moneyToastDepositFailedBody',
+  },
+  card: {
+    title: 'moneyToastDepositFailedTitle',
+    description: 'moneyToastDepositFailedBody',
+  },
+} as const;
+
+/**
+ * Toast copy for a failed deposit initiation.
+ *
+ * Mobile's `getDepositToastKeys` defaults an unset intent to `convert` because
+ * post-submit toasts can still derive the payment method. At initiation there
+ * is no transaction yet, and every extension initiation surface is Add funds,
+ * so an unset intent uses the `addMusd` copy.
+ *
+ * @param intent - The explicit funding intent, if one was recorded.
+ * @returns Title and description locale keys.
+ */
+const getDepositFailedToastCopy = (intent?: MoneyAccountDepositIntent) =>
+  DEPOSIT_FAILED_TOAST_COPY[intent ?? 'addMusd'];
 
 /**
  * Initiates a Money Account deposit: creates the placeholder approve +
@@ -46,13 +74,11 @@ export type InitiateDepositOptions = {
  * returns the user to the surface they started from (e.g. the Money home)
  * rather than the global wallet home.
  *
- * Two deliberate differences from mobile's hook, both consequences of the
- * extension navigating **after** creation rather than early with a skeleton:
- * there is no navigation to roll back on failure, and there is no
- * user-rejection path at initiation (rejection happens later, inside the
- * confirmation). Mobile's `preferredPaymentToken` / `autoSelectFiatPayment` /
- * `replaceConfirmation` params are confirmation-navigation features the
- * extension does not have yet.
+ * Setup failures are reported to Sentry and shown as a toast inside this
+ * hook, matching mobile. The promise resolves after that so callers do not
+ * each need a `.catch`. There is no navigation to roll back on failure
+ * (the extension navigates after creation) and no user-rejection path at
+ * initiation (rejection happens later, inside the confirmation).
  *
  * @returns The initiator and its loading state.
  */
@@ -60,6 +86,7 @@ export function useMoneyAccountDeposit() {
   const { navigateToTransaction } = useConfirmationNavigation();
   const location = useLocation();
   const selectedAccount = useSelector(getMaybeSelectedInternalAccount);
+  const reportError = useMoneyErrorReporter();
   const [isLoading, setIsLoading] = useState(false);
 
   const initiateDeposit = useCallback(
@@ -89,13 +116,17 @@ export function useMoneyAccountDeposit() {
         });
       } catch (error) {
         clearMoneyAccountDepositIntent(batchId);
-        const errorObj =
-          error instanceof Error
-            ? error
-            : new Error('[Money Account] Deposit setup failed');
-        options?.onDepositSetupFailure?.(errorObj);
-        // Rethrow so the caller can log the failed initiation.
-        throw error;
+        const toastCopy = getDepositFailedToastCopy(options?.intent);
+        reportError({
+          error,
+          message: '[Money Account] Deposit setup failed',
+          title: toastCopy.title,
+          description: toastCopy.description,
+          extra: {
+            flow: 'deposit',
+            ...(options?.intent ? { intent: options.intent } : {}),
+          },
+        });
       } finally {
         setIsLoading(false);
       }
@@ -104,6 +135,7 @@ export function useMoneyAccountDeposit() {
       location.pathname,
       location.search,
       navigateToTransaction,
+      reportError,
       selectedAccount,
     ],
   );

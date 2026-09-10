@@ -5352,6 +5352,10 @@
   "manage": {
     "message": "Manage"
   },
+  "manageAccounts": {
+    "message": "Manage accounts",
+    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
+  },
   "manageConnectedAccounts": {
     "message": "Manage connected accounts"
   },
@@ -5617,11 +5621,17 @@
   "moneyBalanceLastKnown": {
     "message": "Last known balance"
   },
+  "moneyBalanceRetry": {
+    "message": "Retry"
+  },
   "moneyBalanceTitle": {
     "message": "Money balance"
   },
   "moneyBalanceUnavailable": {
     "message": "Balance unavailable"
+  },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "We're temporarily unable to display your balance. Your funds are safe—please try again shortly."
   },
   "moneyBenefitAutoEarn": {
     "message": "Auto-earn yield on your Money balance"
@@ -5710,6 +5720,27 @@
   },
   "moneySend": {
     "message": "Send"
+  },
+  "moneyToastDepositFailedBody": {
+    "message": "Unable to add funds. Try again."
+  },
+  "moneyToastDepositFailedBodyConvert": {
+    "message": "Unable to convert. Try again."
+  },
+  "moneyToastDepositFailedTitle": {
+    "message": "Deposit failed"
+  },
+  "moneyToastDepositFailedTitleAddMusd": {
+    "message": "Failed to add funds"
+  },
+  "moneyToastDepositFailedTitleConvert": {
+    "message": "Conversion failed"
+  },
+  "moneyToastWithdrawFailedBody": {
+    "message": "Unable to transfer funds. Try again."
+  },
+  "moneyToastWithdrawFailedTitle": {
+    "message": "Transfer failed"
   },
   "month": {
     "message": "month"
@@ -8161,6 +8192,10 @@
   "perpsToastSubmitInProgress": {
     "message": "Submitting your trade",
     "description": "In-progress toast text shown while a perps trade is being submitted"
+  },
+  "perpsToastTradeEntryFailed": {
+    "message": "Couldn't open trade",
+    "description": "Error toast text shown when opening the perps order form from an asset page fails"
   },
   "perpsToastTradeSuccess": {
     "message": "Position closed",

@@ -26,8 +26,6 @@ class TokensTab extends HomePage {
   private readonly assetPriceInDetailsModal =
     '[data-testid="asset-hovered-price"]';
 
-  private readonly coinOverviewBuyButton = '[data-testid="coin-overview-buy"]';
-
   private readonly coinOverviewSendButton =
     '[data-testid="coin-overview-send"]';
 
@@ -206,11 +204,6 @@ class TokensTab extends HomePage {
       css: this.tokenName,
       text: symbol,
     });
-  }
-
-  async checkBuySellButtonIsPresent(): Promise<void> {
-    console.log(`Verify the buy/sell button is displayed`);
-    await this.driver.waitForSelector(this.coinOverviewBuyButton);
   }
 
   /**
