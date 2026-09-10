@@ -245,7 +245,7 @@ import { createDefiReferralMiddleware } from './lib/defi-referrals/createDefiRef
 import { isHyperliquidDepositPromptEligible } from './lib/hyperliquid-deposit/eligibility';
 import { showHyperliquidDepositPromptApproval } from './lib/hyperliquid-deposit/prompt';
 import { createHyperliquidDepositMiddleware } from './lib/hyperliquid-deposit/createHyperliquidDepositMiddleware';
-import { createPopupOpenerWithNotificationClose } from './lib/hyperliquid-deposit/createPopupOpenerWithNotificationClose';
+import { createPopupOpener } from './popup/background';
 
 import {
   diffMap,
@@ -5499,11 +5499,10 @@ export default class MetamaskController extends EventEmitter {
               tabId: sourceTabId,
               requestOpenPopup: useSidePanelAsDefault
                 ? undefined
-                : createPopupOpenerWithNotificationClose({
-                    appStateController: this.appStateController,
-                    extension: this.extension,
-                    notificationManager: this.notificationManager,
-                  }),
+                : createPopupOpener({ extension: this.extension }),
+              closeNotification: useSidePanelAsDefault
+                ? undefined
+                : () => this.notificationManager.closePopup(),
             });
           },
         }),

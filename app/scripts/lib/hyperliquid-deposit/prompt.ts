@@ -15,6 +15,8 @@ type ShowHyperliquidDepositPromptApprovalOptions = {
   // Optional function to open the popup. If provided and returns true, the
   // approval is added without triggering UI (the popup will show it).
   requestOpenPopup?: (tabId: number) => Promise<boolean>;
+  // Optional function to close the notification window.
+  closeNotification?: () => Promise<void>;
 };
 
 /**
@@ -27,6 +29,7 @@ type ShowHyperliquidDepositPromptApprovalOptions = {
  * @param options.selectedAddress - The address that signed the request.
  * @param options.tabId - The tab ID of the dapp that triggered the approval.
  * @param options.requestOpenPopup - Optional function to open popup.
+ * @param options.closeNotification - Optional callback to close notification.
  */
 export async function showHyperliquidDepositPromptApproval({
   approvalController,
@@ -34,6 +37,7 @@ export async function showHyperliquidDepositPromptApproval({
   selectedAddress,
   tabId,
   requestOpenPopup,
+  closeNotification,
 }: ShowHyperliquidDepositPromptApprovalOptions): Promise<void> {
   if (
     approvalController.hasRequest({
@@ -61,6 +65,8 @@ export async function showHyperliquidDepositPromptApproval({
         approvalController.add(approvalRequest).catch(() => {
           // User dismissed or approval failed - both are expected flows
         });
+        // Close notification after approval is added
+        await closeNotification?.();
         return;
       }
     } catch (error) {
@@ -69,7 +75,8 @@ export async function showHyperliquidDepositPromptApproval({
         error,
       );
     }
-    // Fall through to default behavior if popup failed
+  } else if (requestOpenPopup && tabId === undefined) {
+    log.debug('HyperliquidDepositPrompt: tabId missing, using default UI');
   }
 
   // Default: let triggerUi decide (notification/sidepanel)
