@@ -198,7 +198,7 @@ export type AppStateControllerState = {
    * The entry point that initiated the last Perps deposit flow (e.g.
    * 'hyperliquid_deposit_prompt'). Currently used to show custom toast UI.
    */
-  lastPerpsDepositEntryPoint?: string;
+  lastPerpsDepositEntryPoint: string | null;
 };
 
 const controllerName = 'AppStateController';
@@ -333,7 +333,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   dappSwapComparisonData: {},
   storageWriteErrorType: null,
   passkeyAutoUnlockSuppressed: false,
-  lastPerpsDepositEntryPoint: undefined,
+  lastPerpsDepositEntryPoint: null,
   ...getInitialStateOverrides(),
 });
 
@@ -1515,7 +1515,7 @@ export class AppStateController extends BaseController<
    *
    * @param entryPoint - The entry point identifier, or undefined to clear.
    */
-  setLastPerpsDepositEntryPoint(entryPoint: string | undefined): void {
+  setLastPerpsDepositEntryPoint(entryPoint: string | null): void {
     this.update((state) => {
       state.lastPerpsDepositEntryPoint = entryPoint;
     });

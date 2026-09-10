@@ -224,6 +224,7 @@
     "lastFetched": null,
     "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": "object",
+    "lastPerpsDepositEntryPoint": null,
     "lastQrScanCompletedSuccessfully": null,
     "lastSyncedTimestamp": "number",
     "lastUpdateTimestamp": "number",

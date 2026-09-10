@@ -7494,7 +7494,7 @@ export function setPerpsTabBadgeSeen(value: boolean) {
   };
 }
 
-export function setLastPerpsDepositEntryPoint(entryPoint: string | undefined) {
+export function setLastPerpsDepositEntryPoint(entryPoint: string | null) {
   return submitRequestToBackground('setLastPerpsDepositEntryPoint', [
     entryPoint,
   ]);

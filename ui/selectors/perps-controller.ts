@@ -138,8 +138,8 @@ export const selectPerpsLastDepositResult = (state: PerpsState) =>
   state.metamask.lastDepositResult ?? null;
 
 export const selectPerpsLastDepositEntryPoint = (state: {
-  metamask: { lastPerpsDepositEntryPoint?: string };
-}): string | undefined => {
+  metamask: { lastPerpsDepositEntryPoint: string | null };
+}): string | null => {
   return state.metamask.lastPerpsDepositEntryPoint;
 };
 

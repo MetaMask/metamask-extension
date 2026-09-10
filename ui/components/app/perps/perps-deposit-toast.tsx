@@ -19,7 +19,7 @@ const clearDepositResult = () => {
   submitRequestToBackground('perpsClearDepositResult', []).catch(
     () => undefined,
   );
-  submitRequestToBackground('setLastPerpsDepositEntryPoint', [undefined]).catch(
+  submitRequestToBackground('setLastPerpsDepositEntryPoint', [null]).catch(
     () => undefined,
   );
 };

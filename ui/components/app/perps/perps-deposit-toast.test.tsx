@@ -420,7 +420,7 @@ describe('PerpsDepositToast', () => {
     );
     expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
       'setLastPerpsDepositEntryPoint',
-      [undefined],
+      [null],
     );
   });
 
