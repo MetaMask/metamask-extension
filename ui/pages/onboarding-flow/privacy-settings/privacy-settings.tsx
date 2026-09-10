@@ -36,6 +36,7 @@ import {
   TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { getIsBasicFunctionalityConsolidationEnabledInBuild } from '../../../../shared/lib/environment';
 
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
@@ -107,6 +108,10 @@ export default function PrivacySettings() {
   } = defaultState;
   const useExternalNameSources = useSelector(getUseExternalNameSources);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const isBasicFunctionalityConsolidationEnabled =
+    getIsBasicFunctionalityConsolidationEnabledInBuild();
+  const isSocialLoginBasicFunctionalityLocked =
+    isSocialLoginFlow && isBasicFunctionalityConsolidationEnabled;
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
 
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
@@ -143,15 +148,19 @@ export default function PrivacySettings() {
   const { isFromReminder } = useOnboardingSearchParams();
 
   const handleSubmit = () => {
-    dispatch(setUse4ByteResolution(turnOn4ByteResolution));
-    dispatch(setUseTokenDetection(turnOnTokenDetection));
-    dispatch(
-      setUseMultiAccountBalanceChecker(isMultiAccountBalanceCheckerEnabled),
-    );
-    dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
-    dispatch(setUseAddressBarEnsResolution(addressBarResolution));
-    setUseTransactionSimulations(isTransactionSimulationsEnabled);
-    setUseExternalNameSources(turnOnExternalNameSources);
+    // When consolidation is on, child prefs are owned by Basic Functionality
+    // and applied at onboarding completion via toggleBasicFunctionality.
+    if (!isBasicFunctionalityConsolidationEnabled) {
+      dispatch(setUse4ByteResolution(turnOn4ByteResolution));
+      dispatch(setUseTokenDetection(turnOnTokenDetection));
+      dispatch(
+        setUseMultiAccountBalanceChecker(isMultiAccountBalanceCheckerEnabled),
+      );
+      dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
+      dispatch(setUseAddressBarEnsResolution(addressBarResolution));
+      setUseTransactionSimulations(isTransactionSimulationsEnabled);
+      setUseExternalNameSources(turnOnExternalNameSources);
+    }
 
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL) as string);
@@ -169,7 +178,9 @@ export default function PrivacySettings() {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           is_basic_functionality_enabled: externalServicesOnboardingToggleState,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          turnon_token_detection: turnOnTokenDetection,
+          turnon_token_detection: isBasicFunctionalityConsolidationEnabled
+            ? externalServicesOnboardingToggleState
+            : turnOnTokenDetection,
         })
         .build(),
     );
@@ -218,15 +229,20 @@ export default function PrivacySettings() {
   const items = [
     { id: 1, title: t('general'), subtitle: t('generalDescription') },
     { id: 2, title: t('assets'), subtitle: t('assetsDescription') },
-    {
-      id: 3,
-      title: isSocialLoginFlow
-        ? t('securityDefaultSettingsSocialLogin')
-        : t('security'),
-      subtitle: isSocialLoginFlow
-        ? t('securitySocialLoginDefaultSettingsDescription')
-        : t('securityDescription'),
-    },
+    // When consolidated, Security only has MetaMetrics (social). Hide it for SRP.
+    ...(!isBasicFunctionalityConsolidationEnabled || isSocialLoginFlow
+      ? [
+          {
+            id: 3,
+            title: isSocialLoginFlow
+              ? t('securityDefaultSettingsSocialLogin')
+              : t('security'),
+            subtitle: isSocialLoginFlow
+              ? t('securitySocialLoginDefaultSettingsDescription')
+              : t('securityDescription'),
+          },
+        ]
+      : []),
   ];
 
   const handleDataCollectionForMarketing = async (value: boolean) => {
@@ -400,7 +416,11 @@ export default function PrivacySettings() {
                   <Setting
                     dataTestId="basic-functionality-toggle"
                     value={externalServicesOnboardingToggleState}
+                    disabled={isSocialLoginBasicFunctionalityLocked}
                     setValue={(toggledValue) => {
+                      if (isSocialLoginBasicFunctionalityLocked) {
+                        return;
+                      }
                       if (toggledValue) {
                         dispatch(onboardingToggleBasicFunctionalityOn());
                         trackEvent(
@@ -561,27 +581,31 @@ export default function PrivacySettings() {
               ) : null}
               {selectedItem?.id === 2 ? (
                 <>
-                  <Setting
-                    value={turnOnTokenDetection}
-                    setValue={setTurnOnTokenDetection}
-                    title={t('turnOnTokenDetection')}
-                    description={t('useTokenDetectionPrivacyDesc')}
-                  />
-                  <Setting
-                    value={isTransactionSimulationsEnabled}
-                    setValue={setTransactionSimulationsEnabled}
-                    title={t('simulationsSettingSubHeader')}
-                    description={t('simulationsSettingDescription', [
-                      <a
-                        key="learn_more_link"
-                        href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        {t('learnMoreUpperCase')}
-                      </a>,
-                    ])}
-                  />
+                  {!isBasicFunctionalityConsolidationEnabled && (
+                    <>
+                      <Setting
+                        value={turnOnTokenDetection}
+                        setValue={setTurnOnTokenDetection}
+                        title={t('turnOnTokenDetection')}
+                        description={t('useTokenDetectionPrivacyDesc')}
+                      />
+                      <Setting
+                        value={isTransactionSimulationsEnabled}
+                        setValue={setTransactionSimulationsEnabled}
+                        title={t('simulationsSettingSubHeader')}
+                        description={t('simulationsSettingDescription', [
+                          <a
+                            key="learn_more_link"
+                            href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            {t('learnMoreUpperCase')}
+                          </a>,
+                        ])}
+                      />
+                    </>
+                  )}
                   <Setting
                     title={t('onboardingAdvancedPrivacyIPFSTitle')}
                     showToggle={false}
@@ -614,107 +638,119 @@ export default function PrivacySettings() {
                       </>
                     }
                   />
-                  <Setting
-                    value={turnOnCurrencyRateCheck}
-                    setValue={setTurnOnCurrencyRateCheck}
-                    title={t('currencyRateCheckToggle')}
-                    dataTestId="currency-rate-check-toggle"
-                    description={t('currencyRateCheckToggleDescription', [
-                      <a
-                        key="coingecko_link"
-                        href={COINGECKO_LINK}
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        {t('coingecko')}
-                      </a>,
-                      <a
-                        key="cryptocompare_link"
-                        href={CRYPTOCOMPARE_LINK}
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        {t('cryptoCompare')}
-                      </a>,
-                      <a
-                        key="privacy_policy_link"
-                        href={PRIVACY_POLICY_LINK}
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        {t('privacyMsg')}
-                      </a>,
-                    ])}
-                  />
-                  <Setting
-                    value={addressBarResolution}
-                    setValue={setAddressBarResolution}
-                    title={t('ensDomainsSettingTitle')}
-                    description={
-                      <>
-                        <Text
-                          variant={TextVariant.BodySm}
-                          color={TextColor.TextAlternative}
-                        >
-                          {t('ensDomainsSettingDescriptionIntroduction')}
-                        </Text>
-                        <Box
-                          marginTop={4}
-                          marginBottom={4}
-                          className="pl-4"
-                          style={{ listStyleType: 'circle' }}
-                          asChild
-                        >
-                          <ul>
+                  {!isBasicFunctionalityConsolidationEnabled && (
+                    <>
+                      <Setting
+                        value={turnOnCurrencyRateCheck}
+                        setValue={setTurnOnCurrencyRateCheck}
+                        title={t('currencyRateCheckToggle')}
+                        dataTestId="currency-rate-check-toggle"
+                        description={t('currencyRateCheckToggleDescription', [
+                          <a
+                            key="coingecko_link"
+                            href={COINGECKO_LINK}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            {t('coingecko')}
+                          </a>,
+                          <a
+                            key="cryptocompare_link"
+                            href={CRYPTOCOMPARE_LINK}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            {t('cryptoCompare')}
+                          </a>,
+                          <a
+                            key="privacy_policy_link"
+                            href={PRIVACY_POLICY_LINK}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            {t('privacyMsg')}
+                          </a>,
+                        ])}
+                      />
+                      <Setting
+                        value={addressBarResolution}
+                        setValue={setAddressBarResolution}
+                        title={t('ensDomainsSettingTitle')}
+                        description={
+                          <>
                             <Text
                               variant={TextVariant.BodySm}
-                              asChild
                               color={TextColor.TextAlternative}
                             >
-                              <li>{t('ensDomainsSettingDescriptionPart1')}</li>
+                              {t('ensDomainsSettingDescriptionIntroduction')}
                             </Text>
+                            <Box
+                              marginTop={4}
+                              marginBottom={4}
+                              className="pl-4"
+                              style={{ listStyleType: 'circle' }}
+                              asChild
+                            >
+                              <ul>
+                                <Text
+                                  variant={TextVariant.BodySm}
+                                  asChild
+                                  color={TextColor.TextAlternative}
+                                >
+                                  <li>
+                                    {t('ensDomainsSettingDescriptionPart1')}
+                                  </li>
+                                </Text>
+                                <Text
+                                  variant={TextVariant.BodySm}
+                                  asChild
+                                  color={TextColor.TextAlternative}
+                                >
+                                  <li>
+                                    {t('ensDomainsSettingDescriptionPart2')}
+                                  </li>
+                                </Text>
+                              </ul>
+                            </Box>
                             <Text
                               variant={TextVariant.BodySm}
-                              asChild
                               color={TextColor.TextAlternative}
                             >
-                              <li>{t('ensDomainsSettingDescriptionPart2')}</li>
+                              {t('ensDomainsSettingDescriptionOutroduction')}
                             </Text>
-                          </ul>
-                        </Box>
-                        <Text
-                          variant={TextVariant.BodySm}
-                          color={TextColor.TextAlternative}
-                        >
-                          {t('ensDomainsSettingDescriptionOutroduction')}
-                        </Text>
-                      </>
-                    }
-                  />
-                  <Setting
-                    value={isMultiAccountBalanceCheckerEnabled}
-                    setValue={setMultiAccountBalanceCheckerEnabled}
-                    title={t('useMultiAccountBalanceChecker')}
-                    description={t(
-                      'useMultiAccountBalanceCheckerSettingDescription',
-                    )}
-                  />
+                          </>
+                        }
+                      />
+                      <Setting
+                        value={isMultiAccountBalanceCheckerEnabled}
+                        setValue={setMultiAccountBalanceCheckerEnabled}
+                        title={t('useMultiAccountBalanceChecker')}
+                        description={t(
+                          'useMultiAccountBalanceCheckerSettingDescription',
+                        )}
+                      />
+                    </>
+                  )}
                 </>
               ) : null}
               {selectedItem?.id === 3 ? (
                 <>
-                  <Setting
-                    value={turnOn4ByteResolution}
-                    setValue={setTurnOn4ByteResolution}
-                    title={t('use4ByteResolution')}
-                    description={t('toggleDecodeDescription')}
-                  />
-                  <Setting
-                    value={turnOnExternalNameSources}
-                    setValue={setTurnOnExternalNameSources}
-                    title={t('externalNameSourcesSetting')}
-                    description={t('externalNameSourcesSettingDescription')}
-                  />
+                  {!isBasicFunctionalityConsolidationEnabled && (
+                    <>
+                      <Setting
+                        value={turnOn4ByteResolution}
+                        setValue={setTurnOn4ByteResolution}
+                        title={t('use4ByteResolution')}
+                        description={t('toggleDecodeDescription')}
+                      />
+                      <Setting
+                        value={turnOnExternalNameSources}
+                        setValue={setTurnOnExternalNameSources}
+                        title={t('externalNameSourcesSetting')}
+                        description={t('externalNameSourcesSettingDescription')}
+                      />
+                    </>
+                  )}
                   {isSocialLoginFlow && (
                     <>
                       <MetametricsToggle

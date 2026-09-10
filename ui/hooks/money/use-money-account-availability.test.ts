@@ -8,16 +8,22 @@ jest.mock('../../store/background-connection', () => ({
 }));
 
 const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
-const enabledState = {
+const stateWith = ({
+  useExternalServices = true,
+  flagEnabled = true,
+} = {}) => ({
   metamask: {
-    remoteFeatureFlags: {
-      moneyEnableMoneyAccount: {
-        enabled: true,
-        minimumVersion: '0.0.1',
-      },
-    },
+    useExternalServices,
+    remoteFeatureFlags: flagEnabled
+      ? {
+          moneyEnableMoneyAccount: {
+            enabled: true,
+            minimumVersion: '0.0.1',
+          },
+        }
+      : {},
   },
-};
+});
 
 describe('useMoneyAccountAvailability', () => {
   beforeEach(() => {
@@ -33,7 +39,7 @@ describe('useMoneyAccountAvailability', () => {
 
     const { result } = renderHookWithProvider(
       () => useMoneyAccountAvailability(),
-      enabledState,
+      stateWith(),
     );
 
     await waitFor(() => {
@@ -48,7 +54,17 @@ describe('useMoneyAccountAvailability', () => {
   it('does not request availability when the feature flag is disabled', () => {
     const { result } = renderHookWithProvider(
       () => useMoneyAccountAvailability(),
-      { metamask: { remoteFeatureFlags: {} } },
+      stateWith({ flagEnabled: false }),
+    );
+
+    expect(result.current.availability).toStrictEqual({ isAvailable: false });
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+  });
+
+  it('does not request availability when basic functionality is off', () => {
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountAvailability(),
+      stateWith({ useExternalServices: false }),
     );
 
     expect(result.current.availability).toStrictEqual({ isAvailable: false });

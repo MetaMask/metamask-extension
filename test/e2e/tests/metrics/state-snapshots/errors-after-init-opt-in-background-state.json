@@ -37,6 +37,7 @@
     "currentAppVersion": "string",
     "currentMigrationVersion": "number",
     "firstTimeInfo": "object",
+    "installAttribution": null,
     "previousAppVersion": "",
     "previousMigrationVersion": 0
   },
@@ -97,7 +98,8 @@
   "AssetsController": "object",
   "AuthenticationController": {
     "isSignedIn": "boolean",
-    "needsProfilePairing": "boolean"
+    "needsProfilePairing": "boolean",
+    "needsSocialPairing": "boolean"
   },
   "BridgeController": {
     "assetExchangeRates": "object",
@@ -171,8 +173,7 @@
   "MetaMetricsController": {
     "dataCollectionForMarketing": "boolean",
     "marketingCampaignCookieId": null,
-    "tracesBeforeMetricsOptIn": "object",
-    "traits": "object"
+    "tracesBeforeMetricsOptIn": "object"
   },
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
@@ -180,6 +181,9 @@
   },
   "MoneyAccountController": {
     "moneyAccounts": "object"
+  },
+  "MoneyAccountUpgradeController": {
+    "upgradedAccounts": "object"
   },
   "MultichainAssetsController": {
     "accountsAssets": "object",
@@ -278,6 +282,8 @@
     "openSeaEnabled": true,
     "overrideContentSecurityPolicyHeader": true,
     "preferences": {
+      "basicFunctionalityMigrationNotification": null,
+      "basicFunctionalityMigrationNotificationDismissed": "boolean",
       "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
@@ -341,7 +347,7 @@
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": "valueA"
+      "feature3": "valueC"
     },
     "thresholdCache": "object"
   },

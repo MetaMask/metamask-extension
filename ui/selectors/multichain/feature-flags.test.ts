@@ -330,13 +330,13 @@ describe('getIsBasicFunctionalityConsolidationEnabled', () => {
     ).toBe(false);
   });
 
-  it('returns false when the persisted cohort marker is true but the remote flag is false', () => {
+  it('keeps a consolidated user on the consolidated experience when the remote flag is turned off', () => {
     expect(
       getIsBasicFunctionalityConsolidationEnabled(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         buildState({ extensionBasicFunctionalityToggle: false }, true) as any,
       ),
-    ).toBe(false);
+    ).toBe(true);
   });
 });
 
