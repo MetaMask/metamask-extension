@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   trace,
   endTrace,
@@ -8,7 +7,10 @@ import {
   TraceOperation,
   getPerformanceTimestamp,
 } from '../../../shared/lib/trace';
-import { getUseExternalServices } from '../../selectors';
+import {
+  getSelectedEvmInternalAccount,
+  getUseExternalServices,
+} from '../../selectors';
 import {
   getIsPerpsExperienceAvailable,
   getIsPerpsTerminalBackendEnabled,
@@ -35,7 +37,7 @@ type PreloadState = {
 export function usePerpsPreload(walletReady: boolean): void {
   const available = useSelector(getIsPerpsExperienceAvailable);
   const useExternalServices = useSelector(getUseExternalServices);
-  const address = useSelector(getSelectedInternalAccount)?.address;
+  const address = useSelector(getSelectedEvmInternalAccount)?.address;
   const provider = useSelector(
     (state: PreloadState) => state.metamask.activeProvider,
   );

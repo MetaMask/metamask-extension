@@ -205,46 +205,77 @@ describe('PerpsStreamBridge', () => {
       },
     );
 
-    it('waits for stream initialization before starting account disconnect', async () => {
-      let address = '0xaaa';
-      const { bridge, controllerApi } = createBridge({
-        getSelectedAddress: () => address,
-      });
-      const api = bridge.bridgeApi() as unknown as {
-        perpsInitForAccount: (selectedAddress: string) => Promise<unknown>;
-        perpsActivatePriceStream: (params: {
-          symbols: string[];
-        }) => Promise<void>;
-      };
-      await api.perpsInitForAccount(address);
-      let finishInit!: () => void;
-      let startInit!: () => void;
-      const initStarted = new Promise<void>((resolve) => {
-        startInit = resolve;
-      });
-      controllerApi.perpsInit.mockImplementationOnce(
-        () =>
-          new Promise<void>((resolve) => {
-            finishInit = resolve;
-            startInit();
-          }),
-      );
-      const activation = api.perpsActivatePriceStream({ symbols: ['BTC'] });
-      await initStarted;
-      address = '0xbbb';
-      const transition = api.perpsInitForAccount(address);
-      try {
-        await new Promise<void>((resolve) => setImmediate(resolve));
-        expect(controllerApi.perpsDisconnect).not.toHaveBeenCalled();
-        finishInit();
-        await Promise.all([activation, transition]);
-        expect(controllerApi.perpsDisconnect).toHaveBeenCalledTimes(1);
-      } finally {
-        finishInit();
-        await Promise.all([activation, transition]);
-        bridge.dispose();
-      }
-    });
+    it.each(['prices', 'candles'] as const)(
+      'preserves a pending %s subscription across a queued account switch',
+      async (channel) => {
+        let address = '0xaaa';
+        const controller = createMockController();
+        controller.subscribeToPrices.mockImplementation(() => jest.fn());
+        controller.subscribeToCandles.mockImplementation(() => jest.fn());
+        const { bridge, controllerApi, emit } = createBridge({
+          controller: controller as unknown as PerpsController,
+          getSelectedAddress: () => address,
+        });
+        const api = bridge.bridgeApi();
+        const init = api.perpsInitForAccount as (
+          selectedAddress: string,
+        ) => Promise<unknown>;
+        await init(address);
+        let finishInit!: () => void;
+        let startInit!: () => void;
+        const initStarted = new Promise<void>((resolve) => {
+          startInit = resolve;
+        });
+        controllerApi.perpsInit.mockImplementationOnce(
+          () =>
+            new Promise<void>((resolve) => {
+              finishInit = resolve;
+              startInit();
+            }),
+        );
+        const activate = (
+          channel === 'prices'
+            ? api.perpsActivatePriceStream
+            : api.perpsActivateCandleStream
+        ) as (params: Record<string, unknown>) => Promise<void>;
+        const activation = activate(
+          channel === 'prices'
+            ? { symbols: ['BTC'] }
+            : { symbol: 'BTC', interval: '1h' },
+        );
+        await initStarted;
+        address = '0xbbb';
+        const transition = init(address);
+        try {
+          await new Promise<void>((resolve) => setImmediate(resolve));
+          expect(controllerApi.perpsDisconnect).not.toHaveBeenCalled();
+          finishInit();
+          await Promise.all([activation, transition]);
+          expect(controllerApi.perpsDisconnect).toHaveBeenCalledTimes(1);
+          const subscribe =
+            channel === 'prices'
+              ? controller.subscribeToPrices
+              : controller.subscribeToCandles;
+          // The switch must capture the request, unsubscribe, and restore it.
+          expect(subscribe).toHaveBeenCalledTimes(2);
+          expect(subscribe.mock.results[0].value).toHaveBeenCalledTimes(1);
+          expect(subscribe.mock.results[1].value).not.toHaveBeenCalled();
+          emit.mockClear();
+          subscribe.mock.calls[1][0].callback([] as never);
+          expect(emit).toHaveBeenCalledWith(
+            channel,
+            [],
+            ...(channel === 'candles'
+              ? [{ symbol: 'BTC', interval: '1h' }]
+              : []),
+          );
+        } finally {
+          finishInit();
+          await Promise.all([activation, transition]);
+          bridge.dispose();
+        }
+      },
+    );
 
     it('keeps the first window streams alive when a second window handles the same account change later', async () => {
       let selectedAddress = '0xaaa';

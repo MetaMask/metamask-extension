@@ -1,12 +1,15 @@
+import { it } from '@jest/globals';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   getPerpsStreamManager,
   resetPerpsStreamManager,
 } from '../../../providers/perps/PerpsStreamManager';
 import { getIsPerpsTerminalBackendEnabled } from '../../../selectors/perps';
-import { getUseExternalServices } from '../../../selectors';
+import {
+  getSelectedEvmInternalAccount,
+  getUseExternalServices,
+} from '../../../selectors';
 import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
@@ -16,8 +19,9 @@ jest.mock('../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
-jest.mock('../../../../shared/lib/selectors/accounts', () => ({
-  getSelectedInternalAccount: jest.fn(),
+jest.mock('../../../selectors', () => ({
+  ...jest.requireActual('../../../selectors'),
+  getSelectedEvmInternalAccount: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -39,8 +43,8 @@ Object.defineProperty(globalThis, 'crypto', {
   },
 });
 
-const getSelectedMock = getSelectedInternalAccount as jest.MockedFunction<
-  typeof getSelectedInternalAccount
+const getSelectedMock = getSelectedEvmInternalAccount as jest.MockedFunction<
+  typeof getSelectedEvmInternalAccount
 >;
 const useSelectorMock = useSelector as jest.MockedFunction<typeof useSelector>;
 
@@ -64,6 +68,55 @@ describe('usePerpsStreamManager', () => {
       return (selector as (s: unknown) => unknown)({});
     });
   });
+
+  it.each([
+    ['BTC', 'bc1qselected', 'bip122:p2wpkh'],
+    ['Tron', 'TSelected', 'tron:eoa'],
+  ])(
+    'initializes the EVM session while %s is selected',
+    async (name, address, type) => {
+      const evm = {
+        id: 'evm',
+        address: '0xready',
+        type: 'eip155:eoa',
+        metadata: { name: 'EVM', lastSelected: 1 },
+      };
+      const nonEvm = {
+        id: 'non-evm',
+        address,
+        type,
+        metadata: { name, lastSelected: 2 },
+      };
+      const state = {
+        metamask: {
+          internalAccounts: {
+            selectedAccount: nonEvm.id,
+            accounts: { evm, nonEvm },
+          },
+        },
+      };
+      getSelectedMock.mockImplementation(
+        jest.requireActual('../../../selectors').getSelectedEvmInternalAccount,
+      );
+      useSelectorMock.mockImplementation((selector) => {
+        if (selector === getUseExternalServices) {
+          return true;
+        }
+        if (selector === getIsPerpsTerminalBackendEnabled) {
+          return false;
+        }
+        return selector(state as never);
+      });
+
+      const { result } = renderHook(() => usePerpsStreamManager());
+      await waitFor(() => expect(result.current.streamManager).not.toBeNull());
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsInitForAccount',
+        ['0xready'],
+      );
+      expect(result.current.selectedAddress).toBe('0xready');
+    },
+  );
 
   it('recovers without remount when Basic Functionality is enabled after initialization fails', async () => {
     const consoleSpy = jest

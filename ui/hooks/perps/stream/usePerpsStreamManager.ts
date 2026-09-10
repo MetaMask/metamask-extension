@@ -11,13 +11,15 @@
 
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   getPerpsStreamManager,
   type PerpsStreamManager,
 } from '../../../providers/perps/PerpsStreamManager';
 import { getIsPerpsTerminalBackendEnabled } from '../../../selectors/perps';
-import { getUseExternalServices } from '../../../selectors';
+import {
+  getSelectedEvmInternalAccount,
+  getUseExternalServices,
+} from '../../../selectors';
 
 export type UsePerpsStreamManagerReturn = {
   /** The stream manager instance (null while initializing) */
@@ -53,8 +55,8 @@ export type UsePerpsStreamManagerReturn = {
  * ```
  */
 export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
-  // Get the selected account address from Redux
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  // The background Perps session uses the EVM account, even on BTC assets.
+  const selectedAccount = useSelector(getSelectedEvmInternalAccount);
   const selectedAddress = selectedAccount?.address ?? null;
   const useTerminalApi = useSelector(getIsPerpsTerminalBackendEnabled);
   const useExternalServices = useSelector(getUseExternalServices);
