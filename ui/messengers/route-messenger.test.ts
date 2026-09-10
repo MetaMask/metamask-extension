@@ -45,7 +45,7 @@ describe('createRouteMessenger', () => {
     expect(() =>
       routeMessenger.registerActionHandler(
         'SomePathRoute:test' as never,
-        jest.fn(),
+        jest.fn() as never,
       ),
     ).not.toThrow();
   });
