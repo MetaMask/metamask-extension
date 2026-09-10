@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added a deeplink that opens Explore Search with a pre-filled query (#46050)
 - Added Money Account withdrawals (#45999)
 - Added Money Account deposits from the Money home page and wallet home balance row, with balance refresh after confirmation (#45930)
 - Added a one-time notice on the home page when an account holds USDC on Arc (#45990)
@@ -29,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Bumped assets-controller to 15.0.0 and account-tree-controller to 8.1.0 (#46110)
 - Redesigned the Perps tab header on wallet home to match the mobile layout, including a large total balance, available balance, persistent Withdraw and Add funds buttons, and unrealized P&L under Your positions (#45860)
 - Updated Money Account service support (#45803)
 - Updated wallet asset and account management dependencies (#46007)
