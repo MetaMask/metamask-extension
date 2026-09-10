@@ -38,8 +38,8 @@ import {
 } from '../../../hooks/perps/stream';
 import {
   filterMarketsByQuery,
+  isCryptoMarket,
   isHip3Market,
-  marketMatchesCategory,
 } from '../../../components/app/perps/utils';
 import {
   DEFAULT_ROUTE,
@@ -188,9 +188,14 @@ const filterByType = (
     default: {
       // Any controller market category (crypto, stock, pre-ipo, index, etf,
       // commodity, forex, …) is matched generically so a new category works
-      // without a new case here. Shared with the Perps tab category pills so
-      // a pill can never open a category this list would show as empty.
-      return markets.filter((m) => marketMatchesCategory(m, filter));
+      // without a new case here. Crypto keeps the Extension's long-standing
+      // `marketSource` rule rather than the controller's `matchesCategory`,
+      // which also counts a HIP-3 market typed `marketType: 'crypto'`.
+      return markets.filter((m) =>
+        filter === 'crypto'
+          ? isCryptoMarket(m)
+          : getMarketTypeFilter(m) === filter,
+      );
     }
   }
 };

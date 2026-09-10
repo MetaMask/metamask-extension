@@ -225,6 +225,36 @@ describe('PerpsCategoryRail', () => {
       ).toHaveAttribute('aria-selected', 'true');
     });
 
+    it('marks the More trigger as holding the selection when it overflows', async () => {
+      restoreGeometry = mockRailGeometry(widthForPills(2));
+
+      renderRail({ selectedCategory: 'forex', onClear: jest.fn() });
+
+      const trigger = await screen.findByTestId(
+        'perps-market-categories-more-button',
+      );
+
+      // Without this the rail would show no active filter at all while one is
+      // in force, because the pill carrying it is inside the menu.
+      expect(trigger).toHaveClass('bg-icon-default');
+      expect(trigger).toHaveAccessibleName(
+        `More, ${messages.perpsFilterForex.message} selected`,
+      );
+    });
+
+    it('leaves the More trigger unmarked while the selection is on the rail', async () => {
+      restoreGeometry = mockRailGeometry(widthForPills(2));
+
+      renderRail({ selectedCategory: 'crypto', onClear: jest.fn() });
+
+      const trigger = await screen.findByTestId(
+        'perps-market-categories-more-button',
+      );
+
+      expect(trigger).not.toHaveClass('bg-icon-default');
+      expect(trigger).toHaveTextContent(messages.perpsFilterMore.message);
+    });
+
     it('clears the filter when the overflowed active category is chosen again', async () => {
       restoreGeometry = mockRailGeometry(widthForPills(2));
       const onClear = jest.fn();

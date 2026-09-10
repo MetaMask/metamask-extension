@@ -259,6 +259,17 @@ export const PerpsCategoryRail = ({
             // The trigger is always the last thing on the rail, so a
             // left-anchored menu would open past the edge of a narrow window.
             menuClassName="left-auto right-0"
+            // A selection that overflowed is still shown on the rail: the
+            // trigger takes the active fill so the user can see the filter in
+            // force is inside this menu.
+            isTriggerActive={Boolean(overflowSelection)}
+            triggerAriaLabel={
+              overflowSelection
+                ? t('perpsFilterMoreSelected', [
+                    t(MARKET_FILTER_LABEL_KEYS[overflowSelection]),
+                  ])
+                : undefined
+            }
             testId={`${testId}-more`}
           />
         </Box>

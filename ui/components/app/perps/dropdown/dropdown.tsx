@@ -48,6 +48,12 @@ export type DropdownProps<OptionId extends string> = {
    * opens past the edge of a narrow window.
    */
   menuClassName?: string;
+  /**
+   * Whether the trigger should read as holding the current selection. The
+   * category rail sets it when the active category has overflowed into this
+   * menu, so the filter in force is still visible on the rail.
+   */
+  isTriggerActive?: boolean;
 };
 
 /**
@@ -62,6 +68,7 @@ export type DropdownProps<OptionId extends string> = {
  * @param props.triggerClassName - Extra trigger classes
  * @param props.triggerAriaLabel - Accessible name for the trigger
  * @param props.menuClassName - Extra menu classes, for anchoring the menu
+ * @param props.isTriggerActive - Whether the trigger holds the current selection
  */
 export const Dropdown = <OptionId extends string>({
   options,
@@ -72,6 +79,7 @@ export const Dropdown = <OptionId extends string>({
   triggerClassName,
   triggerAriaLabel,
   menuClassName,
+  isTriggerActive = false,
 }: DropdownProps<OptionId>) => {
   const [isOpen, setIsOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
@@ -197,6 +205,9 @@ export const Dropdown = <OptionId extends string>({
         className={twMerge(
           'flex items-center justify-start gap-1 rounded-lg bg-background-muted px-3 py-2 hover:bg-hover active:opacity-70',
           triggerClassName,
+          // Matches ButtonFilter's active fill, so an overflowed selection
+          // reads the same as a selected pill on the rail.
+          isTriggerActive && 'bg-icon-default hover:bg-icon-default',
         )}
         onClick={handleToggle}
         onKeyDown={handleTriggerKeyDown}
@@ -205,13 +216,23 @@ export const Dropdown = <OptionId extends string>({
         aria-label={triggerAriaLabel}
         data-testid={`${testId}-button`}
       >
-        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextDefault}
+          // `text-icon-inverse` is the token ButtonFilter flips its own label
+          // to on the active fill, so the two read identically.
+          className={isTriggerActive ? 'text-icon-inverse' : undefined}
+        >
           {triggerLabel ?? selectedOption?.label ?? ''}
         </Text>
         <Icon
           name={isOpen ? IconName.ArrowUp : IconName.ArrowDown}
           size={IconSize.Xs}
-          color={IconColor.IconDefault}
+          // An Icon does not inherit the trigger's text colour, so on the
+          // active fill the default would be the fill colour itself.
+          color={
+            isTriggerActive ? IconColor.IconInverse : IconColor.IconDefault
+          }
           className="ml-auto"
         />
       </ButtonBase>

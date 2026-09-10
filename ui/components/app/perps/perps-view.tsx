@@ -450,11 +450,11 @@ export const PerpsView = () => {
         <Box paddingLeft={4} paddingRight={4}>
           <PerpsBalanceActionsSkeleton />
         </Box>
-        {/* Reserves the Products section's height so it does not push the
-            sections below it down when the live categories arrive. */}
-        <PerpsProducts isLoading />
         <PerpsSectionSkeleton cardCount={5} showStartTradeCta />
         <PerpsSectionSkeleton cardCount={5} />
+        {/* Reserves the Products section's height in the same slot it occupies
+            once loaded, so nothing below it shifts when the chips arrive. */}
+        <PerpsProducts isLoading />
         <Box data-testid="perps-recent-activity-skeleton">
           <PerpsSectionSkeleton cardCount={3} showStartTradeCta={false} />
         </Box>
@@ -478,11 +478,6 @@ export const PerpsView = () => {
         />
       </Box>
 
-      {/* Products: the tab's shortcut into the full market list, placed above
-          the user's own positions so the discovery route is reachable without
-          scrolling the whole tab. */}
-      <PerpsProducts isLoading={marketsLoading} />
-
       {/* Positions + Orders sections */}
       {batchActionError ? (
         <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
@@ -502,6 +497,10 @@ export const PerpsView = () => {
 
       {/* Watchlist */}
       <PerpsWatchlist markets={watchlistMarkets} />
+
+      {/* Products: the tab's shortcut into the full market list, below the
+          user's own watchlist so their own markets come first. */}
+      <PerpsProducts isLoading={marketsLoading} />
 
       {/* Top movers */}
       <PerpsTopMovers markets={allMarkets} isLoading={marketsLoading} />
