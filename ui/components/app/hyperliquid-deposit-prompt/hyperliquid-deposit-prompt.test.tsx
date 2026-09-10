@@ -175,11 +175,14 @@ describe('HyperliquidDepositPrompt', () => {
     mockGetEnvironmentType.mockReturnValue('notification');
   });
 
-  it('renders the title, logos, default token and continue button', () => {
+  it('renders the title, description, logos, default token and action buttons', () => {
     renderComponent();
 
     expect(
       screen.getByText(messages.hyperliquidDepositPromptTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.hyperliquidDepositPromptDescription.message),
     ).toBeInTheDocument();
     expect(screen.getByText(messages.payWith.message)).toBeInTheDocument();
     expect(
@@ -194,6 +197,9 @@ describe('HyperliquidDepositPrompt', () => {
     expect(
       screen.getByTestId('hyperliquid-deposit-prompt-continue'),
     ).toBeEnabled();
+    expect(
+      screen.getByTestId('hyperliquid-deposit-prompt-no-thanks'),
+    ).toHaveTextContent(messages.hyperliquidDepositPromptNoThanks.message);
   });
 
   it('tracks Hyperliquid Deposit Prompt Viewed on render', () => {
@@ -212,6 +218,24 @@ describe('HyperliquidDepositPrompt', () => {
     const { onActionComplete } = renderComponent();
 
     fireEvent.click(screen.getByTestId('hyperliquid-deposit-prompt-close'));
+
+    expect(onActionComplete).toHaveBeenCalledWith({ action: 'dismiss' });
+    expect(mockStartPerpsDeposit).not.toHaveBeenCalled();
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      name: MetaMetricsEventName.HyperliquidDepositPromptInteracted,
+      properties: {
+        category: MetaMetricsEventCategory.Confirmations,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        interaction_type: 'dismiss',
+      },
+      sensitiveProperties: {},
+    });
+  });
+
+  it('resolves the approval without starting a deposit when No thanks is clicked', () => {
+    const { onActionComplete } = renderComponent();
+
+    fireEvent.click(screen.getByTestId('hyperliquid-deposit-prompt-no-thanks'));
 
     expect(onActionComplete).toHaveBeenCalledWith({ action: 'dismiss' });
     expect(mockStartPerpsDeposit).not.toHaveBeenCalled();
@@ -308,6 +332,9 @@ describe('HyperliquidDepositPrompt', () => {
     expect(
       screen.getByTestId('hyperliquid-deposit-prompt-continue'),
     ).toBeDisabled();
+    expect(
+      screen.getByTestId('hyperliquid-deposit-prompt-no-thanks'),
+    ).toBeEnabled();
   });
 
   it('uses the wallet home perps tab as goBackTo when bottom nav is disabled', async () => {
