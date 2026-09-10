@@ -35,9 +35,7 @@ describe('InfoPopover', () => {
     expect(getByTestId('test-tooltip')).toHaveClass(
       'mm-box--background-color-background-elevated2',
     );
-    expect(getByTestId('test-tooltip')).not.toHaveStyle({
-      backgroundColor: 'var(--color-text-default)',
-    });
+    expect(getByTestId('test-tooltip').style.backgroundColor).toBe('');
   });
 
   it('closes the popover when clicking outside', async () => {
