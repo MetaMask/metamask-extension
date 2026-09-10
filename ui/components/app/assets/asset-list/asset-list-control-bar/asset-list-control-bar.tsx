@@ -39,6 +39,7 @@ import {
   AlignItems,
   Display,
   JustifyContent,
+  BlockSize,
 } from '../../../../../helpers/constants/design-system';
 import ImportControl from '../import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -180,6 +181,7 @@ const AssetListControlBar = ({
   ).length;
   const totalEnabledNetworkCount = allEnabledNetworksForAllNamespaces.length;
   const networkButtonText = useNetworkFilterButtonLabel();
+  const isSingleNetworkFilterSelected = totalEnabledNetworkCount === 1;
 
   const shouldShowRefreshButtons = useMemo(
     () =>
@@ -385,7 +387,11 @@ const AssetListControlBar = ({
       paddingBottom={1}
       data-testid={dataTestId}
     >
-      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+      <Box
+        display={Display.Flex}
+        justifyContent={JustifyContent.spaceBetween}
+        minWidth={BlockSize.Zero}
+      >
         <Button
           data-testid="sort-by-networks"
           variant={ButtonVariant.Secondary}
@@ -394,8 +400,11 @@ const AssetListControlBar = ({
           isLoading={isNetworkSwitchPending}
           isDisabled={isNetworkSwitchPending}
           startIconName={IconName.Filter}
+          className={`min-w-0 max-w-full ${
+            isSingleNetworkFilterSelected ? 'text-primary-default' : ''
+          }`}
         >
-          {networkButtonText}
+          <span className="truncate block max-w-full">{networkButtonText}</span>
         </Button>
 
         <Box
