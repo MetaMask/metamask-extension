@@ -6189,9 +6189,6 @@
   "networkURL": {
     "message": "Network URL"
   },
-  "relayerFee": {
-    "message": "Relayer fee"
-  },
   "networkURLDefinition": {
     "message": "The URL used to access this network."
   },
@@ -8953,6 +8950,9 @@
   },
   "rejected": {
     "message": "Rejected"
+  },
+  "relayerFee": {
+    "message": "Relayer fee"
   },
   "remove": {
     "message": "Remove"
