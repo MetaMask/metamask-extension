@@ -11,6 +11,7 @@ import {
 
 type FundingMethodItemProps = {
   icon: IconName;
+  iconSize?: IconSize;
   title: string;
   description: string;
   onClick: () => void;
@@ -18,6 +19,7 @@ type FundingMethodItemProps = {
 
 const FundingMethodItem = ({
   icon,
+  iconSize = IconSize.Md,
   title,
   description,
   onClick,
@@ -31,7 +33,7 @@ const FundingMethodItem = ({
     padding={4}
   >
     <span className="funding-method-item__icon">
-      <Icon name={icon} size={IconSize.Md} />
+      <Icon name={icon} size={iconSize} />
     </span>
     <Box display={[Display.Flex]} flexDirection={FlexDirection.Column}>
       <Text variant={TextVariant.bodyMdMedium}>{title}</Text>
