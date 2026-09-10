@@ -2,8 +2,6 @@ import React from 'react';
 import {
   Box,
   BoxFlexDirection,
-  BoxJustifyContent,
-  BoxAlignItems,
   Text,
   TextVariant,
   TextColor,
@@ -70,17 +68,8 @@ export const PerpsRecentActivity = ({
         gap={2}
         data-testid="perps-recent-activity-loading"
       >
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
-          alignItems={BoxAlignItems.Center}
-          paddingLeft={4}
-          paddingRight={4}
-          paddingTop={3}
-          paddingBottom={3}
-        >
-          <Skeleton className="h-5 w-36 rounded" />
-          <Skeleton className="h-4 w-14 rounded" />
+        <Box paddingLeft={4} paddingTop={4}>
+          <Skeleton className="h-6 w-36 rounded" />
         </Box>
         <Box flexDirection={BoxFlexDirection.Column}>
           {[1, 2, 3].map((cardIndex) => (
@@ -98,16 +87,10 @@ export const PerpsRecentActivity = ({
         gap={2}
         data-testid="perps-recent-activity-empty"
       >
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
-          alignItems={BoxAlignItems.Center}
-          paddingLeft={4}
-          paddingRight={4}
-          paddingTop={3}
-          paddingBottom={3}
-        >
-          <Text fontWeight={FontWeight.Medium}>{t('perpsRecentActivity')}</Text>
+        <Box paddingLeft={4} paddingTop={4} paddingBottom={2}>
+          <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
+            {t('perpsRecentActivity')}
+          </Text>
         </Box>
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
           <Text

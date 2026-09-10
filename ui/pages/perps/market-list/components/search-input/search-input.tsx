@@ -59,7 +59,7 @@ export const SearchInput = ({
       }
       onChange={(event) => onChange(event.target.value)}
       placeholder={t('perpsSearchMarkets')}
-      size={TextFieldSize.Md}
+      size={TextFieldSize.Lg}
       value={value}
     />
   );

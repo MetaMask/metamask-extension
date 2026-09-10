@@ -13,6 +13,7 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
   Text,
+  TextAlign,
   TextVariant,
   FontWeight,
   Icon,
@@ -682,10 +683,10 @@ export const MarketListView = () => {
     >
       {/* Header */}
       <Box
-        className="border-b border-border-muted px-4 py-3"
+        className="px-4 py-3"
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
-        gap={3}
+        justifyContent={BoxJustifyContent.Between}
       >
         <ButtonBase
           onClick={handleBack}
@@ -699,12 +700,20 @@ export const MarketListView = () => {
             color={IconColor.IconDefault}
           />
         </ButtonBase>
-        <Text fontWeight={FontWeight.Medium}>{t('perpsMarkets')}</Text>
+        <Text
+          variant={TextVariant.HeadingSm}
+          fontWeight={FontWeight.Bold}
+          textAlign={TextAlign.Center}
+          className="flex-1"
+        >
+          {t('perpsMarkets')}
+        </Text>
+        <Box className="w-8" />
       </Box>
 
       {/* Search Row */}
       <Box
-        className="border-b border-border-muted px-4 py-3"
+        className="px-4 py-3"
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
       >
@@ -720,7 +729,7 @@ export const MarketListView = () => {
       {/* Filter and Sort Row - Hidden when searching */}
       {!searchQuery.trim() && (
         <Box
-          className="border-b border-border-muted px-4 py-3 flex-wrap"
+          className="px-4 py-3 flex-wrap"
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
           justifyContent={BoxJustifyContent.Start}

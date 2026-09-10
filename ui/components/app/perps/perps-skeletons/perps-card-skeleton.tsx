@@ -19,8 +19,8 @@ export const PerpsCardSkeleton = () => {
       gap={4}
       data-testid="perps-card-skeleton"
     >
-      {/* Token Logo Skeleton - matches AvatarTokenSize.Md (32px) */}
-      <Skeleton className="h-8 w-8 shrink-0 rounded-full" />
+      {/* Token Logo Skeleton - matches AvatarTokenSize.Lg (40px) */}
+      <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
 
       {/* Left side: Symbol and info */}
       <Box

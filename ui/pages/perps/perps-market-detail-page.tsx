@@ -1144,7 +1144,7 @@ const PerpsMarketDetailPage = () => {
           </Box>
 
           {/* Token Logo */}
-          <PerpsTokenLogo symbol={market.symbol} size={AvatarTokenSize.Md} />
+          <PerpsTokenLogo symbol={market.symbol} size={AvatarTokenSize.Lg} />
 
           {/* Market identity: full name + leverage + chevron, ticker-collateral perp */}
           <Box
@@ -1157,7 +1157,7 @@ const PerpsMarketDetailPage = () => {
               gap={1}
             >
               <Text
-                variant={TextVariant.HeadingMd}
+                variant={TextVariant.HeadingSm}
                 className="truncate"
                 data-testid="perps-market-detail-name"
               >
@@ -1321,8 +1321,8 @@ const PerpsMarketDetailPage = () => {
           <Box paddingLeft={4} paddingRight={4}>
             <Box paddingBottom={2}>
               <Text
-                variant={TextVariant.HeadingSm}
-                fontWeight={FontWeight.Medium}
+                variant={TextVariant.HeadingMd}
+                fontWeight={FontWeight.Bold}
               >
                 {t('perpsPosition')}
               </Text>
@@ -1541,8 +1541,8 @@ const PerpsMarketDetailPage = () => {
               {/* Details Section */}
               <Box paddingTop={4} paddingBottom={2}>
                 <Text
-                  variant={TextVariant.HeadingSm}
-                  fontWeight={FontWeight.Medium}
+                  variant={TextVariant.HeadingMd}
+                  fontWeight={FontWeight.Bold}
                 >
                   {t('perpsDetails')}
                 </Text>
@@ -1674,8 +1674,8 @@ const PerpsMarketDetailPage = () => {
               data-testid="perps-orders-section-header"
             >
               <Text
-                variant={TextVariant.HeadingSm}
-                fontWeight={FontWeight.Medium}
+                variant={TextVariant.HeadingMd}
+                fontWeight={FontWeight.Bold}
               >
                 {t('perpsOrders')}
               </Text>
@@ -1704,10 +1704,7 @@ const PerpsMarketDetailPage = () => {
             paddingBottom={2}
             data-testid="perps-stats-section-header"
           >
-            <Text
-              variant={TextVariant.HeadingSm}
-              fontWeight={FontWeight.Medium}
-            >
+            <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
               {t('perpsStats')}
             </Text>
           </Box>

@@ -7,6 +7,7 @@ import {
   IconName,
   IconSize,
   Text,
+  TextVariant,
 } from '@metamask/design-system-react';
 
 export type PerpsSectionHeaderProps = {
@@ -17,8 +18,8 @@ export type PerpsSectionHeaderProps = {
 };
 
 /**
- * Clickable section header on the Perps tab: label, right-pointing arrow,
- * hover and pressed states.
+ * Clickable section header on the Perps tab: heading with the chevron
+ * tucked directly after the title, matching Top movers.
  *
  * `ButtonBase` stands in for the SectionHeader primitive the design system
  * lacks, and supplies the button role and keyboard activation.
@@ -36,15 +37,17 @@ export const PerpsSectionHeader = ({
   'aria-label': ariaLabel,
 }: PerpsSectionHeaderProps) => (
   <ButtonBase
-    className="w-full flex flex-row justify-between items-center px-4 py-3 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
+    className="w-auto self-start h-auto justify-start gap-1 bg-transparent px-4 pt-4 rounded-none hover:bg-transparent active:bg-transparent"
     onClick={onClick}
     data-testid={dataTestId}
     aria-label={ariaLabel}
   >
-    <Text fontWeight={FontWeight.Medium}>{label}</Text>
+    <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
+      {label}
+    </Text>
     <Icon
       name={IconName.ArrowRight}
-      size={IconSize.Sm}
+      size={IconSize.Md}
       color={IconColor.IconAlternative}
     />
   </ButtonBase>

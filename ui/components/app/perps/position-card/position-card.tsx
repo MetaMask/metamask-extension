@@ -103,7 +103,7 @@ export const PositionCard = ({
       {/* Token Logo */}
       <PerpsTokenLogo
         symbol={position.symbol}
-        size={AvatarTokenSize.Md}
+        size={AvatarTokenSize.Lg}
         className="shrink-0"
       />
 

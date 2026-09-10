@@ -119,22 +119,22 @@ export const PerpsMarketRecentActivity = ({
       {hasTransactions ? (
         <ButtonBase
           onClick={handleSeeAll}
-          className="w-full flex flex-row justify-between items-center px-4 py-2 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
+          className="w-auto self-start h-auto justify-start gap-1 bg-transparent px-4 pt-4 rounded-none hover:bg-transparent active:bg-transparent"
           data-testid="perps-market-detail-view-all-activity"
           aria-label={`${t('perpsRecentActivity')}, ${t('perpsSeeAll')}`}
         >
-          <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
+          <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
             {t('perpsRecentActivity')}
           </Text>
           <Icon
             name={IconName.ArrowRight}
-            size={IconSize.Sm}
+            size={IconSize.Md}
             color={IconColor.IconAlternative}
           />
         </ButtonBase>
       ) : (
-        <Box paddingLeft={4} paddingRight={4} paddingTop={2} paddingBottom={2}>
-          <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
+        <Box paddingLeft={4} paddingRight={4} paddingTop={4} paddingBottom={2}>
+          <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Bold}>
             {t('perpsRecentActivity')}
           </Text>
         </Box>
