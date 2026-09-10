@@ -1390,7 +1390,7 @@
         "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
-        "@metamask/perps-controller>@myx-trade/sdk>lodash-es": true
+        "@metamask/ramps-controller>@metamask/controller-utils>lodash-es": true
       }
     },
     "@metamask/core-backend": {
@@ -1958,7 +1958,7 @@
         "@metamask/utils": true,
         "async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "@metamask/perps-controller>@myx-trade/sdk>lodash-es": true,
+        "@metamask/ramps-controller>@metamask/controller-utils>lodash-es": true,
         "@metamask/keyring-controller>ulid": true
       }
     },
@@ -5864,7 +5864,7 @@
         "define": true
       }
     },
-    "@metamask/perps-controller>@myx-trade/sdk>lodash-es": {
+    "@metamask/ramps-controller>@metamask/controller-utils>lodash-es": {
       "globals": {
         "exports": true,
         "module": true
