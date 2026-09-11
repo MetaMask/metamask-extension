@@ -72,7 +72,6 @@
     "accountTree": "object",
     "accountWalletsMetadata": "object",
     "accountsAssets": "object",
-    "accountsByChainId": "object",
     "activeProvider": "string",
     "activeQrCodeScanRequest": null,
     "addSnapAccountEnabled": "boolean",
