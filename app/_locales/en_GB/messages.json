@@ -5680,6 +5680,9 @@
   "moneyBenefits": {
     "message": "Benefits"
   },
+  "moneyContactSupport": {
+    "message": "Contact support"
+  },
   "moneyEarnApyTitle": {
     "message": "Earn up to $1 APY"
   },
@@ -8953,6 +8956,9 @@
   },
   "rejected": {
     "message": "Rejected"
+  },
+  "relayerFee": {
+    "message": "Relayer fee"
   },
   "remove": {
     "message": "Remove"

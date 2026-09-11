@@ -31,6 +31,7 @@ export async function mockIdentityServices(
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
   mockAPICall(server, AuthMocks.getMockAuthPairResponse());
+  mockAPICall(server, AuthMocks.getMockAuthPairSocialIdentifierResponse());
   mockAPICall(server, AuthMocks.getMockCustomerServiceTokenResponse());
 
   // Storage

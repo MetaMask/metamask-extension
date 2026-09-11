@@ -4,9 +4,7 @@
       "hiddenAccountList": "object",
       "pinnedAccountList": "object"
     },
-    "AccountTracker": {
-      "accountsByChainId": "object"
-    },
+    "AccountTracker": {},
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
       "accountTree": "object",
@@ -107,10 +105,7 @@
       "lastFetched": null,
       "version": null
     },
-    "CurrencyController": {
-      "currencyRates": {},
-      "currentCurrency": "usd"
-    },
+    "CurrencyController": {},
     "DeFiPositionsControllerV2": "object",
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},
@@ -137,17 +132,9 @@
     },
     "MoneyAccountController": { "moneyAccounts": "object" },
     "MoneyAccountUpgradeController": { "upgradedAccounts": "object" },
-    "MultichainAssetsController": {
-      "accountsAssets": "object",
-      "allIgnoredAssets": "object",
-      "assetsMetadata": "object"
-    },
-    "MultichainAssetsRatesController": {
-      "conversionRates": "object"
-    },
-    "MultichainBalancesController": {
-      "balances": "object"
-    },
+    "MultichainAssetsController": {},
+    "MultichainAssetsRatesController": {},
+    "MultichainBalancesController": {},
     "MultichainNetworkController": "object",
     "MultichainRatesController": {
       "cryptocurrencies": ["btc", "sol"],
@@ -341,17 +328,9 @@
       "subjectMetadata": "object"
     },
     "SubscriptionController": "object",
-    "TokenBalancesController": {
-      "tokenBalances": "object"
-    },
-    "TokenRatesController": {
-      "marketData": "object"
-    },
-    "TokensController": {
-      "allDetectedTokens": {},
-      "allIgnoredTokens": {},
-      "allTokens": {}
-    },
+    "TokenBalancesController": {},
+    "TokenRatesController": {},
+    "TokensController": {},
     "TransactionController": {
       "lastFetchedBlockNumbers": "object",
       "methodData": "object",

@@ -72,6 +72,19 @@ export type OrderFormState = {
 };
 
 /**
+ * Transient new-order fields persisted by PerpsController for a short return
+ * window. Derived fields such as balancePercent and autoCloseEnabled are
+ * reconstructed when the form is restored.
+ */
+export type OrderFormDraft = Pick<OrderFormState, 'type' | 'direction'> &
+  Partial<
+    Pick<
+      OrderFormState,
+      'amount' | 'leverage' | 'takeProfitPrice' | 'stopLossPrice' | 'limitPrice'
+    >
+  >;
+
+/**
  * Calculated values derived from form state
  * These are read-only display values
  */
@@ -130,6 +143,10 @@ export type OrderEntryProps = {
   onAddFunds?: () => void;
   /** Initial leverage override for new orders (e.g. last used leverage for this market) */
   initialLeverage?: number;
+  /** Unexpired same-market draft used to restore a new-order form. */
+  initialDraft?: OrderFormDraft;
+  /** Called when the user selects a leverage value. */
+  onLeverageChange?: (leverage: number) => void;
   /** Market size decimals for controller-based position-size formatting */
   sizeDecimals?: number;
   /**

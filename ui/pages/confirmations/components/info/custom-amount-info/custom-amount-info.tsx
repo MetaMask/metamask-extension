@@ -171,6 +171,7 @@ export const CustomAmountInfo = React.memo(
       hasAmount,
       hasInput,
       isDepositPrefillLoading,
+      isQuoteDerivedAmountLoading,
       updatePendingAmount,
       updatePendingAmountPercentage,
     } = useTransactionCustomAmount({
@@ -203,8 +204,11 @@ export const CustomAmountInfo = React.memo(
     );
 
     // Show amount skeleton while deposit prefill recomputes (e.g. token or
-    // account change) so the field does not briefly flash "0".
-    const showAmountLoader = isDepositPrefillLoading && !hasAccountNoFunds;
+    // account change) so the field does not briefly flash "0", and while a
+    // quote the displayed amount comes from is still loading.
+    const showAmountLoader =
+      (isDepositPrefillLoading && !hasAccountNoFunds) ||
+      isQuoteDerivedAmountLoading;
 
     if (!currentConfirmation || isAwaitingRequiredToken) {
       return (

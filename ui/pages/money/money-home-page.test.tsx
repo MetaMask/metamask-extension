@@ -18,6 +18,9 @@ const mockUseMoneyActivityItems = jest.fn();
 const mockUseMoneyActivityItemClick = jest.fn();
 const mockUseMoneyAccountDeposit = jest.fn();
 const mockInitiateDeposit = jest.fn();
+const mockUseMoneyAccountWithdrawal = jest.fn();
+const mockInitiateWithdrawal = jest.fn();
+const mockUseUpgradeMoneyAccount = jest.fn();
 const mockNavigate = jest.fn();
 const mockSelectMoneyEarningSectionEnabled = jest.mocked(
   selectMoneyEarningSectionEnabled,
@@ -88,6 +91,12 @@ jest.mock('../../hooks/money/use-money-activity-items', () => ({
 }));
 jest.mock('../../hooks/money/useMoneyAccountDeposit', () => ({
   useMoneyAccountDeposit: () => mockUseMoneyAccountDeposit(),
+}));
+jest.mock('../../hooks/money/useMoneyAccountWithdrawal', () => ({
+  useMoneyAccountWithdrawal: () => mockUseMoneyAccountWithdrawal(),
+}));
+jest.mock('../../hooks/money/use-upgrade-money-account', () => ({
+  useUpgradeMoneyAccount: () => mockUseUpgradeMoneyAccount(),
 }));
 
 jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
@@ -220,6 +229,12 @@ describe('MoneyHomePage', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('upgrades the Money account while mounted', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(mockUseUpgradeMoneyAccount).toHaveBeenCalled();
+  });
+
   it('keeps groundwork actions other than the transfer entry points inert', () => {
     renderWithLocalization(<MoneyHomePage />);
 
@@ -228,9 +243,14 @@ describe('MoneyHomePage', () => {
       messages.addFunds.message,
       messages.moneySend.message,
       messages.moneyLearnMore.message,
+      messages.moneyMoreOptions.message,
     ];
     screen.getAllByRole('button').forEach((button) => {
-      if (activeLabels.includes(button.textContent ?? '')) {
+      if (
+        activeLabels.includes(
+          button.textContent || (button.getAttribute('aria-label') ?? ''),
+        )
+      ) {
         expect(button).toBeEnabled();
       } else {
         expect(button).toBeDisabled();
@@ -352,8 +372,12 @@ describe('MoneyHomePage', () => {
     expect(screen.getByTestId('money-add-button')).toBeEnabled();
     screen.getAllByRole('button').forEach((button) => {
       if (
-        [messages.moneyAdd.message, messages.moneySend.message].includes(
-          button.textContent ?? '',
+        [
+          messages.moneyAdd.message,
+          messages.moneySend.message,
+          messages.moneyMoreOptions.message,
+        ].includes(
+          button.textContent || (button.getAttribute('aria-label') ?? ''),
         )
       ) {
         expect(button).toBeEnabled();
