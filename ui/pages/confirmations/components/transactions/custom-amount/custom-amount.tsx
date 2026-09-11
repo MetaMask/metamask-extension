@@ -14,10 +14,6 @@ import {
 import { Box, Text } from '../../../../../components/component-library';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
-import {
-  useIsTransactionPayLoading,
-  useTransactionPayIsMaxAmount,
-} from '../../../hooks/pay/useTransactionPayData';
 
 const FIAT_DISPLAY_DECIMALS = 2;
 
@@ -133,8 +129,6 @@ export const CustomAmount = React.memo(
     isLoading,
     onChange,
   }: CustomAmountProps) => {
-    const isMaxAmount = useTransactionPayIsMaxAmount();
-    const isQuotesLoading = useIsTransactionPayLoading();
     const selectedCurrency = useSelector(getCurrentCurrency);
     const currency = currencyProp ?? selectedCurrency;
     const fiatSymbol = getCurrencySymbol(currency);
@@ -155,8 +149,6 @@ export const CustomAmount = React.memo(
     const amountWidth = amountLength - decimalSeparatorCount * 0.5;
     const displayWidth = amountWidth + Math.max(1, fiatSymbol.length);
 
-    const showLoader = isLoading || (isMaxAmount && isQuotesLoading);
-
     const handleChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
@@ -168,7 +160,7 @@ export const CustomAmount = React.memo(
       [onChange],
     );
 
-    if (showLoader) {
+    if (isLoading) {
       return <CustomAmountSkeleton />;
     }
 
