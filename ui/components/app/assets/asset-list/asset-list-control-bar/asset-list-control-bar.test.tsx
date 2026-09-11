@@ -529,7 +529,6 @@ describe('NFTs options', () => {
       actions,
       'refreshAssetsForSelectedAccount',
     );
-    const updateBalancesSpy = jest.spyOn(actions, 'updateBalancesFoAccounts');
     const detectTokensSpy = jest.spyOn(actions, 'detectTokens');
 
     const state = createMockState();
@@ -555,17 +554,15 @@ describe('NFTs options', () => {
         assetTypes: ['token', 'price', 'metadata'],
       },
     );
-    expect(updateBalancesSpy).not.toHaveBeenCalled();
     expect(detectTokensSpy).not.toHaveBeenCalled();
   });
 
-  it('refreshes via the legacy token controllers when assets unify state is disabled', async () => {
+  it('refreshes via token detection when assets unify state is disabled', async () => {
     setBackgroundConnection(backgroundConnectionMock as never);
     const refreshAssetsSpy = jest.spyOn(
       actions,
       'refreshAssetsForSelectedAccount',
     );
-    const updateBalancesSpy = jest.spyOn(actions, 'updateBalancesFoAccounts');
     const detectTokensSpy = jest.spyOn(actions, 'detectTokens');
 
     const state = createMockState();
@@ -584,7 +581,6 @@ describe('NFTs options', () => {
     fireEvent.click(await findByTestId('asset-list-control-bar-action-button'));
     fireEvent.click(await findByTestId('refreshList__button'));
 
-    expect(updateBalancesSpy).toHaveBeenCalledWith(['0x1'], false);
     expect(detectTokensSpy).toHaveBeenCalledWith(['0x1']);
     expect(refreshAssetsSpy).not.toHaveBeenCalled();
   });

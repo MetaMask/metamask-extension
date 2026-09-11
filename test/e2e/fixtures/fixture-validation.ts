@@ -85,7 +85,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AssetsController',
   'data.AuthenticationController',
   'data.MetaMetricsController',
-  'data.TokenBalancesController',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
   // E2E runs in full-screen / toolbar-popup flows, not the extension side panel.

@@ -401,7 +401,6 @@
     "thresholdCache": "object",
     "throttledOrigins": "object",
     "timezone": "string",
-    "tokenBalances": "object",
     "tokenScanCache": "object",
     "tokenSecurityTypeDestination": null,
     "tokenWarnings": "object",

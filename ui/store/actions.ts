@@ -5860,37 +5860,6 @@ export async function tokenDetectionStopPollingByPollingToken(
   await removePollingTokenFromAppState(pollingToken);
 }
 
-export async function tokenBalancesStartPolling(
-  chainIds: string[],
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'tokenBalancesStartPolling',
-    [{ chainIds }],
-  );
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-export async function tokenBalancesStopPollingByPollingToken(
-  pollingToken: string,
-) {
-  await submitRequestToBackground('tokenBalancesStopPollingByPollingToken', [
-    pollingToken,
-  ]);
-  await removePollingTokenFromAppState(pollingToken);
-}
-
-export function updateBalancesFoAccounts(
-  chainIds: string[],
-  queryAllAccounts: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    await submitRequestToBackground('updateBalances', [
-      { chainIds, queryAllAccounts },
-    ]);
-  };
-}
-
 /**
  * Informs the StaticAssetsController that the UI requires static assets polling
  * for the given chain ids and selected account address.

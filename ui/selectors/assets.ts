@@ -148,7 +148,7 @@ export type DefiState = {
 export type BalanceCalculationState = {
   metamask: AccountTreeControllerState &
     AccountsControllerState &
-    TokenBalancesControllerState &
+    Pick<TokenBalancesControllerState, 'tokenBalances'> &
     TokenRatesControllerState &
     MultichainBalancesControllerState &
     TokensControllerState &

@@ -52,8 +52,6 @@ jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
 jest.mock('../../../store/controller-actions/transaction-controller');

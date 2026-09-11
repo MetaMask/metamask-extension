@@ -1,36 +1,33 @@
 import { useSelector } from 'react-redux';
 import { Token } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import {
-  tokenBalancesStartPolling,
-  tokenBalancesStopPollingByPollingToken,
-} from '../store/actions';
 import { getTokenBalances } from '../ducks/metamask/metamask';
 import { hexToDecimal } from '../../shared/lib/conversion.utils';
-import { getEnabledChainIds } from '../selectors/multichain/networks';
 import { getIsAssetsUnifyStateEnabled } from '../selectors/assets-unify-state';
-import useMultiPolling from './useMultiPolling';
 
-export const useTokenBalances = ({ chainIds }: { chainIds?: Hex[] } = {}) => {
+/**
+ * Read EVM token balances. Prefer this (or higher-level hooks) over direct
+ * controller access — balances come from AssetsController via
+ * `getTokenBalancesControllerTokenBalances` when unify is enabled.
+ *
+ * @param _options - Reserved for callers that previously passed `chainIds`
+ * for TokenBalancesController polling (removed with that controller).
+ * @param _options.chainIds
+ * @returns Token balances keyed by account → chain → token address.
+ */
+export const useTokenBalances = (
+  // Keep the options bag so existing call sites do not break.
+
+  _options: { chainIds?: Hex[] } = {},
+) => {
   const tokenBalances = useSelector(getTokenBalances);
-  const enabledChainIds = useSelector(getEnabledChainIds);
-  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
-
-  const pollableChains =
-    chainIds && chainIds.length > 0 ? chainIds : enabledChainIds;
-
-  useMultiPolling({
-    startPolling: tokenBalancesStartPolling,
-    stopPollingByPollingToken: tokenBalancesStopPollingByPollingToken,
-    input: isAssetsUnifyStateEnabled ? [] : [pollableChains],
-  });
 
   return { tokenBalances };
 };
 
 // This hook is designed for backwards compatibility with `ui/hooks/useTokenTracker.js`
 // and the github.com/MetaMask/eth-token-tracker library. It replaces RPC calls with
-// reading state from `TokenBalancesController`. It should not be used in new code.
+// reading balances via assets-migration selectors. It should not be used in new code.
 // Instead, prefer to use `useTokenBalances` directly, or compose higher level hooks from it.
 export const useTokenTracker = ({
   chainId,
