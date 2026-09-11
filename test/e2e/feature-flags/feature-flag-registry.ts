@@ -3492,7 +3492,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'tokenDetailsAdvancedCharts',
     productionDefault: {
-      enabled: true,
+      enabled: false,
       minimumVersion: '13.49.0',
     },
     status: FeatureFlagStatus.Active,
