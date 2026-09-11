@@ -9,6 +9,9 @@ import { Driver } from '../../../webdriver/driver';
  */
 const QUOTE_PARAMS_DEBOUNCE_MS = 500;
 
+/** Prefix the Select quote dialog renders before each quote's cost. */
+const TOTAL_COST_LABEL = 'Total cost:';
+
 export type BridgeQuote = {
   amount: string;
   tokenFrom?: string;
@@ -84,6 +87,8 @@ class BridgeQuotePage {
 
   private moreETHneededForGas = '[data-testid="bridge-insufficient-gas"]';
 
+  private moreQuotesButton = '[aria-label="More quotes"]';
+
   private networkFees = '[data-testid="network-fees"]';
 
   private networkNameSelector = (network: string) =>
@@ -95,6 +100,20 @@ class BridgeQuotePage {
 
   private priceImpactQuoteCardButton =
     '[data-testid="price-impact-warning-button"]';
+
+  private quoteOption = '.bridge-quote-option';
+
+  private quotesModal = '.quotes-modal';
+
+  private quotesModalBackButton = '.quotes-modal [aria-label="Back"]';
+
+  private quotesModalTitle = {
+    css: this.quotesModal,
+    text: 'Select quote',
+  };
+
+  private quoteTotalCost = (position: number) =>
+    `${this.quotesModal} ${this.quoteOption}:nth-child(${position}) [data-testid="bridge-quote-total-cost"]`;
 
   private rwaGeoRestrictedMessage = {
     css: '[data-testid="bridge-no-quotes"]',
@@ -287,6 +306,40 @@ class BridgeQuotePage {
     );
   };
 
+  /**
+   * Opens the Select quote dialog from More quotes and asserts the Total cost
+   * of every quote, then closes the dialog with Back so the quote selected on
+   * the quote page is left unchanged.
+   *
+   * @param expectedTotalCosts - Total cost values as rendered, cheapest first,
+   * e.g. `['$38.95']` or `['0.0143 ETH']`. Derive them from the mocked quotes
+   * with `getExpectedQuoteTotalCosts` rather than writing amounts by hand.
+   */
+  async checkQuoteTotalCost(expectedTotalCosts: string[]): Promise<void> {
+    await this.driver.clickElement(this.moreQuotesButton);
+    await this.driver.waitForSelector(this.quotesModalTitle);
+
+    await this.waitForExpectedNumberOfQuotes(expectedTotalCosts.length);
+
+    const costs = await this.readAllQuoteTotalCosts(expectedTotalCosts.length);
+    // Comparing the whole list in order also covers the cheapest-first sorting.
+    assert.deepEqual(
+      costs,
+      expectedTotalCosts,
+      `Unexpected Total cost values: ${costs.join(', ')}`,
+    );
+
+    await this.driver.waitForSelector({
+      css: `${this.quotesModal} ${this.quoteOption}:first-child`,
+      text: 'Lowest cost',
+    });
+
+    await this.driver.clickElementAndWaitToDisappear(
+      this.quotesModalBackButton,
+    );
+    console.log(`Quote total costs are as expected: ${costs.join(', ')}`);
+  }
+
   async checkRwaGeoRestrictedMessageIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.rwaGeoRestrictedMessage);
@@ -470,6 +523,35 @@ class BridgeQuotePage {
     await this.driver.clickElement(pickerButton);
   };
 
+  /**
+   * Reads the Total cost of every row of the Select quote dialog, in display
+   * order.
+   *
+   * @param expectedQuoteCount - Number of quotes the mocks return.
+   */
+  async readAllQuoteTotalCosts(expectedQuoteCount: number): Promise<string[]> {
+    const costs = [];
+    for (let position = 1; position <= expectedQuoteCount; position++) {
+      costs.push(await this.readSingleQuoteTotalCost(position));
+    }
+    return costs;
+  }
+
+  /**
+   * Reads the Total cost of one row of the Select quote dialog, as rendered:
+   * either a fiat amount (`$2.26`) or, when the quote has no fiat cost, the
+   * native network fee (`0.0143 ETH`).
+   *
+   * @param position - 1-based position of the quote in the dialog.
+   */
+  async readSingleQuoteTotalCost(position: number): Promise<string> {
+    const costElement = await this.driver.waitForSelector(
+      this.quoteTotalCost(position),
+    );
+    const cost = await costElement.getText();
+    return cost.replace(TOTAL_COST_LABEL, '').trim();
+  }
+
   rejectModal = async () => {
     await this.driver.clickElement(this.warningModalCancelButton);
   };
@@ -624,6 +706,25 @@ class BridgeQuotePage {
 
   async switchTokens(): Promise<void> {
     await this.driver.clickElement(this.switchTokensButton);
+  }
+
+  /**
+   * Waits for the Select quote dialog to list every quote. Quotes are streamed,
+   * so the list keeps growing and re-sorting until the last one lands.
+   *
+   * @param expectedQuoteCount - Number of quotes the mocks return.
+   */
+  async waitForExpectedNumberOfQuotes(
+    expectedQuoteCount: number,
+  ): Promise<void> {
+    const hasAllQuotes = await this.driver.elementCountBecomesN(
+      `${this.quotesModal} ${this.quoteOption}`,
+      expectedQuoteCount,
+    );
+    assert.ok(
+      hasAllQuotes,
+      `Select quote dialog did not list ${expectedQuoteCount} quotes`,
+    );
   }
 
   waitForQuote = async () => {

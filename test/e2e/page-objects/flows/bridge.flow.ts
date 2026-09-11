@@ -100,6 +100,7 @@ export const verifySubmittedSwapTransaction = async ({
  * @param testParams.expectedWalletBalance - The expected wallet balance after the transaction
  * @param testParams.expectedSwapTokens - The expected swap tokens shown in the activity list
  * @param testParams.expectedDestAmount - The expected quoted destination amounts in the quote page
+ * @param testParams.expectedTotalCost - The expected Total cost shown in the Select quote dialog, as rendered (e.g. `$2.26` or `0.0143 ETH`). Pass an array to assert every quote in display order. When omitted the dialog is not opened.
  * @param testParams.expectedDetailsDestAmount - The expected destination amount shown in the transaction details
  * @param testParams.expectedActivityAmount - The expected destination amount shown in the activity list
  * @param testParams.submitDelay - The delay to wait before submitting the transaction, must be less than the refresh interval of the stream
@@ -117,6 +118,7 @@ export const bridgeTransaction = async ({
   expectedDestAmount,
   expectedDetailsDestAmount,
   expectedActivityAmount,
+  expectedTotalCost,
   submitDelay,
   skipStatusPage,
   openPickersWithDebounce,
@@ -130,6 +132,7 @@ export const bridgeTransaction = async ({
   expectedDestAmount: string;
   expectedDetailsDestAmount?: string;
   expectedActivityAmount?: string;
+  expectedTotalCost?: string[];
   submitDelay?: number;
   skipStatusPage?: boolean;
   openPickersWithDebounce?: boolean;
@@ -147,6 +150,9 @@ export const bridgeTransaction = async ({
   submitDelay && (await driver.delay(submitDelay));
   if (expectedDestAmount) {
     await bridgePage.checkDestAmount(expectedDestAmount);
+  }
+  if (expectedTotalCost) {
+    await bridgePage.checkQuoteTotalCost(expectedTotalCost);
   }
 
   if (skipStatusPage) {
