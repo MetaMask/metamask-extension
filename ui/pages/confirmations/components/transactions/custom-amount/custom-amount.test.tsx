@@ -3,18 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import {
-  useIsTransactionPayLoading,
-  useTransactionPayIsMaxAmount,
-} from '../../../hooks/pay/useTransactionPayData';
 import { CustomAmount, CustomAmountSkeleton } from './custom-amount';
-
-jest.mock('../../../hooks/pay/useTransactionPayData');
-
-const mockUseTransactionPayIsMaxAmount = jest.mocked(
-  useTransactionPayIsMaxAmount,
-);
-const mockUseIsTransactionPayLoading = jest.mocked(useIsTransactionPayLoading);
 
 const mockStore = configureStore([thunk]);
 
@@ -32,8 +21,6 @@ const CustomAmountHarness = ({ initialAmount }: { initialAmount: string }) => {
 describe('CustomAmount', () => {
   beforeEach(() => {
     jest.resetAllMocks();
-    mockUseTransactionPayIsMaxAmount.mockReturnValue(false);
-    mockUseIsTransactionPayLoading.mockReturnValue(false);
   });
 
   it('renders amount', () => {
@@ -69,39 +56,6 @@ describe('CustomAmount', () => {
     renderWithProvider(<CustomAmount amountFiat="123.45" isLoading />, store);
 
     expect(screen.getByTestId('custom-amount-skeleton')).toBeInTheDocument();
-  });
-
-  it('renders skeleton when max amount and quotes are loading', () => {
-    mockUseTransactionPayIsMaxAmount.mockReturnValue(true);
-    mockUseIsTransactionPayLoading.mockReturnValue(true);
-
-    const store = mockStore(getMockState());
-
-    renderWithProvider(<CustomAmount amountFiat="123.45" />, store);
-
-    expect(screen.getByTestId('custom-amount-skeleton')).toBeInTheDocument();
-  });
-
-  it('renders amount when max amount but quotes are not loading', () => {
-    mockUseTransactionPayIsMaxAmount.mockReturnValue(true);
-    mockUseIsTransactionPayLoading.mockReturnValue(false);
-
-    const store = mockStore(getMockState());
-
-    renderWithProvider(<CustomAmount amountFiat="123.45" />, store);
-
-    expect(screen.getByTestId('custom-amount-input')).toHaveValue('123.45');
-  });
-
-  it('renders amount when quotes are loading but not max amount', () => {
-    mockUseTransactionPayIsMaxAmount.mockReturnValue(false);
-    mockUseIsTransactionPayLoading.mockReturnValue(true);
-
-    const store = mockStore(getMockState());
-
-    renderWithProvider(<CustomAmount amountFiat="123.45" />, store);
-
-    expect(screen.getByTestId('custom-amount-input')).toHaveValue('123.45');
   });
 
   it('renders with error color when hasAlert is true', () => {

@@ -114,6 +114,7 @@ const DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN = {
   isDepositPrefillLoading: false,
   isDepositPrefilled: false,
   isInputChanged: false,
+  isQuoteDerivedAmountLoading: false,
   updatePendingAmount: jest.fn(),
   updatePendingAmountPercentage: jest.fn(),
 };
@@ -365,6 +366,18 @@ describe('CustomAmountInfo', () => {
 
     expect(getByTestId('custom-amount')).toHaveTextContent('123');
     expect(queryByTestId('custom-amount-skeleton')).not.toBeInTheDocument();
+  });
+
+  it('shows amount skeleton while the quote the amount comes from is loading', () => {
+    const { getByTestId, queryByTestId } = render({
+      customAmountHookReturn: {
+        ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+        isQuoteDerivedAmountLoading: true,
+      },
+    });
+
+    expect(getByTestId('custom-amount-skeleton')).toBeInTheDocument();
+    expect(queryByTestId('custom-amount')).not.toBeInTheDocument();
   });
 
   it('renders amount details under the amount input', () => {
