@@ -385,9 +385,80 @@ const mockDefaultProLayoutPreferences = {
   ordersSortField: 'time',
   ordersSortDirection: 'desc',
 };
+const mockDefaultOrderBookPreferences = {
+  currency: 'usd',
+  metric: 'total',
+};
+const mockDefaultVisibleCandleCount = 30;
+const mockPendingTradeConfigurationTtlMs = 30_000;
+
+/**
+ * Mirror `selectPendingTradeConfiguration` so UI tests expire drafts the same
+ * way `PerpsController.getPendingTradeConfiguration` does (`age > TTL`).
+ *
+ * @param {object | undefined} state
+ * @param {string} coin
+ * @returns {object | undefined}
+ */
+function mockSelectPendingTradeConfiguration(state, coin) {
+  const network = state?.isTestnet ? 'testnet' : 'mainnet';
+  const config = state?.tradeConfigurations?.[network]?.[coin]?.pendingConfig;
+  if (!config) {
+    return undefined;
+  }
+  const { timestamp, ...configWithoutTimestamp } = config;
+  if (Date.now() - timestamp > mockPendingTradeConfigurationTtlMs) {
+    return undefined;
+  }
+  return configWithoutTimestamp;
+}
+
+/**
+ * @param {object | undefined} state
+ * @returns {object}
+ */
+function mockSelectOrderBookPreferences(state) {
+  return {
+    ...mockDefaultOrderBookPreferences,
+    ...state?.orderBookPreferences,
+  };
+}
+
+/**
+ * @param {object | undefined} state
+ * @param {string} coin
+ * @returns {number | undefined}
+ */
+function mockSelectOrderBookGrouping(state, coin) {
+  const network = state?.isTestnet ? 'testnet' : 'mainnet';
+  return state?.tradeConfigurations?.[network]?.[coin]?.orderBookGrouping;
+}
+
+/**
+ * @param {object | undefined} state
+ * @returns {number}
+ */
+function mockSelectVisibleCandleCount(state) {
+  return Number.isFinite(state?.visibleCandleCount)
+    ? state.visibleCandleCount
+    : mockDefaultVisibleCandleCount;
+}
 
 module.exports = {
+  DEFAULT_ORDER_BOOK_PREFERENCES: mockDefaultOrderBookPreferences,
   DEFAULT_PRO_LAYOUT_PREFERENCES: mockDefaultProLayoutPreferences,
+  DEFAULT_SELECTED_ORDER_TYPE: 'market',
+  PERPS_CONSTANTS: {
+    DefaultMaxLeverage: 50,
+    PendingTradeConfigurationTtlMs: mockPendingTradeConfigurationTtlMs,
+  },
+  selectPendingTradeConfiguration: mockSelectPendingTradeConfiguration,
+  selectOrderBookPreferences: mockSelectOrderBookPreferences,
+  selectOrderBookGrouping: mockSelectOrderBookGrouping,
+  selectVisibleCandleCount: mockSelectVisibleCandleCount,
+  getDefaultPerpsControllerState: () => ({
+    visibleCandleCount: mockDefaultVisibleCandleCount,
+  }),
   PERPS_EVENT_PROPERTY: mockPerpsEventPropertyKeys,
   PERPS_EVENT_VALUE: mockPerpsEventValueLiterals,
   PerpsAnalyticsEvent: mockPerpsAnalyticsEventNames,

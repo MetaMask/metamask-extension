@@ -2364,6 +2364,7 @@
         "@metamask/utils": true,
         "@metamask/perps-controller>@nktkas/hyperliquid": true,
         "@metamask/perps-controller>bignumber.js": true,
+        "reselect": true,
         "uuid": true
       }
     },
