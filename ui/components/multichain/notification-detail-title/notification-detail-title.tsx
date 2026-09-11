@@ -1,16 +1,19 @@
 import React from 'react';
 
 import {
+  Text,
+  TextVariant,
+  TextAlign,
+  OverflowWrap,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
   BlockSize,
   Display,
   FlexDirection,
   JustifyContent,
-  TextVariant,
-  TextAlign,
-  OverflowWrap,
 } from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../component-library';
+import { Box } from '../../component-library';
 
 export type NotificationDetailTitleProps = {
   title: string;
@@ -41,14 +44,14 @@ export const NotificationDetailTitle = ({
       paddingInlineEnd={8}
     >
       <Text
-        variant={TextVariant.headingSm}
+        variant={TextVariant.HeadingSm}
         textAlign={TextAlign.Center}
         overflowWrap={OverflowWrap.BreakWord}
         data-testid="notification-details-title"
       >
         {title}
       </Text>
-      <Text variant={TextVariant.bodyXs}>{date}</Text>
+      <Text variant={TextVariant.BodyXs}>{date}</Text>
     </Box>
   );
 };
