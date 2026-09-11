@@ -3,10 +3,12 @@ import {
   USER_STORAGE_GROUPS_FEATURE_KEY,
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
-import { USER_STORAGE_RAMPS_ORDERS_FEATURE } from '@metamask/ramps-controller';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
+import {
+  UserStorageMockttpController,
+  USER_STORAGE_RAMPS_ORDERS_FEATURE,
+} from '../../helpers/identity/user-storage/userStorageMockttpController';
 
 const AuthMocks = AuthenticationController.Mocks;
 

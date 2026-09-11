@@ -4,12 +4,15 @@ import {
   USER_STORAGE_GROUPS_FEATURE_KEY,
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
-import { USER_STORAGE_RAMPS_ORDERS_FEATURE } from '@metamask/ramps-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { MOCK_SRP_E2E_IDENTIFIER_BASE_KEY } from '../../../tests/identity/mocks';
 
 const { getE2EIdentifierFromJwt } = AuthenticationController.Mocks;
+
+// Local copy of the ramps-controller feature key. Importing that package from
+// Playwright (native ESM) crashes on `import package.json` without `type: json`.
+export const USER_STORAGE_RAMPS_ORDERS_FEATURE = 'rampsOrders';
 
 const baseUrl =
   'https://user-storage\\.api\\.cx\\.metamask\\.io\\/api\\/v1\\/userstorage';
