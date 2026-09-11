@@ -54,6 +54,7 @@ import {
   SOLANA_SIMULATE_TRANSACTION,
   SOLANA_GET_SIGNATURES_FOR_ADDRESS,
   solanaCatchAllResponse,
+  SOLANA_DISCOVERY_RPC_RESULTS,
 } from './mock-responses';
 
 const AuthMocks = AuthenticationController.Mocks;
@@ -1168,6 +1169,28 @@ export async function mockBenchmarkEndpoints(
       .always()
       .thenCallback(delayedResponse(350, SOLANA_GET_SIGNATURES_FOR_ADDRESS)),
   );
+
+  // The remaining discovery methods the Solana snap calls. Each is matched on
+  // its own method name, so these never shadow the handlers above; they only
+  // answer what would otherwise reach the catch-all with a wrong-shaped body.
+  // 100 ms matches the "simple calls" band in the table above.
+  for (const [method, result] of Object.entries(SOLANA_DISCOVERY_RPC_RESULTS)) {
+    endpoints.push(
+      await server
+        .forPost(SOLANA_URL_REGEX)
+        .withJsonBodyIncluding({ method })
+        .asPriority(MOCK_PRIORITIES.HIGH_PRIORITY)
+        .always()
+        .thenCallback(async (req) => {
+          const body = (await req.body.getJson()) as { id?: string };
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          return {
+            statusCode: 200,
+            json: { id: body?.id ?? '1337', jsonrpc: '2.0', result },
+          };
+        }),
+    );
+  }
 
   endpoints.push(
     await server

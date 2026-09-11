@@ -517,3 +517,45 @@ export function solanaCatchAllResponse(id: string | number = '1337') {
     },
   };
 }
+
+const SOLANA_RPC_CONTEXT = { apiVersion: '2.0.18', slot: 308460925 };
+
+const SOLANA_MAINNET_GENESIS_HASH =
+  '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
+
+/**
+ * Well-formed results for the Solana discovery JSON-RPC methods this suite does
+ * not mock individually.
+ *
+ * Ported from `SOLANA_DISCOVERY_RPC_RESULTS` in `test/e2e/mock-e2e.js`, which
+ * #43961 completed for the shared e2e environment. The benchmark suite is a
+ * separate mock implementation and never loaded that helper, so it kept the
+ * defect: every method below fell through to `solanaCatchAllResponse`, whose
+ * `{ context, value: null }` is the wrong shape for a genesis hash, a version
+ * object, a slot number or a health string. Malformed bodies throw inside the
+ * Solana snap and restart discovery — the ~516-request retry storm #43961
+ * measured, and the ~6.5s slow path #45266 sees on 37% of iterations.
+ *
+ * Each entry is the empty/identity result for a wallet with no Solana activity,
+ * which is what the benchmark fixtures represent.
+ */
+export const SOLANA_DISCOVERY_RPC_RESULTS: Record<string, unknown> = {
+  getGenesisHash: SOLANA_MAINNET_GENESIS_HASH,
+  getHealth: 'ok',
+  getVersion: { 'solana-core': '2.0.18', 'feature-set': 3271415109 },
+  getSlot: SOLANA_RPC_CONTEXT.slot,
+  getMultipleAccounts: { context: SOLANA_RPC_CONTEXT, value: [] },
+  getProgramAccounts: [],
+  getTokenAccountBalance: {
+    context: SOLANA_RPC_CONTEXT,
+    value: { amount: '0', decimals: 9, uiAmount: null, uiAmountString: '0' },
+  },
+  getEpochInfo: {
+    absoluteSlot: 308460925,
+    blockHeight: 286665030,
+    epoch: 762,
+    slotIndex: 156925,
+    slotsInEpoch: 432000,
+    transactionCount: 386021115957,
+  },
+};
