@@ -45,7 +45,6 @@ const MAINNET_MUSD_ADDRESS: Hex = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
 const MAINNET_MUSD_ASSET_ID =
   'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da';
 const MAINNET_MUSD_DECIMALS = 6;
-const MAINNET_MUSD_PRICE_IN_ETH = 1 / 1700;
 const HYPERCORE_CHAIN_ID_DECIMAL = Number(CHAIN_IDS.LOCALHOST);
 const PRICE_API_BASE_URL = 'https://price.api.cx.metamask.io';
 const RELAY_API_BASE_URL = 'https://api.relay.link';
@@ -68,52 +67,6 @@ const PERPS_WITHDRAW_CONFIRMATION_ENABLED_FLAG = {
       enabled: true,
     },
   },
-};
-
-const ARBITRUM_USDC_MARKET_DATA = {
-  tokenAddress: ARBITRUM_USDC_ADDRESS,
-  currency: 'ETH',
-  allTimeHigh: 1,
-  allTimeLow: 1,
-  circulatingSupply: 0,
-  dilutedMarketCap: 0,
-  high1d: 1,
-  low1d: 1,
-  marketCap: 0,
-  marketCapPercentChange1d: 0,
-  price: ARBITRUM_USDC_PRICE_IN_ETH,
-  priceChange1d: 0,
-  pricePercentChange1d: 0,
-  pricePercentChange1h: 0,
-  pricePercentChange1y: 0,
-  pricePercentChange7d: 0,
-  pricePercentChange14d: 0,
-  pricePercentChange30d: 0,
-  pricePercentChange200d: 0,
-  totalVolume: 0,
-};
-
-const MAINNET_MUSD_MARKET_DATA = {
-  tokenAddress: MAINNET_MUSD_ADDRESS,
-  currency: 'ETH',
-  allTimeHigh: 1,
-  allTimeLow: 1,
-  circulatingSupply: 0,
-  dilutedMarketCap: 0,
-  high1d: 1,
-  low1d: 1,
-  marketCap: 0,
-  marketCapPercentChange1d: 0,
-  price: MAINNET_MUSD_PRICE_IN_ETH,
-  priceChange1d: 0,
-  pricePercentChange1d: 0,
-  pricePercentChange1h: 0,
-  pricePercentChange1y: 0,
-  pricePercentChange7d: 0,
-  pricePercentChange14d: 0,
-  pricePercentChange30d: 0,
-  pricePercentChange200d: 0,
-  totalVolume: 0,
 };
 
 type RelayQuoteRequestBody = {
@@ -763,16 +716,6 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
                 name: 'USD Coin',
               },
             ],
-          },
-        },
-      })
-      .withTokenRatesController({
-        marketData: {
-          [CHAIN_IDS.MAINNET]: {
-            [MAINNET_MUSD_ADDRESS]: MAINNET_MUSD_MARKET_DATA,
-          },
-          [CHAIN_IDS.ARBITRUM]: {
-            [ARBITRUM_USDC_ADDRESS]: ARBITRUM_USDC_MARKET_DATA,
           },
         },
       })

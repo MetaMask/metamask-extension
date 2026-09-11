@@ -11,7 +11,6 @@ import type {
   CurrencyRateState,
   NftControllerState,
   RatesControllerState,
-  TokenRatesControllerState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
@@ -433,11 +432,6 @@ class FixtureBuilderV2 {
   withSnapController(data: Partial<PersistedSnapControllerState>): this {
     (this.fixture.data as Record<string, unknown>).SnapController ??= {};
     merge(this.fixture.data.SnapController, data);
-    return this;
-  }
-
-  withTokenRatesController(data: Partial<TokenRatesControllerState>): this {
-    merge(this.fixture.data.TokenRatesController, data);
     return this;
   }
 
