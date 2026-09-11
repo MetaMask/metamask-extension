@@ -1923,7 +1923,6 @@ export const getMonadBaseBridgeFixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x8f')
-    .withCurrencyController(BRIDGE_MONAD_MOCK_CURRENCY_RATES)
     .withEnabledNetworks({
       eip155: {
         '0x8f': true,
