@@ -6,9 +6,10 @@
  */
 
 import { IconName } from '@metamask/design-system-react';
-import type {
-  MarketCategoryFilter,
-  MarketFilter,
+import {
+  MARKET_CATEGORY_FILTERS,
+  type MarketCategoryFilter,
+  type MarketFilter,
 } from '../../../../shared/constants/perps';
 
 /**
@@ -169,12 +170,12 @@ export const MARKET_CATEGORY_ICONS: Record<MarketCategoryFilter, IconName> = {
 };
 
 /**
- * Product chip order on the Perps tab, owned by the design rather than the
- * controller: the Products section interleaves `new` and puts `commodity`
- * ahead of `index`, which `MARKET_CATEGORIES` does not. Kept explicit so a
- * controller reordering cannot silently reshuffle the tab.
+ * Chip order the Products design gives (Figma `13192:28387`): it interleaves
+ * `new` and puts `commodity` ahead of `index`, which the controller's
+ * `MARKET_CATEGORIES` does not, so the order stays explicit here rather than
+ * following the controller's.
  */
-export const PERPS_PRODUCT_CATEGORIES = [
+const PERPS_PRODUCT_CATEGORY_ORDER: readonly MarketCategoryFilter[] = [
   'crypto',
   'stock',
   'pre-ipo',
@@ -183,4 +184,18 @@ export const PERPS_PRODUCT_CATEGORIES = [
   'new',
   'forex',
   'etf',
-] as const satisfies readonly MarketCategoryFilter[];
+];
+
+/**
+ * Categories shown as Products chips on the Perps tab: every filter the
+ * controller owns, in the design's order, with anything the controller adds
+ * later appended — so a new core category reaches the tab on its own. `all` is
+ * the absence of a filter and never gets a chip.
+ */
+export const PERPS_PRODUCT_CATEGORIES: readonly MarketCategoryFilter[] = [
+  ...PERPS_PRODUCT_CATEGORY_ORDER,
+  ...MARKET_CATEGORY_FILTERS.filter(
+    (category) =>
+      category !== 'all' && !PERPS_PRODUCT_CATEGORY_ORDER.includes(category),
+  ),
+];

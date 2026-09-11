@@ -1,4 +1,5 @@
 import React from 'react';
+import { MARKET_CATEGORIES } from '@metamask/perps-controller';
 import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
@@ -74,6 +75,14 @@ describe('PerpsProducts', () => {
         'forex',
         'etf',
       ]);
+    });
+
+    it('chips every category the controller owns', () => {
+      // The list is derived from the controller's categories, so a category
+      // added to core reaches the tab without a change here.
+      MARKET_CATEGORIES.forEach((category) => {
+        expect(PERPS_PRODUCT_CATEGORIES).toContain(category);
+      });
     });
 
     it('labels the chips with the shared market filter copy', () => {
