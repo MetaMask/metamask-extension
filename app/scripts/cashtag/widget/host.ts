@@ -5,6 +5,7 @@ import {
   injectPageStyles,
   removePageStyles,
 } from '../lib/ui';
+import widgetPageStyles from './page.css';
 
 const widgetPageStyleAttr = 'data-mm-cashtag-widget-css';
 const widgetFramePath = 'cashtag-widget.html';
@@ -29,10 +30,7 @@ function frameUrl(symbol: string, theme: 'light' | 'dark') {
 }
 
 export async function injectWidget(): Promise<WidgetHandle> {
-  await injectPageStyles(
-    'scripts/cashtag/widget/page.css',
-    widgetPageStyleAttr,
-  );
+  injectPageStyles(widgetPageStyles, widgetPageStyleAttr);
 
   const host = document.createElement('div');
   host.id = 'mm-cashtag-popover';

@@ -37,15 +37,14 @@ export function bindHostColorScheme(
   };
 }
 
-export async function injectPageStyles(cssPath: string, markerAttr: string) {
+export function injectPageStyles(css: string, markerAttr: string) {
   if (document.querySelector(`[${markerAttr}]`)) {
     return;
   }
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = chrome.runtime.getURL(cssPath);
-  link.setAttribute(markerAttr, '');
-  (document.head ?? document.documentElement).appendChild(link);
+  const style = document.createElement('style');
+  style.textContent = css;
+  style.setAttribute(markerAttr, '');
+  (document.head ?? document.documentElement).appendChild(style);
 }
 
 export function removePageStyles(markerAttr: string) {

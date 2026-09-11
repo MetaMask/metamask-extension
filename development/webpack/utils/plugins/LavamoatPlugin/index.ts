@@ -107,9 +107,9 @@ export const lavamoatPlugin = (args: Args) =>
     generatePolicyOnly: args.generatePolicy,
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
-    // we apply lockdown to 'runtime.<hash>.js', 'scripts/contentscript.js', and 'service-worker.js'.
+    // Apply lockdown to shared runtimes and self-contained extension entrypoints.
     inlineLockdown:
-      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js|service-worker\.js|cashtag-widget-frame\.js)$/u,
+      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js|service-worker\.js|cashtag-widget(?:\.[0-9a-h]{20})?\.js)$/u,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
       consoleTaming: 'unsafe',
@@ -153,7 +153,7 @@ export const lavamoatPlugin = (args: Args) =>
             },
           },
         };
-      } else if (chunk.name === 'cashtag-widget-frame') {
+      } else if (chunk.name === 'cashtag-widget') {
         // The iframed X widget has its own SES/LavaMoat runtime
         return {
           mode: 'safe',

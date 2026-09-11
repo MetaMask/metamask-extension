@@ -70,30 +70,24 @@ describe('injectPageStyles', () => {
   const markerAttr = 'data-mm-cashtag-test-css';
 
   beforeEach(() => {
-    Object.assign(chrome.runtime, {
-      getURL: (path: string) => `chrome-extension://test/${path}`,
-    });
     document
       .querySelectorAll(`[${markerAttr}]`)
       .forEach((node) => node.remove());
   });
 
-  it('links the stylesheet from the extension origin once per marker', async () => {
-    await injectPageStyles('scripts/cashtag/pill/page.css', markerAttr);
-    await injectPageStyles('scripts/cashtag/pill/page.css', markerAttr);
+  it('inlines the stylesheet once per marker', () => {
+    injectPageStyles('a[data-mm-cashtag] { color: red; }', markerAttr);
+    injectPageStyles('a[data-mm-cashtag] { color: blue; }', markerAttr);
 
-    const links = document.querySelectorAll<HTMLLinkElement>(
-      `link[${markerAttr}]`,
+    const styles = document.querySelectorAll<HTMLStyleElement>(
+      `style[${markerAttr}]`,
     );
-    expect(links).toHaveLength(1);
-    expect(links[0].rel).toBe('stylesheet');
-    expect(links[0].href).toBe(
-      'chrome-extension://test/scripts/cashtag/pill/page.css',
-    );
+    expect(styles).toHaveLength(1);
+    expect(styles[0].textContent).toBe('a[data-mm-cashtag] { color: red; }');
   });
 
-  it('removes the stylesheet for the marker', async () => {
-    await injectPageStyles('scripts/cashtag/pill/page.css', markerAttr);
+  it('removes the stylesheet for the marker', () => {
+    injectPageStyles('a[data-mm-cashtag] { color: red; }', markerAttr);
 
     removePageStyles(markerAttr);
 

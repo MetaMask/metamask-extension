@@ -1,5 +1,6 @@
-/* Copied via webpack (PostCSS + Tailwind) → loaded by the widget frame page.
-   Design tokens are prepended by the CopyPlugin transform */
+@import '@metamask/design-tokens/styles.css';
+
+/* Bundled with the widget frame page through Webpack's CSS pipeline. */
 @tailwind base;
 @tailwind utilities;
 

@@ -28,7 +28,10 @@ a[data-mm-cashtag]:active {
   box-sizing: border-box;
   max-width: 100%;
   margin: 0 2px;
-  padding: 2px 10px 2px 3px;
+  /* Logical, so the pill follows the host page's direction without relying on
+     a `dir` attribute we don't control. */
+  padding-block: 2px;
+  padding-inline: 3px 10px;
   border-radius: 999px;
   border: 1px solid var(--color-border-muted);
   background-color: var(--color-background-muted);

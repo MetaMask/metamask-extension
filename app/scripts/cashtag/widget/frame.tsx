@@ -5,17 +5,6 @@ import { EXTENSION_MESSAGES } from '#shared/constants/messages';
 import type { AssetData, ResolvedTicker } from '../lib/types';
 import { Widget } from './widget';
 
-function loadStyles() {
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = browser.runtime.getURL('scripts/cashtag/widget/widget.css');
-  document.head.appendChild(link);
-  return new Promise<void>((resolve) => {
-    link.addEventListener('load', () => resolve());
-    link.addEventListener('error', () => resolve());
-  });
-}
-
 function openExtensionPage(page: 'swap' | 'asset', asset: AssetData) {
   if (!asset.caipAssetId) {
     return;
@@ -67,7 +56,6 @@ async function main() {
     return;
   }
 
-  await loadStyles();
   const resolved = await loadTicker(symbol);
   if (!resolved) {
     return;
