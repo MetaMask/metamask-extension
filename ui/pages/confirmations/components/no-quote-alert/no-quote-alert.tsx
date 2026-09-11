@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import React, { useCallback, useMemo, useState } from 'react';
 import type { QuoteErrorInfo } from '@metamask/transaction-pay-controller';
 import {
