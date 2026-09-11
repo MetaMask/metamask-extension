@@ -1,4 +1,5 @@
 import React from 'react';
+import { act } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { createSwapsMockStore } from '../../../../test/jest';
@@ -16,12 +17,17 @@ const createProps = (customProps = {}) => {
 };
 
 describe('CountdownTimer', () => {
-  it('renders the component with initial props', () => {
+  it('renders the component with initial props', async () => {
     const store = configureMockStore()(createSwapsMockStore());
     const { getByTestId } = renderWithProvider(
       <CountdownTimer {...createProps()} />,
       store,
     );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
     expect(getByTestId('countdown-timer__timer-container')).toBeInTheDocument();
   });
 });
