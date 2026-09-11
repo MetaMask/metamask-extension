@@ -65,24 +65,117 @@ async function getExtensionStorageFilePath(driver: Driver): Promise<string> {
   return extensionStoragePath;
 }
 
+type VaultPayload = {
+  data: string;
+  iv: string;
+  salt: string;
+  keyMetadata?: unknown;
+};
+
 /**
- * Returns whether file contents include a vault payload vault-decryptor can parse.
+ * Returns whether a value is a vault object with string `data`, `iv`, and `salt`.
+ *
+ * @param vault - The parsed vault candidate.
+ * @returns True when those three fields are strings.
+ */
+function isVaultValid(vault: unknown): vault is VaultPayload {
+  if (typeof vault !== 'object' || vault === null) {
+    return false;
+  }
+  const candidate = vault as Record<string, unknown>;
+  return ['data', 'iv', 'salt'].every(
+    (key) => typeof candidate[key] === 'string',
+  );
+}
+
+/**
+ * Builds a vault from a KeyringController fragment that includes keyMetadata.
+ *
+ * @param keyringControllerStateFragment - Matched KeyringController JSON text.
+ * @returns A vault object, or null when data, iv, salt, or keyMetadata are incomplete.
+ */
+function extractVaultFromMacLogFragment(
+  keyringControllerStateFragment: string,
+): VaultPayload | null {
+  try {
+    const dataRegex = /\\"data\\":\\"([A-Za-z0-9+/=]*)/u;
+    const ivRegex = /,\\"iv\\":\\"([A-Za-z0-9+/]{10,40}=*)/u;
+    const saltRegex = /,\\"salt\\":\\"([A-Za-z0-9+/]{10,100}=*)\\"/u;
+    const keyMetaRegex = /,\\"keyMetadata\\":(.*}})/u;
+
+    const vaultParts = [dataRegex, ivRegex, saltRegex, keyMetaRegex].map(
+      (reg) => keyringControllerStateFragment.match(reg)?.[1],
+    );
+    const [data, iv, salt, keyMetadata] = vaultParts;
+    if (!data || !iv || !salt || !keyMetadata) {
+      return null;
+    }
+
+    return {
+      data,
+      iv,
+      salt,
+      keyMetadata: JSON.parse(keyMetadata.replaceAll('\\', '')),
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Extracts a vault payload from Chrome LevelDB `.log` text.
+ *
+ * Mirrors vault-decryptor Chrome log attempts that produce an object with
+ * string `data`, `iv`, and `salt`.
  *
  * @param fileContents - The log file contents.
- * @returns True when both KeyringController and "vault" are present.
+ * @returns The vault object when valid, otherwise null.
  */
-function logFileHasVaultContent(fileContents: string): boolean {
-  return (
-    fileContents.includes('KeyringController') &&
-    fileContents.includes('"vault"')
+function extractVaultFromLog(fileContents: string): VaultPayload | null {
+  const macLogWithBareVault = fileContents.match(
+    /KeyringController":(\{"vault":".*?=\\"\}"\})/u,
   );
+  if (macLogWithBareVault?.[1]) {
+    const vault = extractVaultFromMacLogFragment(macLogWithBareVault[1]);
+    if (isVaultValid(vault)) {
+      return vault;
+    }
+  }
+
+  const macLogWithKeyMetadata = fileContents.match(
+    /"KeyringController":(\{.*?"vault":".*?=\\"\}"\})/u,
+  );
+  if (macLogWithKeyMetadata?.[1]) {
+    const vault = extractVaultFromMacLogFragment(macLogWithKeyMetadata[1]);
+    if (isVaultValid(vault)) {
+      return vault;
+    }
+  }
+
+  const splitStateVaultRegex =
+    /KeyringController[\s\S]*?"vault":"((?:[^"\\]|\\.)*)"/gu;
+  let splitStateMatch = splitStateVaultRegex.exec(fileContents);
+  while (splitStateMatch !== null) {
+    try {
+      const vaultString = JSON.parse(`"${splitStateMatch[1]}"`) as string;
+      const parsedVault: unknown = JSON.parse(vaultString);
+      if (isVaultValid(parsedVault)) {
+        return parsedVault;
+      }
+    } catch {
+      // Not valid JSON: continue
+    }
+    splitStateMatch = splitStateVaultRegex.exec(fileContents);
+  }
+
+  return null;
 }
 
 /**
  * Finds a Chrome LevelDB `.log` file that contains a parseable vault.
  *
  * @param extensionStoragePath - The path to the extension's storage.
- * @returns The matching log file path, or undefined if none contain vault data.
+ * @returns The matching log file path, or undefined if none extract a valid vault.
  */
 async function findLogFileWithVault(
   extensionStoragePath: string,
@@ -95,7 +188,7 @@ async function findLogFileWithVault(
     const filePath = path.resolve(extensionStoragePath, filename);
     try {
       const contents = await fs.readFile(filePath, 'utf8');
-      if (logFileHasVaultContent(contents)) {
+      if (isVaultValid(extractVaultFromLog(contents))) {
         return filePath;
       }
     } catch {
@@ -107,7 +200,60 @@ async function findLogFileWithVault(
 }
 
 /**
- * Waits until a Chrome extension `.log` file contains vault data.
+ * Copies extension storage until a snapshot `.log` extracts a valid vault.
+ *
+ * @param driver - The WebDriver instance.
+ * @returns The copied storage directory and the log file path inside it.
+ */
+async function waitUntilCopiedVaultLogIsReady(driver: Driver): Promise<{
+  copiedDir: string;
+  vaultLogFileCopy: string;
+}> {
+  const leftoverDirs: string[] = [];
+  let result: { copiedDir: string; vaultLogFileCopy: string } | undefined;
+
+  try {
+    await driver.waitUntil(
+      async () => {
+        try {
+          const extensionPath = await getExtensionStorageFilePath(driver);
+          const copiedDir = await copyDirectoryToTmp(extensionPath);
+          if (!copiedDir) {
+            return false;
+          }
+          leftoverDirs.push(copiedDir);
+          const vaultLogFileCopy = await findLogFileWithVault(copiedDir);
+          if (!vaultLogFileCopy) {
+            return false;
+          }
+          result = { copiedDir, vaultLogFileCopy };
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { timeout: 20000, interval: 500 },
+    );
+  } catch {
+    throw new Error(
+      'No copied Chrome log file contained a parseable vault within 20000ms',
+    );
+  } finally {
+    await Promise.all(
+      leftoverDirs
+        .filter((dir) => dir !== result?.copiedDir)
+        .map((dir) => fs.remove(dir)),
+    );
+  }
+
+  if (!result) {
+    throw new Error('No copied Chrome log file contained a parseable vault');
+  }
+  return result;
+}
+
+/**
+ * Waits until a live Chrome extension `.log` file extracts a valid vault.
  *
  * @param driver - The WebDriver instance.
  * @returns The path of the log file that contains the vault.
@@ -117,21 +263,23 @@ async function waitUntilVaultLogIsWritten(driver: Driver): Promise<string> {
   try {
     await driver.waitUntil(
       async () => {
-        const extensionPath = await getExtensionStorageFilePath(driver);
-        vaultLogPath = await findLogFileWithVault(extensionPath);
-        return Boolean(vaultLogPath);
+        try {
+          const extensionPath = await getExtensionStorageFilePath(driver);
+          vaultLogPath = await findLogFileWithVault(extensionPath);
+          return Boolean(vaultLogPath);
+        } catch {
+          return false;
+        }
       },
-      { timeout: 80000, interval: 1000 },
+      { timeout: 20000, interval: 500 },
     );
   } catch {
     throw new Error(
-      'No Chrome log file contained KeyringController and "vault" within 80000ms',
+      'No Chrome log file contained a parseable vault within 20000ms',
     );
   }
   if (!vaultLogPath) {
-    throw new Error(
-      'No Chrome log file contained KeyringController and "vault"',
-    );
+    throw new Error('No Chrome log file contained a parseable vault');
   }
   return vaultLogPath;
 }
@@ -161,21 +309,15 @@ describe('Vault Decryptor Page', function () {
           needNavigateToNewPage: false,
         });
 
-        const extensionPath = await getExtensionStorageFilePath(driver);
-        const vaultLogPath = await waitUntilVaultLogIsWritten(driver);
-
-        // copy log file to a temp location, to avoid reading it while the browser is writing it
         let copiedDir;
         try {
-          copiedDir = await copyDirectoryToTmp(extensionPath);
-          const vaultLogFileCopy = path.join(
-            copiedDir,
-            path.basename(vaultLogPath),
-          );
+          const copiedVaultLog = await waitUntilCopiedVaultLogIsReady(driver);
+          copiedDir = copiedVaultLog.copiedDir;
+          const { vaultLogFileCopy } = copiedVaultLog;
           const copiedLogContents = await fs.readFile(vaultLogFileCopy, 'utf8');
           assert.ok(
-            logFileHasVaultContent(copiedLogContents),
-            'copied log file is missing vault content',
+            isVaultValid(extractVaultFromLog(copiedLogContents)),
+            'copied log file has no parseable vault',
           );
 
           // navigate to the Vault decryptor webapp and fill the input field with storage recovered from filesystem
