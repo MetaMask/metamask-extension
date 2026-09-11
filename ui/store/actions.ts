@@ -153,7 +153,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventAccountType,
-  MetaMetricsUserTraits,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import {
@@ -4657,6 +4656,61 @@ export function toggleBasicFunctionality(
   };
 }
 
+export function consolidateBasicFunctionality(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('consolidateBasicFunctionality');
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error('[consolidateBasicFunctionality] error', error);
+    }
+  };
+}
+
+function dismissBasicFunctionalityMigrationNotification(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground(
+        'dismissBasicFunctionalityMigrationNotification',
+      );
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error(
+        '[dismissBasicFunctionalityMigrationNotification] error',
+        error,
+      );
+    }
+  };
+}
+
+export function hideMigrationModal(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return dismissBasicFunctionalityMigrationNotification();
+}
+
+export function hideMigrationToast(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return dismissBasicFunctionalityMigrationNotification();
+}
+
 export function setIsIpfsGatewayEnabled(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -6082,10 +6136,6 @@ export function updateEventFragment(
  */
 export function trackMetaMetricsPage(payload: MetaMetricsPagePayload) {
   return submitRequestToBackground('trackMetaMetricsPage', [payload]);
-}
-
-export function updateMetaMetricsTraits(traits: MetaMetricsUserTraits) {
-  return submitRequestToBackground('updateMetaMetricsTraits', [traits]);
 }
 
 export function resetViewedNotifications() {

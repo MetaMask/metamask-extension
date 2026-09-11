@@ -20,6 +20,7 @@ describe('getTransactionControllerInitMessenger', () => {
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         actions: expect.arrayContaining([
+          'TransactionPayController:getAmountData',
           'TransactionPayController:getDelegationTransaction',
           'TransactionPayController:getPaymentOverrideData',
         ]),

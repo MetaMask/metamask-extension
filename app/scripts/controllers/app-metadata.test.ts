@@ -21,6 +21,7 @@ describe('AppMetadataController', () => {
         previousMigrationVersion: 1,
         currentMigrationVersion: 1,
         firstTimeInfo: undefined,
+        installAttribution: null,
       };
       withController(
         {
@@ -201,6 +202,7 @@ describe('AppMetadataController', () => {
             "currentAppVersion": "",
             "currentMigrationVersion": 0,
             "firstTimeInfo": undefined,
+            "installAttribution": null,
             "previousAppVersion": "",
             "previousMigrationVersion": 0,
           }
@@ -221,6 +223,7 @@ describe('AppMetadataController', () => {
             "currentAppVersion": "",
             "currentMigrationVersion": 0,
             "firstTimeInfo": undefined,
+            "installAttribution": null,
             "previousAppVersion": "",
             "previousMigrationVersion": 0,
           }
@@ -237,6 +240,65 @@ describe('AppMetadataController', () => {
             'usedInUi',
           ),
         ).toMatchInlineSnapshot(`{}`);
+      });
+    });
+  });
+  describe('setInstallAttribution', () => {
+    it('records cookie id and optional ga client id', () => {
+      withController(({ controller }) => {
+        controller.setInstallAttribution({
+          cookieId: 'GA1.1.12345.67890',
+          gaClientId: '12345.67890',
+        });
+
+        expect(controller.state.installAttribution).toStrictEqual({
+          cookieId: 'GA1.1.12345.67890',
+          gaClientId: '12345.67890',
+        });
+      });
+    });
+
+    it('omits gaClientId when it is not provided', () => {
+      withController(({ controller }) => {
+        controller.setInstallAttribution({
+          cookieId: 'malformed-ga-cookie',
+        });
+
+        expect(controller.state.installAttribution).toStrictEqual({
+          cookieId: 'malformed-ga-cookie',
+        });
+      });
+    });
+
+    it('does not overwrite existing install attribution', () => {
+      withController(
+        {
+          state: {
+            installAttribution: {
+              cookieId: 'existing',
+              gaClientId: 'existing-id',
+            },
+          },
+        },
+        ({ controller }) => {
+          controller.setInstallAttribution({
+            cookieId: 'GA1.1.12345.67890',
+            gaClientId: '12345.67890',
+          });
+
+          expect(controller.state.installAttribution).toStrictEqual({
+            cookieId: 'existing',
+            gaClientId: 'existing-id',
+          });
+        },
+      );
+    });
+
+    it('does not record empty cookie ids', () => {
+      withController(({ controller }) => {
+        controller.setInstallAttribution({ cookieId: '' });
+
+        expect(controller.state.installAttribution).toBeNull();
       });
     });
   });

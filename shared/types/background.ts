@@ -93,6 +93,7 @@ export type ControllerStatePropertiesEnumerated = {
   currentMigrationVersion: AppMetadataControllerState['currentMigrationVersion'];
   previousAppVersion: AppMetadataControllerState['previousAppVersion'];
   previousMigrationVersion: AppMetadataControllerState['previousMigrationVersion'];
+  installAttribution: AppMetadataControllerState['installAttribution'];
   approvalFlows: ApprovalControllerState['approvalFlows'];
   pendingApprovals: ApprovalControllerState['pendingApprovals'];
   pendingApprovalCount: ApprovalControllerState['pendingApprovalCount'];
@@ -194,7 +195,6 @@ export type ControllerStatePropertiesEnumerated = {
   optedIn: AnalyticsControllerState['optedIn'];
   analyticsId: AnalyticsControllerState['analyticsId'];
   passkeyRecord: PasskeyControllerState['passkeyRecord'];
-  traits: MetaMetricsControllerState['traits'];
   dataCollectionForMarketing: MetaMetricsControllerState['dataCollectionForMarketing'];
   marketingCampaignCookieId: MetaMetricsControllerState['marketingCampaignCookieId'];
   metaMetricsDataDeletionId: MetaMetricsDataDeletionState['metaMetricsDataDeletionId'];

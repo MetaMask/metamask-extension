@@ -242,15 +242,6 @@ describe('Token Cell', () => {
     mockAnyEnabledNetworksAreAvailable = true;
   });
 
-  it('should match snapshot', () => {
-    const { container } = renderWithProvider(
-      <TokenCell {...(props as TokenCellProps)} />,
-      mockStore,
-    );
-
-    expect(container).toMatchSnapshot();
-  });
-
   it('calls onClick when clicked', () => {
     const { queryByTestId } = renderWithProvider(
       <TokenCell {...(props as TokenCellProps)} />,

@@ -25,6 +25,7 @@ import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast/survey-toast';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
+import { BasicFunctionalityMigrationToast } from '../basic-functionality-migration-toast';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
 import { ArcUsageNoticeToast } from '../arc-usage-notice-toast';
 import {
@@ -80,6 +81,9 @@ const MemoizedPerpsWithdrawToast = memo(PerpsWithdrawToast);
 const MemoizedShieldPausedToast = memo(ShieldPausedToast);
 const MemoizedShieldEndingToast = memo(ShieldEndingToast);
 const MemoizedSidePanelMigrationToast = memo(SidePanelMigrationToast);
+const MemoizedBasicFunctionalityMigrationToast = memo(
+  BasicFunctionalityMigrationToast,
+);
 const MemoizedStorageErrorToast = memo(StorageErrorToast);
 const MemoizedArcUsageNoticeToast = memo(ArcUsageNoticeToast);
 
@@ -108,6 +112,7 @@ export function ToastMaster() {
         <MemoizedShieldPausedToast />
         <MemoizedShieldEndingToast />
         <MemoizedSidePanelMigrationToast />
+        <MemoizedBasicFunctionalityMigrationToast />
       </ToastContainer>
     );
   }

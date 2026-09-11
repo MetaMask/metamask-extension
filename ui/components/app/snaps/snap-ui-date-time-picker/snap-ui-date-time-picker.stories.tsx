@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { ThemeProvider } from '@mui/material/styles';

@@ -180,6 +180,7 @@
     "initializationState": "string",
     "inputPrimaryDenomination": "string",
     "insights": "object",
+    "installAttribution": null,
     "interfaces": "object",
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "ipfsGateway": "string",
@@ -256,6 +257,7 @@
     "nativeAssetIdentifiers": "object",
     "nativeProviders": "object",
     "needsProfilePairing": "boolean",
+    "needsSocialPairing": "boolean",
     "networkConfigurations": "object",
     "networkConfigurationsByChainId": "object",
     "networkConnectionBannerNetwork": null,
@@ -295,6 +297,8 @@
     "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
     "preferences": {
+      "basicFunctionalityMigrationNotification": null,
+      "basicFunctionalityMigrationNotificationDismissed": "boolean",
       "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
@@ -347,7 +351,7 @@
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": "valueA"
+      "feature3": "valueC"
     },
     "requests": "object",
     "rewardsAccounts": "object",
@@ -410,7 +414,6 @@
     "tokens": "object",
     "tracesBeforeMetricsOptIn": "object",
     "tradeConfigurations": "object",
-    "traits": "object",
     "transactionBatches": "object",
     "transactionData": "object",
     "transactions": "object",
@@ -427,6 +430,7 @@
     "unapprovedTypedMessagesCount": 0,
     "unconnectedAccountAlertShownOrigins": "object",
     "updateModalLastDismissedAt": null,
+    "upgradedAccounts": "object",
     "urlScanCache": "object",
     "use4ByteResolution": true,
     "useAddressBarEnsResolution": true,

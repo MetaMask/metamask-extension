@@ -172,6 +172,9 @@
   "activity": {
     "message": "Activity"
   },
+  "activityAndNonceDataDeleted": {
+    "message": "Activity and nonce data deleted"
+  },
   "activityEmptyDescription": {
     "message": "Swap your first token today."
   },
@@ -1990,6 +1993,38 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Turn on basic functionality"
   },
+  "basicFunctionalityMigrationModalTitle": {
+    "message": "Your settings have changed"
+  },
+  "basicFunctionalityMigrationSocialModalBlogPostLink": {
+    "message": "blog post"
+  },
+  "basicFunctionalityMigrationSocialModalBody1": {
+    "message": "We’re updating how MetaMask works for social login. To enable a seamless experience across MetaMask, your social login identifier (email or handle) will now be securely linked to your user profile and associated account addresses. As part of this update, Basic Functionality and other default settings will always be enabled."
+  },
+  "basicFunctionalityMigrationSocialModalBody2": {
+    "message": "We never sell your data to third parties. Read more about what we collect and why in our $1 and updated $2.",
+    "description": "$1 is the blog post link, $2 is the Privacy Notice link"
+  },
+  "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
+    "message": "Privacy Notice"
+  },
+  "basicFunctionalityMigrationSocialModalTitle": {
+    "message": "Privacy and product updates"
+  },
+  "basicFunctionalityMigrationToastDescription": {
+    "message": "Third-party APIs are now part of Basic Functionality. Based on your previous preferences, this setting is $1. Change it any time in $2",
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+  },
+  "basicFunctionalityMigrationToastDisabled": {
+    "message": "disabled"
+  },
+  "basicFunctionalityMigrationToastEnabled": {
+    "message": "enabled"
+  },
+  "basicFunctionalityMigrationToastSettingsLink": {
+    "message": "Settings > Privacy"
+  },
   "basicFunctionalityRequired_description": {
     "message": "This feature isn't available while basic functionality is turned off. Use the toggle below to turn it on."
   },
@@ -2557,7 +2592,7 @@
     "message": "Use max allowed"
   },
   "bridgeValidationInsufficientGasMessage": {
-    "message": "You don't have enough $1 to pay the gas fee for this bridge. Enter a smaller amount or buy more $1."
+    "message": "You don't have enough $1 to pay the network fee for this bridge. Enter a smaller amount or buy more $1."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "More $1 needed for gas"
@@ -3603,7 +3638,7 @@
     "message": "Disable"
   },
   "disabledGasOptionToolTipMessage": {
-    "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
+    "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original network fee.",
     "description": "$1 is gas estimate type which can be market or aggressive"
   },
   "disconnect": {
@@ -3776,7 +3811,7 @@
     "message": "Edit contact"
   },
   "editGasFeeModalTitle": {
-    "message": "Edit gas fee"
+    "message": "Edit network fee"
   },
   "editGasLimitOutOfBounds": {
     "message": "Gas limit must be at least $1"
@@ -4239,7 +4274,7 @@
     "message": "Gas price"
   },
   "gasPriceExcessive": {
-    "message": "Your gas fee is set unnecessarily high. Consider lowering the amount."
+    "message": "Your network fee is set unnecessarily high. Consider lowering the amount."
   },
   "gasPriceFetchFailed": {
     "message": "Gas price estimation failed due to network error."
@@ -4760,9 +4795,21 @@
   "honeypotTitle": {
     "message": "Honey pot"
   },
+  "hyperliquidDepositPromptDescription": {
+    "message": "Deposit any token. We'll swap it and send it to your Hyperliquid account automatically—no MetaMask fee.",
+    "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositPromptNoThanks": {
+    "message": "No thanks, deposit manually",
+    "description": "The label of the dismiss button in the Hyperliquid deposit prompt screen"
+  },
   "hyperliquidDepositPromptTitle": {
     "message": "Fund Hyperliquid with MetaMask",
     "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositToastSuccessDescription": {
+    "message": "Funds are ready to trade on Hyperliquid and MetaMask Perps.",
+    "description": "Description shown in the success toast after a perps deposit initiated from the Hyperliquid deposit prompt"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Apply a MetaMask referral code to all future trades per Hyperliquid's $1. MetaMask earns a fee.",
@@ -5263,7 +5310,7 @@
     "message": "Log in"
   },
   "loginErrorSessionExpiredDescription": {
-    "message": "Your session has expired. Please log in again to continue."
+    "message": "Log in again to continue."
   },
   "loginErrorSessionExpiredTitle": {
     "message": "Session has expired"
@@ -5312,6 +5359,10 @@
   },
   "manage": {
     "message": "Manage"
+  },
+  "manageAccounts": {
+    "message": "Manage accounts",
+    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
   },
   "manageConnectedAccounts": {
     "message": "Manage connected accounts"
@@ -5503,6 +5554,9 @@
   "moneyActivity": {
     "message": "Activity"
   },
+  "moneyActivityCard": {
+    "message": "Card"
+  },
   "moneyActivityConversionFailed": {
     "message": "Conversion failed"
   },
@@ -5536,11 +5590,20 @@
   "moneyActivityFilterSends": {
     "message": "Sends"
   },
+  "moneyActivityLoadError": {
+    "message": "Couldn't load your activity"
+  },
+  "moneyActivityMusdBack": {
+    "message": "mUSD back"
+  },
   "moneyActivityPending": {
     "message": "Pending"
   },
   "moneyActivityPlaceholderDescription": {
     "message": "Your Money activity will appear here."
+  },
+  "moneyActivityPurchase": {
+    "message": "Purchase"
   },
   "moneyActivityReceived": {
     "message": "Received"
@@ -5550,6 +5613,12 @@
   },
   "moneyActivityReceiving": {
     "message": "Receiving"
+  },
+  "moneyActivityRefund": {
+    "message": "Refund"
+  },
+  "moneyActivityRetry": {
+    "message": "Retry"
   },
   "moneyActivitySendFailed": {
     "message": "Send failed"
@@ -5578,11 +5647,17 @@
   "moneyBalanceLastKnown": {
     "message": "Last known balance"
   },
+  "moneyBalanceRetry": {
+    "message": "Retry"
+  },
   "moneyBalanceTitle": {
     "message": "Money balance"
   },
   "moneyBalanceUnavailable": {
     "message": "Balance unavailable"
+  },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "We're temporarily unable to display your balance. Your funds are safe—please try again shortly."
   },
   "moneyBenefitAutoEarn": {
     "message": "Auto-earn yield on your Money balance"
@@ -5671,6 +5746,45 @@
   },
   "moneySend": {
     "message": "Send"
+  },
+  "moneyToastDepositFailedBody": {
+    "message": "Unable to add funds. Try again."
+  },
+  "moneyToastDepositFailedBodyConvert": {
+    "message": "Unable to convert. Try again."
+  },
+  "moneyToastDepositFailedTitle": {
+    "message": "Deposit failed"
+  },
+  "moneyToastDepositFailedTitleAddMusd": {
+    "message": "Failed to add funds"
+  },
+  "moneyToastDepositFailedTitleConvert": {
+    "message": "Conversion failed"
+  },
+  "moneyToastWithdrawFailedBody": {
+    "message": "Unable to transfer funds. Try again."
+  },
+  "moneyToastWithdrawFailedTitle": {
+    "message": "Transfer failed"
+  },
+  "moneyTransferBetweenAccounts": {
+    "message": "Another account"
+  },
+  "moneyTransferComingSoon": {
+    "message": "Coming soon"
+  },
+  "moneyTransferPerpsAccount": {
+    "message": "Perps account"
+  },
+  "moneyTransferSendExternal": {
+    "message": "External address"
+  },
+  "moneyTransferTitle": {
+    "message": "Send funds to"
+  },
+  "moneyTransferWithdrawToBank": {
+    "message": "Bank account"
   },
   "month": {
     "message": "month"
@@ -6060,7 +6174,7 @@
     "message": "Range of priority fees (aka “miner tip”). This goes to miners and incentivizes them to prioritize your transaction."
   },
   "networkStatusStabilityFeeTooltip": {
-    "message": "Gas fees are $1 relative to the past 72 hours.",
+    "message": "Network fees are $1 relative to the past 72 hours.",
     "description": "$1 is networks stability value - stable, low, high"
   },
   "networkSuggested": {
@@ -6435,6 +6549,9 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "You have not received any notifications yet."
+  },
+  "notificationsSettingsAccountsLoadError": {
+    "message": "We couldn't load your account notification settings. Try again later."
   },
   "notificationsSettingsAgenticCliDescription": {
     "message": "CLI connection requests, approvals, and session updates for Agent wallet"
@@ -6872,7 +6989,7 @@
     "message": "Show password"
   },
   "passwordsDontMatch": {
-    "message": "Passwords don't match"
+    "message": "Passwords don't match."
   },
   "paste": {
     "message": "Paste"
@@ -8120,6 +8237,10 @@
     "message": "Submitting your trade",
     "description": "In-progress toast text shown while a perps trade is being submitted"
   },
+  "perpsToastTradeEntryFailed": {
+    "message": "Couldn't open trade",
+    "description": "Error toast text shown when opening the perps order form from an asset page fails"
+  },
   "perpsToastTradeSuccess": {
     "message": "Position closed",
     "description": "Success toast text shown when a perps position is closed"
@@ -8830,6 +8951,9 @@
   "rejected": {
     "message": "Rejected"
   },
+  "relayerFee": {
+    "message": "Relayer fee"
+  },
   "remove": {
     "message": "Remove"
   },
@@ -9296,6 +9420,10 @@
   },
   "searchAnAcccountOrContact": {
     "message": "Search an account or contact"
+  },
+  "searchAnAccount": {
+    "message": "Search an account",
+    "description": "Search input placeholder for the Perps destination account picker"
   },
   "searchForAnAssetToSend": {
     "message": "Search for an asset to send"
@@ -11180,7 +11308,7 @@
     "message": "Swap would have failed"
   },
   "stxCancelledDescription": {
-    "message": "Your transaction would have failed and was cancelled to protect you from paying unnecessary gas fees."
+    "message": "Your transaction would have failed and was cancelled to protect you from paying unnecessary network fees."
   },
   "stxCancelledSubDescription": {
     "message": "Try your swap again. We’ll be here to protect you against similar risks next time."
@@ -11225,7 +11353,7 @@
     "message": "Swap cancelled"
   },
   "stxUserCancelledDescription": {
-    "message": "Your transaction has been cancelled and you did not pay any unnecessary gas fees."
+    "message": "Your transaction has been cancelled and you did not pay any unnecessary network fees."
   },
   "submit": {
     "message": "Submit"
@@ -11357,7 +11485,7 @@
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
   "swapGasFeesExplanation": {
-    "message": "MetaMask doesn't make money from gas fees. These fees are estimates and can change based on how busy the network is and how complex a transaction is. Learn more $1.",
+    "message": "MetaMask doesn't make money from network fees. These fees are estimates and can change based on how busy the network is and how complex a transaction is. Learn more $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
   },
   "swapGasFeesExplanationLinkText": {
@@ -11368,7 +11496,7 @@
     "message": " Included"
   },
   "swapGasFeesSplit": {
-    "message": "Gas fees on the previous screen are split between these two transactions."
+    "message": "Network fees on the previous screen are split between these two transactions."
   },
   "swapGasFeesSponsored": {
     "message": "Paid by MetaMask"
@@ -11504,7 +11632,7 @@
     "message": "Liquidity source"
   },
   "swapSuggestedGasSettingToolTipMessage": {
-    "message": "Swaps are complex and time sensitive transactions. We recommend this gas fee for a good balance between cost and confidence of a successful Swap."
+    "message": "Swaps are complex and time sensitive transactions. We recommend this network fee for a good balance between cost and confidence of a successful Swap."
   },
   "swapToConfirmWithHwWallet": {
     "message": "to confirm with your hardware wallet"
@@ -11529,7 +11657,7 @@
     "message": "Unknown"
   },
   "swapValidationInsufficientGasMessage": {
-    "message": "You don't have enough $1 to pay the gas fee for this swap. Enter a smaller amount or buy more $1."
+    "message": "You don't have enough $1 to pay the network fee for this swap. Enter a smaller amount or buy more $1."
   },
   "swapZeroSlippage": {
     "message": "0% Slippage"
@@ -11745,7 +11873,7 @@
     "message": "Function"
   },
   "transactionDetailGasHeading": {
-    "message": "Estimated gas fee"
+    "message": "Estimated network fee"
   },
   "transactionError": {
     "message": "Transaction error. Exception thrown in contract code."
@@ -11766,7 +11894,7 @@
     "message": "Base fee (GWEI)"
   },
   "transactionHistoryL1GasLabel": {
-    "message": "Total L1 gas fee"
+    "message": "Total L1 network fee"
   },
   "transactionHistoryL2GasLimitLabel": {
     "message": "L2 gas limit"
@@ -11781,7 +11909,7 @@
     "message": "Priority fee (GWEI)"
   },
   "transactionHistoryTotalGasFee": {
-    "message": "Total gas fee"
+    "message": "Total network fee"
   },
   "transactionIdCopied": {
     "message": "Transaction ID copied"
@@ -11984,7 +12112,7 @@
     "message": "Unlock"
   },
   "unlockPageIncorrectPassword": {
-    "message": "Password is incorrect. Please try again."
+    "message": "Incorrect password. Try again."
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Too many attempts. Try again in "
@@ -12257,7 +12385,7 @@
     "message": "According to our records, the network name may not correctly match this chain ID."
   },
   "wrongPassword": {
-    "message": "Wrong password",
+    "message": "Incorrect password. Try again.",
     "description": "Displayed when the user enters an incorrect password"
   },
   "year": {

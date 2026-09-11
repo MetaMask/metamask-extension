@@ -196,6 +196,17 @@ describe('PerpsAttributionContext', () => {
     });
   });
 
+  it('includes non-deeplink source in screenViewedAttribution', () => {
+    const { result } = renderHook(() => usePerpsAttributionContext(), {
+      wrapper: createWrapper('?source=hyperliquid_deposit_prompt'),
+    });
+
+    // Non-deeplink sources pass through as-is to override default screen source.
+    expect(result.current.screenViewedAttribution).toStrictEqual({
+      source: 'hyperliquid_deposit_prompt',
+    });
+  });
+
   it('keeps source=deeplink on screen views after flow-attribution churn from navigation', () => {
     const { result } = renderHook(() => usePerpsAttributionContext(), {
       wrapper: createWrapper('?source=deeplink&utm_source=ads'),

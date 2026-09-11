@@ -32,7 +32,10 @@ export default class GasFeeModal {
 
   private driver: Driver;
 
-  private readonly editGasFeeModalTitle = { text: 'Edit gas fee', tag: 'h4' };
+  private readonly editGasFeeModalTitle = {
+    text: 'Edit network fee',
+    tag: 'h4',
+  };
 
   private readonly estimatesModal: RawLocator =
     '[data-testid="gas-fee-estimates-modal"]';

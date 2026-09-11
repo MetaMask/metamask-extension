@@ -512,6 +512,7 @@
     "fiatCurrency": "string",
     "firstTimeFlowType": "string",
     "firstTimeInfo": {},
+    "installAttribution": "null",
     "forgottenPassword": "boolean",
     "fullScreenGasPollTokens": ["string"],
     "gasEstimateType": "string",
@@ -845,6 +846,7 @@
       }
     },
     "needsProfilePairing": "boolean",
+    "needsSocialPairing": "boolean",
     "networkConfigurations": {},
     "networkConfigurationsByChainId": {},
     "networkConnectionBannerNetwork": "null",
@@ -922,6 +924,8 @@
       "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": "boolean",
       "isBasicFunctionalityConsolidatedEnabled": "boolean",
+      "basicFunctionalityMigrationNotification": "null",
+      "basicFunctionalityMigrationNotificationDismissed": "boolean",
       "privacyMode": "boolean",
       "showDefaultAddress": "boolean",
       "showConfirmationAdvancedDetails": "boolean",
@@ -1243,10 +1247,6 @@
       "mainnet": {}
     },
     "tracesBeforeMetricsOptIn": [],
-    "traits": {
-      "install_date_ext": "string",
-      "storage_kind": "string"
-    },
     "batchTransactionCounts": {},
     "transactionBatches": [],
     "transactionData": {},
@@ -1264,6 +1264,7 @@
     "unapprovedTypedMessagesCount": "number",
     "unconnectedAccountAlertShownOrigins": {},
     "updateModalLastDismissedAt": "null",
+    "upgradedAccounts": {},
     "urlScanCache": {},
     "use4ByteResolution": "boolean",
     "useAddressBarEnsResolution": "boolean",

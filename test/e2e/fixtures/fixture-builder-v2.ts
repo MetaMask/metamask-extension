@@ -27,6 +27,7 @@ import type {
   PermissionControllerState,
   SubjectMetadataControllerState,
 } from '@metamask/permission-controller';
+import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import type { UserStorageControllerState } from '@metamask/profile-sync-controller/user-storage';
 import {
   type NetworkMetadata,
@@ -274,6 +275,13 @@ class FixtureBuilderV2 {
 
   withAnnouncementController(data: Partial<AnnouncementControllerState>): this {
     merge(this.fixture.data.AnnouncementController, data);
+    return this;
+  }
+
+  withAuthenticationController(
+    data: Partial<AuthenticationControllerState>,
+  ): this {
+    merge(this.fixture.data.AuthenticationController, data);
     return this;
   }
 

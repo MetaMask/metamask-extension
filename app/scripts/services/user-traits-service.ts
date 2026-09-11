@@ -18,7 +18,11 @@ import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/asse
 import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
 import { getDeviceType, getInstallType, getOs, getPlatform } from '../lib/util';
 import * as analytics from '../controllers/analytics/analytics';
-import type { MetaMetricsControllerGetStateAction } from '../controllers/metametrics-controller';
+import type {
+  AppMetadataControllerGetStateAction,
+  AppMetadataControllerState,
+} from '../controllers/app-metadata';
+import type { StorageKind } from '../../../shared/lib/stores/persistence-manager';
 
 export const SERVICE_NAME = 'UserTraitsService';
 
@@ -67,7 +71,7 @@ export type MetaMaskState = Pick<
  * Actions that this service is allowed to call.
  */
 type AllowedActions =
-  | MetaMetricsControllerGetStateAction
+  | AppMetadataControllerGetStateAction
   | SeedlessOnboardingControllerGetStateAction;
 
 /**
@@ -92,6 +96,10 @@ export type UserTraitsServiceOptions = {
    * Messenger used to read the state the user traits are derived from.
    */
   messenger: UserTraitsServiceMessenger;
+  /**
+   * Returns the persistence storage kind currently in use.
+   */
+  getStorageKind: () => StorageKind | undefined;
 };
 
 /**
@@ -109,23 +117,32 @@ export class UserTraitsService {
 
   #messenger: UserTraitsServiceMessenger;
 
+  #getStorageKind: () => StorageKind | undefined;
+
   previousUserTraits?: MetaMetricsUserTraits;
 
   /**
    * @param options - The service options.
    * @param options.messenger - Messenger used to read state via the messenger.
+   * @param options.getStorageKind - Returns the persistence storage kind currently in use.
    */
-  constructor({ messenger }: UserTraitsServiceOptions) {
+  constructor({ messenger, getStorageKind }: UserTraitsServiceOptions) {
     this.#messenger = messenger;
+    this.#getStorageKind = getStorageKind;
   }
 
   /**
-   * Returns the seed traits that are not derived from other state keys (e.g.
-   * `install_date_ext`, `storage_kind`, `cookie_id`, `ga_client_id`). These are
-   * still owned by MetaMetricsController's `traits` state for now.
+   * Returns AppMetadataController state used to derive seed traits
+   * (`install_date_ext`, `cookie_id`, `ga_client_id`).
    */
-  #getSeedTraits(): MetaMetricsUserTraits {
-    return this.#messenger.call('MetaMetricsController:getState').traits;
+  #getAppMetadataState(): Pick<
+    AppMetadataControllerState,
+    'firstTimeInfo' | 'installAttribution'
+  > {
+    const { firstTimeInfo, installAttribution } = this.#messenger.call(
+      'AppMetadataController:getState',
+    );
+    return { firstTimeInfo, installAttribution };
   }
 
   /**
@@ -166,17 +183,19 @@ export class UserTraitsService {
   _buildUserTraitsObject(
     metamaskState: MetaMaskState,
   ): Partial<MetaMetricsUserTraits> | null {
-    const traits = this.#getSeedTraits();
-    const storageKindTrait = traits[MetaMetricsUserTrait.StorageKind];
-    const cookieIdTrait = traits[MetaMetricsUserTrait.CookieId];
-    const gaClientIdTrait = traits[MetaMetricsUserTrait.GaClientId];
+    const { firstTimeInfo, installAttribution } = this.#getAppMetadataState();
+    const storageKindTrait = this.#getStorageKind();
+    const cookieIdTrait = installAttribution?.cookieId;
+    const gaClientIdTrait = installAttribution?.gaClientId;
+    const installDateExt = firstTimeInfo?.date
+      ? (new Date(firstTimeInfo.date).toISOString().split('T')[0] ?? '')
+      : '';
 
     const currentTraits: MetaMetricsUserTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
         Object.values(metamaskState.addressBook).map(size),
       ),
-      [MetaMetricsUserTrait.InstallDateExt]:
-        traits[MetaMetricsUserTrait.InstallDateExt] || '',
+      [MetaMetricsUserTrait.InstallDateExt]: installDateExt,
       ...(storageKindTrait
         ? { [MetaMetricsUserTrait.StorageKind]: storageKindTrait }
         : {}),
