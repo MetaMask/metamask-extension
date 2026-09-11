@@ -544,3 +544,113 @@ describe('Trace', () => {
     });
   });
 });
+
+describe('trace occurrences in test builds', () => {
+  type TraceModule = typeof import('./trace');
+
+  const originalInTest = process.env.IN_TEST;
+  const originalStateHooks = globalThis.stateHooks;
+  let isolated: TraceModule;
+
+  const loadTraceModule = () => {
+    jest.isolateModules(() => {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      isolated = require('./trace') as TraceModule;
+    });
+  };
+
+  const getOccurrences = () =>
+    globalThis.stateHooks.getCustomTraceOccurrences?.() ?? [];
+
+  beforeEach(() => {
+    process.env.IN_TEST = 'true';
+    globalThis.stateHooks = {} as typeof globalThis.stateHooks;
+    globalThis.sentry = undefined;
+    loadTraceModule();
+  });
+
+  afterEach(() => {
+    process.env.IN_TEST = originalInTest;
+    globalThis.stateHooks = originalStateHooks;
+  });
+
+  it('keeps every completion of a trace, where getCustomTraces keeps only the last', () => {
+    isolated.trace({ name: NAME_MOCK, id: ID_MOCK, startTime: 100 });
+    isolated.endTrace({ name: NAME_MOCK, id: ID_MOCK, timestamp: 150 });
+    isolated.trace({ name: NAME_MOCK, id: ID_MOCK, startTime: 200 });
+    isolated.endTrace({ name: NAME_MOCK, id: ID_MOCK, timestamp: 290 });
+
+    expect(getOccurrences()).toStrictEqual([
+      {
+        name: NAME_MOCK,
+        id: ID_MOCK,
+        startTime: 100,
+        endTime: 150,
+        duration: 50,
+        success: true,
+      },
+      {
+        name: NAME_MOCK,
+        id: ID_MOCK,
+        startTime: 200,
+        endTime: 290,
+        duration: 90,
+        success: true,
+      },
+    ]);
+    expect(globalThis.stateHooks.getCustomTraces?.()).toStrictEqual({
+      [NAME_MOCK]: 90,
+    });
+  });
+
+  it('marks a trace ended with success: false as unsuccessful', () => {
+    isolated.trace({ name: NAME_MOCK, startTime: 100 });
+    isolated.endTrace({
+      name: NAME_MOCK,
+      timestamp: 180,
+      data: { success: false },
+    });
+
+    expect(getOccurrences()).toStrictEqual([
+      expect.objectContaining({ duration: 80, success: false }),
+    ]);
+  });
+
+  it('marks a callback trace that throws as unsuccessful', () => {
+    expect(() =>
+      isolated.trace({ name: NAME_MOCK }, () => {
+        throw new Error('test error');
+      }),
+    ).toThrow('test error');
+
+    expect(getOccurrences()).toStrictEqual([
+      expect.objectContaining({ name: NAME_MOCK, success: false }),
+    ]);
+  });
+
+  it('reads the start and the end from the same clock when neither is given', () => {
+    const nowSpy = jest
+      .spyOn(performance, 'now')
+      .mockReturnValueOnce(1000)
+      .mockReturnValueOnce(1250);
+
+    isolated.trace({ name: NAME_MOCK });
+    isolated.endTrace({ name: NAME_MOCK });
+
+    expect(getOccurrences()).toStrictEqual([
+      expect.objectContaining({ duration: 250, success: true }),
+    ]);
+    nowSpy.mockRestore();
+  });
+
+  it('does not expose occurrences outside test builds', () => {
+    delete process.env.IN_TEST;
+    globalThis.stateHooks = {} as typeof globalThis.stateHooks;
+    loadTraceModule();
+
+    isolated.trace({ name: NAME_MOCK, startTime: 100 });
+    isolated.endTrace({ name: NAME_MOCK, timestamp: 150 });
+
+    expect(globalThis.stateHooks.getCustomTraceOccurrences).toBeUndefined();
+  });
+});

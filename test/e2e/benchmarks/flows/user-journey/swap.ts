@@ -15,6 +15,12 @@ import SwapPage from '../../../page-objects/pages/swap/swap-page';
 import { Driver } from '../../../webdriver/driver';
 import { collectTimerResults } from '../../utils/timer-helper';
 import {
+  readTraceOccurrences,
+  traceCountResult,
+  traceTimerResult,
+} from '../../utils/trace-occurrences';
+import { TraceName } from '../../../../../shared/lib/trace';
+import {
   measureStepWithLongTasks,
   buildLongTaskTimerResults,
 } from '../../utils/long-task-helper';
@@ -29,7 +35,11 @@ import {
 } from '../../../../../shared/constants/benchmarks';
 import { WITH_STATE_POWER_USER } from '../../utils/constants';
 import { collectWebVitals } from '../../utils';
-import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
+import type {
+  BenchmarkRunResult,
+  LongTaskStepResult,
+  TimerResult,
+} from '../../utils/types';
 import { registerSwapInterceptor } from '../../mocks/swap-mocks';
 
 export const testTitle = 'benchmark-swap-power-user';
@@ -39,6 +49,7 @@ const SOLANA_USDC_CONTRACT_ADDRESS =
 
 export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
   const steps: LongTaskStepResult[] = [];
+  const traceTimers: TimerResult[] = [];
   let webVitals: WebVitalsMetrics | undefined;
   try {
     const branchMock = getTestSpecificMock();
@@ -121,6 +132,27 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
           ),
         );
 
+        // In-app trace spans over the same two steps, on the browser's clock
+        // (extension#46006). Report-only: no threshold is registered for them.
+        const occurrences = await readTraceOccurrences(driver);
+        traceTimers.push(
+          traceTimerResult(
+            occurrences,
+            TraceName.SwapViewLoaded,
+            'swapViewLoaded',
+          ),
+          traceTimerResult(
+            occurrences,
+            TraceName.SwapQuoteFetch,
+            'swapQuoteFetch',
+          ),
+          traceCountResult(
+            occurrences,
+            TraceName.SwapQuoteFetch,
+            'swapQuoteFetchCount',
+          ),
+        );
+
         try {
           webVitals = await collectWebVitals(driver);
         } catch (error) {
@@ -130,14 +162,22 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
     );
 
     return {
-      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
+      timers: [
+        ...collectTimerResults(),
+        ...buildLongTaskTimerResults(steps),
+        ...traceTimers,
+      ],
       webVitals,
       success: true,
       benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
     };
   } catch (error) {
     return {
-      timers: [...collectTimerResults(), ...buildLongTaskTimerResults(steps)],
+      timers: [
+        ...collectTimerResults(),
+        ...buildLongTaskTimerResults(steps),
+        ...traceTimers,
+      ],
       webVitals,
       success: false,
       error: error instanceof Error ? error.message : String(error),
