@@ -5,6 +5,8 @@ import {
 } from '@metamask/assets-controller';
 import type { PreferencesState } from '@metamask/preferences-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type {
   TraceCallback as ControllerTraceCallback,
   TraceContext as ControllerTraceContext,
@@ -21,6 +23,8 @@ import {
   type AssetsUnifyStateFeatureFlag,
 } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { ARC_NATIVE_CAIP_CHAIN_ID } from '#ui/components/app/assets/enablement/arc';
 
 /**
  * Cached API client instance.
@@ -161,6 +165,56 @@ function getApiClient(
 }
 
 /**
+ * Forces a full Arc assets refresh after a confirmed transaction.
+ *
+ * Arc USDC is represented as a native asset in the wallet, but the
+ * AccountActivity incremental balance update can miss that native USDC balance
+ * after swaps while updating ERC-20 balances such as EURC correctly. A full
+ * account asset scan resolves the native USDC balance, matching the manual
+ * recovery path of reloading the extension or switching accounts.
+ *
+ * @param controllerMessenger - The AssetsController messenger.
+ * @param assetsController - The initialized AssetsController instance.
+ */
+function subscribeToArcTransactionConfirmedRefresh(
+  controllerMessenger: AssetsControllerMessenger,
+  assetsController: AssetsController,
+): void {
+  controllerMessenger.subscribe(
+    'TransactionController:transactionConfirmed',
+    (transactionMeta: TransactionMeta) => {
+      if (transactionMeta.chainId?.toLowerCase() !== CHAIN_IDS.ARC) {
+        return;
+      }
+
+      const fromAddress = transactionMeta.txParams.from?.toLowerCase();
+      if (!fromAddress) {
+        return;
+      }
+
+      const matchedAccount = controllerMessenger
+        .call('AccountTreeController:getAccountsFromSelectedAccountGroup')
+        .find(
+          (account: InternalAccount) =>
+            account.address.toLowerCase() === fromAddress,
+        );
+
+      if (!matchedAccount) {
+        return;
+      }
+
+      assetsController
+        .getAssets([matchedAccount], {
+          chainIds: [ARC_NATIVE_CAIP_CHAIN_ID],
+          forceUpdate: true,
+          bypassServerCache: true,
+        })
+        .catch(() => undefined);
+    },
+  );
+}
+
+/**
  * Init function for the AssetsController.
  *
  * @param request - The request object.
@@ -255,6 +309,11 @@ export const AssetsControllerInit: MessengerClientInitFunction<
     }),
     trace: createAssetsControllerTrace(initMessenger),
   });
+
+  subscribeToArcTransactionConfirmedRefresh(
+    controllerMessenger,
+    messengerClient,
+  );
 
   return { messengerClient };
 };
