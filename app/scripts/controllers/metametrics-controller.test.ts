@@ -14,7 +14,6 @@ import type {
   AnalyticsEventProperties,
   AnalyticsUserTraits,
 } from '@metamask/analytics-controller';
-import { Browser } from 'webextension-polyfill';
 import { deriveStateFromMetadata } from '@metamask/base-controller';
 import {
   MOCK_ANY_NAMESPACE,
@@ -119,14 +118,6 @@ const MOCK_ANALYTICS_CONTROLLER_OPTED_IN: AnalyticsControllerState = {
   consentDecisionMade: true,
   analyticsId: TEST_ANALYTICS_ID,
 };
-const MOCK_EXTENSION_ID = 'testid';
-
-const MOCK_EXTENSION = {
-  runtime: {
-    id: MOCK_EXTENSION_ID,
-    setUninstallURL: () => undefined,
-  },
-} as unknown as Browser;
 
 const MOCK_TRAITS = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -225,7 +216,6 @@ describe('MetaMetricsController', function () {
     it('should properly initialize', async function () {
       const spy = jest.spyOn(segmentMock, 'track');
       await withController(({ controller, controllerMessenger }) => {
-        expect(controller.version).toStrictEqual(VERSION);
         expect(controller.chainId).toStrictEqual(DEFAULT_CHAIN_ID);
         expect(controller.state.marketingCampaignCookieId).toStrictEqual(null);
         const { analyticsId, consentDecisionMade } = controllerMessenger.call(
@@ -1546,40 +1536,6 @@ describe('MetaMetricsController', function () {
       );
     });
   });
-  describe('updateExtensionUninstallUrl', function () {
-    it('should include extension version in uninstall URL regardless of MetaMetrics participation', async function () {
-      await withController(({ controller }) => {
-        const setUninstallURLSpy = jest.spyOn(
-          MOCK_EXTENSION.runtime,
-          'setUninstallURL',
-        );
-
-        // Test with MetaMetrics disabled
-        controller.updateExtensionUninstallUrl(false, 'test-id');
-        expect(setUninstallURLSpy).toHaveBeenCalledWith(
-          expect.stringContaining(`av=${VERSION}`),
-        );
-        expect(setUninstallURLSpy).toHaveBeenCalledWith(
-          expect.not.stringContaining('mmi='),
-        );
-        expect(setUninstallURLSpy).toHaveBeenCalledWith(
-          expect.not.stringContaining('env='),
-        );
-
-        // Test with MetaMetrics enabled
-        controller.updateExtensionUninstallUrl(true, 'test-id');
-        expect(setUninstallURLSpy).toHaveBeenCalledWith(
-          expect.stringContaining(`av=${VERSION}`),
-        );
-        expect(setUninstallURLSpy).toHaveBeenCalledWith(
-          expect.stringContaining('mmi='),
-        );
-        expect(setUninstallURLSpy).toHaveBeenCalledWith(
-          expect.stringContaining('env='),
-        );
-      });
-    });
-  });
 
   describe('metadata', () => {
     it('includes expected state in debug snapshots', async () => {
@@ -1973,9 +1929,6 @@ async function withController<ReturnValue>(
     return fn({
       controller: new MetaMetricsController({
         messenger: metaMetricsControllerMessenger,
-        version: '0.0.1',
-        environment: 'test',
-        extension: MOCK_EXTENSION,
         ...options,
         state: mmcState,
       }),
