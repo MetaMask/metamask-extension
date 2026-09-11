@@ -15,6 +15,9 @@ default: &default main
 buildTypes:
   main:
     id: 10
+    # Build name used in multiple user-readable places
+    # eg. eip6963
+    name: MetaMask
     features:
       - keyring-snaps
       - multi-srp
@@ -34,12 +37,10 @@ buildTypes:
       - PERPS_ENABLED: true
     # Main build uses the default browser manifest
     manifestOverrides: false
-    # Build name used in multiple user-readable places
-    # eg. eip6963
-    buildNameOverride: MetaMask
 
   beta:
     id: 11
+    name: MetaMask Beta
     features:
       - build-beta
       - keyring-snaps
@@ -62,10 +63,10 @@ buildTypes:
     isPrerelease: true
     # Folder which contains overrides to browser manifests
     manifestOverrides: ./app/build-types/beta/manifest/
-    buildNameOverride: MetaMask Beta
 
   experimental:
     id: 12
+    name: MetaMask Experimental
     features:
       - build-experimental
       - keyring-snaps
@@ -87,10 +88,10 @@ buildTypes:
       - QR_SYNC_ENABLED: true
     isPrerelease: true
     manifestOverrides: app/build-types/experimental/manifest
-    buildNameOverride: MetaMask Experimental
 
   flask:
     id: 15
+    name: MetaMask Flask
     # Code surrounded using code fences for that feature
     # will not be removed
     features:
@@ -116,7 +117,6 @@ buildTypes:
 
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
-    buildNameOverride: MetaMask Flask
 
 # Build types are composed of a set of features.
 # Each feature can have code fences that add new code

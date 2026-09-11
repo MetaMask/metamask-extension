@@ -53,6 +53,7 @@ describe('loadBuildTypesConfig', () => {
     nextBuildsYml.buildTypes.foo = {
       id: 63,
       extends: 'main',
+      name: 'MetaMask Foo',
     };
     yamlParseMock.mockReturnValueOnce(nextBuildsYml);
     const buildTypes = loadBuildTypesConfig(null);
@@ -60,7 +61,18 @@ describe('loadBuildTypesConfig', () => {
       ...buildTypes.buildTypes.main,
       id: 63,
       extends: 'main',
+      name: 'MetaMask Foo',
     });
+  });
+
+  it('should throw if a build type name is missing', () => {
+    const nextBuildsYml = makeBuildsYml();
+    delete nextBuildsYml.buildTypes.main.name;
+    yamlParseMock.mockReturnValueOnce(nextBuildsYml);
+
+    expect(() => loadBuildTypesConfig(null)).toThrow(
+      `Expected a string, but received: undefined`,
+    );
   });
 
   it('should throw if build type id is out of range', () => {
@@ -92,6 +104,20 @@ describe('loadBuildTypesConfig', () => {
     expect(() => loadBuildTypesConfig(null)).toThrow(
       `Build type ids must be unique. Duplicate ids: ${JSON.stringify(
         [64],
+        null,
+        2,
+      )}`,
+    );
+  });
+
+  it('should throw if build type names are not unique', () => {
+    const nextBuildsYml = makeBuildsYml();
+    nextBuildsYml.buildTypes.flask.name = nextBuildsYml.buildTypes.main.name;
+    yamlParseMock.mockReturnValueOnce(nextBuildsYml);
+
+    expect(() => loadBuildTypesConfig(null)).toThrow(
+      `Build type names must be unique. Duplicate names: ${JSON.stringify(
+        ['MetaMask'],
         null,
         2,
       )}`,

@@ -58,7 +58,7 @@ describe('EIP-6963 Provider', function () {
             type: 'eip6963:announceProvider',
             detail: {
               info: {
-                name: 'MetaMask Main',
+                name: 'MetaMask',
                 rdns: 'io.metamask',
               },
               provider: true,
