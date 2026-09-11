@@ -122,8 +122,29 @@ const OP_DEFAULT = 'custom';
 const tracesByKey: Map<string, PendingTrace> = new Map();
 const durationsByName: { [name: string]: number } = {};
 
+/**
+ * One completed trace, as recorded in test builds.
+ *
+ * `durationsByName` keeps only the last duration per name, so a trace that
+ * ends more than once, or ends in failure, is indistinguishable there from a
+ * single success. Occurrences keep every completion, in completion order, with
+ * both timestamps read from the same clock as the trace itself.
+ */
+export type TraceOccurrence = {
+  name: string;
+  id: string;
+  startTime: number;
+  endTime: number;
+  duration: number;
+  success: boolean;
+};
+
+const MAX_TRACE_OCCURRENCES = 1000;
+const traceOccurrences: TraceOccurrence[] = [];
+
 if (process.env.IN_TEST && globalThis.stateHooks) {
   globalThis.stateHooks.getCustomTraces = () => durationsByName;
+  globalThis.stateHooks.getCustomTraceOccurrences = () => [...traceOccurrences];
 }
 
 type PendingTrace = {
@@ -308,7 +329,9 @@ export function endTrace(request: EndTraceRequest): void {
   const { request: pendingRequest, startTime } = pendingTrace;
   const endTime = timestamp ?? getPerformanceTimestamp();
 
-  logTrace(pendingRequest, startTime, endTime);
+  logTrace(pendingRequest, startTime, endTime, {
+    success: request.data?.success !== false,
+  });
 }
 
 /**
@@ -423,7 +446,7 @@ function traceCallback<ResultType>(
       },
       () => {
         const end = Date.now();
-        logTrace(request, start, end, error);
+        logTrace(request, start, end, { error, success: error === undefined });
       },
     ) as ResultType;
   };
@@ -575,13 +598,25 @@ function logTrace(
   request: TraceRequest,
   startTime: number,
   endTime: number,
-  error?: unknown,
+  { error, success }: { error?: unknown; success: boolean },
 ) {
   const duration = endTime - startTime;
   const { name } = request;
 
   if (process.env.IN_TEST) {
     durationsByName[name] = duration;
+
+    traceOccurrences.push({
+      name,
+      id: getTraceId(request),
+      startTime,
+      endTime,
+      duration,
+      success,
+    });
+    if (traceOccurrences.length > MAX_TRACE_OCCURRENCES) {
+      traceOccurrences.shift();
+    }
   }
 
   log('Finished trace', name, duration, { request, error });

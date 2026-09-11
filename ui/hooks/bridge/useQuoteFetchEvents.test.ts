@@ -188,7 +188,6 @@ describe('useQuoteFetchEvents', () => {
 
     expect(mockEndTrace).toHaveBeenCalledWith({
       name: TraceName.SwapQuoteFetch,
-      timestamp: expect.any(Number),
     });
   });
 
@@ -206,7 +205,6 @@ describe('useQuoteFetchEvents', () => {
 
     expect(mockEndTrace).toHaveBeenCalledWith({
       name: TraceName.SwapQuoteFetch,
-      timestamp: expect.any(Number),
     });
   });
 
@@ -224,7 +222,6 @@ describe('useQuoteFetchEvents', () => {
 
     expect(mockEndTrace).toHaveBeenCalledWith({
       name: TraceName.SwapQuoteFetch,
-      timestamp: expect.any(Number),
       data: { success: false },
     });
   });
@@ -244,7 +241,6 @@ describe('useQuoteFetchEvents', () => {
 
     expect(mockEndTrace).toHaveBeenCalledWith({
       name: TraceName.SwapQuoteFetch,
-      timestamp: expect.any(Number),
       data: { success: false },
     });
   });
