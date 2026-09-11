@@ -67,6 +67,7 @@
   "metamask": {
     "accountGroupsMetadata": "object",
     "accountIdByAddress": "object",
+    "accountSourceBackfillEnqueued": true,
     "accountState": null,
     "accountTree": "object",
     "accountWalletsMetadata": "object",
@@ -356,6 +357,7 @@
       "feature2": false,
       "feature3": "valueC"
     },
+    "reportedAccounts": "object",
     "requests": "object",
     "rewardsAccounts": "object",
     "rewardsActiveAccount": null,

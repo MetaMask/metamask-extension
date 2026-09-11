@@ -155,6 +155,7 @@
     "accountIdByAddress": {
       "*": "string"
     },
+    "accountSourceBackfillEnqueued": "boolean",
     "accountsAssets": {
       "*": "array"
     },
@@ -1013,6 +1014,7 @@
       "variational": {}
     },
     "region": "string",
+    "reportedAccounts": "array",
     "requests": {
       "*": {
         "status": "string",

@@ -2687,7 +2687,7 @@ describe('LegacyBackgroundApiService', () => {
      */
     function registerResetWalletHandlers(rootMessenger: RootMessenger): void {
       rootMessenger.registerActionHandler(
-        'AuthenticationController:performSignOut',
+        'AuthenticationController:clearState',
         jest.fn(),
       );
       rootMessenger.registerActionHandler(
@@ -2743,6 +2743,9 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(callSpy).toHaveBeenCalledWith(
+          'AuthenticationController:clearState',
+        );
+        expect(callSpy).not.toHaveBeenCalledWith(
           'AuthenticationController:performSignOut',
         );
         expect(callSpy).toHaveBeenCalledWith(
@@ -2800,6 +2803,12 @@ describe('LegacyBackgroundApiService', () => {
         expect(callSpy).not.toHaveBeenCalledWith(
           'AppStateController:setIsWalletResetInProgress',
           true,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'AuthenticationController:clearState',
+        );
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'AuthenticationController:performSignOut',
         );
         // Non-onboarding cleanup still runs.
         expect(callSpy).toHaveBeenCalledWith('PasskeyController:clearState');
@@ -8667,6 +8676,7 @@ function getMessenger(
       'SubscriptionController:stopAllPolling',
       'AuthenticationController:getState',
       'AuthenticationController:performSignOut',
+      'AuthenticationController:clearState',
       'AppStateController:setPasskeyAutoUnlockSuppressed',
       'AppStateController:setTrezorModel',
       'KeyringController:withKeyringV2Unsafe',
