@@ -65,7 +65,7 @@ export function buildDefaultFixture(
   if (options.anvilPort) {
     applyAnvilPort(builder, options.anvilPort);
   }
-  return builder.build();
+  return builder.withSyncDisabled().build();
 }
 
 export function buildOnboardingFixture(
