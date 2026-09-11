@@ -11,12 +11,10 @@ import {
 } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { parseCaipAssetType } from '@metamask/utils';
-import { Skeleton } from '@metamask/design-system-react';
+import { Skeleton, TextField, twMerge } from '@metamask/design-system-react';
 import {
   IconName,
   Text,
-  TextField,
-  TextFieldType,
   ButtonLink,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -95,9 +93,11 @@ export const BridgeInputGroup = ({
   onAmountChange?: (value: string) => void;
   token: BridgeToken;
   buttonProps: { testId: string };
-  amountFieldProps: Pick<
+  amountFieldProps: {
+    'data-testid': string;
+  } & Pick<
     React.ComponentProps<typeof TextField>,
-    'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
+    'autoFocus' | 'value' | 'isReadOnly' | 'isDisabled' | 'className'
   >;
   onMaxButtonClick?: (value: string) => void;
   onBlockExplorerClick?: (token: BridgeToken) => void;
@@ -138,8 +138,16 @@ export const BridgeInputGroup = ({
     : undefined;
   const balanceAmount = useSelector(getFromTokenBalance);
 
-  const isAmountReadOnly =
-    amountFieldProps?.readOnly || amountFieldProps?.disabled;
+  const {
+    'data-testid': amountTestId,
+    className: amountClassName,
+    isReadOnly,
+    isDisabled,
+    value: amountValue,
+    ...restAmountFieldProps
+  } = amountFieldProps;
+
+  const isAmountReadOnly = Boolean(isReadOnly || isDisabled);
   const shouldShowAmountSkeleton = Boolean(
     showAmountSkeleton && isAmountReadOnly,
   );
@@ -161,7 +169,7 @@ export const BridgeInputGroup = ({
   }, [locale, balanceAmount, token.symbol]);
 
   const inputFontSize = useMemo(() => {
-    const len = (amountFieldProps?.value ?? '').toString().length;
+    const len = (amountValue ?? '').toString().length;
     if (len <= 10) {
       return 40;
     }
@@ -175,14 +183,14 @@ export const BridgeInputGroup = ({
       return 25;
     }
     return 20;
-  }, [amountFieldProps?.value]);
+  }, [amountValue]);
 
   useEffect(() => {
     const hasAmountInputPrefixChanged =
       previousHasAmountInputPrefix.current !== hasAmountInputPrefix;
 
     if (!isAmountReadOnly && inputRef.current) {
-      inputRef.current.value = amountFieldProps?.value?.toString() ?? '';
+      inputRef.current.value = amountValue?.toString() ?? '';
       inputRef.current.focus();
       if (hasAmountInputPrefixChanged) {
         inputRef.current.setSelectionRange(
@@ -193,7 +201,7 @@ export const BridgeInputGroup = ({
     }
 
     previousHasAmountInputPrefix.current = hasAmountInputPrefix;
-  }, [amountFieldProps?.value, hasAmountInputPrefix, isAmountReadOnly, token]);
+  }, [amountValue, hasAmountInputPrefix, isAmountReadOnly, token]);
 
   useEffect(() => {
     return () => {
@@ -223,7 +231,7 @@ export const BridgeInputGroup = ({
           <Skeleton
             width={128}
             height={40}
-            data-testid={`${amountFieldProps.testId}-loading-skeleton`}
+            data-testid={`${amountTestId}-loading-skeleton`}
             style={{ flex: 1, minWidth: 0 }}
           />
         ) : (
@@ -243,8 +251,8 @@ export const BridgeInputGroup = ({
               ) : undefined
             }
             inputProps={{
-              disableStateStyles: true,
-              textAlign: TextAlign.Start,
+              'data-testid': amountTestId,
+              className: 'text-left',
               style: {
                 fontWeight: 400,
                 fontSize: inputFontSize,
@@ -253,23 +261,21 @@ export const BridgeInputGroup = ({
               },
             }}
             style={{
-              flex: 1,
-              minWidth: 0,
-              opacity:
-                isAmountReadOnly && amountFieldProps?.value ? 1 : undefined,
+              opacity: isAmountReadOnly && amountValue ? 1 : undefined,
             }}
-            display={Display.Flex}
+            className={twMerge(
+              'amount-input flex min-w-0 flex-1',
+              amountClassName,
+            )}
             inputRef={inputRef}
-            type={TextFieldType.Text}
-            className="amount-input"
+            isReadOnly={isReadOnly}
+            isDisabled={isDisabled}
+            value={amountValue?.toString() ?? ''}
             placeholder="0"
             onKeyPress={(e?: React.KeyboardEvent<HTMLDivElement>) => {
               if (e) {
                 // Only allow numbers and at most one decimal point
-                if (
-                  e.key === '.' &&
-                  amountFieldProps.value?.toString().includes('.')
-                ) {
+                if (e.key === '.' && amountValue?.toString().includes('.')) {
                   e.preventDefault();
                 } else if (!/^[\d.]{1}$/u.test(e.key)) {
                   e.preventDefault();
@@ -289,7 +295,7 @@ export const BridgeInputGroup = ({
               const cleanedValue = sanitizeAmountInput(e.target.value);
               onAmountChange?.(cleanedValue ?? '');
             }}
-            {...amountFieldProps}
+            {...restAmountFieldProps}
           />
         )}
         <SelectedAssetButton

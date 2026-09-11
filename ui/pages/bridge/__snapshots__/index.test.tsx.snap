@@ -78,14 +78,11 @@ exports[`Bridge renders the component with initial props 1`] = `
               class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
-                style="flex: 1; min-width: 0;"
+                class="items-center rounded-lg border bg-default transition-colors h-10 pl-0 pr-0 border-default amount-input flex min-w-0 flex-1"
               >
                 <input
-                  autocomplete="off"
-                  class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-text--text-align-start mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                  class="w-full rounded text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular m-0 h-full min-w-0 flex-1 border-0 bg-transparent p-0 pl-4 pr-4 truncate text-left"
                   data-testid="from-amount"
-                  focused="true"
                   placeholder="0"
                   style="font-weight: 400; font-size: 40px; transition: font-size 0.1s; padding: 0px;"
                   type="text"
@@ -190,15 +187,13 @@ exports[`Bridge renders the component with initial props 1`] = `
                 class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate amount-input mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
-                  style="flex: 1; min-width: 0; opacity: 1;"
+                  class="items-center rounded-lg border bg-default transition-colors h-10 pl-0 pr-0 cursor-not-allowed border-muted opacity-50 amount-input flex min-w-0 flex-1 amount-input"
+                  style="opacity: 1;"
                 >
                   <input
-                    autocomplete="off"
-                    class="mm-box mm-text mm-input mm-input--disable-state-styles mm-input--disabled mm-text-field__input mm-text--body-md mm-text--text-align-start mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                    class="w-full rounded text-default outline-none transition-colors border-transparent placeholder:text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular m-0 h-full min-w-0 flex-1 border-0 bg-transparent p-0 pl-4 pr-4 truncate text-left"
                     data-testid="to-amount"
                     disabled=""
-                    focused="false"
                     placeholder="0"
                     readonly=""
                     style="font-weight: 400; font-size: 40px; transition: font-size 0.1s; padding: 0px;"

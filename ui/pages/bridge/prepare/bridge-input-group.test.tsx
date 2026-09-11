@@ -139,7 +139,7 @@ const InputGroup = ({
       token={getFromToken(mockState)}
       buttonProps={{ testId: ASSET_PICKER_BUTTON_TEST_ID }}
       amountFieldProps={{
-        testId: 'from-amount',
+        'data-testid': 'from-amount',
         autoFocus: true,
         value: '1',
       }}
@@ -310,7 +310,7 @@ describe('BridgeInputGroup', () => {
         <InputGroup
           mockState={mockState}
           amountFieldProps={{
-            testId: 'from-amount',
+            'data-testid': 'from-amount',
             autoFocus: true,
             value: '12',
           }}
@@ -340,11 +340,11 @@ describe('BridgeInputGroup', () => {
         isDestination: true,
         showAmountSkeleton: true,
         amountFieldProps: {
-          testId: 'to-amount',
+          'data-testid': 'to-amount',
           autoFocus: false,
           value: '0',
-          readOnly: true,
-          disabled: true,
+          isReadOnly: true,
+          isDisabled: true,
           className: 'amount-input',
         },
       },
