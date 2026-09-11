@@ -136,7 +136,14 @@ import {
   isStopLossSafeFromLiquidation,
 } from '../../components/app/perps/utils/tpslValidation';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
-import { PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
+import {
+  PERPS_MIN_MARKET_ORDER_USD,
+  PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC,
+} from '../../components/app/perps/constants';
+import {
+  consumeUnfundedDepositFunnel,
+  markUnfundedDepositFunnel,
+} from '../../components/app/perps/utils/unfunded-deposit-funnel';
 import {
   OrderEntry,
   OrderEntryHeader,
@@ -972,7 +979,10 @@ const PerpsOrderEntryPage = () => {
   // read `account.spendableBalance` directly.
   const availableBalance = Number.parseFloat(getTradeableBalance(account));
   const hasNoAvailableBalance =
-    orderMode === 'new' && !isLoadingAccount && availableBalance <= 0;
+    orderMode === 'new' &&
+    !isLoadingAccount &&
+    (!Number.isFinite(availableBalance) ||
+      availableBalance < PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC);
   const isPrimaryTradeAction = orderMode !== 'new' || !hasNoAvailableBalance;
 
   const isNearLiquidation = useMemo(() => {
@@ -1168,14 +1178,13 @@ const PerpsOrderEntryPage = () => {
 
   const isSubmitDisabled =
     !selectedAddress ||
+    isLoadingAccount ||
     isDepositLoading ||
     isOrderPending ||
-    (orderMode === 'new' && isLoadingAccount) ||
-    hasNoAvailableBalance ||
-    (isMarketOrderWithAmount &&
-      (isMaxSlippageLoading || !isEstimatedSlippageReady)) ||
     (isPrimaryTradeAction &&
-      (isLimitPriceInvalid ||
+      ((isMarketOrderWithAmount &&
+        (isMaxSlippageLoading || !isEstimatedSlippageReady)) ||
+        isLimitPriceInvalid ||
         isNearLiquidation ||
         hasInvalidTPSL ||
         isInsufficientFunds ||
@@ -1944,6 +1953,16 @@ const PerpsOrderEntryPage = () => {
         );
         return;
       }
+      if (consumeUnfundedDepositFunnel()) {
+        track(MetaMetricsEventName.PerpsUiInteraction, {
+          [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+            PERPS_EVENT_VALUE.INTERACTION_TYPE.TRADE_SUBMITTED_AFTER_DEPOSIT,
+          [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
+          ...(decodedSymbol
+            ? { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }
+            : {}),
+        });
+      }
       if (shouldHandleTpslSeparately) {
         const { takeProfitPrice: cleanTp, stopLossPrice: cleanSl } =
           normalizeTpslPrices({
@@ -2053,6 +2072,7 @@ const PerpsOrderEntryPage = () => {
     orderCalculations,
     position,
     selectedAddress,
+    decodedSymbol,
     currentPrice,
     getTradeActionToastDescription,
     getClosePartialToastDescription,
@@ -2082,6 +2102,24 @@ const PerpsOrderEntryPage = () => {
     isEstimatedSlippageReady,
   ]);
 
+  const trackUnfundedDepositCta = useCallback(
+    (buttonLocation: string) => {
+      markUnfundedDepositFunnel();
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
+        [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
+        [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: false,
+        ...(decodedSymbol
+          ? { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }
+          : {}),
+      });
+    },
+    [decodedSymbol, track],
+  );
+
   const handlePrimaryAction = useCallback(async () => {
     await gate(async () => {
       if (hasNoAvailableBalance) {
@@ -2093,6 +2131,7 @@ const PerpsOrderEntryPage = () => {
           return;
         }
 
+        trackUnfundedDepositCta(PERPS_EVENT_VALUE.BUTTON_LOCATION.TRADING);
         await triggerDeposit();
         return;
       }
@@ -2106,11 +2145,15 @@ const PerpsOrderEntryPage = () => {
     isDepositLoading,
     isEligible,
     selectedAddress,
+    trackUnfundedDepositCta,
     triggerDeposit,
   ]);
 
   const handleAddFunds = useCallback(async () => {
     await gate(async () => {
+      if (isLoadingAccount) {
+        return;
+      }
       if (!isEligible) {
         setIsGeoBlockModalOpen(true);
         return;
@@ -2119,9 +2162,37 @@ const PerpsOrderEntryPage = () => {
         return;
       }
 
+      if (hasNoAvailableBalance) {
+        trackUnfundedDepositCta(PERPS_EVENT_VALUE.BUTTON_LOCATION.AMOUNT_INPUT);
+      } else {
+        track(MetaMetricsEventName.PerpsUiInteraction, {
+          [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+            PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+          [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+            PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
+          [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+            PERPS_EVENT_VALUE.BUTTON_LOCATION.AMOUNT_INPUT,
+          [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
+          ...(decodedSymbol
+            ? { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }
+            : {}),
+        });
+      }
+
       await triggerDeposit();
     });
-  }, [gate, isDepositLoading, isEligible, selectedAddress, triggerDeposit]);
+  }, [
+    decodedSymbol,
+    gate,
+    hasNoAvailableBalance,
+    isLoadingAccount,
+    isDepositLoading,
+    isEligible,
+    selectedAddress,
+    track,
+    trackUnfundedDepositCta,
+    triggerDeposit,
+  ]);
 
   const handleFormSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -2180,7 +2251,7 @@ const PerpsOrderEntryPage = () => {
   const isLong = orderDirection === 'long';
   const submitButtonText = (() => {
     if (hasNoAvailableBalance) {
-      return t('addFunds');
+      return t('perpsAddFundsToTrade');
     }
 
     switch (orderMode) {
@@ -2263,6 +2334,7 @@ const PerpsOrderEntryPage = () => {
           midPrice={topOfBook?.midPrice}
           onOrderTypeChange={setOrderType}
           onAddFunds={handleAddFunds}
+          isLoadingAccount={isLoadingAccount}
           initialLeverage={initialLeverage}
           autoFocusUsd={orderMode !== 'close'}
           autoFocusLimitPrice={orderMode !== 'close'}
@@ -2331,6 +2403,15 @@ const PerpsOrderEntryPage = () => {
           isChartOpen ? 'fixed left-0 w-full' : 'sticky shrink-0',
         )}
       >
+        {hasNoAvailableBalance && (
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            data-testid="perps-unfunded-add-funds-hint"
+          >
+            {t('perpsAddFundsHint')}
+          </Text>
+        )}
         <Button
           type="submit"
           variant={ButtonVariant.Primary}

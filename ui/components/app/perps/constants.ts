@@ -74,6 +74,13 @@ export const PERPS_COLLATERAL_SYMBOL = 'USDC';
 export const PERPS_MIN_MARKET_ORDER_USD = 10;
 
 /**
+ * Tradeable balance at or below this displays as 0.00 USDC and cannot fund the
+ * $10 minimum order. Treat it as unfunded so the trade-screen CTA becomes
+ * Add funds instead of a disabled Insufficient funds control.
+ */
+export const PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC = 0.01;
+
+/**
  * Market sorting configuration
  * Controls sorting behavior for the markets view
  */
