@@ -4,6 +4,8 @@ import {
 } from '@metamask/transaction-controller';
 import { isMusdOnMoneyAccountChain } from '@metamask/money-account-utils';
 import type { Hex } from '@metamask/utils';
+import { isMusdToken } from '../../components/app/musd/constants';
+import type { MoneyAccountDepositIntent } from './deposit-intent';
 
 /**
  * The first nested transaction matching a given TransactionType, or undefined
@@ -26,6 +28,23 @@ export const isMoneyDepositTx = (transactionMeta: TransactionMeta) =>
     nestedTxWithType(transactionMeta, TransactionType.moneyAccountDeposit),
   );
 
+/**
+ * Derives the deposit intent from the transaction's payment data.
+ *
+ * @param transactionMeta - The deposit batch transaction.
+ */
+export const resolveMoneyDepositIntent = (
+  transactionMeta: TransactionMeta,
+): MoneyAccountDepositIntent => {
+  if (transactionMeta.metamaskPay?.fiat) {
+    return 'card';
+  }
+  if (isMusdToken(transactionMeta.metamaskPay?.tokenAddress)) {
+    return 'addMusd';
+  }
+  return 'convert';
+};
+
 export const isMoneyWithdrawTx = (transactionMeta: TransactionMeta) =>
   transactionMeta.type === TransactionType.moneyAccountWithdraw ||
   Boolean(
@@ -34,6 +53,25 @@ export const isMoneyWithdrawTx = (transactionMeta: TransactionMeta) =>
 
 export const isMoneyAccountTx = (transactionMeta: TransactionMeta) =>
   isMoneyDepositTx(transactionMeta) || isMoneyWithdrawTx(transactionMeta);
+
+/**
+ * True for a transaction submitted on behalf of a money account batch, such as
+ * the relay deposit that funds it or the vault deposit that follows it. These
+ * children do not reference their parent, so the link is found from the
+ * parent's `requiredTransactionIds`.
+ *
+ * @param transactionMeta - The candidate child transaction.
+ * @param transactions - All known transactions.
+ */
+export const isMoneyAccountChildTx = (
+  transactionMeta: TransactionMeta,
+  transactions: TransactionMeta[],
+): boolean =>
+  transactions.some(
+    (tx) =>
+      tx.requiredTransactionIds?.includes(transactionMeta.id) &&
+      isMoneyAccountTx(tx),
+  );
 
 /**
  * Perps/Predict deposit parent types (money → service). When funded from the
