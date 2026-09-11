@@ -18,6 +18,7 @@ import type {
   MetaData,
 } from './base-store';
 import { runTrackedTask } from './utils/run-tracked-task';
+import { getPersistenceWriteTelemetrySampleRate } from '../sentry-remote-rates';
 
 export type StorageKind = 'data' | 'split';
 
@@ -67,15 +68,30 @@ export type WriteRetryRecoveredEvent = {
   retryDelayMs: number;
 };
 
+export type SplitStateWriteEvent = {
+  bytesByController: Record<string, number>;
+  coalescedUpdates: number;
+  controllerKeys: string[];
+  idleStatus: 'active' | 'idle' | 'unknown';
+  measurementDurationMs: number;
+  sampleRate: number;
+  totalBytes: number;
+  writeDurationMs: number;
+};
+
 export type PersistenceManagerEventMap = {
   vaultCorruptionDetected: [VaultCorruptionDetectedEvent];
   splitStateMigrationSucceeded: [SplitStateMigrationSucceededEvent];
   splitStateMigrationFailed: [SplitStateMigrationFailedEvent];
+  splitStateWrite: [SplitStateWriteEvent];
   writeRetryRecovered: [WriteRetryRecoveredEvent];
 };
 
 export type PersistenceManagerOptions = {
+  getIsIdle?: () => boolean | undefined;
+  getPersistenceWriteSampleRate?: () => number;
   localStore: BaseStore;
+  random?: () => number;
 };
 
 type WriteRetryOptions = {
@@ -86,6 +102,13 @@ export const PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS = 1000;
 
 const PERSISTENCE_MANAGER_WRITE_RETRY_DELAY_MS =
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS / 2;
+
+function getSerializedByteLength(value: unknown): number {
+  const serializedValue = JSON.stringify(value);
+  return serializedValue === undefined
+    ? 0
+    : new TextEncoder().encode(serializedValue).byteLength;
+}
 
 function delay(ms: number, signal?: AbortSignal): Promise<boolean> {
   return new Promise((resolve) => {
@@ -306,9 +329,23 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    */
   #errorTypeBeforeCallbackRegistered: StorageWriteErrorType | null = null;
 
-  constructor({ localStore }: PersistenceManagerOptions) {
+  #getIsIdle: () => boolean | undefined;
+
+  #getPersistenceWriteSampleRate: () => number;
+
+  #random: () => number;
+
+  constructor({
+    getIsIdle = () => undefined,
+    getPersistenceWriteSampleRate = getPersistenceWriteTelemetrySampleRate,
+    localStore,
+    random = Math.random,
+  }: PersistenceManagerOptions) {
     super();
+    this.#getIsIdle = getIsIdle;
     this.#localStore = localStore;
+    this.#getPersistenceWriteSampleRate = getPersistenceWriteSampleRate;
+    this.#random = random;
   }
 
   /**
@@ -503,6 +540,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   #currentLockAbortController: void | AbortController = undefined;
 
   #pendingPairs = new Map<string, unknown>();
+
+  #pendingUpdateCount = 0;
 
   #hasSimulatedStorageSetFailure = false;
 
@@ -734,6 +773,48 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       );
     }
     this.#pendingPairs.set(key, value);
+    this.#pendingUpdateCount += 1;
+  }
+
+  #recordSplitStateWrite(
+    pairs: Map<string, unknown>,
+    coalescedUpdates: number,
+    writeDurationMs: number,
+  ): void {
+    const controllerPairs = [...pairs.entries()]
+      .filter(([key]) => key !== 'data' && key !== 'manifest' && key !== 'meta')
+      .sort(([leftKey], [rightKey]) => leftKey.localeCompare(rightKey));
+    const sampleRate = this.#getPersistenceWriteSampleRate();
+    if (
+      controllerPairs.length === 0 ||
+      sampleRate <= 0 ||
+      this.#random() >= sampleRate
+    ) {
+      return;
+    }
+
+    const measurementStartedAt = performance.now();
+    const bytesByController = Object.fromEntries(
+      controllerPairs.map(([key, value]) => [
+        key,
+        getSerializedByteLength(value),
+      ]),
+    );
+    const totalBytes = getSerializedByteLength(
+      Object.fromEntries(controllerPairs),
+    );
+    const isIdle = this.#getIsIdle();
+
+    this.emit('splitStateWrite', {
+      bytesByController,
+      coalescedUpdates,
+      controllerKeys: controllerPairs.map(([key]) => key),
+      idleStatus: isIdle === undefined ? 'unknown' : isIdle ? 'idle' : 'active',
+      measurementDurationMs: performance.now() - measurementStartedAt,
+      sampleRate,
+      totalBytes,
+      writeDurationMs,
+    });
   }
 
   async persist(): Promise<[boolean, Error | undefined]> {
@@ -775,15 +856,20 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         let backupFailed = false;
         try {
           const clone = structuredClone(this.#pendingPairs);
+          const coalescedUpdates = this.#pendingUpdateCount;
           // reset the pendingPairs
           this.#pendingPairs.clear();
+          this.#pendingUpdateCount = 0;
+          let writeDurationMs = 0;
           try {
             // save the pairs (includes test simulation check)
+            const writeStartedAt = performance.now();
             await this.#retryWrite(
               () => this.#setKeyValuesInLocalStore(clone),
               'persist-retry-recovered',
               { supersedable: true },
             );
+            writeDurationMs = performance.now() - writeStartedAt;
           } catch (err) {
             // merge the clone with the pending pairs again
             for (const [key, value] of clone.entries()) {
@@ -794,7 +880,19 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
                 this.#pendingPairs.set(key, value);
               }
             }
+            this.#pendingUpdateCount += coalescedUpdates;
             throw err;
+          }
+
+          try {
+            // Telemetry must not treat a successful write as a failure.
+            this.#recordSplitStateWrite(
+              clone,
+              coalescedUpdates,
+              writeDurationMs,
+            );
+          } catch {
+            // Ignore measurement/reporting failures after a successful write.
           }
 
           const partialState = Object.create(null);
