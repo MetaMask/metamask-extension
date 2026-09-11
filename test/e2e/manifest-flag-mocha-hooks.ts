@@ -60,8 +60,15 @@ process.env.ENABLE_MV3 = getManifestVersion() === 3 ? 'true' : 'false';
 
 // Global beforeEach hook to backup the manifest.json file
 if (typeof beforeEach === 'function' && process.env.SELENIUM_BROWSER) {
-  beforeEach(() => {
+  beforeEach(function () {
     console.debug('manifest-flag-mocha-hooks.ts -- beforeEach hook');
+
+    // Expose the per-test Mocha timeout (including suite-level overrides)
+    // so withFixtures can set an internal deadline just before it.
+    const testTimeout = this.currentTest?.timeout?.() ?? 0;
+    if (testTimeout > 0) {
+      process.env.MOCHA_TIMEOUT = String(testTimeout);
+    }
 
     restoreBackupManifest();
 

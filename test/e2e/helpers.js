@@ -240,7 +240,10 @@ async function withFixtures(options, testSuite) {
     unifiedEvmAccountsApiBalances,
     virtualAuthenticator,
     isBenchmark = false,
+    testTimeout = parseInt(process.env.MOCHA_TIMEOUT, 10) || 0,
   } = options;
+
+  const fixtureStartTime = Date.now();
 
   // Normalize localNodeOptions
   const localNodeOptsNormalized = normalizeLocalNodeOptions(localNodeOptions);
@@ -616,7 +619,9 @@ async function withFixtures(options, testSuite) {
 
     console.log(`\nExecuting testcase: '${title}'\n`);
 
-    await testSuite({
+    // This lets our catch (screenshots) and finally (server cleanup) run before Mocha moves on to the next test.
+    const ARTIFACT_DEADLINE_BUFFER_MS = 5_000;
+    const testPromise = testSuite({
       bundlerServer,
       contractRegistry,
       driver: effectiveDriver,
@@ -633,6 +638,36 @@ async function withFixtures(options, testSuite) {
         },
       }),
     });
+
+    // Silence the orphaned test promise if the deadline wins the race and the
+    // test callback rejects afterwards (prevents unhandled-rejection noise).
+    // eslint-disable-next-line no-empty-function
+    testPromise.catch(() => {});
+
+    const elapsed = Date.now() - fixtureStartTime;
+    const deadlineMs = testTimeout - ARTIFACT_DEADLINE_BUFFER_MS - elapsed;
+    if (deadlineMs > 0 && testTimeout > 0) {
+      let deadlineTimer;
+      const deadlinePromise = new Promise((_, reject) => {
+        deadlineTimer = setTimeout(() => {
+          reject(
+            new Error(
+              `withFixtures internal deadline exceeded after ${deadlineMs}ms ` +
+                `(Mocha timeout: ${testTimeout}ms). Capturing artifacts before Mocha moves on.`,
+            ),
+          );
+        }, deadlineMs);
+      });
+
+      try {
+        await Promise.race([testPromise, deadlinePromise]);
+      } finally {
+        clearTimeout(deadlineTimer);
+      }
+    } else {
+      // --leave-running or very short timeout: no deadline, wait indefinitely
+      await testPromise;
+    }
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
     if (errorsAndExceptions) {
