@@ -45,19 +45,15 @@ const getIsBasicFunctionalityMigrationNotificationDismissed = (state: {
   );
 
 export const getShouldShowBasicFunctionalityMigrationModal = createSelector(
-  getIsBasicFunctionalityToggleEnabled,
   getBasicFunctionalityMigrationNotification,
   getIsBasicFunctionalityMigrationNotificationDismissed,
-  (isToggleEnabled, notification, isDismissed) =>
-    isToggleEnabled && notification === 'modal' && !isDismissed,
+  (notification, isDismissed) => notification === 'modal' && !isDismissed,
 );
 
 export const getShouldShowBasicFunctionalityMigrationToast = createSelector(
-  getIsBasicFunctionalityToggleEnabled,
   getBasicFunctionalityMigrationNotification,
   getIsBasicFunctionalityMigrationNotificationDismissed,
-  (isToggleEnabled, notification, isDismissed) =>
-    isToggleEnabled && notification === 'toast' && !isDismissed,
+  (notification, isDismissed) => notification === 'toast' && !isDismissed,
 );
 
 /**

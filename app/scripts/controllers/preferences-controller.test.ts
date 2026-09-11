@@ -21,6 +21,7 @@ import {
 } from '../../../shared/constants/preferences';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
+import { BFT_CHILD_PREFERENCES } from '../../../shared/lib/basic-functionality-consolidation';
 import type {
   PreferencesControllerMessenger,
   PreferencesControllerState,
@@ -666,6 +667,28 @@ describe('preferences controller', () => {
       expect(
         controller.getPreferences().isBasicFunctionalityConsolidatedEnabled,
       ).toBe(true);
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBe('modal');
+      expect(toggleExternalServices).toHaveBeenCalledWith(true);
+    });
+
+    it('repairs a consolidated social-login wallet with Basic Functionality disabled', () => {
+      const { controller, getSeedlessOnboardingState, toggleExternalServices } =
+        setupController({});
+      controller.toggleExternalServices(false);
+      controller.setPreference('isBasicFunctionalityConsolidatedEnabled', true);
+      getSeedlessOnboardingState.mockReturnValue({
+        authConnection: 'google',
+      });
+
+      controller.consolidateBasicFunctionality();
+
+      expect(controller.state.useExternalServices).toBe(true);
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        expect(controller.state[preference]).toBe(true);
+      }
+      expect(controller.state.isMultiAccountBalancesEnabled).toBe(true);
       expect(
         controller.getPreferences().basicFunctionalityMigrationNotification,
       ).toBe('modal');
