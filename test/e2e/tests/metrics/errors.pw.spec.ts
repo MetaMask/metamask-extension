@@ -1,6 +1,7 @@
 import { resolve } from 'path';
 import { promises as fs } from 'fs';
 import { strict as assert } from 'assert';
+import { test as pwTest } from '@playwright/test';
 import { cloneDeep, get, has, set, unset } from 'lodash';
 import { Browser } from 'selenium-webdriver';
 import prettier from 'prettier';
@@ -10,7 +11,7 @@ import { SENTRY_UI_STATE } from '../../../../app/scripts/constants/sentry-state'
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures, sentryRegEx } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
-import { MOCK_ANALYTICS_ID } from '../../constants';
+import { E2E_DRIVER, MOCK_ANALYTICS_ID } from '../../constants';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
@@ -249,7 +250,14 @@ function getMissingProperties(complete: object, object: object): object {
   return missing;
 }
 
-describe('Sentry errors', function () {
+function skipFirefoxLavaMoat(): void {
+  pwTest.skip(
+    pwTest.info().project.name === 'firefox-e2e',
+    'Playwright page.evaluate is incompatible with LavaMoat scuttling in Firefox',
+  );
+}
+
+pwTest.describe('Sentry errors', () => {
   const migrationError =
     process.env.SELENIUM_BROWSER === Browser.CHROME
       ? `"type":"TypeError","value":"Cannot read properties of undefined (reading 'version')`
@@ -259,18 +267,6 @@ describe('Sentry errors', function () {
       .forPost(sentryRegEx)
       .withBodyIncluding('{"type":"event"')
       .withBodyIncluding(migrationError)
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {},
-        };
-      });
-  }
-
-  async function mockSentryInvariantMigrationError(mockServer: Mockttp) {
-    return await mockServer
-      .forPost(sentryRegEx)
-      .withBodyIncluding('typeof state.PreferencesController is number')
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -291,10 +287,11 @@ describe('Sentry errors', function () {
       });
   }
 
-  describe('before initialization, after opting out of metrics', function () {
-    it('should NOT send error events in the background', async function () {
+  pwTest.describe('before initialization, after opting out of metrics', () => {
+    pwTest('should NOT send error events in the background', async () => {
       await withFixtures(
         {
+          driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: {
             ...new FixtureBuilderV2()
               .withMetaMetricsController({
@@ -306,7 +303,7 @@ describe('Sentry errors', function () {
             // Intentionally corrupt state to trigger migration error during initialization
             meta: undefined,
           },
-          title: this.test?.fullTitle(),
+          title: pwTest.info().titlePath.join(' '),
           testSpecificMock: async (mockServer: MockttpServer) => {
             await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
@@ -366,9 +363,11 @@ describe('Sentry errors', function () {
       );
     });
 
-    it('should NOT send error events in the UI', async function () {
+    pwTest('should NOT send error events in the UI', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
+          driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: null,
@@ -376,7 +375,7 @@ describe('Sentry errors', function () {
               optedIn: false,
             })
             .build(),
-          title: this.test?.fullTitle(),
+          title: pwTest.info().titlePath.join(' '),
           testSpecificMock: async (mockServer: MockttpServer) => {
             await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
@@ -441,10 +440,11 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('before initialization, after opting into metrics', function () {
-    it('should send error events in background', async function () {
+  pwTest.describe('before initialization, after opting into metrics', () => {
+    pwTest('should send error events in background', async () => {
       await withFixtures(
         {
+          driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: {
             ...new FixtureBuilderV2()
               .withMetaMetricsController({
@@ -456,7 +456,7 @@ describe('Sentry errors', function () {
             // Intentionally corrupt state to trigger migration error during initialization
             meta: undefined,
           },
-          title: this.test?.fullTitle(),
+          title: pwTest.info().titlePath.join(' '),
           testSpecificMock: async (mockServer: MockttpServer) => {
             await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
@@ -527,9 +527,10 @@ describe('Sentry errors', function () {
       );
     });
 
-    it('should capture background application state', async function () {
+    pwTest('should capture background application state', async () => {
       await withFixtures(
         {
+          driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: {
             ...new FixtureBuilderV2()
               .withMetaMetricsController({
@@ -541,7 +542,7 @@ describe('Sentry errors', function () {
             // Intentionally corrupt state to trigger migration error during initialization
             meta: undefined,
           },
-          title: this.test?.fullTitle(),
+          title: pwTest.info().titlePath.join(' '),
           testSpecificMock: async (mockServer: MockttpServer) => {
             await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
@@ -627,102 +628,11 @@ describe('Sentry errors', function () {
       );
     });
 
-    // todo: reenable this test https://github.com/MetaMask/metamask-extension/issues/21807
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('should capture migration log breadcrumbs when there is an invariant state error in a migration', async function () {
+    pwTest('should send error events in UI', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
-          fixtures: {
-            ...new FixtureBuilderV2()
-              .withMetaMetricsController({
-                analyticsId: MOCK_ANALYTICS_ID,
-                consentDecisionMade: true,
-                optedIn: true,
-              })
-              .withBadPreferencesControllerState()
-              .build(),
-          },
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockRemoteFeatureFlags(mockServer);
-            await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-              .withQuery({ baseCurrency: 'usd' })
-              .thenCallback(() => {
-                return {
-                  statusCode: 200,
-                  json: {
-                    usd: {
-                      name: 'US Dollar',
-                      ticker: 'usd',
-                      value: 1,
-                      currencyType: 'fiat',
-                    },
-                    eth: {
-                      name: 'Ether',
-                      ticker: 'eth',
-                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
-                      currencyType: 'crypto',
-                    },
-                    mon: {
-                      name: 'Monad',
-                      ticker: 'mon',
-                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
-                      currencyType: 'crypto',
-                    },
-                  },
-                };
-              });
-            return await mockSentryInvariantMigrationError(mockServer);
-          },
-          manifestFlags: {
-            sentry: { forceEnable: false },
-          },
-        },
-        async ({ driver, mockedEndpoint }) => {
-          await driver.navigate();
-
-          // Wait for Sentry request
-          await driver.wait(async () => {
-            const isPending = await mockedEndpoint.isPending();
-            return isPending === false;
-          }, WAIT_FOR_SENTRY_MS);
-
-          const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
-          const mockJsonBody = JSON.parse(mockTextBody[2]);
-          const breadcrumbs = mockJsonBody?.breadcrumbs ?? [];
-          const migrationLogBreadcrumbs = breadcrumbs.filter(
-            (breadcrumb: { message?: string }) => {
-              return breadcrumb.message?.match(/Running migration \d+/u);
-            },
-          );
-          const migrationLogMessages = migrationLogBreadcrumbs.map(
-            (breadcrumb: { message?: string }) =>
-              breadcrumb.message?.match(/(Running migration \d+)/u)?.[1] ?? '',
-          );
-
-          const firstMigrationLog = migrationLogMessages[0];
-          const lastMigrationLog =
-            migrationLogMessages[migrationLogMessages.length - 1];
-
-          assert.equal(migrationLogMessages.length, 8);
-          assert.equal(firstMigrationLog, 'Running migration 75');
-          assert.equal(lastMigrationLog, 'Running migration 82');
-        },
-      );
-    });
-
-    it('should send error events in UI', async function () {
-      await withFixtures(
-        {
+          driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: MOCK_ANALYTICS_ID,
@@ -730,7 +640,7 @@ describe('Sentry errors', function () {
               optedIn: true,
             })
             .build(),
-          title: this.test?.fullTitle(),
+          title: pwTest.info().titlePath.join(' '),
           testSpecificMock: async (mockServer: MockttpServer) => {
             await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
@@ -804,9 +714,11 @@ describe('Sentry errors', function () {
       );
     });
 
-    it('should capture UI application state', async function () {
+    pwTest('should capture UI application state', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
+          driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: MOCK_ANALYTICS_ID,
@@ -814,7 +726,7 @@ describe('Sentry errors', function () {
               optedIn: true,
             })
             .build(),
-          title: this.test?.fullTitle(),
+          title: pwTest.info().titlePath.join(' '),
           testSpecificMock: async (mockServer: MockttpServer) => {
             await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
@@ -910,10 +822,12 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('after initialization, after opting out of metrics', function () {
-    it('should NOT send error events in the background', async function () {
+  pwTest.describe('after initialization, after opting out of metrics', () => {
+    pwTest('should NOT send error events in the background', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
+          driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: null,
@@ -921,7 +835,7 @@ describe('Sentry errors', function () {
               optedIn: false,
             })
             .build(),
-          title: this.test?.fullTitle(),
+          title: pwTest.info().titlePath.join(' '),
           testSpecificMock: async (mockServer: MockttpServer) => {
             await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
@@ -985,9 +899,11 @@ describe('Sentry errors', function () {
       );
     });
 
-    it('should NOT send error events in the UI', async function () {
+    pwTest('should NOT send error events in the UI', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
+          driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: null,
@@ -995,7 +911,7 @@ describe('Sentry errors', function () {
               optedIn: false,
             })
             .build(),
-          title: this.test?.fullTitle(),
+          title: pwTest.info().titlePath.join(' '),
           testSpecificMock: async (mockServer: MockttpServer) => {
             await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
@@ -1058,10 +974,12 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('after initialization, after opting into metrics', function () {
-    it('should send error events in background', async function () {
+  pwTest.describe('after initialization, after opting into metrics', () => {
+    pwTest('should send error events in background', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
+          driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: MOCK_ANALYTICS_ID,
@@ -1069,7 +987,7 @@ describe('Sentry errors', function () {
               optedIn: true,
             })
             .build(),
-          title: this.test?.fullTitle(),
+          title: pwTest.info().titlePath.join(' '),
           testSpecificMock: async (mockServer: MockttpServer) => {
             await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
@@ -1148,9 +1066,11 @@ describe('Sentry errors', function () {
       );
     });
 
-    it('should capture background application state', async function () {
+    pwTest('should capture background application state', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
+          driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: MOCK_ANALYTICS_ID,
@@ -1158,7 +1078,7 @@ describe('Sentry errors', function () {
               optedIn: true,
             })
             .build(),
-          title: this.test?.fullTitle(),
+          title: pwTest.info().titlePath.join(' '),
           testSpecificMock: async (mockServer: MockttpServer) => {
             await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
@@ -1250,9 +1170,11 @@ describe('Sentry errors', function () {
       );
     });
 
-    it('should send error events in UI', async function () {
+    pwTest('should send error events in UI', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
+          driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: MOCK_ANALYTICS_ID,
@@ -1260,7 +1182,7 @@ describe('Sentry errors', function () {
               optedIn: true,
             })
             .build(),
-          title: this.test?.fullTitle(),
+          title: pwTest.info().titlePath.join(' '),
           testSpecificMock: async (mockServer: MockttpServer) => {
             await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
@@ -1334,9 +1256,11 @@ describe('Sentry errors', function () {
       );
     });
 
-    it('should capture UI application state', async function () {
+    pwTest('should capture UI application state', async () => {
+      skipFirefoxLavaMoat();
       await withFixtures(
         {
+          driverType: E2E_DRIVER.PLAYWRIGHT,
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               analyticsId: MOCK_ANALYTICS_ID,
@@ -1344,7 +1268,7 @@ describe('Sentry errors', function () {
               optedIn: true,
             })
             .build(),
-          title: this.test?.fullTitle(),
+          title: pwTest.info().titlePath.join(' '),
           testSpecificMock: async (mockServer: MockttpServer) => {
             await mockRemoteFeatureFlags(mockServer);
             await mockSpotPrices(mockServer, {
@@ -1437,7 +1361,8 @@ describe('Sentry errors', function () {
     });
   });
 
-  it('should not have extra properties in UI state mask', async function () {
+  pwTest('should not have extra properties in UI state mask', async () => {
+    skipFirefoxLavaMoat();
     const expectedMissingState = {
       // This can get wiped out during initialization due to a bug in
       // the "resetState" method
@@ -1498,8 +1423,9 @@ describe('Sentry errors', function () {
     };
     await withFixtures(
       {
+        driverType: E2E_DRIVER.PLAYWRIGHT,
         fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
+        title: pwTest.info().titlePath.join(' '),
         manifestFlags: {
           sentry: { forceEnable: false },
         },

@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { test as pwTest } from '@playwright/test';
 import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
@@ -9,7 +10,7 @@ import {
   handleSidepanelPostOnboarding,
   type OnboardingMetricsFlowOptions,
 } from '../../page-objects/flows/onboarding.flow';
-import { MOCK_ANALYTICS_ID } from '../../constants';
+import { E2E_DRIVER, MOCK_ANALYTICS_ID } from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import { Driver } from '../../webdriver/driver';
@@ -31,16 +32,6 @@ async function mockSegment(mockServer: Mockttp) {
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
         batch: [{ type: 'track', event: 'Wallet Creation Attempted' }],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'SRP Backup Selected' }],
       })
       .thenCallback(() => {
         return {
@@ -101,137 +92,146 @@ async function mockSegment(mockServer: Mockttp) {
   ];
 }
 
-describe('Wallet Created Events', function () {
-  it('are sent when onboarding user who chooses to opt in metrics', async function () {
+pwTest.describe('Wallet Created Events', () => {
+  pwTest(
+    'are sent when onboarding user who chooses to opt in metrics',
+    async () => {
+      await withFixtures(
+        {
+          driverType: E2E_DRIVER.PLAYWRIGHT,
+          fixtures: new FixtureBuilderV2({ onboarding: true })
+            .withMetaMetricsController({
+              analyticsId: MOCK_ANALYTICS_ID,
+            })
+            .build(),
+          title: pwTest.info().titlePath.join(' '),
+          testSpecificMock: mockSegment,
+        },
+        async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+          await completeCreateNewWalletOnboardingFlow({
+            driver,
+            consentDecisionMade: true,
+            optedIn: true,
+          });
+          const events = await getEventPayloads(driver, mockedEndpoints);
+          assert.equal(events.length, 6);
+
+          if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+            assert.equal(events[0].event, 'Wallet Creation Attempted');
+            assert.deepStrictEqual(events[0].properties, {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              account_type: 'metamask',
+              category: 'Onboarding',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: '0x1',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'fullscreen',
+              locale: 'en',
+            });
+            assert.equal(events[1].event, 'SRP Revealed');
+            assert.deepStrictEqual(events[1].properties, {
+              category: 'Onboarding',
+              locale: 'en',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: '0x1',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'fullscreen',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              hd_entropy_index: 0,
+            });
+            assert.equal(events[2].event, 'SRP Backup Confirm Display');
+            assert.ok(
+              events[2].properties.category === 'Onboarding' &&
+                events[2].properties.chain_id === '0x1' &&
+                events[2].properties.environment_type === 'fullscreen' &&
+                events[2].properties.locale === 'en' &&
+                (events[2].properties.hd_entropy_index === 0 ||
+                  events[2].properties.hd_entropy_index === undefined),
+            );
+            assert.equal(events[3].event, 'SRP Backup Confirmed');
+            assert.ok(
+              events[3].properties.category === 'Onboarding' &&
+                events[3].properties.chain_id === '0x1' &&
+                events[3].properties.environment_type === 'fullscreen' &&
+                events[3].properties.locale === 'en' &&
+                (events[3].properties.hd_entropy_index === 0 ||
+                  events[3].properties.hd_entropy_index === undefined),
+            );
+            assert.equal(events[4].event, 'Wallet Created');
+            assert.ok(
+              events[4].properties.category === 'Onboarding' &&
+                events[4].properties.chain_id === '0x1' &&
+                events[4].properties.environment_type === 'fullscreen' &&
+                events[4].properties.locale === 'en' &&
+                events[4].properties.biometrics_enabled === false,
+            );
+            assert.equal(events[5].event, 'Wallet Setup Completed');
+            assert.deepStrictEqual(events[5].properties, {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              account_type: 'metamask',
+              category: 'Onboarding',
+              locale: 'en',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: '0x1',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: 'fullscreen',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              wallet_setup_type: 'new',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              new_wallet: true,
+            });
+          }
+        },
+      );
+    },
+  );
+
+  pwTest(
+    'are not sent when onboarding user who chooses to opt out metrics',
+    async () => {
+      await withFixtures(
+        {
+          driverType: E2E_DRIVER.PLAYWRIGHT,
+          fixtures: new FixtureBuilderV2({ onboarding: true })
+            .withMetaMetricsController({
+              analyticsId: MOCK_ANALYTICS_ID,
+            })
+            .build(),
+          title: pwTest.info().titlePath.join(' '),
+          testSpecificMock: mockSegment,
+        },
+        async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+          await completeCreateNewWalletOnboardingFlow({
+            driver,
+          });
+          const mockedRequests = await getEventPayloads(
+            driver,
+            mockedEndpoints,
+            false,
+          );
+          assert.equal(mockedRequests.length, 0);
+        },
+      );
+    },
+  );
+
+  pwTest('are sent when user onboarding with social login', async () => {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
-            analyticsId: MOCK_ANALYTICS_ID,
-          })
-          .build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
-      },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await completeCreateNewWalletOnboardingFlow({
-          driver,
-          consentDecisionMade: true,
-          optedIn: true,
-        });
-        const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 6);
-
-        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-          assert.equal(events[0].event, 'Wallet Creation Attempted');
-          assert.deepStrictEqual(events[0].properties, {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: 'metamask',
-            category: 'Onboarding',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: '0x1',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            environment_type: 'fullscreen',
-            locale: 'en',
-          });
-          assert.equal(events[1].event, 'SRP Revealed');
-          assert.deepStrictEqual(events[1].properties, {
-            category: 'Onboarding',
-            locale: 'en',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: '0x1',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            environment_type: 'fullscreen',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            hd_entropy_index: 0,
-          });
-          assert.equal(events[2].event, 'SRP Backup Confirm Display');
-          assert.ok(
-            events[2].properties.category === 'Onboarding' &&
-              events[2].properties.chain_id === '0x1' &&
-              events[2].properties.environment_type === 'fullscreen' &&
-              events[2].properties.locale === 'en' &&
-              (events[2].properties.hd_entropy_index === 0 ||
-                events[2].properties.hd_entropy_index === undefined),
-          );
-          assert.equal(events[3].event, 'SRP Backup Confirmed');
-          assert.ok(
-            events[3].properties.category === 'Onboarding' &&
-              events[3].properties.chain_id === '0x1' &&
-              events[3].properties.environment_type === 'fullscreen' &&
-              events[3].properties.locale === 'en' &&
-              (events[3].properties.hd_entropy_index === 0 ||
-                events[3].properties.hd_entropy_index === undefined),
-          );
-          assert.equal(events[4].event, 'Wallet Created');
-          assert.ok(
-            events[4].properties.category === 'Onboarding' &&
-              events[4].properties.chain_id === '0x1' &&
-              events[4].properties.environment_type === 'fullscreen' &&
-              events[4].properties.locale === 'en' &&
-              events[4].properties.biometrics_enabled === false,
-          );
-          assert.equal(events[5].event, 'Wallet Setup Completed');
-          assert.deepStrictEqual(events[5].properties, {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: 'metamask',
-            category: 'Onboarding',
-            locale: 'en',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: '0x1',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            environment_type: 'fullscreen',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            wallet_setup_type: 'new',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            new_wallet: true,
-          });
-        }
-      },
-    );
-  });
-
-  it('are not sent when onboarding user who chooses to opt out metrics', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
-            analyticsId: MOCK_ANALYTICS_ID,
-          })
-          .build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
-      },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await completeCreateNewWalletOnboardingFlow({
-          driver,
-        });
-        const mockedRequests = await getEventPayloads(
-          driver,
-          mockedEndpoints,
-          false,
-        );
-        assert.equal(mockedRequests.length, 0);
-      },
-    );
-  });
-
-  it('are sent when user onboarding with social login', async function () {
-    await withFixtures(
-      {
+        driverType: E2E_DRIVER.PLAYWRIGHT,
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
+        title: pwTest.info().titlePath.join(' '),
         testSpecificMock: async (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
           const oAuthMockttpService = new OAuthMockttpService();

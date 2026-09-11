@@ -1,4 +1,6 @@
+import { test as pwTest } from '@playwright/test';
 import { MockttpServer } from 'mockttp';
+import { E2E_DRIVER } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import {
@@ -22,17 +24,18 @@ async function mockSentrySession(mockServer: MockttpServer) {
   ];
 }
 
-describe('Sessions', function () {
-  it('sends session in UI if metrics enabled', async function () {
+pwTest.describe('Sessions', () => {
+  pwTest('sends session in UI if metrics enabled', async () => {
     await withFixtures(
       {
+        driverType: E2E_DRIVER.PLAYWRIGHT,
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
-        title: this.test?.fullTitle(),
+        title: pwTest.info().titlePath.join(' '),
         testSpecificMock: mockSentrySession,
         manifestFlags: {
           sentry: { forceEnable: false },
@@ -45,16 +48,17 @@ describe('Sessions', function () {
     );
   });
 
-  it('does not send session in UI if metrics disabled', async function () {
+  pwTest('does not send session in UI if metrics disabled', async () => {
     await withFixtures(
       {
+        driverType: E2E_DRIVER.PLAYWRIGHT,
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             consentDecisionMade: true,
             optedIn: false,
           })
           .build(),
-        title: this.test?.fullTitle(),
+        title: pwTest.info().titlePath.join(' '),
         testSpecificMock: mockSentrySession,
         manifestFlags: {
           sentry: { forceEnable: false },
