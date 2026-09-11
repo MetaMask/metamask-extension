@@ -683,8 +683,16 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
       state.metamask?.assetsInfo ?? {},
     (state: { metamask: AssetsControllerState }) =>
       state.metamask?.assetsPrice ?? {},
+    (state: { metamask: NetworkState }) =>
+      state.metamask?.networkConfigurationsByChainId ?? {},
   ],
-  (isAssetsUnifyStateEnabled, currencyRates, assetsInfo, assetsPrice) => {
+  (
+    isAssetsUnifyStateEnabled,
+    currencyRates,
+    assetsInfo,
+    assetsPrice,
+    networkConfigurationsByChainId,
+  ) => {
     if (!isAssetsUnifyStateEnabled) {
       return currencyRates;
     }
@@ -720,6 +728,26 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
         conversionDate: price.lastUpdated / 1000,
         conversionRate: price.price,
         usdConversionRate: price.usdPrice,
+      };
+    }
+
+    const hasUsdNativeCurrency = Object.values(
+      networkConfigurationsByChainId,
+    ).some(({ nativeCurrency }) => nativeCurrency === 'USD');
+    const usdPrice = Object.values(assetsPrice).find(
+      (price): price is FungibleAssetPrice =>
+        price.assetPriceType === 'fungible' &&
+        Number.isFinite(price.price) &&
+        price.price > 0 &&
+        Number.isFinite(price.usdPrice) &&
+        price.usdPrice > 0,
+    );
+
+    if (hasUsdNativeCurrency && !result.USD && usdPrice) {
+      result.USD = {
+        conversionDate: usdPrice.lastUpdated / 1000,
+        conversionRate: usdPrice.price / usdPrice.usdPrice,
+        usdConversionRate: 1,
       };
     }
 
