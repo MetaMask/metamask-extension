@@ -2218,9 +2218,6 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "TokenRatesController": {
-      "marketData": {}
-    },
     "TokensController": {
       "allDetectedTokens": {},
       "allIgnoredTokens": {},
