@@ -346,6 +346,69 @@ describe('Bridge asset selectors', () => {
       });
     });
 
+    it('falls back to allTokens when tokensChainsCache is absent from state', () => {
+      const FALLBACK_TOKEN_ADDRESS =
+        '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            refreshRate: 30000,
+            priceImpactThreshold: { normal: 1, gasless: 2 },
+            maxRefreshCount: 5,
+            support: true,
+            chains: {
+              [CHAIN_IDS.MAINNET]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) }],
+          },
+        },
+        metamaskStateOverrides: {
+          allTokens: {
+            [CHAIN_IDS.MAINNET]: {
+              [MOCK_EVM_ACCOUNT.address]: [
+                {
+                  address: FALLBACK_TOKEN_ADDRESS,
+                  decimals: 18,
+                  symbol: 'FALL',
+                  name: 'Fallback Token',
+                  image: 'https://example.com/fall.png',
+                },
+              ],
+            },
+          },
+          tokenBalances: {
+            [MOCK_EVM_ACCOUNT.address]: {
+              [CHAIN_IDS.MAINNET]: {
+                [FALLBACK_TOKEN_ADDRESS]: '0xDE0B6B3A7640000', // 1e18 → "1"
+              },
+            },
+          },
+        },
+      });
+
+      // `TokenListController` is no longer initialized, so state has no cache.
+      Reflect.deleteProperty(state.metamask, 'tokensChainsCache');
+
+      const [accountGroup] = getAccountGroupsByAddress(state, [
+        MOCK_EVM_ACCOUNT.address,
+      ]);
+      const assetsWithBalance = getBridgeSortedAssets(state, accountGroup.id);
+
+      expect(
+        assetsWithBalance.find((asset) =>
+          asset.assetId.toLowerCase().includes(FALLBACK_TOKEN_ADDRESS),
+        ),
+      ).toMatchObject({
+        symbol: 'FALL',
+        name: 'Fallback Token',
+        decimals: 18,
+        balance: '1',
+      });
+    });
+
     it('returns empty results when accountGroupId is undefined', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
