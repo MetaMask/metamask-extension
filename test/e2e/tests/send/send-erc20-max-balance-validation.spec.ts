@@ -4,7 +4,6 @@
  * Regression test for ASSETS-3385 ("Max Send balance not updating").
  */
 
-import { merge } from 'lodash';
 import { toHex } from '@metamask/controller-utils';
 import type { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
@@ -155,18 +154,6 @@ describe('Send ERC20 - Max Balance Validation', function () {
         },
       })
       .build();
-
-    merge(fixture.data, {
-      AccountTrackerController: {
-        accountsByChainId: {
-          [CHAIN_ID_HEX]: {
-            [account]: {
-              balance: '0x15af1d78b58c400000', // 25 ETH
-            },
-          },
-        },
-      },
-    });
 
     await withFixtures(
       {

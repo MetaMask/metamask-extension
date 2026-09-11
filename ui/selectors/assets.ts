@@ -158,7 +158,7 @@ export type BalanceCalculationState = {
       MultichainAssetsControllerState,
       'accountsAssets' | 'assetsMetadata' | 'allIgnoredAssets'
     > &
-    AccountTrackerControllerState &
+    Pick<AccountTrackerControllerState, 'accountsByChainId'> &
     NetworkEnablementControllerState &
     RemoteFeatureFlagControllerState &
     AssetsControllerState &

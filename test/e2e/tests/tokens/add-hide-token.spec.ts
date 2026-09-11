@@ -1,5 +1,4 @@
 import { toHex } from '@metamask/controller-utils';
-import { merge } from 'lodash';
 import type { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
@@ -140,17 +139,6 @@ describe('Add hide token', function () {
         },
       })
       .build();
-    merge(fixture.data, {
-      AccountTrackerController: {
-        accountsByChainId: {
-          [chainIdHex]: {
-            [account]: {
-              balance: '0x15af1d78b58c400000', // 25 ETH
-            },
-          },
-        },
-      },
-    });
     await withFixtures(
       {
         fixtures: fixture,

@@ -44,7 +44,6 @@ type ControllerMessengerCallback = (
 ) => BaseRestrictedControllerMessenger;
 
 export type MessengerClientsToInitialize =
-  | 'AccountTrackerController'
   | 'AuthenticationController'
   | 'ClientController'
   | 'CronjobController'
