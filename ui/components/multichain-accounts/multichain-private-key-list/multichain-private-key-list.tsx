@@ -60,7 +60,6 @@ import {
   TraceName,
   TraceOperation,
 } from '../../../../shared/lib/trace';
-import { MINUTE } from '../../../../shared/constants/time';
 import { MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { PasskeyVerification } from '../../app/passkey-verification';
 import { useDispatch } from '../../../store/hooks';
@@ -132,7 +131,7 @@ const MultichainPrivateKeyList = ({
   );
 
   // useCopyToClipboard analysis: Copies one of your private keys
-  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: MINUTE });
+  const [, handleCopy] = useCopyToClipboard();
 
   const accountsSpreadByNetworkByGroupId = useSelector((state) =>
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),

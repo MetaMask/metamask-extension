@@ -252,9 +252,7 @@ export default function NameDetails({
   );
 
   // useCopyToClipboard analysis: Copies the public address of the name
-  const [copiedAddress, handleCopyAddress] = useCopyToClipboard({
-    clearDelayMs: null,
-  });
+  const [copiedAddress, handleCopyAddress] = useCopyToClipboard();
 
   useEffect(() => {
     setName(savedPetname ?? '');

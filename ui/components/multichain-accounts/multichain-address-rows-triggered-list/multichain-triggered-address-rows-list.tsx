@@ -136,7 +136,7 @@ export const MultichainTriggeredAddressRowsList = ({
   const t = useI18nContext();
 
   // useCopyToClipboard analysis: Copies one of your public addresses
-  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [, handleCopy] = useCopyToClipboard();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);

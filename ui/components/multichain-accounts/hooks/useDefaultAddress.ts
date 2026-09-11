@@ -36,9 +36,7 @@ export const useDefaultAddress = (
   const displayDefaultAddress =
     isDefaultAddressEnabled && showDefaultAddressPreference && defaultAddress;
 
-  const [addressCopied, handleCopy] = useCopyToClipboard({
-    clearDelayMs: null,
-  });
+  const [addressCopied, handleCopy] = useCopyToClipboard();
 
   const handleDefaultAddressClick = useCallback(() => {
     if (defaultAddress) {

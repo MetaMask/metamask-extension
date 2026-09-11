@@ -14,11 +14,8 @@ describe('useCopyToClipboard', () => {
     jest.useRealTimers();
   });
 
-  it('copies text and expires if clearDelay = 1000', () => {
-    const clearDelay = 1000;
-    const { result } = renderHook(() =>
-      useCopyToClipboard({ clearDelayMs: clearDelay }),
-    );
+  it('copies text and resets copy feedback after the default delay', () => {
+    const { result } = renderHook(() => useCopyToClipboard());
     const [, handleCopy] = result.current;
 
     // Act/Assert - Copy
@@ -26,39 +23,33 @@ describe('useCopyToClipboard', () => {
     expect(mockCopyToClipboard).toHaveBeenNthCalledWith(1, 'test');
     expect(result.current[0]).toBe(true);
 
-    // Act/Assert - Expiry (clipboard is cleared)
-    act(() => {
-      jest.advanceTimersByTime(clearDelay + 1);
-    });
-    expect(mockCopyToClipboard).toHaveBeenCalledTimes(2);
-    expect(mockCopyToClipboard).toHaveBeenNthCalledWith(2, ' ');
-    expect(result.current[0]).toBe(false);
-  });
-
-  it('copies text and does not expire if clearDelayMs is null', () => {
-    const { result } = renderHook(() =>
-      useCopyToClipboard({ clearDelayMs: null }),
-    );
-    const [, handleCopy] = result.current;
-
-    // Act/Assert - Copy
-    act(() => handleCopy('test'));
-    expect(mockCopyToClipboard).toHaveBeenNthCalledWith(1, 'test');
-    expect(result.current[0]).toBe(true);
-
-    // Act/Assert - Expiry (clipboard is not cleared)
+    // Act/Assert - Expiry only resets the UI state.
     act(() => {
       jest.advanceTimersByTime(DEFAULT_UI_DELAY + 1);
     });
-    expect(mockCopyToClipboard).toHaveBeenCalledTimes(1); // it was not called a second time
+    expect(mockCopyToClipboard).toHaveBeenCalledTimes(1);
+    expect(result.current[0]).toBe(false);
+  });
+
+  it('does not write to the clipboard again after copy feedback resets', () => {
+    const { result } = renderHook(() => useCopyToClipboard());
+    const [, handleCopy] = result.current;
+
+    // Act/Assert - Copy
+    act(() => handleCopy('test'));
+    expect(mockCopyToClipboard).toHaveBeenNthCalledWith(1, 'test');
+    expect(result.current[0]).toBe(true);
+
+    // Act/Assert - Expiry
+    act(() => {
+      jest.advanceTimersByTime(DEFAULT_UI_DELAY + 1);
+    });
+    expect(mockCopyToClipboard).toHaveBeenCalledTimes(1);
     expect(result.current[0]).toBe(false);
   });
 
   it('resets copied state when invoked', () => {
-    const clearDelay = 1000;
-    const { result } = renderHook(() =>
-      useCopyToClipboard({ clearDelayMs: clearDelay }),
-    );
+    const { result } = renderHook(() => useCopyToClipboard());
     const [, handleCopy, resetCopyState] = result.current;
 
     // Act/Assert - Copy
@@ -72,7 +63,7 @@ describe('useCopyToClipboard', () => {
 
     // Act/Assert - No Expiry (as the copy state was reset)
     act(() => {
-      jest.advanceTimersByTime(clearDelay + 1);
+      jest.advanceTimersByTime(DEFAULT_UI_DELAY + 1);
     });
     expect(mockCopyToClipboard).toHaveBeenCalledTimes(1); // it was not called a second time
     expect(result.current[0]).toBe(false);

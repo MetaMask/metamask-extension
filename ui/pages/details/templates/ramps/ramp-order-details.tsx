@@ -40,7 +40,7 @@ export function RampOrderDetails({
 }) {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
-  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [, handleCopy] = useCopyToClipboard();
   const { goToBuy } = useRampsNavigation();
   const { getOrderById } = useRampsOrders();
 

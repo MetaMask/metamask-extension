@@ -193,9 +193,7 @@ const MessageBody = forwardRef(
     const [hasDecrypted, setHasDecrypted] = useState(false);
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [hasCopied, copyToClipboard] = useCopyToClipboard({
-      clearDelayMs: null,
-    });
+    const [hasCopied, copyToClipboard] = useCopyToClipboard();
 
     const copyMessage = () => {
       copyToClipboard(rawMessage);
