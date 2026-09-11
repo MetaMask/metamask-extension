@@ -24,9 +24,8 @@ const ImportControl = forwardRef<HTMLButtonElement, ImportControlProps>(
     return (
       <ButtonIcon
         ref={ref}
-        className="asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed"
         data-testid="asset-list-control-bar-action-button"
-        disabled={!shouldShowTokensLinks}
+        isDisabled={!shouldShowTokensLinks}
         size={ButtonIconSize.Sm}
         iconName={IconName.MoreVertical}
         ariaLabel={t('assetOptions')}
