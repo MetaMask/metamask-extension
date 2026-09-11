@@ -194,6 +194,7 @@ function subscribeToArcTransactionConfirmedRefresh(
         return;
       }
 
+      // TODO: should be moved to the controller (comment on PR#46259)
       const matchedAccount = controllerMessenger
         .call('AccountTreeController:getAccountsFromSelectedAccountGroup')
         .find(
