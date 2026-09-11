@@ -20,7 +20,6 @@ import {
   CurrencyRateController,
   DeFiPositionsController,
   DeFiPositionsControllerV2,
-  MultichainAssetsController,
   NftController,
   NftDetectionController,
   RatesController,
@@ -186,7 +185,6 @@ export type MessengerClient =
   | MoneyAccountBalanceService
   | MoneyAccountController
   | MoneyAccountUpgradeController
-  | MultichainAssetsController
   | MultichainTransactionsController
   | MultichainNetworkController
   | MultichainRoutingService
@@ -296,7 +294,6 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   LoggingController['state'] &
   MetaMetricsController['state'] &
   MetaMetricsDataDeletionController['state'] &
-  MultichainAssetsController['state'] &
   MultichainTransactionsController['state'] &
   MultichainNetworkController['state'] &
   NameController['state'] &
