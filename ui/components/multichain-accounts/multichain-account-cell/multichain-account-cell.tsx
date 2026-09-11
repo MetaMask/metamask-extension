@@ -211,7 +211,7 @@ export const MultichainAccountCell = ({
   accountName,
   accountNameString,
   onClick,
-  balance='1234567',
+  balance,
   balancePosition = 'end',
   startAccessory,
   endAccessory,
@@ -369,11 +369,7 @@ export const MultichainAccountCell = ({
         style={{ flexShrink: 0 }}
       >
         {balancePosition === 'end' && (
-          <BalanceDisplay
-            balance={balance}
-            isHidden={privacyMode}
-            endSpacing={isEditMode ? undefined : 8}
-          />
+          <BalanceDisplay balance={balance} isHidden={privacyMode} />
         )}
         {showDeleteIcon ? (
           <EditModeDeleteIcon
