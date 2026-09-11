@@ -1295,33 +1295,100 @@ describe('PerpsStreamManager', () => {
         expect.anything(),
       );
     });
+  });
 
-    it('notifies subscribers with null when REST fallback fails without cache', async () => {
-      const consoleErrorSpy = jest
+  describe('account fetch failure', () => {
+    /**
+     * Rejects `perpsGetAccountState` the way a total HyperLiquid outage does —
+     * the TAT-3832 report's `Failed to fetch account state
+     * (failedDexs=[main,xyz], spotError=WebSocket connection permanently
+     * terminated)`.
+     *
+     * @param error - The rejection surfaced to the account channel.
+     */
+    function rejectAccountStateWith(error: Error) {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsGetAccountState') {
+          return Promise.reject(error);
+        }
+        return Promise.resolve(undefined);
+      });
+    }
+
+    let consoleErrorSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      consoleErrorSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
+    });
 
-      try {
-        mockSubmitRequestToBackground.mockImplementation((method: string) => {
-          if (method === 'perpsGetAccountState') {
-            return Promise.reject(new Error('network'));
-          }
-          return Promise.resolve(undefined);
-        });
+    afterEach(() => {
+      consoleErrorSpy.mockRestore();
+    });
 
-        const onData = jest.fn();
-        manager.account.subscribe(onData);
+    it('does not notify subscribers when the REST fallback fails without cache', async () => {
+      rejectAccountStateWith(
+        new Error(
+          'Failed to fetch account state (failedDexs=[main,xyz], spotError=WebSocket connection permanently terminated)',
+        ),
+      );
 
-        await jest.advanceTimersByTimeAsync(3_000);
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
 
-        expect(onData).toHaveBeenCalledWith(null);
-        expect(consoleErrorSpy).toHaveBeenCalledWith(
-          '[PerpsStreamManager] Failed to fetch account',
-          expect.any(Error),
-        );
-      } finally {
-        consoleErrorSpy.mockRestore();
-      }
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      // A failed fetch is not data. Notifying here is what let the balance
+      // header leave its loading state and render a funded account as $0.00.
+      expect(onData).not.toHaveBeenCalled();
+      expect(manager.account.hasCachedData()).toBe(false);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[PerpsStreamManager] Failed to fetch account',
+        expect.any(Error),
+      );
+    });
+
+    // Pre-existing-behaviour guard, not proof of this fix: the old code's
+    // `!hasCachedData()` check already suppressed the push once a cache
+    // existed, so this passes with or without the fix. Kept to pin the
+    // behaviour that a later failure must never clobber a good balance.
+    it('keeps previously cached account data when a later REST fallback fails', async () => {
+      const cachedAccount = { totalBalance: '632.69' };
+      manager.handleBackgroundUpdate({
+        channel: 'account',
+        data: cachedAccount,
+      });
+
+      rejectAccountStateWith(new Error('network'));
+
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(manager.account.getCachedData()).toBe(cachedAccount);
+      expect(onData).not.toHaveBeenCalledWith(null);
+    });
+
+    it('still delivers account data pushed after an account fetch failure', async () => {
+      rejectAccountStateWith(new Error('network'));
+
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(onData).not.toHaveBeenCalled();
+
+      const recoveredAccount = { totalBalance: '632.69' };
+      manager.handleBackgroundUpdate({
+        channel: 'account',
+        data: recoveredAccount,
+      });
+
+      expect(onData).toHaveBeenCalledWith(recoveredAccount);
+      expect(manager.account.hasCachedData()).toBe(true);
     });
   });
 
