@@ -598,11 +598,14 @@ export class PreferencesController extends BaseController<
   /**
    * One-time Basic Functionality consolidation when the remote FF turns on.
    * Aligns child preferences, marks the user as consolidated, and schedules
-   * the modal/toast notice when needed, then syncs external-service
-   * controllers.
+   * the modal/toast notice when needed, then syncs external-service controllers.
+   * Also repairs previously consolidated social-login wallets that still have
+   * Basic Functionality disabled.
    */
   consolidateBasicFunctionality(): void {
-    if (this.state.preferences.isBasicFunctionalityConsolidatedEnabled) {
+    const hasBftConsolidationMarker =
+      this.state.preferences.isBasicFunctionalityConsolidatedEnabled;
+    if (hasBftConsolidationMarker && this.state.useExternalServices) {
       return;
     }
 
@@ -616,6 +619,9 @@ export class PreferencesController extends BaseController<
       firstTimeFlowType: firstTimeFlowType ?? undefined,
       authConnection,
     });
+    if (hasBftConsolidationMarker && !isSocialLogin) {
+      return;
+    }
 
     const preferenceState = {
       useExternalServices: this.state.useExternalServices,

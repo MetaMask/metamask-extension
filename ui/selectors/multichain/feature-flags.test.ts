@@ -6,6 +6,8 @@ import {
   getIsNetworkManagementEnabled,
   getIsSecurityTrustTdpEnabled,
   getIsTokenManagementFilterEnabled,
+  getShouldShowBasicFunctionalityMigrationModal,
+  getShouldShowBasicFunctionalityMigrationToast,
 } from './feature-flags';
 
 const buildState = (
@@ -266,6 +268,50 @@ describe('getIsBasicFunctionalityToggleEnabled', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getIsBasicFunctionalityToggleEnabled(buildState() as any),
     ).toBe(false);
+  });
+});
+
+describe('Basic Functionality migration notification selectors', () => {
+  it('shows a scheduled modal when the remote flag is disabled', () => {
+    const state = {
+      metamask: {
+        remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
+        preferences: {
+          basicFunctionalityMigrationNotification: 'modal' as const,
+          basicFunctionalityMigrationNotificationDismissed: false,
+        },
+      },
+    };
+
+    expect(getShouldShowBasicFunctionalityMigrationModal(state)).toBe(true);
+  });
+
+  it('shows a scheduled toast when the remote flag is disabled', () => {
+    const state = {
+      metamask: {
+        remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
+        preferences: {
+          basicFunctionalityMigrationNotification: 'toast' as const,
+          basicFunctionalityMigrationNotificationDismissed: false,
+        },
+      },
+    };
+
+    expect(getShouldShowBasicFunctionalityMigrationToast(state)).toBe(true);
+  });
+
+  it('hides a dismissed notification', () => {
+    const state = {
+      metamask: {
+        remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
+        preferences: {
+          basicFunctionalityMigrationNotification: 'toast' as const,
+          basicFunctionalityMigrationNotificationDismissed: true,
+        },
+      },
+    };
+
+    expect(getShouldShowBasicFunctionalityMigrationToast(state)).toBe(false);
   });
 });
 
