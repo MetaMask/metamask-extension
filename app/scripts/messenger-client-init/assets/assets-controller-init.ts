@@ -17,6 +17,7 @@ import { type MessengerClientInitFunction } from '../types';
 import { type AssetsControllerInitMessenger } from '../messengers/assets/assets-controller-messenger';
 import type { OnboardingControllerState } from '../../controllers/onboarding';
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
+import { getBackendApiUrlsOption } from '../../../../shared/lib/core-backend-api-urls';
 import {
   ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,
@@ -161,6 +162,7 @@ function getApiClient(
       clientProduct: 'metamask-extension',
       clientVersion: process.env.METAMASK_VERSION,
       getBearerToken: () => safeGetBearerToken(initMessenger),
+      ...getBackendApiUrlsOption(),
     }) as unknown as AssetsControllerOptions['queryApiClient'];
   }
   return apiClient;

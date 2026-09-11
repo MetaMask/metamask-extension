@@ -10,14 +10,20 @@ import {
 jest.mock('../../../helpers/api-client', () => ({
   apiClient: {
     prices: {
-      fetch: jest.fn(),
+      getV3HistoricalPricesQueryOptions: jest.fn(),
     },
   },
 }));
 
-const mockPricesFetch = jest.mocked(
-  (apiClient.prices as unknown as { fetch: jest.Mock }).fetch,
-);
+/** Underlying fetch mock invoked by the mocked query options' queryFn. */
+const mockPricesFetch = jest.fn();
+
+jest
+  .mocked(apiClient.prices.getV3HistoricalPricesQueryOptions)
+  .mockImplementation((chainId, assetType, queryOptions) => ({
+    queryKey: ['prices', 'v3Historical', chainId, assetType, queryOptions],
+    queryFn: () => mockPricesFetch(chainId, assetType, queryOptions),
+  }));
 
 /**
  * In these tests, we represent the price data with 1 point per day.
@@ -222,15 +228,11 @@ describe('useHistoricalPrices', () => {
       });
 
       expect(mockPricesFetch).toHaveBeenCalledWith(
-        'https://price.api.cx.metamask.io',
-        expect.stringMatching(
-          /\/v3\/historical-prices\/eip155:1\/erc20:0x[0-9a-fA-F]{40}/u,
-        ),
+        'eip155:1',
+        expect.stringMatching(/^erc20:0x[0-9a-fA-F]{40}$/u),
         expect.objectContaining({
-          params: expect.objectContaining({
-            vsCurrency: 'usd',
-            timePeriod: '7D',
-          }),
+          currency: 'usd',
+          timePeriod: '7D',
         }),
       );
     });
@@ -380,15 +382,11 @@ describe('useHistoricalPrices', () => {
       });
 
       expect(mockPricesFetch).toHaveBeenCalledWith(
-        'https://price.api.cx.metamask.io',
-        expect.stringContaining(
-          `/v3/historical-prices/${SolScope.Mainnet}/token:`,
-        ),
+        SolScope.Mainnet,
+        expect.stringMatching(/^token:/u),
         expect.objectContaining({
-          params: expect.objectContaining({
-            vsCurrency: 'usd',
-            timePeriod: '7D',
-          }),
+          currency: 'usd',
+          timePeriod: '7D',
         }),
       );
     });
