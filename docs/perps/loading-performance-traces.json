@@ -1,0 +1,136 @@
+{
+  "contextAuthority": "Isolation-scope tags captured at spanStart; inherited unrelated scope tags excluded. Match span name and platform boundary when comparing.",
+  "groups": [
+    {
+      "id": "after-immediate-1",
+      "rawSha256": "011dc17f1a71f544fe28c39487be1c450cc1c893e54ed8880e76cba964c8ea74",
+      "recipeStatus": "pass",
+      "renderedPriceMatches": 12,
+      "spans": [
+        {
+          "name": "Perps Connection Establishment",
+          "spanId": "bf0e8c9068119779",
+          "startTimestamp": 1789091106.3393002,
+          "endTimestamp": 1789091108.7386,
+          "durationMs": 2399.2998600006104,
+          "op": "perps.operation",
+          "startContext": {
+            "feature": "perps",
+            "lifecycle_context": "cold_process",
+            "source": "wallet_root",
+            "start_boundary": "wallet_root_effect",
+            "completion_boundary": "preload_ready"
+          },
+          "success": true,
+          "reason": "subscriptions_ready"
+        },
+        {
+          "name": "Perps Entry To Live Market List",
+          "spanId": "b1b7acc768c954f1",
+          "startTimestamp": 1789091106.6715,
+          "endTimestamp": 1789091108.8491,
+          "durationMs": 2177.600145339966,
+          "op": "perps.operation",
+          "startContext": {
+            "feature": "perps",
+            "lifecycle_context": "cold_process",
+            "surface": "home"
+          },
+          "success": true,
+          "variant": "empty"
+        }
+      ]
+    },
+    {
+      "id": "after-warm-1",
+      "rawSha256": "503ef012b4a50041653838b4537c91b69a91d02082b098876d0e668f220b1c81",
+      "recipeStatus": "pass",
+      "renderedPriceMatches": 12,
+      "spans": [
+        {
+          "name": "Perps Entry To Live Market List",
+          "spanId": "834f79fded345860",
+          "startTimestamp": 1789091157.1482,
+          "endTimestamp": 1789091157.1482,
+          "durationMs": 0,
+          "op": "perps.operation",
+          "startContext": {
+            "feature": "perps",
+            "lifecycle_context": "warm",
+            "surface": "home"
+          },
+          "success": true,
+          "variant": "empty"
+        }
+      ]
+    },
+    {
+      "id": "after-account-2",
+      "rawSha256": "07fa912ab3227bf56c555cd68d3da534ace14cb94fe0674a02872c40cee7236b",
+      "recipeStatus": "pass",
+      "renderedPriceMatches": 12,
+      "spans": [
+        {
+          "name": "Perps Account Switch Reconnection",
+          "spanId": "8652d1181e810ad3",
+          "startTimestamp": 1789091215.9265,
+          "endTimestamp": 1789091219.342,
+          "durationMs": 3415.4999256134033,
+          "op": "perps.operation",
+          "startContext": {
+            "feature": "perps",
+            "lifecycle_context": "warm",
+            "source": "wallet_root",
+            "trigger": "requested_account_change",
+            "start_boundary": "wallet_root_effect",
+            "completion_boundary": "preload_ready",
+            "surface": "home"
+          },
+          "success": true,
+          "reason": "subscriptions_ready"
+        },
+        {
+          "name": "Perps Entry To Live Market List",
+          "spanId": "ba2717a87ebc43e0",
+          "startTimestamp": 1789091216.7782,
+          "endTimestamp": 1789091219.4655,
+          "durationMs": 2687.300205230713,
+          "op": "perps.operation",
+          "startContext": {
+            "feature": "perps",
+            "lifecycle_context": "warm",
+            "surface": "home"
+          },
+          "success": true,
+          "variant": "empty"
+        }
+      ]
+    },
+    {
+      "id": "after-background_resume-1",
+      "rawSha256": "2d9a0c2cc0ca548fda91138c118b828fbe62c29763a190e39bddbea6c358a447",
+      "recipeStatus": "pass",
+      "renderedPriceMatches": 12,
+      "spans": [
+        {
+          "name": "Perps Entry To Live Market List",
+          "spanId": "a2372fb4d8b72d08",
+          "startTimestamp": 1789091271.7647,
+          "endTimestamp": 1789091271.7648,
+          "durationMs": 0.10013580322265625,
+          "op": "perps.operation",
+          "startContext": {
+            "feature": "perps",
+            "lifecycle_context": "background_resume",
+            "surface": "home"
+          },
+          "success": true,
+          "variant": "empty"
+        }
+      ]
+    }
+  ],
+  "harnessVersion": "0.50.5",
+  "scope": "Post-benchmark SDK validation of the account-switch telemetry addition. Not included in before/after latency cohorts. Local real SDK events, no remote ingestion claim.",
+  "sourceRef": "96583820b169e80830f1fded4c9f92f413fcd689+usePerpsPreload-sha256:4ed221ec4e1ed08438098b3ef6805227286eab505e9030c05d6738a9706ff565"
+}
