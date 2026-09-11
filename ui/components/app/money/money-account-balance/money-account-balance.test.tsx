@@ -98,7 +98,7 @@ const arrange = ({
   } as UseMoneyAccountBalanceResult);
 };
 
-const render = ({ privacyMode = false } = {}) =>
+const render = ({ privacyMode = false, isHomeCardEnabled = true } = {}) =>
   renderWithProvider(
     <MoneyAccountBalance />,
     configureMockStore()({
@@ -106,6 +106,13 @@ const render = ({ privacyMode = false } = {}) =>
       metamask: {
         ...mockState.metamask,
         preferences: { ...mockState.metamask.preferences, privacyMode },
+        remoteFeatureFlags: {
+          ...mockState.metamask.remoteFeatureFlags,
+          moneyHomeScreenCardEnabled: {
+            enabled: isHomeCardEnabled,
+            minimumVersion: '0.0.0',
+          },
+        },
       },
     }),
   );
@@ -124,6 +131,14 @@ describe('MoneyAccountBalance', () => {
     });
 
     const { queryByTestId } = render();
+
+    expect(queryByTestId(MONEY_ACCOUNT_BALANCE_TEST_ID)).toBeNull();
+  });
+
+  it('renders nothing when the home screen card flag is off', () => {
+    arrange({ totalFiatFormatted: '$2,384.34' });
+
+    const { queryByTestId } = render({ isHomeCardEnabled: false });
 
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_TEST_ID)).toBeNull();
   });
