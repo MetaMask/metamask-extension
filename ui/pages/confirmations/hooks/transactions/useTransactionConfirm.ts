@@ -1,7 +1,4 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta, TransactionType } from '@metamask/transaction-controller';
 import { cloneDeep } from 'lodash';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
@@ -11,9 +8,7 @@ import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import { updateAndApproveTx } from '../../../../store/actions';
-import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
-import { useGasSponsorshipPreference } from '../gas/useGasSponsorshipPreference';
 import {
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
@@ -39,10 +34,6 @@ export function useTransactionConfirm() {
 
   const { isSupported: isGaslessSupportedSTX } =
     useGaslessSupportedSmartTransactions();
-  const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const { isSponsorshipOptedOut } = useGasSponsorshipPreference(
-    transactionMeta?.chainId,
-  );
   const { onDappSwapCompleted, updateSwapWithQuoteDetailsIfRequired } =
     useDappSwapActions();
   const { shouldRedirectToHwSigningPage, redirectToHwSigningPage } =
@@ -70,10 +61,6 @@ export function useTransactionConfirm() {
     [selectedGasFeeToken],
   );
 
-  const handleGasless7702 = useCallback((tx: TransactionMeta) => {
-    tx.isExternalSign = true;
-  }, []);
-
   const {
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
@@ -94,60 +81,8 @@ export function useTransactionConfirm() {
 
     updateSwapWithQuoteDetailsIfRequired(txToApprove);
 
-    // If the gasless flow is not supported (e.g. stx is disabled by the user,
-    // or 7702 is not supported in the chain), or the user has opted out of
-    // gas sponsorship, we override the `isGasFeeSponsored` flag to `false` so
-    // the transaction meta object in state has the correct value for the
-    // transaction details on the activity list to not show as sponsored. One
-    // limitation on the activity list will be that pre-populated transactions
-    // on fresh installs will not show as sponsored even if they were because
-    // this is not easily observable onchain for all cases.
-    //
-    // Money Account withdrawals are sponsored on Monad by design (the money
-    // account has no native MON). `useIsGaslessSupported` can disagree with
-    // the 7702 publish hook; clearing the flag here made the hook skip and
-    // published the parent `execute()` instead — which mines and moves
-    // nothing when that parent is still the empty placeholder.
-    txToApprove.isGasFeeSponsored = isMoneyAccountWithdraw
-      ? Boolean(transactionMeta.isGasFeeSponsored) && !isSponsorshipOptedOut
-      : isGaslessSupported &&
-        transactionMeta.isGasFeeSponsored &&
-        !isSponsorshipOptedOut;
-
-    // Revert the controller's `isExternalSign` flag when this account cannot
-    // use an external relay — i.e. gasless is unsupported for the account/chain
-    // (such as hardware wallets, which cannot sign EIP-7702 authorization
-    // lists) — or the user has opted out of gas sponsorship. Hardware wallet
-    // sendBundle transactions are gasless but still require local signing. The
-    // TransactionController sets `isExternalSign = true` whenever
-    // `isGasFeeSponsored` is true during gas estimation, regardless of whether
-    // an external relay is actually eligible for this account. If we leave it
-    // set, the sign step is skipped (no keyring/device call) and, when no relay
-    // catches the publish, an unsigned/empty payload reaches
-    // `eth_sendRawTransaction` and is rejected by the node.
-    //
-    // Sponsored money-account withdrawals skip local signing and must stay
-    // externally signed so the 7702 relay publishes them, even when
-    // `useIsGaslessSupported` is false (same reason we keep `isGasFeeSponsored`
-    // above).
-    const shouldKeepSponsoredMoneyAccountWithdraw =
-      isMoneyAccountWithdraw &&
-      Boolean(transactionMeta.isGasFeeSponsored) &&
-      !isSponsorshipOptedOut;
-    const shouldClearExternalSign =
-      transactionMeta.isExternalSign &&
-      !shouldKeepSponsoredMoneyAccountWithdraw &&
-      (!isGaslessSupported ||
-        isSponsorshipOptedOut ||
-        shouldRedirectToHwSigningPage);
-    if (shouldClearExternalSign) {
-      txToApprove.isExternalSign = false;
-    }
-
     if (isGaslessSupportedSTX) {
       handleSmartTransaction(txToApprove);
-    } else if (selectedGasFeeToken) {
-      handleGasless7702(txToApprove);
     }
 
     if (shouldRedirectToHwSigningPage) {
@@ -177,16 +112,13 @@ export function useTransactionConfirm() {
       return false;
     }
   }, [
-    handleGasless7702,
     handleSmartTransaction,
     customNonceValue,
     dispatch,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
-    isGaslessSupported,
     isGaslessSupportedSTX,
     isMoneyAccountWithdraw,
-    isSponsorshipOptedOut,
     onDappSwapCompleted,
     prepareWithdrawTransaction,
     redirectToHwSigningPage,

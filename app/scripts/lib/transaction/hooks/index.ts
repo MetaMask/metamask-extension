@@ -15,6 +15,7 @@ import {
 import { Hex } from '@metamask/utils';
 
 import { AccountOverviewTabKey } from '../../../../../shared/constants/app-state';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { getEip7702SupportedChains } from '../../../../../shared/lib/eip7702-support-utils';
 import {
   getInternalEvmAddresses,
@@ -31,6 +32,7 @@ import {
 import { MessengerClientFlatState } from '../../../messenger-client-init/controller-list';
 import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import { getTransactionById } from '../util';
+import { isRelaySupported } from '../transaction-relay';
 import { isSendBundleSupported } from '../sentinel-api';
 import { Delegation7702PublishHook } from './delegation-7702-publish';
 import { EnforceSimulationHook } from './enforce-simulation-hook';
@@ -61,6 +63,8 @@ export function getTransactionControllerHooks(
 ): TransactionControllerOptions['hooks'] {
   return {
     afterAdd: afterAddHook(request),
+    isSponsored: isSponsoredHook(request),
+    shouldSign: shouldSignHook(request),
     beforePublish: beforePublishHook(request),
     beforeSign: beforeSignHook(request),
     // @ts-expect-error - Controller type is missing signedTx parameter
@@ -76,6 +80,89 @@ function afterAddHook({ messenger }: TransactionControllerHookRequest) {
       transactionMeta,
     );
     return {};
+  };
+}
+
+type TransactionApprovalDecision = {
+  signingMode: 'local' | 'external';
+  sponsorshipEnabled: boolean;
+};
+
+async function getTransactionApprovalDecision(
+  { getFlatState }: TransactionControllerHookRequest,
+  transactionMeta: TransactionMeta,
+): Promise<TransactionApprovalDecision> {
+  const flatState = getFlatState();
+  const { gasSponsorshipOptOutByChainId } = getPreferences(flatState);
+  const { isHardwareWalletAccount, isSmartTransaction } =
+    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
+
+  const isSmartTransactionAndBundleSupported =
+    isSmartTransaction && (await isSendBundleSupported(transactionMeta.chainId));
+
+  const shouldCheck7702Eligibility =
+    !isHardwareWalletAccount && !isSmartTransactionAndBundleSupported;
+
+  const is7702Supported = Boolean(
+    shouldCheck7702Eligibility &&
+      (await isRelaySupported(transactionMeta.chainId)) &&
+      transactionMeta.txParams?.to !== undefined,
+  );
+
+  const isMoneyAccountWithdraw =
+    transactionMeta.type === TransactionType.moneyAccountWithdraw;
+  const requiresExternalSigning =
+    isMoneyAccountWithdraw ||
+    (Boolean(transactionMeta.selectedGasFeeToken) &&
+      !transactionMeta.isGasFeeTokenIgnoredIfBalance &&
+      !isHardwareWalletAccount &&
+      !isSmartTransactionAndBundleSupported);
+
+  const sponsorshipEnabled =
+    Boolean(transactionMeta.isGasFeeSponsored) &&
+    !Boolean(gasSponsorshipOptOutByChainId?.[transactionMeta.chainId]) &&
+    (isSmartTransactionAndBundleSupported ||
+      is7702Supported ||
+      (isMoneyAccountWithdraw && requiresExternalSigning));
+
+  if (isMoneyAccountWithdraw && !sponsorshipEnabled) {
+    throw new Error('Required transaction sponsorship is unavailable');
+  }
+
+  const signingMode: 'local' | 'external' = requiresExternalSigning
+    ? 'external'
+    : 'local';
+
+  return {
+    signingMode,
+    sponsorshipEnabled,
+  };
+}
+
+function isSponsoredHook(request: TransactionControllerHookRequest) {
+  return async ({ transactionMeta }: { transactionMeta: TransactionMeta }) => {
+    const { sponsorshipEnabled } = await getTransactionApprovalDecision(
+      request,
+      transactionMeta,
+    );
+
+    return sponsorshipEnabled;
+  };
+}
+
+function shouldSignHook(request: TransactionControllerHookRequest) {
+  return async ({
+    transactionMeta,
+  }: {
+    transactionMeta: TransactionMeta;
+    isSponsored: boolean;
+  }) => {
+    const { signingMode } = await getTransactionApprovalDecision(
+      request,
+      transactionMeta,
+    );
+
+    return signingMode === 'local';
   };
 }
 
