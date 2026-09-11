@@ -15,7 +15,11 @@ import {
   WINDOW_TITLES,
 } from '../../constants';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
-import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
+import {
+  getMainnet25EthAssetsControllerPatch,
+  MOCK_ETH_CONVERSION_RATE,
+  mockPriceApi,
+} from '../tokens/utils/mocks';
 
 const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
 
@@ -131,15 +135,9 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
           .withKeyringControllerMultiSRP()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withSnapsPrivacyWarningAlreadyShown()
-          .withCurrencyController({
-            currencyRates: {
-              ETH: {
-                conversionDate: Date.now(),
-                conversionRate: MOCK_ETH_CONVERSION_RATE,
-                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
-              },
-            },
-          })
+          .withAssetsController(
+            getMainnet25EthAssetsControllerPatch(MOCK_ETH_CONVERSION_RATE),
+          )
           .build(),
         title: this.test?.fullTitle(),
         dappOptions: {

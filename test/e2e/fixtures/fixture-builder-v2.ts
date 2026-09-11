@@ -7,7 +7,6 @@ import type { AddressBookControllerState } from '@metamask/address-book-controll
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type {
   AccountTrackerControllerState,
-  CurrencyRateState,
   NftControllerState,
   RatesControllerState,
   TokensControllerState,
@@ -272,11 +271,6 @@ class FixtureBuilderV2 {
 
   withAppStateController(data: Partial<AppStateControllerState>): this {
     merge(this.fixture.data.AppStateController, data);
-    return this;
-  }
-
-  withCurrencyController(data: Partial<CurrencyRateState>): this {
-    merge(this.fixture.data.CurrencyController, data);
     return this;
   }
 
@@ -685,14 +679,6 @@ class FixtureBuilderV2 {
   withConversionRateDisabled(): this {
     return this.withPreferencesController({
       useCurrencyRateCheck: false,
-    });
-  }
-
-  withCurrencyRates(
-    currencyRates: CurrencyRateState['currencyRates'] = {},
-  ): this {
-    return this.withCurrencyController({
-      currencyRates: { ...currencyRates },
     });
   }
 

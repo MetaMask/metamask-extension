@@ -259,75 +259,10 @@ describe('LegacyBackgroundApiService', () => {
   });
 
   describe('setCurrentCurrency', () => {
-    const originalEnv = process.env;
-
-    beforeEach(() => {
-      // Clear the require cache and resets process.env before each test to ensure a clean environment.
-      jest.resetModules();
-      process.env = { ...originalEnv };
-    });
-
-    afterEach(() => {
-      // Restore original environment
-      process.env = originalEnv;
-    });
-
-    it('sets the currency in the CurrencyRateController', async () => {
+    it('sets the currency in the AssetsController', async () => {
       const currencyCode: SupportedCurrency = 'usd';
 
       await withService(async ({ serviceMessenger, rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: false, featureVersion: '1' },
-            },
-          }),
-        );
-
-        rootMessenger.registerActionHandler(
-          'CurrencyRateController:setCurrentCurrency',
-          jest.fn(),
-        );
-
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        await expect(
-          rootMessenger.call(
-            'LegacyBackgroundApiService:setCurrentCurrency',
-            currencyCode,
-          ),
-        ).resolves.toBeUndefined();
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'CurrencyRateController:setCurrentCurrency',
-          currencyCode,
-        );
-      });
-    });
-
-    it('sets the currency in the AssetsController and CurrencyRateController when assets unify state is enabled', async () => {
-      const currencyCode: SupportedCurrency = 'usd';
-
-      await withService(async ({ serviceMessenger, rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: true, featureVersion: '1' },
-            },
-          }),
-        );
-
-        rootMessenger.registerActionHandler(
-          'CurrencyRateController:setCurrentCurrency',
-          jest.fn(),
-        );
-
         rootMessenger.registerActionHandler(
           'AssetsController:setSelectedCurrency',
           jest.fn(),
@@ -341,11 +276,6 @@ describe('LegacyBackgroundApiService', () => {
             currencyCode,
           ),
         ).resolves.toBeUndefined();
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'CurrencyRateController:setCurrentCurrency',
-          currencyCode,
-        );
 
         expect(callSpy).toHaveBeenCalledWith(
           'AssetsController:setSelectedCurrency',
@@ -8553,7 +8483,6 @@ function getMessenger(
       'NetworkEnablementController:isNetworkEnabled',
       'NetworkEnablementController:restoreEnabledNetworkMap',
       'RemoteFeatureFlagController:getState',
-      'CurrencyRateController:setCurrentCurrency',
       'AssetsContractController:getTokenStandardAndDetails',
       'AssetsController:addCustomAsset',
       'AssetsController:getAssets',

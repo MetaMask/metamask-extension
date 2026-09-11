@@ -84,11 +84,6 @@ const maskedBackgroundFields = [
   'AppStateController.fullScreenGasPollTokens',
   'AppStateController.notificationGasPollTokens',
   'AppStateController.popupGasPollTokens',
-  'CurrencyController.currencyRates.ETH.conversionDate',
-  'CurrencyController.currencyRates.LineaETH.conversionDate',
-  'CurrencyController.currencyRates.SepoliaETH.conversionDate',
-  'CurrencyController.currencyRates.MegaETH.conversionDate',
-  'CurrencyController.currencyRates.MON.conversionDate',
   // Network metadata entries vary as networks are added/removed in the codebase
   'NetworkController.networksMetadata',
 ];
@@ -1466,6 +1461,8 @@ describe('Sentry errors', function () {
       balances: false,
       tokenBalances: false,
       marketData: false,
+      currencyRates: false,
+      currentCurrency: false,
       assetsRates: false,
       smartTransactionsState: {
         fees: {

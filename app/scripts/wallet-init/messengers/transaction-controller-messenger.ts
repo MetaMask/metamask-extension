@@ -169,6 +169,8 @@ export function getTransactionControllerInitMessenger(
       'AuthenticationController:getBearerToken',
       'BridgeStatusController:getState',
       'BridgeStatusController:submitTx',
+      // Compat shim registered by transaction-pay / bridge messengers:
+      // derives currentCurrency from AssetsController.
       'CurrencyRateController:getState',
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',

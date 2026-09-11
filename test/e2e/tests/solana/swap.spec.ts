@@ -447,15 +447,6 @@ function buildUsdcToSolFixture() {
         },
       },
     },
-    CurrencyController: {
-      currencyRates: {
-        ETH: {
-          conversionDate: 1770832998.066,
-          conversionRate: 1932.163232734,
-          usdConversionRate: 1932.163232734,
-        },
-      },
-    },
   });
   return fixture;
 }
@@ -483,15 +474,6 @@ describe('Swap on Solana', function () {
                 [USDC_CAIP_ASSET]: {
                   conversionTime: 1770832998.066,
                   rate: String(USDC_PRICE),
-                },
-              },
-            },
-            CurrencyController: {
-              currencyRates: {
-                ETH: {
-                  conversionDate: 1770832998.066,
-                  conversionRate: 1932.163232734,
-                  usdConversionRate: 1932.163232734,
                 },
               },
             },
