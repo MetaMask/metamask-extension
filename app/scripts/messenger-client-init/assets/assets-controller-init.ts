@@ -24,7 +24,7 @@ import {
 } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { ARC_NATIVE_CAIP_CHAIN_ID } from '#ui/components/app/assets/enablement/arc';
+import { ARC_NATIVE_CAIP_CHAIN_ID } from '../../../../ui/components/app/assets/enablement/arc';
 
 /**
  * Cached API client instance.
