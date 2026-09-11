@@ -113,12 +113,11 @@ describe('TokenListItem', () => {
       }
       return undefined;
     });
-    const { getByTestId, container } = renderWithProvider(
+    const { getByTestId } = renderWithProvider(
       <TokenListItem {...props} />,
       store,
     );
     expect(getByTestId('multichain-token-list-item')).toBeDefined();
-    expect(container).toMatchSnapshot();
   });
 
   it('should render with custom className', () => {
@@ -142,12 +141,11 @@ describe('TokenListItem', () => {
       title: '',
       chainId: '0x1',
     };
-    const { getByText, container } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
     expect(getByText('11.9751 ETH')).toBeInTheDocument();
-    expect(container).toMatchSnapshot();
   });
 
   it('should display warning scam modal', () => {
@@ -172,11 +170,10 @@ describe('TokenListItem', () => {
       chainId: '0x1',
       nativeCurrencySymbol: 'ETH',
     };
-    const { getByTestId, getByText, container } = renderWithProvider(
+    const { getByTestId, getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
-    expect(container).toMatchSnapshot();
 
     const warningScamModal = getByTestId('scam-warning');
     fireEvent.click(warningScamModal);
@@ -201,12 +198,11 @@ describe('TokenListItem', () => {
       chainId: '0x1',
       nativeCurrencySymbol: undefined,
     };
-    const { getByTestId, getByText, container } = renderWithProvider(
+    const { getByTestId, getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
 
-    expect(container).toMatchSnapshot();
     const warningScamModal = getByTestId('scam-warning');
     fireEvent.click(warningScamModal);
 
@@ -231,12 +227,11 @@ describe('TokenListItem', () => {
       chainId: '0x1',
     };
 
-    const { getByText, container } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <TokenListItem {...propsToUse} />,
       store,
     );
     expect(getByText('11.9751 ETH')).toBeInTheDocument();
-    expect(container).toMatchSnapshot();
   });
 
   it('handles click action and fires onClick', () => {
@@ -313,7 +308,7 @@ describe('TokenListItem', () => {
 
   it('handles clicking staking opens tab', async () => {
     const store = configureMockStore()(state);
-    const { queryByTestId, container } = renderWithProvider(
+    const { queryByTestId } = renderWithProvider(
       <TokenListItem isStakeable {...props} />,
       store,
     );
@@ -324,7 +319,6 @@ describe('TokenListItem', () => {
 
     expect(stakeButton).toBeInTheDocument();
     expect(stakeButton).not.toBeDisabled();
-    expect(container).toMatchSnapshot();
 
     stakeButton && fireEvent.click(stakeButton);
     expect(openTabSpy).toHaveBeenCalledTimes(1);

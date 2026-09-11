@@ -19,6 +19,7 @@ import {
   toAssetId,
   fetchAssetMetadataForAssetIds,
   getNativeAssetId,
+  isNativeCaipAssetId,
   isEvmChainId,
   isTronSpecialAsset,
 } from './asset-utils';
@@ -53,6 +54,28 @@ describe('asset-utils', () => {
     it('returns undefined for a chain unknown to the asset map', () => {
       // getNativeAssetForChainId throws on custom/unsupported networks.
       expect(getNativeAssetId('0x123456' as Hex)).toBeUndefined();
+    });
+  });
+
+  describe('isNativeCaipAssetId', () => {
+    it('returns true for slip44 native asset ids', () => {
+      expect(isNativeCaipAssetId('eip155:1/slip44:60' as CaipAssetType)).toBe(
+        true,
+      );
+    });
+
+    it('returns false for erc20 asset ids', () => {
+      expect(
+        isNativeCaipAssetId(
+          'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f' as CaipAssetType,
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for invalid asset ids', () => {
+      expect(isNativeCaipAssetId('not-a-caip-asset-id' as CaipAssetType)).toBe(
+        false,
+      );
     });
   });
 

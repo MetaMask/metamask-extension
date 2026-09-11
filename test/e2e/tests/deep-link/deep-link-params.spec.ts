@@ -4,7 +4,7 @@ import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import DeepLink from '../../page-objects/pages/security/deep-link-page';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import type { Anvil } from '../../seeder/anvil';
@@ -121,9 +121,13 @@ describe('Deep Link - Parameter Handling & Security', function () {
         const rawUrl = `https://link.metamask.io/home`;
         const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
         await driver.openNewURL(signedUrl);
-        const internalDeepLinkUrl = await driver.getCurrentUrl();
         const deepLink = new DeepLink(driver);
+        // Wait for the background's `webRequest` redirect before reading the
+        // URL, otherwise we may capture the external link instead. This raced
+        // fine until profile-sync-controller@30 made post-unlock sign-in faster,
+        // so its follow-up scrypt derivation now blocks the background here.
         await deepLink.checkPageIsLoaded();
+        const internalDeepLinkUrl = await driver.getCurrentUrl();
         const isChecked =
           await deepLink.getSkipDeepLinkInterstitialCheckBoxState();
         assert.equal(isChecked, false, 'checkbox should not be checked');

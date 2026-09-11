@@ -26,6 +26,8 @@ const NETWORK_NAME_MAINNET = 'Ethereum';
 const NETWORK_NAME_SEPOLIA = 'Sepolia';
 
 const SEPOLIA_NATIVE_ASSET_ID = 'eip155:11155111/slip44:60';
+const SEPOLIA_NATIVE_ZERO_ADDRESS_ASSET_ID =
+  'eip155:11155111/erc20:0x0000000000000000000000000000000000000000';
 
 const SEPOLIA_NATIVE_ASSET_INFO = {
   aggregators: [],
@@ -61,14 +63,19 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
             assetsBalance: {
               [DEFAULT_FIXTURE_ACCOUNT_ID]: {
                 [SEPOLIA_NATIVE_ASSET_ID]: { amount: '25' },
+                [SEPOLIA_NATIVE_ZERO_ADDRESS_ASSET_ID]: { amount: '25' },
               },
             },
             assetsInfo: {
               [SEPOLIA_NATIVE_ASSET_ID]: SEPOLIA_NATIVE_ASSET_INFO,
+              [SEPOLIA_NATIVE_ZERO_ADDRESS_ASSET_ID]: SEPOLIA_NATIVE_ASSET_INFO,
             },
             assetsPrice: {
               ...getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
               [SEPOLIA_NATIVE_ASSET_ID]: getMockAssetsPrice(
+                MOCK_ETH_CONVERSION_RATE,
+              )['eip155:1/slip44:60'],
+              [SEPOLIA_NATIVE_ZERO_ADDRESS_ASSET_ID]: getMockAssetsPrice(
                 MOCK_ETH_CONVERSION_RATE,
               )['eip155:1/slip44:60'],
             },
@@ -82,12 +89,26 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockPriceApi(mockServer);
+          // mockSpotPrices uses `.always()` and overrides mockPriceApi's
+          // catch-all. Include mainnet + both Sepolia native ID shapes
+          // (slip44:60 and the zero-address ERC-20 alias AC 15 requests).
           await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
+              price: MOCK_ETH_CONVERSION_RATE,
+              marketCap: 112500000,
+              pricePercentChange1d: 0,
+            },
             [SEPOLIA_NATIVE_ASSET_ID]: {
               price: MOCK_ETH_CONVERSION_RATE,
               marketCap: 112500000,
               pricePercentChange1d: 0,
             },
+            'eip155:11155111/erc20:0x0000000000000000000000000000000000000000':
+              {
+                price: MOCK_ETH_CONVERSION_RATE,
+                marketCap: 112500000,
+                pricePercentChange1d: 0,
+              },
           });
         },
       },

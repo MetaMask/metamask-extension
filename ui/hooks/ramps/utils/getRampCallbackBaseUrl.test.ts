@@ -1,4 +1,6 @@
+import { getDefaultRedirectCallbackUrl } from '@metamask/ramps-controller';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
+import { getRampsEnvironment } from '../../../../shared/lib/ramps/environment';
 import { getRampCallbackBaseUrl } from './getRampCallbackBaseUrl';
 
 const PRODUCTION_CALLBACK =
@@ -64,5 +66,14 @@ describe('getRampCallbackBaseUrl', () => {
   it('returns the staging URL when METAMASK_ENVIRONMENT is unset', () => {
     delete process.env.METAMASK_ENVIRONMENT;
     expect(getRampCallbackBaseUrl()).toBe(STAGING_CALLBACK);
+  });
+
+  // The callback host map lives in `@metamask/ramps-controller`; this locks the
+  // shared helper to core's derivation so the two cannot drift apart.
+  it('delegates to core getDefaultRedirectCallbackUrl for the resolved environment', () => {
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
+    expect(getRampCallbackBaseUrl()).toBe(
+      getDefaultRedirectCallbackUrl(getRampsEnvironment()),
+    );
   });
 });

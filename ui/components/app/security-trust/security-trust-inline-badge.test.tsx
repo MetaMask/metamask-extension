@@ -3,7 +3,6 @@ import { fireEvent, render } from '@testing-library/react';
 import {
   getSecurityTrustBadgeConfig,
   SecurityTrustInlineBadge,
-  SecurityTrustVerifiedBadge,
   type SecurityTrustInlineBadgeConfig,
 } from './security-trust-inline-badge';
 
@@ -91,28 +90,6 @@ describe('SecurityTrustInlineBadge', () => {
     );
 
     fireEvent.click(getByTestId('security-badge-warning'));
-    expect(onClick).toHaveBeenCalledTimes(1);
-  });
-});
-
-describe('SecurityTrustVerifiedBadge', () => {
-  it('renders verified badge wrapper without onClick', () => {
-    const badge = getTestBadgeConfig('Verified');
-    const { getAllByTestId } = render(
-      <SecurityTrustVerifiedBadge badge={badge} />,
-    );
-
-    expect(getAllByTestId('security-badge-verified').length).toBeGreaterThan(0);
-  });
-
-  it('delegates onClick to inline badge', () => {
-    const badge = getTestBadgeConfig('Verified');
-    const onClick = jest.fn();
-    const { getByTestId } = render(
-      <SecurityTrustVerifiedBadge badge={badge} onClick={onClick} />,
-    );
-
-    fireEvent.click(getByTestId('security-badge-verified'));
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 });

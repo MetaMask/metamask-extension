@@ -58,6 +58,47 @@ jest.mock('../../../store/actions', () => ({
 
 jest.mock('../../../store/controller-actions/transaction-controller');
 
+const mockUseAssetPerpsMarket = jest.fn(
+  (): { market: { name: string } | undefined; isLoading: boolean } => ({
+    market: undefined,
+    isLoading: false,
+  }),
+);
+jest.mock('../hooks/useAssetPerpsMarket', () => ({
+  useAssetPerpsMarket: () => mockUseAssetPerpsMarket(),
+}));
+
+const mockUsePerpsPositionForAsset = jest.fn(() => ({
+  position: undefined,
+  isLoading: false,
+}));
+jest.mock('../../../hooks/perps/usePerpsPositionForAsset', () => ({
+  usePerpsPositionForAsset: () => mockUsePerpsPositionForAsset(),
+}));
+
+jest.mock('../../../components/app/perps/perps-view-stream-boundary', () => ({
+  PerpsViewStreamBoundary: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
+}));
+
+// The Perps row and position card have their own suites; here we only assert
+// that the asset page mounts them for the native path with the matched market.
+jest.mock('../../../components/app/perps/perps-trade-buttons', () => ({
+  PerpsTradeButtons: ({ marketSymbol }: { marketSymbol: string }) => (
+    <div data-testid="perps-trade-buttons" data-market={marketSymbol} />
+  ),
+}));
+
+jest.mock('./asset-perps-position-section', () => ({
+  AssetPerpsPositionSection: ({ marketSymbol }: { marketSymbol: string }) => (
+    <div
+      data-testid="asset-perps-position-section"
+      data-market={marketSymbol}
+    />
+  ),
+}));
+
 // Mock the price chart
 jest.mock('react-chartjs-2', () => ({
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -128,27 +169,6 @@ jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
   __esModule: true,
   default: jest.fn(() => ({
     openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
-  })),
-}));
-
-jest.mock('../../../components/app/musd/hooks/useMerklRewards', () => ({
-  useMerklRewards: jest.fn(() => ({
-    hasClaimableReward: false,
-    rewardAmountFiat: null,
-    lifetimeClaimedFiat: 0,
-    isLoading: false,
-    isEligible: false,
-    refetch: jest.fn(),
-    hasClaimedBefore: false,
-    claimableRewardDisplay: null,
-  })),
-}));
-
-jest.mock('../../../components/app/musd/hooks/useMerklClaim', () => ({
-  useMerklClaim: jest.fn(() => ({
-    claimRewards: jest.fn(),
-    isClaiming: false,
-    error: null,
   })),
 }));
 
@@ -368,6 +388,15 @@ describe('AssetPage', () => {
     // Clear previous mock implementations
     (useMultiPolling as jest.Mock).mockClear();
 
+    mockUseAssetPerpsMarket.mockReturnValue({
+      market: undefined,
+      isLoading: false,
+    });
+    mockUsePerpsPositionForAsset.mockReturnValue({
+      position: undefined,
+      isLoading: false,
+    });
+
     // Return a stable (same-reference) default so Reselect's input stability
     // check does not trigger a warning when getAsset calls this selector twice.
     (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
@@ -423,6 +452,15 @@ describe('AssetPage', () => {
       fiat: '',
     },
   } as const;
+
+  it('renders token decimals with a dedicated test id', () => {
+    const { getByTestId } = renderWithProvider(
+      <AssetPage asset={token} optionsButton={null} />,
+      store,
+    );
+
+    expect(getByTestId('asset-token-decimals')).toHaveTextContent('18');
+  });
 
   it('should not show a modal when token passed in props is not an ERC721', () => {
     renderWithProvider(<AssetPage asset={token} optionsButton={null} />, store);
@@ -601,6 +639,114 @@ describe('AssetPage', () => {
     expect(getByTestId('asset-name')).toHaveTextContent(native.symbol);
   });
 
+  describe('Perps actions on the native asset page', () => {
+    const renderNative = () =>
+      renderWithProvider(
+        <AssetPage asset={native} optionsButton={null} />,
+        store,
+        '/0x1',
+      );
+
+    it('holds a skeleton while the market lookup is in flight', () => {
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: undefined,
+        isLoading: true,
+      });
+
+      const { queryByTestId } = renderNative();
+
+      expect(queryByTestId('asset-perps-actions-skeleton')).toBeInTheDocument();
+      expect(queryByTestId('coin-overview-buy')).not.toBeInTheDocument();
+      expect(queryByTestId('coin-overview-swap')).not.toBeInTheDocument();
+      expect(queryByTestId('perps-trade-buttons')).not.toBeInTheDocument();
+    });
+
+    it('holds a skeleton while the position lookup for a matched market is in flight', () => {
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: { name: 'ETH' },
+        isLoading: false,
+      });
+      mockUsePerpsPositionForAsset.mockReturnValue({
+        position: undefined,
+        isLoading: true,
+      });
+
+      const { queryByTestId } = renderNative();
+
+      expect(queryByTestId('asset-perps-actions-skeleton')).toBeInTheDocument();
+      expect(queryByTestId('perps-trade-buttons')).not.toBeInTheDocument();
+    });
+
+    it('renders the Perps row when position loading settled with none', () => {
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: { name: 'ETH' },
+        isLoading: false,
+      });
+      mockUsePerpsPositionForAsset.mockReturnValue({
+        position: undefined,
+        isLoading: false,
+      });
+
+      const { queryByTestId } = renderNative();
+
+      expect(
+        queryByTestId('asset-perps-actions-skeleton'),
+      ).not.toBeInTheDocument();
+      expect(queryByTestId('perps-trade-buttons')).toHaveAttribute(
+        'data-market',
+        'ETH',
+      );
+    });
+
+    it('renders the Perps row and the open position section once the lookups resolve', () => {
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: { name: 'ETH' },
+        isLoading: false,
+      });
+
+      const { queryByTestId } = renderNative();
+
+      expect(
+        queryByTestId('asset-perps-actions-skeleton'),
+      ).not.toBeInTheDocument();
+      expect(queryByTestId('perps-trade-buttons')).toHaveAttribute(
+        'data-market',
+        'ETH',
+      );
+      expect(queryByTestId('asset-perps-position-section')).toHaveAttribute(
+        'data-market',
+        'ETH',
+      );
+      expect(queryByTestId('coin-overview-buy')).not.toBeInTheDocument();
+      expect(queryByTestId('coin-overview-swap')).not.toBeInTheDocument();
+    });
+
+    it('renders Receive rather than Send for a zero-balance native Perps asset', () => {
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: { name: 'ETH' },
+        isLoading: false,
+      });
+
+      const { queryByTestId } = renderNative();
+
+      expect(queryByTestId('coin-overview-receive')).toBeInTheDocument();
+      expect(queryByTestId('coin-overview-send')).not.toBeInTheDocument();
+    });
+
+    it('keeps the standard row and no position section when the asset has no market', () => {
+      const { queryByTestId } = renderNative();
+
+      expect(
+        queryByTestId('asset-perps-actions-skeleton'),
+      ).not.toBeInTheDocument();
+      expect(queryByTestId('perps-trade-buttons')).not.toBeInTheDocument();
+      expect(
+        queryByTestId('asset-perps-position-section'),
+      ).not.toBeInTheDocument();
+      expect(queryByTestId('coin-overview-buy')).toBeInTheDocument();
+    });
+  });
+
   it('should render an ERC20 asset without prices', async () => {
     const address = '0x309375769E79382beFDEc5bdab51063AeBDC4936';
 
@@ -688,13 +834,11 @@ describe('AssetPage', () => {
 
     const musdRemoteFlags = (overrides: {
       earnMusdConversionFlowEnabled?: boolean;
-      earnMerklCampaignClaiming?: boolean;
     }) => ({
       bridgeConfig: {
         support: true,
       },
       earnMusdConversionFlowEnabled: true,
-      earnMerklCampaignClaiming: true,
       ...overrides,
     });
 
@@ -714,30 +858,10 @@ describe('AssetPage', () => {
 
       expect(getByText(messages.yourBalance.message)).toBeInTheDocument();
       expect(queryByTestId('musd-position-section')).not.toBeInTheDocument();
-      expect(queryByTestId('musd-bonus-section')).not.toBeInTheDocument();
       expect(queryByTestId('musd-convert-section')).not.toBeInTheDocument();
     });
 
-    it('hides bonus section when Merkl claiming is off but shows position', () => {
-      const { queryByTestId } = renderWithProvider(
-        <AssetPage asset={musdToken} optionsButton={null} />,
-        configureMockStore([thunk])({
-          ...mockStore,
-          metamask: {
-            ...mockStore.metamask,
-            remoteFeatureFlags: musdRemoteFlags({
-              earnMerklCampaignClaiming: false,
-            }),
-          },
-        }),
-      );
-
-      expect(queryByTestId('musd-position-section')).toBeInTheDocument();
-      expect(queryByTestId('musd-convert-section')).not.toBeInTheDocument();
-      expect(queryByTestId('musd-bonus-section')).not.toBeInTheDocument();
-    });
-
-    it('renders position and bonus, but never the convert section, when flow and Merkl claiming are on', () => {
+    it('renders the position, but never the convert section, when the conversion flow is on', () => {
       const { queryByTestId } = renderWithProvider(
         <AssetPage asset={musdToken} optionsButton={null} />,
         configureMockStore([thunk])({
@@ -751,158 +875,6 @@ describe('AssetPage', () => {
 
       expect(queryByTestId('musd-position-section')).toBeInTheDocument();
       expect(queryByTestId('musd-convert-section')).not.toBeInTheDocument();
-      expect(queryByTestId('musd-bonus-section')).toBeInTheDocument();
-    });
-  });
-
-  describe('mUSD bonus cross-chain aggregation', () => {
-    const musdRemoteFlags = (overrides: {
-      earnMusdConversionFlowEnabled?: boolean;
-      earnMerklCampaignClaiming?: boolean;
-    }) => ({
-      bridgeConfig: {
-        support: true,
-      },
-      earnMusdConversionFlowEnabled: true,
-      earnMerklCampaignClaiming: true,
-      ...overrides,
-    });
-
-    const musdBaseAsset = {
-      type: AssetType.token,
-      chainId: CHAIN_IDS.MAINNET,
-      address: MUSD_TOKEN_ADDRESS,
-      symbol: 'MUSD',
-      decimals: 6,
-      image: '',
-      balance: {
-        value: '0',
-        display: '0',
-        fiat: '',
-      },
-    } as const;
-
-    const musdLineaAsset = {
-      ...musdBaseAsset,
-      chainId: CHAIN_IDS.LINEA_MAINNET,
-    };
-
-    const buildMusdAssetsByChain = (options: {
-      mainnetFiat: number;
-      lineaFiat: number;
-      mainnetPositive: boolean;
-      lineaPositive: boolean;
-    }) => {
-      const { mainnetFiat, lineaFiat, mainnetPositive, lineaPositive } =
-        options;
-      const mainnetRaw = mainnetPositive ? '0x01' : '0x0';
-      const lineaRaw = lineaPositive ? '0x01' : '0x0';
-      const defaultMainnet = DEFAULT_ASSETS_BY_SELECTED_ACCOUNT_GROUP['0x1'];
-      return {
-        [CHAIN_IDS.MAINNET]: [
-          ...defaultMainnet.slice(0, 3),
-          {
-            assetId: MUSD_TOKEN_ADDRESS,
-            address: MUSD_TOKEN_ADDRESS,
-            rawBalance: mainnetRaw,
-            balance: mainnetPositive ? '1' : '0',
-            fiat: { balance: mainnetFiat },
-          },
-        ],
-        [CHAIN_IDS.LINEA_MAINNET]: [
-          {
-            assetId: MUSD_TOKEN_ADDRESS,
-            address: MUSD_TOKEN_ADDRESS,
-            rawBalance: lineaRaw,
-            balance: lineaPositive ? '1' : '0',
-            fiat: { balance: lineaFiat },
-          },
-        ],
-      };
-    };
-
-    afterEach(() => {
-      // Return a stable reference so subsequent tests don't see stale overrides.
-      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
-        DEFAULT_ASSETS_BY_SELECTED_ACCOUNT_GROUP,
-      );
-    });
-
-    it('shows estimated annual bonus as 3% of combined Mainnet and Linea fiat when viewing Mainnet mUSD', () => {
-      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
-        buildMusdAssetsByChain({
-          mainnetFiat: 1000,
-          lineaFiat: 500,
-          mainnetPositive: true,
-          lineaPositive: true,
-        }),
-      );
-
-      const { getByText } = renderWithProvider(
-        <AssetPage asset={musdBaseAsset} optionsButton={null} />,
-        configureMockStore([thunk])({
-          ...mockStore,
-          metamask: {
-            ...mockStore.metamask,
-            remoteFeatureFlags: musdRemoteFlags({}),
-          },
-        }),
-      );
-
-      expect(
-        getByText(messages.musdAssetBonusEstimatedAnnual.message),
-      ).toBeInTheDocument();
-      expect(getByText(/\+\$45\.00/u)).toBeInTheDocument();
-    });
-
-    it('shows the same estimated annual bonus when viewing Linea mUSD as when viewing Mainnet', () => {
-      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
-        buildMusdAssetsByChain({
-          mainnetFiat: 1000,
-          lineaFiat: 500,
-          mainnetPositive: true,
-          lineaPositive: true,
-        }),
-      );
-
-      const { getByText } = renderWithProvider(
-        <AssetPage asset={musdLineaAsset} optionsButton={null} />,
-        configureMockStore([thunk])({
-          ...mockStore,
-          metamask: {
-            ...mockStore.metamask,
-            remoteFeatureFlags: musdRemoteFlags({}),
-          },
-        }),
-      );
-
-      expect(getByText(/\+\$45\.00/u)).toBeInTheDocument();
-    });
-
-    it('shows Accruing next bonus on Linea when mUSD is only on Mainnet', () => {
-      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
-        buildMusdAssetsByChain({
-          mainnetFiat: 100,
-          lineaFiat: 0,
-          mainnetPositive: true,
-          lineaPositive: false,
-        }),
-      );
-
-      const { getByText } = renderWithProvider(
-        <AssetPage asset={musdLineaAsset} optionsButton={null} />,
-        configureMockStore([thunk])({
-          ...mockStore,
-          metamask: {
-            ...mockStore.metamask,
-            remoteFeatureFlags: musdRemoteFlags({}),
-          },
-        }),
-      );
-
-      expect(
-        getByText(messages.musdAssetBonusAccruing.message),
-      ).toBeInTheDocument();
     });
   });
 });

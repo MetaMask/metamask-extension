@@ -1,6 +1,7 @@
 import React, {
   ReactElement,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -25,6 +26,13 @@ export type ConfirmContextType = {
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
   /** Route to use for cancel / reject / auto-exit; captured once from URL on mount. */
   goBackTo: string | undefined;
+  /**
+   * Call before triggering a navigation elsewhere (e.g. navigating back to
+   * the Send page) to prevent the auto-exit effect below from racing it with
+   * its own navigate(goBackTo ?? DEFAULT_ROUTE) once the confirmation is
+   * rejected/removed. See CONF-1865.
+   */
+  suppressAutoExit: () => void;
 };
 
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
@@ -56,14 +64,20 @@ export const ConfirmContextProvider = ({
   const navigate = useNavigate();
   const previousConfirmation = usePrevious(currentConfirmation);
   const shouldNavigateHomeRef = useRef(false);
+  const autoExitSuppressedRef = useRef(false);
   const isHardwareWalletErrorModalVisible = useSelector(
     getIsHardwareWalletErrorModalVisible,
   );
 
+  const suppressAutoExit = useCallback(() => {
+    autoExitSuppressedRef.current = true;
+  }, []);
+
   /**
    * The hook below takes care of navigating to the home page when the confirmation not acted on by user
    * but removed by us, this can happen in cases like when dapp changes network.
-   * We also skip navigation if the hardware wallet error modal is visible to allow for retry functionality.
+   * We also skip navigation if the hardware wallet error modal is visible to allow for retry functionality,
+   * or if suppressAutoExit() was called (e.g. a caller is already navigating elsewhere, such as back to Send).
    */
   useEffect(() => {
     if (currentConfirmationOverride !== undefined) {
@@ -75,6 +89,10 @@ export const ConfirmContextProvider = ({
 
     if (shouldNavigateHomeRef.current && !isHardwareWalletErrorModalVisible) {
       shouldNavigateHomeRef.current = false;
+      if (autoExitSuppressedRef.current) {
+        autoExitSuppressedRef.current = false;
+        return;
+      }
       navigate(goBackTo ?? DEFAULT_ROUTE, { replace: true });
     }
   }, [
@@ -92,12 +110,14 @@ export const ConfirmContextProvider = ({
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
       goBackTo,
+      suppressAutoExit,
     }),
     [
       currentConfirmation,
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
       goBackTo,
+      suppressAutoExit,
     ],
   );
 
@@ -121,5 +141,6 @@ export const useConfirmContext = <CurrentConfirmation = Confirmation>() => {
     isScrollToBottomCompleted: boolean;
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
     goBackTo: string | undefined;
+    suppressAutoExit: () => void;
   };
 };

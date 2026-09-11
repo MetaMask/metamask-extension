@@ -1,5 +1,6 @@
 import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../shared/lib/assets/security-trust-feature-flags';
 import {
+  BFT_CHILD_PREFERENCES,
   getIsBasicFunctionalityConsolidationEnabled,
   getIsBasicFunctionalityToggleEnabled,
   getIsNetworkManagementEnabled,
@@ -23,6 +24,29 @@ const buildState = (
     preferences: {
       isBasicFunctionalityConsolidatedEnabled,
     },
+  },
+});
+
+const buildBftState = (
+  useExternalServices: boolean,
+  remoteFlag = true,
+  childOverrides: Partial<
+    Record<(typeof BFT_CHILD_PREFERENCES)[number], boolean>
+  > = {},
+) => ({
+  ...buildState({ extensionBasicFunctionalityToggle: remoteFlag }, false),
+  metamask: {
+    ...buildState().metamask,
+    remoteFeatureFlags: {
+      extensionBasicFunctionalityToggle: remoteFlag,
+    },
+    useExternalServices,
+    ...Object.fromEntries(
+      BFT_CHILD_PREFERENCES.map((preference) => [
+        preference,
+        childOverrides[preference] ?? useExternalServices,
+      ]),
+    ),
   },
 });
 
@@ -246,6 +270,48 @@ describe('getIsBasicFunctionalityToggleEnabled', () => {
 });
 
 describe('getIsBasicFunctionalityConsolidationEnabled', () => {
+  it('returns true for an all-on legacy BFT user when the remote flag is enabled', () => {
+    expect(
+      getIsBasicFunctionalityConsolidationEnabled(
+        buildBftState(true) as unknown as Parameters<
+          typeof getIsBasicFunctionalityConsolidationEnabled
+        >[0],
+      ),
+    ).toBe(true);
+  });
+
+  it('returns true for an all-off legacy BFT user when the remote flag is enabled', () => {
+    expect(
+      getIsBasicFunctionalityConsolidationEnabled(
+        buildBftState(false) as unknown as Parameters<
+          typeof getIsBasicFunctionalityConsolidationEnabled
+        >[0],
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false for a mixed legacy BFT user', () => {
+    expect(
+      getIsBasicFunctionalityConsolidationEnabled(
+        buildBftState(true, true, {
+          useTokenDetection: false,
+        }) as unknown as Parameters<
+          typeof getIsBasicFunctionalityConsolidationEnabled
+        >[0],
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false for a consistent legacy BFT user when the remote flag is disabled', () => {
+    expect(
+      getIsBasicFunctionalityConsolidationEnabled(
+        buildBftState(true, false) as unknown as Parameters<
+          typeof getIsBasicFunctionalityConsolidationEnabled
+        >[0],
+      ),
+    ).toBe(false);
+  });
+
   it('returns true when the remote flag and persisted cohort marker are both true', () => {
     expect(
       getIsBasicFunctionalityConsolidationEnabled(
@@ -264,13 +330,13 @@ describe('getIsBasicFunctionalityConsolidationEnabled', () => {
     ).toBe(false);
   });
 
-  it('returns false when the persisted cohort marker is true but the remote flag is false', () => {
+  it('keeps a consolidated user on the consolidated experience when the remote flag is turned off', () => {
     expect(
       getIsBasicFunctionalityConsolidationEnabled(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         buildState({ extensionBasicFunctionalityToggle: false }, true) as any,
       ),
-    ).toBe(false);
+    ).toBe(true);
   });
 });
 

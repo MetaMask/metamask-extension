@@ -511,10 +511,20 @@ describe('RampsPaymentMethodScreen', () => {
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('navigates to provider selection when change provider is clicked', () => {
+  it('opens provider selection modal when change provider is clicked', () => {
     mockLocationState = { amount: 100 };
+    useRampsController.mockReturnValue({
+      ...defaultControllerState,
+      providers: [
+        {
+          id: '/providers/transak',
+          name: 'Transak',
+          supportedCryptoCurrencies: { 'eip155:1/slip44:60': true },
+        },
+      ],
+    });
 
-    renderWithProvider(
+    const { baseElement } = renderWithProvider(
       <RampsPaymentMethodScreen />,
       createStore(),
       '/ramps/payment-method',
@@ -522,9 +532,11 @@ describe('RampsPaymentMethodScreen', () => {
 
     fireEvent.click(screen.getByTestId('ramps-change-provider-button'));
 
-    expect(mockNavigate).toHaveBeenCalledWith('/ramps/provider-selection', {
-      state: { amount: 100 },
-    });
+    expect(
+      screen.getByTestId('ramps-provider-selection-modal'),
+    ).toBeInTheDocument();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(baseElement).toMatchSnapshot();
   });
 
   it('uses the chain-matching account address for non-EVM assets', () => {

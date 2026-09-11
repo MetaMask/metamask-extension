@@ -26,8 +26,6 @@ class TokensTab extends HomePage {
   private readonly assetPriceInDetailsModal =
     '[data-testid="asset-hovered-price"]';
 
-  private readonly coinOverviewBuyButton = '[data-testid="coin-overview-buy"]';
-
   private readonly coinOverviewSendButton =
     '[data-testid="coin-overview-send"]';
 
@@ -208,11 +206,6 @@ class TokensTab extends HomePage {
     });
   }
 
-  async checkBuySellButtonIsPresent(): Promise<void> {
-    console.log(`Verify the buy/sell button is displayed`);
-    await this.driver.waitForSelector(this.coinOverviewBuyButton);
-  }
-
   /**
    * Asserts the token list row count without expanding the low-value section.
    *
@@ -375,6 +368,7 @@ class TokensTab extends HomePage {
    */
   async checkTokenAmountIsDisplayed(tokenAmount: string): Promise<void> {
     console.log(`Waiting for token amount ${tokenAmount} to be displayed`);
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.waitForSelector({
       css: this.tokenAmountValue,
       text: tokenAmount,
@@ -734,17 +728,25 @@ class TokensTab extends HomePage {
   }
 
   private async expandLowValueAssetsIfPresent(): Promise<void> {
-    // If the low value assets section is already expanded, no action is required.
     try {
       await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
         timeout: 1000,
       });
       return;
     } catch {
-      // Not expanded yet (or low value section not present), attempt to expand it below.
+      // Not expanded yet (or section not present)
     }
 
-    await this.driver.clickElementSafe(this.lowValueAssetsToggle);
+    const togglePresent = await this.driver.isElementPresentAndVisible(
+      this.lowValueAssetsToggle,
+      1000,
+    );
+    if (!togglePresent) {
+      return;
+    }
+
+    await this.driver.clickElement(this.lowValueAssetsToggle);
+    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded);
   }
 
   private async findTokenRowByName(tokenName: string): Promise<WebElement> {
@@ -852,6 +854,10 @@ class TokensTab extends HomePage {
       this.tokenManagementCustomTokenSuccessToast,
     );
     await this.returnFromTokenManagementToHome();
+    await this.driver.assertElementNotPresent(
+      this.tokenManagementCustomTokenSuccessToast,
+      { findElementGuard: this.tokenListItem },
+    );
   }
 
   /**

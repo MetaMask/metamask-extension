@@ -10,7 +10,7 @@ import { DefaultSubscriptionPaymentOptions } from '../../types/metametrics';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { PreferencesController } from '../../../app/scripts/controllers/preferences-controller';
 // eslint-disable-next-line import-x/no-restricted-paths
-import { MetaMetricsController } from '../../../app/scripts/controllers/metametrics-controller';
+import { setParticipateInMetaMetrics } from '../../../app/scripts/controllers/analytics';
 import { getIsShieldSubscriptionActive } from './subscription-utils';
 import { loadShieldConfig } from './config';
 
@@ -121,15 +121,13 @@ export function getIsSubscriptionCancelNotAllowed(
 /**
  * Update the preferences after a shield subscription is active
  *
- * @param metaMetricsController - MetaMetricsController instance.
  * @param preferencesController - PreferencesController instance.
  */
 export function updatePreferencesAndMetricsForShieldSubscription(
-  metaMetricsController: MetaMetricsController,
   preferencesController: PreferencesController,
 ) {
   // shield subscribers have to turn on metametrics
-  metaMetricsController.setParticipateInMetaMetrics(true);
+  setParticipateInMetaMetrics(true);
   // shield subscribers have to turn on security alerts
   preferencesController.setSecurityAlertsEnabled(true);
   // shield subscribers have to turn on phishing detection

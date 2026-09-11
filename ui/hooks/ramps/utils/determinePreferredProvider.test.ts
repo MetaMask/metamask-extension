@@ -31,6 +31,15 @@ describe('determinePreferredProvider', () => {
     });
   });
 
+  it('auto-selects the first provider when Transak is unavailable', () => {
+    const result = determinePreferredProvider([], [moonpayProvider]);
+
+    expect(result).toEqual({
+      provider: moonpayProvider,
+      autoSelected: true,
+    });
+  });
+
   it('prefers the most recent completed order provider without auto-selecting', () => {
     const result = determinePreferredProvider(
       [{ providerId: 'moonpay', completedAt: 1000 }],

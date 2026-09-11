@@ -177,4 +177,51 @@ describe('useAccountSettingsProps() tests', () => {
       expect(hook.result.current.data).toStrictEqual({});
     });
   });
+
+  it('surfaces a failed read when there are no settings to show', async () => {
+    const mocks = arrangeMocks();
+    mocks.mockCheckAccountsPresence.mockReturnValue((() =>
+      Promise.reject(
+        new Error('Failed to read wallet-activity subscriptions'),
+      )) as unknown as ReturnType<typeof ActionsModule.checkAccountsPresence>);
+
+    const hook = renderHookWithProviderTyped(
+      () => useAccountSettingsProps(['0x1']),
+      {},
+    );
+
+    await waitFor(() => {
+      expect(hook.result.current.error).toBe('Failed to get account settings');
+    });
+    expect(hook.result.current.data).toStrictEqual({});
+  });
+
+  it('keeps earlier settings when a later read fails', async () => {
+    const mocks = arrangeMocks();
+    mocks.mockCheckAccountsPresence.mockReturnValue((() =>
+      Promise.resolve({
+        '0x1': true,
+      })) as unknown as ReturnType<typeof ActionsModule.checkAccountsPresence>);
+
+    const hook = renderHookWithProviderTyped(
+      () => useAccountSettingsProps(['0x1']),
+      {},
+    );
+
+    await waitFor(() => {
+      expect(hook.result.current.data).toStrictEqual({ '0x1': true });
+    });
+
+    mocks.mockCheckAccountsPresence.mockReturnValue((() =>
+      Promise.reject(
+        new Error('Failed to read wallet-activity subscriptions'),
+      )) as unknown as ReturnType<typeof ActionsModule.checkAccountsPresence>);
+
+    await act(async () => {
+      await hook.result.current.update(['0x1']);
+    });
+
+    expect(hook.result.current.data).toStrictEqual({ '0x1': true });
+    expect(hook.result.current.error).toBe('Failed to get account settings');
+  });
 });

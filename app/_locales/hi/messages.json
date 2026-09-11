@@ -105,6 +105,10 @@
   "accountIdenticon": {
     "message": "अकाउंट आइकॉन"
   },
+  "accountImported": {
+    "message": "अकाउंट इंपोर्ट किया गया",
+    "description": "Success toast shown after a private key or JSON account is imported"
+  },
   "accountName": {
     "message": "अकाउंट का नाम"
   },
@@ -476,6 +480,42 @@
   },
   "activity_marketShort_success_title": {
     "message": "शॉर्ट क्लोज़ किया जा रहा है - मार्केट क्लोज़"
+  },
+  "activity_moneyAccountDeposit_failed_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "डिपॉज़िट नहीं हो पाया"
+  },
+  "activity_moneyAccountDeposit_pending_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "डिपॉज़िट कर रहे हैं"
+  },
+  "activity_moneyAccountDeposit_success_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "डिपॉज़िट किया गया"
+  },
+  "activity_moneyAccountWithdraw_failed_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "भेजना नहीं हो पाया"
+  },
+  "activity_moneyAccountWithdraw_pending_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "भेजा जा रहा है"
+  },
+  "activity_moneyAccountWithdraw_success_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "भेजा गया"
   },
   "activity_nftBuy_failed_title": {
     "message": "खरीदना नहीं हो पाया"
@@ -1526,6 +1566,12 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "आपका पर्प्स बैलेंस चेक नहीं किया जा सका। फिर से कोशिश करें।"
   },
+  "alertReasonAddressTrustSignalMalicious": {
+    "message": "एड्रेस को हाई रिस्क के तौर पर फ़्लैग किया गया है"
+  },
+  "alertReasonAddressTrustSignalWarning": {
+    "message": "कम एड्रेस सिग्नल"
+  },
   "alertReasonFirstTimeInteraction": {
     "message": "पहला इंटरैक्शन"
   },
@@ -1681,6 +1727,12 @@
   "approvedOnForAccounts": {
     "message": "$1 पर $2 के लिए एप्रूव किया गया",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
+  },
+  "arcUsageNoticeDescription": {
+    "message": "Arc में आपका स्वागत है! Arc चेन के आपके उपयोग को सुगम बनाने और सत्यापित करने के लिए, हम Arc टीम के साथ आपकी जानकारी साझा कर सकते हैं।"
+  },
+  "arcUsageNoticeTitle": {
+    "message": "नोटिस"
   },
   "areYouSure": {
     "message": "क्या आपको यकीन है?"
@@ -1880,6 +1932,15 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "बेसिक फंक्शनलिटी को चालू करें"
+  },
+  "basicFunctionalityMigrationSocialModalBlogPostLink": {
+    "message": "ब्लॉग पोस्ट"
+  },
+  "basicFunctionalityMigrationSocialModalTitle": {
+    "message": "गोपनीयता और प्रोडक्ट अपडेट्स"
+  },
+  "basicFunctionalityMigrationToastEnabled": {
+    "message": "चालू किया गया"
   },
   "basicFunctionalityRequired_description": {
     "message": "बेसिक फंक्शनैलिटी बंद होने पर यह फ़ीचर उपलब्ध नहीं है। इसे चालू करने के लिए नीचे दिए गए टॉगल का इस्तेमाल करें।"
@@ -2446,9 +2507,6 @@
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "अधिकतम अनुमत सीमा का उपयोग करें"
-  },
-  "bridgeValidationInsufficientGasMessage": {
-    "message": "इस ब्रिज के लिए गैस फीस का भुगतान करने के लिए आपके पास पर्याप्त $1 नहीं है। कम राशि दर्ज करें या अधिक $1 खरीदें।"
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "गैस के लिए अधिक $1 की आवश्यकता है"
@@ -3341,6 +3399,9 @@
   "deepLink_thePredictPage": {
     "message": "प्रेडिक्शन मार्केट पेज"
   },
+  "deepLink_thePrivacySettingsPage": {
+    "message": "प्राइवेसी सेटिंग्स पेज"
+  },
   "deepLink_theRewardsPage": {
     "message": "MetaMask रिवॉर्ड्स पेज"
   },
@@ -3489,10 +3550,6 @@
   },
   "disable": {
     "message": "बंद करें"
-  },
-  "disabledGasOptionToolTipMessage": {
-    "message": "मूल गैस शुल्क से न्यूनतम 10% की वृद्धि को पूरा नहीं करने के कारण “$1” को अक्षम कर दिया गया है।",
-    "description": "$1 is gas estimate type which can be market or aggressive"
   },
   "disconnect": {
     "message": "डिसकनेक्ट करें"
@@ -3664,7 +3721,7 @@
     "message": "कॉन्टेक्ट बदलें"
   },
   "editGasFeeModalTitle": {
-    "message": "गैस फ़ीस बदलें"
+    "message": "नेटवर्क फीस बदलें"
   },
   "editGasLimitOutOfBounds": {
     "message": "गैस लिमिट कम से कम $1 होनी चाहिए"
@@ -4126,9 +4183,6 @@
   "gasPrice": {
     "message": "गैस प्राइस"
   },
-  "gasPriceExcessive": {
-    "message": "आपका गैस फ़ीस अनावश्यक रूप से अधिक निर्धारित किया गया है। अमाउंट को कम करने पर विचार करें।"
-  },
   "gasPriceFetchFailed": {
     "message": "गैस प्राइस अनुमान नेटवर्क गड़बड़ी के कारण नहीं हो पाया है।"
   },
@@ -4361,9 +4415,25 @@
     "message": "खर्च करने वाला: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
+  "hardwareSwapAmount": {
+    "message": "$3 $4 के लिए $1 $2 को स्वैप करें",
+    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappedAmount": {
+    "message": "$3 $4 के लिए $1 $2 को स्वैप किया गया",
+    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappingAmount": {
+    "message": "$3 $4 के लिए $1 $2 को स्वैप क्र रहे हिन्",
+    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
   "hardwareToAddress": {
     "message": "प्रति: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareToken": {
+    "message": "टोकन: $1",
+    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "आपने अपने डिवाइस पर इस ट्रांज़ैक्शन को रिजेक्ट कर दिया है",
@@ -4377,6 +4447,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "जारी रखें"
+  },
+  "hardwareWalletErrorOnlyV4SupportedDescription": {
+    "message": "आपका $1 केवल वर्ज़न 4 (V4) टाइप्ड डेटा साइन कर सकता है। इस साइट ने पुराने सिग्नेचर प्रकार का अनुरोध किया है, जो सपोर्टेड नहीं है",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorReconnectButton": {
     "message": "रीकनेक्ट करें और फिर से कोशिश करें",
@@ -4421,6 +4495,9 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 लॉक किया गया",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleUnsupportedSignature": {
+    "message": "सिग्नेचर सपोर्टेड नहीं है"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "पक्का करें कि चुने गए अकाउंट के लिए आपका $1 डिवाइस सीक्रेट रिकवरी फ्रेज़ या पासफ्रेज़ के साथ सेट अप है",
@@ -4604,6 +4681,10 @@
   },
   "honeypotTitle": {
     "message": "हनी पॉट"
+  },
+  "hyperliquidDepositPromptTitle": {
+    "message": "MetaMask के साथ हाइपरलिक्विड को फंड करें",
+    "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "हाइपरलिक्विड के $1 पर आने वाले सभी ट्रेड पर MetaMask रेफरल कोड लगाएं। MetaMask को फीस मिलती है।",
@@ -5103,9 +5184,6 @@
   "loginErrorSessionExpiredButton": {
     "message": "लॉग इन करें"
   },
-  "loginErrorSessionExpiredDescription": {
-    "message": "आपका सत्र समाप्त हो गया है। कृपया जारी रखने के लिए फिर से लॉग इन करें।"
-  },
   "loginErrorSessionExpiredTitle": {
     "message": "सत्र समाप्त हो गया है"
   },
@@ -5153,6 +5231,10 @@
   },
   "manage": {
     "message": "मैनेज करें"
+  },
+  "manageAccounts": {
+    "message": "एकाउंट्स मैनेज करें",
+    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
   },
   "manageConnectedAccounts": {
     "message": "कनेक्टेड अकाउंट्स मैनेज करें"
@@ -5221,10 +5303,6 @@
   "memo": {
     "message": "ज्ञापन"
   },
-  "merklRewardsClaimBonus": {
-    "message": "बोनस क्लेम करें",
-    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
-  },
   "merklRewardsToastFailed": {
     "message": "आपका mUSD बोनस क्लेम फेल हो गया",
     "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
@@ -5236,10 +5314,6 @@
   "merklRewardsToastSuccess": {
     "message": "आपका mUSD बोनस यहाँ है!",
     "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
-  },
-  "merklRewardsUnexpectedError": {
-    "message": "एक अनचाही गड़बड़ी हुई। कृपया फिर से कोशिश करें।",
-    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "मैसेज"
@@ -5325,6 +5399,30 @@
   "money": {
     "message": "वित्त"
   },
+  "moneyAccountApyPitch": {
+    "message": "$1 APY कमाएं",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchInfo": {
+    "message": "एपीवाय की जानकारी"
+  },
+  "moneyAccountApyTooltip": {
+    "message": "दिखाया गया रेट मौजूदा मार्केट कंडीशन के आधार पर एक अनुमानित एनुअल परसेंटेज यील्ड (APY) है। APY वेरिएबल है और इसकी गारंटी नहीं है।"
+  },
+  "moneyAccountAvailableBalance": {
+    "message": "उपलब्ध बैलेंस: $1",
+    "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountProjectedBalance": {
+    "message": "अनुमानित 1-वर्षीय बैलेंस:"
+  },
+  "moneyAccountProjectedBalanceInfo": {
+    "message": "अनुमानित 1-वर्षीय बैलेंस"
+  },
+  "moneyAccountProjectedBalanceTooltip": {
+    "message": "प्रोजेक्शन में माना गया है कि $1% एनुअल परसेंटेज यील्ड (APY) एक वर्ष तक अपरिवर्तित रहती है। APY परिवर्तनशील है और इसकी गारंटी नहीं है।",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyActivity": {
     "message": "गतिविधि"
   },
@@ -5345,6 +5443,9 @@
   },
   "moneyActivityDepositing": {
     "message": "डिपॉज़िट कर रहे हैं"
+  },
+  "moneyActivityDetailsTransactionId": {
+    "message": "ट्रांसेक्शन ID"
   },
   "moneyActivityEmpty": {
     "message": "अभी तक कोई गतिविधि नहीं हुई"
@@ -5390,6 +5491,18 @@
   },
   "moneyApy": {
     "message": "$1 APY"
+  },
+  "moneyBalanceInfoBody": {
+    "message": "आपका डॉलर-बैक्ड mUSD बैलेंस जो हमेशा खर्च करने, भेजने या कभी भी ट्रेड करने\n के लिए उपलब्ध है। हम इसे आपके कुल अकाउंट बैलेंस में कैलकुलेट नहीं करते हैं।"
+  },
+  "moneyBalanceInfoWithdrawals": {
+    "message": "विदड्रॉल तुरंत प्रोसेस होते हैं, जो रिलेवेंट ब्लॉकचेन पर स्टैंडर्ड नेटवर्क कन्फर्मेशन टाइम के अधीन होते हैं। अगर लिक्विडिटी टाइट है, तो टेम्पररी डिले हो सकता है।"
+  },
+  "moneyBalanceLastKnown": {
+    "message": "आखिरी ज्ञात बैलेंस"
+  },
+  "moneyBalanceTitle": {
+    "message": "Money बैलेंस"
   },
   "moneyBalanceUnavailable": {
     "message": "बैलेंस अनुपलब्ध है"
@@ -5561,54 +5674,6 @@
     "message": "$1 $2 Snaps का उपयोग करना चाहता है",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdAssetBonusAccruing": {
-    "message": "अगला बोनस अर्जित किया जा रहा है",
-    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
-  },
-  "musdAssetBonusClaimAmount": {
-    "message": "$1 बोनस क्लेम करें",
-    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
-  },
-  "musdAssetBonusEstimatedAnnual": {
-    "message": "अनुमानित वार्षिक बोनस",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusInfoAria": {
-    "message": "आपकी बोनस जानकारी",
-    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
-  },
-  "musdAssetBonusInfoEstimatedAnnual": {
-    "message": "आपके वर्तमान बैलेंस और ब्याज दर के आधार पर एक वर्ष में आपकी संभावित कमाई का अनुमान। रेट बदलता रहता है और बदल सकता है।",
-    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLearnMore": {
-    "message": "अधिक जानें।",
-    "description": "Link label at the bottom of the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLifetimeClaimed": {
-    "message": "आपने शुरुआत से लेकर अब तक कुल जितना बोनस क्लेम किया है।",
-    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoYourBonus": {
-    "message": "mUSD होल्ड करने पर आपको मिलता है $1% सालाना बोनस। आपका बोनस Linea पर रोज़ाना क्लेम किया जा सकता है। $2",
-    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
-  },
-  "musdAssetBonusLifetimeClaimed": {
-    "message": "लाइफटाइम बोनस क्लेम किया गया",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusNoAccruing": {
-    "message": "अगला कोई बोनस अर्जित नहीं किया जा रहा है",
-    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
-  },
-  "musdAssetBonusRate": {
-    "message": "$1% बोनस",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
-  "musdAssetBonusTitle": {
-    "message": "आपका बोनस",
-    "description": "Section title on the mUSD asset details page"
-  },
   "musdAssetConvertBenefitDailyBonus": {
     "message": "दैनिक बोनस",
     "description": "Benefit tag on the mUSD asset details convert section"
@@ -5672,14 +5737,6 @@
   "musdBuyMusd": {
     "message": "mUSD खरीदें"
   },
-  "musdClaimSendingTo": {
-    "message": "को भेजा जा रहा है",
-    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
-  },
-  "musdClaimSendingToWallet": {
-    "message": "$1 को भेजा जा रहा है",
-    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
-  },
   "musdClaimTitle": {
     "message": "बोनस क्लेम करें",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5742,10 +5799,6 @@
     "message": "केवल उन एड्रेस को सेव करें जिन पर आपको भरोसा हो।",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "इसे बुरी नीयत वाला के रूप में पहचाना गया है। हम इस एड्रेस के साथ इंटरैक्ट न करने की सलाह देते हैं।",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "यदि आप इस एड्रेस को जानते हैं, तो भविष्य में इसे पहचानने के लिए इसे एक उपनाम दें।",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5757,10 +5810,6 @@
   "nameInstructionsSaved": {
     "message": "आपने पहले इस एड्रेस के लिए एक उपनाम जोड़ा है। आप अन्य सुझाए गए उपनामों को एडिट कर या देख सकते हैं।",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "हम इस एड्रेस की पुष्टि नहीं कर सकते। यह नया या अप्रमाणित हो सकता है। आगे इसे पहचानने के लिए एक व्यक्तिगत डिस्प्ले नाम सेट करें।",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "उपनाम",
@@ -5789,10 +5838,6 @@
   "nameModalTitleVerified": {
     "message": "सत्यापित एड्रेस",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "एड्रेस की समीक्षा की आवश्यकता है",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "$1 द्वारा प्रस्तावित",
@@ -5936,10 +5981,6 @@
   },
   "networkStatusPriorityFeeTooltip": {
     "message": "प्रायोरिटी फ़ीस की सीमा (उर्फ \"माइनर टिप\")। यह माइनरों के पास जाता है और उन्हें आपके ट्रांसेक्शन को प्राथमिकता देने के लिए प्रोत्साहित करता है।"
-  },
-  "networkStatusStabilityFeeTooltip": {
-    "message": "पिछले 72 घंटों के सापेक्ष गैस फ़ीस $1 है।",
-    "description": "$1 is networks stability value - stable, low, high"
   },
   "networkSuggested": {
     "message": "सुझावित नेटवर्क"
@@ -6313,6 +6354,9 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "आपको अभी तक कोई नोटिफिकेशंस नहीं मिली है।"
+  },
+  "notificationsSettingsAccountsLoadError": {
+    "message": "हम आपकी अकाउंट नोटिफिकेशन सेटिंग्स लोड नहीं कर सके। बाद में फिर से प्रयास करें।"
   },
   "notificationsSettingsAgenticCliDescription": {
     "message": "एजेंट वॉलेट के लिए CLI कनेक्शन रिक्वेस्ट, एप्रूवल और सेशन अपडेट"
@@ -6749,9 +6793,6 @@
   "passwordToggleShow": {
     "message": "पासवर्ड दिखाएं"
   },
-  "passwordsDontMatch": {
-    "message": "पासवर्ड मेल नहीं खाता"
-  },
   "paste": {
     "message": "पेस्ट करें"
   },
@@ -7140,9 +7181,6 @@
   "perpsAddFunds": {
     "message": "फंड जोड़ें"
   },
-  "perpsAddFundsDescription": {
-    "message": "लेवरेज के साथ परपेचुअल कॉन्ट्रैक्ट्स में ट्रेडिंग शुरू करने के लिए फंड जोड़ें"
-  },
   "perpsAddMargin": {
     "message": "Add margin"
   },
@@ -7213,6 +7251,12 @@
   "perpsCandlePeriodMinutes": {
     "message": "मिनट"
   },
+  "perpsChart": {
+    "message": "प्राइस चार्ट"
+  },
+  "perpsChartLoadError": {
+    "message": "चार्ट डाटा लोड नहीं हो पाया"
+  },
   "perpsCloseAll": {
     "message": "सब बंद करें"
   },
@@ -7260,6 +7304,9 @@
   },
   "perpsCloseShort": {
     "message": "शॉर्ट को क्लोज़ करें"
+  },
+  "perpsCollapseChart": {
+    "message": "चार्ट को छोटा करें"
   },
   "perpsConfirmCloseLong": {
     "message": "लॉन्ग को क्लोज़ करें"
@@ -7358,6 +7405,9 @@
   "perpsExchangeAccountNotFound": {
     "message": "ट्रेडिंग शुरू करने के लिए फंड जोड़ें।",
     "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
+  },
+  "perpsExpandChart": {
+    "message": "चार्ट को बड़ा करें"
   },
   "perpsExploreMarkets": {
     "message": "मार्केट एक्सप्लोर करें"
@@ -7995,11 +8045,17 @@
     "message": "TP/SL सफलतापूर्वक अपडेट किया गया",
     "description": "Success toast text shown when TP/SL settings are updated"
   },
-  "perpsTotalBalance": {
-    "message": "कुल बैलेंस"
+  "perpsTopMovers": {
+    "message": "टॉप मूवर्स",
+    "description": "Heading of the Perps tab section ranking markets by 24h price change"
   },
-  "perpsTradePerps": {
-    "message": "पर्प्स ट्रेड करें"
+  "perpsTopMoversGainers": {
+    "message": "गेनर्स",
+    "description": "Toggle option showing the markets that rose the most over 24h in the Top movers section"
+  },
+  "perpsTopMoversLosers": {
+    "message": "लूज़र्स",
+    "description": "Toggle option showing the markets that fell the most over 24h in the Top movers section"
   },
   "perpsTrades": {
     "message": "ट्रेड्स"
@@ -8392,6 +8448,10 @@
   "quotedTotalCost": {
     "message": "कुल कीमत: $1"
   },
+  "rampsBackToWallet": {
+    "message": "वॉलेट पर वापस जाएँ",
+    "description": "Secondary button on the ramps complete-buy interstitial that returns to the wallet home"
+  },
   "rampsBestRate": {
     "message": "सबसे अच्छी रेट"
   },
@@ -8409,6 +8469,21 @@
   "rampsChangeProvider": {
     "message": "प्रोवाइडर बदलें।"
   },
+  "rampsChooseProvider": {
+    "message": "प्रदाता चुनें"
+  },
+  "rampsCompleteBuyTitle": {
+    "message": "खरीदारी पूरी करें",
+    "description": "Title of the interstitial shown after opening a ramps provider checkout tab"
+  },
+  "rampsCompletePurchaseInProviderTab": {
+    "message": "$1 टैब में अपनी खरीदारी पूरी करें",
+    "description": "$1 is the on-ramp provider name (e.g. Transak)"
+  },
+  "rampsContinueInBrowser": {
+    "message": "ब्राउज़र में जारी रखें",
+    "description": "Banner title on the ramps complete-buy interstitial"
+  },
   "rampsEligibilityFailedDescription": {
     "message": "कृपया फिर से प्रयास करें, या यदि ऐसा बार-बार हो रहा है तो सपोर्ट से संपर्क करें।"
   },
@@ -8420,6 +8495,10 @@
   },
   "rampsErrorLoadingTokens": {
     "message": "टोकन को लोड करने में गड़बड़ी हुई"
+  },
+  "rampsEstimatedToReceive": {
+    "message": "प्राप्त होने का अनुमान",
+    "description": "Label for the estimated crypto amount on the ramps complete-buy interstitial"
   },
   "rampsMaxPurchaseLimit": {
     "message": "अधिकतम खरीद $1 है",
@@ -8546,27 +8625,26 @@
   "rampsPaymentDelayMinutes": {
     "message": "मिनट"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  "rampsPaymentMethod": {
+    "message": "पेमेंट का तरीका",
+    "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
   },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "अधिकतम $1",
+  "rampsPaymentMethodLimits": {
+    "message": "$1 तक",
     "description": "$1 is the maximum fiat buy amount"
   },
   "rampsPaymentMethodMinLimit": {
     "message": "न्यूनतम $1",
     "description": "$1 is the minimum fiat buy amount"
   },
+  "rampsPreviouslyUsed": {
+    "message": "पिछली बार इस्तेमाल किया गया"
+  },
   "rampsQuoteFetchError": {
     "message": "कोटेशन प्राप्त नहीं हो पाया।"
   },
   "rampsQuoteUnavailable": {
     "message": "कोटेशन उपलब्ध नहीं है।"
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "$1 के लिए कोटेशन दिखाए गए हैं।",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "भुगतान विधि चुनें"
@@ -8666,6 +8744,14 @@
   },
   "removeAccount": {
     "message": "अकाउंट हटाएं"
+  },
+  "removeAccountConfirmDescription": {
+    "message": "आप इस अकाउंट को प्राइवेट की (key) से इंपोर्ट करके कभी भी रिस्टोर कर सकते हैं।",
+    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
+  },
+  "removeAccountConfirmTitle": {
+    "message": "$1 हटाएं",
+    "description": "Title of the account remove confirmation modal. $1 is the account name."
   },
   "removeAccountModalBannerDescription": {
     "message": "इस अकाउंट को हटाने से पहले सुनिश्चित करें कि आपके पास इसके लिए सीक्रेट रिकवरी फ्रेज़ या प्राइवेट की (key) है।",
@@ -9120,6 +9206,10 @@
   "searchAnAcccountOrContact": {
     "message": "किसी अकाउंट या कॉन्टेक्ट को ढूंढें"
   },
+  "searchAnAccount": {
+    "message": "किसी अकाउंट को ढूंढें",
+    "description": "Search input placeholder for the Perps destination account picker"
+  },
   "searchForAnAssetToSend": {
     "message": "भेजने के लिए किसी एसेट को ढूंढें"
   },
@@ -9559,6 +9649,9 @@
   "selectPathHelp": {
     "message": "यदि आपको अपनी पसंद के हिसाब से अकाउंट दिखाई नहीं देते हैं, तो HD पथ या मौजूदा चुना गया नेटवर्क बदलने की कोशिश करें।"
   },
+  "selectPerpsAccount": {
+    "message": "पर्प्स अकाउंट चुनें"
+  },
   "selectRecipient": {
     "message": "प्राप्तकर्ता चुनें"
   },
@@ -9599,6 +9692,9 @@
   },
   "sendSelectSendAsset": {
     "message": "भेजने के लिए एसेट को चुनें"
+  },
+  "sendToPerps": {
+    "message": "पर्प्स को भेजें"
   },
   "sendingAsset": {
     "message": "$1 भेजा जा रहा है"
@@ -10996,9 +11092,6 @@
   "stxCancelled": {
     "message": "स्वैप विफल हो गया होगा"
   },
-  "stxCancelledDescription": {
-    "message": "आपका ट्रांसेक्शन विफल हो सकता था और उसे कैंसिल कर दिया गया ताकि आपको गैस फ़ीस का अनावश्यक पेमेंट करने से रोका जा सके।"
-  },
   "stxCancelledSubDescription": {
     "message": "अपने स्वैप का पुन: प्रयास करें। हम अगली बार इसी तरह के जोखिमों से आपकी रक्षा करने के लिए यहां मौजूद रहेंगे।"
   },
@@ -11040,9 +11133,6 @@
   },
   "stxUserCancelled": {
     "message": "स्वैप कैंसिल हुआ"
-  },
-  "stxUserCancelledDescription": {
-    "message": "आपका ट्रांसेक्शन कैंसिल किया गया और आपने किसी भी तरह के अनावश्यक गैस फ़ीस का पेमेंट नहीं किया।"
   },
   "submit": {
     "message": "सबमिट करें"
@@ -11173,19 +11263,12 @@
     "message": "$1 से $2 का स्वैप",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesExplanation": {
-    "message": "MetaMask गैस फीस से पैसे नहीं कमाता है। ये शुल्क अनुमानित हैं और इस आधार पर बदल सकते हैं कि नेटवर्क कितना व्यस्त है और ट्रांसेक्शन कितना जटिल है। अधिक जानें $1।",
-    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
-  },
   "swapGasFeesExplanationLinkText": {
     "message": "यहाँ",
     "description": "Text for link in swapGasFeesExplanation"
   },
   "swapGasFeesIncluded": {
     "message": " शामिल किया गया"
-  },
-  "swapGasFeesSplit": {
-    "message": "पिछली स्क्रीन पर गैस फ़ीस इन दो ट्रांसेक्शन के बीच विभाजित हैं।"
   },
   "swapGasFeesSponsored": {
     "message": "MetaMask द्वारा भुगतान किया गया"
@@ -11320,9 +11403,6 @@
   "swapSource": {
     "message": "चलनिधि का स्रोत"
   },
-  "swapSuggestedGasSettingToolTipMessage": {
-    "message": "विनिमय जटिल और समय के प्रति संवेदनशील ट्रांसेक्शन हैं। हम एक सफल विनिमय की लागत और विश्वास के बीच अच्छे संतुलन के लिए इस गैस फ़ीस की अनुशंसा करते हैं।"
-  },
   "swapToConfirmWithHwWallet": {
     "message": "अपने hardware wallet से पुष्टि करने के लिए"
   },
@@ -11344,9 +11424,6 @@
   },
   "swapUnknown": {
     "message": "अज्ञात"
-  },
-  "swapValidationInsufficientGasMessage": {
-    "message": "इस स्वैप के लिए गैस फीस का भुगतान करने के लिए आपके पास पर्याप्त $1 नहीं है। कम राशि दर्ज करें या अधिक $1 खरीदें।"
   },
   "swapZeroSlippage": {
     "message": "0% स्लिपेज"
@@ -11562,7 +11639,7 @@
     "message": "फंक्शन"
   },
   "transactionDetailGasHeading": {
-    "message": "अनुमानित गैस फीस"
+    "message": "अनुमानित नेटवर्क शुल्क"
   },
   "transactionError": {
     "message": "ट्रांसेक्शन में गड़बड़ी। कॉन्ट्रैक्ट कोड में अपवाद डाला गया।"
@@ -11582,9 +11659,6 @@
   "transactionHistoryBaseFee": {
     "message": "बेस फी (GWEI)"
   },
-  "transactionHistoryL1GasLabel": {
-    "message": "कुल L1 गैस फ़ीस"
-  },
   "transactionHistoryL2GasLimitLabel": {
     "message": "L2 गैस लिमिट"
   },
@@ -11598,7 +11672,7 @@
     "message": "प्रायोरिटी फी (GWEI)"
   },
   "transactionHistoryTotalGasFee": {
-    "message": "कुल गैस फीस"
+    "message": "कुल नेटवर्क शुल्क"
   },
   "transactionIdCopied": {
     "message": "Transaction ID कॉपी किया गया"
@@ -11799,9 +11873,6 @@
   },
   "unlock": {
     "message": "अनलॉक करें"
-  },
-  "unlockPageIncorrectPassword": {
-    "message": "पासवर्ड गलत है। कृपया फिर से प्रयास करें।"
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "बहुत अधिक प्रयास हो गए हैं। इतने समय में फिर से कोशिश करें "
@@ -12072,10 +12143,6 @@
   },
   "wrongNetworkName": {
     "message": "हमारे रिकॉर्ड के अनुसार, नेटवर्क का नाम इस चेन ID से ठीक से मेल नहीं खा सकता है।"
-  },
-  "wrongPassword": {
-    "message": "गलत पासवर्ड",
-    "description": "Displayed when the user enters an incorrect password"
   },
   "year": {
     "message": "वर्ष"

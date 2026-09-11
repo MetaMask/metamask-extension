@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { debounce } from 'lodash';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
   isSolanaAddress,
@@ -37,20 +36,9 @@ export const useRecipientValidation = () => {
   } = useSendType();
   const { validateName } = useNameValidation();
   const [result, setResult] = useState<RecipientValidationResult>({});
-  const prevAddressValidated = useRef<string>();
-  const prevChainIdValidated = useRef<string>();
+  const validationRequestIdRef = useRef(0);
   const unmountedRef = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
-
-  // Use ref to hold the latest validation function to avoid recreating the debounced function
-  // when dependencies change. This prevents pending validations from being cancelled.
-  const validateRecipientRef =
-    useRef<
-      (
-        toAddress: string,
-        signal?: AbortSignal,
-      ) => Promise<RecipientValidationResult>
-    >();
 
   useEffect(() => {
     return () => {
@@ -59,9 +47,8 @@ export const useRecipientValidation = () => {
     };
   }, []);
 
-  // Update the ref whenever dependencies change
-  useEffect(() => {
-    validateRecipientRef.current = async (
+  const validateRecipient = useCallback(
+    async (
       toAddress: string,
       signal?: AbortSignal,
     ): Promise<RecipientValidationResult> => {
@@ -100,63 +87,52 @@ export const useRecipientValidation = () => {
       return {
         error: 'invalidAddress',
       };
-    };
-  }, [
-    asset,
-    chainId,
-    isBitcoinSendType,
-    isEvmSendType,
-    isSolanaSendType,
-    isStellarSendType,
-    isTronSendType,
-    validateName,
-  ]);
-
-  // Create debounced function only once - it calls through the ref to get latest validation logic
-  const debouncedValidateRecipient = useMemo(
-    () =>
-      debounce(async (toAddress: string, validationChainId: string) => {
-        abortControllerRef.current?.abort();
-        abortControllerRef.current = new AbortController();
-
-        const validationResult = await validateRecipientRef.current?.(
-          toAddress,
-          abortControllerRef.current.signal,
-        );
-
-        if (
-          !unmountedRef.current &&
-          prevAddressValidated.current === toAddress &&
-          prevChainIdValidated.current === validationChainId
-        ) {
-          setResult({
-            ...validationResult,
-            toAddressValidated: toAddress,
-          });
-        }
-      }, VALIDATION_DEBOUNCE_MS),
-    [],
+    },
+    [
+      asset,
+      chainId,
+      isBitcoinSendType,
+      isEvmSendType,
+      isSolanaSendType,
+      isStellarSendType,
+      isTronSendType,
+      validateName,
+    ],
   );
 
   useEffect(() => {
-    const addressUnchanged = prevAddressValidated.current === to;
-    const chainIdUnchanged = prevChainIdValidated.current === chainId;
-
-    // Skip if nothing changed or no address to validate
-    if (!to || !chainId || (addressUnchanged && chainIdUnchanged)) {
-      return;
+    if (!to || !chainId) {
+      return undefined;
     }
 
-    prevAddressValidated.current = to;
-    prevChainIdValidated.current = chainId;
-    debouncedValidateRecipient(to, chainId);
-  }, [to, chainId, debouncedValidateRecipient]);
+    validationRequestIdRef.current += 1;
+    const requestId = validationRequestIdRef.current;
 
-  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      abortControllerRef.current?.abort();
+      abortControllerRef.current = new AbortController();
+
+      validateRecipient(to, abortControllerRef.current.signal)
+        .then((validationResult) => {
+          if (
+            unmountedRef.current ||
+            validationRequestIdRef.current !== requestId
+          ) {
+            return;
+          }
+
+          setResult({
+            ...validationResult,
+            toAddressValidated: to,
+          });
+        })
+        .catch(() => undefined);
+    }, VALIDATION_DEBOUNCE_MS);
+
     return () => {
-      debouncedValidateRecipient.cancel();
+      clearTimeout(timeoutId);
     };
-  }, [debouncedValidateRecipient]);
+  }, [to, chainId, validateRecipient]);
 
   const { alerts, hasUnacknowledgedAlerts, acknowledgeAlerts } =
     useSendAlerts();

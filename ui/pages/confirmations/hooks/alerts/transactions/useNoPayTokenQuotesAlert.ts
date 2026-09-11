@@ -1,10 +1,16 @@
 import { useMemo } from 'react';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import {
+  hasTransactionType,
+  isPerpsWithdrawTransaction,
+} from '../../../../../../shared/lib/transactions.utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import {
@@ -29,6 +35,10 @@ export function useNoPayTokenQuotesAlert(): Alert[] {
   const sourceAmounts = useTransactionPaySourceAmounts();
   const requiredTokens = useTransactionPayRequiredTokens();
 
+  const isMoneyAccountDeposit = hasTransactionType(currentConfirmation, [
+    TransactionType.moneyAccountDeposit,
+  ]);
+
   const isPerpsWithdrawNotReady =
     isPerpsWithdrawTransaction(currentConfirmation) &&
     hasPositiveRequiredAmount &&
@@ -42,8 +52,21 @@ export function useNoPayTokenQuotesAlert(): Alert[] {
       )?.skipIfBalance,
   );
 
+  // Money-account deposits require a Relay quote (`isQuoteRequired`). When the
+  // pay-token fiat rate is missing at source-amount time, `sourceAmounts`
+  // stays empty and the usual "no quotes" path never fires — Add funds just
+  // stays disabled with no explanation.
+  const isDepositMissingSourceAmounts =
+    isMoneyAccountDeposit &&
+    Boolean(payToken) &&
+    hasPositiveRequiredAmount &&
+    !isQuotePending &&
+    !quotes?.length &&
+    !sourceAmounts?.length;
+
   const showAlert =
     isPerpsWithdrawNotReady ||
+    isDepositMissingSourceAmounts ||
     (payToken &&
       !isQuotePending &&
       sourceAmounts?.length &&

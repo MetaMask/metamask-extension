@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 
@@ -114,15 +114,18 @@ export const SnapUIAccountSelector = ({
     />
   ));
 
-  const handleSelect = (value: State) => {
-    if (switchGlobalAccount) {
-      dispatch(
-        setSelectedInternalAccountWithoutLoading(
-          (value as AccountSelectorState).accountId,
-        ),
-      );
-    }
-  };
+  const handleSelect = useCallback(
+    (value: State) => {
+      if (switchGlobalAccount) {
+        dispatch(
+          setSelectedInternalAccountWithoutLoading(
+            (value as AccountSelectorState).accountId,
+          ),
+        );
+      }
+    },
+    [dispatch, switchGlobalAccount],
+  );
 
   return (
     <SnapUISelector

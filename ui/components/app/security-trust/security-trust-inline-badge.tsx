@@ -12,6 +12,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export type SecurityTrustTranslate = (
   key: string,
@@ -142,20 +143,13 @@ export const SecurityTrustInlineBadge = ({
   );
 };
 
-export const SecurityTrustVerifiedBadge = ({
-  badge,
-  testId = 'security-badge-verified',
-  onClick,
-}: {
-  badge: SecurityTrustInlineBadgeConfig;
-  testId?: string;
-  onClick?: () => void;
-}) => (
-  <Box
-    flexDirection={BoxFlexDirection.Row}
-    alignItems={BoxAlignItems.Center}
-    data-testid={onClick ? undefined : testId}
-  >
-    <SecurityTrustInlineBadge badge={badge} testId={testId} onClick={onClick} />
-  </Box>
-);
+export const SecurityBadge = ({ value }: { value?: string }) => {
+  const t = useI18nContext() as SecurityTrustTranslate;
+  const badge = getSecurityTrustBadgeConfig(value, t);
+
+  if (!badge) {
+    return null;
+  }
+
+  return <SecurityTrustInlineBadge badge={badge} testId="security-badge" />;
+};

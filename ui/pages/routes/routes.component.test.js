@@ -164,7 +164,6 @@ jest.mock('../../hooks/musd', () => ({
   }),
   isTokenInWildcardList: jest.fn().mockReturnValue(false),
   checkTokenAllowed: jest.fn().mockReturnValue(false),
-  isMerklClaimTransaction: jest.fn().mockReturnValue(false),
 }));
 
 jest.mock('../../hooks/useMultiPolling', () => ({

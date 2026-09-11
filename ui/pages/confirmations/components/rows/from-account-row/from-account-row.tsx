@@ -27,6 +27,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useDisplayName } from '../../../../../hooks/useDisplayName';
 import { useConfirmContext } from '../../../context/confirm';
+import { replaceAccountInNestedTransactions } from '../../../utils/transaction-pay';
 import { AccountSelectModal } from '../../account-select-modal';
 
 export { ConfirmInfoRowSize };
@@ -84,24 +85,32 @@ export function FromAccountRow({
   const closeModal = useCallback(() => setIsModalOpen(false), []);
 
   const handleSelect = useCallback(
-    (address: string) => {
+    async (address: string) => {
       closeModal();
 
       if (
-        currentConfirmation?.id &&
-        address.toLowerCase() !== from.toLowerCase()
+        !currentConfirmation?.id ||
+        address.toLowerCase() === from.toLowerCase()
       ) {
-        // The TransactionPayController resolves the funding account (and gas)
-        // from `accountOverride ?? txParams.from`, so keep it in sync with the
-        // newly selected account.
-        setAccountOverride(currentConfirmation.id, address as Hex).catch(
-          (error) => {
-            console.error('Failed to set pay account override', error);
-          },
-        );
+        return;
+      }
+
+      // Rewrite nested calldata first and await persistence so confirm cannot
+      // approve a previously funded batch that still transfers to the old
+      // recipient, then seed accountOverride.
+      try {
+        await replaceAccountInNestedTransactions({
+          transactionId: currentConfirmation.id,
+          nestedTransactions: currentConfirmation.nestedTransactions,
+          oldAddress: accountOverride ?? txFrom,
+          newAddress: address,
+        });
+        await setAccountOverride(currentConfirmation.id, address as Hex);
+      } catch (error) {
+        console.error('Failed to update pay account override', error);
       }
     },
-    [closeModal, currentConfirmation?.id, from],
+    [accountOverride, closeModal, currentConfirmation, from, txFrom],
   );
 
   if (!currentConfirmation || !from) {

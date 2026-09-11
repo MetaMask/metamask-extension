@@ -260,19 +260,21 @@ export const BackupAndSyncToggle = ({
 
   return (
     <Box
-      marginTop={4}
-      marginBottom={4}
-      paddingLeft={4}
-      paddingRight={4}
-      className="privacy-settings__setting__wrapper"
+      marginTop={isOnboarding ? 3 : 4}
+      marginBottom={isOnboarding ? 3 : 4}
+      paddingLeft={isOnboarding ? 0 : 4}
+      paddingRight={isOnboarding ? 0 : 4}
+      className="w-full"
       id="backup-and-sync-toggle"
       data-testid={backupAndSyncToggleTestIds.container}
     >
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Start}
-        marginBottom={1}
+        alignItems={BoxAlignItems.Center}
+        marginBottom={isOnboarding ? 4 : 1}
+        className="w-full"
+        gap={4}
       >
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {t('backupAndSyncEnable')}
@@ -283,52 +285,47 @@ export const BackupAndSyncToggle = ({
             <Preloader size={36} />
           </Box>
         ) : (
-          <div
-            className="privacy-settings__setting__toggle"
-            data-testid={backupAndSyncToggleTestIds.toggleContainer}
-          >
+          <Box data-testid={backupAndSyncToggleTestIds.toggleContainer}>
             <ToggleButton
               value={displayedBackupAndSyncEnabled}
               onToggle={handleBackupAndSyncToggleSetValue}
               dataTestId={backupAndSyncToggleTestIds.toggleButton}
             />
-          </div>
-        )}
-      </Box>
-      <div className="privacy-settings__setting__description">
-        <Text
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextAlternative}
-          asChild
-        >
-          <div>
-            {t('backupAndSyncEnableDescription', [
-              <Text
-                asChild
-                variant={TextVariant.BodyMd}
-                key="privacy-link"
-                color={TextColor.InfoDefault}
-              >
-                <a
-                  href={ZENDESK_URLS.PROFILE_PRIVACY}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t('backupAndSyncPrivacyLink')}
-                </a>
-              </Text>,
-            ])}
-          </div>
-        </Text>
-
-        {error && (
-          <Box marginTop={4} paddingBottom={4}>
-            <Text color={TextColor.ErrorDefault} variant={TextVariant.BodySm}>
-              {t('notificationsSettingsBoxError')}
-            </Text>
           </Box>
         )}
-      </div>
+      </Box>
+      <Text
+        variant={isOnboarding ? TextVariant.BodySm : TextVariant.BodyMd}
+        color={TextColor.TextAlternative}
+        asChild
+        className="w-full"
+      >
+        <div>
+          {t('backupAndSyncEnableDescription', [
+            <Text
+              asChild
+              variant={isOnboarding ? TextVariant.BodySm : TextVariant.BodyMd}
+              key="privacy-link"
+              color={TextColor.InfoDefault}
+            >
+              <a
+                href={ZENDESK_URLS.PROFILE_PRIVACY}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t('backupAndSyncPrivacyLink')}
+              </a>
+            </Text>,
+          ])}
+          {error && (
+            <Box marginTop={4} paddingBottom={4}>
+              <Text color={TextColor.ErrorDefault} variant={TextVariant.BodySm}>
+                {t('notificationsSettingsBoxError')}
+              </Text>
+            </Box>
+          )}
+        </div>
+      </Text>
     </Box>
   );
 };

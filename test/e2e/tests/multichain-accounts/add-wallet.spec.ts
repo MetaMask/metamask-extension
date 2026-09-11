@@ -159,7 +159,13 @@ describe('Add wallet', function () {
           'foobarbazqux',
         );
 
-        // Check new imported account has correct name and label
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkAccountImportedToastIsDisplayed();
+        await headerNavbar.checkAccountLabel(IMPORTED_ACCOUNT_NAME);
+
+        await headerNavbar.openAccountMenu();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
         );
@@ -168,8 +174,6 @@ describe('Add wallet', function () {
           account: IMPORTED_ACCOUNT_NAME,
         });
         await accountListPage.checkNumberOfAvailableAccounts(4);
-        await accountListPage.switchToAccount(IMPORTED_ACCOUNT_NAME);
-        await headerNavbar.checkAccountLabel(IMPORTED_ACCOUNT_NAME);
       },
     );
   });

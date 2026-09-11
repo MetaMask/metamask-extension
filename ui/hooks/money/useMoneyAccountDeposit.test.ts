@@ -1,6 +1,7 @@
 import { act } from '@testing-library/react';
 import { EthAccountType, BtcAccountType } from '@metamask/keyring-api';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { MONEY_HOME_ROUTE } from '../../helpers/constants/routes';
 import { getMoneyAccountDepositIntent } from '../../helpers/money/deposit-intent';
 import {
   ConfirmationLoader,
@@ -8,9 +9,14 @@ import {
 } from '../../pages/confirmations/hooks/useConfirmationNavigation';
 import { createMoneyAccountDepositTransaction } from '../../store/controller-actions/transaction-pay-controller';
 import { useMoneyAccountDeposit } from './useMoneyAccountDeposit';
+import { useMoneyErrorReporter } from './useMoneyErrorReporter';
 
 jest.mock('../../store/controller-actions/transaction-pay-controller', () => ({
   createMoneyAccountDepositTransaction: jest.fn(),
+}));
+
+jest.mock('./useMoneyErrorReporter', () => ({
+  useMoneyErrorReporter: jest.fn(),
 }));
 
 jest.mock('../../pages/confirmations/hooks/useConfirmationNavigation', () => ({
@@ -24,6 +30,7 @@ const createDepositTransactionMock = jest.mocked(
   createMoneyAccountDepositTransaction,
 );
 const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
+const useMoneyErrorReporterMock = jest.mocked(useMoneyErrorReporter);
 
 const TRANSACTION_ID = 'transaction-id-mock';
 const ACCOUNT_ID = 'account-id-mock';
@@ -47,10 +54,12 @@ const EVM_ACCOUNT_STATE = stateWithSelectedAccount(EthAccountType.Eoa);
 
 describe('useMoneyAccountDeposit', () => {
   const navigateToTransactionMock = jest.fn();
+  const reportErrorMock = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
 
+    useMoneyErrorReporterMock.mockReturnValue(reportErrorMock);
     useConfirmationNavigationMock.mockReturnValue({
       navigateToTransaction: navigateToTransactionMock,
     } as unknown as ReturnType<typeof useConfirmationNavigation>);
@@ -73,9 +82,28 @@ describe('useMoneyAccountDeposit', () => {
 
     expect(createDepositTransactionMock).toHaveBeenCalledWith(
       expect.stringMatching(/^0x[0-9a-f]{32}$/u),
+      '0x1234567890123456789012345678901234567890',
     );
     expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
       loader: ConfirmationLoader.CustomAmount,
+      goBackTo: '/',
+    });
+  });
+
+  it('passes the originating route as goBackTo so the confirmation returns there', async () => {
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+      MONEY_HOME_ROUTE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit();
+    });
+
+    expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
+      loader: ConfirmationLoader.CustomAmount,
+      goBackTo: MONEY_HOME_ROUTE,
     });
   });
 
@@ -117,14 +145,13 @@ describe('useMoneyAccountDeposit', () => {
     expect(intentAtCreationTime).toBeUndefined();
   });
 
-  it('clears the intent, reports the failure and rethrows when setup fails', async () => {
+  it('clears the intent, reports the failure and resolves when setup fails', async () => {
     const error = new Error('setup failed');
     let failedBatchId: string | undefined;
     createDepositTransactionMock.mockImplementation(async (batchId) => {
       failedBatchId = batchId;
       throw error;
     });
-    const onDepositSetupFailure = jest.fn();
 
     const { result } = renderHookWithProvider(
       () => useMoneyAccountDeposit(),
@@ -133,38 +160,84 @@ describe('useMoneyAccountDeposit', () => {
 
     await act(async () => {
       await expect(
-        result.current.initiateDeposit({
-          intent: 'card',
-          onDepositSetupFailure,
-        }),
-      ).rejects.toThrow('setup failed');
+        result.current.initiateDeposit({ intent: 'card' }),
+      ).resolves.toBeUndefined();
     });
 
     expect(getMoneyAccountDepositIntent(failedBatchId)).toBeUndefined();
-    expect(onDepositSetupFailure).toHaveBeenCalledWith(error);
+    expect(reportErrorMock).toHaveBeenCalledWith({
+      error,
+      message: '[Money Account] Deposit setup failed',
+      title: 'moneyToastDepositFailedTitle',
+      description: 'moneyToastDepositFailedBody',
+      extra: { flow: 'deposit', intent: 'card' },
+    });
     expect(navigateToTransactionMock).not.toHaveBeenCalled();
     expect(result.current.isLoading).toBe(false);
   });
 
-  it('fails fast without creating the batch when the selected account is not EVM', async () => {
-    const onDepositSetupFailure = jest.fn();
+  it('uses add-funds toast copy when a generic deposit fails', async () => {
+    const error = new Error('setup failed');
+    createDepositTransactionMock.mockRejectedValue(error);
 
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit();
+    });
+
+    expect(reportErrorMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: 'moneyToastDepositFailedTitleAddMusd',
+        description: 'moneyToastDepositFailedBody',
+        extra: { flow: 'deposit' },
+      }),
+    );
+  });
+
+  it('uses conversion toast copy when a convert deposit fails', async () => {
+    const error = new Error('setup failed');
+    createDepositTransactionMock.mockRejectedValue(error);
+
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit({ intent: 'convert' });
+    });
+
+    expect(reportErrorMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: 'moneyToastDepositFailedTitleConvert',
+        description: 'moneyToastDepositFailedBodyConvert',
+        extra: { flow: 'deposit', intent: 'convert' },
+      }),
+    );
+  });
+
+  it('fails fast without creating the batch when the selected account is not EVM', async () => {
     const { result } = renderHookWithProvider(
       () => useMoneyAccountDeposit(),
       stateWithSelectedAccount(BtcAccountType.P2wpkh),
     );
 
     await act(async () => {
-      await expect(
-        result.current.initiateDeposit({ onDepositSetupFailure }),
-      ).rejects.toThrow('[Money Account] Missing funding EVM account');
+      await expect(result.current.initiateDeposit()).resolves.toBeUndefined();
     });
 
     expect(createDepositTransactionMock).not.toHaveBeenCalled();
     expect(navigateToTransactionMock).not.toHaveBeenCalled();
-    expect(onDepositSetupFailure).toHaveBeenCalledWith(
+    expect(reportErrorMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: '[Money Account] Missing funding EVM account',
+        error: expect.objectContaining({
+          message: '[Money Account] Missing funding EVM account',
+        }),
+        message: '[Money Account] Deposit setup failed',
       }),
     );
     expect(result.current.isLoading).toBe(false);
@@ -176,11 +249,10 @@ describe('useMoneyAccountDeposit', () => {
     });
 
     await act(async () => {
-      await expect(result.current.initiateDeposit()).rejects.toThrow(
-        '[Money Account] Missing funding EVM account',
-      );
+      await expect(result.current.initiateDeposit()).resolves.toBeUndefined();
     });
 
     expect(createDepositTransactionMock).not.toHaveBeenCalled();
+    expect(reportErrorMock).toHaveBeenCalledTimes(1);
   });
 });

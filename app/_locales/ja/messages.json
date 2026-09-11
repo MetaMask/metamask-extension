@@ -105,6 +105,10 @@
   "accountIdenticon": {
     "message": "アカウントのアイデンティコン"
   },
+  "accountImported": {
+    "message": "アカウントがインポートされました",
+    "description": "Success toast shown after a private key or JSON account is imported"
+  },
   "accountName": {
     "message": "アカウント名"
   },
@@ -476,6 +480,42 @@
   },
   "activity_marketShort_success_title": {
     "message": "ショートをクローズしました - マーケット"
+  },
+  "activity_moneyAccountDeposit_failed_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "デポジット失敗"
+  },
+  "activity_moneyAccountDeposit_pending_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "入金中"
+  },
+  "activity_moneyAccountDeposit_success_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "デポジット"
+  },
+  "activity_moneyAccountWithdraw_failed_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "送金に失敗しました"
+  },
+  "activity_moneyAccountWithdraw_pending_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "送信中"
+  },
+  "activity_moneyAccountWithdraw_success_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "送信完了"
   },
   "activity_nftBuy_failed_title": {
     "message": "購入に失敗しました"
@@ -1526,6 +1566,12 @@
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "パーペチュアル残高を確認できませんでした。もう一度お試しください。"
   },
+  "alertReasonAddressTrustSignalMalicious": {
+    "message": "アドレスが高リスクと判断されました"
+  },
+  "alertReasonAddressTrustSignalWarning": {
+    "message": "アドレスのシグナルが限定的"
+  },
   "alertReasonFirstTimeInteraction": {
     "message": "初回のやり取り"
   },
@@ -1681,6 +1727,12 @@
   "approvedOnForAccounts": {
     "message": "$1に$2に対して承認済み",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
+  },
+  "arcUsageNoticeDescription": {
+    "message": "Arcへようこそ！当社はArcチェーンのご利用を促進、確認するために、Arcチームと情報を共有する場合があります。"
+  },
+  "arcUsageNoticeTitle": {
+    "message": "お知らせ"
   },
   "areYouSure": {
     "message": "よろしいですか？"
@@ -1880,6 +1932,15 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "基本機能をオンにする"
+  },
+  "basicFunctionalityMigrationSocialModalBlogPostLink": {
+    "message": "ブログ投稿"
+  },
+  "basicFunctionalityMigrationSocialModalTitle": {
+    "message": "プライバシーと製品アップデート"
+  },
+  "basicFunctionalityMigrationToastEnabled": {
+    "message": "有効にしました"
   },
   "basicFunctionalityRequired_description": {
     "message": "この機能は、基本機能をオフにしている間は利用できません。オンにするには、下のトグルボタンをご利用ください。"
@@ -2446,9 +2507,6 @@
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "最大許容額を使用"
-  },
-  "bridgeValidationInsufficientGasMessage": {
-    "message": "このブリッジのガス代を支払うのに十分な$1がありません。金額を下げるか、$1を買い足してください。"
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "ガス代により多くの$1が必要です"
@@ -3341,6 +3399,9 @@
   "deepLink_thePredictPage": {
     "message": "予測市場ページ"
   },
+  "deepLink_thePrivacySettingsPage": {
+    "message": "プライバシー設定ページ"
+  },
   "deepLink_theRewardsPage": {
     "message": "MetaMaskリワードページ"
   },
@@ -3489,10 +3550,6 @@
   },
   "disable": {
     "message": "無効にする"
-  },
-  "disabledGasOptionToolTipMessage": {
-    "message": "「$1」は、元のガス代から最低10%の増加条件を満たしていないため、無効になっています。",
-    "description": "$1 is gas estimate type which can be market or aggressive"
   },
   "disconnect": {
     "message": "接続解除"
@@ -3664,7 +3721,7 @@
     "message": "連絡先を編集"
   },
   "editGasFeeModalTitle": {
-    "message": "ガス代を編集"
+    "message": "ネットワーク手数料を編集"
   },
   "editGasLimitOutOfBounds": {
     "message": "ガスリミットは$1以上にする必要があります"
@@ -4126,9 +4183,6 @@
   "gasPrice": {
     "message": "ガス価格 (gwei)"
   },
-  "gasPriceExcessive": {
-    "message": "ガス代が不要に高く設定されています。金額を下げることを検討してください。"
-  },
   "gasPriceFetchFailed": {
     "message": "ネットワークエラーのため、ガス価格の見積もりに失敗しました。"
   },
@@ -4365,9 +4419,25 @@
     "message": "使用者：$1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
+  "hardwareSwapAmount": {
+    "message": "$1 $2を$3 $4にスワップ",
+    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappedAmount": {
+    "message": "$1 $2を$3 $4にスワップ済み",
+    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappingAmount": {
+    "message": "$1 $2を$3 $4にスワップ中",
+    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
   "hardwareToAddress": {
     "message": "移動先: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareToken": {
+    "message": "トークン：$1",
+    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "デバイス上でこのトランザクションを拒否しました",
@@ -4381,6 +4451,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "続行"
+  },
+  "hardwareWalletErrorOnlyV4SupportedDescription": {
+    "message": "ご使用の$1は、バージョン4 (V4) タイプのデータしか署名できません。このサイトから、サポートされていない古い署名タイプが要求されました。",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorReconnectButton": {
     "message": "再接続してもう一度お試しください",
@@ -4425,6 +4499,9 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1がロックされています",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleUnsupportedSignature": {
+    "message": "署名がサポートされていません"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "$1デバイスが選択されたアカウントのシークレットリカバリーフレーズまたはパスフレーズででセットアップされていることを確認します",
@@ -4608,6 +4685,10 @@
   },
   "honeypotTitle": {
     "message": "ハニーポット"
+  },
+  "hyperliquidDepositPromptTitle": {
+    "message": "MetaMaskでHyperliquidに入金",
+    "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Hyperliquidの$1に従い、今後すべての取引にMetaMaskの紹介コードを適用できます。MetaMaskは手数料をいただきます。",
@@ -5107,9 +5188,6 @@
   "loginErrorSessionExpiredButton": {
     "message": "ログイン"
   },
-  "loginErrorSessionExpiredDescription": {
-    "message": "セッションの期限が切れました。続行するには再度ログインしてください。"
-  },
   "loginErrorSessionExpiredTitle": {
     "message": "セッションの期限が切れました"
   },
@@ -5157,6 +5235,10 @@
   },
   "manage": {
     "message": "管理"
+  },
+  "manageAccounts": {
+    "message": "アカウントの管理",
+    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
   },
   "manageConnectedAccounts": {
     "message": "接続されたアカウントの管理"
@@ -5225,10 +5307,6 @@
   "memo": {
     "message": "メモ"
   },
-  "merklRewardsClaimBonus": {
-    "message": "ボーナスを請求する",
-    "description": "Short label shown in token list for tokens with claimable Merkl rewards"
-  },
   "merklRewardsToastFailed": {
     "message": "mUSDボーナスの請求に失敗しました",
     "description": "Toast message shown when a Merkl reward claim transaction fails or is dropped"
@@ -5240,10 +5318,6 @@
   "merklRewardsToastSuccess": {
     "message": "mUSDのボーナスを獲得しました！",
     "description": "Toast message shown when a Merkl reward claim transaction is confirmed"
-  },
-  "merklRewardsUnexpectedError": {
-    "message": "予期せぬエラーが発生しました。もう一度お試しください。",
-    "description": "Error message shown when claiming Merkl rewards fails"
   },
   "message": {
     "message": "メッセージ"
@@ -5329,6 +5403,30 @@
   "money": {
     "message": "マネー"
   },
+  "moneyAccountApyPitch": {
+    "message": "年換算利率 (APY) $1%を獲得",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchInfo": {
+    "message": "APY情報"
+  },
+  "moneyAccountApyTooltip": {
+    "message": "表示されている利率は、現在の市況に基づく予想年換算利率 (APY) です。APYは変動制で、保証されるものではありません。"
+  },
+  "moneyAccountAvailableBalance": {
+    "message": "利用可能残高：$1",
+    "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountProjectedBalance": {
+    "message": "1年後の予想残高:"
+  },
+  "moneyAccountProjectedBalanceInfo": {
+    "message": "1年後の予想残高"
+  },
+  "moneyAccountProjectedBalanceTooltip": {
+    "message": "予測では、$1%の年換算利率 (APY) が1年間変わらないと仮定されています。APYは変動制で、保証されるものではありません。",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyActivity": {
     "message": "アクティビティ"
   },
@@ -5349,6 +5447,9 @@
   },
   "moneyActivityDepositing": {
     "message": "入金中"
+  },
+  "moneyActivityDetailsTransactionId": {
+    "message": "トランザクションID"
   },
   "moneyActivityEmpty": {
     "message": "まだアクティビティがありません"
@@ -5394,6 +5495,18 @@
   },
   "moneyApy": {
     "message": "$1のAPY"
+  },
+  "moneyBalanceInfoBody": {
+    "message": "ドルの裏付けのあるmUSD残高は、いつでもショッピング、送金、取引などにご利用いただけます。この残高は、アカウントの合計残高には算入されません。"
+  },
+  "moneyBalanceInfoWithdrawals": {
+    "message": "出金は、該当するブロックチェーンの標準的なネットワーク確認時間に従って、即座に処理されます。流動性が低い場合は、一時的に遅延が生じる可能性があります。"
+  },
+  "moneyBalanceLastKnown": {
+    "message": "直近の残高"
+  },
+  "moneyBalanceTitle": {
+    "message": "マネー残高"
   },
   "moneyBalanceUnavailable": {
     "message": "残高が利用できません"
@@ -5565,54 +5678,6 @@
     "message": "$1が$2 Snapの使用を求めています",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
-  "musdAssetBonusAccruing": {
-    "message": "次のボーナスを獲得しています",
-    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
-  },
-  "musdAssetBonusClaimAmount": {
-    "message": "$1のボーナスを請求",
-    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
-  },
-  "musdAssetBonusEstimatedAnnual": {
-    "message": "予想年間ボーナス",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusInfoAria": {
-    "message": "ボーナス情報",
-    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
-  },
-  "musdAssetBonusInfoEstimatedAnnual": {
-    "message": "現在の残高とレートに基づき1年間でいくら稼げるかの予想です。レートは変動式で、変わる可能性があります。",
-    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLearnMore": {
-    "message": "詳細を見る。",
-    "description": "Link label at the bottom of the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoLifetimeClaimed": {
-    "message": "開始以降請求したボーナスの合計です。",
-    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
-  },
-  "musdAssetBonusInfoYourBonus": {
-    "message": "mUSDを保有するだけで獲得できる年換算$1%のボーナスです。Lineaで毎日請求できます。$2",
-    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
-  },
-  "musdAssetBonusLifetimeClaimed": {
-    "message": "生涯で請求したボーナス",
-    "description": "Label in the mUSD asset details Your bonus section"
-  },
-  "musdAssetBonusNoAccruing": {
-    "message": "獲得しているボーナスはありません",
-    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
-  },
-  "musdAssetBonusRate": {
-    "message": "$1%のボーナス",
-    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
-  },
-  "musdAssetBonusTitle": {
-    "message": "ボーナス",
-    "description": "Section title on the mUSD asset details page"
-  },
   "musdAssetConvertBenefitDailyBonus": {
     "message": "デイリーボーナス",
     "description": "Benefit tag on the mUSD asset details convert section"
@@ -5676,14 +5741,6 @@
   "musdBuyMusd": {
     "message": "mUSDを購入"
   },
-  "musdClaimSendingTo": {
-    "message": "送金先: ",
-    "description": "Label for the account row in the mUSD claim confirmation screen when no wallet name is available"
-  },
-  "musdClaimSendingToWallet": {
-    "message": "送金先: $1",
-    "description": "Label for the account row in the mUSD claim confirmation screen, where $1 is the wallet name"
-  },
   "musdClaimTitle": {
     "message": "ボーナスを請求する",
     "description": "Title for the mUSD bonus claim confirmation screen"
@@ -5746,10 +5803,6 @@
     "message": "信頼できるアドレスのみを保存してください。",
     "description": "Footer warning text shown in name modal for malicious and warning addresses."
   },
-  "nameInstructionsMalicious": {
-    "message": "このアドレスは悪質であると判断されました。このアドレスとはやり取りしないことをお勧めします。",
-    "description": "Instruction text in name component modal when address is malicious."
-  },
   "nameInstructionsNew": {
     "message": "このアドレスを知っている場合は、今後認識できるようニックネームを付けてください。",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -5761,10 +5814,6 @@
   "nameInstructionsSaved": {
     "message": "以前このアドレスのニックネームを追加しています。編集するか、他のニックネームの提案を参照できます。",
     "description": "Instruction text in name component modal when value is saved."
-  },
-  "nameInstructionsWarning": {
-    "message": "このアドレスは検証できません。新規または未確認の可能性があります。今後の識別のため、個人用の表示名を設定してください。",
-    "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
     "message": "ニックネーム",
@@ -5793,10 +5842,6 @@
   "nameModalTitleVerified": {
     "message": "検証済みのアドレス",
     "description": "Title of the modal created by the name component when address is verified."
-  },
-  "nameModalTitleWarning": {
-    "message": "アドレスの確認が必要です",
-    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "提案元: $1",
@@ -5940,10 +5985,6 @@
   },
   "networkStatusPriorityFeeTooltip": {
     "message": "優先手数料 (別名「マイナーチップ」) の範囲。これはマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。"
-  },
-  "networkStatusStabilityFeeTooltip": {
-    "message": "ガス代は過去72時間と比較して$1です。",
-    "description": "$1 is networks stability value - stable, low, high"
   },
   "networkSuggested": {
     "message": "おすすめのネットワーク"
@@ -6317,6 +6358,9 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "まだ通知を受け取っていません。"
+  },
+  "notificationsSettingsAccountsLoadError": {
+    "message": "アカウントの通知設定を読み込めませんでした。後でもう一度お試しください。"
   },
   "notificationsSettingsAgenticCliDescription": {
     "message": "Agent Walletを対象としたCLIによる接続要求、承認、セッション更新情報"
@@ -6754,7 +6798,7 @@
     "message": "パスワードを表示"
   },
   "passwordsDontMatch": {
-    "message": "パスワードが一致していません"
+    "message": "パスワードが一致していません."
   },
   "paste": {
     "message": "貼り付け"
@@ -7144,9 +7188,6 @@
   "perpsAddFunds": {
     "message": "資金を追加"
   },
-  "perpsAddFundsDescription": {
-    "message": "レバレッジを利用したパーペチュアル契約の取引を開始するには、資金を追加してください"
-  },
   "perpsAddMargin": {
     "message": "証拠金を追加"
   },
@@ -7217,6 +7258,12 @@
   "perpsCandlePeriodMinutes": {
     "message": "分"
   },
+  "perpsChart": {
+    "message": "価格チャート"
+  },
+  "perpsChartLoadError": {
+    "message": "チャートデータを読み込めませんでした"
+  },
   "perpsCloseAll": {
     "message": "すべてクローズ"
   },
@@ -7264,6 +7311,9 @@
   },
   "perpsCloseShort": {
     "message": "ショートをクローズ"
+  },
+  "perpsCollapseChart": {
+    "message": "チャートを折りたたむ"
   },
   "perpsConfirmCloseLong": {
     "message": "ロングをクローズ"
@@ -7362,6 +7412,9 @@
   "perpsExchangeAccountNotFound": {
     "message": "取引を開始するには資金を追加してください。",
     "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
+  },
+  "perpsExpandChart": {
+    "message": "チャートを展開"
   },
   "perpsExploreMarkets": {
     "message": "市場を探索"
@@ -7999,11 +8052,17 @@
     "message": "TP/SLが更新されました",
     "description": "Success toast text shown when TP/SL settings are updated"
   },
-  "perpsTotalBalance": {
-    "message": "合計残高"
+  "perpsTopMovers": {
+    "message": "注目銘柄",
+    "description": "Heading of the Perps tab section ranking markets by 24h price change"
   },
-  "perpsTradePerps": {
-    "message": "パーペチュアルを取引"
+  "perpsTopMoversGainers": {
+    "message": "上昇銘柄",
+    "description": "Toggle option showing the markets that rose the most over 24h in the Top movers section"
+  },
+  "perpsTopMoversLosers": {
+    "message": "下落銘柄",
+    "description": "Toggle option showing the markets that fell the most over 24h in the Top movers section"
   },
   "perpsTrades": {
     "message": "取引"
@@ -8396,6 +8455,10 @@
   "quotedTotalCost": {
     "message": "合計コスト: $1"
   },
+  "rampsBackToWallet": {
+    "message": "ウォレットに戻る",
+    "description": "Secondary button on the ramps complete-buy interstitial that returns to the wallet home"
+  },
   "rampsBestRate": {
     "message": "最も有利なレート"
   },
@@ -8413,6 +8476,21 @@
   "rampsChangeProvider": {
     "message": "プロバイダーを変更します。"
   },
+  "rampsChooseProvider": {
+    "message": "プロバイダーの選択"
+  },
+  "rampsCompleteBuyTitle": {
+    "message": "購入を完了",
+    "description": "Title of the interstitial shown after opening a ramps provider checkout tab"
+  },
+  "rampsCompletePurchaseInProviderTab": {
+    "message": "$1タブで購入を完了",
+    "description": "$1 is the on-ramp provider name (e.g. Transak)"
+  },
+  "rampsContinueInBrowser": {
+    "message": "ブラウザで続ける",
+    "description": "Banner title on the ramps complete-buy interstitial"
+  },
   "rampsEligibilityFailedDescription": {
     "message": "もう一度お試しください。引き続き問題が発生する場合はサポートにお問い合わせください。"
   },
@@ -8424,6 +8502,10 @@
   },
   "rampsErrorLoadingTokens": {
     "message": "トークンの読み込みエラー"
+  },
+  "rampsEstimatedToReceive": {
+    "message": "受取予定額",
+    "description": "Label for the estimated crypto amount on the ramps complete-buy interstitial"
   },
   "rampsMaxPurchaseLimit": {
     "message": "最高購入額は$1です",
@@ -8550,27 +8632,26 @@
   "rampsPaymentDelayMinutes": {
     "message": "分"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1〜$2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  "rampsPaymentMethod": {
+    "message": "支払方法",
+    "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
   },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "最大 $1",
+  "rampsPaymentMethodLimits": {
+    "message": "最大$1",
     "description": "$1 is the maximum fiat buy amount"
   },
   "rampsPaymentMethodMinLimit": {
     "message": "最小 $1",
     "description": "$1 is the minimum fiat buy amount"
   },
+  "rampsPreviouslyUsed": {
+    "message": "前回の利用"
+  },
   "rampsQuoteFetchError": {
     "message": "クォートを取得できませんでした。"
   },
   "rampsQuoteUnavailable": {
     "message": "クォートが利用できません。"
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "$1用のクォートが表示されています。",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "支払方法を選択"
@@ -8670,6 +8751,14 @@
   },
   "removeAccount": {
     "message": "アカウントを削除"
+  },
+  "removeAccountConfirmDescription": {
+    "message": "このアカウントは、秘密鍵を使ってインポートすることでいつでも復元できます。",
+    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
+  },
+  "removeAccountConfirmTitle": {
+    "message": "$1を削除",
+    "description": "Title of the account remove confirmation modal. $1 is the account name."
   },
   "removeAccountModalBannerDescription": {
     "message": "削除する前に、このアカウントのシークレットリカバリーフレーズまたは秘密鍵をお持ちであることを確認してください。",
@@ -9124,6 +9213,10 @@
   "searchAnAcccountOrContact": {
     "message": "アカウントまたは連絡先を検索"
   },
+  "searchAnAccount": {
+    "message": "アカウントの検索",
+    "description": "Search input placeholder for the Perps destination account picker"
+  },
   "searchForAnAssetToSend": {
     "message": "送金する資産を検索"
   },
@@ -9563,6 +9656,9 @@
   "selectPathHelp": {
     "message": "アカウントが見当たらない場合は、HDパスまたは現在選択されているネットワークを切り替えてみてください。"
   },
+  "selectPerpsAccount": {
+    "message": "パーペチュアルアカウントの選択"
+  },
   "selectRecipient": {
     "message": "受取人を選択"
   },
@@ -9603,6 +9699,9 @@
   },
   "sendSelectSendAsset": {
     "message": "送る資産を選択してください"
+  },
+  "sendToPerps": {
+    "message": "パーペチュアルに送金"
   },
   "sendingAsset": {
     "message": "$1を送信中"
@@ -11000,9 +11099,6 @@
   "stxCancelled": {
     "message": "スワップは失敗していたと思われます"
   },
-  "stxCancelledDescription": {
-    "message": "トランザクションが失敗しそうになり、不要なガス代の支払いを避けるためにキャンセルされました。"
-  },
   "stxCancelledSubDescription": {
     "message": "もう一度スワップをお試しください。次回も同様のリスクを防ぐために監視を行います。"
   },
@@ -11044,9 +11140,6 @@
   },
   "stxUserCancelled": {
     "message": "スワップがキャンセルされました"
-  },
-  "stxUserCancelledDescription": {
-    "message": "不要なガス代を支払うことなくトランザクションがキャンセルされました。"
   },
   "submit": {
     "message": "送信"
@@ -11177,19 +11270,12 @@
     "message": "$1から$2へのスワップ",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesExplanation": {
-    "message": "MetaMaskはガス代から収益を得ません。これらの手数料は見積もりであり、ネットワークの混雑状況やトランザクションの複雑さによって変わる可能性があります。詳細は$1をご覧ください。",
-    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
-  },
   "swapGasFeesExplanationLinkText": {
     "message": "こちら",
     "description": "Text for link in swapGasFeesExplanation"
   },
   "swapGasFeesIncluded": {
     "message": " 込み"
-  },
-  "swapGasFeesSplit": {
-    "message": "前の画面のガス代は、この2つのトランザクションに分けられています。"
   },
   "swapGasFeesSponsored": {
     "message": "MetaMaskが負担"
@@ -11324,9 +11410,6 @@
   "swapSource": {
     "message": "流動性の供給源"
   },
-  "swapSuggestedGasSettingToolTipMessage": {
-    "message": "スワップは複雑で急を要するトランザクションです。コストとスワップの確実な成功のバランスが取れたこのガス代をお勧めします。"
-  },
   "swapToConfirmWithHwWallet": {
     "message": "ハードウェアウォレットで確定"
   },
@@ -11348,9 +11431,6 @@
   },
   "swapUnknown": {
     "message": "不明"
-  },
-  "swapValidationInsufficientGasMessage": {
-    "message": "このスワップのガス代を支払うのに十分な$1がありません。金額を下げるか、$1を買い足してください。"
   },
   "swapZeroSlippage": {
     "message": "0%スリッページ"
@@ -11566,7 +11646,7 @@
     "message": "関数"
   },
   "transactionDetailGasHeading": {
-    "message": "ガス代見積もり"
+    "message": "推定ネットワーク手数料"
   },
   "transactionError": {
     "message": "トランザクションエラー。コントラクトコードで例外がスローされました。"
@@ -11586,9 +11666,6 @@
   "transactionHistoryBaseFee": {
     "message": "基本料金 (Gwei)"
   },
-  "transactionHistoryL1GasLabel": {
-    "message": "L1ガス代合計"
-  },
   "transactionHistoryL2GasLimitLabel": {
     "message": "L2ガスリミット"
   },
@@ -11602,7 +11679,7 @@
     "message": "優先手数料 (gwei)"
   },
   "transactionHistoryTotalGasFee": {
-    "message": "ガス代合計"
+    "message": "ネットワーク手数料合計"
   },
   "transactionIdCopied": {
     "message": "トランザクションIDがコピーされました"
@@ -11803,9 +11880,6 @@
   },
   "unlock": {
     "message": "ロックを解除"
-  },
-  "unlockPageIncorrectPassword": {
-    "message": "パスワードが正しくありません。もう一度お試しください。"
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "試行回数の上限に達しました。再試行できるまであと"
@@ -12076,10 +12150,6 @@
   },
   "wrongNetworkName": {
     "message": "当社の記録によると、ネットワーク名がこのチェーンIDと正しく一致していない可能性があります。"
-  },
-  "wrongPassword": {
-    "message": "パスワードが正しくありません",
-    "description": "Displayed when the user enters an incorrect password"
   },
   "year": {
     "message": "年"

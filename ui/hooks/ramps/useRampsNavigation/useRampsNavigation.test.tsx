@@ -378,12 +378,48 @@ describe('useRampsNavigation goToBuy', () => {
     const opened = await goToBuy(result, { assetId: 'eip155:1/erc20:0xabc' });
     expect(opened).toBe(true);
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
-      state: { assetId: 'eip155:1/erc20:0xabc' },
+      state: { assetId: catalogAssetId },
     });
   });
 
+  it('intent with a checksummed EVM assetId pre-selects the catalog spelling', async () => {
+    // Token pages build EVM asset ids from a checksummed address, while the
+    // catalog returns some of them lowercased (mUSD). The controller looks up
+    // the selected token by exact assetId, so the catalog spelling has to win.
+    const catalogAssetId =
+      'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da';
+    const { result, getModalName } = run(
+      buildState({
+        tokens: {
+          data: {
+            topTokens: [],
+            allTokens: [
+              { assetId: catalogAssetId, tokenSupported: true } as RampsToken,
+            ],
+          },
+          selected: null,
+          isLoading: false,
+          error: null,
+        },
+      }),
+    );
+
+    const opened = await goToBuy(result, {
+      assetId: 'eip155:1/erc20:0xACA92E438df0B2401fF60dA7E4337B687a2435DA',
+    });
+
+    expect(opened).toBe(true);
+    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
+      catalogAssetId,
+    ]);
+    expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
+      state: { assetId: catalogAssetId },
+    });
+    expect(getModalName()).toBeNull();
+  });
+
   it('intent with affected-network assetId matches a catalog token with checksum casing', async () => {
-    const assetId = 'eip155:59144/erc20:0xabc';
+    const catalogAssetId = 'eip155:59144/erc20:0xAbC';
     const { result } = run(
       buildState({
         tokens: {
@@ -391,7 +427,7 @@ describe('useRampsNavigation goToBuy', () => {
             topTokens: [],
             allTokens: [
               {
-                assetId: 'eip155:59144/erc20:0xAbC',
+                assetId: catalogAssetId,
                 tokenSupported: true,
               } as RampsToken,
             ],
@@ -403,11 +439,13 @@ describe('useRampsNavigation goToBuy', () => {
       }),
     );
 
-    const opened = await goToBuy(result, { assetId });
+    const opened = await goToBuy(result, {
+      assetId: 'eip155:59144/erc20:0xabc',
+    });
 
     expect(opened).toBe(true);
     expect(mockNavigate).toHaveBeenCalledWith(RAMPS_BUILD_QUOTE_ROUTE, {
-      state: { assetId },
+      state: { assetId: catalogAssetId },
     });
   });
 
@@ -504,6 +542,37 @@ describe('useRampsNavigation goToBuy', () => {
       state: { assetId },
     });
     expect(getModalName()).toBeNull();
+  });
+
+  it('intent with a checksummed assetId still uses the catalog spelling while the catalog refreshes', async () => {
+    // An unsettled catalog does not gate the buy, but the tokens it already
+    // holds are still the best source for the assetId spelling.
+    const catalogAssetId =
+      'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da';
+    const { result } = run(
+      buildState({
+        tokens: {
+          data: {
+            topTokens: [],
+            allTokens: [
+              { assetId: catalogAssetId, tokenSupported: true } as RampsToken,
+            ],
+          },
+          selected: null,
+          isLoading: true,
+          error: null,
+        },
+      }),
+    );
+
+    const opened = await goToBuy(result, {
+      assetId: 'eip155:1/erc20:0xACA92E438df0B2401fF60dA7E4337B687a2435DA',
+    });
+
+    expect(opened).toBe(true);
+    expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
+      catalogAssetId,
+    ]);
   });
 
   it('intent with assetId and incomplete settled catalog → fails open to build quote', async () => {

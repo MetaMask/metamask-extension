@@ -11,7 +11,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import Homepage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Driver } from '../../webdriver/driver';

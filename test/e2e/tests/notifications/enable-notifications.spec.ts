@@ -62,7 +62,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
      * → General notifications: requires manual re-enable
      * → Product notifications: disabled (persisted in AUS)
      * → First account: enabled
-     * → Second account: disabled (persisted in AUS from Part 1)
+     * → Second account: disabled (persisted via the Trigger API from Part 1)
      */
     it('syncs notification settings on next onboarding after enabling for the first time', async function () {
       // server that persists trigger settings.

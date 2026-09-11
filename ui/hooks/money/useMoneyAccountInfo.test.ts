@@ -14,8 +14,9 @@ jest.mock('../useMessenger', () => ({
 
 const MONEY_ADDRESS: Hex = '0x2D49EA58A4C70b62c8B56DE971310d9e999c8117';
 
-const stateWithFlag = (enabled: boolean) => ({
+const stateWithFlag = (enabled: boolean, useExternalServices = true) => ({
   metamask: {
+    useExternalServices,
     remoteFeatureFlags: {
       [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: {
         enabled,
@@ -165,9 +166,23 @@ describe('useMoneyAccountInfo', () => {
     expect(mockGetMoneyAccountAvailability).not.toHaveBeenCalled();
   });
 
+  it('reports no account and skips the gate when basic functionality is off, even with the flag cached on', () => {
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountInfo(),
+      stateWithFlag(true, false),
+    );
+
+    expect(result.current).toStrictEqual({
+      isMoneyAccountFeatureEnabled: false,
+      hasMoneyAccount: false,
+      primaryMoneyAccount: undefined,
+    });
+    expect(mockGetMoneyAccountAvailability).not.toHaveBeenCalled();
+  });
+
   it('reports no account when the flag is unserved', () => {
     const { result } = renderHookWithProvider(() => useMoneyAccountInfo(), {
-      metamask: { remoteFeatureFlags: {} },
+      metamask: { useExternalServices: true, remoteFeatureFlags: {} },
     });
 
     expect(result.current).toStrictEqual({

@@ -49,7 +49,9 @@ describe('useQuoteFetchEvents', () => {
     trackEventSpy = jest
       .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
       .mockImplementation(
-        (..._args: unknown[]) => (() => Promise.resolve()) as never,
+        (..._args: unknown[]) =>
+          () =>
+            Promise.resolve(),
       );
   });
 

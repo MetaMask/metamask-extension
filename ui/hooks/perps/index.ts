@@ -3,6 +3,9 @@ export { usePerpsEligibility } from './usePerpsEligibility';
 export { usePerpsMeasurement } from './usePerpsMeasurement';
 export { usePerpsLifecycleBreadcrumbs } from './usePerpsLifecycleBreadcrumbs';
 export { usePerpsMarketInfo } from './usePerpsMarketInfo';
+export type { UsePerpsMarketInfoReturn } from './usePerpsMarketInfo';
+export { usePerpsPositionForAsset } from './usePerpsPositionForAsset';
+export type { UsePerpsPositionForAssetReturn } from './usePerpsPositionForAsset';
 export { usePerpsOrderFees } from './usePerpsOrderFees';
 export { usePerpsMetamaskFeeDiscountBips } from './usePerpsMetamaskFeeDiscountBips';
 export type {
@@ -46,6 +49,7 @@ export type {
   UsePerpsEventTrackingDeclarativeOptions,
 } from './usePerpsEventTracking';
 export { usePerpsBottomNavSource } from './usePerpsBottomNavSource';
+export { PERPS_HOME_TAB_ROUTE, usePerpsHomeRoute } from './usePerpsHomeRoute';
 export {
   estimateLiquidationPrice,
   liquidationDistancePercent,

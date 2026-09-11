@@ -23,13 +23,13 @@ exports[`BridgeAsset should render ERC20 asset 1`] = `
       </div>
     </div>
     <div
-      class="absolute"
+      class="absolute inline-flex items-center justify-center"
       color="background-default"
-      style="bottom: 0px; right: 0px;"
+      style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
-        style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[34px] w-[34px] border-background-default border rounded-md"
+        style="width: 15px; height: 15px; border-width: 1px;"
       >
         <img
           alt="Ethereum"
@@ -88,7 +88,7 @@ exports[`BridgeAsset should render ERC20 asset 1`] = `
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+        d="M12 2.25A9.75 9.75 0 1 0 21.75 12 9.76 9.76 0 0 0 12 2.25m0 18A8.25 8.25 0 1 1 20.25 12 8.26 8.26 0 0 1 12 20.25m1.5-3.75a.75.75 0 0 1-.75.75 1.5 1.5 0 0 1-1.5-1.5V12a.75.75 0 0 1 0-1.5 1.5 1.5 0 0 1 1.5 1.5v3.75a.75.75 0 0 1 .75.75m-3-8.625A1.125 1.125 0 1 1 11.625 9 1.125 1.125 0 0 1 10.5 7.875"
       />
     </svg>
   </button>
@@ -118,13 +118,13 @@ exports[`BridgeAsset should render asset with accountType 1`] = `
       </div>
     </div>
     <div
-      class="absolute"
+      class="absolute inline-flex items-center justify-center"
       color="background-default"
-      style="bottom: 0px; right: 0px;"
+      style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
-        style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[34px] w-[34px] border-background-default border rounded-md"
+        style="width: 15px; height: 15px; border-width: 1px;"
       >
         <img
           alt="Bitcoin"
@@ -192,7 +192,7 @@ exports[`BridgeAsset should render asset with accountType 1`] = `
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+        d="M12 2.25A9.75 9.75 0 1 0 21.75 12 9.76 9.76 0 0 0 12 2.25m0 18A8.25 8.25 0 1 1 20.25 12 8.26 8.26 0 0 1 12 20.25m1.5-3.75a.75.75 0 0 1-.75.75 1.5 1.5 0 0 1-1.5-1.5V12a.75.75 0 0 1 0-1.5 1.5 1.5 0 0 1 1.5 1.5v3.75a.75.75 0 0 1 .75.75m-3-8.625A1.125 1.125 0 1 1 11.625 9 1.125 1.125 0 0 1 10.5 7.875"
       />
     </svg>
   </button>
@@ -222,13 +222,13 @@ exports[`BridgeAsset should render asset with balance 1`] = `
       </div>
     </div>
     <div
-      class="absolute"
+      class="absolute inline-flex items-center justify-center"
       color="background-default"
-      style="bottom: 0px; right: 0px;"
+      style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
-        style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[34px] w-[34px] border-background-default border rounded-md"
+        style="width: 15px; height: 15px; border-width: 1px;"
       >
         <img
           alt="Ethereum"
@@ -291,7 +291,7 @@ exports[`BridgeAsset should render asset with balance 1`] = `
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+        d="M12 2.25A9.75 9.75 0 1 0 21.75 12 9.76 9.76 0 0 0 12 2.25m0 18A8.25 8.25 0 1 1 20.25 12 8.26 8.26 0 0 1 12 20.25m1.5-3.75a.75.75 0 0 1-.75.75 1.5 1.5 0 0 1-1.5-1.5V12a.75.75 0 0 1 0-1.5 1.5 1.5 0 0 1 1.5 1.5v3.75a.75.75 0 0 1 .75.75m-3-8.625A1.125 1.125 0 1 1 11.625 9 1.125 1.125 0 0 1 10.5 7.875"
       />
     </svg>
   </button>
@@ -325,13 +325,13 @@ exports[`BridgeAsset should render native asset 1`] = `
       </div>
     </div>
     <div
-      class="absolute"
+      class="absolute inline-flex items-center justify-center"
       color="background-default"
-      style="bottom: 0px; right: 0px;"
+      style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
     >
       <div
-        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-lg h-[34px] w-[34px] border-background-default border"
-        style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative h-[34px] w-[34px] border-background-default border rounded-md"
+        style="width: 15px; height: 15px; border-width: 1px;"
       >
         <img
           alt="Ethereum"
@@ -390,7 +390,7 @@ exports[`BridgeAsset should render native asset 1`] = `
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+        d="M12 2.25A9.75 9.75 0 1 0 21.75 12 9.76 9.76 0 0 0 12 2.25m0 18A8.25 8.25 0 1 1 20.25 12 8.26 8.26 0 0 1 12 20.25m1.5-3.75a.75.75 0 0 1-.75.75 1.5 1.5 0 0 1-1.5-1.5V12a.75.75 0 0 1 0-1.5 1.5 1.5 0 0 1 1.5 1.5v3.75a.75.75 0 0 1 .75.75m-3-8.625A1.125 1.125 0 1 1 11.625 9 1.125 1.125 0 0 1 10.5 7.875"
       />
     </svg>
   </button>

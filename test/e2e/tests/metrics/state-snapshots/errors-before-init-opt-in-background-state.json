@@ -34,12 +34,13 @@
     "AppMetadataController": {
       "currentMigrationVersion": "number",
       "firstTimeInfo": "object",
+      "installAttribution": null,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
     "AppStateController": {
+      "arcUsageNoticeShown": "boolean",
       "browserEnvironment": { "browser": "string" },
-      "canTrackWalletFundsObtained": false,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -107,16 +108,15 @@
     "LoggingController": { "logs": "object" },
     "MetaMetricsController": {
       "dataCollectionForMarketing": "boolean",
-      "fragments": "object",
       "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": "object",
-      "traits": "object"
+      "tracesBeforeMetricsOptIn": "object"
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
     "MoneyAccountController": { "moneyAccounts": "object" },
+    "MoneyAccountUpgradeController": { "upgradedAccounts": "object" },
     "MultichainAssetsController": {
       "accountsAssets": "object",
       "allIgnoredAssets": "object",
@@ -200,6 +200,8 @@
       "openSeaEnabled": true,
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
+        "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": "boolean",
         "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
@@ -244,7 +246,6 @@
     },
     "ProfileMetricsController": "object",
     "RampsController": {
-      "countries": "object",
       "orders": "object",
       "providerAutoSelected": "boolean",
       "userRegion": null
@@ -256,7 +257,23 @@
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
-        "feature3": { "name": "groupC", "value": "valueC" }
+        "feature3": [
+          {
+            "name": "groupA",
+            "scope": { "type": "threshold", "value": 0.3 },
+            "value": "valueA"
+          },
+          {
+            "name": "groupB",
+            "scope": { "type": "threshold", "value": 0.5 },
+            "value": "valueB"
+          },
+          {
+            "name": "groupC",
+            "scope": { "type": "threshold", "value": 1 },
+            "value": "valueC"
+          }
+        ]
       }
     },
     "RewardsController": {

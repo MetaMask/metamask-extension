@@ -1,12 +1,10 @@
 /**
  * Real Ledger DMK (Device Management Kit) offscreen handler.
  *
- * NOT YET WIRED: no bundle entry point imports this module, so the DMK
- * dependency graph (`@ledgerhq/*`, `rxjs`, inversify) stays out of the build
- * and no LavaMoat policy entries are required yet. Only Jest imports it. A
- * follow-up PR replaces the `ledger-dmk.ts` stub with this implementation and
- * wires it into the offscreen router (via dynamic `import()`), landing the
- * generated policies alongside that first reachable import.
+ * Loaded by the offscreen router via dynamic `import('./ledger-dmk-handler.ts')`
+ * so a module-eval failure in the DMK dependency graph cannot take down the
+ * rest of the offscreen document. Mode selection is gated by the `ledgerDmk`
+ * remote feature flag.
  */
 import {
   LedgerDmkBridge,
@@ -591,6 +589,35 @@ export class LedgerDmkBridgeHandler {
     } catch {
       // Bridge cleanup failed; nothing to recover here.
     }
+  }
+
+  /**
+   * Best-effort synchronous reset of the cached bridge, invoked when a router
+   * action has wedged past its timeout.
+   *
+   * Clears bridge references immediately (same as the start of
+   * `#tearDownBridge`) so the next action opens a fresh bridge instead of
+   * queuing behind a hung `destroy()`. Async destroy is fire-and-forget.
+   */
+  forceReset(): void {
+    this.#bridgeGeneration += 1;
+    if (this.#sessionStateSubscription) {
+      this.#sessionStateSubscription.unsubscribe();
+      this.#sessionStateSubscription = null;
+    }
+
+    const bridgeToDestroy = this.#bridge;
+    this.#bridge = null;
+    this.#bridgePromise = null;
+    this.#sessionId = null;
+
+    if (!bridgeToDestroy) {
+      return;
+    }
+
+    Promise.resolve(bridgeToDestroy.destroy()).catch(() => {
+      /* best-effort: ignore destroy failures during forced reset */
+    });
   }
 
   /**

@@ -13,7 +13,6 @@ const QUOTE_DEBOUNCE_MS = 500;
 const mockNavigate = jest.fn();
 const mockGetBuyWidgetData = jest.fn();
 const mockWatchRampsCheckoutTab = jest.fn();
-const mockShowBuyTabOpenedToast = jest.fn();
 let mockLocationState: { assetId?: string } | null = null;
 
 jest.mock('react-router-dom', () => ({
@@ -47,11 +46,6 @@ jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
 jest.mock('../../../store/controller-actions/ramps-controller', () => ({
   watchRampsCheckoutTab: (...args: unknown[]) =>
     mockWatchRampsCheckoutTab(...args),
-}));
-
-jest.mock('../../../helpers/utils/show-buy-tab-opened-toast', () => ({
-  showBuyTabOpenedToast: (...args: unknown[]) =>
-    mockShowBuyTabOpenedToast(...args),
 }));
 
 const mockUseRampsScreenViewed = jest.fn();
@@ -172,6 +166,25 @@ describe('RampsBuildQuoteScreen', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('sizes the amount input from an inaccessible text twin', () => {
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    const amountInput = screen.getByTestId('ramps-build-quote-amount-input');
+    const amountSizeContainer = amountInput.parentElement;
+    const amountSizeTwin = amountSizeContainer?.querySelector(
+      '[aria-hidden="true"]',
+    );
+
+    expect(amountSizeContainer).toHaveClass('relative', 'w-max', 'min-w-[1ch]');
+    expect(amountSizeTwin).toHaveTextContent('100');
+    expect(amountInput).toHaveClass('absolute', 'inset-0');
+    expect(amountInput).not.toHaveAttribute('size');
+  });
+
   it('matches snapshot while quote is loading', () => {
     useRampsQuotes.mockReturnValue({
       data: null,
@@ -193,6 +206,24 @@ describe('RampsBuildQuoteScreen', () => {
       data: null,
       loading: false,
       error: new Error('quote failed'),
+    });
+
+    const { container } = renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('matches snapshot when quote fetch fails with a technical HTTP error', () => {
+    useRampsQuotes.mockReturnValue({
+      data: null,
+      loading: false,
+      error: new Error(
+        "Fetching 'https://on-ramp.dev-api.cx.metamask.io/v2/quotes?action=buy&region=us-ut' failed with status '401'",
+      ),
     });
 
     const { container } = renderWithProvider(
@@ -264,7 +295,7 @@ describe('RampsBuildQuoteScreen', () => {
     );
   });
 
-  it('opens the provider widget via background watch and returns home on continue', async () => {
+  it('opens the provider widget via background watch and navigates to complete buy on continue', async () => {
     mockGetBuyWidgetData.mockResolvedValue({
       url: 'https://provider.example/checkout',
       orderId: 'order-123',
@@ -296,7 +327,18 @@ describe('RampsBuildQuoteScreen', () => {
         providerName: 'Transak',
       }),
     );
-    expect(mockNavigate).toHaveBeenCalledWith('/');
+    expect(mockNavigate).toHaveBeenCalledWith('/ramps/complete-buy', {
+      state: {
+        checkoutUrl: 'https://provider.example/checkout',
+        providerName: 'Transak',
+        amountOut: undefined,
+        tokenSymbol: 'mUSD',
+        tokenIconUrl: 'https://example.com/musd.png',
+        tokenChainId: 'eip155:1',
+        walletAddress: '0xabc123',
+        createdAt: expect.any(Number),
+      },
+    });
   });
 
   it('watches redirect-only checkouts without an order code', async () => {
@@ -326,7 +368,18 @@ describe('RampsBuildQuoteScreen', () => {
         providerName: 'Transak',
       }),
     );
-    expect(mockNavigate).toHaveBeenCalledWith('/');
+    expect(mockNavigate).toHaveBeenCalledWith('/ramps/complete-buy', {
+      state: {
+        checkoutUrl: 'https://provider.example/checkout',
+        providerName: 'Transak',
+        amountOut: undefined,
+        tokenSymbol: 'mUSD',
+        tokenIconUrl: 'https://example.com/musd.png',
+        tokenChainId: 'eip155:1',
+        walletAddress: '0xabc123',
+        createdAt: expect.any(Number),
+      },
+    });
   });
 
   it('surfaces an error and does not navigate when the widget has no url', async () => {

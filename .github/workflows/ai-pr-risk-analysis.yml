@@ -1,26 +1,44 @@
 name: AI PR risk analysis
 
-on:
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - ready_for_review
+# Reusable workflow — called from main.yml with the changed-files list from
+# get-requirements (dorny/paths-filter all_changes_files).
+# Do not add a standalone pull_request trigger; that would double-run analysis.
+#
+# The action owns labels / check runs / summaries.
+#
+# Pin bump process for MetaMask/ai-analyzer:
+# 1. Pick an immutable commit SHA from main
+#    (https://github.com/MetaMask/ai-analyzer/commits/main) or from a release
+#    (https://github.com/MetaMask/ai-analyzer/releases)
+# 2. Update the checkout `ref:` below
+# 3. Smoke-test Analyze on a PR
 
-concurrency:
-  group: ai-pr-risk-analysis-${{ github.event.pull_request.number || github.run_id }}
-  cancel-in-progress: true
+on:
+  workflow_call:
+    inputs:
+      changed-files:
+        description: Whitespace-separated changed file paths (from get-requirements)
+        required: true
+        type: string
+    secrets:
+      AI_ANALYZER_TOKEN:
+        description: Token with read access to MetaMask/ai-analyzer (private action checkout)
+        required: true
+      AI_ANALYZER_LITELLM_KEY:
+        description: LiteLLM API key for AI PR analysis
+        required: true
+      AI_ANALYZER_LANGFUSE_PUBLIC_KEY:
+        description: Optional Langfuse public key for analyzer tracing (diffs redacted)
+        required: false
+      AI_ANALYZER_LANGFUSE_SECRET_KEY:
+        description: Optional Langfuse secret key; pair with public key to enable tracing
+        required: false
 
 jobs:
   analyze:
     name: Analyze
-    if: >-
-      github.event_name == 'pull_request'
-      && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
-      && github.event.pull_request.draft == false
-      && (github.event.pull_request.base.ref == 'main' || startsWith(github.event.pull_request.base.ref, 'release/'))
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
       pull-requests: write
@@ -29,12 +47,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      # https://github.com/MetaMask/ai-analyzer/releases
+      - name: Verify changed-files input
+        env:
+          CHANGED_FILES: ${{ inputs.changed-files }}
+        run: |
+          if [[ -z "${CHANGED_FILES// }" ]]; then
+            echo "::error::changed-files input is empty; refusing to fall back to gh rediscovery"
+            exit 1
+          fi
+
+      # Pinned immutable SHA — see header pin bump process
       - name: Checkout AI Analyzer
         uses: actions/checkout@v6
         with:
           repository: MetaMask/ai-analyzer
-          ref: v1
+          ref: f9a82c6ae0bfdadb352b9b736d26174705fe6348
           path: .ai-analyzer-action
           token: ${{ secrets.AI_ANALYZER_TOKEN }}
 
@@ -42,10 +69,13 @@ jobs:
         uses: ./.ai-analyzer-action
         with:
           mode: pr-risk-analysis
+          config-path: .github/ai-pr-analyzer
+          changed-files: ${{ inputs.changed-files }}
           add-comment: false
           add-label: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           litellm-api-key: ${{ secrets.AI_ANALYZER_LITELLM_KEY }}
+          langfuse-public-key: ${{ secrets.AI_ANALYZER_LANGFUSE_PUBLIC_KEY }}
+          langfuse-secret-key: ${{ secrets.AI_ANALYZER_LANGFUSE_SECRET_KEY }}
           # Gate override for Runway release-branch cherry-picks
           gate-override-risk-threshold: medium
           gate-override-base-pattern: '^release/'

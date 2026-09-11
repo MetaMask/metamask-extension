@@ -3,7 +3,10 @@ import log from 'loglevel';
 import { isEmpty } from 'lodash';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
 import { captureException, captureMessage } from '../sentry';
-import { MISSING_VAULT_ERROR } from '../../constants/errors';
+import {
+  MISSING_VAULT_ERROR,
+  isBrowserShuttingDownError,
+} from '../../constants/errors';
 import { getManifestFlags } from '../manifestFlags';
 import { VaultCorruptionType } from '../../constants/state-corruption';
 import { StorageWriteErrorType } from '../../constants/app-state';
@@ -441,7 +444,12 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
   async #openBackupDatabase(): Promise<void> {
     try {
-      const db = new IndexedDBStore();
+      // The backup is the recovery path for a corrupted vault, so its writes
+      // request strict durability: they must reach disk before resolving, even
+      // if the browser or the machine goes down immediately afterwards. The
+      // cost is negligible here because the write is skipped unless the
+      // serialized backup actually changed.
+      const db = new IndexedDBStore({ strictDurability: true });
       await db.open('metamask-backup', 1);
       this.#backupDb = db;
     } catch (error) {
@@ -672,6 +680,21 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
           return [true, undefined];
         } catch (err) {
+          // A write that failed only because the browser is closing is not a
+          // storage problem, so none of the failure handling below applies.
+          // Sentry is handled globally by `ignoreErrors`; returning early here
+          // is about the two effects that outlive this call - it must not latch
+          // `#dataPersistenceFailing`, which would suppress the report of a
+          // later real failure, and it must not run `#notifySetFailed`, which
+          // persists a storage-error flag that would warn the user in their
+          // next session. Both are unlikely to be reached with the browser
+          // going away, so this is precautionary.
+          if (isBrowserShuttingDownError(err)) {
+            log.info(
+              'MetaMask - storage write failed because the browser is shutting down',
+            );
+            return [false, err];
+          }
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
             // Use different tags to differentiate storage.local vs IndexedDB backup failures.
@@ -815,6 +838,21 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
           return [true, undefined];
         } catch (err) {
+          // A write that failed only because the browser is closing is not a
+          // storage problem, so none of the failure handling below applies.
+          // Sentry is handled globally by `ignoreErrors`; returning early here
+          // is about the two effects that outlive this call - it must not latch
+          // `#dataPersistenceFailing`, which would suppress the report of a
+          // later real failure, and it must not run `#notifySetFailed`, which
+          // persists a storage-error flag that would warn the user in their
+          // next session. Both are unlikely to be reached with the browser
+          // going away, so this is precautionary.
+          if (isBrowserShuttingDownError(err)) {
+            log.info(
+              'MetaMask - storage write failed because the browser is shutting down',
+            );
+            return [false, err];
+          }
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
             // Use different tags to differentiate storage.local vs IndexedDB backup failures.
@@ -888,6 +926,17 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               tags: { 'persistence.error': 'get-failed' },
               fingerprint: ['persistence-error', 'get-failed'],
             });
+          }
+
+          // A read that failed only because the browser is closing says nothing
+          // about the state of the data, so it must not trigger vault recovery:
+          // emitting `vaultCorruptionDetected` and throwing `MISSING_VAULT_ERROR`
+          // would both be false positives. Re-throw the original error here, as
+          // we would for any other read failure below, so callers abort the same
+          // way. We still reported it above; whether that event is kept is
+          // decided by `ignoreErrors` in `setupSentry.js`, not here.
+          if (isBrowserShuttingDownError(localStoreError)) {
+            throw localStoreError;
           }
         }
 

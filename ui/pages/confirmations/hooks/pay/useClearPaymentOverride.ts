@@ -11,6 +11,9 @@ import { clearPaymentOverride } from '../../utils/transaction-pay';
 /**
  * Clears any active paymentOverride on the current confirmation.
  * Call from non-money-account pay option handlers.
+ *
+ * The background preserves non-atomic mode when a max-amount Money Account
+ * deposit switches payment methods.
  */
 export function useClearPaymentOverride(): () => void {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -18,7 +21,6 @@ export function useClearPaymentOverride(): () => void {
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
-
   return useCallback(() => {
     if (transactionId && paymentOverride) {
       clearPaymentOverride(transactionId);

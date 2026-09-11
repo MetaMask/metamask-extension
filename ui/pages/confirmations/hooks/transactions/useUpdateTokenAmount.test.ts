@@ -5,8 +5,13 @@ import { getMockConfirmStateForTransaction } from '../../../../../test/data/conf
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { updateEditableParams } from '../../../../store/actions';
 import { updateAtomicBatchData } from '../../../../store/controller-actions/transaction-controller';
+import {
+  updateMoneyAccountDepositAmount,
+  updateMoneyAccountWithdrawAmount,
+} from '../../../../store/controller-actions/transaction-pay-controller';
 import * as useTransactionPayDataModule from '../pay/useTransactionPayData';
 import * as transactionPayUtils from '../../utils/transaction-pay';
+import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
 
 jest.mock('../../../../store/actions', () => ({
@@ -24,8 +29,20 @@ jest.mock(
   }),
 );
 
+jest.mock(
+  '../../../../store/controller-actions/transaction-pay-controller',
+  () => ({
+    ...jest.requireActual(
+      '../../../../store/controller-actions/transaction-pay-controller',
+    ),
+    updateMoneyAccountDepositAmount: jest.fn(),
+    updateMoneyAccountWithdrawAmount: jest.fn(),
+  }),
+);
+
 jest.mock('../pay/useTransactionPayData');
 jest.mock('../../utils/transaction-pay');
+jest.mock('./useTransactionAccountOverride');
 
 const MOCK_RECIPIENT = '0x1234567890123456789012345678901234567890';
 const MOCK_TOKEN_ADDRESS = '0xabcdef0123456789abcdef0123456789abcdef01';
@@ -95,15 +112,125 @@ function runHook({
 describe('useUpdateTokenAmount', () => {
   const updateEditableParamsMock = jest.mocked(updateEditableParams);
   const updateAtomicBatchDataMock = jest.mocked(updateAtomicBatchData);
+  const useTransactionAccountOverrideMock = jest.mocked(
+    useTransactionAccountOverride,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
     updateAtomicBatchDataMock.mockResolvedValue(undefined);
     updateEditableParamsMock.mockReturnValue((() =>
       Promise.resolve()) as never);
+    useTransactionAccountOverrideMock.mockReturnValue(undefined);
   });
 
   describe('updateTokenAmount', () => {
+    it('dispatches the money deposit commit path for a money account deposit batch', async () => {
+      const updateMoneyAmountMock = jest
+        .mocked(updateMoneyAccountDepositAmount)
+        .mockResolvedValue(true);
+
+      const transactionMeta = createMockTransactionMeta({
+        nestedTransactions: [
+          { to: MOCK_TOKEN_ADDRESS, type: 'tokenMethodApprove' },
+          { to: MOCK_RECIPIENT, type: 'moneyAccountDeposit' },
+        ],
+      } as unknown as Partial<TransactionMeta>);
+
+      const { result } = runHook({
+        transactionMeta,
+        // The placeholder batch has no transfer calldata to parse.
+        tokenTransferData: {
+          data: undefined,
+          to: undefined,
+          index: undefined,
+        },
+      });
+
+      await act(async () => {
+        result.current.updateTokenAmount('1.5');
+      });
+
+      expect(updateMoneyAmountMock).toHaveBeenCalledWith(
+        transactionMeta.id,
+        '1.5',
+      );
+      expect(updateAtomicBatchDataMock).not.toHaveBeenCalled();
+      expect(updateEditableParamsMock).not.toHaveBeenCalled();
+    });
+
+    it('dispatches the withdrawal commit path for a money account withdrawal batch', async () => {
+      const updateWithdrawAmountMock = jest
+        .mocked(updateMoneyAccountWithdrawAmount)
+        .mockResolvedValue(false);
+
+      const transactionMeta = createMockTransactionMeta({
+        nestedTransactions: [
+          { to: MOCK_TOKEN_ADDRESS, type: 'moneyAccountWithdraw' },
+          { to: MOCK_RECIPIENT, type: 'transfer' },
+        ],
+      } as unknown as Partial<TransactionMeta>);
+
+      const { result } = runHook({
+        transactionMeta,
+        tokenTransferData: {
+          data: undefined,
+          to: undefined,
+          index: undefined,
+        },
+      });
+
+      await act(async () => {
+        result.current.updateTokenAmount('2');
+      });
+
+      expect(updateWithdrawAmountMock).toHaveBeenCalledWith(
+        transactionMeta.id,
+        '2',
+        undefined,
+      );
+      expect(updateAtomicBatchDataMock).not.toHaveBeenCalled();
+      expect(updateEditableParamsMock).not.toHaveBeenCalled();
+    });
+
+    it('passes the account override as the withdraw recipient', async () => {
+      const accountOverride =
+        '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' as const;
+      useTransactionAccountOverrideMock.mockReturnValue(accountOverride);
+
+      const updateWithdrawAmountMock = jest
+        .mocked(updateMoneyAccountWithdrawAmount)
+        .mockResolvedValue(false);
+
+      const transactionMeta = createMockTransactionMeta({
+        nestedTransactions: [
+          { to: MOCK_TOKEN_ADDRESS, type: 'moneyAccountWithdraw' },
+          { to: MOCK_RECIPIENT, type: 'transfer' },
+        ],
+      } as unknown as Partial<TransactionMeta>);
+
+      const { result } = runHook({
+        transactionMeta,
+        tokenTransferData: {
+          data: undefined,
+          to: undefined,
+          index: undefined,
+        },
+      });
+
+      // The commit promise settles in a microtask, and its `finally` clears the
+      // pending flag, so the state update must be flushed inside `act`.
+      await act(async () => {
+        result.current.updateTokenAmount('2');
+      });
+
+      expect(updateWithdrawAmountMock).toHaveBeenCalledWith(
+        transactionMeta.id,
+        '2',
+        accountOverride,
+      );
+    });
+
     it('does nothing when data is undefined', () => {
       const { result } = runHook({
         tokenTransferData: {

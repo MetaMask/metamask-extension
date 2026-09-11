@@ -4,10 +4,12 @@ import * as transactionPayUtils from '../../utils/transaction-pay';
 import { useSendTokens } from '../send/useSendTokens';
 import { Asset, AssetStandard } from '../../types/send';
 import { useTransactionPayBlockedTokens } from './useTransactionPayBlockedTokens';
+import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 
 jest.mock('../send/useSendTokens');
 jest.mock('./useTransactionPayBlockedTokens');
+jest.mock('./useTransactionPayToken');
 jest.mock('../../utils/transaction-pay', () => ({
   ...jest.requireActual('../../utils/transaction-pay'),
   getAvailableTokens: jest.fn(),
@@ -41,6 +43,7 @@ describe('useTransactionPayAvailableTokens', () => {
   const getAvailableTokensMock = jest.mocked(
     transactionPayUtils.getAvailableTokens,
   );
+  const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
 
   const blockedTokensMock = {
     chainIds: ['0xa4b1'],
@@ -51,6 +54,10 @@ describe('useTransactionPayAvailableTokens', () => {
     jest.resetAllMocks();
     useSendTokensMock.mockReturnValue([SEND_TOKEN_MOCK]);
     useTransactionPayBlockedTokensMock.mockReturnValue(blockedTokensMock);
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: undefined,
+      setPayToken: jest.fn(),
+    });
     getAvailableTokensMock.mockReturnValue([TOKEN_MOCK]);
   });
 
@@ -72,6 +79,7 @@ describe('useTransactionPayAvailableTokens', () => {
         }),
       ]),
       blockedTokens: blockedTokensMock,
+      payToken: undefined,
     });
   });
 
