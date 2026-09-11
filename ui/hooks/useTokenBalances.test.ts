@@ -1,35 +1,16 @@
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { BtcScope } from '@metamask/keyring-api';
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
-import { tokenBalancesStartPolling } from '../store/actions';
 import {
   useTokenBalances,
   useTokenTracker,
   stringifyBalance,
 } from './useTokenBalances';
 
-jest.mock('../store/actions', () => ({
-  tokenBalancesStartPolling: jest
-    .fn()
-    .mockImplementation((input) =>
-      Promise.resolve(`${JSON.stringify(input)}_token`),
-    ),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
-}));
-
-const mockTokenBalancesStartPolling = jest.mocked(tokenBalancesStartPolling);
-
 const BASE_STATE = {
   metamask: {
     completedOnboarding: true,
     isUnlocked: true,
-    tokenBalances: {
-      '0xAddress': {
-        '0x1': {
-          '0xToken1': '0x64', // 100 in hex
-        },
-      },
-    },
     selectedNetworkClientId: 'mainnet',
     networkConfigurationsByChainId: {
       '0x1': {
@@ -55,22 +36,17 @@ const BASE_STATE = {
 };
 
 describe('useTokenBalances', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+  it('returns empty balances when legacy controller state is absent', () => {
+    const { result } = renderHookWithProvider(
+      () => useTokenBalances(),
+      BASE_STATE,
+    );
 
-  it('does not start TokenBalancesController polling', () => {
-    renderHookWithProvider(() => useTokenBalances(), BASE_STATE);
-
-    expect(mockTokenBalancesStartPolling).not.toHaveBeenCalled();
+    expect(result.current.tokenBalances).toStrictEqual({});
   });
 });
 
 describe('useTokenTracker', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   const tokens = [
     { address: '0xToken1', symbol: 'TK1', decimals: 18 },
     { address: '0xToken2', symbol: 'TK2', decimals: 6 },
@@ -92,7 +68,7 @@ describe('useTokenTracker', () => {
         ...t,
         balance: '0',
         balanceError: null,
-        string: stringifyBalance('0', t.decimals),
+        string: '0',
       })),
     );
   });
