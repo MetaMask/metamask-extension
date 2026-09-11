@@ -14,6 +14,7 @@ import {
   ConfirmationLoader,
   useConfirmationNavigation,
 } from '../../pages/confirmations/hooks/useConfirmationNavigation';
+import type { SetPayTokenRequest } from '../../pages/confirmations/hooks/pay/types';
 import { createMoneyAccountDepositTransaction } from '../../store/controller-actions/transaction-pay-controller';
 import { useMoneyErrorReporter } from './useMoneyErrorReporter';
 
@@ -24,6 +25,10 @@ export type InitiateDepositOptions = {
    * payment method instead of a guess.
    */
   intent?: MoneyAccountDepositIntent;
+  /**
+   * Token to pre-select as the source of funds.
+   */
+  preferredPaymentToken?: SetPayTokenRequest;
 };
 
 const DEPOSIT_FAILED_TOAST_COPY = {
@@ -113,6 +118,7 @@ export function useMoneyAccountDeposit() {
         navigateToTransaction(transactionId, {
           loader: ConfirmationLoader.CustomAmount,
           goBackTo: location.pathname + location.search,
+          preferredPaymentToken: options?.preferredPaymentToken,
         });
       } catch (error) {
         clearMoneyAccountDepositIntent(batchId);

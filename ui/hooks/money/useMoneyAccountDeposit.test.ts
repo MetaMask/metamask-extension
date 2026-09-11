@@ -107,6 +107,25 @@ describe('useMoneyAccountDeposit', () => {
     });
   });
 
+  it('forwards the preferred payment token to the confirmation', async () => {
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit({
+        preferredPaymentToken: { address: '0xabc', chainId: '0x1' },
+      });
+    });
+
+    expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
+      loader: ConfirmationLoader.CustomAmount,
+      goBackTo: '/',
+      preferredPaymentToken: { address: '0xabc', chainId: '0x1' },
+    });
+  });
+
   it('records an explicit intent against the batch id before creating', async () => {
     let intentAtCreationTime;
     createDepositTransactionMock.mockImplementation(async (batchId) => {
