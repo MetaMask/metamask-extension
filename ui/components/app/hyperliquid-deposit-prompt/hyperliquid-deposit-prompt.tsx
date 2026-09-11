@@ -360,7 +360,7 @@ export const HyperliquidDepositPrompt: React.FC<
         <Text
           variant={TextVariant.BodySm}
           color={TextColor.TextAlternative}
-          className="mt-2 text-center"
+          className="mt-2"
         >
           {t('hyperliquidDepositPromptDescription')}
         </Text>

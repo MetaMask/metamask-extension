@@ -97,8 +97,8 @@ describe('perps-controller selectors', () => {
   describe('selectPerpsActiveProvider', () => {
     it('returns value from state', () => {
       expect(
-        selectPerpsActiveProvider(buildState({ activeProvider: 'myx' })),
-      ).toBe('myx');
+        selectPerpsActiveProvider(buildState({ activeProvider: 'lighter' })),
+      ).toBe('lighter');
     });
 
     it('defaults to hyperliquid', () => {

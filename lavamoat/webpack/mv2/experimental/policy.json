@@ -951,31 +951,14 @@
         "immer": true
       }
     },
-    "@metamask/profile-sync-controller>@metamask/base-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/ramps-controller>@metamask/base-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
     "@metamask/base-data-service": {
       "packages": {
-        "@metamask/messenger": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@tanstack/react-query>@tanstack/query-core": true,
         "cockatiel": true,
         "eslint>fast-deep-equal": true,
-        "lodash": true
+        "@metamask/base-data-service>lodash-es": true
       }
     },
     "@metamask/bridge-controller": {
@@ -1210,7 +1193,7 @@
         "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
-        "@metamask/ramps-controller>@metamask/controller-utils>lodash-es": true
+        "@metamask/base-data-service>lodash-es": true
       }
     },
     "@metamask/core-backend": {
@@ -1768,14 +1751,14 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/profile-sync-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/eth-hd-keyring": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/utils": true,
         "async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "@metamask/ramps-controller>@metamask/controller-utils>lodash-es": true,
+        "@metamask/base-data-service>lodash-es": true,
         "@metamask/keyring-controller>ulid": true
       }
     },
@@ -2333,7 +2316,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/profile-sync-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/profile-sync-controller>@metamask/keyring-controller": true,
         "@metamask/utils": true,
@@ -2373,7 +2356,7 @@
         ]
       },
       "packages": {
-        "@metamask/ramps-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/ramps-controller>@metamask/controller-utils": true,
         "cockatiel": true,
         "eslint>fast-deep-equal": true
@@ -2521,7 +2504,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
-        "@metamask/smart-transactions-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "lodash": true,
@@ -5589,10 +5572,12 @@
         "define": true
       }
     },
-    "@metamask/ramps-controller>@metamask/controller-utils>lodash-es": {
+    "@metamask/base-data-service>lodash-es": {
       "globals": {
+        "clearTimeout": true,
         "exports": true,
-        "module": true
+        "module": true,
+        "setTimeout": true
       }
     },
     "loglevel": {

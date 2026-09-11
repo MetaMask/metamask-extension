@@ -25,6 +25,7 @@ import { usePayWithNoFeeToken } from '../pay/usePayWithNoFeeToken';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
 import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
 import {
+  useIsTransactionPayLoading,
   useTransactionPayIsMaxAmount,
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayTotals,
@@ -72,6 +73,7 @@ export function useTransactionCustomAmount({
   const { chainId, id: transactionId } = transactionMeta ?? {};
 
   const isMaxAmount = useTransactionPayIsMaxAmount();
+  const isQuotesLoading = useIsTransactionPayLoading();
   const isMoneyAccountDeposit = hasTransactionType(transactionMeta, [
     TransactionType.moneyAccountDeposit,
   ]);
@@ -128,10 +130,11 @@ export function useTransactionCustomAmount({
   // wallet holds. The controller's isMaxAmount path uses the same raw
   // payment-token balance for 100%.
   const depositMaxHumanRef = useRef<string | null>(null);
-  // Max clicked while override assets are still loading. Prefill already
-  // waits for that fetch; Max must too — `balanceRaw` can still be the
-  // previous account's snapshot while TPC's isMaxAmount path uses live raw.
-  const pendingDepositMaxRef = useRef(false);
+  // Max held until override assets finish loading — `balanceRaw` can still be
+  // the previous account's snapshot while TPC's isMaxAmount path uses live raw.
+  // Records whether the hold came from prefill so applying it later keeps the
+  // prefill semantics (no manual-edit guard, prefill metrics).
+  const pendingDepositMaxRef = useRef<{ isPrefill: boolean } | null>(null);
   // Mirrors `userEditedRef` for render-time use: the ref is needed to block
   // prefill synchronously, before the next render, while the state is what the
   // loading flag below can safely read. Stored as the edited transaction id so
@@ -145,6 +148,11 @@ export function useTransactionCustomAmount({
   const shouldUseDepositPrefill =
     isMoneyAccountDeposit && depositPrefill.enabled;
   const prevDepositHasPrefilledRef = useRef(depositPrefill.hasPrefilled);
+  // The prefill amount is written by an effect, one commit after prefill
+  // reports `hasPrefilled`. Without tracking that gap the field paints "$0"
+  // between the skeleton coming down and the amount arriving.
+  const [hasAppliedDepositPrefill, setHasAppliedDepositPrefill] =
+    useState(false);
 
   // Create and update debounced function
   useEffect(() => {
@@ -230,6 +238,16 @@ export function useTransactionCustomAmount({
     totals?.targetAmount?.usd,
   ]);
 
+  // Only the Max display above is driven by the quote, so only it goes stale
+  // while a quote is in flight. The flows excluded from that branch keep the
+  // committed amount, and blanking the field for them flickers the value the
+  // user (or prefill) just set.
+  const isQuoteDerivedAmount =
+    isMaxAmount &&
+    !isInputBased &&
+    !isMoneyAccountDeposit &&
+    !isMoneyAccountWithdraw;
+
   const amountHuman = useMemo(
     () =>
       getAmountHumanFromFiat(amountFiat, tokenFiatRate, hasBalanceUsdOverride),
@@ -281,7 +299,7 @@ export function useTransactionCustomAmount({
     prevPayTokenKeyRef.current = payTokenKey;
 
     depositMaxHumanRef.current = null;
-    pendingDepositMaxRef.current = false;
+    pendingDepositMaxRef.current = null;
     userEditedRef.current = false;
     setEditedTransactionId(undefined);
 
@@ -355,7 +373,7 @@ export function useTransactionCustomAmount({
       }
 
       depositMaxHumanRef.current = null;
-      pendingDepositMaxRef.current = false;
+      pendingDepositMaxRef.current = null;
 
       if (transactionId) {
         upsertTransactionUIMetricsFragment(transactionId, {
@@ -382,7 +400,7 @@ export function useTransactionCustomAmount({
       // Hold Max until the override-account fetch completes, matching prefill.
       // Applying now would send a stale `balanceRaw` while TPC uses live raw.
       if (isDepositMax && isAccountTokensLoading) {
-        pendingDepositMaxRef.current = true;
+        pendingDepositMaxRef.current = { isPrefill };
         if (!isPrefill) {
           userEditedRef.current = true;
           setEditedTransactionId(transactionId);
@@ -390,7 +408,7 @@ export function useTransactionCustomAmount({
         return;
       }
 
-      pendingDepositMaxRef.current = false;
+      pendingDepositMaxRef.current = null;
 
       const balanceUsdValue = new BigNumber(String(balanceUsd ?? 0));
 
@@ -528,16 +546,27 @@ export function useTransactionCustomAmount({
   useEffect(() => {
     hasPrefilledMaxRef.current = false;
     userEditedRef.current = false;
-    pendingDepositMaxRef.current = false;
+    pendingDepositMaxRef.current = null;
   }, [transactionId]);
 
-  // Apply a Max that was clicked while override assets were still loading.
+  // Apply a Max (clicked or prefilled) that was held while override assets
+  // were still loading.
   useEffect(() => {
-    if (isAccountTokensLoading || !pendingDepositMaxRef.current) {
+    const pendingDepositMax = pendingDepositMaxRef.current;
+
+    if (isAccountTokensLoading || !pendingDepositMax) {
       return;
     }
-    pendingDepositMaxRef.current = false;
-    updatePendingAmountPercentage(100);
+    pendingDepositMaxRef.current = null;
+    updatePendingAmountPercentage(100, {
+      isPrefill: pendingDepositMax.isPrefill,
+    });
+
+    if (pendingDepositMax.isPrefill) {
+      // The prefilled amount is only now in the field, so the amount skeleton
+      // it was held behind can come down.
+      setHasAppliedDepositPrefill(true);
+    }
   }, [isAccountTokensLoading, updatePendingAmountPercentage]);
 
   const applyDepositPrefillAmount = useCallback(
@@ -624,6 +653,8 @@ export function useTransactionCustomAmount({
     // (from tokenKey changes) must not overwrite their input.
     if (userEditedRef.current) {
       prevDepositHasPrefilledRef.current = depositPrefill.hasPrefilled;
+      // Nothing left to apply — the manual input owns the field.
+      setHasAppliedDepositPrefill(true);
       return;
     }
 
@@ -637,8 +668,16 @@ export function useTransactionCustomAmount({
       } else {
         applyDepositPrefillAmount(depositPrefill.prefillAmount ?? '0');
       }
-    } else if (prevDepositHasPrefilledRef.current) {
-      setAmountFiat('0.0');
+
+      // A Max held for the funding-account fetch has not written the amount
+      // yet — keep the skeleton up so the field does not show $0 until the
+      // effect above applies it.
+      setHasAppliedDepositPrefill(pendingDepositMaxRef.current === null);
+    } else {
+      if (prevDepositHasPrefilledRef.current) {
+        setAmountFiat('0.0');
+      }
+      setHasAppliedDepositPrefill(false);
     }
 
     prevDepositHasPrefilledRef.current = depositPrefill.hasPrefilled;
@@ -678,13 +717,16 @@ export function useTransactionCustomAmount({
     isDepositPrefillEnabled: shouldUseDepositPrefill,
     // Hide the skeleton after a manual edit on the *current* token. A pay
     // token / funding account change clears the edit guard so loading (and
-    // the new prefill) can show again.
+    // the new prefill) can show again. A committed prefill that has not been
+    // written to the field yet still counts as loading.
     isDepositPrefillLoading:
       shouldUseDepositPrefill &&
-      depositPrefill.isLoading &&
+      (depositPrefill.isLoading ||
+        (depositPrefill.hasPrefilled && !hasAppliedDepositPrefill)) &&
       !hasUserEditedAmount,
     isDepositPrefilled: shouldUseDepositPrefill && depositPrefill.hasPrefilled,
     isInputChanged,
+    isQuoteDerivedAmountLoading: isQuoteDerivedAmount && isQuotesLoading,
     updatePendingAmount,
     updatePendingAmountPercentage,
   };
