@@ -4795,9 +4795,21 @@
   "honeypotTitle": {
     "message": "Honey pot"
   },
+  "hyperliquidDepositPromptDescription": {
+    "message": "Deposit any token. We'll swap it and send it to your Hyperliquid account automatically—no MetaMask fee.",
+    "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositPromptNoThanks": {
+    "message": "No thanks, deposit manually",
+    "description": "The label of the dismiss button in the Hyperliquid deposit prompt screen"
+  },
   "hyperliquidDepositPromptTitle": {
     "message": "Fund Hyperliquid with MetaMask",
     "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositToastSuccessDescription": {
+    "message": "Funds are ready to trade on Hyperliquid and MetaMask Perps.",
+    "description": "Description shown in the success toast after a perps deposit initiated from the Hyperliquid deposit prompt"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Apply a MetaMask referral code to all future trades per Hyperliquid's $1. MetaMask earns a fee.",
@@ -5298,7 +5310,7 @@
     "message": "Log in"
   },
   "loginErrorSessionExpiredDescription": {
-    "message": "Your session has expired. Please log in again to continue."
+    "message": "Log in again to continue."
   },
   "loginErrorSessionExpiredTitle": {
     "message": "Session has expired"
@@ -5347,6 +5359,10 @@
   },
   "manage": {
     "message": "Manage"
+  },
+  "manageAccounts": {
+    "message": "Manage accounts",
+    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
   },
   "manageConnectedAccounts": {
     "message": "Manage connected accounts"
@@ -5538,6 +5554,9 @@
   "moneyActivity": {
     "message": "Activity"
   },
+  "moneyActivityCard": {
+    "message": "Card"
+  },
   "moneyActivityConversionFailed": {
     "message": "Conversion failed"
   },
@@ -5571,11 +5590,20 @@
   "moneyActivityFilterSends": {
     "message": "Sends"
   },
+  "moneyActivityLoadError": {
+    "message": "Couldn't load your activity"
+  },
+  "moneyActivityMusdBack": {
+    "message": "mUSD back"
+  },
   "moneyActivityPending": {
     "message": "Pending"
   },
   "moneyActivityPlaceholderDescription": {
     "message": "Your Money activity will appear here."
+  },
+  "moneyActivityPurchase": {
+    "message": "Purchase"
   },
   "moneyActivityReceived": {
     "message": "Received"
@@ -5585,6 +5613,12 @@
   },
   "moneyActivityReceiving": {
     "message": "Receiving"
+  },
+  "moneyActivityRefund": {
+    "message": "Refund"
+  },
+  "moneyActivityRetry": {
+    "message": "Retry"
   },
   "moneyActivitySendFailed": {
     "message": "Send failed"
@@ -5613,11 +5647,17 @@
   "moneyBalanceLastKnown": {
     "message": "Last known balance"
   },
+  "moneyBalanceRetry": {
+    "message": "Retry"
+  },
   "moneyBalanceTitle": {
     "message": "Money balance"
   },
   "moneyBalanceUnavailable": {
     "message": "Balance unavailable"
+  },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "We're temporarily unable to display your balance. Your funds are safe—please try again shortly."
   },
   "moneyBenefitAutoEarn": {
     "message": "Auto-earn yield on your Money balance"
@@ -5706,6 +5746,45 @@
   },
   "moneySend": {
     "message": "Send"
+  },
+  "moneyToastDepositFailedBody": {
+    "message": "Unable to add funds. Try again."
+  },
+  "moneyToastDepositFailedBodyConvert": {
+    "message": "Unable to convert. Try again."
+  },
+  "moneyToastDepositFailedTitle": {
+    "message": "Deposit failed"
+  },
+  "moneyToastDepositFailedTitleAddMusd": {
+    "message": "Failed to add funds"
+  },
+  "moneyToastDepositFailedTitleConvert": {
+    "message": "Conversion failed"
+  },
+  "moneyToastWithdrawFailedBody": {
+    "message": "Unable to transfer funds. Try again."
+  },
+  "moneyToastWithdrawFailedTitle": {
+    "message": "Transfer failed"
+  },
+  "moneyTransferBetweenAccounts": {
+    "message": "Another account"
+  },
+  "moneyTransferComingSoon": {
+    "message": "Coming soon"
+  },
+  "moneyTransferPerpsAccount": {
+    "message": "Perps account"
+  },
+  "moneyTransferSendExternal": {
+    "message": "External address"
+  },
+  "moneyTransferTitle": {
+    "message": "Send funds to"
+  },
+  "moneyTransferWithdrawToBank": {
+    "message": "Bank account"
   },
   "month": {
     "message": "month"
@@ -6910,7 +6989,7 @@
     "message": "Show password"
   },
   "passwordsDontMatch": {
-    "message": "Passwords don't match"
+    "message": "Passwords don't match."
   },
   "paste": {
     "message": "Paste"
@@ -8158,6 +8237,10 @@
     "message": "Submitting your trade",
     "description": "In-progress toast text shown while a perps trade is being submitted"
   },
+  "perpsToastTradeEntryFailed": {
+    "message": "Couldn't open trade",
+    "description": "Error toast text shown when opening the perps order form from an asset page fails"
+  },
   "perpsToastTradeSuccess": {
     "message": "Position closed",
     "description": "Success toast text shown when a perps position is closed"
@@ -8867,6 +8950,9 @@
   },
   "rejected": {
     "message": "Rejected"
+  },
+  "relayerFee": {
+    "message": "Relayer fee"
   },
   "remove": {
     "message": "Remove"
@@ -12026,7 +12112,7 @@
     "message": "Unlock"
   },
   "unlockPageIncorrectPassword": {
-    "message": "Password is incorrect. Please try again."
+    "message": "Incorrect password. Try again."
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Too many attempts. Try again in "
@@ -12299,7 +12385,7 @@
     "message": "According to our records, the network name may not correctly match this chain ID."
   },
   "wrongPassword": {
-    "message": "Wrong password",
+    "message": "Incorrect password. Try again.",
     "description": "Displayed when the user enters an incorrect password"
   },
   "year": {

@@ -37,6 +37,7 @@
     "currentAppVersion": "string",
     "currentMigrationVersion": "number",
     "firstTimeInfo": "object",
+    "installAttribution": null,
     "previousAppVersion": "",
     "previousMigrationVersion": 0
   },
@@ -172,8 +173,7 @@
   "MetaMetricsController": {
     "dataCollectionForMarketing": "boolean",
     "marketingCampaignCookieId": null,
-    "tracesBeforeMetricsOptIn": "object",
-    "traits": "object"
+    "tracesBeforeMetricsOptIn": "object"
   },
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,

@@ -65,7 +65,9 @@ export function MoneyAccountDetails({ item }: Readonly<Props>) {
             size={ButtonSize.Lg}
             variant={ButtonVariant.Primary}
             isLoading={isDepositLoading}
-            onClick={() => initiateDeposit()}
+            onClick={() => {
+              initiateDeposit();
+            }}
           >
             {t('addFunds')}
           </Button>

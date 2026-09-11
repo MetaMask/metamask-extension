@@ -49,13 +49,14 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 225,
+      "currentMigrationVersion": 226,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
       },
       "previousAppVersion": "",
-      "previousMigrationVersion": 0
+      "previousMigrationVersion": 0,
+      "installAttribution": null
     },
     "AppStateController": {
       "arcUsageNoticeShown": false,
@@ -171,11 +172,7 @@
           },
           "type": "start"
         }
-      ],
-      "traits": {
-        "install_date_ext": "2026-01-22",
-        "storage_kind": "split"
-      }
+      ]
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -2259,6 +2256,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 225
+    "version": 226
   }
 }

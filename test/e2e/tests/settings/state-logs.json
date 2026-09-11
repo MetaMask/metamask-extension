@@ -512,6 +512,7 @@
     "fiatCurrency": "string",
     "firstTimeFlowType": "string",
     "firstTimeInfo": {},
+    "installAttribution": "null",
     "forgottenPassword": "boolean",
     "fullScreenGasPollTokens": ["string"],
     "gasEstimateType": "string",
@@ -1247,10 +1248,6 @@
       "mainnet": {}
     },
     "tracesBeforeMetricsOptIn": [],
-    "traits": {
-      "install_date_ext": "string",
-      "storage_kind": "string"
-    },
     "batchTransactionCounts": {},
     "transactionBatches": [],
     "transactionData": {},

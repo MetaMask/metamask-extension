@@ -165,7 +165,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
+                      d="m17.03 12.53-7.5 7.5a.75.75 0 0 1-1.06-1.06L15.44 12 8.47 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5a.75.75 0 0 1 0 1.06"
                     />
                   </svg>
                 </div>
@@ -191,7 +191,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
               />
             </svg>
             <p
@@ -210,7 +210,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
               />
             </svg>
             <p
@@ -229,7 +229,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                d="M19.28 18.22a.75.75 0 0 1-1.06 1.06L12 13.06l-6.22 6.22a.75.75 0 0 1-1.06-1.06L10.94 12 4.72 5.78a.75.75 0 0 1 1.06-1.06L12 10.94l6.22-6.22a.75.75 0 0 1 1.06 1.06L13.06 12Z"
               />
             </svg>
             <p
@@ -440,7 +440,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
+                      d="m17.03 12.53-7.5 7.5a.75.75 0 0 1-1.06-1.06L15.44 12 8.47 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5a.75.75 0 0 1 0 1.06"
                     />
                   </svg>
                 </div>
@@ -466,7 +466,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
               />
             </svg>
             <p
@@ -485,7 +485,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
               />
             </svg>
             <p
@@ -504,7 +504,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                d="M19.28 18.22a.75.75 0 0 1-1.06 1.06L12 13.06l-6.22 6.22a.75.75 0 0 1-1.06-1.06L10.94 12 4.72 5.78a.75.75 0 0 1 1.06-1.06L12 10.94l6.22-6.22a.75.75 0 0 1 1.06 1.06L13.06 12Z"
               />
             </svg>
             <p
@@ -715,7 +715,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
+                      d="m17.03 12.53-7.5 7.5a.75.75 0 0 1-1.06-1.06L15.44 12 8.47 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5a.75.75 0 0 1 0 1.06"
                     />
                   </svg>
                 </div>
@@ -741,7 +741,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
               />
             </svg>
             <p
@@ -760,7 +760,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
               />
             </svg>
             <p
@@ -779,7 +779,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                d="M19.28 18.22a.75.75 0 0 1-1.06 1.06L12 13.06l-6.22 6.22a.75.75 0 0 1-1.06-1.06L10.94 12 4.72 5.78a.75.75 0 0 1 1.06-1.06L12 10.94l6.22-6.22a.75.75 0 0 1 1.06 1.06L13.06 12Z"
               />
             </svg>
             <p
