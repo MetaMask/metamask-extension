@@ -1,0 +1,39 @@
+diff --git a/dist/cli/mm.cjs b/dist/cli/mm.cjs
+index 5ab49331b50577fbdeae72bfb20b4d83908be772..15025c014ac9171d7fcb10ae14f456304090aa52 100644
+--- a/dist/cli/mm.cjs
++++ b/dist/cli/mm.cjs
+@@ -831,6 +831,7 @@ async function autoStartDaemon(worktreeRoot) {
+         const runtimeBin = resolveRuntime(worktreeRoot, config.runtime);
+         const child = (0, node_child_process_1.spawn)(runtimeBin, [config.daemonPath], {
+             detached: true,
++            shell: process.platform === 'win32' && runtimeBin.endsWith('.cmd'),
+             stdio: ['ignore', 'ignore', 'ignore'],
+             cwd: worktreeRoot,
+         });
+@@ -861,6 +862,7 @@ async function handleServe(worktreeRoot, background) {
+     if (background) {
+         const child = (0, node_child_process_1.spawn)(runtimeBin, [config.daemonPath], {
+             detached: true,
++            shell: process.platform === 'win32' && runtimeBin.endsWith('.cmd'),
+             stdio: ['ignore', 'ignore', 'ignore'],
+             cwd: worktreeRoot,
+         });
+@@ -870,6 +872,7 @@ async function handleServe(worktreeRoot, background) {
+         return;
+     }
+     const child = (0, node_child_process_1.spawn)(runtimeBin, [config.daemonPath], {
++        shell: process.platform === 'win32' && runtimeBin.endsWith('.cmd'),
+         stdio: 'inherit',
+         cwd: worktreeRoot,
+     });
+@@ -973,6 +976,10 @@ function resolveRuntime(worktreeRoot, runtime) {
+         return 'node';
+     }
+     const binPath = path.join(worktreeRoot, 'node_modules', '.bin', runtime);
++    const windowsBinPath = `${binPath}.cmd`;
++    if (process.platform === 'win32' && (0, node_fs_1.existsSync)(windowsBinPath)) {
++        return windowsBinPath;
++    }
+     if (!(0, node_fs_1.existsSync)(binPath)) {
+         process.stderr.write(`Error: Runtime '${runtime}' not found at ${binPath}. Install it or set "mm.runtime" in package.json.\n`);
+         process.exit(1);

@@ -618,7 +618,7 @@
     "@metamask/auto-changelog": "^6.2.0",
     "@metamask/bitcoin-regtest-up": "^1.0.0",
     "@metamask/browser-playground": "0.8.1",
-    "@metamask/client-mcp-core": "0.5.0",
+    "@metamask/client-mcp-core": "patch:@metamask/client-mcp-core@npm%3A0.5.0#~/.yarn/patches/@metamask-client-mcp-core-npm-0.5.0-8f4fed0048.patch",
     "@metamask/design-system-shared": "^0.37.0",
     "@metamask/eslint-config": "^14.1.1",
     "@metamask/eslint-config-jest": "^14.1.1",

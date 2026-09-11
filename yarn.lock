@@ -5883,6 +5883,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/client-mcp-core@patch:@metamask/client-mcp-core@npm%3A0.5.0#~/.yarn/patches/@metamask-client-mcp-core-npm-0.5.0-8f4fed0048.patch":
+  version: 0.5.0
+  resolution: "@metamask/client-mcp-core@patch:@metamask/client-mcp-core@npm%3A0.5.0#~/.yarn/patches/@metamask-client-mcp-core-npm-0.5.0-8f4fed0048.patch::version=0.5.0&hash=3e7401"
+  dependencies:
+    cosmiconfig: "npm:^9.0.0"
+    express: "npm:^5.2.1"
+    zod: "npm:^4.3.5"
+  peerDependencies:
+    "@playwright/test": ^1.49.0
+    playwright: ^1.49.0
+  bin:
+    mm: ./dist/cli/mm.cjs
+  checksum: 10/efc75044d2bead14ed50cdbfaee87e3b30a7db9729ef8c82957eb40416e63b8a5f21e360fe0e8b1da5c2652425ceeb1c69147ef075c220e812f35ff71813646d
+  languageName: node
+  linkType: hard
+
 "@metamask/client-utils@npm:^2.0.2":
   version: 2.0.2
   resolution: "@metamask/client-utils@npm:2.0.2"
@@ -31324,7 +31340,7 @@ __metadata:
     "@metamask/chomp-api-service": "npm:^4.0.2"
     "@metamask/claims-controller": "npm:^0.6.1"
     "@metamask/client-controller": "npm:^1.0.0"
-    "@metamask/client-mcp-core": "npm:0.5.0"
+    "@metamask/client-mcp-core": "patch:@metamask/client-mcp-core@npm%3A0.5.0#~/.yarn/patches/@metamask-client-mcp-core-npm-0.5.0-8f4fed0048.patch"
     "@metamask/client-utils": "npm:^2.0.2"
     "@metamask/compliance-controller": "npm:^2.1.0"
     "@metamask/config-registry-controller": "npm:^3.0.0"
