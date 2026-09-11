@@ -7168,11 +7168,11 @@
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
   "permission_getPreferences": {
-    "message": "See information like your preferred language and fiat currency.",
+    "message": "See information like your preferred language and local currency currency.",
     "description": "The description for the `snap_getPreferences` permission"
   },
   "permission_getPreferencesDescription": {
-    "message": "Let $1 access information like your preferred language and fiat currency in your MetaMask settings. This helps $1 display content tailored to your preferences. ",
+    "message": "Let $1 access information like your preferred language and local currency currency in your MetaMask settings. This helps $1 display content tailored to your preferences. ",
     "description": "An extended description for the `snap_getPreferences` permission. $1 is the snap name."
   },
   "permission_homePage": {
