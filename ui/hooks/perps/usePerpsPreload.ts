@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   trace,
@@ -24,6 +24,8 @@ import {
   PERPS_LIFECYCLE_TAG,
 } from '../../helpers/perps/entry-trace';
 
+const START_BOUNDARY_TAG = 'start_boundary';
+const COMPLETION_BOUNDARY_TAG = 'completion_boundary';
 const CONNECTION_TIMEOUT_MS = 30_000;
 type PreloadState = {
   metamask: { activeProvider?: string; isTestnet?: boolean };
@@ -49,6 +51,7 @@ export function usePerpsPreload(walletReady: boolean): void {
   );
   const useTerminalApi = useSelector(getIsPerpsTerminalBackendEnabled);
   const enabled = walletReady && available && useExternalServices;
+  const previousRequestedAddress = useRef<string>();
 
   useEffect(observePerpsLifecycle, []);
 
@@ -62,9 +65,20 @@ export function usePerpsPreload(walletReady: boolean): void {
   useEffect(() => {
     const manager = getPerpsStreamManager();
     if (!enabled || !address) {
+      previousRequestedAddress.current = undefined;
       manager.reset();
       return undefined;
     }
+    // Measure this UI's requested account transition through preload readiness.
+    // The background queue may share the actual reconnect with another UI.
+    const accountChanged = Boolean(
+      previousRequestedAddress.current &&
+      previousRequestedAddress.current !== address.toLowerCase(),
+    );
+    previousRequestedAddress.current = address.toLowerCase();
+    const name = accountChanged
+      ? TraceName.PerpsAccountSwitchReconnection
+      : TraceName.PerpsConnectionEstablishment;
     manager.setUseTerminalApi(useTerminalApi);
     const id = crypto.randomUUID();
     let cancelled = false;
@@ -81,13 +95,16 @@ export function usePerpsPreload(walletReady: boolean): void {
       .then((context) =>
         trace({
           startTime,
-          name: TraceName.PerpsConnectionEstablishment,
+          name,
           id,
           op: TraceOperation.PerpsOperation,
           tags: {
             feature: 'perps',
             [PERPS_LIFECYCLE_TAG]: context,
             source: 'wallet_root',
+            [START_BOUNDARY_TAG]: 'wallet_root_effect',
+            [COMPLETION_BOUNDARY_TAG]: 'preload_ready',
+            ...(accountChanged ? { trigger: 'requested_account_change' } : {}),
           },
         }),
       )
@@ -104,7 +121,7 @@ export function usePerpsPreload(walletReady: boolean): void {
         .then(() =>
           endTrace({
             timestamp,
-            name: TraceName.PerpsConnectionEstablishment,
+            name,
             id,
             data: { success, reason },
           }),

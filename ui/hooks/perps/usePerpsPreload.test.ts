@@ -320,6 +320,7 @@ describe('usePerpsPreload', () => {
       const firstId = jest.mocked(trace).mock.calls[0][0].id;
       if (change === 'account') {
         state = structuredClone(state);
+        state = structuredClone(state);
         state.metamask.internalAccounts.accounts.selected.address = '0xsecond';
       }
       if (change === 'provider') {
@@ -341,12 +342,147 @@ describe('usePerpsPreload', () => {
         [firstId],
       );
       expect(trace).toHaveBeenCalledTimes(2);
+      expect(jest.mocked(trace).mock.calls[1][0].name).toBe(
+        change === 'account'
+          ? TraceName.PerpsAccountSwitchReconnection
+          : TraceName.PerpsConnectionEstablishment,
+      );
       expect(jest.mocked(trace).mock.calls[1][0].id).not.toBe(firstId);
       if (change === 'terminal') {
         expect(mockManager.clearAllCaches).not.toHaveBeenCalled();
       } else {
         expect(mockManager.clearAllCaches).toHaveBeenCalled();
       }
+    },
+  );
+
+  it('waits for account preload and keeps superseded trace IDs independent', async () => {
+    const { rerender } = renderHook(() => usePerpsPreload(true));
+    await act(async () => undefined);
+    const second = deferred();
+    const third = deferred();
+    jest.mocked(submitRequestToBackground).mockImplementation((method) => {
+      if (method !== 'perpsStartPreload') {
+        return Promise.resolve(undefined);
+      }
+      return state.metamask.internalAccounts.accounts.selected.address ===
+        '0xsecond'
+        ? second.promise
+        : third.promise;
+    });
+
+    state = structuredClone(state);
+    state.metamask.internalAccounts.accounts.selected.address = '0xsecond';
+    await act(async () => rerender());
+    const secondTrace = jest.mocked(trace).mock.calls[1][0];
+    expect(secondTrace).toEqual(
+      expect.objectContaining({
+        name: TraceName.PerpsAccountSwitchReconnection,
+        tags: expect.objectContaining({
+          source: 'wallet_root',
+          trigger: 'requested_account_change',
+        }),
+      }),
+    );
+    expect(secondTrace.tags).toHaveProperty(
+      'start_boundary',
+      'wallet_root_effect',
+    );
+    expect(secondTrace.tags).toHaveProperty(
+      'completion_boundary',
+      'preload_ready',
+    );
+    expect(secondTrace.tags).toHaveProperty(
+      'lifecycle_context',
+      'cold_process',
+    );
+    expect(endTrace).not.toHaveBeenCalledWith(
+      expect.objectContaining({ id: secondTrace.id }),
+    );
+
+    state = structuredClone(state);
+    state.metamask.internalAccounts.accounts.selected.address = '0xfirst';
+    await act(async () => rerender());
+    const thirdTrace = jest.mocked(trace).mock.calls[2][0];
+    expect(thirdTrace.name).toBe(TraceName.PerpsAccountSwitchReconnection);
+    expect(thirdTrace.id).not.toBe(secondTrace.id);
+    expect(endTrace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: secondTrace.id,
+        data: { success: false, reason: 'released' },
+      }),
+    );
+    await act(async () => second.resolve());
+    expect(endTrace).not.toHaveBeenCalledWith(
+      expect.objectContaining({ id: thirdTrace.id }),
+    );
+    await act(async () => third.resolve());
+    expect(endTrace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: TraceName.PerpsAccountSwitchReconnection,
+        id: thirdTrace.id,
+        data: { success: true, reason: 'subscriptions_ready' },
+      }),
+    );
+    expect(
+      jest
+        .mocked(endTrace)
+        .mock.calls.filter(([request]) => request.id === secondTrace.id),
+    ).toHaveLength(1);
+  });
+
+  it('does not classify case-only address changes or unlock as account switches', async () => {
+    const { rerender } = renderHook(({ ready }) => usePerpsPreload(ready), {
+      initialProps: { ready: true },
+    });
+    await act(async () => undefined);
+    state = structuredClone(state);
+    state.metamask.internalAccounts.accounts.selected.address = '0xFIRST';
+    await act(async () => rerender({ ready: true }));
+    await act(async () => rerender({ ready: false }));
+    state = structuredClone(state);
+    state.metamask.internalAccounts.accounts.selected.address = '0xsecond';
+    await act(async () => rerender({ ready: true }));
+    expect(trace).toHaveBeenCalledTimes(3);
+    for (const [request] of jest.mocked(trace).mock.calls) {
+      expect(request.name).toBe(TraceName.PerpsConnectionEstablishment);
+    }
+  });
+
+  it.each(['failure', 'timeout'] as const)(
+    'ends an unsuccessful account switch on %s',
+    async (outcome) => {
+      const { rerender } = renderHook(() => usePerpsPreload(true));
+      await act(async () => undefined);
+      const init = deferred();
+      mockManager.initForAddress.mockReturnValueOnce(init.promise);
+      state = structuredClone(state);
+      state.metamask.internalAccounts.accounts.selected.address = '0xsecond';
+      await act(async () => rerender());
+      const request = jest.mocked(trace).mock.calls[1][0];
+      await act(async () => {
+        if (outcome === 'failure') {
+          init.reject(new Error('offline'));
+        } else {
+          jest.advanceTimersByTime(30_000);
+          init.resolve();
+        }
+      });
+      expect(endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.PerpsAccountSwitchReconnection,
+          id: request.id,
+          data: {
+            success: false,
+            reason: outcome === 'failure' ? 'connection_failed' : 'timeout',
+          },
+        }),
+      );
+      expect(
+        jest
+          .mocked(endTrace)
+          .mock.calls.filter(([item]) => item.id === request.id),
+      ).toHaveLength(1);
     },
   );
 
