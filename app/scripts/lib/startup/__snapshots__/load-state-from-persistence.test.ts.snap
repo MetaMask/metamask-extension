@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`loadStateFromPersistence disables backup and sync flags when WITH_STATE builds a fixture wallet 1`] = `
+{
+  "isAccountSyncingEnabled": false,
+  "isBackupAndSyncEnabled": false,
+  "isContactSyncingEnabled": false,
+  "isRampsSyncingEnabled": false,
+}
+`;

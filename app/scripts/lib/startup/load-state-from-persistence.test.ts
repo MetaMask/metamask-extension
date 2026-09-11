@@ -214,4 +214,30 @@ describe('loadStateFromPersistence', () => {
       config: { fromFixture: true },
     });
   });
+
+  it('disables backup and sync flags when WITH_STATE builds a fixture wallet', async () => {
+    process.env.WITH_STATE = JSON.stringify({ seedPhrase: 'test' });
+    mockGenerateWalletState.mockResolvedValue({
+      fixture: { data: { config: {} } },
+    });
+    mockMigrateData.mockResolvedValue({
+      state: {
+        data: {
+          ...migratedState.data,
+          UserStorageController: {
+            isBackupAndSyncEnabled: true,
+            isAccountSyncingEnabled: true,
+            isContactSyncingEnabled: true,
+            isRampsSyncingEnabled: true,
+          },
+        },
+        meta: migratedState.meta,
+      },
+      changedKeys: new Set(['KeyringController']),
+    });
+
+    const { versionedData } = await loadState();
+
+    expect(versionedData.data?.UserStorageController).toMatchSnapshot();
+  });
 });
