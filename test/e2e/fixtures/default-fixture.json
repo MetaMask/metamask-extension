@@ -181,9 +181,9 @@
     "AppMetadataController": {
       "currentMigrationVersion": 226,
       "firstTimeInfo": {},
+      "installAttribution": null,
       "previousAppVersion": "",
-      "previousMigrationVersion": 0,
-      "installAttribution": null
+      "previousMigrationVersion": 0
     },
     "AppStateController": {
       "arcUsageNoticeShown": false,
@@ -1030,14 +1030,14 @@
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
         "avatarType": "maskicon",
+        "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": false,
         "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": false,
-        "basicFunctionalityMigrationNotification": null,
-        "basicFunctionalityMigrationNotificationDismissed": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -1109,6 +1109,7 @@
       }
     },
     "RampsController": {
+      "autoramps": [],
       "orders": [],
       "providerAutoSelected": false,
       "userRegion": null
@@ -1132,19 +1133,28 @@
         "feature2": false,
         "feature3": [
           {
-            "value": "valueA",
             "name": "groupA",
-            "scope": { "type": "threshold", "value": 0.3 }
+            "scope": {
+              "type": "threshold",
+              "value": 0.3
+            },
+            "value": "valueA"
           },
           {
-            "value": "valueB",
             "name": "groupB",
-            "scope": { "type": "threshold", "value": 0.5 }
+            "scope": {
+              "type": "threshold",
+              "value": 0.5
+            },
+            "value": "valueB"
           },
           {
-            "scope": { "type": "threshold", "value": 1 },
-            "value": "valueC",
-            "name": "groupC"
+            "name": "groupC",
+            "scope": {
+              "type": "threshold",
+              "value": 1
+            },
+            "value": "valueC"
           }
         ]
       }

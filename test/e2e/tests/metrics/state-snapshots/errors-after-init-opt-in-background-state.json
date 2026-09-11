@@ -54,6 +54,7 @@
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "hasShownMultichainAccountsIntroModal": "boolean",
     "isWalletResetInProgress": "boolean",
+    "lastPerpsDepositEntryPoint": null,
     "lastQrScanCompletedSuccessfully": null,
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
@@ -327,7 +328,8 @@
     "watchEthereumAccountEnabled": "boolean"
   },
   "ProfileMetricsController": {
-    "accountSourceBackfillEnqueued": false,
+    "accountSourceBackfillEnqueued": true,
+    "initialDelayEndTimestamp": "number",
     "initialEnqueueCompleted": "boolean",
     "proofBackfillEnqueued": "boolean",
     "reportedAccounts": "object",
@@ -335,6 +337,7 @@
   },
   "QrSyncController": "object",
   "RampsController": {
+    "autoramps": "object",
     "countries": "object",
     "nativeProviders": "object",
     "orders": "object",

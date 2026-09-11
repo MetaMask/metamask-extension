@@ -253,6 +253,7 @@
       "syncQueue": "object"
     },
     "RampsController": {
+      "autoramps": "object",
       "orders": "object",
       "providerAutoSelected": "boolean",
       "userRegion": null

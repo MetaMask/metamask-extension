@@ -7892,16 +7892,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ramps-controller@npm:^20.2.0":
-  version: 20.2.0
-  resolution: "@metamask/ramps-controller@npm:20.2.0"
+"@metamask/ramps-controller@npm:^22.0.0":
+  version: 22.0.0
+  resolution: "@metamask/ramps-controller@npm:22.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/profile-sync-controller": "npm:^29.0.0"
-    "@metamask/remote-feature-flag-controller": "npm:^6.1.0"
-  checksum: 10/2ad551a54458cb01221d1b13794f222fd8e5672fa11bfa7cd348838c59b16623bb243ecff9015459f8c7b07e453b3daffb9242d431744e80d89dc3b29eb33989
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/profile-sync-controller": "npm:^32.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
+    fast-deep-equal: "npm:^3.1.3"
+  checksum: 10/01b48cd46f2e1e3f1a0a2cde0214937bdad518550b12059ae20a085e1eeff242b29561942f86294b959f2f6116a6b870693f8f1ac41fe7a3c615480c084a6fde
   languageName: node
   linkType: hard
 
@@ -31489,7 +31490,7 @@ __metadata:
     "@metamask/profile-metrics-controller": "npm:^5.1.0"
     "@metamask/profile-sync-controller": "npm:^32.0.0"
     "@metamask/providers": "npm:^22.1.1"
-    "@metamask/ramps-controller": "npm:^20.2.0"
+    "@metamask/ramps-controller": "npm:^22.0.0"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
     "@metamask/react-data-query": "npm:^1.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^6.1.1"
