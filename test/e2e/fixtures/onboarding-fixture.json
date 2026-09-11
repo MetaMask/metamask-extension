@@ -49,14 +49,14 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 229,
+      "currentMigrationVersion": 226,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
       },
-      "installAttribution": null,
       "previousAppVersion": "",
-      "previousMigrationVersion": 0
+      "previousMigrationVersion": 0,
+      "installAttribution": null
     },
     "AppStateController": {
       "arcUsageNoticeShown": false,
@@ -2012,14 +2012,14 @@
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
         "avatarType": "maskicon",
-        "basicFunctionalityMigrationNotification": null,
-        "basicFunctionalityMigrationNotificationDismissed": false,
         "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": false,
+        "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -2250,6 +2250,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 229
+    "version": 226
   }
 }
