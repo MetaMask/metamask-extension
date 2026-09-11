@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import {
+  cpSync,
   mkdtempSync,
   mkdirSync,
   readFileSync,
@@ -104,6 +105,32 @@ describe('loading cohort summary', () => {
     expect(report.complete).toBe(false);
     expect(report.failures).toStrictEqual([samples[0]]);
     expect(report.groups[0].clickToRows.count).toBe(2);
+  });
+
+  it('rejects duplicate cohort keys even when each cohort has valid provenance', () => {
+    const manifest = JSON.parse(
+      readFileSync(path.join(root, 'sample-manifest.json'), 'utf8'),
+    );
+    const secondSamples = samples.map((sample, index) => {
+      const name = `after-warm-${index + 4}`;
+      cpSync(path.join(root, sample), path.join(root, name), {
+        recursive: true,
+      });
+      const file = `${name}/measurements.json`;
+      const value = JSON.parse(readFileSync(path.join(root, file), 'utf8'));
+      value.build.provenanceSha256 = 'b'.repeat(64);
+      write(file, value);
+      return name;
+    });
+    manifest.cohorts.push({
+      ...manifest.cohorts[0],
+      samples: secondSamples,
+      buildProvenanceSha256: 'b'.repeat(64),
+    });
+    write('sample-manifest.json', manifest);
+    const result = summarize();
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain('Duplicate cohort key');
   });
 
   it('rejects a duration inconsistent with its raw timestamps', () => {

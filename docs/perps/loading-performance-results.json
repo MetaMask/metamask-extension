@@ -2,7 +2,7 @@
   "baselineSource": "867848e2481626dc47ee1bb0f2695dc45d0eef67 plus eight common startup policy prerequisites",
   "boundaries": {
     "rows": "actual click to first positive-priced rendered DOM rows",
-    "matchedRows": "actual click to all rendered prices matching finite positive current-manager quotes, with current account identity and account/order/position cache availability"
+    "matchedRows": "actual click to all sampled positive-priced rows matching finite positive current-manager quotes, with current account identity and account/order/position cache availability; V2 filtered unpriced rows, so complete rendered-row coverage is not proven"
   },
   "browser": "Chrome for Testing 147.0.7727.15, fullscreen MV3",
   "collectorSha256": "652028fa123a4ad2fe9b4aed661e1ddb459756b7349fcef3ed6bb415f93f99b6",
