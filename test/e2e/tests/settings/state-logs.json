@@ -344,15 +344,7 @@
       "selected": "null"
     },
     "cryptocurrencies": ["string"],
-    "currencyRates": {
-      "*": {
-        "conversionDate": "null",
-        "conversionRate": "number",
-        "usdConversionRate": "null"
-      }
-    },
     "currentAppVersion": "string",
-    "currentCurrency": "string",
     "currentExtensionPopupId": "number",
     "dappSwapComparisonData": {},
     "currentLocale": "string",

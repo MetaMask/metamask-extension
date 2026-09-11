@@ -11,6 +11,7 @@ import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
 import {
+  getMainnet25EthAssetsControllerPatch,
   getMockAssetsPrice,
   MOCK_ETH_CONVERSION_RATE,
   mockPriceApi,
@@ -25,9 +26,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           .withKeyringControllerMultiSRP()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withSnapsPrivacyWarningAlreadyShown()
-          .withAssetsController({
-            assetsPrice: getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
-          })
+          .withAssetsController(
+            getMainnet25EthAssetsControllerPatch(MOCK_ETH_CONVERSION_RATE),
+          )
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
