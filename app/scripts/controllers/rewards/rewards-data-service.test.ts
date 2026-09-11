@@ -91,6 +91,7 @@ describe('RewardsDataService', () => {
 
     // Set environment variables for testing
     delete process.env.METAMASK_ENVIRONMENT;
+    delete process.env.REWARDS_USE_UAT_APIS;
   });
 
   afterAll(() => {
@@ -540,7 +541,7 @@ describe('RewardsDataService', () => {
 
       expect(result).toEqual(mockLoginResponse);
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.UAT}/auth/mobile-login`,
+        `${REWARDS_API_URL.PRD}/auth/mobile-login`,
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify(mockLoginRequest),
@@ -822,7 +823,7 @@ describe('RewardsDataService', () => {
 
       expect(result).toEqual(mockSeasonStateResponse);
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.UAT}/seasons/${mockSeasonId}/state`,
+        `${REWARDS_API_URL.PRD}/seasons/${mockSeasonId}/state`,
         {
           credentials: 'omit',
           method: 'GET',
@@ -1096,7 +1097,7 @@ describe('RewardsDataService', () => {
       // Assert
       expect(result).toEqual(mockOptInStatusResponse);
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.UAT}/public/rewards/ois`,
+        `${REWARDS_API_URL.PRD}/public/rewards/ois`,
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify(mockOptInStatusRequest),
@@ -1373,8 +1374,7 @@ describe('RewardsDataService', () => {
   });
 
   describe('API URL configuration', () => {
-    it('uses production URL for production environment', async () => {
-      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
+    it('uses the production URL by default', async () => {
       service = createService();
 
       const mockResponse = {
@@ -1395,8 +1395,8 @@ describe('RewardsDataService', () => {
       );
     });
 
-    it('uses production URL for release candidate environment', async () => {
-      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.RELEASE_CANDIDATE;
+    it('ignores METAMASK_ENVIRONMENT when resolving the host', async () => {
+      process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
       service = createService();
 
       const mockResponse = {
@@ -1408,17 +1408,13 @@ describe('RewardsDataService', () => {
       await service.validateReferralCode('TEST');
 
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining(REWARDS_API_URL.PRD),
-        expect.any(Object),
-      );
-      expect(mockFetch).toHaveBeenCalledWith(
         `${REWARDS_API_URL.PRD}/referral/validate?code=TEST`,
         expect.any(Object),
       );
     });
 
-    it('uses UAT URL for non-production environments', async () => {
-      delete process.env.METAMASK_ENVIRONMENT;
+    it('uses the UAT URL when REWARDS_USE_UAT_APIS is set', async () => {
+      process.env.REWARDS_USE_UAT_APIS = 'true';
       service = createService();
 
       const mockResponse = {
@@ -1911,7 +1907,7 @@ describe('RewardsDataService', () => {
 
       expect(result).toEqual(mockLoginResponse);
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.UAT}/auth/login`,
+        `${REWARDS_API_URL.PRD}/auth/login`,
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify(mockSiweLoginBody),
@@ -2028,7 +2024,7 @@ describe('RewardsDataService', () => {
 
       expect(result).toEqual(mockSubscriptionResponse);
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.UAT}/wr/subscriptions/join`,
+        `${REWARDS_API_URL.PRD}/wr/subscriptions/join`,
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify(mockSiweJoinBody),
@@ -2140,7 +2136,7 @@ describe('RewardsDataService', () => {
       expect(result.message).toBe(mockChallengeResponse.message);
 
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.UAT}/auth/challenge/generate`,
+        `${REWARDS_API_URL.PRD}/auth/challenge/generate`,
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify({ address: mockAddress }),
@@ -2264,7 +2260,7 @@ describe('RewardsDataService', () => {
 
       expect(result).toEqual(mockVipFees);
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.UAT}/vip/fees`,
+        `${REWARDS_API_URL.PRD}/vip/fees`,
         expect.objectContaining({
           method: 'GET',
           credentials: 'omit',

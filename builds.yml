@@ -186,6 +186,12 @@ env:
   - ENABLE_SENTRY: true
   - ACCOUNTS_USE_DEV_APIS: false
   - BRIDGE_USE_CUSTOM_BASE_URL: null
+  # Point the Rewards API at the UAT host instead of production. Leave unset to
+  # get the default: UAT for local development builds, production for everything
+  # else. Setting it to true or false overrides that default in either
+  # direction. Test builds always use production, where the requests are mocked
+  # at the network layer.
+  - REWARDS_USE_UAT_APIS: null
   - SWAPS_USE_DEV_APIS: false
   - PORTFOLIO_URL: https://app.metamask.io
   - TOKEN_ALLOWANCE_IMPROVEMENTS: false

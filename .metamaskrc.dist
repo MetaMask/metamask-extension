@@ -37,6 +37,11 @@ INFURA_STORYBOOK_PROJECT_ID=
 ;ANALYTICS_DATA_DELETION_SOURCE_ID=
 ;ANALYTICS_DATA_DELETION_ENDPOINT=
 ;SWAPS_USE_DEV_APIS=
+; Which Rewards API host to use. Leave unset for the default: UAT on local
+; development builds, production everywhere else. Set to `true` to force UAT on
+; a dist build, or `false` to force production on a development build. Test
+; builds always use production regardless of this value.
+;REWARDS_USE_UAT_APIS=
 ;PORTFOLIO_URL=
 ;TRANSACTION_SECURITY_PROVIDER=
 
