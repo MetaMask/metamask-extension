@@ -1,5 +1,5 @@
 // TODO: Once all usages of tokensChainsCache are removed from this repo, this
-// fetching logic should be moved to the core package (e.g. TokenListService
+// fetching logic should be moved to the core package (e.g. TokenListController
 // or a dedicated tokens API service), and this hook should be updated to read
 // from Redux state rather than calling the API directly.
 import { useState, useEffect } from 'react';
