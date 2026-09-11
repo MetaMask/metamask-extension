@@ -1014,7 +1014,7 @@
       "variational": {}
     },
     "region": "string",
-    "reportedAccounts": "object",
+    "reportedAccounts": "array",
     "requests": {
       "*": {
         "status": "string",
