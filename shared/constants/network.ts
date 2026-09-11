@@ -296,6 +296,7 @@ export const ARC_DISPLAY_NAME = 'Arc';
 export const GRAVITY_DISPLAY_NAME = 'Gravity';
 export const ROBINHOOD_CHAIN_DISPLAY_NAME = 'Robinhood Chain';
 export const ZERO_G_DISPLAY_NAME = '0G';
+export const XGR_DISPLAY_NAME = 'XGR Mainnet';
 export const SOMNIA_DISPLAY_NAME = 'Somnia';
 
 /**
@@ -406,6 +407,7 @@ export const CURRENCY_SYMBOLS = {
   KONET: 'KONET',
   ARC: 'USDC',
   ZERO_G: '0G',
+  XGR: 'XGR',
   GRAVITY: 'G',
   SOMNIA: 'SOMI',
 } as const;
@@ -646,6 +648,8 @@ export const ROBINHOOD_CHAIN_IMAGE_URL = './images/robinhood.svg';
 export const ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL = './images/rootstock-native.svg';
 export const ZERO_G_IMAGE_URL = './images/0g.svg';
 export const ZERO_G_NATIVE_TOKEN_IMAGE_URL = './images/0g-native.svg';
+export const XGR_IMAGE_URL = './images/xgr.png';
+export const XGR_NATIVE_TOKEN_IMAGE_URL = './images/xgr.png';
 export const TEMPO_TESTNET_IMAGE_URL = './images/tempo.svg';
 export const TEMPO_MAINNET_IMAGE_URL = './images/tempo.svg';
 export const CHILIZ_IMAGE_URL = './images/chiliz.svg';
@@ -849,6 +853,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.GRAVITY]: GRAVITY_DISPLAY_NAME,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ROBINHOOD_CHAIN_DISPLAY_NAME,
   [CHAIN_IDS.ZERO_G]: ZERO_G_DISPLAY_NAME,
+  [CHAIN_IDS.XGR]: XGR_DISPLAY_NAME,
   [CHAIN_IDS.SOMNIA]: SOMNIA_DISPLAY_NAME,
 } as const;
 
@@ -1025,6 +1030,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.GRAVITY]: CURRENCY_SYMBOLS.GRAVITY,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: CURRENCY_SYMBOLS.ETH,
   [CHAIN_IDS.ZERO_G]: CURRENCY_SYMBOLS.ZERO_G,
+  [CHAIN_IDS.XGR]: CURRENCY_SYMBOLS.XGR,
   [CHAIN_IDS.SOMNIA]: CURRENCY_SYMBOLS.SOMNIA,
 } as const;
 
@@ -1223,6 +1229,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.SOMNIA]: SOMNIA_IMAGE_URL,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ROBINHOOD_CHAIN_IMAGE_URL,
   [CHAIN_IDS.ZERO_G]: ZERO_G_IMAGE_URL,
+  [CHAIN_IDS.XGR]: XGR_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1326,6 +1333,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.KONET]: KONET_IMAGE_URL,
   [CHAIN_IDS.ROBINHOOD_CHAIN]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ZERO_G]: ZERO_G_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.XGR]: XGR_NATIVE_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
