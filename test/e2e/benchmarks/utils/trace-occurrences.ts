@@ -56,7 +56,10 @@ export function traceTimerResult(
     );
   }
 
-  return { id, value: last.duration };
+  // Tagged with a unit so the runner leaves it out of the per-run `total`,
+  // which sums only untagged timers: the spans overlap the step timers, and
+  // adding both would count the same time twice.
+  return { id, value: last.duration, unit: 'ms' };
 }
 
 /**
