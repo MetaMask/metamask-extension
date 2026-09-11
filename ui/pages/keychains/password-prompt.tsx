@@ -6,16 +6,15 @@ import {
   ButtonIcon,
   IconName,
   IconColor,
-} from '@metamask/design-system-react';
-import {
-  Label,
   TextField,
   TextFieldSize,
   TextFieldType,
+} from '@metamask/design-system-react';
+import {
+  Label,
   HelpText,
   HelpTextSeverity,
 } from '../../components/component-library';
-import { BlockSize } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
 type PasswordPromptProps = {
@@ -60,8 +59,8 @@ export function PasswordPrompt({
           size={TextFieldSize.Lg}
           value={password}
           onChange={(event) => onPasswordChange(event.target.value)}
-          error={Boolean(error)}
-          width={BlockSize.Full}
+          isError={Boolean(error)}
+          className="w-full"
           endAccessory={
             <ButtonIcon
               type="button"

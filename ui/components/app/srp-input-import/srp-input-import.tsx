@@ -15,9 +15,9 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   BoxBackgroundColor,
+  TextField,
+  TextFieldType,
 } from '@metamask/design-system-react';
-import { TextField, TextFieldType } from '../../component-library';
-import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -365,17 +365,33 @@ export default function SrpInputImport({
                 {draftSrp.map((word, index) => {
                   return (
                     <TextField
+                      inputRef={(el) => {
+                        if (el) {
+                          srpRefs.current[word.id] = el;
+                        }
+                      }}
                       inputProps={{
-                        ref: (el) => {
-                          if (el) {
-                            srpRefs.current[word.id] = el;
+                        'data-testid': `import-srp__srp-word-${index}`,
+                        onKeyDown: (
+                          e: React.KeyboardEvent<HTMLInputElement>,
+                        ) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            if (word.word.trim() !== '') {
+                              nextWord(word.id);
+                            }
+                          } else if (
+                            e.key === 'Backspace' &&
+                            word.word.length === 0
+                          ) {
+                            e.preventDefault();
+                            deleteWord(word.id);
                           }
                         },
                       }}
-                      backgroundColor={BackgroundColor.backgroundMuted}
-                      testId={`import-srp__srp-word-${index}`}
+                      className="w-full bg-muted"
                       key={word.id}
-                      error={
+                      isError={
                         !word.active &&
                         misSpelledWordsList().includes(word.word)
                       }
@@ -397,20 +413,6 @@ export default function SrpInputImport({
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         handleChange(word.id, e.target.value)
                       }
-                      onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          if (word.word.trim() !== '') {
-                            nextWord(word.id);
-                          }
-                        } else if (
-                          e.key === 'Backspace' &&
-                          word.word.length === 0
-                        ) {
-                          e.preventDefault();
-                          deleteWord(word.id);
-                        }
-                      }}
                       onFocus={() => {
                         onWordFocus(word.id);
                       }}
