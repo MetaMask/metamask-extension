@@ -8,6 +8,9 @@ const E2E_TESTS_REGEX =
 // include JS and JSX files only in the app, shared, and ui directories
 const JS_REGEX = /^(app|shared|ui)\/.*\.(js|jsx)$/u;
 
+// include SCSS files only in the app, shared, and ui directories
+const SCSS_REGEX = /^(app|shared|ui)\/.*\.scss$/u;
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 enum AUTOMATION_TYPE {
@@ -20,4 +23,4 @@ enum AUTOMATION_TYPE {
   PRE_PUSH_HOOK = 'pre-push-hook',
 }
 
-export { E2E_TESTS_REGEX, JS_REGEX, AUTOMATION_TYPE };
+export { E2E_TESTS_REGEX, JS_REGEX, SCSS_REGEX, AUTOMATION_TYPE };
