@@ -17,6 +17,10 @@ import { AccountOverviewTabs } from './account-overview-tabs';
 
 const mockTrackEvent = jest.fn();
 
+jest.mock('../../../hooks/useBottomNavBar', () => ({
+  useBottomNavBar: jest.fn().mockReturnValue(false),
+}));
+
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../../shared/lib/analytics/create-event-builder',

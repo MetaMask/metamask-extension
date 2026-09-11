@@ -24,6 +24,10 @@ const render = (props: AccountOverviewUnknownProps) => {
   );
 };
 
+jest.mock('../../../hooks/useBottomNavBar', () => ({
+  useBottomNavBar: jest.fn().mockReturnValue(false),
+}));
+
 describe('AccountOverviewUnknown', () => {
   it('shows only the activity tab', () => {
     const { queryByTestId } = render({

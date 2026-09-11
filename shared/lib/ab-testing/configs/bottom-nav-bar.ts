@@ -12,8 +12,9 @@ export const BOTTOM_NAV_AB_TEST_VARIANTS: Record<
   ABTestVariantName,
   BottomNavVariantConfig
 > = {
+  // Pinned on for the 11-sep UAT build so the bottom nav shows regardless of the LaunchDarkly bucket.
   [ABTestVariant.Control]: {
-    withBottomNavBar: false,
+    withBottomNavBar: true,
   },
   [ABTestVariant.Treatment]: {
     withBottomNavBar: true,

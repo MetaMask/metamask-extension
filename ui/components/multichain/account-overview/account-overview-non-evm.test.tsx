@@ -10,6 +10,10 @@ import {
   AccountOverviewNonEvmProps,
 } from './account-overview-non-evm';
 
+jest.mock('../../../hooks/useBottomNavBar', () => ({
+  useBottomNavBar: jest.fn().mockReturnValue(false),
+}));
+
 jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
