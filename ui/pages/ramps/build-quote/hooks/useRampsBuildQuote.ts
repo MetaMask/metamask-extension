@@ -1,4 +1,10 @@
-import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ChangeEvent,
+} from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { CaipChainId } from '@metamask/utils';
@@ -98,6 +104,13 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     selectedToken?.assetId,
   );
 
+  // Remove the one-time navigation intent after the preselected token reaches
+  // the UI store so later cross-surface changes are not treated as a mismatch.
+  useEffect(() => {
+    if (intentAssetId && tokenStateIsSettled) {
+      navigate(location.pathname, { replace: true, state: null });
+    }
+  }, [intentAssetId, location.pathname, navigate, tokenStateIsSettled]);
   const { amount, amountAsNumber, debouncedAmount, handleAmountChange } =
     useBuildQuoteAmount(userRegion?.country?.defaultAmount);
 
@@ -124,7 +137,6 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     selectedPaymentMethod &&
     selectedProvider &&
     selectedToken?.assetId &&
-    tokenStateIsSettled &&
     debouncedAmount > 0 &&
     hasSettledQuoteAmount &&
     !amountLimitError,
