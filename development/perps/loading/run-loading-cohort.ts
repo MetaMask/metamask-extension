@@ -11,9 +11,8 @@ import {
 import path from 'node:path';
 import assert from 'node:assert/strict';
 
-const { browserPid }: typeof import('./browser-process') = await import(
-  new URL('./browser-process.ts', import.meta.url).href
-);
+const { browserPid, isColdMode }: typeof import('./browser-process') =
+  await import(new URL('./browser-process.ts', import.meta.url).href);
 
 const configPath = process.env.PERPS_MEASUREMENT_CONFIG;
 assert(
@@ -81,6 +80,10 @@ assert(
 );
 if (mode === 'account') {
   assert(
+    accountName && Object.hasOwn(config.accounts ?? {}, accountName),
+    'Account flow requires an existing label in config.accounts',
+  );
+  assert(
     start === end,
     'Account changes must alternate targets; run one sample at a time',
   );
@@ -122,7 +125,7 @@ for (let index = Number(start); index <= Number(end); index++) {
       ],
       path.join(out, 'prepare-home.json'),
     );
-    if (['immediate', 'delayed'].includes(mode)) {
+    if (isColdMode(mode)) {
       await run(
         harness,
         [

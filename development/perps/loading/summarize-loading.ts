@@ -2,6 +2,10 @@ import assert from 'node:assert/strict';
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
+const { isColdMode }: typeof import('./browser-process') = await import(
+  new URL('./browser-process.ts', import.meta.url).href
+);
+
 type Measurement = {
   arm: string;
   mode: string;
@@ -48,6 +52,21 @@ assert(manifest.cohorts.length > 0, 'Declare at least one cohort');
 assert(
   manifest.cohorts.every((cohort) => cohort.samples.length >= 3),
   'Declare at least three samples per cohort',
+);
+const cohortKey = ({
+  arm,
+  mode,
+  accountName,
+}: {
+  arm: string;
+  mode: string;
+  accountName?: string;
+}) => [arm, mode, accountName].filter(Boolean).join('/');
+const cohortKeys = manifest.cohorts.map(cohortKey);
+assert.equal(
+  new Set(cohortKeys).size,
+  cohortKeys.length,
+  'Duplicate cohort key would merge distinct sample populations',
 );
 const declared = manifest.cohorts.flatMap((cohort) =>
   cohort.samples.map((directory) => ({ cohort, directory })),
@@ -158,7 +177,7 @@ for (const { cohort, directory } of declared) {
     );
     assert.equal(observation.entry, observation.switchClick);
   }
-  if (['immediate', 'delayed'].includes(measurement.mode)) {
+  if (isColdMode(measurement.mode)) {
     assert.notEqual(measurement.beforePid, measurement.afterPid);
     assert(
       measurement.requests.some(
@@ -170,9 +189,7 @@ for (const { cohort, directory } of declared) {
       ),
     );
   }
-  const key = [measurement.arm, measurement.mode, measurement.accountName]
-    .filter(Boolean)
-    .join('/');
+  const key = cohortKey(measurement);
   const samples = groups.get(key) ?? [];
   samples.push({
     file: path.relative(root, file),

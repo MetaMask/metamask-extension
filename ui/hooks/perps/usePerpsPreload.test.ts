@@ -320,7 +320,6 @@ describe('usePerpsPreload', () => {
       const firstId = jest.mocked(trace).mock.calls[0][0].id;
       if (change === 'account') {
         state = structuredClone(state);
-        state = structuredClone(state);
         state.metamask.internalAccounts.accounts.selected.address = '0xsecond';
       }
       if (change === 'provider') {

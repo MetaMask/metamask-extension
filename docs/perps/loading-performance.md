@@ -1,25 +1,25 @@
 # Perps preload performance and telemetry
 
-On a fresh browser process, opening Perps immediately after unlock took **3.48 seconds before and 2.69 seconds after**, a **23% reduction in median wait**. Opening Perps three seconds after unlock took **3.84 seconds before and 0.05 seconds after**, a **98.7% reduction**. The latter includes a declared preload opportunity on wallet Home before the measured click.
+On a fresh browser process, opening Perps immediately after unlock took **3.48 seconds before and 2.69 seconds after**, a **23% reduction in median wait**. Opening Perps three seconds after unlock took **3.84 seconds before and 0.05 seconds after**, a **98.7% reduction**. The latter includes a declared preload opportunity on wallet Home before the measured click. These are three-sample medians; immediate-entry ranges overlap, so statistical significance is not established.
 
-These are real click-to-priced-DOM measurements, not browser startup time, recipe execution duration, or Sentry span duration. Three samples were retained per build and flow/direction. The ranges overlap for immediate entry, so this is an observed median improvement, not a statistical significance claim.
+These are real click-to-priced-DOM measurements, not browser startup time, recipe execution duration, or Sentry span duration. Three samples were retained per build and flow/direction.
 
-| Flow                                        | First priced rows, before → after | Rows matching current quotes, before → after |
-| ------------------------------------------- | --------------------------------- | -------------------------------------------- |
-| Fresh browser, immediate entry after unlock | 3.484 s → 2.686 s                 | 3.687 s → 2.937 s                            |
-| Fresh browser, entry 3 s after unlock       | 3.837 s → 0.050 s                 | 4.101 s → 0.050 s                            |
-| Warm entry                                  | 0.028 s → 0.035 s                 | 9.757 s → 0.035 s                            |
-| Brief tab resume                            | 0.024 s → 0.026 s                 | 7.320 s → 0.026 s                            |
-| Account 1 → Account 2                       | 2.793 s → 2.035 s                 | 2.906 s → 2.150 s                            |
-| Account 2 → Account 1                       | 2.739 s → 2.067 s                 | 2.879 s → 2.176 s                            |
+| Flow                                        | First priced rows, before → after | Sampled priced rows matching quotes, before → after |
+| ------------------------------------------- | --------------------------------- | --------------------------------------------------- |
+| Fresh browser, immediate entry after unlock | 3.484 s → 2.686 s                 | 3.687 s → 2.937 s                                   |
+| Fresh browser, entry 3 s after unlock       | 3.837 s → 0.050 s                 | 4.101 s → 0.050 s                                   |
+| Warm entry                                  | 0.028 s → 0.035 s                 | 9.757 s → 0.035 s                                   |
+| Brief tab resume                            | 0.024 s → 0.026 s                 | 7.320 s → 0.026 s                                   |
+| Account 1 → Account 2                       | 2.793 s → 2.035 s                 | 2.906 s → 2.150 s                                   |
+| Account 2 → Account 1                       | 2.739 s → 2.067 s                 | 2.879 s → 2.176 s                                   |
 
-Warm cached rows can appear before their displayed symbols have matching current quotes. The second boundary waits for every included price to match a finite positive quote using the actual UI formatter, and for the manager address and account/order/position caches to be available. It does not independently establish exchange-origin freshness or the provenance/content of every account snapshot. The observed warm and resume difference is in this quote-matching boundary; first priced rows remained around 25–35 ms.
+Warm cached rows can appear before their displayed symbols have matching current quotes. The historical second boundary waits for every included positive-priced row to match a finite positive quote using the actual UI formatter, and for the manager address and account/order/position caches to be available. Its collector filtered unpriced rows before checking, so it does not prove completeness of the rendered row set. The revised reusable collector retains unpriced rows and waits for all of them; its separate validation does not retroactively strengthen the historical samples. It does not independently establish exchange-origin freshness or the provenance/content of every account snapshot. The observed warm and resume difference is in this quote-matching boundary; first priced rows remained around 25–35 ms.
 
 The account journey selects an existing account on wallet Home, then clicks Perps. It includes that intervening UI/automation delay, which is retained separately in the raw values. It does not measure switching inside an already-open Perps dashboard. Brief resume means a measured hidden→visible tab transition in the same process, not prolonged suspension or socket recovery.
 
 ## Reproduce and inspect
 
-The [reusable recipe collector](../../development/perps/loading/README.md) generates, plans and runs each flow, checks build identity and prices, captures actual SDK events, and retains complete recipe evidence. [All 36 samples, raw timestamps, medians, ranges and hashes](./loading-performance-results.json) are included. Keep failed authoring attempts outside the declared cohorts; do not overwrite or count them as passes.
+The [reusable recipe collector](../../development/perps/loading/README.md) generates, plans and runs each flow, checks build identity and prices, captures actual SDK events, and retains complete recipe evidence. [All 36 sample extracts, raw timestamps, medians, ranges and hashes](./loading-performance-results.json) are included. Keep failed authoring attempts outside the declared cohorts; do not overwrite or count them as passes.
 
 The benchmark compares frozen baseline `867848e2481626dc47ee1bb0f2695dc45d0eef67` plus the same eight startup policy prerequisites against PR commit `96583820b169e80830f1fded4c9f92f413fcd689`. It used mm-harness 0.50.5 and Chrome for Testing 147.0.7727.15, fullscreen MV3, on the same preserved development wallet profile. Fresh-process samples verify browser replacement and an uncached Terminal `/v1/perpetuals` response with nonzero bytes. HTTP cache was disabled equally during both observation windows. OS, DNS and backend caches were not reset.
 
