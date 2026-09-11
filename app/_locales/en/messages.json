@@ -1538,6 +1538,9 @@
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
+  "alertInsufficientPayMethodBalance": {
+    "message": "Add less or use a different payment method."
+  },
   "alertInsufficientPayTokenBalance": {
     "message": "Insufficient funds"
   },

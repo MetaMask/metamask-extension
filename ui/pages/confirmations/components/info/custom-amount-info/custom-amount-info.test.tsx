@@ -131,6 +131,7 @@ const MOCK_AVAILABLE_TOKEN = {
 };
 
 const DEFAULT_ALERTS_HOOK_RETURN: {
+  alertContent?: React.ReactNode;
   alertMessage?: string;
   hasAlert: boolean;
   hideResults: boolean;
@@ -977,6 +978,23 @@ describe('CustomAmountInfo', () => {
     expect(
       getByText(messages.alertNoPayTokenQuotesMessage.message),
     ).toBeInTheDocument();
+  });
+
+  it('renders alert content instead of body text when provided', () => {
+    const { getByTestId, queryByText } = render({
+      alertsHookReturn: {
+        alertContent: <div data-testid="alert-content" />,
+        alertMessage: messages.alertNoPayTokenQuotesMessage.message,
+        hasAlert: true,
+        hideResults: true,
+        disableUpdate: false,
+      },
+    });
+
+    expect(getByTestId('alert-content')).toBeInTheDocument();
+    expect(
+      queryByText(messages.alertNoPayTokenQuotesMessage.message),
+    ).not.toBeInTheDocument();
   });
 
   describe('overrideCenterContent', () => {

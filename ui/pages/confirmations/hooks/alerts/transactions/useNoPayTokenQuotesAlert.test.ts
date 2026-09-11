@@ -4,6 +4,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import {
+  QuoteErrorInfo,
   TransactionPayQuote,
   TransactionPayRequiredToken,
   TransactionPaySourceAmount,
@@ -20,6 +21,7 @@ import {
   useIsTransactionPayQuotePending,
   useTransactionPayHasExecutableQuote,
   useTransactionPayHasPositiveRequiredAmount,
+  useTransactionPayQuoteError,
   useTransactionPayQuotes,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
@@ -27,6 +29,7 @@ import {
 import { AlertsName } from '../constants';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
+import { NoQuoteAlert } from '../../../components/no-quote-alert';
 import { useNoPayTokenQuotesAlert } from './useNoPayTokenQuotesAlert';
 
 jest.mock('../../pay/useTransactionPayToken');
@@ -49,6 +52,12 @@ const REQUIRED_TOKEN_MOCK = {
   amountRaw: '1000000',
   skipIfBalance: false,
 } as TransactionPayRequiredToken;
+
+const QUOTE_ERROR_MOCK: QuoteErrorInfo = {
+  detail: ['Custom Error - 0xdb42144d'],
+  message: 'Quote simulation failed',
+  reason: 'simulation-failed',
+};
 
 function runHook(state = getMockConfirmState()) {
   return renderHookWithConfirmContextProvider(
@@ -84,6 +93,9 @@ describe('useNoPayTokenQuotesAlert', () => {
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
   );
+  const useTransactionPayQuoteErrorMock = jest.mocked(
+    useTransactionPayQuoteError,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -100,6 +112,7 @@ describe('useNoPayTokenQuotesAlert', () => {
     useTransactionPayQuotesMock.mockReturnValue(undefined);
     useTransactionPaySourceAmountsMock.mockReturnValue([SOURCE_AMOUNT_MOCK]);
     useTransactionPayRequiredTokensMock.mockReturnValue([REQUIRED_TOKEN_MOCK]);
+    useTransactionPayQuoteErrorMock.mockReturnValue(undefined);
   });
 
   it('returns alert if pay token selected and no quotes available', () => {
@@ -174,6 +187,52 @@ describe('useNoPayTokenQuotesAlert', () => {
         isBlocking: true,
       }),
     ]);
+  });
+
+  describe('Quote error', () => {
+    beforeEach(() => {
+      useTransactionPayQuotesMock.mockReturnValue([
+        {} as TransactionPayQuote<Json>,
+      ]);
+      useTransactionPayQuoteErrorMock.mockReturnValue(QUOTE_ERROR_MOCK);
+    });
+
+    it('returns alert if a quote failed validation', () => {
+      const { result } = runHook();
+
+      expect(result.current).toStrictEqual([
+        {
+          key: AlertsName.NoPayTokenQuotes,
+          field: RowAlertKey.PayWith,
+          content: expect.objectContaining({
+            type: NoQuoteAlert,
+            props: { error: QUOTE_ERROR_MOCK },
+          }),
+          message: QUOTE_ERROR_MOCK.message,
+          reason: 'No quotes',
+          severity: Severity.Danger,
+          isBlocking: true,
+        },
+      ]);
+    });
+
+    it('returns alert if a quote failed validation while no pay token is selected', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: undefined,
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      const { result } = runHook();
+
+      expect(result.current).toStrictEqual([
+        expect.objectContaining({
+          key: AlertsName.NoPayTokenQuotes,
+          message: QUOTE_ERROR_MOCK.message,
+          isBlocking: true,
+        }),
+      ]);
+    });
   });
 
   it('returns no alerts if all source amounts have skipIfBalance', () => {

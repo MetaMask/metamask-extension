@@ -6,6 +6,7 @@ import {
   selectIsTransactionPayLoadingByTransactionId,
   selectTransactionPayIsMaxAmountByTransactionId,
   selectTransactionPayIsPostQuoteByTransactionId,
+  selectTransactionPayQuoteErrorByTransactionId,
   selectTransactionPayQuotesByTransactionId,
   selectTransactionPaySourceAmountsByTransactionId,
   selectTransactionPayTokensByTransactionId,
@@ -20,6 +21,10 @@ import { useConfirmContext } from '../../context/confirm';
 
 export function useTransactionPayQuotes() {
   return useTransactionPayData(selectTransactionPayQuotesByTransactionId);
+}
+
+export function useTransactionPayQuoteError() {
+  return useTransactionPayData(selectTransactionPayQuoteErrorByTransactionId);
 }
 
 export function useTransactionPayHasExecutableQuote() {
