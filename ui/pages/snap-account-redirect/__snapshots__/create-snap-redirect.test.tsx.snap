@@ -113,7 +113,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
                   </p>
                   <button
                     aria-label=""
-                    class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+                    class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill"
                     data-testid="snap-account-redirect-url-icon"
                   >
                     <span

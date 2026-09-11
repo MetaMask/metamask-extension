@@ -43,7 +43,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
           >
             <button
               aria-label="Close"
-              class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-pill"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
@@ -447,7 +447,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
           >
             <button
               aria-label="Close"
-              class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-pill"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"

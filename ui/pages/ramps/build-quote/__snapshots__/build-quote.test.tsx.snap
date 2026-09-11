@@ -116,7 +116,7 @@ exports[`RampsBuildQuoteScreen matches snapshot after user edits amount before r
           Buying via Transak.
         </p>
         <button
-          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
+          class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
           data-testid="ramps-build-quote-continue"
           role="button"
         >
@@ -814,7 +814,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when falling back without region
           Buying via Transak.
         </p>
         <button
-          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
+          class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
           data-testid="ramps-build-quote-continue"
           role="button"
         >
@@ -953,7 +953,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
         </p>
         <button
           aria-disabled="true"
-          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 bg-icon-default text-primary-inverse focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed w-full"
+          class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 bg-icon-default text-primary-inverse focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed w-full"
           data-testid="ramps-build-quote-continue"
           disabled=""
           role="button"
@@ -1094,7 +1094,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails with a te
         </p>
         <button
           aria-disabled="true"
-          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 bg-icon-default text-primary-inverse focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed w-full"
+          class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 bg-icon-default text-primary-inverse focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed w-full"
           data-testid="ramps-build-quote-continue"
           disabled=""
           role="button"
@@ -1228,7 +1228,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote is available 1`] = `
           Buying via Transak.
         </p>
         <button
-          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
+          class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
           data-testid="ramps-build-quote-continue"
           role="button"
         >
@@ -1362,7 +1362,7 @@ exports[`RampsBuildQuoteScreen matches snapshot while quote is loading 1`] = `
         <button
           aria-busy="true"
           aria-disabled="true"
-          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 opacity-50 text-primary-inverse bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default cursor-not-allowed w-full"
+          class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 opacity-50 text-primary-inverse bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default cursor-not-allowed w-full"
           data-testid="ramps-build-quote-continue"
           disabled=""
           role="button"
@@ -1816,7 +1816,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
         </p>
         <button
           aria-disabled="true"
-          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 bg-icon-default text-primary-inverse focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed w-full"
+          class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 bg-icon-default text-primary-inverse focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default opacity-50 cursor-not-allowed w-full"
           data-testid="ramps-build-quote-continue"
           disabled=""
           role="button"
@@ -1950,7 +1950,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with regional default amount 1`]
           Buying via Transak.
         </p>
         <button
-          class="inline-flex items-center justify-center rounded-xl px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
+          class="inline-flex items-center justify-center rounded-full px-4 font-medium overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default w-full"
           data-testid="ramps-build-quote-continue"
           role="button"
         >
