@@ -1133,13 +1133,12 @@
     },
     "@metamask/base-data-service": {
       "packages": {
-        "@metamask/messenger": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@tanstack/react-query>@tanstack/query-core": true,
         "cockatiel": true,
         "eslint>fast-deep-equal": true,
-        "lodash": true
+        "@metamask/base-data-service>lodash-es": true
       }
     },
     "@metamask/bridge-controller": {
@@ -2365,6 +2364,7 @@
         "@metamask/utils": true,
         "@metamask/perps-controller>@nktkas/hyperliquid": true,
         "@metamask/perps-controller>bignumber.js": true,
+        "reselect": true,
         "uuid": true
       }
     },
@@ -2650,7 +2650,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
-        "@metamask/smart-transactions-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "lodash": true,
@@ -5796,6 +5796,12 @@
     "lodash": {
       "globals": {
         "define": true
+      }
+    },
+    "@metamask/base-data-service>lodash-es": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
       }
     },
     "loglevel": {

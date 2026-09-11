@@ -217,9 +217,13 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
   }, [committedKey, enabled, readyToCommit, tokenKey]);
 
   const hasPrefilled = committedKey === tokenKey;
-  // No pay token means auto-select found nothing to prefill — do not keep
-  // the amount skeleton up forever waiting for a token that will not come.
-  const isLoading = enabled && Boolean(payToken) && !hasPrefilled;
+  // Loading until the prefill commits, including before a pay token exists.
+  // The pay token, the funding account's tokens and their fiat rates all
+  // arrive asynchronously, and reporting "not loading" in any of those gaps
+  // paints $0 in the field before the prefilled amount lands. A funding
+  // account that holds nothing never commits, so consumers release the
+  // skeleton on the blocking no-funds alert instead.
+  const isLoading = enabled && !hasPrefilled;
 
   return {
     prefillAmount,
