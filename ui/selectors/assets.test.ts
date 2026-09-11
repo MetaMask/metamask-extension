@@ -122,15 +122,6 @@ const mockRatesState = {
       'token-1': { rate: 1.5, currency: 'USD' },
       'token-2': { rate: 0.8, currency: 'EUR' },
     },
-    historicalPrices: {
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-        usd: {
-          intervals: {},
-          updateTime: 1737542312,
-          expirationTime: 1737542312,
-        },
-      },
-    },
   },
 };
 
@@ -434,7 +425,7 @@ describe('getAssetsRates', () => {
 
   it('should return an empty object if assetsRates is empty', () => {
     const emptyState: AssetsRatesState = {
-      metamask: { conversionRates: {}, historicalPrices: {} },
+      metamask: { conversionRates: {} },
     };
     const result = getAssetsRates(emptyState);
     expect(result).toEqual({});
@@ -1135,7 +1126,6 @@ describe('Aggregated balance recomputation behavior', () => {
     const tokenBalances = {};
     const marketData = {};
     const conversionRates = {};
-    const historicalPrices = {};
     const balances = {};
     const allTokens = {};
     const currencyRates = {};
@@ -1157,7 +1147,6 @@ describe('Aggregated balance recomputation behavior', () => {
         currentCurrency: 'usd',
         currencyRates,
         conversionRates,
-        historicalPrices,
         accountsAssets,
         assetsMetadata,
         allIgnoredAssets,
@@ -1181,7 +1170,6 @@ describe('Aggregated balance recomputation behavior', () => {
         currentCurrency: 'usd',
         currencyRates,
         conversionRates,
-        historicalPrices,
         accountsAssets,
         assetsMetadata,
         allIgnoredAssets,
@@ -1216,7 +1204,6 @@ describe('Aggregated balance recomputation behavior', () => {
         currentCurrency: 'usd',
         currencyRates: {},
         conversionRates: {},
-        historicalPrices: {},
         accountsAssets: {},
         assetsMetadata: {},
         allIgnoredAssets: {},

@@ -282,7 +282,6 @@ import { InstitutionalSnapControllerInit } from './messenger-client-init/institu
 import {
   MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
-  MultichainAssetsRatesControllerInit,
   MultichainNetworkControllerInit,
 } from './messenger-client-init/multichain';
 import {
@@ -631,7 +630,6 @@ export default class MetamaskController extends EventEmitter {
       AccountTreeController: AccountTreeControllerInit,
       SnapAccountService: SnapAccountServiceInit,
       MultichainAssetsController: MultichainAssetsControllerInit,
-      MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       MultichainAccountService: MultichainAccountServiceInit,
       MultichainRoutingService: MultichainRoutingServiceInit,
@@ -760,8 +758,6 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.MultichainAssetsController;
     this.multichainTransactionsController =
       messengerClientsByName.MultichainTransactionsController;
-    this.multichainAssetsRatesController =
-      messengerClientsByName.MultichainAssetsRatesController;
     this.multichainAccountService =
       messengerClientsByName.MultichainAccountService;
     this.tokenBalancesController =
@@ -1419,7 +1415,6 @@ export default class MetamaskController extends EventEmitter {
         AppMetadataController: this.appMetadataController,
         MultichainAssetsController: this.multichainAssetsController,
         MultichainTransactionsController: this.multichainTransactionsController,
-        MultichainAssetsRatesController: this.multichainAssetsRatesController,
         TokenRatesController: this.tokenRatesController,
         MultichainNetworkController: this.multichainNetworkController,
         NetworkController: this.networkController,
@@ -2480,7 +2475,6 @@ export default class MetamaskController extends EventEmitter {
       notificationServicesController,
       notificationServicesPushController,
       deFiPositionsController,
-      multichainAssetsRatesController,
       staticAssetsController,
     } = this;
 
@@ -3557,14 +3551,6 @@ export default class MetamaskController extends EventEmitter {
       currencyRateStopPollingByPollingToken:
         currencyRateController.stopPollingByPollingToken.bind(
           currencyRateController,
-        ),
-      multichainAssetsRatesStartPolling:
-        multichainAssetsRatesController.startPolling.bind(
-          multichainAssetsRatesController,
-        ),
-      multichainAssetsRatesStopPollingByPollingToken:
-        multichainAssetsRatesController.stopPollingByPollingToken.bind(
-          multichainAssetsRatesController,
         ),
 
       tokenRatesStartPolling:
