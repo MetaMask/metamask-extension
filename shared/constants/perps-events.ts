@@ -107,6 +107,9 @@ export const PERPS_EVENT_VALUE = {
     /** Extension order-book panel open/close (not yet in controller contract). */
     ORDER_BOOK_OPENED: 'order_book_opened',
     ORDER_BOOK_CLOSED: 'order_book_closed',
+    /** Extension order-entry chart panel open/close (not yet in controller contract). */
+    CHART_OPENED: 'chart_opened',
+    CHART_CLOSED: 'chart_closed',
   },
   ERROR_TYPE: {
     ...CONTROLLER_PERPS_EVENT_VALUE.ERROR_TYPE,

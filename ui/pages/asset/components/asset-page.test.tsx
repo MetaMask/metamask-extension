@@ -131,27 +131,6 @@ jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
   })),
 }));
 
-jest.mock('../../../components/app/musd/hooks/useMerklRewards', () => ({
-  useMerklRewards: jest.fn(() => ({
-    hasClaimableReward: false,
-    rewardAmountFiat: null,
-    lifetimeClaimedFiat: 0,
-    isLoading: false,
-    isEligible: false,
-    refetch: jest.fn(),
-    hasClaimedBefore: false,
-    claimableRewardDisplay: null,
-  })),
-}));
-
-jest.mock('../../../components/app/musd/hooks/useMerklClaim', () => ({
-  useMerklClaim: jest.fn(() => ({
-    claimRewards: jest.fn(),
-    isClaiming: false,
-    error: null,
-  })),
-}));
-
 const selectedAccountAddress = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
 
 const DEFAULT_ASSETS_BY_SELECTED_ACCOUNT_GROUP = {
@@ -688,13 +667,11 @@ describe('AssetPage', () => {
 
     const musdRemoteFlags = (overrides: {
       earnMusdConversionFlowEnabled?: boolean;
-      earnMerklCampaignClaiming?: boolean;
     }) => ({
       bridgeConfig: {
         support: true,
       },
       earnMusdConversionFlowEnabled: true,
-      earnMerklCampaignClaiming: true,
       ...overrides,
     });
 
@@ -714,30 +691,10 @@ describe('AssetPage', () => {
 
       expect(getByText(messages.yourBalance.message)).toBeInTheDocument();
       expect(queryByTestId('musd-position-section')).not.toBeInTheDocument();
-      expect(queryByTestId('musd-bonus-section')).not.toBeInTheDocument();
       expect(queryByTestId('musd-convert-section')).not.toBeInTheDocument();
     });
 
-    it('hides bonus section when Merkl claiming is off but shows position', () => {
-      const { queryByTestId } = renderWithProvider(
-        <AssetPage asset={musdToken} optionsButton={null} />,
-        configureMockStore([thunk])({
-          ...mockStore,
-          metamask: {
-            ...mockStore.metamask,
-            remoteFeatureFlags: musdRemoteFlags({
-              earnMerklCampaignClaiming: false,
-            }),
-          },
-        }),
-      );
-
-      expect(queryByTestId('musd-position-section')).toBeInTheDocument();
-      expect(queryByTestId('musd-convert-section')).not.toBeInTheDocument();
-      expect(queryByTestId('musd-bonus-section')).not.toBeInTheDocument();
-    });
-
-    it('renders position and bonus, but never the convert section, when flow and Merkl claiming are on', () => {
+    it('renders the position, but never the convert section, when the conversion flow is on', () => {
       const { queryByTestId } = renderWithProvider(
         <AssetPage asset={musdToken} optionsButton={null} />,
         configureMockStore([thunk])({
@@ -751,158 +708,6 @@ describe('AssetPage', () => {
 
       expect(queryByTestId('musd-position-section')).toBeInTheDocument();
       expect(queryByTestId('musd-convert-section')).not.toBeInTheDocument();
-      expect(queryByTestId('musd-bonus-section')).toBeInTheDocument();
-    });
-  });
-
-  describe('mUSD bonus cross-chain aggregation', () => {
-    const musdRemoteFlags = (overrides: {
-      earnMusdConversionFlowEnabled?: boolean;
-      earnMerklCampaignClaiming?: boolean;
-    }) => ({
-      bridgeConfig: {
-        support: true,
-      },
-      earnMusdConversionFlowEnabled: true,
-      earnMerklCampaignClaiming: true,
-      ...overrides,
-    });
-
-    const musdBaseAsset = {
-      type: AssetType.token,
-      chainId: CHAIN_IDS.MAINNET,
-      address: MUSD_TOKEN_ADDRESS,
-      symbol: 'MUSD',
-      decimals: 6,
-      image: '',
-      balance: {
-        value: '0',
-        display: '0',
-        fiat: '',
-      },
-    } as const;
-
-    const musdLineaAsset = {
-      ...musdBaseAsset,
-      chainId: CHAIN_IDS.LINEA_MAINNET,
-    };
-
-    const buildMusdAssetsByChain = (options: {
-      mainnetFiat: number;
-      lineaFiat: number;
-      mainnetPositive: boolean;
-      lineaPositive: boolean;
-    }) => {
-      const { mainnetFiat, lineaFiat, mainnetPositive, lineaPositive } =
-        options;
-      const mainnetRaw = mainnetPositive ? '0x01' : '0x0';
-      const lineaRaw = lineaPositive ? '0x01' : '0x0';
-      const defaultMainnet = DEFAULT_ASSETS_BY_SELECTED_ACCOUNT_GROUP['0x1'];
-      return {
-        [CHAIN_IDS.MAINNET]: [
-          ...defaultMainnet.slice(0, 3),
-          {
-            assetId: MUSD_TOKEN_ADDRESS,
-            address: MUSD_TOKEN_ADDRESS,
-            rawBalance: mainnetRaw,
-            balance: mainnetPositive ? '1' : '0',
-            fiat: { balance: mainnetFiat },
-          },
-        ],
-        [CHAIN_IDS.LINEA_MAINNET]: [
-          {
-            assetId: MUSD_TOKEN_ADDRESS,
-            address: MUSD_TOKEN_ADDRESS,
-            rawBalance: lineaRaw,
-            balance: lineaPositive ? '1' : '0',
-            fiat: { balance: lineaFiat },
-          },
-        ],
-      };
-    };
-
-    afterEach(() => {
-      // Return a stable reference so subsequent tests don't see stale overrides.
-      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
-        DEFAULT_ASSETS_BY_SELECTED_ACCOUNT_GROUP,
-      );
-    });
-
-    it('shows estimated annual bonus as 3% of combined Mainnet and Linea fiat when viewing Mainnet mUSD', () => {
-      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
-        buildMusdAssetsByChain({
-          mainnetFiat: 1000,
-          lineaFiat: 500,
-          mainnetPositive: true,
-          lineaPositive: true,
-        }),
-      );
-
-      const { getByText } = renderWithProvider(
-        <AssetPage asset={musdBaseAsset} optionsButton={null} />,
-        configureMockStore([thunk])({
-          ...mockStore,
-          metamask: {
-            ...mockStore.metamask,
-            remoteFeatureFlags: musdRemoteFlags({}),
-          },
-        }),
-      );
-
-      expect(
-        getByText(messages.musdAssetBonusEstimatedAnnual.message),
-      ).toBeInTheDocument();
-      expect(getByText(/\+\$45\.00/u)).toBeInTheDocument();
-    });
-
-    it('shows the same estimated annual bonus when viewing Linea mUSD as when viewing Mainnet', () => {
-      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
-        buildMusdAssetsByChain({
-          mainnetFiat: 1000,
-          lineaFiat: 500,
-          mainnetPositive: true,
-          lineaPositive: true,
-        }),
-      );
-
-      const { getByText } = renderWithProvider(
-        <AssetPage asset={musdLineaAsset} optionsButton={null} />,
-        configureMockStore([thunk])({
-          ...mockStore,
-          metamask: {
-            ...mockStore.metamask,
-            remoteFeatureFlags: musdRemoteFlags({}),
-          },
-        }),
-      );
-
-      expect(getByText(/\+\$45\.00/u)).toBeInTheDocument();
-    });
-
-    it('shows Accruing next bonus on Linea when mUSD is only on Mainnet', () => {
-      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
-        buildMusdAssetsByChain({
-          mainnetFiat: 100,
-          lineaFiat: 0,
-          mainnetPositive: true,
-          lineaPositive: false,
-        }),
-      );
-
-      const { getByText } = renderWithProvider(
-        <AssetPage asset={musdLineaAsset} optionsButton={null} />,
-        configureMockStore([thunk])({
-          ...mockStore,
-          metamask: {
-            ...mockStore.metamask,
-            remoteFeatureFlags: musdRemoteFlags({}),
-          },
-        }),
-      );
-
-      expect(
-        getByText(messages.musdAssetBonusAccruing.message),
-      ).toBeInTheDocument();
     });
   });
 });

@@ -4,7 +4,7 @@ import { withFixtures } from '../helpers';
 import { login } from '../page-objects/flows/login.flow';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
-import LoginPage from '../page-objects/pages/login-page';
+import LoginPage from '../page-objects/pages/onboarding/login-page';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/connect-account-confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
 

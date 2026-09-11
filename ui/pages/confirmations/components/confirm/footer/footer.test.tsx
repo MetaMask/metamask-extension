@@ -77,6 +77,7 @@ jest.mock('../../../hooks/pay/useTransactionPayData', () => ({
   useTransactionPayPrimaryRequiredToken: jest.fn(() => undefined),
   useTransactionPayQuotes: jest.fn(() => undefined),
   useTransactionPayRequiredTokens: jest.fn(() => []),
+  useTransactionPayTotals: jest.fn(() => undefined),
 }));
 jest.mock(
   '../../../../../components/app/product-safety/scam-questionnaire/useScamQuestionnaireMetrics',

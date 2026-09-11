@@ -13,6 +13,13 @@ export type UsePerpsTabExploreDataOptions = {
 };
 
 export type UsePerpsTabExploreDataReturn = {
+  /**
+   * Every live market, unsliced. The Perps tab owns the single market-list
+   * stream subscription, so sections that need a different view of the same
+   * data (e.g. Top movers ranking by price change) read it from here rather
+   * than opening a second subscription.
+   */
+  allMarkets: PerpsMarketData[];
   exploreMarkets: PerpsMarketData[];
   watchlistMarkets: PerpsMarketData[];
   isInitialLoading: boolean;
@@ -53,6 +60,7 @@ export function usePerpsTabExploreData(
   );
 
   return {
+    allMarkets: liveMarkets,
     exploreMarkets,
     watchlistMarkets: filteredWatchlistMarkets,
     isInitialLoading,

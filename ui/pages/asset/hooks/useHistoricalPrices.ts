@@ -7,7 +7,6 @@ import {
   isStrictHexString,
   parseCaipAssetType,
 } from '@metamask/utils';
-// @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
 import { API_URLS, GC_TIMES, STALE_TIMES } from '@metamask/core-backend';
 import { fromIso8601DurationToPriceApiTimePeriod } from '../util';

@@ -24,6 +24,38 @@ import { submitRequestToBackground } from '../../store/background-connection';
 export async function invalidateMoneyAccountBalanceCaches(
   address: string,
 ): Promise<void> {
+  await invalidateMoneyAccountBalanceSourceCaches(address);
+
+  await queryClient.invalidateQueries(
+    {
+      queryKey: [
+        MoneyAccountBalanceServiceQueryKeys.FETCH_BALANCE_WITH_FALLBACK,
+        address,
+      ],
+      refetchType: 'all',
+    },
+    // The UI client forwards this argument to the background service over
+    // JSON-RPC, where an omitted argument arrives as `null` — bypassing
+    // tanstack's `options = {}` default and crashing its
+    // `options.cancelRefetch` read. Must stay an explicit object.
+    {},
+  );
+}
+
+/**
+ * Bust only the background source caches, without triggering a UI refetch.
+ *
+ * Every fetch through the facade re-caches whatever the sources return with a
+ * fresh `staleTime` — including a stale post-transaction read. Busting the
+ * source caches after such a read means the next poll fetches the sources
+ * anew instead of being served that re-cached stale value for another
+ * `staleTime` window.
+ *
+ * @param address - Money account address (same casing as used by the UI query).
+ */
+export async function invalidateMoneyAccountBalanceSourceCaches(
+  address: string,
+): Promise<void> {
   await Promise.all([
     submitRequestToBackground<void>('messengerCall', [
       'MoneyAccountBalanceService:invalidateQueries',
@@ -49,12 +81,4 @@ export async function invalidateMoneyAccountBalanceCaches(
       ],
     ]),
   ]);
-
-  await queryClient.invalidateQueries({
-    queryKey: [
-      MoneyAccountBalanceServiceQueryKeys.FETCH_BALANCE_WITH_FALLBACK,
-      address,
-    ],
-    refetchType: 'all',
-  });
 }

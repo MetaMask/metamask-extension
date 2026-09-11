@@ -14,7 +14,7 @@ import {
   simpleReloadScript,
 } from '../../page-objects/flows/vault-corruption.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
+import VaultRecoveryPage from '../../page-objects/pages/vault/recovery-page';
 import { getConfig, mockFeatureFlagsWithoutNonEvmAccounts } from './helpers';
 
 /**

@@ -10,7 +10,7 @@ import NetworksPage from '../pages/networks/networks-page';
 // we switch too early, that trigger is missed and nothing re-fetches the balance
 // afterwards.
 // Solana is intentionally excluded as it's seeded in the fixtures vault
-const NON_EVM_SNAP_READY_DELAY_MS = 10_000;
+const NON_EVM_SNAP_READY_DELAY_MS = 5_000;
 const NON_EVM_NETWORKS_NEEDING_DELAY = ['Tron', 'Bitcoin'];
 
 /**

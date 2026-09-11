@@ -25,6 +25,7 @@ import { formatMoneyActivityDateHeader } from './utils/group-money-activity';
 
 const mockUseMoneyAccountAvailability = jest.fn();
 const mockUseMoneyActivityItems = jest.fn();
+const mockUseMoneyActivityItemClick = jest.fn();
 const mockNavigate = jest.fn();
 const mockGetPrivacyMode = jest.mocked(getPrivacyMode);
 
@@ -51,6 +52,10 @@ jest.mock('../../hooks/money/use-money-account-availability', () => ({
 
 jest.mock('../../hooks/money/use-money-activity-items', () => ({
   useMoneyActivityItems: () => mockUseMoneyActivityItems(),
+}));
+
+jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
+  useMoneyActivityItemClick: () => mockUseMoneyActivityItemClick(),
 }));
 
 const mockItems = MOCK_MONEY_TRANSACTIONS.map(onchainItem);
@@ -87,6 +92,7 @@ describe('MoneyActivityPage', () => {
       items: mockItems,
       buckets: mockBuckets,
     });
+    mockUseMoneyActivityItemClick.mockReturnValue(undefined);
   });
 
   it('redirects home when Money Account is unavailable', () => {
@@ -232,5 +238,25 @@ describe('MoneyActivityPage', () => {
     expect(
       screen.getByText(messages.moneyActivityDepositing.message),
     ).toBeInTheDocument();
+  });
+
+  it('invokes the item click handler when details navigation is enabled', () => {
+    const onItemClick = jest.fn();
+    mockUseMoneyActivityItemClick.mockReturnValue(onItemClick);
+
+    renderWithLocalization(<MoneyActivityPage />);
+
+    fireEvent.click(
+      screen.getByTestId(`money-activity-row-${mockItems[0].id}`),
+    );
+    expect(onItemClick).toHaveBeenCalledWith(mockItems[0]);
+  });
+
+  it('does not make rows clickable when details navigation is disabled', () => {
+    renderWithLocalization(<MoneyActivityPage />);
+
+    expect(
+      screen.getByTestId(`money-activity-row-${mockItems[0].id}`).tagName,
+    ).toBe('DIV');
   });
 });

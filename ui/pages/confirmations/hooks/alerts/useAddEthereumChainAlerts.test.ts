@@ -66,8 +66,11 @@ describe('useAddEthereumChainAlerts', () => {
       currentConfirmation: undefined,
     });
 
-    const { result } = renderHook(() => useAddEthereumChainAlerts());
+    const { result, rerender } = renderHook(() => useAddEthereumChainAlerts());
     expect(result.current).toEqual([]);
+    const first = result.current;
+    rerender();
+    expect(result.current).toBe(first);
   });
 
   it('returns empty array when chain is not in safe list', async () => {

@@ -52,8 +52,6 @@ export function useHwSwapSubmission({
   const hasStartedSubmission = useRef(false);
   /** Last-seen locked-quote requestId; used to detect quote changes/retries. */
   const quoteRequestIdRef = useRef<string | undefined>();
-  const submitActiveQuoteRef = useRef(submitActiveQuote);
-  submitActiveQuoteRef.current = submitActiveQuote;
 
   /**
    * Detects when the locked quote changes (a new quote, or a retry that
@@ -95,10 +93,10 @@ export function useHwSwapSubmission({
     }
 
     hasStartedSubmission.current = true;
-    submitActiveQuoteRef.current().catch(() => {
+    submitActiveQuote().catch(() => {
       hasStartedSubmission.current = false;
     });
-  }, [lockedQuote]);
+  }, [lockedQuote, submitActiveQuote]);
 
   const retrySubmission = useCallback(async () => {
     hasStartedSubmission.current = true;

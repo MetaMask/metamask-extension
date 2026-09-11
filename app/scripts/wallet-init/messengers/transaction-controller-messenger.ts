@@ -55,11 +55,7 @@ import {
   TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionControllerUpdateTransactionAction,
 } from '@metamask/transaction-controller';
-import {
-  TransactionPayControllerGetDelegationTransactionAction,
-  TransactionPayControllerGetStateAction,
-  TransactionPayControllerGetStrategyAction,
-} from '@metamask/transaction-pay-controller';
+import { TransactionPayControllerActions } from '@metamask/transaction-pay-controller';
 import { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import { AppStateControllerSetDefaultHomeActiveTabNameAction } from '../../controllers/app-state-controller-method-action-types';
@@ -110,9 +106,7 @@ export type TransactionControllerInitMessengerActions =
   | TransactionControllerGetStateAction
   | TransactionControllerIsAtomicBatchSupportedAction
   | TransactionControllerUpdateTransactionAction
-  | TransactionPayControllerGetDelegationTransactionAction
-  | TransactionPayControllerGetStateAction
-  | TransactionPayControllerGetStrategyAction;
+  | TransactionPayControllerActions;
 
 export type TransactionControllerInitMessengerEvents =
   | BridgeStatusControllerStateChangeEvent
@@ -201,6 +195,7 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:isAtomicBatchSupported',
       'TransactionController:updateTransaction',
       'TransactionPayController:getDelegationTransaction',
+      'TransactionPayController:getPaymentOverrideData',
       'TransactionPayController:getState',
       'TransactionPayController:getStrategy',
     ],

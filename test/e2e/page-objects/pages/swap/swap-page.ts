@@ -454,6 +454,27 @@ class SwapPage {
     });
   }
 
+  async verifyQuote(options: {
+    swapFrom: string;
+    swapTo: string;
+    amount: number;
+  }): Promise<void> {
+    await this.checkQuoteIsDisplayed();
+    await this.checkSourceToken(options.swapFrom);
+    await this.checkDestinationToken(options.swapTo);
+
+    const swapFromAmount = await this.getFromAmountValue();
+    assert.equal(swapFromAmount, options.amount.toString());
+
+    const swapToAmount = await this.getToAmountValue();
+    const normalizedSwapToAmount = Number(swapToAmount.replace(/,/gu, ''));
+    assert.equal(
+      normalizedSwapToAmount > 0,
+      true,
+      `Expected destination amount to be > 0 but got ${swapToAmount}`,
+    );
+  }
+
   async waitForMaxButtonToBeDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.maxButton);
   }

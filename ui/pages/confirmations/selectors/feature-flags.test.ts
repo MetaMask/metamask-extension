@@ -3,6 +3,7 @@ import { DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE } from '../../../../shared/lib/tr
 import {
   selectBlockedPayTokens,
   selectDepositLimits,
+  selectDefaultPaySelectedSection,
   selectEnableMoneyAccountTransactions,
   selectEnforcedSimulationsSlippage,
   selectIsEnforcedSimulationsEnabled,
@@ -76,6 +77,7 @@ type PayExtendedFlag = {
     musdConversion?: PayPrefilledAmountConfig;
   };
   enableMoneyAccountTransactions?: Record<string, boolean>;
+  defaultPaySelectedSection?: Record<string, string>;
 };
 
 type HardwareWalletFlag = {
@@ -632,6 +634,29 @@ describe('Confirmations Pay Feature Flags', () => {
       expect(
         selectIsMoneyAccountTransactionEnabled(state, 'perpsDeposit'),
       ).toBe(false);
+    });
+  });
+
+  describe('selectDefaultPaySelectedSection', () => {
+    it('returns the map from the flag', () => {
+      const state = getMockPayExtendedState({
+        defaultPaySelectedSection: {
+          perpsWithdraw: 'money-account',
+          perpsDeposit: 'money-account',
+          predictWithdraw: 'crypto',
+        },
+      });
+
+      expect(selectDefaultPaySelectedSection(state)).toStrictEqual({
+        perpsWithdraw: 'money-account',
+        perpsDeposit: 'money-account',
+        predictWithdraw: 'crypto',
+      });
+    });
+
+    it('defaults to an empty map when the flag is absent', () => {
+      const state = getMockPayExtendedState();
+      expect(selectDefaultPaySelectedSection(state)).toStrictEqual({});
     });
   });
 

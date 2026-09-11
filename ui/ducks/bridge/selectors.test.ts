@@ -276,7 +276,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const result = getFromChain(state as never);
+      const result = getFromChain(state);
       expect(result).toStrictEqual({
         blockExplorerUrls: ['https://localhost/blockExplorer/0xa4b1'],
         chainId: 'eip155:42161',
@@ -315,7 +315,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const result = getFromChain(state as never);
+      const result = getFromChain(state);
       expect(result).toStrictEqual(
         expect.objectContaining({
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
@@ -337,7 +337,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const result = getToChain(state as never);
+      const result = getToChain(state);
 
       expect(result).toStrictEqual({
         chainId: formatChainIdToCaip(ChainId.LINEA),
@@ -358,7 +358,7 @@ describe('Bridge selectors', () => {
         bridgeSliceOverrides: { toToken: null },
       });
 
-      const result = getToChain(state as never);
+      const result = getToChain(state);
 
       expect(result).toStrictEqual({
         chainId: 'eip155:1',
@@ -380,7 +380,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      expect(getChainValueOrderOverride(state as never)).toStrictEqual([
+      expect(getChainValueOrderOverride(state)).toStrictEqual([
         { chainId: 'eip155:8453', name: 'Base' },
         { chainId: 'eip155:1', name: 'Ethereum' },
       ]);
@@ -401,7 +401,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      expect(getChainValueOrderOverride(state as never)).toStrictEqual([]);
+      expect(getChainValueOrderOverride(state)).toStrictEqual([]);
     });
   });
 
@@ -424,7 +424,7 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getFromChains(state as never);
+      const result = getFromChains(state);
 
       expect(result).toHaveLength(4);
       expect(
@@ -462,7 +462,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getFromChains(state as never);
+      const result = getFromChains(state);
 
       expect(result.length).toBeGreaterThanOrEqual(15);
       expect(result.map(({ chainId }) => chainId)).toEqual(
@@ -528,7 +528,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getFromChains(state as never);
+      const result = getFromChains(state);
       const resultsInCaip = result
         .map((r) => formatChainIdToCaip(r.chainId))
         .filter(Boolean);
@@ -600,7 +600,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getFromChains(state as never);
+      const result = getFromChains(state);
 
       expect(result).toStrictEqual([
         { chainId: robinhoodCaipChainId, name: 'Robinhood' },
@@ -626,7 +626,7 @@ describe('Bridge selectors', () => {
           ...mockNetworkState(...FEATURED_RPCS),
         },
       });
-      const result = getToChains(state as never);
+      const result = getToChains(state);
 
       expect(result).toHaveLength(5);
       expect(result).toMatchInlineSnapshot(`
@@ -665,7 +665,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getToChains(state as never);
+      const result = getToChains(state);
 
       expect(result).toHaveLength(17);
       expect(result.map(({ name, chainId }) => ({ name, chainId })))
@@ -754,7 +754,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getToChains(state as never);
+      const result = getToChains(state);
 
       expect(result).toStrictEqual([
         { chainId: robinhoodCaipChainId, name: 'Robinhood' },
@@ -804,7 +804,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getToChains(state as never);
+      const result = getToChains(state);
       const resultsInCaip = result
         .map((r) => formatChainIdToCaip(r.chainId))
         .filter(Boolean);
@@ -847,7 +847,7 @@ describe('Bridge selectors', () => {
           fromToken: { address: '0x123', symbol: 'TEST', chainId: 'eip155:1' },
         },
       });
-      const result = getFromToken(state as never);
+      const result = getFromToken(state);
 
       expect(result).toStrictEqual({
         address: '0x123',
@@ -862,7 +862,7 @@ describe('Bridge selectors', () => {
           fromToken: null,
         },
       });
-      const result = getFromToken(state as never);
+      const result = getFromToken(state);
 
       expect(result).toStrictEqual({
         accountType: undefined,
@@ -900,7 +900,7 @@ describe('Bridge selectors', () => {
           }),
         },
       });
-      const result = getToToken(state as never);
+      const result = getToToken(state);
 
       expect(result).toMatchInlineSnapshot(`
         {
@@ -932,7 +932,7 @@ describe('Bridge selectors', () => {
           toToken: null,
         },
       });
-      const result = getToToken(state as never);
+      const result = getToToken(state);
 
       expect(result).toStrictEqual({
         accountType: undefined,
@@ -1000,7 +1000,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getToToken(state as never);
+      const result = getToToken(state);
 
       // Should return ETH (native token) instead of mUSD for Bitcoin bridges
       expect(result).toStrictEqual({
@@ -1029,7 +1029,7 @@ describe('Bridge selectors', () => {
           toToken: null,
         },
       });
-      const result = getToToken(state as never);
+      const result = getToToken(state);
 
       expect(result).toStrictEqual({
         accountType: undefined,
@@ -1055,7 +1055,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { fromTokenInputValue: '123' },
       });
-      const result = getFromAmount(state as never);
+      const result = getFromAmount(state);
 
       expect(result).toStrictEqual('123');
     });
@@ -1064,7 +1064,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { fromTokenInputValue: '' },
       });
-      const result = getFromAmount(state as never);
+      const result = getFromAmount(state);
 
       expect(result).toStrictEqual('');
     });
@@ -1156,7 +1156,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const result = getBridgeQuotes(state as never);
+      const result = getBridgeQuotes(state);
       expect(result.sortedQuotes).toHaveLength(2);
       const { recommendedQuote, activeQuote, ...rest } = result;
       expect(recommendedQuote).toStrictEqual(activeQuote);
@@ -1251,7 +1251,7 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getBridgeQuotes(state as never);
+      const result = getBridgeQuotes(state);
 
       expect(result.sortedQuotes).toHaveLength(2);
       const EXPECTED_SORTED_COSTS = [
@@ -1385,7 +1385,7 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getBridgeQuotes(state as never);
+      const result = getBridgeQuotes(state);
 
       expect(result.sortedQuotes).toHaveLength(2);
 
@@ -1444,7 +1444,7 @@ describe('Bridge selectors', () => {
         bridgeStateOverrides: { quotes: [] },
       });
 
-      const result = getBridgeQuotes(state as never);
+      const result = getBridgeQuotes(state);
 
       expect(result).toStrictEqual({
         activeQuote: null,
@@ -1466,9 +1466,8 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const { activeQuote, recommendedQuote, sortedQuotes } = getBridgeQuotes(
-        state as never,
-      );
+      const { activeQuote, recommendedQuote, sortedQuotes } =
+        getBridgeQuotes(state);
 
       expect(activeQuote?.quote.requestId).toStrictEqual(
         '381c23bc-e3e4-48fe-bc53-257471e388ad',
@@ -1502,9 +1501,8 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const { activeQuote, recommendedQuote, sortedQuotes } = getBridgeQuotes(
-        state as never,
-      );
+      const { activeQuote, recommendedQuote, sortedQuotes } =
+        getBridgeQuotes(state);
 
       expect(activeQuote?.quote.requestId).toStrictEqual('fastestQuote');
       expect(recommendedQuote?.quote.requestId).toStrictEqual('fastestQuote');
@@ -1586,7 +1584,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const result = getBatchSellQuotes(state as never, { requestCount: 1 });
+      const result = getBatchSellQuotes(state, { requestCount: 1 });
       const { recommendedQuotes, ...rest } = result;
       expect(result.recommendedQuotes).toHaveLength(1);
       const recommendedQuote = recommendedQuotes[0] as QuoteResponse;
@@ -1715,7 +1713,7 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getBatchSellQuotes(state as never, { requestCount: 1 });
+      const result = getBatchSellQuotes(state, { requestCount: 1 });
 
       expect(result.recommendedQuotes).toHaveLength(1);
       expect(result.recommendedQuotes[0]?.quote.priceData?.priceImpact)
@@ -1856,7 +1854,7 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getBatchSellQuotes(state as never, { requestCount: 1 });
+      const result = getBatchSellQuotes(state, { requestCount: 1 });
 
       expect(result.recommendedQuotes).toHaveLength(1);
 
@@ -1938,7 +1936,7 @@ describe('Bridge selectors', () => {
         bridgeStateOverrides: { quotes: [] },
       });
 
-      const result = getBatchSellQuotes(state as never, { requestCount: 1 });
+      const result = getBatchSellQuotes(state, { requestCount: 1 });
 
       expect(result).toMatchInlineSnapshot(`
         {
@@ -2022,7 +2020,7 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getBatchSellQuotes(state as never, { requestCount: 4 });
+      const result = getBatchSellQuotes(state, { requestCount: 4 });
 
       expect(result.recommendedQuotes).toHaveLength(4);
       expect(result.recommendedQuotes[0]?.quote.priceData?.priceImpact)
@@ -2109,7 +2107,7 @@ describe('Bridge selectors', () => {
           quotesRefreshCount: 1,
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isNoQuotesAvailable).toStrictEqual(false);
     });
@@ -2134,7 +2132,7 @@ describe('Bridge selectors', () => {
           quotesRefreshCount: 1,
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isNoQuotesAvailable).toStrictEqual(true);
     });
@@ -2148,7 +2146,7 @@ describe('Bridge selectors', () => {
           quotes: [],
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isNoQuotesAvailable).toStrictEqual(false);
     });
@@ -2171,7 +2169,7 @@ describe('Bridge selectors', () => {
           quotesLastFetched: Date.now(),
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientBalance).toStrictEqual(true);
     });
@@ -2197,7 +2195,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasBalance).toStrictEqual(true);
     });
@@ -2237,7 +2235,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasBalance).toStrictEqual(true);
     });
@@ -2284,7 +2282,7 @@ describe('Bridge selectors', () => {
           selectedMultichainNetworkChainId: formatChainIdToCaip(ChainId.SOLANA),
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasBalance).toStrictEqual(false);
     });
@@ -2330,7 +2328,7 @@ describe('Bridge selectors', () => {
           selectedMultichainNetworkChainId: formatChainIdToCaip(ChainId.SOLANA),
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasBalance).toStrictEqual(false);
     });
@@ -2345,7 +2343,7 @@ describe('Bridge selectors', () => {
           quotesLastFetched: Date.now(),
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientBalance).toStrictEqual(false);
     });
@@ -2360,7 +2358,7 @@ describe('Bridge selectors', () => {
           quotesLastFetched: Date.now(),
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientBalance).toStrictEqual(false);
     });
@@ -2378,7 +2376,7 @@ describe('Bridge selectors', () => {
           quoteRequest: { srcTokenAmount: '1000' },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientBalance).toStrictEqual(true);
     });
@@ -2396,7 +2394,7 @@ describe('Bridge selectors', () => {
           quoteRequest: { srcTokenAmount: '10000000000000000' },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasBalance).toStrictEqual(true);
     });
@@ -2440,7 +2438,7 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasBalance).toStrictEqual(true);
     });
@@ -2456,7 +2454,7 @@ describe('Bridge selectors', () => {
           quoteRequest: {},
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasBalance).toStrictEqual(false);
     });
@@ -2473,7 +2471,7 @@ describe('Bridge selectors', () => {
           quotes: mockErc20Erc20Quotes,
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasBalance).toStrictEqual(false);
     });
@@ -2507,25 +2505,24 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.feeData?.network?.[0]
+        getBridgeQuotes(state).activeQuote?.quote.feeData?.network?.[0]
           ?.normalizedAmount,
       ).toStrictEqual('0.00000011265800784');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.feeData?.relayer?.[0]
+        getBridgeQuotes(state).activeQuote?.quote.feeData?.relayer?.[0]
           ?.normalizedAmount,
       ).toStrictEqual('0.001');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
+        getBridgeQuotes(state).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('0.00100011265800784');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.sentAmount?.amount,
+        getBridgeQuotes(state).activeQuote?.sentAmount?.amount,
       ).toStrictEqual('0.01');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.src
-          ?.normalizedAmount,
+        getBridgeQuotes(state).activeQuote?.quote.src?.normalizedAmount,
       ).toStrictEqual('0.01');
       expect(result.isInsufficientGasForQuote).toBe(true);
     });
@@ -2548,32 +2545,31 @@ describe('Bridge selectors', () => {
           quotes: mockBridgeQuotesNativeErc20,
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
+        getBridgeQuotes(state).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('0.00100011265800784');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.feeData?.network?.[0]
+        getBridgeQuotes(state).activeQuote?.quote.feeData?.network?.[0]
           ?.normalizedAmount,
       ).toStrictEqual('0.00000011265800784');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.feeData?.relayer?.[0]
+        getBridgeQuotes(state).activeQuote?.quote.feeData?.relayer?.[0]
           ?.normalizedAmount,
       ).toStrictEqual('0.001');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.src
-          ?.normalizedAmount,
+        getBridgeQuotes(state).activeQuote?.quote.src?.normalizedAmount,
       ).toStrictEqual('0.01');
       expect(result.isInsufficientGasForQuote).toStrictEqual(false);
     });
 
     it('should return isNetworkFeeUnavailable=true for a BTC quote with zero network fee', () => {
       const state = createBtcZeroNetworkFeeQuoteState();
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.feeData?.network?.[0]
+        getBridgeQuotes(state).activeQuote?.quote.feeData?.network?.[0]
           ?.normalizedAmount,
       ).toStrictEqual('0');
       expect(result.isNetworkFeeUnavailable).toBe(true);
@@ -2582,10 +2578,10 @@ describe('Bridge selectors', () => {
 
     it('should return isNetworkFeeUnavailable=true for a Tron quote with zero network fee', () => {
       const state = createTronZeroNetworkFeeQuoteState();
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
+        getBridgeQuotes(state).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('0');
       expect(result.isNetworkFeeUnavailable).toBe(true);
       expect(result.isInsufficientGasForQuote).toBe(false);
@@ -2593,10 +2589,10 @@ describe('Bridge selectors', () => {
 
     it('should return isNetworkFeeUnavailable=false for a Tron quote with a valid network fee', () => {
       const state = createTronBridgeState({ nonEvmFeesInNative: '1' });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
+        getBridgeQuotes(state).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('1');
       expect(result.isNetworkFeeUnavailable).toBe(false);
     });
@@ -2668,22 +2664,21 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.src?.valueInCurrency,
+        getBridgeQuotes(state).activeQuote?.quote.src?.valueInCurrency,
       ).toBe('25.2425');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.feeData?.network?.[0]
+        getBridgeQuotes(state).activeQuote?.quote.feeData?.network?.[0]
           ?.valueInCurrency,
       ).toBe('0.00028437697629012');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.dest
-          ?.valueInCurrency,
+        getBridgeQuotes(state).activeQuote?.quote.dest?.valueInCurrency,
       ).toBe('14.90773022');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.priceData
-          ?.adjustedReturn?.valueInCurrency,
+        getBridgeQuotes(state).activeQuote?.quote.priceData?.adjustedReturn
+          ?.valueInCurrency,
       ).toBe('12.38319584302370988');
       expect(result.isEstimatedReturnLow).toBe(true);
     });
@@ -2752,8 +2747,8 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getValidationErrors(state as never);
-      const { activeQuote } = getBridgeQuotes(state as never);
+      const result = getValidationErrors(state);
+      const { activeQuote } = getBridgeQuotes(state);
 
       expect(activeQuote?.quote.src?.valueInCurrency).toBe('25.2425');
       expect(activeQuote?.totalNetworkFee).toMatchInlineSnapshot(`
@@ -2824,9 +2819,9 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
-      expect(getBridgeQuotes(state as never).activeQuote).toStrictEqual(null);
+      expect(getBridgeQuotes(state).activeQuote).toStrictEqual(null);
       expect(result.isEstimatedReturnLow).toStrictEqual(false);
     });
 
@@ -2901,7 +2896,7 @@ describe('Bridge selectors', () => {
             },
           },
         });
-        const result = getValidationErrors(state as never);
+        const result = getValidationErrors(state);
 
         expect(result.isPriceImpactWarning).toBe(isPriceImpactWarning);
         expect(result.isPriceImpactError).toBe(isPriceImpactError);
@@ -2933,7 +2928,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasForQuote).toStrictEqual(true);
     });
@@ -2968,7 +2963,7 @@ describe('Bridge selectors', () => {
           gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
       expect(result.isInsufficientGasBalance).toStrictEqual(false);
@@ -3001,7 +2996,7 @@ describe('Bridge selectors', () => {
           gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
       // isInsufficientGasBalance is overshadowed by isInsufficientNativeReserve
@@ -3035,7 +3030,7 @@ describe('Bridge selectors', () => {
           gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       // 100 - 80 = 20 MON remaining, which is >= 10 MON reserve
       expect(result.isInsufficientGasBalance).toStrictEqual(false);
@@ -3068,7 +3063,7 @@ describe('Bridge selectors', () => {
           gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
       expect(result.isInsufficientNativeReserve).toBe(true);
@@ -3104,7 +3099,7 @@ describe('Bridge selectors', () => {
           gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
       expect(result.isInsufficientNativeReserve).toBe(false);
@@ -3137,7 +3132,7 @@ describe('Bridge selectors', () => {
           gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       // 100 - 80 = 20 MON remaining, which is >= 10 MON reserve
       expect(result.isInsufficientNativeReserve).toBe(false);
@@ -3149,7 +3144,7 @@ describe('Bridge selectors', () => {
         fromNativeBalance: '1',
         srcTokenAmount: '99999500',
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       // 1 - 0.999995 = 0.000005 BTC, which is < 0.00003 BTC reserve
       expect(result.isInsufficientNativeReserve).toBe(true);
@@ -3161,7 +3156,7 @@ describe('Bridge selectors', () => {
         fromNativeBalance: '1',
         srcTokenAmount: '99997000',
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientNativeReserve).toBe(false);
     });
@@ -3181,17 +3176,17 @@ describe('Bridge selectors', () => {
       });
 
       expect(
-        getInsufficientNativeReserveError(stateWithSmallQuoteFee as never),
+        getInsufficientNativeReserveError(stateWithSmallQuoteFee),
       ).toBeUndefined();
       expect(
-        getInsufficientNativeReserveError(stateWithLargeQuoteFee as never),
+        getInsufficientNativeReserveError(stateWithLargeQuoteFee),
       ).toBeUndefined();
-      expect(
-        getQuoteRequestInsufficientBal(stateWithSmallQuoteFee as never),
-      ).toBe(false);
-      expect(
-        getQuoteRequestInsufficientBal(stateWithLargeQuoteFee as never),
-      ).toBe(false);
+      expect(getQuoteRequestInsufficientBal(stateWithSmallQuoteFee)).toBe(
+        false,
+      );
+      expect(getQuoteRequestInsufficientBal(stateWithLargeQuoteFee)).toBe(
+        false,
+      );
     });
 
     it('should return isInsufficientNativeReserve=true and isInsufficientGasForQuote=false on Bitcoin when the quote fee is payable but the reserve would be depleted', () => {
@@ -3201,12 +3196,11 @@ describe('Bridge selectors', () => {
         nonEvmFeesInNative: '0.00000001',
         srcTokenAmount: '99997000',
       });
-      const result = getValidationErrors(state as never);
-      const nativeReserveError = getActiveQuoteInsufficientNativeReserveError(
-        state as never,
-      );
+      const result = getValidationErrors(state);
+      const nativeReserveError =
+        getActiveQuoteInsufficientNativeReserveError(state);
 
-      const { activeQuote } = getBridgeQuotes(state as never);
+      const { activeQuote } = getBridgeQuotes(state);
       expect(activeQuote?.totalNetworkFee).toMatchInlineSnapshot(`
         {
           "amount": "0.00000001",
@@ -3246,7 +3240,7 @@ describe('Bridge selectors', () => {
         nonEvmFeesInNative: '0.000031',
         srcTokenAmount: '99997000',
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientNativeReserve).toBe(false);
       expect(result.isInsufficientGasForQuote).toBe(true);
@@ -3282,7 +3276,7 @@ describe('Bridge selectors', () => {
           gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       // We don't apply such logic in Solana because this is handled by another validator
       expect(result.isInsufficientNativeReserve).toBe(false);
@@ -3553,7 +3547,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const result = getFromTokenBalance(state as never);
+      const result = getFromTokenBalance(state);
       expect(result).toBe('2');
     });
 
@@ -3568,7 +3562,7 @@ describe('Bridge selectors', () => {
           fromTokenBalance: '2000000',
         },
       });
-      const result = getFromTokenBalance(state as never);
+      const result = getFromTokenBalance(state);
       expect(result).toBe('2');
     });
   });
@@ -3595,7 +3589,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const result = getFromAccount(state as never);
+      const result = getFromAccount(state);
       expect(result).toMatchObject({
         id: MOCK_SOLANA_ACCOUNT.id,
         type: SolAccountType.DataAccount,
@@ -3605,7 +3599,7 @@ describe('Bridge selectors', () => {
 
     it('should return the selected EVM account', () => {
       const state = createBridgeMockStore({});
-      const result = getFromAccount(state as never);
+      const result = getFromAccount(state);
       expect(result).toStrictEqual(
         expect.objectContaining({
           id: MOCK_EVM_ACCOUNT.id,
@@ -3646,12 +3640,12 @@ describe('Bridge selectors', () => {
         },
       });
 
-      expect(getFromChain(state as never)).toStrictEqual(
+      expect(getFromChain(state)).toStrictEqual(
         expect.objectContaining({
           chainId: 'eip155:1',
         }),
       );
-      const result = getFromAccount(state as never);
+      const result = getFromAccount(state);
       expect(result).toMatchObject({
         address: MOCK_EVM_ACCOUNT.address,
         id: MOCK_EVM_ACCOUNT.id,
@@ -3853,7 +3847,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { slippage: 0.5 },
       });
-      expect(getSlippage(state as never)).toBe(0.5);
+      expect(getSlippage(state)).toBe(0.5);
     });
   });
 
@@ -3869,7 +3863,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getQuoteRequest(state as never);
+      const result = getQuoteRequest(state);
       expect(result).toStrictEqual(
         expect.objectContaining({
           srcChainId: ChainId.ETH,
@@ -3884,12 +3878,12 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { sortOrder: SortOrder.ETA_ASC },
       });
-      expect(getBridgeSortOrder(state as never)).toBe(SortOrder.ETA_ASC);
+      expect(getBridgeSortOrder(state)).toBe(SortOrder.ETA_ASC);
     });
 
     it('returns default sort order', () => {
       const state = createBridgeMockStore({});
-      expect(getBridgeSortOrder(state as never)).toBe('cost_ascending');
+      expect(getBridgeSortOrder(state)).toBe('cost_ascending');
     });
   });
 
@@ -3898,14 +3892,14 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { txAlert: { message: 'test alert' } },
       });
-      expect(getTxAlerts(state as never)).toStrictEqual({
+      expect(getTxAlerts(state)).toStrictEqual({
         message: 'test alert',
       });
     });
 
     it('returns undefined when no txAlert', () => {
       const state = createBridgeMockStore({});
-      expect(getTxAlerts(state as never)).toBeUndefined();
+      expect(getTxAlerts(state)).toBeUndefined();
     });
   });
 
@@ -3914,14 +3908,14 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { wasTxDeclined: true },
       });
-      expect(getWasTxDeclined(state as never)).toBe(true);
+      expect(getWasTxDeclined(state)).toBe(true);
     });
 
     it('returns false when tx was not declined', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { wasTxDeclined: false },
       });
-      expect(getWasTxDeclined(state as never)).toBe(false);
+      expect(getWasTxDeclined(state)).toBe(false);
     });
   });
 
@@ -3932,7 +3926,7 @@ describe('Bridge selectors', () => {
           bridgeConfig: {},
         },
       });
-      const result = getPriceImpactThresholds(state as never);
+      const result = getPriceImpactThresholds(state);
       expect(result).toStrictEqual(
         expect.objectContaining({
           warning: 0.055,
@@ -3949,7 +3943,7 @@ describe('Bridge selectors', () => {
           bridgeConfig: {},
         },
       });
-      const result = getPriceImpactThresholds(state as never);
+      const result = getPriceImpactThresholds(state);
       expect(result).toHaveProperty('warning');
       expect(result).toHaveProperty('error');
       expect(typeof result.warning).toBe('number');
@@ -3961,9 +3955,7 @@ describe('Bridge selectors', () => {
   describe('getTopAssetsFromFeatureFlags', () => {
     it('returns undefined when chainId is not provided', () => {
       const state = createBridgeMockStore({});
-      expect(
-        getTopAssetsFromFeatureFlags(state as never, undefined),
-      ).toBeUndefined();
+      expect(getTopAssetsFromFeatureFlags(state, undefined)).toBeUndefined();
     });
 
     it('returns topAssets for a given chainId', () => {
@@ -3981,7 +3973,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getTopAssetsFromFeatureFlags(state as never, 'eip155:1');
+      const result = getTopAssetsFromFeatureFlags(state, 'eip155:1');
       expect(result).toStrictEqual(topAssets);
     });
 
@@ -3998,7 +3990,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getTopAssetsFromFeatureFlags(state as never, 'eip155:1');
+      const result = getTopAssetsFromFeatureFlags(state, 'eip155:1');
       expect(result).toBeUndefined();
     });
   });
@@ -4006,7 +3998,7 @@ describe('Bridge selectors', () => {
   describe('getBip44DefaultPairsConfig', () => {
     it('returns bip44DefaultPairs from feature flags', () => {
       const state = createBridgeMockStore({});
-      const result = getBip44DefaultPairsConfig(state as never);
+      const result = getBip44DefaultPairsConfig(state);
       expect(result).toStrictEqual(
         expect.objectContaining({
           bip122: expect.any(Object),
@@ -4033,7 +4025,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getQuoteRefreshRate(state as never);
+      const result = getQuoteRefreshRate(state);
       expect(result).toBe(10000);
     });
 
@@ -4045,7 +4037,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getQuoteRefreshRate(state as never);
+      const result = getQuoteRefreshRate(state);
       expect(result).toBe(7000);
     });
   });
@@ -4053,7 +4045,7 @@ describe('Bridge selectors', () => {
   describe('selectNoFeeAssets', () => {
     it('returns empty array when no chainId is provided', () => {
       const state = createBridgeMockStore({});
-      expect(selectNoFeeAssets(state as never, undefined)).toStrictEqual([]);
+      expect(selectNoFeeAssets(state, undefined)).toStrictEqual([]);
     });
 
     it('returns noFeeAssets for a given chainId', () => {
@@ -4070,7 +4062,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = selectNoFeeAssets(state as never, 'eip155:1');
+      const result = selectNoFeeAssets(state, 'eip155:1');
       expect(result).toStrictEqual(['asset1', 'asset2']);
     });
 
@@ -4087,7 +4079,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = selectNoFeeAssets(state as never, 'eip155:1');
+      const result = selectNoFeeAssets(state, 'eip155:1');
       expect(result).toStrictEqual([]);
     });
   });
@@ -4104,7 +4096,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getLastSelectedChainId(state as never);
+      const result = getLastSelectedChainId(state);
       expect(result).toBe('eip155:1');
     });
   });
@@ -4125,7 +4117,7 @@ describe('Bridge selectors', () => {
           toToken: toBridgeToken(getNativeAssetForChainId(ChainId.SOLANA)),
         },
       });
-      const result = getIsToOrFromNonEvm(state as never);
+      const result = getIsToOrFromNonEvm(state);
       expect(result).toBe(true);
     });
 
@@ -4144,7 +4136,7 @@ describe('Bridge selectors', () => {
           toToken: toBridgeToken(getNativeAssetForChainId('0xe708')),
         },
       });
-      const result = getIsToOrFromNonEvm(state as never);
+      const result = getIsToOrFromNonEvm(state);
       expect(result).toBe(false);
     });
 
@@ -4160,7 +4152,7 @@ describe('Bridge selectors', () => {
           toToken: null,
         },
       });
-      const result = getIsToOrFromNonEvm(state as never);
+      const result = getIsToOrFromNonEvm(state);
       expect(result).toBe(false);
     });
   });
@@ -4196,7 +4188,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getIsSolanaSwap(state as never);
+      const result = getIsSolanaSwap(state);
       expect(result).toBe(true);
     });
 
@@ -4227,7 +4219,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getIsSolanaSwap(state as never);
+      const result = getIsSolanaSwap(state);
       expect(result).toBe(false);
     });
 
@@ -4246,7 +4238,7 @@ describe('Bridge selectors', () => {
           toToken: toBridgeToken(getNativeAssetForChainId('0xe708')),
         },
       });
-      const result = getIsSolanaSwap(state as never);
+      const result = getIsSolanaSwap(state);
       expect(result).toBe(false);
     });
   });
@@ -4423,7 +4415,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getIsStxEnabled(state as never);
+      const result = getIsStxEnabled(state);
       expect(result).toBe(true);
     });
 
@@ -4450,7 +4442,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getIsStxEnabled(state as never);
+      const result = getIsStxEnabled(state);
       expect(result).toBe(false);
     });
   });
@@ -4497,7 +4489,7 @@ describe('Bridge selectors', () => {
           toToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
         },
       });
-      const result = getToAccounts(state as never);
+      const result = getToAccounts(state);
       expect(result.length).toBeGreaterThan(0);
       expect(result[0]).toStrictEqual(
         expect.objectContaining({
@@ -4518,7 +4510,7 @@ describe('Bridge selectors', () => {
           toToken: null,
         },
       });
-      const result = getToAccounts(state as never);
+      const result = getToAccounts(state);
       expect(result).toStrictEqual(
         expect.arrayContaining([
           expect.objectContaining({
@@ -4538,13 +4530,13 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getHardwareWalletName(state as never);
+      const result = getHardwareWalletName(state);
       expect(result).toBe('Ledger');
     });
 
     it('returns undefined for non-hardware wallet', () => {
       const state = createBridgeMockStore({});
-      const result = getHardwareWalletName(state as never);
+      const result = getHardwareWalletName(state);
       expect(result).toBeUndefined();
     });
   });
@@ -4567,7 +4559,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getFromTokenBalanceInUsd(state as never);
+      const result = getFromTokenBalanceInUsd(state);
       expect(result).toBe(2000);
     });
 
@@ -4582,7 +4574,7 @@ describe('Bridge selectors', () => {
           marketData: {},
         },
       });
-      const result = getFromTokenBalanceInUsd(state as never);
+      const result = getFromTokenBalanceInUsd(state);
       expect(result).toBe(0);
     });
   });
@@ -4605,7 +4597,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getFromAmountInCurrency(state as never);
+      const result = getFromAmountInCurrency(state);
       expect(result.valueInCurrency.toNumber()).toBe(2000);
       expect(result.usd.toNumber()).toBe(2000);
     });
@@ -4621,7 +4613,7 @@ describe('Bridge selectors', () => {
           marketData: {},
         },
       });
-      const result = getFromAmountInCurrency(state as never);
+      const result = getFromAmountInCurrency(state);
       expect(result.valueInCurrency.toNumber()).toBe(0);
       expect(result.usd.toNumber()).toBe(0);
     });
@@ -4633,7 +4625,7 @@ describe('Bridge selectors', () => {
           fromTokenInputValue: null,
         },
       });
-      const result = getFromAmountInCurrency(state as never);
+      const result = getFromAmountInCurrency(state);
       expect(result.valueInCurrency.toNumber()).toBe(0);
     });
   });
@@ -4646,7 +4638,7 @@ describe('Bridge selectors', () => {
           fromTokenInputValue: '1.5',
         },
       });
-      const result = getValidatedFromValue(state as never);
+      const result = getValidatedFromValue(state);
       expect(result).toBe('1500000000000000000');
     });
 
@@ -4656,7 +4648,7 @@ describe('Bridge selectors', () => {
           fromTokenInputValue: null,
         },
       });
-      const result = getValidatedFromValue(state as never);
+      const result = getValidatedFromValue(state);
       expect(result).toBeUndefined();
     });
 
@@ -4672,7 +4664,7 @@ describe('Bridge selectors', () => {
           fromTokenInputValue: '0.001',
         },
       });
-      const result = getValidatedFromValue(state as never);
+      const result = getValidatedFromValue(state);
       expect(result).toBe('1000');
     });
   });
@@ -4696,7 +4688,7 @@ describe('Bridge selectors', () => {
           })),
         },
       });
-      const result = getPriceImpact(state as never);
+      const result = getPriceImpact(state);
       expect(result).toBe(0.15);
     });
 
@@ -4704,7 +4696,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeStateOverrides: { quotes: [] },
       });
-      const result = getPriceImpact(state as never);
+      const result = getPriceImpact(state);
       expect(result).toBeNull();
     });
 
@@ -4720,7 +4712,7 @@ describe('Bridge selectors', () => {
           })),
         },
       });
-      const result = getPriceImpact(state as never);
+      const result = getPriceImpact(state);
       expect(result).toBeNull();
     });
   });
@@ -4732,7 +4724,7 @@ describe('Bridge selectors', () => {
           bridgeConfig: {},
         },
       });
-      const result = getIsStockMarketClosed(state as never, Date.now());
+      const result = getIsStockMarketClosed(state, Date.now());
       expect(result).toBe(false);
     });
 
@@ -4743,7 +4735,7 @@ describe('Bridge selectors', () => {
           rwaTokensEnabled: true,
         } as never,
       });
-      const result = getIsStockMarketClosed(state as never, Date.now());
+      const result = getIsStockMarketClosed(state, Date.now());
       expect(result).toBe(false);
     });
 
@@ -4770,7 +4762,7 @@ describe('Bridge selectors', () => {
           }),
         },
       });
-      const result = getIsStockMarketClosed(state as never, now);
+      const result = getIsStockMarketClosed(state, now);
       expect(result).toBe(true);
     });
 
@@ -4936,7 +4928,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeStateOverrides: { quotes: [] },
       });
-      const result = getWarningLabels(state as never);
+      const result = getWarningLabels(state);
       expect(result).toStrictEqual([]);
     });
 
@@ -4960,7 +4952,7 @@ describe('Bridge selectors', () => {
           quotesRefreshCount: 1,
         },
       });
-      const result = getWarningLabels(state as never);
+      const result = getWarningLabels(state);
       expect(result).toContain('no_quotes');
     });
 
@@ -4981,7 +4973,7 @@ describe('Bridge selectors', () => {
           quotesLastFetched: Date.now(),
         },
       });
-      const result = getWarningLabels(state as never);
+      const result = getWarningLabels(state);
       expect(result).toContain('insufficient_balance');
     });
 
@@ -4997,20 +4989,20 @@ describe('Bridge selectors', () => {
           quotes: [],
         },
       });
-      const result = getWarningLabels(state as never);
+      const result = getWarningLabels(state);
       expect(result).toContain('tx_alert');
     });
 
     it('returns network_fee_unavailable when BTC network fee is unavailable', () => {
       const state = createBtcZeroNetworkFeeQuoteState();
-      const result = getWarningLabels(state as never);
+      const result = getWarningLabels(state);
 
       expect(result).toContain('network_fee_unavailable');
     });
 
     it('returns network_fee_unavailable when Tron network fee is unavailable', () => {
       const state = createTronZeroNetworkFeeQuoteState();
-      const result = getWarningLabels(state as never);
+      const result = getWarningLabels(state);
 
       expect(result).toContain('network_fee_unavailable');
     });
@@ -5021,7 +5013,7 @@ describe('Bridge selectors', () => {
         fromNativeBalance: '1',
         srcTokenAmount: '99999500',
       });
-      const result = getWarningLabels(state as never);
+      const result = getWarningLabels(state);
 
       expect(result).toContain('insufficient_native_reserve');
     });
@@ -5050,7 +5042,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getWarningLabels(state as never);
+      const result = getWarningLabels(state);
       expect(result).toContain('price_impact');
     });
 
@@ -5178,9 +5170,9 @@ describe('Bridge selectors', () => {
           quotes: [],
         },
       });
-      const result = getValidationErrors(state as never, Date.now());
+      const result = getValidationErrors(state, Date.now());
       expect(result.isQuoteExpired).toBe(
-        selectIsQuoteExpired(state.metamask as never, {}, Date.now()),
+        selectIsQuoteExpired(state.metamask, {}, Date.now()),
       );
     });
   });
@@ -5192,7 +5184,7 @@ describe('Bridge selectors', () => {
           quoteStreamComplete: null,
         },
       });
-      const result = getBridgeUnavailableQuoteReason(state as never);
+      const result = getBridgeUnavailableQuoteReason(state);
       expect(result).toBe('noOptionsAvailableMessage');
     });
 
@@ -5205,7 +5197,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getBridgeUnavailableQuoteReason(state as never);
+      const result = getBridgeUnavailableQuoteReason(state);
       expect(result).toBe('noOptionsAvailableMessage');
     });
 
@@ -5219,7 +5211,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getBridgeUnavailableQuoteReason(state as never);
+      const result = getBridgeUnavailableQuoteReason(state);
       expect(result).toBe('bridgeQuoteStreamCompleteAmountTooHigh');
     });
 
@@ -5233,7 +5225,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getBridgeUnavailableQuoteReason(state as never);
+      const result = getBridgeUnavailableQuoteReason(state);
       expect(result).toBe('bridgeQuoteStreamCompleteAmountTooLow');
     });
 
@@ -5247,7 +5239,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getBridgeUnavailableQuoteReason(state as never);
+      const result = getBridgeUnavailableQuoteReason(state);
       expect(result).toBe('bridgeQuoteStreamCompleteRetry');
     });
 
@@ -5261,7 +5253,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getBridgeUnavailableQuoteReason(state as never);
+      const result = getBridgeUnavailableQuoteReason(state);
       expect(result).toBe('bridgeQuoteStreamCompleteTokenNotSupported');
     });
 
@@ -5274,7 +5266,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getBridgeUnavailableQuoteReason(state as never);
+      const result = getBridgeUnavailableQuoteReason(state);
       expect(result).toBe('noOptionsAvailableMessage');
     });
   });

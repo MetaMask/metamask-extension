@@ -5,8 +5,8 @@ import { Driver } from '../../webdriver/driver';
 import { E2E_SRP } from '../../constants';
 import { Anvil } from '../../seeder/anvil';
 import HomePage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
-import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
+import ResetPasswordPage from '../../page-objects/pages/onboarding/reset-password-page';
 import {
   lockAndWaitForLoginPage,
   lockAndWaitForPasskeyUnlockPage,

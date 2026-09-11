@@ -1,6 +1,7 @@
 'use no memo';
 
 import { useEffect, useMemo, useState } from 'react';
+import { BigNumber } from 'bignumber.js';
 import {
   TransactionMeta,
   TransactionType,
@@ -14,6 +15,7 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayAvailableTokens } from '../../pay/useTransactionPayAvailableTokens';
 import { ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS } from '../../pay/useAutomaticTransactionPayToken';
 import { useIsTransactionPayLoading } from '../../pay/useTransactionPayData';
+import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { useTransactionAccountOverride } from '../../transactions/useTransactionAccountOverride';
 import { AlertsName } from '../constants';
 
@@ -25,6 +27,7 @@ export function useAccountNoFundsAlert(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const availableTokens = useTransactionPayAvailableTokens();
+  const { payToken } = useTransactionPayToken();
   const isLoading = useIsTransactionPayLoading();
   const accountOverride = useTransactionAccountOverride();
   const from = currentConfirmation?.txParams?.from;
@@ -38,7 +41,9 @@ export function useAccountNoFundsAlert(): Alert[] {
     TransactionType.moneyAccountDeposit,
   ]);
 
-  const hasTokens = availableTokens.some((token) => !token.disabled);
+  const hasTokens =
+    availableTokens.some((token) => !token.disabled) ||
+    new BigNumber(payToken?.balanceUsd ?? '0').gt(0);
 
   // Keep the wait flag in sync during render so an account override cannot
   // flash this alert for one frame before effects run.

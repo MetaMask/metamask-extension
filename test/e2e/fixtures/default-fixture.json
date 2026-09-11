@@ -179,16 +179,16 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 223,
+      "currentMigrationVersion": 224.1,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
     "AppStateController": {
+      "arcUsageNoticeShown": false,
       "browserEnvironment": {
         "browser": "chrome"
       },
-      "canTrackWalletFundsObtained": false,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -1103,13 +1103,6 @@
       }
     },
     "RampsController": {
-      "countries": {
-        "data": [],
-        "error": null,
-        "errorKey": null,
-        "isLoading": false,
-        "selected": null
-      },
       "orders": [],
       "providerAutoSelected": false,
       "userRegion": null
@@ -1135,10 +1128,23 @@
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
-        "feature3": {
-          "name": "groupC",
-          "value": "valueC"
-        }
+        "feature3": [
+          {
+            "value": "valueA",
+            "name": "groupA",
+            "scope": { "type": "threshold", "value": 0.3 }
+          },
+          {
+            "value": "valueB",
+            "name": "groupB",
+            "scope": { "type": "threshold", "value": 0.5 }
+          },
+          {
+            "scope": { "type": "threshold", "value": 1 },
+            "value": "valueC",
+            "name": "groupC"
+          }
+        ]
       }
     },
     "RewardsController": {
@@ -1270,6 +1276,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 223
+    "version": 224.1
   }
 }

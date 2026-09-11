@@ -28,6 +28,7 @@ import type { MoneyActivityItem } from '../types/money-activity';
 export type MoneyActivityRowProps = {
   item: MoneyActivityItem;
   privacyMode?: boolean;
+  onClick?: () => void;
 };
 
 function getAmountColor({
@@ -49,6 +50,7 @@ function getAmountColor({
 export function MoneyActivityRow({
   item,
   privacyMode = false,
+  onClick,
 }: MoneyActivityRowProps) {
   const t = useI18nContext() as MoneyActivityTranslate;
   const display = getMoneyActivityDisplayInfo(item.tx, t);
@@ -59,15 +61,8 @@ export function MoneyActivityRow({
     isIncoming: display.isIncoming,
   });
 
-  return (
-    <Box
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      gap={4}
-      padding={4}
-      className="w-full"
-      data-testid={`money-activity-row-${item.id}`}
-    >
+  const content = (
+    <>
       <AvatarIcon
         iconName={display.icon}
         severity={AvatarIconSeverity.Neutral}
@@ -138,6 +133,34 @@ export function MoneyActivityRow({
           {display.fiatAmount}
         </SensitiveText>
       </Box>
+    </>
+  );
+
+  const rowClassName = 'flex w-full items-center gap-4 p-4';
+
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className={`${rowClassName} bg-transparent text-left hover:bg-hover`}
+        data-testid={`money-activity-row-${item.id}`}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      gap={4}
+      padding={4}
+      className="w-full"
+      data-testid={`money-activity-row-${item.id}`}
+    >
+      {content}
     </Box>
   );
 }

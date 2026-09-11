@@ -137,6 +137,20 @@ export function buildErrorContent(
         ],
       };
 
+    // Ledger can only sign EIP-712 typed data V4.
+    // Retrying cannot succeed: the dApp requested an unsupported signature type.
+    case ErrorCode.DeviceStateOnlyV4Supported:
+      return {
+        variant: HardwareWalletErrorContentVariant.Description,
+        icon: IconName.Danger,
+        iconColor: IconColor.WarningDefault,
+        title: t('hardwareWalletErrorTitleUnsupportedSignature'),
+        showRepairLink,
+        description: t('hardwareWalletErrorOnlyV4SupportedDescription', [
+          t(walletType),
+        ]),
+      };
+
     // Device state - Disconnected/Connection issues
     case ErrorCode.DeviceDisconnected:
     case ErrorCode.ConnectionTransportMissing:

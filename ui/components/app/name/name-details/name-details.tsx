@@ -347,12 +347,12 @@ export default function NameDetails({
 
     switch (displayState) {
       case TrustSignalDisplayState.Malicious:
-        titleKey = 'nameModalTitleMalicious';
-        instructionsKey = 'nameInstructionsMalicious';
+        titleKey = 'alertReasonAddressTrustSignalMalicious';
+        instructionsKey = 'alertMessageAddressTrustSignalMalicious';
         break;
       case TrustSignalDisplayState.Warning:
-        titleKey = 'nameModalTitleWarning';
-        instructionsKey = 'nameInstructionsWarning';
+        titleKey = 'alertReasonAddressTrustSignalWarning';
+        instructionsKey = 'alertMessageAddressTrustSignal';
         break;
       case TrustSignalDisplayState.Verified:
         titleKey = 'nameModalTitleVerified';

@@ -5,6 +5,7 @@ import {
   selectMoneyAccountDepositQuotePipelineEnabled,
   selectMoneyAccountFeatureEnabled,
   selectMoneyAccountVaultConfig,
+  selectMoneyActivityDetailsEnabled,
   selectMoneyActivityMockDataEnabled,
   selectMoneyEarningSectionEnabled,
   selectMoneyDepositMinBalance,
@@ -308,5 +309,48 @@ describe('selectMoneyActivityMockDataEnabled', () => {
 
   it('is false when the flag is unserved and the env var is off', () => {
     expect(selectMoneyActivityMockDataEnabled(mockState())).toBe(false);
+  });
+});
+
+describe('selectMoneyActivityDetailsEnabled', () => {
+  let originalEnv: string | undefined;
+
+  beforeEach(() => {
+    originalEnv = process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS;
+    delete process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS;
+  });
+
+  afterEach(() => {
+    if (originalEnv === undefined) {
+      delete process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS;
+    } else {
+      process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS = originalEnv;
+    }
+  });
+
+  it('is true when the remote flag is true', () => {
+    expect(
+      selectMoneyActivityDetailsEnabled(
+        mockState({ moneyEnableActivityDetails: true }),
+      ),
+    ).toBe(true);
+  });
+
+  it('is false when the remote flag is false', () => {
+    process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS = 'true';
+    expect(
+      selectMoneyActivityDetailsEnabled(
+        mockState({ moneyEnableActivityDetails: false }),
+      ),
+    ).toBe(false);
+  });
+
+  it('falls back to the env var when the flag is unserved', () => {
+    process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS = 'true';
+    expect(selectMoneyActivityDetailsEnabled(mockState())).toBe(true);
+  });
+
+  it('is false when the flag is unserved and the env var is off', () => {
+    expect(selectMoneyActivityDetailsEnabled(mockState())).toBe(false);
   });
 });

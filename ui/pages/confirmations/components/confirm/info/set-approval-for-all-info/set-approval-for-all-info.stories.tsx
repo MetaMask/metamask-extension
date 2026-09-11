@@ -1,13 +1,14 @@
 import { Meta } from '@storybook/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { getMockApproveConfirmState } from '../../../../../../../test/data/confirmations/helper';
+import { getMockSetApprovalForAllConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../context/confirm';
 import { DappSwapContextProvider } from '../../../../context/dapp-swap';
+import { GasFeeModalContextProvider } from '../../../../context/gas-fee-modal';
 import SetApprovalForAll from './set-approval-for-all-info';
 
-const store = configureStore(getMockApproveConfirmState());
+const store = configureStore(getMockSetApprovalForAllConfirmState());
 
 const Story = {
   title: 'Components/App/Confirm/info/SetApprovalForAll',
@@ -16,7 +17,9 @@ const Story = {
     (story: () => Meta<typeof SetApprovalForAll>) => (
       <Provider store={store}>
         <ConfirmContextProvider>
-          <DappSwapContextProvider>{story()}</DappSwapContextProvider>
+          <DappSwapContextProvider>
+            <GasFeeModalContextProvider>{story()}</GasFeeModalContextProvider>
+          </DappSwapContextProvider>
         </ConfirmContextProvider>
       </Provider>
     ),

@@ -201,10 +201,12 @@ export const MultichainBridgeQuoteCard = ({
 
   return (
     <>
-      <BridgeQuotesModal
-        isOpen={showAllQuotes}
-        onClose={() => setShowAllQuotes(false)}
-      />
+      {showAllQuotes && (
+        <BridgeQuotesModal
+          isOpen={showAllQuotes}
+          onClose={() => setShowAllQuotes(false)}
+        />
+      )}
       <Column gap={2}>
         {/* Rate and timer */}
         <Row justifyContent={JustifyContent.spaceBetween}>
@@ -245,10 +247,12 @@ export const MultichainBridgeQuoteCard = ({
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
-              {`1 ${activeQuote.quote.src.asset.symbol} = ${formatTokenAmount(
-                locale,
-                activeQuote.quote.priceData?.swapRate,
-              )} ${activeQuote.quote.dest.asset.symbol}`}
+              {activeQuote.quote.priceData?.swapRate
+                ? `1 ${activeQuote.quote.src.asset.symbol} = ${formatTokenAmount(
+                    locale,
+                    activeQuote.quote.priceData.swapRate,
+                  )} ${activeQuote.quote.dest.asset.symbol}`
+                : ''}
             </Text>
             <ButtonIcon
               iconName={IconName.ArrowRight}

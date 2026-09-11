@@ -8,13 +8,26 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AddressPoisoningAlertContent } from '../../../components/send/address-poisoning-alert-content/address-poisoning-alert-content';
-import { useTransferRecipient } from '../../../components/confirm/info/hooks/useTransferRecipient';
+import { getSendRecipients } from '../../../utils/getSendRecipients';
+import { useTransactionMetadataRequestOptional } from '../../transactions/useTransactionMetadataRequest';
 import { useAddressPoisoningDetection } from '../../send/useAddressPoisoningDetection';
 import { AlertsName } from '../constants';
 
 export function useAddressPoisoningAlert(): Alert[] {
   const t = useI18nContext();
-  const recipient = useTransferRecipient();
+  const transactionMeta = useTransactionMetadataRequestOptional();
+
+  // Only the first payee is checked, because the detector takes a single
+  // address and the alert renders a single comparison. Batch confirmations do
+  // not render a top-level interacting-with row, so supporting multiple payees
+  // requires confirmation UX support. `getSendRecipients` decodes calldata,
+  // so keep this memoized on the transaction rather than recomputing every
+  // render.
+  const recipient = useMemo(
+    () => (transactionMeta ? getSendRecipients(transactionMeta)[0] : undefined),
+    [transactionMeta],
+  );
+
   const { isPoisoningSuspect, bestMatch } =
     useAddressPoisoningDetection(recipient);
 

@@ -121,3 +121,8 @@ NEW_HARDWARE_WALLET_ONBOARDING='false'
 ; `moneyActivityMockDataEnabled` takes precedence when it is a boolean.
 ; Rebuild after changing this value.
 ;MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED='true'
+
+; Set to `true` so Money activity rows navigate to the transaction details
+; page. Remote flag `moneyEnableActivityDetails` takes precedence when it
+; is a boolean. Rebuild after changing this value.
+;MM_MONEY_ENABLE_ACTIVITY_DETAILS='true'

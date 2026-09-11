@@ -1,7 +1,8 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { bytesToHex } from '@metamask/utils';
+import { bytesToHex, type Hex } from '@metamask/utils';
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { parse as uuidParse, v4 as uuidv4 } from 'uuid';
 import { getMaybeSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
@@ -36,11 +37,14 @@ export type InitiateDepositOptions = {
  * unavailable money account is a thrown error here, not a rendered state,
  * because the surface is supposed to be hidden entirely.
  *
- * Fails fast (as `useMoneyAccountWithdrawal` does) when no EVM account is
- * selected: the funding account is only seeded later by
- * `handleUnapprovedTransactionAddedForMoneyAccount`, which silently skips
- * non-EVM selections, so without this guard the user would reach the
- * confirmation with Pay having no funding account to quote against.
+ * Fails fast when no eligible EVM account is selected. The selected account's
+ * address is passed as Pay's `accountOverride` so the confirmation defaults
+ * the From row — and quotes — to that account instead of the money account
+ * that executes the batch.
+ *
+ * The current location is passed as `goBackTo` so closing the confirmation
+ * returns the user to the surface they started from (e.g. the Money home)
+ * rather than the global wallet home.
  *
  * Two deliberate differences from mobile's hook, both consequences of the
  * extension navigating **after** creation rather than early with a skeleton:
@@ -54,6 +58,7 @@ export type InitiateDepositOptions = {
  */
 export function useMoneyAccountDeposit() {
   const { navigateToTransaction } = useConfirmationNavigation();
+  const location = useLocation();
   const selectedAccount = useSelector(getMaybeSelectedInternalAccount);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -73,11 +78,14 @@ export function useMoneyAccountDeposit() {
           throw new Error('[Money Account] Missing funding EVM account');
         }
 
-        const { transactionId } =
-          await createMoneyAccountDepositTransaction(batchId);
+        const { transactionId } = await createMoneyAccountDepositTransaction(
+          batchId,
+          selectedAccount.address as Hex,
+        );
 
         navigateToTransaction(transactionId, {
           loader: ConfirmationLoader.CustomAmount,
+          goBackTo: location.pathname + location.search,
         });
       } catch (error) {
         clearMoneyAccountDepositIntent(batchId);
@@ -92,7 +100,12 @@ export function useMoneyAccountDeposit() {
         setIsLoading(false);
       }
     },
-    [navigateToTransaction, selectedAccount],
+    [
+      location.pathname,
+      location.search,
+      navigateToTransaction,
+      selectedAccount,
+    ],
   );
 
   return { initiateDeposit, isLoading };

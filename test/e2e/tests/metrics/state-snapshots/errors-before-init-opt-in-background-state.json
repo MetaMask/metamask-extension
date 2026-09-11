@@ -38,8 +38,8 @@
       "previousMigrationVersion": 0
     },
     "AppStateController": {
+      "arcUsageNoticeShown": "boolean",
       "browserEnvironment": { "browser": "string" },
-      "canTrackWalletFundsObtained": false,
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -244,7 +244,6 @@
     },
     "ProfileMetricsController": "object",
     "RampsController": {
-      "countries": "object",
       "orders": "object",
       "providerAutoSelected": "boolean",
       "userRegion": null
@@ -256,7 +255,23 @@
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
-        "feature3": { "name": "groupC", "value": "valueC" }
+        "feature3": [
+          {
+            "name": "groupA",
+            "scope": { "type": "threshold", "value": 0.3 },
+            "value": "valueA"
+          },
+          {
+            "name": "groupB",
+            "scope": { "type": "threshold", "value": 0.5 },
+            "value": "valueB"
+          },
+          {
+            "name": "groupC",
+            "scope": { "type": "threshold", "value": 1 },
+            "value": "valueC"
+          }
+        ]
       }
     },
     "RewardsController": {

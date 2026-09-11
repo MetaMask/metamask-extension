@@ -10,6 +10,7 @@ export {
   configureAnalytics,
   canSubmitAnalytics,
   identify,
+  setParticipateInMetaMetrics,
   trackEvent,
   trackPage,
   updateProfileSessionData,

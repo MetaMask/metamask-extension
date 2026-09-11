@@ -60,9 +60,6 @@ class HomePage {
 
   private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
 
-  private readonly bottomNavActivityButton =
-    '[data-testid="bottom-nav-activity"]';
-
   private readonly bottomNavHomeButton = '[data-testid="bottom-nav-home"]';
 
   protected readonly bridgeButton: string =
@@ -548,19 +545,7 @@ class HomePage {
 
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
-    const isBottomNav = await this.driver.isElementPresentAndVisible(
-      this.bottomNavActivityButton,
-      3000,
-    );
-    if (isBottomNav) {
-      await this.driver.clickElement(this.bottomNavActivityButton);
-      await this.driver.waitForUrl({
-        url: `${this.driver.extensionUrl}/home.html#${ACTIVITY_ROUTE}`,
-      });
-    } else {
-      await this.checkPageIsLoaded();
-      await this.driver.clickElement(this.activityTab);
-    }
+    await this.driver.clickElement(this.activityTab);
   }
 
   async goToBackupSRPPage(): Promise<void> {

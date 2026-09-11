@@ -15,7 +15,6 @@ export {
   selectIsMusdTokenListItemCtaEnabled,
   selectIsMusdAssetOverviewCtaEnabled,
   selectIsMusdRewardsUiEnabled,
-  selectIsMerklClaimingEnabled,
   selectMusdCtaTokens,
   selectMusdConvertibleTokensAllowlist,
   selectMusdConvertibleTokensBlocklist,

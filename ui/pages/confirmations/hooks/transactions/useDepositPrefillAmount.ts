@@ -17,9 +17,12 @@ import {
 } from '../../selectors/feature-flags';
 import { getDepositLimitForTransaction } from '../../utils/pay-deposit-limit';
 import { isRouteToken } from '../../utils/relay-fixed-spread';
+import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
+
+const ZERO_PREFILL_AMOUNT = '0.0';
 
 function formatFiatAmount(value: BigNumber): string {
   return value.isInteger() ? value.toString(10) : value.toFixed(2);
@@ -88,10 +91,14 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
   );
 
   const enabled = Boolean(prefilledAmountConfig.enabled);
+  const { balanceUsd: liveBalanceUsd } = usePayTokenAccountBalance();
 
+  // Live funding-account USD, not the pay-controller snapshot. A $0 snapshot
+  // (common on deposits: tx `from` is the money account) left prefill
+  // uncommitted and the amount skeleton up forever.
   // Keep balance as a string so BigNumber.times never receives a JS number with
   // >15 significant digits (throws in this bignumber.js version).
-  const balanceUsd = String(payToken?.balanceUsd ?? 0);
+  const balanceUsd = String(liveBalanceUsd || payToken?.balanceUsd || 0);
   // The confirmation id is part of the key so a following deposit rendered by
   // the same mounted UI releases the commit and prefills again, instead of
   // inheriting the previous confirmation's amount.
@@ -101,13 +108,12 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
   const prefillAmount = useMemo(() => {
     const balanceUsdValue = new BigNumber(balanceUsd);
 
-    if (
-      !enabled ||
-      !payToken ||
-      !balanceUsdValue.isFinite() ||
-      balanceUsdValue.lte(0)
-    ) {
+    if (!enabled || !payToken) {
       return undefined;
+    }
+
+    if (!balanceUsdValue.isFinite() || balanceUsdValue.lte(0)) {
+      return ZERO_PREFILL_AMOUNT;
     }
 
     const stable = isRouteToken(relayFixedSpread, {
@@ -144,7 +150,9 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
   }, [committedKey, enabled, prefillAmount, tokenKey]);
 
   const hasPrefilled = committedKey === tokenKey;
-  const isLoading = enabled && !hasPrefilled;
+  // No pay token means auto-select found nothing to prefill — do not keep
+  // the amount skeleton up forever waiting for a token that will not come.
+  const isLoading = enabled && Boolean(payToken) && !hasPrefilled;
 
   return { prefillAmount, isLoading, hasPrefilled, enabled };
 }

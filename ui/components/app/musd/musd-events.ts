@@ -229,112 +229,16 @@ export type MusdConversionStatusUpdatedEventProperties = {
   amount_hex: string;
 };
 
-/** Analytics `location` for Merkl claim bonus in the extension (no mobile bottom sheet). */
-export type MerklClaimBonusAnalyticsLocation =
-  | 'token_list_item'
-  | 'asset_overview';
-
 /**
  * Stable `musd` prop preset for home token list rows. Single module-level object so
  * parents do not allocate new references each render (see TokenCell `showMusdCta` memo).
  */
 export type TokenListCellMusdOptions = {
-  merklClaimBonus: { location: MerklClaimBonusAnalyticsLocation };
   convert: { entryPoint: MusdConvertLinkEntryPoint };
 };
 
 export const TOKEN_LIST_CELL_MUSD_OPTIONS: TokenListCellMusdOptions = {
-  merklClaimBonus: { location: 'token_list_item' },
   convert: { entryPoint: 'token_list' },
-};
-
-/**
- * Stable `musd` prop preset for the asset overview token cell (Merkl only; no list convert link).
- */
-export type AssetOverviewTokenCellMusdOptions = {
-  merklClaimBonus: { location: 'asset_overview' };
-};
-
-export const ASSET_OVERVIEW_TOKEN_CELL_MUSD_OPTIONS: AssetOverviewTokenCellMusdOptions =
-  {
-    merklClaimBonus: { location: 'asset_overview' },
-  };
-
-/**
- * Properties for MUSD_CLAIM_BONUS_BUTTON_CLICKED event
- */
-export type MusdClaimBonusButtonClickedEventProperties = {
-  /** Where the button was displayed */
-  location: MerklClaimBonusAnalyticsLocation;
-  /** Claim amount in mUSD */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  claim_amount: string;
-  /** Network chain ID (hex) */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  network_chain_id: string;
-  /** Network name */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  network_name: string;
-};
-
-/**
- * Properties for mUSD Claim Bonus CTA Displayed (Merkl claim CTA impression)
- */
-export type MusdClaimBonusCtaDisplayedEventProperties = {
-  location: MerklClaimBonusAnalyticsLocation;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  view_trigger: 'component_mounted';
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  button_text: string;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  network_chain_id: string;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  network_name: string;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  asset_symbol: string;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  bonus_amount_range: string;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  has_claimed_before: boolean;
-};
-
-/**
- * Properties for MUSD_CLAIM_BONUS_STATUS_UPDATED event
- * Tracks Merkl claim transaction status changes
- */
-export type MusdClaimBonusStatusUpdatedEventProperties = {
-  /** Transaction ID */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  transaction_id: string;
-  /** Current transaction status */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  transaction_status: 'approved' | 'confirmed' | 'failed' | 'dropped';
-  /** Transaction type - always 'merklClaim' */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  transaction_type: 'merklClaim';
-  /** Linea mainnet chain ID (hex); always Merkl claim chain for this event */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  network_chain_id: string;
-  /** Network name for Linea */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  network_name: string;
-  /**
-   * mUSD amount in token base units (6 decimals), as a decimal string (e.g.
-   * `'5000000'` for 5 mUSD), or `'0'` for a zero payout. Not human-readable
-   * fractional dollars despite the legacy property name.
-   */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  amount_claimed_decimal?: string;
 };
 
 /**

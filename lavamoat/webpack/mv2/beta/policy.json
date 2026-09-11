@@ -117,11 +117,6 @@
         "TextEncoder": true
       }
     },
-    "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@ethereumjs/rlp": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
     "eth-lattice-keyring>gridplus-sdk>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
@@ -184,24 +179,6 @@
         "@metamask/eth-sig-util>@ethereumjs/rlp": true,
         "buffer": true,
         "@metamask/eth-sig-util>ethereum-cryptography": true,
-        "webpack>events": true,
-        "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
-      }
-    },
-    "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@ethereumjs/util": {
-      "globals": {
-        "Buffer.alloc": true,
-        "Buffer.allocUnsafe": true,
-        "Buffer.byteLength": true,
-        "Buffer.concat": true,
-        "Buffer.from": true,
-        "Buffer.isBuffer": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@ethereumjs/rlp": true,
-        "buffer": true,
-        "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography": true,
         "webpack>events": true,
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
       }
@@ -784,13 +761,17 @@
     },
     "@metamask/account-tree-controller": {
       "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
         "console.warn": true,
-        "setTimeout": true
+        "setTimeout": true,
+        "structuredClone": true
       },
       "packages": {
         "@metamask/account-api": true,
         "@metamask/accounts-controller": true,
         "@metamask/base-controller": true,
+        "@metamask/eth-hd-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/profile-sync-controller": true,
@@ -866,7 +847,7 @@
         "@metamask/base-controller": true,
         "@metamask/client-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/assets-controller>@metamask/core-backend": true,
+        "@metamask/core-backend": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/phishing-controller": true,
         "@metamask/polling-controller": true,
@@ -1061,6 +1042,24 @@
         "lodash": true
       }
     },
+    "@metamask/chomp-api-service": {
+      "globals": {
+        "URL": true,
+        "fetch": true
+      },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+        ]
+      },
+      "packages": {
+        "@metamask/base-data-service": true,
+        "@metamask/controller-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "cockatiel": true
+      }
+    },
     "@metamask/claims-controller": {
       "globals": {
         "fetch": true
@@ -1111,9 +1110,9 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/polling-controller": true,
-        "@metamask/profile-sync-controller": true,
         "@metamask/superstruct": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "reselect": true
       }
     },
     "@metamask/connectivity-controller": {
@@ -1378,22 +1377,14 @@
     },
     "@metamask/eth-json-rpc-middleware": {
       "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
-      "globals": {
+        "TextEncoder": true,
         "setTimeout": true
       },
       "packages": {
+        "@metamask/eth-sig-util": true,
+        "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/json-rpc-engine>klona": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true
@@ -1492,23 +1483,6 @@
         "@metamask/eth-sig-util>@scure/base": true,
         "buffer": true,
         "@metamask/eth-sig-util>ethereum-cryptography": true,
-        "tweetnacl": true
-      }
-    },
-    "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": {
-      "globals": {
-        "Buffer.byteLength": true,
-        "Buffer.concat": true,
-        "Buffer.from": true
-      },
-      "packages": {
-        "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@ethereumjs/rlp": true,
-        "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@ethereumjs/util": true,
-        "@metamask/abi-utils": true,
-        "@metamask/utils": true,
-        "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@scure/base": true,
-        "buffer": true,
-        "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography": true,
         "tweetnacl": true
       }
     },
@@ -2051,11 +2025,12 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/config-registry-controller": true,
         "@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
+        "@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
@@ -2331,14 +2306,6 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "cockatiel": true
-      }
-    },
-    "@metamask/transaction-pay-controller>@metamask/ramps-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true
       }
     },
     "@metamask/rate-limit-controller": {
@@ -2722,7 +2689,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/ramps-controller": true,
+        "@metamask/ramps-controller": true,
         "@metamask/sentinel-api-service": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
@@ -2758,6 +2725,7 @@
         "crypto": true
       },
       "packages": {
+        "@metamask/scure-bip39": true,
         "@metamask/superstruct": true,
         "@noble/hashes": true,
         "@scure/base": true,
@@ -2835,6 +2803,7 @@
         "@metamask/approval-controller": true,
         "@metamask/browser-passworder": true,
         "@metamask/claims-controller": true,
+        "@metamask/config-registry-controller": true,
         "@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/gas-fee-controller": true,
@@ -3122,14 +3091,6 @@
         "@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
-      }
-    },
     "@metamask/eth-money-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/curves": {
       "globals": {
         "TextEncoder": true
@@ -3198,12 +3159,6 @@
       }
     },
     "@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -3380,12 +3335,6 @@
       }
     },
     "@metamask/eth-sig-util>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -3736,6 +3685,7 @@
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
+        "console.warn": true,
         "document.visibilityState": true,
         "removeEventListener": true,
         "setInterval": true,
@@ -4876,16 +4826,6 @@
         "@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true
-      },
-      "packages": {
-        "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/curves": true,
-        "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
-      }
-    },
     "@metamask/keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography": {
       "globals": {
         "TextDecoder": true,
@@ -5635,7 +5575,7 @@
         "mockttp>express>safe-buffer": true
       }
     },
-    "@storybook/addon-docs>remark-external-links>mdast-util-definitions": {
+    "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": {
       "packages": {
         "react-markdown>unist-util-visit": true
       }
@@ -5653,7 +5593,7 @@
         "console.warn": true
       },
       "packages": {
-        "@storybook/addon-docs>remark-external-links>mdast-util-definitions": true,
+        "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>mdurl": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>unist-builder": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>unist-util-generated": true,
@@ -6278,7 +6218,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "@metamask/object-multiplex>readable-stream": {
@@ -6293,7 +6233,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "@metamask/obs-store>readable-stream": {
@@ -6308,7 +6248,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "@metamask/post-message-stream>readable-stream": {
@@ -6323,7 +6263,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "@metamask/providers>readable-stream": {
@@ -6338,7 +6278,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "@metamask/snaps-controllers>readable-stream": {
@@ -6353,7 +6293,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "crypto-browserify>browserify-sign>readable-stream": {
@@ -6374,7 +6314,7 @@
         "readable-stream-2>process-nextick-args": true,
         "crypto-browserify>browserify-sign>readable-stream>safe-buffer": true,
         "crypto-browserify>browserify-sign>readable-stream>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream": {
@@ -6389,7 +6329,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream": {
@@ -6404,7 +6344,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": {
@@ -6419,7 +6359,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": {
@@ -6434,7 +6374,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "stream-browserify>readable-stream": {
@@ -6449,7 +6389,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "stream-http>readable-stream": {
@@ -6464,7 +6404,7 @@
         "duplexify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "@storybook/react>util-deprecate": true
+        "readable-stream-2>util-deprecate": true
       }
     },
     "@metamask/snaps-controllers>readable-web-to-node-stream": {
@@ -6987,7 +6927,7 @@
         "react": true
       }
     },
-    "@storybook/react>util-deprecate": {
+    "readable-stream-2>util-deprecate": {
       "globals": {
         "console.trace": true,
         "console.warn": true,
