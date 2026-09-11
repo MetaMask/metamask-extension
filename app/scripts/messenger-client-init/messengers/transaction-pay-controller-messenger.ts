@@ -24,6 +24,7 @@ import type {
 import type { RootMessenger } from '../../lib/messenger';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 import { getAssetsControllerMessenger } from './assets/assets-controller-messenger';
+import { registerAccountTrackerGetStateCompat } from './account-tracker-controller-compat';
 import { registerCurrencyRateGetStateCompat } from './currency-rate-controller-compat';
 
 type TokenBalancesCompatState = {
@@ -146,8 +147,10 @@ export function getTransactionPayControllerMessenger(
   >,
 ): TransactionPayControllerMessenger {
   // Compat shims: transaction-pay-controller still requests
-  // TokenBalancesController:getState / TokenRatesController:getState /
-  // CurrencyRateController:getState when assets-unify remote flag is off.
+  // AccountTrackerController:getState / TokenBalancesController:getState /
+  // TokenRatesController:getState / CurrencyRateController:getState when
+  // assets-unify remote flag is off.
+  registerAccountTrackerGetStateCompat(messenger as RootMessenger);
   registerTokenBalancesGetStateCompat(messenger as RootMessenger);
   registerTokenRatesGetStateCompat(messenger as RootMessenger);
   registerCurrencyRateGetStateCompat(messenger as RootMessenger);
@@ -166,6 +169,7 @@ export function getTransactionPayControllerMessenger(
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
+      // Compat shim: derives accountsByChainId from AssetsController.
       'AccountTrackerController:getState',
       'AssetsController:getStateForTransactionPay',
       // Compat shim: derives currencyRates / currentCurrency from AssetsController.
@@ -272,19 +276,16 @@ function registerAssetsControllerGetStateForTransactionPayAction(
     assetsControllerMessenger.registerActionHandler(
       'AssetsController:getStateForTransactionPay' as const,
       () => {
-        const accountsByChainIdControllerState = controllerMessenger.call(
-          'AccountTrackerController:getState',
-        );
         const tokensControllerState = controllerMessenger.call(
           'TokensController:getState',
         );
 
         return {
-          // TokenBalancesController / TokenRatesController / CurrencyRateController
-          // are removed; empty maps when unify is not in build.
+          // AccountTrackerController / TokenBalancesController /
+          // TokenRatesController / CurrencyRateController are removed; empty
+          // maps when unify is not in build.
           tokenBalances: {},
-          accountsByChainId:
-            accountsByChainIdControllerState?.accountsByChainId ?? {},
+          accountsByChainId: {},
           allTokens: tokensControllerState?.allTokens ?? {},
           marketData: {},
           currencyRates: {},

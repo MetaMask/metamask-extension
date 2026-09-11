@@ -6,7 +6,6 @@ import type { AccountTreeControllerState } from '@metamask/account-tree-controll
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type {
-  AccountTrackerControllerState,
   NftControllerState,
   RatesControllerState,
   TokensControllerState,
@@ -178,15 +177,6 @@ class FixtureBuilderV2 {
 
   withAccountTreeController(data: Partial<AccountTreeControllerState>): this {
     merge(this.fixture.data.AccountTreeController, data);
-    return this;
-  }
-
-  withAccountTracker(data: Partial<AccountTrackerControllerState>): this {
-    const fixtureData = this.fixture.data as Record<string, unknown>;
-    if (!fixtureData.AccountTracker) {
-      fixtureData.AccountTracker = { accountsByChainId: {} };
-    }
-    merge(fixtureData.AccountTracker as AccountTrackerControllerState, data);
     return this;
   }
 

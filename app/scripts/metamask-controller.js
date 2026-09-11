@@ -347,7 +347,6 @@ import { NameControllerInit } from './messenger-client-init/confirmations/name-c
 import { SelectedNetworkControllerInit } from './messenger-client-init/selected-network-controller-init';
 import { ShieldSubscriptionServiceInit } from './messenger-client-init/subscription';
 import { NetworkConnectionBannerControllerInit } from './messenger-client-init/network-connection-banner';
-import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
 import { BridgeControllerInit } from './messenger-client-init/bridge-controller-init';
 import { BridgeStatusControllerInit } from './messenger-client-init/bridge-status-controller-init';
@@ -597,7 +596,6 @@ export default class MetamaskController extends EventEmitter {
         ? { PerpsController: PerpsControllerInit }
         : {}),
       PPOMController: PPOMControllerInit,
-      AccountTrackerController: AccountTrackerControllerInit,
       PhishingController: PhishingControllerInit,
       TransactionPayController: TransactionPayControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
@@ -725,8 +723,6 @@ export default class MetamaskController extends EventEmitter {
     this.ppomController = messengerClientsByName.PPOMController;
     this.phishingController = messengerClientsByName.PhishingController;
     this.onboardingController = messengerClientsByName.OnboardingController;
-    this.accountTrackerController =
-      messengerClientsByName.AccountTrackerController;
     this.txController = this.wallet.getInstance('TransactionController');
     this.txPayController = messengerClientsByName.TransactionPayController;
     this.smartTransactionsController =
@@ -1323,7 +1319,6 @@ export default class MetamaskController extends EventEmitter {
      * On chrome profile re-start, they will be re-initialized.
      */
     const resetOnRestartStore = {
-      AccountTracker: this.accountTrackerController,
       DecryptMessageController: this.decryptMessageController,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignatureController: this.signatureController,
@@ -3748,7 +3743,8 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
 
   /**
-   * Get an account balance from the AccountTrackerController or request it directly from the network.
+   * Get an account balance from AssetsController-derived AccountTracker state
+   * or request it directly from the network.
    *
    * @param {string} address - The account address
    * @param {Provider} provider - The provider instance to use when asking the network
@@ -6366,7 +6362,6 @@ export default class MetamaskController extends EventEmitter {
       this.gasFeeController.stopAllPolling();
       this.staticAssetsController.stopAllPolling();
       this.appStateController.clearPollingTokens();
-      this.accountTrackerController.stopAllPolling();
       this.deFiPositionsController.stopAllPolling();
       this.subscriptionController.stopAllPolling();
     } catch (error) {
@@ -6390,7 +6385,6 @@ export default class MetamaskController extends EventEmitter {
       // Consider storing the tokens per controller in state instead.
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
       this.staticAssetsController.stopPollingByPollingToken(pollingToken);
-      this.accountTrackerController.stopPollingByPollingToken(pollingToken);
       this.appStateController.removePollingToken(
         pollingToken,
         appStatePollingTokenType,
