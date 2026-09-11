@@ -5,7 +5,6 @@ import useTokenRatesPolling from '../hooks/useTokenRatesPolling';
 import useTokenDetectionPolling from '../hooks/useTokenDetectionPolling';
 import useStaticTokensPollingHook from '../hooks/useStaticTokensPolling';
 import useDeFiPolling from '../hooks/defi/useDeFiPolling';
-import useMultichainAssetsRatesPolling from '../hooks/useMultichainAssetsRatesPolling';
 import { getIsAssetsUnifyStateEnabled } from '../selectors/assets-unify-state';
 import { useArcDefaultTokens } from '../hooks/useArcDefaultTokens';
 
@@ -17,7 +16,6 @@ const LegacyAssetsPolling = ({ children }: { children: ReactNode }) => {
   useTokenRatesPolling();
   useTokenDetectionPolling();
   useDeFiPolling();
-  useMultichainAssetsRatesPolling();
   useStaticTokensPollingHook();
 
   return <>{children}</>;

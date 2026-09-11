@@ -120,9 +120,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     assetsMetadata: false,
     allIgnoredAssets: false,
   },
-  MultichainAssetsRatesController: {
-    assetsRates: false,
-  },
   BridgeController: {
     assetExchangeRates: false,
     minimumBalanceForRentExemptionInLamports: false,

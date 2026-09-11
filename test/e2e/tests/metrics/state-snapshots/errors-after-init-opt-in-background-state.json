@@ -190,10 +190,6 @@
     "allIgnoredAssets": "object",
     "assetsMetadata": "object"
   },
-  "MultichainAssetsRatesController": {
-    "conversionRates": "object",
-    "historicalPrices": "object"
-  },
   "MultichainNetworkController": "object",
   "MultichainRatesController": {
     "cryptocurrencies": ["btc", "sol"],
