@@ -57,6 +57,7 @@ describe('usePayTokenAccountBalance', () => {
     expect(result.current).toStrictEqual({
       balanceUsd: '0',
       balanceRaw: '0',
+      isLiveBalance: false,
     });
   });
 
@@ -66,6 +67,7 @@ describe('usePayTokenAccountBalance', () => {
     expect(result.current.balanceRaw).toBe('2000000000000000000');
     // Spendable USD is capped to the Pay-with snapshot when live rate×raw is higher.
     expect(result.current.balanceUsd).toBe('5');
+    expect(result.current.isLiveBalance).toBe(true);
   });
 
   it('falls back to controller snapshot when no matching account token', () => {
@@ -76,6 +78,7 @@ describe('usePayTokenAccountBalance', () => {
     expect(result.current).toStrictEqual({
       balanceUsd: PAY_TOKEN_MOCK.balanceUsd,
       balanceRaw: PAY_TOKEN_MOCK.balanceRaw,
+      isLiveBalance: false,
     });
   });
 
@@ -89,6 +92,7 @@ describe('usePayTokenAccountBalance', () => {
     expect(result.current).toStrictEqual({
       balanceUsd: PAY_TOKEN_MOCK.balanceUsd,
       balanceRaw: PAY_TOKEN_MOCK.balanceRaw,
+      isLiveBalance: false,
     });
   });
 
@@ -142,6 +146,7 @@ describe('usePayTokenAccountBalance', () => {
     expect(result.current).toStrictEqual({
       balanceUsd: PAY_TOKEN_MOCK.balanceUsd,
       balanceRaw: PAY_TOKEN_MOCK.balanceRaw,
+      isLiveBalance: false,
     });
   });
 
@@ -238,6 +243,7 @@ describe('usePayTokenAccountBalance', () => {
     expect(result.current).toStrictEqual({
       balanceUsd: '0',
       balanceRaw: '0',
+      isLiveBalance: true,
     });
   });
 
@@ -257,6 +263,7 @@ describe('usePayTokenAccountBalance', () => {
     expect(result.current).toStrictEqual({
       balanceUsd: '0',
       balanceRaw: '0',
+      isLiveBalance: false,
     });
   });
 });

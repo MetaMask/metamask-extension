@@ -34,6 +34,7 @@
     "AppMetadataController": {
       "currentMigrationVersion": "number",
       "firstTimeInfo": "object",
+      "installAttribution": null,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -108,8 +109,7 @@
     "MetaMetricsController": {
       "dataCollectionForMarketing": "boolean",
       "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": "object",
-      "traits": "object"
+      "tracesBeforeMetricsOptIn": "object"
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -246,6 +246,7 @@
     },
     "ProfileMetricsController": "object",
     "RampsController": {
+      "autoramps": "object",
       "orders": "object",
       "providerAutoSelected": "boolean",
       "userRegion": null
@@ -257,7 +258,23 @@
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
-        "feature3": { "name": "groupC", "value": "valueC" }
+        "feature3": [
+          {
+            "name": "groupA",
+            "scope": { "type": "threshold", "value": 0.3 },
+            "value": "valueA"
+          },
+          {
+            "name": "groupB",
+            "scope": { "type": "threshold", "value": 0.5 },
+            "value": "valueB"
+          },
+          {
+            "name": "groupC",
+            "scope": { "type": "threshold", "value": 1 },
+            "value": "valueC"
+          }
+        ]
       }
     },
     "RewardsController": {
@@ -295,7 +312,8 @@
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
-      "isContactSyncingEnabled": true
+      "isContactSyncingEnabled": true,
+      "isRampsSyncingEnabled": true
     },
     "config": "object"
   }

@@ -18,6 +18,7 @@ import {
   Button,
   ButtonBase,
   ButtonIcon,
+  ButtonVariant,
   Icon,
   IconColor,
   IconName,
@@ -52,6 +53,7 @@ import { usePerpsHomeRoute } from '../../../hooks/perps/usePerpsHomeRoute';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { usePerpsDepositConfirmation } from '../perps/hooks/usePerpsDepositConfirmation';
 import { PERPS_EVENT_VALUE } from '../../../../shared/constants/perps-events';
+import { HYPERLIQUID_DEPOSIT_PROMPT } from '../../../../shared/constants/hyperliquid-deposit-prompt';
 import type {
   HyperliquidDepositPromptProps,
   HyperliquidDepositPromptAction,
@@ -204,7 +206,10 @@ export const HyperliquidDepositPrompt: React.FC<
           MetaMetricsEventName.HyperliquidDepositPromptInteracted,
         )
           .addCategory(MetaMetricsEventCategory.Confirmations)
-          .addProperties({ action })
+          .addProperties({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            interaction_type: action,
+          })
           .build(),
       );
     },
@@ -237,7 +242,10 @@ export const HyperliquidDepositPrompt: React.FC<
   // no deposit happens until the user confirms an amount on that screen.
   // Navigation is deferred so the payment token can be pre-selected first.
   const { isLoading: isStartingDeposit, trigger: startPerpsDeposit } =
-    usePerpsDepositConfirmation({ navigateOnCreate: false });
+    usePerpsDepositConfirmation({
+      navigateOnCreate: false,
+      entryPoint: HYPERLIQUID_DEPOSIT_PROMPT,
+    });
 
   const [selectedToken, setSelectedToken] = useState<AssetType>();
   const [isPickerOpen, setIsPickerOpen] = useState(false);
@@ -279,7 +287,7 @@ export const HyperliquidDepositPrompt: React.FC<
     upsertTransactionUIMetricsFragment(transactionId, {
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        mm_pay_entry_point: 'hyperliquid_deposit_prompt',
+        mm_pay_entry_point: HYPERLIQUID_DEPOSIT_PROMPT,
       },
     });
 
@@ -352,8 +360,15 @@ export const HyperliquidDepositPrompt: React.FC<
         >
           {t('hyperliquidDepositPromptTitle')}
         </Text>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="mt-2"
+        >
+          {t('hyperliquidDepositPromptDescription')}
+        </Text>
       </Box>
-      <Box flexDirection={BoxFlexDirection.Column} gap={2} className="pt-14">
+      <Box flexDirection={BoxFlexDirection.Column} gap={2} className="pt-8">
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {t('payWith')}
         </Text>
@@ -373,15 +388,26 @@ export const HyperliquidDepositPrompt: React.FC<
           {t('somethingWentWrong')}
         </Text>
       )}
-      <Button
-        data-testid="hyperliquid-deposit-prompt-continue"
-        onClick={handleContinue}
-        isLoading={isStartingDeposit}
-        isDisabled={!displayToken || isStartingDeposit}
-        isFullWidth
-      >
-        {t('continue')}
-      </Button>
+      <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+        <Button
+          data-testid="hyperliquid-deposit-prompt-continue"
+          onClick={handleContinue}
+          isLoading={isStartingDeposit}
+          isDisabled={!displayToken || isStartingDeposit}
+          isFullWidth
+        >
+          {t('continue')}
+        </Button>
+        <Button
+          data-testid="hyperliquid-deposit-prompt-no-thanks"
+          variant={ButtonVariant.Tertiary}
+          onClick={handleClose}
+          isDisabled={isStartingDeposit}
+          isFullWidth
+        >
+          {t('hyperliquidDepositPromptNoThanks')}
+        </Button>
+      </Box>
       <Modal
         isOpen={isPickerOpen}
         onClose={() => setIsPickerOpen(false)}

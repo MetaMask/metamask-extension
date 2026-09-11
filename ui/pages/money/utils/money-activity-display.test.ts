@@ -4,10 +4,12 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { IconName } from '@metamask/design-system-react';
+import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import MOCK_MONEY_TRANSACTIONS from '../constants/mock-activity-data';
 import {
   getMoneyActivityDisplayInfo,
+  getAccountsApiActivityDisplayInfo,
   type MoneyActivityTranslate,
 } from './money-activity-display';
 
@@ -133,5 +135,54 @@ describe('getMoneyActivityDisplayInfo', () => {
     expect(display.description).toBe('From: 0x12345...45678');
     expect(display.primaryAmount).toBe('+1.00 mUSD');
     expect(display.fiatAmount).toBe('+$1.00');
+  });
+
+  it('renders requiredAssets as the mUSD amount for a live deposit', () => {
+    const display = getMoneyActivityDisplayInfo(
+      makeTx({
+        type: TransactionType.moneyAccountDeposit,
+        requiredAssets: [
+          {
+            address: MUSD_TOKEN_ADDRESS,
+            amount: '2500000',
+          },
+        ],
+      }),
+      t,
+    );
+
+    expect(display.primaryAmount).toBe('+2.50 mUSD');
+    expect(display.fiatAmount).toBe('+$2.50');
+  });
+});
+
+describe('getAccountsApiActivityDisplayInfo', () => {
+  it('renders a card purchase as a signed outflow with a Card subtitle', () => {
+    const display = getAccountsApiActivityDisplayInfo(
+      {
+        kind: 'card',
+        hash: '0xabc',
+        time: 1,
+        chainId: '0x8f',
+        token: {
+          address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+          symbol: 'mUSD',
+          decimals: 6,
+        },
+        amount: '1500000',
+        paidTo: '0xdef',
+      },
+      t,
+    );
+
+    expect(display).toMatchObject({
+      label: messages.moneyActivityPurchase.message,
+      description: messages.moneyActivityCard.message,
+      primaryAmount: '-1.50 mUSD',
+      fiatAmount: '-$1.50',
+      isIncoming: false,
+      icon: IconName.Card,
+      status: 'confirmed',
+    });
   });
 });

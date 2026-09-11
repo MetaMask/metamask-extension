@@ -20,7 +20,6 @@ import {
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import type { Json, Hex } from '@metamask/utils';
-import type { MetaMetricsUserTraits } from '../../../shared/constants/metametrics';
 import {
   trace,
   endTrace,
@@ -78,12 +77,6 @@ const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
     includeInDebugSnapshot: false,
     usedInUi: false,
   },
-  traits: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: false,
-    usedInUi: false,
-  },
   dataCollectionForMarketing: {
     includeInStateLogs: true,
     persist: true,
@@ -102,13 +95,11 @@ const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
  * The state that MetaMetricsController stores.
  *
  * @property tracesBeforeMetricsOptIn - Array of queued traces added before a user opts into metrics.
- * @property traits - Traits that are not derived from other state keys.
  * @property dataCollectionForMarketing - Flag to determine if data collection for marketing is enabled.
  * @property marketingCampaignCookieId - The marketing campaign cookie id.
  */
 export type MetaMetricsControllerState = {
   tracesBeforeMetricsOptIn: BufferedTrace[];
-  traits: MetaMetricsUserTraits;
   dataCollectionForMarketing: boolean | null;
   marketingCampaignCookieId: string | null;
 };
@@ -184,7 +175,6 @@ export const getDefaultMetaMetricsControllerState =
     dataCollectionForMarketing: null,
     marketingCampaignCookieId: null,
     tracesBeforeMetricsOptIn: [],
-    traits: {},
   });
 
 const MESSENGER_EXPOSED_METHODS = [
@@ -196,7 +186,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'setMarketingCampaignCookieId',
   'trackTracesAfterMetricsOptIn',
   'updateExtensionUninstallUrl',
-  'updateTraits',
 ] as const;
 
 export class MetaMetricsController extends BaseController<
@@ -441,12 +430,5 @@ export class MetaMetricsController extends BaseController<
         },
       });
     }
-  }
-
-  // Add or update traits for tracking.
-  updateTraits(newTraits: MetaMetricsUserTraits): void {
-    this.update((state) => {
-      state.traits = { ...state.traits, ...newTraits };
-    });
   }
 }

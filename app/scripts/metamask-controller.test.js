@@ -2326,9 +2326,10 @@ describe('MetaMaskController', () => {
         expect(trackEvent).toHaveBeenCalledTimes(1);
         expect(trackEvent).toHaveBeenCalledWith(
           expect.objectContaining({
-            name: 'Arc Usage Notice Toast Viewed',
+            name: 'Network Usage Notice Toast Viewed',
             properties: expect.objectContaining({
               category: 'Home',
+              network_name: 'arc',
               chain_id_caip: 'eip155:5042',
             }),
           }),

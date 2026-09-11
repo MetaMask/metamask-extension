@@ -148,6 +148,7 @@ function setupDefaultMocks({
       isDepositPrefillLoading: false,
       isDepositPrefilled: false,
       isInputChanged: false,
+      isQuoteDerivedAmountLoading: false,
       updatePendingAmount: jest.fn(),
       updatePendingAmountPercentage: jest.fn(),
     });
@@ -156,6 +157,7 @@ function setupDefaultMocks({
       useTransactionCustomAmountAlertsModule.useTransactionCustomAmountAlerts,
     )
     .mockReturnValue({
+      hasAlert: false,
       hideResults,
       disableUpdate: false,
     });

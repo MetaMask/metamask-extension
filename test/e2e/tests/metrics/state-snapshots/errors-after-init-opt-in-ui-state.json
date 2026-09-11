@@ -103,6 +103,7 @@
     "assetsInfo": "object",
     "assetsMetadata": "object",
     "assetsPrice": "object",
+    "autoramps": "object",
     "balances": "object",
     "batchSellTrades": null,
     "batchSellTradesLoadingStatus": null,
@@ -180,6 +181,7 @@
     "initializationState": "string",
     "inputPrimaryDenomination": "string",
     "insights": "object",
+    "installAttribution": null,
     "interfaces": "object",
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "ipfsGateway": "string",
@@ -202,6 +204,7 @@
     "isMultiAccountBalancesEnabled": "boolean",
     "isNotificationServicesEnabled": "boolean",
     "isPushEnabled": "boolean",
+    "isRampsSyncingEnabled": true,
     "isReady": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
     "isSignedIn": "boolean",
@@ -223,6 +226,7 @@
     "lastFetched": null,
     "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": "object",
+    "lastPerpsDepositEntryPoint": null,
     "lastQrScanCompletedSuccessfully": null,
     "lastSyncedTimestamp": "number",
     "lastUpdateTimestamp": "number",
@@ -350,7 +354,7 @@
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": "valueA"
+      "feature3": "valueC"
     },
     "requests": "object",
     "rewardsAccounts": "object",
@@ -414,7 +418,6 @@
     "tokensChainsCache": {},
     "tracesBeforeMetricsOptIn": "object",
     "tradeConfigurations": "object",
-    "traits": "object",
     "transactionBatches": "object",
     "transactionData": "object",
     "transactions": "object",
