@@ -6,7 +6,6 @@ import {
 } from '#shared/constants/metametrics';
 import { getInstallAttribution } from '#shared/lib/install-attribution';
 import { createEventBuilder, trackEvent } from '../../controllers/analytics';
-import type MetaMaskController from '../../metamask-controller';
 import { onUpdate } from '../../on-update';
 import {
   handleOnInstalled,
@@ -56,7 +55,6 @@ function createController(
       consentDecisionMade: overrides.consentDecisionMade ?? false,
       optedIn: overrides.optedIn ?? true,
     }),
-    store: {} as MetaMaskController['store'],
   };
 }
 
@@ -81,7 +79,11 @@ function createDeps(
     controller: createController(),
     platform: createPlatform(),
     isInitialized,
-    requestSafeReload: jest.fn(),
+    requestSafeReload: jest.fn(async () => undefined),
+    postUpdateReloadCoordinator: {
+      tryBeginReload: jest.fn(() => true),
+      complete: jest.fn(),
+    },
     ...overrides,
     resolveInitialization,
   };
@@ -94,6 +96,7 @@ const installDetails = {
 describe('install-lifecycle', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    onUpdateMock.mockResolvedValue(false);
     jest.useFakeTimers();
     jest.setSystemTime(new Date('2026-08-20T12:34:56.789Z'));
   });
@@ -196,7 +199,11 @@ describe('install-lifecycle', () => {
           },
           platform: createPlatform(),
           isInitialized: Promise.resolve(),
-          requestSafeReload: jest.fn(),
+          requestSafeReload: jest.fn(async () => undefined),
+          postUpdateReloadCoordinator: {
+            tryBeginReload: jest.fn(() => true),
+            complete: jest.fn(),
+          },
         };
 
         const handlePromise = handleOnInstalled([installDetails], deps);
@@ -259,7 +266,32 @@ describe('install-lifecycle', () => {
           deps.platform,
           '13.0.0',
           deps.requestSafeReload,
+          true,
         );
+        expect(deps.postUpdateReloadCoordinator.complete).toHaveBeenCalledTimes(
+          1,
+        );
+      });
+
+      it('leaves coordination incomplete when the recovery reload is scheduled', async () => {
+        onUpdateMock.mockResolvedValueOnce(true);
+        const deps = createDeps({
+          platform: createPlatform({
+            getVersion: jest.fn(() => '13.1.0'),
+          }),
+        });
+        const details = {
+          reason: 'update',
+          previousVersion: '13.0.0',
+        } as Runtime.OnInstalledDetailsType;
+
+        const handlePromise = handleOnInstalled([details], deps);
+        deps.resolveInitialization();
+        await handlePromise;
+
+        expect(
+          deps.postUpdateReloadCoordinator.complete,
+        ).not.toHaveBeenCalled();
       });
 
       it('ignores update events when the previous version matches the current version', async () => {
@@ -276,6 +308,9 @@ describe('install-lifecycle', () => {
         await handleOnInstalled([details], deps);
 
         expect(onUpdateMock).not.toHaveBeenCalled();
+        expect(deps.postUpdateReloadCoordinator.complete).toHaveBeenCalledTimes(
+          1,
+        );
       });
     });
   });
