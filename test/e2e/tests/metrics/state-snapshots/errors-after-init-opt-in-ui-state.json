@@ -103,7 +103,6 @@
     "assetsInfo": "object",
     "assetsMetadata": "object",
     "assetsPrice": "object",
-    "balances": "object",
     "batchSellTrades": null,
     "batchSellTradesLoadingStatus": null,
     "batchTransactionCounts": "object",

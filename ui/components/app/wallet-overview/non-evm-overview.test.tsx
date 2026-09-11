@@ -155,7 +155,7 @@ const mockMetamaskStore = {
       },
     },
   },
-  // MultichainBalancesController
+  // Non-EVM balances (via assets-migration / AssetsController)
   balances: {
     [mockNonEvmAccount.id]: {
       [MultichainNativeAssets.BITCOIN]: {
