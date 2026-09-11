@@ -112,7 +112,7 @@ describe('Send ERC20', function () {
           await sendPage.pressContinueButton();
 
           await confirmation.checkPageIsLoaded();
-          await confirmation.clickFooterConfirmButton();
+          await confirmation.clickFooterButton({ button: 'confirm' });
 
           await homePage.goToActivityList();
           await activityTab.checkTransactionActivityByText('Sent');
@@ -155,7 +155,7 @@ describe('Send ERC20', function () {
           await driver.delay(veryLargeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const watchAssetConfirmation = new WatchAssetConfirmation(driver);
-          await watchAssetConfirmation.clickFooterConfirmButton();
+          await watchAssetConfirmation.clickFooterButton({ button: 'confirm' });
 
           // Initiate transfer
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -167,7 +167,9 @@ describe('Send ERC20', function () {
           const tokenTransferConfirmation =
             new TokenTransferTransactionConfirmation(driver);
           await tokenTransferConfirmation.checkDappInitiatedHeadingTitle();
-          await tokenTransferConfirmation.clickFooterConfirmButton();
+          await tokenTransferConfirmation.clickFooterButton({
+            button: 'confirm',
+          });
 
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,

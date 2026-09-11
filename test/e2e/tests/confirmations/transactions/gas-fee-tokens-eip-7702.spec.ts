@@ -137,7 +137,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
 
         await transactionConfirmation.checkGasFeeSymbol('USDC');
         await transactionConfirmation.checkGasFeeTokenFee('$0.43');
-        await transactionConfirmation.clickFooterConfirmButton();
+        await transactionConfirmation.clickFooterButton({ button: 'confirm' });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -196,7 +196,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         await transactionConfirmation.closeGasFeeToastMessage();
 
         await transactionConfirmation.checkGasFeeSymbol('USDC');
-        await transactionConfirmation.clickFooterConfirmButton();
+        await transactionConfirmation.clickFooterButton({ button: 'confirm' });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

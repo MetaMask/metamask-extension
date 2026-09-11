@@ -778,7 +778,9 @@ describe('Shield Plan Stripe Integration', function () {
           'USDT',
         );
 
-        await shieldSubscriptionApprovePage.clickFooterConfirmButton();
+        await shieldSubscriptionApprovePage.clickFooterButton({
+          button: 'confirm',
+        });
         await shieldDetailPage.checkPageIsLoaded();
 
         await shieldDetailPage.clickManagePlanButton();
