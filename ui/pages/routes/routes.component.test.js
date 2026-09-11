@@ -59,8 +59,6 @@ jest.mock('../../store/actions', () => ({
     .mockResolvedValue({ chainId: '0x5' }),
   showNetworkDropdown: () => mockShowNetworkDropdown,
   hideNetworkDropdown: () => mockHideNetworkDropdown,
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
   setTokenNetworkFilter: jest.fn(),
 }));
 

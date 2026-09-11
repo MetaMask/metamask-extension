@@ -53,7 +53,7 @@ import { createDeepEqualSelector } from './selector-creators';
 // allDetectedTokens: DONE (Not being used)
 //
 // TokenBalancesController
-// tokenBalances: DONE
+// tokenBalances: DONE (via AssetsController when unify enabled; controller removed)
 //
 // CurrencyRateController
 // currencyRates: DONE
