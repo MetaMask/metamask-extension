@@ -6368,7 +6368,7 @@
     "message": "You don't have any tokens yet. Search by name or address to discover popular tokens."
   },
   "noWebcamFound": {
-    "message": "Your computer's webcam was not found. Please try again."
+    "message": "Your computer's webcam was not found. Try again."
   },
   "noWebcamFoundTitle": {
     "message": "Webcam not found"
@@ -6548,7 +6548,7 @@
     "message": "Nothing to see here"
   },
   "notificationsPageErrorContent": {
-    "message": "Please, try to visit this page again."
+    "message": "Try visiting this page again."
   },
   "notificationsPageErrorTitle": {
     "message": "There has been an error"
@@ -6566,7 +6566,7 @@
     "message": "Agent wallet"
   },
   "notificationsSettingsBoxError": {
-    "message": "Something went wrong. Please try again."
+    "message": "Something went wrong. Try again."
   },
   "notificationsSettingsDeselectAll": {
     "message": "Deselect all"
@@ -6672,7 +6672,7 @@
     "message": "The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default."
   },
   "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "Please enter a valid URL"
+    "message": "Enter a valid URL"
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Add custom IPFS Gateway"
@@ -7525,7 +7525,7 @@
     "message": "Close short"
   },
   "perpsConnectionTimeout": {
-    "message": "Connection timed out. Please try again."
+    "message": "Connection timed out. Try again."
   },
   "perpsContactSupport": {
     "message": "Contact support"
@@ -7778,7 +7778,7 @@
     "message": "More"
   },
   "perpsNetworkError": {
-    "message": "A network error occurred. Please try again."
+    "message": "A network error occurred. Try again."
   },
   "perpsNoMarketsFound": {
     "message": "No markets found"
@@ -7938,7 +7938,7 @@
     "message": "Positions"
   },
   "perpsRateLimitExceeded": {
-    "message": "Too many requests. Please wait and try again."
+    "message": "Too many requests. Wait and try again."
   },
   "perpsRecentActivity": {
     "message": "Recent activity"
@@ -7988,7 +7988,7 @@
     "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
-    "message": "Service temporarily unavailable. Please try again later."
+    "message": "Service temporarily unavailable. Try again later."
   },
   "perpsShort": {
     "message": "Short"
@@ -8176,7 +8176,7 @@
     "description": "Error toast text shown when adding or removing margin fails"
   },
   "perpsToastMarginAdjustmentFailedDescriptionFallback": {
-    "message": "Unable to adjust margin. Please try again.",
+    "message": "Unable to adjust margin. Try again.",
     "description": "Fallback description shown when margin adjustment fails without a usable error message."
   },
   "perpsToastMarginRemoveSuccess": {
@@ -8455,7 +8455,7 @@
     "message": "Pinned"
   },
   "pleaseConfirm": {
-    "message": "Please confirm"
+    "message": "Confirm"
   },
   "pna25ModalBlogPostLink": {
     "message": "blog post."
@@ -8678,7 +8678,7 @@
     "description": "$1 is the token symbol being purchased"
   },
   "rampsBuyWidgetError": {
-    "message": "Unable to start your purchase. Please try again."
+    "message": "Unable to start your purchase. Try again."
   },
   "rampsBuyingViaProvider": {
     "message": "Buying via $1.",
@@ -8703,7 +8703,7 @@
     "description": "Banner title on the ramps complete-buy interstitial"
   },
   "rampsEligibilityFailedDescription": {
-    "message": "Please try again, or contact support if this keeps happening."
+    "message": "Try again, or contact support if this keeps happening."
   },
   "rampsEligibilityFailedTitle": {
     "message": "We couldn’t verify your region"
@@ -8868,7 +8868,7 @@
     "message": "Select payment method"
   },
   "rampsServiceDisruptionDescription": {
-    "message": "We’re experiencing a service disruption. Please try again later."
+    "message": "We're experiencing a service disruption. Try again later."
   },
   "rampsServiceDisruptionTitle": {
     "message": "Buying is temporarily unavailable"
@@ -9166,25 +9166,25 @@
     "message": "Reward"
   },
   "rewardsAuthFailDescription": {
-    "message": "An unknown error occurred while authenticating this account with the rewards program. Please try again later."
+    "message": "An unknown error occurred while authenticating this account with the rewards program. Try again later."
   },
   "rewardsAuthFailTitle": {
     "message": "Unknown error."
   },
   "rewardsErrorMessagesAccountAlreadyRegistered": {
-    "message": "This account is already registered with another Rewards profile. Please switch account to continue."
+    "message": "This account is already registered with another Rewards profile. Switch account to continue."
   },
   "rewardsErrorMessagesFailedToClaimReward": {
-    "message": "Failed to claim reward. Please try again shortly."
+    "message": "Failed to claim reward. Try again shortly."
   },
   "rewardsErrorMessagesRequestRejected": {
     "message": "You rejected the request."
   },
   "rewardsErrorMessagesServiceNotAvailable": {
-    "message": "Service is not available at the moment. Please try again shortly."
+    "message": "Service is not available at the moment. Try again shortly."
   },
   "rewardsErrorMessagesSomethingWentWrong": {
-    "message": "Something went wrong. Please try again shortly."
+    "message": "Something went wrong. Try again shortly."
   },
   "rewardsLinkAccount": {
     "message": "Add account"
@@ -9199,7 +9199,7 @@
     "message": "Win prizes, claim perks, and discover more ways to earn—just by using MetaMask."
   },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
-    "message": "We cannot determine if your country allows opting into the rewards program. Please check your connection and try again."
+    "message": "We cannot determine if your country allows opting into the rewards program. Check your connection and try again."
   },
   "rewardsOnboardingIntroGeoCheckFailedTitle": {
     "message": "Cannot determine opt-in eligibility"
@@ -9487,7 +9487,7 @@
     "message": "Security and privacy"
   },
   "securityChangePasswordToastError": {
-    "message": "Password couldn’t be changed. Please try again."
+    "message": "Password couldn't be changed. Try again."
   },
   "securityChangePasswordToastPasskeyRenewalFailed": {
     "message": "New password saved, but $1 unlock couldn't be turned on.",
@@ -10000,13 +10000,13 @@
     "message": "Deleting draft failed"
   },
   "shieldClaimDraftDeleteFailedDescription": {
-    "message": "Unable to delete your claim draft. Please try again."
+    "message": "Unable to delete your claim draft. Try again."
   },
   "shieldClaimDraftSaveFailed": {
     "message": "Saving draft failed"
   },
   "shieldClaimDraftSaveFailedDescription": {
-    "message": "Unable to save your claim draft. Please try again."
+    "message": "Unable to save your claim draft. Try again."
   },
   "shieldClaimDraftSaved": {
     "message": "Draft saved"
@@ -10040,7 +10040,7 @@
     "description": "The $1 is the maximum file size in MB"
   },
   "shieldClaimFileUploaderHelpText": {
-    "message": "If you have any additional evidence, please upload it here."
+    "message": "If you have any additional evidence, upload it here."
   },
   "shieldClaimGroupActive": {
     "message": "Active claims"
@@ -10089,10 +10089,10 @@
     "message": "Incident details"
   },
   "shieldClaimInvalidChainId": {
-    "message": "Please enter a valid chain ID"
+    "message": "Enter a valid chain ID"
   },
   "shieldClaimInvalidEmail": {
-    "message": "Please enter a valid email address"
+    "message": "Enter a valid email address"
   },
   "shieldClaimInvalidRequired": {
     "message": "This field is required"
