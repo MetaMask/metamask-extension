@@ -5796,39 +5796,6 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
 }
 
 /**
- * Informs the CurrencyRateController that the UI requires currency rate polling
- *
- * @param nativeCurrencies - An array of native currency symbols
- * @returns polling token that can be used to stop polling
- */
-export async function currencyRateStartPolling(
-  nativeCurrencies: string[],
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'currencyRateStartPolling',
-    [{ nativeCurrencies }],
-  );
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-/**
- * Informs the CurrencyRateController that the UI no longer requires currency rate polling
- * for the given network client.
- * If all network clients unsubscribe, the controller stops polling.
- *
- * @param pollingToken - Poll token received from calling currencyRateStartPolling
- */
-export async function currencyRateStopPollingByPollingToken(
-  pollingToken: string,
-) {
-  await submitRequestToBackground('currencyRateStopPollingByPollingToken', [
-    pollingToken,
-  ]);
-  await removePollingTokenFromAppState(pollingToken);
-}
-
-/**
  * Informs the TokenDetectionController that the UI requires token detection polling
  *
  * @param chainIds - An array of chain ids to poll token detection on.

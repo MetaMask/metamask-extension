@@ -12,9 +12,9 @@ const NATIVE_ASSET_ID_BY_CHAIN_ID: Record<number, string> = {
 
 /**
  * The ETH-to-USD conversion rate used by {@link mockPriceApi}.
- * Fixtures that rely on this mock must seed CurrencyController with the same
- * value to avoid race conditions between the initial render and the mock
- * response arriving.
+ * Fixtures that rely on this mock must seed AssetsController `assetsPrice`
+ * with the same value (e.g. via {@link getMainnet25EthAssetsControllerPatch})
+ * to avoid race conditions between the initial render and the mock response.
  */
 export const MOCK_ETH_CONVERSION_RATE = 3401;
 

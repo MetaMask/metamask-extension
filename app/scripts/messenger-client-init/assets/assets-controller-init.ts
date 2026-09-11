@@ -66,7 +66,7 @@ function safeGetTokenDetectionEnabled(
  * Returns a getter for basic functionality (use external services) from preferences.
  * When true, token/price APIs are used; when false, only RPC is used.
  * Also returns false during onboarding (before the user has completed setup),
- * matching the behavior of the UI polling hooks (useCurrencyRatePolling).
+ * matching the behavior of the UI polling hooks (legacy assets polling).
  *
  * @param initMessenger - The initialization messenger.
  * @returns Getter that returns whether basic functionality is enabled (defaults to true on error).
@@ -205,7 +205,7 @@ export const AssetsControllerInit: MessengerClientInitFunction<
     );
     // When onboarding completes, re-evaluate basic functionality so price
     // subscriptions start (or stay stopped) based on the current preference.
-    // This mirrors how useCurrencyRatePolling gates on completedOnboarding.
+    // This mirrors how legacy assets polling gates on completedOnboarding.
     initMessenger.subscribe(
       'OnboardingController:stateChange',
       (completedOnboarding: boolean) => {

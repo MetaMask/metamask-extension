@@ -373,16 +373,6 @@
       "lastFetched": null,
       "version": null
     },
-    "CurrencyController": {
-      "currencyRates": {
-        "ETH": {
-          "conversionDate": null,
-          "conversionRate": 1700,
-          "usdConversionRate": null
-        }
-      },
-      "currentCurrency": "usd"
-    },
     "DeFiPositionsControllerV2": {
       "allDeFiPositionsV2": {}
     },
