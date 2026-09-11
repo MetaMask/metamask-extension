@@ -5885,7 +5885,7 @@ __metadata:
 
 "@metamask/client-mcp-core@patch:@metamask/client-mcp-core@npm%3A0.5.0#~/.yarn/patches/@metamask-client-mcp-core-npm-0.5.0-8f4fed0048.patch":
   version: 0.5.0
-  resolution: "@metamask/client-mcp-core@patch:@metamask/client-mcp-core@npm%3A0.5.0#~/.yarn/patches/@metamask-client-mcp-core-npm-0.5.0-8f4fed0048.patch::version=0.5.0&hash=3e7401"
+  resolution: "@metamask/client-mcp-core@patch:@metamask/client-mcp-core@npm%3A0.5.0#~/.yarn/patches/@metamask-client-mcp-core-npm-0.5.0-8f4fed0048.patch::version=0.5.0&hash=db3d1c"
   dependencies:
     cosmiconfig: "npm:^9.0.0"
     express: "npm:^5.2.1"
@@ -5895,7 +5895,7 @@ __metadata:
     playwright: ^1.49.0
   bin:
     mm: ./dist/cli/mm.cjs
-  checksum: 10/efc75044d2bead14ed50cdbfaee87e3b30a7db9729ef8c82957eb40416e63b8a5f21e360fe0e8b1da5c2652425ceeb1c69147ef075c220e812f35ff71813646d
+  checksum: 10/b93a01221009261a4932f04c682e1c49c65f9d53272109805ad2704d69cfad1d5fd87a50175e558c8c499c8956410cfff283b1032b9acea9ce5874c70f4e890a
   languageName: node
   linkType: hard
 
