@@ -324,7 +324,6 @@
       "subjectMetadata": "object"
     },
     "SubscriptionController": "object",
-    "TokenRatesController": {},
     "TokensController": {},
     "TransactionController": {
       "lastFetchedBlockNumbers": "object",
