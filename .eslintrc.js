@@ -922,4 +922,20 @@ module.exports = defineConfig([
       '@typescript-eslint/naming-convention': 'off',
     },
   },
+  /**
+   * `recalibrate-thresholds.mts` runs on Node's type stripping rather than
+   * `tsx`, and Node ESM resolves no extensions implicitly, so every relative
+   * specifier in its import chain must carry one. `tsconfig` already sets
+   * `allowImportingTsExtensions`. Same exemption, same reason as the
+   * `development/webpack` block above.
+   */
+  {
+    files: [
+      './test/e2e/benchmarks/utils/gated-metrics.ts',
+      './test/e2e/benchmarks/utils/thresholds.ts',
+    ],
+    rules: {
+      'import-x/extensions': 'off',
+    },
+  },
 ]);
