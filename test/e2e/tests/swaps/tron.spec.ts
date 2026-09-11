@@ -1,41 +1,42 @@
-import { strict as assert } from 'assert';
+import { Suite } from 'mocha';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { login } from '../../page-objects/flows/login.flow';
-import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import {
+  createTronSwap,
+  landOnTronHome,
+} from '../../page-objects/flows/tron-swap.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
+import { TRON_CHECK_BALANCE_ACCOUNT } from '../tron/fixtures/environments';
+import { withTronFixtures } from '../tron/fixtures/with-tron-fixtures';
 import {
   mockTronSwapApis,
   mockTronSwapApisNoQuotes,
   mockTronSwapApisWithoutFeeEstimation,
   TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
-} from './mocks/common-tron';
+} from '../tron/mocks/common-tron';
 
-describe('Swap on Tron', function () {
+describe('Swap on Tron', function (this: Suite) {
+  this.timeout(180_000);
+
   it('Quote displayed between TRX and TRC20', async function () {
-    await withFixtures(
+    await withTronFixtures(
       {
+        accounts: [TRON_CHECK_BALANCE_ACCOUNT],
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockTronSwapApis,
+        testSpecificMock: (mockServer) => mockTronSwapApis(mockServer),
         ignoredConsoleErrors: [
           `Failed to send transaction: ${TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE}`,
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
-
-        await switchToNetworkFromNetworkSelect(driver, 'Tron');
+        await landOnTronHome(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('106.07');
-
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createTronSwap(driver, swapPage, {
           amount: 1,
           swapTo: 'USDT',
           swapFrom: 'TRX',
@@ -54,24 +55,21 @@ describe('Swap on Tron', function () {
   });
 
   it('Swap disabled when Tron network fees cannot be estimated', async function () {
-    await withFixtures(
+    await withTronFixtures(
       {
+        accounts: [TRON_CHECK_BALANCE_ACCOUNT],
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockTronSwapApisWithoutFeeEstimation,
+        testSpecificMock: (mockServer) =>
+          mockTronSwapApisWithoutFeeEstimation(mockServer),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
-
-        await switchToNetworkFromNetworkSelect(driver, 'Tron');
+        await landOnTronHome(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('106.07');
-
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createTronSwap(driver, swapPage, {
           amount: 1,
           swapTo: 'USDT',
           swapFrom: 'TRX',
@@ -85,24 +83,20 @@ describe('Swap on Tron', function () {
   });
 
   it('No quotes available for the pair', async function () {
-    await withFixtures(
+    await withTronFixtures(
       {
+        accounts: [TRON_CHECK_BALANCE_ACCOUNT],
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockTronSwapApisNoQuotes,
+        testSpecificMock: (mockServer) => mockTronSwapApisNoQuotes(mockServer),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
-
-        await switchToNetworkFromNetworkSelect(driver, 'Tron');
+        await landOnTronHome(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('106.07');
-
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createTronSwap(driver, swapPage, {
           amount: 1,
           swapTo: 'USDT',
           swapFrom: 'TRX',
@@ -116,24 +110,20 @@ describe('Swap on Tron', function () {
   });
 
   it('Quote displayed for USDT to TRX swap (reverse direction)', async function () {
-    await withFixtures(
+    await withTronFixtures(
       {
+        accounts: [TRON_CHECK_BALANCE_ACCOUNT],
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockTronSwapApis,
+        testSpecificMock: (mockServer) => mockTronSwapApis(mockServer),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
-
-        await switchToNetworkFromNetworkSelect(driver, 'Tron');
+        await landOnTronHome(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('106.07');
-
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createTronSwap(driver, swapPage, {
           amount: 1,
           swapTo: 'TRX',
           swapFrom: 'USDT',
@@ -144,31 +134,26 @@ describe('Swap on Tron', function () {
         await swapPage.checkQuoteIsDisplayed();
         await swapPage.checkSourceToken('USDT');
         await swapPage.checkDestinationToken('TRX');
-        assert.notEqual(await swapPage.getFromAmountValue(), '');
-        assert.notEqual(await swapPage.getToAmountValue(), '');
+        await swapPage.checkSwapAmountsArePopulated();
       },
     );
   });
 
   it('Amount exceeding balance shows insufficient funds', async function () {
-    await withFixtures(
+    await withTronFixtures(
       {
+        accounts: [TRON_CHECK_BALANCE_ACCOUNT],
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockTronSwapApis,
+        testSpecificMock: (mockServer) => mockTronSwapApis(mockServer),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
-
-        await switchToNetworkFromNetworkSelect(driver, 'Tron');
+        await landOnTronHome(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('106.07');
-
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createTronSwap(driver, swapPage, {
           amount: 999999,
           swapTo: 'USDT',
           swapFrom: 'TRX',
@@ -181,24 +166,20 @@ describe('Swap on Tron', function () {
   });
 
   it('Quote updates when selecting different destination token', async function () {
-    await withFixtures(
+    await withTronFixtures(
       {
+        accounts: [TRON_CHECK_BALANCE_ACCOUNT],
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockTronSwapApis,
+        testSpecificMock: (mockServer) => mockTronSwapApis(mockServer),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
-
-        await switchToNetworkFromNetworkSelect(driver, 'Tron');
+        await landOnTronHome(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('106.07');
-
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSwap({
+        await createTronSwap(driver, swapPage, {
           amount: 10,
           swapTo: 'USDT',
           swapFrom: 'TRX',
@@ -218,21 +199,17 @@ describe('Swap on Tron', function () {
   });
 
   it('Swap form shows default token on open', async function () {
-    await withFixtures(
+    await withTronFixtures(
       {
+        accounts: [TRON_CHECK_BALANCE_ACCOUNT],
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockTronSwapApis,
+        testSpecificMock: (mockServer) => mockTronSwapApis(mockServer),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
-
-        await switchToNetworkFromNetworkSelect(driver, 'Tron');
+        await landOnTronHome(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('106.07');
-
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.checkSourceToken('TRX');

@@ -1,4 +1,8 @@
-import { TRON_ACCOUNT_ADDRESS, TRX_TO_USD_RATE } from '../mocks/common-tron';
+import {
+  TRX_BALANCE,
+  TRON_ACCOUNT_ADDRESS,
+  TRX_TO_USD_RATE,
+} from '../mocks/common-tron';
 import { TronFixtureAccount } from './with-tron-fixtures';
 import { GAS_FREE, HTX, SEED, TRX, USDD, USDT } from './tokens';
 
@@ -51,4 +55,11 @@ export const TRON_LOW_TRX_WITH_USDT_ACCOUNT: TronFixtureAccount = {
     { ...TRX, balance: 1, priceUsd: TRX_TO_USD_RATE },
     { ...USDT, balance: '2000000', priceUsd: 0.999176 },
   ],
+};
+
+export const TRON_CHECK_BALANCE_ACCOUNT: TronFixtureAccount = {
+  address: TRON_ACCOUNT_ADDRESS,
+  assets: (TRON_PORTFOLIO_ACCOUNT.assets ?? []).map((asset) =>
+    asset.type === 'native' ? { ...asset, balance: TRX_BALANCE } : { ...asset },
+  ),
 };
