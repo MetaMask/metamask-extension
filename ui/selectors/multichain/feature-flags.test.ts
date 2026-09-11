@@ -1,6 +1,8 @@
 import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../shared/lib/assets/security-trust-feature-flags';
+import { TOKEN_DETAILS_ADVANCED_CHARTS_FLAG } from '../../../shared/lib/assets/advanced-charts-feature-flags';
 import {
   BFT_CHILD_PREFERENCES,
+  getIsAdvancedChartsEnabled,
   getIsBasicFunctionalityConsolidationEnabled,
   getIsBasicFunctionalityToggleEnabled,
   getIsNetworkManagementEnabled,
@@ -387,6 +389,92 @@ describe('getIsSecurityTrustTdpEnabled', () => {
     expect(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getIsSecurityTrustTdpEnabled(buildState() as any),
+    ).toBe(false);
+  });
+});
+
+describe('getIsAdvancedChartsEnabled', () => {
+  it('returns true for a version-gated flag whose minimumVersion is satisfied', () => {
+    expect(
+      getIsAdvancedChartsEnabled(
+        buildState({
+          [TOKEN_DETAILS_ADVANCED_CHARTS_FLAG]: {
+            enabled: true,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false for a version-gated flag whose minimumVersion is in the future', () => {
+    expect(
+      getIsAdvancedChartsEnabled(
+        buildState({
+          [TOKEN_DETAILS_ADVANCED_CHARTS_FLAG]: {
+            enabled: true,
+            minimumVersion: '999.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false when the version-gated flag is explicitly disabled', () => {
+    expect(
+      getIsAdvancedChartsEnabled(
+        buildState({
+          [TOKEN_DETAILS_ADVANCED_CHARTS_FLAG]: {
+            enabled: false,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false for malformed objects missing the minimumVersion field', () => {
+    expect(
+      getIsAdvancedChartsEnabled(
+        buildState({
+          [TOKEN_DETAILS_ADVANCED_CHARTS_FLAG]: {
+            enabled: true,
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false when the flag is missing', () => {
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getIsAdvancedChartsEnabled(buildState() as any),
+    ).toBe(false);
+  });
+
+  it('returns true for a simple boolean true flag (backward compatible)', () => {
+    expect(
+      getIsAdvancedChartsEnabled(
+        buildState({
+          [TOKEN_DETAILS_ADVANCED_CHARTS_FLAG]: true,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false for a simple boolean false flag (backward compatible)', () => {
+    expect(
+      getIsAdvancedChartsEnabled(
+        buildState({
+          [TOKEN_DETAILS_ADVANCED_CHARTS_FLAG]: false,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
     ).toBe(false);
   });
 });

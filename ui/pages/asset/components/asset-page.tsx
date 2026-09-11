@@ -75,6 +75,7 @@ import {
   getOptedIn,
   getShowFiatInTestnets,
 } from '../../../selectors';
+import { getIsAdvancedChartsEnabled } from '../../../selectors/multichain/feature-flags';
 import {
   getAsset,
   getAssetsBySelectedAccountGroup,
@@ -163,11 +164,15 @@ const AssetPage = ({
   const selectedAccount = useSelector(selectSelectedAccount) as InternalAccount;
 
   // [POC — THROWAWAY] Advanced chart state
+  const isAdvancedChartsEnabled = useSelector(getIsAdvancedChartsEnabled);
+  console.log('[Advanced Charts Flag] isAdvancedChartsEnabled:', isAdvancedChartsEnabled);
+  
   const [advancedChartError, setAdvancedChartError] = useState<string | null>(
     null,
   );
   const [acChartReady, setAcChartReady] = useState(false);
-  const showAdvancedChart = !advancedChartError;
+  const showAdvancedChart = isAdvancedChartsEnabled && !advancedChartError;
+  console.log('[Advanced Charts Flag] showAdvancedChart:', showAdvancedChart, '(enabled:', isAdvancedChartsEnabled, 'error:', advancedChartError, ')');
   const [acInterval, setAcInterval] = useState('15m');
   const [acChartType, setAcChartType] = useState(CHART_TYPE_LINE);
   const [acIndicators, setAcIndicators] = useState<Set<string>>(
@@ -343,7 +348,7 @@ const AssetPage = ({
   const { latestBar: realtimeLatestBar } = useOHLCVRealtime({
     assetId: caipAssetId as string,
     interval: acInterval,
-    enabled: acChartReady && showAdvancedChart,
+    enabled: isAdvancedChartsEnabled && acChartReady && showAdvancedChart,
   });
 
   // Convert latestBar to the format expected by AdvancedChartIframe

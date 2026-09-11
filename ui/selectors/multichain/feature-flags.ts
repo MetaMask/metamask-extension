@@ -4,6 +4,7 @@ import { createSelector } from 'reselect';
 import { isMultichainFeatureEnabled } from '../../../shared/lib/multichain-feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../shared/lib/assets/security-trust-feature-flags';
+import { TOKEN_DETAILS_ADVANCED_CHARTS_FLAG } from '../../../shared/lib/assets/advanced-charts-feature-flags';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 
 export {
@@ -171,4 +172,27 @@ export const getIsSecurityTrustTdpEnabled = createSelector(
 export const getIsDiscoverSearchEnabled = createSelector(
   getRemoteFeatureFlags,
   ({ extensionUXSearch }) => getBooleanFeatureFlag(extensionUXSearch, false),
+);
+
+/**
+ * Get the state of the `tokenDetailsAdvancedCharts` remote feature flag.
+ * LD key: `token-details-advanced-charts` (camelCased in extension state).
+ *
+ * When enabled, the Token Details Page renders the TradingView advanced chart
+ * iframe instead of the legacy Chart.js line chart.
+ *
+ * @param _state - The MetaMask state object
+ * @returns boolean - True when the advanced chart integration should be shown.
+ */
+export const getIsAdvancedChartsEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) => {
+    const rawFlagValue = remoteFeatureFlags[TOKEN_DETAILS_ADVANCED_CHARTS_FLAG];
+    console.log('[Advanced Charts Flag] Raw flag value:', rawFlagValue);
+    
+    const result = getBooleanFeatureFlag(rawFlagValue, false);
+    console.log('[Advanced Charts Flag] Final boolean result:', result);
+    
+    return result;
+  },
 );

@@ -45,6 +45,10 @@ export function getConfigForRemoteFeatureFlagRequest() {
     process.env.METAMASK_ENVIRONMENT,
     'METAMASK_ENVIRONMENT is not defined',
   );
+  
+  console.log('[LaunchDarkly Config] METAMASK_BUILD_TYPE:', process.env.METAMASK_BUILD_TYPE);
+  console.log('[LaunchDarkly Config] METAMASK_ENVIRONMENT:', process.env.METAMASK_ENVIRONMENT);
+  
   const buildType = process.env.METAMASK_BUILD_TYPE;
 
   const distribution =
@@ -58,6 +62,8 @@ export function getConfigForRemoteFeatureFlagRequest() {
   if (buildType === 'experimental') {
     environment = EnvironmentType.Exp;
   }
+
+  console.log('[LaunchDarkly Config] Final LD environment:', environment, 'distribution:', distribution);
 
   return { distribution, environment };
 }

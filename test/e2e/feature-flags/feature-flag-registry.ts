@@ -2678,6 +2678,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  tokenDetailsAdvancedCharts: {
+    inProd: false,
+    name: 'tokenDetailsAdvancedCharts',
+    productionDefault: {
+      enabled: true,
+      minimumVersion: '13.50.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   extensionUpdatePromptMinimumVersion: {
     inProd: true,
     name: 'extensionUpdatePromptMinimumVersion',
