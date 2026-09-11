@@ -5359,31 +5359,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:^39.1.0":
-  version: 39.1.0
-  resolution: "@metamask/accounts-controller@npm:39.1.0"
+"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@40.0.0-preview-429f77222":
+  version: 40.0.0-preview-429f77222
+  resolution: "@metamask-previews/accounts-controller@npm:40.0.0-preview-429f77222"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
-    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/base-controller": "npm:^10.0.0"
     "@metamask/eth-snap-keyring": "npm:^24.0.0"
     "@metamask/keyring-api": "npm:^24.0.0"
-    "@metamask/keyring-controller": "npm:^27.1.1"
+    "@metamask/keyring-controller": "npm:^28.0.0"
     "@metamask/keyring-internal-api": "npm:^12.0.0"
     "@metamask/keyring-sdk": "npm:^3.1.0"
     "@metamask/keyring-utils": "npm:^5.0.0"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/network-controller": "npm:^35.0.1"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/network-controller": "npm:^37.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^11.12.0"
     deepmerge: "npm:^4.2.2"
     ethereum-cryptography: "npm:^2.1.2"
     immer: "npm:^9.0.6"
-    lodash: "npm:^4.17.21"
-    uuid: "npm:^8.3.2"
+    lodash-es: "npm:^4.17.21"
+    uuid: "npm:^9.0.1"
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/db164c9be5508698ec1856682ee44944e46917514567e9655c768c2962796ee15a389a28edbb3e76479867e1c6455774bbbf2a3d2a46398193b274117d3175ae
+  checksum: 10/b02b7db51f5fbbf297e3dea0e8b36553c87a102010bd1b4aa0ed49f35e7428f9f49b2dc61e0456adfeb7a721d3a3d297278e9fd9a355c544055e10936b12afb6
   languageName: node
   linkType: hard
 
@@ -8175,22 +8175,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snap-account-service@npm:^2.1.2":
-  version: 2.1.2
-  resolution: "@metamask/snap-account-service@npm:2.1.2"
+"@metamask/snap-account-service@npm:@metamask-previews/snap-account-service@3.0.0-preview-09a5567a0":
+  version: 3.0.0-preview-09a5567a0
+  resolution: "@metamask-previews/snap-account-service@npm:3.0.0-preview-09a5567a0"
   dependencies:
     "@metamask/account-api": "npm:^2.0.0"
+    "@metamask/accounts-controller": "npm:^40.0.0"
     "@metamask/eth-snap-keyring": "npm:^24.0.0"
     "@metamask/keyring-api": "npm:^24.0.0"
-    "@metamask/keyring-controller": "npm:^27.1.1"
+    "@metamask/keyring-controller": "npm:^28.0.0"
     "@metamask/keyring-internal-snap-client": "npm:^11.0.0"
     "@metamask/keyring-snap-sdk": "npm:^10.0.0"
-    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/snaps-sdk": "npm:^11.0.0"
-    "@metamask/utils": "npm:^11.11.0"
-    lodash: "npm:^4.17.21"
-  checksum: 10/31be9807cd8fede52d236c2dbeaa1a345540ef3fb010d0a00d4ec7899bdcba97345f29c2338211e433988d13ba7447ea72c703a6840ac3646482ab61ad39f9f1
+    "@metamask/utils": "npm:^11.12.0"
+    lodash-es: "npm:^4.17.21"
+  checksum: 10/f3e49adac0b5c4c38dc72399a5aba075fead8bc7a36c560f625ca7d7c013f2c8bbb9e502badc67fe5567cd7811ee5cbbe903d85eec55f1169ded3dda26b92ba3
   languageName: node
   linkType: hard
 
