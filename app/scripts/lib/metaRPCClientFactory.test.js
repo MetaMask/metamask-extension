@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-done-callback, jest/no-conditional-expect */
 import { obj as createThoughStream } from 'through2';
 import metaRPCClientFactory, { DisconnectError } from './metaRPCClientFactory';
 
@@ -10,15 +9,12 @@ describe('metaRPCClientFactory', () => {
     const metaRPCClient = metaRPCClientFactory(streamTest);
     metaRPCClient.foo();
   });
-  it('should be able to make an rpc request/response with the method and params', (done) => {
+  it('should be able to make an rpc request/response with the method and params', async () => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     // make a "foo" method call
-    metaRPCClient.foo('bar').then((result) => {
-      expect(result).toStrictEqual('foobarbaz');
-      done();
-    });
+    const requestPromise = metaRPCClient.foo('bar');
 
     // fake a response
     metaRPCClient.requests.forEach((_, key) => {
@@ -28,17 +24,15 @@ describe('metaRPCClientFactory', () => {
         result: 'foobarbaz',
       });
     });
+
+    await expect(requestPromise).resolves.toStrictEqual('foobarbaz');
   });
-  it('should be able to make an rpc request/error with the method and params', (done) => {
+  it('should be able to make an rpc request/error with the method and params', async () => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     // make a "foo" method call
-    metaRPCClient.foo('bar').catch((err) => {
-      expect(err.message).toStrictEqual('foo-message');
-      expect(err.code).toStrictEqual(1);
-      done();
-    });
+    const requestPromise = metaRPCClient.foo('bar');
 
     metaRPCClient.requests.forEach((_, key) => {
       streamTest.write({
@@ -49,6 +43,11 @@ describe('metaRPCClientFactory', () => {
           message: 'foo-message',
         },
       });
+    });
+
+    await expect(requestPromise).rejects.toMatchObject({
+      code: 1,
+      message: 'foo-message',
     });
   });
 
@@ -84,13 +83,15 @@ describe('metaRPCClientFactory', () => {
     await expect(requestProm2).resolves.toStrictEqual('foobarbaz');
   });
 
-  it('should be able to handle notifications', (done) => {
+  it('should be able to handle notifications', async () => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
-    metaRPCClient.onNotification((notification) => {
-      expect(notification.method).toStrictEqual('foobarbaz');
-      done();
+    const notificationPromise = new Promise((resolve) => {
+      metaRPCClient.onNotification((notification) => {
+        expect(notification.method).toStrictEqual('foobarbaz');
+        resolve();
+      });
     });
 
     // send a notification
@@ -99,15 +100,19 @@ describe('metaRPCClientFactory', () => {
       method: 'foobarbaz',
       params: ['bar'],
     });
+
+    await notificationPromise;
   });
 
-  it('should be able to handle errors with no id', (done) => {
+  it('should be able to handle errors with no id', async () => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
-    metaRPCClient.onUncaughtError((error) => {
-      expect(error.code).toStrictEqual(1);
-      done();
+    const uncaughtErrorPromise = new Promise((resolve) => {
+      metaRPCClient.onUncaughtError((error) => {
+        expect(error.code).toStrictEqual(1);
+        resolve();
+      });
     });
 
     streamTest.write({
@@ -117,6 +122,8 @@ describe('metaRPCClientFactory', () => {
         message: 'error msg',
       },
     });
+
+    await uncaughtErrorPromise;
   });
 
   it('should cache the proxied rpc *methods*, but not the results', async () => {
@@ -148,13 +155,15 @@ describe('metaRPCClientFactory', () => {
     );
   });
 
-  it('should be able to handle errors with null id', (done) => {
+  it('should be able to handle errors with null id', async () => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
-    metaRPCClient.onUncaughtError((error) => {
-      expect(error.code).toStrictEqual(1);
-      done();
+    const uncaughtErrorPromise = new Promise((resolve) => {
+      metaRPCClient.onUncaughtError((error) => {
+        expect(error.code).toStrictEqual(1);
+        resolve();
+      });
     });
 
     streamTest.write({
@@ -165,19 +174,20 @@ describe('metaRPCClientFactory', () => {
         message: 'error msg',
       },
     });
+
+    await uncaughtErrorPromise;
   });
 
-  it('should fail all pending actions with a DisconnectError when the stream ends', (done) => {
+  it('should fail all pending actions with a DisconnectError when the stream ends', async () => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
-    metaRPCClient.foo('bar').catch((err) => {
-      expect(err).toBeInstanceOf(DisconnectError);
-      expect(err.message).toStrictEqual('disconnected');
-      done();
-    });
+    const requestPromise = metaRPCClient.foo('bar');
 
     streamTest.emit('end');
+
+    await expect(requestPromise).rejects.toThrow(DisconnectError);
+    await expect(requestPromise).rejects.toThrow('disconnected');
   });
 
   it('should not throw when receiving junk data over the stream', async () => {

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck Vitest hoisted mock globals are provided by the test runner.
 import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { PermissionController } from '@metamask/permission-controller';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
@@ -19,8 +21,8 @@ import { PermissionControllerInit } from './permission-controller-init';
 
 jest.mock('@metamask/permission-controller');
 
-jest.mock('../controllers/permissions', () => {
-  const actual = jest.requireActual<
+jest.mock('../controllers/permissions', async () => {
+  const actual = await vi.importActual<
     typeof import('../controllers/permissions')
   >('../controllers/permissions');
   return {

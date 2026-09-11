@@ -34,16 +34,14 @@ jest.mock('react-router-dom', () => ({
   useParams: () => ({ id: 'test-param' }),
 }));
 
-const renderLockContainer = (isUnlocked = false) => {
+const renderLockContainer = async (isUnlocked = false) => {
   const store = configureStore({
     ...mockState,
     metamask: { ...mockState.metamask, isUnlocked },
   });
-  // Use require so the mock for lock.component is already in place before
-  // the module resolves its imports.
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const LockContainer = require('./lock.container').default;
-  return renderWithProvider(<LockContainer />, store);
+  const { default: LockContainer } = await import('./lock.container.js');
+  const TypedLockContainer = LockContainer as unknown as React.ComponentType;
+  return renderWithProvider(<TypedLockContainer />, store);
 };
 
 const getCapturedProps = () =>
@@ -55,25 +53,25 @@ describe('lock.container', () => {
   });
 
   describe('mapStateToProps', () => {
-    it('passes isUnlocked: false when the wallet is locked', () => {
-      renderLockContainer(false);
+    it('passes isUnlocked: false when the wallet is locked', async () => {
+      await renderLockContainer(false);
       expect(getCapturedProps().isUnlocked).toBe(false);
     });
 
-    it('passes isUnlocked: true when the wallet is unlocked', () => {
-      renderLockContainer(true);
+    it('passes isUnlocked: true when the wallet is unlocked', async () => {
+      await renderLockContainer(true);
       expect(getCapturedProps().isUnlocked).toBe(true);
     });
   });
 
   describe('mapDispatchToProps', () => {
-    it('dispatches the lockMetamask action when the lockMetamask prop is called', () => {
+    it('dispatches the lockMetamask action when the lockMetamask prop is called', async () => {
       // Return a plain action so the thunk middleware does not try to hit
       // background APIs during the test.
       const fakeAction = { type: 'LOCK_METAMASK_TEST' };
       jest.spyOn(actions, 'lockMetamask').mockReturnValue(fakeAction as never);
 
-      renderLockContainer(true);
+      await renderLockContainer(true);
 
       const { lockMetamask } = getCapturedProps() as {
         lockMetamask: () => void;
@@ -85,23 +83,23 @@ describe('lock.container', () => {
   });
 
   describe('mergeProps', () => {
-    it('forwards navigate from withRouterHooks to the Lock component', () => {
-      renderLockContainer();
+    it('forwards navigate from withRouterHooks to the Lock component', async () => {
+      await renderLockContainer();
       expect(getCapturedProps().navigate).toBe(mockNavigate);
     });
 
-    it('does not forward location to the Lock component', () => {
-      renderLockContainer();
+    it('does not forward location to the Lock component', async () => {
+      await renderLockContainer();
       expect(getCapturedProps().location).toBeUndefined();
     });
 
-    it('does not forward params to the Lock component', () => {
-      renderLockContainer();
+    it('does not forward params to the Lock component', async () => {
+      await renderLockContainer();
       expect(getCapturedProps().params).toBeUndefined();
     });
 
-    it('still forwards isUnlocked and lockMetamask alongside navigate', () => {
-      renderLockContainer(true);
+    it('still forwards isUnlocked and lockMetamask alongside navigate', async () => {
+      await renderLockContainer(true);
       expect(getCapturedProps()).toMatchObject({
         navigate: mockNavigate,
         isUnlocked: true,

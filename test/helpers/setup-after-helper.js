@@ -4,7 +4,7 @@ import nock from 'nock';
 import '@testing-library/jest-dom';
 
 jest.mock('webextension-polyfill', () => {
-  return {
+  const browserMock = {
     runtime: {
       getManifest: () => ({ manifest_version: 3 }),
       sendMessage: jest.fn(() => Promise.resolve()),
@@ -13,6 +13,12 @@ jest.mock('webextension-polyfill', () => {
         addListener: jest.fn(),
       },
     },
+  };
+
+  return {
+    __esModule: true,
+    ...browserMock,
+    default: browserMock,
   };
 });
 

@@ -73,6 +73,17 @@ function getInitRequestMock(
   return requestMock;
 }
 
+function setControllerState(
+  controller: NetworkEnablementController,
+  state: NetworkEnablementController['state'],
+) {
+  Object.defineProperty(controller, 'state', {
+    configurable: true,
+    value: state,
+    writable: true,
+  });
+}
+
 describe('NetworkEnablementControllerInit', () => {
   it('initializes the controller', () => {
     const { messengerClient } =
@@ -121,12 +132,12 @@ describe('NetworkEnablementControllerInit', () => {
     const request = getInitRequestMock(messenger);
     const { messengerClient } = NetworkEnablementControllerInit(request);
 
-    messengerClient.state = {
+    setControllerState(messengerClient, {
       enabledNetworkMap: {
         solana: { [SolScope.Mainnet]: true },
       },
       nativeAssetIdentifiers: {},
-    };
+    });
 
     expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
 
@@ -156,12 +167,12 @@ describe('NetworkEnablementControllerInit', () => {
     const request = getInitRequestMock(messenger);
     const { messengerClient } = NetworkEnablementControllerInit(request);
 
-    messengerClient.state = {
+    setControllerState(messengerClient, {
       enabledNetworkMap: {
         bitcoin: { [BtcScope.Mainnet]: true },
       },
       nativeAssetIdentifiers: {},
-    };
+    });
 
     expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
 
@@ -190,12 +201,12 @@ describe('NetworkEnablementControllerInit', () => {
     const request = getInitRequestMock(messenger);
     const { messengerClient } = NetworkEnablementControllerInit(request);
 
-    messengerClient.state = {
+    setControllerState(messengerClient, {
       enabledNetworkMap: {
         solana: { [SolScope.Mainnet]: true },
       },
       nativeAssetIdentifiers: {},
-    };
+    });
 
     expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
 
@@ -223,13 +234,13 @@ describe('NetworkEnablementControllerInit', () => {
     const request = getInitRequestMock(messenger);
     const { messengerClient } = NetworkEnablementControllerInit(request);
 
-    messengerClient.state = {
+    setControllerState(messengerClient, {
       enabledNetworkMap: {
         solana: { [SolScope.Mainnet]: true },
         bitcoin: { [BtcScope.Mainnet]: true },
       },
       nativeAssetIdentifiers: {},
-    };
+    });
 
     expect(messengerClient.enableNetwork).not.toHaveBeenCalled();
 
