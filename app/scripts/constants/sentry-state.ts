@@ -352,8 +352,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   SubjectMetadataController: {
     subjectMetadata: false,
   },
-  // TokenDetectionController has no public controller state.
-  TokenDetectionController: {},
   TokensController: {
     allDetectedTokens: {
       [AllProperties]: false,
