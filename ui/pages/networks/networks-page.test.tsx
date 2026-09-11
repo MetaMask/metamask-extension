@@ -67,6 +67,7 @@ jest.mock('../../components/multichain/networks-form/use-safe-chains', () => ({
 
 const mockJsonRpcRequest = jest.fn().mockResolvedValue('0x1');
 jest.mock('../../../shared/lib/rpc.utils', () => ({
+  ...jest.requireActual('../../../shared/lib/rpc.utils'),
   jsonRpcRequest: (...args: unknown[]) => mockJsonRpcRequest(...args),
 }));
 

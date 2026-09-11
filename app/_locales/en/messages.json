@@ -9303,6 +9303,9 @@
   "rpcUrl": {
     "message": "RPC URL"
   },
+  "rpcUrlRateLimited": {
+    "message": "This RPC provider is limiting requests. Try again later or use a different RPC URL."
+  },
   "safeTransferFrom": {
     "message": "Safe transfer from"
   },
