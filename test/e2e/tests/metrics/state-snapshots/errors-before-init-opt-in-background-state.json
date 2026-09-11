@@ -246,6 +246,7 @@
     },
     "ProfileMetricsController": "object",
     "RampsController": {
+      "autoramps": "object",
       "orders": "object",
       "providerAutoSelected": "boolean",
       "userRegion": null
@@ -311,7 +312,8 @@
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
-      "isContactSyncingEnabled": true
+      "isContactSyncingEnabled": true,
+      "isRampsSyncingEnabled": true
     },
     "config": "object"
   }

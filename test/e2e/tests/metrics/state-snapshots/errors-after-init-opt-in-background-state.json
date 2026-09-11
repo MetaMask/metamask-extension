@@ -330,6 +330,7 @@
   "ProfileMetricsController": "object",
   "QrSyncController": "object",
   "RampsController": {
+    "autoramps": "object",
     "countries": "object",
     "nativeProviders": "object",
     "orders": "object",
@@ -424,6 +425,7 @@
     "isBackupAndSyncEnabled": true,
     "isBackupAndSyncUpdateLoading": "boolean",
     "isContactSyncingEnabled": true,
-    "isContactSyncingInProgress": "boolean"
+    "isContactSyncingInProgress": "boolean",
+    "isRampsSyncingEnabled": true
   }
 }

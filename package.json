@@ -342,8 +342,9 @@
     "@metamask/messenger": "^3.0.0",
     "@ledgerhq/context-module/ethers": "^6.15.0",
     "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
-    "@metamask/profile-sync-controller": "^30.0.0",
-    "@metamask/account-tree-controller": "^9.0.0"
+    "@metamask/profile-sync-controller": "^32.0.0",
+    "@metamask/account-tree-controller": "^9.0.0",
+    "@metamask/ramps-controller": "^22.0.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -474,9 +475,9 @@
     "@metamask/ppom-validator": "0.39.1",
     "@metamask/preinstalled-example-snap": "^0.8.1",
     "@metamask/profile-metrics-controller": "^4.0.3",
-    "@metamask/profile-sync-controller": "^30.0.0",
+    "@metamask/profile-sync-controller": "^32.0.0",
     "@metamask/providers": "^22.1.1",
-    "@metamask/ramps-controller": "^20.2.0",
+    "@metamask/ramps-controller": "^22.0.0",
     "@metamask/rate-limit-controller": "^7.0.0",
     "@metamask/react-data-query": "^1.0.0",
     "@metamask/remote-feature-flag-controller": "^6.1.1",
