@@ -121,16 +121,18 @@ export function useFetchInitialNotificationsEffect() {
   const [hasCompletedInitialFetch, setHasCompletedInitialFetch] =
     useState(false);
   const [traceError, setTraceError] = useState<unknown>();
+  const [previousShouldRunInitialFetch, setPreviousShouldRunInitialFetch] =
+    useState(shouldRunInitialFetch);
 
-  /* eslint-disable react-hooks/set-state-in-effect -- Reset trace-only state
-   * while ineligible so a later enable/sign-in activation starts pending. */
-  useEffect(() => {
+  // Reset trace-only state before children observe a new eligibility cycle.
+  // React applies this guarded previous-value update before rendering children.
+  if (previousShouldRunInitialFetch !== shouldRunInitialFetch) {
+    setPreviousShouldRunInitialFetch(shouldRunInitialFetch);
     if (!shouldRunInitialFetch) {
       setHasCompletedInitialFetch(false);
       setTraceError(undefined);
     }
-  }, [shouldRunInitialFetch]);
-  /* eslint-enable react-hooks/set-state-in-effect */
+  }
 
   useEffect(() => {
     let cancelled = false;
