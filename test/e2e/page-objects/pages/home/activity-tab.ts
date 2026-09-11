@@ -54,8 +54,14 @@ class ActivityTab extends HomePage {
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
+  private readonly transactionBaseFeeRowValue =
+    '[data-testid="transaction-base-fee"] [data-testid="transaction-breakdown-row-value"]';
+
   private readonly transactionBreakdownAmount =
     '[data-testid="transaction-breakdown-value-amount"]';
+
+  private readonly transactionBreakdownAmountRowValue =
+    '[data-testid="transaction-breakdown-value-amount"] [data-testid="transaction-breakdown-row-value"]';
 
   private readonly transactionBreakdownRowValue = (rowIndex: number) => ({
     css: `[data-testid="transaction-breakdown-row"]:nth-child(${
@@ -106,7 +112,18 @@ class ActivityTab extends HomePage {
       this.transactionStatusLabel(expectedStatus),
     );
 
-    if (!isBridge) {
+    if (isBridge) {
+      console.log('Checking bridge fee and total amount rows are populated');
+      const feeValue = await this.driver.waitForSelector(
+        this.transactionBaseFeeRowValue,
+      );
+      await this.driver.waitForNonEmptyElement(feeValue);
+
+      const totalValue = await this.driver.waitForSelector(
+        this.transactionBreakdownAmountRowValue,
+      );
+      await this.driver.waitForNonEmptyElement(totalValue);
+    } else {
       console.log('Checking displayed amounts');
       if (expectedSrcAmount) {
         await this.driver.waitForSelector({
