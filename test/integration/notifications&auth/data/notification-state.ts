@@ -40,6 +40,7 @@ export const getMockedNotificationsState = () => {
     isBackupAndSyncUpdateLoading: false,
     isContactSyncingEnabled: true,
     isContactSyncingInProgress: false,
+    isRampsSyncingEnabled: true,
     analyticsId: 'test-metametrics-id',
     isMetamaskNotificationsFeatureSeen: true,
     isNotificationServicesEnabled: true,

@@ -1086,9 +1086,11 @@
       "watchEthereumAccountEnabled": false
     },
     "ProfileMetricsController": {
+      "accountSourceBackfillEnqueued": false,
       "initialDelayEndTimestamp": 1770282498299,
       "initialEnqueueCompleted": false,
       "proofBackfillEnqueued": false,
+      "reportedAccounts": [],
       "syncQueue": {
         "01KGPGYE2JJGMXDJPEVXKPJ1JG": [
           {
@@ -1270,7 +1272,8 @@
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
-      "isContactSyncingEnabled": true
+      "isContactSyncingEnabled": true,
+      "isRampsSyncingEnabled": true
     },
     "config": {}
   },

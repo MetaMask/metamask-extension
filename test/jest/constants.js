@@ -6,4 +6,7 @@ export const ESM_DEPENDENCIES_TO_TRANSPILE = [
   '@metamask/base-data-service',
   '@metamask/messenger',
   'lodash-es',
+  '@metamask/profile-sync-controller',
+  '@metamask/profile-metrics-controller',
+  '@metamask/controller-utils',
 ];

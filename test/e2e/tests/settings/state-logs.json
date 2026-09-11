@@ -155,6 +155,7 @@
     "accountIdByAddress": {
       "*": "string"
     },
+    "accountSourceBackfillEnqueued": "boolean",
     "accountsAssets": {
       "*": "array"
     },
@@ -677,6 +678,7 @@
     "isMultiAccountBalancesEnabled": "boolean",
     "isNotificationServicesEnabled": "boolean",
     "isPushEnabled": "boolean",
+    "isRampsSyncingEnabled": "boolean",
     "isReady": "boolean",
     "isTestnet": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
@@ -1010,6 +1012,7 @@
       "variational": {}
     },
     "region": "string",
+    "reportedAccounts": "object",
     "requests": {
       "*": {
         "status": "string",

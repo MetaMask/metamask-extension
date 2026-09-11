@@ -34,4 +34,5 @@ export const FIXTURES_PREFERENCES = {
   useExternalServices: true,
   isBackupAndSyncEnabled: true,
   isAccountSyncingEnabled: true,
+  isRampsSyncingEnabled: true,
 };

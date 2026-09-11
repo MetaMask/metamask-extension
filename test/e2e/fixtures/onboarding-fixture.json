@@ -2072,8 +2072,10 @@
       "watchEthereumAccountEnabled": false
     },
     "ProfileMetricsController": {
+      "accountSourceBackfillEnqueued": false,
       "initialEnqueueCompleted": false,
       "proofBackfillEnqueued": false,
+      "reportedAccounts": [],
       "syncQueue": {}
     },
     "RampsController": {
@@ -2250,7 +2252,8 @@
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
-      "isContactSyncingEnabled": true
+      "isContactSyncingEnabled": true,
+      "isRampsSyncingEnabled": true
     },
     "config": {}
   },

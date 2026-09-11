@@ -326,7 +326,13 @@
     "useTransactionSimulations": true,
     "watchEthereumAccountEnabled": "boolean"
   },
-  "ProfileMetricsController": "object",
+  "ProfileMetricsController": {
+    "accountSourceBackfillEnqueued": false,
+    "initialEnqueueCompleted": "boolean",
+    "proofBackfillEnqueued": "boolean",
+    "reportedAccounts": "object",
+    "syncQueue": "object"
+  },
   "QrSyncController": "object",
   "RampsController": {
     "countries": "object",
@@ -423,6 +429,7 @@
     "isBackupAndSyncEnabled": true,
     "isBackupAndSyncUpdateLoading": "boolean",
     "isContactSyncingEnabled": true,
-    "isContactSyncingInProgress": "boolean"
+    "isContactSyncingInProgress": "boolean",
+    "isRampsSyncingEnabled": true
   }
 }
