@@ -127,8 +127,6 @@ jest.mock('../../store/actions', () => {
     hideAsset: jest.fn(() => () => Promise.resolve()),
     ignoreTokens: jest.fn(() => () => Promise.resolve()),
     importCustomAssetsBatch: jest.fn(() => () => Promise.resolve()),
-    multichainAddAssets: jest.fn(() => () => Promise.resolve()),
-    multichainIgnoreAssets: jest.fn(() => () => Promise.resolve()),
   };
 });
 
@@ -139,8 +137,6 @@ type MockedTokenManagementActions = {
   hideAsset: jest.Mock;
   ignoreTokens: jest.Mock;
   importCustomAssetsBatch: jest.Mock;
-  multichainAddAssets: jest.Mock;
-  multichainIgnoreAssets: jest.Mock;
 };
 
 const getMockedActions = () =>
@@ -290,12 +286,6 @@ const expectNonEvmApiResultImport = async ({
   symbol: string;
 }) => {
   await waitFor(() =>
-    expect(actions.multichainAddAssets).toHaveBeenCalledWith(
-      [assetId],
-      accountId,
-    ),
-  );
-  await waitFor(() =>
     expect(actions.importCustomAssetsBatch).toHaveBeenCalledWith(
       accountId,
       [{ assetId, isHidden: false }],
@@ -411,8 +401,6 @@ describe('TokenManagementPage', () => {
     actions.hideAsset.mockClear();
     actions.ignoreTokens.mockClear();
     actions.importCustomAssetsBatch.mockClear();
-    actions.multichainAddAssets.mockClear();
-    actions.multichainIgnoreAssets.mockClear();
     mockToastError.mockClear();
     const originalWarn = console.warn;
     consoleWarnSpy = jest
@@ -1428,7 +1416,7 @@ describe('TokenManagementPage', () => {
     );
   });
 
-  it('toggling ON a not-yet-imported non-EVM browse result imports via multichainAddAssets and seeds unified assets', async () => {
+  it('toggling ON a not-yet-imported non-EVM browse result imports via importCustomAssetsBatch', async () => {
     const solanaResultId = `${solanaChainId}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`;
     const solanaTokenReference = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
     setTokenSearchState({
@@ -1702,7 +1690,6 @@ describe('TokenManagementPage', () => {
 
     expect(actions.ignoreTokens).not.toHaveBeenCalled();
     expect(actions.hideAsset).not.toHaveBeenCalled();
-    expect(actions.multichainIgnoreAssets).not.toHaveBeenCalled();
   });
 
   it('shows imported EVM tokens from TokensController before balances exist', () => {
