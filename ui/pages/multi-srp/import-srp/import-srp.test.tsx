@@ -18,6 +18,9 @@ jest.mock('../../../store/actions', () => ({
       discoveredAccounts: { Bitcoin: 0, Solana: 0 },
     }),
   ),
+  resolveSeedlessPasswordSyncState: jest
+    .fn()
+    .mockReturnValue(jest.fn().mockResolvedValue('in-sync')),
   showAlert: jest.fn().mockReturnValue({ type: 'ALERT_OPEN' }),
   hideAlert: jest.fn().mockReturnValue({ type: 'ALERT_CLOSE' }),
 }));

@@ -4,6 +4,7 @@ import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
+import { PasswordChangeRecoveryStatus } from '@metamask/seedless-onboarding-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import * as passkeyCeremony from '../../../shared/lib/passkey/passkey-ceremony';
@@ -94,7 +95,9 @@ describe('UnlockPage component (passkey UI)', () => {
     onSubmit: jest.fn().mockResolvedValue(undefined),
     navigateAfterUnlock: jest.fn(),
     isPasskeyActive: true,
-    checkIsSeedlessPasswordOutdated: jest.fn().mockResolvedValue(undefined),
+    resolveSeedlessPasswordSyncState: jest
+      .fn()
+      .mockResolvedValue(PasswordChangeRecoveryStatus.InSync),
     getIsSeedlessOnboardingUserAuthenticated: jest.fn().mockResolvedValue(true),
     forceUpdateMetamaskState: jest.fn().mockResolvedValue(undefined),
     isSocialLoginFlow: false,
@@ -153,6 +156,87 @@ describe('UnlockPage component (passkey UI)', () => {
       expect(props.onSubmit).toHaveBeenCalledWith('test-password');
       expect(props.navigateAfterUnlock).toHaveBeenCalled();
     });
+  });
+
+  it('resolves the cached recovery status on mount', async () => {
+    const resolveSeedlessPasswordSyncState = jest
+      .fn()
+      .mockResolvedValue(PasswordChangeRecoveryStatus.PasswordOutdated);
+    const props = buildProps({
+      isSocialLoginFlow: true,
+      isPasskeyActive: false,
+      resolveSeedlessPasswordSyncState,
+    });
+
+    renderWithProvider(<UnlockPage {...props} />, mockStore, '/unlock');
+
+    await waitFor(() => {
+      expect(resolveSeedlessPasswordSyncState).toHaveBeenCalledWith({
+        skipCache: false,
+      });
+    });
+  });
+
+  it('submits a new password after resolving the mount recovery status', async () => {
+    const resolveSeedlessPasswordSyncState = jest
+      .fn()
+      .mockResolvedValue(PasswordChangeRecoveryStatus.EnterNewPassword);
+    const props = buildProps({
+      isSocialLoginFlow: true,
+      isPasskeyActive: false,
+      resolveSeedlessPasswordSyncState,
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <UnlockPage {...props} />,
+      mockStore,
+      '/unlock',
+    );
+
+    await waitFor(() => {
+      expect(resolveSeedlessPasswordSyncState).toHaveBeenCalledWith({
+        skipCache: false,
+      });
+    });
+
+    fireEvent.change(getByTestId('unlock-password'), {
+      target: { value: 'new-password' },
+    });
+    fireEvent.click(getByTestId('unlock-submit'));
+
+    await waitFor(() => {
+      expect(resolveSeedlessPasswordSyncState).toHaveBeenCalledTimes(1);
+      expect(props.onSubmit).toHaveBeenCalledWith('new-password');
+    });
+  });
+
+  it('keeps the wallet blocked when recovery status is unknown', async () => {
+    const props = buildProps({
+      isSocialLoginFlow: true,
+      isPasskeyActive: false,
+      resolveSeedlessPasswordSyncState: jest
+        .fn()
+        .mockResolvedValue(PasswordChangeRecoveryStatus.Unknown),
+    });
+
+    const { getByTestId } = renderWithProvider(
+      <UnlockPage {...props} />,
+      mockStore,
+      '/unlock',
+    );
+
+    await waitFor(() => {
+      expect(getByTestId('unlock-page-help-text')).toHaveTextContent(
+        'Your wallet remains locked',
+      );
+    });
+
+    fireEvent.change(getByTestId('unlock-password'), {
+      target: { value: 'new-password' },
+    });
+
+    expect(getByTestId('unlock-submit')).toBeDisabled();
+    expect(props.onSubmit).not.toHaveBeenCalled();
   });
 
   it('shows a passkey error banner when authentication fails with a non-silent error', async () => {

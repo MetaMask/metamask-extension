@@ -495,6 +495,23 @@ export type LegacyBackgroundApiServiceChangePasswordAction = {
 };
 
 /**
+ * Resolves the current Seedless password synchronization state.
+ *
+ * Non-Seedless wallets and wallets that have not completed onboarding are
+ * already in sync from the perspective of Seedless password recovery.
+ *
+ * @param options - Options for resolving the password synchronization state.
+ * @param options.skipCache - Whether to bypass the controller's cached remote
+ * state. A pending Seedless password change always forces an authoritative
+ * remote check.
+ * @returns The current password synchronization and recovery status.
+ */
+export type LegacyBackgroundApiServiceResolveSeedlessPasswordSyncStateAction = {
+  type: `LegacyBackgroundApiService:resolveSeedlessPasswordSyncState`;
+  handler: LegacyBackgroundApiService['resolveSeedlessPasswordSyncState'];
+};
+
+/**
  * Checks if the seedless password is outdated.
  *
  * @param args - The arguments for the checkIsSeedlessPasswordOutdated method.
@@ -599,7 +616,11 @@ export type LegacyBackgroundApiServiceSetLockedAction = {
 };
 
 /**
- * Syncs the keyring encryption key with the seedless onboarding controller.
+ * Stores the current keyring encryption key in the Seedless onboarding
+ * controller state.
+ *
+ * The recovery coordinator is responsible for lifecycle advancement and
+ * verifying any remote synchronization after this local state update.
  *
  * @returns
  */
@@ -1191,6 +1212,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSetSelectedInternalAccountAction
   | LegacyBackgroundApiServiceGetNextNonceAction
   | LegacyBackgroundApiServiceChangePasswordAction
+  | LegacyBackgroundApiServiceResolveSeedlessPasswordSyncStateAction
   | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction
   | LegacyBackgroundApiServiceSyncPasswordAndUnlockWalletAction
   | LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction

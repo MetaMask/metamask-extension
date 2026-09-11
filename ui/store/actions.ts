@@ -52,6 +52,7 @@ import {
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { PasswordChangeRecoveryStatus } from '@metamask/seedless-onboarding-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import type { NotificationServicesControllerEnableNotificationsOptions } from '@metamask/notification-services-controller/notification-services';
@@ -1061,39 +1062,43 @@ export function getIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
 }
 
 /**
- * Checks if the seedless password is outdated.
+ * Resolves the Seedless password synchronization and recovery state.
  *
- * @param skipCache - whether to skip the cache @default false
- * @param captureSentryError - whether to capture the sentry error. @default false
- * @returns Promise<boolean | undefined> true if the password is outdated, false otherwise, undefined if the flow is not seedless
+ * The status is kept local to the caller; it is never stored in Redux and the
+ * action does not accept or persist a password.
+ *
+ * @param options - Resolver options.
+ * @param options.skipCache - Whether to bypass the controller's cached remote
+ * state.
+ * @returns The current recovery status. Failures resolve to `unknown` so the
+ * caller keeps the wallet blocked.
  */
-export function checkIsSeedlessPasswordOutdated(
-  skipCache = true,
-  captureSentryError = true,
-): ThunkAction<boolean | undefined, MetaMaskReduxState, unknown, AnyAction> {
-  return async (
-    dispatch: MetaMaskReduxDispatch,
-    getState: () => MetaMaskReduxState,
-  ) => {
-    const isSocialLoginFlow = getIsSocialLoginFlow(getState());
-    if (!isSocialLoginFlow) {
-      return false;
-    }
-
-    let isPasswordOutdated = false;
+export function resolveSeedlessPasswordSyncState({
+  skipCache = false,
+}: { skipCache?: boolean } = {}): ThunkAction<
+  Promise<PasswordChangeRecoveryStatus>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      isPasswordOutdated = await submitRequestToBackground<boolean>(
-        'checkIsSeedlessPasswordOutdated',
-        [{ skipCache, captureSentryError }],
-      );
-      if (isPasswordOutdated) {
-        await forceUpdateMetamaskState(dispatch);
-      }
-    } catch (error) {
-      log.warn('checkIsSeedlessPasswordOutdated error', error);
-    }
+      const passwordSyncState =
+        await submitRequestToBackground<PasswordChangeRecoveryStatus>(
+          'resolveSeedlessPasswordSyncState',
+          [{ skipCache }],
+        );
 
-    return isPasswordOutdated;
+      // The resolver may advance or clear the persisted lifecycle phase. Pull
+      // those controller patches into Redux without treating this refresh as
+      // lifecycle persistence.
+      await forceUpdateMetamaskState(dispatch);
+
+      return passwordSyncState;
+    } catch (error) {
+      log.warn('resolveSeedlessPasswordSyncState error', error);
+      return PasswordChangeRecoveryStatus.Unknown;
+    }
   };
 }
 

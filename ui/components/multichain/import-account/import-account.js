@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TextButton } from '@metamask/design-system-react';
+import { PasswordChangeRecoveryStatus } from '@metamask/seedless-onboarding-controller';
 import { getErrorMessage } from '../../../../shared/lib/error';
 import {
   MetaMetricsEventAccountImportType,
@@ -46,10 +47,10 @@ export const ImportAccount = ({ onActionComplete }) => {
 
     try {
       if (isSocialLoginFlow) {
-        const isPasswordOutdated = await dispatch(
-          actions.checkIsSeedlessPasswordOutdated(true),
+        const passwordSyncState = await dispatch(
+          actions.resolveSeedlessPasswordSyncState({ skipCache: true }),
         );
-        if (isPasswordOutdated) {
+        if (passwordSyncState !== PasswordChangeRecoveryStatus.InSync) {
           return false;
         }
       }

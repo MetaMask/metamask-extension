@@ -42,8 +42,8 @@ import {
 } from '../../../../shared/lib/passkey/passkey-error';
 import {
   changePassword,
-  checkIsSeedlessPasswordOutdated,
   forceUpdateMetamaskState,
+  resolveSeedlessPasswordSyncState,
   verifyPassword,
 } from '../../../store/actions';
 import { getIsSocialLoginFlow } from '../../../selectors';
@@ -160,6 +160,7 @@ const ChangePassword = ({
       setIsIncorrectPasswordError(false);
       setStep(ChangePasswordSteps.ChangePassword);
     } catch (error) {
+      console.error('handleSubmitCurrentPassword', error);
       setIsIncorrectPasswordError(true);
     }
   };
@@ -335,9 +336,8 @@ const ChangePassword = ({
 
   useEffect(() => {
     (async () => {
-      // check if the seedless password is outdated as long as the user land on the change password page
       if (isSocialLoginFlow) {
-        await dispatch(checkIsSeedlessPasswordOutdated());
+        await dispatch(resolveSeedlessPasswordSyncState({ skipCache: false }));
       }
     })();
   }, [dispatch, isSocialLoginFlow]);

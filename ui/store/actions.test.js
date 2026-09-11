@@ -11,6 +11,7 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { SubscriptionUserEvent } from '@metamask/subscription-controller';
+import { PasswordChangeRecoveryStatus } from '@metamask/seedless-onboarding-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
@@ -342,120 +343,55 @@ describe('Actions', () => {
     });
   });
 
-  describe('#checkIsSeedlessPasswordOutdated', () => {
+  describe('#resolveSeedlessPasswordSyncState', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('should return true if the password is outdated', async () => {
-      const store = mockStore({
-        ...defaultState,
-        metamask: {
-          ...defaultState.metamask,
-          firstTimeFlowType: FirstTimeFlowType.socialCreate,
-        },
-      });
-
-      const checkIsSeedlessPasswordOutdatedStub = sinon.stub().resolves(true);
-
-      background.getApi.returns({
-        checkIsSeedlessPasswordOutdated: checkIsSeedlessPasswordOutdatedStub,
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      const result = await store.dispatch(
-        actions.checkIsSeedlessPasswordOutdated(),
-      );
-      expect(result).toStrictEqual(true);
-      expect(checkIsSeedlessPasswordOutdatedStub.callCount).toStrictEqual(1);
-      expect(checkIsSeedlessPasswordOutdatedStub.firstCall.args).toStrictEqual([
-        {
-          skipCache: true,
-          captureSentryError: true,
-        },
-      ]);
-    });
-
-    it('should return false if the password is not outdated', async () => {
-      const store = mockStore({
-        ...defaultState,
-        metamask: {
-          ...defaultState.metamask,
-          firstTimeFlowType: FirstTimeFlowType.socialCreate,
-        },
-      });
-
-      const checkIsSeedlessPasswordOutdatedStub = sinon.stub().resolves(false);
-
-      background.getApi.returns({
-        checkIsSeedlessPasswordOutdated: checkIsSeedlessPasswordOutdatedStub,
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      const result = await store.dispatch(
-        actions.checkIsSeedlessPasswordOutdated(),
-      );
-      expect(result).toStrictEqual(false);
-      expect(checkIsSeedlessPasswordOutdatedStub.callCount).toStrictEqual(1);
-    });
-
-    it('passes skipCache and captureSentryError to the background check', async () => {
-      const store = mockStore({
-        ...defaultState,
-        metamask: {
-          ...defaultState.metamask,
-          firstTimeFlowType: FirstTimeFlowType.socialCreate,
-        },
-      });
-
-      const checkIsSeedlessPasswordOutdatedStub = sinon.stub().resolves(true);
-
-      background.getApi.returns({
-        checkIsSeedlessPasswordOutdated: checkIsSeedlessPasswordOutdatedStub,
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      const result = await store.dispatch(
-        actions.checkIsSeedlessPasswordOutdated(false, false),
-      );
-
-      expect(result).toStrictEqual(true);
-      expect(checkIsSeedlessPasswordOutdatedStub.callCount).toStrictEqual(1);
-      expect(checkIsSeedlessPasswordOutdatedStub.firstCall.args).toStrictEqual([
-        {
-          skipCache: false,
-          captureSentryError: false,
-        },
-      ]);
-    });
-
-    it('should not throw an error if the checkIsSeedlessPasswordOutdated fails', async () => {
-      const store = mockStore({
-        ...defaultState,
-        metamask: {
-          ...defaultState.metamask,
-          firstTimeFlowType: FirstTimeFlowType.socialCreate,
-        },
-      });
-
-      const checkIsSeedlessPasswordOutdatedStub = sinon
+    it('returns the recovery status from the background service', async () => {
+      const store = mockStore();
+      const resolveSeedlessPasswordSyncStateStub = sinon
         .stub()
-        .rejects(new Error('error'));
+        .resolves(PasswordChangeRecoveryStatus.EnterNewPassword);
+      const getStatePatchesStub = sinon.stub().resolves([]);
 
       background.getApi.returns({
-        checkIsSeedlessPasswordOutdated: checkIsSeedlessPasswordOutdatedStub,
+        resolveSeedlessPasswordSyncState: resolveSeedlessPasswordSyncStateStub,
+        getStatePatches: getStatePatchesStub,
       });
 
       setBackgroundConnection(background.getApi());
 
       const result = await store.dispatch(
-        actions.checkIsSeedlessPasswordOutdated(),
+        actions.resolveSeedlessPasswordSyncState(),
       );
-      expect(result).toStrictEqual(false);
-      expect(checkIsSeedlessPasswordOutdatedStub.callCount).toStrictEqual(1);
+
+      expect(result).toStrictEqual(
+        PasswordChangeRecoveryStatus.EnterNewPassword,
+      );
+      expect(
+        resolveSeedlessPasswordSyncStateStub.calledOnceWith({
+          skipCache: false,
+        }),
+      ).toStrictEqual(true);
+      expect(getStatePatchesStub.calledOnceWith()).toStrictEqual(true);
+    });
+
+    it('returns unknown when the background resolver fails', async () => {
+      const store = mockStore();
+      background.getApi.returns({
+        resolveSeedlessPasswordSyncState: sinon
+          .stub()
+          .rejects(new Error('resolver failed')),
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      const result = await store.dispatch(
+        actions.resolveSeedlessPasswordSyncState({ skipCache: true }),
+      );
+
+      expect(result).toStrictEqual(PasswordChangeRecoveryStatus.Unknown);
     });
   });
 

@@ -6976,6 +6976,9 @@
   "passwordNotLongEnough": {
     "message": "Must be at least 8 characters"
   },
+  "passwordRecoveryBlocked": {
+    "message": "We couldn’t verify the password change. Your wallet remains locked. Try again later."
+  },
   "passwordTermsWarning": {
     "message": "If I lose this password, MetaMask can’t reset it."
   },

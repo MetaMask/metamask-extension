@@ -1,5 +1,6 @@
 import {
   SecretType,
+  SeedlessPasswordChangePhase,
   SeedlessOnboardingControllerState,
 } from '@metamask/seedless-onboarding-controller';
 import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
@@ -119,6 +120,11 @@ describe('State Utils', () => {
 
     it('sanitizes seedless onboarding controller state', () => {
       const state: Partial<SeedlessOnboardingControllerState> = {
+        passwordChangePhase: SeedlessPasswordChangePhase.KeySyncPending,
+        passwordOutdatedCache: {
+          isExpiredPwd: true,
+          timestamp: 1,
+        },
         vault: 'vault',
         vaultEncryptionKey: 'vaultEncryptionKey',
         vaultEncryptionSalt: 'vaultEncryptionSalt',
@@ -147,6 +153,11 @@ describe('State Utils', () => {
       const sanitizedState = sanitizeUIState(state);
 
       expect(sanitizedState).toStrictEqual({
+        passwordChangePhase: SeedlessPasswordChangePhase.KeySyncPending,
+        passwordOutdatedCache: {
+          isExpiredPwd: true,
+          timestamp: 1,
+        },
         nodeAuthTokens: [
           {
             nodeIndex: 1,
@@ -164,6 +175,34 @@ describe('State Utils', () => {
   });
 
   describe('sanitizePatches', () => {
+    it('keeps recovery signals while removing Seedless secrets', () => {
+      const patches: Patch[] = [
+        {
+          op: 'replace',
+          path: ['passwordChangePhase'],
+          value: SeedlessPasswordChangePhase.KeySyncPending,
+        },
+        {
+          op: 'replace',
+          path: ['encryptedKeyringEncryptionKey'],
+          value: 'encrypted-key',
+        },
+        {
+          op: 'replace',
+          path: ['vault'],
+          value: 'vault',
+        },
+      ];
+
+      expect(sanitizePatches(patches)).toStrictEqual([
+        {
+          op: 'replace',
+          path: ['passwordChangePhase'],
+          value: SeedlessPasswordChangePhase.KeySyncPending,
+        },
+      ]);
+    });
+
     it('ignores patch if path matches remove key', () => {
       const patches: Patch[] = [
         {

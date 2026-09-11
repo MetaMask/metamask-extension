@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
+import type { PasswordChangeRecoveryStatus } from '@metamask/seedless-onboarding-controller';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -11,7 +12,7 @@ import { getRedirectAfterUnlock } from '../../helpers/utils/redirect-after-unloc
 import {
   tryUnlockMetamask,
   forceUpdateMetamaskState,
-  checkIsSeedlessPasswordOutdated,
+  resolveSeedlessPasswordSyncState,
   resetOnboarding,
   getIsSeedlessOnboardingUserAuthenticated,
 } from '../../store/actions';
@@ -40,6 +41,9 @@ type OwnProps = {
   /** Injected by withRouterHooks; stripped in mergeProps — UnlockPage does not use URL params. */
   params: RouterHooksProps['params'];
   onSubmit?: (password: string) => Promise<void>;
+  resolveSeedlessPasswordSyncState?: (options?: {
+    skipCache?: boolean;
+  }) => Promise<PasswordChangeRecoveryStatus>;
   /**
    * Redirects after a successful unlock (`onSubmit` is called).
    * Previously, navigation was handled immediately after `onSubmit` is called.
@@ -83,8 +87,8 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
       dispatch(tryUnlockMetamask(password)),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     loginWithDifferentMethod: () => dispatch(resetOnboarding()),
-    checkIsSeedlessPasswordOutdated: () =>
-      dispatch(checkIsSeedlessPasswordOutdated()),
+    resolveSeedlessPasswordSyncState: (options?: { skipCache?: boolean }) =>
+      dispatch(resolveSeedlessPasswordSyncState(options)),
     getIsSeedlessOnboardingUserAuthenticated: () =>
       dispatch(getIsSeedlessOnboardingUserAuthenticated()),
   };
@@ -137,6 +141,9 @@ const UnlockPageConnected = compose(
 )(UnlockPage) as React.ComponentType<
   React.PropsWithChildren<{
     onSubmit?: (password: string) => Promise<void>;
+    resolveSeedlessPasswordSyncState?: (options?: {
+      skipCache?: boolean;
+    }) => Promise<PasswordChangeRecoveryStatus>;
     navigateAfterUnlock?: () => Promise<void>;
   }>
 >;
