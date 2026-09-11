@@ -201,7 +201,7 @@ export function useDeepLinkNavigationTrace(): void {
           return;
         }
 
-        if (pendingUnlockStart) {
+        if (pendingUnlockStart !== null) {
           await pendingUnlockStart;
         }
 

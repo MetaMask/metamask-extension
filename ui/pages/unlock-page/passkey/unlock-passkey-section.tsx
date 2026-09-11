@@ -152,10 +152,12 @@ export const UnlockPasskeySection = ({
         );
         passkeyFailedAttemptCount.current = 0;
       } catch (err) {
-        cancelPendingDeepLinkUnlockTrace(
-          deepLinkTraceId ? await deepLinkTraceId : null,
-          'unlock_failed',
-        );
+        if (deepLinkTraceId !== null) {
+          cancelPendingDeepLinkUnlockTrace(
+            await deepLinkTraceId,
+            'unlock_failed',
+          );
+        }
         if (!isMountedRef.current) {
           return;
         }
