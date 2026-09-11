@@ -342,19 +342,34 @@ describe('LegacyBackgroundApiService', () => {
             .mockReturnValue({ configuration: { chainId: '0x5' }, provider }),
         );
         rootMessenger.registerActionHandler(
-          'TokensController:getState',
+          'AccountsController:getState',
           jest.fn().mockReturnValue({
-            allTokens: {
-              '0x5': {
-                '0xf0d172594caedee459b89ad44c94098e474571b6': [
-                  {
-                    address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-                    decimals: 18,
-                    symbol: 'DAI',
-                  },
-                ],
+            internalAccounts: {
+              accounts: {
+                [accountId]: {
+                  id: accountId,
+                  address: '0xf0d172594caedee459b89ad44c94098e474571b6',
+                  type: 'eip155:eoa',
+                },
               },
             },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'AssetsController:getState',
+          jest.fn().mockReturnValue({
+            assetsInfo: {
+              [assetId]: {
+                type: 'erc20',
+                symbol: 'DAI',
+                decimals: 18,
+                name: 'DAI',
+                image: '',
+              },
+            },
+            assetsBalance: {},
+            customAssets: { [accountId]: [assetId] },
+            assetPreferences: {},
           }),
         );
 
@@ -398,8 +413,19 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn().mockReturnValue({ configuration: { chainId: '0x5' } }),
         );
         rootMessenger.registerActionHandler(
-          'TokensController:getState',
-          jest.fn().mockReturnValue({ allTokens: {} }),
+          'AccountsController:getState',
+          jest.fn().mockReturnValue({
+            internalAccounts: { accounts: {} },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'AssetsController:getState',
+          jest.fn().mockReturnValue({
+            assetsInfo: {},
+            assetsBalance: {},
+            customAssets: {},
+            assetPreferences: {},
+          }),
         );
         const getTokenStandardAndDetails = jest.fn().mockResolvedValue({
           standard: 'ERC20',
@@ -473,8 +499,19 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn().mockReturnValue({ address: '0xabc' }),
         );
         rootMessenger.registerActionHandler(
-          'TokensController:getState',
-          jest.fn().mockReturnValue({ allTokens: {} }),
+          'AccountsController:getState',
+          jest.fn().mockReturnValue({
+            internalAccounts: { accounts: {} },
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'AssetsController:getState',
+          jest.fn().mockReturnValue({
+            assetsInfo: {},
+            assetsBalance: {},
+            customAssets: {},
+            assetPreferences: {},
+          }),
         );
         rootMessenger.registerActionHandler(
           'AssetsContractController:getTokenStandardAndDetails',
@@ -8330,8 +8367,6 @@ function getMessenger(
       'AssetsController:getAssets',
       'AssetsController:getState',
       'AssetsController:setSelectedCurrency',
-      'TokensController:addToken',
-      'TokensController:getState',
       'KeyringController:exportSeedPhrase',
       'KeyringController:getState',
       'AccountsController:getSelectedAccount',

@@ -396,11 +396,6 @@
   "StaticAssetsController": {},
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
-  "TokensController": {
-    "allDetectedTokens": {},
-    "allIgnoredTokens": {},
-    "allTokens": {}
-  },
   "TransactionPayController": { "transactionData": "object" },
   "TxController": {
     "batchTransactionCounts": "object",

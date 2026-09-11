@@ -22,7 +22,6 @@ import { addHexPrefix } from '../../../shared/lib/add-hex-prefix';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { Header, Page } from '../../components/multichain/pages/page';
 import {
-  addImportedTokens,
   getTokenStandardAndDetailsByChain,
   importCustomAssetsBatch,
 } from '../../store/actions';
@@ -33,7 +32,6 @@ import {
 import {
   getAllNetworkConfigurationsByCaipChainId,
   getCurrentChainId,
-  getNetworkConfigurationsByChainId,
 } from '../../../shared/lib/selectors/networks';
 import {
   getInternalAccounts,
@@ -125,7 +123,6 @@ export const CustomTokenImportPage = () => {
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const currentChainId = useSelector(getCurrentChainId) as Hex;
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const allNetworkConfigurations = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
   );
@@ -179,13 +176,6 @@ export const CustomTokenImportPage = () => {
   );
 
   const networkName = selectedNetworkConfig?.name ?? t('currentNetwork');
-  const networkClientId = isEvmChainId(selectedNetwork as CaipChainId | Hex)
-    ? networkConfigurations?.[selectedNetwork as Hex]?.rpcEndpoints?.[
-        networkConfigurations?.[selectedNetwork as Hex]
-          ?.defaultRpcEndpointIndex ?? 0
-      ]?.networkClientId
-    : undefined;
-
   const existingTokens = useMemo(() => {
     const tokens =
       allTokens?.[selectedNetwork]?.[selectedAccount?.address ?? ''] ?? [];
@@ -497,22 +487,6 @@ export const CustomTokenImportPage = () => {
     }
     setIsSubmitting(true);
     try {
-      await dispatch(
-        addImportedTokens(
-          [
-            {
-              address,
-              symbol,
-              decimals: parsedDecimals,
-              isERC721: false,
-            },
-          ],
-          networkClientId,
-        ),
-      );
-
-      // Seed AssetsController so the manage-tokens list (customAssets +
-      // assetsInfo) stays in sync with the import.
       if (selectedAccount?.id) {
         const assetId = toAssetId(
           address as Hex,
@@ -569,7 +543,6 @@ export const CustomTokenImportPage = () => {
     isValid,
     name,
     navigate,
-    networkClientId,
     parsedDecimals,
     selectedAccount?.id,
     selectedNetwork,
