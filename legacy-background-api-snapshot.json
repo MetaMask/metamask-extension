@@ -173,8 +173,6 @@
     "subscriptionsStartPolling",
     "subscriptionsStopPolling",
     "syncAccountTreeWithUserStorage",
-    "tokenDetectionStartPolling",
-    "tokenDetectionStopPollingByPollingToken",
     "trackAnalyticsEvent",
     "trackAnalyticsPage",
     "trackMetaMetricsPage",
