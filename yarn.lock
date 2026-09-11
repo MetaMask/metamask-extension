@@ -5669,30 +5669,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^9.0.0, @metamask/base-controller@npm:^9.0.1, @metamask/base-controller@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "@metamask/base-controller@npm:9.1.0"
+"@metamask/base-controller@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@metamask/base-controller@npm:10.0.0"
   dependencies:
-    "@metamask/messenger": "npm:^1.1.1"
-    "@metamask/utils": "npm:^11.9.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/utils": "npm:^11.12.0"
     immer: "npm:^9.0.6"
-  checksum: 10/752b70b35026fdf31ea8feef638f06286dbbde8d17e1ba804085fdbedbb076d900d2d7b6db3d2af284b3aa8fa84c95a0ceea6a3a46ee7b7e29433f037e9afc69
+  checksum: 10/b09bbf175fe248c592d1e66dcc7d65b324bfd5b16fa95c751ce163dedc97153f19419fca4bb84d2a1c6cfa7b308572cc8ea2ce88cefff1ab4504dba29e9015df
   languageName: node
   linkType: hard
 
-"@metamask/base-data-service@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/base-data-service@npm:1.0.0"
+"@metamask/base-data-service@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/base-data-service@npm:2.0.0"
   dependencies:
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/storage-service": "npm:^1.0.2"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/storage-service": "npm:^2.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^11.12.0"
     "@tanstack/query-core": "npm:^5.62.16"
     cockatiel: "npm:^3.1.2"
     fast-deep-equal: "npm:^3.1.3"
-    lodash: "npm:^4.17.21"
-  checksum: 10/c965dc930a3c172c71624278499f4ec2da829def684c3923b2729d1a31dd2635d5c05230a9dc9ea8546adc029c4e2ed782fdc992be4692d47d9aafdb2d778deb
+    lodash-es: "npm:^4.17.21"
+  checksum: 10/5fd9a9e5f5c75c87e0d8de12714e7376eed8afeb2ddda87a5846344623c216406a7ca871402f55414bf890a8b965f5835f4aee346a2d2ad3875f5a09abb25b04
   languageName: node
   linkType: hard
 
@@ -7144,14 +7144,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/messenger@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/messenger@npm:2.0.0"
+"@metamask/messenger@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/messenger@npm:3.0.0"
   dependencies:
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^11.12.0"
   peerDependencies:
     typescript: ">=5.0.0"
-  checksum: 10/c387511edd89db73b774f631fb4bb382c9254af2dd7f80f9bd45f776e618cf90f653cc0e9744b1bf491f71f99c8318b16e8230a847f619a4fca655ea3f6a08e1
+  checksum: 10/ea335702bc818f0ea42ca8af4dd7c5f77562e650b1b4de9df92614dacaae0c29d6956999ae3cc524038d9ffdcd866890b4dee141323fda5072ae70d3c7d05173
   languageName: node
   linkType: hard
 
@@ -8311,6 +8311,16 @@ __metadata:
     "@metamask/messenger": "npm:^1.2.0"
     "@metamask/utils": "npm:^11.9.0"
   checksum: 10/dda8f1a6c63c98bbd8fa61cd5863e54f8e9801389a96efc69fd8d10011cd194370990bac5b8693c7861e23769237e617946e0304a1dc9ea4da83b8d3fb6c8942
+  languageName: node
+  linkType: hard
+
+"@metamask/storage-service@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/storage-service@npm:2.0.0"
+  dependencies:
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/utils": "npm:^11.12.0"
+  checksum: 10/d59320e5d40e249d4e4789f3bcd3817e8cff2ddceb5f673a274a613313c9cc42280885358e519006067f37c011e754ce522d7e7ffbfd318f1c282d3f072f5be1
   languageName: node
   linkType: hard
 
@@ -31229,8 +31239,8 @@ __metadata:
     "@metamask/assets-controllers": "npm:^111.3.0"
     "@metamask/authenticated-user-storage": "npm:^3.0.2"
     "@metamask/auto-changelog": "npm:^6.2.0"
-    "@metamask/base-controller": "npm:^9.0.1"
-    "@metamask/base-data-service": "npm:^1.0.0"
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/base-data-service": "npm:^2.0.0"
     "@metamask/bitcoin-regtest-up": "npm:^1.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^2.0.1"
     "@metamask/bitcoin-wallet-standard": "npm:^1.1.0"
@@ -31301,7 +31311,7 @@ __metadata:
     "@metamask/logo": "npm:^4.0.0"
     "@metamask/message-manager": "npm:^14.0.0"
     "@metamask/message-signing-snap": "npm:1.1.4"
-    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
     "@metamask/messenger-cli": "npm:^0.2.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/mobile-wallet-protocol-core": "npm:^0.4.0"
