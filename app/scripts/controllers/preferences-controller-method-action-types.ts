@@ -53,8 +53,9 @@ export type PreferencesControllerToggleExternalServicesAction = {
 /**
  * One-time Basic Functionality consolidation when the remote FF turns on.
  * Aligns child preferences, marks the user as consolidated, and schedules
- * the modal/toast notice when needed, then syncs external-service
- * controllers.
+ * the modal/toast notice when needed, then syncs external-service controllers.
+ * Also repairs previously consolidated social-login wallets that still have
+ * Basic Functionality disabled.
  */
 export type PreferencesControllerConsolidateBasicFunctionalityAction = {
   type: `PreferencesController:consolidateBasicFunctionality`;
