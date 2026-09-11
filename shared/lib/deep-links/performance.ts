@@ -178,6 +178,12 @@ export async function removeExpiredPendingDeepLinkNavigations(): Promise<void> {
 }
 
 export async function getCurrentTabId(): Promise<number | null> {
+  // The tabs API is absent outside of tab-hosted contexts, so treat it as
+  // "no tab" rather than letting the missing namespace throw.
+  if (!browser.tabs) {
+    return null;
+  }
+
   const tab = await browser.tabs.getCurrent();
   return tab?.id ?? null;
 }
