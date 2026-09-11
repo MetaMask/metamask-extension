@@ -60,9 +60,9 @@ import { createDeepEqualSelector } from './selector-creators';
 // marketData: DONE
 //
 // MultichainAssetsController
-// accountsAssets: DONE
-// assetsMetadata: DONE
-// allIgnoredAssets: DONE
+// accountsAssets: DONE (via AssetsController when unify enabled; controller removed)
+// assetsMetadata: DONE (via AssetsController.assetsInfo when unify enabled; controller removed)
+// allIgnoredAssets: DONE (via AssetsController.assetPreferences when unify enabled; controller removed)
 //
 // MultichainBalancesController
 // balances: unused (controller removed)

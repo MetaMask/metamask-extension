@@ -115,11 +115,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isWalletResetInProgress: false,
     pna25Acknowledged: false,
   },
-  MultichainAssetsController: {
-    accountsAssets: false,
-    assetsMetadata: false,
-    allIgnoredAssets: false,
-  },
   BridgeController: {
     assetExchangeRates: false,
     minimumBalanceForRentExemptionInLamports: false,

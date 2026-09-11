@@ -184,11 +184,6 @@
     "MoneyAccountUpgradeController": {
       "upgradedAccounts": {}
     },
-    "MultichainAssetsController": {
-      "accountsAssets": {},
-      "allIgnoredAssets": {},
-      "assetsMetadata": {}
-    },
     "MultichainNetworkController": {
       "isEvmSelected": true,
       "multichainNetworkConfigurationsByChainId": {

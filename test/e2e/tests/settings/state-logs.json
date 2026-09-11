@@ -155,9 +155,6 @@
     "accountIdByAddress": {
       "*": "string"
     },
-    "accountsAssets": {
-      "*": "array"
-    },
     "accountState": "null",
     "accountsByChainId": {
       "*": {
@@ -223,7 +220,6 @@
     "allDeFiPositionsCount": {},
     "allDeFiPositionsV2": {},
     "allDetectedTokens": {},
-    "allIgnoredAssets": {},
     "allIgnoredTokens": {},
     "allNftContracts": {},
     "allNfts": {},
@@ -258,21 +254,6 @@
         "decimals": "number",
         "aggregators": [],
         "image": "string"
-      }
-    },
-    "assetsMetadata": {
-      "*": {
-        "name": "string",
-        "symbol": "string",
-        "fungible": "boolean",
-        "iconUrl": "string",
-        "units": [
-          {
-            "name": "string",
-            "symbol": "string",
-            "decimals": "number"
-          }
-        ]
       }
     },
     "assetsPrice": {
