@@ -24,6 +24,7 @@ import {
 } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
+import { useUpgradeMoneyAccount } from '../../hooks/money/use-upgrade-money-account';
 import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountDeposit } from '../../hooks/money/useMoneyAccountDeposit';
@@ -116,6 +117,7 @@ export function MoneyHomePage() {
   const [isTransferSheetOpen, setIsTransferSheetOpen] = useState(false);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
+  useUpgradeMoneyAccount();
   const {
     apyDecimal,
     apyPercentFormatted,
