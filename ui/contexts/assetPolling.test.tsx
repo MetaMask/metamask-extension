@@ -5,7 +5,6 @@ import * as redux from 'react-redux';
 import useCurrencyRatePolling from '../hooks/useCurrencyRatePolling';
 import useTokenRatesPolling from '../hooks/useTokenRatesPolling';
 import useTokenDetectionPolling from '../hooks/useTokenDetectionPolling';
-import useTokenListPolling from '../hooks/useTokenListPolling';
 import useStaticTokensPollingHook from '../hooks/useStaticTokensPolling';
 import useDeFiPolling from '../hooks/defi/useDeFiPolling';
 import useMultichainAssetsRatesPolling from '../hooks/useMultichainAssetsRatesPolling';
@@ -23,7 +22,6 @@ jest.mock('react-redux', () => ({
 jest.mock('../hooks/useCurrencyRatePolling');
 jest.mock('../hooks/useTokenRatesPolling');
 jest.mock('../hooks/useTokenDetectionPolling');
-jest.mock('../hooks/useTokenListPolling');
 jest.mock('../hooks/useStaticTokensPolling');
 jest.mock('../hooks/defi/useDeFiPolling');
 jest.mock('../hooks/useMultichainAssetsRatesPolling');
@@ -34,7 +32,6 @@ const mockUseSelector = jest.mocked(redux.useSelector);
 const mockUseCurrencyRatePolling = jest.mocked(useCurrencyRatePolling);
 const mockUseTokenRatesPolling = jest.mocked(useTokenRatesPolling);
 const mockUseTokenDetectionPolling = jest.mocked(useTokenDetectionPolling);
-const mockUseTokenListPolling = jest.mocked(useTokenListPolling);
 const mockUseStaticTokensPollingHook = jest.mocked(useStaticTokensPollingHook);
 const mockUseDeFiPolling = jest.mocked(useDeFiPolling);
 const mockUseMultichainAssetsRatesPolling = jest.mocked(
@@ -60,7 +57,6 @@ describe('AssetPollingProvider', () => {
     );
     (mockUseTokenRatesPolling as jest.Mock).mockImplementation(() => undefined);
     mockUseTokenDetectionPolling.mockReturnValue({});
-    (mockUseTokenListPolling as jest.Mock).mockImplementation(() => undefined);
     mockUseStaticTokensPollingHook.mockReturnValue({});
     mockUseDeFiPolling.mockReturnValue({});
     (mockUseMultichainAssetsRatesPolling as jest.Mock).mockImplementation(
@@ -88,7 +84,6 @@ describe('AssetPollingProvider', () => {
       expect(mockUseCurrencyRatePolling).toHaveBeenCalledTimes(1);
       expect(mockUseTokenRatesPolling).toHaveBeenCalledTimes(1);
       expect(mockUseTokenDetectionPolling).toHaveBeenCalledTimes(1);
-      expect(mockUseTokenListPolling).toHaveBeenCalledTimes(1);
       expect(mockUseDeFiPolling).toHaveBeenCalledTimes(1);
       expect(mockUseMultichainAssetsRatesPolling).toHaveBeenCalledTimes(1);
       expect(mockUseStaticTokensPollingHook).toHaveBeenCalledTimes(1);
@@ -102,7 +97,6 @@ describe('AssetPollingProvider', () => {
     });
 
     it('calls only AssetsControllerPolling hooks', () => {
-      expect(mockUseTokenListPolling).toHaveBeenCalledTimes(1);
       expect(mockUseDeFiPolling).toHaveBeenCalledTimes(1);
       expect(mockUseStaticTokensPollingHook).toHaveBeenCalledTimes(1);
       expect(mockUseArcDefaultTokens).toHaveBeenCalledTimes(1);

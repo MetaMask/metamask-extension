@@ -91,7 +91,7 @@ export const getIsAssetsUnifyStateEnabled = (
  * appears in the flag's `deprecatedControllers` list.
  *
  * @param state - The MetaMask state object
- * @param controllerName - The controller name to check (e.g. 'TokenListController').
+ * @param controllerName - The controller name to check (e.g. 'TokensController').
  * @returns boolean - True if the controller is deprecated, false otherwise.
  */
 export const getIsControllerDeprecated = (
@@ -109,14 +109,3 @@ export const getIsControllerDeprecated = (
   const featureFlag = getAssetsUnifyStateRemoteFeatureFlag(state);
   return featureFlag?.deprecatedControllers?.includes(controllerName) ?? false;
 };
-
-/**
- * Selector to check whether the `TokenListController` has been deprecated by
- * the assets-unify-state rollout for the running app version.
- *
- * @param state - The MetaMask state object
- * @returns boolean - True if `TokenListController` is deprecated, false otherwise.
- */
-export const getIsTokenListControllerDeprecated = (
-  state: RemoteFeatureFlagsState,
-): boolean => getIsControllerDeprecated(state, 'TokenListController');

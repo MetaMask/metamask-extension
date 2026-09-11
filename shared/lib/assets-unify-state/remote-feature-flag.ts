@@ -69,7 +69,7 @@ export const isAssetsUnifyStateTracesEnabled = (
  * tests do not need to configure remote feature-flag state.
  *
  * @param remoteFeatureFlags - The remote feature flags state.
- * @param controllerName - The controller name to check (e.g. 'TokenListController').
+ * @param controllerName - The controller name to check (e.g. 'TokensController').
  * @returns boolean
  */
 export const getIsDeprecatedController = (

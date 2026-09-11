@@ -6,7 +6,7 @@ import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/envi
 import {
   getAssetsUnifyStateRemoteFeatureFlag,
   getIsAssetsUnifyStateEnabled,
-  getIsTokenListControllerDeprecated,
+  getIsControllerDeprecated,
 } from './feature-flags';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
@@ -176,9 +176,9 @@ describe('Assets Unify State Feature Flags', () => {
     });
   });
 
-  describe('getIsTokenListControllerDeprecated', () => {
+  describe('getIsControllerDeprecated', () => {
     const buildState = (
-      deprecatedControllers: string[] = ['TokenListController'],
+      deprecatedControllers: string[] = ['TokensController'],
     ) => ({
       metamask: {
         remoteFeatureFlags: {
@@ -203,7 +203,9 @@ describe('Assets Unify State Feature Flags', () => {
       // process.env.IN_TEST is always true in Jest (set by test/helpers/setup-helper.js)
       setAssetsUnifyStateEnabled(false);
 
-      expect(getIsTokenListControllerDeprecated(buildState())).toBe(true);
+      expect(getIsControllerDeprecated(buildState(), 'TokensController')).toBe(
+        true,
+      );
     });
 
     describe('outside test environments', () => {
@@ -221,21 +223,26 @@ describe('Assets Unify State Feature Flags', () => {
       it('returns true when assets-unify-state is enabled and the controller is deprecated', () => {
         setAssetsUnifyStateEnabled(true);
 
-        expect(getIsTokenListControllerDeprecated(buildState())).toBe(true);
+        expect(
+          getIsControllerDeprecated(buildState(), 'TokensController'),
+        ).toBe(true);
       });
 
       it('returns false when assets-unify-state is disabled', () => {
         setAssetsUnifyStateEnabled(false);
 
-        expect(getIsTokenListControllerDeprecated(buildState())).toBe(false);
+        expect(
+          getIsControllerDeprecated(buildState(), 'TokensController'),
+        ).toBe(false);
       });
 
       it('returns false when the controller is not in the deprecated list', () => {
         setAssetsUnifyStateEnabled(true);
 
         expect(
-          getIsTokenListControllerDeprecated(
+          getIsControllerDeprecated(
             buildState(['SomeOtherController']),
+            'TokensController',
           ),
         ).toBe(false);
       });
@@ -251,7 +258,9 @@ describe('Assets Unify State Feature Flags', () => {
           },
         };
 
-        expect(getIsTokenListControllerDeprecated(state)).toBe(false);
+        expect(getIsControllerDeprecated(state, 'TokensController')).toBe(
+          false,
+        );
       });
     });
   });

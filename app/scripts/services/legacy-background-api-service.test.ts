@@ -595,7 +595,7 @@ describe('LegacyBackgroundApiService', () => {
   });
 
   describe('getTokenStandardAndDetails', () => {
-    it('gets token data from the token list and a balance retrieved via the global provider', async () => {
+    it('gets imported token data and a balance retrieved via the global provider', async () => {
       const providerResultStub = {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         eth_getCode: '0x123',
@@ -626,23 +626,20 @@ describe('LegacyBackgroundApiService', () => {
             .mockReturnValue({ configuration: { chainId: '0x5' }, provider }),
         );
         rootMessenger.registerActionHandler(
-          'TokenListController:getState',
+          'TokensController:getState',
           jest.fn().mockReturnValue({
-            tokensChainsCache: {
+            allTokens: {
               '0x5': {
-                data: {
-                  '0x6b175474e89094c44da98b954eedeac495271d0f': {
+                '0xf0d172594caedee459b89ad44c94098e474571b6': [
+                  {
+                    address: '0x6b175474e89094c44da98b954eedeac495271d0f',
                     decimals: 18,
                     symbol: 'DAI',
                   },
-                },
+                ],
               },
             },
           }),
-        );
-        rootMessenger.registerActionHandler(
-          'TokensController:getState',
-          jest.fn().mockReturnValue({ allTokens: {} }),
         );
 
         const result = await rootMessenger.call(
@@ -672,10 +669,6 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'NetworkController:getNetworkClientById',
           jest.fn().mockReturnValue({ configuration: { chainId: '0x5' } }),
-        );
-        rootMessenger.registerActionHandler(
-          'TokenListController:getState',
-          jest.fn().mockReturnValue({ tokensChainsCache: {} }),
         );
         rootMessenger.registerActionHandler(
           'TokensController:getState',
@@ -740,10 +733,6 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'AccountsController:getSelectedAccount',
           jest.fn().mockReturnValue({ address: '0xabc' }),
-        );
-        rootMessenger.registerActionHandler(
-          'TokenListController:getState',
-          jest.fn().mockReturnValue({ tokensChainsCache: {} }),
         );
         rootMessenger.registerActionHandler(
           'TokensController:getState',
@@ -8570,7 +8559,6 @@ function getMessenger(
       'AssetsController:getAssets',
       'AssetsController:getState',
       'AssetsController:setSelectedCurrency',
-      'TokenListController:getState',
       'TokensController:addToken',
       'TokensController:getState',
       'KeyringController:exportSeedPhrase',
