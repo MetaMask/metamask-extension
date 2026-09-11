@@ -772,10 +772,78 @@ describe('buildMetricLines', () => {
     );
 
     const { details } = lines[0];
-    expect(details).toContain('absolute ceiling exceeded');
+    expect(details).toContain('fail ceiling exceeded');
     expect(details).toContain('11291ms');
     expect(details).toContain('11050ms');
     expect(details).not.toContain('-72.1%');
+    // No CV adjustment on this violation, so no widening clause is added.
+    expect(details).not.toContain('widened');
+  });
+
+  it('names the tier, so a warn ceiling is not read as a fail ceiling', () => {
+    const lines = buildMetricLines(
+      makeComparison({
+        relativeMetrics: [
+          {
+            metric: 'total',
+            percentile: 'p75',
+            current: 11291,
+            baseline: 11000,
+            delta: 291,
+            deltaPercent: 0.026,
+            severity: COMPARISON_SEVERITY.Pass.value,
+            indication: COMPARISON_SEVERITY.Pass.icon,
+          },
+        ],
+        absoluteViolations: [
+          {
+            metricId: 'total',
+            percentile: 'p75',
+            value: 11291,
+            threshold: 11050,
+            severity: THRESHOLD_SEVERITY.Warn,
+          },
+        ],
+      }),
+    );
+
+    const { details } = lines[0];
+    expect(details).toContain('warn ceiling exceeded');
+    expect(details).not.toContain('fail ceiling exceeded');
+  });
+
+  it('discloses CV widening and the pre-widening ceiling it came from', () => {
+    // 11050 effective = 8840 base x 1.250. Without this the reader sees only
+    // 11050 and cannot tell it was widened by this run's own variance.
+    const lines = buildMetricLines(
+      makeComparison({
+        relativeMetrics: [
+          {
+            metric: 'total',
+            percentile: 'p75',
+            current: 11291,
+            baseline: 11000,
+            delta: 291,
+            deltaPercent: 0.026,
+            severity: COMPARISON_SEVERITY.Pass.value,
+            indication: COMPARISON_SEVERITY.Pass.icon,
+          },
+        ],
+        absoluteViolations: [
+          {
+            metricId: 'total',
+            percentile: 'p75',
+            value: 11291,
+            threshold: 11050,
+            severity: THRESHOLD_SEVERITY.Fail,
+            cvAdjustment: 1.25,
+          },
+        ],
+      }),
+    );
+
+    const { details } = lines[0];
+    expect(details).toContain('widened x1.250 by CV from 8840ms');
   });
 
   it('overrides icon with 🟡 when absolute Warn violation matches the metric', () => {
