@@ -8367,10 +8367,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@metamask/solana-wallet-snap@npm:5.0.1"
-  checksum: 10/b1b02da2d0a3cf0059851d3098654a81e826590b08153f289e83184fbcf4ad621a987d1b16876d2f9b5dca735509db7ce477ca045a73d1e601fb6c314b206294
+"@metamask/solana-wallet-snap@npm:@metamask-previews/solana-wallet-snap@6.0.0-preview-471dac7":
+  version: 6.0.0-preview-471dac7
+  resolution: "@metamask-previews/solana-wallet-snap@npm:6.0.0-preview-471dac7"
+  checksum: 10/686c1ecf8ac9c7abb932514995514232247ab93b1fe25aa057aa75ea1abbd5070de5d5dbbb0caef7045edec8e913bddf8b9eeb01caf81e4cade5453936b95522
   languageName: node
   linkType: hard
 
@@ -31445,7 +31445,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^12.0.1"
     "@metamask/snaps-utils": "npm:^12.6.0"
     "@metamask/solana-test-validator-up": "npm:^1.0.0"
-    "@metamask/solana-wallet-snap": "npm:^5.0.1"
+    "@metamask/solana-wallet-snap": "npm:@metamask-previews/solana-wallet-snap@6.0.0-preview-471dac7"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
     "@metamask/stellar-wallet-snap": "npm:0.1.0"
     "@metamask/storage-service": "npm:^1.0.0"
