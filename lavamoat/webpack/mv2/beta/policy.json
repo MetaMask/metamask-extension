@@ -1659,7 +1659,7 @@
         "@metamask/gator-permissions-controller>@metamask/abi-utils": true,
         "@metamask/base-controller": true,
         "@metamask/delegation-core": true,
-        "@metamask/delegation-deployments": true,
+        "@metamask/gator-permissions-controller>@metamask/delegation-deployments": true,
         "@metamask/snaps-utils": true,
         "@metamask/gator-permissions-controller>@metamask/transaction-controller": true,
         "@metamask/utils": true
@@ -1956,7 +1956,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/delegation-core": true,
-        "@metamask/delegation-deployments": true,
+        "@metamask/money-account-upgrade-controller>@metamask/delegation-deployments": true,
         "@metamask/keyring-controller": true,
         "@metamask/money-account-utils": true,
         "@metamask/utils": true

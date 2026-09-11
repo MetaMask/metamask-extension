@@ -6091,10 +6091,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/delegation-deployments@npm:^1.3.0, @metamask/delegation-deployments@npm:^1.4.0":
+"@metamask/delegation-deployments@npm:^1.4.0":
   version: 1.4.0
   resolution: "@metamask/delegation-deployments@npm:1.4.0"
   checksum: 10/e5e7b83e27daec5b1b61482647d43d4b685954818ff02687e2dbe8169a4dfe199cc8d2ed444242b60425ac2e7d2cf2a5ca29f3e69936abe6a8391f578ec693bb
+  languageName: node
+  linkType: hard
+
+"@metamask/delegation-deployments@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/delegation-deployments@npm:2.0.0"
+  checksum: 10/7f2712ab5e48551880f2ce49d6bd6434b7587772b5053504b1186ae1a894313e9a30ef7ba94cceb7ee80a91c31764ca1a92aec9d8a30de925524a6314f163a7d
   languageName: node
   linkType: hard
 
@@ -31335,7 +31342,7 @@ __metadata:
     "@metamask/core-backend": "npm:^9.1.1"
     "@metamask/delegation-controller": "npm:^3.0.2"
     "@metamask/delegation-core": "npm:^2.0.0"
-    "@metamask/delegation-deployments": "npm:^1.3.0"
+    "@metamask/delegation-deployments": "npm:^2.0.0"
     "@metamask/design-system-react": "npm:^0.41.0"
     "@metamask/design-system-shared": "npm:^0.36.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.13.0"
