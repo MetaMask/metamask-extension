@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { ERC721, ERC1155 } from '@metamask/controller-utils';
 
+import { TextField, TextFieldSize } from '@metamask/design-system-react';
 import {
   Box,
   ButtonIcon,
@@ -8,11 +9,8 @@ import {
   ButtonLink,
   IconName,
   Text,
-  TextField,
-  TextFieldSize,
 } from '../../../../../components/component-library';
 import {
-  BlockSize,
   Display,
   JustifyContent,
   TextColor,
@@ -159,12 +157,9 @@ export const Amount = ({
         {t('amount')}
       </Text>
       <TextField
-        error={Boolean(amountError)}
+        isError={Boolean(amountError)}
         onChange={onChange}
-        onPaste={setAmountInputMethodPasted}
-        onInput={setAmountInputMethodManual}
         placeholder="0"
-        testId="send-amount-input"
         value={amount}
         endAccessory={
           <Box display={Display.Flex}>
@@ -182,9 +177,13 @@ export const Amount = ({
             )}
           </Box>
         }
-        width={BlockSize.Full}
+        className="w-full"
         size={TextFieldSize.Lg}
-        paddingRight={3}
+        inputProps={{
+          'data-testid': 'send-amount-input',
+          onPaste: setAmountInputMethodPasted,
+          onInput: setAmountInputMethodManual,
+        }}
       />
       <Box
         display={Display.Flex}
