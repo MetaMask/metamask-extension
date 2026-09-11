@@ -359,7 +359,7 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   BridgeStatusControllerState &
   ClaimsControllerState &
   CronjobControllerState &
-  CurrencyRateState &
+  Pick<CurrencyRateState, 'currentCurrency' | 'currencyRates'> &
   DecryptMessageControllerState &
   DeFiPositionsControllerState &
   DeFiPositionsControllerV2State &

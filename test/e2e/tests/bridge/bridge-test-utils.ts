@@ -28,11 +28,8 @@ import { mockSegment } from '../metrics/mocks/segment';
 import {
   BRIDGE_ETH_USD_SPOT_PRICE,
   BRIDGE_L2_ETH_USD_SPOT_PRICE,
-  BRIDGE_L2_MOCK_CURRENCY_RATES,
   BRIDGE_L2_WITH_FIXTURES_OPTIONS,
-  BRIDGE_MOCK_CURRENCY_RATES,
   BRIDGE_MOCK_TOKEN_SPOT_PRICES,
-  BRIDGE_MONAD_MOCK_CURRENCY_RATES,
   BRIDGE_MONAD_USD_SPOT_PRICE,
   BRIDGE_MONAD_WITH_FIXTURES_OPTIONS,
   BRIDGE_SOLANA_USD_SPOT_PRICE,
@@ -1526,7 +1523,6 @@ export const getBridgeFixtures = ({
       consentDecisionMade: true,
       optedIn: true,
     })
-    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
     .withTokensController({
       allTokens: {
         '0x1': {
@@ -1660,7 +1656,6 @@ export const getQuoteNegativeCasesFixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
-    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1721,7 +1716,6 @@ export const getBridgeNegativeCasesFixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
-    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1782,7 +1776,6 @@ export const getInsufficientFundsFixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
-    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1837,7 +1830,6 @@ export const getBridgeL2Fixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0xe708')
-    .withCurrencyController(BRIDGE_L2_MOCK_CURRENCY_RATES)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -1927,7 +1919,6 @@ export const getMonadBaseBridgeFixtures = (
 ) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x8f')
-    .withCurrencyController(BRIDGE_MONAD_MOCK_CURRENCY_RATES)
     .withEnabledNetworks({
       eip155: {
         '0x8f': true,
@@ -2096,7 +2087,6 @@ async function mockGasIncludedSwapUSDCtoDAI(mockServer: Mockttp) {
 export const getGasIncludedSwapFixtures = (title?: string) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
-    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
@@ -2228,7 +2218,6 @@ async function mockSentinelNetworksRelayOnly(mockServer: Mockttp) {
 export const getGasless7702SwapFixtures = (title?: string) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
-    .withCurrencyController(BRIDGE_MOCK_CURRENCY_RATES)
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
