@@ -689,36 +689,6 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
       .withRemoteFeatureFlagController({
         remoteFeatureFlags: PERPS_WITHDRAW_CONFIRMATION_FLAG.remoteFeatureFlags,
       })
-      .withTokensController({
-        allTokens: {
-          [CHAIN_IDS.MAINNET]: {
-            [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: [
-              {
-                address: MAINNET_MUSD_ADDRESS,
-                symbol: 'mUSD',
-                image: `https://static.cx.metamask.io/api/v1/tokenIcons/1/${MAINNET_MUSD_ADDRESS.toLowerCase()}.png`,
-                isERC721: false,
-                decimals: MAINNET_MUSD_DECIMALS,
-                aggregators: ['metamask'],
-                name: 'MetaMask USD',
-              },
-            ],
-          },
-          [CHAIN_IDS.ARBITRUM]: {
-            [DEFAULT_FIXTURE_ACCOUNT_LOWERCASE]: [
-              {
-                address: ARBITRUM_USDC_ADDRESS,
-                symbol: 'USDC',
-                image: `https://static.cx.metamask.io/api/v1/tokenIcons/42161/${ARBITRUM_USDC_ADDRESS.toLowerCase()}.png`,
-                isERC721: false,
-                decimals: 6,
-                aggregators: ['metamask'],
-                name: 'USD Coin',
-              },
-            ],
-          },
-        },
-      })
       .withAssetsController({
         customAssets: {
           [DEFAULT_FIXTURE_ACCOUNT_ID]: [

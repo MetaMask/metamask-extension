@@ -57,9 +57,7 @@ import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors
 import {
   addNetwork,
   addCustomAsset,
-  addImportedTokens,
   hideAsset,
-  ignoreTokens as ignoreTokensAction,
   importCustomAssetsBatch,
 } from '../../store/actions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
@@ -997,17 +995,6 @@ export const TokenManagementPage = () => {
       await Promise.allSettled(
         entries.map(async ([, entry]) => {
           if (entry.kind === 'evm') {
-            const { networkClientId } = getNetworkMeta(entry.hexChainId);
-            if (!networkClientId) {
-              return;
-            }
-            await dispatch(
-              ignoreTokensAction({
-                tokensToIgnore: [entry.address],
-                dontShowLoadingIndicator: true,
-                networkClientId,
-              }),
-            );
             if (entry.caipAssetId) {
               await dispatch(hideAsset(entry.caipAssetId));
             }
@@ -1017,7 +1004,7 @@ export const TokenManagementPage = () => {
         }),
       );
     };
-  }, [addCommittedHideKeys, dispatch, getNetworkMeta]);
+  }, [addCommittedHideKeys, dispatch]);
 
   useEffect(() => {
     return () => {
@@ -1225,26 +1212,9 @@ export const TokenManagementPage = () => {
           if (!evmAccount?.id) {
             return;
           }
-          await Promise.all([
-            dispatch(
-              addImportedTokens(
-                [
-                  {
-                    address: payload.assetReference,
-                    symbol: payload.symbol,
-                    decimals: payload.decimals,
-                    isERC721: false,
-                    name: payload.name,
-                    ...(payload.iconUrl ? { image: payload.iconUrl } : {}),
-                  },
-                ],
-                networkClientIdForImport,
-              ),
-            ),
-            dispatch(
-              importEvmSearchResultToUnifiedAssets(evmAccount.id, payload),
-            ),
-          ]);
+          await dispatch(
+            importEvmSearchResultToUnifiedAssets(evmAccount.id, payload),
+          );
 
           trackEvent(tokenAddedEvent);
           if (addedNetwork) {

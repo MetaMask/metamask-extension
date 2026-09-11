@@ -104,21 +104,7 @@ describe('Add hide token', function () {
     const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
     const fixture = new FixtureBuilderV2()
       .withEnabledNetworks({ eip155: { [chainIdHex]: true } })
-      .withTokensController({
-        allTokens: {
-          [chainIdHex]: {
-            [account]: [
-              {
-                address: tokenAddress,
-                decimals: 4,
-                image: undefined,
-                isERC721: false,
-                symbol: 'TST',
-              },
-            ],
-          },
-        },
-      })
+
       .withAssetsController({
         assetsBalance: {
           [DEFAULT_FIXTURE_ACCOUNT_ID]: {
@@ -174,21 +160,7 @@ describe('Add hide token', function () {
     const tstBalanceHolder = { value: '10' };
     const fixture = new FixtureBuilderV2()
       .withEnabledNetworks({ eip155: { [chainIdHex]: true } })
-      .withTokensController({
-        allTokens: {
-          [chainIdHex]: {
-            [account]: [
-              {
-                address: tokenAddress,
-                decimals: 4,
-                image: undefined,
-                isERC721: false,
-                symbol: 'TST',
-              },
-            ],
-          },
-        },
-      })
+
       .withAssetsController({
         assetsBalance: {
           [DEFAULT_FIXTURE_ACCOUNT_ID]: {

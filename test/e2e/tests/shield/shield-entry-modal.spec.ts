@@ -22,21 +22,7 @@ describe('Shield Entry Modal', function () {
               '0x1': true,
             },
           })
-          .withTokensController({
-            allTokens: {
-              '0x1': {
-                '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-                  {
-                    address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                    symbol: 'WETH',
-                    decimals: 18,
-                    isERC721: false,
-                    aggregators: [],
-                  },
-                ],
-              },
-            },
-          })
+
           .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
@@ -96,21 +82,7 @@ describe('Shield Entry Modal', function () {
               '0x1': true,
             },
           })
-          .withTokensController({
-            allTokens: {
-              '0x1': {
-                '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-                  {
-                    address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                    symbol: 'WETH',
-                    decimals: 18,
-                    isERC721: false,
-                    aggregators: [],
-                  },
-                ],
-              },
-            },
-          })
+
           .withAssetsController(getMainnet25EthAssetsControllerPatch())
           .build(),
         title: this.test?.fullTitle(),
