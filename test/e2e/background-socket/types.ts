@@ -9,13 +9,18 @@ export type MessageType = {
     | 'notFound'
     | 'queryTabs'
     | 'waitUntilWindowWithProperty'
-    | 'qrSyncSimulate';
+    | 'qrSyncSimulate'
+    | 'fixtureStateReset'
+    | 'fixtureStateResetError'
+    | 'resetFixtureState';
   tabs?: chrome.tabs.Tab[];
   title?: string;
   property?: WindowProperties;
   value?: string;
   action?: QrSyncSimulatorAction;
   params?: SimulatorParams;
+  error?: string;
+  reloadServiceWorker?: boolean;
 };
 
 export type Handle = {
@@ -27,7 +32,8 @@ export type Handle = {
 export type WindowProperties = 'title' | 'url';
 
 export type ServerMochaEventEmitterType = {
+  connection: [];
   error: [error: Error];
+  fixtureStateReset: [];
   openTabs: [openTabs: chrome.tabs.Tab[]];
-  notFound: [openTabs: chrome.tabs.Tab[]];
 };
