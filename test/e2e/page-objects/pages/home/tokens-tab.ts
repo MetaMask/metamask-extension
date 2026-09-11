@@ -7,6 +7,9 @@ import HomePage from './homepage';
 /** Timeout for waiting on the import-confirm button to disappear after submit. */
 const TOKEN_IMPORT_CONFIRM_TIMEOUT_MS = 20_000;
 
+/** Timeout for assets-controller updates to reach the token list. */
+const TOKEN_LIST_UPDATE_TIMEOUT_MS = 30_000;
+
 const SEARCH_TOKEN_ASSET_IDS: Record<string, string> = {
   BAT: 'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
   CHAI: 'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215',
@@ -243,8 +246,7 @@ class TokensTab extends HomePage {
     expectedTokenBalance: string,
     symbol: string,
   ): Promise<void> {
-    await this.expandLowValueAssetsIfPresent();
-    await this.checkTokenAmountIsDisplayed(`${expectedTokenBalance} ${symbol}`);
+    await this.waitForTokenAmountInList(`${expectedTokenBalance} ${symbol}`);
   }
 
   /**
@@ -394,23 +396,13 @@ class TokensTab extends HomePage {
   ): Promise<void> {
     const { timeout, amountTimeout } = options;
     console.log(`Checking if token ${tokenName} exists in token list`);
-    await this.expandLowValueAssetsIfPresent();
-    await this.driver.waitForSelector(
-      {
-        css: this.tokenName,
-        text: tokenName,
-      },
-      timeout === undefined ? {} : { timeout },
-    );
+    await this.waitForTokenNameInList(tokenName, timeout);
     console.log(`Token "${tokenName}" was found in the token list`);
 
     if (amount) {
-      await this.driver.waitForSelector(
-        {
-          css: this.tokenAmountValue,
-          text: amount,
-        },
-        amountTimeout === undefined ? {} : { timeout: amountTimeout },
+      await this.waitForTokenAmountInList(
+        amount,
+        amountTimeout ?? TOKEN_LIST_UPDATE_TIMEOUT_MS,
       );
       console.log(`Token amount ${amount} was found`);
     }
@@ -1071,7 +1063,7 @@ class TokensTab extends HomePage {
    */
   async openTokenDetails(tokenSymbol: string): Promise<void> {
     console.log(`Opening token details for ${tokenSymbol}`);
-    await this.expandLowValueAssetsIfPresent();
+    await this.waitForTokenNameInList(tokenSymbol);
     await this.driver.clickElement({
       text: tokenSymbol,
       css: this.tokenName,
@@ -1124,6 +1116,84 @@ class TokensTab extends HomePage {
 
   private tokenPercentage(address: string): string {
     return `[data-testid="token-increase-decrease-percentage-${address}"]`;
+  }
+
+  /**
+   * Waits for a token amount, expanding the low-value section if needed.
+   *
+   * @param tokenAmount - Token amount text to wait for.
+   * @param timeout - Maximum time to wait.
+   */
+  private async waitForTokenAmountInList(
+    tokenAmount: string,
+    timeout: number = TOKEN_LIST_UPDATE_TIMEOUT_MS,
+  ): Promise<void> {
+    await this.waitForTokenListUpdate(
+      () =>
+        this.driver.isElementPresentAndVisible(
+          {
+            css: this.tokenAmountValue,
+            text: tokenAmount,
+          },
+          250,
+        ),
+      timeout,
+    );
+  }
+
+  /**
+   * Waits for a token list update, expanding the low-value section if needed.
+   *
+   * @param isExpectedElementVisible - Checks whether the expected element is visible.
+   * @param timeout - Maximum time to wait.
+   */
+  private async waitForTokenListUpdate(
+    isExpectedElementVisible: () => Promise<boolean>,
+    timeout: number,
+  ): Promise<void> {
+    await this.driver.waitUntil(
+      async () => {
+        if (await isExpectedElementVisible()) {
+          return true;
+        }
+
+        const toggleVisible = await this.driver.isElementPresentAndVisible(
+          this.lowValueAssetsToggle,
+          250,
+        );
+
+        if (toggleVisible) {
+          await this.driver.clickElementSafe(this.lowValueAssetsToggle, 1000);
+        }
+
+        return false;
+      },
+      { timeout, interval: 200 },
+    );
+  }
+
+  /**
+   * Waits for a token name, expanding the low-value section if it appears
+   * after the token list's initial render.
+   *
+   * @param tokenName - Token name text to wait for.
+   * @param timeout - Maximum time to wait.
+   */
+  private async waitForTokenNameInList(
+    tokenName: string,
+    timeout: number = TOKEN_LIST_UPDATE_TIMEOUT_MS,
+  ): Promise<void> {
+    await this.waitForTokenListUpdate(
+      () =>
+        this.driver.isElementPresentAndVisible(
+          {
+            css: this.tokenName,
+            text: tokenName,
+          },
+          250,
+        ),
+      timeout,
+    );
   }
 
   /**
