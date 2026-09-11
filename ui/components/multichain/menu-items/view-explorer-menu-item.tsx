@@ -119,9 +119,8 @@ export const ViewExplorerMenuItem = ({
   let actualAddressLink = addressLink;
 
   if (namespace === 'eip155') {
-    // For test networks and custom networks, show actual block explorer URL
-    if (isTestNetwork || (!isPopularNetwork && isCustomNetwork)) {
-      blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
+    // For EIP155 networks, always show actual block explorer URL
+    blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
       // network-specific explorer URL for navigation
       if (blockExplorerUrl) {
         const normalizedAddress = account.address;
@@ -130,10 +129,6 @@ export const ViewExplorerMenuItem = ({
           : `${blockExplorerUrl}/`;
         actualAddressLink = `${baseUrl}address/${normalizedAddress}`;
       }
-    } else {
-      // For popular networks, show etherscan.io
-      blockExplorerUrlSubTitle = 'etherscan.io';
-    }
   } else {
     // For non-EIP155 networks, always show actual block explorer URL
     blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
