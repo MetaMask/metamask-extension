@@ -154,32 +154,10 @@ export const selectPerpsLastDepositTransactionId = (state: PerpsState) =>
 export const selectPerpsLastDepositResult = (state: PerpsState) =>
   state.metamask.lastDepositResult ?? null;
 
-type EventFragmentsState = {
-  metamask: {
-    eventFragments?: Record<
-      string,
-      { properties?: Record<string, unknown> } | undefined
-    >;
-    lastDepositTransactionId?: string | null;
-  };
-};
-
-/**
- * Returns the mm_pay_entry_point from the last deposit transaction's UI
- * metrics fragment, or undefined if not set. Used to customize the deposit
- * toast for Hyperliquid-initiated deposits.
- * @param state
- */
-export const selectPerpsLastDepositEntryPoint = (
-  state: EventFragmentsState,
-): string | undefined => {
-  const transactionId = state.metamask.lastDepositTransactionId;
-  if (!transactionId) {
-    return undefined;
-  }
-  const fragmentId = `transaction-ui-${transactionId}`;
-  const fragment = state.metamask.eventFragments?.[fragmentId];
-  return fragment?.properties?.mm_pay_entry_point as string | undefined;
+export const selectPerpsLastDepositEntryPoint = (state: {
+  metamask: { lastPerpsDepositEntryPoint?: string | null };
+}): string | null => {
+  return state.metamask.lastPerpsDepositEntryPoint ?? null;
 };
 
 export const selectPerpsWithdrawInProgress = (state: PerpsState): boolean =>

@@ -406,58 +406,24 @@ describe('perps-controller selectors', () => {
   });
 
   describe('selectPerpsLastDepositEntryPoint', () => {
-    it('returns entry point from event fragment when present', () => {
+    it('returns entry point from persisted state when present', () => {
       expect(
         selectPerpsLastDepositEntryPoint(
           buildState({
-            lastDepositTransactionId: 'tx-123',
-            eventFragments: {
-              'transaction-ui-tx-123': {
-                properties: {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  mm_pay_entry_point: 'hyperliquid_deposit_prompt',
-                },
-              },
-            },
+            lastPerpsDepositEntryPoint: 'hyperliquid_deposit_prompt',
           }),
         ),
       ).toBe('hyperliquid_deposit_prompt');
     });
 
-    it('returns undefined when no transaction ID exists', () => {
+    it('returns null when no entry point is set', () => {
       expect(
         selectPerpsLastDepositEntryPoint(
           buildState({
-            lastDepositTransactionId: null,
+            lastPerpsDepositEntryPoint: null,
           }),
         ),
-      ).toBeUndefined();
-    });
-
-    it('returns undefined when no event fragment exists for transaction', () => {
-      expect(
-        selectPerpsLastDepositEntryPoint(
-          buildState({
-            lastDepositTransactionId: 'tx-123',
-            eventFragments: {},
-          }),
-        ),
-      ).toBeUndefined();
-    });
-
-    it('returns undefined when event fragment has no entry point property', () => {
-      expect(
-        selectPerpsLastDepositEntryPoint(
-          buildState({
-            lastDepositTransactionId: 'tx-123',
-            eventFragments: {
-              'transaction-ui-tx-123': {
-                properties: {},
-              },
-            },
-          }),
-        ),
-      ).toBeUndefined();
+      ).toBeNull();
     });
   });
 
