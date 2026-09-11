@@ -227,6 +227,10 @@ env:
   # Core Backend Services
   ###
   - MM_BACKEND_WEBSOCKET_URL: wss://gateway.api.cx.metamask.io/v1
+  - MM_BACKEND_ACCOUNTS_API_URL
+  - MM_BACKEND_PRICES_API_URL
+  - MM_BACKEND_TOKEN_API_URL
+  - MM_BACKEND_TOKENS_API_URL
 
   ###
   # Notifications Feature

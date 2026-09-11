@@ -11,6 +11,7 @@ import {
   isDefiControllerV2Enabled,
   type DefiControllerV2FeatureFlag,
 } from '../../../../shared/lib/defi-controller-v2/remote-feature-flag';
+import { getBackendApiUrlsOption } from '../../../../shared/lib/core-backend-api-urls';
 
 /**
  * Cached API client instance shared across init calls (matches AssetsController).
@@ -47,6 +48,7 @@ function getApiClient(
       clientProduct: 'metamask-extension',
       clientVersion: process.env.METAMASK_VERSION,
       getBearerToken: () => safeGetBearerToken(initMessenger),
+      ...getBackendApiUrlsOption(),
     });
   }
   return apiClient;

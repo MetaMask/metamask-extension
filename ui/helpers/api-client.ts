@@ -1,4 +1,5 @@
 import { createApiPlatformClient } from '@metamask/core-backend';
+import { getBackendApiUrlsOption } from '../../shared/lib/core-backend-api-urls';
 import { submitRequestToBackground } from '../store/background-connection';
 import { queryClient } from '../contexts/query-client';
 
@@ -12,4 +13,5 @@ export const apiClient = createApiPlatformClient({
   queryClient: queryClient as unknown as QueryClient,
   getBearerToken: () =>
     submitRequestToBackground<string | undefined>('getBearerToken'),
+  ...getBackendApiUrlsOption(),
 });
