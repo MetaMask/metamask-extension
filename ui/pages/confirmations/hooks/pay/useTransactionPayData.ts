@@ -74,13 +74,20 @@ export function useIsTransactionPayQuotePending() {
   const isPostQuote = useTransactionPayIsPostQuote();
   const hasPositiveRequiredAmount =
     useTransactionPayHasPositiveRequiredAmount();
+  const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
 
   if (isPostQuoteWithdrawTransaction(currentConfirmation)) {
-    const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
-    return (
-      hasPositiveRequiredAmount &&
-      (isLoading || (isPerpsWithdraw && !isPostQuote))
-    );
+    if (isPerpsWithdrawTransaction(currentConfirmation)) {
+      return hasPositiveRequiredAmount && (isLoading || !isPostQuote);
+    }
+
+    // Money-account withdraws carry no `requiredAssets`: Pay derives the
+    // amount from the nested transfer calldata that the debounced amount
+    // update commits in the background. Until it lands, the stored quote is
+    // the no-op quote saved when the destination token was selected, whose
+    // gas-only totals make the amount look fee-free. Stay pending so the rows
+    // load instead of showing that amount and then correcting it.
+    return isLoading || !primaryRequiredToken;
   }
 
   return isLoading;
