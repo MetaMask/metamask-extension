@@ -1,5 +1,11 @@
 import React from 'react';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import {
   en as messages,
   renderWithProvider,
@@ -18,6 +24,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { AssetType } from '../../../shared/constants/transaction';
+import { ETH_TOKEN_IMAGE_URL } from '../../../shared/constants/network';
 import { TokenManagementPage } from './token-management';
 
 const METRICS_PROPERTIES = {
@@ -678,6 +685,32 @@ describe('TokenManagementPage', () => {
     expect(
       await screen.findByTestId('home-network-filter-manage-networks'),
     ).toBeInTheDocument();
+  });
+
+  it('shows the selected network icon in the network filter button', () => {
+    renderPage();
+
+    const networkFilterIcon = screen.getByTestId(
+      'token-management-network-filter-icon',
+    );
+
+    expect(
+      within(networkFilterIcon).getByRole('img', {
+        name: 'Ethereum Mainnet',
+      }),
+    ).toHaveAttribute('src', ETH_TOKEN_IMAGE_URL);
+  });
+
+  it('omits the network filter icon when multiple networks are enabled', () => {
+    renderPage(
+      createState({
+        enabledNetworks: { '0x1': true, '0x5': true },
+      }),
+    );
+
+    expect(
+      screen.queryByTestId('token-management-network-filter-icon'),
+    ).not.toBeInTheDocument();
   });
 
   it('navigates to the dedicated networks page from manage networks in the shared modal', async () => {
