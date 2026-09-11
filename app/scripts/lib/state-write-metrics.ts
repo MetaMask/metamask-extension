@@ -11,7 +11,7 @@ const STATE_WRITE_TRACE_OPERATION = 'state.write';
  * @param event - Value-free measurements for one persisted batch.
  */
 export function trackSplitStateWrite(event: SplitStateWriteEvent): void {
-  const sentry = globalThis.sentry;
+  const { sentry } = globalThis;
   if (!sentry) {
     return;
   }

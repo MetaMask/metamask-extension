@@ -249,14 +249,14 @@ describe('setup-initial-state-hooks', () => {
     it('tolerates a missing stateHooks object when checking idle status', async () => {
       setSelfHref('chrome-extension://abc123/home.html');
       await importFresh();
-      const { PersistenceManager } = jest.requireMock(
+      const persistenceManagerModule = jest.requireMock(
         '../../../shared/lib/stores/persistence-manager',
-      ) as {
-        PersistenceManager: jest.Mock;
-      };
-      const [{ getIsIdle }] = PersistenceManager.mock.calls.at(-1) as [
-        { getIsIdle: () => boolean | undefined },
-      ];
+      ) as Record<string, jest.Mock>;
+      const persistenceManagerConstructor =
+        persistenceManagerModule.PersistenceManager;
+      const [{ getIsIdle }] = persistenceManagerConstructor.mock.calls.at(
+        -1,
+      ) as [{ getIsIdle: () => boolean | undefined }];
       // @ts-expect-error intentional missing hooks for regression coverage
       delete globalThis.stateHooks;
 

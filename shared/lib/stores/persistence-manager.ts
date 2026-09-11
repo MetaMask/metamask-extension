@@ -10,6 +10,7 @@ import {
 import { getManifestFlags } from '../manifestFlags';
 import { VaultCorruptionType } from '../../constants/state-corruption';
 import { StorageWriteErrorType } from '../../constants/app-state';
+import { getPersistenceWriteTelemetrySampleRate } from '../sentry-remote-rates';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
   MetaMaskStateType,
@@ -18,7 +19,6 @@ import type {
   MetaData,
 } from './base-store';
 import { runTrackedTask } from './utils/run-tracked-task';
-import { getPersistenceWriteTelemetrySampleRate } from '../sentry-remote-rates';
 
 export type StorageKind = 'data' | 'split';
 
@@ -804,12 +804,18 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       Object.fromEntries(controllerPairs),
     );
     const isIdle = this.#getIsIdle();
+    let idleStatus: SplitStateWriteEvent['idleStatus'] = 'unknown';
+    if (isIdle === true) {
+      idleStatus = 'idle';
+    } else if (isIdle === false) {
+      idleStatus = 'active';
+    }
 
     this.emit('splitStateWrite', {
       bytesByController,
       coalescedUpdates,
       controllerKeys: controllerPairs.map(([key]) => key),
-      idleStatus: isIdle === undefined ? 'unknown' : isIdle ? 'idle' : 'active',
+      idleStatus,
       measurementDurationMs: performance.now() - measurementStartedAt,
       sampleRate,
       totalBytes,
