@@ -4269,9 +4269,7 @@ describe('LegacyBackgroundApiService', () => {
           'KeyringController:submitPassword',
           expect.anything(),
         );
-        expect(callSpy).toHaveBeenCalledWith(
-          'AccountsController:updateAccounts',
-        );
+        expect(callSpy).toHaveBeenCalledWith('AccountsController:init');
         expect(callSpy).toHaveBeenCalledWith('MultichainAccountService:init');
         expect(callSpy).toHaveBeenCalledWith('AccountTreeController:init');
       });
@@ -4379,9 +4377,7 @@ describe('LegacyBackgroundApiService', () => {
         ).resolves.toBeUndefined();
 
         expect(unlockSpy).toHaveBeenCalledWith(authenticationResponse);
-        expect(callSpy).toHaveBeenCalledWith(
-          'AccountsController:updateAccounts',
-        );
+        expect(callSpy).toHaveBeenCalledWith('AccountsController:init');
         expect(callSpy).toHaveBeenCalledWith('MultichainAccountService:init');
         expect(callSpy).toHaveBeenCalledWith('AccountTreeController:init');
       });
@@ -4405,9 +4401,7 @@ describe('LegacyBackgroundApiService', () => {
           ),
         ).rejects.toThrow(error);
 
-        expect(callSpy).not.toHaveBeenCalledWith(
-          'AccountsController:updateAccounts',
-        );
+        expect(callSpy).not.toHaveBeenCalledWith('AccountsController:init');
       });
     });
   });
@@ -6385,7 +6379,7 @@ describe('LegacyBackgroundApiService', () => {
         const clearUnapprovedTransactions = jest.fn();
         const createWallet = jest.fn().mockResolvedValue(undefined);
         const setIsWalletResetInProgress = jest.fn();
-        const updateAccounts = jest.fn().mockResolvedValue(undefined);
+        const init = jest.fn().mockResolvedValue(undefined);
         const reinit = jest.fn();
         const primaryKeyring = {
           type: 'HD Key Tree',
@@ -6433,10 +6427,7 @@ describe('LegacyBackgroundApiService', () => {
           'KeyringController:getState',
           jest.fn().mockReturnValue({ keyrings: [primaryKeyring] }),
         );
-        rootMessenger.registerActionHandler(
-          'AccountsController:updateAccounts',
-          updateAccounts,
-        );
+        rootMessenger.registerActionHandler('AccountsController:init', init);
         rootMessenger.registerActionHandler(
           'AccountTreeController:reinit',
           reinit,
@@ -8647,7 +8638,7 @@ function getMessenger(
       'SeedlessOnboardingController:submitGlobalPassword',
       'SeedlessOnboardingController:submitPassword',
       'SeedlessOnboardingController:syncLatestGlobalPassword',
-      'AccountsController:updateAccounts',
+      'AccountsController:init',
       'AccountsController:clearState',
       'AccountOrderController:updateHiddenAccountsList',
       'AccountTreeController:clearState',
@@ -8768,10 +8759,7 @@ async function withService<ReturnValue>(
  * @param rootMessenger - The root messenger to register the handlers on.
  */
 function registerUnlockSideEffectHandlers(rootMessenger: RootMessenger): void {
-  rootMessenger.registerActionHandler(
-    'AccountsController:updateAccounts',
-    jest.fn(),
-  );
+  rootMessenger.registerActionHandler('AccountsController:init', jest.fn());
   rootMessenger.registerActionHandler(
     'MultichainAccountService:init',
     jest.fn(),

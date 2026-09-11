@@ -41,7 +41,6 @@ export function getSnapKeyringBuilderMessenger(
       'AccountsController:getAccountByAddress',
       'AccountsController:setAccountName',
       'AccountsController:listMultichainAccounts',
-      'AccountsController:updateAccounts',
       'SnapController:handleRequest',
       'SnapController:getSnap',
       'SnapController:isMinimumPlatformVersion',

@@ -82,7 +82,7 @@ import {
   AccountsControllerListAccountsAction,
   AccountsControllerSetAccountNameAction,
   AccountsControllerSetSelectedAccountAction,
-  AccountsControllerUpdateAccountsAction,
+  AccountsControllerInitAction,
 } from '@metamask/accounts-controller';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import {
@@ -612,7 +612,7 @@ type AllowedActions =
   | AccountsControllerListAccountsAction
   | AccountsControllerSetAccountNameAction
   | AccountsControllerSetSelectedAccountAction
-  | AccountsControllerUpdateAccountsAction
+  | AccountsControllerInitAction
   | AddressBookControllerClearAction
   | ApprovalControllerAcceptRequestAction
   | ApprovalControllerAddAction
@@ -2615,7 +2615,7 @@ export class LegacyBackgroundApiService {
    * tree, and (asynchronously) resyncs and aligns accounts.
    */
   async #initAccountsAfterUnlock(): Promise<void> {
-    await this.#messenger.call('AccountsController:updateAccounts');
+    this.#messenger.call('AccountsController:init');
 
     // Init multichain accounts after creating internal accounts.
     await this.#messenger.call('MultichainAccountService:init');
@@ -4108,10 +4108,8 @@ export class LegacyBackgroundApiService {
       metadata: { id: string };
     };
 
-    // Once we have our first HD keyring available, we re-create the internal list of
-    // accounts (they should be up-to-date already, but we still run `updateAccounts` as
-    // there are some account migration happening in that function).
-    await this.#messenger.call('AccountsController:updateAccounts');
+    // Once we have our first HD keyring available, sync internal accounts from keyring state.
+    this.#messenger.call('AccountsController:init');
 
     // Then we can build the initial tree.
     this.#messenger.call('AccountTreeController:reinit');
@@ -4535,9 +4533,7 @@ export class LegacyBackgroundApiService {
       // now. We re-create the internal list of accounts (which is
       // not an expensive operation, since we should only have 1 HD
       // keyring that has one default account.
-      // TODO: Remove this once the `accounts-controller` once only
-      // depends only on keyrings `:stateChange`.
-      await this.#messenger.call('AccountsController:updateAccounts');
+      this.#messenger.call('AccountsController:init');
 
       // Init multichain accounts after creating internal accounts.
       await this.#messenger.call('MultichainAccountService:init');
