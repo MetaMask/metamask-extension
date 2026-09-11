@@ -11,6 +11,7 @@ import {
   IconColor,
   ButtonBase,
   ButtonBaseSize,
+  twMerge,
 } from '@metamask/design-system-react';
 
 export type DropdownOption<OptionId extends string> = {
@@ -21,12 +22,38 @@ export type DropdownOption<OptionId extends string> = {
 export type DropdownProps<OptionId extends string> = {
   /** Available options */
   options: DropdownOption<OptionId>[];
-  /** Currently selected option ID */
-  selectedId: OptionId;
+  /**
+   * Currently selected option ID, or `null` when the menu holds no selection —
+   * the category rail's overflow menu never does, because the active category
+   * is promoted into the visible row instead.
+   */
+  selectedId: OptionId | null;
   /** Callback when selection changes */
   onChange: (id: OptionId) => void;
   /** Test ID prefix for testing */
   testId: string;
+  /**
+   * Trigger text. Defaults to the selected option's label, which is what a
+   * picker wants; the category rail's overflow menu passes a standing "More"
+   * instead, because its trigger names the menu rather than the selection.
+   */
+  triggerLabel?: string;
+  /** Extra trigger classes, merged after the default picker styling. */
+  triggerClassName?: string;
+  /** Accessible name for the trigger, when its label is not descriptive alone. */
+  triggerAriaLabel?: string;
+  /**
+   * Extra menu classes, merged after the default left-anchored positioning. A
+   * trigger sitting at the inline end needs `right-0 left-auto`, or its menu
+   * opens past the edge of a narrow window.
+   */
+  menuClassName?: string;
+  /**
+   * Whether the trigger should read as holding the current selection. The
+   * category rail sets it when the active category has overflowed into this
+   * menu, so the filter in force is still visible on the rail.
+   */
+  isTriggerActive?: boolean;
 };
 
 /**
@@ -37,12 +64,22 @@ export type DropdownProps<OptionId extends string> = {
  * @param props.selectedId - Currently selected option ID
  * @param props.onChange - Callback when selection changes
  * @param props.testId - Test ID prefix for testing
+ * @param props.triggerLabel - Trigger text, defaulting to the selected label
+ * @param props.triggerClassName - Extra trigger classes
+ * @param props.triggerAriaLabel - Accessible name for the trigger
+ * @param props.menuClassName - Extra menu classes, for anchoring the menu
+ * @param props.isTriggerActive - Whether the trigger holds the current selection
  */
 export const Dropdown = <OptionId extends string>({
   options,
   selectedId,
   onChange,
   testId,
+  triggerLabel,
+  triggerClassName,
+  triggerAriaLabel,
+  menuClassName,
+  isTriggerActive = false,
 }: DropdownProps<OptionId>) => {
   const [isOpen, setIsOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
@@ -74,21 +111,23 @@ export const Dropdown = <OptionId extends string>({
     };
   }, [isOpen]);
 
-  // Focus the selected option when dropdown opens
+  // Focus a menu option when the list opens. With no selection (the category
+  // More menu), land on the first option so Arrow/Enter work immediately.
+  const focusIndexOnOpen = selectedIndex >= 0 ? selectedIndex : 0;
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
   const [prevSelectedIndex, setPrevSelectedIndex] = useState(selectedIndex);
   if (isOpen !== prevIsOpen || selectedIndex !== prevSelectedIndex) {
     setPrevIsOpen(isOpen);
     setPrevSelectedIndex(selectedIndex);
-    if (isOpen && selectedIndex >= 0) {
-      setFocusedIndex(selectedIndex);
+    if (isOpen && options.length > 0) {
+      setFocusedIndex(focusIndexOnOpen);
     }
   }
   useEffect(() => {
-    if (isOpen && selectedIndex >= 0) {
-      optionRefs.current[selectedIndex]?.focus();
+    if (isOpen && options.length > 0) {
+      optionRefs.current[focusIndexOnOpen]?.focus();
     }
-  }, [isOpen, selectedIndex]);
+  }, [focusIndexOnOpen, isOpen, options.length]);
 
   const handleToggle = useCallback(() => {
     setIsOpen((prev) => !prev);
@@ -163,20 +202,37 @@ export const Dropdown = <OptionId extends string>({
       <ButtonBase
         ref={triggerRef}
         size={ButtonBaseSize.Sm}
-        className="flex items-center justify-start gap-1 rounded-lg bg-background-muted px-3 py-2 hover:bg-hover active:opacity-70"
+        className={twMerge(
+          'flex items-center justify-start gap-1 rounded-lg bg-background-muted px-3 py-2 hover:bg-hover active:opacity-70',
+          triggerClassName,
+          // Matches ButtonFilter's active fill, so an overflowed selection
+          // reads the same as a selected pill on the rail.
+          isTriggerActive && 'bg-icon-default hover:bg-icon-default',
+        )}
         onClick={handleToggle}
         onKeyDown={handleTriggerKeyDown}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
+        aria-label={triggerAriaLabel}
         data-testid={`${testId}-button`}
       >
-        <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
-          {selectedOption?.label ?? ''}
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextDefault}
+          // `text-icon-inverse` is the token ButtonFilter flips its own label
+          // to on the active fill, so the two read identically.
+          className={isTriggerActive ? 'text-icon-inverse' : undefined}
+        >
+          {triggerLabel ?? selectedOption?.label ?? ''}
         </Text>
         <Icon
           name={isOpen ? IconName.ArrowUp : IconName.ArrowDown}
           size={IconSize.Xs}
-          color={IconColor.IconDefault}
+          // An Icon does not inherit the trigger's text colour, so on the
+          // active fill the default would be the fill colour itself.
+          color={
+            isTriggerActive ? IconColor.IconInverse : IconColor.IconDefault
+          }
           className="ml-auto"
         />
       </ButtonBase>
@@ -184,7 +240,10 @@ export const Dropdown = <OptionId extends string>({
       {/* Dropdown menu */}
       {isOpen && (
         <Box
-          className="absolute left-0 top-full z-10 mt-1 min-w-[120px] overflow-hidden rounded-lg border border-border-muted bg-background-default shadow-lg"
+          className={twMerge(
+            'absolute left-0 top-full z-10 mt-1 min-w-[120px] overflow-hidden rounded-lg border border-border-muted bg-background-default shadow-lg',
+            menuClassName,
+          )}
           flexDirection={BoxFlexDirection.Column}
           role="listbox"
           aria-activedescendant={

@@ -4,8 +4,8 @@ import { Driver } from '../../../webdriver/driver';
  * The Perps Market List: search, filter/sort, and picking a market to open.
  *
  * Screen: `#/perps/market-list`, reached from `PerpsTab.clickExploreMarketsRow`.
- * Owns: the market list view, filter/sort controls, market rows, dismissing
- * the perps toast that can intercept clicks, and header back.
+ * Owns: the market list view, category rail / watchlist filter, sort controls,
+ * market rows, dismissing the perps toast that can intercept clicks, and header back.
  * Boundaries: selecting a row only navigates — market detail interactions
  * belong to `PerpsMarketDetailPage`. Toast content beyond the close control
  * is out of scope.
@@ -15,19 +15,15 @@ import { Driver } from '../../../webdriver/driver';
  * @see ui/pages/perps/market-list/index.tsx
  */
 export class PerpsMarketListPage {
+  private readonly categoryPill = (optionId: string) => ({
+    testId: `market-list-categories-pill-${optionId}`,
+  });
+
   private readonly driver: Driver;
 
   private readonly exploreMarketsRow = {
     testId: 'perps-explore-markets-row',
   };
-
-  private readonly filterOption = (optionId: string) => {
-    return {
-      xpath: `//*[@data-testid='filter-select-button'][contains(normalize-space(.), '${optionId}')]`,
-    };
-  };
-
-  private readonly filterSelectButton = { testId: 'filter-select-button' };
 
   private readonly filterSortRow = { testId: 'market-list-filter-sort-row' };
 
@@ -63,8 +59,13 @@ export class PerpsMarketListPage {
     testId: 'sort-dropdown-option-volumeLow',
   };
 
-  constructor(driver: Driver) {
-    this.driver = driver;
+  private readonly watchlistFilterActive = {
+    xpath:
+      "//*[@data-testid='market-list-watchlist-toggle' and @aria-pressed='true']",
+  };
+
+  constructor(webDriver: Driver) {
+    this.driver = webDriver;
   }
 
   /**
@@ -95,15 +96,6 @@ export class PerpsMarketListPage {
     await this.driver.fill(this.searchInput, query);
   }
 
-  /**
-   * Returns the selector for a filter dropdown option (e.g. 'all', 'crypto').
-   *
-   * @param optionId - The filter option id (e.g. 'all', 'crypto').
-   */
-  private getFilterOptionSelector(optionId: string): { testId: string } {
-    return { testId: `filter-select-option-${optionId}` };
-  }
-
   async isPageLoaded(timeout = 2000): Promise<boolean> {
     return this.driver.isElementPresentAndVisible(this.parentSelector, timeout);
   }
@@ -124,15 +116,14 @@ export class PerpsMarketListPage {
   }
 
   /**
-   * Selects a filter by type (e.g. 'crypto', 'all').
-   * Opens the filter dropdown and clicks the option.
+   * Selects a market category via the category pill rail.
    *
-   * @param optionId - 'all' | 'crypto' | 'stock' | 'commodity' | 'forex' | 'new'
+   * @param optionId - 'crypto' | 'stock' | 'commodity' | 'forex' | 'new' | …
    */
   async selectFilter(optionId: string): Promise<void> {
-    await this.driver.waitForSelector(this.filterSelectButton);
-    await this.driver.clickElement(this.filterSelectButton);
-    await this.driver.clickElement(this.getFilterOptionSelector(optionId));
+    const pill = this.categoryPill(optionId);
+    await this.driver.waitForSelector(pill);
+    await this.driver.clickElement(pill);
   }
 
   /**
@@ -163,12 +154,31 @@ export class PerpsMarketListPage {
   }
 
   /**
-   * Waits for the filter dropdown button to show the given label (e.g. "All", "Crypto", "Stocks").
+   * Waits until the list reflects the expected filter.
+   * Watchlist uses the header star toggle; categories use an active pill on the rail.
    *
-   * @param label - Expected visible label on the filter button.
+   * @param label - 'Watchlist' or a category label such as 'Crypto'.
    */
   async waitForFilterLabel(label: string): Promise<void> {
-    await this.driver.waitForSelector(this.filterOption(label));
+    if (label === 'Watchlist') {
+      await this.driver.waitForSelector(this.watchlistFilterActive);
+      return;
+    }
+
+    const optionIdByLabel: Record<string, string> = {
+      Crypto: 'crypto',
+      Stocks: 'stock',
+      Commodities: 'commodity',
+      Forex: 'forex',
+    };
+    const optionId = optionIdByLabel[label];
+    if (!optionId) {
+      throw new Error(`Unsupported filter label for category rail: ${label}`);
+    }
+
+    await this.driver.waitForSelector({
+      xpath: `//*[@data-testid='market-list-categories-pill-${optionId}' and @aria-pressed='true']`,
+    });
   }
 
   /**

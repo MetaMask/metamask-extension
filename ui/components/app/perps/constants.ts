@@ -5,6 +5,12 @@
  * These may eventually be moved to core.
  */
 
+import { IconName } from '@metamask/design-system-react';
+import type {
+  MarketCategoryFilter,
+  MarketFilter,
+} from '../../../../shared/constants/perps';
+
 /**
  * Height of list item rows (positions, orders, markets, transactions).
  * Matches ASSET_CELL_HEIGHT from the tokens tab for visual consistency.
@@ -120,3 +126,61 @@ export const HIP3_MARKET_CONFIG = {
     return Boolean(marketSource && allowedSources.has(marketSource));
   },
 } as const;
+
+/**
+ * i18n label key for every market filter. Driven by the controller's
+ * `MARKET_CATEGORIES` plus the UI-only `all` / `new` pseudo-filters and the
+ * `watchlist` user-state filter — adding a core category only requires a new
+ * label key here.
+ *
+ * Shared by every surface that labels a category: the market-list filter
+ * dropdown and the Perps tab category pills, so the two cannot drift.
+ */
+export const MARKET_FILTER_LABEL_KEYS: Record<MarketFilter, string> = {
+  all: 'perpsFilterAll',
+  // Reuses the Perps tab section heading rather than adding a duplicate string.
+  watchlist: 'perpsWatchlist',
+  crypto: 'perpsFilterCrypto',
+  stock: 'perpsFilterStocks',
+  'pre-ipo': 'perpsFilterPreIpo',
+  index: 'perpsFilterIndex',
+  etf: 'perpsFilterEtf',
+  commodity: 'perpsFilterCommodities',
+  forex: 'perpsFilterForex',
+  new: 'perpsFilterNew',
+};
+
+/**
+ * Leading glyph for each product category chip, taken from the Products design
+ * (Figma `13192:28387`). Indices and ETFs deliberately share `Chart` — the
+ * design uses one bar-chart glyph for both.
+ */
+export const MARKET_CATEGORY_ICONS: Record<MarketCategoryFilter, IconName> = {
+  // `all` never renders a chip; kept so the record stays exhaustive.
+  all: IconName.Category,
+  crypto: IconName.Ethereum,
+  stock: IconName.Diagram,
+  'pre-ipo': IconName.Rocket,
+  commodity: IconName.Tint,
+  index: IconName.Chart,
+  new: IconName.Fire,
+  forex: IconName.Exchange,
+  etf: IconName.Chart,
+};
+
+/**
+ * Product chip order on the Perps tab, owned by the design rather than the
+ * controller: the Products section interleaves `new` and puts `commodity`
+ * ahead of `index`, which `MARKET_CATEGORIES` does not. Kept explicit so a
+ * controller reordering cannot silently reshuffle the tab.
+ */
+export const PERPS_PRODUCT_CATEGORIES = [
+  'crypto',
+  'stock',
+  'pre-ipo',
+  'commodity',
+  'index',
+  'new',
+  'forex',
+  'etf',
+] as const satisfies readonly MarketCategoryFilter[];

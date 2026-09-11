@@ -7848,12 +7848,6 @@
   "perpsSortByPriceChange": {
     "message": "Perubahan harga"
   },
-  "perpsSortByRank": {
-    "message": "Peringkat"
-  },
-  "perpsSortBySection": {
-    "message": "Urutkan sesuai"
-  },
   "perpsSortByTitle": {
     "message": "Filter"
   },

@@ -7841,12 +7841,6 @@
   "perpsSortByPriceChange": {
     "message": "प्राइस में बदलाव"
   },
-  "perpsSortByRank": {
-    "message": "रैंक"
-  },
-  "perpsSortBySection": {
-    "message": "इसके अनुसार क्रमबद्ध करें"
-  },
   "perpsSortByTitle": {
     "message": "फिल्टर"
   },

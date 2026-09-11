@@ -7848,12 +7848,6 @@
   "perpsSortByPriceChange": {
     "message": "가격 변동"
   },
-  "perpsSortByRank": {
-    "message": "순위"
-  },
-  "perpsSortBySection": {
-    "message": "정렬 기준"
-  },
   "perpsSortByTitle": {
     "message": "필터"
   },

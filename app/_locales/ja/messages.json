@@ -7848,12 +7848,6 @@
   "perpsSortByPriceChange": {
     "message": "価格変動"
   },
-  "perpsSortByRank": {
-    "message": "ランキング"
-  },
-  "perpsSortBySection": {
-    "message": "並べ替え基準"
-  },
   "perpsSortByTitle": {
     "message": "フィルター"
   },

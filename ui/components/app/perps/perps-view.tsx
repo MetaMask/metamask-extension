@@ -52,6 +52,7 @@ import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
 import { PerpsMarketBalanceActions } from './perps-market-balance-actions';
 import { CloseAllPositionsModal } from './close-position/close-all-positions-modal';
 import { PerpsExploreMarkets } from './perps-explore-markets';
+import { PerpsProducts } from './perps-products';
 import { PerpsPositionsOrders } from './perps-positions-orders';
 import { PerpsRecentActivity } from './perps-recent-activity';
 import { PERPS_TOAST_KEYS, usePerpsToast } from './perps-toast';
@@ -451,6 +452,9 @@ export const PerpsView = () => {
         </Box>
         <PerpsSectionSkeleton cardCount={5} showStartTradeCta />
         <PerpsSectionSkeleton cardCount={5} />
+        {/* Reserves the Products section's height in the same slot it occupies
+            once loaded, so nothing below it shifts when the chips arrive. */}
+        <PerpsProducts isLoading />
         <Box data-testid="perps-recent-activity-skeleton">
           <PerpsSectionSkeleton cardCount={3} showStartTradeCta={false} />
         </Box>
@@ -493,6 +497,10 @@ export const PerpsView = () => {
 
       {/* Watchlist */}
       <PerpsWatchlist markets={watchlistMarkets} />
+
+      {/* Products: the tab's shortcut into the full market list, below the
+          user's own watchlist so their own markets come first. */}
+      <PerpsProducts isLoading={marketsLoading} />
 
       {/* Top movers */}
       <PerpsTopMovers markets={allMarkets} isLoading={marketsLoading} />

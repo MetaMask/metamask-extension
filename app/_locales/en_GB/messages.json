@@ -7640,6 +7640,10 @@
   "perpsFilterAll": {
     "message": "All"
   },
+  "perpsFilterClear": {
+    "message": "$1, clear filter",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "Commodities"
   },
@@ -7647,13 +7651,21 @@
     "message": "Crypto"
   },
   "perpsFilterEtf": {
-    "message": "ETF"
+    "message": "ETFs"
   },
   "perpsFilterForex": {
     "message": "Forex"
   },
   "perpsFilterIndex": {
-    "message": "Index"
+    "message": "Indices"
+  },
+  "perpsFilterMore": {
+    "message": "More",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "More, $1 selected",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "New"
@@ -7750,6 +7762,14 @@
   },
   "perpsMarket": {
     "message": "Market"
+  },
+  "perpsMarketCategories": {
+    "message": "Market categories",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1 markets",
+    "description": "Count of markets currently listed. $1 is the number of markets"
   },
   "perpsMarketNotFound": {
     "message": "Market not found"
@@ -7937,6 +7957,10 @@
   "perpsPositions": {
     "message": "Positions"
   },
+  "perpsProducts": {
+    "message": "Products",
+    "description": "Heading of the Perps tab section listing market categories as chips"
+  },
   "perpsRateLimitExceeded": {
     "message": "Too many requests. Please wait and try again."
   },
@@ -8051,14 +8075,8 @@
   "perpsSortByPriceChange": {
     "message": "Price change"
   },
-  "perpsSortByRank": {
-    "message": "Rank"
-  },
-  "perpsSortBySection": {
-    "message": "Sort by"
-  },
   "perpsSortByTitle": {
-    "message": "Filter"
+    "message": "Sort by"
   },
   "perpsSortByVolume": {
     "message": "Volume"
