@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { SolAccountType } from '@metamask/keyring-api';
 import {
   CSSTransition as CSSTransitionComponent,
   TransitionGroup,
@@ -8,10 +7,10 @@ import {
 import { Box, BoxProps } from '../../component-library';
 import { getSelectedAccount } from '../../../selectors';
 import type { CarouselProps, CarouselState } from './types';
-import { MAX_SLIDES } from './constants';
 import { StackCard } from './stack-card';
 import { StackCardEmpty } from './stack-card-empty';
 import { useTransitionToNextCard } from './animations/useTransitionToNextCard';
+import { getVisibleCarouselSlides } from './utils';
 
 export const Carousel = React.forwardRef(
   (
@@ -46,18 +45,10 @@ export const Carousel = React.forwardRef(
     }, []);
 
     // Filter visible slides
-    const visibleSlides = slides
-      .filter((slide) => {
-        if (
-          slide.variableName === 'solana' &&
-          selectedAccount?.type === SolAccountType.DataAccount
-        ) {
-          return false;
-        }
-        // All cards are dismissable in this implementation - ignore undismissable property
-        return !slide.dismissed;
-      })
-      .slice(0, MAX_SLIDES);
+    const visibleSlides = getVisibleCarouselSlides(
+      slides,
+      selectedAccount?.type,
+    );
 
     const currentSlide = visibleSlides[state.activeSlideIndex];
     const nextSlide = visibleSlides[state.activeSlideIndex + 1];

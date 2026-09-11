@@ -43,6 +43,10 @@ import {
 } from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { usePasskeyUnlock } from '../../../hooks/passkey/usePasskeyUnlock';
+import {
+  cancelPendingDeepLinkUnlockTrace,
+  startPendingDeepLinkUnlockTrace,
+} from '../../../hooks/useDeepLinkNavigationTrace';
 
 export type UnlockPasskeySectionProps = {
   logoSection: ReactNode;
@@ -114,6 +118,7 @@ export const UnlockPasskeySection = ({
         authenticator_id: passkeyAuthenticatorId,
         /* eslint-enable @typescript-eslint/naming-convention */
       };
+      let deepLinkTraceId: Promise<string | null> | null = null;
       try {
         trackEvent(
           createEventBuilder(MetaMetricsEventName.PasskeyUnlockInteracted)
@@ -125,6 +130,7 @@ export const UnlockPasskeySection = ({
             .build(),
         );
 
+        deepLinkTraceId = startPendingDeepLinkUnlockTrace();
         await unlockWithPasskey();
         await onUnlockSuccess();
 
@@ -146,6 +152,12 @@ export const UnlockPasskeySection = ({
         );
         passkeyFailedAttemptCount.current = 0;
       } catch (err) {
+        if (deepLinkTraceId !== null) {
+          cancelPendingDeepLinkUnlockTrace(
+            await deepLinkTraceId,
+            'unlock_failed',
+          );
+        }
         if (!isMountedRef.current) {
           return;
         }

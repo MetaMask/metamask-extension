@@ -7,6 +7,19 @@ import {
 } from '../../../../shared/lib/deep-links/constants';
 import { ParsedDeepLink, parse } from '../../../../shared/lib/deep-links/parse';
 import ExtensionPlatform from '../../platforms/extension';
+import {
+  clearPendingDeepLinkNavigation,
+  getPendingDeepLinkNavigation,
+  removeExpiredPendingDeepLinkNavigations,
+  setPendingDeepLinkNavigation,
+} from '../../../../shared/lib/deep-links/performance';
+import {
+  endTrace,
+  getPerformanceTimestamp,
+  trace,
+  TraceName,
+  TraceOperation,
+} from '../../../../shared/lib/trace';
 import { DeepLinkRouter } from './deep-link-router';
 
 // the Jest type for it is wrong
@@ -19,6 +32,10 @@ jest.mock('webextension-polyfill', () => ({
   tabs: {
     update: jest.fn(),
     TAB_ID_NONE: -1,
+    onRemoved: {
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+    },
   },
   webRequest: {
     onBeforeRequest: {
@@ -36,6 +53,26 @@ jest.mock('webextension-polyfill', () => ({
 const parseMock = parse as jest.MockedFunction<typeof parse>;
 jest.mock('../../../../shared/lib/deep-links/parse', () => ({
   parse: jest.fn(),
+}));
+jest.mock('../../../../shared/lib/deep-links/performance', () => ({
+  clearPendingDeepLinkNavigation: jest.fn(),
+  getDeepLinkUrlTags: jest.fn(() => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+    deeplink_route: 'external-route',
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+    deeplink_variant: 'default',
+    signed: false,
+  })),
+  getPendingDeepLinkNavigation: jest.fn(),
+  removeExpiredPendingDeepLinkNavigations: jest.fn(),
+  removePendingDeepLinkNavigation: jest.fn(),
+  setPendingDeepLinkNavigation: jest.fn(),
+}));
+jest.mock('../../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../../shared/lib/trace'),
+  endTrace: jest.fn(),
+  getPerformanceTimestamp: jest.fn(() => 1_000),
+  trace: jest.fn(() => ({})),
 }));
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(true);
@@ -77,6 +114,10 @@ describe('DeepLinkRouter', () => {
   let router: DeepLinkRouter;
 
   beforeEach(() => {
+    jest.mocked(getPendingDeepLinkNavigation).mockResolvedValue(null);
+    jest.mocked(removeExpiredPendingDeepLinkNavigations).mockResolvedValue();
+    jest.mocked(setPendingDeepLinkNavigation).mockResolvedValue();
+    jest.mocked(clearPendingDeepLinkNavigation).mockResolvedValue();
     router = new DeepLinkRouter({
       getExtensionURL: new ExtensionPlatform().getExtensionURL,
       getState,
@@ -104,6 +145,10 @@ describe('DeepLinkRouter', () => {
           { urls: [`*://*.${DEEP_LINK_HOST}/*`], types: ['main_frame'] },
           mockIsManifestV3() ? [] : ['blocking'],
         );
+        expect(browser.tabs.onRemoved.addListener).toHaveBeenCalledWith(
+          expect.any(Function),
+        );
+        expect(removeExpiredPendingDeepLinkNavigations).toHaveBeenCalled();
       },
     );
   });
@@ -114,6 +159,9 @@ describe('DeepLinkRouter', () => {
       expect(
         browser.webRequest.onBeforeRequest.removeListener,
       ).toHaveBeenCalledWith(expect.any(Function));
+      expect(browser.tabs.onRemoved.removeListener).toHaveBeenCalledWith(
+        expect.any(Function),
+      );
     });
   });
 
@@ -141,6 +189,128 @@ describe('DeepLinkRouter', () => {
         expect(response).toEqual(mockIsManifestV3() ? {} : { cancel: true });
       },
     );
+
+    it('records Processed and stores Navigated handoff for an internal route', async () => {
+      const tabId = 1;
+      parseMock.mockResolvedValue({
+        signature: 'valid',
+        route: { pathname: '/swap' },
+        destination: {
+          path: 'cross-chain/swap',
+          query: new URLSearchParams(),
+        },
+      } as ParsedDeepLink);
+
+      await onBeforeRequest?.({
+        tabId,
+        url: 'https://link.metamask.io/swap',
+        initiator: 'https://metamask.io',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(getPerformanceTimestamp).toHaveBeenCalledTimes(1);
+      expect(trace).toHaveBeenCalledWith({
+        name: TraceName.DeeplinkProcessed,
+        id: expect.any(String),
+        op: TraceOperation.DeeplinkPerformance,
+        data: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+          deeplink_activation_id: expect.any(String),
+        },
+        tags: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+          deeplink_route: 'external-route',
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+          deeplink_variant: 'default',
+          signed: false,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+          start_source: 'parse',
+        },
+      });
+      expect(parseMock).toHaveBeenCalledWith(
+        new URL('https://link.metamask.io/swap'),
+        { traceContext: {} },
+      );
+      expect(setPendingDeepLinkNavigation).toHaveBeenCalledWith(tabId, {
+        id: expect.any(String),
+        intakeTimestamp: 1_000,
+        createdAt: expect.any(Number),
+        urlTags: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+          deeplink_route: 'external-route',
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+          deeplink_variant: 'default',
+          signed: false,
+        },
+        targetRoute: '/swap',
+        interstitial: 'skipped',
+      });
+      expect(endTrace).toHaveBeenCalledWith({
+        name: TraceName.DeeplinkProcessed,
+        id: expect.any(String),
+        data: {
+          success: true,
+          seam: 'pre_navigate',
+          segment: 'full',
+          interstitial: 'skipped',
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+          target_route: '/swap',
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+          signature_status: 'valid',
+        },
+      });
+    });
+
+    it('records rejected Processed when parsing returns false', async () => {
+      parseMock.mockResolvedValue(false);
+
+      await onBeforeRequest?.({
+        tabId: 1,
+        url: 'https://link.metamask.io/unsupported',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(endTrace).toHaveBeenCalledWith({
+        name: TraceName.DeeplinkProcessed,
+        id: expect.any(String),
+        data: {
+          success: false,
+          reason: 'rejected',
+          segment: 'full',
+        },
+      });
+      expect(setPendingDeepLinkNavigation).not.toHaveBeenCalled();
+    });
+
+    it('records signature_status from parse, independent of the signed URL tag', async () => {
+      parseMock.mockResolvedValue({
+        signature: 'invalid',
+        route: { pathname: '/home' },
+        destination: {
+          path: '',
+          query: new URLSearchParams(),
+        },
+      } as ParsedDeepLink);
+
+      await onBeforeRequest?.({
+        tabId: 1,
+        url: 'https://link.metamask.io/home?sig=foo',
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+
+      expect(trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.DeeplinkProcessed,
+          tags: expect.objectContaining({ signed: false }),
+        }),
+      );
+      expect(endTrace).toHaveBeenCalledWith({
+        name: TraceName.DeeplinkProcessed,
+        id: expect.any(String),
+        data: expect.objectContaining({
+          success: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+          signature_status: 'invalid',
+        }),
+      });
+    });
 
     // by default, the router should not skip the interstitial page for either signed or unsigned links
     it.each([{ signed: true }, { signed: false }])(
