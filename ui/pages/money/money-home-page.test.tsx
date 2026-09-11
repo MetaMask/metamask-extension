@@ -243,9 +243,14 @@ describe('MoneyHomePage', () => {
       messages.addFunds.message,
       messages.moneySend.message,
       messages.moneyLearnMore.message,
+      messages.moneyMoreOptions.message,
     ];
     screen.getAllByRole('button').forEach((button) => {
-      if (activeLabels.includes(button.textContent ?? '')) {
+      if (
+        activeLabels.includes(
+          button.textContent || (button.getAttribute('aria-label') ?? ''),
+        )
+      ) {
         expect(button).toBeEnabled();
       } else {
         expect(button).toBeDisabled();
@@ -367,8 +372,12 @@ describe('MoneyHomePage', () => {
     expect(screen.getByTestId('money-add-button')).toBeEnabled();
     screen.getAllByRole('button').forEach((button) => {
       if (
-        [messages.moneyAdd.message, messages.moneySend.message].includes(
-          button.textContent ?? '',
+        [
+          messages.moneyAdd.message,
+          messages.moneySend.message,
+          messages.moneyMoreOptions.message,
+        ].includes(
+          button.textContent || (button.getAttribute('aria-label') ?? ''),
         )
       ) {
         expect(button).toBeEnabled();

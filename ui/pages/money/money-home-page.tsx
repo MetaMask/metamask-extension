@@ -6,7 +6,6 @@ import {
   BannerAlert,
   BannerAlertSeverity,
   Button,
-  ButtonIcon,
   ButtonVariant,
   FontWeight,
   Icon,
@@ -41,6 +40,7 @@ import {
   MAX_PREVIEW_ITEMS,
 } from './components/money-activity-list';
 import { MoneyCondensedInfoCards } from './components/money-condensed-info-cards';
+import { MoneyMoreMenu } from './components/money-more-menu';
 import { MoneyPotentialEarnings } from './components/money-potential-earnings';
 import { MoneyPositionPlaceholder } from './components/money-position-placeholder';
 import { MoneyActivityFilter } from './utils/money-activity-filters';
@@ -245,11 +245,7 @@ export function MoneyHomePage() {
           <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
             {t('money')}
           </Text>
-          <ButtonIcon
-            iconName={IconName.MoreVertical}
-            ariaLabel={t('moneyMoreOptions')}
-            disabled
-          />
+          <MoneyMoreMenu />
         </header>
 
         {isBalanceFetchError ? (
