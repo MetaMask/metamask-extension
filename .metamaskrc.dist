@@ -98,6 +98,15 @@ BLOCKAID_PUBLIC_KEY=
 ; Set this to `true` to enable `AuthenticationController` environment config to match the extension's build type. If set to `true`, `beta` and `uat` builds will result in using `Env.UAT`. Leaving it to `false` or unset will use `Env.PRD`.
 ; FORCE_AUTH_MATCH_BUILD='false'
 
+; Set to `dev` to point AuthenticationController and identity services
+; (User Storage, Profile Metrics, Config Registry, Authenticated User Storage)
+; at DEV backends. Defaults to prod, and is ignored outside local development
+; (`yarn start`) builds. Restart `yarn start` after changing.
+; Enabling DEV will break authenticated services that still talk to PRD
+; (notifications, shield, money-account, bridge, perps). After flipping,
+; clear the auth session from Settings → Debug → Backup and sync.
+; MM_DEV_API_ENV=dev
+
 ; This variable is required to run performance tests
 TEST_SRP_2=
 

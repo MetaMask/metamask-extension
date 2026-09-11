@@ -18,17 +18,16 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useMoneyActivityDisplayInfo } from '../../../hooks/money/use-money-activity-display';
 import {
-  getMoneyActivityDisplayInfo,
-  type MoneyActivityTranslate,
-} from '../utils/money-activity-display';
-import type { MoneyActivityItem } from '../types/money-activity';
+  isOnchainMoneyActivityItem,
+  type MoneyActivityItem,
+} from '../types/money-activity';
 
 export type MoneyActivityRowProps = {
   item: MoneyActivityItem;
   privacyMode?: boolean;
-  onClick?: () => void;
+  onItemClick?: (item: MoneyActivityItem) => void;
 };
 
 function getAmountColor({
@@ -50,16 +49,16 @@ function getAmountColor({
 export function MoneyActivityRow({
   item,
   privacyMode = false,
-  onClick,
+  onItemClick,
 }: MoneyActivityRowProps) {
-  const t = useI18nContext() as MoneyActivityTranslate;
-  const display = getMoneyActivityDisplayInfo(item.tx, t);
+  const display = useMoneyActivityDisplayInfo(item);
   const isFailed = display.status === 'failed';
   const isPending = display.status === 'pending';
   const amountColor = getAmountColor({
     isFailed,
     isIncoming: display.isIncoming,
   });
+  const isClickable = Boolean(onItemClick) && isOnchainMoneyActivityItem(item);
 
   const content = (
     <>
@@ -138,11 +137,11 @@ export function MoneyActivityRow({
 
   const rowClassName = 'flex w-full items-center gap-4 p-4';
 
-  if (onClick) {
+  if (isClickable && onItemClick) {
     return (
       <button
         type="button"
-        onClick={onClick}
+        onClick={() => onItemClick(item)}
         className={`${rowClassName} bg-transparent text-left hover:bg-hover`}
         data-testid={`money-activity-row-${item.id}`}
       >

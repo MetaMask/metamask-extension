@@ -414,7 +414,6 @@ import {
 import { isDmkFeatureEnabled } from '../../../shared/lib/hardware-wallets/feature-flags';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
-import { isBasicFunctionalitySocialLoginUser } from '../../../shared/lib/basic-functionality-consolidation';
 import {
   LatticeKeyringV2,
   LatticeCreateAccountOptions,
@@ -505,13 +504,11 @@ const MESSENGER_EXPOSED_METHODS = [
   'checkHardwareStatus',
   'checkIsSeedlessPasswordOutdated',
   'connectHardware',
-  'consolidateBasicFunctionality',
   'createNewVaultAndGetSeedPhrase',
   'createNewVaultAndKeychain',
   'createNewVaultAndRestore',
   'createSeedPhraseBackup',
   'decodeTransactionData',
-  'dismissBasicFunctionalityMigrationNotification',
   'discoverAndCreateAccounts',
   'estimateGas',
   'exportAccount',
@@ -3080,43 +3077,6 @@ export class LegacyBackgroundApiService {
           break;
       }
     }
-  }
-
-  /**
-   * One-time Basic Functionality consolidation when the remote FF turns on.
-   * Aligns child preferences, schedules the modal/toast notice, and syncs
-   * TokenDetection / GasFee / Shield / subscription controllers when
-   * consolidation actually ran.
-   */
-  consolidateBasicFunctionality(): void {
-    const { firstTimeFlowType } = this.#messenger.call(
-      'OnboardingController:getState',
-    );
-    const { authConnection } = this.#messenger.call(
-      'SeedlessOnboardingController:getState',
-    );
-    const landingState = this.#messenger.call(
-      'PreferencesController:consolidateBasicFunctionality',
-      {
-        isSocialLogin: isBasicFunctionalitySocialLoginUser({
-          firstTimeFlowType: firstTimeFlowType ?? undefined,
-          authConnection,
-        }),
-      },
-    );
-
-    if (landingState !== null) {
-      this.toggleExternalServices(landingState);
-    }
-  }
-
-  /**
-   * Dismisses the one-time Basic Functionality migration modal or toast.
-   */
-  dismissBasicFunctionalityMigrationNotification(): void {
-    this.#messenger.call(
-      'PreferencesController:dismissBasicFunctionalityMigrationNotification',
-    );
   }
 
   /**

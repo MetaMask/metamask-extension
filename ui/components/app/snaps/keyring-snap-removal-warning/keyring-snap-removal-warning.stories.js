@@ -1,5 +1,5 @@
 import React from 'react';
-import { useArgs } from '@storybook/preview-api';
+import { useArgs } from 'storybook/preview-api';
 import { Button } from '../../../component-library';
 import KeyringSnapRemovalWarning from './keyring-snap-removal-warning';
 

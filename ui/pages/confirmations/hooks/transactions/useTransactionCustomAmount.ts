@@ -34,6 +34,7 @@ import {
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,
   MUSD_TOKEN_ADDRESS,
 } from '../../constants/musd';
+import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
 import { useDepositPrefillAmount } from './useDepositPrefillAmount';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
@@ -106,6 +107,7 @@ export function useTransactionCustomAmount({
 
   const { payToken } = useTransactionPayToken();
   const accountOverride = useTransactionAccountOverride();
+  const isAccountTokensLoading = useAccountTokensLoading();
   const { isNoFeeToken } = usePayWithNoFeeToken();
   const isNoFeePayToken = Boolean(
     payToken && isNoFeeToken(payToken.address, String(payToken.chainId)),
@@ -126,6 +128,10 @@ export function useTransactionCustomAmount({
   // wallet holds. The controller's isMaxAmount path uses the same raw
   // payment-token balance for 100%.
   const depositMaxHumanRef = useRef<string | null>(null);
+  // Max clicked while override assets are still loading. Prefill already
+  // waits for that fetch; Max must too — `balanceRaw` can still be the
+  // previous account's snapshot while TPC's isMaxAmount path uses live raw.
+  const pendingDepositMaxRef = useRef(false);
   // Mirrors `userEditedRef` for render-time use: the ref is needed to block
   // prefill synchronously, before the next render, while the state is what the
   // loading flag below can safely read. Stored as the edited transaction id so
@@ -275,6 +281,7 @@ export function useTransactionCustomAmount({
     prevPayTokenKeyRef.current = payTokenKey;
 
     depositMaxHumanRef.current = null;
+    pendingDepositMaxRef.current = false;
     userEditedRef.current = false;
     setEditedTransactionId(undefined);
 
@@ -348,6 +355,7 @@ export function useTransactionCustomAmount({
       }
 
       depositMaxHumanRef.current = null;
+      pendingDepositMaxRef.current = false;
 
       if (transactionId) {
         upsertTransactionUIMetricsFragment(transactionId, {
@@ -368,6 +376,22 @@ export function useTransactionCustomAmount({
       percentage: number,
       { isPrefill = false }: { isPrefill?: boolean } = {},
     ) => {
+      const isDepositMax =
+        percentage === 100 && isMoneyAccountDeposit && isNoFeePayToken;
+
+      // Hold Max until the override-account fetch completes, matching prefill.
+      // Applying now would send a stale `balanceRaw` while TPC uses live raw.
+      if (isDepositMax && isAccountTokensLoading) {
+        pendingDepositMaxRef.current = true;
+        if (!isPrefill) {
+          userEditedRef.current = true;
+          setEditedTransactionId(transactionId);
+        }
+        return;
+      }
+
+      pendingDepositMaxRef.current = false;
+
       const balanceUsdValue = new BigNumber(String(balanceUsd ?? 0));
 
       if (!balanceUsdValue.isFinite() || balanceUsdValue.lte(0)) {
@@ -485,6 +509,7 @@ export function useTransactionCustomAmount({
       balanceUsd,
       disableUpdate,
       hasBalanceUsdOverride,
+      isAccountTokensLoading,
       isMaxAmount,
       isMoneyAccountDeposit,
       isNoFeePayToken,
@@ -503,7 +528,17 @@ export function useTransactionCustomAmount({
   useEffect(() => {
     hasPrefilledMaxRef.current = false;
     userEditedRef.current = false;
+    pendingDepositMaxRef.current = false;
   }, [transactionId]);
+
+  // Apply a Max that was clicked while override assets were still loading.
+  useEffect(() => {
+    if (isAccountTokensLoading || !pendingDepositMaxRef.current) {
+      return;
+    }
+    pendingDepositMaxRef.current = false;
+    updatePendingAmountPercentage(100);
+  }, [isAccountTokensLoading, updatePendingAmountPercentage]);
 
   const applyDepositPrefillAmount = useCallback(
     (fiatAmount: string) => {
@@ -693,11 +728,26 @@ function getPreferredPayTokenBalanceRaw(
   liveBalanceRaw?: string,
   snapshotBalanceRaw?: string,
 ): string | undefined {
-  if (liveBalanceRaw && !new BigNumber(liveBalanceRaw).isZero()) {
-    return new BigNumber(liveBalanceRaw).toFixed(0);
+  const live =
+    liveBalanceRaw && !new BigNumber(liveBalanceRaw).isZero()
+      ? new BigNumber(liveBalanceRaw)
+      : null;
+  const snapshot =
+    snapshotBalanceRaw && !new BigNumber(snapshotBalanceRaw).isZero()
+      ? new BigNumber(snapshotBalanceRaw)
+      : null;
+
+  // When both are known, use the smaller so the submitted Max/prefill amount
+  // never exceeds the TPC payment-token snapshot (isMax source) or the live
+  // wallet balance — mismatch here is a common first-open "No quotes".
+  if (live && snapshot) {
+    return BigNumber.min(live, snapshot).toFixed(0);
   }
-  if (snapshotBalanceRaw && !new BigNumber(snapshotBalanceRaw).isZero()) {
-    return new BigNumber(snapshotBalanceRaw).toFixed(0);
+  if (live) {
+    return live.toFixed(0);
+  }
+  if (snapshot) {
+    return snapshot.toFixed(0);
   }
   return undefined;
 }

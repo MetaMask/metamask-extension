@@ -24,6 +24,18 @@ export type FirstTimeInfo = {
 /**
  * The options that AppMetadataController takes.
  */
+
+/**
+ * Google Analytics identifiers captured from the metamask.io `_ga` cookie at
+ * install time.
+ */
+export type InstallGaAttribution = {
+  /** Raw `_ga` cookie value. Maps to the Segment `cookie_id` trait. */
+  cookieId: string;
+  /** Parsed Google Analytics client identifier. Maps to the Segment `ga_client_id` trait. */
+  gaClientId?: string;
+};
+
 export type AppMetadataControllerOptions = {
   state?: Partial<AppMetadataControllerState>;
   messenger: AppMetadataControllerMessenger;
@@ -41,6 +53,7 @@ export type AppMetadataControllerState = {
   currentMigrationVersion: number;
   /** Installation version and date - set once on first install, never changes */
   firstTimeInfo?: FirstTimeInfo;
+  installAttribution: InstallGaAttribution | null;
 };
 
 /**
@@ -53,6 +66,7 @@ export const getDefaultAppMetadataControllerState =
     previousMigrationVersion: 0,
     currentMigrationVersion: 0,
     firstTimeInfo: undefined,
+    installAttribution: null,
   });
 
 /**
@@ -137,12 +151,21 @@ const controllerMetadata: StateMetadata<AppMetadataControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: false,
   },
+  installAttribution: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+  },
 };
 
 /**
- * Methods exposed by the {@link AlertController} messenger.
+ * Methods exposed by the {@link AppMetadataController} messenger.
  */
-const MESSENGER_EXPOSED_METHODS = ['maybeRecordFirstTimeInfo'] as const;
+const MESSENGER_EXPOSED_METHODS = [
+  'maybeRecordFirstTimeInfo',
+  'setInstallAttribution',
+] as const;
 
 /**
  * The AppMetadata controller stores metadata about the current extension instance,
@@ -238,5 +261,31 @@ export class AppMetadataController extends BaseController<
         };
       });
     }
+  }
+
+  /**
+   * Records Google Analytics identifiers captured at install time.
+   * Write-once: no-op if install attribution is already set, or if `cookieId` is empty.
+   *
+   * @param attribution - Install-time GA cookie values.
+   * @param attribution.cookieId - Raw `_ga` cookie value.
+   * @param attribution.gaClientId - Parsed Google Analytics client identifier.
+   */
+  setInstallAttribution({
+    cookieId,
+    gaClientId,
+  }: {
+    cookieId: string;
+    gaClientId?: string;
+  }): void {
+    if (this.state.installAttribution || !cookieId) {
+      return;
+    }
+
+    this.update((state) => {
+      state.installAttribution = gaClientId
+        ? { cookieId, gaClientId }
+        : { cookieId };
+    });
   }
 }

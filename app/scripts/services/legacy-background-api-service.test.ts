@@ -6281,96 +6281,6 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
-  describe('consolidateBasicFunctionality', () => {
-    it('consolidates preferences for a social-login user and syncs external services', async () => {
-      await withService(async ({ rootMessenger, service }) => {
-        const consolidate = jest.fn().mockReturnValue(true);
-        const toggleExternalServices = jest.fn();
-        const toggleSpy = jest.spyOn(service, 'toggleExternalServices');
-
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getState',
-          jest.fn().mockReturnValue({ firstTimeFlowType: 'socialCreate' }),
-        );
-        rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:getState',
-          jest.fn().mockReturnValue({ authConnection: 'google' }),
-        );
-        rootMessenger.registerActionHandler(
-          'PreferencesController:consolidateBasicFunctionality',
-          consolidate,
-        );
-        rootMessenger.registerActionHandler(
-          'PreferencesController:toggleExternalServices',
-          toggleExternalServices,
-        );
-        rootMessenger.registerActionHandler(
-          'SubscriptionController:getState',
-          jest.fn().mockReturnValue({ subscriptions: [] }),
-        );
-        rootMessenger.registerActionHandler(
-          'TokenDetectionController:enable',
-          jest.fn(),
-        );
-        rootMessenger.registerActionHandler(
-          'GasFeeController:enableNonRPCGasFeeApis',
-          jest.fn(),
-        );
-
-        rootMessenger.call(
-          'LegacyBackgroundApiService:consolidateBasicFunctionality',
-        );
-
-        expect(consolidate).toHaveBeenCalledWith({ isSocialLogin: true });
-        expect(toggleSpy).toHaveBeenCalledWith(true);
-        expect(toggleExternalServices).toHaveBeenCalledWith(true);
-      });
-    });
-
-    it('does not sync external services when consolidation is a no-op', async () => {
-      await withService(async ({ rootMessenger, service }) => {
-        const toggleSpy = jest.spyOn(service, 'toggleExternalServices');
-
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getState',
-          jest.fn().mockReturnValue({ firstTimeFlowType: 'create' }),
-        );
-        rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:getState',
-          jest.fn().mockReturnValue({}),
-        );
-        rootMessenger.registerActionHandler(
-          'PreferencesController:consolidateBasicFunctionality',
-          jest.fn().mockReturnValue(null),
-        );
-
-        rootMessenger.call(
-          'LegacyBackgroundApiService:consolidateBasicFunctionality',
-        );
-
-        expect(toggleSpy).not.toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe('dismissBasicFunctionalityMigrationNotification', () => {
-    it('dismisses the notice on PreferencesController', async () => {
-      await withService(async ({ rootMessenger }) => {
-        const dismiss = jest.fn();
-        rootMessenger.registerActionHandler(
-          'PreferencesController:dismissBasicFunctionalityMigrationNotification',
-          dismiss,
-        );
-
-        rootMessenger.call(
-          'LegacyBackgroundApiService:dismissBasicFunctionalityMigrationNotification',
-        );
-
-        expect(dismiss).toHaveBeenCalledTimes(1);
-      });
-    });
-  });
-
   describe('throwTestError', () => {
     beforeEach(() => {
       jest.useFakeTimers();
@@ -8773,8 +8683,6 @@ function getMessenger(
       'PhishingController:maybeUpdateState',
       'PhishingController:testOrigin',
       'PreferencesController:toggleExternalServices',
-      'PreferencesController:consolidateBasicFunctionality',
-      'PreferencesController:dismissBasicFunctionalityMigrationNotification',
       'SubscriptionController:getState',
       'TokenDetectionController:enable',
       'TokenDetectionController:disable',

@@ -12,7 +12,6 @@ const {
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
-const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_BTC_CONVERSION_RATE,
@@ -724,11 +723,25 @@ async function setupMocking(
       client: 'extension',
       distribution: 'main',
     })
+    .asPriority(RulePriority.FALLBACK)
     .thenCallback(() => {
+      // E2E has no canonical profile id, so threshold flags stay unresolved
+      // arrays and BackendWebSocketService treats them as off. Pin a boolean
+      // here (not in production code). Tests can still override this mock.
+      const flags = getProductionRemoteFlagApiResponse().map((entry) => {
+        if (
+          entry &&
+          typeof entry === 'object' &&
+          'backendWebSocketConnection' in entry
+        ) {
+          return { backendWebSocketConnection: true };
+        }
+        return entry;
+      });
       return {
         ok: true,
         statusCode: 200,
-        json: getProductionRemoteFlagApiResponse(),
+        json: flags,
       };
     });
 
@@ -1024,8 +1037,9 @@ async function setupMocking(
       };
     });
 
-  // This endpoint returns metadata for "transaction simulation" supported networks.
-  await server.forGet(`${TX_SENTINEL_URL}/networks`).thenJson(200, {
+  // STX v26 always routes to per-network tx-sentinel hosts. Default mocks cover
+  // all sentinel subdomains so startup/liveness/polling does not hang in E2E.
+  const txSentinelNetworksRegistry = {
     1: {
       name: 'Mainnet',
       group: 'ethereum',
@@ -1037,18 +1051,13 @@ async function setupMocking(
       smartTransactions: true,
       hidden: false,
     },
-  });
-  await server.forGet(`${TX_SENTINEL_URL}/network`).thenJson(200, {
-    name: 'Mainnet',
-    group: 'ethereum',
-    chainID: 1,
-    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-    network: 'ethereum-mainnet',
-    explorer: 'https://etherscan.io',
-    confirmations: true,
-    smartTransactions: true,
-    hidden: false,
-  });
+  };
+  await server
+    .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/networks$/u)
+    .thenJson(200, txSentinelNetworksRegistry);
+  await server
+    .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/network$/u)
+    .thenJson(200, txSentinelNetworksRegistry[1]);
 
   await server
     .forGet(`${SWAPS_API_V2_BASE_URL}/featureFlags`)

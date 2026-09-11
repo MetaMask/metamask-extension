@@ -22,6 +22,7 @@ import { isRouteToken } from '../../utils/relay-fixed-spread';
 import { getMarketData } from '../../../../selectors';
 import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';
+import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
 
@@ -103,8 +104,12 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
   );
 
   const enabled = Boolean(prefilledAmountConfig.enabled);
-  const { balanceUsd: liveBalanceUsd, balanceRaw: liveBalanceRaw } =
-    usePayTokenAccountBalance();
+  const {
+    balanceUsd: liveBalanceUsd,
+    balanceRaw: liveBalanceRaw,
+    isLiveBalance,
+  } = usePayTokenAccountBalance();
+  const isAccountTokensLoading = useAccountTokensLoading();
 
   // Live funding-account USD, not the pay-controller snapshot. A $0 snapshot
   // (common on deposits: tx `from` is the money account) left prefill
@@ -160,20 +165,39 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
       prefillAmount: formatFiatAmount(
         isCapped ? new BigNumber(String(depositLimit)) : raw,
       ),
-      // Uncapped 100% submits exact balanceRaw (not fiat→mUSD ROUND_UP).
-      isUncappedMaxPrefill: percentage === 100 && !isCapped,
+      // Uncapped 100% submits exact balanceRaw (not fiat→mUSD ROUND_UP), so it
+      // is only a Max deposit when the raw balance is the funding account's
+      // own. The snapshot fallback can belong to a previously selected account;
+      // committing it as Max would submit that account's balance and suppress
+      // the insufficient-funds alert.
+      isUncappedMaxPrefill: percentage === 100 && !isCapped && isLiveBalance,
     };
-  }, [balanceUsd, depositLimit, enabled, payToken, relayFixedSpread]);
+  }, [
+    balanceUsd,
+    depositLimit,
+    enabled,
+    isLiveBalance,
+    payToken,
+    relayFixedSpread,
+  ]);
 
   // Uncapped 100% prefill must wait for live balanceRaw — otherwise consumers
   // fall back to the fiat path and can request slightly more than available.
   // Non-zero prefills also wait for the pay-token fiat rate so the amount
   // commit can produce source amounts / quotes on the first pass.
-  const hasLiveBalanceRaw = new BigNumber(liveBalanceRaw || '0').gt(0);
+  const hasLiveBalanceRaw =
+    isLiveBalance && new BigNumber(liveBalanceRaw || '0').gt(0);
   const needsQuote =
     prefillAmount !== undefined && new BigNumber(prefillAmount).gt(0);
+  // While the funding account's tokens are still being fetched, the only
+  // balance available is the controller snapshot, which may describe the
+  // account used before the switch. Hold the prefill (skeleton stays up)
+  // rather than committing that amount, since the commit is one-shot per
+  // token / account key and would not re-apply once the real balance lands.
+  const isAwaitingLiveBalance = !isLiveBalance && isAccountTokensLoading;
   const readyToCommit =
     prefillAmount !== undefined &&
+    !isAwaitingLiveBalance &&
     (!isUncappedMaxPrefill || hasLiveBalanceRaw) &&
     (!needsQuote || hasPayTokenMarketPrice);
 

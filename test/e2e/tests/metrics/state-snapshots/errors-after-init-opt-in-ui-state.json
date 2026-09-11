@@ -180,6 +180,7 @@
     "initializationState": "string",
     "inputPrimaryDenomination": "string",
     "insights": "object",
+    "installAttribution": null,
     "interfaces": "object",
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "ipfsGateway": "string",
@@ -350,7 +351,7 @@
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": "valueA"
+      "feature3": "valueC"
     },
     "requests": "object",
     "rewardsAccounts": "object",
@@ -414,7 +415,6 @@
     "tokensChainsCache": {},
     "tracesBeforeMetricsOptIn": "object",
     "tradeConfigurations": "object",
-    "traits": "object",
     "transactionBatches": "object",
     "transactionData": "object",
     "transactions": "object",

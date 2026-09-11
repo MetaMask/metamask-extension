@@ -36,7 +36,7 @@ import { MetaMaskExtensionLauncher } from '.';
 
 const DEFAULT_ANVIL_PORT = 8545;
 const DEFAULT_FIXTURE_SERVER_PORT = 12345;
-const HEADLESS = true;
+const HEADLESS = process.env.MM_HEADLESS !== 'false';
 
 export class MetaMaskSessionManager implements ISessionManager {
   private activeSession: {

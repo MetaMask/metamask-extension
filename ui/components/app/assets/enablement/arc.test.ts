@@ -37,6 +37,11 @@ describe('filterOutArcNativeAsset', () => {
     address: ARC_NATIVE_ADDRESS.toUpperCase(),
     isNative: true,
   };
+  const arcNativeEmptyAddress = {
+    chainId: ARC_NATIVE_HEX_CHAIN_ID,
+    address: '',
+    isNative: true,
+  };
   const arcNativeUpperAssetId = {
     chainId: ARC_NATIVE_CAIP_CHAIN_ID.toUpperCase(),
     assetId: ARC_NATIVE_ASSET_ID.toUpperCase(),
@@ -78,6 +83,12 @@ describe('filterOutArcNativeAsset', () => {
       description: 'matches the Arc native asset case-insensitively',
       assets: [arcNativeUpperAddress, arcNativeUpperAssetId],
       expected: [],
+    },
+    {
+      description:
+        'filters out the Arc native asset when the route token has an empty address',
+      assets: [arcNativeEmptyAddress, arcErc20UsdcByAddress],
+      expected: [arcErc20UsdcByAddress],
     },
     {
       description: 'keeps the Arc native address when it is on a non-Arc chain',
