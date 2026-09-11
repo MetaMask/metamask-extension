@@ -423,42 +423,6 @@ describe('enrichLocalActivity', () => {
     expect(enriched.data).toMatchObject({ token: { amount: '5000000' } });
   });
 
-  it('maps mUSD conversion rows from convert to swap', () => {
-    const group = buildTokenTransferGroup({
-      type: TransactionType.musdConversion,
-      txParams: {
-        from: '0x1111111111111111111111111111111111111111',
-        to: MUSD_TOKEN_ADDRESS,
-        data: MUSD_TRANSFER_DATA,
-        value: '0x0',
-      },
-    });
-    const activity = {
-      type: 'convert',
-      chainId: 'eip155:1',
-      status: 'success',
-      timestamp: 1,
-      data: {
-        hash: '0xabc',
-        sourceToken: {
-          direction: 'out',
-          symbol: 'USDC',
-          assetId: `eip155:1/erc20:${DAI_ADDRESS}`,
-        },
-        destinationToken: {
-          direction: 'in',
-          symbol: 'mUSD',
-          assetId: MUSD_TOKEN_ASSET_ID_BY_CHAIN[CHAIN_IDS.MAINNET],
-        },
-      },
-    } as ActivityListItem;
-
-    const enriched = enrichLocalActivity(activity, group);
-
-    expect(enriched.type).toBe('swap');
-    expect(enriched.data).toEqual(activity.data);
-  });
-
   it('does not change unrelated activity items', () => {
     const group = buildTokenTransferGroup({
       type: TransactionType.simpleSend,

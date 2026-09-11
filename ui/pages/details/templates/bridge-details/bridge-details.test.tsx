@@ -149,7 +149,6 @@ type BridgeItem = Extract<
     type:
       | 'swap'
       | 'bridge'
-      | 'convert'
       | 'lendingDeposit'
       | 'lendingWithdrawal'
       | 'wrap'
