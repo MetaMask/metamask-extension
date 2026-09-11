@@ -25,6 +25,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useUpgradeMoneyAccount } from '../../hooks/money/use-upgrade-money-account';
 import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';
+import type { MoneyDepositToken } from '../../hooks/money/money-deposit-token-utils';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountDeposit } from '../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInterest } from '../../hooks/money/useMoneyAccountInterest';
@@ -184,6 +185,17 @@ export function MoneyHomePage() {
   const handleAddFunds = useCallback(() => {
     initiateDeposit();
   }, [initiateDeposit]);
+  const handleAddToken = useCallback(
+    (token: MoneyDepositToken) => {
+      initiateDeposit({
+        preferredPaymentToken: {
+          address: token.address,
+          chainId: token.chainId,
+        },
+      });
+    },
+    [initiateDeposit],
+  );
   const handleLearnMore = useCallback(() => {
     global.platform.openTab({ url: MONEY_LANDING_URL });
   }, []);
@@ -230,6 +242,8 @@ export function MoneyHomePage() {
           apyDecimal={apyDecimal}
           isNoFeeToken={isNoFeeToken}
           privacyMode={privacyMode}
+          onAddToken={handleAddToken}
+          isAddDisabled={isDepositLoading}
         />
         <MoneySectionDivider />
       </>
