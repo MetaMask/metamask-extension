@@ -2,6 +2,7 @@ import React, {
   useCallback,
   useDeferredValue,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -474,7 +475,9 @@ export const TokenManagementPage = () => {
   >(() => new Set<string>());
   const stagedHidesRef = useRef<Map<string, StagedHidePayload>>(new Map());
   const hasTrackedScreenOpenedRef = useRef(false);
-  const tokenListOrderRef = useRef<Map<string, number>>(new Map());
+  const [tokenListOrder, setTokenListOrder] = useState<Map<string, number>>(
+    () => new Map(),
+  );
 
   const stageHide = useCallback((key: string, payload: StagedHidePayload) => {
     stagedHidesRef.current.set(key, payload);
@@ -1477,47 +1480,67 @@ export const TokenManagementPage = () => {
     visibleTokenAssetIds,
   ]);
 
-  const tokenListItems = useMemo<TokenManagementListItem[]>(() => {
-    const nextTokenListItems = (() => {
-      if (hasQuery) {
-        return searchResults.map((result) => ({
-          type: 'api-result' as const,
-          result,
-        }));
-      }
+  const unsortedTokenListItems = useMemo<TokenManagementListItem[]>(() => {
+    if (hasQuery) {
+      return searchResults.map((result) => ({
+        type: 'api-result' as const,
+        result,
+      }));
+    }
 
-      return [
-        ...visibleTokens.map((token) => ({
-          type: 'managed' as const,
-          token,
-        })),
-        ...browseApiResults.map((result) => ({
-          type: 'api-result' as const,
-          result,
-        })),
-      ];
-    })();
+    return [
+      ...visibleTokens.map((token) => ({
+        type: 'managed' as const,
+        token,
+      })),
+      ...browseApiResults.map((result) => ({
+        type: 'api-result' as const,
+        result,
+      })),
+    ];
+  }, [browseApiResults, hasQuery, searchResults, visibleTokens]);
 
-    nextTokenListItems.forEach((item) => {
+  const tokenListResult = useMemo(() => {
+    const order = new Map(tokenListOrder);
+    let orderChanged = false;
+
+    for (const item of unsortedTokenListItems) {
       const itemKey = getTokenManagementListItemOrderKey(item);
-      if (!tokenListOrderRef.current.has(itemKey)) {
-        tokenListOrderRef.current.set(itemKey, tokenListOrderRef.current.size);
+      if (!order.has(itemKey)) {
+        order.set(itemKey, order.size);
+        orderChanged = true;
       }
-    });
+    }
 
-    return [...nextTokenListItems].sort((itemA, itemB) => {
+    const items = [...unsortedTokenListItems].sort((itemA, itemB) => {
       const itemAOrder =
-        tokenListOrderRef.current.get(
-          getTokenManagementListItemOrderKey(itemA),
-        ) ?? Number.MAX_SAFE_INTEGER;
+        order.get(getTokenManagementListItemOrderKey(itemA)) ??
+        Number.MAX_SAFE_INTEGER;
       const itemBOrder =
-        tokenListOrderRef.current.get(
-          getTokenManagementListItemOrderKey(itemB),
-        ) ?? Number.MAX_SAFE_INTEGER;
+        order.get(getTokenManagementListItemOrderKey(itemB)) ??
+        Number.MAX_SAFE_INTEGER;
 
       return itemAOrder - itemBOrder;
     });
-  }, [browseApiResults, hasQuery, searchResults, visibleTokens]);
+
+    return {
+      items,
+      pendingOrder: orderChanged ? order : null,
+    };
+  }, [unsortedTokenListItems, tokenListOrder]);
+
+  const tokenListItems = tokenListResult.items;
+  const pendingTokenListOrder = tokenListResult.pendingOrder;
+
+  useLayoutEffect(() => {
+    if (!pendingTokenListOrder) {
+      return;
+    }
+    // Persist newly discovered list item order keys after derive+sort in useMemo.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- order map must follow list growth without render-time setState
+    setTokenListOrder(pendingTokenListOrder);
+  }, [pendingTokenListOrder]);
+
   const tokenManagementViewState =
     tokenListItems.length === 0
       ? TOKEN_MANAGEMENT_NO_RESULTS_VIEW_STATE
