@@ -5,6 +5,7 @@ import {
 } from '@metamask/messenger';
 import { BridgeControllerMessenger } from '@metamask/bridge-controller';
 import { RootMessenger } from '../../lib/messenger';
+import { registerCurrencyRateGetStateCompat } from './currency-rate-controller-compat';
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -19,6 +20,9 @@ export function getBridgeControllerMessenger(
     MessengerEvents<BridgeControllerMessenger>
   >,
 ) {
+  // Compat shim: bridge-controller may still request CurrencyRateController:getState.
+  registerCurrencyRateGetStateCompat(messenger as RootMessenger);
+
   const controllerMessenger: BridgeControllerMessenger = new Messenger({
     namespace: 'BridgeController',
     parent: messenger,
@@ -32,6 +36,7 @@ export function getBridgeControllerMessenger(
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
       'RemoteFeatureFlagController:getState',
+      // Compat shim: derives currencyRates / currentCurrency from AssetsController.
       'CurrencyRateController:getState',
       'AuthenticationController:getBearerToken',
       'AssetsController:getExchangeRatesForBridge',

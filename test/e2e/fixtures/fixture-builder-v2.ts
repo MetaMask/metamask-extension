@@ -9,7 +9,6 @@ import type { BridgeStatusControllerState } from '@metamask/bridge-status-contro
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type {
   AccountTrackerControllerState,
-  CurrencyRateState,
   NftControllerState,
   RatesControllerState,
   TokensControllerState,
@@ -276,17 +275,6 @@ class FixtureBuilderV2 {
 
   withBridgeStatusController(data: Partial<BridgeStatusControllerState>): this {
     merge(this.fixture.data.BridgeStatusController, data);
-    return this;
-  }
-
-  /**
-   * @deprecated Assets-unify reads fiat from `AssetsController`. Set a displayed
-   * rate with {@link FixtureBuilderV2.withAssetsController} `assetsPrice`, and
-   * the selected currency with `selectedCurrency`.
-   * @param data - Legacy CurrencyController state to merge.
-   */
-  withCurrencyController(data: Partial<CurrencyRateState>): this {
-    merge(this.fixture.data.CurrencyController, data);
     return this;
   }
 
@@ -709,14 +697,6 @@ class FixtureBuilderV2 {
   withConversionRateDisabled(): this {
     return this.withPreferencesController({
       useCurrencyRateCheck: false,
-    });
-  }
-
-  withCurrencyRates(
-    currencyRates: CurrencyRateState['currencyRates'] = {},
-  ): this {
-    return this.withCurrencyController({
-      currencyRates: { ...currencyRates },
     });
   }
 

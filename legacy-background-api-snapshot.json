@@ -103,8 +103,6 @@
     "backupUserData",
     "checkAndUpdateAllNftsOwnershipStatus",
     "checkAndUpdateSingleNftOwnershipStatus",
-    "currencyRateStartPolling",
-    "currencyRateStopPollingByPollingToken",
     "deFiStartPolling",
     "deFiStopPolling",
     "detectNfts",
