@@ -8,6 +8,11 @@ import {
 import { MetaMaskStateType } from '../../../shared/lib/stores/base-store';
 import { OperationSafener } from './operation-safener';
 
+type SafePersistOptions = {
+  /** Whether to flush pending split-state persistence without waiting for the debounce. */
+  flush?: boolean;
+};
+
 /** Time before `runtime.reload()` so popup/notification UIs can `window.close()` first (issue #29151). */
 const RELOAD_AFTER_EVACUATE_MS = 150;
 
@@ -46,16 +51,29 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
     /**
      * Safely updates the persistence manager
      *
-     * @param params - Arguments to pass to the persistence operation. For
-     * 'data' storage, pass the state; for 'split' storage, no arguments needed.
+     * @param stateOrOptions - For 'data' storage, the state to persist. For
+     * 'split' storage, options that control how the state is persisted.
      * @returns true if the update was queued, false if writes are not allowed.
      */
     safePersist: async (
-      ...params: Parameters<
-        PersistenceManager['set'] | PersistenceManager['persist']
-      >
+      stateOrOptions?: MetaMaskStateType | SafePersistOptions,
     ) => {
-      return operationSafener.execute(...params);
+      const isSplitStorage = persistenceManager.storageKind === 'split';
+      const didQueuePersist = isSplitStorage
+        ? operationSafener.execute()
+        : operationSafener.execute(stateOrOptions as MetaMaskStateType);
+
+      if (
+        didQueuePersist &&
+        isSplitStorage &&
+        (stateOrOptions as SafePersistOptions | undefined)?.flush
+      ) {
+        // Let synchronous state-change cascades join this persistence batch.
+        await Promise.resolve();
+        await operationSafener.flush();
+      }
+
+      return didQueuePersist;
     },
     /**
      * Requests a safe reload of the browser. It prevents any new updates from
