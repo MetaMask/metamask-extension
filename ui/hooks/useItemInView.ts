@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, type RefObject } from 'react';
 import { useIntersectionObserver } from './useIntersectionObserver';
 
 const defaultRootMargin = '300px 0px';
@@ -11,21 +11,25 @@ const defaultRootMargin = '300px 0px';
  * @param options.targetIndex - Index of the item to observe.
  * @param options.onVisible - Called when the target item enters view.
  * @param options.root - Scroll container to observe within. Defaults to the viewport.
+ * @param options.rootRef - Ref to the scroll container; read when the observer attaches.
  * @param options.rootMargin - Margin around `root` used to expand the intersection area.
  */
 export function useItemInView({
   targetIndex,
   onVisible,
   root = null,
+  rootRef,
   rootMargin = defaultRootMargin,
 }: {
   targetIndex: number;
   onVisible: () => void;
   root?: Element | null;
+  rootRef?: RefObject<Element | null>;
   rootMargin?: string;
 }) {
   const { ref: targetRef } = useIntersectionObserver({
     root,
+    rootRef,
     rootMargin,
     onChange: (isIntersecting) => {
       if (isIntersecting) {

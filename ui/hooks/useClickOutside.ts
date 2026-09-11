@@ -12,7 +12,10 @@ export function useOnClickOutside({
   active,
 }: UseOnClickOutsideOptions) {
   const onClickOutsideRef = useRef(onClickOutside);
-  onClickOutsideRef.current = onClickOutside;
+
+  useEffect(() => {
+    onClickOutsideRef.current = onClickOutside;
+  }, [onClickOutside]);
 
   useEffect(() => {
     if (!active) {

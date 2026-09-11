@@ -34,7 +34,10 @@ const useMultiPolling = <PollingInput extends Json>(
 
   // Keep ref to latest stop function for use in unmount cleanup
   const stopPollingRef = useRef(usePollingOptions.stopPollingByPollingToken);
-  stopPollingRef.current = usePollingOptions.stopPollingByPollingToken;
+
+  useEffect(() => {
+    stopPollingRef.current = usePollingOptions.stopPollingByPollingToken;
+  }, [usePollingOptions.stopPollingByPollingToken]);
 
   const isMounted = useRef(true);
   useEffect(() => {
@@ -55,7 +58,10 @@ const useMultiPolling = <PollingInput extends Json>(
 
   // Track current `inputKeyMap` for race condition handling in async callbacks
   const inputKeyMapRef = useRef(inputKeyMap);
-  inputKeyMapRef.current = inputKeyMap;
+
+  useEffect(() => {
+    inputKeyMapRef.current = inputKeyMap;
+  }, [inputKeyMap]);
 
   useEffect(() => {
     if (!completedOnboarding) {

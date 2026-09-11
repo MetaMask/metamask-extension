@@ -8,6 +8,7 @@ import {
 } from '../ducks/app/app';
 import { useDispatch } from '../store/hooks';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
+import { usePrevious } from './usePrevious';
 
 export function useShouldAnimateGasEstimations() {
   const { isGasEstimatesLoading, gasFeeEstimates } = useGasFeeEstimates();
@@ -17,23 +18,21 @@ export function useShouldAnimateGasEstimations() {
     getGasLoadingAnimationIsShowing,
   );
 
+  const previousGasFeeEstimates = usePrevious(gasFeeEstimates);
+
   // Do the animation only when gas prices have changed...
-  const lastGasEstimates = useRef(gasFeeEstimates);
-  const gasEstimatesChanged = !isEqual(
-    lastGasEstimates.current,
-    gasFeeEstimates,
-  );
+  const gasEstimatesChanged =
+    previousGasFeeEstimates !== undefined &&
+    !isEqual(previousGasFeeEstimates, gasFeeEstimates);
 
   // ... and only if gas didn't just load
   // Removing this line will cause the initial loading screen to stay empty
-  const gasJustLoaded = isEqual(lastGasEstimates.current, {});
-
-  if (gasEstimatesChanged) {
-    lastGasEstimates.current = gasFeeEstimates;
-  }
+  const gasJustLoaded = isEqual(previousGasFeeEstimates, {});
 
   const showLoadingAnimation =
     isGasEstimatesLoading || (gasEstimatesChanged && !gasJustLoaded);
+
+  const hideAnimationTimerRef = useRef(undefined);
 
   useEffect(() => {
     if (
@@ -45,17 +44,16 @@ export function useShouldAnimateGasEstimations() {
   }, [dispatch, isGasLoadingAnimationActive, showLoadingAnimation]);
 
   useEffect(() => {
-    let timer;
-
     if (isGasLoadingAnimationActive && !showLoadingAnimation) {
-      timer = setTimeout(() => {
+      hideAnimationTimerRef.current = setTimeout(() => {
         dispatch(toggleGasLoadingAnimation(false));
       }, 2000);
     }
 
     return () => {
-      if (timer) {
-        clearTimeout(timer);
+      if (hideAnimationTimerRef.current) {
+        clearTimeout(hideAnimationTimerRef.current);
+        hideAnimationTimerRef.current = undefined;
       }
     };
   }, [dispatch, isGasLoadingAnimationActive, showLoadingAnimation]);
