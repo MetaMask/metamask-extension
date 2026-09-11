@@ -117,7 +117,7 @@ Before collecting results, write `sample-manifest.json` in the evidence director
       "mode": "immediate",
       "sourceRef": "exact-baseline-commit",
       "buildProvenanceSha256": "sha256-of-JSON.stringify-of-verified-provenance",
-      "collectorSha256": "sha256-of-measure-loading.ts",
+      "collectorSha256": "sha256-of-JSON.stringify-of-ordered-collector-source-hashes",
       "formatterSha256": "sha256-of-shared/lib/perps-formatters.ts",
       "samples": [
         "before-immediate-1",
@@ -129,7 +129,7 @@ Before collecting results, write `sample-manifest.json` in the evidence director
 }
 ```
 
-Add the other cohorts and `accountName` for account flows. Hash the parsed provenance with `JSON.stringify`, without indentation, using the runtime provenance when present. Do not mix collector versions, formatter versions or build identities. Authoring probes belong outside the declared sample set.
+Add the other cohorts and `accountName` for account flows. The collector hash covers the ordered `{ file, sha256 }` entries for `measure-loading.ts`, `market-observation.ts`, `browser-process.ts` and `run-loading-cohort.ts`, serialized with `JSON.stringify` without indentation. Hash the parsed provenance with `JSON.stringify`, without indentation, using the runtime provenance when present. Do not mix collector versions, formatter versions or build identities. Authoring probes belong outside the declared sample set.
 
 ```sh
 node development/perps/loading/summarize-loading.ts temp/perps-loading/evidence
@@ -138,3 +138,7 @@ node development/perps/loading/summarize-loading.ts temp/perps-loading/evidence
 The summary recomputes durations from raw timestamps, verifies price/account assertions and recipe results, excludes failed attempts from successful statistics, and lists missing/excluded directories. Report median, range, count and every raw value. Three samples establish an observed median, not statistical significance or a percentile estimate.
 
 SDK events stay in each sample's `measurements.json`. Pair `spanStart` and `spanEnd` by span ID, take duration from SDK timestamps, and use start-time scope context. Scope tags observed at span end may describe another operation. Filter successful spans separately from timeout, cancellation and error outcomes. Keep SDK durations separate from browser click-to-DOM durations.
+
+The new tool writes `comparison.json`, which is the complete declared-cohort summary. The checked-in `docs/perps/loading-performance-results.json` is a sanitized extract of the earlier V2 benchmark: it retains raw timestamps, metrics, sample hashes and counts without wallet addresses or full SDK events. It is not the direct output schema of this summarizer. Its original V2 collector hash covers one file; version 3 hashes the four source files listed above and fixes complete-row readiness. Keep those versions separate.
+
+`observation.unlock` is the unlock-submit click; `observation.unlocked` is the first frame observing an unlocked wallet. `unlockClickToEntryMs`, `unlockClickToDataMs` and `unlockClickToLiveMs` use the former; `observedUnlockToEntryMs` uses the latter. They are not interchangeable.

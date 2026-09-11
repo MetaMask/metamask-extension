@@ -14,9 +14,8 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 
-const { browserPid }: typeof import('./browser-process') = await import(
-  new URL('./browser-process.ts', import.meta.url).href
-);
+const { browserPid, isColdMode }: typeof import('./browser-process') =
+  await import(new URL('./browser-process.ts', import.meta.url).href);
 
 const configPath = process.env.PERPS_MEASUREMENT_CONFIG;
 assert(
@@ -218,9 +217,14 @@ const formatterSource = stripTypeScriptTypes(
   { mode: 'strip' },
 ).replace(/^export /gmu, '');
 assert(!/^import /mu.test(formatterSource), 'Formatter must stay portable');
+const observationSource = stripTypeScriptTypes(
+  readFileSync(new URL('./market-observation.ts', import.meta.url), 'utf8'),
+  { mode: 'strip' },
+).replace(/^export /gmu, '');
 const collector = `(() => {
   const Intl = document.__perpsIntl;
   ${formatterSource}
+  ${observationSource}
   if (window.__perpsMeasure) window.__perpsMeasure.stop = true;
   const p = { stop:false, epoch:performance.timeOrigin, unlock:null, unlocked:null, entry:null, ready:null, firstRows:null, dataReady:null, snapshots:[], backendReady:false };
   window.__perpsMeasure = p; p.visibility=[]; p.onVisibility=()=>p.visibility.push({at:performance.now(),state:document.visibilityState});document.addEventListener('visibilitychange',p.onVisibility);
@@ -242,13 +246,13 @@ const collector = `(() => {
     const selected=s?.metamask?.internalAccounts?.accounts?.[s?.metamask?.internalAccounts?.selectedAccount]?.address;
     const dataReady=(!p.expectedAddress || selected?.toLowerCase()===p.expectedAddress.toLowerCase()) && !!selected && m?.getCurrentAddress()?.toLowerCase()===selected.toLowerCase() && !!m?.isInitialized() && markets.length>0 && pricesReady && m?.positions.hasCachedData() && m?.orders.hasCachedData() && m?.account.hasCachedData();
     if(dataReady && p.dataReady===null) p.dataReady=now;
-    const rows=[...document.querySelectorAll('[data-testid]')].filter(e=>/^(perps-watchlist-(?!header)|explore-markets-|market-row-(?!ticker-|skeleton))/.test(e.getAttribute('data-testid'))&&e.getClientRects().length&&e.matches('button')&&Number((e.querySelector('.text-right')?.textContent??'').replace(/[^0-9.]/g,''))>0);
-    if(p.entry!==null && rows.length && p.firstRows===null) p.firstRows=now;
+    const rows=[...document.querySelectorAll('button[data-testid]')].filter(e=>/^(perps-watchlist-(?!header)|explore-markets-|market-row-(?!ticker-|skeleton))/.test(e.getAttribute('data-testid'))&&e.getClientRects().length);
+    const rowProof=observeMarketRows(rows.map(e=>({testId:e.getAttribute('data-testid'),displayed:e.querySelector('.text-right')?.textContent?.trim()??''})),markets,prices,price=>formatPerpsFiat(price,{ranges:PRICE_RANGES_UNIVERSAL}));
+    if(p.entry!==null && rowProof.some(row=>row.priced) && p.firstRows===null) p.firstRows=now;
     if(document.visibilityState==='visible' && p.entry!==null && rows.length && dataReady && p.ready===null) {
-      const rowProof=rows.map(e=>{const ticker=e.querySelector('[data-testid^="market-row-ticker-"]')?.getAttribute('data-testid');const metadata=markets.find(m=>'market-row-ticker-'+m.symbol.replace(/:/g,'-')===ticker);const quote=prices.find(q=>q.symbol===metadata?.symbol);return {testId:e.getAttribute('data-testid'),symbol:metadata?.symbol,displayed:e.innerText.split('\\n').find(t=>/^\\$[0-9,.]+$/.test(t.trim()))?.trim(),quote:quote?{price:quote.price,timestamp:quote.timestamp}:null,metadataLive:metadata&&m.hasLiveMarketData?.([metadata]),pricesLive:m.hasLivePrices?.(prices)};});
       p.lastRowsProof={at:now,rows:rowProof};
       if(!p.firstRowsProof)p.firstRowsProof={at:now,rows:rowProof};
-      if(!rowProof.every(row=>row.quote && Number.isFinite(Number(row.quote.price)) && Number(row.quote.price)>0 && row.displayed===formatPerpsFiat(Number(row.quote.price),{ranges:PRICE_RANGES_UNIVERSAL}))) {document.__perpsRAF(frame);return;}
+      if(!allMarketRowsMatch(rowProof)) {document.__perpsRAF(frame);return;}
       p.ready=now;p.rowProof=rowProof;p.managerAddress=m.getCurrentAddress(); p.selectedAddress=selected; p.final={visibility:document.visibilityState,markets:markets.length,prices:prices.length,rows:rows.map(e=>({testId:e.getAttribute('data-testid'),text:e.innerText})),route:location.hash,terminalFlag:s?.metamask?.remoteFeatureFlags?.perpsTerminalBackendEnabled};
     }
     document.__perpsRAF(frame);
@@ -304,11 +308,20 @@ function verifyBuild(arm: string) {
       .digest('hex'),
   };
 }
-async function sample(arm: string, mode: string, index: string) {
+async function sample(
+  arm: string,
+  mode: string,
+  index: string,
+  accountName?: string,
+) {
   const out = path.join(root, `${arm}-${mode}-${index}`);
   mkdirSync(out, { recursive: true });
+  const cold = isColdMode(mode);
+  assert(
+    !cold || existsSync(path.join(out, 'prior-browser.pid')),
+    'Cold setup missing prior-browser.pid; use run-loading-cohort.ts to stop and relaunch the verified browser first',
+  );
   const initialPageNormalization = await singlePage();
-  const cold = ['immediate', 'delayed'].includes(mode);
   const beforePid = cold
     ? readFileSync(path.join(out, 'prior-browser.pid'), 'utf8').trim()
     : await browserPid(port);
@@ -416,7 +429,6 @@ async function sample(arm: string, mode: string, index: string) {
     await page.evaluate(
       `window.__perpsMeasure.requiredSpans=${JSON.stringify(config.requiredSpans?.[arm]?.[mode] ?? [])}`,
     );
-    const accountName = process.argv[5];
     if (mode === 'account') {
       assert(accountName, 'Existing UI account label required');
       const accountId = config.accounts?.[accountName];
@@ -636,15 +648,15 @@ async function sample(arm: string, mode: string, index: string) {
         numbers.ready !== null && numbers.entry !== null
           ? Number(numbers.ready) - Number(numbers.entry)
           : null,
-      unlockToLiveMs:
+      unlockClickToLiveMs:
         numbers.unlock !== null && numbers.ready !== null
           ? Number(numbers.ready) - Number(numbers.unlock)
           : null,
-      unlockToDataMs:
+      unlockClickToDataMs:
         numbers.unlock !== null && numbers.dataReady !== null
           ? Number(numbers.dataReady) - Number(numbers.unlock)
           : null,
-      unlockToEntryMs:
+      unlockClickToEntryMs:
         numbers.unlock !== null && numbers.entry !== null
           ? Number(numbers.entry) - Number(numbers.unlock)
           : null,
@@ -706,13 +718,25 @@ async function sample(arm: string, mode: string, index: string) {
           ranges: PRICE_RANGES_UNIVERSAL,
         }),
     }));
+    const collectorSources = [
+      'measure-loading.ts',
+      'market-observation.ts',
+      'browser-process.ts',
+      'run-loading-cohort.ts',
+    ].map((file) => ({
+      file,
+      sha256: createHash('sha256')
+        .update(readFileSync(new URL(file, import.meta.url)))
+        .digest('hex'),
+    }));
     const record = {
-      collectorVersion: 2,
+      collectorVersion: 3,
+      collectorSources,
       formatterSha256: createHash('sha256')
         .update(readFileSync(path.join(repo, 'shared/lib/perps-formatters.ts')))
         .digest('hex'),
       collectorSha256: createHash('sha256')
-        .update(readFileSync(new URL(import.meta.url)))
+        .update(JSON.stringify(collectorSources))
         .digest('hex'),
       accountName: mode === 'account' ? accountName : undefined,
       accuracy,
@@ -877,5 +901,11 @@ if (process.argv[2] === 'resume') {
     /^[1-9][0-9]*$/u.test(process.argv[4]),
     'Specify a positive sample index',
   );
-  await sample(process.argv[2], process.argv[3], process.argv[4]);
+  const accountName = process.argv[5];
+  assert(
+    process.argv[3] !== 'account' ||
+      (accountName && Object.hasOwn(config.accounts ?? {}, accountName)),
+    'Account flow requires an existing label in config.accounts',
+  );
+  await sample(process.argv[2], process.argv[3], process.argv[4], accountName);
 }

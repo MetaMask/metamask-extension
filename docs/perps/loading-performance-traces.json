@@ -1,18 +1,20 @@
 {
+  "collectorSha256": "ccffd6b2364e49dcad7cea8d8cc2e3fbba303c8b553ddd9ea24e519e88e0b2f7",
+  "collectorVersion": 3,
   "contextAuthority": "Isolation-scope tags captured at spanStart; inherited unrelated scope tags excluded. Match span name and platform boundary when comparing.",
   "groups": [
     {
       "id": "after-immediate-1",
-      "rawSha256": "011dc17f1a71f544fe28c39487be1c450cc1c893e54ed8880e76cba964c8ea74",
+      "rawSha256": "cc7e9d7636d03def165e95f63962a9c8ab2f07aae95af45eb82de46089d27194",
       "recipeStatus": "pass",
       "renderedPriceMatches": 12,
       "spans": [
         {
           "name": "Perps Connection Establishment",
-          "spanId": "bf0e8c9068119779",
-          "startTimestamp": 1789091106.3393002,
-          "endTimestamp": 1789091108.7386,
-          "durationMs": 2399.2998600006104,
+          "spanId": "85ebbdc1c1b97890",
+          "startTimestamp": 1789092538.2784002,
+          "endTimestamp": 1789092540.6697,
+          "durationMs": 2391.2997245788574,
           "op": "perps.operation",
           "startContext": {
             "feature": "perps",
@@ -26,10 +28,10 @@
         },
         {
           "name": "Perps Entry To Live Market List",
-          "spanId": "b1b7acc768c954f1",
-          "startTimestamp": 1789091106.6715,
-          "endTimestamp": 1789091108.8491,
-          "durationMs": 2177.600145339966,
+          "spanId": "996b8fff080c615c",
+          "startTimestamp": 1789092539.7725,
+          "endTimestamp": 1789092540.7839003,
+          "durationMs": 1011.4002227783203,
           "op": "perps.operation",
           "startContext": {
             "feature": "perps",
@@ -43,16 +45,16 @@
     },
     {
       "id": "after-warm-1",
-      "rawSha256": "503ef012b4a50041653838b4537c91b69a91d02082b098876d0e668f220b1c81",
+      "rawSha256": "4daa2c104617b9f9bee29393e2097927e6cf36d4e167452eb7d400a8cc5ac248",
       "recipeStatus": "pass",
       "renderedPriceMatches": 12,
       "spans": [
         {
           "name": "Perps Entry To Live Market List",
-          "spanId": "834f79fded345860",
-          "startTimestamp": 1789091157.1482,
-          "endTimestamp": 1789091157.1482,
-          "durationMs": 0,
+          "spanId": "82a742509560e915",
+          "startTimestamp": 1789092619.7098,
+          "endTimestamp": 1789092619.7099001,
+          "durationMs": 0.10013580322265625,
           "op": "perps.operation",
           "startContext": {
             "feature": "perps",
@@ -65,17 +67,17 @@
       ]
     },
     {
-      "id": "after-account-2",
-      "rawSha256": "07fa912ab3227bf56c555cd68d3da534ace14cb94fe0674a02872c40cee7236b",
+      "id": "after-account-3",
+      "rawSha256": "9d9529b89645d36dc822f5f4023e2063e717ce694a6130011f2877f999dbc766",
       "recipeStatus": "pass",
       "renderedPriceMatches": 12,
       "spans": [
         {
           "name": "Perps Account Switch Reconnection",
-          "spanId": "8652d1181e810ad3",
-          "startTimestamp": 1789091215.9265,
-          "endTimestamp": 1789091219.342,
-          "durationMs": 3415.4999256134033,
+          "spanId": "bf59e0d42caedd13",
+          "startTimestamp": 1789092880.6571002,
+          "endTimestamp": 1789092886.1405,
+          "durationMs": 5483.399868011475,
           "op": "perps.operation",
           "startContext": {
             "feature": "perps",
@@ -83,18 +85,17 @@
             "source": "wallet_root",
             "trigger": "requested_account_change",
             "start_boundary": "wallet_root_effect",
-            "completion_boundary": "preload_ready",
-            "surface": "home"
+            "completion_boundary": "preload_ready"
           },
           "success": true,
           "reason": "subscriptions_ready"
         },
         {
           "name": "Perps Entry To Live Market List",
-          "spanId": "ba2717a87ebc43e0",
-          "startTimestamp": 1789091216.7782,
-          "endTimestamp": 1789091219.4655,
-          "durationMs": 2687.300205230713,
+          "spanId": "915addb5f3b051a4",
+          "startTimestamp": 1789092881.5168002,
+          "endTimestamp": 1789092886.1777,
+          "durationMs": 4660.899877548218,
           "op": "perps.operation",
           "startContext": {
             "feature": "perps",
@@ -108,16 +109,16 @@
     },
     {
       "id": "after-background_resume-1",
-      "rawSha256": "2d9a0c2cc0ca548fda91138c118b828fbe62c29763a190e39bddbea6c358a447",
+      "rawSha256": "f8a240d71139f34b75882d0a5ddd45547f768da6df347d4aabdeb6c6413f1a87",
       "recipeStatus": "pass",
       "renderedPriceMatches": 12,
       "spans": [
         {
           "name": "Perps Entry To Live Market List",
-          "spanId": "a2372fb4d8b72d08",
-          "startTimestamp": 1789091271.7647,
-          "endTimestamp": 1789091271.7648,
-          "durationMs": 0.10013580322265625,
+          "spanId": "9811d2eb3a58ac07",
+          "startTimestamp": 1789092949.7647,
+          "endTimestamp": 1789092949.7647,
+          "durationMs": 0,
           "op": "perps.operation",
           "startContext": {
             "feature": "perps",
@@ -131,6 +132,6 @@
     }
   ],
   "harnessVersion": "0.50.5",
-  "scope": "Post-benchmark SDK validation of the account-switch telemetry addition. Not included in before/after latency cohorts. Local real SDK events, no remote ingestion claim.",
+  "scope": "Post-benchmark SDK validation using all rendered market-row buttons, including unpriced rows until ready. Not included in before/after latency cohorts. Local real SDK events, no remote ingestion claim.",
   "sourceRef": "96583820b169e80830f1fded4c9f92f413fcd689+usePerpsPreload-sha256:4ed221ec4e1ed08438098b3ef6805227286eab505e9030c05d6738a9706ff565"
 }

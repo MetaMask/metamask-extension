@@ -35,3 +35,7 @@ export async function browserPid(port: number): Promise<string> {
     socket.close();
   }
 }
+
+export function isColdMode(mode: string): boolean {
+  return mode === 'immediate' || mode === 'delayed';
+}
