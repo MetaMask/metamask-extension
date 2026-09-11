@@ -112,10 +112,30 @@ export const useCarouselManagement = ({
   const currentLocale = useSelector(getCurrentLocale);
   const contentfulEnabled =
     remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
+  const eligibilityNeeded =
+    contentfulEnabled && useExternalServices && showDownloadMobileAppSlide;
+  const eligibilityKey = eligibilityNeeded
+    ? `needed:${selectedAccount.address}`
+    : 'not-needed';
 
   const [downloadEligible, setDownloadEligible] = useState<boolean>(false);
   const [downloadEligibilityReady, setDownloadEligibilityReady] =
-    useState<boolean>(false);
+    useState<boolean>(!eligibilityNeeded);
+  const [previousEligibilityKey, setPreviousEligibilityKey] =
+    useState(eligibilityKey);
+
+  // Reset account-specific eligibility before children observe a new cycle.
+  // React applies this guarded previous-value update before rendering children.
+  if (previousEligibilityKey !== eligibilityKey) {
+    setPreviousEligibilityKey(eligibilityKey);
+    if (eligibilityNeeded) {
+      setDownloadEligibilityReady(false);
+    } else {
+      setDownloadEligible(false);
+      setDownloadEligibilityReady(true);
+    }
+  }
+
   const fetchKey = [
     enabled,
     contentfulEnabled,
@@ -131,19 +151,10 @@ export const useCarouselManagement = ({
     status: CarouselFetchStatus;
   }>({ key: '', status: 'idle' });
 
-  /* eslint-disable react-hooks/set-state-in-effect -- This effect resets
-   * account-specific eligibility before resolving its asynchronous source. */
   useEffect(() => {
-    const eligibilityNeeded =
-      contentfulEnabled && useExternalServices && showDownloadMobileAppSlide;
-
     if (!eligibilityNeeded) {
-      setDownloadEligible(false);
-      setDownloadEligibilityReady(true);
-      return () => undefined;
+      return undefined;
     }
-
-    setDownloadEligibilityReady(false);
 
     let cancelled = false;
 
@@ -169,13 +180,7 @@ export const useCarouselManagement = ({
     return () => {
       cancelled = true;
     };
-  }, [
-    selectedAccount.address,
-    useExternalServices,
-    showDownloadMobileAppSlide,
-    contentfulEnabled,
-  ]);
-  /* eslint-enable react-hooks/set-state-in-effect */
+  }, [eligibilityNeeded, selectedAccount.address]);
 
   useEffect(() => {
     // Wait until eligibility is resolved (or not required) to avoid double fetch
