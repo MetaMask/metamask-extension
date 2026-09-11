@@ -14,7 +14,7 @@ exports[`Restore vault Component renders match snapshot 1`] = `
       >
         <button
           aria-label="Back"
-          class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+          class="inline-flex shrink-0 items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
           color="text-icon-default"
           data-testid="import-srp-back-button"
         >
