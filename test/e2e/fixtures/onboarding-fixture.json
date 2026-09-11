@@ -49,7 +49,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 227,
+      "currentMigrationVersion": 228,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -191,9 +191,6 @@
     },
     "MultichainAssetsRatesController": {
       "conversionRates": {}
-    },
-    "MultichainBalancesController": {
-      "balances": {}
     },
     "MultichainNetworkController": {
       "isEvmSelected": true,
@@ -2256,6 +2253,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 227
+    "version": 228
   }
 }

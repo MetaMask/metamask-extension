@@ -288,14 +288,6 @@
         "lastUpdated": "number"
       }
     },
-    "balances": {
-      "*": {
-        "*": {
-          "unit": "string",
-          "amount": "string"
-        }
-      }
-    },
     "batchSellTrades": "null",
     "batchSellTradesLoadingStatus": "null",
     "batchTransactionCounts": {},
