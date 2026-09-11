@@ -183,8 +183,11 @@ export default class ExtensionStore implements BaseStore {
   }
 
   /**
-   * Removes all keys contained in the manifest from the `local` extension
-   * storage area.
+   * Removes all keys contained in the persisted or in-memory manifest from the
+   * `local` extension storage area.
+   *
+   * Reset is destructive, so a stale or partial persisted manifest must not
+   * hide keys this process already knows about.
    */
   async reset(): Promise<void> {
     if (!this.isSupported) {
@@ -193,6 +196,27 @@ export default class ExtensionStore implements BaseStore {
       );
     }
     const { local } = browser.storage;
-    return await local.remove(['manifest', ...this.#manifest]);
+    const keysToRemove = new Set(this.#manifest);
+    try {
+      const response = await local.get(['manifest']);
+      if (
+        isObject(response) &&
+        hasProperty(response, 'manifest') &&
+        Array.isArray(response.manifest)
+      ) {
+        for (const key of response.manifest) {
+          if (typeof key === 'string') {
+            keysToRemove.add(key);
+          }
+        }
+      }
+    } catch (error) {
+      log.warn(
+        '[ExtensionStore]: Failed to read manifest before reset:',
+        error,
+      );
+    }
+    await local.remove(['manifest', ...keysToRemove]);
+    this.#manifest.clear();
   }
 }

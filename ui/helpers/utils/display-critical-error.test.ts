@@ -1,8 +1,15 @@
 import browser from 'webextension-polyfill';
 import { act } from 'react-dom/test-utils';
-import { CriticalErrorType } from '../../../shared/constants/state-corruption';
+import {
+  CriticalErrorRepairAction,
+  CriticalErrorType,
+  METHOD_REPAIR_DATABASE,
+  isStateCorruptionErrorType,
+} from '../../../shared/constants/critical-error';
+import { MISSING_VAULT_ERROR } from '../../../shared/constants/errors';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
 import * as errorUtils from '../../../shared/lib/error-utils';
+import type { Backup } from '../../../shared/lib/stores/persistence-manager';
 import {
   displayCriticalErrorMessage,
   displayCriticalErrorPage,
@@ -43,33 +50,71 @@ jest.mock('../../../shared/lib/manifestFlags', () => ({
   })),
 }));
 
-/** Shared getErrorHtml mock that optionally shows the "Attempt recovery" button based on hasBackup param. */
+/**
+ * Shared getErrorHtml stub for handler tests.
+ */
 function mockGetErrorHtmlWithOptionalRestoreLink() {
   return (
     _errorKey: unknown,
-    _error: unknown,
+    error: unknown,
     _localeContext: unknown,
     _supportLink: unknown,
-    hasBackup?: boolean,
-  ) => `
+    repairAction?: CriticalErrorRepairAction,
+    criticalErrorType?: CriticalErrorType,
+    showReportCheckbox: boolean = true,
+  ) => {
+    const errorMessage =
+      error && typeof error === 'object' && 'message' in error
+        ? String((error as { message: unknown }).message)
+        : undefined;
+    let repairButtonLabel = '';
+    if (repairAction === CriticalErrorRepairAction.Recover) {
+      repairButtonLabel =
+        errorMessage === MISSING_VAULT_ERROR
+          ? 'criticalErrorRecoverAccounts'
+          : 'criticalErrorAttemptRecovery';
+    } else if (repairAction === CriticalErrorRepairAction.Reset) {
+      repairButtonLabel = 'criticalErrorResetMetaMaskState';
+    }
+
+    return `
     <div>
-      <input type="checkbox" id="critical-error-checkbox" checked />
-      <button id="critical-error-button">Restart</button>
-      ${hasBackup ? '<button type="button" id="critical-error-restore-link">Attempt recovery</button>' : ''}
+      ${
+        showReportCheckbox
+          ? '<input type="checkbox" id="critical-error-checkbox" checked />'
+          : ''
+      }
+      ${
+        isStateCorruptionErrorType(criticalErrorType)
+          ? ''
+          : '<button id="critical-error-button">Restart</button>'
+      }
+      ${
+        repairAction === CriticalErrorRepairAction.Recover ||
+        repairAction === CriticalErrorRepairAction.Reset
+          ? `<button type="button" id="critical-error-repair-button">${repairButtonLabel}</button>`
+          : ''
+      }
     </div>
   `;
+  };
 }
 
 const MOCK_BACKUP_WITH_VAULT = {
   KeyringController: { vault: 'encrypted-vault-data' },
 };
 
-/** Mocks `globalThis.stateHooks.getBackupState` to resolve a vault backup. */
-function mockGetBackupStateWithVault(): () => void {
+/**
+ * Mocks `globalThis.stateHooks.getBackupState` to resolve a vault backup.
+ * @param backup
+ */
+function mockGetBackupStateWithVault(
+  backup: Backup = MOCK_BACKUP_WITH_VAULT,
+): () => void {
   const previous = globalThis.stateHooks?.getBackupState;
   globalThis.stateHooks = {
     ...(globalThis.stateHooks ?? {}),
-    getBackupState: async () => MOCK_BACKUP_WITH_VAULT,
+    getBackupState: async () => backup,
   };
   return () => {
     if (previous) {
@@ -126,7 +171,7 @@ describe('displayCriticalError', () => {
     rootContainer = document.createElement('div');
     rootContainer.appendChild(container);
 
-    // Mock getBackupState (no backup) so passing port does not throw; hasBackup stays false.
+    // Mock getBackupState (no backup) so passing port does not throw; no repair action is shown.
     restoreGetBackupState = mockGetBackupStateNoVault();
 
     global.fetch = jest.fn().mockResolvedValue({
@@ -159,9 +204,11 @@ describe('displayCriticalError', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.Other,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.Other,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -175,7 +222,9 @@ describe('displayCriticalError', () => {
         enLocaleMessages: {},
       },
       expect.any(String),
-      false,
+      CriticalErrorRepairAction.None,
+      CriticalErrorType.Other,
+      true,
     );
     expect(
       rootContainer.querySelector('#critical-error-content')?.innerHTML,
@@ -194,9 +243,11 @@ describe('displayCriticalError', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.Other,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.Other,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -305,9 +356,11 @@ describe('displayCriticalError', () => {
         container,
         CriticalErrorTranslationKey.SomethingIsWrong,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.Other,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.Other,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -347,9 +400,11 @@ describe('displayCriticalError', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.Other,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.Other,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -394,9 +449,11 @@ describe('displayCriticalError', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.Other,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.Other,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -444,9 +501,11 @@ describe('displayCriticalError', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        port,
-        CriticalErrorType.BackgroundInitTimeout,
+        {
+          currentLocale: 'en',
+          port,
+          criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        },
       ),
     ).rejects.toThrow(error);
 
@@ -454,8 +513,7 @@ describe('displayCriticalError', () => {
       data: {
         method: CRITICAL_ERROR_SCREEN_VIEWED,
         params: {
-          backup: null,
-          canTriggerRestore: false,
+          repairAction: CriticalErrorRepairAction.None,
           criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
         },
       },
@@ -463,7 +521,7 @@ describe('displayCriticalError', () => {
   });
 });
 
-describe('restore accounts link', () => {
+describe('repair button', () => {
   let rootContainer: HTMLElement;
   let container: HTMLElement;
   let mockPort: browser.Runtime.Port;
@@ -499,6 +557,15 @@ describe('restore accounts link', () => {
       localeMessages: {},
       enLocaleMessages: {},
     });
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+    } as Response);
+    process.env = {
+      ...originalEnv,
+      SENTRY_DSN: MOCK_SENTRY_DSN,
+      SENTRY_DSN_DEV: MOCK_SENTRY_DSN_DEV,
+      METAMASK_ENVIRONMENT: 'development',
+    };
   });
 
   afterEach(() => {
@@ -507,15 +574,107 @@ describe('restore accounts link', () => {
       restoreGetBackupState = null;
     }
     jest.clearAllMocks();
+    jest.useRealTimers();
+    process.env = originalEnv;
   });
 
-  it('sends METHOD_REPAIR_DATABASE_TIMEOUT when restore accounts link is clicked and user confirms', async () => {
+  it('sends METHOD_REPAIR_DATABASE with recover action when repair button is clicked and user confirms', async () => {
+    jest.useFakeTimers();
+    jest.spyOn(errorUtils, 'getErrorHtml').mockRestore();
+    jest.spyOn(errorUtils, 'getErrorHtml');
+
+    restoreGetBackupState = mockGetBackupStateWithVault();
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
+
+    const error = new Error(MISSING_VAULT_ERROR);
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+        },
+      ),
+    ).rejects.toThrow(error);
+
+    // getErrorHtml should have been called with the recover action.
+    expect(errorUtils.getErrorHtml).toHaveBeenCalledWith(
+      CriticalErrorTranslationKey.TroubleStarting,
+      error,
+      expect.any(Object),
+      expect.any(String),
+      CriticalErrorRepairAction.Recover,
+      CriticalErrorType.MissingVaultInDatabase,
+      true,
+    );
+
+    expect(rootContainer.querySelector('#critical-error-button')).toBeNull();
+    expect(
+      rootContainer.querySelector('#critical-error-checkbox'),
+    ).not.toBeNull();
+    // Repair button should be in the DOM
+    const repairButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-repair-button',
+    );
+    expect(repairButton).toBeTruthy();
+    expect(repairButton?.disabled).toBe(true);
+    expect(repairButton?.textContent?.trim()).toBe(
+      'criticalErrorRecoverAccounts',
+    );
+
+    repairButton?.click();
+    expect(window.confirm).not.toHaveBeenCalled();
+    expect(mockPort.postMessage).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+
+    expect(repairButton?.disabled).toBe(false);
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
+
+    expect(window.confirm).toHaveBeenCalled();
+    expect(repairButton?.disabled).toBe(true);
+    expect(repairButton?.textContent).toBe('stateCorruptionRestoringDatabase');
+    repairButton?.click();
+    expect(window.confirm).toHaveBeenCalledTimes(1);
+    expect(mockPort.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: METHOD_REPAIR_DATABASE,
+          params: expect.objectContaining({
+            repairAction: CriticalErrorRepairAction.Recover,
+            criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+          }),
+        }),
+      }),
+    );
+  });
+
+  it('restores the repair button when posting METHOD_REPAIR_DATABASE fails', async () => {
+    jest.useFakeTimers();
     jest
       .spyOn(errorUtils, 'getErrorHtml')
       .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
 
     restoreGetBackupState = mockGetBackupStateWithVault();
     jest.spyOn(window, 'confirm').mockReturnValue(true);
+
+    const postMessage = mockPort.postMessage as jest.Mock;
+    postMessage.mockImplementation(
+      (message: { data?: { method?: string } }) => {
+        if (message?.data?.method === METHOD_REPAIR_DATABASE) {
+          throw new Error('Attempting to use a disconnected port object');
+        }
+      },
+    );
 
     const error = new Error(MOCK_ERROR_MESSAGE);
 
@@ -524,45 +683,51 @@ describe('restore accounts link', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.BackgroundInitTimeout,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        },
       ),
     ).rejects.toThrow(error);
 
-    // getErrorHtml should have been called with hasBackup=true
-    expect(errorUtils.getErrorHtml).toHaveBeenCalledWith(
-      CriticalErrorTranslationKey.TroubleStarting,
-      error,
-      expect.any(Object),
-      expect.any(String),
-      true,
+    const repairButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-repair-button',
     );
+    expect(repairButton).toBeTruthy();
 
-    // Restore link should be in the DOM
-    const restoreLink = rootContainer.querySelector(
-      '#critical-error-restore-link',
-    );
-    expect(restoreLink).toBeTruthy();
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
 
-    // Click the restore link
-    restoreLink?.dispatchEvent(new Event('click'));
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
 
-    expect(window.confirm).toHaveBeenCalled();
-    expect(mockPort.postMessage).toHaveBeenCalledWith(
+    expect(repairButton?.disabled).toBe(false);
+    expect(repairButton?.textContent).toBe('criticalErrorAttemptRecovery');
+
+    postMessage.mockImplementation(() => undefined);
+
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
+
+    expect(repairButton?.disabled).toBe(true);
+    expect(repairButton?.textContent).toBe('stateCorruptionRestoringDatabase');
+    expect(postMessage).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({
-          method: 'repairDatabaseTimeout',
-          params: expect.objectContaining({
-            criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
-            backup: expect.any(Object),
-          }),
+          method: METHOD_REPAIR_DATABASE,
         }),
       }),
     );
   });
 
-  it('does not send METHOD_REPAIR_DATABASE_TIMEOUT when restore accounts link is clicked and user cancels', async () => {
+  it('does not send METHOD_REPAIR_DATABASE when repair button is clicked and user cancels', async () => {
+    jest.useFakeTimers();
     jest
       .spyOn(errorUtils, 'getErrorHtml')
       .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
@@ -577,18 +742,29 @@ describe('restore accounts link', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
-        CriticalErrorType.BackgroundInitTimeout,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        },
       ),
     ).rejects.toThrow(error);
 
-    const restoreLink = rootContainer.querySelector(
-      '#critical-error-restore-link',
+    const repairButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-repair-button',
     );
-    expect(restoreLink).toBeTruthy();
+    expect(repairButton).toBeTruthy();
+    expect(repairButton?.disabled).toBe(true);
 
-    restoreLink?.dispatchEvent(new Event('click'));
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+
+    expect(repairButton?.disabled).toBe(false);
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
 
     expect(window.confirm).toHaveBeenCalled();
     // postMessage is called once when the error is displayed (CRITICAL_ERROR_SCREEN_VIEWED), but not for repair when user cancels
@@ -598,7 +774,7 @@ describe('restore accounts link', () => {
         data: expect.objectContaining({
           method: CRITICAL_ERROR_SCREEN_VIEWED,
           params: expect.objectContaining({
-            backup: expect.anything(),
+            repairAction: CriticalErrorRepairAction.Recover,
             criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
           }),
         }),
@@ -606,7 +782,445 @@ describe('restore accounts link', () => {
     );
   });
 
-  it('does not show restore accounts link when no backup exists', async () => {
+  it('uses values from the background without re-reading IndexedDB', async () => {
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+
+    const getBackupState = jest.fn().mockResolvedValue(null);
+    const previous = globalThis.stateHooks?.getBackupState;
+    globalThis.stateHooks = {
+      ...(globalThis.stateHooks ?? {}),
+      getBackupState,
+    };
+    restoreGetBackupState = () => {
+      if (previous) {
+        globalThis.stateHooks.getBackupState = previous;
+      } else {
+        delete globalThis.stateHooks.getBackupState;
+      }
+    };
+
+    const error = new Error(MISSING_VAULT_ERROR);
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+          repairActionFromBackground: CriticalErrorRepairAction.Recover,
+          analyticsConsentFromBackground: false,
+        },
+      ),
+    ).rejects.toThrow(error);
+
+    expect(getBackupState).not.toHaveBeenCalled();
+    expect(errorUtils.getErrorHtml).toHaveBeenCalledWith(
+      CriticalErrorTranslationKey.TroubleStarting,
+      error,
+      expect.any(Object),
+      expect.any(String),
+      CriticalErrorRepairAction.Recover,
+      CriticalErrorType.MissingVaultInDatabase,
+      true,
+    );
+    expect(mockPort.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: CRITICAL_ERROR_SCREEN_VIEWED,
+          params: expect.objectContaining({
+            repairAction: CriticalErrorRepairAction.Recover,
+          }),
+        }),
+      }),
+    );
+  });
+
+  it('does not report again when analytics is enabled and background capture was attempted', async () => {
+    jest.useFakeTimers();
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
+    const error = new Error(MISSING_VAULT_ERROR);
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+          repairActionFromBackground: CriticalErrorRepairAction.Recover,
+          analyticsConsentFromBackground: true,
+          backgroundCaptureAttempted: true,
+        },
+      ),
+    ).rejects.toThrow(error);
+
+    expect(rootContainer.querySelector('#critical-error-checkbox')).toBeNull();
+    expect(errorUtils.getErrorHtml).toHaveBeenCalledWith(
+      CriticalErrorTranslationKey.TroubleStarting,
+      error,
+      expect.any(Object),
+      expect.any(String),
+      CriticalErrorRepairAction.Recover,
+      CriticalErrorType.MissingVaultInDatabase,
+      false,
+    );
+
+    const repairButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-repair-button',
+    );
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
+
+    expect(fetch).not.toHaveBeenCalled();
+    expect(mockPort.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: METHOD_REPAIR_DATABASE,
+        }),
+      }),
+    );
+  });
+
+  it('reports when analytics is enabled and background capture was not attempted', async () => {
+    jest.useFakeTimers();
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
+    const error = new Error('Background initialization timeout');
+    restoreGetBackupState = mockGetBackupStateWithVault({
+      ...MOCK_BACKUP_WITH_VAULT,
+      AnalyticsController: { consentDecisionMade: true, optedIn: true },
+    });
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        },
+      ),
+    ).rejects.toThrow(error);
+
+    expect(rootContainer.querySelector('#critical-error-checkbox')).toBeNull();
+    const repairButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-repair-button',
+    );
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
+
+    expect(fetch).toHaveBeenCalled();
+    expect(mockPort.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: METHOD_REPAIR_DATABASE,
+        }),
+      }),
+    );
+  });
+
+  it('starts repair after the Sentry report times out', async () => {
+    jest.useFakeTimers();
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
+    jest
+      .mocked(fetch)
+      .mockImplementation(() => new Promise<Response>(() => undefined));
+    const error = new Error('Background initialization timeout');
+    restoreGetBackupState = mockGetBackupStateWithVault({
+      ...MOCK_BACKUP_WITH_VAULT,
+      AnalyticsController: { consentDecisionMade: true, optedIn: true },
+    });
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.BackgroundInitTimeout,
+        },
+      ),
+    ).rejects.toThrow(error);
+
+    const repairButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-repair-button',
+    );
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
+
+    expect(fetch).toHaveBeenCalled();
+    expect(mockPort.postMessage).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: METHOD_REPAIR_DATABASE,
+        }),
+      }),
+    );
+
+    await act(async () => {
+      jest.advanceTimersByTime(2_000);
+    });
+
+    expect(mockPort.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: METHOD_REPAIR_DATABASE,
+        }),
+      }),
+    );
+  });
+
+  it('shows a checked report checkbox when analytics is disabled', async () => {
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+    const error = new Error(MISSING_VAULT_ERROR);
+    restoreGetBackupState = mockGetBackupStateWithVault({
+      ...MOCK_BACKUP_WITH_VAULT,
+      AnalyticsController: { consentDecisionMade: true, optedIn: false },
+    });
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+        },
+      ),
+    ).rejects.toThrow(error);
+
+    const reportCheckbox = rootContainer.querySelector<HTMLInputElement>(
+      '#critical-error-checkbox',
+    );
+    expect(reportCheckbox?.checked).toBe(true);
+  });
+
+  it('does not report during repair when analytics is disabled and the checkbox is unchecked', async () => {
+    jest.useFakeTimers();
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
+    const error = new Error(MISSING_VAULT_ERROR);
+    restoreGetBackupState = mockGetBackupStateWithVault({
+      ...MOCK_BACKUP_WITH_VAULT,
+      AnalyticsController: { consentDecisionMade: true, optedIn: false },
+    });
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+        },
+      ),
+    ).rejects.toThrow(error);
+
+    const reportCheckbox = rootContainer.querySelector<HTMLInputElement>(
+      '#critical-error-checkbox',
+    );
+    const repairButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-repair-button',
+    );
+    if (reportCheckbox) {
+      reportCheckbox.checked = false;
+    }
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
+
+    expect(fetch).not.toHaveBeenCalled();
+    expect(mockPort.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: METHOD_REPAIR_DATABASE,
+        }),
+      }),
+    );
+  });
+
+  it('does not attach the vault backup to thrown errors or background messages', async () => {
+    jest.useFakeTimers();
+    jest
+      .spyOn(errorUtils, 'getErrorHtml')
+      .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
+
+    const error = {
+      message: MISSING_VAULT_ERROR,
+      name: 'PersistenceError',
+      stack: 'PersistenceError: missing vault',
+      sentryTags: {
+        'corruption.backupShouldExist': 'true',
+      },
+    };
+
+    restoreGetBackupState = mockGetBackupStateWithVault();
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+        },
+      ),
+    ).rejects.toBe(error);
+
+    const repairButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-repair-button',
+    );
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
+
+    expect(error).not.toHaveProperty('backup');
+    expect(JSON.stringify(error)).not.toContain('encrypted-vault-data');
+    expect(
+      JSON.stringify(jest.mocked(mockPort.postMessage).mock.calls),
+    ).not.toContain('encrypted-vault-data');
+    expect(
+      JSON.stringify(jest.mocked(mockPort.postMessage).mock.calls),
+    ).not.toContain('"backup"');
+    expect(mockPort.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: METHOD_REPAIR_DATABASE,
+        }),
+      }),
+    );
+  });
+
+  it('sends METHOD_REPAIR_DATABASE with reset action when repair button is clicked and user confirms', async () => {
+    jest.useFakeTimers();
+    jest.spyOn(errorUtils, 'getErrorHtml').mockRestore();
+    jest.spyOn(errorUtils, 'getErrorHtml');
+
+    restoreGetBackupState = mockGetBackupStateNoVault();
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
+
+    const error = new Error(MISSING_VAULT_ERROR);
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+          criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+          backgroundCaptureAttempted: true,
+        },
+      ),
+    ).rejects.toThrow(error);
+
+    expect(errorUtils.getErrorHtml).toHaveBeenCalledWith(
+      CriticalErrorTranslationKey.TroubleStarting,
+      error,
+      expect.any(Object),
+      expect.any(String),
+      CriticalErrorRepairAction.Reset,
+      CriticalErrorType.MissingVaultInDatabase,
+      true,
+    );
+
+    expect(rootContainer.querySelector('#critical-error-button')).toBeNull();
+    expect(
+      rootContainer.querySelector('#critical-error-checkbox'),
+    ).not.toBeNull();
+    const repairButton = rootContainer.querySelector<HTMLButtonElement>(
+      '#critical-error-repair-button',
+    );
+    expect(repairButton).toBeTruthy();
+    expect(repairButton?.disabled).toBe(true);
+    expect(repairButton?.textContent?.trim()).toBe(
+      'criticalErrorResetMetaMaskState',
+    );
+
+    repairButton?.click();
+    expect(window.confirm).not.toHaveBeenCalled();
+    expect(mockPort.postMessage).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      jest.advanceTimersByTime(5_000);
+    });
+
+    expect(repairButton?.disabled).toBe(false);
+    await act(async () => {
+      repairButton?.click();
+      await Promise.resolve();
+    });
+
+    expect(repairButton?.disabled).toBe(true);
+    expect(repairButton?.textContent).toBe('stateCorruptionResettingDatabase');
+    expect(fetch).toHaveBeenCalled();
+    expect(mockPort.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          method: METHOD_REPAIR_DATABASE,
+          params: {
+            repairAction: CriticalErrorRepairAction.Reset,
+            criticalErrorType: CriticalErrorType.MissingVaultInDatabase,
+          },
+        }),
+      }),
+    );
+  });
+
+  it('does not show repair button when no backup exists', async () => {
     jest
       .spyOn(errorUtils, 'getErrorHtml')
       .mockImplementation(mockGetErrorHtmlWithOptionalRestoreLink());
@@ -620,23 +1234,27 @@ describe('restore accounts link', () => {
         container,
         CriticalErrorTranslationKey.TroubleStarting,
         error,
-        'en',
-        mockPort,
+        {
+          currentLocale: 'en',
+          port: mockPort,
+        },
       ),
     ).rejects.toThrow(error);
 
-    // getErrorHtml should have been called with hasBackup=false
+    // getErrorHtml should have been called with no repair action.
     expect(errorUtils.getErrorHtml).toHaveBeenCalledWith(
       CriticalErrorTranslationKey.TroubleStarting,
       error,
       expect.any(Object),
       expect.any(String),
-      false,
+      CriticalErrorRepairAction.None,
+      undefined,
+      true,
     );
 
-    // No restore link
+    // No repair button
     expect(
-      rootContainer.querySelector('#critical-error-restore-link'),
+      rootContainer.querySelector('#critical-error-repair-button'),
     ).toBeNull();
   });
 });
