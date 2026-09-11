@@ -7,6 +7,7 @@ import type { PreferencesState } from '@metamask/preferences-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type {
   TraceCallback as ControllerTraceCallback,
   TraceContext as ControllerTraceContext,
@@ -24,7 +25,8 @@ import {
 } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { ARC_NATIVE_CAIP_CHAIN_ID } from '../../../../ui/components/app/assets/enablement/arc';
+
+const ARC_CAIP_CHAIN_ID = toEvmCaipChainId(CHAIN_IDS.ARC);
 
 /**
  * Cached API client instance.
@@ -205,7 +207,7 @@ function subscribeToArcTransactionConfirmedRefresh(
 
       assetsController
         .getAssets([matchedAccount], {
-          chainIds: [ARC_NATIVE_CAIP_CHAIN_ID],
+          chainIds: [ARC_CAIP_CHAIN_ID],
           forceUpdate: true,
           bypassServerCache: true,
         })
