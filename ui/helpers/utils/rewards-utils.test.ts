@@ -5,10 +5,21 @@ import { formatAccountToCaipAccountId } from './rewards-utils';
 jest.mock('loglevel', () => ({
   error: jest.fn(),
 }));
+jest.mock('@metamask/bridge-controller', () => ({
+  ...jest.requireActual('@metamask/bridge-controller'),
+  formatChainIdToCaip: jest.fn(
+    jest.requireActual('@metamask/bridge-controller').formatChainIdToCaip,
+  ),
+}));
 
 describe('rewards-utils', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest
+      .mocked(bridgeControllerUtils.formatChainIdToCaip)
+      .mockImplementation(
+        jest.requireActual('@metamask/bridge-controller').formatChainIdToCaip,
+      );
   });
 
   describe('formatAccountToCaipAccountId', () => {
@@ -291,7 +302,7 @@ describe('rewards-utils', () => {
         const address = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
 
         jest
-          .spyOn(bridgeControllerUtils, 'formatChainIdToCaip')
+          .mocked(bridgeControllerUtils.formatChainIdToCaip)
           .mockImplementationOnce(() => {
             throw new Error('Invalid chain ID format');
           });
@@ -310,7 +321,7 @@ describe('rewards-utils', () => {
 
         // Mock formatChainIdToCaip to return invalid data that will cause parseCaipChainId to fail
         jest
-          .spyOn(bridgeControllerUtils, 'formatChainIdToCaip')
+          .mocked(bridgeControllerUtils.formatChainIdToCaip)
           .mockImplementationOnce(() => 'invalid:caip:format:with:extra:parts');
 
         const result = formatAccountToCaipAccountId(address, '0x1');
