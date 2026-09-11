@@ -75,7 +75,7 @@ export type FeatureFlagRegistryEntry = {
  * Remote flag values are stored in the exact format returned by the production
  * client-config API, so they can be served directly by mock-e2e.js.
  *
- * Production defaults last synced: 2026-09-01
+ * Production defaults last synced: 2026-09-08
  * Source: https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod
  */
 /* eslint-disable @typescript-eslint/naming-convention -- production API flag names */
@@ -212,20 +212,53 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           minimumVersion: '13.38.0',
         },
         '13.42.0': {
-          deprecatedControllers: ['TokenListController'],
+          deprecatedControllers: [
+            'TokenListController',
+            'TokenDetectionController',
+            'TokensController',
+            'CurrencyRateController',
+            'TokenRatesController',
+            'TokenBalancesController',
+            'AccountTrackerController',
+            'MultichainAssetsController',
+            'MultichainAssetsRatesController',
+            'MultichainBalancesController',
+          ],
           enabled: true,
           featureVersion: '1',
           minimumVersion: '13.38.0',
         },
         '13.43.0': {
-          deprecatedControllers: ['TokenListController'],
+          deprecatedControllers: [
+            'TokenListController',
+            'TokenDetectionController',
+            'TokensController',
+            'CurrencyRateController',
+            'TokenRatesController',
+            'TokenBalancesController',
+            'AccountTrackerController',
+            'MultichainAssetsController',
+            'MultichainAssetsRatesController',
+            'MultichainBalancesController',
+          ],
           enabled: true,
           featureVersion: '1',
           minimumVersion: '13.38.0',
           tracesEnabled: false,
         },
         '13.46.1': {
-          deprecatedControllers: ['TokenListController'],
+          deprecatedControllers: [
+            'TokenListController',
+            'TokenDetectionController',
+            'TokensController',
+            'CurrencyRateController',
+            'TokenRatesController',
+            'TokenBalancesController',
+            'AccountTrackerController',
+            'MultichainAssetsController',
+            'MultichainAssetsRatesController',
+            'MultichainBalancesController',
+          ],
           enabled: true,
           featureVersion: '1',
           minimumVersion: '13.38.0',
@@ -1038,6 +1071,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       default: 1,
       included: 1.5,
       perChainConfig: {
+        '0x1237': {
+          base: 1.5,
+          name: 'robinhood',
+        },
         '0x18c6': {
           base: 1.3,
           name: 'megaeth',
@@ -1183,7 +1220,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       {
         scope: {
           type: 'threshold',
-          value: 1,
+          value: 0.5,
         },
         thresholdName: 'control',
         thresholdVersion: 2,
@@ -1208,7 +1245,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       {
         scope: {
           type: 'threshold',
-          value: 0,
+          value: 1,
         },
         thresholdName: 'treatment',
         thresholdVersion: 2,
@@ -2329,14 +2366,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         name: 'control',
         scope: {
           type: 'threshold',
-          value: 1,
+          value: 0.5,
         },
       },
       {
         name: 'treatment',
         scope: {
           type: 'threshold',
-          value: 0,
+          value: 1,
         },
       },
     ],
@@ -2352,14 +2389,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         name: 'control',
         scope: {
           type: 'threshold',
-          value: 1,
+          value: 0.95,
         },
       },
       {
         name: 'treatment',
         scope: {
           type: 'threshold',
-          value: 0,
+          value: 1,
         },
       },
     ],
@@ -2434,6 +2471,21 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         '13.41.0': {
           enabled: false,
         },
+        '13.47.0': [
+          {
+            scope: {
+              type: 'threshold',
+              value: 1,
+            },
+            thresholdName: 'feature is ON',
+            thresholdVersion: 2,
+            value: {
+              enabled: true,
+              maxAttempts: 5,
+              pollInterval: 5000,
+            },
+          },
+        ],
       },
     },
     status: FeatureFlagStatus.Active,
@@ -2850,6 +2902,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  moneyAccountBalanceSource: {
+    inProd: true,
+    name: 'moneyAccountBalanceSource',
+    productionDefault: 'rpc',
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   moneyAccountChompConfig: {
     inProd: true,
     name: 'moneyAccountChompConfig',
@@ -2883,17 +2943,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  [MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME]: {
+  moneyEnableActivityDetails: {
     inProd: false,
-    name: MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME,
+    name: 'moneyEnableActivityDetails',
     productionDefault: false,
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
 
-  [MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME]: {
+  moneyEnableMoneyAccount: {
     inProd: true,
-    name: MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
+    name: 'moneyEnableMoneyAccount',
     productionDefault: {
       enabled: false,
     },
@@ -3123,7 +3183,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
             name: 'treatment',
             scope: {
               type: 'threshold',
-              value: 0,
+              value: 1,
             },
           },
         ],
@@ -3214,14 +3274,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         name: 'control',
         scope: {
           type: 'threshold',
-          value: 1,
+          value: 0,
         },
       },
       {
         name: 'treatment',
         scope: {
           type: 'threshold',
-          value: 0,
+          value: 1,
         },
       },
     ],
@@ -3234,7 +3294,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'rampsEnabled',
     productionDefault: {
       enabled: false,
-      minimumVersion: '13.47.0',
+      minimumVersion: '13.48.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
