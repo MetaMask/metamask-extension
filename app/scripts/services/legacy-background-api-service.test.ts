@@ -160,15 +160,10 @@ describe('LegacyBackgroundApiService', () => {
   });
 
   describe('setCurrentCurrency', () => {
-    it('sets the currency in the AssetsController and CurrencyRateController', async () => {
+    it('sets the currency in the AssetsController', async () => {
       const currencyCode: SupportedCurrency = 'usd';
 
       await withService(async ({ serviceMessenger, rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'CurrencyRateController:setCurrentCurrency',
-          jest.fn(),
-        );
-
         rootMessenger.registerActionHandler(
           'AssetsController:setSelectedCurrency',
           jest.fn(),
@@ -182,11 +177,6 @@ describe('LegacyBackgroundApiService', () => {
             currencyCode,
           ),
         ).resolves.toBeUndefined();
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'CurrencyRateController:setCurrentCurrency',
-          currencyCode,
-        );
 
         expect(callSpy).toHaveBeenCalledWith(
           'AssetsController:setSelectedCurrency',
@@ -8352,7 +8342,6 @@ function getMessenger(
       'NetworkEnablementController:isNetworkEnabled',
       'NetworkEnablementController:restoreEnabledNetworkMap',
       'RemoteFeatureFlagController:getState',
-      'CurrencyRateController:setCurrentCurrency',
       'AssetsContractController:getTokenStandardAndDetails',
       'AssetsController:addCustomAsset',
       'AssetsController:getAssets',
