@@ -24,7 +24,6 @@ export const ValidColors = [
   Color.errorInverse,
   Color.successDefault,
   Color.successInverse,
-  Color.sepoliaInverse,
   Color.warningDefault,
   Color.warningInverse,
   Color.infoDefault,
