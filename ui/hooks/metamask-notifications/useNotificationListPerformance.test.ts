@@ -17,8 +17,9 @@ jest.mock('../../../shared/lib/trace', () => ({
 const ID = '00000000-0000-4000-8000-000000000001';
 
 describe('useNotificationListPerformance', () => {
-  // The abandonment end is deferred one macrotask so a StrictMode
-  // setup/cleanup/setup probe can cancel it; tests drive that clock explicitly.
+  // The abandonment end is deferred one microtask so a StrictMode
+  // setup/cleanup/setup probe can cancel it; tests drive that checkpoint
+  // explicitly.
   const flushDeferredAbandon = () => {
     act(() => {
       jest.advanceTimersByTime(0);

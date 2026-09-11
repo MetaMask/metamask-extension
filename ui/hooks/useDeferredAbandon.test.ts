@@ -3,8 +3,8 @@ import { useEffect } from 'react';
 import { useDeferredAbandon } from './useDeferredAbandon';
 
 describe('useDeferredAbandon', () => {
-  // The work is deferred one macrotask so a StrictMode setup/cleanup/setup
-  // probe can cancel it; tests drive that clock explicitly.
+  // The work is deferred one microtask so a StrictMode setup/cleanup/setup
+  // probe can cancel it; tests drive that checkpoint explicitly.
   const flushDeferredAbandon = () => {
     act(() => {
       jest.advanceTimersByTime(0);
