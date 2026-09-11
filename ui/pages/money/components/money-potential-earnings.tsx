@@ -30,6 +30,8 @@ type MoneyPotentialEarningsProps = {
   apyDecimal: number | undefined;
   isNoFeeToken: (token: MoneyDepositToken) => boolean;
   privacyMode: boolean;
+  onAddToken: (token: MoneyDepositToken) => void;
+  isAddDisabled?: boolean;
 };
 
 export function MoneyPotentialEarnings({
@@ -37,6 +39,8 @@ export function MoneyPotentialEarnings({
   apyDecimal,
   isNoFeeToken,
   privacyMode,
+  onAddToken,
+  isAddDisabled = false,
 }: MoneyPotentialEarningsProps) {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
@@ -133,6 +137,8 @@ export function MoneyPotentialEarnings({
           apyDecimal={apyDecimal ?? 0}
           hasNoFee={isNoFeeToken(token)}
           privacyMode={privacyMode}
+          onAddClick={onAddToken}
+          isAddDisabled={isAddDisabled}
         />
       ))}
 

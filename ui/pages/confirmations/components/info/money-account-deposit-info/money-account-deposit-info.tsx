@@ -7,6 +7,7 @@ import {
   MUSD_TOKEN_ADDRESS,
 } from '../../../constants/musd';
 import { useAddToken } from '../../../hooks/tokens/useAddToken';
+import { useConfirmationNavigationOptions } from '../../../hooks/useConfirmationNavigation';
 import { CustomAmountInfo } from '../custom-amount-info';
 
 const MONEY_ACCOUNT_DEPOSIT_CURRENCY = 'usd';
@@ -27,6 +28,8 @@ const renderAmountDetails = (amountFiat: string) => (
 );
 
 export const MoneyAccountDepositInfo = () => {
+  const { preferredPaymentToken } = useConfirmationNavigationOptions();
+
   useAddToken({
     chainId: MUSD_CONVERSION_DEFAULT_CHAIN_ID,
     decimals: MUSD_TOKEN.decimals,
@@ -47,6 +50,7 @@ export const MoneyAccountDepositInfo = () => {
       displayAccountRow
       displayPercentageButtons
       hidePayTokenAmount
+      preferredToken={preferredPaymentToken}
     />
   );
 };

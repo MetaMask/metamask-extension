@@ -299,6 +299,25 @@ describe('MoneyHomePage', () => {
     expect(mockInitiateDeposit).toHaveBeenCalledWith();
   });
 
+  it('initiates a deposit prefilled with the row token from Earn on your crypto', () => {
+    mockUseMoneyDepositTokens.mockReturnValue({
+      tokens: [DEPOSIT_TOKEN],
+      isNoFeeToken: () => false,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId('money-potential-earnings-token-add'));
+
+    expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
+    expect(mockInitiateDeposit).toHaveBeenCalledWith({
+      preferredPaymentToken: {
+        address: DEPOSIT_TOKEN.address,
+        chainId: DEPOSIT_TOKEN.chainId,
+      },
+    });
+  });
+
   it('disables the deposit entry points while a deposit is initiating', () => {
     mockUseMoneyAccountDeposit.mockReturnValue({
       initiateDeposit: mockInitiateDeposit,
