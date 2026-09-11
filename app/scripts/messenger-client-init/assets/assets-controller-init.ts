@@ -249,10 +249,21 @@ export const AssetsControllerInit: MessengerClientInitFunction<
       }
     },
     // TEMPORARY (ASSETS-3346): legacy state slices used to heal wiped `assetsInfo` metadata.
-    tempMigrateAssetsInfoMetadataAssets3346: () => ({
-      TokensController: persistedState.TokensController,
-      AccountsController: persistedState.AccountsController,
-    }),
+    // TokensController runtime was removed, but vault may still retain the slice for healing.
+    tempMigrateAssetsInfoMetadataAssets3346: () => {
+      const legacyPersistedState = persistedState as {
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- vault key
+        TokensController?: unknown;
+      };
+      return {
+        TokensController: legacyPersistedState.TokensController,
+        AccountsController: persistedState.AccountsController,
+      } as ReturnType<
+        NonNullable<
+          AssetsControllerOptions['tempMigrateAssetsInfoMetadataAssets3346']
+        >
+      >;
+    },
     trace: createAssetsControllerTrace(initMessenger),
   });
 

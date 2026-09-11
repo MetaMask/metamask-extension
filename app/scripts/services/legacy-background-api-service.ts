@@ -123,11 +123,7 @@ import {
   GetSignatureState,
   SignatureStateChange,
 } from '@metamask/signature-controller';
-import {
-  AssetsContractControllerGetTokenStandardAndDetailsAction,
-  TokensControllerAddTokenAction,
-  TokensControllerGetStateAction,
-} from '@metamask/assets-controllers';
+import { AssetsContractControllerGetTokenStandardAndDetailsAction } from '@metamask/assets-controllers';
 import {
   AccountId,
   Asset,
@@ -742,8 +738,6 @@ type AllowedActions =
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerGetSubscriptionByProductAction
   | SubscriptionControllerStopAllPollingAction
-  | TokensControllerAddTokenAction
-  | TokensControllerGetStateAction
   | TransactionControllerAddTransactionAction
   | TransactionControllerAddTransactionBatchAction
   | TransactionControllerClearUnapprovedTransactionsAction
@@ -942,13 +936,9 @@ export class LegacyBackgroundApiService {
   }
 
   /**
-   * Adds a token to the wallet.
-   *
-   * When the assets unify state feature is enabled, the token is added as a
-   * custom asset on the AssetsController for the currently selected account
-   * (resolving the chain ID from the given network client and building the
-   * CAIP-19 asset ID from the address). Otherwise, it is added via the
-   * TokensController.
+   * Adds a token to the wallet via AssetsController as a custom asset for the
+   * currently selected account (resolving the chain ID from the given network
+   * client and building the CAIP-19 asset ID from the address).
    *
    * @param token - The token to add.
    * @param token.address - The token contract address.
@@ -970,44 +960,40 @@ export class LegacyBackgroundApiService {
     image?: string;
     networkClientId: string;
   }): Promise<void> {
-    if (getIsAssetsUnifiedStateIncludedInBuild()) {
-      const selectedAccount = this.#messenger.call(
-        'AccountsController:getSelectedAccount',
+    if (!getIsAssetsUnifiedStateIncludedInBuild()) {
+      throw new Error(
+        'MetaMask - Cannot add token when AssetsController is not included in the build',
       );
-      const {
-        configuration: { chainId },
-      } = this.#messenger.call(
-        'NetworkController:getNetworkClientById',
-        networkClientId,
+    }
+
+    const selectedAccount = this.#messenger.call(
+      'AccountsController:getSelectedAccount',
+    );
+    const {
+      configuration: { chainId },
+    } = this.#messenger.call(
+      'NetworkController:getNetworkClientById',
+      networkClientId,
+    );
+    const assetId = toAssetId(address, chainId);
+    if (!assetId) {
+      throw new Error(
+        `MetaMask - Cannot build assetId for token ${address} on ${chainId}`,
       );
-      const assetId = toAssetId(address, chainId);
-      if (!assetId) {
-        throw new Error(
-          `MetaMask - Cannot build assetId for token ${address} on ${chainId}`,
-        );
-      }
-      await this.#messenger.call(
-        'AssetsController:addCustomAsset',
-        selectedAccount.id,
-        assetId,
-        {
-          address,
-          symbol,
-          name: symbol,
-          decimals,
-          chainId,
-          ...(image ? { iconUrl: image } : {}),
-        },
-      );
-    } else {
-      await this.#messenger.call('TokensController:addToken', {
+    }
+    await this.#messenger.call(
+      'AssetsController:addCustomAsset',
+      selectedAccount.id,
+      assetId,
+      {
         address,
         symbol,
+        name: symbol,
         decimals,
-        image,
-        networkClientId,
-      });
-    }
+        chainId,
+        ...(image ? { iconUrl: image } : {}),
+      },
+    );
   }
 
   /**
@@ -1589,21 +1575,11 @@ export class LegacyBackgroundApiService {
 
   /**
    * Returns the `TokensController.allTokens` map, reconstructed from the
-   * `AssetsController` state when the assets unify state feature is enabled.
+   * `AssetsController` state via migration selectors.
    *
    * @returns The `ChainId -> AccountAddress -> Token[]` map.
    */
   #getAllTokens(): ReturnType<typeof getTokensControllerAllTokens> {
-    const { allTokens } = this.#messenger.call('TokensController:getState');
-
-    // When the assets unify state feature is disabled, the selector simply
-    // returns `TokensController.allTokens`; the additional slices are only
-    // needed to reconstruct the token list from the (conditionally registered)
-    // AssetsController state when the feature is enabled.
-    if (!this.isAssetsUnifyStateEnabled()) {
-      return allTokens;
-    }
-
     const { internalAccounts } = this.#messenger.call(
       'AccountsController:getState',
     );
@@ -1615,7 +1591,7 @@ export class LegacyBackgroundApiService {
     );
 
     const metamask = {
-      allTokens,
+      allTokens: {},
       internalAccounts,
       remoteFeatureFlags,
       assetsInfo,

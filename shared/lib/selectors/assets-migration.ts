@@ -45,9 +45,9 @@ import { createDeepEqualSelector } from './selector-creators';
 // accountsByChainId: DONE (via AssetsController when unify enabled; controller removed)
 //
 // TokensController
-// allTokens: DONE
-// allIgnoredTokens: DONE
-// allDetectedTokens: DONE (Not being used)
+// allTokens: DONE (via AssetsController when unify enabled; controller removed)
+// allIgnoredTokens: DONE (via AssetsController when unify enabled; controller removed)
+// allDetectedTokens: DONE (Not being used; controller removed)
 //
 // TokenBalancesController
 // tokenBalances: DONE (via AssetsController when unify enabled; controller removed)

@@ -30,21 +30,7 @@ function createShieldFixture() {
         '0x1': true,
       },
     })
-    .withTokensController({
-      allTokens: {
-        '0x1': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-            {
-              address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-              symbol: 'WETH',
-              decimals: 18,
-              isERC721: false,
-              aggregators: [],
-            },
-          ],
-        },
-      },
-    })
+
     .withAssetsController({
       assetsBalance: {
         'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
@@ -63,21 +49,7 @@ function createShieldFixtureCancelled() {
         '0x1': true,
       },
     })
-    .withTokensController({
-      allTokens: {
-        '0x1': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-            {
-              address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-              symbol: 'WETH',
-              decimals: 18,
-              isERC721: false,
-              aggregators: [],
-            },
-          ],
-        },
-      },
-    })
+
     .withAppStateController({
       showShieldEntryModalOnce: true, // Prevent entry modal from showing since subscription exists (even if cancelled)
     });
@@ -92,28 +64,7 @@ function createShieldFixtureCrypto() {
         '0x1': true,
       },
     })
-    .withTokensController({
-      allTokens: {
-        '0x1': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-            {
-              address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-              symbol: 'USDC',
-              decimals: 6,
-              isERC721: false,
-              aggregators: [],
-            },
-            {
-              address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-              symbol: 'USDT',
-              decimals: 6,
-              isERC721: false,
-              aggregators: [],
-            },
-          ],
-        },
-      },
-    })
+
     .withAssetsController({
       customAssets: {
         'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': [

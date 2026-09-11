@@ -349,17 +349,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   SubjectMetadataController: {
     subjectMetadata: false,
   },
-  TokensController: {
-    allDetectedTokens: {
-      [AllProperties]: false,
-    },
-    allIgnoredTokens: {
-      [AllProperties]: false,
-    },
-    allTokens: {
-      [AllProperties]: false,
-    },
-  },
   TransactionController: {
     transactions: false,
     lastFetchedBlockNumbers: false,
