@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import useAlerts from '../../../../hooks/useAlerts';
 import { useConfirmContext } from '../../context/confirm';
@@ -33,6 +33,7 @@ export function useTransactionCustomAmountAlerts({
 }: {
   pendingFiatAmount?: string;
 } = {}): {
+  alertContent?: ReactNode;
   alertMessage?: string;
   hasAlert: boolean;
   hideResults: boolean;
@@ -72,7 +73,7 @@ export function useTransactionCustomAmountAlerts({
     };
   }
 
-  const { reason, message, key } = firstAlert;
+  const { reason, message, key, content } = firstAlert;
   const showInlineEvenIfSame = ALERTS_SHOW_INLINE_MESSAGE.includes(key);
   const alertMessage =
     reason && message && (reason !== message || showInlineEvenIfSame)
@@ -80,6 +81,7 @@ export function useTransactionCustomAmountAlerts({
       : undefined;
 
   return {
+    ...(content ? { alertContent: content } : {}),
     ...(alertMessage ? { alertMessage } : {}),
     disableUpdate,
     hasAlert: true,
