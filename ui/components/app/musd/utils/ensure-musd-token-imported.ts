@@ -1,10 +1,10 @@
 import type { Hex } from '@metamask/utils';
 import { MUSD_TOKEN, getMusdTokenAddressForChain } from '../constants';
-import {
-  addImportedTokens,
-  findNetworkClientIdByChainId,
-} from '../../../../store/actions';
+import { importCustomAssetsBatch } from '../../../../store/actions';
+import { toAssetId } from '../../../../../shared/lib/asset-utils';
+import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import type { MetaMaskReduxDispatch } from '../../../../store/store';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../../shared/lib/environment';
 
 /**
  * Ensures mUSD is present in the user's imported token list for `chainId` so
@@ -24,23 +24,41 @@ export async function ensureMusdTokenImportedForChain(
     return;
   }
 
+  if (!getIsAssetsUnifiedStateIncludedInBuild()) {
+    return;
+  }
+
   try {
-    const networkClientId = await findNetworkClientIdByChainId(
-      chainId.toLowerCase(),
-    );
     await Promise.resolve(
-      dispatch(
-        addImportedTokens(
-          [
-            {
-              address: musdAddress,
-              symbol: MUSD_TOKEN.symbol,
-              decimals: MUSD_TOKEN.decimals,
-            },
-          ],
-          networkClientId,
-        ),
-      ),
+      dispatch((innerDispatch, getState) => {
+        const selected = getSelectedInternalAccount(getState());
+        if (!selected?.id) {
+          return Promise.resolve();
+        }
+
+        const assetId = toAssetId(musdAddress, chainId);
+        if (!assetId) {
+          return Promise.resolve();
+        }
+
+        return Promise.resolve(
+          innerDispatch(
+            importCustomAssetsBatch(
+              selected.id,
+              [{ assetId, isHidden: false }],
+              {
+                [assetId]: {
+                  address: musdAddress,
+                  symbol: MUSD_TOKEN.symbol,
+                  name: MUSD_TOKEN.symbol,
+                  decimals: MUSD_TOKEN.decimals,
+                  chainId,
+                },
+              },
+            ),
+          ),
+        );
+      }),
     );
   } catch (err) {
     console.warn('[MUSD] Failed to add mUSD token to token list:', err);

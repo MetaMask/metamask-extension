@@ -498,24 +498,8 @@ export const CustomTokenImportPage = () => {
     }
     setIsSubmitting(true);
     try {
-      await dispatch(
-        addImportedTokens(
-          [
-            {
-              address,
-              symbol,
-              decimals: parsedDecimals,
-              isERC721: false,
-            },
-          ],
-          networkClientId,
-        ),
-      );
-
-      // Write path: seed AssetsController whenever the unified assets state is
-      // included in the build. The runtime rollout flag is treated as always-on
-      // for writes so the manage-tokens list (customAssets + assetsInfo) stays
-      // in sync; read/display gating still uses assetsUnifyStateFeatureEnabled.
+      // Seed AssetsController whenever the unified assets state is included in
+      // the build. TokensController import path was removed.
       if (getIsAssetsUnifiedStateIncludedInBuild() && selectedAccount?.id) {
         const assetId = toAssetId(
           address as Hex,
@@ -547,6 +531,20 @@ export const CustomTokenImportPage = () => {
             ),
           );
         }
+      } else {
+        await dispatch(
+          addImportedTokens(
+            [
+              {
+                address,
+                symbol,
+                decimals: parsedDecimals,
+                isERC721: false,
+              },
+            ],
+            networkClientId,
+          ),
+        );
       }
 
       trackSubmitAttempt(1);

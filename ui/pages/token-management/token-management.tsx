@@ -934,9 +934,6 @@ export const TokenManagementPage = () => {
                 networkClientId,
               }),
             );
-            if (isAssetsUnifiedStateInBuild && entry.caipAssetId) {
-              await dispatch(hideAsset(entry.caipAssetId));
-            }
             return;
           }
           await dispatch(hideAsset(entry.assetId));
@@ -1160,21 +1157,6 @@ export const TokenManagementPage = () => {
             return;
           }
           await Promise.all([
-            dispatch(
-              addImportedTokens(
-                [
-                  {
-                    address: payload.assetReference,
-                    symbol: payload.symbol,
-                    decimals: payload.decimals,
-                    isERC721: false,
-                    name: payload.name,
-                    ...(payload.iconUrl ? { image: payload.iconUrl } : {}),
-                  },
-                ],
-                networkClientIdForImport,
-              ),
-            ),
             ...(isAssetsUnifiedStateInBuild
               ? [
                   dispatch(
@@ -1184,7 +1166,25 @@ export const TokenManagementPage = () => {
                     ),
                   ),
                 ]
-              : []),
+              : [
+                  dispatch(
+                    addImportedTokens(
+                      [
+                        {
+                          address: payload.assetReference,
+                          symbol: payload.symbol,
+                          decimals: payload.decimals,
+                          isERC721: false,
+                          name: payload.name,
+                          ...(payload.iconUrl
+                            ? { image: payload.iconUrl }
+                            : {}),
+                        },
+                      ],
+                      networkClientIdForImport,
+                    ),
+                  ),
+                ]),
           ]);
 
           trackEvent(tokenAddedEvent);

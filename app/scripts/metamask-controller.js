@@ -340,7 +340,6 @@ import { GatorPermissionsControllerInit } from './messenger-client-init/gator-pe
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { AnalyticsControllerInit } from './messenger-client-init/analytics-controller-init';
 import { MetaMetricsControllerInit } from './messenger-client-init/metametrics-controller-init';
-import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
 import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
 import { RatesControllerInit } from './messenger-client-init/rates-controller-init';
 import { NameControllerInit } from './messenger-client-init/confirmations/name-controller-init';
@@ -605,7 +604,6 @@ export default class MetamaskController extends EventEmitter {
       AssetsContractController: AssetsContractControllerInit,
       NftDetectionController: NftDetectionControllerInit,
       RatesController: RatesControllerInit,
-      TokensController: TokensControllerInit,
       StaticAssetsController: StaticAssetsControllerInit,
       MultichainNetworkController: MultichainNetworkControllerInit,
       NetworkEnablementController: NetworkEnablementControllerInit,
@@ -742,7 +740,6 @@ export default class MetamaskController extends EventEmitter {
     this.multichainAccountService =
       messengerClientsByName.MultichainAccountService;
     this.staticAssetsController = messengerClientsByName.StaticAssetsController;
-    this.tokensController = messengerClientsByName.TokensController;
     this.multichainNetworkController =
       messengerClientsByName.MultichainNetworkController;
     this.multichainRatesController = messengerClientsByName.RatesController;
@@ -1352,7 +1349,6 @@ export default class MetamaskController extends EventEmitter {
       AccountOrderController: this.accountOrderController,
       GasFeeController: this.gasFeeController,
       GatorPermissionsController: this.gatorPermissionsController,
-      TokensController: this.tokensController,
       StaticAssetsController: this.staticAssetsController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
@@ -1413,7 +1409,6 @@ export default class MetamaskController extends EventEmitter {
         NetworkEnablementController: this.networkEnablementController,
         AccountOrderController: this.accountOrderController,
         GasFeeController: this.gasFeeController,
-        TokensController: this.tokensController,
         StaticAssetsController: this.staticAssetsController,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
@@ -2414,7 +2409,6 @@ export default class MetamaskController extends EventEmitter {
       announcementController,
       onboardingController,
       preferencesController,
-      tokensController,
       smartTransactionsController,
       txController,
       backup,
@@ -2818,7 +2812,6 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:addToken',
       ),
-      updateTokenType: tokensController.updateTokenType.bind(tokensController),
       setFeatureFlag: preferencesController.setFeatureFlag.bind(
         preferencesController,
       ),
@@ -3543,11 +3536,9 @@ export default class MetamaskController extends EventEmitter {
         'LegacyBackgroundApiService:getAssets',
       ),
 
-      /** Token Detection V2 */
-      addDetectedTokens:
-        tokensController.addDetectedTokens.bind(tokensController),
-      addImportedTokens: tokensController.addTokens.bind(tokensController),
-      ignoreTokens: tokensController.ignoreTokens.bind(tokensController),
+      /** Token Detection V2 — writes retargeted to AssetsController */
+      addImportedTokens: this.#addImportedTokens.bind(this),
+      ignoreTokens: this.#ignoreTokens.bind(this),
       getBalancesInSingleCall: (...args) =>
         this.assetsContractController.getBalancesInSingleCall(...args),
 
@@ -4183,6 +4174,93 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
 
   /**
+   * Import tokens as custom assets on AssetsController (replaces TokensController.addTokens).
+   *
+   * @param {Array<object>} tokensToImport - Token descriptors to import.
+   * @param {string} networkClientId - Network client id for the tokens' chain.
+   */
+  async #addImportedTokens(tokensToImport, networkClientId) {
+    if (!getIsAssetsUnifiedStateIncludedInBuild() || !this.assetsController) {
+      throw new Error(
+        'MetaMask - Cannot import tokens when AssetsController is not included in the build',
+      );
+    }
+
+    const selectedAccount = this.accountsController.getSelectedAccount();
+    const { chainId } =
+      this.networkController.getNetworkConfigurationByNetworkClientId(
+        networkClientId,
+      );
+
+    if (!chainId) {
+      throw new Error(
+        'MetaMask - Cannot import tokens without a network chainId',
+      );
+    }
+
+    await Promise.all(
+      (tokensToImport ?? []).map(async (token) => {
+        const assetId = toAssetId(token.address, chainId);
+        if (!assetId) {
+          return;
+        }
+        await this.assetsController.addCustomAsset(
+          selectedAccount.id,
+          assetId,
+          {
+            address: token.address,
+            symbol: token.symbol,
+            name: token.name ?? token.symbol,
+            decimals: token.decimals,
+            chainId,
+            ...(token.image ? { iconUrl: token.image } : {}),
+            ...(token.aggregators ? { aggregators: token.aggregators } : {}),
+          },
+        );
+      }),
+    );
+  }
+
+  /**
+   * Hide tokens via AssetsController (replaces TokensController.ignoreTokens).
+   *
+   * @param {string[]} tokensToIgnore - Token contract addresses to hide.
+   * @param {string} networkClientId - Network client id for the tokens' chain.
+   */
+  async #ignoreTokens(tokensToIgnore, networkClientId) {
+    if (!getIsAssetsUnifiedStateIncludedInBuild() || !this.assetsController) {
+      throw new Error(
+        'MetaMask - Cannot ignore tokens when AssetsController is not included in the build',
+      );
+    }
+
+    const { chainId } =
+      this.networkController.getNetworkConfigurationByNetworkClientId(
+        networkClientId,
+      );
+
+    if (!chainId) {
+      throw new Error(
+        'MetaMask - Cannot ignore tokens without a network chainId',
+      );
+    }
+
+    const addresses = Array.isArray(tokensToIgnore)
+      ? tokensToIgnore
+      : [tokensToIgnore];
+
+    await Promise.all(
+      addresses.map(async (address) => {
+        const assetId = toAssetId(address, chainId);
+        if (!assetId) {
+          return;
+        }
+        await this.assetsController.hideAsset(assetId);
+      }),
+    );
+  }
+
+  /**
    * When assets-unify-state is enabled, validates ERC-20 `wallet_watchAsset`
    * input that the unified path requires before the EIP-747 confirmation flow.
    * Does not persist; see {@link #persistUnifiedWatchAsset}.
@@ -4340,27 +4418,22 @@ export default class MetamaskController extends EventEmitter {
   }) => {
     switch (type) {
       case ERC20: {
-        // Write operations (importing an asset) use the unified AssetsController
-        // whenever it is included in the build; the runtime rollout flag is
-        // treated as always-on for writes. The compile-time build gate still
-        // decides between the unified and legacy paths.
-        if (getIsAssetsUnifiedStateIncludedInBuild()) {
-          this.#validateUnifiedWatchAssetRequest(asset, networkClientId);
-          // Show the EIP-747 confirmation and wait for the user. A rejection
-          // throws here, so we never reach the persist step below.
-          await this.#requestUnifiedWatchAssetApproval(
-            asset,
-            origin,
-            networkClientId,
+        // Write operations (importing an asset) use the unified AssetsController.
+        // TokensController.watchAsset was removed with TokensController.
+        if (!getIsAssetsUnifiedStateIncludedInBuild()) {
+          throw new Error(
+            'MetaMask - Cannot watch ERC-20 asset when AssetsController is not included in the build',
           );
-          await this.#persistUnifiedWatchAsset(asset, networkClientId);
-        } else {
-          await this.tokensController.watchAsset({
-            asset,
-            type,
-            networkClientId,
-          });
         }
+        this.#validateUnifiedWatchAssetRequest(asset, networkClientId);
+        // Show the EIP-747 confirmation and wait for the user. A rejection
+        // throws here, so we never reach the persist step below.
+        await this.#requestUnifiedWatchAssetApproval(
+          asset,
+          origin,
+          networkClientId,
+        );
+        await this.#persistUnifiedWatchAsset(asset, networkClientId);
         return undefined;
       }
       case ERC721:

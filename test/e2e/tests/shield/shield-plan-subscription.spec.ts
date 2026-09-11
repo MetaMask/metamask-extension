@@ -31,21 +31,7 @@ function createShieldFixtureCard() {
           '0x1': true,
         },
       })
-      .withTokensController({
-        allTokens: {
-          '0x1': {
-            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-              {
-                address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-                symbol: 'WETH',
-                decimals: 18,
-                isERC721: false,
-                aggregators: [],
-              },
-            ],
-          },
-        },
-      })
+
       .withAssetsController({
         assetsInfo: {
           'eip155:1/slip44:60': {
@@ -80,29 +66,7 @@ function createShieldFixtureCrypto() {
           '0x1': true,
         },
       })
-      .withTokensController({
-        allTokens: {
-          '0x1': {
-            // USDC and USDT tokens on Mainnet
-            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-              {
-                address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                symbol: 'USDC',
-                decimals: 6,
-                isERC721: false,
-                aggregators: [],
-              },
-              {
-                address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-                symbol: 'USDT',
-                decimals: 6,
-                isERC721: false,
-                aggregators: [],
-              },
-            ],
-          },
-        },
-      })
+
       .withAssetsController({
         // With assets-unify, virtual token balances + the token list come from
         // `assetsBalance` + `assetsInfo` (see shared/lib/selectors/assets-migration).

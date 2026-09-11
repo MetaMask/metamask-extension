@@ -231,6 +231,64 @@ describe('getTransactionPayControllerMessenger', () => {
       ),
     ).toStrictEqual({ accountsByChainId: {} });
   });
+
+  it('provides TokensController state backed by AssetsController', () => {
+    const messenger = getRootMessenger<never, never>();
+    const assetsControllerMessenger = new Messenger({
+      namespace: 'AssetsController',
+      parent: messenger,
+    });
+    const allTokens = {
+      '0x1': {
+        '': [
+          {
+            address: '0x0000000000000000000000000000000000000001',
+            symbol: 'TST',
+            decimals: 18,
+          },
+        ],
+      },
+    };
+
+    // This action is registered by AssetsController in production.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (assetsControllerMessenger as any).registerActionHandler(
+      'AssetsController:getStateForTransactionPay',
+      () => ({ allTokens }),
+    );
+
+    const transactionPayControllerMessenger =
+      getTransactionPayControllerMessenger(messenger);
+
+    expect(
+      transactionPayControllerMessenger.call('TokensController:getState'),
+    ).toStrictEqual({
+      allTokens,
+      allIgnoredTokens: {},
+      allDetectedTokens: {},
+      tokens: [],
+      detectedTokens: [],
+      ignoredTokens: [],
+    });
+  });
+
+  it('provides empty TokensController state when assets are excluded', () => {
+    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(false);
+    const messenger = getRootMessenger<never, never>();
+    const transactionPayControllerMessenger =
+      getTransactionPayControllerMessenger(messenger);
+
+    expect(
+      transactionPayControllerMessenger.call('TokensController:getState'),
+    ).toStrictEqual({
+      allTokens: {},
+      allIgnoredTokens: {},
+      allDetectedTokens: {},
+      tokens: [],
+      detectedTokens: [],
+      ignoredTokens: [],
+    });
+  });
 });
 
 describe('getTransactionPayControllerInitMessenger', () => {
