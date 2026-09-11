@@ -2,7 +2,6 @@ import React, { useContext, useEffect } from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import * as redux from 'react-redux';
-import useTokenDetectionPolling from '../hooks/useTokenDetectionPolling';
 import useStaticTokensPollingHook from '../hooks/useStaticTokensPolling';
 import useDeFiPolling from '../hooks/defi/useDeFiPolling';
 import { useArcDefaultTokens } from '../hooks/useArcDefaultTokens';
@@ -16,14 +15,12 @@ jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
 }));
-jest.mock('../hooks/useTokenDetectionPolling');
 jest.mock('../hooks/useStaticTokensPolling');
 jest.mock('../hooks/defi/useDeFiPolling');
 jest.mock('../hooks/useArcDefaultTokens');
 
 const mockUseSelector = jest.mocked(redux.useSelector);
 
-const mockUseTokenDetectionPolling = jest.mocked(useTokenDetectionPolling);
 const mockUseStaticTokensPollingHook = jest.mocked(useStaticTokensPollingHook);
 const mockUseDeFiPolling = jest.mocked(useDeFiPolling);
 const mockUseArcDefaultTokens = jest.mocked(useArcDefaultTokens);
@@ -41,7 +38,6 @@ const renderProvider = (isAssetsUnifyStateEnabled: boolean) => {
 describe('AssetPollingProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseTokenDetectionPolling.mockReturnValue({});
     mockUseStaticTokensPollingHook.mockReturnValue({});
     mockUseDeFiPolling.mockReturnValue({});
     mockUseArcDefaultTokens.mockImplementation(() => undefined);
@@ -62,8 +58,7 @@ describe('AssetPollingProvider', () => {
       renderProvider(false);
     });
 
-    it('calls all polling hooks', () => {
-      expect(mockUseTokenDetectionPolling).toHaveBeenCalledTimes(1);
+    it('calls remaining legacy polling hooks', () => {
       expect(mockUseDeFiPolling).toHaveBeenCalledTimes(1);
       expect(mockUseStaticTokensPollingHook).toHaveBeenCalledTimes(1);
       expect(mockUseArcDefaultTokens).not.toHaveBeenCalled();
@@ -79,8 +74,6 @@ describe('AssetPollingProvider', () => {
       expect(mockUseDeFiPolling).toHaveBeenCalledTimes(1);
       expect(mockUseStaticTokensPollingHook).toHaveBeenCalledTimes(1);
       expect(mockUseArcDefaultTokens).toHaveBeenCalledTimes(1);
-
-      expect(mockUseTokenDetectionPolling).not.toHaveBeenCalled();
     });
   });
 
