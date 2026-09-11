@@ -24,7 +24,7 @@
     "url": "https://github.com/MetaMask/metamask-extension.git"
   },
   "scripts": {
-    "webpack": "tsx ./development/webpack/launch.ts",
+    "webpack": "node --import ./development/webpack/register-node-ts.mts ./development/webpack/run-node-ts.mts ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
     "webpack:tsc": "tsc -p ./development/webpack/tsconfig.webpack.json",
     "webpack:lavamoat": "NODE_OPTIONS=\"--no-deprecation --max-old-space-size=${WEBPACK_LAVAMOAT_HEAP:-8192}\" lavamoat --policy lavamoat/webpack/build/policy.json --override lavamoat/webpack/build/policy-override.json ./development/.webpack/launch.js",
@@ -79,8 +79,8 @@
     "anvil": "node_modules/.bin/anvil",
     "test:unit:watch": "node --expose-gc ./node_modules/jest/bin/jest.js --watch",
     "test:unit:coverage": "node --expose-gc ./node_modules/jest/bin/jest.js --coverage",
-    "test:unit:webpack": "tsx --test development/webpack/test/*.test.ts",
-    "test:unit:webpack:coverage": "nyc --reporter=html --reporter=json --reporter=text --report-dir=./coverage/webpack tsx --test development/webpack/test/*.test.ts",
+    "test:unit:webpack": "node --import ./development/webpack/register-node-ts.mts --test development/webpack/test/run-tests.mts",
+    "test:unit:webpack:coverage": "nyc --reporter=html --reporter=json --reporter=text --report-dir=./coverage/webpack node --import ./development/webpack/register-node-ts.mts --test development/webpack/test/run-tests.mts",
     "test:integration": "yarn webpack-cli build --config ./development/webpack/webpack.integration.tests.config.ts && jest --config jest.integration.config.js",
     "test:integration:update-baseline": "UPDATE_BASELINE=ratchet yarn test:integration",
     "test:integration:update-baseline:strict": "UPDATE_BASELINE=strict yarn test:integration",
@@ -127,7 +127,7 @@
     "lint:images:fix": "tsx development/optimize-media.mts --fix",
     "lint:baseline": "node development/lint-baseline.mts",
     "lint:baseline:fix": "node development/lint-baseline.mts --fix",
-    "validate-source-maps": "tsx ./development/webpack/sourcemap-validator.ts",
+    "validate-source-maps": "node --import ./development/webpack/register-node-ts.mts ./development/webpack/run-node-ts.mts ./development/webpack/sourcemap-validator.ts",
     "verify-locales": "node ./development/verify-locale-strings.js",
     "verify-locales:fix": "node ./development/verify-locale-strings.js --fix",
     "mozilla-lint": "addons-linter dist/firefox",

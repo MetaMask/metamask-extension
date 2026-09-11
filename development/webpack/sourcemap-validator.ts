@@ -511,7 +511,7 @@ export function indicesOf(substring: string, str: string): number[] {
   return a;
 }
 
-// Run when executed directly (e.g. tsx ./development/webpack/sourcemap-validator.ts)
+// Run when executed directly.
 if (require.main === module) {
   main().catch((error) => {
     console.error(error);

@@ -1,5 +1,3 @@
-#!/usr/bin/env -S node --require "./node_modules/tsx/dist/preflight.cjs" --import "./node_modules/tsx/dist/loader.mjs"
-
 /**
  * @file This script optimizes build processes by conditionally forking child
  * processes based on command-line arguments. It handles memory management,
@@ -7,9 +5,9 @@
  * maintainability. Supports cross-platform execution with specific
  * considerations for Windows environments.
  *
- * On Linux-like systems you can skip the overhead of running `yarn` by
- * executing this file directly, e.g., `./development/webpack/launch.ts`, or via
- * bun or tsx.
+ * On Linux-like systems you can skip the overhead of running `yarn` by running
+ * the source file directly:
+ * `node --import ./development/webpack/register-node-ts.mts ./development/webpack/run-node-ts.mts ./development/webpack/launch.ts`.
  */
 
 // Note: minimize non-`type` imports to decrease load time.
@@ -29,7 +27,14 @@ if (args.cache === false || args.help === true || args.watch === true) {
   // cache is disabled, we need to output "help", or we're in watch mode.
   require('./build').build();
 } else {
-  fork(process, join(__dirname, 'fork'), rawArgv);
+  const runFromSource = __filename.endsWith('.ts');
+  const forkFile = runFromSource
+    ? join(__dirname, 'run-node-ts.mts')
+    : join(__dirname, 'fork');
+  const forkArgs = runFromSource
+    ? [join(__dirname, 'fork.ts'), ...rawArgv]
+    : rawArgv;
+  fork(process, forkFile, forkArgs);
 }
 
 /**
