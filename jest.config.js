@@ -100,11 +100,6 @@ module.exports = {
   testEnvironmentOptions: {
     customExportConditions: ['node', 'node-addons'],
   },
-  // Transform @metamask packages with Babel: newer Core releases (e.g.
-  // bridge-controller) ship ESM-only, including nested dependency copies.
-  // lodash-es is ESM-only and is hoisted to the root by those same packages.
-  // Everything else in node_modules is left untransformed for speed.
-  transformIgnorePatterns: ['/node_modules/(?!(@metamask/|lodash-es))'],
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
     '^.+\\.mts$': [
