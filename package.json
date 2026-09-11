@@ -336,8 +336,6 @@
     "@metamask/keyring-internal-api": "^12.1.0",
     "@metamask/keyring-api": "^24.1.0",
     "@metamask/accounts-controller": "^39.1.0",
-    "@metamask/keyring-controller": "^27.1.1",
-    "@metamask/polling-controller": "^16.0.9",
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
     "@metamask/base-controller": "^10.0.0",
     "@metamask/base-data-service": "^2.0.0",
