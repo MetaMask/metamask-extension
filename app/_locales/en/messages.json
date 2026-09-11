@@ -3657,16 +3657,16 @@
     "message": "Disconnect all"
   },
   "disconnectAllSitesDescriptionText": {
-    "message": "This will disconnect all your accounts from all dapps. You'll need to reconnect to use them again."
+    "message": "This will disconnect all your accounts from all sites. You'll need to reconnect to use them again."
   },
   "disconnectAllSitesError": {
-    "message": "Some dapps couldn't be disconnected. Please try again."
+    "message": "Some sites couldn't be disconnected. Please try again."
   },
   "disconnectAllSitesQuestion": {
     "message": "Disconnect all?"
   },
   "disconnectAllSitesSuccess": {
-    "message": "All dapps successfully disconnected."
+    "message": "All sites successfully disconnected."
   },
   "disconnectPrompt": {
     "message": "Disconnect $1"
@@ -3675,7 +3675,7 @@
     "message": "Disconnect?"
   },
   "disconnectSiteDescriptionText": {
-    "message": "This will disconnect all your accounts from $1. You'll need to reconnect to use this dapp again.",
+    "message": "This will disconnect all your accounts from $1. You'll need to reconnect to use this site again.",
     "description": "$1 is the site hostname"
   },
   "disconnectSiteSuccess": {
@@ -10791,10 +10791,10 @@
     "message": "Smart Account"
   },
   "smartAccountRequestsFromDapps": {
-    "message": "Smart account requests from dapps"
+    "message": "Smart account requests from sites"
   },
   "smartAccountRequestsFromDappsDescriptionV2": {
-    "message": "Let dapps request smart account features for standard accounts. MetaMask will only upgrade to our audited smart account."
+    "message": "Let sites request smart account features for standard accounts. MetaMask will only upgrade to our audited smart account."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."
