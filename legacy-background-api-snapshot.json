@@ -123,8 +123,6 @@
     "staticAssetsStopPollingByPollingToken",
     "subscriptionsStartPolling",
     "subscriptionsStopPolling",
-    "tokenDetectionStartPolling",
-    "tokenDetectionStopPollingByPollingToken",
     "trackAnalyticsEvent",
     "trackMetaMetricsPage",
     "updateViewedNotifications"
