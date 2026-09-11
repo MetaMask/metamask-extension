@@ -65,12 +65,14 @@ type BalanceDisplayProps = {
   balance?: string;
   isSubtitle?: boolean;
   isHidden?: boolean;
+  endSpacing?: number;
 };
 
 const BalanceDisplay = ({
   balance,
   isSubtitle = false,
   isHidden = false,
+  endSpacing,
 }: BalanceDisplayProps) => {
   // Account group balances are fetched lazily, so a cell may have no balance to
   // show yet. Render nothing rather than a placeholder that reads as "no funds".
@@ -85,7 +87,7 @@ const BalanceDisplay = ({
       variant={isSubtitle ? TextVariant.BodySm : TextVariant.BodyMd}
       color={isSubtitle ? TextColor.TextAlternative : undefined}
       fontWeight={isSubtitle ? undefined : FontWeight.Medium}
-      style={isSubtitle ? undefined : { marginRight: 8 }}
+      style={endSpacing ? { marginRight: endSpacing } : undefined}
       ellipsis
       isHidden={isHidden}
     >
@@ -105,14 +107,12 @@ const EditModeVisibilityIcon = ({
   isHidden,
   ariaLabel,
   onClick,
-  disabled = false,
 }: EditModeVisibilityIconProps) => (
   <ButtonIcon
     iconName={isHidden ? IconName.EyeSlash : IconName.Eye}
-    size={ButtonIconSize.Sm}
+    size={ButtonIconSize.Md}
     ariaLabel={ariaLabel}
     onClick={onClick}
-    isDisabled={disabled}
     className="multichain-account-cell__edit-mode-action-icon flex-shrink-0"
     data-testid={
       isHidden
@@ -120,7 +120,7 @@ const EditModeVisibilityIcon = ({
         : 'multichain-account-cell-edit-mode-visible-icon'
     }
     iconProps={{
-      size: IconSize.Sm,
+      size: IconSize.Md,
       color: IconColor.IconAlternative,
     }}
   />
@@ -211,7 +211,7 @@ export const MultichainAccountCell = ({
   accountName,
   accountNameString,
   onClick,
-  balance,
+  balance='1234567',
   balancePosition = 'end',
   startAccessory,
   endAccessory,
@@ -362,13 +362,18 @@ export const MultichainAccountCell = ({
         </Box>
       </Box>
       <Box
+        className="multichain-account-cell__trailing"
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
         style={{ flexShrink: 0 }}
       >
         {balancePosition === 'end' && (
-          <BalanceDisplay balance={balance} isHidden={privacyMode} />
+          <BalanceDisplay
+            balance={balance}
+            isHidden={privacyMode}
+            endSpacing={isEditMode ? undefined : 8}
+          />
         )}
         {showDeleteIcon ? (
           <EditModeDeleteIcon
