@@ -1,7 +1,6 @@
 import React, { ReactNode, createContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import useCurrencyRatePolling from '../hooks/useCurrencyRatePolling';
-import useTokenRatesPolling from '../hooks/useTokenRatesPolling';
 import useTokenDetectionPolling from '../hooks/useTokenDetectionPolling';
 import useStaticTokensPollingHook from '../hooks/useStaticTokensPolling';
 import useDeFiPolling from '../hooks/defi/useDeFiPolling';
@@ -13,7 +12,6 @@ import { useArcDefaultTokens } from '../hooks/useArcDefaultTokens';
 // same order within this component (satisfying React's Rules of Hooks).
 const LegacyAssetsPolling = ({ children }: { children: ReactNode }) => {
   useCurrencyRatePolling();
-  useTokenRatesPolling();
   useTokenDetectionPolling();
   useDeFiPolling();
   useStaticTokensPollingHook();
