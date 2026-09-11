@@ -12,8 +12,8 @@
  *
  * Adding a rate is a two-sided change, not a client-only one. LaunchDarkly
  * stores this flag's `variationJsonSchema` with `additionalProperties: false`
- * and enforces it on write, so a new key (`propagationSampleRate`, say) has to
- * be added to that schema before any value carrying it can be published.
+ * and enforces it on write, so a new key (`persistenceWriteSampleRate`, say)
+ * has to be added to that schema before any value carrying it can be published.
  * Landing the client half first looks complete and reads nothing.
  */
 
@@ -21,7 +21,19 @@ export type SentryRemoteRates = {
   tracesSampleRate?: number;
   wrapperSampleRate?: number;
   transactionSampleRates?: Record<string, number>;
+  /**
+   * Sample rate for measuring split-state persistence write size/frequency
+   * before emitting a Sentry `state.write` span. Gates the extra
+   * `JSON.stringify` cost.
+   */
+  persistenceWriteSampleRate?: number;
 };
+
+/**
+ * Default probability of measuring a successful split-state persist write when
+ * `sentry.persistenceWriteSampleRate` is absent or malformed.
+ */
+export const PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE = 0.01;
 
 type ControllerFlagState = {
   remoteFeatureFlags?: { sentry?: Record<string, unknown> };
@@ -103,6 +115,20 @@ export function getRemoteTracesSampleRate(): number | undefined {
 }
 
 /**
+ * Effective sample rate for measuring split-state persistence writes.
+ * Uses `sentry.persistenceWriteSampleRate` when a valid remote override was
+ * applied, otherwise {@link PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE}.
+ *
+ * @returns A sample rate in [0, 1].
+ */
+export function getPersistenceWriteTelemetrySampleRate(): number {
+  return (
+    remoteRates.persistenceWriteSampleRate ??
+    PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE
+  );
+}
+
+/**
  * Test-only reset of the cached rates.
  */
 export function resetSentryRemoteRates(): void {
@@ -149,7 +175,8 @@ async function waitForPersistedStateHook(
  * valid overrides: `tracesSampleRate` onto the live client's options (the
  * sampler consults options per event, so a post-init update takes effect
  * without re-init), `wrapperSampleRate` into the module cache consumed by
- * `shouldSampleWrappers`.
+ * `shouldSampleWrappers`, and `persistenceWriteSampleRate` for split-state
+ * write-size telemetry sampling.
  *
  * Read once, after waiting for the persisted-state hook to register (see
  * {@link waitForPersistedStateHook}): no per-call lookups afterward.
@@ -185,6 +212,9 @@ export async function applySentryRemoteRates(client?: {
     tracesSampleRate: asValidRate(sentryFlag?.tracesSampleRate),
     wrapperSampleRate: asValidRate(sentryFlag?.wrapperSampleRate),
     transactionSampleRates: asValidRateMap(sentryFlag?.transactionSampleRates),
+    persistenceWriteSampleRate: asValidRate(
+      sentryFlag?.persistenceWriteSampleRate,
+    ),
   };
   remoteRates = applied;
 

@@ -1,5 +1,6 @@
 import type {
   PersistenceManager as PersistenceManagerType,
+  SplitStateWriteEvent,
   WriteRetryRecoveredEvent,
 } from '../../../shared/lib/stores/persistence-manager';
 import {
@@ -12,6 +13,7 @@ const mockGetBackup = jest.fn();
 const mockCleanUpMostRecentRetrievedState = jest.fn();
 const mockPersistenceOn = jest.fn();
 const mockTrackEarlySegmentEvent = jest.fn();
+const mockTrackSplitStateWrite = jest.fn();
 let mockMostRecentRetrievedState: unknown = null;
 
 jest.mock('../platforms/extension', () => {
@@ -34,6 +36,14 @@ jest.mock('../../../shared/lib/object.utils', () => ({
 
 jest.mock('./segment/custom-segment-tracking', () => ({
   trackEarlySegmentEvent: mockTrackEarlySegmentEvent,
+}));
+
+jest.mock('./state-write-metrics', () => ({
+  trackSplitStateWrite: mockTrackSplitStateWrite,
+}));
+
+jest.mock('../../../shared/lib/sentry-remote-rates', () => ({
+  getPersistenceWriteTelemetrySampleRate: jest.fn(() => 0.01),
 }));
 
 jest.mock('../../../shared/lib/stores/extension-store', () => {
@@ -92,6 +102,7 @@ describe('setup-initial-state-hooks', () => {
     mockCleanUpMostRecentRetrievedState.mockClear();
     mockPersistenceOn.mockClear();
     mockTrackEarlySegmentEvent.mockClear();
+    mockTrackSplitStateWrite.mockClear();
     globalThis.stateHooks = {} as typeof stateHooks;
   });
 
@@ -190,7 +201,7 @@ describe('setup-initial-state-hooks', () => {
       setSelfHref('chrome-extension://abc123/home.html');
       await importFresh();
 
-      expect(mockPersistenceOn).toHaveBeenCalledTimes(4);
+      expect(mockPersistenceOn).toHaveBeenCalledTimes(5);
       expect(mockPersistenceOn).toHaveBeenCalledWith(
         'vaultCorruptionDetected',
         expect.any(Function),
@@ -207,6 +218,49 @@ describe('setup-initial-state-hooks', () => {
         'writeRetryRecovered',
         expect.any(Function),
       );
+      expect(mockPersistenceOn).toHaveBeenCalledWith(
+        'splitStateWrite',
+        mockTrackSplitStateWrite,
+      );
+    });
+
+    it('reports sampled split-state writes to Sentry metrics', async () => {
+      setSelfHref('chrome-extension://abc123/home.html');
+      await importFresh();
+      const event: SplitStateWriteEvent = {
+        bytesByController: { FooController: 13 },
+        coalescedUpdates: 1,
+        controllerKeys: ['FooController'],
+        idleStatus: 'unknown',
+        measurementDurationMs: 0.2,
+        sampleRate: 0.01,
+        totalBytes: 31,
+        writeDurationMs: 4,
+      };
+      const splitStateWriteHandler = mockPersistenceOn.mock.calls.find(
+        ([eventName]) => eventName === 'splitStateWrite',
+      )?.[1] as (payload: SplitStateWriteEvent) => void;
+
+      splitStateWriteHandler(event);
+
+      expect(mockTrackSplitStateWrite).toHaveBeenCalledWith(event);
+    });
+
+    it('tolerates a missing stateHooks object when checking idle status', async () => {
+      setSelfHref('chrome-extension://abc123/home.html');
+      await importFresh();
+      const persistenceManagerModule = jest.requireMock(
+        '../../../shared/lib/stores/persistence-manager',
+      ) as Record<string, jest.Mock>;
+      const persistenceManagerConstructor =
+        persistenceManagerModule.PersistenceManager;
+      const [{ getIsIdle }] = persistenceManagerConstructor.mock.calls.at(
+        -1,
+      ) as [{ getIsIdle: () => boolean | undefined }];
+      // @ts-expect-error intentional missing hooks for regression coverage
+      delete globalThis.stateHooks;
+
+      expect(getIsIdle()).toBeUndefined();
     });
 
     it('tracks write retry recovery events to Segment', async () => {

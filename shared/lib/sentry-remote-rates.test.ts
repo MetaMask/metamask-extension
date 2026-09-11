@@ -1,7 +1,9 @@
 import {
   applySentryRemoteRates,
+  getPersistenceWriteTelemetrySampleRate,
   getRemoteTransactionSampleRates,
   getRemoteWrapperSampleRate,
+  PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE,
   resetSentryRemoteRates,
 } from './sentry-remote-rates';
 import { shouldSampleWrappers } from './wrapper-sampling';
@@ -44,6 +46,7 @@ describe('applySentryRemoteRates', () => {
       tracesSampleRate: 0.02,
       wrapperSampleRate: 0.5,
       transactionSampleRates: undefined,
+      persistenceWriteSampleRate: undefined,
     });
     expect(client.options.tracesSampleRate).toBe(0.02);
     expect(getRemoteWrapperSampleRate()).toBe(0.5);
@@ -79,6 +82,7 @@ describe('applySentryRemoteRates', () => {
         tracesSampleRate: undefined,
         wrapperSampleRate: undefined,
         transactionSampleRates: undefined,
+        persistenceWriteSampleRate: undefined,
       });
       expect(client.options.tracesSampleRate).toBe(0.0075);
       expect(getRemoteWrapperSampleRate()).toBeUndefined();
@@ -105,6 +109,7 @@ describe('applySentryRemoteRates', () => {
       tracesSampleRate: undefined,
       wrapperSampleRate: undefined,
       transactionSampleRates: undefined,
+      persistenceWriteSampleRate: undefined,
     });
     expect(client.options.tracesSampleRate).toBe(0.0075);
   });
@@ -139,6 +144,7 @@ describe('applySentryRemoteRates', () => {
       tracesSampleRate: 0.03,
       wrapperSampleRate: undefined,
       transactionSampleRates: undefined,
+      persistenceWriteSampleRate: undefined,
     });
     expect(client.options.tracesSampleRate).toBe(0.03);
     jest.useRealTimers();
@@ -160,6 +166,7 @@ describe('applySentryRemoteRates', () => {
       tracesSampleRate: 0.04,
       wrapperSampleRate: undefined,
       transactionSampleRates: undefined,
+      persistenceWriteSampleRate: undefined,
     });
     expect(client.options.tracesSampleRate).toBe(0.04);
     jest.useRealTimers();
@@ -186,6 +193,44 @@ describe('applySentryRemoteRates', () => {
 
     expect(applied.tracesSampleRate).toBe(0.02);
     expect(getRemoteWrapperSampleRate()).toBe(0.5);
+  });
+
+  describe('persistenceWriteSampleRate', () => {
+    it('falls back to the compile-time default when absent', () => {
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(
+        PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE,
+      );
+    });
+
+    it('uses the remote override once applied', async () => {
+      mockPersistedState({ persistenceWriteSampleRate: 0.25 });
+
+      const applied = await applySentryRemoteRates();
+
+      expect(applied.persistenceWriteSampleRate).toBe(0.25);
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(0.25);
+    });
+
+    it('accepts the boundary rates 0 and 1', async () => {
+      mockPersistedState({ persistenceWriteSampleRate: 0 });
+      await applySentryRemoteRates();
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(0);
+
+      resetSentryRemoteRates();
+      mockPersistedState({ persistenceWriteSampleRate: 1 });
+      await applySentryRemoteRates();
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(1);
+    });
+
+    it('ignores an invalid remote rate and keeps the default', async () => {
+      mockPersistedState({ persistenceWriteSampleRate: 1.5 });
+
+      await applySentryRemoteRates();
+
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(
+        PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE,
+      );
+    });
   });
 
   describe('transactionSampleRates', () => {
