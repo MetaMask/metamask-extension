@@ -158,19 +158,6 @@ function toMusdFiat(
  * @param transactionGroup - Source local transaction group.
  * @returns Activity item mapped to a money-account kind when applicable.
  */
-function remapMusdConversionToSwapActivity(
-  activity: ActivityListItem,
-): ActivityListItem {
-  if (activity.type !== 'convert') {
-    return activity;
-  }
-
-  return {
-    ...activity,
-    type: 'swap',
-  };
-}
-
 function enrichMoneyAccountActivity(
   activity: ActivityListItem,
   transactionGroup: LocalActivitySource,
@@ -226,6 +213,5 @@ export function enrichLocalActivity(
   next = enrichTokenTransferActivity(next, transactionGroup);
   next = enrichApprovalActivity(next, transactionGroup);
   next = enrichLocalMusdClaimActivity(next, transactionGroup);
-  next = remapMusdConversionToSwapActivity(next);
   return next;
 }

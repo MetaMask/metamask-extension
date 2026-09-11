@@ -588,31 +588,46 @@ export const selectLocalActivityItems = createSelector(
       if (
         type === TransactionType.swap ||
         type === TransactionType.swapAndSend ||
-        type === TransactionType.bridge
+        type === TransactionType.bridge ||
+        type === TransactionType.musdConversion
       ) {
-        const bridgeHistoryItem = getBridgeHistory(
-          transactionGroup.initialTransaction,
-        );
-        const activityStatus = getBridgeActivityStatus(bridgeHistoryItem);
         const fees = getLocalTransactionFees(transactionGroup);
+        const isMusdConversion = type === TransactionType.musdConversion;
+        const bridgeHistoryItem = isMusdConversion
+          ? undefined
+          : getBridgeHistory(transactionGroup.initialTransaction);
+        const activityStatus = bridgeHistoryItem
+          ? getBridgeActivityStatus(bridgeHistoryItem)
+          : undefined;
 
-        const prepared = {
-          ...transactionGroup,
-          ...getSwapTokens(bridgeHistoryItem),
-          ...(activityStatus ? { activityStatus } : {}),
-          fees,
-          nativeAssetSymbol,
-          contractTokenMetadata,
-        };
+        const prepared = isMusdConversion
+          ? {
+              ...transactionGroup,
+              fees,
+              nativeAssetSymbol,
+              contractTokenMetadata,
+              ...(sourceToken ? { sourceToken } : {}),
+            }
+          : {
+              ...transactionGroup,
+              ...getSwapTokens(bridgeHistoryItem),
+              ...(activityStatus ? { activityStatus } : {}),
+              fees,
+              nativeAssetSymbol,
+              contractTokenMetadata,
+            };
 
-        return enrichLocalActivity(mapLocalTransaction(prepared), prepared);
+        const activity = mapLocalTransaction(prepared);
+        const activityItem =
+          activity.type === 'convert' ? { ...activity, type: 'swap' } : activity;
+
+        return enrichLocalActivity(activityItem, prepared);
       }
 
       const prepared = {
         ...transactionGroup,
         nativeAssetSymbol,
         contractTokenMetadata,
-        ...(sourceToken ? { sourceToken } : {}),
       };
 
       return enrichLocalActivity(mapLocalTransaction(prepared), prepared);
