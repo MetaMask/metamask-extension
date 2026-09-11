@@ -11,19 +11,16 @@ import {
   ButtonIconSize,
   IconName,
   IconColor,
+  TextField,
+  TextFieldSize,
 } from '@metamask/design-system-react';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  BorderRadius,
-  BackgroundColor,
-} from '../../../../../../helpers/constants/design-system';
 import { useFormatters } from '../../../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { formatPositionSize } from '../../../../../../../shared/lib/perps-formatters';
 import { getPreferences } from '../../../../../../../shared/lib/selectors/preferences';
-import { TextField, TextFieldSize } from '../../../../../component-library';
 import { PerpsSlider } from '../../../perps-slider';
 import { getDisplaySymbol } from '../../../utils';
 import type { AmountInputProps } from '../../order-entry.types';
@@ -429,16 +426,13 @@ export const AmountInput = ({
         }
         onBlur={isUsdDenomination ? handleAmountBlur : handleTokenBlur}
         placeholder={isUsdDenomination ? usdPlaceholder : '0'}
-        borderRadius={BorderRadius.MD}
-        borderWidth={0}
-        backgroundColor={BackgroundColor.backgroundMuted}
-        className="w-full"
+        className="w-full rounded-lg border-0 bg-muted"
         data-testid="amount-input-field"
         autoFocus={autoFocus}
         inputRef={usdInputRef}
         inputProps={{
           inputMode: 'decimal',
-          style: { textAlign: 'right' },
+          className: 'text-right',
         }}
         startAccessory={
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
@@ -492,14 +486,11 @@ export const AmountInput = ({
             onChange={handlePercentInputChange}
             onFocus={handleNumericFocusSelectAll}
             onBlur={handlePercentInputBlur}
-            borderRadius={BorderRadius.MD}
-            borderWidth={0}
-            backgroundColor={BackgroundColor.backgroundMuted}
-            className="w-full"
+            className="w-full rounded-lg border-0 bg-muted"
             data-testid="balance-percent-input"
             inputProps={{
               inputMode: 'numeric',
-              style: { textAlign: 'right', paddingLeft: '8px' },
+              className: 'text-right pl-2',
             }}
             endAccessory={
               <Text

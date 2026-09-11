@@ -6,16 +6,13 @@ import {
   TextColor,
   BoxFlexDirection,
   BoxAlignItems,
+  TextField,
+  TextFieldSize,
 } from '@metamask/design-system-react';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../../../shared/constants/perps-events';
-import { TextField, TextFieldSize } from '../../../../../component-library';
-import {
-  BorderRadius,
-  BackgroundColor,
-} from '../../../../../../helpers/constants/design-system';
 import { PerpsSlider } from '../../../perps-slider';
 import { MetaMetricsEventName } from '../../../../../../../shared/constants/metametrics';
 import { usePerpsEventTracking } from '../../../../../../hooks/perps';
@@ -160,14 +157,11 @@ export const LeverageSlider = ({
             onChange={handleInputChange}
             onBlur={handleInputBlur}
             onFocus={handleInputFocus}
-            borderRadius={BorderRadius.MD}
-            borderWidth={0}
-            backgroundColor={BackgroundColor.backgroundMuted}
-            className="w-full"
+            className="w-full rounded-lg border-0 bg-muted"
             data-testid="leverage-input"
             inputProps={{
               inputMode: 'numeric',
-              style: { textAlign: 'right' },
+              className: 'text-right',
               onKeyDown: handleInputKeyDown,
             }}
             endAccessory={
