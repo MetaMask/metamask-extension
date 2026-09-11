@@ -70,7 +70,6 @@
     "accountState": null,
     "accountTree": "object",
     "accountWalletsMetadata": "object",
-    "accountsByChainId": "object",
     "activeProvider": "string",
     "activeQrCodeScanRequest": null,
     "addSnapAccountEnabled": "boolean",

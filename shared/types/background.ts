@@ -346,7 +346,7 @@ export type ControllerStatePropertiesEnumerated = {
 };
 
 export type ControllerStateTypesMerged = AccountsControllerState &
-  AccountTrackerControllerState &
+  Pick<AccountTrackerControllerState, 'accountsByChainId'> &
   AddressBookControllerState &
   AssetsControllerState &
   AlertControllerState &
