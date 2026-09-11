@@ -1,24 +1,22 @@
 import { Suite } from 'mocha';
-import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { Driver } from '../../webdriver/driver';
-import { login } from '../../page-objects/flows/login.flow';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
+import { Driver } from '../../../webdriver/driver';
 import {
-  selectAllNetworksFromNetworkSelect,
-  switchToNetworkFromNetworkSelect,
-} from '../../page-objects/flows/network.flow';
-import AssetDetailsPage from '../../page-objects/pages/asset/asset-details';
-import HomePage from '../../page-objects/pages/home/homepage';
-import TokensTab from '../../page-objects/pages/home/tokens-tab';
+  setupTronAssetsHome,
+  TRON_HOMEPAGE_TOKEN_TIMEOUT_MS,
+} from '../../../page-objects/flows/tron-assets.flow';
+import { selectAllNetworksFromNetworkSelect } from '../../../page-objects/flows/network.flow';
+import { selectTronNetwork } from '../../../page-objects/flows/tron-network.flow';
+import AssetDetailsPage from '../../../page-objects/pages/asset/asset-details';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import TokensTab from '../../../page-objects/pages/home/tokens-tab';
 import {
   EMPTY_TRON_ACCOUNT,
   TRON_PORTFOLIO_ACCOUNT,
   TRON_PORTFOLIO_LOW_VALUE_ASSET_NAMES,
   TRON_PORTFOLIO_MAIN_LIST_ASSET_NAMES,
-} from './fixtures/environments';
-import { withTronFixtures } from './fixtures/with-tron-fixtures';
-
-/** Max wait for Tron Snap balances to appear in the token list after refresh. */
-const TRON_ASSET_LIST_TIMEOUT_MS = 30_000;
+} from '../../tron/fixtures/environments';
+import { withTronFixtures } from '../../tron/fixtures/with-tron-fixtures';
 
 /**
  * Enables the batch-sell remote flag so native coin overflow uses the More menu
@@ -55,25 +53,6 @@ function tronAssetsTestConfig(
   };
 }
 
-async function landOnTronHome(driver: Driver): Promise<void> {
-  await login(driver, { validateBalance: false });
-  await switchToNetworkFromNetworkSelect(driver, 'Tron');
-  // Refresh re-hydrates the UI from background state so asynchronously-fetched
-  // Snap balances appear reliably in the token list.
-  await driver.refresh();
-  const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
-}
-
-async function waitForTronAssetList(
-  tokensTab: TokensTab,
-  tokenName = 'Tron',
-): Promise<void> {
-  await tokensTab.checkTokenExistsInList(tokenName, undefined, {
-    timeout: TRON_ASSET_LIST_TIMEOUT_MS,
-  });
-}
-
 describe('Tron - Assets', function (this: Suite) {
   this.timeout(180_000);
 
@@ -82,10 +61,9 @@ describe('Tron - Assets', function (this: Suite) {
       await withTronFixtures(
         tronAssetsTestConfig([EMPTY_TRON_ACCOUNT], this.test?.fullTitle()),
         async ({ driver }: { driver: Driver }) => {
-          await landOnTronHome(driver);
+          await setupTronAssetsHome(driver);
 
           const tokensTab = new TokensTab(driver);
-          await waitForTronAssetList(tokensTab);
           await tokensTab.checkOnlyAssetsArePresent(['Tron']);
           await tokensTab.checkTokenAmountIsDisplayed('0');
           await tokensTab.checkTokenRowHasVisibleLogo('Tron');
@@ -102,44 +80,35 @@ describe('Tron - Assets', function (this: Suite) {
       await withTronFixtures(
         tronAssetsTestConfig([TRON_PORTFOLIO_ACCOUNT], this.test?.fullTitle()),
         async ({ driver }: { driver: Driver }) => {
-          await landOnTronHome(driver);
+          await setupTronAssetsHome(driver, { expectedTrxAmount: '6.072' });
 
           const tokensTab = new TokensTab(driver);
-          await waitForTronAssetList(tokensTab, 'Tron');
-          await tokensTab.checkTokenExistsInList('Tron', '6.072', {
-            timeout: TRON_ASSET_LIST_TIMEOUT_MS,
-          });
           await tokensTab.checkTokenRowHasVisibleLogo('Tron');
           await tokensTab.checkTokenRowContainsAllText('Tron', [
             'Tron',
             '6.072 TRX',
             '$',
           ]);
-          await tokensTab.checkTokenExistsInList('GasFreeTransferSolution');
           await tokensTab.checkTokenRowContainsAllText(
             'GasFreeTransferSolution',
             ['GasFreeTransferSolution', '33.333 GAS_FREE', '$'],
           );
-          await tokensTab.checkTokenExistsInList('Tether');
           await tokensTab.checkTokenRowHasVisibleLogo('Tether');
           await tokensTab.checkTokenRowContainsAllText('Tether', [
             'Tether',
             '2.805 USDT',
             '$',
           ]);
-          await tokensTab.checkTokenExistsInList('HTX DAO');
           await tokensTab.checkTokenRowContainsAllText('HTX DAO', [
             'HTX DAO',
             '3.16M HTX',
             '$',
           ]);
-          await tokensTab.checkTokenExistsInList('USDD');
           await tokensTab.checkTokenRowContainsAllText('USDD', [
             'USDD',
             '0.290 USDD',
             '$',
           ]);
-          await tokensTab.checkTokenExistsInList('SEED');
           await tokensTab.checkTokenRowContainsAllText('SEED', [
             'SEED',
             '89.851 SEED',
@@ -154,12 +123,10 @@ describe('Tron - Assets', function (this: Suite) {
       await withTronFixtures(
         tronAssetsTestConfig([TRON_PORTFOLIO_ACCOUNT], this.test?.fullTitle()),
         async ({ driver }: { driver: Driver }) => {
-          await landOnTronHome(driver);
+          await setupTronAssetsHome(driver, { expectedTrxAmount: '6.072' });
           const tokensTab = new TokensTab(driver);
-          await tokensTab.checkTokenNameVisible('Tron', {
-            timeout: TRON_ASSET_LIST_TIMEOUT_MS,
-          });
 
+          await tokensTab.collapseLowValueAssets();
           await tokensTab.checkCollapsedTokenItemNumber(
             TRON_PORTFOLIO_MAIN_LIST_ASSET_NAMES.length,
           );
@@ -168,7 +135,7 @@ describe('Tron - Assets', function (this: Suite) {
           );
           for (const tokenName of TRON_PORTFOLIO_MAIN_LIST_ASSET_NAMES) {
             await tokensTab.checkTokenNameVisible(tokenName, {
-              timeout: TRON_ASSET_LIST_TIMEOUT_MS,
+              timeout: TRON_HOMEPAGE_TOKEN_TIMEOUT_MS,
             });
           }
           await tokensTab.checkAssetIsAbsent('GasFreeTransferSolution');
@@ -195,13 +162,17 @@ describe('Tron - Assets', function (this: Suite) {
             this.test?.fullTitle(),
           ),
           async ({ driver }: { driver: Driver }) => {
-            await landOnTronHome(driver);
+            await setupTronAssetsHome(driver, { expectedTrxAmount: '6.072' });
             const tokensTab = new TokensTab(driver);
-            await waitForTronAssetList(tokensTab);
             await selectAllNetworksFromNetworkSelect(driver);
             await tokensTab.checkTokenExistsInList('Tron');
             await tokensTab.checkTokenExistsInList('Tether');
             await tokensTab.checkTokenExistsInList('Ethereum');
+
+            // Restore the Tron filter so the next steps start from a clean
+            // Tron-only home state.
+            await selectTronNetwork(driver);
+            await new HomePage(driver).navigateToHome();
           },
         );
       });
@@ -213,9 +184,8 @@ describe('Tron - Assets', function (this: Suite) {
             this.test?.fullTitle(),
           ),
           async ({ driver }: { driver: Driver }) => {
-            await landOnTronHome(driver);
+            await setupTronAssetsHome(driver, { expectedTrxAmount: '6.072' });
             const tokensTab = new TokensTab(driver);
-            await waitForTronAssetList(tokensTab);
             await tokensTab.checkOnlyAssetsArePresent([
               'Tron',
               'GasFreeTransferSolution',
@@ -236,9 +206,8 @@ describe('Tron - Assets', function (this: Suite) {
       await withTronFixtures(
         tronAssetsTestConfig([TRON_PORTFOLIO_ACCOUNT], this.test?.fullTitle()),
         async ({ driver }: { driver: Driver }) => {
-          await landOnTronHome(driver);
+          await setupTronAssetsHome(driver, { expectedTrxAmount: '6.072' });
           const tokensTab = new TokensTab(driver);
-          await waitForTronAssetList(tokensTab);
           await tokensTab.clickOnAsset('Tron');
           const details = new AssetDetailsPage(driver);
           await details.checkPageIsLoaded();
@@ -252,6 +221,8 @@ describe('Tron - Assets', function (this: Suite) {
           });
           await details.checkDailyResourcesSection();
           await details.checkAllStandardSections();
+
+          await new HomePage(driver).navigateToHome();
         },
       );
     });
@@ -260,9 +231,8 @@ describe('Tron - Assets', function (this: Suite) {
       await withTronFixtures(
         tronAssetsTestConfig([TRON_PORTFOLIO_ACCOUNT], this.test?.fullTitle()),
         async ({ driver }: { driver: Driver }) => {
-          await landOnTronHome(driver);
+          await setupTronAssetsHome(driver, { expectedTrxAmount: '6.072' });
           const tokensTab = new TokensTab(driver);
-          await waitForTronAssetList(tokensTab);
           await tokensTab.clickOnAsset('Tether');
           const details = new AssetDetailsPage(driver);
           await details.checkPageIsLoaded();
@@ -271,6 +241,8 @@ describe('Tron - Assets', function (this: Suite) {
           await details.checkTokenActionButtons();
           await details.checkAllStandardSections();
           await details.checkDailyResourcesSectionIsAbsent();
+
+          await new HomePage(driver).navigateToHome();
         },
       );
     });

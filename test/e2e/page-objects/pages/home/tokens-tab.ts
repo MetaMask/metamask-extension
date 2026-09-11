@@ -92,6 +92,8 @@ class TokensTab extends HomePage {
   private readonly lowValueAssetsToggle =
     '[data-testid="low-value-assets-toggle"]';
 
+  private readonly lowValueAssetsToggleCollapsed = `${this.lowValueAssetsToggle}[aria-expanded="false"]`;
+
   private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
 
   private readonly manageTokensButton = '[data-testid="manageTokens__button"]';
@@ -637,11 +639,35 @@ class TokensTab extends HomePage {
     expectedText: string,
   ): Promise<void> {
     console.log(`Checking token row "${tokenName}" contains "${expectedText}"`);
-    const row = await this.findTokenRowByName(tokenName);
-    assert.ok(
-      (await row.getText()).includes(expectedText),
-      `Expected "${tokenName}" row to contain "${expectedText}"`,
-    );
+    await this.expandLowValueAssetsIfPresent();
+
+    let lastSeenText = '';
+    try {
+      await this.driver.waitUntil(
+        async () => {
+          const rows = await this.driver.findElements(this.tokenListItem);
+          for (const row of rows) {
+            const nameElements = await row.findElements(By.css(this.tokenName));
+            if (nameElements.length === 0) {
+              continue;
+            }
+            if ((await nameElements[0].getText()) !== tokenName) {
+              continue;
+            }
+            lastSeenText = await row.getText();
+            if (lastSeenText.includes(expectedText)) {
+              return true;
+            }
+          }
+          return false;
+        },
+        { timeout: 10000, interval: 500 },
+      );
+    } catch {
+      throw new Error(
+        `Expected "${tokenName}" row to contain "${expectedText}", but last saw: "${lastSeenText}"`,
+      );
+    }
   }
 
   async checkTokenRowHasVisibleLogo(tokenName: string): Promise<void> {
@@ -712,6 +738,19 @@ class TokensTab extends HomePage {
   async clickTokenOptionsButton(): Promise<void> {
     console.log('Click the token options button');
     await this.driver.clickElement(this.tokenOptionsButton);
+  }
+
+  /**
+   * Collapses the low-value assets section when it is currently expanded.
+   * The expansion state is retained by the token list between renders.
+   */
+  async collapseLowValueAssets(): Promise<void> {
+    await this.driver.waitForSelector(this.lowValueAssetsToggle);
+    const toggle = await this.driver.findElement(this.lowValueAssetsToggle);
+    if ((await toggle.getAttribute('aria-expanded')) === 'true') {
+      await this.driver.clickElementSafe(this.lowValueAssetsToggle);
+    }
+    await this.driver.waitForSelector(this.lowValueAssetsToggleCollapsed);
   }
 
   /**
