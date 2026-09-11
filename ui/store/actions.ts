@@ -6087,6 +6087,21 @@ export function getGasFeeTimeEstimate(
   ]);
 }
 
+/**
+ * Closes the notification window remotely from the browser action popup.
+ * This is different from `attemptCloseNotificationPopup` which closes the
+ * current window (used by notification to close itself).
+ */
+export async function closeNotificationFromPopup(): Promise<void> {
+  if (getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP) {
+    console.warn(
+      'closeNotificationFromPopup: Can only be called from popup context',
+    );
+    return;
+  }
+  await submitRequestToBackground('closeNotificationPopup');
+}
+
 export async function attemptCloseNotificationPopup() {
   // Check if the current window is NOT a popup - if confirmed, we should not close it
   try {
