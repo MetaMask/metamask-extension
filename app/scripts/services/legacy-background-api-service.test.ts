@@ -4269,9 +4269,7 @@ describe('LegacyBackgroundApiService', () => {
           'KeyringController:submitPassword',
           expect.anything(),
         );
-        expect(callSpy).toHaveBeenCalledWith(
-          'AccountsController:init',
-        );
+        expect(callSpy).toHaveBeenCalledWith('AccountsController:init');
         expect(callSpy).toHaveBeenCalledWith('MultichainAccountService:init');
         expect(callSpy).toHaveBeenCalledWith('AccountTreeController:init');
       });
@@ -4379,9 +4377,7 @@ describe('LegacyBackgroundApiService', () => {
         ).resolves.toBeUndefined();
 
         expect(unlockSpy).toHaveBeenCalledWith(authenticationResponse);
-        expect(callSpy).toHaveBeenCalledWith(
-          'AccountsController:init',
-        );
+        expect(callSpy).toHaveBeenCalledWith('AccountsController:init');
         expect(callSpy).toHaveBeenCalledWith('MultichainAccountService:init');
         expect(callSpy).toHaveBeenCalledWith('AccountTreeController:init');
       });
@@ -4405,9 +4401,7 @@ describe('LegacyBackgroundApiService', () => {
           ),
         ).rejects.toThrow(error);
 
-        expect(callSpy).not.toHaveBeenCalledWith(
-          'AccountsController:init',
-        );
+        expect(callSpy).not.toHaveBeenCalledWith('AccountsController:init');
       });
     });
   });
@@ -6433,10 +6427,7 @@ describe('LegacyBackgroundApiService', () => {
           'KeyringController:getState',
           jest.fn().mockReturnValue({ keyrings: [primaryKeyring] }),
         );
-        rootMessenger.registerActionHandler(
-          'AccountsController:init',
-          init,
-        );
+        rootMessenger.registerActionHandler('AccountsController:init', init);
         rootMessenger.registerActionHandler(
           'AccountTreeController:reinit',
           reinit,
@@ -8768,10 +8759,7 @@ async function withService<ReturnValue>(
  * @param rootMessenger - The root messenger to register the handlers on.
  */
 function registerUnlockSideEffectHandlers(rootMessenger: RootMessenger): void {
-  rootMessenger.registerActionHandler(
-    'AccountsController:init',
-    jest.fn(),
-  );
+  rootMessenger.registerActionHandler('AccountsController:init', jest.fn());
   rootMessenger.registerActionHandler(
     'MultichainAccountService:init',
     jest.fn(),
