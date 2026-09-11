@@ -11782,7 +11782,7 @@
     "message": "Token address"
   },
   "tokenAllowance": {
-    "message": "Token allowance"
+    "message": "spending cap"
   },
   "tokenAlreadyAdded": {
     "message": "Token has already been added."
