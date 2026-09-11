@@ -77,7 +77,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   // nothing to validate against.
   'data.CurrencyController',
   'data.MultichainAssetsController',
-  'data.TokenRatesController',
   'data.TokensController',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.
