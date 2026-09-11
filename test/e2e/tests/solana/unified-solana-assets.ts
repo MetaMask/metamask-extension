@@ -44,11 +44,6 @@ const SOLANA_POSITIVE_BALANCE_ASSETS_CONTROLLER = {
 };
 
 const MULTICHAIN_SOL_ASSETS_PATCH = {
-  MultichainAssetsController: {
-    accountsAssets: {
-      [SOL_ACCOUNT_ID]: [SOL_CAIP_ASSET],
-    },
-  },
   MultichainRatesController: {
     conversionRates: {
       [SOL_CAIP_ASSET]: {

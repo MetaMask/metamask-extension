@@ -132,7 +132,6 @@
     },
     "MoneyAccountController": { "moneyAccounts": "object" },
     "MoneyAccountUpgradeController": { "upgradedAccounts": "object" },
-    "MultichainAssetsController": {},
     "MultichainNetworkController": "object",
     "MultichainRatesController": {
       "cryptocurrencies": ["btc", "sol"],
@@ -347,6 +346,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 229
+    "version": 230
   }
 }
