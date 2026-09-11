@@ -71,7 +71,6 @@ import {
   setEnabledAllPopularNetworks,
   setTokenNetworkFilter,
   showImportNftsModal,
-  updateBalancesFoAccounts,
 } from '../../../../../store/actions';
 import type { MetaMaskReduxState } from '../../../../../store/store';
 import Tooltip from '../../../../ui/tooltip';
@@ -356,12 +355,6 @@ const AssetListControlBar = ({
         );
       }
     } else {
-      dispatch(
-        updateBalancesFoAccounts(
-          Object.keys(enabledNetworksByNamespace),
-          false,
-        ),
-      );
       dispatch(detectTokens(Object.keys(enabledNetworksByNamespace)));
     }
     closePopover();

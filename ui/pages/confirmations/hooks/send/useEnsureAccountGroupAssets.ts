@@ -2,16 +2,12 @@ import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import { useSelector } from 'react-redux';
 import type { AccountGroupId } from '@metamask/account-api';
 import type { AssetType } from '@metamask/assets-controller';
-import type { CaipChainId, Hex } from '@metamask/utils';
+import type { CaipChainId } from '@metamask/utils';
 
 import { getIsAssetsUnifyStateEnabled } from '../../../../selectors/assets-unify-state';
 import { getAllMultichainNetworkConfigurations } from '../../../../selectors/multichain/networks';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { getInternalAccountsFromGroupById } from '../../../../selectors/multichain-accounts/account-tree';
-import {
-  refreshAssetsForSelectedAccount,
-  updateBalancesFoAccounts,
-} from '../../../../store/actions';
+import { refreshAssetsForSelectedAccount } from '../../../../store/actions';
 import { useDispatch } from '../../../../store/hooks';
 import {
   hasRequestedAccountGroupAssets,
@@ -44,9 +40,8 @@ const EMPTY_ACCOUNTS: ReturnType<typeof getInternalAccountsFromGroupById> = [];
  * When assets-unify-state is enabled, loading is limited to the override
  * group's accounts: fanning asset fetches out across a large wallet is a known
  * performance cost, so only the account actually being paid from is fetched.
- * The legacy TokenBalancesController path cannot take an account list — it
- * only includes non-selected accounts when `queryAllAccounts` is true, which
- * refreshes every account.
+ * TokenBalancesController has been removed; when unify is disabled this hook
+ * is a no-op.
  *
  * @param accountGroupId - Account group to load, or undefined to no-op.
  * @returns Whether an asset load for that group is currently in flight.
@@ -59,17 +54,10 @@ export function useEnsureAccountGroupAssets(
   const allMultichainNetworks = useSelector(
     getAllMultichainNetworkConfigurations,
   );
-  const evmNetworkConfigurations = useSelector(
-    getNetworkConfigurationsByChainId,
-  );
 
   const caipChainIds = useMemo(
     () => Object.keys(allMultichainNetworks) as CaipChainId[],
     [allMultichainNetworks],
-  );
-  const evmChainIds = useMemo(
-    () => Object.keys(evmNetworkConfigurations) as Hex[],
-    [evmNetworkConfigurations],
   );
 
   const accounts = useSelector((state) =>
@@ -92,42 +80,34 @@ export function useEnsureAccountGroupAssets(
       return;
     }
 
+    if (!isAssetsUnifyStateEnabled) {
+      return;
+    }
+
     // Wait until the relevant chain list is populated before requesting. The
     // loader marks a group as requested for the whole session, so kicking off a
     // load with no chains would resolve as a no-op success and dedupe the group
     // permanently — it would never retry once the chains become available,
     // leaving the token list empty.
-    const chainIdsToLoad = isAssetsUnifyStateEnabled
-      ? caipChainIds
-      : evmChainIds;
-    if (chainIdsToLoad.length === 0) {
+    if (caipChainIds.length === 0) {
       return;
     }
 
     // Groups already requested this session are deduped inside the loader, so
     // re-running this effect after an unrelated selector change costs nothing.
     runAccountGroupAssetLoad([accountGroupId], async () => {
-      if (isAssetsUnifyStateEnabled) {
-        await dispatch(
-          refreshAssetsForSelectedAccount(accounts, {
-            chainIds: caipChainIds,
-            assetTypes: FUNGIBLE_ASSET_TYPES,
-          }),
-        );
-        return;
-      }
-
-      // Legacy TokenBalancesController.updateBalances has no account-list
-      // option. Non-selected (override) accounts are only included when
-      // queryAllAccounts is true, which refreshes every account.
-      await dispatch(updateBalancesFoAccounts(evmChainIds, true));
+      await dispatch(
+        refreshAssetsForSelectedAccount(accounts, {
+          chainIds: caipChainIds,
+          assetTypes: FUNGIBLE_ASSET_TYPES,
+        }),
+      );
     });
   }, [
     accountGroupId,
     accounts,
     caipChainIds,
     dispatch,
-    evmChainIds,
     isAssetsUnifyStateEnabled,
   ]);
 

@@ -11,11 +11,7 @@ import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/netwo
 import { mockSpotPrices } from '../tokens/utils/mocks';
 import SendPage from '../../page-objects/pages/send/send-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import {
-  DEFAULT_FIXTURE_ACCOUNT,
-  DEFAULT_FIXTURE_ACCOUNT_ID,
-  NETWORK_CLIENT_ID,
-} from '../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT_ID, NETWORK_CLIENT_ID } from '../../constants';
 
 const NETWORK_NAME_MAINNET = 'Ethereum';
 const HST_TOKEN_ADDRESS = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
@@ -149,15 +145,6 @@ function buildFixturesForAssetDetails(title: string) {
         },
       })
       .withShowNativeTokenAsMainBalanceDisabled()
-      .withTokenBalancesController({
-        tokenBalances: {
-          [DEFAULT_FIXTURE_ACCOUNT]: {
-            [CHAIN_IDS.MAINNET]: {
-              [HST_TOKEN_ADDRESS]: '0x3e8',
-            },
-          },
-        },
-      })
       .build(),
     localNodeOptions: [
       {
@@ -199,17 +186,21 @@ function buildFixturesForSend(title: string) {
           [DEFAULT_FIXTURE_ACCOUNT_ID]: {
             // Pre-seed Polygon native balance so the home page shows 25 at login
             'eip155:137/slip44:60': { amount: '25' },
+            [`eip155:137/erc20:${HST_TOKEN_ADDRESS}`]: { amount: '1000' },
           },
         },
-      })
-      .withTokenBalancesController({
-        tokenBalances: {
-          [DEFAULT_FIXTURE_ACCOUNT]: {
-            [CHAIN_IDS.POLYGON]: {
-              // HST (TST) contract pre-seeded so it shows after import in test 2
-              [HST_TOKEN_ADDRESS]: '0x3e8',
-            },
+        assetsInfo: {
+          [`eip155:137/erc20:${HST_TOKEN_ADDRESS}`]: {
+            type: 'erc20',
+            decimals: 18,
+            symbol: 'TST',
+            name: 'TST',
           },
+        },
+        customAssets: {
+          [DEFAULT_FIXTURE_ACCOUNT_ID]: [
+            `eip155:137/erc20:${HST_TOKEN_ADDRESS}`,
+          ],
         },
       })
       .build(),

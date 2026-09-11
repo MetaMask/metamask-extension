@@ -5,12 +5,8 @@ import type { InternalAccount } from '@metamask/keyring-internal-api';
 
 import { getIsAssetsUnifyStateEnabled } from '../../../../selectors/assets-unify-state';
 import { getAllMultichainNetworkConfigurations } from '../../../../selectors/multichain/networks';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { getInternalAccountsFromGroupById } from '../../../../selectors/multichain-accounts/account-tree';
-import {
-  refreshAssetsForSelectedAccount,
-  updateBalancesFoAccounts,
-} from '../../../../store/actions';
+import { refreshAssetsForSelectedAccount } from '../../../../store/actions';
 import { useDispatch } from '../../../../store/hooks';
 import { resetAccountGroupAssetLoaderForTests } from '../../utils/account-group-asset-loader';
 import { useEnsureAccountGroupAssets } from './useEnsureAccountGroupAssets';
@@ -25,15 +21,11 @@ jest.mock('../../../../selectors/assets-unify-state', () => ({
 jest.mock('../../../../selectors/multichain/networks', () => ({
   getAllMultichainNetworkConfigurations: jest.fn(),
 }));
-jest.mock('../../../../../shared/lib/selectors/networks', () => ({
-  getNetworkConfigurationsByChainId: jest.fn(),
-}));
 jest.mock('../../../../selectors/multichain-accounts/account-tree', () => ({
   getInternalAccountsFromGroupById: jest.fn(),
 }));
 jest.mock('../../../../store/actions', () => ({
   refreshAssetsForSelectedAccount: jest.fn(),
-  updateBalancesFoAccounts: jest.fn(),
 }));
 jest.mock('../../../../store/hooks', () => ({
   useDispatch: jest.fn(),
@@ -48,7 +40,6 @@ const ACCOUNT = {
 // Only the keys of these config maps matter — the hook derives its chain lists
 // from Object.keys().
 const MULTICHAIN_NETWORKS = { 'eip155:1': {} } as never;
-const EVM_NETWORKS = { '0x1': {} } as never;
 
 describe('useEnsureAccountGroupAssets', () => {
   const dispatchMock = jest.fn(async (action) =>
@@ -61,16 +52,12 @@ describe('useEnsureAccountGroupAssets', () => {
   const getAllMultichainNetworkConfigurationsMock = jest.mocked(
     getAllMultichainNetworkConfigurations,
   );
-  const getNetworkConfigurationsByChainIdMock = jest.mocked(
-    getNetworkConfigurationsByChainId,
-  );
   const getInternalAccountsFromGroupByIdMock = jest.mocked(
     getInternalAccountsFromGroupById,
   );
   const refreshAssetsForSelectedAccountMock = jest.mocked(
     refreshAssetsForSelectedAccount,
   );
-  const updateBalancesFoAccountsMock = jest.mocked(updateBalancesFoAccounts);
   const useDispatchMock = jest.mocked(useDispatch);
 
   beforeEach(() => {
@@ -82,11 +69,8 @@ describe('useEnsureAccountGroupAssets', () => {
     getAllMultichainNetworkConfigurationsMock.mockReturnValue(
       MULTICHAIN_NETWORKS,
     );
-    getNetworkConfigurationsByChainIdMock.mockReturnValue(EVM_NETWORKS);
     getInternalAccountsFromGroupByIdMock.mockReturnValue([ACCOUNT]);
     refreshAssetsForSelectedAccountMock.mockReturnValue((() =>
-      Promise.resolve()) as never);
-    updateBalancesFoAccountsMock.mockReturnValue((() =>
       Promise.resolve()) as never);
 
     useSelectorMock.mockImplementation((selector) => {
@@ -95,9 +79,6 @@ describe('useEnsureAccountGroupAssets', () => {
       }
       if (selector === getAllMultichainNetworkConfigurations) {
         return getAllMultichainNetworkConfigurationsMock({} as never);
-      }
-      if (selector === getNetworkConfigurationsByChainId) {
-        return getNetworkConfigurationsByChainIdMock({} as never);
       }
       if (typeof selector === 'function') {
         return selector({} as never);
@@ -130,14 +111,15 @@ describe('useEnsureAccountGroupAssets', () => {
     });
   });
 
-  it('falls back to updateBalances for all accounts when unify is disabled', async () => {
+  it('does not load when unify is disabled', async () => {
     getIsAssetsUnifyStateEnabledMock.mockReturnValue(false);
 
     renderHook(() => useEnsureAccountGroupAssets(GROUP_ID));
 
-    await waitFor(() => {
-      expect(updateBalancesFoAccountsMock).toHaveBeenCalledWith(['0x1'], true);
+    await act(async () => {
+      await Promise.resolve();
     });
+
     expect(refreshAssetsForSelectedAccountMock).not.toHaveBeenCalled();
   });
 
@@ -149,10 +131,9 @@ describe('useEnsureAccountGroupAssets', () => {
     });
 
     expect(refreshAssetsForSelectedAccountMock).not.toHaveBeenCalled();
-    expect(updateBalancesFoAccountsMock).not.toHaveBeenCalled();
   });
 
-  it('does not request while networks are empty, then retries once they load (unify)', async () => {
+  it('does not request while networks are empty, then retries once they load', async () => {
     getAllMultichainNetworkConfigurationsMock.mockReturnValue({} as never);
 
     const { rerender } = renderHook(() =>
@@ -180,28 +161,6 @@ describe('useEnsureAccountGroupAssets', () => {
           assetTypes: ['fungible'],
         },
       );
-    });
-  });
-
-  it('does not request while networks are empty, then retries once they load (legacy)', async () => {
-    getIsAssetsUnifyStateEnabledMock.mockReturnValue(false);
-    getNetworkConfigurationsByChainIdMock.mockReturnValue({} as never);
-
-    const { rerender } = renderHook(() =>
-      useEnsureAccountGroupAssets(GROUP_ID),
-    );
-
-    await act(async () => {
-      await Promise.resolve();
-    });
-
-    expect(updateBalancesFoAccountsMock).not.toHaveBeenCalled();
-
-    getNetworkConfigurationsByChainIdMock.mockReturnValue(EVM_NETWORKS);
-    rerender();
-
-    await waitFor(() => {
-      expect(updateBalancesFoAccountsMock).toHaveBeenCalledWith(['0x1'], true);
     });
   });
 

@@ -28,7 +28,6 @@ const CHAIN_ID_HEX = toHex(CHAIN_ID);
 const TOKEN_ADDRESS = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
 const TOKEN_DECIMALS = 4;
 const SYMBOL = 'TST';
-const INITIAL_RAW_BALANCE = '0x186a0';
 const POST_SEND_RAW_BALANCE = '0xc350';
 const RECIPIENT_ADDRESS = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
@@ -163,15 +162,6 @@ describe('Send ERC20 - Max Balance Validation', function () {
           [CHAIN_ID_HEX]: {
             [account]: {
               balance: '0x15af1d78b58c400000', // 25 ETH
-            },
-          },
-        },
-      },
-      TokenBalancesController: {
-        tokenBalances: {
-          [account]: {
-            [CHAIN_ID_HEX]: {
-              [TOKEN_ADDRESS]: INITIAL_RAW_BALANCE,
             },
           },
         },
