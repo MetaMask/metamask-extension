@@ -1,5 +1,6 @@
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import {
+  activityMatchesAssetId,
   dedupeItems,
   getActivityItemIdentifier,
   getItemKey,
@@ -77,6 +78,74 @@ describe('getActivityItemIdentifier', () => {
     });
 
     expect(getActivityItemIdentifier(rampSell)).toBeUndefined();
+  });
+});
+
+describe('activityMatchesAssetId', () => {
+  it('matches equivalent EVM token asset ids with token and erc20 namespaces', () => {
+    const tokenAddress = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
+    const item = makeItem({
+      timestamp: 1,
+      status: 'success',
+      type: 'swap',
+      data: {
+        from: '0x1',
+        sourceToken: {
+          assetId: `eip155:8453/token:${tokenAddress}`,
+          direction: 'out',
+        },
+      },
+    });
+
+    expect(
+      activityMatchesAssetId(
+        item,
+        `eip155:8453/erc20:${tokenAddress}` as never,
+      ),
+    ).toBe(true);
+  });
+
+  it('matches Arc ERC20 USDC wrapper activity on the Arc native USDC asset page', () => {
+    const item = makeItem({
+      timestamp: 1,
+      status: 'success',
+      type: 'swap',
+      data: {
+        from: '0x1',
+        destinationToken: {
+          assetId:
+            'eip155:5042/erc20:0x3600000000000000000000000000000000000000',
+          direction: 'in',
+        },
+      },
+    });
+
+    expect(
+      activityMatchesAssetId(item, 'eip155:5042/slip44:5042' as never),
+    ).toBe(true);
+  });
+
+  it('matches Arc native USDC activity on the Arc ERC20 USDC wrapper route', () => {
+    const item = makeItem({
+      timestamp: 1,
+      status: 'success',
+      type: 'receive',
+      data: {
+        from: '0x1',
+        to: '0x2',
+        token: {
+          assetId: 'eip155:5042/slip44:5042',
+          direction: 'in',
+        },
+      },
+    });
+
+    expect(
+      activityMatchesAssetId(
+        item,
+        'eip155:5042/erc20:0x3600000000000000000000000000000000000000' as never,
+      ),
+    ).toBe(true);
   });
 });
 
