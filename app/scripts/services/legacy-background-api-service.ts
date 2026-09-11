@@ -1645,8 +1645,8 @@ export class LegacyBackgroundApiService {
   /**
    * Gets the standard and details for a token on the globally selected network.
    *
-   * Resolves the token metadata from the static token list
-   * and the user's tokens, falling back to an on-chain lookup via the
+   * Resolves the token metadata from the static token list, the dynamic token
+   * list and the user's tokens, falling back to an on-chain lookup via the
    * `AssetsContractController` when the token cannot be treated as an ERC20.
    *
    * @param address - The token contract address.
@@ -1782,8 +1782,8 @@ export class LegacyBackgroundApiService {
   /**
    * Gets the standard and details for a token on a specific chain.
    *
-   * Resolves the token metadata from the static token list
-   * and the user's tokens, falling back to an on-chain lookup via the
+   * Resolves the token metadata from the static token list, the dynamic token
+   * list and the user's tokens, falling back to an on-chain lookup via the
    * `AssetsContractController` when the token cannot be treated as an ERC20.
    *
    * @param address - The token contract address.

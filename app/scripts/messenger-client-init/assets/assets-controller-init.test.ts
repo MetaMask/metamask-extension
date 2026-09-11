@@ -503,7 +503,7 @@ describe('AssetsControllerInit', () => {
                   enabled: true,
                   featureVersion: '1',
                   minimumVersion: '13.38.0',
-                  deprecatedControllers: ['TokensController'],
+                  deprecatedControllers: ['TokenListController'],
                   tracesEnabled: true,
                 },
               },

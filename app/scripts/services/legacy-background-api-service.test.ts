@@ -595,7 +595,7 @@ describe('LegacyBackgroundApiService', () => {
   });
 
   describe('getTokenStandardAndDetails', () => {
-    it('gets token data from the token list and a balance retrieved via the global provider', async () => {
+    it('gets imported token data and a balance retrieved via the global provider', async () => {
       const providerResultStub = {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         eth_getCode: '0x123',
