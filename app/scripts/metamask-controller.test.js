@@ -4683,9 +4683,6 @@ describe('MetaMaskController', () => {
       jest
         .spyOn(metamaskController, 'triggerNetworkrequests')
         .mockImplementation(noop);
-      jest
-        .spyOn(metamaskController.tokenDetectionController, 'detectTokens')
-        .mockResolvedValue(undefined);
 
       await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(
         password,

@@ -83,10 +83,6 @@ import { getNetworkConnectionBannerControllerMessenger } from './network-connect
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
 import {
-  getTokenDetectionControllerInitMessenger,
-  getTokenDetectionControllerMessenger,
-} from './token-detection-controller-messenger';
-import {
   getTokensControllerInitMessenger,
   getTokensControllerMessenger,
 } from './tokens-controller-messenger';
@@ -264,11 +260,6 @@ export {
   getStaticAssetsControllerMessenger,
   getStaticAssetsControllerInitMessenger,
 } from './static-assets-controller-messenger';
-export type { TokenDetectionControllerInitMessenger } from './token-detection-controller-messenger';
-export {
-  getTokenDetectionControllerMessenger,
-  getTokenDetectionControllerInitMessenger,
-} from './token-detection-controller-messenger';
 export type { TokensControllerInitMessenger } from './tokens-controller-messenger';
 export {
   getTokensControllerMessenger,
@@ -568,10 +559,6 @@ export const MESSENGER_FACTORIES = {
   RampsController: {
     getMessenger: getRampsControllerMessenger,
     getInitMessenger: getRampsControllerInitMessenger,
-  },
-  TokenDetectionController: {
-    getMessenger: getTokenDetectionControllerMessenger,
-    getInitMessenger: getTokenDetectionControllerInitMessenger,
   },
   TokensController: {
     getMessenger: getTokensControllerMessenger,
