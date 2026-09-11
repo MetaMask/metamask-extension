@@ -619,7 +619,9 @@ export const selectLocalActivityItems = createSelector(
 
         const activity = mapLocalTransaction(prepared);
         const activityItem =
-          activity.type === 'convert' ? { ...activity, type: 'swap' } : activity;
+          activity.type === 'convert'
+            ? { ...activity, type: 'swap' }
+            : activity;
 
         return enrichLocalActivity(activityItem, prepared);
       }
