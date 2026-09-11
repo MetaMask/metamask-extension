@@ -245,13 +245,21 @@ function render(
   jest
     .mocked(useTransactionPayDataModule.useTransactionPayTotals)
     .mockReturnValue(totals);
+  const isMoneyAccountWithdraw = Boolean(
+    transactionMeta.nestedTransactions?.some(
+      (nested) => nested.type === TransactionType.moneyAccountWithdraw,
+    ),
+  );
+  let isQuotePending = isQuotesLoading;
+  if (transactionMeta.type === TransactionType.perpsWithdraw) {
+    isQuotePending =
+      hasPositiveRequiredAmount && (isQuotesLoading || !isPostQuote);
+  } else if (isMoneyAccountWithdraw) {
+    isQuotePending = isQuotesLoading || !primaryRequiredToken;
+  }
   jest
     .mocked(useTransactionPayDataModule.useIsTransactionPayQuotePending)
-    .mockReturnValue(
-      transactionMeta.type === TransactionType.perpsWithdraw
-        ? hasPositiveRequiredAmount && (isQuotesLoading || !isPostQuote)
-        : isQuotesLoading,
-    );
+    .mockReturnValue(isQuotePending);
   jest
     .mocked(useTransactionPayDataModule.useTransactionPayHasExecutableQuote)
     .mockReturnValue(hasQuotes);
@@ -866,6 +874,29 @@ describe('CustomAmountInfo', () => {
 
       expect(getByTestId('receive-row')).toBeInTheDocument();
       expect(queryByTestId('total-row')).not.toBeInTheDocument();
+    });
+
+    it('renders the money-account withdraw receive row as a skeleton until the typed amount reaches Pay', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        primaryRequiredToken: undefined,
+        transactionMeta: MOCK_MONEY_ACCOUNT_WITHDRAW_TRANSACTION_META,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: true },
+      });
+
+      expect(getByTestId('receive-row-skeleton')).toBeInTheDocument();
+      expect(queryByTestId('receive-row')).not.toBeInTheDocument();
+    });
+
+    it('renders the money-account withdraw receive row once the quoted amount is committed', () => {
+      const { getByTestId, queryByTestId } = render({
+        hasQuotes: true,
+        transactionMeta: MOCK_MONEY_ACCOUNT_WITHDRAW_TRANSACTION_META,
+        withdraw: { isWithdraw: true, canSelectWithdrawToken: true },
+      });
+
+      expect(getByTestId('receive-row')).toBeInTheDocument();
+      expect(queryByTestId('receive-row-skeleton')).not.toBeInTheDocument();
     });
 
     it('renders the total row for a withdraw when post-quote is disabled', () => {
