@@ -58,7 +58,7 @@ export const SnapUIInput: FunctionComponent<
     const {
       handleInputChange,
       getValue,
-      focusedInput,
+      getFocusedInput,
       setCurrentFocusedInput,
     } = useSnapInterfaceContext();
 
@@ -79,10 +79,10 @@ export const SnapUIInput: FunctionComponent<
      * This avoids losing the focus when the UI is re-rendered
      */
     useEffect(() => {
-      if (inputRef.current && name === focusedInput) {
+      if (inputRef.current && name === getFocusedInput()) {
         (inputRef.current.querySelector('input') as HTMLInputElement).focus();
       }
-    }, [inputRef]);
+    }, [getFocusedInput, inputRef, name]);
 
     /**
      * Get the input value, replacing commas with dots for number inputs.
