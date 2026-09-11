@@ -1157,18 +1157,18 @@
         "ethers>@ethersproject/constants": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
-        "@metamask/controller-utils": true,
+        "@metamask/bridge-controller>@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/multichain-network-controller": true,
-        "@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/bridge-controller>bignumber.js": true,
         "buffer": true,
-        "lodash": true,
+        "@metamask/base-data-service>lodash-es": true,
         "reselect": true,
-        "uuid": true
+        "@metamask/bridge-controller>uuid": true
       }
     },
     "@metamask/bridge-status-controller": {
@@ -1183,15 +1183,14 @@
       },
       "packages": {
         "@metamask/bridge-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/keyring-controller": true,
-        "@metamask/polling-controller": true,
-        "@metamask/snaps-controllers": true,
+        "@metamask/bridge-status-controller>@metamask/controller-utils": true,
+        "@metamask/bridge-status-controller>@metamask/keyring-controller": true,
+        "@metamask/bridge-status-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/bridge-status-controller>@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/bridge-status-controller>bignumber.js": true,
-        "uuid": true
+        "@metamask/bridge-status-controller>uuid": true
       }
     },
     "@metamask/browser-passworder": {
@@ -1319,6 +1318,40 @@
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "lodash": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/base-data-service>lodash-es": true
+      }
+    },
+    "@metamask/bridge-status-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/base-data-service>lodash-es": true
       }
     },
     "@metamask/name-controller>@metamask/controller-utils": {
@@ -1928,6 +1961,23 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
+    "@metamask/bridge-status-controller>@metamask/keyring-controller": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/base-controller": true,
+        "@metamask/eth-hd-keyring": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/keyring-controller>ethereumjs-wallet": true,
+        "@metamask/base-data-service>lodash-es": true,
+        "@metamask/keyring-controller>ulid": true
+      }
+    },
     "@metamask/profile-sync-controller>@metamask/keyring-controller": {
       "globals": {
         "console.error": true
@@ -2204,6 +2254,11 @@
         "lodash": true
       }
     },
+    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
     "@metamask/multichain-transactions-controller": {
       "globals": {
         "console.error": true
@@ -2431,6 +2486,30 @@
         "@metamask/base-controller": true,
         "fast-json-stable-stringify": true,
         "uuid": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "fast-json-stable-stringify": true,
+        "@metamask/bridge-controller>@metamask/polling-controller>uuid": true
+      }
+    },
+    "@metamask/bridge-status-controller>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "fast-json-stable-stringify": true,
+        "@metamask/bridge-status-controller>@metamask/polling-controller>uuid": true
       }
     },
     "@metamask/post-message-stream": {
@@ -2920,6 +2999,14 @@
         "webpack>events": true,
         "lodash": true,
         "uuid": true
+      }
+    },
+    "@metamask/bridge-status-controller>@metamask/transaction-controller": {
+      "packages": {
+        "@metamask/bridge-status-controller>@metamask/controller-utils": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "@metamask/bridge-status-controller>@metamask/transaction-controller>uuid": true
       }
     },
     "@metamask/transaction-pay-controller": {
@@ -7357,6 +7444,16 @@
         "crypto": true
       }
     },
+    "@metamask/bridge-controller>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/bridge-status-controller>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
     "@metamask/eth-qr-keyring>uuid": {
       "globals": {
         "crypto": true
@@ -7390,6 +7487,24 @@
     "@metamask/mobile-wallet-protocol-dapp-client>uuid": {
       "globals": {
         "crypto": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/polling-controller>uuid": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
+      }
+    },
+    "@metamask/bridge-status-controller>@metamask/polling-controller>uuid": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
+      }
+    },
+    "@metamask/bridge-status-controller>@metamask/transaction-controller>uuid": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
       }
     },
     "remote-redux-devtools>socketcluster-client>uuid": {
