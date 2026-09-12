@@ -108,15 +108,20 @@ export function ActivityList({
       return;
     }
 
+    /* eslint-disable @typescript-eslint/naming-convention -- Segment event properties use snake_case */
     trackEvent(
       createEventBuilder(MetaMetricsEventName.ActivityDetailsOpened)
         .addCategory(MetaMetricsEventCategory.Navigation)
         .addProperties({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           activity_type: item.type,
+          transaction_status: item.status,
+          location: filter && 'assetId' in filter ? 'asset_details' : 'home',
+          chain_id_source: item.chainId,
+          chain_id_destination: item.chainId,
         })
         .build(),
     );
+    /* eslint-enable @typescript-eslint/naming-convention */
 
     setSelectedItem(item);
 
