@@ -406,6 +406,32 @@ describe('Trace', () => {
       );
     });
 
+    it('does not force-promote the inherited active span to a transaction', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn().mockReturnValue({
+          traceId: 'abc123',
+          spanId: 'def456',
+        }),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK }, () => true);
+
+      // An operation that inherits the ambient active span must stay a child
+      // span of it. No `forceTransaction` may be inferred from the fallback,
+      // otherwise every timer/poll/messenger-driven trace is manufactured into
+      // a billed Sentry transaction. See #45393.
+      expect(startSpanMock).toHaveBeenCalledWith(
+        {
+          name: NAME_MOCK,
+          parentSpan: activeSpanMock,
+          op: 'custom',
+        },
+        expect.any(Function),
+      );
+    });
+
     it('does not call getActiveSpan when parentContext is provided', () => {
       trace(
         { name: NAME_MOCK, parentContext: PARENT_CONTEXT_MOCK },
