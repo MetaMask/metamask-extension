@@ -2,6 +2,7 @@
 
 import './scripts/load/bootstrap';
 import { APP_INIT_LIVENESS_METHOD } from '../shared/constants/ui-initialization';
+import { APP_INIT_LIVENESS_STREAM } from './scripts/constants/stream';
 import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/extension-lazy-listener';
 
 const { chrome } = globalThis;
@@ -71,7 +72,7 @@ chrome.runtime.onConnect.addListener((port) => {
       data: {
         method: APP_INIT_LIVENESS_METHOD,
       },
-      name: 'app-init-liveness',
+      name: APP_INIT_LIVENESS_STREAM,
     });
   } catch (e) {
     console.error(
