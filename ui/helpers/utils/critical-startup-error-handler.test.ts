@@ -494,4 +494,20 @@ describe('CriticalStartupErrorHandler', () => {
       handler.uninstall();
     });
   });
+
+  describe('port without onMessage (browser-namespace regression)', () => {
+    it('install() does not throw when the port lacks onMessage (browser-namespace regression)', () => {
+      // A raw browser-namespace port has no `onMessage`/`onDisconnect` because
+      // webextension-polyfill is a no-op when the native `browser` namespace is
+      // present (Chromium 151+ Dev). Names deliberately avoid shadowing the
+      // shared `port`/`container` fixtures above.
+      const bareContainer = document.createElement('div');
+      const barePort = { name: 'popup', postMessage: jest.fn() };
+      const handler = new CriticalStartupErrorHandler(
+        barePort as never,
+        bareContainer,
+      );
+      expect(() => handler.install()).not.toThrow();
+    });
+  });
 });
