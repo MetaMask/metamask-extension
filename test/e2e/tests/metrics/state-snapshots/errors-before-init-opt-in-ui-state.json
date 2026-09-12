@@ -4,9 +4,7 @@
       "hiddenAccountList": "object",
       "pinnedAccountList": "object"
     },
-    "AccountTracker": {
-      "accountsByChainId": "object"
-    },
+    "AccountTracker": {},
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
       "accountTree": "object",
@@ -45,6 +43,7 @@
       "currentAppVersion": "string",
       "currentMigrationVersion": "number",
       "firstTimeInfo": "object",
+      "installAttribution": null,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -106,10 +105,7 @@
       "lastFetched": null,
       "version": null
     },
-    "CurrencyController": {
-      "currencyRates": {},
-      "currentCurrency": "usd"
-    },
+    "CurrencyController": {},
     "DeFiPositionsControllerV2": "object",
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},
@@ -128,8 +124,7 @@
     "MetaMetricsController": {
       "dataCollectionForMarketing": "boolean",
       "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": "object",
-      "traits": "object"
+      "tracesBeforeMetricsOptIn": "object"
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -137,17 +132,9 @@
     },
     "MoneyAccountController": { "moneyAccounts": "object" },
     "MoneyAccountUpgradeController": { "upgradedAccounts": "object" },
-    "MultichainAssetsController": {
-      "accountsAssets": "object",
-      "allIgnoredAssets": "object",
-      "assetsMetadata": "object"
-    },
-    "MultichainAssetsRatesController": {
-      "conversionRates": "object"
-    },
-    "MultichainBalancesController": {
-      "balances": "object"
-    },
+    "MultichainAssetsController": {},
+    "MultichainAssetsRatesController": {},
+    "MultichainBalancesController": {},
     "MultichainNetworkController": "object",
     "MultichainRatesController": {
       "cryptocurrencies": ["btc", "sol"],
@@ -291,6 +278,7 @@
     },
     "ProfileMetricsController": "object",
     "RampsController": {
+      "autoramps": "object",
       "orders": "object",
       "providerAutoSelected": "boolean",
       "userRegion": null
@@ -340,17 +328,9 @@
       "subjectMetadata": "object"
     },
     "SubscriptionController": "object",
-    "TokenBalancesController": {
-      "tokenBalances": "object"
-    },
-    "TokenRatesController": {
-      "marketData": "object"
-    },
-    "TokensController": {
-      "allDetectedTokens": {},
-      "allIgnoredTokens": {},
-      "allTokens": {}
-    },
+    "TokenBalancesController": {},
+    "TokenRatesController": {},
+    "TokensController": {},
     "TransactionController": {
       "lastFetchedBlockNumbers": "object",
       "methodData": "object",
@@ -364,12 +344,13 @@
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
-      "isContactSyncingEnabled": true
+      "isContactSyncingEnabled": true,
+      "isRampsSyncingEnabled": true
     },
     "config": "object"
   },
   "meta": {
     "storageKind": "split",
-    "version": 225
+    "version": 226
   }
 }

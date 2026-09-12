@@ -179,8 +179,9 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 225,
+      "currentMigrationVersion": 226,
       "firstTimeInfo": {},
+      "installAttribution": null,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -405,8 +406,7 @@
     "MetaMetricsController": {
       "dataCollectionForMarketing": false,
       "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": [],
-      "traits": {}
+      "tracesBeforeMetricsOptIn": []
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -1030,14 +1030,14 @@
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
         "avatarType": "maskicon",
+        "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": false,
         "defaultAddressScope": "eip155",
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "gasSponsorshipOptOutByChainId": {},
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": false,
-        "basicFunctionalityMigrationNotification": null,
-        "basicFunctionalityMigrationNotificationDismissed": false,
         "privacyMode": false,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
@@ -1107,6 +1107,7 @@
       }
     },
     "RampsController": {
+      "autoramps": [],
       "orders": [],
       "providerAutoSelected": false,
       "userRegion": null
@@ -1122,10 +1123,6 @@
         "extensionSignedDeepLinkWarningEnabled": "Warning enabled",
         "perpsTAT3382AbtestTabBadge": "control",
         "platformSplitStateGradualRollout": "feature is ON",
-        "stxMigrationBatchStatus": "sentinel on",
-        "stxMigrationCancel": "sentinel on",
-        "stxMigrationGetFees": "sentinel on",
-        "stxMigrationSubmitTransactions": "sentinel on",
         "swapsSWAPS4827AbtestChainValueOrder": "control"
       },
       "localOverrides": {},
@@ -1134,19 +1131,28 @@
         "feature2": false,
         "feature3": [
           {
-            "value": "valueA",
             "name": "groupA",
-            "scope": { "type": "threshold", "value": 0.3 }
+            "scope": {
+              "type": "threshold",
+              "value": 0.3
+            },
+            "value": "valueA"
           },
           {
-            "value": "valueB",
             "name": "groupB",
-            "scope": { "type": "threshold", "value": 0.5 }
+            "scope": {
+              "type": "threshold",
+              "value": 0.5
+            },
+            "value": "valueB"
           },
           {
-            "scope": { "type": "threshold", "value": 1 },
-            "value": "valueC",
-            "name": "groupC"
+            "name": "groupC",
+            "scope": {
+              "type": "threshold",
+              "value": 1
+            },
+            "value": "valueC"
           }
         ]
       }
@@ -1274,12 +1280,13 @@
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
-      "isContactSyncingEnabled": true
+      "isContactSyncingEnabled": true,
+      "isRampsSyncingEnabled": true
     },
     "config": {}
   },
   "meta": {
     "storageKind": "split",
-    "version": 225
+    "version": 226
   }
 }

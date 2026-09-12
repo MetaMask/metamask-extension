@@ -22,7 +22,7 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+            d="M15.53 18.97a.75.75 0 0 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 1.06L8.56 12Z"
           />
         </svg>
       </button>
@@ -59,7 +59,7 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+                    d="M21 4.5H3A1.5 1.5 0 0 0 1.5 6v12A1.5 1.5 0 0 0 3 19.5h18a1.5 1.5 0 0 0 1.5-1.5V6A1.5 1.5 0 0 0 21 4.5M21 6v2.25H3V6Zm0 12H3V9.75h18zm-1.5-2.25a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1 0-1.5h3a.75.75 0 0 1 .75.75m-6 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5a.75.75 0 0 1 .75.75"
                   />
                 </svg>
               </div>
@@ -94,7 +94,7 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                  d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
                 />
               </svg>
             </div>
@@ -121,7 +121,7 @@ exports[`RampsPaymentMethodScreen keeps cached methods visible when a refetch er
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M5 17.886v-7h2v7zm6 0v-7h2v7zm-9 4v-2h20v2zm15-4v-7h2v7zm-15-9v-2l10-5 10 5v2zm4.45-2h11.1L12 4.136z"
+                    d="M2.25 9.75H4.5v6H3a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5h-1.5v-6h2.25a.75.75 0 0 0 .393-1.388l-9.75-6a.75.75 0 0 0-.786 0l-9.75 6A.75.75 0 0 0 2.25 9.75m3.75 0h3v6H6Zm7.5 0v6h-3v-6Zm4.5 6h-3v-6h3ZM12 3.88l7.1 4.37H4.9ZM23.25 19.5a.75.75 0 0 1-.75.75h-21a.75.75 0 0 1 0-1.5h21a.75.75 0 0 1 .75.75"
                   />
                 </svg>
               </div>
@@ -196,7 +196,7 @@ exports[`RampsPaymentMethodScreen matches snapshot when no payment methods are a
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+            d="M15.53 18.97a.75.75 0 0 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 1.06L8.56 12Z"
           />
         </svg>
       </button>
@@ -262,7 +262,7 @@ exports[`RampsPaymentMethodScreen matches snapshot when payment methods fail to 
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+            d="M15.53 18.97a.75.75 0 0 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 1.06L8.56 12Z"
           />
         </svg>
       </button>
@@ -328,7 +328,7 @@ exports[`RampsPaymentMethodScreen matches snapshot when payment methods query is
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+            d="M15.53 18.97a.75.75 0 0 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 1.06L8.56 12Z"
           />
         </svg>
       </button>
@@ -394,7 +394,7 @@ exports[`RampsPaymentMethodScreen matches snapshot while loading 1`] = `
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+            d="M15.53 18.97a.75.75 0 0 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 1.06L8.56 12Z"
           />
         </svg>
       </button>
@@ -561,7 +561,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+            d="M15.53 18.97a.75.75 0 0 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 1.06L8.56 12Z"
           />
         </svg>
       </button>
@@ -598,7 +598,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+                    d="M21 4.5H3A1.5 1.5 0 0 0 1.5 6v12A1.5 1.5 0 0 0 3 19.5h18a1.5 1.5 0 0 0 1.5-1.5V6A1.5 1.5 0 0 0 21 4.5M21 6v2.25H3V6Zm0 12H3V9.75h18zm-1.5-2.25a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1 0-1.5h3a.75.75 0 0 1 .75.75m-6 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5a.75.75 0 0 1 .75.75"
                   />
                 </svg>
               </div>
@@ -633,7 +633,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                  d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
                 />
               </svg>
             </div>
@@ -660,7 +660,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with payment methods 1`] = `
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M5 17.886v-7h2v7zm6 0v-7h2v7zm-9 4v-2h20v2zm15-4v-7h2v7zm-15-9v-2l10-5 10 5v2zm4.45-2h11.1L12 4.136z"
+                    d="M2.25 9.75H4.5v6H3a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5h-1.5v-6h2.25a.75.75 0 0 0 .393-1.388l-9.75-6a.75.75 0 0 0-.786 0l-9.75 6A.75.75 0 0 0 2.25 9.75m3.75 0h3v6H6Zm7.5 0v6h-3v-6Zm4.5 6h-3v-6h3ZM12 3.88l7.1 4.37H4.9ZM23.25 19.5a.75.75 0 0 1-.75.75h-21a.75.75 0 0 1 0-1.5h21a.75.75 0 0 1 .75.75"
                   />
                 </svg>
               </div>
@@ -735,7 +735,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+            d="M15.53 18.97a.75.75 0 0 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 1.06L8.56 12Z"
           />
         </svg>
       </button>
@@ -772,7 +772,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+                    d="M21 4.5H3A1.5 1.5 0 0 0 1.5 6v12A1.5 1.5 0 0 0 3 19.5h18a1.5 1.5 0 0 0 1.5-1.5V6A1.5 1.5 0 0 0 21 4.5M21 6v2.25H3V6Zm0 12H3V9.75h18zm-1.5-2.25a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1 0-1.5h3a.75.75 0 0 1 .75.75m-6 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5a.75.75 0 0 1 .75.75"
                   />
                 </svg>
               </div>
@@ -822,7 +822,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                  d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
                 />
               </svg>
             </div>
@@ -849,7 +849,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M5 17.886v-7h2v7zm6 0v-7h2v7zm-9 4v-2h20v2zm15-4v-7h2v7zm-15-9v-2l10-5 10 5v2zm4.45-2h11.1L12 4.136z"
+                    d="M2.25 9.75H4.5v6H3a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5h-1.5v-6h2.25a.75.75 0 0 0 .393-1.388l-9.75-6a.75.75 0 0 0-.786 0l-9.75 6A.75.75 0 0 0 2.25 9.75m3.75 0h3v6H6Zm7.5 0v6h-3v-6Zm4.5 6h-3v-6h3ZM12 3.88l7.1 4.37H4.9ZM23.25 19.5a.75.75 0 0 1-.75.75h-21a.75.75 0 0 1 0-1.5h21a.75.75 0 0 1 .75.75"
                   />
                 </svg>
               </div>
@@ -887,7 +887,7 @@ exports[`RampsPaymentMethodScreen matches snapshot with per-method quotes 1`] = 
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M12 17q.424 0 .713-.287c.289-.288.287-.43.287-.713s-.096-.52-.287-.713S12.283 15 12 15s-.52.096-.712.287S11 15.717 11 16s.096.52.288.712.429.288.712.288m-1-4h2V7h-2zm1 9q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                    d="M12 2.25A9.75 9.75 0 1 0 21.75 12 9.76 9.76 0 0 0 12 2.25m0 18A8.25 8.25 0 1 1 20.25 12 8.26 8.26 0 0 1 12 20.25m-.75-7.5V7.5a.75.75 0 0 1 1.5 0v5.25a.75.75 0 0 1-1.5 0m1.875 3.375A1.125 1.125 0 1 1 12 15a1.125 1.125 0 0 1 1.125 1.125"
                   />
                 </svg>
               </div>
@@ -947,7 +947,7 @@ exports[`RampsPaymentMethodScreen opens provider selection modal when change pro
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+              d="M15.53 18.97a.75.75 0 0 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 1.06L8.56 12Z"
             />
           </svg>
         </button>
@@ -984,7 +984,7 @@ exports[`RampsPaymentMethodScreen opens provider selection modal when change pro
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="M22 6v12q0 .824-.587 1.413c-.587.589-.863.587-1.413.587H4q-.824 0-1.412-.587C1.999 18.826 2 18.55 2 18V6q0-.824.588-1.412C3.175 4 3.45 4 4 4h16q.824 0 1.413.588C22.002 5.176 22 5.45 22 6M4 8h16V6H4zm0 4v6h16v-6z"
+                      d="M21 4.5H3A1.5 1.5 0 0 0 1.5 6v12A1.5 1.5 0 0 0 3 19.5h18a1.5 1.5 0 0 0 1.5-1.5V6A1.5 1.5 0 0 0 21 4.5M21 6v2.25H3V6Zm0 12H3V9.75h18zm-1.5-2.25a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1 0-1.5h3a.75.75 0 0 1 .75.75m-6 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5a.75.75 0 0 1 .75.75"
                     />
                   </svg>
                 </div>
@@ -1019,7 +1019,7 @@ exports[`RampsPaymentMethodScreen opens provider selection modal when change pro
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="m9.55 17.886-5.7-5.7 1.425-1.425 4.275 4.275 9.175-9.176 1.425 1.425z"
+                    d="m21.53 7.28-12 12a.75.75 0 0 1-1.06 0l-5.25-5.25a.75.75 0 0 1 1.06-1.06L9 17.69 20.47 6.22a.75.75 0 0 1 1.06 1.06"
                   />
                 </svg>
               </div>
@@ -1046,7 +1046,7 @@ exports[`RampsPaymentMethodScreen opens provider selection modal when change pro
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="M5 17.886v-7h2v7zm6 0v-7h2v7zm-9 4v-2h20v2zm15-4v-7h2v7zm-15-9v-2l10-5 10 5v2zm4.45-2h11.1L12 4.136z"
+                      d="M2.25 9.75H4.5v6H3a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5h-1.5v-6h2.25a.75.75 0 0 0 .393-1.388l-9.75-6a.75.75 0 0 0-.786 0l-9.75 6A.75.75 0 0 0 2.25 9.75m3.75 0h3v6H6Zm7.5 0v6h-3v-6Zm4.5 6h-3v-6h3ZM12 3.88l7.1 4.37H4.9ZM23.25 19.5a.75.75 0 0 1-.75.75h-21a.75.75 0 0 1 0-1.5h21a.75.75 0 0 1 .75.75"
                     />
                   </svg>
                 </div>
@@ -1141,7 +1141,7 @@ exports[`RampsPaymentMethodScreen opens provider selection modal when change pro
             >
               <button
                 aria-label="Close"
-                class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                class="inline-flex shrink-0 items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                 data-testid="ramps-provider-selection-close"
               >
                 <svg
@@ -1151,7 +1151,7 @@ exports[`RampsPaymentMethodScreen opens provider selection modal when change pro
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
+                    d="M19.28 18.22a.75.75 0 0 1-1.06 1.06L12 13.06l-6.22 6.22a.75.75 0 0 1-1.06-1.06L10.94 12 4.72 5.78a.75.75 0 0 1 1.06-1.06L12 10.94l6.22-6.22a.75.75 0 0 1 1.06 1.06L13.06 12Z"
                   />
                 </svg>
               </button>

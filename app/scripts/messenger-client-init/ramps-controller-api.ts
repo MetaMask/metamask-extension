@@ -43,6 +43,8 @@ export function getRampsControllerApi(
     refreshRampsOrder: rampsController.getOrder.bind(rampsController),
     getRampsOrderFromCallback:
       rampsController.getOrderFromCallback.bind(rampsController),
+    syncRampsOrdersWithUserStorage: () =>
+      rampsController.syncOrdersWithUserStorage(),
     watchRampsCheckoutTab: (params: WatchRampsCheckoutTabParams) =>
       watchRampsCheckoutTab(params),
   };

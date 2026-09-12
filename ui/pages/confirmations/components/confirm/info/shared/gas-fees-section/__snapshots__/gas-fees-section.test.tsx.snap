@@ -56,7 +56,7 @@ exports[`<GasFeesSection /> renders component for gas fees section 1`] = `
           >
             <button
               aria-label="Edit"
-              class="inline-flex items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+              class="inline-flex shrink-0 items-center justify-center p-0 h-6 w-6 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
               data-testid="edit-gas-fee-icon"
             >
               <svg
@@ -66,7 +66,7 @@ exports[`<GasFeesSection /> renders component for gas fees section 1`] = `
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M5 19h1.425L16.2 9.225 14.775 7.8 5 17.575zm-2 2v-4.25L16.2 3.575q.3-.275.663-.425c.363-.15.495-.15.762-.15s.525.05.775.15.467.25.65.45L20.425 5q.3.275.437.65c.137.375.138.5.138.75q0 .4-.138.763c-.138.363-.237.462-.437.662L7.25 21zM15.475 8.525l-.7-.725L16.2 9.225z"
+                  d="m21.31 6.878-4.188-4.19a1.5 1.5 0 0 0-2.122 0L3.44 14.25A1.49 1.49 0 0 0 3 15.31v4.19A1.5 1.5 0 0 0 4.5 21h4.19a1.49 1.49 0 0 0 1.06-.44L21.31 9a1.5 1.5 0 0 0 0-2.122M8.69 19.5H4.5v-4.19l8.25-8.25 4.19 4.19ZM18 10.189 13.81 6l2.25-2.25 4.19 4.189Z"
                 />
               </svg>
             </button>

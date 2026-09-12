@@ -10,6 +10,7 @@ import {
   invalidateMoneyAccountBalanceCaches,
   invalidateMoneyAccountBalanceSourceCaches,
 } from '../../helpers/money/invalidate-balance-caches';
+import { reportMoneyError } from '../../helpers/money/report-money-error';
 import { queryClient } from '../../contexts/query-client';
 import { selectPrimaryMoneyAccount } from '../../selectors/money-account';
 import { useRefreshMoneyBalanceOnTxConfirm } from './useRefreshMoneyBalanceOnTxConfirm';
@@ -45,6 +46,10 @@ jest.mock('../../helpers/money/invalidate-balance-caches', () => ({
     .mockResolvedValue(undefined),
 }));
 
+jest.mock('../../helpers/money/report-money-error', () => ({
+  reportMoneyError: jest.fn(),
+}));
+
 const mockGetQueryData = jest.mocked(queryClient.getQueryData);
 const mockInvalidateMoneyAccountBalanceCaches = jest.mocked(
   invalidateMoneyAccountBalanceCaches,
@@ -52,6 +57,7 @@ const mockInvalidateMoneyAccountBalanceCaches = jest.mocked(
 const mockInvalidateMoneyAccountBalanceSourceCaches = jest.mocked(
   invalidateMoneyAccountBalanceSourceCaches,
 );
+const mockReportMoneyError = jest.mocked(reportMoneyError);
 const mockSelectPrimaryMoneyAccount = jest.mocked(selectPrimaryMoneyAccount);
 
 const EVENT = 'TransactionController:transactionStatusUpdated';
@@ -318,6 +324,13 @@ describe('useRefreshMoneyBalanceOnTxConfirm', () => {
       expect(
         mockInvalidateMoneyAccountBalanceSourceCaches,
       ).toHaveBeenCalledWith(MOCK_ADDRESS);
+      expect(mockReportMoneyError).toHaveBeenCalledWith(
+        '[Money Balance Refresh] Balance unchanged after 8 retries; awaiting 30s auto-poll',
+        expect.objectContaining({
+          message: 'Money Account balance unchanged after retries',
+        }),
+        { attempts: 8 },
+      );
     } finally {
       jest.useRealTimers();
     }
@@ -335,5 +348,23 @@ describe('useRefreshMoneyBalanceOnTxConfirm', () => {
     expect(
       mockInvalidateMoneyAccountBalanceSourceCaches,
     ).not.toHaveBeenCalled();
+    expect(mockReportMoneyError).not.toHaveBeenCalled();
+  });
+
+  it('forwards a refresh exception to Sentry', async () => {
+    const error = new Error('invalidate failed');
+    mockInvalidateMoneyAccountBalanceCaches.mockRejectedValue(error);
+
+    renderHook(() => useRefreshMoneyBalanceOnTxConfirm());
+    const handler = getStatusUpdatedHandler();
+
+    emit(handler, makeTx(TransactionType.moneyAccountDeposit));
+    await waitFor(() => {
+      expect(mockReportMoneyError).toHaveBeenCalledWith(
+        '[Money Balance Refresh] Balance refresh failed',
+        error,
+        { attempts: 8 },
+      );
+    });
   });
 });

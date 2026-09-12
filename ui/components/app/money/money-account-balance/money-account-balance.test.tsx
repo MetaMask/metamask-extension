@@ -218,6 +218,10 @@ describe('MoneyAccountBalance', () => {
 
     expect(getByText(tEn('moneyBalanceInfoBody'))).toBeInTheDocument();
     expect(getByText(tEn('moneyBalanceInfoWithdrawals'))).toBeInTheDocument();
+    expect(getByText(tEn('moneyBalanceInfoBody'))).toHaveClass('text-default');
+    expect(getByText(tEn('moneyBalanceInfoWithdrawals'))).toHaveClass(
+      'text-default',
+    );
   });
 
   it('initiates a generic deposit when Add is clicked', () => {

@@ -22,11 +22,9 @@ const MoneyAccountDepositButtonContent = () => {
   return (
     <DeveloperButton
       title="Money Account Deposit"
-      onPress={() =>
-        initiateDeposit().catch((error) =>
-          console.error('Failed to initiate money account deposit', error),
-        )
-      }
+      onPress={() => {
+        initiateDeposit();
+      }}
       disabled={isLoading}
     />
   );

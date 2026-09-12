@@ -46,16 +46,18 @@ import * as Utils from '../lib/util';
 import * as analyticsHelpers from '../controllers/analytics/analytics';
 import { getUserTraitsServiceMessenger } from '../messenger-client-init/messengers/user-traits-service-messenger';
 import type {
-  MetaMetricsControllerGetStateAction,
-  MetaMetricsControllerState,
-} from '../controllers/metametrics-controller';
+  AppMetadataControllerGetStateAction,
+  AppMetadataControllerState,
+} from '../controllers/app-metadata';
+import type { StorageKind } from '../../../shared/lib/stores/persistence-manager';
 import { UserTraitsService } from './user-traits-service';
 import type { MetaMaskState } from './user-traits-service';
 
 const TEST_ANALYTICS_ID = '00000000-0000-4000-8000-000000000001';
 
 type WithServiceOptions = {
-  seedTraits?: Partial<MetaMetricsUserTraits>;
+  appMetadataState?: Partial<AppMetadataControllerState>;
+  storageKind?: StorageKind;
   seedlessOnboardingState?: Partial<SeedlessOnboardingControllerState>;
   /**
    * When true, `SeedlessOnboardingController:getState` throws, simulating the
@@ -66,15 +68,14 @@ type WithServiceOptions = {
 
 type WithServiceCallback<ReturnValue> = (args: {
   service: UserTraitsService;
-  updateSeedTraits: (traits: Partial<MetaMetricsUserTraits>) => void;
+  updateAppMetadataState: (state: Partial<AppMetadataControllerState>) => void;
 }) => ReturnValue;
 
 /**
  * Builds a {@link UserTraitsService} wired to a real restricted messenger via
- * {@link getUserTraitsServiceMessenger}, with configurable seed traits and
- * SeedlessOnboardingController state, then runs the provided callback with the
- * service and a helper to mutate the seed traits (mirroring the effect of
- * `MetaMetricsController.updateTraits`).
+ * {@link getUserTraitsServiceMessenger}, with configurable AppMetadataController
+ * state and SeedlessOnboardingController state, then runs the provided callback
+ * with the service and a helper to mutate AppMetadata state.
  *
  * @param args - Either a callback, or an options object followed by a callback.
  * @returns The return value of the callback.
@@ -86,25 +87,28 @@ async function withService<ReturnValue>(
 ): Promise<ReturnValue> {
   const [
     {
-      seedTraits = {},
+      appMetadataState = {},
+      storageKind = 'split',
       seedlessOnboardingState = {},
       seedlessOnboardingUnavailable = false,
     },
     fn,
   ] = args.length === 2 ? args : [{}, args[0]];
 
-  let seed = { ...seedTraits } as MetaMetricsUserTraits;
+  let appMetadata: Partial<AppMetadataControllerState> = {
+    ...appMetadataState,
+  };
 
   const rootMessenger: Messenger<
     MockAnyNamespace,
-    | MetaMetricsControllerGetStateAction
+    | AppMetadataControllerGetStateAction
     | SeedlessOnboardingControllerGetStateAction,
     never
   > = new Messenger({ namespace: MOCK_ANY_NAMESPACE });
 
   rootMessenger.registerActionHandler(
-    'MetaMetricsController:getState',
-    () => ({ traits: seed }) as MetaMetricsControllerState,
+    'AppMetadataController:getState',
+    () => appMetadata as AppMetadataControllerState,
   );
 
   rootMessenger.registerActionHandler(
@@ -119,13 +123,16 @@ async function withService<ReturnValue>(
 
   const service = new UserTraitsService({
     messenger: getUserTraitsServiceMessenger(rootMessenger),
+    getStorageKind: () => storageKind,
   });
 
-  const updateSeedTraits = (traits: Partial<MetaMetricsUserTraits>) => {
-    seed = { ...seed, ...traits };
+  const updateAppMetadataState = (
+    state: Partial<AppMetadataControllerState>,
+  ) => {
+    appMetadata = { ...appMetadata, ...state };
   };
 
-  return fn({ service, updateSeedTraits });
+  return fn({ service, updateAppMetadataState });
 }
 
 describe('UserTraitsService', function () {
@@ -241,11 +248,7 @@ describe('UserTraitsService', function () {
         },
       };
 
-      await withService(({ service, updateSeedTraits }) => {
-        updateSeedTraits({
-          [MetaMetricsUserTrait.StorageKind]: 'split',
-        });
-
+      await withService(({ service }) => {
         const traits = service._buildUserTraitsObject({
           addressBook: {
             [CHAIN_IDS.MAINNET]: {
@@ -421,6 +424,65 @@ describe('UserTraitsService', function () {
           [MetaMetricsUserTrait.Os]: OS.MACOS,
         });
       });
+    });
+
+    it('derives install_date_ext from firstTimeInfo.date', async function () {
+      await withService(
+        {
+          appMetadataState: {
+            firstTimeInfo: {
+              version: '13.0.0',
+              date: Date.UTC(2024, 0, 15, 12, 0, 0),
+            },
+          },
+        },
+        ({ service }) => {
+          const traits = service._buildUserTraitsObject({
+            addressBook: {},
+            allNfts: {},
+            allTokens: {},
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+            internalAccounts: {
+              accounts: {
+                mock1: {} as InternalAccount,
+              },
+              selectedAccount: 'mock1',
+            },
+            multichainNetworkConfigurationsByChainId: {},
+            ledgerTransportType: LedgerTransportTypes.webhid,
+            openSeaEnabled: true,
+            useNftDetection: false,
+            securityAlertsEnabled: true,
+            theme: 'default' as ThemeType,
+            useTokenDetection: true,
+            names: {
+              ethereumAddress: {},
+            },
+            consentDecisionMade: true,
+            optedIn: true,
+            analyticsId: TEST_ANALYTICS_ID,
+            currentCurrency: 'usd',
+            dataCollectionForMarketing: false,
+            preferences: {
+              privacyMode: false,
+              tokenNetworkFilter: {},
+              tokenSortConfig: {
+                key: 'token-sort-key',
+                order: 'dsc',
+                sortCallback: 'stringNumeric',
+              },
+              showNativeTokenAsMainBalance: true,
+            } as Preferences,
+            srpSessionData: undefined,
+            keyrings: [],
+            firstTimeFlowType: FirstTimeFlowType.create,
+          });
+
+          expect(traits?.[MetaMetricsUserTrait.InstallDateExt]).toBe(
+            '2024-01-15',
+          );
+        },
+      );
     });
 
     it('uses the social create flow to build the account type trait', async function () {
@@ -1210,7 +1272,7 @@ describe('UserTraitsService', function () {
     });
 
     it('updates the profile when install attribution traits arrive after opt-in', async function () {
-      await withService({}, async ({ service, updateSeedTraits }) => {
+      await withService({}, async ({ service, updateAppMetadataState }) => {
         const identifySpy = jest
           .spyOn(analyticsHelpers, 'identify')
           .mockImplementation(() => undefined);
@@ -1260,9 +1322,11 @@ describe('UserTraitsService', function () {
 
         expect(identifySpy).toHaveBeenCalledTimes(1);
 
-        updateSeedTraits({
-          [MetaMetricsUserTrait.CookieId]: 'GA1.1.12345.67890',
-          [MetaMetricsUserTrait.GaClientId]: '12345.67890',
+        updateAppMetadataState({
+          installAttribution: {
+            cookieId: 'GA1.1.12345.67890',
+            gaClientId: '12345.67890',
+          },
         });
 
         service.handleMetaMaskStateUpdate(metaMaskState);
