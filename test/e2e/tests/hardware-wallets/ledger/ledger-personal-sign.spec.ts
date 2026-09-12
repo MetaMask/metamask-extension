@@ -32,7 +32,10 @@ describe('Ledger Hardware Signatures', function (this: Suite) {
         await testDappPage.personalSign();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmation = new Confirmation(driver);
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDappPage.checkSuccessPersonalSign(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,

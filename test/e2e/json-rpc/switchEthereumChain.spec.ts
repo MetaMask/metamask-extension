@@ -178,7 +178,10 @@ describe('Switch Ethereum Chain for two dapps', function () {
         );
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await confirmation.checkPageIsLoaded();
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         // Switch and confirm to queued notification for switchEthereumChain
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -299,7 +302,10 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await transactionConfirmation.checkSendAmount('0 ETH');
 
         // Confirm pending tx
-        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
       },
     );
   });

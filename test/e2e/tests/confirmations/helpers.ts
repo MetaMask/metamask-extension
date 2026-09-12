@@ -15,7 +15,7 @@ export const DECODING_E2E_API_URL =
 export async function scrollAndConfirmAndAssertConfirm(driver: Driver) {
   const confirmation = new Confirmation(driver);
   await confirmation.clickScrollToBottomButton();
-  await confirmation.clickFooterConfirmButton();
+  await confirmation.clickFooterButton({ button: 'confirm' });
 }
 
 export function withTransactionEnvelopeTypeFixtures(
