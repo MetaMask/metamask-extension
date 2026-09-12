@@ -34,6 +34,23 @@ CLONE_DIR="temp-benchmark-stats"
 RAW_BRANCH="${BRANCH_NAME:-main}"
 SAFE_BRANCH="${RAW_BRANCH//\//-}"
 
+# Mirrors resolveBenchmarkMockMode() in shared/constants/benchmarks.ts, including
+# its precedence: an explicit BENCHMARK_MOCK_MODE wins over the branch heuristic.
+# The two must agree — the harness stamps the mode it measured under and this
+# stamps the mode the entry is filed under, and a disagreement silently files a
+# live measurement in the mocked series.
+resolve_mock_mode() {
+    case "${BENCHMARK_MOCK_MODE:-}" in
+        mocked) echo 'mocked'; return ;;
+        live)   echo 'live';   return ;;
+    esac
+    if [[ "${RAW_BRANCH}" == "main" || "${RAW_BRANCH}" == release/* ]]; then
+        echo 'live'
+    else
+        echo 'mocked'
+    fi
+}
+
 # Assemble the commit data based on mode
 assemble_performance_data() {
     local results_dir="${BENCHMARK_RESULTS_DIR:-benchmark-results}"
@@ -132,17 +149,39 @@ assemble_performance_data() {
 
     echo "Collected ${file_count} preset(s)" >&2
 
+    # Record which network population produced these numbers. Consumers only
+    # ever build a baseline from entries matching their own population — a
+    # `live` run carries upstream latency that a `mocked` run does not, so
+    # blending them yields deltas that describe the internet rather than the
+    # commit. Mirrors resolveBenchmarkMockMode() in shared/constants/benchmarks.ts.
+    local mock_mode
+    mock_mode="$(resolve_mock_mode)"
+
     # presets_json can exceed ARG_MAX; pass it via stdin instead of as a jq argument
     # (a too-large argv makes the kernel fail to exec jq with "Argument list too long").
+    # `releaseTag` is empty for per-commit runs and carries the measured tag for
+    # scheduled ones, so a single series can be read release-over-release.
     printf '%s' "${presets_json}" | jq \
         --argjson timestamp "$(date +%s000)" \
-        '{ timestamp: $timestamp, presets: . }'
+        --arg mockMode "${mock_mode}" \
+        --arg releaseTag "${RELEASE_TAG:-}" \
+        '{ timestamp: $timestamp, mockMode: $mockMode, presets: . }
+         + (if $releaseTag == "" then {} else { releaseTag: $releaseTag } end)'
 }
 
 # Resolve stats file and assemble data
 case "${DATA_TYPE}" in
     performance)
-        STATS_FILE="stats/${SAFE_BRANCH}/performance_data.json"
+        # Separate file per population. Keying only by branch would put both
+        # series in one file now that main publishes mocked as well as live, and
+        # the consumer's filter would then be the only thing keeping them apart —
+        # one unstamped entry and a mocked baseline silently absorbs live latency.
+        # `live` keeps the historical path so the existing series is continuous.
+        if [[ "$(resolve_mock_mode)" == 'mocked' ]]; then
+            STATS_FILE="stats/${SAFE_BRANCH}/performance_data_mocked.json"
+        else
+            STATS_FILE="stats/${SAFE_BRANCH}/performance_data.json"
+        fi
         COMMIT_MESSAGE="Adding performance benchmark data for ${RAW_BRANCH} at commit: ${HEAD_COMMIT_HASH}"
         echo "Mode: performance (branch: ${RAW_BRANCH})"
         echo "Assembling benchmark data from directory..."
@@ -185,12 +224,29 @@ jq . "${STATS_FILE}" > /dev/null || {
 }
 
 # --- Check for duplicate ---
+#
+# A push that re-runs CI for the same commit must not add a second point, so the
+# SHA is the dedup key there. A deliberate re-measure is the opposite case: the
+# scheduled live series measures one release SHA repeatedly, and every run is a
+# new point. ALLOW_REMEASURE is set by the caller exactly when it named the ref
+# it measured, which is what distinguishes the two.
+#
+# Suffixing is safe because nothing reads this file by exact SHA:
+# historical-comparison.ts takes Object.keys(), filters on timestamp and mock
+# mode, and sorts by timestamp, so the key is opaque to every consumer.
+
+ENTRY_KEY="${HEAD_COMMIT_HASH}"
 
 if jq -e "has(\"${HEAD_COMMIT_HASH}\")" "${STATS_FILE}" > /dev/null; then
-    echo "SHA ${HEAD_COMMIT_HASH} already exists in ${STATS_FILE}. No new commit needed."
-    cd ..
-    rm -rf "${CLONE_DIR}"
-    exit 0
+    if [[ "${ALLOW_REMEASURE:-false}" == "true" ]]; then
+        ENTRY_KEY="${HEAD_COMMIT_HASH}-${GITHUB_RUN_ID}"
+        echo "SHA ${HEAD_COMMIT_HASH} already present; re-measure stored under ${ENTRY_KEY}."
+    else
+        echo "SHA ${HEAD_COMMIT_HASH} already exists in ${STATS_FILE}. No new commit needed."
+        cd ..
+        rm -rf "${CLONE_DIR}"
+        exit 0
+    fi
 fi
 
 # --- Append and push ---
@@ -202,7 +258,7 @@ TEMP_FILE="${STATS_FILE}.tmp"
 # the blob on argv.
 data_file="$(mktemp)"
 printf '%s' "${COMMIT_DATA}" >"${data_file}"
-jq --arg sha "${HEAD_COMMIT_HASH}" --slurpfile data "${data_file}" \
+jq --arg sha "${ENTRY_KEY}" --slurpfile data "${data_file}" \
     '. + {($sha): $data[0]}' "${STATS_FILE}" > "${TEMP_FILE}"
 rm -f "${data_file}"
 mv "${TEMP_FILE}" "${STATS_FILE}"
