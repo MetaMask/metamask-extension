@@ -62,6 +62,44 @@ function getExcludedAddress(chainId: string): string | undefined {
   return EXCLUDED_ASSETS_FROM_ASSET_LIST[chainId.toLowerCase()];
 }
 
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+/**
+ * Whether an asset is the native representation of its chain — the entry the
+ * excluded ERC-20 is a display duplicate of.
+ *
+ * Native assets reach these filters in several shapes depending on the source:
+ * flagged with `isNative`, carrying the zero address, or only identified by a
+ * `slip44` CAIP-19 asset ID.
+ *
+ * @param asset - Asset to inspect.
+ * @param asset.isNative
+ * @param asset.address
+ * @param asset.assetId
+ * @returns Whether the asset represents its chain's native gas token.
+ */
+function isNativeRepresentation(asset: {
+  isNative?: boolean;
+  address?: string;
+  assetId?: string;
+}): boolean {
+  if (asset.isNative) {
+    return true;
+  }
+
+  const parsed =
+    typeof asset.assetId === 'string' && isCaipAssetType(asset.assetId)
+      ? parseCaipAssetType(asset.assetId)
+      : undefined;
+
+  if (parsed?.assetNamespace === 'slip44') {
+    return true;
+  }
+
+  const address = asset.address ?? parsed?.assetReference;
+  return address?.toLowerCase() === ZERO_ADDRESS;
+}
+
 export type TokenBalances = TokenBalancesControllerState['tokenBalances'];
 
 /**
@@ -70,6 +108,12 @@ export type TokenBalances = TokenBalancesControllerState['tokenBalances'];
  * native token. The native token (zero address) is kept, as it is the source
  * of truth for display on those chains.
  *
+ * The ERC-20 is only removed when that native token is actually part of the
+ * chain's assets. Both identities mirror the same balance, so when the native
+ * one is missing (ex: no `assetsInfo` metadata for `eip155:5042/slip44:5042`)
+ * the ERC-20 is the only representation left and hiding it would drop the
+ * token from the list entirely.
+ *
  * @param assets - Per-chain map of assets keyed by chain ID.
  * @returns The asset map with excluded ERC-20s removed from affected chains.
  */
@@ -77,7 +121,11 @@ export function filterExcludedAssets(
   assets: AccountGroupAssets,
 ): AccountGroupAssets {
   return Object.entries(assets).reduce((acc, [chainId, chainAssets]) => {
-    if (!chainAssets || !getExcludedAddress(chainId)) {
+    if (
+      !chainAssets ||
+      !getExcludedAddress(chainId) ||
+      !chainAssets.some(isNativeRepresentation)
+    ) {
       return acc;
     }
     return {
@@ -125,47 +173,84 @@ type AssetLike = {
   chainId?: string | number;
   assetId?: string;
   address?: string;
+  isNative?: boolean;
 };
+
+/**
+ * Resolves the hex chain id of an asset when that chain has an excluded
+ * ERC-20, plus the address to compare against it. Returns undefined for
+ * assets that no exclusion applies to.
+ *
+ * Handles hex (0x13b2) and CAIP (eip155:5042) chain ids - falling back to the
+ * assetId's chain part when no chainId field is present - and resolves the
+ * address from the `address` field or the assetId reference.
+ *
+ * @param asset - Asset to resolve.
+ * @returns The hex chain id and address, or undefined when not applicable.
+ */
+function resolveExcludedChain(
+  asset: AssetLike,
+): { hexChainId: string; address: string | undefined } | undefined {
+  const parsed =
+    typeof asset.assetId === 'string' && isCaipAssetType(asset.assetId)
+      ? parseCaipAssetType(asset.assetId)
+      : undefined;
+
+  const rawChainId = asset.chainId ?? parsed?.chainId;
+  if (rawChainId === undefined) {
+    return undefined;
+  }
+
+  let hexChainId: string;
+  try {
+    hexChainId = formatChainIdToHex(String(rawChainId));
+  } catch {
+    return undefined; // unparseable chain id → not an excluded chain
+  }
+
+  if (!getExcludedAddress(hexChainId)) {
+    return undefined;
+  }
+
+  return { hexChainId, address: asset.address ?? parsed?.assetReference };
+}
 
 /**
  * Filters out excluded homonym ERC-20s (ex: Arc USDC at 0x3600...) - display
  * duplicates of their chain's native gas token.
  *
- * Handles hex (0x13b2) and CAIP (eip155:5042) chain ids - falling back to the
- * assetId's chain part when no chainId field is present - and resolves the
- * address from the `address` field or the assetId reference.
- * @param assets
+ * @param assets - Assets to filter.
+ * @param options - Filter options.
+ * @param options.keepWhenNativeAbsent - When true (the default, for lists of
+ * assets the user holds) the ERC-20 is only dropped if the list also holds the
+ * native token it duplicates, as in {@link filterExcludedAssets}. Pass false
+ * for catalogues of importable tokens, where the ERC-20 must never be offered.
+ * @returns The assets without the excluded ERC-20s.
  */
 export function filterExcludedAssetList<AssetGeneric extends AssetLike>(
   assets: AssetGeneric[],
+  { keepWhenNativeAbsent = true }: { keepWhenNativeAbsent?: boolean } = {},
 ): AssetGeneric[] {
-  return assets.filter((asset) => {
-    const parsed =
-      typeof asset.assetId === 'string' && isCaipAssetType(asset.assetId)
-        ? parseCaipAssetType(asset.assetId)
-        : undefined;
+  const resolved = assets.map((asset) => ({
+    asset,
+    excluded: resolveExcludedChain(asset),
+  }));
 
-    const rawChainId = asset.chainId ?? parsed?.chainId;
-    if (rawChainId === undefined) {
-      return true;
-    }
+  const chainsWithNativeAsset = new Set(
+    resolved
+      .filter(({ asset, excluded }) => excluded && isNativeRepresentation(asset))
+      .map(({ excluded }) => excluded?.hexChainId),
+  );
 
-    let hexChainId: string;
-    try {
-      hexChainId = formatChainIdToHex(String(rawChainId));
-    } catch {
-      return true; // unparseable chain id → not an excluded chain
-    }
-
-    if (!getExcludedAddress(hexChainId)) {
-      return true;
-    }
-
-    return !isExcludedAsset(
-      hexChainId,
-      asset.address ?? parsed?.assetReference,
-    );
-  });
+  return resolved
+    .filter(
+      ({ excluded }) =>
+        !excluded ||
+        (keepWhenNativeAbsent &&
+          !chainsWithNativeAsset.has(excluded.hexChainId)) ||
+        !isExcludedAsset(excluded.hexChainId, excluded.address),
+    )
+    .map(({ asset }) => asset);
 }
 
 /**
