@@ -1,3 +1,6 @@
+import { lstatSync, realpathSync } from 'node:fs';
+import path from 'node:path';
+
 export async function browserPid(port: number): Promise<string> {
   const version = await (
     await fetch(`http://127.0.0.1:${port}/json/version`, {
@@ -12,7 +15,7 @@ export async function browserPid(port: number): Promise<string> {
     });
     return await new Promise<string>((resolve, reject) => {
       const timer = setTimeout(
-        () => reject(Error('Browser process discovery timed out')),
+        () => reject(new Error('Browser process discovery timed out')),
         8000,
       );
       socket.onmessage = ({ data }) => {
@@ -24,7 +27,7 @@ export async function browserPid(port: number): Promise<string> {
         if (browsers?.length === 1) {
           resolve(String(browsers[0].id));
         } else {
-          reject(Error('Expected one browser process'));
+          reject(new Error('Expected one browser process'));
         }
       };
       socket.send(
@@ -38,4 +41,38 @@ export async function browserPid(port: number): Promise<string> {
 
 export function isColdMode(mode: string): boolean {
   return mode === 'immediate' || mode === 'delayed';
+}
+
+/**
+ * Resolve a local measurement path without leaving its declared workspace.
+ * Existing symlink ancestors must also stay inside that workspace.
+ *
+ * @param root - Trusted workspace or artifact directory.
+ * @param input - Relative path or absolute path inside root.
+ */
+export function resolveMeasurementPath(root: string, input: string): string {
+  const base = realpathSync(root);
+  const lexicalBase = path.resolve(root);
+  const resolved = path.resolve(lexicalBase, input);
+  const relative = path.relative(lexicalBase, resolved);
+  if (
+    relative === '..' ||
+    relative.startsWith(`..${path.sep}`) ||
+    path.isAbsolute(relative)
+  ) {
+    throw new Error('Measurement path leaves its workspace');
+  }
+  let ancestor = resolved;
+  while (!lstatSync(ancestor, { throwIfNoEntry: false })) {
+    ancestor = path.dirname(ancestor);
+  }
+  const canonicalRelative = path.relative(base, realpathSync(ancestor));
+  if (
+    canonicalRelative === '..' ||
+    canonicalRelative.startsWith(`..${path.sep}`) ||
+    path.isAbsolute(canonicalRelative)
+  ) {
+    throw new Error('Measurement symlink leaves its workspace');
+  }
+  return resolved;
 }

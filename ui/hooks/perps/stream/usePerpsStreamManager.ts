@@ -15,7 +15,10 @@ import {
   getPerpsStreamManager,
   type PerpsStreamManager,
 } from '../../../providers/perps/PerpsStreamManager';
-import { getIsPerpsTerminalBackendEnabled } from '../../../selectors/perps';
+import {
+  getIsPerpsTerminalBackendEnabled,
+  getIsPerpsExperienceAvailable,
+} from '../../../selectors/perps';
 import {
   getSelectedEvmInternalAccount,
   selectEvmAddress,
@@ -62,6 +65,8 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
   const selectedAddress = selectedEvmAddress ?? lastEvmAccount?.address ?? null;
   const useTerminalApi = useSelector(getIsPerpsTerminalBackendEnabled);
   const useExternalServices = useSelector(getUseExternalServices);
+  const available = useSelector(getIsPerpsExperienceAvailable);
+  const enabled = available && useExternalServices;
 
   const streamManager = getPerpsStreamManager();
   // Configure the singleton before any dependent hook reads its market cache.
@@ -82,21 +87,23 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
   const [prevSelectedAddress, setPrevSelectedAddress] = useState<
     string | null | undefined
   >(undefined);
-  const [prevUseExternalServices, setPrevUseExternalServices] =
-    useState(useExternalServices);
+  const [prevEnabled, setPrevEnabled] = useState(enabled);
 
-  if (
-    selectedAddress !== prevSelectedAddress ||
-    useExternalServices !== prevUseExternalServices
-  ) {
+  if (selectedAddress !== prevSelectedAddress || enabled !== prevEnabled) {
     setPrevSelectedAddress(selectedAddress);
-    setPrevUseExternalServices(useExternalServices);
+    setPrevEnabled(enabled);
     if (!selectedAddress) {
       setIsReady(false);
       setError(new Error('No account selected'));
-    } else if (!useExternalServices) {
+    } else if (!enabled) {
       setIsReady(false);
-      setError(new Error('Perps requires Basic Functionality'));
+      setError(
+        new Error(
+          available
+            ? 'Perps requires Basic Functionality'
+            : 'Perps is unavailable',
+        ),
+      );
     } else if (streamManager.isInitialized(selectedAddress)) {
       setIsReady(true);
       setError(null);
@@ -107,7 +114,7 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
   }
 
   useEffect(() => {
-    if (!selectedAddress || !useExternalServices) {
+    if (!selectedAddress || !enabled) {
       return undefined;
     }
 
@@ -134,7 +141,7 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
     return () => {
       cancelled = true;
     };
-  }, [selectedAddress, streamManager, useExternalServices]);
+  }, [selectedAddress, streamManager, enabled]);
 
   return {
     streamManager: isReady ? streamManager : null,
