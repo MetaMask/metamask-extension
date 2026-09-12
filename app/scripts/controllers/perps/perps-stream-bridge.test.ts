@@ -3011,6 +3011,37 @@ describe('wallet-root Perps preload', () => {
     bridge.dispose();
   });
 
+  it('retains a successful preload provider and fills across a brief UI close', async () => {
+    const { api, bridge, controller, controllerApi } = setup();
+    const unsubscribeFills = jest.fn();
+    controller.subscribeToOrderFills.mockReturnValue(unsubscribeFills);
+    api.perpsRegisterPreload('home');
+    await api.perpsInitForAccount('0xfirst');
+    await api.perpsStartPreload('home');
+    const fills = [{ orderId: 'first', timestamp: 1 }] as OrderFill[];
+    controller.subscribeToOrderFills.mock.calls[0][0].callback(fills, true);
+
+    bridge.dispose();
+    // Let queued cleanup settle before a replacement can mask an early teardown.
+    await new Promise<void>((resolve) => setImmediate(resolve));
+    expect(controllerApi.perpsDisconnect).not.toHaveBeenCalled();
+    expect(unsubscribeFills).not.toHaveBeenCalled();
+
+    const replacement = createBridge({
+      controller: controller as unknown as PerpsController,
+      controllerApi,
+    });
+    await (
+      replacement.bridge.bridgeApi().perpsInitForAccount as (
+        address: string,
+      ) => Promise<void>
+    )('0xfirst');
+    expect(controllerApi.perpsDisconnect).not.toHaveBeenCalled();
+    expect(controller.subscribeToOrderFills).toHaveBeenCalledTimes(1);
+    expect(replacement.emit).toHaveBeenCalledWith('fills', fills);
+    replacement.bridge.dispose();
+  });
+
   it('starts the controller preload before foreground initialization like Mobile', async () => {
     const { api, controller, controllerApi } = setup();
 
