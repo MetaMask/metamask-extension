@@ -51,9 +51,11 @@ export const AnalyticsControllerInit: MessengerClientInitFunction<
   );
   configureOptOutSegmentEnrichment(enrichmentContext);
 
+  const platformAdapter = createPlatformAdapter(enrichmentContext);
+
   const controller = new AnalyticsController({
     messenger: controllerMessenger,
-    platformAdapter: createPlatformAdapter(enrichmentContext),
+    platformAdapter,
     state: persisted as AnalyticsControllerState,
     isAnonymousEventsFeatureEnabled: true,
     isEventQueuePersistenceEnabled: true,
@@ -61,6 +63,15 @@ export const AnalyticsControllerInit: MessengerClientInitFunction<
     isGeolocationEnabled: true,
     isEventFragmentsEnabled: true,
   });
+
+  // Eagerly seed cachedAnalyticsId so track/view payloads have a valid userId
+  // before init() completes. When isGeolocationEnabled is true, init() awaits
+  // a geolocation network request before calling onSetupCompleted — creating a
+  // window where events fire with userId: undefined. Calling it here is safe
+  // and idempotent; init() will call it again once geolocation resolves.
+  // See: https://github.com/MetaMask/metamask-extension/issues/45125
+  platformAdapter.onSetupCompleted(persisted.analyticsId);
+
   controller.init();
 
   configureAnalytics({
