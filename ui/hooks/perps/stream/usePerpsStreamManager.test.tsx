@@ -5,7 +5,10 @@ import {
   getPerpsStreamManager,
   resetPerpsStreamManager,
 } from '../../../providers/perps/PerpsStreamManager';
-import { getIsPerpsTerminalBackendEnabled } from '../../../selectors/perps';
+import {
+  getIsPerpsTerminalBackendEnabled,
+  getIsPerpsExperienceAvailable,
+} from '../../../selectors/perps';
 import {
   getSelectedEvmInternalAccount,
   selectEvmAddress,
@@ -52,6 +55,7 @@ const useSelectorMock = useSelector as jest.MockedFunction<typeof useSelector>;
 
 describe('usePerpsStreamManager', () => {
   let useExternalServices = true;
+  let perpsAvailable = true;
   beforeEach(() => {
     jest.clearAllMocks();
     jest.mocked(selectEvmAddress).mockReset();
@@ -60,8 +64,12 @@ describe('usePerpsStreamManager', () => {
     resetPerpsStreamManager();
     uuidCounter = 0;
     useExternalServices = true;
+    perpsAvailable = true;
 
     useSelectorMock.mockImplementation((selector) => {
+      if (selector === getIsPerpsExperienceAvailable) {
+        return perpsAvailable;
+      }
       if (selector === getUseExternalServices) {
         return useExternalServices;
       }
@@ -70,6 +78,28 @@ describe('usePerpsStreamManager', () => {
       }
       return (selector as (s: unknown) => unknown)({});
     });
+  });
+
+  it('does not initialize an asset-page stream while Perps is unavailable', async () => {
+    perpsAvailable = false;
+    jest.mocked(selectEvmAddress).mockReturnValue('0xselected');
+    const { result, rerender } = renderHook(() => usePerpsStreamManager());
+    await act(async () => undefined);
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    expect(result.current.streamManager).toBeNull();
+    expect(result.current.isInitializing).toBe(false);
+
+    perpsAvailable = true;
+    rerender();
+    await waitFor(() => expect(result.current.streamManager).not.toBeNull());
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsInitForAccount',
+      ['0xselected'],
+    );
+    perpsAvailable = false;
+    rerender();
+    expect(result.current.streamManager).toBeNull();
+    expect(result.current.isInitializing).toBe(false);
   });
 
   it('prefers the selected EVM account over a newer historical EVM selection', async () => {
@@ -117,6 +147,9 @@ describe('usePerpsStreamManager', () => {
         jest.requireActual('../../../selectors').getSelectedEvmInternalAccount,
       );
       useSelectorMock.mockImplementation((selector) => {
+        if (selector === getIsPerpsExperienceAvailable) {
+          return true;
+        }
         if (selector === getUseExternalServices) {
           return true;
         }
@@ -178,6 +211,9 @@ describe('usePerpsStreamManager', () => {
     manager.markets.pushData([{ symbol: 'ENS', name: 'ENS' }] as never[]);
     getSelectedMock.mockReturnValue(undefined as never);
     useSelectorMock.mockImplementation((selector) => {
+      if (selector === getIsPerpsExperienceAvailable) {
+        return true;
+      }
       if (selector === getUseExternalServices) {
         return true;
       }

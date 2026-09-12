@@ -255,10 +255,14 @@ export class PerpsStreamBridge {
   /** Remove a closed UI connection from the background's bridge registry. */
   dispose(): void {
     const abandonedPreload = Boolean(
-      this.#preloadId && !this.#walletInitialized,
+      this.#preloadId &&
+      !this.#walletInitialized &&
+      (!this.#preloadReady || !this.#isPreloadAllowed()),
     );
     this.destroy();
     controllerBridges.get(this.#controller)?.delete(this);
+    // A ready preload retains the controller's last-UI reconnect grace period.
+    // Cancel incomplete or revoked owners without manufacturing wallet ownership.
     if (abandonedPreload) {
       this.#disconnectIfUnowned().catch((error) => {
         console.debug(

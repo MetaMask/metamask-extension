@@ -13,7 +13,7 @@ The observer uses the same portable price formatter as the UI. It captures nativ
 
 Use one isolated checkout, its existing canonical fixture/profile, and its recorded harness executable. Discover the installed contract with `mm-harness help --json`, inspect `status --json`, and use public `launch --verify` to prepare the runtime. Do not reset/reimport or accept Terms as part of a measurement. Resolve any required human wallet action before recording a cohort.
 
-Create an untracked config, for example `temp/perps-loading/config.json`. Replace the example port, extension ID and account mapping with the values verified for your checkout. The config contains no credentials.
+Create an untracked config, for example `temp/perps-loading/config.json`. Replace the example port, extension ID and account mapping with the values verified for your checkout. The config contains no credentials. Artifact and runtime directories must resolve inside the checkout, including through symlinks. Run the summarizer from a working directory that contains its evidence directory.
 
 ```json
 {
