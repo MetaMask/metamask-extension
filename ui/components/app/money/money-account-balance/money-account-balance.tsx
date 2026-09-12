@@ -151,10 +151,10 @@ export const MoneyAccountBalance = () => {
             }}
           >
             <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-              <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
+              <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
                 {t('moneyBalanceInfoBody')}
               </Text>
-              <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
+              <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
                 {t('moneyBalanceInfoWithdrawals')}
               </Text>
             </Box>

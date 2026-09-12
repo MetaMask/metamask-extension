@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { SECOND } from '../../../../shared/constants/time';
 import { HYPERLIQUID_DEPOSIT_PROMPT } from '../../../../shared/constants/hyperliquid-deposit-prompt';
@@ -15,10 +15,14 @@ import { toast, ToastContent } from '../../ui/toast/toast';
 const id = 'perps-deposit-toast';
 const duration = 5 * SECOND;
 
-const clearDepositResult = () =>
+const clearDepositResult = () => {
   submitRequestToBackground('perpsClearDepositResult', []).catch(
     () => undefined,
   );
+  submitRequestToBackground('setLastPerpsDepositEntryPoint', [null]).catch(
+    () => undefined,
+  );
+};
 
 export function PerpsDepositToast() {
   const t = useI18nContext();
@@ -29,35 +33,14 @@ export function PerpsDepositToast() {
   const hasDepositResult = Boolean(lastDepositResult);
   const lastDepositResultError = lastDepositResult?.error;
   const lastDepositResultSuccess = lastDepositResult?.success;
-  const lastDepositResultTimestamp = lastDepositResult?.timestamp;
-
-  // Track the entry point when the toast was first shown for a deposit result
-  const entryPointRef = useRef<{
-    timestamp: number | undefined;
-    entryPoint: string | undefined;
-  }>({ timestamp: undefined, entryPoint: undefined });
 
   useEffect(() => {
     if (!hasDepositResult) {
       return;
     }
 
-    // Capture the entry point when we first show the toast for a deposit result.
-    // This is to show entry point-specific toast content that will persist
-    // through subsequent renders (even if the event fragment is cleaned up).
-    let capturedEntryPoint = entryPoint;
-    if (entryPointRef.current.timestamp === lastDepositResultTimestamp) {
-      capturedEntryPoint = entryPointRef.current.entryPoint;
-    } else {
-      entryPointRef.current = {
-        timestamp: lastDepositResultTimestamp,
-        entryPoint,
-      };
-    }
-
     const isSuccess = lastDepositResultSuccess === true;
-    const isHyperliquidDeposit =
-      capturedEntryPoint === HYPERLIQUID_DEPOSIT_PROMPT;
+    const isHyperliquidDeposit = entryPoint === HYPERLIQUID_DEPOSIT_PROMPT;
     let title = t('perpsDepositToastSuccessTitle');
     let description: string;
 
@@ -94,7 +77,6 @@ export function PerpsDepositToast() {
     hasDepositResult,
     lastDepositResultError,
     lastDepositResultSuccess,
-    lastDepositResultTimestamp,
     t,
   ]);
 
