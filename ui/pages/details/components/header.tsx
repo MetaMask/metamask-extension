@@ -44,14 +44,6 @@ function getTitleConfig(item: ActivityListItem | undefined) {
         args: getDefinedArgs(sourceSymbol, destinationSymbol),
       };
     }
-    case 'convert': {
-      return {
-        key,
-        args: getDefinedArgs(
-          item.data.destinationToken?.symbol ?? item.data.sourceToken?.symbol,
-        ),
-      };
-    }
     case 'bridge':
     case 'wrap':
     case 'unwrap': {
