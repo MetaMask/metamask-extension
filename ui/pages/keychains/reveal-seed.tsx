@@ -23,7 +23,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventVerificationMethod,
 } from '../../../shared/constants/metametrics';
-import { MINUTE } from '../../../shared/constants/time';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
