@@ -6,13 +6,11 @@ import {
 } from '@metamask/transaction-controller';
 import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
 import {
   EthScope,
   isEvmAccountType,
   type Transaction as KeyringTransaction,
 } from '@metamask/keyring-api';
-import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import {
   mapKeyringTransaction,
   mapLocalTransaction,
@@ -30,7 +28,6 @@ import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
 import type { MetaMaskReduxState } from '../store/store';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
-import { toAssetId } from '../../shared/lib/asset-utils';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
 import {
   getMoneyAccountTransactionType,
@@ -71,11 +68,6 @@ import {
   getTokenScanCache,
 } from './selectors';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
-
-const selectTransactionPayData = (state: MetaMaskReduxState) =>
-  (state.metamask as unknown as TransactionPayControllerState)
-    .transactionData ??
-  (EMPTY_OBJECT as TransactionPayControllerState['transactionData']);
 
 /**
  * Whether the selected account group belongs to the same HD entropy wallet that
@@ -485,14 +477,12 @@ function getBridgeActivityStatus(
 export const selectLocalActivityItems = createSelector(
   selectLocalTransactions,
   selectBridgeHistory,
-  selectTransactionPayData,
   getNetworkConfigurationsByChainId,
   selectEvmAddress,
   getTokensControllerAllTokens,
   (
     transactionGroups,
     getBridgeHistory,
-    transactionPayData,
     networkConfigurationsByChainId,
     evmAddress,
     allTokens,
@@ -528,102 +518,28 @@ export const selectLocalActivityItems = createSelector(
         chainId,
         transactionGroup.initialTransaction.txParams.to,
       );
-      const sourceToken = (() => {
-        if (type !== TransactionType.musdConversion) {
-          return undefined;
-        }
-
-        const { metamaskPay } = transactionGroup.initialTransaction;
-        const transactionPay =
-          transactionPayData[transactionGroup.initialTransaction.id];
-        const paymentToken = transactionPay?.paymentToken;
-        const payTokenAddress =
-          metamaskPay?.tokenAddress ?? paymentToken?.address;
-        const payTokenChainId = metamaskPay?.chainId ?? paymentToken?.chainId;
-        const sourceTokenMetadata = resolveContractTokenMetadata(
-          payTokenChainId,
-          payTokenAddress,
-        );
-        const sourceAmount =
-          transactionPay?.totals?.sourceAmount.raw ??
-          transactionPay?.sourceAmounts?.find((sourceAmountData) => {
-            const targetTokenAddress =
-              transactionGroup.initialTransaction.txParams.to;
-
-            return (
-              targetTokenAddress &&
-              sourceAmountData.targetTokenAddress.toLowerCase() ===
-                targetTokenAddress.toLowerCase()
-            );
-          })?.sourceAmountRaw ??
-          transactionPay?.sourceAmounts?.[0]?.sourceAmountRaw;
-        const sourceTokenCaipChainId = payTokenChainId
-          ? toCaipChainId(
-              KnownCaipNamespace.Eip155,
-              Number.parseInt(payTokenChainId, 16).toString(),
-            )
-          : undefined;
-        const sourceTokenAssetId =
-          payTokenAddress && sourceTokenCaipChainId
-            ? toAssetId(payTokenAddress, sourceTokenCaipChainId)
-            : undefined;
-        const sourceTokenSymbol =
-          sourceTokenMetadata?.symbol ?? paymentToken?.symbol;
-        const sourceTokenDecimals =
-          sourceTokenMetadata?.decimals ?? paymentToken?.decimals;
-
-        return sourceTokenMetadata || paymentToken || sourceTokenAssetId
-          ? {
-              direction: 'out' as const,
-              ...(sourceAmount ? { amount: sourceAmount } : {}),
-              ...(sourceTokenSymbol ? { symbol: sourceTokenSymbol } : {}),
-              ...(sourceTokenDecimals === undefined
-                ? {}
-                : { decimals: sourceTokenDecimals }),
-              ...(sourceTokenAssetId ? { assetId: sourceTokenAssetId } : {}),
-            }
-          : undefined;
-      })();
 
       if (
         type === TransactionType.swap ||
         type === TransactionType.swapAndSend ||
-        type === TransactionType.bridge ||
-        type === TransactionType.musdConversion
+        type === TransactionType.bridge
       ) {
+        const bridgeHistoryItem = getBridgeHistory(
+          transactionGroup.initialTransaction,
+        );
+        const activityStatus = getBridgeActivityStatus(bridgeHistoryItem);
         const fees = getLocalTransactionFees(transactionGroup);
-        const isMusdConversion = type === TransactionType.musdConversion;
-        const bridgeHistoryItem = isMusdConversion
-          ? undefined
-          : getBridgeHistory(transactionGroup.initialTransaction);
-        const activityStatus = bridgeHistoryItem
-          ? getBridgeActivityStatus(bridgeHistoryItem)
-          : undefined;
 
-        const prepared = isMusdConversion
-          ? {
-              ...transactionGroup,
-              fees,
-              nativeAssetSymbol,
-              contractTokenMetadata,
-              ...(sourceToken ? { sourceToken } : {}),
-            }
-          : {
-              ...transactionGroup,
-              ...getSwapTokens(bridgeHistoryItem),
-              ...(activityStatus ? { activityStatus } : {}),
-              fees,
-              nativeAssetSymbol,
-              contractTokenMetadata,
-            };
+        const prepared = {
+          ...transactionGroup,
+          ...getSwapTokens(bridgeHistoryItem),
+          ...(activityStatus ? { activityStatus } : {}),
+          fees,
+          nativeAssetSymbol,
+          contractTokenMetadata,
+        };
 
-        const activity = mapLocalTransaction(prepared);
-        const activityItem =
-          activity.type === 'convert'
-            ? { ...activity, type: 'swap' }
-            : activity;
-
-        return enrichLocalActivity(activityItem, prepared);
+        return enrichLocalActivity(mapLocalTransaction(prepared), prepared);
       }
 
       const prepared = {
