@@ -1,5 +1,6 @@
 import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { trace, endTrace } from '../../../../shared/lib/trace';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -22,6 +23,12 @@ import * as mocks from './mocks';
 import { PerpsView } from './perps-view';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 import type { PerpsTransaction } from './types';
+
+jest.mock('../../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../../shared/lib/trace'),
+  trace: jest.fn(),
+  endTrace: jest.fn(),
+}));
 
 const mockNavigate = jest.fn();
 
@@ -93,8 +100,15 @@ jest.mock('../../../hooks/perps/usePerpsTransactionHistory', () => ({
 }));
 
 jest.mock('../../../store/background-connection', () => ({
-  submitRequestToBackground: (...args: unknown[]) =>
-    mockSubmitRequestToBackground(...args),
+  submitRequestToBackground: (method: string, ...args: unknown[]) => {
+    if (method === 'perpsGetLifecycleContext') {
+      return Promise.resolve('cold_process');
+    }
+    if (method === 'perpsMarkForegroundSettled') {
+      return Promise.resolve(undefined);
+    }
+    return mockSubmitRequestToBackground(method, ...args);
+  },
 }));
 
 jest.mock('../../../../shared/lib/sentry', () => ({
@@ -240,6 +254,10 @@ const mockStore = configureStore({
 describe('PerpsView', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      value: 'visible',
+    });
     mockExposeCancelAllOrders = false;
     mockUsePerpsBottomNavSource.mockReturnValue(undefined);
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
@@ -260,6 +278,7 @@ describe('PerpsView', () => {
       isInitialLoading: false,
     });
     jest.mocked(usePerpsTabExploreData).mockReturnValue({
+      isLive: true,
       allMarkets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
       exploreMarkets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
       watchlistMarkets: mocks.mockCryptoMarkets.filter((market) =>
@@ -278,6 +297,40 @@ describe('PerpsView', () => {
   });
 
   describe('with default mock data (positions and orders)', () => {
+    it('waits for pending orders before completing the Mobile Home trace', async () => {
+      jest
+        .mocked(streamHooks.usePerpsLiveOrders)
+        .mockReturnValue({ orders: [], isInitialLoading: true });
+      const store = configureStore(mockState);
+      const { rerender } = renderWithProvider(<PerpsView />, store);
+      expect(endTrace).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Perps Entry To Live Market List',
+          data: expect.objectContaining({ success: true }),
+        }),
+      );
+
+      jest
+        .mocked(streamHooks.usePerpsLiveOrders)
+        .mockReturnValue({ orders: mocks.mockOrders, isInitialLoading: false });
+      rerender(<PerpsView />);
+
+      await waitFor(() => {
+        expect(trace).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: 'Perps Entry To Live Market List',
+            op: 'perps.operation',
+          }),
+        );
+        expect(endTrace).toHaveBeenCalledWith(
+          expect.objectContaining({
+            name: 'Perps Entry To Live Market List',
+            data: { success: true, variant: 'order' },
+          }),
+        );
+      });
+    });
+
     it('renders the perps tab view', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
@@ -982,6 +1035,7 @@ describe('PerpsView', () => {
 
   it('passes tab explore and watchlist markets from the tab hook', () => {
     jest.mocked(usePerpsTabExploreData).mockReturnValue({
+      isLive: true,
       allMarkets: [...mocks.mockCryptoMarkets, ...mocks.mockHip3Markets],
       exploreMarkets: [mocks.mockCryptoMarkets[0]],
       watchlistMarkets: [mocks.mockCryptoMarkets[1]],

@@ -1,11 +1,19 @@
+import { it } from '@jest/globals';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   getPerpsStreamManager,
   resetPerpsStreamManager,
 } from '../../../providers/perps/PerpsStreamManager';
-import { getIsPerpsTerminalBackendEnabled } from '../../../selectors/perps';
+import {
+  getIsPerpsTerminalBackendEnabled,
+  getIsPerpsExperienceAvailable,
+} from '../../../selectors/perps';
+import {
+  getSelectedEvmInternalAccount,
+  selectEvmAddress,
+  getUseExternalServices,
+} from '../../../selectors';
 import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
@@ -15,8 +23,10 @@ jest.mock('../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
-jest.mock('../../../../shared/lib/selectors/accounts', () => ({
-  getSelectedInternalAccount: jest.fn(),
+jest.mock('../../../selectors', () => ({
+  ...jest.requireActual('../../../selectors'),
+  getSelectedEvmInternalAccount: jest.fn(),
+  selectEvmAddress: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -26,6 +36,7 @@ jest.mock('react-redux', () => ({
 jest.mock('../../../providers/perps/CandleStreamChannel', () => ({
   CandleStreamChannel: jest.fn().mockImplementation(() => ({
     clearAll: jest.fn(),
+    clearCache: jest.fn(),
   })),
 }));
 
@@ -37,25 +48,145 @@ Object.defineProperty(globalThis, 'crypto', {
   },
 });
 
-const getSelectedMock = getSelectedInternalAccount as jest.MockedFunction<
-  typeof getSelectedInternalAccount
+const getSelectedMock = getSelectedEvmInternalAccount as jest.MockedFunction<
+  typeof getSelectedEvmInternalAccount
 >;
 const useSelectorMock = useSelector as jest.MockedFunction<typeof useSelector>;
 
 describe('usePerpsStreamManager', () => {
+  let useExternalServices = true;
+  let perpsAvailable = true;
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.mocked(selectEvmAddress).mockReset();
     mockSubmitRequestToBackground.mockReset();
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
     resetPerpsStreamManager();
     uuidCounter = 0;
+    useExternalServices = true;
+    perpsAvailable = true;
 
     useSelectorMock.mockImplementation((selector) => {
+      if (selector === getIsPerpsExperienceAvailable) {
+        return perpsAvailable;
+      }
+      if (selector === getUseExternalServices) {
+        return useExternalServices;
+      }
       if (selector === getIsPerpsTerminalBackendEnabled) {
         return false;
       }
       return (selector as (s: unknown) => unknown)({});
     });
+  });
+
+  it('does not initialize an asset-page stream while Perps is unavailable', async () => {
+    perpsAvailable = false;
+    jest.mocked(selectEvmAddress).mockReturnValue('0xselected');
+    const { result, rerender } = renderHook(() => usePerpsStreamManager());
+    await act(async () => undefined);
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    expect(result.current.streamManager).toBeNull();
+    expect(result.current.isInitializing).toBe(false);
+
+    perpsAvailable = true;
+    rerender();
+    await waitFor(() => expect(result.current.streamManager).not.toBeNull());
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsInitForAccount',
+      ['0xselected'],
+    );
+    perpsAvailable = false;
+    rerender();
+    expect(result.current.streamManager).toBeNull();
+    expect(result.current.isInitializing).toBe(false);
+  });
+
+  it('prefers the selected EVM account over a newer historical EVM selection', async () => {
+    getSelectedMock.mockReturnValue({
+      address: '0xhistorical',
+      type: 'eip155:eoa',
+    } as never);
+    jest.mocked(selectEvmAddress).mockReturnValue('0xselected');
+    const { result } = renderHook(() => usePerpsStreamManager());
+    await waitFor(() => expect(result.current.streamManager).not.toBeNull());
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsInitForAccount',
+      ['0xselected'],
+    );
+    jest.mocked(selectEvmAddress).mockReset();
+  });
+
+  it.each([
+    ['BTC', 'bc1qselected', 'bip122:p2wpkh'],
+    ['Tron', 'TSelected', 'tron:eoa'],
+  ])(
+    'initializes the EVM session while %s is selected',
+    async (name, address, type) => {
+      const evm = {
+        id: 'evm',
+        address: '0xready',
+        type: 'eip155:eoa',
+        metadata: { name: 'EVM', lastSelected: 1 },
+      };
+      const nonEvm = {
+        id: 'non-evm',
+        address,
+        type,
+        metadata: { name, lastSelected: 2 },
+      };
+      const state = {
+        metamask: {
+          internalAccounts: {
+            selectedAccount: nonEvm.id,
+            accounts: { evm, nonEvm },
+          },
+        },
+      };
+      getSelectedMock.mockImplementation(
+        jest.requireActual('../../../selectors').getSelectedEvmInternalAccount,
+      );
+      useSelectorMock.mockImplementation((selector) => {
+        if (selector === getIsPerpsExperienceAvailable) {
+          return true;
+        }
+        if (selector === getUseExternalServices) {
+          return true;
+        }
+        if (selector === getIsPerpsTerminalBackendEnabled) {
+          return false;
+        }
+        return selector(state as never);
+      });
+
+      const { result } = renderHook(() => usePerpsStreamManager());
+      await waitFor(() => expect(result.current.streamManager).not.toBeNull());
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsInitForAccount',
+        ['0xready'],
+      );
+      expect(result.current.selectedAddress).toBe('0xready');
+    },
+  );
+
+  it('recovers without remount when Basic Functionality is enabled after initialization fails', async () => {
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    getSelectedMock.mockReturnValue({ address: '0xready' } as never);
+    mockSubmitRequestToBackground.mockRejectedValueOnce(
+      new Error('Perps connection is unavailable'),
+    );
+    const { result, rerender } = renderHook(() => usePerpsStreamManager());
+    await waitFor(() => expect(result.current.error).not.toBeNull());
+    useExternalServices = false;
+    rerender();
+    expect(result.current.streamManager).toBeNull();
+    useExternalServices = true;
+    rerender();
+    await waitFor(() => expect(result.current.streamManager).not.toBeNull());
+    expect(result.current.error).toBeNull();
+    consoleSpy.mockRestore();
   });
 
   afterEach(() => {
@@ -80,6 +211,12 @@ describe('usePerpsStreamManager', () => {
     manager.markets.pushData([{ symbol: 'ENS', name: 'ENS' }] as never[]);
     getSelectedMock.mockReturnValue(undefined as never);
     useSelectorMock.mockImplementation((selector) => {
+      if (selector === getIsPerpsExperienceAvailable) {
+        return true;
+      }
+      if (selector === getUseExternalServices) {
+        return true;
+      }
       if (selector === getIsPerpsTerminalBackendEnabled) {
         return true;
       }
@@ -106,7 +243,10 @@ describe('usePerpsStreamManager', () => {
     expect(result.current.error).toBeNull();
     expect(result.current.isInitializing).toBe(false);
     expect(getPerpsStreamManager().isInitialized('0xready')).toBe(true);
-    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsInitForAccount',
+      ['0xready'],
+    );
   });
 
   it('does not call initForAddress when already initialized for that address', async () => {
@@ -161,7 +301,7 @@ describe('usePerpsStreamManager', () => {
       if (method === 'perpsDisconnect') {
         return undefined;
       }
-      if (method === 'perpsInit') {
+      if (method === 'perpsInitForAccount') {
         perpsInitCount += 1;
         if (perpsInitCount === 1) {
           await firstInitGate;
@@ -185,11 +325,10 @@ describe('usePerpsStreamManager', () => {
       rerender();
     });
 
-    await waitFor(() => {
-      expect(result.current.streamManager).not.toBeNull();
-    });
-
-    expect(getPerpsStreamManager().getCurrentAddress()).toBe('0xB');
+    // B waits for A's RPC to settle before starting its own initialization.
+    expect(perpsInitCount).toBe(1);
+    expect(result.current.streamManager).toBeNull();
+    expect(result.current.selectedAddress).toBe('0xB');
 
     expect(releaseFirstInit).toBeDefined();
     if (releaseFirstInit === undefined) {
@@ -202,7 +341,9 @@ describe('usePerpsStreamManager', () => {
     });
 
     await waitFor(() => {
-      expect(getPerpsStreamManager().getCurrentAddress()).toBe('0xB');
+      expect(result.current.streamManager).not.toBeNull();
     });
+    expect(perpsInitCount).toBe(2);
+    expect(getPerpsStreamManager().getCurrentAddress()).toBe('0xB');
   });
 });

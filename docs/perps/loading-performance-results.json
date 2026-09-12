@@ -1,0 +1,599 @@
+{
+  "baselineSource": "867848e2481626dc47ee1bb0f2695dc45d0eef67 plus eight common startup policy prerequisites",
+  "boundaries": {
+    "rows": "actual click to first positive-priced rendered DOM rows",
+    "matchedRows": "actual click to all sampled positive-priced rows matching finite positive current-manager quotes, with current account identity and account/order/position cache availability; V2 filtered unpriced rows, so complete rendered-row coverage is not proven"
+  },
+  "browser": "Chrome for Testing 147.0.7727.15, fullscreen MV3",
+  "collectorSha256": "652028fa123a4ad2fe9b4aed661e1ddb459756b7349fcef3ed6bb415f93f99b6",
+  "formatterSha256": "9934b3b8ef9a2bc07d6c10568ee7e1659626478adc83e04adcf6bb99d0350caa",
+  "groups": [
+    {
+      "arm": "before",
+      "flow": "immediate",
+      "direction": null,
+      "samples": [
+        {
+          "id": "before-immediate-1",
+          "rawSha256": "2b80f7a207c3b1acc9862c5876413b1b99d932489366c3a35587bd7288ff3ea6",
+          "entry": 3114.1999999284744,
+          "firstRows": 7946.5,
+          "matchedRows": 8218.699999928474,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        },
+        {
+          "id": "before-immediate-2",
+          "rawSha256": "f9279f02702ef1951e87fcc593725f3fec42f2fa70a46acc8264694003bffb4f",
+          "entry": 3196.1999999284744,
+          "firstRows": 6680.199999928474,
+          "matchedRows": 6883.100000023842,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        },
+        {
+          "id": "before-immediate-3",
+          "rawSha256": "690fc9fe3e3f4f669f0c0bc7120b251d106b4a3ed85943441182f8df218cd941",
+          "entry": 3441.899999976158,
+          "firstRows": 6102.5,
+          "matchedRows": 6303.700000047684,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        }
+      ],
+      "clickToRowsMs": {
+        "count": 3,
+        "median": 3484,
+        "min": 2660.600000023842,
+        "max": 4832.300000071526,
+        "values": [4832.300000071526, 3484, 2660.600000023842]
+      },
+      "clickToMatchedRowsMs": {
+        "count": 3,
+        "median": 3686.9000000953674,
+        "min": 2861.8000000715256,
+        "max": 5104.5,
+        "values": [5104.5, 3686.9000000953674, 2861.8000000715256]
+      }
+    },
+    {
+      "arm": "before",
+      "flow": "delayed",
+      "direction": null,
+      "samples": [
+        {
+          "id": "before-delayed-1",
+          "rawSha256": "d732fd5ad7b667080650481f07b2b3058543810e63f5366526939ddd87ef1afc",
+          "entry": 7251.200000047684,
+          "firstRows": 11087.800000071526,
+          "matchedRows": 11352.300000071526,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        },
+        {
+          "id": "before-delayed-2",
+          "rawSha256": "059ae4bc9e0fb6119cbf005a7dde4f243f8dbf6585bde91e43c05a613f008300",
+          "entry": 6691.800000071526,
+          "firstRows": 10233.899999976158,
+          "matchedRows": 10498.5,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        },
+        {
+          "id": "before-delayed-3",
+          "rawSha256": "2445ba6372148cece55bbc36f9d497cb0a0b6e31521ee0ee3979570cd1e6e611",
+          "entry": 6927,
+          "firstRows": 11481.199999928474,
+          "matchedRows": 11755.899999976158,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        }
+      ],
+      "clickToRowsMs": {
+        "count": 3,
+        "median": 3836.600000023842,
+        "min": 3542.0999999046326,
+        "max": 4554.199999928474,
+        "values": [3836.600000023842, 3542.0999999046326, 4554.199999928474]
+      },
+      "clickToMatchedRowsMs": {
+        "count": 3,
+        "median": 4101.100000023842,
+        "min": 3806.6999999284744,
+        "max": 4828.899999976158,
+        "values": [4101.100000023842, 3806.6999999284744, 4828.899999976158]
+      }
+    },
+    {
+      "arm": "before",
+      "flow": "warm",
+      "direction": null,
+      "samples": [
+        {
+          "id": "before-warm-2",
+          "rawSha256": "885c1dfaa741fb6e39e0ee3ad25b0881268c0913f05f61aed5d405794f7ec2d2",
+          "entry": 17520.899999976158,
+          "firstRows": 17549.199999928474,
+          "matchedRows": 23364,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        },
+        {
+          "id": "before-warm-3",
+          "rawSha256": "6358c0c3287b95e5abd0b5a424f1e5194603d036d93eff83dc7456ce24cc7790",
+          "entry": 28203.899999976158,
+          "firstRows": 28229.299999952316,
+          "matchedRows": 38522.299999952316,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        },
+        {
+          "id": "before-warm-4",
+          "rawSha256": "45f6883420c0496ce9d88ce4ad2671a5530139925937bff5e59c3599fef08375",
+          "entry": 43831.59999990463,
+          "firstRows": 43863.199999928474,
+          "matchedRows": 53589,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        }
+      ],
+      "clickToRowsMs": {
+        "count": 3,
+        "median": 28.299999952316284,
+        "min": 25.399999976158142,
+        "max": 31.600000023841858,
+        "values": [28.299999952316284, 25.399999976158142, 31.600000023841858]
+      },
+      "clickToMatchedRowsMs": {
+        "count": 3,
+        "median": 9757.400000095367,
+        "min": 5843.100000023842,
+        "max": 10318.399999976158,
+        "values": [5843.100000023842, 10318.399999976158, 9757.400000095367]
+      }
+    },
+    {
+      "arm": "before",
+      "flow": "background_resume",
+      "direction": null,
+      "samples": [
+        {
+          "id": "before-background_resume-1",
+          "rawSha256": "a4660b5804d10116c4365a7300fb204945c0cec2af816e057db07ee44f557a9b",
+          "entry": 61794,
+          "firstRows": 61818.09999990463,
+          "matchedRows": 61865.89999997616,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        },
+        {
+          "id": "before-background_resume-2",
+          "rawSha256": "a92d75467f7868cc19168ce3b1a1339a0ba057d66417513989150be4a00206e2",
+          "entry": 71344.59999990463,
+          "firstRows": 71426.69999992847,
+          "matchedRows": 82816.69999992847,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        },
+        {
+          "id": "before-background_resume-3",
+          "rawSha256": "cb1a3160e637696b430d7106444afdd58209dea68b355a7f194fbee62c1bf7e9",
+          "entry": 88168.69999992847,
+          "firstRows": 88191,
+          "matchedRows": 95488.89999997616,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        }
+      ],
+      "clickToRowsMs": {
+        "count": 3,
+        "median": 24.09999990463257,
+        "min": 22.300000071525574,
+        "max": 82.10000002384186,
+        "values": [24.09999990463257, 82.10000002384186, 22.300000071525574]
+      },
+      "clickToMatchedRowsMs": {
+        "count": 3,
+        "median": 7320.200000047684,
+        "min": 71.89999997615814,
+        "max": 11472.100000023842,
+        "values": [71.89999997615814, 11472.100000023842, 7320.200000047684]
+      }
+    },
+    {
+      "arm": "before",
+      "flow": "account",
+      "direction": "dev2",
+      "samples": [
+        {
+          "id": "before-account-2",
+          "rawSha256": "c22bf47b092fdc444ae02e6e2223b90fb9798a104298a0e51d16a411806aa6c0",
+          "entry": 103137.69999992847,
+          "firstRows": 106107.5,
+          "matchedRows": 106267.89999997616,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": 891.0
+        },
+        {
+          "id": "before-account-4",
+          "rawSha256": "e6dd533c1b86cf0638a153114c09ce20cec9ccc60e2a85d0384bda0e62b7efc1",
+          "entry": 125235.89999997616,
+          "firstRows": 127973.59999990463,
+          "matchedRows": 128089,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": 852.6000000238419
+        },
+        {
+          "id": "before-account-6",
+          "rawSha256": "fb150a36a1c99999ecf24512b333a614ec5d5ec1861f4a6569a9b22a30ed5352",
+          "entry": 152614.89999997616,
+          "firstRows": 155407.69999992847,
+          "matchedRows": 155521.29999995232,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": 874.5
+        }
+      ],
+      "clickToRowsMs": {
+        "count": 3,
+        "median": 2792.7999999523163,
+        "min": 2737.6999999284744,
+        "max": 2969.8000000715256,
+        "values": [2969.8000000715256, 2737.6999999284744, 2792.7999999523163]
+      },
+      "clickToMatchedRowsMs": {
+        "count": 3,
+        "median": 2906.399999976158,
+        "min": 2853.100000023842,
+        "max": 3130.2000000476837,
+        "values": [3130.2000000476837, 2853.100000023842, 2906.399999976158]
+      }
+    },
+    {
+      "arm": "before",
+      "flow": "account",
+      "direction": "dev1",
+      "samples": [
+        {
+          "id": "before-account-3",
+          "rawSha256": "2c5cc157814b524d9b73a8ddd6c1e25f9cd96a69f3a234f109c6a0aa6b1d9c21",
+          "entry": 114519.69999992847,
+          "firstRows": 117335.69999992847,
+          "matchedRows": 117464.09999990463,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": 868.5
+        },
+        {
+          "id": "before-account-5",
+          "rawSha256": "47f561362c09994579fb0f26ee4cec9565365625c7d664f0623e1acf256f7a36",
+          "entry": 136576.19999992847,
+          "firstRows": 139315.19999992847,
+          "matchedRows": 139455.09999990463,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": 870.2000000476837
+        },
+        {
+          "id": "before-account-7",
+          "rawSha256": "5a6988c2dba12cb46cae3ed2e4bad227e85d1f044d31fd27102ad7218c4d7f59",
+          "entry": 163470,
+          "firstRows": 166090.5,
+          "matchedRows": 166206.09999990463,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": 867.2999999523163
+        }
+      ],
+      "clickToRowsMs": {
+        "count": 3,
+        "median": 2739,
+        "min": 2620.5,
+        "max": 2816,
+        "values": [2816, 2739, 2620.5]
+      },
+      "clickToMatchedRowsMs": {
+        "count": 3,
+        "median": 2878.899999976158,
+        "min": 2736.0999999046326,
+        "max": 2944.399999976158,
+        "values": [2944.399999976158, 2878.899999976158, 2736.0999999046326]
+      }
+    },
+    {
+      "arm": "after",
+      "flow": "immediate",
+      "direction": null,
+      "samples": [
+        {
+          "id": "after-immediate-1",
+          "rawSha256": "99ce5707747f534b8d2e81fff760023d0c48005746813655cd27eee2d04141c0",
+          "entry": 3423.7999999523163,
+          "firstRows": 6743.700000047684,
+          "matchedRows": 6984.200000047684,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        },
+        {
+          "id": "after-immediate-2",
+          "rawSha256": "8f00da2df55363ba959de4507e39172aba98f44a3a268e56c1d2626042106c67",
+          "entry": 3586.6999999284744,
+          "firstRows": 6273.100000023842,
+          "matchedRows": 6523.399999976158,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        },
+        {
+          "id": "after-immediate-3",
+          "rawSha256": "12fc047c1caba2b0caabfa7d9cc6de4fa63a2dbef2f1e071f9c061e1aa785204",
+          "entry": 4460.300000071526,
+          "firstRows": 6440.100000023842,
+          "matchedRows": 6619.300000071526,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        }
+      ],
+      "clickToRowsMs": {
+        "count": 3,
+        "median": 2686.4000000953674,
+        "min": 1979.7999999523163,
+        "max": 3319.9000000953674,
+        "values": [3319.9000000953674, 2686.4000000953674, 1979.7999999523163]
+      },
+      "clickToMatchedRowsMs": {
+        "count": 3,
+        "median": 2936.7000000476837,
+        "min": 2159,
+        "max": 3560.4000000953674,
+        "values": [3560.4000000953674, 2936.7000000476837, 2159]
+      }
+    },
+    {
+      "arm": "after",
+      "flow": "delayed",
+      "direction": null,
+      "samples": [
+        {
+          "id": "after-delayed-1",
+          "rawSha256": "2c437ace8fbd218500dfdf7653919450cecbf3da93997c3a46e01eec761feb23",
+          "entry": 6734.099999904633,
+          "firstRows": 6791.399999976158,
+          "matchedRows": 6791.399999976158,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        },
+        {
+          "id": "after-delayed-2",
+          "rawSha256": "9f1532f3e2110ee22ae3fd257a3f4d165461b36146d0552b98713cbc0e7a4e02",
+          "entry": 6202.299999952316,
+          "firstRows": 6251.299999952316,
+          "matchedRows": 6251.299999952316,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        },
+        {
+          "id": "after-delayed-3",
+          "rawSha256": "c8f905629484673ce3fb9b4c21a4a7c07273db1b0d05506fc0383bac849ca528",
+          "entry": 11375,
+          "firstRows": 11424.5,
+          "matchedRows": 11424.5,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        }
+      ],
+      "clickToRowsMs": {
+        "count": 3,
+        "median": 49.5,
+        "min": 49,
+        "max": 57.300000071525574,
+        "values": [57.300000071525574, 49, 49.5]
+      },
+      "clickToMatchedRowsMs": {
+        "count": 3,
+        "median": 49.5,
+        "min": 49,
+        "max": 57.300000071525574,
+        "values": [57.300000071525574, 49, 49.5]
+      }
+    },
+    {
+      "arm": "after",
+      "flow": "warm",
+      "direction": null,
+      "samples": [
+        {
+          "id": "after-warm-2",
+          "rawSha256": "3617e70b8b3d306c68b31ff09fc22c97c22cf281511ef99dd81279686d8c2262",
+          "entry": 24961.700000047684,
+          "firstRows": 24992.800000071526,
+          "matchedRows": 24992.800000071526,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        },
+        {
+          "id": "after-warm-3",
+          "rawSha256": "99b72dba7d9affd7553ef3f8d7573b9ad978e8eac891c5ea4b09bbba548dd379",
+          "entry": 37019.5,
+          "firstRows": 37054.800000071526,
+          "matchedRows": 37054.800000071526,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        },
+        {
+          "id": "after-warm-4",
+          "rawSha256": "6ee9f57643de3557f4b4df71e63df23e2f130f5ce727fd07673b252bb6537ac9",
+          "entry": 46702.60000002384,
+          "firstRows": 46812.200000047684,
+          "matchedRows": 46812.200000047684,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        }
+      ],
+      "clickToRowsMs": {
+        "count": 3,
+        "median": 35.300000071525574,
+        "min": 31.100000023841858,
+        "max": 109.60000002384186,
+        "values": [31.100000023841858, 35.300000071525574, 109.60000002384186]
+      },
+      "clickToMatchedRowsMs": {
+        "count": 3,
+        "median": 35.300000071525574,
+        "min": 31.100000023841858,
+        "max": 109.60000002384186,
+        "values": [31.100000023841858, 35.300000071525574, 109.60000002384186]
+      }
+    },
+    {
+      "arm": "after",
+      "flow": "background_resume",
+      "direction": null,
+      "samples": [
+        {
+          "id": "after-background_resume-1",
+          "rawSha256": "a08075dd28154fbd3c7018af5017dacd7a1a101189d901e4d5ab0d928446ce06",
+          "entry": 61758,
+          "firstRows": 61783.60000002384,
+          "matchedRows": 61783.60000002384,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        },
+        {
+          "id": "after-background_resume-2",
+          "rawSha256": "013bc034487e948510b7bfcb241b3294e952bbfff48b4a0535efbac70ed3789d",
+          "entry": 72619.30000007153,
+          "firstRows": 72649.70000004768,
+          "matchedRows": 72649.70000004768,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        },
+        {
+          "id": "after-background_resume-3",
+          "rawSha256": "3c075f87cdc879c0897afd6c731ab5352ebfb6f1a62bb3646d65da0d537ea9f9",
+          "entry": 83218.10000002384,
+          "firstRows": 83244.10000002384,
+          "matchedRows": 83244.10000002384,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": null
+        }
+      ],
+      "clickToRowsMs": {
+        "count": 3,
+        "median": 26,
+        "min": 25.600000023841858,
+        "max": 30.399999976158142,
+        "values": [25.600000023841858, 30.399999976158142, 26]
+      },
+      "clickToMatchedRowsMs": {
+        "count": 3,
+        "median": 26,
+        "min": 25.600000023841858,
+        "max": 30.399999976158142,
+        "values": [25.600000023841858, 30.399999976158142, 26]
+      }
+    },
+    {
+      "arm": "after",
+      "flow": "account",
+      "direction": "dev2",
+      "samples": [
+        {
+          "id": "after-account-2",
+          "rawSha256": "f70daadb24314e5bf42ec48c56518cba3a1bd290de043da8893690d6087184f4",
+          "entry": 98619.5,
+          "firstRows": 102147,
+          "matchedRows": 102254.10000002384,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": 875.7000000476837
+        },
+        {
+          "id": "after-account-4",
+          "rawSha256": "79249bb901609d922113cf8b785fb38205ac5117f5112cda8bce045916e666d1",
+          "entry": 129652.30000007153,
+          "firstRows": 131687.60000002384,
+          "matchedRows": 131802,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": 848.8999999761581
+        },
+        {
+          "id": "after-account-6",
+          "rawSha256": "9a8ecf1884ce62ad4cc6442eac7e470ec8edbadf2497fe3c15224b2a27c258bf",
+          "entry": 157668.30000007153,
+          "firstRows": 159604.80000007153,
+          "matchedRows": 159718.30000007153,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": 885.8999999761581
+        }
+      ],
+      "clickToRowsMs": {
+        "count": 3,
+        "median": 2035.2999999523163,
+        "min": 1936.5,
+        "max": 3527.5,
+        "values": [3527.5, 2035.2999999523163, 1936.5]
+      },
+      "clickToMatchedRowsMs": {
+        "count": 3,
+        "median": 2149.6999999284744,
+        "min": 2050,
+        "max": 3634.600000023842,
+        "values": [3634.600000023842, 2149.6999999284744, 2050]
+      }
+    },
+    {
+      "arm": "after",
+      "flow": "account",
+      "direction": "dev1",
+      "samples": [
+        {
+          "id": "after-account-3",
+          "rawSha256": "64cec3f8141d15ee45290ffbb1fe8dd0380a296cf47cd4a258b7b7326b9b5918",
+          "entry": 114659.30000007153,
+          "firstRows": 116726,
+          "matchedRows": 116835.40000009537,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": 867.1999999284744
+        },
+        {
+          "id": "after-account-5",
+          "rawSha256": "a9cb8408ba7806561c14ec827a15cff6b5ad9dd29d0a18552737f2f81ab39edc",
+          "entry": 146552.20000004768,
+          "firstRows": 149671.40000009537,
+          "matchedRows": 149784.70000004768,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": 866.5
+        },
+        {
+          "id": "after-account-7",
+          "rawSha256": "259ac1a3aa72bed1aa605634974898fdcfce6f88fcdfa926f828285fbb914342",
+          "entry": 168314.10000002384,
+          "firstRows": 170239.90000009537,
+          "matchedRows": 170352.90000009537,
+          "priceMatches": 12,
+          "accountClickToPerpsClickMs": 947.8999999761581
+        }
+      ],
+      "clickToRowsMs": {
+        "count": 3,
+        "median": 2066.6999999284744,
+        "min": 1925.8000000715256,
+        "max": 3119.2000000476837,
+        "values": [2066.6999999284744, 3119.2000000476837, 1925.8000000715256]
+      },
+      "clickToMatchedRowsMs": {
+        "count": 3,
+        "median": 2176.100000023842,
+        "min": 2038.8000000715256,
+        "max": 3232.5,
+        "values": [2176.100000023842, 3232.5, 2038.8000000715256]
+      }
+    }
+  ],
+  "harnessVersion": "0.50.5",
+  "limits": [
+    "Rendered DOM and current manager cache equality, not presented pixels or exchange-origin freshness",
+    "SDK times are separate boundaries; no baseline SDK or remote ingestion proof",
+    "Brief tab resume, not prolonged background suspension",
+    "Account selection on Home followed by Perps click, not in-place dashboard switching",
+    "Three samples per arm/flow/direction; no statistical significance or percentile claim"
+  ],
+  "measurementDate": "2026-09-11",
+  "mobileSource": "7c379ae5cc63cd5db35dc2ce919883b5a674617e",
+  "prSource": "96583820b169e80830f1fded4c9f92f413fcd689"
+}

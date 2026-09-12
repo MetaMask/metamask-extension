@@ -11,12 +11,19 @@
 
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   getPerpsStreamManager,
   type PerpsStreamManager,
 } from '../../../providers/perps/PerpsStreamManager';
-import { getIsPerpsTerminalBackendEnabled } from '../../../selectors/perps';
+import {
+  getIsPerpsTerminalBackendEnabled,
+  getIsPerpsExperienceAvailable,
+} from '../../../selectors/perps';
+import {
+  getSelectedEvmInternalAccount,
+  selectEvmAddress,
+  getUseExternalServices,
+} from '../../../selectors';
 
 export type UsePerpsStreamManagerReturn = {
   /** The stream manager instance (null while initializing) */
@@ -52,10 +59,14 @@ export type UsePerpsStreamManagerReturn = {
  * ```
  */
 export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
-  // Get the selected account address from Redux
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const selectedAddress = selectedAccount?.address ?? null;
+  // The background Perps session uses the EVM account, even on BTC assets.
+  const selectedEvmAddress = useSelector(selectEvmAddress);
+  const lastEvmAccount = useSelector(getSelectedEvmInternalAccount);
+  const selectedAddress = selectedEvmAddress ?? lastEvmAccount?.address ?? null;
   const useTerminalApi = useSelector(getIsPerpsTerminalBackendEnabled);
+  const useExternalServices = useSelector(getUseExternalServices);
+  const available = useSelector(getIsPerpsExperienceAvailable);
+  const enabled = available && useExternalServices;
 
   const streamManager = getPerpsStreamManager();
   // Configure the singleton before any dependent hook reads its market cache.
@@ -76,12 +87,23 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
   const [prevSelectedAddress, setPrevSelectedAddress] = useState<
     string | null | undefined
   >(undefined);
+  const [prevEnabled, setPrevEnabled] = useState(enabled);
 
-  if (selectedAddress !== prevSelectedAddress) {
+  if (selectedAddress !== prevSelectedAddress || enabled !== prevEnabled) {
     setPrevSelectedAddress(selectedAddress);
+    setPrevEnabled(enabled);
     if (!selectedAddress) {
       setIsReady(false);
       setError(new Error('No account selected'));
+    } else if (!enabled) {
+      setIsReady(false);
+      setError(
+        new Error(
+          available
+            ? 'Perps requires Basic Functionality'
+            : 'Perps is unavailable',
+        ),
+      );
     } else if (streamManager.isInitialized(selectedAddress)) {
       setIsReady(true);
       setError(null);
@@ -92,12 +114,7 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
   }
 
   useEffect(() => {
-    if (!selectedAddress) {
-      return undefined;
-    }
-
-    // Already initialized by a previous call
-    if (streamManager.isInitialized(selectedAddress)) {
+    if (!selectedAddress || !enabled) {
       return undefined;
     }
 
@@ -124,7 +141,7 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
     return () => {
       cancelled = true;
     };
-  }, [selectedAddress, streamManager]);
+  }, [selectedAddress, streamManager, enabled]);
 
   return {
     streamManager: isReady ? streamManager : null,

@@ -1,4 +1,9 @@
-import type { Position } from '@metamask/perps-controller';
+import { it } from '@jest/globals';
+import type {
+  Position,
+  PerpsMarketData,
+  PriceUpdate,
+} from '@metamask/perps-controller';
 import { PerpsStreamManager } from './PerpsStreamManager';
 
 // Polyfill crypto.randomUUID for jsdom
@@ -20,6 +25,7 @@ jest.mock('../../store/background-connection', () => ({
 jest.mock('./CandleStreamChannel', () => ({
   CandleStreamChannel: jest.fn().mockImplementation(() => ({
     clearAll: jest.fn(),
+    clearCache: jest.fn(),
   })),
 }));
 
@@ -496,7 +502,10 @@ describe('PerpsStreamManager', () => {
     it('calls perpsInit on first init and sets address', async () => {
       await manager.initForAddress('0xfirst');
 
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsInitForAccount',
+        ['0xfirst'],
+      );
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
         'perpsDisconnect',
       );
@@ -512,7 +521,7 @@ describe('PerpsStreamManager', () => {
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
 
-    it('calls disconnect then init on account switch', async () => {
+    it('delegates account teardown and initialization to the shared background coordinator', async () => {
       await manager.initForAddress('0xfirst');
       mockSubmitRequestToBackground.mockClear();
 
@@ -524,12 +533,93 @@ describe('PerpsStreamManager', () => {
 
       await manager.initForAddress('0xsecond');
 
-      expect(callOrder).toContain('perpsDisconnect');
-      expect(callOrder).toContain('perpsInit');
-      expect(callOrder.indexOf('perpsDisconnect')).toBeLessThan(
-        callOrder.indexOf('perpsInit'),
-      );
+      expect(callOrder).not.toContain('perpsDisconnect');
+      expect(callOrder).toContain('perpsInitForAccount');
+
       expect(manager.isInitialized('0xsecond')).toBe(true);
+    });
+
+    it.each<['positions' | 'orders' | 'account', string]>([
+      ['positions', 'perpsGetPositions'],
+      ['orders', 'perpsGetOpenOrders'],
+      ['account', 'perpsGetAccountState'],
+    ])(
+      'cancels the previous account %s fallback on switch',
+      async (channel, method) => {
+        jest.useFakeTimers();
+        await manager.initForAddress('0xfirst');
+        let resolveFallback!: (value: unknown) => void;
+        const fallback = new Promise((resolve) => {
+          resolveFallback = resolve;
+        });
+        mockSubmitRequestToBackground.mockImplementation((request: string) =>
+          request === method ? fallback : Promise.resolve(undefined),
+        );
+        const onData = jest.fn();
+        manager[channel].subscribe(onData);
+        await jest.advanceTimersByTimeAsync(3_000);
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(method, []);
+
+        await manager.initForAddress('0xsecond');
+        const stale =
+          channel === 'account' ? { totalBalance: '99' } : [{ symbol: 'OLD' }];
+        resolveFallback(stale);
+        await fallback;
+        await Promise.resolve();
+
+        expect(manager[channel].hasCachedData()).toBe(false);
+        expect(onData).not.toHaveBeenCalled();
+      },
+    );
+
+    it('retains new-session snapshots emitted before initialization returns', async () => {
+      await manager.initForAddress('0xfirst');
+      const positions = [makePosition('NEW')];
+      mockSubmitRequestToBackground.mockImplementation(
+        async (method: string) => {
+          if (method === 'perpsInitForAccount') {
+            manager.handleBackgroundUpdate({
+              channel: 'positions',
+              data: [makePosition('OLD')],
+            });
+            expect(manager.positions.hasCachedData()).toBe(false);
+          }
+          if (method === 'perpsInitForAccount') {
+            manager.handleBackgroundUpdate({
+              channel: 'accountSession',
+              data: { address: '0xsecond' },
+            });
+            manager.handleBackgroundUpdate({
+              channel: 'positions',
+              data: positions,
+            });
+          }
+        },
+      );
+
+      await manager.initForAddress('0xsecond');
+
+      expect(manager.positions.getCachedData()).toEqual(positions);
+      const onData = jest.fn();
+      manager.positions.subscribe(onData);
+      expect(onData).toHaveBeenCalledWith(positions);
+    });
+
+    it('discards early snapshots when initialization fails', async () => {
+      mockSubmitRequestToBackground.mockImplementation(async () => {
+        manager.handleBackgroundUpdate({
+          channel: 'positions',
+          data: [makePosition('FAILED')],
+        });
+        throw new Error('init failed');
+      });
+
+      await expect(manager.initForAddress('0xfailed')).rejects.toThrow(
+        'init failed',
+      );
+
+      expect(manager.positions.hasCachedData()).toBe(false);
+      expect(manager.isInitialized()).toBe(false);
     });
 
     it('deduplicates concurrent calls for the same address', async () => {
@@ -541,9 +631,65 @@ describe('PerpsStreamManager', () => {
       await Promise.all([p1, p2]);
 
       const initCalls = mockSubmitRequestToBackground.mock.calls.filter(
-        ([m]: [string]) => m === 'perpsInit',
+        ([m]: [string]) => m === 'perpsInitForAccount',
       );
       expect(initCalls).toHaveLength(1);
+    });
+
+    it('serializes A to B to A and drops stream updates during the transition', async () => {
+      let release!: () => void;
+      let entered!: () => void;
+      const started = new Promise<void>((resolve) => {
+        entered = resolve;
+      });
+      const barrier = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      mockSubmitRequestToBackground.mockImplementationOnce(() => {
+        entered();
+        return barrier;
+      });
+      const first = manager.initForAddress('0xaaa');
+      await started;
+      const middle = manager.initForAddress('0xbbb');
+      const latest = manager.initForAddress('0xaaa');
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('STALE')],
+      });
+      expect(manager.positions.getCachedData()).toEqual([]);
+      release();
+      await Promise.all([first, middle, latest]);
+
+      expect(manager.getCurrentAddress()).toBe('0xaaa');
+      expect(
+        mockSubmitRequestToBackground.mock.calls.map(([method]) => method),
+      ).toEqual(['perpsInitForAccount', 'perpsInitForAccount']);
+    });
+
+    it('cannot restore initialization after reset while the RPC is pending', async () => {
+      let release!: () => void;
+      let entered!: () => void;
+      const started = new Promise<void>((resolve) => {
+        entered = resolve;
+      });
+      const barrier = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      mockSubmitRequestToBackground.mockImplementationOnce(() => {
+        entered();
+        return barrier;
+      });
+      const pending = manager.initForAddress('0xaaa');
+      await started;
+
+      manager.reset();
+      release();
+      await pending;
+
+      expect(manager.isInitialized()).toBe(false);
+      expect(manager.getCurrentAddress()).toBeNull();
     });
 
     it('throws when address is empty', async () => {
@@ -552,7 +698,7 @@ describe('PerpsStreamManager', () => {
       );
     });
 
-    it('calls perpsDisconnect before second perpsInit when first init is still in flight', async () => {
+    it('queues the next shared account request until the previous request settles', async () => {
       let releaseFirstInit: (() => void) | undefined;
       const firstInitBarrier = new Promise<void>((resolve) => {
         releaseFirstInit = resolve;
@@ -564,7 +710,7 @@ describe('PerpsStreamManager', () => {
           if (method === 'perpsDisconnect') {
             return undefined;
           }
-          if (method === 'perpsInit') {
+          if (method === 'perpsInitForAccount') {
             perpsInitCount += 1;
             if (perpsInitCount === 1) {
               await firstInitBarrier;
@@ -580,17 +726,14 @@ describe('PerpsStreamManager', () => {
       await Promise.resolve();
 
       const pSecond = manager.initForAddress('0xsecond');
-      await pSecond;
+      expect(manager.isInitialized()).toBe(false);
+      releaseFirstInit?.();
+      await Promise.all([pFirst, pSecond]);
 
       const callOrder = mockSubmitRequestToBackground.mock.calls.map(
         ([m]: [string]) => m,
       );
-      const disconnectIdx = callOrder.indexOf('perpsDisconnect');
-      const secondInitIdx = callOrder.findIndex(
-        (m, i) => m === 'perpsInit' && i > disconnectIdx,
-      );
-      expect(disconnectIdx).toBeGreaterThanOrEqual(0);
-      expect(secondInitIdx).toBeGreaterThan(disconnectIdx);
+      expect(callOrder).toEqual(['perpsInitForAccount', 'perpsInitForAccount']);
       expect(manager.getCurrentAddress()).toBe('0xsecond');
 
       expect(releaseFirstInit).toBeDefined();
@@ -608,7 +751,7 @@ describe('PerpsStreamManager', () => {
         if (method === 'perpsDisconnect') {
           return Promise.resolve(undefined);
         }
-        if (method === 'perpsInit') {
+        if (method === 'perpsInitForAccount') {
           initAttempts += 1;
           if (initAttempts === 1) {
             return Promise.reject(new Error('init failed'));
@@ -626,17 +769,17 @@ describe('PerpsStreamManager', () => {
 
       expect(manager.isInitialized('0xretry')).toBe(true);
       const initCalls = mockSubmitRequestToBackground.mock.calls.filter(
-        ([m]: [string]) => m === 'perpsInit',
+        ([m]: [string]) => m === 'perpsInitForAccount',
       );
       expect(initCalls).toHaveLength(2);
     });
 
-    it('clears pending init on perpsDisconnect failure so switch can be retried', async () => {
+    it('clears pending init on shared account transition failure so switch can be retried', async () => {
       await manager.initForAddress('0xfirst');
       mockSubmitRequestToBackground.mockClear();
 
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsDisconnect') {
+        if (method === 'perpsInitForAccount') {
           return Promise.reject(new Error('disconnect failed'));
         }
         return Promise.resolve(undefined);
@@ -665,7 +808,7 @@ describe('PerpsStreamManager', () => {
           if (method === 'perpsDisconnect') {
             return undefined;
           }
-          if (method === 'perpsInit') {
+          if (method === 'perpsInitForAccount') {
             perpsInitCount += 1;
             if (perpsInitCount === 1) {
               await firstInitBarrier;
@@ -680,7 +823,10 @@ describe('PerpsStreamManager', () => {
       await Promise.resolve();
       await Promise.resolve();
 
-      await manager.initForAddress('0xwins');
+      const pWinner = manager.initForAddress('0xwins');
+      expect(manager.isInitialized()).toBe(false);
+      releaseFirstInit?.();
+      await Promise.all([pSlow, pWinner]);
 
       expect(manager.getCurrentAddress()).toBe('0xwins');
 
@@ -692,6 +838,82 @@ describe('PerpsStreamManager', () => {
       await pSlow;
 
       expect(manager.getCurrentAddress()).toBe('0xwins');
+    });
+  });
+
+  describe('live snapshot provenance', () => {
+    const markets = [{ symbol: 'BTC' }] as PerpsMarketData[];
+    const prices = [{ symbol: 'BTC', price: '50000' }] as PriceUpdate[];
+
+    it('distinguishes persisted market seeds from current-session responses', () => {
+      manager.handleBackgroundUpdate({
+        channel: 'markets',
+        data: markets,
+        live: false,
+      });
+      expect(manager.hasLiveMarketData(markets)).toBe(false);
+
+      manager.handleBackgroundUpdate({
+        channel: 'markets',
+        data: markets,
+        live: true,
+      });
+      expect(manager.hasLiveMarketData(markets)).toBe(true);
+      expect(manager.hasLiveMarketData([{ ...markets[0] }])).toBe(false);
+    });
+
+    it('merges detail prices without discarding the other preloaded symbols', () => {
+      manager.handleBackgroundUpdate({
+        channel: 'prices',
+        data: [...prices, { symbol: 'ETH', price: '2000' }],
+      });
+      const previous = manager.prices.getCachedData();
+      manager.handleBackgroundUpdate({
+        channel: 'prices',
+        data: [{ symbol: 'BTC', price: '51000' }],
+      });
+      const current = manager.prices.getCachedData();
+
+      expect(current).toEqual([
+        { symbol: 'BTC', price: '51000' },
+        { symbol: 'ETH', price: '2000' },
+      ]);
+      expect(manager.hasLivePrices(current)).toBe(true);
+      expect(manager.hasLivePrices(previous)).toBe(false);
+      expect(manager.hasLivePrices(prices)).toBe(false);
+    });
+
+    it.each(['0', '-1', 'invalid'])(
+      'does not accept a %s price as live readiness',
+      (price) => {
+        manager.handleBackgroundUpdate({
+          channel: 'prices',
+          data: [{ symbol: 'BTC', price }],
+        });
+        expect(manager.hasLivePrices(manager.prices.getCachedData())).toBe(
+          false,
+        );
+      },
+    );
+
+    it.each(['reset', 'clearAllCaches'] as const)(
+      'invalidates consumed snapshots after %s',
+      (method) => {
+        manager.pushLiveMarkets(markets);
+        manager.handleBackgroundUpdate({ channel: 'prices', data: prices });
+        const snapshot = manager.prices.getCachedData();
+
+        manager[method]();
+
+        expect(manager.hasLiveMarketData(markets)).toBe(false);
+        expect(manager.hasLivePrices(snapshot)).toBe(false);
+      },
+    );
+
+    it('invalidates live market metadata after a backend change', () => {
+      manager.pushLiveMarkets(markets);
+      manager.setUseTerminalApi(true);
+      expect(manager.hasLiveMarketData(markets)).toBe(false);
     });
   });
 
@@ -734,6 +956,22 @@ describe('PerpsStreamManager', () => {
       manager.handleBackgroundUpdate({ channel: 'fills', data: fills });
 
       expect(cb).toHaveBeenCalledWith(fills);
+    });
+
+    it('delivers wallet-warmed fills immediately after screen navigation', () => {
+      const initial = [{ orderId: '1', symbol: 'BTC' }];
+      manager.handleBackgroundUpdate({ channel: 'fills', data: initial });
+      const firstScreen = jest.fn();
+      const leave = manager.fills.subscribe(firstScreen);
+      expect(firstScreen).toHaveBeenCalledWith(initial);
+      leave();
+      const updated = [{ orderId: '2', symbol: 'ETH' }, ...initial];
+      manager.handleBackgroundUpdate({ channel: 'fills', data: updated });
+      const nextScreen = jest.fn();
+      manager.fills.subscribe(nextScreen);
+      expect(nextScreen).toHaveBeenCalledWith(updated);
+      expect(firstScreen).toHaveBeenCalledTimes(1);
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
 
     it('routes prices channel to prices.pushData', () => {
@@ -1367,7 +1605,7 @@ describe('PerpsStreamManager', () => {
       expect(() => manager.cleanupPrewarm()).not.toThrow();
     });
 
-    it('does not prewarm fills channel (fills are REST-only)', () => {
+    it('leaves fills prewarming to the background provider session', () => {
       manager.prewarm();
 
       expect(manager.fills.isPrewarming()).toBe(false);
