@@ -54,6 +54,7 @@
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "hasShownMultichainAccountsIntroModal": "boolean",
     "isWalletResetInProgress": "boolean",
+    "lastPerpsDepositEntryPoint": null,
     "lastQrScanCompletedSuccessfully": null,
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
@@ -329,6 +330,7 @@
   "ProfileMetricsController": "object",
   "QrSyncController": "object",
   "RampsController": {
+    "autoramps": "object",
     "countries": "object",
     "nativeProviders": "object",
     "orders": "object",
@@ -423,6 +425,7 @@
     "isBackupAndSyncEnabled": true,
     "isBackupAndSyncUpdateLoading": "boolean",
     "isContactSyncingEnabled": true,
-    "isContactSyncingInProgress": "boolean"
+    "isContactSyncingInProgress": "boolean",
+    "isRampsSyncingEnabled": true
   }
 }

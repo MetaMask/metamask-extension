@@ -412,6 +412,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isBackupAndSyncUpdateLoading: false,
     isAccountSyncingEnabled: true,
     isContactSyncingEnabled: true,
+    isRampsSyncingEnabled: true,
   },
 };
 

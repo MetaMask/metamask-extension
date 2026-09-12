@@ -1,8 +1,5 @@
-import { useMemo } from 'react';
-import {
-  TransactionType,
-  type TransactionMeta,
-} from '@metamask/transaction-controller';
+import React, { useMemo } from 'react';
+import { TransactionType } from '@metamask/transaction-controller';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
@@ -11,12 +8,14 @@ import {
   hasTransactionType,
   isPerpsWithdrawTransaction,
 } from '../../../../../../shared/lib/transactions.utils';
-import { useConfirmContext } from '../../../context/confirm';
+import { NoQuoteAlert } from '../../../components/no-quote-alert';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
+import { useTransactionMetadataRequestOptional } from '../../transactions/useTransactionMetadataRequest';
 import {
   useIsTransactionPayQuotePending,
   useTransactionPayHasExecutableQuote,
   useTransactionPayHasPositiveRequiredAmount,
+  useTransactionPayQuoteError,
   useTransactionPayQuotes,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
@@ -25,7 +24,7 @@ import { AlertsName } from '../constants';
 
 export function useNoPayTokenQuotesAlert(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequestOptional();
   const { payToken } = useTransactionPayToken();
   const quotes = useTransactionPayQuotes();
   const isQuotePending = useIsTransactionPayQuotePending();
@@ -34,13 +33,14 @@ export function useNoPayTokenQuotesAlert(): Alert[] {
     useTransactionPayHasPositiveRequiredAmount();
   const sourceAmounts = useTransactionPaySourceAmounts();
   const requiredTokens = useTransactionPayRequiredTokens();
+  const quoteError = useTransactionPayQuoteError();
 
-  const isMoneyAccountDeposit = hasTransactionType(currentConfirmation, [
+  const isMoneyAccountDeposit = hasTransactionType(transactionMeta, [
     TransactionType.moneyAccountDeposit,
   ]);
 
   const isPerpsWithdrawNotReady =
-    isPerpsWithdrawTransaction(currentConfirmation) &&
+    isPerpsWithdrawTransaction(transactionMeta) &&
     hasPositiveRequiredAmount &&
     !isQuotePending &&
     (!payToken || !hasExecutableQuote);
@@ -67,6 +67,10 @@ export function useNoPayTokenQuotesAlert(): Alert[] {
   const showAlert =
     isPerpsWithdrawNotReady ||
     isDepositMissingSourceAmounts ||
+    // A quote can be returned but fail validation (e.g. insufficient balance,
+    // simulation revert). Prices and fees still render, but confirmation is
+    // blocked and the structured reason from the pay controller is surfaced.
+    Boolean(quoteError) ||
     (payToken &&
       !isQuotePending &&
       sourceAmounts?.length &&
@@ -82,11 +86,16 @@ export function useNoPayTokenQuotesAlert(): Alert[] {
       {
         key: AlertsName.NoPayTokenQuotes,
         field: RowAlertKey.PayWith,
-        message: t('alertNoPayTokenQuotesMessage'),
+        ...(quoteError
+          ? {
+              content: <NoQuoteAlert error={quoteError} />,
+              message: quoteError.message,
+            }
+          : { message: t('alertNoPayTokenQuotesMessage') }),
         reason: t('alertNoPayTokenQuotesTitle'),
         severity: Severity.Danger,
         isBlocking: true,
       },
     ];
-  }, [showAlert, t]);
+  }, [quoteError, showAlert, t]);
 }

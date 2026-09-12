@@ -7,6 +7,14 @@ import {
 import type { OnboardingControllerState } from '../controllers/onboarding';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
 import { removeStalePrecreatedOrders } from '../lib/ramps-stale-order-cleanup';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
+import { trace } from '../../../shared/lib/trace';
+import { captureException } from '../../../shared/lib/sentry';
+import { trackEvent } from '../controllers/analytics';
 import type { MessengerClientInitFunction } from './types';
 import { getRampsControllerApi } from './ramps-controller-api';
 import type { RampsControllerInitMessenger } from './messengers/ramps-controller-messenger';
@@ -162,6 +170,28 @@ export const RampsControllerInit: MessengerClientInitFunction<
   const messengerClient = new RampsController({
     messenger: controllerMessenger,
     state: persistedState.RampsController ?? getDefaultRampsControllerState(),
+    // @ts-expect-error Controller uses string for names rather than enum
+    trace,
+    onOrderSyncErroneousSituation: (situationMessage, sentryContext) => {
+      captureException(
+        new Error(`Ramps order sync - ${situationMessage}`),
+        sentryContext,
+      );
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.ProfileActivityUpdated)
+          .addCategory(MetaMetricsEventCategory.BackupAndSync)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            feature_name: 'Backup And Sync',
+            action: 'Ramps Order Sync Erroneous Situation',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            additional_description: situationMessage,
+          })
+          .build(),
+      );
+    },
   });
 
   const isNetworkAllowed = () => isRampsNetworkAllowed(initMessenger);

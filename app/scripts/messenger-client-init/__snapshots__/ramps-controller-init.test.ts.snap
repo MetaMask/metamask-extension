@@ -18,6 +18,35 @@ exports[`RampsControllerInit exposes ramps background API methods 1`] = `
   "setRampsUserRegion",
   "startRampsLifecycle",
   "stopRampsLifecycle",
+  "syncRampsOrdersWithUserStorage",
   "watchRampsCheckoutTab",
+]
+`;
+
+exports[`RampsControllerInit reports order sync erroneous situations to sentry and analytics 1`] = `
+[
+  [
+    [Error: Ramps order sync - missing remote order],
+    {
+      "orderId": "1",
+    },
+  ],
+]
+`;
+
+exports[`RampsControllerInit reports order sync erroneous situations to sentry and analytics 2`] = `
+[
+  [
+    {
+      "name": "Profile Activity Updated",
+      "properties": {
+        "action": "Ramps Order Sync Erroneous Situation",
+        "additional_description": "missing remote order",
+        "category": "Backup And Sync",
+        "feature_name": "Backup And Sync",
+      },
+      "sensitiveProperties": {},
+    },
+  ],
 ]
 `;
