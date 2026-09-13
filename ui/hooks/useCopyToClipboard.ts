@@ -10,7 +10,7 @@ export const DEFAULT_UI_DELAY = 2 * SECOND;
  */
 export function useCopyToClipboard(): [
   boolean,
-  (text: string) => void,
+  (text: string) => Promise<boolean>,
   () => void,
 ] {
   const [copied, setCopied] = useState<boolean>(false);
@@ -32,8 +32,9 @@ export function useCopyToClipboard(): [
         .then(() => {
           setCopied(true);
           startTimeout?.();
+          return true;
         })
-        .catch(() => undefined);
+        .catch(() => false);
     },
     [startTimeout],
   );

@@ -2724,6 +2724,9 @@
   "clearActivityDescription": {
     "message": "Resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
   },
+  "clearClipboard": {
+    "message": "Clear clipboard"
+  },
   "clearFilters": {
     "message": "Clear filters"
   },
@@ -2733,6 +2736,12 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Click here to connect your Ledger via WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clipboardClearFailed": {
+    "message": "Couldn't clear clipboard. Try again."
+  },
+  "clipboardCleared": {
+    "message": "Clipboard cleared"
   },
   "close": {
     "message": "Close"
@@ -9926,6 +9935,9 @@
   "sendingNativeAsset": {
     "message": "Sending $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
+  },
+  "sensitiveClipboardWarning": {
+    "message": "This sensitive information remains on your clipboard."
   },
   "sent": {
     "message": "Sent"
