@@ -44,6 +44,27 @@ export default class DeepLink {
     });
   }
 
+  /**
+   * Asserts the description box does not display the given text.
+   *
+   * Uses the same `{ css, text }` locator shape as
+   * {@link checkDescriptionTextIsDisplayed} (XPath `contains()`). A
+   * `waitAtLeastGuard` is required because 404 extra CTA copy is filled
+   * asynchronously after `verify(url)` — absence must not pass before
+   * that work finishes.
+   *
+   * @param text - The (partial) text that must not appear.
+   */
+  async checkDescriptionTextIsNotDisplayed(text: string): Promise<void> {
+    await this.driver.assertElementNotPresent(
+      {
+        css: this.descriptionBox,
+        text,
+      },
+      { waitAtLeastGuard: regularDelayMs },
+    );
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
       this.descriptionBox,

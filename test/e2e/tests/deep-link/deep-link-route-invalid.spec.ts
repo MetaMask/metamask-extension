@@ -13,6 +13,9 @@ import {
 } from './helpers';
 
 describe('Deep Link - Invalid Route', function () {
+  const extraCtaRedirectCopy = `and we'll take you to the right place.`;
+  const extraCtaUpdateCopy = 'Update to the latest version of MetaMask';
+  const invalidRouteDescription = `We can't find the page you are looking for.`;
   const scenarios = generateScenariosForRoutes(['/INVALID']);
 
   scenarios.forEach(({ locked, signed, route, action }) => {
@@ -75,14 +78,19 @@ describe('Deep Link - Invalid Route', function () {
 
           console.log('Checking error text for invalid route');
           await deepLink.checkDescriptionTextIsDisplayed(
-            `We can't find the page you are looking for.`,
+            invalidRouteDescription,
           );
           if (isSigned) {
+            await deepLink.checkDescriptionTextIsDisplayed(extraCtaUpdateCopy);
             await deepLink.checkDescriptionTextIsDisplayed(
-              'Update to the latest version of MetaMask',
+              extraCtaRedirectCopy,
             );
-            await deepLink.checkDescriptionTextIsDisplayed(
-              `and we'll take you to the right place.`,
+          } else {
+            await deepLink.checkDescriptionTextIsNotDisplayed(
+              extraCtaUpdateCopy,
+            );
+            await deepLink.checkDescriptionTextIsNotDisplayed(
+              extraCtaRedirectCopy,
             );
           }
 
