@@ -612,7 +612,6 @@
     "@google/genai": "^1.0.0",
     "@jest/globals": "^29.7.0",
     "@lavamoat/allow-scripts": "^5.0.1",
-    "@lavamoat/lavadome-core": "0.0.20",
     "@lavamoat/lavapack": "^7.0.22",
     "@lydell/node-pty": "^1.1.0",
     "@metamask/api-specs": "^0.13.0",
@@ -862,7 +861,7 @@
   "lavamoat": {
     "allowScripts": {
       "$root$": true,
-      "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false,
+      "@lavamoat/lavadome-react>@lavamoat/preinstall-always-fail#2.0.0": false,
       "@metamask/test-dapp-solana>@solana/spl-token>@solana/buffer-layout-utils>bigint-buffer": false,
       "@google/genai>protobufjs": false,
       "@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
