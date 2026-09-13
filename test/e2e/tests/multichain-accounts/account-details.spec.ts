@@ -4,7 +4,6 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
-import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import AccountAddressModal from '../../page-objects/pages/accounts/address-modal';
 import AccountAddressListPage from '../../page-objects/pages/accounts/address-list-page';
@@ -132,9 +131,8 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           await privateKeyModal.checkPageIsLoaded();
           await privateKeyModal.typePassword(WALLET_PASSWORD);
           await privateKeyModal.clickConfirm();
-          const accountDetailsModal = new AccountDetailsModal(driver);
-          await accountDetailsModal.clickCopyPrivateKeyButton();
-          await accountDetailsModal.checkAddressIsCopied();
+          await privateKeyModal.clickCopyPrivateKeyButton();
+          await privateKeyModal.checkPrivateKeyIsCopied();
         },
       );
     });

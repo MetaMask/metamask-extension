@@ -347,17 +347,6 @@
       "React: Act warnings (component updates not wrapped)": 6,
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/components/multichain/account-details/account-details-display.test.tsx": {
-      "MetaMask: Background connection not initialized": 1,
-      "React: Act warnings (component updates not wrapped)": 1,
-      "React: DOM nesting violations": 1
-    },
-    "ui/components/multichain/account-details/account-details.test.js": {
-      "React: Act warnings (component updates not wrapped)": 8,
-      "React: DOM nesting violations": 1,
-      "warn: LavaDome: Initiated with \"unsafeOpenModeShadow\" set": 1,
-      "warn: LavaDomeDebug(getTextByRoot): Call/include this function for": 1
-    },
     "ui/components/multichain/account-list-item-menu/account-list-item-menu.test.js": {
       "React: PropTypes validation failures": 1
     },
