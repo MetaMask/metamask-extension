@@ -172,6 +172,9 @@
   "activity": {
     "message": "İşlem Geçmişi"
   },
+  "activityAndNonceDataDeleted": {
+    "message": "İşlem geçmişi ve nonce verileri silindi"
+  },
   "activityEmptyDescription": {
     "message": "İlk token takas işleminizi bugün yapın."
   },
@@ -1933,14 +1936,37 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Temel işlevselliği aç"
   },
+  "basicFunctionalityMigrationModalTitle": {
+    "message": "Ayarlarınız değiştirildi"
+  },
   "basicFunctionalityMigrationSocialModalBlogPostLink": {
     "message": "blog yayınımızda okuyabilirsiniz"
+  },
+  "basicFunctionalityMigrationSocialModalBody1": {
+    "message": "MetaMask'in sosyal medya hesabı ile giriş işlemlerinde çalışma şeklini güncelliyoruz. MetaMask genelinde kesintisiz bir deneyim sunabilmek amacıyla; sosyal medya hesabı kimliğiniz (e-posta veya kullanıcı adı) artık kullanıcı profilinize ve ilişkili hesap adreslerinize güvenli bir şekilde bağlanacaktır. Bu güncellemenin bir parçası olarak, Temel İşlevsellik ve diğer varsayılan ayarlar her zaman etkin olacaktır."
+  },
+  "basicFunctionalityMigrationSocialModalBody2": {
+    "message": "Verilerinizi asla üçüncü taraflara satmayız. Hangi verileri neden topladığımız hakkında daha fazla bilgiyi şurada okuyabilirsiniz: $1 ve güncellenmiş $2.",
+    "description": "$1 is the blog post link, $2 is the Privacy Notice link"
+  },
+  "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
+    "message": "Gizlilik Bildirisi"
   },
   "basicFunctionalityMigrationSocialModalTitle": {
     "message": "Gizlilik ve ürün güncellemeleri"
   },
+  "basicFunctionalityMigrationToastDescription": {
+    "message": "Üçüncü taraf API'ler artık Temel İşlevselliğin bir parçasıdır. Önceki tercihlerinize göre bu ayar $1. Dilediğiniz zaman şurada değiştirebilirsiniz:$2",
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+  },
+  "basicFunctionalityMigrationToastDisabled": {
+    "message": "devre dışı"
+  },
   "basicFunctionalityMigrationToastEnabled": {
     "message": "etkinleştirildi"
+  },
+  "basicFunctionalityMigrationToastSettingsLink": {
+    "message": "Ayarlar > Gizlilik"
   },
   "basicFunctionalityRequired_description": {
     "message": "Bu özellik temel işlevsellik kapalıyken kullanılamaz. Açmak için aşağıdaki aç-kapa düğmesini kullanın."
@@ -2507,6 +2533,9 @@
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "İzin verilen maksimumu kullanın"
+  },
+  "bridgeValidationInsufficientGasMessage": {
+    "message": "Bu köprü için ağ ücretini ödemeye yetecek $1 yok. Daha küçük bir tutar girin veya daha fazla $1 satın alın."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Gaz için daha fazla $1 gerekli"
@@ -3551,6 +3580,10 @@
   "disable": {
     "message": "Devre dışı bırak"
   },
+  "disabledGasOptionToolTipMessage": {
+    "message": "Orijinal ağ ücretine göre minimum %10 artış şartını karşılamadığı için “$1” devre dışı bırakıldı.",
+    "description": "$1 is gas estimate type which can be market or aggressive"
+  },
   "disconnect": {
     "message": "Bağlantıyı kes"
   },
@@ -4183,6 +4216,9 @@
   "gasPrice": {
     "message": "Gaz fiyatı"
   },
+  "gasPriceExcessive": {
+    "message": "Ağ ücretiniz gereksiz bir şekilde yüksek. Tutarı azaltmayı göz önünde bulundurun."
+  },
   "gasPriceFetchFailed": {
     "message": "Gaz fiyatı tahmini ağ hatası nedeniyle başarısız oldu."
   },
@@ -4686,9 +4722,21 @@
   "honeypotTitle": {
     "message": "Bal tuzağı"
   },
+  "hyperliquidDepositPromptDescription": {
+    "message": "Dilediğiniz tokenı yatırın. Tokenınızı otomatik olarak takas edip Hyperliquid hesabınıza gönderelim; üstelik MetaMask ücreti ödemeden.",
+    "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositPromptNoThanks": {
+    "message": "Hayır, teşekkürler, manuel olarak yatır",
+    "description": "The label of the dismiss button in the Hyperliquid deposit prompt screen"
+  },
   "hyperliquidDepositPromptTitle": {
     "message": "MetaMask ile HyperLiquid'e fon ekle",
     "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositToastSuccessDescription": {
+    "message": "Fonlar; Hyperliquid ve MetaMask Perps üzerinde işlem yapmaya hazır.",
+    "description": "Description shown in the success toast after a perps deposit initiated from the Hyperliquid deposit prompt"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Hyperliquid'in $1 bölümü uyarınca gelecekteki tüm işlemlere MetaMask referans kodunu uygulayın. MetaMask bir ücret kazanır.",
@@ -5188,6 +5236,9 @@
   "loginErrorSessionExpiredButton": {
     "message": "Oturum aç"
   },
+  "loginErrorSessionExpiredDescription": {
+    "message": "Devam etmek için tekrar oturum açın."
+  },
   "loginErrorSessionExpiredTitle": {
     "message": "Oturum sona erdi"
   },
@@ -5510,6 +5561,9 @@
   },
   "moneyBalanceUnavailable": {
     "message": "Bakiye kullanılamıyor"
+  },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "Bakiyenizi geçici olarak görüntüleyemiyoruz. Fonlarınız güvende—kısa bir süre sonra tekrar deneyin."
   },
   "moneyBenefitAutoEarn": {
     "message": "Para bakiyeniz üzerinden otomatik getiri elde edin"
@@ -5986,6 +6040,10 @@
   "networkStatusPriorityFeeTooltip": {
     "message": "Öncelik ücretleri (başka bir deyişle \"madenci bahşişi\") aralıkları. Bu ücretler doğrudan madencilere gider ve işleminizin öncelikli olarak gerçekleştirilmesini teşvik eder."
   },
+  "networkStatusStabilityFeeTooltip": {
+    "message": "Ağ ücretleri son 72 saate kıyasla $1 seviyesinde.",
+    "description": "$1 is networks stability value - stable, low, high"
+  },
   "networkSuggested": {
     "message": "Önerilen ağ"
   },
@@ -6358,6 +6416,9 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "Henüz herhangi bir bildirim almadınız."
+  },
+  "notificationsSettingsAccountsLoadError": {
+    "message": "Hesap bildirim ayarlarınızı yükleyemedik. Daha sonra tekrar deneyin."
   },
   "notificationsSettingsAgenticCliDescription": {
     "message": "Ajan cüzdanı için CLI bağlantı talepleri, onaylar ve oturum güncellemeleri"
@@ -8043,6 +8104,10 @@
     "message": "İşleminiz gönderiliyor",
     "description": "In-progress toast text shown while a perps trade is being submitted"
   },
+  "perpsToastTradeEntryFailed": {
+    "message": "İşlem açılamadı",
+    "description": "Error toast text shown when opening the perps order form from an asset page fails"
+  },
   "perpsToastTradeSuccess": {
     "message": "Pozisyon kapatıldı",
     "description": "Success toast text shown when a perps position is closed"
@@ -8752,6 +8817,9 @@
   },
   "rejected": {
     "message": "Reddedildi"
+  },
+  "relayerFee": {
+    "message": "Relayer ücreti"
   },
   "remove": {
     "message": "Kaldır"
@@ -11106,6 +11174,9 @@
   "stxCancelled": {
     "message": "Takas başarısız olurdu"
   },
+  "stxCancelledDescription": {
+    "message": "İşleminiz başarısız oldu ve gereksiz ağ ücreti ödemenizi önlemek amacıyla iptal edildi."
+  },
   "stxCancelledSubDescription": {
     "message": "Swap işlemini tekrar dene. Bir dahaki sefere seni benzer risklere karşı korumak için burada olacağız."
   },
@@ -11147,6 +11218,9 @@
   },
   "stxUserCancelled": {
     "message": "Takas iptal edildi"
+  },
+  "stxUserCancelledDescription": {
+    "message": "İşleminiz iptal edildi ve gereksiz ağ ücreti ödemediniz."
   },
   "submit": {
     "message": "Gönder"
@@ -11277,12 +11351,19 @@
     "message": "$1 ile $2 takası",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
+  "swapGasFeesExplanation": {
+    "message": "MetaMask, ağ ücretlerinden kazanç sağlamaz. Bu ücretler tahmini değerlerdir ve ağın yoğunluğuna ve işlemin karmaşıklığına bağlı olarak değişiklik gösterebilir. Daha fazla bilgi edinin $1.",
+    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
+  },
   "swapGasFeesExplanationLinkText": {
     "message": "Buradan",
     "description": "Text for link in swapGasFeesExplanation"
   },
   "swapGasFeesIncluded": {
     "message": " Dahil"
+  },
+  "swapGasFeesSplit": {
+    "message": "Önceki ekrandaki ağ ücretleri bu iki işlem arasında bölünmüştür."
   },
   "swapGasFeesSponsored": {
     "message": "MetaMask tarafından ödenir"
@@ -11417,6 +11498,9 @@
   "swapSource": {
     "message": "Likidite kaynağı"
   },
+  "swapSuggestedGasSettingToolTipMessage": {
+    "message": "Takas işlemleri karmaşıktır ve zaman hassasiyeti taşır. Başarılı bir Takas işleminin maliyeti ile gerçekleşme güvenliği arasında iyi bir denge kurulması için bu ağ ücretini öneriyoruz."
+  },
   "swapToConfirmWithHwWallet": {
     "message": "donanım cüzdanınızla onaylamak için"
   },
@@ -11438,6 +11522,9 @@
   },
   "swapUnknown": {
     "message": "Bilinmeyen"
+  },
+  "swapValidationInsufficientGasMessage": {
+    "message": "Bu takas işlemi için ağ ücretini ödemeye yetecek $1 yok. Daha küçük bir tutar girin veya daha fazla $1 satın alın."
   },
   "swapZeroSlippage": {
     "message": "%0 Kayma"
@@ -11673,6 +11760,9 @@
   "transactionHistoryBaseFee": {
     "message": "Baz ücret (GWEI)"
   },
+  "transactionHistoryL1GasLabel": {
+    "message": "Toplam L1 ağ ücreti"
+  },
   "transactionHistoryL2GasLimitLabel": {
     "message": "L2 gaz limiti"
   },
@@ -11684,6 +11774,9 @@
   },
   "transactionHistoryPriorityFee": {
     "message": "Öncelik ücreti (GWEI)"
+  },
+  "transactionHistoryTotalGasFee": {
+    "message": "Toplam ağ ücreti"
   },
   "transactionIdCopied": {
     "message": "İşlem kimliği kopyalandı"
@@ -11884,6 +11977,9 @@
   },
   "unlock": {
     "message": "Kilidi Aç"
+  },
+  "unlockPageIncorrectPassword": {
+    "message": "Şifre yanlış. Tekrar deneyin."
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Çok sayıda deneme. Şu kadar süre sonra tekrar deneyin: "
@@ -12154,6 +12250,10 @@
   },
   "wrongNetworkName": {
     "message": "Kayıtlarımıza göre ağ adı bu zincir kimliği ile doğru şekilde eşleşmiyor olabilir."
+  },
+  "wrongPassword": {
+    "message": "Şifre yanlış. Tekrar deneyin.",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "year": {
     "message": "yıl"

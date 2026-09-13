@@ -172,6 +172,9 @@
   "activity": {
     "message": "アクティビティ"
   },
+  "activityAndNonceDataDeleted": {
+    "message": "アクティビティとナンスデータが削除されました"
+  },
   "activityEmptyDescription": {
     "message": "今すぐ最初のトークンをスワップしましょう。"
   },
@@ -1933,14 +1936,37 @@
   "basicConfigurationModalHeadingOn": {
     "message": "基本機能をオンにする"
   },
+  "basicFunctionalityMigrationModalTitle": {
+    "message": "設定が変更されました"
+  },
   "basicFunctionalityMigrationSocialModalBlogPostLink": {
     "message": "ブログ投稿"
+  },
+  "basicFunctionalityMigrationSocialModalBody1": {
+    "message": "現在、MetaMaskのソーシャルログインの仕組みを更新しています。MetaMask全体でシームレスな体験を実現するため、ソーシャルログイン識別子 (メールアドレスまたはハンドル名) がユーザープロファイルおよび関連するアカウントアドレスと安全に紐付けられます。この更新の一環として、基本機能およびその他のデフォルトの設定が常に有効となります。"
+  },
+  "basicFunctionalityMigrationSocialModalBody2": {
+    "message": "当社がお客様のデータを第三者に販売することは絶対にありません。当社が収集するデータおよび収集理由の詳細については、$1および改訂版の$2をご覧ください。",
+    "description": "$1 is the blog post link, $2 is the Privacy Notice link"
+  },
+  "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
+    "message": "プライバシー通知"
   },
   "basicFunctionalityMigrationSocialModalTitle": {
     "message": "プライバシーと製品アップデート"
   },
+  "basicFunctionalityMigrationToastDescription": {
+    "message": "サードパーティAPIは基本機能の一部となりました。お客様の以前の設定に基づき、この設定は$1になっています。設定はいつでも$2で変更できます。",
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
+  },
+  "basicFunctionalityMigrationToastDisabled": {
+    "message": "無効"
+  },
   "basicFunctionalityMigrationToastEnabled": {
     "message": "有効にしました"
+  },
+  "basicFunctionalityMigrationToastSettingsLink": {
+    "message": "設定 > プライバシー"
   },
   "basicFunctionalityRequired_description": {
     "message": "この機能は、基本機能をオフにしている間は利用できません。オンにするには、下のトグルボタンをご利用ください。"
@@ -2507,6 +2533,9 @@
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "最大許容額を使用"
+  },
+  "bridgeValidationInsufficientGasMessage": {
+    "message": "このブリッジのネットワーク手数料を支払うのに十分な$1がありません。金額を下げるか、$1を買い足してください。"
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "ガス代により多くの$1が必要です"
@@ -3551,6 +3580,10 @@
   "disable": {
     "message": "無効にする"
   },
+  "disabledGasOptionToolTipMessage": {
+    "message": "元のネットワーク手数料の10%以上という増額の条件を満たしていないため、「$1」は無効になっています。",
+    "description": "$1 is gas estimate type which can be market or aggressive"
+  },
   "disconnect": {
     "message": "接続解除"
   },
@@ -4183,6 +4216,9 @@
   "gasPrice": {
     "message": "ガス価格 (gwei)"
   },
+  "gasPriceExcessive": {
+    "message": "ネットワーク手数料が不要に高く設定されています。金額を下げることを検討してください。"
+  },
   "gasPriceFetchFailed": {
     "message": "ネットワークエラーのため、ガス価格の見積もりに失敗しました。"
   },
@@ -4686,9 +4722,21 @@
   "honeypotTitle": {
     "message": "ハニーポット"
   },
+  "hyperliquidDepositPromptDescription": {
+    "message": "任意のトークンを入金してください。当社側でトークンを交換して、Hyperliquidアカウントに自動で送金します。MetaMask側では手数料は発生しません。",
+    "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositPromptNoThanks": {
+    "message": "手動で入金するので結構です",
+    "description": "The label of the dismiss button in the Hyperliquid deposit prompt screen"
+  },
   "hyperliquidDepositPromptTitle": {
     "message": "MetaMaskでHyperliquidに入金",
     "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositToastSuccessDescription": {
+    "message": "資金の準備が整い、HyperliquidとMetaMaskパーペチュアルで取引可能となりました。",
+    "description": "Description shown in the success toast after a perps deposit initiated from the Hyperliquid deposit prompt"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Hyperliquidの$1に従い、今後すべての取引にMetaMaskの紹介コードを適用できます。MetaMaskは手数料をいただきます。",
@@ -5188,6 +5236,9 @@
   "loginErrorSessionExpiredButton": {
     "message": "ログイン"
   },
+  "loginErrorSessionExpiredDescription": {
+    "message": "続行するには再度ログインしてください。"
+  },
   "loginErrorSessionExpiredTitle": {
     "message": "セッションの期限が切れました"
   },
@@ -5510,6 +5561,9 @@
   },
   "moneyBalanceUnavailable": {
     "message": "残高が利用できません"
+  },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "現在、一時的に残高を表示できません。資金は安全に保管されています。しばらくしてからもう一度お試しください。"
   },
   "moneyBenefitAutoEarn": {
     "message": "Money残高に対する利息を自動で獲得"
@@ -5985,6 +6039,10 @@
   },
   "networkStatusPriorityFeeTooltip": {
     "message": "優先手数料 (別名「マイナーチップ」) の範囲。これはマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。"
+  },
+  "networkStatusStabilityFeeTooltip": {
+    "message": "ネットワーク手数料は過去72時間と比較して$1です。",
+    "description": "$1 is networks stability value - stable, low, high"
   },
   "networkSuggested": {
     "message": "おすすめのネットワーク"
@@ -8036,6 +8094,10 @@
     "message": "取引を送信中",
     "description": "In-progress toast text shown while a perps trade is being submitted"
   },
+  "perpsToastTradeEntryFailed": {
+    "message": "取引を開けませんでした",
+    "description": "Error toast text shown when opening the perps order form from an asset page fails"
+  },
   "perpsToastTradeSuccess": {
     "message": "ポジションがクローズされました",
     "description": "Success toast text shown when a perps position is closed"
@@ -8745,6 +8807,9 @@
   },
   "rejected": {
     "message": "拒否済"
+  },
+  "relayerFee": {
+    "message": "リレイヤー手数料"
   },
   "remove": {
     "message": "削除"
@@ -11099,6 +11164,9 @@
   "stxCancelled": {
     "message": "スワップは失敗していたと思われます"
   },
+  "stxCancelledDescription": {
+    "message": "トランザクションが失敗しそうになり、不要なネットワーク手数料の支払いを避けるためにキャンセルされました。"
+  },
   "stxCancelledSubDescription": {
     "message": "もう一度スワップをお試しください。次回も同様のリスクを防ぐために監視を行います。"
   },
@@ -11140,6 +11208,9 @@
   },
   "stxUserCancelled": {
     "message": "スワップがキャンセルされました"
+  },
+  "stxUserCancelledDescription": {
+    "message": "不要なネットワーク手数料を支払うことなくトランザクションがキャンセルされました。"
   },
   "submit": {
     "message": "送信"
@@ -11270,12 +11341,19 @@
     "message": "$1から$2へのスワップ",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
+  "swapGasFeesExplanation": {
+    "message": "MetaMaskはネットワーク手数料から収益を得ません。これらの手数料は見積もりであり、ネットワークの混雑状況やトランザクションの複雑さによって変わる可能性があります。詳細は$1をご覧ください。",
+    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
+  },
   "swapGasFeesExplanationLinkText": {
     "message": "こちら",
     "description": "Text for link in swapGasFeesExplanation"
   },
   "swapGasFeesIncluded": {
     "message": " 込み"
+  },
+  "swapGasFeesSplit": {
+    "message": "前の画面のネットワーク手数料は、この2つのトランザクションに分けられています。"
   },
   "swapGasFeesSponsored": {
     "message": "MetaMaskが負担"
@@ -11410,6 +11488,9 @@
   "swapSource": {
     "message": "流動性の供給源"
   },
+  "swapSuggestedGasSettingToolTipMessage": {
+    "message": "スワップは複雑で急を要するトランザクションです。コストとスワップの確実な成功のバランスが取れたこのネットワーク手数料をお勧めします。"
+  },
   "swapToConfirmWithHwWallet": {
     "message": "ハードウェアウォレットで確定"
   },
@@ -11431,6 +11512,9 @@
   },
   "swapUnknown": {
     "message": "不明"
+  },
+  "swapValidationInsufficientGasMessage": {
+    "message": "このスワップのネットワーク手数料を支払うのに十分な$1がありません。金額を下げるか、$1を買い足してください。"
   },
   "swapZeroSlippage": {
     "message": "0%スリッページ"
@@ -11666,6 +11750,9 @@
   "transactionHistoryBaseFee": {
     "message": "基本料金 (Gwei)"
   },
+  "transactionHistoryL1GasLabel": {
+    "message": "L1ネットワーク手数料合計"
+  },
   "transactionHistoryL2GasLimitLabel": {
     "message": "L2ガスリミット"
   },
@@ -11880,6 +11967,9 @@
   },
   "unlock": {
     "message": "ロックを解除"
+  },
+  "unlockPageIncorrectPassword": {
+    "message": "パスワードが正しくありません。もう一度お試しください。"
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "試行回数の上限に達しました。再試行できるまであと"
@@ -12150,6 +12240,10 @@
   },
   "wrongNetworkName": {
     "message": "当社の記録によると、ネットワーク名がこのチェーンIDと正しく一致していない可能性があります。"
+  },
+  "wrongPassword": {
+    "message": "パスワードが正しくありません。もう一度お試しください。",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "year": {
     "message": "年"
