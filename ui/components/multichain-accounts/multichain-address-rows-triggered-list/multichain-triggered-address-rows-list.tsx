@@ -337,9 +337,8 @@ export const MultichainTriggeredAddressRowsList = ({
       },
       index: number,
     ): JSX.Element => {
-      const handleCopyClick = () => {
+      const handleCopyClick = () =>
         handleCopy(normalizeSafeAddress(item.account.address));
-      };
 
       return (
         <MultichainAggregatedAddressListRow

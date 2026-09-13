@@ -8,9 +8,15 @@ import { Copyable } from './copyable';
 jest.mock('../../../../hooks/useCopyToClipboard');
 
 describe('Copyable', () => {
-  const handleCopy = jest.fn();
+  const handleCopy = jest.fn().mockResolvedValue(true);
+  const sensitiveClipboard = { state: 'idle', clear: jest.fn() };
   beforeEach(() => {
-    useCopyToClipboard.mockReturnValue([false, handleCopy]);
+    useCopyToClipboard.mockReturnValue([
+      false,
+      handleCopy,
+      jest.fn(),
+      sensitiveClipboard,
+    ]);
   });
 
   afterEach(() => {
@@ -60,5 +66,18 @@ describe('Copyable', () => {
     await waitFor(() => {
       expect(handleCopy).toHaveBeenCalledWith(value);
     });
+  });
+
+  it('shows cleanup controls only for sensitive content after copying', () => {
+    sensitiveClipboard.state = 'ready';
+    const { getByTestId } = renderWithProvider(
+      <Copyable text={value} sensitive />,
+    );
+
+    fireEvent.click(getByTestId('reveal-icon'));
+    fireEvent.click(getByTestId('clear-sensitive-clipboard'));
+
+    expect(sensitiveClipboard.clear).toHaveBeenCalledTimes(1);
+    expect(handleCopy).not.toHaveBeenCalled();
   });
 });

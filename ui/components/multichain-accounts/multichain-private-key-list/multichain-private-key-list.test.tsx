@@ -56,9 +56,14 @@ jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => mockUseI18nContext(),
 }));
 
-const mockHandleCopy = jest.fn();
+const mockHandleCopy = jest.fn().mockResolvedValue(true);
 jest.mock('../../../hooks/useCopyToClipboard', () => ({
-  useCopyToClipboard: () => [false, mockHandleCopy],
+  useCopyToClipboard: () => [
+    false,
+    mockHandleCopy,
+    jest.fn(),
+    { state: 'idle', clear: jest.fn() },
+  ],
 }));
 
 const mockUseIsPasskeyActive = jest.fn().mockReturnValue(false);

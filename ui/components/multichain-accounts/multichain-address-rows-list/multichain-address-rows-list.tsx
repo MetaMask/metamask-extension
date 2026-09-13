@@ -125,9 +125,7 @@ export const MultichainAddressRowsList = ({
       },
       index: number,
     ): JSX.Element => {
-      const handleCopyClick = () => {
-        handleCopy(item.normalizedAddress);
-      };
+      const handleCopyClick = () => handleCopy(item.normalizedAddress);
 
       return (
         <MultichainAddressRow

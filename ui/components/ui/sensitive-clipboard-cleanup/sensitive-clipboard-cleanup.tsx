@@ -12,7 +12,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import type { SensitiveClipboardState } from '../../../hooks/useSensitiveClipboard';
+import type { SensitiveClipboardState } from '../../../hooks/useCopyToClipboard';
 
 type SensitiveClipboardCleanupProps = {
   state: SensitiveClipboardState;
@@ -34,6 +34,7 @@ export function SensitiveClipboardCleanup({
       <BannerAlert
         severity={BannerAlertSeverity.Success}
         data-testid="sensitive-clipboard-cleared"
+        onClick={(event) => event.stopPropagation()}
       >
         <Text variant={TextVariant.BodySm}>{t('clipboardCleared')}</Text>
       </BannerAlert>
@@ -44,6 +45,7 @@ export function SensitiveClipboardCleanup({
     <BannerAlert
       severity={BannerAlertSeverity.Warning}
       data-testid="sensitive-clipboard-warning"
+      onClick={(event) => event.stopPropagation()}
     >
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
         <Text variant={TextVariant.BodySm}>
@@ -56,7 +58,10 @@ export function SensitiveClipboardCleanup({
         ) : null}
         <Button
           data-testid="clear-sensitive-clipboard"
-          onClick={onClear}
+          onClick={(event) => {
+            event.stopPropagation();
+            onClear();
+          }}
           size={ButtonSize.Sm}
           variant={ButtonVariant.Secondary}
         >

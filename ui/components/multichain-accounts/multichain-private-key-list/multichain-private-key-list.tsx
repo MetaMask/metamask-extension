@@ -30,6 +30,7 @@ import {
 } from '../../component-library';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
+import { SensitiveClipboardCleanup } from '../../ui/sensitive-clipboard-cleanup/sensitive-clipboard-cleanup';
 import {
   getInternalAccountListSpreadByScopesByGroupId,
   getInternalAccountsFromGroupById,
@@ -131,7 +132,9 @@ const MultichainPrivateKeyList = ({
   );
 
   // useCopyToClipboard analysis: Copies one of your private keys
-  const [, handleCopy] = useCopyToClipboard();
+  const [, handleCopy, , sensitiveClipboard] = useCopyToClipboard({
+    sensitive: true,
+  });
 
   const accountsSpreadByNetworkByGroupId = useSelector((state) =>
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),
@@ -425,21 +428,24 @@ const MultichainPrivateKeyList = ({
         return <></>;
       }
 
-      const handleCopyClick = () => {
-        handleCopy(privateKey);
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.KeyExportCopied)
-            .addCategory(MetaMetricsEventCategory.Keys)
-            .addProperties({
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              key_type: MetaMetricsEventKeyType.Pkey,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              copy_method: 'clipboard',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              hd_entropy_index: hdEntropyIndex,
-            })
-            .build(),
-        );
+      const handleCopyClick = async () => {
+        const copied = await handleCopy(privateKey);
+        if (copied) {
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.KeyExportCopied)
+              .addCategory(MetaMetricsEventCategory.Keys)
+              .addProperties({
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                key_type: MetaMetricsEventKeyType.Pkey,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                copy_method: 'clipboard',
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                hd_entropy_index: hdEntropyIndex,
+              })
+              .build(),
+          );
+        }
+        return copied;
       };
 
       return (
@@ -502,6 +508,12 @@ const MultichainPrivateKeyList = ({
       data-testid="multichain-private-keyring-list"
     >
       {reveal ? renderedRows : renderUnrevealedContent()}
+      {reveal ? (
+        <SensitiveClipboardCleanup
+          state={sensitiveClipboard.state}
+          onClear={sensitiveClipboard.clear}
+        />
+      ) : null}
     </Box>
   );
 };

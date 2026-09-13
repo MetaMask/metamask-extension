@@ -5,15 +5,43 @@ import { useTimeout } from './useTimeout';
 // This is exported for use by the unit tests
 export const DEFAULT_UI_DELAY = 2 * SECOND;
 
+export type SensitiveClipboardState = 'idle' | 'ready' | 'cleared' | 'error';
+
+type SensitiveClipboard = {
+  state: SensitiveClipboardState;
+  clear: () => Promise<boolean>;
+};
+
+type UseCopyToClipboardOptions = {
+  sensitive: true;
+};
+
+type CopyToClipboard = (text: string) => Promise<boolean>;
+
+type StandardCopyToClipboardResult = [boolean, CopyToClipboard, () => void];
+
+type SensitiveCopyToClipboardResult = [
+  boolean,
+  CopyToClipboard,
+  () => void,
+  SensitiveClipboard,
+];
+
 /**
+ * @param options
  * @returns [copied, handleCopy, resetState]
  */
-export function useCopyToClipboard(): [
-  boolean,
-  (text: string) => Promise<boolean>,
-  () => void,
-] {
+export function useCopyToClipboard(
+  options: UseCopyToClipboardOptions,
+): SensitiveCopyToClipboardResult;
+export function useCopyToClipboard(): StandardCopyToClipboardResult;
+export function useCopyToClipboard(
+  options?: UseCopyToClipboardOptions,
+): StandardCopyToClipboardResult | SensitiveCopyToClipboardResult {
   const [copied, setCopied] = useState<boolean>(false);
+  const [sensitiveClipboardState, setSensitiveClipboardState] =
+    useState<SensitiveClipboardState>('idle');
+  const isSensitive = options?.sensitive === true;
 
   const startTimeout = useTimeout(
     () => {
@@ -26,22 +54,48 @@ export function useCopyToClipboard(): [
   );
 
   const handleCopy = useCallback(
-    (text: string) => {
-      globalThis.navigator.clipboard
-        .writeText(text)
-        .then(() => {
-          setCopied(true);
-          startTimeout?.();
-          return true;
-        })
-        .catch(() => false);
+    async (text: string) => {
+      try {
+        await globalThis.navigator.clipboard.writeText(text);
+        setCopied(true);
+        if (isSensitive) {
+          setSensitiveClipboardState('ready');
+        }
+        startTimeout?.();
+        return true;
+      } catch {
+        return false;
+      }
     },
-    [startTimeout],
+    [isSensitive, startTimeout],
   );
 
   const resetState = useCallback(() => {
     setCopied(false);
   }, []);
+
+  const clearSensitiveClipboard = useCallback(async () => {
+    try {
+      await globalThis.navigator.clipboard.writeText('');
+      setSensitiveClipboardState('cleared');
+      return true;
+    } catch {
+      setSensitiveClipboardState('error');
+      return false;
+    }
+  }, []);
+
+  if (isSensitive) {
+    return [
+      copied,
+      handleCopy,
+      resetState,
+      {
+        state: sensitiveClipboardState,
+        clear: clearSensitiveClipboard,
+      },
+    ];
+  }
 
   return [copied, handleCopy, resetState];
 }

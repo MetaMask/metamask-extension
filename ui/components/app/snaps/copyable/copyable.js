@@ -11,6 +11,7 @@ import {
   IconColor,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
+import { SensitiveClipboardCleanup } from '../../../ui/sensitive-clipboard-cleanup/sensitive-clipboard-cleanup';
 import { Icon, IconName, Box, Text } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Tooltip from '../../../ui/tooltip';
@@ -27,7 +28,9 @@ export const Copyable = ({
   const t = useI18nContext();
 
   // useCopyToClipboard analysis: Could be sensitive or non-sensitive, so the param decides
-  const [, handleCopy] = useCopyToClipboard();
+  const [, handleCopy, , sensitiveClipboard] = useCopyToClipboard(
+    sensitive ? { sensitive: true } : undefined,
+  );
   const [isVisible, setIsVisible] = useState(!sensitive);
   const [isClicked, setIsClicked] = useState(false);
 
@@ -38,9 +41,12 @@ export const Copyable = ({
     setIsVisible((state) => !state);
   };
 
-  const handleCopyClick = (e) => {
+  const handleCopyClick = async (e) => {
     e.stopPropagation();
-    handleCopy(text);
+    const copied = await handleCopy(text);
+    if (!copied) {
+      return;
+    }
     setIsClicked(true);
     startTimeout();
   };
@@ -135,6 +141,12 @@ export const Copyable = ({
           data-testid="copy-icon"
         />
       )}
+      {sensitive ? (
+        <SensitiveClipboardCleanup
+          state={sensitiveClipboard.state}
+          onClear={sensitiveClipboard.clear}
+        />
+      ) : null}
     </Box>
   );
 };
