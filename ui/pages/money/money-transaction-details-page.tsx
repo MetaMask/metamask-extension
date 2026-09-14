@@ -301,6 +301,7 @@ export function MoneyTransactionDetailsPage() {
               <InfoPopover
                 position={PopoverPosition.BottomStart}
                 iconColor={IconColor.IconAlternative}
+                wrapperStyle={{ display: 'inline-flex', alignItems: 'center' }}
                 ariaLabel={t('transactionFee')}
                 data-testid="money-transaction-details-fee-info"
               >
