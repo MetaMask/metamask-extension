@@ -783,7 +783,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
   ): void {
     const controllerPairs = [...pairs.entries()]
       .filter(([key]) => key !== 'data' && key !== 'manifest' && key !== 'meta')
-      .sort(([leftKey], [rightKey]) => leftKey.localeCompare(rightKey));
+      .toSorted(([leftKey], [rightKey]) => leftKey.localeCompare(rightKey));
     const sampleRate = this.#getPersistenceWriteSampleRate();
     if (
       controllerPairs.length === 0 ||
