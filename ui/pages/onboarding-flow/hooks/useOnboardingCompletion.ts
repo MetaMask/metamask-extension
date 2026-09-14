@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import {
@@ -8,6 +8,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import {
+  EXTERNAL_SERVICES_OWNED_PREFERENCES,
+  type ExternalServicesOwnedPreference,
+} from '../../../../shared/lib/basic-functionality-consolidation';
 import { getIsBasicFunctionalityConsolidationEnabledInBuild } from '../../../../shared/lib/environment';
 import {
   getDeferredDeepLinkRoute,
@@ -30,9 +34,8 @@ import {
   getDeferredDeepLink,
   getAccountTypeForOnboardingMetrics,
   getIsSocialLoginFlow,
-  getUseCurrencyRateCheck,
-  getUseTokenDetection,
 } from '../../../selectors';
+import { getExternalServicesOwnedPreferences } from '../../../selectors/multichain/basic-functionality';
 import {
   getCompletedOnboarding,
   getHasSeenOnboardingCompletionPage,
@@ -41,11 +44,15 @@ import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import {
   toggleExternalServices,
   toggleBasicFunctionality,
+  setOpenSeaEnabled,
   setPreference,
   setCompletedOnboarding,
   setCompletedOnboardingWithSidepanel,
   setUseAddressBarEnsResolution,
   setUseCurrencyRateCheck,
+  setUseNftDetection,
+  setUsePhishDetect,
+  setUseSafeChainsListValidation,
   setUseSidePanelAsDefault,
   setUseTokenDetection,
   removeDeferredDeepLink,
@@ -54,6 +61,25 @@ import {
 } from '../../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { useDispatch } from '../../../store/hooks';
+
+/**
+ * The action that persists each preference
+ * `toggleExternalServices` overwrites. Keyed by
+ * {@link EXTERNAL_SERVICES_OWNED_PREFERENCES} so a new entry there fails to
+ * compile until it is wired up here.
+ */
+const EXTERNAL_SERVICES_PREFERENCE_ACTIONS: Record<
+  ExternalServicesOwnedPreference,
+  (value: boolean) => ReturnType<typeof setUseTokenDetection>
+> = {
+  useTokenDetection: setUseTokenDetection,
+  useCurrencyRateCheck: setUseCurrencyRateCheck,
+  usePhishDetect: setUsePhishDetect,
+  useAddressBarEnsResolution: setUseAddressBarEnsResolution,
+  openSeaEnabled: setOpenSeaEnabled,
+  useNftDetection: setUseNftDetection,
+  useSafeChainsListValidation: setUseSafeChainsListValidation,
+};
 
 /**
  * Shared onboarding-completion actions for the completion route.
@@ -85,14 +111,11 @@ export function useOnboardingCompletion() {
   const isBasicFunctionalityToggleEnabled =
     getIsBasicFunctionalityConsolidationEnabledInBuild();
 
-  // The preferences that the onboarding privacy screen owns and that
-  // `toggleExternalServices` also writes. Captured before Basic Functionality
-  // is applied so the user's choices can be restored afterwards.
-  const useTokenDetection = useSelector(getUseTokenDetection);
-  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const useAddressBarEnsResolution = useSelector(
-    (state: { metamask: { useAddressBarEnsResolution: boolean } }) =>
-      state.metamask.useAddressBarEnsResolution,
+  // Captured before Basic Functionality is applied, because applying it
+  // overwrites these. See the restore below.
+  const externalServicesOwnedPreferences = useSelector(
+    getExternalServicesOwnedPreferences,
+    shallowEqual,
   );
 
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
@@ -297,15 +320,17 @@ export function useOnboardingCompletion() {
 
         // `toggleExternalServices(true)` turns every preference it owns back
         // on, which would discard the choices made on the onboarding privacy
-        // screen. Restore them. Nothing is restored when Basic Functionality is
-        // turned off, because that must disable them, or on the consolidated
-        // path, which owns these preferences by design.
+        // screen. Restore the ones the user turned off. Nothing is restored
+        // when Basic Functionality is turned off, because that must disable
+        // them, or on the consolidated path, which owns them by design.
         if (!isBasicFunctionalityToggleEnabled && basicFunctionalityEnabled) {
-          await dispatch(setUseTokenDetection(useTokenDetection));
-          await dispatch(setUseCurrencyRateCheck(useCurrencyRateCheck));
-          await dispatch(
-            setUseAddressBarEnsResolution(useAddressBarEnsResolution),
-          );
+          for (const preference of EXTERNAL_SERVICES_OWNED_PREFERENCES) {
+            if (!externalServicesOwnedPreferences[preference]) {
+              await dispatch(
+                EXTERNAL_SERVICES_PREFERENCE_ACTIONS[preference](false),
+              );
+            }
+          }
         }
 
         if (!backupAndSyncOnboardingToggleState) {
@@ -362,6 +387,7 @@ export function useOnboardingCompletion() {
       deferredDeepLink,
       dispatch,
       externalServicesOnboardingToggleState,
+      externalServicesOwnedPreferences,
       firstTimeFlowType,
       isBasicFunctionalityToggleEnabled,
       isOnboardingCompleted,
@@ -370,9 +396,6 @@ export function useOnboardingCompletion() {
       isSocialLoginFlow,
       isUnlocked,
       trackEvent,
-      useAddressBarEnsResolution,
-      useCurrencyRateCheck,
-      useTokenDetection,
     ],
   );
 

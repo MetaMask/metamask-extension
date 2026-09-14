@@ -84,6 +84,12 @@ const mockSetUseCurrencyRateCheck = jest.fn().mockResolvedValue(undefined);
 const mockSetUseAddressBarEnsResolution = jest
   .fn()
   .mockResolvedValue(undefined);
+const mockSetUsePhishDetect = jest.fn().mockResolvedValue(undefined);
+const mockSetOpenSeaEnabled = jest.fn().mockResolvedValue(undefined);
+const mockSetUseNftDetection = jest.fn().mockResolvedValue(undefined);
+const mockSetUseSafeChainsListValidation = jest
+  .fn()
+  .mockResolvedValue(undefined);
 const mockSetHasSeenOnboardingCompletionPage = jest
   .fn()
   .mockResolvedValue(undefined);
@@ -99,6 +105,10 @@ const backgroundConnectionMock = new Proxy(
     setUseTokenDetection: mockSetUseTokenDetection,
     setUseCurrencyRateCheck: mockSetUseCurrencyRateCheck,
     setUseAddressBarEnsResolution: mockSetUseAddressBarEnsResolution,
+    setUsePhishDetect: mockSetUsePhishDetect,
+    setOpenSeaEnabled: mockSetOpenSeaEnabled,
+    setUseNftDetection: mockSetUseNftDetection,
+    setUseSafeChainsListValidation: mockSetUseSafeChainsListValidation,
     setHasSeenOnboardingCompletionPage: mockSetHasSeenOnboardingCompletionPage,
     completeOnboarding: mockCompleteOnboarding,
   },
@@ -145,6 +155,10 @@ describe('useOnboardingCompletion', () => {
       useTokenDetection: true,
       useCurrencyRateCheck: true,
       useAddressBarEnsResolution: true,
+      usePhishDetect: true,
+      openSeaEnabled: true,
+      useNftDetection: true,
+      useSafeChainsListValidation: true,
     },
     appState: {
       externalServicesOnboardingToggleState: true,
@@ -305,7 +319,7 @@ describe('useOnboardingCompletion', () => {
   });
 
   describe('onboarding privacy choices', () => {
-    it('restores the choices that toggleExternalServices overwrites', async () => {
+    it('restores every preference the user turned off', async () => {
       const { result } = renderHookWithProvider(
         () => useOnboardingCompletion(),
         {
@@ -314,6 +328,10 @@ describe('useOnboardingCompletion', () => {
             ...mockState.metamask,
             useCurrencyRateCheck: false,
             useAddressBarEnsResolution: false,
+            usePhishDetect: false,
+            openSeaEnabled: false,
+            useNftDetection: false,
+            useSafeChainsListValidation: false,
           },
         },
       );
@@ -326,8 +344,38 @@ describe('useOnboardingCompletion', () => {
         expect(mockToggleExternalServices).toHaveBeenCalledWith(true);
         expect(mockSetUseCurrencyRateCheck).toHaveBeenCalledWith(false);
         expect(mockSetUseAddressBarEnsResolution).toHaveBeenCalledWith(false);
-        expect(mockSetUseTokenDetection).toHaveBeenCalledWith(true);
+        expect(mockSetUsePhishDetect).toHaveBeenCalledWith(false);
+        expect(mockSetOpenSeaEnabled).toHaveBeenCalledWith(false);
+        expect(mockSetUseNftDetection).toHaveBeenCalledWith(false);
+        expect(mockSetUseSafeChainsListValidation).toHaveBeenCalledWith(false);
       });
+    });
+
+    it('leaves the preferences the user kept on alone', async () => {
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            useCurrencyRateCheck: false,
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding();
+      });
+
+      await waitFor(() => {
+        expect(mockSetUseCurrencyRateCheck).toHaveBeenCalledWith(false);
+      });
+      expect(mockSetUseTokenDetection).not.toHaveBeenCalled();
+      expect(mockSetUseAddressBarEnsResolution).not.toHaveBeenCalled();
+      expect(mockSetUsePhishDetect).not.toHaveBeenCalled();
+      expect(mockSetOpenSeaEnabled).not.toHaveBeenCalled();
+      expect(mockSetUseNftDetection).not.toHaveBeenCalled();
+      expect(mockSetUseSafeChainsListValidation).not.toHaveBeenCalled();
     });
 
     it('does not restore them when Basic Functionality is turned off', async () => {
@@ -338,6 +386,7 @@ describe('useOnboardingCompletion', () => {
           metamask: {
             ...mockState.metamask,
             useCurrencyRateCheck: false,
+            usePhishDetect: false,
           },
           appState: {
             ...mockState.appState,
@@ -354,8 +403,7 @@ describe('useOnboardingCompletion', () => {
         expect(mockToggleExternalServices).toHaveBeenCalledWith(false);
       });
       expect(mockSetUseCurrencyRateCheck).not.toHaveBeenCalled();
-      expect(mockSetUseAddressBarEnsResolution).not.toHaveBeenCalled();
-      expect(mockSetUseTokenDetection).not.toHaveBeenCalled();
+      expect(mockSetUsePhishDetect).not.toHaveBeenCalled();
     });
 
     it('leaves the consolidated path to own them', async () => {
@@ -369,6 +417,7 @@ describe('useOnboardingCompletion', () => {
           metamask: {
             ...mockState.metamask,
             useCurrencyRateCheck: false,
+            usePhishDetect: false,
           },
         },
       );
@@ -381,8 +430,7 @@ describe('useOnboardingCompletion', () => {
         expect(mockToggleBasicFunctionality).toHaveBeenCalledWith(true);
       });
       expect(mockSetUseCurrencyRateCheck).not.toHaveBeenCalled();
-      expect(mockSetUseAddressBarEnsResolution).not.toHaveBeenCalled();
-      expect(mockSetUseTokenDetection).not.toHaveBeenCalled();
+      expect(mockSetUsePhishDetect).not.toHaveBeenCalled();
     });
   });
 

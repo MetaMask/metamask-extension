@@ -28,6 +28,7 @@ import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
 import type { Preferences } from '../../../shared/types/preferences';
 import {
   BFT_CHILD_PREFERENCES,
+  EXTERNAL_SERVICES_OWNED_PREFERENCES,
   getBasicFunctionalityConsolidationPlan,
   isBasicFunctionalitySocialLoginUser,
   type BasicFunctionalityPreferenceState,
@@ -583,17 +584,23 @@ export class PreferencesController extends BaseController<
     });
   }
 
+  /**
+   * Turns Basic Functionality on or off along with the preferences it owns.
+   *
+   * The owned preferences are listed in
+   * {@link EXTERNAL_SERVICES_OWNED_PREFERENCES} so that callers which need to
+   * know what this overwrites, such as onboarding completion, cannot drift
+   * from it.
+   *
+   * @param useExternalServices - Whether external services should be enabled.
+   */
   toggleExternalServices(useExternalServices: boolean): void {
     this.update((state) => {
       state.useExternalServices = useExternalServices;
+      for (const preference of EXTERNAL_SERVICES_OWNED_PREFERENCES) {
+        state[preference] = useExternalServices;
+      }
     });
-    this.setUseTokenDetection(useExternalServices);
-    this.setUseCurrencyRateCheck(useExternalServices);
-    this.setUsePhishDetect(useExternalServices);
-    this.setUseAddressBarEnsResolution(useExternalServices);
-    this.setOpenSeaEnabled(useExternalServices);
-    this.setUseNftDetection(useExternalServices);
-    this.setUseSafeChainsListValidation(useExternalServices);
   }
 
   /**
