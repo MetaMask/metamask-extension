@@ -6,6 +6,11 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { clearToastPhase } from '../../toast-listener/toast-lifecycle';
+import {
+  clearMoneyAccountDepositIntent,
+  getMoneyAccountDepositIntent,
+  setMoneyAccountDepositIntent,
+} from '../../../../helpers/money/deposit-intent';
 import { useMoneyAccountToasts } from './money-account-toast-listener';
 
 const EVENT = 'TransactionController:transactionStatusUpdated';
@@ -15,13 +20,23 @@ const mockUnsubscribe = jest.fn();
 const mockToastLoading = jest.fn();
 const mockToastSuccess = jest.fn();
 const mockToastError = jest.fn();
+const mockToastDismiss = jest.fn();
 const mockUseMoneyAccountToastLabel = jest.fn();
+let mockTransactions: TransactionMeta[] = [];
 
 jest.mock('../../../../hooks/useMessenger', () => ({
   useMessenger: () => ({
     subscribe: mockSubscribe,
     unsubscribe: mockUnsubscribe,
   }),
+}));
+
+jest.mock('react-redux', () => ({
+  useStore: () => ({ getState: () => ({}) }),
+}));
+
+jest.mock('../../../../selectors/transactionController', () => ({
+  selectTransactions: () => mockTransactions,
 }));
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
@@ -33,7 +48,7 @@ jest.mock('../../../ui/toast/toast', () => ({
     loading: (...args: unknown[]) => mockToastLoading(...args),
     success: (...args: unknown[]) => mockToastSuccess(...args),
     error: (...args: unknown[]) => mockToastError(...args),
-    dismiss: jest.fn(),
+    dismiss: (...args: unknown[]) => mockToastDismiss(...args),
   },
   ToastContent: ({
     title,
@@ -102,9 +117,17 @@ describe('useMoneyAccountToasts', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseMoneyAccountToastLabel.mockReturnValue(undefined);
-    ['approved-1', 'lifecycle-1', 'no-hash', 'labelled'].forEach(
-      clearToastPhase,
-    );
+    mockTransactions = [];
+    [
+      'approved-1',
+      'lifecycle-1',
+      'no-hash',
+      'labelled',
+      'sped-up',
+      'cancelled',
+      'intent-1',
+    ].forEach(clearToastPhase);
+    clearMoneyAccountDepositIntent('0xbatch');
   });
 
   it('subscribes on mount and unsubscribes on unmount', () => {
@@ -178,6 +201,62 @@ describe('useMoneyAccountToasts', () => {
     });
   });
 
+  it('dismisses the pending toast instead of failing when dropped for a speed-up', () => {
+    const { emit } = mountHook();
+    const meta = (status: TransactionStatus) =>
+      createMoneyDeposit({ id: 'sped-up', status, replacedById: 'faster' });
+    mockTransactions = [
+      createMoneyDeposit({ id: 'faster', status: TransactionStatus.submitted }),
+    ];
+
+    emit({ transactionMeta: meta(TransactionStatus.submitted) });
+    emit({ transactionMeta: meta(TransactionStatus.dropped) });
+
+    expect(mockToastDismiss).toHaveBeenCalledWith('money-tx-sped-up');
+    expect(mockToastError).not.toHaveBeenCalled();
+  });
+
+  it('shows a failed toast when dropped for a cancel', () => {
+    const { emit } = mountHook();
+    const meta = (status: TransactionStatus) =>
+      createMoneyDeposit({ id: 'cancelled', status, replacedById: 'cancel' });
+    mockTransactions = [
+      createMoneyDeposit({
+        id: 'cancel',
+        status: TransactionStatus.submitted,
+        type: TransactionType.cancel,
+      }),
+    ];
+
+    emit({ transactionMeta: meta(TransactionStatus.submitted) });
+    emit({ transactionMeta: meta(TransactionStatus.dropped) });
+
+    expect(mockToastDismiss).not.toHaveBeenCalled();
+    expect(mockToastError).toHaveBeenCalledWith(expect.anything(), {
+      id: 'money-tx-cancelled',
+    });
+  });
+
+  it('passes the recorded deposit intent to the label and clears it on terminal toasts', () => {
+    setMoneyAccountDepositIntent('0xbatch', 'card');
+    const { emit } = mountHook();
+    const meta = (status: TransactionStatus) =>
+      createMoneyDeposit({ id: 'intent-1', status, batchId: '0xbatch' });
+
+    emit({ transactionMeta: meta(TransactionStatus.submitted) });
+    expect(getMoneyAccountDepositIntent('0xbatch')).toBe('card');
+
+    emit({ transactionMeta: meta(TransactionStatus.confirmed) });
+    expect(getMoneyAccountDepositIntent('0xbatch')).toBeUndefined();
+
+    render(mockToastSuccess.mock.calls[0][0]);
+    expect(mockUseMoneyAccountToastLabel).toHaveBeenCalledWith(
+      'success',
+      'intent-1',
+      'card',
+    );
+  });
+
   it('renders the money label with a details link, falling back to generic copy', () => {
     mockUseMoneyAccountToastLabel.mockReturnValue({
       title: 'money-title',
@@ -197,6 +276,7 @@ describe('useMoneyAccountToasts', () => {
     expect(mockUseMoneyAccountToastLabel).toHaveBeenCalledWith(
       'pending',
       'labelled',
+      undefined,
     );
     expect(screen.getByTestId('money-account-toast-pending')).toHaveTextContent(
       'money-title',

@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
+import { useStore } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   TransactionStatus,
+  TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
@@ -12,10 +14,18 @@ import { useMessenger } from '../../../../hooks/useMessenger';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { defineAllowedRouteCapabilities } from '../../../../helpers/route-messenger-helpers';
 import { isMoneyAccountTx } from '../../../../helpers/money/money-transaction-guards';
+import {
+  clearMoneyAccountDepositIntent,
+  getMoneyAccountDepositIntent,
+  type MoneyAccountDepositIntent,
+} from '../../../../helpers/money/deposit-intent';
 import type { RouteMessengerFromCapabilities } from '../../../../messengers/route-messenger';
+import type { MetaMaskReduxState } from '../../../../store/store';
+import { selectTransactions } from '../../../../selectors/transactionController';
 import { toast, ToastContent } from '../../../ui/toast/toast';
 import type { ToastStatus } from '../../toast-listener/shared';
 import {
+  clearToastPhase,
   shouldShowPendingToast,
   shouldShowTerminalToast,
 } from '../../toast-listener/toast-lifecycle';
@@ -60,6 +70,14 @@ const failedStatuses = new Set<string>([
 
 const generateToastId = (id: string) => `money-tx-${id}`;
 
+function isSpeedUpReplacement(
+  replacedById: string,
+  transactions: TransactionMeta[],
+) {
+  const replacement = transactions.find((tx) => tx.id === replacedById);
+  return replacement?.type !== TransactionType.cancel;
+}
+
 function getDetailsRoute(chainId?: Hex, hash?: string) {
   if (!chainId || !hash) {
     return undefined;
@@ -71,6 +89,7 @@ type ContentProps = {
   toastId: string;
   status: ToastStatus;
   transactionId: string;
+  recordedIntent?: MoneyAccountDepositIntent;
   to?: string;
 };
 
@@ -78,12 +97,14 @@ const MoneyAccountToastContent = ({
   toastId,
   status,
   transactionId,
+  recordedIntent,
   to,
 }: ContentProps) => {
   const t = useI18nContext();
   const label: ToastLabel = useMoneyAccountToastLabel(
     status,
     transactionId,
+    recordedIntent,
   ) ?? { title: t(fallbackToastLabels[status]) };
 
   return (
@@ -109,13 +130,18 @@ function showMoneyAccountToast(
   status: ToastStatus,
   transactionMeta: TransactionMeta,
 ) {
-  const { id, chainId, hash } = transactionMeta;
+  const { id, chainId, hash, batchId } = transactionMeta;
   const toastId = generateToastId(id);
+  const recordedIntent = getMoneyAccountDepositIntent(batchId);
+  if (status !== 'pending') {
+    clearMoneyAccountDepositIntent(batchId);
+  }
   const content = (
     <MoneyAccountToastContent
       toastId={toastId}
       status={status}
       transactionId={id}
+      recordedIntent={recordedIntent}
       to={getDetailsRoute(chainId, hash)}
     />
   );
@@ -135,6 +161,7 @@ function showMoneyAccountToast(
  */
 export function useMoneyAccountToasts(): void {
   const messenger = useMessenger<MoneyAccountToastMessenger>();
+  const store = useStore<MetaMaskReduxState>();
 
   useEffect(() => {
     const handleStatusUpdated = (
@@ -150,7 +177,7 @@ export function useMoneyAccountToasts(): void {
         return;
       }
 
-      const { id, status } = transactionMeta;
+      const { id, status, replacedById } = transactionMeta;
 
       if (pendingStatuses.has(status)) {
         if (shouldShowPendingToast(id)) {
@@ -161,8 +188,19 @@ export function useMoneyAccountToasts(): void {
         shouldShowTerminalToast(id)
       ) {
         showMoneyAccountToast('success', transactionMeta);
-      } else if (failedStatuses.has(status) && shouldShowTerminalToast(id)) {
-        showMoneyAccountToast('failed', transactionMeta);
+      } else if (failedStatuses.has(status)) {
+        if (
+          replacedById &&
+          isSpeedUpReplacement(
+            replacedById,
+            selectTransactions(store.getState()),
+          )
+        ) {
+          toast.dismiss(generateToastId(id));
+          clearToastPhase(id);
+        } else if (shouldShowTerminalToast(id)) {
+          showMoneyAccountToast('failed', transactionMeta);
+        }
       }
     };
 
@@ -177,7 +215,7 @@ export function useMoneyAccountToasts(): void {
         handleStatusUpdated,
       );
     };
-  }, [messenger]);
+  }, [messenger, store]);
 }
 
 const MoneyAccountToastListenerInner = () => {

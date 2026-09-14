@@ -1,4 +1,3 @@
-import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
@@ -9,11 +8,7 @@ import { getAccountGroupsByAddress } from '../../../../selectors/multichain-acco
 import type { MultichainAccountsState } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { getMoneyAccountFiatAmount } from '../../../../selectors/activity/enrich-local-activity';
 import type { MetaMaskReduxState } from '../../../../store/store';
-import {
-  clearMoneyAccountDepositIntent,
-  getMoneyAccountDepositIntent,
-  type MoneyAccountDepositIntent,
-} from '../../../../helpers/money/deposit-intent';
+import type { MoneyAccountDepositIntent } from '../../../../helpers/money/deposit-intent';
 import {
   isMoneyDepositTx,
   isMoneyWithdrawTx,
@@ -163,34 +158,6 @@ function useWithdrawDestination(
   );
 }
 
-function useDepositIntent(
-  isDeposit: boolean,
-  status: ToastStatus,
-  transactionMeta: TransactionMeta | undefined,
-): MoneyAccountDepositIntent {
-  const batchId = transactionMeta?.batchId;
-
-  // Memoised so the terminal toast keeps the recorded intent after the effect
-  // below clears it; the fallback derivation only applies to later updates.
-  const intent = useMemo(() => {
-    if (!isDeposit) {
-      return 'convert';
-    }
-    return (
-      getMoneyAccountDepositIntent(batchId) ??
-      (transactionMeta ? resolveMoneyDepositIntent(transactionMeta) : 'convert')
-    );
-  }, [isDeposit, batchId, transactionMeta]);
-
-  useEffect(() => {
-    if (isDeposit && status !== 'pending') {
-      clearMoneyAccountDepositIntent(batchId);
-    }
-  }, [isDeposit, status, batchId]);
-
-  return intent;
-}
-
 /**
  * Toast copy for money account deposits and withdrawals, mirroring mobile's
  * money toasts. Classified from the transaction itself rather than the
@@ -199,10 +166,14 @@ function useDepositIntent(
  *
  * @param status - Toast status.
  * @param transactionId - Transaction id the toast was raised for.
+ * @param recordedIntent - Deposit intent recorded when the deposit was
+ * initiated, captured by the caller when the toast was raised. Falls back to
+ * deriving the intent from the transaction's payment method.
  */
 export function useMoneyAccountToastLabel(
   status: ToastStatus,
   transactionId: string | undefined,
+  recordedIntent?: MoneyAccountDepositIntent,
 ): ToastLabel | undefined {
   const t = useI18nContext();
   const transactionMeta = useSelector((state: MetaMaskReduxState) =>
@@ -215,7 +186,6 @@ export function useMoneyAccountToastLabel(
   const isWithdraw =
     !isDeposit &&
     Boolean(transactionMeta && isMoneyWithdrawTx(transactionMeta));
-  const intent = useDepositIntent(isDeposit, status, transactionMeta);
   const destination = useWithdrawDestination(
     isWithdraw
       ? getMoneyAccountWithdrawTransferDetails(transactionMeta).recipient
@@ -226,6 +196,7 @@ export function useMoneyAccountToastLabel(
     return undefined;
   }
   if (isDeposit) {
+    const intent = recordedIntent ?? resolveMoneyDepositIntent(transactionMeta);
     return getDepositLabel(status, transactionMeta, intent, t);
   }
   if (isWithdraw) {

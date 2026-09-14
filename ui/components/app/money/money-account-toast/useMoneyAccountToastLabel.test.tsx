@@ -1,11 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import {
-  clearMoneyAccountDepositIntent,
-  getMoneyAccountDepositIntent,
-  setMoneyAccountDepositIntent,
-} from '../../../../helpers/money/deposit-intent';
 import { useMoneyAccountToastLabel } from './useMoneyAccountToastLabel';
 
 const mockT = jest.fn((key: string, args?: string[]) =>
@@ -87,7 +82,6 @@ describe('useMoneyAccountToastLabel', () => {
     mockTransaction = undefined;
     mockInternalAccounts = {};
     mockAccountGroups = [];
-    clearMoneyAccountDepositIntent(BATCH_ID);
   });
 
   it('returns undefined for transactions that are not money account batches', () => {
@@ -112,30 +106,26 @@ describe('useMoneyAccountToastLabel', () => {
         description: 'moneyToastInProgressDescription',
       });
 
-      setMoneyAccountDepositIntent(BATCH_ID, 'card');
       const recorded = renderHook(() =>
-        useMoneyAccountToastLabel('pending', 'tx-1'),
+        useMoneyAccountToastLabel('pending', 'tx-1', 'card'),
       );
       expect(recorded.result.current).toStrictEqual({
         title: 'moneyToastDepositInProgressTitleCard',
         description: 'moneyToastDepositInProgressDescriptionCard',
       });
-      expect(getMoneyAccountDepositIntent(BATCH_ID)).toBe('card');
     });
 
-    it('formats the amount on success and clears the recorded intent', () => {
+    it('formats the amount on success', () => {
       setDeposit({ metamaskPay: { targetFiat: '20.5' } });
-      setMoneyAccountDepositIntent(BATCH_ID, 'addMusd');
 
       const { result } = renderHook(() =>
-        useMoneyAccountToastLabel('success', 'tx-1'),
+        useMoneyAccountToastLabel('success', 'tx-1', 'addMusd'),
       );
 
       expect(result.current).toStrictEqual({
         title: 'moneyToastDepositSuccessTitleAddMusd',
         description: 'moneyToastDepositSuccessDescription:$20.50',
       });
-      expect(getMoneyAccountDepositIntent(BATCH_ID)).toBeUndefined();
     });
 
     it('falls back to convert copy without an amount when nothing is known', () => {
