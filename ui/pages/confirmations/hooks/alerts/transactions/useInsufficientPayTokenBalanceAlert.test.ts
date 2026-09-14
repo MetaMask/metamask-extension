@@ -525,6 +525,87 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       expect(result.current).toStrictEqual([]);
     });
 
+    it.each([
+      ['deposit', TransactionType.moneyAccountDeposit],
+      ['withdraw', TransactionType.moneyAccountWithdraw],
+    ] as const)(
+      'returns no alert for a money-account %s even when sponsorship is not flagged',
+      (_name, type) => {
+        useTransactionPayTokenMock.mockReturnValue({
+          payToken: {
+            ...PAY_TOKEN_MOCK,
+            chainId: CHAIN_IDS.MONAD as Hex,
+          },
+          isNative: false,
+          setPayToken: jest.fn(),
+        });
+
+        useTokenWithBalanceMock.mockReturnValue({
+          address: NATIVE_TOKEN_MOCK.address,
+          chainId: CHAIN_IDS.MONAD,
+          symbol: 'MON',
+          decimals: 18,
+          balance: '0',
+          balanceRaw: '0',
+          balanceFiat: '$0.00',
+          tokenFiatAmount: 0,
+        });
+
+        // `isGasFeeSponsored` is deliberately absent: it is only set for
+        // `CHAIN_IDS.MONAD` at creation and `useTransactionConfirm` can clear
+        // it, which is what made this alert appear intermittently.
+        const { result } = runHook(
+          {},
+          {
+            confirmationOverrides: {
+              nestedTransactions: [{ type }],
+            },
+          },
+        );
+
+        expect(result.current).toStrictEqual([]);
+      },
+    );
+
+    it('returns no alert for a money-account withdraw when post-quote is disabled', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          chainId: CHAIN_IDS.MONAD as Hex,
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      useTokenWithBalanceMock.mockReturnValue({
+        address: NATIVE_TOKEN_MOCK.address,
+        chainId: CHAIN_IDS.MONAD,
+        symbol: 'MON',
+        decimals: 18,
+        balance: '0',
+        balanceRaw: '0',
+        balanceFiat: '$0.00',
+        tokenFiatAmount: 0,
+      });
+
+      // With `confirmations_pay_post_quote` off, `canSelectWithdrawToken` is
+      // false, so the withdraw used to fall through to the native-gas check
+      // even though it still runs as a sponsored batch from the money account.
+      const { result } = runHook(
+        {},
+        {
+          confirmationOverrides: {
+            isGasFeeSponsored: true,
+            nestedTransactions: [
+              { type: TransactionType.moneyAccountWithdraw },
+            ],
+          },
+        },
+      );
+
+      expect(result.current).toStrictEqual([]);
+    });
+
     it('returns alert on Monad when the transaction is not a sponsored money-account deposit', () => {
       useTransactionPayTokenMock.mockReturnValue({
         payToken: {
