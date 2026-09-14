@@ -62,17 +62,17 @@ const GATED_METRIC_VALUES = [
   // measurement of its flow (#45452), so it inherits every one of their
   // defects by construction.
   //
-  // `onboardingImportWallet.total` is among them and is the only metric that
-  // has ever blocked a pull request — 27 of 116 Chrome runs on `main`,
-  // 2026-08-27 to 09-03. The gate therefore stops blocking on timing entirely.
+  // `onboardingImportWallet.total` is among them. It was the only gated metric
+  // that failed the gate on `main` from 2026-08-27 to 09-03, in 27 of 116
+  // Chrome runs, so no timing metric that has failed the gate stays gated.
   //
   // The flows themselves keep running. Only the timing entries leave the
-  // allowlist, because seven of the eight CLS canaries above are produced by
+  // allowlist, because five of the six CLS canaries above are produced by
   // these same flows, and CLS is unaffected by the step-timer defects — it is
   // read in-page by `web-vitals` rather than timed from the driver.
   //
   // Restore condition per flow. Every ticket listed for a flow must close, and
-  // restoring is not a revert: a metric returns by qualifying under the
+  // restoring is not a revert: a metric returns by graduating under the
   // procedure above against data produced after those fixes, never by being
   // added back.
   //

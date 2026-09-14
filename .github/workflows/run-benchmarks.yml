@@ -28,6 +28,10 @@ jobs:
         # Startup + interaction + user journeys: chrome/firefox × webpack × preset (test build: build-test-webpack / build-test-mv2-webpack).
         browser: [chrome, firefox]
         buildType: [webpack]
+        # `startupPowerUserHome` is paused (#46078). It returns when #45945 (it
+        # exits 0 with no measurements) closes and its data graduates under the
+        # procedure in test/e2e/benchmarks/utils/gated-metrics.ts. It ran with
+        # `--browserLoads 15 --pageLoads 7`, which a restored leg needs again.
         pageType:
           - startupStandardHome
           - interactionUserActions

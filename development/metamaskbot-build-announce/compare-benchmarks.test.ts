@@ -194,8 +194,7 @@ describe('compare-benchmarks', () => {
     it('still fails on startupStandardHome.uiStartup, which stays gated', () => {
       // The control for the cases above: at least one metric must still block,
       // or every one of them would pass against an allowlist that gates
-      // nothing. Re-pointed from `onboardingImportWallet.total` when #46078
-      // paused the CUF-derived timing metrics.
+      // nothing.
       const benchmarks = [
         {
           name: 'benchmark-chrome-webpack-startupStandardHome',
@@ -215,10 +214,11 @@ describe('compare-benchmarks', () => {
     });
 
     it('no longer blocks on onboardingImportWallet.total, paused per #46078', () => {
-      // It was the only metric that has ever blocked a pull request: 27 of 116
-      // Chrome runs on `main`, 2026-08-27 to 09-03. Its clock runs in the Node
-      // test process (#46006) and its value is the sum of those step timers
-      // rather than a measurement of the flow (#45452), so a breach now warns.
+      // It was the only gated metric that failed the gate on `main` from
+      // 2026-08-27 to 09-03, in 27 of 116 Chrome runs. Its clock runs in the
+      // Node test process (#46006) and its value is the sum of those step
+      // timers rather than a measurement of the flow (#45452), so a breach
+      // warns.
       const benchmarks = [
         {
           name: 'benchmark-chrome-webpack-userJourneyOnboardingImport',
