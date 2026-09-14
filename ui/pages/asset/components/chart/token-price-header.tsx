@@ -122,7 +122,7 @@ const TokenPriceHeader = ({
       {shouldShowPriceEmptyState && <PriceEmptyState />}
       {(shouldShowPrice || shouldShowPriceMuted) && (
         <Text
-          data-testid="token-price-header-price"
+          data-testid="asset-hovered-price"
           variant={TextVariant.displayMd}
           fontWeight={FontWeight.Medium}
           borderRadius={BorderRadius.LG}
@@ -143,7 +143,7 @@ const TokenPriceHeader = ({
           flexDirection={BoxFlexDirection.Row}
         >
           <Text
-            data-testid="token-price-header-percent-change"
+            data-testid="asset-price-percent-change"
             variant={TextVariant.bodyMdMedium}
             color={getPercentChangeColor(percentChange)}
           >

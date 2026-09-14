@@ -41,14 +41,14 @@ describe('TokenPriceHeader', () => {
       expect(container.querySelector('.mb-1.rounded-lg')).toBeInTheDocument();
       // Price should not be visible
       expect(
-        screen.queryByTestId('token-price-header-price'),
+        screen.queryByTestId('asset-hovered-price'),
       ).not.toBeInTheDocument();
     });
 
     it('shows muted price when loading with existing price', () => {
       render(<TokenPriceHeader {...defaultProps} loading={true} price={100} />);
 
-      const priceElement = screen.getByTestId('token-price-header-price');
+      const priceElement = screen.getByTestId('asset-hovered-price');
       expect(priceElement).toBeInTheDocument();
       expect(priceElement).toHaveStyle({ opacity: '0.5' });
     });
@@ -69,7 +69,7 @@ describe('TokenPriceHeader', () => {
     it('displays formatted price when available', () => {
       render(<TokenPriceHeader {...defaultProps} price={100.5} />);
 
-      const priceElement = screen.getByTestId('token-price-header-price');
+      const priceElement = screen.getByTestId('asset-hovered-price');
       expect(priceElement).toHaveTextContent('USD 100.50');
     });
 
@@ -90,7 +90,7 @@ describe('TokenPriceHeader', () => {
       );
 
       const percentElement = screen.getByTestId(
-        'token-price-header-percent-change',
+        'asset-price-percent-change',
       );
       expect(percentElement).toHaveTextContent('+5.25%');
       // Check for success color class
@@ -107,7 +107,7 @@ describe('TokenPriceHeader', () => {
       );
 
       const percentElement = screen.getByTestId(
-        'token-price-header-percent-change',
+        'asset-price-percent-change',
       );
       expect(percentElement).toHaveTextContent('-3.75%');
       // Check for error color class
@@ -120,7 +120,7 @@ describe('TokenPriceHeader', () => {
       );
 
       const percentElement = screen.getByTestId(
-        'token-price-header-percent-change',
+        'asset-price-percent-change',
       );
       expect(percentElement).toHaveTextContent('+0.00%');
       // Check for default color class
@@ -132,7 +132,7 @@ describe('TokenPriceHeader', () => {
 
       // When percentChange is undefined and not loading, empty state shows
       expect(
-        screen.queryByTestId('token-price-header-percent-change'),
+        screen.queryByTestId('asset-price-percent-change'),
       ).not.toBeInTheDocument();
     });
   });
@@ -160,7 +160,7 @@ describe('TokenPriceHeader', () => {
 
       // Should only have percent change, no date
       const percentElement = screen.getByTestId(
-        'token-price-header-percent-change',
+        'asset-price-percent-change',
       );
       expect(percentElement.parentElement?.childElementCount).toBe(1);
     });
@@ -178,7 +178,7 @@ describe('TokenPriceHeader', () => {
 
       // Should show dash for NaN
       const percentElement = screen.getByTestId(
-        'token-price-header-percent-change',
+        'asset-price-percent-change',
       );
       expect(percentElement).toHaveTextContent('-');
     });
@@ -193,7 +193,7 @@ describe('TokenPriceHeader', () => {
       );
 
       const percentElement = screen.getByTestId(
-        'token-price-header-percent-change',
+        'asset-price-percent-change',
       );
       expect(percentElement).toHaveTextContent('+1000.50%');
     });
@@ -201,7 +201,7 @@ describe('TokenPriceHeader', () => {
     it('handles very small prices', () => {
       render(<TokenPriceHeader {...defaultProps} price={0.00001} />);
 
-      const priceElement = screen.getByTestId('token-price-header-price');
+      const priceElement = screen.getByTestId('asset-hovered-price');
       expect(priceElement).toHaveTextContent('USD 0.00');
     });
   });
