@@ -45,6 +45,16 @@ export type PreferencesControllerSetUseSafeChainsListValidationAction = {
   handler: PreferencesController['setUseSafeChainsListValidation'];
 };
 
+/**
+ * Turns Basic Functionality on or off along with the preferences it owns.
+ *
+ * The owned preferences are listed in
+ * {@link EXTERNAL_SERVICES_OWNED_PREFERENCES} so that callers which need to
+ * know what this overwrites, such as onboarding completion, cannot drift
+ * from it.
+ *
+ * @param useExternalServices - Whether external services should be enabled.
+ */
 export type PreferencesControllerToggleExternalServicesAction = {
   type: `PreferencesController:toggleExternalServices`;
   handler: PreferencesController['toggleExternalServices'];
