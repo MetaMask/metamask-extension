@@ -66,7 +66,6 @@ import {
 import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
-  detectTokens,
   refreshAssetsForSelectedAccount,
   setEnabledAllPopularNetworks,
   setTokenNetworkFilter,
@@ -83,7 +82,6 @@ import {
   ASSETS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
-import { getIsAssetsUnifyStateEnabled } from '../../../../../selectors/assets-unify-state/feature-flags';
 import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
 import {
   getInternalAccountsFromGroupById,
@@ -130,7 +128,6 @@ const AssetListControlBar = ({
   const accountSupportsEnabledNetworks = useSelector(
     selectAccountSupportsEnabledNetworks,
   );
-  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
   const selectedInternalAccount = useSelector(getSelectedInternalAccount);
   const isEvmOnlySelectedAccountGroup = useSelector(
     (state: MetaMaskReduxState) => {
@@ -345,17 +342,13 @@ const AssetListControlBar = ({
   };
 
   const handleRefresh = () => {
-    if (isAssetsUnifyStateEnabled) {
-      if (selectedInternalAccount) {
-        dispatch(
-          refreshAssetsForSelectedAccount([selectedInternalAccount], {
-            chainIds: selectedCaipChainIds,
-            assetTypes: ['token', 'price', 'metadata'],
-          }),
-        );
-      }
-    } else {
-      dispatch(detectTokens(Object.keys(enabledNetworksByNamespace)));
+    if (selectedInternalAccount) {
+      dispatch(
+        refreshAssetsForSelectedAccount([selectedInternalAccount], {
+          chainIds: selectedCaipChainIds,
+          assetTypes: ['token', 'price', 'metadata'],
+        }),
+      );
     }
     closePopover();
   };

@@ -1,16 +1,14 @@
 import React, { ReactNode, createContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import useTokenDetectionPolling from '../hooks/useTokenDetectionPolling';
 import useStaticTokensPollingHook from '../hooks/useStaticTokensPolling';
 import useDeFiPolling from '../hooks/defi/useDeFiPolling';
 import { getIsAssetsUnifyStateEnabled } from '../selectors/assets-unify-state';
 import { useArcDefaultTokens } from '../hooks/useArcDefaultTokens';
 
-// Calls all legacy polling hooks unconditionally. Rendered only when
+// Calls remaining legacy polling hooks unconditionally. Rendered only when
 // assets-unify-state is disabled so that the hooks always execute in the
 // same order within this component (satisfying React's Rules of Hooks).
 const LegacyAssetsPolling = ({ children }: { children: ReactNode }) => {
-  useTokenDetectionPolling();
   useDeFiPolling();
   useStaticTokensPollingHook();
 

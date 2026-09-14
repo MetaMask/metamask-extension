@@ -76,6 +76,9 @@ import { createDeepEqualSelector } from './selector-creators';
 //
 // TokenListController
 // tokensChainsCache: unused (controller removed)
+//
+// TokenDetectionController
+// (no persisted state; controller removed — detection via AssetsController)
 
 // This utility type makes the selector forceably require just the state that was originally required
 // For selectors with custom state input, this prevents their input type from requiring additional state that will not be needed after the migration

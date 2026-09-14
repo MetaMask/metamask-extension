@@ -161,8 +161,6 @@ export function getLegacyBackgroundApiServiceMessenger(
       'PhishingController:testOrigin',
       'PreferencesController:toggleExternalServices',
       'SubscriptionController:getState',
-      'TokenDetectionController:enable',
-      'TokenDetectionController:disable',
       'GasFeeController:enableNonRPCGasFeeApis',
       'GasFeeController:disableNonRPCGasFeeApis',
       'ShieldController:start',

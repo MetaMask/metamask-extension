@@ -4498,19 +4498,6 @@ export function setUseCurrencyRateCheck(
   };
 }
 
-// TokenDetectionController
-export function detectTokens(
-  chainIds?: string[],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.detectTokens`);
-    await submitRequestToBackground('detectTokens', [{ chainIds }]);
-    dispatch(hideLoadingIndication());
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
 // TODO: with support of non EVM, check if possible to refactor this and get chainIds from the state in the fct instead of passing it as a param
 export function detectNfts(
   chainIds: string[],
@@ -5793,38 +5780,6 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
     pollingToken,
     POLLING_TOKEN_ENVIRONMENT_TYPES[getEnvironmentType()],
   ]);
-}
-
-/**
- * Informs the TokenDetectionController that the UI requires token detection polling
- *
- * @param chainIds - An array of chain ids to poll token detection on.
- * @returns polling token that can be used to stop polling.
- */
-export async function tokenDetectionStartPolling(
-  chainIds: string[],
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'tokenDetectionStartPolling',
-    [{ chainIds }],
-  );
-
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-/**
- * Informs the TokenDetectionController that the UI no longer token detection polling
- *
- * @param pollingToken - Poll token received from calling tokenDetectionStartPolling
- */
-export async function tokenDetectionStopPollingByPollingToken(
-  pollingToken: string,
-) {
-  await submitRequestToBackground('tokenDetectionStopPollingByPollingToken', [
-    pollingToken,
-  ]);
-  await removePollingTokenFromAppState(pollingToken);
 }
 
 /**
