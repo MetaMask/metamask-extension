@@ -181,7 +181,7 @@ export const CustomAmountInfo = React.memo(
       prefillMaxOnLoad,
     });
 
-    const { alertMessage, hasAlert, hideResults } =
+    const { alertContent, alertMessage, hasAlert, hideResults } =
       useTransactionCustomAmountAlerts({
         pendingFiatAmount: amountFiat,
       });
@@ -242,7 +242,7 @@ export const CustomAmountInfo = React.memo(
         >
           {children}
         </CenterContainer>
-        <AlertMessage alertMessage={alertMessage} />
+        <AlertMessage alertContent={alertContent} alertMessage={alertMessage} />
         {displayPercentageButtons && (
           <PercentageButtons
             disabled={!hasTokens || Boolean(disablePercentageButtons)}
@@ -477,7 +477,17 @@ function useIsResultReady(hasAmount: boolean, disablePay?: boolean) {
   return Boolean(disablePay) || isQuotePending || Boolean(quotes?.length);
 }
 
-function AlertMessage({ alertMessage }: { alertMessage?: string }) {
+function AlertMessage({
+  alertContent,
+  alertMessage,
+}: {
+  alertContent?: ReactNode;
+  alertMessage?: string;
+}) {
+  if (alertContent) {
+    return <>{alertContent}</>;
+  }
+
   if (!alertMessage) {
     return null;
   }

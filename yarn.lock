@@ -6098,12 +6098,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-system-react@npm:^0.41.0":
-  version: 0.41.0
-  resolution: "@metamask/design-system-react@npm:0.41.0"
+"@metamask/design-system-react@npm:^0.42.0":
+  version: 0.42.0
+  resolution: "@metamask/design-system-react@npm:0.42.0"
   dependencies:
     "@floating-ui/react-dom": "npm:^2.1.2"
-    "@metamask/design-system-shared": "npm:^0.36.0"
+    "@metamask/design-system-shared": "npm:^0.37.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
     blo: "npm:^2.0.0"
@@ -6115,18 +6115,18 @@ __metadata:
     "@metamask/utils": ^11.12.1
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/c321e5b3ca1610e97aba04e809b8cdb521df43c6522c6e2d40677a57b0f55d386f216ddbc7e68baa1e747d19f884c92bea68c005fcef7c8209fcdbcc71c91935
+  checksum: 10/9f4f640978806d0eadd1ffecd2532b988656b9cb932649123f1ce04d27498e4ff97e32c2e1765fef55a4c661760cfccd53a9034e7204ed527a5ad28349b1816f
   languageName: node
   linkType: hard
 
-"@metamask/design-system-shared@npm:^0.36.0":
-  version: 0.36.0
-  resolution: "@metamask/design-system-shared@npm:0.36.0"
+"@metamask/design-system-shared@npm:^0.37.0":
+  version: 0.37.0
+  resolution: "@metamask/design-system-shared@npm:0.37.0"
   dependencies:
     "@metamask/utils": "npm:^11.12.1"
   peerDependencies:
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/916281b242f1cd729ce330f2acdae655077e2c15bc34f2072aaa89dec4e2ba31560a8e134636bf461ec4b8d8f5971f2c7052eebf463288b948ead7748dee2198
+  checksum: 10/62e5fe597adedb9cbcabd33c331ff8a1a83dc226452b8d98378ace02421ae324c3427aae349608416d3dfd4c741054cd834702e4b7e77b8e4139b8d21a71f7a6
   languageName: node
   linkType: hard
 
@@ -31336,8 +31336,8 @@ __metadata:
     "@metamask/delegation-controller": "npm:^3.0.2"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^1.3.0"
-    "@metamask/design-system-react": "npm:^0.41.0"
-    "@metamask/design-system-shared": "npm:^0.36.0"
+    "@metamask/design-system-react": "npm:^0.42.0"
+    "@metamask/design-system-shared": "npm:^0.37.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.13.0"
     "@metamask/design-tokens": "npm:^11.0.0"
     "@metamask/dummy-package": "workspace:*"
