@@ -525,12 +525,13 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
       expect(result.current).toStrictEqual([]);
     });
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['deposit', TransactionType.moneyAccountDeposit],
       ['withdraw', TransactionType.moneyAccountWithdraw],
-    ] as const)(
+    ])(
       'returns no alert for a money-account %s even when sponsorship is not flagged',
-      (_name, type) => {
+      (_name: string, type: TransactionType) => {
         useTransactionPayTokenMock.mockReturnValue({
           payToken: {
             ...PAY_TOKEN_MOCK,
