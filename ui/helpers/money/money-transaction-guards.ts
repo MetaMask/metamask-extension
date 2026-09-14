@@ -54,6 +54,17 @@ export const isMoneyWithdrawTx = (transactionMeta: TransactionMeta) =>
 export const isMoneyAccountTx = (transactionMeta: TransactionMeta) =>
   isMoneyDepositTx(transactionMeta) || isMoneyWithdrawTx(transactionMeta);
 
+export const getMoneyPayChainIds = (
+  transactionMeta: TransactionMeta,
+): { sourceChainId: Hex | undefined; destinationChainId: Hex | undefined } => {
+  const local = transactionMeta.chainId;
+  const pay = transactionMeta.metamaskPay?.chainId as Hex | undefined;
+
+  return transactionMeta.metamaskPay?.isPostQuote
+    ? { sourceChainId: local, destinationChainId: pay }
+    : { sourceChainId: pay ?? local, destinationChainId: local };
+};
+
 /**
  * True for a transaction submitted on behalf of a money account batch, such as
  * the relay deposit that funds it or the vault deposit that follows it. These
