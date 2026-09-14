@@ -19,6 +19,7 @@ import { hasTransactionType } from '../../../../../../shared/lib/transactions.ut
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { usePayTokenAccountBalance } from '../../pay/usePayTokenAccountBalance';
+import { useIsFundingAccountBalanceSettling } from '../../pay/useIsFundingAccountBalanceSettling';
 import { useTransactionPayWithdraw } from '../../pay/useTransactionPayWithdraw';
 import { useTokenWithBalance } from '../../tokens/useTokenWithBalance';
 import {
@@ -105,14 +106,39 @@ export function useInsufficientPayTokenBalanceAlert({
   // withdrawable fiat instead of the selected pay-token wallet balance;
   // keep `undefined` while that query is loading or failed so we do not
   // treat unknown balance as zero and block confirm transiently.
-  const { balanceUsd: payTokenBalanceUsd, balanceRaw } =
-    usePayTokenAccountBalance();
+  const {
+    balanceUsd: payTokenBalanceUsd,
+    balanceRaw,
+    isBalanceUsdKnown,
+    isLiveBalance,
+  } = usePayTokenAccountBalance();
+  // Changing the funding account leaves the controller snapshot — which can
+  // hold the *previous* account's balance — as the only figure available for
+  // a few commits. That snapshot is positive, so `isBalanceUsdKnown` alone
+  // does not catch it.
+  const isFundingAccountBalanceSettling =
+    useIsFundingAccountBalanceSettling(isLiveBalance);
   const balanceUsd = useMemo(() => {
     if (isMoneyPaymentOverride) {
       return withdrawableFiatRaw;
     }
+    // A `0` USD balance we cannot yet substantiate (pay token just changed,
+    // funding account assets still loading, fiat rate not arrived) is unknown,
+    // not empty. Likewise a balance still attributable to the account we just
+    // switched away from. Returning `undefined` keeps every check below
+    // silent so switching account or token does not flash "Insufficient
+    // funds" before the real balance lands.
+    if (!isBalanceUsdKnown || isFundingAccountBalanceSettling) {
+      return undefined;
+    }
     return payTokenBalanceUsd;
-  }, [isMoneyPaymentOverride, payTokenBalanceUsd, withdrawableFiatRaw]);
+  }, [
+    isBalanceUsdKnown,
+    isFundingAccountBalanceSettling,
+    isMoneyPaymentOverride,
+    payTokenBalanceUsd,
+    withdrawableFiatRaw,
+  ]);
   const nativeBalanceRaw = nativeToken?.balanceRaw ?? '0';
 
   const totalAmountUsd = useMemo(() => {
@@ -124,13 +150,24 @@ export function useInsufficientPayTokenBalanceAlert({
       return new BigNumber(pendingAmountUsd);
     }
 
+    // `requiredTokens` describes the previous quote until the refresh lands.
+    // After a pay-token or funding-account switch that amount belongs to the
+    // token that was selected before, so comparing it against the new token's
+    // balance momentarily reports "Insufficient funds".
+    //
+    // Treat it as zero while the quote is in flight; the real check runs once
+    // it resolves.
+    if (isLoading) {
+      return new BigNumber(0);
+    }
+
     return (requiredTokens ?? [])
       .filter((token) => !token.skipIfBalance)
       .reduce(
         (acc, token) => acc.plus(new BigNumber(token.amountUsd)),
         new BigNumber(0),
       );
-  }, [balanceUsd, isMax, pendingAmountUsd, requiredTokens]);
+  }, [balanceUsd, isLoading, isMax, pendingAmountUsd, requiredTokens]);
 
   const totalSourceAmountRaw = useMemo(() => {
     if (isLoading) {
@@ -179,6 +216,10 @@ export function useInsufficientPayTokenBalanceAlert({
       isMoneyPaymentOverride ||
       isPostQuote ||
       isPendingAlert ||
+      // `balanceRaw` is the previous account's snapshot for the first few
+      // commits after a funding-account switch, so neither branch below can
+      // be trusted yet.
+      isFundingAccountBalanceSettling ||
       !payToken
     ) {
       return false;
@@ -192,17 +233,25 @@ export function useInsufficientPayTokenBalanceAlert({
       return totalSourceAmountRaw.gt(balanceRaw ?? '0');
     }
 
+    // No positive raw balance and no trustworthy USD figure: we know nothing
+    // about what the funding account holds, so stay silent rather than
+    // comparing the amount against a placeholder zero.
+    if (balanceUsd === undefined) {
+      return false;
+    }
+
     const sourceUsd = new BigNumber(totals?.sourceAmount?.usd ?? '0').plus(
       isPayTokenNative || isSourceGasFeeToken
         ? new BigNumber(totals?.fees?.sourceNetwork?.max?.usd ?? '0')
         : '0',
     );
 
-    return sourceUsd.gt(0) && sourceUsd.gt(balanceUsd ?? '0');
+    return sourceUsd.gt(0) && sourceUsd.gt(balanceUsd);
   }, [
     balanceRaw,
     balanceUsd,
     isExactRawMoneyAccountDeposit,
+    isFundingAccountBalanceSettling,
     isMax,
     isMoneyPaymentOverride,
     isPayTokenNative,
