@@ -144,8 +144,6 @@ const INTERNAL_ACCOUNTS_MOCK: Record<string, InternalAccount> = {
       keyring: { type: 'Snap Keyring' },
       snap: {
         id: SOLANA_WALLET_SNAP_ID,
-        name: 'Solana Wallet',
-        enabled: true,
       },
     },
     options: {},
