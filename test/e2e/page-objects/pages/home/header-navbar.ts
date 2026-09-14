@@ -340,9 +340,7 @@ class HeaderNavbar {
 
   async waitForNotificationCountFloatingBubble(): Promise<void> {
     console.log(`Wait for notification count bubble to be present`);
-    await this.driver.waitForSelector({
-      css: this.notificationCountFloatingBubble,
-    });
+    await this.driver.waitForSelector(this.notificationCountFloatingBubble);
   }
 }
 
