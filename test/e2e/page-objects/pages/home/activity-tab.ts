@@ -95,10 +95,10 @@ class ActivityTab extends HomePage {
     expectedDestToken?: string,
   ): Promise<void> {
     console.log(`Open bridge transaction details`);
-    const [completedTx] = await this.driver.findElements({
+    await this.driver.clickElement({
       text: action,
+      css: this.activityListAction,
     });
-    await completedTx.click();
     await this.driver.waitForSelector({ text: action });
 
     console.log('Checking scanner links');
@@ -114,15 +114,10 @@ class ActivityTab extends HomePage {
 
     if (isBridge) {
       console.log('Checking bridge fee and total amount rows are populated');
-      const feeValue = await this.driver.waitForSelector(
-        this.transactionBaseFeeRowValue,
-      );
-      await this.driver.waitForNonEmptyElement(feeValue);
-
-      const totalValue = await this.driver.waitForSelector(
+      await this.waitForNonEmptyDetailsRow(this.transactionBaseFeeRowValue);
+      await this.waitForNonEmptyDetailsRow(
         this.transactionBreakdownAmountRowValue,
       );
-      await this.driver.waitForNonEmptyElement(totalValue);
     } else {
       console.log('Checking displayed amounts');
       if (expectedSrcAmount) {
@@ -531,6 +526,24 @@ class ActivityTab extends HomePage {
 
   async clickSpeedUpTransaction() {
     await this.driver.clickElement(this.speedupInlineButton);
+  }
+
+  /**
+   * Re-queries `locator` on each poll so a details re-render cannot stale a
+   * captured WebElement the way `waitForNonEmptyElement(element)` would.
+   *
+   * @param locator - CSS locator for a details row value cell.
+   */
+  private async waitForNonEmptyDetailsRow(locator: string): Promise<void> {
+    await this.driver.waitForSelector(locator);
+    await this.driver.wait(async () => {
+      try {
+        const [element] = await this.driver.findElements(locator);
+        return Boolean(element && (await element.getText()));
+      } catch {
+        return false;
+      }
+    });
   }
 
   /**
