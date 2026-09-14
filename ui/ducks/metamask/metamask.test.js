@@ -119,41 +119,45 @@ describe('MetaMask Reducers', () => {
         },
         cachedBalances: {},
         useCurrencyRateCheck: true,
-        currencyRates: {
-          GoerliETH: {
-            conversionRate: 1200.88200327,
+        selectedCurrency: 'usd',
+        assetsInfo: {
+          'eip155:5/slip44:60': {
+            type: 'native',
+            decimals: 18,
+            symbol: 'GoerliETH',
           },
         },
-        currentCurrency: 'usd',
+        assetsPrice: {
+          'eip155:5/slip44:60': {
+            assetPriceType: 'fungible',
+            price: 1200.88200327,
+            usdPrice: 1200.88200327,
+            lastUpdated: 0,
+          },
+        },
+        assetsBalance: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            'eip155:5/slip44:60': {
+              amount: '5.172902145926065918',
+            },
+          },
+          '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
+            'eip155:5/slip44:60': {
+              amount: '3.98263680644472',
+            },
+          },
+          '15e69915-2a1a-4019-93b3-916e11fd432f': {
+            'eip155:5/slip44:60': {
+              amount: '3.51557748305372339',
+            },
+          },
+          '784225f4-d30b-4e77-a900-c8bbce735b88': {
+            'eip155:5/slip44:60': {
+              amount: '0',
+            },
+          },
+        },
         ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-        accountsByChainId: {
-          '0x5': {
-            '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
-              code: '0x',
-              balance: '0x47c9d71831c76efe',
-              nonce: '0x1b',
-              address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
-            },
-            '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb': {
-              code: '0x',
-              balance: '0x37452b1315889f80',
-              nonce: '0xa',
-              address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
-            },
-            '0x2f8d4a878cfa04a6e60d46362f5644deab66572d': {
-              code: '0x',
-              balance: '0x30c9d71831c76efe',
-              nonce: '0x1c',
-              address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
-            },
-            '0xd85a4b6a394794842887b8284293d69163007bbb': {
-              code: '0x',
-              balance: '0x0',
-              nonce: '0x0',
-              address: '0xd85a4b6a394794842887b8284293d69163007bbb',
-            },
-          },
-        },
         addressBook: {
           '0x5': {
             '0x06195827297c7a80a443b6894d3bdb8824b43896': {
@@ -352,7 +356,7 @@ describe('MetaMask Reducers', () => {
     });
 
     describe('getSendToAccounts()', () => {
-      it('should return an array including all the users accounts and the address book', () => {
+      it('returns an array including all the users accounts and the address book', () => {
         expect(getSendToAccounts(mockState)).toStrictEqual([
           {
             id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
@@ -365,9 +369,7 @@ describe('MetaMask Reducers', () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
-            code: '0x',
             balance: '0x47c9d71831c76efe',
-            nonce: '0x1b',
             address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
           },
           {
@@ -381,9 +383,7 @@ describe('MetaMask Reducers', () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
-            code: '0x',
             balance: '0x37452b1315889f80',
-            nonce: '0xa',
             address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
           },
           {
@@ -397,9 +397,7 @@ describe('MetaMask Reducers', () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
-            code: '0x',
             balance: '0x30c9d71831c76efe',
-            nonce: '0x1c',
             address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
           },
           {
@@ -413,9 +411,7 @@ describe('MetaMask Reducers', () => {
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
-            code: '0x',
             balance: '0x0',
-            nonce: '0x0',
             address: '0xd85a4b6a394794842887b8284293d69163007bbb',
           },
           {
@@ -764,25 +760,40 @@ describe('MetaMask Reducers', () => {
   describe('getTokensByChainId', () => {
     const state = {
       metamask: {
-        allTokens: {
-          '0x1': {
-            '0x123': [
-              { symbol: 'ETH', address: '0xabc' },
-              { symbol: 'DAI', address: '0xdef' },
-            ],
+        assetsInfo: {
+          'eip155:1/erc20:0xabc': {
+            type: 'erc20',
+            symbol: 'ETH',
+            decimals: 18,
           },
-          '0x2': {
-            '0x456': [{ symbol: 'USDC', address: '0xghi' }],
+          'eip155:1/erc20:0xdef': {
+            type: 'erc20',
+            symbol: 'DAI',
+            decimals: 18,
+          },
+          'eip155:2/erc20:0xghi': {
+            type: 'erc20',
+            symbol: 'USDC',
+            decimals: 6,
           },
         },
+        customAssets: {
+          account1: ['eip155:1/erc20:0xabc', 'eip155:1/erc20:0xdef'],
+          account2: ['eip155:2/erc20:0xghi'],
+        },
+        assetsBalance: {},
         internalAccounts: {
           selectedAccount: 'account1',
           accounts: {
             account1: {
+              id: 'account1',
               address: '0x123',
+              type: 'eip155:eoa',
             },
             account2: {
+              id: 'account2',
               address: '0x456',
+              type: 'eip155:eoa',
             },
           },
         },
@@ -792,8 +803,20 @@ describe('MetaMask Reducers', () => {
     it('returns tokens for the selected account and chain ID', () => {
       const tokens = getTokensByChainId(state, '0x1');
       expect(tokens).toStrictEqual([
-        { symbol: 'ETH', address: '0xabc' },
-        { symbol: 'DAI', address: '0xdef' },
+        {
+          symbol: 'ETH',
+          address: '0xabc',
+          decimals: 18,
+          name: undefined,
+          image: undefined,
+        },
+        {
+          symbol: 'DAI',
+          address: '0xdef',
+          decimals: 18,
+          name: undefined,
+          image: undefined,
+        },
       ]);
     });
 
@@ -807,8 +830,8 @@ describe('MetaMask Reducers', () => {
         ...state,
         metamask: {
           ...state.metamask,
-          allTokens: {
-            '0x1': {},
+          customAssets: {
+            account1: [],
           },
         },
       };
@@ -816,12 +839,13 @@ describe('MetaMask Reducers', () => {
       expect(tokens).toStrictEqual([]);
     });
 
-    it('returns an empty array if allTokens is undefined', () => {
+    it('returns an empty array if customAssets is undefined', () => {
       const stateWithNoTokens = {
         ...state,
         metamask: {
           ...state.metamask,
-          allTokens: undefined,
+          customAssets: undefined,
+          assetsBalance: {},
         },
       };
       const tokens = getTokensByChainId(stateWithNoTokens, '0x1');

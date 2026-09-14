@@ -1,6 +1,6 @@
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import type {
   MultichainAssetsControllerState,
-  MultichainAssetsRatesControllerState,
   MultichainBalancesControllerState,
   RatesControllerState,
 } from '@metamask/assets-controllers';
@@ -81,7 +81,7 @@ export type AssetsState = {
 };
 
 export type AssetsRatesState = {
-  metamask: MultichainAssetsRatesControllerState;
+  metamask: Pick<AssetsControllerState, 'assetsPrice'>;
 };
 
 export type RatesState = {

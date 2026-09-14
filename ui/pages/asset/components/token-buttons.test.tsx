@@ -283,6 +283,15 @@ describe('TokenButtons asset deactivation wiring', () => {
         },
       },
       selectedAccountGroup: STELLAR_GROUP_ID,
+      assetsInfo: {
+        [PUBNET_USDC_ASSET]: {
+          type: 'asset',
+          symbol: 'USDC',
+          name: 'USD Coin',
+          decimals: 7,
+          image: '',
+        },
+      },
       assetsBalance: {
         [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
           [PUBNET_USDC_ASSET]: {
@@ -394,11 +403,13 @@ describe('TokenButtons asset deactivation wiring', () => {
       ...stellarMockState,
       metamask: {
         ...stellarMockState.metamask,
-        balances: {
+        assetsBalance: {
           [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
             [PUBNET_USDC_ASSET]: {
               amount: '25.50',
-              unit: 'USDC',
+              metadata: {
+                limit: '10',
+              },
             },
           },
         },

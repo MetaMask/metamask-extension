@@ -36,6 +36,7 @@ import {
   type CaipChainId,
   type Hex,
 } from '@metamask/utils';
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import type {
   AccountTrackerControllerState,
   CurrencyRateState,
@@ -150,6 +151,7 @@ export type BridgeAppState = {
     GasFeeState &
     NetworkState &
     AccountsControllerState &
+    AssetsControllerState &
     AccountTreeControllerState &
     AccountTrackerControllerState &
     TokenBalancesControllerState &

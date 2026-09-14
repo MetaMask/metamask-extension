@@ -41,7 +41,6 @@ import {
   getAllTokens,
   selectERC20TokensByChain,
 } from '../../selectors';
-import { getIsAssetsUnifyStateEnabled } from '../../selectors/assets-unify-state/feature-flags';
 import {
   getAssetsControllerAssetPreferences,
   isAssetIdHiddenInPreferencesMap,
@@ -50,7 +49,6 @@ import { checkExistingAddresses } from '../../helpers/utils/util';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { isEvmChainId, toAssetId } from '../../../shared/lib/asset-utils';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -138,9 +136,6 @@ export const CustomTokenImportPage = () => {
     string,
     Record<string, { address: string }[]>
   >;
-  const assetsUnifyStateFeatureEnabled = useSelector(
-    getIsAssetsUnifyStateEnabled,
-  );
   const assetPreferences = useSelector(getAssetsControllerAssetPreferences);
   // Chain-scoped token-list cache, same source the backend uses inside
   // `getTokenStandardAndDetailsByChain`. Provides a metadata fallback when
@@ -187,17 +182,12 @@ export const CustomTokenImportPage = () => {
     const tokens =
       allTokens?.[selectedNetwork]?.[selectedAccount?.address ?? ''] ?? [];
 
-    // When assets-unify-state is enabled, `allTokens` is derived from
-    // AssetsController state. Hiding a token only flips
-    // `assetPreferences[assetId].hidden = true`; the token stays in
+    // `allTokens` is derived from AssetsController state. Hiding a token only
+    // flips `assetPreferences[assetId].hidden = true`; the token stays in
     // `customAssets`, so it still appears in `allTokens`. Treat hidden tokens
     // as not-yet-imported so users can re-import them — `handleSubmit`
     // dispatches `importCustomAssetsBatch` with `isHidden: true`, which
     // unhides the asset rather than adding a duplicate.
-    if (!assetsUnifyStateFeatureEnabled) {
-      return tokens;
-    }
-
     return tokens.filter((token) => {
       if (!token?.address) {
         return true;
@@ -211,13 +201,7 @@ export const CustomTokenImportPage = () => {
       }
       return !isAssetIdHiddenInPreferencesMap(assetPreferences, assetId);
     });
-  }, [
-    allTokens,
-    assetPreferences,
-    assetsUnifyStateFeatureEnabled,
-    selectedAccount?.address,
-    selectedNetwork,
-  ]);
+  }, [allTokens, assetPreferences, selectedAccount?.address, selectedNetwork]);
 
   const tokenListForSelectedNetwork =
     erc20TokensByChain?.[selectedNetwork]?.data;
@@ -512,11 +496,9 @@ export const CustomTokenImportPage = () => {
         ),
       );
 
-      // Write path: seed AssetsController whenever the unified assets state is
-      // included in the build. The runtime rollout flag is treated as always-on
-      // for writes so the manage-tokens list (customAssets + assetsInfo) stays
-      // in sync; read/display gating still uses assetsUnifyStateFeatureEnabled.
-      if (getIsAssetsUnifiedStateIncludedInBuild() && selectedAccount?.id) {
+      // Seed AssetsController so the manage-tokens list (customAssets +
+      // assetsInfo) stays in sync with the import.
+      if (selectedAccount?.id) {
         const assetId = toAssetId(
           address as Hex,
           selectedNetwork as CaipChainId | Hex,

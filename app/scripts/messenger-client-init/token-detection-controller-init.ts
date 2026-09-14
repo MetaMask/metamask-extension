@@ -6,7 +6,6 @@ import type {
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
 } from '../../../shared/constants/metametrics';
-import { getIsDeprecatedController } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
 import { createEventBuilder, trackEvent } from '../controllers/analytics';
 import { MessengerClientInitFunction } from './types';
@@ -79,15 +78,7 @@ export const TokenDetectionControllerInit: MessengerClientInitFunction<
       );
     },
     tokenListService,
-    isDeprecated: () => {
-      const { remoteFeatureFlags } = initMessenger.call(
-        'RemoteFeatureFlagController:getState',
-      );
-      return getIsDeprecatedController(
-        remoteFeatureFlags,
-        'TokenDetectionController',
-      );
-    },
+    isDeprecated: () => true,
   });
 
   return {

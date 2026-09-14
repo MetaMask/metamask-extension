@@ -158,8 +158,8 @@
     },
     "shared/lib/metametrics.test.ts": {
       "Third-party: Bindings failed, using pure JS": 1,
-      "\u00b5WebSockets: Compatibility warnings": 1,
-      "\u00b5WebSockets: Fallback to Node implementation": 1
+      "µWebSockets: Compatibility warnings": 1,
+      "µWebSockets: Fallback to Node implementation": 1
     },
     "shared/lib/selectors/index.test.ts": {
       "Reselect: Identity function warnings": 2
@@ -447,7 +447,7 @@
       "Test errors: Uncaught Errors": 4
     },
     "ui/contexts/metametrics.test.tsx": {
-      "warn: \u26a0\ufe0f React Router Future Flag": 1
+      "warn: ⚠️ React Router Future Flag": 1
     },
     "ui/ducks/bridge/asset-selectors.test.ts": {
       "Reselect: Input stability warnings": 1
@@ -527,9 +527,6 @@
     },
     "ui/hooks/subscription/useSubscriptionPricing.test.ts": {
       "React: Act warnings (component updates not wrapped)": 1
-    },
-    "ui/hooks/useCurrencyRatePolling.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 3
     },
     "ui/hooks/useDecodedTransactionData.test.ts": {
       "error: Unexpected keys \"data\", \"to\", \"chainId\"": 1

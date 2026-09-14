@@ -74,10 +74,12 @@ const DEFAULT_PROPS = {
 };
 
 const render = (props = {}, state = {}) => {
+  const btcAssetId = MultichainNativeAssets.BITCOIN;
   const defaultState = {
     metamask: {
       ...mockState.metamask,
       completedOnboarding: true,
+      selectedCurrency: 'usd',
       internalAccounts: {
         accounts: {
           ...mockState.metamask.internalAccounts.accounts,
@@ -86,23 +88,30 @@ const render = (props = {}, state = {}) => {
         },
         selectedAccount: mockAccount.id,
       },
-      balances: {
+      assetsBalance: {
+        ...mockState.metamask.assetsBalance,
         [mockNonEvmAccount.id]: {
-          'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+          [btcAssetId]: {
             amount: '1.00000000',
-            unit: 'BTC',
           },
         },
       },
-      rates: {
-        btc: {
-          conversionDate: 0,
-          conversionRate: '100000',
+      assetsInfo: {
+        ...mockState.metamask.assetsInfo,
+        [btcAssetId]: {
+          type: 'native',
+          decimals: 8,
+          symbol: 'BTC',
+          name: 'Bitcoin',
         },
       },
-      conversionRates: {
-        'bip122:000000000019d6689c085ae165831e93/slip44:0': {
-          rate: '100000',
+      assetsPrice: {
+        ...mockState.metamask.assetsPrice,
+        [btcAssetId]: {
+          assetPriceType: 'fungible',
+          price: 100000,
+          usdPrice: 100000,
+          lastUpdated: 0,
         },
       },
       snaps: {
@@ -140,16 +149,7 @@ describe('AccountListItem', () => {
   });
 
   it('renders AccountListItem component and shows account name, address, and balance for non-EVM account', () => {
-    const { container } = render(
-      { account: mockNonEvmAccount },
-      {
-        metamask: {
-          accountsAssets: {
-            [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
-          },
-        },
-      },
-    );
+    const { container } = render({ account: mockNonEvmAccount });
     expect(screen.getByText(mockAccount.metadata.name)).toBeInTheDocument();
     expect(
       screen.getByText(shortenAddress(mockNonEvmAccount.address)),
@@ -333,9 +333,6 @@ describe('AccountListItem', () => {
             metamask: {
               preferences: {
                 showFiatInTestnets: true,
-              },
-              accountsAssets: {
-                [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
               },
             },
           },
