@@ -28433,10 +28433,12 @@ SOFTWARE.
 
 ******************************
 
-@metamask/tron-wallet-snap
-1.33.1 <https://github.com/MetaMask/snap-tron-wallet>
-license: (MIT-0 OR Apache-2.0)
-authors: undefined
+@metamask-previews/tron-wallet-snap
+3.2.0-preview-672fdc2b <https://github.com/MetaMask/internal-snaps>
+This project is licensed under either of
+
+ * MIT license ([LICENSE.MIT](LICENSE.MIT))
+ * Apache License, Version 2.0 ([LICENSE.APACHE2](LICENSE.APACHE2))
 
 ******************************
 
