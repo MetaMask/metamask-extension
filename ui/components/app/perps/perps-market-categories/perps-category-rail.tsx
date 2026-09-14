@@ -17,14 +17,17 @@ import {
 import { useCategoryRailOverflow } from './use-category-rail-overflow';
 
 /**
- * Skeleton pill footprint. Height matches the real pill so the rail occupies
- * its final height from first paint and nothing below it shifts when the
- * categories arrive.
+ * Skeleton pill footprint per pill shape. Height matches the real pill so the
+ * rail occupies its final height from first paint and nothing below it shifts
+ * when the categories arrive.
  */
-const SKELETON_PILL_STYLES = 'h-8 w-20 shrink-0 rounded-lg';
+const SKELETON_PILL_STYLES: Record<PerpsCategoryPillVariant, string> = {
+  [PerpsCategoryPillVariant.Chip]: 'h-10 w-20 shrink-0 rounded-full',
+  [PerpsCategoryPillVariant.Filter]: 'h-8 w-20 shrink-0 rounded-lg',
+};
 const SKELETON_PILL_KEYS = ['a', 'b', 'c', 'd', 'e'];
 
-/** How many pills the loading rail reserves room for. */
+/** How many pills the single-row `Overflow` loading rail reserves room for. */
 export const SKELETON_PILL_COUNT = SKELETON_PILL_KEYS.length;
 
 /** Ghost styling for the overflow trigger, so it reads as one more filter. */
@@ -161,19 +164,22 @@ export const PerpsCategoryRail = ({
   );
 
   if (isLoading) {
+    // `Wrap` reserves a pill per category and wraps like the real rail, so it
+    // takes as many lines as the pills will; `Overflow` is one clipped row.
+    const skeletonKeys = isOverflow ? SKELETON_PILL_KEYS : categories;
     return (
       <Box className="px-4">
         <Box
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
           gap={2}
-          className="overflow-hidden"
+          className={isOverflow ? 'overflow-hidden' : 'flex-wrap'}
           data-testid={`${testId}-skeleton`}
         >
-          {SKELETON_PILL_KEYS.map((pillKey) => (
+          {skeletonKeys.map((pillKey) => (
             <Skeleton
               key={`${testId}-skeleton-pill-${pillKey}`}
-              className={SKELETON_PILL_STYLES}
+              className={SKELETON_PILL_STYLES[pillVariant]}
             />
           ))}
         </Box>

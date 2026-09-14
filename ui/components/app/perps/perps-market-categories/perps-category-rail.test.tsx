@@ -286,6 +286,16 @@ describe('PerpsCategoryRail', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('wraps a skeleton pill per category in the wrap layout', () => {
+      renderRail({ isLoading: true, layout: PerpsCategoryRailLayout.Wrap });
+
+      const skeleton = screen.getByTestId('perps-market-categories-skeleton');
+
+      expect(skeleton.children).toHaveLength(CATEGORIES.length);
+      expect(skeleton).toHaveClass('flex-wrap');
+      expect(skeleton).not.toHaveClass('overflow-hidden');
+    });
+
     it('replaces the skeleton with the pills once market data arrives', () => {
       renderRail();
 

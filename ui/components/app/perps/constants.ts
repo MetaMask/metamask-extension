@@ -170,32 +170,10 @@ export const MARKET_CATEGORY_ICONS: Record<MarketCategoryFilter, IconName> = {
 };
 
 /**
- * Chip order the Products design gives (Figma `13192:28387`): it interleaves
- * `new` and puts `commodity` ahead of `index`, which the controller's
- * `MARKET_CATEGORIES` does not, so the order stays explicit here rather than
- * following the controller's.
+ * Categories shown as Products chips on the Perps tab, taken from the
+ * controller's filters in its own order — the order the market list's filter
+ * rail uses too — so a core category change reaches the tab with no change
+ * here. `all` is the absence of a filter and never gets a chip.
  */
-const PERPS_PRODUCT_CATEGORY_ORDER: readonly MarketCategoryFilter[] = [
-  'crypto',
-  'stock',
-  'pre-ipo',
-  'commodity',
-  'index',
-  'new',
-  'forex',
-  'etf',
-];
-
-/**
- * Categories shown as Products chips on the Perps tab: every filter the
- * controller owns, in the design's order, with anything the controller adds
- * later appended — so a new core category reaches the tab on its own. `all` is
- * the absence of a filter and never gets a chip.
- */
-export const PERPS_PRODUCT_CATEGORIES: readonly MarketCategoryFilter[] = [
-  ...PERPS_PRODUCT_CATEGORY_ORDER,
-  ...MARKET_CATEGORY_FILTERS.filter(
-    (category) =>
-      category !== 'all' && !PERPS_PRODUCT_CATEGORY_ORDER.includes(category),
-  ),
-];
+export const PERPS_PRODUCT_CATEGORIES: readonly MarketCategoryFilter[] =
+  MARKET_CATEGORY_FILTERS.filter((category) => category !== 'all');

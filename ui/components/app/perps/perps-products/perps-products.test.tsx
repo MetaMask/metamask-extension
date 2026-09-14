@@ -13,7 +13,6 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
 import { PERPS_PRODUCT_CATEGORIES } from '../constants';
-import { SKELETON_PILL_COUNT } from '../perps-market-categories/perps-category-rail';
 import { PerpsProducts } from './perps-products';
 
 const mockNavigate = jest.fn();
@@ -62,27 +61,13 @@ describe('PerpsProducts', () => {
       expect(getChipCategories()).toStrictEqual([...PERPS_PRODUCT_CATEGORIES]);
     });
 
-    it('orders the chips as the Products design does, not as the controller does', () => {
-      // `commodity` before `index`, and `new` interleaved before `forex` — the
-      // controller's own order disagrees on both.
+    it('chips every category the controller owns, in its order', () => {
+      // Derived from the controller, so a category added to core reaches the
+      // tab without a change here.
       expect(PERPS_PRODUCT_CATEGORIES).toStrictEqual([
-        'crypto',
-        'stock',
-        'pre-ipo',
-        'commodity',
-        'index',
+        ...MARKET_CATEGORIES,
         'new',
-        'forex',
-        'etf',
       ]);
-    });
-
-    it('chips every category the controller owns', () => {
-      // The list is derived from the controller's categories, so a category
-      // added to core reaches the tab without a change here.
-      MARKET_CATEGORIES.forEach((category) => {
-        expect(PERPS_PRODUCT_CATEGORIES).toContain(category);
-      });
     });
 
     it('labels the chips with the shared market filter copy', () => {
@@ -127,7 +112,7 @@ describe('PerpsProducts', () => {
 
       expect(
         screen.getByTestId('perps-products-categories-skeleton').children,
-      ).toHaveLength(SKELETON_PILL_COUNT);
+      ).toHaveLength(PERPS_PRODUCT_CATEGORIES.length);
       expect(
         screen.queryByTestId('perps-products-categories'),
       ).not.toBeInTheDocument();
