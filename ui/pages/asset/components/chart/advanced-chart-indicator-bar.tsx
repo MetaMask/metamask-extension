@@ -13,6 +13,15 @@ import { useTheme } from '../../../../hooks/useTheme';
 const TOGGLE_INDICATORS = ['BOL', 'RSI', 'Volume', 'MACD'] as const;
 const MA_OPTIONS = ['MA5', 'MA10', 'MA20', 'MA50', 'MA200'] as const;
 
+/**
+ * Moving averages are driven by a single `SET_MA_VISIBILITY` message rather
+ * than the per-indicator add/remove messages, so callers need to tell the two
+ * kinds of indicator apart.
+ *
+ * @param name - Indicator name, e.g. `MA20` or `RSI`.
+ */
+export const isMovingAverage = (name: string) => /^MA\d+$/u.test(name);
+
 type IndicatorBarProps = {
   activeIndicators: Set<string>;
   onIndicatorToggle: (name: string) => void;
@@ -42,7 +51,7 @@ const IndicatorBar = ({
     color: isSelected ? toolbarText : toolbarMuted,
   });
 
-  const selectedMAs = [...activeIndicators].filter((n) => /^MA\d+$/u.test(n));
+  const selectedMAs = [...activeIndicators].filter(isMovingAverage);
   let maLabel: string;
   if (selectedMAs.length === 0) {
     maLabel = 'MA';

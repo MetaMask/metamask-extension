@@ -7,6 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { useTheme } from '../../../../hooks/useTheme';
+import { isMovingAverage } from './advanced-chart-indicator-bar';
 import { useOHLCVChart } from './useOHLCVChart';
 import type { OHLCVRealtimeBar } from './useOHLCVRealtime';
 
@@ -36,6 +37,8 @@ type AdvancedChartIframeProps = {
   height?: number;
   chartType: number;
   selectedInterval: string;
+  /** Persisted indicator selection, re-applied to each freshly loaded chart. */
+  activeIndicators?: Set<string>;
   onError?: (error: string) => void;
   onReady?: () => void;
   /** Real-time candle update from useOHLCVRealtime hook */
@@ -52,6 +55,7 @@ const AdvancedChartIframe = forwardRef<
       height = 300,
       chartType,
       selectedInterval,
+      activeIndicators,
       onError,
       onReady,
       realtimeBar,
@@ -139,6 +143,44 @@ const AdvancedChartIframe = forwardRef<
         postToChart({ type: 'SET_CHART_TYPE', payload: { type: chartType } });
       }
     }, [chartType, chartReady, postToChart]);
+
+    // Read through a ref so the replay effect below runs only when a chart
+    // becomes ready, not on every toggle — the parent already posts those.
+    const activeIndicatorsRef = useRef(activeIndicators);
+    activeIndicatorsRef.current = activeIndicators;
+
+    // Re-apply the persisted indicator selection to a freshly loaded chart.
+    // The engine starts with no indicators, so without this the toolbar shows
+    // them as enabled while the chart itself is bare after navigating to
+    // another token or reopening the extension.
+    useEffect(() => {
+      if (!chartReady) {
+        return;
+      }
+      const active = [...(activeIndicatorsRef.current ?? [])];
+      const movingAverages = active.filter(isMovingAverage);
+
+      for (const name of active) {
+        if (isMovingAverage(name)) {
+          continue;
+        }
+        postToChart(
+          name === 'Volume'
+            ? {
+                type: 'TOGGLE_VOLUME',
+                payload: { visible: true, volumeOverlay: true },
+              }
+            : { type: 'ADD_INDICATOR', payload: { name } },
+        );
+      }
+
+      if (movingAverages.length > 0) {
+        postToChart({
+          type: 'SET_MA_VISIBILITY',
+          payload: { visible: movingAverages },
+        });
+      }
+    }, [chartReady, postToChart]);
 
     // Forward realtime bar updates to the chart engine
     useEffect(() => {

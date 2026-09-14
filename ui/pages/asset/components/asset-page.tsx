@@ -112,7 +112,9 @@ import IntervalBar, {
   CHART_TYPE_LINE,
   CHART_TYPE_CANDLE,
 } from './chart/advanced-chart-interval-bar';
-import IndicatorBar from './chart/advanced-chart-indicator-bar';
+import IndicatorBar, {
+  isMovingAverage,
+} from './chart/advanced-chart-indicator-bar';
 import { useAdvancedChartPreferences } from './chart/useAdvancedChartPreferences';
 import { useOHLCVRealtime } from './chart/useOHLCVRealtime';
 import { MarketClosedActionButton } from './market-closed-action-button';
@@ -173,12 +175,16 @@ const AssetPage = ({
   const showAdvancedChart = isAdvancedChartsEnabled && !advancedChartError;
 
   // Reset chart error state when navigating to a different token so the
-  // advanced chart gets a fresh retry opportunity.
+  // advanced chart gets a fresh retry opportunity. Done during render rather
+  // than in an effect to avoid rendering the previous token's error state
+  // first: https://react.dev/reference/react/useState#storing-information-from-previous-renders
   const assetKey = `${asset.chainId}:${asset.type === AssetType.token ? (asset as { address?: string }).address : 'native'}`;
-  useEffect(() => {
+  const [renderedAssetKey, setRenderedAssetKey] = useState(assetKey);
+  if (renderedAssetKey !== assetKey) {
+    setRenderedAssetKey(assetKey);
     setAdvancedChartError(null);
     setAcChartReady(false);
-  }, [assetKey]);
+  }
   const {
     chartType: acChartType,
     interval: acInterval,
@@ -227,7 +233,7 @@ const AssetPage = ({
       } else {
         nextIndicators.add(ma);
       }
-      const selectedMAs = [...nextIndicators].filter((n) => /^MA\d+$/u.test(n));
+      const selectedMAs = [...nextIndicators].filter(isMovingAverage);
       acRef.current?.postMessage({
         type: 'SET_MA_VISIBILITY',
         payload: { visible: selectedMAs },
@@ -578,6 +584,7 @@ const AssetPage = ({
               height={300}
               chartType={acChartType}
               selectedInterval={acInterval}
+              activeIndicators={acIndicators}
               onError={setAdvancedChartError}
               onReady={handleAdvancedChartReady}
               realtimeBar={realtimeBar}

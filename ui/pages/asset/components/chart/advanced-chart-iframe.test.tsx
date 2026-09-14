@@ -333,6 +333,141 @@ describe('AdvancedChartIframe', () => {
     });
   });
 
+  describe('Persisted Indicators', () => {
+    const renderAndMakeReady = (activeIndicators?: Set<string>) => {
+      const result = render(
+        <AdvancedChartIframe
+          {...defaultProps}
+          activeIndicators={activeIndicators}
+        />,
+      );
+
+      act(() => {
+        result.container
+          .querySelector('iframe')
+          ?.dispatchEvent(new Event('load'));
+      });
+
+      act(() => {
+        window.dispatchEvent(
+          new MessageEvent('message', {
+            origin: CHART_ORIGIN,
+            data: JSON.stringify({ type: 'CHART_READY' }),
+          }),
+        );
+      });
+
+      return result;
+    };
+
+    it('re-applies persisted toggle indicators when the chart becomes ready', async () => {
+      renderAndMakeReady(new Set(['RSI', 'MACD']));
+
+      await waitFor(() => {
+        expect(postMessageSpy).toHaveBeenCalledWith(
+          JSON.stringify({
+            type: 'ADD_INDICATOR',
+            payload: { name: 'RSI' },
+          }),
+          CHART_ORIGIN,
+        );
+      });
+
+      expect(postMessageSpy).toHaveBeenCalledWith(
+        JSON.stringify({
+          type: 'ADD_INDICATOR',
+          payload: { name: 'MACD' },
+        }),
+        CHART_ORIGIN,
+      );
+    });
+
+    it('re-applies persisted volume via TOGGLE_VOLUME', async () => {
+      renderAndMakeReady(new Set(['Volume']));
+
+      await waitFor(() => {
+        expect(postMessageSpy).toHaveBeenCalledWith(
+          JSON.stringify({
+            type: 'TOGGLE_VOLUME',
+            payload: { visible: true, volumeOverlay: true },
+          }),
+          CHART_ORIGIN,
+        );
+      });
+
+      expect(postMessageSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('ADD_INDICATOR'),
+        expect.any(String),
+      );
+    });
+
+    it('re-applies persisted moving averages in a single message', async () => {
+      renderAndMakeReady(new Set(['MA20', 'RSI', 'MA50']));
+
+      await waitFor(() => {
+        expect(postMessageSpy).toHaveBeenCalledWith(
+          JSON.stringify({
+            type: 'SET_MA_VISIBILITY',
+            payload: { visible: ['MA20', 'MA50'] },
+          }),
+          CHART_ORIGIN,
+        );
+      });
+
+      expect(postMessageSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('"name":"MA20"'),
+        expect.any(String),
+      );
+    });
+
+    it('sends no indicator messages when none are persisted', () => {
+      renderAndMakeReady(new Set());
+
+      expect(postMessageSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('ADD_INDICATOR'),
+        expect.any(String),
+      );
+      expect(postMessageSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('SET_MA_VISIBILITY'),
+        expect.any(String),
+      );
+    });
+
+    it('does not re-apply indicators when the selection changes after ready', () => {
+      const { rerender } = renderAndMakeReady(new Set(['RSI']));
+
+      postMessageSpy.mockClear();
+
+      // The parent posts its own message for user-driven toggles, so replaying
+      // here would double up.
+      rerender(
+        <AdvancedChartIframe
+          {...defaultProps}
+          activeIndicators={new Set(['RSI', 'MACD'])}
+        />,
+      );
+
+      expect(postMessageSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('ADD_INDICATOR'),
+        expect.any(String),
+      );
+    });
+
+    it('does not apply indicators before the chart is ready', () => {
+      render(
+        <AdvancedChartIframe
+          {...defaultProps}
+          activeIndicators={new Set(['RSI'])}
+        />,
+      );
+
+      expect(postMessageSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('ADD_INDICATOR'),
+        expect.any(String),
+      );
+    });
+  });
+
   describe('Message Event Handling', () => {
     it('handles CHART_READY message from iframe', async () => {
       const mockOnReady = jest.fn();
