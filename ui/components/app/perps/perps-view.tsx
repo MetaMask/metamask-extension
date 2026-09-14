@@ -112,6 +112,7 @@ export const PerpsView = () => {
     allMarkets,
     exploreMarkets,
     watchlistMarkets,
+    watchlistCount,
     isInitialLoading: marketsLoading,
   } = usePerpsTabExploreData();
 
@@ -452,6 +453,14 @@ export const PerpsView = () => {
         </Box>
         <PerpsSectionSkeleton cardCount={5} showStartTradeCta />
         <PerpsSectionSkeleton cardCount={5} />
+        {/* Watchlist sits above Products once loaded, and is the one section
+            whose presence is known before the markets arrive: the starred
+            symbols are persisted. Reserving its rows here keeps Products in the
+            slot it will occupy instead of letting the watchlist push it down.
+            A user with nothing starred gets no section and no reservation. */}
+        {watchlistCount > 0 && (
+          <PerpsSectionSkeleton cardCount={watchlistCount} />
+        )}
         {/* Reserves the Products section's height in the same slot it occupies
             once loaded, so nothing below it shifts when the chips arrive. */}
         <PerpsProducts isLoading />
@@ -499,8 +508,10 @@ export const PerpsView = () => {
       <PerpsWatchlist markets={watchlistMarkets} />
 
       {/* Products: the tab's shortcut into the full market list, below the
-          user's own watchlist so their own markets come first. */}
-      <PerpsProducts isLoading={marketsLoading} />
+          user's own watchlist so their own markets come first. Loading is not
+          a live state here: `marketsLoading` is part of the `isLoading` the
+          early return above already took, so it is false by this point. */}
+      <PerpsProducts isLoading={false} />
 
       {/* Top movers */}
       <PerpsTopMovers markets={allMarkets} isLoading={marketsLoading} />

@@ -134,8 +134,10 @@ export const HIP3_MARKET_CONFIG = {
  * `watchlist` user-state filter — adding a core category only requires a new
  * label key here.
  *
- * Shared by every surface that labels a category: the market-list filter
- * dropdown and the Perps tab category pills, so the two cannot drift.
+ * Shared by every surface that labels a category: the market list's category
+ * rail and the Perps tab's Products chips, both through
+ * `PerpsMarketCategoryPill`, plus the rail's `More` menu options — so no two
+ * can drift.
  */
 export const MARKET_FILTER_LABEL_KEYS: Record<MarketFilter, string> = {
   all: 'perpsFilterAll',

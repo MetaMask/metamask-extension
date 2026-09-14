@@ -642,6 +642,13 @@ export const MarketListView = () => {
 
   const isWatchlistFilterActive = selectedFilter === WATCHLIST_MARKET_FILTER;
 
+  // Only a category selects a pill: `all` is the absence of a filter, and
+  // watchlist is the header star's state rather than a slot on the rail. Both
+  // read as no selection, which keeps the rail's contract "a category or
+  // nothing" with no special case inside it.
+  const railSelection =
+    selectedFilter === 'all' || isWatchlistFilterActive ? null : selectedFilter;
+
   const handleWatchlistToggle = useCallback(() => {
     handleFilterChange(
       isWatchlistFilterActive ? 'all' : WATCHLIST_MARKET_FILTER,
@@ -820,7 +827,7 @@ export const MarketListView = () => {
         >
           <PerpsCategoryRail
             categories={railCategories}
-            selectedCategory={selectedFilter === 'all' ? null : selectedFilter}
+            selectedCategory={railSelection}
             onSelect={handleFilterChange}
             onClear={handleFilterClear}
             isLoading={isLoading}
@@ -838,7 +845,9 @@ export const MarketListView = () => {
               color={TextColor.TextAlternative}
               data-testid="market-list-count"
             >
-              {t('perpsMarketCount', [String(displayedMarkets.length)])}
+              {displayedMarkets.length === 1
+                ? t('perpsMarketCountSingular')
+                : t('perpsMarketCount', [String(displayedMarkets.length)])}
             </Text>
             <SortDropdown
               selectedField={sortField}

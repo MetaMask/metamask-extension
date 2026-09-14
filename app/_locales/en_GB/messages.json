@@ -7771,6 +7771,10 @@
     "message": "$1 markets",
     "description": "Count of markets currently listed. $1 is the number of markets"
   },
+  "perpsMarketCountSingular": {
+    "message": "1 market",
+    "description": "Count of markets currently listed, when exactly one is listed"
+  },
   "perpsMarketNotFound": {
     "message": "Market not found"
   },

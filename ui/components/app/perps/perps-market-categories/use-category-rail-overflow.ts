@@ -27,13 +27,19 @@ export type CategoryRailOverflow = {
  *
  * Widths are cached per key on the pass that renders every item, because an
  * item moved into the overflow menu is unmounted and would otherwise measure as
- * zero forever. `keys` changing (new categories, a locale switch) drops back to
- * a full render so every width is re-read at its current text.
+ * zero forever. The cache is keyed on `keys` plus the active key: new
+ * categories or a locale switch change the labels, and becoming active adds the
+ * clear glyph, so either drops back to a full render and re-reads every width
+ * at what is actually on screen.
  *
  * @param keys - Item keys in render order.
+ * @param activeKey - The active item, whose width differs from its inactive one.
  * @returns Refs to attach, plus the number of items that fit.
  */
-export function useCategoryRailOverflow(keys: string[]): CategoryRailOverflow {
+export function useCategoryRailOverflow(
+  keys: string[],
+  activeKey?: string | null,
+): CategoryRailOverflow {
   const rowElement = useRef<HTMLElement | null>(null);
   const itemElements = useRef(new Map<string, HTMLElement>());
   const itemWidths = useRef(new Map<string, number>());
@@ -45,6 +51,11 @@ export function useCategoryRailOverflow(keys: string[]): CategoryRailOverflow {
   // A stable dependency for the effects below: the array identity changes on
   // every render, the content rarely does.
   const keysSignature = keys.join('|');
+  // What the cached widths are keyed on. The active key rides along because the
+  // active item renders the clear glyph and so measures wider than the same item
+  // did while inactive; without it the fit would be recomputed from the width
+  // the pill had before it was selected.
+  const measureSignature = `${keysSignature}::${activeKey ?? ''}`;
 
   const measure = useCallback(() => {
     const row = rowElement.current;
@@ -54,9 +65,10 @@ export function useCategoryRailOverflow(keys: string[]): CategoryRailOverflow {
 
     const currentKeys = keysSignature ? keysSignature.split('|') : [];
 
-    // New categories, or new label text, invalidate every cached width.
-    if (cachedSignature.current !== keysSignature) {
-      cachedSignature.current = keysSignature;
+    // New categories, new label text, or a new active item invalidate every
+    // cached width.
+    if (cachedSignature.current !== measureSignature) {
+      cachedSignature.current = measureSignature;
       itemWidths.current.clear();
     }
 
@@ -95,20 +107,22 @@ export function useCategoryRailOverflow(keys: string[]): CategoryRailOverflow {
       fitted += 1;
     }
     setVisibleCount(fitted);
-  }, [keysSignature]);
+  }, [keysSignature, measureSignature]);
 
-  // New categories (or new label text) invalidate every cached width, so drop
-  // back to rendering all of them and measure again. Adjusted during render
-  // rather than in an effect, which would cost an extra render pass.
-  const [measuredSignature, setMeasuredSignature] = useState(keysSignature);
-  if (measuredSignature !== keysSignature) {
-    setMeasuredSignature(keysSignature);
+  // New categories, new label text or a new active item invalidate every cached
+  // width, so drop back to rendering all of them and measure again. Adjusted
+  // during render rather than in an effect, which would cost an extra pass.
+  const [lastMeasured, setLastMeasured] = useState(measureSignature);
+  if (lastMeasured !== measureSignature) {
+    setLastMeasured(measureSignature);
     setVisibleCount(null);
   }
 
+  // Mount and any signature change (categories, labels, active item) remeasure
+  // here; the row's own size changes are covered by the ResizeObserver below.
   useLayoutEffect(() => {
     measure();
-  });
+  }, [measure]);
 
   // Held in state, not just a ref, so the observer effect below re-runs when the
   // row mounts. A ref callback cannot return a cleanup on React 18.

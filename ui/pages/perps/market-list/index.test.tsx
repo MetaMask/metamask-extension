@@ -108,6 +108,28 @@ describe('MarketListView', () => {
       });
     });
 
+    it('drops the plural when the filter leaves a single market', async () => {
+      mockUsePerpsLiveMarketListData.mockReturnValue({
+        markets: [mockCryptoMarkets[0]],
+        cryptoMarkets: [mockCryptoMarkets[0]],
+        hip3Markets: [],
+        isInitialLoading: false,
+        error: null,
+        refresh: jest.fn(),
+      });
+
+      renderWithProvider(<MarketListView />, mockStore);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('market-list-count')).toHaveTextContent(
+          '1 market',
+        );
+      });
+      expect(screen.getByTestId('market-list-count')).not.toHaveTextContent(
+        '1 markets',
+      );
+    });
+
     it('closes the search box and drops the query when the icon is pressed again', async () => {
       renderWithProvider(<MarketListView />, mockStore);
 
@@ -434,6 +456,21 @@ describe('MarketListView', () => {
           // ETH is crypto but not watchlisted: proves replace, not combine.
           expect(screen.getByTestId('market-row-ETH')).toBeInTheDocument();
         });
+      });
+
+      it('leaves the rail unselected while the watchlist filter is on', async () => {
+        renderWithProvider(
+          <MarketListView />,
+          watchlistStore,
+          '/perps/market-list?filter=watchlist',
+        );
+
+        await waitFor(() => screen.getByTestId('market-row-BTC'));
+
+        // Watchlist is the header star's state, not a category, so no pill
+        // reports itself pressed while it is in force.
+        const rail = screen.getByTestId('market-list-categories');
+        expect(rail.querySelectorAll('[aria-pressed="true"]')).toHaveLength(0);
       });
 
       it('hides the watchlist toggle while the watchlist is empty', async () => {

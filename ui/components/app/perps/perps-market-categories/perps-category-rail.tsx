@@ -27,6 +27,9 @@ const SKELETON_PILL_STYLES: Record<PerpsCategoryPillVariant, string> = {
 };
 const SKELETON_PILL_KEYS = ['a', 'b', 'c', 'd', 'e'];
 
+/** Stable empty list for the `Wrap` layout, which measures nothing. */
+const EMPTY_CATEGORIES: MarketFilter[] = [];
+
 /** How many pills the single-row `Overflow` loading rail reserves room for. */
 export const SKELETON_PILL_COUNT = SKELETON_PILL_KEYS.length;
 
@@ -125,8 +128,12 @@ export const PerpsCategoryRail = ({
   const t = useI18nContext();
   const isOverflow = layout === PerpsCategoryRailLayout.Overflow;
 
-  const { rowRef, registerItem, visibleCount } =
-    useCategoryRailOverflow(categories);
+  // `Wrap` never overflows, so it has no fit to measure: passing no categories
+  // keeps its ResizeObserver and layout reads off the Perps tab entirely.
+  const { rowRef, registerItem, visibleCount } = useCategoryRailOverflow(
+    isOverflow ? categories : EMPTY_CATEGORIES,
+    selectedCategory,
+  );
 
   // Before the first measurement every pill is rendered, which is what gives
   // the hook a width to read.

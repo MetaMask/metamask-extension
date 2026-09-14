@@ -23,9 +23,11 @@ export type DropdownProps<OptionId extends string> = {
   /** Available options */
   options: DropdownOption<OptionId>[];
   /**
-   * Currently selected option ID, or `null` when the menu holds no selection —
-   * the category rail's overflow menu never does, because the active category
-   * is promoted into the visible row instead.
+   * Currently selected option ID, or `null` when the menu holds no selection.
+   * The category rail's overflow menu can hold one: the rail splits its
+   * categories in source order, so the active category lands in this menu
+   * whenever it falls past the fit boundary, and the rail then passes it here
+   * alongside `isTriggerActive`.
    */
   selectedId: OptionId | null;
   /** Callback when selection changes */
