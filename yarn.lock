@@ -5882,7 +5882,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:^76.1.0":
+"@metamask/bridge-status-controller@npm:^76.2.0":
   version: 76.2.0
   resolution: "@metamask/bridge-status-controller@npm:76.2.0"
   dependencies:
@@ -31698,7 +31698,7 @@ __metadata:
     "@metamask/bitcoin-wallet-snap": "npm:^2.0.1"
     "@metamask/bitcoin-wallet-standard": "npm:^1.1.0"
     "@metamask/bridge-controller": "npm:^81.1.0"
-    "@metamask/bridge-status-controller": "npm:^76.1.0"
+    "@metamask/bridge-status-controller": "npm:^76.2.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/browser-playground": "npm:0.8.1"
     "@metamask/chain-agnostic-permission": "npm:^1.6.2"
