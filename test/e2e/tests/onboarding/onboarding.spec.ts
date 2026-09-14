@@ -39,6 +39,15 @@ const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
 const MOCK_ETH_PRICE = 1700;
 
+const NATIVE_ASSETS_INFO = {
+  'eip155:1/slip44:60': {
+    type: 'native' as const,
+    decimals: 18,
+    symbol: 'ETH',
+    name: 'Ethereum',
+  },
+};
+
 async function mockSpotPrices(mockServer: Mockttp) {
   return await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
@@ -83,7 +92,9 @@ describe('MetaMask onboarding', function () {
   it("Creates a new wallet, sets up a secure password, and doesn't complete the onboarding process and refreshes the page", async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        fixtures: new FixtureBuilderV2({ onboarding: true })
+          .withAssetsController({ assetsInfo: NATIVE_ASSETS_INFO })
+          .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
