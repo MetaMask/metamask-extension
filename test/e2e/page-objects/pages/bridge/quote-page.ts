@@ -321,13 +321,9 @@ class BridgeQuotePage {
 
     await this.waitForExpectedNumberOfQuotes(expectedTotalCosts.length);
 
-    const costs = await this.readAllQuoteTotalCosts(expectedTotalCosts.length);
-    // Comparing the whole list in order also covers the cheapest-first sorting.
-    assert.deepEqual(
-      costs,
-      expectedTotalCosts,
-      `Unexpected Total cost values: ${costs.join(', ')}`,
-    );
+    // Checking each value at its own position also covers the cheapest-first
+    // sorting.
+    await this.checkAllQuoteTotalCosts(expectedTotalCosts);
 
     await this.driver.waitForSelector({
       css: `${this.quotesModal} ${this.quoteOption}:first-child`,
@@ -337,7 +333,9 @@ class BridgeQuotePage {
     await this.driver.clickElementAndWaitToDisappear(
       this.quotesModalBackButton,
     );
-    console.log(`Quote total costs are as expected: ${costs.join(', ')}`);
+    console.log(
+      `Quote total costs are as expected: ${expectedTotalCosts.join(', ')}`,
+    );
   }
 
   async checkRwaGeoRestrictedMessageIsDisplayed(): Promise<void> {
@@ -524,32 +522,33 @@ class BridgeQuotePage {
   };
 
   /**
-   * Reads the Total cost of every row of the Select quote dialog, in display
+   * Checks the Total cost of every row of the Select quote dialog, in display
    * order.
    *
-   * @param expectedQuoteCount - Number of quotes the mocks return.
+   * @param expectedTotalCosts - Total cost values as rendered, cheapest first.
    */
-  async readAllQuoteTotalCosts(expectedQuoteCount: number): Promise<string[]> {
-    const costs = [];
-    for (let position = 1; position <= expectedQuoteCount; position++) {
-      costs.push(await this.readSingleQuoteTotalCost(position));
+  async checkAllQuoteTotalCosts(expectedTotalCosts: string[]): Promise<void> {
+    for (const [index, expectedTotalCost] of expectedTotalCosts.entries()) {
+      await this.checkSingleQuoteTotalCost(index + 1, expectedTotalCost);
     }
-    return costs;
   }
 
   /**
-   * Reads the Total cost of one row of the Select quote dialog, as rendered:
+   * Checks the Total cost of one row of the Select quote dialog, as rendered:
    * either a fiat amount (`$2.26`) or, when the quote has no fiat cost, the
    * native network fee (`0.0143 ETH`).
    *
    * @param position - 1-based position of the quote in the dialog.
+   * @param expectedTotalCost - Total cost value as rendered, without the label.
    */
-  async readSingleQuoteTotalCost(position: number): Promise<string> {
-    const costElement = await this.driver.waitForSelector(
-      this.quoteTotalCost(position),
-    );
-    const cost = await costElement.getText();
-    return cost.replace(TOTAL_COST_LABEL, '').trim();
+  async checkSingleQuoteTotalCost(
+    position: number,
+    expectedTotalCost: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.quoteTotalCost(position),
+      text: `${TOTAL_COST_LABEL} ${expectedTotalCost}`,
+    });
   }
 
   rejectModal = async () => {
