@@ -27,9 +27,6 @@ describe('MoneyActivityList', () => {
     expect(
       screen.queryByText(messages.moneyActivity.message),
     ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText(messages.moneyActivityPlaceholderDescription.message),
-    ).not.toBeInTheDocument();
   });
 
   it('renders at most five preview rows', () => {
@@ -40,9 +37,6 @@ describe('MoneyActivityList', () => {
     expect(screen.getAllByTestId(/money-activity-row-money-tx-/u)).toHaveLength(
       MAX_PREVIEW_ITEMS,
     );
-    expect(
-      screen.queryByText(messages.moneyActivityPlaceholderDescription.message),
-    ).not.toBeInTheDocument();
   });
 
   it('shows an enabled View all button when there are more than five items', () => {
@@ -75,13 +69,10 @@ describe('MoneyActivityList', () => {
     expect(screen.getByTestId('money-activity-view-all')).toBeInTheDocument();
   });
 
-  it('shows a settling skeleton instead of empty copy', () => {
+  it('shows a settling skeleton while the preview is filling', () => {
     renderWithLocalization(<MoneyActivityList items={[]} isSettling />);
 
     expect(screen.getByTestId('money-activity-settling')).toBeInTheDocument();
-    expect(
-      screen.queryByText(messages.moneyActivityPlaceholderDescription.message),
-    ).not.toBeInTheDocument();
   });
 
   it('does not make Accounts API rows clickable', () => {

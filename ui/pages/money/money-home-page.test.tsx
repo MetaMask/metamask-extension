@@ -222,9 +222,6 @@ describe('MoneyHomePage', () => {
     ).toHaveClass('shrink-0');
     expect(screen.queryByTestId('money-activity-list')).not.toBeInTheDocument();
     expect(
-      screen.queryByText(messages.moneyActivityPlaceholderDescription.message),
-    ).not.toBeInTheDocument();
-    expect(
       screen.queryByTestId(/money-activity-row-/u),
     ).not.toBeInTheDocument();
   });
@@ -405,9 +402,6 @@ describe('MoneyHomePage', () => {
     renderWithLocalization(<MoneyHomePage />);
 
     expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
-    expect(
-      screen.queryByText(messages.moneyActivityPlaceholderDescription.message),
-    ).not.toBeInTheDocument();
     expect(screen.getAllByTestId(/money-activity-row-money-tx-/u)).toHaveLength(
       5,
     );
