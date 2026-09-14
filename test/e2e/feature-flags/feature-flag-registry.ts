@@ -8,6 +8,9 @@
  *
  * The global E2E mock (mock-e2e.js) reads from this registry to return
  * production-accurate values when the extension fetches flags at runtime.
+ * Threshold arrays served to E2E (and written by feature-flag sync) are
+ * deterministic: the default variant (`control` if present, otherwise the
+ * widest bucket) is set to `scope.value = 1` and every other arm to `0`.
  *
  * To override a flag in a test, use:
  * - `manifestFlags: { remoteFeatureFlags: { flagName: value } }` (runtime override)
@@ -24,6 +27,7 @@ import {
   MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME,
   MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
 } from '../../../shared/lib/money/feature-flags';
+import { toDeterministicThresholdScopes } from './deterministic-threshold-scopes';
 
 // ============================================================================
 // Types
@@ -3456,106 +3460,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  stxMigrationBatchStatus: {
-    inProd: true,
-    name: 'stxMigrationBatchStatus',
-    productionDefault: [
-      {
-        name: 'sentinel on',
-        scope: {
-          type: 'threshold',
-          value: 1,
-        },
-        value: true,
-      },
-      {
-        name: 'sentinel off',
-        scope: {
-          type: 'threshold',
-          value: 0,
-        },
-        value: false,
-      },
-    ],
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  stxMigrationCancel: {
-    inProd: true,
-    name: 'stxMigrationCancel',
-    productionDefault: [
-      {
-        name: 'sentinel on',
-        scope: {
-          type: 'threshold',
-          value: 1,
-        },
-        value: true,
-      },
-      {
-        name: 'sentinel off',
-        scope: {
-          type: 'threshold',
-          value: 0,
-        },
-        value: false,
-      },
-    ],
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  stxMigrationGetFees: {
-    inProd: true,
-    name: 'stxMigrationGetFees',
-    productionDefault: [
-      {
-        name: 'sentinel on',
-        scope: {
-          type: 'threshold',
-          value: 1,
-        },
-        value: true,
-      },
-      {
-        name: 'sentinel off',
-        scope: {
-          type: 'threshold',
-          value: 0,
-        },
-        value: false,
-      },
-    ],
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  stxMigrationSubmitTransactions: {
-    inProd: true,
-    name: 'stxMigrationSubmitTransactions',
-    productionDefault: [
-      {
-        name: 'sentinel on',
-        scope: {
-          type: 'threshold',
-          value: 1,
-        },
-        value: true,
-      },
-      {
-        name: 'sentinel off',
-        scope: {
-          type: 'threshold',
-          value: 0,
-        },
-        value: false,
-      },
-    ],
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
   swapsChainValueOrderOverride: {
     inProd: true,
     name: 'swapsChainValueOrderOverride',
@@ -3579,6 +3483,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'tempoConfig',
     productionDefault: {
       enabled: false,
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  tokenDetailsAdvancedCharts: {
+    inProd: true,
+    name: 'tokenDetailsAdvancedCharts',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.49.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3624,14 +3539,18 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
  * Returns the production flag defaults in the raw API response format
  * (array of single-key objects), suitable for use by mock-e2e.js.
  *
- * Only includes remote flags that are in production.
+ * Only includes remote flags that are in production. Threshold arrays are
+ * rewritten so the default variant always matches (`scope.value = 1`) and
+ * other arms never match (`0`), which keeps E2E assignment deterministic.
  *
  * @returns Array of `{ flagName: value }` objects matching the client-config API format
  */
 export function getProductionRemoteFlagApiResponse(): Json[] {
   return Object.values(FEATURE_FLAG_REGISTRY)
     .filter((entry) => entry.type === FeatureFlagType.Remote && entry.inProd)
-    .map((entry) => ({ [entry.name]: entry.productionDefault }));
+    .map((entry) => ({
+      [entry.name]: toDeterministicThresholdScopes(entry.productionDefault),
+    }));
 }
 
 /**

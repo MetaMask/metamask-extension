@@ -102,6 +102,11 @@ type StateHooks = {
    */
   resetWebVitalsMetrics?: () => void;
 
+  /**
+   * Returns the persistence storage kind currently in use (`data` or `split`).
+   */
+  getStorageKind?: () => import('../shared/lib/stores/persistence-manager').StorageKind;
+
   // Agentic dev hooks (METAMASK_DEBUG only) — expose internals for CDP automation.
   // Typed as `unknown` because these are untyped debug-only entry points consumed
   // by CDP automation scripts that perform their own runtime checks.

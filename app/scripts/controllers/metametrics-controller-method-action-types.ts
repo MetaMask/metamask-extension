@@ -57,11 +57,6 @@ export type MetaMetricsControllerBufferedEndTraceAction = {
   handler: MetaMetricsController['bufferedEndTrace'];
 };
 
-export type MetaMetricsControllerUpdateTraitsAction = {
-  type: `MetaMetricsController:updateTraits`;
-  handler: MetaMetricsController['updateTraits'];
-};
-
 /**
  * Union of all MetaMetricsController action types.
  */
@@ -73,5 +68,4 @@ export type MetaMetricsControllerMethodActions =
   | MetaMetricsControllerClearTracesAfterMetricsOptInAction
   | MetaMetricsControllerAddTraceBeforeMetricsOptInAction
   | MetaMetricsControllerBufferedTraceAction
-  | MetaMetricsControllerBufferedEndTraceAction
-  | MetaMetricsControllerUpdateTraitsAction;
+  | MetaMetricsControllerBufferedEndTraceAction;

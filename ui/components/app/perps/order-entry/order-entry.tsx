@@ -56,6 +56,8 @@ import { OrderTypeToggle } from './components/order-type-toggle';
  * @param props.onCalculationsChange
  * @param props.onAddFunds
  * @param props.initialLeverage
+ * @param props.initialDraft
+ * @param props.onLeverageChange
  * @param props.sizeDecimals
  * @param props.markPrice
  * @param props.autoFocusUsd
@@ -83,6 +85,8 @@ export const OrderEntry = ({
   onOrderTypeChange,
   onAddFunds,
   initialLeverage,
+  initialDraft,
+  onLeverageChange,
   sizeDecimals,
   markPrice,
   autoFocusUsd = false,
@@ -94,7 +98,7 @@ export const OrderEntry = ({
   const activeProvider = useSelector(selectPerpsActiveProvider);
 
   // Fetch full MarketInfo for szDecimals (used to round position size before margin calc)
-  const marketInfo = usePerpsMarketInfo(asset);
+  const { market: marketInfo } = usePerpsMarketInfo(asset);
 
   // Fetch dynamic fee rates from the controller (user-specific, with discounts)
   const {
@@ -135,6 +139,7 @@ export const OrderEntry = ({
     onSubmit,
     orderType,
     initialLeverage,
+    initialDraft,
     sizeDecimals,
     maxLeverage,
     szDecimals: marketInfo?.szDecimals,
@@ -142,6 +147,14 @@ export const OrderEntry = ({
     feeRate,
     limitPricePrefill,
   });
+
+  const handlePersistedLeverageChange = useCallback(
+    (leverage: number) => {
+      handleLeverageChange(leverage);
+      onLeverageChange?.(leverage);
+    },
+    [handleLeverageChange, onLeverageChange],
+  );
 
   const isLong = formState.direction === 'long';
 
@@ -339,7 +352,7 @@ export const OrderEntry = ({
         {mode !== 'close' && (
           <LeverageSlider
             leverage={formState.leverage}
-            onLeverageChange={handleLeverageChange}
+            onLeverageChange={handlePersistedLeverageChange}
             maxLeverage={maxLeverage}
             minLeverage={
               mode === 'modify' && existingPosition

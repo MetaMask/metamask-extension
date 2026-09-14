@@ -105,6 +105,10 @@
   "accountIdenticon": {
     "message": "Идентикон счета"
   },
+  "accountImported": {
+    "message": "Счет импортирован",
+    "description": "Success toast shown after a private key or JSON account is imported"
+  },
   "accountName": {
     "message": "Имя счета"
   },
@@ -476,6 +480,42 @@
   },
   "activity_marketShort_success_title": {
     "message": "Короткая позиция закрыта — рынок"
+  },
+  "activity_moneyAccountDeposit_failed_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "Ошибка депозита"
+  },
+  "activity_moneyAccountDeposit_pending_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "Внесение депозита"
+  },
+  "activity_moneyAccountDeposit_success_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "Внесено"
+  },
+  "activity_moneyAccountWithdraw_failed_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "Не удалось отправить"
+  },
+  "activity_moneyAccountWithdraw_pending_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "Отправляется"
+  },
+  "activity_moneyAccountWithdraw_success_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "Отправлено"
   },
   "activity_nftBuy_failed_title": {
     "message": "Ошибка покупки"
@@ -1688,6 +1728,12 @@
     "message": "Одобрено $1 для $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
+  "arcUsageNoticeDescription": {
+    "message": "Добро пожаловать в Arc! Чтобы обеспечить и проверить ваше использование сети Arc, мы можем передавать информацию команде Arc."
+  },
+  "arcUsageNoticeTitle": {
+    "message": "Уведомление"
+  },
   "areYouSure": {
     "message": "Вы уверены?"
   },
@@ -1886,6 +1932,15 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Включить базовый функционал"
+  },
+  "basicFunctionalityMigrationSocialModalBlogPostLink": {
+    "message": "посте в блоге"
+  },
+  "basicFunctionalityMigrationSocialModalTitle": {
+    "message": "Конфиденциальность и обновления продуктов"
+  },
+  "basicFunctionalityMigrationToastEnabled": {
+    "message": "включено"
   },
   "basicFunctionalityRequired_description": {
     "message": "Эта функция недоступна, пока отключена базовый функционал. Используйте переключатель ниже, чтобы включить ее."
@@ -2452,9 +2507,6 @@
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Использовать разрешенный максимум"
-  },
-  "bridgeValidationInsufficientGasMessage": {
-    "message": "У Вас недостаточно $1 для покрытия платы за газ для этого моста. Введите меньшую сумму или купите больше $1."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Для оплаты газа нужно еще $1"
@@ -3347,6 +3399,9 @@
   "deepLink_thePredictPage": {
     "message": "страница рыночных прогнозов"
   },
+  "deepLink_thePrivacySettingsPage": {
+    "message": "страница настроек конфиденциальности"
+  },
   "deepLink_theRewardsPage": {
     "message": "страница Бонусов MetaMask"
   },
@@ -3495,10 +3550,6 @@
   },
   "disable": {
     "message": "Отключить"
-  },
-  "disabledGasOptionToolTipMessage": {
-    "message": "\"$1\" неактивен, потому что не достигает минимального 10-процентного увеличения по сравнению с первоначальной платой за газ.",
-    "description": "$1 is gas estimate type which can be market or aggressive"
   },
   "disconnect": {
     "message": "Отключить"
@@ -3670,7 +3721,7 @@
     "message": "Изменить контакт"
   },
   "editGasFeeModalTitle": {
-    "message": "Изменить плату за газ"
+    "message": "Изменить комиссию сети"
   },
   "editGasLimitOutOfBounds": {
     "message": "Лимит газа должен быть не менее $1"
@@ -4132,9 +4183,6 @@
   "gasPrice": {
     "message": "Цена газа (Гвей)"
   },
-  "gasPriceExcessive": {
-    "message": "Установлена неоправданно высокая плата за газ. Рекомендуем снизить ее."
-  },
   "gasPriceFetchFailed": {
     "message": "Не удалось определить примерную цену газа из-за ошибки сети."
   },
@@ -4400,6 +4448,10 @@
   "hardwareWalletErrorContinueButton": {
     "message": "Продолжить"
   },
+  "hardwareWalletErrorOnlyV4SupportedDescription": {
+    "message": "Ваш $1 может подписывать только типизированные данные версии 4 (V4). Этот сайт запросил более старый тип подписи, который не поддерживается",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWalletErrorReconnectButton": {
     "message": "Переподключить и повторить попытку",
     "description": "Button label shown when a hardware wallet is disconnected during signing."
@@ -4629,6 +4681,10 @@
   },
   "honeypotTitle": {
     "message": "Ловушка"
+  },
+  "hyperliquidDepositPromptTitle": {
+    "message": "Пополнение Hyperliquid с помощью MetaMask",
+    "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Применять реферальный код MetaMask ко всем будущим сделкам в соответствии с $1 Hyperliquid. MetaMask взимает комиссию.",
@@ -5128,9 +5184,6 @@
   "loginErrorSessionExpiredButton": {
     "message": "Войти"
   },
-  "loginErrorSessionExpiredDescription": {
-    "message": "Срок вашего сеанса истек. Войдите снова, чтобы продолжить."
-  },
   "loginErrorSessionExpiredTitle": {
     "message": "Срок вашего сеанса истек"
   },
@@ -5178,6 +5231,10 @@
   },
   "manage": {
     "message": "Управление"
+  },
+  "manageAccounts": {
+    "message": "Управление счетами",
+    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
   },
   "manageConnectedAccounts": {
     "message": "Управление подключенными счетами"
@@ -5386,6 +5443,9 @@
   },
   "moneyActivityDepositing": {
     "message": "Внесение депозита"
+  },
+  "moneyActivityDetailsTransactionId": {
+    "message": "ID транзакции"
   },
   "moneyActivityEmpty": {
     "message": "Пока нет активности"
@@ -5922,10 +5982,6 @@
   "networkStatusPriorityFeeTooltip": {
     "message": "Диапазон платы за приоритет (также известной как «чаевые» майнеру), которая направляется непосредственно майнерам, чтобы они уделили приоритетное внимание вашей транзакции."
   },
-  "networkStatusStabilityFeeTooltip": {
-    "message": "Относительная плата за газ составляет $1 за последние 72 часа.",
-    "description": "$1 is networks stability value - stable, low, high"
-  },
   "networkSuggested": {
     "message": "Рекомендовано сетью"
   },
@@ -6298,6 +6354,9 @@
   },
   "notificationsPageNoNotificationsContent": {
     "message": "Вы еще не получили ни одного уведомления."
+  },
+  "notificationsSettingsAccountsLoadError": {
+    "message": "Не удалось загрузить настройки уведомлений вашего счета. Попробуйте позже."
   },
   "notificationsSettingsAgenticCliDescription": {
     "message": "Запросы на подключение CLI, одобрения и обновления сеансов агентского кошелька"
@@ -6735,7 +6794,7 @@
     "message": "Показать пароль"
   },
   "passwordsDontMatch": {
-    "message": "Пароли не совпадают"
+    "message": "Пароли не совпадают."
   },
   "paste": {
     "message": "Вставить"
@@ -7195,6 +7254,12 @@
   "perpsCandlePeriodMinutes": {
     "message": "Минуты"
   },
+  "perpsChart": {
+    "message": "График цен"
+  },
+  "perpsChartLoadError": {
+    "message": "Не удалось загрузить данные графика"
+  },
   "perpsCloseAll": {
     "message": "Закрыть все"
   },
@@ -7242,6 +7307,9 @@
   },
   "perpsCloseShort": {
     "message": "Закрыть короткую"
+  },
+  "perpsCollapseChart": {
+    "message": "Свернуть график"
   },
   "perpsConfirmCloseLong": {
     "message": "Закрыть длинную"
@@ -7340,6 +7408,9 @@
   "perpsExchangeAccountNotFound": {
     "message": "Внесите средства, чтобы начать торговать.",
     "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
+  },
+  "perpsExpandChart": {
+    "message": "Развернуть график"
   },
   "perpsExploreMarkets": {
     "message": "Обзор рынков"
@@ -7977,6 +8048,18 @@
     "message": "ТП/СЛ успешно обновлены",
     "description": "Success toast text shown when TP/SL settings are updated"
   },
+  "perpsTopMovers": {
+    "message": "Лидеры роста и падения",
+    "description": "Heading of the Perps tab section ranking markets by 24h price change"
+  },
+  "perpsTopMoversGainers": {
+    "message": "Лидеры роста",
+    "description": "Toggle option showing the markets that rose the most over 24h in the Top movers section"
+  },
+  "perpsTopMoversLosers": {
+    "message": "Лидеры падения",
+    "description": "Toggle option showing the markets that fell the most over 24h in the Top movers section"
+  },
   "perpsTrades": {
     "message": "Сделки"
   },
@@ -8368,6 +8451,10 @@
   "quotedTotalCost": {
     "message": "Общая стоимость: $1"
   },
+  "rampsBackToWallet": {
+    "message": "Вернуться в кошелек",
+    "description": "Secondary button on the ramps complete-buy interstitial that returns to the wallet home"
+  },
   "rampsBestRate": {
     "message": "Лучший курс"
   },
@@ -8385,6 +8472,21 @@
   "rampsChangeProvider": {
     "message": "Изменить поставщика."
   },
+  "rampsChooseProvider": {
+    "message": "Выберите провайдера"
+  },
+  "rampsCompleteBuyTitle": {
+    "message": "Завершение покупки",
+    "description": "Title of the interstitial shown after opening a ramps provider checkout tab"
+  },
+  "rampsCompletePurchaseInProviderTab": {
+    "message": "Завершите покупку во вкладке $1",
+    "description": "$1 is the on-ramp provider name (e.g. Transak)"
+  },
+  "rampsContinueInBrowser": {
+    "message": "Продолжить в браузере",
+    "description": "Banner title on the ramps complete-buy interstitial"
+  },
   "rampsEligibilityFailedDescription": {
     "message": "Повторите попытку или обратитесь в службу поддержки, если это будет повторяться."
   },
@@ -8396,6 +8498,10 @@
   },
   "rampsErrorLoadingTokens": {
     "message": "Ошибка загрузки токенов"
+  },
+  "rampsEstimatedToReceive": {
+    "message": "Примерная сумма к получению",
+    "description": "Label for the estimated crypto amount on the ramps complete-buy interstitial"
   },
   "rampsMaxPurchaseLimit": {
     "message": "Максимальная сумма покупки — $1",
@@ -8522,9 +8628,20 @@
   "rampsPaymentDelayMinutes": {
     "message": "мин."
   },
+  "rampsPaymentMethod": {
+    "message": "Способ оплаты",
+    "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
+  },
+  "rampsPaymentMethodLimits": {
+    "message": "До $1",
+    "description": "$1 is the maximum fiat buy amount"
+  },
   "rampsPaymentMethodMinLimit": {
     "message": "Мин. $1",
     "description": "$1 is the minimum fiat buy amount"
+  },
+  "rampsPreviouslyUsed": {
+    "message": "Использовалось последним"
   },
   "rampsQuoteFetchError": {
     "message": "Не удалось получить котировку."
@@ -8630,6 +8747,14 @@
   },
   "removeAccount": {
     "message": "Удалить счет"
+  },
+  "removeAccountConfirmDescription": {
+    "message": "Вы можете восстановить этот счет в любое время, импортировав его с помощью приватного ключа.",
+    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
+  },
+  "removeAccountConfirmTitle": {
+    "message": "Удалить $1",
+    "description": "Title of the account remove confirmation modal. $1 is the account name."
   },
   "removeAccountModalBannerDescription": {
     "message": "Перед удалением убедитесь, что у вас есть секретная фраза для восстановления или закрытый ключ для этого счета.",
@@ -9084,6 +9209,10 @@
   "searchAnAcccountOrContact": {
     "message": "Поиск по аккаунту или контакту"
   },
+  "searchAnAccount": {
+    "message": "Поиск счета",
+    "description": "Search input placeholder for the Perps destination account picker"
+  },
   "searchForAnAssetToSend": {
     "message": "Поиск актива для отправки"
   },
@@ -9523,6 +9652,9 @@
   "selectPathHelp": {
     "message": "Если вы не видите ожидаемые счета, попробуйте переключиться на путь HD или текущую выбранную сеть."
   },
+  "selectPerpsAccount": {
+    "message": "Выберите счет перпов"
+  },
   "selectRecipient": {
     "message": "Выберите получателя"
   },
@@ -9563,6 +9695,9 @@
   },
   "sendSelectSendAsset": {
     "message": "Выберите актив для отправки"
+  },
+  "sendToPerps": {
+    "message": "Отправить в Перпы"
   },
   "sendingAsset": {
     "message": "Отправка $1..."
@@ -10960,9 +11095,6 @@
   "stxCancelled": {
     "message": "Потенциально неуспешный обмен"
   },
-  "stxCancelledDescription": {
-    "message": "Ваша транзакция завершилась неудачно и была бы отменена, чтобы избежать ненужной платы за газ."
-  },
   "stxCancelledSubDescription": {
     "message": "Попробуйте обменять снова. В следующий раз мы сможем защитить вас от подобного риска."
   },
@@ -11004,9 +11136,6 @@
   },
   "stxUserCancelled": {
     "message": "Своп отменен"
-  },
-  "stxUserCancelledDescription": {
-    "message": "Ваша транзакция была отменена, и вы не вносили никакой ненужной платы за газ."
   },
   "submit": {
     "message": "Отправить"
@@ -11137,19 +11266,12 @@
     "message": "Своп $1 на $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesExplanation": {
-    "message": "MetaMask не получает плату за газ. Сумма этой платы являются приблизительной и может меняться в зависимости от загруженности сети и сложности транзакции. Узнайте подробнее $1.",
-    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
-  },
   "swapGasFeesExplanationLinkText": {
     "message": "здесь",
     "description": "Text for link in swapGasFeesExplanation"
   },
   "swapGasFeesIncluded": {
     "message": " Включен"
-  },
-  "swapGasFeesSplit": {
-    "message": "Плата за газ, указанная на предыдущем экране, распределяется между этими двумя транзакциями."
   },
   "swapGasFeesSponsored": {
     "message": "Оплачено MetaMask"
@@ -11284,9 +11406,6 @@
   "swapSource": {
     "message": "Источник ликвидности"
   },
-  "swapSuggestedGasSettingToolTipMessage": {
-    "message": "Своп — это сложная транзакция, выполнение которой зависят от имеющегося времени. Мы рекомендуем эту плату за газ для хорошего баланса между стоимостью и уверенностью в успехе свопа."
-  },
   "swapToConfirmWithHwWallet": {
     "message": "чтобы подтвердить с помощью аппаратного кошелька"
   },
@@ -11308,9 +11427,6 @@
   },
   "swapUnknown": {
     "message": "Неизвестно"
-  },
-  "swapValidationInsufficientGasMessage": {
-    "message": "У вас недостаточно $1 для покрытия платы за газ для этого свопа. Введите меньшую сумму или купите больше $1."
   },
   "swapZeroSlippage": {
     "message": "0% проскальзывания"
@@ -11526,7 +11642,7 @@
     "message": "Функция"
   },
   "transactionDetailGasHeading": {
-    "message": "Примерная плата за газ"
+    "message": "Примерная комиссия сети"
   },
   "transactionError": {
     "message": "Ошибка транзакции. Исключение в коде контракта."
@@ -11546,9 +11662,6 @@
   "transactionHistoryBaseFee": {
     "message": "Базовая комиссия (Гвей)"
   },
-  "transactionHistoryL1GasLabel": {
-    "message": "Итого платы за газ L1"
-  },
   "transactionHistoryL2GasLimitLabel": {
     "message": "Лимит газа L2"
   },
@@ -11562,7 +11675,7 @@
     "message": "Плата за приоритет (Гвей)"
   },
   "transactionHistoryTotalGasFee": {
-    "message": "Итого платы за газ"
+    "message": "Общая комиссия сети"
   },
   "transactionIdCopied": {
     "message": "ID транзакции скопирован"
@@ -11763,9 +11876,6 @@
   },
   "unlock": {
     "message": "Разблокировать"
-  },
-  "unlockPageIncorrectPassword": {
-    "message": "Неверный пароль. Попробуйте еще раз."
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Слишком много попыток. Попробуйте ещё раз через "
@@ -12036,10 +12146,6 @@
   },
   "wrongNetworkName": {
     "message": "Согласно нашим записям, имя сети может не соответствовать этому ID блокчейна."
-  },
-  "wrongPassword": {
-    "message": "Неверный пароль",
-    "description": "Displayed when the user enters an incorrect password"
   },
   "year": {
     "message": "год"
