@@ -53,12 +53,14 @@ describe('MultichainPrivateKeyRow', () => {
       `multichain-private-key-value-${CHAIN_ID}`,
     );
     expect(privateKey).toHaveStyle({ filter: 'blur(8px)' });
+    expect(privateKey).not.toHaveTextContent(PRIVATE_KEY);
 
     fireEvent.click(
       screen.getByTestId(`multichain-private-key-reveal-${CHAIN_ID}`),
     );
 
     expect(privateKey).not.toHaveStyle({ filter: 'blur(8px)' });
+    expect(privateKey).toHaveTextContent(PRIVATE_KEY);
   });
 
   it('copies the private key without revealing it', () => {

@@ -73,7 +73,7 @@ const PrivateKeyContent = ({
           style={isRevealed ? undefined : { filter: 'blur(8px)' }}
           data-testid={`multichain-private-key-value-${chainId}`}
         >
-          {privateKey}
+          {isRevealed ? privateKey : '•'.repeat(64)}
         </Text>
         {isRevealed ? null : (
           <Box
@@ -108,7 +108,7 @@ const PrivateKeyContent = ({
         onClick={onCopy}
         data-testid={`multichain-private-key-copy-${chainId}`}
       >
-        {t('copy')}
+        {t('copyPrivateKey')}
       </Button>
     </Box>
   );
