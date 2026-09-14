@@ -877,6 +877,18 @@ module.exports = defineConfig([
     },
   },
   /**
+   * Perps loading measurement scripts.
+   *
+   * These run under Node's native TypeScript execution, which resolves imports
+   * the ESM way — so the `.ts` extension is required, not optional.
+   */
+  {
+    files: ['./development/perps/loading/**/*.ts'],
+    rules: {
+      'import-x/extensions': 'off',
+    },
+  },
+  /**
    * Webpack
    */
   {

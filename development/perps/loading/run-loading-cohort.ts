@@ -14,7 +14,7 @@ import {
   browserPid,
   isColdMode,
   resolveMeasurementPath,
-} from './browser-process.ts'; // eslint-disable-line import-x/extensions -- Native Node TypeScript execution requires the extension.
+} from './browser-process.ts';
 
 /**
  * Execute a measurement command against its prepared runtime.
