@@ -43,7 +43,7 @@ jest.mock('./state-write-metrics', () => ({
 }));
 
 jest.mock('../../../shared/lib/sentry-remote-rates', () => ({
-  getPersistenceWriteTelemetrySampleRate: jest.fn(() => 0.01),
+  getPersistenceWriteTelemetrySampleRate: jest.fn(() => 0),
 }));
 
 jest.mock('../../../shared/lib/stores/extension-store', () => {
@@ -233,7 +233,7 @@ describe('setup-initial-state-hooks', () => {
         controllerKeys: ['FooController'],
         idleStatus: 'unknown',
         measurementDurationMs: 0.2,
-        sampleRate: 0.01,
+        sampleRate: 0,
         totalBytes: 31,
         writeDurationMs: 4,
       };

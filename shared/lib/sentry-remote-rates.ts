@@ -32,8 +32,9 @@ export type SentryRemoteRates = {
 /**
  * Default probability of measuring a successful split-state persist write when
  * `sentry.persistenceWriteSampleRate` is absent or malformed.
+ * Off by default until a remote rate is published.
  */
-export const PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE = 0.01;
+export const PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE = 0;
 
 type ControllerFlagState = {
   remoteFeatureFlags?: { sentry?: Record<string, unknown> };

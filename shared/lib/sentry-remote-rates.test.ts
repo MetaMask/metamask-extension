@@ -197,9 +197,8 @@ describe('applySentryRemoteRates', () => {
 
   describe('persistenceWriteSampleRate', () => {
     it('falls back to the compile-time default when absent', () => {
-      expect(getPersistenceWriteTelemetrySampleRate()).toBe(
-        PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE,
-      );
+      expect(PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE).toBe(0);
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(0);
     });
 
     it('uses the remote override once applied', async () => {
