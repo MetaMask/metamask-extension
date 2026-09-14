@@ -79,22 +79,6 @@ import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { trackEvent } from './controllers/analytics';
 import MetaMaskController from './metamask-controller';
 
-// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
-// and provide the pure flag-evaluation logic without the IN_TEST bypass
-// (test/helpers/setup-helper.js sets process.env.IN_TEST=true for all unit tests,
-// so using jest.requireActual here would make the function always return true,
-// breaking tests that depend on the disabled-flag path).
-jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
-  ...jest.requireActual(
-    '../../shared/lib/assets-unify-state/remote-feature-flag',
-  ),
-  isAssetsUnifyStateFeatureEnabled: jest.fn(
-    (featureFlag, featureVersion) =>
-      Boolean(featureFlag?.enabled) &&
-      featureFlag?.featureVersion === featureVersion,
-  ),
-}));
-
 jest.mock('./controllers/analytics', () => ({
   ...jest.requireActual('./controllers/analytics'),
   trackEvent: jest.fn(),
@@ -335,18 +319,6 @@ jest.mock('@metamask/core-backend', () => ({
     getCachedData: jest.fn().mockReturnValue({}),
   }),
 }));
-
-jest.mock('../../shared/lib/environment', () => {
-  const actualEnvironment = jest.requireActual('../../shared/lib/environment');
-  return {
-    ...actualEnvironment,
-    // Wrap in a jest.fn (defaulting to the real behavior) so individual tests
-    // can toggle the unified-assets build gate on/off.
-    getIsAssetsUnifiedStateIncludedInBuild: jest.fn(
-      actualEnvironment.getIsAssetsUnifiedStateIncludedInBuild,
-    ),
-  };
-});
 
 jest.mock('../../shared/lib/manifestFlags', () => ({
   getManifestFlags: jest.fn(() => ({})),
@@ -686,53 +658,10 @@ describe('MetaMaskController', () => {
       const watchAssetTokenAddress =
         '0x073Ec1fAd5cC742951e44Ae96680A7Ba13b8C668';
 
-      afterEach(() => {
-        // The file-level beforeEach rebuilds the controller (reading this build
-        // gate) before any describe-level beforeEach runs, so restore the
-        // default (enabled in tests) to avoid leaking an "off" value into the
-        // next test's controller construction.
-        jest
-          .mocked(environment.getIsAssetsUnifiedStateIncludedInBuild)
-          .mockReturnValue(true);
-      });
-
-      it('delegates ERC-20 to TokensController.watchAsset when the unified assets build flag is off', async () => {
-        jest
-          .mocked(environment.getIsAssetsUnifiedStateIncludedInBuild)
-          .mockReturnValue(false);
-
-        const watchAssetSpy = jest
-          .spyOn(metamaskController.tokensController, 'watchAsset')
-          .mockResolvedValue(undefined);
-
-        const asset = {
-          address: watchAssetTokenAddress,
-          symbol: 'TST',
-          decimals: 4,
-        };
-
-        await metamaskController.handleWatchAssetRequest({
-          asset,
-          type: ERC20,
-          origin: 'https://example.com',
-          networkClientId: watchAssetNetworkClientId,
-        });
-
-        expect(watchAssetSpy).toHaveBeenCalledWith({
-          asset,
-          type: ERC20,
-          networkClientId: watchAssetNetworkClientId,
-        });
-      });
-
-      describe('with the unified assets build flag on', () => {
+      describe('ERC-20 via AssetsController', () => {
         let addRequestSpy;
 
         beforeEach(() => {
-          jest
-            .mocked(environment.getIsAssetsUnifiedStateIncludedInBuild)
-            .mockReturnValue(true);
-
           jest
             .spyOn(metamaskController.accountsController, 'getSelectedAccount')
             .mockReturnValue({

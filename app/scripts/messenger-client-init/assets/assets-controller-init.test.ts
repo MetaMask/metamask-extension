@@ -504,10 +504,6 @@ describe('AssetsControllerInit', () => {
             return {
               remoteFeatureFlags: {
                 [ASSETS_UNIFY_STATE_FLAG]: {
-                  enabled: true,
-                  featureVersion: '1',
-                  minimumVersion: '13.38.0',
-                  deprecatedControllers: ['TokenListController'],
                   tracesEnabled: true,
                 },
               },
