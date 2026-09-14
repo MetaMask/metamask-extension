@@ -35,15 +35,15 @@ const GATED_METRIC_VALUES = [
   METRIC.assetDetails.cls,
   METRIC.solanaAssetDetails.cls,
 
-  // Removed with them: `onboardingImportWallet.cls` and `onboardingNewWallet.cls`.
-  // Both emit no `cls` at all — absent from the p95 map in 60 of 60 runs for the
-  // import flow and 3 of 3 sampled for the new-wallet flow, while the other six
-  // canaries emit every run. `compare-benchmarks.ts` skips an entry missing
-  // p75/p95 with a warn and a continue, so each has been scoring as a pass
-  // rather than as a measurement. They are the only two onboarding canaries and
-  // the only two that are dark, which is a collection defect rather than a
-  // gating decision — restoring them means making the flows emit CLS, not
-  // adding the keys back.
+  // Removed: `onboardingImportWallet.cls` and `onboardingNewWallet.cls`. Both
+  // emit no `cls` at all: each is absent from the Chrome artifact in 60 of 60
+  // `main` push runs (2026-09-08 to 09-11), while the other six canaries emit
+  // every run. `validateResultThresholds` checks a percentile only when the
+  // metric is present, so a missing metric raises no violation and no warning,
+  // and each has been scoring as a pass rather than as a measurement. They are
+  // the only two onboarding canaries and the only two that are dark, which is
+  // a collection defect rather than a gating decision — restoring them means
+  // making the flows emit CLS, not adding the keys back.
   //
   // PAUSED — the nine CUF-derived timing metrics, per #46078.
   //
