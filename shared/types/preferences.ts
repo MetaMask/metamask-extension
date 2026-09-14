@@ -31,5 +31,8 @@ export type Preferences = {
   useNativeCurrencyAsPrimaryCurrency: boolean;
   useSidePanelAsDefault?: boolean;
   perpsSelectedCandlePeriod?: string;
+  tdpChartType?: number;
+  tdpChartInterval?: string;
+  tdpChartIndicators?: string[];
   gasSponsorshipOptOutByChainId: Record<string, boolean>;
 };

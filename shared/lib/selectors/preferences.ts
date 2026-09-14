@@ -12,3 +12,22 @@ export function getPreferences({
 }: PreferencesMetaMaskState): Preferences {
   return (metamask.preferences ?? {}) as Preferences;
 }
+
+// TDP Advanced Chart preferences — persisted via PreferencesController.
+// Chart type: 1 = Candle, 2 = Line (matches TradingView + mobile conventions).
+const CHART_TYPE_LINE_DEFAULT = 2;
+const CHART_INTERVAL_DEFAULT = '15m';
+
+export function getTdpChartType(state: PreferencesMetaMaskState): number {
+  return state.metamask.preferences?.tdpChartType ?? CHART_TYPE_LINE_DEFAULT;
+}
+
+export function getTdpChartInterval(state: PreferencesMetaMaskState): string {
+  return state.metamask.preferences?.tdpChartInterval ?? CHART_INTERVAL_DEFAULT;
+}
+
+export function getTdpChartIndicators(
+  state: PreferencesMetaMaskState,
+): string[] {
+  return state.metamask.preferences?.tdpChartIndicators ?? [];
+}

@@ -12,7 +12,6 @@ import {
   FontWeight,
   IconColor,
   IconName,
-  Skeleton,
   Text,
   TextButton,
   TextButtonSize,
@@ -76,6 +75,7 @@ import {
   getOptedIn,
   getShowFiatInTestnets,
 } from '../../../selectors';
+import { getIsAdvancedChartsEnabled } from '../../../selectors/multichain/feature-flags';
 import {
   getAsset,
   getAssetsBySelectedAccountGroup,
@@ -93,9 +93,6 @@ import { selectIsMusdConversionFlowEnabled } from '../../../selectors/musd';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { useSpendableBalance } from '../hooks/useSpendableBalance';
-import { useAssetPerpsMarket } from '../hooks/useAssetPerpsMarket';
-import { usePerpsPositionForAsset } from '../../../hooks/perps/usePerpsPositionForAsset';
-import { PerpsViewStreamBoundary } from '../../../components/app/perps/perps-view-stream-boundary';
 import { getIsAssetRequireActivate } from '../../../selectors/stellar-assets';
 import { isNativeAsset, type Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -106,9 +103,18 @@ import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
 import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
 import { AssetMarketDetails } from './asset-market-details';
-import { AssetPerpsPositionSection } from './asset-perps-position-section';
 import { AssetStickyActions } from './asset-sticky-actions';
 import AssetChart from './chart/asset-chart';
+// [POC — THROWAWAY] Advanced Chart via cross-origin iframe from localhost:8001
+import AdvancedChartIframe from './chart/advanced-chart-iframe';
+import type { AdvancedChartIframeRef } from './chart/advanced-chart-iframe';
+import IntervalBar, {
+  CHART_TYPE_LINE,
+  CHART_TYPE_CANDLE,
+} from './chart/advanced-chart-interval-bar';
+import IndicatorBar from './chart/advanced-chart-indicator-bar';
+import { useAdvancedChartPreferences } from './chart/useAdvancedChartPreferences';
+import { useOHLCVRealtime } from './chart/useOHLCVRealtime';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
 import { AssetActivateCard } from './asset-activation-card';
@@ -121,28 +127,6 @@ import {
   AssetPageSecurityTrustProvider,
   AssetPageSecurityTrustSection,
 } from './security-trust';
-
-/**
- * Activates live Perps stream emission while the asset page is resolving or
- * showing Perps UI, so position lookup can run in parallel with the market
- * match instead of waiting until Long / Short mount.
- *
- * @param props - Wrapper props
- * @param props.enabled - Whether a Perps market is loading or already matched
- * @param props.children - Action row and optional position section
- */
-const MaybePerpsViewStreamBoundary = ({
-  enabled,
-  children,
-}: {
-  enabled: boolean;
-  children: ReactNode;
-}) => {
-  if (!enabled) {
-    return <>{children}</>;
-  }
-  return <PerpsViewStreamBoundary>{children}</PerpsViewStreamBoundary>;
-};
 
 // TODO BIP44 Refactor: BIP-44 has been enabled and is stable, this page needs a significant refactor to remove confusing branching logic
 const AssetPage = ({
@@ -179,6 +163,72 @@ const AssetPage = ({
     [caipChainId],
   );
   const selectedAccount = useSelector(selectSelectedAccount) as InternalAccount;
+
+  // Advanced chart state — preferences persisted via PreferencesController.
+  const isAdvancedChartsEnabled = useSelector(getIsAdvancedChartsEnabled);
+  const [advancedChartError, setAdvancedChartError] = useState<string | null>(
+    null,
+  );
+  const [acChartReady, setAcChartReady] = useState(false);
+  const showAdvancedChart = isAdvancedChartsEnabled && !advancedChartError;
+  const {
+    chartType: acChartType,
+    interval: acInterval,
+    indicators: acIndicators,
+    setChartType: setAcChartType,
+    setInterval: setAcInterval,
+    toggleIndicator: toggleAcIndicator,
+  } = useAdvancedChartPreferences();
+  const acRef = React.useRef<AdvancedChartIframeRef>(null);
+
+  const handleAdvancedChartReady = useCallback(() => {
+    setAcChartReady(true);
+  }, []);
+
+  const handleIndicatorToggle = useCallback(
+    (name: string) => {
+      const wasActive = acIndicators.has(name);
+      toggleAcIndicator(name);
+      if (wasActive) {
+        acRef.current?.postMessage(
+          name === 'Volume'
+            ? { type: 'TOGGLE_VOLUME', payload: { visible: false } }
+            : { type: 'REMOVE_INDICATOR', payload: { name } },
+        );
+      } else {
+        acRef.current?.postMessage(
+          name === 'Volume'
+            ? {
+                type: 'TOGGLE_VOLUME',
+                payload: { visible: true, volumeOverlay: true },
+              }
+            : { type: 'ADD_INDICATOR', payload: { name } },
+        );
+      }
+    },
+    [acIndicators, toggleAcIndicator],
+  );
+
+  const handleMAToggle = useCallback(
+    (ma: string) => {
+      toggleAcIndicator(ma);
+      // Compute the new MA set after toggle for the postMessage.
+      const nextIndicators = new Set(acIndicators);
+      if (nextIndicators.has(ma)) {
+        nextIndicators.delete(ma);
+      } else {
+        nextIndicators.add(ma);
+      }
+      const selectedMAs = [...nextIndicators].filter((n) =>
+        /^MA\d+$/u.test(n),
+      );
+      acRef.current?.postMessage({
+        type: 'SET_MA_VISIBILITY',
+        payload: { visible: selectedMAs },
+      });
+    },
+    [acIndicators, toggleAcIndicator],
+  );
 
   useEffect(() => {
     endTrace({ name: TraceName.AssetDetails });
@@ -298,6 +348,21 @@ const AssetPage = ({
     ? toAssetId(address, caipChainId)
     : (decodedAsset as CaipAssetType);
 
+  // [POC — THROWAWAY] Real-time OHLCV updates via polling
+  const { latestBar: realtimeLatestBar } = useOHLCVRealtime({
+    assetId: caipAssetId as string,
+    interval: acInterval,
+    enabled: isAdvancedChartsEnabled && acChartReady && showAdvancedChart,
+  });
+
+  // Convert latestBar to the format expected by AdvancedChartIframe
+  const realtimeBar = useMemo(() => {
+    if (!realtimeLatestBar) {
+      return undefined;
+    }
+    return realtimeLatestBar;
+  }, [realtimeLatestBar]);
+
   const securityTrustToken = useMemo(
     () => ({
       symbol,
@@ -416,18 +481,6 @@ const AssetPage = ({
 
   const isUpdatedAssetNative = isNativeAsset(updatedAsset);
   const tokenAsset = isUpdatedAssetNative ? null : updatedAsset;
-  // Perps-eligible assets show Long / Short / Send / More instead of the
-  // regular action buttons (mobile Token Details parity).
-  const { market: perpsMarket, isLoading: isPerpsMarketLoading } =
-    useAssetPerpsMarket(symbol);
-  const { isLoading: isPerpsPositionLoading } = usePerpsPositionForAsset(
-    perpsMarket?.name ?? '',
-  );
-  // Hold the row until market *and* position lookups settle (no Buy/Swap →
-  // Long/Short flash). Stream-init failure is a settled "no position" state,
-  // so Send / Buy / Swap are not gated on an unbounded wait.
-  const isPerpsActionsLoading =
-    isPerpsMarketLoading || Boolean(perpsMarket && isPerpsPositionLoading);
   const isMusdAssetPage = useMemo(
     () =>
       type === AssetType.token &&
@@ -503,74 +556,71 @@ const AssetPage = ({
           )}
         </Box>
         <AssetPageSecurityTrustBanner />
-        <AssetChart
-          chainId={chainId}
-          address={address}
-          currentPrice={currentPrice}
-          currency={currency}
-          asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
-        />
-        <MaybePerpsViewStreamBoundary
-          enabled={Boolean(isPerpsMarketLoading || perpsMarket)}
-        >
-          <Box marginTop={4} paddingLeft={4} paddingRight={4}>
-            {isPerpsActionsLoading ? (
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                gap={3}
-                className="w-full"
-                data-testid="asset-perps-actions-skeleton"
-              >
-                {['long', 'short', 'send', 'more'].map((slot) => (
-                  <Skeleton key={slot} className="h-[52px] flex-1 rounded-lg" />
-                ))}
-              </Box>
-            ) : (
-              <>
-                {isUpdatedAssetNative ? (
-                  <CoinButtons
-                    {...{
-                      account: selectedAccount,
-                      trackingLocation: 'asset-page',
-                      isSigningEnabled,
-                      isSwapsChain,
-                      isBridgeChain,
-                      chainId,
-                      hasBalance: Boolean(
-                        updatedAsset.balance?.value &&
-                        updatedAsset.balance.value !== '0',
-                      ),
-                      disableSendForNonEvm: true,
-                      buyAssetId: caipAssetId,
-                      perpsMarketSymbol: perpsMarket?.name,
-                    }}
-                  />
-                ) : null}
-                {tokenAsset ? (
-                  <TokenButtons
-                    token={tokenAsset}
-                    disableSendForNonEvm
-                    isMarketClosed={isMarketClosed}
-                    perpsMarketSymbol={perpsMarket?.name}
-                  />
-                ) : null}
-                {isMarketClosed && tokenAsset ? (
-                  <Box marginTop={4}>
-                    <MarketClosedActionButton
-                      onClick={handleOpenMarketClosedModal}
-                    />
-                  </Box>
-                ) : null}
-              </>
+        {/* [POC — THROWAWAY] Advanced Chart replaces legacy chart; falls back on error.
+            Layout mirrors mobile: IntervalBar → AdvancedChart → IndicatorBar */}
+        {showAdvancedChart ? (
+          <>
+            <IntervalBar
+              selectedInterval={acInterval}
+              onIntervalSelect={setAcInterval}
+              chartType={acChartType}
+              onChartTypeSelect={setAcChartType}
+            />
+            <AdvancedChartIframe
+              ref={acRef}
+              assetId={caipAssetId as string}
+              height={300}
+              chartType={acChartType}
+              selectedInterval={acInterval}
+              onError={setAdvancedChartError}
+              onReady={handleAdvancedChartReady}
+              realtimeBar={realtimeBar}
+            />
+            {acChartType === CHART_TYPE_CANDLE && (
+              <IndicatorBar
+                activeIndicators={acIndicators}
+                onIndicatorToggle={handleIndicatorToggle}
+                onMAToggle={handleMAToggle}
+              />
             )}
-          </Box>
-          {perpsMarket?.name ? (
-            <AssetPerpsPositionSection
-              marketSymbol={perpsMarket.name}
-              assetName={name ?? symbol}
+          </>
+        ) : (
+          <AssetChart
+            chainId={chainId}
+            address={address}
+            currentPrice={currentPrice}
+            currency={currency}
+            asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
+          />
+        )}
+        <Box marginTop={4} paddingLeft={4} paddingRight={4}>
+          {isUpdatedAssetNative ? (
+            <CoinButtons
+              {...{
+                account: selectedAccount,
+                trackingLocation: 'asset-page',
+                isSigningEnabled,
+                isSwapsChain,
+                isBridgeChain,
+                chainId,
+                disableSendForNonEvm: true,
+                buyAssetId: caipAssetId,
+              }}
             />
           ) : null}
-        </MaybePerpsViewStreamBoundary>
+          {tokenAsset ? (
+            <TokenButtons
+              token={tokenAsset}
+              disableSendForNonEvm
+              isMarketClosed={isMarketClosed}
+            />
+          ) : null}
+          {isMarketClosed && tokenAsset ? (
+            <Box marginTop={4}>
+              <MarketClosedActionButton onClick={handleOpenMarketClosedModal} />
+            </Box>
+          ) : null}
+        </Box>
         <Box flexDirection={BoxFlexDirection.Column} paddingTop={3}>
           {showTronResources && (
             <Box>
