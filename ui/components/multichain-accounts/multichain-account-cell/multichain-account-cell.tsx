@@ -87,7 +87,7 @@ const BalanceDisplay = ({
       variant={isSubtitle ? TextVariant.BodySm : TextVariant.BodyMd}
       color={isSubtitle ? TextColor.TextAlternative : undefined}
       fontWeight={isSubtitle ? undefined : FontWeight.Medium}
-      style={endSpacing ? { marginRight: endSpacing } : undefined}
+      style={isSubtitle ? undefined : { marginRight: 8 }}
       ellipsis
       isHidden={isHidden}
     >
@@ -139,14 +139,14 @@ const EditModeDeleteIcon = ({
 }: EditModeDeleteIconProps) => (
   <ButtonIcon
     iconName={IconName.RemoveMinus}
-    size={ButtonIconSize.Sm}
+    size={ButtonIconSize.Md}
     ariaLabel={ariaLabel}
     onClick={onClick}
     isDisabled={disabled}
     className="multichain-account-cell__edit-mode-action-icon flex-shrink-0"
     data-testid="multichain-account-cell-edit-mode-delete-icon"
     iconProps={{
-      size: IconSize.Sm,
+      size: IconSize.Md,
       className: IconColor.ErrorDefault,
     }}
   />
