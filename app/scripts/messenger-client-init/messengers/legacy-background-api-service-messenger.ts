@@ -149,6 +149,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'SubscriptionController:stopAllPolling',
       'AuthenticationController:getState',
       'AuthenticationController:performSignOut',
+      'AuthenticationController:clearState',
       'AppStateController:setPasskeyAutoUnlockSuppressed',
       'AppStateController:setTrezorModel',
       'MetaMetricsController:bufferedTrace',
