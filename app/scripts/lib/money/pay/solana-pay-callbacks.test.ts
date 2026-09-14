@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer';
-import { FeeType, TransactionStatus } from '@metamask/keyring-api';
+import { FeeType, SolScope, TransactionStatus } from '@metamask/keyring-api';
 import type {
   GetSolanaPayPreflightRequest,
   SolanaPaySignAndSendTransactionRequest,
@@ -11,11 +11,7 @@ import {
   SystemProgram,
   type TransactionInstruction,
 } from '@solana/web3.js';
-import type {
-  CaipAccountId,
-  CaipAssetType,
-  CaipChainId,
-} from '@metamask/utils';
+import type { CaipAccountId, CaipAssetType } from '@metamask/utils';
 import { sha256 } from '../../../../../shared/lib/hash.utils';
 import type { TransactionPayControllerInitMessenger } from '../../../messenger-client-init/messengers';
 import { createSolanaPayCallbacks } from './solana-pay-callbacks';
@@ -26,23 +22,9 @@ jest.mock('../../../../../shared/lib/hash.utils', () => ({
 
 const ACCOUNT_ID = 'account-id';
 const ADDRESS = Keypair.generate().publicKey.toBase58();
-const SCOPE = 'solana:mainnet' as CaipChainId;
+const SCOPE = SolScope.Mainnet;
 const CAIP_ACCOUNT_ID = `${SCOPE}:${ADDRESS}` as CaipAccountId;
 const ASSET_ID = `${SCOPE}/slip44:501` as CaipAssetType;
-
-function getAccountsState() {
-  return {
-    internalAccounts: {
-      accounts: {
-        [ACCOUNT_ID]: {
-          id: ACCOUNT_ID,
-          address: ADDRESS,
-          scopes: [SCOPE],
-        },
-      },
-    },
-  };
-}
 
 function getMessenger(call: jest.Mock): TransactionPayControllerInitMessenger {
   return { call } as unknown as TransactionPayControllerInitMessenger;
@@ -83,9 +65,6 @@ describe('createSolanaPayCallbacks', () => {
       lamports: 1,
     });
     const call = jest.fn((action: string) => {
-      if (action === 'AccountsController:getState') {
-        return getAccountsState();
-      }
       if (action === 'SnapController:handleRequest') {
         return [
           { type: FeeType.Base, asset: { amount: '0.000005' } },
@@ -101,7 +80,8 @@ describe('createSolanaPayCallbacks', () => {
     );
 
     const result = await callbacks.getPreflight({
-      accountId: CAIP_ACCOUNT_ID,
+      accountId: ACCOUNT_ID,
+      caipAccountId: CAIP_ACCOUNT_ID,
       requestId: 'request-id',
       scope: SCOPE,
       sourceAmountRaw: '1000000000',
@@ -124,6 +104,51 @@ describe('createSolanaPayCallbacks', () => {
     );
     expect(result.preparedTransaction).not.toHaveLength(0);
     expect(result.preparationId).not.toHaveLength(0);
+    expect(call).toHaveBeenCalledWith(
+      'SnapController:handleRequest',
+      expect.objectContaining({
+        request: expect.objectContaining({
+          params: expect.objectContaining({ accountId: ACCOUNT_ID }),
+        }),
+      }),
+    );
+  });
+
+  it('passes the wallet-local account ID to Snap submission', async () => {
+    const call = jest.fn((action: string) => {
+      if (action === 'SnapController:handleRequest') {
+        return { transactionId: 'solana-signature' };
+      }
+      throw new Error(`Unexpected action: ${action}`);
+    });
+    const callbacks = createSolanaPayCallbacks(
+      getMessenger(call),
+      'project-id',
+      getConnection(),
+    );
+    const request = {
+      accountId: ACCOUNT_ID,
+      caipAccountId: CAIP_ACCOUNT_ID,
+      preparedTransaction: 'transaction',
+      preparationId: await sha256(
+        `${ACCOUNT_ID}:${SCOPE}:request-id:transaction`,
+      ),
+      requestId: 'request-id',
+      scope: SCOPE,
+    } as SolanaPaySignAndSendTransactionRequest;
+
+    await expect(callbacks.signAndSendTransaction(request)).resolves.toEqual({
+      outcome: 'submitted',
+      transactionId: 'solana-signature',
+    });
+    expect(call).toHaveBeenCalledWith(
+      'SnapController:handleRequest',
+      expect.objectContaining({
+        request: expect.objectContaining({
+          params: expect.objectContaining({ accountId: ACCOUNT_ID }),
+        }),
+      }),
+    );
   });
 
   const failureCases: {
@@ -151,9 +176,6 @@ describe('createSolanaPayCallbacks', () => {
   failureCases.forEach(({ name, error, expected }) => {
     it(`classifies ${name} without retrying`, async () => {
       const call = jest.fn((action: string) => {
-        if (action === 'AccountsController:getState') {
-          return getAccountsState();
-        }
         if (action === 'SnapController:handleRequest') {
           throw error;
         }
@@ -165,10 +187,11 @@ describe('createSolanaPayCallbacks', () => {
         getConnection(),
       );
       const request = {
-        accountId: CAIP_ACCOUNT_ID,
+        accountId: ACCOUNT_ID,
+        caipAccountId: CAIP_ACCOUNT_ID,
         preparedTransaction: 'transaction',
         preparationId: await sha256(
-          `${CAIP_ACCOUNT_ID}:${SCOPE}:request-id:transaction`,
+          `${ACCOUNT_ID}:${SCOPE}:request-id:transaction`,
         ),
         requestId: 'request-id',
         scope: SCOPE,
@@ -177,15 +200,12 @@ describe('createSolanaPayCallbacks', () => {
       await expect(callbacks.signAndSendTransaction(request)).resolves.toEqual(
         expected,
       );
-      expect(call).toHaveBeenCalledTimes(2);
+      expect(call).toHaveBeenCalledTimes(1);
     });
   });
 
   it('refreshes the source account and maps a confirmed Snap transaction', async () => {
     const call = jest.fn((action: string) => {
-      if (action === 'AccountsController:getState') {
-        return getAccountsState();
-      }
       if (
         action ===
         'MultichainTransactionsController:updateTransactionsForAccount'
@@ -215,7 +235,8 @@ describe('createSolanaPayCallbacks', () => {
 
     await expect(
       callbacks.getTransactionStatus({
-        accountId: CAIP_ACCOUNT_ID,
+        accountId: ACCOUNT_ID,
+        caipAccountId: CAIP_ACCOUNT_ID,
         scope: SCOPE,
         transactionId: 'signature',
       }),

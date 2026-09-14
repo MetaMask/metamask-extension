@@ -1,5 +1,4 @@
 import { Buffer } from 'buffer';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   FeeType,
   TransactionStatus as MultichainTransactionStatus,
@@ -32,7 +31,6 @@ import {
   isObject,
   parseCaipAccountId,
   parseCaipAssetType,
-  type CaipAccountId,
   type Hex,
   type Json,
 } from '@metamask/utils';
@@ -93,8 +91,8 @@ async function getPreflight(
   messenger: TransactionPayControllerInitMessenger,
   connection: Connection,
 ) {
-  const account = getInternalAccount(request.accountId, messenger);
-  const payer = new PublicKey(account.address);
+  const { address } = parseCaipAccountId(request.caipAccountId);
+  const payer = new PublicKey(address);
   const instructions = request.transaction.instructions.map(
     ({ programId, keys, data }) =>
       new TransactionInstruction({
@@ -122,7 +120,7 @@ async function getPreflight(
   ).toString('base64');
   const fees = await getSnapFees(
     preparedTransaction,
-    account.id,
+    request.accountId,
     request.scope,
     messenger,
   );
@@ -293,7 +291,6 @@ async function signAndSendTransaction(
     return { outcome: 'not-submitted', reason: 'preparation-mismatch' };
   }
 
-  const account = getInternalAccount(request.accountId, messenger);
   try {
     const result = await messenger.call('SnapController:handleRequest', {
       origin: ORIGIN_METAMASK,
@@ -304,7 +301,7 @@ async function signAndSendTransaction(
         jsonrpc: '2.0',
         method: 'signAndSendTransaction',
         params: {
-          accountId: account.id,
+          accountId: request.accountId,
           options: { commitment: 'confirmed', skipPreflight: false },
           scope: request.scope,
           transaction: request.preparedTransaction,
@@ -353,14 +350,13 @@ async function getTransactionStatus(
   request: GetSolanaPayTransactionStatusRequest,
   messenger: TransactionPayControllerInitMessenger,
 ): Promise<'pending' | 'confirmed' | 'failed' | 'unknown'> {
-  const account = getInternalAccount(request.accountId, messenger);
   await messenger.call(
     'MultichainTransactionsController:updateTransactionsForAccount',
-    account.id,
+    request.accountId,
   );
   const transactions = messenger.call(
     'MultichainTransactionsController:getState',
-  ).nonEvmTransactions[account.id]?.[request.scope]?.transactions;
+  ).nonEvmTransactions[request.accountId]?.[request.scope]?.transactions;
   const transaction = transactions?.find(
     ({ id }) => id === request.transactionId,
   );
@@ -528,25 +524,6 @@ async function getNonAtomicFollowUpStatus(
     return 'confirmed';
   }
   return 'pending';
-}
-
-function getInternalAccount(
-  accountId: string,
-  messenger: TransactionPayControllerInitMessenger,
-): InternalAccount {
-  const { address } = parseCaipAccountId(accountId as CaipAccountId);
-  const accounts = Object.values(
-    messenger.call('AccountsController:getState').internalAccounts.accounts,
-  );
-  const account = accounts.find(
-    (candidate) =>
-      candidate.address === address &&
-      candidate.scopes.some((scope) => accountId.startsWith(`${scope}:`)),
-  );
-  if (!account) {
-    throw new Error('Solana Pay source account unavailable');
-  }
-  return account;
 }
 
 async function getPreparationId({

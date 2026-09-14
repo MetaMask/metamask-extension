@@ -92,7 +92,10 @@ export function BridgeFeeRow({
     if (!solanaPayQuote) {
       return undefined;
     }
-    const { preflight } = solanaPayQuote;
+    const { preflight, providerQuote } = solanaPayQuote;
+    const relayFeeUsd = new BigNumber(providerQuote.fees.relayer.amountUsd)
+      .plus(providerQuote.fees.app?.amountUsd ?? '0')
+      .toNumber();
     return {
       network: new BigNumber(preflight.networkFeeRaw)
         .plus(preflight.priorityFeeRaw)
@@ -101,6 +104,8 @@ export function BridgeFeeRow({
       rentDebit: new BigNumber(preflight.rentDebitRaw)
         .dividedBy(1_000_000_000)
         .toFixed(),
+      relay: formatFiat(relayFeeUsd),
+      relayFeeUsd,
       reserve: new BigNumber(preflight.rentExemptionRequirementRaw)
         .dividedBy(1_000_000_000)
         .toFixed(),
@@ -110,7 +115,7 @@ export function BridgeFeeRow({
         .dividedBy(1_000_000_000)
         .toFixed(),
     };
-  }, [solanaPayQuote]);
+  }, [formatFiat, solanaPayQuote]);
 
   const isSmall = variant === ConfirmInfoRowSize.Small;
 
@@ -155,6 +160,7 @@ export function BridgeFeeRow({
 
   if (solanaFee) {
     const tooltip = [
+      `${t('providerFee')}: ${solanaFee.relay}`,
       t('solanaPayNetworkFee', [solanaFee.network]),
       t('solanaPayRentDebit', [solanaFee.rentDebit]),
       t('solanaPayRentReserve', [solanaFee.reserve]),
@@ -187,7 +193,7 @@ export function BridgeFeeRow({
         }
       >
         <ConfirmInfoRowText
-          text={`${solanaFee.total} SOL`}
+          text={`${solanaFee.relayFeeUsd > 0 ? `${solanaFee.relay} + ` : ''}${solanaFee.total} SOL`}
           data-testid="solana-pay-fee-value"
         />
       </ConfirmInfoRow>

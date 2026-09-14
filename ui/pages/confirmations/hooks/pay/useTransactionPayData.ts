@@ -40,9 +40,18 @@ export function useTransactionPayQuoteError() {
 export function useTransactionPayHasExecutableQuote() {
   const quotes = useTransactionPayQuotes();
   const solanaPayQuote = useSolanaPayQuote();
+  const payIntent = useTransactionPayData(
+    selectTransactionPayIntentByTransactionId,
+  );
 
   if (solanaPayQuote) {
-    return solanaPayQuote.preflight.affordability.isAffordable;
+    const hasRequiredProductAction =
+      !payIntent?.atomicProductActionRequired ||
+      solanaPayQuote.route.atomicProductActionIncluded;
+    return (
+      solanaPayQuote.preflight.affordability.isAffordable &&
+      hasRequiredProductAction
+    );
   }
   return (
     quotes?.some((quote) => quote.strategy !== TransactionPayStrategy.None) ??

@@ -12,8 +12,14 @@ import {
 import { useTransactionPayToken } from '../../hooks/pay/useTransactionPayToken';
 import {
   useIsTransactionPayLoading,
+  useSolanaPayQuote,
   useTransactionPayIsMaxAmount,
 } from '../../hooks/pay/useTransactionPayData';
+import { useTransactionPayAvailableTokens } from '../../hooks/pay/useTransactionPayAvailableTokens';
+import {
+  selectTransactionPayIntentByTransactionId,
+  type TransactionPayState,
+} from '../../../../selectors/transactionPayController';
 import { useConfirmContext } from '../../context/confirm';
 import { formatAmount } from '../../../../../shared/lib/format-amount';
 import { getTokenAddress } from '../../utils/transaction-pay';
@@ -28,8 +34,19 @@ export type PayTokenAmountProps = {
 export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
   const locale = useSelector(getCurrentLocale) ?? 'en';
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const transactionId = currentConfirmation?.id ?? '';
   const { chainId } = currentConfirmation ?? { chainId: '0x0' as Hex };
   const { payToken } = useTransactionPayToken();
+  const solanaPayQuote = useSolanaPayQuote();
+  const availableTokens = useTransactionPayAvailableTokens();
+  const payIntent = useSelector((state: TransactionPayState) =>
+    selectTransactionPayIntentByTransactionId(state, transactionId),
+  );
+  const solanaToken = availableTokens.find(
+    ({ accountId, assetId }) =>
+      accountId === payIntent?.sourceWalletAccountId &&
+      assetId === payIntent?.sourceAssetId,
+  );
   const targetTokenAddress = getTokenAddress(currentConfirmation);
   const isQuotesLoading = useIsTransactionPayLoading();
   const isMaxAmount = useTransactionPayIsMaxAmount();
@@ -52,6 +69,18 @@ export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
   );
 
   const fiatRates = useTokenFiatRates(fiatRequests);
+
+  const formattedSolanaAmount = useMemo(() => {
+    if (!solanaPayQuote || !solanaToken) {
+      return undefined;
+    }
+    return formatAmount(
+      locale,
+      new BigNumber(solanaPayQuote.preflight.sourceAmountRaw).dividedBy(
+        new BigNumber(10).pow(solanaToken.decimals ?? 0),
+      ),
+    );
+  }, [locale, solanaPayQuote, solanaToken]);
 
   const formattedAmount = useMemo(() => {
     const payTokenFiatRate = fiatRates[0];
@@ -76,6 +105,19 @@ export function PayTokenAmount({ amountHuman, disabled }: PayTokenAmountProps) {
     return (
       <Box data-testid="pay-token-amount">
         <Text color={TextColor.textMuted}>0 ETH</Text>
+      </Box>
+    );
+  }
+
+  if (payIntent?.sourceChainId.startsWith('solana:')) {
+    if (!formattedSolanaAmount || !solanaToken) {
+      return <PayTokenAmountSkeleton />;
+    }
+    return (
+      <Box data-testid="pay-token-amount">
+        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+          {formattedSolanaAmount} {solanaToken.symbol}
+        </Text>
       </Box>
     );
   }

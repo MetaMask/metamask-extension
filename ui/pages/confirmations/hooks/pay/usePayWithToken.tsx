@@ -72,10 +72,17 @@ export function usePayWithToken(): PayWithToken {
   const payIntent = useSelector((state: TransactionPayState) =>
     selectTransactionPayIntentByTransactionId(state, transactionId),
   );
+  const selectedSolanaToken = availableTokens.find(
+    (token) =>
+      token.assetId === payIntent?.sourceAssetId &&
+      `${String(token.chainId)}:${token.accountAddress}` ===
+        payIntent?.sourceAccountId,
+  );
   const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
   const isMoneyAccountSelected =
-    paymentOverride === PaymentOverride.MoneyAccount ||
-    (isDefaultMoneyAccount && !payToken);
+    !selectedSolanaToken &&
+    (paymentOverride === PaymentOverride.MoneyAccount ||
+      (isDefaultMoneyAccount && !payToken));
   const { withdrawableFiatFormatted } = useMoneyAccountWithdrawableFiat(
     isMoneyAccountSelected,
   );
@@ -102,12 +109,6 @@ export function usePayWithToken(): PayWithToken {
   }, []);
 
   const firstRequiredToken = requiredTokens?.[0];
-  const selectedSolanaToken = availableTokens.find(
-    (token) =>
-      token.assetId === payIntent?.sourceAssetId &&
-      `${String(token.chainId)}:${token.accountAddress}` ===
-        payIntent?.sourceAccountId,
-  );
   const resolvedToken =
     payToken ?? (shouldWaitForPayToken ? undefined : firstRequiredToken);
 
@@ -167,7 +168,10 @@ export function usePayWithToken(): PayWithToken {
     displayToken,
     balanceUsdFormatted,
     label: isPostQuoteWithdraw ? t('withdrawTo') : t('payWith'),
-    from: selectedSolanaToken?.accountAddress ?? from,
+    from:
+      selectedSolanaToken && payIntent?.requestId
+        ? undefined
+        : (selectedSolanaToken?.accountAddress ?? from),
     ownerId: currentConfirmation?.id ?? '',
     isPostQuoteWithdraw,
     isMoneyAccountSelected,
