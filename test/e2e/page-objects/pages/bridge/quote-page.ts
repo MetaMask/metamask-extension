@@ -179,6 +179,18 @@ class BridgeQuotePage {
   };
 
   /**
+   * Checks the Total cost of every row of the Select quote dialog, in display
+   * order.
+   *
+   * @param expectedTotalCosts - Total cost values as rendered, cheapest first.
+   */
+  async checkAllQuoteTotalCosts(expectedTotalCosts: string[]): Promise<void> {
+    for (const [index, expectedTotalCost] of expectedTotalCosts.entries()) {
+      await this.checkSingleQuoteTotalCost(index + 1, expectedTotalCost);
+    }
+  }
+
+  /**
    * Checks that the asset picker is shown again after navigating back from an
    * asset page, then leaves it to return to the swap form.
    */
@@ -340,6 +352,24 @@ class BridgeQuotePage {
       throw e;
     }
     console.log('The RWA geo-restricted message is displayed');
+  }
+
+  /**
+   * Checks the Total cost of one row of the Select quote dialog, as rendered:
+   * either a fiat amount (`$2.26`) or, when the quote has no fiat cost, the
+   * native network fee (`0.0143 ETH`).
+   *
+   * @param position - 1-based position of the quote in the dialog.
+   * @param expectedTotalCost - Total cost value as rendered, without the label.
+   */
+  async checkSingleQuoteTotalCost(
+    position: number,
+    expectedTotalCost: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.quoteTotalCost(position),
+      text: `${TOTAL_COST_LABEL} ${expectedTotalCost}`,
+    });
   }
 
   async checkTokenIsDisabled() {
@@ -512,36 +542,6 @@ class BridgeQuotePage {
     await this.driver.delay(QUOTE_PARAMS_DEBOUNCE_MS);
     await this.driver.clickElement(pickerButton);
   };
-
-  /**
-   * Checks the Total cost of every row of the Select quote dialog, in display
-   * order.
-   *
-   * @param expectedTotalCosts - Total cost values as rendered, cheapest first.
-   */
-  async checkAllQuoteTotalCosts(expectedTotalCosts: string[]): Promise<void> {
-    for (const [index, expectedTotalCost] of expectedTotalCosts.entries()) {
-      await this.checkSingleQuoteTotalCost(index + 1, expectedTotalCost);
-    }
-  }
-
-  /**
-   * Checks the Total cost of one row of the Select quote dialog, as rendered:
-   * either a fiat amount (`$2.26`) or, when the quote has no fiat cost, the
-   * native network fee (`0.0143 ETH`).
-   *
-   * @param position - 1-based position of the quote in the dialog.
-   * @param expectedTotalCost - Total cost value as rendered, without the label.
-   */
-  async checkSingleQuoteTotalCost(
-    position: number,
-    expectedTotalCost: string,
-  ): Promise<void> {
-    await this.driver.waitForSelector({
-      css: this.quoteTotalCost(position),
-      text: `${TOTAL_COST_LABEL} ${expectedTotalCost}`,
-    });
-  }
 
   rejectModal = async () => {
     await this.driver.clickElement(this.warningModalCancelButton);
