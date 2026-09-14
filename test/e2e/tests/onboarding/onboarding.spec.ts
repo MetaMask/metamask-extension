@@ -33,8 +33,11 @@ import {
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import { lockAndWaitForPasskeyUnlockPage } from '../../page-objects/flows/login.flow';
 import DeepLink from '../../page-objects/pages/security/deep-link-page';
+import { getMockAssetsPrice } from '../tokens/utils/mocks';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
+
+const MOCK_ETH_PRICE = 1700;
 
 async function mockSpotPrices(mockServer: Mockttp) {
   return await mockServer
@@ -44,7 +47,7 @@ async function mockSpotPrices(mockServer: Mockttp) {
       json: {
         'eip155:1/slip44:60': {
           id: 'ethereum',
-          price: 1700,
+          price: MOCK_ETH_PRICE,
           marketCap: 382623505141,
           pricePercentChange1d: 0,
         },
@@ -163,6 +166,18 @@ describe('MetaMask onboarding', function () {
             eip155: {
               '0x1': true,
             },
+          })
+          .withCurrencyController({
+            currencyRates: {
+              ETH: {
+                conversionDate: Date.now(),
+                conversionRate: MOCK_ETH_PRICE,
+                usdConversionRate: MOCK_ETH_PRICE,
+              },
+            },
+          })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_PRICE),
           })
           .build(),
         testSpecificMock: mockSpotPrices,

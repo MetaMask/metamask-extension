@@ -16,7 +16,11 @@ import {
 } from '../../constants';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../stub/keyring-bridge';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
-import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
+import {
+  getMockAssetsPrice,
+  MOCK_ETH_CONVERSION_RATE,
+  mockPriceApi,
+} from '../tokens/utils/mocks';
 
 describe('Multichain Accounts - Account tree', function (this: Suite) {
   it('should display basic wallets and accounts', async function () {
@@ -35,6 +39,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
                 usdConversionRate: MOCK_ETH_CONVERSION_RATE,
               },
             },
+          })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -102,10 +109,10 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
                 'eip155:1/slip44:60': { amount: '0' },
               },
             },
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
           })
           .build(),
         title: this.test?.fullTitle(),
-        unifiedEvmAccountsApiBalances: { mainnetNativeEthHuman: '25' },
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockSnapSimpleKeyringAndSite(mockServer);
           return await mockPriceApi(mockServer);
@@ -166,6 +173,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
                 usdConversionRate: MOCK_ETH_CONVERSION_RATE,
               },
             },
+          })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
           })
           .build(),
         title: this.test?.fullTitle(),
