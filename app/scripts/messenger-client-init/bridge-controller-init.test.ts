@@ -47,6 +47,7 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('BridgeControllerInit', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     process.env.METAMASK_VERSION = 'MOCK_VERSION';
   });
 
@@ -76,10 +77,6 @@ describe('BridgeControllerInit', () => {
   });
 
   describe('trackMetaMetricsFn', () => {
-    beforeEach(() => {
-      jest.mocked(trackEvent).mockClear();
-    });
-
     it('forwards Failed failure telemetry including hash presence', () => {
       BridgeControllerInit(getInitRequestMock());
       const constructorOptions = jest.mocked(BridgeController).mock.calls[0][0];
