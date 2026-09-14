@@ -29,7 +29,6 @@ const SET_ENVIRONMENT_VARIABLES_DECLARED_VARIABLES = [
   'METAMASK_SHIELD_ENABLED',
   'PERPS_ENABLED',
   'QR_SYNC_ENABLED',
-  'ASSETS_UNIFIED_STATE_ENABLED',
   'COMPLIANCE_API_URL',
 ];
 
@@ -55,7 +54,6 @@ function getVariablesForSetEnvironmentVariables() {
     METAMASK_SHIELD_ENABLED: 'false',
     PERPS_ENABLED: 'false',
     QR_SYNC_ENABLED: 'false',
-    ASSETS_UNIFIED_STATE_ENABLED: 'false',
     COMPLIANCE_API_URL: 'https://compliance.example.test',
   });
 

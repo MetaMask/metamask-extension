@@ -3,7 +3,6 @@ import {
   CurrencyRateController,
   CurrencyRateMessenger,
 } from '@metamask/assets-controllers';
-import { getIsDeprecatedController } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { CurrencyRateControllerInitMessenger } from './messengers';
 import { MessengerClientInitFunction } from './types';
 
@@ -30,15 +29,7 @@ export const CurrencyRateControllerInit: MessengerClientInitFunction<
     useExternalServices: () =>
       initMessenger.call('PreferencesController:getState').useExternalServices,
     tokenPricesService: new CodefiTokenPricesServiceV2(),
-    isDeprecated: () => {
-      const { remoteFeatureFlags } = initMessenger.call(
-        'RemoteFeatureFlagController:getState',
-      );
-      return getIsDeprecatedController(
-        remoteFeatureFlags,
-        'CurrencyRateController',
-      );
-    },
+    isDeprecated: () => true,
   });
 
   return {

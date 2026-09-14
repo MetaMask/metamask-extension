@@ -50,7 +50,7 @@ export const mockTokensV2SupportedNetworks = (mockServer: Mockttp) =>
  * decimals, and name for a fixed set of chains (ETH 1337, BTC, SOL, Solana
  * USDC, Tron native), which are required by
  * getMultiChainBalancesControllerBalances to include the balance in its
- * output when the assetsUnifyState feature flag is enabled.
+ * output.
  *
  * @param mockServer - The mock server instance.
  */

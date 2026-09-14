@@ -124,9 +124,6 @@ const mockMetamaskStore = {
     },
   },
   useExternalServices: true,
-  accountsAssets: {
-    [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
-  },
   internalAccounts: {
     accounts: {
       [mockNonEvmAccount.id]: mockNonEvmAccount,
@@ -155,21 +152,28 @@ const mockMetamaskStore = {
       },
     },
   },
-  // MultichainBalancesController
-  balances: {
+  selectedCurrency: 'usd',
+  assetsBalance: {
     [mockNonEvmAccount.id]: {
       [MultichainNativeAssets.BITCOIN]: {
         amount: mockNonEvmBalance,
-        unit: 'BTC',
       },
     },
   },
-  // (Multichain) RatesController
-  fiatCurrency: 'usd',
-  conversionRates: {
-    [Cryptocurrency.Btc]: {
-      conversionRate: '1.000',
-      conversionDate: 0,
+  assetsInfo: {
+    [MultichainNativeAssets.BITCOIN]: {
+      type: 'native',
+      decimals: 8,
+      symbol: 'BTC',
+      name: 'Bitcoin',
+    },
+  },
+  assetsPrice: {
+    [MultichainNativeAssets.BITCOIN]: {
+      assetPriceType: 'fungible',
+      price: 1,
+      usdPrice: 1,
+      lastUpdated: 0,
     },
   },
   cryptocurrencies: [Cryptocurrency.Btc],
@@ -250,10 +254,13 @@ describe('NonEvmOverview', () => {
               [MultichainNetworks.BITCOIN]: true,
             },
           },
-          currentCurrency: 'usd',
-          conversionRates: {
+          selectedCurrency: 'usd',
+          assetsPrice: {
             [MultichainNativeAssets.BITCOIN]: {
-              rate: '1',
+              assetPriceType: 'fungible',
+              price: 1,
+              usdPrice: 1,
+              lastUpdated: 0,
             },
           },
         },
@@ -272,9 +279,8 @@ describe('NonEvmOverview', () => {
       getStore({
         metamask: {
           ...mockMetamaskStore,
-          balances: {},
-          accountsAssets: {
-            [mockNonEvmAccount.id]: [],
+          assetsBalance: {
+            [mockNonEvmAccount.id]: {},
           },
         },
       }),
