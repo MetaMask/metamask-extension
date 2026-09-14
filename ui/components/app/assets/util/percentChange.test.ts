@@ -2,6 +2,7 @@ import { computePercentChange } from './percentChange';
 
 describe('computePercentChange', () => {
   describe('valid calculations', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       // [currentValue, previousValue, expected, description]
       [110, 100, 10, 'positive change: +10%'],
@@ -18,7 +19,7 @@ describe('computePercentChange', () => {
       [1, 10000, -99.99, 'large negative change: -99.99%'],
     ])(
       'computes %s → %s as %s% (%s)',
-      (currentValue, previousValue, expected) => {
+      (currentValue: number, previousValue: number, expected: number) => {
         expect(computePercentChange(currentValue, previousValue)).toBe(
           expected,
         );
@@ -27,6 +28,7 @@ describe('computePercentChange', () => {
   });
 
   describe('edge cases returning undefined', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       // [currentValue, previousValue, description]
       [undefined, 100, 'current value is undefined'],
@@ -36,7 +38,11 @@ describe('computePercentChange', () => {
       [0, 0, 'both values are zero (division by zero)'],
     ])(
       'returns undefined when %s',
-      (currentValue, previousValue, _description) => {
+      (
+        currentValue: number | undefined,
+        previousValue: number | undefined,
+        _description: string,
+      ) => {
         expect(
           computePercentChange(currentValue, previousValue),
         ).toBeUndefined();
