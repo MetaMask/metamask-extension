@@ -107,12 +107,14 @@ const EditModeVisibilityIcon = ({
   isHidden,
   ariaLabel,
   onClick,
+  disabled = false,
 }: EditModeVisibilityIconProps) => (
   <ButtonIcon
     iconName={isHidden ? IconName.EyeSlash : IconName.Eye}
     size={ButtonIconSize.Md}
     ariaLabel={ariaLabel}
     onClick={onClick}
+    isDisabled={disabled}
     className="multichain-account-cell__edit-mode-action-icon flex-shrink-0"
     data-testid={
       isHidden
