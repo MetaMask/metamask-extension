@@ -98,7 +98,6 @@ export const getMockAssetsPrice = (
   'eip155:59144/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
   'eip155:8453/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
   'eip155:42161/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
-  'eip155:143/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
   'eip155:143/slip44:268435779': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
 });
 
