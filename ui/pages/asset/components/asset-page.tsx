@@ -171,6 +171,14 @@ const AssetPage = ({
   );
   const [acChartReady, setAcChartReady] = useState(false);
   const showAdvancedChart = isAdvancedChartsEnabled && !advancedChartError;
+
+  // Reset chart error state when navigating to a different token so the
+  // advanced chart gets a fresh retry opportunity.
+  const assetKey = `${chainId}:${tokenAddress ?? 'native'}`;
+  useEffect(() => {
+    setAdvancedChartError(null);
+    setAcChartReady(false);
+  }, [assetKey]);
   const {
     chartType: acChartType,
     interval: acInterval,
