@@ -101,7 +101,7 @@ export const MultichainAccountPrivateKeyListPage = ({
         >
           {t('revealMultichainPrivateKeysBannerDescription', [learnMoreLink])}
         </BannerAlert>
-        <Box flexDirection={BoxFlexDirection.Column}>
+        <Box flexDirection={BoxFlexDirection.Column} paddingTop={4}>
           {decodedAccountGroupId ? (
             <MultichainPrivateKeyList
               groupId={decodedAccountGroupId}

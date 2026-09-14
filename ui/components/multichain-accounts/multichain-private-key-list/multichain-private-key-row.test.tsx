@@ -49,15 +49,17 @@ describe('MultichainPrivateKeyRow', () => {
   it('obscures the private key until tapped', () => {
     renderComponent();
 
+    const revealButton = screen.getByTestId(
+      `multichain-private-key-reveal-${CHAIN_ID}`,
+    );
     const privateKey = screen.getByTestId(
       `multichain-private-key-value-${CHAIN_ID}`,
     );
+    expect(revealButton).toHaveClass('bg-muted/50');
     expect(privateKey).toHaveStyle({ filter: 'blur(8px)' });
     expect(privateKey).not.toHaveTextContent(PRIVATE_KEY);
 
-    fireEvent.click(
-      screen.getByTestId(`multichain-private-key-reveal-${CHAIN_ID}`),
-    );
+    fireEvent.click(revealButton);
 
     expect(privateKey).not.toHaveStyle({ filter: 'blur(8px)' });
     expect(privateKey).toHaveTextContent(PRIVATE_KEY);
@@ -66,9 +68,13 @@ describe('MultichainPrivateKeyRow', () => {
   it('copies the private key without revealing it', () => {
     renderComponent();
 
-    fireEvent.click(
-      screen.getByTestId(`multichain-private-key-copy-${CHAIN_ID}`),
+    const copyButton = screen.getByTestId(
+      `multichain-private-key-copy-${CHAIN_ID}`,
     );
+    expect(copyButton).toHaveTextContent('copy');
+    expect(copyButton).toHaveClass('rounded-lg');
+
+    fireEvent.click(copyButton);
 
     expect(mockOnCopy).toHaveBeenCalledTimes(1);
     expect(
