@@ -44,9 +44,6 @@ class ActivityTab extends HomePage {
 
   private readonly failedTransactions = '[data-tx-status="failed"]';
 
-  private readonly pendingOrConfirmedTransactions =
-    '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"], [data-tx-status="confirmed"]';
-
   private readonly pendingTransactionItems =
     '[data-tx-status="submitted"], [data-tx-status="approved"], [data-tx-status="unapproved"], [data-tx-status="pending"]';
 
@@ -290,40 +287,6 @@ class ActivityTab extends HomePage {
     }, 10000);
     console.log(
       `${expectedNumber} Bridge pending transactions found in activity list on homepage`,
-    );
-  }
-
-  /**
-   * This function checks if at least the specified number of pending or
-   * confirmed transactions are displayed in the activity list on homepage.
-   * It waits up to 30 seconds for the expected number of transactions to be
-   * visible, accepting either status.
-   *
-   * Local chains (e.g. java-tron) can confirm a transaction before a pending
-   * row is ever observable, so a confirmed-only assertion made immediately
-   * after submit can miss the pending phase; this poll accepts either.
-   *
-   * @param expectedNumber - The minimum number of pending or confirmed transactions expected to be displayed in activity list. Defaults to 1.
-   * @returns A promise that resolves if at least the expected number of pending or confirmed transactions is displayed within the timeout period.
-   */
-  async checkPendingOrConfirmedTxNumberDisplayedInActivity(
-    expectedNumber: number = 1,
-  ): Promise<void> {
-    console.log(
-      `Wait for at least ${expectedNumber} pending or confirmed transactions to be displayed in activity list`,
-    );
-    await this.driver.wait(async () => {
-      try {
-        const activityItems = await this.driver.findElements(
-          this.pendingOrConfirmedTransactions,
-        );
-        return activityItems.length >= expectedNumber;
-      } catch {
-        return false;
-      }
-    }, 30000);
-    console.log(
-      `At least ${expectedNumber} pending or confirmed transactions found in activity list on homepage`,
     );
   }
 

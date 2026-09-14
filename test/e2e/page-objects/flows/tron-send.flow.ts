@@ -105,9 +105,6 @@ export async function confirmTronSendAndAssertActivity({
   await homePage.goToActivityList();
 
   const activityList = new ActivityTab(driver);
-  await activityList.checkPendingOrConfirmedTxNumberDisplayedInActivity(
-    expectedConfirmedTxCount,
-  );
   await activityList.checkConfirmedTxNumberDisplayedInActivity(
     expectedConfirmedTxCount,
   );
