@@ -5,10 +5,8 @@ import {
 } from '@metamask/account-tree-controller';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import {
-  UserStorageMockttpController,
-  USER_STORAGE_RAMPS_ORDERS_FEATURE,
-} from '../../helpers/identity/user-storage/userStorageMockttpController';
+import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
+import { USER_STORAGE_RAMPS_ORDERS_FEATURE } from './constants';
 
 const AuthMocks = AuthenticationController.Mocks;
 

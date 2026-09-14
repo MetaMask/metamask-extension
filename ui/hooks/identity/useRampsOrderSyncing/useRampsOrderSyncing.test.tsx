@@ -1,3 +1,4 @@
+import log from 'loglevel';
 import { waitFor } from '@testing-library/react';
 import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers-navigate';
 import * as rampsControllerActions from '../../../store/controller-actions/ramps-controller';
@@ -75,13 +76,22 @@ describe('useRampsOrderSyncing', () => {
     return { mockSync, ...result.current };
   };
 
-  it('dispatches when conditions are met', async () => {
+  it('dispatches and handles synchronous errors when conditions are met', async () => {
     const arranged = arrange();
     arranged.dispatchRampsOrderSyncing();
     await waitFor(() => {
       expect(arranged.mockSync).toHaveBeenCalled();
       expect(arranged.shouldDispatchRampsOrderSyncing).toBe(true);
     });
+
+    const error = new Error('Background connection unavailable');
+    const logSpy = jest.spyOn(log, 'error');
+    arranged.mockSync.mockImplementation(() => {
+      throw error;
+    });
+
+    expect(() => arranged.dispatchRampsOrderSyncing()).not.toThrow();
+    expect(logSpy).toHaveBeenCalledWith(error);
   });
 
   it('does not dispatch when conditions fail', async () => {

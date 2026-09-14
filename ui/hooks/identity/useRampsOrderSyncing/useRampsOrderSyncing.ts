@@ -37,12 +37,16 @@ export const useShouldDispatchRampsOrderSyncing = () => {
 export const useRampsOrderSyncing = () => {
   const shouldDispatchRampsOrderSyncing = useShouldDispatchRampsOrderSyncing();
   const dispatchRampsOrderSyncing = useCallback(() => {
-    if (!shouldDispatchRampsOrderSyncing) {
-      return;
-    }
-    syncRampsOrdersWithUserStorage().catch((error) => {
+    try {
+      if (!shouldDispatchRampsOrderSyncing) {
+        return;
+      }
+      syncRampsOrdersWithUserStorage().catch((error) => {
+        log.error(error);
+      });
+    } catch (error) {
       log.error(error);
-    });
+    }
   }, [shouldDispatchRampsOrderSyncing]);
   return { dispatchRampsOrderSyncing, shouldDispatchRampsOrderSyncing };
 };
