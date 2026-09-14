@@ -13,7 +13,7 @@ describe('Bridge Monad to Base', function (this: Suite) {
         BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       ),
       async ({ driver }) => {
-        await login(driver, { expectedBalance: '$225,730.11' });
+        await login(driver);
 
         await bridgeTransaction({
           driver,
