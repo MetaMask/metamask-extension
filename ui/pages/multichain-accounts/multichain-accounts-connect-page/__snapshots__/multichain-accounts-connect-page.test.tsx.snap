@@ -150,7 +150,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                 </div>
               </div>
               <div
-                class="flex flex-row items-center justify-center"
+                class="flex flex-row items-center justify-center multichain-account-cell__trailing"
                 style="flex-shrink: 0;"
               >
                 <div
@@ -425,7 +425,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                 </div>
               </div>
               <div
-                class="flex flex-row items-center justify-center"
+                class="flex flex-row items-center justify-center multichain-account-cell__trailing"
                 style="flex-shrink: 0;"
               >
                 <div
@@ -700,7 +700,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                 </div>
               </div>
               <div
-                class="flex flex-row items-center justify-center"
+                class="flex flex-row items-center justify-center multichain-account-cell__trailing"
                 style="flex-shrink: 0;"
               >
                 <div
