@@ -67,6 +67,9 @@ const PercentChangeEmptyState = () => (
 
 /**
  * Determines the color for the percentage change based on its value.
+ *
+ * @param value - The percentage change value to evaluate
+ * @returns The appropriate TextColor for the given value
  */
 const getPercentChangeColor = (value: number | undefined): TextColor => {
   if (value === undefined || Number.isNaN(value)) {
@@ -87,6 +90,14 @@ const getPercentChangeColor = (value: number | undefined): TextColor => {
  * - Does NOT use imperative refs for hover updates
  * - Does NOT fetch its own data
  * - Accepts pre-computed percentChange directly
+ *
+ * @param options - Component props
+ * @param options.price - Current price to display
+ * @param options.percentChange - Pre-computed percentage change (e.g., 5.25 for +5.25%)
+ * @param options.currency - Currency code for formatting (e.g., 'USD')
+ * @param options.timestamp - Timestamp for the price (shown as formatted date)
+ * @param options.loading - Whether data is currently loading
+ * @returns The rendered TokenPriceHeader component
  */
 const TokenPriceHeader = ({
   price,
