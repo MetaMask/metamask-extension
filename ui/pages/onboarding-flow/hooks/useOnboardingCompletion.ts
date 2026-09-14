@@ -30,6 +30,8 @@ import {
   getDeferredDeepLink,
   getAccountTypeForOnboardingMetrics,
   getIsSocialLoginFlow,
+  getUseCurrencyRateCheck,
+  getUseTokenDetection,
 } from '../../../selectors';
 import {
   getCompletedOnboarding,
@@ -42,7 +44,10 @@ import {
   setPreference,
   setCompletedOnboarding,
   setCompletedOnboardingWithSidepanel,
+  setUseAddressBarEnsResolution,
+  setUseCurrencyRateCheck,
   setUseSidePanelAsDefault,
+  setUseTokenDetection,
   removeDeferredDeepLink,
   setIsBackupAndSyncFeatureEnabled,
   setHasSeenOnboardingCompletionPage,
@@ -79,6 +84,16 @@ export function useOnboardingCompletion() {
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isBasicFunctionalityToggleEnabled =
     getIsBasicFunctionalityConsolidationEnabledInBuild();
+
+  // The preferences that the onboarding privacy screen owns and that
+  // `toggleExternalServices` also writes. Captured before Basic Functionality
+  // is applied so the user's choices can be restored afterwards.
+  const useTokenDetection = useSelector(getUseTokenDetection);
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+  const useAddressBarEnsResolution = useSelector(
+    (state: { metamask: { useAddressBarEnsResolution: boolean } }) =>
+      state.metamask.useAddressBarEnsResolution,
+  );
 
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
   const isFinishingOnboardingRef = useRef(false);
@@ -280,6 +295,19 @@ export function useOnboardingCompletion() {
             : toggleExternalServices(basicFunctionalityEnabled),
         );
 
+        // `toggleExternalServices(true)` turns every preference it owns back
+        // on, which would discard the choices made on the onboarding privacy
+        // screen. Restore them. Nothing is restored when Basic Functionality is
+        // turned off, because that must disable them, or on the consolidated
+        // path, which owns these preferences by design.
+        if (!isBasicFunctionalityToggleEnabled && basicFunctionalityEnabled) {
+          await dispatch(setUseTokenDetection(useTokenDetection));
+          await dispatch(setUseCurrencyRateCheck(useCurrencyRateCheck));
+          await dispatch(
+            setUseAddressBarEnsResolution(useAddressBarEnsResolution),
+          );
+        }
+
         if (!backupAndSyncOnboardingToggleState) {
           await dispatch(
             setIsBackupAndSyncFeatureEnabled(
@@ -342,6 +370,9 @@ export function useOnboardingCompletion() {
       isSocialLoginFlow,
       isUnlocked,
       trackEvent,
+      useAddressBarEnsResolution,
+      useCurrencyRateCheck,
+      useTokenDetection,
     ],
   );
 

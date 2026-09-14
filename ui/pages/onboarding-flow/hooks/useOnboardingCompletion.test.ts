@@ -79,6 +79,11 @@ const mockSetPreference = jest.fn().mockResolvedValue(undefined);
 const mockSetUseMultiAccountBalanceChecker = jest
   .fn()
   .mockResolvedValue(undefined);
+const mockSetUseTokenDetection = jest.fn().mockResolvedValue(undefined);
+const mockSetUseCurrencyRateCheck = jest.fn().mockResolvedValue(undefined);
+const mockSetUseAddressBarEnsResolution = jest
+  .fn()
+  .mockResolvedValue(undefined);
 const mockSetHasSeenOnboardingCompletionPage = jest
   .fn()
   .mockResolvedValue(undefined);
@@ -91,6 +96,9 @@ const backgroundConnectionMock = new Proxy(
     toggleBasicFunctionality: mockToggleBasicFunctionality,
     setPreference: mockSetPreference,
     setUseMultiAccountBalanceChecker: mockSetUseMultiAccountBalanceChecker,
+    setUseTokenDetection: mockSetUseTokenDetection,
+    setUseCurrencyRateCheck: mockSetUseCurrencyRateCheck,
+    setUseAddressBarEnsResolution: mockSetUseAddressBarEnsResolution,
     setHasSeenOnboardingCompletionPage: mockSetHasSeenOnboardingCompletionPage,
     completeOnboarding: mockCompleteOnboarding,
   },
@@ -134,6 +142,9 @@ describe('useOnboardingCompletion', () => {
       completedOnboarding: false,
       hasSeenOnboardingCompletionPage: false,
       deferredDeepLink: null,
+      useTokenDetection: true,
+      useCurrencyRateCheck: true,
+      useAddressBarEnsResolution: true,
     },
     appState: {
       externalServicesOnboardingToggleState: true,
@@ -291,6 +302,88 @@ describe('useOnboardingCompletion', () => {
     });
     expect(mockSetPreference).not.toHaveBeenCalled();
     expect(mockSetUseMultiAccountBalanceChecker).not.toHaveBeenCalled();
+  });
+
+  describe('onboarding privacy choices', () => {
+    it('restores the choices that toggleExternalServices overwrites', async () => {
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            useCurrencyRateCheck: false,
+            useAddressBarEnsResolution: false,
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding();
+      });
+
+      await waitFor(() => {
+        expect(mockToggleExternalServices).toHaveBeenCalledWith(true);
+        expect(mockSetUseCurrencyRateCheck).toHaveBeenCalledWith(false);
+        expect(mockSetUseAddressBarEnsResolution).toHaveBeenCalledWith(false);
+        expect(mockSetUseTokenDetection).toHaveBeenCalledWith(true);
+      });
+    });
+
+    it('does not restore them when Basic Functionality is turned off', async () => {
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            useCurrencyRateCheck: false,
+          },
+          appState: {
+            ...mockState.appState,
+            externalServicesOnboardingToggleState: false,
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding();
+      });
+
+      await waitFor(() => {
+        expect(mockToggleExternalServices).toHaveBeenCalledWith(false);
+      });
+      expect(mockSetUseCurrencyRateCheck).not.toHaveBeenCalled();
+      expect(mockSetUseAddressBarEnsResolution).not.toHaveBeenCalled();
+      expect(mockSetUseTokenDetection).not.toHaveBeenCalled();
+    });
+
+    it('leaves the consolidated path to own them', async () => {
+      mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+        true,
+      );
+      const { result } = renderHookWithProvider(
+        () => useOnboardingCompletion(),
+        {
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            useCurrencyRateCheck: false,
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.completeOnboarding();
+      });
+
+      await waitFor(() => {
+        expect(mockToggleBasicFunctionality).toHaveBeenCalledWith(true);
+      });
+      expect(mockSetUseCurrencyRateCheck).not.toHaveBeenCalled();
+      expect(mockSetUseAddressBarEnsResolution).not.toHaveBeenCalled();
+      expect(mockSetUseTokenDetection).not.toHaveBeenCalled();
+    });
   });
 
   it('allows retrying completion after a failed attempt', async () => {
