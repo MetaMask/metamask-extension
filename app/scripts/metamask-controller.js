@@ -4844,6 +4844,10 @@ export default class MetamaskController extends EventEmitter {
     const perpsStream = perpsController
       ? new PerpsStreamBridge({
           controller: perpsController,
+          // `getSelectedAccount` returns the last selected *EVM* account: it
+          // falls back to `listAccounts()`, which filters to EVM types. So a
+          // selected Bitcoin or Tron account still yields the EVM address the
+          // UI sends, and `#initForAccount` does not reject the preload.
           getSelectedAddress: () =>
             this.accountsController.getSelectedAccount().address,
           onControllerStateChange: (cb) => {
