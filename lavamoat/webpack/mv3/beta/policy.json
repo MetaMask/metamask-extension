@@ -1358,6 +1358,24 @@
         "lodash": true
       }
     },
+    "@metamask/profile-metrics-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/base-data-service>lodash-es": true
+      }
+    },
     "@metamask/ramps-controller>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
@@ -1928,6 +1946,23 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
+    "@metamask/profile-metrics-controller>@metamask/keyring-controller": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/base-controller": true,
+        "@metamask/eth-hd-keyring": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
+        "@metamask/utils": true,
+        "async-mutex": true,
+        "@metamask/keyring-controller>ethereumjs-wallet": true,
+        "@metamask/base-data-service>lodash-es": true,
+        "@metamask/keyring-controller>ulid": true
+      }
+    },
     "@metamask/profile-sync-controller>@metamask/keyring-controller": {
       "globals": {
         "console.error": true
@@ -2433,6 +2468,18 @@
         "uuid": true
       }
     },
+    "@metamask/profile-metrics-controller>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "fast-json-stable-stringify": true,
+        "@metamask/profile-metrics-controller>@metamask/polling-controller>uuid": true
+      }
+    },
     "@metamask/post-message-stream": {
       "globals": {
         "MessageEvent.prototype": true,
@@ -2472,14 +2519,15 @@
         "console.error": true
       },
       "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/polling-controller": true,
+        "@metamask/profile-metrics-controller>@metamask/controller-utils": true,
+        "@metamask/profile-metrics-controller>@metamask/keyring-controller": true,
+        "@metamask/profile-metrics-controller>@metamask/polling-controller": true,
         "@metamask/profile-sync-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "async-mutex": true,
-        "uuid": true
+        "@metamask/profile-metrics-controller>uuid": true
       }
     },
     "@metamask/profile-sync-controller": {
@@ -7388,6 +7436,17 @@
       }
     },
     "@metamask/mobile-wallet-protocol-dapp-client>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/profile-metrics-controller>@metamask/polling-controller>uuid": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
+      }
+    },
+    "@metamask/profile-metrics-controller>uuid": {
       "globals": {
         "crypto": true
       }
