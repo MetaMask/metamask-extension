@@ -1441,9 +1441,8 @@ class FixtureBuilderV2 {
     const assetId: CaipAssetType = `eip155:${chainId}/erc20:${tokenAddress}`;
     return (
       this
-        // When `assetsUnifyState` is enabled the asset list is derived from the
-        // AssetsController (`customAssets` + `assetsInfo` + `assetsBalance`),
-        // not from TokensController/TokenBalancesController.
+        // Asset list is derived from AssetsController (`customAssets` +
+        // `assetsInfo` + `assetsBalance`).
         .withAssetsController({
           customAssets: { [DEFAULT_FIXTURE_ACCOUNT_ID]: [assetId] },
           assetsBalance: {

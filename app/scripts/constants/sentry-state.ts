@@ -297,6 +297,10 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     useTokenDetection: true,
     useTransactionSimulations: true,
   },
+  ProfileMetricsController: {
+    accountSourceBackfillEnqueued: true,
+    reportedAccounts: false,
+  },
   RemoteFeatureFlagController: {
     remoteFeatureFlags: true,
     cacheTimestamp: false,
@@ -407,6 +411,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
     isBackupAndSyncUpdateLoading: false,
     isAccountSyncingEnabled: true,
     isContactSyncingEnabled: true,
+    isRampsSyncingEnabled: true,
   },
 };
 

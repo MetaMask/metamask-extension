@@ -276,8 +276,16 @@
       "useTransactionSimulations": true,
       "watchEthereumAccountEnabled": "boolean"
     },
-    "ProfileMetricsController": "object",
+    "ProfileMetricsController": {
+      "accountSourceBackfillEnqueued": false,
+      "initialDelayEndTimestamp": "number",
+      "initialEnqueueCompleted": "boolean",
+      "proofBackfillEnqueued": "boolean",
+      "reportedAccounts": "object",
+      "syncQueue": "object"
+    },
     "RampsController": {
+      "autoramps": "object",
       "orders": "object",
       "providerAutoSelected": "boolean",
       "userRegion": null
@@ -343,7 +351,8 @@
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
-      "isContactSyncingEnabled": true
+      "isContactSyncingEnabled": true,
+      "isRampsSyncingEnabled": true
     },
     "config": "object"
   },

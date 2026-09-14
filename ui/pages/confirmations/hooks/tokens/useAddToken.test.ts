@@ -4,25 +4,12 @@ import { EthAccountType } from '@metamask/keyring-api';
 
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import * as actions from '../../../../store/actions';
-import { isAssetsUnifyStateFeatureEnabled } from '../../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { useAddToken } from './useAddToken';
 
 jest.mock('../../../../store/actions', () => ({
   addToken: jest.fn(),
   findNetworkClientIdByChainId: jest.fn(),
 }));
-
-// `test/jest/setup.js` forces this to `false` for every unit test. Re-mock it
-// here so the unified assets state path can be exercised.
-jest.mock(
-  '../../../../../shared/lib/assets-unify-state/remote-feature-flag',
-  () => ({
-    ...jest.requireActual(
-      '../../../../../shared/lib/assets-unify-state/remote-feature-flag',
-    ),
-    isAssetsUnifyStateFeatureEnabled: jest.fn(() => false),
-  }),
-);
 
 const TOKEN_ADDRESS_MOCK =
   '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as const;
@@ -79,9 +66,6 @@ const UNIFIED_TOKEN_STATE = {
         decimals: DECIMALS_MOCK,
       },
     },
-    remoteFeatureFlags: {
-      assetsUnifyState: { enabled: true, featureVersion: '1' },
-    },
   },
 };
 
@@ -104,26 +88,16 @@ async function runHook(state: Record<string, unknown> = {}) {
   return result;
 }
 
-async function runLegacyHook({
-  existingTokens,
-}: { existingTokens?: { address: string }[] } = {}) {
-  return runHook({
-    metamask: {
-      allTokens: {
-        [CHAIN_ID_MOCK]: {
-          [ACCOUNT_ADDRESS_MOCK]: existingTokens || [],
-        },
-      },
-    },
-  });
-}
-
-async function runUnifiedHook({
+async function runWithTokenState({
   assetsPrice,
-}: { assetsPrice?: Record<string, unknown> } = {}) {
+}: {
+  assetsPrice?: Record<string, unknown>;
+} = {}) {
   return runHook(
     merge({}, UNIFIED_TOKEN_STATE, {
-      metamask: { assetsPrice: assetsPrice ?? {} },
+      metamask: {
+        assetsPrice: assetsPrice ?? {},
+      },
     }),
   );
 }
@@ -132,20 +106,16 @@ describe('useAddToken', () => {
   const mockAddToken = actions.addToken as jest.Mock;
   const mockFindNetworkClientIdByChainId =
     actions.findNetworkClientIdByChainId as jest.Mock;
-  const mockIsAssetsUnifyStateFeatureEnabled = jest.mocked(
-    isAssetsUnifyStateFeatureEnabled,
-  );
 
   beforeEach(() => {
     jest.resetAllMocks();
 
     mockFindNetworkClientIdByChainId.mockResolvedValue(NETWORK_CLIENT_ID_MOCK);
     mockAddToken.mockReturnValue({ type: 'ADD_TOKEN' });
-    mockIsAssetsUnifyStateFeatureEnabled.mockReturnValue(false);
   });
 
   it('adds token if not present', async () => {
-    await runLegacyHook();
+    await runHook();
 
     expect(mockAddToken).toHaveBeenCalledWith(
       {
@@ -158,89 +128,64 @@ describe('useAddToken', () => {
     );
   });
 
-  it('does not add token if already present', async () => {
-    await runLegacyHook({
-      existingTokens: [
-        {
-          address: TOKEN_ADDRESS_MOCK,
-        },
-      ],
+  it('does not add token if it has a price and the native asset has a price', async () => {
+    await runWithTokenState({
+      assetsPrice: {
+        [ASSET_ID_MOCK]: FUNGIBLE_PRICE_MOCK,
+        [NATIVE_ASSET_ID_MOCK]: NATIVE_FUNGIBLE_PRICE_MOCK,
+      },
     });
 
     expect(mockAddToken).not.toHaveBeenCalled();
   });
 
-  describe('with unified assets state', () => {
-    const originalBuildFlag = process.env.ASSETS_UNIFIED_STATE_ENABLED;
-
-    beforeEach(() => {
-      process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
-      mockIsAssetsUnifyStateFeatureEnabled.mockReturnValue(true);
+  it('adds token again if it is present but has no price', async () => {
+    await runWithTokenState({
+      assetsPrice: {
+        [NATIVE_ASSET_ID_MOCK]: NATIVE_FUNGIBLE_PRICE_MOCK,
+      },
     });
 
-    afterAll(() => {
-      process.env.ASSETS_UNIFIED_STATE_ENABLED = originalBuildFlag;
+    expect(mockAddToken).toHaveBeenCalledWith(
+      {
+        address: TOKEN_ADDRESS_MOCK,
+        decimals: DECIMALS_MOCK,
+        networkClientId: NETWORK_CLIENT_ID_MOCK,
+        symbol: SYMBOL_MOCK,
+      },
+      true,
+    );
+  });
+
+  it('adds token again if the native asset has no price', async () => {
+    await runWithTokenState({
+      assetsPrice: {
+        [ASSET_ID_MOCK]: FUNGIBLE_PRICE_MOCK,
+      },
     });
 
-    it('does not add token if it has a price and the native asset has a price', async () => {
-      await runUnifiedHook({
-        assetsPrice: {
-          [ASSET_ID_MOCK]: FUNGIBLE_PRICE_MOCK,
-          [NATIVE_ASSET_ID_MOCK]: NATIVE_FUNGIBLE_PRICE_MOCK,
-        },
-      });
+    expect(mockAddToken).toHaveBeenCalledTimes(1);
+  });
 
-      expect(mockAddToken).not.toHaveBeenCalled();
+  it('adds token again if the price entry is not fungible', async () => {
+    await runWithTokenState({
+      assetsPrice: {
+        [ASSET_ID_MOCK]: { assetPriceType: 'nft', price: 1, lastUpdated: 1 },
+        [NATIVE_ASSET_ID_MOCK]: NATIVE_FUNGIBLE_PRICE_MOCK,
+      },
     });
 
-    it('adds token again if it is present but has no price', async () => {
-      await runUnifiedHook({
-        assetsPrice: {
-          [NATIVE_ASSET_ID_MOCK]: NATIVE_FUNGIBLE_PRICE_MOCK,
-        },
-      });
+    expect(mockAddToken).toHaveBeenCalledTimes(1);
+  });
 
-      expect(mockAddToken).toHaveBeenCalledWith(
-        {
-          address: TOKEN_ADDRESS_MOCK,
-          decimals: DECIMALS_MOCK,
-          networkClientId: NETWORK_CLIENT_ID_MOCK,
-          symbol: SYMBOL_MOCK,
-        },
-        true,
-      );
+  it('adds token again if the price entry has no price value', async () => {
+    await runWithTokenState({
+      assetsPrice: {
+        [ASSET_ID_MOCK]: { assetPriceType: 'fungible', lastUpdated: 1 },
+        [NATIVE_ASSET_ID_MOCK]: NATIVE_FUNGIBLE_PRICE_MOCK,
+      },
     });
 
-    it('adds token again if the native asset has no price', async () => {
-      await runUnifiedHook({
-        assetsPrice: {
-          [ASSET_ID_MOCK]: FUNGIBLE_PRICE_MOCK,
-        },
-      });
-
-      expect(mockAddToken).toHaveBeenCalledTimes(1);
-    });
-
-    it('adds token again if the price entry is not fungible', async () => {
-      await runUnifiedHook({
-        assetsPrice: {
-          [ASSET_ID_MOCK]: { assetPriceType: 'nft', price: 1, lastUpdated: 1 },
-          [NATIVE_ASSET_ID_MOCK]: NATIVE_FUNGIBLE_PRICE_MOCK,
-        },
-      });
-
-      expect(mockAddToken).toHaveBeenCalledTimes(1);
-    });
-
-    it('adds token again if the price entry has no price value', async () => {
-      await runUnifiedHook({
-        assetsPrice: {
-          [ASSET_ID_MOCK]: { assetPriceType: 'fungible', lastUpdated: 1 },
-          [NATIVE_ASSET_ID_MOCK]: NATIVE_FUNGIBLE_PRICE_MOCK,
-        },
-      });
-
-      expect(mockAddToken).toHaveBeenCalledTimes(1);
-    });
+    expect(mockAddToken).toHaveBeenCalledTimes(1);
   });
 });

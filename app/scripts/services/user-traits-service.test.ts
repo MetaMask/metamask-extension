@@ -1,11 +1,7 @@
 import { toHex } from '@metamask/controller-utils';
 import { AddressBookEntry } from '@metamask/address-book-controller';
 import { NameEntry, NameType } from '@metamask/name-controller';
-import {
-  Nft,
-  Token,
-  TokensControllerState,
-} from '@metamask/assets-controllers';
+import { Nft } from '@metamask/assets-controllers';
 import {
   AuthConnection,
   type SeedlessOnboardingControllerGetStateAction,
@@ -220,33 +216,31 @@ describe('UserTraitsService', function () {
     });
 
     it('should return full user traits object on first call', async function () {
-      const MOCK_ALL_TOKENS: TokensControllerState['allTokens'] = {
-        [toHex(1)]: {
-          '0x1235ce91d74254f29d4609f25932fe6d97bf4842': [
-            {
-              address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
-            },
-            {
-              address: '0xabc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
-            },
-          ] as Token[],
-          '0xe364b0f9d1879e53e8183055c9d7dd2b7375d86b': [
-            {
-              address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
-            },
-          ] as Token[],
-        },
-        [toHex(4)]: {
-          '0x1235ce91d74254f29d4609f25932fe6d97bf4842': [
-            {
-              address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
-            },
-            {
-              address: '0x12317F958D2ee523a2206206994597C13D831ec7',
-            },
-          ] as Token[],
-        },
-      };
+      const tokenAccount1 = createMockInternalAccount({
+        id: 'mock1',
+        address: '0x1235ce91d74254f29d4609f25932fe6d97bf4842',
+      });
+      const tokenAccount2 = createMockInternalAccount({
+        id: 'mock2',
+        address: '0xe364b0f9d1879e53e8183055c9d7dd2b7375d86b',
+      });
+      const tokenAssetIdsAccount1 = [
+        'eip155:1/erc20:0xd2cea331e5f5d8ee9fb1055c297795937645de91',
+        'eip155:1/erc20:0xabc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
+        'eip155:4/erc20:0xd2cea331e5f5d8ee9fb1055c297795937645de91',
+        'eip155:4/erc20:0x12317f958d2ee523a2206206994597c13d831ec7',
+      ] as const;
+      const tokenAssetIdsAccount2 = [
+        'eip155:1/erc20:0xd2cea331e5f5d8ee9fb1055c297795937645de91',
+      ] as const;
+      const tokenAssetsInfo = Object.fromEntries(
+        [...new Set([...tokenAssetIdsAccount1, ...tokenAssetIdsAccount2])].map(
+          (assetId) => [
+            assetId,
+            { type: 'erc20', symbol: 'TKN', decimals: 18, name: 'Token' },
+          ],
+        ),
+      );
 
       await withService(({ service }) => {
         const traits = service._buildUserTraitsObject({
@@ -291,7 +285,11 @@ describe('UserTraitsService', function () {
               ] as Nft[],
             },
           },
-          allTokens: MOCK_ALL_TOKENS,
+          customAssets: {
+            [tokenAccount1.id]: [...tokenAssetIdsAccount1],
+            [tokenAccount2.id]: [...tokenAssetIdsAccount2],
+          },
+          assetsInfo: tokenAssetsInfo,
           ...mockNetworkState(
             { chainId: CHAIN_IDS.MAINNET },
             { chainId: CHAIN_IDS.GOERLI },
@@ -299,10 +297,10 @@ describe('UserTraitsService', function () {
           ),
           internalAccounts: {
             accounts: {
-              mock1: {} as InternalAccount,
-              mock2: {} as InternalAccount,
+              [tokenAccount1.id]: tokenAccount1,
+              [tokenAccount2.id]: tokenAccount2,
             },
-            selectedAccount: 'mock1',
+            selectedAccount: tokenAccount1.id,
           },
           multichainNetworkConfigurationsByChainId: {
             'bip122:000000000019d6689c085ae165831e93': {
@@ -659,6 +657,13 @@ describe('UserTraitsService', function () {
           multichainNetworkConfigurationsByChainId: {},
         } as MetaMaskState);
 
+        const updatedTokenAccount = createMockInternalAccount({
+          id: 'mock1',
+          address: '0xabcde',
+        });
+        const updatedTokenAssetId =
+          'eip155:1/erc20:0x0000000000000000000000000000000000000001' as const;
+
         const updatedTraits = service._buildUserTraitsObject({
           addressBook: {
             [CHAIN_IDS.MAINNET]: {
@@ -678,9 +683,15 @@ describe('UserTraitsService', function () {
               } as AddressBookEntry,
             },
           },
-          allTokens: {
-            [toHex(1)]: {
-              '0xabcde': [{ address: '0xtestAddress' } as Token],
+          customAssets: {
+            [updatedTokenAccount.id]: [updatedTokenAssetId],
+          },
+          assetsInfo: {
+            [updatedTokenAssetId]: {
+              type: 'erc20',
+              symbol: 'TEST',
+              decimals: 18,
+              name: 'Test',
             },
           },
           ...networkState,
@@ -688,7 +699,7 @@ describe('UserTraitsService', function () {
           openSeaEnabled: false,
           internalAccounts: {
             accounts: {
-              mock1: {} as InternalAccount,
+              [updatedTokenAccount.id]: updatedTokenAccount,
               mock2: {} as InternalAccount,
               mock3: {} as InternalAccount,
             },

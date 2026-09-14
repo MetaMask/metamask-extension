@@ -79,15 +79,18 @@ type TestState = MultichainState &
     metamask: Pick<
       MetaMaskReduxState['metamask'],
       | 'preferences'
-      | 'accountsByChainId'
+      | 'assetsBalance'
+      | 'assetsInfo'
       | 'networkConfigurationsByChainId'
-      | 'currentCurrency'
+      | 'selectedCurrency'
       | 'currencyRates'
       | 'completedOnboarding'
       | 'selectedNetworkClientId'
       | 'remoteFeatureFlags'
     >;
   };
+
+const ETH_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
 
 function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
   return {
@@ -96,7 +99,7 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
         showFiatInTestnets: false,
       } as MetaMaskReduxState['metamask']['preferences'],
       ...mockNetworkState({ chainId }),
-      currentCurrency: 'ETH',
+      selectedCurrency: 'ETH',
       currencyRates: {
         ETH: {
           conversionRate: null,
@@ -110,11 +113,85 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
         accounts: MOCK_ACCOUNTS,
       },
       accountIdByAddress: MOCK_ACCOUNT_ID_BY_ADDRESS,
-      accountsByChainId: {
-        '0x1': {
-          [MOCK_ACCOUNT_EOA.address]: {
-            balance: '3',
+      assetsBalance: {
+        [MOCK_ACCOUNT_EOA.id]: {
+          [ETH_NATIVE_ASSET_ID]: {
+            amount: '0.000000000000000003',
           },
+        },
+        [MOCK_ACCOUNT_BIP122_P2WPKH.id]: {
+          [MultichainNativeAssets.BITCOIN]: {
+            amount: '1.00000000',
+          },
+        },
+        [MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET.id]: {
+          [MultichainNativeAssets.BITCOIN_TESTNET]: {
+            amount: '2.00000000',
+          },
+        },
+        [MOCK_ACCOUNT_TRON_MAINNET.id]: {
+          [MultichainNativeAssets.TRON]: {
+            amount: '100.000000',
+          },
+        },
+        [MOCK_ACCOUNT_TRON_NILE.id]: {
+          [MultichainNativeAssets.TRON_NILE]: {
+            amount: '200.000000',
+          },
+        },
+        [MOCK_ACCOUNT_TRON_SHASTA.id]: {
+          [MultichainNativeAssets.TRON_SHASTA]: {
+            amount: '150.000000',
+          },
+        },
+        [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
+          [MultichainNativeAssets.STELLAR]: {
+            amount: '42.0000000',
+          },
+        },
+      },
+      assetsInfo: {
+        [ETH_NATIVE_ASSET_ID]: {
+          type: 'native',
+          decimals: 18,
+          symbol: 'ETH',
+          name: 'Ether',
+        },
+        [MultichainNativeAssets.BITCOIN]: {
+          type: 'native',
+          decimals: 8,
+          symbol: 'BTC',
+          name: 'Bitcoin',
+        },
+        [MultichainNativeAssets.BITCOIN_TESTNET]: {
+          type: 'native',
+          decimals: 8,
+          symbol: 'BTC',
+          name: 'Bitcoin',
+        },
+        [MultichainNativeAssets.TRON]: {
+          type: 'native',
+          decimals: 6,
+          symbol: 'TRX',
+          name: 'Tron',
+        },
+        [MultichainNativeAssets.TRON_NILE]: {
+          type: 'native',
+          decimals: 6,
+          symbol: 'TRX',
+          name: 'Tron',
+        },
+        [MultichainNativeAssets.TRON_SHASTA]: {
+          type: 'native',
+          decimals: 6,
+          symbol: 'TRX',
+          name: 'Tron',
+        },
+        [MultichainNativeAssets.STELLAR]: {
+          type: 'native',
+          decimals: 7,
+          symbol: 'XLM',
+          name: 'Stellar',
         },
       },
       nonEvmTransactions: {
@@ -123,44 +200,6 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
             transactions: [],
             next: null,
             lastUpdated: 0,
-          },
-        },
-      },
-      balances: {
-        [MOCK_ACCOUNT_BIP122_P2WPKH.id]: {
-          [MultichainNativeAssets.BITCOIN]: {
-            amount: '1.00000000',
-            unit: 'BTC',
-          },
-        },
-        [MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET.id]: {
-          [MultichainNativeAssets.BITCOIN_TESTNET]: {
-            amount: '2.00000000',
-            unit: 'BTC',
-          },
-        },
-        [MOCK_ACCOUNT_TRON_MAINNET.id]: {
-          [MultichainNativeAssets.TRON]: {
-            amount: '100.000000',
-            unit: 'TRX',
-          },
-        },
-        [MOCK_ACCOUNT_TRON_NILE.id]: {
-          [MultichainNativeAssets.TRON_NILE]: {
-            amount: '200.000000',
-            unit: 'TRX',
-          },
-        },
-        [MOCK_ACCOUNT_TRON_SHASTA.id]: {
-          [MultichainNativeAssets.TRON_SHASTA]: {
-            amount: '150.000000',
-            unit: 'TRX',
-          },
-        },
-        [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
-          [MultichainNativeAssets.STELLAR]: {
-            amount: '42.0000000',
-            unit: 'XLM',
           },
         },
       },
@@ -502,7 +541,7 @@ describe('Multichain Selectors', () => {
       (currency: string) => {
         const state = getEvmState();
 
-        state.metamask.currentCurrency = currency;
+        state.metamask.selectedCurrency = currency;
         expect(getCurrentCurrency(state)).toBe(currency);
         expect(getMultichainCurrentCurrency(state)).toBe(currency);
       },
@@ -514,7 +553,7 @@ describe('Multichain Selectors', () => {
       (currency: string) => {
         const state = getNonEvmState();
 
-        state.metamask.currentCurrency = currency;
+        state.metamask.selectedCurrency = currency;
         expect(getCurrentCurrency(state)).toBe(currency);
         expect(getMultichainCurrentCurrency(state)).toBe(currency);
       },
@@ -822,7 +861,7 @@ describe('Multichain Selectors', () => {
         chainId: SupportedCaipChainId;
       }) => {
         const state = getNonEvmState(account, chainId);
-        const balance = state.metamask.balances[account.id][asset].amount;
+        const balance = state.metamask.assetsBalance[account.id][asset].amount;
 
         state.metamask.internalAccounts.selectedAccount = account.id;
         expect(getMultichainSelectedAccountCachedBalance(state)).toBe(balance);
@@ -861,7 +900,7 @@ describe('Multichain Selectors', () => {
         chainId: SupportedCaipChainId;
       }) => {
         const state = getTronState(account, chainId);
-        const balance = state.metamask.balances[account.id][asset].amount;
+        const balance = state.metamask.assetsBalance[account.id][asset].amount;
 
         state.metamask.internalAccounts.selectedAccount = account.id;
         expect(getMultichainSelectedAccountCachedBalance(state)).toBe(balance);
@@ -890,7 +929,7 @@ describe('Multichain Selectors', () => {
       it('returns 0 and warns when balances omit the selected account', () => {
         const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
         const state = getNonEvmState();
-        state.metamask.balances = {};
+        state.metamask.assetsBalance = {};
         state.metamask.internalAccounts.selectedAccount =
           MOCK_ACCOUNT_BIP122_P2WPKH.id;
         expect(getMultichainSelectedAccountCachedBalance(state)).toBe(0);
@@ -904,7 +943,7 @@ describe('Multichain Selectors', () => {
         const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
         const state = getNonEvmState();
         const accountId = MOCK_ACCOUNT_BIP122_P2WPKH.id;
-        state.metamask.balances = {
+        state.metamask.assetsBalance = {
           [accountId]: {},
         };
         state.metamask.internalAccounts.selectedAccount = accountId;
@@ -936,7 +975,7 @@ describe('Multichain Selectors', () => {
         chainId: SupportedCaipChainId;
       }) => {
         const state = getStellarState(account, chainId);
-        const balance = state.metamask.balances[account.id][asset].amount;
+        const balance = state.metamask.assetsBalance[account.id][asset].amount;
 
         state.metamask.internalAccounts.selectedAccount = account.id;
         expect(getMultichainSelectedAccountCachedBalance(state)).toBe(balance);
@@ -959,17 +998,17 @@ describe('Multichain Selectors', () => {
   describe('getMultichainSelectedAccountCachedBalanceIsZero', () => {
     it('returns true if the selected EVM account has a zero balance', () => {
       const state = getEvmState();
-      state.metamask.accountsByChainId['0x1'][
-        MOCK_ACCOUNT_EOA.address
-      ].balance = '0x00';
+      state.metamask.assetsBalance[MOCK_ACCOUNT_EOA.id][
+        ETH_NATIVE_ASSET_ID
+      ].amount = '0';
       expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(true);
     });
 
     it('returns false if the selected EVM account has a non-zero balance', () => {
       const state = getEvmState();
-      state.metamask.accountsByChainId['0x1'][
-        MOCK_ACCOUNT_EOA.address
-      ].balance = '3';
+      state.metamask.assetsBalance[MOCK_ACCOUNT_EOA.id][
+        ETH_NATIVE_ASSET_ID
+      ].amount = '0.000000000000000003';
       expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(
         false,
       );
@@ -977,7 +1016,7 @@ describe('Multichain Selectors', () => {
 
     it('returns true if the selected non-EVM account has a zero balance', () => {
       const state = getNonEvmState(MOCK_ACCOUNT_BIP122_P2WPKH);
-      state.metamask.balances[MOCK_ACCOUNT_BIP122_P2WPKH.id][
+      state.metamask.assetsBalance[MOCK_ACCOUNT_BIP122_P2WPKH.id][
         MultichainNativeAssets.BITCOIN
       ].amount = '0.00000000';
       expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(true);
@@ -985,7 +1024,7 @@ describe('Multichain Selectors', () => {
 
     it('returns false if the selected non-EVM account has a non-zero balance', () => {
       const state = getNonEvmState(MOCK_ACCOUNT_BIP122_P2WPKH);
-      state.metamask.balances[MOCK_ACCOUNT_BIP122_P2WPKH.id][
+      state.metamask.assetsBalance[MOCK_ACCOUNT_BIP122_P2WPKH.id][
         MultichainNativeAssets.BITCOIN
       ].amount = '1.00000000';
       expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(

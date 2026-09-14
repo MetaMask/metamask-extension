@@ -8,6 +8,7 @@ import {
   ConfirmationLoader,
   PayWithOption,
 } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
+import { setLastPerpsDepositEntryPoint } from '../../../../store/actions';
 import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
 import { usePerpsNetworkManagement } from './usePerpsNetworkManagement';
 
@@ -19,6 +20,7 @@ export type PerpsDepositConfirmationOptions = {
   onCreated?: (transactionId: string) => void;
   navigateOnCreate?: boolean;
   payWithOption?: PayWithOption;
+  entryPoint?: string;
 };
 
 export type PerpsDepositConfirmationResult = {
@@ -38,7 +40,12 @@ export type PerpsDepositConfirmationResult = {
 export function usePerpsDepositConfirmation(
   options: PerpsDepositConfirmationOptions = {},
 ): PerpsDepositConfirmationResult {
-  const { onCreated, navigateOnCreate = true, payWithOption } = options;
+  const {
+    onCreated,
+    navigateOnCreate = true,
+    payWithOption,
+    entryPoint,
+  } = options;
   const navigate = useNavigate();
   const location = useLocation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -66,6 +73,10 @@ export function usePerpsDepositConfirmation(
       // the deposit tx against that network client and throws if it is missing.
       // Add it first (no-op when already present) so the deposit can start.
       await ensureArbitrumNetworkExists();
+
+      // Set or clear the entry point (currently required for
+      // hyperliquid-prompted deposits to show a custom toast message).
+      setLastPerpsDepositEntryPoint(entryPoint ?? null);
 
       const { transactionId } = await createPerpsDepositTransaction({});
 
@@ -104,6 +115,7 @@ export function usePerpsDepositConfirmation(
     }
   }, [
     ensureArbitrumNetworkExists,
+    entryPoint,
     isLoading,
     location.pathname,
     location.search,

@@ -59,12 +59,6 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-jest.mock('../../../shared/lib/assets-unify-state/remote-feature-flag', () =>
-  jest.requireActual(
-    '../../../shared/lib/assets-unify-state/remote-feature-flag',
-  ),
-);
-
 // The page kicks off real on-chain probes through `getTokenStandardAndDetailsByChain`.
 // Replace it with a deterministic stub so the unit test never reaches the background script.
 jest.mock('../../store/actions', () => {
@@ -88,13 +82,6 @@ const getMockedActions = () =>
     importCustomAssetsBatch: jest.Mock;
     getTokenStandardAndDetailsByChain: jest.Mock;
   };
-
-const ASSETS_UNIFY_STATE_FLAG_ON = {
-  assetsUnifyState: {
-    enabled: true,
-    featureVersion: '1',
-  },
-};
 
 describe('mergeCustomTokenMetadataForImport', () => {
   it('prefers RPC when the token list returns empty strings and placeholder decimals', () => {
@@ -475,12 +462,10 @@ describe('CustomTokenImportPage', () => {
       const accountId = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
 
       renderPage({
-        remoteFeatureFlags: ASSETS_UNIFY_STATE_FLAG_ON,
         // Simulate state after the user hid the token from the manage tokens
-        // list when assets-unify-state is on: the token remains in
-        // `customAssets` (so the unified `getAllTokens` selector still
-        // returns it) and `assetPreferences[assetId].hidden` is `true`.
-        // The hidden-token filter is still gated by the runtime FF (read path).
+        // list: the token remains in `customAssets` (so the unified
+        // `getAllTokens` selector still returns it) and
+        // `assetPreferences[assetId].hidden` is `true`.
         customAssets: { [accountId]: [assetId] },
         assetsInfo: {
           [assetId]: {
@@ -528,13 +513,12 @@ describe('CustomTokenImportPage', () => {
     });
   });
 
-  it('still shows "tokenAlreadyAdded" for a visible (non-hidden) token even when assets-unify-state is enabled', async () => {
+  it('shows "tokenAlreadyAdded" for a visible (non-hidden) token', async () => {
     const tokenAddress = '0x1111111111111111111111111111111111111111';
     const assetId = `eip155:1/erc20:${tokenAddress}`;
     const accountId = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
 
     renderPage({
-      remoteFeatureFlags: ASSETS_UNIFY_STATE_FLAG_ON,
       // Token is present in `customAssets` but NOT hidden: the unified
       // selector should still return it, so the "already added" guard
       // must trigger.
