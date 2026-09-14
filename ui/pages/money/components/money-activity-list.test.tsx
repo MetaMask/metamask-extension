@@ -17,21 +17,20 @@ const previewItems = MOCK_MONEY_TRANSACTIONS.slice(0, MAX_PREVIEW_ITEMS).map(
 );
 
 describe('MoneyActivityList', () => {
-  it('renders the empty copy when there are no items', () => {
-    renderWithLocalization(<MoneyActivityList items={[]} />);
+  it('renders nothing when there are no items', () => {
+    const { container } = renderWithLocalization(
+      <MoneyActivityList items={[]} />,
+    );
 
-    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
     expect(
-      screen.getByText(messages.moneyActivity.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.moneyActivityPlaceholderDescription.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByTestId('money-activity-view-all'),
+      screen.queryByTestId('money-activity-list'),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByTestId(/money-activity-row-/u),
+      screen.queryByText(messages.moneyActivity.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.moneyActivityPlaceholderDescription.message),
     ).not.toBeInTheDocument();
   });
 
