@@ -40,9 +40,8 @@ describe('Test Snap Cronjob Duration', function () {
           'Reconnect to Cronjob Duration Snap',
         );
 
-        // Switch back to the extension page and validate that a notification
-        // appears. The Snap notifies every 10 seconds for as long as it stays
-        // installed, so the unread count keeps growing and cannot be asserted without flakiness.
+        // Switch back to the extension page and validate that a notification appears.
+        // The exact count cannot be asserted without flakiness due to the nature of cronjobs.
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

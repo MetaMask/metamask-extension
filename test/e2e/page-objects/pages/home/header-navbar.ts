@@ -166,10 +166,8 @@ class HeaderNavbar {
    * Verifies the notification count in the open global menu, waits for the
    * drawer to settle after React re-renders, then opens the notifications list.
    *
-   * @param count - The exact unread count to expect. Omit it when the count is
-   * not deterministic, for example when a recurring cronjob keeps adding
-   * notifications while the assertion runs; the badge is then only required to
-   * be present.
+   * @param count - The exact unread count to expect.
+   * Omit it when the count is not deterministic (e.g. cronjobs).
    */
   async checkNotificationCountAndOpenNotifications(
     count?: number,
