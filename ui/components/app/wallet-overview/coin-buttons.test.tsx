@@ -101,8 +101,6 @@ jest.mock(
 
 jest.mock('../../../store/actions', () => ({
   setActiveNetworkWithError: jest.fn(),
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
 const mockAccount = {

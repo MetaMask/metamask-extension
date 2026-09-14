@@ -91,7 +91,6 @@ describe('Add hide token', function () {
   const tokenAddress = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
   const chainId = 1337;
   const chainIdHex = toHex(chainId);
-  const rawBalance = '0x186a0'; // 100000 raw = 10 TST (4 decimals)
 
   it('hides the token when clicked', async function () {
     const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
@@ -151,15 +150,6 @@ describe('Add hide token', function () {
           },
         },
       },
-      TokenBalancesController: {
-        tokenBalances: {
-          [account]: {
-            [chainIdHex]: {
-              [tokenAddress]: rawBalance,
-            },
-          },
-        },
-      },
     });
     await withFixtures(
       {
@@ -184,9 +174,8 @@ describe('Add hide token', function () {
   });
 
   // Under unified state (assetsUnifyState), the UI reads token balances from
-  // AssetsController.assetsBalance, but the WebSocket balance update only
-  // reaches TokenBalancesController. Until AssetsController subscribes to
-  // AccountActivityService:balanceUpdated, this test cannot pass.
+  // AssetsController.assetsBalance. Until AssetsController fully consumes
+  // AccountActivityService:balanceUpdated for ERC-20 updates, this test cannot pass.
   // eslint-disable-next-line mocha/no-skipped-tests -- blocked until unified balance path receives WS updates
   it.skip('updates token balance when a WebSocket balance update is received', async function () {
     const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
@@ -228,17 +217,6 @@ describe('Add hide token', function () {
         },
       })
       .build();
-    merge(fixture.data, {
-      TokenBalancesController: {
-        tokenBalances: {
-          [account]: {
-            [chainIdHex]: {
-              [tokenAddress]: rawBalance,
-            },
-          },
-        },
-      },
-    });
     await withFixtures(
       {
         fixtures: fixture,

@@ -25,12 +25,75 @@ import type { RootMessenger } from '../../lib/messenger';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 import { getAssetsControllerMessenger } from './assets/assets-controller-messenger';
 
+type TokenBalancesCompatState = {
+  tokenBalances: Record<string, Record<string, Record<string, `0x${string}`>>>;
+};
+
+const EMPTY_TOKEN_BALANCES_STATE: TokenBalancesCompatState = {
+  tokenBalances: {},
+};
+
+type CompatRootMessenger = {
+  call: (actionType: string, ...args: unknown[]) => unknown;
+};
+
+/**
+ * Derive TokenBalancesController-shaped state from AssetsController so
+ * transaction-pay-controller can keep calling TokenBalancesController:getState
+ * when the assets-unify remote flag is off.
+ *
+ * @param messenger - Root messenger used to read AssetsController state.
+ * @returns Compat state with `tokenBalances`.
+ */
+function getTokenBalancesCompatState(
+  messenger: CompatRootMessenger,
+): TokenBalancesCompatState {
+  if (!getIsAssetsUnifiedStateIncludedInBuild()) {
+    return EMPTY_TOKEN_BALANCES_STATE;
+  }
+
+  try {
+    const transactionPayState = messenger.call(
+      'AssetsController:getStateForTransactionPay',
+    ) as TokenBalancesCompatState | undefined;
+    return {
+      tokenBalances: transactionPayState?.tokenBalances ?? {},
+    };
+  } catch {
+    return EMPTY_TOKEN_BALANCES_STATE;
+  }
+}
+
+/**
+ * Register a TokenBalancesController:getState shim backed by AssetsController
+ * so TransactionPayController keeps working after TokenBalancesController removal.
+ *
+ * @param messenger - The root messenger.
+ */
+function registerTokenBalancesGetStateCompat(messenger: RootMessenger): void {
+  const compatMessenger = new Messenger({
+    namespace: 'TokenBalancesController',
+    parent: messenger,
+  });
+  // Namespace messenger has no built-in action types; register the compat getState.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (compatMessenger as any).registerActionHandler(
+    'TokenBalancesController:getState',
+    () =>
+      getTokenBalancesCompatState(messenger as unknown as CompatRootMessenger),
+  );
+}
+
 export function getTransactionPayControllerMessenger(
   messenger: RootMessenger<
     MessengerActions<TransactionPayControllerMessenger>,
     MessengerEvents<TransactionPayControllerMessenger>
   >,
 ): TransactionPayControllerMessenger {
+  // Compat shim: transaction-pay-controller still requests
+  // TokenBalancesController:getState when assets-unify remote flag is off.
+  registerTokenBalancesGetStateCompat(messenger as RootMessenger);
+
   const controllerMessenger: TransactionPayControllerMessenger = new Messenger({
     namespace: 'TransactionPayController',
     parent: messenger,
@@ -53,6 +116,7 @@ export function getTransactionPayControllerMessenger(
       'NetworkController:getNetworkClientById',
       'NetworkController:getNetworkConfigurationByChainId',
       'RemoteFeatureFlagController:getState',
+      // Compat shim: derives tokenBalances from AssetsController.
       'TokenBalancesController:getState',
       'TokenRatesController:getState',
       'TokensController:getState',
@@ -144,9 +208,6 @@ function registerAssetsControllerGetStateForTransactionPayAction(
     assetsControllerMessenger.registerActionHandler(
       'AssetsController:getStateForTransactionPay' as const,
       () => {
-        const tokenBalancesControllerState = controllerMessenger.call(
-          'TokenBalancesController:getState',
-        );
         const accountsByChainIdControllerState = controllerMessenger.call(
           'AccountTrackerController:getState',
         );
@@ -161,7 +222,8 @@ function registerAssetsControllerGetStateForTransactionPayAction(
         );
 
         return {
-          tokenBalances: tokenBalancesControllerState?.tokenBalances ?? {},
+          // TokenBalancesController is removed; empty map when unify is not in build.
+          tokenBalances: {},
           accountsByChainId:
             accountsByChainIdControllerState?.accountsByChainId ?? {},
           allTokens: tokensControllerState?.allTokens ?? {},
