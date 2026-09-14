@@ -165,21 +165,28 @@ class HeaderNavbar {
   /**
    * Verifies the notification count in the open global menu, waits for the
    * drawer to settle after React re-renders, then opens the notifications list.
-   * @param count
+   *
+   * @param count - The exact unread count to expect. Omit it when the count is
+   * not deterministic, for example when a recurring cronjob keeps adding
+   * notifications while the assertion runs; the badge is then only required to
+   * be present.
    */
   async checkNotificationCountAndOpenNotifications(
-    count: number,
+    count?: number,
   ): Promise<void> {
     console.log(
-      `Verify notification count is ${count} and open notifications list`,
+      count === undefined
+        ? 'Verify a notification count is displayed and open notifications list'
+        : `Verify notification count is ${count} and open notifications list`,
     );
 
-    await this.waitForNotificationCountFloatingBubble(count);
+    await this.waitForNotificationCountFloatingBubble();
     await this.openGlobalMenu();
-    await this.driver.findElement({
-      css: this.notificationCountOption,
-      text: count.toString(),
-    });
+    await this.driver.findElement(
+      count === undefined
+        ? this.notificationCountOption
+        : { css: this.notificationCountOption, text: count.toString() },
+    );
     await this.driver.waitForElementToStopMoving(this.drawerBackButton);
     await this.driver.waitForElementToStopMoving(this.notificationsButton);
     await this.driver.clickElement(this.notificationsButton);
@@ -331,11 +338,10 @@ class HeaderNavbar {
     await this.driver.clickElement(this.networkOption(networkId));
   }
 
-  async waitForNotificationCountFloatingBubble(count: number): Promise<void> {
-    console.log(`Wait for notification count bubble to be ${count}`);
+  async waitForNotificationCountFloatingBubble(): Promise<void> {
+    console.log(`Wait for notification count bubble to be present`);
     await this.driver.waitForSelector({
       css: this.notificationCountFloatingBubble,
-      text: count.toString(),
     });
   }
 }

@@ -40,12 +40,13 @@ describe('Test Snap Cronjob Duration', function () {
           'Reconnect to Cronjob Duration Snap',
         );
 
-        // Switch back to the extension page and validation one notification
-        // appears.
+        // Switch back to the extension page and validate that a notification
+        // appears. The Snap notifies every 10 seconds for as long as it stays
+        // installed, so the unread count keeps growing and cannot be asserted without flakiness.
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await headerNavbar.checkNotificationCountAndOpenNotifications(1);
+        await headerNavbar.checkNotificationCountAndOpenNotifications();
         await notificationsListPage.checkPageIsLoaded();
         await notificationsListPage.checkSnapsNotificationMessage(
           'This notification was triggered by a cronjob using an ISO 8601 duration.',
