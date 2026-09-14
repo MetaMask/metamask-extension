@@ -2,17 +2,21 @@ import {
   getRemoteTracesSampleRate,
   getRemoteTransactionSampleRates,
 } from '../../../shared/lib/sentry-remote-rates';
+import { STATE_WRITE_TRACE_NAME } from './state-write-metrics';
 
 /**
  * Per-`name` sample rates that override the global `tracesSampleRate`, so a
  * high-volume custom transaction can be capped without lowering visibility
- * elsewhere. Seeded with the two assets-controller transactions pinned to `0`.
+ * elsewhere. Seeded with the two assets-controller transactions pinned to `0`,
+ * and `State Persist` pinned to `1` so writes already selected by
+ * `persistenceWriteSampleRate` are not resampled down at the Sentry layer.
  */
 export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
   Record<string, number>
 > = Object.freeze({
   AssetsDataSourceTiming: 0,
   AssetsUpdatePipeline: 0,
+  [STATE_WRITE_TRACE_NAME]: 1,
 });
 
 /**

@@ -123,6 +123,16 @@ describe('createTracesSampler', () => {
     }
   });
 
+  it('keeps already-measured State Persist writes at full sample rate', () => {
+    delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
+    const sampler = createTracesSampler({ defaultSampleRate });
+
+    expect(sampler({ name: 'State Persist' })).toBe(1);
+    expect(sampler({ name: 'State Persist' })).toBeGreaterThan(
+      defaultSampleRate,
+    );
+  });
+
   it('throttles a transaction supplied purely via the env override', () => {
     process.env.SENTRY_SAMPLE_RATE_OVERRIDES = JSON.stringify({
       'Flagged Transaction': 0,

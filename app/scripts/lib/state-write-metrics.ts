@@ -1,7 +1,12 @@
 import type { Span, SpanAttributes } from '@sentry/types';
 import type { SplitStateWriteEvent } from '../../../shared/lib/stores/persistence-manager';
 
-const STATE_WRITE_TRACE_NAME = 'State Persist';
+/**
+ * Sentry transaction name for sampled split-state persistence writes.
+ * Must stay in sync with {@link DEFAULT_TRANSACTION_SAMPLE_RATES} so already
+ * measured writes are not dropped again by the global `tracesSampleRate`.
+ */
+export const STATE_WRITE_TRACE_NAME = 'State Persist';
 const STATE_WRITE_TRACE_OPERATION = 'state.write';
 
 /**
