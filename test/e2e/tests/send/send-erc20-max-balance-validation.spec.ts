@@ -110,21 +110,7 @@ describe('Send ERC20 - Max Balance Validation', function () {
 
     const fixture = new FixtureBuilderV2()
       .withEnabledNetworks({ eip155: { [CHAIN_ID_HEX]: true } })
-      .withTokensController({
-        allTokens: {
-          [CHAIN_ID_HEX]: {
-            [account]: [
-              {
-                address: TOKEN_ADDRESS,
-                decimals: TOKEN_DECIMALS,
-                image: undefined,
-                isERC721: false,
-                symbol: SYMBOL,
-              },
-            ],
-          },
-        },
-      })
+
       .withAssetsController({
         assetsBalance: {
           [DEFAULT_FIXTURE_ACCOUNT_ID]: {

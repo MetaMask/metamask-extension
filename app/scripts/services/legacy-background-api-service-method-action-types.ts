@@ -43,13 +43,9 @@ export type LegacyBackgroundApiServiceGetAssetsAction = {
 };
 
 /**
- * Adds a token to the wallet.
- *
- * When the assets unify state feature is enabled, the token is added as a
- * custom asset on the AssetsController for the currently selected account
- * (resolving the chain ID from the given network client and building the
- * CAIP-19 asset ID from the address). Otherwise, it is added via the
- * TokensController.
+ * Adds a token to the wallet via AssetsController as a custom asset for the
+ * currently selected account (resolving the chain ID from the given network
+ * client and building the CAIP-19 asset ID from the address).
  *
  * @param token - The token to add.
  * @param token.address - The token contract address.

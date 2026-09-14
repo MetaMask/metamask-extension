@@ -393,7 +393,10 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   SnapRegistryControllerState &
   SubjectMetadataControllerState &
   Pick<TokenBalancesControllerState, 'tokenBalances'> &
-  TokensControllerState &
+  Pick<
+    TokensControllerState,
+    'allDetectedTokens' | 'allIgnoredTokens' | 'allTokens'
+  > &
   TokenListState &
   Pick<TokenRatesControllerState, 'marketData'> &
   TransactionControllerState &

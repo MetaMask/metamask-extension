@@ -26,6 +26,7 @@ import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/e
 import { getAssetsControllerMessenger } from './assets/assets-controller-messenger';
 import { registerAccountTrackerGetStateCompat } from './account-tracker-controller-compat';
 import { registerCurrencyRateGetStateCompat } from './currency-rate-controller-compat';
+import { registerTokensControllerGetStateCompat } from './tokens-controller-compat';
 
 type TokenBalancesCompatState = {
   tokenBalances: Record<string, Record<string, Record<string, `0x${string}`>>>;
@@ -148,12 +149,13 @@ export function getTransactionPayControllerMessenger(
 ): TransactionPayControllerMessenger {
   // Compat shims: transaction-pay-controller still requests
   // AccountTrackerController:getState / TokenBalancesController:getState /
-  // TokenRatesController:getState / CurrencyRateController:getState when
-  // assets-unify remote flag is off.
+  // TokenRatesController:getState / CurrencyRateController:getState /
+  // TokensController:getState when assets-unify remote flag is off.
   registerAccountTrackerGetStateCompat(messenger as RootMessenger);
   registerTokenBalancesGetStateCompat(messenger as RootMessenger);
   registerTokenRatesGetStateCompat(messenger as RootMessenger);
   registerCurrencyRateGetStateCompat(messenger as RootMessenger);
+  registerTokensControllerGetStateCompat(messenger as RootMessenger);
 
   const controllerMessenger: TransactionPayControllerMessenger = new Messenger({
     namespace: 'TransactionPayController',
@@ -161,10 +163,7 @@ export function getTransactionPayControllerMessenger(
   });
 
   // TODO: Remove this once the assets unified state is fully rolled out
-  registerAssetsControllerGetStateForTransactionPayAction(
-    messenger,
-    controllerMessenger,
-  );
+  registerAssetsControllerGetStateForTransactionPayAction(messenger);
 
   messenger.delegate({
     messenger: controllerMessenger,
@@ -183,6 +182,7 @@ export function getTransactionPayControllerMessenger(
       'TokenBalancesController:getState',
       // Compat shim: derives marketData from AssetsController.
       'TokenRatesController:getState',
+      // Compat shim: derives allTokens / allIgnoredTokens from AssetsController.
       'TokensController:getState',
       'TransactionController:estimateGas',
       'TransactionController:estimateGasBatch',
@@ -203,6 +203,8 @@ export function getTransactionPayControllerMessenger(
       // Kept for transaction-pay-controller subscriptions; no publisher after
       // TokenRatesController removal (AssetsController:stateChange covers unify).
       'TokenRatesController:stateChange',
+      // Kept for transaction-pay-controller subscriptions; no publisher after
+      // TokensController removal (AssetsController:stateChange covers unify).
       'TokensController:stateChange',
       'TransactionController:stateChange',
       'TransactionController:unapprovedTransactionAdded',
@@ -269,24 +271,19 @@ export function getTransactionPayControllerInitMessenger(
 
 function registerAssetsControllerGetStateForTransactionPayAction(
   messenger: RootMessenger,
-  controllerMessenger: TransactionPayControllerMessenger,
 ) {
   if (!getIsAssetsUnifiedStateIncludedInBuild()) {
     const assetsControllerMessenger = getAssetsControllerMessenger(messenger);
     assetsControllerMessenger.registerActionHandler(
       'AssetsController:getStateForTransactionPay' as const,
       () => {
-        const tokensControllerState = controllerMessenger.call(
-          'TokensController:getState',
-        );
-
         return {
           // AccountTrackerController / TokenBalancesController /
-          // TokenRatesController / CurrencyRateController are removed; empty
-          // maps when unify is not in build.
+          // TokenRatesController / CurrencyRateController / TokensController
+          // are removed; empty maps when unify is not in build.
           tokenBalances: {},
           accountsByChainId: {},
-          allTokens: tokensControllerState?.allTokens ?? {},
+          allTokens: {},
           marketData: {},
           currencyRates: {},
           currentCurrency: '',

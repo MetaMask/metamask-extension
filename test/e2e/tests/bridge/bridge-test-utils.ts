@@ -1346,21 +1346,7 @@ export const getBridgeFixtures = ({
       consentDecisionMade: true,
       optedIn: true,
     })
-    .withTokensController({
-      allTokens: {
-        '0x1': {
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-            {
-              address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-              symbol: 'DAI',
-              decimals: 18,
-              isERC721: false,
-              aggregators: [],
-            },
-          ],
-        },
-      },
-    })
+
     .withEnabledNetworks({
       eip155: {
         '0x1': true,

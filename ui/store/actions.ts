@@ -5757,17 +5757,6 @@ export function estimateGas(params: TransactionParams): Promise<Hex> {
   return submitRequestToBackground('estimateGas', [params]);
 }
 
-export async function updateTokenType(
-  tokenAddress: string,
-): Promise<Token | undefined> {
-  try {
-    return await submitRequestToBackground('updateTokenType', [tokenAddress]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
-  return undefined;
-}
-
 export async function addPollingTokenToAppState(pollingToken: string) {
   return submitRequestToBackground('addPollingTokenToAppState', [
     pollingToken,

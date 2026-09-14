@@ -275,11 +275,6 @@
     "SnapInterfaceController": { "interfaces": "object" },
     "SubjectMetadataController": {},
     "SubscriptionController": "object",
-    "TokensController": {
-      "allDetectedTokens": {},
-      "allIgnoredTokens": {},
-      "allTokens": {}
-    },
     "TransactionController": {
       "lastFetchedBlockNumbers": "object",
       "methodData": "object",

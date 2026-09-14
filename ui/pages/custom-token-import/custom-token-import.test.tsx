@@ -343,19 +343,31 @@ describe('CustomTokenImportPage', () => {
     const actions = getMockedActions();
     await submitCustomToken();
 
+    const expectedAssetId =
+      'eip155:1/erc20:0x1111111111111111111111111111111111111111';
+
     await waitFor(() =>
-      expect(actions.addImportedTokens).toHaveBeenCalledWith(
+      expect(actions.importCustomAssetsBatch).toHaveBeenCalledWith(
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         [
-          expect.objectContaining({
+          {
+            assetId: expectedAssetId,
+            isHidden: false,
+          },
+        ],
+        {
+          [expectedAssetId]: expect.objectContaining({
             address: '0x1111111111111111111111111111111111111111',
             symbol: 'APE',
+            name: 'ApeCoin',
             decimals: 18,
-            isERC721: false,
+            chainId: '0x1',
+            unlisted: true,
           }),
-        ],
-        'mainnet',
+        },
       ),
     );
+    expect(actions.addImportedTokens).not.toHaveBeenCalled();
     await waitFor(() =>
       expect(mockNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE, {
         state: {
@@ -420,7 +432,7 @@ describe('CustomTokenImportPage', () => {
         ),
       );
 
-      await waitFor(() => expect(actions.addImportedTokens).toHaveBeenCalled());
+      expect(actions.addImportedTokens).not.toHaveBeenCalled();
     });
 
     it('passes the full token name (not the symbol) as the name field in metadata', async () => {

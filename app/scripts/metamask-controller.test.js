@@ -690,14 +690,10 @@ describe('MetaMaskController', () => {
           .mockReturnValue(true);
       });
 
-      it('delegates ERC-20 to TokensController.watchAsset when the unified assets build flag is off', async () => {
+      it('throws when the unified assets build flag is off', async () => {
         jest
           .mocked(environment.getIsAssetsUnifiedStateIncludedInBuild)
           .mockReturnValue(false);
-
-        const watchAssetSpy = jest
-          .spyOn(metamaskController.tokensController, 'watchAsset')
-          .mockResolvedValue(undefined);
 
         const asset = {
           address: watchAssetTokenAddress,
@@ -705,18 +701,16 @@ describe('MetaMaskController', () => {
           decimals: 4,
         };
 
-        await metamaskController.handleWatchAssetRequest({
-          asset,
-          type: ERC20,
-          origin: 'https://example.com',
-          networkClientId: watchAssetNetworkClientId,
-        });
-
-        expect(watchAssetSpy).toHaveBeenCalledWith({
-          asset,
-          type: ERC20,
-          networkClientId: watchAssetNetworkClientId,
-        });
+        await expect(
+          metamaskController.handleWatchAssetRequest({
+            asset,
+            type: ERC20,
+            origin: 'https://example.com',
+            networkClientId: watchAssetNetworkClientId,
+          }),
+        ).rejects.toThrow(
+          'MetaMask - Cannot watch ERC-20 asset when AssetsController is not included in the build',
+        );
       });
 
       describe('with the unified assets build flag on', () => {
@@ -736,10 +730,6 @@ describe('MetaMaskController', () => {
 
           jest
             .spyOn(metamaskController.assetsController, 'addCustomAsset')
-            .mockResolvedValue(undefined);
-
-          jest
-            .spyOn(metamaskController.tokensController, 'watchAsset')
             .mockResolvedValue(undefined);
 
           // Intercept only the watch-asset approval request; delegate every
@@ -809,12 +799,6 @@ describe('MetaMaskController', () => {
             unlisted: false,
             iconUrl: 'https://example.com/icon.svg',
           });
-
-          // The unified path must not route through the deprecated
-          // TokensController.watchAsset.
-          expect(
-            metamaskController.tokensController.watchAsset,
-          ).not.toHaveBeenCalled();
 
           const approvalOrder = addRequestSpy.mock.invocationCallOrder[0];
           const addOrder =
@@ -1246,12 +1230,14 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
 
-        // Give account 2 a token
+        // TokensController was removed; token membership is derived from AssetsController.
         jest
-          .spyOn(metamaskController.tokensController, 'state', 'get')
+          .spyOn(metamaskController.assetsController, 'state', 'get')
           .mockReturnValue({
-            allTokens: {},
-            allIgnoredTokens: {},
+            assetsInfo: {},
+            assetsBalance: {},
+            customAssets: {},
+            assetPreferences: {},
           });
 
         await metamaskController.legacyBackgroundApiService.createNewVaultAndRestore(

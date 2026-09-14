@@ -221,20 +221,6 @@ const expectEvmApiResultImport = async ({
   symbol: string;
 }) => {
   await waitFor(() =>
-    expect(actions.addImportedTokens).toHaveBeenCalledWith(
-      [
-        expect.objectContaining({
-          address,
-          symbol,
-          decimals,
-          isERC721: false,
-          name,
-        }),
-      ],
-      'mainnet',
-    ),
-  );
-  await waitFor(() =>
     expect(actions.importCustomAssetsBatch).toHaveBeenCalledWith(
       accountId,
       [{ assetId, isHidden: false }],
@@ -248,6 +234,7 @@ const expectEvmApiResultImport = async ({
       },
     ),
   );
+  expect(actions.addImportedTokens).not.toHaveBeenCalled();
 };
 
 const expectNonEvmApiResultImport = async ({
@@ -1491,11 +1478,6 @@ describe('TokenManagementPage', () => {
         dontShowLoadingIndicator: true,
         networkClientId: 'mainnet',
       }),
-    );
-    await waitFor(() =>
-      expect(actions.hideAsset).toHaveBeenCalledWith(
-        `eip155:1/erc20:${mainnetToken.address}`,
-      ),
     );
   });
 
