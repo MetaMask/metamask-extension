@@ -101,6 +101,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed stale USDC balance on Arc after a confirmed swap or bridge (#46259)
 - Fixed Swap opened from a token detail page to select a token with an available balance (#45606)
 - Fixed swap quote costs to match the displayed sorting order (#45984)
 - Fixed hardware wallet swap and send signing so a disconnected, locked, or timed-out device shows a reconnect prompt instead of a generic transaction failure (#45825)
