@@ -3460,106 +3460,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  stxMigrationBatchStatus: {
-    inProd: true,
-    name: 'stxMigrationBatchStatus',
-    productionDefault: [
-      {
-        name: 'sentinel on',
-        scope: {
-          type: 'threshold',
-          value: 1,
-        },
-        value: true,
-      },
-      {
-        name: 'sentinel off',
-        scope: {
-          type: 'threshold',
-          value: 0,
-        },
-        value: false,
-      },
-    ],
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  stxMigrationCancel: {
-    inProd: true,
-    name: 'stxMigrationCancel',
-    productionDefault: [
-      {
-        name: 'sentinel on',
-        scope: {
-          type: 'threshold',
-          value: 1,
-        },
-        value: true,
-      },
-      {
-        name: 'sentinel off',
-        scope: {
-          type: 'threshold',
-          value: 0,
-        },
-        value: false,
-      },
-    ],
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  stxMigrationGetFees: {
-    inProd: true,
-    name: 'stxMigrationGetFees',
-    productionDefault: [
-      {
-        name: 'sentinel on',
-        scope: {
-          type: 'threshold',
-          value: 1,
-        },
-        value: true,
-      },
-      {
-        name: 'sentinel off',
-        scope: {
-          type: 'threshold',
-          value: 0,
-        },
-        value: false,
-      },
-    ],
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  stxMigrationSubmitTransactions: {
-    inProd: true,
-    name: 'stxMigrationSubmitTransactions',
-    productionDefault: [
-      {
-        name: 'sentinel on',
-        scope: {
-          type: 'threshold',
-          value: 1,
-        },
-        value: true,
-      },
-      {
-        name: 'sentinel off',
-        scope: {
-          type: 'threshold',
-          value: 0,
-        },
-        value: false,
-      },
-    ],
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
   swapsChainValueOrderOverride: {
     inProd: true,
     name: 'swapsChainValueOrderOverride',
@@ -3583,6 +3483,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'tempoConfig',
     productionDefault: {
       enabled: false,
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  tokenDetailsAdvancedCharts: {
+    inProd: true,
+    name: 'tokenDetailsAdvancedCharts',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.49.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,

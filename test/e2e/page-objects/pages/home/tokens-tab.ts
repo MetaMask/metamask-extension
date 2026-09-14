@@ -167,6 +167,9 @@ class TokensTab extends HomePage {
   private readonly tokenManagementCustomTokenSuccessToast =
     '[data-testid="token-management-custom-token-success-toast"]';
 
+  private readonly tokenManagementCustomTokenSuccessToastClose =
+    '[data-testid="toast-close-button"]';
+
   private readonly tokenManagementPage =
     '[data-testid="parent-selector-token-management-page"]';
 
@@ -853,11 +856,10 @@ class TokensTab extends HomePage {
     await this.driver.waitForSelector(
       this.tokenManagementCustomTokenSuccessToast,
     );
-    await this.returnFromTokenManagementToHome();
-    await this.driver.assertElementNotPresent(
-      this.tokenManagementCustomTokenSuccessToast,
-      { findElementGuard: this.tokenListItem },
+    await this.driver.clickElementAndWaitToDisappear(
+      this.tokenManagementCustomTokenSuccessToastClose,
     );
+    await this.returnFromTokenManagementToHome();
   }
 
   /**

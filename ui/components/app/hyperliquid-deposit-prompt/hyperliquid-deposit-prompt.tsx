@@ -242,7 +242,10 @@ export const HyperliquidDepositPrompt: React.FC<
   // no deposit happens until the user confirms an amount on that screen.
   // Navigation is deferred so the payment token can be pre-selected first.
   const { isLoading: isStartingDeposit, trigger: startPerpsDeposit } =
-    usePerpsDepositConfirmation({ navigateOnCreate: false });
+    usePerpsDepositConfirmation({
+      navigateOnCreate: false,
+      entryPoint: HYPERLIQUID_DEPOSIT_PROMPT,
+    });
 
   const [selectedToken, setSelectedToken] = useState<AssetType>();
   const [isPickerOpen, setIsPickerOpen] = useState(false);
@@ -360,7 +363,7 @@ export const HyperliquidDepositPrompt: React.FC<
         <Text
           variant={TextVariant.BodySm}
           color={TextColor.TextAlternative}
-          className="mt-2 text-center"
+          className="mt-2"
         >
           {t('hyperliquidDepositPromptDescription')}
         </Text>

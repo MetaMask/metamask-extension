@@ -1538,6 +1538,9 @@
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
+  "alertInsufficientPayMethodBalance": {
+    "message": "Add less or use a different payment method."
+  },
   "alertInsufficientPayTokenBalance": {
     "message": "Insufficient funds"
   },
@@ -5677,6 +5680,9 @@
   "moneyBenefits": {
     "message": "Benefits"
   },
+  "moneyContactSupport": {
+    "message": "Contact support"
+  },
   "moneyEarnApyTitle": {
     "message": "Earn up to $1 APY"
   },
@@ -5767,6 +5773,24 @@
   },
   "moneyToastWithdrawFailedTitle": {
     "message": "Transfer failed"
+  },
+  "moneyTransferBetweenAccounts": {
+    "message": "Another account"
+  },
+  "moneyTransferComingSoon": {
+    "message": "Coming soon"
+  },
+  "moneyTransferPerpsAccount": {
+    "message": "Perps account"
+  },
+  "moneyTransferSendExternal": {
+    "message": "External address"
+  },
+  "moneyTransferTitle": {
+    "message": "Send funds to"
+  },
+  "moneyTransferWithdrawToBank": {
+    "message": "Bank account"
   },
   "month": {
     "message": "month"
@@ -8932,6 +8956,9 @@
   },
   "rejected": {
     "message": "Rejected"
+  },
+  "relayerFee": {
+    "message": "Relayer fee"
   },
   "remove": {
     "message": "Remove"
