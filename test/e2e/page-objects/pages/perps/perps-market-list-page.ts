@@ -15,6 +15,33 @@ import { Driver } from '../../../webdriver/driver';
  * @see ui/pages/perps/market-list/index.tsx
  */
 export class PerpsMarketListPage {
+  /**
+   * The category is in force either as a pressed pill on the rail, or — when it
+   * overflowed — as the `More` trigger whose accessible name says it holds the
+   * selection ("More, Forex selected"). One union locator, so the wait does not
+   * have to know which side of the fit boundary the category landed on.
+   *
+   * @param optionId - Category id, as it appears in the pill test id.
+   * @param label - Category display label, as it appears in the trigger's name.
+   */
+  private readonly categoryFilterActive = (
+    optionId: string,
+    label: string,
+  ) => ({
+    xpath:
+      `//*[@data-testid='market-list-categories-pill-${optionId}' and @aria-pressed='true']` +
+      ` | //*[@data-testid='market-list-categories-more-button' and @aria-label='More, ${label} selected']`,
+  });
+
+  /** Overflow menu for categories that do not fit the rail at popup width. */
+  private readonly categoryMoreButton = {
+    testId: 'market-list-categories-more-button',
+  };
+
+  private readonly categoryMoreOption = (optionId: string) => ({
+    testId: `market-list-categories-more-option-${optionId}`,
+  });
+
   private readonly categoryPill = (optionId: string) => ({
     testId: `market-list-categories-pill-${optionId}`,
   });
@@ -48,6 +75,9 @@ export class PerpsMarketListPage {
 
   /** CSS selector for the search input; driver.fill() expects a string locator. */
   private readonly searchInput = '[data-testid="search-input"]';
+
+  /** Header icon that reveals the search box; the input is not mounted until pressed. */
+  private readonly searchToggle = { testId: 'market-list-search-toggle' };
 
   private readonly sortDropdownButton = { testId: 'sort-dropdown-button' };
 
@@ -87,11 +117,19 @@ export class PerpsMarketListPage {
   }
 
   /**
-   * Fills the search input with the given query.
+   * Fills the search input with the given query, opening the box first.
+   *
+   * Search sits behind the header icon rather than always occupying a row, so
+   * the input is not in the DOM until the toggle is pressed.
    *
    * @param query
    */
   async fillSearch(query: string): Promise<void> {
+    if (
+      !(await this.driver.isElementPresentAndVisible(this.searchInput, 1000))
+    ) {
+      await this.driver.clickElement(this.searchToggle);
+    }
     await this.driver.waitForSelector(this.searchInput);
     await this.driver.fill(this.searchInput, query);
   }
@@ -116,14 +154,24 @@ export class PerpsMarketListPage {
   }
 
   /**
-   * Selects a market category via the category pill rail.
+   * Selects a market category, from the rail or from its overflow menu.
+   *
+   * The rail keeps one row and measures whatever does not fit into a `More`
+   * menu, so a later category is unmounted at popup width and has to be reached
+   * through that menu instead.
    *
    * @param optionId - 'crypto' | 'stock' | 'commodity' | 'forex' | 'new' | …
    */
   async selectFilter(optionId: string): Promise<void> {
     const pill = this.categoryPill(optionId);
-    await this.driver.waitForSelector(pill);
-    await this.driver.clickElement(pill);
+    if (await this.driver.isElementPresentAndVisible(pill, 2000)) {
+      await this.driver.clickElement(pill);
+      return;
+    }
+
+    await this.driver.waitForSelector(this.categoryMoreButton);
+    await this.driver.clickElement(this.categoryMoreButton);
+    await this.driver.clickElement(this.categoryMoreOption(optionId));
   }
 
   /**
@@ -155,7 +203,9 @@ export class PerpsMarketListPage {
 
   /**
    * Waits until the list reflects the expected filter.
-   * Watchlist uses the header star toggle; categories use an active pill on the rail.
+   *
+   * Watchlist uses the header star toggle. A category is pressed on the rail, or
+   * — if it overflowed at this width — on the `More` trigger that holds it.
    *
    * @param label - 'Watchlist' or a category label such as 'Crypto'.
    */
@@ -176,9 +226,11 @@ export class PerpsMarketListPage {
       throw new Error(`Unsupported filter label for category rail: ${label}`);
     }
 
-    await this.driver.waitForSelector({
-      xpath: `//*[@data-testid='market-list-categories-pill-${optionId}' and @aria-pressed='true']`,
-    });
+    // An overflowed category is not on the rail at all: the More trigger names
+    // it instead, so either is proof the filter is in force.
+    await this.driver.waitForSelector(
+      this.categoryFilterActive(optionId, label),
+    );
   }
 
   /**
