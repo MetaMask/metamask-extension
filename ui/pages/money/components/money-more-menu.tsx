@@ -19,9 +19,27 @@ import { useBoolean } from '../../../hooks/useBoolean';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MONEY_LANDING_URL } from '../constants/urls';
 
+/**
+ * Mobile's `IconName.Export` (outlink). After the Phosphor remap,
+ * web `IconName.Export` looks like share, so Benefits uses this glyph
+ * directly until the design system restores an outlink asset.
+ */
+const MONEY_OUTLINK_ICON = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className="inline-block h-5 w-5 shrink-0 text-icon-default"
+    aria-hidden="true"
+    data-testid="money-more-menu-benefits-icon"
+  >
+    <path d="m5 21c-.55 0-1.02083-.1958-1.4125-.5875s-.5875-.8625-.5875-1.4125v-14c0-.55.19583-1.02083.5875-1.4125s.8625-.5875 1.4125-.5875h7v2h-7v14h14v-7h2v7c0 .55-.1958 1.0208-.5875 1.4125s-.8625.5875-1.4125.5875zm4.7-5.3-1.4-1.4 9.3-9.3h-3.6v-2h7v7h-2v-3.6z" />
+  </svg>
+);
+
 type MenuOption = {
   key: string;
-  icon: IconName;
+  icon: IconName | React.ReactElement;
   label: string;
   onClick?: () => void;
   disabled?: boolean;
@@ -62,7 +80,7 @@ export function MoneyMoreMenu() {
     },
     {
       key: 'benefits',
-      icon: IconName.Export,
+      icon: MONEY_OUTLINK_ICON,
       label: t('moneyBenefits'),
       onClick: handleBenefits,
     },
@@ -106,11 +124,15 @@ export function MoneyMoreMenu() {
               className="flex w-full items-center gap-4 px-4 py-3 text-left hover:bg-hover active:bg-pressed disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent"
               data-testid={`money-more-menu-${key}`}
             >
-              <Icon
-                name={icon}
-                size={IconSize.Md}
-                color={IconColor.IconDefault}
-              />
+              {React.isValidElement(icon) ? (
+                icon
+              ) : (
+                <Icon
+                  name={icon}
+                  size={IconSize.Md}
+                  color={IconColor.IconDefault}
+                />
+              )}
               <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
                 {label}
               </Text>
