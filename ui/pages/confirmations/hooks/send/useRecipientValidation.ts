@@ -136,6 +136,12 @@ export const useRecipientValidation = () => {
     recipientWarning: result?.warning ? t(result?.warning) : undefined,
     resolutionProtocol: result?.protocol,
     toAddressValidated: result?.toAddressValidated,
+    // True while a validation is outstanding for the current input, i.e. the
+    // debounced check has not committed a result for `to` yet. Consumers use
+    // this to block submit until the recipient is actually validated.
+    isRecipientValidationPending: Boolean(
+      to && chainId && to !== result?.toAddressValidated,
+    ),
     alerts,
     hasUnacknowledgedAlerts,
     acknowledgeAlerts,

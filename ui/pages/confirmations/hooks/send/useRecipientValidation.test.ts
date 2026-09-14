@@ -71,6 +71,7 @@ describe('useRecipientValidation', () => {
       recipientResolvedLookup: undefined,
       resolutionProtocol: undefined,
       toAddressValidated: undefined,
+      isRecipientValidationPending: true,
       alerts: [],
       hasUnacknowledgedAlerts: false,
       acknowledgeAlerts: mockAcknowledgeAlerts,
@@ -403,6 +404,38 @@ describe('useRecipientValidation', () => {
           expect.any(Object),
         );
       });
+    });
+
+    it('reports validation as pending until the debounced result commits', async () => {
+      const mockValidateName = jest.fn().mockResolvedValue({
+        resolvedLookup: '0x123',
+        protocol: 'ens',
+      });
+
+      jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
+        validateName: mockValidateName,
+      });
+
+      mockUseSendContext.mockReturnValue({
+        asset: EVM_ASSET,
+        to: 'vitalik.eth',
+        chainId: '0x1',
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const { result } = renderHook();
+
+      expect(result.current.isRecipientValidationPending).toBe(true);
+      expect(mockValidateName).not.toHaveBeenCalled();
+
+      await act(async () => {
+        jest.advanceTimersByTime(500);
+      });
+
+      await waitFor(() => {
+        expect(result.current.isRecipientValidationPending).toBe(false);
+      });
+      expect(result.current.recipientResolvedLookup).toBe('0x123');
+      expect(result.current.toAddressValidated).toBe('vitalik.eth');
     });
 
     it('discards validation results when chainId changes during validation', async () => {
