@@ -248,6 +248,20 @@ export function MoneyHomePage() {
         <MoneySectionDivider />
       </>
     ) : null;
+  const activitySection =
+    activityItems.length > 0 || isActivitySettling ? (
+      <>
+        <MoneyActivityList
+          items={activityItems}
+          privacyMode={privacyMode}
+          onViewAll={handleViewAllActivity}
+          onItemClick={handleActivityItemClick}
+          hasMore={hasMoreActivity}
+          isSettling={isActivitySettling}
+        />
+        <MoneySectionDivider />
+      </>
+    ) : null;
 
   return (
     <>
@@ -399,15 +413,7 @@ export function MoneyHomePage() {
                   <MoneySectionDivider />
                 </>
               ) : null}
-              <MoneyActivityList
-                items={activityItems}
-                privacyMode={privacyMode}
-                onViewAll={handleViewAllActivity}
-                onItemClick={handleActivityItemClick}
-                hasMore={hasMoreActivity}
-                isSettling={isActivitySettling}
-              />
-              <MoneySectionDivider />
+              {activitySection}
               {earnOnYourCryptoSection}
               <MoneyCondensedInfoCards />
             </>
@@ -444,16 +450,7 @@ export function MoneyHomePage() {
               </section>
 
               <MoneySectionDivider />
-              <MoneyActivityList
-                items={activityItems}
-                privacyMode={privacyMode}
-                onViewAll={handleViewAllActivity}
-                onItemClick={handleActivityItemClick}
-                hasMore={hasMoreActivity}
-                isSettling={isActivitySettling}
-              />
-
-              <MoneySectionDivider />
+              {activitySection}
               {earnOnYourCryptoSection}
 
               <section className="px-4 py-3">
