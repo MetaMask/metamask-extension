@@ -71,7 +71,7 @@ export default function RampsProviderListItem({
     quote.quote.amountOut !== null &&
     tokenSymbol
       ? formatToken(Number(quote.quote.amountOut), tokenSymbol, {
-          maximumFractionDigits: 6,
+          maximumFractionDigits: 4,
           minimumFractionDigits: 0,
         })
       : '';

@@ -4,7 +4,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
-import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
+import {
+  ConfirmationLoader,
+  PayWithOption,
+} from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
+import { setLastPerpsDepositEntryPoint } from '../../../../store/actions';
 import { createPerpsDepositTransaction } from './createPerpsDepositTransaction';
 import { usePerpsNetworkManagement } from './usePerpsNetworkManagement';
 
@@ -15,6 +19,8 @@ export type PerpsDepositConfirmationResponse = {
 export type PerpsDepositConfirmationOptions = {
   onCreated?: (transactionId: string) => void;
   navigateOnCreate?: boolean;
+  payWithOption?: PayWithOption;
+  entryPoint?: string;
 };
 
 export type PerpsDepositConfirmationResult = {
@@ -34,7 +40,12 @@ export type PerpsDepositConfirmationResult = {
 export function usePerpsDepositConfirmation(
   options: PerpsDepositConfirmationOptions = {},
 ): PerpsDepositConfirmationResult {
-  const { onCreated, navigateOnCreate = true } = options;
+  const {
+    onCreated,
+    navigateOnCreate = true,
+    payWithOption,
+    entryPoint,
+  } = options;
   const navigate = useNavigate();
   const location = useLocation();
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -63,12 +74,20 @@ export function usePerpsDepositConfirmation(
       // Add it first (no-op when already present) so the deposit can start.
       await ensureArbitrumNetworkExists();
 
+      // Set or clear the entry point (currently required for
+      // hyperliquid-prompted deposits to show a custom toast message).
+      setLastPerpsDepositEntryPoint(entryPoint ?? null);
+
       const { transactionId } = await createPerpsDepositTransaction({});
 
       if (navigateOnCreate) {
         const params = new URLSearchParams({
           loader: ConfirmationLoader.CustomAmount,
         });
+
+        if (payWithOption) {
+          params.set('payWithOption', payWithOption);
+        }
 
         const goBackTo = location.pathname + location.search;
         if (goBackTo && goBackTo !== '/') {
@@ -96,12 +115,14 @@ export function usePerpsDepositConfirmation(
     }
   }, [
     ensureArbitrumNetworkExists,
+    entryPoint,
     isLoading,
     location.pathname,
     location.search,
     navigate,
     navigateOnCreate,
     onCreated,
+    payWithOption,
     selectedAccount?.address,
   ]);
 

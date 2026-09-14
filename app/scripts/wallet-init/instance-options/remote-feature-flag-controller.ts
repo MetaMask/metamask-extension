@@ -93,7 +93,10 @@ type RemoteFeatureFlagControllerInstanceOptions =
  *
  * @param options - Options bag.
  * @param options.messenger - Root messenger; resolves the MetaMetrics id from
- * `AnalyticsController` lazily at fetch time.
+ * `AnalyticsController` and the canonical profile id from
+ * `AuthenticationController` lazily at fetch / init time. Falls back to the
+ * MetaMetrics id when no profile id is available so threshold flags still
+ * resolve for pre-auth and E2E sessions.
  * @param options.state - Initial persisted state; `prevClientVersion` is read
  * from `AppMetadataController` so the controller can invalidate cached flags
  * when the client version changes between sessions, and the initial `disabled`
@@ -109,8 +112,47 @@ export function getRemoteFeatureFlagControllerInstanceOptions({
 }): RemoteFeatureFlagControllerInstanceOptions {
   return {
     clientConfigApiService: getRemoteFeatureFlagClientConfigApiService(),
-    getMetaMetricsId: () =>
-      messenger.call('AnalyticsController:getState').analyticsId,
+    // Apply default feature flag values here.
+    defaultFeatureFlags: {
+      // Example:
+      // 'feature-flag-name': true,
+    },
+    // Flags that are used in flows prior to authentication should be added here.
+    metaMetricsFlags: [
+      // Example:
+      // 'feature-flag-name',
+    ],
+    getMetaMetricsId: () => {
+      try {
+        return messenger.call('AnalyticsController:getState').analyticsId ?? '';
+      } catch {
+        // `wallet.init()` runs before AnalyticsController is registered.
+        return '';
+      }
+    },
+    getCanonicalProfileId: () => {
+      try {
+        const { srpSessionData } = messenger.call(
+          'AuthenticationController:getState',
+        );
+        const canonicalProfileId =
+          Object.entries(srpSessionData ?? {})?.[0]?.[1]?.profile
+            ?.canonicalProfileId ?? '';
+        if (canonicalProfileId) {
+          return canonicalProfileId;
+        }
+      } catch {
+        // `wallet.init()` runs before AuthenticationController is registered.
+      }
+      // RFFC 6 leaves threshold flags as raw arrays when this is ''. E2E and
+      // pre-auth users have a MetaMetrics id but no profile; fall back so
+      // those flags still resolve the way they did in RFFC 5.
+      try {
+        return messenger.call('AnalyticsController:getState').analyticsId ?? '';
+      } catch {
+        return '';
+      }
+    },
     clientVersion: getBaseSemVerVersion(),
     prevClientVersion: state.AppMetadataController?.currentAppVersion as
       | string

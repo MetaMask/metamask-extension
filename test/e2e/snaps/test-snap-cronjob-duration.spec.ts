@@ -17,6 +17,7 @@ describe('Test Snap Cronjob Duration', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
+          .withAuthenticationController({ isSignedIn: true })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         testSpecificMock: mockCronjobDurationSnap,

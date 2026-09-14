@@ -105,6 +105,10 @@
   "accountIdenticon": {
     "message": "Identicon da conta"
   },
+  "accountImported": {
+    "message": "Conta importada",
+    "description": "Success toast shown after a private key or JSON account is imported"
+  },
   "accountName": {
     "message": "Nome da conta"
   },
@@ -476,6 +480,42 @@
   },
   "activity_marketShort_success_title": {
     "message": "Posição short fechada - mercado"
+  },
+  "activity_moneyAccountDeposit_failed_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "Falha no depósito"
+  },
+  "activity_moneyAccountDeposit_pending_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "Depositando"
+  },
+  "activity_moneyAccountDeposit_success_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "Depositado"
+  },
+  "activity_moneyAccountWithdraw_failed_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "Falha ao enviar"
+  },
+  "activity_moneyAccountWithdraw_pending_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "Enviando"
+  },
+  "activity_moneyAccountWithdraw_success_description": {
+    "message": "Money Account"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "Enviado"
   },
   "activity_nftBuy_failed_title": {
     "message": "Comprar falhou"
@@ -896,12 +936,24 @@
     "message": "Vendido $1",
     "description": "$1 is the token symbol"
   },
+  "activity_receive_failed_description": {
+    "message": "De $1",
+    "description": "$1 is the shortened sender address"
+  },
   "activity_receive_failed_title": {
     "message": "Falha ao receber"
+  },
+  "activity_receive_pending_description": {
+    "message": "De $1",
+    "description": "$1 is the shortened sender address"
   },
   "activity_receive_pending_title": {
     "message": "Recebendo $1",
     "description": "$1 is the token symbol"
+  },
+  "activity_receive_success_description": {
+    "message": "De $1",
+    "description": "$1 is the shortened sender address"
   },
   "activity_receive_success_title": {
     "message": "Recebido $1",
@@ -950,12 +1002,24 @@
     "message": "Vendido $1",
     "description": "$1 is the token symbol"
   },
+  "activity_send_failed_description": {
+    "message": "Para $1",
+    "description": "$1 is the shortened recipient address"
+  },
   "activity_send_failed_title": {
     "message": "Falha ao enviar"
+  },
+  "activity_send_pending_description": {
+    "message": "Para $1",
+    "description": "$1 is the shortened recipient address"
   },
   "activity_send_pending_title": {
     "message": "Enviando $1",
     "description": "$1 is the token symbol"
+  },
+  "activity_send_success_description": {
+    "message": "Para $1",
+    "description": "$1 is the shortened recipient address"
   },
   "activity_send_success_title": {
     "message": "Enviou $1",
@@ -1428,10 +1492,10 @@
     "message": "Golpistas às vezes imitam os sites fazendo pequenas alterações em seus endereços. Certifique-se de estar interagindo com o site correto antes de continuar."
   },
   "alertMessageAddressTrustSignal": {
-    "message": "Não conseguimos verificar esse endereço. Ele pode ser novo ou não verificado. Continue somente se você confia na fonte."
+    "message": "Parceiros de segurança não possuem histórico confiável suficiente para verificar este endereço."
   },
   "alertMessageAddressTrustSignalMalicious": {
-    "message": "Se você confirmar essa solicitação, provavelmente perderá seus ativos para um golpista."
+    "message": "Parceiros de segurança sinalizaram este endereço por atividade maliciosa."
   },
   "alertMessageBurnAddress": {
     "message": "Você está enviando seus ativos para um endereço de queima. Se continuar, você perderá seus ativos."
@@ -1501,6 +1565,12 @@
   },
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Não foi possível verificar seu saldo de Perps. Tente novamente."
+  },
+  "alertReasonAddressTrustSignalMalicious": {
+    "message": "Endereço sinalizado como de alto risco"
+  },
+  "alertReasonAddressTrustSignalWarning": {
+    "message": "Sinais limitados sobre o endereço"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "1ª interação"
@@ -1657,6 +1727,12 @@
   "approvedOnForAccounts": {
     "message": "Aprovada em $1 para $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
+  },
+  "arcUsageNoticeDescription": {
+    "message": "Boas-vindas à Arc! Para facilitar e verificar seu uso da rede Arc, podemos ter que compartilhar informações com a equipe da Arc."
+  },
+  "arcUsageNoticeTitle": {
+    "message": "Aviso"
   },
   "areYouSure": {
     "message": "Tem certeza?"
@@ -1856,6 +1932,15 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Ativar funcionalidade básica"
+  },
+  "basicFunctionalityMigrationSocialModalBlogPostLink": {
+    "message": "postagem no blog"
+  },
+  "basicFunctionalityMigrationSocialModalTitle": {
+    "message": "atualizações de Privacidade e produtos"
+  },
+  "basicFunctionalityMigrationToastEnabled": {
+    "message": "ativada"
   },
   "basicFunctionalityRequired_description": {
     "message": "Este recurso não está disponível enquanto as funcionalidades básicas estiverem desativadas. Use o botão abaixo para ativá-lo."
@@ -2146,6 +2231,12 @@
   "bridgeNoPriceInfoTitle": {
     "message": "Sem informações de preço"
   },
+  "bridgeOffHoursDescription": {
+    "message": "Mercado fechado: o preço é calculado pelo emissor e não reflete dados de mercado em tempo real. Ele poderá sofrer alterações quando os mercados reabrirem na próxima sessão de negociação disponível."
+  },
+  "bridgeOffHoursTitle": {
+    "message": "Negociação fora do horário comercial"
+  },
   "bridgePoints": {
     "message": "Est. de pontos",
     "description": "Label for estimated points that can be earned from a bridge or swap"
@@ -2377,6 +2468,22 @@
   "bridgeSendLoading": {
     "message": "Enviando da cadeia de origem"
   },
+  "bridgeStellarTrustlineWarningCta": {
+    "message": "Ativar $1",
+    "description": "CTA on the Stellar trustline warning banner. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessage": {
+    "message": "Este swap pode falhar. Na Stellar, sua conta não pode receber $1 até que o token seja ativado na sua carteira com uma trustline válida.",
+    "description": "Body of the Stellar trustline warning on cross-chain swaps when destination is the active account. $1 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningMessageDifferentAccount": {
+    "message": "Este swap pode falhar. Na Stellar, a conta $1 não pode receber $2 até que você mude para essa conta e ative o token com uma trustline válida.",
+    "description": "Body of the Stellar trustline warning when the destination account is not the active account. $1 is the destination account name; $2 is the destination token symbol."
+  },
+  "bridgeStellarTrustlineWarningTitle": {
+    "message": "Ative $1 na Stellar primeiro",
+    "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
+  },
   "bridgeSuspicious": {
     "message": "Suspeito"
   },
@@ -2400,9 +2507,6 @@
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "Use o máximo permitido"
-  },
-  "bridgeValidationInsufficientGasMessage": {
-    "message": "Você não tem $1 suficiente para pagar a taxa de gás para esta ponte. Insira um valor menor ou compre mais $1."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Necessário mais $1 para gás"
@@ -3295,6 +3399,9 @@
   "deepLink_thePredictPage": {
     "message": "a página dos mercados de previsão"
   },
+  "deepLink_thePrivacySettingsPage": {
+    "message": "a página de configurações de privacidade"
+  },
   "deepLink_theRewardsPage": {
     "message": "a página de recompensas da MetaMask"
   },
@@ -3354,6 +3461,9 @@
   },
   "defiTabErrorTitle": {
     "message": "Não foi possível carregar esta página."
+  },
+  "defiUnsupportedEmptyDescription": {
+    "message": "DeFi não oferece suporte nesta rede."
   },
   "delete": {
     "message": "Excluir"
@@ -3441,10 +3551,6 @@
   "disable": {
     "message": "Desativar"
   },
-  "disabledGasOptionToolTipMessage": {
-    "message": "“$1” está desativado porque não satisfaz o aumento mínimo de 10% em relação à taxa de gás original.",
-    "description": "$1 is gas estimate type which can be market or aggressive"
-  },
   "disconnect": {
     "message": "Desconectar"
   },
@@ -3477,6 +3583,10 @@
   },
   "disconnectSiteDescriptionText": {
     "message": "Isso desconectará todas as suas contas de $1. Será necessário se reconectar para usar este dApp novamente.",
+    "description": "$1 is the site hostname"
+  },
+  "disconnectSiteSuccess": {
+    "message": "Desconectado de $1 com sucesso.",
     "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
@@ -3611,7 +3721,7 @@
     "message": "Editar contato"
   },
   "editGasFeeModalTitle": {
-    "message": "Editar taxa de gás"
+    "message": "Editar taxas de rede"
   },
   "editGasLimitOutOfBounds": {
     "message": "O limite de gás deve ser de pelo menos $1"
@@ -4073,9 +4183,6 @@
   "gasPrice": {
     "message": "Preço do gás (GWEI)"
   },
-  "gasPriceExcessive": {
-    "message": "Sua taxa de gás está desnecessariamente alta. Considere reduzir o valor."
-  },
   "gasPriceFetchFailed": {
     "message": "Ocorreu uma falha na estimativa do preço do gás devido a um erro na rede."
   },
@@ -4308,9 +4415,25 @@
     "message": "Gastador: $1",
     "description": "Shows the spender for a hardware-wallet bridge approval signature. $1 is the shortened spender address."
   },
+  "hardwareSwapAmount": {
+    "message": "Trocar $1 $2 por $3 $4",
+    "description": "Label for a pending hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappedAmount": {
+    "message": "$1 $2 trocados por $3 $4",
+    "description": "Label for a submitted hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
+  "hardwareSwappingAmount": {
+    "message": "Trocando $1 $2 por $3 $4",
+    "description": "Label for the active hardware-wallet swap signature. $1 is the source amount, $2 the source token symbol, $3 the destination amount, $4 the destination token symbol."
+  },
   "hardwareToAddress": {
     "message": "Para: $1",
     "description": "Shows the destination contract/address for a hardware-wallet bridge send signature. $1 is the shortened address."
+  },
+  "hardwareToken": {
+    "message": "Token: $1",
+    "description": "Shows the token contract being approved for a hardware-wallet bridge approval signature. $1 is the shortened token address."
   },
   "hardwareTransactionRejected": {
     "message": "Você rejeitou esta transação no seu dispositivo",
@@ -4324,6 +4447,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Continuar"
+  },
+  "hardwareWalletErrorOnlyV4SupportedDescription": {
+    "message": "Seu $1 só pode assinar dados digitados na versão 4 (V4). Este site solicitou um tipo de assinatura mais antigo, que não é suportado.",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWalletErrorReconnectButton": {
     "message": "Reconecte e tente novamente",
@@ -4368,6 +4495,9 @@
   "hardwareWalletErrorTitleDeviceLocked": {
     "message": "$1 bloqueada",
     "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleUnsupportedSignature": {
+    "message": "Assinatura não suportada"
   },
   "hardwareWalletErrorUnknownErrorDescription": {
     "message": "Certifique-se de que seu dispositivo $1 esteja configurado com a Frase de Recuperação Secreta ou senha para a conta selecionada",
@@ -4551,6 +4681,10 @@
   },
   "honeypotTitle": {
     "message": "Honeypot"
+  },
+  "hyperliquidDepositPromptTitle": {
+    "message": "Deposite fundos na Hyperliquid com MetaMask",
+    "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Aplique um código de indicação da MetaMask a todas as negociações futuras, conforme o $1 da Hyperliquid. A MetaMask recebe uma comissão.",
@@ -5050,9 +5184,6 @@
   "loginErrorSessionExpiredButton": {
     "message": "Fazer login"
   },
-  "loginErrorSessionExpiredDescription": {
-    "message": "Sua sessão expirou. Faça login novamente para continuar."
-  },
   "loginErrorSessionExpiredTitle": {
     "message": "A sessão expirou"
   },
@@ -5100,6 +5231,10 @@
   },
   "manage": {
     "message": "Gerenciar"
+  },
+  "manageAccounts": {
+    "message": "Gerenciar contas",
+    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
   },
   "manageConnectedAccounts": {
     "message": "Gerenciar contas conectadas"
@@ -5264,17 +5399,110 @@
   "money": {
     "message": "Money"
   },
+  "moneyAccountApyPitch": {
+    "message": "Ganhe $1% de APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchInfo": {
+    "message": "Informações sobre APY"
+  },
+  "moneyAccountApyTooltip": {
+    "message": "A taxa apresentada é uma estimativa da Taxa Anual Efetiva (APY) com base nas condições atuais do mercado. A APY é variável e não é garantida."
+  },
+  "moneyAccountAvailableBalance": {
+    "message": "Saldo disponível: $1",
+    "description": "$1 is the formatted Money Account vault withdrawable balance"
+  },
+  "moneyAccountProjectedBalance": {
+    "message": "Saldo projetado para 1 anos:"
+  },
+  "moneyAccountProjectedBalanceInfo": {
+    "message": "Saldo projetado para 1 anos"
+  },
+  "moneyAccountProjectedBalanceTooltip": {
+    "message": "A projeção pressupõe que a Taxa Anual Efetiva (APY) de $1% permanecerá inalterada por um ano. A APY é variável e não é garantida.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyActivity": {
     "message": "Atividade"
   },
+  "moneyActivityConversionFailed": {
+    "message": "Falha na conversão"
+  },
+  "moneyActivityConverted": {
+    "message": "Convertido"
+  },
+  "moneyActivityConverting": {
+    "message": "Convertendo"
+  },
+  "moneyActivityDepositFailed": {
+    "message": "Falha no depósito"
+  },
+  "moneyActivityDeposited": {
+    "message": "Depositado"
+  },
+  "moneyActivityDepositing": {
+    "message": "Depositando"
+  },
+  "moneyActivityDetailsTransactionId": {
+    "message": "ID da transação"
+  },
+  "moneyActivityEmpty": {
+    "message": "Nenhuma atividade ainda"
+  },
+  "moneyActivityFilterAll": {
+    "message": "Tudo"
+  },
+  "moneyActivityFilterDeposits": {
+    "message": "Depósitos"
+  },
+  "moneyActivityFilterSends": {
+    "message": "Envia"
+  },
+  "moneyActivityPending": {
+    "message": "Pendente"
+  },
   "moneyActivityPlaceholderDescription": {
     "message": "A atividade de sua conta Money será exibida aqui."
+  },
+  "moneyActivityReceived": {
+    "message": "Recebido"
+  },
+  "moneyActivityReceivedFrom": {
+    "message": "De: $1"
+  },
+  "moneyActivityReceiving": {
+    "message": "Recebendo"
+  },
+  "moneyActivitySendFailed": {
+    "message": "Falha ao enviar"
+  },
+  "moneyActivitySending": {
+    "message": "Enviando"
+  },
+  "moneyActivitySent": {
+    "message": "Enviado"
+  },
+  "moneyActivityViewAll": {
+    "message": "Exibir tudo"
   },
   "moneyAdd": {
     "message": "Adicionar"
   },
   "moneyApy": {
     "message": "$1 de APY"
+  },
+  "moneyBalanceInfoBody": {
+    "message": "Seu saldo em mUSD lastreado em dólar, sempre disponível. Use para pagar, enviar ou negociar a qualquer momento. Não contabilizamos esse valor no saldo total da sua conta."
+  },
+  "moneyBalanceInfoWithdrawals": {
+    "message": "Os saques são processados imediatamente, sujeitos aos prazos padrão de confirmação da rede na blockchain correspondente. Se a liquidez estiver baixa, podem ocorrer atrasos temporários."
+  },
+  "moneyBalanceLastKnown": {
+    "message": "Último saldo conhecido"
+  },
+  "moneyBalanceTitle": {
+    "message": "Saldo monetário"
   },
   "moneyBalanceUnavailable": {
     "message": "Saldo indisponível"
@@ -5754,10 +5982,6 @@
   "networkStatusPriorityFeeTooltip": {
     "message": "Intervalo das taxas de prioridade (ou seja, a \"gorjeta do minerador\"). Esse valor vai para os mineradores e os incentiva a priorizar sua transação."
   },
-  "networkStatusStabilityFeeTooltip": {
-    "message": "As taxas de gás estão $1 em relação às últimas 72 horas.",
-    "description": "$1 is networks stability value - stable, low, high"
-  },
   "networkSuggested": {
     "message": "Rede sugerida"
   },
@@ -5865,6 +6089,9 @@
   },
   "nftTokenIdPlaceholder": {
     "message": "Insira o ID do token"
+  },
+  "nftUnsupportedEmptyDescription": {
+    "message": "Essa rede não oferece suporte a NFTs."
   },
   "nftWarningContent": {
     "message": "Você está concedendo acesso a $1, incluindo o que você vier a possuir no futuro. A parte na outra ponta pode transferir esses NFTs da sua carteira a qualquer momento, sem solicitar, até você revogar essa aprovação. $2",
@@ -6456,7 +6683,7 @@
     "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNotSupported": {
-    "message": "Chave de acesso não suportada",
+    "message": "A MetaMask não consegue usar as chaves de acesso salvas aqui. Tente novamente e salve-as em um gerenciador de senhas.",
     "description": "Shown when passkey setup fails because the authenticator does not return the required PRF extension result."
   },
   "passkeyErrorRegistrationFailed": {
@@ -6564,7 +6791,7 @@
     "message": "Exibir senha"
   },
   "passwordsDontMatch": {
-    "message": "As senhas são diferentes"
+    "message": "As senhas são diferentes."
   },
   "paste": {
     "message": "Colar"
@@ -7024,6 +7251,12 @@
   "perpsCandlePeriodMinutes": {
     "message": "Minutos"
   },
+  "perpsChart": {
+    "message": "Gráfico de preços"
+  },
+  "perpsChartLoadError": {
+    "message": "Falha ao carregar os dados do gráfico"
+  },
   "perpsCloseAll": {
     "message": "Encerrar tudo"
   },
@@ -7035,6 +7268,15 @@
   },
   "perpsCloseAmount": {
     "message": "Valor de encerramento"
+  },
+  "perpsCloseAmountCappedAtPosition": {
+    "message": "Valor de fechamento limitado ao valor da sua posição."
+  },
+  "perpsCloseAmountInPercentLabel": {
+    "message": "Insira o valor de fechamento como uma porcentagem da sua posição"
+  },
+  "perpsCloseAmountInUsdLabel": {
+    "message": "Insira o valor de fechamento em dólares dos EUA"
   },
   "perpsCloseLimitPriceOutsideOracleBand": {
     "message": "O preço não pode diferir mais de 95% do preço de mercado"
@@ -7048,6 +7290,9 @@
   "perpsClosePartialMinNotional": {
     "message": "Fechamentos parciais devem ter um valor mínimo de $1 em USD. Aumente o valor do fechamento ou feche a posição completa."
   },
+  "perpsClosePercentCappedAtMax": {
+    "message": "Percentual de fechamento limitado a 100%."
+  },
   "perpsClosePosition": {
     "message": "Encerrar posição"
   },
@@ -7059,6 +7304,9 @@
   },
   "perpsCloseShort": {
     "message": "Encerrar posição short"
+  },
+  "perpsCollapseChart": {
+    "message": "Recolher gráfico"
   },
   "perpsConfirmCloseLong": {
     "message": "Encerrar posição long"
@@ -7157,6 +7405,9 @@
   "perpsExchangeAccountNotFound": {
     "message": "Adicione fundos para inciar operações de trading.",
     "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
+  },
+  "perpsExpandChart": {
+    "message": "Expandir gráfico"
   },
   "perpsExploreMarkets": {
     "message": "Explorar mercados"
@@ -7794,6 +8045,18 @@
     "message": "TP/SL atualizado com sucesso",
     "description": "Success toast text shown when TP/SL settings are updated"
   },
+  "perpsTopMovers": {
+    "message": "Principais movimentações",
+    "description": "Heading of the Perps tab section ranking markets by 24h price change"
+  },
+  "perpsTopMoversGainers": {
+    "message": "Ganhadores",
+    "description": "Toggle option showing the markets that rose the most over 24h in the Top movers section"
+  },
+  "perpsTopMoversLosers": {
+    "message": "Perdedores",
+    "description": "Toggle option showing the markets that fell the most over 24h in the Top movers section"
+  },
   "perpsTrades": {
     "message": "Negociações"
   },
@@ -8185,6 +8448,10 @@
   "quotedTotalCost": {
     "message": "Custo total: $1"
   },
+  "rampsBackToWallet": {
+    "message": "Voltar à carteira",
+    "description": "Secondary button on the ramps complete-buy interstitial that returns to the wallet home"
+  },
   "rampsBestRate": {
     "message": "Melhor taxa"
   },
@@ -8202,6 +8469,21 @@
   "rampsChangeProvider": {
     "message": "Alterar fornecedor."
   },
+  "rampsChooseProvider": {
+    "message": "Escolher provedor"
+  },
+  "rampsCompleteBuyTitle": {
+    "message": "Compra concluída",
+    "description": "Title of the interstitial shown after opening a ramps provider checkout tab"
+  },
+  "rampsCompletePurchaseInProviderTab": {
+    "message": "Conclua sua compra na aba de $1",
+    "description": "$1 is the on-ramp provider name (e.g. Transak)"
+  },
+  "rampsContinueInBrowser": {
+    "message": "Continuar no navegador",
+    "description": "Banner title on the ramps complete-buy interstitial"
+  },
   "rampsEligibilityFailedDescription": {
     "message": "Tente novamente ou entre em contato com o suporte se isso continuar acontecendo."
   },
@@ -8213,6 +8495,10 @@
   },
   "rampsErrorLoadingTokens": {
     "message": "Erro ao carregar tokens"
+  },
+  "rampsEstimatedToReceive": {
+    "message": "Estimativa de recebimento",
+    "description": "Label for the estimated crypto amount on the ramps complete-buy interstitial"
   },
   "rampsMaxPurchaseLimit": {
     "message": "A compra máxima é de $1",
@@ -8339,12 +8625,12 @@
   "rampsPaymentDelayMinutes": {
     "message": "min"
   },
-  "rampsPaymentMethodLimits": {
-    "message": "$1 – $2",
-    "description": "$1 is the minimum fiat buy amount, $2 is the maximum"
+  "rampsPaymentMethod": {
+    "message": "Método de pagamento",
+    "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
   },
-  "rampsPaymentMethodMaxLimit": {
-    "message": "Máx. $1",
+  "rampsPaymentMethodLimits": {
+    "message": "Até $1",
     "description": "$1 is the maximum fiat buy amount"
   },
   "rampsPaymentMethodMinLimit": {
@@ -8352,20 +8638,13 @@
     "description": "$1 is the minimum fiat buy amount"
   },
   "rampsPreviouslyUsed": {
-    "message": "Usado anteriormente"
-  },
-  "rampsProviders": {
-    "message": "Fornecedores"
+    "message": "Usado pela última vez"
   },
   "rampsQuoteFetchError": {
     "message": "Falha ao buscar cotação."
   },
   "rampsQuoteUnavailable": {
     "message": "Cotação não disponível."
-  },
-  "rampsQuotesDisplayedFor": {
-    "message": "Cotações exibidas para $1.",
-    "description": "$1 is the payment method name"
   },
   "rampsSelectPaymentMethod": {
     "message": "Selecione o método de pagamento"
@@ -8465,6 +8744,14 @@
   },
   "removeAccount": {
     "message": "Remover conta"
+  },
+  "removeAccountConfirmDescription": {
+    "message": "Você pode restaurar esta conta a qualquer momento importando-a com a chave privada.",
+    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
+  },
+  "removeAccountConfirmTitle": {
+    "message": "Remover $1",
+    "description": "Title of the account remove confirmation modal. $1 is the account name."
   },
   "removeAccountModalBannerDescription": {
     "message": "Certifique-se de ter a Frase de Recuperação Secreta ou a chave privada desta conta antes de removê-la.",
@@ -8919,6 +9206,10 @@
   "searchAnAcccountOrContact": {
     "message": "Pesquise uma conta ou contato"
   },
+  "searchAnAccount": {
+    "message": "Pesquisar uma conta",
+    "description": "Search input placeholder for the Perps destination account picker"
+  },
   "searchForAnAssetToSend": {
     "message": "Pesquise um ativo para enviar"
   },
@@ -9198,16 +9489,16 @@
     "message": "Malicioso"
   },
   "securityTrustMaliciousTokenBannerDescription": {
-    "message": "$1 foi sinalizado como malicioso. É provável que roube fundos de qualquer pessoa que interaja com ele."
+    "message": "Parceiros de segurança sinalizam $1 como de alto risco."
   },
   "securityTrustMaliciousTokenBannerDescriptionNoSymbol": {
-    "message": "Este token foi sinalizado como malicioso. É provável que ele roube fundos de qualquer pessoa que interaja com ele."
+    "message": "Parceiros de segurança sinalizam este token como de alto risco."
   },
   "securityTrustMaliciousTokenSheetDescription": {
-    "message": "Sinais de risco graves foram detectados em $1. Recomendamos não negociar este token."
+    "message": "Parceiros de segurança sinalizam $1 como de alto risco."
   },
   "securityTrustMaliciousTokenSheetDescriptionNoSymbol": {
-    "message": "Sinais de risco graves foram detectados neste token. Recomendamos não negociar este token."
+    "message": "Parceiros de segurança sinalizam este token como de alto risco."
   },
   "securityTrustMaliciousTokenTitle": {
     "message": "Token malicioso"
@@ -9237,10 +9528,10 @@
     "message": "De risco"
   },
   "securityTrustRiskyTokenDescription": {
-    "message": "$1 foi sinalizado como suspeito. Analise os riscos antes de prosseguir."
+    "message": "Parceiros de segurança identificaram sinais de risco no contrato ou na atividade de negociação de $1."
   },
   "securityTrustRiskyTokenDescriptionNoSymbol": {
-    "message": "Este token foi sinalizado como suspeito. Analise os riscos antes de prosseguir."
+    "message": "Parceiros de segurança identificaram sinais de risco no contrato ou na atividade de negociação deste token."
   },
   "securityTrustRiskyTokenTitle": {
     "message": "Token suspeito"
@@ -9252,13 +9543,13 @@
     "message": "Nenhum sinal de risco detectado. Sempre pesquise qualquer ativo antes de negociar."
   },
   "securityTrustSubtitleMalicious": {
-    "message": "Sinais de risco graves foram detectados. Recomendamos evitar este ativo."
+    "message": "Parceiros de segurança sinalizam este token como de alto risco."
   },
   "securityTrustSubtitleNoIssues": {
     "message": "Nenhum sinal de risco detectado. Sempre pesquise qualquer ativo antes de negociar."
   },
   "securityTrustSubtitleSuspicious": {
-    "message": "Sinais de alerta detectados. Analise cuidadosamente os problemas sinalizados antes de negociar este ativo."
+    "message": "Parceiros de segurança identificaram sinais de risco no contrato ou na atividade de negociação deste token."
   },
   "securityTrustSubtitleUnavailable": {
     "message": "Não foi possível carregar a análise de segurança para este token."
@@ -9267,10 +9558,10 @@
     "message": "Suspeito"
   },
   "securityTrustSuspiciousTokenDescription": {
-    "message": "$1 é um token suspeito."
+    "message": "Parceiros de segurança identificaram sinais de risco no contrato ou na atividade de negociação de $1."
   },
   "securityTrustSuspiciousTokenDescriptionNoSymbol": {
-    "message": "Este é um token suspeito."
+    "message": "Parceiros de segurança identificaram sinais de risco no contrato ou na atividade de negociação deste token."
   },
   "securityTrustTelegram": {
     "message": "Telegram"
@@ -9358,6 +9649,9 @@
   "selectPathHelp": {
     "message": "Se as contas que você esperava não forem exibidas, tente mudar o caminho do HD ou a rede atualmente selecionada."
   },
+  "selectPerpsAccount": {
+    "message": "Selecionar conta perp"
+  },
   "selectRecipient": {
     "message": "Selecionar destinatário"
   },
@@ -9398,6 +9692,9 @@
   },
   "sendSelectSendAsset": {
     "message": "Selecionar ativo para enviar"
+  },
+  "sendToPerps": {
+    "message": "Enviar aos perps"
   },
   "sendingAsset": {
     "message": "Enviando $1"
@@ -10795,9 +11092,6 @@
   "stxCancelled": {
     "message": "A troca teria falhado"
   },
-  "stxCancelledDescription": {
-    "message": "Sua transação teria falhado e foi cancelada para protegê-lo contra o pagamento de taxas de gás desnecessárias."
-  },
   "stxCancelledSubDescription": {
     "message": "Tente trocar novamente. Estaremos aqui para proteger você contra riscos semelhantes no futuro."
   },
@@ -10839,9 +11133,6 @@
   },
   "stxUserCancelled": {
     "message": "Troca cancelada"
-  },
-  "stxUserCancelledDescription": {
-    "message": "Sua transação foi cancelada e você não pagou nenhuma taxa de gás desnecessária."
   },
   "submit": {
     "message": "Enviar"
@@ -10972,19 +11263,12 @@
     "message": "A troca de $1 por $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesExplanation": {
-    "message": "A MetaMask não ganha dinheiro com taxas de gás. Essas taxas são estimativas e podem mudar de acordo com a carga de atividade da rede e a complexidade da transação. Saiba mais $1.",
-    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
-  },
   "swapGasFeesExplanationLinkText": {
     "message": "aqui",
     "description": "Text for link in swapGasFeesExplanation"
   },
   "swapGasFeesIncluded": {
     "message": " incluídas"
-  },
-  "swapGasFeesSplit": {
-    "message": "As taxas de gás da tela anterior estão divididas entre essas duas transações."
   },
   "swapGasFeesSponsored": {
     "message": "Pago pela MetaMask"
@@ -11119,9 +11403,6 @@
   "swapSource": {
     "message": "Fonte de liquidez"
   },
-  "swapSuggestedGasSettingToolTipMessage": {
-    "message": "Trocas são transações complexas e urgentes. Recomendamos essa taxa de gás para atingir o equilíbrio ideal entre o custo e a confiança de uma troca bem-sucedida."
-  },
   "swapToConfirmWithHwWallet": {
     "message": "para confirmar com a sua carteira de hardware"
   },
@@ -11143,9 +11424,6 @@
   },
   "swapUnknown": {
     "message": "Desconhecido"
-  },
-  "swapValidationInsufficientGasMessage": {
-    "message": "Você não tem $1 suficiente para pagar a taxa de transação (gas) dessa troca. Insira um valor menor ou compre mais $1."
   },
   "swapZeroSlippage": {
     "message": "0% de slippage"
@@ -11361,7 +11639,7 @@
     "message": "Função"
   },
   "transactionDetailGasHeading": {
-    "message": "Taxa de gás estimada"
+    "message": "Taxa de rede estimada"
   },
   "transactionError": {
     "message": "Erro de transação. Exceção gerada no código do contrato."
@@ -11381,9 +11659,6 @@
   "transactionHistoryBaseFee": {
     "message": "Taxa-base (GWEI)"
   },
-  "transactionHistoryL1GasLabel": {
-    "message": "Taxa de gás L1 total"
-  },
   "transactionHistoryL2GasLimitLabel": {
     "message": "Limite de gás L2"
   },
@@ -11397,7 +11672,7 @@
     "message": "Taxa de prioridade (GWEI)"
   },
   "transactionHistoryTotalGasFee": {
-    "message": "Taxa de gás total"
+    "message": "Taxa total da rede"
   },
   "transactionIdCopied": {
     "message": "ID da transação copiada"
@@ -11598,9 +11873,6 @@
   },
   "unlock": {
     "message": "Desbloquear"
-  },
-  "unlockPageIncorrectPassword": {
-    "message": "Senha incorreta. Tente novamente."
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Excesso de tentativas. Tente de novo em "
@@ -11871,10 +12143,6 @@
   },
   "wrongNetworkName": {
     "message": "De acordo com os nossos registros, o nome da rede pode não corresponder a esta ID de cadeia."
-  },
-  "wrongPassword": {
-    "message": "Senha incorreta",
-    "description": "Displayed when the user enters an incorrect password"
   },
   "year": {
     "message": "ano"

@@ -23,11 +23,16 @@
 #     (gh-readonly-queue/{base}/pr-{N}-{sha}).
 #
 #   - push to main/stable:
-#     Observation only — no retry (no originating PR to label).
+#     Observation only — no retry.
+#
+#   - push to release/*:
+#     Retry retryable failures once by default (attempt 1 → attempt 2).
+#     There is no PR label, so attempts 3 and 4 are unavailable.
 #
 # Reruns call `gh run rerun --failed`, which triggers a new main.yml
 # completion → workflow_run fires again. The default budget allows attempt 2;
-# retry-ci extends the budget through attempt 4. Keep these limits in sync with
+# retry-ci extends PR retries through attempt 4. Release pushes stop at attempt
+# 2 because they have no PR label. Keep these limits in sync with
 # classify-failures.mts and ci-status-gate.yml.
 #
 # Merge queue interaction:
@@ -77,7 +82,8 @@ jobs:
     #   if run.event == 'pull_request'        → run  (retry budget via PR)
     #   if run.event == 'push'
     #     and run.branch in ['main','stable'] → run  (observation only — no retry)
-    #   else                                  → skip (release/*, workflow_dispatch, etc.)
+    #     and starts with 'release/'          → run  (default retry budget, no label extension)
+    #   else                                  → skip (workflow_dispatch, etc.)
     #
     # Cancelled runs are included so that preempted retries (attempt > 1,
     # cancelled before completion) can emit a lightweight Sentry event.
@@ -90,11 +96,25 @@ jobs:
           github.event.workflow_run.event == 'merge_group'
           || github.event.workflow_run.event == 'pull_request'
           || (github.event.workflow_run.event == 'push'
-              && contains(fromJson('["main","stable"]'), github.event.workflow_run.head_branch))
+              && (contains(fromJson('["main","stable"]'), github.event.workflow_run.head_branch)
+                  || startsWith(github.event.workflow_run.head_branch, 'release/')))
         )
       }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    concurrency:
+      # This lock serializes triage per release branch without sharing Main's
+      # group. Sharing it would let a delayed workflow_run event replace a
+      # pending Main run. The retry step verifies the current run and branch
+      # SHA before it can rerun anything.
+      group: >-
+        ${{
+          github.event.workflow_run.event == 'push'
+          && startsWith(github.event.workflow_run.head_branch, 'release/')
+          && format('Triage-release-{0}', github.event.workflow_run.head_branch)
+          || format('Triage-{0}', github.run_id)
+        }}
+      cancel-in-progress: false
     permissions:
       actions: write
       checks: write
@@ -130,7 +150,7 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Install Sentry SDK
-        run: npm install --no-save @sentry/node@^10.45.0
+        run: npm install --no-save @sentry/node@10.73.0
 
       - name: Get version from package.json
         run: |
@@ -149,7 +169,8 @@ jobs:
       - name: Verify current merge queue entry
         id: verify-queue-entry
         # The verifier posts a terminal failure status for stale or
-        # unverified entries; the retry step runs only for current entries.
+        # unverified entries; run it only after classification has authorized
+        # a merge-group retry so ordinary failures avoid the extra API calls.
         if: >-
           ${{
             steps.classify.outputs.will-retry == 'true'
@@ -162,6 +183,9 @@ jobs:
       # -- Retry retryable failures when a retry budget is available --
       # The classify step decides whether this is an automatic retry or a
       # retry-ci-funded retry, then outputs whether retry-ci should be consumed.
+      # Release pushes can use only the automatic attempt 1 -> 2 retry.
+      # A stale or unverified merge-queue entry is terminal: rerunning its
+      # detached synthetic SHA could interfere with a newer queue run.
       #
       # Order matters: rerun BEFORE removing the label. If the rerun API
       # call fails, the label stays on the PR — signaling that the retry
@@ -195,11 +219,44 @@ jobs:
             echo "PR #$PR head still matches failed run $HEAD_SHA"
           fi
 
+          # Release branches use branch-scoped concurrency with cancellation
+          # enabled. Only rerun while this failed SHA remains the branch head,
+          # and this is still the current failed attempt, otherwise the retry
+          # could cancel CI for a newer release commit or attempt.
+          if [[ "$WORKFLOW_EVENT" == 'push' && "$HEAD_BRANCH" == release/* ]]; then
+            if ! RUN_STATE=$(gh api "repos/$REPO/actions/runs/$MAIN_RUN_ID" --jq '[.status, .conclusion, .run_attempt, .head_sha] | @tsv' 2>/dev/null); then
+              echo "::warning::Could not verify release run $MAIN_RUN_ID — skipping retry"
+              exit 0
+            fi
+
+            IFS=$'\t' read -r CURRENT_STATUS CURRENT_CONCLUSION CURRENT_ATTEMPT CURRENT_SHA <<< "$RUN_STATE"
+            if [[ "$CURRENT_STATUS" != 'completed' || "$CURRENT_CONCLUSION" != 'failure' || "$CURRENT_ATTEMPT" != "$RUN_ATTEMPT" || "$CURRENT_SHA" != "$HEAD_SHA" ]]; then
+              echo "Release run $MAIN_RUN_ID changed since classification (status=$CURRENT_STATUS conclusion=$CURRENT_CONCLUSION attempt=$CURRENT_ATTEMPT sha=$CURRENT_SHA) — skipping stale retry"
+              exit 0
+            fi
+
+            if ! CURRENT_HEAD=$(gh api "repos/$REPO/git/ref/heads/$HEAD_BRANCH" --jq '.object.sha' 2>/dev/null); then
+              echo "::warning::Could not verify release branch $HEAD_BRANCH head — skipping retry"
+              exit 0
+            fi
+
+            if [[ "$CURRENT_HEAD" != "$HEAD_SHA" ]]; then
+              echo "Release branch $HEAD_BRANCH advanced from $HEAD_SHA to $CURRENT_HEAD — skipping stale retry"
+              exit 0
+            fi
+
+            echo "Release branch $HEAD_BRANCH head still matches failed run $HEAD_SHA"
+          fi
+
           echo "Rerunning failed jobs..."
           gh run rerun "$MAIN_RUN_ID" --failed --repo "$REPO"
           echo "Rerun triggered."
 
           if [[ "$CONSUME_RETRY_LABEL" == "true" ]]; then
+            if [[ -z "$PR" ]]; then
+              echo "::error::Cannot consume retry-ci without an originating PR"
+              exit 1
+            fi
             echo "Removing retry-ci label from PR #$PR..."
             gh pr edit "$PR" --repo "$REPO" --remove-label "retry-ci" \
               || echo "::warning::Failed to remove retry-ci label from PR #$PR — label stays"

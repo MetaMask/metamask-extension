@@ -137,8 +137,8 @@ class AccountListPage {
   private readonly hiddenAccountOptionsMenuButton =
     '.multichain-account-menu-popover__list--menu-item-hidden-account [data-testid="account-list-item-menu-button"]';
 
-  private readonly hiddenAccountsList =
-    '[data-testid="multichain-account-tree-hidden-header"]';
+  private readonly hiddenAccountRevealButton =
+    '[data-testid="multichain-account-cell-edit-mode-hidden-icon"]';
 
   private readonly hideAccountButton =
     '[data-testid="multichain-account-menu-item-hideAccount"]';
@@ -174,6 +174,9 @@ class AccountListPage {
 
   private readonly importWalletFromMultichainWalletModalButton =
     '[data-testid="choose-wallet-type-import-wallet"]';
+
+  private readonly manageAccountsButton =
+    '[data-testid="account-list-page-manage-button"]';
 
   private readonly multichainAccountListItem = '.multichain-account-cell';
 
@@ -254,9 +257,6 @@ class AccountListPage {
     text: 'Nevermind',
     tag: 'button',
   };
-
-  private readonly unhideAccountButton =
-    '[data-testid="multichain-account-menu-item-showAccount"]';
 
   private readonly unpinAccountButton =
     '[data-testid="multichain-account-menu-item-unpin"]';
@@ -351,6 +351,8 @@ class AccountListPage {
   /**
    * Import a new account with a private key.
    *
+   * On success, the wallet navigates home with the imported account selected.
+   *
    * @param privateKey - Private key of the account
    * @param expectedErrorMessage - Expected error message if the import should fail
    */
@@ -373,12 +375,11 @@ class AccountListPage {
     } else {
       // Import + forceUpdateMetamaskState can outlive the default 3s staleness
       // wait under multi-SRP / Solana load on CI before the Add Wallet page
-      // navigates away.
+      // navigates home.
       await this.driver.clickElementAndWaitToDisappear(
         this.importAccountConfirmButton,
         10000,
       );
-      await this.closeChooseWalletTypePage();
     }
   }
 
@@ -573,11 +574,6 @@ class AccountListPage {
       css: this.currentSelectedAccount,
       text: 'Imported',
     });
-  }
-
-  async checkHiddenAccountsListExists(): Promise<void> {
-    console.log(`Check that hidden accounts list is displayed in account list`);
-    await this.driver.waitForSelector(this.hiddenAccountsList);
   }
 
   /**
@@ -924,6 +920,25 @@ class AccountListPage {
     );
   }
 
+  /**
+   * Enter the manage accounts mode of the account list, where hidden accounts
+   * are listed under their wallet and can be revealed again.
+   */
+  async enterManageAccountsMode(): Promise<void> {
+    console.log(`Enter manage accounts mode in account list`);
+    await this.driver.clickElement(this.manageAccountsButton);
+  }
+
+  /**
+   * Leave the manage accounts mode of the account list. The manage button is
+   * hidden while managing, so the back button is what closes the mode.
+   */
+  async exitManageAccountsMode(): Promise<void> {
+    console.log(`Exit manage accounts mode in account list`);
+    await this.driver.clickElement(this.closeMultichainAccountsPageButton);
+    await this.driver.waitForSelector(this.manageAccountsButton);
+  }
+
   async hideAccount(): Promise<void> {
     console.log(`Hide account in account list`);
     await this.openAccountOptionsMenu();
@@ -932,6 +947,8 @@ class AccountListPage {
 
   /**
    * Import an account with a JSON file.
+   *
+   * On success, the wallet navigates home with the imported account selected.
    *
    * @param jsonFilePath - Path to the JSON file to import
    * @param password - Password for the imported account
@@ -959,7 +976,6 @@ class AccountListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.importAccountConfirmButton,
     );
-    await this.closeChooseWalletTypePage();
   }
 
   /**
@@ -1008,11 +1024,6 @@ class AccountListPage {
   async openHiddenAccountOptions(): Promise<void> {
     console.log(`Open hidden accounts options menu`);
     await this.driver.clickElement(this.hiddenAccountOptionsMenuButton);
-  }
-
-  async openHiddenAccountsList(): Promise<void> {
-    console.log(`Open hidden accounts option menu`);
-    await this.driver.clickElement(this.hiddenAccountsList);
   }
 
   /**
@@ -1072,6 +1083,15 @@ class AccountListPage {
     }
   }
 
+  /**
+   * Reveal the first hidden account. The account list must be in manage
+   * accounts mode.
+   */
+  async revealHiddenAccount(): Promise<void> {
+    console.log(`Reveal hidden account in account list`);
+    await this.driver.clickElement(this.hiddenAccountRevealButton);
+  }
+
   async selectAccount(accountLabel: string): Promise<void> {
     console.log(`Select account with label ${accountLabel} in account list`);
     await this.driver.clickElement({
@@ -1117,12 +1137,6 @@ class AccountListPage {
     console.log(`Type "${text}" into the import SRP input`);
     const srpInput = await this.driver.findVisibleElement(this.importSrpInput);
     await srpInput.sendKeys(text);
-  }
-
-  async unhideAccount(): Promise<void> {
-    console.log(`Unhide account in account list`);
-    await this.openAccountOptionsMenu();
-    await this.driver.clickElement(this.unhideAccountButton);
   }
 
   async unpinAccount(): Promise<void> {

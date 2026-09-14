@@ -22,24 +22,28 @@ export type ProviderTag = {
  * `Info` aliases the `primary-muted` / `primary-default` design tokens.
  *
  * @param providerId - Provider id.
- * @param matchedQuote - Quote matched to this provider, when available.
+ * @param quotes - Quotes response containing provider quotes.
  * @param ordersProviders - Provider ids from completed orders.
  * @param t - i18n translate function.
  * @returns Localized tag with its severity, or null.
  */
 export function getProviderTag(
   providerId: string,
-  matchedQuote: Quote | null,
+  quotes: QuotesResponse | null,
   ordersProviders: string[],
   t: TranslateFn,
 ): ProviderTag | null {
   if (ordersProviders.includes(providerId)) {
     return { label: t('rampsPreviouslyUsed'), severity: TagSeverity.Info };
   }
-  if (matchedQuote?.metadata?.tags?.isMostReliable) {
+  const providerQuotes = quotes?.success?.filter(
+    (quote) => quote.provider === providerId,
+  );
+
+  if (providerQuotes?.some((quote) => quote.metadata?.tags?.isMostReliable)) {
     return { label: t('rampsMostReliable'), severity: TagSeverity.Neutral };
   }
-  if (matchedQuote?.metadata?.tags?.isBestRate) {
+  if (providerQuotes?.some((quote) => quote.metadata?.tags?.isBestRate)) {
     return { label: t('rampsBestRate'), severity: TagSeverity.Success };
   }
   return null;

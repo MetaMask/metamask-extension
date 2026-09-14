@@ -4,11 +4,13 @@ import { NameType } from '@metamask/name-controller';
 
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../../context/confirm';
+import { PAY_TRANSACTION_TYPES } from '../../../constants/pay';
 import { getInternalAccounts } from '../../../../../selectors';
 import { useTransferRecipient } from '../../../components/confirm/info/hooks/useTransferRecipient';
 import {
@@ -44,12 +46,20 @@ export function useFirstTimeInteractionAlert(): Alert[] {
   const isTrustSignalLoading =
     trustSignalDisplayState === TrustSignalDisplayState.Loading;
 
+  // First-time interaction is not meaningful for wallet-initiated MM Pay
+  // flows (money account, perps, mUSD, etc.).
+  const isPayTransaction = hasTransactionType(
+    currentConfirmation,
+    PAY_TRANSACTION_TYPES,
+  );
+
   const showAlert =
     !isInternalAccount &&
     isFirstTimeInteraction &&
     !isVerifiedAddress &&
     !isFirstPartyContract &&
-    !isTrustSignalLoading;
+    !isTrustSignalLoading &&
+    !isPayTransaction;
 
   return useMemo(() => {
     // If isFirstTimeInteraction is undefined that means it's either disabled or error in accounts API

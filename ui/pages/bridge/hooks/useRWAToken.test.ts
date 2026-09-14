@@ -69,7 +69,7 @@ describe('isTokenTradingOpenAt', () => {
 
     it('returns false when market object is undefined', () => {
       expect(
-        isTokenTradingOpenAt(buildToken({ market: undefined as never }), NOON),
+        isTokenTradingOpenAt(buildToken({ market: undefined }), NOON),
       ).toBe(false);
     });
 
@@ -78,7 +78,7 @@ describe('isTokenTradingOpenAt', () => {
         isTokenTradingOpenAt(
           buildToken({
             market: {
-              nextOpen: null as never,
+              nextOpen: undefined,
               nextClose: '2026-03-02T17:00:00.000Z',
             },
           }),
@@ -93,7 +93,7 @@ describe('isTokenTradingOpenAt', () => {
           buildToken({
             market: {
               nextOpen: '2026-03-02T09:00:00.000Z',
-              nextClose: null as never,
+              nextClose: undefined,
             },
           }),
           NOON,

@@ -329,10 +329,12 @@ This mirrors the post-bucketing shape returned by
 Every new remote A/B test flag should be registered in
 `test/e2e/feature-flags/feature-flag-registry.ts` with its production default.
 
-For A/B tests, store the exact remote JSON value in the registry, including the
-threshold array, so the E2E mock remains production-accurate.
+Registry sync and the E2E `/v1/flags` mock force a deterministic default:
+named `control` if present, otherwise the widest threshold bucket. The
+selected arm is stored as `scope.value = 1` and every other arm as `0`.
+Tests that need a non-default variant must override it.
 
-Use test-specific overrides when you need deterministic assignments in a single
+Use test-specific overrides when you need a specific assignment in a single
 test:
 
 - `manifestFlags: { remoteFeatureFlags: { flagName: { name, value } } }`

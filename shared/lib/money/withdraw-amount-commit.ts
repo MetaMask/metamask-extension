@@ -1,11 +1,12 @@
 import type { Hex } from '@metamask/utils';
 
 /**
- * Result of committing a Money Account withdrawal amount. Crosses the
- * background→UI bridge, so it carries the recipient the commit actually
- * encoded: the UI's Confirm gate compares it against the recipient currently
- * displayed, which can change between commits.
+ * Encoded nested withdraw + transfer calldata returned by a Money Account
+ * amount commit. Shared across the background encoder and the UI confirm
+ * bridge so the contract cannot drift.
  */
-export type WithdrawAmountCommitResult =
-  | { didCommit: true; recipient: Hex }
-  | { didCommit: false };
+export type MoneyAccountWithdrawAmountUpdate = {
+  transactionData?: Hex;
+  transferData: Hex;
+  withdrawData: Hex;
+};

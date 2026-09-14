@@ -1,9 +1,8 @@
 # QR Sync Sentry Reporting
 
 QR Sync reports unexpected failures to Sentry through `messenger.captureException`.
-Both `QrSyncController` and `QrSyncDataService` use `createSentryError(message, cause)`
-so the Sentry event message is stable while the original thrown value is preserved on
-`error.cause`.
+`QrSyncController` uses `createSentryError(message, cause)` so the Sentry event
+message is stable while the original thrown value is preserved on `error.cause`.
 
 ## Error handling vs Sentry
 
@@ -45,15 +44,16 @@ returns `true`. Expected user, peer, or transport outcomes are suppressed.
 
 ### Reported scenarios
 
-| Scenario                    | Trigger                                                             | Sentry message                            | UI `qrSyncError`                                     | Example cause                                            |
-| --------------------------- | ------------------------------------------------------------------- | ----------------------------------------- | ---------------------------------------------------- | -------------------------------------------------------- |
-| Relay connect failure       | `createSession` → `#setError({ error })`                            | `QR sync session failed (UNKNOWN)`        | `{ code: UNKNOWN, message: 'Unknown error' }`        | `Error('Relay unavailable')`                             |
-| Unmapped MWP client error   | MWP client `error` event → `#setError({ error })`                   | `QR sync session failed (UNKNOWN)`        | `{ code: UNKNOWN, message: <SessionError message> }` | `SessionError(UNKNOWN, 'Something went wrong.')`         |
-| Mobile sync failure         | Mobile sends `sync-error` → `#setError({ error, qrSyncError })`     | `QR sync session failed (SYNC_FAILED)`    | `{ code: SYNC_FAILED, message: <peer message> }`     | `Error('Mobile could not complete the sync')`            |
-| Sync offer handling failure | `#failAwaitingSyncOffer` → `#setError({ error, qrSyncError })`      | `QR sync session failed (SYNC_FAILED)`    | `{ code: SYNC_FAILED, message: ... }`                | `Error('Sync offer failed')`                             |
-| Sync completion failure     | `#failAwaitingSyncCompletion` → `#setError({ error, qrSyncError })` | `QR sync session failed (SYNC_FAILED)`    | `{ code: SYNC_FAILED, message: ... }`                | `Error('Sync completion failed')`                        |
-| Message send failure        | `sendRequest` rejects in `#sendMessage`                             | `QR sync failed to send message (<type>)` | _(error propagates; phase unchanged)_                | `Error('Relay write failed')` while sending `sync-ready` |
-| Cleanup failure             | Session teardown throws in `#performCleanupSession`                 | `QR sync session cleanup failed`          | _(cleanup continues)_                                | `Error('Failed to unregister handlers')`                 |
+| Scenario                    | Trigger                                                             | Sentry message                              | UI `qrSyncError`                                     | Example cause                                            |
+| --------------------------- | ------------------------------------------------------------------- | ------------------------------------------- | ---------------------------------------------------- | -------------------------------------------------------- |
+| Relay connect failure       | `createSession` → `#setError({ error })`                            | `QR sync session failed (UNKNOWN)`          | `{ code: UNKNOWN, message: 'Unknown error' }`        | `Error('Relay unavailable')`                             |
+| Unmapped MWP client error   | MWP client `error` event → `#setError({ error })`                   | `QR sync session failed (UNKNOWN)`          | `{ code: UNKNOWN, message: <SessionError message> }` | `SessionError(UNKNOWN, 'Something went wrong.')`         |
+| Mobile sync failure         | Mobile sends `sync-error` → `#setError({ error, qrSyncError })`     | `QR sync session failed (SYNC_FAILED)`      | `{ code: SYNC_FAILED, message: <peer message> }`     | `Error('Mobile could not complete the sync')`            |
+| Sync offer handling failure | `#failAwaitingSyncOffer` → `#setError({ error, qrSyncError })`      | `QR sync session failed (SYNC_FAILED)`      | `{ code: SYNC_FAILED, message: ... }`                | `Error('Sync offer failed')`                             |
+| Sync completion failure     | `#failAwaitingSyncCompletion` → `#setError({ error, qrSyncError })` | `QR sync session failed (SYNC_FAILED)`      | `{ code: SYNC_FAILED, message: ... }`                | `Error('Sync completion failed')`                        |
+| Message send failure        | `sendRequest` rejects in `#sendMessage`                             | `QR sync failed to send message (<type>)`   | _(error propagates; phase unchanged)_                | `Error('Relay write failed')` while sending `sync-ready` |
+| Cleanup failure             | Session teardown throws in `#performCleanupSession`                 | `QR sync session cleanup failed`            | _(cleanup continues)_                                | `Error('Failed to unregister handlers')`                 |
+| Account tree export failure | `syncAccounts()` → `AccountTreeController:exportState` throws       | `Failed to export account tree for QR sync` | _(error propagates to caller; phase unchanged)_      | `Error('Invalid password')`                              |
 
 ### Suppressed scenarios
 
@@ -109,45 +109,34 @@ await mwpDappClient.sendRequest({ ... });
 // UI:     error propagates to caller; session phase is not moved to failed by #sendMessage alone
 ```
 
-## QrSyncDataService
+## Account tree export failures
 
-`buildWalletExportEntries` reports any failure while assembling the wallet export
-payload, then rethrows the original error.
-
-### Reported scenarios
-
-| Scenario                | Trigger                                         | Sentry message                                  | Example cause                                                         |
-| ----------------------- | ----------------------------------------------- | ----------------------------------------------- | --------------------------------------------------------------------- |
-| Export assembly failure | Any throw inside `buildWalletExportEntries`     | `Failed to build QR sync wallet export entries` | `Error('Invalid password')` from `KeyringController:exportSeedPhrase` |
-| Missing account group   | Selected group id is not in account tree state  | `Failed to build QR sync wallet export entries` | `Error('Account group "wallet/0" not found.')`                        |
-| Unsupported wallet type | Group references a wallet that cannot be synced | `Failed to build QR sync wallet export entries` | `Error('Account group "wallet/0" cannot be synced.')`                 |
-
-Validation errors such as an empty selection (`At least one account group must be
-selected.`) are also reported because they indicate a controller/UI contract bug
-rather than an explicit user action.
-
-### Examples
-
-**Reported — seed phrase export failure**
+`syncAccounts()` wraps the `AccountTreeController:exportState` call (plus the
+subsequent `filterAllGroups`/`serialize`) in its own try/catch and reports
+unconditionally before rethrowing, mirroring how the removed `QrSyncDataService`
+used to report `buildWalletExportEntries` failures:
 
 ```ts
-await messenger.call(
-  'KeyringController:exportSeedPhrase',
-  { password },
-  entropyId,
-);
-// throws Error('Invalid password')
-// Sentry: "Failed to build QR sync wallet export entries" with cause Error('Invalid password')
-// Error is rethrown to QrSyncController/UI
+try {
+  let snapshot = await this.messenger.call(
+    'AccountTreeController:exportState',
+    {
+      includeSecrets: true,
+      password,
+    },
+  );
+  // ...filter and serialize...
+} catch (error) {
+  this.#reportToSentry('Failed to export account tree for QR sync', error);
+  throw error;
+}
 ```
 
-**Reported — unsupported account group**
-
-```ts
-// Wallet type cannot be represented in the sync-ready payload
-throw new Error('Account group "imported-wallet/0" cannot be synced.');
-// Sentry: "Failed to build QR sync wallet export entries" with cause <thrown error>
-```
+Every failure here — wrong password, unsupported wallet type, or any other
+`exportState` rejection — is reported with the same static message and
+rethrown to the caller. There's no code-based suppression for this path (unlike
+`#setError`'s `shouldReportQrSyncErrorToSentry` filtering), matching the old
+service's unconditional behavior.
 
 ## Adding new reports
 

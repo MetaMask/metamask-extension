@@ -59,6 +59,7 @@ export const AnalyticsControllerInit: MessengerClientInitFunction<
     isEventQueuePersistenceEnabled: true,
     isPreConsentQueueEnabled: true,
     isGeolocationEnabled: true,
+    isEventFragmentsEnabled: true,
   });
   controller.init();
 

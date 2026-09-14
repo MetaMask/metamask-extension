@@ -76,5 +76,15 @@ describe('NotificationsSettingsContent', () => {
     expect(
       screen.getByText(messages.notificationsSettingsAgenticCliTitle.message),
     ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('notifications-settings-section-walletActivity'),
+    ).not.toHaveTextContent(
+      `${messages.notificationsSettingsStatusPush.message}, ${messages.notificationsSettingsStatusInApp.message}`,
+    );
+    expect(
+      screen.getByTestId('notifications-settings-section-marketing'),
+    ).toHaveTextContent(
+      `${messages.notificationsSettingsStatusPush.message}, ${messages.notificationsSettingsStatusInApp.message}`,
+    );
   });
 });

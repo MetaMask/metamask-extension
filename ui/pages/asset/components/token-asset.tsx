@@ -33,7 +33,9 @@ const TokenAsset = ({
   chainId: Hex;
 }) => {
   const { address: hexOrCaipAddress, assetId, symbol, isERC721, image } = token;
-  const address = assetId || hexOrCaipAddress;
+
+  // TODO: refactor AssetPage to be CAIP compliant by default.
+  const address = hexOrCaipAddress || assetId;
 
   const tokenList = useSelector(getTokenList);
   const allNetworks: {
@@ -62,12 +64,12 @@ const TokenAsset = ({
   const tokenData = Object.values(tokenList).find(
     (t) =>
       isEqualCaseInsensitive(t.symbol, symbol) &&
-      isEqualCaseInsensitive(t.address, address),
+      isEqualCaseInsensitive(t.address, address ?? ''),
   );
 
   // If not found in tokenList, try erc20TokensByChain
   const tokenDataFromChain =
-    erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()];
+    address && erc20TokensByChain?.[chainId]?.data?.[address.toLowerCase()];
 
   const name = tokenData?.name || tokenDataFromChain?.name || symbol;
   const iconUrl =
@@ -91,7 +93,7 @@ const TokenAsset = ({
       asset={{
         chainId,
         type: AssetType.token,
-        address,
+        address: address ?? '',
         symbol,
         name,
         decimals: token.decimals,

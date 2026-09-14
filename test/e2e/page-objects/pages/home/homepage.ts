@@ -38,6 +38,9 @@ const NON_EVM_ICON_TIMEOUT = 20_000;
  * @see ui/pages/home/home.tsx
  */
 class HomePage {
+  private readonly accountImportedToast =
+    '[data-testid="account-imported-toast"]';
+
   protected readonly activityTab = {
     testId: 'account-overview__activity-tab',
   };
@@ -59,9 +62,6 @@ class HomePage {
     '[data-testid$="overview__primary-currency"]';
 
   private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
-
-  private readonly bottomNavActivityButton =
-    '[data-testid="bottom-nav-activity"]';
 
   private readonly bottomNavHomeButton = '[data-testid="bottom-nav-home"]';
 
@@ -160,6 +160,13 @@ class HomePage {
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
+  }
+
+  async checkAccountImportedToastIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.accountImportedToast,
+      text: 'Account imported',
+    });
   }
 
   /**
@@ -532,6 +539,10 @@ class HomePage {
     );
   }
 
+  async dismissAccountImportedToast(): Promise<void> {
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
+  }
+
   async dismissSrpAddedToast(): Promise<void> {
     console.log('Dismiss SRP added toast');
     // The toast can take some time to appear
@@ -548,19 +559,7 @@ class HomePage {
 
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
-    const isBottomNav = await this.driver.isElementPresentAndVisible(
-      this.bottomNavActivityButton,
-      3000,
-    );
-    if (isBottomNav) {
-      await this.driver.clickElement(this.bottomNavActivityButton);
-      await this.driver.waitForUrl({
-        url: `${this.driver.extensionUrl}/home.html#${ACTIVITY_ROUTE}`,
-      });
-    } else {
-      await this.checkPageIsLoaded();
-      await this.driver.clickElement(this.activityTab);
-    }
+    await this.driver.clickElement(this.activityTab);
   }
 
   async goToBackupSRPPage(): Promise<void> {

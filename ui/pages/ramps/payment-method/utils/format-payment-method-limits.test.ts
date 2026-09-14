@@ -6,13 +6,10 @@ import {
 
 const t = (key: string, substitutions?: string[]) => {
   if (key === 'rampsPaymentMethodLimits') {
-    return `${substitutions?.[0]} – ${substitutions?.[1]}`;
+    return `Up to ${substitutions?.[0]}`;
   }
   if (key === 'rampsPaymentMethodMinLimit') {
     return `Min ${substitutions?.[0]}`;
-  }
-  if (key === 'rampsPaymentMethodMaxLimit') {
-    return `Max ${substitutions?.[0]}`;
   }
   return key;
 };
@@ -59,6 +56,11 @@ describe('formatPaymentMethodLimits', () => {
       ),
       minOnly: formatPaymentMethodLimits(
         { minAmount: 25, maxAmount: Number.NaN },
+        formatFiat,
+        t,
+      ),
+      maxOnly: formatPaymentMethodLimits(
+        { minAmount: Number.NaN, maxAmount: 2000 },
         formatFiat,
         t,
       ),

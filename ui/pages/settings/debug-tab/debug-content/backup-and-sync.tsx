@@ -16,12 +16,20 @@ import {
   AlignItems,
 } from '../../../../helpers/constants/design-system';
 import { useDeleteAccountSyncingDataFromUserStorage } from '../../../../hooks/identity/useAccountSyncing';
+import {
+  devApiEnv,
+  loadAuthenticationConfig,
+} from '../../../../../shared/lib/authentication';
+import { performSignOut } from '../../../../store/actions';
+import { useDispatch } from '../../../../store/hooks';
 
 type DeleteSyncedDataProps = {
   onDelete: () => Promise<void>;
   deleteSuccessful: boolean;
   title: string;
   description: string;
+  buttonLabel?: string;
+  testId?: string;
 };
 
 const DeleteSyncedData = ({
@@ -29,6 +37,8 @@ const DeleteSyncedData = ({
   deleteSuccessful,
   title,
   description,
+  buttonLabel = 'Reset',
+  testId,
 }: DeleteSyncedDataProps) => {
   return (
     <div className="settings-page__content-padded">
@@ -47,8 +57,12 @@ const DeleteSyncedData = ({
         </div>
 
         <div className="settings-page__content-item-col">
-          <Button variant={ButtonVariant.Primary} onClick={onDelete}>
-            Reset
+          <Button
+            variant={ButtonVariant.Primary}
+            onClick={onDelete}
+            data-testid={testId}
+          >
+            {buttonLabel}
           </Button>
         </div>
         <div className="settings-page__content-item-col">
@@ -90,6 +104,27 @@ export const useDeleteAccountSyncDataProps = () => {
   };
 };
 
+export const useClearAuthSessionProps = () => {
+  const dispatch = useDispatch();
+  const [deleteSuccessful, setDeleteSuccessful] = useState(false);
+  const identityEnv = loadAuthenticationConfig();
+  const apiEnv = devApiEnv();
+
+  const onDelete = useCallback(async () => {
+    await dispatch(performSignOut());
+    setDeleteSuccessful(true);
+  }, [dispatch]);
+
+  return {
+    deleteSuccessful,
+    onDelete,
+    title: 'Identity auth session',
+    description: `Current identity env is ${identityEnv} (MM_DEV_API_ENV=${apiEnv}). Clear the persisted Profile Sync session after flipping MM_DEV_API_ENV, then unlock so a matching token can be minted.`,
+    buttonLabel: 'Clear auth session',
+    testId: 'identity-dev-clear-auth-session-button',
+  };
+};
+
 export const BackupAndSyncDevSettings = () => {
   return (
     <>
@@ -97,6 +132,7 @@ export const BackupAndSyncDevSettings = () => {
         Backup and sync
       </Text>
       <DeleteSyncedData {...useDeleteAccountSyncDataProps()} />
+      <DeleteSyncedData {...useClearAuthSessionProps()} />
     </>
   );
 };

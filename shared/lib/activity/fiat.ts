@@ -1,6 +1,7 @@
 import { isCaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import type { CaipAssetType, Hex } from '@metamask/utils';
 import { NATIVE_TOKEN_ADDRESS } from '../../constants/transaction';
+import { isNativeCaipAssetId } from '../asset-utils';
 import { formatUnits } from '../unit';
 import type { Token } from '../multichain/types';
 import type { TokenAmount } from './types';
@@ -104,7 +105,7 @@ export function getTokenAddressForMarketRates(
       return assetReference.toLowerCase();
     }
 
-    if (assetNamespace === 'slip44' || assetNamespace === 'native') {
+    if (isNativeCaipAssetId(assetId) || assetNamespace === 'native') {
       return NATIVE_TOKEN_ADDRESS;
     }
   } catch {

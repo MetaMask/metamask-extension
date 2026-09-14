@@ -30,7 +30,6 @@ export enum IconSize {
  */
 
 export enum IconName {
-  Accessibility = 'accessibility',
   AddSquare = 'add-square',
   Add = 'add',
   Arrow2Down = 'arrow-2-down',
@@ -102,7 +101,6 @@ export enum IconName {
   SecuritySearch = 'security-search',
   SecurityTick = 'security-tick',
   Security = 'security',
-  Send = 'send',
   Setting = 'setting',
   Snaps = 'snaps',
   Speedometer = 'speedometer',

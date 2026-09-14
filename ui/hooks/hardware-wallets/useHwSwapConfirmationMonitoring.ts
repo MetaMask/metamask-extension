@@ -48,7 +48,11 @@ export function useHwSwapConfirmationMonitoring({
   );
 
   const previousTxIdRef = useRef<string | undefined>();
-  const lastSeenGenerationRef = useRef(retryGenerationCounterRef?.current ?? 0);
+  const lastSeenGenerationRef = useRef(0);
+
+  useEffect(() => {
+    lastSeenGenerationRef.current = retryGenerationCounterRef?.current ?? 0;
+  }, [retryGenerationCounterRef]);
 
   useEffect(() => {
     if (

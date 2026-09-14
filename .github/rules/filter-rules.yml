@@ -45,7 +45,6 @@ config_files: &config_files
   - 'crowdin.yml'
   - 'eslint.config.js'
   - 'oxfmt.config.mts'
-  - 'privacy-snapshot.json'
   - 'sonar-project.properties'
   - 'stylelint.config.js'
   - 'tailwind.config.js'
@@ -97,8 +96,9 @@ storybook_files:
   - '**/*.snap'
   - '.storybook/**'
 
-# E2E test files — changes require running E2E even when builds are reused
+# E2E test files and runtime inputs — changes require running E2E even when builds are reused
 e2e_test_files:
+  - 'privacy-snapshot.json'
   - 'test/e2e/**'
 
 # Build-affecting CI files — these live under .github/ (which is in ci_files

@@ -21,7 +21,7 @@ import {
   isEnforcedSimulationsEligible,
 } from '../../../../../shared/lib/transaction/enforced-simulations';
 import { TransactionMetricsRequest } from '../../../../../shared/types/metametrics';
-import { accountSupports7702 } from '../../account-supports-7702';
+import { accountSupports7702ForRelay } from '../../account-supports-7702';
 import {
   getSmartTransactionCommonParams,
   SmartTransactionHookMessenger,
@@ -152,7 +152,7 @@ function publishHook({
 
     const { isExternalSign } = transactionMeta;
 
-    const keyringSupports7702 = await accountSupports7702(
+    const keyringSupports7702 = await accountSupports7702ForRelay(
       transactionMeta.txParams?.from,
       getKeyringController(messenger),
     );

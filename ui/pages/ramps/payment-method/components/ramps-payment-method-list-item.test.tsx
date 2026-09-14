@@ -62,7 +62,7 @@ describe('RampsPaymentMethodListItem', () => {
       <RampsPaymentMethodListItem
         paymentMethod={debitCard}
         isSelected
-        limitText="$25.00 – $2,000.00"
+        limitText="Up to $2,000"
         onClick={jest.fn()}
       />,
       createStore(),

@@ -32,6 +32,10 @@ describe('InfoPopover', () => {
     expect(getByTestId('test-tooltip')).toBeInTheDocument();
     expect(getByTestId('test-tooltip')).toHaveTextContent('Tooltip content');
     expect(getByTestId('test-tooltip')).toHaveStyle({ maxWidth: '250px' });
+    expect(getByTestId('test-tooltip')).toHaveClass(
+      'mm-box--background-color-background-elevated2',
+    );
+    expect(getByTestId('test-tooltip').style.backgroundColor).toBe('');
   });
 
   it('closes the popover when clicking outside', async () => {

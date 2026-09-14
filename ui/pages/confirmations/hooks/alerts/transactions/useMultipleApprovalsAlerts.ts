@@ -10,6 +10,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import { parseApprovalTransactionData } from '../../../../../../shared/lib/transaction.utils';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -17,6 +18,7 @@ import { useAsyncResult } from '../../../../../hooks/useAsync';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getTokenStandardAndDetailsByChain } from '../../../../../store/actions';
 import { useBatchApproveBalanceChanges } from '../../../components/confirm/info/hooks/useBatchApproveBalanceChanges';
+import { PAY_TRANSACTION_TYPES } from '../../../constants/pay';
 import { useConfirmContext } from '../../../context/confirm';
 import {
   getUseTransactionSimulations,
@@ -298,11 +300,20 @@ export function useMultipleApprovalsAlerts(): Alert[] {
     return findUnusedApprovals(approvals, tokenOutflows);
   }, [approvals, tokenOutflows]);
 
+  // MetaMask Pay flows (money account deposits/withdrawals, perps, mUSD)
+  // batch their own approvals internally; mirrors mobile's
+  // `useBatchedUnusedApprovalsAlert` MM_PAY_TRANSACTION_TYPES skip.
+  const isPayTransaction = hasTransactionType(
+    currentConfirmation,
+    PAY_TRANSACTION_TYPES,
+  );
+
   const shouldShowAlert =
     unusedApprovals.length > 0 &&
     Boolean(currentConfirmation?.simulationData) &&
     isSimulationSupported &&
-    !skipAlertOriginAllowed;
+    !skipAlertOriginAllowed &&
+    !isPayTransaction;
 
   return useMemo(() => {
     if (!shouldShowAlert) {

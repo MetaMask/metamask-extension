@@ -25,6 +25,7 @@ import { formatMoneyActivityDateHeader } from './utils/group-money-activity';
 
 const mockUseMoneyAccountAvailability = jest.fn();
 const mockUseMoneyActivityItems = jest.fn();
+const mockUseMoneyActivityItemClick = jest.fn();
 const mockNavigate = jest.fn();
 const mockGetPrivacyMode = jest.mocked(getPrivacyMode);
 
@@ -51,6 +52,10 @@ jest.mock('../../hooks/money/use-money-account-availability', () => ({
 
 jest.mock('../../hooks/money/use-money-activity-items', () => ({
   useMoneyActivityItems: () => mockUseMoneyActivityItems(),
+}));
+
+jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
+  useMoneyActivityItemClick: () => mockUseMoneyActivityItemClick(),
 }));
 
 const mockItems = MOCK_MONEY_TRANSACTIONS.map(onchainItem);
@@ -86,7 +91,14 @@ describe('MoneyActivityPage', () => {
     mockUseMoneyActivityItems.mockReturnValue({
       items: mockItems,
       buckets: mockBuckets,
+      hasMore: false,
+      loadMore: jest.fn(),
+      isLoadingMore: false,
+      isSettling: false,
+      error: false,
+      refetch: jest.fn(),
     });
+    mockUseMoneyActivityItemClick.mockReturnValue(undefined);
   });
 
   it('redirects home when Money Account is unavailable', () => {
@@ -204,6 +216,12 @@ describe('MoneyActivityPage', () => {
     mockUseMoneyActivityItems.mockReturnValue({
       items: [],
       buckets: EMPTY_MONEY_ACTIVITY_BUCKETS,
+      hasMore: false,
+      loadMore: jest.fn(),
+      isLoadingMore: false,
+      isSettling: false,
+      error: false,
+      refetch: jest.fn(),
     });
 
     renderWithLocalization(<MoneyActivityPage />);
@@ -222,6 +240,12 @@ describe('MoneyActivityPage', () => {
     mockUseMoneyActivityItems.mockReturnValue({
       items,
       buckets: buildMoneyActivityBuckets(items),
+      hasMore: false,
+      loadMore: jest.fn(),
+      isLoadingMore: false,
+      isSettling: false,
+      error: false,
+      refetch: jest.fn(),
     });
 
     renderWithLocalization(<MoneyActivityPage />);
@@ -232,5 +256,70 @@ describe('MoneyActivityPage', () => {
     expect(
       screen.getByText(messages.moneyActivityDepositing.message),
     ).toBeInTheDocument();
+  });
+
+  it('invokes the item click handler when details navigation is enabled', () => {
+    const onItemClick = jest.fn();
+    mockUseMoneyActivityItemClick.mockReturnValue(onItemClick);
+
+    renderWithLocalization(<MoneyActivityPage />);
+
+    fireEvent.click(
+      screen.getByTestId(`money-activity-row-${mockItems[0].id}`),
+    );
+    expect(onItemClick).toHaveBeenCalledWith(mockItems[0]);
+  });
+
+  it('does not make rows clickable when details navigation is disabled', () => {
+    renderWithLocalization(<MoneyActivityPage />);
+
+    expect(
+      screen.getByTestId(`money-activity-row-${mockItems[0].id}`).tagName,
+    ).toBe('DIV');
+  });
+
+  it('shows a settling skeleton instead of empty copy', () => {
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [],
+      buckets: EMPTY_MONEY_ACTIVITY_BUCKETS,
+      hasMore: true,
+      loadMore: jest.fn(),
+      isLoadingMore: true,
+      isSettling: true,
+      error: false,
+      refetch: jest.fn(),
+    });
+
+    renderWithLocalization(<MoneyActivityPage />);
+
+    expect(screen.getByTestId('money-activity-settling')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-activity-scroll-sentinel'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('money-activity-empty'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows a load error and retry when the Accounts API fails with no rows', () => {
+    const refetch = jest.fn();
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [],
+      buckets: EMPTY_MONEY_ACTIVITY_BUCKETS,
+      hasMore: false,
+      loadMore: jest.fn(),
+      isLoadingMore: false,
+      isSettling: false,
+      error: true,
+      refetch,
+    });
+
+    renderWithLocalization(<MoneyActivityPage />);
+
+    expect(screen.getByTestId('money-activity-empty')).toHaveTextContent(
+      messages.moneyActivityLoadError.message,
+    );
+    fireEvent.click(screen.getByTestId('money-activity-retry'));
+    expect(refetch).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { SECOND } from '../../../../shared/constants/time';
+import { HYPERLIQUID_DEPOSIT_PROMPT } from '../../../../shared/constants/hyperliquid-deposit-prompt';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
   selectPerpsDepositPending,
+  selectPerpsLastDepositEntryPoint,
   selectPerpsLastDepositResult,
   selectPerpsShouldShowDepositToast,
 } from '../../../selectors/perps-controller';
@@ -13,20 +15,24 @@ import { toast, ToastContent } from '../../ui/toast/toast';
 const id = 'perps-deposit-toast';
 const duration = 5 * SECOND;
 
-const clearDepositResult = () =>
+const clearDepositResult = () => {
   submitRequestToBackground('perpsClearDepositResult', []).catch(
     () => undefined,
   );
+  submitRequestToBackground('setLastPerpsDepositEntryPoint', [null]).catch(
+    () => undefined,
+  );
+};
 
 export function PerpsDepositToast() {
   const t = useI18nContext();
   const depositInProgress = useSelector(selectPerpsDepositPending);
   const lastDepositResult = useSelector(selectPerpsLastDepositResult);
   const shouldShowDepositToast = useSelector(selectPerpsShouldShowDepositToast);
+  const entryPoint = useSelector(selectPerpsLastDepositEntryPoint);
   const hasDepositResult = Boolean(lastDepositResult);
   const lastDepositResultError = lastDepositResult?.error;
   const lastDepositResultSuccess = lastDepositResult?.success;
-  const lastDepositResultTimestamp = lastDepositResult?.timestamp;
 
   useEffect(() => {
     if (!hasDepositResult) {
@@ -34,12 +40,19 @@ export function PerpsDepositToast() {
     }
 
     const isSuccess = lastDepositResultSuccess === true;
-    const title = isSuccess
-      ? t('perpsDepositToastSuccessTitle')
-      : t('perpsDepositToastErrorTitle');
-    const description = isSuccess
-      ? t('perpsDepositToastSuccessDescription')
-      : lastDepositResultError || t('perpsDepositToastErrorDescription');
+    const isHyperliquidDeposit = entryPoint === HYPERLIQUID_DEPOSIT_PROMPT;
+    let title = t('perpsDepositToastSuccessTitle');
+    let description: string;
+
+    if (isSuccess && isHyperliquidDeposit) {
+      description = t('hyperliquidDepositToastSuccessDescription');
+    } else if (isSuccess) {
+      description = t('perpsDepositToastSuccessDescription');
+    } else {
+      title = t('perpsDepositToastErrorTitle');
+      description =
+        lastDepositResultError || t('perpsDepositToastErrorDescription');
+    }
     const content = (
       <ToastContent title={title} description={description} dataTestId={id} />
     );
@@ -60,10 +73,10 @@ export function PerpsDepositToast() {
       toast.dismiss(id);
     };
   }, [
+    entryPoint,
     hasDepositResult,
     lastDepositResultError,
     lastDepositResultSuccess,
-    lastDepositResultTimestamp,
     t,
   ]);
 

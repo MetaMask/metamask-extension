@@ -3867,6 +3867,36 @@ describe('Actions', () => {
     });
   });
 
+  describe('#hideMigrationModal', () => {
+    it('dismisses the Basic Functionality migration notification', async () => {
+      const store = mockStore();
+
+      background.dismissBasicFunctionalityMigrationNotification = sinon.stub();
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.hideMigrationModal());
+
+      expect(
+        background.dismissBasicFunctionalityMigrationNotification.callCount,
+      ).toStrictEqual(1);
+    });
+  });
+
+  describe('#hideMigrationToast', () => {
+    it('dismisses the Basic Functionality migration notification', async () => {
+      const store = mockStore();
+
+      background.dismissBasicFunctionalityMigrationNotification = sinon.stub();
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.hideMigrationToast());
+
+      expect(
+        background.dismissBasicFunctionalityMigrationNotification.callCount,
+      ).toStrictEqual(1);
+    });
+  });
+
   describe('#toggleBasicFunctionality', () => {
     it('calls toggleExternalServices and consolidated preference setters', async () => {
       const store = mockStore();

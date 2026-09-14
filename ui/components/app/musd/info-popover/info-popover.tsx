@@ -14,12 +14,12 @@ import {
 import { Popover, PopoverPosition } from '../../../component-library';
 
 /**
- * Default panel styles — matches confirmations InfoPopoverTooltip for visual parity.
+ * Default panel styles — matches confirmations InfoPopoverTooltip for visual
+ * parity. The Popover supplies its theme-aware elevated background.
  * Z-index above extension chrome (see ui/css/design-system/_z-index.scss).
  */
 const POPOVER_STYLE = {
   zIndex: 1050,
-  backgroundColor: 'var(--color-text-default)',
   paddingTop: '6px',
   paddingBottom: '6px',
   paddingLeft: '16px',

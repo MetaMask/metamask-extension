@@ -25,7 +25,7 @@ import {
 import { proxyTronBlockchainCalls } from '../mocks/local-tron-node-mocks';
 
 const TRON_PROVIDER_ANY_ACCOUNT_RE =
-  /^(https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+|https:\/\/api\.trongrid\.io|https:\/\/api\.shasta\.trongrid\.io|https:\/\/nile\.trongrid\.io)\/v1\/accounts\/([A-Za-z0-9]{20,})(\/transactions(\/trc20)?)?(\?.*)?$/u;
+  /^(https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+|https:\/\/api\.trongrid\.io|https:\/\/api\.shasta\.trongrid\.io|https:\/\/shasta\.api\.trongrid\.io|https:\/\/nile\.trongrid\.io|https:\/\/nile\.api\.trongrid\.io)\/v1\/accounts\/([A-Za-z0-9]{20,})(\/transactions(\/trc20)?)?(\?.*)?$/u;
 
 type WithFixturesOptions = Parameters<typeof withFixtures>[0];
 type WithFixturesTestSuite = Parameters<typeof withFixtures>[1];
@@ -501,7 +501,7 @@ function getUniqueAssets(accounts: TronFixtureAccount[]): TronFixtureAsset[] {
 
 function tronProviderUrl(path: string): RegExp {
   return new RegExp(
-    `^(https://tron-mainnet\\.infura\\.io/v3/[^/]+|https://api\\.trongrid\\.io|https://api\\.shasta\\.trongrid\\.io|https://nile\\.trongrid\\.io)${path}(\\?[^#]*)?$`,
+    `^(https://tron-mainnet\\.infura\\.io/v3/[^/]+|https://api\\.trongrid\\.io|https://api\\.shasta\\.trongrid\\.io|https://shasta\\.api\\.trongrid\\.io|https://nile\\.trongrid\\.io|https://nile\\.api\\.trongrid\\.io)${path}(\\?[^#]*)?$`,
     'u',
   );
 }

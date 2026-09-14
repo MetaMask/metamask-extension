@@ -50,10 +50,6 @@ module.exports = {
     return Promise.resolve(TOKEN_DETAILS_MOCK[address]);
   },
 
-  trackMetaMetricsEvent: () => {
-    // Intentionally empty
-  },
-
   trackAnalyticsEvent: () => Promise.resolve(),
 
   decodeTransactionData: async (request) => {

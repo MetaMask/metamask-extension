@@ -248,6 +248,32 @@ describe('useOnboardingCompletion', () => {
     });
   });
 
+  it('forces Basic Functionality on for social-login users when consolidation is enabled', async () => {
+    mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
+      true,
+    );
+    const { result } = renderHookWithProvider(() => useOnboardingCompletion(), {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        firstTimeFlowType: FirstTimeFlowType.socialCreate,
+      },
+      appState: {
+        ...mockState.appState,
+        externalServicesOnboardingToggleState: false,
+      },
+    });
+
+    await act(async () => {
+      await result.current.completeOnboarding();
+    });
+
+    await waitFor(() => {
+      expect(mockToggleExternalServices).toHaveBeenCalledWith(true);
+      expect(mockSetUseMultiAccountBalanceChecker).toHaveBeenCalledWith(true);
+    });
+  });
+
   it('uses toggleExternalServices when the Basic Functionality build flag is disabled', async () => {
     const { result } = renderHookWithProvider(
       () => useOnboardingCompletion(),

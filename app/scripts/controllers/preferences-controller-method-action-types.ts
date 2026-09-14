@@ -51,6 +51,17 @@ export type PreferencesControllerToggleExternalServicesAction = {
 };
 
 /**
+ * One-time Basic Functionality consolidation when the remote FF turns on.
+ * Aligns child preferences, marks the user as consolidated, and schedules
+ * the modal/toast notice when needed, then syncs external-service
+ * controllers.
+ */
+export type PreferencesControllerConsolidateBasicFunctionalityAction = {
+  type: `PreferencesController:consolidateBasicFunctionality`;
+  handler: PreferencesController['consolidateBasicFunctionality'];
+};
+
+/**
  * Setter for the `useTokenDetection` property
  *
  * @param val - Whether or not the user prefers to use the static token list or dynamic token list from the API
@@ -350,6 +361,15 @@ export type PreferencesControllerSetSnapsAddSnapAccountModalDismissedAction = {
 };
 
 /**
+ * Dismisses the one-time Basic Functionality migration modal or toast.
+ */
+export type PreferencesControllerDismissBasicFunctionalityMigrationNotificationAction =
+  {
+    type: `PreferencesController:dismissBasicFunctionalityMigrationNotification`;
+    handler: PreferencesController['dismissBasicFunctionalityMigrationNotification'];
+  };
+
+/**
  * Resets the preferences state to the default values.
  * This is used when the wallet is reset during the "Forgot Password" flow.
  */
@@ -392,6 +412,7 @@ export type PreferencesControllerMethodActions =
   | PreferencesControllerSetUseMultiAccountBalanceCheckerAction
   | PreferencesControllerSetUseSafeChainsListValidationAction
   | PreferencesControllerToggleExternalServicesAction
+  | PreferencesControllerConsolidateBasicFunctionalityAction
   | PreferencesControllerSetUseTokenDetectionAction
   | PreferencesControllerSetUseNftDetectionAction
   | PreferencesControllerSetUse4ByteResolutionAction
@@ -422,6 +443,7 @@ export type PreferencesControllerMethodActions =
   | PreferencesControllerSetShowDefaultAddressAction
   | PreferencesControllerSetDefaultAddressScopeAction
   | PreferencesControllerSetSnapsAddSnapAccountModalDismissedAction
+  | PreferencesControllerDismissBasicFunctionalityMigrationNotificationAction
   | PreferencesControllerResetStateAction
   | PreferencesControllerAddReferralApprovedAccountAction
   | PreferencesControllerAddReferralPassedAccountAction

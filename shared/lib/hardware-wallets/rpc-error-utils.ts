@@ -24,7 +24,10 @@ import {
   refine,
   type Infer,
 } from '@metamask/superstruct';
-import { KeyringControllerError } from '@metamask/keyring-controller';
+import {
+  isKeyringControllerError,
+  KeyringControllerError,
+} from '@metamask/keyring-controller';
 import { TREZOR_DESKTOP_CONNECTION_MISSING_CODE } from '../../constants/hardware-wallets';
 import { extractMessageFromUnknownError } from '../error';
 import { HardwareWalletType } from './types';
@@ -434,6 +437,22 @@ function extractHexStatusCodeFromMessage(message: string): string | null {
 }
 
 /**
+ * Ledger devices can only sign EIP-712 typed data with version V4.
+ * The keyring throws "Ledger: Only version 4 of typed data signing is
+ * supported" for V1/V3 requests.
+ *
+ * @param message - The error message to inspect
+ * @returns True when the message indicates only V4 typed data is supported
+ */
+function isOnlyV4TypedDataErrorMessage(message: string): boolean {
+  const normalizedMessage = message.toLowerCase();
+  return (
+    normalizedMessage.includes('version 4 of typed data') ||
+    normalizedMessage.includes('only version 4')
+  );
+}
+
+/**
  * Map a Ledger status code (hex string) to an ErrorCode
  *
  * @param statusCode - The Ledger status code (e.g., "0x5515")
@@ -616,12 +635,23 @@ function mapCodeToErrorCode(code: string | number): ErrorCode {
 }
 
 /**
- * Get HardwareWalletError code from a JsonRpcError
+ * Get a hardware-wallet ErrorCode from an unknown error.
+ *
+ * Signing failures are often a `KeyringControllerError` whose real hardware
+ * wallet code lives on `error.cause`. Unwrap that nested code first so callers
+ * do not need to inspect the wrapper themselves.
  *
  * @param error - The error to extract from
  * @returns The ErrorCode if found, null otherwise
  */
 export function getHardwareWalletErrorCode(error: unknown): ErrorCode | null {
+  if (isKeyringControllerError(error) && error.cause !== error) {
+    const causeCode = getHardwareWalletErrorCode(error.cause);
+    if (causeCode !== null) {
+      return causeCode;
+    }
+  }
+
   // Check for serialized RPC error with cause
   if (isSerializedRpcHardwareWalletError(error)) {
     return mapNumericCodeToErrorCode(error.data.cause.code);
@@ -657,7 +687,7 @@ export function getHardwareWalletErrorCode(error: unknown): ErrorCode | null {
  * @returns True if the error matches known HW error shapes
  */
 export function isHardwareWalletError(error: unknown): boolean {
-  if (error instanceof KeyringControllerError) {
+  if (isKeyringControllerError(error) && error.cause !== error) {
     return isHardwareWalletError(error.cause);
   }
 
@@ -679,15 +709,12 @@ export function isHardwareWalletError(error: unknown): boolean {
 
   const errorAsAny = error as {
     name?: string;
-    cause?: unknown;
     data?: { cause?: { name?: string } };
   };
 
   return (
     errorAsAny?.name === 'HardwareWalletError' ||
-    errorAsAny?.data?.cause?.name === 'HardwareWalletError' ||
-    (errorAsAny?.name === 'KeyringControllerError' &&
-      isHardwareWalletError(errorAsAny?.cause))
+    errorAsAny?.data?.cause?.name === 'HardwareWalletError'
   );
 }
 
@@ -725,9 +752,17 @@ export function isUserRejectedHardwareWalletError(error: unknown): boolean {
   // Some provider errors are transported as EIP-1193 userRejectedRequest (4001)
   // without preserving the full HardwareWalletError shape.
   const errorAsAny = error as { code?: unknown; data?: { code?: unknown } };
-  return (
+  if (
     errorAsAny?.code === errorCodes.provider.userRejectedRequest ||
     errorAsAny?.data?.code === errorCodes.provider.userRejectedRequest
+  ) {
+    return true;
+  }
+
+  return (
+    errorCause !== undefined &&
+    errorCause !== error &&
+    isUserRejectedHardwareWalletError(errorCause)
   );
 }
 
@@ -803,6 +838,56 @@ function tryInferTrezorKeyringError(
 }
 
 /**
+ * Infer a Ledger ErrorCode from a KeyringControllerError when the cause
+ * code is missing or Unknown.
+ *
+ * Retrying cannot succeed for unsupported typed-data versions, so this maps
+ * the keyring's V3/V1 rejection onto DeviceStateOnlyV4Supported.
+ *
+ * @param error - The KeyringControllerError to inspect
+ * @param walletType - The hardware wallet type
+ * @param causeCode - The already-extracted cause ErrorCode, if any
+ * @returns A HardwareWalletError if a Ledger code was inferred, otherwise null
+ */
+function tryInferLedgerKeyringError(
+  error: KeyringControllerError,
+  walletType: HardwareWalletType,
+  causeCode: ErrorCode | null,
+): HardwareWalletError | null {
+  if (
+    walletType !== HardwareWalletType.Ledger ||
+    (causeCode !== ErrorCode.Unknown && causeCode !== null)
+  ) {
+    return null;
+  }
+
+  const causeMessage = getErrorMessage(error.cause);
+  if (isOnlyV4TypedDataErrorMessage(causeMessage)) {
+    return createHardwareWalletError(
+      ErrorCode.DeviceStateOnlyV4Supported,
+      walletType,
+      causeMessage,
+      {
+        cause: getErrorCause(error.cause),
+      },
+    );
+  }
+
+  if (isOnlyV4TypedDataErrorMessage(error.message)) {
+    return createHardwareWalletError(
+      ErrorCode.DeviceStateOnlyV4Supported,
+      walletType,
+      error.message,
+      {
+        cause: getErrorCause(error.cause),
+      },
+    );
+  }
+
+  return null;
+}
+
+/**
  * Reconstruct a HardwareWalletError from a KeyringControllerError.
  *
  * @param error - The KeyringControllerError to reconstruct from
@@ -822,6 +907,15 @@ function fromKeyringControllerError(
   );
   if (trezorInferred) {
     return trezorInferred;
+  }
+
+  const ledgerInferred = tryInferLedgerKeyringError(
+    error,
+    walletType,
+    causeCode,
+  );
+  if (ledgerInferred) {
+    return ledgerInferred;
   }
 
   if (causeCode !== null) {
@@ -870,12 +964,13 @@ function fromSerializedTopLevelHardwareWalletError(
 }
 
 /**
- * Try to reconstruct a HardwareWalletError from a Ledger status code
- * embedded in the error message.
+ * Try to reconstruct a HardwareWalletError from a Ledger error message.
+ * Handles transport status codes (e.g. 0x5515) and keyring-level V1/V3
+ * typed data rejections that are not tied to a status code.
  *
  * @param error - The error to inspect
  * @param walletType - The hardware wallet type
- * @returns A HardwareWalletError if a Ledger status code was found, otherwise null
+ * @returns A HardwareWalletError if a Ledger error was recognized, otherwise null
  */
 function tryFromLedgerErrorMessage(
   error: unknown,
@@ -906,14 +1001,25 @@ function tryFromLedgerErrorMessage(
   }
 
   const hexStatusCode = extractHexStatusCodeFromMessage(errorMessage);
-  if (!hexStatusCode) {
-    return null;
+  if (hexStatusCode) {
+    const errorCode = mapLedgerStatusCodeToErrorCode(hexStatusCode);
+    return createHardwareWalletError(errorCode, walletType, errorMessage, {
+      cause: getErrorCause(error),
+    });
   }
 
-  const errorCode = mapLedgerStatusCodeToErrorCode(hexStatusCode);
-  return createHardwareWalletError(errorCode, walletType, errorMessage, {
-    cause: getErrorCause(error),
-  });
+  if (isOnlyV4TypedDataErrorMessage(errorMessage)) {
+    return createHardwareWalletError(
+      ErrorCode.DeviceStateOnlyV4Supported,
+      walletType,
+      errorMessage,
+      {
+        cause: getErrorCause(error),
+      },
+    );
+  }
+
+  return null;
 }
 
 /**
@@ -957,7 +1063,7 @@ export function toHardwareWalletError(
     return error;
   }
 
-  if (error instanceof KeyringControllerError) {
+  if (isKeyringControllerError(error)) {
     return fromKeyringControllerError(error, walletType);
   }
 

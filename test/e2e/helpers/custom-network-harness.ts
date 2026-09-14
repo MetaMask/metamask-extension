@@ -396,8 +396,12 @@ export function prepareCustomNetwork(
     localNodeOptions: [
       { type: 'anvil', options: { chainId: network.chainIdDecimal } },
     ],
-    testSpecificMock: (mockServer: Mockttp) =>
-      mockTokenAndPriceApis(mockServer, { assets, priceMode }),
+    testSpecificMock: async (mockServer: Mockttp) => {
+      return mockTokenAndPriceApis(mockServer, {
+        assets,
+        priceMode,
+      });
+    },
     network,
   };
 }

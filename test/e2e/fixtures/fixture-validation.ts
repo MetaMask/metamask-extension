@@ -58,16 +58,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AppStateController.onboardingDate',
   'data.AppStateController.recoveryPhraseReminderLastShown',
   'data.AppStateController.termsOfUseLastAgreed',
-  'data.CurrencyController.currencyRates.BNB.conversionDate',
-  'data.CurrencyController.currencyRates.BNB.conversionRate',
-  'data.CurrencyController.currencyRates.BNB.usdConversionRate',
-  'data.CurrencyController.currencyRates.ETH.conversionDate',
-  'data.CurrencyController.currencyRates.ETH.conversionRate',
-  'data.CurrencyController.currencyRates.POL.conversionDate',
-  'data.CurrencyController.currencyRates.POL.conversionRate',
-  'data.CurrencyController.currencyRates.POL.usdConversionRate',
-  'data.MultichainAssetsRatesController.conversionRates.bip122:000000000019d6689c085ae165831e93/slip44:0.conversionTime',
-  'data.MultichainAssetsRatesController.conversionRates.bip122:000000000019d6689c085ae165831e93/slip44:0.expirationTime',
   'data.NetworkController.networkConfigurationsByChainId.0x539.lastUpdatedAt',
   'data.NotificationServicesController.metamaskNotificationsList',
   'data.PhishingController.c2DomainBlocklistLastFetched',
@@ -81,6 +71,16 @@ const getFixtureIgnoredKeys = (): string[] => [
   // Threshold group selection is derived from the (random) analyticsId, so it
   // is non-deterministic per run, like the other flags above.
   'data.RemoteFeatureFlagController.featureFlagThresholdGroups',
+  // Legacy assets controllers set `persist: false` in `@metamask/assets-controllers`
+  // v111.2.0, so they are absent from persisted state. The fixtures still seed them
+  // because controllers are constructed from the fixture state at boot, but there is
+  // nothing to validate against.
+  'data.CurrencyController',
+  'data.MultichainAssetsRatesController',
+  'data.MultichainAssetsController',
+  'data.MultichainBalancesController',
+  'data.TokenRatesController',
+  'data.TokensController',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.
   'data.AccountsController.internalAccounts.accounts',
@@ -88,7 +88,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AssetsController',
   'data.AuthenticationController',
   'data.MetaMetricsController',
-  'data.MultichainAssetsController',
   'data.TokenBalancesController',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
@@ -102,8 +101,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   // Random ids
   'data.AnalyticsController.analyticsId',
   'data.AnalyticsController.preConsentEventQueue',
-  'data.MultichainBalancesController',
-  'data.MultichainBalancesController.balances',
   'data.MultichainTransactionsController.nonEvmTransactions',
   'data.NetworkController.networkConfigurationsByChainId.0x539.rpcEndpoints[0].networkClientId',
   'data.NetworkController.networkConfigurationsByChainId.0x1.rpcEndpoints[0].failoverUrls',

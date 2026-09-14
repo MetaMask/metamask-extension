@@ -73,6 +73,7 @@ export function useLocalTransactions(filters: ActivityListFilter) {
           isEarliestNonce: isTransactionEarliestNonce(
             nonce,
             initialTransaction?.chainId,
+            initialTransaction?.txParams?.from,
             earliestNonceByChain,
           ),
         };

@@ -79,10 +79,129 @@ export function getConfirmationTransactionType(
   return payType ?? transactionMeta.type;
 }
 
+type SanitizedMessage = {
+  type: string;
+  value: unknown;
+};
+
+function unwrapSanitizedMessage({ value }: SanitizedMessage): unknown {
+  if (Array.isArray(value)) {
+    return value.map((item) =>
+      unwrapSanitizedMessage(item as SanitizedMessage),
+    );
+  }
+
+  if (typeof value === 'object' && value !== null) {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [
+        key,
+        unwrapSanitizedMessage(item as SanitizedMessage),
+      ]),
+    );
+  }
+
+  return value;
+}
+
+/**
+ * Parses EIP-712 data and filters message values to fields included in the
+ * primary type's signing schema.
+ *
+ * @param dataToParse - The serialized EIP-712 data.
+ * @returns The parsed data with display-safe message values.
+ */
 export const parseSanitizeTypedDataMessage = (dataToParse: string) => {
-  const { message, primaryType, types } = parseTypedDataMessage(dataToParse);
+  const typedDataMessage = parseTypedDataMessage(dataToParse);
+  const { message, primaryType, types } = typedDataMessage;
   const sanitizedMessage = sanitizeMessage(message, primaryType, types);
-  return { sanitizedMessage, primaryType };
+
+  return {
+    ...typedDataMessage,
+    message: unwrapSanitizedMessage(sanitizedMessage) as Record<
+      string,
+      unknown
+    >,
+    sanitizedMessage,
+  };
+};
+
+type Eip712Types = Record<string, { name: string; type: string }[]>;
+
+/**
+ * Checks whether an EIP-712 type declares a field, optionally with a specific
+ * Solidity type.
+ *
+ * @param types - The EIP-712 type definitions.
+ * @param primaryType - The type definition to inspect.
+ * @param fieldName - The field name to find.
+ * @param fieldType - The expected Solidity type, if required.
+ * @returns Whether the requested field is declared by the schema.
+ */
+export const isEip712PrimaryTypeField = (
+  types: Eip712Types,
+  primaryType: string,
+  fieldName: string,
+  fieldType?: string,
+) =>
+  types[primaryType]?.some(
+    ({ name, type }) =>
+      name === fieldName && (fieldType === undefined || type === fieldType),
+  ) ?? false;
+
+const MAX_UINT256 = BigInt(
+  '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+);
+const DECIMAL_UINT256_PATTERN = /^\d{1,78}$/u;
+const HEXADECIMAL_UINT256_PATTERN = /^0x[\da-f]{1,64}$/iu;
+
+/**
+ * Validates and normalizes a decimal or hexadecimal uint256 value.
+ *
+ * @param value - The value to normalize.
+ * @returns The normalized decimal value, or undefined when invalid.
+ */
+export const normalizeUint256 = (value: unknown): string | undefined => {
+  if (
+    (typeof value !== 'string' && typeof value !== 'number') ||
+    (typeof value === 'number' && (!Number.isSafeInteger(value) || value < 0))
+  ) {
+    return undefined;
+  }
+
+  const stringValue = String(value);
+  if (
+    !DECIMAL_UINT256_PATTERN.test(stringValue) &&
+    !HEXADECIMAL_UINT256_PATTERN.test(stringValue)
+  ) {
+    return undefined;
+  }
+
+  const tokenId = BigInt(stringValue);
+  return tokenId <= MAX_UINT256 ? tokenId.toString() : undefined;
+};
+
+/**
+ * Gets a valid token ID declared as uint256 by the primary EIP-712 type.
+ *
+ * @param message - The schema-filtered EIP-712 message.
+ * @param types - The EIP-712 type definitions.
+ * @param primaryType - The message's primary type.
+ * @returns The normalized token ID, or undefined when absent or invalid.
+ */
+export const getEip712TokenId = (
+  message: Record<string, unknown>,
+  types: Eip712Types,
+  primaryType: string,
+): string | undefined => {
+  const tokenIdField = types[primaryType]?.find(
+    ({ name }) => name === 'tokenId',
+  );
+
+  if (tokenIdField?.type !== 'uint256') {
+    return undefined;
+  }
+
+  return normalizeUint256(message.tokenId);
 };
 
 /**

@@ -12,6 +12,7 @@ import {
   selectRequiredTransactionHashes,
   selectTransactionById,
   selectUnapprovedTransactionById,
+  selectNonReplacedTransactions,
 } from './transactionController';
 
 type TransactionState = {
@@ -38,6 +39,7 @@ describe('transactionController selectors', () => {
     selectRequiredTransactionHashes.clearCache();
     selectTransactionById.clearCache();
     selectUnapprovedTransactionById.clearCache();
+    selectNonReplacedTransactions.clearCache();
   });
 
   describe('selectTransactions', () => {
@@ -306,6 +308,62 @@ describe('transactionController selectors', () => {
       const state = createMockState([tx]);
 
       expect(selectUnapprovedTransactionById(state, undefined)).toBeUndefined();
+    });
+  });
+
+  describe('selectNonReplacedTransactions', () => {
+    it('drops originals that carry a complete replacement shape', () => {
+      const original = makeTx({
+        id: 'original',
+        time: 1,
+        hash: '0xaaa',
+        replacedBy: '0xbbb',
+        replacedById: 'replacement',
+      });
+      const replacement = makeTx({
+        id: 'replacement',
+        time: 2,
+        hash: '0xbbb',
+      });
+      const state = createMockState([original, replacement]);
+
+      expect(
+        selectNonReplacedTransactions(state).map((tx) => tx.id),
+      ).toStrictEqual(['replacement']);
+    });
+
+    it('keeps originals when replacement metadata is only partial', () => {
+      const missingHash = makeTx({
+        id: 'missing-hash',
+        time: 1,
+        replacedBy: '0xbbb',
+        replacedById: 'replacement',
+      });
+      const missingReplacedBy = makeTx({
+        id: 'missing-replaced-by',
+        time: 2,
+        hash: '0xaaa',
+        replacedById: 'replacement',
+      });
+      const missingReplacedById = makeTx({
+        id: 'missing-replaced-by-id',
+        time: 3,
+        hash: '0xaaa',
+        replacedBy: '0xbbb',
+      });
+      const state = createMockState([
+        missingHash,
+        missingReplacedBy,
+        missingReplacedById,
+      ]);
+
+      expect(
+        selectNonReplacedTransactions(state).map((tx) => tx.id),
+      ).toStrictEqual([
+        'missing-hash',
+        'missing-replaced-by',
+        'missing-replaced-by-id',
+      ]);
     });
   });
 });

@@ -735,6 +735,32 @@ describe('PersistenceManager', () => {
     });
   });
 
+  describe('backup durability', () => {
+    it('requests strict durability for backup writes', async () => {
+      await manager.open();
+      manager.storageKind = 'data';
+      manager.setMetadata({ version: 10 });
+      mockStoreSet.mockResolvedValueOnce(undefined);
+
+      // Spy after `open()` so only the backup write itself is captured.
+      const transactionSpy = jest.spyOn(IDBDatabase.prototype, 'transaction');
+
+      const [result] = await manager.set({
+        KeyringController: {
+          vault: 'encrypted-vault',
+        },
+      } as unknown as MetaMaskStateType);
+
+      expect(result).toBe(true);
+      expect(transactionSpy).toHaveBeenCalledTimes(1);
+      expect(transactionSpy.mock.calls[0]).toStrictEqual([
+        'store',
+        'readwrite',
+        { durability: 'strict' },
+      ]);
+    });
+  });
+
   describe('persist', () => {
     it('throws if storageKind is not split', async () => {
       manager.storageKind = 'data';

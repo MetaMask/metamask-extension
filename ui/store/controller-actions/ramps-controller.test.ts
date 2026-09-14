@@ -14,6 +14,7 @@ import {
   setRampsSelectedProvider,
   setRampsSelectedToken,
   setRampsUserRegion,
+  syncRampsOrdersWithUserStorage,
 } from './ramps-controller';
 
 jest.mock('../background-connection');
@@ -63,6 +64,7 @@ describe('ramps-controller actions', () => {
     await removeRampsOrder('order-1');
     await refreshRampsOrder('transak', 'order-1', '0xabc');
     await getRampsOrderFromCallback('transak', 'https://callback', '0xabc');
+    await syncRampsOrdersWithUserStorage();
 
     expect(mockSubmitRequestToBackground.mock.calls).toMatchSnapshot();
   });

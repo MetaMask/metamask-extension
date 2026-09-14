@@ -56,6 +56,7 @@ import { TEST_CHAINS } from '../../shared/constants/network';
 import {
   createDeepEqualSelector,
   createParameterizedSelector,
+  createShallowEqualSelector,
 } from '../../shared/lib/selectors/selector-creators';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
@@ -65,7 +66,11 @@ import {
   getCurrentCurrency,
 } from '../ducks/metamask/metamask';
 import { findAssetByAddress } from '../pages/asset/util';
-import { isEvmChainId, toAssetId } from '../../shared/lib/asset-utils';
+import {
+  isEvmChainId,
+  isNativeCaipAssetId,
+  toAssetId,
+} from '../../shared/lib/asset-utils';
 import type { ResolvedAssetRoute } from '../../shared/lib/asset-route';
 import { isEmptyHexString } from '../../shared/lib/hexstring-utils';
 import { isZeroAmount } from '../helpers/utils/number-utils';
@@ -117,7 +122,12 @@ import {
   getSelectedMultichainNetworkConfiguration,
   MultichainNetworkControllerState,
 } from './multichain/networks';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
+import {
+  getInternalAccountBySelectedAccountGroupAndCaip,
+  getInternalAccountsFromGroupById,
+  getSelectedAccountGroup,
+} from './multichain-accounts/account-tree';
+import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -181,6 +191,40 @@ export function getAssetsBalance(state: { metamask?: AssetsControllerState }) {
   return state.metamask?.assetsBalance ?? defaultState.assetsBalance;
 }
 
+type AssetsBalanceLookupState = MultichainAccountsState & {
+  metamask?: AssetsControllerState;
+};
+
+const selectSelectedAccountGroupAccountsIds = createShallowEqualSelector(
+  (state: AssetsBalanceLookupState) =>
+    getInternalAccountsFromGroupById(state, getSelectedAccountGroup(state)),
+  (accounts: InternalAccount[]) => accounts.map((account) => account.id),
+);
+
+/**
+ * Whether any account in the selected account group has a balance entry for the
+ * given asset, i.e. whether the wallet owns the asset rather than merely
+ * knowing about it.
+ *
+ * @param _state - Redux state object.
+ * @param assetId - CAIP asset id to look up.
+ * @returns `true` when the asset has a balance entry in the group.
+ */
+export const selectIsAssetInAssetsBalance = createParameterizedSelector(100)(
+  [
+    getAssetsBalance,
+    selectSelectedAccountGroupAccountsIds,
+    (_state: unknown, assetId?: CaipAssetType) => assetId?.toLowerCase(),
+  ],
+  (assetsBalance, accountIds, assetIdLower) =>
+    Boolean(assetIdLower) &&
+    accountIds.some((accountId) =>
+      Object.keys(assetsBalance[accountId] ?? {}).some(
+        (key) => key.toLowerCase() === assetIdLower,
+      ),
+    ),
+);
+
 /**
  * Returns the assets price (AssetsController state).
  *
@@ -220,23 +264,6 @@ export function getSelectedCurrency(state: {
   metamask?: AssetsControllerState;
 }) {
   return state.metamask?.selectedCurrency ?? defaultState.selectedCurrency;
-}
-
-/**
- * TEMPORARY (until scaleToHumanIfRaw is fixed in core): strip `assetsInfo` so
- * aggregation cannot re-divide large human-readable balances by 10^decimals
- * and drop them from the fiat total (#44786).
- *
- * @param state - AssetsController state slice.
- * @returns State with empty assetsInfo.
- */
-function stripAssetsInfoForAggregation(
-  state: AssetsControllerState,
-): AssetsControllerState {
-  return {
-    ...state,
-    assetsInfo: {},
-  };
 }
 
 /**
@@ -293,7 +320,7 @@ export function getUnifiedBalanceForAccountGroup(
   // selected-account argument is only a placeholder.
   const placeholderAccount = { id: accountIds[0] } as InternalAccount;
   const { totalBalanceInFiat = 0 } = getAggregatedBalanceForAccount(
-    stripAssetsInfoForAggregation(assetsControllerState),
+    assetsControllerState,
     placeholderAccount,
     enabledNetworkMap,
     undefined,
@@ -456,8 +483,8 @@ export const getMultiChainAssets = createSelector(
 
     const allAssets: TokenWithFiatAmount[] = [];
     assetIds.forEach((assetId: CaipAssetId) => {
-      const { chainId, assetNamespace } = parseCaipAssetType(assetId);
-      const isNative = assetNamespace === 'slip44';
+      const { chainId } = parseCaipAssetType(assetId);
+      const isNative = isNativeCaipAssetId(assetId);
       const balance = balances?.[assetId] || { amount: '0', unit: '' };
       const rate = assetRates?.[assetId]?.rate;
 
@@ -695,8 +722,10 @@ export const getMultichainNativeAssetType = createSelector(
   (selectedAccount, accountAssets, currentNetwork) => {
     const assetTypes = accountAssets?.[selectedAccount.id] || [];
     const nativeAssetType = assetTypes.find((assetType) => {
-      const { chainId, assetNamespace } = parseCaipAssetType(assetType);
-      return chainId === currentNetwork.chainId && assetNamespace === 'slip44';
+      const { chainId } = parseCaipAssetType(assetType);
+      return (
+        chainId === currentNetwork.chainId && isNativeCaipAssetId(assetType)
+      );
     });
 
     return nativeAssetType;
@@ -961,9 +990,7 @@ export const selectBalanceForAllWallets = createDeepEqualSelector(
   ) => {
     if (isAssetsUnifyStateEnabled) {
       return calculateBalanceForAllWalletsFromUnified(
-        stripAssetsInfoForAggregation(
-          augmentAssetControllersState(assetsControllerState),
-        ),
+        augmentAssetControllersState(assetsControllerState),
         accountTreeState,
         enabledNetworkMap,
       );
@@ -1028,9 +1055,7 @@ export const selectBalanceChangeBySelectedAccountGroup = (
       }
       if (isAssetsUnifyStateEnabled) {
         return calculateBalanceChangeForAccountGroupFromUnified(
-          stripAssetsInfoForAggregation(
-            augmentAssetControllersState(assetsControllerState),
-          ),
+          augmentAssetControllersState(assetsControllerState),
           accountTreeState,
           groupId,
           period,
@@ -1528,7 +1553,7 @@ const getStateForAssetSelector = createSelector(
   },
 );
 
-export const getAssetsBySelectedAccountGroup = createSelector(
+export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
   getStateForAssetSelector,
   (assetListState: AssetListState) =>
     filterExcludedAssets(selectAssetsBySelectedAccountGroup(assetListState)),
@@ -1805,7 +1830,6 @@ export const getFungibleAssetForRoute = (
     try {
       const assetsByGroup = getAssetsBySelectedAccountGroup(state);
       const chainIdsToTry = getChainIdsForAssetRouteLookup(chainId, assetId);
-      const { assetNamespace } = parseCaipAssetType(assetId);
 
       for (const id of chainIdsToTry) {
         const match = assetsByGroup[id as string]?.find((item) =>
@@ -1816,7 +1840,7 @@ export const getFungibleAssetForRoute = (
         }
       }
 
-      if (assetNamespace === 'slip44') {
+      if (isNativeCaipAssetId(assetId)) {
         for (const id of chainIdsToTry) {
           const nativeAsset = assetsByGroup[id as string]?.find(
             (item) => item.isNative,
@@ -1836,7 +1860,7 @@ export const getFungibleAssetForRoute = (
       }
 
       // Native assets may be keyed by zero address while the route uses slip44.
-      if (assetNamespace === 'slip44') {
+      if (isNativeCaipAssetId(assetId)) {
         const nativeFlatMatch = Object.values(assetsByGroup)
           .flat()
           .find(

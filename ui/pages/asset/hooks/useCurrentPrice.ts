@@ -1,20 +1,25 @@
-import { AssetType } from '@metamask/bridge-controller';
-import { CaipAssetType, Hex } from '@metamask/utils';
+import { AssetType, formatChainIdToCaip } from '@metamask/bridge-controller';
+import { useQuery } from '@tanstack/react-query';
+import { type SupportedCurrency } from '@metamask/core-backend';
+import { CaipAssetType, Hex, isCaipChainId } from '@metamask/utils';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { getCurrencyRates, getMarketData } from '../../../selectors';
 import { getAssetsRates } from '../../../selectors/assets';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { apiClient } from '../../../helpers/api-client';
 import { Asset } from '../types/asset';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { getNativeAssetForChainIdSafe } from '../../../ducks/bridge/utils';
 
 /**
- * Get the current price of an asset.
+ * Get cached spot prices from redux state
  *
- * @param asset - The asset to get the current price of
- * @returns The current price of the asset. If the asset is not found, or the price is not found, returns null.
+ * @param asset - The asset to get the cached price of
+ * @returns The cached price of the asset, or undefined if it is not in state.
  */
-export const useCurrentPrice = (asset: Asset): { currentPrice?: number } => {
+const useCachedPrice = (asset: Asset): { currentPrice?: number } => {
   const isEvm = isEvmChainId(asset.chainId);
   const evmMarketData = useSelector(getMarketData);
   const evmCurrencyRates = useSelector(getCurrencyRates);
@@ -64,4 +69,66 @@ export const useCurrentPrice = (asset: Asset): { currentPrice?: number } => {
     : undefined;
 
   return { currentPrice };
+};
+
+/**
+ * Get spot prices from our APIs
+ *
+ * @param asset - The asset to get the spot price of
+ * @param enabled - Whether to fetch. Pass false when a cached price is available.
+ * @returns The spot price of the asset, or undefined while loading or if unavailable.
+ */
+const useSpotPrice = (
+  asset: Asset,
+  enabled: boolean,
+): { currentPrice?: number } => {
+  const currency = useSelector(getCurrentCurrency);
+  const isEvm = isEvmChainId(asset.chainId);
+  const { chainId, type } = asset;
+
+  const assetId = useMemo(() => {
+    if (type === AssetType.native) {
+      return getNativeAssetForChainIdSafe(chainId)?.assetId;
+    }
+
+    const caipChainId = isCaipChainId(chainId)
+      ? chainId
+      : formatChainIdToCaip(chainId);
+    const address = isEvm ? toChecksumHexAddress(asset.address) : asset.address;
+
+    return toAssetId(address, caipChainId);
+  }, [asset, chainId, isEvm, type]);
+
+  const queryOptions = apiClient.prices.getV3SpotPricesQueryOptions(
+    assetId ? [assetId] : [],
+    { currency: currency.toLowerCase() as SupportedCurrency },
+  );
+
+  const { data: currentPrice } = useQuery({
+    ...queryOptions,
+    enabled: enabled && Boolean(assetId),
+    select: (response) =>
+      assetId
+        ? (response?.[assetId]?.price ??
+          response?.[assetId.toLowerCase()]?.price)
+        : undefined,
+  });
+
+  return { currentPrice };
+};
+
+/**
+ * Get the current price of an asset.
+ *
+ * @param asset - The asset to get the current price of
+ * @returns The current price of the asset. If the asset is not found, or the price is not found, returns undefined.
+ */
+export const useCurrentPrice = (asset: Asset): { currentPrice?: number } => {
+  const { currentPrice: cachedPrice } = useCachedPrice(asset);
+  const { currentPrice: spotPrice } = useSpotPrice(
+    asset,
+    cachedPrice === undefined,
+  );
+
+  return { currentPrice: cachedPrice ?? spotPrice };
 };

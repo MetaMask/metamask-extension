@@ -352,6 +352,29 @@ describe('HardwareWalletErrorModal', () => {
       ).toBeInTheDocument();
     });
 
+    it('displays unsupported signature copy for DeviceStateOnlyV4Supported', () => {
+      const error = createTestError(
+        ErrorCode.DeviceStateOnlyV4Supported,
+        'Ledger: Only version 4 of typed data signing is supported',
+        'This device can only sign version 4 (V4) typed data.',
+      );
+
+      const { getByText, queryByText } = renderWithMetrics(
+        <HardwareWalletErrorModal error={error} />,
+      );
+
+      expect(
+        getByText('[hardwareWalletErrorTitleUnsupportedSignature]'),
+      ).toBeInTheDocument();
+      expect(
+        getByText('[hardwareWalletErrorOnlyV4SupportedDescription]'),
+      ).toBeInTheDocument();
+      expect(getByText('[confirm]')).toBeInTheDocument();
+      expect(
+        queryByText('[hardwareWalletErrorReconnectButton]'),
+      ).not.toBeInTheDocument();
+    });
+
     it('displays app instructions for DeviceStateEthAppClosed', () => {
       const error = createTestError(
         ErrorCode.DeviceStateEthAppClosed,

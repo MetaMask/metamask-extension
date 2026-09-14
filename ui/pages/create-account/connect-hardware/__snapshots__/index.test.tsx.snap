@@ -19,7 +19,7 @@ exports[`ConnectHardwareForm initial render render matches snapshot 1`] = `
         >
           <button
             aria-label="Back"
-            class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            class="inline-flex shrink-0 items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             data-testid="hardware-connect-close-btn"
           >
             <svg
@@ -29,7 +29,7 @@ exports[`ConnectHardwareForm initial render render matches snapshot 1`] = `
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+                d="M15.53 18.97a.75.75 0 0 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 1.06L8.56 12Z"
               />
             </svg>
           </button>
@@ -156,7 +156,7 @@ exports[`ConnectHardwareForm initial render render matches snapshot 1`] = `
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M3 11V3h8v8zm2-2h4V5H5zM3 21v-8h8v8zm2-2h4v-4H5zm8-8V3h8v8zm2-2h4V5h-4zm4 12v-2h2v2zm-6-6v-2h2v2zm2 2v-2h2v2zm-2 2v-2h2v2zm2 2v-2h2v2zm2-2v-2h2v2zm0-4v-2h2v2zm2 2v-2h2v2z"
+                  d="M9.75 3.75h-4.5a1.5 1.5 0 0 0-1.5 1.5v4.5a1.5 1.5 0 0 0 1.5 1.5h4.5a1.5 1.5 0 0 0 1.5-1.5v-4.5a1.5 1.5 0 0 0-1.5-1.5m0 6h-4.5v-4.5h4.5zm0 3h-4.5a1.5 1.5 0 0 0-1.5 1.5v4.5a1.5 1.5 0 0 0 1.5 1.5h4.5a1.5 1.5 0 0 0 1.5-1.5v-4.5a1.5 1.5 0 0 0-1.5-1.5m0 6h-4.5v-4.5h4.5zm9-15h-4.5a1.5 1.5 0 0 0-1.5 1.5v4.5a1.5 1.5 0 0 0 1.5 1.5h4.5a1.5 1.5 0 0 0 1.5-1.5v-4.5a1.5 1.5 0 0 0-1.5-1.5m0 6h-4.5v-4.5h4.5zm-6 6.75v-3a.75.75 0 0 1 1.5 0v3a.75.75 0 0 1-1.5 0m7.5-1.5a.75.75 0 0 1-.75.75h-2.25v3.75a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1 0-1.5h2.25V13.5a.75.75 0 0 1 1.5 0v.75h2.25a.75.75 0 0 1 .75.75m0 3v1.5a.75.75 0 0 1-1.5 0V18a.75.75 0 0 1 1.5 0"
                 />
               </svg>
             </div>

@@ -3,7 +3,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { onchainItem } from '../types/money-activity';
+import { onchainItem, accountsApiItem } from '../types/money-activity';
 import {
   formatMoneyActivityDateHeader,
   getMoneyActivityDateKeyUtc,
@@ -79,6 +79,28 @@ describe('groupMoneyActivityItems', () => {
     expect(sections[0].isPending).toBeUndefined();
     expect(sections[0].title).toBe('May 10, 2026');
     expect(sections[0].data.map((item) => item.id)).toStrictEqual(['failed']);
+  });
+
+  it('keeps Accounts API rows in date sections rather than Pending', () => {
+    const apiItem = accountsApiItem({
+      kind: 'card',
+      hash: '0xabc',
+      time: Date.UTC(2026, 4, 10),
+      chainId: '0x8f',
+      token: {
+        address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+        symbol: 'mUSD',
+        decimals: 6,
+      },
+      amount: '1000000',
+      paidTo: '0xdef',
+    });
+
+    const sections = groupMoneyActivityItems([apiItem], 'Pending');
+
+    expect(sections).toHaveLength(1);
+    expect(sections[0].isPending).toBeUndefined();
+    expect(sections[0].data.map((item) => item.id)).toStrictEqual([apiItem.id]);
   });
 
   it('groups settled items by UTC day newest-first', () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { PreferredAvatar } from './preferred-avatar';
-import type { StoryObj } from '@storybook/react';
+import type { StoryObj } from '@storybook/react-webpack5';
 
 const ActionsData = {
   address: '0x7830c87C02e56AFf27FA8Ab1241711331FA86F43',

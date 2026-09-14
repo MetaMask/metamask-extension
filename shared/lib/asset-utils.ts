@@ -23,6 +23,7 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { MultichainNetworks } from '../constants/multichain/networks';
 import {
   TRON_SPECIAL_ASSET_CAIP_TYPES_SET,
+  SLIP44_ASSET_NAMESPACE,
   type TronSpecialAssetCaipType,
 } from '../constants/multichain/assets';
 import { NATIVE_TOKEN_ADDRESS } from '../constants/transaction';
@@ -162,6 +163,23 @@ export const getNativeAssetId = (
   } catch {
     return undefined;
   }
+};
+
+export const isNativeCaipAssetId = (assetId: CaipAssetType) => {
+  try {
+    return (
+      parseCaipAssetType(assetId).assetNamespace === SLIP44_ASSET_NAMESPACE
+    );
+  } catch {
+    return false;
+  }
+};
+
+export const normalizeTokenAssetId = (assetId: CaipAssetType) => {
+  const { chain } = parseCaipAssetType(assetId);
+  return chain.namespace === KnownCaipNamespace.Eip155
+    ? (assetId.toLowerCase() as CaipAssetType)
+    : assetId;
 };
 
 /**

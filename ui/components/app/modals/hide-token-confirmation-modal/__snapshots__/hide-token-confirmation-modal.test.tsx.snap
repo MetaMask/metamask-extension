@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Hide Token Confirmation Modal matches snapshot 1`] = `
+<div>
+  <div
+    class="hide-token-confirmation__container"
+  >
+    <div
+      class="hide-token-confirmation__title"
+    >
+      Hide token?
+    </div>
+    <div
+      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-full h-12 w-12 hide-token-confirmation__identicon"
+    >
+      <span
+        class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+      >
+        T
+      </span>
+    </div>
+    <div
+      class="hide-token-confirmation__symbol"
+    >
+      TKN
+    </div>
+    <div
+      class="hide-token-confirmation__copy"
+    >
+      You can add this token back in the future by going to “Import token” in your accounts options menu.
+    </div>
+    <div
+      class="gap-4 items-center justify-center mt-4 flex w-full"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
+        data-testid="hide-token-confirmation__cancel"
+      >
+        Cancel
+      </button>
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+        data-testid="hide-token-confirmation__hide"
+      >
+        Hide
+      </button>
+    </div>
+  </div>
+</div>
+`;

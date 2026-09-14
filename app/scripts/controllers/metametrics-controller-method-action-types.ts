@@ -5,93 +5,9 @@
 
 import type { MetaMetricsController } from './metametrics-controller';
 
-export type MetaMetricsControllerFinalizeAbandonedFragmentsAction = {
-  type: `MetaMetricsController:finalizeAbandonedFragments`;
-  handler: MetaMetricsController['finalizeAbandonedFragments'];
-};
-
-/**
- * Create an event fragment in state and returns the event fragment object.
- *
- * @param options - Fragment settings and properties to initiate the fragment with.
- */
-export type MetaMetricsControllerCreateEventFragmentAction = {
-  type: `MetaMetricsController:createEventFragment`;
-  handler: MetaMetricsController['createEventFragment'];
-};
-
-/**
- * Returns the fragment stored in memory with provided id or undefined if it
- * does not exist.
- *
- * @param id - id of fragment to retrieve
- */
-export type MetaMetricsControllerGetEventFragmentByIdAction = {
-  type: `MetaMetricsController:getEventFragmentById`;
-  handler: MetaMetricsController['getEventFragmentById'];
-};
-
-/**
- * Deletes to finalizes event fragment based on the canDeleteIfAbandoned property.
- *
- * @param fragment
- */
-export type MetaMetricsControllerProcessAbandonedFragmentAction = {
-  type: `MetaMetricsController:processAbandonedFragment`;
-  handler: MetaMetricsController['processAbandonedFragment'];
-};
-
-/**
- * Updates an event fragment in state
- *
- * @param id - The fragment id to update
- * @param payload - Fragment settings and properties to initiate the fragment with.
- */
-export type MetaMetricsControllerUpdateEventFragmentAction = {
-  type: `MetaMetricsController:updateEventFragment`;
-  handler: MetaMetricsController['updateEventFragment'];
-};
-
-/**
- * Deletes an event fragment from state
- *
- * @param id - The fragment id to delete
- */
-export type MetaMetricsControllerDeleteEventFragmentAction = {
-  type: `MetaMetricsController:deleteEventFragment`;
-  handler: MetaMetricsController['deleteEventFragment'];
-};
-
-/**
- * Finalizes a fragment, tracking either a success event or failure Event
- * and then removes the fragment from state.
- *
- * @param id - UUID of the event fragment to be closed
- * @param options
- * @param options.abandoned - if true track the failure event instead of the success event
- * @param options.page - page the final event occurred on. This will override whatever is set on the fragment
- * @param options.referrer - Dapp that originated the fragment. This is for fallback only, the fragment referrer
- * property will take precedence.
- */
-export type MetaMetricsControllerFinalizeEventFragmentAction = {
-  type: `MetaMetricsController:finalizeEventFragment`;
-  handler: MetaMetricsController['finalizeEventFragment'];
-};
-
 export type MetaMetricsControllerUpdateExtensionUninstallUrlAction = {
   type: `MetaMetricsController:updateExtensionUninstallUrl`;
   handler: MetaMetricsController['updateExtensionUninstallUrl'];
-};
-
-/**
- * Setter for the `participateInMetaMetrics` property
- *
- * @param participateInMetaMetrics - Whether or not the user wants to participate in MetaMetrics if not set
- * @returns The string of the new metametrics id, or null
- */
-export type MetaMetricsControllerSetParticipateInMetaMetricsAction = {
-  type: `MetaMetricsController:setParticipateInMetaMetrics`;
-  handler: MetaMetricsController['setParticipateInMetaMetrics'];
 };
 
 export type MetaMetricsControllerSetDataCollectionForMarketingAction = {
@@ -102,11 +18,6 @@ export type MetaMetricsControllerSetDataCollectionForMarketingAction = {
 export type MetaMetricsControllerSetMarketingCampaignCookieIdAction = {
   type: `MetaMetricsController:setMarketingCampaignCookieId`;
   handler: MetaMetricsController['setMarketingCampaignCookieId'];
-};
-
-export type MetaMetricsControllerHandleMetaMaskStateUpdateAction = {
-  type: `MetaMetricsController:handleMetaMaskStateUpdate`;
-  handler: MetaMetricsController['handleMetaMaskStateUpdate'];
 };
 
 export type MetaMetricsControllerTrackTracesAfterMetricsOptInAction = {
@@ -146,30 +57,15 @@ export type MetaMetricsControllerBufferedEndTraceAction = {
   handler: MetaMetricsController['bufferedEndTrace'];
 };
 
-export type MetaMetricsControllerUpdateTraitsAction = {
-  type: `MetaMetricsController:updateTraits`;
-  handler: MetaMetricsController['updateTraits'];
-};
-
 /**
  * Union of all MetaMetricsController action types.
  */
 export type MetaMetricsControllerMethodActions =
-  | MetaMetricsControllerFinalizeAbandonedFragmentsAction
-  | MetaMetricsControllerCreateEventFragmentAction
-  | MetaMetricsControllerGetEventFragmentByIdAction
-  | MetaMetricsControllerProcessAbandonedFragmentAction
-  | MetaMetricsControllerUpdateEventFragmentAction
-  | MetaMetricsControllerDeleteEventFragmentAction
-  | MetaMetricsControllerFinalizeEventFragmentAction
   | MetaMetricsControllerUpdateExtensionUninstallUrlAction
-  | MetaMetricsControllerSetParticipateInMetaMetricsAction
   | MetaMetricsControllerSetDataCollectionForMarketingAction
   | MetaMetricsControllerSetMarketingCampaignCookieIdAction
-  | MetaMetricsControllerHandleMetaMaskStateUpdateAction
   | MetaMetricsControllerTrackTracesAfterMetricsOptInAction
   | MetaMetricsControllerClearTracesAfterMetricsOptInAction
   | MetaMetricsControllerAddTraceBeforeMetricsOptInAction
   | MetaMetricsControllerBufferedTraceAction
-  | MetaMetricsControllerBufferedEndTraceAction
-  | MetaMetricsControllerUpdateTraitsAction;
+  | MetaMetricsControllerBufferedEndTraceAction;

@@ -19,6 +19,7 @@ describe('Test Snap Management', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
+          .withAuthenticationController({ isSignedIn: true })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         testSpecificMock: mockNotificationSnap,

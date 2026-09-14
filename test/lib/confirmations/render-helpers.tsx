@@ -84,6 +84,7 @@ export function renderWithConfirmContext(
     isScrollToBottomCompleted: true,
     setIsScrollToBottomCompleted: () => undefined,
     goBackTo: undefined,
+    suppressAutoExit: () => undefined,
   });
 }
 

@@ -13,6 +13,7 @@ describe('Backup And Sync Selectors', () => {
       isAccountSyncingEnabled: true,
       isContactSyncingEnabled: true,
       isContactSyncingInProgress: false,
+      isRampsSyncingEnabled: true,
     },
   };
 
