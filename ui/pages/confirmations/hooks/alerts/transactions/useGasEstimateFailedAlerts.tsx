@@ -16,7 +16,10 @@ import {
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { simulationIndicatesMonadReserveBalanceViolation } from '../../../../../../shared/lib/monad-reserve-balance';
+import {
+  hasMonadReserveBalanceRule,
+  simulationIndicatesMonadReserveBalanceViolation,
+} from '../../../../../../shared/lib/monad-reserve-balance';
 import { RevertReason } from '../../../components/revert-reason/revert-reason';
 import { useConfirmContext } from '../../../context/confirm';
 import { useEstimationFailed } from '../../gas/useEstimationFailed';
@@ -31,7 +34,7 @@ export function useGasEstimateFailedAlerts(): Alert[] {
 
   const isGasSponsored = useIsGasSponsored();
   const isMonadReserveViolation =
-    Boolean(chainId) &&
+    hasMonadReserveBalanceRule(chainId) &&
     simulationIndicatesMonadReserveBalanceViolation({
       simulationData,
       simulationFails,
