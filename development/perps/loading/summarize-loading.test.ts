@@ -249,9 +249,6 @@ describe('loading measurement command boundaries', () => {
   let exitCode = 0;
 
   class MockSocket {
-    // eslint-disable-next-line @typescript-eslint/naming-convention -- Match the WebSocket API.
-    static OPEN = 1;
-
     readyState = 1;
 
     onopen: (() => void) | null = null;
@@ -364,6 +361,10 @@ describe('loading measurement command boundaries', () => {
       this.onclose?.();
     }
   }
+
+  // The measurement code reads `WebSocket.OPEN`, so the stand-in has to carry
+  // the same uppercase constant the Web API exposes.
+  Object.assign(MockSocket, { OPEN: 1 });
 
   beforeEach(() => {
     jest.clearAllMocks();

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
-import { isColdMode, resolveMeasurementPath } from './browser-process.ts'; // eslint-disable-line import-x/extensions -- Native Node TypeScript execution requires the extension.
+import { isColdMode, resolveMeasurementPath } from './browser-process.ts';
 
 type Measurement = {
   arm: string;
