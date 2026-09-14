@@ -68,6 +68,9 @@ export const BRIDGE_MONAD_MOCK_CURRENCY_RATES = {
   },
 };
 
+/** Monad native CAIP-19 (slip44:268435779, not ETH slip44:60). */
+export const MONAD_NATIVE_ASSET_ID = 'eip155:143/slip44:268435779';
+
 /** Native ETH balances seeded for mainnet bridge fixtures (mainnet loses gas to HST deploy). */
 export function getBridgeFixtureAssetsBalance() {
   return {
@@ -104,8 +107,7 @@ export function getBridgeL2FixtureAssetsBalance() {
 export function getBridgeMonadBaseFixtureAssetsBalance() {
   return {
     [DEFAULT_FIXTURE_ACCOUNT_ID]: {
-      // Monad native CAIP-19 uses slip44:268435779 (not slip44:60).
-      'eip155:143/slip44:268435779': {
+      [MONAD_NATIVE_ASSET_ID]: {
         amount: String(BRIDGE_MONAD_NATIVE_BALANCE_PER_CHAIN),
       },
       'eip155:8453/slip44:60': {

@@ -31,6 +31,7 @@ import {
   BRIDGE_MONAD_USD_SPOT_PRICE,
   BRIDGE_MONAD_WITH_FIXTURES_OPTIONS,
   BRIDGE_WITH_FIXTURES_OPTIONS,
+  MONAD_NATIVE_ASSET_ID,
   getBridgeAssetsControllerConfig,
   getBridgeL2AssetsControllerConfig,
   getBridgeMonadBaseAssetsControllerConfig,
@@ -1125,7 +1126,8 @@ async function mockPriceSpotPricesV3(
         if (
           (ethNativeAssetIds as readonly string[]).includes(assetId) ||
           assetId.endsWith('/slip44:60') ||
-          assetId.endsWith('/slip44:1')
+          assetId.endsWith('/slip44:1') ||
+          assetId === MONAD_NATIVE_ASSET_ID
         ) {
           json[assetId] = tokenEntry(
             'ethereum',
@@ -2022,6 +2024,11 @@ export const getMonadBaseBridgeFixtures = (
       eip155: {
         '0x8f': true,
         '0x2105': true,
+      },
+    })
+    .withNetworkEnablementController({
+      nativeAssetIdentifiers: {
+        'eip155:143': MONAD_NATIVE_ASSET_ID,
       },
     })
     .withAssetsController(getBridgeMonadBaseAssetsControllerConfig());

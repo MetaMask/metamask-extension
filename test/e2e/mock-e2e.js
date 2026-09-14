@@ -537,6 +537,19 @@ function getWellKnownTokenAssetMetadata(assetIds) {
     });
   }
 
+  // Monad native is slip44:268435779 (not ETH slip44:60).
+  if (
+    assetIds.includes('eip155:143/slip44:268435779') ||
+    assetIds.includes('eip155:143/slip44:60')
+  ) {
+    results.push({
+      assetId: 'eip155:143/slip44:268435779',
+      name: 'Monad',
+      symbol: 'MON',
+      decimals: 18,
+    });
+  }
+
   for (const token of WELL_KNOWN_MAINNET_ERC20_ASSETS) {
     if (includesAssetId(token.assetId)) {
       results.push({
@@ -610,8 +623,14 @@ function buildUnifiedEvmAccountsApiBalances(
       nativeBalance = defaultNativeOverride;
     }
 
-    // Chain 1337 uses slip44:1 per nativeAssetIdentifiers; all others use slip44:60.
-    const slip44 = chainRef === '1337' ? '1' : '60';
+    // Native CAIP-19 slip44 must match AssetsController / nativeAssetIdentifiers.
+    // Localhost (1337) uses slip44:1; Monad (143) uses slip44:268435779; others use 60 (ETH).
+    let slip44 = '60';
+    if (chainRef === '1337') {
+      slip44 = '1';
+    } else if (chainRef === '143') {
+      slip44 = '268435779';
+    }
     balances.push({
       accountId: id,
       assetId: `eip155:${chainRef}/slip44:${slip44}`,
@@ -1601,6 +1620,26 @@ async function setupMocking(
       json: {
         'eip155:1337/slip44:1': {
           id: 'ethereum',
+          price: ethConversionInUsd,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+
+  // Monad native — slip44:268435779 (not ETH slip44:60).
+  await server
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'eip155:143/slip44:268435779',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:143/slip44:268435779': {
+          id: 'monad',
           price: ethConversionInUsd,
           marketCap: 382623505141,
           pricePercentChange1d: 0,
