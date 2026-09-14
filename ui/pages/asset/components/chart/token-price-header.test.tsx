@@ -50,7 +50,8 @@ describe('TokenPriceHeader', () => {
 
       const priceElement = screen.getByTestId('asset-hovered-price');
       expect(priceElement).toBeInTheDocument();
-      expect(priceElement).toHaveStyle({ opacity: '0.5' });
+      // Opacity is applied to the wrapping Box, not the Text element
+      expect(priceElement.parentElement).toHaveStyle({ opacity: '0.5' });
     });
 
     it('shows percent skeleton when loading with no percentChange', () => {

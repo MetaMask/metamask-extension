@@ -8,7 +8,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Display } from '../../../../helpers/constants/design-system';
 import { loadingOpacity, getDynamicShortDate } from '../../util';
 import { useFormatters } from '../../../../hooks/useFormatters';
 
@@ -41,9 +40,9 @@ const PriceLoading = () => (
  * Empty state when price is not available.
  */
 const PriceEmptyState = () => (
-  <Text variant={TextVariant.DisplayMd} marginBottom={1}>
-    {'\u00A0'}
-  </Text>
+  <Box marginBottom={1}>
+    <Text variant={TextVariant.DisplayMd}>{'\u00A0'}</Text>
+  </Box>
 );
 
 /**
@@ -126,15 +125,18 @@ const TokenPriceHeader = ({
       {shouldShowPriceLoading && <PriceLoading />}
       {shouldShowPriceEmptyState && <PriceEmptyState />}
       {(shouldShowPrice || shouldShowPriceMuted) && (
-        <Text
-          data-testid="asset-hovered-price"
-          variant={TextVariant.DisplayMd}
-          fontWeight={FontWeight.Medium}
+        <Box
           marginBottom={1}
           style={{ opacity: shouldShowPriceMuted ? loadingOpacity : 1 }}
         >
-          {formatCurrencyTokenPrice(price, currency)}
-        </Text>
+          <Text
+            data-testid="asset-hovered-price"
+            variant={TextVariant.DisplayMd}
+            fontWeight={FontWeight.Medium}
+          >
+            {formatCurrencyTokenPrice(price, currency)}
+          </Text>
+        </Box>
       )}
 
       {/* Percentage change display */}
@@ -155,15 +157,15 @@ const TokenPriceHeader = ({
             {formattedPercent || '-'}
           </Text>
           {timestamp !== undefined && (
-            <Text
-              display={Display.InlineBlock}
-              variant={TextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.TextAlternative}
-              marginLeft={2}
-            >
-              {getDynamicShortDate(timestamp)}
-            </Text>
+            <Box marginLeft={2}>
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.TextAlternative}
+              >
+                {getDynamicShortDate(timestamp)}
+              </Text>
+            </Box>
           )}
         </Box>
       )}
