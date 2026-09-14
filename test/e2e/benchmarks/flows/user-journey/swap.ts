@@ -15,10 +15,10 @@ import SwapPage from '../../../page-objects/pages/swap/swap-page';
 import { Driver } from '../../../webdriver/driver';
 import { collectTimerResults } from '../../utils/timer-helper';
 import {
-  readTraceOccurrences,
-  traceCountResult,
-  traceTimerResult,
-} from '../../utils/trace-occurrences';
+  sentryCountResult,
+  sentryTimerResult,
+  waitForSentryTransactions,
+} from '../../utils/sentry-transactions';
 import { TraceName } from '../../../../../shared/lib/trace';
 import {
   measureStepWithLongTasks,
@@ -64,6 +64,10 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
           testing: {
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
+          // Sample every trace, so the swap spans reach the mocked Sentry
+          // endpoint this benchmark reads them from. CI builds otherwise send
+          // only a small fraction of traces.
+          sentry: { tracesSampleRate: 1 },
         },
         useMockingPassThrough: !shouldUseMockedRequests(),
         disableServerMochaToBackground: true,
@@ -84,7 +88,13 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
           return [...branchEndpoints];
         },
       },
-      async ({ driver }: { driver: Driver }) => {
+      async ({
+        driver,
+        mockedEndpoint,
+      }: {
+        driver: Driver;
+        mockedEndpoint: MockedEndpoint[];
+      }) => {
         // Login flow
         await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
@@ -132,22 +142,27 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
           ),
         );
 
-        // In-app trace spans over the same two steps, on the browser's clock
-        // (extension#46006). Report-only: no threshold is registered for them.
-        const occurrences = await readTraceOccurrences(driver);
+        // The app's own spans over the same two steps, as the Sentry SDK sent
+        // them, timed on the browser's clock (extension#46006). Report-only:
+        // no threshold is registered for them.
+        const transactions = await waitForSentryTransactions(
+          driver,
+          mockedEndpoint,
+          [TraceName.SwapViewLoaded, TraceName.SwapQuoteFetch],
+        );
         traceTimers.push(
-          traceTimerResult(
-            occurrences,
+          sentryTimerResult(
+            transactions,
             TraceName.SwapViewLoaded,
             'swapViewLoaded',
           ),
-          traceTimerResult(
-            occurrences,
+          sentryTimerResult(
+            transactions,
             TraceName.SwapQuoteFetch,
             'swapQuoteFetch',
           ),
-          traceCountResult(
-            occurrences,
+          sentryCountResult(
+            transactions,
             TraceName.SwapQuoteFetch,
             'swapQuoteFetchCount',
           ),
