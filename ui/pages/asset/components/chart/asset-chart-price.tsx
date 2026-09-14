@@ -4,21 +4,8 @@ import React, {
   useImperativeHandle,
   useMemo,
 } from 'react';
+import { computePercentChange } from '../../../../components/app/assets/util/percentChange';
 import TokenPriceHeader from './token-price-header';
-
-/**
- * Computes percentage change from price and comparePrice.
- * Returns undefined if either value is missing or comparePrice is zero.
- */
-function computePercentChange(
-  price: number | undefined,
-  comparePrice: number | undefined,
-): number | undefined {
-  if (price === undefined || comparePrice === undefined || comparePrice === 0) {
-    return undefined;
-  }
-  return ((price - comparePrice) / comparePrice) * 100;
-}
 
 /**
  * A component that shows the price of an asset at a certain time, along with
