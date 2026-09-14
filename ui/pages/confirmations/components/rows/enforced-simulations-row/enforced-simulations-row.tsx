@@ -181,7 +181,7 @@ export function EnforcedSimulationsRow() {
       padding={4}
       gap={2}
       marginBottom={4}
-      className="relative overflow-visible rounded-lg border-2 border-muted shadow-[0_2px_8px_0_rgba(0,0,0,0.04)] bg-[linear-gradient(180deg,var(--color-background-default)_0%,var(--color-background-alternative)_100%)]"
+      className="relative overflow-visible rounded-lg border-2 border-muted shadow-[0_2px_8px_0_rgba(0,0,0,0.04)] bg-[linear-gradient(180deg,var(--color-background-subsection)_0%,var(--color-background-section)_100%)]"
     >
       <Box
         flexDirection={BoxFlexDirection.Row}
