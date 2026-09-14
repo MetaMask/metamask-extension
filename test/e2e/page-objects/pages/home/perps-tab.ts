@@ -180,6 +180,17 @@ export class PerpsTab extends PerpsPositionsBase {
   }
 
   /**
+   * Opens Withdraw from Perps Home. The destination is fixture-dependent:
+   * the legacy form (`PerpsWithdrawPage`) or the confirmation flow
+   * (`PerpsWithdrawConfirmation`).
+   */
+  async openWithdraw(): Promise<void> {
+    await this.navigateToPerpsHome();
+    await this.waitForBalanceSection();
+    await this.clickWithdraw();
+  }
+
+  /**
    * Waits for the balance section to be visible (empty or with balance).
    */
   async waitForBalanceSection(): Promise<void> {

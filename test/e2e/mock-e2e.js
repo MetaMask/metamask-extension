@@ -12,7 +12,6 @@ const {
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
-const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   DEFAULT_BTC_CONVERSION_RATE,
@@ -106,8 +105,8 @@ const {
 } = require('./tests/phishing-controller/mocks');
 const { mockIdentityServices } = require('./tests/identity/mocks');
 const {
-  mockAuthenticatedUserStorageNotificationPreferences,
-} = require('./helpers/authenticated-user-storage/mocks');
+  MockttpNotificationTriggerServer,
+} = require('./helpers/notifications/mock-notification-trigger-server');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
@@ -813,6 +812,36 @@ async function setupMocking(
       };
     });
 
+  // Chomp API service
+  await server
+    .forGet('https://chomp.api.cx.metamask.io/v1/chomp')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          auth: { message: '' },
+          chains: {
+            '0x8f': {
+              autoDepositDelegate: '0x0000000000000000000000000000000000000001',
+              protocol: {
+                vedaProtocol: {
+                  supportedTokens: [
+                    {
+                      tokenAddress:
+                        '0x00000000000000000000000000000000000000aa',
+                      tokenDecimals: 6,
+                    },
+                  ],
+                  adapterAddress: '0x0000000000000000000000000000000000000002',
+                  intentTypes: ['cash-deposit', 'cash-withdrawal'],
+                },
+              },
+            },
+          },
+        },
+      };
+    });
+
   // Account link
   const accountLinkRegex =
     /^https:\/\/etherscan.io\/address\/0x[a-fA-F0-9]{40}$/u;
@@ -1008,8 +1037,9 @@ async function setupMocking(
       };
     });
 
-  // This endpoint returns metadata for "transaction simulation" supported networks.
-  await server.forGet(`${TX_SENTINEL_URL}/networks`).thenJson(200, {
+  // STX v26 always routes to per-network tx-sentinel hosts. Default mocks cover
+  // all sentinel subdomains so startup/liveness/polling does not hang in E2E.
+  const txSentinelNetworksRegistry = {
     1: {
       name: 'Mainnet',
       group: 'ethereum',
@@ -1021,18 +1051,13 @@ async function setupMocking(
       smartTransactions: true,
       hidden: false,
     },
-  });
-  await server.forGet(`${TX_SENTINEL_URL}/network`).thenJson(200, {
-    name: 'Mainnet',
-    group: 'ethereum',
-    chainID: 1,
-    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-    network: 'ethereum-mainnet',
-    explorer: 'https://etherscan.io',
-    confirmations: true,
-    smartTransactions: true,
-    hidden: false,
-  });
+  };
+  await server
+    .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/networks$/u)
+    .thenJson(200, txSentinelNetworksRegistry);
+  await server
+    .forGet(/https:\/\/tx-sentinel-[\w-]+\.api\.cx\.metamask\.io\/network$/u)
+    .thenJson(200, txSentinelNetworksRegistry[1]);
 
   await server
     .forGet(`${SWAPS_API_V2_BASE_URL}/featureFlags`)
@@ -1785,8 +1810,8 @@ async function setupMocking(
   // Identity APIs
   await mockIdentityServices(server);
 
-  // Authenticated User Storage APIs
-  mockAuthenticatedUserStorageNotificationPreferences(server);
+  // Trigger API and Authenticated User Storage notification preferences
+  new MockttpNotificationTriggerServer().setupServer(server);
 
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {

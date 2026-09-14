@@ -271,15 +271,15 @@ export default function CreationSuccessful() {
       )}
       {renderDoneButton()}
       {!isFromSettingsSRPBackup && (
-        <Box>
-          <TextButton
-            onClick={() => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
-            className="hover:bg-transparent active:bg-transparent w-full text-center"
-            data-testid="manage-default-settings"
-          >
-            {t('manageDefaultSettings')}
-          </TextButton>
-        </Box>
+        <Button
+          variant={ButtonVariant.Tertiary}
+          size={ButtonSize.Lg}
+          className="w-full"
+          data-testid="manage-default-settings"
+          onClick={() => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+        >
+          {t('manageDefaultSettings')}
+        </Button>
       )}
     </Box>
   );

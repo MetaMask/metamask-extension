@@ -6,6 +6,17 @@ jest.mock('loglevel', () => ({
   error: jest.fn(),
 }));
 
+// @metamask/bridge-controller is ESM-only; its transformed exports are
+// non-configurable getters, so `jest.spyOn` on the namespace throws
+// "Cannot redefine property". Mock the module with a factory instead,
+// passing through to the real implementation unless a test overrides it.
+jest.mock('@metamask/bridge-controller', () => ({
+  ...jest.requireActual('@metamask/bridge-controller'),
+  formatChainIdToCaip: jest.fn(
+    jest.requireActual('@metamask/bridge-controller').formatChainIdToCaip,
+  ),
+}));
+
 describe('rewards-utils', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -290,11 +301,12 @@ describe('rewards-utils', () => {
       it('should return null when formatChainIdToCaip throws', () => {
         const address = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
 
-        jest
-          .spyOn(bridgeControllerUtils, 'formatChainIdToCaip')
-          .mockImplementationOnce(() => {
-            throw new Error('Invalid chain ID format');
-          });
+        const mockFormatChainIdToCaip = jest.mocked(
+          bridgeControllerUtils.formatChainIdToCaip,
+        );
+        mockFormatChainIdToCaip.mockImplementationOnce(() => {
+          throw new Error('Invalid chain ID format');
+        });
 
         const result = formatAccountToCaipAccountId(address, '0x1');
 
@@ -309,9 +321,12 @@ describe('rewards-utils', () => {
         const address = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
 
         // Mock formatChainIdToCaip to return invalid data that will cause parseCaipChainId to fail
-        jest
-          .spyOn(bridgeControllerUtils, 'formatChainIdToCaip')
-          .mockImplementationOnce(() => 'invalid:caip:format:with:extra:parts');
+        const mockFormatChainIdToCaip = jest.mocked(
+          bridgeControllerUtils.formatChainIdToCaip,
+        );
+        mockFormatChainIdToCaip.mockReturnValueOnce(
+          'invalid:caip:format:with:extra:parts' as never,
+        );
 
         const result = formatAccountToCaipAccountId(address, '0x1');
 

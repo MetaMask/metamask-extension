@@ -75,7 +75,7 @@ exports[`Customize Nonce should match snapshot 1`] = `
               class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root css-1z10yd4-MuiFormControl-root-MuiTextField-root"
             >
               <div
-                class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-15qwct3-MuiInputBase-root-MuiInput-root"
+                class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-td0fwi-MuiInputBase-root-MuiInput-root"
               >
                 <input
                   aria-invalid="false"

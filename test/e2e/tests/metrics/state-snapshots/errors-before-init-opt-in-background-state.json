@@ -34,6 +34,7 @@
     "AppMetadataController": {
       "currentMigrationVersion": "number",
       "firstTimeInfo": "object",
+      "installAttribution": null,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -107,16 +108,15 @@
     "LoggingController": { "logs": "object" },
     "MetaMetricsController": {
       "dataCollectionForMarketing": "boolean",
-      "fragments": "object",
       "marketingCampaignCookieId": null,
-      "tracesBeforeMetricsOptIn": "object",
-      "traits": "object"
+      "tracesBeforeMetricsOptIn": "object"
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
     "MoneyAccountController": { "moneyAccounts": "object" },
+    "MoneyAccountUpgradeController": { "upgradedAccounts": "object" },
     "MultichainAssetsController": {
       "accountsAssets": "object",
       "allIgnoredAssets": "object",
@@ -200,6 +200,8 @@
       "openSeaEnabled": true,
       "overrideContentSecurityPolicyHeader": true,
       "preferences": {
+        "basicFunctionalityMigrationNotification": null,
+        "basicFunctionalityMigrationNotificationDismissed": "boolean",
         "defaultAddressScope": "string",
         "dismissSmartAccountSuggestionEnabled": "boolean",
         "featureNotificationsEnabled": "boolean",
@@ -242,8 +244,16 @@
       "useTransactionSimulations": true,
       "watchEthereumAccountEnabled": "boolean"
     },
-    "ProfileMetricsController": "object",
+    "ProfileMetricsController": {
+      "accountSourceBackfillEnqueued": false,
+      "initialDelayEndTimestamp": "number",
+      "initialEnqueueCompleted": "boolean",
+      "proofBackfillEnqueued": "boolean",
+      "reportedAccounts": "object",
+      "syncQueue": "object"
+    },
     "RampsController": {
+      "autoramps": "object",
       "orders": "object",
       "providerAutoSelected": "boolean",
       "userRegion": null
@@ -309,7 +319,8 @@
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
       "isBackupAndSyncEnabled": true,
-      "isContactSyncingEnabled": true
+      "isContactSyncingEnabled": true,
+      "isRampsSyncingEnabled": true
     },
     "config": "object"
   }
