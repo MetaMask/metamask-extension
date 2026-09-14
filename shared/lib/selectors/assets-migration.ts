@@ -42,7 +42,7 @@ import { createDeepEqualSelector } from './selector-creators';
 // Old state controllers and fields status
 //
 // AccountTrackerController
-// accountsByChainId: DONE
+// accountsByChainId: DONE (via AssetsController when unify enabled; controller removed)
 //
 // TokensController
 // allTokens: DONE

@@ -96,10 +96,6 @@ import {
   getNameControllerMessenger,
 } from './name-controller-messenger';
 import { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
-import {
-  getAccountTrackerControllerInitMessenger,
-  getAccountTrackerControllerMessenger,
-} from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 import { getQrSyncControllerMessenger } from './qr-sync';
 import {
@@ -184,11 +180,6 @@ import {
 } from './money-account-upgrade-controller-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
-export type { AccountTrackerControllerInitMessenger } from './account-tracker-controller-messenger';
-export {
-  getAccountTrackerControllerMessenger,
-  getAccountTrackerControllerInitMessenger,
-} from './account-tracker-controller-messenger';
 export { getAlertControllerMessenger } from './alert-controller-messenger';
 export { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 export { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
@@ -304,10 +295,6 @@ export const MESSENGER_FACTORIES = {
   AccountOrderController: {
     getMessenger: getAccountOrderControllerMessenger,
     getInitMessenger: noop,
-  },
-  AccountTrackerController: {
-    getMessenger: getAccountTrackerControllerMessenger,
-    getInitMessenger: getAccountTrackerControllerInitMessenger,
   },
   AlertController: {
     getMessenger: getAlertControllerMessenger,

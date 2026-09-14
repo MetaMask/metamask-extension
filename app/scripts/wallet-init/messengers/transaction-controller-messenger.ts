@@ -65,6 +65,8 @@ import {
   InstitutionalSnapControllerPublishHookAction,
 } from '../../controllers/institutional-snap/InstitutionalSnapController-method-action-types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { registerAccountTrackerGetStateCompat } from '../../messenger-client-init/messengers/account-tracker-controller-compat';
+import { registerCurrencyRateGetStateCompat } from '../../messenger-client-init/messengers/currency-rate-controller-compat';
 
 export type TransactionControllerInitMessenger = ReturnType<
   typeof getTransactionControllerInitMessenger
@@ -129,6 +131,11 @@ export function getTransactionControllerInitMessenger(
     TransactionControllerInitMessengerEvents
   >,
 ) {
+  // Compat shims: wallet-init TransactionController may still request
+  // AccountTrackerController:getState / CurrencyRateController:getState.
+  registerAccountTrackerGetStateCompat(messenger as RootMessenger);
+  registerCurrencyRateGetStateCompat(messenger as RootMessenger);
+
   const controllerInitMessenger = new Messenger<
     'TransactionControllerInit',
     TransactionControllerInitMessengerActions,
@@ -157,6 +164,7 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:unapprovedTransactionAdded',
     ],
     actions: [
+      // Compat shim: derives accountsByChainId from AssetsController.
       'AccountTrackerController:getState',
       'AccountsController:getState',
       'ApprovalController:acceptRequest',
@@ -169,8 +177,7 @@ export function getTransactionControllerInitMessenger(
       'AuthenticationController:getBearerToken',
       'BridgeStatusController:getState',
       'BridgeStatusController:submitTx',
-      // Compat shim registered by transaction-pay / bridge messengers:
-      // derives currentCurrency from AssetsController.
+      // Compat shim: derives currentCurrency from AssetsController.
       'CurrencyRateController:getState',
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',

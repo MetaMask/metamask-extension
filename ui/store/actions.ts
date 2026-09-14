@@ -5815,20 +5815,6 @@ export async function staticAssetsStopPollingByPollingToken(
 }
 
 /**
- * Stops polling on the account tracker controller.
- *
- * @param pollingToken - polling token to use to stop polling.
- */
-export async function accountTrackerStopPollingByPollingToken(
-  pollingToken: string,
-) {
-  await submitRequestToBackground('accountTrackerStopPollingByPollingToken', [
-    pollingToken,
-  ]);
-  await removePollingTokenFromAppState(pollingToken);
-}
-
-/**
  * Informs the GasFeeController that the UI requires gas fee polling
  *
  * @param networkClientId - unique identifier for the network client

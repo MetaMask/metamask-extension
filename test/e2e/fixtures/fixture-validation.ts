@@ -79,7 +79,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.
   'data.AccountsController.internalAccounts.accounts',
-  'data.AccountTracker',
   'data.AssetsController',
   'data.AuthenticationController',
   'data.MetaMetricsController',

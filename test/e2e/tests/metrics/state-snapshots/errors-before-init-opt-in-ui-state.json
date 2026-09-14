@@ -4,7 +4,6 @@
       "hiddenAccountList": "object",
       "pinnedAccountList": "object"
     },
-    "AccountTracker": {},
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
       "accountTree": "object",
