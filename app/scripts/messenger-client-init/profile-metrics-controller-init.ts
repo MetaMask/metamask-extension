@@ -24,9 +24,11 @@ export const ProfileMetricsControllerInit: MessengerClientInitFunction<
 > = ({ controllerMessenger, persistedState, getMessengerClient }) => {
   const analyticsController = getMessengerClient('AnalyticsController');
   const appStateController = getMessengerClient('AppStateController');
+  const preferencesController = getMessengerClient('PreferencesController');
   const assertUserOptedIn = () =>
     appStateController.state.pna25Acknowledged === true &&
-    analyticsController.state.optedIn === true;
+    analyticsController.state.optedIn === true &&
+    preferencesController.state.useExternalServices === true;
 
   const messengerClient = new ProfileMetricsController({
     messenger: controllerMessenger,

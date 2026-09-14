@@ -531,6 +531,22 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setArcUsageNoticeShown', () => {
+    it('defaults arcUsageNoticeShown to false', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.arcUsageNoticeShown).toBe(false);
+      });
+    });
+
+    it('sets arcUsageNoticeShown to true', async () => {
+      await withController(({ controller }) => {
+        controller.setArcUsageNoticeShown();
+
+        expect(controller.state.arcUsageNoticeShown).toBe(true);
+      });
+    });
+  });
+
   describe('setShieldPausedToastLastClickedOrClosed', () => {
     it('set the shieldPausedToastLastClickedOrClosed time', async () => {
       await withController(({ controller }) => {
@@ -784,22 +800,6 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setCanTrackWalletFundsObtained', () => {
-    it('updates the canTrackWalletFundsObtained state with a boolean value', async () => {
-      await withController(({ controller }) => {
-        expect(controller.state.canTrackWalletFundsObtained).toBe(true);
-
-        controller.setCanTrackWalletFundsObtained(false);
-
-        expect(controller.state.canTrackWalletFundsObtained).toBe(false);
-
-        controller.setCanTrackWalletFundsObtained(true);
-
-        expect(controller.state.canTrackWalletFundsObtained).toBe(true);
-      });
-    });
-  });
-
   describe('metadata', () => {
     it('includes expected state in debug snapshots', async () => {
       await withController(
@@ -831,8 +831,8 @@ describe('AppStateController', () => {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
               "appActiveTab": undefined,
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
-              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
@@ -921,8 +921,8 @@ describe('AppStateController', () => {
             {
               "addressSecurityAlertResponses": {},
               "appActiveTab": undefined,
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
-              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
@@ -1007,8 +1007,8 @@ describe('AppStateController', () => {
             ),
           ).toMatchInlineSnapshot(`
             {
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
-              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "defaultHomeActiveTabName": null,
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
@@ -1082,6 +1082,7 @@ describe('AppStateController', () => {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
               "appActiveTab": undefined,
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,

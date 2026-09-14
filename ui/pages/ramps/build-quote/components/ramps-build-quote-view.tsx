@@ -64,16 +64,24 @@ export default function RampsBuildQuoteView({
             alignItems={BoxAlignItems.Center}
           >
             <span className={amountTextClassName}>{currencySymbol}</span>
-            <input
-              aria-label={t('amount')}
-              className={`min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none ${amountTextClassName}`}
-              data-testid="ramps-build-quote-amount-input"
-              inputMode="decimal"
-              onChange={handleAmountChange}
-              size={Math.max(amount.length, 1)}
-              type="text"
-              value={amount}
-            />
+            {/* The hidden amount sets an exact cross-browser input width. */}
+            <span className="relative w-max min-w-[1ch]">
+              <span
+                aria-hidden="true"
+                className={`block invisible min-w-[1ch] whitespace-pre ${amountTextClassName}`}
+              >
+                {amount || '0'}
+              </span>
+              <input
+                aria-label={t('amount')}
+                className={`absolute inset-0 min-w-[1ch] max-w-full border-0 bg-transparent p-0 text-left outline-none ${amountTextClassName}`}
+                data-testid="ramps-build-quote-amount-input"
+                inputMode="decimal"
+                onChange={handleAmountChange}
+                type="text"
+                value={amount}
+              />
+            </span>
           </Box>
 
           <RampsPaymentMethodPill

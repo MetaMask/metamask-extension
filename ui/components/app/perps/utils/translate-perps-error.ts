@@ -13,6 +13,10 @@ export const ERROR_CODE_TO_I18N_KEY = {
 
   // Provider / token
   [PERPS_ERROR_CODES.PROVIDER_NOT_AVAILABLE]: 'somethingWentWrong',
+  // Routing failures across the controller's multi-provider layer. The
+  // extension exposes no provider picker, so neither is user-actionable.
+  [PERPS_ERROR_CODES.PROVIDER_NOT_FOUND]: 'somethingWentWrong',
+  [PERPS_ERROR_CODES.PROVIDER_LIFECYCLE_STALE]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.TOKEN_NOT_SUPPORTED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.BRIDGE_CONTRACT_NOT_FOUND]: 'somethingWentWrong',
 
@@ -78,7 +82,7 @@ export const ERROR_CODE_TO_I18N_KEY = {
   // reasoning as the trigger block above: the extension's order form places
   // only market and limit orders, so nothing in its UI can produce a strategy
   // request and none of these codes is reachable from it. They share the
-  // generic `ORDER_*` copy rather than carrying nineteen bespoke strings that
+  // generic `ORDER_*` copy rather than carrying a bespoke string per code that
   // every locale would have to translate for a flow that does not exist.
   // `ORDER_STRATEGY_HANDLE_UNKNOWN` and `ORDER_STRATEGY_CANCEL_INCOMPLETE`
   // arrive on the cancel path, where `CANCEL_ORDER_I18N_KEY_OVERRIDES` already
@@ -86,6 +90,7 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.ORDER_STRATEGY_PARAMS_NOT_SUPPORTED]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_STRATEGY_FIELD_UNSUPPORTED]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_STRATEGY_MARKET_UNSUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_STRATEGY_ROUTE_UNAVAILABLE]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_STRATEGY_HANDLE_UNKNOWN]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_STRATEGY_CANCEL_INCOMPLETE]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_EDIT_STRATEGY_UNSUPPORTED]: 'perpsOrderFailed',
@@ -99,6 +104,7 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.ORDER_SCALE_NOTIONAL_TOO_SMALL]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_CHASE_INTERVAL_INVALID]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_CHASE_DURATION_INVALID]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_CHASE_MAX_DISTANCE_INVALID]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_CHASE_LIMIT_REACHED]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_CHASE_ABANDONED]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_CHASE_TOUCH_UNAVAILABLE]: 'perpsOrderFailed',
@@ -147,6 +153,10 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.POSITION_WOULD_FLIP]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.MARGIN_ADJUSTMENT_FAILED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.TPSL_UPDATE_FAILED]: 'somethingWentWrong',
+  // The controller could not keep the position's TP/SL triggers in place. The
+  // user cannot re-arm them from the error toast, so it shares the generic copy
+  // with the update failure above.
+  [PERPS_ERROR_CODES.TPSL_PROTECTION_LOST]: 'somethingWentWrong',
 
   // Order execution
   [PERPS_ERROR_CODES.ORDER_REJECTED]: 'perpsOrderRejected',

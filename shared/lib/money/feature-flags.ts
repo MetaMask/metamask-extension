@@ -42,6 +42,13 @@ export const MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME =
   'moneyActivityMockDataEnabled';
 
 /**
+ * The LaunchDarkly flag that gates navigation from Money activity rows to
+ * the transaction details page. Same name as mobile.
+ */
+export const MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME =
+  'moneyEnableActivityDetails';
+
+/**
  * Whether the Money Account feature is enabled.
  *
  * The flag is version-gated, so an absent, malformed, or below-minimum-version
@@ -164,4 +171,25 @@ export function isMoneyActivityMockDataEnabled(
   }
 
   return process.env.MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED?.toString() === 'true';
+}
+
+/**
+ * Whether tapping a Money activity row should open the transaction details
+ * page.
+ *
+ * A remote boolean wins (including `false`). Any other remote value falls
+ * through to `MM_MONEY_ENABLE_ACTIVITY_DETAILS`.
+ *
+ * @param remoteFeatureFlags - The remote feature flags.
+ * @returns Whether activity details navigation is enabled.
+ */
+export function isMoneyActivityDetailsEnabled(
+  remoteFeatureFlags: Record<string, unknown> | undefined,
+): boolean {
+  const remote = remoteFeatureFlags?.[MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME];
+  if (typeof remote === 'boolean') {
+    return remote;
+  }
+
+  return process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS?.toString() === 'true';
 }

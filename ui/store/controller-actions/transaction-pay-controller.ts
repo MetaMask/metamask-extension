@@ -1,7 +1,9 @@
 import type { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
-import type { WithdrawAmountCommitResult } from '../../../shared/lib/money/withdraw-amount-commit';
+import type { MoneyAccountWithdrawAmountUpdate } from '../../../shared/lib/money/withdraw-amount-commit';
 import { submitRequestToBackground } from '../background-connection';
+
+export type { MoneyAccountWithdrawAmountUpdate };
 
 export async function updateTransactionPaymentToken({
   transactionId,
@@ -24,26 +26,30 @@ export async function updateTransactionPaymentToken({
 export async function setPaymentOverride(
   transactionId: string,
   {
+    atomic,
     paymentOverride,
     refundTo,
   }: {
+    atomic?: boolean;
     paymentOverride?: PaymentOverride;
     refundTo?: Hex;
   } = {},
 ): Promise<void> {
   return await submitRequestToBackground('setTransactionPayPaymentOverride', [
     transactionId,
-    { paymentOverride, refundTo },
+    { atomic, paymentOverride, refundTo },
   ]);
 }
 
 export async function setIsMaxAmount(
   transactionId: string,
   isMaxAmount: boolean,
+  options: { isMoneyAccountDeposit?: boolean } = {},
 ): Promise<void> {
   return await submitRequestToBackground('setTransactionPayIsMaxAmount', [
     transactionId,
     isMaxAmount,
+    options,
   ]);
 }
 
@@ -54,14 +60,18 @@ export async function setIsMaxAmount(
  * recorded against it before this call.
  *
  * @param batchId - Caller-generated batch id.
+ * @param accountOverride - Currently selected EVM account, used as the
+ * default funding account on the confirmation (`txParams.from` is the
+ * money account, which executes the batch).
  * @returns The created transaction id and the batch id.
  */
 export async function createMoneyAccountDepositTransaction(
   batchId: Hex,
+  accountOverride: Hex,
 ): Promise<{ transactionId: string; batchId: Hex }> {
   return await submitRequestToBackground(
     'createMoneyAccountDepositTransaction',
-    [batchId],
+    [batchId, accountOverride],
   );
 }
 
@@ -69,52 +79,117 @@ export async function createMoneyAccountDepositTransaction(
  * Creates the placeholder Money Account withdrawal batch in the background
  * and returns the created transaction's id for confirmation navigation.
  *
+ * @param accountOverride - Currently selected EVM account, used as the
+ * default destination on the confirmation (`txParams.from` is the money
+ * account, which executes the batch).
  * @returns The created transaction id and the batch id.
  */
-export async function createMoneyAccountWithdrawTransaction(): Promise<{
+export async function createMoneyAccountWithdrawTransaction(
+  accountOverride: Hex,
+): Promise<{
   transactionId: string;
   batchId: Hex;
 }> {
   return await submitRequestToBackground(
     'createMoneyAccountWithdrawTransaction',
-    [],
+    [accountOverride],
   );
 }
 
+const lastWithdrawAmountByTransactionId = new Map<string, string>();
+const lastWithdrawAmountListeners = new Set<() => void>();
+
 /**
- * Prepares and commits a Money Account withdrawal amount in the background:
- * re-encodes the withdraw + transfer calldata for the new amount, with the
- * redeemed mUSD forwarded to the Pay account override (the account shown on
- * the confirmation) or, when unset, the currently selected account.
- * Superseded intents resolve `{ didCommit: false }`.
+ * Last human-readable withdraw amount recorded for this transaction.
+ * Confirm uses this so Send can re-encode even if the confirmation UI still
+ * holds the unencoded placeholder. The footer uses it to enable Send when
+ * TPC has no required token / quote totals (direct withdraws).
  *
- * NOTE: The background handler is not registered yet — the
- * transaction-pay-controller wiring is being delivered separately by the Pay
- * team, so this call rejects until that lands.
+ * @param transactionId - Id of the Money Account withdrawal transaction.
+ * @returns The last amount, if any update has been recorded.
+ */
+export function getLastMoneyAccountWithdrawAmount(
+  transactionId: string,
+): string | undefined {
+  return lastWithdrawAmountByTransactionId.get(transactionId);
+}
+
+/**
+ * Record the typed withdraw amount immediately so Send can encode before the
+ * debounced background write finishes.
  *
  * @param transactionId - Id of the Money Account withdrawal transaction.
  * @param amountHuman - Exact human-readable amount.
- * @returns Whether this intent committed transaction metadata, and the
- * recipient it encoded if so.
+ */
+export function setLastMoneyAccountWithdrawAmount(
+  transactionId: string,
+  amountHuman: string,
+): void {
+  lastWithdrawAmountByTransactionId.set(transactionId, amountHuman);
+  lastWithdrawAmountListeners.forEach((listener) => listener());
+}
+
+/**
+ * Clears the recorded withdraw amount for a transaction. Called when the
+ * confirmation unmounts or after a successful prepare so the module-level map
+ * does not retain stale entries for the UI process lifetime.
+ *
+ * @param transactionId - Id of the Money Account withdrawal transaction.
+ */
+export function clearLastMoneyAccountWithdrawAmount(
+  transactionId: string,
+): void {
+  if (!lastWithdrawAmountByTransactionId.delete(transactionId)) {
+    return;
+  }
+  lastWithdrawAmountListeners.forEach((listener) => listener());
+}
+
+/**
+ * Subscribe to last-withdraw-amount writes. Used by
+ * `useLastMoneyAccountWithdrawAmount`.
+ *
+ * @param onStoreChange - Listener invoked after any amount is recorded.
+ * @returns Unsubscribe function.
+ */
+export function subscribeLastMoneyAccountWithdrawAmount(
+  onStoreChange: () => void,
+): () => void {
+  lastWithdrawAmountListeners.add(onStoreChange);
+  return () => {
+    lastWithdrawAmountListeners.delete(onStoreChange);
+  };
+}
+
+/**
+ * Encodes and commits a Money Account withdrawal amount in the background.
+ * Confirm approves the returned transaction so Send does not use the empty
+ * placeholder. Superseded or zero-amount intents resolve `false`.
+ *
+ * @param transactionId - Id of the Money Account withdrawal transaction.
+ * @param amountHuman - Exact human-readable amount.
+ * @param recipientOverride - Optional EVM address to receive the redeemed mUSD.
+ * @returns The encoded nested calldata, or `false` if this intent did not
+ * commit.
  */
 export async function updateMoneyAccountWithdrawAmount(
   transactionId: string,
   amountHuman: string,
-): Promise<WithdrawAmountCommitResult> {
+  recipientOverride?: Hex,
+): Promise<MoneyAccountWithdrawAmountUpdate | false> {
+  setLastMoneyAccountWithdrawAmount(transactionId, amountHuman);
   return await submitRequestToBackground('updateMoneyAccountWithdrawAmount', [
     transactionId,
     amountHuman,
+    recipientOverride,
   ]);
 }
 
 /**
  * Prepares and commits a Money Account deposit amount in the background:
  * re-encodes the nested approve + deposit calldata for the new amount and
- * writes it into the transaction. Superseded intents resolve `false`.
- *
- * NOTE: The background handler is not registered yet — the
- * transaction-pay-controller wiring is being delivered separately by the Pay
- * team, so this call rejects until that lands.
+ * writes `requiredAssets` so TransactionPayController can fetch quotes.
+ * Superseded intents resolve `false`.
  *
  * @param transactionId - Id of the Money Account deposit transaction.
  * @param amountHuman - Exact human-readable amount.

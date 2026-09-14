@@ -117,8 +117,8 @@ exports[`Bridge renders the component with initial props 1`] = `
                       </div>
                     </div>
                     <div
-                      class="absolute"
-                      style="bottom: 0px; right: 0px;"
+                      class="absolute inline-flex items-center justify-center"
+                      style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
                     >
                       <div
                         class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"
@@ -231,8 +231,8 @@ exports[`Bridge renders the component with initial props 1`] = `
                         </div>
                       </div>
                       <div
-                        class="absolute"
-                        style="bottom: 0px; right: 0px;"
+                        class="absolute inline-flex items-center justify-center"
+                        style="bottom: 7%; right: 7%; transform: translate(50%, 50%);"
                       >
                         <div
                           class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-alternative rounded-sm h-[18px] w-[18px] border-background-default border"

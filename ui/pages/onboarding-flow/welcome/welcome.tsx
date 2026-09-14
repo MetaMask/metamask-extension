@@ -75,7 +75,6 @@ import LoginErrorModal from './login-error-modal';
 
 const MetaMaskWordMarkAnimation = lazy(
   () =>
-    // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
     import('./metamask-wordmark-animation') as unknown as Promise<{
       default: ComponentType<
         React.PropsWithChildren<{
@@ -89,7 +88,6 @@ const MetaMaskWordMarkAnimation = lazy(
 
 const FoxAppearAnimation = lazy(
   () =>
-    // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
     import('./fox-appear-animation') as unknown as Promise<{
       default: ComponentType<
         React.PropsWithChildren<{

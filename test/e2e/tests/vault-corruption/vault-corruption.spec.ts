@@ -13,7 +13,7 @@ import {
   getFirstAddress,
   onboardThenTriggerCorruptionFlow,
 } from '../../page-objects/flows/vault-corruption.flow';
-import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
+import VaultRecoveryPage from '../../page-objects/pages/vault/recovery-page';
 import { pausePersistence, readStorage } from '../state-persistence/helpers';
 import { getConfig, mockFeatureFlagsWithoutNonEvmAccounts } from './helpers';
 

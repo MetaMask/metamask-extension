@@ -10,7 +10,7 @@ import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 import {
-  mockTronApis,
+  mockTronSendApis,
   TRON_RECIPIENT_ADDRESS,
 } from '../tron/mocks/common-tron';
 
@@ -20,7 +20,7 @@ describe('Send Tron', function () {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockTronApis,
+        testSpecificMock: mockTronSendApis,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
@@ -39,7 +39,6 @@ describe('Send Tron', function () {
         const sendPage = new SendPage(driver);
         await sendPage.selectToken('tron:728126428', 'TRX');
 
-        // Wait for the send page to load
         await sendPage.fillRecipient({
           recipientAddress: TRON_RECIPIENT_ADDRESS,
         });
@@ -53,8 +52,8 @@ describe('Send Tron', function () {
 
         const activityTab = new ActivityTab(driver);
         await activityTab.goToActivityList();
+        await activityTab.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityTab.checkTxAmountInActivity('-1 TRX', 1);
-        await activityTab.checkNoFailedTransactions();
       },
     );
   });

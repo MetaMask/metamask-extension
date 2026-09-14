@@ -21,6 +21,7 @@ describe('getTransactionControllerInitMessenger', () => {
       expect.objectContaining({
         actions: expect.arrayContaining([
           'TransactionPayController:getDelegationTransaction',
+          'TransactionPayController:getPaymentOverrideData',
         ]),
       }),
     );

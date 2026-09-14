@@ -6,7 +6,12 @@ import {
 } from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
+  getFromAmountInCurrency,
+  getFromToken,
   getFromTokenBalanceInUsd,
+  getIsSlippageUserOverride,
+  getSlippage,
+  getToToken,
   getWarningLabels,
   type BridgeAppState,
 } from '../../ducks/bridge/selectors';
@@ -33,6 +38,11 @@ export const useQuoteFetchEvents = () => {
   );
 
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
+  const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
+  const fromToken = useSelector(getFromToken);
+  const toToken = useSelector(getToToken);
+  const slippage = useSelector(getSlippage);
+  const isSlippageUserOverride = useSelector(getIsSlippageUserOverride);
 
   const getHasSufficientGasForQuote = useHasSufficientGasForQuoteForMetrics();
   const hasSufficientGasForQuote = getHasSufficientGasForQuote(
@@ -60,6 +70,20 @@ export const useQuoteFetchEvents = () => {
             recommendedQuote,
             fromTokenBalanceInUsd,
             hasSufficientGasForQuote,
+            {
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+              custom_slippage: isSlippageUserOverride,
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+              slippage_limit:
+                slippage === undefined ? undefined : Number(slippage),
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+              usd_amount_source:
+                fromAmountInCurrency.usd.toNumber() || undefined,
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+              token_symbol_source: fromToken?.symbol,
+              // eslint-disable-next-line @typescript-eslint/naming-convention -- analytics property
+              token_symbol_destination: toToken?.symbol,
+            },
           ),
         ),
       );

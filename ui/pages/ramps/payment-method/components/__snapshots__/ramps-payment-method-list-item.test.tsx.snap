@@ -179,7 +179,7 @@ exports[`RampsPaymentMethodListItem matches snapshot with delay and limits 1`] =
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate text-left"
             data-testid="ramps-payment-method-item-delay-debit-credit-card"
           >
-            5 - 10 mins • $25.00 – $2,000.00
+            5 - 10 mins • Up to $2,000
           </p>
         </div>
       </div>
@@ -312,7 +312,7 @@ exports[`RampsPaymentMethodListItem matches snapshot with quote amounts 1`] = `
           <p
             class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
           >
-            0.10596 ETH
+            0.106 ETH
           </p>
           <p
             class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"

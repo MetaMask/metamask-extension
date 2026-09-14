@@ -19,10 +19,9 @@ import {
   useConfirmationNavigationOptions,
 } from '../../../hooks/useConfirmationNavigation';
 import { CustomAmountInfoSkeleton } from '../../info/custom-amount-info';
-import { MusdClaimInfo } from '../../info/musd-claim-info';
-import { MusdConversionInfo } from '../../info/musd-conversion-info';
+import { MoneyAccountDepositInfo } from '../../info/money-account-deposit-info';
 import { MoneyAccountWithdrawInfo } from '../../info/money-account-withdraw-info';
-import { MoneyAccountDepositInfo } from './money-account-deposit-info';
+import { MusdConversionInfo } from '../../info/musd-conversion-info';
 import { PerpsDepositInfo } from './perps-deposit-info';
 import { PerpsWithdrawInfo } from './perps-withdraw-info';
 import ApproveInfo from './approve/approve';
@@ -164,7 +163,9 @@ const Info = () => {
 
       [TransactionType.moneyAccountDeposit]: () => MoneyAccountDepositInfo,
       [TransactionType.moneyAccountWithdraw]: () => MoneyAccountWithdrawInfo,
-      [TransactionType.musdClaim]: () => MusdClaimInfo,
+      // Merkl claiming was removed (MUSD-1223); the type stays mapped so a claim
+      // still in flight across the upgrade renders instead of throwing here.
+      [TransactionType.musdClaim]: () => BaseTransactionInfo,
       [TransactionType.musdConversion]: () => MusdConversionInfo,
       [TransactionType.perpsDeposit]: () => PerpsDepositInfo,
       [TransactionType.perpsWithdraw]: () => PerpsWithdrawInfo,

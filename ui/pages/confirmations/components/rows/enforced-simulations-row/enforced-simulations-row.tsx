@@ -59,9 +59,11 @@ export function EnforcedSimulationsRow() {
     currentTransactionIdRef.current = transactionId;
   }, [transactionId]);
 
-  useEffect(() => {
+  const [prevTransactionId, setPrevTransactionId] = useState(transactionId);
+  if (transactionId !== prevTransactionId) {
+    setPrevTransactionId(transactionId);
     setIsUnavailable(false);
-  }, [transactionId]);
+  }
 
   useEffect(() => {
     if (
@@ -216,15 +218,9 @@ function EnforcedSimulationsCheckbox({
 
   const isToggling = pendingEnabled !== null;
 
-  useEffect(() => {
-    if (pendingEnabled === null) {
-      return;
-    }
-
-    if (isEnabled === pendingEnabled) {
-      setPendingEnabled(null);
-    }
-  }, [isEnabled, pendingEnabled]);
+  if (pendingEnabled !== null && isEnabled === pendingEnabled) {
+    setPendingEnabled(null);
+  }
 
   const handleToggle = useCallback(async () => {
     const targetEnabled = !isEnabled;

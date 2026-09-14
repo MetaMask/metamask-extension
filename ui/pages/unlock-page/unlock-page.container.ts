@@ -7,7 +7,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../shared/constants/app';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { getRedirectAfterUnlock } from '../../helpers/utils/redirect-after-unlock';
 import {
   tryUnlockMetamask,
   forceUpdateMetamaskState,
@@ -111,15 +111,7 @@ const mergeProps = (
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const handleNavigationAfterUnlock = async () => {
-    // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
-    let redirectTo = DEFAULT_ROUTE;
-    const fromLocation = location.state?.from;
-    if (fromLocation?.pathname) {
-      const search = fromLocation.search || '';
-      redirectTo = fromLocation.pathname + search;
-    }
-
-    navigate(redirectTo, { replace: true });
+    navigate(getRedirectAfterUnlock(location.state), { replace: true });
   };
 
   const onSubmit = async (password: string) => {

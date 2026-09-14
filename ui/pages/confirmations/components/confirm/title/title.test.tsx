@@ -17,6 +17,7 @@ import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmat
 import {
   permitNFTSignatureMsg,
   permitSignatureMsg,
+  permitSignatureMsgWithUnsignedFields,
 } from '../../../../../../test/data/confirmations/typed_sign';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -124,6 +125,29 @@ describe('ConfirmTitle', () => {
     expect(
       getByText(tEn('confirmTitleDescPermitSignature')),
     ).toBeInTheDocument();
+  });
+
+  it('ignores unsigned permit fields when rendering the title', () => {
+    const mockStore = configureMockStore([])(
+      getMockTypedSignConfirmStateForRequest(
+        permitSignatureMsgWithUnsignedFields,
+      ),
+    );
+    const { getByText, queryByText } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+    );
+
+    expect(getByText(tEn('confirmTitlePermitTokens'))).toBeInTheDocument();
+    expect(
+      getByText(tEn('confirmTitleDescPermitSignature')),
+    ).toBeInTheDocument();
+    expect(
+      queryByText(tEn('confirmTitleRevokeApproveTransaction')),
+    ).not.toBeInTheDocument();
+    expect(
+      queryByText(tEn('confirmTitleApproveTransactionNFT')),
+    ).not.toBeInTheDocument();
   });
 
   it('should render the title and description for a NFT permit signature', () => {

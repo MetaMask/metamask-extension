@@ -6,7 +6,7 @@ import {
   completeImportSRPOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import { lockAndWaitForLoginPage } from '../../page-objects/flows/login.flow';
 
 describe('Reset Wallet - ', function () {

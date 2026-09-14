@@ -19,12 +19,14 @@ export type MoneyActivityListProps = {
   items: MoneyActivityItem[];
   privacyMode?: boolean;
   onViewAll?: () => void;
+  onItemClick?: (item: MoneyActivityItem) => void;
 };
 
 export function MoneyActivityList({
   items,
   privacyMode = false,
   onViewAll,
+  onItemClick,
 }: MoneyActivityListProps) {
   const t = useI18nContext();
   const previewItems = items.slice(0, MAX_PREVIEW_ITEMS);
@@ -52,7 +54,12 @@ export function MoneyActivityList({
         ) : null}
       </Box>
       {previewItems.map((item) => (
-        <MoneyActivityRow key={item.id} item={item} privacyMode={privacyMode} />
+        <MoneyActivityRow
+          key={item.id}
+          item={item}
+          privacyMode={privacyMode}
+          onClick={onItemClick ? () => onItemClick(item) : undefined}
+        />
       ))}
       {hasMoreItems ? (
         <Box paddingLeft={4} paddingRight={4} paddingTop={3} paddingBottom={3}>

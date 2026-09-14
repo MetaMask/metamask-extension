@@ -383,6 +383,10 @@ env:
   # can be reviewed without live deposits/withdraws. Remote flag
   # moneyActivityMockDataEnabled takes precedence when it is a boolean.
   - MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED: false
+  # Local/QA only: make Money activity rows navigate to the transaction
+  # details page. Remote flag moneyEnableActivityDetails takes precedence
+  # when it is a boolean.
+  - MM_MONEY_ENABLE_ACTIVITY_DETAILS: false
 
   ###
   # Meta variables

@@ -4,6 +4,7 @@ import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feat
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import {
   isMoneyAccountEnabled,
+  isMoneyActivityDetailsEnabled,
   isMoneyActivityMockDataEnabled,
   isMoneyEarningSectionEnabled,
 } from '../../../shared/lib/money/feature-flags';
@@ -140,4 +141,19 @@ export const selectMoneyAccountDepositQuotePipelineEnabled = createSelector(
 export const selectMoneyActivityMockDataEnabled = createSelector(
   getRemoteFeatureFlags,
   isMoneyActivityMockDataEnabled,
+);
+
+/**
+ * Selects whether tapping a Money activity row should open transaction
+ * details.
+ *
+ * Remote `moneyEnableActivityDetails` (plain boolean) wins; otherwise the
+ * `MM_MONEY_ENABLE_ACTIVITY_DETAILS` env var is used. Defaults off.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether activity details navigation is enabled.
+ */
+export const selectMoneyActivityDetailsEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyActivityDetailsEnabled,
 );

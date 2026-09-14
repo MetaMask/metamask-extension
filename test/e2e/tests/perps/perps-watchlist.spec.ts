@@ -129,4 +129,36 @@ describe('Perps Watchlist', function (this: Suite) {
       },
     );
   });
+
+  it('opens the market list filtered to the watchlist from the section header', async function () {
+    await withFixtures(
+      {
+        ...getPerpsConfigEligible(this.test?.fullTitle()),
+        ignoredConsoleErrors: ['Value is null'],
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver);
+
+        const perpsTab = new PerpsTab(driver);
+        await perpsTab.navigateToPerpsHome();
+        await perpsTab.waitForBalanceSection();
+
+        const marketListPage = new PerpsMarketListPage(driver);
+        const marketDetailPage = new PerpsMarketDetailPage(driver);
+
+        await marketListPage.navigateToMarketList();
+        await marketDetailPage.navigateToMarket('BTC');
+        await marketDetailPage.clickFavoriteButton();
+        await marketDetailPage.clickBack();
+        await marketListPage.clickBack();
+        await perpsTab.waitForWatchlistMarket('BTC');
+
+        await perpsTab.clickWatchlistHeader();
+
+        await marketListPage.checkPageIsLoaded();
+        await marketListPage.waitForFilterLabel('Watchlist');
+        await marketListPage.waitForMarketRow('BTC');
+      },
+    );
+  });
 });

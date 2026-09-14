@@ -12,7 +12,7 @@ import OnboardingPrivacySettingsPage from '../pages/onboarding/onboarding-privac
 import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
 import HeaderNavbar from '../pages/home/header-navbar';
 import HomePage from '../pages/home/homepage';
-import LoginPage from '../pages/login-page';
+import LoginPage from '../pages/onboarding/login-page';
 import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
 

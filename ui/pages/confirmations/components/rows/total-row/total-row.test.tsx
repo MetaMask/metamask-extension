@@ -7,11 +7,13 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
+import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { TotalRow, TotalRowProps } from './total-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
+jest.mock('../../../hooks/pay/useIsPaidByMetaMask');
 
 const mockStore = configureMockStore([]);
 
@@ -28,6 +30,7 @@ describe('TotalRow', () => {
   const useIsTransactionPayLoadingMock = jest.mocked(
     useIsTransactionPayLoading,
   );
+  const useIsPaidByMetaMaskMock = jest.mocked(useIsPaidByMetaMask);
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -36,6 +39,7 @@ describe('TotalRow', () => {
     } as TransactionPayTotals);
 
     useIsTransactionPayLoadingMock.mockReturnValue(false);
+    useIsPaidByMetaMaskMock.mockReturnValue(false);
   });
 
   it('renders skeleton with label when loading (Default variant)', () => {
@@ -86,5 +90,22 @@ describe('TotalRow', () => {
     const totalValue = getByTestId('total-value');
     expect(totalValue).toBeInTheDocument();
     expect(totalValue).toHaveTextContent('$123.46');
+  });
+
+  it('excludes sponsored network gas from the total when paid by MetaMask', () => {
+    useIsPaidByMetaMaskMock.mockReturnValue(true);
+    useTransactionPayTotalsMock.mockReturnValue({
+      total: { usd: '0.29' },
+      fees: {
+        provider: { usd: '0' },
+        metaMask: { usd: '0' },
+        sourceNetwork: { estimate: { usd: '0' } },
+        targetNetwork: { usd: '0.15' },
+      },
+    } as TransactionPayTotals);
+
+    const { getByTestId } = render();
+
+    expect(getByTestId('total-value')).toHaveTextContent('$0.14');
   });
 });

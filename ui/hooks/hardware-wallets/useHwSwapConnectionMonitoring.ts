@@ -1,11 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import {
   ConnectionStatus,
-  getHardwareWalletErrorCode,
   isInE2eTest,
-  isUserRejectedHardwareWalletError,
   useHardwareWalletState,
 } from '../../contexts/hardware-wallets';
 import {
@@ -13,6 +10,7 @@ import {
   HardwareWalletSignatureStatus,
 } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { getHardwareWalletSignatureErrorEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils';
 
 type UseHardwareWalletConnectionMonitoringOptions = {
   signatureState: HardwareWalletSignaturesState;
@@ -89,24 +87,13 @@ export function useHwSwapConnectionMonitoring({
 
     handledConnectionErrorRef.current = connectionState.error;
 
-    const errorCode = getHardwareWalletErrorCode(connectionState.error);
+    const event = getHardwareWalletSignatureErrorEvent(connectionState.error);
 
-    if (
-      errorCode === ErrorCode.ConnectionClosed ||
-      errorCode === ErrorCode.DeviceDisconnected
-    ) {
+    if (event.type === HardwareWalletSignatureEvent.DeviceDisconnected) {
       isDeviceDisconnectedRef.current = true;
-      dispatchSignatureEvent({
-        type: HardwareWalletSignatureEvent.DeviceDisconnected,
-      });
-      return;
     }
 
-    dispatchSignatureEvent({
-      type: isUserRejectedHardwareWalletError(connectionState.error)
-        ? HardwareWalletSignatureEvent.TransactionRejected
-        : HardwareWalletSignatureEvent.TransactionFailed,
-    });
+    dispatchSignatureEvent(event);
   }, [connectionState, inE2e, signatureState.status, dispatchSignatureEvent]);
 
   const resetConnectionError = useCallback((preserveError?: unknown) => {

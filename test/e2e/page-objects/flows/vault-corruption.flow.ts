@@ -5,8 +5,8 @@ import HeaderNavbar from '../pages/home/header-navbar';
 import AccountListPage from '../pages/accounts/list-page';
 import AccountAddressModal from '../pages/accounts/address-modal';
 import AccountAddressListPage from '../pages/accounts/address-list-page';
-import CriticalErrorPage from '../pages/critical-error-page';
-import VaultRecoveryPage from '../pages/vault-recovery-page';
+import CriticalErrorPage from '../pages/vault/critical-error-page';
+import VaultRecoveryPage from '../pages/vault/recovery-page';
 import {
   completeCreateNewWalletOnboardingFlow,
   type OnboardingMetricsFlowOptions,

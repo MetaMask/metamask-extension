@@ -16,6 +16,7 @@ import { RampsControllerInit } from './ramps-controller-init';
 import { RAMPS_NETWORK_ACCESS_DENIED_MESSAGE } from './ramps-network-gate';
 
 const mockRampsController = {
+  state: { orders: [] as { status: string }[] },
   init: jest.fn().mockResolvedValue(undefined),
   getCountries: jest.fn(),
   startOrderPolling: jest.fn(),
@@ -117,6 +118,7 @@ function getInitRequestMock(
 }
 
 function resetMockRampsController(): void {
+  mockRampsController.state = { orders: [] };
   mockInit = jest.fn().mockResolvedValue(undefined);
   mockStartOrderPolling = jest.fn();
   mockStopOrderPolling = jest.fn();
@@ -260,6 +262,92 @@ describe('RampsControllerInit', () => {
     await Promise.resolve();
     expect(mockStartOrderPolling).toHaveBeenCalled();
 
+    api?.stopRampsLifecycle?.();
+
+    expect(mockStopOrderPolling).toHaveBeenCalled();
+  });
+
+  it('keeps polling on UI close while an order is still pending', async () => {
+    mockRampsController.state = { orders: [{ status: 'PENDING' }] };
+    const { api } = RampsControllerInit(getInitRequestMock());
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(mockStartOrderPolling).toHaveBeenCalled();
+
+    api?.stopRampsLifecycle?.();
+
+    expect(mockStopOrderPolling).not.toHaveBeenCalled();
+  });
+
+  // A stub in one of these statuses may never resolve, so it must not hold the
+  // lifecycle open — see IN_FLIGHT_ORDER_STATUSES.
+  async function expectUiCloseStopsPollingFor(status: string): Promise<void> {
+    mockRampsController.state = { orders: [{ status }] };
+    const { api } = RampsControllerInit(getInitRequestMock());
+    await Promise.resolve();
+    await Promise.resolve();
+
+    api?.stopRampsLifecycle?.();
+
+    expect(mockStopOrderPolling).toHaveBeenCalled();
+  }
+
+  it('stops polling on UI close for a PRECREATED stub', async () => {
+    await expectUiCloseStopsPollingFor('PRECREATED');
+  });
+
+  it('stops polling on UI close for an UNKNOWN stub', async () => {
+    await expectUiCloseStopsPollingFor('UNKNOWN');
+  });
+
+  it('runs stale-stub cleanup again after a UI close/open cycle', async () => {
+    mockRampsController.state = { orders: [{ status: 'PRECREATED' }] };
+    const { api } = RampsControllerInit(getInitRequestMock());
+    await Promise.resolve();
+    await Promise.resolve();
+    const startCallsAfterBoot = mockStartOrderPolling.mock.calls.length;
+
+    // Close: the stub must not hold the lifecycle open, otherwise
+    // `lifecycleStarted` never clears and cleanup can never run again.
+    api?.stopRampsLifecycle?.();
+    expect(mockStopOrderPolling).toHaveBeenCalled();
+
+    // Reopen: lifecycle restarts, so cleanup gets another chance.
+    api?.startRampsLifecycle?.();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(mockStartOrderPolling.mock.calls.length).toBeGreaterThan(
+      startCallsAfterBoot,
+    );
+  });
+
+  it('stops polling on UI close once every order is terminal', async () => {
+    mockRampsController.state = {
+      orders: [{ status: 'COMPLETED' }, { status: 'CANCELLED' }],
+    };
+    const { api } = RampsControllerInit(getInitRequestMock());
+    await Promise.resolve();
+    await Promise.resolve();
+
+    api?.stopRampsLifecycle?.();
+
+    expect(mockStopOrderPolling).toHaveBeenCalled();
+  });
+
+  it('stops polling on UI close with a pending order when network access is revoked', async () => {
+    mockRampsController.state = { orders: [{ status: 'PENDING' }] };
+    const { initMessenger, setUseExternalServices } = createInitMessenger();
+    const baseMessenger = getRootMessenger<never, never>();
+    const { api } = RampsControllerInit({
+      ...buildControllerInitRequestMock(),
+      controllerMessenger: getRampsControllerMessenger(baseMessenger),
+      initMessenger,
+      persistedState: {},
+    });
+    await Promise.resolve();
+    await Promise.resolve();
+
+    setUseExternalServices(false);
     api?.stopRampsLifecycle?.();
 
     expect(mockStopOrderPolling).toHaveBeenCalled();

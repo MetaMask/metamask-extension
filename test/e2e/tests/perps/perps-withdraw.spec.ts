@@ -5,8 +5,11 @@
  * confirmation flow: navigation, form validation, summary row visibility,
  * and confirmation UI state.
  *
- * The Withdraw page is accessible from Perps Home → balance dropdown → Withdraw.
- * Uses {@link WS_USER_WITH_FUNDED_ACCOUNT} so the balance bar leaves the loading skeleton.
+ * The Withdraw page is accessible from Perps Home → Withdraw button in the
+ * persistent balance header.
+ * Uses {@link WS_USER_WITH_FUNDED_ACCOUNT} so the balance bar leaves the
+ * loading skeleton and — because Withdraw is only rendered for accounts with a
+ * non-zero balance — the button actually appears in the header.
  * Cancel and the header back control both navigate to wallet home (`/`); tests re-open
  * the Perps tab before asserting the balance section.
  *
