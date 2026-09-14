@@ -1341,7 +1341,7 @@ const PerpsOrderEntryPage = () => {
 
   const isSubmitDisabled =
     !selectedAddress ||
-    isLoadingAccount ||
+    (orderMode === 'new' && isLoadingAccount) ||
     isDepositLoading ||
     isOrderPending ||
     (isPrimaryTradeAction &&

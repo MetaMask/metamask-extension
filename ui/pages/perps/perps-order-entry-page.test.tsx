@@ -2247,6 +2247,42 @@ describe('PerpsOrderEntryPage', () => {
       );
     });
 
+    it('keeps close submit enabled while the account stream is still loading', () => {
+      mockSearchParams.set('mode', 'close');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockLiveAccount.mockReturnValue({
+        account: null,
+        isInitialLoading: true,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).not.toBeDisabled();
+      expect(submitButton).toHaveTextContent('Close position');
+    });
+
+    it('keeps modify submit enabled while the account stream is still loading', () => {
+      mockSearchParams.set('mode', 'modify');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      mockLiveAccount.mockReturnValue({
+        account: null,
+        isInitialLoading: true,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).not.toBeDisabled();
+      expect(submitButton).toHaveTextContent('Modify Position');
+    });
+
     it('disables submit when selected account address is missing', async () => {
       const state = createMockState();
       state.metamask.internalAccounts = {
