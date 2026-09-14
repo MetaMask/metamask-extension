@@ -83,12 +83,14 @@ export function usePerpsPreload(walletReady: boolean): void {
     const id = crypto.randomUUID();
     let cancelled = false;
     let ended = false;
-    const release = () => {
-      submitRequestToBackground('perpsStopPreload', [id]).catch(
-        (error: unknown) => {
-          console.debug('[usePerpsPreload] Release failed', error);
-        },
-      );
+    let preloadReady = false;
+    const release = (preserveConnection = false) => {
+      submitRequestToBackground('perpsStopPreload', [
+        id,
+        preserveConnection,
+      ]).catch((error: unknown) => {
+        console.debug('[usePerpsPreload] Release failed', error);
+      });
     };
     const startTime = getPerformanceTimestamp();
     const traceReady = getPerpsLifecycleContext()
@@ -149,6 +151,7 @@ export function usePerpsPreload(walletReady: boolean): void {
         manager.prewarm();
         await submitRequestToBackground('perpsStartPreload', [id]);
         if (!cancelled) {
+          preloadReady = true;
           finish(true, 'subscriptions_ready');
         }
       })
@@ -166,8 +169,8 @@ export function usePerpsPreload(walletReady: boolean): void {
       cancelled = true;
       clearTimeout(timeout);
       finish(false, 'released');
-      // Release this UI's owner, never globally disconnect another open surface.
-      release();
+      // Successful preload leaves provider teardown to the last-UI grace period.
+      release(preloadReady);
       manager.cleanupPrewarm();
     };
   }, [enabled, address, provider, isTestnet, useTerminalApi]);

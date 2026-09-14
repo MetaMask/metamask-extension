@@ -2976,7 +2976,7 @@ describe('wallet-root Perps preload', () => {
       perpsRegisterPreload: (id: string) => void;
       perpsInitForAccount: (address: string) => Promise<void>;
       perpsStartPreload: (id: string) => Promise<void>;
-      perpsStopPreload: (id: string) => void;
+      perpsStopPreload: (id: string, preserveConnection?: boolean) => void;
       perpsViewActive: (active: boolean) => void;
       perpsActivatePriceStream: (params: {
         symbols: string[];
@@ -3011,36 +3011,42 @@ describe('wallet-root Perps preload', () => {
     bridge.dispose();
   });
 
-  it('retains a successful preload provider and fills across a brief UI close', async () => {
-    const { api, bridge, controller, controllerApi } = setup();
-    const unsubscribeFills = jest.fn();
-    controller.subscribeToOrderFills.mockReturnValue(unsubscribeFills);
-    api.perpsRegisterPreload('home');
-    await api.perpsInitForAccount('0xfirst');
-    await api.perpsStartPreload('home');
-    const fills = [{ orderId: 'first', timestamp: 1 }] as OrderFill[];
-    controller.subscribeToOrderFills.mock.calls[0][0].callback(fills, true);
+  it.each([false, true])(
+    'retains a successful preload across a brief UI close with hook cleanup %s',
+    async (releaseBeforeDispose) => {
+      const { api, bridge, controller, controllerApi } = setup();
+      const unsubscribeFills = jest.fn();
+      controller.subscribeToOrderFills.mockReturnValue(unsubscribeFills);
+      api.perpsRegisterPreload('home');
+      await api.perpsInitForAccount('0xfirst');
+      await api.perpsStartPreload('home');
+      const fills = [{ orderId: 'first', timestamp: 1 }] as OrderFill[];
+      controller.subscribeToOrderFills.mock.calls[0][0].callback(fills, true);
 
-    bridge.dispose();
-    // Let queued cleanup settle before a replacement can mask an early teardown.
-    await new Promise<void>((resolve) => setImmediate(resolve));
-    expect(controllerApi.perpsDisconnect).not.toHaveBeenCalled();
-    expect(unsubscribeFills).not.toHaveBeenCalled();
+      if (releaseBeforeDispose) {
+        await api.perpsStopPreload('home', true);
+      }
+      bridge.dispose();
+      // Let queued cleanup settle before a replacement can mask an early teardown.
+      await new Promise<void>((resolve) => setImmediate(resolve));
+      expect(controllerApi.perpsDisconnect).not.toHaveBeenCalled();
+      expect(unsubscribeFills).not.toHaveBeenCalled();
 
-    const replacement = createBridge({
-      controller: controller as unknown as PerpsController,
-      controllerApi,
-    });
-    await (
-      replacement.bridge.bridgeApi().perpsInitForAccount as (
-        address: string,
-      ) => Promise<void>
-    )('0xfirst');
-    expect(controllerApi.perpsDisconnect).not.toHaveBeenCalled();
-    expect(controller.subscribeToOrderFills).toHaveBeenCalledTimes(1);
-    expect(replacement.emit).toHaveBeenCalledWith('fills', fills);
-    replacement.bridge.dispose();
-  });
+      const replacement = createBridge({
+        controller: controller as unknown as PerpsController,
+        controllerApi,
+      });
+      await (
+        replacement.bridge.bridgeApi().perpsInitForAccount as (
+          address: string,
+        ) => Promise<void>
+      )('0xfirst');
+      expect(controllerApi.perpsDisconnect).not.toHaveBeenCalled();
+      expect(controller.subscribeToOrderFills).toHaveBeenCalledTimes(1);
+      expect(replacement.emit).toHaveBeenCalledWith('fills', fills);
+      replacement.bridge.dispose();
+    },
+  );
 
   it('starts the controller preload before foreground initialization like Mobile', async () => {
     const { api, controller, controllerApi } = setup();
@@ -3174,9 +3180,14 @@ describe('wallet-root Perps preload', () => {
     },
   );
 
-  it.each(['none', 'replacement', 'other-window'] as const)(
-    'releases a preload-only session after a market timeout with survivor=%s',
-    async (owner) => {
+  it.each([
+    ['none', false],
+    ['replacement', false],
+    ['other-window', false],
+    ['none', true],
+  ] satisfies [string, boolean][])(
+    'releases a pending preload with survivor=%s and preserveConnection=%s',
+    async (owner, preserveConnection) => {
       const { api, bridge, controllerApi, controller } = setup();
       const survivor = createBridge({
         controller: controller as unknown as PerpsController,
@@ -3206,7 +3217,7 @@ describe('wallet-root Perps preload', () => {
       const pending = api.perpsStartPreload('home');
       const result = expect(pending).rejects.toThrow();
       await started;
-      const stopped = api.perpsStopPreload('home');
+      const stopped = api.perpsStopPreload('home', preserveConnection);
       if (owner === 'replacement') {
         api.perpsRegisterPreload('replacement');
       }
@@ -3783,19 +3794,26 @@ describe('wallet-root Perps preload', () => {
     expect(controllerApi.perpsInit).not.toHaveBeenCalled();
   });
 
-  it('stops the controller preload when eligibility is revoked', async () => {
-    let allowed = true;
-    const { api, controller, bridge } = setup({
-      isPreloadAllowed: () => allowed,
-    });
-    await api.perpsStartPreload('home');
+  it.each([false, true])(
+    'stops a ready preload when eligibility is revoked with preserveConnection=%s',
+    async (preserveConnection) => {
+      let allowed = true;
+      const { api, controller, bridge, controllerApi } = setup({
+        isPreloadAllowed: () => allowed,
+      });
+      api.perpsRegisterPreload('home');
+      await api.perpsInitForAccount('0xfirst');
+      await api.perpsStartPreload('home');
 
-    allowed = false;
-    api.perpsStopPreload('home');
+      allowed = false;
+      await api.perpsStopPreload('home', preserveConnection);
 
-    expect(controller.stopMarketDataPreload).toHaveBeenCalled();
-    expect(bridge.canEmit('prices')).toBe(false);
-  });
+      expect(controller.stopMarketDataPreload).toHaveBeenCalled();
+      expect(controllerApi.perpsDisconnect).toHaveBeenCalledTimes(1);
+      expect(bridge.canEmit('prices')).toBe(false);
+      bridge.dispose();
+    },
+  );
 
   it('releases subscriptions after a failed provider ping', async () => {
     const { api, controller, ping, bridge, controllerApi } = setup();
