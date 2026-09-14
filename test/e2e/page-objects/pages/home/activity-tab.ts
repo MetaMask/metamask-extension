@@ -54,14 +54,18 @@ class ActivityTab extends HomePage {
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
-  private readonly transactionBaseFeeRowValue =
-    '[data-testid="transaction-base-fee"] [data-testid="transaction-breakdown-row-value"]';
+  private readonly transactionBaseFeeRowValue = {
+    xpath:
+      '//*[@data-testid="transaction-base-fee"]//*[@data-testid="transaction-breakdown-row-value" and normalize-space(.) != ""]',
+  };
 
   private readonly transactionBreakdownAmount =
     '[data-testid="transaction-breakdown-value-amount"]';
 
-  private readonly transactionBreakdownAmountRowValue =
-    '[data-testid="transaction-breakdown-value-amount"] [data-testid="transaction-breakdown-row-value"]';
+  private readonly transactionBreakdownAmountRowValue = {
+    xpath:
+      '//*[@data-testid="transaction-breakdown-value-amount"]//*[@data-testid="transaction-breakdown-row-value" and normalize-space(.) != ""]',
+  };
 
   private readonly transactionBreakdownRowValue = (rowIndex: number) => ({
     css: `[data-testid="transaction-breakdown-row"]:nth-child(${
@@ -114,8 +118,8 @@ class ActivityTab extends HomePage {
 
     if (isBridge) {
       console.log('Checking bridge fee and total amount rows are populated');
-      await this.waitForNonEmptyDetailsRow(this.transactionBaseFeeRowValue);
-      await this.waitForNonEmptyDetailsRow(
+      await this.driver.waitForSelector(this.transactionBaseFeeRowValue);
+      await this.driver.waitForSelector(
         this.transactionBreakdownAmountRowValue,
       );
     } else {
@@ -526,24 +530,6 @@ class ActivityTab extends HomePage {
 
   async clickSpeedUpTransaction() {
     await this.driver.clickElement(this.speedupInlineButton);
-  }
-
-  /**
-   * Re-queries `locator` on each poll so a details re-render cannot stale a
-   * captured WebElement the way `waitForNonEmptyElement(element)` would.
-   *
-   * @param locator - CSS locator for a details row value cell.
-   */
-  private async waitForNonEmptyDetailsRow(locator: string): Promise<void> {
-    await this.driver.waitForSelector(locator);
-    await this.driver.wait(async () => {
-      try {
-        const [element] = await this.driver.findElements(locator);
-        return Boolean(element && (await element.getText()));
-      } catch {
-        return false;
-      }
-    });
   }
 
   /**
