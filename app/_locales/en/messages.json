@@ -3159,6 +3159,9 @@
   "copiedToClipboard": {
     "message": "Copied to clipboard"
   },
+  "copy": {
+    "message": "Copy"
+  },
   "copyAddress": {
     "message": "Copy address to clipboard"
   },

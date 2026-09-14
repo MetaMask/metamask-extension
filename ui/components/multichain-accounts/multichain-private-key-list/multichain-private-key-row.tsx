@@ -67,7 +67,7 @@ const PrivateKeyContent = ({
       paddingBottom={4}
     >
       <ButtonBase
-        className="relative h-auto min-h-[112px] w-full min-w-0 overflow-hidden rounded-lg bg-muted p-4 hover:bg-muted-hover active:bg-muted-pressed"
+        className="relative h-auto min-h-[112px] w-full min-w-0 overflow-hidden rounded-lg bg-muted/50 p-4 hover:bg-muted-hover/50 active:bg-muted-pressed/50"
         onClick={() => setIsRevealed((value) => !value)}
         aria-label={isRevealed ? t('hideSentitiveInfo') : t('tapToReveal')}
         data-testid={`multichain-private-key-reveal-${chainId}`}
@@ -108,15 +108,14 @@ const PrivateKeyContent = ({
         )}
       </ButtonBase>
       <Button
+        className="rounded-lg"
         size={ButtonSize.Sm}
         variant={ButtonVariant.Secondary}
         startIconName={LegacyIconName.Copy}
         onClick={handleCopy}
         data-testid={`multichain-private-key-copy-${chainId}`}
       >
-        {isCopied
-          ? t('multichainAccountPrivateKeyCopied')
-          : t('copyPrivateKey')}
+        {isCopied ? t('multichainAccountPrivateKeyCopied') : t('copy')}
       </Button>
     </Box>
   );
