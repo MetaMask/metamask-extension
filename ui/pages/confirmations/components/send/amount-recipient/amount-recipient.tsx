@@ -60,9 +60,6 @@ export const AmountRecipient = () => {
     Boolean(hexDataError) ||
     Boolean(nonEVMSubmitError) ||
     addressPoisoningDetectionResult.pending;
-  // Block submit while the debounced recipient validation has not resolved
-  // for the current input yet. Otherwise a fast click submits the raw,
-  // unvalidated `to` and `addTransaction` throws `Invalid "to" address`.
   const isDisabled =
     hasBlockingError ||
     !toResolved ||
