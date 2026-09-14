@@ -31,6 +31,22 @@ jest.mock('node:child_process', () => ({
   spawn: jest.fn(),
 }));
 
+/**
+ * Build an `mkdtempSync` prefix under the repository's `temp/` directory.
+ *
+ * These workspaces deliberately live inside the repo rather than in `tmpdir()`,
+ * because the symlink-escape assertions need somewhere that is genuinely
+ * outside the workspace root, and they use `tmpdir()` for that. `temp/` is
+ * gitignored, so a fresh checkout does not have it.
+ *
+ * @param name - Short label distinguishing one suite's workspaces from another's.
+ */
+function measurementWorkspacePrefix(name: string): string {
+  const parent = path.join(process.cwd(), 'temp');
+  mkdirSync(parent, { recursive: true });
+  return path.join(parent, `perps-${name}-test-`);
+}
+
 describe('loading cohort summary', () => {
   let root: string;
   const hash = 'a'.repeat(64);
@@ -50,9 +66,7 @@ describe('loading cohort summary', () => {
   }
 
   beforeEach(() => {
-    root = realpathSync(
-      mkdtempSync(path.join(process.cwd(), 'temp/perps-summary-test-')),
-    );
+    root = realpathSync(mkdtempSync(measurementWorkspacePrefix('summary')));
     write('sample-manifest.json', {
       cohorts: [
         {
@@ -368,7 +382,7 @@ describe('loading measurement command boundaries', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    root = mkdtempSync(path.join(process.cwd(), 'temp/perps-command-test-'));
+    root = mkdtempSync(measurementWorkspacePrefix('command'));
     mkdirSync(path.join(root, 'runtime/runtime-dist'), { recursive: true });
     writeFileSync(path.join(root, 'runtime/runtime-dist/manifest.json'), '{}');
     const provenance = {
