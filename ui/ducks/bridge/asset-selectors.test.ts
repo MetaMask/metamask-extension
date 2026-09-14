@@ -424,7 +424,12 @@ describe('Bridge asset selectors', () => {
           assetsBalance: {
             ...UNIFIED_BRIDGE_ASSET_STATE.assetsBalance,
             [MOCK_EVM_ACCOUNT.id]: {
-              ...UNIFIED_BRIDGE_ASSET_STATE.assetsBalance[MOCK_EVM_ACCOUNT.id],
+              ...(
+                UNIFIED_BRIDGE_ASSET_STATE.assetsBalance as Record<
+                  string,
+                  Record<string, { amount: string }>
+                >
+              )[MOCK_EVM_ACCOUNT.id],
               [FALLBACK_ASSET_ID]: { amount: '1' },
             },
           },

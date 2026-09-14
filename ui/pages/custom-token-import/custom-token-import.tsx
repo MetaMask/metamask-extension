@@ -201,12 +201,7 @@ export const CustomTokenImportPage = () => {
       }
       return !isAssetIdHiddenInPreferencesMap(assetPreferences, assetId);
     });
-  }, [
-    allTokens,
-    assetPreferences,
-    selectedAccount?.address,
-    selectedNetwork,
-  ]);
+  }, [allTokens, assetPreferences, selectedAccount?.address, selectedNetwork]);
 
   const tokenListForSelectedNetwork =
     erc20TokensByChain?.[selectedNetwork]?.data;

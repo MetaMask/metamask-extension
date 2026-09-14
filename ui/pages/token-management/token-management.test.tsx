@@ -1755,20 +1755,23 @@ describe('TokenManagementPage', () => {
     });
 
     const stateWithImportedToken = createState();
-    stateWithImportedToken.metamask = {
-      ...stateWithImportedToken.metamask,
-      customAssets: {
-        [mainnetToken.accountId]: [`eip155:1/erc20:${usdcAddress}`],
-      },
-      assetsInfo: {
-        ...(stateWithImportedToken.metamask.assetsInfo ?? {}),
-        [`eip155:1/erc20:${usdcAddress}`]: {
-          type: 'erc20',
-          symbol: 'USDC',
-          decimals: 6,
-          name: 'USD Coin',
-        },
-      },
+    (
+      stateWithImportedToken.metamask as unknown as {
+        customAssets: Record<string, string[]>;
+      }
+    ).customAssets = {
+      [mainnetToken.accountId]: [`eip155:1/erc20:${usdcAddress}`],
+    };
+    (
+      stateWithImportedToken.metamask.assetsInfo as Record<
+        string,
+        { type: string; decimals: number; symbol: string; name?: string }
+      >
+    )[`eip155:1/erc20:${usdcAddress}`] = {
+      type: 'erc20',
+      symbol: 'USDC',
+      decimals: 6,
+      name: 'USD Coin',
     };
 
     renderPage(stateWithImportedToken);
@@ -1796,29 +1799,27 @@ describe('TokenManagementPage', () => {
       ],
     });
 
-    const baseState = createState();
-    const stateWithIgnoredToken = {
-      ...baseState,
-      metamask: {
-        ...baseState.metamask,
-        customAssets: {
-          [mainnetToken.accountId]: [`eip155:1/erc20:${mainnetToken.address}`],
-        },
-        assetsInfo: {
-          ...(baseState.metamask.assetsInfo ?? {}),
-          [`eip155:1/erc20:${mainnetToken.address}`]: {
-            type: 'erc20',
-            symbol: mainnetToken.symbol,
-            decimals: mainnetToken.decimals,
-            name: mainnetToken.name,
-          },
-        },
-        assetPreferences: {
-          ...(baseState.metamask.assetPreferences ?? {}),
-          [`eip155:1/erc20:${mainnetToken.address}`]: {
-            hidden: true,
-          },
-        },
+    const stateWithIgnoredToken = createState();
+    const unifiedState = stateWithIgnoredToken.metamask as unknown as {
+      customAssets: Record<string, string[]>;
+      assetsInfo: Record<
+        string,
+        { type: string; decimals: number; symbol: string; name?: string }
+      >;
+      assetPreferences: Record<string, { hidden?: boolean }>;
+    };
+    unifiedState.customAssets = {
+      [mainnetToken.accountId]: [`eip155:1/erc20:${mainnetToken.address}`],
+    };
+    unifiedState.assetsInfo[`eip155:1/erc20:${mainnetToken.address}`] = {
+      type: 'erc20',
+      symbol: mainnetToken.symbol,
+      decimals: mainnetToken.decimals,
+      name: mainnetToken.name,
+    };
+    unifiedState.assetPreferences = {
+      [`eip155:1/erc20:${mainnetToken.address}`]: {
+        hidden: true,
       },
     };
 

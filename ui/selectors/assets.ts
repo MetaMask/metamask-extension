@@ -126,11 +126,15 @@ import {
 import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
 
 export type AssetsState = {
-  metamask: MultichainAssetsControllerState;
+  metamask: MultichainAssetsControllerState &
+    Pick<
+      AssetsControllerState,
+      'assetsInfo' | 'assetsBalance' | 'customAssets' | 'assetPreferences'
+    >;
 };
 
 export type AssetsRatesState = {
-  metamask: MultichainAssetsRatesControllerState;
+  metamask: Pick<AssetsControllerState, 'assetsPrice'>;
 };
 
 export type DefiState = {

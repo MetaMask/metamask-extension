@@ -21,7 +21,9 @@ const STATE_EMPTY_MOCK = {
 } as unknown as MetaMaskReduxState;
 
 function createMockState(
-  metamaskState: Partial<MetaMaskReduxState['metamask']>,
+  // AssetsController fields used below are not yet on FlattenedBackgroundStateProxy.
+  metamaskState: Partial<MetaMaskReduxState['metamask']> &
+    Record<string, unknown>,
 ): MetaMaskReduxState {
   return {
     ...STATE_EMPTY_MOCK,
@@ -196,30 +198,34 @@ describe('Tags Utils', () => {
         assetsInfo: {
           [tokenIds[0]]: {
             type: 'erc20',
+            name: 'Token 1',
             symbol: 'T1',
             decimals: 18,
           },
           [tokenIds[1]]: {
             type: 'erc20',
+            name: 'Token 2',
             symbol: 'T2',
             decimals: 18,
           },
           [tokenIds[2]]: {
             type: 'erc20',
+            name: 'Token 3',
             symbol: 'T3',
             decimals: 18,
           },
           [tokenIds[3]]: {
             type: 'erc20',
+            name: 'Token 4',
             symbol: 'T4',
             decimals: 18,
           },
-        } as unknown as MetaMaskReduxState['metamask']['assetsInfo'],
+        },
         customAssets: {
           [account1]: [tokenIds[0], tokenIds[1]],
           [account2]: [tokenIds[2]],
           [account3]: [tokenIds[3]],
-        } as unknown as MetaMaskReduxState['metamask']['customAssets'],
+        },
       });
 
       const tags = getStartupTraceTags(state);

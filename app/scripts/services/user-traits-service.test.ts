@@ -367,7 +367,7 @@ describe('UserTraitsService', function () {
           srpSessionData: undefined,
           keyrings: [],
           firstTimeFlowType: FirstTimeFlowType.create,
-        });
+        } as unknown as MetaMaskState);
 
         expect(traits).toStrictEqual({
           [MetaMetricsUserTrait.AddressBookEntries]: 3,
@@ -746,7 +746,7 @@ describe('UserTraitsService', function () {
           keyrings: [],
           firstTimeFlowType: FirstTimeFlowType.import,
           multichainNetworkConfigurationsByChainId: {},
-        } as MetaMaskState);
+        } as unknown as MetaMaskState);
 
         expect(updatedTraits).toStrictEqual({
           [MetaMetricsUserTrait.AddressBookEntries]: 4,

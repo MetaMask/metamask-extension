@@ -78,6 +78,10 @@ type ControllerStateSelector<
   metamask: Pick<InputState, ResultField>;
 }) => InputState[ResultField];
 
+type StateSelector<InputState, Result> = (state: {
+  metamask: InputState;
+}) => Result;
+
 // ChainId (hex) -> AccountAddress (hex checksummed) -> Balance (hex)
 export const getAccountTrackerControllerAccountsByChainId =
   createDeepEqualSelector(
@@ -525,15 +529,12 @@ export const getMultiChainBalancesControllerBalances = createDeepEqualSelector(
   'balances'
 >;
 
-export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
-  [
-    (state: { metamask: AssetsControllerState }) =>
-      state.metamask?.selectedCurrency,
-  ],
-  (selectedCurrency) => {
-    return selectedCurrency;
-  },
-) as unknown as ControllerStateSelector<CurrencyRateState, 'currentCurrency'>;
+export const getCurrencyRateControllerCurrentCurrency = ((state: {
+  metamask: AssetsControllerState;
+}) => state.metamask?.selectedCurrency) as unknown as StateSelector<
+  Pick<AssetsControllerState, 'selectedCurrency'>,
+  CurrencyRateState['currentCurrency']
+>;
 
 // Native Symbol -> Rates (conversionRate, usdConversionRate, conversionDate)
 export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
@@ -722,9 +723,9 @@ export const getMultichainAssetsRatesControllerConversionRates =
 
       return result;
     },
-  ) as unknown as ControllerStateSelector<
-    MultichainAssetsRatesControllerState,
-    'conversionRates'
+  ) as unknown as StateSelector<
+    Pick<AssetsControllerState, 'assetsPrice'>,
+    MultichainAssetsRatesControllerState['conversionRates']
   >;
 
 export const getRatesControllerRates = createDeepEqualSelector(
@@ -768,15 +769,12 @@ export const getRatesControllerRates = createDeepEqualSelector(
   },
 ) as unknown as ControllerStateSelector<RatesControllerState, 'rates'>;
 
-export const getRatesControllerFiatCurrency = createDeepEqualSelector(
-  [
-    (state: { metamask: AssetsControllerState }) =>
-      state.metamask.selectedCurrency,
-  ],
-  (selectedCurrency) => {
-    return selectedCurrency;
-  },
-) as unknown as ControllerStateSelector<RatesControllerState, 'fiatCurrency'>;
+export const getRatesControllerFiatCurrency = ((state: {
+  metamask: AssetsControllerState;
+}) => state.metamask.selectedCurrency) as unknown as StateSelector<
+  Pick<AssetsControllerState, 'selectedCurrency'>,
+  RatesControllerState['fiatCurrency']
+>;
 
 /**
  * Converts a scientific notation balance string (e.g. "1e-18") to its raw

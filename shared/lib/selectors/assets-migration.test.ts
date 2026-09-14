@@ -1,5 +1,6 @@
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
+import type { FungibleAssetPrice } from '@metamask/assets-controller';
 import type { CaipAssetType, Hex } from '@metamask/utils';
 import {
   getAccountTrackerControllerAccountsByChainId,
@@ -43,11 +44,14 @@ const mockAccountId3 = 'mock-account-id-3';
 const mockAccountAddressLowercase2: Hex =
   '0x1234567890abcdef1234567890abcdef12345678';
 
-function makeMockPrice(overrides: Partial<Record<string, unknown>> = {}) {
+function makeMockPrice(
+  overrides: Partial<Omit<FungibleAssetPrice, 'assetPriceType'>> = {},
+): FungibleAssetPrice {
   return {
     assetPriceType: 'fungible',
     id: 'mock-price',
     price: 1,
+    usdPrice: 1,
     lastUpdated: 1700000000000,
     marketCap: 0,
     allTimeHigh: 0,
@@ -1275,7 +1279,7 @@ describe('getCurrencyRateControllerCurrentCurrency', () => {
     const state = {
       metamask: {
         currentCurrency: 'eur',
-        selectedCurrency: 'usd',
+        selectedCurrency: 'usd' as const,
       },
     };
     const result = getCurrencyRateControllerCurrentCurrency(state);
@@ -1672,10 +1676,9 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     const lastUpdated = 1700000000000;
     const state = {
       metamask: {
-        conversionRates: {},
         assetsPrice: {
           [nativeEthAssetId]: {
-            assetPriceType: 'fungible',
+            assetPriceType: 'fungible' as const,
             id: 'eth-price',
             price: 2000,
             usdPrice: 2000,
@@ -1699,7 +1702,7 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
             pricePercentChange1y: 30,
           },
           [solanaTokenAssetId]: {
-            assetPriceType: 'fungible',
+            assetPriceType: 'fungible' as const,
             id: 'sol-usdc-price',
             price: 1.02,
             usdPrice: 1.02,
@@ -1756,7 +1759,6 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     it('returns empty result when only EVM assets exist in assetsPrice', () => {
       const state = {
         metamask: {
-          conversionRates: {},
           assetsPrice: {
             [nativeEthAssetId]: makeMockPrice({ id: 'eth', price: 2000 }),
             [erc20AssetId]: makeMockPrice({ id: 'usdc', price: 1 }),
@@ -1772,7 +1774,6 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
       const lastUpdated = 1700000000000;
       const state = {
         metamask: {
-          conversionRates: {},
           assetsPrice: {
             [solanaTokenAssetId]: makeMockPrice({
               id: 'sol-usdc',
@@ -1803,17 +1804,18 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     it('omits non-finite market data fields instead of stringifying them', () => {
       const state = {
         metamask: {
-          conversionRates: {},
           assetsPrice: {
-            [solanaTokenAssetId]: makeMockPrice({
-              id: 'sol-usdc',
-              price: 1.5,
+            [solanaTokenAssetId]: {
+              ...makeMockPrice({
+                id: 'sol-usdc',
+                price: 1.5,
+              }),
               allTimeHigh: null,
               allTimeLow: undefined,
               circulatingSupply: NaN,
               marketCap: null,
               totalVolume: Infinity,
-            }),
+            } as unknown as FungibleAssetPrice,
           },
         },
       };
@@ -1830,7 +1832,6 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     it('handles empty assetsPrice', () => {
       const state = {
         metamask: {
-          conversionRates: {},
           assetsPrice: {},
         },
       };
@@ -1951,7 +1952,7 @@ describe('getRatesControllerFiatCurrency', () => {
     const state = {
       metamask: {
         fiatCurrency: 'eur',
-        selectedCurrency: 'usd',
+        selectedCurrency: 'usd' as const,
       },
     };
     const result = getRatesControllerFiatCurrency(state);

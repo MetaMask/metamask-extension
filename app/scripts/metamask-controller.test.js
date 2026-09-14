@@ -13,9 +13,6 @@ import {
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
 import {
-  BtcAccountType,
-  BtcMethod,
-  BtcScope,
   EthAccountType,
   SolAccountType,
   TrxAccountType,
@@ -25,10 +22,7 @@ import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { MultichainAccountService } from '@metamask/multichain-account-service';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import {
-  RatesController,
-  TokenListController,
-} from '@metamask/assets-controllers';
+import { TokenListController } from '@metamask/assets-controllers';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import {
   Caip25CaveatType,
@@ -98,6 +92,7 @@ jest.mock('./messenger-client-init/perps-controller-init', () => ({
 }));
 
 jest.mock('./messenger-client-init/ramps-controller-init', () => ({
+  ...jest.requireActual('./messenger-client-init/ramps-controller-init'),
   RampsControllerInit: jest.fn().mockImplementation(() => ({
     messengerClient: {
       state: {},
@@ -589,7 +584,7 @@ describe('MetaMaskController', () => {
       jest.spyOn(MetaMaskController.prototype, 'resetStates');
       jest
         .spyOn(environment, 'getIsPerpsIncludedInBuild')
-        .mockReturnValue(false);
+        .mockReturnValue(true);
 
       jest.spyOn(Messenger.prototype, 'subscribe');
       jest.spyOn(TokenListController.prototype, 'start');
@@ -1255,24 +1250,6 @@ describe('MetaMaskController', () => {
     });
 
     describe('#getBalance', () => {
-      it('should return the balance known by accountTrackerController', async () => {
-        const balance = '0x14ced5122ce0a000';
-
-        jest
-          .spyOn(metamaskController.accountTrackerController, 'state', 'get')
-          .mockReturnValue({
-            accountsByChainId: {
-              '0x1': {
-                [toChecksumHexAddress(TEST_ADDRESS)]: { balance },
-              },
-            },
-          });
-
-        const gotten = await metamaskController.getBalance(TEST_ADDRESS);
-
-        expect(balance).toStrictEqual(gotten);
-      });
-
       it('should ask the network for a balance when not known by accountTrackerController', async () => {
         const balance = '0x14ced5122ce0a000';
         const { provider } = createTestProviderTools({
@@ -3325,193 +3302,6 @@ describe('MetaMaskController', () => {
         expect(metamaskController.rawListeners('update')).toHaveLength(
           baseUpdateListenerCount,
         );
-      });
-    });
-
-    describe('MultichainRatesController start/stop', () => {
-      const mockEvmAccount = createMockInternalAccount();
-      const mockNonEvmAccount = {
-        ...mockEvmAccount,
-        scopes: [BtcScope.Mainnet],
-        id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
-        type: BtcAccountType.P2wpkh,
-        methods: [BtcMethod.SendBitcoin],
-        address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
-      };
-      const mockCurrency = 'CAD';
-
-      beforeEach(() => {
-        jest.spyOn(metamaskController.multichainRatesController, 'start');
-        jest.spyOn(metamaskController.multichainRatesController, 'stop');
-      });
-
-      afterEach(() => {
-        jest.clearAllMocks();
-      });
-
-      describe('client is open', () => {
-        beforeEach(() => {
-          jest.replaceProperty(
-            metamaskController,
-            'activeControllerConnections',
-            1,
-          );
-        });
-
-        it('starts MultichainRatesController if selected account is changed to non-EVM', async () => {
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).not.toHaveBeenCalled();
-
-          metamaskController.controllerMessenger.publish(
-            'AccountsController:selectedAccountChange',
-            mockNonEvmAccount,
-          );
-
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).toHaveBeenCalledTimes(1);
-        });
-
-        it('stops MultichainRatesController if selected account is changed to EVM', async () => {
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).not.toHaveBeenCalled();
-
-          metamaskController.controllerMessenger.publish(
-            'AccountsController:selectedAccountChange',
-            mockNonEvmAccount,
-          );
-
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).toHaveBeenCalledTimes(1);
-
-          metamaskController.controllerMessenger.publish(
-            'AccountsController:selectedAccountChange',
-            mockEvmAccount,
-          );
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).toHaveBeenCalledTimes(1);
-          expect(
-            metamaskController.multichainRatesController.stop,
-          ).toHaveBeenCalledTimes(1);
-        });
-
-        it('does not start MultichainRatesController if selected account is changed to EVM', async () => {
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).not.toHaveBeenCalled();
-
-          metamaskController.controllerMessenger.publish(
-            'AccountsController:selectedAccountChange',
-            mockEvmAccount,
-          );
-
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).not.toHaveBeenCalled();
-        });
-      });
-
-      describe('client is closed', () => {
-        beforeEach(() => {
-          jest.replaceProperty(
-            metamaskController,
-            'activeControllerConnections',
-            0,
-          );
-        });
-
-        it('does not start MultichainRatesController if selected account is changed to non-EVM', async () => {
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).not.toHaveBeenCalled();
-
-          metamaskController.controllerMessenger.publish(
-            'AccountsController:selectedAccountChange',
-            mockNonEvmAccount,
-          );
-
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).not.toHaveBeenCalled();
-        });
-
-        it('stops MultichainRatesController if selected account is changed to EVM', async () => {
-          metamaskController.controllerMessenger.publish(
-            'AccountsController:selectedAccountChange',
-            mockEvmAccount,
-          );
-
-          expect(
-            metamaskController.multichainRatesController.stop,
-          ).toHaveBeenCalledTimes(1);
-        });
-
-        it('does not start MultichainRatesController if selected account is changed to EVM', async () => {
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).not.toHaveBeenCalled();
-
-          metamaskController.controllerMessenger.publish(
-            'AccountsController:selectedAccountChange',
-            mockEvmAccount,
-          );
-
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).not.toHaveBeenCalled();
-        });
-      });
-
-      it('calls setFiatCurrency when the `currentCurrency` has changed', async () => {
-        jest.spyOn(RatesController.prototype, 'setFiatCurrency');
-        const localMetamaskController = new MetaMaskController({
-          showUserConfirmation: noop,
-          encryptor: mockEncryptor,
-          initState: {
-            ...cloneDeep(firstTimeState),
-            AccountsController: {
-              internalAccounts: {
-                accounts: {
-                  [mockNonEvmAccount.id]: mockNonEvmAccount,
-                  [mockEvmAccount.id]: mockEvmAccount,
-                },
-                selectedAccount: mockNonEvmAccount.id,
-              },
-            },
-          },
-          initLangCode: 'en_US',
-          platform: {
-            showTransactionNotification: () => undefined,
-            getVersion: () => 'foo',
-          },
-          browser: browserPolyfillMock,
-          getRequestAccountTabIds: () => ({}),
-          getOpenMetamaskTabsIds: () => ({}),
-          notificationManager: {
-            markAsAutomaticallyClosed: jest.fn(),
-          },
-          infuraProjectId: 'foo',
-          isFirstMetaMaskControllerSetup: true,
-          cronjobControllerStorageManager:
-            createMockCronjobControllerStorageManager(),
-          controllerMessenger: new Messenger({
-            namespace: MOCK_ANY_NAMESPACE,
-          }),
-        });
-
-        metamaskController.controllerMessenger.publish(
-          'CurrencyRateController:stateChange',
-          { currentCurrency: mockCurrency },
-          getMockPatches(),
-        );
-
-        expect(
-          localMetamaskController.multichainRatesController.setFiatCurrency,
-        ).toHaveBeenCalledWith(mockCurrency);
       });
     });
 

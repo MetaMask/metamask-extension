@@ -14,6 +14,10 @@ import {
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
 import type { AccountGroupAssets } from '@metamask/assets-controllers';
+import type {
+  AllWalletsBalance,
+  BalanceChangeResult,
+} from '@metamask/assets-controller';
 import type { MetaMaskReduxState } from '../store/store';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import {
@@ -50,7 +54,7 @@ import {
 
 /**
  * State shape for asset selector tests. Cast to this when passing partial state
- * to selectors that accept a full Redux state type.
+ * to selectors that accept a full Redux / controller state type.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AssetSelectorTestState = any;
@@ -58,23 +62,25 @@ type AssetSelectorTestState = any;
 const mockGetAggregatedBalanceForAccount = jest.fn(
   (..._args: unknown[]) => undefined,
 );
-const mockCalculateBalanceForAllWalletsFromUnified = jest.fn(
-  (..._args: unknown[]) => ({
-    wallets: {},
-    totalBalanceInUserCurrency: 0,
-    userCurrency: 'usd',
-  }),
-);
-const mockCalculateBalanceChangeForAccountGroupFromUnified = jest.fn(
-  (..._args: unknown[]) => ({
-    period: '1d',
-    currentTotalInUserCurrency: 0,
-    previousTotalInUserCurrency: 0,
-    amountChangeInUserCurrency: 0,
-    percentChange: 0,
-    userCurrency: 'usd',
-  }),
-);
+const mockCalculateBalanceForAllWalletsFromUnified: jest.Mock<
+  AllWalletsBalance,
+  unknown[]
+> = jest.fn(() => ({
+  wallets: {},
+  totalBalanceInUserCurrency: 0,
+  userCurrency: 'usd',
+}));
+const mockCalculateBalanceChangeForAccountGroupFromUnified: jest.Mock<
+  BalanceChangeResult,
+  unknown[]
+> = jest.fn(() => ({
+  period: '1d',
+  currentTotalInUserCurrency: 0,
+  previousTotalInUserCurrency: 0,
+  amountChangeInUserCurrency: 0,
+  percentChange: 0,
+  userCurrency: 'usd',
+}));
 jest.mock('@metamask/assets-controller', () => ({
   getAggregatedBalanceForAccount: (...args: unknown[]) =>
     mockGetAggregatedBalanceForAccount(...args),
@@ -132,7 +138,7 @@ const mockSolanaAccount = {
   scopes: [SolScope.Mainnet],
 };
 
-const mockRatesState = {
+const mockRatesState: AssetsRatesState = {
   metamask: {
     assetsPrice: {
       [RATE_ASSET_1]: {
@@ -518,7 +524,7 @@ describe('getAssetsRates', () => {
   });
 
   it('returns an empty object if assetsPrice is empty', () => {
-    const emptyState: AssetSelectorTestState = {
+    const emptyState: AssetsRatesState = {
       metamask: { assetsPrice: {} },
     };
     const result = getAssetsRates(emptyState);
@@ -1184,7 +1190,9 @@ describe('Aggregated balance adapters/selectors', () => {
     mockCalculateBalanceForAllWalletsFromUnified.mockReturnValueOnce({
       wallets: {
         w1: {
+          walletId: 'w1',
           totalBalanceInUserCurrency: 100,
+          userCurrency: 'usd',
           groups: {
             'w1/g1': {
               walletId: 'w1',
@@ -1195,6 +1203,7 @@ describe('Aggregated balance adapters/selectors', () => {
           },
         },
       },
+      totalBalanceInUserCurrency: 100,
       userCurrency: 'usd',
     });
 

@@ -399,14 +399,23 @@ export const createBridgeMockStore = ({
     ETH: DEFAULT_ETH_EFFECTIVE_RATE,
   };
 
-  const rateBySymbolFromOverride =
+  const rateBySymbolFromOverride: Record<string, number> =
     currencyRatesOverride === undefined
       ? defaultRateBySymbol
       : Object.fromEntries(
-          Object.entries(currencyRatesOverride).flatMap(([symbol, rates]) =>
+          (
+            Object.entries(currencyRatesOverride) as [
+              string,
+              {
+                conversionRate?: number;
+                usdConversionRate?: number;
+                conversionDate?: number;
+              },
+            ][]
+          ).flatMap(([symbol, rates]) =>
             rates?.conversionRate === undefined
               ? []
-              : [[symbol, rates.conversionRate as number]],
+              : [[symbol, rates.conversionRate]],
           ),
         );
 
@@ -710,17 +719,17 @@ export const createBridgeMockStore = ({
   const conversionRatesAsAssets = conversionRatesOverride
     ? {
         assetsPrice: Object.fromEntries(
-          Object.entries(conversionRatesOverride).map(
-            ([assetId, rate]: [
+          (
+            Object.entries(conversionRatesOverride) as [
               string,
               { rate?: string; conversionTime?: number },
-            ]) => [
-              assetId,
-              toFungiblePrice(Number(rate.rate ?? 0), {
-                lastUpdated: rate.conversionTime ?? Date.now(),
-              }),
-            ],
-          ),
+            ][]
+          ).map(([assetId, rate]) => [
+            assetId,
+            toFungiblePrice(Number(rate.rate ?? 0), {
+              lastUpdated: rate.conversionTime ?? Date.now(),
+            }),
+          ]),
         ),
       }
     : null;

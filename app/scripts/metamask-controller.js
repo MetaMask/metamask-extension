@@ -166,9 +166,7 @@ import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multicha
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
-import {
-  getIsPerpsIncludedInBuild,
-} from '../../shared/lib/environment';
+import { getIsPerpsIncludedInBuild } from '../../shared/lib/environment';
 import { getEnabledAdvancedPermissions } from '../../shared/lib/gator-permissions/feature-flags';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
@@ -1537,7 +1535,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.setupControllerEventSubscriptions();
-    this.setupMultichainDataAndSubscriptions();
 
     // For more information about these legacy streams, see here:
     // https://github.com/MetaMask/metamask-extension/issues/15491
@@ -2182,12 +2179,6 @@ export default class MetamaskController extends EventEmitter {
       },
     );
   }
-
-  /**
-   * Placeholder retained for constructor call sites. Multichain rates are
-   * owned by AssetsController.
-   */
-  setupMultichainDataAndSubscriptions() {}
 
   /**
    * If it does not already exist, creates and inserts middleware to handle eth

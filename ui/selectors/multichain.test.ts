@@ -1,3 +1,4 @@
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
@@ -74,20 +75,29 @@ import {
   getShouldShowFiat,
 } from '.';
 
+/**
+ * Multichain selector fixtures seed unified AssetsController fields
+ * (`assetsBalance`, `assetsInfo`, `assetsPrice`, `selectedCurrency`) that are
+ * not yet on `FlattenedBackgroundStateProxy`, while `MultichainState` still
+ * requires some legacy controller slices. Compose both explicitly for typed
+ * fixtures.
+ */
 type TestState = MultichainState &
   AccountsState & {
-    metamask: Pick<
-      MetaMaskReduxState['metamask'],
-      | 'preferences'
-      | 'assetsBalance'
-      | 'assetsInfo'
-      | 'networkConfigurationsByChainId'
-      | 'selectedCurrency'
-      | 'currencyRates'
-      | 'completedOnboarding'
-      | 'selectedNetworkClientId'
-      | 'remoteFeatureFlags'
-    >;
+    metamask: MultichainState['metamask'] &
+      Pick<
+        AssetsControllerState,
+        'assetsBalance' | 'assetsInfo' | 'assetsPrice' | 'selectedCurrency'
+      > &
+      Pick<
+        MetaMaskReduxState['metamask'],
+        | 'preferences'
+        | 'networkConfigurationsByChainId'
+        | 'currencyRates'
+        | 'completedOnboarding'
+        | 'selectedNetworkClientId'
+        | 'remoteFeatureFlags'
+      >;
   };
 
 const ETH_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
@@ -99,7 +109,7 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
         showFiatInTestnets: false,
       } as MetaMaskReduxState['metamask']['preferences'],
       ...mockNetworkState({ chainId }),
-      selectedCurrency: 'ETH',
+      selectedCurrency: 'eth',
       currencyRates: {
         ETH: {
           conversionRate: null,
@@ -215,8 +225,11 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
           conversionRate: 0.08,
         },
       },
-      conversionRates: {},
-      historicalPrices: {},
+      // Legacy MultichainBalancesController slice still required by MultichainState.
+      // Runtime selectors under test read unified `assetsBalance` instead.
+      balances: {},
+      // Unified AssetsController price map; conversion rates are derived from this.
+      assetsPrice: {},
       assetsMetadata: {},
       accountsAssets: {},
       allIgnoredAssets: {},
@@ -536,9 +549,9 @@ describe('Multichain Selectors', () => {
     });
 
     // @ts-expect-error This is missing from the Mocha type definitions
-    it.each(['usd', 'ETH'])(
+    it.each(['usd', 'eth'] as const)(
       "returns current currency '%s' if account is EVM",
-      (currency: string) => {
+      (currency: 'usd' | 'eth') => {
         const state = getEvmState();
 
         state.metamask.selectedCurrency = currency;
@@ -548,9 +561,9 @@ describe('Multichain Selectors', () => {
     );
 
     // @ts-expect-error This is missing from the Mocha type definitions
-    it.each(['usd', 'BTC'])(
+    it.each(['usd', 'btc'] as const)(
       "returns current currency '%s' if account is non-EVM",
-      (currency: string) => {
+      (currency: 'usd' | 'btc') => {
         const state = getNonEvmState();
 
         state.metamask.selectedCurrency = currency;

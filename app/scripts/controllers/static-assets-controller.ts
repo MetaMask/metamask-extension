@@ -322,10 +322,7 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
    * @param chainId - The chain ID.
    * @returns A promise that resolves to the filtered tokens.
    */
-  async #filterIgnoredTokens(
-    tokens: Token[],
-    chainId: Hex,
-  ): Promise<Token[]> {
+  async #filterIgnoredTokens(tokens: Token[], chainId: Hex): Promise<Token[]> {
     const { assetPreferences } = this.messenger.call(
       'AssetsController:getState',
     );

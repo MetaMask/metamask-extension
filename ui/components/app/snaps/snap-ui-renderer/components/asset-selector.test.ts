@@ -1,3 +1,5 @@
+import { SolAccountType, SolScope } from '@metamask/keyring-api';
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import { AssetSelector, Box, Field } from '@metamask/snaps-sdk/jsx';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderInterface } from '../test-utils';
@@ -14,8 +16,8 @@ describe('SnapUIAssetSelector', () => {
       [accountId]: {
         address: '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         id: accountId,
-        type: 'solana:dataAccount',
-        scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+        type: SolAccountType.DataAccount,
+        scopes: [SolScope.Mainnet],
         methods: [],
         options: {},
         metadata: {
@@ -39,7 +41,7 @@ describe('SnapUIAssetSelector', () => {
     },
   };
 
-  const mockAssetsInfo = {
+  const mockAssetsInfo: AssetsControllerState['assetsInfo'] = {
     [solNativeAssetId]: {
       type: 'native',
       decimals: 9,
@@ -58,7 +60,7 @@ describe('SnapUIAssetSelector', () => {
     },
   };
 
-  const mockAssetsPrice = {
+  const mockAssetsPrice: AssetsControllerState['assetsPrice'] = {
     [solNativeAssetId]: {
       assetPriceType: 'fungible',
       price: 151.36,
@@ -79,7 +81,7 @@ describe('SnapUIAssetSelector', () => {
       accountIdByAddress: {
         '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv': accountId,
       },
-      selectedCurrency: 'usd',
+      selectedCurrency: 'usd' as const,
       assetsBalance: mockAssetsBalance,
       assetsInfo: mockAssetsInfo,
       assetsPrice: mockAssetsPrice,

@@ -46,7 +46,9 @@ describe('useMultichainBalances', () => {
     // Linea/OP/mainnet fiat amounts differ. Assert identity + balances only.
     expect(result.current.assetsWithBalance).toHaveLength(6);
     expect(
-      result.current.assetsWithBalance.map((a) => a.chainId).sort(),
+      result.current.assetsWithBalance
+        .map((a: { chainId: string }) => a.chainId)
+        .sort(),
     ).toEqual(
       [
         '0x1',
@@ -59,7 +61,8 @@ describe('useMultichainBalances', () => {
     );
     expect(
       result.current.assetsWithBalance.find(
-        (a) => a.chainId === '0x1' && a.isNative,
+        (a: { chainId: string; isNative?: boolean }) =>
+          a.chainId === '0x1' && a.isNative,
       )?.balance,
     ).toBe('0.01');
   });
@@ -116,10 +119,12 @@ describe('useMultichainBalances', () => {
 
     expect(result.current.assetsWithBalance).toHaveLength(9);
     const byKey = Object.fromEntries(
-      result.current.assetsWithBalance.map((a) => [
-        `${a.chainId}:${a.address || 'native'}`,
-        a,
-      ]),
+      result.current.assetsWithBalance.map(
+        (a: { chainId: string; address?: string }) => [
+          `${a.chainId}:${a.address || 'native'}`,
+          a,
+        ],
+      ),
     );
     expect(
       byKey['0x1:0x514910771AF9Ca656af840dff83E8264EcF986CA']?.balance,
