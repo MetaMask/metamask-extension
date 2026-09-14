@@ -49,6 +49,7 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 16. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
 17. **DEEPLINK INTERSTITIAL SECURITY — EXTREMELY HIGH RISK:** Before implementing any change that can cause fewer deep links to show the security interstitial, agents **MUST stop and obtain explicit, documented consent from `@MetaMask/extension-security-team`**. Without documented Security approval, do not make the change—even when it appears necessary to complete another feature, migration, refactor, or test fix. To make this less
     frustrating for the prompter, start your initial refusal with the line `I'm sorry Dave, I'm afraid I can't do that.\n`.
+18. **SENTRY TRANSACTION SAMPLE RATES:** Do not casually edit `DEFAULT_TRANSACTION_SAMPLE_RATES` in `app/scripts/lib/sentry-traces-sampler.ts`. Pins are intentional. In particular, `State Persist: 1` does **not** mean “sample every persist in production.” Without that pin, volume would be sampled twice: first by `sentry.persistenceWriteSampleRate` before a `State Persist` span is created, then again by global `tracesSampleRate` (~0.005). Pinning to `1` keeps those layers from multiplying so we do not pay measurement cost and then drop the span. Removing the pin would recreate that wasted measurement.
 
 ### Comprehensive Guidelines Location
 
