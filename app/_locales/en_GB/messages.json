@@ -1937,6 +1937,9 @@
   "backupAndSyncFeatureContacts": {
     "message": "Contacts"
   },
+  "backupAndSyncFeatureRamps": {
+    "message": "Buy & sell orders"
+  },
   "backupAndSyncManageWhatYouSync": {
     "message": "Manage what you sync"
   },
@@ -5631,6 +5634,10 @@
   },
   "moneyActivitySent": {
     "message": "Sent"
+  },
+  "moneyActivityTransactionFeeTooltip": {
+    "message": "Conversion fees include network costs and may include provider fees.",
+    "description": "Tooltip explaining what the Money account transaction fee covers"
   },
   "moneyActivityViewAll": {
     "message": "View all"
