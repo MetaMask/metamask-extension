@@ -327,7 +327,14 @@
     "useTransactionSimulations": true,
     "watchEthereumAccountEnabled": "boolean"
   },
-  "ProfileMetricsController": "object",
+  "ProfileMetricsController": {
+    "accountSourceBackfillEnqueued": true,
+    "initialDelayEndTimestamp": "number",
+    "initialEnqueueCompleted": "boolean",
+    "proofBackfillEnqueued": "boolean",
+    "reportedAccounts": "object",
+    "syncQueue": "object"
+  },
   "QrSyncController": "object",
   "RampsController": {
     "autoramps": "object",
