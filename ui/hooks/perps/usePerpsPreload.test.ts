@@ -126,6 +126,10 @@ describe('usePerpsPreload', () => {
       'perpsStartPreload',
       expect.anything(),
     );
+    expect(submitRequestToBackground).toHaveBeenCalledWith('perpsStopPreload', [
+      expect.any(String),
+      false,
+    ]);
   });
 
   it('uses the explicitly selected EVM account when another EVM account has newer metadata', async () => {
@@ -234,6 +238,7 @@ describe('usePerpsPreload', () => {
     unmount();
     expect(submitRequestToBackground).toHaveBeenCalledWith('perpsStopPreload', [
       id,
+      true,
     ]);
     expect(endTrace).toHaveBeenCalledTimes(1);
     expect(mockManager.clearAllCaches).toHaveBeenCalled();
@@ -288,6 +293,10 @@ describe('usePerpsPreload', () => {
       expect.objectContaining({ data: { success: false, reason: 'timeout' } }),
     );
     expect(mockManager.cleanupPrewarm).toHaveBeenCalled();
+    expect(submitRequestToBackground).toHaveBeenCalledWith('perpsStopPreload', [
+      expect.any(String),
+      false,
+    ]);
   });
 
   it('records initialization failure without claiming readiness', async () => {
@@ -307,6 +316,10 @@ describe('usePerpsPreload', () => {
     );
     expect(mockManager.prewarm).not.toHaveBeenCalled();
     expect(jest.getTimerCount()).toBe(0);
+    expect(submitRequestToBackground).toHaveBeenCalledWith('perpsStopPreload', [
+      expect.any(String),
+      false,
+    ]);
     debug.mockRestore();
   });
 
@@ -338,7 +351,7 @@ describe('usePerpsPreload', () => {
 
       expect(submitRequestToBackground).toHaveBeenCalledWith(
         'perpsStopPreload',
-        [firstId],
+        [firstId, true],
       );
       expect(trace).toHaveBeenCalledTimes(2);
       expect(jest.mocked(trace).mock.calls[1][0].name).toBe(

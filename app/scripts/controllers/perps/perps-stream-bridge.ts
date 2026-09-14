@@ -383,7 +383,8 @@ export class PerpsStreamBridge {
         }
       },
       perpsStartPreload: (id: string) => this.#startPreload(id),
-      perpsStopPreload: (id: string) => this.#stopPreload(id),
+      perpsStopPreload: (id: string, preserveConnection = false) =>
+        this.#stopPreload(id, preserveConnection),
       perpsActivateStreaming: async (params: ActivateStreamingParams) => {
         await this.#initAndActivate();
         if (this.#isConnectionAlive()) {
@@ -774,14 +775,20 @@ export class PerpsStreamBridge {
     await operation;
   }
 
-  #stopPreload(id: string): Promise<void> | undefined {
+  #stopPreload(
+    id: string,
+    preserveConnection = false,
+  ): Promise<void> | undefined {
     if (!this.#isPreloadAllowed()) {
       PerpsStreamBridge.invalidateController(this.#controller);
       return this.#disconnectIfUnowned();
     }
     if (this.#preloadId === id) {
+      // Only a completed preload can hand provider teardown to the UI-close grace.
+      const keepConnection =
+        preserveConnection && this.#preloadReady && !this.#preloadOperation;
       this.#releasePreload();
-      if (!this.#viewActive && !this.#walletInitialized) {
+      if (!keepConnection && !this.#viewActive && !this.#walletInitialized) {
         return this.#disconnectIfUnowned();
       }
     }
