@@ -16,6 +16,65 @@ const createQueryClient = () =>
     },
   });
 
+const ETH_RATE = 11.1;
+const POL_RATE = 0.25;
+const LAST_UPDATED = 1700000000000;
+
+const USDT_GOERLI = 'eip155:5/erc20:0xdac17f958d2ee523a2206206994597c13d831ec7';
+const YFI_GOERLI = 'eip155:5/erc20:0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e';
+const USDC_POLYGON =
+  'eip155:137/erc20:0x2791bca1f2de4661ed88a30c99a7a9449aa84174';
+
+const defaultAssetsInfo = {
+  ...mockState.metamask.assetsInfo,
+  'eip155:1/slip44:60': { type: 'native', decimals: 18, symbol: 'ETH' },
+  'eip155:5/slip44:60': { type: 'native', decimals: 18, symbol: 'ETH' },
+  'eip155:137/slip44:60': { type: 'native', decimals: 18, symbol: 'POL' },
+  [USDT_GOERLI]: { type: 'erc20', decimals: 6, symbol: 'USDT' },
+  [YFI_GOERLI]: { type: 'erc20', decimals: 18, symbol: 'YFI' },
+  [USDC_POLYGON]: { type: 'erc20', decimals: 6, symbol: 'USDC' },
+};
+
+const defaultAssetsPrice = {
+  'eip155:1/slip44:60': {
+    assetPriceType: 'fungible',
+    price: ETH_RATE,
+    usdPrice: ETH_RATE,
+    lastUpdated: LAST_UPDATED,
+  },
+  'eip155:5/slip44:60': {
+    assetPriceType: 'fungible',
+    price: ETH_RATE,
+    usdPrice: ETH_RATE,
+    lastUpdated: LAST_UPDATED,
+  },
+  'eip155:137/slip44:60': {
+    assetPriceType: 'fungible',
+    price: POL_RATE,
+    usdPrice: POL_RATE,
+    lastUpdated: LAST_UPDATED,
+  },
+  // marketData price is in native units; assetsPrice stores fiat (= price * nativeRate)
+  [USDT_GOERLI]: {
+    assetPriceType: 'fungible',
+    price: 0.5 * ETH_RATE,
+    usdPrice: 0.5 * ETH_RATE,
+    lastUpdated: LAST_UPDATED,
+  },
+  [YFI_GOERLI]: {
+    assetPriceType: 'fungible',
+    price: 3.304588 * ETH_RATE,
+    usdPrice: 3.304588 * ETH_RATE,
+    lastUpdated: LAST_UPDATED,
+  },
+  [USDC_POLYGON]: {
+    assetPriceType: 'fungible',
+    price: Number(POL_RATE),
+    usdPrice: Number(POL_RATE),
+    lastUpdated: LAST_UPDATED,
+  },
+};
+
 const renderUseTokenExchangeRate = (
   tokenAddress?: string,
   metaMaskState?: Record<string, unknown>,
@@ -31,23 +90,9 @@ const renderUseTokenExchangeRate = (
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        currencyRates: {
-          ETH: {
-            conversionRate: 11.1,
-          },
-          POL: {
-            conversionRate: 0.25,
-          },
-        },
-        marketData: {
-          '0x5': {
-            '0xdAC17F958D2ee523a2206206994597C13D831ec7': { price: 0.5 },
-            '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': { price: 3.304588 },
-          },
-          '0x89': {
-            '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174': { price: 1.0 },
-          },
-        },
+        selectedCurrency: 'usd',
+        assetsInfo: defaultAssetsInfo,
+        assetsPrice: defaultAssetsPrice,
         ...metaMaskState,
       },
     });
@@ -150,7 +195,7 @@ describe('useTokenExchangeRate', () => {
   it('native: price is unavailable', () => {
     const {
       result: { current: exchangeRate },
-    } = renderUseTokenExchangeRate(undefined, { currencyRates: {} });
+    } = renderUseTokenExchangeRate(undefined, { assetsPrice: {} });
 
     expect(exchangeRate?.value).toBe(undefined);
   });
@@ -203,9 +248,20 @@ describe('useTokenExchangeRate', () => {
       } = renderUseTokenExchangeRate(
         undefined,
         {
-          currencyRates: {
-            ETH: { conversionRate: 11.1 },
-            // POL not included
+          assetsPrice: {
+            'eip155:1/slip44:60': {
+              assetPriceType: 'fungible',
+              price: ETH_RATE,
+              usdPrice: ETH_RATE,
+              lastUpdated: LAST_UPDATED,
+            },
+            'eip155:5/slip44:60': {
+              assetPriceType: 'fungible',
+              price: ETH_RATE,
+              usdPrice: ETH_RATE,
+              lastUpdated: LAST_UPDATED,
+            },
+            // POL native rate omitted
           },
         },
         '0x89',

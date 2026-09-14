@@ -1,15 +1,16 @@
-import {
-  ApprovalType,
-  toChecksumHexAddress,
-  toHex,
-} from '@metamask/controller-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   GasFeeToken,
   TransactionMeta,
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
+import {
+  getMockConfirmState,
+  MOCK_CONFIRMATIONS_ACCOUNT_ID,
+  nativeEvmAssetId,
+  weiToAssetAmount,
+} from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
@@ -92,8 +93,6 @@ function buildState({
   chainId?: string;
   remoteFeatureFlags?: Record<string, unknown>;
 } = {}) {
-  const accountAddress = transaction?.txParams?.from as string;
-
   let pendingApprovals = {};
   if (currentConfirmation) {
     pendingApprovals = {
@@ -104,16 +103,17 @@ function buildState({
     };
   }
 
+  const resolvedChainId = chainId ?? '0x5';
+  const assetId = nativeEvmAssetId(resolvedChainId);
+
   return getMockConfirmState({
     metamask: {
       selectedNetworkClientId: selectedNetworkClientId ?? 'goerli',
       pendingApprovals,
       ...(remoteFeatureFlags ? { remoteFeatureFlags } : {}),
-      accountsByChainId: {
-        [chainId ?? '0x5']: {
-          [toChecksumHexAddress(accountAddress)]: {
-            balance: toHex(balance ?? 0),
-          },
+      assetsBalance: {
+        [MOCK_CONFIRMATIONS_ACCOUNT_ID]: {
+          [assetId]: { amount: weiToAssetAmount(balance ?? 0) },
         },
       },
       transactions: transaction ? [transaction] : [],
