@@ -8,12 +8,27 @@ import { TraceName } from '../../../shared/lib/trace';
  * Per-`name` sample rates that override the global `tracesSampleRate`, so a
  * high-volume custom transaction can be capped without lowering visibility
  * elsewhere. Seeded with the two assets-controller transactions pinned to `0`.
+ *
+ * The Perps preload entries are throttled rather than pinned to `0`: the
+ * background preload refreshes on a 5-minute interval for as long as an
+ * unlocked UI keeps it alive, so their volume scales with session wall-clock
+ * time rather than with user actions, and every unlocked user in the Perps
+ * rollout cohort pays it even when they never open Perps. A tenth of the
+ * default keeps the loading path observable without letting an idle session
+ * dominate the trace budget; the remote `sentry` flag can retune or silence
+ * them without a release.
  */
 export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
   Record<string, number>
 > = Object.freeze({
   AssetsDataSourceTiming: 0,
   AssetsUpdatePipeline: 0,
+  // Literals, not `TraceName`: this module is loaded by the Sentry bootstrap,
+  // which must not pull in `shared/lib/trace` (it imports `./sentry`).
+  // `sentry-traces-sampler.test.ts` asserts these against the enum.
+  'Perps Market Data Preload': 0.0005,
+  'Perps User Data Preload': 0.0005,
+  'Perps Get Market Data With Prices': 0.0005,
 });
 
 /**
