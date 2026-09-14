@@ -89,9 +89,7 @@ describe('TokenPriceHeader', () => {
         <TokenPriceHeader {...defaultProps} price={100} percentChange={5.25} />,
       );
 
-      const percentElement = screen.getByTestId(
-        'asset-price-percent-change',
-      );
+      const percentElement = screen.getByTestId('asset-price-percent-change');
       expect(percentElement).toHaveTextContent('+5.25%');
       // Check for success color class
       expect(percentElement).toHaveClass('mm-box--color-success-default');
@@ -106,9 +104,7 @@ describe('TokenPriceHeader', () => {
         />,
       );
 
-      const percentElement = screen.getByTestId(
-        'asset-price-percent-change',
-      );
+      const percentElement = screen.getByTestId('asset-price-percent-change');
       expect(percentElement).toHaveTextContent('-3.75%');
       // Check for error color class
       expect(percentElement).toHaveClass('mm-box--color-error-default');
@@ -119,9 +115,7 @@ describe('TokenPriceHeader', () => {
         <TokenPriceHeader {...defaultProps} price={100} percentChange={0} />,
       );
 
-      const percentElement = screen.getByTestId(
-        'asset-price-percent-change',
-      );
+      const percentElement = screen.getByTestId('asset-price-percent-change');
       expect(percentElement).toHaveTextContent('+0.00%');
       // Check for default color class
       expect(percentElement).toHaveClass('mm-box--color-text-default');
@@ -159,9 +153,7 @@ describe('TokenPriceHeader', () => {
       );
 
       // Should only have percent change, no date
-      const percentElement = screen.getByTestId(
-        'asset-price-percent-change',
-      );
+      const percentElement = screen.getByTestId('asset-price-percent-change');
       expect(percentElement.parentElement?.childElementCount).toBe(1);
     });
   });
@@ -177,9 +169,7 @@ describe('TokenPriceHeader', () => {
       );
 
       // Should show dash for NaN
-      const percentElement = screen.getByTestId(
-        'asset-price-percent-change',
-      );
+      const percentElement = screen.getByTestId('asset-price-percent-change');
       expect(percentElement).toHaveTextContent('-');
     });
 
@@ -192,9 +182,7 @@ describe('TokenPriceHeader', () => {
         />,
       );
 
-      const percentElement = screen.getByTestId(
-        'asset-price-percent-change',
-      );
+      const percentElement = screen.getByTestId('asset-price-percent-change');
       expect(percentElement).toHaveTextContent('+1000.50%');
     });
 
