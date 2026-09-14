@@ -126,7 +126,6 @@ import {
 import {
   AssetsContractControllerGetTokenStandardAndDetailsAction,
   CurrencyRateControllerSetCurrentCurrencyAction,
-  GetTokenListState,
   TokenDetectionControllerDisableAction,
   TokenDetectionControllerEnableAction,
   TokensControllerAddTokenAction,
@@ -742,7 +741,6 @@ type AllowedActions =
   | SubscriptionControllerGetStateAction
   | SubscriptionControllerGetSubscriptionByProductAction
   | SubscriptionControllerStopAllPollingAction
-  | GetTokenListState
   | TokenDetectionControllerDisableAction
   | TokenDetectionControllerEnableAction
   | TokensControllerAddTokenAction
@@ -1602,17 +1600,12 @@ export class LegacyBackgroundApiService {
   ): Promise<TokenStandardAndDetails> {
     const currentChainId = this.getGlobalChainId();
 
-    const { tokensChainsCache } = this.#messenger.call(
-      'TokenListController:getState',
-    );
-    const tokenList = tokensChainsCache?.[currentChainId]?.data || {};
     const allTokens = this.#getAllTokens();
 
     const tokens = allTokens?.[currentChainId]?.[userAddress as string] || [];
 
     const staticTokenListDetails =
       STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
-    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
     const userDefinedTokenDetails =
       tokens.find(({ address: _address }) =>
         isEqualCaseInsensitive(_address, address),
@@ -1620,7 +1613,6 @@ export class LegacyBackgroundApiService {
 
     const tokenDetails = {
       ...staticTokenListDetails,
-      ...tokenListDetails,
       ...userDefinedTokenDetails,
     } as MergedTokenDetails;
 
@@ -1745,11 +1737,6 @@ export class LegacyBackgroundApiService {
     tokenId?: string,
     chainId?: Hex,
   ): Promise<TokenStandardAndDetails> {
-    const { tokensChainsCache } = this.#messenger.call(
-      'TokenListController:getState',
-    );
-    const tokenList = (chainId && tokensChainsCache?.[chainId]?.data) || {};
-
     const allTokens = this.#getAllTokens();
     const selectedAccount = this.#messenger.call(
       'AccountsController:getSelectedAccount',
@@ -1763,14 +1750,12 @@ export class LegacyBackgroundApiService {
         STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
     }
 
-    const tokenListDetails = tokenList[address?.toLowerCase()] || {};
     const userDefinedTokenDetails =
       tokens.find(({ address: _address }) =>
         isEqualCaseInsensitive(_address, address),
       ) || {};
     const tokenDetails = {
       ...staticTokenListDetails,
-      ...tokenListDetails,
       ...userDefinedTokenDetails,
     } as MergedTokenDetails;
 

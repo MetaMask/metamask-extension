@@ -343,7 +343,6 @@ import { GatorPermissionsControllerInit } from './messenger-client-init/gator-pe
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { AnalyticsControllerInit } from './messenger-client-init/analytics-controller-init';
 import { MetaMetricsControllerInit } from './messenger-client-init/metametrics-controller-init';
-import { TokenListControllerInit } from './messenger-client-init/token-list-controller-init';
 import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
 import { TokenBalancesControllerInit } from './messenger-client-init/token-balances-controller-init';
@@ -615,7 +614,6 @@ export default class MetamaskController extends EventEmitter {
       NftDetectionController: NftDetectionControllerInit,
       CurrencyRateController: CurrencyRateControllerInit,
       RatesController: RatesControllerInit,
-      TokenListController: TokenListControllerInit,
       TokenDetectionController: TokenDetectionControllerInit,
       TokensController: TokensControllerInit,
       TokenBalancesController: TokenBalancesControllerInit,
@@ -769,7 +767,6 @@ export default class MetamaskController extends EventEmitter {
     this.tokenBalancesController =
       messengerClientsByName.TokenBalancesController;
     this.staticAssetsController = messengerClientsByName.StaticAssetsController;
-    this.tokenListController = messengerClientsByName.TokenListController;
     this.tokenDetectionController =
       messengerClientsByName.TokenDetectionController;
     this.tokensController = messengerClientsByName.TokensController;
@@ -1381,7 +1378,6 @@ export default class MetamaskController extends EventEmitter {
       AccountOrderController: this.accountOrderController,
       GasFeeController: this.gasFeeController,
       GatorPermissionsController: this.gatorPermissionsController,
-      TokenListController: this.tokenListController,
       TokensController: this.tokensController,
       TokenBalancesController: this.tokenBalancesController,
       StaticAssetsController: this.staticAssetsController,
@@ -1447,7 +1443,6 @@ export default class MetamaskController extends EventEmitter {
         NetworkEnablementController: this.networkEnablementController,
         AccountOrderController: this.accountOrderController,
         GasFeeController: this.gasFeeController,
-        TokenListController: this.tokenListController,
         TokensController: this.tokensController,
         TokenBalancesController: this.tokenBalancesController,
         StaticAssetsController: this.staticAssetsController,
@@ -1497,7 +1492,6 @@ export default class MetamaskController extends EventEmitter {
       this.signatureController.resetState.bind(this.signatureController),
       this.bridgeController.resetState.bind(this.bridgeController),
       this.approvalController.clearRequests.bind(this.approvalController),
-      // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 
     if (isManifestV3) {
@@ -2410,7 +2404,6 @@ export default class MetamaskController extends EventEmitter {
       currencyRateController,
       tokenBalancesController,
       tokenDetectionController,
-      tokenListController,
       gasFeeController,
       gatorPermissionsController,
       metaMetricsController,
@@ -3537,11 +3530,6 @@ export default class MetamaskController extends EventEmitter {
         tokenDetectionController.stopPollingByPollingToken.bind(
           tokenDetectionController,
         ),
-
-      tokenListStartPolling:
-        tokenListController.startPolling.bind(tokenListController),
-      tokenListStopPollingByPollingToken:
-        tokenListController.stopPollingByPollingToken.bind(tokenListController),
 
       tokenBalancesStartPolling: tokenBalancesController.startPolling.bind(
         tokenBalancesController,
@@ -6424,7 +6412,6 @@ export default class MetamaskController extends EventEmitter {
       this.currencyRateController.stopAllPolling();
       this.tokenRatesController.stopAllPolling();
       this.tokenDetectionController.stopAllPolling();
-      this.tokenListController.stopAllPolling();
       this.tokenBalancesController.stopAllPolling();
       this.staticAssetsController.stopAllPolling();
       this.appStateController.clearPollingTokens();
@@ -6454,7 +6441,6 @@ export default class MetamaskController extends EventEmitter {
       this.currencyRateController.stopPollingByPollingToken(pollingToken);
       this.tokenRatesController.stopPollingByPollingToken(pollingToken);
       this.tokenDetectionController.stopPollingByPollingToken(pollingToken);
-      this.tokenListController.stopPollingByPollingToken(pollingToken);
       this.tokenBalancesController.stopPollingByPollingToken(pollingToken);
       this.staticAssetsController.stopPollingByPollingToken(pollingToken);
       this.accountTrackerController.stopPollingByPollingToken(pollingToken);

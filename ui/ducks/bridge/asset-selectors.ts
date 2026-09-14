@@ -35,7 +35,7 @@ import {
   getAssetsRates,
 } from '../../selectors/assets';
 import { getInternalAccountByGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
-import { EMPTY_ARRAY } from '../../selectors/shared';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from '../../selectors/shared';
 import { type BridgeAppState, getFromChains } from './selectors';
 import { type BridgeToken } from './types';
 import { getMaybeHexChainId } from './utils';
@@ -77,7 +77,9 @@ const getERC20AssetsWithBalance = createSelector(
     getEvmAccountAddress,
     getAllowedHexChainIds,
     getTokenBalancesControllerTokenBalances,
-    ({ metamask: { tokensChainsCache } }) => tokensChainsCache,
+    // `TokenListController` is no longer initialized, so `tokensChainsCache`
+    // is absent from state.
+    ({ metamask: { tokensChainsCache } }) => tokensChainsCache ?? EMPTY_OBJECT,
     getTokensControllerAllTokens,
   ],
   (
