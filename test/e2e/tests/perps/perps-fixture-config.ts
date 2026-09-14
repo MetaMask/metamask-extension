@@ -729,15 +729,6 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
           },
         },
       })
-      .withCurrencyController({
-        currencyRates: {
-          ETH: {
-            conversionDate: 0,
-            conversionRate: 1700,
-            usdConversionRate: 1700,
-          },
-        },
-      })
       // Select Arbitrum so the GasFeeController polls gas estimates for the
       // right chain. The "no gas price" blocking alert checks the *global*
       // `gasEstimateType` (which only updates for the selected network), so

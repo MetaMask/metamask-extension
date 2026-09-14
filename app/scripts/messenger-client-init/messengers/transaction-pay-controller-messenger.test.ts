@@ -138,6 +138,55 @@ describe('getTransactionPayControllerMessenger', () => {
       transactionPayControllerMessenger.call('TokenRatesController:getState'),
     ).toStrictEqual({ marketData: {} });
   });
+
+  it('provides CurrencyRateController state backed by AssetsController', () => {
+    const messenger = getRootMessenger<never, never>();
+    const assetsControllerMessenger = new Messenger({
+      namespace: 'AssetsController',
+      parent: messenger,
+    });
+    const currencyRates = {
+      ETH: {
+        conversionDate: 1,
+        conversionRate: 1700,
+        usdConversionRate: 1700,
+      },
+    };
+
+    // This action is registered by AssetsController in production.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (assetsControllerMessenger as any).registerActionHandler(
+      'AssetsController:getStateForTransactionPay',
+      () => ({
+        currencyRates,
+        currentCurrency: 'usd',
+      }),
+    );
+
+    const transactionPayControllerMessenger =
+      getTransactionPayControllerMessenger(messenger);
+
+    expect(
+      transactionPayControllerMessenger.call('CurrencyRateController:getState'),
+    ).toStrictEqual({
+      currencyRates,
+      currentCurrency: 'usd',
+    });
+  });
+
+  it('provides empty CurrencyRateController state when assets are excluded', () => {
+    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(false);
+    const messenger = getRootMessenger<never, never>();
+    const transactionPayControllerMessenger =
+      getTransactionPayControllerMessenger(messenger);
+
+    expect(
+      transactionPayControllerMessenger.call('CurrencyRateController:getState'),
+    ).toStrictEqual({
+      currencyRates: {},
+      currentCurrency: '',
+    });
+  });
 });
 
 describe('getTransactionPayControllerInitMessenger', () => {

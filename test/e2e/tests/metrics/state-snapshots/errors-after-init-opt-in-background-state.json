@@ -137,10 +137,6 @@
   },
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
-  "CurrencyController": {
-    "currencyRates": {},
-    "currentCurrency": "usd"
-  },
   "DeFiPositionsController": "object",
   "DeFiPositionsControllerV2": "object",
   "DecryptMessageController": {

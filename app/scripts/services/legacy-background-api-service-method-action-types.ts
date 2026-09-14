@@ -16,7 +16,7 @@ export type LegacyBackgroundApiServiceIsAssetsUnifyStateEnabledAction = {
 };
 
 /**
- * Sets the current currency for the CurrencyRateController and AssetsController (if the assets unify state feature is enabled).
+ * Sets the selected currency on the AssetsController.
  *
  * @param currencyCode - The currency code to set as the current currency.
  */

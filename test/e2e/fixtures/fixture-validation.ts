@@ -75,7 +75,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   // v111.2.0, so they are absent from persisted state. The fixtures still seed them
   // because controllers are constructed from the fixture state at boot, but there is
   // nothing to validate against.
-  'data.CurrencyController',
   'data.TokensController',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.

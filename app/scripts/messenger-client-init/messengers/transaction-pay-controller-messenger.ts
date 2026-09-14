@@ -24,6 +24,7 @@ import type {
 import type { RootMessenger } from '../../lib/messenger';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 import { getAssetsControllerMessenger } from './assets/assets-controller-messenger';
+import { registerCurrencyRateGetStateCompat } from './currency-rate-controller-compat';
 
 type TokenBalancesCompatState = {
   tokenBalances: Record<string, Record<string, Record<string, `0x${string}`>>>;
@@ -145,10 +146,11 @@ export function getTransactionPayControllerMessenger(
   >,
 ): TransactionPayControllerMessenger {
   // Compat shims: transaction-pay-controller still requests
-  // TokenBalancesController:getState / TokenRatesController:getState when
-  // assets-unify remote flag is off.
+  // TokenBalancesController:getState / TokenRatesController:getState /
+  // CurrencyRateController:getState when assets-unify remote flag is off.
   registerTokenBalancesGetStateCompat(messenger as RootMessenger);
   registerTokenRatesGetStateCompat(messenger as RootMessenger);
+  registerCurrencyRateGetStateCompat(messenger as RootMessenger);
 
   const controllerMessenger: TransactionPayControllerMessenger = new Messenger({
     namespace: 'TransactionPayController',
@@ -166,6 +168,7 @@ export function getTransactionPayControllerMessenger(
     actions: [
       'AccountTrackerController:getState',
       'AssetsController:getStateForTransactionPay',
+      // Compat shim: derives currencyRates / currentCurrency from AssetsController.
       'CurrencyRateController:getState',
       'GasFeeController:getState',
       'NetworkController:findNetworkClientIdByChainId',
@@ -190,6 +193,8 @@ export function getTransactionPayControllerMessenger(
     ],
     events: [
       'AssetsController:stateChange',
+      // Kept for transaction-pay-controller subscriptions; no publisher after
+      // CurrencyRateController removal (AssetsController:stateChange covers unify).
       'CurrencyRateController:stateChange',
       // Kept for transaction-pay-controller subscriptions; no publisher after
       // TokenRatesController removal (AssetsController:stateChange covers unify).
@@ -273,20 +278,17 @@ function registerAssetsControllerGetStateForTransactionPayAction(
         const tokensControllerState = controllerMessenger.call(
           'TokensController:getState',
         );
-        const currencyRatesControllerState = controllerMessenger.call(
-          'CurrencyRateController:getState',
-        );
 
         return {
-          // TokenBalancesController / TokenRatesController are removed; empty
-          // maps when unify is not in build.
+          // TokenBalancesController / TokenRatesController / CurrencyRateController
+          // are removed; empty maps when unify is not in build.
           tokenBalances: {},
           accountsByChainId:
             accountsByChainIdControllerState?.accountsByChainId ?? {},
           allTokens: tokensControllerState?.allTokens ?? {},
           marketData: {},
-          currencyRates: currencyRatesControllerState?.currencyRates ?? {},
-          currentCurrency: currencyRatesControllerState?.currentCurrency ?? '',
+          currencyRates: {},
+          currentCurrency: '',
         };
       },
     );

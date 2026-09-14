@@ -3531,51 +3531,17 @@ describe('MetaMaskController', () => {
         });
       });
 
-      it('calls setFiatCurrency when the `currentCurrency` has changed', async () => {
+      it('calls setFiatCurrency when the `selectedCurrency` has changed', async () => {
         jest.spyOn(RatesController.prototype, 'setFiatCurrency');
-        const localMetamaskController = new MetaMaskController({
-          showUserConfirmation: noop,
-          encryptor: mockEncryptor,
-          initState: {
-            ...cloneDeep(firstTimeState),
-            AccountsController: {
-              internalAccounts: {
-                accounts: {
-                  [mockNonEvmAccount.id]: mockNonEvmAccount,
-                  [mockEvmAccount.id]: mockEvmAccount,
-                },
-                selectedAccount: mockNonEvmAccount.id,
-              },
-            },
-          },
-          initLangCode: 'en_US',
-          platform: {
-            showTransactionNotification: () => undefined,
-            getVersion: () => 'foo',
-          },
-          browser: browserPolyfillMock,
-          getRequestAccountTabIds: () => ({}),
-          getOpenMetamaskTabsIds: () => ({}),
-          notificationManager: {
-            markAsAutomaticallyClosed: jest.fn(),
-          },
-          infuraProjectId: 'foo',
-          isFirstMetaMaskControllerSetup: true,
-          cronjobControllerStorageManager:
-            createMockCronjobControllerStorageManager(),
-          controllerMessenger: new Messenger({
-            namespace: MOCK_ANY_NAMESPACE,
-          }),
-        });
 
         metamaskController.controllerMessenger.publish(
-          'CurrencyRateController:stateChange',
-          { currentCurrency: mockCurrency },
+          'AssetsController:stateChange',
+          { selectedCurrency: mockCurrency },
           getMockPatches(),
         );
 
         expect(
-          localMetamaskController.multichainRatesController.setFiatCurrency,
+          metamaskController.multichainRatesController.setFiatCurrency,
         ).toHaveBeenCalledWith(mockCurrency);
       });
     });
