@@ -72,6 +72,9 @@ describe('MultichainPrivateKeyRow', () => {
 
     expect(mockOnCopy).toHaveBeenCalledTimes(1);
     expect(
+      screen.getByText('multichainAccountPrivateKeyCopied'),
+    ).toBeInTheDocument();
+    expect(
       screen.getByTestId(`multichain-private-key-value-${CHAIN_ID}`),
     ).toHaveStyle({ filter: 'blur(8px)' });
   });

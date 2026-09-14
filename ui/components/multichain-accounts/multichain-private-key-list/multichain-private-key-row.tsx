@@ -50,7 +50,13 @@ const PrivateKeyContent = ({
   privateKey,
 }: PrivateKeyContentProps) => {
   const t = useI18nContext();
+  const [isCopied, setIsCopied] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
+
+  const handleCopy = () => {
+    onCopy();
+    setIsCopied(true);
+  };
 
   return (
     <Box
@@ -105,10 +111,12 @@ const PrivateKeyContent = ({
         size={ButtonSize.Sm}
         variant={ButtonVariant.Secondary}
         startIconName={LegacyIconName.Copy}
-        onClick={onCopy}
+        onClick={handleCopy}
         data-testid={`multichain-private-key-copy-${chainId}`}
       >
-        {t('copyPrivateKey')}
+        {isCopied
+          ? t('multichainAccountPrivateKeyCopied')
+          : t('copyPrivateKey')}
       </Button>
     </Box>
   );
