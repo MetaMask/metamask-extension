@@ -9,7 +9,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { clearABTestExposureTrackingForTest } from '../../../hooks/useABTest';
 import { setPerpsTabBadgeSeen } from '../../../store/actions';
 import { PERPS_TAB_BADGE_AB_KEY } from '../../../../shared/lib/ab-testing/configs/perps-tab-badge';
@@ -34,10 +33,6 @@ jest.mock('../../../store/actions', () => ({
   setDefaultHomeActiveTabName: jest.fn(),
   detectNfts: jest.fn(() => ({ type: 'MOCK_DETECT_NFTS' })),
   setPerpsTabBadgeSeen: jest.fn(() => () => Promise.resolve()),
-}));
-
-jest.mock('../../../hooks/useTokenBalances', () => ({
-  useTokenBalances: jest.fn(),
 }));
 
 jest.mock('../../app/assets/asset-list', () => ({
@@ -72,7 +67,6 @@ jest.mock('../../app/perps/perps-tab', () => ({
 
 beforeEach(() => {
   jest.clearAllMocks();
-  (useTokenBalances as jest.Mock).mockReturnValue({ tokenBalances: {} });
 });
 
 describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
@@ -122,7 +116,6 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     clearABTestExposureTrackingForTest();
     originalPerpsEnabled = process.env.PERPS_ENABLED;
     process.env.PERPS_ENABLED = 'true';
-    (useTokenBalances as jest.Mock).mockReturnValue({ tokenBalances: {} });
   });
 
   afterEach(() => {
@@ -268,39 +261,6 @@ describe('AccountOverviewTabs - Perps tab New badge (TAT-3382)', () => {
     expect(mockTrackEvent).not.toHaveBeenCalledWith(
       expect.objectContaining({
         name: MetaMetricsEventName.ExperimentViewed,
-      }),
-    );
-  });
-});
-
-describe('AccountOverviewTabs - TokenBalancesPoller', () => {
-  it('polls token balances for the enabled EVM chain IDs', () => {
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        enabledNetworkMap: {
-          eip155: {
-            [CHAIN_IDS.MAINNET]: true,
-            [CHAIN_IDS.POLYGON]: true,
-          },
-        },
-      },
-    });
-
-    renderWithProvider(
-      <AccountOverviewTabs
-        setBasicFunctionalityModalOpen={jest.fn()}
-        onSupportLinkClick={jest.fn()}
-      />,
-      store,
-    );
-
-    expect(useTokenBalances).toHaveBeenCalledWith(
-      expect.objectContaining({
-        chainIds: expect.arrayContaining([
-          CHAIN_IDS.MAINNET,
-          CHAIN_IDS.POLYGON,
-        ]),
       }),
     );
   });

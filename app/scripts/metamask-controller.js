@@ -53,7 +53,6 @@ import {
 } from '@metamask/transaction-controller';
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
-import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   hexToBigInt,
   toCaipChainId,
@@ -169,7 +168,6 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
   getIsPerpsIncludedInBuild,
-  getIsAssetsUnifiedStateIncludedInBuild,
 } from '../../shared/lib/environment';
 import { getEnabledAdvancedPermissions } from '../../shared/lib/gator-permissions/feature-flags';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
@@ -666,9 +664,7 @@ export default class MetamaskController extends EventEmitter {
       MoneyAccountBalanceService: MoneyAccountBalanceServiceInit,
       MoneyAccountController: MoneyAccountControllerInit,
       MoneyAccountUpgradeController: MoneyAccountUpgradeControllerInit,
-      ...(getIsAssetsUnifiedStateIncludedInBuild()
-        ? { AssetsController: AssetsControllerInit }
-        : {}),
+      AssetsController: AssetsControllerInit,
       LegacyBackgroundApiService: LegacyBackgroundApiServiceInit,
     };
 
@@ -1383,9 +1379,7 @@ export default class MetamaskController extends EventEmitter {
       StaticAssetsController: this.staticAssetsController,
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
-      ...(this.assetsController
-        ? { AssetsController: this.assetsController }
-        : {}),
+      AssetsController: this.assetsController,
       PhishingController: this.phishingController,
       SelectedNetworkController: this.selectedNetworkController,
       LoggingController: this.loggingController,
@@ -1449,9 +1443,7 @@ export default class MetamaskController extends EventEmitter {
         StaticAssetsController: this.staticAssetsController,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
-        ...(this.assetsController
-          ? { AssetsController: this.assetsController }
-          : {}),
+        AssetsController: this.assetsController,
         SelectedNetworkController: this.selectedNetworkController,
         LoggingController: this.loggingController,
         MultichainRatesController: this.multichainRatesController,
@@ -1671,16 +1663,6 @@ export default class MetamaskController extends EventEmitter {
     this.tokenDetectionController.enable();
     this.getInfuraFeatureFlags();
     if (
-      !isEvmAccountType(
-        this.accountsController.getSelectedMultichainAccount().type,
-      ) &&
-      !this.controllerMessenger.call(
-        'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-      )
-    ) {
-      this.multichainRatesController.start();
-    }
-    if (
       getIsPerpsIncludedInBuild() &&
       this.preferencesController.state.useExternalServices
     ) {
@@ -1697,13 +1679,6 @@ export default class MetamaskController extends EventEmitter {
 
   stopNetworkRequests() {
     this.tokenDetectionController.disable();
-    if (
-      !this.controllerMessenger.call(
-        'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-      )
-    ) {
-      this.multichainRatesController.stop();
-    }
     if (getIsPerpsIncludedInBuild()) {
       this.messengerClientApi
         .perpsStopEligibilityMonitoring?.()
@@ -2198,45 +2173,10 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Sets up multichain data and subscriptions.
-   * This method is called during the MetaMaskController constructor.
-   * It starts the MultichainRatesController if selected account is non-EVM
-   * and subscribes to account changes.
+   * Placeholder retained for constructor call sites. Multichain rates are
+   * owned by AssetsController.
    */
-  setupMultichainDataAndSubscriptions() {
-    if (
-      this.controllerMessenger.call(
-        'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-      )
-    ) {
-      return;
-    }
-
-    this.controllerMessenger.subscribe(
-      'AccountsController:selectedAccountChange',
-      (selectedAccount) => {
-        if (
-          this.activeControllerConnections === 0 ||
-          isEvmAccountType(selectedAccount.type)
-        ) {
-          this.multichainRatesController.stop();
-          return;
-        }
-        this.multichainRatesController.start();
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      'CurrencyRateController:stateChange',
-      ({ currentCurrency }) => {
-        if (
-          currentCurrency !== this.multichainRatesController.state.fiatCurrency
-        ) {
-          this.multichainRatesController.setFiatCurrency(currentCurrency);
-        }
-      },
-    );
-  }
+  setupMultichainDataAndSubscriptions() {}
 
   /**
    * If it does not already exist, creates and inserts middleware to handle eth
@@ -3104,6 +3044,10 @@ export default class MetamaskController extends EventEmitter {
         ),
       setPerpsTabBadgeSeen:
         appStateController.setPerpsTabBadgeSeen.bind(appStateController),
+      setLastPerpsDepositEntryPoint:
+        appStateController.setLastPerpsDepositEntryPoint.bind(
+          appStateController,
+        ),
       setMusdConversionEducationSeen:
         appStateController.setMusdConversionEducationSeen.bind(
           appStateController,
@@ -4291,9 +4235,9 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
 
   /**
-   * When assets-unify-state is enabled, validates ERC-20 `wallet_watchAsset`
-   * input that the unified path requires before the EIP-747 confirmation flow.
-   * Does not persist; see {@link #persistUnifiedWatchAsset}.
+   * Validates ERC-20 `wallet_watchAsset` input that the unified path requires
+   * before the EIP-747 confirmation flow. Does not persist; see
+   * {@link #persistUnifiedWatchAsset}.
    *
    * @param {object} asset - The asset descriptor from the dapp request.
    * @param {string} networkClientId - The network client the request targets.
@@ -4448,27 +4392,15 @@ export default class MetamaskController extends EventEmitter {
   }) => {
     switch (type) {
       case ERC20: {
-        // Write operations (importing an asset) use the unified AssetsController
-        // whenever it is included in the build; the runtime rollout flag is
-        // treated as always-on for writes. The compile-time build gate still
-        // decides between the unified and legacy paths.
-        if (getIsAssetsUnifiedStateIncludedInBuild()) {
-          this.#validateUnifiedWatchAssetRequest(asset, networkClientId);
-          // Show the EIP-747 confirmation and wait for the user. A rejection
-          // throws here, so we never reach the persist step below.
-          await this.#requestUnifiedWatchAssetApproval(
-            asset,
-            origin,
-            networkClientId,
-          );
-          await this.#persistUnifiedWatchAsset(asset, networkClientId);
-        } else {
-          await this.tokensController.watchAsset({
-            asset,
-            type,
-            networkClientId,
-          });
-        }
+        this.#validateUnifiedWatchAssetRequest(asset, networkClientId);
+        // Show the EIP-747 confirmation and wait for the user. A rejection
+        // throws here, so we never reach the persist step below.
+        await this.#requestUnifiedWatchAssetApproval(
+          asset,
+          origin,
+          networkClientId,
+        );
+        await this.#persistUnifiedWatchAsset(asset, networkClientId);
         return undefined;
       }
       case ERC721:

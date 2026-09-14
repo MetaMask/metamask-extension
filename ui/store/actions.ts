@@ -3021,8 +3021,8 @@ export function multichainIgnoreAssets(
 }
 
 /**
- * Refreshes assets for the given accounts (unified state). Used when assets-unify-state
- * is enabled (e.g. refresh in asset list control bar).
+ * Refreshes assets for the given accounts (unified AssetsController state).
+ * Used by the refresh action in the asset list control bar.
  *
  * @param accounts - Accounts to refresh assets for (e.g. selected account)
  * @param options - Options for fetching assets
@@ -7464,6 +7464,12 @@ export function setPerpsTabBadgeSeen(value: boolean) {
   return async () => {
     await submitRequestToBackground('setPerpsTabBadgeSeen', [value]);
   };
+}
+
+export function setLastPerpsDepositEntryPoint(entryPoint: string | null) {
+  return submitRequestToBackground('setLastPerpsDepositEntryPoint', [
+    entryPoint,
+  ]);
 }
 
 /**

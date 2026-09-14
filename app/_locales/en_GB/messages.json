@@ -1538,6 +1538,9 @@
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
+  "alertInsufficientPayMethodBalance": {
+    "message": "Add less or use a different payment method."
+  },
   "alertInsufficientPayTokenBalance": {
     "message": "Insufficient funds"
   },
@@ -5676,6 +5679,9 @@
   },
   "moneyBenefits": {
     "message": "Benefits"
+  },
+  "moneyContactSupport": {
+    "message": "Contact support"
   },
   "moneyEarnApyTitle": {
     "message": "Earn up to $1 APY"

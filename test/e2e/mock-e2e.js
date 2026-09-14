@@ -1952,7 +1952,7 @@ async function setupMocking(
       partialSupport: ['solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1'],
     });
 
-  // Accounts API: v2 supported networks (used by AccountsApiDataSource when assetsUnifyState is enabled)
+  // Accounts API: v2 supported networks (used by AccountsApiDataSource)
   await server
     .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
     .always()
@@ -2011,8 +2011,8 @@ async function setupMocking(
       };
     });
 
-  // Accounts API: v5/v6 multi-account balances (used by AccountsApiDataSource
-  // when assetsUnifyState is enabled). Default: 25 ETH native per requested
+  // Accounts API: v5/v6 multi-account balances (used by AccountsApiDataSource).
+  // Default: 25 ETH native per requested
   // chain for the default fixture account. Override via
   // withFixtures({ unifiedEvmAccountsApiBalances }) when login() asserts a
   // custom fiat total. v6 rows include `object: 'token'` (core 15).

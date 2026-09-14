@@ -7,8 +7,8 @@ export type OnboardingPrivacyMocks = {
   accountsApiBalancesMock: MockedEndpoint;
 };
 
-// Mock Infura RPC and Accounts API v5 balances. With assetsUnifyState enabled,
-// post-onboarding balance polling uses Accounts API v5 instead of Infura RPC.
+// Mock Infura RPC and Accounts API v5 balances. Post-onboarding balance
+// polling uses Accounts API v5 instead of Infura RPC.
 export async function mockOnboardingInfuraPrivacy(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint[]> {
