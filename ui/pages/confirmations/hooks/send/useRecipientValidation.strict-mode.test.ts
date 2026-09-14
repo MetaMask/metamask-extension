@@ -17,12 +17,6 @@ jest.mock('../../context/send');
 jest.mock('./useSendType');
 jest.mock('./alerts/useSendAlerts');
 
-/**
- * Regression test for the StrictMode remount bug: the validation effect used
- * a lifetime `unmountedRef` that was set to `true` by the StrictMode
- * setup/cleanup/setup probe and never re-armed, so every validation result
- * (including ENS resolutions) was discarded and `setResult` never ran.
- */
 describe('useRecipientValidation under StrictMode', () => {
   const mockUseI18nContext = jest.mocked(useI18nContext);
   const mockUseSendContext = jest.mocked(useSendContext);
