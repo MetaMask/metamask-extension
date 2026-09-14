@@ -105,6 +105,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
+        unifiedEvmAccountsApiBalances: { mainnetNativeEthHuman: '25' },
         testSpecificMock: async (mockServer: Mockttp) => {
           await mockSnapSimpleKeyringAndSite(mockServer);
           return await mockPriceApi(mockServer);
@@ -115,7 +116,10 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x15af1d78b58c40000',
         )) ?? console.error('localNodes is undefined or empty');
-        await login(driver, { waitForNonEvmAccounts: false });
+        await login(driver, {
+          expectedBalance: '$85,025.00',
+          waitForNonEvmAccounts: false,
+        });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         const headerNavbar = new HeaderNavbar(driver);
