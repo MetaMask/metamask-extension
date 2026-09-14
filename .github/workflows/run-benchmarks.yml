@@ -37,7 +37,7 @@ jobs:
           - userJourneyAssets
           - userJourneyTransactions
           - userJourneyAccountManagement
-    runs-on: ubuntu-latest
+    runs-on: namespace-profile-metamask-ci-linux-small
     timeout-minutes: 30
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
