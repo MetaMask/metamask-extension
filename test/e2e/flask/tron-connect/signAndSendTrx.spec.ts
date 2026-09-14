@@ -4,6 +4,7 @@ import { connectTronTestDapp } from '../../page-objects/flows/tron-dapp.flow';
 import SnapSignTransactionConfirmation from '../../page-objects/pages/confirmations/snap-sign-transaction-confirmation';
 import { DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS } from './testHelpers';
 import { withTronAccountSnap, TRANSACTION_HASH_MOCK } from './common-tron';
+import { UNSUPPORTED_CALL_TYPE_SCAN_TRANSACTION_RESPONSE } from './mocks/security-api';
 
 const FUNDED_TRX_BALANCE_IN_SUN = 200_000_000;
 const INSUFFICIENT_TRX_BALANCE_IN_SUN = 100_000_000;
@@ -114,6 +115,38 @@ describe('Tron Connect - Sign/Send TRX - e2e tests', function () {
         await signTransacitonConfiramtion.checkPageIsLoaded();
         await signTransacitonConfiramtion.checkInsufficientFundsBannerIsDisplayed();
         await signTransacitonConfiramtion.checkConfirmButtonIsDisabled();
+      },
+    );
+  });
+
+  it('Keeps confirmation enabled when Security Alerts returns an unsupported call type', async function () {
+    await withTronAccountSnap(
+      {
+        ...DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS,
+        title: this.test?.fullTitle(),
+        tronBalance: FUNDED_TRX_BALANCE_IN_SUN,
+        scanTransactionResponse:
+          UNSUPPORTED_CALL_TYPE_SCAN_TRANSACTION_RESPONSE,
+      },
+      async (driver) => {
+        const testDappTron = new TestDappTron(driver);
+
+        await testDappTron.openTestDappPage();
+
+        await connectTronTestDapp(driver, testDappTron);
+
+        await testDappTron.setTRXRecipientAddress(DEFAULT_TRON_ADDRESS_2);
+        await testDappTron.setTRXAmount('123');
+
+        await testDappTron.sendTRXTransaction();
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const signTransacitonConfiramtion = new SnapSignTransactionConfirmation(
+          driver,
+        );
+        await signTransacitonConfiramtion.checkPageIsLoaded();
+        await signTransacitonConfiramtion.checkUnsupportedContractSimulationMessageIsDisplayed();
+        await signTransacitonConfiramtion.checkConfirmButtonIsEnabled();
       },
     );
   });
