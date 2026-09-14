@@ -182,7 +182,7 @@ describe('compareFiatBalanceWithPriority', () => {
       });
       const assetB = createMockAsset({
         name: 'Asset B',
-        chainId: CHAIN_IDS.LINEA_MAINNET,
+        chainId: CHAIN_IDS.MAINNET,
       });
 
       const result = compareFiatBalanceWithPriority(assetA, assetB);
@@ -198,11 +198,28 @@ describe('compareFiatBalanceWithPriority', () => {
       });
       const assetB = createMockAsset({
         name: 'Asset B',
-        chainId: CHAIN_IDS.LINEA_MAINNET,
+        chainId: CHAIN_IDS.MAINNET,
         fiatBalance: 0,
       });
 
       const result = compareFiatBalanceWithPriority(assetA, assetB);
+
+      expect(result).toBeGreaterThan(0);
+    });
+
+    it('does not pin Linea native above other listed natives when fiat balances are equal', () => {
+      const linea = createMockAsset({
+        name: 'Ethereum',
+        chainId: CHAIN_IDS.LINEA_MAINNET,
+        fiatBalance: 0,
+      });
+      const arbitrum = createMockAsset({
+        name: 'Ethereum',
+        chainId: CHAIN_IDS.ARBITRUM,
+        fiatBalance: 0,
+      });
+
+      const result = compareFiatBalanceWithPriority(linea, arbitrum);
 
       expect(result).toBeGreaterThan(0);
     });
