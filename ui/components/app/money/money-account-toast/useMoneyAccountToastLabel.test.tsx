@@ -150,7 +150,7 @@ describe('useMoneyAccountToastLabel', () => {
 
       expect(result.current).toStrictEqual({
         title: 'moneyToastDepositFailedTitleConvert',
-        description: 'moneyToastDepositFailedDescriptionConvert',
+        description: 'moneyToastDepositFailedBodyConvert',
       });
     });
   });
@@ -172,7 +172,7 @@ describe('useMoneyAccountToastLabel', () => {
       );
       expect(failed.result.current).toStrictEqual({
         title: 'moneyToastWithdrawFailedTitle',
-        description: 'moneyToastWithdrawFailedDescription',
+        description: 'moneyToastWithdrawFailedBody',
       });
     });
 

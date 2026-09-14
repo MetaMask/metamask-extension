@@ -38,21 +38,21 @@ const depositToastKeys: Record<MoneyAccountDepositIntent, DepositToastKeys> = {
     inProgressDescription: 'moneyToastInProgressDescription',
     successTitle: 'moneyToastDepositSuccessTitleConvert',
     failedTitle: 'moneyToastDepositFailedTitleConvert',
-    failedDescription: 'moneyToastDepositFailedDescriptionConvert',
+    failedDescription: 'moneyToastDepositFailedBodyConvert',
   },
   addMusd: {
     inProgressTitle: 'moneyToastDepositInProgressTitleAddMusd',
     inProgressDescription: 'moneyToastInProgressDescription',
     successTitle: 'moneyToastDepositSuccessTitleAddMusd',
     failedTitle: 'moneyToastDepositFailedTitleAddMusd',
-    failedDescription: 'moneyToastDepositFailedDescriptionAddMusd',
+    failedDescription: 'moneyToastDepositFailedBody',
   },
   card: {
     inProgressTitle: 'moneyToastDepositInProgressTitleCard',
     inProgressDescription: 'moneyToastDepositInProgressDescriptionCard',
     successTitle: 'moneyToastDepositSuccessTitleCard',
-    failedTitle: 'moneyToastDepositFailedTitleCard',
-    failedDescription: 'moneyToastDepositFailedDescriptionAddMusd',
+    failedTitle: 'moneyToastDepositFailedTitle',
+    failedDescription: 'moneyToastDepositFailedBody',
   },
 };
 
@@ -113,7 +113,7 @@ function getWithdrawLabel(
   if (status === 'failed') {
     return {
       title: t('moneyToastWithdrawFailedTitle'),
-      description: t('moneyToastWithdrawFailedDescription'),
+      description: t('moneyToastWithdrawFailedBody'),
     };
   }
 

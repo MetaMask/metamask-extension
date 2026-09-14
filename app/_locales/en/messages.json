@@ -5768,17 +5768,8 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "Conversion failed"
   },
-  "moneyToastDepositFailedDescriptionAddMusd": {
-    "message": "Unable to add funds. Try again."
-  },
-  "moneyToastDepositFailedDescriptionConvert": {
-    "message": "Unable to convert. Try again."
-  },
   "moneyToastDepositFailedTitleAddMusd": {
     "message": "Failed to add funds"
-  },
-  "moneyToastDepositFailedTitleCard": {
-    "message": "Deposit failed"
   },
   "moneyToastDepositFailedTitleConvert": {
     "message": "Conversion failed"
@@ -5815,9 +5806,6 @@
     "message": "This may take a few minutes."
   },
   "moneyToastWithdrawFailedBody": {
-    "message": "Unable to transfer funds. Try again."
-  },
-  "moneyToastWithdrawFailedDescription": {
     "message": "Unable to transfer funds. Try again."
   },
   "moneyToastWithdrawFailedTitle": {
