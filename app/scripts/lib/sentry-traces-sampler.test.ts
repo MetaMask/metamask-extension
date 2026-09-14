@@ -2,6 +2,7 @@ import {
   applySentryRemoteRates,
   resetSentryRemoteRates,
 } from '../../../shared/lib/sentry-remote-rates';
+import { TraceName } from '../../../shared/lib/trace';
 import {
   DEFAULT_TRANSACTION_SAMPLE_RATES,
   createTracesSampler,
@@ -120,6 +121,26 @@ describe('createTracesSampler', () => {
       DEFAULT_TRANSACTION_SAMPLE_RATES,
     )) {
       expect(sampler({ name })).toBe(rate);
+    }
+  });
+
+  it('throttles the Perps preload transactions below the default rate', () => {
+    delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
+    const sampler = createTracesSampler({ defaultSampleRate });
+
+    // The background preload refreshes on a timer for as long as an unlocked UI
+    // keeps it alive, so its volume tracks session duration rather than user
+    // actions. These must stay strictly below the default rate.
+    for (const name of [
+      TraceName.PerpsMarketDataPreload,
+      TraceName.PerpsUserDataPreload,
+      TraceName.PerpsGetMarketDataWithPrices,
+    ]) {
+      expect(sampler({ name })).toBeLessThan(defaultSampleRate);
+      // A pinned rate must not be bypassed by a sampled parent transaction.
+      expect(sampler({ name, parentSampled: true })).toBeLessThan(
+        defaultSampleRate,
+      );
     }
   });
 
