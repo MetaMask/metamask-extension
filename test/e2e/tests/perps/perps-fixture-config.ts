@@ -64,29 +64,6 @@ const PERPS_WITHDRAW_CONFIRMATION_ENABLED_FLAG = {
   },
 };
 
-const ARBITRUM_USDC_MARKET_DATA = {
-  tokenAddress: ARBITRUM_USDC_ADDRESS,
-  currency: 'ETH',
-  allTimeHigh: 1,
-  allTimeLow: 1,
-  circulatingSupply: 0,
-  dilutedMarketCap: 0,
-  high1d: 1,
-  low1d: 1,
-  marketCap: 0,
-  marketCapPercentChange1d: 0,
-  price: ARBITRUM_USDC_PRICE_IN_ETH,
-  priceChange1d: 0,
-  pricePercentChange1d: 0,
-  pricePercentChange1h: 0,
-  pricePercentChange1y: 0,
-  pricePercentChange7d: 0,
-  pricePercentChange14d: 0,
-  pricePercentChange30d: 0,
-  pricePercentChange200d: 0,
-  totalVolume: 0,
-};
-
 type RelayQuoteRequestBody = {
   amount?: string;
   user?: string;
@@ -709,13 +686,6 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
                 name: 'USD Coin',
               },
             ],
-          },
-        },
-      })
-      .withTokenRatesController({
-        marketData: {
-          [CHAIN_IDS.ARBITRUM]: {
-            [ARBITRUM_USDC_ADDRESS]: ARBITRUM_USDC_MARKET_DATA,
           },
         },
       })

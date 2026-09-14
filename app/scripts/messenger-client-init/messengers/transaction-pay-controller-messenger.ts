@@ -33,6 +33,14 @@ const EMPTY_TOKEN_BALANCES_STATE: TokenBalancesCompatState = {
   tokenBalances: {},
 };
 
+type TokenRatesCompatState = {
+  marketData: Record<string, Record<string, unknown>>;
+};
+
+const EMPTY_TOKEN_RATES_STATE: TokenRatesCompatState = {
+  marketData: {},
+};
+
 type CompatRootMessenger = {
   call: (actionType: string, ...args: unknown[]) => unknown;
 };
@@ -84,15 +92,63 @@ function registerTokenBalancesGetStateCompat(messenger: RootMessenger): void {
   );
 }
 
+/**
+ * Derive TokenRatesController-shaped state from AssetsController so
+ * transaction-pay-controller can keep calling TokenRatesController:getState
+ * when the assets-unify remote flag is off.
+ *
+ * @param messenger - Root messenger used to read AssetsController state.
+ * @returns Compat state with `marketData`.
+ */
+function getTokenRatesCompatState(
+  messenger: CompatRootMessenger,
+): TokenRatesCompatState {
+  if (!getIsAssetsUnifiedStateIncludedInBuild()) {
+    return EMPTY_TOKEN_RATES_STATE;
+  }
+
+  try {
+    const transactionPayState = messenger.call(
+      'AssetsController:getStateForTransactionPay',
+    ) as TokenRatesCompatState | undefined;
+    return {
+      marketData: transactionPayState?.marketData ?? {},
+    };
+  } catch {
+    return EMPTY_TOKEN_RATES_STATE;
+  }
+}
+
+/**
+ * Register a TokenRatesController:getState shim backed by AssetsController
+ * so TransactionPayController keeps working after TokenRatesController removal.
+ *
+ * @param messenger - The root messenger.
+ */
+function registerTokenRatesGetStateCompat(messenger: RootMessenger): void {
+  const compatMessenger = new Messenger({
+    namespace: 'TokenRatesController',
+    parent: messenger,
+  });
+  // Namespace messenger has no built-in action types; register the compat getState.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (compatMessenger as any).registerActionHandler(
+    'TokenRatesController:getState',
+    () => getTokenRatesCompatState(messenger as unknown as CompatRootMessenger),
+  );
+}
+
 export function getTransactionPayControllerMessenger(
   messenger: RootMessenger<
     MessengerActions<TransactionPayControllerMessenger>,
     MessengerEvents<TransactionPayControllerMessenger>
   >,
 ): TransactionPayControllerMessenger {
-  // Compat shim: transaction-pay-controller still requests
-  // TokenBalancesController:getState when assets-unify remote flag is off.
+  // Compat shims: transaction-pay-controller still requests
+  // TokenBalancesController:getState / TokenRatesController:getState when
+  // assets-unify remote flag is off.
   registerTokenBalancesGetStateCompat(messenger as RootMessenger);
+  registerTokenRatesGetStateCompat(messenger as RootMessenger);
 
   const controllerMessenger: TransactionPayControllerMessenger = new Messenger({
     namespace: 'TransactionPayController',
@@ -118,6 +174,7 @@ export function getTransactionPayControllerMessenger(
       'RemoteFeatureFlagController:getState',
       // Compat shim: derives tokenBalances from AssetsController.
       'TokenBalancesController:getState',
+      // Compat shim: derives marketData from AssetsController.
       'TokenRatesController:getState',
       'TokensController:getState',
       'TransactionController:estimateGas',
@@ -134,6 +191,8 @@ export function getTransactionPayControllerMessenger(
     events: [
       'AssetsController:stateChange',
       'CurrencyRateController:stateChange',
+      // Kept for transaction-pay-controller subscriptions; no publisher after
+      // TokenRatesController removal (AssetsController:stateChange covers unify).
       'TokenRatesController:stateChange',
       'TokensController:stateChange',
       'TransactionController:stateChange',
@@ -214,20 +273,18 @@ function registerAssetsControllerGetStateForTransactionPayAction(
         const tokensControllerState = controllerMessenger.call(
           'TokensController:getState',
         );
-        const marketDataControllerState = controllerMessenger.call(
-          'TokenRatesController:getState',
-        );
         const currencyRatesControllerState = controllerMessenger.call(
           'CurrencyRateController:getState',
         );
 
         return {
-          // TokenBalancesController is removed; empty map when unify is not in build.
+          // TokenBalancesController / TokenRatesController are removed; empty
+          // maps when unify is not in build.
           tokenBalances: {},
           accountsByChainId:
             accountsByChainIdControllerState?.accountsByChainId ?? {},
           allTokens: tokensControllerState?.allTokens ?? {},
-          marketData: marketDataControllerState?.marketData ?? {},
+          marketData: {},
           currencyRates: currencyRatesControllerState?.currencyRates ?? {},
           currentCurrency: currencyRatesControllerState?.currentCurrency ?? '',
         };

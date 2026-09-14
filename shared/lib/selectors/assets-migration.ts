@@ -57,7 +57,7 @@ import { createDeepEqualSelector } from './selector-creators';
 // currentCurrency: DONE
 //
 // TokenRatesController
-// marketData: DONE
+// marketData: DONE (via AssetsController.assetsPrice when unify enabled; controller removed)
 //
 // MultichainAssetsController
 // accountsAssets: DONE (via AssetsController when unify enabled; controller removed)
