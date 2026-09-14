@@ -167,6 +167,7 @@ describe('usePayWithToken', () => {
       sourceAssetId: `${SolScope.Mainnet}/slip44:501`,
       sourceChainId: SolScope.Mainnet,
       sourceWalletAccountId: 'solana-account-id',
+      sourceAmountRaw: '1000000000',
     });
     useTransactionPayAvailableTokensMock.mockReturnValue([
       {

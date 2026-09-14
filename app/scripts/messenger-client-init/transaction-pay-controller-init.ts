@@ -319,7 +319,10 @@ function getApi(
         messengerClient.state.transactionData[request.transactionId]
           ?.accountOverride ?? transaction?.txParams.from;
       const sourceAssetId = toAssetId(request.tokenAddress, request.chainId);
-      if (!accountAddress || !sourceAssetId) {
+      const sourceAmountRaw =
+        messengerClient.state.transactionData[request.transactionId]
+          ?.sourceAmounts?.[0]?.sourceAmountRaw;
+      if (!accountAddress || !sourceAssetId || !sourceAmountRaw) {
         return;
       }
       const sourceWalletAccount = Object.values(
@@ -340,6 +343,7 @@ function getApi(
         intent: {
           version: 2,
           sourceWalletAccountId: sourceWalletAccount.id,
+          sourceAmountRaw,
           sourceAccountId: `${sourceChainId}:${accountAddress}`,
           sourceAssetId,
           sourceChainId,

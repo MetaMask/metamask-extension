@@ -225,6 +225,7 @@ describe('transaction-pay utils', () => {
       const payIntent = {
         version: 2,
         sourceWalletAccountId: 'internal-account-id',
+        sourceAmountRaw: '1000000000',
         sourceAccountId: `${SolScope.Mainnet}:solana-address`,
         sourceAssetId: `${SolScope.Mainnet}/slip44:501`,
         sourceChainId: SolScope.Mainnet,
