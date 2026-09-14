@@ -147,7 +147,11 @@ export function wouldViolateMonadReserveBalance({
   balance: Hex | string | undefined;
   value: Hex | string | undefined;
 }): boolean {
-  if (!hasMonadReserveBalanceRule(chainId)) {
+  if (
+    !hasMonadReserveBalanceRule(chainId) ||
+    balance === undefined ||
+    value === undefined
+  ) {
     return false;
   }
 
