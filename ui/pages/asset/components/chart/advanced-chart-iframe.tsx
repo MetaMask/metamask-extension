@@ -3,11 +3,13 @@ import React, {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from 'react';
 import { useTheme } from '../../../../hooks/useTheme';
 import { isMovingAverage } from './advanced-chart-indicator-bar';
+import { CHART_TYPE_CANDLE } from './advanced-chart-interval-bar';
 import { useOHLCVChart } from './useOHLCVChart';
 import type { OHLCVRealtimeBar } from './useOHLCVRealtime';
 
@@ -65,6 +67,9 @@ const AdvancedChartIframe = forwardRef<
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const [chartReady, setChartReady] = useState(false);
     const [iframeLoaded, setIframeLoaded] = useState(false);
+    // Which studies the engine currently has applied, so each sync posts only
+    // a diff. Cleared on CHART_READY, since a (re)built chart starts bare.
+    const appliedStudiesRef = useRef<Set<string>>(new Set());
     const theme = useTheme();
     const isDark = theme === 'dark';
     const chartUrl = `${CHART_ORIGIN}/index.html?theme=${isDark ? 'dark' : 'light'}`;
@@ -106,6 +111,7 @@ const AdvancedChartIframe = forwardRef<
               ? JSON.parse(event.data)
               : event.data;
           if (msg?.type === 'CHART_READY') {
+            appliedStudiesRef.current = new Set();
             setChartReady(true);
             onReady?.();
           }
@@ -144,43 +150,78 @@ const AdvancedChartIframe = forwardRef<
       }
     }, [chartType, chartReady, postToChart]);
 
-    // Read through a ref so the replay effect below runs only when a chart
-    // becomes ready, not on every toggle — the parent already posts those.
-    const activeIndicatorsRef = useRef(activeIndicators);
-    activeIndicatorsRef.current = activeIndicators;
+    // Studies are candlestick-only: the selection stays in preferences but
+    // nothing is drawn on a line chart. Gating here rather than in the parent
+    // means no caller can accidentally draw studies on a line chart.
+    const showIndicators = chartType === CHART_TYPE_CANDLE;
 
-    // Re-apply the persisted indicator selection to a freshly loaded chart.
-    // The engine starts with no indicators, so without this the toolbar shows
-    // them as enabled while the chart itself is bare after navigating to
-    // another token or reopening the extension.
+    // Volume and moving averages have their own messages, so they're split out
+    // of the generic add/remove list.
+    const studies = useMemo(
+      () =>
+        showIndicators
+          ? [...(activeIndicators ?? [])].filter(
+              (name) => name !== 'Volume' && !isMovingAverage(name),
+            )
+          : [],
+      [showIndicators, activeIndicators],
+    );
+
+    const movingAverages = useMemo(
+      () =>
+        showIndicators
+          ? [...(activeIndicators ?? [])].filter(isMovingAverage)
+          : [],
+      [showIndicators, activeIndicators],
+    );
+
+    const showVolume =
+      showIndicators && (activeIndicators?.has('Volume') ?? false);
+
+    // Sync studies. Also re-applies the full selection to a newly loaded chart
+    // (after navigating to another token, or reopening the extension), where
+    // the engine has none applied yet.
     useEffect(() => {
       if (!chartReady) {
         return;
       }
-      const active = [...(activeIndicatorsRef.current ?? [])];
-      const movingAverages = active.filter(isMovingAverage);
+      const applied = appliedStudiesRef.current;
+      const desired = new Set(studies);
 
-      for (const name of active) {
-        if (isMovingAverage(name)) {
-          continue;
+      for (const name of desired) {
+        if (!applied.has(name)) {
+          applied.add(name);
+          postToChart({ type: 'ADD_INDICATOR', payload: { name } });
         }
-        postToChart(
-          name === 'Volume'
-            ? {
-                type: 'TOGGLE_VOLUME',
-                payload: { visible: true, volumeOverlay: true },
-              }
-            : { type: 'ADD_INDICATOR', payload: { name } },
-        );
       }
+      for (const name of [...applied]) {
+        if (!desired.has(name)) {
+          applied.delete(name);
+          postToChart({ type: 'REMOVE_INDICATOR', payload: { name } });
+        }
+      }
+    }, [studies, chartReady, postToChart]);
 
-      if (movingAverages.length > 0) {
-        postToChart({
-          type: 'SET_MA_VISIBILITY',
-          payload: { visible: movingAverages },
-        });
+    // Moving averages are driven as a single batch rather than per-indicator.
+    useEffect(() => {
+      if (!chartReady) {
+        return;
       }
-    }, [chartReady, postToChart]);
+      postToChart({
+        type: 'SET_MA_VISIBILITY',
+        payload: { visible: movingAverages },
+      });
+    }, [movingAverages, chartReady, postToChart]);
+
+    useEffect(() => {
+      if (!chartReady) {
+        return;
+      }
+      postToChart({
+        type: 'TOGGLE_VOLUME',
+        payload: { visible: showVolume, volumeOverlay: true },
+      });
+    }, [showVolume, chartReady, postToChart]);
 
     // Forward realtime bar updates to the chart engine
     useEffect(() => {

@@ -107,14 +107,11 @@ import { AssetStickyActions } from './asset-sticky-actions';
 import AssetChart from './chart/asset-chart';
 // [POC — THROWAWAY] Advanced Chart via cross-origin iframe from localhost:8001
 import AdvancedChartIframe from './chart/advanced-chart-iframe';
-import type { AdvancedChartIframeRef } from './chart/advanced-chart-iframe';
 import IntervalBar, {
   CHART_TYPE_LINE,
   CHART_TYPE_CANDLE,
 } from './chart/advanced-chart-interval-bar';
-import IndicatorBar, {
-  isMovingAverage,
-} from './chart/advanced-chart-indicator-bar';
+import IndicatorBar from './chart/advanced-chart-indicator-bar';
 import { useAdvancedChartPreferences } from './chart/useAdvancedChartPreferences';
 import { useOHLCVRealtime } from './chart/useOHLCVRealtime';
 import { MarketClosedActionButton } from './market-closed-action-button';
@@ -193,54 +190,10 @@ const AssetPage = ({
     setInterval: setAcInterval,
     toggleIndicator: toggleAcIndicator,
   } = useAdvancedChartPreferences();
-  const acRef = React.useRef<AdvancedChartIframeRef>(null);
 
   const handleAdvancedChartReady = useCallback(() => {
     setAcChartReady(true);
   }, []);
-
-  const handleIndicatorToggle = useCallback(
-    (name: string) => {
-      const wasActive = acIndicators.has(name);
-      toggleAcIndicator(name);
-      if (wasActive) {
-        acRef.current?.postMessage(
-          name === 'Volume'
-            ? { type: 'TOGGLE_VOLUME', payload: { visible: false } }
-            : { type: 'REMOVE_INDICATOR', payload: { name } },
-        );
-      } else {
-        acRef.current?.postMessage(
-          name === 'Volume'
-            ? {
-                type: 'TOGGLE_VOLUME',
-                payload: { visible: true, volumeOverlay: true },
-              }
-            : { type: 'ADD_INDICATOR', payload: { name } },
-        );
-      }
-    },
-    [acIndicators, toggleAcIndicator],
-  );
-
-  const handleMAToggle = useCallback(
-    (ma: string) => {
-      toggleAcIndicator(ma);
-      // Compute the new MA set after toggle for the postMessage.
-      const nextIndicators = new Set(acIndicators);
-      if (nextIndicators.has(ma)) {
-        nextIndicators.delete(ma);
-      } else {
-        nextIndicators.add(ma);
-      }
-      const selectedMAs = [...nextIndicators].filter(isMovingAverage);
-      acRef.current?.postMessage({
-        type: 'SET_MA_VISIBILITY',
-        payload: { visible: selectedMAs },
-      });
-    },
-    [acIndicators, toggleAcIndicator],
-  );
 
   useEffect(() => {
     endTrace({ name: TraceName.AssetDetails });
@@ -579,7 +532,6 @@ const AssetPage = ({
               onChartTypeSelect={setAcChartType}
             />
             <AdvancedChartIframe
-              ref={acRef}
               assetId={caipAssetId as string}
               height={300}
               chartType={acChartType}
@@ -589,11 +541,13 @@ const AssetPage = ({
               onReady={handleAdvancedChartReady}
               realtimeBar={realtimeBar}
             />
+            {/* Candlestick-only: the selection is kept in preferences, but the
+                bar and the studies themselves are hidden on a line chart. */}
             {acChartType === CHART_TYPE_CANDLE && (
               <IndicatorBar
                 activeIndicators={acIndicators}
-                onIndicatorToggle={handleIndicatorToggle}
-                onMAToggle={handleMAToggle}
+                onIndicatorToggle={toggleAcIndicator}
+                onMAToggle={toggleAcIndicator}
               />
             )}
           </>

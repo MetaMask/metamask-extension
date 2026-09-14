@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getTdpChartType,
@@ -34,7 +34,11 @@ export function useAdvancedChartPreferences() {
   // Resolved values: local override ?? persisted ?? default.
   const chartType = localChartType ?? persistedChartType;
   const interval = localInterval ?? persistedInterval;
-  const indicators = localIndicators ?? new Set<string>(persistedIndicators);
+  // Memoized so consumers can use the set as an effect dependency.
+  const indicators = useMemo(
+    () => localIndicators ?? new Set<string>(persistedIndicators),
+    [localIndicators, persistedIndicators],
+  );
 
   const setChartType = useCallback((next: number) => {
     setLocalChartType(next);
@@ -45,7 +49,8 @@ export function useAdvancedChartPreferences() {
     );
   }, []);
 
-  const setInterval = useCallback((next: string) => {
+  // Named to avoid shadowing the global `setInterval`; exposed as `setInterval`.
+  const setChartInterval = useCallback((next: string) => {
     setLocalInterval(next);
     submitRequestToBackground('setPreference', [
       'tdpChartInterval',
@@ -81,7 +86,7 @@ export function useAdvancedChartPreferences() {
     interval,
     indicators,
     setChartType,
-    setInterval,
+    setInterval: setChartInterval,
     toggleIndicator,
     /** Convenience: whether the current chart type is line (hides indicators). */
     isLineChart: chartType === CHART_TYPE_LINE,

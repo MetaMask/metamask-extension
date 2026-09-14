@@ -333,11 +333,18 @@ describe('AdvancedChartIframe', () => {
     });
   });
 
-  describe('Persisted Indicators', () => {
-    const renderAndMakeReady = (activeIndicators?: Set<string>) => {
+  describe('Indicator Syncing', () => {
+    const CANDLE = 1;
+    const LINE = 2;
+
+    const renderReady = (
+      activeIndicators?: Set<string>,
+      chartType = CANDLE,
+    ) => {
       const result = render(
         <AdvancedChartIframe
           {...defaultProps}
+          chartType={chartType}
           activeIndicators={activeIndicators}
         />,
       );
@@ -360,97 +367,49 @@ describe('AdvancedChartIframe', () => {
       return result;
     };
 
-    it('re-applies persisted toggle indicators when the chart becomes ready', async () => {
-      renderAndMakeReady(new Set(['RSI', 'MACD']));
-
-      await waitFor(() => {
-        expect(postMessageSpy).toHaveBeenCalledWith(
-          JSON.stringify({
-            type: 'ADD_INDICATOR',
-            payload: { name: 'RSI' },
-          }),
-          CHART_ORIGIN,
-        );
-      });
-
+    const expectPosted = (message: Record<string, unknown>) =>
       expect(postMessageSpy).toHaveBeenCalledWith(
-        JSON.stringify({
-          type: 'ADD_INDICATOR',
-          payload: { name: 'MACD' },
-        }),
+        JSON.stringify(message),
         CHART_ORIGIN,
       );
-    });
 
-    it('re-applies persisted volume via TOGGLE_VOLUME', async () => {
-      renderAndMakeReady(new Set(['Volume']));
+    const expectNotPosted = (type: string) =>
+      expect(postMessageSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining(type),
+        expect.any(String),
+      );
+
+    it('applies the persisted selection once the chart is ready', async () => {
+      renderReady(new Set(['RSI', 'MACD']));
 
       await waitFor(() => {
-        expect(postMessageSpy).toHaveBeenCalledWith(
-          JSON.stringify({
-            type: 'TOGGLE_VOLUME',
-            payload: { visible: true, volumeOverlay: true },
-          }),
-          CHART_ORIGIN,
-        );
+        expectPosted({ type: 'ADD_INDICATOR', payload: { name: 'RSI' } });
       });
-
-      expect(postMessageSpy).not.toHaveBeenCalledWith(
-        expect.stringContaining('ADD_INDICATOR'),
-        expect.any(String),
-      );
+      expectPosted({ type: 'ADD_INDICATOR', payload: { name: 'MACD' } });
     });
 
-    it('re-applies persisted moving averages in a single message', async () => {
-      renderAndMakeReady(new Set(['MA20', 'RSI', 'MA50']));
+    it('applies volume via TOGGLE_VOLUME rather than ADD_INDICATOR', async () => {
+      renderReady(new Set(['Volume']));
 
       await waitFor(() => {
-        expect(postMessageSpy).toHaveBeenCalledWith(
-          JSON.stringify({
-            type: 'SET_MA_VISIBILITY',
-            payload: { visible: ['MA20', 'MA50'] },
-          }),
-          CHART_ORIGIN,
-        );
+        expectPosted({
+          type: 'TOGGLE_VOLUME',
+          payload: { visible: true, volumeOverlay: true },
+        });
       });
-
-      expect(postMessageSpy).not.toHaveBeenCalledWith(
-        expect.stringContaining('"name":"MA20"'),
-        expect.any(String),
-      );
+      expectNotPosted('ADD_INDICATOR');
     });
 
-    it('sends no indicator messages when none are persisted', () => {
-      renderAndMakeReady(new Set());
+    it('applies moving averages as a single batch', async () => {
+      renderReady(new Set(['MA20', 'RSI', 'MA50']));
 
-      expect(postMessageSpy).not.toHaveBeenCalledWith(
-        expect.stringContaining('ADD_INDICATOR'),
-        expect.any(String),
-      );
-      expect(postMessageSpy).not.toHaveBeenCalledWith(
-        expect.stringContaining('SET_MA_VISIBILITY'),
-        expect.any(String),
-      );
-    });
-
-    it('does not re-apply indicators when the selection changes after ready', () => {
-      const { rerender } = renderAndMakeReady(new Set(['RSI']));
-
-      postMessageSpy.mockClear();
-
-      // The parent posts its own message for user-driven toggles, so replaying
-      // here would double up.
-      rerender(
-        <AdvancedChartIframe
-          {...defaultProps}
-          activeIndicators={new Set(['RSI', 'MACD'])}
-        />,
-      );
-
-      expect(postMessageSpy).not.toHaveBeenCalledWith(
-        expect.stringContaining('ADD_INDICATOR'),
-        expect.any(String),
-      );
+      await waitFor(() => {
+        expectPosted({
+          type: 'SET_MA_VISIBILITY',
+          payload: { visible: ['MA20', 'MA50'] },
+        });
+      });
+      expectNotPosted('"name":"MA20"');
     });
 
     it('does not apply indicators before the chart is ready', () => {
@@ -461,10 +420,122 @@ describe('AdvancedChartIframe', () => {
         />,
       );
 
-      expect(postMessageSpy).not.toHaveBeenCalledWith(
-        expect.stringContaining('ADD_INDICATOR'),
-        expect.any(String),
+      expectNotPosted('ADD_INDICATOR');
+    });
+
+    it('adds only the newly selected indicator when the selection grows', async () => {
+      const { rerender } = renderReady(new Set(['RSI']));
+
+      await waitFor(() => {
+        expectPosted({ type: 'ADD_INDICATOR', payload: { name: 'RSI' } });
+      });
+      postMessageSpy.mockClear();
+
+      rerender(
+        <AdvancedChartIframe
+          {...defaultProps}
+          chartType={CANDLE}
+          activeIndicators={new Set(['RSI', 'MACD'])}
+        />,
       );
+
+      await waitFor(() => {
+        expectPosted({ type: 'ADD_INDICATOR', payload: { name: 'MACD' } });
+      });
+      expect(postMessageSpy).not.toHaveBeenCalledWith(
+        JSON.stringify({ type: 'ADD_INDICATOR', payload: { name: 'RSI' } }),
+        CHART_ORIGIN,
+      );
+    });
+
+    it('removes an indicator that is deselected', async () => {
+      const { rerender } = renderReady(new Set(['RSI', 'MACD']));
+
+      await waitFor(() => {
+        expectPosted({ type: 'ADD_INDICATOR', payload: { name: 'MACD' } });
+      });
+      postMessageSpy.mockClear();
+
+      rerender(
+        <AdvancedChartIframe
+          {...defaultProps}
+          chartType={CANDLE}
+          activeIndicators={new Set(['RSI'])}
+        />,
+      );
+
+      await waitFor(() => {
+        expectPosted({ type: 'REMOVE_INDICATOR', payload: { name: 'MACD' } });
+      });
+    });
+
+    describe('Line chart', () => {
+      it('applies no studies even when indicators are selected', () => {
+        renderReady(new Set(['RSI', 'MA20', 'Volume']), LINE);
+
+        expectNotPosted('ADD_INDICATOR');
+        expectPosted({ type: 'SET_MA_VISIBILITY', payload: { visible: [] } });
+        expectPosted({
+          type: 'TOGGLE_VOLUME',
+          payload: { visible: false, volumeOverlay: true },
+        });
+      });
+
+      it('removes the studies when switching from candle to line', async () => {
+        const { rerender } = renderReady(
+          new Set(['RSI', 'MA20', 'Volume']),
+          CANDLE,
+        );
+
+        await waitFor(() => {
+          expectPosted({ type: 'ADD_INDICATOR', payload: { name: 'RSI' } });
+        });
+        postMessageSpy.mockClear();
+
+        rerender(
+          <AdvancedChartIframe
+            {...defaultProps}
+            chartType={LINE}
+            activeIndicators={new Set(['RSI', 'MA20', 'Volume'])}
+          />,
+        );
+
+        await waitFor(() => {
+          expectPosted({ type: 'REMOVE_INDICATOR', payload: { name: 'RSI' } });
+        });
+        expectPosted({ type: 'SET_MA_VISIBILITY', payload: { visible: [] } });
+        expectPosted({
+          type: 'TOGGLE_VOLUME',
+          payload: { visible: false, volumeOverlay: true },
+        });
+      });
+
+      it('restores the studies when switching back to candle', async () => {
+        const indicators = new Set(['RSI', 'MA20', 'Volume']);
+        const { rerender } = renderReady(indicators, LINE);
+
+        postMessageSpy.mockClear();
+
+        rerender(
+          <AdvancedChartIframe
+            {...defaultProps}
+            chartType={CANDLE}
+            activeIndicators={indicators}
+          />,
+        );
+
+        await waitFor(() => {
+          expectPosted({ type: 'ADD_INDICATOR', payload: { name: 'RSI' } });
+        });
+        expectPosted({
+          type: 'SET_MA_VISIBILITY',
+          payload: { visible: ['MA20'] },
+        });
+        expectPosted({
+          type: 'TOGGLE_VOLUME',
+          payload: { visible: true, volumeOverlay: true },
+        });
+      });
     });
   });
 

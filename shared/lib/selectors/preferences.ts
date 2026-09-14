@@ -17,6 +17,8 @@ export function getPreferences({
 // Chart type: 1 = Candle, 2 = Line (matches TradingView + mobile conventions).
 const CHART_TYPE_LINE_DEFAULT = 2;
 const CHART_INTERVAL_DEFAULT = '15m';
+// Stable reference so `useSelector` consumers don't re-render on every call.
+const NO_INDICATORS: string[] = [];
 
 export function getTdpChartType(state: PreferencesMetaMaskState): number {
   return state.metamask.preferences?.tdpChartType ?? CHART_TYPE_LINE_DEFAULT;
@@ -29,5 +31,5 @@ export function getTdpChartInterval(state: PreferencesMetaMaskState): string {
 export function getTdpChartIndicators(
   state: PreferencesMetaMaskState,
 ): string[] {
-  return state.metamask.preferences?.tdpChartIndicators ?? [];
+  return state.metamask.preferences?.tdpChartIndicators ?? NO_INDICATORS;
 }
