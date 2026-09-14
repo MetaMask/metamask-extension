@@ -227,9 +227,7 @@ const AssetPage = ({
       } else {
         nextIndicators.add(ma);
       }
-      const selectedMAs = [...nextIndicators].filter((n) =>
-        /^MA\d+$/u.test(n),
-      );
+      const selectedMAs = [...nextIndicators].filter((n) => /^MA\d+$/u.test(n));
       acRef.current?.postMessage({
         type: 'SET_MA_VISIBILITY',
         payload: { visible: selectedMAs },

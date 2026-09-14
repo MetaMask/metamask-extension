@@ -7,7 +7,10 @@ import {
 } from '../../../../../shared/lib/selectors/preferences';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useAdvancedChartPreferences } from './useAdvancedChartPreferences';
-import { CHART_TYPE_LINE, CHART_TYPE_CANDLE } from './advanced-chart-interval-bar';
+import {
+  CHART_TYPE_LINE,
+  CHART_TYPE_CANDLE,
+} from './advanced-chart-interval-bar';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
@@ -180,9 +183,7 @@ describe('useAdvancedChartPreferences', () => {
     unmount();
 
     // Second mount (Token B) — same persisted prefs
-    const { result: resultB } = renderHook(() =>
-      useAdvancedChartPreferences(),
-    );
+    const { result: resultB } = renderHook(() => useAdvancedChartPreferences());
     expect(resultB.current.chartType).toBe(CHART_TYPE_CANDLE);
     expect(resultB.current.interval).toBe('1h');
     expect(resultB.current.indicators).toEqual(new Set(['Volume', 'MA20']));

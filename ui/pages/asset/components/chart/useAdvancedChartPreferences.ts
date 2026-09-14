@@ -34,17 +34,15 @@ export function useAdvancedChartPreferences() {
   // Resolved values: local override ?? persisted ?? default.
   const chartType = localChartType ?? persistedChartType;
   const interval = localInterval ?? persistedInterval;
-  const indicators =
-    localIndicators ?? new Set<string>(persistedIndicators);
+  const indicators = localIndicators ?? new Set<string>(persistedIndicators);
 
   const setChartType = useCallback((next: number) => {
     setLocalChartType(next);
-    submitRequestToBackground('setPreference', [
-      'tdpChartType',
-      next,
-    ]).catch(() => {
-      // Best-effort persist — chart still updates via local state.
-    });
+    submitRequestToBackground('setPreference', ['tdpChartType', next]).catch(
+      () => {
+        // Best-effort persist — chart still updates via local state.
+      },
+    );
   }, []);
 
   const setInterval = useCallback((next: string) => {
