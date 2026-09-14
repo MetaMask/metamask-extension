@@ -57,6 +57,9 @@ class HeaderNavbar {
   private readonly networkOption = (networkId: string) =>
     `[data-testid="${networkId}"]`;
 
+  private readonly notificationCountFloatingBubble =
+    '[data-testid="notifications-tag-counter__unread-dot"]';
+
   private readonly notificationCountOption =
     '[data-testid="global-menu-notification-count"]';
 
@@ -170,6 +173,8 @@ class HeaderNavbar {
     console.log(
       `Verify notification count is ${count} and open notifications list`,
     );
+
+    await this.waitForNotificationCountFloatingBubble(count);
     await this.openGlobalMenu();
     await this.driver.findElement({
       css: this.notificationCountOption,
@@ -324,6 +329,14 @@ class HeaderNavbar {
   async selectNetwork(networkId: string): Promise<void> {
     console.log(`Selecting network ${networkId}`);
     await this.driver.clickElement(this.networkOption(networkId));
+  }
+
+  async waitForNotificationCountFloatingBubble(count: number): Promise<void> {
+    console.log(`Wait for notification count bubble to be ${count}`);
+    await this.driver.waitForSelector({
+      css: this.notificationCountFloatingBubble,
+      text: count.toString(),
+    });
   }
 }
 
