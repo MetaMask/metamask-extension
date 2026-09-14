@@ -31,11 +31,20 @@ import { useMoneyAccountDeposit } from '../../hooks/money/useMoneyAccountDeposit
 import { useMoneyAccountInterest } from '../../hooks/money/useMoneyAccountInterest';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { useMoneyActivityItemClick } from '../../hooks/money/use-money-activity-item-click';
+import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
+import { useTrackOnce } from '../../hooks/useTrackOnce';
 import { moneyFormatUsd } from '../../helpers/money/format';
 import { selectMoneyEarningSectionEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
 import { reportMoneyError } from '../../helpers/money/report-money-error';
-import { MONEY_LANDING_URL } from './constants/urls';
+import {
+  MONEY_URLS,
+  MoneyBottomSheetName,
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+} from './constants/money-events';
 import {
   MoneyActivityList,
   MAX_PREVIEW_ITEMS,
@@ -48,6 +57,7 @@ import { MoneyActivityFilter } from './utils/money-activity-filters';
 import { MoneyTransferSheet } from './components/money-transfer-sheet';
 
 const MONEY_FUNDED_BALANCE_THRESHOLD = 0.01;
+const ACTION_BUTTON_ROW_BUTTON_COUNT = 2;
 const MONEY_ONBOARDING_ARTWORK = './images/money-onboarding-stepper-step-1.png';
 const FORMATTED_ZERO = moneyFormatUsd(new BigNumber(0));
 
@@ -176,15 +186,41 @@ export function MoneyHomePage() {
   } = useMoneyActivityItems({
     fill: { bucket: MoneyActivityFilter.All, count: MAX_PREVIEW_ITEMS },
   });
-  const handleActivityItemClick = useMoneyActivityItemClick();
+  const handleActivityItemClick = useMoneyActivityItemClick({
+    screenName: MoneyScreenName.MoneyHome,
+  });
   const { initiateDeposit, isLoading: isDepositLoading } =
     useMoneyAccountDeposit();
+  const { trackButtonClicked, trackScreenViewed } = useMoneyAnalytics({
+    screenName: MoneyScreenName.MoneyHome,
+  });
+  const isPageLoading =
+    isAvailabilityLoading || (availability.isAvailable && isBalanceLoading);
+
+  useTrackOnce(!isPageLoading && availability.isAvailable, trackScreenViewed);
+
   const handleViewAllActivity = useCallback(() => {
+    trackButtonClicked({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.ViewAll,
+      componentName: MoneyComponentName.ActivitySection,
+      labelKey: 'moneyActivityViewAll',
+      redirectTarget: MoneyScreenName.MoneyActivity,
+    });
     navigate(MONEY_ACTIVITY_ROUTE);
-  }, [navigate]);
-  const handleAddFunds = useCallback(() => {
+  }, [navigate, trackButtonClicked]);
+  const handleAddFundsFromActionRow = useCallback(() => {
+    trackButtonClicked({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.AddMoney,
+      componentName: MoneyComponentName.ActionButtonRow,
+      labelKey: 'moneyAdd',
+      redirectTarget: MoneyScreenName.MoneyDeposit,
+      buttonPosition: 1,
+      buttonRowButtonCount: ACTION_BUTTON_ROW_BUTTON_COUNT,
+    });
     initiateDeposit();
-  }, [initiateDeposit]);
+  }, [initiateDeposit, trackButtonClicked]);
   const handleAddToken = useCallback(
     (token: MoneyDepositToken) => {
       initiateDeposit({
@@ -196,17 +232,43 @@ export function MoneyHomePage() {
     },
     [initiateDeposit],
   );
+  const handleAddFundsFromFundCard = useCallback(() => {
+    trackButtonClicked({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.AddMoney,
+      componentName: MoneyComponentName.OnboardingCard,
+      labelKey: 'addFunds',
+      redirectTarget: MoneyScreenName.MoneyDeposit,
+    });
+    initiateDeposit();
+  }, [initiateDeposit, trackButtonClicked]);
   const handleLearnMore = useCallback(() => {
-    global.platform.openTab({ url: MONEY_LANDING_URL });
-  }, []);
+    trackButtonClicked({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.LearnMore,
+      componentName: MoneyComponentName.WhatYouGetSection,
+      labelKey: 'moneyLearnMore',
+      redirectTarget: MONEY_URLS.MONEY_LANDING,
+    });
+    global.platform.openTab({ url: MONEY_URLS.MONEY_LANDING });
+  }, [trackButtonClicked]);
   const handleOpenTransferSheet = useCallback(() => {
+    trackButtonClicked({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.TransferMoney,
+      componentName: MoneyComponentName.ActionButtonRow,
+      labelKey: 'moneySend',
+      redirectTarget: MoneyBottomSheetName.TransferMoneySheet,
+      buttonPosition: 2,
+      buttonRowButtonCount: ACTION_BUTTON_ROW_BUTTON_COUNT,
+    });
     setIsTransferSheetOpen(true);
-  }, []);
+  }, [trackButtonClicked]);
   const handleCloseTransferSheet = useCallback(() => {
     setIsTransferSheetOpen(false);
   }, []);
 
-  if (isAvailabilityLoading || (availability.isAvailable && isBalanceLoading)) {
+  if (isPageLoading) {
     return (
       <div
         className="flex min-h-full flex-col gap-4 bg-background-default p-4"
@@ -334,7 +396,7 @@ export function MoneyHomePage() {
             <MoneyActionCard
               icon={IconName.Add}
               label={t('moneyAdd')}
-              onClick={handleAddFunds}
+              onClick={handleAddFundsFromActionRow}
               disabled={isDepositLoading}
               testId="money-add-button"
             />
@@ -375,7 +437,7 @@ export function MoneyHomePage() {
               <Button
                 className="w-full"
                 isLoading={isDepositLoading}
-                onClick={handleAddFunds}
+                onClick={handleAddFundsFromFundCard}
               >
                 {t('addFunds')}
               </Button>
