@@ -244,8 +244,9 @@ describe('useOnboardingCompletion', () => {
         'isBasicFunctionalityConsolidatedEnabled',
         true,
       );
-      expect(mockSetUseMultiAccountBalanceChecker).toHaveBeenCalledWith(true);
+      expect(mockToggleBasicFunctionality).toHaveBeenCalledWith(true);
     });
+    expect(mockSetUseMultiAccountBalanceChecker).not.toHaveBeenCalled();
   });
 
   it('forces Basic Functionality on for social-login users when consolidation is enabled', async () => {
@@ -269,9 +270,10 @@ describe('useOnboardingCompletion', () => {
     });
 
     await waitFor(() => {
-      expect(mockToggleExternalServices).toHaveBeenCalledWith(true);
-      expect(mockSetUseMultiAccountBalanceChecker).toHaveBeenCalledWith(true);
+      expect(mockToggleBasicFunctionality).toHaveBeenCalledWith(true);
     });
+    expect(mockToggleExternalServices).not.toHaveBeenCalled();
+    expect(mockSetUseMultiAccountBalanceChecker).not.toHaveBeenCalled();
   });
 
   it('uses toggleExternalServices when the Basic Functionality build flag is disabled', async () => {
