@@ -23,6 +23,7 @@ import {
 import { ConfirmInfoRowText } from '../../../../../components/app/confirm/info/row/text';
 import {
   useIsTransactionPayQuotePending,
+  useSolanaPayQuote,
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
@@ -50,6 +51,7 @@ export function BridgeFeeRow({
   const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
   const isLoading = useIsTransactionPayQuotePending();
   const quotes = useTransactionPayQuotes();
+  const solanaPayQuote = useSolanaPayQuote();
   const totals = useTransactionPayTotals();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const isPaidByMetaMask = useIsPaidByMetaMask();
@@ -80,6 +82,30 @@ export function BridgeFeeRow({
     }
     return formatFiat(raw.toNumber());
   }, [totals, formatFiat]);
+
+  const solanaFee = useMemo(() => {
+    if (!solanaPayQuote) {
+      return undefined;
+    }
+    const { preflight } = solanaPayQuote;
+    return {
+      network: new BigNumber(preflight.networkFeeRaw)
+        .plus(preflight.priorityFeeRaw)
+        .dividedBy(1_000_000_000)
+        .toFixed(),
+      rentDebit: new BigNumber(preflight.rentDebitRaw)
+        .dividedBy(1_000_000_000)
+        .toFixed(),
+      reserve: new BigNumber(preflight.rentExemptionRequirementRaw)
+        .dividedBy(1_000_000_000)
+        .toFixed(),
+      total: new BigNumber(preflight.networkFeeRaw)
+        .plus(preflight.priorityFeeRaw)
+        .plus(preflight.rentDebitRaw)
+        .dividedBy(1_000_000_000)
+        .toFixed(),
+    };
+  }, [solanaPayQuote]);
 
   const isSmall = variant === ConfirmInfoRowSize.Small;
 
@@ -117,6 +143,47 @@ export function BridgeFeeRow({
         label={feeLabel}
         rowVariant={variant}
       />
+    );
+  }
+
+  if (solanaFee) {
+    const tooltip = [
+      t('solanaPayNetworkFee', [solanaFee.network]),
+      t('solanaPayRentDebit', [solanaFee.rentDebit]),
+      t('solanaPayRentReserve', [solanaFee.reserve]),
+    ];
+    return (
+      <ConfirmInfoRow
+        data-testid="solana-pay-fee-row"
+        label={feeLabel}
+        rowVariant={variant}
+        labelChildren={
+          <InfoPopoverTooltip
+            position={PopoverPosition.Top}
+            offset={[0, 16]}
+            iconName={IconName.Question}
+            iconColor={IconColor.IconAlternative}
+            iconMarginLeft={1}
+            plainIcon
+            ariaLabel={feeLabel}
+            data-testid="solana-pay-fee-tooltip"
+          >
+            <Text variant={TextVariant.BodyMd}>
+              {tooltip.map((line, index) => (
+                <React.Fragment key={line}>
+                  {index > 0 && <br />}
+                  {line}
+                </React.Fragment>
+              ))}
+            </Text>
+          </InfoPopoverTooltip>
+        }
+      >
+        <ConfirmInfoRowText
+          text={`${solanaFee.total} SOL`}
+          data-testid="solana-pay-fee-value"
+        />
+      </ConfirmInfoRow>
     );
   }
 

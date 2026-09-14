@@ -411,6 +411,28 @@ describe('useActivityRowContent', () => {
       expect(result.current.primaryAmount).toBeUndefined();
     });
 
+    it('shows the refunded Solana Pay outcome', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent({
+          ...buildMoneyActivity('moneyAccountDeposit', '25.5'),
+          payOutcome: 'refunded',
+        }),
+      );
+
+      expect(result.current.subtitle).toBe('solanaPayActivityRefunded');
+    });
+
+    it('shows the unknown Solana Pay outcome', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent({
+          ...buildMoneyActivity('moneyAccountDeposit', '25.5'),
+          payOutcome: 'unknown',
+        }),
+      );
+
+      expect(result.current.subtitle).toBe('solanaPayActivityUnknown');
+    });
+
     it('shows the mUSD token avatar', () => {
       const { result } = renderHookWithProvider(() =>
         useActivityRowContent(buildMoneyActivity('moneyAccountDeposit', '1')),

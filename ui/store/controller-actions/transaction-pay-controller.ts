@@ -1,9 +1,53 @@
 import type { PaymentOverride } from '@metamask/transaction-pay-controller';
-import type { Hex } from '@metamask/utils';
+import type { CaipAccountId, CaipAssetType, Hex } from '@metamask/utils';
 import type { MoneyAccountWithdrawAmountUpdate } from '../../../shared/lib/money/withdraw-amount-commit';
 import { submitRequestToBackground } from '../background-connection';
 
 export type { MoneyAccountWithdrawAmountUpdate };
+
+const lastSolanaPayQuoteKeyByTransactionId = new Map<string, string>();
+
+export async function setSolanaPaySource({
+  transactionId,
+  sourceAccountId,
+  sourceAssetId,
+  amount,
+  destinationChainId,
+  destinationCurrency,
+  recipient,
+}: {
+  transactionId: string;
+  sourceAccountId: CaipAccountId;
+  sourceAssetId: CaipAssetType;
+  amount: string;
+  destinationChainId: Hex;
+  destinationCurrency: Hex;
+  recipient: Hex;
+}): Promise<void> {
+  const quoteKey = [
+    sourceAccountId,
+    sourceAssetId,
+    amount,
+    destinationChainId,
+    destinationCurrency,
+    recipient,
+  ].join(':');
+  if (lastSolanaPayQuoteKeyByTransactionId.get(transactionId) === quoteKey) {
+    return;
+  }
+  lastSolanaPayQuoteKeyByTransactionId.set(transactionId, quoteKey);
+  try {
+    await submitRequestToBackground('setSolanaPaySource', [
+      transactionId,
+      sourceAccountId,
+      sourceAssetId,
+      { amount, destinationChainId, destinationCurrency, recipient },
+    ]);
+  } catch (error) {
+    lastSolanaPayQuoteKeyByTransactionId.delete(transactionId);
+    throw error;
+  }
+}
 
 export async function updateTransactionPaymentToken({
   transactionId,

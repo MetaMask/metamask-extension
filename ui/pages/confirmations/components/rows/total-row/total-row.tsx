@@ -14,6 +14,7 @@ import {
 import { ConfirmInfoRowText } from '../../../../../components/app/confirm/info/row/text';
 import {
   useIsTransactionPayLoading,
+  useSolanaPayQuote,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
@@ -31,9 +32,17 @@ export function TotalRow({
   const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
   const isLoading = useIsTransactionPayLoading();
   const totals = useTransactionPayTotals();
+  const solanaPayQuote = useSolanaPayQuote();
   const isPaidByMetaMask = useIsPaidByMetaMask();
 
   const totalUsd = useMemo(() => {
+    if (solanaPayQuote) {
+      return formatFiat(
+        new BigNumber(
+          solanaPayQuote.providerQuote.details.currencyIn.amountUsd,
+        ).toNumber(),
+      );
+    }
     if (!totals?.total) {
       return '';
     }
@@ -41,7 +50,7 @@ export function TotalRow({
     return formatFiat(
       getDisplayedTotalUsd(totals, isPaidByMetaMask).toNumber(),
     );
-  }, [totals, formatFiat, isPaidByMetaMask]);
+  }, [totals, formatFiat, isPaidByMetaMask, solanaPayQuote]);
 
   const isSmall = variant === ConfirmInfoRowSize.Small;
   const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;

@@ -1,3 +1,4 @@
+import type { MetamaskPayOutcome } from '@metamask/transaction-controller';
 import type {
   ActivityItem,
   ActivityKind as ClientActivityKind,
@@ -27,6 +28,7 @@ export type MoneyAccountActivityItem = Omit<
   'type'
 > & {
   type: MoneyAccountActivityKind;
+  payOutcome?: MetamaskPayOutcome['type'];
 };
 
 export type ActivityKind = ClientActivityKind | MoneyAccountActivityKind;

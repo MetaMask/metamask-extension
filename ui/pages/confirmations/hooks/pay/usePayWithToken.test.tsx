@@ -11,7 +11,10 @@ import {
 import { useSelector } from 'react-redux';
 import { useConfirmContext } from '../../context/confirm';
 import { getInternalAccountByAddress } from '../../../../selectors/accounts';
-import { selectPaymentOverrideByTransactionId } from '../../../../selectors/transactionPayController';
+import {
+  selectPaymentOverrideByTransactionId,
+  selectTransactionPayIntentByTransactionId,
+} from '../../../../selectors/transactionPayController';
 import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
@@ -44,6 +47,7 @@ jest.mock('../../../../selectors/accounts', () => ({
 }));
 jest.mock('../../../../selectors/transactionPayController', () => ({
   selectPaymentOverrideByTransactionId: jest.fn(),
+  selectTransactionPayIntentByTransactionId: jest.fn(),
 }));
 jest.mock('./useIsMoneyAccountFlagDefault', () => ({
   useIsMoneyAccountFlagDefault: jest.fn(),
@@ -104,6 +108,9 @@ describe('usePayWithToken', () => {
   const selectPaymentOverrideByTransactionIdMock = jest.mocked(
     selectPaymentOverrideByTransactionId,
   );
+  const selectTransactionPayIntentByTransactionIdMock = jest.mocked(
+    selectTransactionPayIntentByTransactionId,
+  );
   const useIsMoneyAccountFlagDefaultMock = jest.mocked(
     useIsMoneyAccountFlagDefault,
   );
@@ -136,6 +143,7 @@ describe('usePayWithToken', () => {
     });
     getInternalAccountByAddressMock.mockReturnValue(ACCOUNT as never);
     selectPaymentOverrideByTransactionIdMock.mockReturnValue(undefined);
+    selectTransactionPayIntentByTransactionIdMock.mockReturnValue(undefined);
     useIsMoneyAccountFlagDefaultMock.mockReturnValue(false);
     useMoneyAccountWithdrawableFiatMock.mockReturnValue({
       withdrawableFiatFormatted: '$12.34',

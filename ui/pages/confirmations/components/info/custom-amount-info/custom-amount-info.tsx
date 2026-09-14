@@ -51,6 +51,7 @@ import { useTransactionPayMetrics } from '../../../hooks/pay/useTransactionPayMe
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
+import { useRefreshSolanaPayQuote } from '../../../hooks/pay/useRefreshSolanaPayQuote';
 import { useAccountNoFundsAlert } from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -154,6 +155,7 @@ export const CustomAmountInfo = React.memo(
     const { isWithdraw } = useTransactionPayWithdraw();
     const hasTokens = availableTokens.length > 0 || isWithdraw;
     const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+    useRefreshSolanaPayQuote(availableTokens, primaryRequiredToken);
     // Withdraws source funds off-chain (vault / HyperCore) and money-account
     // withdraw batches have no `requiredAssets`, so Pay never populates a
     // primary required token. Waiting on it leaves the amount UI on the
@@ -187,6 +189,9 @@ export const CustomAmountInfo = React.memo(
       });
 
     const { isNative: isNativePayToken, payToken } = useTransactionPayToken();
+    const hasSolanaPaySource = availableTokens.some(
+      (token) => token.isSelected && token.accountType?.includes('solana'),
+    );
     const { isNoFeeToken } = usePayWithNoFeeToken();
     const isNoFeePayToken = Boolean(
       payToken && isNoFeeToken(payToken.address, String(payToken.chainId)),
@@ -194,7 +199,9 @@ export const CustomAmountInfo = React.memo(
     // Withdraw always offers Max. Deposit shows Max only for fixed-spread
     // ("No fee") tokens; other deposit tokens and native deposit tokens keep
     // 90% so a gas/fee buffer remains.
-    const showMax = isWithdraw || (isNoFeePayToken && !isNativePayToken);
+    const showMax =
+      !hasSolanaPaySource &&
+      (isWithdraw || (isNoFeePayToken && !isNativePayToken));
 
     const handleAmountChange = useCallback(
       (value: string) => {

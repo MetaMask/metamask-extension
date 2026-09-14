@@ -4,7 +4,9 @@ import { type TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import {
   selectIsTransactionPayLoadingByTransactionId,
+  selectSolanaPayQuoteByTransactionId,
   selectTransactionPayIsMaxAmountByTransactionId,
+  selectTransactionPayIntentByTransactionId,
   selectTransactionPayIsPostQuoteByTransactionId,
   selectTransactionPayQuoteErrorByTransactionId,
   selectTransactionPayQuotesByTransactionId,
@@ -23,13 +25,25 @@ export function useTransactionPayQuotes() {
   return useTransactionPayData(selectTransactionPayQuotesByTransactionId);
 }
 
+export function useSolanaPayQuote() {
+  const quote = useTransactionPayData(selectSolanaPayQuoteByTransactionId);
+  const intent = useTransactionPayData(
+    selectTransactionPayIntentByTransactionId,
+  );
+  return intent?.sourceChainId.startsWith('solana:') ? quote : undefined;
+}
+
 export function useTransactionPayQuoteError() {
   return useTransactionPayData(selectTransactionPayQuoteErrorByTransactionId);
 }
 
 export function useTransactionPayHasExecutableQuote() {
   const quotes = useTransactionPayQuotes();
+  const solanaPayQuote = useSolanaPayQuote();
 
+  if (solanaPayQuote) {
+    return solanaPayQuote.preflight.affordability.isAffordable;
+  }
   return (
     quotes?.some((quote) => quote.strategy !== TransactionPayStrategy.None) ??
     false

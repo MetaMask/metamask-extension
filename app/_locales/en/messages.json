@@ -10988,6 +10988,24 @@
     "message": "Contact the creators of $1 for further support.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
+  "solanaPayActivityRefunded": {
+    "message": "Payment refunded"
+  },
+  "solanaPayActivityUnknown": {
+    "message": "Payment status unknown"
+  },
+  "solanaPayNetworkFee": {
+    "message": "Network fee: $1 SOL",
+    "description": "$1 is the Solana network fee"
+  },
+  "solanaPayRentDebit": {
+    "message": "Rent deposit: $1 SOL",
+    "description": "$1 is the Solana rent debited by the transaction"
+  },
+  "solanaPayRentReserve": {
+    "message": "Minimum account reserve: $1 SOL",
+    "description": "$1 is the Solana rent-exempt reserve retained in the account"
+  },
   "someNetworks": {
     "message": "$1 networks"
   },

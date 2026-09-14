@@ -303,13 +303,26 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       case 'moneyAccountWithdraw': {
         const { fiat, token } = activity.data;
 
+        let payOutcomeSubtitle = t(labelKeys.description.key);
+        if (
+          activity.type === 'moneyAccountDeposit' &&
+          activity.payOutcome === 'refunded'
+        ) {
+          payOutcomeSubtitle = t('solanaPayActivityRefunded');
+        } else if (
+          activity.type === 'moneyAccountDeposit' &&
+          activity.payOutcome === 'unknown'
+        ) {
+          payOutcomeSubtitle = t('solanaPayActivityUnknown');
+        }
+
         return buildMmPayProductBalanceContent({
           currency: MONEY_ACCOUNT_FIAT_CURRENCY,
           fiat,
           formatCurrencyWithMinThreshold,
           isIncoming: activity.type === 'moneyAccountDeposit',
           isWithdraw: activity.type === 'moneyAccountWithdraw',
-          subtitle: t(labelKeys.description.key),
+          subtitle: payOutcomeSubtitle,
           title: t(labelKeys.title.key),
           token,
         });

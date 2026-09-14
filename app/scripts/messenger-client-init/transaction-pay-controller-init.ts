@@ -3,13 +3,23 @@ import {
   TransactionPayController,
   TransactionPayControllerMessenger,
   TransactionPayStrategy,
+  type GetSolanaPayQuoteRequest,
 } from '@metamask/transaction-pay-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
+import {
+  KnownCaipNamespace,
+  parseCaipAssetType,
+  toCaipChainId,
+  type CaipAccountId,
+  type CaipAssetType,
+  type Hex,
+} from '@metamask/utils';
 import {
   getMoneyAccountFlow,
   MoneyAccountFlow,
 } from '../../../shared/lib/money/money-account-flow';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import {
   type DelegationMessenger,
   getDelegationTransaction,
@@ -27,6 +37,7 @@ import {
   updateMoneyAccountDepositAmount,
 } from '../lib/money/pay/update-deposit-amount';
 import { updateMoneyAccountWithdrawAmount } from '../lib/money/pay/update-withdraw-amount';
+import { createSolanaPayCallbacks } from '../lib/money/pay/solana-pay-callbacks';
 import type {
   MoneyPayMessenger,
   PaymentOverrideMessenger,
@@ -74,7 +85,12 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
       ),
     getStrategy,
     messenger: controllerMessenger,
+    solana: createSolanaPayCallbacks(initMessenger, request.infuraProjectId),
     state: persistedState.TransactionPayController,
+  });
+
+  messengerClient.recoverSolanaPay().catch((error) => {
+    console.error('Failed to recover Solana Pay transactions', error);
   });
 
   const api = getApi(messengerClient, initMessenger as MoneyPayMessenger);
@@ -257,8 +273,81 @@ function getApi(
         }
       });
     },
-    updateTransactionPaymentToken:
-      messengerClient.updatePaymentToken.bind(messengerClient),
+    setSolanaPaySource: async (
+      transactionId: string,
+      sourceAccountId: CaipAccountId,
+      sourceAssetId: CaipAssetType,
+      quoteRequest: Omit<GetSolanaPayQuoteRequest, 'transactionId'>,
+    ) => {
+      messengerClient.setPayIntent({
+        transactionId,
+        intent: {
+          version: 1,
+          sourceAccountId,
+          sourceAssetId,
+          sourceChainId: parseCaipAssetType(sourceAssetId).chainId,
+        },
+      });
+      const quote = await messengerClient.getSolanaPayQuote({
+        ...quoteRequest,
+        transactionId,
+      });
+      const targetAmount = messengerClient.state.transactionData[
+        transactionId
+      ]?.tokens.find(({ skipIfBalance }) => !skipIfBalance)?.amountRaw;
+      const outputAmount = quote.providerQuote.details.currencyOut.amount;
+      if (
+        targetAmount &&
+        new BigNumber(outputAmount).gt(0) &&
+        new BigNumber(outputAmount).lt(targetAmount)
+      ) {
+        const adjustedAmount = new BigNumber(quoteRequest.amount)
+          .times(targetAmount)
+          .dividedBy(outputAmount)
+          .times('1.005')
+          .toFixed(0, BigNumber.ROUND_CEIL);
+        return await messengerClient.getSolanaPayQuote({
+          ...quoteRequest,
+          amount: adjustedAmount,
+          transactionId,
+        });
+      }
+      return quote;
+    },
+    updateTransactionPaymentToken: (request: {
+      transactionId: string;
+      tokenAddress: Hex;
+      chainId: Hex;
+    }) => {
+      messengerClient.updatePaymentToken(request);
+      const intent = messengerClient.state.payIntents[request.transactionId];
+      if (!intent?.sourceChainId.startsWith('solana:')) {
+        return;
+      }
+      const transaction = moneyPayMessenger
+        .call('TransactionController:getState')
+        .transactions.find(({ id }) => id === request.transactionId);
+      const accountAddress =
+        messengerClient.state.transactionData[request.transactionId]
+          ?.accountOverride ?? transaction?.txParams.from;
+      const sourceAssetId = toAssetId(request.tokenAddress, request.chainId);
+      if (!accountAddress || !sourceAssetId) {
+        return;
+      }
+      const sourceChainId = toCaipChainId(
+        KnownCaipNamespace.Eip155,
+        Number.parseInt(request.chainId, 16).toString(),
+      );
+      messengerClient.setPayIntent({
+        transactionId: request.transactionId,
+        intent: {
+          version: 1,
+          sourceAccountId: `${sourceChainId}:${accountAddress}`,
+          sourceAssetId,
+          sourceChainId,
+        },
+      });
+    },
   };
 }
 

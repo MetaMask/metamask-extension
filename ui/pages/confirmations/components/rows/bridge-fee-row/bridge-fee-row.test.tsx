@@ -3,6 +3,7 @@ import { userEvent } from '@testing-library/user-event';
 import configureMockStore from 'redux-mock-store';
 import { TransactionType } from '@metamask/transaction-controller';
 import type {
+  SolanaPayQuote,
   TransactionPayQuote,
   TransactionPayTotals,
 } from '@metamask/transaction-pay-controller';
@@ -15,6 +16,7 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import {
   useIsTransactionPayQuotePending,
+  useSolanaPayQuote,
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
@@ -49,6 +51,7 @@ function getPerpsWithdrawState() {
 }
 
 describe('BridgeFeeRow', () => {
+  const useSolanaPayQuoteMock = jest.mocked(useSolanaPayQuote);
   const useTransactionPayTotalsMock = jest.mocked(useTransactionPayTotals);
   const useTransactionPayQuotesMock = jest.mocked(useTransactionPayQuotes);
   const useIsTransactionPayQuotePendingMock = jest.mocked(
@@ -59,6 +62,7 @@ describe('BridgeFeeRow', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
+    useSolanaPayQuoteMock.mockReturnValue(undefined);
     useTransactionPayTotalsMock.mockReturnValue({
       fees: {
         provider: { usd: '1.00' },
@@ -73,6 +77,25 @@ describe('BridgeFeeRow', () => {
     useTransactionPayQuotesMock.mockReturnValue([
       {} as TransactionPayQuote<Json>,
     ]);
+  });
+
+  it('renders finalized Solana network, rent debit, and reserve values', () => {
+    useSolanaPayQuoteMock.mockReturnValue({
+      preflight: {
+        networkFeeRaw: '5000',
+        priorityFeeRaw: '1000',
+        rentDebitRaw: '2039280',
+        rentExemptionRequirementRaw: '890880',
+      },
+      providerQuote: {},
+    } as SolanaPayQuote);
+
+    const { getByTestId } = render();
+
+    expect(getByTestId('solana-pay-fee-value')).toHaveTextContent(
+      '0.00204528 SOL',
+    );
+    expect(getByTestId('solana-pay-fee-tooltip-button')).toBeInTheDocument();
   });
 
   it('renders skeleton with label when loading (Default variant)', () => {

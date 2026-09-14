@@ -522,6 +522,7 @@
     "@sentry/types": "10.38.0",
     "@simplewebauthn/browser": "^13.3.0",
     "@solana/addresses": "2.0.0-rc.4",
+    "@solana/web3.js": "1.98.2",
     "@swc/core": "1.13.3",
     "@tanstack/react-query": "^5.101.0",
     "@tanstack/react-virtual": "^3.10.8",
