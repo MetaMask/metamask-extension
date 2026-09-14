@@ -33,10 +33,8 @@ const mockTopAssets = [
 
 const setupController = ({
   supportedChains,
-  getIsAssetsUnifyStateEnabled = () => false,
 }: {
   supportedChains: Hex[];
-  getIsAssetsUnifyStateEnabled?: () => boolean;
 }) => {
   const messenger = new Messenger<
     MockAnyNamespace,
@@ -46,9 +44,7 @@ const setupController = ({
     | MessengerEvents<AccountsControllerMessenger>
   >({ namespace: MOCK_ANY_NAMESPACE });
 
-  const tokensControllerAddTokensSpy = jest.fn();
   const networkControllerFindNetworkClientIdByChainIdSpy = jest.fn();
-  const tokensControllerGetStateSpy = jest.fn();
   const assetsControllerGetStateSpy = jest.fn();
   const assetsControllerAddCustomAssetSpy = jest.fn();
   const fetchWithCacheSpy = jest.spyOn(fetchWithCacheModule, 'default');
@@ -63,8 +59,6 @@ const setupController = ({
     messenger: staticAssetsControllerMessenger,
     actions: [
       'NetworkController:findNetworkClientIdByChainId',
-      'TokensController:getState',
-      'TokensController:addTokens',
       'AssetsController:getState',
       'AssetsController:addCustomAsset',
     ],
@@ -74,16 +68,6 @@ const setupController = ({
   messenger.registerActionHandler(
     'NetworkController:findNetworkClientIdByChainId',
     networkControllerFindNetworkClientIdByChainIdSpy,
-  );
-
-  messenger.registerActionHandler(
-    'TokensController:getState',
-    tokensControllerGetStateSpy,
-  );
-
-  messenger.registerActionHandler(
-    'TokensController:addTokens',
-    tokensControllerAddTokensSpy,
   );
 
   messenger.registerActionHandler(
@@ -101,7 +85,6 @@ const setupController = ({
     getSupportedChains: () => new Set(supportedChains),
     getCacheExpirationTime: () => 1000,
     getTopX: () => 10,
-    getIsAssetsUnifyStateEnabled,
   });
 
   return {
@@ -109,9 +92,7 @@ const setupController = ({
     messenger,
     spies: {
       fetchWithCacheSpy,
-      tokensControllerAddTokensSpy,
       networkControllerFindNetworkClientIdByChainIdSpy,
-      tokensControllerGetStateSpy,
       assetsControllerGetStateSpy,
       assetsControllerAddCustomAssetSpy,
     },
@@ -125,25 +106,24 @@ describe('StaticAssetsController', () => {
   });
 
   describe('_executePoll', () => {
-    it('fetches top assets for a chain and add them to the TokensController', async () => {
+    it('fetches top assets for a chain and adds them to the AssetsController', async () => {
       const {
         controller,
         spies: {
-          tokensControllerAddTokensSpy,
+          assetsControllerGetStateSpy,
+          assetsControllerAddCustomAssetSpy,
           networkControllerFindNetworkClientIdByChainIdSpy,
-          tokensControllerGetStateSpy,
           fetchWithCacheSpy,
         },
       } = setupController({
         supportedChains: [CHAIN_IDS.MAINNET],
       });
+
       networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
         'mainnet',
       );
-      tokensControllerGetStateSpy.mockReturnValue({
-        allIgnoredTokens: {},
-      });
-      tokensControllerAddTokensSpy.mockReturnThis();
+      assetsControllerGetStateSpy.mockReturnValue({ assetPreferences: {} });
+      assetsControllerAddCustomAssetSpy.mockResolvedValue(undefined);
       fetchWithCacheSpy.mockResolvedValue(mockTopAssets);
 
       await controller._executePoll({
@@ -156,7 +136,6 @@ describe('StaticAssetsController', () => {
         `https://token.api.cx.metamask.io/v3/tokens/trending`,
       );
       url.searchParams.set('chainIds', 'eip155:1');
-      // Set the minimum volume, liquidity and market cap to 1 to fetch all tokens.
       url.searchParams.set('minVolume24hUsd', '1');
       url.searchParams.set('minLiquidity', '1');
       url.searchParams.set('minMarketCap', '1');
@@ -169,29 +148,20 @@ describe('StaticAssetsController', () => {
       expect(
         networkControllerFindNetworkClientIdByChainIdSpy,
       ).toHaveBeenCalledWith(CHAIN_IDS.MAINNET);
-      expect(tokensControllerGetStateSpy).toHaveBeenCalled();
-      expect(tokensControllerAddTokensSpy).toHaveBeenCalledWith(
-        [
-          {
-            address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-            symbol: 'WETH',
-            decimals: 18,
-            name: 'Wrapped Ether',
-            aggregators: [],
-            image:
-              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
-          },
-          {
-            address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
-            symbol: 'WBTC',
-            decimals: 8,
-            name: 'Wrapped Bitcoin',
-            aggregators: [],
-            image:
-              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599.png',
-          },
-        ],
-        'mainnet',
+      expect(assetsControllerAddCustomAssetSpy).toHaveBeenCalledTimes(
+        mockTopAssets.length,
+      );
+      expect(assetsControllerAddCustomAssetSpy).toHaveBeenCalledWith(
+        'mock-account-id',
+        toAssetId(
+          '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          CHAIN_IDS.MAINNET,
+        ),
+        expect.objectContaining({
+          address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          symbol: 'WETH',
+          decimals: 18,
+        }),
       );
     });
 
@@ -243,10 +213,9 @@ describe('StaticAssetsController', () => {
         const {
           controller,
           spies: {
-            tokensControllerAddTokensSpy,
-            networkControllerFindNetworkClientIdByChainIdSpy,
-            tokensControllerGetStateSpy,
             fetchWithCacheSpy,
+            networkControllerFindNetworkClientIdByChainIdSpy,
+            assetsControllerAddCustomAssetSpy,
           },
         } = setupController({
           supportedChains: [CHAIN_IDS.MAINNET],
@@ -258,8 +227,7 @@ describe('StaticAssetsController', () => {
         expect(
           networkControllerFindNetworkClientIdByChainIdSpy,
         ).not.toHaveBeenCalled();
-        expect(tokensControllerGetStateSpy).not.toHaveBeenCalled();
-        expect(tokensControllerAddTokensSpy).not.toHaveBeenCalled();
+        expect(assetsControllerAddCustomAssetSpy).not.toHaveBeenCalled();
       },
     );
 
@@ -267,9 +235,8 @@ describe('StaticAssetsController', () => {
       const {
         controller,
         spies: {
-          tokensControllerAddTokensSpy,
+          assetsControllerAddCustomAssetSpy,
           networkControllerFindNetworkClientIdByChainIdSpy,
-          tokensControllerGetStateSpy,
           fetchWithCacheSpy,
         },
       } = setupController({
@@ -287,18 +254,16 @@ describe('StaticAssetsController', () => {
       });
 
       expect(fetchWithCacheSpy).not.toHaveBeenCalled();
-      expect(tokensControllerGetStateSpy).not.toHaveBeenCalled();
-      expect(tokensControllerAddTokensSpy).not.toHaveBeenCalled();
+      expect(assetsControllerAddCustomAssetSpy).not.toHaveBeenCalled();
     });
 
     describe('fetchTopAssets', () => {
-      it('does not add tokens to the TokensController if the fetch top assets fails', async () => {
+      it('does not add tokens to the AssetsController if the fetch top assets fails', async () => {
         const {
           controller,
           spies: {
-            tokensControllerAddTokensSpy,
+            assetsControllerAddCustomAssetSpy,
             networkControllerFindNetworkClientIdByChainIdSpy,
-            tokensControllerGetStateSpy,
             fetchWithCacheSpy,
           },
         } = setupController({
@@ -307,10 +272,6 @@ describe('StaticAssetsController', () => {
         networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
           'mainnet',
         );
-        tokensControllerGetStateSpy.mockReturnValue({
-          allIgnoredTokens: {},
-        });
-        tokensControllerAddTokensSpy.mockReturnThis();
         fetchWithCacheSpy.mockRejectedValue(
           new Error('Fetch top assets failed'),
         );
@@ -321,7 +282,7 @@ describe('StaticAssetsController', () => {
           selectedAccountId: 'mock-account-id',
         });
 
-        expect(tokensControllerAddTokensSpy).not.toHaveBeenCalled();
+        expect(assetsControllerAddCustomAssetSpy).not.toHaveBeenCalled();
       });
 
       // @ts-expect-error This function is missing from the Mocha type definitions
@@ -378,9 +339,9 @@ describe('StaticAssetsController', () => {
           const {
             controller,
             spies: {
-              tokensControllerAddTokensSpy,
+              assetsControllerGetStateSpy,
+              assetsControllerAddCustomAssetSpy,
               networkControllerFindNetworkClientIdByChainIdSpy,
-              tokensControllerGetStateSpy,
               fetchWithCacheSpy,
             },
           } = setupController({
@@ -389,10 +350,8 @@ describe('StaticAssetsController', () => {
           networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
             'mainnet',
           );
-          tokensControllerGetStateSpy.mockReturnValue({
-            allIgnoredTokens: {},
-          });
-          tokensControllerAddTokensSpy.mockReturnThis();
+          assetsControllerGetStateSpy.mockReturnValue({ assetPreferences: {} });
+          assetsControllerAddCustomAssetSpy.mockResolvedValue(undefined);
           fetchWithCacheSpy.mockResolvedValue([...mockTopAssets, token]);
 
           await controller._executePoll({
@@ -401,227 +360,14 @@ describe('StaticAssetsController', () => {
             selectedAccountId: 'mock-account-id',
           });
 
-          expect(
-            networkControllerFindNetworkClientIdByChainIdSpy,
-          ).toHaveBeenCalledWith(CHAIN_IDS.MAINNET);
-          expect(tokensControllerGetStateSpy).toHaveBeenCalled();
-          expect(tokensControllerAddTokensSpy).toHaveBeenCalledWith(
-            [
-              {
-                address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-                symbol: 'WETH',
-                decimals: 18,
-                name: 'Wrapped Ether',
-                aggregators: [],
-                image:
-                  'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
-              },
-              {
-                address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
-                symbol: 'WBTC',
-                decimals: 8,
-                name: 'Wrapped Bitcoin',
-                aggregators: [],
-                image:
-                  'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599.png',
-              },
-            ],
-            'mainnet',
+          expect(assetsControllerAddCustomAssetSpy).toHaveBeenCalledTimes(
+            mockTopAssets.length,
           );
         },
       );
     });
 
     describe('filterIgnoredTokens', () => {
-      it('filters the tokens if they are not ignored and adds them to the TokensController', async () => {
-        const {
-          controller,
-          spies: {
-            tokensControllerAddTokensSpy,
-            networkControllerFindNetworkClientIdByChainIdSpy,
-            tokensControllerGetStateSpy,
-            fetchWithCacheSpy,
-          },
-        } = setupController({
-          supportedChains: [CHAIN_IDS.MAINNET],
-        });
-        const ignoredTokens = {
-          assetId: 'eip155:1/erc20:0xff20817765cb7f73d4bde2e66e067e58d11095c2',
-          symbol: 'AMP',
-          decimals: 18,
-          name: 'Amp',
-        };
-        networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
-          'mainnet',
-        );
-        tokensControllerGetStateSpy.mockReturnValue({
-          allIgnoredTokens: {
-            [CHAIN_IDS.MAINNET]: {
-              '0x123': ['0xff20817765cb7f73d4bde2e66e067e58d11095c2'],
-            },
-          },
-        });
-        tokensControllerAddTokensSpy.mockReturnThis();
-        fetchWithCacheSpy.mockResolvedValue([...mockTopAssets, ignoredTokens]);
-
-        await controller._executePoll({
-          chainIds: [CHAIN_IDS.MAINNET],
-          selectedAccountAddress: '0x123',
-          selectedAccountId: 'mock-account-id',
-        });
-
-        expect(
-          networkControllerFindNetworkClientIdByChainIdSpy,
-        ).toHaveBeenCalledWith(CHAIN_IDS.MAINNET);
-        expect(tokensControllerGetStateSpy).toHaveBeenCalled();
-        expect(tokensControllerAddTokensSpy).toHaveBeenCalledWith(
-          [
-            {
-              address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-              symbol: 'WETH',
-              decimals: 18,
-              name: 'Wrapped Ether',
-              aggregators: [],
-              image:
-                'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
-            },
-            {
-              address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
-              symbol: 'WBTC',
-              decimals: 8,
-              name: 'Wrapped Bitcoin',
-              aggregators: [],
-              image:
-                'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599.png',
-            },
-          ],
-          'mainnet',
-        );
-      });
-
-      // @ts-expect-error This function is missing from the Mocha type definitions
-      it.each([
-        {
-          testCase: 'allIgnoredTokens is not found',
-          allIgnoredTokens: undefined,
-        },
-        {
-          testCase: 'chainId is not in allIgnoredTokens',
-          allIgnoredTokens: {},
-        },
-        {
-          testCase: 'selectedAccountAddress is not in allIgnoredTokens',
-          allIgnoredTokens: {
-            [CHAIN_IDS.MAINNET]: {},
-          },
-        },
-      ])(
-        `does not filter the tokens if $testCase`,
-        async ({
-          allIgnoredTokens,
-        }: {
-          allIgnoredTokens: Record<string, Record<string, string[]>>;
-        }) => {
-          const {
-            controller,
-            spies: {
-              tokensControllerAddTokensSpy,
-              networkControllerFindNetworkClientIdByChainIdSpy,
-              tokensControllerGetStateSpy,
-              fetchWithCacheSpy,
-            },
-          } = setupController({
-            supportedChains: [CHAIN_IDS.MAINNET],
-          });
-          networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
-            'mainnet',
-          );
-          tokensControllerGetStateSpy.mockReturnValue({
-            allIgnoredTokens,
-          });
-          tokensControllerAddTokensSpy.mockReturnThis();
-          fetchWithCacheSpy.mockResolvedValue(mockTopAssets);
-
-          await controller._executePoll({
-            chainIds: [CHAIN_IDS.MAINNET],
-            selectedAccountAddress: '0x123',
-            selectedAccountId: 'mock-account-id',
-          });
-
-          expect(tokensControllerAddTokensSpy).toHaveBeenCalledWith(
-            [
-              {
-                address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-                symbol: 'WETH',
-                decimals: 18,
-                name: 'Wrapped Ether',
-                aggregators: [],
-                image:
-                  'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
-              },
-              {
-                address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
-                symbol: 'WBTC',
-                decimals: 8,
-                name: 'Wrapped Bitcoin',
-                aggregators: [],
-                image:
-                  'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599.png',
-              },
-            ],
-            'mainnet',
-          );
-        },
-      );
-    });
-
-    describe('with assetsUnifyState flag enabled', () => {
-      it('adds tokens to the AssetsController instead of TokensController', async () => {
-        const {
-          controller,
-          spies: {
-            assetsControllerGetStateSpy,
-            assetsControllerAddCustomAssetSpy,
-            networkControllerFindNetworkClientIdByChainIdSpy,
-            tokensControllerAddTokensSpy,
-            fetchWithCacheSpy,
-          },
-        } = setupController({
-          supportedChains: [CHAIN_IDS.MAINNET],
-          getIsAssetsUnifyStateEnabled: () => true,
-        });
-
-        networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
-          'mainnet',
-        );
-        assetsControllerGetStateSpy.mockReturnValue({ assetPreferences: {} });
-        assetsControllerAddCustomAssetSpy.mockResolvedValue(undefined);
-        fetchWithCacheSpy.mockResolvedValue(mockTopAssets);
-
-        await controller._executePoll({
-          chainIds: [CHAIN_IDS.MAINNET],
-          selectedAccountAddress: '0x123',
-          selectedAccountId: 'mock-account-id',
-        });
-
-        expect(tokensControllerAddTokensSpy).not.toHaveBeenCalled();
-        expect(assetsControllerAddCustomAssetSpy).toHaveBeenCalledTimes(
-          mockTopAssets.length,
-        );
-        expect(assetsControllerAddCustomAssetSpy).toHaveBeenCalledWith(
-          'mock-account-id',
-          toAssetId(
-            '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-            CHAIN_IDS.MAINNET,
-          ),
-          expect.objectContaining({
-            address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-            symbol: 'WETH',
-            decimals: 18,
-          }),
-        );
-      });
-
       it('filters out hidden tokens using AssetsController assetPreferences', async () => {
         const hiddenTokenAddress = '0xff20817765cb7f73d4bde2e66e067e58d11095c2';
         const hiddenToken = {
@@ -630,7 +376,6 @@ describe('StaticAssetsController', () => {
           decimals: 18,
           name: 'Amp',
         };
-        // toAssetId checksums the address, so the key must use the checksummed form.
         const hiddenTokenAssetId = toAssetId(
           hiddenTokenAddress,
           CHAIN_IDS.MAINNET,
@@ -645,7 +390,6 @@ describe('StaticAssetsController', () => {
           },
         } = setupController({
           supportedChains: [CHAIN_IDS.MAINNET],
-          getIsAssetsUnifyStateEnabled: () => true,
         });
 
         networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
@@ -684,7 +428,6 @@ describe('StaticAssetsController', () => {
           },
         } = setupController({
           supportedChains: [CHAIN_IDS.MAINNET],
-          getIsAssetsUnifyStateEnabled: () => true,
         });
 
         networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(

@@ -3,7 +3,6 @@ import {
   TokensControllerMessenger,
 } from '@metamask/assets-controllers';
 import { assert } from '@metamask/utils';
-import { getIsDeprecatedController } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { MessengerClientInitFunction } from './types';
 import { TokensControllerInitMessenger } from './messengers';
 import { getGlobalChainId } from './init-utils';
@@ -26,12 +25,7 @@ export const TokensControllerInit: MessengerClientInitFunction<
     provider,
     chainId: getGlobalChainId(initMessenger),
     tokenListService,
-    isDeprecated: () => {
-      const { remoteFeatureFlags } = initMessenger.call(
-        'RemoteFeatureFlagController:getState',
-      );
-      return getIsDeprecatedController(remoteFeatureFlags, 'TokensController');
-    },
+    isDeprecated: () => true,
   });
 
   return {

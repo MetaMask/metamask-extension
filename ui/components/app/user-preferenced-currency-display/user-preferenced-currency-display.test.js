@@ -12,7 +12,9 @@ describe('UserPreferencedCurrencyDisplay Component', () => {
       metamask: {
         ...mockState.metamask,
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-        currencyRates: {},
+        selectedCurrency: 'usd',
+        // No conversion rates → display native (0 ETH), not fiat.
+        assetsPrice: {},
         preferences: {},
       },
     };

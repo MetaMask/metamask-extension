@@ -73,6 +73,7 @@ function runHook({
   balanceUsdOverride,
   isNoFeePayToken = true,
   isMaxAmount = false,
+  isQuotesLoading = false,
   requiredTokens = [],
   totals,
   updateTokenAmountMock = jest.fn(),
@@ -97,6 +98,7 @@ function runHook({
   balanceUsdOverride?: number;
   isNoFeePayToken?: boolean;
   isMaxAmount?: boolean;
+  isQuotesLoading?: boolean;
   requiredTokens?: { amountUsd?: string; skipIfBalance?: boolean }[];
   totals?: TransactionPayTotals;
   updateTokenAmountMock?: jest.Mock;
@@ -121,6 +123,9 @@ function runHook({
   jest
     .mocked(useTransactionPayDataModule.useTransactionPayIsMaxAmount)
     .mockReturnValue(isMaxAmount);
+  jest
+    .mocked(useTransactionPayDataModule.useIsTransactionPayLoading)
+    .mockReturnValue(isQuotesLoading);
   jest
     .mocked(useTransactionPayDataModule.useTransactionPayTotals)
     .mockReturnValue(
@@ -300,6 +305,53 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(result.current.amountFiat).toBe('123.46');
+    });
+  });
+
+  describe('isQuoteDerivedAmountLoading', () => {
+    it('reports loading while an output-based Max quote is pending', () => {
+      const { result } = runHook({
+        isMaxAmount: true,
+        isQuotesLoading: true,
+        totals: {
+          isInputBased: false,
+          targetAmount: { usd: '123.456' },
+        } as TransactionPayTotals,
+      });
+
+      expect(result.current.isQuoteDerivedAmountLoading).toBe(true);
+    });
+
+    it('does not report loading while a money account deposit quote is pending', () => {
+      const { result } = runHook({
+        transactionMeta: {
+          ...MOCK_TRANSACTION_META,
+          type: TransactionType.moneyAccountDeposit,
+        } as TransactionMeta,
+        isMaxAmount: true,
+        isQuotesLoading: true,
+      });
+
+      expect(result.current.isQuoteDerivedAmountLoading).toBe(false);
+    });
+
+    it('does not report loading while an input-based Max quote is pending', () => {
+      const { result } = runHook({
+        isMaxAmount: true,
+        isQuotesLoading: true,
+        totals: {
+          isInputBased: true,
+          sourceAmount: { usd: '100' },
+        } as TransactionPayTotals,
+      });
+
+      expect(result.current.isQuoteDerivedAmountLoading).toBe(false);
+    });
+
+    it('does not report loading when Max is not armed', () => {
+      const { result } = runHook({ isQuotesLoading: true });
+
+      expect(result.current.isQuoteDerivedAmountLoading).toBe(false);
     });
   });
 
@@ -1110,6 +1162,72 @@ describe('useTransactionCustomAmount', () => {
       expect(result.current.isDepositPrefilled).toBe(true);
     });
 
+    it('keeps the amount skeleton up while a prefilled Max waits for the funding account tokens', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { result, rerender } = runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        payTokenBalanceUsd: 55.709,
+        payTokenBalanceRaw: '55709000',
+        livePayTokenBalanceRaw: '55709000',
+        isAccountTokensLoading: true,
+        updateTokenAmountMock,
+        depositPrefill: {
+          enabled: true,
+          isUncappedMaxPrefill: true,
+          hasPrefilled: true,
+          isLoading: false,
+          prefillAmount: '55.70',
+        },
+      });
+
+      // The held Max has not written the amount yet, so the field must stay
+      // behind the skeleton instead of showing $0.
+      expect(result.current.amountFiat).toBe('0');
+      expect(result.current.isDepositPrefillLoading).toBe(true);
+      expect(updateTokenAmountMock).not.toHaveBeenCalled();
+
+      jest.mocked(useAccountTokensLoading).mockReturnValue(false);
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.amountFiat).toBe('55.7');
+      expect(result.current.isDepositPrefillLoading).toBe(false);
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('55.709');
+    });
+
+    it('applies a held prefill as a prefill, not a manual edit', () => {
+      const { result, rerender } = runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        payTokenBalanceUsd: 55.709,
+        payTokenBalanceRaw: '55709000',
+        livePayTokenBalanceRaw: '55709000',
+        isAccountTokensLoading: true,
+        depositPrefill: {
+          enabled: true,
+          isUncappedMaxPrefill: true,
+          hasPrefilled: true,
+          isLoading: false,
+          prefillAmount: '55.70',
+        },
+      });
+
+      jest.mocked(useAccountTokensLoading).mockReturnValue(false);
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.amountFiat).toBe('55.7');
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        moneyAccountDepositMeta.id,
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            mm_pay_amount_input_type: 'prefilled_max',
+          }),
+        }),
+      );
+    });
+
     it('does not set max amount mode for capped or partial deposit prefill', () => {
       runHook({
         transactionMeta: moneyAccountDepositMeta,
@@ -1267,6 +1385,39 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(result.current.isDepositPrefillLoading).toBe(true);
+    });
+
+    it('stops reporting prefill loading once the committed amount is in the field', () => {
+      const { result } = runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        payTokenBalanceUsd: 1000,
+        depositPrefill: {
+          enabled: true,
+          isUncappedMaxPrefill: false,
+          hasPrefilled: true,
+          isLoading: false,
+          prefillAmount: '500',
+        },
+      });
+
+      expect(result.current.amountFiat).toBe('500');
+      expect(result.current.isDepositPrefillLoading).toBe(false);
+    });
+
+    it('does not report prefill loading when nothing can be prefilled', () => {
+      const { result } = runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        payTokenBalanceUsd: 0,
+        depositPrefill: {
+          enabled: true,
+          isUncappedMaxPrefill: false,
+          hasPrefilled: false,
+          isLoading: false,
+          prefillAmount: undefined,
+        },
+      });
+
+      expect(result.current.isDepositPrefillLoading).toBe(false);
     });
 
     it('does not report prefill loading after a manual edit', () => {

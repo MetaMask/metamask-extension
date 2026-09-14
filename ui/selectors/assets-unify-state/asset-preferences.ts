@@ -1,5 +1,5 @@
 /**
- * Selector for AssetsController state when assets-unify-state is enabled.
+ * Selector for AssetsController assetPreferences state.
  * Returns assetPreferences so the UI can check if an asset is hidden (in preferences)
  * and should be unhidden rather than added as a new custom asset.
  */

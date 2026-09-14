@@ -43,7 +43,7 @@ async function mockIncrementalSecurityEndpoints(mockServer: Mockttp) {
     },
   });
 
-  // With assetsUnifyState, homepage balance reads Accounts API v5 instead of RPC.
+  // Homepage balance reads Accounts API v5 instead of RPC.
   await mockServer
     .forGet(
       /^https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
