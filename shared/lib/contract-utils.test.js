@@ -1,6 +1,5 @@
 import { createTestProviderTools } from '../../test/stub/provider';
-
-const { readAddressAsContract } = require('./contract-utils');
+import { readAddressAsContract } from './contract-utils';
 
 describe('Contract Utils', () => {
   it('checks is an address is a contract address or not', async () => {

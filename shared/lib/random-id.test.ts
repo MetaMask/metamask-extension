@@ -23,7 +23,7 @@ describe('createRandomId', () => {
     expect(id).toBeLessThan(Number.MAX_SAFE_INTEGER);
   });
 
-  it('wraps so the id after MAX_SAFE_INTEGER - 1 is 0', () => {
+  it('wraps so the id after MAX_SAFE_INTEGER - 1 is 0', async () => {
     const MAX = Number.MAX_SAFE_INTEGER;
     jest.resetModules();
     const getRandomValuesSpy = jest
@@ -36,10 +36,10 @@ describe('createRandomId', () => {
         return array;
       });
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports -- intentional post-resetModules reload
-    const { default: createRandomIdFromSeed } = require('./random-id') as {
-      default: () => number;
-    };
+    const { default: createRandomIdFromSeed } =
+      (await import('./random-id')) as {
+        default: () => number;
+      };
 
     expect(createRandomIdFromSeed()).toBe(MAX - 2);
     expect(createRandomIdFromSeed()).toBe(MAX - 1);
