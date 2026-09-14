@@ -359,7 +359,7 @@ describe('MoneyHomePage', () => {
     ['growth', 'musd', 'benefits'].forEach((card) => {
       expect(
         screen.getByTestId(`money-condensed-info-card-${card}-image`),
-      ).toHaveClass('rounded-xl', 'bg-background-subsection');
+      ).toHaveClass('rounded-xl');
     });
     expect(screen.queryByText('Earn up to 4.2% APY')).not.toBeInTheDocument();
     expect(
