@@ -79,7 +79,6 @@ describe('snap-account-redirect confirmation', () => {
         getByText(`Follow the instructions from ${mockSnapName}`),
       ).toBeInTheDocument();
       expect(getByText('Test Snap Account Message')).toBeInTheDocument();
-      expect(container.querySelector('.callout')).toBeDefined();
       expect(container).toMatchSnapshot();
     });
   });

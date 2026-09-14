@@ -62,7 +62,7 @@ describe('switch-ethereum-chain confirmation', () => {
     const store = configureMockStore(middleware)(testStore);
     const { container } = renderWithProvider(<Confirmation />, store);
     await waitFor(() => {
-      expect(container.querySelector('.callout')).toBeFalsy();
+      expect(container.querySelector('.mm-banner-alert')).toBeFalsy();
       expect(container).toMatchSnapshot();
     });
   });

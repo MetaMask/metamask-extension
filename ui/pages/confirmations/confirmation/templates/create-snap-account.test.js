@@ -73,7 +73,6 @@ describe('create-snap-account confirmation', () => {
       expect(
         getByText(messages.createSnapAccountTitle.message),
       ).toBeInTheDocument();
-      expect(container.querySelector('.callout')).toBeDefined();
       expect(container).toMatchSnapshot();
     });
   });
