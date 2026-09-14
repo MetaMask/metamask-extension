@@ -7,6 +7,10 @@
  * `RemoteFeatureFlagController` state once at Sentry init, letting sampling
  * react to quota pressure or validation step-ups without a build.
  *
+ * Manifest `_flags.remoteFeatureFlags.sentry` overrides are merged on top
+ * (for local/E2E `.manifest-overrides.json` testing) so a build-time value
+ * wins over the persisted remote flag.
+ *
  * The compile-time constants remain the fallbacks whenever the flag is
  * absent or malformed.
  *
@@ -16,6 +20,8 @@
  * has to be added to that schema before any value carrying it can be published.
  * Landing the client half first looks complete and reads nothing.
  */
+
+import { getManifestFlags } from './manifestFlags';
 
 export type SentryRemoteRates = {
   tracesSampleRate?: number;
@@ -78,6 +84,49 @@ function asValidRate(value: unknown): number | undefined {
     value <= 1
     ? value
     : undefined;
+}
+
+/**
+ * Narrow an unknown `sentry` flag value to a plain object.
+ *
+ * @param value - Candidate flag value.
+ * @returns The object, or undefined when invalid.
+ */
+function asSentryFlagObject(
+  value: unknown,
+): Record<string, unknown> | undefined {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    return undefined;
+  }
+  return value as Record<string, unknown>;
+}
+
+/**
+ * `sentry` overrides from `_flags.remoteFeatureFlags` in the extension
+ * manifest (including `.manifest-overrides.json`).
+ *
+ * @returns The manifest sentry flag object, or undefined when absent.
+ */
+function getManifestSentryRemoteFlag(): Record<string, unknown> | undefined {
+  return asSentryFlagObject(getManifestFlags().remoteFeatureFlags?.sentry);
+}
+
+/**
+ * Merge persisted remote `sentry` rates with manifest overrides. Manifest
+ * keys win so local/E2E builds can force a rate without LaunchDarkly.
+ *
+ * @param persisted - Rates from persisted `RemoteFeatureFlagController` state.
+ * @param manifest - Rates from `getManifestFlags().remoteFeatureFlags.sentry`.
+ * @returns The merged flag object, or undefined when both are absent.
+ */
+function mergeSentryFlags(
+  persisted: Record<string, unknown> | undefined,
+  manifest: Record<string, unknown> | undefined,
+): Record<string, unknown> | undefined {
+  if (!persisted && !manifest) {
+    return undefined;
+  }
+  return { ...persisted, ...manifest };
 }
 
 /**
@@ -172,7 +221,8 @@ async function waitForPersistedStateHook(
 }
 
 /**
- * Reads the `sentry` remote feature flag from persisted state and applies
+ * Reads the `sentry` remote feature flag from persisted state (merged with
+ * any `_flags.remoteFeatureFlags.sentry` manifest overrides) and applies
  * valid overrides: `tracesSampleRate` onto the live client's options (the
  * sampler consults options per event, so a post-init update takes effect
  * without re-init), `wrapperSampleRate` into the module cache consumed by
@@ -189,25 +239,29 @@ async function waitForPersistedStateHook(
 export async function applySentryRemoteRates(client?: {
   getOptions: () => { tracesSampleRate?: number };
 }): Promise<SentryRemoteRates> {
-  let sentryFlag: Record<string, unknown> | undefined;
+  let persistedSentry: Record<string, unknown> | undefined;
   try {
     const getPersistedState = await waitForPersistedStateHook();
-    if (!getPersistedState) {
-      // State hooks never registered: compile-time fallbacks apply.
-      return {};
+    if (getPersistedState) {
+      const persistedState = (await getPersistedState({
+        reportErrors: false,
+      })) as
+        | { data?: Record<string, ControllerFlagState | undefined> }
+        | undefined;
+      persistedSentry = asSentryFlagObject(
+        persistedState?.data?.RemoteFeatureFlagController?.remoteFeatureFlags
+          ?.sentry,
+      );
     }
-    const persistedState = (await getPersistedState({
-      reportErrors: false,
-    })) as
-      | { data?: Record<string, ControllerFlagState | undefined> }
-      | undefined;
-    sentryFlag =
-      persistedState?.data?.RemoteFeatureFlagController?.remoteFeatureFlags
-        ?.sentry;
   } catch {
-    // Persisted state unavailable (fresh install, storage error): fallbacks apply.
-    return {};
+    // Persisted state unavailable (fresh install, storage error): continue
+    // with manifest overrides only when present.
   }
+
+  const sentryFlag = mergeSentryFlags(
+    persistedSentry,
+    getManifestSentryRemoteFlag(),
+  );
 
   const applied: SentryRemoteRates = {
     tracesSampleRate: asValidRate(sentryFlag?.tracesSampleRate),
