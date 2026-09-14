@@ -78,7 +78,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.CurrencyController',
   'data.MultichainAssetsRatesController',
   'data.MultichainAssetsController',
-  'data.MultichainBalancesController',
   'data.TokenRatesController',
   'data.TokensController',
   // Entire objects/controllers ignored (dynamic or impractical to validate)

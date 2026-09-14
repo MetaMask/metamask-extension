@@ -57,7 +57,7 @@ import { createDeepEqualSelector } from './selector-creators';
 // allIgnoredAssets: DONE
 //
 // MultichainBalancesController
-// balances: DONE
+// balances: unused (controller removed)
 //
 // MultichainAssetsRatesController
 // conversionRates: DONE

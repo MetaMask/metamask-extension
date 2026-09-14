@@ -155,7 +155,6 @@
     "accountIdByAddress": {
       "*": "string"
     },
-    "accountSourceBackfillEnqueued": "boolean",
     "accountsAssets": {
       "*": "array"
     },
@@ -287,15 +286,6 @@
         "dilutedMarketCap": "number",
         "pricePercentChange1d": "number",
         "lastUpdated": "number"
-      }
-    },
-    "autoramps": [],
-    "balances": {
-      "*": {
-        "*": {
-          "unit": "string",
-          "amount": "string"
-        }
       }
     },
     "batchSellTrades": "null",
@@ -679,7 +669,6 @@
     "isMultiAccountBalancesEnabled": "boolean",
     "isNotificationServicesEnabled": "boolean",
     "isPushEnabled": "boolean",
-    "isRampsSyncingEnabled": "boolean",
     "isReady": "boolean",
     "isTestnet": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
@@ -711,7 +700,6 @@
     "lastFetched": "null",
     "lastFetchedAt": "number",
     "lastFetchedBlockNumbers": {},
-    "lastPerpsDepositEntryPoint": "null",
     "lastUpdateTimestamp": "number",
     "lastUpdated": "number",
     "lastUpdatedAt": "null",
@@ -1014,7 +1002,6 @@
       "variational": {}
     },
     "region": "string",
-    "reportedAccounts": "array",
     "requests": {
       "*": {
         "status": "string",

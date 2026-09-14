@@ -7511,14 +7511,6 @@ export async function decodeTransactionData({
   ]);
 }
 
-export async function multichainUpdateBalance(
-  accountId: string,
-): Promise<void> {
-  return await submitRequestToBackground<void>('multichainUpdateBalance', [
-    accountId,
-  ]);
-}
-
 export async function multichainUpdateTransactions(
   accountId: string,
 ): Promise<void> {
