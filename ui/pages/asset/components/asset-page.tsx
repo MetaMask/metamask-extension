@@ -174,7 +174,7 @@ const AssetPage = ({
 
   // Reset chart error state when navigating to a different token so the
   // advanced chart gets a fresh retry opportunity.
-  const assetKey = `${chainId}:${tokenAddress ?? 'native'}`;
+  const assetKey = `${asset.chainId}:${asset.type === AssetType.token ? (asset as { address?: string }).address : 'native'}`;
   useEffect(() => {
     setAdvancedChartError(null);
     setAcChartReady(false);
