@@ -1,13 +1,14 @@
 import React from 'react';
-import { Box, BoxFlexDirection, Skeleton } from '@metamask/design-system-react';
 import {
-  BorderRadius,
-  Display,
+  Box,
+  BoxFlexDirection,
   FontWeight,
+  Skeleton,
+  Text,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { Text } from '../../../../components/component-library';
+} from '@metamask/design-system-react';
+import { Display } from '../../../../helpers/constants/design-system';
 import { loadingOpacity, getDynamicShortDate } from '../../util';
 import { useFormatters } from '../../../../hooks/useFormatters';
 
@@ -32,7 +33,7 @@ export type TokenPriceHeaderProps = {
  */
 const PriceLoading = () => (
   <Skeleton hideChildren width="25%" className="mb-1 rounded-lg">
-    <Text variant={TextVariant.displayMd}>{'\u00A0'}</Text>
+    <Text variant={TextVariant.DisplayMd}>{'\u00A0'}</Text>
   </Skeleton>
 );
 
@@ -40,7 +41,7 @@ const PriceLoading = () => (
  * Empty state when price is not available.
  */
 const PriceEmptyState = () => (
-  <Text variant={TextVariant.displayMd} marginBottom={1}>
+  <Text variant={TextVariant.DisplayMd} marginBottom={1}>
     {'\u00A0'}
   </Text>
 );
@@ -50,7 +51,9 @@ const PriceEmptyState = () => (
  */
 const PercentChangeLoading = () => (
   <Skeleton hideChildren width="33%" className="rounded-lg">
-    <Text variant={TextVariant.bodyMdMedium}>{'\u00A0'}</Text>
+    <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+      {'\u00A0'}
+    </Text>
   </Skeleton>
 );
 
@@ -58,7 +61,9 @@ const PercentChangeLoading = () => (
  * Empty state when percentage change is not available.
  */
 const PercentChangeEmptyState = () => (
-  <Text variant={TextVariant.bodyMdMedium}>{'\u00A0'}</Text>
+  <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+    {'\u00A0'}
+  </Text>
 );
 
 /**
@@ -66,12 +71,12 @@ const PercentChangeEmptyState = () => (
  */
 const getPercentChangeColor = (value: number | undefined): TextColor => {
   if (value === undefined || Number.isNaN(value)) {
-    return TextColor.textAlternative;
+    return TextColor.TextAlternative;
   }
   if (value === 0) {
-    return TextColor.textDefault;
+    return TextColor.TextDefault;
   }
-  return value > 0 ? TextColor.successDefault : TextColor.errorDefault;
+  return value > 0 ? TextColor.SuccessDefault : TextColor.ErrorDefault;
 };
 
 /**
@@ -123,9 +128,8 @@ const TokenPriceHeader = ({
       {(shouldShowPrice || shouldShowPriceMuted) && (
         <Text
           data-testid="asset-hovered-price"
-          variant={TextVariant.displayMd}
+          variant={TextVariant.DisplayMd}
           fontWeight={FontWeight.Medium}
-          borderRadius={BorderRadius.LG}
           marginBottom={1}
           style={{ opacity: shouldShowPriceMuted ? loadingOpacity : 1 }}
         >
@@ -144,7 +148,8 @@ const TokenPriceHeader = ({
         >
           <Text
             data-testid="asset-price-percent-change"
-            variant={TextVariant.bodyMdMedium}
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
             color={getPercentChangeColor(percentChange)}
           >
             {formattedPercent || '-'}
@@ -152,8 +157,9 @@ const TokenPriceHeader = ({
           {timestamp !== undefined && (
             <Text
               display={Display.InlineBlock}
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.textAlternative}
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.TextAlternative}
               marginLeft={2}
             >
               {getDynamicShortDate(timestamp)}

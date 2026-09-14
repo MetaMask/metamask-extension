@@ -92,7 +92,7 @@ describe('TokenPriceHeader', () => {
       const percentElement = screen.getByTestId('asset-price-percent-change');
       expect(percentElement).toHaveTextContent('+5.25%');
       // Check for success color class
-      expect(percentElement).toHaveClass('mm-box--color-success-default');
+      expect(percentElement).toHaveClass('text-success-default');
     });
 
     it('displays negative percent change in red', () => {
@@ -107,7 +107,7 @@ describe('TokenPriceHeader', () => {
       const percentElement = screen.getByTestId('asset-price-percent-change');
       expect(percentElement).toHaveTextContent('-3.75%');
       // Check for error color class
-      expect(percentElement).toHaveClass('mm-box--color-error-default');
+      expect(percentElement).toHaveClass('text-error-default');
     });
 
     it('displays zero percent change in default color', () => {
@@ -118,7 +118,7 @@ describe('TokenPriceHeader', () => {
       const percentElement = screen.getByTestId('asset-price-percent-change');
       expect(percentElement).toHaveTextContent('+0.00%');
       // Check for default color class
-      expect(percentElement).toHaveClass('mm-box--color-text-default');
+      expect(percentElement).toHaveClass('text-default');
     });
 
     it('displays dash when percentChange is undefined', () => {
