@@ -128,7 +128,7 @@ export function MoneyMoreMenu() {
                 icon
               ) : (
                 <Icon
-                  name={icon}
+                  name={icon as IconName}
                   size={IconSize.Md}
                   color={IconColor.IconDefault}
                 />
