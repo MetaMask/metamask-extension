@@ -220,9 +220,7 @@ describe('MoneyHomePage', () => {
         .closest('li')
         ?.querySelector('svg'),
     ).toHaveClass('shrink-0');
-    expect(
-      screen.queryByTestId('money-activity-list'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('money-activity-list')).not.toBeInTheDocument();
     expect(
       screen.queryByText(messages.moneyActivityPlaceholderDescription.message),
     ).not.toBeInTheDocument();
@@ -345,9 +343,7 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByTestId('money-position-lifetime-value'),
     ).toHaveTextContent('+$56.78');
-    expect(
-      screen.queryByTestId('money-activity-list'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('money-activity-list')).not.toBeInTheDocument();
     expect(
       screen.getByTestId('money-condensed-info-cards'),
     ).toBeInTheDocument();
@@ -592,9 +588,7 @@ describe('MoneyHomePage', () => {
     expect(mockUseMoneyAccountInterest).toHaveBeenCalledWith({
       enabled: false,
     });
-    expect(
-      screen.queryByTestId('money-activity-list'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('money-activity-list')).not.toBeInTheDocument();
     expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
   });
 

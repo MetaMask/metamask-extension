@@ -23,9 +23,7 @@ describe('MoneyActivityList', () => {
     );
 
     expect(container).toBeEmptyDOMElement();
-    expect(
-      screen.queryByTestId('money-activity-list'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('money-activity-list')).not.toBeInTheDocument();
     expect(
       screen.queryByText(messages.moneyActivity.message),
     ).not.toBeInTheDocument();
