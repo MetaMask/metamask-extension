@@ -288,9 +288,11 @@ describe('Send NFT', function () {
             await new NftsTab(driver).clickNFTIconOnActivityList();
 
             const nftDetailsPage = new NFTDetailsPage(driver);
+            await nftDetailsPage.checkPageIsLoaded();
             await nftDetailsPage.clickNFTSendButton();
 
             const sendPage = new SendPage(driver);
+            await sendPage.checkSendFormIsLoaded();
             await sendPage.fillRecipient({
               recipientAddress: DEFAULT_RECIPIENT,
             });

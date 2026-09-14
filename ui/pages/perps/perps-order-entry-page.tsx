@@ -575,7 +575,7 @@ const PerpsOrderEntryPage = () => {
     return !cleaned || Number.isNaN(parsed) || parsed <= 0;
   }, [orderType, orderFormState]);
 
-  const marketInfo = usePerpsMarketInfo(decodedSymbol ?? '');
+  const { market: marketInfo } = usePerpsMarketInfo(decodedSymbol ?? '');
 
   // Market-not-found renders a displayed error state (see the `!market` branch
   // below); emit the error screen view for that funnel state.
@@ -2514,13 +2514,13 @@ const PerpsOrderEntryPage = () => {
         id="perps-order-entry-chart"
         label={t('perpsChart')}
       >
-        <Box paddingLeft={4} paddingRight={4} paddingTop={2}>
-          {chartContent}
-        </Box>
         <PerpsCandlePeriodSelector
           selectedPeriod={selectedPeriod}
           onPeriodChange={handlePeriodChange}
         />
+        <Box paddingLeft={4} paddingRight={4} paddingBottom={2}>
+          {chartContent}
+        </Box>
       </PerpsExpandableChartPanel>
 
       {/* Body: form content + sliding order book, ordered by

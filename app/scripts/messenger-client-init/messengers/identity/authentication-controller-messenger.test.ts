@@ -28,6 +28,36 @@ describe('getAuthenticationControllerMessenger', () => {
       }),
     );
   });
+
+  it('delegates SeedlessOnboardingController:getAccessToken for social identifier pairing', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAuthenticationControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining([
+          'SeedlessOnboardingController:getAccessToken',
+        ]),
+      }),
+    );
+  });
+
+  it('delegates KeyringController:withKeyringV2Unsafe for native SIP-6 signing', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAuthenticationControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining([
+          'KeyringController:withKeyringV2Unsafe',
+        ]),
+      }),
+    );
+  });
 });
 
 describe('getAuthenticationControllerInitMessenger', () => {
@@ -37,5 +67,20 @@ describe('getAuthenticationControllerInitMessenger', () => {
       getAuthenticationControllerInitMessenger(messenger);
 
     expect(authenticationControllerInitMessenger).toBeInstanceOf(Messenger);
+  });
+
+  it('delegates RemoteFeatureFlagController:getState', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getAuthenticationControllerInitMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining([
+          'RemoteFeatureFlagController:getState',
+        ]),
+      }),
+    );
   });
 });

@@ -93,6 +93,7 @@ export type ControllerStatePropertiesEnumerated = {
   currentMigrationVersion: AppMetadataControllerState['currentMigrationVersion'];
   previousAppVersion: AppMetadataControllerState['previousAppVersion'];
   previousMigrationVersion: AppMetadataControllerState['previousMigrationVersion'];
+  installAttribution: AppMetadataControllerState['installAttribution'];
   approvalFlows: ApprovalControllerState['approvalFlows'];
   pendingApprovals: ApprovalControllerState['pendingApprovals'];
   pendingApprovalCount: ApprovalControllerState['pendingApprovalCount'];
@@ -189,13 +190,11 @@ export type ControllerStatePropertiesEnumerated = {
   encryptionSalt?: KeyringControllerState['encryptionSalt'];
   logs: LoggingControllerState['logs'];
   tracesBeforeMetricsOptIn: MetaMetricsControllerState['tracesBeforeMetricsOptIn'];
-  fragments: MetaMetricsControllerState['fragments'];
   consentDecisionMade?: AnalyticsControllerState['consentDecisionMade'];
   preConsentEventQueue?: AnalyticsControllerState['preConsentEventQueue'];
   optedIn: AnalyticsControllerState['optedIn'];
   analyticsId: AnalyticsControllerState['analyticsId'];
   passkeyRecord: PasskeyControllerState['passkeyRecord'];
-  traits: MetaMetricsControllerState['traits'];
   dataCollectionForMarketing: MetaMetricsControllerState['dataCollectionForMarketing'];
   marketingCampaignCookieId: MetaMetricsControllerState['marketingCampaignCookieId'];
   metaMetricsDataDeletionId: MetaMetricsDataDeletionState['metaMetricsDataDeletionId'];

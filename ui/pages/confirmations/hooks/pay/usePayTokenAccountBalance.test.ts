@@ -57,6 +57,7 @@ describe('usePayTokenAccountBalance', () => {
     expect(result.current).toStrictEqual({
       balanceUsd: '0',
       balanceRaw: '0',
+      isLiveBalance: false,
     });
   });
 
@@ -64,7 +65,9 @@ describe('usePayTokenAccountBalance', () => {
     const { result } = renderHook(() => usePayTokenAccountBalance());
 
     expect(result.current.balanceRaw).toBe('2000000000000000000');
-    expect(result.current.balanceUsd).toBe('3400');
+    // Spendable USD is capped to the Pay-with snapshot when live rate×raw is higher.
+    expect(result.current.balanceUsd).toBe('5');
+    expect(result.current.isLiveBalance).toBe(true);
   });
 
   it('falls back to controller snapshot when no matching account token', () => {
@@ -75,6 +78,7 @@ describe('usePayTokenAccountBalance', () => {
     expect(result.current).toStrictEqual({
       balanceUsd: PAY_TOKEN_MOCK.balanceUsd,
       balanceRaw: PAY_TOKEN_MOCK.balanceRaw,
+      isLiveBalance: false,
     });
   });
 
@@ -88,6 +92,7 @@ describe('usePayTokenAccountBalance', () => {
     expect(result.current).toStrictEqual({
       balanceUsd: PAY_TOKEN_MOCK.balanceUsd,
       balanceRaw: PAY_TOKEN_MOCK.balanceRaw,
+      isLiveBalance: false,
     });
   });
 
@@ -141,6 +146,7 @@ describe('usePayTokenAccountBalance', () => {
     expect(result.current).toStrictEqual({
       balanceUsd: PAY_TOKEN_MOCK.balanceUsd,
       balanceRaw: PAY_TOKEN_MOCK.balanceRaw,
+      isLiveBalance: false,
     });
   });
 
@@ -150,16 +156,36 @@ describe('usePayTokenAccountBalance', () => {
     const { result } = renderHook(() => usePayTokenAccountBalance());
 
     expect(result.current.balanceRaw).toBe('2000000000000000000');
-    expect(result.current.balanceUsd).toBe('5');
+    expect(result.current.balanceUsd).toBe('2.000346864215349');
   });
 
-  it('does not understate USD when the live rate is below the snapshot', () => {
+  it('does not exceed the Pay-with snapshot when live USD is higher', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: { ...PAY_TOKEN_MOCK, balanceUsd: '54.71' },
+      setPayToken: jest.fn(),
+    });
+    useSendTokensMock.mockReturnValue([
+      {
+        ...ACCOUNT_TOKEN_MOCK,
+        decimals: 6,
+        rawBalance: '0x3430d40' as Hex, // 54710000 → 54.71 USDC
+      },
+    ]);
+    // Inflated rate would otherwise push spendable above Pay with.
+    useTokenFiatRateMock.mockReturnValue(1.018);
+
+    const { result } = renderHook(() => usePayTokenAccountBalance());
+
+    expect(result.current.balanceUsd).toBe('54.71');
+  });
+
+  it('uses live USD when it is below the Pay-with snapshot', () => {
     useTokenFiatRateMock.mockReturnValue(1);
 
     const { result } = renderHook(() => usePayTokenAccountBalance());
 
     expect(result.current.balanceRaw).toBe('2000000000000000000');
-    expect(result.current.balanceUsd).toBe('5');
+    expect(result.current.balanceUsd).toBe('2');
   });
 
   it('falls back to controller balanceUsd when USD rate is unavailable', () => {
@@ -182,7 +208,7 @@ describe('usePayTokenAccountBalance', () => {
 
     const { result } = renderHook(() => usePayTokenAccountBalance());
 
-    expect(result.current.balanceUsd).toBe('1700');
+    expect(result.current.balanceUsd).toBe('5');
     expect(result.current.balanceRaw).toBe('1000000');
   });
 
@@ -201,7 +227,7 @@ describe('usePayTokenAccountBalance', () => {
 
     const { result } = renderHook(() => usePayTokenAccountBalance());
 
-    expect(result.current.balanceUsd).toBe('1700');
+    expect(result.current.balanceUsd).toBe('5');
   });
 
   it('handles zero rawBalance', () => {
@@ -217,6 +243,7 @@ describe('usePayTokenAccountBalance', () => {
     expect(result.current).toStrictEqual({
       balanceUsd: '0',
       balanceRaw: '0',
+      isLiveBalance: true,
     });
   });
 
@@ -236,6 +263,7 @@ describe('usePayTokenAccountBalance', () => {
     expect(result.current).toStrictEqual({
       balanceUsd: '0',
       balanceRaw: '0',
+      isLiveBalance: false,
     });
   });
 });

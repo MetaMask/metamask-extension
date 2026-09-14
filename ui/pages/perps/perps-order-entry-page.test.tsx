@@ -77,7 +77,10 @@ jest.mock('../../components/app/compliance', () => ({
   }),
 }));
 
-const mockUsePerpsMarketInfo = jest.fn(() => undefined);
+const mockUsePerpsMarketInfo = jest.fn(() => ({
+  market: undefined,
+  isLoading: false,
+}));
 
 jest.mock('../../hooks/perps/usePerpsAttribution', () => ({
   usePerpsAttribution: () => ({
@@ -480,7 +483,10 @@ describe('PerpsOrderEntryPage', () => {
       orders: [],
       isInitialLoading: false,
     });
-    mockUsePerpsMarketInfo.mockReturnValue(undefined);
+    mockUsePerpsMarketInfo.mockReturnValue({
+      market: undefined,
+      isLoading: false,
+    });
     mockLiveAccount.mockReturnValue({
       account: mockAccountState,
       isInitialLoading: false,

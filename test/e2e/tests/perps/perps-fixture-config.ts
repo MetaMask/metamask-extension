@@ -4,6 +4,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   DEFAULT_FIXTURE_ACCOUNT_ID,
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  NETWORK_CLIENT_ID,
 } from '../../constants';
 import {
   getProductionRemoteFlagApiResponse,
@@ -42,6 +43,7 @@ const ARBITRUM_USDC_PRICE_IN_ETH = 1 / 1700;
 const HYPERCORE_CHAIN_ID_DECIMAL = Number(CHAIN_IDS.LOCALHOST);
 const PRICE_API_BASE_URL = 'https://price.api.cx.metamask.io';
 const RELAY_API_BASE_URL = 'https://api.relay.link';
+
 const RELAY_REQUEST_ID = 'perps-withdraw-e2e-request-id';
 const RELAY_TRANSACTION_HASH =
   '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
@@ -766,6 +768,13 @@ export function getPerpsConfigEligibleWithArbitrumUsdc(title?: string) {
           },
         },
       })
+      // Select Arbitrum so the GasFeeController polls gas estimates for the
+      // right chain. The "no gas price" blocking alert checks the *global*
+      // `gasEstimateType` (which only updates for the selected network), so
+      // starting on localhost or a testnet causes the confirmation to stay
+      // permanently stuck. Related bug ticket #46056
+      .withSelectedNetwork(NETWORK_CLIENT_ID.ARBITRUM_MAINNET)
+      .withEnabledNetworks({ eip155: { [CHAIN_IDS.ARBITRUM]: true } })
       .build(),
     title,
     manifestFlags: PERPS_WITHDRAW_CONFIRMATION_MANIFEST_FLAG,

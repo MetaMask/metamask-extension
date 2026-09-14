@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -112,13 +112,25 @@ export const AccountList = () => {
     (location.state as { fromFreshTab?: boolean } | null)?.fromFreshTab ===
       true;
 
+  const [isEditMode, setIsEditMode] = useState(false);
+
   const handleBack = useCallback(() => {
+    // Edit mode hides the gear icon, so back is the way out of it.
+    if (isEditMode) {
+      setIsEditMode(false);
+      return;
+    }
+
     if (isFreshTab) {
       navigate(DEFAULT_ROUTE, { replace: true });
     } else {
       transitionBack(() => navigate(PREVIOUS_ROUTE));
     }
-  }, [isFreshTab, navigate]);
+  }, [isEditMode, isFreshTab, navigate]);
+
+  const handleEnterEditMode = useCallback(() => {
+    setIsEditMode(true);
+  }, []);
 
   return (
     <Page
@@ -138,8 +150,19 @@ export const AccountList = () => {
             data-testid="account-list-page-back-button"
           />
         }
+        endAccessory={
+          isEditMode ? null : (
+            <ButtonIcon
+              size={ButtonIconSize.Md}
+              ariaLabel={t('manageAccounts')}
+              iconName={IconName.Setting}
+              onClick={handleEnterEditMode}
+              data-testid="account-list-page-manage-button"
+            />
+          )
+        }
       >
-        {t('accounts')}
+        {isEditMode ? t('manageAccounts') : t('accounts')}
       </Header>
       <div className="account-list-page__content flex flex-col min-h-0 overflow-auto">
         <Box
@@ -167,6 +190,7 @@ export const AccountList = () => {
               displayWalletHeader={hasMultipleWallets}
               showConnectionStatus={permittedAccounts.length > 0}
               showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
+              isEditMode={isEditMode}
             />
           ) : (
             <Box
