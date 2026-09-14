@@ -69,7 +69,7 @@ import { MultichainPrivateKeyRow } from './multichain-private-key-row';
 const VERIFY_PASSKEY_SCREEN = 'VERIFY_PASSKEY_SCREEN';
 const VERIFY_PASSWORD_SCREEN = 'VERIFY_PASSWORD_SCREEN';
 const ETHEREUM_MAINNET_CAIP_CHAIN_ID = 'eip155:1' as CaipChainId;
-const PRIVATE_KEY_EXPORTING_SNAP_IDS = new Set([
+const PRIVATE_KEY_EXPORTING_SNAP_IDS = new Set<string>([
   BITCOIN_WALLET_SNAP_ID,
   SOLANA_WALLET_SNAP_ID,
   TRON_WALLET_SNAP_ID,
