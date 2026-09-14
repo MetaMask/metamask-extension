@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed small UI issues around the manage accounts screen (#46324)
 - Fixed a bug that prevented relayer fees from being shown in the selected bridge quote (#46243)
 - Fixed ramps quote errors showing raw HTTP request URLs and status codes instead of a readable message (#46023)
 - Fixed money account deposits so tokens held by a switched funding account load across all networks and the pre-filled amount reliably gets a quote (#46047)
