@@ -65,14 +65,12 @@ type BalanceDisplayProps = {
   balance?: string;
   isSubtitle?: boolean;
   isHidden?: boolean;
-  endSpacing?: number;
 };
 
 const BalanceDisplay = ({
   balance,
   isSubtitle = false,
   isHidden = false,
-  endSpacing,
 }: BalanceDisplayProps) => {
   // Account group balances are fetched lazily, so a cell may have no balance to
   // show yet. Render nothing rather than a placeholder that reads as "no funds".
