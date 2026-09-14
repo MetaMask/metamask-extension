@@ -29,11 +29,11 @@ const IndicatorBar = ({
   const [showMADropdown, setShowMADropdown] = useState(false);
 
   const toolbarText = 'var(--color-text-default)';
-  const toolbarMuted = 'var(--color-text-muted)';
+  const toolbarMuted = 'var(--color-text-alternative)';
   const activeCheckColor = isDark ? brandColor.lime100 : brandColor.green500;
   const pillStyle = (isSelected: boolean) => ({
     padding: '4px 10px',
-    borderRadius: '12px',
+    borderRadius: '8px',
     border: 'none',
     cursor: 'pointer' as const,
     fontSize: '12px',
@@ -105,7 +105,7 @@ const IndicatorBar = ({
             zIndex: 100,
             background: 'var(--color-background-default)',
             border: '1px solid var(--color-border-muted)',
-            borderRadius: '8px',
+            borderRadius: '8px', // BorderRadius.LG
             padding: '4px 0',
             boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
             minWidth: '120px',

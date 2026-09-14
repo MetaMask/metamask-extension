@@ -38,14 +38,12 @@ const IntervalBar = ({
   const isDark = theme === 'dark';
 
   const toolbarText = 'var(--color-text-default)';
-  const toolbarMuted = 'var(--color-text-muted)';
-  const activeBg = isDark
-    ? 'var(--color-background-default-pressed)'
-    : 'var(--color-background-default-hover)';
+  const toolbarMuted = 'var(--color-text-alternative)';
+  const activeBg = 'var(--color-background-default-hover)';
 
   const pillStyle = (isSelected: boolean) => ({
     padding: '4px 10px',
-    borderRadius: '12px',
+    borderRadius: '8px',
     border: 'none',
     cursor: 'pointer' as const,
     fontSize: '12px',
