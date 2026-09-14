@@ -23,6 +23,7 @@ import {
 } from './useAccountTotalCrossChainFiatBalance';
 
 jest.mock('react-redux', () => ({
+  shallowEqual: jest.fn(),
   useSelector: jest.fn((selector) => selector()),
 }));
 

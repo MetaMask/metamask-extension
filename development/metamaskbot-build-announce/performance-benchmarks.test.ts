@@ -16,7 +16,9 @@ import {
   type BenchmarkEntry,
 } from './performance-benchmarks';
 
-jest.mock('fs/promises');
+jest.mock('fs/promises', () => ({
+  readFile: jest.fn(),
+}));
 
 const makeEntry = (
   overrides: Partial<BenchmarkEntry> = {},

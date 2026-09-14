@@ -94,7 +94,7 @@ global.log = log;
 //
 
 // dom
-const jsdom = new JSDOM();
+const jsdom = new JSDOM('', { url: 'http://localhost/' });
 global.window = jsdom.window;
 
 // required by `trezor-connect/node_modules/whatwg-fetch`
