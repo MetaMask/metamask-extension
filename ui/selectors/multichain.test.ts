@@ -216,7 +216,6 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
         },
       },
       conversionRates: {},
-      historicalPrices: {},
       assetsMetadata: {},
       accountsAssets: {},
       allIgnoredAssets: {},

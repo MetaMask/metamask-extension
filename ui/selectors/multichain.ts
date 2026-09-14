@@ -81,7 +81,7 @@ export type AssetsState = {
 };
 
 export type AssetsRatesState = {
-  metamask: MultichainAssetsRatesControllerState;
+  metamask: Pick<MultichainAssetsRatesControllerState, 'conversionRates'>;
 };
 
 export type RatesState = {

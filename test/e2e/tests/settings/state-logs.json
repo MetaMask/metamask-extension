@@ -311,31 +311,6 @@
     },
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
-    "conversionRates": {
-      "*": {
-        "currency": "string",
-        "rate": "string",
-        "conversionTime": "number",
-        "expirationTime": "number",
-        "marketData": {
-          "fungible": "boolean",
-          "allTimeHigh": "string",
-          "allTimeLow": "string",
-          "circulatingSupply": "string",
-          "marketCap": "string",
-          "totalVolume": "string",
-          "pricePercentChange": {
-            "PT1H": "number",
-            "P1D": "number",
-            "P7D": "number",
-            "P14D": "number",
-            "P30D": "number",
-            "P200D": "number",
-            "P1Y": "number"
-          }
-        }
-      }
-    },
     "country": "string",
     "coverageResults": {},
     "countries": {
@@ -521,7 +496,6 @@
     "hasShownMultichainAccountsIntroModal": "boolean",
     "hiddenAccountList": [],
     "hip3ConfigVersion": "number",
-    "historicalPrices": {},
     "ignoredNfts": [],
     "initializationAttempts": "number",
     "initializationError": "null",
@@ -1239,7 +1213,6 @@
       "mainnet": {}
     },
     "tracesBeforeMetricsOptIn": [],
-    "batchTransactionCounts": {},
     "transactionBatches": [],
     "transactionData": {},
     "transactions": [],

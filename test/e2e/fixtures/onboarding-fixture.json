@@ -189,9 +189,6 @@
       "allIgnoredAssets": {},
       "assetsMetadata": {}
     },
-    "MultichainAssetsRatesController": {
-      "conversionRates": {}
-    },
     "MultichainNetworkController": {
       "isEvmSelected": true,
       "multichainNetworkConfigurationsByChainId": {

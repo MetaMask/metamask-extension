@@ -130,7 +130,7 @@ export type AssetsState = {
 };
 
 export type AssetsRatesState = {
-  metamask: MultichainAssetsRatesControllerState;
+  metamask: Pick<MultichainAssetsRatesControllerState, 'conversionRates'>;
 };
 
 export type DefiState = {
@@ -146,7 +146,7 @@ export type BalanceCalculationState = {
     MultichainBalancesControllerState &
     TokensControllerState &
     CurrencyRateState &
-    MultichainAssetsRatesControllerState &
+    Pick<MultichainAssetsRatesControllerState, 'conversionRates'> &
     MultichainAssetsControllerState &
     AccountTrackerControllerState &
     NetworkEnablementControllerState &
@@ -855,7 +855,9 @@ const selectTokenRatesStateForBalances = createSelector(
 );
 
 /**
- * Provides conversion rates and historical prices with stable fallbacks.
+ * Provides conversion rates for legacy balance computations.
+ * `historicalPrices` is always empty: MultichainAssetsRatesController was
+ * removed and chart/history data is fetched via the Price API instead.
  */
 const selectMultichainRatesStateForBalances = createSelector(
   [getMultichainAssetsRatesControllerConversionRates],
