@@ -6,7 +6,7 @@ import TokenPriceHeader from './token-price-header';
 jest.mock('../../../../hooks/useFormatters', () => ({
   useFormatters: () => ({
     formatCurrencyTokenPrice: (price: number | undefined, currency: string) =>
-      price !== undefined ? `${currency} ${price.toFixed(2)}` : '-',
+      price === undefined ? '-' : `${currency} ${price.toFixed(2)}`,
     formatNumber: (value: number, options: Intl.NumberFormatOptions) => {
       if (options.style === 'percent') {
         const sign = value >= 0 ? '+' : '';
