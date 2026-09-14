@@ -207,6 +207,12 @@ function shouldSeedHardwareWalletMainnetBalance(fixtures) {
 
 /**
  * @param {object} options
+ * @param {number} [options.testTimeout] - Mocha timeout for this test in ms.
+ *   Auto-detected from `MOCHA_TIMEOUT` (set by run-e2e-test.js and updated
+ *   per-test by the global beforeEach hook in manifest-flag-mocha-hooks.ts).
+ *   If a test sets `this.timeout()` inside the `it()` body (rather than on a
+ *   `describe` block), the hook cannot detect it — pass `testTimeout` explicitly:
+ *   `testTimeout: this.timeout()`.
  * @param {({driver: Driver, mockedEndpoint: MockedEndpoint}: TestSuiteArguments) => Promise<void>} testSuite
  */
 async function withFixtures(options, testSuite) {
