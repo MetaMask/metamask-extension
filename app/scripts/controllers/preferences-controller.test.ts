@@ -437,6 +437,35 @@ describe('preferences controller', () => {
     });
   });
 
+  describe('toggleBasicFunctionality', () => {
+    it('sets Basic Functionality and every child preference together', () => {
+      const { controller, toggleExternalServices } = setupController({});
+      controller.toggleExternalServices(false);
+
+      controller.toggleBasicFunctionality(true);
+
+      expect(controller.state.useExternalServices).toBe(true);
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        expect(controller.state[preference]).toBe(true);
+      }
+      expect(controller.state.isMultiAccountBalancesEnabled).toBe(true);
+      expect(toggleExternalServices).toHaveBeenCalledWith(true);
+    });
+
+    it('turns every child preference off together', () => {
+      const { controller, toggleExternalServices } = setupController({});
+
+      controller.toggleBasicFunctionality(false);
+
+      expect(controller.state.useExternalServices).toBe(false);
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        expect(controller.state[preference]).toBe(false);
+      }
+      expect(controller.state.isMultiAccountBalancesEnabled).toBe(false);
+      expect(toggleExternalServices).toHaveBeenCalledWith(false);
+    });
+  });
+
   describe('addSnapAccountEnabled', () => {
     it('defaults addSnapAccountEnabled to false', () => {
       const { controller } = setupController({});

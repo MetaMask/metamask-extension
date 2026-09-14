@@ -51,6 +51,17 @@ export type PreferencesControllerToggleExternalServicesAction = {
 };
 
 /**
+ * Turns Basic Functionality and every child preference on or off in one
+ * state update, then syncs TokenDetection / GasFee / Shield controllers.
+ *
+ * @param useBasicFunctionality - Whether Basic Functionality should be on.
+ */
+export type PreferencesControllerToggleBasicFunctionalityAction = {
+  type: `PreferencesController:toggleBasicFunctionality`;
+  handler: PreferencesController['toggleBasicFunctionality'];
+};
+
+/**
  * One-time Basic Functionality consolidation when the remote FF turns on.
  * Aligns child preferences, marks the user as consolidated, and schedules
  * the modal/toast notice when needed, then syncs external-service controllers.
@@ -413,6 +424,7 @@ export type PreferencesControllerMethodActions =
   | PreferencesControllerSetUseMultiAccountBalanceCheckerAction
   | PreferencesControllerSetUseSafeChainsListValidationAction
   | PreferencesControllerToggleExternalServicesAction
+  | PreferencesControllerToggleBasicFunctionalityAction
   | PreferencesControllerConsolidateBasicFunctionalityAction
   | PreferencesControllerSetUseTokenDetectionAction
   | PreferencesControllerSetUseNftDetectionAction

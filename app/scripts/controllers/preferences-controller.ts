@@ -447,6 +447,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'setUseMultiAccountBalanceChecker',
   'setUseSafeChainsListValidation',
   'toggleExternalServices',
+  'toggleBasicFunctionality',
   'setUseTokenDetection',
   'setUseNftDetection',
   'setUse4ByteResolution',
@@ -593,6 +594,27 @@ export class PreferencesController extends BaseController<
     this.setOpenSeaEnabled(useExternalServices);
     this.setUseNftDetection(useExternalServices);
     this.setUseSafeChainsListValidation(useExternalServices);
+  }
+
+  /**
+   * Turns Basic Functionality and every child preference on or off in one
+   * state update, then syncs TokenDetection / GasFee / Shield controllers.
+   *
+   * @param useBasicFunctionality - Whether Basic Functionality should be on.
+   */
+  toggleBasicFunctionality(useBasicFunctionality: boolean): void {
+    this.update((state) => {
+      state.useExternalServices = useBasicFunctionality;
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        state[preference] = useBasicFunctionality;
+      }
+      state.isMultiAccountBalancesEnabled = useBasicFunctionality;
+    });
+
+    this.messenger.call(
+      'LegacyBackgroundApiService:toggleExternalServices',
+      useBasicFunctionality,
+    );
   }
 
   /**
