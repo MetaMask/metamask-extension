@@ -225,6 +225,9 @@ function enrichMoneyAccountActivity(
   return {
     ...activity,
     type,
+    ...(transaction.metamaskPay?.intent?.outcome?.type
+      ? { payOutcome: transaction.metamaskPay.intent.outcome.type }
+      : {}),
     data: {
       from: transaction.txParams?.from ?? '',
       ...(fiat ? { fiat } : {}),

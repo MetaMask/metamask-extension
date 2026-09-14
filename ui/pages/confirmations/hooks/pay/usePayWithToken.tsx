@@ -14,6 +14,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import {
   selectPaymentOverrideByTransactionId,
+  selectTransactionPayIntentByTransactionId,
   type TransactionPayState,
 } from '../../../../selectors/transactionPayController';
 import { useConfirmContext } from '../../context/confirm';
@@ -68,6 +69,9 @@ export function usePayWithToken(): PayWithToken {
   const paymentOverride = useSelector((state: TransactionPayState) =>
     selectPaymentOverrideByTransactionId(state, transactionId),
   );
+  const payIntent = useSelector((state: TransactionPayState) =>
+    selectTransactionPayIntentByTransactionId(state, transactionId),
+  );
   const isDefaultMoneyAccount = useIsMoneyAccountFlagDefault();
   const isMoneyAccountSelected =
     paymentOverride === PaymentOverride.MoneyAccount ||
@@ -98,6 +102,12 @@ export function usePayWithToken(): PayWithToken {
   }, []);
 
   const firstRequiredToken = requiredTokens?.[0];
+  const selectedSolanaToken = availableTokens.find(
+    (token) =>
+      token.assetId === payIntent?.sourceAssetId &&
+      `${String(token.chainId)}:${token.accountAddress}` ===
+        payIntent?.sourceAccountId,
+  );
   const resolvedToken =
     payToken ?? (shouldWaitForPayToken ? undefined : firstRequiredToken);
 
@@ -109,9 +119,13 @@ export function usePayWithToken(): PayWithToken {
   // Prefer the live funding-account balance over TransactionPayController's
   // paymentToken snapshot — that snapshot can be 0 / stale (e.g. mUSD on Monad
   // after auto-select) while the Pay-with modal still shows the real balance.
-  const cryptoBalanceUsd = payToken
-    ? accountBalanceUsd
-    : (resolvedToken?.balanceUsd ?? '0');
+  let cryptoBalanceUsd = resolvedToken?.balanceUsd ?? '0';
+  if (payToken) {
+    cryptoBalanceUsd = accountBalanceUsd;
+  }
+  if (selectedSolanaToken) {
+    cryptoBalanceUsd = String(selectedSolanaToken.fiat?.balance ?? 0);
+  }
 
   const balanceUsdFormatted = useMemo(() => {
     if (isMoneyAccountSelected) {
@@ -133,6 +147,13 @@ export function usePayWithToken(): PayWithToken {
       symbol: t('payWithMoneyAccount'),
       balanceUsd: withdrawableFiatFormatted ?? '',
     };
+  } else if (selectedSolanaToken?.chainId) {
+    displayToken = {
+      chainId: String(selectedSolanaToken.chainId),
+      address: selectedSolanaToken.address ?? selectedSolanaToken.assetId ?? '',
+      symbol: selectedSolanaToken.symbol ?? '',
+      balanceUsd: cryptoBalanceUsd,
+    };
   } else if (resolvedToken?.chainId) {
     displayToken = {
       chainId: resolvedToken.chainId,
@@ -146,7 +167,7 @@ export function usePayWithToken(): PayWithToken {
     displayToken,
     balanceUsdFormatted,
     label: isPostQuoteWithdraw ? t('withdrawTo') : t('payWith'),
-    from,
+    from: selectedSolanaToken?.accountAddress ?? from,
     ownerId: currentConfirmation?.id ?? '',
     isPostQuoteWithdraw,
     isMoneyAccountSelected,

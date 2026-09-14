@@ -15944,7 +15944,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/web3.js@npm:^1.32.0, @solana/web3.js@npm:^1.36.0, @solana/web3.js@npm:^1.91.4, @solana/web3.js@npm:^1.95.5":
+"@solana/web3.js@npm:1.98.2, @solana/web3.js@npm:^1.32.0, @solana/web3.js@npm:^1.36.0, @solana/web3.js@npm:^1.91.4, @solana/web3.js@npm:^1.95.5":
   version: 1.98.2
   resolution: "@solana/web3.js@npm:1.98.2"
   dependencies:
@@ -36196,6 +36196,7 @@ __metadata:
     "@slack/types": "npm:^2.14.0"
     "@slack/webhook": "npm:^7.0.5"
     "@solana/addresses": "npm:2.0.0-rc.4"
+    "@solana/web3.js": "npm:1.98.2"
     "@storybook/addon-a11y": "npm:9.1.20"
     "@storybook/addon-docs": "npm:9.1.20"
     "@storybook/addon-webpack5-compiler-babel": "npm:^4.0.0"

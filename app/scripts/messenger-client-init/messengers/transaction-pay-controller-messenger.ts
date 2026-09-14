@@ -6,7 +6,15 @@ import {
 import type { TransactionPayControllerMessenger } from '@metamask/transaction-pay-controller';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
-import type { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import type {
+  AccountsControllerGetSelectedAccountAction,
+  AccountsControllerGetStateAction,
+} from '@metamask/accounts-controller';
+import type {
+  MultichainTransactionsControllerGetStateAction,
+  MultichainTransactionsControllerUpdateTransactionsForAccountAction,
+} from '@metamask/multichain-transactions-controller';
+import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import type { MoneyAccountControllerGetMoneyAccountAction } from '@metamask/money-account-controller';
 import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
@@ -15,6 +23,8 @@ import type {
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type {
   TransactionControllerAddTransactionBatchAction,
+  TransactionControllerConfirmTransactionAction,
+  TransactionControllerFailTransactionAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetStateAction,
   TransactionControllerIsAtomicBatchSupportedAction,
@@ -44,8 +54,10 @@ export function getTransactionPayControllerMessenger(
       'NetworkController:getNetworkClientById',
       'NetworkController:getNetworkConfigurationByChainId',
       'RemoteFeatureFlagController:getState',
+      'TransactionController:confirmTransaction',
       'TransactionController:estimateGas',
       'TransactionController:estimateGasBatch',
+      'TransactionController:failTransaction',
       'TransactionController:getGasFeeTokens',
       'TransactionController:getState',
       'TransactionController:updateTransaction',
@@ -67,6 +79,7 @@ export function getTransactionPayControllerMessenger(
 
 type InitMessengerActions =
   | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerGetStateAction
   | DelegationControllerSignDelegationAction
   | KeyringControllerSignEip7702AuthorizationAction
   | TransactionControllerGetNonceLockAction
@@ -74,9 +87,12 @@ type InitMessengerActions =
   | TransactionControllerIsAtomicBatchSupportedAction
   | TransactionControllerUpdateTransactionAction
   | MoneyAccountControllerGetMoneyAccountAction
+  | MultichainTransactionsControllerGetStateAction
+  | MultichainTransactionsControllerUpdateTransactionsForAccountAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
+  | SnapControllerHandleRequestAction
   | TransactionControllerAddTransactionBatchAction;
 
 type InitMessengerEvents = TransactionControllerUnapprovedTransactionAddedEvent;
@@ -102,12 +118,16 @@ export function getTransactionPayControllerInitMessenger(
     messenger: controllerInitMessenger,
     actions: [
       'AccountsController:getSelectedAccount',
+      'AccountsController:getState',
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
       'MoneyAccountController:getMoneyAccount',
+      'MultichainTransactionsController:getState',
+      'MultichainTransactionsController:updateTransactionsForAccount',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
+      'SnapController:handleRequest',
       'TransactionController:addTransactionBatch',
       'TransactionController:getNonceLock',
       'TransactionController:getState',

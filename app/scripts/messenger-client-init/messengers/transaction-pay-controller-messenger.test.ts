@@ -29,6 +29,22 @@ describe('getTransactionPayControllerMessenger', () => {
     );
   });
 
+  it('delegates the externally published transaction lifecycle actions', () => {
+    const messenger = getRootMessenger<never, never>();
+    const delegateSpy = jest.spyOn(messenger, 'delegate');
+
+    getTransactionPayControllerMessenger(messenger);
+
+    expect(delegateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        actions: expect.arrayContaining([
+          'TransactionController:confirmTransaction',
+          'TransactionController:failTransaction',
+        ]),
+      }),
+    );
+  });
+
   it('delegates SentinelApiService:simulateTransactions', () => {
     const messenger = getRootMessenger<never, never>();
     const delegateSpy = jest.spyOn(messenger, 'delegate');
@@ -64,7 +80,11 @@ describe('getTransactionPayControllerInitMessenger', () => {
       expect.objectContaining({
         actions: expect.arrayContaining([
           'AccountsController:getSelectedAccount',
+          'AccountsController:getState',
+          'MultichainTransactionsController:getState',
+          'MultichainTransactionsController:updateTransactionsForAccount',
           'NetworkController:getNetworkClientById',
+          'SnapController:handleRequest',
           'TransactionController:getState',
           'TransactionController:updateTransaction',
         ]),

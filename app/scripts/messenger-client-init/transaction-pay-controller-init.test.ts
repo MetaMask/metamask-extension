@@ -82,10 +82,17 @@ function getInitRequestMock(
 }
 
 describe('TransactionPayControllerInit', () => {
-  it('initializes the controller', () => {
+  beforeEach(() => {
+    jest
+      .mocked(TransactionPayController.prototype.recoverSolanaPay)
+      .mockResolvedValue({});
+  });
+
+  it('initializes the controller and starts recovery', () => {
     const { messengerClient } =
       TransactionPayControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(TransactionPayController);
+    expect(messengerClient.recoverSolanaPay).toHaveBeenCalledTimes(1);
   });
 
   it('passes the proper arguments to the controller', () => {
@@ -99,6 +106,13 @@ describe('TransactionPayControllerInit', () => {
       getPaymentOverrideData: expect.any(Function),
       getStrategy: expect.any(Function),
       messenger: expect.any(Object),
+      solana: expect.objectContaining({
+        getPreflight: expect.any(Function),
+        signAndSendTransaction: expect.any(Function),
+        getTransactionStatus: expect.any(Function),
+        submitNonAtomicFollowUp: expect.any(Function),
+        getNonAtomicFollowUpStatus: expect.any(Function),
+      }),
       state: undefined,
     });
   });
@@ -125,6 +139,53 @@ describe('TransactionPayControllerInit', () => {
       expect.objectContaining({ isSubsidized: true }),
       transaction,
     );
+  });
+
+  describe('api.setSolanaPaySource', () => {
+    it('persists the account-scoped intent before requesting the quote', async () => {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      Object.defineProperty(messengerClient, 'state', {
+        value: { transactionData: {}, payIntents: {} },
+      });
+      jest.mocked(messengerClient.getSolanaPayQuote).mockResolvedValue({
+        providerQuote: {
+          details: { currencyOut: { amount: '100' } },
+        },
+      } as never);
+
+      await api.setSolanaPaySource(
+        'tx-1',
+        'solana:mainnet:solana-address',
+        'solana:mainnet/slip44:501',
+        {
+          amount: '1000000000',
+          destinationChainId: '0x1',
+          destinationCurrency: '0x0000000000000000000000000000000000000001',
+          recipient: '0x0000000000000000000000000000000000000002',
+        },
+      );
+
+      expect(messengerClient.setPayIntent).toHaveBeenCalledWith({
+        transactionId: 'tx-1',
+        intent: {
+          version: 1,
+          sourceAccountId: 'solana:mainnet:solana-address',
+          sourceAssetId: 'solana:mainnet/slip44:501',
+          sourceChainId: 'solana:mainnet',
+        },
+      });
+      expect(messengerClient.getSolanaPayQuote).toHaveBeenCalledWith({
+        amount: '1000000000',
+        destinationChainId: '0x1',
+        destinationCurrency: '0x0000000000000000000000000000000000000001',
+        recipient: '0x0000000000000000000000000000000000000002',
+        transactionId: 'tx-1',
+      });
+    });
   });
 
   describe('api.setTransactionPayPostQuote', () => {

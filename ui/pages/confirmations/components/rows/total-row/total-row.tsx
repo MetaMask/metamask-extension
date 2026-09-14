@@ -14,6 +14,7 @@ import {
 import { ConfirmInfoRowText } from '../../../../../components/app/confirm/info/row/text';
 import {
   useIsTransactionPayLoading,
+  useSolanaPayQuote,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useConfirmContext } from '../../../context/confirm';
@@ -43,10 +44,18 @@ export function TotalRow({
   // pending, that quote is the previous amount, so show the skeleton.
   const isLoading = isPayLoading || isAmountPending;
   const totals = useTransactionPayTotals();
+  const solanaPayQuote = useSolanaPayQuote();
   const isPaidByMetaMask = useIsPaidByMetaMask();
   const sponsoredNetworkFees = useSponsoredNetworkFeeFlags();
 
   const totalUsd = useMemo(() => {
+    if (solanaPayQuote) {
+      return formatFiat(
+        new BigNumber(
+          solanaPayQuote.providerQuote.details.currencyIn.amountUsd,
+        ).toNumber(),
+      );
+    }
     if (!totals?.total) {
       return '';
     }
@@ -58,7 +67,13 @@ export function TotalRow({
         sponsoredNetworkFees,
       ).toNumber(),
     );
-  }, [totals, formatFiat, isPaidByMetaMask, sponsoredNetworkFees]);
+  }, [
+    totals,
+    formatFiat,
+    isPaidByMetaMask,
+    sponsoredNetworkFees,
+    solanaPayQuote,
+  ]);
 
   const isSmall = variant === ConfirmInfoRowSize.Small;
   const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;

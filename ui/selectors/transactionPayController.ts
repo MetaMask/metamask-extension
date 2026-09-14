@@ -1,9 +1,22 @@
 import { createSelector } from 'reselect';
-import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
+import type {
+  TransactionPayControllerState,
+  TransactionPayIntent,
+} from '@metamask/transaction-pay-controller';
 
 export type TransactionPayState = {
   metamask: TransactionPayControllerState;
 };
+
+export const selectTransactionPayIntentByTransactionId = createSelector(
+  (state: TransactionPayState) => state,
+  (_state: TransactionPayState, transactionId: string) => transactionId,
+  (
+    state: TransactionPayState,
+    transactionId: string,
+  ): TransactionPayIntent | undefined =>
+    state.metamask.payIntents?.[transactionId],
+);
 
 export const selectTransactionDataByTransactionId = createSelector(
   (state: TransactionPayState) => state,
@@ -25,6 +38,11 @@ export const selectIsTransactionPayLoadingByTransactionId = createSelector(
 export const selectTransactionPayQuotesByTransactionId = createSelector(
   selectTransactionDataByTransactionId,
   (transactionData) => transactionData?.quotes,
+);
+
+export const selectSolanaPayQuoteByTransactionId = createSelector(
+  selectTransactionDataByTransactionId,
+  (transactionData) => transactionData?.solanaPayQuote,
 );
 
 export const selectTransactionPayQuoteErrorByTransactionId = createSelector(
