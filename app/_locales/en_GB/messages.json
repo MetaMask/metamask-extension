@@ -5768,12 +5768,6 @@
   "moneyToastDepositFailedTitleConvert": {
     "message": "Conversion failed"
   },
-  "moneyToastDepositFailedTitleAddMusd": {
-    "message": "Failed to add funds"
-  },
-  "moneyToastDepositFailedTitleConvert": {
-    "message": "Conversion failed"
-  },
   "moneyToastDepositInProgressDescriptionCard": {
     "message": "Card orders may take a few minutes."
   },
@@ -5811,6 +5805,23 @@
   "moneyToastWithdrawFailedTitle": {
     "message": "Transfer failed"
   },
+  "moneyToastWithdrawFallbackDestination": {
+    "message": "your account"
+  },
+  "moneyToastWithdrawInProgressTitle": {
+    "message": "Transfer in progress"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "$1 added to $2.",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "Added to $1.",
+    "description": "$1 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessTitle": {
+    "message": "Transfer complete"
+  },
   "moneyTransferBetweenAccounts": {
     "message": "Another account"
   },
@@ -5828,23 +5839,6 @@
   },
   "moneyTransferWithdrawToBank": {
     "message": "Bank account"
-  },
-  "moneyToastWithdrawFallbackDestination": {
-    "message": "your account"
-  },
-  "moneyToastWithdrawInProgressTitle": {
-    "message": "Transfer in progress"
-  },
-  "moneyToastWithdrawSuccessDescription": {
-    "message": "$1 added to $2.",
-    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
-  },
-  "moneyToastWithdrawSuccessDescriptionNoAmount": {
-    "message": "Added to $1.",
-    "description": "$1 is the destination account name"
-  },
-  "moneyToastWithdrawSuccessTitle": {
-    "message": "Transfer complete"
   },
   "month": {
     "message": "month"
