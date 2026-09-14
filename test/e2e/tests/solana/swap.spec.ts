@@ -425,24 +425,6 @@ const SOLANA_USDC_SWAP_ASSETS_FIXTURE = {
   },
 };
 
-const MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH = {
-  MultichainAssetsController: {
-    accountsAssets: {
-      [SOL_ACCOUNT_ID]: [SOL_CAIP_ASSET, USDC_CAIP_ASSET],
-    },
-    assetsMetadata: {
-      [USDC_CAIP_ASSET]: {
-        fungible: true,
-        iconUrl:
-          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
-        name: 'USD Coin',
-        symbol: 'USDC',
-        units: [{ decimals: 6, name: 'USD Coin', symbol: 'USDC' }],
-      },
-    },
-  },
-};
-
 /**
  * Builds the controller state shared by the USDC → SOL swap scenarios.
  *
@@ -474,7 +456,6 @@ function buildUsdcToSolFixture() {
         },
       },
     },
-    ...MULTICHAIN_ASSETS_CONTROLLER_USDC_PATCH,
   });
   return fixture;
 }

@@ -280,7 +280,6 @@ import { sanitizeUIState } from './lib/state-utils';
 import { rejectOriginApprovals } from './lib/approval/utils';
 import { InstitutionalSnapControllerInit } from './messenger-client-init/institutional-snap/institutional-snap-controller-init';
 import {
-  MultichainAssetsControllerInit,
   MultichainTransactionsControllerInit,
   MultichainNetworkControllerInit,
 } from './messenger-client-init/multichain';
@@ -629,7 +628,6 @@ export default class MetamaskController extends EventEmitter {
       // reacting to any `:multichainAccountGroup*` events.
       AccountTreeController: AccountTreeControllerInit,
       SnapAccountService: SnapAccountServiceInit,
-      MultichainAssetsController: MultichainAssetsControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       MultichainAccountService: MultichainAccountServiceInit,
       MultichainRoutingService: MultichainRoutingServiceInit,
@@ -754,8 +752,6 @@ export default class MetamaskController extends EventEmitter {
     this.assetsContractController =
       messengerClientsByName.AssetsContractController;
     this.assetsController = messengerClientsByName.AssetsController;
-    this.multichainAssetsController =
-      messengerClientsByName.MultichainAssetsController;
     this.multichainTransactionsController =
       messengerClientsByName.MultichainTransactionsController;
     this.multichainAccountService =
@@ -1413,7 +1409,6 @@ export default class MetamaskController extends EventEmitter {
         ConnectivityController: this.connectivityController,
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
-        MultichainAssetsController: this.multichainAssetsController,
         MultichainTransactionsController: this.multichainTransactionsController,
         TokenRatesController: this.tokenRatesController,
         MultichainNetworkController: this.multichainNetworkController,
@@ -3755,13 +3750,6 @@ export default class MetamaskController extends EventEmitter {
         this.nameController,
       ),
       setName: this.nameController.setName.bind(this.nameController),
-
-      // Multichain Assets Controller
-      multichainAddAssets: (assetIds, accountId) =>
-        this.multichainAssetsController.addAssets(assetIds, accountId),
-
-      multichainIgnoreAssets: (assetIds, accountId) =>
-        this.multichainAssetsController.ignoreAssets(assetIds, accountId),
 
       // MultichainTransactionsController
       multichainUpdateTransactions: (accountId) =>

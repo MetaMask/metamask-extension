@@ -130,7 +130,10 @@ import {
 import type { MultichainAccountsState } from './multichain-accounts/account-tree.types';
 
 export type AssetsState = {
-  metamask: MultichainAssetsControllerState;
+  metamask: Pick<
+    MultichainAssetsControllerState,
+    'accountsAssets' | 'assetsMetadata' | 'allIgnoredAssets'
+  >;
 };
 
 export type AssetsRatesState = {
@@ -151,7 +154,10 @@ export type BalanceCalculationState = {
     TokensControllerState &
     CurrencyRateState &
     Pick<MultichainAssetsRatesControllerState, 'conversionRates'> &
-    MultichainAssetsControllerState &
+    Pick<
+      MultichainAssetsControllerState,
+      'accountsAssets' | 'assetsMetadata' | 'allIgnoredAssets'
+    > &
     AccountTrackerControllerState &
     NetworkEnablementControllerState &
     RemoteFeatureFlagControllerState &
