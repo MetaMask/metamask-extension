@@ -13,7 +13,8 @@ describe('Bridge Monad to Base', function (this: Suite) {
         BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
       ),
       async ({ driver }) => {
-        await login(driver);
+        // Monad+Base fixtures do not render the default 25 ETH homepage total.
+        await login(driver, { validateBalance: false });
 
         await bridgeTransaction({
           driver,
