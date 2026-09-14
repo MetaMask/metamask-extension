@@ -37,15 +37,7 @@ export const useRecipientValidation = () => {
   const { validateName } = useNameValidation();
   const [result, setResult] = useState<RecipientValidationResult>({});
   const validationRequestIdRef = useRef(0);
-  const unmountedRef = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
-
-  useEffect(() => {
-    return () => {
-      unmountedRef.current = true;
-      abortControllerRef.current?.abort();
-    };
-  }, []);
 
   const validateRecipient = useCallback(
     async (
@@ -107,6 +99,7 @@ export const useRecipientValidation = () => {
 
     validationRequestIdRef.current += 1;
     const requestId = validationRequestIdRef.current;
+    let cancelled = false;
 
     const timeoutId = setTimeout(() => {
       abortControllerRef.current?.abort();
@@ -114,10 +107,7 @@ export const useRecipientValidation = () => {
 
       validateRecipient(to, abortControllerRef.current.signal)
         .then((validationResult) => {
-          if (
-            unmountedRef.current ||
-            validationRequestIdRef.current !== requestId
-          ) {
+          if (cancelled || validationRequestIdRef.current !== requestId) {
             return;
           }
 
@@ -130,7 +120,9 @@ export const useRecipientValidation = () => {
     }, VALIDATION_DEBOUNCE_MS);
 
     return () => {
+      cancelled = true;
       clearTimeout(timeoutId);
+      abortControllerRef.current?.abort();
     };
   }, [to, chainId, validateRecipient]);
 
