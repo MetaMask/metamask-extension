@@ -2455,6 +2455,23 @@ export function createNextMultichainAccountGroup(
 }
 
 /**
+ * Remove a multichain wallet and refresh the account tree state.
+ *
+ * @param walletId - ID of the wallet to remove.
+ */
+export function removeMultichainAccountWallet(
+  walletId: AccountWalletId,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    const entropySource = stripWalletTypePrefixFromWalletId(walletId);
+    await submitRequestToBackground('removeMultichainAccountWallet', [
+      entropySource,
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+/**
  * Set the pinned state of an account group.
  *
  * @param accountGroupId - ID of an account group.

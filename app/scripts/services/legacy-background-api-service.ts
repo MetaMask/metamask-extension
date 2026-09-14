@@ -552,6 +552,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'rejectPermissionsRequest',
   'resolvePendingApproval',
   'removeAccount',
+  'removeMultichainAccountWallet',
   'removePermissionsFor',
   'removePermittedAccount',
   'removePermittedChain',
@@ -1974,6 +1975,18 @@ export class LegacyBackgroundApiService {
     await this.#messenger.call('KeyringController:removeAccount', address);
 
     return address;
+  }
+
+  /**
+   * Removes a multichain wallet created from an imported entropy source.
+   *
+   * @param entropySource - The entropy source id without the wallet type prefix.
+   */
+  async removeMultichainAccountWallet(entropySource: string): Promise<void> {
+    await this.#messenger.call(
+      'MultichainAccountService:removeMultichainAccountWallet',
+      entropySource,
+    );
   }
 
   /**

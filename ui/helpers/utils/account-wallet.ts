@@ -15,3 +15,21 @@ export function isPrivateKeyWallet(wallet: AccountWalletObject): boolean {
     wallet.metadata.keyring.type === KeyringTypes.simple
   );
 }
+
+/**
+ * The primary wallet is the entropy wallet derived from the first HD keyring.
+ *
+ * @param wallet - Wallet object from the account tree.
+ * @param primaryHdKeyringId - Metadata id of the first HD keyring, if any.
+ * @returns True when this wallet is the primary HD wallet.
+ */
+export function isPrimaryWallet(
+  wallet: AccountWalletObject,
+  primaryHdKeyringId: string | undefined,
+): boolean {
+  return (
+    Boolean(primaryHdKeyringId) &&
+    wallet.type === AccountWalletType.Entropy &&
+    wallet.metadata.entropy.id === primaryHdKeyringId
+  );
+}
