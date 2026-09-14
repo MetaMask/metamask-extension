@@ -1,5 +1,6 @@
 import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { SolScope } from '@metamask/keyring-api';
 import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
@@ -127,9 +128,10 @@ jest.mock('../../send/asset', () => ({
           onClick={() =>
             onAssetSelect?.({
               accountAddress: 'solana-address',
+              accountId: 'solana-wallet-account-id',
               accountType: 'solana:data-account',
-              assetId: 'solana:mainnet/slip44:501',
-              chainId: 'solana:mainnet',
+              assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+              chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
               decimals: 9,
               isNative: true,
             })
@@ -323,12 +325,10 @@ describe('PayWithModal', () => {
     await waitFor(() =>
       expect(setSolanaPaySourceMock).toHaveBeenCalledWith({
         transactionId: 'transaction-id',
-        sourceAccountId: 'solana:mainnet:solana-address',
-        sourceAssetId: 'solana:mainnet/slip44:501',
-        amount: '500000000',
-        destinationChainId: '0x1',
-        destinationCurrency: '0x0000000000000000000000000000000000000001',
-        recipient: '0x1234567890123456789012345678901234567890',
+        sourceWalletAccountId: 'solana-wallet-account-id',
+        sourceAccountId: `${SolScope.Mainnet}:solana-address`,
+        sourceAssetId: `${SolScope.Mainnet}/slip44:501`,
+        sourceAmountRaw: '500000000',
       }),
     );
     expect(onCloseMock).toHaveBeenCalled();

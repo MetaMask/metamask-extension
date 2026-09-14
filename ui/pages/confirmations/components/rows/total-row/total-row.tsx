@@ -37,11 +37,17 @@ export function TotalRow({
 
   const totalUsd = useMemo(() => {
     if (solanaPayQuote) {
-      return formatFiat(
+      const sourceTotal = formatFiat(
         new BigNumber(
           solanaPayQuote.providerQuote.details.currencyIn.amountUsd,
         ).toNumber(),
       );
+      const additionalSol = new BigNumber(solanaPayQuote.preflight.totalFeeRaw)
+        .plus(solanaPayQuote.preflight.rentDebitRaw)
+        .dividedBy(1_000_000_000);
+      return additionalSol.gt(0)
+        ? `${sourceTotal} + ${additionalSol.toFixed()} SOL`
+        : sourceTotal;
     }
     if (!totals?.total) {
       return '';

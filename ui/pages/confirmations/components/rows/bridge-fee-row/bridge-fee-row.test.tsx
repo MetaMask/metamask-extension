@@ -87,13 +87,18 @@ describe('BridgeFeeRow', () => {
         rentDebitRaw: '2039280',
         rentExemptionRequirementRaw: '890880',
       },
-      providerQuote: {},
+      providerQuote: {
+        fees: {
+          app: { amountUsd: '0.25' },
+          relayer: { amountUsd: '1' },
+        },
+      },
     } as SolanaPayQuote);
 
     const { getByTestId } = render();
 
     expect(getByTestId('solana-pay-fee-value')).toHaveTextContent(
-      '0.00204528 SOL',
+      '$1.25 + 0.00204528 SOL',
     );
     expect(getByTestId('solana-pay-fee-tooltip-button')).toBeInTheDocument();
   });

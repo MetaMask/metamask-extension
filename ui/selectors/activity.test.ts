@@ -214,6 +214,60 @@ describe('selectNonEvmActivityItems', () => {
     });
   });
 
+  it('hides a Solana source transaction represented by its product parent', () => {
+    const state = structuredClone(
+      typedMockState,
+    ) as unknown as MetaMaskReduxState & MultichainAccountsState;
+    state.metamask.internalAccounts.selectedAccount =
+      MOCK_ACCOUNT_SOLANA_MAINNET.id;
+    state.metamask.internalAccounts.accounts = {
+      ...state.metamask.internalAccounts.accounts,
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
+        ...MOCK_ACCOUNT_SOLANA_MAINNET,
+        address: solanaAddress,
+      },
+    };
+    state.metamask.accountTree.wallets[
+      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+    ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0'].accounts.push(
+      MOCK_ACCOUNT_SOLANA_MAINNET.id,
+    );
+    state.metamask.nonEvmTransactions = {
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
+        [MultichainNetworks.SOLANA]: {
+          transactions: [solanaSendTransaction],
+          next: null,
+          lastUpdated: 0,
+        },
+      },
+    };
+    state.metamask.enabledNetworkMap = {
+      solana: { [MultichainNetworks.SOLANA]: true },
+    };
+    state.metamask.transactions = [
+      {
+        chainId: '0x1',
+        id: 'parent-transaction-id',
+        metamaskPay: {
+          intent: {
+            version: 2,
+            sourceAccountId: `${MultichainNetworks.SOLANA}:${solanaAddress}`,
+            sourceAssetId: `${MultichainNetworks.SOLANA}/slip44:501`,
+            sourceChainId: MultichainNetworks.SOLANA,
+            sourceTransactionId: solanaTxId,
+            sourceWalletAccountId: MOCK_ACCOUNT_SOLANA_MAINNET.id,
+          },
+        },
+        networkClientId: 'mainnet',
+        status: EvmTransactionStatus.submitted,
+        txParams: { from: selectEvmAddress(state) },
+        type: EvmTransactionType.perpsDeposit,
+      } as unknown as TransactionMeta,
+    ];
+
+    expect(selectNonEvmActivityItems(state)).toEqual([]);
+  });
+
   it('keeps unmatched non-EVM sends classified as sends', () => {
     const state = structuredClone(
       typedMockState,

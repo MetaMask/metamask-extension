@@ -1,10 +1,14 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
+import type {
+  SolanaPayQuote,
+  TransactionPayTotals,
+} from '@metamask/transaction-pay-controller';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { getMockPersonalSignConfirmState } from '../../../../../../test/data/confirmations/helper';
 import {
   useIsTransactionPayLoading,
+  useSolanaPayQuote,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
@@ -26,6 +30,7 @@ function render(props: TotalRowProps = {}) {
 }
 
 describe('TotalRow', () => {
+  const useSolanaPayQuoteMock = jest.mocked(useSolanaPayQuote);
   const useTransactionPayTotalsMock = jest.mocked(useTransactionPayTotals);
   const useIsTransactionPayLoadingMock = jest.mocked(
     useIsTransactionPayLoading,
@@ -34,6 +39,7 @@ describe('TotalRow', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
+    useSolanaPayQuoteMock.mockReturnValue(undefined);
     useTransactionPayTotalsMock.mockReturnValue({
       total: { usd: '123.456' },
     } as TransactionPayTotals);
@@ -72,6 +78,30 @@ describe('TotalRow', () => {
     );
 
     expect(getByTestId('total-value')).toHaveTextContent('$123.46');
+  });
+
+  it('renders provider-final exact-output source total plus Solana costs', () => {
+    useSolanaPayQuoteMock.mockReturnValue({
+      preflight: {
+        rentDebitRaw: '1000',
+        sourceAmountRaw: '1000000000',
+        totalFeeRaw: '5000',
+      },
+      providerQuote: {
+        details: { currencyIn: { amountUsd: '100' } },
+      },
+      route: {
+        atomicProductActionIncluded: true,
+        targetAmountMinimum: '99000000',
+        tradeType: 'EXACT_OUTPUT',
+      },
+    } as SolanaPayQuote);
+
+    const { getByTestId } = render();
+
+    expect(getByTestId('total-value')).toHaveTextContent(
+      '$100.00 + 0.000006 SOL',
+    );
   });
 
   it('renders total value with ConfirmInfoRowText for Default variant', () => {

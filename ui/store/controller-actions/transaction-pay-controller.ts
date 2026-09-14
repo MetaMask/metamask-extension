@@ -5,47 +5,57 @@ import { submitRequestToBackground } from '../background-connection';
 
 export type { MoneyAccountWithdrawAmountUpdate };
 
-const lastSolanaPayQuoteKeyByTransactionId = new Map<string, string>();
+const solanaPayQuotePromiseByTransactionId = new Map<string, Promise<void>>();
 
 export async function setSolanaPaySource({
   transactionId,
+  sourceWalletAccountId,
   sourceAccountId,
   sourceAssetId,
-  amount,
-  destinationChainId,
-  destinationCurrency,
-  recipient,
+  sourceAmountRaw,
 }: {
   transactionId: string;
+  sourceWalletAccountId: string;
   sourceAccountId: CaipAccountId;
   sourceAssetId: CaipAssetType;
-  amount: string;
-  destinationChainId: Hex;
-  destinationCurrency: Hex;
-  recipient: Hex;
+  sourceAmountRaw: string;
 }): Promise<void> {
-  const quoteKey = [
-    sourceAccountId,
-    sourceAssetId,
-    amount,
-    destinationChainId,
-    destinationCurrency,
-    recipient,
-  ].join(':');
-  if (lastSolanaPayQuoteKeyByTransactionId.get(transactionId) === quoteKey) {
-    return;
-  }
-  lastSolanaPayQuoteKeyByTransactionId.set(transactionId, quoteKey);
-  try {
-    await submitRequestToBackground('setSolanaPaySource', [
+  return await submitSolanaPayQuoteRequest(transactionId, () =>
+    submitRequestToBackground('setSolanaPaySource', [
       transactionId,
+      sourceWalletAccountId,
       sourceAccountId,
       sourceAssetId,
-      { amount, destinationChainId, destinationCurrency, recipient },
-    ]);
-  } catch (error) {
-    lastSolanaPayQuoteKeyByTransactionId.delete(transactionId);
-    throw error;
+      sourceAmountRaw,
+    ]),
+  );
+}
+
+export async function refreshSolanaPayQuote(
+  transactionId: string,
+): Promise<void> {
+  return await submitSolanaPayQuoteRequest(transactionId, () =>
+    submitRequestToBackground('refreshSolanaPayQuote', [transactionId]),
+  );
+}
+
+async function submitSolanaPayQuoteRequest(
+  transactionId: string,
+  submit: () => Promise<unknown>,
+): Promise<void> {
+  const activeRequest = solanaPayQuotePromiseByTransactionId.get(transactionId);
+  if (activeRequest) {
+    return await activeRequest;
+  }
+
+  const request = submit().then(() => undefined);
+  solanaPayQuotePromiseByTransactionId.set(transactionId, request);
+  try {
+    await request;
+  } finally {
+    if (solanaPayQuotePromiseByTransactionId.get(transactionId) === request) {
+      solanaPayQuotePromiseByTransactionId.delete(transactionId);
+    }
   }
 }
 

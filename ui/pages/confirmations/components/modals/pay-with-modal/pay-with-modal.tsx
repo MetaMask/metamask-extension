@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { SolScope } from '@metamask/keyring-api';
 import {
   type CaipAccountId,
   type CaipAssetType,
@@ -139,13 +140,13 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
         const requiredToken = requiredTokens?.[0];
         const sourceAccountId = getSolanaAccountId(token);
         const sourceAssetId = token.assetId as CaipAssetType;
+        const sourceWalletAccountId = token.accountId;
         const transactionId = currentConfirmation?.id;
-        const recipient = currentConfirmation?.txParams.from;
         if (
           !requiredToken ||
           !sourceAccountId ||
-          !transactionId ||
-          !recipient
+          !sourceWalletAccountId ||
+          !transactionId
         ) {
           return;
         }
@@ -155,14 +156,11 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
         );
         await setSolanaPaySource({
           transactionId,
+          sourceWalletAccountId,
           sourceAccountId,
           sourceAssetId,
-          amount: sourceAmount,
-          destinationChainId: requiredToken.chainId,
-          destinationCurrency: requiredToken.address,
-          recipient: recipient as Hex,
+          sourceAmountRaw: sourceAmount,
         });
-        clearOverride();
         handleClose();
         return;
       }
@@ -312,7 +310,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
 
 function isSolanaAsset(token: AssetType): boolean {
   return (
-    String(token.chainId) === 'solana:mainnet' &&
+    String(token.chainId) === SolScope.Mainnet &&
     Boolean(token.accountAddress && token.assetId)
   );
 }

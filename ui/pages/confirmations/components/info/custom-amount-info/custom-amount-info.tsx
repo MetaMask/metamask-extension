@@ -155,7 +155,7 @@ export const CustomAmountInfo = React.memo(
     const { isWithdraw } = useTransactionPayWithdraw();
     const hasTokens = availableTokens.length > 0 || isWithdraw;
     const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
-    useRefreshSolanaPayQuote(availableTokens, primaryRequiredToken);
+    useRefreshSolanaPayQuote(primaryRequiredToken);
     // Withdraws source funds off-chain (vault / HyperCore) and money-account
     // withdraw batches have no `requiredAssets`, so Pay never populates a
     // primary required token. Waiting on it leaves the amount UI on the

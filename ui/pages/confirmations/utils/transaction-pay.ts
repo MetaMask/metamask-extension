@@ -1,3 +1,4 @@
+import { SolScope } from '@metamask/keyring-api';
 import {
   TransactionMeta,
   TransactionType,
@@ -163,7 +164,7 @@ export function getAvailableTokens({
       const isEvmAccount = token.accountType?.includes('eip155');
       const isSolanaAccount =
         token.accountType?.includes('solana') &&
-        token.assetId?.startsWith('solana:mainnet/') &&
+        token.assetId?.startsWith(`${SolScope.Mainnet}/`) &&
         Boolean(token.accountId);
       if (
         (token.standard !== AssetStandard.ERC20 &&

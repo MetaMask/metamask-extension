@@ -1,7 +1,9 @@
 import {
+  PaymentOverride,
   TransactionPayController,
   TransactionPayControllerMessenger,
 } from '@metamask/transaction-pay-controller';
+import { SolScope } from '@metamask/keyring-api';
 import {
   TransactionType,
   type TransactionMeta,
@@ -159,30 +161,77 @@ describe('TransactionPayControllerInit', () => {
 
       await api.setSolanaPaySource(
         'tx-1',
-        'solana:mainnet:solana-address',
-        'solana:mainnet/slip44:501',
-        {
-          amount: '1000000000',
-          destinationChainId: '0x1',
-          destinationCurrency: '0x0000000000000000000000000000000000000001',
-          recipient: '0x0000000000000000000000000000000000000002',
-        },
+        'wallet-account-id',
+        `${SolScope.Mainnet}:solana-address`,
+        `${SolScope.Mainnet}/slip44:501`,
+        '1000000000',
       );
 
       expect(messengerClient.setPayIntent).toHaveBeenCalledWith({
         transactionId: 'tx-1',
         intent: {
-          version: 1,
-          sourceAccountId: 'solana:mainnet:solana-address',
-          sourceAssetId: 'solana:mainnet/slip44:501',
-          sourceChainId: 'solana:mainnet',
+          version: 2,
+          sourceWalletAccountId: 'wallet-account-id',
+          sourceAmountRaw: '1000000000',
+          sourceAccountId: `${SolScope.Mainnet}:solana-address`,
+          sourceAssetId: `${SolScope.Mainnet}/slip44:501`,
+          sourceChainId: SolScope.Mainnet,
         },
       });
       expect(messengerClient.getSolanaPayQuote).toHaveBeenCalledWith({
-        amount: '1000000000',
-        destinationChainId: '0x1',
-        destinationCurrency: '0x0000000000000000000000000000000000000001',
-        recipient: '0x0000000000000000000000000000000000000002',
+        transactionId: 'tx-1',
+      });
+    });
+
+    it('preserves the Money Account non-atomic follow-up contract before quoting', async () => {
+      const transaction = {
+        id: 'tx-1',
+        type: TransactionType.moneyAccountDeposit,
+      } as TransactionMeta;
+      const { api, messengerClient } = TransactionPayControllerInit(
+        getInitRequestMock([transaction]),
+      );
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+
+      await api.setSolanaPaySource(
+        'tx-1',
+        'wallet-account-id',
+        `${SolScope.Mainnet}:solana-address`,
+        `${SolScope.Mainnet}/slip44:501`,
+        '1000000000',
+      );
+
+      expect(messengerClient.setTransactionConfig).toHaveBeenCalledWith(
+        'tx-1',
+        expect.any(Function),
+      );
+      const update = jest.mocked(messengerClient.setTransactionConfig).mock
+        .calls[0][1];
+      const config: {
+        atomic?: boolean;
+        paymentOverride?: PaymentOverride;
+      } = {};
+      update(config);
+      expect(config).toStrictEqual({
+        atomic: false,
+        paymentOverride: PaymentOverride.MoneyAccount,
+      });
+    });
+  });
+
+  describe('api.refreshSolanaPayQuote', () => {
+    it('requests a Core-derived route for the current transaction', async () => {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+
+      await api.refreshSolanaPayQuote('tx-1');
+
+      expect(messengerClient.getSolanaPayQuote).toHaveBeenCalledWith({
         transactionId: 'tx-1',
       });
     });

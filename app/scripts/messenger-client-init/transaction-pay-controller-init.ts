@@ -3,10 +3,8 @@ import {
   TransactionPayController,
   TransactionPayControllerMessenger,
   TransactionPayStrategy,
-  type GetSolanaPayQuoteRequest,
 } from '@metamask/transaction-pay-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { BigNumber } from 'bignumber.js';
 import {
   KnownCaipNamespace,
   parseCaipAssetType,
@@ -273,46 +271,36 @@ function getApi(
         }
       });
     },
+    refreshSolanaPayQuote: async (transactionId: string) =>
+      await messengerClient.getSolanaPayQuote({ transactionId }),
     setSolanaPaySource: async (
       transactionId: string,
+      sourceWalletAccountId: string,
       sourceAccountId: CaipAccountId,
       sourceAssetId: CaipAssetType,
-      quoteRequest: Omit<GetSolanaPayQuoteRequest, 'transactionId'>,
+      sourceAmountRaw: string,
     ) => {
+      const transaction = moneyPayMessenger
+        .call('TransactionController:getState')
+        .transactions.find(({ id }) => id === transactionId);
+      if (getMoneyAccountFlow(transaction) === MoneyAccountFlow.Deposit) {
+        messengerClient.setTransactionConfig(transactionId, (config) => {
+          config.atomic = false;
+          config.paymentOverride = PaymentOverride.MoneyAccount;
+        });
+      }
       messengerClient.setPayIntent({
         transactionId,
         intent: {
-          version: 1,
+          version: 2,
+          sourceWalletAccountId,
+          sourceAmountRaw,
           sourceAccountId,
           sourceAssetId,
           sourceChainId: parseCaipAssetType(sourceAssetId).chainId,
         },
       });
-      const quote = await messengerClient.getSolanaPayQuote({
-        ...quoteRequest,
-        transactionId,
-      });
-      const targetAmount = messengerClient.state.transactionData[
-        transactionId
-      ]?.tokens.find(({ skipIfBalance }) => !skipIfBalance)?.amountRaw;
-      const outputAmount = quote.providerQuote.details.currencyOut.amount;
-      if (
-        targetAmount &&
-        new BigNumber(outputAmount).gt(0) &&
-        new BigNumber(outputAmount).lt(targetAmount)
-      ) {
-        const adjustedAmount = new BigNumber(quoteRequest.amount)
-          .times(targetAmount)
-          .dividedBy(outputAmount)
-          .times('1.005')
-          .toFixed(0, BigNumber.ROUND_CEIL);
-        return await messengerClient.getSolanaPayQuote({
-          ...quoteRequest,
-          amount: adjustedAmount,
-          transactionId,
-        });
-      }
-      return quote;
+      return await messengerClient.getSolanaPayQuote({ transactionId });
     },
     updateTransactionPaymentToken: (request: {
       transactionId: string;
@@ -321,7 +309,7 @@ function getApi(
     }) => {
       messengerClient.updatePaymentToken(request);
       const intent = messengerClient.state.payIntents[request.transactionId];
-      if (!intent?.sourceChainId.startsWith('solana:')) {
+      if (!intent?.sourceChainId.startsWith('solana:') || intent.requestId) {
         return;
       }
       const transaction = moneyPayMessenger
@@ -334,6 +322,15 @@ function getApi(
       if (!accountAddress || !sourceAssetId) {
         return;
       }
+      const sourceWalletAccount = Object.values(
+        moneyPayMessenger.call('AccountsController:getState').internalAccounts
+          .accounts,
+      ).find(
+        ({ address }) => address.toLowerCase() === accountAddress.toLowerCase(),
+      );
+      if (!sourceWalletAccount) {
+        return;
+      }
       const sourceChainId = toCaipChainId(
         KnownCaipNamespace.Eip155,
         Number.parseInt(request.chainId, 16).toString(),
@@ -341,7 +338,8 @@ function getApi(
       messengerClient.setPayIntent({
         transactionId: request.transactionId,
         intent: {
-          version: 1,
+          version: 2,
+          sourceWalletAccountId: sourceWalletAccount.id,
           sourceAccountId: `${sourceChainId}:${accountAddress}`,
           sourceAssetId,
           sourceChainId,

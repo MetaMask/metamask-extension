@@ -1,5 +1,6 @@
 import React from 'react';
 import { act, renderHook } from '@testing-library/react';
+import { SolScope } from '@metamask/keyring-api';
 import {
   PaymentOverride,
   type TransactionPaymentToken,
@@ -153,6 +154,37 @@ describe('usePayWithToken', () => {
     useSelectorMock.mockImplementation(
       (selector: (state: unknown) => unknown) => selector({}),
     );
+  });
+
+  it('shows the immutable Solana source instead of the Money Account override', () => {
+    selectPaymentOverrideByTransactionIdMock.mockReturnValue(
+      PaymentOverride.MoneyAccount,
+    );
+    selectTransactionPayIntentByTransactionIdMock.mockReturnValue({
+      version: 2,
+      requestId: 'relay-request-id',
+      sourceAccountId: `${SolScope.Mainnet}:solana-address`,
+      sourceAssetId: `${SolScope.Mainnet}/slip44:501`,
+      sourceChainId: SolScope.Mainnet,
+      sourceWalletAccountId: 'solana-account-id',
+    });
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        accountAddress: 'solana-address',
+        accountId: 'solana-account-id',
+        assetId: `${SolScope.Mainnet}/slip44:501`,
+        chainId: SolScope.Mainnet,
+        fiat: { balance: 25 },
+        isNative: true,
+        symbol: 'SOL',
+      },
+    ]);
+
+    const { result } = renderHook(() => usePayWithToken());
+
+    expect(result.current.displayToken).toMatchObject({ symbol: 'SOL' });
+    expect(result.current.isMoneyAccountSelected).toBe(false);
+    expect(result.current.from).toBeUndefined();
   });
 
   it('returns the crypto pay token display values by default', () => {

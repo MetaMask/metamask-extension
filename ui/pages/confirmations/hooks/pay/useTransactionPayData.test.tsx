@@ -6,6 +6,9 @@ import { TransactionType } from '@metamask/transaction-controller';
 import {
   TransactionPayStrategy,
   TransactionPayQuote,
+  type SolanaPayQuote,
+  type TransactionData,
+  type TransactionPayIntent,
   TransactionPayRequiredToken,
   TransactionPaySourceAmount,
   type TransactionPayTotals,
@@ -54,6 +57,7 @@ const mockStore = configureStore([]);
 
 const STATE_MOCK = {
   metamask: {
+    payIntents: {},
     transactionData: {
       [TRANSACTION_ID_MOCK]: {
         isLoading: true,
@@ -69,14 +73,14 @@ const STATE_MOCK = {
 };
 
 function createWrapper(
-  stateOverrides?: Partial<
-    (typeof STATE_MOCK)['metamask']['transactionData'][typeof TRANSACTION_ID_MOCK]
-  >,
+  stateOverrides?: Partial<TransactionData>,
   transactionType?: TransactionType,
+  payIntent?: TransactionPayIntent,
 ) {
   const state = stateOverrides
     ? {
         metamask: {
+          payIntents: payIntent ? { [TRANSACTION_ID_MOCK]: payIntent } : {},
           transactionData: {
             [TRANSACTION_ID_MOCK]: {
               ...STATE_MOCK.metamask.transactionData[TRANSACTION_ID_MOCK],
@@ -85,7 +89,13 @@ function createWrapper(
           },
         },
       }
-    : STATE_MOCK;
+    : {
+        ...STATE_MOCK,
+        metamask: {
+          ...STATE_MOCK.metamask,
+          payIntents: payIntent ? { [TRANSACTION_ID_MOCK]: payIntent } : {},
+        },
+      };
 
   const store = mockStore(state);
 
@@ -141,6 +151,55 @@ describe('useTransactionPayData', () => {
       );
 
       expect(result.current).toBe(false);
+    });
+
+    it('returns false when Core reports a required product action was omitted', () => {
+      const payIntent = {
+        atomicProductActionRequired: true,
+        sourceChainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      } as unknown as TransactionPayIntent;
+      const solanaPayQuote = {
+        preflight: { affordability: { isAffordable: true } },
+        route: { atomicProductActionIncluded: false },
+      } as SolanaPayQuote;
+      const { result } = renderHook(
+        () => useTransactionPayHasExecutableQuote(),
+        {
+          wrapper: createWrapper(
+            { solanaPayQuote },
+            TransactionType.perpsDeposit,
+            payIntent,
+          ),
+        },
+      );
+
+      expect(result.current).toBe(false);
+    });
+
+    it('returns true when Core includes the required exact-output product action', () => {
+      const payIntent = {
+        atomicProductActionRequired: true,
+        sourceChainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      } as unknown as TransactionPayIntent;
+      const solanaPayQuote = {
+        preflight: { affordability: { isAffordable: true } },
+        route: {
+          atomicProductActionIncluded: true,
+          tradeType: 'EXACT_OUTPUT',
+        },
+      } as SolanaPayQuote;
+      const { result } = renderHook(
+        () => useTransactionPayHasExecutableQuote(),
+        {
+          wrapper: createWrapper(
+            { solanaPayQuote },
+            TransactionType.predictDeposit,
+            payIntent,
+          ),
+        },
+      );
+
+      expect(result.current).toBe(true);
     });
 
     it('returns false when quotes are unavailable', () => {

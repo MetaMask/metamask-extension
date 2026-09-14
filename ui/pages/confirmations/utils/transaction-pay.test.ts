@@ -1,3 +1,4 @@
+import { SolScope } from '@metamask/keyring-api';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import type {
@@ -217,15 +218,16 @@ describe('transaction-pay utils', () => {
         accountAddress: 'solana-address',
         accountId: 'internal-account-id',
         accountType: 'solana:data-account' as Asset['accountType'],
-        assetId: 'solana:mainnet/slip44:501',
-        chainId: 'solana:mainnet',
+        assetId: `${SolScope.Mainnet}/slip44:501`,
+        chainId: SolScope.Mainnet,
         standard: AssetStandard.Native,
       });
       const payIntent = {
-        version: 1,
-        sourceAccountId: 'solana:mainnet:solana-address',
-        sourceAssetId: 'solana:mainnet/slip44:501',
-        sourceChainId: 'solana:mainnet',
+        version: 2,
+        sourceWalletAccountId: 'internal-account-id',
+        sourceAccountId: `${SolScope.Mainnet}:solana-address`,
+        sourceAssetId: `${SolScope.Mainnet}/slip44:501`,
+        sourceChainId: SolScope.Mainnet,
       } as TransactionPayIntent;
 
       const result = getAvailableTokens({ tokens: [solanaAsset], payIntent });
@@ -234,7 +236,7 @@ describe('transaction-pay utils', () => {
       expect(result[0]).toEqual(
         expect.objectContaining({
           accountId: 'internal-account-id',
-          assetId: 'solana:mainnet/slip44:501',
+          assetId: `${SolScope.Mainnet}/slip44:501`,
           isSelected: true,
         }),
       );
