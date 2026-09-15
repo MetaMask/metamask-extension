@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { KeyringType } from '@metamask/keyring-api/v2';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
@@ -83,7 +84,8 @@ const PRIVATE_KEY_EXPORTING_SNAP_IDS = new Set<string>([
 const hasPrivateKeyAvailable = (account: InternalAccount) =>
   account.metadata.keyring.type === KeyringTypes.hd ||
   account.metadata.keyring.type === KeyringTypes.simple ||
-  (account.metadata.keyring.type === KeyringTypes.snap &&
+  ((account.metadata.keyring.type === KeyringTypes.snap ||
+    account.metadata.keyring.type === KeyringType.Snap) &&
     account.metadata.snap?.id !== undefined &&
     PRIVATE_KEY_EXPORTING_SNAP_IDS.has(account.metadata.snap.id));
 
