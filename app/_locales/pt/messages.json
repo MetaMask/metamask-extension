@@ -8637,9 +8637,6 @@
   "rampsPreviouslyUsed": {
     "message": "Usado pela última vez"
   },
-  "rampsQuoteFetchError": {
-    "message": "Falha ao buscar cotação."
-  },
   "rampsQuoteUnavailable": {
     "message": "Cotação não disponível."
   },

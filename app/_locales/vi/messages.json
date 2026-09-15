@@ -8654,9 +8654,6 @@
   "rampsPreviouslyUsed": {
     "message": "Sử dụng lần cuối"
   },
-  "rampsQuoteFetchError": {
-    "message": "Tìm nạp báo giá không thành công."
-  },
   "rampsQuoteUnavailable": {
     "message": "Không có báo giá."
   },

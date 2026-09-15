@@ -8640,9 +8640,6 @@
   "rampsPreviouslyUsed": {
     "message": "Zuletzt verwendet"
   },
-  "rampsQuoteFetchError": {
-    "message": "Angebot konnte nicht abgerufen werden."
-  },
   "rampsQuoteUnavailable": {
     "message": "Angebot nicht verfügbar."
   },

@@ -8637,9 +8637,6 @@
   "rampsPreviouslyUsed": {
     "message": "पिछली बार इस्तेमाल किया गया"
   },
-  "rampsQuoteFetchError": {
-    "message": "कोटेशन प्राप्त नहीं हो पाया।"
-  },
   "rampsQuoteUnavailable": {
     "message": "कोटेशन उपलब्ध नहीं है।"
   },

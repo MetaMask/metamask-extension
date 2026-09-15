@@ -8637,9 +8637,6 @@
   "rampsPreviouslyUsed": {
     "message": "Huling ginamit"
   },
-  "rampsQuoteFetchError": {
-    "message": "Nabigong kunin ang quote."
-  },
   "rampsQuoteUnavailable": {
     "message": "Hindi available ang quote."
   },

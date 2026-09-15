@@ -8646,9 +8646,6 @@
   "rampsPreviouslyUsed": {
     "message": "上次使用"
   },
-  "rampsQuoteFetchError": {
-    "message": "获取报价失败。"
-  },
   "rampsQuoteUnavailable": {
     "message": "报价不可用。"
   },

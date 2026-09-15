@@ -8651,9 +8651,6 @@
   "rampsPreviouslyUsed": {
     "message": "Son kullanılma"
   },
-  "rampsQuoteFetchError": {
-    "message": "Teklif alınamadı."
-  },
   "rampsQuoteUnavailable": {
     "message": "Teklif kullanılamıyor."
   },

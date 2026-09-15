@@ -8640,9 +8640,6 @@
   "rampsPreviouslyUsed": {
     "message": "Τελευταία χρήση"
   },
-  "rampsQuoteFetchError": {
-    "message": "Αποτυχία λήψης προσφοράς."
-  },
   "rampsQuoteUnavailable": {
     "message": "Δεν υπάρχει διαθέσιμη προσφορά."
   },
