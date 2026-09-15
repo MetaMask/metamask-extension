@@ -374,6 +374,9 @@ describe('MultichainPrivateKeyList', () => {
     ).toBeInTheDocument();
     expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
     expect(screen.getByTestId('confirm-button')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('multichain-private-keyring-list'),
+    ).not.toHaveClass('pt-4');
   });
 
   it('fires trace and endTrace around successful reveal', async () => {
@@ -413,6 +416,9 @@ describe('MultichainPrivateKeyList', () => {
     expect(screen.getByText('Solana')).toBeInTheDocument();
     expect(screen.queryByText('Polygon Mainnet')).not.toBeInTheDocument();
     expect(screen.queryByText('Arbitrum One')).not.toBeInTheDocument();
+    expect(screen.getByTestId('multichain-private-keyring-list')).toHaveClass(
+      'pt-4',
+    );
     expect(mockExportAccounts).toHaveBeenCalledWith('correctpassword', [
       ACCOUNT_ONE_ADDRESS_MOCK,
       ACCOUNT_TWO_ADDRESS_MOCK,

@@ -84,7 +84,7 @@ describe('MultichainPrivateKeyRow', () => {
     const privateKey = screen.getByTestId(
       `multichain-private-key-value-${CHAIN_ID}`,
     );
-    expect(revealButton).toHaveClass('bg-muted/50');
+    expect(revealButton).toHaveClass('bg-background-section');
     expect(revealButton).toHaveClass('items-start');
     expect(privateKey).toHaveStyle({ filter: 'blur(8px)' });
     expect(privateKey).not.toHaveTextContent(PRIVATE_KEY);
