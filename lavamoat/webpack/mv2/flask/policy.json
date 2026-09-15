@@ -5787,14 +5787,14 @@
     },
     "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": {
       "packages": {
-        "react-markdown>unist-util-visit": true
+        "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions>unist-util-visit": true
       }
     },
     "react-markdown>remark-parse>mdast-util-from-markdown": {
       "packages": {
         "react-markdown>remark-parse>mdast-util-from-markdown>mdast-util-to-string": true,
         "react-markdown>remark-parse>mdast-util-from-markdown>micromark": true,
-        "react-syntax-highlighter>refractor>parse-entities": true,
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": true,
         "react-markdown>vfile>unist-util-stringify-position": true
       }
     },
@@ -5832,7 +5832,7 @@
     },
     "react-markdown>remark-parse>mdast-util-from-markdown>micromark": {
       "packages": {
-        "react-syntax-highlighter>refractor>parse-entities": true
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": true
       }
     },
     "crypto-browserify>diffie-hellman>miller-rabin": {
@@ -5970,7 +5970,7 @@
         "mockttp>express>safe-buffer": true
       }
     },
-    "react-syntax-highlighter>refractor>parse-entities": {
+    "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": {
       "globals": {
         "document.createElement": true
       }
@@ -7087,15 +7087,25 @@
       "packages": {
         "react-markdown>unified>bail": true,
         "react-markdown>unified>extend": true,
-        "react-markdown>unified>is-buffer": true,
+        "react-markdown>vfile>is-buffer": true,
         "mocha>yargs-unparser>is-plain-obj": true,
         "react-markdown>unified>trough": true,
         "react-markdown>vfile": true
       }
     },
+    "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions>unist-util-visit>unist-util-visit-parents": {
+      "packages": {
+        "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions>unist-util-visit>unist-util-is": true
+      }
+    },
     "react-markdown>unist-util-visit>unist-util-visit-parents": {
       "packages": {
         "react-markdown>unist-util-visit>unist-util-is": true
+      }
+    },
+    "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions>unist-util-visit": {
+      "packages": {
+        "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions>unist-util-visit>unist-util-visit-parents": true
       }
     },
     "react-markdown>unist-util-visit": {
