@@ -109,7 +109,7 @@ jest.mock('../../../store/actions', () => {
         await Promise.resolve();
       };
     }),
-    removeMultichainAccountWallet: jest.fn().mockImplementation(() => {
+    removeWallet: jest.fn().mockImplementation(() => {
       return async function () {
         await Promise.resolve();
       };
@@ -158,9 +158,9 @@ const mockSetAccountGroupPinned = jest.requireMock(
 const mockRemoveAccount = jest.requireMock(
   '../../../store/actions',
 ).removeAccount;
-const mockRemoveMultichainAccountWallet = jest.requireMock(
+const mockremoveWallet = jest.requireMock(
   '../../../store/actions',
-).removeMultichainAccountWallet;
+).removeWallet;
 
 const popoverOpenSelector = '.mm-popover--open';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
@@ -1538,7 +1538,7 @@ describe('MultichainAccountList', () => {
       expect(
         screen.queryByTestId('wallet-remove-modal-locked'),
       ).not.toBeInTheDocument();
-      expect(mockRemoveMultichainAccountWallet).not.toHaveBeenCalled();
+      expect(mockremoveWallet).not.toHaveBeenCalled();
     });
 
     it('removes the selected non-primary wallet from its confirmation modal', async () => {
@@ -1561,7 +1561,7 @@ describe('MultichainAccountList', () => {
         );
       });
 
-      expect(mockRemoveMultichainAccountWallet).toHaveBeenCalledWith(
+      expect(mockremoveWallet).toHaveBeenCalledWith(
         walletTwoId,
       );
       expect(
@@ -1580,7 +1580,7 @@ describe('MultichainAccountList', () => {
       expect(
         screen.queryByTestId('wallet-remove-modal-remove'),
       ).not.toBeInTheDocument();
-      expect(mockRemoveMultichainAccountWallet).not.toHaveBeenCalled();
+      expect(mockremoveWallet).not.toHaveBeenCalled();
     });
 
     it('does not show Remove on the pinned header in edit mode', () => {

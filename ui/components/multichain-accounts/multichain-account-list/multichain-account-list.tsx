@@ -178,10 +178,6 @@ type ListItem =
       sectionKey?: string;
       isCollapsible?: boolean;
       isExpanded?: boolean;
-      /**
-       * Trailing control shown on wallet headers in edit mode. Primary wallets
-       * are locked; every other wallet can be removed. Absent outside edit mode.
-       */
       editHeaderAction?: 'remove' | 'locked';
       walletId?: AccountWalletId;
     }

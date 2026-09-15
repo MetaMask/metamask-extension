@@ -2459,14 +2459,11 @@ export function createNextMultichainAccountGroup(
  *
  * @param walletId - ID of the wallet to remove.
  */
-export function removeMultichainAccountWallet(
+export function removeWallet(
   walletId: AccountWalletId,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    const entropySource = stripWalletTypePrefixFromWalletId(walletId);
-    await submitRequestToBackground('removeMultichainAccountWallet', [
-      entropySource,
-    ]);
+    // TODO: Delete call to background API
     await forceUpdateMetamaskState(dispatch);
   };
 }

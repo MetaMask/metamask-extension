@@ -3029,28 +3029,6 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
-  describe('removeMultichainAccountWallet', () => {
-    it('removes the wallet for the given entropy source', async () => {
-      await withService(async ({ rootMessenger, serviceMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'MultichainAccountService:removeMultichainAccountWallet',
-          jest.fn(),
-        );
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        await rootMessenger.call(
-          'LegacyBackgroundApiService:removeMultichainAccountWallet',
-          'entropy-source-id',
-        );
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'MultichainAccountService:removeMultichainAccountWallet',
-          'entropy-source-id',
-        );
-      });
-    });
-  });
-
   describe('onAccountRemoved', () => {
     it('executes side effects of a removed account', async () => {
       await withService(async ({ rootMessenger, serviceMessenger }) => {
