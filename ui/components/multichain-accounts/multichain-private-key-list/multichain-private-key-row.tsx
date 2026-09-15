@@ -90,7 +90,7 @@ const PrivateKeyContent = ({
       alignItems={BoxAlignItems.End}
       gap={3}
       paddingHorizontal={4}
-      paddingBottom={4}
+      paddingBottom={1}
     >
       <ButtonBase
         className="relative h-auto min-h-[112px] w-full min-w-0 items-start overflow-hidden rounded-lg bg-background-section p-4 hover:bg-background-section active:bg-background-section"
