@@ -707,9 +707,13 @@ describe('MultichainAccountCell', () => {
         store,
       );
 
-      fireEvent.click(
-        screen.getByTestId('multichain-account-cell-edit-mode-visible-icon'),
+      const visibilityIcon = screen.getByTestId(
+        'multichain-account-cell-edit-mode-visible-icon',
       );
+
+      expect(visibilityIcon).toBeDisabled();
+
+      fireEvent.click(visibilityIcon);
 
       expect(handleVisibilityIconClick).not.toHaveBeenCalled();
     });

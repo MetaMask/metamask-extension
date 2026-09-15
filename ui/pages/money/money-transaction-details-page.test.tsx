@@ -4,7 +4,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
@@ -15,7 +15,9 @@ import {
 import { getPrivacyMode } from '../../selectors/selectors';
 import { selectMoneyActivityDetailsEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getInternalAccountByAddress } from '../../selectors/accounts';
+import { selectTransactionById } from '../../selectors/transactionController';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
+import { useMoneyTransactionFee } from '../../hooks/money/use-money-transaction-fee';
 import MOCK_MONEY_TRANSACTIONS from './constants/mock-activity-data';
 import { onchainItem } from './types/money-activity';
 import { MoneyTransactionDetailsPage } from './money-transaction-details-page';
@@ -33,7 +35,9 @@ const mockSelectMoneyActivityDetailsEnabled = jest.mocked(
 const mockGetInternalAccountByAddress = jest.mocked(
   getInternalAccountByAddress,
 );
+const mockSelectTransactionById = jest.mocked(selectTransactionById);
 const mockUseCopyToClipboard = jest.mocked(useCopyToClipboard);
+const mockUseMoneyTransactionFee = jest.mocked(useMoneyTransactionFee);
 
 jest.mock('react-redux', () => ({
   useSelector: (selector: () => unknown) => selector(),
@@ -54,8 +58,31 @@ jest.mock('../../selectors/accounts', () => ({
   getInternalAccountByAddress: jest.fn(),
 }));
 
+jest.mock('../../selectors/transactionController', () => ({
+  ...jest.requireActual('../../selectors/transactionController'),
+  selectTransactionById: jest.fn(),
+}));
+
 jest.mock('../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: jest.fn(),
+}));
+
+jest.mock('../../hooks/useFormatters', () => ({
+  useFormatters: () => ({
+    formatCurrencyWithMinThreshold: (value: number) => {
+      if (value !== 0 && Math.abs(value) < 0.01) {
+        return '<$0.01';
+      }
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(value);
+    },
+  }),
+}));
+
+jest.mock('../../hooks/money/use-money-transaction-fee', () => ({
+  useMoneyTransactionFee: jest.fn(),
 }));
 
 jest.mock('react-router-dom', () => ({
@@ -98,11 +125,16 @@ describe('MoneyTransactionDetailsPage', () => {
       address: deposited.tx.txParams.from,
       metadata: { name: 'Defi account' },
     } as ReturnType<typeof getInternalAccountByAddress>);
+    mockSelectTransactionById.mockReturnValue(undefined);
     mockUseCopyToClipboard.mockReturnValue([
       false,
       mockCopyToClipboard,
       jest.fn(),
     ]);
+    mockUseMoneyTransactionFee.mockReturnValue({
+      feeUsd: 0.16,
+      totalUsd: 1000.16,
+    });
     mockUseParams.mockReturnValue({ transactionId: deposited.id });
     mockUseMoneyAccountAvailability.mockReturnValue({
       availability: {
@@ -189,6 +221,12 @@ describe('MoneyTransactionDetailsPage', () => {
     expect(
       screen.getByTestId('money-transaction-details-account'),
     ).toHaveTextContent('Defi account (0x0000...0001)');
+    expect(
+      screen.getByTestId('money-transaction-details-fee'),
+    ).toHaveTextContent('$0.16');
+    expect(
+      screen.getByTestId('money-transaction-details-total'),
+    ).toHaveTextContent('$1,000.16');
     expect(mockGetInternalAccountByAddress).toHaveBeenCalledWith(
       undefined,
       deposited.tx.txParams.from,
@@ -199,6 +237,49 @@ describe('MoneyTransactionDetailsPage', () => {
     expect(
       screen.queryByTestId('money-transaction-details-explorer'),
     ).not.toBeInTheDocument();
+  });
+
+  it('shows unavailable fee and total values as dashes', () => {
+    mockUseMoneyTransactionFee.mockReturnValue({
+      feeUsd: undefined,
+      totalUsd: undefined,
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee'),
+    ).toHaveTextContent('-');
+    expect(
+      screen.getByTestId('money-transaction-details-total'),
+    ).toHaveTextContent('-');
+  });
+
+  it('shows a minimum threshold for a sub-cent transaction fee', () => {
+    mockUseMoneyTransactionFee.mockReturnValue({
+      feeUsd: 0.001,
+      totalUsd: 1000.001,
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee'),
+    ).toHaveTextContent('<$0.01');
+  });
+
+  it('opens the transaction fee information popover', async () => {
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    await act(async () => {
+      fireEvent.click(
+        screen.getByTestId('money-transaction-details-fee-info-button'),
+      );
+    });
+
+    expect(
+      screen.getByText(messages.moneyActivityTransactionFeeTooltip.message),
+    ).toBeInTheDocument();
   });
 
   it('renders the origin address when it does not belong to an internal account', () => {
@@ -308,5 +389,57 @@ describe('MoneyTransactionDetailsPage', () => {
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: EXPLORER_TX_URL,
     });
+  });
+
+  it('prefers the activity list item over the raw controller transaction', () => {
+    const promoted = onchainItem({
+      ...deposited.tx,
+      id: 'promoted-child',
+      type: TransactionType.moneyAccountDeposit,
+    } as TransactionMeta);
+    const rawChild = {
+      ...promoted.tx,
+      type: TransactionType.swap,
+      metamaskPay: undefined,
+    } as TransactionMeta;
+    mockUseParams.mockReturnValue({ transactionId: promoted.id });
+    mockUseMoneyActivityItems.mockReturnValue({ items: [promoted] });
+    mockSelectTransactionById.mockReturnValue(rawChild);
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-title'),
+    ).toHaveTextContent(messages.moneyActivityDeposited.message);
+  });
+
+  it('redirects when the controller transaction is not Money activity and is absent from the list', () => {
+    mockUseMoneyActivityItems.mockReturnValue({ items: [] });
+    mockSelectTransactionById.mockReturnValue({
+      ...deposited.tx,
+      type: TransactionType.swap,
+      metamaskPay: undefined,
+    } as TransactionMeta);
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(screen.getByTestId('navigate')).toHaveAttribute(
+      'data-to',
+      MONEY_ACTIVITY_ROUTE,
+    );
+  });
+
+  it('resolves a live transaction from TransactionController instead of the paged feed', () => {
+    mockUseMoneyActivityItems.mockReturnValue({ items: [] });
+    mockSelectTransactionById.mockReturnValue(deposited.tx);
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-page'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('money-transaction-details-title'),
+    ).toHaveTextContent(messages.moneyActivityDeposited.message);
   });
 });

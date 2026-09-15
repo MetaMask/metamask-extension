@@ -27,6 +27,11 @@ export const selectTransactionPayQuotesByTransactionId = createSelector(
   (transactionData) => transactionData?.quotes,
 );
 
+export const selectTransactionPayQuoteErrorByTransactionId = createSelector(
+  selectTransactionDataByTransactionId,
+  (transactionData) => transactionData?.quoteError,
+);
+
 export const selectTransactionPayTokensByTransactionId = createSelector(
   selectTransactionDataByTransactionId,
   (transactionData) => transactionData?.tokens ?? [],
