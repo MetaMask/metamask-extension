@@ -1,12 +1,26 @@
 // This file is used only for manifest version 3
+// eslint-disable-next-line spaced-comment
+/// <reference lib="webworker" />
 
 import './scripts/load/bootstrap';
 import { APP_INIT_LIVENESS_METHOD } from '../shared/constants/ui-initialization';
 import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/extension-lazy-listener';
+import { PostUpdateReloadCoordinator } from './scripts/lib/post-update-reload-coordinator';
+
+// The DOM library types `self` as Window; override it only in this module.
+// eslint-disable-next-line consistent-this
+declare const self: ServiceWorkerGlobalScope;
 
 const { chrome } = globalThis;
 
 const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
+
+const isServiceWorkerActivated = self.serviceWorker.state === 'activated';
+const postUpdateReloadCoordinator = new PostUpdateReloadCoordinator(
+  chrome,
+  isServiceWorkerActivated,
+);
+globalThis.stateHooks.postUpdateReloadCoordinator = postUpdateReloadCoordinator;
 
 function saveTimestamp() {
   const timestamp = new Date().toISOString();
@@ -40,8 +54,15 @@ async function runImportScripts() {
 
   const startImportScriptsTime = performance.now();
 
-  // eslint-disable-next-line import-x/extensions
-  await import('./scripts/background.js');
+  try {
+    // eslint-disable-next-line import-x/extensions
+    await import('./scripts/background.js');
+  } catch (error) {
+    // If importing background.js fails, enable the toolbar action; it and the
+    // manifest-declared side panel can then surface the critical startup error.
+    postUpdateReloadCoordinator.complete();
+    throw error;
+  }
 
   const endImportScriptsTime = performance.now();
 
@@ -91,7 +112,6 @@ chrome.runtime.onConnect.addListener((port) => {
  * that whenever the already installed service worker is stopped and then restarted, the state
  * is 'activated'.
  */
-// @ts-expect-error - typescript doesn't know about this
-if (self.serviceWorker.state === 'activated') {
+if (isServiceWorkerActivated) {
   runImportScripts();
 }
