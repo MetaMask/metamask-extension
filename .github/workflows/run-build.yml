@@ -90,6 +90,13 @@ jobs:
       - name: Run tsc
         run: yarn webpack:tsc
 
+      - name: Set SOURCE_DATE_EPOCH for reproducible zip builds
+        if: ${{ contains(inputs.build-command, '--zip') }}
+        run: |
+          SOURCE_DATE_EPOCH="$(git log -1 --format=%ct)"
+          echo "SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH}" >> "${GITHUB_ENV}"
+          echo "Using SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH} for zip entry mtimes"
+
       - name: Run build
         run: ${{ inputs.build-command }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
 
