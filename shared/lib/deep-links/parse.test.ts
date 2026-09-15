@@ -1,4 +1,5 @@
 import log from 'loglevel';
+import { endTrace, trace, TraceName, TraceOperation } from '../trace';
 import { NavigationOrigin, parse } from './parse';
 import { VALID, INVALID, MISSING, verify } from './verify';
 import { type Route, routes } from './routes';
@@ -17,6 +18,11 @@ jest.mock('./routes', () => ({
   routes: new Map(),
 }));
 jest.mock('loglevel');
+jest.mock('../trace', () => ({
+  ...jest.requireActual('../trace'),
+  endTrace: jest.fn(),
+  trace: jest.fn(),
+}));
 
 describe('parse', () => {
   const mockHandler = jest.fn() as jest.MockedFunction<Route['handler']>;
@@ -134,6 +140,98 @@ describe('parse', () => {
     await parse(new URL(urlStr));
 
     expect(mockVerify).toHaveBeenCalledWith(new URL(urlStr));
+  });
+
+  it('traces signature verification for signed external deeplinks with a parent', async () => {
+    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
+    mockHandler.mockReturnValue({
+      path: 'destination-value',
+      query: new URLSearchParams(),
+    });
+    mockVerify.mockResolvedValue(VALID);
+    const traceContext = {};
+    const url = new URL('https://link.metamask.io/test?sig=bar');
+
+    await parse(url, { traceContext });
+
+    expect(trace).toHaveBeenCalledWith({
+      name: TraceName.DeeplinkSignatureVerify,
+      id: expect.any(String),
+      op: TraceOperation.DeeplinkPerformance,
+      parentContext: traceContext,
+    });
+    expect(mockVerify).toHaveBeenCalledWith(url);
+    expect(endTrace).toHaveBeenCalledWith({
+      name: TraceName.DeeplinkSignatureVerify,
+      id: expect.any(String),
+      data: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+        signature_status: VALID,
+      },
+    });
+  });
+
+  it('records invalid signature_status on the Signature Verify child', async () => {
+    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
+    mockHandler.mockReturnValue({
+      path: 'destination-value',
+      query: new URLSearchParams(),
+    });
+    mockVerify.mockResolvedValue(INVALID);
+    const url = new URL('https://link.metamask.io/test?sig=foo');
+
+    const result = await parse(url, { traceContext: {} });
+
+    expect(result).not.toBe(false);
+    expect(result && 'signature' in result ? result.signature : undefined).toBe(
+      INVALID,
+    );
+    expect(endTrace).toHaveBeenCalledWith({
+      name: TraceName.DeeplinkSignatureVerify,
+      id: expect.any(String),
+      data: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+        signature_status: INVALID,
+      },
+    });
+  });
+
+  it('ends Signature Verify with an error when verification throws', async () => {
+    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
+    mockHandler.mockReturnValue({
+      path: 'destination-value',
+      query: new URLSearchParams(),
+    });
+    mockVerify.mockRejectedValue(new Error('verify failed'));
+
+    await expect(
+      parse(new URL('https://link.metamask.io/test?sig=bar'), {
+        traceContext: {},
+      }),
+    ).rejects.toThrow('verify failed');
+
+    expect(endTrace).toHaveBeenCalledWith({
+      name: TraceName.DeeplinkSignatureVerify,
+      id: expect.any(String),
+      data: {
+        success: false,
+        reason: 'error',
+      },
+    });
+  });
+
+  it('does not trace signature verification for unsigned external deeplinks', async () => {
+    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
+    mockHandler.mockReturnValue({
+      path: 'destination-value',
+      query: new URLSearchParams(),
+    });
+    mockVerify.mockResolvedValue(MISSING);
+
+    await parse(new URL('https://link.metamask.io/test'));
+
+    expect(trace).not.toHaveBeenCalled();
+    expect(mockVerify).toHaveBeenCalledTimes(1);
   });
 
   it('skips signature verification when `navigationOrigin` is `NavigationOrigin.INTERNAL`', async () => {

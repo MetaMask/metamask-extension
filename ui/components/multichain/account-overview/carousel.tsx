@@ -1,9 +1,16 @@
-import React, { useRef, useState, useCallback, useMemo } from 'react';
+import React, {
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useLayoutEffect,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { removeSlide } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
 import { CarouselWithEmptyState } from '../carousel';
-import { getAppIsLoading } from '../../../selectors';
+import { getAppIsLoading, getSelectedAccount } from '../../../selectors';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
@@ -13,6 +20,25 @@ import {
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
 import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
 import DownloadMobileAppModal from '../../app/download-mobile-modal/download-mobile-modal';
+import {
+  endTrace,
+  trace,
+  TraceName,
+  TraceOperation,
+} from '../../../../shared/lib/trace';
+import { useDeferredAbandon } from '../../../hooks/useDeferredAbandon';
+import { getVisibleCarouselSlides } from '../carousel/utils';
+
+/**
+ * Identifies the traced banner surface. Unlike mobile, whose equivalent trace
+ * covers Braze banners, extension slides are served by Contentful.
+ */
+const BANNER_TRACE_TAGS = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+  placement_id: 'home_carousel',
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+  banner_source: 'contentful',
+} as const;
 
 export const Carousel = () => {
   const dispatch = useDispatch();
@@ -21,15 +47,113 @@ export const Carousel = () => {
   const isCarouselEnabled = Boolean(
     remoteFeatureFlags && remoteFeatureFlags.carouselBanners,
   );
+  const isContentfulEnabled = Boolean(
+    remoteFeatureFlags?.contentfulCarouselEnabled,
+  );
+  const selectedAccount = useSelector(getSelectedAccount);
   const { trackEvent, createEventBuilder } = useAnalytics();
   const displayedSlideIds = useRef<Set<string>>(new Set());
 
   const [showDownloadMobileAppModal, setShowDownloadMobileAppModal] =
     useState(false);
 
-  const { slides } = useCarouselManagement({
+  const { slides, fetchStatus } = useCarouselManagement({
     enabled: isCarouselEnabled,
   });
+  const visibleSlides = useMemo(
+    () => getVisibleCarouselSlides(slides, selectedAccount?.type),
+    [selectedAccount?.type, slides],
+  );
+  const traceIdRef = useRef<string | null>(null);
+  const initialSlideIdsRef = useRef<Set<string>>(new Set());
+  const traceActivationStartedRef = useRef(false);
+  const { cancelAbandon, scheduleAbandon } = useDeferredAbandon();
+
+  const endBannerTrace = useCallback(
+    (data: Record<string, number | string | boolean>) => {
+      const id = traceIdRef.current;
+      if (!id) {
+        return;
+      }
+
+      traceIdRef.current = null;
+      endTrace({
+        name: TraceName.HomeBannerTimeToContent,
+        id,
+        data,
+      });
+    },
+    [],
+  );
+
+  useLayoutEffect(() => {
+    const isEnabled = isCarouselEnabled && isContentfulEnabled;
+    if (!isEnabled) {
+      cancelAbandon();
+      endBannerTrace({
+        ...BANNER_TRACE_TAGS,
+        success: false,
+        reason: 'unmounted',
+      });
+      traceActivationStartedRef.current = false;
+      return undefined;
+    }
+
+    // Discards the teardown scheduled by a StrictMode probe, which resumes the
+    // original span instead of reporting a false abandonment. Without this the
+    // latch below would also see an already-activated instance and never start
+    // a replacement, leaving the surface unmeasured for the rest of the session.
+    cancelAbandon();
+
+    if (!traceActivationStartedRef.current) {
+      traceActivationStartedRef.current = true;
+      initialSlideIdsRef.current = new Set(
+        slides.map(({ id }: CarouselSlide) => id),
+      );
+      const id = crypto.randomUUID();
+      traceIdRef.current = id;
+      trace({
+        name: TraceName.HomeBannerTimeToContent,
+        id,
+        op: TraceOperation.BannerPerformance,
+        tags: { ...BANNER_TRACE_TAGS },
+      });
+    }
+
+    return () =>
+      scheduleAbandon(() =>
+        endBannerTrace({
+          ...BANNER_TRACE_TAGS,
+          success: false,
+          reason: 'unmounted',
+        }),
+      );
+  }, [
+    cancelAbandon,
+    endBannerTrace,
+    isCarouselEnabled,
+    isContentfulEnabled,
+    scheduleAbandon,
+    slides,
+  ]);
+
+  useEffect(() => {
+    if (fetchStatus === 'error') {
+      endBannerTrace({
+        ...BANNER_TRACE_TAGS,
+        success: false,
+        source: 'event',
+        reason: 'error',
+      });
+    } else if (fetchStatus === 'settled' && visibleSlides.length === 0) {
+      endBannerTrace({
+        ...BANNER_TRACE_TAGS,
+        success: false,
+        source: 'event',
+        reason: 'empty',
+      });
+    }
+  }, [endBannerTrace, fetchStatus, visibleSlides.length]);
 
   const slideById = useMemo(() => {
     const m = new Map<string, CarouselSlide>();
@@ -88,6 +212,16 @@ export const Carousel = () => {
 
   const handleActiveSlideChange = useCallback(
     (slide: CarouselSlide) => {
+      endBannerTrace({
+        ...BANNER_TRACE_TAGS,
+        success: true,
+        source: initialSlideIdsRef.current.has(slide.id)
+          ? 'warm-cache'
+          : 'event',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- Sentry snake_case
+        banner_name: slide.id,
+      });
+
       if (!displayedSlideIds.current.has(slide.id)) {
         displayedSlideIds.current.add(slide.id);
         trackEvent(
@@ -102,7 +236,7 @@ export const Carousel = () => {
         );
       }
     },
-    [createEventBuilder, trackEvent],
+    [createEventBuilder, endBannerTrace, trackEvent],
   );
 
   if (!isCarouselEnabled) {
