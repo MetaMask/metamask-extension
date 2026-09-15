@@ -1,9 +1,8 @@
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { isEvmAccountType } from '@metamask/keyring-api';
 import type { Hex } from '@metamask/utils';
-import { getMaybeSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { selectMoneyFundingAccount } from '../../pages/confirmations/selectors/money-funding-account';
 import {
   ConfirmationLoader,
   useConfirmationNavigation,
@@ -22,10 +21,14 @@ import { useMoneyErrorReporter } from './useMoneyErrorReporter';
  * as `useMoneyAccountDeposit`. There is no deposit-intent equivalent for
  * withdrawals — mobile records none either.
  *
- * Fails fast when no eligible EVM account is selected. The selected account's
- * address is passed as Pay's `accountOverride` so the confirmation defaults
- * the From row — and the withdraw recipient — to that account instead of the
- * money account that executes the batch.
+ * The recipient is resolved by `selectMoneyFundingAccount`: the globally
+ * selected account when it is eligible, otherwise the user's first eligible
+ * EVM account. A hardware account cannot sign the withdraw batch, so a user on
+ * a hardware wallet withdraws to their first eligible account rather than
+ * being blocked at the confirmation. Fails fast only when no eligible account
+ * exists. That address is passed as Pay's `accountOverride` so the
+ * confirmation defaults the From row — and the withdraw recipient — to that
+ * account instead of the money account that executes the batch.
  *
  * Setup failures are reported to Sentry and shown as a toast inside this
  * hook, matching mobile. The promise resolves after that so callers do not
@@ -36,19 +39,19 @@ import { useMoneyErrorReporter } from './useMoneyErrorReporter';
 export function useMoneyAccountWithdrawal() {
   const { navigateToTransaction } = useConfirmationNavigation();
   const location = useLocation();
-  const selectedAccount = useSelector(getMaybeSelectedInternalAccount);
+  const recipientAccount = useSelector(selectMoneyFundingAccount);
   const reportError = useMoneyErrorReporter();
   const [isLoading, setIsLoading] = useState(false);
 
   const initiateWithdrawal = useCallback(async () => {
     setIsLoading(true);
     try {
-      if (!selectedAccount || !isEvmAccountType(selectedAccount.type)) {
+      if (!recipientAccount) {
         throw new Error('[Money Account] Missing recipient EVM address');
       }
 
       const { transactionId } = await createMoneyAccountWithdrawTransaction(
-        selectedAccount.address as Hex,
+        recipientAccount.address as Hex,
       );
 
       navigateToTransaction(transactionId, {
@@ -70,8 +73,8 @@ export function useMoneyAccountWithdrawal() {
     location.pathname,
     location.search,
     navigateToTransaction,
+    recipientAccount,
     reportError,
-    selectedAccount,
   ]);
 
   return { initiateWithdrawal, isLoading };
