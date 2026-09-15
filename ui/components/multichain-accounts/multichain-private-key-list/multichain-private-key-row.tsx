@@ -23,7 +23,10 @@ import {
   ButtonVariant,
   IconName as LegacyIconName,
 } from '../../component-library';
-import { IconColor as LegacyIconColor } from '../../../helpers/constants/design-system';
+import {
+  BorderRadius,
+  IconColor as LegacyIconColor,
+} from '../../../helpers/constants/design-system';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
@@ -89,7 +92,7 @@ const PrivateKeyContent = ({
       paddingBottom={4}
     >
       <ButtonBase
-        className="relative h-auto min-h-[112px] w-full min-w-0 items-start overflow-hidden rounded-lg bg-muted/50 p-4 hover:bg-muted-hover/50 active:bg-muted-pressed/50"
+        className="relative h-auto min-h-[112px] w-full min-w-0 items-start overflow-hidden rounded-lg bg-background-section p-4 hover:bg-background-section active:bg-background-section"
         onClick={() => setIsRevealed((value) => !value)}
         aria-label={isRevealed ? t('hideSentitiveInfo') : t('tapToReveal')}
         data-testid={`multichain-private-key-reveal-${chainId}`}
@@ -130,6 +133,7 @@ const PrivateKeyContent = ({
         )}
       </ButtonBase>
       <Button
+        borderRadius={BorderRadius.LG}
         className={
           isCopied
             ? 'rounded-lg border-success-default bg-success-muted text-success-default hover:bg-success-muted active:bg-success-muted'

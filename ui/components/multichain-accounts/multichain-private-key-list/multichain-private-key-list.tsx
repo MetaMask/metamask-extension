@@ -546,7 +546,7 @@ const MultichainPrivateKeyList = ({
 
   return (
     <Box
-      className="flex"
+      className={reveal ? 'flex pt-4' : 'flex'}
       flexDirection={BoxFlexDirection.Column}
       data-testid="multichain-private-keyring-list"
     >
