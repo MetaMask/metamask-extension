@@ -9078,10 +9078,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "@metamask/tron-wallet-snap@npm:3.2.0"
-  checksum: 10/8d65d9d037269b4a9f507bf80080bfe7817e6d58396f6b87400f73295e060237792a3b3ecfb719daa658a08bcb7d5825598cb69abb2c1ec724ccb096273ec6eb
+"@metamask/tron-wallet-snap@npm:@metamask-previews/tron-wallet-snap@3.2.0-preview-672fdc2b":
+  version: 3.2.0-preview-672fdc2b
+  resolution: "@metamask-previews/tron-wallet-snap@npm:3.2.0-preview-672fdc2b"
+  checksum: 10/0150c990d3f9943f3cb7418e96dfade1559d36727157f307bf4382cc0bc5fc1912c70fa99c39062babe0752dbbd8abce3ac2591188ca866ce0c7376d8908cb02
   languageName: node
   linkType: hard
 
