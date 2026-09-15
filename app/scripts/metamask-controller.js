@@ -2895,6 +2895,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'PreferencesController:consolidateBasicFunctionality',
       ),
+      toggleBasicFunctionality: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'PreferencesController:toggleBasicFunctionality',
+      ),
 
       addKnownMethodData: preferencesController.addKnownMethodData.bind(
         preferencesController,

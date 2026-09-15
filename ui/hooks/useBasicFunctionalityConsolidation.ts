@@ -2,30 +2,44 @@ import { useEffect, useRef } from 'react';
 import { getCompletedOnboarding } from '../ducks/metamask/metamask';
 import { getIsUnlocked } from '../ducks/metamask/base-selectors';
 import { getIsBasicFunctionalityToggleEnabled } from '../selectors/multichain/feature-flags';
+import { getIsBasicFunctionalitySocialLoginUser } from '../selectors/onboarding/onboarding';
 import { consolidateBasicFunctionality } from '../store/actions';
 import { useAppSelector, useDispatch } from '../store/hooks';
 
 /**
- * When the Basic Functionality consolidation remote FF turns on, run the
- * one-time preference consolidation (and schedule modal/toast if needed).
+ * Runs one-time Basic Functionality consolidation when the remote flag is on,
+ * and repairs a persisted consolidated social-login wallet if Basic
+ * Functionality is off.
  */
 export function useBasicFunctionalityConsolidation(): void {
   const dispatch = useDispatch();
   const isRunning = useRef(false);
 
-  const isToggleEnabled = useAppSelector(getIsBasicFunctionalityToggleEnabled);
-  const isConsolidated = useAppSelector((state) =>
+  const isBftConsolidationRemoteEnabled = useAppSelector(
+    getIsBasicFunctionalityToggleEnabled,
+  );
+  const hasBftConsolidationMarker = useAppSelector((state) =>
     Boolean(
       state.metamask.preferences?.isBasicFunctionalityConsolidatedEnabled,
     ),
   );
+  const isBasicFunctionalityEnabled = useAppSelector(
+    (state) => state.metamask.useExternalServices,
+  );
   const isUnlocked = useAppSelector(getIsUnlocked);
   const completedOnboarding = useAppSelector(getCompletedOnboarding);
+  const isSocialLoginUser = useAppSelector(
+    getIsBasicFunctionalitySocialLoginUser,
+  );
+  const shouldRunConsolidation =
+    (isBftConsolidationRemoteEnabled && !hasBftConsolidationMarker) ||
+    (hasBftConsolidationMarker &&
+      !isBasicFunctionalityEnabled &&
+      isSocialLoginUser);
 
   useEffect(() => {
     if (
-      !isToggleEnabled ||
-      isConsolidated ||
+      !shouldRunConsolidation ||
       !isUnlocked ||
       !completedOnboarding ||
       isRunning.current
@@ -37,11 +51,5 @@ export function useBasicFunctionalityConsolidation(): void {
     dispatch(consolidateBasicFunctionality()).finally(() => {
       isRunning.current = false;
     });
-  }, [
-    completedOnboarding,
-    dispatch,
-    isConsolidated,
-    isToggleEnabled,
-    isUnlocked,
-  ]);
+  }, [completedOnboarding, dispatch, isUnlocked, shouldRunConsolidation]);
 }

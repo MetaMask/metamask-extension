@@ -16,6 +16,25 @@ export const BFT_CHILD_PREFERENCES = [
 ] as const;
 
 /**
+ * The subset of {@link BFT_CHILD_PREFERENCES} that
+ * `PreferencesController.toggleExternalServices` owns. When enabling, callers
+ * can pass the current values so they are applied in the same write instead of
+ * being overwritten and later restored.
+ */
+export const EXTERNAL_SERVICES_OWNED_PREFERENCES = [
+  'useTokenDetection',
+  'useCurrencyRateCheck',
+  'usePhishDetect',
+  'useAddressBarEnsResolution',
+  'openSeaEnabled',
+  'useNftDetection',
+  'useSafeChainsListValidation',
+] as const satisfies readonly (typeof BFT_CHILD_PREFERENCES)[number][];
+
+export type ExternalServicesOwnedPreference =
+  (typeof EXTERNAL_SERVICES_OWNED_PREFERENCES)[number];
+
+/**
  * If more than this many BFT child prefs are enabled, consolidation lands
  * Basic Functionality on (majority of {@link BFT_CHILD_PREFERENCES}).
  */

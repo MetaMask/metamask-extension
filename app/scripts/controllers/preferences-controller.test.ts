@@ -21,6 +21,7 @@ import {
 } from '../../../shared/constants/preferences';
 import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import { FALLBACK_LOCALE } from '../../../shared/lib/i18n';
+import { BFT_CHILD_PREFERENCES } from '../../../shared/lib/basic-functionality-consolidation';
 import type {
   PreferencesControllerMessenger,
   PreferencesControllerState,
@@ -434,6 +435,65 @@ describe('preferences controller', () => {
       expect(controller.state.useNftDetection).toStrictEqual(false);
       expect(controller.state.useSafeChainsListValidation).toStrictEqual(false);
     });
+
+    it('preserves owned preference overrides when enabling', () => {
+      const { controller } = setupController({});
+      controller.toggleExternalServices(false);
+
+      controller.toggleExternalServices(true, {
+        useTokenDetection: false,
+        useCurrencyRateCheck: false,
+      });
+
+      expect(controller.state.useExternalServices).toBe(true);
+      expect(controller.state.useTokenDetection).toBe(false);
+      expect(controller.state.useCurrencyRateCheck).toBe(false);
+      expect(controller.state.usePhishDetect).toBe(true);
+      expect(controller.state.useAddressBarEnsResolution).toBe(true);
+      expect(controller.state.openSeaEnabled).toBe(true);
+      expect(controller.state.useNftDetection).toBe(true);
+      expect(controller.state.useSafeChainsListValidation).toBe(true);
+    });
+
+    it('ignores owned preference overrides when disabling', () => {
+      const { controller } = setupController({});
+
+      controller.toggleExternalServices(false, {
+        useTokenDetection: true,
+      });
+
+      expect(controller.state.useExternalServices).toBe(false);
+      expect(controller.state.useTokenDetection).toBe(false);
+    });
+  });
+
+  describe('toggleBasicFunctionality', () => {
+    it('sets Basic Functionality and every child preference together', () => {
+      const { controller, toggleExternalServices } = setupController({});
+      controller.toggleExternalServices(false);
+
+      controller.toggleBasicFunctionality(true);
+
+      expect(controller.state.useExternalServices).toBe(true);
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        expect(controller.state[preference]).toBe(true);
+      }
+      expect(controller.state.isMultiAccountBalancesEnabled).toBe(true);
+      expect(toggleExternalServices).toHaveBeenCalledWith(true);
+    });
+
+    it('turns every child preference off together', () => {
+      const { controller, toggleExternalServices } = setupController({});
+
+      controller.toggleBasicFunctionality(false);
+
+      expect(controller.state.useExternalServices).toBe(false);
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        expect(controller.state[preference]).toBe(false);
+      }
+      expect(controller.state.isMultiAccountBalancesEnabled).toBe(false);
+      expect(toggleExternalServices).toHaveBeenCalledWith(false);
+    });
   });
 
   describe('addSnapAccountEnabled', () => {
@@ -666,6 +726,28 @@ describe('preferences controller', () => {
       expect(
         controller.getPreferences().isBasicFunctionalityConsolidatedEnabled,
       ).toBe(true);
+      expect(
+        controller.getPreferences().basicFunctionalityMigrationNotification,
+      ).toBe('modal');
+      expect(toggleExternalServices).toHaveBeenCalledWith(true);
+    });
+
+    it('repairs a consolidated social-login wallet with Basic Functionality disabled', () => {
+      const { controller, getSeedlessOnboardingState, toggleExternalServices } =
+        setupController({});
+      controller.toggleExternalServices(false);
+      controller.setPreference('isBasicFunctionalityConsolidatedEnabled', true);
+      getSeedlessOnboardingState.mockReturnValue({
+        authConnection: 'google',
+      });
+
+      controller.consolidateBasicFunctionality();
+
+      expect(controller.state.useExternalServices).toBe(true);
+      for (const preference of BFT_CHILD_PREFERENCES) {
+        expect(controller.state[preference]).toBe(true);
+      }
+      expect(controller.state.isMultiAccountBalancesEnabled).toBe(true);
       expect(
         controller.getPreferences().basicFunctionalityMigrationNotification,
       ).toBe('modal');
