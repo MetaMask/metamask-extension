@@ -13,8 +13,10 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
+  Icon,
   IconColor,
   IconName,
+  IconSize,
   SensitiveText,
   SensitiveTextLength,
   Skeleton,
@@ -118,9 +120,8 @@ export function MoneyTransactionDetailsPage() {
   }, [availability, controllerTx, items, transactionId]);
   const fromAddress =
     item?.kind === 'onchain' ? item.tx.txParams.from : undefined;
-  const { feeUsd, totalUsd } = useMoneyTransactionFee(
-    item?.kind === 'onchain' ? item.tx : undefined,
-  );
+  const { feeUsd, totalUsd, isNetworkFeePaidByMetaMask } =
+    useMoneyTransactionFee(item?.kind === 'onchain' ? item.tx : undefined);
   const fromAccount = useSelector((state) =>
     fromAddress ? getInternalAccountByAddress(state, fromAddress) : undefined,
   );
@@ -141,6 +142,8 @@ export function MoneyTransactionDetailsPage() {
     totalUsd === undefined
       ? '-'
       : formatCurrencyWithMinThreshold(totalUsd, MONEY_ACCOUNT_FIAT_CURRENCY);
+  const isFullySponsoredFee =
+    isNetworkFeePaidByMetaMask && feeUsd !== undefined && feeUsd === 0;
 
   let body: React.ReactNode;
   if (isAvailabilityLoading) {
@@ -307,19 +310,48 @@ export function MoneyTransactionDetailsPage() {
               >
                 <Text variant={TextVariant.BodyMd}>
                   {t('moneyActivityTransactionFeeTooltip')}
+                  {isNetworkFeePaidByMetaMask &&
+                  feeUsd !== undefined &&
+                  feeUsd > 0 ? (
+                    <>
+                      <br />
+                      {`${t('networkFee')}: ${t('paidByMetaMask')}`}
+                    </>
+                  ) : null}
                 </Text>
               </InfoPopover>
             }
             testId="money-transaction-details-fee"
             value={
-              <SensitiveText
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
-                isHidden={privacyMode}
-                length={SensitiveTextLength.Short}
-              >
-                {formattedFee}
-              </SensitiveText>
+              isFullySponsoredFee ? (
+                <Box
+                  flexDirection={BoxFlexDirection.Row}
+                  alignItems={BoxAlignItems.Center}
+                  gap={1}
+                  data-testid="money-transaction-details-fee-sponsored"
+                >
+                  <Icon
+                    name={IconName.Check}
+                    size={IconSize.Sm}
+                    color={IconColor.SuccessDefault}
+                  />
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    color={TextColor.SuccessDefault}
+                  >
+                    {t('paidByMetaMask')}
+                  </Text>
+                </Box>
+              ) : (
+                <SensitiveText
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  isHidden={privacyMode}
+                  length={SensitiveTextLength.Short}
+                >
+                  {formattedFee}
+                </SensitiveText>
+              )
             }
           />
           <MoneyTransactionDetailsRow

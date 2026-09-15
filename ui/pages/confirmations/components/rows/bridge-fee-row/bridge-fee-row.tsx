@@ -31,7 +31,10 @@ import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { useConfirmContext } from '../../../context/confirm';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { InfoPopoverTooltip } from '../../info-popover-tooltip';
-import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
+import {
+  useIsNetworkFeePaidByMetaMask,
+  useIsPaidByMetaMask,
+} from '../../../hooks/pay/useIsPaidByMetaMask';
 
 export type BridgeFeeRowProps = {
   variant?: ConfirmInfoRowSize;
@@ -53,6 +56,7 @@ export function BridgeFeeRow({
   const totals = useTransactionPayTotals();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const isPaidByMetaMask = useIsPaidByMetaMask();
+  const isNetworkFeePaidByMetaMask = useIsNetworkFeePaidByMetaMask();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
@@ -63,13 +67,19 @@ export function BridgeFeeRow({
       return '';
     }
 
-    const totalFee = new BigNumber(totals.fees.provider?.usd ?? '0')
-      .plus(totals.fees.metaMask?.usd ?? '0')
-      .plus(totals.fees.sourceNetwork?.estimate?.usd ?? '0')
-      .plus(totals.fees.targetNetwork?.usd ?? '0');
+    let totalFee = new BigNumber(totals.fees.provider?.usd ?? '0').plus(
+      totals.fees.metaMask?.usd ?? '0',
+    );
+
+    // Sponsored network gas must not inflate the fee the user is shown.
+    if (!isNetworkFeePaidByMetaMask) {
+      totalFee = totalFee
+        .plus(totals.fees.sourceNetwork?.estimate?.usd ?? '0')
+        .plus(totals.fees.targetNetwork?.usd ?? '0');
+    }
 
     return formatFiat(totalFee.toNumber());
-  }, [totals, formatFiat]);
+  }, [totals, formatFiat, isNetworkFeePaidByMetaMask]);
 
   const metamaskFeeUsd = useMemo(() => {
     const raw = new BigNumber(totals?.fees?.metaMask?.usd ?? '0');
@@ -97,6 +107,7 @@ export function BridgeFeeRow({
       metamaskFeeFormatted: metamaskFeeUsd,
       includeMetamaskFee: isSmall,
       useProviderFeeLabel: isPerpsWithdraw,
+      isNetworkFeePaidByMetaMask,
     });
   }, [
     isPaidByMetaMask,
@@ -108,6 +119,7 @@ export function BridgeFeeRow({
     metamaskFeeUsd,
     isSmall,
     isPerpsWithdraw,
+    isNetworkFeePaidByMetaMask,
   ]);
 
   if (isLoading) {
@@ -218,6 +230,7 @@ type BuildTooltipLinesArgs = {
   metamaskFeeFormatted: string;
   includeMetamaskFee: boolean;
   useProviderFeeLabel?: boolean;
+  isNetworkFeePaidByMetaMask?: boolean;
 };
 
 function buildTooltipLines({
@@ -228,6 +241,7 @@ function buildTooltipLines({
   metamaskFeeFormatted,
   includeMetamaskFee,
   useProviderFeeLabel,
+  isNetworkFeePaidByMetaMask,
 }: BuildTooltipLinesArgs): string[] {
   const networkFee = new BigNumber(
     totals.fees.sourceNetwork?.estimate?.usd ?? '0',
@@ -242,8 +256,12 @@ function buildTooltipLines({
     lines.push('');
   }
 
+  const networkFeeValue = isNetworkFeePaidByMetaMask
+    ? t('paidByMetaMask')
+    : formatFiat(networkFee.toNumber());
+
   lines.push(
-    `${t('networkFee')}: ${formatFiat(networkFee.toNumber())}`,
+    `${t('networkFee')}: ${networkFeeValue}`,
     `${useProviderFeeLabel ? t('providerFee') : t('bridgeFee')}: ${formatFiat(
       providerFeeUsd.toNumber(),
     )}`,
