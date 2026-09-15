@@ -1,5 +1,7 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../app/_locales/en/messages.json';
 import { MultichainPrivateKeyRow } from './multichain-private-key-row';
 
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -24,7 +26,7 @@ const renderComponent = ({
       chainId={CHAIN_ID}
       isCollapsible={isCollapsible}
       isExpanded={isExpanded}
-      networkName="Ethereum and EVMs"
+      networkName={messages.ethereumAndEvms.message}
       onCopy={mockOnCopy}
       onToggle={mockOnToggle}
       privateKey={PRIVATE_KEY}
@@ -44,7 +46,9 @@ describe('MultichainPrivateKeyRow', () => {
   it('renders the network and shortened address', () => {
     renderComponent();
 
-    expect(screen.getByText('Ethereum and EVMs')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.ethereumAndEvms.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('0x12345...45678')).toBeInTheDocument();
   });
 
