@@ -6,6 +6,7 @@ import {
   type TransactionPayState,
 } from '../../../../selectors/transactionPayController';
 import { useConfirmContext } from '../../context/confirm';
+import { selectIsSolanaPayEnabled } from '../../selectors/feature-flags';
 import { getAvailableTokens } from '../../utils/transaction-pay';
 import { useSendTokens } from '../send/useSendTokens';
 import { useTransactionPayBlockedTokens } from './useTransactionPayBlockedTokens';
@@ -21,6 +22,7 @@ export function useTransactionPayAvailableTokens() {
     ),
   );
   const blockedTokens = useTransactionPayBlockedTokens();
+  const isSolanaPayEnabled = useSelector(selectIsSolanaPayEnabled);
   const { payToken } = useTransactionPayToken();
 
   const availableTokens = useMemo(
@@ -30,8 +32,9 @@ export function useTransactionPayAvailableTokens() {
         blockedTokens,
         payToken,
         paySource,
+        isSolanaPayEnabled,
       }),
-    [blockedTokens, paySource, payToken, tokens],
+    [blockedTokens, isSolanaPayEnabled, paySource, payToken, tokens],
   );
 
   return availableTokens;
