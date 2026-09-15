@@ -197,6 +197,22 @@ describe('LedgerDmkBridgeHandler', () => {
       expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
     });
 
+    it('skips the permitted-device probe when WebHID is unavailable', async () => {
+      Object.defineProperty(globalThis, 'navigator', {
+        value: {},
+        writable: true,
+        configurable: true,
+      });
+
+      await expect(handler.handleAction(LedgerAction.makeApp)).resolves.toBe(
+        true,
+      );
+
+      // The probe is WebHID-only, so it must not touch `navigator.hid`.
+      expect(mockHidGetDevices).not.toHaveBeenCalled();
+      expect(mockBridgeStartDiscovering).toHaveBeenCalledTimes(1);
+    });
+
     it('wraps discovery Errors as HardwareWalletError.Unknown', async () => {
       const discoveryError = new Error('HID permission denied');
       mockBridgeStartDiscovering.mockReturnValue(

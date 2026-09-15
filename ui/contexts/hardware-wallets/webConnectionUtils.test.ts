@@ -837,15 +837,19 @@ describe('webConnectionUtils', () => {
     });
 
     it('returns an empty array when WebHID is not available', async () => {
-      Object.defineProperty(window.navigator, 'hid', {
-        value: undefined,
-        writable: true,
-        configurable: true,
-      });
+      const originalHid = window.navigator.hid;
+      const { requestDevice } = getMockedHid();
+      delete (window.navigator as { hid?: HID }).hid;
 
       await expect(
         requestWebHidDevices(HardwareWalletType.Ledger),
       ).resolves.toEqual([]);
+      expect(requestDevice).not.toHaveBeenCalled();
+
+      Object.defineProperty(window.navigator, 'hid', {
+        value: originalHid,
+        configurable: true,
+      });
     });
   });
 
