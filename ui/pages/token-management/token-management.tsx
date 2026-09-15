@@ -9,6 +9,8 @@ import React, {
 import { useSelector, useStore } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
   Box,
   BoxAlignItems,
   BoxBackgroundColor,
@@ -51,7 +53,10 @@ import {
   getSelectedMultichainNetworkConfiguration,
   selectEnabledNetworksAsCaipChainIds,
 } from '../../selectors/multichain/networks';
-import { useNetworkFilterButtonLabel } from '../../components/app/assets/hooks/useNetworkFilterButtonLabel';
+import {
+  useNetworkFilterButtonIcon,
+  useNetworkFilterButtonLabel,
+} from '../../components/app/assets/hooks/useNetworkFilterButtonLabel';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import {
   addNetwork,
@@ -887,6 +892,7 @@ export const TokenManagementPage = () => {
   }, [commitStagedHides]);
 
   const networkFilterLabel = useNetworkFilterButtonLabel();
+  const networkFilterIcon = useNetworkFilterButtonIcon();
 
   const getTokenKey = useCallback((token: ManagedAsset) => {
     const address = 'address' in token ? token.address : token.assetId;
@@ -1727,6 +1733,14 @@ export const TokenManagementPage = () => {
           className="bg-default text-default border border-muted"
           onClick={handleOpenNetworkFilter}
         >
+          {networkFilterIcon ? (
+            <AvatarNetwork
+              data-testid="token-management-network-filter-icon"
+              name={networkFilterIcon.name}
+              src={networkFilterIcon.src}
+              size={AvatarNetworkSize.Xs}
+            />
+          ) : null}
           <Text
             variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
