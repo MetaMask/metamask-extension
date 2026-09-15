@@ -6,16 +6,17 @@ jest.mock('loglevel', () => ({
   error: jest.fn(),
 }));
 
-// @metamask/bridge-controller is ESM-only; its transformed exports are
-// non-configurable getters, so `jest.spyOn` on the namespace throws
-// "Cannot redefine property". Mock the module with a factory instead,
-// passing through to the real implementation unless a test overrides it.
-jest.mock('@metamask/bridge-controller', () => ({
-  ...jest.requireActual('@metamask/bridge-controller'),
-  formatChainIdToCaip: jest.fn(
-    jest.requireActual('@metamask/bridge-controller').formatChainIdToCaip,
-  ),
-}));
+// `@metamask/bridge-controller`'s build output defines named exports with
+// `configurable: false`, so `jest.spyOn` can't redefine them directly (it
+// throws "Cannot redefine property"). Wrapping the real implementation in a
+// `jest.fn` here lets tests below use `mockImplementationOnce` on it instead.
+jest.mock('@metamask/bridge-controller', () => {
+  const actual = jest.requireActual('@metamask/bridge-controller');
+  return {
+    ...actual,
+    formatChainIdToCaip: jest.fn(actual.formatChainIdToCaip),
+  };
+});
 
 describe('rewards-utils', () => {
   beforeEach(() => {
@@ -301,10 +302,9 @@ describe('rewards-utils', () => {
       it('should return null when formatChainIdToCaip throws', () => {
         const address = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
 
-        const mockFormatChainIdToCaip = jest.mocked(
-          bridgeControllerUtils.formatChainIdToCaip,
-        );
-        mockFormatChainIdToCaip.mockImplementationOnce(() => {
+        (
+          bridgeControllerUtils.formatChainIdToCaip as jest.Mock
+        ).mockImplementationOnce(() => {
           throw new Error('Invalid chain ID format');
         });
 
@@ -321,12 +321,9 @@ describe('rewards-utils', () => {
         const address = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
 
         // Mock formatChainIdToCaip to return invalid data that will cause parseCaipChainId to fail
-        const mockFormatChainIdToCaip = jest.mocked(
-          bridgeControllerUtils.formatChainIdToCaip,
-        );
-        mockFormatChainIdToCaip.mockReturnValueOnce(
-          'invalid:caip:format:with:extra:parts' as never,
-        );
+        (
+          bridgeControllerUtils.formatChainIdToCaip as jest.Mock
+        ).mockImplementationOnce(() => 'invalid:caip:format:with:extra:parts');
 
         const result = formatAccountToCaipAccountId(address, '0x1');
 

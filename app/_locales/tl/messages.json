@@ -5462,9 +5462,6 @@
   "moneyActivityPending": {
     "message": "Nakabinbin"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "Lilitaw ang aktibidad mo sa Money dito."
-  },
   "moneyActivityReceived": {
     "message": "Natanggap"
   },

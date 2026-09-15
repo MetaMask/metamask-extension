@@ -5462,9 +5462,6 @@
   "moneyActivityPending": {
     "message": "अभी पूरा नहीं हुआ"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "आपकी मनी एक्टिविटी यहाँ दिखेंगी।"
-  },
   "moneyActivityReceived": {
     "message": "प्राप्त किया गया"
   },

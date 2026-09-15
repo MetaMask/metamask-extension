@@ -5462,9 +5462,6 @@
   "moneyActivityPending": {
     "message": "Pendente"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "A atividade de sua conta Money será exibida aqui."
-  },
   "moneyActivityReceived": {
     "message": "Recebido"
   },

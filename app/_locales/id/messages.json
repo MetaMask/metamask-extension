@@ -5466,9 +5466,6 @@
   "moneyActivityPending": {
     "message": "Menunggu"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "Aktivitas Money akan ditampilkan di sini."
-  },
   "moneyActivityReceived": {
     "message": "Diterima"
   },

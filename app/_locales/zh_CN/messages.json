@@ -5462,9 +5462,6 @@
   "moneyActivityPending": {
     "message": "待定"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "您的 Money 活动将显示在此处。"
-  },
   "moneyActivityReceived": {
     "message": "已收到"
   },

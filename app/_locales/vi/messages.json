@@ -5466,9 +5466,6 @@
   "moneyActivityPending": {
     "message": "Chờ xử lý"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "Hoạt động Money của bạn sẽ xuất hiện tại đây."
-  },
   "moneyActivityReceived": {
     "message": "Đã nhận"
   },
