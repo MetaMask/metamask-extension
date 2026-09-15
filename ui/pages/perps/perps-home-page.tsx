@@ -1,5 +1,4 @@
 import React from 'react';
-import { Page } from '../../components/multichain/pages/page';
 import { PerpsTab } from '../../components/app/perps/perps-tab';
 
 // Page shown when the Perps tab in the bottom navigation bar is clicked
@@ -8,9 +7,9 @@ import { PerpsTab } from '../../components/app/perps/perps-tab';
 // both this bottom-nav wrapper and the account-overview tab.
 export const PerpsHomePage = () => {
   return (
-    <Page data-testid="perps-home-page">
+    <div className="min-h-full bg-background-default" data-testid="perps-home-page">
       <PerpsTab />
-    </Page>
+    </div>
   );
 };
 

@@ -33,6 +33,7 @@ import { RewardsModalContainer } from '../../components/app/rewards/onboarding/r
 import { Pna25ModalContainer } from '../../components/app/modals/pna25-modal/pna25-modal-container';
 import { AppHeader } from '../../components/multichain/app-header';
 import { DappConnectionControlBar } from '../../components/multichain/dapp-connection-control-bar';
+import { useBottomNavBar } from '../../hooks/useBottomNavBar';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useSegmentContext } from '../../hooks/useSegmentContext';
 import { openBasicFunctionalityModal } from '../../ducks/app/app';
@@ -233,6 +234,9 @@ export default function Home() {
     setBasicFunctionalityModalOpen();
   }, [setBasicFunctionalityModalOpen]);
 
+  const showAppShellChrome = useBottomNavBar();
+  const appHeader = showAppShellChrome ? null : <AppHeader />;
+
   if (forgottenPassword) {
     return <Navigate to={RESTORE_VAULT_ROUTE} replace />;
   }
@@ -244,9 +248,9 @@ export default function Home() {
   if (location.pathname === CONNECTED_ROUTE) {
     return (
       <>
-        <AppHeader />
-        <div className="flex flex-col flex-1 min-h-0">
-          <ScrollContainer className="main-container main-container--has-shadow">
+        {appHeader}
+        <div className="flex min-h-0 flex-1 flex-col">
+          <ScrollContainer className="main-container main-container--has-shadow min-h-0 flex-1">
             <ConnectedSites navigate={navigate} />
           </ScrollContainer>
           <DappConnectionControlBar />
@@ -258,9 +262,9 @@ export default function Home() {
   if (location.pathname === CONNECTED_ACCOUNTS_ROUTE) {
     return (
       <>
-        <AppHeader />
-        <div className="flex flex-col flex-1 min-h-0">
-          <ScrollContainer className="main-container main-container--has-shadow">
+        {appHeader}
+        <div className="flex min-h-0 flex-1 flex-col">
+          <ScrollContainer className="main-container main-container--has-shadow min-h-0 flex-1">
             <ConnectedAccounts navigate={navigate} />
           </ScrollContainer>
           <DappConnectionControlBar />
@@ -269,46 +273,58 @@ export default function Home() {
     );
   }
 
+  const homeBody = (
+    <>
+      <div className="home__container" data-testid="parent-selector-home">
+        <MetaMetricsConsentContainer />
+        <PasswordOutdatedModalContainer />
+        <MultiRpcEditModalContainer />
+        <UpdateModalContainer />
+        <RecoveryPhraseReminderContainer />
+        <TermsOfUsePopupContainer />
+        <ShieldEntryModalContainer />
+        <RewardsModalContainer />
+        <DeeplinkQrCodeModalContainer />
+        <Pna25ModalContainer />
+        <ConnectedStatusPopoverContainer />
+        <div className="home__main-view">
+          <AccountOverview
+            onSupportLinkClick={onSupportLinkClick}
+            useExternalServices={useExternalServices ?? false}
+            setBasicFunctionalityModalOpen={handleBasicFunctionalityModalOpen}
+          />
+          {(isBeta() || isFlask()) && (
+            <div className="home__support">
+              <BetaAndFlaskHomeFooter />
+            </div>
+          )}
+        </div>
+        <HomeNotificationsContainer />
+        <ImportedTokensNotificationContainer />
+      </div>
+      <HomeDeepLinkActions />
+      <ShieldCohortContainer />
+    </>
+  );
+
   return (
     <>
-      <AppHeader />
-      <div className="flex flex-col flex-1 min-h-0">
-        <ScrollContainer className="main-container main-container--has-shadow">
-          <div className="home__container" data-testid="parent-selector-home">
-            <MetaMetricsConsentContainer />
-            <PasswordOutdatedModalContainer />
-            <MultiRpcEditModalContainer />
-            <UpdateModalContainer />
-            <RecoveryPhraseReminderContainer />
-            <TermsOfUsePopupContainer />
-            <ShieldEntryModalContainer />
-            <RewardsModalContainer />
-            <DeeplinkQrCodeModalContainer />
-            <Pna25ModalContainer />
-            <ConnectedStatusPopoverContainer />
-            <div className="home__main-view">
-              <AccountOverview
-                onSupportLinkClick={onSupportLinkClick}
-                useExternalServices={useExternalServices ?? false}
-                setBasicFunctionalityModalOpen={
-                  handleBasicFunctionalityModalOpen
-                }
-              />
-              {(isBeta() || isFlask()) && (
-                <div className="home__support">
-                  <BetaAndFlaskHomeFooter />
-                </div>
-              )}
-            </div>
-            <HomeNotificationsContainer />
-            <ImportedTokensNotificationContainer />
+      {appHeader}
+      {showAppShellChrome ? (
+        <div className="flex min-h-full flex-col">
+          <div className="grow">{homeBody}</div>
+          <div className="sticky bottom-16 z-[100] shrink-0">
+            <DappConnectionControlBar />
           </div>
-
-          <HomeDeepLinkActions />
-          <ShieldCohortContainer />
-        </ScrollContainer>
-        <DappConnectionControlBar />
-      </div>
+        </div>
+      ) : (
+        <div className="flex min-h-0 flex-1 flex-col">
+          <ScrollContainer className="main-container main-container--has-shadow min-h-0 flex-1">
+            {homeBody}
+          </ScrollContainer>
+          <DappConnectionControlBar />
+        </div>
+      )}
     </>
   );
 }

@@ -144,6 +144,7 @@ import { ChooseNewWalletTypePage } from '../multichain-accounts/choose-new-walle
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
 import { LegacyLayout } from '../../layouts/legacy-layout';
+import { MainLayout } from '../../layouts/main-layout';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';
 import { RequireOnboarded } from '../../layouts/require-onboarded';
 import { contactsRoutes } from '../contacts';
@@ -369,322 +370,327 @@ export const routeConfig = [
   {
     element: <RequireAuthenticated />,
     children: [
-      createRouteWithMessenger({
-        path: `${REVEAL_SEED_ROUTE}/:keyringId?`,
-        element: <RevealSeedConfirmation />,
-        capabilities: REVEAL_SEED_ROUTE_CAPABILITIES,
-      }),
       {
-        path: HARDWARE_WALLET_REPAIR_ROUTE,
-        element: <HardwareWalletRepair />,
-      },
-      {
-        path: IMPORT_SRP_ROUTE,
-        element: <ImportSrpPage />,
-      },
-      {
-        path: NETWORKS_ROUTE,
-        element: (
-          <GlobalMenuRouteTransition>
-            <NetworksPage />
-          </GlobalMenuRouteTransition>
-        ),
-      },
-      {
-        path: TOKEN_MANAGEMENT_ROUTE,
-        element: (
-          <GlobalMenuRouteTransition>
-            <TokenManagementFeatureRoute />
-          </GlobalMenuRouteTransition>
-        ),
-      },
-      {
-        path: DISCOVER_SEARCH_ROUTE,
-        element: (
-          <GlobalMenuRouteTransition>
-            <DiscoverSearchFeatureRoute />
-          </GlobalMenuRouteTransition>
-        ),
-      },
-      {
-        path: CUSTOM_TOKEN_IMPORT_ROUTE,
-        element: <CustomTokenImportFeatureRoute />,
-      },
-      {
-        path: `${SETTINGS_ROUTE}/*`,
-        element: (
-          <GlobalMenuRouteTransition>
-            <Settings />
-          </GlobalMenuRouteTransition>
-        ),
-      },
-      ...(getIsQrSyncEnabled()
-        ? [
-            {
-              path: SYNC_ACCOUNTS_ROUTE,
-              element: <SyncAccounts />,
-            },
-          ]
-        : []),
-      {
-        path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
-        element: <SettingsV2LegacyRedirect />,
-      },
-      {
-        path: SEND_PAGE_ROUTE,
-        element: <SendPage />,
-      },
-      {
-        path: `${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`,
-        element: <ConfirmDecryptMessage />,
-      },
-      {
-        path: `${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
-        element: <ConfirmEncryptionPublicKey />,
-      },
-      {
-        path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
-        element: <Confirm />,
-      },
-      {
-        path: `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
-        element: <HardwareWalletSignaturesPage />,
-      },
-      {
-        path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-        element: <ConfirmAddSuggestedTokenPage />,
-      },
-      {
-        path: CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
-        element: <ConfirmAddSuggestedNftPage />,
-      },
-      {
-        path: `${CONFIRMATION_V_NEXT_ROUTE}/:id?`,
-        element: <ConfirmationPage />,
-      },
-      {
-        path: `${NEW_ACCOUNT_ROUTE}/*`,
-        element: <CreateAccountPage />,
-      },
-      {
-        path: `${CONNECT_ROUTE}/:id/*`,
-        element: <PermissionsConnect />,
-      },
-      {
-        path: ASSET_IMAGE_ROUTE,
-        element: <NftFullImage />,
-      },
-      {
-        path: ASSET_SECURITY_TRUST_ROUTE,
-        element: <SecurityTrustPage />,
-      },
-      {
-        path: ASSET_DETAILS_ROUTE,
-        element: <Asset />,
-      },
-      {
-        path: PERMISSIONS,
-        element: (
-          <GlobalMenuRouteTransition>
-            <PermissionsPage />
-          </GlobalMenuRouteTransition>
-        ),
-      },
-      {
-        path: GATOR_PERMISSIONS,
-        element: (
-          <GlobalMenuRouteTransition>
-            <GatorPermissionsPage />
-          </GlobalMenuRouteTransition>
-        ),
-      },
-      {
-        path: TOKEN_TRANSFER_DETAILS_ROUTE,
-        element: <GatorPermissionsTokenTransferPermissionsPage />,
-      },
-      {
-        path: REVIEW_GATOR_PERMISSIONS_DETAILS_ROUTE,
-        element: <GatorPermissionsReviewPermissionsPage />,
-      },
-      {
-        path: REVIEW_PERMISSIONS,
-        element: <MultichainReviewPermissions />,
-      },
-      {
-        path: ACCOUNT_LIST_PAGE_ROUTE,
-        element: <AccountList />,
-      },
-      {
-        path: MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
-        element: <MultichainAccountAddressListPage />,
-      },
-      createRouteWithMessenger({
-        path: MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
-        element: <MultichainAccountPrivateKeyListPage />,
-        capabilities: PRIVATE_KEY_LIST_ROUTE_CAPABILITIES,
-      }),
-      {
-        path: ADD_WALLET_PAGE_ROUTE,
-        element: <AddWalletPage />,
-      },
-      {
-        path: CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
-        element: <ChooseNewWalletTypePage />,
-      },
-      {
-        path: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
-        element: <MultichainAccountDetailsPage />,
-      },
-      {
-        path: `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`,
-        element: <SmartAccountPage />,
-      },
-      {
-        path: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
-        element: <WalletDetailsPage />,
-      },
-      {
-        path: CONTACTS_ROUTE,
-        element: (
-          <GlobalMenuRouteTransition>
-            <Outlet />
-          </GlobalMenuRouteTransition>
-        ),
-        children: contactsRoutes,
-      },
-      createRouteWithMessenger({
-        path: DEFAULT_ROUTE,
-        capabilities: HOME_ROUTE_ALLOWED_CAPABILITIES,
-        element: <Home />,
-      }),
-      {
-        path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
-        element: <TransactionDetailsRoute />,
-      },
-      {
-        element: <RequireBasicFunctionality />,
+        element: <MainLayout />,
         children: [
-          {
-            path: '/notifications/settings',
-            element: <Navigate to={NOTIFICATIONS_SETTINGS_ROUTE} replace />,
-          },
-          {
-            path: `${NOTIFICATIONS_ROUTE}/:uuid`,
-            element: <NotificationDetails />,
-          },
-          {
-            path: NOTIFICATIONS_ROUTE,
-            element: (
-              <GlobalMenuRouteTransition>
-                <Notifications />
-              </GlobalMenuRouteTransition>
-            ),
-          },
-          {
-            path: SNAPS_ROUTE,
-            element: (
-              <GlobalMenuRouteTransition>
-                <SnapList />
-              </GlobalMenuRouteTransition>
-            ),
-          },
           createRouteWithMessenger({
-            path: SNAPS_VIEW_ROUTE,
-            capabilities: SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES,
-            element: <SnapView />,
+            path: `${REVEAL_SEED_ROUTE}/:keyringId?`,
+            element: <RevealSeedConfirmation />,
+            capabilities: REVEAL_SEED_ROUTE_CAPABILITIES,
           }),
           {
-            path: `${BATCH_SELL_ROOT_ROUTE}/*`,
-            element: <BatchSell />,
+            path: HARDWARE_WALLET_REPAIR_ROUTE,
+            element: <HardwareWalletRepair />,
           },
           {
-            path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
-            element: <CrossChainSwap />,
+            path: IMPORT_SRP_ROUTE,
+            element: <ImportSrpPage />,
           },
           {
-            path: `${DEFI_ROUTE}/:chainId/:protocolId`,
-            element: <DeFiPage />,
+            path: NETWORKS_ROUTE,
+            element: (
+              <GlobalMenuRouteTransition>
+                <NetworksPage />
+              </GlobalMenuRouteTransition>
+            ),
           },
           {
-            path: RAMPS_BUILD_QUOTE_ROUTE,
-            element: <RampsBuildQuote />,
+            path: TOKEN_MANAGEMENT_ROUTE,
+            element: (
+              <GlobalMenuRouteTransition>
+                <TokenManagementFeatureRoute />
+              </GlobalMenuRouteTransition>
+            ),
           },
           {
-            path: RAMPS_TOKEN_SELECTION_ROUTE,
-            element: <RampsTokenSelection />,
+            path: DISCOVER_SEARCH_ROUTE,
+            element: (
+              <GlobalMenuRouteTransition>
+                <DiscoverSearchFeatureRoute />
+              </GlobalMenuRouteTransition>
+            ),
           },
           {
-            path: RAMPS_PAYMENT_METHOD_ROUTE,
-            element: <RampsPaymentMethod />,
+            path: CUSTOM_TOKEN_IMPORT_ROUTE,
+            element: <CustomTokenImportFeatureRoute />,
           },
           {
-            path: RAMPS_COMPLETE_BUY_ROUTE,
-            element: <RampsCompleteBuy />,
+            path: `${SETTINGS_ROUTE}/*`,
+            element: (
+              <GlobalMenuRouteTransition>
+                <Settings />
+              </GlobalMenuRouteTransition>
+            ),
+          },
+          ...(getIsQrSyncEnabled()
+            ? [
+                {
+                  path: SYNC_ACCOUNTS_ROUTE,
+                  element: <SyncAccounts />,
+                },
+              ]
+            : []),
+          {
+            path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
+            element: <SettingsV2LegacyRedirect />,
           },
           {
-            path: `${MUSD_CONVERSION_ROUTE}/*`,
-            element: <MusdConversionPage />,
+            path: SEND_PAGE_ROUTE,
+            element: <SendPage />,
           },
           {
-            path: SHIELD_PLAN_ROUTE,
-            element: <ShieldPlan />,
+            path: `${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`,
+            element: <ConfirmDecryptMessage />,
           },
           {
-            path: REWARDS_ROUTE,
-            element: <RewardsPage />,
+            path: `${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
+            element: <ConfirmEncryptionPublicKey />,
           },
           {
-            element: <PerpsLayout />,
+            path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
+            element: <Confirm />,
+          },
+          {
+            path: `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`,
+            element: <HardwareWalletSignaturesPage />,
+          },
+          {
+            path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+            element: <ConfirmAddSuggestedTokenPage />,
+          },
+          {
+            path: CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+            element: <ConfirmAddSuggestedNftPage />,
+          },
+          {
+            path: `${CONFIRMATION_V_NEXT_ROUTE}/:id?`,
+            element: <ConfirmationPage />,
+          },
+          {
+            path: `${NEW_ACCOUNT_ROUTE}/*`,
+            element: <CreateAccountPage />,
+          },
+          {
+            path: `${CONNECT_ROUTE}/:id/*`,
+            element: <PermissionsConnect />,
+          },
+          {
+            path: ASSET_IMAGE_ROUTE,
+            element: <NftFullImage />,
+          },
+          {
+            path: ASSET_SECURITY_TRUST_ROUTE,
+            element: <SecurityTrustPage />,
+          },
+          {
+            path: ASSET_DETAILS_ROUTE,
+            element: <Asset />,
+          },
+          {
+            path: PERMISSIONS,
+            element: (
+              <GlobalMenuRouteTransition>
+                <PermissionsPage />
+              </GlobalMenuRouteTransition>
+            ),
+          },
+          {
+            path: GATOR_PERMISSIONS,
+            element: (
+              <GlobalMenuRouteTransition>
+                <GatorPermissionsPage />
+              </GlobalMenuRouteTransition>
+            ),
+          },
+          {
+            path: TOKEN_TRANSFER_DETAILS_ROUTE,
+            element: <GatorPermissionsTokenTransferPermissionsPage />,
+          },
+          {
+            path: REVIEW_GATOR_PERMISSIONS_DETAILS_ROUTE,
+            element: <GatorPermissionsReviewPermissionsPage />,
+          },
+          {
+            path: REVIEW_PERMISSIONS,
+            element: <MultichainReviewPermissions />,
+          },
+          {
+            path: ACCOUNT_LIST_PAGE_ROUTE,
+            element: <AccountList />,
+          },
+          {
+            path: MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
+            element: <MultichainAccountAddressListPage />,
+          },
+          createRouteWithMessenger({
+            path: MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
+            element: <MultichainAccountPrivateKeyListPage />,
+            capabilities: PRIVATE_KEY_LIST_ROUTE_CAPABILITIES,
+          }),
+          {
+            path: ADD_WALLET_PAGE_ROUTE,
+            element: <AddWalletPage />,
+          },
+          {
+            path: CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
+            element: <ChooseNewWalletTypePage />,
+          },
+          {
+            path: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+            element: <MultichainAccountDetailsPage />,
+          },
+          {
+            path: `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`,
+            element: <SmartAccountPage />,
+          },
+          {
+            path: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+            element: <WalletDetailsPage />,
+          },
+          {
+            path: CONTACTS_ROUTE,
+            element: (
+              <GlobalMenuRouteTransition>
+                <Outlet />
+              </GlobalMenuRouteTransition>
+            ),
+            children: contactsRoutes,
+          },
+          createRouteWithMessenger({
+            path: DEFAULT_ROUTE,
+            capabilities: HOME_ROUTE_ALLOWED_CAPABILITIES,
+            element: <Home />,
+          }),
+          {
+            path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
+            element: <TransactionDetailsRoute />,
+          },
+          {
+            element: <RequireBasicFunctionality />,
             children: [
               {
-                path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
-                element: <PerpsMarketDetailPage />,
+                path: '/notifications/settings',
+                element: <Navigate to={NOTIFICATIONS_SETTINGS_ROUTE} replace />,
               },
               {
-                path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
-                element: <PerpsOrderEntryPage />,
+                path: `${NOTIFICATIONS_ROUTE}/:uuid`,
+                element: <NotificationDetails />,
               },
               {
-                path: PERPS_ACTIVITY_ROUTE,
-                element: <PerpsActivityPage />,
+                path: NOTIFICATIONS_ROUTE,
+                element: (
+                  <GlobalMenuRouteTransition>
+                    <Notifications />
+                  </GlobalMenuRouteTransition>
+                ),
               },
               {
-                path: PERPS_TRANSACTION_DETAILS_ROUTE,
-                element: <PerpsTransactionDetailsPage />,
+                path: SNAPS_ROUTE,
+                element: (
+                  <GlobalMenuRouteTransition>
+                    <SnapList />
+                  </GlobalMenuRouteTransition>
+                ),
+              },
+              createRouteWithMessenger({
+                path: SNAPS_VIEW_ROUTE,
+                capabilities: SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES,
+                element: <SnapView />,
+              }),
+              {
+                path: `${BATCH_SELL_ROOT_ROUTE}/*`,
+                element: <BatchSell />,
               },
               {
-                path: PERPS_MARKET_LIST_ROUTE,
-                element: <MarketListView />,
+                path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
+                element: <CrossChainSwap />,
               },
               {
-                path: PERPS_WITHDRAW_ROUTE,
-                element: <PerpsWithdrawPage />,
+                path: `${DEFI_ROUTE}/:chainId/:protocolId`,
+                element: <DeFiPage />,
               },
+              {
+                path: RAMPS_BUILD_QUOTE_ROUTE,
+                element: <RampsBuildQuote />,
+              },
+              {
+                path: RAMPS_TOKEN_SELECTION_ROUTE,
+                element: <RampsTokenSelection />,
+              },
+              {
+                path: RAMPS_PAYMENT_METHOD_ROUTE,
+                element: <RampsPaymentMethod />,
+              },
+              {
+                path: RAMPS_COMPLETE_BUY_ROUTE,
+                element: <RampsCompleteBuy />,
+              },
+              {
+                path: `${MUSD_CONVERSION_ROUTE}/*`,
+                element: <MusdConversionPage />,
+              },
+              {
+                path: SHIELD_PLAN_ROUTE,
+                element: <ShieldPlan />,
+              },
+              {
+                path: REWARDS_ROUTE,
+                element: <RewardsPage />,
+              },
+              {
+                element: <PerpsLayout />,
+                children: [
+                  {
+                    path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
+                    element: <PerpsMarketDetailPage />,
+                  },
+                  {
+                    path: `${PERPS_ORDER_ENTRY_ROUTE}/:symbol`,
+                    element: <PerpsOrderEntryPage />,
+                  },
+                  {
+                    path: PERPS_ACTIVITY_ROUTE,
+                    element: <PerpsActivityPage />,
+                  },
+                  {
+                    path: PERPS_TRANSACTION_DETAILS_ROUTE,
+                    element: <PerpsTransactionDetailsPage />,
+                  },
+                  {
+                    path: PERPS_MARKET_LIST_ROUTE,
+                    element: <MarketListView />,
+                  },
+                  {
+                    path: PERPS_WITHDRAW_ROUTE,
+                    element: <PerpsWithdrawPage />,
+                  },
+                ],
+              },
+              {
+                path: ACTIVITY_ROUTE,
+                element: <ActivityPage />,
+              },
+              {
+                path: PERPS_HOME_PAGE_ROUTE,
+                element: <PerpsPage />,
+              },
+              createRouteWithMessenger({
+                path: MONEY_HOME_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyHomePage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_ACTIVITY_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyActivityPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_TRANSACTION_DETAILS_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyTransactionDetailsPage />,
+              }),
             ],
           },
-          {
-            path: ACTIVITY_ROUTE,
-            element: <ActivityPage />,
-          },
-          {
-            path: PERPS_HOME_PAGE_ROUTE,
-            element: <PerpsPage />,
-          },
-          createRouteWithMessenger({
-            path: MONEY_HOME_ROUTE,
-            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-            element: <MoneyHomePage />,
-          }),
-          createRouteWithMessenger({
-            path: MONEY_ACTIVITY_ROUTE,
-            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-            element: <MoneyActivityPage />,
-          }),
-          createRouteWithMessenger({
-            path: MONEY_TRANSACTION_DETAILS_ROUTE,
-            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-            element: <MoneyTransactionDetailsPage />,
-          }),
         ],
       },
     ],

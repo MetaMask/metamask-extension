@@ -148,7 +148,7 @@ export function BottomNavBar() {
   return (
     <nav
       data-testid="parent-selector-bottom-nav-bar"
-      className="bottom-nav-bar w-full bg-background-default border-t border-[color:var(--bar-border-color)] flex flex-row justify-between p-2 gap-2 z-[100]"
+      className="bottom-nav-bar sticky bottom-0 mt-auto w-full shrink-0 bg-background-default border-t border-[color:var(--bar-border-color)] flex flex-row justify-between p-2 gap-2 z-[100] transition-[background-color,backdrop-filter] duration-200"
       style={{ viewTransitionName: 'bottom-nav-bar' }}
     >
       <NavTab

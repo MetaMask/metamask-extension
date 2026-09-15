@@ -431,7 +431,7 @@ const PrepareBridgePage = ({
       />
 
       <Column
-        className="prepare-bridge-page"
+        className="prepare-bridge-page flex-1"
         gap={4}
         data-testid="parent-selector-bridge-quote"
       >
@@ -656,9 +656,9 @@ const PrepareBridgePage = ({
 
         {!isInitialQuoteLoading && (
           <Column
+            className="flex-1"
             justifyContent={JustifyContent.flexEnd}
             width={BlockSize.Full}
-            height={BlockSize.Full}
             gap={3}
             paddingInline={4}
             paddingTop={4}
