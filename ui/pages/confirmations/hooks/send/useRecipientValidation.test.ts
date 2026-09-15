@@ -127,6 +127,38 @@ describe('useRecipientValidation', () => {
     });
   });
 
+  it('clears the previous result when the recipient is cleared', async () => {
+    mockUseSendContext.mockReturnValue({
+      asset: EVM_ASSET,
+      to: 'vitalik.eth',
+      chainId: '0x1',
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
+      validateName: () =>
+        Promise.resolve({ resolvedLookup: '0x123', protocol: 'ens' }),
+    });
+
+    const { result, rerender } = renderHook();
+
+    await waitFor(() => {
+      expect(result.current.recipientResolvedLookup).toBe('0x123');
+    });
+
+    mockUseSendContext.mockReturnValue({
+      asset: EVM_ASSET,
+      to: '',
+      chainId: '0x1',
+    } as unknown as ReturnType<typeof useSendContext>);
+    rerender({});
+
+    await waitFor(() => {
+      expect(result.current.recipientResolvedLookup).toBeUndefined();
+      expect(result.current.toAddressValidated).toBeUndefined();
+      expect(result.current.isRecipientValidationPending).toBe(false);
+    });
+  });
+
   it('returns confusable characters when available', async () => {
     mockUseSendContext.mockReturnValue({
       asset: EVM_ASSET,

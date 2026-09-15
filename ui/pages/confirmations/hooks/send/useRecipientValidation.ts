@@ -129,16 +129,28 @@ export const useRecipientValidation = () => {
   const { alerts, hasUnacknowledgedAlerts, acknowledgeAlerts } =
     useSendAlerts();
 
+  // A committed result only belongs to the input it was validated for. Once
+  // `to` changes or is cleared, the stored result is stale until the next
+  // validation commits, so consumers never see it.
+  const isResultCurrent =
+    Boolean(to && chainId) && result?.toAddressValidated === to;
+
   return {
-    recipientConfusableCharacters: result?.confusableCharacters,
-    recipientError: result?.error ? t(result?.error) : undefined,
-    recipientResolvedLookup: result?.resolvedLookup,
-    recipientWarning: result?.warning ? t(result?.warning) : undefined,
-    resolutionProtocol: result?.protocol,
-    toAddressValidated: result?.toAddressValidated,
-    isRecipientValidationPending: Boolean(
-      to && chainId && to !== result?.toAddressValidated,
-    ),
+    recipientConfusableCharacters: isResultCurrent
+      ? result?.confusableCharacters
+      : undefined,
+    recipientError:
+      isResultCurrent && result?.error ? t(result.error) : undefined,
+    recipientResolvedLookup: isResultCurrent
+      ? result?.resolvedLookup
+      : undefined,
+    recipientWarning:
+      isResultCurrent && result?.warning ? t(result.warning) : undefined,
+    resolutionProtocol: isResultCurrent ? result?.protocol : undefined,
+    toAddressValidated: isResultCurrent
+      ? result?.toAddressValidated
+      : undefined,
+    isRecipientValidationPending: Boolean(to && chainId && !isResultCurrent),
     alerts,
     hasUnacknowledgedAlerts,
     acknowledgeAlerts,
