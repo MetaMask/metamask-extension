@@ -1,13 +1,12 @@
-import type { Span, SpanAttributes } from '@sentry/types';
 import type { SplitStateWriteEvent } from '../../../shared/lib/stores/persistence-manager';
+import { trace, TraceName, TraceOperation } from '../../../shared/lib/trace';
 
 /**
  * Sentry transaction name for sampled split-state persistence writes.
  * Must stay in sync with {@link DEFAULT_TRANSACTION_SAMPLE_RATES} so already
  * measured writes are not dropped again by the global `tracesSampleRate`.
  */
-export const STATE_WRITE_TRACE_NAME = 'State Persist';
-const STATE_WRITE_TRACE_OPERATION = 'state.write';
+export const STATE_WRITE_TRACE_NAME = TraceName.StatePersist;
 
 /**
  * Reports a sampled split-state persistence write without exposing state
@@ -16,12 +15,7 @@ const STATE_WRITE_TRACE_OPERATION = 'state.write';
  * @param event - Value-free measurements for one persisted batch.
  */
 export function trackSplitStateWrite(event: SplitStateWriteEvent): void {
-  const { sentry } = globalThis;
-  if (!sentry) {
-    return;
-  }
-
-  const attributes: SpanAttributes = {
+  const data: Record<string, number | string | boolean> = {
     'state.write.coalesced_updates': event.coalescedUpdates,
     'state.write.controller_count': event.controllerKeys.length,
     'state.write.controllers': event.controllerKeys.join(','),
@@ -35,18 +29,15 @@ export function trackSplitStateWrite(event: SplitStateWriteEvent): void {
   for (const [controllerKey, bytes] of Object.entries(
     event.bytesByController,
   )) {
-    attributes[`state.write.bytes.${controllerKey}`] = bytes;
+    data[`state.write.bytes.${controllerKey}`] = bytes;
   }
 
-  sentry.startSpan(
+  trace(
     {
-      attributes,
-      forceTransaction: true,
-      name: STATE_WRITE_TRACE_NAME,
-      op: STATE_WRITE_TRACE_OPERATION,
+      data,
+      name: TraceName.StatePersist,
+      op: TraceOperation.StateWrite,
     },
-    (span: Span) => {
-      span.setStatus({ code: 1 });
-    },
+    () => undefined,
   );
 }

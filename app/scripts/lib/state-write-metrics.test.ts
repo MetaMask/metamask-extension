@@ -1,5 +1,6 @@
 import type * as Sentry from '@sentry/browser';
 import type { SplitStateWriteEvent } from '../../../shared/lib/stores/persistence-manager';
+import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { trackSplitStateWrite } from './state-write-metrics';
 
 const EVENT: SplitStateWriteEvent = {
@@ -29,11 +30,16 @@ describe('trackSplitStateWrite', () => {
     expect(() => trackSplitStateWrite(EVENT)).not.toThrow();
   });
 
-  it('reports value-free write measurements as a Sentry span', () => {
-    const setStatus = jest.fn();
-    const startSpan = jest.fn((_options, callback) => callback({ setStatus }));
+  it('reports value-free write measurements via trace()', () => {
+    const startSpan = jest.fn((_options, callback) => callback(null));
+    const withIsolationScope = jest.fn((callback) =>
+      callback({ setTag: jest.fn() }),
+    );
+    const getActiveSpan = jest.fn(() => undefined);
     globalThis.sentry = {
+      getActiveSpan,
       startSpan,
+      withIsolationScope,
     } as unknown as typeof Sentry;
 
     trackSplitStateWrite(EVENT);
@@ -52,15 +58,39 @@ describe('trackSplitStateWrite', () => {
           'state.write.total_bytes': 67,
           'state.write.write_duration_ms': 4.5,
         },
-        forceTransaction: true,
-        name: 'State Persist',
-        op: 'state.write',
+        forceTransaction: undefined,
+        name: TraceName.StatePersist,
+        op: TraceOperation.StateWrite,
+        parentSpan: null,
+        startTime: undefined,
       },
       expect.any(Function),
     );
-    expect(setStatus).toHaveBeenCalledWith({ code: 1 });
     expect(JSON.stringify(startSpan.mock.calls)).not.toContain(
       'controller state value',
+    );
+  });
+
+  it('forces a transaction when an ambient active span exists', () => {
+    const activeSpan = { spanContext: jest.fn() };
+    const startSpan = jest.fn((_options, callback) => callback(null));
+    globalThis.sentry = {
+      getActiveSpan: jest.fn(() => activeSpan),
+      startSpan,
+      withIsolationScope: jest.fn((callback) =>
+        callback({ setTag: jest.fn() }),
+      ),
+    } as unknown as typeof Sentry;
+
+    trackSplitStateWrite(EVENT);
+
+    expect(startSpan).toHaveBeenCalledWith(
+      expect.objectContaining({
+        forceTransaction: true,
+        name: TraceName.StatePersist,
+        parentSpan: activeSpan,
+      }),
+      expect.any(Function),
     );
   });
 });

@@ -2,7 +2,7 @@ import {
   getRemoteTracesSampleRate,
   getRemoteTransactionSampleRates,
 } from '../../../shared/lib/sentry-remote-rates';
-import { STATE_WRITE_TRACE_NAME } from './state-write-metrics';
+import { TraceName } from '../../../shared/lib/trace';
 
 /**
  * Per-`name` sample rates that override the global `tracesSampleRate`, so a
@@ -16,7 +16,7 @@ export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
 > = Object.freeze({
   AssetsDataSourceTiming: 0,
   AssetsUpdatePipeline: 0,
-  [STATE_WRITE_TRACE_NAME]: 1,
+  [TraceName.StatePersist]: 1,
 });
 
 /**
