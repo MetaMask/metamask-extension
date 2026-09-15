@@ -5462,9 +5462,6 @@
   "moneyActivityPending": {
     "message": "अभी पूरा नहीं हुआ"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "आपकी मनी एक्टिविटी यहाँ दिखेंगी।"
-  },
   "moneyActivityReceived": {
     "message": "प्राप्त किया गया"
   },
@@ -7840,12 +7837,6 @@
   },
   "perpsSortByPriceChange": {
     "message": "प्राइस में बदलाव"
-  },
-  "perpsSortByRank": {
-    "message": "रैंक"
-  },
-  "perpsSortBySection": {
-    "message": "इसके अनुसार क्रमबद्ध करें"
   },
   "perpsSortByTitle": {
     "message": "फिल्टर"

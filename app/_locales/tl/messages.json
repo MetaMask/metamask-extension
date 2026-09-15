@@ -5462,9 +5462,6 @@
   "moneyActivityPending": {
     "message": "Nakabinbin"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "Lilitaw ang aktibidad mo sa Money dito."
-  },
   "moneyActivityReceived": {
     "message": "Natanggap"
   },
@@ -7840,12 +7837,6 @@
   },
   "perpsSortByPriceChange": {
     "message": "Pagbabago ng presyo"
-  },
-  "perpsSortByRank": {
-    "message": "Rank"
-  },
-  "perpsSortBySection": {
-    "message": "I-sort ayon sa"
   },
   "perpsSortByTitle": {
     "message": "Filter"

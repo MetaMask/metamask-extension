@@ -5462,9 +5462,6 @@
   "moneyActivityPending": {
     "message": "Pendente"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "A atividade de sua conta Money será exibida aqui."
-  },
   "moneyActivityReceived": {
     "message": "Recebido"
   },
@@ -7840,12 +7837,6 @@
   },
   "perpsSortByPriceChange": {
     "message": "Variação de preço"
-  },
-  "perpsSortByRank": {
-    "message": "Classificação"
-  },
-  "perpsSortBySection": {
-    "message": "Classificar por"
   },
   "perpsSortByTitle": {
     "message": "Filtro"

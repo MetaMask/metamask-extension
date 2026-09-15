@@ -20,10 +20,21 @@ import {
 import { PopoverPosition } from '../../../component-library';
 import { InfoPopover } from '../../musd/info-popover';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
+import { selectMoneyHomeScreenCardEnabled } from '../../../../selectors/money/money-account-feature-flags';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../../hooks/money/useMoneyAccountInfo';
+import { useMoneyAnalytics } from '../../../../hooks/money/useMoneyAnalytics';
+import { useTrackOnce } from '../../../../hooks/useTrackOnce';
+import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+  MoneyTooltipName,
+  MoneyTooltipType,
+} from '../../../../pages/money/constants/money-events';
 
 export const MONEY_ACCOUNT_BALANCE_TEST_ID = 'money-account-balance';
 export const MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID =
@@ -44,8 +55,12 @@ export const MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID =
  *
  * ## When it renders nothing
  *
- * Two things make this render nothing, and both do so rather than showing a
+ * Three things make this render nothing, and all do so rather than showing a
  * placeholder.
+ *
+ * **Home card flag off.** `moneyHomeScreenCardEnabled` hides this card on its
+ * own, without touching the rest of the Money surface. It cannot show the card
+ * when the Money Account feature itself is off.
  *
  * **No Money Account.** `useMoneyAccountInfo` reports the feature flag being
  * off, the account not being upgraded, and the availability gate not having
@@ -89,6 +104,7 @@ export const MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID =
 export const MoneyAccountBalance = () => {
   const t = useI18nContext();
   const { privacyMode } = useSelector(getPreferences);
+  const isHomeCardEnabled = useSelector(selectMoneyHomeScreenCardEnabled);
   const { hasMoneyAccount } = useMoneyAccountInfo();
   const {
     totalFiatFormatted,
@@ -99,15 +115,43 @@ export const MoneyAccountBalance = () => {
   } = useMoneyAccountBalance();
   const { initiateDeposit, isLoading: isDepositLoading } =
     useMoneyAccountDeposit();
+  const { trackButtonClicked, trackComponentViewed, trackTooltipClicked } =
+    useMoneyAnalytics({
+      screenName: MoneyScreenName.WalletHome,
+      componentName: MoneyComponentName.BalanceCard,
+    });
 
   const balance = totalFiatFormatted ?? lastKnownTotalFiatFormatted;
   const isLoading = isBalanceLoading && balance === undefined;
   const isLastKnown = totalFiatFormatted === undefined && !isLoading;
   const isApyLoading = vaultApyQuery.isLoading && !apyPercentFormatted;
+  const isVisible =
+    isHomeCardEnabled &&
+    hasMoneyAccount &&
+    (balance !== undefined || isLoading);
 
-  if (!hasMoneyAccount || (balance === undefined && !isLoading)) {
+  useTrackOnce(isVisible, trackComponentViewed);
+
+  if (!isVisible) {
     return null;
   }
+
+  const handleAddClick = () => {
+    trackButtonClicked({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.AddMoney,
+      labelKey: 'moneyAdd',
+      redirectTarget: MoneyScreenName.MoneyDeposit,
+    });
+    initiateDeposit();
+  };
+
+  const handleInfoOpen = () => {
+    trackTooltipClicked({
+      tooltipName: MoneyTooltipName.MoneyBalance,
+      tooltipType: MoneyTooltipType.Info,
+    });
+  };
 
   return (
     <Box
@@ -142,6 +186,7 @@ export const MoneyAccountBalance = () => {
             iconColor={IconColor.IconAlternative}
             ariaLabel={t('moneyBalanceTitle')}
             data-testid={MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}
+            onOpen={handleInfoOpen}
             wrapperStyle={{ display: 'inline-flex', alignItems: 'center' }}
             position={PopoverPosition.Auto}
             popoverStyle={{
@@ -151,10 +196,10 @@ export const MoneyAccountBalance = () => {
             }}
           >
             <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-              <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
+              <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
                 {t('moneyBalanceInfoBody')}
               </Text>
-              <Text variant={TextVariant.BodyMd} color={TextColor.InfoInverse}>
+              <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
                 {t('moneyBalanceInfoWithdrawals')}
               </Text>
             </Box>
@@ -224,9 +269,7 @@ export const MoneyAccountBalance = () => {
         className="shrink-0 "
         isLoading={isDepositLoading}
         data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
-        onClick={() => {
-          initiateDeposit();
-        }}
+        onClick={handleAddClick}
       >
         {t('moneyAdd')}
       </Button>

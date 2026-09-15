@@ -5462,9 +5462,6 @@
   "moneyActivityPending": {
     "message": "Εκκρεμεί"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "Η δραστηριότητα του Money account σας θα εμφανίζεται εδώ."
-  },
   "moneyActivityReceived": {
     "message": "Ελήφθη"
   },
@@ -7843,12 +7840,6 @@
   },
   "perpsSortByPriceChange": {
     "message": "Αλλαγή τιμής"
-  },
-  "perpsSortByRank": {
-    "message": "Κατάταξη"
-  },
-  "perpsSortBySection": {
-    "message": "Ταξινόμηση κατά"
   },
   "perpsSortByTitle": {
     "message": "Φιλτράρισμα"

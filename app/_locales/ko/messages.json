@@ -5466,9 +5466,6 @@
   "moneyActivityPending": {
     "message": "보류 중"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "머니 활동 내역이 여기에 표시됩니다."
-  },
   "moneyActivityReceived": {
     "message": "받음"
   },
@@ -7847,12 +7844,6 @@
   },
   "perpsSortByPriceChange": {
     "message": "가격 변동"
-  },
-  "perpsSortByRank": {
-    "message": "순위"
-  },
-  "perpsSortBySection": {
-    "message": "정렬 기준"
   },
   "perpsSortByTitle": {
     "message": "필터"
