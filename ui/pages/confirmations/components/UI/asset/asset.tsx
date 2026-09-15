@@ -176,8 +176,9 @@ const TokenAsset = ({
 
   const handleClick = disabled ? undefined : onClick;
   // Dim all static row content when disabled, reusing the shared disabled
-  // opacity token; the tag slot is intentionally left undimmed so a tag renderer
-  // (e.g. ramps' unavailable-token info button) stays interactive.
+  // opacity token. The tagRenderers/endRenderers slots are intentionally left
+  // undimmed so accessory affordances (e.g. ramps' unavailable-token info
+  // button) stay prominent and interactive.
   const dimmedStyle: React.CSSProperties | undefined = disabled
     ? { opacity: 'var(--opacity-disabled)' }
     : undefined;
@@ -206,18 +207,16 @@ const TokenAsset = ({
       paddingBottom={3}
       paddingLeft={4}
       paddingRight={4}
+      // Ignore pointer events on the whole row when disabled so `.send-asset`
+      // hover styles (pointer cursor, hover background) don't suggest that a
+      // non-selectable row is interactive; the row-end accessory below
+      // re-enables them for itself.
+      style={disabled ? { pointerEvents: 'none' } : undefined}
     >
-      {/* Disabled styling is applied per static element (see `dimmedStyle`)
-          rather than to the whole row, so a tag renderer — e.g. ramps'
-          unavailable-token info button — stays interactive on a disabled row. */}
       <Box
         marginRight={4}
         className="shrink-0"
-        style={
-          disabled
-            ? { opacity: 'var(--opacity-disabled)', pointerEvents: 'none' }
-            : undefined
-        }
+        style={disabled ? { opacity: 'var(--opacity-disabled)' } : undefined}
       >
         <BadgeWrapper
           badge={
@@ -274,7 +273,11 @@ const TokenAsset = ({
         </Text>
       </Box>
       {endAccessory ? (
-        <Box marginLeft={2} className="shrink-0">
+        <Box
+          marginLeft={2}
+          className="shrink-0"
+          style={disabled ? { pointerEvents: 'auto' } : undefined}
+        >
           {endAccessory}
         </Box>
       ) : null}
