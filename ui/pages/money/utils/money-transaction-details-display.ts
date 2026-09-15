@@ -1,4 +1,10 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  getTokenDisplaySymbol,
+  MUSD_TOKEN,
+  MUSD_TOKEN_ADDRESS,
+} from '@metamask/money-account-utils';
+import type { Hex } from '@metamask/utils';
 import BigNumber from 'bignumber.js';
 import { moneyFormatUsd } from '../../../helpers/money/format';
 import { shortenString } from '../../../helpers/utils/util';
@@ -15,6 +21,12 @@ import { resolveOnchainAmount } from './money-activity-display';
 export type MoneyTransactionDetailsHeroAmount = {
   amount: string;
   isSuccessColor: boolean;
+};
+
+export type MoneyActivityAsset = {
+  chainId: Hex;
+  tokenAddress: Hex;
+  symbol: string | undefined;
 };
 
 /**
@@ -42,6 +54,44 @@ export function getMoneyTransactionDetailsHeroAmount(
   return {
     amount: `${isIncoming ? '+' : '-'}${formatted}`,
     isSuccessColor: isIncoming,
+  };
+}
+
+/**
+ * Resolves the asset to show on the Money activity details hero.
+ * Prefers the MetaMask Pay token when the deposit was not fiat-funded,
+ * then the transferred token, then mUSD on the transaction chain.
+ *
+ * @param tx - The transaction to present.
+ * @returns Chain, token address, and display symbol for the hero icon.
+ */
+export function getMoneyActivityAsset(tx: TransactionMeta): MoneyActivityAsset {
+  const { metamaskPay, transferInformation, chainId } = tx;
+  const isFiatDeposit = Boolean(metamaskPay?.fiat);
+
+  if (!isFiatDeposit && metamaskPay?.tokenAddress && metamaskPay?.chainId) {
+    return {
+      chainId: metamaskPay.chainId,
+      tokenAddress: metamaskPay.tokenAddress,
+      symbol: getTokenDisplaySymbol(metamaskPay.tokenAddress),
+    };
+  }
+
+  if (transferInformation?.contractAddress) {
+    return {
+      chainId: chainId as Hex,
+      tokenAddress: transferInformation.contractAddress as Hex,
+      symbol: getTokenDisplaySymbol(
+        transferInformation.contractAddress,
+        transferInformation.symbol,
+      ),
+    };
+  }
+
+  return {
+    chainId: chainId as Hex,
+    tokenAddress: MUSD_TOKEN_ADDRESS,
+    symbol: MUSD_TOKEN.symbol,
   };
 }
 

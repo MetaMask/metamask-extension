@@ -2,8 +2,6 @@ import React, { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
-  AvatarToken,
-  AvatarTokenSize,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
@@ -44,6 +42,7 @@ import {
   selectTransactionById,
   type TransactionState,
 } from '../../selectors/transactionController';
+import { TokenIcon } from '../../components/app/token-icon';
 import { onchainItem } from './types/money-activity';
 import {
   getMoneyActivityDisplayInfo,
@@ -51,6 +50,7 @@ import {
 } from './utils/money-activity-display';
 import {
   formatMoneyActivityDetailsDate,
+  getMoneyActivityAsset,
   getMoneyActivityErrorMessage,
   getMoneyActivityExplorerUrl,
   getMoneyActivityPaidWith,
@@ -62,8 +62,6 @@ import { isVisibleMoneyActivityTransaction } from './utils/money-account-transac
 import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scroll';
 import { MoneyTransactionDetailsRow } from './components/money-transaction-details-row';
 import { MoneyTransactionDetailsError } from './components/money-transaction-details-error';
-
-const USDC_TOKEN_IMAGE = './images/icon-usdc.png';
 
 const STATUS_I18N_KEY = {
   confirmed: 'confirmed',
@@ -162,6 +160,7 @@ export function MoneyTransactionDetailsPage() {
     const { tx } = item;
     const display = getMoneyActivityDisplayInfo(tx, t);
     const hero = getMoneyTransactionDetailsHeroAmount(tx);
+    const asset = getMoneyActivityAsset(tx);
     const status = getMoneyActivityStatus(tx);
     const errorMessage = getMoneyActivityErrorMessage(tx);
     const paidWith = getMoneyActivityPaidWith(tx);
@@ -205,10 +204,11 @@ export function MoneyTransactionDetailsPage() {
           paddingBottom={6}
           gap={3}
         >
-          <AvatarToken
-            name="USDC"
-            src={USDC_TOKEN_IMAGE}
-            size={AvatarTokenSize.Xl}
+          <TokenIcon
+            chainId={asset.chainId}
+            tokenAddress={asset.tokenAddress}
+            symbol={asset.symbol}
+            size="xl"
           />
           <SensitiveText
             variant={TextVariant.DisplayMd}
