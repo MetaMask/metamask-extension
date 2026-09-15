@@ -185,7 +185,7 @@ When checking coverage its is sometimes good to check if your coverage is intent
 test coverage on a single test file. This can be done by running the following command:
 
 ```bash
-yarn nyc --reporter=html tsx --test development/webpack/test/your-test-file.test.ts
+WEBPACK_TEST_FILES=development/webpack/test/your-test-file.test.ts yarn nyc --reporter=html node --import ./development/webpack/register-node-ts.mts --test development/webpack/test/run-tests.mts
 ```
 
 ### Performance
