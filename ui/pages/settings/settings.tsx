@@ -162,6 +162,11 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     return () => {
+      // Strict Mode replays effect cleanup while the mounted DOM is still in use.
+      // Only detach retained controls after React has removed the settings tree.
+      if (settingsRootRef.current?.isConnected) {
+        return;
+      }
       settingsRootRef.current
         ?.querySelectorAll(reactRetainedElementSelector)
         .forEach((element) => {
