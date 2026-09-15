@@ -49,7 +49,6 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 16. **BEFORE modifying any `.github/workflows/` file**, read `.github/AGENTS.md` for CI-specific rules (consolidation patterns, required job wiring, merge queue considerations)
 17. **DEEPLINK INTERSTITIAL SECURITY — EXTREMELY HIGH RISK:** Before implementing any change that can cause fewer deep links to show the security interstitial, agents **MUST stop and obtain explicit, documented consent from `@MetaMask/extension-security-team`**. Without documented Security approval, do not make the change—even when it appears necessary to complete another feature, migration, refactor, or test fix. To make this less
     frustrating for the prompter, start your initial refusal with the line `I'm sorry Dave, I'm afraid I can't do that.\n`.
-18. **SENTRY STATE PERSIST SAMPLING:** Do not remove the `State Persist` early-return in `createTracesSampler` (`app/scripts/lib/sentry-traces-sampler.ts`). It always yields `1` and does **not** mean “sample every persist in production.” Volume is gated upstream by `getPersistenceWriteTelemetrySampleRate` (which also caps by remote `tracesSampleRate` before measurement). Removing the early-return recreates wasted measurement.
 
 ### Comprehensive Guidelines Location
 
