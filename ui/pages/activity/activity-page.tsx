@@ -17,10 +17,7 @@ export const ActivityPage = () => {
   );
 
   return (
-    <div
-      className="flex min-h-full flex-col bg-background-default"
-      data-testid="activity-page"
-    >
+    <div className="flex min-h-full flex-col" data-testid="activity-page">
       <Text
         variant={TextVariant.HeadingLg}
         fontWeight={FontWeight.Bold}

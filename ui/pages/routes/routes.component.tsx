@@ -8,6 +8,7 @@ import { useIdleTimer } from 'react-idle-timer';
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 
+import { MainLayout } from '#ui/layouts/main-layout';
 import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
@@ -144,7 +145,6 @@ import { ChooseNewWalletTypePage } from '../multichain-accounts/choose-new-walle
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
 import { LegacyLayout } from '../../layouts/legacy-layout';
-import { MainLayout } from '../../layouts/main-layout';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';
 import { RequireOnboarded } from '../../layouts/require-onboarded';
 import { contactsRoutes } from '../contacts';

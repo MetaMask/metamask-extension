@@ -1,11 +1,11 @@
 import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { SUPPORT_LINK } from '#shared/lib/ui-utils';
+import { openWindow } from '#ui/helpers/utils/window';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { openWindow } from '../../../helpers/utils/window';
-import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
 
 jest.mock('../../../../shared/lib/trace', () => {
@@ -17,17 +17,6 @@ jest.mock('../../../../shared/lib/trace', () => {
   };
 });
 
-jest.mock('../../../store/actions', () => ({
-  ...jest.requireActual('../../../store/actions'),
-  getCustomerServiceToken: jest
-    .fn()
-    .mockResolvedValue('test-customer-service-token'),
-}));
-
-jest.mock('../../../helpers/utils/window', () => ({
-  openWindow: jest.fn(),
-}));
-
 const mockNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
@@ -35,14 +24,16 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  getCustomerServiceToken: jest
+    .fn()
+    .mockResolvedValue('test-customer-service-token'),
+}));
 
-function renderUnlockedContent(state = mockDefaultState) {
-  return renderWithProvider(
-    <AppHeaderUnlockedContent menuRef={menuRef} />,
-    configureStore(state),
-  );
-}
+jest.mock('#ui/helpers/utils/window', () => ({
+  openWindow: jest.fn(),
+}));
 
 describe('AppHeaderUnlockedContent trace', () => {
   beforeEach(() => {
@@ -50,7 +41,12 @@ describe('AppHeaderUnlockedContent trace', () => {
   });
 
   it('calls trace ShowAccountList when AccountPicker is clicked in multichain mode', async () => {
-    renderUnlockedContent();
+    const store = configureStore(mockDefaultState);
+    const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
+    renderWithProvider(
+      <AppHeaderUnlockedContent menuRef={menuRef} />,
+      store,
+    );
 
     const accountName = await screen.findByText('Account 1');
     fireEvent.click(accountName);
@@ -65,7 +61,12 @@ describe('AppHeaderUnlockedContent trace', () => {
   });
 
   it('calls trace ShowAccountAddressList when View All button is clicked in address popover', async () => {
-    renderUnlockedContent();
+    const store = configureStore(mockDefaultState);
+    const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
+    renderWithProvider(
+      <AppHeaderUnlockedContent menuRef={menuRef} />,
+      store,
+    );
 
     const networksSubtitle = screen.getByTestId('networks-subtitle-test-id');
     // The hover handler is on the first child Box inside MultichainTriggeredAddressRowsList
@@ -105,7 +106,12 @@ describe('Default address section', () => {
         },
       },
     };
-    renderUnlockedContent(stateWithFlagOn);
+    const store = configureStore(stateWithFlagOn);
+    const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
+    renderWithProvider(
+      <AppHeaderUnlockedContent menuRef={menuRef} />,
+      store,
+    );
 
     await waitFor(() => {
       expect(
@@ -126,7 +132,12 @@ describe('Default address section', () => {
         },
       },
     };
-    renderUnlockedContent(stateWithPreferenceOff);
+    const store = configureStore(stateWithPreferenceOff);
+    const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
+    renderWithProvider(
+      <AppHeaderUnlockedContent menuRef={menuRef} />,
+      store,
+    );
 
     await waitFor(() => {
       expect(
@@ -142,7 +153,12 @@ describe('Global menu', () => {
   });
 
   it('opens settings from the account options menu', async () => {
-    renderUnlockedContent();
+    const store = configureStore(mockDefaultState);
+    const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
+    renderWithProvider(
+      <AppHeaderUnlockedContent menuRef={menuRef} />,
+      store,
+    );
 
     fireEvent.click(screen.getByTestId('account-options-menu-button'));
 
@@ -153,7 +169,12 @@ describe('Global menu', () => {
 
   describe('Support', () => {
     beforeEach(async () => {
-      renderUnlockedContent();
+      const store = configureStore(mockDefaultState);
+      const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
+      renderWithProvider(
+        <AppHeaderUnlockedContent menuRef={menuRef} />,
+        store,
+      );
 
       fireEvent.click(screen.getByTestId('account-options-menu-button'));
       fireEvent.click(await screen.findByTestId('global-menu-support'));

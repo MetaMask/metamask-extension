@@ -7,10 +7,7 @@ import { PerpsTab } from '../../components/app/perps/perps-tab';
 // both this bottom-nav wrapper and the account-overview tab.
 export const PerpsHomePage = () => {
   return (
-    <div
-      className="min-h-full bg-background-default"
-      data-testid="perps-home-page"
-    >
+    <div className="min-h-full" data-testid="perps-home-page">
       <PerpsTab />
     </div>
   );

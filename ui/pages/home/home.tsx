@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useBottomNavBar } from '#ui/hooks/useBottomNavBar';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -33,7 +34,6 @@ import { RewardsModalContainer } from '../../components/app/rewards/onboarding/r
 import { Pna25ModalContainer } from '../../components/app/modals/pna25-modal/pna25-modal-container';
 import { AppHeader } from '../../components/multichain/app-header';
 import { DappConnectionControlBar } from '../../components/multichain/dapp-connection-control-bar';
-import { useBottomNavBar } from '../../hooks/useBottomNavBar';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useSegmentContext } from '../../hooks/useSegmentContext';
 import { openBasicFunctionalityModal } from '../../ducks/app/app';
@@ -249,7 +249,7 @@ export default function Home() {
     return (
       <>
         {appHeader}
-        <div className="flex min-h-0 flex-1 flex-col">
+        <div className="flex flex-col flex-1 min-h-0">
           <ScrollContainer className="main-container main-container--has-shadow min-h-0 flex-1">
             <ConnectedSites navigate={navigate} />
           </ScrollContainer>
@@ -263,7 +263,7 @@ export default function Home() {
     return (
       <>
         {appHeader}
-        <div className="flex min-h-0 flex-1 flex-col">
+        <div className="flex flex-col flex-1 min-h-0">
           <ScrollContainer className="main-container main-container--has-shadow min-h-0 flex-1">
             <ConnectedAccounts navigate={navigate} />
           </ScrollContainer>
@@ -313,7 +313,7 @@ export default function Home() {
       {showNavbar ? (
         <div className="flex min-h-full flex-col">
           <div className="grow">{homeBody}</div>
-          <div className="sticky bottom-16 z-[100] shrink-0">
+          <div className="sticky bottom-0 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16">
             <DappConnectionControlBar />
           </div>
         </div>

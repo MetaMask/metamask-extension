@@ -96,8 +96,7 @@ const CrossChainSwap = () => {
     transitionBack(() => navigateToDefaultRoute());
   };
 
-  const shellPageClass =
-    'flex min-h-full w-full flex-col bg-background-default';
+  const containerClass = 'flex min-h-full w-full flex-col';
 
   const prepareBody = (
     <>
@@ -168,7 +167,7 @@ const CrossChainSwap = () => {
         path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
         element={
           showBottomBar ? (
-            <div className={shellPageClass}>
+            <div className={containerClass}>
               {swapHeader}
               {prepareBody}
             </div>
@@ -184,7 +183,7 @@ const CrossChainSwap = () => {
         path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
         element={
           showBottomBar ? (
-            <div className={shellPageClass}>
+            <div className={containerClass}>
               {swapHeader}
               <AwaitingSignatures />
               <Footer>
