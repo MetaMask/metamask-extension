@@ -109,13 +109,6 @@ export const extensionToJs = (filename: string) =>
  * TerserPlugin `parallel: false`. That breaks Firefox AMO reviewer `mtree`
  * comparisons. Disabling mangling for the runtime chunk keeps it
  * content-stable while leaving mangling ON for all other chunks.
- *
- * Keeping mangling ON outside the runtime chunk avoids LavaMoat scope-terminator
- * collisions: with `mangle: false`, webpack parameter names (module1, exports1,
- * etc.) can become free identifiers in the module body. Under LavaMoat's
- * `with(ST)` chain, the scope terminator (which unconditionally claims every
- * identifier) shadows those names, causing `Cannot set properties of undefined`
- * errors throughout the build.
  */
 export function getMinimizers() {
   const TerserPlugin: typeof TerserPluginType = require('terser-webpack-plugin');
@@ -127,8 +120,6 @@ export function getMinimizers() {
       minify: TerserPlugin.swcMinify,
       parallel: false,
       terserOptions: {
-        // Keep mangling for non-runtime chunks so LavaMoat `with(ST)` does not
-        // shadow webpack parameter names such as `module1` / `exports1`.
         mangle: true,
       },
       // do not minify snow or the runtime chunk (handled below).
