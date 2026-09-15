@@ -188,6 +188,32 @@ export type TraceRequest = {
   parentContext?: TraceContext;
 
   /**
+   * Opt in to inheriting the ambient active span when no `parentContext` is
+   * supplied. Defaults to `false`: a request without a `parentContext` starts
+   * its own root span.
+   *
+   * Parenting used to fall back to the active span implicitly, which made two
+   * different call sites indistinguishable. A call site that wants a real root
+   * trace and a call site that simply never threaded its parent through both
+   * reach this function as "no `parentContext`", and the implicit fallback
+   * grafted each of them onto whatever span happened to be active. Naming the
+   * behaviour forces every dependent call site to declare which of the two it
+   * is, instead of the resulting topology depending on what the runtime was
+   * doing at the time.
+   *
+   * Set this only where the ambient span is known to be the correct parent, for
+   * example an operation reached from inside another traced callback that
+   * cannot thread its `parentContext` through the intervening API.
+   *
+   * When the fallback applies, the span is also marked `forceTransaction`, so it
+   * stays a transaction rather than becoming a plain child span. The two are
+   * coupled deliberately: demoting an operation to a child removes it from
+   * transaction-level dashboards and alerting, which needs per-operation review
+   * rather than a blanket change. Tracked in MetaMask-planning#7549.
+   */
+  allowActiveSpanFallback?: boolean;
+
+  /**
    * Override the start time of the trace.
    */
   startTime?: number;
@@ -527,16 +553,32 @@ function startSpan<T>(
   request: TraceRequest,
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
-  const { data: attributes, name, parentContext, startTime, op } = request;
+  const {
+    data: attributes,
+    name,
+    parentContext,
+    startTime,
+    op,
+    allowActiveSpanFallback,
+  } = request;
   let parentSpan = resolveParentSpan(parentContext);
 
-  // Inherit from active span (e.g. browserTracingIntegration's pageload/navigation)
-  // when no explicit parent is provided. Must capture before withIsolationScope
-  // severs the active span context chain.
-  // forceTransaction preserves transaction-level visibility for monitoring while
-  // linking to the auto-instrumentation hierarchy.
+  // Parenting is explicit by default: without a `parentContext`, a trace starts
+  // its own root span rather than grafting onto whatever span happens to be
+  // active. Call sites that want the ambient span (e.g. an operation reached
+  // from inside another traced callback that cannot thread its parent through
+  // the intervening API) opt in via `allowActiveSpanFallback`, so "wants a root"
+  // and "forgot to pass a parent" are distinguishable at the call site.
+  //
+  // Must capture before withIsolationScope severs the active span context chain.
+  //
+  // `forceTransaction` stays coupled to the fallback deliberately: promoting the
+  // inherited child back to a transaction preserves transaction-level visibility
+  // for monitoring. Decoupling the two would demote these operations out of
+  // transaction-level dashboards and alerting, which needs per-operation review
+  // first (see MetaMask-planning#7549) and is therefore not done here.
   let forceTransaction: boolean | undefined;
-  if (!parentSpan && !parentContext) {
+  if (!parentSpan && !parentContext && allowActiveSpanFallback) {
     const activeSpan = sentryGetActiveSpan();
     if (activeSpan) {
       parentSpan = activeSpan;
@@ -550,7 +592,9 @@ function startSpan<T>(
     op: op ?? OP_DEFAULT,
     parentSpan,
     startTime,
-    forceTransaction,
+    // Omit the key entirely when the fallback did not apply, so an opted-out
+    // span carries no `forceTransaction` signal at all.
+    ...(forceTransaction === undefined ? {} : { forceTransaction }),
   };
 
   // Cross-process propagation via continueTrace when we have serialized
