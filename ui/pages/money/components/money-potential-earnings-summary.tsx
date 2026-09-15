@@ -23,7 +23,7 @@ type MoneyPotentialEarningsSummaryProps = {
   tokens: MoneyDepositToken[];
   apyDecimal: number | undefined;
   privacyMode: boolean;
-  headingVariant?: TextVariant.HeadingMd | TextVariant.HeadingLg;
+  headingVariant?: typeof TextVariant.HeadingMd | typeof TextVariant.HeadingLg;
   showInfoIcon?: boolean;
 };
 
