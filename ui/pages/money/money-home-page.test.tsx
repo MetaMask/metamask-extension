@@ -403,6 +403,30 @@ describe('MoneyHomePage', () => {
     });
   });
 
+  it('tracks the Earn on your crypto Add button with token row properties', () => {
+    mockUseMoneyDepositTokens.mockReturnValue({
+      tokens: [DEPOSIT_TOKEN],
+      isNoFeeToken: () => false,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId('money-potential-earnings-token-add'));
+
+    expect(mockMoneyAnalytics.trackTokenButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.AddMoney,
+      componentName: MoneyComponentName.PotentialEarningsSectionTokenRow,
+      labelKey: 'moneyAdd',
+      redirectTarget: MoneyScreenName.MoneyDeposit,
+      tokenSymbol: 'USDC',
+      tokenChainId: '0x1',
+      tokenPositionInList: 1,
+      tokensInList: 1,
+      tokenHasBalance: true,
+    });
+  });
+
   it('disables the deposit entry points while a deposit is initiating', () => {
     mockUseMoneyAccountDeposit.mockReturnValue({
       initiateDeposit: mockInitiateDeposit,

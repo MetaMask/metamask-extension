@@ -336,6 +336,42 @@ describe('useMoneyAnalytics', () => {
     });
   });
 
+  describe('trackTokenButtonClicked', () => {
+    it('tracks a button click with token row properties', () => {
+      renderAnalytics({
+        screenName: MoneyScreenName.MoneyHome,
+      }).trackTokenButtonClicked({
+        buttonType: MoneyButtonType.Text,
+        buttonIntent: MoneyButtonIntent.AddMoney,
+        labelKey: 'moneyAdd',
+        componentName: MoneyComponentName.PotentialEarningsSectionTokenRow,
+        redirectTarget: MoneyScreenName.MoneyDeposit,
+        tokenSymbol: 'USDC',
+        tokenChainId: '0x1',
+        tokenPositionInList: 2,
+        tokensInList: 5,
+        tokenHasBalance: true,
+      });
+
+      expectEvent(MetaMetricsEventName.MoneyButtonClicked, {
+        ...FUNDED_BASE,
+        screen_name: MoneyScreenName.MoneyHome,
+        button_type: MoneyButtonType.Text,
+        button_intent: MoneyButtonIntent.AddMoney,
+        component_name: MoneyComponentName.PotentialEarningsSectionTokenRow,
+        label_en: 'Add',
+        label_localized: 'Ajouter',
+        redirect_target: MoneyScreenName.MoneyDeposit,
+        redirect_target_type: MoneyRedirectTargetType.Screen,
+        token_symbol: 'USDC',
+        token_chain_id: '0x1',
+        token_position_in_list: 2,
+        tokens_in_list: 5,
+        token_has_balance: true,
+      });
+    });
+  });
+
   describe('trackSurfaceClicked', () => {
     it('tracks the component and derived redirect type', () => {
       renderAnalytics({

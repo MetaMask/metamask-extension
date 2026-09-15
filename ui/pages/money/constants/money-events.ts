@@ -29,6 +29,7 @@ export enum MoneyComponentName {
   WhatYouGetSection = 'money_what_you_get_section',
   BalanceCard = 'money_balance_card',
   BalanceProjection = 'money_balance_projection',
+  PotentialEarningsSectionTokenRow = 'money_potential_earnings_section_token_row',
   HomeTab = 'money_home_tab',
   ActionButtonRow = 'money_action_button_row',
   More = 'money_more',

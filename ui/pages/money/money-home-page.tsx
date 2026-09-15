@@ -191,9 +191,10 @@ export function MoneyHomePage() {
   });
   const { initiateDeposit, isLoading: isDepositLoading } =
     useMoneyAccountDeposit();
-  const { trackButtonClicked, trackScreenViewed } = useMoneyAnalytics({
-    screenName: MoneyScreenName.MoneyHome,
-  });
+  const { trackButtonClicked, trackTokenButtonClicked, trackScreenViewed } =
+    useMoneyAnalytics({
+      screenName: MoneyScreenName.MoneyHome,
+    });
   const isPageLoading =
     isAvailabilityLoading || (availability.isAvailable && isBalanceLoading);
 
@@ -222,7 +223,19 @@ export function MoneyHomePage() {
     initiateDeposit();
   }, [initiateDeposit, trackButtonClicked]);
   const handleAddToken = useCallback(
-    (token: MoneyDepositToken) => {
+    (token: MoneyDepositToken, tokenIndex: number, tokenCount: number) => {
+      trackTokenButtonClicked({
+        buttonType: MoneyButtonType.Text,
+        buttonIntent: MoneyButtonIntent.AddMoney,
+        componentName: MoneyComponentName.PotentialEarningsSectionTokenRow,
+        labelKey: 'moneyAdd',
+        redirectTarget: MoneyScreenName.MoneyDeposit,
+        tokenSymbol: token.symbol,
+        tokenChainId: token.chainId,
+        tokenPositionInList: tokenIndex + 1,
+        tokensInList: tokenCount,
+        tokenHasBalance: token.moneyFiatAmountUsd > 0,
+      });
       initiateDeposit({
         preferredPaymentToken: {
           address: token.address,
@@ -230,7 +243,7 @@ export function MoneyHomePage() {
         },
       });
     },
-    [initiateDeposit],
+    [initiateDeposit, trackTokenButtonClicked],
   );
   const handleAddFundsFromFundCard = useCallback(() => {
     trackButtonClicked({

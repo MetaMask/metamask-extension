@@ -169,13 +169,13 @@ describe('MoneyPotentialEarnings', () => {
     ).toHaveTextContent('•'.repeat(6));
   });
 
-  it('calls onAddToken with the row token when Add is clicked', () => {
+  it('calls onAddToken with the row token, its position and the list size when Add is clicked', () => {
     const onAddToken = jest.fn();
-    const token = createToken(1);
+    const tokens = [createToken(1), createToken(2), createToken(3)];
 
     renderWithLocalization(
       <MoneyPotentialEarnings
-        tokens={[token]}
+        tokens={tokens}
         apyDecimal={0.04}
         isNoFeeToken={() => false}
         privacyMode={false}
@@ -183,9 +183,11 @@ describe('MoneyPotentialEarnings', () => {
       />,
     );
 
-    fireEvent.click(screen.getByTestId('money-potential-earnings-token-add'));
+    fireEvent.click(
+      screen.getAllByTestId('money-potential-earnings-token-add')[1],
+    );
 
-    expect(onAddToken).toHaveBeenCalledWith(token);
+    expect(onAddToken).toHaveBeenCalledWith(tokens[1], 1, 3);
   });
 
   it('disables the row Add buttons while a deposit is initiating', () => {

@@ -60,6 +60,14 @@ export type MoneyButtonClickedProperties =
     } & MoneyButtonClickedBase)
   | ({ buttonType: MoneyButtonType.Icon } & MoneyButtonClickedBase);
 
+export type MoneyTokenButtonClickedProperties = MoneyButtonClickedProperties & {
+  tokenSymbol: string;
+  tokenChainId: string;
+  tokenPositionInList: number;
+  tokensInList: number;
+  tokenHasBalance: boolean;
+};
+
 export type MoneySurfaceClickedProperties = {
   componentName?: MoneyComponentName;
   redirectTarget: MoneyRedirectTarget;
@@ -176,6 +184,12 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
     [resolveLabel, track],
   );
 
+  const trackTokenButtonClicked = useCallback(
+    (properties: MoneyTokenButtonClickedProperties) =>
+      trackButtonClicked(properties),
+    [trackButtonClicked],
+  );
+
   const trackSurfaceClicked = useCallback(
     (properties: MoneySurfaceClickedProperties) => {
       track(MetaMetricsEventName.MoneySurfaceClicked, {
@@ -242,6 +256,7 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
 
   return {
     trackButtonClicked,
+    trackTokenButtonClicked,
     trackSurfaceClicked,
     trackActivitySurfaceClicked,
     trackTooltipClicked,

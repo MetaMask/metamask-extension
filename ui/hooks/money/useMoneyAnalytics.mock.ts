@@ -6,6 +6,7 @@ export type MoneyAnalyticsMock = {
 
 export const createMoneyAnalyticsMock = (): MoneyAnalyticsMock => ({
   trackButtonClicked: jest.fn(),
+  trackTokenButtonClicked: jest.fn(),
   trackSurfaceClicked: jest.fn(),
   trackActivitySurfaceClicked: jest.fn(),
   trackTooltipClicked: jest.fn(),
