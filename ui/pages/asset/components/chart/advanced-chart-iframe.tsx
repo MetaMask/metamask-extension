@@ -10,7 +10,7 @@ import React, {
 import { useTheme } from '../../../../hooks/useTheme';
 import { isMovingAverage } from './advanced-chart-indicator-bar';
 import { CHART_TYPE_CANDLE } from './advanced-chart-interval-bar';
-import { useOHLCVChart } from './useOHLCVChart';
+import type { OHLCVBar } from './useOHLCVChart';
 import type { OHLCVRealtimeBar } from './useOHLCVRealtime';
 
 /**
@@ -41,6 +41,8 @@ type AdvancedChartIframeProps = {
   selectedInterval: string;
   /** Persisted indicator selection, re-applied to each freshly loaded chart. */
   activeIndicators?: Set<string>;
+  /** OHLCV data from parent (includes merged realtime updates) */
+  ohlcvData: OHLCVBar[];
   onError?: (error: string) => void;
   onReady?: () => void;
   /** Real-time candle update from useOHLCVRealtime hook */
@@ -58,6 +60,7 @@ const AdvancedChartIframe = forwardRef<
       chartType,
       selectedInterval,
       activeIndicators,
+      ohlcvData,
       onError,
       onReady,
       realtimeBar,
@@ -74,12 +77,6 @@ const AdvancedChartIframe = forwardRef<
     const isDark = theme === 'dark';
     const chartUrl = `${CHART_ORIGIN}/index.html?theme=${isDark ? 'dark' : 'light'}`;
 
-    // Reactive OHLCV data fetching via dedicated hook
-    const { ohlcvData, error: ohlcvError } = useOHLCVChart({
-      assetId,
-      interval: selectedInterval,
-    });
-
     const postToChart = useCallback((message: Record<string, unknown>) => {
       iframeRef.current?.contentWindow?.postMessage(
         JSON.stringify(message),
@@ -91,13 +88,6 @@ const AdvancedChartIframe = forwardRef<
     useImperativeHandle(ref, () => ({ postMessage: postToChart }), [
       postToChart,
     ]);
-
-    // Forward OHLCV errors to the parent
-    useEffect(() => {
-      if (ohlcvError) {
-        onError?.(ohlcvError);
-      }
-    }, [ohlcvError, onError]);
 
     // Listen for messages from the chart engine
     useEffect(() => {

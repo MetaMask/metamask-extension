@@ -116,6 +116,9 @@ import IntervalBar, {
 import IndicatorBar from './chart/advanced-chart-indicator-bar';
 import { useAdvancedChartPreferences } from './chart/useAdvancedChartPreferences';
 import { useOHLCVRealtime } from './chart/useOHLCVRealtime';
+import { useOHLCVChart } from './chart/useOHLCVChart';
+import { useOHLCVPriceData } from './chart/useOHLCVPriceData';
+import TokenPriceHeader from './chart/token-price-header';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
 import { AssetActivateCard } from './asset-activation-card';
@@ -193,7 +196,6 @@ const AssetPage = ({
     null,
   );
   const [acChartReady, setAcChartReady] = useState(false);
-  const showAdvancedChart = isAdvancedChartsEnabled && !advancedChartError;
 
   // Reset chart error state when navigating to a different token so the
   // advanced chart gets a fresh retry opportunity. Done during render rather
@@ -337,20 +339,50 @@ const AssetPage = ({
     ? toAssetId(address, caipChainId)
     : (decodedAsset as CaipAssetType);
 
+  // Fetch OHLCV data - used by both chart and price header
+  const {
+    ohlcvData,
+    isLoading: isOhlcvLoading,
+    error: ohlcvError,
+  } = useOHLCVChart({
+    assetId: caipAssetId as string,
+    interval: acInterval,
+  });
+
   // [POC — THROWAWAY] Real-time OHLCV updates via polling
   const { latestBar: realtimeLatestBar } = useOHLCVRealtime({
     assetId: caipAssetId as string,
     interval: acInterval,
-    enabled: isAdvancedChartsEnabled && acChartReady && showAdvancedChart,
+    enabled: isAdvancedChartsEnabled && acChartReady && !advancedChartError,
   });
 
-  // Convert latestBar to the format expected by AdvancedChartIframe
-  const realtimeBar = useMemo(() => {
-    if (!realtimeLatestBar) {
-      return undefined;
+  // Merge realtime bar into ohlcvData so price header stays in sync with chart
+  const mergedOhlcvData = useMemo(() => {
+    if (!realtimeLatestBar || ohlcvData.length === 0) {
+      return ohlcvData;
     }
-    return realtimeLatestBar;
-  }, [realtimeLatestBar]);
+
+    const lastBar = ohlcvData[ohlcvData.length - 1];
+
+    // If realtime bar is newer or same time as last bar, replace it
+    if (realtimeLatestBar.time >= lastBar.time) {
+      return [...ohlcvData.slice(0, -1), realtimeLatestBar];
+    }
+
+    return ohlcvData;
+  }, [ohlcvData, realtimeLatestBar]);
+
+  // Compute price and percent change from merged OHLCV data (includes realtime updates)
+  const {
+    price: ohlcvPrice,
+    percentChange: ohlcvPercentChange,
+    timestamp: ohlcvTimestamp,
+  } = useOHLCVPriceData(mergedOhlcvData);
+
+  // Combine iframe and OHLCV errors for fallback decision
+  const combinedChartError = advancedChartError || ohlcvError;
+  const shouldShowAdvancedChart =
+    isAdvancedChartsEnabled && !combinedChartError;
 
   const securityTrustToken = useMemo(
     () => ({
@@ -559,8 +591,17 @@ const AssetPage = ({
         <AssetPageSecurityTrustBanner />
         {/* [POC — THROWAWAY] Advanced Chart replaces legacy chart; falls back on error.
             Layout mirrors mobile: IntervalBar → AdvancedChart → IndicatorBar */}
-        {showAdvancedChart ? (
+        {shouldShowAdvancedChart ? (
           <>
+            {/* Price header using OHLCV data */}
+            <TokenPriceHeader
+              price={ohlcvPrice}
+              percentChange={ohlcvPercentChange}
+              currency={currency}
+              timestamp={ohlcvTimestamp}
+              loading={false}
+            />
+
             <IntervalBar
               selectedInterval={acInterval}
               onIntervalSelect={setAcInterval}
@@ -573,9 +614,10 @@ const AssetPage = ({
               chartType={acChartType}
               selectedInterval={acInterval}
               activeIndicators={acIndicators}
+              ohlcvData={mergedOhlcvData}
               onError={setAdvancedChartError}
               onReady={handleAdvancedChartReady}
-              realtimeBar={realtimeBar}
+              realtimeBar={realtimeLatestBar}
             />
             {/* Candlestick-only: the selection is kept in preferences, but the
                 bar and the studies themselves are hidden on a line chart. */}
@@ -623,7 +665,7 @@ const AssetPage = ({
                       chainId,
                       hasBalance: Boolean(
                         updatedAsset.balance?.value &&
-                          updatedAsset.balance.value !== '0',
+                        updatedAsset.balance.value !== '0',
                       ),
                       disableSendForNonEvm: true,
                       buyAssetId: caipAssetId,
