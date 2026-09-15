@@ -7851,12 +7851,6 @@
   "perpsSortByPriceChange": {
     "message": "Biến động giá"
   },
-  "perpsSortByRank": {
-    "message": "Xếp hạng"
-  },
-  "perpsSortBySection": {
-    "message": "Sắp xếp theo"
-  },
   "perpsSortByTitle": {
     "message": "Bộ lọc"
   },

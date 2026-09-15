@@ -5,6 +5,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { act, fireEvent, screen } from '@testing-library/react';
+import type { Hex } from '@metamask/utils';
+import { MUSD_TOKEN } from '@metamask/money-account-utils';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
@@ -102,6 +104,28 @@ jest.mock('../../hooks/money/use-money-account-availability', () => ({
 
 jest.mock('../../hooks/money/use-money-activity-items', () => ({
   useMoneyActivityItems: () => mockUseMoneyActivityItems(),
+}));
+
+jest.mock('../../components/app/token-icon', () => ({
+  TokenIcon: ({
+    chainId,
+    tokenAddress,
+    symbol,
+    size,
+  }: {
+    chainId: string;
+    tokenAddress: string;
+    symbol?: string;
+    size?: string;
+  }) => (
+    <div
+      data-testid="money-transaction-details-token-icon"
+      data-chain-id={chainId}
+      data-token-address={tokenAddress}
+      data-symbol={symbol}
+      data-size={size}
+    />
+  ),
 }));
 
 const mockItems = MOCK_MONEY_TRANSACTIONS.map(onchainItem);
@@ -570,5 +594,46 @@ describe('MoneyTransactionDetailsPage', () => {
       'data-to',
       MONEY_ACTIVITY_ROUTE,
     );
+  });
+
+  it('renders the MetaMask Pay token icon for a crypto deposit', () => {
+    const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex;
+    const payDeposit = onchainItem({
+      ...deposited.tx,
+      id: 'money-tx-pay-deposit',
+      metamaskPay: {
+        tokenAddress: usdcAddress,
+        chainId: '0x1',
+      },
+      transferInformation: undefined,
+    } as TransactionMeta);
+    mockUseParams.mockReturnValue({ transactionId: payDeposit.id });
+    mockUseMoneyActivityItems.mockReturnValue({
+      items: [payDeposit],
+      isSettling: false,
+      hasMore: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    const icon = screen.getByTestId('money-transaction-details-token-icon');
+    expect(icon).toHaveAttribute('data-chain-id', '0x1');
+    expect(icon).toHaveAttribute('data-token-address', usdcAddress);
+    expect(icon).toHaveAttribute('data-size', 'xl');
+  });
+
+  it('renders the mUSD token icon when no pay token is present', () => {
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    const icon = screen.getByTestId('money-transaction-details-token-icon');
+    expect(icon).toHaveAttribute('data-chain-id', deposited.tx.chainId);
+    expect(icon).toHaveAttribute(
+      'data-token-address',
+      deposited.tx.transferInformation?.contractAddress,
+    );
+    expect(icon).toHaveAttribute('data-symbol', MUSD_TOKEN.symbol);
+    expect(icon).toHaveAttribute('data-size', 'xl');
   });
 });
