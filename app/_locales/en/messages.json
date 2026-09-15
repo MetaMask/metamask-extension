@@ -8764,7 +8764,7 @@
   "rampsEligibilityFailedTitle": {
     "message": "We couldn’t verify your region"
   },
-  "rampsErrorGettingQuotes": {
+  "rampsQuoteFetchError": {
     "message": "Error getting quotes. Enter a lower amount or"
   },
   "rampsErrorLoadingPaymentMethods": {

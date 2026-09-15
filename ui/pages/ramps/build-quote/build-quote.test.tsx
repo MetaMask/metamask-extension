@@ -270,7 +270,7 @@ describe('RampsBuildQuoteScreen', () => {
     );
 
     expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
-      messages.rampsErrorGettingQuotes.message,
+      messages.rampsQuoteFetchError.message,
     );
     expect(
       screen.getByTestId('ramps-build-quote-change-provider'),
