@@ -5,6 +5,8 @@ import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountGroupId } from '@metamask/account-api';
 import { KeyringType } from '@metamask/keyring-api/v2';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../app/_locales/en/messages.json';
 import {
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
@@ -414,7 +416,9 @@ describe('MultichainPrivateKeyList', () => {
     fireEvent.click(screen.getByTestId('confirm-button'));
 
     expect(await screen.findByText('ethereumAndEvms')).toBeInTheDocument();
-    expect(screen.getByText('Solana')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkNameSolana.message),
+    ).toBeInTheDocument();
     expect(screen.queryByText('Polygon Mainnet')).not.toBeInTheDocument();
     expect(screen.queryByText('Arbitrum One')).not.toBeInTheDocument();
     expect(screen.getByTestId('multichain-private-keyring-list')).toHaveClass(
@@ -422,6 +426,31 @@ describe('MultichainPrivateKeyList', () => {
     );
     expect(mockExportAccounts).toHaveBeenCalledWith('correctpassword', [
       ACCOUNT_ONE_ADDRESS_MOCK,
+      ACCOUNT_TWO_ADDRESS_MOCK,
+    ]);
+  });
+
+  it('shows available keys when a Snap private key export fails', async () => {
+    mockExportAccounts
+      .mockRejectedValueOnce(new Error('bulk export failed'))
+      .mockResolvedValueOnce([ACCOUNT_ONE_PRIVATE_KEY_MOCK])
+      .mockRejectedValueOnce(new Error('Snap export failed'));
+    renderComponent();
+
+    fireEvent.change(await screen.findByPlaceholderText('password'), {
+      target: { value: 'correctpassword' },
+    });
+    fireEvent.click(screen.getByTestId('confirm-button'));
+
+    expect(await screen.findByText('ethereumAndEvms')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.networkNameSolana.message),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('wrong-password-msg')).not.toBeInTheDocument();
+    expect(mockExportAccounts).toHaveBeenNthCalledWith(2, 'correctpassword', [
+      ACCOUNT_ONE_ADDRESS_MOCK,
+    ]);
+    expect(mockExportAccounts).toHaveBeenNthCalledWith(3, 'correctpassword', [
       ACCOUNT_TWO_ADDRESS_MOCK,
     ]);
   });

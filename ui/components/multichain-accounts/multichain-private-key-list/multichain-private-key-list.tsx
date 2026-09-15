@@ -193,6 +193,45 @@ const MultichainPrivateKeyList = ({
     [exportableAddresses],
   );
 
+  const exportPrivateKeysWithFallback = useCallback(async () => {
+    try {
+      const privateKeysList = (await dispatch(
+        exportAccounts(password, exportableAddresses),
+      )) as unknown as string[];
+
+      return buildPrivateKeyMap(privateKeysList);
+    } catch (bulkExportError) {
+      const exportResults = await Promise.allSettled(
+        exportableAddresses.map(async (address) => {
+          const [privateKey] = (await dispatch(
+            exportAccounts(password, [address]),
+          )) as unknown as string[];
+
+          return [address, privateKey] as const;
+        }),
+      );
+      const exportedPrivateKeys = Object.fromEntries(
+        exportResults.flatMap((result) =>
+          result.status === 'fulfilled' ? [result.value] : [],
+        ),
+      );
+
+      if (Object.keys(exportedPrivateKeys).length === 0) {
+        throw bulkExportError;
+      }
+
+      return exportedPrivateKeys;
+    }
+  }, [buildPrivateKeyMap, dispatch, exportableAddresses, password]);
+
+  const getExpandedAccountAddress = useCallback(
+    (exportedPrivateKeys: Record<string, string>) =>
+      [defaultExpandedAccountAddress, ...exportableAddresses].find(
+        (address) => address !== null && exportedPrivateKeys[address],
+      ) ?? null,
+    [defaultExpandedAccountAddress, exportableAddresses],
+  );
+
   const onSubmit = useCallback(async () => {
     trackEvent(
       createEventBuilder(MetaMetricsEventName.KeyExportRequested)
@@ -216,12 +255,9 @@ const MultichainPrivateKeyList = ({
         op: TraceOperation.AccountUi,
       });
 
-      const pks = (await dispatch(
-        exportAccounts(password, exportableAddresses),
-      )) as unknown as string[];
-
-      setPrivateKeys(buildPrivateKeyMap(pks));
-      setExpandedAccountAddress(defaultExpandedAccountAddress);
+      const exportedPrivateKeys = await exportPrivateKeysWithFallback();
+      setPrivateKeys(exportedPrivateKeys);
+      setExpandedAccountAddress(getExpandedAccountAddress(exportedPrivateKeys));
       setReveal(true);
 
       trackEvent(
@@ -256,11 +292,9 @@ const MultichainPrivateKeyList = ({
       );
     }
   }, [
-    buildPrivateKeyMap,
     createEventBuilder,
-    dispatch,
-    defaultExpandedAccountAddress,
-    exportableAddresses,
+    exportPrivateKeysWithFallback,
+    getExpandedAccountAddress,
     hdEntropyIndex,
     password,
     trackEvent,
@@ -292,8 +326,11 @@ const MultichainPrivateKeyList = ({
           exportableAddresses,
         );
 
-        setPrivateKeys(buildPrivateKeyMap(pks));
-        setExpandedAccountAddress(defaultExpandedAccountAddress);
+        const exportedPrivateKeys = buildPrivateKeyMap(pks);
+        setPrivateKeys(exportedPrivateKeys);
+        setExpandedAccountAddress(
+          getExpandedAccountAddress(exportedPrivateKeys),
+        );
         setReveal(true);
 
         trackEvent(
@@ -337,9 +374,9 @@ const MultichainPrivateKeyList = ({
     [
       buildPrivateKeyMap,
       createEventBuilder,
-      defaultExpandedAccountAddress,
       exportAccountsWithPasskey,
       exportableAddresses,
+      getExpandedAccountAddress,
       hdEntropyIndex,
       trackEvent,
     ],
