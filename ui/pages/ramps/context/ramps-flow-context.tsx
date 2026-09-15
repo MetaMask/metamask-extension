@@ -33,9 +33,7 @@ const RampsBuildQuoteDraftContext =
  */
 export function RampsBuildQuoteDraftProvider({
   children,
-}: {
-  children: ReactNode;
-}) {
+}: Readonly<{ children: ReactNode }>) {
   const [draftAmount, setDraftAmount] = useState<string | undefined>(undefined);
   const value = useMemo(() => ({ draftAmount, setDraftAmount }), [draftAmount]);
 
