@@ -76,7 +76,7 @@ describe('usePerpsStreamManager', () => {
       if (selector === getIsPerpsTerminalBackendEnabled) {
         return false;
       }
-      return (selector as (s: unknown) => unknown)({});
+      return (selector as (s: unknown) => unknown)({ metamask: {} });
     });
   });
 
@@ -220,7 +220,7 @@ describe('usePerpsStreamManager', () => {
       if (selector === getIsPerpsTerminalBackendEnabled) {
         return true;
       }
-      return (selector as (s: unknown) => unknown)({});
+      return (selector as (s: unknown) => unknown)({ metamask: {} });
     });
 
     renderHook(() => usePerpsStreamManager());

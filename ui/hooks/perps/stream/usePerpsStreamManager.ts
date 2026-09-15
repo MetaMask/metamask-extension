@@ -24,6 +24,10 @@ import {
   selectEvmAddress,
   getUseExternalServices,
 } from '../../../selectors';
+import {
+  selectPerpsActiveProvider,
+  selectPerpsIsTestnet,
+} from '../../../selectors/perps-controller';
 
 export type UsePerpsStreamManagerReturn = {
   /** The stream manager instance (null while initializing) */
@@ -67,6 +71,8 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
   const useExternalServices = useSelector(getUseExternalServices);
   const available = useSelector(getIsPerpsExperienceAvailable);
   const enabled = available && useExternalServices;
+  const provider = useSelector(selectPerpsActiveProvider);
+  const isTestnet = useSelector(selectPerpsIsTestnet);
 
   const streamManager = getPerpsStreamManager();
   // Configure the singleton before any dependent hook reads its market cache.
@@ -89,9 +95,23 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
   >(undefined);
   const [prevEnabled, setPrevEnabled] = useState(enabled);
 
-  if (selectedAddress !== prevSelectedAddress || enabled !== prevEnabled) {
+  // Only changes after mount invalidate this hook's subscribed network data.
+  const [previousNetwork, setPreviousNetwork] = useState({
+    provider,
+    isTestnet,
+  });
+  const networkChanged =
+    provider !== previousNetwork.provider ||
+    isTestnet !== previousNetwork.isTestnet;
+
+  if (
+    selectedAddress !== prevSelectedAddress ||
+    enabled !== prevEnabled ||
+    networkChanged
+  ) {
     setPrevSelectedAddress(selectedAddress);
     setPrevEnabled(enabled);
+    setPreviousNetwork({ provider, isTestnet });
     if (!selectedAddress) {
       setIsReady(false);
       setError(new Error('No account selected'));
@@ -104,7 +124,10 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
             : 'Perps is unavailable',
         ),
       );
-    } else if (streamManager.isInitialized(selectedAddress)) {
+    } else if (
+      !networkChanged &&
+      streamManager.isInitialized(selectedAddress)
+    ) {
       setIsReady(true);
       setError(null);
     } else {
@@ -141,7 +164,7 @@ export function usePerpsStreamManager(): UsePerpsStreamManagerReturn {
     return () => {
       cancelled = true;
     };
-  }, [selectedAddress, streamManager, enabled]);
+  }, [selectedAddress, streamManager, enabled, provider, isTestnet]);
 
   return {
     streamManager: isReady ? streamManager : null,
