@@ -8760,6 +8760,7 @@ async function withService<ReturnValue>(
     getPermittedAccounts: jest.fn().mockResolvedValue([]),
     getTabUrl: jest.fn().mockResolvedValue(undefined),
     updateTabUrl: jest.fn().mockResolvedValue(undefined),
+    closeNotificationPopup: jest.fn().mockResolvedValue(undefined),
     markNotificationPopupAsAutomaticallyClosed: jest.fn(),
     requestSafeReload: jest.fn(),
     sendUpdate: jest.fn(),
