@@ -45,6 +45,13 @@ type AssetRowProps = {
 type TokenAssetProps = AssetRowProps & {
   hideBalances?: boolean;
   tagRenderers?: TokenTagRenderer[];
+  /**
+   * Optional renderers for a row-end accessory (e.g. ramps' unavailable-token
+   * info button). Rendered as its own row slot — vertically centered against
+   * the full row height, like the balance column — rather than nested next to
+   * the token name, so it doesn't share `tagRenderers`' inline placement.
+   */
+  endRenderers?: TokenTagRenderer[];
 };
 
 const NftAsset = ({ asset, onClick, isSelected }: AssetRowProps) => {
@@ -139,6 +146,7 @@ const TokenAsset = ({
   isSelected,
   hideBalances = false,
   tagRenderers,
+  endRenderers,
 }: TokenAssetProps) => {
   const tokenData = asset;
   const {
@@ -167,7 +175,17 @@ const TokenAsset = ({
     : (image ?? '');
 
   const handleClick = disabled ? undefined : onClick;
+  // Dim all static row content when disabled, reusing the shared disabled
+  // opacity token; the tag slot is intentionally left undimmed so a tag renderer
+  // (e.g. ramps' unavailable-token info button) stays interactive.
+  const dimmedStyle: React.CSSProperties | undefined = disabled
+    ? { opacity: 'var(--opacity-disabled)' }
+    : undefined;
   const tag = tagRenderers?.reduce<ReactNode>(
+    (found, render) => found ?? render(asset),
+    null,
+  );
+  const endAccessory = endRenderers?.reduce<ReactNode>(
     (found, render) => found ?? render(asset),
     null,
   );
@@ -188,9 +206,19 @@ const TokenAsset = ({
       paddingBottom={3}
       paddingLeft={4}
       paddingRight={4}
-      style={disabled ? { opacity: 0.5, pointerEvents: 'none' } : undefined}
     >
-      <Box marginRight={4} className="shrink-0">
+      {/* Disabled styling is applied per static element (see `dimmedStyle`)
+          rather than to the whole row, so a tag renderer — e.g. ramps'
+          unavailable-token info button — stays interactive on a disabled row. */}
+      <Box
+        marginRight={4}
+        className="shrink-0"
+        style={
+          disabled
+            ? { opacity: 'var(--opacity-disabled)', pointerEvents: 'none' }
+            : undefined
+        }
+      >
         <BadgeWrapper
           badge={
             chainId ? (
@@ -220,7 +248,7 @@ const TokenAsset = ({
           alignItems={BoxAlignItems.Center}
           className="min-w-0 overflow-hidden"
         >
-          <DSBox className="mr-1 min-w-0 overflow-hidden">
+          <DSBox className="mr-1 min-w-0 overflow-hidden" style={dimmedStyle}>
             <Text
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
@@ -231,7 +259,7 @@ const TokenAsset = ({
           </DSBox>
           {tag ? <DSBox className="shrink-0">{tag}</DSBox> : null}
           {typeLabel ? (
-            <DSBox className="shrink-0">
+            <DSBox className="shrink-0" style={dimmedStyle}>
               <AccountTypeLabel label={typeLabel} />
             </DSBox>
           ) : null}
@@ -240,10 +268,16 @@ const TokenAsset = ({
           variant={TextVariant.bodySmMedium}
           color={TextColor.textAlternative}
           ellipsis
+          style={dimmedStyle}
         >
           {symbol}
         </Text>
       </Box>
+      {endAccessory ? (
+        <Box marginLeft={2} className="shrink-0">
+          {endAccessory}
+        </Box>
+      ) : null}
       {!hideBalances && (
         <Box
           display={Display.Flex}
@@ -251,6 +285,7 @@ const TokenAsset = ({
           alignItems={AlignItems.flexEnd}
           marginLeft={2}
           className="shrink-0"
+          style={dimmedStyle}
         >
           <Text variant={TextVariant.bodyMdMedium}>
             {formatCurrencyWithMinThreshold(
@@ -276,6 +311,7 @@ export const Asset = ({
   isSelected,
   hideBalances,
   tagRenderers,
+  endRenderers,
 }: TokenAssetProps) => {
   if (NFT_STANDARDS.includes(asset.standard as AssetStandard)) {
     return <NftAsset asset={asset} onClick={onClick} isSelected={isSelected} />;
@@ -287,6 +323,7 @@ export const Asset = ({
       isSelected={isSelected}
       hideBalances={hideBalances}
       tagRenderers={tagRenderers}
+      endRenderers={endRenderers}
     />
   );
 };
