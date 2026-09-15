@@ -26,6 +26,7 @@ import {
 import {
   BorderRadius,
   IconColor as LegacyIconColor,
+  TextColor as LegacyTextColor,
 } from '../../../helpers/constants/design-system';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -134,6 +135,11 @@ const PrivateKeyContent = ({
       </ButtonBase>
       <Button
         borderRadius={BorderRadius.LG}
+        color={
+          isCopied
+            ? LegacyTextColor.successDefault
+            : LegacyTextColor.textDefault
+        }
         className={
           isCopied
             ? 'rounded-lg border-success-default bg-success-muted text-success-default hover:bg-success-muted active:bg-success-muted'
