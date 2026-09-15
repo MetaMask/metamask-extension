@@ -14,7 +14,7 @@ exports[`PickerNetwork should render multiple avatars when avatarGroupProps is p
         class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--rounded-full"
+          class="mm-box mm-box--display-flex mm-box--rounded-full"
           style="margin-left: 0px;"
         >
           <div
@@ -29,7 +29,7 @@ exports[`PickerNetwork should render multiple avatars when avatarGroupProps is p
           </div>
         </div>
         <div
-          class="mm-box mm-box--rounded-full"
+          class="mm-box mm-box--display-flex mm-box--rounded-full"
           style="margin-left: -8px;"
         >
           <div
@@ -78,7 +78,7 @@ exports[`PickerNetwork should render multiple avatars with a stacked tag when is
         class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--rounded-full"
+          class="mm-box mm-box--display-flex mm-box--rounded-full"
           style="margin-left: 0px;"
         >
           <div
@@ -93,7 +93,7 @@ exports[`PickerNetwork should render multiple avatars with a stacked tag when is
           </div>
         </div>
         <div
-          class="mm-box mm-box--rounded-full"
+          class="mm-box mm-box--display-flex mm-box--rounded-full"
           style="margin-left: -8px;"
         >
           <div

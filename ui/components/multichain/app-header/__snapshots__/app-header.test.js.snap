@@ -159,7 +159,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
                       <div
-                        class="mm-box mm-box--rounded-full"
+                        class="mm-box mm-box--display-flex mm-box--rounded-full"
                         style="margin-left: 0px;"
                       >
                         <div
@@ -174,7 +174,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--rounded-full"
+                        class="mm-box mm-box--display-flex mm-box--rounded-full"
                         style="margin-left: -8px;"
                       >
                         <div
@@ -189,7 +189,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--rounded-full"
+                        class="mm-box mm-box--display-flex mm-box--rounded-full"
                         style="margin-left: -8px;"
                       >
                         <div
@@ -204,7 +204,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--rounded-full"
+                        class="mm-box mm-box--display-flex mm-box--rounded-full"
                         style="margin-left: -8px;"
                       >
                         <div
@@ -247,7 +247,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
           />
           <button
             aria-label="Account options"
-            class="inline-flex shrink-0 items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
             data-testid="account-options-menu-button"
           >
             <svg
@@ -277,7 +277,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
               >
                 <button
                   aria-label="Close"
-                  class="inline-flex shrink-0 items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                  class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
                   data-testid="drawer-close-button"
                 >
                   <svg

@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import type { MoneyDepositToken } from '../../../hooks/money/money-deposit-token-utils';
@@ -38,6 +38,7 @@ describe('MoneyPotentialEarnings', () => {
         apyDecimal={0.04}
         isNoFeeToken={() => false}
         privacyMode={false}
+        onAddToken={jest.fn()}
       />,
     );
 
@@ -60,6 +61,7 @@ describe('MoneyPotentialEarnings', () => {
         apyDecimal={0.04}
         isNoFeeToken={() => false}
         privacyMode={false}
+        onAddToken={jest.fn()}
       />,
     );
 
@@ -84,6 +86,7 @@ describe('MoneyPotentialEarnings', () => {
         apyDecimal={undefined}
         isNoFeeToken={() => false}
         privacyMode={false}
+        onAddToken={jest.fn()}
       />,
     );
 
@@ -102,6 +105,7 @@ describe('MoneyPotentialEarnings', () => {
         apyDecimal={0.04}
         isNoFeeToken={() => false}
         privacyMode={false}
+        onAddToken={jest.fn()}
       />,
     );
 
@@ -121,6 +125,7 @@ describe('MoneyPotentialEarnings', () => {
         apyDecimal={0.04}
         isNoFeeToken={() => false}
         privacyMode={false}
+        onAddToken={jest.fn()}
       />,
     );
 
@@ -136,6 +141,7 @@ describe('MoneyPotentialEarnings', () => {
         apyDecimal={0.04}
         isNoFeeToken={({ symbol }) => symbol === 'TOK1'}
         privacyMode={false}
+        onAddToken={jest.fn()}
       />,
     );
 
@@ -151,6 +157,7 @@ describe('MoneyPotentialEarnings', () => {
         apyDecimal={0.04}
         isNoFeeToken={() => false}
         privacyMode
+        onAddToken={jest.fn()}
       />,
     );
 
@@ -162,18 +169,39 @@ describe('MoneyPotentialEarnings', () => {
     ).toHaveTextContent('•'.repeat(6));
   });
 
-  it('keeps Add controls inert', () => {
+  it('calls onAddToken with the row token when Add is clicked', () => {
+    const onAddToken = jest.fn();
+    const token = createToken(1);
+
+    renderWithLocalization(
+      <MoneyPotentialEarnings
+        tokens={[token]}
+        apyDecimal={0.04}
+        isNoFeeToken={() => false}
+        privacyMode={false}
+        onAddToken={onAddToken}
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId('money-potential-earnings-token-add'));
+
+    expect(onAddToken).toHaveBeenCalledWith(token);
+  });
+
+  it('disables the row Add buttons while a deposit is initiating', () => {
     renderWithLocalization(
       <MoneyPotentialEarnings
         tokens={[createToken(1)]}
         apyDecimal={0.04}
         isNoFeeToken={() => false}
         privacyMode={false}
+        onAddToken={jest.fn()}
+        isAddDisabled
       />,
     );
 
     expect(
-      screen.getByRole('button', { name: messages.moneyAdd.message }),
+      screen.getByTestId('money-potential-earnings-token-add'),
     ).toBeDisabled();
   });
 });

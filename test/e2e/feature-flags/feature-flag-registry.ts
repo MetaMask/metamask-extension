@@ -26,6 +26,7 @@ import { ACTIVE_TAB_DOMAIN_METRICS_FLAG } from '../../../shared/lib/active-tab-d
 import {
   MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME,
   MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
+  MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME,
 } from '../../../shared/lib/money/feature-flags';
 import { toDeterministicThresholdScopes } from './deterministic-threshold-scopes';
 
@@ -2896,6 +2897,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
     productionDefault: {
       enabled: false,
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  [MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME]: {
+    inProd: false,
+    name: MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME,
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
