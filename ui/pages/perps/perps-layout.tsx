@@ -86,6 +86,7 @@ export default function PerpsLayout() {
       orders: userEntry?.orders,
       account: userEntry?.accountState,
       address: userEntry?.address,
+      timestamp: userEntry?.timestamp,
     };
   }, shallowEqual);
 
