@@ -25,6 +25,16 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../../hooks/money/useMoneyAccountInfo';
+import { useMoneyAnalytics } from '../../../../hooks/money/useMoneyAnalytics';
+import { useTrackOnce } from '../../../../hooks/useTrackOnce';
+import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+  MoneyTooltipName,
+  MoneyTooltipType,
+} from '../../../../pages/money/constants/money-events';
 
 export const MONEY_ACCOUNT_BALANCE_TEST_ID = 'money-account-balance';
 export const MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID =
@@ -105,19 +115,43 @@ export const MoneyAccountBalance = () => {
   } = useMoneyAccountBalance();
   const { initiateDeposit, isLoading: isDepositLoading } =
     useMoneyAccountDeposit();
+  const { trackButtonClicked, trackComponentViewed, trackTooltipClicked } =
+    useMoneyAnalytics({
+      screenName: MoneyScreenName.WalletHome,
+      componentName: MoneyComponentName.BalanceCard,
+    });
 
   const balance = totalFiatFormatted ?? lastKnownTotalFiatFormatted;
   const isLoading = isBalanceLoading && balance === undefined;
   const isLastKnown = totalFiatFormatted === undefined && !isLoading;
   const isApyLoading = vaultApyQuery.isLoading && !apyPercentFormatted;
+  const isVisible =
+    isHomeCardEnabled &&
+    hasMoneyAccount &&
+    (balance !== undefined || isLoading);
 
-  if (
-    !isHomeCardEnabled ||
-    !hasMoneyAccount ||
-    (balance === undefined && !isLoading)
-  ) {
+  useTrackOnce(isVisible, trackComponentViewed);
+
+  if (!isVisible) {
     return null;
   }
+
+  const handleAddClick = () => {
+    trackButtonClicked({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.AddMoney,
+      labelKey: 'moneyAdd',
+      redirectTarget: MoneyScreenName.MoneyDeposit,
+    });
+    initiateDeposit();
+  };
+
+  const handleInfoOpen = () => {
+    trackTooltipClicked({
+      tooltipName: MoneyTooltipName.MoneyBalance,
+      tooltipType: MoneyTooltipType.Info,
+    });
+  };
 
   return (
     <Box
@@ -152,6 +186,7 @@ export const MoneyAccountBalance = () => {
             iconColor={IconColor.IconAlternative}
             ariaLabel={t('moneyBalanceTitle')}
             data-testid={MONEY_ACCOUNT_BALANCE_INFO_TEST_ID}
+            onOpen={handleInfoOpen}
             wrapperStyle={{ display: 'inline-flex', alignItems: 'center' }}
             position={PopoverPosition.Auto}
             popoverStyle={{
@@ -234,9 +269,7 @@ export const MoneyAccountBalance = () => {
         className="shrink-0 "
         isLoading={isDepositLoading}
         data-testid={MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID}
-        onClick={() => {
-          initiateDeposit();
-        }}
+        onClick={handleAddClick}
       >
         {t('moneyAdd')}
       </Button>

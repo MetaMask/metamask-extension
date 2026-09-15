@@ -17,7 +17,15 @@ import {
 import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
 import { useBoolean } from '../../../hooks/useBoolean';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MONEY_LANDING_URL } from '../constants/urls';
+import { useMoneyAnalytics } from '../../../hooks/money/useMoneyAnalytics';
+import {
+  MONEY_URLS,
+  MoneyBottomSheetName,
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+} from '../constants/money-events';
 
 /**
  * Mobile's `IconName.Export` (outlink). After the Phosphor remap,
@@ -60,16 +68,43 @@ export function MoneyMoreMenu() {
     setTrue: openSupportModal,
     setFalse: closeSupportModal,
   } = useBoolean();
+  const { trackButtonClicked } = useMoneyAnalytics({
+    screenName: MoneyScreenName.MoneyHome,
+  });
+  const { trackBottomSheetViewed, trackSurfaceClicked } = useMoneyAnalytics({
+    bottomSheetName: MoneyBottomSheetName.MoreSheet,
+  });
+
+  const handleToggleMenu = useCallback(() => {
+    if (!isMenuOpen) {
+      trackButtonClicked({
+        buttonType: MoneyButtonType.Icon,
+        buttonIntent: MoneyButtonIntent.OpenMoreMenu,
+        componentName: MoneyComponentName.More,
+        redirectTarget: MoneyBottomSheetName.MoreSheet,
+      });
+      trackBottomSheetViewed();
+    }
+    toggleMenu();
+  }, [isMenuOpen, toggleMenu, trackBottomSheetViewed, trackButtonClicked]);
 
   const handleBenefits = useCallback(() => {
+    trackSurfaceClicked({
+      componentName: MoneyComponentName.MoreSheetWhatYouGet,
+      redirectTarget: MONEY_URLS.MONEY_LANDING,
+    });
     closeMenu();
-    global.platform.openTab({ url: MONEY_LANDING_URL });
-  }, [closeMenu]);
+    global.platform.openTab({ url: MONEY_URLS.MONEY_LANDING });
+  }, [closeMenu, trackSurfaceClicked]);
 
   const handleContactSupport = useCallback(() => {
+    trackSurfaceClicked({
+      componentName: MoneyComponentName.MoreSheetContactSupport,
+      redirectTarget: MONEY_URLS.METAMASK_SUPPORT,
+    });
     closeMenu();
     openSupportModal();
-  }, [closeMenu, openSupportModal]);
+  }, [closeMenu, openSupportModal, trackSurfaceClicked]);
 
   const options: MenuOption[] = [
     {
@@ -97,7 +132,7 @@ export function MoneyMoreMenu() {
       <ButtonIcon
         iconName={IconName.MoreVertical}
         ariaLabel={t('moneyMoreOptions')}
-        onClick={toggleMenu}
+        onClick={handleToggleMenu}
         data-testid="money-more-menu-button"
       />
       <Popover
