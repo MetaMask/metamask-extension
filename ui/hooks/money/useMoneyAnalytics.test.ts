@@ -5,7 +5,7 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import type { QueryState } from '@tanstack/query-core';
+import type { QueryState } from '@tanstack/react-query';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
