@@ -3,9 +3,11 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import type { CaipAssetType } from '@metamask/utils';
+import { isCaipAssetType, type CaipAssetType } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
+import { ARC_USDC_TOKEN_ADDRESS } from '../../../shared/constants/network';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import { selectLocalTransactionsByHash } from '../../selectors/activity';
 import {
@@ -14,17 +16,73 @@ import {
   SIGNING_PSUEDO_STATUS,
 } from '../../components/app/transaction-status-label';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
+import { ARC_NATIVE_CAIP_CHAIN_ID } from '../../components/app/assets/enablement/arc';
 import type { LocalActivityListItem } from './types';
 
 export type ActivityListFilter =
   | { assetId: CaipAssetType }
   | { networks: string[] };
 
+const ARC_NATIVE_USDC_ASSET_ID =
+  `${ARC_NATIVE_CAIP_CHAIN_ID}/slip44:5042` as CaipAssetType;
+const ARC_ERC20_USDC_ASSET_ID = toAssetId(
+  ARC_USDC_TOKEN_ADDRESS,
+  ARC_NATIVE_CAIP_CHAIN_ID,
+);
+
+/**
+ * Converts a CAIP asset ID to the canonical asset ID used by the asset system
+ * when possible.
+ *
+ * @param assetId - The CAIP asset ID to normalize.
+ * @returns The canonical asset ID, or the original asset ID when it cannot be normalized.
+ */
+function normalizeActivityAssetId(assetId: CaipAssetType) {
+  return toAssetId(assetId) ?? assetId;
+}
+
+/**
+ * Gets all activity asset IDs that should be considered equivalent to the
+ * given asset ID.
+ *
+ * Arc USDC can appear as the native token in wallet views and as the ERC20
+ * wrapper in swaps, so both IDs are included for either representation.
+ *
+ * @param assetId - The CAIP asset ID to resolve.
+ * @returns Equivalent asset IDs that should match the same activity rows.
+ */
+function getEquivalentActivityAssetIds(assetId: CaipAssetType) {
+  const normalizedAssetId = normalizeActivityAssetId(assetId);
+  const assetIds = [normalizedAssetId];
+
+  if (
+    ARC_ERC20_USDC_ASSET_ID &&
+    (isEqualCaseInsensitive(normalizedAssetId, ARC_NATIVE_USDC_ASSET_ID) ||
+      isEqualCaseInsensitive(normalizedAssetId, ARC_ERC20_USDC_ASSET_ID))
+  ) {
+    assetIds.push(ARC_NATIVE_USDC_ASSET_ID, ARC_ERC20_USDC_ASSET_ID);
+  }
+
+  return assetIds;
+}
+
+/**
+ * Checks whether an activity item belongs on a token details page for the
+ * given asset ID.
+ *
+ * The check compares the activity token, source token, and destination token,
+ * including equivalent asset IDs such as Arc native USDC and its ERC20 wrapper.
+ *
+ * @param item - The activity item to check.
+ * @param assetId - The token details page asset ID.
+ * @returns Whether the activity item references the given asset.
+ */
 export function activityMatchesAssetId(
   item: ActivityListItem,
   assetId: CaipAssetType,
 ) {
   const { data } = item;
+  const equivalentAssetIds = getEquivalentActivityAssetIds(assetId);
   const tokenAssetIds = [
     'token' in data ? data.token?.assetId : undefined,
     'sourceToken' in data ? data.sourceToken?.assetId : undefined,
@@ -33,7 +91,13 @@ export function activityMatchesAssetId(
 
   return tokenAssetIds.some(
     (tokenAssetId) =>
-      tokenAssetId && isEqualCaseInsensitive(tokenAssetId, assetId),
+      tokenAssetId &&
+      isCaipAssetType(tokenAssetId) &&
+      getEquivalentActivityAssetIds(tokenAssetId).some((equivalentAssetId) =>
+        equivalentAssetIds.some((filterAssetId) =>
+          isEqualCaseInsensitive(equivalentAssetId, filterAssetId),
+        ),
+      ),
   );
 }
 
