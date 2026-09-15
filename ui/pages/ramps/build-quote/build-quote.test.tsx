@@ -427,6 +427,9 @@ describe('RampsBuildQuoteScreen', () => {
     expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
       messages.rampsBuyWidgetError.message,
     );
+    expect(
+      screen.getByTestId('ramps-build-quote-change-provider'),
+    ).toHaveTextContent(messages.rampsChangeProvider.message);
   });
 
   it('matches snapshot with provider quote error', () => {

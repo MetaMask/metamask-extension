@@ -29,6 +29,7 @@ export default function RampsBuildQuoteView({
   paymentMethodLabel,
   showPaymentMethodSpinner,
   displayedQuoteError,
+  isQuoteUnavailableError,
   providerStatusLabel,
   isQuoteLoading,
   canContinue,
@@ -109,7 +110,9 @@ export default function RampsBuildQuoteView({
                 onClick={() => setIsProviderModalOpen(true)}
                 data-testid="ramps-build-quote-change-provider"
               >
-                {t('rampsChangeProviders')}
+                {isQuoteUnavailableError
+                  ? t('rampsChangeProviders')
+                  : t('rampsChangeProvider')}
               </TextButton>
             </Box>
           ) : null}

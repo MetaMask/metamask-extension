@@ -917,7 +917,7 @@ exports[`RampsBuildQuoteScreen matches snapshot when quote fetch fails 1`] = `
             <span
               class="text-inherit text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
             >
-              change providers
+              Change provider.
             </span>
           </button>
         </div>
@@ -1810,7 +1810,7 @@ exports[`RampsBuildQuoteScreen matches snapshot with provider quote error 1`] = 
             <span
               class="text-inherit text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
             >
-              change providers
+              Change provider.
             </span>
           </button>
         </div>
