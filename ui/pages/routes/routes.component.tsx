@@ -81,6 +81,7 @@ import {
   MONEY_HOME_ROUTE,
   MONEY_ACTIVITY_ROUTE,
   MONEY_TRANSACTION_DETAILS_ROUTE,
+  MONEY_EARN_ROUTE,
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
@@ -285,6 +286,7 @@ const MoneyActivityPage = mmLazy(
 const MoneyTransactionDetailsPage = mmLazy(
   () => import('../money/money-transaction-details-page.tsx'),
 );
+const MoneyEarnPage = mmLazy(() => import('../money/money-earn-page.tsx'));
 const PerpsWithdrawPage = mmLazy(
   () => import('../perps/perps-withdraw-page.tsx'),
 );
@@ -684,6 +686,11 @@ export const routeConfig = [
             path: MONEY_TRANSACTION_DETAILS_ROUTE,
             capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
             element: <MoneyTransactionDetailsPage />,
+          }),
+          createRouteWithMessenger({
+            path: MONEY_EARN_ROUTE,
+            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+            element: <MoneyEarnPage />,
           }),
         ],
       },
