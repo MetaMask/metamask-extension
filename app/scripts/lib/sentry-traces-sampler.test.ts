@@ -134,23 +134,18 @@ describe('createTracesSampler', () => {
     );
   });
 
-  it('throttles the Perps preload transactions below the default rate', () => {
+  it('samples Perps preload transactions at 0.1% even with a sampled parent', () => {
     delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
     const sampler = createTracesSampler({ defaultSampleRate });
 
-    // The background preload refreshes on a timer for as long as an unlocked UI
-    // keeps it alive, so its volume tracks session duration rather than user
-    // actions. These must stay strictly below the default rate.
     for (const name of [
       TraceName.PerpsMarketDataPreload,
       TraceName.PerpsUserDataPreload,
       TraceName.PerpsGetMarketDataWithPrices,
     ]) {
-      expect(sampler({ name })).toBeLessThan(defaultSampleRate);
+      expect(sampler({ name })).toBe(0.001);
       // A pinned rate must not be bypassed by a sampled parent transaction.
-      expect(sampler({ name, parentSampled: true })).toBeLessThan(
-        defaultSampleRate,
-      );
+      expect(sampler({ name, parentSampled: true })).toBe(0.001);
     }
   });
 
