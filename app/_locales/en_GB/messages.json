@@ -5286,6 +5286,9 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Locking MetaMask..."
   },
+  "locked": {
+    "message": "Locked"
+  },
   "loginErrorConnectButton": {
     "message": "Try again"
   },
@@ -12383,6 +12386,18 @@
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "This Secret Recovery Phrase can help you regain access if you ever forget your password or lose access to your login."
+  },
+  "walletRemoveConfirmDescription": {
+    "message": "Back up your Secret Recovery Phrase before removing this wallet. Without it, you won’t be able to recover your assets."
+  },
+  "walletRemoveConfirmTitle": {
+    "message": "Remove this wallet"
+  },
+  "walletRemoveLockedDescription": {
+    "message": "This Secret Recovery Phrase is linked to your MetaMask login and Money account, so it can’t be removed."
+  },
+  "walletRemoveLockedTitle": {
+    "message": "Wallet can’t be removed"
   },
   "wantToAddThisNetwork": {
     "message": "Want to add this network?"

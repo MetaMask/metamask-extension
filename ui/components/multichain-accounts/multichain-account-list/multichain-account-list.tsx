@@ -37,7 +37,7 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree.types';
 import {
   removeAccount,
-  removeMultichainAccountWallet,
+  removeWallet,
   setAccountGroupHidden,
   setAccountGroupPinned,
   setSelectedMultichainAccount,
@@ -430,7 +430,7 @@ export const MultichainAccountList = ({
       return;
     }
 
-    await dispatch(removeMultichainAccountWallet(walletRemoveModal.walletId));
+    await dispatch(removeWallet(walletRemoveModal.walletId));
     setWalletRemoveModal(null);
   }, [dispatch, walletRemoveModal]);
 
