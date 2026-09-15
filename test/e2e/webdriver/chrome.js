@@ -32,7 +32,7 @@ class ChromeDriver {
     port,
     proxyPort,
     isBenchmark = false,
-  }) {
+  } = {}) {
     const args = [
       `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager
       '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying,Crashpad', // disable Crashpad to prevent orphaned crash-reporter processes
@@ -68,7 +68,12 @@ class ChromeDriver {
     args.push('--enable-logging');
 
     if (process.env.CI || process.env.CODESPACES) {
-      args.push('--disable-gpu');
+      args.push(
+        '--disable-gpu',
+        '--disable-renderer-backgrounding',
+        '--disable-backgrounding-occluded-windows',
+        '--disable-background-timer-throttling',
+      );
     }
 
     if (isHeadless('SELENIUM')) {
