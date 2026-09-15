@@ -16,6 +16,10 @@ import {
   getIsPerpsExperienceAvailable,
   getIsPerpsTerminalBackendEnabled,
 } from '../../selectors/perps/feature-flags';
+import {
+  selectPerpsActiveProvider,
+  selectPerpsIsTestnet,
+} from '../../selectors/perps-controller';
 import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
 import { submitRequestToBackground } from '../../store/background-connection';
 import {
@@ -27,9 +31,6 @@ import {
 const START_BOUNDARY_TAG = 'start_boundary';
 const COMPLETION_BOUNDARY_TAG = 'completion_boundary';
 const CONNECTION_TIMEOUT_MS = 30_000;
-type PreloadState = {
-  metamask: { activeProvider?: string; isTestnet?: boolean };
-};
 
 /**
  * Warm data when the unlocked wallet root is eligible, matching Mobile's
@@ -43,12 +44,8 @@ export function usePerpsPreload(walletReady: boolean): void {
   const selectedEvmAddress = useSelector(selectEvmAddress);
   const lastEvmAccount = useSelector(getSelectedEvmInternalAccount);
   const address = selectedEvmAddress ?? lastEvmAccount?.address;
-  const provider = useSelector(
-    (state: PreloadState) => state.metamask.activeProvider,
-  );
-  const isTestnet = useSelector(
-    (state: PreloadState) => state.metamask.isTestnet,
-  );
+  const provider = useSelector(selectPerpsActiveProvider);
+  const isTestnet = useSelector(selectPerpsIsTestnet);
   const useTerminalApi = useSelector(getIsPerpsTerminalBackendEnabled);
   const enabled = walletReady && available && useExternalServices;
   const previousRequestedAddress = useRef<string>();

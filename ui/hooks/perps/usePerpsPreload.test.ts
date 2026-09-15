@@ -1,4 +1,5 @@
 import { it } from '@jest/globals';
+import { useLayoutEffect } from 'react';
 import { act, renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { trace, endTrace, TraceName } from '../../../shared/lib/trace';
@@ -6,6 +7,10 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import { CandlePeriod } from '../../components/app/perps/constants/chartConfig';
 import type { PerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
 import { usePerpsPreload } from './usePerpsPreload';
+import { usePerpsLivePositions } from './stream/usePerpsLivePositions';
+import { usePerpsLiveOrders } from './stream/usePerpsLiveOrders';
+import { usePerpsLiveAccount } from './stream/usePerpsLiveAccount';
+import { usePerpsLiveFills } from './stream/usePerpsLiveFills';
 
 jest.mock('react-redux', () => ({ useSelector: jest.fn() }));
 jest.mock('../../selectors', () => ({
@@ -516,6 +521,141 @@ describe('usePerpsPreload', () => {
     expect(mockManager.cleanupPrewarm).toHaveBeenCalled();
   });
 
+  it('keeps fills loading while account initialization is pending', async () => {
+    const { PerpsStreamManager: Manager } = jest.requireActual<
+      typeof import('../../providers/perps/PerpsStreamManager')
+    >('../../providers/perps/PerpsStreamManager');
+    const manager = new Manager();
+    mockCurrentManager = manager;
+    const pending = deferred();
+    jest
+      .mocked(submitRequestToBackground)
+      .mockImplementation((method) =>
+        method === 'perpsInitForAccount'
+          ? pending.promise
+          : Promise.resolve(undefined),
+      );
+    const { result, rerender, unmount } = renderHook(() => usePerpsLiveFills());
+    await act(async () => undefined);
+    rerender();
+    expect(result.current).toEqual({ fills: [], isInitialLoading: true });
+    await act(async () => pending.resolve());
+    act(() => manager.handleBackgroundUpdate({ channel: 'fills', data: [] }));
+    expect(result.current).toEqual({ fills: [], isInitialLoading: false });
+    unmount();
+    manager.reset();
+  });
+
+  it.each<['provider' | 'network', boolean]>([
+    ['provider', false],
+    ['network', false],
+    ['provider', true],
+    ['network', true],
+  ])(
+    'clears mounted data on %s change with early cache delivery %s',
+    async (change, earlyDelivery) => {
+      const { PerpsStreamManager: Manager } = jest.requireActual<
+        typeof import('../../providers/perps/PerpsStreamManager')
+      >('../../providers/perps/PerpsStreamManager');
+      const manager = new Manager();
+      mockCurrentManager = manager;
+      const committed = jest.fn();
+      const { result, rerender, unmount } = renderHook(() => {
+        usePerpsPreload(true);
+        const snapshot = {
+          positions: usePerpsLivePositions(),
+          orders: usePerpsLiveOrders(),
+          account: usePerpsLiveAccount(),
+          fills: usePerpsLiveFills(),
+        };
+        useLayoutEffect(() => {
+          committed(snapshot);
+        });
+        return snapshot;
+      });
+      await act(async () => undefined);
+      const publish = (network: string) => {
+        manager.handleBackgroundUpdate({
+          channel: 'positions',
+          data: [{ symbol: network }],
+        });
+        manager.handleBackgroundUpdate({
+          channel: 'orders',
+          data: [{ orderId: network }],
+        });
+        manager.handleBackgroundUpdate({
+          channel: 'account',
+          data: { totalBalance: network },
+        });
+        manager.handleBackgroundUpdate({
+          channel: 'fills',
+          data: [{ orderId: network }],
+        });
+      };
+      act(() => publish('old'));
+      expect(result.current.positions.positions).toEqual([{ symbol: 'old' }]);
+      expect(result.current.orders.orders).toEqual([{ orderId: 'old' }]);
+      expect(result.current.account.account).toEqual({ totalBalance: 'old' });
+      expect(result.current.fills.fills).toEqual([{ orderId: 'old' }]);
+      if (change === 'provider') {
+        state.metamask.activeProvider = 'aggregated';
+      } else {
+        state.metamask.isTestnet = true;
+      }
+      committed.mockClear();
+      rerender();
+      expect(result.current.positions).toEqual({
+        positions: [],
+        isInitialLoading: true,
+      });
+      if (earlyDelivery) {
+        act(() => publish('new'));
+      }
+      await act(async () => undefined);
+      expect(committed).toHaveBeenCalled();
+      for (const [snapshot] of committed.mock.calls) {
+        expect(snapshot.positions.positions).not.toEqual([{ symbol: 'old' }]);
+        expect(snapshot.orders.orders).not.toEqual([{ orderId: 'old' }]);
+        expect(snapshot.account.account).not.toEqual({ totalBalance: 'old' });
+        expect(snapshot.fills.fills).not.toEqual([{ orderId: 'old' }]);
+        if (!earlyDelivery) {
+          expect(snapshot).toEqual({
+            positions: { positions: [], isInitialLoading: true },
+            orders: { orders: [], isInitialLoading: true },
+            account: { account: null, isInitialLoading: true },
+            fills: { fills: [], isInitialLoading: true },
+          });
+        }
+      }
+      if (!earlyDelivery) {
+        expect(result.current).toEqual({
+          positions: { positions: [], isInitialLoading: true },
+          orders: { orders: [], isInitialLoading: true },
+          account: { account: null, isInitialLoading: true },
+          fills: { fills: [], isInitialLoading: true },
+        });
+        act(() => publish('new'));
+      }
+      expect(result.current.positions).toEqual({
+        positions: [{ symbol: 'new' }],
+        isInitialLoading: false,
+      });
+      expect(result.current.orders).toEqual({
+        orders: [{ orderId: 'new' }],
+        isInitialLoading: false,
+      });
+      expect(result.current.account).toEqual({
+        account: { totalBalance: 'new' },
+        isInitialLoading: false,
+      });
+      expect(result.current.fills).toEqual({
+        fills: [{ orderId: 'new' }],
+        isInitialLoading: false,
+      });
+      unmount();
+      manager.reset();
+    },
+  );
   it.each([true, false])(
     'keeps mounted candle subscriptions receiving updates when Terminal becomes %s',
     async (terminal) => {
