@@ -455,6 +455,24 @@ describe('MultichainPrivateKeyList', () => {
     ]);
   });
 
+  it('does not report an export failure as a wrong password', async () => {
+    mockExportAccounts
+      .mockRejectedValueOnce(new Error('bulk export failed'))
+      .mockRejectedValueOnce(new Error('EVM export failed'))
+      .mockRejectedValueOnce(new Error('Snap export failed'));
+    renderComponent();
+
+    fireEvent.change(await screen.findByPlaceholderText('password'), {
+      target: { value: 'correctpassword' },
+    });
+    fireEvent.click(screen.getByTestId('confirm-button'));
+
+    await waitFor(() => {
+      expect(mockExportAccounts).toHaveBeenCalledTimes(3);
+    });
+    expect(screen.queryByTestId('wrong-password-msg')).not.toBeInTheDocument();
+  });
+
   it('keeps a single EVM section expanded without disclosure controls', async () => {
     const state = createMockState();
     state.metamask.accountTree.wallets[WALLET_ID_MOCK].groups[

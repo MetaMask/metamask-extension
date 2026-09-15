@@ -233,6 +233,8 @@ const MultichainPrivateKeyList = ({
   );
 
   const onSubmit = useCallback(async () => {
+    let passwordVerified = false;
+
     trackEvent(
       createEventBuilder(MetaMetricsEventName.KeyExportRequested)
         .addCategory(MetaMetricsEventCategory.Keys)
@@ -249,6 +251,7 @@ const MultichainPrivateKeyList = ({
 
     try {
       await verifyPassword(password);
+      passwordVerified = true;
       setWrongPassword(false);
       trace({
         name: TraceName.ShowAccountPrivateKeyList,
@@ -274,7 +277,7 @@ const MultichainPrivateKeyList = ({
           .build(),
       );
     } catch (error) {
-      setWrongPassword(true);
+      setWrongPassword(!passwordVerified);
       setReveal(false);
       trackEvent(
         createEventBuilder(MetaMetricsEventName.KeyExportFailed)
