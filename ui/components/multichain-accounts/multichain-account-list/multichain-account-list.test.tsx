@@ -109,6 +109,11 @@ jest.mock('../../../store/actions', () => {
         await Promise.resolve();
       };
     }),
+    removeWallet: jest.fn().mockImplementation(() => {
+      return async function () {
+        await Promise.resolve();
+      };
+    }),
   };
 });
 
@@ -153,6 +158,9 @@ const mockSetAccountGroupPinned = jest.requireMock(
 const mockRemoveAccount = jest.requireMock(
   '../../../store/actions',
 ).removeAccount;
+const mockremoveWallet = jest.requireMock(
+  '../../../store/actions',
+).removeWallet;
 
 const popoverOpenSelector = '.mm-popover--open';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
@@ -1455,6 +1463,148 @@ describe('MultichainAccountList', () => {
       expect(
         document.querySelector(menuButtonSelector),
       ).not.toBeInTheDocument();
+    });
+
+    it('shows Locked on the primary wallet header and Remove on others in edit mode', () => {
+      renderComponent({ isEditMode: true });
+
+      const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
+      expect(walletHeaders).toHaveLength(2);
+
+      const lockedLabel = within(walletHeaders[0]).getByTestId(
+        'multichain-account-tree-wallet-header-locked',
+      );
+      expect(lockedLabel).toHaveTextContent(messages.locked.message);
+      expect(
+        within(lockedLabel).getByTestId(
+          'multichain-account-tree-wallet-header-locked-icon',
+        ),
+      ).toHaveClass('text-icon-alternative');
+      expect(
+        within(lockedLabel).getByText(messages.locked.message),
+      ).toHaveClass('text-alternative');
+      expect(
+        within(walletHeaders[0]).queryByTestId(
+          'multichain-account-tree-wallet-header-remove',
+        ),
+      ).not.toBeInTheDocument();
+
+      const removeLabel = within(walletHeaders[1]).getByTestId(
+        'multichain-account-tree-wallet-header-remove',
+      );
+      expect(removeLabel).toHaveTextContent(messages.remove.message);
+      expect(
+        within(removeLabel).getByTestId(
+          'multichain-account-tree-wallet-header-remove-icon',
+        ),
+      ).toHaveClass('text-error-default');
+      expect(
+        within(removeLabel).getByText(messages.remove.message),
+      ).toHaveClass('text-error-default');
+      expect(
+        within(walletHeaders[1]).queryByTestId(
+          'multichain-account-tree-wallet-header-locked',
+        ),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not show Remove or Locked on wallet headers outside edit mode', () => {
+      renderComponent();
+
+      expect(
+        screen.queryByTestId('multichain-account-tree-wallet-header-remove'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('multichain-account-tree-wallet-header-locked'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('opens and dismisses the locked wallet modal without collapsing the wallet', () => {
+      renderComponent({ isEditMode: true });
+
+      fireEvent.click(
+        screen.getByTestId('multichain-account-tree-wallet-header-locked'),
+      );
+
+      expect(
+        screen.getByTestId('wallet-remove-modal-locked'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+      ).toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('wallet-remove-modal-got-it-button'));
+
+      expect(
+        screen.queryByTestId('wallet-remove-modal-locked'),
+      ).not.toBeInTheDocument();
+      expect(mockremoveWallet).not.toHaveBeenCalled();
+    });
+
+    it('removes the selected non-primary wallet from its confirmation modal', async () => {
+      renderComponent({ isEditMode: true });
+
+      fireEvent.click(
+        screen.getByTestId('multichain-account-tree-wallet-header-remove'),
+      );
+
+      expect(
+        screen.getByTestId('wallet-remove-modal-remove'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+
+      fireEvent.click(
+        screen.getByTestId('wallet-remove-modal-remove-button'),
+      );
+
+      expect(mockremoveWallet).toHaveBeenCalledWith(
+        walletTwoId,
+      );
+      expect(
+        screen.queryByTestId('wallet-remove-modal-remove'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('dismisses the wallet removal modal without removing the wallet', () => {
+      renderComponent({ isEditMode: true });
+
+      fireEvent.click(
+        screen.getByTestId('multichain-account-tree-wallet-header-remove'),
+      );
+      fireEvent.click(screen.getByTestId('wallet-remove-modal-cancel-button'));
+
+      expect(
+        screen.queryByTestId('wallet-remove-modal-remove'),
+      ).not.toBeInTheDocument();
+      expect(mockremoveWallet).not.toHaveBeenCalled();
+    });
+
+    it('does not show Remove on the pinned header in edit mode', () => {
+      renderComponent({
+        wallets: walletsWithPinnedAccount,
+        isEditMode: true,
+      });
+
+      const pinnedHeader = screen.getByTestId(
+        'multichain-account-tree-pinned-header',
+      );
+
+      expect(
+        within(pinnedHeader).queryByTestId(
+          'multichain-account-tree-wallet-header-remove',
+        ),
+      ).not.toBeInTheDocument();
+      expect(
+        within(pinnedHeader).queryByTestId(
+          'multichain-account-tree-wallet-header-locked',
+        ),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getAllByTestId('multichain-account-tree-wallet-header-remove')
+          .length,
+      ).toBeGreaterThan(0);
     });
 
     it('shows delete mode for private-key accounts and visibility mode for other wallets', () => {
