@@ -214,14 +214,6 @@ messenger.registerActionHandler('MetaMetricsController:getState', () => ({
   marketingCampaignCookieId: null,
 }));
 messenger.registerActionHandler(
-  'MetaMetricsController:trackTracesAfterMetricsOptIn',
-  () => undefined,
-);
-messenger.registerActionHandler(
-  'MetaMetricsController:clearTracesAfterMetricsOptIn',
-  () => undefined,
-);
-messenger.registerActionHandler(
   'MetaMetricsController:setMarketingCampaignCookieId',
   () => undefined,
 );

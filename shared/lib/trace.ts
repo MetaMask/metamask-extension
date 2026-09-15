@@ -241,6 +241,11 @@ export type BufferedTrace = {
   parentTraceName?: string;
 };
 
+/**
+ * This queue belongs to the background module instance. UI pages must access
+ * it through the background RPC rather than importing the buffered methods
+ * directly, because each extension page has its own module instance.
+ */
 const tracesBeforeMetricsOptIn: BufferedTrace[] = [];
 
 export function trace<ResultType>(
@@ -326,6 +331,8 @@ export function endTrace(request: EndTraceRequest): void {
 
 /**
  * Add a trace to the in-memory queue until the user opts into metrics.
+ * This must be called in the same background module instance used to flush the
+ * queue.
  *
  * @param traceData - The trace data to queue.
  */
@@ -335,6 +342,7 @@ export function addTraceBeforeMetricsOptIn(traceData: BufferedTrace): void {
 
 /**
  * Track all queued traces after a user opts into metrics.
+ * This must run in the background module instance that owns the queue.
  */
 export function trackTracesAfterMetricsOptIn(): void {
   tracesBeforeMetricsOptIn.forEach((bufferedTrace) => {
@@ -348,6 +356,7 @@ export function trackTracesAfterMetricsOptIn(): void {
 
 /**
  * Clear all traces queued before the user opted into metrics.
+ * This must run in the background module instance that owns the queue.
  */
 export function clearTracesAfterMetricsOptIn(): void {
   tracesBeforeMetricsOptIn.length = 0;
@@ -355,6 +364,8 @@ export function clearTracesAfterMetricsOptIn(): void {
 
 /**
  * Buffered trace method that checks consent and either buffers or executes immediately.
+ * UI pages must call this through the background RPC so the queue remains
+ * shared across extension page navigation.
  *
  * @param request - The trace request.
  * @param isMetricsOptedIn - Whether metrics are opted in.
@@ -394,6 +405,8 @@ export function bufferedTrace<TraceResultType>(
 
 /**
  * Buffered end trace method that checks consent and either buffers or executes immediately.
+ * UI pages must call this through the background RPC so the queue remains
+ * shared across extension page navigation.
  *
  * @param request - The end trace request.
  * @param isMetricsOptedIn - Whether metrics are opted in.

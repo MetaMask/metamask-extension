@@ -25,9 +25,7 @@ import { createEventBuilder } from '../../../../shared/lib/analytics/create-even
 import type { PreferencesControllerGetStateAction } from '../preferences-controller';
 import type { MetaMetricsControllerGetStateAction } from '../metametrics-controller';
 import type {
-  MetaMetricsControllerClearTracesAfterMetricsOptInAction,
   MetaMetricsControllerSetMarketingCampaignCookieIdAction,
-  MetaMetricsControllerTrackTracesAfterMetricsOptInAction,
 } from '../metametrics-controller-method-action-types';
 import { getAnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
 import {
@@ -75,8 +73,6 @@ function createConfiguredMessenger({
     analyticsControllerState.optedIn = false;
     analyticsControllerState.consentDecisionMade = false;
   });
-  const trackTracesHandler = jest.fn();
-  const clearTracesHandler = jest.fn();
   const setMarketingCampaignCookieIdHandler = jest.fn();
   const setUninstallURL = jest.fn();
   const mockExtension = {
@@ -92,8 +88,6 @@ function createConfiguredMessenger({
     | NetworkControllerGetNetworkClientByIdAction
     | RemoteFeatureFlagControllerGetStateAction
     | MetaMetricsControllerGetStateAction
-    | MetaMetricsControllerTrackTracesAfterMetricsOptInAction
-    | MetaMetricsControllerClearTracesAfterMetricsOptInAction
     | MetaMetricsControllerSetMarketingCampaignCookieIdAction
     | AnalyticsControllerGetStateAction
     | AnalyticsControllerTrackEventAction
@@ -152,14 +146,6 @@ function createConfiguredMessenger({
     () => metaMetricsControllerState as never,
   );
   rootMessenger.registerActionHandler(
-    'MetaMetricsController:trackTracesAfterMetricsOptIn',
-    trackTracesHandler as never,
-  );
-  rootMessenger.registerActionHandler(
-    'MetaMetricsController:clearTracesAfterMetricsOptIn',
-    clearTracesHandler as never,
-  );
-  rootMessenger.registerActionHandler(
     'MetaMetricsController:setMarketingCampaignCookieId',
     ((cookieId: string | null) => {
       metaMetricsControllerState.marketingCampaignCookieId = cookieId;
@@ -209,8 +195,6 @@ function createConfiguredMessenger({
     optInHandler,
     optOutHandler,
     resetConsentDecisionHandler,
-    trackTracesHandler,
-    clearTracesHandler,
     setMarketingCampaignCookieIdHandler,
     setUninstallURL,
     analyticsControllerState,
@@ -339,29 +323,21 @@ describe('analytics', () => {
 
   describe('setParticipateInMetaMetrics', () => {
     it('opts in and out via AnalyticsController and records the consent decision', async () => {
-      const {
-        analyticsControllerState,
-        optInHandler,
-        optOutHandler,
-        trackTracesHandler,
-        clearTracesHandler,
-      } = createConfiguredMessenger({
-        optedIn: false,
-        consentDecisionMade: false,
-      });
+      const { analyticsControllerState, optInHandler, optOutHandler } =
+        createConfiguredMessenger({
+          optedIn: false,
+          consentDecisionMade: false,
+        });
 
       expect(analyticsControllerState.consentDecisionMade).toBe(false);
 
       await setParticipateInMetaMetrics(true);
       expect(optInHandler).toHaveBeenCalledTimes(1);
-      expect(trackTracesHandler).toHaveBeenCalledTimes(1);
-      expect(clearTracesHandler).toHaveBeenCalledTimes(1);
       expect(analyticsControllerState.optedIn).toBe(true);
       expect(analyticsControllerState.consentDecisionMade).toBe(true);
 
       await setParticipateInMetaMetrics(false);
       expect(optOutHandler).toHaveBeenCalledTimes(1);
-      expect(clearTracesHandler).toHaveBeenCalledTimes(2);
       expect(analyticsControllerState.optedIn).toBe(false);
       expect(analyticsControllerState.consentDecisionMade).toBe(true);
     });

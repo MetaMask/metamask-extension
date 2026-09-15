@@ -26,9 +26,7 @@ import type {
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type { MetaMetricsControllerGetStateAction } from '../../controllers/metametrics-controller';
 import type {
-  MetaMetricsControllerClearTracesAfterMetricsOptInAction,
   MetaMetricsControllerSetMarketingCampaignCookieIdAction,
-  MetaMetricsControllerTrackTracesAfterMetricsOptInAction,
 } from '../../controllers/metametrics-controller-method-action-types';
 import type { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import type { RootMessenger } from '../../lib/messenger';
@@ -40,8 +38,6 @@ type InitActions =
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
   | MetaMetricsControllerGetStateAction
-  | MetaMetricsControllerTrackTracesAfterMetricsOptInAction
-  | MetaMetricsControllerClearTracesAfterMetricsOptInAction
   | MetaMetricsControllerSetMarketingCampaignCookieIdAction
   | AnalyticsControllerGetStateAction
   | AnalyticsControllerTrackEventAction
@@ -116,8 +112,6 @@ export function getAnalyticsControllerInitMessenger(
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
       'MetaMetricsController:getState',
-      'MetaMetricsController:trackTracesAfterMetricsOptIn',
-      'MetaMetricsController:clearTracesAfterMetricsOptIn',
       'MetaMetricsController:setMarketingCampaignCookieId',
       'AnalyticsController:getState',
       'AnalyticsController:trackEvent',

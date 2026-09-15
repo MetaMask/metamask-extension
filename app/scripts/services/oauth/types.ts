@@ -3,6 +3,7 @@ import {
   SeedlessOnboardingControllerGetStateAction,
   SeedlessOnboardingControllerGetAccessTokenAction,
 } from '@metamask/seedless-onboarding-controller';
+import type { AnalyticsControllerGetStateAction } from '@metamask/analytics-controller';
 import type { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
 import { Messenger } from '@metamask/messenger';
 import { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
@@ -10,10 +11,6 @@ import type {
   AnalyticsEvent,
   AnalyticsEventBuildOptions,
 } from '../../../../shared/lib/analytics/create-event-builder';
-import type {
-  TraceRequest,
-  EndTraceRequest,
-} from '../../../../shared/lib/trace';
 import type { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
 import ExtensionPlatform from '../../platforms/extension';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
@@ -40,7 +37,8 @@ export type OAuthServiceAction =
   | SeedlessOnboardingControllerGetStateAction
   | SeedlessOnboardingControllerGetAccessTokenAction
   | OnboardingControllerGetStateAction
-  | GeolocationControllerGetGeolocationAction;
+  | GeolocationControllerGetGeolocationAction
+  | AnalyticsControllerGetStateAction;
 
 /**
  * All possible events that the OAuthService can emit.
@@ -151,15 +149,6 @@ export type OAuthServiceOptions = {
    * The extension platform abstraction for browser tab lifecycle handling.
    */
   platform: ExtensionPlatform;
-
-  /**
-   * Buffered trace methods that handle consent checking
-   */
-  bufferedTrace: (
-    request: TraceRequest,
-    fn?: (context?: unknown) => unknown,
-  ) => void;
-  bufferedEndTrace: (request: EndTraceRequest) => void;
 
   /**
    * Track an analytics event built with createEventBuilder.

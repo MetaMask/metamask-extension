@@ -62,7 +62,12 @@ import { createSentryError } from '../../../shared/lib/error';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { captureException } from '../../../shared/lib/sentry';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
-import { TraceName, TraceOperation } from '../../../shared/lib/trace';
+import {
+  bufferedEndTrace,
+  bufferedTrace,
+  TraceName,
+  TraceOperation,
+} from '../../../shared/lib/trace';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../../shared/constants/passkey';
 import { DecodedTransactionDataSource } from '../../../shared/types/transaction-decode';
 import { enforceSimulations } from '../lib/transaction/containers/enforced-simulations';
@@ -141,6 +146,8 @@ jest.mock('../lib/open-update-tab-and-reload');
 jest.mock('../../../shared/lib/sentry');
 jest.mock('../../../shared/lib/trace', () => ({
   ...jest.requireActual('../../../shared/lib/trace'),
+  bufferedTrace: jest.fn(),
+  bufferedEndTrace: jest.fn(),
   trace: jest.fn(),
   endTrace: jest.fn(),
 }));
@@ -4950,6 +4957,8 @@ describe('LegacyBackgroundApiService', () => {
   describe('syncPasswordAndUnlockWallet', () => {
     beforeEach(() => {
       jest.useFakeTimers();
+      jest.mocked(bufferedTrace).mockClear();
+      jest.mocked(bufferedEndTrace).mockClear();
     });
 
     afterEach(() => {
@@ -5080,10 +5089,7 @@ describe('LegacyBackgroundApiService', () => {
           'SeedlessOnboardingController:syncLatestGlobalPassword',
           jest.fn().mockResolvedValue(undefined),
         );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:bufferedTrace',
-          jest.fn(),
-        );
+        registerAnalyticsStateHandler(rootMessenger, true);
         rootMessenger.registerActionHandler(
           'KeyringController:changePassword',
           jest.fn().mockResolvedValue(undefined),
@@ -5099,10 +5105,6 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'SeedlessOnboardingController:revokePendingRefreshTokens',
           jest.fn().mockResolvedValue(undefined),
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:bufferedEndTrace',
-          jest.fn(),
         );
         registerUnlockSideEffectHandlers(rootMessenger);
 
@@ -5137,12 +5139,12 @@ describe('LegacyBackgroundApiService', () => {
           'SeedlessOnboardingController:syncLatestGlobalPassword',
           { globalPassword: 'global-password' },
         );
-        expect(callSpy).toHaveBeenCalledWith(
-          'MetaMetricsController:bufferedTrace',
+        expect(bufferedTrace).toHaveBeenCalledWith(
           {
             name: TraceName.OnboardingResetPassword,
             op: TraceOperation.OnboardingSecurityOp,
           },
+          true,
         );
         expect(callSpy).toHaveBeenCalledWith(
           'KeyringController:changePassword',
@@ -5158,12 +5160,12 @@ describe('LegacyBackgroundApiService', () => {
         expect(callSpy).toHaveBeenCalledWith(
           'SeedlessOnboardingController:revokePendingRefreshTokens',
         );
-        expect(callSpy).toHaveBeenCalledWith(
-          'MetaMetricsController:bufferedEndTrace',
+        expect(bufferedEndTrace).toHaveBeenCalledWith(
           {
             name: TraceName.OnboardingResetPassword,
             data: { success: true },
           },
+          true,
         );
       });
     });
@@ -5204,17 +5206,10 @@ describe('LegacyBackgroundApiService', () => {
           'SeedlessOnboardingController:syncLatestGlobalPassword',
           jest.fn().mockResolvedValue(undefined),
         );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:bufferedTrace',
-          jest.fn(),
-        );
+        registerAnalyticsStateHandler(rootMessenger, false);
         rootMessenger.registerActionHandler(
           'KeyringController:changePassword',
           jest.fn().mockRejectedValue(error),
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:bufferedEndTrace',
-          jest.fn(),
         );
         // Handlers used while re-locking the wallet on failure.
         rootMessenger.registerActionHandler(
@@ -5257,12 +5252,12 @@ describe('LegacyBackgroundApiService', () => {
           'global-password',
         );
         expect(callSpy).toHaveBeenCalledWith('KeyringController:setLocked');
-        expect(callSpy).toHaveBeenCalledWith(
-          'MetaMetricsController:bufferedEndTrace',
+        expect(bufferedEndTrace).toHaveBeenCalledWith(
           {
             name: TraceName.OnboardingResetPassword,
             data: { success: false },
           },
+          false,
         );
         expect(captureExceptionSpy).toHaveBeenCalledWith(
           createSentryError(TraceName.OnboardingResetPasswordError, error),
@@ -6342,18 +6337,16 @@ describe('LegacyBackgroundApiService', () => {
       Buffer.from(mnemonic, 'utf8').values(),
     );
 
+    beforeEach(() => {
+      jest.mocked(bufferedTrace).mockClear();
+      jest.mocked(bufferedEndTrace).mockClear();
+    });
+
     it('captures the error and rethrows when backup creation fails', async () => {
       await withService(
         async ({ rootMessenger, service, serviceMessenger }) => {
           const error = new Error('backup failed');
-          rootMessenger.registerActionHandler(
-            'MetaMetricsController:bufferedTrace',
-            jest.fn(),
-          );
-          rootMessenger.registerActionHandler(
-            'MetaMetricsController:bufferedEndTrace',
-            jest.fn(),
-          );
+          registerAnalyticsStateHandler(rootMessenger, false);
           rootMessenger.registerActionHandler(
             'SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase',
             jest.fn().mockRejectedValue(error),
@@ -6377,6 +6370,20 @@ describe('LegacyBackgroundApiService', () => {
               TraceName.OnboardingCreateKeyAndBackupSrpError,
               error,
             ),
+          );
+          expect(bufferedTrace).toHaveBeenCalledWith(
+            {
+              name: TraceName.OnboardingCreateKeyAndBackupSrp,
+              op: TraceOperation.OnboardingSecurityOp,
+            },
+            false,
+          );
+          expect(bufferedEndTrace).toHaveBeenCalledWith(
+            {
+              name: TraceName.OnboardingCreateKeyAndBackupSrp,
+              data: { success: false },
+            },
+            false,
           );
         },
       );
@@ -6470,6 +6477,11 @@ describe('LegacyBackgroundApiService', () => {
   });
 
   describe('syncSeedPhrases', () => {
+    beforeEach(() => {
+      jest.mocked(bufferedTrace).mockClear();
+      jest.mocked(bufferedEndTrace).mockClear();
+    });
+
     it('imports private key secrets that are not backed up locally', async () => {
       await withService(async ({ rootMessenger, service }) => {
         const privateKeyData = new Uint8Array(32).fill(1);
@@ -6488,14 +6500,7 @@ describe('LegacyBackgroundApiService', () => {
           'SeedlessOnboardingController:getSecretDataBackupState',
           jest.fn().mockReturnValue(null),
         );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:bufferedTrace',
-          jest.fn(),
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:bufferedEndTrace',
-          jest.fn(),
-        );
+        registerAnalyticsStateHandler(rootMessenger, false);
 
         const importSpy = jest
           .spyOn(service, 'importAccountWithStrategy')
@@ -6511,6 +6516,20 @@ describe('LegacyBackgroundApiService', () => {
             shouldSelectAccount: false,
           },
         );
+        expect(bufferedTrace).toHaveBeenCalledWith(
+          {
+            name: TraceName.OnboardingFetchSrps,
+            op: TraceOperation.OnboardingSecurityOp,
+          },
+          false,
+        );
+        expect(bufferedEndTrace).toHaveBeenCalledWith(
+          {
+            name: TraceName.OnboardingFetchSrps,
+            data: { success: true },
+          },
+          false,
+        );
       });
     });
   });
@@ -6518,6 +6537,11 @@ describe('LegacyBackgroundApiService', () => {
   describe('addNewSeedPhraseBackup', () => {
     const mnemonic =
       'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+
+    beforeEach(() => {
+      jest.mocked(bufferedTrace).mockClear();
+      jest.mocked(bufferedEndTrace).mockClear();
+    });
 
     it('captures the error and rethrows when adding secret data fails', async () => {
       await withService(
@@ -6527,14 +6551,7 @@ describe('LegacyBackgroundApiService', () => {
             'OnboardingController:getState',
             jest.fn().mockReturnValue({ completedOnboarding: false }),
           );
-          rootMessenger.registerActionHandler(
-            'MetaMetricsController:bufferedTrace',
-            jest.fn(),
-          );
-          rootMessenger.registerActionHandler(
-            'MetaMetricsController:bufferedEndTrace',
-            jest.fn(),
-          );
+          registerAnalyticsStateHandler(rootMessenger, false);
           rootMessenger.registerActionHandler(
             'SeedlessOnboardingController:addNewSecretData',
             jest.fn().mockRejectedValue(error),
@@ -6551,6 +6568,20 @@ describe('LegacyBackgroundApiService', () => {
 
           expect(captureExceptionSpy).toHaveBeenCalledWith(
             createSentryError(TraceName.OnboardingAddSrpError, error),
+          );
+          expect(bufferedTrace).toHaveBeenCalledWith(
+            {
+              name: TraceName.OnboardingAddSrp,
+              op: TraceOperation.OnboardingSecurityOp,
+            },
+            false,
+          );
+          expect(bufferedEndTrace).toHaveBeenCalledWith(
+            {
+              name: TraceName.OnboardingAddSrp,
+              data: { success: false },
+            },
+            false,
           );
         },
       );
@@ -8541,6 +8572,22 @@ function getRootMessenger(): RootMessenger {
 }
 
 /**
+ * Registers the analytics consent state used by buffered trace tests.
+ *
+ * @param rootMessenger - The root messenger to register the handler on.
+ * @param optedIn - Whether MetaMetrics is currently opted in.
+ */
+function registerAnalyticsStateHandler(
+  rootMessenger: RootMessenger,
+  optedIn: boolean,
+): void {
+  rootMessenger.registerActionHandler(
+    'AnalyticsController:getState',
+    () => ({ optedIn }) as never,
+  );
+}
+
+/**
  * Constructs the messenger for the service under test.
  *
  * @param rootMessenger - The root messenger, with all external actions and
@@ -8682,8 +8729,7 @@ function getMessenger(
       'KeyringController:withKeyringV2Unsafe',
       'AnalyticsController:getEventFragmentById',
       'AnalyticsController:upsertEventFragment',
-      'MetaMetricsController:bufferedTrace',
-      'MetaMetricsController:bufferedEndTrace',
+      'AnalyticsController:getState',
       'TransactionController:updateEditableParams',
       'TransactionController:estimateGas',
       'TransactionController:isAtomicBatchSupported',

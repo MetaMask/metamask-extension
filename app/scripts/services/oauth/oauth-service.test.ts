@@ -13,6 +13,12 @@ import browser from 'webextension-polyfill';
 import { OAuthErrorMessages } from '../../../../shared/lib/error';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
+import {
+  bufferedEndTrace,
+  bufferedTrace,
+  TraceName,
+  TraceOperation,
+} from '../../../../shared/lib/trace';
 import ExtensionPlatform from '../../platforms/extension';
 import { OAuthServiceMessenger, WebAuthenticator } from './types';
 import { OAuthService } from './oauth-service';
@@ -48,6 +54,11 @@ const MOCK_STATE = JSON.stringify({
 });
 
 jest.mock('../../platforms/extension');
+jest.mock('../../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../../shared/lib/trace'),
+  bufferedEndTrace: jest.fn(),
+  bufferedTrace: jest.fn(),
+}));
 
 const mockCaptureException = jest.fn();
 const mockGetGeolocation = jest.fn().mockResolvedValue(undefined);
@@ -56,6 +67,9 @@ const mockGetOnboardingControllerState = jest.fn().mockReturnValue({
   completedOnboarding: false,
 });
 const mockGetAccessToken = jest.fn().mockResolvedValue('mock-access-token');
+const mockGetAnalyticsControllerState = jest
+  .fn()
+  .mockReturnValue({ optedIn: false });
 
 function getMessenger(): OAuthServiceTestMessenger {
   const rootMessenger: RootMessenger = new Messenger({
@@ -74,6 +88,10 @@ function getMessenger(): OAuthServiceTestMessenger {
     'SeedlessOnboardingController:getAccessToken',
     mockGetAccessToken,
   );
+  rootMessenger.registerActionHandler(
+    'AnalyticsController:getState',
+    mockGetAnalyticsControllerState,
+  );
 
   const messenger = new Messenger({
     namespace: 'OAuthService',
@@ -86,6 +104,7 @@ function getMessenger(): OAuthServiceTestMessenger {
       'GeolocationController:getGeolocation',
       'OnboardingController:getState',
       'SeedlessOnboardingController:getAccessToken',
+      'AnalyticsController:getState',
     ],
   });
 
@@ -111,8 +130,8 @@ const mockWebAuthenticator: WebAuthenticator = {
   generateNonce: generateNonceSpy,
 };
 
-const mockBufferedTrace = jest.fn();
-const mockBufferedEndTrace = jest.fn();
+const mockBufferedTrace = jest.mocked(bufferedTrace);
+const mockBufferedEndTrace = jest.mocked(bufferedEndTrace);
 const mockTrackEvent = jest.fn();
 const mockPlatform = new ExtensionPlatform();
 let messenger: OAuthServiceTestMessenger;
@@ -154,12 +173,12 @@ describe('OAuthService - startOAuthLogin', () => {
   });
 
   it('should start the OAuth login process with `Google`', async () => {
+    mockGetAnalyticsControllerState.mockReturnValue({ optedIn: true });
+
     const oauthService = new OAuthService({
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -179,6 +198,39 @@ describe('OAuthService - startOAuthLogin', () => {
       expect.any(Function),
     );
     expect(mockGetGeolocation).toHaveBeenCalled();
+    expect(mockGetAnalyticsControllerState).toHaveBeenCalledTimes(4);
+    expect(mockBufferedTrace).toHaveBeenNthCalledWith(
+      1,
+      {
+        name: TraceName.OnboardingOAuthProviderLogin,
+        op: TraceOperation.OnboardingSecurityOp,
+      },
+      true,
+    );
+    expect(mockBufferedTrace).toHaveBeenNthCalledWith(
+      2,
+      {
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+        op: TraceOperation.OnboardingSecurityOp,
+      },
+      true,
+    );
+    expect(mockBufferedEndTrace).toHaveBeenNthCalledWith(
+      1,
+      {
+        name: TraceName.OnboardingOAuthProviderLogin,
+        data: { success: true },
+      },
+      true,
+    );
+    expect(mockBufferedEndTrace).toHaveBeenNthCalledWith(
+      2,
+      {
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+        data: { success: true },
+      },
+      true,
+    );
   });
 
   it('should start the OAuth login process with `Apple`', async () => {
@@ -186,8 +238,6 @@ describe('OAuthService - startOAuthLogin', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -268,8 +318,6 @@ describe('OAuthService - startOAuthLogin', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -361,8 +409,6 @@ describe('OAuthService - startOAuthLogin', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -395,8 +441,6 @@ describe('OAuthService - startOAuthLogin', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -419,8 +463,6 @@ describe('OAuthService - startOAuthLogin', () => {
         generateNonce: jest.fn().mockReturnValue(Math.random().toString()),
       },
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -461,8 +503,6 @@ describe('OAuthService - startOAuthLogin', () => {
           cb(undefined);
         }),
       },
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
       platform: mockPlatform,
     });
@@ -500,8 +540,6 @@ describe('OAuthService - startOAuthLogin', () => {
           cb(undefined);
         }),
       },
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
       platform: mockPlatform,
     });
@@ -537,8 +575,6 @@ describe('OAuthService - startOAuthLogin', () => {
           cb(undefined);
         }),
       },
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
       platform: mockPlatform,
     });
@@ -566,8 +602,6 @@ describe('OAuthService - startOAuthLogin', () => {
         messenger,
         webAuthenticator: mockWebAuthenticator,
         platform: mockPlatform,
-        bufferedTrace: mockBufferedTrace,
-        bufferedEndTrace: mockBufferedEndTrace,
         trackEvent: mockTrackEvent,
       });
 
@@ -621,8 +655,6 @@ describe('OAuthService - getNewRefreshToken', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -681,8 +713,6 @@ describe('OAuthService - getNewRefreshToken', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -719,8 +749,6 @@ describe('OAuthService - getNewRefreshToken', () => {
         messenger,
         webAuthenticator: mockWebAuthenticator,
         platform: mockPlatform,
-        bufferedTrace: mockBufferedTrace,
-        bufferedEndTrace: mockBufferedEndTrace,
         trackEvent: mockTrackEvent,
       });
 
@@ -762,8 +790,6 @@ describe('OAuthService - renewRefreshToken', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
     const oauthConfig = loadOAuthConfig();
@@ -814,8 +840,6 @@ describe('OAuthService - renewRefreshToken', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -848,8 +872,6 @@ describe('OAuthService - revokeRefreshToken', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
     const oauthConfig = loadOAuthConfig();
@@ -895,8 +917,6 @@ describe('OAuthService - revokeRefreshToken', () => {
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
-      bufferedTrace: mockBufferedTrace,
-      bufferedEndTrace: mockBufferedEndTrace,
       trackEvent: mockTrackEvent,
     });
 
@@ -933,8 +953,6 @@ describe('OAuthService - revokeRefreshToken', () => {
         messenger,
         webAuthenticator: mockWebAuthenticator,
         platform: mockPlatform,
-        bufferedTrace: mockBufferedTrace,
-        bufferedEndTrace: mockBufferedEndTrace,
         trackEvent: mockTrackEvent,
       });
 
