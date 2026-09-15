@@ -223,6 +223,28 @@ describe('applySentryRemoteRates', () => {
       expect(getPersistenceWriteTelemetrySampleRate()).toBe(0.25);
     });
 
+    it('is capped by the remote tracesSampleRate', async () => {
+      mockPersistedState({
+        persistenceWriteSampleRate: 0.5,
+        tracesSampleRate: 0.01,
+      });
+
+      await applySentryRemoteRates();
+
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(0.01);
+    });
+
+    it('drops every write when the remote tracesSampleRate is 0', async () => {
+      mockPersistedState({
+        persistenceWriteSampleRate: 1,
+        tracesSampleRate: 0,
+      });
+
+      await applySentryRemoteRates();
+
+      expect(getPersistenceWriteTelemetrySampleRate()).toBe(0);
+    });
+
     it('accepts the boundary rates 0 and 1', async () => {
       mockPersistedState({ persistenceWriteSampleRate: 0 });
       await applySentryRemoteRates();

@@ -315,6 +315,13 @@ describe('createTracesSampler with the remote tracesSampleRate flag', () => {
     expect(sampler({ name: 'AssetsDataSourceTiming' })).toBe(0);
   });
 
+  it('keeps State Persist at 1 under a remote tracesSampleRate ceiling', async () => {
+    const sampler = createTracesSampler({ defaultSampleRate });
+    await applyRemoteTracesSampleRate(0.001);
+
+    expect(sampler({ name: 'State Persist' })).toBe(1);
+  });
+
   it('falls back to build-time behavior when no remote rate is set', () => {
     const sampler = createTracesSampler({ defaultSampleRate });
 
@@ -406,6 +413,16 @@ describe('createTracesSampler with the remote transactionSampleRates flag', () =
     });
 
     expect(sampler({ name: 'Boosted Transaction' })).toBe(0.001);
+  });
+
+  it('keeps State Persist at 1 under a remote per-name rate', async () => {
+    const sampler = createTracesSampler({ defaultSampleRate });
+    await applyRemoteRates({
+      tracesSampleRate: 0.01,
+      transactionSampleRates: { 'State Persist': 0.5 },
+    });
+
+    expect(sampler({ name: 'State Persist' })).toBe(1);
   });
 
   it('ignores a malformed flag value (safe no-op, build-time fallback)', async () => {

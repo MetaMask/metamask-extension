@@ -7,16 +7,13 @@ import { TraceName } from '../../../shared/lib/trace';
 /**
  * Per-`name` sample rates that override the global `tracesSampleRate`, so a
  * high-volume custom transaction can be capped without lowering visibility
- * elsewhere. Seeded with the two assets-controller transactions pinned to `0`,
- * and `State Persist` pinned to `1` so writes already selected by
- * `persistenceWriteSampleRate` are not resampled down at the Sentry layer.
+ * elsewhere. Seeded with the two assets-controller transactions pinned to `0`.
  */
 export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
   Record<string, number>
 > = Object.freeze({
   AssetsDataSourceTiming: 0,
   AssetsUpdatePipeline: 0,
-  [TraceName.StatePersist]: 1,
 });
 
 /**
@@ -180,6 +177,13 @@ export function createTracesSampler({
     : DEFAULT_TRANSACTION_SAMPLE_RATES;
 
   return (samplingContext) => {
+    // `State Persist` is sampled upstream, before its bytes are measured
+    // (`getPersistenceWriteTelemetrySampleRate`, which also applies the remote
+    // ceiling). Any rate below 1 here would drop writes we already measured.
+    if (samplingContext?.name === TraceName.StatePersist) {
+      return 1;
+    }
+
     // Read per call so a remote value applied after `Sentry.init` takes effect
     // without rebuilding the sampler; the read is a cached module field, not a
     // storage lookup. The same value is passed as BOTH default and ceiling, so

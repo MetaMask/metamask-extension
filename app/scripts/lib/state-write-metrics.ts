@@ -3,8 +3,7 @@ import { trace, TraceName, TraceOperation } from '../../../shared/lib/trace';
 
 /**
  * Sentry transaction name for sampled split-state persistence writes.
- * Must stay in sync with {@link DEFAULT_TRANSACTION_SAMPLE_RATES} so already
- * measured writes are not dropped again by the global `tracesSampleRate`.
+ * Must match the `State Persist` early-return in `createTracesSampler`.
  */
 export const STATE_WRITE_TRACE_NAME = TraceName.StatePersist;
 

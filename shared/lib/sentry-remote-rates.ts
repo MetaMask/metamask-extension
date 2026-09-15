@@ -168,13 +168,16 @@ export function getRemoteTracesSampleRate(): number | undefined {
  * Effective sample rate for measuring split-state persistence writes.
  * Uses `sentry.persistenceWriteSampleRate` when a valid remote override was
  * applied, otherwise {@link PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE}.
+ * Capped by the remote `tracesSampleRate` when set, so quota throttles drop
+ * writes before measurement instead of after a `State Persist` span is created.
  *
  * @returns A sample rate in [0, 1].
  */
 export function getPersistenceWriteTelemetrySampleRate(): number {
-  return (
+  return Math.min(
     remoteRates.persistenceWriteSampleRate ??
-    PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE
+      PERSISTENCE_WRITE_TELEMETRY_SAMPLE_RATE,
+    remoteRates.tracesSampleRate ?? 1,
   );
 }
 
