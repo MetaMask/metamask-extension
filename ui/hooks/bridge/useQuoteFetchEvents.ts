@@ -57,7 +57,6 @@ export const useQuoteFetchEvents = () => {
       if (!firstQuoteRequestId) {
         endTrace({
           name: TraceName.SwapQuoteFetch,
-          timestamp: Date.now(),
         });
       }
       dispatch(
@@ -96,7 +95,6 @@ export const useQuoteFetchEvents = () => {
     if (firstQuoteRequestId) {
       endTrace({
         name: TraceName.SwapQuoteFetch,
-        timestamp: Date.now(),
       });
     }
   }, [firstQuoteRequestId]);
@@ -105,7 +103,6 @@ export const useQuoteFetchEvents = () => {
     if (quoteFetchError) {
       endTrace({
         name: TraceName.SwapQuoteFetch,
-        timestamp: Date.now(),
         data: { success: false },
       });
     }
@@ -115,7 +112,6 @@ export const useQuoteFetchEvents = () => {
     return () => {
       endTrace({
         name: TraceName.SwapQuoteFetch,
-        timestamp: Date.now(),
         data: { success: false },
       });
     };
