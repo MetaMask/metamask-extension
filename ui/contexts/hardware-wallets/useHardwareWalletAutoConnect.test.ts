@@ -1,6 +1,7 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import {
   CONFIRM_TRANSACTION_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
 } from '../../helpers/constants/routes';
@@ -340,6 +341,45 @@ describe('useHardwareWalletAutoConnect', () => {
       await connectCallback({ productId: 123 } as HIDDevice);
 
       expect(mockConnectRef).toHaveBeenCalled();
+      expect(mockUpdateConnectionState).toHaveBeenCalledWith(
+        ConnectionState.disconnected(),
+      );
+      expect(mockSetAutoConnected).not.toHaveBeenCalled();
+    });
+
+    it('clears silent native connect failures on hardware wallet routes', async () => {
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest
+          .fn()
+          .mockReturnValueOnce(false)
+          .mockReturnValue(false),
+        destroy: jest.fn(),
+      };
+
+      const mockConnectRefWithError = jest
+        .fn()
+        .mockRejectedValue(new Error('Connection failed'));
+
+      setupHook(
+        {},
+        {
+          adapterRef: { current: mockAdapter },
+          connectRef: { current: mockConnectRefWithError },
+        },
+        [`${CROSS_CHAIN_SWAP_ROUTE}/swaps`],
+      );
+
+      // Get the connect callback from the subscription (index 1 since index 0 is walletType)
+      const subscribeCall = (
+        webConnectionUtils.subscribeToWebHidEvents as jest.Mock
+      ).mock.calls[0];
+      const connectCallback = subscribeCall[1];
+
+      await connectCallback({ productId: 123 } as HIDDevice);
+
+      expect(mockConnectRefWithError).toHaveBeenCalled();
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         ConnectionState.disconnected(),
       );
@@ -862,6 +902,38 @@ describe('useHardwareWalletAutoConnect', () => {
           adapterRef: { current: mockAdapter },
         },
         [DEFAULT_ROUTE],
+      );
+
+      await waitFor(() => {
+        expect(mockConnectRef).toHaveBeenCalled();
+      });
+
+      expect(mockUpdateConnectionState).toHaveBeenCalledWith(
+        ConnectionState.disconnected(),
+      );
+      expect(mockSetAutoConnected).not.toHaveBeenCalled();
+    });
+
+    it('clears silent auto-connect failures on hardware wallet routes', async () => {
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest.fn().mockReturnValue(false),
+        destroy: jest.fn(),
+      };
+
+      (webConnectionUtils.getConnectedDevices as jest.Mock).mockResolvedValue([
+        { productId: 123 },
+      ]);
+
+      mockConnectRef.mockRejectedValue(new Error('Connection failed'));
+
+      setupAutoConnectHook(
+        {},
+        {
+          adapterRef: { current: mockAdapter },
+        },
+        [CONFIRM_TRANSACTION_ROUTE],
       );
 
       await waitFor(() => {

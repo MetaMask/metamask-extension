@@ -130,7 +130,10 @@ export const useHardwareWalletAutoConnect = ({
               updateConnectionState(ConnectionState.disconnected());
             }
           } catch {
-            if (!abortSignal.aborted && !isOnAutoConnectRoute) {
+            // Background auto-connect is best-effort; a failed probe must never
+            // surface as a blocking error modal on hardware-wallet routes. Reset
+            // to disconnected so the CTA ("Connect Ledger") handles not-ready state.
+            if (!abortSignal.aborted) {
               updateConnectionState(ConnectionState.disconnected());
             }
           } finally {
@@ -295,7 +298,10 @@ export const useHardwareWalletAutoConnect = ({
                 updateConnectionState(ConnectionState.disconnected());
               }
             } catch {
-              if (!abortSignal.aborted && !isOnAutoConnectRoute) {
+              // Background auto-connect is best-effort; a failed probe must never
+              // surface as a blocking error modal on hardware-wallet routes. Reset
+              // to disconnected so the CTA ("Connect Ledger") handles not-ready state.
+              if (!abortSignal.aborted) {
                 updateConnectionState(ConnectionState.disconnected());
               }
             } finally {
