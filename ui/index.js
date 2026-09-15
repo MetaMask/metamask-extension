@@ -3,7 +3,6 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
-import { PasswordSyncStatus } from '@metamask/seedless-onboarding-controller';
 
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
@@ -306,29 +305,22 @@ export async function runInitialActions(store) {
   }
 
   try {
-    let recoveryLockInProgress = false;
-    const validateSeedlessPasswordSyncState = async (state) => {
+    const refreshSeedlessPasswordSyncState = async (state) => {
       const isUnlocked = getIsUnlocked(state);
       const isSocialLoginFlow = getIsSocialLoginFlow(state);
-      if (!isUnlocked || !isSocialLoginFlow || recoveryLockInProgress) {
+      if (!isUnlocked || !isSocialLoginFlow) {
         return;
       }
 
-      const passwordSyncState = await store.dispatch(
-        actions.resolveSeedlessPasswordSyncState({ skipCache: false }),
-      );
-      if (passwordSyncState === PasswordSyncStatus.InSync) {
-        return;
-      }
-
-      recoveryLockInProgress = true;
       try {
-        await store.dispatch(actions.lockMetamask());
-      } finally {
-        recoveryLockInProgress = false;
+        await store.dispatch(
+          actions.resolveSeedlessPasswordSyncState({ skipCache: false }),
+        );
+      } catch (error) {
+        log.error('[Metamask] Seedless password state check error', error);
       }
     };
-    await validateSeedlessPasswordSyncState(initialState);
+    await refreshSeedlessPasswordSyncState(initialState);
     // Periodically check Seedless password state while the app UI is open.
     const pwdCheckIntervalId = setInterval(() => {
       const state = store.getState();
@@ -337,7 +329,7 @@ export async function runInitialActions(store) {
         clearInterval(pwdCheckIntervalId);
         return;
       }
-      validateSeedlessPasswordSyncState(state);
+      refreshSeedlessPasswordSyncState(state);
     }, SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS);
   } catch (e) {
     log.error('[Metamask] Seedless password state check error', e);

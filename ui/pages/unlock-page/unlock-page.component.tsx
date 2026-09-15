@@ -110,8 +110,6 @@ type UnlockPageState = {
   showLoginErrorModal: boolean;
   showConnectionsRemovedModal: boolean;
   isPasswordUnlockMode: boolean;
-  passwordSyncState: PasswordSyncStatus;
-  isPasswordSyncStateLoading: boolean;
 };
 
 type UnlockPageContext = {
@@ -245,8 +243,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     showLoginErrorModal: false,
     showConnectionsRemovedModal: false,
     isPasswordUnlockMode: true,
-    passwordSyncState: PasswordSyncStatus.InSync,
-    isPasswordSyncStateLoading: false,
   };
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -281,47 +277,15 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     }
   }
 
-  resolvePasswordSyncState = async ({
-    skipCache = false,
-  }: { skipCache?: boolean } = {}): Promise<PasswordSyncStatus> => {
-    if (!this.props.isSocialLoginFlow) {
-      this.setState({
-        passwordSyncState: PasswordSyncStatus.InSync,
-        isPasswordSyncStateLoading: false,
-      });
-      return PasswordSyncStatus.InSync;
-    }
-
-    this.setState({ isPasswordSyncStateLoading: true });
-
-    try {
-      const passwordSyncState =
-        await this.props.resolveSeedlessPasswordSyncState({
-          skipCache,
-        });
-      this.setState({
-        passwordSyncState,
-        error:
-          passwordSyncState === PasswordSyncStatus.Unknown
-            ? this.ctx.t('passwordRecoveryBlocked')
-            : null,
-      });
-      return passwordSyncState;
-    } catch {
-      // A failed status refresh is transient. Keep the last known recovery
-      // state so an unavailable remote check does not block password entry.
-      return this.state.passwordSyncState;
-    } finally {
-      this.setState({ isPasswordSyncStateLoading: false });
-    }
-  };
-
   async componentDidMount() {
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
-    if (isOnboardingCompleted && isSocialLoginFlow) {
-      const passwordSyncState = await this.resolvePasswordSyncState();
-      if (passwordSyncState === PasswordSyncStatus.Unknown) {
-        return;
+    if (isOnboardingCompleted) {
+      try {
+        await this.props.resolveSeedlessPasswordSyncState({
+          skipCache: false,
+        });
+      } catch (error) {
+        log.error('Failed to resolve Seedless password sync state', error);
       }
     } else if (isSocialLoginFlow) {
       // if the onboarding is not completed, check if the seedless onboarding user is authenticated to do the rehydration
@@ -346,11 +310,11 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     event.preventDefault();
     event.stopPropagation();
 
-    const { password, isSubmitting, isPasswordSyncStateLoading } = this.state;
+    const { password, isSubmitting } = this.state;
     const { onSubmit, isOnboardingCompleted, accountTypeForMetrics } =
       this.props;
 
-    if (password === '' || isSubmitting || isPasswordSyncStateLoading) {
+    if (password === '' || isSubmitting) {
       return;
     }
 
@@ -452,7 +416,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     let errorReason;
     let shouldShowLoginErrorModal = false;
     let shouldShowConnectionsRemovedModal = false;
-    let { passwordSyncState } = this.state;
 
     switch (message) {
       case 'Incorrect password':
@@ -470,12 +433,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
       case SeedlessOnboardingControllerErrorMessage.OutdatedPassword:
         finalErrorMessage = t('passwordChangedRecently');
         errorReason = 'outdated_password';
-        passwordSyncState = PasswordSyncStatus.EnterNewPassword;
-        break;
-      case SeedlessOnboardingControllerErrorMessage.CouldNotRecoverPassword:
-        finalErrorMessage = t('passwordRecoveryBlocked');
-        errorReason = 'password_recovery_blocked';
-        passwordSyncState = PasswordSyncStatus.Unknown;
         break;
       case SeedlessOnboardingControllerErrorMessage.AuthenticationError:
       case SeedlessOnboardingControllerErrorMessage.InvalidRevokeToken:
@@ -538,7 +495,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
       unlockDelayPeriod: finalUnlockDelayPeriod,
       showLoginErrorModal: shouldShowLoginErrorModal,
       showConnectionsRemovedModal: shouldShowConnectionsRemovedModal,
-      passwordSyncState,
     });
   };
 
@@ -703,8 +659,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
       showLoginErrorModal,
       showConnectionsRemovedModal,
       isPasswordUnlockMode,
-      passwordSyncState,
-      isPasswordSyncStateLoading,
     } = this.state;
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     const { t } = this.ctx;
@@ -713,10 +667,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     const isRehydrationFlow = isSocialLoginFlow && !isOnboardingCompleted;
     const showPasswordUnlockForm =
       !this.props.isPasskeyActive || isPasswordUnlockMode;
-    const isPasswordRecoveryBlocked =
-      passwordSyncState === PasswordSyncStatus.Unknown;
-    const isUnlockDisabled =
-      isLocked || isSubmitting || isPasswordSyncStateLoading;
 
     return (
       <Box
@@ -769,15 +719,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
                     {t('welcomeBack')}
                   </Text>
                 )}
-                {isPasswordSyncStateLoading && (
-                  <Text
-                    data-testid="unlock-password-recovery-loading"
-                    variant={TextVariant.BodySm}
-                    color={TextColor.TextDefault}
-                  >
-                    {t('loading')}
-                  </Text>
-                )}
                 <Box
                   flexDirection={BoxFlexDirection.Row}
                   alignItems={BoxAlignItems.Start}
@@ -798,7 +739,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
                       'aria-label': t('password'),
                     }}
                     textFieldProps={{
-                      disabled: isUnlockDisabled || isPasswordRecoveryBlocked,
+                      disabled: isLocked,
                     }}
                     onChange={(event) =>
                       this.handleInputChange(
@@ -816,7 +757,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
                   />
                   {this.props.isPasskeyActive ? (
                     <UnlockPasskeyIconButton
-                      disabled={isUnlockDisabled || isPasswordRecoveryBlocked}
+                      disabled={isLocked || isSubmitting}
                       onClick={this.handleUnlockPasskeyFromPasswordForm}
                     />
                   ) : null}
@@ -827,9 +768,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
                   className="w-full mb-6"
                   type="submit"
                   data-testid="unlock-submit"
-                  disabled={
-                    !password || isUnlockDisabled || isPasswordRecoveryBlocked
-                  }
+                  disabled={!password || isLocked}
                 >
                   {this.ctx.t('unlock')}
                 </Button>

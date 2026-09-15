@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { PasswordSyncStatus } from '@metamask/seedless-onboarding-controller';
 import {
   ButtonIcon,
   ButtonSize,
@@ -13,8 +12,8 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  checkIsSeedlessPasswordOutdated,
   importMnemonicToVault,
-  resolveSeedlessPasswordSyncState,
 } from '../../../store/actions';
 import { SECOND } from '../../../../shared/constants/time';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
@@ -53,10 +52,10 @@ export const ImportSrp = () => {
       }
 
       if (isSocialLoginEnabled) {
-        const passwordSyncState = await dispatch(
-          resolveSeedlessPasswordSyncState({ skipCache: true }),
+        const isPasswordOutdated = await dispatch(
+          checkIsSeedlessPasswordOutdated(true),
         );
-        if (passwordSyncState !== PasswordSyncStatus.InSync) {
+        if (isPasswordOutdated) {
           return;
         }
       }

@@ -177,10 +177,7 @@ jest.mock('../../store/actions', () => ({
   setIsBackupAndSyncFeatureEnabled: jest.fn(
     () => async () => Promise.resolve(),
   ),
-  resolveSeedlessPasswordSyncState: jest.fn(
-    () => async () => Promise.resolve('in-sync'),
-  ),
-  lockMetamask: jest.fn(() => async () => Promise.resolve()),
+  checkIsSeedlessPasswordOutdated: jest.fn(() => async () => Promise.resolve()),
   getIsSeedlessOnboardingUserAuthenticated: jest.fn(
     () => async () => Promise.resolve(false),
   ),

@@ -1063,6 +1063,43 @@ export function getIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
 }
 
 /**
+ * Checks if the Seedless password is outdated.
+ *
+ * @param skipCache - Whether to skip the cache.
+ * @param captureSentryError - Whether to capture the error in Sentry.
+ * @returns True when the password is outdated, false otherwise.
+ */
+export function checkIsSeedlessPasswordOutdated(
+  skipCache = true,
+  captureSentryError = true,
+): ThunkAction<boolean | undefined, MetaMaskReduxState, unknown, AnyAction> {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
+    const isSocialLoginFlow = getIsSocialLoginFlow(getState());
+    if (!isSocialLoginFlow) {
+      return false;
+    }
+
+    let isPasswordOutdated = false;
+    try {
+      isPasswordOutdated = await submitRequestToBackground<boolean>(
+        'checkIsSeedlessPasswordOutdated',
+        [{ skipCache, captureSentryError }],
+      );
+      if (isPasswordOutdated) {
+        await forceUpdateMetamaskState(dispatch);
+      }
+    } catch (error) {
+      log.warn('checkIsSeedlessPasswordOutdated error', error);
+    }
+
+    return isPasswordOutdated;
+  };
+}
+
+/**
  * Resolves the Seedless password synchronization and recovery state.
  *
  * The status is kept local to the caller; it is never stored in Redux and the
@@ -1071,8 +1108,7 @@ export function getIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
  * @param options - Resolver options.
  * @param options.skipCache - Whether to bypass the controller's cached remote
  * state.
- * @returns The current recovery status. Failures resolve to `in-sync` so
- * transient resolver errors do not lock an already unlocked wallet.
+ * @returns The current recovery status.
  */
 export function resolveSeedlessPasswordSyncState({
   skipCache = false,
@@ -1099,8 +1135,7 @@ export function resolveSeedlessPasswordSyncState({
     } catch (error) {
       log.warn('resolveSeedlessPasswordSyncState error', error);
       // Match the previous outdated-password check: a failed status refresh
-      // must not lock the wallet. A genuine recovery failure is still returned
-      // as `Unknown` by the background resolver and remains blocking.
+      // must not block the periodic check or change the current UX state.
       return PasswordSyncStatus.InSync;
     }
   };

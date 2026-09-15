@@ -1,5 +1,6 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import log from 'loglevel';
 import { PasswordSyncStatus } from '@metamask/seedless-onboarding-controller';
 import { setupLocale } from '../shared/lib/error-utils';
 import * as browserRuntimeUtils from '../shared/lib/browser-runtime.utils';
@@ -256,15 +257,14 @@ describe('Index Tests', () => {
       );
     });
 
-    it('locks the wallet when polling finds an unfinished recovery', async () => {
+    it('does not lock the wallet when polling finds an unfinished recovery', async () => {
       const resolveSeedlessPasswordSyncStateAction = {
         type: 'RESOLVE_SEEDLESS_PASSWORD_SYNC_STATE',
       };
-      const lockMetamaskAction = { type: 'LOCK_METAMASK' };
+      actions.lockMetamask.mockClear();
       actions.resolveSeedlessPasswordSyncState.mockReturnValue(
         resolveSeedlessPasswordSyncStateAction,
       );
-      actions.lockMetamask.mockReturnValue(lockMetamaskAction);
 
       const store = {
         getState: jest.fn().mockReturnValue({
@@ -284,14 +284,19 @@ describe('Index Tests', () => {
 
       await runInitialActions(store);
 
-      expect(actions.lockMetamask).toHaveBeenCalledTimes(1);
-      expect(store.dispatch).toHaveBeenCalledWith(lockMetamaskAction);
+      expect(actions.lockMetamask).not.toHaveBeenCalled();
+      expect(store.dispatch).toHaveBeenCalledWith(
+        resolveSeedlessPasswordSyncStateAction,
+      );
     });
 
     it('does not lock the wallet when a status refresh fails', async () => {
       const resolveSeedlessPasswordSyncStateAction = {
         type: 'RESOLVE_SEEDLESS_PASSWORD_SYNC_STATE',
       };
+      const logErrorSpy = jest
+        .spyOn(log, 'error')
+        .mockImplementation(() => undefined);
       actions.lockMetamask.mockClear();
       actions.resolveSeedlessPasswordSyncState.mockReturnValue(
         resolveSeedlessPasswordSyncStateAction,
@@ -306,11 +311,11 @@ describe('Index Tests', () => {
             isSocialLoginFlow: true,
           },
         }),
-        // The action maps a failed status refresh to InSync so the poll leaves
-        // the unlocked wallet open and retries on the next interval.
+        // A failed refresh is logged by the poller but must not lock the
+        // unlocked wallet.
         dispatch: jest.fn((action) =>
           action === resolveSeedlessPasswordSyncStateAction
-            ? Promise.resolve(PasswordSyncStatus.InSync)
+            ? Promise.reject(new Error('resolver failed'))
             : Promise.resolve(),
         ),
       };
@@ -318,6 +323,10 @@ describe('Index Tests', () => {
       await runInitialActions(store);
 
       expect(actions.lockMetamask).not.toHaveBeenCalled();
+      expect(logErrorSpy).toHaveBeenCalledWith(
+        '[Metamask] Seedless password state check error',
+        expect.any(Error),
+      );
     });
 
     it('stops the password sync interval after reset to a non-social login flow', async () => {
