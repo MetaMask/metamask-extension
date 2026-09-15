@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { TransactionType } from '@metamask/transaction-controller';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
@@ -15,7 +14,10 @@ import {
   selectPaymentOverrideByTransactionId,
   type TransactionPayState,
 } from '../../../../../selectors/transactionPayController';
-import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
+import {
+  getMoneyAccountFlow,
+  MoneyAccountFlow,
+} from '../../../../../../shared/lib/money/money-account-flow';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { usePayTokenAccountBalance } from '../../pay/usePayTokenAccountBalance';
@@ -51,9 +53,8 @@ export function useInsufficientPayTokenBalanceAlert({
   );
   const isMoneyPaymentOverride =
     paymentOverride === PaymentOverride.MoneyAccount;
-  const isMoneyAccountDeposit = hasTransactionType(currentConfirmation, [
-    TransactionType.moneyAccountDeposit,
-  ]);
+  const isMoneyAccountDeposit =
+    getMoneyAccountFlow(currentConfirmation) === MoneyAccountFlow.Deposit;
   const { withdrawableFiatRaw } = useMoneyAccountWithdrawableFiat(
     isMoneyPaymentOverride,
   );
@@ -239,13 +240,35 @@ export function useInsufficientPayTokenBalanceAlert({
 
   // Post-quote can run before `payToken` is set (auto-selection skipped);
   // gas check is independent of `payToken`.
-  // Only sponsored Money Account deposits skip the native-gas alert — not
-  // every Pay flow funded on Monad.
-  const isSponsoredMoneyAccountDeposit =
-    Boolean(currentConfirmation?.isGasFeeSponsored) && isMoneyAccountDeposit;
+  //
+  // Money Account batches never spend the signing account's native balance on
+  // gas: they execute *from* the money account, which holds no native MON, and
+  // the Monad gas station sponsors the fee. `nativeBalanceRaw` above is the
+  // *selected* account's balance (`useTokenWithBalance` reads
+  // `getSelectedInternalAccount`), so comparing it against the batch's source
+  // network fee compares two unrelated quantities and reports "Not enough MON
+  // to cover fees" against a fee nobody pays from that balance.
+  //
+  // Suppress for deposit *and* withdraw, unconditionally, mirroring
+  // `useInsufficientBalanceAlerts`. Gating on `isGasFeeSponsored` or on the
+  // post-quote flag is what made this alert appear only sometimes:
+  //   - `isGasFeeSponsored` is only set at creation for `CHAIN_IDS.MONAD`, and
+  //     `useTransactionConfirm` can clear it (opt-out / unsupported gasless),
+  //     so the guard could evaporate mid-confirmation.
+  //   - Withdraw had no money-account guard at all and leaned on `isPostQuote`
+  //     (`canSelectWithdrawToken`), which is false whenever the remote
+  //     `confirmations_pay_post_quote` flag is off or unserved for
+  //     `moneyAccountWithdraw` — the direct-transfer fallback still runs as a
+  //     sponsored 7702 batch from the money account, so the native check was
+  //     still wrong.
+  // Genuine shortfalls remain covered: deposits by the pay-token balance
+  // checks above, withdrawals by `useInsufficientMoneyAccountBalanceAlert`.
+  const isMoneyAccountTransaction = Boolean(
+    getMoneyAccountFlow(currentConfirmation),
+  );
   const isInsufficientForSourceNetwork = useMemo(
     () =>
-      !isSponsoredMoneyAccountDeposit &&
+      !isMoneyAccountTransaction &&
       !isMoneyPaymentOverride &&
       (payToken || isPostQuote) &&
       !isPayTokenNative &&
@@ -253,12 +276,12 @@ export function useInsufficientPayTokenBalanceAlert({
       !isSourceGasFeeToken &&
       totalSourceNetworkFeeRaw.gt(nativeBalanceRaw),
     [
+      isMoneyAccountTransaction,
       isMoneyPaymentOverride,
       isPayTokenNative,
       isPendingAlert,
       isPostQuote,
       isSourceGasFeeToken,
-      isSponsoredMoneyAccountDeposit,
       nativeBalanceRaw,
       payToken,
       totalSourceNetworkFeeRaw,

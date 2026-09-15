@@ -17,21 +17,15 @@ const previewItems = MOCK_MONEY_TRANSACTIONS.slice(0, MAX_PREVIEW_ITEMS).map(
 );
 
 describe('MoneyActivityList', () => {
-  it('renders the empty copy when there are no items', () => {
-    renderWithLocalization(<MoneyActivityList items={[]} />);
+  it('renders nothing when there are no items', () => {
+    const { container } = renderWithLocalization(
+      <MoneyActivityList items={[]} />,
+    );
 
-    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
+    expect(screen.queryByTestId('money-activity-list')).not.toBeInTheDocument();
     expect(
-      screen.getByText(messages.moneyActivity.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.moneyActivityPlaceholderDescription.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByTestId('money-activity-view-all'),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByTestId(/money-activity-row-/u),
+      screen.queryByText(messages.moneyActivity.message),
     ).not.toBeInTheDocument();
   });
 
@@ -43,9 +37,6 @@ describe('MoneyActivityList', () => {
     expect(screen.getAllByTestId(/money-activity-row-money-tx-/u)).toHaveLength(
       MAX_PREVIEW_ITEMS,
     );
-    expect(
-      screen.queryByText(messages.moneyActivityPlaceholderDescription.message),
-    ).not.toBeInTheDocument();
   });
 
   it('shows an enabled View all button when there are more than five items', () => {
@@ -78,13 +69,10 @@ describe('MoneyActivityList', () => {
     expect(screen.getByTestId('money-activity-view-all')).toBeInTheDocument();
   });
 
-  it('shows a settling skeleton instead of empty copy', () => {
+  it('shows a settling skeleton while the preview is filling', () => {
     renderWithLocalization(<MoneyActivityList items={[]} isSettling />);
 
     expect(screen.getByTestId('money-activity-settling')).toBeInTheDocument();
-    expect(
-      screen.queryByText(messages.moneyActivityPlaceholderDescription.message),
-    ).not.toBeInTheDocument();
   });
 
   it('does not make Accounts API rows clickable', () => {

@@ -4,7 +4,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
@@ -17,6 +17,7 @@ import { selectMoneyActivityDetailsEnabled } from '../../selectors/money/money-a
 import { getInternalAccountByAddress } from '../../selectors/accounts';
 import { selectTransactionById } from '../../selectors/transactionController';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
+import { useMoneyTransactionFee } from '../../hooks/money/use-money-transaction-fee';
 import MOCK_MONEY_TRANSACTIONS from './constants/mock-activity-data';
 import { onchainItem } from './types/money-activity';
 import { MoneyTransactionDetailsPage } from './money-transaction-details-page';
@@ -36,6 +37,7 @@ const mockGetInternalAccountByAddress = jest.mocked(
 );
 const mockSelectTransactionById = jest.mocked(selectTransactionById);
 const mockUseCopyToClipboard = jest.mocked(useCopyToClipboard);
+const mockUseMoneyTransactionFee = jest.mocked(useMoneyTransactionFee);
 
 jest.mock('react-redux', () => ({
   useSelector: (selector: () => unknown) => selector(),
@@ -63,6 +65,24 @@ jest.mock('../../selectors/transactionController', () => ({
 
 jest.mock('../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: jest.fn(),
+}));
+
+jest.mock('../../hooks/useFormatters', () => ({
+  useFormatters: () => ({
+    formatCurrencyWithMinThreshold: (value: number) => {
+      if (value !== 0 && Math.abs(value) < 0.01) {
+        return '<$0.01';
+      }
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(value);
+    },
+  }),
+}));
+
+jest.mock('../../hooks/money/use-money-transaction-fee', () => ({
+  useMoneyTransactionFee: jest.fn(),
 }));
 
 jest.mock('react-router-dom', () => ({
@@ -111,6 +131,10 @@ describe('MoneyTransactionDetailsPage', () => {
       mockCopyToClipboard,
       jest.fn(),
     ]);
+    mockUseMoneyTransactionFee.mockReturnValue({
+      feeUsd: 0.16,
+      totalUsd: 1000.16,
+    });
     mockUseParams.mockReturnValue({ transactionId: deposited.id });
     mockUseMoneyAccountAvailability.mockReturnValue({
       availability: {
@@ -197,6 +221,12 @@ describe('MoneyTransactionDetailsPage', () => {
     expect(
       screen.getByTestId('money-transaction-details-account'),
     ).toHaveTextContent('Defi account (0x0000...0001)');
+    expect(
+      screen.getByTestId('money-transaction-details-fee'),
+    ).toHaveTextContent('$0.16');
+    expect(
+      screen.getByTestId('money-transaction-details-total'),
+    ).toHaveTextContent('$1,000.16');
     expect(mockGetInternalAccountByAddress).toHaveBeenCalledWith(
       undefined,
       deposited.tx.txParams.from,
@@ -207,6 +237,49 @@ describe('MoneyTransactionDetailsPage', () => {
     expect(
       screen.queryByTestId('money-transaction-details-explorer'),
     ).not.toBeInTheDocument();
+  });
+
+  it('shows unavailable fee and total values as dashes', () => {
+    mockUseMoneyTransactionFee.mockReturnValue({
+      feeUsd: undefined,
+      totalUsd: undefined,
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee'),
+    ).toHaveTextContent('-');
+    expect(
+      screen.getByTestId('money-transaction-details-total'),
+    ).toHaveTextContent('-');
+  });
+
+  it('shows a minimum threshold for a sub-cent transaction fee', () => {
+    mockUseMoneyTransactionFee.mockReturnValue({
+      feeUsd: 0.001,
+      totalUsd: 1000.001,
+    });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    expect(
+      screen.getByTestId('money-transaction-details-fee'),
+    ).toHaveTextContent('<$0.01');
+  });
+
+  it('opens the transaction fee information popover', async () => {
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    await act(async () => {
+      fireEvent.click(
+        screen.getByTestId('money-transaction-details-fee-info-button'),
+      );
+    });
+
+    expect(
+      screen.getByText(messages.moneyActivityTransactionFeeTooltip.message),
+    ).toBeInTheDocument();
   });
 
   it('renders the origin address when it does not belong to an internal account', () => {
