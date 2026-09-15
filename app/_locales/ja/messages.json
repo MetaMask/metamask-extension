@@ -8638,9 +8638,6 @@
   "rampsPreviouslyUsed": {
     "message": "前回の利用"
   },
-  "rampsQuoteFetchError": {
-    "message": "クォートを取得できませんでした。"
-  },
   "rampsQuoteUnavailable": {
     "message": "クォートが利用できません。"
   },

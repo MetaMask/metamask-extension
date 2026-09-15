@@ -8634,9 +8634,6 @@
   "rampsPreviouslyUsed": {
     "message": "Dernière utilisation"
   },
-  "rampsQuoteFetchError": {
-    "message": "Échec de la récupération de la cotation."
-  },
   "rampsQuoteUnavailable": {
     "message": "Cotation non disponible."
   },

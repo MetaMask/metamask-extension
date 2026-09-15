@@ -8642,9 +8642,6 @@
   "rampsPreviouslyUsed": {
     "message": "Terakhir digunakan"
   },
-  "rampsQuoteFetchError": {
-    "message": "Gagal mengambil kuotasi."
-  },
   "rampsQuoteUnavailable": {
     "message": "Kuotasi tidak tersedia."
   },

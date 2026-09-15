@@ -8642,9 +8642,6 @@
   "rampsPreviouslyUsed": {
     "message": "마지막 사용"
   },
-  "rampsQuoteFetchError": {
-    "message": "견적을 불러오지 못했습니다."
-  },
   "rampsQuoteUnavailable": {
     "message": "견적을 확인할 수 없습니다."
   },
