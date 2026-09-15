@@ -91,8 +91,8 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
       : null,
   );
 
-  const intentAssetId = (location.state as BuildQuoteLocationState | null)
-    ?.assetId;
+  const locationState = location.state as BuildQuoteLocationState | null;
+  const intentAssetId = locationState?.assetId;
   const tokenStateIsSettled = isTokenStateSettled(
     intentAssetId,
     selectedToken?.assetId,
@@ -216,9 +216,9 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
 
   const handlePaymentMethodPress = useCallback(() => {
     navigate(RAMPS_PAYMENT_METHOD_ROUTE, {
-      state: { amount: debouncedAmount },
+      state: { amount: amountAsNumber },
     });
-  }, [debouncedAmount, navigate]);
+  }, [amountAsNumber, navigate]);
 
   const canContinue = resolveCanContinue({
     hasAmount,
