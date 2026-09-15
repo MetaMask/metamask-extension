@@ -8,6 +8,7 @@ describe('NotificationDetailTitle', () => {
 
     const titleElement = screen.getByText('Test Title');
     expect(titleElement).toBeInTheDocument();
+    expect(titleElement).toHaveClass('text-center');
 
     const dateElement = screen.getByText('2023-10-18');
     expect(dateElement).toBeInTheDocument();
