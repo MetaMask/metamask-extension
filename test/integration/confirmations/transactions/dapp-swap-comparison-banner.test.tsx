@@ -18,13 +18,14 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import nock from 'nock';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
-import { tEn } from '../../../lib/i18n-helpers';
+import { enLocale as messages, tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
 import {
   getUnapprovedContractInteractionTransaction,
   getUnapprovedDappSwapTransaction,
+  getUnapprovedSimpleSendTransaction,
 } from './transactionDataHelpers';
 
 jest.setTimeout(30_000);
@@ -33,6 +34,19 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
 }));
+
+// This branch still calls usePureBlack / PureBlackProvider, which the
+// installed @metamask/design-system-react no longer exports.
+jest.mock('@metamask/design-system-react', () => {
+  const actual = jest.requireActual('@metamask/design-system-react');
+  return {
+    ...actual,
+    PureBlackProvider:
+      actual.PureBlackProvider ??
+      (({ children }: { children: unknown }) => children),
+    usePureBlack: actual.usePureBlack ?? jest.fn(() => false),
+  };
+});
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 
@@ -514,6 +528,67 @@ describe('DappSwapComparisonBanner', () => {
     // Verify standard confirmation UI is displayed instead
     expect(
       await screen.findByText(tEn('confirmTitleTransaction')),
+    ).toBeInTheDocument();
+  });
+
+  it('does not display the banner for a wallet-initiated simpleSend', async () => {
+    const mockedMetaMaskState = {
+      ...getMetaMaskStateWithDappSwap({
+        accountAddress: getSelectedAccountAddress(),
+        includeQuote: true,
+      }),
+      pendingApprovals: {
+        [pendingTransactionId]: {
+          id: pendingTransactionId,
+          origin: 'metamask',
+          time: pendingTransactionTime,
+          type: ApprovalType.Transaction,
+          requestData: {
+            txId: pendingTransactionId,
+          },
+          requestState: null,
+          expectsResult: false,
+        },
+      },
+      transactions: [
+        getUnapprovedSimpleSendTransaction(
+          getSelectedAccountAddress(),
+          pendingTransactionId,
+          pendingTransactionTime,
+        ),
+      ],
+    };
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    expect(screen.queryByTestId('market-rate-tab')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('metamask-swap-tab')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('dapp-swap-banner')).not.toBeInTheDocument();
+
+    // Swap/Bridge quote-error UI lives on the bridge/swap prepare pages, not
+    // on a simpleSend confirmation. Asserting absence here guards against the
+    // WPN-1799 mis-routing where a native send could surface cross-chain
+    // quote-failure banners.
+    expect(
+      screen.queryByTestId('bridge-banner-alerts'),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('swaps-banner-title')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('bridge-no-quotes')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('bridge-cta-button')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.swapFetchingQuotesErrorTitle.message),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.swapQuotesNotAvailableErrorTitle.message),
+    ).not.toBeInTheDocument();
+
+    expect(
+      await screen.findByText(messages.confirmTitleSending.message),
     ).toBeInTheDocument();
   });
 
