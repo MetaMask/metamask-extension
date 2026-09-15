@@ -256,6 +256,24 @@ describe('RampsBuildQuoteScreen', () => {
     );
   });
 
+  it('shows a quote unavailable message when no provider returns a quote', () => {
+    useRampsQuotes.mockReturnValue({
+      data: { success: [], error: [] },
+      loading: false,
+      error: null,
+    });
+
+    renderWithProvider(
+      <RampsBuildQuoteScreen />,
+      createStore(),
+      '/ramps/build-quote',
+    );
+
+    expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
+      messages.rampsQuoteUnavailable.message,
+    );
+  });
+
   it('disables continue while amount debounce has not settled', () => {
     jest.useFakeTimers();
 

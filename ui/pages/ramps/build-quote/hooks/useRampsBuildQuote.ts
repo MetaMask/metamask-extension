@@ -181,6 +181,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     hasQuoteFetchError,
     quotesResponse,
     selectedQuote,
+    quoteUnavailableMessage: t('rampsQuoteUnavailable'),
   });
   const providerQuoteError = quotesResponse?.error?.find(
     (error) => error.provider === selectedProvider?.id && error.error,
