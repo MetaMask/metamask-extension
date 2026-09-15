@@ -161,12 +161,14 @@ export function getAvailableTokens({
   requiredTokens,
   tokens,
   blockedTokens,
+  isSolanaPayEnabled = false,
 }: {
   payToken?: TransactionPaymentToken;
   paySource?: TransactionPaySource;
   requiredTokens?: TransactionPayRequiredToken[];
   tokens: Asset[];
   blockedTokens?: BlockedPayTokensListConfig;
+  isSolanaPayEnabled?: boolean;
 }): Asset[] {
   return tokens
     .filter((token) => {
@@ -183,6 +185,14 @@ export function getAvailableTokens({
         return false;
       }
 
+      const isSelected = isPayTokenSelected(token, payToken, paySource);
+
+      // The rollout flag controls admission only. Keep an already-admitted
+      // source visible after rollback so its status and recovery remain usable.
+      if (isSolanaAccount && !isSolanaPayEnabled && !isSelected) {
+        return false;
+      }
+
       // MetaMask Pay can't source funds from EVM testnets (quotes route through
       // bridges/swaps that don't support them), so exclude those tokens from
       // both the Pay-with list and the auto-selected default.
@@ -193,8 +203,6 @@ export function getAvailableTokens({
       ) {
         return false;
       }
-
-      const isSelected = isPayTokenSelected(token, payToken, paySource);
 
       if (isSelected) {
         return true;

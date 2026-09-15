@@ -36,6 +36,7 @@ import {
 import { updateMoneyAccountWithdrawAmount } from '../lib/money/pay/update-withdraw-amount';
 import { subscribePersistPayMetadata } from '../lib/money/pay/persist-pay-metadata';
 import { createSolanaPayCallbacks } from '../lib/money/pay/solana-pay-callbacks';
+import { trackSolanaPayLifecycle } from '../lib/money/pay/solana-pay-metrics';
 import type {
   MoneyPayMessenger,
   PaymentOverrideMessenger,
@@ -88,6 +89,11 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
   });
 
   subscribePersistPayMetadata(controllerMessenger);
+
+  controllerMessenger.subscribe(
+    'TransactionPayController:solanaPayLifecycle',
+    trackSolanaPayLifecycle,
+  );
 
   messengerClient.recoverSolanaPayStatus().catch((error) => {
     console.error('Failed to recover Solana Pay status', error);
