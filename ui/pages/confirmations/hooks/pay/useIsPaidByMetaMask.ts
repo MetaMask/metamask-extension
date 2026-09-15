@@ -16,6 +16,25 @@ const SUPPORTED_TYPES: TransactionType[] = [
 ];
 
 /**
+ * Whether only the network-fee component is sponsored. Other fee lines
+ * (provider / MetaMask) may still be charged to the user.
+ *
+ * Use this when the UI should keep a non-zero fee total but label the
+ * network-fee line as "Paid by MetaMask" (partial sponsorship). Prefer
+ * {@link useIsPaidByMetaMask} when every fee component is zero and the whole
+ * fee row should be replaced.
+ *
+ * @returns Whether the current confirmation's network fee is MetaMask-sponsored.
+ */
+export function useIsNetworkFeePaidByMetaMask(): boolean {
+  const transactionMeta = useTransactionMetadataRequestOptional();
+  return (
+    hasTransactionType(transactionMeta, SUPPORTED_TYPES) &&
+    Boolean(transactionMeta?.isGasFeeSponsored)
+  );
+}
+
+/**
  * Whether the confirmation should present fees as paid by MetaMask.
  *
  * For gas-sponsored transactions (`isGasFeeSponsored`), source/target network

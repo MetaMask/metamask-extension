@@ -7,7 +7,10 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
-import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
+import {
+  useIsNetworkFeePaidByMetaMask,
+  useIsPaidByMetaMask,
+} from '../../../hooks/pay/useIsPaidByMetaMask';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { TotalRow, TotalRowProps } from './total-row';
@@ -31,6 +34,9 @@ describe('TotalRow', () => {
     useIsTransactionPayLoading,
   );
   const useIsPaidByMetaMaskMock = jest.mocked(useIsPaidByMetaMask);
+  const useIsNetworkFeePaidByMetaMaskMock = jest.mocked(
+    useIsNetworkFeePaidByMetaMask,
+  );
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -40,6 +46,7 @@ describe('TotalRow', () => {
 
     useIsTransactionPayLoadingMock.mockReturnValue(false);
     useIsPaidByMetaMaskMock.mockReturnValue(false);
+    useIsNetworkFeePaidByMetaMaskMock.mockReturnValue(false);
   });
 
   it('renders skeleton with label when loading (Default variant)', () => {
@@ -107,5 +114,23 @@ describe('TotalRow', () => {
     const { getByTestId } = render();
 
     expect(getByTestId('total-value')).toHaveTextContent('$0.14');
+  });
+
+  it('excludes only network gas when the network fee is sponsored but other fees remain', () => {
+    useIsNetworkFeePaidByMetaMaskMock.mockReturnValue(true);
+    useTransactionPayTotalsMock.mockReturnValue({
+      total: { usd: '100.37' },
+      fees: {
+        provider: { usd: '0.14' },
+        metaMask: { usd: '0' },
+        sourceNetwork: { estimate: { usd: '0.20' } },
+        targetNetwork: { usd: '0.03' },
+      },
+    } as TransactionPayTotals);
+
+    const { getByTestId } = render();
+
+    // 100.37 - 0.20 - 0.03 = 100.14 (provider fee stays)
+    expect(getByTestId('total-value')).toHaveTextContent('$100.14');
   });
 });

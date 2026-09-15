@@ -11,7 +11,10 @@ import {
   useTransactionPaySourceAmounts,
   useTransactionPayTotals,
 } from './useTransactionPayData';
-import { useIsPaidByMetaMask } from './useIsPaidByMetaMask';
+import {
+  useIsPaidByMetaMask,
+  useIsNetworkFeePaidByMetaMask,
+} from './useIsPaidByMetaMask';
 
 jest.mock('../transactions/useTransactionMetadataRequest');
 jest.mock('./useTransactionPayData');
@@ -258,6 +261,63 @@ describe('useIsPaidByMetaMask', () => {
     useTransactionPayHasPositiveRequiredAmountMock.mockReturnValue(false);
 
     const { result } = renderHook(() => useIsPaidByMetaMask());
+    expect(result.current).toBe(false);
+  });
+});
+
+describe('useIsNetworkFeePaidByMetaMask', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+    mockConfirmation(TransactionType.moneyAccountDeposit, {
+      isGasFeeSponsored: true,
+    });
+  });
+
+  it('returns true for a sponsored moneyAccountDeposit', () => {
+    const { result } = renderHook(() => useIsNetworkFeePaidByMetaMask());
+    expect(result.current).toBe(true);
+  });
+
+  it('returns true for a sponsored moneyAccountWithdraw', () => {
+    mockConfirmation(TransactionType.moneyAccountWithdraw, {
+      isGasFeeSponsored: true,
+    });
+
+    const { result } = renderHook(() => useIsNetworkFeePaidByMetaMask());
+    expect(result.current).toBe(true);
+  });
+
+  it('returns true for a sponsored musdConversion', () => {
+    mockConfirmation(TransactionType.musdConversion, {
+      isGasFeeSponsored: true,
+    });
+
+    const { result } = renderHook(() => useIsNetworkFeePaidByMetaMask());
+    expect(result.current).toBe(true);
+  });
+
+  it('returns false when gas is not sponsored', () => {
+    mockConfirmation(TransactionType.moneyAccountDeposit, {
+      isGasFeeSponsored: false,
+    });
+
+    const { result } = renderHook(() => useIsNetworkFeePaidByMetaMask());
+    expect(result.current).toBe(false);
+  });
+
+  it('returns false for unsupported transaction types even when sponsored', () => {
+    mockConfirmation(TransactionType.simpleSend, {
+      isGasFeeSponsored: true,
+    });
+
+    const { result } = renderHook(() => useIsNetworkFeePaidByMetaMask());
+    expect(result.current).toBe(false);
+  });
+
+  it('returns false when transaction metadata is undefined', () => {
+    useTransactionMetadataRequestOptionalMock.mockReturnValue(undefined);
+
+    const { result } = renderHook(() => useIsNetworkFeePaidByMetaMask());
     expect(result.current).toBe(false);
   });
 });

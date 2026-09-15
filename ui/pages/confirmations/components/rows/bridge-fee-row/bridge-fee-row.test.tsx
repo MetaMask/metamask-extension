@@ -1,4 +1,5 @@
 import React from 'react';
+import { act, fireEvent } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import configureMockStore from 'redux-mock-store';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -18,7 +19,10 @@ import {
   useTransactionPayQuotes,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
-import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
+import {
+  useIsPaidByMetaMask,
+  useIsNetworkFeePaidByMetaMask,
+} from '../../../hooks/pay/useIsPaidByMetaMask';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { BridgeFeeRow, BridgeFeeRowProps } from './bridge-fee-row';
@@ -55,6 +59,9 @@ describe('BridgeFeeRow', () => {
     useIsTransactionPayQuotePending,
   );
   const useIsPaidByMetaMaskMock = jest.mocked(useIsPaidByMetaMask);
+  const useIsNetworkFeePaidByMetaMaskMock = jest.mocked(
+    useIsNetworkFeePaidByMetaMask,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -69,6 +76,7 @@ describe('BridgeFeeRow', () => {
 
     useIsTransactionPayQuotePendingMock.mockReturnValue(false);
     useIsPaidByMetaMaskMock.mockReturnValue(false);
+    useIsNetworkFeePaidByMetaMaskMock.mockReturnValue(false);
 
     useTransactionPayQuotesMock.mockReturnValue([
       {} as TransactionPayQuote<Json>,
@@ -287,6 +295,46 @@ describe('BridgeFeeRow', () => {
       expect(
         queryByTestId('bridge-fee-tooltip-popover-button'),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Network fee paid by MetaMask (partial sponsorship)', () => {
+    beforeEach(() => {
+      useIsNetworkFeePaidByMetaMaskMock.mockReturnValue(true);
+      useTransactionPayTotalsMock.mockReturnValue({
+        fees: {
+          provider: { usd: '0.14' },
+          metaMask: { usd: '0' },
+          sourceNetwork: { estimate: { usd: '0.20' } },
+          targetNetwork: { usd: '0.03' },
+        },
+      } as TransactionPayTotals);
+    });
+
+    it('labels the network fee as Paid by MetaMask in the tooltip', async () => {
+      const { getByTestId, findByText } = render({
+        variant: ConfirmInfoRowSize.Small,
+      });
+
+      await act(async () => {
+        fireEvent.click(getByTestId('bridge-fee-tooltip-popover-button'));
+      });
+
+      const tooltip = await findByText((content) =>
+        content.includes(`${messages.networkFee.message}:`),
+      );
+      expect(tooltip.textContent).toContain(
+        `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
+      );
+      expect(tooltip.textContent).toContain(
+        `${messages.bridgeFee.message}: $0.14`,
+      );
+    });
+
+    it('excludes sponsored network gas from the fee total', () => {
+      const { getByTestId } = render();
+
+      expect(getByTestId('transaction-fee-value')).toHaveTextContent('$0.14');
     });
   });
 

@@ -16,7 +16,10 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
-import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
+import {
+  useIsNetworkFeePaidByMetaMask,
+  useIsPaidByMetaMask,
+} from '../../../hooks/pay/useIsPaidByMetaMask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 
@@ -32,6 +35,7 @@ export function TotalRow({
   const isLoading = useIsTransactionPayLoading();
   const totals = useTransactionPayTotals();
   const isPaidByMetaMask = useIsPaidByMetaMask();
+  const isNetworkFeePaidByMetaMask = useIsNetworkFeePaidByMetaMask();
 
   const totalUsd = useMemo(() => {
     if (!totals?.total) {
@@ -39,9 +43,13 @@ export function TotalRow({
     }
 
     return formatFiat(
-      getDisplayedTotalUsd(totals, isPaidByMetaMask).toNumber(),
+      getDisplayedTotalUsd(
+        totals,
+        isPaidByMetaMask,
+        isNetworkFeePaidByMetaMask,
+      ).toNumber(),
     );
-  }, [totals, formatFiat, isPaidByMetaMask]);
+  }, [totals, formatFiat, isPaidByMetaMask, isNetworkFeePaidByMetaMask]);
 
   const isSmall = variant === ConfirmInfoRowSize.Small;
   const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;
@@ -74,31 +82,40 @@ export function TotalRow({
 }
 
 /**
- * Pay totals include estimated target-network gas even when that gas is
- * sponsored. Same-token Money Account deposits therefore show "Paid by
- * MetaMask" on the fee row while `totals.total` still adds that gas on top of
- * the typed amount. Strip fee components whenever the fee row claims
- * sponsorship so Total matches what the user actually pays.
+ * Pay totals include estimated network gas even when that gas is sponsored.
+ * Strip fee components so Total matches what the user actually pays:
+ * - fully sponsored (`isPaidByMetaMask`): remove every fee line
+ * - network-only sponsored: remove source/target network gas only
  *
  * @param totals - Pay totals for the current confirmation.
- * @param isPaidByMetaMask - Whether the fee row is showing sponsorship.
+ * @param isPaidByMetaMask - Whether every fee component is MetaMask-sponsored.
+ * @param isNetworkFeePaidByMetaMask - Whether only network gas is sponsored.
  * @returns The USD total to display.
  */
 function getDisplayedTotalUsd(
   totals: TransactionPayTotals,
   isPaidByMetaMask: boolean,
+  isNetworkFeePaidByMetaMask: boolean,
 ): BigNumber {
   const total = new BigNumber(totals.total.usd);
 
-  if (!isPaidByMetaMask) {
+  let feesToExclude = new BigNumber(0);
+
+  if (isPaidByMetaMask) {
+    feesToExclude = new BigNumber(totals.fees?.provider?.usd ?? '0')
+      .plus(totals.fees?.metaMask?.usd ?? '0')
+      .plus(totals.fees?.sourceNetwork?.estimate?.usd ?? '0')
+      .plus(totals.fees?.targetNetwork?.usd ?? '0');
+  } else if (isNetworkFeePaidByMetaMask) {
+    feesToExclude = new BigNumber(
+      totals.fees?.sourceNetwork?.estimate?.usd ?? '0',
+    ).plus(totals.fees?.targetNetwork?.usd ?? '0');
+  }
+
+  if (feesToExclude.isZero()) {
     return total;
   }
 
-  const fees = new BigNumber(totals.fees?.provider?.usd ?? '0')
-    .plus(totals.fees?.metaMask?.usd ?? '0')
-    .plus(totals.fees?.sourceNetwork?.estimate?.usd ?? '0')
-    .plus(totals.fees?.targetNetwork?.usd ?? '0');
-  const net = total.minus(fees);
-
+  const net = total.minus(feesToExclude);
   return net.lt(0) ? new BigNumber(0) : net;
 }
