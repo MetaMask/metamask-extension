@@ -5605,9 +5605,6 @@
   "moneyActivityPending": {
     "message": "Pending"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "Your Money activity will appear here."
-  },
   "moneyActivityPurchase": {
     "message": "Purchase"
   },

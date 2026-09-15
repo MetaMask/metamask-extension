@@ -51,7 +51,7 @@ exports[`NameDetails renders proposed names 1`] = `
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-pill"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
@@ -148,7 +148,7 @@ exports[`NameDetails renders proposed names 1`] = `
                 />
                 <button
                   aria-label="Copy address to clipboard"
-                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-pill"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
@@ -181,7 +181,7 @@ exports[`NameDetails renders proposed names 1`] = `
                       />
                       <button
                         aria-label="Clear"
-                        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-pill"
                       >
                         <span
                           class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
@@ -233,7 +233,7 @@ exports[`NameDetails renders proposed names 1`] = `
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-pill"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
@@ -308,7 +308,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-pill"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
@@ -403,7 +403,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
                 />
                 <button
                   aria-label="Copy address to clipboard"
-                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-pill"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
@@ -436,7 +436,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
                       />
                       <button
                         aria-label="Clear"
-                        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-pill"
                       >
                         <span
                           class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
@@ -453,7 +453,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-pill"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
@@ -528,7 +528,7 @@ exports[`NameDetails renders with no saved name 1`] = `
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-pill"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
@@ -625,7 +625,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                 />
                 <button
                   aria-label="Copy address to clipboard"
-                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-pill"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
@@ -658,7 +658,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                       />
                       <button
                         aria-label="Clear"
-                        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-pill"
                       >
                         <span
                           class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
@@ -675,7 +675,7 @@ exports[`NameDetails renders with no saved name 1`] = `
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-pill"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
@@ -750,7 +750,7 @@ exports[`NameDetails renders with recognized name 1`] = `
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-pill"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
@@ -847,7 +847,7 @@ exports[`NameDetails renders with recognized name 1`] = `
                 />
                 <button
                   aria-label="Copy address to clipboard"
-                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-pill"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
@@ -880,7 +880,7 @@ exports[`NameDetails renders with recognized name 1`] = `
                       />
                       <button
                         aria-label="Clear"
-                        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-pill"
                       >
                         <span
                           class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
@@ -897,7 +897,7 @@ exports[`NameDetails renders with recognized name 1`] = `
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-pill"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
@@ -972,7 +972,7 @@ exports[`NameDetails renders with saved name 1`] = `
             >
               <button
                 aria-label="Close"
-                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-pill"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
@@ -1069,7 +1069,7 @@ exports[`NameDetails renders with saved name 1`] = `
                 />
                 <button
                   aria-label="Copy address to clipboard"
-                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-pill"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
@@ -1102,7 +1102,7 @@ exports[`NameDetails renders with saved name 1`] = `
                       />
                       <button
                         aria-label="Clear"
-                        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-pill"
                       >
                         <span
                           class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
@@ -1119,7 +1119,7 @@ exports[`NameDetails renders with saved name 1`] = `
             class="mm-box mm-modal-footer mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-pill"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
