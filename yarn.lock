@@ -8729,10 +8729,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/stellar-wallet-snap@npm:0.1.0":
-  version: 0.1.0
-  resolution: "@metamask/stellar-wallet-snap@npm:0.1.0"
-  checksum: 10/373cebc4af1b95e3a9228b0ce2bea79fb71d6d61f86abb03f3160ed040469392307d4f932fe0189b13d555d729c14205eaad20ab6957ab6291888a4c00a3cc6e
+"@metamask/stellar-wallet-snap@npm:@metamask-previews/stellar-wallet-snap@1.0.0-preview-b657139d":
+  version: 1.0.0-preview-b657139d
+  resolution: "@metamask-previews/stellar-wallet-snap@npm:1.0.0-preview-b657139d"
+  checksum: 10/c10d4a81a6514285613c3094aef5139ddf6a813a4769947bb14f1e08fc43e85389c61a6c63ffb8005f31ca34d4c2835e46f6b69db2afe39df4bed0522a55cfe9
   languageName: node
   linkType: hard
 
