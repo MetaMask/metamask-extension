@@ -3101,12 +3101,18 @@ export class LegacyBackgroundApiService {
       Record<ExternalServicesOwnedPreference, boolean>
     >,
   ): void {
-    this.#messenger.call(
-      'PreferencesController:toggleExternalServices',
-      ...(ownedPreferences
-        ? ([useExternal, ownedPreferences] as const)
-        : ([useExternal] as const)),
-    );
+    if (ownedPreferences) {
+      this.#messenger.call(
+        'PreferencesController:toggleExternalServices',
+        useExternal,
+        ownedPreferences,
+      );
+    } else {
+      this.#messenger.call(
+        'PreferencesController:toggleExternalServices',
+        useExternal,
+      );
+    }
 
     const subscriptionState = this.#messenger.call(
       'SubscriptionController:getState',

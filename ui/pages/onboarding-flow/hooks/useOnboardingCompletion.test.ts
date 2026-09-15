@@ -312,7 +312,15 @@ describe('useOnboardingCompletion', () => {
     });
 
     await waitFor(() => {
-      expect(mockToggleExternalServices).toHaveBeenCalledWith(true);
+      expect(mockToggleExternalServices).toHaveBeenCalledWith(true, {
+        useTokenDetection: true,
+        useCurrencyRateCheck: true,
+        usePhishDetect: true,
+        useAddressBarEnsResolution: true,
+        openSeaEnabled: true,
+        useNftDetection: true,
+        useSafeChainsListValidation: true,
+      });
     });
     expect(mockSetPreference).not.toHaveBeenCalled();
     expect(mockSetUseMultiAccountBalanceChecker).not.toHaveBeenCalled();
