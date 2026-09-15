@@ -5934,9 +5934,6 @@
   "networkFeeExplanationTitle": {
     "message": "ネットワーク手数料"
   },
-  "networkMenu": {
-    "message": "ネットワークメニュー"
-  },
   "networkMenuHeading": {
     "message": "ネットワークを選択"
   },

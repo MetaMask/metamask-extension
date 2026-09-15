@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import cn from 'clsx';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '#shared/constants/app';
 import {
   AlignItems,
   BackgroundColor,
@@ -7,7 +8,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
 

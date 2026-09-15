@@ -16,6 +16,7 @@ import {
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
+import { useBottomNavBar } from '#ui/hooks/useBottomNavBar';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MultichainTriggeredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-triggered-list';
 import {
@@ -34,7 +35,6 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   DISCOVER_SEARCH_ROUTE,
 } from '../../../helpers/constants/routes';
-import { useBottomNavBar } from '../../../hooks/useBottomNavBar';
 import { transitionForward } from '../../ui/transition';
 import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
 import { getShowSupportDataConsentModal } from '../../../ducks/app/app';
