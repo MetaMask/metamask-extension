@@ -388,6 +388,28 @@ describe('useInsufficientBalanceAlerts', () => {
     expect(alerts).toEqual(ALERT);
   });
 
+  it('returns no alerts on Monad when reserve violation is the root cause', () => {
+    const monadTransaction = {
+      ...TRANSACTION_MOCK,
+      chainId: '0x8f',
+      isGasFeeSponsored: false,
+      simulationData: {
+        callTraceErrors: ['reserve balance violation'],
+        tokenBalanceChanges: [],
+      },
+    } as TransactionMeta;
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: monadTransaction,
+      transaction: monadTransaction,
+      chainId: '0x8f',
+    });
+
+    // Generic fee alert must not mask the Monad reserve-balance alert.
+    expect(alerts).toEqual([]);
+  });
+
   it('returns no alerts for money account deposits even when native balance is insufficient', () => {
     const moneyAccountDeposit = {
       ...TRANSACTION_MOCK,
