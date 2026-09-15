@@ -8,7 +8,6 @@ import {
   isLikelyCommentLine,
   isInsideMultilineBlockComment,
   indicesOf,
-  indicesOfNewError,
   detectMapLocationFromContentscript,
   discoverWebpackBundles,
   validateBundle,
@@ -136,37 +135,6 @@ describe('sourcemap-validator', () => {
       );
       assert.deepStrictEqual(indicesOf('aa', 'aaa'), [0, 1]);
       assert.deepStrictEqual(indicesOf('aa', 'aabaa'), [0, 3]);
-    });
-  });
-
-  describe('indicesOfNewError', () => {
-    it('returns indices for real new Error constructor calls', () => {
-      assert.deepStrictEqual(indicesOfNewError('throw new Error()'), [6]);
-      assert.deepStrictEqual(
-        indicesOfNewError('new Error and new Error'),
-        [0, 14],
-      );
-      assert.deepStrictEqual(indicesOfNewError('throw new Error("x");'), [6]);
-    });
-
-    it('skips longer identifiers that share the new Error prefix', () => {
-      assert.deepStrictEqual(
-        indicesOfNewError(
-          'throw"string"==typeof ErrorWrapper?.prototype?.constructor?.name?new ErrorWrapper({message:message}):ErrorWrapper({message:message})',
-        ),
-        [],
-      );
-      assert.deepStrictEqual(indicesOfNewError('new Errors()'), []);
-      assert.deepStrictEqual(indicesOfNewError('new Error$()'), []);
-    });
-
-    it('keeps real new Error when ErrorWrapper appears nearby', () => {
-      assert.deepStrictEqual(
-        indicesOfNewError(
-          'throw new Error("x");const y=new ErrorWrapper({message:"y"})',
-        ),
-        [6],
-      );
     });
   });
 

@@ -3,9 +3,8 @@
  *
  * Discovers all .js bundles in dist/chrome that have a .map file in the
  * selected location (sibling or dist/sourcemaps), then for each bundle finds
- * real `new Error` constructor calls in the built code (not longer names such
- * as `new ErrorWrapper`) and verifies the source map correctly maps those
- * positions back to the original source containing "new Error".
+ * "new Error" in the built code and verifies the source map
+ * correctly maps those positions back to the original source containing "new Error".
  * If it's not working, it may error or print minified garbage.
  *
  * Run after a webpack production/test build, e.g.:
@@ -29,10 +28,6 @@ const CONTENTSCRIPT_SOURCEMAP_REFERENCE =
   '//# sourceMappingURL=contentscript.js.map';
 
 const TARGET_STRING = 'new Error';
-// After TARGET_STRING, these characters continue a JS identifier (e.g.
-// `new ErrorWrapper`). Without a boundary check, substring sampling treats
-// those as real `new Error` sites and fails when maps point elsewhere.
-const IDENTIFIER_CONTINUE_PATTERN = /[$\w]/u;
 
 // The perps controller uses a dynamic import() for the MYX provider that is
 // intentionally stripped from the published package. Webpack emits `new Error`
@@ -376,7 +371,7 @@ export async function validateBundle({
     const buildLines = rawBuild.split('\n');
     for (let lineIndex = 0; lineIndex < buildLines.length; lineIndex++) {
       const line = buildLines[lineIndex];
-      const matchIndices = indicesOfNewError(line);
+      const matchIndices = indicesOf(TARGET_STRING, line);
       for (const matchColumn of matchIndices) {
         const position = { line: lineIndex + 1, column: matchColumn };
         const result = consumer.originalPositionFor(position);
@@ -511,29 +506,6 @@ export function indicesOf(substring: string, str: string): number[] {
   const a: number[] = [];
   let i = -1;
   while ((i = str.indexOf(substring, i + 1)) >= 0) {
-    a.push(i);
-  }
-  return a;
-}
-
-/**
- * Returns indices of real `new Error` constructor calls in minified output.
- *
- * Skips longer identifiers that only share the `"new Error"` prefix, such as
- * `new ErrorWrapper` from `readable-stream`. Those appear when SWC mangling is
- * disabled and would otherwise cause false SourcemapValidator failures.
- *
- * @param str - A single line of bundle output.
- * @returns Array of 0-based indices; empty if no bounded `new Error` is found.
- */
-export function indicesOfNewError(str: string): number[] {
-  const a: number[] = [];
-  let i = -1;
-  while ((i = str.indexOf(TARGET_STRING, i + 1)) >= 0) {
-    const after = str[i + TARGET_STRING.length];
-    if (after !== undefined && IDENTIFIER_CONTINUE_PATTERN.test(after)) {
-      continue;
-    }
     a.push(i);
   }
   return a;
