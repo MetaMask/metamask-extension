@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
-import { Suite } from 'mocha';
+import { test as pwTest } from '@playwright/test';
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import { MOCK_ANALYTICS_ID } from '../../constants';
+import { E2E_DRIVER, MOCK_ANALYTICS_ID } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
@@ -74,10 +74,11 @@ const mockSegment = async (mockServer: Mockttp) => {
  * 2. Deletion while Metrics is Opted out.
  * 3. Deletion when user never opted for metrics.
  */
-describe('Delete MetaMetrics Data', function (this: Suite) {
-  it('while user has opted in for metrics tracking', async function () {
+pwTest.describe('Delete MetaMetrics Data', () => {
+  pwTest('while user has opted in for metrics tracking', async () => {
     await withFixtures(
       {
+        driverType: E2E_DRIVER.PLAYWRIGHT,
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
@@ -85,7 +86,7 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
             optedIn: true,
           })
           .build(),
-        title: this.test?.fullTitle(),
+        title: pwTest.info().titlePath.join(' '),
         testSpecificMock: mockSegment,
       },
       async ({
@@ -138,9 +139,10 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
     );
   });
 
-  it('while user has opted out for metrics tracking', async function () {
+  pwTest('while user has opted out for metrics tracking', async () => {
     await withFixtures(
       {
+        driverType: E2E_DRIVER.PLAYWRIGHT,
         fixtures: new FixtureBuilderV2()
           .withMetaMetricsController({
             analyticsId: MOCK_ANALYTICS_ID,
@@ -148,8 +150,7 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
             optedIn: false,
           })
           .build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
+        title: pwTest.info().titlePath.join(' '),
       },
       async ({ driver }: TestSuiteArguments) => {
         await login(driver);
@@ -168,12 +169,12 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
     );
   });
 
-  it('when the user has never opted in for metrics', async function () {
+  pwTest('when the user has never opted in for metrics', async () => {
     await withFixtures(
       {
+        driverType: E2E_DRIVER.PLAYWRIGHT,
         fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
+        title: pwTest.info().titlePath.join(' '),
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
