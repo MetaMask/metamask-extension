@@ -118,7 +118,7 @@ export function getMoneyTransactionFeeUsd(
   }
 
   if (isNetworkFeeSponsored) {
-    return bridgeFee;
+    return bridgeFee ?? 0;
   }
 
   const gasFee = getMoneyGasFeeUsd(tx, nativeUsdRate);
