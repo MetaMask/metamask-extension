@@ -17,6 +17,28 @@ jest.mock('../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: jest.fn(),
 }));
 
+jest.mock('../../../components/app/token-icon', () => ({
+  TokenIcon: ({
+    chainId,
+    tokenAddress,
+    symbol,
+    size,
+  }: {
+    chainId: string;
+    tokenAddress: string;
+    symbol?: string;
+    size?: string;
+  }) => (
+    <div
+      data-testid="money-api-activity-details-token-icon"
+      data-chain-id={chainId}
+      data-token-address={tokenAddress}
+      data-symbol={symbol}
+      data-size={size}
+    />
+  ),
+}));
+
 const [cardActivity, cashbackActivity, refundActivity] =
   MOCK_ACCOUNTS_API_ACTIVITY;
 
@@ -46,6 +68,14 @@ describe('MoneyApiActivityDetails', () => {
     expect(
       screen.getByTestId('money-api-activity-details-hero-amount'),
     ).toHaveTextContent('-$10.00');
+    const icon = screen.getByTestId('money-api-activity-details-token-icon');
+    expect(icon).toHaveAttribute('data-chain-id', cardActivity.chainId);
+    expect(icon).toHaveAttribute(
+      'data-token-address',
+      cardActivity.token.address,
+    );
+    expect(icon).toHaveAttribute('data-symbol', cardActivity.token.symbol);
+    expect(icon).toHaveAttribute('data-size', 'xl');
     expect(
       screen.getByTestId('money-api-activity-details-status-value'),
     ).toHaveTextContent(messages.completed.message);

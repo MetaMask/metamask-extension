@@ -1,7 +1,5 @@
 import React from 'react';
 import {
-  AvatarToken,
-  AvatarTokenSize,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
@@ -19,6 +17,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { TokenIcon } from '../../../components/app/token-icon';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import type { AccountsApiActivity } from '../types/money-activity';
@@ -33,8 +32,6 @@ import {
   shortenMoneyActivityHex,
 } from '../utils/money-transaction-details-display';
 import { MoneyTransactionDetailsRow } from './money-transaction-details-row';
-
-const USDC_TOKEN_IMAGE = './images/icon-usdc.png';
 
 const HERO_COPY_KEY: Record<AccountsApiActivity['kind'], string> = {
   card: 'moneyActivityDetailsYouSpent',
@@ -122,10 +119,11 @@ export function MoneyApiActivityDetails({
           alignItems={BoxAlignItems.Center}
           gap={3}
         >
-          <AvatarToken
-            name="USDC"
-            src={USDC_TOKEN_IMAGE}
-            size={AvatarTokenSize.Xl}
+          <TokenIcon
+            chainId={activity.chainId}
+            tokenAddress={activity.token.address}
+            symbol={activity.token.symbol}
+            size="xl"
           />
           <SensitiveText
             variant={TextVariant.DisplayMd}
