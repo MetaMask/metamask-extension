@@ -37,10 +37,7 @@ export function RampsBuildQuoteDraftProvider({
   children: ReactNode;
 }) {
   const [draftAmount, setDraftAmount] = useState<string | undefined>(undefined);
-  const value = useMemo(
-    () => ({ draftAmount, setDraftAmount }),
-    [draftAmount],
-  );
+  const value = useMemo(() => ({ draftAmount, setDraftAmount }), [draftAmount]);
 
   return (
     <RampsBuildQuoteDraftContext.Provider value={value}>

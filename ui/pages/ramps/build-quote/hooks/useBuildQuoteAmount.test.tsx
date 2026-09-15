@@ -27,9 +27,7 @@ const FlowHarness = ({
   regionDefaultAmount?: number;
 }) => (
   <RampsBuildQuoteDraftProvider>
-    {show ? (
-      <AmountConsumer regionDefaultAmount={regionDefaultAmount} />
-    ) : null}
+    {show ? <AmountConsumer regionDefaultAmount={regionDefaultAmount} /> : null}
   </RampsBuildQuoteDraftProvider>
 );
 
