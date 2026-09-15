@@ -5,9 +5,6 @@ import {
 import { getRampsEnvironment } from '../../../shared/lib/ramps/environment';
 import type { MessengerClientInitFunction } from './types';
 
-const rampsFetch: typeof globalThis.fetch = (input, init) =>
-  globalThis.fetch(input, { ...init, cache: 'no-store' });
-
 /**
  * Initialize the RampsService.
  *
@@ -23,7 +20,7 @@ export const RampsServiceInit: MessengerClientInitFunction<
     messenger: controllerMessenger,
     environment: getRampsEnvironment(),
     context: 'browser',
-    fetch: rampsFetch,
+    fetch: globalThis.fetch.bind(globalThis),
     // Sent as clientProduct/clientVersion query params so the on-ramp API
     // can version-gate features per client. Headers are not used for gating.
     clientProduct: 'metamask-extension',
