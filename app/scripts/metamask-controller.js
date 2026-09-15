@@ -6489,22 +6489,48 @@ export default class MetamaskController extends EventEmitter {
   /**
    * A method that is called by the background when all instances of metamask are closed.
    * Currently used to stop controller polling.
+   *
+   * Each controller is stopped independently, so one that fails to stop does
+   * not prevent the others from stopping, and the failure is reported.
+   *
+   * Note that only polling started on behalf of the UI is stopped here.
+   * Controllers that track submitted transactions until they complete
+   * (`smartTransactionsController`, `userOperationController` and
+   * `bridgeStatusController`) are not stopped, because that tracking must
+   * continue after the UI closes.
    */
   onClientClosed() {
-    try {
-      this.gasFeeController.stopAllPolling();
-      this.currencyRateController.stopAllPolling();
-      this.tokenRatesController.stopAllPolling();
-      this.tokenDetectionController.stopAllPolling();
-      this.tokenListController.stopAllPolling();
-      this.tokenBalancesController.stopAllPolling();
-      this.staticAssetsController.stopAllPolling();
-      this.appStateController.clearPollingTokens();
-      this.accountTrackerController.stopAllPolling();
-      this.deFiPositionsController.stopAllPolling();
-      this.subscriptionController.stopAllPolling();
-    } catch (error) {
-      console.error(error);
+    const uiPollingTeardowns = {
+      GasFeeController: () => this.gasFeeController.stopAllPolling(),
+      CurrencyRateController: () =>
+        this.currencyRateController.stopAllPolling(),
+      TokenRatesController: () => this.tokenRatesController.stopAllPolling(),
+      TokenDetectionController: () =>
+        this.tokenDetectionController.stopAllPolling(),
+      TokenListController: () => this.tokenListController.stopAllPolling(),
+      TokenBalancesController: () =>
+        this.tokenBalancesController.stopAllPolling(),
+      StaticAssetsController: () =>
+        this.staticAssetsController.stopAllPolling(),
+      AppStateController: () => this.appStateController.clearPollingTokens(),
+      AccountTrackerController: () =>
+        this.accountTrackerController.stopAllPolling(),
+      DeFiPositionsController: () =>
+        this.deFiPositionsController.stopAllPolling(),
+      SubscriptionController: () =>
+        this.subscriptionController.stopAllPolling(),
+    };
+
+    for (const [name, teardown] of Object.entries(uiPollingTeardowns)) {
+      try {
+        teardown();
+      } catch (error) {
+        captureException(
+          new Error(`Failed to stop polling for ${name} on client close`, {
+            cause: error,
+          }),
+        );
+      }
     }
   }
 

@@ -1112,6 +1112,104 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('onClientClosed', () => {
+      const getOtherUiPollingTeardownSpies = () => [
+        ...[
+          metamaskController.currencyRateController,
+          metamaskController.tokenRatesController,
+          metamaskController.tokenDetectionController,
+          metamaskController.tokenListController,
+          metamaskController.tokenBalancesController,
+          metamaskController.staticAssetsController,
+          metamaskController.accountTrackerController,
+          metamaskController.deFiPositionsController,
+          metamaskController.subscriptionController,
+        ].map((controller) => jest.spyOn(controller, 'stopAllPolling')),
+        jest.spyOn(metamaskController.appStateController, 'clearPollingTokens'),
+      ];
+
+      beforeEach(() => {
+        globalThis.sentry = {
+          ...globalThis.sentry,
+          captureException: jest.fn(),
+        };
+        // `captureException` also logs to the console; the error is expected.
+        jest.spyOn(console, 'error').mockImplementation();
+      });
+
+      it('stops the remaining controllers and reports the failure when one controller fails to stop polling', () => {
+        const teardownError = new Error('Mock teardown failure');
+        const { gasFeeController } = metamaskController;
+        // Give the first controller in the teardown a real polling token, so
+        // the failure is thrown from inside its real `stopAllPolling`.
+        jest
+          .spyOn(gasFeeController, '_startPolling')
+          .mockReturnValue(undefined);
+        jest
+          .spyOn(gasFeeController, '_stopPollingByPollingTokenSetId')
+          .mockImplementation(() => {
+            throw teardownError;
+          });
+        gasFeeController.startPolling({ networkClientId: 'mainnet' });
+        const otherTeardownSpies = getOtherUiPollingTeardownSpies();
+
+        metamaskController.onClientClosed();
+
+        for (const spy of otherTeardownSpies) {
+          expect(spy).toHaveBeenCalledTimes(1);
+        }
+        expect(globalThis.sentry.captureException).toHaveBeenCalledTimes(1);
+        expect(globalThis.sentry.captureException).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: expect.stringContaining('GasFeeController'),
+            cause: teardownError,
+          }),
+        );
+      });
+
+      it('reports every controller that fails to stop polling', () => {
+        const gasFeeError = new Error('Mock gas fee teardown failure');
+        const subscriptionError = new Error(
+          'Mock subscription teardown failure',
+        );
+        jest
+          .spyOn(metamaskController.gasFeeController, 'stopAllPolling')
+          .mockImplementation(() => {
+            throw gasFeeError;
+          });
+        jest
+          .spyOn(metamaskController.subscriptionController, 'stopAllPolling')
+          .mockImplementation(() => {
+            throw subscriptionError;
+          });
+
+        metamaskController.onClientClosed();
+
+        expect(globalThis.sentry.captureException).toHaveBeenCalledTimes(2);
+        expect(globalThis.sentry.captureException).toHaveBeenCalledWith(
+          expect.objectContaining({ cause: gasFeeError }),
+        );
+        expect(globalThis.sentry.captureException).toHaveBeenCalledWith(
+          expect.objectContaining({ cause: subscriptionError }),
+        );
+      });
+
+      it('stops every UI polling controller without reporting when none fails', () => {
+        const gasFeeSpy = jest.spyOn(
+          metamaskController.gasFeeController,
+          'stopAllPolling',
+        );
+        const otherTeardownSpies = getOtherUiPollingTeardownSpies();
+
+        metamaskController.onClientClosed();
+
+        for (const spy of [gasFeeSpy, ...otherTeardownSpies]) {
+          expect(spy).toHaveBeenCalledTimes(1);
+        }
+        expect(globalThis.sentry.captureException).not.toHaveBeenCalled();
+      });
+    });
+
     describe('#createNewVaultAndKeychain', () => {
       it('can only create new vault on keyringController once', async () => {
         const password = 'a-fake-password';
