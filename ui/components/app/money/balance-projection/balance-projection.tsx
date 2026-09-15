@@ -107,6 +107,7 @@ const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
         <InfoPopover
           iconColor={IconColor.IconAlternative}
           ariaLabel={t('moneyAccountProjectedBalanceInfo')}
+          wrapperStyle={{ display: 'inline-flex', alignItems: 'center' }}
           data-testid="balance-projection-info"
         >
           {t('moneyAccountProjectedBalanceTooltip', [String(apyPercent)])}
@@ -128,6 +129,7 @@ const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
       <InfoPopover
         iconColor={IconColor.IconAlternative}
         ariaLabel={t('moneyAccountApyPitchInfo')}
+        wrapperStyle={{ display: 'inline-flex', alignItems: 'center' }}
         data-testid="balance-projection-apy-pitch-info"
       >
         {t('moneyAccountApyTooltip')}
