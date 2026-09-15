@@ -52,7 +52,7 @@ describe('useMoneyActivityItemClick', () => {
     );
   });
 
-  it('does not navigate for Accounts API rows', () => {
+  it('navigates to the details route for Accounts API rows', () => {
     mockSelectMoneyActivityDetailsEnabled.mockReturnValue(true);
     const apiItem = accountsApiItem({
       kind: 'card',
@@ -71,6 +71,8 @@ describe('useMoneyActivityItemClick', () => {
     const { result } = renderHook(() => useMoneyActivityItemClick());
     result.current?.(apiItem);
 
-    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith(
+      getMoneyTransactionDetailsRoute(apiItem.id),
+    );
   });
 });

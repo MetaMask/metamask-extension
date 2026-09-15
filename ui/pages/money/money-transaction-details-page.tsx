@@ -1,4 +1,10 @@
-import React, { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -44,7 +50,7 @@ import {
   selectTransactionById,
   type TransactionState,
 } from '../../selectors/transactionController';
-import { onchainItem } from './types/money-activity';
+import { isAccountsApiActivityId, onchainItem } from './types/money-activity';
 import {
   getMoneyActivityDisplayInfo,
   type MoneyActivityTranslate,
@@ -60,6 +66,7 @@ import {
 import { getMoneyActivityStatus } from './utils/classify-money-activity';
 import { isVisibleMoneyActivityTransaction } from './utils/money-account-transactions';
 import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scroll';
+import { MoneyApiActivityDetails } from './components/money-api-activity-details';
 import { MoneyTransactionDetailsRow } from './components/money-transaction-details-row';
 import { MoneyTransactionDetailsError } from './components/money-transaction-details-error';
 
@@ -86,7 +93,8 @@ export function MoneyTransactionDetailsPage() {
   const detailsEnabled = useSelector(selectMoneyActivityDetailsEnabled);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
-  const { items } = useMoneyActivityItems();
+  const { items, isSettling, hasMore, loadMore, isLoadingMore } =
+    useMoneyActivityItems();
   const controllerTx = useSelector((state: TransactionState) =>
     selectTransactionById(state, transactionId),
   );
@@ -99,14 +107,13 @@ export function MoneyTransactionDetailsPage() {
   }, [transactionId]);
 
   const item = useMemo(() => {
-    const listItem = items.find(
-      (candidate) =>
-        candidate.kind === 'onchain' && candidate.id === transactionId,
-    );
+    const listItem = items.find((candidate) => candidate.id === transactionId);
     if (listItem) {
       return listItem;
     }
-    if (!controllerTx) {
+    // Accounts API ids never exist on TransactionController; skip the
+    // on-chain fallback so a missing API row can keep paging instead.
+    if (!controllerTx || isAccountsApiActivityId(transactionId)) {
       return undefined;
     }
     const moneyAddress = availability.isAvailable
@@ -116,6 +123,20 @@ export function MoneyTransactionDetailsPage() {
       ? onchainItem(controllerTx)
       : undefined;
   }, [availability, controllerTx, items, transactionId]);
+
+  const isLookingUpApiItem =
+    isAccountsApiActivityId(transactionId) && item === undefined;
+
+  useEffect(() => {
+    if (isLookingUpApiItem && hasMore && !isLoadingMore && !isSettling) {
+      loadMore();
+    }
+  }, [hasMore, isLoadingMore, isLookingUpApiItem, isSettling, loadMore]);
+
+  const isResolvingItem =
+    item === undefined &&
+    (isSettling || isLoadingMore || (isLookingUpApiItem && hasMore));
+
   const fromAddress =
     item?.kind === 'onchain' ? item.tx.txParams.from : undefined;
   const { feeUsd, totalUsd } = useMoneyTransactionFee(
@@ -143,7 +164,7 @@ export function MoneyTransactionDetailsPage() {
       : formatCurrencyWithMinThreshold(totalUsd, MONEY_ACCOUNT_FIAT_CURRENCY);
 
   let body: React.ReactNode;
-  if (isAvailabilityLoading) {
+  if (isAvailabilityLoading || isResolvingItem) {
     body = (
       <div
         className="flex min-h-full flex-col gap-4 bg-background-default p-4"
@@ -156,8 +177,16 @@ export function MoneyTransactionDetailsPage() {
     );
   } else if (!availability.isAvailable) {
     body = <Navigate to={DEFAULT_ROUTE} replace />;
-  } else if (!detailsEnabled || !item || item.kind !== 'onchain') {
+  } else if (!detailsEnabled || !item) {
     body = <Navigate to={MONEY_ACTIVITY_ROUTE} replace />;
+  } else if (item.kind === 'accountsApi') {
+    body = (
+      <MoneyApiActivityDetails
+        activity={item.tx}
+        privacyMode={privacyMode}
+        onBack={handleBack}
+      />
+    );
   } else {
     const { tx } = item;
     const display = getMoneyActivityDisplayInfo(tx, t);

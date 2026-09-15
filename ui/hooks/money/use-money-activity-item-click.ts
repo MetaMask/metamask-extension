@@ -19,9 +19,6 @@ export function useMoneyActivityItemClick():
 
   const onClick = useCallback(
     (item: MoneyActivityItem) => {
-      if (item.kind !== 'onchain') {
-        return;
-      }
       navigate(getMoneyTransactionDetailsRoute(item.id));
     },
     [navigate],
