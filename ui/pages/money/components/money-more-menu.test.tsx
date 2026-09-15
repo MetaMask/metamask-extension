@@ -55,6 +55,9 @@ describe('MoneyMoreMenu', () => {
       messages.moneyBenefits.message,
     );
     expect(
+      screen.getByTestId('money-more-menu-benefits-icon'),
+    ).toBeInTheDocument();
+    expect(
       screen.getByTestId('money-more-menu-contact-support'),
     ).toHaveTextContent(messages.moneyContactSupport.message);
   });

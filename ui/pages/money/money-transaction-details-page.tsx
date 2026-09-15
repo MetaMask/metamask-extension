@@ -1,7 +1,6 @@
 import React, { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import BigNumber from 'bignumber.js';
 import {
   AvatarToken,
   AvatarTokenSize,
@@ -14,10 +13,8 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
-  Icon,
   IconColor,
   IconName,
-  IconSize,
   SensitiveText,
   SensitiveTextLength,
   Skeleton,
@@ -31,11 +28,15 @@ import {
   MONEY_ACTIVITY_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
-import { moneyFormatUsd } from '../../helpers/money/format';
+import { PopoverPosition } from '../../components/component-library';
+import { InfoPopover } from '../../components/app/musd/info-popover';
+import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../shared/lib/money/constants';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
+import { useFormatters } from '../../hooks/useFormatters';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
+import { useMoneyTransactionFee } from '../../hooks/money/use-money-transaction-fee';
 import { selectMoneyActivityDetailsEnabled } from '../../selectors/money/money-account-feature-flags';
 import { getPrivacyMode } from '../../selectors/selectors';
 import { getInternalAccountByAddress } from '../../selectors/accounts';
@@ -63,7 +64,6 @@ import { MoneyTransactionDetailsRow } from './components/money-transaction-detai
 import { MoneyTransactionDetailsError } from './components/money-transaction-details-error';
 
 const USDC_TOKEN_IMAGE = './images/icon-usdc.png';
-const ZERO_USD = moneyFormatUsd(new BigNumber(0));
 
 const STATUS_I18N_KEY = {
   confirmed: 'confirmed',
@@ -79,6 +79,7 @@ const STATUS_COLOR = {
 
 export function MoneyTransactionDetailsPage() {
   const t = useI18nContext() as MoneyActivityTranslate;
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const navigate = useNavigate();
   const { transactionId } = useParams<{ transactionId: string }>();
   const privacyMode = useSelector(getPrivacyMode);
@@ -117,6 +118,9 @@ export function MoneyTransactionDetailsPage() {
   }, [availability, controllerTx, items, transactionId]);
   const fromAddress =
     item?.kind === 'onchain' ? item.tx.txParams.from : undefined;
+  const { feeUsd, totalUsd } = useMoneyTransactionFee(
+    item?.kind === 'onchain' ? item.tx : undefined,
+  );
   const fromAccount = useSelector((state) =>
     fromAddress ? getInternalAccountByAddress(state, fromAddress) : undefined,
   );
@@ -129,6 +133,14 @@ export function MoneyTransactionDetailsPage() {
   const handleBack = useCallback(() => {
     navigate(PREVIOUS_ROUTE);
   }, [navigate]);
+  const formattedFee =
+    feeUsd === undefined
+      ? '-'
+      : formatCurrencyWithMinThreshold(feeUsd, MONEY_ACCOUNT_FIAT_CURRENCY);
+  const formattedTotal =
+    totalUsd === undefined
+      ? '-'
+      : formatCurrencyWithMinThreshold(totalUsd, MONEY_ACCOUNT_FIAT_CURRENCY);
 
   let body: React.ReactNode;
   if (isAvailabilityLoading) {
@@ -286,12 +298,17 @@ export function MoneyTransactionDetailsPage() {
           <MoneyTransactionDetailsRow
             label={t('transactionFee')}
             labelEnd={
-              <Icon
-                name={IconName.Info}
-                size={IconSize.Sm}
-                color={IconColor.IconAlternative}
-                aria-hidden
-              />
+              <InfoPopover
+                position={PopoverPosition.BottomStart}
+                iconColor={IconColor.IconAlternative}
+                wrapperStyle={{ display: 'inline-flex', alignItems: 'center' }}
+                ariaLabel={t('transactionFee')}
+                data-testid="money-transaction-details-fee-info"
+              >
+                <Text variant={TextVariant.BodyMd}>
+                  {t('moneyActivityTransactionFeeTooltip')}
+                </Text>
+              </InfoPopover>
             }
             testId="money-transaction-details-fee"
             value={
@@ -301,7 +318,7 @@ export function MoneyTransactionDetailsPage() {
                 isHidden={privacyMode}
                 length={SensitiveTextLength.Short}
               >
-                {ZERO_USD}
+                {formattedFee}
               </SensitiveText>
             }
           />
@@ -315,7 +332,7 @@ export function MoneyTransactionDetailsPage() {
                 isHidden={privacyMode}
                 length={SensitiveTextLength.Short}
               >
-                {ZERO_USD}
+                {formattedTotal}
               </SensitiveText>
             }
           />

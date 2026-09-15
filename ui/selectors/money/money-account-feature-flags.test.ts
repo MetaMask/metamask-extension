@@ -8,6 +8,7 @@ import {
   selectMoneyActivityDetailsEnabled,
   selectMoneyActivityMockDataEnabled,
   selectMoneyEarningSectionEnabled,
+  selectMoneyHomeScreenCardEnabled,
   selectMoneyDepositMinBalance,
   selectMoneyVaultApyRemoteConfig,
 } from './money-account-feature-flags';
@@ -58,6 +59,56 @@ describe('selectMoneyAccountFeatureEnabled', () => {
       selectMoneyAccountFeatureEnabled(
         mockState({
           moneyEnableMoneyAccount: {
+            enabled: true,
+            minimumVersion: '9999.0.0',
+          },
+        }),
+      ),
+    ).toBe(false);
+  });
+});
+
+describe('selectMoneyHomeScreenCardEnabled', () => {
+  it('is true for an enabled, version-satisfied flag', () => {
+    expect(
+      selectMoneyHomeScreenCardEnabled(
+        mockState({
+          moneyHomeScreenCardEnabled: {
+            enabled: true,
+            minimumVersion: '0.0.1',
+          },
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it('is false for a disabled flag', () => {
+    expect(
+      selectMoneyHomeScreenCardEnabled(
+        mockState({
+          moneyHomeScreenCardEnabled: {
+            enabled: false,
+            minimumVersion: '0.0.1',
+          },
+        }),
+      ),
+    ).toBe(false);
+  });
+
+  it('is false when the flag is unserved or malformed', () => {
+    expect(selectMoneyHomeScreenCardEnabled(mockState())).toBe(false);
+    expect(
+      selectMoneyHomeScreenCardEnabled(
+        mockState({ moneyHomeScreenCardEnabled: true }),
+      ),
+    ).toBe(false);
+  });
+
+  it('is false when the current version is below the flag minimum', () => {
+    expect(
+      selectMoneyHomeScreenCardEnabled(
+        mockState({
+          moneyHomeScreenCardEnabled: {
             enabled: true,
             minimumVersion: '9999.0.0',
           },

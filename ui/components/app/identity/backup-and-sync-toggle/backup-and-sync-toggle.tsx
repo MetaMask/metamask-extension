@@ -163,6 +163,10 @@ export const BackupAndSyncToggle = ({
             BACKUPANDSYNC_FEATURES.contactSyncing,
             false,
           );
+          await setIsBackupAndSyncFeatureEnabled(
+            BACKUPANDSYNC_FEATURES.rampsSyncing,
+            false,
+          );
         } catch (err) {
           console.error('Failed to disable backup and sync features:', err);
         }
@@ -222,6 +226,10 @@ export const BackupAndSyncToggle = ({
         BACKUPANDSYNC_FEATURES.contactSyncing,
         false,
       );
+      await setIsBackupAndSyncFeatureEnabled(
+        BACKUPANDSYNC_FEATURES.rampsSyncing,
+        false,
+      );
       return;
     }
 
@@ -249,6 +257,10 @@ export const BackupAndSyncToggle = ({
               BACKUPANDSYNC_FEATURES.contactSyncing,
               true,
             );
+            await setIsBackupAndSyncFeatureEnabled(
+              BACKUPANDSYNC_FEATURES.rampsSyncing,
+              true,
+            );
           },
         }),
       );
@@ -262,6 +274,10 @@ export const BackupAndSyncToggle = ({
     );
     await setIsBackupAndSyncFeatureEnabled(
       BACKUPANDSYNC_FEATURES.contactSyncing,
+      true,
+    );
+    await setIsBackupAndSyncFeatureEnabled(
+      BACKUPANDSYNC_FEATURES.rampsSyncing,
       true,
     );
   };
