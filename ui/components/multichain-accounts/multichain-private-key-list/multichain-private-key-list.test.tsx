@@ -4,12 +4,16 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountGroupId } from '@metamask/account-api';
+import { KeyringType } from '@metamask/keyring-api/v2';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../app/_locales/en/messages.json';
 import {
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
 } from '../../../../shared/lib/passkey';
 import { TraceName, trace, endTrace } from '../../../../shared/lib/trace';
+import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
 import { useDispatch } from '../../../store/hooks';
 import { MultichainPrivateKeyList } from './multichain-private-key-list';
 
@@ -118,6 +122,7 @@ const ACCOUNT_ONE_ADDRESS_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
 const ACCOUNT_TWO_ADDRESS_MOCK = 'DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy';
 
 const ACCOUNT_ONE_PRIVATE_KEY_MOCK = 'private-key-mock';
+const ACCOUNT_TWO_PRIVATE_KEY_MOCK = 'solana-private-key-mock';
 
 const INTERNAL_ACCOUNTS_MOCK: Record<string, InternalAccount> = {
   [ACCOUNT_ONE_ID_MOCK]: {
@@ -139,7 +144,10 @@ const INTERNAL_ACCOUNTS_MOCK: Record<string, InternalAccount> = {
     metadata: {
       name: 'Solana Account',
       importTime: Date.now(),
-      keyring: { type: 'Snap Keyring' },
+      keyring: { type: KeyringType.Snap },
+      snap: {
+        id: SOLANA_WALLET_SNAP_ID,
+      },
     },
     options: {},
     methods: [],
@@ -291,14 +299,20 @@ const mockVerifyPassword = jest.fn().mockImplementation((pwd: string) => {
 const mockExportAccounts = jest
   .fn()
   .mockImplementation((_pwd: string, _addresses: string[]) => {
-    return Promise.resolve([ACCOUNT_ONE_PRIVATE_KEY_MOCK]);
+    return Promise.resolve([
+      ACCOUNT_ONE_PRIVATE_KEY_MOCK,
+      ACCOUNT_TWO_PRIVATE_KEY_MOCK,
+    ]);
   });
 
 const mockExportAccountsWithPasskey = jest
   .fn()
   .mockImplementation(
     (_authenticationResponse: unknown, _addresses: string[]) => {
-      return Promise.resolve([ACCOUNT_ONE_PRIVATE_KEY_MOCK]);
+      return Promise.resolve([
+        ACCOUNT_ONE_PRIVATE_KEY_MOCK,
+        ACCOUNT_TWO_PRIVATE_KEY_MOCK,
+      ]);
     },
   );
 
@@ -331,8 +345,11 @@ jest.mock('../../../store/actions', () => ({
   },
 }));
 
-const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
-  const store = mockStore(createMockState());
+const renderComponent = (
+  groupId: AccountGroupId = GROUP_ID_MOCK,
+  state = createMockState(),
+) => {
+  const store = mockStore(state);
   return render(
     <Provider store={store}>
       <MultichainPrivateKeyList groupId={groupId} goBack={mockGoBack} />
@@ -360,6 +377,9 @@ describe('MultichainPrivateKeyList', () => {
     ).toBeInTheDocument();
     expect(screen.getByTestId('cancel-button')).toBeInTheDocument();
     expect(screen.getByTestId('confirm-button')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('multichain-private-keyring-list'),
+    ).not.toHaveClass('pt-4');
   });
 
   it('fires trace and endTrace around successful reveal', async () => {
@@ -387,6 +407,122 @@ describe('MultichainPrivateKeyList', () => {
     });
   });
 
+  it('combines EVM networks and renders exportable Snap accounts', async () => {
+    renderComponent();
+
+    fireEvent.change(await screen.findByPlaceholderText('password'), {
+      target: { value: 'correctpassword' },
+    });
+    fireEvent.click(screen.getByTestId('confirm-button'));
+
+    expect(await screen.findByText('ethereumAndEvms')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkNameSolana.message),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Polygon Mainnet')).not.toBeInTheDocument();
+    expect(screen.queryByText('Arbitrum One')).not.toBeInTheDocument();
+    expect(screen.getByTestId('multichain-private-keyring-list')).toHaveClass(
+      'pt-4',
+    );
+    expect(mockExportAccounts).toHaveBeenCalledWith('correctpassword', [
+      ACCOUNT_ONE_ADDRESS_MOCK,
+      ACCOUNT_TWO_ADDRESS_MOCK,
+    ]);
+  });
+
+  it('shows available keys when a Snap private key export fails', async () => {
+    mockExportAccounts
+      .mockRejectedValueOnce(new Error('bulk export failed'))
+      .mockResolvedValueOnce([ACCOUNT_ONE_PRIVATE_KEY_MOCK])
+      .mockRejectedValueOnce(new Error('Snap export failed'));
+    renderComponent();
+
+    fireEvent.change(await screen.findByPlaceholderText('password'), {
+      target: { value: 'correctpassword' },
+    });
+    fireEvent.click(screen.getByTestId('confirm-button'));
+
+    expect(await screen.findByText('ethereumAndEvms')).toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.networkNameSolana.message),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('wrong-password-msg')).not.toBeInTheDocument();
+    expect(mockExportAccounts).toHaveBeenNthCalledWith(2, 'correctpassword', [
+      ACCOUNT_ONE_ADDRESS_MOCK,
+    ]);
+    expect(mockExportAccounts).toHaveBeenNthCalledWith(3, 'correctpassword', [
+      ACCOUNT_TWO_ADDRESS_MOCK,
+    ]);
+  });
+
+  it('does not report an export failure as a wrong password', async () => {
+    mockExportAccounts
+      .mockRejectedValueOnce(new Error('bulk export failed'))
+      .mockRejectedValueOnce(new Error('EVM export failed'))
+      .mockRejectedValueOnce(new Error('Snap export failed'));
+    renderComponent();
+
+    fireEvent.change(await screen.findByPlaceholderText('password'), {
+      target: { value: 'correctpassword' },
+    });
+    fireEvent.click(screen.getByTestId('confirm-button'));
+
+    await waitFor(() => {
+      expect(mockExportAccounts).toHaveBeenCalledTimes(3);
+    });
+    expect(screen.queryByTestId('wrong-password-msg')).not.toBeInTheDocument();
+  });
+
+  it('keeps a single EVM section expanded without disclosure controls', async () => {
+    const state = createMockState();
+    state.metamask.accountTree.wallets[WALLET_ID_MOCK].groups[
+      GROUP_ID_MOCK
+    ].accounts = [ACCOUNT_ONE_ID_MOCK];
+    delete state.metamask.internalAccounts.accounts[ACCOUNT_TWO_ID_MOCK];
+    mockExportAccounts.mockResolvedValueOnce([ACCOUNT_ONE_PRIVATE_KEY_MOCK]);
+
+    renderComponent(GROUP_ID_MOCK, state);
+
+    fireEvent.change(await screen.findByPlaceholderText('password'), {
+      target: { value: 'correctpassword' },
+    });
+    fireEvent.click(screen.getByTestId('confirm-button'));
+
+    const evmHeader = await screen.findByTestId(
+      'multichain-private-key-row-toggle-eip155:1',
+    );
+    expect(evmHeader.tagName).toBe('DIV');
+    expect(
+      screen.queryByTestId('multichain-private-key-row-toggle-icon-eip155:1'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId('multichain-private-key-reveal-eip155:1'),
+    ).toBeInTheDocument();
+  });
+
+  it('expands the EVM section by default and keeps only one section open', async () => {
+    renderComponent();
+
+    fireEvent.change(await screen.findByPlaceholderText('password'), {
+      target: { value: 'correctpassword' },
+    });
+    fireEvent.click(screen.getByTestId('confirm-button'));
+
+    const evmToggle = await screen.findByTestId(
+      'multichain-private-key-row-toggle-eip155:1',
+    );
+    const solanaToggle = screen.getByTestId(
+      'multichain-private-key-row-toggle-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    );
+    expect(evmToggle).toHaveAttribute('aria-expanded', 'true');
+    expect(solanaToggle).toHaveAttribute('aria-expanded', 'false');
+
+    fireEvent.click(solanaToggle);
+
+    expect(evmToggle).toHaveAttribute('aria-expanded', 'false');
+    expect(solanaToggle).toHaveAttribute('aria-expanded', 'true');
+  });
+
   describe('passkey reveal', () => {
     beforeEach(() => {
       mockUseIsPasskeyActive.mockReturnValue(true);
@@ -399,7 +535,7 @@ describe('MultichainPrivateKeyList', () => {
       await waitFor(() => {
         expect(mockExportAccountsWithPasskey).toHaveBeenCalledWith(
           mockPasskeyAuthResponse,
-          [ACCOUNT_ONE_ADDRESS_MOCK],
+          [ACCOUNT_ONE_ADDRESS_MOCK, ACCOUNT_TWO_ADDRESS_MOCK],
         );
       });
       expect(mockExportAccounts).not.toHaveBeenCalled();
