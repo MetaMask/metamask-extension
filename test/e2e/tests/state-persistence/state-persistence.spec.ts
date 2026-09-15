@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 import { WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
 import { assertAccountVisible } from '../../page-objects/flows/account-list.flow';
-import { reloadAndUnlock } from '../../page-objects/flows/login.flow';
+import { login, reloadAndUnlock } from '../../page-objects/flows/login.flow';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
@@ -13,6 +13,7 @@ import {
   expectDataStateStorage,
   expectSplitStateStorage,
   pausePersistence,
+  reloadExtension,
   setLocalStorageFlags,
 } from './helpers';
 
@@ -85,6 +86,36 @@ describe('State Persistence', function () {
   this.timeout(180000);
 
   describe('split state', function () {
+    it('keeps a newly added account after a forced runtime reload', async function () {
+      const accountName = 'Account 2';
+
+      await withFixtures(getFixtureOptions(this), async ({ driver }) => {
+        await completeCreateNewWalletOnboardingFlow({
+          driver,
+          password: WALLET_PASSWORD,
+          skipSRPBackup: true,
+        });
+        const homePage = new HomePage(driver);
+        await homePage.ensurePageIsReady();
+        await expectSplitStateStorage(driver);
+
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.addMultichainAccount();
+        await accountListPage.checkAccountDisplayedInAccountList(accountName);
+
+        await reloadExtension(driver, { evacuatePersistence: false });
+        await login(driver, {
+          validateBalance: false,
+          waitForNonEvmAccounts: false,
+        });
+
+        await assertAccountVisible(driver, accountName);
+      });
+    });
+
     it('should default to the split state storage', async function () {
       await withFixtures(getFixtureOptions(this), async ({ driver }) => {
         await completeCreateNewWalletOnboardingFlow({
