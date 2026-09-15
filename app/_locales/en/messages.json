@@ -8764,9 +8764,6 @@
   "rampsEligibilityFailedTitle": {
     "message": "We couldn’t verify your region"
   },
-  "rampsQuoteFetchError": {
-    "message": "Error getting quotes. Enter a lower amount or"
-  },
   "rampsErrorLoadingPaymentMethods": {
     "message": "Error loading payment methods"
   },
@@ -8916,6 +8913,9 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Last used"
+  },
+  "rampsQuoteFetchError": {
+    "message": "Error getting quotes. Enter a lower amount or"
   },
   "rampsQuoteUnavailable": {
     "message": "Quote unavailable."
