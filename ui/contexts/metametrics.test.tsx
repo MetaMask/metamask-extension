@@ -133,9 +133,10 @@ describe('MetaMetricsProvider', () => {
     resetPreviousTrackedPagePathForTesting();
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([true, false])(
     'passes the current opt-in state through the buffered trace RPCs',
-    async (isOptedIn) => {
+    async (isOptedIn: boolean) => {
       const store = mockStore({
         metamask: {
           analyticsId: '0x123',
