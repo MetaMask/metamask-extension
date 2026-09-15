@@ -1204,6 +1204,67 @@ describe('Actions', () => {
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
+    // Added for coverage requirement.
+    it('skips the WebHID device picker during E2E test runs', async () => {
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          ledgerTransportType: 'webhid',
+        },
+      });
+
+      const originalInTest = process.env.IN_TEST;
+      const originalJestWorkerId = process.env.JEST_WORKER_ID;
+      process.env.IN_TEST = 'true';
+      process.env.JEST_WORKER_ID = 'undefined';
+
+      const mockRequestDevice = sinon.stub();
+      Object.defineProperty(window, 'navigator', {
+        value: {
+          ...window.navigator,
+          hid: {
+            requestDevice: mockRequestDevice,
+          },
+        },
+        writable: true,
+      });
+
+      try {
+        const connectHardware = background.connectHardware.resolves([
+          { address: '0xLedgerAddress' },
+        ]);
+
+        setBackgroundConnection(background);
+
+        const accounts = await store.dispatch(
+          actions.connectHardware(
+            HardwareDeviceNames.ledger,
+            0,
+            `m/44'/60'/0'/0`,
+            true,
+            translateHardwareMessage,
+          ),
+        );
+
+        // E2E runs bypass the picker entirely and proceed to the background.
+        expect(mockRequestDevice.callCount).toStrictEqual(0);
+        expect(connectHardware.callCount).toStrictEqual(1);
+        expect(accounts).toStrictEqual([{ address: '0xLedgerAddress' }]);
+      } finally {
+        if (originalInTest === undefined) {
+          delete process.env.IN_TEST;
+        } else {
+          process.env.IN_TEST = originalInTest;
+        }
+        if (originalJestWorkerId === undefined) {
+          delete process.env.JEST_WORKER_ID;
+        } else {
+          process.env.JEST_WORKER_ID = originalJestWorkerId;
+        }
+      }
+    });
+
     it('translates Trezor Suite Desktop missing errors during connect', async () => {
       const store = mockStore();
       const page = 0;
