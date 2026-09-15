@@ -144,7 +144,7 @@ export function MoneyTransactionDetailsPage() {
   if (isAvailabilityLoading) {
     body = (
       <div
-        className="flex min-h-full flex-col gap-4 bg-background-default p-4"
+        className="flex min-h-full flex-col gap-4 p-4"
         data-testid="money-transaction-details-loading"
       >
         <Skeleton className="h-8 w-8" />
@@ -174,7 +174,7 @@ export function MoneyTransactionDetailsPage() {
 
     body = (
       <main
-        className="flex min-h-full flex-col bg-background-default"
+        className="flex min-h-full flex-col"
         data-testid="money-transaction-details-page"
       >
         <div className="grid grid-cols-[auto_1fr_auto] items-center px-4 py-4">

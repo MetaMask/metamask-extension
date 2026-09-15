@@ -8,6 +8,7 @@ import { useIdleTimer } from 'react-idle-timer';
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
 
+import { MainLayout } from '#ui/layouts/main-layout';
 import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
@@ -552,11 +553,6 @@ export const routeConfig = [
         ),
         children: contactsRoutes,
       },
-      createRouteWithMessenger({
-        path: DEFAULT_ROUTE,
-        capabilities: HOME_ROUTE_ALLOWED_CAPABILITIES,
-        element: <Home />,
-      }),
       {
         path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
         element: <TransactionDetailsRoute />,
@@ -596,10 +592,6 @@ export const routeConfig = [
           {
             path: `${BATCH_SELL_ROOT_ROUTE}/*`,
             element: <BatchSell />,
-          },
-          {
-            path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
-            element: <CrossChainSwap />,
           },
           {
             path: `${DEFI_ROUTE}/:chainId/:protocolId`,
@@ -662,29 +654,48 @@ export const routeConfig = [
               },
             ],
           },
+        ],
+      },
+      {
+        element: <MainLayout />,
+        children: [
+          createRouteWithMessenger({
+            path: DEFAULT_ROUTE,
+            capabilities: HOME_ROUTE_ALLOWED_CAPABILITIES,
+            element: <Home />,
+          }),
           {
-            path: ACTIVITY_ROUTE,
-            element: <ActivityPage />,
+            element: <RequireBasicFunctionality />,
+            children: [
+              {
+                path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
+                element: <CrossChainSwap />,
+              },
+              {
+                path: ACTIVITY_ROUTE,
+                element: <ActivityPage />,
+              },
+              {
+                path: PERPS_HOME_PAGE_ROUTE,
+                element: <PerpsPage />,
+              },
+              createRouteWithMessenger({
+                path: MONEY_HOME_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyHomePage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_ACTIVITY_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyActivityPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_TRANSACTION_DETAILS_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyTransactionDetailsPage />,
+              }),
+            ],
           },
-          {
-            path: PERPS_HOME_PAGE_ROUTE,
-            element: <PerpsPage />,
-          },
-          createRouteWithMessenger({
-            path: MONEY_HOME_ROUTE,
-            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-            element: <MoneyHomePage />,
-          }),
-          createRouteWithMessenger({
-            path: MONEY_ACTIVITY_ROUTE,
-            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-            element: <MoneyActivityPage />,
-          }),
-          createRouteWithMessenger({
-            path: MONEY_TRANSACTION_DETAILS_ROUTE,
-            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-            element: <MoneyTransactionDetailsPage />,
-          }),
         ],
       },
     ],

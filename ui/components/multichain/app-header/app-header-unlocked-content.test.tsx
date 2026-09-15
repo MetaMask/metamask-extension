@@ -1,5 +1,7 @@
 import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { SUPPORT_LINK } from '#shared/lib/ui-utils';
+import { openWindow } from '#ui/helpers/utils/window';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -22,6 +24,17 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  getCustomerServiceToken: jest
+    .fn()
+    .mockResolvedValue('test-customer-service-token'),
+}));
+
+jest.mock('#ui/helpers/utils/window', () => ({
+  openWindow: jest.fn(),
+}));
+
 describe('AppHeaderUnlockedContent trace', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -31,10 +44,7 @@ describe('AppHeaderUnlockedContent trace', () => {
     const store = configureStore(mockDefaultState);
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
     renderWithProvider(
-      <AppHeaderUnlockedContent
-        disableAccountPicker={false}
-        menuRef={menuRef}
-      />,
+      <AppHeaderUnlockedContent menuRef={menuRef} />,
       store,
     );
 
@@ -54,10 +64,7 @@ describe('AppHeaderUnlockedContent trace', () => {
     const store = configureStore(mockDefaultState);
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
     renderWithProvider(
-      <AppHeaderUnlockedContent
-        disableAccountPicker={false}
-        menuRef={menuRef}
-      />,
+      <AppHeaderUnlockedContent menuRef={menuRef} />,
       store,
     );
 
@@ -102,10 +109,7 @@ describe('Default address section', () => {
     const store = configureStore(stateWithFlagOn);
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
     renderWithProvider(
-      <AppHeaderUnlockedContent
-        disableAccountPicker={false}
-        menuRef={menuRef}
-      />,
+      <AppHeaderUnlockedContent menuRef={menuRef} />,
       store,
     );
 
@@ -131,10 +135,7 @@ describe('Default address section', () => {
     const store = configureStore(stateWithPreferenceOff);
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
     renderWithProvider(
-      <AppHeaderUnlockedContent
-        disableAccountPicker={false}
-        menuRef={menuRef}
-      />,
+      <AppHeaderUnlockedContent menuRef={menuRef} />,
       store,
     );
 
@@ -142,6 +143,73 @@ describe('Default address section', () => {
       expect(
         screen.queryByTestId('default-address-container'),
       ).not.toBeInTheDocument();
+    });
+  });
+});
+
+describe('Global menu', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('opens settings from the account options menu', async () => {
+    const store = configureStore(mockDefaultState);
+    const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
+    renderWithProvider(
+      <AppHeaderUnlockedContent menuRef={menuRef} />,
+      store,
+    );
+
+    fireEvent.click(screen.getByTestId('account-options-menu-button'));
+
+    expect(
+      await screen.findByTestId('global-menu-settings'),
+    ).toBeInTheDocument();
+  });
+
+  describe('Support', () => {
+    beforeEach(async () => {
+      const store = configureStore(mockDefaultState);
+      const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
+      renderWithProvider(
+        <AppHeaderUnlockedContent menuRef={menuRef} />,
+        store,
+      );
+
+      fireEvent.click(screen.getByTestId('account-options-menu-button'));
+      fireEvent.click(await screen.findByTestId('global-menu-support'));
+
+      await screen.findByTestId('visit-support-data-consent-modal');
+    });
+
+    it('opens the visit support data consent modal', async () => {
+      expect(
+        await screen.findByTestId('visit-support-data-consent-modal'),
+      ).toBeInTheDocument();
+    });
+
+    it('opens the support site when Confirm is clicked', async () => {
+      fireEvent.click(
+        await screen.findByTestId(
+          'visit-support-data-consent-modal-accept-button',
+        ),
+      );
+
+      await waitFor(() => {
+        expect(openWindow).toHaveBeenCalled();
+      });
+    });
+
+    it('opens the support site when Do not share is clicked', async () => {
+      fireEvent.click(
+        await screen.findByTestId(
+          'visit-support-data-consent-modal-reject-button',
+        ),
+      );
+
+      await waitFor(() => {
+        expect(openWindow).toHaveBeenCalledWith(SUPPORT_LINK);
+      });
     });
   });
 });

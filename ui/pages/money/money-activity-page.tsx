@@ -147,7 +147,7 @@ export function MoneyActivityPage() {
   if (isAvailabilityLoading) {
     body = (
       <div
-        className="flex min-h-full flex-col gap-4 bg-background-default p-4"
+        className="flex min-h-full flex-col gap-4 p-4"
         data-testid="money-activity-loading"
       >
         <Skeleton className="h-8 w-8" />
@@ -257,10 +257,7 @@ export function MoneyActivityPage() {
     }
 
     body = (
-      <main
-        className="min-h-full bg-background-default pb-5"
-        data-testid="money-activity-page"
-      >
+      <main className="min-h-full pb-5" data-testid="money-activity-page">
         <div className="flex items-center px-2 py-2">
           <ButtonIcon
             iconName={IconName.ArrowLeft}
