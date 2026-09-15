@@ -99,6 +99,7 @@ import {
 } from '../contexts/hardware-wallets/rpcErrorUtils';
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../selectors/multichain/basic-functionality';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -4650,6 +4651,28 @@ export function toggleBasicFunctionality(
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     }
+  };
+}
+
+/**
+ * Turns Basic Functionality on using the path that matches the wallet's
+ * consolidation state when this runs, rather than the state read when the
+ * caller rendered. Consolidation can complete while a confirmation dialog is
+ * open, and the legacy path only owns seven of the child preferences, so it
+ * would leave the rest off behind a consolidated toggle.
+ */
+export function enableBasicFunctionality(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
+    await dispatch(
+      getIsBasicFunctionalityConsolidationEnabled(getState())
+        ? toggleBasicFunctionality(true)
+        : toggleExternalServices(true),
+    );
   };
 }
 

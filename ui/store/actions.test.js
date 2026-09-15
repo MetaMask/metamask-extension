@@ -3913,6 +3913,67 @@ describe('Actions', () => {
     });
   });
 
+  describe('#enableBasicFunctionality', () => {
+    const buildStateForConsolidation = (isConsolidated) => ({
+      ...defaultState,
+      metamask: {
+        ...defaultState.metamask,
+        useExternalServices: false,
+        remoteFeatureFlags: {
+          extensionBasicFunctionalityToggle: isConsolidated,
+        },
+        preferences: {
+          ...defaultState.metamask.preferences,
+          isBasicFunctionalityConsolidatedEnabled: isConsolidated,
+        },
+      },
+    });
+
+    it('uses the consolidated toggle when the wallet is consolidated', async () => {
+      const store = mockStore(buildStateForConsolidation(true));
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.enableBasicFunctionality());
+
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(1);
+      expect(background.toggleBasicFunctionality.getCall(0).args).toStrictEqual(
+        [true],
+      );
+      expect(background.toggleExternalServices.callCount).toStrictEqual(0);
+    });
+
+    it('uses the legacy toggle when the wallet is not consolidated', async () => {
+      const store = mockStore(buildStateForConsolidation(false));
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.enableBasicFunctionality());
+
+      expect(background.toggleExternalServices.callCount).toStrictEqual(1);
+      expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
+        true,
+      ]);
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(0);
+    });
+
+    it('reads consolidation state when dispatched, not when created', async () => {
+      const unconsolidatedStore = mockStore(buildStateForConsolidation(false));
+      const consolidatedStore = mockStore(buildStateForConsolidation(true));
+
+      setBackgroundConnection(background);
+
+      // Built while the wallet is unconsolidated, dispatched after
+      // consolidation has landed.
+      const thunkAction = actions.enableBasicFunctionality();
+      unconsolidatedStore.getState();
+      await consolidatedStore.dispatch(thunkAction);
+
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(1);
+      expect(background.toggleExternalServices.callCount).toStrictEqual(0);
+    });
+  });
+
   describe('#createMetaMetricsDataDeletionTask', () => {
     afterEach(() => {
       sinon.restore();

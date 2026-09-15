@@ -24,11 +24,7 @@ import {
   selectIsBackupAndSyncUpdateLoading,
 } from '../../../../selectors/identity/backup-and-sync';
 import { selectIsMetamaskNotificationsEnabled } from '../../../../selectors/metamask-notifications/metamask-notifications';
-import {
-  showModal,
-  toggleBasicFunctionality,
-  toggleExternalServices,
-} from '../../../../store/actions';
+import { enableBasicFunctionality, showModal } from '../../../../store/actions';
 import ToggleButton from '../../../ui/toggle-button';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 import {
@@ -36,7 +32,6 @@ import {
   getExternalServicesOnboardingToggleState,
   getUseExternalServices,
 } from '../../../../selectors';
-import { getIsBasicFunctionalityConsolidationEnabled } from '../../../../selectors/multichain/feature-flags';
 import {
   onboardingToggleBackupAndSyncOff,
   onboardingToggleBackupAndSyncOn,
@@ -75,9 +70,6 @@ export const BackupAndSyncToggle = ({
 
   const isBasicFunctionalityEnabled: boolean = useSelector(
     getUseExternalServices,
-  );
-  const isBasicFunctionalityConsolidationEnabled = useSelector(
-    getIsBasicFunctionalityConsolidationEnabled,
   );
   const isOnboardingBasicFunctionalityEnabled = useSelector(
     getExternalServicesOnboardingToggleState,
@@ -240,11 +232,7 @@ export const BackupAndSyncToggle = ({
         showModal({
           name: CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
           enableBackupAndSync: async () => {
-            await dispatch(
-              isBasicFunctionalityConsolidationEnabled
-                ? toggleBasicFunctionality(true)
-                : toggleExternalServices(true),
-            );
+            await dispatch(enableBasicFunctionality());
             await setIsBackupAndSyncFeatureEnabled(
               BACKUPANDSYNC_FEATURES.main,
               true,
