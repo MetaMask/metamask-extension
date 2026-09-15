@@ -445,7 +445,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
                     >
                       <div
-                        class="mm-box mm-box--rounded-full"
+                        class="mm-box mm-box--display-flex mm-box--rounded-full"
                         style="margin-left: 0px;"
                       >
                         <div
@@ -460,7 +460,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--rounded-full"
+                        class="mm-box mm-box--display-flex mm-box--rounded-full"
                         style="margin-left: -8px;"
                       >
                         <div
@@ -475,7 +475,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--rounded-full"
+                        class="mm-box mm-box--display-flex mm-box--rounded-full"
                         style="margin-left: -8px;"
                       >
                         <div
@@ -489,7 +489,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                         </div>
                       </div>
                       <div
-                        class="mm-box mm-box--rounded-full"
+                        class="mm-box mm-box--display-flex mm-box--rounded-full"
                         style="margin-left: -8px;"
                       >
                         <div
