@@ -256,7 +256,7 @@ describe('RampsBuildQuoteScreen', () => {
     );
   });
 
-  it('shows a quote unavailable message when no provider returns a quote', () => {
+  it('shows a quote error with a change-provider action when no provider returns a quote', () => {
     useRampsQuotes.mockReturnValue({
       data: { success: [], error: [] },
       loading: false,
@@ -270,8 +270,17 @@ describe('RampsBuildQuoteScreen', () => {
     );
 
     expect(screen.getByTestId('ramps-build-quote-error')).toHaveTextContent(
-      messages.rampsQuoteUnavailable.message,
+      messages.rampsErrorGettingQuotes.message,
     );
+    expect(
+      screen.getByTestId('ramps-build-quote-change-provider'),
+    ).toHaveTextContent(messages.rampsChangeProviders.message);
+
+    fireEvent.click(screen.getByTestId('ramps-build-quote-change-provider'));
+
+    expect(
+      screen.getByTestId('ramps-provider-selection-empty'),
+    ).toBeInTheDocument();
   });
 
   it('disables continue while amount debounce has not settled', () => {

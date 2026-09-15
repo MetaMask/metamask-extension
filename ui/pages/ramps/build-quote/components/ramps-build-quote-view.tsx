@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   BoxAlignItems,
@@ -8,12 +8,16 @@ import {
   ButtonSize,
   ButtonVariant,
   Text,
+  TextButton,
+  TextButtonSize,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import RampsTokenSelectionHeader from '../../token-selection/components/ramps-token-selection-header';
+import RampsProviderSelectionModal from '../../provider-selection';
 import type { RampsBuildQuoteReadyViewModel } from '../hooks/useRampsBuildQuote';
+import { parseFiatAmount } from '../utils/build-quote';
 import RampsPaymentMethodPill from './ramps-payment-method-pill';
 
 export default function RampsBuildQuoteView({
@@ -34,6 +38,7 @@ export default function RampsBuildQuoteView({
   handleContinue,
 }: RampsBuildQuoteReadyViewModel) {
   const t = useI18nContext();
+  const [isProviderModalOpen, setIsProviderModalOpen] = useState(false);
 
   return (
     <Box
@@ -84,23 +89,37 @@ export default function RampsBuildQuoteView({
             </span>
           </Box>
 
+          {displayedQuoteError ? (
+            <Box
+              className="flex flex-col items-center"
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Center}
+              gap={1}
+            >
+              <Text
+                variant={TextVariant.BodySm}
+                color={TextColor.ErrorDefault}
+                className="text-center"
+                data-testid="ramps-build-quote-error"
+              >
+                {displayedQuoteError}
+              </Text>
+              <TextButton
+                size={TextButtonSize.BodySm}
+                onClick={() => setIsProviderModalOpen(true)}
+                data-testid="ramps-build-quote-change-provider"
+              >
+                {t('rampsChangeProviders')}
+              </TextButton>
+            </Box>
+          ) : null}
+
           <RampsPaymentMethodPill
             label={paymentMethodLabel}
             isLoading={showPaymentMethodSpinner}
             onClick={handlePaymentMethodPress}
           />
         </Box>
-
-        {displayedQuoteError ? (
-          <Text
-            variant={TextVariant.BodySm}
-            color={TextColor.ErrorDefault}
-            className="mb-4 text-center"
-            data-testid="ramps-build-quote-error"
-          >
-            {displayedQuoteError}
-          </Text>
-        ) : null}
 
         <Box
           className="pb-4"
@@ -131,6 +150,14 @@ export default function RampsBuildQuoteView({
           </Button>
         </Box>
       </Box>
+
+      {isProviderModalOpen ? (
+        <RampsProviderSelectionModal
+          isOpen
+          onClose={() => setIsProviderModalOpen(false)}
+          amount={parseFiatAmount(amount)}
+        />
+      ) : null}
     </Box>
   );
 }

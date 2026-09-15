@@ -160,7 +160,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
 
   const hasQuoteFetchError = quoteFetchError !== null;
   const quoteFetchErrorMessage = hasQuoteFetchError
-    ? parseUserFacingError(quoteFetchError, t('rampsQuoteFetchError'))
+    ? parseUserFacingError(quoteFetchError, t('rampsErrorGettingQuotes'))
     : null;
 
   const selectedQuote = useMemo(
@@ -181,7 +181,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
     hasQuoteFetchError,
     quotesResponse,
     selectedQuote,
-    quoteUnavailableMessage: t('rampsQuoteUnavailable'),
+    quoteUnavailableMessage: t('rampsErrorGettingQuotes'),
   });
   const providerQuoteError = quotesResponse?.error?.find(
     (error) => error.provider === selectedProvider?.id && error.error,
@@ -198,7 +198,7 @@ export function useRampsBuildQuote(): RampsBuildQuoteViewModel {
           formatCurrency,
           t,
           backendError: providerQuoteError,
-        }) ?? t('rampsQuoteUnavailable'))
+        }) ?? t('rampsErrorGettingQuotes'))
       : displayedQuoteError);
 
   const paymentMethodLabel = useMemo(
