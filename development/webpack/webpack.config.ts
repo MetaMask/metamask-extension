@@ -64,10 +64,21 @@ const browsersListPath = join(root, '.browserslistrc');
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
 const { variables, safeVariables, version, buildEnvVarDeclarations } =
   getVariables(args, buildTypes);
-const webAccessibleResources =
-  args.devtool === 'source-map'
+const webAccessibleResources = [
+  ...(args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
-    : [];
+    : []),
+  'images/*',
+];
+// Styles for the outer X document. They cannot be bundled into the widget
+// frame HTML because that HTML is the iframe, so they are imported as strings
+// and injected by the content script instead.
+const cashtagPageStylesRe =
+  /scripts[\\/]cashtag[\\/](?:pill|widget)[\\/]page\.css$/u;
+// HtmlBundlerPlugin extracts every stylesheet it recognises into its own asset,
+// which would break the string imports above, so they are excluded here.
+const bundledStylesRe =
+  /^(?!.*[\\/]cashtag[\\/](?:pill|widget)[\\/]page\.css$).*\.(?:css|scss|sass|less|styl)$/u;
 
 // #region cache
 const cache = args.cache
@@ -154,6 +165,7 @@ const plugins: WebpackPluginInstance[] = [
     preprocessorOptions: { useWith: false },
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
+    css: { test: bundledStylesRe },
     data: { isTest: args.test },
     // In watch mode, inject the dev-only background client into the relevant HTML page.
     beforeEmit: (content, entry, compilation) => {
@@ -311,10 +323,16 @@ const reactRefreshJsxLoader = getSwcLoader(
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
 
+const isCashtagWidgetEntry = (chunk: { name?: string | null }) =>
+  chunk.name === 'cashtag-widget';
 const isChunkableInitial = (chunk: Chunk) =>
-  manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
+  !isCashtagWidgetEntry(chunk) &&
+  manifestPlugin.canBeChunked(chunk) &&
+  chunk.canBeInitial();
 const isChunkableAsync = (chunk: Chunk) =>
-  manifestPlugin.canBeChunked(chunk) && !chunk.canBeInitial();
+  !isCashtagWidgetEntry(chunk) &&
+  manifestPlugin.canBeChunked(chunk) &&
+  !chunk.canBeInitial();
 
 const threadLoader = getThreadLoader(args);
 const reactCompiler = getReactCompilerLoader({
@@ -325,9 +343,6 @@ const reactCompiler = getReactCompilerLoader({
 });
 
 const config = {
-  // All entries are added dynamically by ManifestPlugin
-  // an empty entry object prevents webpack's default entry.
-  entry: {},
   cache,
   plugins,
   context,
@@ -504,9 +519,32 @@ const config = {
           },
         ],
       },
+      // Host-page styles, imported as text so the content script can inject
+      // and remove them without exposing a web-accessible stylesheet.
+      {
+        test: cashtagPageStylesRe,
+        use: [
+          { loader: 'css-loader', options: { exportType: 'string' } },
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                config: false,
+                plugins: [
+                  tailwindcss(),
+                  autoprefixer({ overrideBrowserslist: browsersListQuery }),
+                  rtlCss({ processEnv: false }),
+                  discardFontFace(['woff2']), // keep woff2 fonts
+                ],
+              },
+            },
+          },
+        ],
+      },
       // css, sass/scss
       {
         test: /\.(css|sass|scss)$/u,
+        exclude: cashtagPageStylesRe,
         use: [
           // Resolves CSS `@import` and `url()` paths and loads the files.
           'css-loader',
@@ -601,7 +639,9 @@ const config = {
       // casting to string as webpack's types are wrong, `false` is allowed, and
       // is actually the default value.
       name: (chunk) =>
-        (manifestPlugin.canBeChunked(chunk) ? 'runtime' : false) as string,
+        (isCashtagWidgetEntry(chunk) || !manifestPlugin.canBeChunked(chunk)
+          ? false
+          : 'runtime') as string,
     },
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations

@@ -1,5 +1,11 @@
 declare module 'human-standard-token-abi';
 
+// Stylesheets imported as text, via css-loader's `exportType: 'string'`.
+declare module '*.css' {
+  const content: string;
+  export default content;
+}
+
 declare module 'eth-ens-namehash' {
   function hash(name: string): string;
   function normalize(name: string): string;
