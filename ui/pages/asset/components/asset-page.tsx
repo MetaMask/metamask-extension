@@ -73,6 +73,7 @@ import {
   getOptedIn,
   getShowFiatInTestnets,
 } from '../../../selectors';
+import { getIsAdvancedChartsEnabled } from '../../../selectors/multichain/feature-flags';
 import {
   getAsset,
   getAssetsBySelectedAccountGroup,
@@ -106,6 +107,18 @@ import { AssetMarketDetails } from './asset-market-details';
 import { AssetPerpsPositionSection } from './asset-perps-position-section';
 import { AssetStickyActions } from './asset-sticky-actions';
 import AssetChart from './chart/asset-chart';
+// [POC — THROWAWAY] Advanced Chart via cross-origin iframe from localhost:8001
+import AdvancedChartIframe from './chart/advanced-chart-iframe';
+import IntervalBar, {
+  CHART_TYPE_LINE,
+  CHART_TYPE_CANDLE,
+} from './chart/advanced-chart-interval-bar';
+import IndicatorBar from './chart/advanced-chart-indicator-bar';
+import { useAdvancedChartPreferences } from './chart/useAdvancedChartPreferences';
+import { useOHLCVRealtime } from './chart/useOHLCVRealtime';
+import { useOHLCVChart } from './chart/useOHLCVChart';
+import { useOHLCVPriceData } from './chart/useOHLCVPriceData';
+import TokenPriceHeader from './chart/token-price-header';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
 import { AssetActivateCard } from './asset-activation-card';
@@ -176,6 +189,37 @@ const AssetPage = ({
     [caipChainId],
   );
   const selectedAccount = useSelector(selectSelectedAccount) as InternalAccount;
+
+  // Advanced chart state — preferences persisted via PreferencesController.
+  const isAdvancedChartsEnabled = useSelector(getIsAdvancedChartsEnabled);
+  const [advancedChartError, setAdvancedChartError] = useState<string | null>(
+    null,
+  );
+  const [acChartReady, setAcChartReady] = useState(false);
+
+  // Reset chart error state when navigating to a different token so the
+  // advanced chart gets a fresh retry opportunity. Done during render rather
+  // than in an effect to avoid rendering the previous token's error state
+  // first: https://react.dev/reference/react/useState#storing-information-from-previous-renders
+  const assetKey = `${asset.chainId}:${asset.type === AssetType.token ? (asset as { address?: string }).address : 'native'}`;
+  const [renderedAssetKey, setRenderedAssetKey] = useState(assetKey);
+  if (renderedAssetKey !== assetKey) {
+    setRenderedAssetKey(assetKey);
+    setAdvancedChartError(null);
+    setAcChartReady(false);
+  }
+  const {
+    chartType: acChartType,
+    interval: acInterval,
+    indicators: acIndicators,
+    setChartType: setAcChartType,
+    setInterval: setAcInterval,
+    toggleIndicator: toggleAcIndicator,
+  } = useAdvancedChartPreferences();
+
+  const handleAdvancedChartReady = useCallback(() => {
+    setAcChartReady(true);
+  }, []);
 
   useEffect(() => {
     endTrace({ name: TraceName.AssetDetails });
@@ -294,6 +338,51 @@ const AssetPage = ({
   const caipAssetId = isEvm
     ? toAssetId(address, caipChainId)
     : (decodedAsset as CaipAssetType);
+
+  // Fetch OHLCV data - used by both chart and price header
+  const {
+    ohlcvData,
+    isLoading: isOhlcvLoading,
+    error: ohlcvError,
+  } = useOHLCVChart({
+    assetId: caipAssetId as string,
+    interval: acInterval,
+  });
+
+  // [POC — THROWAWAY] Real-time OHLCV updates via polling
+  const { latestBar: realtimeLatestBar } = useOHLCVRealtime({
+    assetId: caipAssetId as string,
+    interval: acInterval,
+    enabled: isAdvancedChartsEnabled && acChartReady && !advancedChartError,
+  });
+
+  // Merge realtime bar into ohlcvData so price header stays in sync with chart
+  const mergedOhlcvData = useMemo(() => {
+    if (!realtimeLatestBar || ohlcvData.length === 0) {
+      return ohlcvData;
+    }
+
+    const lastBar = ohlcvData[ohlcvData.length - 1];
+
+    // If realtime bar is newer or same time as last bar, replace it
+    if (realtimeLatestBar.time >= lastBar.time) {
+      return [...ohlcvData.slice(0, -1), realtimeLatestBar];
+    }
+
+    return ohlcvData;
+  }, [ohlcvData, realtimeLatestBar]);
+
+  // Compute price and percent change from merged OHLCV data (includes realtime updates)
+  const {
+    price: ohlcvPrice,
+    percentChange: ohlcvPercentChange,
+    timestamp: ohlcvTimestamp,
+  } = useOHLCVPriceData(mergedOhlcvData);
+
+  // Combine iframe and OHLCV errors for fallback decision
+  const combinedChartError = advancedChartError || ohlcvError;
+  const shouldShowAdvancedChart =
+    isAdvancedChartsEnabled && !combinedChartError;
 
   const securityTrustToken = useMemo(
     () => ({
@@ -500,12 +589,54 @@ const AssetPage = ({
           )}
         </Box>
         <AssetPageSecurityTrustBanner />
-        <AssetChart
-          chainId={chainId}
-          address={address}
-          currentPrice={currentPrice}
-          currency={currency}
-        />
+        {/* [POC — THROWAWAY] Advanced Chart replaces legacy chart; falls back on error.
+            Layout mirrors mobile: IntervalBar → AdvancedChart → IndicatorBar */}
+        {shouldShowAdvancedChart ? (
+          <>
+            {/* Price header using OHLCV data */}
+            <TokenPriceHeader
+              price={ohlcvPrice}
+              percentChange={ohlcvPercentChange}
+              currency={currency}
+              timestamp={ohlcvTimestamp}
+              loading={isOhlcvLoading}
+            />
+
+            <IntervalBar
+              selectedInterval={acInterval}
+              onIntervalSelect={setAcInterval}
+              chartType={acChartType}
+              onChartTypeSelect={setAcChartType}
+            />
+            <AdvancedChartIframe
+              assetId={caipAssetId as string}
+              height={300}
+              chartType={acChartType}
+              selectedInterval={acInterval}
+              activeIndicators={acIndicators}
+              ohlcvData={mergedOhlcvData}
+              onError={setAdvancedChartError}
+              onReady={handleAdvancedChartReady}
+              realtimeBar={realtimeLatestBar}
+            />
+            {/* Candlestick-only: the selection is kept in preferences, but the
+                bar and the studies themselves are hidden on a line chart. */}
+            {acChartType === CHART_TYPE_CANDLE && (
+              <IndicatorBar
+                activeIndicators={acIndicators}
+                onIndicatorToggle={toggleAcIndicator}
+                onMAToggle={toggleAcIndicator}
+              />
+            )}
+          </>
+        ) : (
+          <AssetChart
+            chainId={chainId}
+            address={address}
+            currentPrice={currentPrice}
+            currency={currency}
+          />
+        )}
         <MaybePerpsViewStreamBoundary
           enabled={Boolean(isPerpsMarketLoading || perpsMarket)}
         >
