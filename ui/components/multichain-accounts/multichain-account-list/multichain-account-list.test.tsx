@@ -1555,11 +1555,9 @@ describe('MultichainAccountList', () => {
         screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
       ).toBeInTheDocument();
 
-      await act(async () => {
-        fireEvent.click(
-          screen.getByTestId('wallet-remove-modal-remove-button'),
-        );
-      });
+      fireEvent.click(
+        screen.getByTestId('wallet-remove-modal-remove-button'),
+      );
 
       expect(mockremoveWallet).toHaveBeenCalledWith(
         walletTwoId,
