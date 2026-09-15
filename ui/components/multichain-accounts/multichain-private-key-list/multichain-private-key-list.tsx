@@ -504,6 +504,7 @@ const MultichainPrivateKeyList = ({
             key={account.id}
             address={account.address}
             chainId={chainId}
+            isCollapsible={privateKeySections.length > 1}
             isExpanded={expandedAccountAddress === account.address}
             networkName={networkName}
             onCopy={() => handlePrivateKeyCopy(privateKey)}
