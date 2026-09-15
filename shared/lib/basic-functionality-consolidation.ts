@@ -17,10 +17,9 @@ export const BFT_CHILD_PREFERENCES = [
 
 /**
  * The subset of {@link BFT_CHILD_PREFERENCES} that
- * `PreferencesController.toggleExternalServices` overwrites to match Basic
- * Functionality. Onboarding reads this list to restore the choices the user
- * made on the privacy screen, so any preference added here is covered
- * automatically.
+ * `PreferencesController.toggleExternalServices` owns. When enabling, callers
+ * can pass the current values so they are applied in the same write instead of
+ * being overwritten and later restored.
  */
 export const EXTERNAL_SERVICES_OWNED_PREFERENCES = [
   'useTokenDetection',

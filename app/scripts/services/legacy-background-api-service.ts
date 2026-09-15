@@ -293,6 +293,7 @@ import {
   getIsAssetsUnifiedStateIncludedInBuild,
   getIsSeedlessOnboardingFeatureEnabled,
 } from '../../../shared/lib/environment';
+import type { ExternalServicesOwnedPreference } from '../../../shared/lib/basic-functionality-consolidation';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield/subscription-utils';
 import { getAllEnabledNetworkClientIds } from '../../../shared/lib/network.utils';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
@@ -3088,11 +3089,21 @@ export class LegacyBackgroundApiService {
    * and the shield service is stopped if applicable.
    *
    * @param useExternal - Whether external services should be enabled.
+   * @param ownedPreferences - Optional per-preference values forwarded to
+   * PreferencesController so enabling can preserve granular onboarding choices
+   * in one write.
    */
-  toggleExternalServices(useExternal: boolean): void {
+  toggleExternalServices(
+    useExternal: boolean,
+    ownedPreferences?: Partial<
+      Record<ExternalServicesOwnedPreference, boolean>
+    >,
+  ): void {
     this.#messenger.call(
       'PreferencesController:toggleExternalServices',
-      useExternal,
+      ...(ownedPreferences
+        ? ([useExternal, ownedPreferences] as const)
+        : ([useExternal] as const)),
     );
 
     const subscriptionState = this.#messenger.call(

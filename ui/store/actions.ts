@@ -4623,11 +4623,15 @@ export function setIpfsGateway(
 
 export function toggleExternalServices(
   val: boolean,
+  ownedPreferences?: Record<string, boolean>,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.toggleExternalServices`);
     try {
-      await submitRequestToBackground('toggleExternalServices', [val]);
+      await submitRequestToBackground(
+        'toggleExternalServices',
+        ownedPreferences ? [val, ownedPreferences] : [val],
+      );
       await forceUpdateMetamaskState(dispatch);
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)

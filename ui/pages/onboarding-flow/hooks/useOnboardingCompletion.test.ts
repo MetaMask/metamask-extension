@@ -319,7 +319,7 @@ describe('useOnboardingCompletion', () => {
   });
 
   describe('onboarding privacy choices', () => {
-    it('restores every preference the user turned off', async () => {
+    it('applies every preference the user turned off in the same toggleExternalServices write', async () => {
       const { result } = renderHookWithProvider(
         () => useOnboardingCompletion(),
         {
@@ -341,17 +341,26 @@ describe('useOnboardingCompletion', () => {
       });
 
       await waitFor(() => {
-        expect(mockToggleExternalServices).toHaveBeenCalledWith(true);
-        expect(mockSetUseCurrencyRateCheck).toHaveBeenCalledWith(false);
-        expect(mockSetUseAddressBarEnsResolution).toHaveBeenCalledWith(false);
-        expect(mockSetUsePhishDetect).toHaveBeenCalledWith(false);
-        expect(mockSetOpenSeaEnabled).toHaveBeenCalledWith(false);
-        expect(mockSetUseNftDetection).toHaveBeenCalledWith(false);
-        expect(mockSetUseSafeChainsListValidation).toHaveBeenCalledWith(false);
+        expect(mockToggleExternalServices).toHaveBeenCalledWith(true, {
+          useTokenDetection: true,
+          useCurrencyRateCheck: false,
+          usePhishDetect: false,
+          useAddressBarEnsResolution: false,
+          openSeaEnabled: false,
+          useNftDetection: false,
+          useSafeChainsListValidation: false,
+        });
       });
+      expect(mockSetUseCurrencyRateCheck).not.toHaveBeenCalled();
+      expect(mockSetUseAddressBarEnsResolution).not.toHaveBeenCalled();
+      expect(mockSetUsePhishDetect).not.toHaveBeenCalled();
+      expect(mockSetOpenSeaEnabled).not.toHaveBeenCalled();
+      expect(mockSetUseNftDetection).not.toHaveBeenCalled();
+      expect(mockSetUseSafeChainsListValidation).not.toHaveBeenCalled();
+      expect(mockSetUseTokenDetection).not.toHaveBeenCalled();
     });
 
-    it('leaves the preferences the user kept on alone', async () => {
+    it('does not follow that write with individual preference restores', async () => {
       const { result } = renderHookWithProvider(
         () => useOnboardingCompletion(),
         {
@@ -368,17 +377,21 @@ describe('useOnboardingCompletion', () => {
       });
 
       await waitFor(() => {
-        expect(mockSetUseCurrencyRateCheck).toHaveBeenCalledWith(false);
+        expect(mockToggleExternalServices).toHaveBeenCalledWith(true, {
+          useTokenDetection: true,
+          useCurrencyRateCheck: false,
+          usePhishDetect: true,
+          useAddressBarEnsResolution: true,
+          openSeaEnabled: true,
+          useNftDetection: true,
+          useSafeChainsListValidation: true,
+        });
       });
+      expect(mockSetUseCurrencyRateCheck).not.toHaveBeenCalled();
       expect(mockSetUseTokenDetection).not.toHaveBeenCalled();
-      expect(mockSetUseAddressBarEnsResolution).not.toHaveBeenCalled();
-      expect(mockSetUsePhishDetect).not.toHaveBeenCalled();
-      expect(mockSetOpenSeaEnabled).not.toHaveBeenCalled();
-      expect(mockSetUseNftDetection).not.toHaveBeenCalled();
-      expect(mockSetUseSafeChainsListValidation).not.toHaveBeenCalled();
     });
 
-    it('does not restore them when Basic Functionality is turned off', async () => {
+    it('does not pass owned preferences when Basic Functionality is turned off', async () => {
       const { result } = renderHookWithProvider(
         () => useOnboardingCompletion(),
         {

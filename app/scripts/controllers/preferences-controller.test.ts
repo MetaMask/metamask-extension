@@ -435,6 +435,36 @@ describe('preferences controller', () => {
       expect(controller.state.useNftDetection).toStrictEqual(false);
       expect(controller.state.useSafeChainsListValidation).toStrictEqual(false);
     });
+
+    it('preserves owned preference overrides when enabling', () => {
+      const { controller } = setupController({});
+      controller.toggleExternalServices(false);
+
+      controller.toggleExternalServices(true, {
+        useTokenDetection: false,
+        useCurrencyRateCheck: false,
+      });
+
+      expect(controller.state.useExternalServices).toBe(true);
+      expect(controller.state.useTokenDetection).toBe(false);
+      expect(controller.state.useCurrencyRateCheck).toBe(false);
+      expect(controller.state.usePhishDetect).toBe(true);
+      expect(controller.state.useAddressBarEnsResolution).toBe(true);
+      expect(controller.state.openSeaEnabled).toBe(true);
+      expect(controller.state.useNftDetection).toBe(true);
+      expect(controller.state.useSafeChainsListValidation).toBe(true);
+    });
+
+    it('ignores owned preference overrides when disabling', () => {
+      const { controller } = setupController({});
+
+      controller.toggleExternalServices(false, {
+        useTokenDetection: true,
+      });
+
+      expect(controller.state.useExternalServices).toBe(false);
+      expect(controller.state.useTokenDetection).toBe(false);
+    });
   });
 
   describe('toggleBasicFunctionality', () => {

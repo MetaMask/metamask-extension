@@ -6241,6 +6241,27 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
+    it('forwards owned preference overrides when enabling', async () => {
+      mockGetIsShieldSubscriptionActive.mockReturnValue(false);
+
+      await withService(({ rootMessenger }) => {
+        const handlers = registerToggleExternalServicesHandlers(rootMessenger);
+        const ownedPreferences = { useTokenDetection: false };
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:toggleExternalServices',
+          true,
+          ownedPreferences,
+        );
+
+        expect(handlers.toggleExternalServices).toHaveBeenCalledWith(
+          true,
+          ownedPreferences,
+        );
+        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
+      });
+    });
+
     it('disables external services and stops shield when a subscription is active', async () => {
       mockGetIsShieldSubscriptionActive.mockReturnValue(true);
 

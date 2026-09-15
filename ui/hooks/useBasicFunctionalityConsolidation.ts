@@ -2,12 +2,14 @@ import { useEffect, useRef } from 'react';
 import { getCompletedOnboarding } from '../ducks/metamask/metamask';
 import { getIsUnlocked } from '../ducks/metamask/base-selectors';
 import { getIsBasicFunctionalityToggleEnabled } from '../selectors/multichain/feature-flags';
+import { getIsBasicFunctionalitySocialLoginUser } from '../selectors/onboarding/onboarding';
 import { consolidateBasicFunctionality } from '../store/actions';
 import { useAppSelector, useDispatch } from '../store/hooks';
 
 /**
  * Runs one-time Basic Functionality consolidation when the remote flag is on,
- * and repairs a persisted consolidated wallet if Basic Functionality is off.
+ * and repairs a persisted consolidated social-login wallet if Basic
+ * Functionality is off.
  */
 export function useBasicFunctionalityConsolidation(): void {
   const dispatch = useDispatch();
@@ -26,9 +28,14 @@ export function useBasicFunctionalityConsolidation(): void {
   );
   const isUnlocked = useAppSelector(getIsUnlocked);
   const completedOnboarding = useAppSelector(getCompletedOnboarding);
+  const isSocialLoginUser = useAppSelector(
+    getIsBasicFunctionalitySocialLoginUser,
+  );
   const shouldRunConsolidation =
     (isBftConsolidationRemoteEnabled && !hasBftConsolidationMarker) ||
-    (hasBftConsolidationMarker && !isBasicFunctionalityEnabled);
+    (hasBftConsolidationMarker &&
+      !isBasicFunctionalityEnabled &&
+      isSocialLoginUser);
 
   useEffect(() => {
     if (

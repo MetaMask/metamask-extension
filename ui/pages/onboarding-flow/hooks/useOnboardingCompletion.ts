@@ -8,10 +8,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import {
-  EXTERNAL_SERVICES_OWNED_PREFERENCES,
-  type ExternalServicesOwnedPreference,
-} from '../../../../shared/lib/basic-functionality-consolidation';
 import { getIsBasicFunctionalityConsolidationEnabledInBuild } from '../../../../shared/lib/environment';
 import {
   getDeferredDeepLinkRoute,
@@ -44,42 +40,15 @@ import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import {
   toggleExternalServices,
   toggleBasicFunctionality,
-  setOpenSeaEnabled,
   setPreference,
   setCompletedOnboarding,
   setCompletedOnboardingWithSidepanel,
-  setUseAddressBarEnsResolution,
-  setUseCurrencyRateCheck,
-  setUseNftDetection,
-  setUsePhishDetect,
-  setUseSafeChainsListValidation,
   setUseSidePanelAsDefault,
-  setUseTokenDetection,
   removeDeferredDeepLink,
   setIsBackupAndSyncFeatureEnabled,
   setHasSeenOnboardingCompletionPage,
 } from '../../../store/actions';
-import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { useDispatch } from '../../../store/hooks';
-
-/**
- * The action that persists each preference
- * `toggleExternalServices` overwrites. Keyed by
- * {@link EXTERNAL_SERVICES_OWNED_PREFERENCES} so a new entry there fails to
- * compile until it is wired up here.
- */
-const EXTERNAL_SERVICES_PREFERENCE_ACTIONS: Record<
-  ExternalServicesOwnedPreference,
-  (value: boolean) => ReturnType<typeof setUseTokenDetection>
-> = {
-  useTokenDetection: setUseTokenDetection,
-  useCurrencyRateCheck: setUseCurrencyRateCheck,
-  usePhishDetect: setUsePhishDetect,
-  useAddressBarEnsResolution: setUseAddressBarEnsResolution,
-  openSeaEnabled: setOpenSeaEnabled,
-  useNftDetection: setUseNftDetection,
-  useSafeChainsListValidation: setUseSafeChainsListValidation,
-};
 
 /**
  * Shared onboarding-completion actions for the completion route.
@@ -111,8 +80,8 @@ export function useOnboardingCompletion() {
   const isBasicFunctionalityToggleEnabled =
     getIsBasicFunctionalityConsolidationEnabledInBuild();
 
-  // Captured before Basic Functionality is applied, because applying it
-  // overwrites these. See the restore below.
+  // Captured so the legacy `toggleExternalServices` write can apply these in
+  // the same background call instead of overwriting them and restoring later.
   const externalServicesOwnedPreferences = useSelector(
     getExternalServicesOwnedPreferences,
     shallowEqual,
@@ -315,23 +284,13 @@ export function useOnboardingCompletion() {
         await dispatch(
           isBasicFunctionalityToggleEnabled
             ? toggleBasicFunctionality(basicFunctionalityEnabled)
-            : toggleExternalServices(basicFunctionalityEnabled),
+            : toggleExternalServices(
+                basicFunctionalityEnabled,
+                basicFunctionalityEnabled
+                  ? externalServicesOwnedPreferences
+                  : undefined,
+              ),
         );
-
-        // `toggleExternalServices(true)` turns every preference it owns back
-        // on, which would discard the choices made on the onboarding privacy
-        // screen. Restore the ones the user turned off. Nothing is restored
-        // when Basic Functionality is turned off, because that must disable
-        // them, or on the consolidated path, which owns them by design.
-        if (!isBasicFunctionalityToggleEnabled && basicFunctionalityEnabled) {
-          for (const preference of EXTERNAL_SERVICES_OWNED_PREFERENCES) {
-            if (!externalServicesOwnedPreferences[preference]) {
-              await dispatch(
-                EXTERNAL_SERVICES_PREFERENCE_ACTIONS[preference](false),
-              );
-            }
-          }
-        }
 
         if (!backupAndSyncOnboardingToggleState) {
           await dispatch(
