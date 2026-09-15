@@ -5466,9 +5466,6 @@
   "moneyActivityPending": {
     "message": "보류 중"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "머니 활동 내역이 여기에 표시됩니다."
-  },
   "moneyActivityReceived": {
     "message": "받음"
   },

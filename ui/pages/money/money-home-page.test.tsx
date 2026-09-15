@@ -18,6 +18,9 @@ const mockUseMoneyActivityItems = jest.fn();
 const mockUseMoneyActivityItemClick = jest.fn();
 const mockUseMoneyAccountDeposit = jest.fn();
 const mockInitiateDeposit = jest.fn();
+const mockUseMoneyAccountWithdrawal = jest.fn();
+const mockInitiateWithdrawal = jest.fn();
+const mockUseUpgradeMoneyAccount = jest.fn();
 const mockNavigate = jest.fn();
 const mockSelectMoneyEarningSectionEnabled = jest.mocked(
   selectMoneyEarningSectionEnabled,
@@ -88,6 +91,12 @@ jest.mock('../../hooks/money/use-money-activity-items', () => ({
 }));
 jest.mock('../../hooks/money/useMoneyAccountDeposit', () => ({
   useMoneyAccountDeposit: () => mockUseMoneyAccountDeposit(),
+}));
+jest.mock('../../hooks/money/useMoneyAccountWithdrawal', () => ({
+  useMoneyAccountWithdrawal: () => mockUseMoneyAccountWithdrawal(),
+}));
+jest.mock('../../hooks/money/use-upgrade-money-account', () => ({
+  useUpgradeMoneyAccount: () => mockUseUpgradeMoneyAccount(),
 }));
 
 jest.mock('../../hooks/money/use-money-activity-item-click', () => ({
@@ -211,13 +220,16 @@ describe('MoneyHomePage', () => {
         .closest('li')
         ?.querySelector('svg'),
     ).toHaveClass('shrink-0');
-    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.moneyActivityPlaceholderDescription.message),
-    ).toBeInTheDocument();
+    expect(screen.queryByTestId('money-activity-list')).not.toBeInTheDocument();
     expect(
       screen.queryByTestId(/money-activity-row-/u),
     ).not.toBeInTheDocument();
+  });
+
+  it('upgrades the Money account while mounted', () => {
+    renderWithLocalization(<MoneyHomePage />);
+
+    expect(mockUseUpgradeMoneyAccount).toHaveBeenCalled();
   });
 
   it('keeps groundwork actions other than the transfer entry points inert', () => {
@@ -228,9 +240,14 @@ describe('MoneyHomePage', () => {
       messages.addFunds.message,
       messages.moneySend.message,
       messages.moneyLearnMore.message,
+      messages.moneyMoreOptions.message,
     ];
     screen.getAllByRole('button').forEach((button) => {
-      if (activeLabels.includes(button.textContent ?? '')) {
+      if (
+        activeLabels.includes(
+          button.textContent || (button.getAttribute('aria-label') ?? ''),
+        )
+      ) {
         expect(button).toBeEnabled();
       } else {
         expect(button).toBeDisabled();
@@ -284,6 +301,25 @@ describe('MoneyHomePage', () => {
     expect(mockInitiateDeposit).toHaveBeenCalledWith();
   });
 
+  it('initiates a deposit prefilled with the row token from Earn on your crypto', () => {
+    mockUseMoneyDepositTokens.mockReturnValue({
+      tokens: [DEPOSIT_TOKEN],
+      isNoFeeToken: () => false,
+    });
+
+    renderWithLocalization(<MoneyHomePage />);
+
+    fireEvent.click(screen.getByTestId('money-potential-earnings-token-add'));
+
+    expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
+    expect(mockInitiateDeposit).toHaveBeenCalledWith({
+      preferredPaymentToken: {
+        address: DEPOSIT_TOKEN.address,
+        chainId: DEPOSIT_TOKEN.chainId,
+      },
+    });
+  });
+
   it('disables the deposit entry points while a deposit is initiating', () => {
     mockUseMoneyAccountDeposit.mockReturnValue({
       initiateDeposit: mockInitiateDeposit,
@@ -323,7 +359,7 @@ describe('MoneyHomePage', () => {
     expect(
       screen.getByTestId('money-position-lifetime-value'),
     ).toHaveTextContent('+$56.78');
-    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
+    expect(screen.queryByTestId('money-activity-list')).not.toBeInTheDocument();
     expect(
       screen.getByTestId('money-condensed-info-cards'),
     ).toBeInTheDocument();
@@ -339,7 +375,7 @@ describe('MoneyHomePage', () => {
     ['growth', 'musd', 'benefits'].forEach((card) => {
       expect(
         screen.getByTestId(`money-condensed-info-card-${card}-image`),
-      ).toHaveClass('rounded-xl', 'bg-background-subsection');
+      ).toHaveClass('rounded-xl');
     });
     expect(screen.queryByText('Earn up to 4.2% APY')).not.toBeInTheDocument();
     expect(
@@ -352,8 +388,12 @@ describe('MoneyHomePage', () => {
     expect(screen.getByTestId('money-add-button')).toBeEnabled();
     screen.getAllByRole('button').forEach((button) => {
       if (
-        [messages.moneyAdd.message, messages.moneySend.message].includes(
-          button.textContent ?? '',
+        [
+          messages.moneyAdd.message,
+          messages.moneySend.message,
+          messages.moneyMoreOptions.message,
+        ].includes(
+          button.textContent || (button.getAttribute('aria-label') ?? ''),
         )
       ) {
         expect(button).toBeEnabled();
@@ -381,9 +421,6 @@ describe('MoneyHomePage', () => {
     renderWithLocalization(<MoneyHomePage />);
 
     expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
-    expect(
-      screen.queryByText(messages.moneyActivityPlaceholderDescription.message),
-    ).not.toBeInTheDocument();
     expect(screen.getAllByTestId(/money-activity-row-money-tx-/u)).toHaveLength(
       5,
     );
@@ -564,7 +601,7 @@ describe('MoneyHomePage', () => {
     expect(mockUseMoneyAccountInterest).toHaveBeenCalledWith({
       enabled: false,
     });
-    expect(screen.getByTestId('money-activity-list')).toBeInTheDocument();
+    expect(screen.queryByTestId('money-activity-list')).not.toBeInTheDocument();
     expect(screen.getByTestId('money-potential-earnings')).toBeInTheDocument();
   });
 
