@@ -599,7 +599,7 @@ const AssetPage = ({
               percentChange={ohlcvPercentChange}
               currency={currency}
               timestamp={ohlcvTimestamp}
-              loading={false}
+              loading={isOhlcvLoading}
             />
 
             <IntervalBar

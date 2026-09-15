@@ -9,13 +9,23 @@ import { submitRequestToBackground } from '../../../../store/background-connecti
 import { CHART_TYPE_LINE } from './advanced-chart-interval-bar';
 
 /**
- * Persists TDP Advanced Chart preferences (chart type, interval, indicators)
- * via PreferencesController, following the established Perps candle-period
- * pattern (local override for instant UI + fire-and-forget background save).
+ * React hook for managing Token Details Page Advanced Chart preferences.
+ *
+ * Persists chart type, interval, and indicator selection via PreferencesController.
+ * Uses local state for instant UI updates while background sync is in progress
+ * (fire-and-forget pattern matching the perpsSelectedCandlePeriod approach).
  *
  * Preferences are global (not per-token) — navigating between tokens reuses
- * the same saved chart type, interval, and indicator selection. This matches
- * mobile's `useTokenChartPreferences()` behavior.
+ * the same saved chart configuration, matching mobile behavior.
+ *
+ * @returns Object containing chart preferences and setter functions:
+ * - chartType: Current chart type (1 = Candle, 2 = Line)
+ * - interval: Current interval ('15m', '1h', etc.)
+ * - indicators: Set of active indicator names
+ * - setChartType: Update chart type
+ * - setInterval: Update interval
+ * - toggleIndicator: Toggle indicator on/off
+ * - isLineChart: Convenience flag for line chart
  */
 export function useAdvancedChartPreferences() {
   // Read persisted values from PreferencesController via selectors.

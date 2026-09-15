@@ -20,14 +20,32 @@ const CHART_INTERVAL_DEFAULT = '15m';
 // Stable reference so `useSelector` consumers don't re-render on every call.
 const NO_INDICATORS: string[] = [];
 
+/**
+ * Returns the user's preferred chart type for Token Details Page.
+ *
+ * @param state - The MetaMask state
+ * @returns Chart type: 1 = Candle, 2 = Line (default)
+ */
 export function getTdpChartType(state: PreferencesMetaMaskState): number {
   return state.metamask.preferences?.tdpChartType ?? CHART_TYPE_LINE_DEFAULT;
 }
 
+/**
+ * Returns the user's preferred chart interval for Token Details Page.
+ *
+ * @param state - The MetaMask state
+ * @returns Candle interval string (e.g., '15m', '1h', '1d')
+ */
 export function getTdpChartInterval(state: PreferencesMetaMaskState): string {
   return state.metamask.preferences?.tdpChartInterval ?? CHART_INTERVAL_DEFAULT;
 }
 
+/**
+ * Returns the user's selected chart indicators for Token Details Page.
+ *
+ * @param state - The MetaMask state
+ * @returns Array of indicator names (e.g., ['RSI', 'MACD', 'MA20'])
+ */
 export function getTdpChartIndicators(
   state: PreferencesMetaMaskState,
 ): string[] {

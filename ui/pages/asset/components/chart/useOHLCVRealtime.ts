@@ -73,26 +73,13 @@ async function fetchLatestBar(
   url.searchParams.set('interval', interval);
   url.searchParams.set('vsCurrency', currency);
 
-  console.log('[OHLCV-RT] Fetching /latest', {
-    assetId,
-    interval,
-    timePeriod,
-    currency,
-    url: url.toString(),
-  });
-
   const response = await fetch(url.toString(), { signal });
   if (!response.ok) {
-    console.log('[OHLCV-RT] Error: /latest returned non-OK status', {
-      status: response.status,
-      statusText: response.statusText,
-    });
     return null;
   }
 
   const bar = (await response.json()) as OHLCVApiBar | null;
   if (!bar) {
-    console.log('[OHLCV-RT] Error: /latest returned null or empty body');
     return null;
   }
 
@@ -103,18 +90,8 @@ async function fetchLatestBar(
     Number.isNaN(bar.timestamp) ||
     Number.isNaN(bar.close)
   ) {
-    console.log('[OHLCV-RT] Error: Invalid bar data from /latest', { bar });
     return null;
   }
-
-  console.log('[OHLCV-RT] Received bar from /latest', {
-    timestamp: bar.timestamp,
-    close: bar.close,
-    open: bar.open,
-    high: bar.high,
-    low: bar.low,
-    volume: bar.volume,
-  });
 
   // Keep timestamp in milliseconds (matching useOHLCVChart format)
   return {
@@ -185,13 +162,6 @@ export function useOHLCVRealtime({
   // even if the underlying bar data hasn't changed (price stable).
   const updateLatestBar = useCallback((bar: OHLCVRealtimeBar) => {
     setLatestBar((prev) => {
-      const isEqual = areBarsEqual(prev, bar);
-      console.log('[OHLCV-RT] Updating latestBar state', {
-        prevClose: prev?.close,
-        newClose: bar.close,
-        timestamp: bar.time,
-        dataChanged: !isEqual,
-      });
       // Always return a new object to trigger React state update
       return { ...bar };
     });
@@ -215,24 +185,10 @@ export function useOHLCVRealtime({
 
   useEffect(() => {
     if (!enabled || !assetId || !interval) {
-      console.log('[OHLCV-RT] Polling disabled or missing params', {
-        enabled,
-        assetId: Boolean(assetId),
-        interval: Boolean(interval),
-      });
       return undefined;
     }
 
     const timePeriod = INTERVAL_TO_TIME_PERIOD[interval] ?? '1d';
-
-    console.log('[OHLCV-RT] Starting polling subscription', {
-      assetId,
-      interval,
-      timePeriod,
-      currency,
-      debounceMs: DEBOUNCE_MS,
-      pollIntervalMs: POLL_INTERVAL_MS,
-    });
 
     const pollLatest = async () => {
       // Abort any in-flight request
@@ -250,30 +206,19 @@ export function useOHLCVRealtime({
         );
         if (bar && !controller.signal.aborted) {
           updateLatestBar(bar);
-        } else if (!bar) {
-          console.log('[OHLCV-RT] No bar returned from fetchLatestBar');
         }
       } catch (error) {
-        if (error instanceof Error && error.name !== 'AbortError') {
-          console.log('[OHLCV-RT] Error during polling', {
-            error: error.message,
-            name: error.name,
-          });
-        }
+        // Silently ignore errors (including AbortError)
       }
     };
 
     // Debounce before starting the polling loop
     debounceTimerRef.current = setTimeout(() => {
-      console.log('[OHLCV-RT] Debounce complete, starting immediate poll');
       // Immediate poll for instant data
       // eslint-disable-next-line no-void -- fire-and-forget async poll
       void pollLatest();
 
       // Then poll periodically
-      console.log(
-        `[OHLCV-RT] Starting periodic polling every ${POLL_INTERVAL_MS}ms`,
-      );
       pollTimerRef.current = setInterval(() => {
         // eslint-disable-next-line no-void -- fire-and-forget async poll
         void pollLatest();
@@ -281,11 +226,6 @@ export function useOHLCVRealtime({
     }, DEBOUNCE_MS);
 
     return () => {
-      console.log('[OHLCV-RT] Cleaning up polling subscription', {
-        assetId,
-        interval,
-      });
-
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
         debounceTimerRef.current = null;
