@@ -1235,6 +1235,9 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         relay: {
           enabled: true,
           gaslessEnabled: false,
+          solana: {
+            enabled: false,
+          },
         },
       },
       perpsWithdrawAnyToken: false,
