@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountGroupId } from '@metamask/account-api';
+import { KeyringType } from '@metamask/keyring-api/v2';
 import {
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
@@ -141,7 +142,7 @@ const INTERNAL_ACCOUNTS_MOCK: Record<string, InternalAccount> = {
     metadata: {
       name: 'Solana Account',
       importTime: Date.now(),
-      keyring: { type: 'Snap Keyring' },
+      keyring: { type: KeyringType.Snap },
       snap: {
         id: SOLANA_WALLET_SNAP_ID,
       },
