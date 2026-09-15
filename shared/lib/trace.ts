@@ -345,11 +345,11 @@ export function addTraceBeforeMetricsOptIn(traceData: BufferedTrace): void {
  * This must run in the background module instance that owns the queue.
  */
 export function trackTracesAfterMetricsOptIn(): void {
-  tracesBeforeMetricsOptIn.forEach((bufferedTrace) => {
-    if (bufferedTrace.type === 'start') {
-      trace(bufferedTrace.request as TraceRequest);
-    } else if (bufferedTrace.type === 'end') {
-      endTrace(bufferedTrace.request as EndTraceRequest);
+  tracesBeforeMetricsOptIn.forEach((bufferedTraceBeforeOptIn) => {
+    if (bufferedTraceBeforeOptIn.type === 'start') {
+      trace(bufferedTraceBeforeOptIn.request as TraceRequest);
+    } else if (bufferedTraceBeforeOptIn.type === 'end') {
+      endTrace(bufferedTraceBeforeOptIn.request as EndTraceRequest);
     }
   });
 }
