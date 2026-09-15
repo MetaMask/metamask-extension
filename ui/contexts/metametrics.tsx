@@ -221,13 +221,25 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
     ],
   );
 
-  const bufferedTrace: UITraceMethod = useCallback((request, fn) => {
-    return submitRequestToBackground('bufferedTrace', [request, fn]);
-  }, []);
+  // **IMPORTANT**: Keep buffered traces on the background connection. Calling the shared
+  // methods directly here would create a queue local to this UI page.
+  const bufferedTrace: UITraceMethod = useCallback(
+    (request, fn) => {
+      return submitRequestToBackground('bufferedTrace', [
+        request,
+        isOptedIn,
+        fn,
+      ]);
+    },
+    [isOptedIn],
+  );
 
-  const bufferedEndTrace: UIEndTraceMethod = useCallback((request) => {
-    submitRequestToBackground('bufferedEndTrace', [request]);
-  }, []);
+  const bufferedEndTrace: UIEndTraceMethod = useCallback(
+    (request) => {
+      submitRequestToBackground('bufferedEndTrace', [request, isOptedIn]);
+    },
+    [isOptedIn],
+  );
 
   // Used to prevent double tracking page calls across StrictMode remounts.
   /**
