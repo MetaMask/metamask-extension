@@ -11,6 +11,7 @@ export default function createOriginMiddleware(opts) {
     /** @type {Function} */ next,
   ) {
     req.origin = opts.origin;
+    req.originPath = opts.originPath;
     next();
   };
 }
