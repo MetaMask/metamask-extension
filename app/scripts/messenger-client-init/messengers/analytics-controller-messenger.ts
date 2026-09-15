@@ -25,9 +25,7 @@ import type {
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type { MetaMetricsControllerGetStateAction } from '../../controllers/metametrics-controller';
-import type {
-  MetaMetricsControllerSetMarketingCampaignCookieIdAction,
-} from '../../controllers/metametrics-controller-method-action-types';
+import type { MetaMetricsControllerSetMarketingCampaignCookieIdAction } from '../../controllers/metametrics-controller-method-action-types';
 import type { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import type { RootMessenger } from '../../lib/messenger';
 

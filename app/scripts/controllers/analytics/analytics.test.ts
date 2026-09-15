@@ -24,9 +24,7 @@ import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import type { PreferencesControllerGetStateAction } from '../preferences-controller';
 import type { MetaMetricsControllerGetStateAction } from '../metametrics-controller';
-import type {
-  MetaMetricsControllerSetMarketingCampaignCookieIdAction,
-} from '../metametrics-controller-method-action-types';
+import type { MetaMetricsControllerSetMarketingCampaignCookieIdAction } from '../metametrics-controller-method-action-types';
 import { getAnalyticsControllerInitMessenger } from '../../messenger-client-init/messengers/analytics-controller-messenger';
 import {
   configureAnalytics,
