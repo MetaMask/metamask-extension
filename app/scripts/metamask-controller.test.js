@@ -105,6 +105,7 @@ jest.mock('./messenger-client-init/perps-controller-init', () => ({
     messengerClient: {
       state: {},
       name: 'PerpsController',
+      stopMarketDataPreload: jest.fn(),
     },
     api: {
       perpsDisconnect: jest.fn().mockResolvedValue(undefined),
@@ -299,8 +300,29 @@ jest.mock('./lib/rpc-method-middleware', () => ({
 
 jest.mock('../../shared/lib/trace', () => ({
   ...jest.requireActual('../../shared/lib/trace'),
+  getPerformanceTimestamp: jest.fn(() => 1_000),
   trace: jest.fn(),
   endTrace: jest.fn(),
+}));
+
+// Records the options the controller wires the bridge with, so the callbacks it
+// passes can be exercised without standing up the Hyperliquid SDK.
+const perpsStreamBridgeOptions = [];
+const mockPerpsStreamCanEmit = jest.fn().mockReturnValue(true);
+jest.mock('./controllers/perps/perps-stream-bridge', () => ({
+  PerpsStreamBridge: class {
+    static invalidateController = jest.fn();
+
+    constructor(options) {
+      perpsStreamBridgeOptions.push(options);
+    }
+
+    bridgeApi = () => ({});
+
+    canEmit = (...args) => mockPerpsStreamCanEmit(...args);
+
+    dispose = jest.fn();
+  },
 }));
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(false);
@@ -1041,6 +1063,35 @@ describe('MetaMaskController', () => {
       });
     });
 
+    it('disconnects active Perps when Basic Functionality is disabled', async () => {
+      jest
+        .spyOn(environment, 'getIsPerpsIncludedInBuild')
+        .mockReturnValue(true);
+      jest
+        .spyOn(metamaskController.messengerClientApi, 'perpsGetConnectionState')
+        .mockReturnValue('connected');
+      const disconnect = jest.spyOn(
+        metamaskController.messengerClientApi,
+        'perpsDisconnect',
+      );
+      const publishPreferences = (useExternalServices) =>
+        metamaskController.controllerMessenger.publish(
+          'PreferencesController:stateChange',
+          {
+            ...metamaskController.preferencesController.state,
+            useExternalServices,
+          },
+          getMockPatches(),
+        );
+      publishPreferences(true);
+      expect(disconnect).not.toHaveBeenCalled();
+
+      publishPreferences(false);
+      await waitForAllPromises();
+
+      expect(disconnect).toHaveBeenCalledTimes(1);
+    });
+
     describe('_onLock', () => {
       it('disconnects an active perps websocket', async () => {
         jest
@@ -1048,7 +1099,9 @@ describe('MetaMaskController', () => {
           .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
-        metamaskController.messengerClientsByName.PerpsController = {};
+        metamaskController.messengerClientsByName.PerpsController = {
+          stopMarketDataPreload: jest.fn(),
+        };
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
@@ -1094,7 +1147,9 @@ describe('MetaMaskController', () => {
           .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
-        metamaskController.messengerClientsByName.PerpsController = {};
+        metamaskController.messengerClientsByName.PerpsController = {
+          stopMarketDataPreload: jest.fn(),
+        };
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
@@ -2984,6 +3039,67 @@ describe('MetaMaskController', () => {
         );
       });
 
+      describe('perps stream bridge wiring', () => {
+        const connectPerpsBridge = () => {
+          perpsStreamBridgeOptions.length = 0;
+          mockPerpsStreamCanEmit.mockReturnValue(true);
+          metamaskController.messengerClientsByName.PerpsController = {
+            state: {},
+            stopMarketDataPreload: jest.fn(),
+          };
+
+          const streamTest = createThroughStream((chunk, _, cb) => {
+            cb(chunk);
+          });
+          metamaskController.setupTrustedCommunication(streamTest, {});
+
+          return {
+            bridgeOptions: perpsStreamBridgeOptions[0],
+            streamTest,
+          };
+        };
+
+        it('resolves the selected address from the accounts controller', () => {
+          const { bridgeOptions, streamTest } = connectPerpsBridge();
+          jest
+            .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+            .mockReturnValue({ address: '0xabc' });
+
+          expect(bridgeOptions.getSelectedAddress()).toBe('0xabc');
+          streamTest.end();
+        });
+
+        it('withholds preload permission when Perps is not in the build', () => {
+          const { bridgeOptions, streamTest } = connectPerpsBridge();
+          jest
+            .spyOn(environment, 'getIsPerpsIncludedInBuild')
+            .mockReturnValue(false);
+
+          expect(bridgeOptions.isPreloadAllowed()).toBe(false);
+          streamTest.end();
+        });
+
+        it('asks the bridge whether it owns each stream channel', () => {
+          const { bridgeOptions, streamTest } = connectPerpsBridge();
+
+          // A channel the bridge disowns must be dropped before the write, so
+          // the guard has to run for every channel rather than once per stream.
+          mockPerpsStreamCanEmit.mockReturnValue(false);
+          expect(() =>
+            bridgeOptions.emit('prices', { coin: 'BTC' }, {}),
+          ).not.toThrow();
+
+          mockPerpsStreamCanEmit.mockReturnValue(true);
+          bridgeOptions.emit('markets', { coin: 'ETH' }, {});
+
+          expect(mockPerpsStreamCanEmit.mock.calls).toStrictEqual([
+            ['prices'],
+            ['markets'],
+          ]);
+          streamTest.end();
+        });
+      });
+
       const createTestStream = () => {
         const {
           promise: onFinishedCallbackPromise,
@@ -3152,7 +3268,9 @@ describe('MetaMaskController', () => {
           .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
-        metamaskController.messengerClientsByName.PerpsController = {};
+        metamaskController.messengerClientsByName.PerpsController = {
+          stopMarketDataPreload: jest.fn(),
+        };
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
@@ -3209,7 +3327,9 @@ describe('MetaMaskController', () => {
           .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
-        metamaskController.messengerClientsByName.PerpsController = {};
+        metamaskController.messengerClientsByName.PerpsController = {
+          stopMarketDataPreload: jest.fn(),
+        };
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
@@ -3266,7 +3386,9 @@ describe('MetaMaskController', () => {
           .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
-        metamaskController.messengerClientsByName.PerpsController = {};
+        metamaskController.messengerClientsByName.PerpsController = {
+          stopMarketDataPreload: jest.fn(),
+        };
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);

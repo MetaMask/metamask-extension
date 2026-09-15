@@ -1,6 +1,9 @@
 import { useEffect, useMemo } from 'react';
 import type { PriceUpdate } from '@metamask/perps-controller';
-import type { PerpsStreamManager } from '../../../providers/perps';
+import {
+  getPerpsStreamManager,
+  type PerpsStreamManager,
+} from '../../../providers/perps/PerpsStreamManager';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { usePerpsChannel } from './usePerpsChannel';
 
@@ -24,6 +27,8 @@ export type UsePerpsLivePricesOptions = {
 export type UsePerpsLivePricesReturn = {
   /** Map of symbol to price update */
   prices: Record<string, PriceUpdate>;
+  /** Whether the consumed snapshot came from this session's live stream. */
+  isLive: boolean;
   /** Whether we're waiting for the first data */
   isInitialLoading: boolean;
 };
@@ -121,5 +126,11 @@ export function usePerpsLivePrices(
     return priceRecord;
   }, [isInitialLoading, priceArray, requestedSymbols]);
 
-  return { prices, isInitialLoading };
+  return {
+    prices,
+    isInitialLoading,
+    isLive:
+      getPerpsStreamManager().hasLivePrices(priceArray) &&
+      Object.values(prices).some((price) => Number(price.price) > 0),
+  };
 }

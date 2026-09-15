@@ -27,6 +27,7 @@ import {
   MARKET_CATEGORIES,
   type PerpsMarketData,
 } from '@metamask/perps-controller';
+import { usePerpsEntryTrace } from '../../../hooks/perps/usePerpsEntryTrace';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -215,8 +216,11 @@ export const MarketListView = () => {
   const { setFlowAttribution } = usePerpsAttribution();
 
   // Use stream hooks for real-time market data
-  const { markets: allMarkets, isInitialLoading: marketsLoading } =
-    usePerpsLiveMarketListData();
+  const {
+    markets: allMarkets,
+    isInitialLoading: marketsLoading,
+    areMarketsLive,
+  } = usePerpsLiveMarketListData();
   const { account } = usePerpsLiveAccount();
 
   // Upper-cased so lookups match `PerpsMarketData.symbol` casing.
@@ -351,6 +355,13 @@ export const MarketListView = () => {
   const trackRef = useRef(track);
   trackRef.current = track;
   // Latest settled result set, read by the tap handler for rank/count.
+  usePerpsEntryTrace(
+    'market_list',
+    displayedMarkets,
+    isLoading,
+    areMarketsLive(displayedMarkets),
+  );
+
   const displayedMarketsRef = useRef(displayedMarkets);
   displayedMarketsRef.current = displayedMarkets;
   // Last query actually emitted, so abandonment reports what was measured.
