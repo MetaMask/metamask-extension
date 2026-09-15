@@ -59,7 +59,7 @@ export function RampsTokenUnavailableInfo({
         data-testid="ramps-token-unavailable-modal"
       >
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent className="items-center">
           <ModalHeader
             onClose={handleClose}
             closeButtonProps={{ ariaLabel: t('close') }}
