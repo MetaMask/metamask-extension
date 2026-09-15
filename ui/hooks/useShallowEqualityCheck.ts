@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useState } from 'react';
 import { shallowEqual } from 'react-redux';
 
 /**
@@ -30,11 +30,11 @@ import { shallowEqual } from 'react-redux';
  * @returns Referentially stable value that only changes when shallow comparison fails
  */
 export function useShallowEqualityCheck<Value>(value: Value): Value {
-  const ref = useRef<Value>(value);
-  if (!shallowEqual(ref.current, value)) {
-    ref.current = value;
+  const [stableValue, setStableValue] = useState(value);
+  if (!shallowEqual(stableValue, value)) {
+    setStableValue(value);
   }
-  return ref.current;
+  return stableValue;
 }
 
 export default useShallowEqualityCheck;

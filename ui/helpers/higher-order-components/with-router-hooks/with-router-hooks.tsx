@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import {
   useNavigate,
   useLocation,
@@ -23,19 +23,19 @@ export type RouterHooksProps = {
  * @returns Referentially stable location that only changes when pathname/search/hash/state change
  */
 function useLocationStable(location: RouterLocation): RouterLocation {
-  const ref = useRef<RouterLocation>(location);
+  const [stableLocation, setStableLocation] = useState(location);
 
   const isLocationParamsEqual =
-    ref.current.pathname === location.pathname &&
-    ref.current.search === location.search &&
-    ref.current.hash === location.hash &&
-    shallowEqual(ref.current.state, location.state);
+    stableLocation.pathname === location.pathname &&
+    stableLocation.search === location.search &&
+    stableLocation.hash === location.hash &&
+    shallowEqual(stableLocation.state, location.state);
 
   if (!isLocationParamsEqual) {
-    ref.current = location;
+    setStableLocation(location);
   }
 
-  return ref.current;
+  return stableLocation;
 }
 
 function withRouterHooks<Props extends object>(
