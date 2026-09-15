@@ -342,8 +342,11 @@ jest.mock('../../../store/actions', () => ({
   },
 }));
 
-const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
-  const store = mockStore(createMockState());
+const renderComponent = (
+  groupId: AccountGroupId = GROUP_ID_MOCK,
+  state = createMockState(),
+) => {
+  const store = mockStore(state);
   return render(
     <Provider store={store}>
       <MultichainPrivateKeyList groupId={groupId} goBack={mockGoBack} />
@@ -414,6 +417,33 @@ describe('MultichainPrivateKeyList', () => {
       ACCOUNT_ONE_ADDRESS_MOCK,
       ACCOUNT_TWO_ADDRESS_MOCK,
     ]);
+  });
+
+  it('keeps a single EVM section expanded without disclosure controls', async () => {
+    const state = createMockState();
+    state.metamask.accountTree.wallets[WALLET_ID_MOCK].groups[
+      GROUP_ID_MOCK
+    ].accounts = [ACCOUNT_ONE_ID_MOCK];
+    delete state.metamask.internalAccounts.accounts[ACCOUNT_TWO_ID_MOCK];
+    mockExportAccounts.mockResolvedValueOnce([ACCOUNT_ONE_PRIVATE_KEY_MOCK]);
+
+    renderComponent(GROUP_ID_MOCK, state);
+
+    fireEvent.change(await screen.findByPlaceholderText('password'), {
+      target: { value: 'correctpassword' },
+    });
+    fireEvent.click(screen.getByTestId('confirm-button'));
+
+    const evmHeader = await screen.findByTestId(
+      'multichain-private-key-row-toggle-eip155:1',
+    );
+    expect(evmHeader.tagName).toBe('DIV');
+    expect(
+      screen.queryByTestId('multichain-private-key-row-toggle-icon-eip155:1'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId('multichain-private-key-reveal-eip155:1'),
+    ).toBeInTheDocument();
   });
 
   it('expands the EVM section by default and keeps only one section open', async () => {

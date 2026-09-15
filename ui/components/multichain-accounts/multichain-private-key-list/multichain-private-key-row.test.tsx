@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { MultichainPrivateKeyRow } from './multichain-private-key-row';
 
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -11,11 +11,18 @@ const PRIVATE_KEY = 'private-key-mock';
 const mockOnCopy = jest.fn();
 const mockOnToggle = jest.fn();
 
-const renderComponent = (isExpanded = true) =>
+const renderComponent = ({
+  isCollapsible = true,
+  isExpanded = true,
+}: {
+  isCollapsible?: boolean;
+  isExpanded?: boolean;
+} = {}) =>
   render(
     <MultichainPrivateKeyRow
       address="0x1234567890abcdef1234567890abcdef12345678"
       chainId={CHAIN_ID}
+      isCollapsible={isCollapsible}
       isExpanded={isExpanded}
       networkName="Ethereum and EVMs"
       onCopy={mockOnCopy}
@@ -27,6 +34,11 @@ const renderComponent = (isExpanded = true) =>
 describe('MultichainPrivateKeyRow', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   it('renders the network and shortened address', () => {
@@ -46,6 +58,23 @@ describe('MultichainPrivateKeyRow', () => {
     expect(mockOnToggle).toHaveBeenCalledTimes(1);
   });
 
+  it('does not render an interactive header for a single section', () => {
+    renderComponent({ isCollapsible: false });
+
+    const header = screen.getByTestId(
+      `multichain-private-key-row-toggle-${CHAIN_ID}`,
+    );
+    fireEvent.click(header);
+
+    expect(mockOnToggle).not.toHaveBeenCalled();
+    expect(
+      screen.queryByTestId(
+        `multichain-private-key-row-toggle-icon-${CHAIN_ID}`,
+      ),
+    ).not.toBeInTheDocument();
+    expect(header).not.toHaveClass('hover:bg-hover');
+  });
+
   it('obscures the private key until tapped', () => {
     renderComponent();
 
@@ -56,6 +85,7 @@ describe('MultichainPrivateKeyRow', () => {
       `multichain-private-key-value-${CHAIN_ID}`,
     );
     expect(revealButton).toHaveClass('bg-muted/50');
+    expect(revealButton).toHaveClass('items-start');
     expect(privateKey).toHaveStyle({ filter: 'blur(8px)' });
     expect(privateKey).not.toHaveTextContent(PRIVATE_KEY);
 
@@ -80,13 +110,24 @@ describe('MultichainPrivateKeyRow', () => {
     expect(
       screen.getByText('multichainAccountPrivateKeyCopied'),
     ).toBeInTheDocument();
+    expect(copyButton).toHaveClass('bg-success-muted', 'text-success-default');
     expect(
       screen.getByTestId(`multichain-private-key-value-${CHAIN_ID}`),
     ).toHaveStyle({ filter: 'blur(8px)' });
+
+    act(() => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    expect(copyButton).toHaveTextContent('copy');
+    expect(copyButton).not.toHaveClass(
+      'bg-success-muted',
+      'text-success-default',
+    );
   });
 
   it('hides the private key content while collapsed', () => {
-    renderComponent(false);
+    renderComponent({ isExpanded: false });
 
     expect(
       screen.queryByTestId(`multichain-private-key-reveal-${CHAIN_ID}`),
