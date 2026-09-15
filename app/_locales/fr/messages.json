@@ -5462,9 +5462,6 @@
   "moneyActivityPending": {
     "message": "En attente"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "L'historique de votre compte Money apparaîtra ici."
-  },
   "moneyActivityReceived": {
     "message": "Reçu"
   },
@@ -7844,12 +7841,6 @@
   "perpsSortByPriceChange": {
     "message": "Variation du prix"
   },
-  "perpsSortByRank": {
-    "message": "Rang"
-  },
-  "perpsSortBySection": {
-    "message": "Trier par"
-  },
   "perpsSortByTitle": {
     "message": "Filtrer"
   },
@@ -8642,9 +8633,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Dernière utilisation"
-  },
-  "rampsQuoteFetchError": {
-    "message": "Échec de la récupération de la cotation."
   },
   "rampsQuoteUnavailable": {
     "message": "Cotation non disponible."

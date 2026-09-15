@@ -58,6 +58,7 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import { useBottomNavBar } from '../../../hooks/useBottomNavBar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
@@ -98,6 +99,7 @@ const PrepareBridgePage = ({
   onOpenSettings: () => void;
 }) => {
   const dispatch = useDispatch();
+  const showNavbar = useBottomNavBar();
 
   const t = useI18nContext();
   const { formatCurrency } = useFormatters();
@@ -656,7 +658,10 @@ const PrepareBridgePage = ({
 
         {!isInitialQuoteLoading && (
           <Column
-            className="flex-1"
+            className={classnames('sticky z-10 flex-1 shrink-0', {
+              'bottom-16': showNavbar,
+              'bottom-0': !showNavbar,
+            })}
             justifyContent={JustifyContent.flexEnd}
             width={BlockSize.Full}
             gap={3}
@@ -664,7 +669,6 @@ const PrepareBridgePage = ({
             paddingTop={4}
             paddingBottom={4}
             backgroundColor={BackgroundColor.backgroundDefault}
-            style={{ position: 'sticky', bottom: 0 }}
           >
             <PrepareBridgePageFooter
               onFetchNewQuotes={() => {

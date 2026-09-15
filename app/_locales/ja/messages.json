@@ -5466,9 +5466,6 @@
   "moneyActivityPending": {
     "message": "保留中"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "Moneyのアクティビティがここに表示されます。"
-  },
   "moneyActivityReceived": {
     "message": "受け取りました"
   },
@@ -7848,12 +7845,6 @@
   "perpsSortByPriceChange": {
     "message": "価格変動"
   },
-  "perpsSortByRank": {
-    "message": "ランキング"
-  },
-  "perpsSortBySection": {
-    "message": "並べ替え基準"
-  },
   "perpsSortByTitle": {
     "message": "フィルター"
   },
@@ -8646,9 +8637,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "前回の利用"
-  },
-  "rampsQuoteFetchError": {
-    "message": "クォートを取得できませんでした。"
   },
   "rampsQuoteUnavailable": {
     "message": "クォートが利用できません。"

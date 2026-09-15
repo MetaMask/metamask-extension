@@ -5462,9 +5462,6 @@
   "moneyActivityPending": {
     "message": "Nakabinbin"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "Lilitaw ang aktibidad mo sa Money dito."
-  },
   "moneyActivityReceived": {
     "message": "Natanggap"
   },
@@ -7841,12 +7838,6 @@
   "perpsSortByPriceChange": {
     "message": "Pagbabago ng presyo"
   },
-  "perpsSortByRank": {
-    "message": "Rank"
-  },
-  "perpsSortBySection": {
-    "message": "I-sort ayon sa"
-  },
   "perpsSortByTitle": {
     "message": "Filter"
   },
@@ -8639,9 +8630,6 @@
   },
   "rampsPreviouslyUsed": {
     "message": "Huling ginamit"
-  },
-  "rampsQuoteFetchError": {
-    "message": "Nabigong kunin ang quote."
   },
   "rampsQuoteUnavailable": {
     "message": "Hindi available ang quote."

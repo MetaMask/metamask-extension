@@ -428,6 +428,8 @@ export function useTransactionCustomAmount({
         .times(balanceUsdValue);
       // Arm isMaxAmount on a full (100%) selection, including money-account
       // deposits, so Pay quotes the whole pay-token balance as EXACT_INPUT.
+      // Typed / percentage amounts leave isMaxAmount off so Relay stays
+      // atomic and quotes EXACT_OUTPUT (mobile parity).
       // Flows passing balanceUsdOverride (Perps and money-account withdraw)
       // spend an external vault balance the background cannot read, so they
       // stay off that path and keep the typed amount authoritative.

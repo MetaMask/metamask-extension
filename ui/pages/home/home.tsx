@@ -234,8 +234,8 @@ export default function Home() {
     setBasicFunctionalityModalOpen();
   }, [setBasicFunctionalityModalOpen]);
 
-  const showAppShellChrome = useBottomNavBar();
-  const appHeader = showAppShellChrome ? null : <AppHeader />;
+  const showNavbar = useBottomNavBar();
+  const appHeader = showNavbar ? null : <AppHeader />;
 
   if (forgottenPassword) {
     return <Navigate to={RESTORE_VAULT_ROUTE} replace />;
@@ -310,7 +310,7 @@ export default function Home() {
   return (
     <>
       {appHeader}
-      {showAppShellChrome ? (
+      {showNavbar ? (
         <div className="flex min-h-full flex-col">
           <div className="grow">{homeBody}</div>
           <div className="sticky bottom-16 z-[100] shrink-0">

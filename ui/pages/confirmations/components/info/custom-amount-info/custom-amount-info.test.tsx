@@ -362,6 +362,41 @@ describe('CustomAmountInfo', () => {
     expect(queryByTestId('custom-amount-skeleton')).not.toBeInTheDocument();
   });
 
+  it('withholds the stale amount from alerts while deposit prefill is loading', () => {
+    // `amountFiat` still holds the previously selected token's amount while
+    // prefill recomputes. Passing it on would compare it against the new
+    // token's balance and momentarily show "Insufficient funds".
+    render({
+      customAmountHookReturn: {
+        ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+        amountFiat: '100',
+        isDepositPrefillEnabled: true,
+        isDepositPrefillLoading: true,
+        isDepositPrefilled: false,
+      },
+    });
+
+    expect(
+      useTransactionCustomAmountAlertsModule.useTransactionCustomAmountAlerts,
+    ).toHaveBeenCalledWith({ pendingFiatAmount: undefined });
+  });
+
+  it('passes the amount to alerts once the field has settled', () => {
+    render({
+      customAmountHookReturn: {
+        ...DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+        amountFiat: '100',
+        isDepositPrefillEnabled: true,
+        isDepositPrefillLoading: false,
+        isDepositPrefilled: true,
+      },
+    });
+
+    expect(
+      useTransactionCustomAmountAlertsModule.useTransactionCustomAmountAlerts,
+    ).toHaveBeenCalledWith({ pendingFiatAmount: '100' });
+  });
+
   it('keeps the amount visible when deposit prefill is enabled but not loading', () => {
     const { getByTestId, queryByTestId } = render({
       customAmountHookReturn: {

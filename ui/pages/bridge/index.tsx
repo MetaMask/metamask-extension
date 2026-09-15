@@ -107,9 +107,7 @@ const CrossChainSwap = () => {
           setIsSettingsModalOpen(false);
         }}
       />
-      <PrepareBridgePage
-        onOpenSettings={() => setIsSettingsModalOpen(true)}
-      />
+      <PrepareBridgePage onOpenSettings={() => setIsSettingsModalOpen(true)} />
     </>
   );
 

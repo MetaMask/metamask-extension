@@ -6,9 +6,9 @@ import { ScrollContainer } from '../contexts/scroll-container';
 import { useBottomNavBar } from '../hooks/useBottomNavBar';
 
 export const MainLayout = () => {
-  const showChrome = useBottomNavBar();
+  const showNavbar = useBottomNavBar();
 
-  if (showChrome) {
+  if (showNavbar) {
     return (
       <div className="flex h-screen flex-col">
         <AppHeader />

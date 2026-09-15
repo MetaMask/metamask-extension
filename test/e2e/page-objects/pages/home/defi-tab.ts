@@ -64,6 +64,11 @@ class DeFiToken {
  * @see ui/pages/defi/pages/defi-tab.tsx
  */
 class DeFiTab extends HomePage {
+  private readonly aaveV3ProtocolName = {
+    css: '[data-testid="multichain-token-list-item-token-name"]',
+    text: 'Aave V3',
+  };
+
   private readonly defiPage = {
     testId: 'parent-selector-defi-tab',
   };
@@ -103,9 +108,7 @@ class DeFiTab extends HomePage {
 
   async clickIntoAaveV3DetailsPage() {
     console.log('Click Aave V3 details page');
-    await this.driver.clickElement({
-      text: 'Aave V3',
-    });
+    await this.driver.clickElement(this.aaveV3ProtocolName);
   }
 }
 

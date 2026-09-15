@@ -172,6 +172,7 @@ function runHook({
       balanceUsd: String(payTokenBalanceUsd),
       balanceRaw: livePayTokenBalanceRaw ?? payTokenBalanceRaw ?? '0',
       isLiveBalance: livePayTokenBalanceRaw !== undefined,
+      isBalanceUsdKnown: Number(payTokenBalanceUsd) > 0,
     });
   jest.mocked(useUpdateTokenAmountModule.useUpdateTokenAmount).mockReturnValue({
     updateTokenAmount: updateTokenAmountMock,

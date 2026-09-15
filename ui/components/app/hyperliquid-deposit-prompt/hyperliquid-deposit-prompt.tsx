@@ -42,7 +42,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
 import { updateTransactionPaymentToken } from '../../../store/controller-actions/transaction-pay-controller';
 import { upsertTransactionUIMetricsFragment } from '../../../store/actions';
-import { TokenIcon } from '../../../pages/confirmations/components/token-icon/token-icon';
+import { TokenIcon } from '../token-icon';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import { ConfirmationLoader } from '../../../pages/confirmations/hooks/useConfirmationNavigation';
 import { selectBlockedPayTokens } from '../../../pages/confirmations/selectors/feature-flags';
