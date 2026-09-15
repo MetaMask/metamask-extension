@@ -2463,8 +2463,15 @@ export function removeWallet(
   walletId: AccountWalletId,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    // TODO: Delete call to background API
-    await forceUpdateMetamaskState(dispatch);
+    log.debug(`background.removeAccountWallet`);
+    try {
+      await submitRequestToBackground('removeAccountWallet', [walletId]);
+      // Forcing update of the state speeds up the UI update process
+      // and makes UX better
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
   };
 }
 

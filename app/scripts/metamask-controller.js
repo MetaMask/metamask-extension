@@ -2962,6 +2962,9 @@ export default class MetamaskController extends EventEmitter {
         this.accountTreeController.setAccountGroupHidden.bind(
           this.accountTreeController,
         ),
+      removeAccountWallet: this.accountTreeController.removeAccountWallet.bind(
+        this.accountTreeController,
+      ),
       syncAccountTreeWithUserStorage: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'AccountTreeController:syncWithUserStorage',

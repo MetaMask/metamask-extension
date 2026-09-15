@@ -430,6 +430,7 @@ export const MultichainAccountList = ({
       return;
     }
 
+    console.log('handleWalletRemoveConfirm', walletRemoveModal.walletId);
     await dispatch(removeWallet(walletRemoveModal.walletId));
     setWalletRemoveModal(null);
   }, [dispatch, walletRemoveModal]);
